@@ -25,7 +25,9 @@ export class TradingReceiveAccount {
     readonly bitcoinReceiveAddressModal: Locator;
     readonly bitcoinReceiveAddressModalOption: Locator;
 
-    readonly findAccountButton: Locator;
+    readonly addAccountButton: Locator;
+    readonly addAccountModalNetworkButton = (symbol: NetworkSymbol) =>
+        this.page.getByTestId(`@settings/wallet/network/${symbol}/add-button`);
 
     constructor(private readonly page: Page) {
         // receive account & receive address
@@ -63,7 +65,7 @@ export class TradingReceiveAccount {
             '@trading/bitcoin-receive-address-modal/option',
         );
 
-        this.findAccountButton = this.page.getByTestId('@find-account');
+        this.addAccountButton = this.page.getByTestId('@add-account');
     }
 
     @step()
@@ -100,12 +102,17 @@ export class TradingReceiveAccount {
     }
 
     @step()
-    async selectAddSuiteReceiveAccount(index: number) {
+    async selectAddSuiteReceiveAccount(index: number, symbol?: NetworkSymbol) {
         await this.receiveAddressPicker.click();
         await expect(this.receiveAccountModal).toBeVisible();
 
         await this.receiveAccountModalAddSuiteOption.nth(0).click();
-        await this.findAccountButton.click();
+
+        if (symbol) {
+            await this.addAccountModalNetworkButton(symbol).click();
+        } else {
+            await this.addAccountButton.click();
+        }
 
         await this.page.discoveryShouldFinish();
 

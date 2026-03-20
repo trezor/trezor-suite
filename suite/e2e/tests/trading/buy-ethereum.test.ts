@@ -37,7 +37,7 @@ test.describe('Trading - Buy Ethereum', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
             await tradingPage.fillBuyForm({
                 amount: fiatAmount,
                 selectReceiveAddress: async () => {
-                    await tradingPage.receiveAccount.selectAddSuiteReceiveAccount(0);
+                    await tradingPage.receiveAccount.selectAddSuiteReceiveAccount(0, 'eth');
                 },
             });
             await expect(tradingPage.quotes.bestOfferAmount).toContainText('0.018615 ETH');

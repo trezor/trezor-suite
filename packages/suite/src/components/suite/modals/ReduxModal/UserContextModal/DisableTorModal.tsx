@@ -38,7 +38,11 @@ export const DisableTorModal = ({ onCancel, decision }: DisableTorModalProps) =>
     };
 
     return symbol ? (
-        <AdvancedCoinSettingsModal symbol={symbol} onCancel={() => setSymbol(undefined)} />
+        <AdvancedCoinSettingsModal
+            symbol={symbol}
+            onCancel={() => setSymbol(undefined)}
+            onBackClick={() => setSymbol(undefined)}
+        />
     ) : (
         <Modal
             onCancel={onCancel}

@@ -29,6 +29,9 @@ export const Banner: StoryObj<typeof meta> = {
         description: {
             control: 'text',
         },
+        isLoading: {
+            control: 'boolean',
+        },
         icon: {
             options: [undefined, true, ...variables.ICONS],
             control: {

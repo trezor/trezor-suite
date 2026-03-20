@@ -31,8 +31,7 @@ import { HomescreenGallery } from './HomescreenGallery';
 import { DeviceMatrixExplanation } from './DeviceMatrixExplanation';
 import { TroubleshootingTips } from './troubleshooting/TroubleshootingTips';
 import { getMessageId } from './getMessageId';
-import { CoinGroup } from './CoinGroup/CoinGroup';
-import { CoinList } from './CoinList/CoinList';
+import { NetworkList } from './NetworkList/NetworkList';
 import { StatusLight } from './StatusLight';
 import { AmountUnitSwitchWrapper } from './AmountUnitSwitchWrapper';
 import { TorLoader } from './TorLoader/TorLoader';
@@ -77,8 +76,7 @@ export {
     HomescreenGallery,
     DeviceMatrixExplanation,
     TroubleshootingTips,
-    CoinGroup,
-    CoinList,
+    NetworkList,
     StatusLight,
     AmountUnitSwitchWrapper,
     TorLoader,

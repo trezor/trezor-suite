@@ -54,7 +54,7 @@ test.describe('Coin Settings', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
                 await settingsPage.navigateTo('coins');
 
                 for (const network of defaultUnchecked) {
-                    await expect(settingsPage.coinsTab.networkButton(network)).toBeDisabledCoin();
+                    await settingsPage.coinsTab.expectNetworkDisabled(network);
                 }
                 // check dashboard with all coins disabled
                 await dashboardPage.navigateTo();
@@ -86,12 +86,10 @@ test.describe('Coin Settings', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
                 const backendType = 'blockbook';
                 const customServer = 'https://eth.marek.pl/';
 
-                await expect(settingsPage.coinsTab.networkButton('eth')).toBeEnabledCoin();
+                await settingsPage.coinsTab.expectNetworkEnabled('eth');
                 await settingsPage.coinsTab.openNetworkAdvanceSettings('eth');
                 await settingsPage.coinsTab.changeBackend(backendType, customServer);
-                await expect(settingsPage.coinsTab.networkButton('eth')).toContainTranslation(
-                    'TR_CUSTOM_BACKEND',
-                );
+                await settingsPage.coinsTab.expectCustomBackendIndicator('eth');
             });
         },
     );

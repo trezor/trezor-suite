@@ -1,7 +1,6 @@
 import { type ReactNode } from 'react';
 
 import { Card, Column, type IconName, InfoItem, Tooltip } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 type SettingsSectionProps = {
     title: ReactNode;
@@ -10,6 +9,7 @@ type SettingsSectionProps = {
     children?: ReactNode;
     tooltipText?: ReactNode;
     hasVerticalLayout?: boolean;
+    hasContainer?: boolean;
 };
 
 export const SettingsSection = ({
@@ -18,6 +18,7 @@ export const SettingsSection = ({
     children,
     tooltipText,
     hasVerticalLayout,
+    hasContainer = true,
 }: SettingsSectionProps) => {
     const width = hasVerticalLayout ? '100%' : 250;
 
@@ -37,11 +38,17 @@ export const SettingsSection = ({
             typographyStyle="headline-sm"
             verticalAlignment="start"
         >
-            <Card>
-                <Column gap={spacings.xxl} hasDivider>
+            {hasContainer ? (
+                <Card>
+                    <Column gap={32} hasDivider>
+                        {children}
+                    </Column>
+                </Card>
+            ) : (
+                <Column gap={32} width="100%">
                     {children}
                 </Column>
-            </Card>
+            )}
         </InfoItem>
     );
 };

@@ -98,7 +98,7 @@ test.describe('Account metadata', { tag: ['@webOnly', '@T3W1', '@T3T1', '@smoke'
             const newAccountLabelId = `m/84'/0'/${newAccountIndex}'` as AccountLabelId;
             await walletPage.openAccount();
             await walletPage.addAccountButton.click();
-            await settingsPage.coinsTab.networkButton('btc').click();
+            await settingsPage.coinsTab.networkAddButton('btc').click();
             await page.getByTestId('@add-account').click();
             await metadataPage.account.changeLabel({
                 accountId: newAccountLabelId,
