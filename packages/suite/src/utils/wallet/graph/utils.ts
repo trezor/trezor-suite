@@ -23,8 +23,8 @@ import {
     type GraphScale,
 } from 'src/types/wallet/graph';
 
-import { type ObjectType, type TypeName, sumFiatValueMapInPlace } from './utilsShared';
-import { type FiatValueMap } from './utilsWorker';
+import { sumFiatValueMapInPlace } from './utilsShared';
+import { type FiatValueMap, type ObjectType, type TypeName } from './types';
 
 export const deviceGraphDataFilterFn = (d: GraphData, deviceState: StaticSessionId | undefined) => {
     if (!deviceState) return false;
