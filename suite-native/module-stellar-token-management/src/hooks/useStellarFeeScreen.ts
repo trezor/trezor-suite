@@ -230,7 +230,7 @@ export const useStellarFeeScreen = ({
 
             if (isFulfilled(result)) {
                 // Refresh account data
-                dispatch(fetchAndUpdateAccountThunk({ accountKey }));
+                await dispatch(fetchAndUpdateAccountThunk({ accountKey }));
 
                 // Execute success callback
                 onSuccess();

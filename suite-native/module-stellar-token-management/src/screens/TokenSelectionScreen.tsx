@@ -6,7 +6,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import { type TokenAddress } from '@suite-common/wallet-types';
+import type { StellarTokenInfo, TokenAddress } from '@suite-common/wallet-types';
 import { useAlert } from '@suite-native/alerts';
 import { Box, Button, Card, Loader, SearchInput, Text, VStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
@@ -21,7 +21,7 @@ import {
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { TokenListItem } from '../components/TokenListItem';
-import { type StellarTokenInfo, useInactiveStellarTokens } from '../hooks/useInactiveStellarTokens';
+import { useInactiveStellarTokens } from '../hooks/useInactiveStellarTokens';
 import { composeStellarTrustlineFeesThunk } from '../thunks';
 
 type RouteProps = StackProps<

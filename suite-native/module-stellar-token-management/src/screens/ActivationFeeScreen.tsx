@@ -41,10 +41,16 @@ type NavigationProp = StackToStackCompositeNavigationProps<
 
 export const ActivationFeeScreen = () => {
     const route = useRoute<RouteProps>();
-    const { accountKey, tokenContract } = route.params;
+    const { accountKey, tokenContract, isTrading } = route.params;
     const navigation = useNavigation<NavigationProp>();
 
     const handleSuccess = useCallback(() => {
+        if (isTrading) {
+            navigation.pop();
+
+            return;
+        }
+
         // Navigate to home page after activation
         navigation.popTo(RootStackRoutes.AppTabs, {
             screen: AppTabsRoutes.HomeStack,
@@ -52,7 +58,7 @@ export const ActivationFeeScreen = () => {
                 screen: HomeStackRoutes.Home,
             },
         });
-    }, [navigation]);
+    }, [navigation, isTrading]);
 
     const {
         account,

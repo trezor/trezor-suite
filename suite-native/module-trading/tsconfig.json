@@ -62,6 +62,9 @@
         { "path": "../link" },
         { "path": "../message-system" },
         { "path": "../module-add-accounts" },
+        {
+            "path": "../module-stellar-token-management"
+        },
         { "path": "../navigation" },
         { "path": "../services" },
         { "path": "../toasts" },

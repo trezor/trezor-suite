@@ -6,9 +6,8 @@ import { Translation } from '@suite/intl';
 import { desktopQueryKeys, useQuery } from '@suite-common/react-query';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getCoingeckoId } from '@suite-common/wallet-config';
-import { type Account, type SelectedAccountLoaded } from '@suite-common/wallet-types';
-import type { TokenDetailByMint, TokenInfo } from '@trezor/blockchain-link-types';
-import { STELLAR_DECIMALS, getTokenMetadata } from '@trezor/blockchain-link-utils/src/stellar';
+import { type SelectedAccountLoaded, type StellarTokenInfo } from '@suite-common/wallet-types';
+import { getStellarInactiveTokens } from '@suite-common/wallet-utils';
 import { Button, Card, Row, Table, Text, Tooltip } from '@trezor/components';
 import { AssetLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
@@ -33,47 +32,6 @@ const DashedText = ({ children, ...props }: React.ComponentProps<typeof Text>) =
     </DashedTextWrapper>
 );
 
-export interface StellarTokenInfo extends TokenInfo {
-    homeDomain?: string;
-    rating?: number;
-}
-
-/**
- * Get the list of inactive Stellar tokens for the user account
- */
-export const getInactiveStellarTokens = async (account: Account): Promise<StellarTokenInfo[]> => {
-    if (account.symbol !== 'xlm') return [];
-
-    const allTokens: TokenDetailByMint = await getTokenMetadata();
-
-    // Get the currently active token contract addresses for the user
-    const activeTokenContracts = new Set(account.tokens?.map(token => token.contract) || []);
-
-    // Return tokens that the user has not activated yet
-    const inactiveTokens = Object.entries(allTokens)
-        .filter(([contractAddress]) => !activeTokenContracts.has(contractAddress))
-        .map(([contract]) => ({
-            type: 'STELLAR-CLASSIC' as const,
-            standard: 'STELLAR-CLASSIC' as const,
-            contract,
-            name: allTokens[contract]?.name,
-            symbol: contract.split('-')[0],
-            decimals: STELLAR_DECIMALS,
-            homeDomain: allTokens[contract]?.home_domain,
-            rating: allTokens[contract]?.rating,
-        }))
-        .sort((a, b) => {
-            // Place tokens without ratings last, otherwise sort high to low
-            if (a.rating == null && b.rating == null) return 0;
-            if (a.rating == null) return 1;
-            if (b.rating == null) return -1;
-
-            return b.rating - a.rating;
-        });
-
-    return inactiveTokens;
-};
-
 interface InactiveTokensTableProps {
     selectedAccount: SelectedAccountLoaded;
     searchQuery: string;
@@ -94,7 +52,7 @@ export const InactiveTokensTable = ({ selectedAccount, searchQuery }: InactiveTo
         queryKey: desktopQueryKeys.inactiveTokens(account.symbol),
         queryFn: () => {
             try {
-                return getInactiveStellarTokens(account);
+                return getStellarInactiveTokens(account);
             } catch (error) {
                 dispatch(
                     notificationsActions.addToast({

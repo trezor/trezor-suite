@@ -5,8 +5,7 @@ import { type CryptoId } from 'invity-api';
 import { desktopQueryKeys, useQuery } from '@suite-common/react-query';
 import { cryptoIdToNetworkAndContractAddress } from '@suite-common/trading';
 import { type Account } from '@suite-common/wallet-types';
-
-import { getInactiveStellarTokens } from 'src/views/wallet/tokens/inactive-tokens/InactiveTokensTable';
+import { getStellarInactiveTokens } from '@suite-common/wallet-utils';
 
 interface UseTradingStellarActivateTokenProps {
     account?: Account;
@@ -21,8 +20,8 @@ export const useTradingStellarActivateToken = ({
 
     const { data: inactiveTokens, refetch } = useQuery({
         enabled: account?.symbol === 'xlm',
-        queryKey: [desktopQueryKeys.inactiveTokens(account?.symbol ?? 'xlm', account?.key)],
-        queryFn: () => getInactiveStellarTokens(account!),
+        queryKey: desktopQueryKeys.inactiveTokens(account?.symbol ?? 'xlm', account?.key),
+        queryFn: () => getStellarInactiveTokens(account!),
         initialData: [],
     });
 

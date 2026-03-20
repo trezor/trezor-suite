@@ -267,9 +267,22 @@ export const TradingFormOffer = () => {
             receiveCryptoId: selectedAssetCryptoId,
         });
 
+    const isStellarActivateTokenModalOpen =
+        stellarActivateTokenModal.isOpen && !!stellarInactiveToken;
+
     const isContentBelowBreakpoint = useIsContentBelowBreakpoint(breakpoints.tablet);
 
     const noOffersWithTor = isTorEnabled && !quote && !isLoading;
+
+    const isConfirmButtonLoading =
+        areFeesLoading ||
+        (preselectedQuote && state.isFormLoading) ||
+        (state.isFormLoading && !isAmountEmpty && (type === 'sell' || isReceiveAddressSelected));
+
+    const confirmButtonTranslationId =
+        state.isFormLoading && !isAmountEmpty && (type === 'sell' || isReceiveAddressSelected)
+            ? 'TR_TRADING_OFFER_LOOKING'
+            : tradingGetSectionActionLabel(type);
 
     return (
         <Column gap={20}>
@@ -382,26 +395,12 @@ export const TradingFormOffer = () => {
                                     }}
                                     size="large"
                                     isDisabled={isButtonDisabled || isLoading}
-                                    isLoading={
-                                        areFeesLoading ||
-                                        (preselectedQuote && state.isFormLoading) ||
-                                        (state.isFormLoading &&
-                                            !isAmountEmpty &&
-                                            (type === 'sell' || isReceiveAddressSelected))
-                                    }
+                                    isLoading={isConfirmButtonLoading}
                                     data-testid={`@trading/form/${type}-button`}
                                     minWidth={160}
                                     width={isContentBelowBreakpoint ? undefined : '100%'}
                                 >
-                                    <Translation
-                                        id={
-                                            state.isFormLoading &&
-                                            !isAmountEmpty &&
-                                            (type === 'sell' || isReceiveAddressSelected)
-                                                ? 'TR_TRADING_OFFER_LOOKING'
-                                                : tradingGetSectionActionLabel(type)
-                                        }
-                                    />
+                                    <Translation id={confirmButtonTranslationId} />
                                 </Button>
                             )}
                         </>
@@ -422,17 +421,15 @@ export const TradingFormOffer = () => {
                 <TradingRevokeModal cryptoId={bestScoredQuoteAmounts.sendCurrency as CryptoId} />
             )}
 
-            {stellarActivateTokenModal.isOpen &&
-                stellarInactiveToken &&
-                tradingReceiveAddress?.selectedAccount?.symbol && (
-                    <StellarManageTokenModal
-                        mode="activate"
-                        account={tradingReceiveAddress.selectedAccount}
-                        symbol={tradingReceiveAddress.selectedAccount.symbol}
-                        contractAddress={stellarInactiveToken.contract}
-                        onCancel={stellarActivateTokenModal.onClose}
-                    />
-                )}
+            {isStellarActivateTokenModalOpen && !!tradingReceiveAddress?.selectedAccount && (
+                <StellarManageTokenModal
+                    mode="activate"
+                    account={tradingReceiveAddress.selectedAccount}
+                    symbol={tradingReceiveAddress.selectedAccount.symbol}
+                    contractAddress={stellarInactiveToken.contract}
+                    onCancel={stellarActivateTokenModal.onClose}
+                />
+            )}
         </Column>
     );
 };
