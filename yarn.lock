@@ -11308,6 +11308,8 @@ __metadata:
     "@evolu/common": "patch:@evolu/common@npm%3A7.3.0#~/.yarn/patches/@evolu-common-npm-7.3.0-dc4f142770.patch"
     "@suite-common/suite-sync-evolu": "workspace:*"
     "@suite-common/suite-sync-storage": "workspace:*"
+    "@suite-common/wallet-config": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
     "@types/better-sqlite3": "npm:^7.6.13"
     better-sqlite3: "npm:^12.1.1"
     ws: "npm:^8.18.0"

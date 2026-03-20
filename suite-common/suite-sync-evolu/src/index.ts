@@ -8,3 +8,7 @@ export { createEvoluInstanceFactory } from './createEvoluInstance';
 export { evoluCreateSuiteSyncOwner } from './evoluCreateSuiteSyncOwner';
 export { createEvoluAppOwnerFromTrezorData } from './createEvoluAppOwnerFromTrezorData';
 export { Schema } from './schema';
+export { AccountEvoluId } from './data/accountTable';
+export { AddressEvoluId } from './data/addressTable';
+export { OutputEvoluId } from './data/outputTable';
+export { WalletLabelId } from './data/walletTable';

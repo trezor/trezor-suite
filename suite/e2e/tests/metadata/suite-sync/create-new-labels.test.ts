@@ -1,50 +1,26 @@
 import {
-    accountDescriptor,
-    ownerId,
+    buildExpectedAccount,
+    buildExpectedAddress,
+    buildExpectedOutput,
+    buildExpectedWallet,
     ownerSecret,
-    walletDescriptor,
-} from '../../../fixtures/metadata/default-metadata-ids';
+} from '../../../fixtures/metadata/suite-sync-data';
 import { AccountLabelId } from '../../../support/enums/accountLabelId';
 import { expect, test } from '../../../support/fixtures';
 
 const defaultWalletIndex = 0;
-const expectedWallet = {
-    updatedAt: null,
-    isDeleted: null,
-    ownerId,
-    walletDescriptor,
-    label: 'Evolu write wallet',
-};
 
-const expectedAccount = {
-    updatedAt: null,
-    isDeleted: null,
-    ownerId,
-    accountDescriptor,
-    networkSymbol: 'btc',
-    label: 'Evolu write BTC account',
-};
-
-const expectedAddress = {
-    updatedAt: null,
-    isDeleted: null,
-    ownerId,
-    accountDescriptor,
-    label: 'Evolu write BTC address',
+const expectedWallet = buildExpectedWallet({ label: 'Evolu write wallet' });
+const expectedAccount = buildExpectedAccount({ label: 'Evolu write BTC account' });
+const expectedAddress = buildExpectedAddress({
     address: 'bc1qkkr2uvry034tsj4p52za2pg42ug4pxg5qfxyfa',
-    networkSymbol: 'btc',
-};
-
-const expectedOutput = {
-    isDeleted: null,
-    updatedAt: null,
-    ownerId,
-    accountDescriptor,
-    label: 'Evolu write output',
-    networkSymbol: 'btc',
-    outputIndex: '0',
+    label: 'Evolu write BTC address',
+});
+const expectedOutput = buildExpectedOutput({
     txId: 'aa545d95cf07892e1ae70b40e856b9b476f703e2e20647d0985830fd7b734393',
-};
+    outputIndex: '0',
+    label: 'Evolu write output',
+});
 
 test.describe('Suite Sync - Labelling', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({ wipeEvoluRelay: true });

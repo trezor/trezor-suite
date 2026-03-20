@@ -1,7 +1,10 @@
-import { ownerId } from '../../../fixtures/metadata/default-metadata-ids';
 import {
     accountSeed,
     addressSeed,
+    buildExpectedAccount,
+    buildExpectedAddress,
+    buildExpectedOutput,
+    buildExpectedWallet,
     outputSeed,
     ownerSecret,
     walletSeed,
@@ -10,6 +13,15 @@ import { AccountLabelId } from '../../../support/enums/accountLabelId';
 import { expect, test } from '../../../support/fixtures';
 
 const defaultWalletIndex = 0;
+
+const expectedAccount = buildExpectedAccount({ label: null });
+const expectedWallet = buildExpectedWallet({ label: null });
+const expectedAddress = buildExpectedAddress({ address: addressSeed.address, label: null });
+const expectedOutput = buildExpectedOutput({
+    txId: outputSeed.txId,
+    outputIndex: outputSeed.outputIndex,
+    label: null,
+});
 
 test.describe('Suite Sync - Remove Labels', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({ wipeEvoluRelay: true });
@@ -82,74 +94,10 @@ test.describe('Suite Sync - Remove Labels', { tag: ['@T3W1', '@T3T1'] }, () => {
         await test.step('Verify labels are removed in relay (label is null)', async () => {
             evoluClient.init({ ownerSecret });
 
-            await evoluClient.expectInTable(
-                'account',
-                [
-                    {
-                        updatedAt: null,
-                        isDeleted: null,
-                        ownerId,
-                        accountDescriptor: accountSeed.accountDescriptor,
-                        networkSymbol: accountSeed.networkSymbol,
-                        label: null,
-                    },
-                ],
-                { softExpect: true },
-            );
-
-            await evoluClient.expectInTable(
-                'wallet',
-                [
-                    {
-                        isDeleted: null,
-                        label: 'Evolu synced wallet',
-                        ownerId: '0Fco3XDgKR59zX5VBvyyGQ',
-                        updatedAt: null,
-                        walletDescriptor: 'mkqRFzxmkCGX9jxgpqqFHcxRUmLJcLDBer',
-                    },
-                    {
-                        updatedAt: null,
-                        isDeleted: null,
-                        ownerId,
-                        walletDescriptor: walletSeed.walletDescriptor,
-                        label: null,
-                    },
-                ],
-                { softExpect: true },
-            );
-
-            await evoluClient.expectInTable(
-                'address',
-                [
-                    {
-                        updatedAt: null,
-                        isDeleted: null,
-                        ownerId,
-                        accountDescriptor: addressSeed.accountDescriptor,
-                        networkSymbol: addressSeed.networkSymbol,
-                        address: addressSeed.address,
-                        label: null,
-                    },
-                ],
-                { softExpect: true },
-            );
-
-            await evoluClient.expectInTable(
-                'output',
-                [
-                    {
-                        updatedAt: null,
-                        isDeleted: null,
-                        ownerId,
-                        accountDescriptor: outputSeed.accountDescriptor,
-                        networkSymbol: outputSeed.networkSymbol,
-                        txId: outputSeed.txId,
-                        outputIndex: outputSeed.outputIndex,
-                        label: null,
-                    },
-                ],
-                { softExpect: true },
-            );
+            await evoluClient.expectInTable('account', [expectedAccount], { softExpect: true });
+            await evoluClient.expectInTable('wallet', [expectedWallet], { softExpect: true });
+            await evoluClient.expectInTable('address', [expectedAddress], { softExpect: true });
+            await evoluClient.expectInTable('output', [expectedOutput], { softExpect: true });
         });
     });
 });

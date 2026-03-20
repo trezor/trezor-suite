@@ -3,6 +3,8 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../suite-sync-evolu" },
-        { "path": "../suite-sync-storage" }
+        { "path": "../suite-sync-storage" },
+        { "path": "../wallet-config" },
+        { "path": "../wallet-types" }
     ]
 }
