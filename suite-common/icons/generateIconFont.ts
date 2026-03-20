@@ -9,7 +9,7 @@ import path from 'path';
 import { MOBILE_ICON_FONT_NAME } from './src/constants';
 import { type IconName as AllAvailableIcons } from './src/icons';
 
-const usedIcons = [
+export const usedIcons = [
     'arrowDown',
     'arrowDown',
     'arrowLineDown',
