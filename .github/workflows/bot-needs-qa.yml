@@ -1,0 +1,132 @@
+name: "[Bot] Set project status approved/needs-qa on Close/Merge PR & Issue"
+
+on:
+  issues:
+    types: [closed]
+  pull_request_target:
+    types: [closed]
+
+env:
+  NOQA_LABEL: no-QA
+  PROJECT_ID: PVT_kwDOAD9FD84AAuwj
+  STATUS_FIELD_ID: PVTSSF_lADOAD9FD84AAuwjzgAYi50
+  NEEDS_QA_OPTION_ID: 97926e6f
+  APPROVED_OPTION_ID: 0f23d421
+
+jobs:
+  set-project-status:
+    name: Set project status
+    runs-on: ubuntu-latest
+    if: github.repository == 'trezor/trezor-suite'
+    steps:
+      - name: Determine event context
+        id: context
+        run: |
+          if [ "${{ github.event_name }}" == "issues" ]; then
+            echo "content_id=${{ github.event.issue.node_id }}" >> $GITHUB_OUTPUT
+            echo "has_noqa_label=${{ contains(github.event.issue.labels.*.name, env.NOQA_LABEL) }}" >> $GITHUB_OUTPUT
+            echo "is_merged=false" >> $GITHUB_OUTPUT
+            echo "event_type=issue" >> $GITHUB_OUTPUT
+          else
+            echo "content_id=${{ github.event.pull_request.node_id }}" >> $GITHUB_OUTPUT
+            echo "has_noqa_label=${{ contains(github.event.pull_request.labels.*.name, env.NOQA_LABEL) }}" >> $GITHUB_OUTPUT
+            echo "is_merged=${{ github.event.pull_request.merged }}" >> $GITHUB_OUTPUT
+            echo "event_type=pull_request" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Skip if PR closed without merge
+        if: |
+          steps.context.outputs.event_type == 'pull_request' &&
+          steps.context.outputs.is_merged == 'false'
+        run: |
+          echo "PR was closed without merging — skipping."
+          exit 0
+
+      - name: Generate GitHub App token
+        if: |
+          steps.context.outputs.event_type == 'issue' ||
+          steps.context.outputs.is_merged == 'true'
+        id: trezor-bot-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ secrets.TREZOR_BOT_APP_ID }}
+          private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
+      - name: Get project item ID
+        if: |
+          steps.context.outputs.event_type == 'issue' ||
+          steps.context.outputs.is_merged == 'true'
+        id: get-item
+        env:
+          GH_TOKEN: ${{ steps.trezor-bot-token.outputs.token }}
+        run: |
+          CONTENT_ID="${{ steps.context.outputs.content_id }}"
+
+          RESPONSE=$(gh api graphql -f query='
+            query($content_id: ID!, $project_id: ID!) {
+              node(id: $content_id) {
+                ... on Issue {
+                  projectItems(first: 10) {
+                    nodes { id project { id } }
+                  }
+                }
+                ... on PullRequest {
+                  projectItems(first: 10) {
+                    nodes { id project { id } }
+                  }
+                }
+              }
+            }' \
+            -f content_id="$CONTENT_ID" \
+            -f project_id="${{ env.PROJECT_ID }}")
+
+          ITEM_ID=$(echo "$RESPONSE" | jq -r \
+            ".data.node.projectItems.nodes[] | select(.project.id == \"${{ env.PROJECT_ID }}\") | .id")
+
+          if [ -z "$ITEM_ID" ] || [ "$ITEM_ID" = "null" ]; then
+            echo "Item not found in project — it may not be tracked. Skipping."
+            echo "item_found=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          echo "ITEM_ID=$ITEM_ID" >> $GITHUB_ENV
+          echo "item_found=true" >> $GITHUB_OUTPUT
+
+      - name: Determine target status
+        if: |
+          (steps.context.outputs.event_type == 'issue' || steps.context.outputs.is_merged == 'true') &&
+          steps.get-item.outputs.item_found == 'true'
+        id: target-status
+        run: |
+          if [ "${{ steps.context.outputs.has_noqa_label }}" == "true" ]; then
+            echo "option_id=${{ env.APPROVED_OPTION_ID }}" >> $GITHUB_OUTPUT
+            echo "status_name=Approved" >> $GITHUB_OUTPUT
+          else
+            echo "option_id=${{ env.NEEDS_QA_OPTION_ID }}" >> $GITHUB_OUTPUT
+            echo "status_name=Needs QA" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Set project status
+        if: |
+          (steps.context.outputs.event_type == 'issue' || steps.context.outputs.is_merged == 'true') &&
+          steps.get-item.outputs.item_found == 'true'
+        env:
+          GH_TOKEN: ${{ steps.trezor-bot-token.outputs.token }}
+        run: |
+          gh api graphql -f query='
+            mutation($project: ID!, $item: ID!, $field: ID!, $value: String!) {
+              updateProjectV2ItemFieldValue(input: {
+                projectId: $project
+                itemId: $item
+                fieldId: $field
+                value: { singleSelectOptionId: $value }
+              }) {
+                projectV2Item {
+                  id
+                }
+              }
+            }' -f project=${{ env.PROJECT_ID }} \
+               -f item=$ITEM_ID \
+               -f field=${{ env.STATUS_FIELD_ID }} \
+               -f value=${{ steps.target-status.outputs.option_id }} \
+
+          echo "✅ Status set to '${{ steps.target-status.outputs.status_name }}' for ${{ steps.context.outputs.event_type }}"
