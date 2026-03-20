@@ -108,8 +108,8 @@ const getTooltipContent = (changeInfo: ChangeInfo) => {
         );
         changeInfo.addedAttributes.forEach(attr => {
             elements.push(
-                <Paragraph key={`added-${attr}`} typographyStyle="body-xs">
-                    &nbsp;&nbsp;- {attr}
+                <Paragraph key={`added-${attr}`} typographyStyle="body-xs" margin={{ left: 8 }}>
+                    - {attr}
                 </Paragraph>,
             );
         });
@@ -123,8 +123,8 @@ const getTooltipContent = (changeInfo: ChangeInfo) => {
         );
         changeInfo.updatedAttributes.forEach(attr => {
             elements.push(
-                <Paragraph key={`updated-${attr}`} typographyStyle="body-xs">
-                    &nbsp;&nbsp;- <Text isMonospaced>{attr}</Text>
+                <Paragraph key={`updated-${attr}`} typographyStyle="body-xs" margin={{ left: 8 }}>
+                    - <Text isMonospaced>{attr}</Text>
                 </Paragraph>,
             );
         });
