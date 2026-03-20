@@ -1,13 +1,16 @@
 import { type MiddlewareAPI } from 'redux';
 
-import { enableOnboardingReducer, updateOnboardingAnalytics } from '@suite/onboarding';
+import {
+    enableOnboardingReducer,
+    goToNextStep,
+    recoveryRerun,
+    updateOnboardingAnalytics,
+} from '@suite/onboarding';
 import { isRecoveryInProgress, recoveryActions, selectRecoveryStatus } from '@suite/recovery';
 import { routerAppChanged } from '@suite/router';
 import { deviceActions } from '@suite-common/device';
 import { firmwareActions } from '@suite-common/firmware';
 
-
-import { goToNextStep, recoveryRerun } from 'src/actions/onboarding/onboardingActions';
 import { type Action, type AppState, type Dispatch } from 'src/types/suite';
 
 const onboardingMiddleware =

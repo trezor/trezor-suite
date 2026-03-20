@@ -1,8 +1,8 @@
 import { Translation } from '@suite/intl';
+import { goToSuite } from '@suite/onboarding';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
 
-import { goToSuite } from 'src/actions/onboarding/onboardingActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { getIsTorLoading } from 'src/utils/suite/tor';
 

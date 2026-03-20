@@ -1,8 +1,8 @@
 import type { BackupState } from '@suite/backup';
 import { initialState as experimentalFeedbackInitialState } from '@suite/experimental-feedback';
 import { flagsInitialState } from '@suite/flags';
-import { type OnboardingState } from '@suite/onboarding';
 import { locksInitialState } from '@suite/locks';
+import { type OnboardingState } from '@suite/onboarding';
 import { type RouterState } from '@suite/router';
 import { suiteSettingsInitialState } from '@suite/settings';
 import { type FirmwareUpdateState } from '@suite-common/firmware';

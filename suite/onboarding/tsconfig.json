@@ -2,12 +2,23 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../../suite-common/device" },
+        {
+            "path": "../../suite-common/redux-utils"
+        },
         {
             "path": "../../suite-common/suite-types"
         },
+        {
+            "path": "../../suite-common/wallet-core"
+        },
         { "path": "../analytics" },
+        { "path": "../flags" },
         { "path": "../intl" },
+        { "path": "../modal" },
         { "path": "../prerequisites" },
+        { "path": "../recovery" },
+        { "path": "../router" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/utils" }

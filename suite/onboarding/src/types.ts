@@ -1,9 +1,9 @@
-import { TranslationKey } from '@suite/intl';
-import { PrerequisiteType } from '@suite/prerequisites';
-import { DeviceModelInternal, FirmwareType } from '@trezor/device-utils';
-import { FirmwareVersionString } from '@trezor/device-utils/src/types';
+import type { TranslationKey } from '@suite/intl';
+import type { PrerequisiteType } from '@suite/prerequisites';
+import type { DeviceModelInternal, FirmwareType } from '@trezor/device-utils';
+import type { FirmwareVersionString } from '@trezor/device-utils/src/types';
 
-import * as STEP from './onboardingSteps';
+import type * as STEP from './onboardingSteps';
 
 export type AnyStepId =
     | typeof STEP.ID_CREATE_OR_RECOVER

@@ -10,7 +10,6 @@ import { type ButtonProps, Card, Column, Link, Note, Row, Tooltip } from '@trezo
 import { FirmwareType } from '@trezor/connect';
 import { DeviceModelInternal, isBitcoinOnlyDevice } from '@trezor/device-utils';
 
-
 import { FirmwareOffer, FirmwareWarningsList, FirmwareWipeWarning } from 'src/components/firmware';
 import { FirmwareLowBatteryModal } from 'src/components/firmware/FirmwareLowBatteryModal';
 import { SkipStepConfirmation } from 'src/components/onboarding/SkipStepConfirmation';

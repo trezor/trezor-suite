@@ -3,7 +3,13 @@ import { useEffect, useMemo, useState } from 'react';
 import { events } from '@suite/analytics';
 import { selectFlags } from '@suite/flags';
 import { Translation } from '@suite/intl';
-import { selectIsOnboardingActive, updateOnboardingAnalytics } from '@suite/onboarding';
+import {
+    goToNextStep,
+    goToSuite,
+    recoveryRerun,
+    selectIsOnboardingActive,
+    updateOnboardingAnalytics,
+} from '@suite/onboarding';
 import { selectRecoveryStatus } from '@suite/recovery';
 import { goto } from '@suite/router';
 import {
@@ -46,7 +52,6 @@ import { useAnalytics } from 'src/support/useAnalytics';
 
 import { SecurityChecklist } from './SecurityChecklist';
 import { type SecurityChecklistItem } from './types';
-import { goToNextStep, goToSuite, recoveryRerun } from '../../../../actions/onboarding/onboardingActions';
 import { ContentFlex, useIsContentBelowBreakpoint } from '../../../../support/suite/ContentFlex';
 import { useResponsiveContext } from '../../../../support/suite/ResponsiveContext';
 
@@ -195,9 +200,11 @@ const SecurityCheckContent = ({
     // Start measuring onboarding duration. In case of an ongoing recovery, the timer is started in middleware.
     useEffect(() => {
         if (!initialized && !isRecoveryInProgress) {
-            dispatch(updateOnboardingAnalytics({
-                startTime: Date.now(),
-            }));
+            dispatch(
+                updateOnboardingAnalytics({
+                    startTime: Date.now(),
+                }),
+            );
         }
     }, [initialized, isRecoveryInProgress, dispatch]);
 

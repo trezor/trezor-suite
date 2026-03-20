@@ -1,14 +1,19 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import { Translation } from '@suite/intl';
-import { STEP, updateOnboardingAnalytics, updateOnboardingBackupType } from '@suite/onboarding';
+import {
+    STEP,
+    goToNextStep,
+    goToPreviousStep,
+    updateOnboardingAnalytics,
+    updateOnboardingBackupType,
+} from '@suite/onboarding';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { selectDeviceDefaultBackupType, selectSelectedDevice } from '@suite-common/device';
 import { type BackupType } from '@suite-common/suite-types';
 import { Text } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-import { goToNextStep, goToPreviousStep } from 'src/actions/onboarding/onboardingActions';
 import { resetDevice } from 'src/actions/settings/deviceSettingsActions';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 
@@ -139,9 +144,7 @@ export const ResetDeviceStep = () => {
             outerActions={
                 !isWaitingOnDevice && (
                     // There is no point to show back button if user can't click it because confirmOnDevice bubble is active
-                    <OnboardingCard.SecondaryButton
-                        onClick={() => dispatch(goToPreviousStep())}
-                    >
+                    <OnboardingCard.SecondaryButton onClick={() => dispatch(goToPreviousStep())}>
                         <Translation id="TR_BACK" />
                     </OnboardingCard.SecondaryButton>
                 )

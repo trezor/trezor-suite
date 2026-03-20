@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useIntl } from 'react-intl';
 
 import { Translation, messages } from '@suite/intl';
+import { beginOnboardingTutorial } from '@suite/onboarding';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { selectSelectedDevice } from '@suite-common/device';
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
@@ -9,7 +10,6 @@ import { type IconName } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { mapTrezorModelToIcon } from '@trezor/product-components';
 
-import { beginOnboardingTutorial } from 'src/actions/onboarding/onboardingActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 export const DeviceTutorialStep = () => {

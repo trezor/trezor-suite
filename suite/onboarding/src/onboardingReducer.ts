@@ -1,10 +1,18 @@
 import { type PayloadAction, createAction, createSlice } from '@reduxjs/toolkit';
 
 import { type OnboardingAnalytics } from '@suite/analytics';
+import { type RouterRootState } from '@suite/router';
+import {
+    type SuiteSettingsRootState,
+    selectIsDeviceAuthenticityCheckEnabled,
+    selectIsUnlockedBootloaderAllowed,
+} from '@suite/settings';
+import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { type BackupType } from '@suite-common/suite-types';
 import { DEVICE } from '@trezor/connect';
 
-import { parseStepId } from './onboardingStepUtils';
+import { stepCategories } from './onboardingStepCategories';
+import { isStepUsed, parseStepId, resolveNextAvailableStep } from './onboardingStepUtils';
 import * as STEP from './onboardingSteps';
 import { type AnyPath, type AnyStepId } from './types';
 
@@ -16,6 +24,13 @@ export interface OnboardingState {
     path: AnyPath[];
     onboardingAnalytics: Partial<OnboardingAnalytics>;
 }
+
+export type OnboardingRootState = { onboarding: OnboardingState };
+
+export type OnboardingFlowRootState = DeviceRootState &
+    OnboardingRootState &
+    RouterRootState &
+    SuiteSettingsRootState;
 
 const initialState: OnboardingState = {
     isActive: false,
@@ -82,8 +97,6 @@ export const {
 } = onboardingActions;
 export const onboardingReducer = onboardingSlice.reducer;
 
-type OnboardingRootState = { onboarding: OnboardingState };
-
 export const selectIsOnboardingActive = (state: OnboardingRootState) => state.onboarding.isActive;
 export const selectOnboardingAnalytics = (state: OnboardingRootState) =>
     state.onboarding.onboardingAnalytics;
@@ -103,4 +116,26 @@ export const selectOnboardingActiveStepCategory = (state: OnboardingRootState) =
     const { activeStepCategory } = parseStepId(state.onboarding.activeStepId);
 
     return activeStepCategory;
+};
+
+export const selectFilteredOnboardingSteps = (state: OnboardingFlowRootState) => {
+    const allSteps = stepCategories.flatMap(({ steps }) => steps);
+    const isStepUsedProps = {
+        device: selectSelectedDevice(state),
+        onboardingPath: selectOnboardingPath(state),
+        isDeviceAuthenticityCheckEnabled: selectIsDeviceAuthenticityCheckEnabled(state),
+        isUnlockedBootloaderAllowed: selectIsUnlockedBootloaderAllowed(state),
+    };
+
+    return allSteps.filter(step => isStepUsed(step, isStepUsedProps));
+};
+
+export const selectResolvedNextStepAfterSkipped = (
+    state: OnboardingFlowRootState,
+    skippedToStepId: AnyStepId,
+): AnyStepId | undefined => {
+    const device = selectSelectedDevice(state);
+    const stepsInPath = selectFilteredOnboardingSteps(state);
+
+    return resolveNextAvailableStep(skippedToStepId, stepsInPath, device ?? null)?.id;
 };

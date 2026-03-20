@@ -2,7 +2,11 @@ import { type MouseEvent } from 'react';
 
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import { enableOnboardingReducer, resetOnboarding, updateOnboardingAnalytics } from '@suite/onboarding';
+import {
+    enableOnboardingReducer,
+    resetOnboarding,
+    updateOnboardingAnalytics,
+} from '@suite/onboarding';
 import { goto } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
 import { Banner } from '@trezor/components';

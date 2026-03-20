@@ -1,4 +1,4 @@
-import { PrerequisiteType } from '@suite/prerequisites';
+import type { PrerequisiteType } from '@suite/prerequisites';
 import { Card } from '@trezor/components';
 
 import { PrerequisitesGuide } from 'src/components/suite';

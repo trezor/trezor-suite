@@ -1,15 +1,14 @@
 import { useEffect, useState } from 'react';
 
 import { Translation } from '@suite/intl';
-import { updateOnboardingAnalytics } from '@suite/onboarding';
-import { OnboardingCard } from '@suite/onboarding-components';
 import { selectShowPinMatrix } from '@suite/modal';
+import { goToNextStep, updateOnboardingAnalytics } from '@suite/onboarding';
+import { OnboardingCard } from '@suite/onboarding-components';
 import { selectSelectedDevice } from '@suite-common/device';
 import { Button, Column } from '@trezor/components';
 import TrezorConnect, { UI_RESPONSE } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
 
-import { goToNextStep } from 'src/actions/onboarding/onboardingActions';
 import { changePin } from 'src/actions/settings/deviceSettingsActions';
 import { SkipStepConfirmation } from 'src/components/onboarding/SkipStepConfirmation';
 import { PinMatrix } from 'src/components/suite';

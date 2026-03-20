@@ -1,4 +1,6 @@
-import { UnknownAction } from '@reduxjs/toolkit';
+// TODO move this into @suite/onboarding (after suite.settings refactor)
+
+import { type UnknownAction } from '@reduxjs/toolkit';
 
 import { onboardingReducer } from '@suite/onboarding';
 import { recoveryReducer } from '@suite/recovery';
@@ -49,34 +51,19 @@ const createStore = (initialState: ReturnType<typeof getInitialState>) => {
     return store;
 };
 
-const updateStore = (store: ReturnType<typeof createStore>) => {
-    // there is not much redux logic in this test
-    // just update state on every action manually
-    store.subscribe(() => {
-        const action = store.getActions().pop();
-        const { onboarding } = store.getState();
-
-        store.getState().onboarding = onboardingReducer(onboarding, action);
-        // add action back to stack
-        store.getActions().push(action);
-    });
-};
-
-const mockStore = (initialState: ReturnType<typeof getInitialState>) => {
-    const store = createStore(initialState);
-    store.subscribe(() => updateStore(store));
-
-    return store;
-};
-
 describe('Onboarding Actions', () => {
     fixtures.forEach(f => {
         it(f.description, () => {
-            const store = mockStore(getInitialState(f.initialState));
+            const initialState = getInitialState(f.initialState);
+            const store = createStore(initialState);
             store.dispatch(f.action());
-            const stateAfter = store.getState().onboarding;
+            let { onboarding } = initialState;
+            const { getActions } = store;
+            for (const action of getActions()) {
+                onboarding = onboardingReducer(onboarding, action as UnknownAction);
+            }
             if (f.expect.toMatchObject) {
-                expect(stateAfter).toMatchObject(f.expect.toMatchObject);
+                expect(onboarding).toMatchObject(f.expect.toMatchObject);
             }
         });
     });

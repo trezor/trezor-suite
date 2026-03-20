@@ -1,7 +1,13 @@
-import { STEP, addOnboardingPath, onboardingReducer, removeOnboardingPath, resetOnboarding } from '@suite/onboarding';
+import {
+    STEP,
+    addOnboardingPath,
+    goToNextStep,
+    goToPreviousStep,
+    onboardingReducer,
+    removeOnboardingPath,
+    resetOnboarding,
+} from '@suite/onboarding';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-
-import { goToNextStep, goToPreviousStep } from 'src/actions/onboarding/onboardingActions';
 
 export default [
     {

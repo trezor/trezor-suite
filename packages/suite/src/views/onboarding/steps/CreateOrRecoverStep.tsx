@@ -1,11 +1,15 @@
 import { useDispatch } from 'react-redux';
 
 import { Translation } from '@suite/intl';
-import { STEP, addOnboardingPath, updateOnboardingAnalytics } from '@suite/onboarding';
+import {
+    STEP,
+    addOnboardingPath,
+    goToNextStep,
+    updateOnboardingAnalytics,
+} from '@suite/onboarding';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { Grid } from '@trezor/components';
 
-import { goToNextStep } from 'src/actions/onboarding/onboardingActions';
 import { OnboardingOption } from 'src/components/onboarding/OnboardingOption';
 import { useLayoutSize } from 'src/hooks/suite';
 

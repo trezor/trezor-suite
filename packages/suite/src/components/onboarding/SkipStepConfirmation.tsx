@@ -2,13 +2,16 @@ import { type ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
 import { Translation } from '@suite/intl';
-import { type AnyStepId, STEP, selectActiveStepId } from '@suite/onboarding';
+import {
+    type AnyStepId,
+    type OnboardingFlowRootState,
+    STEP,
+    goToNextStep,
+    selectActiveStepId,
+    selectResolvedNextStepAfterSkipped,
+} from '@suite/onboarding';
 import { Modal } from '@trezor/components';
 
-import {
-    goToNextStep,
-    resolveNextAfterSkipped,
-} from 'src/actions/onboarding/onboardingActions';
 import { useDispatch } from 'src/hooks/suite';
 
 type SkipStepConfirmationProps = {
@@ -24,7 +27,7 @@ type SkipModalContent = {
 
 const getModalContent = (
     activeStepId: AnyStepId,
-    resolveNext: (stepId: AnyStepId) => AnyStepId | undefined,
+    nextStepAfterSkippedPin: AnyStepId | undefined,
 ): SkipModalContent => {
     switch (activeStepId) {
         case STEP.ID_FIRMWARE_STEP:
@@ -39,7 +42,7 @@ const getModalContent = (
                 heading: <Translation id="TR_SKIP_BACKUP" />,
                 secondaryButtonText: <Translation id="TR_SKIP_BACKUP" />,
                 body: <Translation id="TR_SKIP_BACKUP_DESCRIPTION" />,
-                nextStep: resolveNext(STEP.ID_SET_PIN_STEP),
+                nextStep: nextStepAfterSkippedPin,
             };
         case STEP.ID_SET_PIN_STEP:
             return {
@@ -54,10 +57,13 @@ const getModalContent = (
 
 export const SkipStepConfirmation = ({ onCancel }: SkipStepConfirmationProps) => {
     const activeStepId = useSelector(selectActiveStepId);
+    const nextStepAfterSkippedPin = useSelector((state: OnboardingFlowRootState) =>
+        selectResolvedNextStepAfterSkipped(state, STEP.ID_SET_PIN_STEP),
+    );
     const dispatch = useDispatch();
     const { heading, secondaryButtonText, body, nextStep } = getModalContent(
         activeStepId,
-        (stepId: AnyStepId) => dispatch(resolveNextAfterSkipped(stepId)),
+        nextStepAfterSkippedPin,
     );
 
     if (!heading) return;
