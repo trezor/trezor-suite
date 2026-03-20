@@ -1,8 +1,6 @@
 import { fromUnixTime, getUnixTime, startOfMonth } from 'date-fns';
 
-import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { BASE_CURRENCY_ZERO, toFiatCurrency } from '@suite-common/wallet-utils';
-import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import type { FiatRatesBySymbol, StaticSessionId } from '@trezor/connect';
 import { BigNumber, typedObjectFromEntries, typedObjectKeys } from '@trezor/utils';
 
@@ -13,10 +11,9 @@ import {
 } from 'src/types/wallet/graph';
 
 import { getGraphDataForInterval } from './utils';
-import { type ObjectType, type TypeName, sumFiatValueMapInPlace } from './utilsShared';
+import { sumFiatValueMapInPlace } from './utilsShared';
+import { type FiatValueMap, type ObjectType, type TypeName } from './types';
 import type { State as GraphState } from '../../../reducers/wallet/graphReducer';
-
-export type FiatValueMap = { [K in BaseCurrencyCode]?: BaseCurrencyAmount | undefined };
 
 const calcFiatValueMap = (amount: string, rates: FiatRatesBySymbol): FiatValueMap =>
     typedObjectFromEntries(
