@@ -81,7 +81,6 @@ emulator -avd Pixel_3a_API_31 -gpu swiftshader_indirect
 ```bash
 nix develop
 yarn test:unit
-yarn nx:test-unit       # Only affected packages
 ```
 
 ---
