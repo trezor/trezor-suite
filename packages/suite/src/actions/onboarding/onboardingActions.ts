@@ -3,6 +3,10 @@ import { initialRunCompleted } from '@suite/flags';
 import { closeModal } from '@suite/modal';
 import { recoveryRerunThunk } from '@suite/recovery';
 import { closeModalApp, goto } from '@suite/router';
+import {
+    selectIsDeviceAuthenticityCheckEnabled,
+    selectIsUnlockedBootloaderAllowed,
+} from '@suite/settings';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type ExtraDependencies } from '@suite-common/redux-utils';
 import { type BackupType } from '@suite-common/suite-types';
@@ -73,9 +77,8 @@ const getAllStepsInPath = (getState: GetState) => {
     const isStepUsedProps = {
         device: selectSelectedDevice(getState()),
         onboardingPath: getState().onboarding.path,
-        isDeviceAuthenticityCheckEnabled:
-            getState().suiteSettings.enabledSecurityChecks.deviceAuthenticity,
-        isUnlockedBootloaderAllowed: getState().suiteSettings.debug.isUnlockedBootloaderAllowed,
+        isDeviceAuthenticityCheckEnabled: selectIsDeviceAuthenticityCheckEnabled(getState()),
+        isUnlockedBootloaderAllowed: selectIsUnlockedBootloaderAllowed(getState()),
     };
 
     return allSteps.filter(step => isStepUsed(step, isStepUsedProps));

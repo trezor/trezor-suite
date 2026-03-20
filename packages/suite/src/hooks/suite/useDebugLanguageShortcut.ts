@@ -1,6 +1,11 @@
 import { useCallback, useEffect } from 'react';
 
-import { selectIsDebugModeActive, selectLanguage, suiteSettingsActions } from '@suite/settings';
+import {
+    selectAutodetectLanguage,
+    selectIsDebugModeActive,
+    selectLanguage,
+    suiteSettingsActions,
+} from '@suite/settings';
 import { LANGUAGES, type Locale } from '@suite-common/suite-types';
 import { KEYBOARD_CODE } from '@trezor/components';
 
@@ -16,7 +21,7 @@ export const useDebugLanguageShortcut = () => {
 
     const isDebug = useSelector(selectIsDebugModeActive);
     const language = useSelector(selectLanguage);
-    const isLanguageAutodetect = useSelector(state => state.suiteSettings.autodetect.language);
+    const isLanguageAutodetect = useSelector(selectAutodetectLanguage);
 
     const onLanguageKeys = useCallback(
         (event: KeyboardEvent) => {

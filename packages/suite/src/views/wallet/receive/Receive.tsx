@@ -1,3 +1,4 @@
+import { selectIsCoinjoinReceiveWarningHidden } from '@suite/settings';
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectPendingAccountAddresses } from '@suite-common/wallet-core';
 import { Column } from '@trezor/components';
@@ -12,9 +13,7 @@ import { UsedAddresses } from './components/UsedAddresses';
 import { ConfirmEvmExplanationModal } from '../../../components/suite/modals/ConfirmEvmExplanationModal';
 
 export const Receive = () => {
-    const isCoinjoinReceiveWarningHidden = useSelector(
-        state => state.suiteSettings.isCoinjoinReceiveWarningHidden,
-    );
+    const isCoinjoinReceiveWarningHidden = useSelector(selectIsCoinjoinReceiveWarningHidden);
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const receive = useSelector(state => state.wallet.receive);
     const device = useSelector(selectSelectedDevice);

@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { MODAL_CONTEXT_USER } from '@suite/modal';
+import { selectThemeSettings } from '@suite/settings';
 import { Box, Button, Column, Row } from '@trezor/components';
 import { isDesktop, isMacOs } from '@trezor/env-utils';
 import { TREZOR_SUPPORT_URL } from '@trezor/urls';
@@ -75,7 +76,7 @@ type OnboardingLayoutProps = {
 };
 
 export const OnboardingLayout = ({ children }: OnboardingLayoutProps) => {
-    const theme = useSelector(state => state.suiteSettings.theme);
+    const theme = useSelector(selectThemeSettings);
 
     const isMac = isMacOs();
     const isDesktopApp = isDesktop();

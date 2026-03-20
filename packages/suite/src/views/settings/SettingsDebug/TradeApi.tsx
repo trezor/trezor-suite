@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { suiteSettingsActions } from '@suite/settings';
+import { selectInvityServerEnvironment, suiteSettingsActions } from '@suite/settings';
 import { type InvityServerEnvironment, invityAPI } from '@suite-common/trading';
 
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from 'src/components/suite';
@@ -12,7 +12,7 @@ const StyledActionSelect = styled(ActionSelect)`
 `;
 
 export const TradeApi = () => {
-    const debug = useSelector(state => state.suiteSettings.debug);
+    const invityServerEnvironment = useSelector(selectInvityServerEnvironment);
     const dispatch = useDispatch();
 
     const invityApiServerOptions = Object.entries(invityAPI.SERVERS).map(
@@ -22,7 +22,7 @@ export const TradeApi = () => {
         }),
     );
     const selectedInvityApiServer =
-        invityApiServerOptions.find(s => s.value === debug.invityServerEnvironment) ||
+        invityApiServerOptions.find(s => s.value === invityServerEnvironment) ||
         invityApiServerOptions[0];
 
     const handleChange = (item: { value: InvityServerEnvironment; label: string }) => {
