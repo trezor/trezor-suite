@@ -4,23 +4,25 @@ import styled from 'styled-components';
 import { useDevice } from '@suite/device';
 import { selectFlags } from '@suite/flags';
 import { Translation } from '@suite/intl';
+import { openModal } from '@suite/modal';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { selectHasExperimentalFeature } from '@suite/settings';
 import { Context } from '@suite-common/message-system';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
+    changeCoinVisibility,
     selectDeviceSupportedNetworks,
     selectEnabledNetworks,
     selectShowRediscoverButton,
     startOrRestartDiscoveryThunk,
 } from '@suite-common/wallet-core';
-import { Button, Column, Tooltip, motionEasing } from '@trezor/components';
+import { Button, Column, H4, Switch, Tooltip, motionEasing } from '@trezor/components';
 import { hasBitcoinOnlyFirmware, isBitcoinOnlyDevice } from '@trezor/device-utils';
 import { SectionItem, SettingsSection } from '@trezor/product-components';
 import { breakpoints, spacingsPx } from '@trezor/theme';
 
-import { DeviceBanner } from 'src/components/settings/DeviceBanner';
 import { SettingsLayout } from 'src/components/settings/SettingsLayout';
-import { CoinGroup } from 'src/components/suite';
+import { NetworkList } from 'src/components/suite/NetworkList/NetworkList';
 import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
@@ -76,6 +78,7 @@ const getDiscoveryButtonAnimationConfig = (isConfirmed: boolean): MotionProps =>
 
 export const SettingsCoins = () => {
     const hasContentBelowTabletWidth = useIsContentBelowBreakpoint(breakpoints.tablet);
+    const dispatch = useDispatch();
     const { firmwareTypeBannerClosed } = useSelector(selectFlags);
     const enabledNetworks = useSelector(selectEnabledNetworks);
     const { showUnsupportedCoins, supportedMainnets, unsupportedMainnets, supportedTestnets } =
@@ -83,7 +86,6 @@ export const SettingsCoins = () => {
     const deviceSupportedNetworkSymbols = useSelector(selectDeviceSupportedNetworks);
     const { device, isLocked } = useDevice();
     const isDeviceLocked = !!device && isLocked();
-    const dispatch = useDispatch();
     const { isDiscoveryRunning } = useDiscovery();
     const isDiscoveryButtonVisible = useSelector(state =>
         selectShowRediscoverButton(state, device),
@@ -101,12 +103,39 @@ export const SettingsCoins = () => {
         supportedEnabledNetworks.every(symbol => isCoinjoinSupportedSymbol(symbol));
     const bitcoinOnlyDevice = isBitcoinOnlyDevice(device);
 
-    const showDeviceBanner = device?.connected === false; // device is remembered and disconnected
     const showFirmwareTypeBanner =
         !firmwareTypeBannerClosed &&
         device &&
         !bitcoinOnlyDevice &&
         (bitcoinOnlyFirmware || (!bitcoinOnlyFirmware && onlyBitcoinNetworksEnabled));
+
+    const onToggle = (symbol: NetworkSymbol, isEnabled?: boolean) => {
+        dispatch(
+            changeCoinVisibility({
+                symbol,
+                shouldBeVisible: isEnabled ?? true,
+            }),
+        );
+    };
+
+    const onSettings = (symbol: NetworkSymbol) => {
+        dispatch(openModal({ type: 'advanced-coin-settings', symbol }));
+    };
+
+    const renderRightContent = ({
+        networkSymbol,
+        isEnabled,
+    }: {
+        networkSymbol: NetworkSymbol;
+        isEnabled: boolean;
+    }) => (
+        <Switch
+            size="medium"
+            isChecked={isEnabled}
+            data-testid={`@settings/wallet/network/${networkSymbol}/switch`}
+            onChange={isChecked => onToggle(networkSymbol, isChecked)}
+        />
+    );
 
     const startDiscovery = () => {
         dispatch(startOrRestartDiscoveryThunk());
@@ -118,22 +147,13 @@ export const SettingsCoins = () => {
         <SettingsLayout>
             <ContextMessage context={Context.getSettings('networks')} />
 
-            <Column gap={16}>
-                {showDeviceBanner && (
-                    <DeviceBanner
-                        title={
-                            <Translation id="TR_SETTINGS_COINS_BANNER_DESCRIPTION_REMEMBERED_DISCONNECTED" />
-                        }
-                    />
-                )}
-
-                {showFirmwareTypeBanner && <FirmwareTypeSuggestion />}
-            </Column>
+            <Column gap={16}>{showFirmwareTypeBanner && <FirmwareTypeSuggestion />}</Column>
 
             <SettingsSection
                 hasVerticalLayout={hasContentBelowTabletWidth}
                 title={<Translation id="TR_COINS" />}
                 icon="coin"
+                hasContainer={false}
             >
                 <Anchor anchorId={SettingsAnchor.Crypto}>
                     {({ anchorId, anchorRef, shouldHighlight }) => (
@@ -142,21 +162,58 @@ export const SettingsCoins = () => {
                             ref={anchorRef}
                             shouldHighlight={shouldHighlight}
                         >
-                            <CoinGroup
+                            <NetworkList
                                 networks={supportedMainnets}
                                 enabledNetworks={enabledNetworks}
+                                onClick={onToggle}
+                                onSettings={onSettings}
+                                renderRightContent={({ network, isEnabled }) =>
+                                    renderRightContent({
+                                        networkSymbol: network.symbol,
+                                        isEnabled,
+                                    })
+                                }
                             />
                         </SectionItem>
                     )}
                 </Anchor>
+                {showUnsupportedCoins && (
+                    <Anchor anchorId={SettingsAnchor.UnsupportedCrypto}>
+                        {({ anchorId, anchorRef, shouldHighlight }) => (
+                            <SectionItem
+                                data-testid={anchorId}
+                                ref={anchorRef}
+                                shouldHighlight={shouldHighlight}
+                            >
+                                <Column gap={12} width="100%">
+                                    <H4 typographyStyle="body-md">
+                                        <Translation id="TR_UNSUPPORTED_COINS" />
+                                    </H4>
+                                    <NetworkList
+                                        networks={unsupportedMainnets}
+                                        enabledNetworks={enabledNetworks}
+                                        onClick={onToggle}
+                                        onSettings={onSettings}
+                                        renderRightContent={({ network, isEnabled }) =>
+                                            renderRightContent({
+                                                networkSymbol: network.symbol,
+                                                isEnabled,
+                                            })
+                                        }
+                                    />
+                                </Column>
+                            </SectionItem>
+                        )}
+                    </Anchor>
+                )}
             </SettingsSection>
 
             {useTestnetNetworks && (
                 <SettingsSection
                     hasVerticalLayout={hasContentBelowTabletWidth}
-                    tooltipText={<Translation id="TR_TESTNET_COINS_DESCRIPTION" />}
                     title={<Translation id="TR_TESTNET_COINS" />}
                     icon="coin"
+                    hasContainer={false}
                 >
                     <Anchor anchorId={SettingsAnchor.TestnetCrypto}>
                         {({ anchorId, anchorRef, shouldHighlight }) => (
@@ -165,33 +222,17 @@ export const SettingsCoins = () => {
                                 ref={anchorRef}
                                 shouldHighlight={shouldHighlight}
                             >
-                                <CoinGroup
+                                <NetworkList
                                     networks={supportedTestnets}
                                     enabledNetworks={enabledNetworks}
-                                />
-                            </SectionItem>
-                        )}
-                    </Anchor>
-                </SettingsSection>
-            )}
-
-            {showUnsupportedCoins && (
-                <SettingsSection
-                    hasVerticalLayout={hasContentBelowTabletWidth}
-                    tooltipText={<Translation id="TR_UNSUPPORTED_COINS_DESCRIPTION" />}
-                    title={<Translation id="TR_UNSUPPORTED_COINS" />}
-                    icon="coin"
-                >
-                    <Anchor anchorId={SettingsAnchor.UnsupportedCrypto}>
-                        {({ anchorId, anchorRef, shouldHighlight }) => (
-                            <SectionItem
-                                data-testid={anchorId}
-                                ref={anchorRef}
-                                shouldHighlight={shouldHighlight}
-                            >
-                                <CoinGroup
-                                    networks={unsupportedMainnets}
-                                    enabledNetworks={enabledNetworks}
+                                    onClick={onToggle}
+                                    onSettings={onSettings}
+                                    renderRightContent={({ network, isEnabled }) =>
+                                        renderRightContent({
+                                            networkSymbol: network.symbol,
+                                            isEnabled,
+                                        })
+                                    }
                                 />
                             </SectionItem>
                         )}

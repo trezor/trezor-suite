@@ -11,9 +11,9 @@ import {
     selectEnabledNetworks,
     startOrRestartDiscoveryThunk,
 } from '@suite-common/wallet-core';
-import { Banner, Column, Modal, motionEasing } from '@trezor/components';
+import { Banner, Column, Modal, Switch, motionEasing } from '@trezor/components';
 
-import { CoinGroup } from 'src/components/suite';
+import { NetworkList } from 'src/components/suite/NetworkList/NetworkList';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 
@@ -48,10 +48,12 @@ export const ActivateAssetsModal = ({ onCancel }: ActivateAssetsModalProps) => {
     const { isDiscoveryRunning } = useDiscovery();
 
     const [pendingNetworks, setPendingNetworks] = useState<NetworkSymbol[]>(enabledNetworks);
-    const [advancedSettingsSymbol, setAdvancedSettingsSymbol] = useState<NetworkSymbol | null>(
-        null,
-    );
     const [isApplyPending, setIsApplyPending] = useState(false);
+    const [advancedSettingsSymbol, setAdvancedSettingsSymbol] = useState<
+        NetworkSymbol | undefined
+    >();
+
+    const closeAdvancedSettings = () => setAdvancedSettingsSymbol(undefined);
 
     useEffect(() => {
         dispatch(preserveModal());
@@ -120,60 +122,68 @@ export const ActivateAssetsModal = ({ onCancel }: ActivateAssetsModalProps) => {
         dispatch(setFlag({ key: 'activateAssetsBannerClosed', value: true }));
     };
 
+    if (advancedSettingsSymbol) {
+        return (
+            <AdvancedCoinSettingsModal
+                symbol={advancedSettingsSymbol}
+                onCancel={closeAdvancedSettings}
+                onBackClick={closeAdvancedSettings}
+            />
+        );
+    }
+
     return (
-        <>
-            <Modal
-                onCancel={onCancel}
-                heading={<Translation id="TR_DASHBOARD_MODAL_ACTIVATE_ASSETS_TITLE" />}
-                description={<Translation id="TR_DASHBOARD_MODAL_ACTIVATE_ASSETS_DESC" />}
-                width={600}
-                bottomContent={
-                    hasChanges ? (
-                        <Modal.Button
-                            onClick={onSave}
-                            isLoading={isApplyPending}
-                            isDisabled={isApplyPending}
-                            data-testid="@modal/activate-assets/save"
-                        >
-                            <Translation id="TR_CONFIRM" />
-                        </Modal.Button>
-                    ) : null
-                }
-            >
-                <Column gap={16}>
-                    <AnimatePresence>
-                        {!isActivateAssetsBannerClosed && (
-                            <motion.div {...bannerAnimationConfig}>
-                                <Banner
-                                    intent="neutral"
-                                    icon="info"
-                                    title={
-                                        <Translation id="TR_DASHBOARD_MODAL_ACTIVATE_ASSETS_NOTE" />
-                                    }
-                                    rightContent={
-                                        <Banner.Button size="small" onClick={handleBannerClose}>
-                                            <Translation id="TR_GOT_IT" />
-                                        </Banner.Button>
-                                    }
-                                />
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
-                    <CoinGroup
-                        networks={supportedMainnets}
-                        enabledNetworks={pendingNetworks}
-                        onToggle={handleToggle}
-                        onSettings={setAdvancedSettingsSymbol}
-                        ignoreDeviceLock
-                    />
-                </Column>
-            </Modal>
-            {advancedSettingsSymbol !== null && (
-                <AdvancedCoinSettingsModal
-                    symbol={advancedSettingsSymbol}
-                    onCancel={() => setAdvancedSettingsSymbol(null)}
+        <Modal
+            onCancel={onCancel}
+            heading={<Translation id="TR_DASHBOARD_MODAL_ACTIVATE_ASSETS_TITLE" />}
+            description={<Translation id="TR_DASHBOARD_MODAL_ACTIVATE_ASSETS_DESC" />}
+            width={600}
+            bottomContent={
+                hasChanges ? (
+                    <Modal.Button
+                        onClick={onSave}
+                        isLoading={isApplyPending}
+                        isDisabled={isApplyPending}
+                        data-testid="@modal/activate-assets/save"
+                    >
+                        <Translation id="TR_CONFIRM" />
+                    </Modal.Button>
+                ) : null
+            }
+        >
+            <Column gap={16}>
+                <AnimatePresence>
+                    {!isActivateAssetsBannerClosed && (
+                        <motion.div {...bannerAnimationConfig}>
+                            <Banner
+                                intent="neutral"
+                                icon="info"
+                                title={<Translation id="TR_DASHBOARD_MODAL_ACTIVATE_ASSETS_NOTE" />}
+                                rightContent={
+                                    <Banner.Button size="small" onClick={handleBannerClose}>
+                                        <Translation id="TR_GOT_IT" />
+                                    </Banner.Button>
+                                }
+                            />
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+                <NetworkList
+                    networks={supportedMainnets}
+                    enabledNetworks={pendingNetworks}
+                    onClick={handleToggle}
+                    onSettings={setAdvancedSettingsSymbol}
+                    renderRightContent={({ network, isEnabled }) => (
+                        <Switch
+                            size="medium"
+                            isChecked={isEnabled}
+                            data-testid={`@settings/wallet/network/${network.symbol}/switch`}
+                            onChange={isChecked => handleToggle(network.symbol, isChecked)}
+                        />
+                    )}
+                    ignoreDeviceLock
                 />
-            )}
-        </>
+            </Column>
+        </Modal>
     );
 };

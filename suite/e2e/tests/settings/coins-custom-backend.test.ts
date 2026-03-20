@@ -52,16 +52,14 @@ test.describe('Coin Settings', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
             },
             async ({ page, settingsPage, walletPage }) => {
                 await test.step(`Enable ${coin.toUpperCase()} asset`, async () => {
-                    await expect(settingsPage.coinsTab.networkButton(coin)).toBeDisabledCoin();
+                    await settingsPage.coinsTab.expectNetworkDisabled(coin);
                     await settingsPage.coinsTab.enableNetwork(coin);
-                    await expect(settingsPage.coinsTab.networkButton(coin)).toBeEnabledCoin();
+                    await settingsPage.coinsTab.expectNetworkEnabled(coin);
                 });
                 await test.step(`Enable custom ${backendType} server`, async () => {
                     await settingsPage.coinsTab.openNetworkAdvanceSettings(coin);
                     await settingsPage.coinsTab.changeBackend(backendType, customBackendUrlRight);
-                    await expect(settingsPage.coinsTab.networkButton(coin)).toContainTranslation(
-                        'TR_CUSTOM_BACKEND',
-                    );
+                    await settingsPage.coinsTab.expectCustomBackendIndicator(coin);
                 });
                 await test.step('Refresh coins', async () => {
                     await settingsPage.coinsTab.activateCoinsButton.click();
@@ -91,16 +89,14 @@ test.describe('Coin Settings', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
             },
             async ({ page, settingsPage, walletPage }) => {
                 await test.step(`Enable ${coin.toUpperCase()} asset`, async () => {
-                    await expect(settingsPage.coinsTab.networkButton(coin)).toBeDisabledCoin();
+                    await settingsPage.coinsTab.expectNetworkDisabled(coin);
                     await settingsPage.coinsTab.enableNetwork(coin);
-                    await expect(settingsPage.coinsTab.networkButton(coin)).toBeEnabledCoin();
+                    await settingsPage.coinsTab.expectNetworkEnabled(coin);
                 });
                 await test.step(`Enable custom ${backendType} server`, async () => {
                     await settingsPage.coinsTab.openNetworkAdvanceSettings(coin);
                     await settingsPage.coinsTab.changeBackend(backendType, customBackendUrlWrong);
-                    await expect(settingsPage.coinsTab.networkButton(coin)).toContainTranslation(
-                        'TR_CUSTOM_BACKEND',
-                    );
+                    await settingsPage.coinsTab.expectCustomBackendIndicator(coin);
                 });
                 await test.step('Refresh coins', async () => {
                     await settingsPage.coinsTab.activateCoinsButton.click();

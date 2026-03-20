@@ -56,7 +56,6 @@ export class WalletPage {
     readonly segwitGroupButton: Locator;
     readonly addAccountButton: Locator;
     readonly addAccountConfirmButton: Locator;
-    readonly findMyAccountButton: Locator;
     readonly filterAccountsButton: Locator;
     readonly addAccountTypeSelectInput: Locator;
     readonly addAccountTypeSelectOption = (type: string) =>
@@ -118,7 +117,6 @@ export class WalletPage {
         this.segwitGroupButton = this.page.getByTestId('@account-menu/segwit');
         this.addAccountButton = this.page.getByTestId('@account-menu/add-account');
         this.addAccountConfirmButton = this.page.getByTestId('@add-account');
-        this.findMyAccountButton = this.page.getByTestId('@find-account');
         this.filterAccountsButton = this.page.getByTestId('@account-menu/filter-accounts');
         this.addAccountTypeSelectInput = this.page.getByTestId('@add-account-type/select/input');
         this.accountNotLoaded = this.page.getByTestId('@accounts/account-not-loaded');

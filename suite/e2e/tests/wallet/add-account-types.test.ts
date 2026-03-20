@@ -58,7 +58,7 @@ test.describe('Account types suite', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () =
 
                         await walletPage.addAccountButton.click();
                         await expect(settingsPage.modal).toBeVisible();
-                        await settingsPage.coinsTab.networkButton(coin).click();
+                        await settingsPage.coinsTab.networkAddButton(coin).click();
                         await walletPage.addAccountTypeSelectInput.click();
                         await page.waitForTimeout(500);
                         await walletPage.addAccountTypeSelectOption(type).click();
@@ -109,8 +109,7 @@ test.describe('Account types suite', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () =
 
                     await walletPage.addAccountButton.click();
                     await expect(settingsPage.modal).toBeVisible();
-                    await settingsPage.coinsTab.networkButton(coin.symbol).click();
-                    await walletPage.addAccountConfirmButton.click();
+                    await settingsPage.coinsTab.networkAddButton(coin.symbol).click();
 
                     const numberOfAccountsAfter =
                         await walletPage.getAccountsForCoinInTypeGroupCount('normal', coin.symbol);

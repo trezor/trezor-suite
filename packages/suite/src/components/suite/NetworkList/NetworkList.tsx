@@ -1,43 +1,50 @@
+import { type ReactNode } from 'react';
+
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { getCoinUnavailabilityMessage } from '@suite-common/suite-utils';
 import { type Network, type NetworkSymbol } from '@suite-common/wallet-config';
-import { Row, Tooltip } from '@trezor/components';
+import { selectBlockchainState } from '@suite-common/wallet-core';
+import { Column, Tooltip } from '@trezor/components';
 import { getFirmwareVersion, isDeviceInBootloaderMode } from '@trezor/device-utils';
-import { spacings } from '@trezor/theme';
 import { versionUtils } from '@trezor/utils';
 
 import { useDiscovery, useSelector } from 'src/hooks/suite';
 import { getCoinLabel } from 'src/utils/suite/getCoinLabel';
 
-import { Coin } from './Coin';
+import { NetworkCard } from './NetworkCard';
+import { getBackendStatus } from './getBackendStatus';
 
-export type CoinListProps = {
+export type NetworkListProps = {
     networks: Network[];
     enabledNetworks?: NetworkSymbol[];
-    settingsMode?: boolean;
+    isCardClickable?: boolean;
+    onClick?: (symbol: NetworkSymbol, isEnabled: boolean) => void;
     onSettings?: (symbol: NetworkSymbol) => void;
-    onToggle: (symbol: NetworkSymbol, toggled: boolean) => void;
+    renderRightContent?: (params: {
+        network: Network;
+        isEnabled: boolean;
+        onClick: () => void;
+    }) => ReactNode;
     /**
      * When `true`, toggles stay enabled regardless of device/UI lock state and the
      * "Loading accounts" tooltip is not shown. Intended for callers that only stage
-     * changes locally and apply them explicitly (e.g. ActivateAssetsModal), where
-     * transient TrezorConnect locks during discovery shouldn't block selection.
+     * changes locally and apply them explicitly.
      */
     ignoreDeviceLock?: boolean;
 };
 
-export const CoinList = ({
+export const NetworkList = ({
     networks,
     enabledNetworks,
-    settingsMode = false,
+    isCardClickable = true,
+    onClick,
     onSettings,
-    onToggle,
+    renderRightContent,
     ignoreDeviceLock = false,
-}: CoinListProps) => {
+}: NetworkListProps) => {
     const { device, isLocked } = useDevice();
-
-    const blockchain = useSelector(state => state.wallet.blockchain);
+    const blockchain = useSelector(selectBlockchainState);
     const isDeviceLocked = !ignoreDeviceLock && !!device && isLocked(true);
     const { isDiscoveryRunning } = useDiscovery();
     const lockedTooltip = isDeviceLocked ? 'TR_DISABLED_SWITCH_TOOLTIP' : null;
@@ -50,10 +57,12 @@ export const CoinList = ({
     const deviceDisplayName = device?.name;
 
     return (
-        <Row rowGap={spacings.md} columnGap={spacings.sm} flexWrap="wrap">
+        <Column gap={12} width="100%">
             {networks.map(network => {
                 const { symbol, name, support, features, testnet: isTestnet } = network;
-                const hasCustomBackend = !!blockchain[symbol].backends.selected;
+                const blockchainInfo = blockchain[symbol];
+                const hasCustomBackend = !!blockchainInfo.backends.selected;
+                const backendStatus = getBackendStatus(blockchainInfo);
 
                 const firmwareSupportRestriction =
                     deviceModelInternal && support?.[deviceModelInternal];
@@ -68,22 +77,20 @@ export const CoinList = ({
 
                 const isEnabled = !!enabledNetworks?.includes(symbol);
 
-                const disabled =
-                    (!settingsMode && !!unavailableReason && !isBootloaderMode) ||
-                    isDeviceLocked ||
-                    !isSupportedByApp;
+                const isDisabled = isDeviceLocked;
                 const unavailabilityTooltip =
                     !!unavailableReason &&
                     !isBootloaderMode &&
                     getCoinUnavailabilityMessage(unavailableReason);
                 const tooltipString = discoveryTooltip || lockedTooltip || unavailabilityTooltip;
 
-                const label = getCoinLabel(features, isTestnet, hasCustomBackend);
+                const label = getCoinLabel(features, isTestnet);
 
                 return (
                     <Tooltip
                         key={symbol}
                         placement="top"
+                        isActive={!!tooltipString}
                         content={
                             tooltipString && (
                                 <Translation
@@ -95,21 +102,25 @@ export const CoinList = ({
                             )
                         }
                     >
-                        <Coin
+                        <NetworkCard
                             symbol={symbol}
                             name={name}
                             label={label}
-                            toggled={isEnabled}
-                            disabled={disabled || (settingsMode && !isEnabled)}
-                            forceHover={settingsMode}
-                            onToggle={disabled ? undefined : () => onToggle(symbol, !isEnabled)}
-                            onSettings={
-                                disabled || !onSettings ? undefined : () => onSettings(symbol)
-                            }
+                            backendStatus={hasCustomBackend ? backendStatus : undefined}
+                            isDisabled={isDisabled}
+                            isEnabled={isEnabled}
+                            isCardClickable={isCardClickable}
+                            onClick={onClick}
+                            onSettings={onSettings}
+                            rightContent={renderRightContent?.({
+                                network,
+                                isEnabled,
+                                onClick: () => onClick?.(symbol, !isEnabled),
+                            })}
                         />
                     </Tooltip>
                 );
             })}
-        </Row>
+        </Column>
     );
 };
