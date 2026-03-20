@@ -3,6 +3,7 @@ import {
     selectIsLabelingAvailableForEntity,
     selectIsLabelingInitPossible,
 } from '@suite/metadata';
+import { selectHasExperimentalFeature } from '@suite/settings';
 import {
     type WithSuiteSyncAndDeviceState,
     getIsSuiteSyncLabelingActionEnabled,
@@ -35,8 +36,7 @@ export const selectIsLabelActionEnabled = (
         deviceStaticSessionId,
     );
 
-    const isSuiteSyncFeatureEnabled =
-        state.suiteSettings.experimental?.includes('suite-sync') ?? false;
+    const isSuiteSyncFeatureEnabled = selectHasExperimentalFeature('suite-sync')(state);
 
     // Turn ON in Experimental Features
     if (isSuiteSyncFeatureEnabled) {

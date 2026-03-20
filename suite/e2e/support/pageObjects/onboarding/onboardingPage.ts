@@ -1,8 +1,8 @@
 import { Locator, Page, expect } from '@playwright/test';
 
 import { setFlag } from '@suite/flags';
+import { suiteSettingsActions } from '@suite/settings';
 import { BackupType } from '@suite-common/suite-types';
-import { SUITE as SuiteActions } from '@trezor/suite/src/actions/suite/constants';
 import { Model } from '@trezor/trezor-user-env-link';
 
 import { step } from '../../common';
@@ -175,11 +175,11 @@ export class OnboardingPage {
             actions => actions.forEach(window.store.dispatch),
             [
                 {
-                    type: SuiteActions.TOGGLE_FIRMWARE_HASH_CHECK,
+                    type: suiteSettingsActions.toggleFirmwareHashCheck.type,
                     payload: false,
                 },
                 {
-                    type: SuiteActions.SET_DEBUG_MODE,
+                    type: suiteSettingsActions.setDebugMode.type,
                     payload: { showDebugMenu: true },
                 },
             ],
@@ -190,7 +190,7 @@ export class OnboardingPage {
     async disableDebugMode() {
         await this.page.ensureStoreOnDesktop();
         await this.page.evaluate(action => window.store.dispatch(action), {
-            type: SuiteActions.SET_DEBUG_MODE,
+            type: suiteSettingsActions.setDebugMode.type,
             payload: { showDebugMenu: false },
         });
     }
@@ -199,7 +199,7 @@ export class OnboardingPage {
     async disableFirmwareRevisionCheck() {
         await this.page.ensureStoreOnDesktop();
         await this.page.evaluate(action => window.store.dispatch(action), {
-            type: SuiteActions.TOGGLE_FIRMWARE_REVISION_CHECK,
+            type: suiteSettingsActions.toggleFirmwareRevisionCheck.type,
             payload: false,
         });
     }
@@ -208,7 +208,7 @@ export class OnboardingPage {
     async disableAuthenticityCheck() {
         await this.page.ensureStoreOnDesktop();
         await this.page.evaluate(action => window.store.dispatch(action), {
-            type: SuiteActions.TOGGLE_DEVICE_AUTHENTICITY_CHECK,
+            type: suiteSettingsActions.toggleDeviceAuthenticityCheck.type,
             payload: false,
         });
     }

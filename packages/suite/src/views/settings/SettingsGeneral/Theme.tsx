@@ -1,7 +1,12 @@
 import { events } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { SettingsAnchor } from '@suite/router';
-import { selectIsDebugModeActive, suiteSettingsActions } from '@suite/settings';
+import {
+    selectAutodetectTheme,
+    selectIsDebugModeActive,
+    selectThemeSettings,
+    suiteSettingsActions,
+} from '@suite/settings';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { type ThemeColorVariant } from '@trezor/theme';
 
@@ -53,8 +58,8 @@ const useThemeOptions = () => {
 
 export const Theme = () => {
     const analytics = useAnalytics();
-    const theme = useSelector(state => state.suiteSettings.theme);
-    const autodetectTheme = useSelector(state => state.suiteSettings.autodetect.theme);
+    const theme = useSelector(selectThemeSettings);
+    const autodetectTheme = useSelector(selectAutodetectTheme);
     const dispatch = useDispatch();
     const { optionGroups, getOption } = useThemeOptions();
 

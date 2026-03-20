@@ -6,6 +6,7 @@ import {
     selectIsLabelingAvailableForEntity,
     selectIsLabelingInitPossible,
 } from '@suite/metadata';
+import { type SuiteSettingsRootState, suiteSettingsInitialState } from '@suite/settings';
 import { deviceReducerInitialState } from '@suite-common/device';
 import { type SuiteSyncState, type WithSuiteSyncAndDeviceState } from '@suite-common/suite-sync';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
@@ -49,13 +50,11 @@ const createMockState = (
             ...initialSuiteSyncDesktopState,
             ...suiteSyncOverrides,
         },
-        suite: {
-            ...suiteInitialState,
-            settings: {
-                ...suiteInitialState.settings,
-                experimental: isSuiteSyncFeatureEnabled ? ['suite-sync'] : undefined,
-            },
+        suiteSettings: {
+            ...suiteSettingsInitialState,
+            experimental: isSuiteSyncFeatureEnabled ? ['suite-sync'] : undefined,
         },
+        suite: suiteInitialState,
         wallet: {
             accounts: [] as any[],
         },
@@ -67,6 +66,7 @@ const createMockState = (
     }) as WithSuiteSyncAndDeviceState &
         MetadataRootState &
         SuiteRootState &
+        SuiteSettingsRootState &
         DesktopSuiteSyncRootState;
 
 describe(selectIsLabelActionEnabled.name, () => {

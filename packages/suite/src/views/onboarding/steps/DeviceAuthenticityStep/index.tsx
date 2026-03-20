@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
 import { Translation, type TranslationKey } from '@suite/intl';
-import { selectIsDebugModeActive } from '@suite/settings';
 import { OnboardingCard } from '@suite/onboarding-components';
+import { selectIsDebugModeActive } from '@suite/settings';
 import { selectDeviceAuthenticityByDeviceId, selectSelectedDevice } from '@suite-common/device';
 import { checkDeviceAuthenticityThunk } from '@suite-common/device-authenticity';
 import { Card, Column, Grid, Icon, type IconName, Paragraph } from '@trezor/components';

@@ -1,6 +1,10 @@
 import { useMemo } from 'react';
 
-import { type DebugModeOptions, suiteSettingsActions } from '@suite/settings';
+import {
+    type DebugModeOptions,
+    selectDebugTransports,
+    suiteSettingsActions,
+} from '@suite/settings';
 import { Checkbox } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
@@ -32,7 +36,7 @@ const TRANSPORT_DESCRIPTIONS: Record<Transport, string> = {
 
 const useTransportItems = (transports: readonly Transport[]): TransportMenuItem[] => {
     const activeTransports = useSelector(selectActiveTransports);
-    const debugTransports = useSelector(state => state.suiteSettings.debug.transports);
+    const debugTransports = useSelector(selectDebugTransports);
 
     return useMemo(
         () =>

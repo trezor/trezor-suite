@@ -49,6 +49,7 @@
         { "path": "../intl" },
         { "path": "../metadata" },
         { "path": "../router-config" },
+        { "path": "../settings" },
         {
             "path": "../../packages/blockchain-link-types"
         },

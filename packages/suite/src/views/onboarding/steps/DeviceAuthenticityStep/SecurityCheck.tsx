@@ -5,6 +5,10 @@ import { selectFlags } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { selectRecoveryStatus } from '@suite/recovery';
 import { goto } from '@suite/router';
+import {
+    selectIsDeviceAuthenticityCheckEnabled,
+    selectIsUnlockedBootloaderAllowed,
+} from '@suite/settings';
 import { deviceActions, selectDevices, selectSelectedDevice } from '@suite-common/device';
 import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
 import { type AcquiredDevice } from '@suite-common/suite-types';
@@ -301,12 +305,8 @@ export const SecurityCheck = () => {
     const selectedDevice = useSelector(selectSelectedDevice);
     const devices = useSelector(selectDevices);
     const { initialRun } = useSelector(selectFlags);
-    const isDeviceAuthenticityCheckEnabled = useSelector(
-        state => state.suiteSettings.enabledSecurityChecks.deviceAuthenticity,
-    );
-    const isUnlockedBootloaderAllowed = useSelector(
-        state => state.suiteSettings.debug.isUnlockedBootloaderAllowed,
-    );
+    const isDeviceAuthenticityCheckEnabled = useSelector(selectIsDeviceAuthenticityCheckEnabled);
+    const isUnlockedBootloaderAllowed = useSelector(selectIsUnlockedBootloaderAllowed);
     const dispatch = useDispatch();
     const { goToSuite } = useOnboarding();
     const [isAuthenticityCheckStep, setIsAuthenticityCheckStep] = useState(false);

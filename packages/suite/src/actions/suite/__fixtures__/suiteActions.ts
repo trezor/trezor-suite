@@ -1,4 +1,3 @@
-import { suiteSettingsActions } from '@suite/settings';
 import { deviceActions } from '@suite-common/device';
 import { mockConnectDevice, mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -116,22 +115,6 @@ const reducerActions = [
         result: [
             {
                 transport: {},
-            },
-        ],
-    },
-    {
-        description: suiteSettingsActions.setLanguage.type,
-        actions: [
-            {
-                type: suiteSettingsActions.setLanguage.type,
-                payload: 'cz',
-            },
-        ],
-        result: [
-            {
-                suiteSettings: {
-                    language: 'cz',
-                },
             },
         ],
     },

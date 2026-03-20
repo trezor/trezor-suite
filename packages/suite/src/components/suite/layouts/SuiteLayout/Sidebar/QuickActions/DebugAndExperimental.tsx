@@ -1,6 +1,6 @@
 import { Translation } from '@suite/intl';
 import { SettingsAnchor, goto } from '@suite/router';
-import { selectIsDebugModeActive } from '@suite/settings';
+import { selectIsDebugModeActive, selectIsExperimentalEnabled } from '@suite/settings';
 import { Box, Column, Icon } from '@trezor/components';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -57,7 +57,7 @@ export const DebugAndExperimental = () => {
     const dispatch = useDispatch();
 
     const isEapEnabled = useSelector(state => state.desktopUpdate.allowPrerelease);
-    const isExperimental = useSelector(state => state.suiteSettings.experimental !== undefined);
+    const isExperimental = useSelector(selectIsExperimentalEnabled);
     const isDebug = useSelector(selectIsDebugModeActive);
     const position = { type: 'absolute', top: 0, left: 0 } as const;
 

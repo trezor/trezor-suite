@@ -1,6 +1,13 @@
 import type { AppUpdateEvent, SuiteReadyPayload } from '@suite/analytics';
 import { AccountTransactionBaseAnchor } from '@suite/router';
 import {
+    selectAutodetectLanguage,
+    selectAutodetectTheme,
+    selectExperimentalFeatures,
+    selectLanguage,
+    selectTheme,
+} from '@suite/settings';
+import {
     selectRememberedHiddenWalletsCount,
     selectRememberedStandardWalletsCount,
 } from '@suite-common/device';
@@ -62,7 +69,7 @@ export const getSuiteReadyPayload = async (state: AppState): Promise<SuiteReadyP
     const [osVersion, osCpuArch] = await Promise.all([getOsVersion(), getCpuArch()]);
 
     return {
-        language: state.suiteSettings.language,
+        language: selectLanguage(state),
         enabledNetworks: state.wallet.settings.enabledNetworks,
         customBackends: getCustomBackends(state.wallet.blockchain)
             .map(({ symbol }) => symbol)
@@ -77,10 +84,10 @@ export const getSuiteReadyPayload = async (state: AppState): Promise<SuiteReadyP
         labeling: resolveLabelingType(state),
         rememberedStandardWallets: selectRememberedStandardWalletsCount(state),
         rememberedHiddenWallets: selectRememberedHiddenWalletsCount(state),
-        theme: state.suiteSettings.theme.variant,
+        theme: selectTheme(state),
         suiteVersion: process.env.VERSION || '',
         earlyAccessProgram: state.desktopUpdate.allowPrerelease,
-        experimentalFeatures: state.suiteSettings.experimental,
+        experimentalFeatures: selectExperimentalFeatures(state),
         browserName: getBrowserName(),
         browserVersion: getBrowserVersion(),
         osName: getOsName(),
@@ -89,8 +96,8 @@ export const getSuiteReadyPayload = async (state: AppState): Promise<SuiteReadyP
 
         windowWidth: getWindowWidth(),
         windowHeight: getWindowHeight(),
-        autodetectLanguage: state.suiteSettings.autodetect.language,
-        autodetectTheme: state.suiteSettings.autodetect.theme,
+        autodetectLanguage: selectAutodetectLanguage(state),
+        autodetectTheme: selectAutodetectTheme(state),
 
         isAutomaticUpdateEnabled: state.desktopUpdate.isAutomaticUpdateEnabled,
 

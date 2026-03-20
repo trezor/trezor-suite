@@ -1,4 +1,4 @@
-import { selectHasExperimentalFeature } from '@suite/settings';
+import { type SuiteSettingsRootState, selectHasExperimentalFeature } from '@suite/settings';
 import { type AnyAction, createSliceWithExtraDeps } from '@suite-common/redux-utils';
 import {
     type SuiteSyncInteraction,
@@ -78,7 +78,10 @@ export const selectShowEnableSuiteSyncModal = (
 ): StaticSessionId | null => state.suiteSync.showEnableSuiteSyncModal;
 
 export const selectDesktopSuiteSyncInteraction = (
-    state: DesktopSuiteSyncRootState & WithSuiteSyncAndDeviceState & SuiteRootState,
+    state: DesktopSuiteSyncRootState &
+        WithSuiteSyncAndDeviceState &
+        SuiteRootState &
+        SuiteSettingsRootState,
     deviceStaticSessionId: StaticSessionId | null,
 ): SuiteSyncInteraction | null => {
     const isSuiteSyncFeatureEnabled = selectHasExperimentalFeature('suite-sync')(state);

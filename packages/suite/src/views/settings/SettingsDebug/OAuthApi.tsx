@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { GoogleClient } from '@suite/metadata';
-import { suiteSettingsActions } from '@suite/settings';
+import { selectOAuthServerEnvironment, suiteSettingsActions } from '@suite/settings';
 import { type OAuthServerEnvironment } from '@suite-common/metadata-types';
 
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from 'src/components/suite';
@@ -12,7 +12,7 @@ const StyledActionSelect = styled(ActionSelect)`
 `;
 
 export const OAuthApi = () => {
-    const debug = useSelector(state => state.suiteSettings.debug);
+    const oauthServerEnvironment = useSelector(selectOAuthServerEnvironment);
     const dispatch = useDispatch();
 
     const options = Object.entries(GoogleClient.servers).map(([environment, server]) => ({
@@ -20,7 +20,7 @@ export const OAuthApi = () => {
         value: environment,
     }));
     const selectedOption =
-        options.find(option => option.value === debug.oauthServerEnvironment) || options[0];
+        options.find(option => option.value === oauthServerEnvironment) || options[0];
 
     const handleChange = (item: { value: OAuthServerEnvironment }) => {
         dispatch(suiteSettingsActions.setDebugMode({ oauthServerEnvironment: item.value }));

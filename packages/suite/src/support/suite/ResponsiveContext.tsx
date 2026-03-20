@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useMemo, useState } from 'react';
 
+import { selectSidebarWidth } from '@suite/settings';
+
 import {
     SIDEBAR_COLLAPSED_WIDTH,
     SIDEBAR_MIN_WIDTH,
@@ -26,7 +28,7 @@ type ResponsiveContextType = {
 export const ResponsiveContext = createContext<ResponsiveContextType | undefined>(undefined);
 
 export const ResponsiveContextProvider = ({ children }: { children: React.ReactNode }) => {
-    const sidebarWidthFromRedux = useSelector(state => state.suiteSettings.sidebarWidth);
+    const sidebarWidthFromRedux = useSelector(selectSidebarWidth);
 
     const [sidebarWidthManual, setSidebarWidthManual] = useState<number>(sidebarWidthFromRedux);
     const [sidebarWidthRaw, setSidebarWidthRaw] = useState<number>(sidebarWidthFromRedux);
