@@ -5,15 +5,20 @@ import { eth1NormalAccount, exchangeQuotes, getWalletState } from '@suite-native
 
 import { ExchangeApprovalDetails } from '../ExchangeApprovalDetails';
 
+// Mock FeeSelector to avoid deep dependency chain (useFeesManagement, etc.)
+jest.mock('@suite-native/transaction-management', () => ({
+    ...jest.requireActual('@suite-native/transaction-management'),
+    FeeSelector: jest.fn(() => null),
+}));
+
 describe('ExchangeApprovalDetails', () => {
     let preloadedState: PreloadedState;
     const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
-    const renderExchangeApprovalDetails = (fee: string | undefined = '100000', isLoading = false) =>
-        renderWithStoreProvider(
-            <ExchangeApprovalDetails fee={fee} isLoading={isLoading} exchange="mercuryo" />,
-            { preloadedState },
-        );
+    const renderExchangeApprovalDetails = () =>
+        renderWithStoreProvider(<ExchangeApprovalDetails exchange="mercuryo" />, {
+            preloadedState,
+        });
 
     beforeEach(() => {
         preloadedState = {
@@ -29,7 +34,7 @@ describe('ExchangeApprovalDetails', () => {
     });
 
     it('should render approval details', () => {
-        const { getByText } = renderExchangeApprovalDetails('100000', false);
+        const { getByText } = renderExchangeApprovalDetails();
 
         expect(
             getByText(getTranslation('moduleTrading.exchangeTradePreviewCard.account')),
@@ -38,9 +43,6 @@ describe('ExchangeApprovalDetails', () => {
         expect(
             getByText(getTranslation('moduleTrading.tradingExchangeApprovalScreen.limitLabel')),
         ).toBeOnTheScreen();
-        expect(
-            getByText(getTranslation('transactionManagement.fees.description.title.ethereum')),
-        ).toBeOnTheScreen();
         expect(errorSpy).not.toHaveBeenCalled();
     });
 
@@ -48,7 +50,7 @@ describe('ExchangeApprovalDetails', () => {
         preloadedState!.wallet!.trading!.exchange!.tradingAccountKey =
             'unknown-account-key' as AccountKey;
 
-        const { getByText, queryByText } = renderExchangeApprovalDetails('100000', false);
+        const { getByText, queryByText } = renderExchangeApprovalDetails();
 
         expect(
             getByText(

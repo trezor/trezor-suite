@@ -1,49 +1,31 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useNavigation } from '@react-navigation/native';
-
-import { Card, InlineAlertBox } from '@suite-native/atoms';
+import { type FormDraftRootState, selectDeepCopyOfFormDraft } from '@suite-common/wallet-core';
+import type { FeeLevelLabel } from '@suite-common/wallet-types';
+import { AnimatedCard, Divider, InlineAlertBox } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import {
-    type StackNavigationProps,
-    type TradingStackParamList,
-    TradingStackRoutes,
-} from '@suite-native/navigation';
 import { NetworkAndAccountCard } from '@suite-native/trading-atoms';
-import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
+import {
+    getFormDraftKeyByTradeType,
+    selectExchangeSelectedSendAccount,
+} from '@suite-native/trading-state';
+import { FeeSelector } from '@suite-native/transaction-management';
 
 import { LimitPicker } from './LimitPicker';
-import { FeePicker } from '../../fees/FeePicker';
+import { updateTradingSelectedFeeLevelThunk } from '../../../thunks';
 import { ProviderInfoRow } from '../../general/TradeInfo/ProviderInfoRow';
 
 type ExchangeApprovalDetailsProps = {
-    fee: string | undefined;
-    isLoading: boolean;
     exchange: string | undefined;
 };
 
-export const ExchangeApprovalDetails = ({
-    fee,
-    isLoading,
-    exchange,
-}: ExchangeApprovalDetailsProps) => {
+export const ExchangeApprovalDetails = ({ exchange }: ExchangeApprovalDetailsProps) => {
     const account = useSelector(selectExchangeSelectedSendAccount);
-
-    const navigation =
-        useNavigation<
-            StackNavigationProps<TradingStackParamList, TradingStackRoutes.TradingExchangeApproval>
-        >();
-
-    const navigateToFees = () => {
-        if (fee === undefined || !account?.key) {
-            return;
-        }
-        navigation.navigate(TradingStackRoutes.TradingFees, {
-            accountKey: account.key,
-            tradingType: 'exchange',
-        });
-    };
+    const formDraftKey = getFormDraftKeyByTradeType('exchange');
+    const formDraft = useSelector((state: FormDraftRootState) =>
+        selectDeepCopyOfFormDraft(state, formDraftKey),
+    );
 
     useEffect(() => {
         if (!account) {
@@ -72,15 +54,17 @@ export const ExchangeApprovalDetails = ({
                 <LimitPicker />
             </NetworkAndAccountCard>
 
-            <Card noPadding>
-                <FeePicker
-                    fee={fee ?? '0'}
-                    symbol={account.symbol}
-                    onPress={navigateToFees}
-                    isLoading={isLoading}
-                    noBorder
+            <AnimatedCard noPadding>
+                <Divider />
+                <FeeSelector
+                    accountKey={account.key}
+                    updateThunk={updateTradingSelectedFeeLevelThunk}
+                    selectedFee={(formDraft?.selectedFee as FeeLevelLabel | undefined) ?? 'normal'}
+                    selectedFeePerUnit={formDraft?.feePerUnit}
+                    formDraft={formDraft}
+                    formDraftKey={formDraftKey}
                 />
-            </Card>
+            </AnimatedCard>
         </>
     );
 };
