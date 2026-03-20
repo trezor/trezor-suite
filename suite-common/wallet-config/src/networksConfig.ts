@@ -351,7 +351,14 @@ export const networks = {
             [DeviceModelInternal.T3W1]: '2.11.0',
         },
         backendTypes: ['blockbook'],
-        accountTypes: {},
+        accountTypes: {
+            ledger: {
+                // ledger (live), #1 acc is same as Trezor, so it is skipped
+                accountType: 'ledger',
+                bip43Path: "m/44'/195'/i'/0/0",
+                isDebugOnlyAccountType: true,
+            },
+        },
         coingeckoId: 'tron',
         tradeCryptoId: 'tron',
         yieldXyzId: 'tron',
