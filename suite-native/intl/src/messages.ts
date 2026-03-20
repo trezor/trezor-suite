@@ -974,14 +974,6 @@ export const messages = {
                 description: 'This will erase all data on your Trezor. Proceed with caution.',
             },
         },
-        bluetooth: {
-            title: 'Unpair Bluetooth connection',
-            content: 'Unpair your Trezor from this device',
-            unpairTrezorButton: 'Unpair',
-            description:
-                'This removes your Trezor from the list of paired devices in Trezor Suite.',
-            successMessage: 'Trezor has been unpaired.',
-        },
         firmware: {
             title: 'Firmware',
             subtitle: 'Firmware is your Trezor’s operating system.',
