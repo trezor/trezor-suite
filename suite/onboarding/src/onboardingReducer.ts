@@ -1,4 +1,4 @@
-import { PayloadAction, createAction, createSlice } from '@reduxjs/toolkit';
+import { type PayloadAction, createAction, createSlice } from '@reduxjs/toolkit';
 
 import { type OnboardingAnalytics } from '@suite/analytics';
 import { type BackupType } from '@suite-common/suite-types';
@@ -40,17 +40,14 @@ export const onboardingSlice = createSlice({
             state.isActive = payload;
         },
         goToOnboardingStep: (state, { payload }: PayloadAction<AnyStepId>) => {
-            if (!state.isActive) return;
             state.activeStepId = payload;
         },
         addOnboardingPath: (state, { payload }: PayloadAction<AnyPath>) => {
-            if (!state.isActive) return;
             if (!state.path.includes(payload)) {
                 state.path.push(payload);
             }
         },
         removeOnboardingPath: (state, { payload }: PayloadAction<AnyPath[]>) => {
-            if (!state.isActive) return;
             state.path = state.path.filter(p => !payload.includes(p));
         },
         updateOnboardingAnalytics: (
@@ -60,13 +57,13 @@ export const onboardingSlice = createSlice({
             state.onboardingAnalytics = { ...state.onboardingAnalytics, ...payload };
         },
         updateOnboardingBackupType: (state, { payload }: PayloadAction<BackupType>) => {
-            if (!state.isActive) return;
             state.backupType = payload;
         },
         resetOnboarding: () => initialState,
     },
     extraReducers: builder => {
         builder.addCase(deviceDisconnected, (state, { payload }) => {
+            // Note: This is to prevent a bug when disconnect device in onboarding and connect different one.
             if (!state.isActive) return;
             state.prevDeviceId = payload.id ?? null;
         });
@@ -87,7 +84,6 @@ export const onboardingReducer = onboardingSlice.reducer;
 
 type OnboardingRootState = { onboarding: OnboardingState };
 
-export const selectOnboardingState = (state: OnboardingRootState) => state.onboarding;
 export const selectIsOnboardingActive = (state: OnboardingRootState) => state.onboarding.isActive;
 export const selectOnboardingAnalytics = (state: OnboardingRootState) =>
     state.onboarding.onboardingAnalytics;
