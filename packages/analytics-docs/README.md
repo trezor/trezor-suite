@@ -1,14 +1,13 @@
 # @trezor/analytics-docs (Analytics Events Docs)
 
-UI for displaying analytics events from `@trezor/analytics-log-server` (Live log) and for browsing generated documentation (`analytics.json`).
+UI for browsing generated documentation (`analytics.json`) and displaying analytics events from `@trezor/analytics-log-server` (Live log).
 
-The documentation is deployed as **static assets** via the `[Build] analytics-docs` workflow (S3 sync). For Live log, you need to run the log server separately (Docker).
+The documentation is deployed as **static assets** via the `[Build] analytics-docs` workflow. For Live log, you need to run the log server separately (see `@trezor/analytics-log-server`).
 
 ## What the UI does
 
 - Displays the list of events from `analytics.json` (changelog/sections by platform).
-- Live log connects to the log server via SSE (`/api/analytics-events/stream`).
-- Live log server settings are configured in a UI modal (Settings).
+- Live log connects to the log server
 
 ## Live log configuration
 
@@ -23,30 +22,15 @@ The UI will then:
 
 > Suite (web/desktop) sends events to the `/log` endpoint as a GET request with query parameters.
 
-## Local setup
-
-### 1) Run the log server in Docker
+## Run Analytics Docs
 
 ```bash
-cd /Users/janvaclavik/dev/trezor-suite
-
-docker build -f packages/analytics-log-server/Dockerfile -t analytics-log-server .
-docker run -d --name analytics-log-server \
-  -p 5181:5181 \
-  -e PORT=5181 \
-  analytics-log-server
-```
-
-### 2) Run the UI (without Docker)
-
-```bash
-cd /Users/janvaclavik/dev/trezor-suite
 yarn workspace @trezor/analytics-docs dev
 ```
 
-In your browser, open Live log Settings and set the base URL to `http://localhost:5181`.
+In your browser, open Live log Settings and set the base URL to `http://localhost:5180`.
 
 ## Production deployment
 
-1. **UI (static assets)**: deployed by `.github/workflows/build-analytics-docs.yml` (S3 sync to `s3://*/analytics-docs`).
+1. **Analytics Docs (static assets)**: deployed by `.github/workflows/build-analytics-docs.yml`.
 2. **Log server**: deployed separately (Docker image from `packages/analytics-log-server/Dockerfile`) and must be reachable from the Suite/analytics-docs domain(s) according to your infrastructure.

@@ -47,8 +47,6 @@ This is important mainly for Suite web/desktop, so it can send events to a diffe
 ### Docker
 
 ```bash
-cd /Users/janvaclavik/dev/trezor-suite
-
 docker build -f packages/analytics-log-server/Dockerfile -t analytics-log-server .
 
 docker run -d --name analytics-log-server \
