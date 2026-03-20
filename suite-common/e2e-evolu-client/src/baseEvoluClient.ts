@@ -97,16 +97,39 @@ export class BaseEvoluClient {
     }
 }
 
-export const wipeEvoluRelayData = () => {
+// Hardcoded quota data for test environment. The quota manager cannot store keys
+// per-wallet, so these limits must be seeded into the DB before running Suite Sync tests.
+// This will be refactored.
+const QUOTA_OWNER_ID = '0Fco3XDgKR59zX5VBvyyGQ';
+const QUOTA_STORAGE_LIMIT = 10486;
+const QUOTA_PUBLIC_KEY =
+    '0487472eec47aa28fa62ff3231f60b5c89751318a5598af5f93ab2aad9061ca25f53b352a97b855f16b11b795b715249c8dbfb6e47339f677e30d530f0e80bc4bb';
+const QUOTA_TOTAL_STORAGE_SIZE = 1048576;
+const QUOTA_UNSPENT_STORAGE_SIZE = 1038090;
+const QUOTA_DB_CREDENTIALS = '-U suite-sync -d suite-sync-gate';
+
+export const wipeAndRestartEvoluRelayServer = () => {
     execSync(
         'docker compose -f docker/docker-compose.suite-ci-e2e.yml exec -T suite-sync rm -rf /app/data',
         { cwd: '../../' },
     );
-};
-
-export const restartEvoluRelayServer = () => {
+    execSync(
+        `docker compose -f docker/docker-compose.suite-ci-e2e.yml exec -T quota-db psql ${QUOTA_DB_CREDENTIALS} -c "TRUNCATE challenges, owner_storage_limits, pubkey_storage_limits RESTART IDENTITY CASCADE;"`,
+        { cwd: '../../' },
+    );
     execSync(
         'docker compose -f docker/docker-compose.suite-ci-e2e.yml restart quota-db suite-sync',
+        { cwd: '../../' },
+    );
+};
+
+export const seedQuotaManagerData = () => {
+    execSync(
+        `docker compose -f docker/docker-compose.suite-ci-e2e.yml exec -T quota-db psql ${QUOTA_DB_CREDENTIALS} -c "INSERT INTO owner_storage_limits (\\"ownerId\\", \\"storageLimit\\") VALUES ('${QUOTA_OWNER_ID}', ${QUOTA_STORAGE_LIMIT}) ON CONFLICT DO NOTHING;"`,
+        { cwd: '../../' },
+    );
+    execSync(
+        `docker compose -f docker/docker-compose.suite-ci-e2e.yml exec -T quota-db psql ${QUOTA_DB_CREDENTIALS} -c "INSERT INTO pubkey_storage_limits (\\"publicKey\\", \\"totalStorageSize\\", \\"unspentStorageSize\\") VALUES ('${QUOTA_PUBLIC_KEY}', ${QUOTA_TOTAL_STORAGE_SIZE}, ${QUOTA_UNSPENT_STORAGE_SIZE}) ON CONFLICT DO NOTHING;"`,
         { cwd: '../../' },
     );
 };

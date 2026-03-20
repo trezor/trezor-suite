@@ -7,8 +7,8 @@ import {
     BaseEvoluClient,
     EvoluClientInitParams,
     checkEvoluRelayServerRunning,
-    restartEvoluRelayServer,
-    wipeEvoluRelayData,
+    seedQuotaManagerData,
+    wipeAndRestartEvoluRelayServer,
 } from '@suite-common/e2e-evolu-client';
 import { Schema } from '@suite-common/suite-sync-evolu';
 
@@ -26,6 +26,11 @@ export class EvoluClient extends BaseEvoluClient {
     @step()
     override writeTo<T extends TableName>(table: T, object: Upsertable<(typeof Schema)[T]>) {
         super.writeTo(table, object as any);
+    }
+
+    @step()
+    seedQuotaManagerData() {
+        seedQuotaManagerData();
     }
 
     @step()
@@ -89,6 +94,5 @@ export class EvoluClient extends BaseEvoluClient {
 
 export const wipeAndRestartEvoluServer = async () => {
     await checkEvoluRelayServerRunning();
-    await test.step('Wipe Evolu Relay data', wipeEvoluRelayData);
-    await test.step('Restart Evolu Relay server', restartEvoluRelayServer);
+    await test.step('Wipe and restart Evolu Relay server', wipeAndRestartEvoluRelayServer);
 };
