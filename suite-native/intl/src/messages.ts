@@ -251,22 +251,16 @@ export const messages = {
                 secondaryButton: 'Device removed',
             },
             systemUnpairing: {
-                title: {
-                    android: 'Remove Trezor from system settings',
-                    ios: 'Remove Trezor from Bluetooth settings',
-                },
-                description: {
-                    android:
-                        'To unpair fully, make sure you remove your Trezor from your phone’s Bluetooth settings. If not, you might have trouble pairing it again in the future.',
-                    ios: 'If not, you might have trouble pairing it again in the future.',
-                },
+                title: 'Remove from Bluetooth settings',
+                description:
+                    'Remove your Trezor from your Bluetooth settings. If you don’t, you might have trouble pairing it again in the future.',
                 primaryButton: 'Open system settings',
                 secondaryButton: 'Device removed',
             },
-            pairingInstructions: {
+            unpairingInstructions: {
                 step1: 'Go to Settings > Bluetooth',
-                step2: 'Find your Trezor and tap on ⓘ',
-                step3: 'Tap “Forget device”',
+                step2: 'Find Trezor and tap on ⓘ',
+                step3: 'Tap “Forget this device”',
             },
         },
         toasts: {
@@ -845,6 +839,40 @@ export const messages = {
                 'Trezor will connect automatically without having to confirm every connection.',
             successToast: 'Auto-connect turned on.',
             errorToast: 'Auto-connect failed to turn on.',
+        },
+        forgetDevice: {
+            title: 'Forget device',
+            description:
+                'Permanently delete all data related to your Trezor from this phone, including Bluetooth pairing and connection settings.',
+            info: {
+                title: 'Forget this Trezor?',
+                list: {
+                    item1: 'Trezor Suite will forget any existence of this device.',
+                    item2: 'Bluetooth pairing will be removed and Trezor will be disconnected.',
+                    item3: 'Your wallet backup and funds stay intact—they won’t be erased.',
+                },
+                submitButton: 'Forget device',
+            },
+            guide: {
+                title: 'Remove from Bluetooth settings',
+                step1: {
+                    header: 'On your phone',
+                    description:
+                        'Remove your Trezor from your <link>Bluetooth settings</link>. If you don’t, you might have trouble pairing it again in the future.',
+                },
+                step2: {
+                    header: 'On your Trezor',
+                    description:
+                        'Go to Pair & Connect and remove your phone. This will prevent connection errors later.',
+                },
+                continueButton: 'I’ve removed it',
+            },
+            finish: {
+                title: 'Finish forgetting this Trezor',
+                subtitle: 'Disconnect your Trezor device from the phone.',
+            },
+            successToast: 'Device forgotten',
+            disconnect: 'Disconnect\nyour Trezor',
         },
         pinProtection: {
             title: 'PIN protection',

@@ -5,12 +5,15 @@ import {
     selectKnownDevices,
     selectNearbyDevices,
 } from '@suite-common/bluetooth';
+import { type DeviceRootState, selectDeviceId } from '@suite-common/device';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 
 import { type NativeBluetoothRootState } from './bluetoothSlice';
 import { type BluetoothDevice } from './types';
 
-const createMemoizedSelector = createWeakMapSelector.withTypes<NativeBluetoothRootState>();
+const createMemoizedSelector = createWeakMapSelector.withTypes<
+    NativeBluetoothRootState & DeviceRootState
+>();
 
 export const selectBluetoothAutoConnectPolicy = (state: NativeBluetoothRootState) =>
     selectAutoConnectPolicy(state);
@@ -64,3 +67,9 @@ export const selectKnownConnectableBluetoothDevices = createMemoizedSelector(
 
 export const selectIsBluetoothDeviceOsUnpairingRequired = (state: NativeBluetoothRootState) =>
     selectIsDeviceOsUnpairingRequired(state);
+
+export const selectIsKnownBluetoothDevice = createMemoizedSelector(
+    [selectKnownBluetoothDevices, selectDeviceId],
+    (knownBluetoothDevices, deviceId) =>
+        knownBluetoothDevices.some(knownDevice => knownDevice.deviceId === deviceId),
+);

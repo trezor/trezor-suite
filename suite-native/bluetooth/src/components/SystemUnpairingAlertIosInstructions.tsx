@@ -15,15 +15,15 @@ export const SystemUnpairingAlertIosInstructions = ({
         <VStack paddingTop="sp24">
             <BottomSheetListItem
                 iconNumber={1}
-                translationKey="bluetooth.alerts.pairingInstructions.step1"
+                translationKey="bluetooth.alerts.unpairingInstructions.step1"
             />
             <BottomSheetListItem
                 iconNumber={2}
-                translationKey="bluetooth.alerts.pairingInstructions.step2"
+                translationKey="bluetooth.alerts.unpairingInstructions.step2"
             />
             <BottomSheetListItem
                 iconNumber={3}
-                translationKey="bluetooth.alerts.pairingInstructions.step3"
+                translationKey="bluetooth.alerts.unpairingInstructions.step3"
             />
         </VStack>
     </Box>
