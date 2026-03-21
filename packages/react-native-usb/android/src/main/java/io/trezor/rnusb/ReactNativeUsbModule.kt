@@ -125,38 +125,28 @@ class ReactNativeUsbModule : Module() {
         }
 
         OnCreate {
-            val onDeviceConnect: OnDeviceConnect = { device ->
-                Log.d(LOG_TAG, "New connection detected checking permission for device: $device")
-
+            ReactNativeUsbBroadcastReceiver.setOnUsbDeviceAttachedCallback({ device ->
                 if (usbManager.hasPermission(device)) {
                     // TODO: request permissions only for devices which we are interested, one approach could be to pass list of them from JS during new WebUSB class creation
-                    Log.d(LOG_TAG, "onDeviceConnected: $device")
                     val webUsbDevice = getWebUSBDevice(device)
+                    Log.d(LOG_TAG, "Sending $ON_DEVICE_CONNECT_EVENT_NAME event: ${webUsbDevice}")
                     sendEvent(ON_DEVICE_CONNECT_EVENT_NAME, webUsbDevice)
                     devicesHistory[device.deviceName] = webUsbDevice
                 } else if (isAppInForeground) {
-                    Log.d(LOG_TAG, "Request permission for device: $device")
+                    Log.d(LOG_TAG, "Requesting permission for device: $device")
                     devicesRequestedPermissions.add(device.deviceName)
-
                     usbManager.requestPermission(device, permissionIntent)
                 }
-            }
-            val onDeviceDisconnect: OnDeviceDisconnect = { deviceName ->
-                Log.d(LOG_TAG, "onDeviceDisconnected: ${devicesHistory[deviceName]}")
-
-                if (devicesHistory[deviceName] == null) {
-                    Log.e(LOG_TAG, "Device $deviceName not found in history.")
+            })
+            ReactNativeUsbBroadcastReceiver.setOnUsbDeviceDetachedCallback({ deviceName ->
+                Log.d(LOG_TAG, "Removing $deviceName from device history")
+                devicesHistory.remove(deviceName)?.let { webUsbDevice ->
+                    Log.d(LOG_TAG, "Sending $ON_DEVICE_DISCONNECT_EVENT_NAME event: ${webUsbDevice}")
+                    sendEvent(ON_DEVICE_DISCONNECT_EVENT_NAME, webUsbDevice)
                 }
-
-                devicesHistory[deviceName]?.let { sendEvent(ON_DEVICE_DISCONNECT_EVENT_NAME, it) }
-                Log.d(LOG_TAG, "Disconnect event sent for device ${devicesHistory[deviceName]}")
-
                 devicesRequestedPermissions.remove(deviceName)
-                openedConnections.remove(deviceName)
-            }
-
-            ReactNativeUsbBroadcastReceiver.setOnDeviceConnectCallback(onDeviceConnect)
-            ReactNativeUsbBroadcastReceiver.setOnDeviceDisconnectCallback(onDeviceDisconnect)
+                openedConnections.remove(deviceName)?.close()
+            })
         }
 
         OnActivityEntersForeground {
@@ -168,7 +158,7 @@ class ReactNativeUsbModule : Module() {
             val devicesList = usbManager.deviceList.values.toList()
             for (device in devicesList) {
                 if (usbManager.hasPermission(device)) {
-                    Log.d(LOG_TAG, "Has permission, send event onDeviceConnected: $device")
+                    Log.d(LOG_TAG, "Permission granted: $device")
 
                     val webUsbDevice = if (hasOpenedConnection(device.deviceName)) {
                         Log.d(LOG_TAG, "Device already opened: $device")
@@ -178,12 +168,10 @@ class ReactNativeUsbModule : Module() {
                         openDevice(device.deviceName)
                     }
 
+                    Log.d(LOG_TAG, "Sending $ON_DEVICE_CONNECT_EVENT_NAME event: ${webUsbDevice}")
                     sendEvent(ON_DEVICE_CONNECT_EVENT_NAME, webUsbDevice)
                     devicesHistory[device.deviceName] = webUsbDevice
-                } else if (!devicesRequestedPermissions.contains(
-                        device.deviceName
-                    )
-                ) {
+                } else if (!devicesRequestedPermissions.contains(device.deviceName)) {
                     Log.d(LOG_TAG, "New device connected while app was in background: $device")
                     devicesRequestedPermissions.add(device.deviceName)
                     usbManager.requestPermission(device, permissionIntent)
@@ -201,8 +189,8 @@ class ReactNativeUsbModule : Module() {
         }
 
         OnDestroy {
-            ReactNativeUsbBroadcastReceiver.setOnDeviceConnectCallback(null)
-            ReactNativeUsbBroadcastReceiver.setOnDeviceDisconnectCallback(null)
+            ReactNativeUsbBroadcastReceiver.setOnUsbDeviceAttachedCallback(null)
+            ReactNativeUsbBroadcastReceiver.setOnUsbDeviceDetachedCallback(null)
 
             cancelAllPendingRequests()
             closeAllOpenedDevices()

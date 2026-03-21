@@ -8,21 +8,21 @@ import android.hardware.usb.UsbDevice
 import android.os.Build
 import android.util.Log
 
-typealias OnDeviceConnect = (UsbDevice) -> Unit
-typealias OnDeviceDisconnect = (deviceName: String) -> Unit
+typealias OnUsbDeviceAttachedCallback = (UsbDevice) -> Unit
+typealias OnUsbDeviceDetachedCallback = (deviceName: String) -> Unit
 
 class ReactNativeUsbBroadcastReceiver : BroadcastReceiver() {
 
     companion object {
-        private var onDeviceConnectCallback: OnDeviceConnect? = null
-        private var onDeviceDisconnectCallback: OnDeviceDisconnect? = null
+        private var onUsbDeviceAttachedCallback: OnUsbDeviceAttachedCallback? = null
+        private var onUsbDeviceDetachedCallback: OnUsbDeviceDetachedCallback? = null
 
-        fun setOnDeviceConnectCallback(callback: OnDeviceConnect?) {
-            onDeviceConnectCallback = callback
+        fun setOnUsbDeviceAttachedCallback(callback: OnUsbDeviceAttachedCallback?) {
+            onUsbDeviceAttachedCallback = callback
         }
 
-        fun setOnDeviceDisconnectCallback(callback: OnDeviceDisconnect?) {
-            onDeviceDisconnectCallback = callback
+        fun setOnUsbDeviceDetachedCallback(callback: OnUsbDeviceDetachedCallback?) {
+            onUsbDeviceDetachedCallback = callback
         }
     }
 
@@ -30,12 +30,12 @@ class ReactNativeUsbBroadcastReceiver : BroadcastReceiver() {
         if (intent.action == UsbManager.ACTION_USB_DEVICE_ATTACHED) {
             getDevice(intent)?.let { device ->
                 Log.d(LOG_TAG, "USB device attached: $device")
-                onDeviceConnectCallback?.invoke(device)
+                onUsbDeviceAttachedCallback?.invoke(device)
             }
         } else if (intent.action == UsbManager.ACTION_USB_DEVICE_DETACHED) {
             getDevice(intent)?.let { device ->
                 Log.d(LOG_TAG, "USB device detached: $device")
-                onDeviceDisconnectCallback?.invoke(device.deviceName)
+                onUsbDeviceDetachedCallback?.invoke(device.deviceName)
             }
         }
     }
