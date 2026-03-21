@@ -51,7 +51,7 @@ class ReactNativeUsbModule : Module() {
     private var devicesRequestedPermissions = mutableListOf<String>()
 
     private val permissionIntent by lazy {
-        val intent = Intent(context, ReactNativeUsbPermissionReceiver::class.java)
+        val intent = Intent(context, ReactNativeUsbBroadcastReceiver::class.java)
         intent.setAction(ACTION_USB_PERMISSION)
         PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_MUTABLE)
     }
