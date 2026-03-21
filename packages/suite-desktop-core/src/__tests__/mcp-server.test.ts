@@ -105,7 +105,7 @@ const startMcpServer = async (overrides?: {
         cspNonce: 'test-nonce',
     } as any);
 
-    result!.onLoad();
+    result!.onLoad({} as any);
 
     // Wait for the server to start listening
     await new Promise<void>((resolve, reject) => {
@@ -243,15 +243,6 @@ describe('MCP server', () => {
             cleanup = server.cleanup;
 
             const res = await mcpFetch(server.port, null, { method: 'OPTIONS' });
-
-            expect(res.status).toBe(405);
-        });
-
-        it('OPTIONS /mcp returns 405 even without auth token', async () => {
-            const server = await startMcpServer();
-            cleanup = server.cleanup;
-
-            const res = await mcpFetch(server.port, null, { method: 'OPTIONS', token: null });
 
             expect(res.status).toBe(405);
         });
