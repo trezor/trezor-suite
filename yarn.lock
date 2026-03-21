@@ -12332,11 +12332,32 @@ __metadata:
     "@suite-common/feedback": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/intl": "workspace:*"
-    "@suite-native/navigation": "workspace:*"
     "@suite-native/settings": "workspace:*"
     "@trezor/styles-native": "workspace:*"
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
+    react-redux: "npm:9.2.0"
+  languageName: unknown
+  linkType: soft
+
+"@suite-native/feature-feedback@workspace:suite-native/feature-feedback":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/feature-feedback@workspace:suite-native/feature-feedback"
+  dependencies:
+    "@react-navigation/native": "npm:7.1.28"
+    "@suite-common/feedback": "workspace:*"
+    "@suite-native/atoms": "workspace:*"
+    "@suite-native/icons": "workspace:*"
+    "@suite-native/intl": "workspace:*"
+    "@suite-native/link": "workspace:*"
+    "@suite-native/navigation": "workspace:*"
+    "@suite-native/settings": "workspace:*"
+    "@trezor/styles": "workspace:*"
+    "@trezor/urls": "workspace:*"
+    "@trezor/utils": "workspace:*"
+    react: "npm:19.2.4"
+    react-native: "npm:0.83.2"
+    react-native-reanimated: "npm:~4.2.1"
     react-redux: "npm:9.2.0"
   languageName: unknown
   linkType: soft
@@ -14386,9 +14407,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite/experimental-feedback@workspace:*, @suite/experimental-feedback@workspace:suite/experimental-feedback":
+"@suite/experimental@workspace:*, @suite/experimental@workspace:suite/experimental":
   version: 0.0.0-use.local
-  resolution: "@suite/experimental-feedback@workspace:suite/experimental-feedback"
+  resolution: "@suite/experimental@workspace:suite/experimental"
+  dependencies:
+    "@suite/intl": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@suite/feature-feedback@workspace:*, @suite/feature-feedback@workspace:suite/feature-feedback":
+  version: 0.0.0-use.local
+  resolution: "@suite/feature-feedback@workspace:suite/feature-feedback"
   dependencies:
     "@reduxjs/toolkit": "npm:2.11.2"
     "@suite-common/feedback": "workspace:*"
@@ -14401,14 +14430,6 @@ __metadata:
     react: "npm:19.2.4"
     react-redux: "npm:9.2.0"
     styled-components: "npm:^6.3.9"
-  languageName: unknown
-  linkType: soft
-
-"@suite/experimental@workspace:*, @suite/experimental@workspace:suite/experimental":
-  version: 0.0.0-use.local
-  resolution: "@suite/experimental@workspace:suite/experimental"
-  dependencies:
-    "@suite/intl": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -16035,7 +16056,7 @@ __metadata:
     "@suite/backup": "workspace:*"
     "@suite/device": "workspace:*"
     "@suite/experimental": "workspace:*"
-    "@suite/experimental-feedback": "workspace:*"
+    "@suite/feature-feedback": "workspace:*"
     "@suite/flags": "workspace:*"
     "@suite/idb-migration-utils": "workspace:*"
     "@suite/intl": "workspace:*"

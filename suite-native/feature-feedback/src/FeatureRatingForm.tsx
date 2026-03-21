@@ -3,15 +3,13 @@ import { TextInput } from 'react-native';
 
 import { type Rating, ratingOptions } from '@suite-common/feedback';
 import { Button, Card, HStack, Text, VStack } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
-import { type ExperimentalFeature } from '@suite-native/settings';
+import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { FEEDBACK_FEATURE_CONFIGS } from '../experimentalFeatures';
 import { EmojiRatingOption } from './EmojiRatingOption';
 
-type ExperimentalFeatureRatingFormProps = {
-    feature: ExperimentalFeature;
+type FeatureRatingFormProps = {
+    titleKey: TxKeyPath;
     onSubmit: (rating: Rating, description: string) => void;
     onDismiss: () => void;
 };
@@ -28,13 +26,8 @@ const descriptionInputStyle = prepareNativeStyle(utils => ({
     textAlignVertical: 'top',
 }));
 
-export const ExperimentalFeatureRatingForm = ({
-    feature,
-    onSubmit,
-    onDismiss,
-}: ExperimentalFeatureRatingFormProps) => {
+export const FeatureRatingForm = ({ titleKey, onSubmit, onDismiss }: FeatureRatingFormProps) => {
     const { applyStyle } = useNativeStyles();
-    const { titleKey } = FEEDBACK_FEATURE_CONFIGS[feature];
     const [rating, setRating] = useState<Rating | undefined>();
     const [description, setDescription] = useState('');
 
@@ -52,7 +45,7 @@ export const ExperimentalFeatureRatingForm = ({
                 <VStack spacing="sp12">
                     <Text variant="body-sm">
                         <Translation
-                            id="moduleSettings.advanced.experimentalFeatures.feedback.ratingLabel"
+                            id="moduleSettings.advanced.featureFeedback.ratingLabel"
                             values={{ featureName: <Translation id={titleKey} /> }}
                         />
                     </Text>
@@ -70,7 +63,7 @@ export const ExperimentalFeatureRatingForm = ({
                 </VStack>
                 <VStack spacing="sp12">
                     <Text variant="body-sm">
-                        <Translation id="moduleSettings.advanced.experimentalFeatures.feedback.descriptionLabel" />
+                        <Translation id="moduleSettings.advanced.featureFeedback.descriptionLabel" />
                     </Text>
                     <TextInput
                         style={applyStyle(descriptionInputStyle)}
@@ -83,7 +76,7 @@ export const ExperimentalFeatureRatingForm = ({
                 </VStack>
                 {isFormValid && (
                     <Button onPress={handleSubmit} size="large">
-                        <Translation id="moduleSettings.advanced.experimentalFeatures.feedback.submitButton" />
+                        <Translation id="moduleSettings.advanced.featureFeedback.submitButton" />
                     </Button>
                 )}
             </VStack>

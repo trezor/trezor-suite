@@ -4,25 +4,26 @@ import { useDispatch } from 'react-redux';
 import { type NavigationProp, useNavigation } from '@react-navigation/native';
 
 import { AnimatedFullAlertBox } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
+import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { type RootStackParamList, RootStackRoutes } from '@suite-native/navigation';
 import { type ExperimentalFeature } from '@suite-native/settings';
 
-import { FEEDBACK_FEATURE_CONFIGS } from '../experimentalFeatures';
-import { feedbackDismissed } from './experimentalFeedbackSlice';
+import { feedbackDismissed } from './featureFeedbackSlice';
 
-type ExperimentalFeaturesFeedbackAlertProps = {
+type FeatureFeedbackAlertProps = {
     pendingFeature: ExperimentalFeature;
+    featureTitleKey: TxKeyPath;
 };
 
-export const ExperimentalFeaturesFeedbackAlert = ({
+export const FeatureFeedbackAlert = ({
     pendingFeature,
-}: ExperimentalFeaturesFeedbackAlertProps) => {
+    featureTitleKey,
+}: FeatureFeedbackAlertProps) => {
     const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
     const handleRate = useCallback(() => {
-        navigation.navigate(RootStackRoutes.ExperimentalFeedbackModal, {
+        navigation.navigate(RootStackRoutes.FeatureFeedbackModal, {
             feature: pendingFeature,
         });
     }, [navigation, pendingFeature]);
@@ -31,26 +32,22 @@ export const ExperimentalFeaturesFeedbackAlert = ({
         dispatch(feedbackDismissed(pendingFeature));
     };
 
-    const { titleKey } = FEEDBACK_FEATURE_CONFIGS[pendingFeature];
-
     return (
         <AnimatedFullAlertBox
             marginHorizontal="sp16"
             iconName="smiley"
             title={
                 <Translation
-                    id="moduleSettings.advanced.experimentalFeatures.feedback.title"
-                    values={{ featureName: <Translation id={titleKey} /> }}
+                    id="moduleSettings.advanced.featureFeedback.title"
+                    values={{ featureName: <Translation id={featureTitleKey} /> }}
                 />
             }
-            description={
-                <Translation id="moduleSettings.advanced.experimentalFeatures.feedback.description" />
-            }
+            description={<Translation id="moduleSettings.advanced.featureFeedback.description" />}
             primaryButtonLabel={
-                <Translation id="moduleSettings.advanced.experimentalFeatures.feedback.rateButton" />
+                <Translation id="moduleSettings.advanced.featureFeedback.rateButton" />
             }
             secondaryButtonLabel={
-                <Translation id="moduleSettings.advanced.experimentalFeatures.feedback.dismissButton" />
+                <Translation id="moduleSettings.advanced.featureFeedback.dismissButton" />
             }
             onPressPrimaryButton={handleRate}
             onPressSecondaryButton={handleDismiss}

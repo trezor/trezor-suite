@@ -1,18 +1,18 @@
 import { FEEDBACK_THRESHOLD } from '@suite-common/feedback';
 
 import {
-    experimentalFeedbackReducer,
+    featureFeedbackReducer,
     featureUsed,
     feedbackDismissed,
     feedbackRequested,
     initialState,
-} from '../experimentalFeedbackSlice';
+} from '../featureFeedbackSlice';
 
-describe(experimentalFeedbackReducer.name, () => {
+describe(featureFeedbackReducer.name, () => {
     describe(featureUsed.name, () => {
         it('increments usage count across multiple dispatches', () => {
-            let state = experimentalFeedbackReducer(initialState, featureUsed('suite-sync'));
-            state = experimentalFeedbackReducer(state, featureUsed('suite-sync'));
+            let state = featureFeedbackReducer(initialState, featureUsed('suite-sync'));
+            state = featureFeedbackReducer(state, featureUsed('suite-sync'));
 
             expect(state.usageCounts['suite-sync']).toBe(2);
         });
@@ -21,7 +21,7 @@ describe(experimentalFeedbackReducer.name, () => {
             let state = initialState;
 
             for (let i = 0; i < FEEDBACK_THRESHOLD; i++) {
-                state = experimentalFeedbackReducer(state, featureUsed('suite-sync'));
+                state = featureFeedbackReducer(state, featureUsed('suite-sync'));
             }
 
             expect(state.pendingFeedbackFeatures).toContain('suite-sync');
@@ -31,7 +31,7 @@ describe(experimentalFeedbackReducer.name, () => {
             let state = initialState;
 
             for (let i = 0; i < FEEDBACK_THRESHOLD - 1; i++) {
-                state = experimentalFeedbackReducer(state, featureUsed('suite-sync'));
+                state = featureFeedbackReducer(state, featureUsed('suite-sync'));
             }
 
             expect(state.pendingFeedbackFeatures).not.toContain('suite-sync');
@@ -41,7 +41,7 @@ describe(experimentalFeedbackReducer.name, () => {
             let state = initialState;
 
             for (let i = 0; i < FEEDBACK_THRESHOLD + 5; i++) {
-                state = experimentalFeedbackReducer(state, featureUsed('suite-sync'));
+                state = featureFeedbackReducer(state, featureUsed('suite-sync'));
             }
 
             expect(state.usageCounts['suite-sync']).toBe(FEEDBACK_THRESHOLD);
@@ -51,16 +51,16 @@ describe(experimentalFeedbackReducer.name, () => {
             let state = initialState;
 
             for (let i = 0; i < FEEDBACK_THRESHOLD + 1; i++) {
-                state = experimentalFeedbackReducer(state, featureUsed('suite-sync'));
+                state = featureFeedbackReducer(state, featureUsed('suite-sync'));
             }
 
             expect(state.pendingFeedbackFeatures.filter(f => f === 'suite-sync')).toHaveLength(1);
         });
 
         it('tracks usage counts independently per feature', () => {
-            let state = experimentalFeedbackReducer(initialState, featureUsed('suite-sync'));
-            state = experimentalFeedbackReducer(state, featureUsed('nft-section'));
-            state = experimentalFeedbackReducer(state, featureUsed('nft-section'));
+            let state = featureFeedbackReducer(initialState, featureUsed('suite-sync'));
+            state = featureFeedbackReducer(state, featureUsed('nft-section'));
+            state = featureFeedbackReducer(state, featureUsed('nft-section'));
 
             expect(state.usageCounts['suite-sync']).toBe(1);
             expect(state.usageCounts['nft-section']).toBe(2);
@@ -69,7 +69,7 @@ describe(experimentalFeedbackReducer.name, () => {
 
     describe(feedbackRequested.name, () => {
         it('adds feature to pendingFeedbackFeatures', () => {
-            const state = experimentalFeedbackReducer(
+            const state = featureFeedbackReducer(
                 initialState,
                 feedbackRequested({ feature: 'suite-sync' }),
             );
@@ -83,7 +83,7 @@ describe(experimentalFeedbackReducer.name, () => {
                 pendingFeedbackFeatures: ['suite-sync' as const],
             };
 
-            const state = experimentalFeedbackReducer(
+            const state = featureFeedbackReducer(
                 stateWithPending,
                 feedbackRequested({ feature: 'suite-sync' }),
             );
@@ -97,7 +97,7 @@ describe(experimentalFeedbackReducer.name, () => {
                 usageCounts: { 'suite-sync': 2 as const },
             };
 
-            const state = experimentalFeedbackReducer(
+            const state = featureFeedbackReducer(
                 stateWithCount,
                 feedbackRequested({ feature: 'suite-sync', isFeatureBeingDisabled: true }),
             );
@@ -112,7 +112,7 @@ describe(experimentalFeedbackReducer.name, () => {
                 usageCounts: { 'suite-sync': 2 as const },
             };
 
-            const state = experimentalFeedbackReducer(
+            const state = featureFeedbackReducer(
                 stateWithCount,
                 feedbackRequested({ feature: 'suite-sync', isFeatureBeingDisabled: false }),
             );
@@ -126,7 +126,7 @@ describe(experimentalFeedbackReducer.name, () => {
                 usageCounts: { 'suite-sync': 2 as const },
             };
 
-            const state = experimentalFeedbackReducer(
+            const state = featureFeedbackReducer(
                 stateWithCount,
                 feedbackRequested({ feature: 'suite-sync' }),
             );
@@ -142,19 +142,13 @@ describe(experimentalFeedbackReducer.name, () => {
                 pendingFeedbackFeatures: ['suite-sync' as const],
             };
 
-            const state = experimentalFeedbackReducer(
-                stateWithPending,
-                feedbackDismissed('suite-sync'),
-            );
+            const state = featureFeedbackReducer(stateWithPending, feedbackDismissed('suite-sync'));
 
             expect(state.pendingFeedbackFeatures).not.toContain('suite-sync');
         });
 
         it('is a no-op when feature is not pending', () => {
-            const state = experimentalFeedbackReducer(
-                initialState,
-                feedbackDismissed('suite-sync'),
-            );
+            const state = featureFeedbackReducer(initialState, feedbackDismissed('suite-sync'));
 
             expect(state.pendingFeedbackFeatures).toEqual([]);
         });
@@ -165,10 +159,7 @@ describe(experimentalFeedbackReducer.name, () => {
                 pendingFeedbackFeatures: ['suite-sync' as const, 'nft-section' as const],
             };
 
-            const state = experimentalFeedbackReducer(
-                stateWithPending,
-                feedbackDismissed('suite-sync'),
-            );
+            const state = featureFeedbackReducer(stateWithPending, feedbackDismissed('suite-sync'));
 
             expect(state.pendingFeedbackFeatures).not.toContain('suite-sync');
             expect(state.pendingFeedbackFeatures).toContain('nft-section');

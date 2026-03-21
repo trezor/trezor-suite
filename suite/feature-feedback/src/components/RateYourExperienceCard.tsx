@@ -48,7 +48,7 @@ export const RateYourExperienceCard = ({
                 <Column gap={4}>
                     <Paragraph typographyStyle="body-md-strong">
                         <Translation
-                            id="TR_EXPERIMENTAL_FEEDBACK_CARD_HEADING"
+                            id="TR_FEATURE_FEEDBACK_CARD_HEADING"
                             values={{
                                 feature: translationString(translatedFeedbackFeatures[feature]),
                             }}
@@ -56,7 +56,7 @@ export const RateYourExperienceCard = ({
                     </Paragraph>
                     <Paragraph intent="neutral" typographyStyle="body-sm">
                         <Translation
-                            id="TR_EXPERIMENTAL_FEEDBACK_CARD_DESCRIPTION"
+                            id="TR_FEATURE_FEEDBACK_CARD_DESCRIPTION"
                             values={{
                                 feature,
                             }}
@@ -66,7 +66,7 @@ export const RateYourExperienceCard = ({
 
                 <Row gap={8}>
                     <Button flex="1" intent="brand" type="button" onClick={onRate}>
-                        <Translation id="TR_EXPERIMENTAL_FEEDBACK_CARD_RATE_BUTTON" />
+                        <Translation id="TR_FEATURE_FEEDBACK_CARD_RATE_BUTTON" />
                     </Button>
 
                     <IconButton

@@ -156,7 +156,7 @@
         { "path": "../../suite/device" },
         { "path": "../../suite/experimental" },
         {
-            "path": "../../suite/experimental-feedback"
+            "path": "../../suite/feature-feedback"
         },
         { "path": "../../suite/flags" },
         {
