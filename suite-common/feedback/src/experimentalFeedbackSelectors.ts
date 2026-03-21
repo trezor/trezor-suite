@@ -1,12 +1,12 @@
-import { type ExperimentalFeedbackRootState } from './experimentalFeedbackSlice';
+import { type FeatureFeedbackRootState } from './experimentalFeedbackSlice';
 
-export const selectExperimentalFeatureUsageCount = <FeatureName extends string>(
-    state: ExperimentalFeedbackRootState<FeatureName>,
+export const selectFeatureUsageCount = <FeatureName extends string>(
+    state: FeatureFeedbackRootState<FeatureName>,
     feature: FeatureName,
-): number => state.experimentalFeedback.usageCounts[feature] ?? 0;
+): number => state.featureFeedback.usageCounts[feature] ?? 0;
 
 /** Returns the next feature awaiting feedback, or `null` if the queue is empty.
  * Features are processed one at a time; call `feedbackDismissed` to advance the queue. */
 export const selectPendingFeedbackFeature = <FeatureName extends string>(
-    state: ExperimentalFeedbackRootState<FeatureName>,
-): FeatureName | null => state.experimentalFeedback.pendingFeedbackFeatures[0] ?? null;
+    state: FeatureFeedbackRootState<FeatureName>,
+): FeatureName | null => state.featureFeedback.pendingFeedbackFeatures[0] ?? null;
