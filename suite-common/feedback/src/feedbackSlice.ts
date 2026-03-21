@@ -2,30 +2,28 @@ import { type ActionReducerMapBuilder, type PayloadAction, createSlice } from '@
 
 type UsageCount<T extends string> = Partial<Record<T, number>>;
 
-export type ExperimentalFeedbackState<FeatureName extends string = string> = {
+export type FeatureFeedbackState<FeatureName extends string = string> = {
     usageCounts: UsageCount<FeatureName>;
     pendingFeedbackFeatures: FeatureName[];
 };
 
-export type ExperimentalFeedbackRootState<FeatureName extends string = string> = {
-    experimentalFeedback: ExperimentalFeedbackState<FeatureName>;
+export type FeatureFeedbackRootState<FeatureName extends string = string> = {
+    featureFeedback: FeatureFeedbackState<FeatureName>;
 };
 
-export const experimentalFeedbackInitialState: ExperimentalFeedbackState = {
+export const featureFeedbackInitialState: FeatureFeedbackState = {
     usageCounts: {},
     pendingFeedbackFeatures: [],
 };
 
 export const FEEDBACK_THRESHOLD = 3;
 
-export function createExperimentalFeedbackSlice<FeatureName extends string>(options?: {
-    extraReducers?: (
-        builder: ActionReducerMapBuilder<ExperimentalFeedbackState<FeatureName>>,
-    ) => void;
+export function createFeatureFeedbackSlice<FeatureName extends string>(options?: {
+    extraReducers?: (builder: ActionReducerMapBuilder<FeatureFeedbackState<FeatureName>>) => void;
 }) {
     return createSlice({
-        name: 'experimentalFeedback',
-        initialState: experimentalFeedbackInitialState as ExperimentalFeedbackState<FeatureName>,
+        name: 'featureFeedback',
+        initialState: featureFeedbackInitialState as FeatureFeedbackState<FeatureName>,
         reducers: {
             /** Increments usage count and queues the feedback modal once the threshold is reached.
              * Counting stops at the threshold to avoid re-triggering the modal. */
