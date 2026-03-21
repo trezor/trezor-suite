@@ -2,9 +2,9 @@ export { ExperimentalFeatureRatingForm } from './feedback/ExperimentalFeatureRat
 export { ExperimentalFeaturesFeedbackAlert } from './feedback/ExperimentalFeaturesFeedbackAlert';
 export { ExperimentalFeaturesSettingsCard } from './ExperimentalFeaturesSettingsCard';
 export {
-    experimentalFeedbackInitialState,
-    experimentalFeedbackSlice,
-    experimentalFeedbackReducer,
+    featureFeedbackInitialState,
+    featureFeedbackSlice,
+    featureFeedbackReducer,
     featureUsed,
     feedbackRequested,
     feedbackDismissed,

@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import type { ExperimentalFeature } from '@suite/experimental';
 import {
-    type ExperimentalFeedbackRootState,
+    type FeatureFeedbackRootState,
     type Rating,
     buildUserFeedbackData,
     selectPendingFeedbackFeature,
@@ -18,9 +18,8 @@ export const FeedbackFormManager = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const dispatch = useDispatch();
-    const pendingFeature = useSelector(
-        (state: ExperimentalFeedbackRootState<ExperimentalFeature>) =>
-            selectPendingFeedbackFeature(state),
+    const pendingFeature = useSelector((state: FeatureFeedbackRootState<ExperimentalFeature>) =>
+        selectPendingFeedbackFeature(state),
     );
 
     if (!pendingFeature) return null;

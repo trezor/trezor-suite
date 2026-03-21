@@ -1,9 +1,8 @@
-import { createExperimentalFeedbackSlice } from '@suite-common/feedback';
+import { createFeatureFeedbackSlice } from '@suite-common/feedback';
 import type { ExperimentalFeature } from '@suite-native/settings';
 
-export const experimentalFeedbackSlice = createExperimentalFeedbackSlice<ExperimentalFeature>();
+export const featureFeedbackSlice = createFeatureFeedbackSlice<ExperimentalFeature>();
 
-export const { featureUsed, feedbackRequested, feedbackDismissed } =
-    experimentalFeedbackSlice.actions;
-export const experimentalFeedbackReducer = experimentalFeedbackSlice.reducer;
-export const experimentalFeedbackInitialState = experimentalFeedbackSlice.getInitialState();
+export const { featureUsed, feedbackRequested, feedbackDismissed } = featureFeedbackSlice.actions;
+export const featureFeedbackReducer = featureFeedbackSlice.reducer;
+export const featureFeedbackInitialState = featureFeedbackSlice.getInitialState();

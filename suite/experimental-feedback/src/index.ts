@@ -1,6 +1,6 @@
 export {
-    experimentalFeedbackSlice,
-    experimentalFeedbackReducer,
+    featureFeedbackSlice,
+    featureFeedbackReducer,
     featureUsed,
     feedbackRequested,
     feedbackDismissed,
