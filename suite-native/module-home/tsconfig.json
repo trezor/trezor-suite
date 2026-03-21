@@ -46,7 +46,6 @@
         { "path": "../navigation" },
         { "path": "../services" },
         { "path": "../settings" },
-        { "path": "../theme" },
         { "path": "../toasts" },
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/styles" },
