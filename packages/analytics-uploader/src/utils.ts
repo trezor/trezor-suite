@@ -78,7 +78,7 @@ interface ReportEventProps {
     url: string;
     options: RequestInit;
     retry: boolean;
-    loggerEnabled?: boolean | undefined;
+    loggerEnabled: boolean | undefined;
 }
 
 export const reportEvent = async ({

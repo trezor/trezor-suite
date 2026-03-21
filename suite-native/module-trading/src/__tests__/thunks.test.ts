@@ -178,7 +178,7 @@ describe('thunks', () => {
 
             const ethAccount = store
                 .getState()
-                .wallet.accounts.find(a => a.key === ('eth-account-1' as AccountKey));
+                .wallet.accounts.find(account => account.key === ('eth-account-1' as AccountKey));
 
             const result = await store.dispatch(
                 composeEvmApprovalFeeLevelsThunk({
@@ -195,7 +195,7 @@ describe('thunks', () => {
         it('should compose allowance fee levels for a DEX quote', async () => {
             const ethAccount = store
                 .getState()
-                .wallet.accounts.find(a => a.key === ('eth-account-1' as AccountKey));
+                .wallet.accounts.find(account => account.key === ('eth-account-1' as AccountKey));
 
             const result = await store.dispatch(
                 composeEvmApprovalFeeLevelsThunk({

@@ -1,3 +1,4 @@
+import { type AsyncThunkAction } from '@reduxjs/toolkit';
 import { compose } from 'redux';
 import type { ThunkAction } from 'redux-thunk';
 
@@ -18,6 +19,8 @@ declare module 'redux' {
      * Overload to add thunk support to Redux's dispatch() function and also to override UnknownAction with AnyAction
      */
     export interface Dispatch<A extends Action = AnyAction> {
+        <TThunk extends AsyncThunkAction<any, any, any>>(thunk: TThunk): ReturnType<TThunk>;
+
         <ReturnType = any, State = any, ExtraThunkArg = any>(
             thunkAction: ThunkAction<ReturnType, State, ExtraThunkArg, A>,
         ): ReturnType;
