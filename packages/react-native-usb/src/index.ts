@@ -99,8 +99,6 @@ const createWebUSBDevice = (device: NativeDevice): WebUSBDevice => ({
     usbVersionMajor: 2,
     usbVersionMinor: 0,
     usbVersionSubminor: 0,
-    deviceVersionMajor: 1,
-    deviceVersionMinor: 0,
     deviceVersionSubminor: 0,
     configurations: [],
 });

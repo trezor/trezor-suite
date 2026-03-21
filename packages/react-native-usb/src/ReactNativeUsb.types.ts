@@ -18,8 +18,8 @@ export interface NativeDevice {
     readonly deviceProtocol: number;
     readonly vendorId: number;
     readonly productId: number;
-    // readonly deviceVersionMajor: number;
-    // readonly deviceVersionMinor: number;
+    readonly deviceVersionMajor: number;
+    readonly deviceVersionMinor: number;
     // readonly deviceVersionSubminor: number;
     readonly manufacturerName?: string | undefined;
     readonly productName?: string | undefined;
