@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import {
-    type ExperimentalFeedbackRootState,
+    type FeatureFeedbackRootState,
     selectPendingFeedbackFeature,
 } from '@suite-common/feedback';
 import { selectShouldDisplayOutOfQuotaAlert } from '@suite-common/suite-sync-quota-manager';
@@ -27,7 +27,7 @@ export const HomescreenAlerts = () => {
     const shouldDisplayFirmwareUpdateAlert = useSelector(selectShouldDisplayUpgradeFirmwareAlert);
 
     const pendingFeatureForFeedback = useSelector(
-        (state: ExperimentalFeedbackRootState<ExperimentalFeature>) =>
+        (state: FeatureFeedbackRootState<ExperimentalFeature>) =>
             selectPendingFeedbackFeature(state),
     );
 

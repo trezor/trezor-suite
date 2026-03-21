@@ -2,7 +2,7 @@ import type { Store as ReduxStore } from 'redux';
 import type { ThunkAction as TAction, ThunkDispatch } from 'redux-thunk';
 
 import type { backupActions } from '@suite/backup';
-import { type experimentalFeedbackSlice } from '@suite/experimental-feedback';
+import { type featureFeedbackSlice } from '@suite/experimental-feedback';
 import type { flagsActions } from '@suite/flags';
 import type { LockAction } from '@suite/locks';
 import type { MetadataAction } from '@suite/metadata';
@@ -108,8 +108,8 @@ type SuiteSyncActionDesktop = ReturnType<
 type SuiteSyncQuotaManagerAction = ReturnType<
     (typeof suiteSyncQuotaManagerActions)[keyof typeof suiteSyncQuotaManagerActions]
 >;
-type ExperimentalFeedbackAction = ReturnType<
-    (typeof experimentalFeedbackSlice.actions)[keyof typeof experimentalFeedbackSlice.actions]
+type FeatureFeedbackAction = ReturnType<
+    (typeof featureFeedbackSlice.actions)[keyof typeof featureFeedbackSlice.actions]
 >;
 type DeviceActionDesktop = ReturnType<
     (typeof deviceSlice.actions)[keyof typeof deviceSlice.actions]
@@ -130,7 +130,7 @@ export type Action =
     | BluetoothActionDesktop
     | DesktopUpdateAction
     | DeviceAction
-    | ExperimentalFeedbackAction
+    | FeatureFeedbackAction
     | DeviceActionDesktop
     | DiscoveryAction
     | FeeAction

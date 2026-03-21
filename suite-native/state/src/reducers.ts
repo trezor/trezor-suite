@@ -38,7 +38,7 @@ import { bluetoothSlice } from '@suite-native/bluetooth';
 import { deviceAuthorizationReducer } from '@suite-native/device-authorization';
 import { deviceOnboardingReducer } from '@suite-native/device-onboarding';
 import { pendingCoinVisibilitySlice } from '@suite-native/discovery';
-import { experimentalFeedbackReducer } from '@suite-native/experimental-features';
+import { featureFeedbackReducer } from '@suite-native/experimental-features';
 import { featureFlagsPersistedKeys, featureFlagsReducer } from '@suite-native/feature-flags';
 import { nativeFirmwareReducer } from '@suite-native/firmware';
 import { graphPersistTransform, graphReducer } from '@suite-native/graph';
@@ -265,10 +265,10 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
         storage: deps.mmkvStorage,
     });
 
-    const experimentalFeedbackPersistedReducer = preparePersistReducer({
-        reducer: experimentalFeedbackReducer,
+    const featureFeedbackPersistedReducer = preparePersistReducer({
+        reducer: featureFeedbackReducer,
         persistedKeys: ['usageCounts', 'pendingFeedbackFeatures'],
-        key: 'experimentalFeedback',
+        key: 'featureFeedback',
         version: 1,
         storage: deps.mmkvStorage,
     });
@@ -348,7 +348,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
             appSettings: appSettingsPersistedReducer,
             bannerFlags: bannerFlagsPersistedReducer,
             bluetooth: bluetoothPersistedReducer,
-            experimentalFeedback: experimentalFeedbackPersistedReducer,
+            featureFeedback: featureFeedbackPersistedReducer,
             connectPopup: connectPopupPersistedReducer,
             device: devicePersistedReducer,
             deviceAuthorization: deviceAuthorizationReducer,

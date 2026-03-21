@@ -297,7 +297,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
             }
 
             if (isAnyOf(featureUsed, feedbackRequested, feedbackDismissed)(action)) {
-                api.dispatch(storageActions.saveExperimentalFeedback());
+                api.dispatch(storageActions.saveFeatureFeedback());
             }
 
             if (
