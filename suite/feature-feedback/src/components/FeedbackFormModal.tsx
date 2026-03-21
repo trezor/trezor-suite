@@ -31,7 +31,7 @@ export const FeedbackFormModal = ({ onDismiss, onSubmit, feature }: FeedbackForm
         <Modal
             heading={
                 <Translation
-                    id="TR_EXPERIMENTAL_FEEDBACK_MODAL_HEADING"
+                    id="TR_FEATURE_FEEDBACK_MODAL_HEADING"
                     values={{
                         feature: translationString(translatedFeedbackFeatures[feature]),
                     }}
@@ -40,7 +40,7 @@ export const FeedbackFormModal = ({ onDismiss, onSubmit, feature }: FeedbackForm
             bottomContent={
                 <>
                     <Modal.Button isDisabled={!isFormValid} onClick={handleSubmit}>
-                        <Translation id="TR_EXPERIMENTAL_FEEDBACK_MODAL_SUBMIT" />
+                        <Translation id="TR_FEATURE_FEEDBACK_MODAL_SUBMIT" />
                     </Modal.Button>
                     <Modal.Button intent="neutral" priority="secondary" onClick={onDismiss}>
                         <Translation id="TR_CANCEL" />
@@ -55,7 +55,7 @@ export const FeedbackFormModal = ({ onDismiss, onSubmit, feature }: FeedbackForm
                     <EmojiRatingSelector value={rating} onChange={setRating} />
 
                     <Paragraph typographyStyle="body-sm">
-                        <Translation id="TR_EXPERIMENTAL_FEEDBACK_MODAL_DESCRIPTION" />
+                        <Translation id="TR_FEATURE_FEEDBACK_MODAL_DESCRIPTION" />
                     </Paragraph>
 
                     <Textarea

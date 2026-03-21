@@ -80,7 +80,7 @@
         "@suite/backup": "workspace:*",
         "@suite/device": "workspace:*",
         "@suite/experimental": "workspace:*",
-        "@suite/experimental-feedback": "workspace:*",
+        "@suite/feature-feedback": "workspace:*",
         "@suite/flags": "workspace:*",
         "@suite/idb-migration-utils": "workspace:*",
         "@suite/intl": "workspace:*",
