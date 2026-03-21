@@ -109,7 +109,9 @@ const getCustomMiddleware = (getExtra: () => ExtraDependencies | null) => {
 };
 
 const devTools: DevToolsEnhancerOptions | false =
-    typeof window === 'object' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
+    typeof window === 'object' &&
+    '__REDUX_DEVTOOLS_EXTENSION_COMPOSE__' in window &&
+    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
         ? {
               actionsDenylist: loggerExcludedActions,
           }
