@@ -18,7 +18,7 @@ export interface Analytics<T extends AnalyticsEvent> {
 }
 
 export class QueuedAnalytics<T extends AnalyticsEvent> implements Analytics<T> {
-    private enabled?: boolean;
+    private enabled: boolean | undefined;
 
     private useQueue = false;
     private queue = new Array<T>();

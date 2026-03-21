@@ -72,12 +72,12 @@ export type WalletSettingsAction =
     | SetHideBalanceAction
     | SetBitcoinAmountUnitsAction;
 
-export const setDiscreetMode = (toggled: boolean): WalletSettingsAction => ({
+export const setDiscreetMode = (toggled: boolean): SetHideBalanceAction => ({
     type: WALLET_SETTINGS.SET_HIDE_BALANCE,
     toggled,
 });
 
-export const setBitcoinAmountUnits = (units: PROTO.AmountUnit): WalletSettingsAction => ({
+export const setBitcoinAmountUnits = (units: PROTO.AmountUnit): SetBitcoinAmountUnitsAction => ({
     type: WALLET_SETTINGS.SET_BITCOIN_AMOUNT_UNITS,
     payload: units,
 });
