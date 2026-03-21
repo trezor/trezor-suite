@@ -430,7 +430,7 @@ export type RootStackParamList = {
     [RootStackRoutes.Storybook]: undefined;
     [RootStackRoutes.PassphraseStack]: NavigatorScreenParams<PassphraseStackParamList>;
     [RootStackRoutes.StellarManageTokenStack]: NavigatorScreenParams<StellarManageTokenStackParamList>;
-    [RootStackRoutes.ExperimentalFeedbackModal]: { feature: ExperimentalFeature };
+    [RootStackRoutes.FeatureFeedbackModal]: { feature: ExperimentalFeature };
 };
 
 export type TransactionDetailStackParamList = {

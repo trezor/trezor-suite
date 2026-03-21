@@ -1,5 +1,5 @@
 import type { BackupState } from '@suite/backup';
-import { initialState as experimentalFeedbackInitialState } from '@suite/experimental-feedback';
+import { initialState as featureFeedbackInitialState } from '@suite/feature-feedback';
 import { flagsInitialState } from '@suite/flags';
 import { locksInitialState } from '@suite/locks';
 import { type RouterState } from '@suite/router';
@@ -122,5 +122,5 @@ export const initialAppState: AppState = {
         search: '',
         networkSymbol: undefined,
     },
-    experimentalFeedback: experimentalFeedbackInitialState,
+    featureFeedback: featureFeedbackInitialState,
 };

@@ -145,7 +145,7 @@ export const YieldFlowComplete = ({ flowType, input, output, apy }: YieldFlowCom
             <FeedbackCard
                 heading={
                     <Translation
-                        id="TR_EXPERIMENTAL_FEEDBACK_CARD_HEADING"
+                        id="TR_FEATURE_FEEDBACK_CARD_HEADING"
                         values={{
                             feature: translationString('TR_EARN_STABLECOIN_YIELD_TITLE'),
                         }}

@@ -12328,36 +12328,25 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/experimental-features@workspace:suite-native/experimental-features"
   dependencies:
-    "@react-navigation/native": "npm:7.1.28"
-    "@suite-common/feedback": "workspace:*"
-    "@suite-native/atoms": "workspace:*"
     "@suite-native/intl": "workspace:*"
     "@suite-native/settings": "workspace:*"
-    "@trezor/styles-native": "workspace:*"
     react: "npm:19.2.4"
-    react-native: "npm:0.83.2"
-    react-redux: "npm:9.2.0"
   languageName: unknown
   linkType: soft
 
-"@suite-native/feature-feedback@workspace:suite-native/feature-feedback":
+"@suite-native/feature-feedback@workspace:*, @suite-native/feature-feedback@workspace:suite-native/feature-feedback":
   version: 0.0.0-use.local
   resolution: "@suite-native/feature-feedback@workspace:suite-native/feature-feedback"
   dependencies:
     "@react-navigation/native": "npm:7.1.28"
     "@suite-common/feedback": "workspace:*"
     "@suite-native/atoms": "workspace:*"
-    "@suite-native/icons": "workspace:*"
     "@suite-native/intl": "workspace:*"
-    "@suite-native/link": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@suite-native/settings": "workspace:*"
-    "@trezor/styles": "workspace:*"
-    "@trezor/urls": "workspace:*"
-    "@trezor/utils": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
-    react-native-reanimated: "npm:~4.2.1"
     react-redux: "npm:9.2.0"
   languageName: unknown
   linkType: soft
@@ -12613,7 +12602,7 @@ __metadata:
     "@suite-common/wallet-utils": "workspace:*"
     "@suite-native/alerts": "workspace:*"
     "@suite-native/atoms": "workspace:*"
-    "@suite-native/experimental-features": "workspace:*"
+    "@suite-native/feature-feedback": "workspace:*"
     "@suite-native/forms": "workspace:*"
     "@suite-native/intl": "workspace:*"
     "@suite-native/navigation": "workspace:*"
@@ -12746,7 +12735,7 @@ __metadata:
     "@suite-native/device": "workspace:*"
     "@suite-native/device-manager": "workspace:*"
     "@suite-native/discovery": "workspace:*"
-    "@suite-native/experimental-features": "workspace:*"
+    "@suite-native/feature-feedback": "workspace:*"
     "@suite-native/feature-flags": "workspace:*"
     "@suite-native/formatters": "workspace:*"
     "@suite-native/forms": "workspace:*"
@@ -13188,6 +13177,7 @@ __metadata:
     "@suite-native/device-manager": "workspace:*"
     "@suite-native/discovery": "workspace:*"
     "@suite-native/experimental-features": "workspace:*"
+    "@suite-native/feature-feedback": "workspace:*"
     "@suite-native/firmware": "workspace:*"
     "@suite-native/graph": "workspace:*"
     "@suite-native/intl": "workspace:*"
@@ -13836,7 +13826,7 @@ __metadata:
     "@suite-native/device-authorization": "workspace:*"
     "@suite-native/device-onboarding": "workspace:*"
     "@suite-native/discovery": "workspace:*"
-    "@suite-native/experimental-features": "workspace:*"
+    "@suite-native/feature-feedback": "workspace:*"
     "@suite-native/feature-flags": "workspace:*"
     "@suite-native/firmware": "workspace:*"
     "@suite-native/graph": "workspace:*"
@@ -14283,7 +14273,7 @@ __metadata:
     "@suite-native/alerts": "workspace:*"
     "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
-    "@suite-native/experimental-features": "workspace:*"
+    "@suite-native/feature-feedback": "workspace:*"
     "@suite-native/formatters": "workspace:*"
     "@suite-native/forms": "workspace:*"
     "@suite-native/helpers": "workspace:*"

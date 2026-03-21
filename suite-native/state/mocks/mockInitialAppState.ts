@@ -29,7 +29,7 @@ import { bluetoothInitialState } from '@suite-native/bluetooth';
 import { deviceAuthorizationInitialState } from '@suite-native/device-authorization';
 import { deviceOnboardingSliceInitialState } from '@suite-native/device-onboarding';
 import { pendingCoinVisibilitySlice } from '@suite-native/discovery';
-import { experimentalFeedbackInitialState } from '@suite-native/experimental-features';
+import { featureFeedbackInitialState } from '@suite-native/feature-feedback';
 import { featureFlagsInitialState } from '@suite-native/feature-flags';
 import { nativeFirmwareInitialState } from '@suite-native/firmware';
 import { graphInitialState } from '@suite-native/graph';
@@ -71,7 +71,7 @@ export const mockInitialAppState = (partialState?: Partial<FullAppState>): FullA
     tokenDefinitions: tokenDefinitionsInitialState,
     walletConnect: walletConnectInitialState,
     suiteSyncQuotaManager: quotaManagerInitialState,
-    experimentalFeedback: experimentalFeedbackInitialState,
+    featureFeedback: featureFeedbackInitialState,
 
     wallet: {
         accounts: accountsInitialState,

@@ -622,11 +622,11 @@ export const saveFirmwareSettings = () => (_dispatch: Dispatch, getState: GetSta
     );
 };
 
-export const saveExperimentalFeedback = () => (_dispatch: Dispatch, getState: GetState) => {
+export const saveFeatureFeedback = () => (_dispatch: Dispatch, getState: GetState) => {
     if (!db.isAccessible()) return;
-    const { experimentalFeedback } = getState();
+    const { featureFeedback } = getState();
 
-    return db.addItem('experimentalFeedback', experimentalFeedback, 'experimentalFeedback', true);
+    return db.addItem('featureFeedback', featureFeedback, 'featureFeedback', true);
 };
 
 export const removeDatabase = () => async (dispatch: Dispatch, getState: GetState) => {

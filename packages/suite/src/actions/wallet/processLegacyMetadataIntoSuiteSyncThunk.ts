@@ -1,4 +1,4 @@
-import { featureUsed } from '@suite/experimental-feedback';
+import { featureUsed } from '@suite/feature-feedback';
 import { type MetadataAddPayload } from '@suite-common/metadata-types';
 import { createThunk } from '@suite-common/redux-utils';
 import { type SuiteSyncUpdateError } from '@suite-common/suite-sync-storage';

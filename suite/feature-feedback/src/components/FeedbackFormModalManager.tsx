@@ -18,9 +18,8 @@ export const FeedbackFormManager = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const dispatch = useDispatch();
-    const pendingFeature = useSelector(
-        (state: FeatureFeedbackRootState<FeedbackFeatureName>) =>
-            selectPendingFeedbackFeature(state),
+    const pendingFeature = useSelector((state: FeatureFeedbackRootState<FeedbackFeatureName>) =>
+        selectPendingFeedbackFeature(state),
     );
 
     if (!pendingFeature) return null;
@@ -36,7 +35,7 @@ export const FeedbackFormManager = () => {
             sendFeedbackAction({
                 type: 'SUGGESTION',
                 payload: {
-                    category: experimentalFeatureSet.has(pendingFeature)
+                    category: (experimentalFeatureSet as ReadonlySet<string>).has(pendingFeature)
                         ? 'experimental'
                         : 'feature',
                     description,

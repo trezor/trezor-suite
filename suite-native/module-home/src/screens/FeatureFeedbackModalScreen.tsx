@@ -4,11 +4,8 @@ import { type RouteProp, useNavigation, useRoute } from '@react-navigation/nativ
 
 import { type Rating, buildUserFeedbackData, sendFeedbackAction } from '@suite-common/feedback';
 import { Text, VStack } from '@suite-native/atoms';
-import {
-    ExperimentalFeatureRatingForm,
-    FEEDBACK_FEATURE_CONFIGS,
-    feedbackDismissed,
-} from '@suite-native/experimental-features';
+import { FEEDBACK_FEATURE_CONFIGS } from '@suite-native/experimental-features';
+import { FeatureRatingForm, feedbackDismissed } from '@suite-native/feature-feedback';
 import { Translation } from '@suite-native/intl';
 import {
     type RootStackParamList,
@@ -17,9 +14,9 @@ import {
     ScreenHeader,
 } from '@suite-native/navigation';
 
-type RouteProps = RouteProp<RootStackParamList, RootStackRoutes.ExperimentalFeedbackModal>;
+type RouteProps = RouteProp<RootStackParamList, RootStackRoutes.FeatureFeedbackModal>;
 
-export const ExperimentalFeedbackModalScreen = () => {
+export const FeatureFeedbackModalScreen = () => {
     const dispatch = useDispatch();
     const navigation = useNavigation();
     const route = useRoute<RouteProps>();
@@ -60,12 +57,12 @@ export const ExperimentalFeedbackModalScreen = () => {
             <VStack spacing="sp32">
                 <Text variant="headline-md">
                     <Translation
-                        id="moduleSettings.advanced.experimentalFeatures.feedback.title"
+                        id="moduleSettings.advanced.featureFeedback.title"
                         values={{ featureName: <Translation id={titleKey} /> }}
                     />
                 </Text>
-                <ExperimentalFeatureRatingForm
-                    feature={feature}
+                <FeatureRatingForm
+                    titleKey={titleKey}
                     onSubmit={handleSubmit}
                     onDismiss={handleDismiss}
                 />

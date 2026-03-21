@@ -62,7 +62,7 @@ export const Feedback = ({ type }: FeedbackProps) => {
     const [description, setDescription] = useState('');
     const [rating, setRating] = useState<Rating | undefined>();
 
-    const feedbackCategories: { [key in FeedbackCategory]: ReactNode } = {
+    const feedbackCategories: Partial<Record<FeedbackCategory, ReactNode>> = {
         dashboard: <Translation id="TR_FEEDBACK_CATEGORY_DASHBOARD" />,
         account: <Translation id="TR_FEEDBACK_CATEGORY_ACCOUNT" />,
         settings: <Translation id="TR_FEEDBACK_CATEGORY_SETTINGS" />,

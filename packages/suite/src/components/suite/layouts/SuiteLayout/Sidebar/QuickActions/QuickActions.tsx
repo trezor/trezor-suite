@@ -1,4 +1,4 @@
-import { FeedbackFormManager } from '@suite/experimental-feedback';
+import { FeedbackFormManager } from '@suite/feature-feedback';
 import { Box, Column, Divider, ElevationContext, Flex } from '@trezor/components';
 
 import { CustomBackend } from './CustomBackend';
