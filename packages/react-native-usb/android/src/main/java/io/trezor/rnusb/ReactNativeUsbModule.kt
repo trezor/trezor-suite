@@ -280,13 +280,6 @@ class ReactNativeUsbModule : Module() {
         val device = getDeviceByName(deviceName)
         val usbConnection = getOpenedConnection(deviceName)
         val usbInterface = device.getInterface(interfaceNumber)
-        if (usbInterface == null) {
-            Log.e(
-                LOG_TAG,
-                "Failed to get interface $interfaceNumber for device ${device.deviceName}"
-            )
-            throw Exception("Failed to get interface $interfaceNumber for device ${device.deviceName}")
-        }
         usbConnection.claimInterface(usbInterface, true)
     }
 
@@ -295,13 +288,6 @@ class ReactNativeUsbModule : Module() {
         val device = getDeviceByName(deviceName)
         val usbConnection = getOpenedConnection(deviceName)
         val usbInterface = device.getInterface(interfaceNumber)
-        if (usbInterface == null) {
-            Log.e(
-                LOG_TAG,
-                "Failed to get interface $interfaceNumber for device ${device.deviceName}"
-            )
-            throw Exception("Failed to get interface $interfaceNumber for device ${device.deviceName}")
-        }
         usbConnection.releaseInterface(usbInterface)
     }
 
