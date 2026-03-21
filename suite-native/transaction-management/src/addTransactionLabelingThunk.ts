@@ -7,7 +7,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type Account, type TxTargetId } from '@suite-common/wallet-types';
 import { isCardanoTx } from '@suite-common/wallet-utils';
-import { featureUsed } from '@suite-native/experimental-features';
+import { featureUsed } from '@suite-native/feature-feedback';
 
 const TRANSACTION_MANAGEMENT_PREFIX = '@suite-native/transaction-management';
 

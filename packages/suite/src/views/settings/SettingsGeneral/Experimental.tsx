@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 
 import type { ExperimentalFeature } from '@suite/experimental';
-import { feedbackRequested } from '@suite/experimental-feedback';
+import { feedbackRequested } from '@suite/feature-feedback';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import {

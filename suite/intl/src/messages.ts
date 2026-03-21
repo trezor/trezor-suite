@@ -11225,8 +11225,8 @@ export const messages = defineMessages({
         id: 'TR_FEATURE_FEEDBACK_MODAL_SUBMIT',
         defaultMessage: 'Submit',
     },
-    TR_EXPERIMENTAL_FEEDBACK_CARD_RATE_BUTTON: {
-        id: 'TR_EXPERIMENTAL_FEEDBACK_CARD_RATE_BUTTON',
+    TR_FEATURE_FEEDBACK_CARD_RATE_BUTTON: {
+        id: 'TR_FEATURE_FEEDBACK_CARD_RATE_BUTTON',
         defaultMessage: 'Share feedback',
     },
     TR_OUTSIDE_STAKING_CARD_TITLE: {

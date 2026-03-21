@@ -1,4 +1,4 @@
-import { experimentalFeedbackReducer } from '@suite/experimental-feedback';
+import { featureFeedbackReducer } from '@suite/feature-feedback';
 import { prepareFlagsReducer } from '@suite/flags';
 import { type TranslationKey } from '@suite/intl';
 import { locksReducer } from '@suite/locks';
@@ -48,7 +48,7 @@ export default {
     messageSystem,
     guide,
     protocol,
-    experimentalFeedback: experimentalFeedbackReducer,
+    featureFeedback: featureFeedbackReducer,
     connectPopup: connectPopupReducer,
     walletConnect: walletConnectReducer,
 };

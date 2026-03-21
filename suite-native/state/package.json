@@ -41,7 +41,7 @@
         "@suite-native/device-authorization": "workspace:*",
         "@suite-native/device-onboarding": "workspace:*",
         "@suite-native/discovery": "workspace:*",
-        "@suite-native/experimental-features": "workspace:*",
+        "@suite-native/feature-feedback": "workspace:*",
         "@suite-native/feature-flags": "workspace:*",
         "@suite-native/firmware": "workspace:*",
         "@suite-native/graph": "workspace:*",

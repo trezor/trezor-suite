@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { type SuiteSyncDataRootState, selectSuiteSyncAddressLabel } from '@suite-common/suite-sync';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountDescriptor } from '@suite-common/wallet-types';
-import { featureUsed } from '@suite-native/experimental-features';
+import { featureUsed } from '@suite-native/feature-feedback';
 import { useNativeServices } from '@suite-native/services';
 import type { StaticSessionId } from '@trezor/connect';
 

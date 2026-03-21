@@ -35,7 +35,7 @@ export enum RootStackRoutes {
     Storybook = 'Storybook',
     PassphraseStack = 'PassphraseStack',
     StellarManageTokenStack = 'StellarManageTokenStack',
-    ExperimentalFeedbackModal = 'ExperimentalFeedbackModal',
+    FeatureFeedbackModal = 'FeatureFeedbackModal',
     UnstakeFlow = 'UnstakeFlow',
     UnstakeTransactionDataReview = 'UnstakeTransactionDataReview',
 }

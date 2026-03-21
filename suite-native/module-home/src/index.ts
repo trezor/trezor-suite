@@ -1,2 +1,2 @@
 export * from './navigation/HomeStackNavigator';
-export * from './screens/ExperimentalFeedbackModalScreen';
+export * from './screens/FeatureFeedbackModalScreen';
