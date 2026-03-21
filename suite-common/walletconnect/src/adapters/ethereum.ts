@@ -1,5 +1,6 @@
 import { type WalletKitTypes } from '@reown/walletkit';
 import type { ProposalTypes } from '@walletconnect/types';
+import JSONBig from 'json-bigint';
 
 import * as trezorConnectPopupActions from '@suite-common/connect-popup';
 import { selectSelectedDevice } from '@suite-common/device';
@@ -108,7 +109,12 @@ const ethereumRequestThunk = createThunk<
         case 'eth_signTypedData_v4': {
             const [address, data] = event.params.request.params;
             const account = getAccount(address);
-            const parsedData = JSON.parse(data);
+
+            // `data` can contain large unquoted integers (e.g. from CoW Swap's uint256 max value).
+            // Using standard `JSON.parse` would evaluate them into floats, losing precision
+            // and resulting in overflow errors during EIP-712 decoding.
+            const jsonBig = JSONBig({ storeAsString: true });
+            const parsedData = jsonBig.parse(data);
 
             // For Trezor One (T1B1), we need to pre-compute the hashes
             // as the device cannot process the full EIP-712 JSON structure

@@ -12131,10 +12131,12 @@ __metadata:
     "@trezor/env-utils": "workspace:*"
     "@trezor/type-utils": "workspace:^"
     "@trezor/utils": "workspace:*"
+    "@types/json-bigint": "npm:^1"
     "@walletconnect/core": "npm:^2.21.5"
     "@walletconnect/types": "npm:^2.21.4"
     "@walletconnect/utils": "npm:^2.21.5"
     bs58: "npm:^6.0.0"
+    json-bigint: "npm:^1.0.0"
   languageName: unknown
   linkType: soft
 
@@ -17694,6 +17696,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/json-bigint@npm:^1, @types/json-bigint@npm:^1.0.4":
+  version: 1.0.4
+  resolution: "@types/json-bigint@npm:1.0.4"
+  checksum: 10/7aee137b3796121cec755247ea56577611c8e5df89224c567fa71999764d01e12199c4089c6be8a9e4e6a6a8f5c6f309eee2965cc3dd8d576f4c4ba432566041
+  languageName: node
+  linkType: hard
+
 "@types/json-schema@npm:*, @types/json-schema@npm:^7.0.12, @types/json-schema@npm:^7.0.15, @types/json-schema@npm:^7.0.8, @types/json-schema@npm:^7.0.9":
   version: 7.0.15
   resolution: "@types/json-schema@npm:7.0.15"
@@ -20911,6 +20920,13 @@ __metadata:
   version: 5.2.2
   resolution: "big.js@npm:5.2.2"
   checksum: 10/c04416aeb084f4aa1c5857722439c327cc0ada9bd99ab80b650e3f30e2e4f1b92a04527ed1e7df8ffcd7c0ea311745a04af12d53e2f091bf09a06f1292003827
+  languageName: node
+  linkType: hard
+
+"bignumber.js@npm:^10.0.2":
+  version: 10.0.2
+  resolution: "bignumber.js@npm:10.0.2"
+  checksum: 10/20a77090e3ce830d3e4c267f27d0fc8a26e1eaa6d2ced1e5354edae2a8b0a1613c29f84725130110d9dd8e36929b15f1f0d92a265b585e62e442955aeb1cfe87
   languageName: node
   linkType: hard
 
@@ -32413,6 +32429,15 @@ __metadata:
   bin:
     jsesc: bin/jsesc
   checksum: 10/20bd37a142eca5d1794f354db8f1c9aeb54d85e1f5c247b371de05d23a9751ecd7bd3a9c4fc5298ea6fa09a100dafb4190fa5c98c6610b75952c3487f3ce7967
+  languageName: node
+  linkType: hard
+
+"json-bigint@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "json-bigint@npm:1.0.0"
+  dependencies:
+    bignumber.js: "npm:^9.0.0"
+  checksum: 10/cd3973b88e5706f8f89d2a9c9431f206ef385bd5c584db1b258891a5e6642507c32316b82745239088c697f5ddfe967351e1731f5789ba7855aed56ad5f70e1f
   languageName: node
   linkType: hard
 
@@ -44782,15 +44807,18 @@ __metadata:
     "@babel/runtime": "npm:7.28.6"
     "@trezor/eslint": "workspace:*"
     "@types/jest": "npm:29.5.12"
+    "@types/json-bigint": "npm:^1.0.4"
     "@types/node": "npm:22.13.10"
     "@types/node-fetch": "npm:^2.6.12"
     babel-jest: "npm:30.0.0"
+    bignumber.js: "npm:^10.0.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^9.39.2"
     husky: "npm:^9.1.7"
     jest: "npm:29.7.0"
     jest-environment-node: "npm:^29.7.0"
     jest-expo: "npm:~55.0.9"
+    json-bigint: "npm:^1.0.0"
     node-gyp: "npm:12.2.0"
     nx: "npm:^22.5.2"
     patch-package: "npm:8.0.1"
