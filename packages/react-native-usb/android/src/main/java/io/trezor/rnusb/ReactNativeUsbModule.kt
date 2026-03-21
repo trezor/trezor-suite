@@ -97,10 +97,10 @@ class ReactNativeUsbModule : Module() {
         }
 
         AsyncFunction("transferOut") { deviceName: String, endpointNumber: Int, data: ByteArray, promise: Promise ->
-            // Clone the data before entering async code, as the original ByteArray from JS 
+            // Clone the data before entering async code, as the original ByteArray from JS
             // may become invalid after switching threads (GC may collect it).
             val dataClone = data.copyOf()
-            
+
             withModuleScope(promise) {
                 try {
                     val result = transferOut(deviceName, endpointNumber, dataClone)
@@ -155,8 +155,8 @@ class ReactNativeUsbModule : Module() {
                 openedConnections.remove(deviceName)
             }
 
-            ReactNativeUsbAttachedReceiver.setOnDeviceConnectCallback(onDeviceConnect)
-            ReactNativeUsbDetachedReceiver.setOnDeviceDisconnectCallback(onDeviceDisconnect)
+            ReactNativeUsbBroadcastReceiver.setOnDeviceConnectCallback(onDeviceConnect)
+            ReactNativeUsbBroadcastReceiver.setOnDeviceDisconnectCallback(onDeviceDisconnect)
         }
 
         OnActivityEntersForeground {
@@ -201,8 +201,8 @@ class ReactNativeUsbModule : Module() {
         }
 
         OnDestroy {
-            ReactNativeUsbAttachedReceiver.setOnDeviceConnectCallback(null)
-            ReactNativeUsbDetachedReceiver.setOnDeviceDisconnectCallback(null)
+            ReactNativeUsbBroadcastReceiver.setOnDeviceConnectCallback(null)
+            ReactNativeUsbBroadcastReceiver.setOnDeviceDisconnectCallback(null)
 
             cancelAllPendingRequests()
             closeAllOpenedDevices()
@@ -324,7 +324,7 @@ class ReactNativeUsbModule : Module() {
      */
     private fun getChunkHeader(data: ByteArray): ByteArray {
         val firstByte = data[0]
-        
+
         return if (firstByte == PROTOCOL_V1_MAGIC_BYTE) {
             // Protocol v1: chunk header is just 0x3F
             Log.d(LOG_TAG, "Detected protocol v1, using 1-byte chunk header")
@@ -346,33 +346,33 @@ class ReactNativeUsbModule : Module() {
 
     /**
      * Creates 64-byte chunks from data for USB transfer.
-     * 
+     *
      * Supports Protocol v1 (1-byte header) and Protocol v2/THP (3-byte header)
      */
     private fun createChunks(data: ByteArray): List<ByteArray> {
         val dataSize = data.size
-        
+
         // Single chunk case - just pad to CHUNK_SIZE
         if (dataSize <= CHUNK_SIZE) {
             val chunk = ByteArray(CHUNK_SIZE)
             System.arraycopy(data, 0, chunk, 0, dataSize)
             return listOf(chunk)
         }
-        
+
         // Multi-chunk case - detect protocol and build chunks
         val chunkHeader = getChunkHeader(data)
         val chunkHeaderSize = chunkHeader.size
         val chunkDataSize = CHUNK_SIZE - chunkHeaderSize
-        
+
         val chunks = mutableListOf<ByteArray>()
         var dataOffset = 0
-        
+
         // First chunk: no header, up to 64 bytes
         val firstChunk = ByteArray(CHUNK_SIZE)
         System.arraycopy(data, 0, firstChunk, 0, CHUNK_SIZE)
         chunks.add(firstChunk)
         dataOffset = CHUNK_SIZE
-        
+
         // Subsequent chunks: header + data
         while (dataOffset < dataSize) {
             val chunk = ByteArray(CHUNK_SIZE)
@@ -382,7 +382,7 @@ class ReactNativeUsbModule : Module() {
             chunks.add(chunk)
             dataOffset += bytesToCopy
         }
-        
+
         return chunks
     }
 
@@ -392,7 +392,7 @@ class ReactNativeUsbModule : Module() {
      */
     private fun transferOut(deviceName: String, endpointNumber: Int, data: ByteArray): Int {
         val transferStartTime = System.nanoTime()
-        
+
         val device = getDeviceByName(deviceName)
         val usbConnection = openedConnections.getOrPut(device.deviceName) {
             Log.d(LOG_TAG, "transferOut: Reopening device ${device.deviceName}")
@@ -404,19 +404,19 @@ class ReactNativeUsbModule : Module() {
             Log.e(LOG_TAG, "Failed to get endpoint $endpointNumber for device ${device.deviceName}")
             throw Exception("Failed to get endpoint $endpointNumber for device ${device.deviceName}")
         }
-        
+
         val chunks = createChunks(data)
         val totalChunks = chunks.size
         val bulkTimeout = 0 // 0 means no timeout
 
         for ((index, chunk) in chunks.withIndex()) {
             val bytesWritten = usbConnection.bulkTransfer(usbEndpoint, chunk, CHUNK_SIZE, bulkTimeout)
-            
+
             if (bytesWritten < 0) {
                 Log.e(LOG_TAG, "transferOut: FAILED chunk ${index + 1}/$totalChunks, error: $bytesWritten")
                 throw Exception("USB transfer failed for chunk ${index + 1}/$totalChunks, error: $bytesWritten")
             }
-            
+
             if (bytesWritten != CHUNK_SIZE) {
                 Log.e(LOG_TAG, "transferOut: FAILED chunk ${index + 1}/$totalChunks incomplete: $bytesWritten/$CHUNK_SIZE")
                 throw Exception("USB transfer incomplete for chunk ${index + 1}/$totalChunks: $bytesWritten/$CHUNK_SIZE bytes")
@@ -425,7 +425,7 @@ class ReactNativeUsbModule : Module() {
 
         val durationMs = (System.nanoTime() - transferStartTime) / 1_000_000.0
         Log.d(LOG_TAG, "transferOut: Done - ${data.size} bytes, $totalChunks chunks, %.1f ms".format(durationMs))
-        
+
         return data.size
     }
 
