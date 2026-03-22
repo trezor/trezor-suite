@@ -13208,6 +13208,7 @@ __metadata:
     "@suite-native/navigation": "workspace:*"
     "@suite-native/services": "workspace:*"
     "@suite-native/settings": "workspace:*"
+    "@suite-native/test-utils": "workspace:*"
     "@suite-native/toasts": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/type-utils": "workspace:*"

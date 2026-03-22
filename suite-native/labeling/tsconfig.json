@@ -37,6 +37,7 @@
         { "path": "../settings" },
         { "path": "../toasts" },
         { "path": "../../packages/connect" },
-        { "path": "../../packages/type-utils" }
+        { "path": "../../packages/type-utils" },
+        { "path": "../test-utils" }
     ]
 }
