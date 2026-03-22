@@ -525,7 +525,7 @@ export const getIsDeviceConnectedAndAuthorized = ({
 }) => !!deviceState && !!deviceFeatures;
 
 export const getIsDeviceDescriptorApiTypeBluetooth = (device: Device | TrezorDevice) =>
-    device.descriptor.apiType === 'bluetooth';
+    device.descriptor?.apiType === 'bluetooth';
 
 export const getIsDeviceConnectedViaBluetooth = (device?: TrezorDevice): boolean =>
     !!device?.connected && getIsDeviceDescriptorApiTypeBluetooth(device);
