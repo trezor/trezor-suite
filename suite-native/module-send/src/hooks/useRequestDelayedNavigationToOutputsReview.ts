@@ -13,7 +13,7 @@ import { useWaitForButtonRequest } from '@suite-native/transaction-management';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     SendStackParamList,
-    SendStackRoutes.SendFees,
+    SendStackRoutes.SendOutputs,
     RootStackParamList
 >;
 

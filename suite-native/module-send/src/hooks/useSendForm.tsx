@@ -5,9 +5,12 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { D, pipe } from '@mobily/ts-belt';
 import { useNavigation } from '@react-navigation/native';
-import { isFulfilled } from '@reduxjs/toolkit';
+import { isFulfilled, isRejected } from '@reduxjs/toolkit';
 
-import { selectDeviceUnavailableCapabilities } from '@suite-common/device';
+import {
+    selectDeviceUnavailableCapabilities,
+    selectIsDeviceRemembered,
+} from '@suite-common/device';
 import { getExcludedUtxos } from '@suite-common/transaction-search';
 import { type NetworkType, getDisplaySymbol, getNetwork } from '@suite-common/wallet-config';
 import {
@@ -24,32 +27,50 @@ import {
     sendFormActions,
     updateFeeInfoThunk,
 } from '@suite-common/wallet-core';
-import { type Account, type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import {
+    type Account,
+    type AccountKey,
+    type FeeLevelLabel,
+    type TokenAddress,
+    isFinalPrecomposedTransaction,
+} from '@suite-common/wallet-types';
 import {
     convertAmountUnitsToSubunits,
     formatNetworkAmount,
     getNetworkReserve,
 } from '@suite-common/wallet-utils';
+import { useAlert } from '@suite-native/alerts';
 import { useForm } from '@suite-native/forms';
+import { Translation } from '@suite-native/intl';
 import {
+    AuthorizeDeviceStackRoutes,
+    type RootStackParamList,
+    RootStackRoutes,
     type SendStackParamList,
     SendStackRoutes,
-    type StackNavigationProps,
+    type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
+import { signTransactionNativeThunk } from '@suite-native/send';
 import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 import {
     type FeeLevelsMaxAmount,
+    type NativeSendRootState,
     calculateFeeLevelsMaxAmountThunk,
+    selectFeeLevels,
     transactionManagementActions,
     useSubscribeForSolanaBlockUpdates,
 } from '@suite-native/transaction-management';
 import { useDebounce } from '@trezor/react-utils';
+import { TRANSPORT_ERROR } from '@trezor/transport';
 
+import { selectDestinationTagFromDraft } from '../selectors';
 import {
     type SendOutputsFormValues,
     sendOutputsFormValidationSchema,
 } from '../sendOutputsFormSchema';
 import { constructFormDraft } from '../utils';
+import { useRequestDelayedNavigationToOutputsReview } from './useRequestDelayedNavigationToOutputsReview';
+import { useShowDeviceDisconnectedAlert } from './useShowDeviceDisconnectedAlert';
 import { useUtxoSelection } from './useUtxoSelection';
 
 const getDefaultValues = ({
@@ -86,7 +107,13 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
     const dispatch = useDispatch();
     const debounce = useDebounce();
     const navigation =
-        useNavigation<StackNavigationProps<SendStackParamList, SendStackRoutes.SendOutputs>>();
+        useNavigation<
+            StackToStackCompositeNavigationProps<
+                SendStackParamList,
+                SendStackRoutes.SendOutputs,
+                RootStackParamList
+            >
+        >();
 
     const { selectedUtxos } = useUtxoSelection(accountKey);
 
@@ -305,35 +332,134 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
         if (account) dispatch(updateFeeInfoThunk({ networkSymbol: account.symbol }));
     }, [account, dispatch]);
 
+    const destinationTag = useSelector((state: NativeSendRootState) =>
+        selectDestinationTagFromDraft(state, accountKey, tokenContract),
+    );
+    const isViewOnlyDevice = useSelector(selectIsDeviceRemembered);
+    const { showAlert } = useAlert();
+    const showDeviceDisconnectedAlert = useShowDeviceDisconnectedAlert();
+
+    const requestDelayedNavigationToOutputsReview = useRequestDelayedNavigationToOutputsReview({
+        accountKey,
+        tokenContract,
+    });
+
+    const feeLevels = useSelector(selectFeeLevels);
+
     if (!account || !networkFeeInfo) return null;
 
-    const handleSubmitSendForm = handleSubmit(async values => {
-        // Keyboard has to be dismissed here before navigating, so it's animation is not interfering with the animations on the FeesScreen.
+    const handleSubmitSendForm = handleSubmit(() => {
         Keyboard.dismiss();
 
         if (!network) return;
 
-        const response = await dispatch(
-            composeSendFormTransactionFeeLevelsThunk({
-                formState: constructFormDraft({ formValues: values, tokenContract, selectedUtxos }),
-                composeContext: {
-                    account,
-                    network,
-                    feeInfo: networkFeeInfo,
-                    excludedUtxos,
-                },
-            }),
-        );
-
-        if (isFulfilled(response)) {
-            dispatch(transactionManagementActions.storeFeeLevels({ feeLevels: response.payload }));
-            navigation.navigate(SendStackRoutes.SendFees, {
-                accountKey,
-                tokenContract,
-            });
-
+        const selectedFee: FeeLevelLabel = sendFormDraft?.selectedFee ?? 'normal';
+        const selectedFeeLevelTransaction = feeLevels[selectedFee];
+        if (!isFinalPrecomposedTransaction(selectedFeeLevelTransaction)) {
             return;
         }
+
+        const { networkType } = network;
+
+        if (networkType === 'ripple' && destinationTag) {
+            navigation.navigate(SendStackRoutes.SendDestinationTagReview, {
+                destinationTag,
+                accountKey,
+                tokenContract,
+                transaction: selectedFeeLevelTransaction,
+            });
+        } else if (networkType === 'stellar') {
+            // The first review entry of Stellar is neither a destination address nor a destination tag.
+            // We need to wait for device button requests before navigating to the review screen.
+            dispatch(
+                signTransactionNativeThunk({
+                    accountKey,
+                    tokenContract,
+                    feeLevel: selectedFeeLevelTransaction,
+                }),
+            ).then(signingResponse => {
+                if (isRejected(signingResponse)) {
+                    const errorCode = signingResponse.payload?.errorCode;
+                    const message = signingResponse.payload?.message;
+
+                    if (
+                        errorCode === 'Failure_PinCancelled' || // User cancelled the pin entry on device
+                        errorCode === 'Method_Cancel' || // User canceled the pin entry in the app UI.
+                        errorCode === 'Failure_ActionCancelled' // User canceled the review on device OR device got locked before the review was finished.
+                    ) {
+                        navigation.popTo(SendStackRoutes.SendOutputs, {
+                            accountKey,
+                            tokenContract,
+                        });
+
+                        return;
+                    }
+
+                    if (
+                        errorCode === 'Device_InvalidState' || // Incorrect Passphrase submitted.
+                        errorCode === 'Method_Interrupted' // Passphrase modal closed.
+                    ) {
+                        showAlert({
+                            title: <Translation id="modulePassphrase.featureAuthorizationError" />,
+                            pictogramVariant: 'critical',
+                            primaryButtonTitle: <Translation id="generic.buttons.close" />,
+                            primaryButtonVariant: 'redBold',
+                        });
+
+                        return;
+                    }
+
+                    // Device disconnected during the review.
+                    if (
+                        message === TRANSPORT_ERROR.DEVICE_DISCONNECTED_DURING_ACTION ||
+                        message === TRANSPORT_ERROR.UNEXPECTED_ERROR
+                    ) {
+                        if (isViewOnlyDevice) {
+                            navigation.popTo(SendStackRoutes.SendOutputs, {
+                                accountKey,
+                                tokenContract,
+                            });
+                        }
+
+                        // Timeout needed so the navigation back to home screen of not remembered device is not interrupted by the alert.
+                        setTimeout(() => {
+                            showDeviceDisconnectedAlert();
+                        }, 1500);
+
+                        return;
+                    }
+
+                    dispatch(sendFormActions.discardTransaction());
+                    navigation.navigate(RootStackRoutes.AccountDetail, {
+                        accountKey,
+                        tokenContract,
+                        closeActionType: 'back',
+                    });
+                }
+            });
+
+            requestDelayedNavigationToOutputsReview();
+        } else {
+            navigation.navigate(SendStackRoutes.SendAddressReview, {
+                accountKey,
+                tokenContract,
+                transaction: selectedFeeLevelTransaction,
+            });
+        }
+
+        // In case that view only device is not connected, show connect screen first.
+        navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
+            screen: AuthorizeDeviceStackRoutes.DeviceConnectionGuard,
+            params: {
+                onCancelNavigationTarget: {
+                    name: RootStackRoutes.SendStack,
+                    params: {
+                        screen: SendStackRoutes.SendOutputs,
+                        params: { accountKey, tokenContract },
+                    },
+                },
+            },
+        });
     });
 
     const amount = isAmountInSats

@@ -193,7 +193,6 @@ describe('TradingExchangePreviewScreen', () => {
         const { result } = await renderTradingExchangePreviewScreen();
 
         expect(result.getByText('Transaction details')).toBeOnTheScreen();
-        expect(result.getByText('Fee')).toBeOnTheScreen();
     });
 
     describe('Error Alert Functionality', () => {

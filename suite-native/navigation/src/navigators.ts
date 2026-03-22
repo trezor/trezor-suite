@@ -126,10 +126,6 @@ export type SendStackParamList = {
         accountKey: AccountKey;
         amount?: string;
     };
-    [SendStackRoutes.SendFees]: {
-        accountKey: AccountKey;
-        tokenContract?: TokenAddress;
-    };
     [SendStackRoutes.SendDestinationTagReview]: {
         destinationTag: string;
         transaction: GeneralPrecomposedTransactionFinal;
@@ -437,10 +433,6 @@ export type TradingStackParamList = {
         shouldIncreaseLimit?: boolean;
     };
     [TradingStackRoutes.TradingSellPreview]: undefined;
-    [TradingStackRoutes.TradingFees]: {
-        accountKey: AccountKey;
-        tradingType: Exclude<TradingType, 'buy'>;
-    };
     [TradingStackRoutes.TradingSellOutputsReview]: {
         accountKey: AccountKey;
         tokenContract?: TokenAddress;

@@ -50,11 +50,10 @@ describe('SellPreviewView', () => {
         expect(getByText('Ethereum #1')).toBeOnTheScreen();
         expect(getByText('To')).toBeOnTheScreen();
         expect(getByText('Bank Transfer')).toBeOnTheScreen();
-        expect(getByText('Fee')).toBeOnTheScreen();
     });
 
     it('should render txnErrorString when isTxnError is true', async () => {
-        const { getByText, queryByText } = await renderSellPreviewView({
+        const { getByText } = await renderSellPreviewView({
             txnErrorString: 'Transaction error occurred',
         });
 
@@ -63,8 +62,6 @@ describe('SellPreviewView', () => {
         expect(getByText('To')).toBeOnTheScreen();
         expect(getByText('Bank Transfer')).toBeOnTheScreen();
         expect(getByText('Transaction error occurred')).toBeOnTheScreen();
-        // Fee picker should be hidden when there's a transaction error
-        expect(queryByText('Fee')).not.toBeOnTheScreen();
     });
 
     it('should not render bank account picker when form step is not BANK_ACCOUNT', async () => {
@@ -98,7 +95,6 @@ describe('SellPreviewView', () => {
         // Verify component renders with the passed quote
         expect(getByText('From')).toBeOnTheScreen();
         expect(getByText('To')).toBeOnTheScreen();
-        expect(getByText('Fee')).toBeOnTheScreen();
     });
 
     it('should not render fee picker when quote has no cryptoCurrency', async () => {
