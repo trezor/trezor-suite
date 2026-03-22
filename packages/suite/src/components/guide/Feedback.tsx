@@ -71,6 +71,7 @@ export const Feedback = ({ type }: FeedbackProps) => {
         receive: <Translation id="TR_FEEDBACK_CATEGORY_RECEIVE" />,
         trade: <Translation id="TR_FEEDBACK_CATEGORY_TRADE" />,
         experimental: <Translation id="TR_FEEDBACK_CATEGORY_EXPERIMENTAL" />,
+        feature: <Translation id="TR_FEEDBACK_CATEGORY_EXPERIMENTAL" />,
         other: <Translation id="TR_FEEDBACK_CATEGORY_OTHER" />,
     };
 
