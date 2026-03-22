@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import {
     selectIsDeviceAuthorized,
     selectIsDeviceConnected,
+    selectIsDeviceInBootloader,
     selectIsDeviceInitialized,
     selectIsDeviceThpLocked,
     selectIsPortfolioTrackerDevice,
@@ -17,6 +18,7 @@ import { EmptyPortfolioTrackerState } from './EmptyPortfolioTrackerState';
 import { UninitializedConnectedDeviceState } from './UninitializedConnectedDeviceState';
 
 export const EmptyHomeRenderer = () => {
+    const isDeviceInBootloader = useSelector(selectIsDeviceInBootloader);
     const isDeviceAuthorized = useSelector(selectIsDeviceAuthorized);
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const hasOnlyEmptyPortfolioTracker = useSelector(selectHasOnlyEmptyPortfolioTracker);
@@ -35,7 +37,12 @@ export const EmptyHomeRenderer = () => {
 
     let ScreenContent = EmptyPortfolioTrackerState;
 
-    if (isDeviceSetupSupported && isDeviceConnected && !isDeviceInitialized && !isDeviceThpLocked) {
+    if (
+        isDeviceSetupSupported &&
+        isDeviceConnected &&
+        !isDeviceInitialized &&
+        (isDeviceInBootloader || (isDeviceAuthorized && !isDeviceThpLocked))
+    ) {
         ScreenContent = UninitializedConnectedDeviceState;
     }
     // Crossroads should be displayed if there is no real device connected and portfolio tracker has no accounts

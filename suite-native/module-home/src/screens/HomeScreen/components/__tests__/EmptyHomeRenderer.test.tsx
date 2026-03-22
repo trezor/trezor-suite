@@ -27,7 +27,52 @@ describe('EmptyHomeRenderer', () => {
         ).toBeTruthy();
     };
 
-    it('should display UninitializedConnectedDeviceState when device is connected but not initialized', () => {
+    it('should display UninitializedConnectedDeviceState when device is connected in bootloader, not initialized', () => {
+        renderEmptyHomeRenderer({
+            device: {
+                selectedDevice: {
+                    connected: true,
+                    mode: 'bootloader',
+                    features: { initialized: false, internal_model: DeviceModelInternal.T3B1 },
+                },
+                devices: [{ id: 'device_id' }],
+            },
+        });
+
+        expectUninitializedConnectedDeviceState();
+    });
+
+    it('should display UninitializedConnectedDeviceState when device is connected, authorized, not initialized', () => {
+        renderEmptyHomeRenderer({
+            device: {
+                selectedDevice: {
+                    connected: true,
+                    state: {},
+                    features: { initialized: false, internal_model: DeviceModelInternal.T3B1 },
+                },
+                devices: [{ id: 'device_id' }],
+            },
+        });
+
+        expectUninitializedConnectedDeviceState();
+    });
+
+    it('should not display EmptyPortfolioCrossroadsState when device is connected, not initialized, but model does not support setup', () => {
+        renderEmptyHomeRenderer({
+            device: {
+                selectedDevice: {
+                    connected: true,
+                    state: undefined,
+                    features: { initialized: false, internal_model: DeviceModelInternal.T1B1 },
+                },
+                devices: [{ id: 'device_id' }],
+            },
+        });
+
+        expectEmptyPortfolioCrossroadsState();
+    });
+
+    it('should not display EmptyPortfolioCrossroadsState when device is connected, not initialized, but not authorized', () => {
         renderEmptyHomeRenderer({
             device: {
                 selectedDevice: {
@@ -38,15 +83,16 @@ describe('EmptyHomeRenderer', () => {
             },
         });
 
-        expectUninitializedConnectedDeviceState();
+        expectEmptyPortfolioCrossroadsState();
     });
 
-    it('should not display UninitializedConnectedDeviceState when device is connected, not initialized, but model does not support setup', () => {
+    it('should not display EmptyPortfolioCrossroadsState when device is connected, not initialized, but thp-locked', () => {
         renderEmptyHomeRenderer({
             device: {
                 selectedDevice: {
                     connected: true,
-                    features: { initialized: false, internal_model: DeviceModelInternal.T1B1 },
+                    status: 'thp-locked',
+                    features: { initialized: false, internal_model: DeviceModelInternal.T3B1 },
                 },
                 devices: [{ id: 'device_id' }],
             },
