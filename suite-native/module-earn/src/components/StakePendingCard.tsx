@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS } from '@suite-common/formatters';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { selectAccountNetworkSymbol, useAccoutsSelector } from '@suite-common/wallet-core';
+import { selectAccountNetworkSymbol, useAccountsSelector } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Box, Card, type InlineAlertBoxProps, PressableOpacity, Text } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
@@ -77,7 +77,7 @@ export const StakePendingCard = ({
 }: StakePendingCardProps) => {
     const { applyStyle } = useNativeStyles();
 
-    const symbol = useAccoutsSelector(state => selectAccountNetworkSymbol(state, accountKey));
+    const symbol = useAccountsSelector(state => selectAccountNetworkSymbol(state, accountKey));
 
     const totalStakePending = useNativeStakingSelector(state =>
         selectTotalStakePendingByAccountKey(state, accountKey),

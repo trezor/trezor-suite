@@ -33,6 +33,7 @@
         { "path": "../services" },
         { "path": "../staking" },
         { "path": "../test-utils" },
+        { "path": "../transactions" },
         {
             "path": "../../packages/styles-native"
         },

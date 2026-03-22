@@ -387,6 +387,7 @@ export type RootStackParamList = {
     [RootStackRoutes.DevUtilsStack]: undefined;
     [RootStackRoutes.AccountDetail]: AccountDetailParams;
     [RootStackRoutes.StakingDetail]: { accountKey: AccountKey };
+    [RootStackRoutes.StakingManagement]: { accountKey: AccountKey };
     [RootStackRoutes.DeviceSettingsStack]: NavigatorScreenParams<DeviceSettingsStackParamList>;
     [RootStackRoutes.AddCoinAccountStack]: NavigatorScreenParams<AddCoinAccountStackParamList>;
     [RootStackRoutes.ReceiveStack]: NavigatorScreenParams<ReceiveStackParamList>;

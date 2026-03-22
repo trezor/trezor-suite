@@ -24,6 +24,7 @@ import {
     type TokensRootState,
     type TypedTokenTransfer,
     type WalletAccountTransaction,
+    selectAccountStakeTypeTransactionsWithTokenTransfers,
     selectAccountTransactionsWithTokenTransfers,
 } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -39,6 +40,7 @@ type AccountTransactionProps = {
     listHeaderComponent: JSX.Element;
     accountKey: AccountKey;
     tokenContract?: TokenAddress;
+    stakingOnly?: boolean;
 };
 
 type RenderSectionHeaderParams = {
@@ -130,6 +132,7 @@ export const TransactionList = ({
     listHeaderComponent,
     accountKey,
     tokenContract,
+    stakingOnly = false,
 }: AccountTransactionProps) => {
     const dispatch = useDispatch();
     const [isRefreshing, setIsRefreshing] = useState(false);
@@ -148,7 +151,9 @@ export const TransactionList = ({
     );
 
     const transactions = useSelector((state: TransactionsRootState & TokensRootState) =>
-        selectAccountTransactionsWithTokenTransfers(state, accountKey),
+        stakingOnly
+            ? selectAccountStakeTypeTransactionsWithTokenTransfers(state, accountKey)
+            : selectAccountTransactionsWithTokenTransfers(state, accountKey),
     );
 
     const txnsPerPage = account ? getTxsPerPage(account.networkType) : 25;

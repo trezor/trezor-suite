@@ -1,7 +1,9 @@
-import { type WalletAccountTransaction } from '@suite-common/wallet-types';
+import { type StakeType, type WalletAccountTransaction } from '@suite-common/wallet-types';
+import { getTxStakeType } from '@suite-common/wallet-utils';
 import { Text } from '@suite-native/atoms';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { type NativeTypographyStyle } from '@trezor/theme';
+import { exhaustive } from '@trezor/type-utils';
 
 type TransactionNameProps = {
     transaction: WalletAccountTransaction;
@@ -12,6 +14,23 @@ type TransactionNameProps = {
 interface GetSelfTransactionMessageByTypeProps {
     type?: Required<WalletAccountTransaction>['cardanoSpecific']['subtype'];
 }
+
+const getStakeTransactionMessage = (stakeType: StakeType, isPending: boolean): TxKeyPath | null => {
+    switch (stakeType) {
+        case 'stake':
+            return isPending ? 'transactions.name.staking' : 'transactions.name.stake';
+        case 'unstake':
+            return isPending ? 'transactions.name.unstaking' : 'transactions.name.unstake';
+        case 'claim':
+            return isPending ? 'transactions.name.claiming' : 'transactions.name.claim';
+        case 'change-delegate':
+            return isPending
+                ? 'transactions.name.changingDelegate'
+                : 'transactions.name.changeDelegate';
+        default:
+            return exhaustive(stakeType);
+    }
+};
 
 const getSelfTransactionMessageByType = ({
     type,
@@ -74,12 +93,18 @@ export const TransactionName = ({ transaction, isPending, variant }: Transaction
         );
     }
 
+    const stakeType = getTxStakeType(transaction);
+
+    const stakeTranslationId = stakeType ? getStakeTransactionMessage(stakeType, isPending) : null;
+
     return (
         <Text variant={variant}>
-            {
+            {stakeTranslationId ? (
+                <Translation id={stakeTranslationId} />
+            ) : (
                 // use name of eth txns, but not for recv or sent Transfer
-                ethName ? ethName : <Translation id={getTransactionName(transaction, isPending)} />
-            }
+                ethName || <Translation id={getTransactionName(transaction, isPending)} />
+            )}
         </Text>
     );
 };

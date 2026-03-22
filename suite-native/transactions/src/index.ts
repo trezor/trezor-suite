@@ -1,3 +1,4 @@
+export * from './components/InstantStakeBanner';
 export * from './components/TransactionList';
 export * from './components/TransactionIcon';
 export * from './components/TransactionName';
