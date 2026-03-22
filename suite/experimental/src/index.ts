@@ -17,15 +17,16 @@ export type ExperimentalFeature =
  * Set of features that are truly experimental (as opposed to regular features
  * behind a feature toggle). Used to determine the feedback category.
  */
-export const experimentalFeatureSet: ReadonlySet<ExperimentalFeature> = new Set<ExperimentalFeature>([
-    'password-manager',
-    'tor-external',
-    'testnet-networks',
-    'nft-section',
-    'slip24',
-    'experimental-networks',
-    'tron-view-only',
-]);
+export const experimentalFeatureSet: ReadonlySet<ExperimentalFeature> =
+    new Set<ExperimentalFeature>([
+        'password-manager',
+        'tor-external',
+        'testnet-networks',
+        'nft-section',
+        'slip24',
+        'experimental-networks',
+        'tron-view-only',
+    ]);
 
 /**
  * Maps Experimental feature to its generic product name TranslationKey.
