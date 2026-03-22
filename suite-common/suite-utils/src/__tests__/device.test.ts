@@ -10,6 +10,7 @@ import {
     getFirmwareDowngradeUrl,
     getFirstDeviceInstance,
     getIsDeviceConnectedViaBluetooth,
+    getIsDeviceDescriptorApiTypeBluetooth,
     getIsDeviceRemembered,
     getNewInstanceNumber,
     getNewWalletNumber,
@@ -27,6 +28,14 @@ describe(getStatus.name, () => {
         it(f.status, () => {
             const status = getStatus(f.device);
             expect(status).toEqual(f.status);
+        });
+    });
+});
+
+describe(getIsDeviceDescriptorApiTypeBluetooth.name, () => {
+    fixtures.getIsDeviceDescriptorApiTypeBluetooth.forEach(f => {
+        it(f.description, () => {
+            expect(getIsDeviceDescriptorApiTypeBluetooth(f.device)).toEqual(f.result);
         });
     });
 });
