@@ -14662,6 +14662,7 @@ __metadata:
     "@suite-native/atoms": "workspace:*"
     "@suite-native/icons": "workspace:*"
     "@suite-native/intl": "workspace:*"
+    "@suite-native/labeling": "workspace:*"
     "@suite-native/test-utils": "workspace:*"
     "@suite-native/trading-fixtures": "workspace:*"
     "@suite-native/trading-types": "workspace:*"

@@ -62,7 +62,6 @@ export const getWalletState = ({
             getEthAccount(undefined, accountOverrides),
             getBaseAccount(undefined, accountOverrides),
             getSolAccount(undefined, accountOverrides),
-            // TODO 25971 make sure it does not break anything
             btc1NormalAccount,
             eth1NormalAccount,
             eth2legacyAccount,

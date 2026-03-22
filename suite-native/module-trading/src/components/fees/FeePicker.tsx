@@ -15,7 +15,7 @@ type FeePickerProps = {
 export const FEE_PICKER_TEST_ID = '@trading/fees/fee-picker';
 
 export const FeePicker = ({ fee, symbol, onPress, isLoading = false }: FeePickerProps) => (
-    <TradeInfoRow onPress={onPress} testID={FEE_PICKER_TEST_ID}>
+    <TradeInfoRow onPress={onPress} testID={FEE_PICKER_TEST_ID} noBorder>
         <Text variant="body-sm">
             <Translation id="moduleTrading.tradingExchangePreviewScreen.feeLabel" />
         </Text>

@@ -1,8 +1,8 @@
-import { type ReactNode, memo } from 'react';
+import { type PropsWithChildren, type ReactNode, memo } from 'react';
 import { Pressable } from 'react-native';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { Card, HStack, Radio, Text } from '@suite-native/atoms';
+import { Card, HStack, Radio, Text, VStack } from '@suite-native/atoms';
 import { CryptoIcon } from '@suite-native/icons';
 
 export type ExchangeApprovalLimitCardProps = {
@@ -12,7 +12,7 @@ export type ExchangeApprovalLimitCardProps = {
     contractAddress?: string;
     isChecked?: boolean;
     onChange: () => void;
-};
+} & PropsWithChildren;
 
 export const ExchangeApprovalLimitCard = memo(
     ({
@@ -22,25 +22,29 @@ export const ExchangeApprovalLimitCard = memo(
         contractAddress,
         isChecked = false,
         onChange,
+        children,
     }: ExchangeApprovalLimitCardProps) => (
         <Pressable onPress={onChange}>
             <Card>
-                <HStack alignItems="center" justifyContent="space-between" marginBottom="sp12">
-                    <HStack alignItems="center">
-                        {!!symbol && (
-                            <CryptoIcon
-                                symbol={symbol}
-                                contractAddress={contractAddress}
-                                size="extraSmall"
-                            />
-                        )}
-                        {title}
+                <VStack>
+                    <HStack alignItems="center" justifyContent="space-between">
+                        <HStack alignItems="center">
+                            {!!symbol && (
+                                <CryptoIcon
+                                    symbol={symbol}
+                                    contractAddress={contractAddress}
+                                    size="extraSmall"
+                                />
+                            )}
+                            {title}
+                        </HStack>
+                        <Radio value="option" isChecked={isChecked} onPress={onChange} />
                     </HStack>
-                    <Radio value="option" isChecked={isChecked} onPress={onChange} />
-                </HStack>
-                <Text variant="body-sm" color="textSubdued">
-                    {description}
-                </Text>
+                    <Text variant="body-sm" color="textSubdued">
+                        {description}
+                    </Text>
+                    {children}
+                </VStack>
             </Card>
         </Pressable>
     ),

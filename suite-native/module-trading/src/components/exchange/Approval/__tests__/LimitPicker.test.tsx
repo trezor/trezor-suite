@@ -1,4 +1,5 @@
 import { selectTradingExchangeSelectedQuote, tradingExchangeActions } from '@suite-common/trading';
+import { getTranslation } from '@suite-native/intl';
 import {
     type TestStore,
     initStore,
@@ -34,7 +35,16 @@ describe('LimitPicker', () => {
 
         expect(within(picker).getByText('Unlimited')).toBeOnTheScreen();
         expect(
-            within(picker).getByText(/^Approve unlimited USDC to skip future approval requests/),
+            within(picker).getByText(
+                getTranslation('moduleTrading.exchangeApprovalLimitSheet.unlimitedCard.info'),
+            ),
+        ).toBeOnTheScreen();
+        expect(
+            within(picker).getByText(
+                getTranslation('moduleTrading.exchangeApprovalLimitSheet.unlimitedCard.alert', {
+                    coinSymbol: 'USDC',
+                }),
+            ),
         ).toBeOnTheScreen();
         expect(selectTradingExchangeSelectedQuote(store.getState())).toEqual(
             expect.objectContaining({ approvalType: 'INFINITE' }),
@@ -51,7 +61,9 @@ describe('LimitPicker', () => {
 
         expect(within(picker).getByText('100 USDC')).toBeOnTheScreen();
         expect(
-            within(picker).getByText(/^Approve only the amount needed for this swap/),
+            within(picker).getByText(
+                getTranslation('moduleTrading.exchangeApprovalLimitSheet.limitedCard.info'),
+            ),
         ).toBeOnTheScreen();
         expect(selectTradingExchangeSelectedQuote(store.getState())).toEqual(
             expect.objectContaining({ approvalType: 'MINIMAL' }),
