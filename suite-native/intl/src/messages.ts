@@ -3092,7 +3092,7 @@ export const messages = {
             totalAmount: 'Total amount',
             tabs: {
                 standard: 'Standard fee',
-                custom: 'Custom',
+                custom: 'Custom fee',
             },
             confirmButton: 'Confirm fee',
             submitButton: 'Review and sign',

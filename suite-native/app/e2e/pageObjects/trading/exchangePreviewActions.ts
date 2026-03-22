@@ -16,13 +16,9 @@ class ExchangePreviewActions extends TradingActions {
 
     async waitForFeesToLoad() {
         await waitForVisible(
-            element(by.text('≈').withAncestor(by.id('@trading/fees/fee-picker'))),
+            element(by.text('≈').withAncestor(by.id('@transactionManagement/fee-selector-card'))),
             { timeout: this.DOUBLE_LONG_TIMEOUT },
         );
-    }
-
-    async goToFees() {
-        await element(by.id('@trading/fees/fee-picker')).tap();
     }
 
     async goToTransactionSigning() {

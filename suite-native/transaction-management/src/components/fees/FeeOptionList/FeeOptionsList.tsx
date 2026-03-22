@@ -1,5 +1,3 @@
-import Animated, { FadeInLeft, FadeOutLeft } from 'react-native-reanimated';
-
 import { D, pipe } from '@mobily/ts-belt';
 
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
@@ -47,21 +45,19 @@ export const FeeOptionsList = ({
     const isMultipleOptionsDisplayed = Object.keys(predefinedFeeLevels).length > 1;
 
     return (
-        <Animated.View entering={FadeInLeft.delay(300)} exiting={FadeOutLeft}>
-            <VStack spacing="sp12">
-                {Object.entries(predefinedFeeLevels).map(([feeKey, feeLevel]) => (
-                    <FeeOption
-                        key={feeKey}
-                        feeKey={feeKey as NativeSupportedPredefinedFeeLevel}
-                        feeLevel={feeLevel}
-                        symbol={symbol}
-                        transactionBytes={transactionBytes}
-                        isInteractive={isMultipleOptionsDisplayed}
-                        isLoading={isLoading}
-                        onSelectedFeeLevel={onSelectedFeeLevel}
-                    />
-                ))}
-            </VStack>
-        </Animated.View>
+        <VStack spacing="sp12">
+            {Object.entries(predefinedFeeLevels).map(([feeKey, feeLevel]) => (
+                <FeeOption
+                    key={feeKey}
+                    feeKey={feeKey as NativeSupportedPredefinedFeeLevel}
+                    feeLevel={feeLevel}
+                    symbol={symbol}
+                    transactionBytes={transactionBytes}
+                    isInteractive={isMultipleOptionsDisplayed}
+                    isLoading={isLoading}
+                    onSelectedFeeLevel={onSelectedFeeLevel}
+                />
+            ))}
+        </VStack>
     );
 };
