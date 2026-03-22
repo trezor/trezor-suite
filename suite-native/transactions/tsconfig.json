@@ -8,6 +8,7 @@
         {
             "path": "../../suite-common/redux-utils"
         },
+        { "path": "../../suite-common/staking" },
         {
             "path": "../../suite-common/suite-types"
         },
@@ -44,6 +45,7 @@
             "path": "../../packages/styles-native"
         },
         { "path": "../../packages/theme" },
+        { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" }
     ]
 }

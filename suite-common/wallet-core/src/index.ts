@@ -6,7 +6,7 @@ export * from './accounts/accountsReducer';
 export * from './accounts/accountsSelectors';
 export * from './accounts/accountsThunks';
 export * from './allowance/composeAllowanceTransactionThunk';
-export { useSelector as useAccoutsSelector } from './accounts/hooks/useSelector';
+export { useSelector as useAccountsSelector } from './accounts/hooks/useSelector';
 export * from './blockchain/blockchainActions';
 export * from './blockchain/blockchainMiddleware';
 export * from './blockchain/blockchainReducer';

@@ -7,6 +7,8 @@ import { Translation } from '@suite-native/intl';
 import { selectStakedBalanceByAccountKey, useSelector } from '@suite-native/staking';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
+import { ApyValue } from './ApyValue';
+
 const stakingItemStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
     alignItems: 'center',
@@ -119,7 +121,9 @@ export const ManualStakedBalancesCard = ({
                     <Text color="textSubdued">
                         <Translation id="earn.apy" />
                     </Text>
-                    <Text>{apy ? `${apy}%` : <Translation id="earn.notAvailable" />}</Text>
+                    <Text>
+                        <ApyValue apy={apy} />
+                    </Text>
                 </Box>
             </Card>
         </PressableOpacity>

@@ -1,4 +1,4 @@
-import { selectAccountNetworkSymbol, useAccoutsSelector } from '@suite-common/wallet-core';
+import { selectAccountNetworkSymbol, useAccountsSelector } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import {
     AUTO_STAKED_SYMBOLS,
@@ -19,7 +19,7 @@ export const StakingBalancesOverviewCard = ({
     accountKey,
     handleToggleBottomSheet,
 }: StakingBalancesCardProps) => {
-    const symbol = useAccoutsSelector(state => selectAccountNetworkSymbol(state, accountKey));
+    const symbol = useAccountsSelector(state => selectAccountNetworkSymbol(state, accountKey));
 
     const apy = useNativeStakingSelector(state => selectAPYByAccountKey(state, accountKey));
 

@@ -14,6 +14,7 @@ import {
     type AccountsRootState,
     type TransactionsRootState,
     selectAccountByKey,
+    selectAccountStakeTypeTransactions,
     selectAccountTransactions,
     selectAccounts,
     selectVisibleDeviceAccountsByNetworkSymbol,
@@ -140,6 +141,24 @@ export const selectAnyOfTokensIsKnown = (
 
 export const selectAccountTransactionsWithTokenTransfers = createMemoizedSelector(
     [selectAccountTransactions],
+    (transactions): WalletAccountTransaction[] =>
+        pipe(
+            transactions,
+            A.map(transaction => ({
+                ...transaction,
+                tokens: pipe(
+                    transaction?.tokens ?? [],
+                    A.map((tokenTransfer: TokenTransfer) => ({
+                        ...tokenTransfer,
+                        symbol: tokenTransfer.symbol,
+                    })),
+                ) as TypedTokenTransfer[],
+            })),
+        ) as WalletAccountTransaction[],
+);
+
+export const selectAccountStakeTypeTransactionsWithTokenTransfers = createMemoizedSelector(
+    [selectAccountStakeTypeTransactions],
     (transactions): WalletAccountTransaction[] =>
         pipe(
             transactions,

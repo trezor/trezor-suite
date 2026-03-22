@@ -1,4 +1,4 @@
-import { useAccoutsSelector } from '@suite-common/wallet-core';
+import { useAccountsSelector } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Box, Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
@@ -35,7 +35,7 @@ export const CardanoStakingInfoBanner = ({ accountKey }: CardanoStakingInfoBanne
     const openLink = useOpenLink();
     const apy = useNativeStakingSelector(state => selectAPYByAccountKey(state, accountKey));
 
-    const isStakedWithFiveBinaries = useAccoutsSelector(state =>
+    const isStakedWithFiveBinaries = useAccountsSelector(state =>
         selectIsCardanoStakedWithFiveBinaries(state, accountKey),
     );
 

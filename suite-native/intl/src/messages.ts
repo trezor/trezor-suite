@@ -1968,6 +1968,14 @@ export const messages = {
             stakeDeregistration: 'Deregistration of a stake address',
             stellarTrustlineAdded: 'Established trustline',
             stellarTrustlineRemoved: 'Removed trustline',
+            stake: 'Stake',
+            staking: 'Staking',
+            unstake: 'Unstake',
+            unstaking: 'Unstaking',
+            claim: 'Claim',
+            claiming: 'Claiming',
+            changeDelegate: 'Change delegate',
+            changingDelegate: 'Changing delegate',
         },
         TransactionDetailScreen: {
             sheetSubtitle: 'Transaction #{transactionId}',
@@ -2368,8 +2376,27 @@ export const messages = {
     earn: {
         staking: 'Staking',
         stablecoinYield: 'Stablecoin yield',
+        instantStakeBanner: {
+            stakedTitle: '{amount} {displaySymbol} staked instantly',
+            unstakedTitle: '{amount} {displaySymbol} unstaked instantly',
+            claimedTitle: '{amount} {displaySymbol} claimed',
+            stakedDescription:
+                "You've instantly staked {amount} {symbol}. {days, plural, =0 {} one {The remaining {symbol} will be staked within # day.} other {The remaining {symbol} will be staked within # days.}}",
+            unstakedDescription:
+                "You've received {amount} {symbol} instantly. {days, plural, =0 {} one {The remaining is paid out within # day.} other {The remaining is paid out within # days.}}",
+            claimedDescription: "You've successfully claimed {amount} {symbol} from your stake.",
+        },
         stakingDetailScreen: {
             title: 'Staking',
+        },
+        stakingManagementScreen: {
+            yourStake: 'Your stake',
+            stakedLabel: 'Staked',
+            totalRewardsLabel: 'Total rewards',
+            nextRewardLabel: 'Next reward in {value, plural, one {# day} other {# days}}',
+            unstakeButton: 'Unstake',
+            stakeMoreButton: 'Stake more',
+            stakingHistory: 'Staking history',
         },
         earnScreen: {
             title: 'Earn',
@@ -2414,6 +2441,7 @@ export const messages = {
             rewardsReduced: 'Cardano staking rewards reduced',
         },
         notAvailable: 'Not available',
+        apyNotAvailable: 'APY not available',
         notAvailableShort: 'N/A',
         stakePendingCard: {
             totalStakePending: 'Total stake pending',
