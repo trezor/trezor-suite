@@ -5,7 +5,7 @@ import type { DBSchema } from 'idb';
 import type { FlagsState } from '@suite/flags';
 import { type AnalyticsState } from '@suite-common/analytics-redux';
 import { type AppRememberedPermission } from '@suite-common/connect-popup/src/connectPopupTypes';
-import { type ExperimentalFeedbackState } from '@suite-common/feedback';
+import { type FeatureFeedbackState } from '@suite-common/feedback';
 import type { MessageState } from '@suite-common/message-system';
 import type { MetadataState } from '@suite-common/metadata-types';
 import { type EncryptedHex } from '@suite-common/platform-encryption';
@@ -190,8 +190,8 @@ export interface SuiteDBSchema extends DBSchema {
             permissions: AppRememberedPermission[];
         };
     };
-    experimentalFeedback: {
-        key: 'experimentalFeedback';
-        value: ExperimentalFeedbackState;
+    featureFeedback: {
+        key: 'featureFeedback';
+        value: FeatureFeedbackState;
     };
 }
