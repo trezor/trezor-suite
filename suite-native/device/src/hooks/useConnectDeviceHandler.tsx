@@ -7,6 +7,7 @@ import { useNavigation } from '@react-navigation/native';
 import { bluetoothActions } from '@suite-common/bluetooth';
 import {
     selectIsAnyPhysicalDeviceConnectedViaUsb,
+    selectIsDeviceAuthorized,
     selectIsDeviceThpLocked,
 } from '@suite-common/device';
 import { acquireDevice } from '@suite-common/wallet-core';
@@ -29,13 +30,14 @@ export const useConnectDeviceHandler = () => {
     const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProps>();
 
+    const isDeviceAuthorized = useSelector(selectIsDeviceAuthorized);
     const isDeviceThpLocked = useSelector(selectIsDeviceThpLocked);
     const isAnyPhysicalDeviceConnectedViaUsb = useSelector(
         selectIsAnyPhysicalDeviceConnectedViaUsb,
     );
 
     const onConnectDevicePress = useCallback(() => {
-        if (isDeviceThpLocked) {
+        if (!isDeviceAuthorized || isDeviceThpLocked) {
             dispatch(acquireDevice({}));
         } else if (isAnyPhysicalDeviceConnectedViaUsb || Platform.OS === 'ios') {
             // Make sure auto-connect is enabled in case some device was manually disconnected.
@@ -48,7 +50,13 @@ export const useConnectDeviceHandler = () => {
                 screen: AuthorizeDeviceStackRoutes.ConnectDeviceCrossroads,
             });
         }
-    }, [dispatch, isDeviceThpLocked, isAnyPhysicalDeviceConnectedViaUsb, navigation]);
+    }, [
+        dispatch,
+        isDeviceAuthorized,
+        isDeviceThpLocked,
+        isAnyPhysicalDeviceConnectedViaUsb,
+        navigation,
+    ]);
 
     return { onConnectDevicePress };
 };
