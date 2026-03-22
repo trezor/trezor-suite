@@ -66,13 +66,10 @@ describe('SellPreviewView', () => {
                 ),
             ),
         ).toBeOnTheScreen();
-        expect(
-            getByText(getTranslation('transactionManagement.fees.description.title.ethereum')),
-        ).toBeOnTheScreen();
     });
 
     it('should render txnErrorString when isTxnError is true', () => {
-        const { getByText, queryByText } = renderSellPreviewView({
+        const { getByText } = renderSellPreviewView({
             txnErrorString: 'Transaction error occurred',
         });
 
@@ -91,10 +88,6 @@ describe('SellPreviewView', () => {
             ),
         ).toBeOnTheScreen();
         expect(getByText('Transaction error occurred')).toBeOnTheScreen();
-        // Fee picker should be hidden when there's a transaction error
-        expect(
-            queryByText(getTranslation('transactionManagement.fees.description.title.ethereum')),
-        ).not.toBeOnTheScreen();
     });
 
     it('should not render bank account picker when form step is not BANK_ACCOUNT', () => {
@@ -132,9 +125,6 @@ describe('SellPreviewView', () => {
         expect(
             getByText(getTranslation('moduleTrading.tradingSellPreviewScreen.toFiat')),
         ).toBeOnTheScreen();
-        expect(
-            getByText(getTranslation('transactionManagement.fees.description.title.ethereum')),
-        ).toBeOnTheScreen();
     });
 
     it('should not render fee picker when quote has no cryptoCurrency', () => {
@@ -147,7 +137,7 @@ describe('SellPreviewView', () => {
         });
 
         expect(
-            queryByText(getTranslation('transactionManagement.fees.description.title.ethereum')),
+            queryByText(getTranslation('moduleTrading.tradingExchangePreviewScreen.details')),
         ).not.toBeOnTheScreen();
     });
 });

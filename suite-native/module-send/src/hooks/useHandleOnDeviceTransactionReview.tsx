@@ -98,7 +98,7 @@ export const useHandleOnDeviceTransactionReview = ({
                 errorCode === 'Method_Cancel' || // User canceled the pin entry in the app UI.
                 errorCode === 'Failure_ActionCancelled' // User canceled the review on device OR device got locked before the review was finished.
             ) {
-                navigation.popTo(SendStackRoutes.SendFees, {
+                navigation.popTo(SendStackRoutes.SendOutputs, {
                     accountKey,
                     tokenContract,
                 });
@@ -126,16 +126,14 @@ export const useHandleOnDeviceTransactionReview = ({
                 message === TRANSPORT_ERROR.UNEXPECTED_ERROR
             ) {
                 if (isViewOnlyDevice) {
-                    navigation.popTo(SendStackRoutes.SendFees, {
+                    navigation.popTo(SendStackRoutes.SendOutputs, {
                         accountKey,
                         tokenContract,
+                        postNavigationAction: 'deviceDisconnectedAlert',
                     });
-                }
-
-                // Timeout needed so the navigation back to home screen of not remembered device is not interrupted by the alert.
-                setTimeout(() => {
+                } else {
                     showDeviceDisconnectedAlert();
-                }, 1500);
+                }
 
                 return;
             }

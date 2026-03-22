@@ -212,11 +212,6 @@ describe('TradingExchangePreviewScreen', () => {
         expect(
             result.getByText(getTranslation('moduleTrading.tradingExchangePreviewScreen.details')),
         ).toBeOnTheScreen();
-        expect(
-            result.getByText(
-                getTranslation('transactionManagement.fees.description.title.ethereum'),
-            ),
-        ).toBeOnTheScreen();
     });
 
     describe('Error Alert Functionality', () => {

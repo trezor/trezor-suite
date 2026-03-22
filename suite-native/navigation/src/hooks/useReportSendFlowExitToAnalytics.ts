@@ -15,7 +15,6 @@ const orderedRelevantScreensForAnalytics = Object.values<string>(SendStackRoutes
 
 const screenNameToAnalyticsLabelMap = {
     [SendStackRoutes.SendOutputs]: 'address_and_amount',
-    [SendStackRoutes.SendFees]: 'fee_settings',
     [SendStackRoutes.SendAddressReview]: 'address_review',
     [SendStackRoutes.SendOutputsReview]: 'outputs_review',
     [SendStackRoutes.SendDestinationTagReview]: 'destination_tag_review',

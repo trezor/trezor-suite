@@ -9,7 +9,6 @@ import {
 import { SendAccountsScreen } from '../screens/SendAccountsScreen';
 import { SendAddressReviewScreen } from '../screens/SendAddressReviewScreen';
 import { SendDestinationTagReviewScreen } from '../screens/SendDestinationTagReviewScreen';
-import { SendFeesScreen } from '../screens/SendFeesScreen';
 import { SendOutputsReviewScreen } from '../screens/SendOutputsReviewScreen';
 import { SendOutputsScreen } from '../screens/SendOutputsScreen';
 import { SendUtxoScreen } from '../screens/SendUtxoScreen';
@@ -23,7 +22,6 @@ export const SendStackNavigator = () => (
     >
         <SendStack.Screen name={SendStackRoutes.SendAccounts} component={SendAccountsScreen} />
         <SendStack.Screen name={SendStackRoutes.SendOutputs} component={SendOutputsScreen} />
-        <SendStack.Screen name={SendStackRoutes.SendFees} component={SendFeesScreen} />
         <SendStack.Screen name={SendStackRoutes.SendUtxo} component={SendUtxoScreen} />
         <SendStack.Group
             screenOptions={{

@@ -1,5 +1,8 @@
+import { useCallback } from 'react';
 import Animated, { FadeInDown, FadeOutDown } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
+
+import { useFocusEffect } from '@react-navigation/native';
 
 import { type SendRootState, selectSendFormDraftByKey } from '@suite-common/wallet-core';
 import { isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
@@ -21,12 +24,14 @@ import { SwitchCoinControlButton } from '../components/CoinControl/SwitchCoinCon
 import { SendOutputFields } from '../components/SendOutputFields';
 import { SendOutputsScreenFooter } from '../components/SendOutputsScreenFooter';
 import { useSendForm } from '../hooks/useSendForm';
+import { useShowDeviceDisconnectedAlert } from '../hooks/useShowDeviceDisconnectedAlert';
 import { useUtxoSelection } from '../hooks/useUtxoSelection';
 
 export const SendOutputsScreen = ({
     route: { params },
+    navigation,
 }: StackProps<SendStackParamList, SendStackRoutes.SendOutputs>) => {
-    const { accountKey, tokenContract } = params;
+    const { accountKey, tokenContract, postNavigationAction } = params;
     const sendForm = useSendForm(accountKey, tokenContract);
     const { totalSelectedAmount, selectedUtxos } = useUtxoSelection(accountKey);
     const formDraft = useSelector((state: SendRootState) =>
@@ -34,6 +39,17 @@ export const SendOutputsScreen = ({
     );
     const feeLevels = useSelector(selectFeeLevels);
     const isFeeReady = isFinalPrecomposedTransaction(feeLevels.normal);
+    const showDeviceDisconnectedAlert = useShowDeviceDisconnectedAlert();
+
+    useFocusEffect(
+        useCallback(() => {
+            if (postNavigationAction !== 'deviceDisconnectedAlert') return;
+
+            // One-shot param: clear it immediately to avoid re-triggering on subsequent focus.
+            navigation.setParams({ postNavigationAction: undefined });
+            showDeviceDisconnectedAlert();
+        }, [navigation, postNavigationAction, showDeviceDisconnectedAlert]),
+    );
 
     if (!sendForm) {
         return null;

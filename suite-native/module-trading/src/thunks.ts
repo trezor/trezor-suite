@@ -227,7 +227,7 @@ export const composeTradingTransactionThunk = createThunk(
 
                     const formDraftKey = getFormDraftKeyByTradeType(tradeType);
 
-                    // Store the form state in trading draft so it's available for TradingFeesForm
+                    // Store the form state in trading draft so it's available for FeeSelector
                     dispatch(
                         formDraftActions.storeDraft({
                             key: formDraftKey,

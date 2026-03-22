@@ -9,7 +9,6 @@ import { onAccountDetail } from '../pageObjects/accountDetailActions';
 import { onHome } from '../pageObjects/homeActions';
 import { onMyAssets } from '../pageObjects/myAssetsActions';
 import { onSendAddressReview } from '../pageObjects/send/sendAddressReviewActions';
-import { FeeValues, onSendFees } from '../pageObjects/send/sendFeesActions';
 import { onSendOutputsForm } from '../pageObjects/send/sendOutputsFormActions';
 import { onSendOutputsReview } from '../pageObjects/send/sendOutputsReviewActions';
 import { onTabBar } from '../pageObjects/tabBarActions';
@@ -29,25 +28,17 @@ const SEND_FORM_ERROR_MESSAGES = {
 const INITIAL_ACCOUNT_BALANCE = 3.14;
 
 const prepareTransactionForOnDeviceReview = async ({
-    feeValues,
     isFormEmpty = true,
     recipientValues = [{ address: 'bcrt1q34up3cga3fkmph47t22mpk5d0xxj3ppghph9da', amount: '0.5' }],
 }: {
     recipientValues?: { address: string; amount: string }[];
-    feeValues?: FeeValues;
     isFormEmpty?: boolean;
-}) => {
+} = {}) => {
     if (isFormEmpty) {
         await onSendOutputsForm.fillForm(recipientValues);
     }
 
     await onSendOutputsForm.submitForm();
-
-    if (feeValues) {
-        await onSendFees.selectFee(feeValues);
-    }
-
-    await onSendFees.submitFee();
 };
 
 const signTransactionAndSendIt = async () => {
@@ -90,18 +81,12 @@ describe('Send transaction flow. [@androidOnly @smoke @T3T1 @T3W1]', () => {
     });
 
     it('Compose and dispatch a regtest transaction.', async () => {
-        await prepareTransactionForOnDeviceReview({ isFormEmpty: true });
+        await prepareTransactionForOnDeviceReview();
 
         await signTransactionAndSendIt();
     });
 
-    it('Compose and dispatch a regtest transaction with a custom fee.', async () => {
-        await prepareTransactionForOnDeviceReview({
-            feeValues: { feeType: 'custom', customFeePerUnit: '100' },
-        });
-
-        await signTransactionAndSendIt();
-    });
+    // TODO: Re-add custom fee e2e test using FeeSelector bottom sheet (#25541)
 
     it('Validate send form input errors.', async () => {
         await onSendOutputsForm.fillForm([{ address: 'wrong address', amount: '200' }]);

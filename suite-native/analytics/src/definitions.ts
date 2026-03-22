@@ -4,7 +4,6 @@ import { type DeviceModelInternal } from '@trezor/device-utils';
 
 export type AnalyticsSendFlowStep =
     | 'address_and_amount'
-    | 'fee_settings'
     | 'address_review'
     | 'outputs_review'
     | 'utxo_selection'

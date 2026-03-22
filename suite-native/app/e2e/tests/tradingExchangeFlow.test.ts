@@ -10,7 +10,6 @@ import { onTabBar } from '../pageObjects/tabBarActions';
 import { exchangePreviewActions } from '../pageObjects/trading/exchangePreviewActions';
 import { exchangeOutputsReviewActions } from '../pageObjects/trading/outputsReviewActions';
 import { tradingExchangeActions } from '../pageObjects/trading/tradingExchangeActions';
-import { tradingFeeActions } from '../pageObjects/trading/tradingFeeActions';
 import { openApp, preparePreloadedReduxState, prepareTrezorEmulator } from '../support/setup';
 import { waitForVisible } from '../support/utils';
 
@@ -115,11 +114,6 @@ describe('Trade Exchange [@androidOnly]', () => {
 
             await exchangePreviewActions.waitForFeesToLoad();
             await exchangePreviewActions.scrollScreenToBottom();
-            await exchangePreviewActions.goToFees();
-
-            await tradingFeeActions.expectFeesScreenToBeVisible();
-            await tradingFeeActions.goBack();
-
             await exchangePreviewActions.goToTransactionSigning();
 
             await exchangeOutputsReviewActions.expectOutputsReviewScreenToBeVisible();

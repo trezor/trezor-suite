@@ -122,14 +122,11 @@ export type SendStackParamList = {
     [SendStackRoutes.SendOutputs]: {
         accountKey: AccountKey;
         tokenContract?: TokenAddress;
+        postNavigationAction?: 'deviceDisconnectedAlert';
     };
     [SendStackRoutes.SendUtxo]: {
         accountKey: AccountKey;
         amount?: string;
-    };
-    [SendStackRoutes.SendFees]: {
-        accountKey: AccountKey;
-        tokenContract?: TokenAddress;
     };
     [SendStackRoutes.SendDestinationTagReview]: {
         destinationTag: string;
@@ -445,10 +442,6 @@ export type TradingStackParamList = {
         shouldIncreaseLimit?: boolean;
     };
     [TradingStackRoutes.TradingSellPreview]: undefined;
-    [TradingStackRoutes.TradingFees]: {
-        accountKey: AccountKey;
-        tradingType: Exclude<TradingType, 'buy'>;
-    };
     [TradingStackRoutes.TradingSellOutputsReview]: {
         accountKey: AccountKey;
         tokenContract?: TokenAddress;
