@@ -2671,12 +2671,11 @@ export const messages = {
         exchangeApprovalLimitSheet: {
             title: 'Set limit',
             unlimitedCard: {
-                description:
-                    'Approve unlimited {symbol} to skip future approval requests and reduce fees. Only use this option if you trust {companyName}, as it will have access to all your {symbol}.',
+                info: 'Approve once and avoid future network fees. This provider can spend any amount until you revoke the approval.',
+                alert: 'If the provider is compromised, all your {coinSymbol} may be taken.',
             },
             limitedCard: {
-                description:
-                    "Approve only the amount needed for this swap. This helps reduce risk, but you'll need to approve again (and pay a fee) for future swaps.",
+                info: 'Approve this amount for the provider. Valid until fully used or revoked. Then a new approval and network fee will be required.',
             },
         },
         exchangeTradePreviewCard: {

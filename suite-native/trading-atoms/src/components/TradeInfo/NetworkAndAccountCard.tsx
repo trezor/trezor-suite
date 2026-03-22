@@ -21,12 +21,10 @@ export const NetworkAndAccountCard = ({ title, account, children }: NetworkAndAc
             <TradeInfoHeader
                 title={title}
                 rightContent={
-                    !!symbol && (
-                        <HStack alignItems="center">
-                            <NetworkIcon symbol={symbol} size="extraLarge" />
-                            <AccountLabel account={account} />
-                        </HStack>
-                    )
+                    <HStack alignItems="center">
+                        {!!symbol && <NetworkIcon symbol={symbol} size="extraLarge" />}
+                        <AccountLabel variant="body-sm" account={account} />
+                    </HStack>
                 }
             />
             {children}

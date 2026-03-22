@@ -17,11 +17,9 @@ import {
     type TradingStackParamList,
     type TradingStackRoutes,
 } from '@suite-native/navigation';
-import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
 
 import { ApprovalButton } from '../components/exchange/Approval/ApprovalButton';
-import { ExchangeApprovalDetailsCard } from '../components/exchange/Approval/ExchangeApprovalDetailsCard';
-import { ExchangeApprovalForCard } from '../components/exchange/Approval/ExchangeApprovalForCard';
+import { ExchangeApprovalDetails } from '../components/exchange/Approval/ExchangeApprovalDetails';
 import { useApprovalFlow } from '../hooks/exchange/Approval/useApprovalFlow';
 import { useEvmApprovalFees } from '../hooks/exchange/Approval/useEvmApprovalFees';
 
@@ -40,7 +38,6 @@ export const TradingExchangeApprovalScreen = ({
     const quote = useSelector(selectTradingExchangeActiveQuote);
 
     const { isConfirming, error: confirmError, confirmApproval } = useApprovalFlow();
-    const sendAccount = useSelector(selectExchangeSelectedSendAccount);
 
     const coinSymbol = useSelector((state: TradingRootState) =>
         selectTradingCoinSymbolByCryptoId(state, quote?.send),
@@ -72,6 +69,10 @@ export const TradingExchangeApprovalScreen = ({
     );
 
     if (!quote) {
+        {
+            // TODO 25971 would be better to render some alert
+        }
+
         return null;
     }
 
@@ -95,7 +96,7 @@ export const TradingExchangeApprovalScreen = ({
                 />
             }
         >
-            <VStack spacing="sp16">
+            <VStack spacing="sp12">
                 {!!shouldIncreaseLimit && (
                     <InlineAlertBox
                         title={
@@ -114,11 +115,10 @@ export const TradingExchangeApprovalScreen = ({
                     />
                 )}
 
-                <ExchangeApprovalForCard />
-                <ExchangeApprovalDetailsCard
+                <ExchangeApprovalDetails
                     fee={fee}
                     isLoading={isLoading}
-                    networkSymbol={sendAccount?.symbol}
+                    exchange={quote.exchange}
                 />
             </VStack>
             <ApprovalButton isReady={isApprovalReady} isDisabled={!!error} />

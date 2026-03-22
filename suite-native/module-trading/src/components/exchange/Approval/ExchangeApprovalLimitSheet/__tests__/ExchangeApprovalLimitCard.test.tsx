@@ -1,5 +1,4 @@
-import { Text } from 'react-native';
-
+import { Text } from '@suite-native/atoms';
 import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
 
 import {
@@ -58,5 +57,13 @@ describe('ExchangeApprovalLimitCard', () => {
 
         fireEvent.press(getByText('Test description'));
         expect(mockOnChange).toHaveBeenCalledTimes(1);
+    });
+
+    it('should render children when provided', () => {
+        const { getByText } = renderExchangeApprovalLimitCard({
+            children: <Text>Test children</Text>,
+        });
+
+        expect(getByText('Test children')).toBeTruthy();
     });
 });

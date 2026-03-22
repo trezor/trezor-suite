@@ -30,9 +30,7 @@ export const ProviderInfoRow = ({ exchange }: ProviderInfoRowProps) => {
             </Text>
             <HStack alignItems="center">
                 {!!providerInfo.logo && <ProviderLogo logo={providerInfo.logo} size="body-sm" />}
-                <Text variant="body-sm" color="textSubdued">
-                    {providerInfo.companyName}
-                </Text>
+                <Text variant="body-sm">{providerInfo.companyName}</Text>
             </HStack>
         </TradeInfoRow>
     );

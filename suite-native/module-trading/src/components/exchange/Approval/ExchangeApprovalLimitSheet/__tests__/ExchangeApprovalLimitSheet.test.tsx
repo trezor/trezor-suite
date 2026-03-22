@@ -1,3 +1,4 @@
+import { getTranslation } from '@suite-native/intl';
 import { type PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils';
 import { exchangeQuotes, getInitializedTradingState } from '@suite-native/trading-fixtures';
 
@@ -54,7 +55,14 @@ describe('ExchangeApprovalLimitSheet', () => {
         expect(getByText('Unlimited')).toBeTruthy();
         expect(
             getByText(
-                'Approve unlimited USDC to skip future approval requests and reduce fees. Only use this option if you trust Mercuryo, as it will have access to all your USDC.',
+                getTranslation('moduleTrading.exchangeApprovalLimitSheet.unlimitedCard.info'),
+            ),
+        ).toBeTruthy();
+        expect(
+            getByText(
+                getTranslation('moduleTrading.exchangeApprovalLimitSheet.unlimitedCard.alert', {
+                    coinSymbol: 'USDC',
+                }),
             ),
         ).toBeTruthy();
     });
@@ -64,9 +72,7 @@ describe('ExchangeApprovalLimitSheet', () => {
 
         expect(getByText('100 USDC')).toBeTruthy();
         expect(
-            getByText(
-                "Approve only the amount needed for this swap. This helps reduce risk, but you'll need to approve again (and pay a fee) for future swaps.",
-            ),
+            getByText(getTranslation('moduleTrading.exchangeApprovalLimitSheet.limitedCard.info')),
         ).toBeTruthy();
     });
 
@@ -75,16 +81,6 @@ describe('ExchangeApprovalLimitSheet', () => {
 
         const cryptoIcons = getAllByLabelText('eth0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48');
         expect(cryptoIcons).toHaveLength(2);
-    });
-
-    it('should render provider company name in unlimited card description', () => {
-        const { getByText } = renderSheet();
-
-        expect(
-            getByText(
-                'Approve unlimited USDC to skip future approval requests and reduce fees. Only use this option if you trust Mercuryo, as it will have access to all your USDC.',
-            ),
-        ).toBeTruthy();
     });
 
     it('should display quote sendStringAmount in limited approval option', () => {
