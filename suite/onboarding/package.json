@@ -24,8 +24,12 @@
         "@suite/prerequisites": "workspace:*",
         "@suite/recovery": "workspace:*",
         "@suite/router": "workspace:*",
+        "@suite/settings": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/device-utils": "workspace:*",
         "@trezor/utils": "workspace:*"
+    },
+    "devDependencies": {
+        "@suite-common/test-utils": "workspace:*"
     }
 }

@@ -19,8 +19,12 @@
         { "path": "../prerequisites" },
         { "path": "../recovery" },
         { "path": "../router" },
+        { "path": "../settings" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },
-        { "path": "../../packages/utils" }
+        { "path": "../../packages/utils" },
+        {
+            "path": "../../suite-common/test-utils"
+        }
     ]
 }
