@@ -1,3 +1,4 @@
+export { TradingEnvironmentWarning } from './TradingEnvironmentWarning';
 export { PaymentMethodIcon } from './payment-methods/PaymentMethodIcon';
 export { PaymentMethodPlainType } from './payment-methods/PaymentMethodPlainType';
 export { PaymentMethodType } from './payment-methods/PaymentMethodType';
