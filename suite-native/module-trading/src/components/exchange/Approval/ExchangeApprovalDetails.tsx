@@ -44,6 +44,7 @@ export const ExchangeApprovalDetails = ({
                     symbol={account.symbol}
                     onPress={noop}
                     isLoading={isLoading}
+                    noBorder
                 />
             </Card>
         </>
