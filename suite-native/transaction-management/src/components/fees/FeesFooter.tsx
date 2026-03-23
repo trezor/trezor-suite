@@ -73,6 +73,7 @@ const MainnetSummary = ({ amount, symbol, isLoading }: MainnetSummaryProps) => (
                 value={amount}
                 symbol={symbol}
                 isLoading={isLoading}
+                isDiscreetText={false}
             />
             <CryptoAmountFormatter
                 variant="body-sm"
@@ -81,6 +82,7 @@ const MainnetSummary = ({ amount, symbol, isLoading }: MainnetSummaryProps) => (
                 symbol={symbol}
                 isBalance={false}
                 isLoading={isLoading}
+                isDiscreetText={false}
             />
         </VStack>
     </HStack>
@@ -126,6 +128,7 @@ const TokenSummary = ({
                     decimals={tokenDecimals ?? undefined}
                     value={tokenAmount}
                     tokenSymbol={tokenSymbol}
+                    isDiscreetText={false}
                 />
                 <CryptoAmountFormatter
                     variant="body-sm"
@@ -134,6 +137,7 @@ const TokenSummary = ({
                     symbol={symbol}
                     isBalance={false}
                     isLoading={isLoading}
+                    isDiscreetText={false}
                 />
             </VStack>
         </HStack>

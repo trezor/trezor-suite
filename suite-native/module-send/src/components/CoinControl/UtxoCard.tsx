@@ -123,6 +123,7 @@ export const UtxoCard = ({
                                     value={utxo.amount}
                                     isBalance={false}
                                     symbol={symbol}
+                                    isDiscreetText={false}
                                 />
                                 {fiatAmount && (
                                     <>
@@ -131,6 +132,7 @@ export const UtxoCard = ({
                                             color="textSubdued"
                                             symbol={symbol}
                                             value={fiatAmount}
+                                            isDiscreetText={false}
                                         />
                                     </>
                                 )}

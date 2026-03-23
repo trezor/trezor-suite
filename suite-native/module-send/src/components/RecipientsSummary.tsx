@@ -93,6 +93,7 @@ export const RecipientsSummary = ({
                                 isBalance={isBalance}
                                 accountKey={accountKey}
                                 tokenContract={tokenContract}
+                                isDiscreetText={false}
                             />
                             <CoinAmountFormatter
                                 variant="body-sm"
@@ -103,6 +104,7 @@ export const RecipientsSummary = ({
                                 tokenContract={tokenContract}
                                 adjustsFontSizeToFit
                                 numberOfLines={1}
+                                isDiscreetText={false}
                             />
                         </VStack>
                     </HStack>
