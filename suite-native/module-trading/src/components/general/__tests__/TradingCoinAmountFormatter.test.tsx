@@ -1,23 +1,23 @@
 import type { CryptoId } from 'invity-api';
 
-import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { renderWithStoreProvider } from '@suite-native/test-utils';
 import { btcAsset, getWalletState, usdcAsset } from '@suite-native/trading-fixtures';
 
 import {
     TradingCoinAmountFormatter,
-    TradingCoinAmountFormatterProps,
+    type TradingCoinAmountFormatterProps,
 } from '../TradingCoinAmountFormatter';
 
 describe('TradingCoinAmountFormatter', () => {
     const renderTradingCoinAmountFormatter = (
         props: Partial<TradingCoinAmountFormatterProps> = {},
     ) =>
-        renderWithStoreProviderAsync(<TradingCoinAmountFormatter {...props} />, {
+        renderWithStoreProvider(<TradingCoinAmountFormatter {...props} />, {
             preloadedState: { wallet: getWalletState() },
         });
 
-    it('should render formatted value for network', async () => {
-        const { getByText } = await renderTradingCoinAmountFormatter({
+    it('should render formatted value for network', () => {
+        const { getByText } = renderTradingCoinAmountFormatter({
             amount: '123456',
             cryptoId: btcAsset.cryptoId,
         });
@@ -25,8 +25,8 @@ describe('TradingCoinAmountFormatter', () => {
         expect(getByText('123,456 BTC')).toBeOnTheScreen();
     });
 
-    it('should render formatted value for token', async () => {
-        const { getByText } = await renderTradingCoinAmountFormatter({
+    it('should render formatted value for token', () => {
+        const { getByText } = renderTradingCoinAmountFormatter({
             amount: '123456',
             cryptoId: usdcAsset.cryptoId,
         });
@@ -34,22 +34,22 @@ describe('TradingCoinAmountFormatter', () => {
         expect(getByText('123,456 USDC')).toBeOnTheScreen();
     });
 
-    it('should render null when cryptoId is undefined', async () => {
-        const { toJSON } = await renderTradingCoinAmountFormatter();
+    it('should render null when cryptoId is undefined', () => {
+        const { toJSON } = renderTradingCoinAmountFormatter();
 
         expect(toJSON()).toBeNull();
     });
 
-    it('should render null when cryptoId is unknown', async () => {
-        const { toJSON } = await renderTradingCoinAmountFormatter({
+    it('should render null when cryptoId is unknown', () => {
+        const { toJSON } = renderTradingCoinAmountFormatter({
             cryptoId: 'unknown-crypto-id' as CryptoId,
         });
 
         expect(toJSON()).toBeNull();
     });
 
-    it('should render 0 value when amount is undefined', async () => {
-        const { getByText } = await renderTradingCoinAmountFormatter({
+    it('should render 0 value when amount is undefined', () => {
+        const { getByText } = renderTradingCoinAmountFormatter({
             cryptoId: btcAsset.cryptoId,
         });
 

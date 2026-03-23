@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { IntlProvider as IntlProviderComponent } from 'react-intl';
 
 interface IntlProviderProps {

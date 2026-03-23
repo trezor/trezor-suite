@@ -12,14 +12,14 @@ import {
     selectFeatureConfig,
 } from '@suite-common/message-system';
 import { createThunk } from '@suite-common/redux-utils';
-import { TrezorDevice } from '@suite-common/suite-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { getBrowserName } from '@suite-common/suite-utils';
 import { deviceConnectThunks, selectEnabledNetworks } from '@suite-common/wallet-core';
 import TrezorConnect, {
     BLOCKCHAIN_EVENT,
     DEVICE,
     DEVICE_EVENT,
-    Device,
+    type Device,
     TRANSPORT_EVENT,
     UI_EVENT,
     UI_REQUEST,
@@ -29,7 +29,7 @@ import { DATA_URL } from '@trezor/urls';
 import { capitalizeFirstLetter, getSynchronize } from '@trezor/utils';
 
 import { blacklist } from './blacklist';
-import { ConnectKey, ConnectWebKey } from './types';
+import { type ConnectKey, type ConnectWebKey } from './types';
 
 const CONNECT_INIT_MODULE = '@common/connect-init';
 

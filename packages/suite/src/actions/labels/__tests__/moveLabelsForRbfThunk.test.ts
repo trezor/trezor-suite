@@ -61,6 +61,7 @@ describe(moveLabelsForRbfThunk.name, () => {
                 transactions: {
                     fetchStatusDetail: {},
                     transactions: moveLabelsForRbfTransactionsFixture,
+                    phishing: {},
                 },
             },
             metadata: moveLabelsForRbfMetadataStateFixture,

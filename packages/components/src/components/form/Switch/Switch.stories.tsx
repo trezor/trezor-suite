@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { type Meta, type StoryObj } from '@storybook/react';
 import { useArgs } from 'storybook/preview-api';
 
 import { Switch as SwitchComponent, allowedSwitchFrameProps } from './Switch';

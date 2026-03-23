@@ -1,9 +1,9 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import { isTokenDefinitionKnown, selectCoinDefinitions } from '@suite-common/token-definitions';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { selectHistoricFiatRates } from '@suite-common/wallet-core';
-import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
+import { type Timestamp, type TokenAddress } from '@suite-common/wallet-types';
 import {
     getFiatRateKey,
     isNftTokenTransfer,
@@ -15,7 +15,7 @@ import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { Column } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
-import { WalletAccountTransaction } from 'src/types/wallet';
+import { type WalletAccountTransaction } from 'src/types/wallet';
 
 import { DayHeader } from './DayHeader';
 

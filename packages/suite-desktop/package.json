@@ -21,6 +21,7 @@
         "build:linux": "yarn clean && yarn build:ui && yarn build:app && yarn build:app:electron --publish never --linux --x64 --arm64",
         "build:mac": "yarn clean && yarn build:ui && yarn build:app && yarn build:app:electron --publish never --mac --x64 --arm64",
         "build:win": "yarn clean && yarn build:ui && yarn build:app && yarn build:app:electron --publish never --win --x64",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "_______ DO NOT REMOVE DEPENDENCIES unless you are sure of consequences! _______": "In this package they have special meaning, see core.webpack.config"
     },
     "dependencies": {
@@ -29,7 +30,7 @@
         "usb": "^2.15.0"
     },
     "devDependencies": {
-        "electron": "40.1.0",
-        "electron-builder": "26.6.0"
+        "electron": "40.6.1",
+        "electron-builder": "26.8.1"
     }
 }

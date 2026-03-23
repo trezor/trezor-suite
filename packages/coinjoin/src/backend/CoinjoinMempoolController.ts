@@ -4,18 +4,17 @@ import { arrayDistinct, createCooldown, promiseAllSequence } from '@trezor/utils
 import type { Network } from '@trezor/utxo-lib';
 
 import type { Logger } from '../types';
-import type { AddressController } from './CoinjoinAddressController';
 import { getAllTxAddresses, isDoublespend } from './backendUtils';
 import { getAddressScript, getMultiFilter } from './filters';
 import { MEMPOOL_PURGE_CYCLE, PROGRESS_INFO_COOLDOWN } from '../constants';
-import type { BlockbookTransaction, MempoolClient, OnProgressInfo } from '../types/backend';
-
-type MempoolStatus = 'stopped' | 'running';
-
-export type MempoolController = Pick<
-    CoinjoinMempoolController,
-    'status' | 'start' | 'stop' | 'init' | 'update' | 'getTransactions' | 'removeTransactions'
->;
+import type {
+    AddressControllerShape,
+    BlockbookTransaction,
+    MempoolClient,
+    MempoolControllerShape,
+    MempoolStatus,
+    OnProgressInfo,
+} from '../types/backend';
 
 type CoinjoinMempoolControllerSettings = {
     client: MempoolClient;
@@ -24,7 +23,7 @@ type CoinjoinMempoolControllerSettings = {
     logger?: Logger;
 };
 
-export class CoinjoinMempoolController {
+export class CoinjoinMempoolController implements MempoolControllerShape {
     private readonly client;
     private readonly network;
     private readonly mempool;
@@ -93,7 +92,7 @@ export class CoinjoinMempoolController {
         }
     }
 
-    async init(addressController?: AddressController, onProgressInfo?: OnProgressInfo) {
+    async init(addressController?: AddressControllerShape, onProgressInfo?: OnProgressInfo) {
         onProgressInfo?.({ stage: 'mempool', activity: 'fetch' });
 
         const filters = await this.client
@@ -193,7 +192,7 @@ export class CoinjoinMempoolController {
         this.lastPurge = now;
     }
 
-    getTransactions(addressController?: AddressController) {
+    getTransactions(addressController?: AddressControllerShape) {
         if (!addressController) return Array.from(this.mempool.values());
 
         const set = new Set<string>();

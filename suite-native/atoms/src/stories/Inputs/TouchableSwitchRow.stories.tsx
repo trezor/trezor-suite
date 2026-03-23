@@ -5,7 +5,7 @@ import { ICON_NAMES } from '@suite-native/icons';
 
 import {
     TouchableSwitchRow as TouchableSwitchRowComponent,
-    TouchableSwitchRowProps,
+    type TouchableSwitchRowProps,
 } from '../../TouchableSwitchRow';
 
 type TouchableSwitchRowStory = StoryObj<TouchableSwitchRowProps>;

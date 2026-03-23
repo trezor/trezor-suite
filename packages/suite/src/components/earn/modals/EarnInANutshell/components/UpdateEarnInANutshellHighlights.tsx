@@ -1,14 +1,17 @@
 import { Translation } from '@suite/intl';
 import {
-    NetworkSymbol,
-    StakingNetworkType,
+    type NetworkSymbol,
+    type StakingNetworkType,
     getNetworkDisplaySymbol,
 } from '@suite-common/wallet-config';
 import { exhaustive } from '@trezor/type-utils';
 
 import { formatApyValue } from 'src/views/wallet/staking/utils/formatStakeValues';
 
-import { EarnInANutshellHighlight, EarnInANutshellHighlights } from './EarnInANutshellHighlights';
+import {
+    type EarnInANutshellHighlight,
+    EarnInANutshellHighlights,
+} from './EarnInANutshellHighlights';
 
 interface UpdateEarnInANutshellHighlightsProps {
     networkType: StakingNetworkType;

@@ -1,7 +1,7 @@
-import { ReactNode } from 'react';
-import { Dimensions, GestureResponderEvent, Modal, Pressable, StatusBar } from 'react-native';
+import { type ReactNode } from 'react';
+import { Dimensions, type GestureResponderEvent, Modal, Pressable, StatusBar } from 'react-native';
 import Animated, { FadeIn, LinearTransition, SlideInUp } from 'react-native-reanimated';
-import { EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { type EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
 
 import { selectDeviceState } from '@suite-common/device';

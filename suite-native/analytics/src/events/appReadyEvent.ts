@@ -1,10 +1,10 @@
-import { PlatformOSType } from 'react-native';
+import { type PlatformOSType } from 'react-native';
 
-import { AttributeDef, EventDef } from '@suite-common/analytics';
-import { UNIT_ABBREVIATION } from '@suite-common/suite-constants';
-import { Locale } from '@suite-common/suite-types';
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { BaseCurrencyCode } from '@trezor/blockchain-link-types';
+import { type AttributeDef, type EventDef } from '@suite-common/analytics';
+import { type UNIT_ABBREVIATION } from '@suite-common/suite-constants';
+import { type Locale } from '@suite-common/suite-types';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 
 import { EventType } from '../constants';
 

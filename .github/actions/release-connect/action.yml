@@ -38,7 +38,7 @@ runs:
   using: "composite"
   steps:
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
         submodules: true
 
@@ -107,12 +107,13 @@ runs:
       shell: bash
       env:
         NODE_ENV: "production"
+        __SUITE_WEB_URL__: https://${{ inputs.serverHostname }}/suite-web/${{ needs.extract-branch.outputs.branch }}/web
       run: |
         yarn workspace @trezor/connect-explorer build:webextension
 
     - name: Upload connect-example webextension artifacts
       if: inputs.uploadArtifacts == 'true'
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: connect-example-webextension-${{ inputs.serverHostname }}
         path: |
@@ -120,7 +121,7 @@ runs:
 
     - name: Upload connect-explorer webextension artifacts
       if: inputs.uploadArtifacts == 'true'
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: connect-explorer-webextension-${{ inputs.serverHostname }}
         path: |

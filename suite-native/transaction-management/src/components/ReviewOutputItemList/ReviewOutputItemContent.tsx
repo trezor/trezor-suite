@@ -1,4 +1,8 @@
-import { AccountKey, ReviewOutputType, TokenAddress } from '@suite-common/wallet-types';
+import {
+    type AccountKey,
+    type ReviewOutputType,
+    type TokenAddress,
+} from '@suite-common/wallet-types';
 import { Text } from '@suite-native/atoms';
 import { splitAddressToChunks } from '@suite-native/helpers';
 import { Translation } from '@suite-native/intl';

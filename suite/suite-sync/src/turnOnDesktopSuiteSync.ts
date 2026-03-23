@@ -1,5 +1,5 @@
-import { DesktopAnalyticsDep, events } from '@suite/analytics';
-import { TurnOnSuiteSync, TurnOnSuiteSyncDep } from '@suite-common/suite-sync-types';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { type TurnOnSuiteSync, type TurnOnSuiteSyncDep } from '@suite-common/suite-sync-types';
 
 /**
  * @deprecated Compatibility layer for LegacyLabeling

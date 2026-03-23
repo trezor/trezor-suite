@@ -10,8 +10,8 @@ import {
 } from '@suite-common/wallet-utils';
 import TrezorConnect, { PROTO } from '@trezor/connect';
 import { getSerializedPath } from '@trezor/connect/src/utils/pathUtils';
-import { SerializedError } from '@trezor/connect-common/src/constants/errors';
-import { Result } from '@trezor/type-utils';
+import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
+import { type Result } from '@trezor/type-utils';
 
 import { selectAddressDisplayType } from 'src/selectors/suite/suiteSelectors';
 import type { Dispatch, GetState, TrezorDevice } from 'src/types/suite';

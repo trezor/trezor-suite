@@ -1,15 +1,15 @@
 import { type AnalyticsNativeEvents, events } from '@suite-native/analytics';
-import { CardStepper, CardStepperMap, VStack } from '@suite-native/atoms';
+import { CardStepper, type CardStepperMap, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
 import {
-    DeviceOnboardingStackParamList,
+    type DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes,
-    DeviceSuspicionCause,
-    StackProps,
+    type DeviceSuspicionCause,
+    type StackProps,
 } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
-import { Analytics } from '@trezor/analytics-uploader';
+import { type Analytics } from '@trezor/analytics-uploader';
 import { TREZOR_RESELLERS_URL } from '@trezor/urls';
 
 import { DeviceOnboardingScreenWithExitButton } from '../components/DeviceOnboardingScreenWithExitButton';

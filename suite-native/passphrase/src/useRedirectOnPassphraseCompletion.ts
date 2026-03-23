@@ -5,7 +5,7 @@ import { useRoute } from '@react-navigation/native';
 
 import { selectSelectedDevice } from '@suite-common/device';
 import {
-    DiscoveryRootState,
+    type DiscoveryRootState,
     cancelDiscoveryThunk,
     selectDiscoveryByDevicePath,
 } from '@suite-common/wallet-core';

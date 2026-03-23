@@ -19,7 +19,9 @@ const buildAllPackages = async () => {
     // Get dependencies for connect.
     const connectDeps = (await getPackageDependencies('connect')).update;
 
-    const PACKAGES = [...new Set([...connectDeps, 'connect'])];
+    const PACKAGES = [
+        ...new Set([...connectDeps, 'connect', 'connect-web', 'connect-webextension']),
+    ];
 
     if (await existsDirectory(OUTPUT_DIR)) {
         await removeDir(OUTPUT_DIR, { recursive: true });

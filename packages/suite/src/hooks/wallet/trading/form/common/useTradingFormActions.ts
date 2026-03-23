@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { UseFormReturn, useWatch } from 'react-hook-form';
+import { type UseFormReturn, useWatch } from 'react-hook-form';
 import { useDebounce } from 'react-use';
 
-import { FiatCurrencyCode } from 'invity-api';
+import { type FiatCurrencyCode } from 'invity-api';
 
 import {
     TRADING_FORM_CRYPTO_TOKEN,
@@ -11,10 +11,11 @@ import {
     TRADING_FORM_OUTPUT_FIAT,
     TRADING_FORM_OUTPUT_MAX,
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
-    TradingAssetSellOption,
+    type TradingAssetSellOption,
     type TradingExchangeFormProps,
     type TradingSellFormProps,
     isCountrySubdivisionEmpty,
+    mapFiatCurrencyCodeToBaseCurrencyCode,
     tradingExchangeActions,
 } from '@suite-common/trading';
 import {
@@ -22,7 +23,7 @@ import {
     selectIsNetworkReserveEnabled,
     selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
-import { TokenAddress } from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/wallet-types';
 import {
     convertAmountSubunitsToUnits,
     convertAmountUnitsToSubunits,
@@ -36,9 +37,9 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingFiatValues } from 'src/hooks/wallet/trading/form/common/useTradingFiatValues';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import {
-    TradingSellExchangeFormProps,
-    TradingUseFormActionsProps,
-    TradingUseFormActionsReturnProps,
+    type TradingSellExchangeFormProps,
+    type TradingUseFormActionsProps,
+    type TradingUseFormActionsReturnProps,
 } from 'src/types/trading/tradingForm';
 import { getFeeInUnits, resolveAddressAndToken } from 'src/utils/wallet/trading/tradingUtils';
 
@@ -90,7 +91,7 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
     const tradingFiatValues = useTradingFiatValues({
         cryptoId: sendCryptoSelect?.id,
         amount: sendCryptoAccount?.balance,
-        fiatCurrency: getValues().outputs?.[0]?.currency?.value as FiatCurrencyCode,
+        fiatCurrency: getValues().outputs?.[0]?.currency?.value || undefined,
     });
 
     const { getAssetDecimals } = useTradingAssetDecimals();
@@ -123,7 +124,10 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
 
         if (!tradingFiatValues) return;
 
-        const rate = await tradingFiatValues.fiatRatesUpdater(value);
+        const mappedBaseCurrencyCode = mapFiatCurrencyCodeToBaseCurrencyCode(value);
+        if (!mappedBaseCurrencyCode) return;
+
+        const rate = await tradingFiatValues.fiatRatesUpdater(mappedBaseCurrencyCode);
         const amount = getValues(TRADING_FORM_OUTPUT_AMOUNT);
         const formattedAmount = new BigNumber(
             shouldSendInSats ? convertAmountSubunitsToUnits(amount, networkDecimals) : amount,
@@ -191,10 +195,16 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
         setAccountOnChange(account);
         changeFeeLevel('normal'); // reset fee level
 
-        await tradingFiatValues?.fiatRatesUpdater(
-            getValues(TRADING_FORM_OUTPUT_CURRENCY)?.value as FiatCurrencyCode,
-            selected.contractAddress as TokenAddress,
+        const mappedBaseCurrencyCode = mapFiatCurrencyCodeToBaseCurrencyCode(
+            getValues(TRADING_FORM_OUTPUT_CURRENCY)?.value,
         );
+
+        if (mappedBaseCurrencyCode) {
+            await tradingFiatValues?.fiatRatesUpdater(
+                mappedBaseCurrencyCode,
+                selected.contractAddress as TokenAddress,
+            );
+        }
     };
 
     const setRatioAmount = (divisor: number) => {

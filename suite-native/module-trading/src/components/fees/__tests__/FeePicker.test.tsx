@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { renderWithStoreProviderAsync, userEvent } from '@suite-native/test-utils';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { renderWithStoreProvider, userEvent } from '@suite-native/test-utils';
 
 import { FEE_PICKER_TEST_ID, FeePicker } from '../FeePicker';
 
@@ -21,24 +21,24 @@ describe('FeePicker', () => {
         onPress: jest.fn(),
     };
 
-    const renderFeePicker = async (props = {}) => {
+    const renderFeePicker = (props = {}) => {
         const finalProps = { ...defaultProps, ...props };
 
-        return await renderWithStoreProviderAsync(<FeePicker {...finalProps} />);
+        return renderWithStoreProvider(<FeePicker {...finalProps} />);
     };
 
     beforeEach(() => {
         jest.clearAllMocks();
     });
 
-    it('should render fee label', async () => {
-        const { getByText } = await renderFeePicker();
+    it('should render fee label', () => {
+        const { getByText } = renderFeePicker();
 
         expect(getByText('Fee')).toBeTruthy();
     });
 
-    it('should render fee value with correct symbol', async () => {
-        const { getByText } = await renderFeePicker({
+    it('should render fee value with correct symbol', () => {
+        const { getByText } = renderFeePicker({
             fee: '5000',
             symbol: 'eth' as NetworkSymbol,
             isLoading: false,
@@ -48,8 +48,8 @@ describe('FeePicker', () => {
         expect(getByText('$0.00')).toBeTruthy();
     });
 
-    it('should render caret right icon', async () => {
-        const { getByTestId } = await renderFeePicker();
+    it('should render caret right icon', () => {
+        const { getByTestId } = renderFeePicker();
 
         const icon = getByTestId('caret-right-icon');
         expect(icon).toBeTruthy();
@@ -57,7 +57,7 @@ describe('FeePicker', () => {
 
     it('should render clickable component', async () => {
         const mockOnPress = jest.fn();
-        const { getByTestId } = await renderFeePicker({
+        const { getByTestId } = renderFeePicker({
             onPress: mockOnPress,
             isLoading: false,
         });
@@ -67,23 +67,23 @@ describe('FeePicker', () => {
         expect(mockOnPress).toHaveBeenCalledTimes(1);
     });
 
-    it('should show loading state when isLoading is true', async () => {
-        const { getByTestId } = await renderFeePicker({ isLoading: true });
+    it('should show loading state when isLoading is true', () => {
+        const { getByTestId } = renderFeePicker({ isLoading: true });
 
         // When loading, should show skeleton
         const skeleton = getByTestId('BoxSkeleton');
         expect(skeleton).toBeTruthy();
     });
 
-    it('should not show loading state when isLoading is false', async () => {
-        const { getByText } = await renderFeePicker({ isLoading: false });
+    it('should not show loading state when isLoading is false', () => {
+        const { getByText } = renderFeePicker({ isLoading: false });
 
         // When not loading, should show the formatted fee value
         expect(getByText('$0.50')).toBeTruthy();
     });
 
-    it('should not show loading state when isLoading is undefined', async () => {
-        const { getByText } = await renderFeePicker();
+    it('should not show loading state when isLoading is undefined', () => {
+        const { getByText } = renderFeePicker();
 
         // When isLoading is undefined, should show the formatted fee value
         expect(getByText('$0.50')).toBeTruthy();
@@ -91,8 +91,8 @@ describe('FeePicker', () => {
 
     it.each(['btc', 'eth', 'ltc', 'bch', 'doge'])(
         'should render with %s network symbol',
-        async symbol => {
-            const { getByText } = await renderFeePicker({
+        symbol => {
+            const { getByText } = renderFeePicker({
                 symbol: symbol as NetworkSymbol,
                 isLoading: false,
             });
@@ -103,8 +103,8 @@ describe('FeePicker', () => {
 
     it.each(['100', '1000', '10000', '0.001', '0.00000001'])(
         'should render with fee value %s',
-        async fee => {
-            const { getByText } = await renderFeePicker({
+        fee => {
+            const { getByText } = renderFeePicker({
                 fee,
                 isLoading: false,
             });
@@ -113,8 +113,8 @@ describe('FeePicker', () => {
         },
     );
 
-    it('should render the approximate symbol', async () => {
-        const { getByText } = await renderFeePicker();
+    it('should render the approximate symbol', () => {
+        const { getByText } = renderFeePicker();
 
         expect(getByText('≈')).toBeTruthy();
     });

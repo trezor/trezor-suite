@@ -9,12 +9,12 @@ import { isFulfilled } from '@reduxjs/toolkit';
 
 import { selectDeviceUnavailableCapabilities } from '@suite-common/device';
 import { getExcludedUtxos } from '@suite-common/transaction-search';
-import { getDisplaySymbol, getNetwork } from '@suite-common/wallet-config';
+import { type NetworkType, getDisplaySymbol, getNetwork } from '@suite-common/wallet-config';
 import {
-    AccountsRootState,
-    FeesRootState,
-    SendRootState,
-    WalletSettingsRootState,
+    type AccountsRootState,
+    type FeesRootState,
+    type SendRootState,
+    type WalletSettingsRootState,
     composeSendFormTransactionFeeLevelsThunk,
     selectAccountByKey,
     selectConvertedNetworkFeeInfo,
@@ -24,26 +24,33 @@ import {
     sendFormActions,
     updateFeeInfoThunk,
 } from '@suite-common/wallet-core';
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
-import { convertAmountUnitsToSubunits, getNetworkReserve } from '@suite-common/wallet-utils';
+import { type Account, type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import {
+    convertAmountUnitsToSubunits,
+    formatNetworkAmount,
+    getNetworkReserve,
+} from '@suite-common/wallet-utils';
 import { useForm } from '@suite-native/forms';
 import {
-    SendStackParamList,
+    type SendStackParamList,
     SendStackRoutes,
-    StackNavigationProps,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
-import { TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
+import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 import {
-    FeeLevelsMaxAmount,
+    type FeeLevelsMaxAmount,
     calculateFeeLevelsMaxAmountThunk,
     transactionManagementActions,
     useSubscribeForSolanaBlockUpdates,
 } from '@suite-native/transaction-management';
 import { useDebounce } from '@trezor/react-utils';
 
-import { useUtxoSelection } from './useUtxoSelection';
-import { SendOutputsFormValues, sendOutputsFormValidationSchema } from '../sendOutputsFormSchema';
+import {
+    type SendOutputsFormValues,
+    sendOutputsFormValidationSchema,
+} from '../sendOutputsFormSchema';
 import { constructFormDraft } from '../utils';
+import { useUtxoSelection } from './useUtxoSelection';
 
 const getDefaultValues = ({
     tokenContract,
@@ -63,6 +70,17 @@ const getDefaultValues = ({
             },
         ],
     }) as const;
+
+const getRippleReserve = (account: Account, networkType: NetworkType) => {
+    const reserve =
+        account.misc && 'reserve' in account.misc && account.misc.reserve
+            ? account.misc.reserve
+            : undefined;
+
+    if (networkType !== 'ripple' || !reserve) return undefined;
+
+    return formatNetworkAmount(reserve, account.symbol);
+};
 
 export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress) => {
     const dispatch = useDispatch();
@@ -119,6 +137,9 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
           })
         : undefined;
 
+    const rippleReserve =
+        account && network ? getRippleReserve(account, network.networkType) : undefined;
+
     const form = useForm<SendOutputsFormValues>({
         validation: sendOutputsFormValidationSchema,
         // If the form is prefilled with the draft values, we want to revalidate the draft on every change.
@@ -135,6 +156,7 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
             isTaprootAvailable: !deviceUnavailableCapabilities?.taproot,
             accountNativeAvailableBalance: account?.availableBalance,
             networkReserve,
+            rippleReserve,
         },
         defaultValues: getDefaultValues({
             tokenContract,

@@ -1,14 +1,17 @@
 import { selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
-import { BITCOIN_ONLY_SYMBOLS, BitcoinOnlySymbolsItemType } from '@suite-common/suite-constants';
+import {
+    BITCOIN_ONLY_SYMBOLS,
+    type BitcoinOnlySymbolsItemType,
+} from '@suite-common/suite-constants';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { BTC_LOCKTIME_SEQUENCE, BTC_RBF_SEQUENCE } from '@suite-common/wallet-constants';
 import {
-    Account,
+    type Account,
     AddressDisplayOptions,
-    FormState,
-    PrecomposedLevels,
-    PrecomposedTransaction,
+    type FormState,
+    type PrecomposedLevels,
+    type PrecomposedTransaction,
 } from '@suite-common/wallet-types';
 import {
     datetimeToLocktime,
@@ -21,19 +24,19 @@ import {
 } from '@suite-common/wallet-utils';
 import TrezorConnect, {
     DEFAULT_SORTING_STRATEGY,
-    FeeLevel,
-    Params,
-    SignTransaction,
-    SignedTransaction,
+    type FeeLevel,
+    type Params,
+    type SignTransaction,
+    type SignedTransaction,
 } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
 import {
-    ComposeFeeLevelsError,
-    ComposeTransactionThunkArguments,
-    SignTransactionError,
-    SignTransactionThunkArguments,
+    type ComposeFeeLevelsError,
+    type ComposeTransactionThunkArguments,
+    type SignTransactionError,
+    type SignTransactionThunkArguments,
 } from './sendFormTypes';
 import {
     selectAreSatsAmountUnit,

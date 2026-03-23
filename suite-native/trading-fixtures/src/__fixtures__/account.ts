@@ -1,4 +1,4 @@
-import { Account, AccountKey } from '@suite-common/wallet-types';
+import { type Account, type AccountKey } from '@suite-common/wallet-types';
 
 /**
  * @deprecated use `mockWalletAccount`, to keep AccountKey in sync with Descriptor, etc...

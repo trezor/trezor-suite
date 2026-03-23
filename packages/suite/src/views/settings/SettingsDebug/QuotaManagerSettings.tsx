@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import {
     enforceQuotaManagerUpdated,
-    eraseFetchedDataDebug,
+    eraseFetchedData,
     selectEnforceQuotaManager,
     selectOwnersAllowance,
     selectQuotaManagerBaseUrl,
@@ -40,7 +40,7 @@ export const QuotaManagerSettings = () => {
         }, 300);
     };
 
-    const onEraseFetchedData = () => dispatch(eraseFetchedDataDebug());
+    const onEraseFetchedData = () => dispatch(eraseFetchedData());
 
     const onToggleEnforceQuotaManager = () =>
         dispatch(

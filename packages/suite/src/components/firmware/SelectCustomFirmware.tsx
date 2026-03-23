@@ -1,6 +1,6 @@
-import { Dispatch, SetStateAction } from 'react';
+import { type Dispatch, type SetStateAction } from 'react';
 
-import { ExtendedMessageDescriptor, Translation } from '@suite/intl';
+import { type ExtendedMessageDescriptor, Translation } from '@suite/intl';
 import { BulletList, Button, Row } from '@trezor/components';
 import { GITHUB_FW_BINARIES_URL } from '@trezor/urls';
 

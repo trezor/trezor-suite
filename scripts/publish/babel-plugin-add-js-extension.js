@@ -13,6 +13,8 @@ const isTrezorLibESMImport = src => trezorLibESMPattern.test(src);
 const externalCjsSubpaths = ['protobufjs/light', 'protobufjs/minimal'];
 const isExternalCjsSubpath = src => externalCjsSubpaths.includes(src);
 
+const externalJsonImports = ['bitcoin-ops'];
+
 /**
  * Babel plugin to add .js extension to import/export statements, used for valid ESM builds.
  * This way we can keep our codebase with moduleResolution: bundler (imports without extensions).
@@ -27,6 +29,18 @@ const addJSExtensionPlugin = ({ types }) => {
         const src = nodePath.node.source?.value;
         if (!src) return;
 
+        // Add with { type: 'json' } to JSON imports for Node.js ESM compatibility
+        if (
+            (src.endsWith('.json') || externalJsonImports.includes(src)) &&
+            !nodePath.node.attributes?.length
+        ) {
+            nodePath.node.attributes = [
+                types.importAttribute(types.identifier('type'), types.stringLiteral('json')),
+            ];
+
+            return;
+        }
+
         // Handle @trezor package imports to libESM
         if (isTrezorLibESMImport(src)) {
             const match = src.match(/^@trezor\/([^/]+)\/libESM\/(.+)$/);
@@ -37,17 +51,19 @@ const addJSExtensionPlugin = ({ types }) => {
             const libESMIndex = state.filename.indexOf(`${path.sep}libESM${path.sep}`);
             const packageDir = state.filename.substring(0, libESMIndex);
             const packagesRoot = path.dirname(packageDir);
-            const resolvedPath = path.join(packagesRoot, packageName, 'libESM', subpath);
+            // Check src/ instead of libESM/ — src/ is always present in the repo regardless of
+            // build order, whereas libESM/ may not exist yet in CI when this package is compiled.
+            const resolvedSrcPath = path.join(packagesRoot, packageName, 'src', subpath);
 
             const isDirectory =
-                fs.existsSync(resolvedPath) && fs.statSync(resolvedPath).isDirectory();
+                fs.existsSync(resolvedSrcPath) && fs.statSync(resolvedSrcPath).isDirectory();
 
             // e.g., @trezor/protocol/libESM/protocol-tpn -> @trezor/protocol/libESM/protocol-tpn/index.js
             // e.g., @trezor/protocol/libESM/bigNumber -> @trezor/protocol/libESM/bigNumber.js
             if (isDirectory) {
-                nodePath.node.source = types.stringLiteral(src + '/index.js');
+                nodePath.node.source = types.stringLiteral(src + '/index.mjs');
             } else {
-                nodePath.node.source = types.stringLiteral(src + '.js');
+                nodePath.node.source = types.stringLiteral(src + '.mjs');
             }
 
             return;
@@ -68,9 +84,9 @@ const addJSExtensionPlugin = ({ types }) => {
                 fs.existsSync(resolvedPath) && fs.statSync(resolvedPath).isDirectory();
 
             if (isDirectory) {
-                nodePath.node.source = types.stringLiteral(src + '/index.js');
+                nodePath.node.source = types.stringLiteral(src + '/index.mjs');
             } else {
-                nodePath.node.source = types.stringLiteral(src + '.js');
+                nodePath.node.source = types.stringLiteral(src + '.mjs');
             }
         }
     };

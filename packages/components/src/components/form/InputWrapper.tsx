@@ -1,10 +1,10 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { Elevation, borders, mapElevationToBackground } from '@trezor/theme';
+import { type Elevation, borders, mapElevationToBackground } from '@trezor/theme';
 
-import { InputSize } from './types';
+import { type InputSize } from './types';
 import { mapSizeToTypographyStyle } from './utils';
 import { useElevation } from '../ElevationContext/ElevationContext';
 import { Text } from '../typography/Text/Text';

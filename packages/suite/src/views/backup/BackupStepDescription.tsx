@@ -1,7 +1,7 @@
+import { selectBackupStatus } from '@suite/backup';
 import { Translation } from '@suite/intl';
 
 import { useSelector } from 'src/hooks/suite';
-import { selectBackupStatus } from 'src/reducers/backup/backupReducer';
 
 const nonErrorBackupStatuses = ['initial', 'in-progress', 'finished'] as const;
 

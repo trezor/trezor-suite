@@ -1,22 +1,22 @@
 import { useSelector } from 'react-redux';
 
 import {
-    AccountsRootState,
-    FeesRootState,
+    type AccountsRootState,
+    type FeesRootState,
     selectAccountByKey,
     selectConvertedNetworkFeeInfo,
     selectIsEip1559Fee,
 } from '@suite-common/wallet-core';
 import {
-    AccountKey,
-    FeeLevelLabel,
-    PrecomposedTransactionFinal,
+    type AccountKey,
+    type FeeLevelLabel,
+    type PrecomposedTransactionFinal,
     isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
 import { useForm } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
 
-import { FeesFormValues, feesFormValidationSchema } from '../../feesFormSchema';
+import { type FeesFormValues, feesFormValidationSchema } from '../../feesFormSchema';
 import { selectFeeLevels } from '../../selectors';
 import { getFeeValue } from '../../utils';
 

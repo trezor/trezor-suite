@@ -1,8 +1,8 @@
-import { ExtendedMessageDescriptor } from '@suite/intl';
-import { NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { FormState, StakeFormState } from '@suite-common/wallet-types';
+import { type ExtendedMessageDescriptor } from '@suite/intl';
+import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { type FormState, type StakeFormState } from '@suite-common/wallet-types';
 import { getEvmTransactionTextSignature } from '@suite-common/wallet-utils';
-import { TokenInfo } from '@trezor/blockchain-link-types';
+import { type TokenInfo } from '@trezor/blockchain-link-types';
 
 interface GetTransactionReviewModalActionTranslationParams {
     symbol: NetworkSymbol;

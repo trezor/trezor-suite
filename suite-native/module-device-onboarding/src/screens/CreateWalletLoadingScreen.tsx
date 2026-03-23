@@ -1,11 +1,11 @@
 import { useEffect } from 'react';
 
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { type NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { Box, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
-    DeviceOnboardingStackParamList,
+    type DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes,
     Screen,
 } from '@suite-native/navigation';

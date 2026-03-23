@@ -1,6 +1,6 @@
 import {
     Feature,
-    MessageSystemRootState,
+    type MessageSystemRootState,
     selectIsFeatureEnabled,
 } from '@suite-common/message-system';
 

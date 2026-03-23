@@ -1,7 +1,7 @@
-import { SellFiatTrade, SellFiatTradeQuoteRequest } from 'invity-api';
+import { type SellFiatTrade, type SellFiatTradeQuoteRequest } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
-import { Network } from '@suite-common/wallet-config';
+import { type Network } from '@suite-common/wallet-config';
 import { convertAmountSubunitsToUnits } from '@suite-common/wallet-utils';
 
 import { TRADING_DEFAULT_SELL_FLOWS, TRADING_SELL_THUNK_PREFIX } from '../../constants';
@@ -9,7 +9,11 @@ import { invityAPI } from '../../invityAPI';
 import { tradingSellActions } from '../../reducers/sellReducer';
 import { tradingActions } from '../../reducers/tradingCommonReducer';
 import { selectTradingCoinSymbolByCryptoId } from '../../selectors/tradingSelectors';
-import { HandleSellRequestThunkProps, MinimalSellFormProps, TradingSellType } from '../../types';
+import {
+    type HandleSellRequestThunkProps,
+    type MinimalSellFormProps,
+    type TradingSellType,
+} from '../../types';
 import {
     addIdsToQuotes,
     filterQuotesAccordingTags,
@@ -52,7 +56,7 @@ const getQuoteRequestData = ({
 
     if (
         (!fiatStringAmount && (!cryptoStringAmount || Number(cryptoStringAmount) === 0)) ||
-        !currencySelect ||
+        !currencySelect?.value ||
         !sendCryptoSelect
     ) {
         return null;

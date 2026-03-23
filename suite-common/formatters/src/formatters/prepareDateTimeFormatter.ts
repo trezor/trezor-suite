@@ -1,5 +1,5 @@
 import { makeFormatter } from '../makeFormatter';
-import { FormatterConfig } from '../types';
+import { type FormatterConfig } from '../types';
 import { dateFormatterOptions } from './prepareDateFormatter';
 
 export const prepareDateTimeFormatter = (config: FormatterConfig) =>

@@ -1,17 +1,17 @@
 import {
-    Evolu,
+    type Evolu,
     NonEmptyString100,
     NonEmptyString1000,
-    QueryRows,
+    type QueryRows,
     createIdFromString,
     id,
     nullOr,
 } from '@evolu/common';
 
 import {
-    AccountTable,
-    EntityListener,
-    SuiteSyncAccount,
+    type AccountTable,
+    type EntityListener,
+    type SuiteSyncAccount,
     createSuiteSyncAccountId,
     createSuiteSyncUpdateError,
 } from '@suite-common/suite-sync-storage';
@@ -19,7 +19,7 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { err, ok } from '@trezor/type-utils';
 
-import { UnwrapQuery } from '../evoluUtils';
+import { type UnwrapQuery } from '../evoluUtils';
 import { normalizeLabel } from './normalizeLabel';
 
 export const AccountEvoluId = id('AccountEvoluId');

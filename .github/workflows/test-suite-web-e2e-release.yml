@@ -58,7 +58,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           ref: ${{ needs.extract-branch.outputs.branch }}
 
@@ -93,6 +93,7 @@ jobs:
       currents-project-id: "Og0NOQ"
       release-build: ${{ needs.extract-branch.outputs.release_build }}
       run-reporter: ${{ inputs.publish_results_to_github == true }}
+      download-artifact-name: "connect-explorer-webextension-dev.suite.sldev.cz"
     secrets:
       currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
       e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}

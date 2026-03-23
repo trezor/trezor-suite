@@ -4,7 +4,7 @@ import { ERRORS } from '@trezor/connect-common/src/constants';
 import { bip32 } from '@trezor/utxo-lib';
 import type { BIP32Interface, Network } from '@trezor/utxo-lib';
 
-import { PROTO } from '../constants';
+import type { PROTO } from '../constants';
 
 const pubNode2bjsNode = (node: PROTO.HDNodeType, network?: Network) => {
     const chainCode = Buffer.from(node.chain_code, 'hex');

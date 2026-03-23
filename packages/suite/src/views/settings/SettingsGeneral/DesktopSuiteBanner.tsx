@@ -4,13 +4,13 @@ import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
 
 import { events } from '@suite/analytics';
+import { setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { Box, Button, H2, Icon, IconButton, Image, Paragraph, Row } from '@trezor/components';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { spacings, spacingsPx } from '@trezor/theme';
 import { SUITE_URL } from '@trezor/urls';
 
-import { setFlag } from 'src/actions/suite/suiteActions';
 import { useDispatch } from 'src/hooks/suite/useDispatch';
 import { useAnalytics } from 'src/support/useAnalytics';
 
@@ -70,7 +70,11 @@ export const DesktopSuiteBanner = () => {
                 <Container
                     key="container"
                     onAnimationComplete={() =>
-                        dispatch(dispatch(setFlag('showSettingsDesktopAppPromoBanner', false)))
+                        dispatch(
+                            dispatch(
+                                setFlag({ key: 'showSettingsDesktopAppPromoBanner', value: false }),
+                            ),
+                        )
                     }
                     {...bannerAnimationConfig}
                 >

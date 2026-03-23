@@ -7,13 +7,14 @@
     "main": "src/index",
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "test:unit": "yarn g:jest --coverage",
-        "type-check": "yarn g:tsc --build"
+        "test:unit": "yarn g:jest",
+        "type-check": "yarn g:tsc --build",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
         "@gorhom/bottom-sheet": "5.2.8",
-        "@react-navigation/native": "7.1.26",
-        "@react-navigation/native-stack": "7.9.0",
+        "@react-navigation/native": "7.1.28",
+        "@react-navigation/native-stack": "7.12.0",
         "@reduxjs/toolkit": "2.11.2",
         "@suite-common/device": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
@@ -36,9 +37,9 @@
         "@trezor/styles": "workspace:*",
         "@trezor/urls": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "react": "19.1.0",
-        "react-native": "0.81.5",
-        "react-native-reanimated": "~4.1.5",
+        "react": "19.2.4",
+        "react-native": "0.83.2",
+        "react-native-reanimated": "~4.2.1",
         "react-redux": "9.2.0"
     },
     "devDependencies": {

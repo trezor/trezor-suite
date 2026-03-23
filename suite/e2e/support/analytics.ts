@@ -1,12 +1,9 @@
 import { Page } from '@playwright/test';
 import { RequireExactlyOne } from 'type-fest';
 
-// Hack: direct import to prevent some nasty import cascade resulting in error while importing icons
-import { urlSearchParams } from '@suite/metadata/src/metadataUtils';
-
 import { step } from './common';
 import { expect } from './testExtends/customMatchers';
-import { EventPayload, Requests, SuiteDesktopAnalyticsEventsForE2e } from './types';
+import { EventPayload, SuiteDesktopAnalyticsEventsForE2e } from './types';
 
 type AnalyticsOptions = RequireExactlyOne<
     {
@@ -130,7 +127,7 @@ export class AnalyticsHelper {
 export class AnalyticsFixture {
     private page: Page;
     private lastRequestCount = 0;
-    requests: Requests = [];
+    requests: Record<string, string>[] = [];
 
     constructor(page: Page) {
         this.page = page;
@@ -163,8 +160,8 @@ export class AnalyticsFixture {
     async interceptAnalytics() {
         await this.page.route('**://data.trezor.io/suite/log/**', route => {
             const url = route.request().url();
-            const params = urlSearchParams(url);
-            this.requests.push(params);
+            const params = new URLSearchParams(url);
+            this.requests.push(Object.fromEntries(params.entries()));
             route.continue();
         });
     }

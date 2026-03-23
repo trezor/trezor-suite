@@ -2,19 +2,18 @@ import { produce } from 'immer';
 
 import type { ExperimentalFeature } from '@suite/experimental';
 import type { CountryCode } from '@suite-common/geolocation';
-import { OAuthServerEnvironment } from '@suite-common/metadata-types';
-import { Locale } from '@suite-common/suite-types';
+import { type OAuthServerEnvironment } from '@suite-common/metadata-types';
+import { type Locale } from '@suite-common/suite-types';
 import type { InvityServerEnvironment } from '@suite-common/trading';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
-import { ConnectSettings, TRANSPORT, TransportInfo } from '@trezor/connect';
+import { type ConnectSettings, TRANSPORT, type TransportInfo } from '@trezor/connect';
 import { isWeb } from '@trezor/env-utils';
-import { SuiteThemeVariant } from '@trezor/suite-desktop-api';
+import { type SuiteThemeVariant } from '@trezor/suite-desktop-api';
 
 import { STORAGE, SUITE } from 'src/actions/suite/constants';
-import { LOCK_TYPE } from 'src/actions/suite/constants/suiteConstants';
 import { SIDEBAR_WIDTH_NUMERIC } from 'src/constants/suite/layout';
-import { Action, TorBootstrap, TorStatus } from 'src/types/suite';
+import { type Action, type TorBootstrap, TorStatus } from 'src/types/suite';
 
 export interface SuiteRootState {
     suite: SuiteState;
@@ -45,35 +44,6 @@ type SuiteLifecycle =
     | { status: 'db-error'; error: 'blocking' | 'blocked' }
     // inconsistent IDB state detected, need to reset storage
     | { status: 'db-corrupted'; error: unknown };
-
-export interface Flags {
-    initialRun: boolean; // true on very first launch of Suite, will switch to false after completing onboarding process
-    // is not saved to storage at the moment, so for simplicity of types set to be optional now
-    // recoveryCompleted: boolean;
-    // pinCompleted: boolean;
-    // passphraseCompleted: boolean;
-    taprootBannerClosed: boolean; // banner in account view informing about advantages of using Taproot
-    firmwareTypeBannerClosed: boolean; // banner in Crypto settings suggesting switching firmware type
-    discreetModeCompleted: boolean; // dashboard UI, user tried discreet mode
-    securityStepsHidden: boolean; // dashboard UI
-    dashboardGraphHidden: boolean; // dashboard UI
-    dashboardAssetsGridMode: boolean; // dashboard UI
-    showTEXDashboardPromoBanner: boolean;
-    showTS7DashboardPromoBanner: boolean;
-    showSettingsDesktopAppPromoBanner: boolean;
-    stakeEthBannerClosed: boolean; // banner in account view (Overview tab) presenting ETH staking feature
-    stakeSolBannerClosed: boolean; // banner in account view (Overview tab) presenting SOL staking feature
-    stakeCardanoBannerClosed: boolean; // banner in account view (Overview tab) presenting Cardano staking feature
-    showDashboardStakingPromoBanner: boolean;
-    suspiciousTransactionsTooltipClosed: boolean;
-    showUnhideTokenModal: boolean;
-    showCopyAddressModal: boolean;
-    enableAutoupdateOnNextRun: boolean;
-    showBluetoothDebugInfo: boolean;
-    stellarLimitedHistoryBannerClosed: boolean; // banner in account view (Overview tab) presenting limited history for Stellar
-    solanaLimitedHistoryBannerClosed: boolean; // banner in account view (Overview tab) presenting limited history for Solana
-    hasSeenDisconnectTooltip: boolean; // tooltip shown when device disconnects - show only once ever
-}
 
 export interface EvmSettings {
     confirmExplanationModalClosed: Partial<Record<NetworkSymbol, Record<string, boolean>>>;
@@ -121,8 +91,6 @@ export interface SuiteState {
     torBootstrap: TorBootstrap | null;
     lifecycle: SuiteLifecycle;
     transport?: TransportState;
-    locks: Record<(typeof SUITE.LOCK_TYPE)[keyof typeof SUITE.LOCK_TYPE], number>;
-    flags: Flags;
     evmSettings: EvmSettings;
     countryCode: CountryCode | null;
     prefillFields: PrefillFields;
@@ -137,38 +105,6 @@ const initialState: SuiteState = {
     torStatus: TorStatus.Disabled,
     torBootstrap: null,
     lifecycle: { status: 'initial' },
-    locks: {
-        [LOCK_TYPE.UI]: 0,
-        [LOCK_TYPE.ROUTER]: 0,
-        [LOCK_TYPE.DEVICE]: 0,
-    },
-    flags: {
-        initialRun: true,
-        // recoveryCompleted: false;
-        // pinCompleted: false;
-        // passphraseCompleted: false;
-        discreetModeCompleted: false,
-        taprootBannerClosed: false,
-        firmwareTypeBannerClosed: false,
-        securityStepsHidden: false,
-        dashboardGraphHidden: false,
-        dashboardAssetsGridMode: true,
-        showTEXDashboardPromoBanner: true,
-        showTS7DashboardPromoBanner: true,
-        showSettingsDesktopAppPromoBanner: true,
-        stakeEthBannerClosed: false,
-        stakeSolBannerClosed: false,
-        stakeCardanoBannerClosed: false,
-        showDashboardStakingPromoBanner: true,
-        suspiciousTransactionsTooltipClosed: false,
-        showCopyAddressModal: true,
-        showUnhideTokenModal: true,
-        enableAutoupdateOnNextRun: false,
-        showBluetoothDebugInfo: false,
-        stellarLimitedHistoryBannerClosed: false,
-        solanaLimitedHistoryBannerClosed: false,
-        hasSeenDisconnectTooltip: false,
-    },
     evmSettings: {
         confirmExplanationModalClosed: {},
         explanationBannerClosed: {},
@@ -217,26 +153,10 @@ const initialState: SuiteState = {
 
 export const suiteInitialState = initialState;
 
-const changeLock = (
-    draft: SuiteState,
-    lock: (typeof SUITE.LOCK_TYPE)[keyof typeof SUITE.LOCK_TYPE],
-    enabled: boolean,
-) => {
-    draft.locks[lock] = Math.max(draft.locks[lock] + (enabled ? 1 : -1), 0);
-};
-
-const setFlag = (draft: SuiteState, key: keyof Flags, value: boolean) => {
-    draft.flags[key] = value;
-};
-
 const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteState =>
     produce(state, draft => {
         switch (action.type) {
             case STORAGE.LOAD:
-                draft.flags = {
-                    ...draft.flags,
-                    ...action.payload.suiteSettings?.flags,
-                };
                 draft.evmSettings = {
                     ...draft.evmSettings,
                     ...action.payload.suiteSettings?.evmSettings,
@@ -281,10 +201,6 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
 
             case SUITE.SET_EXPERIMENTAL_FEATURES:
                 draft.settings.experimental = action.payload.enabledFeatures;
-                break;
-
-            case SUITE.SET_FLAG:
-                setFlag(draft, action.key, action.value);
                 break;
 
             case SUITE.SET_RECENTLY_CONNECTED_DEVICE:
@@ -406,18 +322,6 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
             case SUITE.TOGGLE_ENTROPY_CHECK:
                 draft.settings.enabledSecurityChecks.entropy = action.payload;
                 break;
-            case SUITE.LOCK_UI:
-                changeLock(draft, SUITE.LOCK_TYPE.UI, action.payload);
-                break;
-
-            case SUITE.LOCK_DEVICE:
-                changeLock(draft, SUITE.LOCK_TYPE.DEVICE, action.payload);
-                break;
-
-            case SUITE.LOCK_ROUTER:
-                changeLock(draft, SUITE.LOCK_TYPE.ROUTER, action.payload);
-                break;
-
             // no default
         }
     });

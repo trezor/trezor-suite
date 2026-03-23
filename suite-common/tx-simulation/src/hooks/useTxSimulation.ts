@@ -1,4 +1,4 @@
-import { TxSimulationAction } from '@suite-common/wallet-types';
+import { type TxSimulationAction } from '@suite-common/wallet-types';
 
 import { type TxSimulationEVMResult, useTxSimulationEVM } from './useTxSimulationEVM';
 import {

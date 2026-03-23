@@ -2,7 +2,7 @@ import { FreeFocusInside } from 'react-focus-lock';
 
 import { AnimatePresence, motion } from 'framer-motion';
 
-import { ActiveView } from '@suite-common/suite-types';
+import { type ActiveView } from '@suite-common/suite-types';
 import { Box, Modal, variables } from '@trezor/components';
 import { useOnce } from '@trezor/react-utils';
 import { borders, spacings, zIndices } from '@trezor/theme';

@@ -1,7 +1,7 @@
 import {
-    PreloadedState,
+    type PreloadedState,
     act,
-    renderWithStoreProviderAsync,
+    renderWithStoreProvider,
     screen,
     userEvent,
 } from '@suite-native/test-utils';
@@ -28,7 +28,7 @@ describe('SellTabContent', () => {
     });
 
     const renderSellTabContent = (preloadedState?: PreloadedState) =>
-        renderWithStoreProviderAsync(<SellTabContent />, { preloadedState });
+        renderWithStoreProvider(<SellTabContent />, { preloadedState });
 
     const expectSkeleton = () => {
         expect(screen.getAllByTestId('BoxSkeleton').length).toBeGreaterThan(0);
@@ -42,50 +42,50 @@ describe('SellTabContent', () => {
         expect(screen.getByText("It's not you, it's us.")).toBeOnTheScreen();
     };
 
-    it('should render Sell skeleton when isLoading is true', async () => {
+    it('should render Sell skeleton when isLoading is true', () => {
         mockUseSellData.mockReturnValue({
             isLoading: true,
             lastLoadedTimestamp: 1,
             isFullyLoaded: false,
         });
 
-        await renderSellTabContent();
+        renderSellTabContent();
 
         expectSkeleton();
     });
 
-    it('should render Sell skeleton when lastLoadedTimestamp is 0', async () => {
+    it('should render Sell skeleton when lastLoadedTimestamp is 0', () => {
         mockUseSellData.mockReturnValue({
             isLoading: false,
             lastLoadedTimestamp: 0,
             isFullyLoaded: false,
         });
 
-        await renderSellTabContent();
+        renderSellTabContent();
 
         expectSkeleton();
     });
 
-    it('should render Sell form when isLoading is false, lastLoadedTimestamp is greater than 0 and isFullyLoaded true', async () => {
+    it('should render Sell form when isLoading is false, lastLoadedTimestamp is greater than 0 and isFullyLoaded true', () => {
         mockUseSellData.mockReturnValue({
             isLoading: false,
             lastLoadedTimestamp: 1,
             isFullyLoaded: true,
         });
 
-        await renderSellTabContent();
+        renderSellTabContent();
 
         expectSellForm();
     });
 
-    it('should render server error info when isLoading is false, lastLoadedTimestamp is greater than 0 and isFullyLoaded false', async () => {
+    it('should render server error info when isLoading is false, lastLoadedTimestamp is greater than 0 and isFullyLoaded false', () => {
         mockUseSellData.mockReturnValue({
             isLoading: false,
             lastLoadedTimestamp: 1,
             isFullyLoaded: false,
         });
 
-        await renderSellTabContent();
+        renderSellTabContent();
 
         expectServerOffline();
     });
@@ -103,7 +103,7 @@ describe('SellTabContent', () => {
                 isFullyLoaded: true,
             });
 
-        const { getByText } = await renderSellTabContent();
+        const { getByText } = renderSellTabContent();
 
         const reloadButton = getByText('Try again');
 

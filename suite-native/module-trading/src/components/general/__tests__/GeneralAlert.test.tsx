@@ -1,6 +1,6 @@
 import { renderWithBasicProvider } from '@suite-native/test-utils';
 
-import { GeneralAlert, GeneralAlertProps } from '../GeneralAlert';
+import { GeneralAlert, type GeneralAlertProps } from '../GeneralAlert';
 
 describe('GeneralAlert', () => {
     const renderGeneralAlert = (props: GeneralAlertProps) =>

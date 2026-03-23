@@ -17,7 +17,7 @@ jobs:
       COMMIT_HASH: "e2e-test" # it has to be hardcoded to avoid the fingerprint change
     steps:
       - name: Checkout project
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           submodules: "true"
 
@@ -33,13 +33,13 @@ jobs:
           large-packages: false
 
       - name: Install node and yarn
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version-file: ".nvmrc"
           cache: yarn
 
       - name: Setup node_modules cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: node_modules
           key: node_modules-${{ hashFiles('yarn.lock') }}
@@ -156,7 +156,7 @@ jobs:
         run: aws s3 cp . s3://dev.suite.sldev.cz/suite-mobile/${{ steps.expo-fingerprint.outputs.HASH }}/ --recursive
 
       - name: Upload Android build artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: android-test-build-${{ github.run_id }}
           path: suite-native/app/android/app/build/

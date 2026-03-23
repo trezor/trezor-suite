@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 
-import { Meta, StoryObj } from '@storybook/react';
+import { type Meta, type StoryObj } from '@storybook/react';
 
 import { spacings } from '@trezor/theme';
 
-import { Tabs as TabsComponent, TabsProps } from './Tabs';
+import { Tabs as TabsComponent, type TabsProps } from './Tabs';
 import { tabsSizes } from './types';
 import { Column } from '../Flex/Flex';
 

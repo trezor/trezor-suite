@@ -1,8 +1,8 @@
-import { AccountKey, FeeLevelLabel, TokenAddress } from '@suite-common/wallet-types';
+import { type AccountKey, type FeeLevelLabel, type TokenAddress } from '@suite-common/wallet-types';
 
 import { useFeeCalculation } from './useFeeCalculation';
 import { useFeeSelection } from './useFeeSelection';
-import { UpdateSelectedFeeLevelThunkParams } from '../../types';
+import { type UpdateSelectedFeeLevelThunkParams } from '../../types';
 
 type UseFeesManagementParams = {
     accountKey: AccountKey;

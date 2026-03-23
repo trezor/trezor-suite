@@ -1,4 +1,4 @@
-import { AnyAction, createSliceWithExtraDeps } from '@suite-common/redux-utils';
+import { type AnyAction, createSliceWithExtraDeps } from '@suite-common/redux-utils';
 import {
     quotaManagerInitialState,
     suiteSyncQuotaManagerReducer,

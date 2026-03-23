@@ -15,11 +15,11 @@ import {
 } from '@suite-native/device';
 import { ConnectDeviceScreenHeader } from '@suite-native/device-authorization';
 import {
-    AuthorizeDeviceStackParamList,
-    AuthorizeDeviceStackRoutes,
-    RootStackParamList,
+    type AuthorizeDeviceStackParamList,
+    type AuthorizeDeviceStackRoutes,
+    type RootStackParamList,
     Screen,
-    StackToStackCompositeScreenProps,
+    type StackToStackCompositeScreenProps,
 } from '@suite-native/navigation';
 
 export const DeviceConnectionGuardScreen = ({

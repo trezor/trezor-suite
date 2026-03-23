@@ -1,7 +1,7 @@
 import { D, pipe } from '@mobily/ts-belt';
 
-import { NativeFont } from './fontFamilies';
-import { FontWeightValue, fontWeights } from './fontWeights';
+import { type NativeFont } from './fontFamilies';
+import { type FontWeightValue, fontWeights } from './fontWeights';
 
 export const nativeTypographyStyles = [
     'headline-lg',

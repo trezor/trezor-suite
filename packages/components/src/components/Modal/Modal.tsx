@@ -1,10 +1,10 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { useEvent } from 'react-use';
 
 import styled from 'styled-components';
 
 import {
-    Elevation,
+    type Elevation,
     borders,
     mapElevationToBackground,
     negativeSpacings,
@@ -16,14 +16,14 @@ import { ModalBackdrop } from './ModalBackdrop';
 import { ModalButton } from './ModalButton';
 import { ModalContext } from './ModalContext';
 import { ModalProvider } from './ModalProvider';
-import { ModalAlignment, ModalIntent, ModalWidth } from './types';
-import { FrameProps, FramePropsKeys, Padding } from '../../utils/frameProps';
+import { type ModalAlignment, type ModalIntent, type ModalWidth } from './types';
+import { type FrameProps, type FramePropsKeys, type Padding } from '../../utils/frameProps';
 import { useScrollShadow } from '../../utils/useScrollShadow';
 import { Box } from '../Box/Box';
 import { Divider } from '../Divider/Divider';
 import { ElevationContext, ElevationUp, useElevation } from '../ElevationContext/ElevationContext';
 import { Column, Row } from '../Flex/Flex';
-import { IconName } from '../Icon/Icon';
+import { type IconName } from '../Icon/Icon';
 import { IconCircle } from '../IconCircle/IconCircle';
 import { IconButton } from '../buttons/IconButton/IconButton';
 import { H3 } from '../typography/Heading/Heading';

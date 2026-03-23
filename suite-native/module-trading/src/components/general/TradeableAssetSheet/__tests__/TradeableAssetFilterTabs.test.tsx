@@ -1,5 +1,5 @@
-import { Network } from '@suite-common/wallet-config';
-import { fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { type Network } from '@suite-common/wallet-config';
+import { fireEvent, renderWithStoreProvider } from '@suite-native/test-utils';
 
 import { TradeableAssetFilterTabs } from '../TradeableAssetFilterTabs';
 
@@ -23,7 +23,7 @@ jest.mock('@suite-native/discovery', () => {
 
 describe('TradeableAssetFilterTabs', () => {
     const renderComponent = (onSelectedNetworkFilter = jest.fn()) =>
-        renderWithStoreProviderAsync(
+        renderWithStoreProvider(
             <TradeableAssetFilterTabs
                 visible={true}
                 animationDuration={300}
@@ -31,16 +31,16 @@ describe('TradeableAssetFilterTabs', () => {
             />,
         );
 
-    it('should render all filter tabs including "All" option', async () => {
-        const { getByText } = await renderComponent();
+    it('should render all filter tabs including "All" option', () => {
+        const { getByText } = renderComponent();
 
         expect(getByText('All')).toBeTruthy();
         expect(getByText('Bitcoin')).toBeTruthy();
         expect(getByText('Ethereum')).toBeTruthy();
     });
 
-    it('should not render anything when visible is false', async () => {
-        const { queryByText } = await renderWithStoreProviderAsync(
+    it('should not render anything when visible is false', () => {
+        const { queryByText } = renderWithStoreProvider(
             <TradeableAssetFilterTabs
                 visible={false}
                 animationDuration={300}
@@ -53,18 +53,18 @@ describe('TradeableAssetFilterTabs', () => {
         expect(queryByText('Ethereum')).toBeNull();
     });
 
-    it('should call onSelectedNetworkFilter with undefined when "All" is selected', async () => {
+    it('should call onSelectedNetworkFilter with undefined when "All" is selected', () => {
         const onSelectedNetworkFilter = jest.fn();
-        const { getByText } = await renderComponent(onSelectedNetworkFilter);
+        const { getByText } = renderComponent(onSelectedNetworkFilter);
 
         fireEvent.press(getByText('All'));
 
         expect(onSelectedNetworkFilter).toHaveBeenCalledWith(undefined);
     });
 
-    it('should call onSelectedNetworkFilter with network symbol when network tab is selected', async () => {
+    it('should call onSelectedNetworkFilter with network symbol when network tab is selected', () => {
         const onSelectedNetworkFilter = jest.fn();
-        const { getByText } = await renderComponent(onSelectedNetworkFilter);
+        const { getByText } = renderComponent(onSelectedNetworkFilter);
 
         fireEvent.press(getByText('Bitcoin'));
 

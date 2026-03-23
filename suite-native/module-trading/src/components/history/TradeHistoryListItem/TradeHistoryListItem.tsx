@@ -4,8 +4,8 @@ import { useSelector } from 'react-redux';
 
 import { useFormatters } from '@suite-common/formatters';
 import {
-    TradingRootState,
-    TradingTransaction,
+    type TradingRootState,
+    type TradingTransaction,
     selectTradingProviderByNameAndTradeType,
 } from '@suite-common/trading';
 import { Card, HStack, Text, VStack } from '@suite-native/atoms';

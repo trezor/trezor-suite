@@ -1,4 +1,4 @@
-export * from './types';
+export type * from './types';
 export * from './bluetoothSlice';
 export * from './bluetoothThunks';
 export * from './selectors';

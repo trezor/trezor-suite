@@ -1,4 +1,4 @@
-import { ChainedTransactions } from '@suite-common/wallet-types';
+import { type ChainedTransactions } from '@suite-common/wallet-types';
 
 type CalculateRbfFeeParams = {
     chainedTxs: ChainedTransactions;

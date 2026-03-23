@@ -5,11 +5,11 @@ import { Translation } from '@suite/intl';
 import { CARDANO_EVERSTAKE_DREP } from '@suite-common/wallet-constants';
 import {
     DEFAULT_VOTING_OPTION,
-    VotingDelegationOption,
+    type VotingDelegationOption,
     selectVotingDelegationOption,
     stakeActions,
 } from '@suite-common/wallet-core';
-import { SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { validateCardanoDrep } from '@suite-common/wallet-utils';
 import { Card, Column, Modal, Tooltip } from '@trezor/components';
 

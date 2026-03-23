@@ -1,5 +1,5 @@
 import { renderWithBasicProvider } from '@suite-native/test-utils';
-import { ProviderConfirmationStatus } from '@suite-native/trading-types';
+import { type ProviderConfirmationStatus } from '@suite-native/trading-types';
 
 import { ProviderConfirmationStatusInfo } from '../ProviderConfirmationStatusInfo';
 

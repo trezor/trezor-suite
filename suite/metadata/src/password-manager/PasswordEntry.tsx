@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { Translation } from '@suite/intl';
 import type { PasswordEntry as PasswordEntryType } from '@suite-common/metadata-types';
 import { Button, Column, H3, Modal, Paragraph } from '@trezor/components';
-import TrezorConnect, { DeviceUniquePath } from '@trezor/connect';
+import TrezorConnect, { type DeviceUniquePath } from '@trezor/connect';
 import { spacings, spacingsPx } from '@trezor/theme';
 
 import { EntryForm } from './EntryForm';

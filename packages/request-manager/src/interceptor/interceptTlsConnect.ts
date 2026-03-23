@@ -2,7 +2,7 @@ import tls from 'tls';
 
 import { isWhitelistedHost } from '@trezor/utils';
 
-import { Interceptor } from './interceptorTypes';
+import { type Interceptor } from './interceptorTypes';
 
 export const interceptTlsConnect: Interceptor = ({ context, validateRequest }) => {
     const originalTlsConnect = tls.connect;

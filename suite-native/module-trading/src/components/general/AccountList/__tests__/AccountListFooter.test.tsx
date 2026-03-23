@@ -1,6 +1,7 @@
+import { getTranslation } from '@suite-native/intl';
 import { act, fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
 
-import { AccountListFooter, AccountsListFooterProps } from '../AccountListFooter';
+import { AccountListFooter, type AccountsListFooterProps } from '../AccountListFooter';
 
 describe('AccountListFooter', () => {
     const renderAccountsListFooter = (props: Partial<AccountsListFooterProps>) =>
@@ -11,13 +12,13 @@ describe('AccountListFooter', () => {
     it('should not render "OR" when hasTextualDivider props is false', () => {
         const { queryByText } = renderAccountsListFooter({ hasTextualDivider: false });
 
-        expect(queryByText('OR')).toBeNull();
+        expect(queryByText(getTranslation('generic.orSeparator'))).toBeNull();
     });
 
     it('should render "OR" when hasTextualDivider props is true', () => {
         const { getByText } = renderAccountsListFooter({ hasTextualDivider: true });
 
-        expect(getByText('OR')).toBeTruthy();
+        expect(getByText(getTranslation('generic.orSeparator'))).toBeTruthy();
     });
 
     it('should call onAddAccountTap callback on "Add new" button press', () => {
@@ -25,7 +26,11 @@ describe('AccountListFooter', () => {
         const { getByText } = renderAccountsListFooter({ onAddAccountTap });
 
         act(() => {
-            fireEvent.press(getByText('Add new'));
+            fireEvent.press(
+                getByText(
+                    getTranslation('moduleAddAccounts.coinDiscoveryFinishedScreen.addButton'),
+                ),
+            );
         });
 
         expect(onAddAccountTap).toHaveBeenCalledTimes(1);

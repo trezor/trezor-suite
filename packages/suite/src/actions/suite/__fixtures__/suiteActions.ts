@@ -2,12 +2,11 @@ import { deviceActions } from '@suite-common/device';
 import { mockConnectDevice, mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { selectNewlyConnectedDeviceThunk } from '@suite-common/wallet-core';
-import { DEVICE, Device, TRANSPORT } from '@trezor/connect';
+import { DEVICE, type Device, TRANSPORT } from '@trezor/connect';
 
 import { SUITE } from 'src/actions/suite/constants';
-import { AppState, TorStatus } from 'src/types/suite';
+import { type AppState, TorStatus } from 'src/types/suite';
 
-import { SuiteState } from '../../../reducers/suite/suiteReducer';
 import * as suiteActions from '../suiteActions';
 
 const SUITE_DEVICE = mockSuiteDevice({ path: '1' });
@@ -65,21 +64,6 @@ const reducerActions = [
                 },
             },
         ],
-    },
-    {
-        description: `lockUI (true/false)`,
-        actions: [suiteActions.lockUI(true), suiteActions.lockUI(false)],
-        result: [{ locks: { ui: 1 } }, { locks: { ui: 0 } }],
-    },
-    {
-        description: `lockDevice (true/false)`,
-        actions: [suiteActions.lockDevice(true), suiteActions.lockDevice(false)],
-        result: [{ locks: { device: 1 } }, { locks: { device: 0 } }],
-    },
-    {
-        description: `lockRouter (true/false)`,
-        actions: [suiteActions.lockRouter(true), suiteActions.lockRouter(false)],
-        result: [{ locks: { router: 1 } }, { locks: { router: 0 } }],
     },
     {
         description: `updateOnlineStatus (true/false)`,
@@ -149,41 +133,6 @@ const reducerActions = [
                 },
             },
         ],
-    },
-];
-
-const initialRun: Array<{ description: string; state?: Partial<SuiteState> }> = [
-    {
-        description: `initialRunCompleted (initialRun = true)`,
-    },
-    {
-        description: `initialRunCompleted (initialRun = false)`,
-        state: {
-            flags: {
-                initialRun: false,
-                discreetModeCompleted: false,
-                taprootBannerClosed: false,
-                firmwareTypeBannerClosed: false,
-                dashboardGraphHidden: false,
-                securityStepsHidden: false,
-                dashboardAssetsGridMode: true,
-                showTEXDashboardPromoBanner: true,
-                showTS7DashboardPromoBanner: true,
-                showSettingsDesktopAppPromoBanner: true,
-                stakeEthBannerClosed: false,
-                stakeSolBannerClosed: false,
-                stakeCardanoBannerClosed: false,
-                suspiciousTransactionsTooltipClosed: false,
-                showDashboardStakingPromoBanner: true,
-                showCopyAddressModal: true,
-                showUnhideTokenModal: true,
-                enableAutoupdateOnNextRun: false,
-                showBluetoothDebugInfo: false,
-                stellarLimitedHistoryBannerClosed: false,
-                solanaLimitedHistoryBannerClosed: false,
-                hasSeenDisconnectTooltip: false,
-            },
-        },
     },
 ];
 
@@ -358,225 +307,6 @@ const markDeviceAsRecentlyConnected: MarkDeviceAsRecentlyConnectedFixture[] = [
         },
         newlyConnectedDevice: { ...CONNECT_DEVICE, id: 'a-different-id' } as Device,
         isSetAsRecentlyConnected: true,
-    },
-];
-
-const handleDeviceDisconnect = [
-    {
-        description: `no selected device in reducer`,
-        state: {},
-        device: CONNECT_DEVICE,
-    },
-    {
-        description: `disconnect not selected device`,
-        state: {
-            suite: {},
-            device: { selectedDevice: SUITE_DEVICE },
-        },
-        device: mockConnectDevice({
-            path: '2',
-        }),
-    },
-    {
-        description: `disconnected selected device`,
-        state: {
-            suite: {},
-            device: {
-                selectedDevice: SUITE_DEVICE,
-                devices: [SUITE_DEVICE],
-            },
-        },
-        device: CONNECT_DEVICE,
-        result: {
-            payload: undefined,
-        },
-    },
-    {
-        description: `disconnected selected remembered device (no action)`,
-        state: {
-            suite: {},
-            device: {
-                selectedDevice: SUITE_DEVICE,
-                devices: [
-                    mockSuiteDevice({
-                        path: '1',
-                        state: { staticSessionId: '1stTestnetAddress@device_b_id:0' },
-                        remember: true,
-                    }),
-                ],
-            },
-        },
-        device: CONNECT_DEVICE,
-    },
-    {
-        description: `disconnected selected device (3 instances: 2 remembered, 1 stateless which will be removed, no action)`,
-        state: {
-            suite: {},
-            device: {
-                selectedDevice: SUITE_DEVICE,
-                devices: [
-                    SUITE_DEVICE,
-                    mockSuiteDevice({
-                        path: '1',
-                        state: { staticSessionId: '1stTestnetAddress@device_a_id:0' },
-                        instance: 2,
-                        remember: true,
-                    }),
-                    mockSuiteDevice({
-                        path: '1',
-                        state: { staticSessionId: '1stTestnetAddress@device_b_id:0' },
-                        instance: 1,
-                        remember: true,
-                    }),
-                ],
-            },
-        },
-        device: CONNECT_DEVICE,
-        result: {
-            type: deviceActions.selectDevice.type,
-            payload: mockSuiteDevice({
-                state: { staticSessionId: '1stTestnetAddress@device_b_id:0' },
-                instance: 1,
-                remember: true,
-            }),
-        },
-    },
-    {
-        description: `switch to first unacquired device`,
-        state: {
-            suite: {},
-            device: {
-                selectedDevice: SUITE_DEVICE,
-                devices: [
-                    SUITE_DEVICE,
-                    mockSuiteDevice({
-                        type: 'unacquired',
-                        path: '3',
-                    }),
-                    mockSuiteDevice({
-                        type: 'unacquired',
-                        path: '2',
-                    }),
-                    mockSuiteDevice(
-                        {
-                            path: '4',
-                        },
-                        {
-                            device_id: '4',
-                        },
-                    ),
-                ],
-            },
-        },
-        device: CONNECT_DEVICE,
-        result: {
-            payload: mockSuiteDevice({
-                type: 'unacquired',
-                path: '3',
-            }),
-        },
-    },
-    {
-        description: `switch to first connected device`,
-        state: {
-            suite: {},
-            device: {
-                selectedDevice: SUITE_DEVICE,
-                devices: [
-                    mockSuiteDevice(
-                        {
-                            path: '2',
-                        },
-                        {
-                            device_id: '2',
-                        },
-                    ),
-                    mockSuiteDevice(
-                        {
-                            path: '3',
-                            connected: true,
-                            ts: 1,
-                        },
-                        {
-                            device_id: '3',
-                        },
-                    ),
-                    mockSuiteDevice(
-                        {
-                            path: '4',
-                            connected: true,
-                            ts: 2,
-                        },
-                        {
-                            device_id: '4',
-                        },
-                    ),
-                ],
-            },
-        },
-        device: CONNECT_DEVICE,
-        result: {
-            payload: mockSuiteDevice(
-                {
-                    connected: true,
-                    path: '4',
-                    ts: 2,
-                },
-                {
-                    device_id: '4',
-                },
-            ),
-        },
-    },
-    {
-        description: `switch to recently used device`,
-        state: {
-            suite: {},
-            device: {
-                selectedDevice: SUITE_DEVICE,
-                devices: [
-                    mockSuiteDevice(
-                        {
-                            path: '2',
-                            ts: 2,
-                        },
-                        {
-                            device_id: '2',
-                        },
-                    ),
-                    mockSuiteDevice(
-                        {
-                            path: '3',
-                            ts: 3,
-                        },
-                        {
-                            device_id: '3',
-                        },
-                    ),
-                    mockSuiteDevice(
-                        {
-                            path: '4',
-                            ts: 1,
-                        },
-                        {
-                            device_id: '4',
-                        },
-                    ),
-                ],
-            },
-        },
-        device: CONNECT_DEVICE,
-        result: {
-            payload: mockSuiteDevice(
-                {
-                    path: '3',
-                    ts: 3,
-                },
-                {
-                    device_id: '3',
-                },
-            ),
-        },
     },
 ];
 
@@ -775,10 +505,8 @@ const acquireDevice = [
 
 export default {
     reducerActions,
-    initialRun,
     selectDevice,
     markDeviceAsRecentlyConnected,
-    handleDeviceDisconnect,
     forgetDisconnectedDevices,
     observeSelectedDevice,
     acquireDevice,

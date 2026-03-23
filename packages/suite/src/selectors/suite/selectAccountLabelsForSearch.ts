@@ -8,10 +8,10 @@ import {
     selectAllLabelsForAccount,
     selectIsSuiteSyncEnabled,
 } from '@suite-common/suite-sync';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 
-import { AppState } from 'src/types/suite';
+import { type AppState } from 'src/types/suite';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<AppState>();
 

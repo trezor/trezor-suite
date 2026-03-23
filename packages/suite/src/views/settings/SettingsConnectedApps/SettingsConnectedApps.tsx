@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 
 import { Translation } from '@suite/intl';
+import { goto } from '@suite/router';
 import { Column, Icon, Row, SubTabs } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 import { spacings } from '@trezor/theme';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch } from 'src/hooks/suite';
 
 import { ConnectPermissions } from './ConnectPermissions';
@@ -35,7 +35,7 @@ export const SettingsConnectedApps = () => {
 
     useEffect(() => {
         if (tabs.length === 0) {
-            dispatch(goto('settings-index'));
+            dispatch(goto({ routeName: 'settings-index' }));
         }
     }, [tabs.length, dispatch]);
 

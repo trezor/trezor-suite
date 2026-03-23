@@ -4,20 +4,24 @@ import { useSelector } from 'react-redux';
 import { useRoute } from '@react-navigation/native';
 
 import {
-    AccountsRootState,
+    type AccountsRootState,
     selectAccountNetworkSymbol,
     useDisplayBaseCurrency,
 } from '@suite-common/wallet-core';
 import { events } from '@suite-native/analytics';
-import { ActiveView, AnimatedDoubleInput, HStack, Text, VStack } from '@suite-native/atoms';
+import { type ActiveView, AnimatedDoubleInput, HStack, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { SendStackParamList, SendStackRoutes, StackProps } from '@suite-native/navigation';
+import {
+    type SendStackParamList,
+    type SendStackRoutes,
+    type StackProps,
+} from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
 
 import { AmountErrorMessage } from './AmountErrorMessage';
 import { CryptoAmountInput } from './CryptoAmountInput';
 import { FiatAmountInput } from './FiatAmountInput';
-import { SendMaxButton } from './SendMaxButton';
+import { SendMaxSwitch } from './SendMaxSwitch';
 
 type AmountInputProps = {
     index: number;
@@ -53,7 +57,7 @@ export const AmountInputs = ({ index }: AmountInputProps) => {
                         <Translation id="moduleSend.outputs.recipients.amountLabel" />
                     </Text>
                 </Animated.View>
-                <SendMaxButton
+                <SendMaxSwitch
                     outputIndex={index}
                     accountKey={accountKey}
                     tokenContract={tokenContract}

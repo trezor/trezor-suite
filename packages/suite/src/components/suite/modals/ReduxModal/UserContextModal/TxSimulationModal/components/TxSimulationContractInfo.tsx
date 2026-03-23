@@ -1,6 +1,6 @@
 import { Translation } from '@suite/intl';
-import { TransactionSimulation } from '@suite-common/tx-simulation';
-import { Network, getExplorerUrl } from '@suite-common/wallet-config';
+import { type TransactionSimulation } from '@suite-common/tx-simulation';
+import { type Network, getExplorerUrl } from '@suite-common/wallet-config';
 import { selectExplorer } from '@suite-common/wallet-core';
 import { CollapsibleBox, Column, H4, Link, Row, Text } from '@trezor/components';
 

@@ -1,15 +1,15 @@
 import { selectSelectedDevice } from '@suite-common/device';
-import { TrezorDevice } from '@suite-common/suite-types';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type TrezorDevice } from '@suite-common/suite-types';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     selectAccountsByDeviceState,
     selectDiscoveryByDevicePath,
 } from '@suite-common/wallet-core';
-import { Account, DiscoveryStatus } from '@suite-common/wallet-types';
+import { type Account, type DiscoveryStatus } from '@suite-common/wallet-types';
 
-import { AppState } from 'src/types/suite';
+import { type AppState } from 'src/types/suite';
 
-import { DiscoveryStatusType } from '../../types/wallet';
+import { type DiscoveryStatusType } from '../../types/wallet';
 
 type GetDiscoveryStatusParams = {
     device: TrezorDevice | undefined;

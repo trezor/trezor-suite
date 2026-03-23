@@ -4,7 +4,7 @@ import { ICON_NAMES } from '@suite-native/icons';
 
 import {
     FullAlertBox as FullAlertBoxComponent,
-    FullAlertBoxProps,
+    type FullAlertBoxProps,
 } from '../../FullAlertBox/FullAlertBox';
 import { FULL_ALERT_BOX_VARIANTS } from '../../FullAlertBox/presets';
 

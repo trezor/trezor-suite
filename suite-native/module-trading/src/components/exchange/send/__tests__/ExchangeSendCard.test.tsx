@@ -1,11 +1,11 @@
 import { Form } from '@suite-native/forms';
 import {
     act,
-    renderHookWithStoreProviderAsync,
-    renderWithStoreProviderAsync,
+    renderHookWithStoreProvider,
+    renderWithStoreProvider,
 } from '@suite-native/test-utils';
 import { getWalletState, usdcAsset } from '@suite-native/trading-fixtures';
-import { ExchangeFormType } from '@suite-native/trading-types';
+import { type ExchangeFormType } from '@suite-native/trading-types';
 
 import { useExchangeForm } from '../../../../hooks/exchange/useExchangeForm';
 import { ExchangeSendCard } from '../ExchangeSendCard';
@@ -13,28 +13,25 @@ import { ExchangeSendCard } from '../ExchangeSendCard';
 describe('ExchangeSendCard', () => {
     let form: ExchangeFormType;
 
-    const renderForm = () => renderHookWithStoreProviderAsync(() => useExchangeForm());
+    const renderForm = () => renderHookWithStoreProvider(() => useExchangeForm());
 
     const renderExchangeSendCard = (isAmountInputActive: boolean) =>
-        renderWithStoreProviderAsync(
-            <ExchangeSendCard isAmountInputActive={isAmountInputActive} />,
-            {
-                wrapper: ({ children }) => <Form form={form}>{children}</Form>,
-                preloadedState: { wallet: getWalletState() },
-            },
-        );
+        renderWithStoreProvider(<ExchangeSendCard isAmountInputActive={isAmountInputActive} />, {
+            wrapper: ({ children }) => <Form form={form}>{children}</Form>,
+            preloadedState: { wallet: getWalletState() },
+        });
 
-    beforeEach(async () => {
-        const { result } = await renderForm();
+    beforeEach(() => {
+        const { result } = renderForm();
         form = result.current;
     });
 
-    it('should render all components', async () => {
+    it('should render all components', () => {
         act(() => {
             form.setValue('sendAsset', usdcAsset);
             form.setValue('sendCryptoAmount', '100');
         });
-        const { getByText, getByLabelText } = await renderExchangeSendCard(false);
+        const { getByText, getByLabelText } = renderExchangeSendCard(false);
 
         expect(getByText('You pay')).toBeOnTheScreen();
         expect(getByText('$99.00')).toBeOnTheScreen();

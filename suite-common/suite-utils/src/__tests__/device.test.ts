@@ -1,4 +1,4 @@
-import { AcquiredDevice } from '@suite-common/suite-types';
+import { type AcquiredDevice } from '@suite-common/suite-types';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import fixtures from '../__fixtures__/device';

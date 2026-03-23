@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { Device } from '@suite-common/suite-types';
+import { type Device } from '@suite-common/suite-types';
 import { Collapsible, InfoItem, TextButton } from '@trezor/components';
 
 type MessageSystemDevicesProps = {

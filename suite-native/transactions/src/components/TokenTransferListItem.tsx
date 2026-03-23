@@ -1,17 +1,17 @@
 import { useSelector } from 'react-redux';
 
-import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
+import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import {
-    AccountsRootState,
-    FiatRatesRootState,
-    TransactionsRootState,
-    WalletSettingsRootState,
+    type AccountsRootState,
+    type FiatRatesRootState,
+    type TransactionsRootState,
+    type WalletSettingsRootState,
     selectAccountNetworkSymbol,
     selectIsPhishingTransaction,
 } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { TokenAmountFormatter, TokenToFiatAmountFormatter } from '@suite-native/formatters';
-import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
+import { type TypedTokenTransfer, type WalletAccountTransaction } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { selectTransactionFiatRate } from '../selectors';
@@ -51,7 +51,7 @@ export const TokenTransferListItemValues = ({
     );
 
     const isPhishingTransaction = useSelector(
-        (state: TokenDefinitionsRootState & TransactionsRootState) =>
+        (state: TokenDefinitionsRootState & TransactionsRootState & FiatRatesRootState) =>
             selectIsPhishingTransaction(state, transaction.txid, accountKey),
     );
 

@@ -1,6 +1,6 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
-import { NetworkSymbol, getDisplaySymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getDisplaySymbol } from '@suite-common/wallet-config';
 import { Row } from '@trezor/components';
 
 import {

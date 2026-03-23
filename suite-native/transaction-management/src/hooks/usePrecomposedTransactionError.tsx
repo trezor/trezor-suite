@@ -1,7 +1,7 @@
 import { type ReactNode, useMemo } from 'react';
 
-import { NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { PrecomposedTransactionError } from '@suite-common/wallet-types';
+import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { type PrecomposedTransactionError } from '@suite-common/wallet-types';
 import { Translation } from '@suite-native/intl';
 
 export type UsePrecomposedTransactionErrorProps = {

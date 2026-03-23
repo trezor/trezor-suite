@@ -1,6 +1,6 @@
 import { HStack, Text, VStack } from '@suite-native/atoms';
-import { Icon, IconName } from '@suite-native/icons';
-import { Translation, TxKeyPath } from '@suite-native/intl';
+import { Icon, type IconName } from '@suite-native/icons';
+import { Translation, type TxKeyPath } from '@suite-native/intl';
 
 type CardContentRowProps = {
     labelId: TxKeyPath;

@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 
 import { selectCardanoPoolsInfo } from '@suite-common/wallet-core';
-import { CardanoAction } from '@suite-common/wallet-types';
+import { type CardanoAction } from '@suite-common/wallet-types';
 import {
     getAddressParameters,
     getDelegationCertificates,
@@ -10,10 +10,10 @@ import {
     isTestnet,
     selectBestCardanoPool,
 } from '@suite-common/wallet-utils';
-import trezorConnect, { CardanoCertificate } from '@trezor/connect';
+import trezorConnect, { type CardanoCertificate } from '@trezor/connect';
 
 import { useSelector } from 'src/hooks/suite';
-import { ActionAvailability, CardanoStaking } from 'src/types/wallet/cardanoStaking';
+import { type ActionAvailability, type CardanoStaking } from 'src/types/wallet/cardanoStaking';
 
 export const useCardanoStaking = (): CardanoStaking => {
     const account = useSelector(state => state.wallet.selectedAccount.account);

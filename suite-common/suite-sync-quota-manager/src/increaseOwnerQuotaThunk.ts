@@ -1,12 +1,12 @@
-import { Dispatch } from '@reduxjs/toolkit';
+import { type Dispatch } from '@reduxjs/toolkit';
 
 import {
     getProofOfDelegatedIdentity,
     getPublicIdentityKeyFromDelegatedKey,
 } from '@suite-common/delegated-identity-key';
 import { isTrezorDeviceWithState, selectSelectedDevice } from '@suite-common/device';
-import { ExtraDependencies } from '@suite-common/redux-utils';
-import { SuiteSyncOwnerId } from '@suite-common/suite-sync-storage';
+import { type ExtraDependencies } from '@suite-common/redux-utils';
+import { type SuiteSyncOwnerId } from '@suite-common/suite-sync-storage';
 import { asDelegatedIdentityKey } from '@suite-common/suite-types';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 

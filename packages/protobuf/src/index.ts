@@ -4,7 +4,7 @@
 // But we found that it does not work in browser environment
 // see: https://github.com/protobufjs/protobuf.js/issues/758
 import Long from 'long';
-import * as protobuf from 'protobufjs/light';
+import protobuf from 'protobufjs/light';
 
 import { decodeMessage as decode } from './decode';
 import { encodeMessage as encode } from './encode';

@@ -2,10 +2,10 @@ import { useMemo, useState } from 'react';
 
 import { Image } from 'expo-image';
 
-import { CryptoIconName, cryptoIcons, genericTokenIcon } from '@suite-common/icons';
+import { type CryptoIconName, cryptoIcons, genericTokenIcon } from '@suite-common/icons';
 import {
-    NetworkDisplaySymbol,
-    NetworkSymbol,
+    type NetworkDisplaySymbol,
+    type NetworkSymbol,
     getCoingeckoId,
     isNetworkSymbol,
 } from '@suite-common/wallet-config';

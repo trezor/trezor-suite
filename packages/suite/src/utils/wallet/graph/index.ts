@@ -7,6 +7,7 @@
     However, it's important to note that these utilities should not be imported from the worker (graph.ts file).
 */
 
+export type * from './types'; // Shared types used across graph utilities.
 export * from './utils'; // Utilities specific to suite.
 export * from './utilsShared'; // Utilities that are shared between suite and worker.
 export * from './utilsWorker'; // Utilities specific to the worker process.

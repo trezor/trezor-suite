@@ -6,7 +6,7 @@ import { useAlert } from '@suite-native/alerts';
 import { Box, TitleHeader, VStack } from '@suite-native/atoms';
 import { ConnectorImage } from '@suite-native/device';
 import { DevicePinImage, usePinAction } from '@suite-native/device-authorization';
-import { Translation, TxKeyPath } from '@suite-native/intl';
+import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
 import TrezorConnect from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';

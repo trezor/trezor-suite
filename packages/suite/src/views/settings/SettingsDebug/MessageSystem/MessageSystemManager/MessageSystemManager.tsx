@@ -5,7 +5,7 @@ import {
     selectAllManuallyAddedMessageIds,
     selectAllValidMessages,
 } from '@suite-common/message-system';
-import { Action } from '@suite-common/suite-types';
+import { type Action } from '@suite-common/suite-types';
 import { Banner, Button, Column, Divider, Modal, Row, Text } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
 import { spacings } from '@trezor/theme';
@@ -14,7 +14,10 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { MessageSystemConditionGroup } from '../MessageSystemConditionGroup';
 import { MessageSystemManagerDetail } from './MessageSystemManagerDetail';
-import { CategoryFilterOption, MessageSystemManagerFilters } from './MessageSystemManagerFilters';
+import {
+    type CategoryFilterOption,
+    MessageSystemManagerFilters,
+} from './MessageSystemManagerFilters';
 import { MessageSystemManagerInfo } from './MessageSystemManagerInfo';
 import { MessageSystemFormMessage } from '../MessageSystemForm/MessageSystemFormMessage';
 

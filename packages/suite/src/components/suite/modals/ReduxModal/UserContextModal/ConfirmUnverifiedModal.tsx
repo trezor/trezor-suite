@@ -1,14 +1,14 @@
 import { useEffect } from 'react';
 
-import { Translation, TranslationKey } from '@suite/intl';
+import { Translation, type TranslationKey } from '@suite/intl';
 import { closeModal } from '@suite/modal';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
-import { ExtraDependencies } from '@suite-common/redux-utils';
+import { type ExtraDependencies } from '@suite-common/redux-utils';
 import { H3, Modal, Paragraph, Tooltip } from '@trezor/components';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
-import { Dispatch, GetState } from 'src/types/suite';
+import { type Dispatch, type GetState } from 'src/types/suite';
 
 interface ConfirmUnverifiedModalProps {
     action: {

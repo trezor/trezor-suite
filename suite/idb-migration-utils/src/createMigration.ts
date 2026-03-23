@@ -2,7 +2,7 @@ import type { DBSchema } from 'idb';
 
 import { encodeIDBVersion } from './encode';
 import { parseIdbVersion } from './parseIdbVersion';
-import { DBMigration } from './types';
+import { type DBMigration } from './types';
 
 type BaseSemver = `${number}.${number}.${number}`;
 type IdbVersionString = `${BaseSemver}` | `${BaseSemver}.${number}`;

@@ -1,4 +1,7 @@
-import { EnsureWalletSuiteSyncOnDep, UpdateAccountLabel } from '@suite-common/suite-sync-types';
+import {
+    type EnsureWalletSuiteSyncOnDep,
+    type UpdateAccountLabel,
+} from '@suite-common/suite-sync-types';
 import { parseAccountKey } from '@suite-common/wallet-utils';
 
 export type UpdateAccountLabelDeps = EnsureWalletSuiteSyncOnDep;

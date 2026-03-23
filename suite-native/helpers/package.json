@@ -6,9 +6,10 @@
     "sideEffects": false,
     "main": "src/index",
     "scripts": {
-        "test:unit": "yarn g:jest --coverage",
+        "test:unit": "yarn g:jest",
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build"
+        "type-check": "yarn g:tsc --build",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
@@ -19,10 +20,10 @@
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
         "@trezor/type-utils": "workspace:*",
-        "expo-file-system": "^19.0.21",
-        "expo-sharing": "^14.0.8",
-        "react": "19.1.0",
-        "react-native": "0.81.5",
+        "expo-file-system": "~55.0.10",
+        "expo-sharing": "~55.0.11",
+        "react": "19.2.4",
+        "react-native": "0.83.2",
         "react-redux": "9.2.0"
     },
     "devDependencies": {

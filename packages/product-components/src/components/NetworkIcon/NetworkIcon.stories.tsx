@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { type Meta, type StoryObj } from '@storybook/react';
 import styled from 'styled-components';
 
 import { Column, H2, Paragraph, StoryColumn } from '@trezor/components';

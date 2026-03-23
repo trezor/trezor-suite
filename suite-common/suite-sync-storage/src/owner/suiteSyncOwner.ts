@@ -1,4 +1,4 @@
-import { Branded } from '@trezor/type-utils';
+import { type Branded } from '@trezor/type-utils';
 
 /**
  * This is identifier of the SuiteSync user. We generate an Owner for every

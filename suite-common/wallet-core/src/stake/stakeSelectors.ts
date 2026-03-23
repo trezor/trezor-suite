@@ -1,14 +1,13 @@
-import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { CARDANO_APY_MIN_THRESHOLD } from '@suite-common/wallet-constants';
-import { Account } from '@suite-common/wallet-types';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
+import type { Account } from '@suite-common/wallet-types';
 import {
     isSupportedAdaStakingNetworkSymbol,
     isSupportedSolStakingNetworkSymbol,
     selectBestCardanoPool,
 } from '@suite-common/wallet-utils';
 
-import { VotingDelegationOption } from './stakeActions';
-import { StakeRootState } from './stakeReducer';
+import type { VotingDelegationOption } from './stakeActions';
+import type { StakeRootState } from './stakeReducerTypes';
 
 export const selectEverstakeData = (
     state: StakeRootState,
@@ -30,14 +29,21 @@ export const selectPoolStatsApyData = (
         return null;
     }
 
-    if (isSupportedSolStakingNetworkSymbol(symbol)) {
-        return data?.[symbol]?.stakingInfo?.data?.apy || null;
+    const stakingInfoData = data?.[symbol]?.stakingInfo?.data;
+
+    if (stakingInfoData && isSupportedSolStakingNetworkSymbol(symbol)) {
+        return 'apy' in stakingInfoData ? stakingInfoData.apy : null;
     }
 
     if (isSupportedAdaStakingNetworkSymbol(symbol)) {
-        const stakingInfo = data?.[symbol]?.stakingInfo?.data;
+        const stakingInfo = data?.[symbol]?.stakingInfo?.data ?? null;
 
-        if (!stakingInfo?.pools || stakingInfo.pools.length === 0) {
+        if (
+            !stakingInfo ||
+            !('pools' in stakingInfo) ||
+            !stakingInfo.pools ||
+            stakingInfo.pools.length === 0
+        ) {
             return null;
         }
 
@@ -61,18 +67,21 @@ export const selectPoolStatsApyData = (
 
         const { apy } = selectedPool;
 
-        if (!apy || apy < CARDANO_APY_MIN_THRESHOLD) {
+        if (!apy) {
             return null;
         }
 
         return apy;
     }
 
-    return data?.[symbol]?.poolStats?.data.ethApy || null;
+    return data[symbol]?.poolStats?.data?.ethApy || null;
 };
 
-export const selectCardanoPoolsInfo = (state: StakeRootState) =>
-    state.wallet.stake?.data?.ada?.stakingInfo?.data?.pools ?? [];
+export const selectCardanoPoolsInfo = (state: StakeRootState) => {
+    const data = state.wallet.stake?.data?.ada?.stakingInfo?.data;
+
+    return data && 'pools' in data ? data.pools : [];
+};
 
 export const selectPoolStatsNextRewardPayout = (state: StakeRootState, symbol?: NetworkSymbol) => {
     if (!symbol) {
@@ -84,18 +93,18 @@ export const selectPoolStatsNextRewardPayout = (state: StakeRootState, symbol?: 
 
 export const selectValidatorsQueueData = (state: StakeRootState, symbol?: NetworkSymbol) => {
     if (!symbol) {
-        return {};
+        return null;
     }
 
-    return state.wallet.stake?.data?.[symbol]?.validatorsQueue?.data || {};
+    return state.wallet.stake?.data?.[symbol]?.validatorsQueue?.data || null;
 };
 
 export const selectValidatorsQueue = (state: StakeRootState, symbol?: NetworkSymbol) => {
     if (!symbol) {
-        return undefined;
+        return null;
     }
 
-    return state.wallet.stake?.data?.[symbol]?.validatorsQueue;
+    return state.wallet.stake?.data?.[symbol]?.validatorsQueue ?? null;
 };
 
 export const selectStakingRewardsHistory = (

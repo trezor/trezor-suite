@@ -1,5 +1,5 @@
 import { useFormatters } from '@suite-common/formatters';
-import { MonthKey, parseTransactionMonthKey } from '@suite-common/wallet-utils';
+import { type MonthKey, parseTransactionMonthKey } from '@suite-common/wallet-utils';
 import { Box, Text } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';

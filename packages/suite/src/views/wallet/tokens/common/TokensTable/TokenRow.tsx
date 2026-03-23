@@ -1,27 +1,29 @@
-import { ReactNode, useState } from 'react';
+import { type ReactNode, useState } from 'react';
 
 import { events } from '@suite/analytics';
+import { selectIsCopyAddressModalShown, selectIsUnhideTokenModalShown } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
+import { goto } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
 import {
     DefinitionType,
-    EnhancedTokenInfo,
+    type EnhancedTokenInfo,
     TokenManagementAction,
     selectIsSpecificCoinDefinitionKnown,
     tokenDefinitionsActions,
 } from '@suite-common/token-definitions';
 import {
-    TradingType,
+    type TradingType,
     getTradingPrefilledFromAccountData,
     getUnusedAddressFromAccount,
     selectTradingInfo,
     toTokenCryptoId,
     tradingActions,
 } from '@suite-common/trading';
-import { Explorer, Network, getCoingeckoId } from '@suite-common/wallet-config';
+import { type Explorer, type Network, getCoingeckoId } from '@suite-common/wallet-config';
 import { selectExplorer, sendFormActions } from '@suite-common/wallet-core';
-import { Account, TokenAddress } from '@suite-common/wallet-types';
+import { type Account, type TokenAddress } from '@suite-common/wallet-types';
 import {
     getContractAddressForNetworkSymbol,
     getTokenExplorerUrl,
@@ -45,7 +47,6 @@ import { spacings } from '@trezor/theme';
 
 import { SUITE } from 'src/actions/suite/constants';
 import { copyAddressToClipboard, showCopyAddressModal } from 'src/actions/suite/copyAddressActions';
-import { goto } from 'src/actions/suite/routerActions';
 import { setSendFormPrefill } from 'src/actions/suite/suiteActions';
 import { showAddress } from 'src/actions/wallet/receiveActions';
 import {
@@ -64,10 +65,6 @@ import {
     useSelector,
 } from 'src/hooks/suite';
 import { selectIsDeviceCompromised } from 'src/selectors/suite/suiteAuthenticityChecksSelectors';
-import {
-    selectIsCopyAddressModalShown,
-    selectIsUnhideTokenModalShown,
-} from 'src/selectors/suite/suiteSelectors';
 import { useAnalytics } from 'src/support/useAnalytics';
 import { getTokenAddressTranslationId } from 'src/utils/wallet/tokenUtils';
 
@@ -115,21 +112,19 @@ export const TokenRow = ({
 
     if (!unusedAddress || !device) return null;
 
-    const goToWithAnalytics = (...[routeName, options]: Parameters<typeof goto>) => {
+    const goToWithAnalytics = (...[payload]: Parameters<typeof goto>) => {
         if (network.networkType) {
             analytics.report({
                 type: events.accountsActionsEvent.name,
-                payload: { symbol: network.symbol, action: routeName },
+                payload: { symbol: network.symbol, action: payload.routeName },
             });
         }
-        dispatch(goto(routeName, options));
+        dispatch(goto(payload));
     };
 
     const onReceive = () => {
         if (network.networkType === 'cardano') {
-            goToWithAnalytics('wallet-receive', {
-                preserveParams: true,
-            });
+            goToWithAnalytics({ routeName: 'wallet-receive', preserveParams: true });
         } else {
             dispatch(showAddress(path, unusedAddress));
         }
@@ -173,14 +168,14 @@ export const TokenRow = ({
     const canSellToken = !!tokenTradingOptions && tokenTradingOptions.sell;
     const canReceiveToken = !isDeviceLocked && !isDeviceCompromised;
 
-    const onTradeButtonClick = (type: TradingType, ...[routeName]: Parameters<typeof goto>) => {
+    const onTradeButtonClick = (type: TradingType, ...[payload]: Parameters<typeof goto>) => {
         dispatch(
             tradingActions.setTradingFromPrefilledAccount(
                 getTradingPrefilledFromAccountData(account, tokenCryptoId),
             ),
         );
 
-        goToWithAnalytics(routeName);
+        goToWithAnalytics(payload);
 
         analytics.report({
             type: events.tradeNavigateEvent.name,
@@ -291,7 +286,10 @@ export const TokenRow = ({
                                     label: <Translation id="TR_BUY" />,
                                     'data-testid': '@trading/tokens/buy-button',
                                     icon: 'currencyCircleDollar',
-                                    onClick: () => onTradeButtonClick('buy', 'wallet-trading-buy'),
+                                    onClick: () =>
+                                        onTradeButtonClick('buy', {
+                                            routeName: 'wallet-trading-buy',
+                                        }),
                                     isDisabled: !canBuyToken,
                                 },
                                 {
@@ -299,7 +297,9 @@ export const TokenRow = ({
                                     'data-testid': '@trading/tokens/sell-button',
                                     icon: 'currencyCircleDollar',
                                     onClick: () =>
-                                        onTradeButtonClick('sell', 'wallet-trading-sell'),
+                                        onTradeButtonClick('sell', {
+                                            routeName: 'wallet-trading-sell',
+                                        }),
                                     isDisabled: token.balance === '0' || !canSellToken,
                                 },
                                 {
@@ -307,7 +307,9 @@ export const TokenRow = ({
                                     'data-testid': '@trading/tokens/swap-button',
                                     icon: 'arrowsLeftRight',
                                     onClick: () =>
-                                        onTradeButtonClick('exchange', 'wallet-trading-exchange'),
+                                        onTradeButtonClick('exchange', {
+                                            routeName: 'wallet-trading-exchange',
+                                        }),
                                     isHidden: !isBelowTablet,
                                     isDisabled: !canSwapToken,
                                 },
@@ -316,7 +318,8 @@ export const TokenRow = ({
                                     'data-testid': '@trading/tokens/send-button',
                                     icon: 'arrowUp',
                                     onClick: () => {
-                                        goToWithAnalytics('wallet-send', {
+                                        goToWithAnalytics({
+                                            routeName: 'wallet-send',
                                             params: {
                                                 symbol: account.symbol,
                                                 accountIndex: account.index,
@@ -375,7 +378,8 @@ export const TokenRow = ({
                                             type: SUITE.SET_TRANSACTION_HISTORY_PREFILL,
                                             payload: token.contract,
                                         });
-                                        goToWithAnalytics('wallet-index', {
+                                        goToWithAnalytics({
+                                            routeName: 'wallet-index',
                                             params: {
                                                 symbol: account.symbol,
                                                 accountIndex: account.index,
@@ -417,7 +421,9 @@ export const TokenRow = ({
                                     priority="secondary"
                                     icon="arrowsLeftRight"
                                     onClick={() =>
-                                        onTradeButtonClick('exchange', 'wallet-trading-exchange')
+                                        onTradeButtonClick('exchange', {
+                                            routeName: 'wallet-trading-exchange',
+                                        })
                                     }
                                 />
                             </Tooltip>
@@ -467,7 +473,8 @@ export const TokenRow = ({
                                                             accountKey: account.key,
                                                         }),
                                                     );
-                                                    goToWithAnalytics('wallet-send', {
+                                                    goToWithAnalytics({
+                                                        routeName: 'wallet-send',
                                                         params: {
                                                             symbol: account.symbol,
                                                             accountIndex: account.index,

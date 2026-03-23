@@ -1,12 +1,11 @@
-import { UINT256_MAX } from '@suite-common/suite-constants';
-import { AmountSubunit } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { IssueCode } from '../../../types/validation';
+import { type IssueCode } from '../../../types/validation';
+import { UINT256_MAX } from '../../../validation/evm/uint256';
 
 type ValidateFnTestCase = {
     description: string;
-    input: AmountSubunit;
+    input: BigNumber;
     expected: IssueCode | null;
 };
 
@@ -26,17 +25,17 @@ type HasBalanceTestCase = {
 export const isNegativeTestCases: ValidateFnTestCase[] = [
     {
         description: 'positive number returns null',
-        input: new BigNumber('100') as AmountSubunit,
+        input: new BigNumber('100'),
         expected: null,
     },
     {
         description: 'zero returns null',
-        input: new BigNumber('0') as AmountSubunit,
+        input: new BigNumber('0'),
         expected: null,
     },
     {
         description: 'negative number returns NEGATIVE_AMOUNT',
-        input: new BigNumber('-1') as AmountSubunit,
+        input: new BigNumber('-1'),
         expected: 'NEGATIVE_AMOUNT',
     },
 ];
@@ -44,12 +43,12 @@ export const isNegativeTestCases: ValidateFnTestCase[] = [
 export const isNotIntegerTestCases: ValidateFnTestCase[] = [
     {
         description: 'integer returns null',
-        input: new BigNumber('100') as AmountSubunit,
+        input: new BigNumber('100'),
         expected: null,
     },
     {
         description: 'decimal returns NOT_INTEGER',
-        input: new BigNumber('1.5') as AmountSubunit,
+        input: new BigNumber('1.5'),
         expected: 'NOT_INTEGER',
     },
 ];
@@ -57,17 +56,17 @@ export const isNotIntegerTestCases: ValidateFnTestCase[] = [
 export const exceedsUint256TestCases: ValidateFnTestCase[] = [
     {
         description: 'value within range returns null',
-        input: new BigNumber('100') as AmountSubunit,
+        input: new BigNumber('100'),
         expected: null,
     },
     {
         description: 'value equal to UINT256_MAX returns null',
-        input: new BigNumber(UINT256_MAX) as AmountSubunit,
+        input: UINT256_MAX,
         expected: null,
     },
     {
         description: 'value exceeding UINT256_MAX returns EXCEEDS_UINT256',
-        input: new BigNumber(UINT256_MAX).plus(1) as AmountSubunit,
+        input: UINT256_MAX.plus(1),
         expected: 'EXCEEDS_UINT256',
     },
 ];

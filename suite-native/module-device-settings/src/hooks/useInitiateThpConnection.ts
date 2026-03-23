@@ -5,9 +5,9 @@ import { useNavigation } from '@react-navigation/native';
 
 import { selectThpStep } from '@suite-common/thp';
 import {
-    FirmwareUpdateStackParamList,
+    type FirmwareUpdateStackParamList,
     FirmwareUpdateStackRoutes,
-    StackNavigationProps,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
 import TrezorConnect from '@trezor/connect';
 

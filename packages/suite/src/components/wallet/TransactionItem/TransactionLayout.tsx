@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import { Card, Column, Grid, InfoSegments, Row, Text } from '@trezor/components';
 

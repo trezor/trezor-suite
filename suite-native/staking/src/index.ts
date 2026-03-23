@@ -5,7 +5,7 @@
 
 export * from './utils';
 export * from './selectors';
-export * from './types';
+export type * from './types';
 export * from './hooks/useSelector';
 
 export {

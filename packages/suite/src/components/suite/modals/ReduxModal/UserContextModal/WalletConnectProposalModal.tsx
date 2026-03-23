@@ -4,16 +4,17 @@ import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { closeModal } from '@suite/modal';
+import { goto } from '@suite/router';
 import { TxSimulationBanner } from '@suite/tx-simulation';
 import { useDappScan } from '@suite-common/tx-simulation';
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import {
     selectPendingProposal,
     sessionProposalApproveThunk,
     sessionProposalRejectThunk,
 } from '@suite-common/walletconnect';
-import { PendingConnectionProposalNetwork } from '@suite-common/walletconnect/src/walletConnectTypes';
+import { type PendingConnectionProposalNetwork } from '@suite-common/walletconnect/src/walletConnectTypes';
 import {
     Badge,
     Banner,
@@ -21,7 +22,7 @@ import {
     Column,
     ElevationUp,
     Modal,
-    Option,
+    type Option,
     Row,
     Select,
     Text,
@@ -30,7 +31,6 @@ import {
 import { CoinLogo } from '@trezor/product-components';
 import { spacings, spacingsPx } from '@trezor/theme';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { AccountLabel } from 'src/components/suite/AccountLabel';
 import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -81,7 +81,7 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
     };
     const handleGoToCoinSettings = async () => {
         await dispatch(closeModal());
-        dispatch(goto('settings-coins'));
+        dispatch(goto({ routeName: 'settings-coins' }));
     };
 
     const getTooltipContent = (network: PendingConnectionProposalNetwork) => {

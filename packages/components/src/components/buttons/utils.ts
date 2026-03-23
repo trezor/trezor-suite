@@ -1,8 +1,14 @@
-import { DefaultTheme, RuleSet, css } from 'styled-components';
+import { type DefaultTheme, type RuleSet, css } from 'styled-components';
 
-import { BorderRadii, Color, TypographyStyle } from '@trezor/theme';
+import { type BorderRadii, type Color, type TypographyStyle } from '@trezor/theme';
 
-import { ButtonIntent, ButtonPriority, ButtonSize, CommonButtonProps, InverseKey } from './types';
+import {
+    type ButtonIntent,
+    type ButtonPriority,
+    type ButtonSize,
+    type CommonButtonProps,
+    type InverseKey,
+} from './types';
 import { commonFocusStyles } from '../../utils/utils';
 
 export const pickButtonProps = ({

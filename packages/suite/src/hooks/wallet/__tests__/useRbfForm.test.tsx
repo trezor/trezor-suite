@@ -3,8 +3,8 @@ import '@suite-common/test-utils/src/globalOverrides';
 import { screen } from '@testing-library/react';
 
 import { configureMockStore, initPreloadedState } from '@suite-common/test-utils';
-import { SelectedAccountLoaded } from '@suite-common/wallet-types';
-import { ServerInfo } from '@trezor/blockchain-link-types';
+import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { type ServerInfo } from '@trezor/blockchain-link-types';
 import TrezorConnect from '@trezor/connect';
 
 import { ChangeFee } from 'src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/ChangeFee/ChangeFee';
@@ -29,7 +29,8 @@ global.ResizeObserver = class MockedResizeObserver {
 // do not mock
 jest.unmock('@trezor/connect');
 
-jest.mock('src/actions/suite/routerActions', () => ({
+jest.mock('@suite/router', () => ({
+    ...jest.requireActual('@suite/router'),
     goto: () => ({ type: 'mock-redirect' }),
 }));
 

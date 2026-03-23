@@ -1,11 +1,11 @@
 import {
-    EncryptableBranded,
-    EncryptedHex,
-    PlatformEncryption,
+    type EncryptableBranded,
+    type EncryptedHex,
+    type PlatformEncryption,
     asEncryptedHex,
 } from '@suite-common/platform-encryption';
 import {
-    ConnectInitSettings,
+    type ConnectInitSettings,
     type ExtraDependencies,
     notImplementedAction,
     notImplementedActionType,
@@ -14,19 +14,15 @@ import {
     notImplementedThunk,
 } from '@suite-common/redux-utils';
 import type { SuiteSync } from '@suite-common/suite-sync-types';
-import {
-    ReportSecurityCheckParams,
-    Route,
-    asDelegatedIdentityKey,
-} from '@suite-common/suite-types';
+import { type ReportSecurityCheckParams, asDelegatedIdentityKey } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import {
     AddressDisplayOptions,
-    SelectedAccountLoaded,
+    type SelectedAccountLoaded,
     asAccountDescriptor,
 } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
-import { Analytics } from '@trezor/analytics-uploader';
+import { type Analytics } from '@trezor/analytics-uploader';
 import { err, ok } from '@trezor/type-utils';
 
 const suiteSyncMock: SuiteSync = {
@@ -105,8 +101,6 @@ export const extraDependenciesCommonMock: ExtraDependencies = {
             transports: [],
         }),
         selectDesktopBinDir: notImplementedSelector('selectDesktopBinDir', '/bin'),
-        selectRouterApp: notImplementedSelector('selectRouterApp', ''),
-        selectRoute: notImplementedSelector('selectRoute', {} as Route),
         selectMetadata: notImplementedSelector('selectMetadata', {}),
         selectDevice: notImplementedSelector('selectDevice', {
             ...mockSuiteDevice(),
@@ -166,5 +160,6 @@ export const extraDependenciesCommonMock: ExtraDependencies = {
         storageLoadTokenManagement: notImplementedReducer('storageLoadTokenManagement'),
         storageLoadWalletSettings: notImplementedReducer('storageLoadWalletSettings'),
         storageLoadBioAuth: notImplementedReducer('storageLoadBioAuth'),
+        storageLoadFlags: notImplementedReducer('storageLoadFlags'),
     },
 };

@@ -1,8 +1,8 @@
-import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { type PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils';
 import { getWalletState, sellQuotes } from '@suite-native/trading-fixtures';
 import type { ProviderConfirmationStatus } from '@suite-native/trading-types';
 
-import { SellFeePickerCard, SellFeePickerCardProps } from '../SellFeePickerCard';
+import { SellFeePickerCard, type SellFeePickerCardProps } from '../SellFeePickerCard';
 
 describe('SellFeePickerCard', () => {
     const renderSellFeePickerCard = (
@@ -17,13 +17,13 @@ describe('SellFeePickerCard', () => {
         preloadedState.wallet!.trading!.sell!.tradingAccountKey = tradingAccountKey;
         preloadedState.wallet!.trading!.providerConfirmationStatus = providerConfirmationStatus;
 
-        return renderWithStoreProviderAsync(<SellFeePickerCard isTxnError={false} {...props} />, {
+        return renderWithStoreProvider(<SellFeePickerCard isTxnError={false} {...props} />, {
             preloadedState,
         });
     };
 
-    it('should render nothing when isTxnError', async () => {
-        const { toJSON } = await renderSellFeePickerCard({
+    it('should render nothing when isTxnError', () => {
+        const { toJSON } = renderSellFeePickerCard({
             quote: sellQuotes[0],
             isTxnError: true,
         });
@@ -31,35 +31,32 @@ describe('SellFeePickerCard', () => {
         expect(toJSON()).toBeNull();
     });
 
-    it('should render nothing when there is no quote', async () => {
-        const { toJSON } = await renderSellFeePickerCard({});
+    it('should render nothing when there is no quote', () => {
+        const { toJSON } = renderSellFeePickerCard({});
 
         expect(toJSON()).toBeNull();
     });
 
-    it('should render nothing when quote has no cryptoCurrency', async () => {
+    it('should render nothing when quote has no cryptoCurrency', () => {
         const quoteWithoutCrypto = {
             ...sellQuotes[0],
             cryptoCurrency: undefined,
         };
-        const { toJSON } = await renderSellFeePickerCard({
+        const { toJSON } = renderSellFeePickerCard({
             quote: quoteWithoutCrypto as (typeof sellQuotes)[0],
         });
 
         expect(toJSON()).toBeNull();
     });
 
-    it('should render nothing when account is not found', async () => {
-        const { toJSON } = await renderSellFeePickerCard(
-            { quote: sellQuotes[0] },
-            'unknown-account-key',
-        );
+    it('should render nothing when account is not found', () => {
+        const { toJSON } = renderSellFeePickerCard({ quote: sellQuotes[0] }, 'unknown-account-key');
 
         expect(toJSON()).toBeNull();
     });
 
-    it('should render nothing when providerConfirmationStatus is not in "confirmation_success" state', async () => {
-        const { toJSON } = await renderSellFeePickerCard(
+    it('should render nothing when providerConfirmationStatus is not in "confirmation_success" state', () => {
+        const { toJSON } = renderSellFeePickerCard(
             { quote: sellQuotes[0] },
             'eth-account-1',
             'window_closed_with_success',
@@ -68,8 +65,8 @@ describe('SellFeePickerCard', () => {
         expect(toJSON()).toBeNull();
     });
 
-    it('should render FeePickerCard otherwise', async () => {
-        const { getByText } = await renderSellFeePickerCard({ quote: sellQuotes[0] });
+    it('should render FeePickerCard otherwise', () => {
+        const { getByText } = renderSellFeePickerCard({ quote: sellQuotes[0] });
 
         expect(getByText('Fee')).toBeOnTheScreen();
     });

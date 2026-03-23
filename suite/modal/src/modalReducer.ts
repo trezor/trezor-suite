@@ -1,15 +1,15 @@
-import { AnyAction } from '@reduxjs/toolkit';
+import { type AnyAction } from '@reduxjs/toolkit';
 
-import { TrezorDevice, UserContextPayload } from '@suite-common/suite-types';
+import { type TrezorDevice, type UserContextPayload } from '@suite-common/suite-types';
 import { THP_BUTTON_REQUESTS_NAMES } from '@suite-common/thp';
 import {
     DEVICE,
-    Device,
+    type Device,
     UI_REQUEST,
-    UiRequestButtonData,
-    UiRequestConfirmation,
-    UiRequestSelectAccount,
-    UiRequestSelectFee,
+    type UiRequestButtonData,
+    type UiRequestConfirmation,
+    type UiRequestSelectAccount,
+    type UiRequestSelectFee,
 } from '@trezor/connect';
 import { isArrayMember } from '@trezor/utils';
 
@@ -54,7 +54,7 @@ export type ModalState =
           payload: UserContextPayload;
       };
 
-type ModalRootState = {
+export type ModalRootState = {
     modal: ModalState;
 };
 
@@ -156,6 +156,9 @@ const modalReducer = (state: State = initialState, action: AnyAction): State => 
             return state;
     }
 };
+
+export const selectHasActiveModal = (state: ModalRootState) =>
+    state.modal.context !== MODAL_CONTEXT_NONE;
 
 export const selectModalType = (state: ModalRootState) => {
     if ('payload' in state.modal) {

@@ -1,10 +1,10 @@
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import {
-    PreloadedState,
-    TestStore,
+    type PreloadedState,
+    type TestStore,
     act,
     initStore,
-    renderHookWithStoreProviderAsync,
+    renderHookWithStoreProvider,
 } from '@suite-native/test-utils';
 import {
     getBtcAccount,
@@ -92,7 +92,7 @@ describe('useTradingTransaction', () => {
     };
 
     const renderUseTradingTransaction = ({ store }: { store: TestStore }) =>
-        renderHookWithStoreProviderAsync(() => useTradingTransaction({ tradeType: 'exchange' }), {
+        renderHookWithStoreProvider(() => useTradingTransaction({ tradeType: 'exchange' }), {
             store,
         });
 
@@ -129,7 +129,7 @@ describe('useTradingTransaction', () => {
 
     describe('composeRequest', () => {
         it('should call composeTradingTransactionThunk with correct parameters', async () => {
-            const store = await getInitializedStore();
+            const store = getInitializedStore();
             const dispatchSpy = jest.spyOn(store, 'dispatch');
 
             // Mock the networkFeeInfo selector to return proper data
@@ -145,7 +145,7 @@ describe('useTradingTransaction', () => {
                 'selectConvertedNetworkFeeInfo',
             ).mockReturnValue(mockNetworkFeeInfo);
 
-            const { result } = await renderUseTradingTransaction({ store });
+            const { result } = renderUseTradingTransaction({ store });
 
             await act(async () => {
                 await result.current.composeRequest({
@@ -173,7 +173,7 @@ describe('useTradingTransaction', () => {
         });
 
         it('should call composeTradingTransactionThunk with minimal parameters', async () => {
-            const store = await getInitializedStore();
+            const store = getInitializedStore();
             const dispatchSpy = jest.spyOn(store, 'dispatch');
 
             // Mock the networkFeeInfo selector to return proper data
@@ -188,7 +188,7 @@ describe('useTradingTransaction', () => {
                 'selectConvertedNetworkFeeInfo',
             ).mockReturnValue(mockNetworkFeeInfo);
 
-            const { result } = await renderUseTradingTransaction({ store });
+            const { result } = renderUseTradingTransaction({ store });
 
             await act(async () => {
                 await result.current.composeRequest({});
@@ -214,7 +214,7 @@ describe('useTradingTransaction', () => {
 
     describe('fetchFeesAndCompose', () => {
         it('should call updateFeeInfoThunk and then composeRequest with draft fee values', async () => {
-            const store = await getInitializedStore();
+            const store = getInitializedStore();
             const dispatchSpy = jest.spyOn(store, 'dispatch');
 
             // Mock the networkFeeInfo selector to return proper data
@@ -239,7 +239,7 @@ describe('useTradingTransaction', () => {
                 feeLimit: '30000',
             });
 
-            const { result } = await renderUseTradingTransaction({ store });
+            const { result } = renderUseTradingTransaction({ store });
 
             await act(async () => {
                 await result.current.fetchFeesAndCompose();
@@ -273,7 +273,7 @@ describe('useTradingTransaction', () => {
         });
 
         it('should handle undefined draft values', async () => {
-            const store = await getInitializedStore();
+            const store = getInitializedStore();
             const dispatchSpy = jest.spyOn(store, 'dispatch');
 
             // Mock the networkFeeInfo selector to return proper data
@@ -294,7 +294,7 @@ describe('useTradingTransaction', () => {
                 'selectDeepCopyOfFormDraft',
             ).mockReturnValue(undefined);
 
-            const { result } = await renderUseTradingTransaction({ store });
+            const { result } = renderUseTradingTransaction({ store });
 
             await act(async () => {
                 await result.current.fetchFeesAndCompose();
@@ -330,11 +330,11 @@ describe('useTradingTransaction', () => {
 
     describe('signAndSendTransaction', () => {
         it('should call sendTransactionThunk with correct parameters', async () => {
-            const store = await getInitializedStore();
+            const store = getInitializedStore();
             const dispatchSpy = jest.spyOn(store, 'dispatch');
             const mockNextStep = jest.fn();
 
-            const { result } = await renderUseTradingTransaction({ store });
+            const { result } = renderUseTradingTransaction({ store });
 
             await act(async () => {
                 await result.current.signAndSendTransaction({
@@ -365,9 +365,9 @@ describe('useTradingTransaction', () => {
 
     describe('resolveConsent', () => {
         it('should set isConsentRequested to false and resolve the promise', async () => {
-            const store = await getInitializedStore();
+            const store = getInitializedStore();
 
-            const { result } = await renderUseTradingTransaction({ store });
+            const { result } = renderUseTradingTransaction({ store });
 
             // First, trigger the signAndSendTransaction to set up the promise
             const originalSendTransactionThunk =
@@ -398,9 +398,9 @@ describe('useTradingTransaction', () => {
     });
 
     describe('useEffect cleanup', () => {
-        it('should call TrezorConnect.cancel on unmount', async () => {
-            const store = await getInitializedStore();
-            const { unmount } = await renderUseTradingTransaction({ store });
+        it('should call TrezorConnect.cancel on unmount', () => {
+            const store = getInitializedStore();
+            const { unmount } = renderUseTradingTransaction({ store });
 
             // Get the mocked TrezorConnect.cancel function
             const TrezorConnect = require('@trezor/connect');

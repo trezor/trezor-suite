@@ -1,10 +1,10 @@
-import { JSX } from 'react';
+import { type JSX } from 'react';
 
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
-import { Dropdown, DropdownMenuItemProps, IconName } from '@trezor/components';
+import { Dropdown, type DropdownMenuItemProps, type IconName } from '@trezor/components';
 import { breakpoints } from '@trezor/theme';
 
 import { useAnalytics } from 'src/support/useAnalytics';
@@ -54,7 +54,10 @@ export const HeaderDropdown = ({
                   {
                       id: 'wallet-sign-verify',
                       callback: () => {
-                          goToWithAnalytics('wallet-sign-verify', { preserveParams: true });
+                          goToWithAnalytics({
+                              routeName: 'wallet-sign-verify',
+                              preserveParams: true,
+                          });
                       },
                       title: <Translation id="TR_NAV_SIGN_AND_VERIFY" />,
                       icon: 'pencilLine' as const,
@@ -73,7 +76,7 @@ export const HeaderDropdown = ({
                     );
                 }
 
-                goToWithAnalytics('wallet-trading-buy');
+                goToWithAnalytics({ routeName: 'wallet-trading-buy' });
 
                 analytics.report({
                     type: events.tradeNavigateEvent.name,
@@ -100,9 +103,7 @@ export const HeaderDropdown = ({
                     );
                 }
 
-                goToWithAnalytics('wallet-trading-exchange', {
-                    preserveParams: false,
-                });
+                goToWithAnalytics({ routeName: 'wallet-trading-exchange', preserveParams: false });
 
                 analytics.report({
                     type: events.tradeNavigateEvent.name,

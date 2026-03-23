@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Translation } from '@suite/intl';
 import { selectVotingDelegationOption } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { Card, CollapsibleBox, Row, Text } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';

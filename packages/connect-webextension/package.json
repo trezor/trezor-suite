@@ -26,7 +26,7 @@
         "types": "./lib/index.d.ts",
         "exports": {
             ".": {
-                "import": "./libESM/index.js",
+                "import": "./libESM/index.mjs",
                 "require": "./lib/index.js",
                 "types": "./lib/index.d.ts"
             }
@@ -44,7 +44,8 @@
         "build:lib:cjs": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
         "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build"
+        "type-check": "yarn g:tsc --build",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
         "@trezor/connect": "workspace:*",
@@ -57,7 +58,7 @@
         "@types/chrome": "^0.0.299",
         "@types/w3c-web-usb": "^1.0.10",
         "babel-loader": "^10.0.0",
-        "rimraf": "^6.0.1",
+        "rimraf": "^6.1.2",
         "worker-loader": "^3.0.8"
     },
     "peerDependencies": {

@@ -1,4 +1,4 @@
-import { AssetDiff } from '@suite-common/tx-simulation';
+import { type AssetDiff } from '@suite-common/tx-simulation';
 
 interface TxSimulationSummaryProps {
     amount: AssetDiff['in'][number];

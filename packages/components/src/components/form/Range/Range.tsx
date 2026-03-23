@@ -1,14 +1,14 @@
 import {
-    ChangeEventHandler,
-    KeyboardEventHandler,
-    ReactNode,
+    type ChangeEventHandler,
+    type KeyboardEventHandler,
+    type ReactNode,
     useCallback,
     useLayoutEffect,
     useRef,
     useState,
 } from 'react';
 
-import styled, { CSSObject, DefaultTheme, css } from 'styled-components';
+import styled, { type CSSObject, type DefaultTheme, css } from 'styled-components';
 
 import { borders, spacingsPx, typography } from '@trezor/theme';
 

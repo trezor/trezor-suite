@@ -17,7 +17,7 @@ import {
     Mask,
     Rect,
     RoundedRect,
-    RoundedRectProps,
+    type RoundedRectProps,
     Skia,
     useSVG,
     vec,

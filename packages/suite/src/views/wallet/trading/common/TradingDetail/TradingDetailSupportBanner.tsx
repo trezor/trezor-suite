@@ -1,22 +1,24 @@
-import { BuyProviderInfo, ExchangeProviderInfo, SellProviderInfo } from 'invity-api';
-
 import { Translation } from '@suite/intl';
-import { Banner, Link, Paragraph } from '@trezor/components';
+import {
+    type TradingProviderInfo,
+    type TradingTradeType,
+    getStatusUrl,
+    isBuyProviderInfo,
+} from '@suite-common/trading';
+import { Banner, Link } from '@trezor/components';
+
+import { BannerPoints } from 'src/components/wallet/WalletLayout/AccountBanners/BannerPoints';
 
 type TradingDetailSupportBannerProps = {
-    provider?: BuyProviderInfo | SellProviderInfo | ExchangeProviderInfo;
-    orderId?: string;
+    provider?: TradingProviderInfo;
+    trade?: TradingTradeType;
 };
-
-const isBuyProviderInfo = (
-    provider: BuyProviderInfo | SellProviderInfo | ExchangeProviderInfo,
-): provider is BuyProviderInfo => 'brandName' in provider;
 
 export const TradingDetailSupportBanner = ({
     provider,
-    orderId,
+    trade,
 }: TradingDetailSupportBannerProps) => {
-    if (!provider || !orderId) {
+    if (!provider || !trade) {
         return null;
     }
 
@@ -24,29 +26,39 @@ export const TradingDetailSupportBanner = ({
         ? (provider.brandName ?? provider.companyName)
         : (provider.companyName ?? provider.name);
 
-    const supportUrlTemplate = provider.statusUrl || provider.supportUrl;
-    const supportUrl = supportUrlTemplate
-        ?.replace('{{orderId}}', orderId)
-        ?.replace('{{paymentId}}', orderId);
+    const { supportUrl } = provider;
+    const statusUrl = getStatusUrl(provider, trade);
 
-    if (!supportUrl) {
+    if (!supportUrl && !statusUrl) {
         return null;
     }
 
     return (
         <Banner
             intent="neutral"
-            icon="question"
             description={
-                <Paragraph typographyStyle="body-sm">
-                    <Translation
-                        id="TR_TRADING_PROCESSING_SUPPORT"
-                        values={{
-                            providerName,
-                            link: chunks => <Link href={supportUrl}>{chunks}</Link>,
-                        }}
-                    />
-                </Paragraph>
+                <BannerPoints
+                    points={[
+                        statusUrl && (
+                            <Translation
+                                id="TR_TRADING_PROCESSING_STATUS"
+                                values={{
+                                    providerName,
+                                    link: chunks => <Link href={statusUrl}>{chunks}</Link>,
+                                }}
+                            />
+                        ),
+                        supportUrl && (
+                            <Translation
+                                id="TR_TRADING_PROCESSING_SUPPORT"
+                                values={{
+                                    providerName,
+                                    link: chunks => <Link href={supportUrl}>{chunks}</Link>,
+                                }}
+                            />
+                        ),
+                    ].filter(Boolean)}
+                />
             }
         />
     );

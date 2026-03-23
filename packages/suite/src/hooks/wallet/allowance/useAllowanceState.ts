@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 
-import { AllowanceType } from '@suite-common/wallet-types';
+import { type AllowanceType } from '@suite-common/wallet-types';
 
 export const useAllowanceState = () => {
     const [approvalType, setApprovalType] = useState<AllowanceType>('APPROVE');

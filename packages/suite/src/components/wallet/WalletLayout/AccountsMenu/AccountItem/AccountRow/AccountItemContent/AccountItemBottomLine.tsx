@@ -1,4 +1,4 @@
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { Text } from '@trezor/components';
 
 import { CoinBalance } from 'src/components/suite';

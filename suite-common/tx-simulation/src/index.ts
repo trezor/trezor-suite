@@ -1,5 +1,5 @@
 export * from './client';
-export * from './types';
+export type * from './types';
 export { getSimulationErrorRiskLevel } from './utils';
 export { useDappScan } from './hooks/useDappScan';
 export { type TxSimulationEVMResult } from './hooks/useTxSimulationEVM';

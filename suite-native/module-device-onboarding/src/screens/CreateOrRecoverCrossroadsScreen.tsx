@@ -4,9 +4,9 @@ import { Box, Button, Card, CenteredTitleHeader, TextDivider, VStack } from '@su
 import { EmptyWalletSvg } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import {
-    DeviceOnboardingStackParamList,
+    type DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes,
-    StackProps,
+    type StackProps,
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 

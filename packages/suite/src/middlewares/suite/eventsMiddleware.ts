@@ -1,13 +1,13 @@
-import { MiddlewareAPI } from 'redux';
+import { type MiddlewareAPI } from 'redux';
 
+import { routerAppChanged } from '@suite/router';
 import { deviceActions, selectDevices, selectSelectedDevice } from '@suite-common/device';
 import * as deviceUtils from '@suite-common/suite-utils';
 import { notificationsActions, removeAccountEventsThunk } from '@suite-common/toast-notifications';
 import { accountsActions } from '@suite-common/wallet-core';
 import { DEVICE } from '@trezor/connect';
 
-import { SUITE } from 'src/actions/suite/constants';
-import { Action, AppState, Dispatch } from 'src/types/suite';
+import { type Action, type AppState, type Dispatch } from 'src/types/suite';
 import { reportSecurityCheck } from 'src/utils/suite/sentry';
 
 /*
@@ -23,7 +23,7 @@ const eventsMiddleware =
         // pass action
         next(action);
 
-        if (action.type === SUITE.APP_CHANGED && prevState.router.app === 'notifications') {
+        if (action.type === routerAppChanged.type && prevState.router.app === 'notifications') {
             // Leaving notification app. Mark all unseen notifications as seen
             api.dispatch(notificationsActions.resetUnseen());
         }

@@ -1,6 +1,10 @@
 import type { Descriptor } from '../types';
-import { SessionsBackground } from './background';
-import { HandleMessageParams, HandleMessageResponse, SessionsBackgroundInterface } from './types';
+import { type SessionsBackground } from './background';
+import {
+    type HandleMessageParams,
+    type HandleMessageResponse,
+    type SessionsBackgroundInterface,
+} from './types';
 
 /**
  * creating BrowserSessionsBackground initiates sessions-background for browser based environments and provides:

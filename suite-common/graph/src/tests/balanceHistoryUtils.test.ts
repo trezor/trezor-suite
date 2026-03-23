@@ -1,4 +1,4 @@
-import { TokenAddress } from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/wallet-types';
 
 import { getAccountHistoryMovementFromTransactions } from '../balanceHistoryUtils';
 import { btcAccountBalanceHistoryResult, btcAccountTransactions } from './__fixtures__/btc';

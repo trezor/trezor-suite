@@ -1,6 +1,6 @@
 import { Pressable } from 'react-native';
 
-import { TokenAddress } from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/wallet-types';
 import { Card, HStack, Text, VStack } from '@suite-native/atoms';
 import { CryptoIcon, Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';

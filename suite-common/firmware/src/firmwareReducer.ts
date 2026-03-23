@@ -1,17 +1,17 @@
-import { PayloadAction, createSelector } from '@reduxjs/toolkit';
+import { type PayloadAction, createSelector } from '@reduxjs/toolkit';
 
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
-import { FirmwareStatus, TrezorDevice } from '@suite-common/suite-types';
+import { type FirmwareStatus, type TrezorDevice } from '@suite-common/suite-types';
 import {
     DEVICE,
-    DeviceButtonRequest,
-    FirmwareChannel,
-    FirmwareProgress,
-    FirmwareProgressUnexpectedDelay,
-    FirmwareReconnect,
-    FirmwareType,
+    type DeviceButtonRequest,
+    type FirmwareChannel,
+    type FirmwareProgress,
+    type FirmwareProgressUnexpectedDelay,
+    type FirmwareReconnect,
+    type FirmwareType,
     UI_REQUEST,
-    UiRequestConfirmation,
+    type UiRequestConfirmation,
 } from '@trezor/connect';
 
 import { firmwareActions } from './firmwareActions';

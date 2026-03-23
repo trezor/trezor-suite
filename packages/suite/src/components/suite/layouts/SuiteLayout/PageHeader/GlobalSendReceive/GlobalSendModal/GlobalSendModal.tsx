@@ -1,8 +1,8 @@
 import { useCallback, useRef } from 'react';
 
 import { selectSelectedDevice } from '@suite-common/device';
-import { Account } from '@suite-common/wallet-types';
-import { TokenInfo } from '@trezor/blockchain-link-types';
+import { type Account } from '@suite-common/wallet-types';
+import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { Box, Divider } from '@trezor/components';
 import { useCurrentRef } from '@trezor/react-utils';
 
@@ -18,7 +18,7 @@ import {
     ExpandableAssetRowTokens,
 } from 'src/components/suite/asset-picker/components';
 import {
-    AssetPickerListItem,
+    type AssetPickerListItem,
     useExpandableAccountGroups,
     useFilterAccountsWithTokens,
     useInsertGroupLabelsAndSpaces,

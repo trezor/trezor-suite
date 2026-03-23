@@ -1,12 +1,14 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/data/FirmwareInfo.js
 
-import {
+import type {
     ConditionalRelease,
-    DeviceModelInternal,
     FirmwareRelease,
     FirmwareReleaseConfig,
-    FirmwareType,
     IntermediaryReleaseConfig,
+} from '@trezor/device-utils';
+import {
+    DeviceModelInternal,
+    FirmwareType,
     getBootloaderVersionArray,
     getFirmwareOrBootloaderVersionArray,
     getFirmwareVersionArray,
@@ -15,10 +17,11 @@ import { getIntegerInRangeFromString, removeTrailingSlashes, versionUtils } from
 import type { VersionArray } from '@trezor/utils/src/versionUtils';
 
 import { DataManager } from './DataManager';
-import { Features, StrictFeatures } from '../types/device';
-import { FirmwareChannel, FirmwareReleaseConfigInfo } from '../types/firmware';
+import type { Features, StrictFeatures } from '../types/device';
+import type { CurrentVersion, FirmwareReleaseConfigInfo } from '../types/firmware';
 import { getReleaseAsset, getReleasesAssetByDeviceModelAndFirmwareType } from '../utils/assetUtils';
 import { httpRequest } from '../utils/assets';
+import { getOnlineFirmwareBaseUrl } from '../utils/firmwareReleaseConfigUtils';
 import {
     buildIntermediaryFirmwareFileName,
     buildLocalFirmwareFileName,
@@ -27,71 +30,6 @@ import {
     isFirmwareCacheUsedForSelectedSource,
     isStrictFeatures,
 } from '../utils/firmwareUtils';
-
-interface RemoteBaseInfo {
-    BASE_URL: string;
-    MIDDLE_PATH: string;
-}
-const RELEASES_URL_REMOTE_BASE = {
-    BASE_URL: 'https://data.trezor.io',
-    MIDDLE_PATH: 'firmware',
-};
-const UNSIGNED_URL_REMOTE_BASE = {
-    BASE_URL: 'https://data.trezor.io',
-    MIDDLE_PATH: 'dev/firmware/releases/unsigned',
-};
-const UNSIGNED_STABLE_URL_REMOTE_BASE = {
-    BASE_URL: 'https://data.trezor.io',
-    MIDDLE_PATH: 'dev/firmware/releases/unsigned-stable',
-};
-const SIGNED_URL_REMOTE_BASE = {
-    BASE_URL: 'https://suite.corp.sldev.cz',
-    MIDDLE_PATH: 'firmware/signed',
-};
-const SIGNED_LOCALHOST = {
-    BASE_URL: 'http://localhost:3000',
-    MIDDLE_PATH: 'firmware/signed',
-};
-const UNSIGNED_LOCALHOST = {
-    BASE_URL: 'http://localhost:3000',
-    MIDDLE_PATH: 'firmware/unsigned',
-};
-const FIRMWARE_REMOTE_BASE_URLS: Record<FirmwareChannel, RemoteBaseInfo> = {
-    production: RELEASES_URL_REMOTE_BASE,
-    'production-early-access': RELEASES_URL_REMOTE_BASE,
-    'test-unsigned': UNSIGNED_URL_REMOTE_BASE,
-    'test-unsigned-stable': UNSIGNED_STABLE_URL_REMOTE_BASE,
-    'test-signed': SIGNED_URL_REMOTE_BASE,
-    'localhost-unsigned': UNSIGNED_LOCALHOST,
-    'localhost-signed': SIGNED_LOCALHOST,
-};
-
-type OnlineFirmwareBaseUrl = RemoteBaseInfo & { firmwareChannel: FirmwareChannel };
-
-/**
- * Obtains the base URL and middle path where to find firmware releases, based on the current settings.
- * Examples:
- *   { BASE_URL: 'https://data.trezor.io', MIDDLE_PATH: 'firmware', firmwareChannel: 'production' }
- *   { BASE_URL: 'https://data.trezor.io', MIDDLE_PATH: 'firmware', firmwareChannel: 'production-early-access' }
- *   { BASE_URL: 'https://suite.corp.sldev.cz', MIDDLE_PATH: 'firmware/signed', firmwareChannel: 'test-signed' }
- *   { BASE_URL: 'http://localhost:3000', MIDDLE_PATH: 'firmware/unsigned', firmwareChannel: 'localhost-unsigned' }
- */
-export const getOnlineFirmwareBaseUrl = (): OnlineFirmwareBaseUrl => {
-    const firmwareChannel = DataManager.getSettings('firmwareChannel');
-
-    if (!firmwareChannel) {
-        // If for some reason `firmwareChannel` settings is not set we return production one.
-        return {
-            ...FIRMWARE_REMOTE_BASE_URLS['production'],
-            firmwareChannel: 'production' as FirmwareChannel,
-        };
-    }
-
-    return {
-        ...FIRMWARE_REMOTE_BASE_URLS[firmwareChannel],
-        firmwareChannel,
-    };
-};
 
 // We use `bundledReleases` to know what are the binaries that are bundled so we do not need to download them if they are needed.
 const getBundledFirmwareVersion = (
@@ -140,7 +78,9 @@ const getOnlineReleaseByPath = async (releasePath: string) => {
         - test-unsigned-stable https://data.trezor.io/dev/firmware/releases/unsigned-stable/t3t1/universal/t3t1-2.8.10-universal.json
         - localhost-unsigned http://localhost:3000/firmware/unsigned/t3t1/universal/t3t1-2.8.10-universal.json
      */
-    const onlineFirmwareBaseUrl = getOnlineFirmwareBaseUrl();
+    const onlineFirmwareBaseUrl = getOnlineFirmwareBaseUrl(
+        DataManager.getSettings('firmwareChannel'),
+    );
     const url = `${onlineFirmwareBaseUrl.BASE_URL}/${releasePath}`;
 
     const response = await httpRequest(url, 'json', {
@@ -160,7 +100,9 @@ const getOnlineReleasePath = (
     firmwareVersion: VersionArray,
     firmwareType: FirmwareType,
 ): string => {
-    const onlineFirmwareBaseUrl = getOnlineFirmwareBaseUrl();
+    const onlineFirmwareBaseUrl = getOnlineFirmwareBaseUrl(
+        DataManager.getSettings('firmwareChannel'),
+    );
     const firmwareTypeFileString =
         firmwareType === FirmwareType.BitcoinOnly ? 'bitcoinonly' : 'universal';
     const relaseJsonFilename = `${deviceModel.toLowerCase()}-${firmwareVersion.join('.')}-${firmwareTypeFileString}.json`;
@@ -235,7 +177,10 @@ export const getReleaseByVersion = async (
     const releaseName = buildLocalReleaseName(firmwareType, deviceModel, firmwareVersion);
 
     const { firmwareDir, firmwareList } = DataManager.getLocalFirmwares();
-    if (isFirmwareCacheUsedForSelectedSource() && firmwareList.includes(releaseName)) {
+    if (
+        isFirmwareCacheUsedForSelectedSource(DataManager.getSettings('firmwareChannel')) &&
+        firmwareList.includes(releaseName)
+    ) {
         const localReleasePath = `${firmwareDir}${releaseName}`;
         const localReleaseBuffer = await httpRequest(localReleasePath, 'json');
 
@@ -350,16 +295,13 @@ export const initializeFirmwareConfig = async (
 };
 
 export const getLanguage = (languageBinPath: string) => {
-    const baseUrl = getOnlineFirmwareBaseUrl();
+    const baseUrl = getOnlineFirmwareBaseUrl(DataManager.getSettings('firmwareChannel'));
     const url = `${baseUrl.BASE_URL}/${languageBinPath}`;
 
     return httpRequest(url, 'binary');
 };
 
-export type CurrentVersion = {
-    bootloaderVersion: VersionArray | null;
-    firmwareVersion: VersionArray | null;
-};
+export type { CurrentVersion } from '../types/firmware';
 
 const getCurrentVersion = (features: Features): CurrentVersion => {
     if (!isStrictFeatures(features)) {
@@ -696,14 +638,17 @@ export const getFirmwareLocation = ({
     }
 
     const { firmwareDir, firmwareList } = DataManager.getLocalFirmwares();
-    if (isFirmwareCacheUsedForSelectedSource() && firmwareList.includes(firmwareName)) {
+    if (
+        isFirmwareCacheUsedForSelectedSource(DataManager.getSettings('firmwareChannel')) &&
+        firmwareList.includes(firmwareName)
+    ) {
         return {
             baseUrl: firmwareDir,
             path: firmwareName,
         };
     }
 
-    const onlineBaseUrl = getOnlineFirmwareBaseUrl();
+    const onlineBaseUrl = getOnlineFirmwareBaseUrl(DataManager.getSettings('firmwareChannel'));
 
     return {
         baseUrl: onlineBaseUrl.BASE_URL,

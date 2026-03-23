@@ -1,7 +1,7 @@
 import { BigNumber } from '@trezor/utils/src/bigNumber';
-import { Transaction as BitcoinJsTransaction } from '@trezor/utxo-lib';
+import type { Transaction as BitcoinJsTransaction } from '@trezor/utxo-lib';
 
-import { PROTO } from '../../constants';
+import type { PROTO } from '../../constants';
 import type { AccountAddresses } from '../../types';
 import { getSerializedPath } from '../../utils/pathUtils';
 

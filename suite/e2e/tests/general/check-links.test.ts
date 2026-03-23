@@ -1,7 +1,7 @@
 import { Page, TestInfo } from '@playwright/test';
 
+import { routes } from '@suite/router-config';
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
-import routes from '@trezor/suite/src//constants/suite/routes';
 
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';

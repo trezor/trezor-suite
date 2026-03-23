@@ -1,10 +1,10 @@
-import { ExchangeTradeQuoteRequest } from 'invity-api';
+import { type ExchangeTradeQuoteRequest } from 'invity-api';
 
-import { TradingComposedTransactionInfo } from '@suite-common/trading';
+import { type TradingComposedTransactionInfo } from '@suite-common/trading';
 import { getLocationOrigin, isDesktop } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
-import { Account } from 'src/types/wallet';
+import { type Account } from 'src/types/wallet';
 
 export const createQuoteLink = async (
     request: ExchangeTradeQuoteRequest,

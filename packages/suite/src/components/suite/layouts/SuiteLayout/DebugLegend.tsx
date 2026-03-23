@@ -4,8 +4,8 @@ import styled from 'styled-components';
 
 import { Code, Column, Divider, Icon, Row, Text } from '@trezor/components';
 import {
-    CSSColor,
-    Elevation,
+    type CSSColor,
+    type Elevation,
     borders,
     colorVariants,
     spacings,

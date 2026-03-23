@@ -1,11 +1,11 @@
-import { ReactNode, useState } from 'react';
+import { type ReactNode, useState } from 'react';
 import { useZxing } from 'react-zxing';
 
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { UserContextPayload } from '@suite-common/suite-types';
-import { Card, Column, Icon, Modal, ModalProps, Paragraph, Row } from '@trezor/components';
+import { type UserContextPayload } from '@suite-common/suite-types';
+import { Card, Column, Icon, Modal, type ModalProps, Paragraph, Row } from '@trezor/components';
 import { borders, spacings } from '@trezor/theme';
 import { HELP_CENTER_QR_CODE_URL } from '@trezor/urls';
 

@@ -14,7 +14,7 @@ import * as csp from './csp';
 import * as customProtocols from './custom-protocols';
 import * as devTools from './dev-tools';
 import * as eventLogging from './event-logging';
-import { MainWindowProxy } from '../libs/main-window-proxy';
+import { type MainWindowProxy } from '../libs/main-window-proxy';
 import * as eventLoggingApp from './event-logging/app';
 import * as eventLoggingContents from './event-logging/contents';
 import * as eventLoggingProcess from './event-logging/process';
@@ -23,7 +23,13 @@ import * as firmware from './firmware';
 import * as httpReceiverModule from './http-receiver';
 import * as menu from './menu';
 import * as metadata from './metadata';
-import { Dependencies, ModuleInit, ModuleInitBackground, ModuleLoad, ModuleQuit } from './module';
+import type {
+    Dependencies,
+    ModuleInit,
+    ModuleInitBackground,
+    ModuleLoad,
+    ModuleQuit,
+} from './module';
 import * as powerMonitor from './power-monitor';
 import * as requestFilter from './request-filter';
 import * as requestInterceptor from './request-interceptor';

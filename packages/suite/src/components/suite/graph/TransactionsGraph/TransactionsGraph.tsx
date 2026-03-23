@@ -4,20 +4,15 @@ import { Bar, CartesianGrid, Cell, ComposedChart, Line, Tooltip, XAxis, YAxis } 
 import styled, { useTheme } from 'styled-components';
 
 import { selectAccountTransactionsWithNulls } from '@suite-common/wallet-core';
-import { BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { isPending } from '@suite-common/wallet-utils';
 import { Icon } from '@trezor/components';
 import { typography, zIndices } from '@trezor/theme';
 
 import { GraphRangeSelector } from 'src/components/suite/graph/GraphRangeSelector';
 import { GraphSkeleton } from 'src/components/suite/graph/GraphSkeleton';
+import type { TransactionsGraphProps } from 'src/components/suite/graph/types';
 import { useGraph, useSelector } from 'src/hooks/suite';
-import { Account, WalletAccountTransaction } from 'src/types/wallet';
-import {
-    AggregatedAccountHistory,
-    AggregatedDashboardHistory,
-    GraphRange,
-} from 'src/types/wallet/graph';
+import { type Account, type WalletAccountTransaction } from 'src/types/wallet';
 import { calcFakeGraphDataForTimestamps, calcXDomain, calcYDomain } from 'src/utils/wallet/graph';
 
 import { GraphBar } from './GraphBar';
@@ -64,47 +59,17 @@ const Description = styled.div`
     flex: 1;
 `;
 
-interface CommonProps {
-    isLoading?: boolean;
-    selectedRange: GraphRange;
-    xTicks: number[];
-    localCurrency: string;
-    minMaxValues: [number, number];
-    hideToolbar?: boolean;
-    onRefresh?: (abortController?: AbortController) => Promise<any>;
-}
-
-export interface CryptoGraphProps extends CommonProps {
-    variant: 'one-asset';
-    account: Account;
-    data: AggregatedAccountHistory[];
-    receivedValueFn: (data: AggregatedAccountHistory) => string | undefined;
-    sentValueFn: (data: AggregatedAccountHistory) => string | undefined;
-    balanceValueFn: (data: AggregatedAccountHistory) => string | undefined;
-}
-
-export interface FiatGraphProps extends CommonProps {
-    variant: 'all-assets';
-    data: AggregatedDashboardHistory[];
-    receivedValueFn: (data: AggregatedDashboardHistory) => BaseCurrencyAmount | undefined;
-    sentValueFn: (data: AggregatedDashboardHistory) => BaseCurrencyAmount | undefined;
-    balanceValueFn: (data: AggregatedDashboardHistory) => BaseCurrencyAmount | undefined;
-    account?: never;
-}
-
-export type TransactionsGraphProps = CryptoGraphProps | FiatGraphProps;
-
 const emptyList: ReturnType<typeof selectAccountTransactionsWithNulls>[] = [];
 const useTransactionGraphUpdater = ({
     onRequestGraphUpdate,
     account,
 }: {
-    onRequestGraphUpdate: (abortController: AbortController) => Promise<any> | undefined;
+    onRequestGraphUpdate: (abortController: AbortController) => Promise<unknown> | undefined;
     account: Account | undefined;
 }) => {
     const [currentPromise, setCurrentPromise] = useState<{
         promiseId: string;
-        promise: Promise<any>;
+        promise: Promise<unknown>;
         abortController: AbortController;
     } | null>(null);
 

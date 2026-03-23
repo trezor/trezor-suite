@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { Button, Card } from '@trezor/components';
 import { spacings, typography } from '@trezor/theme';
 

@@ -1,6 +1,6 @@
-import { Context, ContextDomain } from '@suite-common/message-system';
-import { Action, Message } from '@suite-common/suite-types';
-import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { Context, type ContextDomain } from '@suite-common/message-system';
+import { type Action, type Message } from '@suite-common/suite-types';
+import { type PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils';
 
 import { ContextMessage } from '../ContextMessage';
 
@@ -56,7 +56,7 @@ const stateWithTradeContextMessage = {
 
 jest.mock('@suite-common/message-system', () => ({
     ...jest.requireActual('@suite-common/message-system'),
-    initMessageSystemThunk: async () => {},
+    initMessageSystemThunk: () => {},
 }));
 
 describe('ContextMessage', () => {
@@ -67,30 +67,30 @@ describe('ContextMessage', () => {
         context: ContextDomain;
         preloadedState?: PreloadedState;
     }) =>
-        renderWithStoreProviderAsync(
+        renderWithStoreProvider(
             <ContextMessage context={context} accessibilityHint={contextActionId} />,
             {
                 preloadedState,
             },
         );
 
-    it('should render content when there is message of given context', async () => {
-        const { queryByText } = await render({
+    it('should render content when there is message of given context', () => {
+        const { queryByText } = render({
             context: Context.getTrading('buy'),
             preloadedState: stateWithTradeContextMessage,
         });
         expect(queryByText(contentText)).toBeTruthy();
     });
 
-    it('should return null when there is no message fetched', async () => {
-        const { queryByHintText } = await render({
+    it('should return null when there is no message fetched', () => {
+        const { queryByHintText } = render({
             context: Context.getTrading('buy'),
         });
         expect(queryByHintText(contextActionId)).toBeNull();
     });
 
-    it('should render content in English when locale is en-US', async () => {
-        const { queryByText } = await render({
+    it('should render content in English when locale is en-US', () => {
+        const { queryByText } = render({
             context: Context.getTrading('buy'),
             preloadedState: {
                 ...stateWithTradeContextMessage,
@@ -104,8 +104,8 @@ describe('ContextMessage', () => {
         expect(queryByText(contentTextCs)).toBeNull();
     });
 
-    it('should render content in Czech when locale is cs-CZ - different from en-US', async () => {
-        const { queryByText } = await render({
+    it('should render content in Czech when locale is cs-CZ - different from en-US', () => {
+        const { queryByText } = render({
             context: Context.getTrading('buy'),
             preloadedState: {
                 ...stateWithTradeContextMessage,

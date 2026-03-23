@@ -1,33 +1,36 @@
 import {
-    ActionCreatorWithPayload,
-    ActionCreatorWithPreparedPayload,
-    ActionCreatorWithoutPayload,
+    type ActionCreatorWithPayload,
+    type ActionCreatorWithPreparedPayload,
+    type ActionCreatorWithoutPayload,
 } from '@reduxjs/toolkit';
 
 import type { AnalyticsSharedEvents } from '@suite-common/analytics';
-import { EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-key-types';
-import { MetadataAddPayload } from '@suite-common/metadata-types';
-import { PlatformEncryptionDep } from '@suite-common/platform-encryption'; // also only types
-import { MigrateSuiteSyncLabelsForRbfTransactionDep } from '@suite-common/suite-rbf-labels-migrations-types';
-import { SuiteSyncDep } from '@suite-common/suite-sync-types';
+import { type EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-key-types';
+import { type MetadataAddPayload } from '@suite-common/metadata-types';
+import { type PlatformEncryptionDep } from '@suite-common/platform-encryption'; // also only types
+import { type MigrateSuiteSyncLabelsForRbfTransactionDep } from '@suite-common/suite-rbf-labels-migrations-types';
+import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
 import {
-    ReportSecurityCheckDep,
-    Route,
-    TrezorDevice,
-    UserContextPayload,
+    type ReportSecurityCheckDep,
+    type TrezorDevice,
+    type UserContextPayload,
 } from '@suite-common/suite-types';
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { Account, AddressDisplayOptions, SelectedAccountStatus } from '@suite-common/wallet-types';
-import { Analytics } from '@trezor/analytics-uploader';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    BlockchainBlock,
-    BluetoothDeviceId,
-    ConnectSettings,
-    Manifest,
-    StaticSessionId,
+    type Account,
+    type AddressDisplayOptions,
+    type SelectedAccountStatus,
+} from '@suite-common/wallet-types';
+import { type Analytics } from '@trezor/analytics-uploader';
+import {
+    type BlockchainBlock,
+    type BluetoothDeviceId,
+    type ConnectSettings,
+    type Manifest,
+    type StaticSessionId,
 } from '@trezor/connect';
 
-import { ActionType, SuiteCompatibleSelector, SuiteCompatibleThunk } from './types';
+import { type ActionType, type SuiteCompatibleSelector, type SuiteCompatibleThunk } from './types';
 
 type BaseReducer = (state: any, action: { type: any; payload: any }) => void;
 type StorageLoadReducer = (state: any, action: { type: any; payload: any }) => void;
@@ -58,7 +61,10 @@ export type ExtraDependenciesStatic = {
         addAccountMetadata: SuiteCompatibleThunk<
             Exclude<MetadataAddPayload, { type: 'walletLabel' }>
         >;
-        forgetBluetoothDevice: SuiteCompatibleThunk<{ bluetoothId: BluetoothDeviceId }>;
+        forgetBluetoothDevice: SuiteCompatibleThunk<{
+            bluetoothId: BluetoothDeviceId;
+            isOsUnpairingFinished?: boolean;
+        }>;
     };
     selectors: {
         // TODO when tokens are implemented 1:1 in both apps, delete from extras
@@ -72,8 +78,6 @@ export type ExtraDependenciesStatic = {
         selectDevice: SuiteCompatibleSelector<TrezorDevice | undefined>;
         selectLanguage: SuiteCompatibleSelector<string>;
         selectIsWindowVisible: SuiteCompatibleSelector<boolean>;
-        selectRouterApp: SuiteCompatibleSelector<string>;
-        selectRoute: SuiteCompatibleSelector<Route | undefined>;
         selectMetadata: SuiteCompatibleSelector<any>;
         selectAddressDisplayType: SuiteCompatibleSelector<AddressDisplayOptions>;
         selectSelectedAccount: SuiteCompatibleSelector<SelectedAccountStatus>;
@@ -117,6 +121,7 @@ export type ExtraDependenciesStatic = {
         storageLoadTokenManagement: StorageLoadReducer;
         storageLoadWalletSettings: StorageLoadReducer;
         storageLoadBioAuth: StorageLoadReducer;
+        storageLoadFlags: StorageLoadReducer;
     };
 };
 

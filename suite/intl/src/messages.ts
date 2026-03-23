@@ -224,6 +224,40 @@ export const messages = defineMessages({
         defaultMessage: 'View and track your {type} in trade history.',
         id: 'TR_TRADING_HEADER_DESCRIPTION',
     },
+    TR_TRADING_CONCIERGE_TITLE: {
+        defaultMessage: 'Large trades, made simple',
+        id: 'TR_TRADING_CONCIERGE_TITLE',
+    },
+    TR_TRADING_CONCIERGE_DESCRIPTION: {
+        defaultMessage:
+            'Get private, competitive pricing for trades over 50,000 EUR, handled by a dedicated specialist.',
+        id: 'TR_TRADING_CONCIERGE_DESCRIPTION',
+    },
+    TR_TRADING_CONCIERGE_BENEFIT_PRICING_TITLE: {
+        defaultMessage: 'Competitive pricing',
+        id: 'TR_TRADING_CONCIERGE_BENEFIT_PRICING_TITLE',
+    },
+    TR_TRADING_CONCIERGE_BENEFIT_PRICING_DESCRIPTION: {
+        defaultMessage: 'Avoid slippage and get a tailored quote for your trade.',
+        id: 'TR_TRADING_CONCIERGE_BENEFIT_PRICING_DESCRIPTION',
+    },
+    TR_TRADING_CONCIERGE_BENEFIT_SPECIALIST_TITLE: {
+        defaultMessage: 'Dedicated specialist',
+        id: 'TR_TRADING_CONCIERGE_BENEFIT_SPECIALIST_TITLE',
+    },
+    TR_TRADING_CONCIERGE_BENEFIT_SPECIALIST_DESCRIPTION: {
+        defaultMessage: 'One expert handles your trade and answers all your questions.',
+        id: 'TR_TRADING_CONCIERGE_BENEFIT_SPECIALIST_DESCRIPTION',
+    },
+    TR_TRADING_CONCIERGE_BENEFIT_EXECUTION_TITLE: {
+        defaultMessage: 'Expedited execution and settlement',
+        id: 'TR_TRADING_CONCIERGE_BENEFIT_EXECUTION_TITLE',
+    },
+    TR_TRADING_CONCIERGE_BENEFIT_EXECUTION_DESCRIPTION: {
+        defaultMessage:
+            'Lock in your price instantly. Funds typically arrive the next business day.',
+        id: 'TR_TRADING_CONCIERGE_BENEFIT_EXECUTION_DESCRIPTION',
+    },
     TR_TRADING_DETAIL_PROCESSING: {
         defaultMessage: '{providerName} is processing your {type}',
         id: 'TR_TRADING_DETAIL_PROCESSING',
@@ -824,6 +858,10 @@ export const messages = defineMessages({
         defaultMessage: 'Trade ID',
         id: 'TR_TRADE_ID',
     },
+    TR_TRADING_PROCESSING_STATUS: {
+        defaultMessage: '<link>Check your order status</link> on the {providerName}’s website.',
+        id: 'TR_TRADING_PROCESSING_STATUS',
+    },
     TR_TRADING_PROCESSING_SUPPORT: {
         defaultMessage: 'Need help? Reach out to <link>{providerName}’s support</link>.',
         id: 'TR_TRADING_PROCESSING_SUPPORT',
@@ -1200,25 +1238,33 @@ export const messages = defineMessages({
     },
     TR_TRADING_OTC_INFO_BUY: {
         defaultMessage:
-            'For purchases over {minimumFiat} {fiatSymbol}, consider using our OTC partners:',
+            'For buys over {minimumFiat} {fiatSymbol}, use Concierge for competitive, private, and secure trades.',
         id: 'TR_TRADING_OTC_INFO_BUY',
     },
     TR_TRADING_OTC_INFO_SELL: {
         defaultMessage:
-            'For sales over {minimumFiat} {fiatSymbol}, consider using our OTC partners:',
+            'For buys over {minimumFiat} {fiatSymbol}, use Concierge for competitive, private, and secure trades.',
         id: 'TR_TRADING_OTC_INFO_SELL',
     },
     TR_TRADING_OTC_LINK_BUY: {
-        defaultMessage: 'Buy with {providerName}',
+        defaultMessage: 'Buy with Concierge',
         id: 'TR_TRADING_OTC_LINK_BUY',
     },
     TR_TRADING_OTC_LINK_SELL: {
-        defaultMessage: 'Sell with {providerName}',
+        defaultMessage: 'Sell with Concierge',
         id: 'TR_TRADING_OTC_LINK_SELL',
     },
     TR_TRADING_PROVIDER: {
         defaultMessage: 'Provider',
         id: 'TR_TRADING_PROVIDER',
+    },
+    TR_TRADING_PROVIDERS: {
+        defaultMessage: 'Providers',
+        id: 'TR_TRADING_PROVIDERS',
+    },
+    TR_TRADING_NO_PROVIDERS_AVAILABLE: {
+        defaultMessage: 'No providers available for this country.',
+        id: 'TR_TRADING_NO_PROVIDERS_AVAILABLE',
     },
     TR_TRADING_RECEIVE_ACCOUNT_NOT_FOUND_TITLE: {
         defaultMessage: 'Account not found',
@@ -1951,8 +1997,12 @@ export const messages = defineMessages({
         id: 'TR_NEEDS_ATTENTION_UNACQUIRED_THP_REQUIRED',
     },
     TR_NEEDS_ATTENTION_UNABLE_TO_CONNECT: {
-        defaultMessage: 'Failed to communicate with your Trezor',
+        defaultMessage: 'We can’t connect to your Trezor',
         id: 'TR_NEEDS_ATTENTION_UNABLE_TO_CONNECT',
+    },
+    TR_NEEDS_ATTENTION_CONNECT_USB_OR_BLUETOOTH: {
+        id: 'TR_NEEDS_ATTENTION_CONNECT_USB_OR_BLUETOOTH',
+        defaultMessage: 'Make sure your Trezor is connected via USB or Bluetooth and unlocked.',
     },
     TR_NEEDS_ATTENTION_DEVICE_BUSY: {
         defaultMessage: 'Your Trezor is in an incorrect state. Restart it to connect.',
@@ -2827,6 +2877,22 @@ export const messages = defineMessages({
         defaultMessage: 'Commodities',
         id: 'TR_BASE_CURRENCY_VALUABLES',
     },
+    TR_CURRENCY: {
+        defaultMessage: 'Currency',
+        id: 'TR_CURRENCY',
+    },
+    TR_SEARCH_CURRENCY_PLACEHOLDER: {
+        defaultMessage: 'Search currency or ticker',
+        id: 'TR_SEARCH_CURRENCY_PLACEHOLDER',
+    },
+    TR_CURRENCY_NOT_FOUND: {
+        defaultMessage: 'Currency not found',
+        id: 'TR_CURRENCY_NOT_FOUND',
+    },
+    TR_CURRENCY_NOT_FOUND_DESCRIPTION: {
+        defaultMessage: 'Try a different search or select a currency from the list.',
+        id: 'TR_CURRENCY_NOT_FOUND_DESCRIPTION',
+    },
     TR_RANDOM_SEED_WORDS_DISCLAIMER: {
         defaultMessage:
             "You may be asked to type some words that aren't part of your wallet backup as an additional security measure.",
@@ -2907,6 +2973,11 @@ export const messages = defineMessages({
     TR_CHECK_RECOVERY_SEED_DESCRIPTION: {
         defaultMessage: 'Perform a simulated recovery to verify your wallet backup.',
         id: 'TR_CHECK_RECOVERY_SEED_DESCRIPTION',
+    },
+    TR_BIO_AUTH_NOT_AVAILABLE_TOOLTIP_CONTENT: {
+        id: 'TR_BIO_AUTH_NOT_AVAILABLE_TOOLTIP_CONTENT',
+        defaultMessage:
+            "Biometrics is not currently available on this device. Try restarting your device or opening Trezor Suite on the primary device display. If these steps don't help, reinstall the application and reconnect your Trezor devices.",
     },
     TR_RECOVERY_TYPES_DESCRIPTION: {
         defaultMessage:
@@ -5379,6 +5450,10 @@ export const messages = defineMessages({
     TR_NAV_SIGN_VERIFY: {
         id: 'TR_NAV_SIGN_VERIFY',
         defaultMessage: 'Sign & verify messages',
+    },
+    TR_NAV_CONCIERGE: {
+        id: 'TR_NAV_CONCIERGE',
+        defaultMessage: 'Concierge',
     },
     TR_BALANCE: {
         id: 'TR_BALANCE',
@@ -8662,8 +8737,29 @@ export const messages = defineMessages({
     },
     TR_ZERO_PHISHING_BANNER: {
         id: 'TR_ZERO_PHISHING_BANNER',
+        defaultMessage: 'This transaction looks suspicious. <a>Learn more</a>',
+    },
+    TR_HIDE_TRANSACTION: {
+        id: 'TR_HIDE_TRANSACTION',
+        defaultMessage: 'Mark as suspicious',
+    },
+    TR_UNHIDE_TRANSACTION: {
+        id: 'TR_UNHIDE_TRANSACTION',
+        defaultMessage: 'Mark as safe',
+    },
+    TR_MARKED_AS_RECOGNIZED_BANNER: {
+        id: 'TR_MARKED_AS_RECOGNIZED_BANNER',
+        defaultMessage: 'You’ve confirmed this transaction is safe.',
+    },
+    TR_HIDE_TRANSACTION_TOOLTIP: {
+        id: 'TR_HIDE_TRANSACTION_TOOLTIP',
         defaultMessage:
-            'Proceed with caution. This may be a fraudulent transaction. <a>Learn more</a>',
+            'To enable marking this transaction as suspicious, set this wallet as remembered.',
+    },
+    TR_UNHIDE_TRANSACTION_TOOLTIP: {
+        id: 'TR_UNHIDE_TRANSACTION_TOOLTIP',
+        defaultMessage:
+            'To enable marking this transaction as safe, set this wallet as remembered.',
     },
     TR_SENDFORM_LABELING_EXAMPLE_1: {
         id: 'TR_SENDFORM_LABELING_EXAMPLE_1',

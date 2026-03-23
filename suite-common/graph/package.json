@@ -8,7 +8,8 @@
     "scripts": {
         "test:unit": "yarn g:jest",
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build"
+        "type-check": "yarn g:tsc --build",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
@@ -24,7 +25,7 @@
         "@trezor/connect": "workspace:*",
         "@trezor/utils": "workspace:*",
         "date-fns": "^4.1.0",
-        "react": "19.1.0",
+        "react": "19.2.4",
         "react-redux": "9.2.0"
     }
 }

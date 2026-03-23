@@ -2,10 +2,10 @@ import { events } from '@suite-native/analytics';
 import { Form } from '@suite-native/forms';
 import { useAnalytics } from '@suite-native/services';
 import {
-    PreloadedState,
+    type PreloadedState,
     act,
-    renderHookWithStoreProviderAsync,
-    renderWithStoreProviderAsync,
+    renderHookWithStoreProvider,
+    renderWithStoreProvider,
     screen,
 } from '@suite-native/test-utils';
 import {
@@ -15,7 +15,7 @@ import {
     residenceCheckDisabledState,
     sellQuotes,
 } from '@suite-native/trading-fixtures';
-import { SellFormType } from '@suite-native/trading-types';
+import { type SellFormType } from '@suite-native/trading-types';
 
 import { useSellForm } from '../../../hooks/sell/useSellForm';
 import { SellForm } from '../SellForm';
@@ -37,10 +37,10 @@ jest.mock('@suite-native/services', () => {
 
 describe('SellForm', () => {
     const renderFormHook = (preloadedState: PreloadedState) =>
-        renderHookWithStoreProviderAsync(() => useSellForm(), { preloadedState });
+        renderHookWithStoreProvider(() => useSellForm(), { preloadedState });
 
     const renderSellForm = (preloadedState: PreloadedState, form: SellFormType) =>
-        renderWithStoreProviderAsync(<SellForm />, {
+        renderWithStoreProvider(<SellForm />, {
             preloadedState,
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
@@ -56,9 +56,9 @@ describe('SellForm', () => {
         screen.unmount();
     });
 
-    it('should render when sell data are not preloaded', async () => {
-        const { result } = await renderFormHook({});
-        const { getByText, getByLabelText } = await renderSellForm({}, result.current);
+    it('should render when sell data are not preloaded', () => {
+        const { result } = renderFormHook({});
+        const { getByText, getByLabelText } = renderSellForm({}, result.current);
 
         expect(getByText('You pay')).toBeOnTheScreen();
         expect(getByText('You get')).toBeOnTheScreen();
@@ -69,14 +69,14 @@ describe('SellForm', () => {
         let form: SellFormType;
         let preloadedState: PreloadedState;
 
-        beforeEach(async () => {
+        beforeEach(() => {
             preloadedState = {
                 wallet: { trading: getInitializedTradingState() },
                 ...residenceCheckDisabledState,
             };
             preloadedState.wallet!.trading!.sell!.quotes = sellQuotes;
 
-            const { result } = await renderFormHook(preloadedState);
+            const { result } = renderFormHook(preloadedState);
             form = result.current;
             act(() => {
                 form.setValue('sendAsset', btcAsset);
@@ -87,8 +87,8 @@ describe('SellForm', () => {
             });
         });
 
-        it('should render with default values', async () => {
-            const { getByLabelText, getByText } = await renderSellForm(preloadedState, form);
+        it('should render with default values', () => {
+            const { getByLabelText, getByText } = renderSellForm(preloadedState, form);
 
             expect(getByText('You pay')).toBeOnTheScreen();
             expect(getByLabelText('Select fiat currency')).toBeOnTheScreen();
@@ -97,11 +97,11 @@ describe('SellForm', () => {
             expect(getByText('Provider')).toBeOnTheScreen();
         });
 
-        it('should render only SellCard and Done when amount input is active', async () => {
+        it('should render only SellCard and Done when amount input is active', () => {
             act(() => {
                 form.setValue('focusedValue', 'fiatStringAmount');
             });
-            const { queryByText, getByText } = await renderSellForm(preloadedState, form);
+            const { queryByText, getByText } = renderSellForm(preloadedState, form);
 
             expect(getByText('You pay')).toBeOnTheScreen();
             expect(getByText('You get')).toBeOnTheScreen();
@@ -112,9 +112,9 @@ describe('SellForm', () => {
         });
     });
 
-    it('should report to analytics on mount', async () => {
-        const { result } = await renderFormHook({});
-        await renderSellForm({}, result.current);
+    it('should report to analytics on mount', () => {
+        const { result } = renderFormHook({});
+        renderSellForm({}, result.current);
 
         expect(reportMock).toHaveBeenCalledWith({
             type: events.tradingSellEvent.name,

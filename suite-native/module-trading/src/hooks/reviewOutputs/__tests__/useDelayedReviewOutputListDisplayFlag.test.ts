@@ -1,4 +1,4 @@
-import { renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
+import { renderHookWithStoreProvider } from '@suite-native/test-utils';
 
 import { useDelayedReviewOutputListDisplayFlag } from '../useDelayedReviewOutputListDisplayFlag';
 
@@ -11,14 +11,14 @@ jest.mock('@suite-common/device', () => ({
 
 describe('useDelayedReviewOutputListDisplayFlag', () => {
     const renderUseRequestDelayedNavigationToOutputsReview = () =>
-        renderHookWithStoreProviderAsync(() => useDelayedReviewOutputListDisplayFlag());
+        renderHookWithStoreProvider(() => useDelayedReviewOutputListDisplayFlag());
 
     beforeEach(() => {
         jest.clearAllMocks();
     });
 
-    it('should became once there are any button requests', async () => {
-        const { result, rerender } = await renderUseRequestDelayedNavigationToOutputsReview();
+    it('should became once there are any button requests', () => {
+        const { result, rerender } = renderUseRequestDelayedNavigationToOutputsReview();
 
         expect(result.current).toBe(false);
 

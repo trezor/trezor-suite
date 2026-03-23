@@ -1,7 +1,7 @@
-import { Color, TypographyStyle } from '@trezor/theme';
+import { type Color, type TypographyStyle } from '@trezor/theme';
 
-import { BulletListDirection, BulletListItemState, BulletSize } from './types';
-import { IconCircleSize } from '../IconCircle/types';
+import { type BulletListDirection, type BulletListItemState, type BulletSize } from './types';
+import { type IconCircleSize } from '../IconCircle/types';
 
 type sizeMapArgs = {
     $size: BulletSize;

@@ -3,23 +3,28 @@ import { differenceInMonths, fromUnixTime, isWithinInterval } from 'date-fns';
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
 import { resetTime } from '@suite-common/suite-utils';
 import {
-    BackendType,
+    type BackendType,
     type NetworkSymbol,
     getNetwork,
     getNetworkFeatures,
 } from '@suite-common/wallet-config';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import type { BlockchainAccountBalanceHistory, StaticSessionId } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
 import { type AppState } from 'src/reducers/store';
-import { State as GraphState } from 'src/reducers/wallet/graphReducer';
-import { CommonAggregatedHistory, GraphData, GraphRange, GraphScale } from 'src/types/wallet/graph';
+import { type State as GraphState } from 'src/reducers/wallet/graphReducer';
+import {
+    type CommonAggregatedHistory,
+    type GraphData,
+    type GraphRange,
+    type GraphScale,
+} from 'src/types/wallet/graph';
 
-import { ObjectType, TypeName, sumFiatValueMapInPlace } from './utilsShared';
-import { FiatValueMap } from './utilsWorker';
+import { type FiatValueMap, type GraphDataPoint, type TypeName } from './types';
+import { sumFiatValueMapInPlace } from './utilsShared';
 
 export const deviceGraphDataFilterFn = (d: GraphData, deviceState: StaticSessionId | undefined) => {
     if (!deviceState) return false;
@@ -114,11 +119,11 @@ export const enhanceBlockchainAccountHistory = (
  * Return array with 2 items, minimum non-zero value and maximum value calculated from sent, received and balance fields
  */
 export const getMinMaxValueFromData = <TType extends TypeName, TValue extends BigNumber>(
-    data: ObjectType<TType>[],
+    data: GraphDataPoint<TType>[],
     _type: TType,
-    extractSentValue: (sourceData: ObjectType<TType>) => TValue | undefined,
-    extractReceivedValue: (sourceData: ObjectType<TType>) => TValue | undefined,
-    extractBalanceValue: (sourceData: ObjectType<TType>) => TValue | undefined,
+    extractSentValue: (sourceData: GraphDataPoint<TType>) => TValue | undefined,
+    extractReceivedValue: (sourceData: GraphDataPoint<TType>) => TValue | undefined,
+    extractBalanceValue: (sourceData: GraphDataPoint<TType>) => TValue | undefined,
 ): [TValue, TValue] => {
     if (!data || data.length === 0) {
         return [new BigNumber(0) as TValue, new BigNumber(0) as TValue];

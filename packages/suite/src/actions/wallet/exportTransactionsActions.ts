@@ -3,11 +3,12 @@ import { selectNetworkTokenDefinitions } from '@suite-common/token-definitions';
 import { advancedSearchTransactions } from '@suite-common/transaction-search';
 import {
     TRANSACTIONS_MODULE_PREFIX,
+    selectAccountTransactionsMarkedAsNotScam,
     selectBaseCurrency,
     selectHistoricFiatRates,
     selectTransactions,
 } from '@suite-common/wallet-core';
-import { Account, ExportFileType } from '@suite-common/wallet-types';
+import { type Account, type ExportFileType } from '@suite-common/wallet-types';
 import { getAccountTransactions } from '@suite-common/wallet-utils';
 
 import { selectAccountLabelsForSearch } from 'src/selectors/suite/selectAccountLabelsForSearch';
@@ -35,6 +36,10 @@ export const exportTransactionsThunk = createThunk(
         const historicFiatRates = selectHistoricFiatRates(getState());
         const baseCurrencyCode = selectBaseCurrency(getState());
         const tokenDefinitions = selectNetworkTokenDefinitions(getState(), account.symbol) || {};
+        const txsMarkedAsNotScam = selectAccountTransactionsMarkedAsNotScam(
+            getState(),
+            account.key,
+        );
 
         // TODO: this is not nice (copy-paste)
         // metadata reducer is still not part of trezor-common and I can not import it
@@ -82,6 +87,7 @@ export const exportTransactionsThunk = createThunk(
                 baseCurrencyCode,
             },
             tokenDefinitions,
+            txsMarkedAsNotScam,
             historicFiatRates,
         );
 

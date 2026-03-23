@@ -1,19 +1,19 @@
-import { AssetOptionBaseProps } from './SelectAssetModal';
+import { type AssetOptionBaseProps } from './types';
 
-interface SelectAssetOptionCurrencyProps extends AssetOptionBaseProps {
+type SelectAssetOptionCurrencyProps = AssetOptionBaseProps & {
     type: 'currency';
     label?: string;
     balance?: string;
     networkName?: string;
     value: string;
-}
+};
 
-interface SelectAssetOptionGroupProps {
+type SelectAssetOptionGroupProps = {
     type: 'group';
     label: string;
     networkName?: string;
     coingeckoId?: string;
-}
+};
 
 export const selectAssetModalOptions: (
     | SelectAssetOptionCurrencyProps

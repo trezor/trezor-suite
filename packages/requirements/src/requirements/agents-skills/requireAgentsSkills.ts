@@ -2,6 +2,7 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 
 import type { Requirement } from '../Requirement';
+import { stripComments } from '../utils/stripComments';
 
 const SKILLS_DIR = 'skills';
 const AGENTS_FILE = 'AGENTS.md';
@@ -11,33 +12,6 @@ const IGNORED_SKILL_LINKS = new Set([
     'skills/tests-native.md', // only for `suite-native`
     'skills/tests-common.md', // only for `suite-common`
 ]);
-
-const stripComments = (content: string) => {
-    let sanitized = '';
-    let cursor = 0;
-
-    while (cursor < content.length) {
-        const commentStartIndex = content.indexOf('<!--', cursor);
-
-        if (commentStartIndex === -1) {
-            sanitized += content.slice(cursor);
-
-            break;
-        }
-
-        sanitized += content.slice(cursor, commentStartIndex);
-
-        const commentEndIndex = content.indexOf('-->', commentStartIndex + 4);
-
-        if (commentEndIndex === -1) {
-            break;
-        }
-
-        cursor = commentEndIndex + 3;
-    }
-
-    return sanitized;
-};
 
 /**
  * Verifies that every markdown file in skills is linked from AGENTS.md

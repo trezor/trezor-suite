@@ -69,8 +69,7 @@ export class DropboxProvider extends AbstractMetadataProvider {
 
         try {
             // dropbox supports authorization code flow for both web and desktop
-            // @ts-expect-error dropbox lib types url as String object, but it is primite string
-            const { code } = await extractCredentialsFromAuthorizationFlow(url);
+            const { code } = await extractCredentialsFromAuthorizationFlow(new URL(url.toString()));
 
             if (!code)
                 return this.error('AUTH_ERROR', 'Failed to extract code from authorization flow');

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { Translation } from '@suite/intl';
-import { TrezorDevice } from '@suite-common/suite-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { startThpAutoconnectThunk, thpActions } from '@suite-common/thp';
 import { Card, Modal, Paragraph } from '@trezor/components';
 

@@ -1,15 +1,13 @@
 import { useSelector } from 'react-redux';
 
-import { BuyProviderInfo, ExchangeProviderInfo, SellProviderInfo } from 'invity-api';
-
 import { Translation } from '@suite/intl';
-import { selectTradingProviderMetadata } from '@suite-common/trading';
+import { type TradingProviderInfo, selectTradingProviderMetadata } from '@suite-common/trading';
 import { Column, Link, Text } from '@trezor/components';
 
 import { TradingFormFeesDisclaimer } from '../TradingFormFeesDisclaimer/TradingFormFeesDisclaimer';
 
 type TradingFooterProps = {
-    provider?: BuyProviderInfo | SellProviderInfo | ExchangeProviderInfo;
+    provider?: TradingProviderInfo;
 };
 
 export const TradingFooter = ({ provider }: TradingFooterProps) => {

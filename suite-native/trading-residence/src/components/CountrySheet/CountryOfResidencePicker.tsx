@@ -8,7 +8,7 @@ import { useAnalytics } from '@suite-native/services';
 import { OverviewRow, useBottomSheetControls } from '@suite-native/trading-atoms';
 
 import { CountrySheet } from './CountrySheet';
-import { TradingLocationFormValues } from '../../types/tradingLocationForm';
+import { type TradingLocationFormValues } from '../../types/tradingLocationForm';
 
 export type CountryOfResidencePickerProps = {
     testID: string;

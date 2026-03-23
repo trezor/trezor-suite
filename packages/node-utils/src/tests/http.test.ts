@@ -1,12 +1,12 @@
 import url from 'url';
 
-import { Log } from '@trezor/utils';
+import { type Log } from '@trezor/utils';
 
 import { getFreePort } from '../getFreePort';
 import {
     HttpServer,
-    ParamsValidatorHandler,
-    RequestHandler,
+    type ParamsValidatorHandler,
+    type RequestHandler,
     allowReferers,
     parseBodyJSON,
     parseBodyText,

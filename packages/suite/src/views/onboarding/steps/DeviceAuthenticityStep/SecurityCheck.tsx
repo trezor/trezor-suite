@@ -1,11 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
 
 import { events } from '@suite/analytics';
+import { selectFlags } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { selectRecoveryStatus } from '@suite/recovery';
+import { goto } from '@suite/router';
 import { deviceActions, selectDevices, selectSelectedDevice } from '@suite-common/device';
 import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
-import { AcquiredDevice } from '@suite-common/suite-types';
+import { type AcquiredDevice } from '@suite-common/suite-types';
 import {
     Box,
     Button,
@@ -29,8 +31,6 @@ import {
     TREZOR_URL,
 } from '@trezor/urls';
 
-import { goto } from 'src/actions/suite/routerActions';
-import * as routerActions from 'src/actions/suite/routerActions';
 import { Hologram } from 'src/components/onboarding/Hologram';
 import { TrezorLink } from 'src/components/suite';
 import { SecurityCheckFail } from 'src/components/suite/SecurityCheck/SecurityCheckFail';
@@ -38,11 +38,10 @@ import { SecurityCheckLayout } from 'src/components/suite/SecurityCheck/Security
 import { ContactSupport } from 'src/components/suite/SecurityCheck/deviceCompromisedCtas';
 import { useDispatch, useLayoutSize, useOnboarding, useSelector } from 'src/hooks/suite';
 import { selectIsOnboardingActive } from 'src/reducers/onboarding/onboardingReducer';
-import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
 import { useAnalytics } from 'src/support/useAnalytics';
 
 import { SecurityChecklist } from './SecurityChecklist';
-import { SecurityChecklistItem } from './types';
+import { type SecurityChecklistItem } from './types';
 import { ContentFlex, useIsContentBelowBreakpoint } from '../../../../support/suite/ContentFlex';
 import { useResponsiveContext } from '../../../../support/suite/ResponsiveContext';
 
@@ -183,9 +182,9 @@ const SecurityCheckContent = ({
         } else if (isOnboardingActive) {
             goToNextStep('firmware');
             // ensure that we are not stuck in the 'start' FullscreenApp
-            dispatch(routerActions.goto('onboarding-index'));
+            dispatch(goto({ routeName: 'onboarding-index' }));
         } else {
-            dispatch(goto('onboarding-index'));
+            dispatch(goto({ routeName: 'onboarding-index' }));
         }
     };
 
@@ -301,7 +300,7 @@ const SecurityCheckContent = ({
 export const SecurityCheck = () => {
     const selectedDevice = useSelector(selectSelectedDevice);
     const devices = useSelector(selectDevices);
-    const { initialRun } = useSelector(selectSuiteFlags);
+    const { initialRun } = useSelector(selectFlags);
     const isDeviceAuthenticityCheckEnabled = useSelector(
         state => state.suite.settings.enabledSecurityChecks.deviceAuthenticity,
     );

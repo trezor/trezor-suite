@@ -2,16 +2,16 @@ import { createSelector } from '@reduxjs/toolkit';
 
 import { selectAnalyticsInstanceId } from '@suite-common/analytics-redux';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
-import { Category, Message } from '@suite-common/suite-types';
+import { type Category, type Message } from '@suite-common/suite-types';
 
 import { getActiveExperimentGroup } from './experimentUtils';
 import { EXPERIMENT_MAP } from './messageSystemConstants';
 import {
-    ContextDomain,
-    ExperimentId,
-    ExperimentsItemType,
-    FeatureDomain,
-    MessageSystemRootState,
+    type ContextDomain,
+    type ExperimentId,
+    type ExperimentsItemType,
+    type FeatureDomain,
+    type MessageSystemRootState,
 } from './messageSystemTypes';
 import { resolveMessageContent } from './messageSystemUtils';
 

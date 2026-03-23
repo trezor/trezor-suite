@@ -5,7 +5,7 @@ import { ICON_NAMES } from '@suite-native/icons';
 import { FULL_ALERT_BOX_VARIANTS } from '../../FullAlertBox/presets';
 import {
     InlineAlertBox as InlineAlertBoxComponent,
-    InlineAlertBoxProps,
+    type InlineAlertBoxProps,
 } from '../../InlineAlertBox/InlineAlertBox';
 
 type InlineAlertBoxStory = StoryObj<InlineAlertBoxProps>;

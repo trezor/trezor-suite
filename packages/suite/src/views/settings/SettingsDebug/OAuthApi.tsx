@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { GoogleClient } from '@suite/metadata';
-import { OAuthServerEnvironment } from '@suite-common/metadata-types';
+import { type OAuthServerEnvironment } from '@suite-common/metadata-types';
 
 import { setDebugMode } from 'src/actions/suite/suiteActions';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from 'src/components/suite';

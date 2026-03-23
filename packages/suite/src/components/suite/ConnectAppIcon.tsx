@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { IconCircle } from '@trezor/components';
-import { SpacingValues, spacings } from '@trezor/theme';
+import { type SpacingValues, spacings } from '@trezor/theme';
 
 import { useProxyImage } from 'src/hooks/suite/useProxyImage';
 

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 
 import { HEADER_HEIGHT } from 'src/constants/suite/layout';
 import { useOptionalAccountHeaderContext } from 'src/support/suite/AccountHeaderProvider';

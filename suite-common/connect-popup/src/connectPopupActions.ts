@@ -1,10 +1,10 @@
 import { createAction } from '@reduxjs/toolkit';
 
 import {
-    AppRememberedPermission,
-    ConnectPopupCall,
-    ConnectPopupCallWithState,
-    ConnectSerializedError,
+    type AppRememberedPermission,
+    type ConnectPopupCall,
+    type ConnectPopupCallWithState,
+    type ConnectSerializedError,
 } from './connectPopupTypes';
 
 export const ACTION_PREFIX = '@suite-common/connect-popup';

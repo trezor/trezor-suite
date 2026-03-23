@@ -1,22 +1,24 @@
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { useFormatters } from '@suite-common/formatters';
-import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
+import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import {
-    FiatRatesRootState,
-    TransactionsRootState,
+    type FiatRatesRootState,
+    type TransactionsRootState,
     selectBaseCurrency,
     selectHistoricFiatRatesByTimestamp,
     selectIsPhishingTransaction,
     selectTransactionBlockTimeById,
+    selectTransactionIsMarkedAsNotScam,
+    transactionsActions,
 } from '@suite-common/wallet-core';
-import { AccountKey, Timestamp } from '@suite-common/wallet-types';
+import { type AccountKey, type Timestamp } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { Box, Card, InlineAlertBox, Text, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
-import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
+import { type TypedTokenTransfer, type WalletAccountTransaction } from '@suite-native/tokens';
 import { useNativeStyles } from '@trezor/styles';
 import { HELP_CENTER_ZERO_VALUE_ATTACKS } from '@trezor/urls';
 
@@ -36,6 +38,8 @@ export const TransactionDetailData = ({
     accountKey,
     tokenTransfer,
 }: TransactionDetailDataProps) => {
+    const dispatch = useDispatch();
+
     const { DateFormatter, TimeFormatter } = useFormatters();
     const { translate } = useTranslate();
     const { applyStyle } = useNativeStyles();
@@ -45,8 +49,12 @@ export const TransactionDetailData = ({
         selectTransactionBlockTimeById(state, accountKey, transaction.txid),
     );
     const isPhishingTransaction = useSelector(
-        (state: TokenDefinitionsRootState & TransactionsRootState) =>
+        (state: TokenDefinitionsRootState & TransactionsRootState & FiatRatesRootState) =>
             selectIsPhishingTransaction(state, transaction.txid, accountKey),
+    );
+
+    const isTxMarkedAsNotScam = useSelector((state: TransactionsRootState) =>
+        selectTransactionIsMarkedAsNotScam(state, transaction.txid, accountKey),
     );
 
     const fiatCurrencyCode = useSelector(selectBaseCurrency);
@@ -62,6 +70,26 @@ export const TransactionDetailData = ({
     const isNetworkTransactionWithTokens = !isTokenTransaction && transactionTokensCount > 0;
 
     const hasIncludedCoins = isMultiTokenTransaction || isNetworkTransactionWithTokens;
+
+    const onMarkTxAsNotScamClick = () => {
+        dispatch(
+            transactionsActions.markTransactionAsNotScam({
+                key: accountKey,
+                txid: transaction.txid,
+                isMarkedAsNotScam: true,
+            }),
+        );
+    };
+
+    const onUnmarkTxAsNotScamClick = () => {
+        dispatch(
+            transactionsActions.markTransactionAsNotScam({
+                key: accountKey,
+                txid: transaction.txid,
+                isMarkedAsNotScam: false,
+            }),
+        );
+    };
 
     return (
         <VStack spacing="sp16">
@@ -84,8 +112,24 @@ export const TransactionDetailData = ({
                             }}
                         />
                     }
+                    buttonProps={{
+                        onPress: () => onMarkTxAsNotScamClick(),
+                    }}
+                    buttonLabel={<Translation id="transactions.phishing.unhideTransaction" />}
                 />
             )}
+
+            {!isPhishingTransaction && isTxMarkedAsNotScam && (
+                <InlineAlertBox
+                    variant="info"
+                    title={<Translation id="transactions.phishing.markedAsRecognized" />}
+                    buttonProps={{
+                        onPress: () => onUnmarkTxAsNotScamClick(),
+                    }}
+                    buttonLabel={<Translation id="transactions.phishing.hideTransaction" />}
+                />
+            )}
+
             <Card borderColor="borderElevation1" style={applyStyle(cardStyle)}>
                 <VStack spacing="sp24">
                     <TransactionDetailRow title={translate('transactions.detail.feeLabel')}>

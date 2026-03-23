@@ -1,8 +1,8 @@
 import base58check from 'bs58check';
 import * as crypto from 'crypto';
 
-import { DataType, MetadataProvider } from '@suite-common/metadata-types';
-import { StaticSessionId } from '@trezor/connect';
+import { type DataType, type MetadataProvider } from '@suite-common/metadata-types';
+import { type StaticSessionId } from '@trezor/connect';
 
 export type FetchIntervalTrackingId =
     `${DataType}-${MetadataProvider['clientId']}-${StaticSessionId}`;
@@ -121,35 +121,6 @@ export const decrypt = (input: Buffer, key: string | Buffer) => {
     const stringified = res.toString('utf8');
 
     return JSON.parse(stringified);
-};
-
-/**
- * parse object from url hash params string
- */
-export const urlHashParams = (hash: string) => {
-    const result: { [param: string]: string } = {};
-    if (!hash) return result;
-    if (hash[0] === '#') {
-        hash = hash.substring(1, hash.length);
-    }
-    const parts = hash.split('&');
-    parts.forEach(part => {
-        const [key, value] = part.split('=');
-        result[key] = decodeURIComponent(value);
-    });
-
-    return result;
-};
-
-/**
- * parse object from url search params string
- */
-export const urlSearchParams = (search: string) => {
-    if (search[0] === '?') {
-        search = search.substring(1);
-    }
-
-    return urlHashParams(search);
 };
 
 export const getFetchTrackingId = (

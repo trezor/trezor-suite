@@ -1,16 +1,24 @@
 import { useSelector } from 'react-redux';
 
-import { RouteProp, useRoute } from '@react-navigation/native';
+import { type RouteProp, useRoute } from '@react-navigation/native';
 
-import { SuiteSyncDataRootState, selectSuiteSyncAccountLabel } from '@suite-common/suite-sync';
-import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { type SuiteSyncDataRootState, selectSuiteSyncAccountLabel } from '@suite-common/suite-sync';
+import {
+    type AccountsRootState,
+    selectAccountByKey,
+    selectAccountNetworkSymbol,
+} from '@suite-common/wallet-core';
+import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { parseAccountKey, parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
 import { CryptoIconWithNetwork } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';
-import { RootStackParamList, RootStackRoutes, ScreenHeader } from '@suite-native/navigation';
-import { TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
+import {
+    type RootStackParamList,
+    type RootStackRoutes,
+    ScreenHeader,
+} from '@suite-native/navigation';
+import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 
 type TokenAccountDetailScreenHeaderProps = {
     accountKey: AccountKey;
@@ -25,7 +33,9 @@ export const TokenAccountDetailScreenHeader = ({
 
     const { accountDescriptor, networkSymbol, deviceStaticSessionId } = parseAccountKey(accountKey);
     const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticSessionId);
-
+    const account = useSelector((state: AccountsRootState) =>
+        selectAccountByKey(state, accountKey),
+    );
     const accountLabel = useSelector((state: AccountsRootState & SuiteSyncDataRootState) =>
         selectSuiteSyncAccountLabel(state, walletDescriptor, accountDescriptor, networkSymbol),
     );
@@ -42,6 +52,8 @@ export const TokenAccountDetailScreenHeader = ({
     if (!symbol) {
         return null;
     }
+
+    const accountLabelBadge = accountLabel ?? account?.accountLabel ?? '';
 
     return (
         <ScreenHeader
@@ -64,7 +76,7 @@ export const TokenAccountDetailScreenHeader = ({
                                 ellipsizeMode="tail"
                             >
                                 {translate('moduleAccounts.accountDetail.accountLabelBadge', {
-                                    accountLabel,
+                                    accountLabel: accountLabelBadge,
                                 })}
                             </Text>
                         </VStack>

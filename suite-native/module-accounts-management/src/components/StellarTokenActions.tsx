@@ -4,20 +4,20 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 
-import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { isZero } from '@suite-common/wallet-utils';
 import { useAlert } from '@suite-native/alerts';
 import { Box, Button } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { composeStellarTrustlineFeesThunk } from '@suite-native/module-stellar-token-management';
 import {
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
-    StackNavigationProps,
+    type StackNavigationProps,
     StellarManageTokenStackRoutes,
 } from '@suite-native/navigation';
-import { TokensRootState, selectAccountTokenBalance } from '@suite-native/tokens';
+import { type TokensRootState, selectAccountTokenBalance } from '@suite-native/tokens';
 
 type StellarTokenActionsProps = {
     accountKey: AccountKey;

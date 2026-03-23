@@ -1,7 +1,11 @@
-import { Account, TokenAddress } from '@suite-common/wallet-types';
-import { renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
+import { type Account, type TokenAddress } from '@suite-common/wallet-types';
+import { renderHookWithStoreProvider } from '@suite-native/test-utils';
 import { btcAsset, getBtcAccount, getWalletState } from '@suite-native/trading-fixtures';
-import { ExchangeFormType, SellFormType, TradeableAsset } from '@suite-native/trading-types';
+import {
+    type ExchangeFormType,
+    type SellFormType,
+    type TradeableAsset,
+} from '@suite-native/trading-types';
 
 import { useSendAccountAssetBalance } from '../useSendAccountAssetBalance';
 
@@ -13,7 +17,7 @@ type HookProps = {
 };
 describe('useSendAccountAssetBalance', () => {
     const renderUseSendAccountAssetBalance = (initialProps: HookProps) =>
-        renderHookWithStoreProviderAsync(
+        renderHookWithStoreProvider(
             ({ form, setBalance, setSendSymbol, setContractAddress }) =>
                 useSendAccountAssetBalance(form, setBalance, setSendSymbol, setContractAddress),
             {
@@ -27,12 +31,12 @@ describe('useSendAccountAssetBalance', () => {
             watch: () => [sendAccount, sendAsset],
         }) as unknown as SellFormType;
 
-    it('should watch for balance and asset symbol', async () => {
+    it('should watch for balance and asset symbol', () => {
         const setBalance = jest.fn();
         const setSendSymbol = jest.fn();
         const setContractAddress = jest.fn();
 
-        await renderUseSendAccountAssetBalance({
+        renderUseSendAccountAssetBalance({
             form: getFormMock(getBtcAccount(), btcAsset),
             setBalance,
             setSendSymbol,
@@ -43,12 +47,12 @@ describe('useSendAccountAssetBalance', () => {
         expect(setSendSymbol).toHaveBeenCalledWith('btc');
     });
 
-    it('should set balance to undefined when account is undefined', async () => {
+    it('should set balance to undefined when account is undefined', () => {
         const setBalance = jest.fn();
         const setSendSymbol = jest.fn();
         const setContractAddress = jest.fn();
 
-        await renderUseSendAccountAssetBalance({
+        renderUseSendAccountAssetBalance({
             form: getFormMock(undefined, btcAsset),
             setBalance,
             setSendSymbol,
@@ -58,12 +62,12 @@ describe('useSendAccountAssetBalance', () => {
         expect(setBalance).toHaveBeenCalledWith(undefined);
     });
 
-    it('should set balance to undefined when symbol is undefined', async () => {
+    it('should set balance to undefined when symbol is undefined', () => {
         const setBalance = jest.fn();
         const setSendSymbol = jest.fn();
         const setContractAddress = jest.fn();
 
-        await renderUseSendAccountAssetBalance({
+        renderUseSendAccountAssetBalance({
             form: getFormMock(getBtcAccount(), undefined),
             setBalance,
             setSendSymbol,

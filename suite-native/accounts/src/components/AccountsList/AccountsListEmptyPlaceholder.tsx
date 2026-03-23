@@ -1,8 +1,8 @@
 import { useRoute } from '@react-navigation/native';
 
 import { Box, PictogramTitleHeader } from '@suite-native/atoms';
-import { IconName } from '@suite-native/icons';
-import { Translation, TxKeyPath } from '@suite-native/intl';
+import { type IconName } from '@suite-native/icons';
+import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { ReceiveStackRoutes } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 

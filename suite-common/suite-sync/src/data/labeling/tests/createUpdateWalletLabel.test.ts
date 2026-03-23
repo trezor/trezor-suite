@@ -1,12 +1,12 @@
 import { createMockDeps, mock } from '@suite-common/dependency-injection';
 import type { WalletTable } from '@suite-common/suite-sync-storage';
 import { asWalletDescriptor } from '@suite-common/wallet-types';
-import { StaticSessionId } from '@trezor/connect';
+import { type StaticSessionId } from '@trezor/connect';
 import { err, ok } from '@trezor/type-utils';
 
 import { createSuiteSyncStorageMock } from '../../../../tests/createSuiteSyncStorageMock.mock';
 import { SuiteSyncUnavailableOnDeviceError } from '../../../createRefreshSuiteSyncKeys';
-import { UpdateWalletLabelDeps, createUpdateWalletLabel } from '../createUpdateWalletLabel';
+import { type UpdateWalletLabelDeps, createUpdateWalletLabel } from '../createUpdateWalletLabel';
 
 const deviceStaticSessionId: StaticSessionId = '1@2:3';
 

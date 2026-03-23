@@ -1,7 +1,7 @@
 import { Translation } from '@suite/intl';
-import { TrezorDevice } from '@suite-common/suite-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { cancelDiscoveryThunk, startDiscoveryThunk } from '@suite-common/wallet-core';
-import { DiscoveryStatus } from '@suite-common/wallet-types';
+import { type DiscoveryStatus } from '@suite-common/wallet-types';
 import { Button, Column, H3, Text, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 

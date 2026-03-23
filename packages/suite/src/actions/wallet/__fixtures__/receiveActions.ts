@@ -1,3 +1,4 @@
+import { lockDevice } from '@suite/locks';
 import {
     MODAL_CLOSE,
     MODAL_OPEN_USER_CONTEXT,
@@ -9,7 +10,6 @@ import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { confirmAddressOnDeviceThunk } from '@suite-common/wallet-core';
 
-import { SUITE } from 'src/actions/suite/constants';
 import * as receiveActions from 'src/actions/wallet/receiveActions';
 
 import { RECEIVE } from '../constants';
@@ -46,8 +46,8 @@ export default [
                 { type: connectInitThunk.fulfilled.type, payload: undefined },
                 { type: MODAL_PRESERVE },
                 { type: confirmAddressOnDeviceThunk.pending.type, payload: undefined },
-                { type: SUITE.LOCK_DEVICE, payload: true },
-                { type: SUITE.LOCK_DEVICE, payload: false },
+                { type: lockDevice.type, payload: true },
+                { type: lockDevice.type, payload: false },
                 { type: '@suite/device/removeButtonRequests', payload: {} },
                 { type: confirmAddressOnDeviceThunk.fulfilled.type, payload: { success: true } },
                 { type: MODAL_REMOVE_PRESERVE },
@@ -80,8 +80,8 @@ export default [
                 { type: connectInitThunk.fulfilled.type, payload: undefined },
                 { type: MODAL_PRESERVE },
                 { type: confirmAddressOnDeviceThunk.pending.type, payload: undefined },
-                { type: SUITE.LOCK_DEVICE, payload: true },
-                { type: SUITE.LOCK_DEVICE, payload: false },
+                { type: lockDevice.type, payload: true },
+                { type: lockDevice.type, payload: false },
                 { type: '@suite/device/removeButtonRequests', payload: {} },
                 { type: confirmAddressOnDeviceThunk.fulfilled.type, payload: { success: true } },
                 { type: MODAL_REMOVE_PRESERVE },
@@ -114,8 +114,8 @@ export default [
                 { type: connectInitThunk.fulfilled.type, payload: undefined },
                 { type: MODAL_PRESERVE },
                 { type: confirmAddressOnDeviceThunk.pending.type, payload: undefined },
-                { type: SUITE.LOCK_DEVICE, payload: true },
-                { type: SUITE.LOCK_DEVICE, payload: false },
+                { type: lockDevice.type, payload: true },
+                { type: lockDevice.type, payload: false },
                 { type: '@suite/device/removeButtonRequests', payload: {} },
                 { type: confirmAddressOnDeviceThunk.fulfilled.type, payload: { success: true } },
                 { type: MODAL_REMOVE_PRESERVE },
@@ -195,8 +195,8 @@ export default [
                 { type: connectInitThunk.fulfilled.type, payload: undefined },
                 { type: MODAL_PRESERVE },
                 { type: confirmAddressOnDeviceThunk.pending.type, payload: undefined },
-                { type: SUITE.LOCK_DEVICE, payload: true },
-                { type: SUITE.LOCK_DEVICE, payload: false },
+                { type: lockDevice.type, payload: true },
+                { type: lockDevice.type, payload: false },
                 { type: '@suite/device/removeButtonRequests', payload: {} },
                 { type: confirmAddressOnDeviceThunk.fulfilled.type, payload: { success: false } },
                 { type: MODAL_REMOVE_PRESERVE },
@@ -224,8 +224,8 @@ export default [
                 { type: connectInitThunk.fulfilled.type, payload: undefined },
                 { type: MODAL_PRESERVE },
                 { type: confirmAddressOnDeviceThunk.pending.type, payload: undefined },
-                { type: SUITE.LOCK_DEVICE, payload: true },
-                { type: SUITE.LOCK_DEVICE, payload: false },
+                { type: lockDevice.type, payload: true },
+                { type: lockDevice.type, payload: false },
                 { type: '@suite/device/removeButtonRequests', payload: {} },
                 { type: confirmAddressOnDeviceThunk.fulfilled.type, payload: { success: false } },
                 { type: MODAL_REMOVE_PRESERVE },

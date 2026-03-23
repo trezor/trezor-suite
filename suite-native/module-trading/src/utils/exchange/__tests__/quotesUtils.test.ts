@@ -2,9 +2,9 @@ import { act } from 'react';
 
 import type { CryptoId } from 'invity-api';
 
-import { MinimalExchangeFormProps } from '@suite-common/trading';
+import { type MinimalExchangeFormProps } from '@suite-common/trading';
 import type { TokenAddress } from '@suite-common/wallet-types';
-import { renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
+import { renderHookWithStoreProvider } from '@suite-native/test-utils';
 import {
     btcAsset,
     ethAsset,
@@ -13,7 +13,7 @@ import {
     jupOnSolanaAsset,
     usdcAsset,
 } from '@suite-native/trading-fixtures';
-import { ExchangeFormType } from '@suite-native/trading-types';
+import { type ExchangeFormType } from '@suite-native/trading-types';
 
 import { useExchangeForm } from '../../../hooks/exchange/useExchangeForm';
 import { tradingExchangeFormToTradingExchangeFormProps } from '../quotesUtils';
@@ -22,12 +22,12 @@ describe('quotesUtils', () => {
     let form: ExchangeFormType;
 
     const renderUseTradingBuyForm = () =>
-        renderHookWithStoreProviderAsync(() => useExchangeForm(), {
+        renderHookWithStoreProvider(() => useExchangeForm(), {
             preloadedState: { wallet: { trading: getInitializedTradingState() } },
         });
 
-    beforeEach(async () => {
-        const { result } = await renderUseTradingBuyForm();
+    beforeEach(() => {
+        const { result } = renderUseTradingBuyForm();
         form = result.current;
     });
 

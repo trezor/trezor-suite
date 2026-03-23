@@ -1,13 +1,13 @@
 import type { CryptoId } from 'invity-api';
 
 import {
-    PreloadedState,
+    type PreloadedState,
     StoreProviderForTests,
     renderHook,
     waitFor,
 } from '@suite-native/test-utils';
 import { adaAsset, btcAsset, usdcAsset } from '@suite-native/trading-fixtures';
-import { TradeableAsset } from '@suite-native/trading-types';
+import { type TradeableAsset } from '@suite-native/trading-types';
 
 import { useFavouriteAssetsSectionList } from '../useFavouriteAssetsSectionList';
 

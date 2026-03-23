@@ -35,6 +35,5 @@ export * from './hooks/useBottomSheetControls';
 export * from './hooks/useSectionList';
 
 export * from './utils/general/cryptoIdUtils';
-export * from './utils/general/currencyUtils';
 export * from './utils/general/receiveAccountUtils';
 export * from './utils/general/tradeableAssetUtils';

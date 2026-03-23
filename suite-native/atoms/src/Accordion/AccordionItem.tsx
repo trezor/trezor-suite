@@ -1,13 +1,13 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { Pressable } from 'react-native';
 import {
-    SharedValue,
+    type SharedValue,
     useAnimatedStyle,
     useDerivedValue,
     withTiming,
 } from 'react-native-reanimated';
 
-import { Icon, IconName } from '@suite-native/icons';
+import { Icon, type IconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { AnimatedBox } from '../AnimatedBox';

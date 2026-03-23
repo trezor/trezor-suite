@@ -8,7 +8,8 @@ import type { ComposeOutput, TransactionInputOutputSortingStrategy } from '@trez
 
 import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
 import { DEFAULT_SORTING_STRATEGY } from '../constants/utxo';
-import { AbstractMethod, MethodPermission } from '../core/AbstractMethod';
+import type { MethodPermission } from '../core/AbstractMethod';
+import { AbstractMethod } from '../core/AbstractMethod';
 import { UI_REQUEST, UI_RESPONSE, createUiMessage } from '../events';
 import {
     TransactionComposer,

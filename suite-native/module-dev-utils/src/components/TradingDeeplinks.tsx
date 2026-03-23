@@ -2,11 +2,11 @@ import { useNavigation } from '@react-navigation/native';
 
 import { Button, HStack, Text, VStack } from '@suite-native/atoms';
 import {
-    AppTabsParamList,
+    type AppTabsParamList,
     AppTabsRoutes,
-    DevUtilsStackParamList,
-    DevUtilsStackRoutes,
-    StackToTabCompositeProps,
+    type DevUtilsStackParamList,
+    type DevUtilsStackRoutes,
+    type StackToTabCompositeProps,
     TradingStackRoutes,
 } from '@suite-native/navigation';
 

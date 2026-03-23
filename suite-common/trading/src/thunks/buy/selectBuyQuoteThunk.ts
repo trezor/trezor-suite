@@ -1,7 +1,7 @@
-import { BuyTrade, FormResponse } from 'invity-api';
+import { type BuyTrade, type FormResponse } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
-import { Timer } from '@trezor/react-utils';
+import { type Timer } from '@trezor/react-utils';
 
 import { TRADING_BUY_THUNK_PREFIX } from '../../constants';
 import { invityAPI } from '../../invityAPI';

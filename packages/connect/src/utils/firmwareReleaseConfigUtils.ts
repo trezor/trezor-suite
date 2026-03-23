@@ -1,11 +1,75 @@
 import { decode, verify } from 'jws';
 
 import { getFirmwareReleaseJwsPublicKey } from '@trezor/connect-data';
-import { FirmwareReleaseConfig } from '@trezor/device-utils';
+import type { FirmwareReleaseConfig } from '@trezor/device-utils';
 
 import { firmwareReleaseConfigAssets } from './assetUtils';
-import { getOnlineFirmwareBaseUrl } from '../data/firmwareInfo';
-import { FirmwareChannel } from '../types/firmware';
+import type { FirmwareChannel } from '../types/firmware';
+
+interface RemoteBaseInfo {
+    BASE_URL: string;
+    MIDDLE_PATH: string;
+}
+
+const RELEASES_URL_REMOTE_BASE = {
+    BASE_URL: 'https://data.trezor.io',
+    MIDDLE_PATH: 'firmware',
+};
+const UNSIGNED_URL_REMOTE_BASE = {
+    BASE_URL: 'https://data.trezor.io',
+    MIDDLE_PATH: 'dev/firmware/releases/unsigned',
+};
+const UNSIGNED_STABLE_URL_REMOTE_BASE = {
+    BASE_URL: 'https://data.trezor.io',
+    MIDDLE_PATH: 'dev/firmware/releases/unsigned-stable',
+};
+const SIGNED_URL_REMOTE_BASE = {
+    BASE_URL: 'https://suite.corp.sldev.cz',
+    MIDDLE_PATH: 'firmware/signed',
+};
+const SIGNED_LOCALHOST = {
+    BASE_URL: 'http://localhost:3000',
+    MIDDLE_PATH: 'firmware/signed',
+};
+const UNSIGNED_LOCALHOST = {
+    BASE_URL: 'http://localhost:3000',
+    MIDDLE_PATH: 'firmware/unsigned',
+};
+const FIRMWARE_REMOTE_BASE_URLS: Record<FirmwareChannel, RemoteBaseInfo> = {
+    production: RELEASES_URL_REMOTE_BASE,
+    'production-early-access': RELEASES_URL_REMOTE_BASE,
+    'test-unsigned': UNSIGNED_URL_REMOTE_BASE,
+    'test-unsigned-stable': UNSIGNED_STABLE_URL_REMOTE_BASE,
+    'test-signed': SIGNED_URL_REMOTE_BASE,
+    'localhost-unsigned': UNSIGNED_LOCALHOST,
+    'localhost-signed': SIGNED_LOCALHOST,
+};
+
+type OnlineFirmwareBaseUrl = RemoteBaseInfo & { firmwareChannel: FirmwareChannel };
+
+/**
+ * Obtains the base URL and middle path where to find firmware releases, based on the current settings.
+ * Examples:
+ *   { BASE_URL: 'https://data.trezor.io', MIDDLE_PATH: 'firmware', firmwareChannel: 'production' }
+ *   { BASE_URL: 'https://data.trezor.io', MIDDLE_PATH: 'firmware', firmwareChannel: 'production-early-access' }
+ *   { BASE_URL: 'https://suite.corp.sldev.cz', MIDDLE_PATH: 'firmware/signed', firmwareChannel: 'test-signed' }
+ *   { BASE_URL: 'http://localhost:3000', MIDDLE_PATH: 'firmware/unsigned', firmwareChannel: 'localhost-unsigned' }
+ */
+export const getOnlineFirmwareBaseUrl = (
+    firmwareChannel?: FirmwareChannel,
+): OnlineFirmwareBaseUrl => {
+    if (!firmwareChannel) {
+        return {
+            ...FIRMWARE_REMOTE_BASE_URLS['production'],
+            firmwareChannel: 'production' as FirmwareChannel,
+        };
+    }
+
+    return {
+        ...FIRMWARE_REMOTE_BASE_URLS[firmwareChannel],
+        firmwareChannel,
+    };
+};
 
 const JWS_CONFIG = {
     SIGN_ALGORITHM: 'ES256',
@@ -24,9 +88,13 @@ const CONFIG_PATH_BY_CHANNEL: Partial<Record<FirmwareChannel, string>> = {
     'production-early-access': 'config-early-access/',
 };
 
-const fetchRemoteJws = async (): Promise<JwsInfo> => {
-    const { BASE_URL, MIDDLE_PATH, firmwareChannel } = getOnlineFirmwareBaseUrl();
-    const configPath = CONFIG_PATH_BY_CHANNEL[firmwareChannel] ?? '';
+const fetchRemoteJws = async (firmwareChannel?: FirmwareChannel): Promise<JwsInfo> => {
+    const {
+        BASE_URL,
+        MIDDLE_PATH,
+        firmwareChannel: resolvedChannel,
+    } = getOnlineFirmwareBaseUrl(firmwareChannel);
+    const configPath = CONFIG_PATH_BY_CHANNEL[resolvedChannel] ?? '';
     const path = `${MIDDLE_PATH}/${configPath}${JWS_CONFIG.REMOTE_FILENAME}`;
     const remoteReleasesUrl = new URL(path, BASE_URL);
 
@@ -50,7 +118,7 @@ const fetchRemoteJws = async (): Promise<JwsInfo> => {
             throw new Error('Invalid response format: "jws" property missing or not a string.');
         }
 
-        return { jws: data.jws, firmwareChannel };
+        return { jws: data.jws, firmwareChannel: resolvedChannel };
     } catch (error) {
         throw new Error(
             `Failed to fetch remote JWS: ${error instanceof Error ? error.message : String(error)}`,
@@ -82,12 +150,12 @@ const verifyAndDecodeJws = (jws: string, publicKey: string): FirmwareReleaseConf
     return parsedPayload;
 };
 
-export const getFirmwareReleaseConfig = async () => {
+export const getFirmwareReleaseConfig = async (firmwareChannel?: FirmwareChannel) => {
     try {
-        const { jws, firmwareChannel } = await fetchRemoteJws();
+        const { jws, firmwareChannel: resolvedChannel } = await fetchRemoteJws(firmwareChannel);
 
         const useProductionKey = ['test-signed', 'production-early-access', 'production'].includes(
-            firmwareChannel,
+            resolvedChannel,
         );
         const publicKey = getFirmwareReleaseJwsPublicKey(useProductionKey);
         const remoteConfig = verifyAndDecodeJws(jws, publicKey);

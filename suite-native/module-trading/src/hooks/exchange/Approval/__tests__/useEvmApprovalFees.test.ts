@@ -1,10 +1,10 @@
 import { tradingActions } from '@suite-common/trading';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import {
-    PreloadedState,
-    TestStore,
+    type PreloadedState,
+    type TestStore,
     initStore,
-    renderHookWithStoreProviderAsync,
+    renderHookWithStoreProvider,
     waitFor,
 } from '@suite-native/test-utils';
 import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
@@ -50,10 +50,10 @@ describe('useEvmApprovalFees', () => {
     });
 
     const renderUseEvmApprovalFees = (params?: Parameters<typeof useEvmApprovalFees>[0]) =>
-        renderHookWithStoreProviderAsync(() => useEvmApprovalFees(params), { store });
+        renderHookWithStoreProvider(() => useEvmApprovalFees(params), { store });
 
-    it('should return isLoading true when fee is undefined', async () => {
-        const { result } = await renderUseEvmApprovalFees();
+    it('should return isLoading true when fee is undefined', () => {
+        const { result } = renderUseEvmApprovalFees();
 
         expect(result.current).toEqual(
             expect.objectContaining({
@@ -65,7 +65,7 @@ describe('useEvmApprovalFees', () => {
         );
     });
 
-    it('should return fee and isLoading false when composed transaction info is available', async () => {
+    it('should return fee and isLoading false when composed transaction info is available', () => {
         preloadedState!.wallet!.trading!.exchange!.selectedQuote = undefined;
         store = initStore(preloadedState).store;
 
@@ -76,7 +76,7 @@ describe('useEvmApprovalFees', () => {
             }),
         );
 
-        const { result } = await renderUseEvmApprovalFees();
+        const { result } = renderUseEvmApprovalFees();
 
         expect(result.current.fee).toBe('50000');
         expect(result.current.error).toBeNull();
@@ -103,7 +103,7 @@ describe('useEvmApprovalFees', () => {
         };
         store = initStore(preloadedState).store;
 
-        const { result } = await renderUseEvmApprovalFees();
+        const { result } = renderUseEvmApprovalFees();
 
         await waitFor(() => {
             expect(result.current.error).toBe(
@@ -114,8 +114,8 @@ describe('useEvmApprovalFees', () => {
         expect(result.current.isLoading).toBe(false);
     });
 
-    it('should accept approvalTypeOverride parameter', async () => {
-        const { result } = await renderUseEvmApprovalFees({ approvalTypeOverride: 'ZERO' });
+    it('should accept approvalTypeOverride parameter', () => {
+        const { result } = renderUseEvmApprovalFees({ approvalTypeOverride: 'ZERO' });
 
         expect(result.current).toEqual(
             expect.objectContaining({

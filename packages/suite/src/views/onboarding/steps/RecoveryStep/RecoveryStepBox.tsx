@@ -1,12 +1,9 @@
 import { Translation } from '@suite/intl';
+import { OnboardingCard, type OnboardingCardProps } from '@suite/onboarding-components';
 import { recoveryActions, selectRecoveryError, selectRecoveryStatus } from '@suite/recovery';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { goToPreviousStep } from 'src/actions/onboarding/onboardingActions';
-import {
-    OnboardingCard,
-    type OnboardingCardProps,
-} from 'src/components/onboarding/OnboardingCard/OnboardingCard';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 
 const RecoveryStepBox = (props: OnboardingCardProps) => {

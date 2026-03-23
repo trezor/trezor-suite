@@ -1,8 +1,16 @@
 {
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
-    "include": ["schema/**/*.json"],
+    "include": [
+        "schema/**/*.json",
+        "src",
+        "scripts",
+        "mock",
+        "redux.d.ts",
+        "files"
+    ],
     "references": [
+        { "path": "../analytics-redux" },
         { "path": "../geolocation" },
         { "path": "../redux-utils" },
         { "path": "../suite-types" },

@@ -6,7 +6,7 @@ import { VideoView, useVideoPlayer } from 'expo-video';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { VideoName, videos } from '../videos';
+import { type VideoName, videos } from '../videos';
 
 type VideoProps = {
     name: VideoName;

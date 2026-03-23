@@ -4,12 +4,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import type { CryptoId, ExchangeTrade } from 'invity-api';
 
 import {
-    TradingExchangeAmountLimitProps,
+    type TradingExchangeAmountLimitProps,
+    exchangeThunks,
+    requiresTokenApproval,
     selectTradingExchangeProviders,
     selectTradingExchangeQuotesRequest,
 } from '@suite-common/trading';
 import { getNetwork } from '@suite-common/wallet-config';
-import { WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
+import { type WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
 import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
 import { events } from '@suite-native/analytics';
 import { useForm } from '@suite-native/forms';
@@ -24,7 +26,7 @@ import {
     selectExchangeSelectedSendAccount,
     selectGroupedExchangeQuotes,
 } from '@suite-native/trading-state';
-import { ExchangeFormType, ExchangeFormValues } from '@suite-native/trading-types';
+import type { ExchangeFormType, ExchangeFormValues } from '@suite-native/trading-types';
 
 import { exchangeFormValidationSchema } from '../../utils/exchange/exchangeFormValidationSchema';
 import { useContextForTradingForm } from '../general/form/useContextForTradingForm';
@@ -163,6 +165,66 @@ const useAmountAndCurrencyFieldsChangeEffect = ({ setValue, watch }: ExchangeFor
     }, [setValue, watch, dispatch, analytics]);
 };
 
+const useDexQuoteApprovalInfoChangeEffect = ({ getValues, setValue, watch }: ExchangeFormType) => {
+    const dispatch = useDispatch();
+    const sendAccount = useSelector(selectExchangeSelectedSendAccount);
+    const [quote] = watch(['quote']);
+
+    const lastProcessedQuoteId = useRef<string | undefined>(undefined);
+    const pendingPrefetchQuoteIds = useRef(new Set<string>());
+
+    // This effect is used to prefetch the approval info for the DEX quote
+    // Then we can show the approval button shortly after the user selects the quote
+    useEffect(() => {
+        let isMounted = true;
+        const { quoteId, isDex } = quote ?? {};
+
+        if (!isDex) {
+            lastProcessedQuoteId.current = undefined;
+
+            return;
+        }
+
+        if (!quote || !quoteId || !sendAccount || !requiresTokenApproval(quote)) {
+            return;
+        }
+
+        if (
+            pendingPrefetchQuoteIds.current.has(quoteId) ||
+            lastProcessedQuoteId.current === quoteId
+        ) {
+            return;
+        }
+
+        pendingPrefetchQuoteIds.current.add(quoteId);
+
+        void dispatch(
+            exchangeThunks.prefetchDexQuoteApprovalThunk({
+                account: sendAccount,
+                trade: quote,
+            }),
+        )
+            .unwrap()
+            .then(response => {
+                if (isMounted && response && getValues('quote')?.quoteId === quoteId) {
+                    setValue('quote', response);
+                }
+
+                lastProcessedQuoteId.current = quoteId;
+            })
+            .catch(() => {
+                lastProcessedQuoteId.current = undefined;
+            })
+            .finally(() => {
+                pendingPrefetchQuoteIds.current.delete(quoteId);
+            });
+
+        return () => {
+            isMounted = false;
+        };
+    }, [dispatch, getValues, quote, sendAccount, setValue]);
+};
+
 const useValidations = (
     { trigger, setValue }: ExchangeFormType,
     limits: TradingExchangeAmountLimitProps | undefined,
@@ -201,6 +263,7 @@ export const useExchangeForm = () => {
     useSendAccountChangeEffect(setValue, selectExchangeSelectedSendAccount);
     useReceiveAccountChangeEffect(setValue, selectExchangeSelectedReceiveAccount);
     useAmountAndCurrencyFieldsChangeEffect(form);
+    useDexQuoteApprovalInfoChangeEffect(form);
     useSendAccountAssetBalance(form, setBalance, setSendSymbol, setContractAddress);
     useValidations(form, limits);
     useProviderMetadataChangeEffect(watch, 'exchange');

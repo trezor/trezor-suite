@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { CryptoId } from 'invity-api';
+import { type CryptoId } from 'invity-api';
 
 import { getCryptoId, parseCryptoId } from '@suite-common/trading';
 import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';

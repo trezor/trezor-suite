@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useRef } from 'react';
 
 import { events } from '@suite/analytics';
-import { TradingExchangeFormProps, exchangeThunks } from '@suite-common/trading';
-import { Network } from '@suite-common/wallet-config';
-import { Timer } from '@trezor/react-utils';
+import { type TradingExchangeFormProps, exchangeThunks } from '@suite-common/trading';
+import { type Network } from '@suite-common/wallet-config';
+import { type Timer } from '@trezor/react-utils';
 
 import { useDispatch } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';

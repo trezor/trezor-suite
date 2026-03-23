@@ -1,11 +1,11 @@
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { SettingsAnchor } from '@suite/router';
 import { Switch } from '@trezor/components';
 
 import { setOnionLinks } from 'src/actions/suite/suiteActions';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionColumn, TextColumn } from 'src/components/suite';
-import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectTorOnionLinks } from 'src/selectors/suite/suiteSelectors';
 import { useAnalytics } from 'src/support/useAnalytics';

@@ -7,7 +7,7 @@ import {
     selectIsPortfolioTrackerDevice,
     selectSelectedDevice,
 } from '@suite-common/device';
-import { TrezorDevice } from '@suite-common/suite-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { startDiscoveryThunk } from '@suite-common/wallet-core';
 import { VStack } from '@suite-native/atoms';
 import { selectHasNoDeviceWithEmptyPassphrase } from '@suite-native/device';

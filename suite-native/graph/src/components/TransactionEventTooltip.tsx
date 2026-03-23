@@ -4,18 +4,18 @@ import { useSelector } from 'react-redux';
 
 import { N } from '@mobily/ts-belt';
 
-import { GroupedBalanceMovementEventPayload } from '@suite-common/graph';
-import { SignValue } from '@suite-common/suite-types';
+import { type GroupedBalanceMovementEventPayload } from '@suite-common/graph';
+import { type SignValue } from '@suite-common/suite-types';
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { Box, Card, Text } from '@suite-native/atoms';
 import {
     CryptoAmountFormatter,
     SignValueFormatter,
     TokenAmountFormatter,
 } from '@suite-native/formatters';
-import { EventTooltipComponentProps } from '@suite-native/react-native-graph';
-import { TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
+import { type EventTooltipComponentProps } from '@suite-native/react-native-graph';
+import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { isNotNullOrUndefined } from '@trezor/utils';
 

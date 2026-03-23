@@ -4,13 +4,13 @@ import styled, { css } from 'styled-components';
 
 import { events } from '@suite/analytics';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { Box, Menu, Popover, PopoverRef } from '@trezor/components';
+import { Box, Menu, Popover, type PopoverRef } from '@trezor/components';
 
 import { Notifications } from 'src/components/suite/notifications/Notifications/Notifications';
 import { useDispatch, useLayoutSize } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
 
-import { NavigationItem, NavigationItemProps } from './NavigationItem';
+import { NavigationItem, type NavigationItemProps } from './NavigationItem';
 
 const StyledNavigationItem = styled(NavigationItem)`
     ${({ theme, isActive }) =>

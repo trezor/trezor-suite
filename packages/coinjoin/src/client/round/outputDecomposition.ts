@@ -1,9 +1,9 @@
 import { arrayToDictionary, getWeakRandomId } from '@trezor/utils';
 
+import type { CoinjoinRoundOptions, CoinjoinRoundShape } from '../../types/round';
 import { getExternalOutputSize } from '../../utils/coordinatorUtils';
 import { compareOutpoint, getRoundEvents, sumCredentials } from '../../utils/roundUtils';
 import type { Account } from '../Account';
-import type { CoinjoinRound, CoinjoinRoundOptions } from '../CoinjoinRound';
 import * as coordinator from '../coordinator';
 import * as middleware from '../middleware';
 
@@ -15,7 +15,7 @@ import * as middleware from '../middleware';
  */
 
 interface GetOutputAmountsParams {
-    round: CoinjoinRound;
+    round: CoinjoinRoundShape;
     options: CoinjoinRoundOptions;
     accountKey: string;
     availableVsize: number;
@@ -74,7 +74,7 @@ const getOutputAmounts = async (params: GetOutputAmountsParams) => {
 };
 
 interface CredentialIssuanceParams {
-    round: CoinjoinRound;
+    round: CoinjoinRoundShape;
     amountToRequest: [number, number];
     vsizeToRequest: [number, number];
     amountCredentials: [middleware.Credentials, middleware.Credentials];
@@ -256,7 +256,7 @@ export interface Bob {
 }
 
 interface CreateOutputsCredentials {
-    round: CoinjoinRound;
+    round: CoinjoinRoundShape;
     options: CoinjoinRoundOptions;
     accountKey: string;
     outputSize: number;
@@ -397,7 +397,7 @@ export interface DecomposedOutputs {
 }
 
 export const outputDecomposition = async (
-    round: CoinjoinRound,
+    round: CoinjoinRoundShape,
     accounts: Account[],
     options: CoinjoinRoundOptions,
 ): Promise<DecomposedOutputs[]> => {

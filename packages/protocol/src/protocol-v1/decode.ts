@@ -1,6 +1,6 @@
 import { PROTOCOL_MALFORMED } from '../errors';
 import { HEADER_SIZE, MESSAGE_HEADER_BYTE, MESSAGE_MAGIC_HEADER_BYTE } from './constants';
-import { TransportProtocolDecode } from '../types';
+import { type TransportProtocolDecode } from '../types';
 
 /**
  * Reads meta information from chunked buffer

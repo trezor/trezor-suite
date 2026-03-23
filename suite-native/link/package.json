@@ -7,14 +7,15 @@
     "main": "src/index",
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build"
+        "type-check": "yarn g:tsc --build",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
         "@suite-native/toasts": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
         "@trezor/urls": "workspace:*",
-        "react": "19.1.0",
+        "react": "19.2.4",
         "type-fest": "4.24.0"
     },
     "peerDependencies": {

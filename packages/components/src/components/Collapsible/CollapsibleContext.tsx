@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react';
 
-import { SpacingValues, spacings } from '@trezor/theme';
+import { type SpacingValues, spacings } from '@trezor/theme';
 
 type CollapsibleContextProps = {
     isOpen: boolean;

@@ -1,15 +1,16 @@
-import { BuyProviderInfo, ExchangeProviderInfo, SellProviderInfo } from 'invity-api';
-
-import { invityAPI } from '@suite-common/trading';
+import {
+    type TradingProviderInfo as TradingProviderInfoType,
+    invityAPI,
+} from '@suite-common/trading';
 import { Row } from '@trezor/components';
 
-import { TradingGetProvidersInfoProps } from 'src/types/trading/trading';
+import { type TradingGetProvidersInfoProps } from 'src/types/trading/trading';
 import { TradingIcon } from 'src/views/wallet/trading/common/TradingIcon';
 
 export type TradingProviderInfoProps = {
     exchange?: string;
     providers?: TradingGetProvidersInfoProps;
-    provider?: BuyProviderInfo | SellProviderInfo | ExchangeProviderInfo;
+    provider?: TradingProviderInfoType;
 };
 
 export const TradingProviderInfo = ({

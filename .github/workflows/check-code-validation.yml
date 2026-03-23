@@ -19,16 +19,16 @@ jobs:
     name: Setup and Cache Dependencies
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Install node and yarn
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version-file: ".nvmrc"
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
       - name: Yarn Cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
           key: yarn-cache-folder-${{ hashFiles('**/yarn.lock', '.yarnrc.yml') }}
@@ -47,7 +47,7 @@ jobs:
       NODE_OPTIONS: --max-old-space-size=6144
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           submodules: true
       - name: "Checkout branches for Nx"
@@ -55,8 +55,7 @@ jobs:
       - name: "Minimal yarn install"
         uses: ./.github/actions/minimal-yarn-install
       - name: Type Check
-        # Temporarily disabling the cache (false positives because of cache mismatch after NX update)
-        run: yarn nx:type-check --output-style=stream --skip-nx-cache
+        run: yarn nx:type-check --output-style=stream
 
   lint:
     name: Linting and formatting
@@ -64,21 +63,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: "Checkout branches for Nx"
         uses: ./.github/actions/nx-checkout
       - name: "Minimal yarn install"
         uses: ./.github/actions/minimal-yarn-install
-
       - name: ESlint Cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
+          # Most of the ESLint cache is handled by Nx. However, it can't handle the root cache.
+          # That's why we include only the root .eslintcache (and only root eslint config hash as cache key)
+          # (context: https://github.com/trezor/trezor-suite/pull/26006#discussion_r2949341349)
           path: |
-            **/.eslintcache
-            !**/node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('**/.eslintrc.js') }}
+            './.eslintcache'
+            '!**/node_modules'
+          key: ${{ runner.os }}-node-${{ hashFiles('./eslint.config.mjs') }} }}
       - name: Lint JS
-        run: yarn lint:js --cache-strategy content
+        run: yarn nx:lint:js --output-style=stream
       - name: Lint Styles
         run: yarn nx:lint:styles --output-style=stream
       - name: Check rust files changes
@@ -98,7 +99,7 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           submodules: true
       - name: "Checkout branches for Nx"
@@ -112,14 +113,14 @@ jobs:
     name: Unit Tests
     needs: setup-and-cache
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 60
     continue-on-error: true
     strategy:
       matrix:
         test-task: [suite, native]
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           submodules: true
       - name: "Checkout branches for Nx"
@@ -135,7 +136,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           submodules: true
       - name: "Checkout branches for Nx"
@@ -151,7 +152,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: "Checkout branches for Nx"
         uses: ./.github/actions/nx-checkout
       - name: "Minimal yarn install"
@@ -175,14 +176,13 @@ jobs:
       - name: Translation Duplicates
         run: yarn workspace @suite/intl translations:list-duplicates
 
-
   releases-revision-checks:
     name: Releases revision Checks
     needs: setup-and-cache
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Check releases.json files changes
         uses: dorny/paths-filter@v3
         id: changes

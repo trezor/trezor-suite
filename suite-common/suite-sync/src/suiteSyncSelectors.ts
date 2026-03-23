@@ -1,12 +1,12 @@
-import { DeviceRootState, selectDeviceByStaticSessionId } from '@suite-common/device';
-import { EncryptedHex } from '@suite-common/platform-encryption';
-import { SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-storage';
-import { StaticSessionId } from '@trezor/connect';
+import { type DeviceRootState, selectDeviceByStaticSessionId } from '@suite-common/device';
+import { type EncryptedHex } from '@suite-common/platform-encryption';
+import { type SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-storage';
+import { type StaticSessionId } from '@trezor/connect';
 import { isNotNull } from '@trezor/utils';
 
 import { DEFAULT_SUITE_SYNC_RELAY_URL } from './relay/relayUrl';
-import { SuiteSyncState } from './suiteSyncSlice';
-import { SuiteSyncInteraction } from './suiteSyncTypes';
+import { type SuiteSyncState } from './suiteSyncSlice';
+import { type SuiteSyncInteraction } from './suiteSyncTypes';
 import { isFwUpgradeNeededForSuiteSync, isSuiteSyncSupportedByDevice } from './suiteSyncUtils';
 
 export type WithSuiteSyncState = {

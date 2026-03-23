@@ -1,4 +1,4 @@
-import { TrezorDevice } from '@suite-common/suite-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 // These hidden device constants are used in mobile app to hold all imported accounts.

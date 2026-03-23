@@ -1,8 +1,8 @@
 import type { AttributeDef, EventDef } from '@suite-common/analytics';
-import { TradingType } from '@suite-common/trading';
+import { type TradingType } from '@suite-common/trading';
 
 import { EventType } from '../constants';
-import { TradingNavigateFrom } from '../definitions';
+import { type TradingNavigateFrom } from '../definitions';
 
 type TradingNavigateAction = 'navigate' | 'cancel';
 

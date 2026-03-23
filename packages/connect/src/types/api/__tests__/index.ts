@@ -1,6 +1,6 @@
 // TrezorConnect API types tests
 
-import {
+import type {
     TrezorConnect,
     // Exported types // TODO: breaking change missing ex: EthereumAddress
 } from '../../..';

@@ -1,10 +1,9 @@
 import { Translation } from '@suite/intl';
+import { DashboardAnchor, goto } from '@suite/router';
 import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
 import { selectPoolStatsApyData } from '@suite-common/wallet-core';
 import { Banner } from '@trezor/components';
 
-import { goto } from 'src/actions/suite/routerActions';
-import { DashboardAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { formatApyValue } from 'src/views/wallet/staking/utils/formatStakeValues';
 
@@ -27,7 +26,9 @@ export const CardanoOutdatedStakingBanner = () => {
             rightContent={
                 <Banner.Button
                     onClick={() =>
-                        dispatch(goto('suite-index', { anchor: DashboardAnchor.Staking }))
+                        dispatch(
+                            goto({ routeName: 'suite-index', anchor: DashboardAnchor.Staking }),
+                        )
                     }
                     data-testid="@notification/bridge-deprecated/button"
                 >

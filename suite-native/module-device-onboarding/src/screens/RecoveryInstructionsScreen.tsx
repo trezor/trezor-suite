@@ -3,11 +3,11 @@ import { useSetAtom } from 'jotai';
 import { Box, Button, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
-    DeviceOnboardingStackParamList,
+    type DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes,
     Screen,
     ScreenHeader,
-    StackProps,
+    type StackProps,
 } from '@suite-native/navigation';
 import { SwipeableWalkthroughStepHeader } from '@suite-native/swipeable-walkthrough';
 

@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { connectPopupActions, selectConnectAppPermissions } from '@suite-common/connect-popup';
 // TODO fix deep import
 // eslint-disable-next-line local-rules/no-package-deep-imports
-import { AppRememberedPermission } from '@suite-common/connect-popup/src/connectPopupTypes';
+import { type AppRememberedPermission } from '@suite-common/connect-popup/src/connectPopupTypes';
 import {
     AnimatedBox,
     Button,

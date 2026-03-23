@@ -13,14 +13,14 @@ import { selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice } from '@
 import { Translation } from '@suite-native/intl';
 import {
     ReceiveStackRoutes,
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
     SendStackRoutes,
-    StackNavigationProps,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
 
 import { HomescreenAlerts } from './HomescreenAlerts';
-import { PortfolioGraph, PortfolioGraphRef } from './PortfolioGraph';
+import { PortfolioGraph, type PortfolioGraphRef } from './PortfolioGraph';
 import { ReferralButton } from './ReferralButton';
 
 export const PortfolioContent = forwardRef<PortfolioGraphRef>((_props, ref) => {

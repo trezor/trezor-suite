@@ -13,7 +13,7 @@ import {
     selectIsPortfolioTrackerDevice,
     selectSelectedDevice,
 } from '@suite-common/device';
-import { TrezorDevice } from '@suite-common/suite-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { selectDeviceThunk, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { events } from '@suite-native/analytics';
 import {
@@ -24,11 +24,11 @@ import {
 } from '@suite-native/atoms';
 import { selectShouldFactoryResetBeVisible } from '@suite-native/device';
 import {
-    AppTabsParamList,
+    type AppTabsParamList,
     AppTabsRoutes,
     EarnStackRoutes,
     HomeStackRoutes,
-    TabNavigationProp,
+    type TabNavigationProp,
     checkIsRouteAnyOf,
 } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';

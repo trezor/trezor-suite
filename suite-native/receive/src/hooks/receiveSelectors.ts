@@ -1,6 +1,6 @@
 import { A, pipe } from '@mobily/ts-belt';
 
-import { DeviceRootState, selectDeviceButtonRequestsCodes } from '@suite-common/device';
+import { type DeviceRootState, selectDeviceButtonRequestsCodes } from '@suite-common/device';
 
 export const hasReceiveAddressButtonRequest = (state: DeviceRootState) =>
     pipe(

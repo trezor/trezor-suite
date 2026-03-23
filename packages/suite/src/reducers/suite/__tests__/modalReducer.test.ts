@@ -1,6 +1,6 @@
-import { State, modalReducer } from '@suite/modal';
+import { type State, modalReducer } from '@suite/modal';
 
-import { Action } from 'src/types/suite';
+import { type Action } from 'src/types/suite';
 
 import fixtures from '../__fixtures__/modalReducer';
 

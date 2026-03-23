@@ -1,6 +1,6 @@
 import { useLayoutEffect, useRef } from 'react';
 
-import { selectRouterUrl } from 'src/reducers/suite/routerReducer';
+import { selectRouterUrl } from '@suite/router';
 
 import { useSelector } from './useSelector';
 

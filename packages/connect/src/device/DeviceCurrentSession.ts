@@ -3,12 +3,14 @@
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { MessagesSchema as Messages } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
-import { MessageResponse, Session, TRANSPORT, Transport } from '@trezor/transport';
+import type { MessageResponse, Session, Transport } from '@trezor/transport';
+import { TRANSPORT } from '@trezor/transport';
 import { isErrorWithoutDeviceInteraction } from '@trezor/transport/src/errors-groups';
 import { scheduleAction } from '@trezor/utils';
 
-import { Device } from './Device';
 import { DEVICE } from '../events';
+import type { IDevice } from '../types/idevice';
+import type { TypedCallProvider } from '../types/typed-call-provider';
 import { initLog } from '../utils/debug';
 
 const blacklist: Record<string, string[] | true> = {
@@ -63,17 +65,10 @@ const nestedError = (cause: Error) => error(ERRORS.nestError(cause));
 const fail = (msg: string) =>
     error(isErrorWithoutDeviceInteraction(msg) ? new ERRORS.TransportError(msg) : new Error(msg));
 
-export interface TypedCallProvider {
-    typedCall: Messages.TypedCall;
-    cancelCall: DeviceCurrentSession['cancelCall'];
-    isDisposed: () => boolean;
-    call: DeviceCurrentSession['call'];
-    send: DeviceCurrentSession['send'];
-    receive: DeviceCurrentSession['receive'];
-}
+export type { TypedCallProvider } from '../types/typed-call-provider';
 
 export class DeviceCurrentSession implements TypedCallProvider {
-    private readonly device: Device;
+    private readonly device: IDevice;
     private readonly transport: Transport;
     private readonly session: Session;
 
@@ -81,7 +76,7 @@ export class DeviceCurrentSession implements TypedCallProvider {
     private callPromise?: Promise<unknown>;
     private abortController?: AbortController;
 
-    constructor(device: Device, transport: Transport, session: Session) {
+    constructor(device: IDevice, transport: Transport, session: Session) {
         this.device = device;
         this.transport = transport;
         this.session = session;

@@ -1,5 +1,7 @@
 import { useContext, useEffect, useRef } from 'react';
 
+import { selectRouterAnchor } from '@suite/router';
+
 import { ScrollContext } from 'src/components/suite/layouts/SuiteLayout/SuiteLayout';
 import { HEADER_HEIGHT_NUMERIC, SUBPAGE_NAV_HEIGHT_NUMERIC } from 'src/constants/suite/layout';
 import { useSelector } from 'src/hooks/suite';
@@ -9,7 +11,7 @@ const OFFSET = 30;
 export const useAnchor = (anchorId: string) => {
     const scrollRef = useContext(ScrollContext);
     const anchorRef = useRef<HTMLDivElement>(null);
-    const anchor = useSelector(state => state.router.anchor);
+    const anchor = useSelector(selectRouterAnchor);
 
     useEffect(() => {
         if (anchorId === anchor && anchorRef.current) {

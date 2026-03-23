@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
 import { useProviderMetadataChangeEffect } from '@suite-common/trading';
@@ -44,12 +44,14 @@ export const TradingSelectedOfferProvider = () => {
         await goToOffers();
     };
 
-    const needsReceiveAddress = type !== 'sell';
     const isReceiveAddressSelected =
         (isTradingExchangeContext(context) || isTradingBuyContext(context)) &&
         !!context.tradingReceiveAddress.receiveAddress;
 
-    if (quote == null || isAmountEmpty || (needsReceiveAddress && !isReceiveAddressSelected)) {
+    const shouldHideProvider = isTradingBuyContext(context) && !isReceiveAddressSelected;
+    const hasNoQuoteOrAmount = quote == null || isAmountEmpty;
+
+    if (hasNoQuoteOrAmount || shouldHideProvider) {
         return;
     }
 

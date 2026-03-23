@@ -8,9 +8,9 @@ import { selectSelectedDevice } from '@suite-common/device';
 import { removeThpCredentialsThunk } from '@suite-common/thp';
 import { useTranslate } from '@suite-native/intl';
 import {
-    DeviceSettingsStackParamList,
+    type DeviceSettingsStackParamList,
     DeviceSettingsStackRoutes,
-    StackNavigationProps,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
 import { useThpAutoconnectActions } from '@suite-native/thp';
 import { useToast } from '@suite-native/toasts';
@@ -43,12 +43,12 @@ export const useDeviceAutoConnect = () => {
             TrezorConnect.cancel();
             showToast({
                 variant: 'error',
-                message: translate('moduleDeviceSettings.autoconnect.enable.error'),
+                message: translate('moduleDeviceSettings.autoConnect.errorToast'),
             });
         } else {
             showToast({
                 variant: 'success',
-                message: translate('moduleDeviceSettings.autoconnect.enable.successToast'),
+                message: translate('moduleDeviceSettings.autoConnect.successToast'),
             });
         }
         navigation.goBack();

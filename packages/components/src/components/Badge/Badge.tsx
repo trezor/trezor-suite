@@ -2,7 +2,7 @@ import React from 'react';
 
 import { borders } from '@trezor/theme';
 
-import { BadgeIntent, BadgeSize } from './types';
+import { type BadgeIntent, type BadgeSize } from './types';
 import {
     mapIntentToBackgroundColor,
     mapIntentToIconColor,
@@ -10,10 +10,14 @@ import {
     mapSizeToPadding,
     mapSizeToTypographyStyle,
 } from './utils';
-import { FrameProps, FramePropsKeys, pickAndPrepareFrameProps } from '../../utils/frameProps';
+import {
+    type FrameProps,
+    type FramePropsKeys,
+    pickAndPrepareFrameProps,
+} from '../../utils/frameProps';
 import { Box } from '../Box/Box';
 import { Row } from '../Flex/Flex';
-import { Icon, IconName } from '../Icon/Icon';
+import { Icon, type IconName } from '../Icon/Icon';
 import { Text } from '../typography/Text/Text';
 
 export const allowedBadgeFrameProps = ['margin', 'cursor'] as const satisfies FramePropsKeys[];

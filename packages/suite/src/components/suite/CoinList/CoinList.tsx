@@ -1,6 +1,6 @@
 import { Translation } from '@suite/intl';
 import { getCoinUnavailabilityMessage } from '@suite-common/suite-utils';
-import { Network, NetworkSymbol } from '@suite-common/wallet-config';
+import { type Network, type NetworkSymbol } from '@suite-common/wallet-config';
 import { Row, Tooltip } from '@trezor/components';
 import { getFirmwareVersion, isDeviceInBootloaderMode } from '@trezor/device-utils';
 import { spacings } from '@trezor/theme';

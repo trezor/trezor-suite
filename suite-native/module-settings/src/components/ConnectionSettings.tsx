@@ -19,9 +19,9 @@ import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { WalletConnectPairBottomSheet } from '@suite-native/module-connect-popup';
 import {
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
-    StackNavigationProps,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
 
 import { AppSettingsCardWithIconLayout } from './AppSettingsCardWithIconLayout';

@@ -31,24 +31,18 @@
         "types": "./lib/index.d.ts",
         "exports": {
             ".": {
-                "import": "./libESM/index.js",
+                "import": "./libESM/index.mjs",
                 "require": "./lib/index.js",
                 "types": "./lib/index.d.ts"
             },
             "./lib/*": "./lib/*.js",
-            "./libESM/*.js": "./libESM/*.js",
             "./lib/types": "./lib/types/index.js",
             "./lib/transaction": "./lib/transaction/index.js",
             "./lib/payments": "./lib/payments/index.js",
             "./lib/compose": "./lib/compose/index.js",
             "./lib/coinselect": "./lib/coinselect/index.js",
             "./lib/script": "./lib/script/index.js",
-            "./libESM/types.js": "./libESM/types/index.js",
-            "./libESM/transaction.js": "./libESM/transaction/index.js",
-            "./libESM/payments.js": "./libESM/payments/index.js",
-            "./libESM/compose.js": "./libESM/compose/index.js",
-            "./libESM/coinselect.js": "./libESM/coinselect/index.js",
-            "./libESM/script.js": "./libESM/script/index.js"
+            "./libESM/*": "./libESM/*"
         }
     },
     "scripts": {
@@ -57,16 +51,18 @@
         "type-check": "yarn g:tsc --build tsconfig.json",
         "build:lib": "yarn build:lib:cjs && yarn build:lib:esm",
         "build:lib:cjs": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
-        "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm"
+        "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
+        "@sinclair/typebox": "^0.33.12",
         "@trezor/utils": "workspace:*",
         "bech32": "^2.0.0",
         "bip66": "^2.0.0",
         "bitcoin-ops": "^1.4.1",
         "blake-hash": "^2.0.0",
         "blakejs": "^1.2.1",
-        "bn.js": "^5.2.2",
+        "bn.js": "^5.2.3",
         "bs58": "^6.0.0",
         "bs58check": "^4.0.0",
         "cashaddrjs": "0.4.4",
@@ -74,7 +70,6 @@
         "int64-buffer": "^1.1.0",
         "pushdata-bitcoin": "^1.0.1",
         "tiny-secp256k1": "^1.1.7",
-        "typeforce": "^1.18.0",
         "varuint-bitcoin": "2.0.0",
         "wif": "^5.0.0"
     },

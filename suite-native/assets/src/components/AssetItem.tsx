@@ -13,21 +13,24 @@ import { BaseCurrencyAmountFormatter, CryptoAmountFormatter } from '@suite-nativ
 import { CryptoIconWithPercentage, Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
-    AppTabsParamList,
-    AppTabsRoutes,
-    RootStackParamList,
+    type AppTabsParamList,
+    type AppTabsRoutes,
+    type RootStackParamList,
     RootStackRoutes,
-    TabToStackCompositeNavigationProp,
+    type TabToStackCompositeNavigationProp,
 } from '@suite-native/navigation';
 import {
-    NativeStakingRootState,
+    type NativeStakingRootState,
     selectHasAnyDeviceAccountsWithStaking,
 } from '@suite-native/staking';
-import { TokensRootState, selectHasDeviceAnyTokensForNetwork } from '@suite-native/tokens';
+import {
+    type TokensRootState,
+    selectHasDeviceAnyTokensWithBalanceForNetwork,
+} from '@suite-native/tokens';
 import { BigNumber } from '@trezor/utils';
 
 import {
-    AssetsRootState,
+    type AssetsRootState,
     selectAssetCryptoValue,
     selectAssetFiatValue,
     selectAssetFiatValuePercentage,
@@ -96,15 +99,15 @@ export const AssetItem = React.memo(({ cryptoCurrencySymbol, onPress }: AssetIte
     );
 
     const accountsPerAsset = accountsKeysForNetworkSymbol.length;
-    const hasAnyTokens = useSelector((state: TokensRootState) =>
-        selectHasDeviceAnyTokensForNetwork(state, cryptoCurrencySymbol),
+    const hasAnyTokensWithBalance = useSelector((state: TokensRootState) =>
+        selectHasDeviceAnyTokensWithBalanceForNetwork(state, cryptoCurrencySymbol),
     );
     const hasAnyAccountsWithStaking = useSelector((state: NativeStakingRootState) =>
         selectHasAnyDeviceAccountsWithStaking(state, cryptoCurrencySymbol),
     );
 
     const handleAssetPress = () => {
-        if (accountsPerAsset === 1 && !hasAnyTokens) {
+        if (accountsPerAsset === 1 && !hasAnyTokensWithBalance) {
             navigation.navigate(RootStackRoutes.AccountDetail, {
                 accountKey: accountsKeysForNetworkSymbol[0],
                 closeActionType: 'back',
@@ -131,7 +134,7 @@ export const AssetItem = React.memo(({ cryptoCurrencySymbol, onPress }: AssetIte
                     {hasAnyAccountsWithStaking && (
                         <StakingBadge networkSymbol={cryptoCurrencySymbol} />
                     )}
-                    {hasAnyTokens && (
+                    {hasAnyTokensWithBalance && (
                         <Badge
                             elevation="1"
                             size="small"

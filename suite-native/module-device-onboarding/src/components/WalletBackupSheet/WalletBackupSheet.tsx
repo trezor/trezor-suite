@@ -2,8 +2,8 @@ import { useState } from 'react';
 
 import * as Haptics from 'expo-haptics';
 
-import { BackupType } from '@suite-common/suite-types';
-import { BottomSheetModal, BottomSheetModalRef, Button, VStack } from '@suite-native/atoms';
+import { type BackupType } from '@suite-common/suite-types';
+import { BottomSheetModal, type BottomSheetModalRef, Button, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';

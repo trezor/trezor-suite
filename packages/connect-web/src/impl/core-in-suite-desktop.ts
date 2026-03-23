@@ -2,15 +2,14 @@
 
 import {
     CORE_CALL,
-    CallMethodAnyResponse,
-    CallMethodPayload,
+    type CallMethodAnyResponse,
+    type CallMethodPayload,
     POPUP,
 } from '@trezor/connect/src/events';
 import type { ConnectImpl, ConnectImplSettings } from '@trezor/connect/src/impl/dynamic';
 import type { Manifest } from '@trezor/connect/src/types/settings';
 import * as ERRORS from '@trezor/connect-common/src/constants/errors';
-import { WebsocketClient } from '@trezor/websocket-client';
-import { WebsocketError } from '@trezor/websocket-client/src/client';
+import { WebsocketClient, WebsocketError } from '@trezor/websocket-client';
 
 /**
  * CoreInSuiteDesktop implementation for TrezorConnect factory.

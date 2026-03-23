@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react';
 
 import { CONDITION_OPTIONS, getDefaultConditionValue } from '@suite-common/message-system';
-import { Condition } from '@suite-common/suite-types';
+import { type Condition } from '@suite-common/suite-types';
 
 type Parsed = { conditions?: unknown[] } | null;
 

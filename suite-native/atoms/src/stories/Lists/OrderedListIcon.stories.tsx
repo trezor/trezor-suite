@@ -5,7 +5,7 @@ import { COLOR_TOKENS, nativeBorders } from '@trezor/theme';
 
 import {
     OrderedListIcon as OrderedListIconComponent,
-    OrderedListIconProps,
+    type OrderedListIconProps,
 } from '../../OrderedListIcon';
 import { HStack } from '../../Stack';
 import { Text } from '../../Text';

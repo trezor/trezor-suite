@@ -7,9 +7,9 @@ import { selectSelectedDevice } from '@suite-common/device';
 import { useForm } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
 import {
-    DeviceNameStackParamList,
+    type DeviceNameStackParamList,
     DeviceNameStackRoutes,
-    StackNavigationProps,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
 import TrezorConnect from '@trezor/connect';

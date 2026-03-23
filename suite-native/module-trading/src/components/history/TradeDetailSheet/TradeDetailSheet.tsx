@@ -1,7 +1,7 @@
 import { memo, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { TradingRootState, selectTradingTradeByOrderId } from '@suite-common/trading';
+import { type TradingRootState, selectTradingTradeByOrderId } from '@suite-common/trading';
 import { BottomSheetModal, useBottomSheetModal } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';

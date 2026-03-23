@@ -4,7 +4,7 @@ import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { isAdditionalShamirBackupInProgress } from '@suite/recovery';
 import { selectSelectedDevice } from '@suite-common/device';
-import { Modal, ModalProps } from '@trezor/components';
+import { Modal, type ModalProps } from '@trezor/components';
 import TrezorConnect, { PROTO } from '@trezor/connect';
 import { ConfirmOnDevicePill } from '@trezor/product-components';
 import {

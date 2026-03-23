@@ -1,5 +1,5 @@
-import { PROTO } from '../../constants';
-import { CommonParams, Params, Response } from '../params';
+import type { PROTO } from '../../constants';
+import type { CommonParams, Params, Response } from '../params';
 
 export declare function evoluGetDelegatedIdentityKey(
     params: Params<CommonParams>,

@@ -33,18 +33,18 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: Checkout project
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           submodules: "true"
 
       - name: Install node and yarn
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version-file: ".nvmrc"
           cache: yarn
 
       - name: Setup node_modules cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: node_modules
           key: node_modules-${{ hashFiles('yarn.lock') }}
@@ -71,14 +71,14 @@ jobs:
         run: yarn sign-config
 
       - name: Cache CocoaPods
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: suite-native/app/ios/Pods
           key: pods-${{ hashFiles('suite-native/app/ios/Podfile.lock') }}
           restore-keys: pods-
 
       - name: Cache Xcode DerivedData
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: suite-native/app/ios/build
           key: xcode-derived-${{ hashFiles('suite-native/app/ios/Podfile.lock') }}-${{ github.sha }}
@@ -89,7 +89,7 @@ jobs:
         run: npx detox build --configuration ios.sim.release
 
       - name: Store build artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ios-test-build
           path: |
@@ -104,18 +104,18 @@ jobs:
     needs: prepare_ios_test_app
     steps:
       - name: Checkout project
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           submodules: "true"
 
       - name: Install node and yarn
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version-file: ".nvmrc"
           cache: yarn
 
       - name: Load node modules cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: node_modules
           key: node_modules-${{ hashFiles('yarn.lock') }}
@@ -134,7 +134,7 @@ jobs:
 
       - name: Generate GitHub App token
         id: trezor-bot-token
-        uses: actions/create-github-app-token@v1
+        uses: actions/create-github-app-token@v2
         with:
           app-id: ${{ secrets.TREZOR_BOT_APP_ID }}
           private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
@@ -155,7 +155,7 @@ jobs:
           HOMEBREW_NO_INSTALL_CLEANUP: 1
 
       - name: Cache Detox framework
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/Library/Detox
           key: detox-framework-${{ hashFiles('**/node_modules/detox/package.json') }}
@@ -165,7 +165,7 @@ jobs:
         working-directory: ./suite-native/app
 
       - name: Download app build artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: ios-test-build
           path: |
@@ -189,7 +189,7 @@ jobs:
 
       - name: "Store test artifacts"
         if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ios-tests-${{ matrix.TEST_GROUP }}
           path: suite-native/app/artifacts

@@ -12,13 +12,13 @@ import { Link } from '@suite-native/link';
 import {
     AppTabsRoutes,
     HomeStackRoutes,
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
     ScreenHeader,
-    StackProps,
-    StackToStackCompositeNavigationProps,
-    StellarManageTokenStackParamList,
-    StellarManageTokenStackRoutes,
+    type StackProps,
+    type StackToStackCompositeNavigationProps,
+    type StellarManageTokenStackParamList,
+    type StellarManageTokenStackRoutes,
 } from '@suite-native/navigation';
 import { BASE_INFO } from '@trezor/blockchain-link-utils/src/stellar';
 import { HELP_CENTER_XLM_URL } from '@trezor/urls';

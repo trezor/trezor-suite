@@ -1,8 +1,15 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { Button, ButtonProps, Select, SelectProps, Tooltip, variables } from '@trezor/components';
+import {
+    Button,
+    type ButtonProps,
+    Select,
+    type SelectProps,
+    Tooltip,
+    variables,
+} from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 const { SCREEN_SIZE } = variables;

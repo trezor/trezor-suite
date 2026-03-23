@@ -1,5 +1,5 @@
-import { TradingTransaction } from '@suite-common/trading';
-import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { type TradingTransaction } from '@suite-common/trading';
+import { renderWithStoreProvider } from '@suite-native/test-utils';
 import {
     getBuyTrade,
     getExchangeTrade,
@@ -18,10 +18,10 @@ const getPreloadedState = (trades: TradingTransaction[]) => ({
 });
 
 describe('TradeDetailInfo', () => {
-    it('should not render when trade is not found', async () => {
+    it('should not render when trade is not found', () => {
         const preloadedState = getPreloadedState([]);
 
-        const { toJSON } = await renderWithStoreProviderAsync(
+        const { toJSON } = renderWithStoreProvider(
             <TradeDetailInfo orderId="nonexistent_order_id" />,
             { preloadedState },
         );
@@ -29,12 +29,12 @@ describe('TradeDetailInfo', () => {
         expect(toJSON()).toBeNull();
     });
 
-    it('should render buy trade info correctly', async () => {
+    it('should render buy trade info correctly', () => {
         const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
 
         const preloadedState = getPreloadedState([buyTrade]);
 
-        const { getByText } = await renderWithStoreProviderAsync(
+        const { getByText } = renderWithStoreProvider(
             <TradeDetailInfo orderId={buyTrade.data.orderId!} />,
             { preloadedState },
         );
@@ -46,12 +46,12 @@ describe('TradeDetailInfo', () => {
         expect(getByText(/[0-9]{1,2}:21/)).toBeTruthy();
     });
 
-    it('should render exchange trade info correctly', async () => {
+    it('should render exchange trade info correctly', () => {
         const exchangeTrade = getExchangeTrade({ status: 'CONVERTING' });
 
         const preloadedState = getPreloadedState([exchangeTrade]);
 
-        const { getByText, queryByText } = await renderWithStoreProviderAsync(
+        const { getByText, queryByText } = renderWithStoreProvider(
             <TradeDetailInfo orderId={exchangeTrade.data.orderId!} />,
             { preloadedState },
         );

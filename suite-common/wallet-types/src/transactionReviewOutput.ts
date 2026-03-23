@@ -1,6 +1,6 @@
-import { TokenInfo } from '@trezor/connect';
+import type { TokenInfo } from '@trezor/connect';
 
-import { FormStateTradingCryptoCurrency, FormStateTradingFiatCurrency } from './sendForm';
+import { type FormStateTradingCryptoCurrency, type FormStateTradingFiatCurrency } from './sendForm';
 
 export type ReviewOutput =
     | {

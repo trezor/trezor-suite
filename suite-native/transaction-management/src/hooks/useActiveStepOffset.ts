@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
-import { LayoutChangeEvent } from 'react-native';
+import { type LayoutChangeEvent } from 'react-native';
 
 import { nativeSpacings } from '@trezor/theme';
 

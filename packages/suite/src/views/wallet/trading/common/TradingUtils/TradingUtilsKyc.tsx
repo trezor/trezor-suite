@@ -1,4 +1,4 @@
-import { ExchangeKYCType } from 'invity-api';
+import { type ExchangeKYCType } from 'invity-api';
 
 import { Translation } from '@suite/intl';
 import { Banner, Icon, Tooltip } from '@trezor/components';
@@ -10,7 +10,7 @@ import {
     KYC_REQUIRED,
     KYC_YES_REFUND,
 } from 'src/constants/wallet/trading/kyc';
-import { TradingExchangeProvidersInfoProps } from 'src/types/trading/trading';
+import { type TradingExchangeProvidersInfoProps } from 'src/types/trading/trading';
 import { TooltipIcon, TooltipText, TooltipWrap } from 'src/views/wallet/trading';
 
 interface TradingUtilsProviderProps {

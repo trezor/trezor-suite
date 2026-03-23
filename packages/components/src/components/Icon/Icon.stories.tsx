@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { type Meta, type StoryObj } from '@storybook/react';
 
 // TODO: suite-common imports in non-suite packages should not be allowed
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports

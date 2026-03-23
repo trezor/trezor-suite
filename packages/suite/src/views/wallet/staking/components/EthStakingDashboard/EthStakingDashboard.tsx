@@ -6,7 +6,7 @@ import { commonQueryKeys } from '@suite-common/react-query';
 import { getDaysToAddToPool, getDaysToUnstake } from '@suite-common/staking';
 import {
     fetchAllTransactionsForAccountThunk,
-    fetchEverstakeDataApi,
+    fetchEthereumValidatorsQueue,
     selectAccountIsStakingActive,
     selectAccountStakeTransactions,
     selectAccountUnstakeTransactions,
@@ -14,7 +14,7 @@ import {
     selectPoolStatsApyData,
     selectPoolStatsNextRewardPayout,
 } from '@suite-common/wallet-core';
-import { EverstakeEndpointType, SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import {
     getStakingDataForNetwork,
     hasStakeInPendingDepositedState,
@@ -66,17 +66,11 @@ export const EthStakingDashboard = ({ selectedAccount }: EthStakingDashboardProp
         queryKey: commonQueryKeys.validatorsQueue(accountKey, lastTxBlockTime),
         staleTime: 60 * 1000, // 1 minute
         queryFn: () => {
-            if (!account) return;
-
-            const timestamp = hasStakeInPendingDepositedState(account)
+            const timestamp = hasStakeInPendingDepositedState(account!)
                 ? lastTxBlockTime
                 : undefined;
 
-            return fetchEverstakeDataApi({
-                symbol: 'eth',
-                endpointType: EverstakeEndpointType.ValidatorsQueue,
-                timestamp,
-            });
+            return fetchEthereumValidatorsQueue({ timestamp });
         },
     });
 

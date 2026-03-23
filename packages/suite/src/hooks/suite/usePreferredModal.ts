@@ -1,12 +1,11 @@
 import { MODAL_CONTEXT_NONE } from '@suite/modal';
+import { type ModalAppParams, type Route, selectRoute, selectRouterParams } from '@suite/router';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
-import { Route } from '@suite-common/suite-types';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { UI_REQUEST } from '@trezor/connect';
 
 import { useDiscovery, useSelector } from 'src/hooks/suite';
 import type { ForegroundAppRoute } from 'src/types/suite';
-import { ModalAppParams } from 'src/utils/suite/router';
 
 const isForegroundApp = (route: Route): route is ForegroundAppRoute =>
     !route.isFullscreenApp && !!route.isForegroundApp;
@@ -48,8 +47,8 @@ const getForegroundAppAction = (route: ForegroundAppRoute, params: Partial<Modal
 
 export const usePreferredModal = () => {
     const { discovery: discoveryForSelectedDevice } = useDiscovery();
-    const route = useSelector(state => state.router.route);
-    const params = useSelector(state => state.router.params as Partial<ModalAppParams>);
+    const route = useSelector(selectRoute);
+    const params = useSelector(selectRouterParams) as Partial<ModalAppParams>;
     const modal = useSelector(state => state.modal);
     const discoveryInProgress = useSelector(selectHasRunningDiscovery);
     const isPassphraseFlow =

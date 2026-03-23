@@ -1,21 +1,22 @@
 import type { FiatCurrencyCode, SellCryptoPaymentMethod, SellFiatTrade } from 'invity-api';
 
 import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
+import { invariant } from '@suite-common/suite-utils';
 import {
-    TradingCountryCode,
-    TradingPaymentMethodProps,
+    type TradingCountryCode,
+    type TradingPaymentMethodProps,
+    getCurrencyLabel,
     getTradingQuotesByPaymentMethod,
     nonSanctionedRegional,
     selectTradingSellInfo,
     selectValidTradingSellQuotes,
 } from '@suite-common/trading';
 import { selectAccountByKey } from '@suite-common/wallet-core';
-import { getCurrencyLabel } from '@suite-native/trading-atoms';
-import { FiatCurrencyItem, SellFormValues } from '@suite-native/trading-types';
+import { type FiatCurrencyItem, type SellFormValues } from '@suite-native/trading-types';
 
 import { selectTradingResidenceCountry } from './residenceSelectors';
 import {
-    TradingRootState,
+    type TradingRootState,
     createMemoizedSelector,
     createMemoizedSelectorWithAccounts,
 } from '../reducers';
@@ -88,7 +89,15 @@ export const selectSellBestQuotesForAvailablePaymentMethods = createMemoizedSele
             return quotesByPaymentMethodMap;
         }, new Map<SellCryptoPaymentMethod, SellFiatTrade>());
 
-        return [...bestQuoteByPaymentMethodMap.values()];
+        return [...bestQuoteByPaymentMethodMap.values()].sort(
+            ({ rate: aRate }, { rate: bRate }) => {
+                // note that quotes without a valid rate should be filtered out by selectValidTradingSellQuotes
+                invariant(aRate, 'rate in object "a" is required for sorting');
+                invariant(bRate, 'rate in object "b" is required for sorting');
+
+                return bRate - aRate;
+            },
+        );
     },
 );
 

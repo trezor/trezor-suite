@@ -6,7 +6,7 @@ import type { AccountDescriptor, WalletDescriptor } from '@suite-common/wallet-t
 import { selectSuiteSyncAccountLabel } from '../account/selectSuiteSyncAccountLabel';
 import { selectSuiteSyncAccountAddressesByAccount } from '../address/suiteSyncAddressSelectors';
 import { selectSuiteSyncOutputLabelsByAccount } from '../output/suiteSyncOutputSelectors';
-import { SuiteSyncDataRootState } from '../suiteSyncDataReducer';
+import { type SuiteSyncDataRootState } from '../suiteSyncDataReducer';
 
 type SelectAllLabelsForAccountParams = {
     walletDescriptor: WalletDescriptor;

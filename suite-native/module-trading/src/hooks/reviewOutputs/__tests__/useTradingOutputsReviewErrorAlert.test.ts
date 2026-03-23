@@ -1,9 +1,9 @@
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import {
-    TestStore,
+    type TestStore,
     act,
     initStore,
-    renderHookWithStoreProviderAsync,
+    renderHookWithStoreProvider,
 } from '@suite-native/test-utils';
 import { getWalletState } from '@suite-native/trading-fixtures';
 
@@ -21,7 +21,7 @@ describe('useTradingOutputsReviewErrorAlert', () => {
     let store: TestStore;
 
     const renderUseTradingOutputsReviewErrorAlert = (accountKey: AccountKey) =>
-        renderHookWithStoreProviderAsync(() => useTradingOutputsReviewErrorAlert(accountKey), {
+        renderHookWithStoreProvider(() => useTradingOutputsReviewErrorAlert(accountKey), {
             store,
         });
 
@@ -30,10 +30,10 @@ describe('useTradingOutputsReviewErrorAlert', () => {
         store = initStore({ wallet: getWalletState({ tradeType: 'exchange' }) }).store;
     });
 
-    it('should show alert', async () => {
+    it('should show alert', () => {
         const mockOnRetry = jest.fn();
         const mockOnCancel = jest.fn();
-        const { result } = await renderUseTradingOutputsReviewErrorAlert(
+        const { result } = renderUseTradingOutputsReviewErrorAlert(
             'btc-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
         );
 
@@ -56,10 +56,10 @@ describe('useTradingOutputsReviewErrorAlert', () => {
         });
     });
 
-    it('should show special text fort solana', async () => {
+    it('should show special text fort solana', () => {
         const mockOnRetry = jest.fn();
         const mockOnCancel = jest.fn();
-        const { result } = await renderUseTradingOutputsReviewErrorAlert(
+        const { result } = renderUseTradingOutputsReviewErrorAlert(
             'sol-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
         );
 

@@ -1,4 +1,4 @@
-import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { renderWithStoreProvider } from '@suite-native/test-utils';
 
 import { NoAccountsComponent } from '../NoAccountsComponent';
 
@@ -10,7 +10,7 @@ describe('NoAccountsComponent', () => {
         isConnected: boolean;
         id?: string;
     }) =>
-        renderWithStoreProviderAsync(<NoAccountsComponent isBottomRounded />, {
+        renderWithStoreProvider(<NoAccountsComponent isBottomRounded />, {
             preloadedState: {
                 device: {
                     selectedDevice: {
@@ -22,22 +22,22 @@ describe('NoAccountsComponent', () => {
             },
         });
 
-    it('should render for not connected device', async () => {
-        const { queryByText } = await renderNoAccountsComponent({ isConnected: false });
+    it('should render for not connected device', () => {
+        const { queryByText } = renderNoAccountsComponent({ isConnected: false });
 
         expect(queryByText('You need to connect your device to add new account.')).toBeTruthy();
     });
 
-    it('should render for no account but connected device', async () => {
-        const { queryByText } = await renderNoAccountsComponent({ isConnected: true });
+    it('should render for no account but connected device', () => {
+        const { queryByText } = renderNoAccountsComponent({ isConnected: true });
 
         expect(
             queryByText('It seems that you don’t have any account matching selected asset.'),
         ).toBeTruthy();
     });
 
-    it('should render for portfolio tracker', async () => {
-        const { queryByText } = await renderNoAccountsComponent({
+    it('should render for portfolio tracker', () => {
+        const { queryByText } = renderNoAccountsComponent({
             isConnected: false,
             id: 'hiddenDeviceWithImportedAccounts',
         });

@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { NetworkType } from '@suite-common/wallet-config';
+import { type NetworkType } from '@suite-common/wallet-config';
 import { isStakingNetworkType } from '@suite-common/wallet-utils';
 import { Banner } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';

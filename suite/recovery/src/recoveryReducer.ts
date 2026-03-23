@@ -1,6 +1,6 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 
-import { SeedInputStatus, WordCount } from './types';
+import { type SeedInputStatus, type WordCount } from './types';
 
 export interface RecoveryState {
     advancedRecovery: boolean;

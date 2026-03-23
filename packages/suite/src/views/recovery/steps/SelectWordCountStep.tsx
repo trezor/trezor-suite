@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { WordCount, wordCounts } from '@suite/recovery';
+import { type WordCount, wordCounts } from '@suite/recovery';
 import { Card, Column, Grid, H4, Paragraph, RadioCard } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 

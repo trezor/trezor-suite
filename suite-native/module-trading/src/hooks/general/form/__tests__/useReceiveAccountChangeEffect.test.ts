@@ -1,10 +1,10 @@
 import { tradingExchangeActions } from '@suite-common/trading';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import {
-    TestStore,
+    type TestStore,
     act,
     initStore,
-    renderHookWithStoreProviderAsync,
+    renderHookWithStoreProvider,
 } from '@suite-native/test-utils';
 import { getBtcAccount, getWalletState } from '@suite-native/trading-fixtures';
 import { selectExchangeSelectedReceiveAccount } from '@suite-native/trading-state';
@@ -16,7 +16,7 @@ describe('useReceiveAccountChangeEffect', () => {
     let setValue: jest.Mock;
 
     const renderUseReceiveAccountChangeEffect = () =>
-        renderHookWithStoreProviderAsync(
+        renderHookWithStoreProvider(
             () => useReceiveAccountChangeEffect(setValue, selectExchangeSelectedReceiveAccount),
             { store },
         );
@@ -27,15 +27,15 @@ describe('useReceiveAccountChangeEffect', () => {
         setValue = jest.fn();
     });
 
-    it('should set receiveAccount based on store value', async () => {
-        await renderUseReceiveAccountChangeEffect();
+    it('should set receiveAccount based on store value', () => {
+        renderUseReceiveAccountChangeEffect();
 
         expect(setValue).toHaveBeenCalledTimes(1);
         expect(setValue).toHaveBeenCalledWith('receiveAccount', undefined);
     });
 
-    it('should set receiveAccount on change', async () => {
-        await renderUseReceiveAccountChangeEffect();
+    it('should set receiveAccount on change', () => {
+        renderUseReceiveAccountChangeEffect();
 
         setValue.mockClear();
         act(() => {

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { Translation } from '@suite/intl';
-import { MetadataProviderType } from '@suite-common/metadata-types';
+import { type MetadataProviderType } from '@suite-common/metadata-types';
 import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
 import { Banner, Column, H3, Modal, Paragraph } from '@trezor/components';
 import type { Deferred } from '@trezor/utils';

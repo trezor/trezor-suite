@@ -1,18 +1,18 @@
-import { ImgHTMLAttributes } from 'react';
+import { type ImgHTMLAttributes } from 'react';
 
 import styled from 'styled-components';
 
 import { resolveStaticPath } from '@trezor/env-utils';
 import { isArrayMember, typedObjectEntries } from '@trezor/utils';
 
-import { IMAGES, ImageType } from './images';
+import { IMAGES, type ImageType } from './images';
 import {
-    FrameProps,
-    FramePropsKeys,
+    type FrameProps,
+    type FramePropsKeys,
     pickAndPrepareFrameProps,
     withFrameProps,
 } from '../../utils/frameProps';
-import { TransientProps } from '../../utils/transientProps';
+import { type TransientProps } from '../../utils/transientProps';
 
 export const allowedImageFrameProps = [
     'margin',

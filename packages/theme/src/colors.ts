@@ -1,9 +1,9 @@
 // If you want to add of modify colors, please read README.md to find out more.
 
 import { colorsV2 } from './colorsV2';
-import { Elevation } from './elevation';
+import { type Elevation } from './elevation';
 import { paletteV1 } from './paletteV1';
-import { CSSColor } from './types';
+import { type CSSColor } from './types';
 
 export type StyledComponentElevationProps = {
     theme: Colors; // this package does not depend on styled-components

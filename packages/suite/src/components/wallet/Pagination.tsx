@@ -69,6 +69,10 @@ export interface GetPagesProps {
 export type Page = number | '...';
 
 export const getPages = ({ currentPage: page, totalPages: total }: GetPagesProps): Page[] => {
+    if (total <= 0) {
+        return [];
+    }
+
     if (total <= 7) {
         return [...Array(total)].map((_, i) => i + 1);
     }

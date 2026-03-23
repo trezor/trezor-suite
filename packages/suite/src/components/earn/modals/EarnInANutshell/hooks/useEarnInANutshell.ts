@@ -1,12 +1,12 @@
 import { openModal } from '@suite/modal';
 import {
-    EarnFlow,
-    EarnModalAction,
-    EarnProvider,
-    EarnYieldContext,
+    type EarnFlow,
+    type EarnModalAction,
+    type EarnProvider,
+    type EarnYieldContext,
 } from '@suite-common/suite-types/src/staking';
 import { selectPoolStatsApyData, selectValidatorsQueueData } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { getUnstakingPeriodInDays } from '@suite-common/wallet-utils';
 
 import { earnFlowToEventTypeMap } from 'src/constants/suite/staking';
@@ -30,15 +30,15 @@ export const useEarnInANutshell = ({
     actionType = 'continue',
     yieldContext,
 }: UseEarnInANutshellProps) => {
-    const { validatorWithdrawTime, validatorExitTime } = useSelector(state =>
+    const validatorsQueueData = useSelector(state =>
         selectValidatorsQueueData(state, account.symbol),
     );
     const apy = useSelector(state => selectPoolStatsApyData(state, account));
 
     const unstakingPeriod = getUnstakingPeriodInDays({
         networkType: account.networkType,
-        validatorWithdrawTime,
-        validatorExitTime,
+        validatorWithdrawTime: validatorsQueueData?.validatorWithdrawTime,
+        validatorExitTime: validatorsQueueData?.validatorExitTime,
     });
 
     const dispatch = useDispatch();

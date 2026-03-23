@@ -835,6 +835,17 @@ export const messages = {
                 title: 'Name changed!',
             },
         },
+        connection: {
+            title: 'Device connection',
+            description: 'Manage device connection settings',
+        },
+        autoConnect: {
+            title: 'Auto-connect',
+            description:
+                'Trezor will connect automatically without having to confirm every connection.',
+            successToast: 'Auto-connect turned on.',
+            errorToast: 'Auto-connect failed to turn on.',
+        },
         pinProtection: {
             title: 'PIN protection',
             content: 'PIN protects your device against physical attack.',
@@ -942,30 +953,6 @@ export const messages = {
             description:
                 'This removes your Trezor from the list of paired devices in Trezor Suite.',
             successMessage: 'Trezor has been unpaired.',
-        },
-        autoconnect: {
-            settingsCard: {
-                title: 'Auto-connect',
-                description: 'Toggle auto-connect settings',
-            },
-            screen: {
-                subtitle:
-                    'Trezor will connect automatically, so you don’t need to approve each connection.',
-            },
-            enable: {
-                pictogramTitle: 'Auto-connect turned on',
-                description:
-                    'Trezor will no longer connect automatically to Trezor Suite. You’ll confirm each connection on your device.',
-                turnOffButton: 'Turn off',
-                error: 'Auto-connect failed to turn on.',
-                successToast: 'Auto-connect turned on',
-            },
-            disable: {
-                pictogramTitle: 'Auto-connect turned off',
-                description:
-                    'Trezor will connect automatically to Trezor Suite. No need to confirm each time.',
-                turnOnButton: 'Turn on',
-            },
         },
         firmware: {
             title: 'Firmware',
@@ -1432,9 +1419,11 @@ export const messages = {
                     connectButton: 'Connect',
                     invalidFormat:
                         'Incorrect format. Please enter the server address in such a way: host:port:[t|s]',
-                    torNotSupported: 'Tor not supported, use a clearnet address instead.',
-                    unableToConnect:
-                        'Unable to connect to server. Check for typos and server disruptions.',
+                    unableToConnect: {
+                        clearnet:
+                            'Unable to connect to server. Check for typos and server disruptions.',
+                        tor: 'Unable to connect to server. Check for typos and ensure Orbot is running on your device.',
+                    },
                 },
                 closeAction: {
                     title: 'Discard changes?',
@@ -1882,6 +1871,12 @@ export const messages = {
         },
         accountDetail: {
             accountLabelBadge: 'Run on {accountLabel}',
+            stablecoinYield: {
+                infoText: 'This token represents your deposit and all rewards in stablecoin yield.',
+                vault: 'Vault',
+                apy: 'Annual percentage yield',
+                supplied: 'Supplied',
+            },
         },
         emptyState: {
             title: 'No assets',
@@ -1906,8 +1901,10 @@ export const messages = {
         },
         phishing: {
             badge: 'Caution!',
-            warning:
-                "Caution! This transaction may be a scam. If you’re unsure, don't engage. <blogLink>Read more</blogLink>",
+            warning: 'This transaction looks suspicious. <blogLink>Learn more</blogLink>',
+            markedAsRecognized: 'You’ve confirmed this transaction is safe..',
+            hideTransaction: 'Mark as suspicious',
+            unhideTransaction: 'Mark as safe',
         },
         emptyState: {
             title: 'No transactions',
@@ -2349,12 +2346,24 @@ export const messages = {
         },
     },
     earn: {
+        staking: 'Staking',
+        stablecoinYield: 'Stablecoin yield',
         stakingDetailScreen: {
             title: 'Staking',
         },
         earnScreen: {
             title: 'Earn',
             subtitle: 'Staking can be currently managed only in Trezor Suite for desktop.',
+            otherOpportunities: 'Other opportunities',
+            depositsCard: {
+                title: 'Your deposits',
+                stablecoin: 'Stablecoin',
+                networkStaking: '{networkName} staking',
+            },
+            activeSheet: {
+                stakingTitle: 'Your stakes',
+                stablecoinYieldTitle: 'Your yields',
+            },
             earnItem: {
                 rewards: 'Rewards',
                 pending: 'Activation pending',
@@ -2362,7 +2371,7 @@ export const messages = {
             infoModal: {
                 title: 'Manage {earnType} in Trezor Suite for desktop',
                 subtitle: 'Go to the link below on your computer and download the desktop app.',
-                copyLabel: 'Hold to copy',
+                copyLabel: 'Tap to copy',
             },
             adaInfo: 'Your ADA stays fully accessible while earning rewards.',
         },
@@ -2376,6 +2385,8 @@ export const messages = {
         trezorDesktop: 'Trezor Suite for desktop or web.',
         adaStaysFullyAccessuble: 'Your ADA stays fully accessible while earning rewards.',
         infoBanner: {
+            updateProviderTitle: 'Save your ADA rewards by updating your staking provider',
+            updateProviderButton: 'Update provider',
             providerReducingRewards:
                 "You're earning nearly 0% in ADA rewards right now. Switch to Everstake to earn up to {apy}% APY. Your funds and past rewards are safe.",
             updateToNewProvider:

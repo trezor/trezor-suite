@@ -1,9 +1,9 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { HStack, Text, VStack } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
-import { Icon, IconName } from '@suite-native/icons';
-import { Translation, TxKeyPath } from '@suite-native/intl';
-import { Color } from '@trezor/theme';
+import { Icon, type IconName } from '@suite-native/icons';
+import { Translation, type TxKeyPath } from '@suite-native/intl';
+import { type Color } from '@trezor/theme';
 
 import { CRYPTO_BALANCE_DECIMALS } from '../constants';
 

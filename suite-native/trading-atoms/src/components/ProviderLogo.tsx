@@ -1,7 +1,7 @@
 import { Image } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { NativeTypographyStyle } from '@trezor/theme';
+import { type NativeTypographyStyle } from '@trezor/theme';
 
 export type TradingProviderLogoProps = {
     logo: string;

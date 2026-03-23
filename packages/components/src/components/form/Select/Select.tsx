@@ -1,19 +1,19 @@
-import { ReactNode, useCallback, useId, useMemo, useRef } from 'react';
+import { type ReactNode, useCallback, useId, useMemo, useRef } from 'react';
 import ReactSelect, {
-    ControlProps,
-    OptionProps,
-    Props as ReactSelectProps,
-    SelectInstance,
-    ValueContainerProps,
+    type ControlProps,
+    type OptionProps,
+    type Props as ReactSelectProps,
+    type SelectInstance,
+    type ValueContainerProps,
 } from 'react-select';
 
 import {
     FormCell,
-    FormCellProps,
+    type FormCellProps,
     allowedFormCellFrameProps,
     pickFormCellProps,
 } from '../FormCell/FormCell';
-import { InputSize } from '../types';
+import { type InputSize } from '../types';
 import {
     Control,
     DropdownIndicator,
@@ -28,9 +28,9 @@ import {
     SingleValue,
     ValueContainer,
 } from './customComponents';
-import { Option as OptionType } from './types';
+import { type Option as OptionType } from './types';
 import { createSharedMenuStyles } from './utils';
-import { FrameProps } from '../../../utils/frameProps';
+import { type FrameProps } from '../../../utils/frameProps';
 
 export const allowedSelectFrameProps = allowedFormCellFrameProps;
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedSelectFrameProps)[number]>;

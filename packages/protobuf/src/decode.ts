@@ -1,4 +1,4 @@
-import * as protobuf from 'protobufjs/light';
+import type * as protobuf from 'protobufjs/light';
 
 import type { MessageResponse } from './messages';
 import { createMessageFromType, isPrimitiveField } from './utils';

@@ -1,8 +1,9 @@
-import { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
+import { type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 
 import useDebounce from 'react-use/lib/useDebounce';
 
 import { Translation } from '@suite/intl';
+import { findAnchorTransactionPage, selectRouterAnchor } from '@suite/router';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { advancedSearchTransactions } from '@suite-common/transaction-search';
 import { groupTransactionsByDate, isPending } from '@suite-common/wallet-utils';
@@ -13,8 +14,7 @@ import { DashboardSection } from 'src/components/dashboard';
 import { Pagination } from 'src/components/wallet';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectAccountLabelsForSearch } from 'src/selectors/suite/selectAccountLabelsForSearch';
-import { Account, WalletAccountTransaction } from 'src/types/wallet';
-import { findAnchorTransactionPage } from 'src/utils/suite/anchor';
+import { type Account, type WalletAccountTransaction } from 'src/types/wallet';
 
 import { NoSearchResults } from './NoSearchResults';
 import { SkeletonTransactionItem } from './SkeletonTransactionItem';
@@ -52,7 +52,7 @@ export const TransactionList = ({
     isTxFilteringEnabled = true,
     customPageFetching,
 }: TransactionListProps) => {
-    const anchor = useSelector(state => state.router.anchor);
+    const anchor = useSelector(selectRouterAnchor);
     const dispatch = useDispatch();
     const searchLabels = useSelector(state => selectAccountLabelsForSearch(state, account));
 

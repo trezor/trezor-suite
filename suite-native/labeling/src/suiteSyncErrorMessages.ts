@@ -1,5 +1,5 @@
-import { SuiteSyncUserFacingErrorType } from '@suite-common/suite-sync-types';
-import { TxKeyPath } from '@suite-native/intl';
+import { type SuiteSyncUserFacingErrorType } from '@suite-common/suite-sync-types';
+import { type TxKeyPath } from '@suite-native/intl';
 
 export const suiteSyncErrorMessageMap: Record<SuiteSyncUserFacingErrorType, TxKeyPath> = {
     DeviceCancelled: 'suiteSync.errors.deviceCancelled',

@@ -13,13 +13,17 @@
         "orval": "orval --config ./orval.config.ts",
         "api:fetch": "node ./scripts/fetchSpec.mjs",
         "api:generate": "yarn orval",
-        "api:update": "yarn api:fetch && yarn api:generate && yarn lint:js --fix && yarn format"
+        "api:update": "yarn api:fetch && yarn api:generate && yarn lint:js --fix && yarn format",
+        "test:unit": "yarn g:jest"
     },
     "devDependencies": {
-        "orval": "8.2.0",
+        "orval": "8.5.0",
         "prettier": "3.8.1"
     },
     "dependencies": {
-        "@suite-common/react-query": "workspace:^"
+        "@suite-common/calldata": "workspace:^",
+        "@suite-common/react-query": "workspace:^",
+        "@trezor/utils": "workspace:^",
+        "zod": "4.3.6"
     }
 }

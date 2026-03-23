@@ -1,7 +1,7 @@
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import {
     FeatureFlag,
-    FeatureFlagsRootState,
+    type FeatureFlagsRootState,
     selectIsFeatureFlagEnabled,
 } from '@suite-native/feature-flags';
 

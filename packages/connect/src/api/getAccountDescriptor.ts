@@ -2,20 +2,13 @@ import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 
 import { getFirmwareRange } from './common/paramsValidator';
-import {
-    AbstractMethod,
-    DEFAULT_FIRMWARE_RANGE,
-    MethodPermission,
-    MethodReturnType,
-    Payload,
-} from '../core/AbstractMethod';
+import type { MethodMessage, MethodPermission, MethodReturnType } from '../core/AbstractMethod';
+import { AbstractMethod, DEFAULT_FIRMWARE_RANGE } from '../core/AbstractMethod';
 import { getCoinInfo } from '../data/coinInfo';
 import { UI_REQUEST, createUiMessage } from '../events';
 import { Bundle, type CoinInfo, type DerivationPath } from '../types';
-import {
-    GetAccountDescriptorParams,
-    GetAccountDescriptorResponse,
-} from '../types/api/getAccountDescriptor';
+import type { GetAccountDescriptorResponse } from '../types/api/getAccountDescriptor';
+import { GetAccountDescriptorParams } from '../types/api/getAccountDescriptor';
 import { getAccountLabel } from '../utils/accountUtils';
 import { getSerializedPath, validatePath } from '../utils/pathUtils';
 
@@ -28,7 +21,7 @@ export default class GetAccountDescriptor extends AbstractMethod<
     disposed = false;
     hasBundle?: boolean;
 
-    constructor(message: { id?: number; payload: Payload<'getAccountDescriptor'> }) {
+    constructor(message: MethodMessage<'getAccountDescriptor'>) {
         super(message);
         this.useDevice = true;
         this.useUi = true;

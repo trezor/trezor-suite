@@ -1,17 +1,17 @@
 import { combineReducers } from '@reduxjs/toolkit';
-import { CryptoId, ExchangeTrade } from 'invity-api';
+import { type CryptoId, type ExchangeTrade } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { getNetwork } from '@suite-common/wallet-config';
-import { Account, AccountKey } from '@suite-common/wallet-types';
+import { type Account, type AccountKey } from '@suite-common/wallet-types';
 
 import { MIN_MAX_QUOTES_OK } from '../../../__fixtures__/exchangeUtils';
 import { accountBtc } from '../../../__fixtures__/utils';
-import { TradingExchangeState } from '../../../reducers/exchangeReducer';
+import { type TradingExchangeState } from '../../../reducers/exchangeReducer';
 import { initialState } from '../../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../../reducers/tradingReducer';
-import { TradingTransactionExchange } from '../../../types';
+import { type TradingTransactionExchange } from '../../../types';
 import { tradingThunks } from '../../common';
 import { exchangeThunks } from '../index';
 import * as sendDexTransactionThunk from '../sendDexTransactionThunk';

@@ -15,16 +15,17 @@ import type {
     BlockFilterResponse,
     BlockbookBlock,
     BlockbookTransaction,
+    CoinjoinBackendClientShape,
     MempoolFilterResponse,
 } from '../types/backend';
-import { RequestOptions, resetIdentityCircuit } from '../utils/http';
+import { type RequestOptions, resetIdentityCircuit } from '../utils/http';
 
 type CoinjoinBackendClientSettings = CoinjoinBackendSettings & {
     timeout?: number;
     logger?: Logger;
 };
 
-export class CoinjoinBackendClient {
+export class CoinjoinBackendClient implements CoinjoinBackendClientShape {
     protected readonly logger;
     protected readonly blockbookUrls;
     protected readonly onionDomains;
@@ -65,7 +66,7 @@ export class CoinjoinBackendClient {
         );
     }
 
-    fetchTransaction(txid: string, options?: RequestOptions): Promise<BlockbookTransaction> {
+    fetchTransaction(txid: string, options?: RequestOptions) {
         const lastCharCode = txid.charCodeAt(txid.length - 1);
         const identity = this.identitiesBlockbook[lastCharCode & 0x3]; // Works only when identities.length === 4
 

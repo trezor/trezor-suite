@@ -37,14 +37,19 @@ export class OutputMetadata extends MetadataBase {
         outputId,
         txNumber,
         label,
+        confirmSuiteSync,
     }: {
         outputId: string;
         txNumber: number;
         label: string;
+        confirmSuiteSync?: boolean;
     }) {
         await this.clickAddLabelButton(outputId, txNumber);
         await this.outputMetadataInput(outputId, txNumber).fill(label);
         await this.page.keyboard.press('Enter');
+        if (confirmSuiteSync) {
+            await this.devicePrompt.confirmSuiteSyncSetup();
+        }
         await this.successIconIsVisible(outputId, txNumber);
     }
 

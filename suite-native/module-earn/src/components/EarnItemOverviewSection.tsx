@@ -5,9 +5,8 @@ import {
     selectHasRunningDiscovery,
     useAccoutsSelector,
 } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
 import { Badge, Box, BoxSkeleton, HStack, Text } from '@suite-native/atoms';
-import { CryptoAmountFormatter, NetworkDisplaySymbolNameFormatter } from '@suite-native/formatters';
+import { NetworkDisplaySymbolNameFormatter } from '@suite-native/formatters';
 import { CryptoIconWithNetwork } from '@suite-native/icons';
 import {
     selectAPYByAccountKey,
@@ -16,8 +15,7 @@ import {
 } from '@suite-native/staking';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { CRYPTO_BALANCE_DECIMALS } from '../constants';
-import { EarnItem } from '../types';
+import { type EarnPromoItem } from '../types';
 
 const accountDescriptionStyle = prepareNativeStyle(_ => ({
     flexShrink: 1,
@@ -31,26 +29,65 @@ const valuesContainerStyle = prepareNativeStyle(utils => ({
     paddingLeft: utils.spacings.sp8,
 }));
 
-type EarnItemOverviewSectionProps = {
-    stakedBalance: string | null;
-} & EarnItem;
+type EarnItemSecondaryDescriptionProps = {
+    accountKey: EarnPromoItem['accountKey'];
+    accountLabel: EarnPromoItem['accountLabel'];
+    formattedAccountType: string | null;
+    item: EarnPromoItem;
+};
 
-export const EarnItemOverviewSection = ({
-    accountKey = '' as AccountKey, // Todo: this is wrong, use null or something
-    symbol,
-    stakedBalance,
+const EarnItemSecondaryDescription = ({
+    accountKey,
     accountLabel,
-}: EarnItemOverviewSectionProps) => {
+    formattedAccountType,
+    item,
+}: EarnItemSecondaryDescriptionProps) => {
+    if (accountKey) {
+        return (
+            <HStack>
+                <Text color="textSubdued" variant="body-sm">
+                    {accountLabel}
+                </Text>
+                {formattedAccountType && (
+                    <Badge label={formattedAccountType} size="small" elevation="1" />
+                )}
+            </HStack>
+        );
+    }
+
+    if (item.type === 'stablecoin-yield') {
+        return (
+            <Text color="textSubdued" variant="body-sm">
+                <NetworkDisplaySymbolNameFormatter value={item.networkSymbol} />
+            </Text>
+        );
+    }
+
+    return null;
+};
+
+export const EarnItemOverviewSection = (item: EarnPromoItem) => {
     const { applyStyle } = useNativeStyles();
+
+    const { accountKey, accountLabel } = item;
 
     const formattedAccountType = useAccoutsSelector(state =>
         selectFormattedAccountType(state, accountKey),
     );
 
     const apy = useNativeStakingSelector(state => selectAPYByAccountKey(state, accountKey));
-    const fallbackApy = useNativeStakingSelector(state => selectAPYBySymbol(state, symbol));
+    const fallbackApy = useNativeStakingSelector(state =>
+        item.type === 'staking' ? selectAPYBySymbol(state, item.symbol) : null,
+    );
 
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
+
+    const apyValue = item.type === 'staking' ? (apy ?? fallbackApy) : item.apy;
+
+    const iconProps =
+        item.type === 'staking'
+            ? { symbol: item.symbol }
+            : { symbol: item.networkSymbol, contractAddress: item.contractAddress };
 
     return (
         <HStack
@@ -61,46 +98,36 @@ export const EarnItemOverviewSection = ({
         >
             <Box flexDirection="row" alignItems="center" flex={1}>
                 <Box marginRight="sp16">
-                    <CryptoIconWithNetwork symbol={symbol} />
+                    <CryptoIconWithNetwork {...iconProps} />
                 </Box>
                 <Box style={applyStyle(accountDescriptionStyle)}>
                     <Text>
-                        <NetworkDisplaySymbolNameFormatter value={symbol} />
+                        {item.type === 'staking' ? (
+                            <NetworkDisplaySymbolNameFormatter value={item.symbol} />
+                        ) : (
+                            item.vaultName
+                        )}
                     </Text>
-                    {accountKey && (
-                        <HStack>
-                            <Text color="textSubdued" variant="body-sm">
-                                {accountLabel}
-                            </Text>
-                            {formattedAccountType && (
-                                <Badge label={formattedAccountType} size="small" elevation="1" />
-                            )}
-                        </HStack>
-                    )}
+                    <EarnItemSecondaryDescription
+                        accountKey={accountKey}
+                        accountLabel={accountLabel}
+                        formattedAccountType={formattedAccountType}
+                        item={item}
+                    />
                 </Box>
             </Box>
 
             {isDiscoveryRunning ? (
                 <BoxSkeleton width={70} height={20} />
             ) : (
-                <>
-                    <Box style={applyStyle(valuesContainerStyle)}>
-                        {accountKey && (
-                            <CryptoAmountFormatter
-                                value={stakedBalance}
-                                symbol={symbol}
-                                decimals={CRYPTO_BALANCE_DECIMALS}
-                                color="textDefault"
-                            />
-                        )}
-                        {(apy || fallbackApy) && (
-                            <Text
-                                variant={accountKey ? 'body-sm' : 'body-md'}
-                                color={accountKey ? 'textSubdued' : 'textDefault'}
-                            >{`${apy || fallbackApy}% p.a.`}</Text>
-                        )}
-                    </Box>
-                </>
+                <Box style={applyStyle(valuesContainerStyle)}>
+                    {apyValue != null && (
+                        <Text
+                            variant={accountKey ? 'body-sm' : 'body-md'}
+                            color={accountKey ? 'textSubdued' : 'textDefault'}
+                        >{`${apyValue}% APY`}</Text>
+                    )}
+                </Box>
             )}
         </HStack>
     );

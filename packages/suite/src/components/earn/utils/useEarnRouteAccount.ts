@@ -1,10 +1,9 @@
+import { parseEarnParams, selectRouterParams } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectDeviceAccounts } from '@suite-common/wallet-core';
-import { WalletParams } from '@suite-common/wallet-types';
+import { type WalletParams } from '@suite-common/wallet-types';
 
 import { useSelector } from 'src/hooks/suite';
-import { selectRouterParams } from 'src/reducers/suite/routerReducer';
-import { parseEarnParams } from 'src/utils/suite/routerParams';
 import { getSelectedAccount } from 'src/utils/wallet/accountUtils';
 
 export const useEarnRouteAccount = () => {

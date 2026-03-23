@@ -1,21 +1,31 @@
+import { ZodError } from 'zod';
+
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
-import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    CardanoValidatorStats,
+    type CardanoPoolsStats,
+    CardanoStatsResponse,
+    type EthereumPoolStats,
+    type EthereumValidatorsQueue,
+    PoolStatsResponse,
+    SolanaDashboardResponse,
+    SolanaStakeAccountRewardsResponse,
+    type SolanaStakeRewardsByAccount,
+    type SolanaStakingInfo,
+    type SolanaTotalStakeRewardsByAccount,
+    SolanaTotalStakeRewardsResponse,
+    ValidatorsQueueResponse,
+} from '@suite-common/wallet-api';
+import { type NetworkConfig } from '@suite-common/wallet-config';
+import {
     EVERSTAKE_ASSET_ENDPOINT_TYPES,
     EVERSTAKE_ENDPOINT_TYPES,
     EverstakeAssetEndpointType,
-    EverstakeDataParams,
     EverstakeEndpointType,
-    EverstakeRewardsEndpointType,
-    EverstakeStakingInfo,
-    StakeRewardsByAccount,
-    TotalStakeRewardsByAccount,
-    ValidatorsQueue,
+    type EverstakeRewardsEndpointType,
 } from '@suite-common/wallet-types';
-import { isTestnet } from '@suite-common/wallet-utils';
-import { TimerId } from '@trezor/type-utils';
+import { isTestnet, requestUrl } from '@suite-common/wallet-utils';
+import { type TimerId } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
 import {
@@ -28,75 +38,127 @@ import { selectEverstakeData } from './stakeSelectors';
 
 const STAKE_MODULE = '@common/wallet-core/stake';
 
-export async function fetchEverstakeDataApi(params: EverstakeDataParams) {
-    const { symbol, endpointType, timestamp } = params;
+interface FetchEthereumStakingDataParams {
+    timestamp?: number;
+}
 
-    if (symbol !== 'eth') {
-        throw new Error('Only Ethereum is supported for this endpoint');
-    }
-
-    const endpointSuffix = EVERSTAKE_ENDPOINT_TYPES[endpointType];
-    const endpointPrefix = EVERSTAKE_ENDPOINT_PREFIX[symbol];
-
+export async function fetchEthereumValidatorsQueue(
+    params?: FetchEthereumStakingDataParams,
+): Promise<EthereumValidatorsQueue> {
     const response = await fetch(
-        `${endpointPrefix}/${endpointSuffix}${timestamp ? `?timestamp=${timestamp}` : ''}`,
+        requestUrl({
+            base: EVERSTAKE_ENDPOINT_PREFIX['eth'],
+            pathname: EVERSTAKE_ENDPOINT_TYPES[EverstakeEndpointType.ValidatorsQueue],
+            searchParams: params?.timestamp
+                ? {
+                      timestamp: params.timestamp.toString(),
+                  }
+                : undefined,
+        }),
     );
 
-    if (!response.ok) throw new Error(response.statusText);
-
-    const data = await response.json();
-
-    if (endpointType === EverstakeEndpointType.PoolStats) {
-        return {
-            ethApy: Number(new BigNumber(data.apr).times(100).toPrecision(3, BigNumber.ROUND_DOWN)),
-            nextRewardPayout: Math.ceil(data.next_reward_payout_in / 60 / 60 / 24),
-        };
+    if (!response.ok) {
+        throw Error(response.statusText);
     }
 
+    const data = await response.json();
+    const parsedData = ValidatorsQueueResponse.parse(data);
+
     return {
-        validatorsEnteringNum: data.validators_entering_num,
-        validatorsExitingNum: data.validators_exiting_num,
-        validatorsTotalCount: data.validators_total_count,
-        validatorsPerEpoch: data.validators_per_epoch,
-        validatorActivationTime: data.validator_activation_time,
-        validatorExitTime: data.validator_exit_time,
-        validatorWithdrawTime: data.validator_withdraw_time,
-        validatorAddingDelay: data.validator_adding_delay,
-        updatedAt: data.updated_at,
-    };
+        validatorActivationTime: parsedData.validator_activation_time,
+        validatorExitTime: parsedData.validator_exit_time,
+        validatorWithdrawTime: parsedData.validator_withdraw_time,
+        validatorAddingDelay: parsedData.validator_adding_delay,
+        updatedAt: parsedData.updated_at,
+    } satisfies EthereumValidatorsQueue;
+}
+
+async function fetchEthereumPoolStats(): Promise<EthereumPoolStats> {
+    const response = await fetch(
+        requestUrl({
+            base: EVERSTAKE_ENDPOINT_PREFIX['eth'],
+            pathname: EVERSTAKE_ENDPOINT_TYPES[EverstakeEndpointType.PoolStats],
+        }),
+    );
+
+    if (!response.ok) {
+        throw Error(response.statusText);
+    }
+
+    const data = await response.json();
+    const { apr, next_reward_payout_in = 0 } = PoolStatsResponse.parse(data);
+
+    return {
+        ethApy: Number(new BigNumber(apr).times(100).toPrecision(3, BigNumber.ROUND_DOWN)),
+        nextRewardPayout: Math.ceil(next_reward_payout_in / 60 / 60 / 24),
+    } satisfies EthereumPoolStats;
+}
+
+export function fetchEthereumStakingData(
+    endpointType: EverstakeEndpointType,
+): Promise<EthereumValidatorsQueue | EthereumPoolStats> {
+    switch (endpointType) {
+        case EverstakeEndpointType.ValidatorsQueue:
+            return fetchEthereumValidatorsQueue();
+        case EverstakeEndpointType.PoolStats:
+            return fetchEthereumPoolStats();
+        default:
+            throw new Error('Invalid endpoint type');
+    }
 }
 
 export const fetchEverstakeData = createThunk<
-    ValidatorsQueue | { ethApy: number; nextRewardPayout: number },
-    EverstakeDataParams,
+    EthereumValidatorsQueue | EthereumPoolStats,
+    {
+        symbol: Extract<NetworkConfig['symbol'], 'eth'>;
+        endpointType: EverstakeEndpointType;
+    },
     { rejectValue: string }
 >(`${STAKE_MODULE}/fetchEverstakeData`, async (params, { fulfillWithValue, rejectWithValue }) => {
+    const { symbol, endpointType } = params;
+
     try {
-        const data = await fetchEverstakeDataApi(params);
+        if (symbol !== 'eth') {
+            throw new Error('Only Ethereum is supported for this endpoint');
+        }
+
+        const data = await fetchEthereumStakingData(endpointType);
 
         return fulfillWithValue(data);
     } catch (error) {
+        if (error instanceof ZodError) {
+            console.error(error);
+        }
+
         return rejectWithValue(error.toString());
     }
 });
 
-const getStakingInfoEndpointParams = (symbol: NetworkSymbol) => {
+const getStakingInfoEndpointParams = (
+    symbol: Extract<NetworkConfig['symbol'], 'sol' | 'ada'>,
+): Record<string, string> | undefined => {
     switch (symbol) {
         case 'sol':
-            return 'name=solana';
+            return {
+                name: 'solana',
+            };
 
         case 'ada':
-            return 'limit=1000&offset=0&partner=Trezor';
+            return {
+                limit: '1000',
+                offset: '0',
+                partner: 'Trezor',
+            };
 
         default:
-            return '';
+            return undefined;
     }
 };
 
 export const fetchEverstakeStakingInfo = createThunk<
-    EverstakeStakingInfo,
+    SolanaStakingInfo | CardanoPoolsStats,
     {
-        symbol: 'sol' | 'ada';
+        symbol: Extract<NetworkConfig['symbol'], 'sol' | 'ada'>;
         endpointType: EverstakeAssetEndpointType;
     },
     { rejectValue: string }
@@ -105,45 +167,58 @@ export const fetchEverstakeStakingInfo = createThunk<
     async (params, { fulfillWithValue, rejectWithValue }) => {
         const { symbol, endpointType } = params;
 
-        const endpointSuffix = EVERSTAKE_ASSET_ENDPOINT_TYPES[endpointType][symbol];
-        const endpointPrefix = EVERSTAKE_ENDPOINT_PREFIX[symbol];
-        const endpointParams = getStakingInfoEndpointParams(symbol);
-
         try {
             const assetResponse = await fetch(
-                `${endpointPrefix}/${endpointSuffix}?${endpointParams}`,
+                requestUrl({
+                    base: EVERSTAKE_ENDPOINT_PREFIX[symbol],
+                    pathname: EVERSTAKE_ASSET_ENDPOINT_TYPES[endpointType][symbol],
+                    searchParams: getStakingInfoEndpointParams(symbol),
+                }),
                 {
                     headers: symbol === 'ada' ? { 'x-api-key': EVERSTAKE_API_KEY } : undefined,
                 },
             );
+
             if (!assetResponse.ok) {
                 throw Error(assetResponse.statusText);
             }
+
             const assetData = await assetResponse.json();
 
             if (symbol === 'ada') {
+                const { data: pools } = CardanoStatsResponse.parse(assetData);
+
                 return fulfillWithValue({
-                    pools: assetData?.data?.map((pool: CardanoValidatorStats) => ({
-                        apy: Number(pool.apy.value),
-                        saturation: Number(pool.saturation) * 100,
+                    pools: pools.map(pool => ({
+                        apy: pool.apy.value,
+                        saturation: pool.saturation * 100,
                         id: pool.validator_address,
                     })),
-                });
+                } satisfies CardanoPoolsStats);
             }
 
+            const { blockchain } = SolanaDashboardResponse.parse(assetData);
+
             return fulfillWithValue({
-                apy: Number(assetData?.blockchain?.apr),
-            });
+                apy: blockchain.apr,
+            } satisfies SolanaStakingInfo);
         } catch (error) {
+            if (error instanceof ZodError) {
+                console.error(error);
+            }
+
             return rejectWithValue(error.toString());
         }
     },
 );
 
 export const fetchEverstakeRewards = createThunk<
-    { rewardsHistory: StakeRewardsByAccount; totalRewards: TotalStakeRewardsByAccount },
     {
-        symbol: 'sol';
+        rewardsHistory: SolanaStakeRewardsByAccount;
+        totalRewards: SolanaTotalStakeRewardsByAccount;
+    },
+    {
+        symbol: Extract<NetworkConfig['symbol'], 'sol'>;
         endpointType: EverstakeRewardsEndpointType;
         address: string;
         signal?: AbortSignal;
@@ -160,10 +235,13 @@ export const fetchEverstakeRewards = createThunk<
 
         try {
             const rewardsHistoryResponse = await fetch(
-                `${EVERSTAKE_REWARDS_SOLANA_ENPOINT}/${address}`,
+                requestUrl({
+                    base: EVERSTAKE_REWARDS_SOLANA_ENPOINT,
+                    pathname: address,
+                }),
                 {
                     method: 'POST',
-                    body: `validator=${encodeURIComponent(EVERSTAKE_VALIDATOR)}`,
+                    body: new URLSearchParams({ validator: EVERSTAKE_VALIDATOR }),
                     signal,
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
@@ -177,23 +255,35 @@ export const fetchEverstakeRewards = createThunk<
 
             const rewardsHistory = await rewardsHistoryResponse.json();
 
+            const parsedRewardsHistory = SolanaStakeAccountRewardsResponse.parse(rewardsHistory);
+
             const totalRewardsResponse = await fetch(
-                `${EVERSTAKE_REWARDS_SOLANA_ENPOINT}/${address}/total?validator=${EVERSTAKE_VALIDATOR}`,
+                requestUrl({
+                    base: EVERSTAKE_REWARDS_SOLANA_ENPOINT,
+                    pathname: `${address}/total`,
+                    searchParams: { validator: EVERSTAKE_VALIDATOR },
+                }),
             );
             if (!totalRewardsResponse.ok) {
                 throw Error(totalRewardsResponse.statusText);
             }
             const totalRewardsData = await totalRewardsResponse.json();
 
+            const { rewards } = SolanaTotalStakeRewardsResponse.parse(totalRewardsData);
+
             return fulfillWithValue({
                 rewardsHistory: {
-                    [address]: rewardsHistory,
+                    [address]: parsedRewardsHistory,
                 },
                 totalRewards: {
-                    [address]: totalRewardsData?.rewards?.toString(),
+                    [address]: rewards,
                 },
             });
         } catch (error) {
+            if (error instanceof ZodError) {
+                console.error(error);
+            }
+
             return rejectWithValue(error.toString());
         }
     },
@@ -209,7 +299,7 @@ export const initStakeDataThunk = createThunk(
         if (isBitcoinOnlyFirmware) return;
 
         const createPromises = (
-            networks: ['eth' | 'sol' | 'ada'],
+            networks: Extract<NetworkConfig['symbol'], 'eth' | 'sol' | 'ada'>[],
             endpointTypes: typeof EverstakeEndpointType | typeof EverstakeAssetEndpointType,
         ) =>
             networks

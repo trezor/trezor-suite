@@ -1,24 +1,25 @@
-import { FieldValues } from 'react-hook-form';
+import { type FieldValues } from 'react-hook-form';
 
 import type { DBSchema } from 'idb';
 
-import { AnalyticsState } from '@suite-common/analytics-redux';
-import { AppRememberedPermission } from '@suite-common/connect-popup/src/connectPopupTypes';
-import { ExperimentalFeedbackState } from '@suite-common/feedback';
+import type { FlagsState } from '@suite/flags';
+import { type AnalyticsState } from '@suite-common/analytics-redux';
+import { type AppRememberedPermission } from '@suite-common/connect-popup/src/connectPopupTypes';
+import { type ExperimentalFeedbackState } from '@suite-common/feedback';
 import type { MessageState } from '@suite-common/message-system';
 import type { MetadataState } from '@suite-common/metadata-types';
-import { EncryptedHex } from '@suite-common/platform-encryption';
+import { type EncryptedHex } from '@suite-common/platform-encryption';
 import type { SuiteSyncQuotaManagerState } from '@suite-common/suite-sync-quota-manager';
-import { SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-storage';
+import { type SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-storage';
 import type {
     DeviceWithEmptyPath,
     MessageSystem,
     PersistentDeviceData,
     ThpSuiteCredentials,
 } from '@suite-common/suite-types';
-import { SimpleTokenStructure } from '@suite-common/token-definitions';
+import { type SimpleTokenStructure } from '@suite-common/token-definitions';
 import type { TradingTransaction } from '@suite-common/trading';
-import { Explorer, NetworkSymbol } from '@suite-common/wallet-config';
+import { type Explorer, type NetworkSymbol } from '@suite-common/wallet-config';
 import type {
     AccountKey,
     BackendSettings,
@@ -26,17 +27,17 @@ import type {
     RatesByTimestamps,
     WalletSettings,
 } from '@suite-common/wallet-types';
-import { StaticSessionId } from '@trezor/connect';
-import { FirmwareChannel } from '@trezor/connect/src/types/firmware';
+import { type StaticSessionId } from '@trezor/connect';
+import { type FirmwareChannel } from '@trezor/connect/src/types/firmware';
 
 import type { BioAuthState } from 'src/reducers/bioAuth';
 import type { SuiteState } from 'src/reducers/suite/suiteReducer';
 import type { Account, WalletAccountTransaction } from 'src/types/wallet';
-import { CoinjoinAccount, CoinjoinDebugSettings } from 'src/types/wallet/coinjoin';
+import { type CoinjoinAccount, type CoinjoinDebugSettings } from 'src/types/wallet/coinjoin';
 
-import { DesktopBluetoothDevice } from '../actions/bluetooth/DesktopBluetoothDevice';
-import { DesktopSuiteSyncState } from '../actions/suiteSync/suiteSyncSlice';
-import { GraphData } from '../types/wallet/graph';
+import { type DesktopBluetoothDevice } from '../actions/bluetooth/DesktopBluetoothDevice';
+import { type DesktopSuiteSyncState } from '../actions/suiteSync/suiteSyncSlice';
+import { type GraphData } from '../types/wallet/graph';
 
 export interface DBWalletAccountTransaction {
     tx: WalletAccountTransaction;
@@ -47,6 +48,10 @@ export interface SuiteDBSchema extends DBSchema {
     bioAuth: {
         key: 'bioAuth';
         value: Pick<BioAuthState, 'bioAuthEnabled'>;
+    };
+    phishing: {
+        key: AccountKey;
+        value: string[];
     };
     txs: {
         key: string;
@@ -71,7 +76,7 @@ export interface SuiteDBSchema extends DBSchema {
         key: string;
         value: {
             settings: SuiteState['settings'];
-            flags: SuiteState['flags'];
+            flags: FlagsState;
             evmSettings: SuiteState['evmSettings'];
             seenDisconnectNotificationForDeviceIds: SuiteState['seenDisconnectNotificationForDeviceIds'];
         };

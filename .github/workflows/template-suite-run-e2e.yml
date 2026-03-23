@@ -87,13 +87,13 @@ jobs:
       - name: Generate GitHub App token
         if: inputs.run-reporter == 'true'
         id: trezor-bot-token
-        uses: actions/create-github-app-token@v1
+        uses: actions/create-github-app-token@v2
         with:
           app-id: ${{ secrets.trezor-bot-app-id }}
           private-key: ${{ secrets.trezor-bot-private-key }}
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           submodules: true
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
@@ -106,13 +106,13 @@ jobs:
           echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_ENV
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version-file: ".nvmrc"
           cache: yarn
 
       - name: Cache node_modules
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: node_modules
           key: node_modules-${{ hashFiles('yarn.lock') }}
@@ -121,20 +121,28 @@ jobs:
       - name: Cache Playwright Browsers
         id: playwright-cache
         if: inputs.target == 'web'
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.cache/ms-playwright
           key: ${{ runner.os }}-playwright-${{ hashFiles('**/yarn.lock') }}
 
       - name: Download build artifact
         if: inputs.download-artifact-name != ''
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: ${{ inputs.download-artifact-name }}
+          path: ${{ github.workspace }}/artifact-download
 
-      - name: Extract build artifact
-        if: inputs.download-artifact-name != ''
-        run: tar -xzf app-build.tar.gz -C ${{ github.workspace }}/packages/suite-desktop
+      - name: Extract build artifact (desktop)
+        if: inputs.download-artifact-name != '' && !contains(inputs.download-artifact-name, 'webextension')
+        run: tar -xzf ${{ github.workspace }}/artifact-download/app-build.tar.gz -C ${{ github.workspace }}/packages/suite-desktop
+
+      - name: Extract build artifact (webextension)
+        if: inputs.download-artifact-name != '' && contains(inputs.download-artifact-name, 'webextension')
+        shell: bash
+        run: |
+          rm -rf ${{ github.workspace }}/packages/connect-explorer/build-webextension
+          mv ${{ github.workspace }}/artifact-download ${{ github.workspace }}/packages/connect-explorer/build-webextension
 
       - name: Install PW Dependencies
         shell: bash

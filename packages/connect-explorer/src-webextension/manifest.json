@@ -7,9 +7,15 @@
     },
     "background": {
         "service_worker": "serviceWorker.bundle.js",
-        "scripts": ["serviceWorker.bundle.js"],
         "type": "module"
     },
-    "permissions": ["scripting"],
-    "host_permissions": ["http://*/*", "https://*/*"]
+    "externally_connectable": {
+        "ids": [],
+        "matches": ["https://*.trezor.io/*", "http://localhost/*", "https://*.suite.sldev.cz/*"]
+    },
+    "host_permissions": [
+        "https://*.trezor.io/*",
+        "http://localhost/*",
+        "https://*.suite.sldev.cz/*"
+    ]
 }

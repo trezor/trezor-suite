@@ -1,4 +1,4 @@
-import { ValueErrorType } from '@sinclair/typebox/errors';
+import { type ValueErrorType } from '@sinclair/typebox/errors';
 
 export class InvalidParameter extends Error {
     field: string;

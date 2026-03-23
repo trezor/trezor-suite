@@ -16,12 +16,12 @@
         "types": "./lib/index.d.ts",
         "exports": {
             ".": {
-                "import": "./libESM/index.js",
+                "import": "./libESM/index.mjs",
                 "require": "./lib/index.js",
                 "types": "./lib/index.d.ts"
             },
             "./lib/*": "./lib/*.js",
-            "./libESM/*.js": "./libESM/*.js",
+            "./libESM/*": "./libESM/*",
             "./messages.json": "./messages.json"
         }
     },
@@ -43,15 +43,22 @@
         "build:lib:cjs": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
         "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
         "update:schema": "yarn workspace @trezor/schema-utils codegen $(pwd)/src/messages.ts > src/messages-schema.ts && yarn g:eslint --fix src/messages-schema.ts && yarn g:prettier --write src/messages-schema.ts",
-        "update:protobuf": "./scripts/protobuf-build.sh"
+        "update:protobuf": "./scripts/protobuf-build.sh",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
+        "@bufbuild/protobuf": "^2.11.0",
         "@trezor/schema-utils": "workspace:*",
         "long": "5.2.5",
         "protobufjs": "7.4.0"
     },
     "devDependencies": {
-        "protobufjs-cli": "^1.1.3"
+        "@bufbuild/buf": "^1.62.1",
+        "@bufbuild/protoc-gen-es": "2.11.0",
+        "@bufbuild/protoplugin": "2.11.0",
+        "@trezor/eslint": "workspace:*",
+        "protobufjs-cli": "^1.1.3",
+        "tsx": "^4.21.0"
     },
     "peerDependencies": {
         "tslib": "^2.6.2"

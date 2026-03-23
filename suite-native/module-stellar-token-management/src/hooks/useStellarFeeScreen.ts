@@ -5,23 +5,23 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 
 import {
-    DeviceRootState,
+    type DeviceRootState,
     selectDeviceButtonRequestsCodes,
     selectIsDeviceConnectedAndAuthorized,
 } from '@suite-common/device';
 import {
-    AccountsRootState,
-    FormDraftRootState,
+    type AccountsRootState,
+    type FormDraftRootState,
     fetchAndUpdateAccountThunk,
     selectAccountByKey,
     selectDeepCopyOfFormDraft,
 } from '@suite-common/wallet-core';
 import {
-    AccountKey,
-    FeeLevelLabel,
-    FormState,
-    PrecomposedTransactionFinal,
-    TokenAddress,
+    type AccountKey,
+    type FeeLevelLabel,
+    type FormState,
+    type PrecomposedTransactionFinal,
+    type TokenAddress,
     isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
 import { useAlert } from '@suite-native/alerts';
@@ -30,14 +30,14 @@ import { useConfirmOnTrezorController } from '@suite-native/confirm-on-trezor';
 import { useTranslate } from '@suite-native/intl';
 import {
     AuthorizeDeviceStackRoutes,
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
-    StackToStackCompositeNavigationProps,
-    StellarManageTokenStackParamList,
+    type StackToStackCompositeNavigationProps,
+    type StellarManageTokenStackParamList,
     StellarManageTokenStackRoutes,
 } from '@suite-native/navigation';
 import {
-    NativeSendRootState,
+    type NativeSendRootState,
     selectFeeLevels,
     useFeesManagement,
 } from '@suite-native/transaction-management';

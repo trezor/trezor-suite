@@ -1,24 +1,23 @@
 import styled, { css } from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { goto, selectRouterParams } from '@suite/router';
 import { selectDevices, selectSelectedDevice } from '@suite-common/device';
 import { selectAccountByKey, selectDeviceThunk } from '@suite-common/wallet-core';
-import { AccountKey, WalletParams } from '@suite-common/wallet-types';
+import { type AccountKey, type WalletParams } from '@suite-common/wallet-types';
 import { ProgressPie } from '@trezor/components';
 import { typography } from '@trezor/theme';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { CountdownTimer } from 'src/components/suite/CountdownTimer';
 import { WalletLabeling } from 'src/components/suite/labeling';
 import { ROUND_PHASE_MESSAGES } from 'src/constants/suite/coinjoin';
 import { useDispatch } from 'src/hooks/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
-import { selectRouterParams } from 'src/reducers/suite/routerReducer';
 import {
     selectRoundsDurationInHours,
     selectSessionProgressByAccountKey,
 } from 'src/reducers/wallet/coinjoinReducer';
-import { CoinjoinSession } from 'src/types/wallet/coinjoin';
+import { type CoinjoinSession } from 'src/types/wallet/coinjoin';
 
 const SPACING = 6;
 
@@ -104,7 +103,8 @@ export const CoinjoinStatusBar = ({ accountKey, session, isSingle }: CoinjoinSta
         }
 
         dispatch(
-            goto('wallet-index', {
+            goto({
+                routeName: 'wallet-index',
                 params: {
                     symbol,
                     accountIndex: index,

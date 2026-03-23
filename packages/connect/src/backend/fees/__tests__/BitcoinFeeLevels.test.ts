@@ -3,7 +3,7 @@ import coinsJSONEth from '@trezor/connect-data/files/coins-eth.json';
 import coinsJSON from '@trezor/connect-data/files/coins.json';
 
 import { getBitcoinNetwork, parseCoinsJson } from '../../../data/coinInfo';
-import { FeeLevel } from '../../../types';
+import type { FeeLevel } from '../../../types';
 import { dispose, initBlockchain } from '../../BlockchainLink';
 import { BitcoinFeeLevels } from '../BitcoinFeeLevels';
 

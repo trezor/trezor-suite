@@ -1,5 +1,5 @@
 import { combineReducers } from '@reduxjs/toolkit';
-import { CryptoId, SellListResponse, SellProviderInfo } from 'invity-api';
+import { type CryptoId, type SellListResponse, type SellProviderInfo } from 'invity-api';
 
 import { configureMockStore } from '@suite-common/test-utils';
 

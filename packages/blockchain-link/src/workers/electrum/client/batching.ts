@@ -1,4 +1,4 @@
-import { TimerId } from '@trezor/type-utils';
+import { type TimerId } from '@trezor/type-utils';
 
 import { JsonRpcClient } from './json-rpc';
 

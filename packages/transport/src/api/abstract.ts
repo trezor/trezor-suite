@@ -1,6 +1,6 @@
 import { TypedEmitter, getSynchronize } from '@trezor/utils';
 
-import { TRANSPORT } from '../constants';
+import { type TRANSPORT } from '../constants';
 import * as ERRORS from '../errors';
 import type {
     AnyError,

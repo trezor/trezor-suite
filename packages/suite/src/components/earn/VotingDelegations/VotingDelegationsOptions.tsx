@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 
-import { Translation, TranslationKey, useTranslation } from '@suite/intl';
-import { NetworkType } from '@suite-common/wallet-config';
+import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
+import { type NetworkType } from '@suite-common/wallet-config';
 import {
     DEFAULT_VOTING_OPTION,
-    VotingDelegationOption,
+    type VotingDelegationOption,
     selectVotingDelegationOption,
     stakeActions,
 } from '@suite-common/wallet-core';

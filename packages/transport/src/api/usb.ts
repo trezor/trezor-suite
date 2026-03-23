@@ -1,6 +1,6 @@
 import { arrayPartition, createDeferred, getSynchronize, resolveAfter } from '@trezor/utils';
 
-import { AbstractApi, AbstractApiConstructorParams } from './abstract';
+import { AbstractApi, type AbstractApiConstructorParams } from './abstract';
 import {
     CONFIGURATION_ID,
     DEBUGLINK_ENDPOINT_ID,
@@ -14,7 +14,7 @@ import {
     WEBUSB_BOOTLOADER_PRODUCT,
 } from '../constants';
 import * as ERRORS from '../errors';
-import { DescriptorApiLevel, PathInternal } from '../types';
+import { type DescriptorApiLevel, PathInternal } from '../types';
 import { getUSBDescriptorModel } from '../utils/descriptor';
 
 interface ConstructorParams extends Omit<AbstractApiConstructorParams, 'type'> {
@@ -84,7 +84,9 @@ export class UsbApi extends AbstractApi {
                 );
 
                 // trezor devices have serial number 468E58AE386B5D2EA8C572A2 or 000000000000000000000000 (for bootloader devices)
-                return this.enumerate();
+                return this.enumerate().then(() => {
+                    this.emit('transport-interface-change', this.devicesToDescriptors());
+                });
             }
 
             const index = this.devices.findIndex(d => d.path === device.serialNumber);

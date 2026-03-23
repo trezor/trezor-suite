@@ -1,11 +1,11 @@
 import React from 'react';
 
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { Form } from '@suite-native/forms';
 import {
-    PreloadedState,
-    renderHookWithStoreProviderAsync,
-    renderWithStoreProviderAsync,
+    type PreloadedState,
+    renderHookWithStoreProvider,
+    renderWithStoreProvider,
 } from '@suite-native/test-utils';
 import {
     getBtcAccount,
@@ -45,11 +45,11 @@ describe('TradingFeesForm', () => {
         },
     };
 
-    const renderUseFeesForm = async (
+    const renderUseFeesForm = (
         accountKey: AccountKey = mockAccountKey,
         preloadedState?: PreloadedState,
     ) => {
-        const { result } = await renderHookWithStoreProviderAsync(
+        const { result } = renderHookWithStoreProvider(
             () =>
                 useFeesForm({
                     accountKey,
@@ -64,13 +64,13 @@ describe('TradingFeesForm', () => {
         return result.current;
     };
 
-    const renderTradingFeesForm = async (props: {
+    const renderTradingFeesForm = (props: {
         accountKey: AccountKey;
         tokenContract?: TokenAddress;
     }) => {
-        const form = await renderUseFeesForm(props.accountKey);
+        const form = renderUseFeesForm(props.accountKey);
 
-        return await renderWithStoreProviderAsync(<TradingFeesForm {...props} />, {
+        return renderWithStoreProvider(<TradingFeesForm {...props} />, {
             preloadedState: defaultState,
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
@@ -80,22 +80,22 @@ describe('TradingFeesForm', () => {
         jest.clearAllMocks();
     });
 
-    it('should render TradingFeesForm with FeesContent component', async () => {
-        const { getByText } = await renderTradingFeesForm({ accountKey: mockAccountKey });
+    it('should render TradingFeesForm with FeesContent component', () => {
+        const { getByText } = renderTradingFeesForm({ accountKey: mockAccountKey });
 
         expect(getByText('Transaction fee')).toBeTruthy();
     });
 
-    it('should render with fees footer when total amount and fee are available', async () => {
-        const { getByText } = await renderTradingFeesForm({ accountKey: mockAccountKey });
+    it('should render with fees footer when total amount and fee are available', () => {
+        const { getByText } = renderTradingFeesForm({ accountKey: mockAccountKey });
 
         // FeesFooter should be rendered if totalAmount and fee are present
         // This test validates the integration between TradingFeesForm and its child components
         expect(getByText('Transaction fee')).toBeTruthy();
     });
 
-    it('should work with token contract for Ethereum accounts', async () => {
-        const { getByText } = await renderTradingFeesForm({
+    it('should work with token contract for Ethereum accounts', () => {
+        const { getByText } = renderTradingFeesForm({
             accountKey: 'eth1' as AccountKey, // Todo: create properly via `createAccountKey()`
             tokenContract: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as TokenAddress,
         });
@@ -103,9 +103,9 @@ describe('TradingFeesForm', () => {
         expect(getByText('Maximum fee')).toBeTruthy();
     });
 
-    it('should not render anything when account is not available', async () => {
+    it('should not render anything when account is not available', () => {
         const accountKey = 'nonexistent-account' as AccountKey;
-        const { queryByText } = await renderTradingFeesForm({ accountKey });
+        const { queryByText } = renderTradingFeesForm({ accountKey });
 
         // Should not render when account doesn't exist
         expect(queryByText('Transaction fee')).toBeFalsy();

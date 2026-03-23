@@ -1,6 +1,6 @@
-import { TradingComposedTransactionInfo } from '@suite-common/trading';
-import { NetworkType } from '@suite-common/wallet-config';
-import { FeeInfo } from '@suite-common/wallet-types';
+import { type TradingComposedTransactionInfo } from '@suite-common/trading';
+import { type NetworkType } from '@suite-common/wallet-config';
+import { type FeeInfo } from '@suite-common/wallet-types';
 
 export const getTxEstimatedTimeSeconds = (
     networkType: NetworkType | undefined,

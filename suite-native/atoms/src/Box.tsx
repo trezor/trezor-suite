@@ -1,13 +1,13 @@
 import React from 'react';
-import { View, ViewProps, ViewStyle } from 'react-native';
+import { View, type ViewProps, type ViewStyle } from 'react-native';
 
 import { D, pipe } from '@mobily/ts-belt';
 
-import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { NativeSpacing } from '@trezor/theme';
+import { type NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { type NativeSpacing } from '@trezor/theme';
 
 import { DebugView, useDebugView } from './DebugView';
-import { TestProps } from './types';
+import { type TestProps } from './types';
 
 const layoutStylePropsKeys = [
     'flex',

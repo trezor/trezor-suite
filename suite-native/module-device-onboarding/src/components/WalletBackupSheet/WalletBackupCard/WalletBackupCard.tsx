@@ -1,8 +1,14 @@
 import { memo } from 'react';
 import { Pressable } from 'react-native';
 
-import { BackupType } from '@suite-common/suite-types';
-import { Card, CardDivider, FullAlertBox, FullAlertBoxProps, VStack } from '@suite-native/atoms';
+import { type BackupType } from '@suite-common/suite-types';
+import {
+    Card,
+    CardDivider,
+    FullAlertBox,
+    type FullAlertBoxProps,
+    VStack,
+} from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';

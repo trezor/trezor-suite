@@ -1,24 +1,23 @@
 import { useSelector } from 'react-redux';
 
-import type { BuyTrade } from 'invity-api';
-
 import {
-    TradingRootState,
-    TradingTransaction,
-    TradingTransactionBuy,
-    TradingTransactionSell,
-    TradingType,
+    type TradingRootState,
+    type TradingTransaction,
+    type TradingTransactionBuy,
+    type TradingTransactionSell,
+    type TradingType,
+    getStatusUrl,
     selectTradingProviderByNameAndTradeType,
     selectTradingTradeByOrderId,
 } from '@suite-common/trading';
 import { FullAlertBox } from '@suite-native/atoms';
-import { IconName } from '@suite-native/icons';
-import { TxKeyPath, useTranslate } from '@suite-native/intl';
+import { type IconName } from '@suite-native/icons';
+import { type TxKeyPath, useTranslate } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import { buildTradingUrl, useBrowserAuth } from '@suite-native/trading-browser-auth';
 import { exhaustive } from '@trezor/type-utils';
 
-import { TradeStatusStep } from '../../../utils/general/utils';
+import { type TradeStatusStep } from '../../../utils/general/utils';
 
 type AlertConfig = {
     iconName: IconName;
@@ -114,11 +113,7 @@ export const TradeDetailAlert = ({
 
     const alertConfig = getAlertConfig(alertType);
 
-    const { openBrowser } = useBrowserAuth(
-        trade?.tradeType === 'buy'
-            ? { tradingType: trade.tradeType, orderId: trade.data.orderId }
-            : { tradingType: trade?.tradeType },
-    );
+    const { openBrowser } = useBrowserAuth(trade?.tradeType);
 
     // If no config found for this alert type, return null
     if (!alertConfig) {
@@ -127,16 +122,10 @@ export const TradeDetailAlert = ({
 
     const { iconName, variant, titleKey, descriptionKey, buttonKey } = alertConfig;
 
-    const supportUrlTemplate = providerInfo?.statusUrl || providerInfo?.supportUrl;
-    let supportUrl: string | undefined;
-    if (tradeType === 'buy') {
-        supportUrl = supportUrlTemplate?.replace(
-            '{{originalPaymentId}}',
-            (trade?.data as BuyTrade)?.paymentId || '',
-        );
-    } else {
-        supportUrl = supportUrlTemplate?.replace('{{orderId}}', trade?.data?.orderId || '');
-    }
+    // todo: separate status url and support url just like on web and desktop
+    const supportUrl = providerInfo?.supportUrl;
+    const statusOrSupportUrl =
+        alertType === 'kyc' ? supportUrl : getStatusUrl(providerInfo, trade?.data) || supportUrl;
 
     const navigateToBrowser = () => {
         if (trade && isBuyOrSell(trade) && trade.data.partnerData) {
@@ -146,7 +135,7 @@ export const TradeDetailAlert = ({
                 orderId,
             });
             onOpenedBrowser?.();
-            openBrowser(trade.data.partnerData, callbackUrl);
+            openBrowser(trade.data.partnerData, callbackUrl, orderId);
         }
     };
 
@@ -157,8 +146,8 @@ export const TradeDetailAlert = ({
         handleButtonPress = () => navigateToBrowser();
     }
 
-    if (supportUrl) {
-        handleButtonPress = () => openLink(supportUrl);
+    if (statusOrSupportUrl) {
+        handleButtonPress = () => openLink(statusOrSupportUrl);
     }
 
     const buttonLabel = handleButtonPress ? translate(buttonKey) : undefined;

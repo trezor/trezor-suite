@@ -1,22 +1,22 @@
 import {
-    DeviceRootState,
+    type DeviceRootState,
     selectHasOnlyPortfolioDevice,
     selectSelectedDevice,
 } from '@suite-common/device';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
-import { TrezorDevice } from '@suite-common/suite-types';
-import { NetworkSymbol, networks, networksCollection } from '@suite-common/wallet-config';
-import { Account, ReviewOutput } from '@suite-common/wallet-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
+import { type NetworkSymbol, networks, networksCollection } from '@suite-common/wallet-config';
+import { type Account, type ReviewOutput } from '@suite-common/wallet-types';
 import {
     findAccountsByAddress,
     isAccountDiscoverable,
     sortByCoin,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
-import { StaticSessionId, type TrezorConnect } from '@trezor/connect';
+import { type StaticSessionId, type TrezorConnect } from '@trezor/connect';
 import { arrayToDictionary } from '@trezor/utils';
 
-import { AccountsRootState } from './accounts/accountsReducer';
+import { type AccountsRootState } from './accounts/accountsReducer';
 import {
     selectAccounts,
     selectAccountsByDeviceState,
@@ -25,9 +25,12 @@ import {
     selectVisibleDeviceAccounts,
 } from './accounts/accountsSelectors';
 import { selectSupportedNetworkByDevice } from './device/deviceSelectors';
-import { DiscoveryRootState } from './discovery/discoveryReducer';
+import { type DiscoveryRootState } from './discovery/discoveryReducer';
 import { selectHasRunningDiscovery } from './discovery/discoverySelectors';
-import { WalletSettingsRootState, selectEnabledNetworks } from './settings/walletSettingsReducer';
+import {
+    type WalletSettingsRootState,
+    selectEnabledNetworks,
+} from './settings/walletSettingsReducer';
 
 /*
 This file is for selectors that reach into more than one wallet-core reduce

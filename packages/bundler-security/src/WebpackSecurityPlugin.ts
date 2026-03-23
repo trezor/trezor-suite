@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import webpack from 'webpack';
+import type webpack from 'webpack';
 
 import { checkSecurityViolation } from './metroSecureResolver';
 

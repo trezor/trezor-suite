@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import { Context } from '@suite-common/message-system';
 import { Box, Card, Column } from '@trezor/components';

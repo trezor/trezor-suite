@@ -2,12 +2,12 @@ import { useMemo } from 'react';
 
 import { Translation } from '@suite/intl';
 import { getNetwork } from '@suite-common/wallet-config';
-import { AccountsRootState, selectIsAccountUtxoBased } from '@suite-common/wallet-core';
+import { type AccountsRootState, selectIsAccountUtxoBased } from '@suite-common/wallet-core';
 import { getFirstFreshAddress } from '@suite-common/wallet-utils';
 import {
     Banner,
     Button,
-    ButtonProps,
+    type ButtonProps,
     Card,
     H4,
     InfoItem,
@@ -21,7 +21,7 @@ import { showAddress } from 'src/actions/wallet/receiveActions';
 import { Address, ReadMoreLink } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite/';
 import { useReceiveDisabled } from 'src/hooks/suite/useReceiveDisabled';
-import { AppState } from 'src/types/suite';
+import { type AppState } from 'src/types/suite';
 
 const TooltipLabel = ({
     symbol,

@@ -1,4 +1,4 @@
-import { ServiceFunction } from '../service';
+import { type ServiceFunction } from '../service';
 
 export const mock = <T extends ServiceFunction<any, any>>(fn: T) =>
     jest.fn<ReturnType<T>, Parameters<T>>().mockImplementation(fn);

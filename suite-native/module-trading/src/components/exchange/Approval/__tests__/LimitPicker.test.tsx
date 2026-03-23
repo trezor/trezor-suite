@@ -1,8 +1,8 @@
 import { selectTradingExchangeSelectedQuote, tradingExchangeActions } from '@suite-common/trading';
 import {
-    TestStore,
+    type TestStore,
     initStore,
-    renderWithStoreProviderAsync,
+    renderWithStoreProvider,
     userEvent,
     within,
 } from '@suite-native/test-utils';
@@ -13,7 +13,7 @@ import { LimitPicker } from '../LimitPicker';
 describe('LimitPicker', () => {
     let store: TestStore;
 
-    const renderLimitPicker = () => renderWithStoreProviderAsync(<LimitPicker />, { store });
+    const renderLimitPicker = () => renderWithStoreProvider(<LimitPicker />, { store });
 
     beforeEach(() => {
         const preloadedState = {
@@ -27,8 +27,8 @@ describe('LimitPicker', () => {
         store = initStore(preloadedState).store;
     });
 
-    it('should render Unlimited when no limit is specified', async () => {
-        const { getByTestId } = await renderLimitPicker();
+    it('should render Unlimited when no limit is specified', () => {
+        const { getByTestId } = renderLimitPicker();
 
         const picker = getByTestId('ExchangeApproval/LimitPicker');
 
@@ -42,7 +42,7 @@ describe('LimitPicker', () => {
     });
 
     it('should update limit when users selects new value', async () => {
-        const { getByTestId } = await renderLimitPicker();
+        const { getByTestId } = renderLimitPicker();
 
         const picker = getByTestId('ExchangeApproval/LimitPicker');
         const sheet = getByTestId('ExchangeApproval/LimitSheet');
@@ -58,10 +58,10 @@ describe('LimitPicker', () => {
         );
     });
 
-    it('should render nothing without quote', async () => {
+    it('should render nothing without quote', () => {
         store.dispatch(tradingExchangeActions.savePreselectedQuote(undefined));
 
-        const { toJSON } = await renderLimitPicker();
+        const { toJSON } = renderLimitPicker();
 
         expect(toJSON()).toBeNull();
     });

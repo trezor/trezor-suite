@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import type { ExperimentalFeature } from '@suite/experimental';
 import {
-    ExperimentalFeedbackRootState,
-    Rating,
+    type ExperimentalFeedbackRootState,
+    type Rating,
     buildUserFeedbackData,
     selectPendingFeedbackFeature,
     sendFeedbackAction,

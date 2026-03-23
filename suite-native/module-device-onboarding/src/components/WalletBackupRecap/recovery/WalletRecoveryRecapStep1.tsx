@@ -1,4 +1,4 @@
-import { SharedValue } from 'react-native-reanimated';
+import { type SharedValue } from 'react-native-reanimated';
 
 import { Translation } from '@suite-native/intl';
 import { SwipeableWalkthroughStep } from '@suite-native/swipeable-walkthrough';

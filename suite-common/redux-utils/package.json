@@ -8,7 +8,8 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
-        "test:unit": "yarn g:jest"
+        "test:unit": "yarn g:jest",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
         "@reduxjs/toolkit": "2.11.2",
@@ -24,7 +25,7 @@
         "@trezor/analytics-uploader": "workspace:*",
         "@trezor/connect": "workspace:*",
         "lodash": "^4.17.21",
-        "react": "19.1.0",
+        "react": "19.2.4",
         "react-redux": "9.2.0",
         "redux": "^5.0.1",
         "redux-thunk": "^3.1.0",

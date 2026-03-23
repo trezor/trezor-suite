@@ -8,12 +8,13 @@
     "scripts": {
         "test:unit": "yarn g:jest --verbose",
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build"
+        "type-check": "yarn g:tsc --build",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
         "@braintree/sanitize-url": "^7.1.2",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "ajv": "^8.17.1"
+        "ajv": "^8.18.0"
     }
 }

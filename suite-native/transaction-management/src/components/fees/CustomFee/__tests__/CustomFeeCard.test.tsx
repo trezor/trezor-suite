@@ -1,16 +1,16 @@
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { Form } from '@suite-native/forms';
 import {
-    PreloadedState,
+    type PreloadedState,
     renderHookWithStoreProvider,
     renderWithStoreProvider,
     userEvent,
 } from '@suite-native/test-utils';
 
 import { getWalletState } from '../../../../__fixtures__/walletState';
-import { FeesFormType } from '../../../../feesFormSchema';
+import { type FeesFormType } from '../../../../feesFormSchema';
 import { useFeesForm } from '../../../../hooks';
-import { CustomFeeCard, CustomFeeCardProps } from '../CustomFeeCard';
+import { CustomFeeCard, type CustomFeeCardProps } from '../CustomFeeCard';
 
 describe('CustomFeeCard', () => {
     const defaultProps = {

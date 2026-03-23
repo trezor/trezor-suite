@@ -1,12 +1,12 @@
 import { useMemo } from 'react';
 
-import { YieldDto } from '@suite-common/earn-api';
+import { type YieldDto } from '@suite-common/earn-api';
 import {
     NORMAL_ACCOUNT_TYPE,
     type NetworkSymbol,
     getNetworkByYieldXyzId,
 } from '@suite-common/wallet-config';
-import { Account, TokenInfoBranded, toTokenSymbol } from '@suite-common/wallet-types';
+import { type Account, type TokenInfoBranded, toTokenSymbol } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils';
 
 import { getApyPercent } from '../../../utils/earnApyUtils';

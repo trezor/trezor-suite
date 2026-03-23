@@ -3,7 +3,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { TrezorDevice } from '@suite-common/suite-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { RotateDeviceImage } from '@trezor/product-components';
 import { borders, typography } from '@trezor/theme';
 

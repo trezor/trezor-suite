@@ -8,14 +8,15 @@
     "scripts": {
         "test:unit": "yarn g:jest",
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build"
+        "type-check": "yarn g:tsc --build",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
-        "@react-navigation/native": "7.1.26",
+        "@react-navigation/native": "7.1.28",
         "@reduxjs/toolkit": "2.11.2",
-        "@sentry/react-native": "7.11.0",
-        "@shopify/react-native-skia": "2.2.12",
+        "@sentry/react-native": "8.2.0",
+        "@shopify/react-native-skia": "2.4.18",
         "@suite-common/device": "workspace:*",
         "@suite-common/formatters": "workspace:*",
         "@suite-common/graph": "workspace:*",
@@ -40,11 +41,11 @@
         "@trezor/theme": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "expo-haptics": "~15.0.8",
-        "jotai": "2.15.0",
-        "react": "19.1.0",
-        "react-native": "0.81.5",
-        "react-native-reanimated": "~4.1.5",
+        "expo-haptics": "~55.0.8",
+        "jotai": "2.17.1",
+        "react": "19.2.4",
+        "react-native": "0.83.2",
+        "react-native-reanimated": "~4.2.1",
         "react-redux": "9.2.0",
         "redux-persist": "6.0.0"
     }

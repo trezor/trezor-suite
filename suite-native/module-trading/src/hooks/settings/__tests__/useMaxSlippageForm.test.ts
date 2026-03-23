@@ -1,19 +1,19 @@
 import {
-    TestStore,
+    type TestStore,
     act,
     initStore,
-    renderHookWithStoreProviderAsync,
+    renderHookWithStoreProvider,
 } from '@suite-native/test-utils';
 
 import { useMaxSlippageForm } from '../useMaxSlippageForm';
 
 describe('useMaxSlippageForm', () => {
     const renderUseMaxSlippageForm = (store: TestStore) =>
-        renderHookWithStoreProviderAsync(() => useMaxSlippageForm(), { store });
+        renderHookWithStoreProvider(() => useMaxSlippageForm(), { store });
 
-    it('should have default value from store', async () => {
+    it('should have default value from store', () => {
         const { store } = initStore();
-        const { result } = await renderUseMaxSlippageForm(store);
+        const { result } = renderUseMaxSlippageForm(store);
 
         expect(result.current.getValues()).toEqual({
             maxSlippage: '1',
@@ -24,7 +24,7 @@ describe('useMaxSlippageForm', () => {
         'should error validation for value %s',
         async slippage => {
             const { store } = initStore();
-            const { result } = await renderUseMaxSlippageForm(store);
+            const { result } = renderUseMaxSlippageForm(store);
 
             await act(async () => {
                 result.current.setValue('maxSlippage', slippage, { shouldValidate: true });
@@ -38,9 +38,9 @@ describe('useMaxSlippageForm', () => {
         },
     );
 
-    it.each(['0.01', '1', '12.34', '50'])('should pass validation for value %s', async slippage => {
+    it.each(['0.01', '1', '12.34', '50'])('should pass validation for value %s', slippage => {
         const { store } = initStore();
-        const { result } = await renderUseMaxSlippageForm(store);
+        const { result } = renderUseMaxSlippageForm(store);
 
         act(() => {
             result.current.setValue('maxSlippage', slippage, { shouldValidate: true });

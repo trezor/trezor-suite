@@ -1,4 +1,4 @@
-import { Translation, TranslationFunction, useTranslation } from '@suite/intl';
+import { Translation, type TranslationFunction, useTranslation } from '@suite/intl';
 import { getFeeUnits, isInteger } from '@suite-common/wallet-utils';
 import { Column, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';

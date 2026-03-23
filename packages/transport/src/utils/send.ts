@@ -1,7 +1,7 @@
 import { encodeMessage } from '@trezor/protobuf';
-import { ThpState, TransportProtocol, thp as protocolThp } from '@trezor/protocol';
+import { type ThpState, type TransportProtocol, thp as protocolThp } from '@trezor/protocol';
 
-import { AsyncResultWithTypedError } from '../types';
+import { type AsyncResultWithTypedError } from '../types';
 
 export const createChunks = (data: Buffer, chunkHeader: Buffer, chunkSize: number) => {
     if (!chunkSize || data.byteLength <= chunkSize) {

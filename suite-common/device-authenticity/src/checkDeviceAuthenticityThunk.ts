@@ -1,7 +1,7 @@
 import { deviceActions } from '@suite-common/device';
 import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
 import { createThunk } from '@suite-common/redux-utils';
-import { StoredAuthenticateDeviceResult } from '@suite-common/suite-types';
+import { type StoredAuthenticateDeviceResult } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import TrezorConnect from '@trezor/connect';
 

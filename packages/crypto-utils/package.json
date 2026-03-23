@@ -29,12 +29,12 @@
         "types": "./lib/index.d.ts",
         "exports": {
             ".": {
-                "import": "./libESM/index.js",
+                "import": "./libESM/index.mjs",
                 "require": "./lib/index.js",
                 "types": "./lib/index.d.ts"
             },
             "./lib/*": "./lib/*.js",
-            "./libESM/*.js": "./libESM/*.js"
+            "./libESM/*": "./libESM/*"
         }
     },
     "scripts": {
@@ -42,7 +42,8 @@
         "build:lib:cjs": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
         "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build"
+        "type-check": "yarn g:tsc --build",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "peerDependencies": {
         "tslib": "^2.6.2"

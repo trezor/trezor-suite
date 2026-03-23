@@ -1,6 +1,6 @@
-import { TradingType } from '@suite-common/trading';
-import { FirmwareType } from '@trezor/connect';
-import { DeviceModelInternal } from '@trezor/device-utils';
+import { type TradingType } from '@suite-common/trading';
+import { type FirmwareType } from '@trezor/connect';
+import { type DeviceModelInternal } from '@trezor/device-utils';
 
 export type AnalyticsSendFlowStep =
     | 'address_and_amount'

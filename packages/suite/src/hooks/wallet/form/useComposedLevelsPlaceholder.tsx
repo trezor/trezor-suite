@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
-import { FeeInfo, PrecomposedLevels } from '@suite-common/wallet-types';
-import { FeeLevel } from '@trezor/connect';
+import { type FeeInfo, type PrecomposedLevels } from '@suite-common/wallet-types';
+import { type FeeLevel } from '@trezor/connect';
 
 export const useComposedLevelsPlaceholder = ({
     feeInfo,

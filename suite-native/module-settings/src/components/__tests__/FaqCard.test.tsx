@@ -1,4 +1,4 @@
-import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { type PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils';
 
 import { FaqCard } from '../FaqCard';
 
@@ -17,7 +17,7 @@ jest.mock('@suite-native/trading-state', () => ({
 
 describe('FaqCard', () => {
     const renderFaqCard = (preloadedState: PreloadedState = {}) =>
-        renderWithStoreProviderAsync(<FaqCard />, { preloadedState });
+        renderWithStoreProvider(<FaqCard />, { preloadedState });
 
     beforeEach(() => {
         mockIsTradingEnabled = true;
@@ -28,8 +28,8 @@ describe('FaqCard', () => {
             mockIsAndroid = true;
         });
 
-        it('should render appropriate sections when BT is enabled', async () => {
-            const { getByText } = await renderFaqCard();
+        it('should render appropriate sections when BT is enabled', () => {
+            const { getByText } = renderFaqCard();
 
             // Android BT-specific info
             expect(getByText('For wireless connections:')).toBeOnTheScreen();
@@ -38,10 +38,10 @@ describe('FaqCard', () => {
             expect(getByText('What trading features are available?')).toBeOnTheScreen();
         });
 
-        it('should not render trading section when trading is disabled', async () => {
+        it('should not render trading section when trading is disabled', () => {
             mockIsTradingEnabled = false;
 
-            const { queryByText } = await renderFaqCard();
+            const { queryByText } = renderFaqCard();
 
             expect(queryByText('What trading features are available?')).toBeNull();
         });
@@ -52,8 +52,8 @@ describe('FaqCard', () => {
             mockIsAndroid = false;
         });
 
-        it('should render appropriate sections when BT is enabled', async () => {
-            const { getByText } = await renderFaqCard();
+        it('should render appropriate sections when BT is enabled', () => {
+            const { getByText } = renderFaqCard();
 
             // iOS BT-specific info
             expect(
@@ -64,10 +64,10 @@ describe('FaqCard', () => {
             expect(getByText('What trading features are available?')).toBeOnTheScreen();
         });
 
-        it('should not render trading section when trading is disabled', async () => {
+        it('should not render trading section when trading is disabled', () => {
             mockIsTradingEnabled = false;
 
-            const { queryByText } = await renderFaqCard();
+            const { queryByText } = renderFaqCard();
 
             expect(queryByText('What trading features are available?')).toBeNull();
         });

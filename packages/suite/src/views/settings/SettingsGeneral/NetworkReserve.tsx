@@ -2,6 +2,7 @@ import { FormattedList } from 'react-intl';
 
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { SettingsAnchor } from '@suite/router';
 import { networksCollection } from '@suite-common/wallet-config';
 import { selectIsNetworkReserveEnabled, setNetworkReserve } from '@suite-common/wallet-core';
 import { Switch } from '@trezor/components';
@@ -9,7 +10,6 @@ import { NETWORK_RESERVE_URL } from '@trezor/urls';
 
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionColumn, TextColumn } from 'src/components/suite';
-import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
 

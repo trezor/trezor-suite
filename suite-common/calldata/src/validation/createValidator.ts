@@ -1,4 +1,4 @@
-import { IssueCode, ValidationResult } from '../types/validation';
+import { type IssueCode, type ValidationResult } from '../types/validation';
 
 export type ValidateFn<Input> = (input: Input) => IssueCode | null;
 export type InspectFn<Output, Context = Record<string, unknown>> = (

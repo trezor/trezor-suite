@@ -1,7 +1,7 @@
-import { SellFiatTrade } from 'invity-api';
+import { type SellFiatTrade } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
-import { Timer } from '@trezor/react-utils';
+import { type Timer } from '@trezor/react-utils';
 
 import { TRADING_SELL_THUNK_PREFIX } from '../../constants';
 import { tradingSellActions } from '../../reducers/sellReducer';

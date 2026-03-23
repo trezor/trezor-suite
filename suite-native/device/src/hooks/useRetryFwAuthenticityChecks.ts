@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { deviceAccessMutex, requestDeviceAccess } from '@suite-native/device-mutex';
 import TrezorConnect, { FIRMWARE } from '@trezor/connect';
-import { TimerId } from '@trezor/type-utils';
+import { type TimerId } from '@trezor/type-utils';
 import { isArrayMember } from '@trezor/utils';
 
 import { selectSelectedDeviceFirmwareRevisionCheckErrorIfEnabled } from '../selectors';

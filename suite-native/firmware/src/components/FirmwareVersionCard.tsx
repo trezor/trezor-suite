@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { PixelRatio } from 'react-native';
 import { useSelector } from 'react-redux';
 
@@ -13,7 +13,7 @@ import {
     Card,
     HStack,
     InlineAlertText,
-    InlineAlertTextProps,
+    type InlineAlertTextProps,
     Text,
     VStack,
 } from '@suite-native/atoms';

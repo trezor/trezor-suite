@@ -1,7 +1,7 @@
-import { CryptoId, SellFiatTrade, SellFiatTradeQuoteRequest } from 'invity-api';
+import { type CryptoId, type SellFiatTrade, type SellFiatTradeQuoteRequest } from 'invity-api';
 
-import { TradingAmountLimitProps } from '../../types';
-import { SellInfo, sellInitialState, tradingSellActions } from '../sellReducer';
+import { type TradingAmountLimitProps } from '../../types';
+import { type SellInfo, sellInitialState, tradingSellActions } from '../sellReducer';
 
 const sellInfo: SellInfo = {
     providerInfos: {},

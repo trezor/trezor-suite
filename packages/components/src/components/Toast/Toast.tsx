@@ -1,14 +1,14 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
 import { borders, spacings, spacingsPx } from '@trezor/theme';
 import { hexToRgba } from '@trezor/utils';
 
-import { ToastAction, ToastIntent } from './types';
+import { type ToastAction, type ToastIntent } from './types';
 import { mapToastIntentToIcon, mapToastVariantToColor, normalizeToastActions } from './utils';
 import { Column, Row } from '../Flex/Flex';
-import { Icon, IconName } from '../Icon/Icon';
+import { Icon, type IconName } from '../Icon/Icon';
 import { Button } from '../buttons/Button/Button';
 import { IconButton } from '../buttons/IconButton/IconButton';
 import { Text } from '../typography/Text/Text';

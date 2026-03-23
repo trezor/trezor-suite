@@ -1,4 +1,4 @@
-import { ReactNode, useState } from 'react';
+import { type ReactNode, useState } from 'react';
 import { Pressable } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
@@ -19,9 +19,9 @@ import { Translation } from '@suite-native/intl';
 import {
     Screen,
     ScreenHeader,
-    SettingsStackParamList,
+    type SettingsStackParamList,
     SettingsStackRoutes,
-    StackNavigationProps,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
 import { useToast } from '@suite-native/toasts';
 

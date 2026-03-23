@@ -9,12 +9,12 @@ import { events } from '@suite-native/analytics';
 import { useTranslate } from '@suite-native/intl';
 import {
     AppTabsRoutes,
-    AuthorizeDeviceStackParamList,
-    AuthorizeDeviceStackRoutes,
+    type AuthorizeDeviceStackParamList,
+    type AuthorizeDeviceStackRoutes,
     HomeStackRoutes,
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
-    StackToStackCompositeNavigationProps,
+    type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
 

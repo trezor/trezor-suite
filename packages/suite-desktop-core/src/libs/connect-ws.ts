@@ -3,20 +3,20 @@ import { WebSocketServer } from 'ws';
 
 import {
     CORE_CALL,
-    CoreCallMessage,
-    Manifest,
+    type CoreCallMessage,
+    type Manifest,
     POPUP,
-    PopupClosedMessage,
-    PopupHandshake,
+    type PopupClosedMessage,
+    type PopupHandshake,
 } from '@trezor/connect';
 import { parseManifest, parseVersion } from '@trezor/connect/src/data/connectSettings';
 import { isLinux, isMacOs, isWindows } from '@trezor/env-utils';
-import { ProcessInfo, findProcessFromIncomingPort } from '@trezor/node-utils';
-import { ConnectPopupResponse } from '@trezor/suite-desktop-api/src/messages';
-import { Deferred, createDeferred, resolveAfter } from '@trezor/utils';
+import { type ProcessInfo, findProcessFromIncomingPort } from '@trezor/node-utils';
+import { type ConnectPopupResponse } from '@trezor/suite-desktop-api/src/messages';
+import { type Deferred, createDeferred, resolveAfter } from '@trezor/utils';
 
-import { createHttpReceiver } from './http-receiver';
-import { Dependencies } from '../modules';
+import { type createHttpReceiver } from './http-receiver';
+import { type Dependencies } from '../modules';
 import { app } from '../typed-electron';
 
 const LOG_PREFIX = 'connect-ws';

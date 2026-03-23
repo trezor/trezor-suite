@@ -21,13 +21,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           lfs: true
           submodules: true
 
       - name: Install node and yarn
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version-file: ".nvmrc"
 
@@ -40,7 +40,7 @@ jobs:
           yarn workspace @trezor/transport-bridge build:js
 
       - name: Upload node-bridge artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: node_bridge_bin_js
           path: |

@@ -1,24 +1,27 @@
 import { A, pipe } from '@mobily/ts-belt';
 
 import {
-    DeviceRootState,
+    type DeviceRootState,
     selectDeviceStaticSessionId,
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/device';
 import { createWeakMapSelector } from '@suite-common/redux-utils';
-import { SuiteSyncDataRootState, selectAccountsWithSuiteSyncLabel } from '@suite-common/suite-sync';
 import {
-    SimpleTokenStructure,
-    TokenDefinitionsRootState,
+    type SuiteSyncDataRootState,
+    selectAccountsWithSuiteSyncLabel,
+} from '@suite-common/suite-sync';
+import {
+    type SimpleTokenStructure,
+    type TokenDefinitionsRootState,
     filterKnownTokens,
     getSimpleCoinDefinitionsByNetwork,
     selectTokenDefinitions,
 } from '@suite-common/token-definitions';
 import {
-    AccountsRootState,
-    FiatRatesRootState,
-    TransactionsRootState,
-    WalletSettingsRootState,
+    type AccountsRootState,
+    type FiatRatesRootState,
+    type TransactionsRootState,
+    type WalletSettingsRootState,
     selectAccountByKey,
     selectBaseCurrency,
     selectCurrentFiatRates,
@@ -26,7 +29,7 @@ import {
     selectPendingAccountAddresses,
     selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
-import { Account, AccountKey, TokenInfoBranded } from '@suite-common/wallet-types';
+import { type Account, type AccountKey, type TokenInfoBranded } from '@suite-common/wallet-types';
 import {
     BASE_CURRENCY_ZERO,
     getAccountFiatBalance,
@@ -39,7 +42,7 @@ import {
 import { doesCoinSupportStaking } from '@suite-native/staking';
 import { isNetworkWithTokens, selectAccountTokenInfo } from '@suite-native/tokens';
 
-import { AccountSelectBottomSheetSection, GroupedByTypeAccounts } from './types';
+import { type AccountSelectBottomSheetSection, type GroupedByTypeAccounts } from './types';
 import {
     filterAccountsByLabelAndNetworkNames,
     filterSendAvailableAccounts,
@@ -57,17 +60,12 @@ export type NativeAccountsRootState = AccountsRootState &
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<NativeAccountsRootState>();
 
-export const selectVisibleAccountsWithLabel = createMemoizedSelector(
-    [
-        (state: NativeAccountsRootState) =>
-            selectAccountsWithSuiteSyncLabel(
-                state,
-                selectVisibleDeviceAccounts(state),
-                selectDeviceStaticSessionId(state),
-            ),
-    ],
-    accounts => accounts,
-);
+export const selectVisibleAccountsWithLabel = (state: NativeAccountsRootState) =>
+    selectAccountsWithSuiteSyncLabel(
+        state,
+        selectVisibleDeviceAccounts(state),
+        selectDeviceStaticSessionId(state),
+    );
 
 // TODO: It searches for filterValue even in tokens without fiat rates.
 // These are currently hidden in UI, but they should be made accessible in some way.
@@ -160,7 +158,12 @@ export const getAccountListSections = (
         account.networkType === 'stellar'
             ? (account.tokens ?? [])
             : filterKnownTokens(tokenDefinitions, account.symbol, account.tokens ?? []);
-    const hasAnyKnownTokens = isNetworkSupportingTokens && !!tokens.length;
+
+    const tokensWithBalance =
+        account.networkType === 'stellar'
+            ? tokens
+            : tokens.filter(token => parseFloat(token?.balance ?? '0') > 0);
+    const hasAnyKnownTokens = isNetworkSupportingTokens && !!tokensWithBalance.length;
 
     const stakingBalance = getAccountTotalStakingBalance(account) ?? '0';
 

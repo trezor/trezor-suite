@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { BaseCurrencyAmount } from '@suite-common/wallet-types';
+import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Box, VStack } from '@suite-native/atoms';
 import {
     GraphBaseCurrencyBalance,

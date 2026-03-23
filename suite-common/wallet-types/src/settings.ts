@@ -1,6 +1,6 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
-import { PROTO } from '@trezor/connect';
+import type { PROTO } from '@trezor/connect';
 
 export const AddressDisplayOptions = {
     ORIGINAL: 'original',

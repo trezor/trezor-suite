@@ -1,33 +1,33 @@
-import { ReactNode, createContext, useMemo } from 'react';
+import { type ReactNode, createContext, useMemo } from 'react';
 import { useIntl } from 'react-intl';
 
-import { FormatNumberOptions } from '@formatjs/intl';
+import type { FormatNumberOptions } from '@formatjs/intl';
 
-import { SignValue } from '@suite-common/suite-types';
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { BaseCurrencyAmount } from '@suite-common/wallet-types';
+import type { SignValue } from '@suite-common/suite-types';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
+import type { BaseCurrencyAmount } from '@suite-common/wallet-types';
 
 import { NetworkNameFormatter } from './formatters/NetworkNameFormatter';
 import { SignValueFormatter } from './formatters/SignValueFormatter';
 import {
-    BaseCurrencyAmountFormatterDataContext,
+    type BaseCurrencyAmountFormatterDataContext,
     prepareBaseCurrencyAmountFormatter,
 } from './formatters/prepareBaseCurrencyAmountFormatter';
 import {
-    CryptoAmountFormatterDataContext,
-    CryptoAmountFormatterInputValue,
+    type CryptoAmountFormatterDataContext,
+    type CryptoAmountFormatterInputValue,
     prepareCryptoAmountFormatter,
 } from './formatters/prepareCryptoAmountFormatter';
 import { prepareDateFormatter } from './formatters/prepareDateFormatter';
 import { prepareDateTimeFormatter } from './formatters/prepareDateTimeFormatter';
 import {
-    DisplaySymbolFormatterDataContext,
+    type DisplaySymbolFormatterDataContext,
     prepareDisplaySymbolFormatter,
 } from './formatters/prepareDisplaySymbolFormatter';
 import { MonthNameFormatter } from './formatters/prepareMonthNameFormatter';
 import { prepareTimeFormatter } from './formatters/prepareTimeFormatter';
-import { Formatter } from './makeFormatter';
-import { FormatterConfig, FormatterProviderConfig } from './types';
+import type { Formatter } from './makeFormatter';
+import type { FormatterConfig, FormatterProviderConfig } from './types';
 
 type FormatterProviderProps = {
     children: ReactNode;

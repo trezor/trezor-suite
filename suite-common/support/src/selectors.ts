@@ -1,5 +1,5 @@
 import {
-    DeviceRootState,
+    type DeviceRootState,
     selectDeviceFirmwareRevision,
     selectDeviceFirmwareVersion,
     selectDeviceInternalModel,
@@ -10,7 +10,7 @@ import { createWeakMapSelector } from '@suite-common/redux-utils';
 import { getSuiteVersion } from '@trezor/env-utils';
 import { HELP_CENTER_WHAT_IS_TREZOR_SUITE_URL, withOpenChat, withUtmParams } from '@trezor/urls';
 
-import { SupportChatUtmParams } from './types';
+import { type SupportChatUtmParams } from './types';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<DeviceRootState>();
 

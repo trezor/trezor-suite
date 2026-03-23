@@ -10,7 +10,7 @@ import { CoinList } from 'src/components/suite/CoinList/CoinList';
 import { useDispatch } from 'src/hooks/suite';
 
 import { CoinGroupHeader } from './CoinGroupHeader';
-import { CoinListProps } from '../CoinList/CoinList';
+import { type CoinListProps } from '../CoinList/CoinList';
 
 type CoinGroupProps = {
     networks: Network[];

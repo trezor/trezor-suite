@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 
-import { ExchangeTrade } from 'invity-api';
+import { type ExchangeTrade } from 'invity-api';
 
-import { TradingExchangeFormContextProps } from 'src/types/trading/tradingForm';
+import { type TradingExchangeFormContextProps } from 'src/types/trading/tradingForm';
 
 interface TradingExchangeWatchApprovalProps {
     selectedQuote?: ExchangeTrade;

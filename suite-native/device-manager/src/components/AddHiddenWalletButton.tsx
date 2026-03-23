@@ -9,11 +9,11 @@ import { HStack, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
-    PassphraseStackParamList,
+    type PassphraseStackParamList,
     PassphraseStackRoutes,
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
-    StackToStackCompositeNavigationProps,
+    type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';

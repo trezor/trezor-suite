@@ -1,13 +1,13 @@
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import {
-    TestStore,
+    type TestStore,
     fireEvent,
     initStore,
-    renderWithStoreProviderAsync,
+    renderWithStoreProvider,
 } from '@suite-native/test-utils';
-import { ReceiveAccount } from '@suite-native/trading-types';
-import { StaticSessionId } from '@trezor/connect';
+import { type ReceiveAccount } from '@suite-native/trading-types';
+import { type StaticSessionId } from '@trezor/connect';
 
 import { AccountListItem } from '../AccountListItem';
 
@@ -67,7 +67,7 @@ describe('AccountListItem', () => {
     ) => {
         store = initStore(preloadedState).store;
 
-        return renderWithStoreProviderAsync(
+        return renderWithStoreProvider(
             <AccountListItem onPress={onPressMock} receiveAccount={receiveAccount} />,
             { store },
         );
@@ -77,23 +77,23 @@ describe('AccountListItem', () => {
         jest.resetAllMocks();
     });
 
-    it('should call onPress callback when pressed', async () => {
+    it('should call onPress callback when pressed', () => {
         const receiveAccount: ReceiveAccount = {
             account: btc10000000Account,
         };
-        const { getByText } = await renderAccountListItem(receiveAccount);
+        const { getByText } = renderAccountListItem(receiveAccount);
 
         fireEvent.press(getByText('My BTC account'));
 
         expect(onPressMock).toHaveBeenCalled();
     });
 
-    it('should render account name', async () => {
+    it('should render account name', () => {
         const receiveAccount: ReceiveAccount = {
             account: btc10000000Account,
         };
         const { getByText, queryByAccessibilityHint, getByLabelText } =
-            await renderAccountListItem(receiveAccount);
+            renderAccountListItem(receiveAccount);
 
         expect(getByText('My BTC account')).toBeTruthy();
         expect(queryByAccessibilityHint('Select to display account addresses')).toBeNull();
@@ -101,7 +101,7 @@ describe('AccountListItem', () => {
         expect(getByLabelText('Balance in crypto')).toHaveTextContent('0.1 BTC');
     });
 
-    it('should display caret when account defines addresses', async () => {
+    it('should display caret when account defines addresses', () => {
         const receiveAccount: ReceiveAccount = {
             account: {
                 ...btc10000000Account,
@@ -112,7 +112,7 @@ describe('AccountListItem', () => {
                 },
             },
         };
-        const { getByText, getByAccessibilityHint } = await renderAccountListItem(receiveAccount);
+        const { getByText, getByAccessibilityHint } = renderAccountListItem(receiveAccount);
 
         expect(getByText('My BTC account')).toBeTruthy();
         expect(getByAccessibilityHint('Select to display account addresses')).toBeTruthy();

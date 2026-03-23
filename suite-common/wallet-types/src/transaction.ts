@@ -1,6 +1,6 @@
-import { Network, NetworkSymbol } from '@suite-common/wallet-config';
-import { BaseCurrencyCode } from '@trezor/blockchain-link-types';
-import {
+import { type Network, type NetworkSymbol } from '@suite-common/wallet-config';
+import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
+import type {
     AccountAddress,
     AccountTransaction,
     AccountUtxo,
@@ -16,9 +16,9 @@ import {
     StaticSessionId,
     TokenInfo,
 } from '@trezor/connect';
-import { Branded, ObjectValues, RequiredKey } from '@trezor/type-utils';
+import { type Branded, type ObjectValues, type RequiredKey } from '@trezor/type-utils';
 
-import { Account, AccountDescriptor } from './account';
+import { type Account, type AccountDescriptor } from './account';
 
 export type { PrecomposedTransactionFinalCardano } from '@trezor/connect';
 

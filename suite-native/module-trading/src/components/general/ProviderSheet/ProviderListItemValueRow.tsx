@@ -2,7 +2,6 @@ import type { TradingTradeType } from '@suite-common/trading';
 import { HStack, Text } from '@suite-native/atoms';
 
 import { useChangeStringsExtractor } from '../../../hooks/history/useChangeStringsExtractor';
-import { CryptoToFiatValueBadge } from '../CryptoToFiatValueBadge';
 
 export type ProviderListItemValueRowProps<T extends TradingTradeType> = {
     quote: T;
@@ -11,20 +10,17 @@ export type ProviderListItemValueRowProps<T extends TradingTradeType> = {
 export const ProviderListItemValueRow = <T extends TradingTradeType>({
     quote,
 }: ProviderListItemValueRowProps<T>) => {
-    const { toStringValue, isToCrypto, toValue, toCurrency } = useChangeStringsExtractor(quote);
+    const { formattedRate } = useChangeStringsExtractor(quote);
+
+    if (!formattedRate) {
+        return null;
+    }
 
     return (
         <HStack justifyContent="space-between" alignItems="center" paddingTop="sp8">
             <Text variant="body-md" color="textDefault">
-                {toStringValue}
+                {formattedRate}
             </Text>
-            {isToCrypto && (
-                <CryptoToFiatValueBadge
-                    amount={toValue}
-                    cryptoId={toCurrency}
-                    color="textSubdued"
-                />
-            )}
         </HStack>
     );
 };

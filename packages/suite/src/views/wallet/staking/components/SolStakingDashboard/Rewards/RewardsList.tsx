@@ -19,7 +19,7 @@ import { BaseCurrencyValue, FormattedCryptoAmount, FormattedDate } from 'src/com
 import { Pagination } from 'src/components/wallet';
 import { TransactionTargetLayout } from 'src/components/wallet/TransactionItem/TransactionTargetLayout';
 import { type SolanaRewards } from 'src/hooks/wallet/useSolanaRewards';
-import { Account } from 'src/types/wallet';
+import { type Account } from 'src/types/wallet';
 import SkeletonTransactionItem from 'src/views/wallet/transactions/TransactionList/SkeletonTransactionItem';
 
 import { RewardsEmpty } from './RewardsEmpty';

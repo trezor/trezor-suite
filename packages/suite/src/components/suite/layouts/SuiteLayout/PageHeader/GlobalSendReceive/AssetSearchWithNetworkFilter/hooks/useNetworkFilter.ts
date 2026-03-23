@@ -1,12 +1,11 @@
-import { RefObject, useEffect, useMemo, useState } from 'react';
+import { type RefObject, useEffect, useMemo, useState } from 'react';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { GlobalSendReceiveType } from '@suite-common/wallet-types';
+import { goto, parseDashboardParams, selectRouterParams } from '@suite/router';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type GlobalSendReceiveType } from '@suite-common/wallet-types';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { globalSendReceiveFilters } from 'src/slices/wallet/globalSendReceiveFilters';
-import { parseDashboardParams } from 'src/utils/suite/routerParams';
 
 export interface UseNetworkFilterProps {
     modal?: NonNullable<GlobalSendReceiveType>;
@@ -15,7 +14,7 @@ export interface UseNetworkFilterProps {
 }
 
 export function useNetworkFilter({ listRef, resetSearch, modal }: UseNetworkFilterProps) {
-    const routerParams = useSelector(state => state.router.params);
+    const routerParams = useSelector(selectRouterParams);
     const networkSymbolUrlParam = useMemo(
         () => parseDashboardParams(routerParams)?.networkSymbol,
         [routerParams],
@@ -42,7 +41,8 @@ export function useNetworkFilter({ listRef, resetSearch, modal }: UseNetworkFilt
         dispatch(globalSendReceiveFilters.actions.setNetworkSymbol(networkFilter));
 
         dispatch(
-            goto('suite-index', {
+            goto({
+                routeName: 'suite-index',
                 params: {
                     modal,
                     ...(networkFilter ? { networkSymbol: networkFilter } : {}),

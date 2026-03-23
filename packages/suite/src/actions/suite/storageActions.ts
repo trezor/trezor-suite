@@ -1,29 +1,29 @@
 import { selectKnownDevices } from '@suite-common/bluetooth';
 import { deviceActions, selectDevices, selectPersistentDeviceData } from '@suite-common/device';
-import { MetadataState } from '@suite-common/metadata-types';
-import { EncryptedHex } from '@suite-common/platform-encryption';
+import { type MetadataState } from '@suite-common/metadata-types';
+import { type EncryptedHex } from '@suite-common/platform-encryption';
 import { createThunk } from '@suite-common/redux-utils/';
-import { SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-storage';
+import { type SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-storage';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { selectThp } from '@suite-common/thp';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { DefinitionType, TokenManagementAction } from '@suite-common/token-definitions';
+import { type DefinitionType, type TokenManagementAction } from '@suite-common/token-definitions';
 import type { TradingTransaction } from '@suite-common/trading';
 import type { Explorer, NetworkSymbol } from '@suite-common/wallet-config';
 import { FormDraftPrefixKeyValues } from '@suite-common/wallet-constants';
 import type {
     AccountKey,
+    FormDraftKeyPrefix,
     FormState,
     RatesByTimestamps,
     SuccessfulAccount,
 } from '@suite-common/wallet-types';
-import { FormDraftKeyPrefix } from '@suite-common/wallet-types';
 import {
     getFormDraftKey,
     isAccountSuccessful,
     selectHistoricRatesByTransactions,
 } from '@suite-common/wallet-utils';
-import { StaticSessionId } from '@trezor/connect';
+import { type StaticSessionId } from '@trezor/connect';
 import { cloneObject } from '@trezor/utils';
 
 import { selectCoinjoinAccountByKey } from 'src/reducers/wallet/coinjoinReducer';
@@ -31,12 +31,12 @@ import { db } from 'src/storage';
 import type { PreloadStoreAction } from 'src/support/suite/preloadStore';
 import type { AppState, Dispatch, GetState, TrezorDevice } from 'src/types/suite';
 import type { Account } from 'src/types/wallet';
-import { GraphData } from 'src/types/wallet/graph';
+import { type GraphData } from 'src/types/wallet/graph';
 import { serializeCoinjoinAccount, serializeDevice } from 'src/utils/suite/storage';
 import { deviceGraphDataFilterFn } from 'src/utils/wallet/graph';
 
 import { STORAGE } from './constants';
-import { DesktopBluetoothDevice } from '../bluetooth/DesktopBluetoothDevice';
+import { type DesktopBluetoothDevice } from '../bluetooth/DesktopBluetoothDevice';
 
 export type StorageAction = NonNullable<PreloadStoreAction>;
 export type StorageLoadAction = Extract<StorageAction, { type: typeof STORAGE.LOAD }>;
@@ -102,7 +102,7 @@ const removeCoinjoinRelatedSetting = (state: AppState) => {
         'suiteSettings',
         {
             settings,
-            flags: state.suite.flags,
+            flags: state.flags,
             evmSettings: state.suite.evmSettings,
             seenDisconnectNotificationForDeviceIds:
                 state.suite.seenDisconnectNotificationForDeviceIds,
@@ -225,6 +225,12 @@ export const removeAccountHistoricRates = (accountKey: string) => {
     return db.removeItemByPK('historicRates', accountKey);
 };
 
+export const removeAccountPhishing = (accountKey: AccountKey) => {
+    if (!db.isAccessible()) return;
+
+    return db.removeItemByPK('phishing', accountKey);
+};
+
 export const removeAccountWithDependencies = (getState: GetState) => (account: Account) =>
     Promise.all([
         ...FormDraftPrefixKeyValues.map(prefix => removeAccountFormDraft(prefix, account.key)),
@@ -234,6 +240,7 @@ export const removeAccountWithDependencies = (getState: GetState) => (account: A
         removeCoinjoinAccount(account.key, getState()),
         removeAccount(account),
         removeAccountHistoricRates(account.key),
+        removeAccountPhishing(account.key),
     ]);
 
 export const forgetDevice = (device: TrezorDevice) => (_: Dispatch, getState: GetState) => {
@@ -296,13 +303,20 @@ export const saveAccountHistoricRates =
 export const saveAccountTransactions =
     (account: Account) => (_dispatch: Dispatch, getState: GetState) => {
         if (!db.isAccessible()) return Promise.resolve();
-        const allTxs = getState().wallet.transactions.transactions;
-        const accTxs = allTxs[account.key] || [];
+        const { transactions, phishing } = getState().wallet.transactions;
+        const accTxs = transactions[account.key] || [];
 
         // wrap txs and add its order inside the array
         const orderedTxs = accTxs.map((tx, order) => ({ tx, order })).filter(({ tx }) => !!tx);
+        const transactionsPromise = db.addItems('txs', orderedTxs, true);
 
-        return db.addItems('txs', orderedTxs, true);
+        const phishingList = phishing[account.key] ?? [];
+        const phishingPromise =
+            phishingList.length > 0
+                ? db.addItem('phishing', phishingList, account.key, true)
+                : db.removeItemByPK('phishing', account.key);
+
+        return Promise.all([transactionsPromise, phishingPromise]);
     };
 
 export const rememberDevice =
@@ -377,7 +391,7 @@ export const saveSuiteSettings =
     () =>
     (_dispatch: Dispatch, getState: GetState): Promise<void> => {
         if (!db.isAccessible()) return Promise.resolve();
-        const { suite } = getState();
+        const { suite, flags } = getState();
 
         const result = db.addItem(
             'suiteSettings',
@@ -389,7 +403,7 @@ export const saveSuiteSettings =
                         e => e !== 'password-manager',
                     ),
                 },
-                flags: suite.flags,
+                flags,
                 evmSettings: suite.evmSettings,
                 seenDisconnectNotificationForDeviceIds:
                     suite.seenDisconnectNotificationForDeviceIds,

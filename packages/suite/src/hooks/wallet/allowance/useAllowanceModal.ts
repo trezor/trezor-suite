@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { CryptoId, DexApprovalType } from 'invity-api';
+import { type CryptoId, type DexApprovalType } from 'invity-api';
 
 import { parseCryptoId } from '@suite-common/trading';
-import { Account, AllowanceType } from '@suite-common/wallet-types';
+import { type Account, type AllowanceType } from '@suite-common/wallet-types';
 import { asAmountSubunit, findToken, getAllowanceAmount } from '@suite-common/wallet-utils';
 import { useCurrentRef } from '@trezor/react-utils';
 import { BigNumber } from '@trezor/utils';

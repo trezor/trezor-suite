@@ -5,7 +5,7 @@ import { asTypedDesktopAnalytics, events } from '@suite/analytics';
 import { metadataLabelingActions, selectMetadata } from '@suite/metadata';
 import { closeModal, openDeferredModal, preserveModal } from '@suite/modal';
 import { selectSelectedDevice } from '@suite-common/device';
-import { MetadataAddPayload } from '@suite-common/metadata-types';
+import { type MetadataAddPayload } from '@suite-common/metadata-types';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import { createThunk } from '@suite-common/redux-utils';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
@@ -21,13 +21,13 @@ import {
     signTransactionThunk,
 } from '@suite-common/wallet-core';
 import {
-    Account,
-    FormState,
-    GeneralPrecomposedTransactionFinal,
-    PrecomposedTransactionFinalBumpFeeRbf,
+    type Account,
+    type FormState,
+    type GeneralPrecomposedTransactionFinal,
+    type PrecomposedTransactionFinalBumpFeeRbf,
 } from '@suite-common/wallet-types';
 import { isCardanoTx, isRbfBumpFeeTransaction } from '@suite-common/wallet-utils';
-import { PROTO, StaticSessionId } from '@trezor/connect';
+import { type PROTO, type StaticSessionId } from '@trezor/connect';
 import { getSynchronize } from '@trezor/utils';
 
 import {
@@ -38,7 +38,7 @@ import {
 import { RBF_ERROR_ALREADY_MINED } from './replaceByFeeErrorThunk';
 import { MODULE_PREFIX } from './sendThunksConsts';
 import {
-    StateBeforePush,
+    type StateBeforePush,
     asStateBeforePush,
     moveLabelsForRbfThunk,
 } from '../../labels/moveLabelsForRbfThunk';

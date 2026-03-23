@@ -1,4 +1,4 @@
-import { KeysOfUnion, NarrowObjectWithKey } from '@trezor/type-utils';
+import { type KeysOfUnion, type NarrowObjectWithKey } from '@trezor/type-utils';
 
 export const typedObjectEntries = <T extends Record<string, unknown>>(
     obj: T,

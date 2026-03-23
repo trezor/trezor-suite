@@ -1,10 +1,10 @@
 import styled from 'styled-components';
 
 import {
-    FormCellProps,
+    type FormCellProps,
     Icon,
     Input,
-    InputProps,
+    type InputProps,
     Spinner,
     pickFormCellProps,
 } from '@trezor/components';

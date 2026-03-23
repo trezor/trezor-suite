@@ -1,12 +1,12 @@
-import { AcquiredDevice, TrezorDevice } from '@suite-common/suite-types';
+import { type AcquiredDevice, type TrezorDevice } from '@suite-common/suite-types';
 import {
     DEVICE,
-    Device,
-    DeviceEvent,
-    DeviceMode,
-    KnownDevice,
-    PROTO,
-    UnavailableCapability,
+    type Device,
+    type DeviceEvent,
+    type DeviceMode,
+    type KnownDevice,
+    type PROTO,
+    type UnavailableCapability,
 } from '@trezor/connect';
 import { DeviceModelInternal, getNarrowedDeviceModelInternal } from '@trezor/device-utils';
 import { exhaustive } from '@trezor/type-utils';

@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { H3 } from '@trezor/components';
 
 import { CoinjoinBalanceSection } from './CoinjoinBalanceSection';

@@ -39,6 +39,14 @@ const main: StorybookConfig = {
                     ),
                     '@trezor/address-validator':
                         require.resolve('./mocks/address-validator.mock.ts'),
+                    // @formatjs packages export ./polyfill.js but imports use ./polyfill (no extension)
+                    // Vite enforces strict exports resolution so we alias to the full paths
+                    '@formatjs/intl-getcanonicallocales/polyfill':
+                        require.resolve('@formatjs/intl-getcanonicallocales/polyfill.js'),
+                    '@formatjs/intl-locale/polyfill':
+                        require.resolve('@formatjs/intl-locale/polyfill.js'),
+                    '@formatjs/intl-listformat/polyfill':
+                        require.resolve('@formatjs/intl-listformat/polyfill.js'),
                 },
             },
             optimizeDeps: {

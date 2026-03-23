@@ -14,12 +14,12 @@ import {
 } from '@floating-ui/react';
 import styled from 'styled-components';
 
-import { Translation, TranslationKey } from '@suite/intl';
+import { Translation, type TranslationKey } from '@suite/intl';
 import { selectDeviceDefaultBackupType } from '@suite-common/device';
-import { BackupType } from '@suite-common/suite-types';
+import { type BackupType } from '@suite-common/suite-types';
 import { Banner, ElevationUp, Text, useElevation } from '@trezor/components';
 import {
-    Elevation,
+    type Elevation,
     borders,
     mapElevationToBackground,
     mapElevationToBorder,

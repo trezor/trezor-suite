@@ -1,29 +1,29 @@
-import { connectPopupActions } from '@suite-common/connect-popup';
-import { tokenDefinitionsActions } from '@suite-common/token-definitions/src/tokenDefinitionsActions';
+import { type connectPopupActions } from '@suite-common/connect-popup';
+import { type tokenDefinitionsActions } from '@suite-common/token-definitions/src/tokenDefinitionsActions';
 import {
-    tradingActions,
-    tradingBuyActions,
-    tradingExchangeActions,
-    tradingSellActions,
+    type tradingActions,
+    type tradingBuyActions,
+    type tradingExchangeActions,
+    type tradingSellActions,
 } from '@suite-common/trading';
 import {
-    FormDraftAction,
-    WalletSettingsAction,
-    accountsActions,
-    blockchainActions,
-    discoveryActions,
-    explorerActions,
-    sendFormActions,
-    stakeActions,
+    type FormDraftAction,
+    type WalletSettingsAction,
+    type accountsActions,
+    type blockchainActions,
+    type discoveryActions,
+    type explorerActions,
+    type sendFormActions,
+    type stakeActions,
 } from '@suite-common/wallet-core';
 
-import { CardanoStakingAction } from 'src/actions/wallet/cardanoStakingActions';
-import { CoinjoinAccountAction } from 'src/actions/wallet/coinjoinAccountActions';
-import { CoinjoinClientAction } from 'src/actions/wallet/coinjoinClientActions';
-import { GraphAction } from 'src/actions/wallet/graphActions';
-import { ReceiveAction } from 'src/actions/wallet/receiveActions';
-import { SignVerifyAction } from 'src/actions/wallet/signVerifyActions';
-import { accountSearchActions } from 'src/reducers/wallet/accountSearchReducer';
+import { type CardanoStakingAction } from 'src/actions/wallet/cardanoStakingActions';
+import { type CoinjoinAccountAction } from 'src/actions/wallet/coinjoinAccountActions';
+import { type CoinjoinClientAction } from 'src/actions/wallet/coinjoinClientActions';
+import { type GraphAction } from 'src/actions/wallet/graphActions';
+import { type ReceiveAction } from 'src/actions/wallet/receiveActions';
+import { type SignVerifyAction } from 'src/actions/wallet/signVerifyActions';
+import { type accountSearchActions } from 'src/reducers/wallet/accountSearchReducer';
 
 // reexport
 export type { CustomBackend } from './backend';
@@ -46,7 +46,7 @@ export type {
     ReceiveInfo,
 } from '@suite-common/wallet-types';
 
-export type { WalletParams } from 'src/utils/suite/router';
+export type { WalletParams } from '@suite/router';
 export type AccountItemType = 'coin' | 'tokens' | 'staking';
 
 /*

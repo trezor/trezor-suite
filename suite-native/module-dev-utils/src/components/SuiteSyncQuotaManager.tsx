@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import {
     enforceQuotaManagerUpdated,
-    eraseFetchedDataDebug,
+    eraseFetchedData,
     selectEnforceQuotaManager,
     selectOwnersAllowance,
     selectQuotaManagerBaseUrl,
@@ -23,7 +23,7 @@ export const SuiteSyncQuotaManager = () => {
     const ownersAllowance = useSelector(selectOwnersAllowance);
     const enforceQuotaManager = useSelector(selectEnforceQuotaManager);
 
-    const onEraseFetchedData = () => dispatch(eraseFetchedDataDebug());
+    const onEraseFetchedData = () => dispatch(eraseFetchedData());
 
     const onToggleEnforceQuotaManager = () =>
         dispatch(

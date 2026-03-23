@@ -4,24 +4,24 @@ import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { AccountType, Network } from '@suite-common/wallet-config';
+import { AccountTransactionBaseAnchor } from '@suite/router';
+import { type AccountType, type Network } from '@suite-common/wallet-config';
 import {
     createTargets,
     selectIsPhishingTransaction,
     useDisplayBaseCurrency,
 } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { formatNetworkAmount, isTxFeePaid } from '@suite-common/wallet-utils';
 import { Button, Link, Row, Tooltip } from '@trezor/components';
 import { HELP_CENTER_REPLACE_BY_FEE_ETHEREUM } from '@trezor/urls';
 
 import { OutlineHighlight } from 'src/components/OutlineHighlight';
-import { AccountTransactionBaseAnchor } from 'src/constants/suite/anchors';
 import { SUBPAGE_NAV_HEIGHT } from 'src/constants/suite/layout';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { WalletAccountTransaction } from 'src/types/wallet';
+import { type WalletAccountTransaction } from 'src/types/wallet';
 
 import { TransactionHeading } from './TransactionHeading';
 import { TransactionLayout } from './TransactionLayout';

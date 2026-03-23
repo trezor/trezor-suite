@@ -2,8 +2,8 @@ import React from 'react';
 
 import type { ExchangeTrade, SellFiatTrade } from 'invity-api';
 
-import { AccountKey } from '@suite-common/wallet-types';
-import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { type AccountKey } from '@suite-common/wallet-types';
+import { renderWithStoreProvider } from '@suite-native/test-utils';
 import {
     exchangeMercuryo,
     exchangeQuotes,
@@ -26,7 +26,7 @@ describe('ProviderReceiveAddress', () => {
         destinationAddress: '1BvBMSEYstWetqTFn5Au4m4GFg7xJaNVN2', // Add destination address
     };
 
-    const renderProviderReceiveAddress = async (
+    const renderProviderReceiveAddress = (
         trade: ExchangeTrade | SellFiatTrade,
         tradeType: 'exchange' | 'sell' = 'exchange',
         accountKey: AccountKey = 'btc-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
@@ -48,7 +48,7 @@ describe('ProviderReceiveAddress', () => {
             walletState.trading.sell.tradingAccountKey = accountKey;
         }
 
-        return await renderWithStoreProviderAsync(<ProviderReceiveAddress trade={trade} />, {
+        return renderWithStoreProvider(<ProviderReceiveAddress trade={trade} />, {
             preloadedState: { wallet: walletState },
         });
     };
@@ -57,8 +57,8 @@ describe('ProviderReceiveAddress', () => {
         jest.clearAllMocks();
     });
 
-    it('should display provider name and receive address for exchange trade', async () => {
-        const { getByText } = await renderProviderReceiveAddress(mockExchangeTrade, 'exchange');
+    it('should display provider name and receive address for exchange trade', () => {
+        const { getByText } = renderProviderReceiveAddress(mockExchangeTrade, 'exchange');
 
         // User should see the provider name in the label
         expect(getByText("Mercuryo's receive address")).toBeTruthy();
@@ -66,8 +66,8 @@ describe('ProviderReceiveAddress', () => {
         expect(getByText('1A1z P1eP 5QGe fi2D MPTf TL5S Lmv7 Divf Na')).toBeTruthy();
     });
 
-    it('should display provider name and destination address for sell fiat trade', async () => {
-        const { getByText } = await renderProviderReceiveAddress(mockSellFiatTrade, 'sell');
+    it('should display provider name and destination address for sell fiat trade', () => {
+        const { getByText } = renderProviderReceiveAddress(mockSellFiatTrade, 'sell');
 
         // User should see the provider name in the label
         expect(getByText("Banxa's receive address")).toBeTruthy();
@@ -75,12 +75,12 @@ describe('ProviderReceiveAddress', () => {
         expect(getByText('1BvB MSEY stWe tqTF n5Au 4m4G Fg7x JaNV N2')).toBeTruthy();
     });
 
-    it('should show fallback text when provider info is not available', async () => {
+    it('should show fallback text when provider info is not available', () => {
         const walletState = getWalletState({ tradeType: 'exchange' });
         // Don't set provider info to simulate missing provider
         walletState.trading.exchange.exchangeInfo!.providerInfos = {};
 
-        const { queryByText } = await renderWithStoreProviderAsync(
+        const { queryByText } = renderWithStoreProvider(
             <ProviderReceiveAddress trade={mockExchangeTrade} />,
             { preloadedState: { wallet: walletState } },
         );
@@ -89,12 +89,12 @@ describe('ProviderReceiveAddress', () => {
         expect(queryByText("Provider's receive address")).toBeFalsy();
     });
 
-    it('should show fallback text when provider company name is not available', async () => {
+    it('should show fallback text when provider company name is not available', () => {
         const walletState = getWalletState({ tradeType: 'exchange' });
         // Don't set provider info to simulate missing provider
         walletState.trading.exchange.exchangeInfo!.providerInfos = {};
 
-        const { queryByText } = await renderWithStoreProviderAsync(
+        const { queryByText } = renderWithStoreProvider(
             <ProviderReceiveAddress trade={mockExchangeTrade} />,
             { preloadedState: { wallet: walletState } },
         );
@@ -103,26 +103,26 @@ describe('ProviderReceiveAddress', () => {
         expect(queryByText("Provider's receive address")).toBeFalsy();
     });
 
-    it('should not render anything when receive address is missing for exchange trade', async () => {
+    it('should not render anything when receive address is missing for exchange trade', () => {
         const tradeWithoutAddress = { ...mockExchangeTrade, sendAddress: undefined };
 
-        const { queryByText } = await renderProviderReceiveAddress(tradeWithoutAddress, 'exchange');
+        const { queryByText } = renderProviderReceiveAddress(tradeWithoutAddress, 'exchange');
 
         // User should not see any address information when address is missing
         expect(queryByText("Mercuryo's receive address")).toBeFalsy();
     });
 
-    it('should not render anything when destination address is missing for sell fiat trade', async () => {
+    it('should not render anything when destination address is missing for sell fiat trade', () => {
         const tradeWithoutAddress = { ...mockSellFiatTrade, destinationAddress: undefined };
 
-        const { queryByText } = await renderProviderReceiveAddress(tradeWithoutAddress, 'sell');
+        const { queryByText } = renderProviderReceiveAddress(tradeWithoutAddress, 'sell');
 
         // User should not see any address information when address is missing
         expect(queryByText("Banxa's receive address")).toBeFalsy();
     });
 
-    it('should display solana address as-is without splitting', async () => {
-        const { getByText } = await renderProviderReceiveAddress(
+    it('should display solana address as-is without splitting', () => {
+        const { getByText } = renderProviderReceiveAddress(
             mockExchangeTrade,
             'exchange',
             'sol-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
@@ -132,8 +132,8 @@ describe('ProviderReceiveAddress', () => {
         expect(getByText('1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa')).toBeTruthy();
     });
 
-    it('should display ethereum address with chunking for non-solana networks', async () => {
-        const { getByText } = await renderProviderReceiveAddress(
+    it('should display ethereum address with chunking for non-solana networks', () => {
+        const { getByText } = renderProviderReceiveAddress(
             mockExchangeTrade,
             'exchange',
             'eth-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
@@ -143,8 +143,8 @@ describe('ProviderReceiveAddress', () => {
         expect(getByText('1A1z P1eP 5QGe fi2D MPTf TL5S Lmv7 Divf Na')).toBeTruthy();
     });
 
-    it('should display bitcoin address with chunking for non-solana networks', async () => {
-        const { getByText } = await renderProviderReceiveAddress(
+    it('should display bitcoin address with chunking for non-solana networks', () => {
+        const { getByText } = renderProviderReceiveAddress(
             mockExchangeTrade,
             'exchange',
             'btc-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
@@ -154,13 +154,13 @@ describe('ProviderReceiveAddress', () => {
         expect(getByText('1A1z P1eP 5QGe fi2D MPTf TL5S Lmv7 Divf Na')).toBeTruthy();
     });
 
-    it('should handle solana network type correctly', async () => {
+    it('should handle solana network type correctly', () => {
         const solanaTrade = {
             ...mockExchangeTrade,
             sendAddress: '9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM', // Real Solana address
         };
 
-        const { getByText } = await renderProviderReceiveAddress(
+        const { getByText } = renderProviderReceiveAddress(
             solanaTrade,
             'exchange',
             'sol-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
@@ -170,8 +170,8 @@ describe('ProviderReceiveAddress', () => {
         expect(getByText('9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM')).toBeTruthy();
     });
 
-    it('should handle undefined network symbol gracefully', async () => {
-        const { queryByText } = await renderProviderReceiveAddress(
+    it('should handle undefined network symbol gracefully', () => {
+        const { queryByText } = renderProviderReceiveAddress(
             mockExchangeTrade,
             'exchange',
             'unknown-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`

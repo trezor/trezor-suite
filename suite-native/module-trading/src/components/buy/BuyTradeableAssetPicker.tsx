@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { TextInput } from 'react-native';
+import { type TextInput } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { HStack } from '@suite-native/atoms';
 import { selectBuyTradeableAssets } from '@suite-native/trading-state';
-import { TradeableAsset } from '@suite-native/trading-types';
+import { type TradeableAsset } from '@suite-native/trading-types';
 
 import { BuyCryptoAmountInput } from './BuyCryptoAmountInput';
 import { BuyTradeableAssetsSheet } from './BuyTradeableAssetsSheet';

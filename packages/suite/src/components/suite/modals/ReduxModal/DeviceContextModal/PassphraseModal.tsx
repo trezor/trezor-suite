@@ -1,7 +1,8 @@
 import { useCallback } from 'react';
 
+import { goto } from '@suite/router';
 import { selectHasDevicePassphraseEntryCapability } from '@suite-common/device';
-import { TrezorDevice } from '@suite-common/suite-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import {
     cancelDiscoveryThunk,
     selectDiscoveryByDevicePath,
@@ -10,7 +11,6 @@ import {
 } from '@suite-common/wallet-core';
 import { UI_REQUEST } from '@trezor/connect';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { PassphraseWalletExistsFlow } from './PassphraseWalletExistsFlow';
@@ -45,7 +45,7 @@ export const PassphraseModal = ({ device }: { device: TrezorDevice }) => {
     const onBackToInitial = () => {
         dispatch(cancelDiscoveryThunk(device));
         dispatch({ type: UI_REQUEST.CLOSE_UI_WINDOW });
-        dispatch(goto('suite-switch-device', { params: { cancelable: true } }));
+        dispatch(goto({ routeName: 'suite-switch-device', params: { cancelable: true } }));
     };
 
     const onCancel = () => {

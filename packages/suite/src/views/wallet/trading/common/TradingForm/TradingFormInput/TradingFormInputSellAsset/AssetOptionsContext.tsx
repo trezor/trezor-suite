@@ -1,6 +1,6 @@
-import { ReactNode, createContext, useContext, useMemo } from 'react';
+import { type ReactNode, createContext, useContext, useMemo } from 'react';
 
-import { CryptoId } from 'invity-api';
+import { type CryptoId } from 'invity-api';
 
 const AssetOptionsContext = createContext<{
     includedCryptoIds: Set<CryptoId>;

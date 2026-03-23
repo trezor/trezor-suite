@@ -1,4 +1,4 @@
-import { Placement } from '@floating-ui/react';
+import { type Placement } from '@floating-ui/react';
 
 export const POPOVER_PLACEMENT_POSITION = ['top', 'right', 'bottom', 'left', 'center'] as const;
 export type PopoverPlacementPosition = (typeof POPOVER_PLACEMENT_POSITION)[number];

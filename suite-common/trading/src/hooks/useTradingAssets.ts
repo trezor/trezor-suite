@@ -1,23 +1,30 @@
 import { useCallback } from 'react';
 
-import { CoinInfo, Coins, CryptoId, Platforms, PlatformsInfo } from 'invity-api';
+import {
+    type CoinInfo,
+    type Coins,
+    type CryptoId,
+    type Platforms,
+    type PlatformsInfo,
+} from 'invity-api';
 
 import {
-    Network,
-    NetworkConfigWithoutTestnets,
-    NetworkSymbol,
+    type Network,
+    type NetworkConfigWithoutTestnets,
+    type NetworkSymbol,
     getDisplaySymbol,
     getMainnets,
     getNetwork,
     isNetworkSymbol,
 } from '@suite-common/wallet-config';
 import addressValidator from '@trezor/address-validator';
-import { TokenInfo } from '@trezor/connect';
+import { type TokenInfo } from '@trezor/connect';
 
+import { TRADING_DEFAULT_CRYPTO_CURRENCY } from '../constants';
 import {
-    TradingAssetOption,
-    TradingAssetOptionNativeToken,
-    TradingAssetOptionWithContractAddress,
+    type TradingAssetOption,
+    type TradingAssetOptionNativeToken,
+    type TradingAssetOptionWithContractAddress,
 } from '../types';
 import {
     cryptoIdToNetwork,
@@ -27,7 +34,6 @@ import {
     testnetToProdCryptoId,
 } from '../utils';
 import { useCoinsAndPlatforms } from './useCoinsAndPlatforms';
-import { TRADING_DEFAULT_CRYPTO_CURRENCY } from '../constants';
 import {
     getTradingNativeCoinSymbolByCryptoId,
     getTradingPlatformsInfoByCryptoId,

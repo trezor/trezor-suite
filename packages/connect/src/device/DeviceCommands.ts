@@ -1,14 +1,14 @@
 // original file https://github.com/trezor/connect/blob/develop/src/js/device/DeviceCommands.js
 
 import { ERRORS } from '@trezor/connect-common/src/constants';
-import { MessagesSchema as Messages } from '@trezor/protobuf';
+import type { MessagesSchema as Messages } from '@trezor/protobuf';
 
 import { PROTO } from '../constants';
 import { getBech32Network, getSegwitNetwork } from '../data/coinInfo';
-import type { TypedCallProvider } from '../device/DeviceCurrentSession';
 import { resolveDescriptorForTaproot } from '../device/resolveDescriptorForTaproot';
 import type { HDNodeResponse } from '../types/api/getPublicKey';
 import type { BitcoinNetworkInfo, CoinInfo, Network } from '../types/coinInfo';
+import type { TypedCallProvider } from '../types/typed-call-provider';
 import * as hdnodeUtils from '../utils/hdnodeUtils';
 import { getScriptType, getSerializedPath, isTaprootPath } from '../utils/pathUtils';
 

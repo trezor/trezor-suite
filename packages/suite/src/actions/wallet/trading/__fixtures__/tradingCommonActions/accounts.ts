@@ -1,6 +1,6 @@
-import { AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
+import { type AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
 
-import { Account } from 'src/types/wallet';
+import { type Account } from 'src/types/wallet';
 
 export const BTC_ACCOUNT: Account = {
     networkType: 'bitcoin',

@@ -8,16 +8,16 @@ import { selectIsDeviceAuthorized } from '@suite-common/device';
 import { useSelectorDeepComparison } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
-import { OnSelectAccount } from '@suite-native/accounts';
+import { type OnSelectAccount } from '@suite-native/accounts';
 import { AnimatedCard } from '@suite-native/atoms';
 import { AccountsRediscoveryNeededWarning } from '@suite-native/discovery';
-import { FiveBinariesHomeBanner, useHandleEarnNavigation } from '@suite-native/module-earn';
+import { FiveBinariesHomeBanner } from '@suite-native/module-earn';
 import {
-    AppTabsParamList,
-    AppTabsRoutes,
-    RootStackParamList,
+    type AppTabsParamList,
+    type AppTabsRoutes,
+    type RootStackParamList,
     RootStackRoutes,
-    TabToStackCompositeNavigationProp,
+    type TabToStackCompositeNavigationProp,
 } from '@suite-native/navigation';
 
 import { selectDeviceNetworksWithAssets } from '../assetsSelectors';
@@ -33,8 +33,6 @@ type NavigationProp = TabToStackCompositeNavigationProp<
 
 export const Assets = () => {
     const navigation = useNavigation<NavigationProp>();
-
-    const { handleEarnNavigation } = useHandleEarnNavigation();
     const deviceNetworks = useSelectorDeepComparison(selectDeviceNetworksWithAssets);
 
     const hasDiscovery = useSelector(selectHasRunningDiscovery);
@@ -46,7 +44,9 @@ export const Assets = () => {
     const handleSelectAssetsAccount: OnSelectAccount = useCallback(
         ({ account, tokenAddress, isStaking }) => {
             if (isStaking) {
-                handleEarnNavigation(account.key);
+                navigation.navigate(RootStackRoutes.StakingDetail, {
+                    accountKey: account.key,
+                });
             } else {
                 navigation.navigate(RootStackRoutes.AccountDetail, {
                     accountKey: account.key,
@@ -56,7 +56,7 @@ export const Assets = () => {
             }
             setSelectedAssetSymbol(null);
         },
-        [handleEarnNavigation, navigation],
+        [navigation],
     );
 
     const handleCloseBottomSheet = useCallback(() => {

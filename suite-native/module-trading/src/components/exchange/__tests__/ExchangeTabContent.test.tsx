@@ -1,7 +1,7 @@
 import {
-    PreloadedState,
+    type PreloadedState,
     act,
-    renderWithStoreProviderAsync,
+    renderWithStoreProvider,
     screen,
     userEvent,
 } from '@suite-native/test-utils';
@@ -29,7 +29,7 @@ describe('ExchangeTab', () => {
     });
 
     const renderExchangeTab = (preloadedState?: PreloadedState) =>
-        renderWithStoreProviderAsync(<ExchangeTabContent />, { preloadedState });
+        renderWithStoreProvider(<ExchangeTabContent />, { preloadedState });
 
     const expectSkeleton = () => {
         expect(screen.getAllByTestId('BoxSkeleton').length).toBeGreaterThan(0);
@@ -44,50 +44,50 @@ describe('ExchangeTab', () => {
         expect(screen.getByText("It's not you, it's us.")).toBeOnTheScreen();
     };
 
-    it('should render Exchange skeleton when isLoading is true', async () => {
+    it('should render Exchange skeleton when isLoading is true', () => {
         mockUseTradingExchangeData.mockReturnValue({
             isLoading: true,
             lastLoadedTimestamp: 1,
             isFullyLoaded: false,
         });
 
-        await renderExchangeTab();
+        renderExchangeTab();
 
         expectSkeleton();
     });
 
-    it('should render Exchange skeleton when lastLoadedTimestamp is 0', async () => {
+    it('should render Exchange skeleton when lastLoadedTimestamp is 0', () => {
         mockUseTradingExchangeData.mockReturnValue({
             isLoading: false,
             lastLoadedTimestamp: 0,
             isFullyLoaded: false,
         });
 
-        await renderExchangeTab();
+        renderExchangeTab();
 
         expectSkeleton();
     });
 
-    it('should render Exchange form when isLoading is false, lastLoadedTimestamp is greater than 0 and isFullyLoaded true', async () => {
+    it('should render Exchange form when isLoading is false, lastLoadedTimestamp is greater than 0 and isFullyLoaded true', () => {
         mockUseTradingExchangeData.mockReturnValue({
             isLoading: false,
             lastLoadedTimestamp: 1,
             isFullyLoaded: true,
         });
 
-        await renderExchangeTab();
+        renderExchangeTab();
 
         expectExchangeForm();
     });
 
-    it('should render server error info when isLoading is false, lastLoadedTimestamp is greater than 0 and isFullyLoaded false', async () => {
+    it('should render server error info when isLoading is false, lastLoadedTimestamp is greater than 0 and isFullyLoaded false', () => {
         mockUseTradingExchangeData.mockReturnValue({
             isLoading: false,
             lastLoadedTimestamp: 1,
             isFullyLoaded: false,
         });
 
-        await renderExchangeTab();
+        renderExchangeTab();
 
         expectServerOffline();
     });
@@ -105,7 +105,7 @@ describe('ExchangeTab', () => {
                 isFullyLoaded: true,
             });
 
-        const { getByText } = await renderExchangeTab();
+        const { getByText } = renderExchangeTab();
 
         const reloadButton = getByText('Try again');
 

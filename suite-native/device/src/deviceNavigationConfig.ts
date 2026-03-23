@@ -19,9 +19,3 @@ export const DEVICE_CONNECTION_BLACKLISTED_ROUTES = [
     DeviceOnboardingStackRoutes.SuspiciousDevice,
     ...SEND_STACK_ROUTES,
 ];
-
-export const buildDisconnectionBlacklist = (isDeviceRemembered: boolean) => [
-    ...DEVICE_DISCONNECTION_BLACKLISTED_ROUTES,
-    // Add SendStack only if device is remembered
-    ...(isDeviceRemembered ? SEND_STACK_ROUTES : []),
-];

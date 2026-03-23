@@ -10,11 +10,12 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "lint:js:fix": "yarn lint:js --fix",
         "type-check": "yarn g:tsc --build",
-        "test:unit": "yarn g:jest --coverage",
+        "test:unit": "yarn g:jest",
+        "test:unit:coverage": "yarn g:jest --coverage",
         "test:unit:watch": "yarn g:jest --watch"
     },
     "dependencies": {
-        "@react-navigation/native": "7.1.26",
+        "@react-navigation/native": "7.1.28",
         "@reduxjs/toolkit": "2.11.2",
         "@suite-common/trading": "workspace:*",
         "@suite-common/validators": "workspace:*",
@@ -29,12 +30,12 @@
         "@suite-native/trading-consts": "workspace:*",
         "@suite-native/trading-state": "workspace:*",
         "@trezor/styles": "workspace:*",
-        "expo-localization": "~17.0.8",
-        "react": "19.1.0",
-        "react-native": "0.81.5",
-        "react-native-reanimated": "~4.1.5",
+        "expo-localization": "~55.0.8",
+        "react": "19.2.4",
+        "react-native": "0.83.2",
+        "react-native-reanimated": "~4.2.1",
         "react-native-safe-area-context": "5.6.2",
-        "react-native-svg": "15.15.2",
+        "react-native-svg": "15.15.3",
         "react-redux": "9.2.0"
     },
     "devDependencies": {

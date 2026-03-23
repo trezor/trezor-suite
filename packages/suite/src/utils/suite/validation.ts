@@ -1,7 +1,7 @@
-import { TranslationFunction } from '@suite/intl';
-import { Formatter } from '@suite-common/formatters';
+import { type TranslationFunction } from '@suite/intl';
+import { type Formatter } from '@suite-common/formatters';
 import { getDisplaySymbol, isNetworkSymbol } from '@suite-common/wallet-config';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import {
     fromBaseCurrencyToCryptoUnit,
     getAmountValidationResult,
@@ -101,7 +101,7 @@ export const validateCryptoLimits =
             }
 
             if (amountLimits.maxCrypto && new BigNumber(value).gt(maxCrypto)) {
-                if (minCrypto.lte(new BigNumber(value))) {
+                if (minCrypto.gt(0) && minCrypto.lte(new BigNumber(value))) {
                     const missingAmount = new BigNumber(value).minus(maxCrypto);
 
                     return translationString(
@@ -170,7 +170,11 @@ export const validateFiatLimits =
             }
 
             if (amountLimits.maxFiat && new BigNumber(value).gt(amountLimits.maxFiat)) {
-                if (new BigNumber(amountLimits.minCrypto ?? '0').lte(new BigNumber(value))) {
+                if (
+                    amountLimits.minCrypto &&
+                    new BigNumber(amountLimits.minCrypto).gt(0) &&
+                    new BigNumber(amountLimits.minCrypto).lte(new BigNumber(cryptoAmount ?? '0'))
+                ) {
                     const missingAmount = new BigNumber(value).minus(amountLimits.maxFiat);
 
                     return translationString(

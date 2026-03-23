@@ -12,7 +12,11 @@ import {
     selectRawNetworkFeeInfo,
     useFormDraft,
 } from '@suite-common/wallet-core';
-import { Account, PrecomposedTransactionFinal, StakeFormState } from '@suite-common/wallet-types';
+import {
+    type Account,
+    type PrecomposedTransactionFinal,
+    type StakeFormState,
+} from '@suite-common/wallet-types';
 import {
     fromBaseCurrencyToCryptoUnit,
     getConvertedOrDefaultFeeInfo,
@@ -29,7 +33,7 @@ import { CRYPTO_INPUT, FIAT_INPUT, OUTPUT_AMOUNT } from 'src/types/earn/earnForm
 import type { AmountLimitProps } from 'src/utils/suite/validation';
 
 import { useCardanoStaking } from './useCardanoStaking';
-import { SupplyContextValues } from '../../components/earn/forms/SupplyFormContext';
+import { type SupplyContextValues } from '../../components/earn/forms/SupplyFormContext';
 import { useFees } from '../wallet/form/useFees';
 import { useStakeCompose } from '../wallet/form/useStakeCompose';
 

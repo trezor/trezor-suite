@@ -3,12 +3,13 @@ import { useDispatch } from 'react-redux';
 
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import { AssetFiatBalance } from '@suite-common/assets';
+import { goto } from '@suite/router';
+import { type AssetFiatBalance } from '@suite-common/assets';
 import { selectCoinDefinitions } from '@suite-common/token-definitions';
-import { Network, NetworkSymbol } from '@suite-common/wallet-config';
+import { type Network, type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectAnyAccountIsStakingActive, useDisplayBaseCurrency } from '@suite-common/wallet-core';
-import { Account, RatesByKey } from '@suite-common/wallet-types';
-import { AmountUnit } from '@suite-common/wallet-utils';
+import { type Account, type RatesByKey } from '@suite-common/wallet-types';
+import { type AmountUnit } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import {
     Card,
@@ -20,9 +21,8 @@ import {
     SkeletonRectangle,
     Text,
 } from '@trezor/components';
-import { TokenInfo } from '@trezor/connect';
+import { type TokenInfo } from '@trezor/connect';
 
-import { goto } from 'src/actions/suite/routerActions';
 import {
     AmountUnitSwitchWrapper,
     CoinBalance,
@@ -35,7 +35,7 @@ import { useAnalytics } from 'src/support/useAnalytics';
 
 import { AssetCardInfo, AssetCardInfoSkeleton } from './AssetCardInfo';
 import { AssetCardTokensAndStakingInfo } from './AssetCardTokensAndStakingInfo';
-import { TradingButton } from '../TradingButton';
+import { AssetActionButton } from '../AssetActionButton';
 import { handleTokensAndStakingData } from '../assetsViewUtils';
 
 type AmountComponentProps = {
@@ -103,7 +103,8 @@ export const AssetCard = ({
 
     const handleCardClick = () => {
         dispatch(
-            goto('wallet-index', {
+            goto({
+                routeName: 'wallet-index',
                 params: {
                     symbol,
                     accountIndex: 0,
@@ -208,24 +209,24 @@ export const AssetCard = ({
 
                             <Row gap={8}>
                                 {isStakeNetwork && (
-                                    <TradingButton
+                                    <AssetActionButton
                                         symbol={symbol}
                                         data-testid={`@dashboard/asset/${symbol}/stake-button`}
                                         onClick={onStakeButtonClick}
                                         routeName="wallet-staking"
                                     >
                                         <Translation id="TR_STAKE_STAKE" />
-                                    </TradingButton>
+                                    </AssetActionButton>
                                 )}
 
-                                <TradingButton
+                                <AssetActionButton
                                     symbol={symbol}
                                     routeName="wallet-trading-buy"
                                     data-testid={`@dashboard/asset/${symbol}/buy-button`}
                                     onClick={onBuyButtonClick}
                                 >
                                     <Translation id="TR_BUY_BUY" />
-                                </TradingButton>
+                                </AssetActionButton>
                             </Row>
                         </Row>
                     </Card>

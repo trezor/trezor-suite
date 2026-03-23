@@ -1,4 +1,4 @@
-import { UISize } from '../../../config/types';
+import { type UISize } from '../../../config/types';
 
 export const selectBarOrientations = ['horizontal', 'vertical', 'auto'] as const;
 export type SelectBarOrientation = (typeof selectBarOrientations)[number];

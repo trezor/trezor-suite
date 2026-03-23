@@ -1,9 +1,9 @@
-import { AmountSubunit } from '@suite-common/wallet-utils';
+import { type BigNumber } from '@trezor/utils';
 
 import { EVM_ABI } from '../../constants/evm';
 import { createEvmEncoder } from '../../encoder/evm';
 import { createPolicy } from '../../policy/createPolicy';
-import { EvmAddress } from '../../types/evm';
+import { type EvmAddress } from '../../types/evm';
 import { validateAddress } from '../../validation/evm/address';
 import { validateUint256 } from '../../validation/evm/uint256';
 import { createBuilder } from '../createBuilder';
@@ -18,7 +18,7 @@ const spenderParam = createParam<string, EvmAddress, ApproveContext>({
     policy: createPolicy({ ZERO_ADDRESS: 'warning', SELF_ADDRESS: 'warning' }),
 });
 
-const amountParam = createParam<AmountSubunit, bigint, ApproveContext>({
+const amountParam = createParam<BigNumber, bigint, ApproveContext>({
     validate: validateUint256,
 });
 

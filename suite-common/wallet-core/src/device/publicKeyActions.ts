@@ -1,9 +1,9 @@
-import { TrezorDevice } from '@suite-common/suite-types';
-import { Account } from '@suite-common/wallet-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
+import { type Account } from '@suite-common/wallet-types';
 import { getDerivationType } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
-import { SerializedError } from '@trezor/connect-common/src/constants/errors';
-import { Result } from '@trezor/type-utils';
+import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
+import { type Result } from '@trezor/type-utils';
 
 export const showXpubOnDevice = async (device: TrezorDevice, account: Account) => {
     const params = {

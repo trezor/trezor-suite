@@ -1,6 +1,6 @@
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import { Route } from '@suite-common/suite-types';
+import { type Route, goto } from '@suite/router';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
 import { getNetworkDisplaySymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
@@ -11,12 +11,11 @@ import { CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 import { exhaustive } from '@trezor/type-utils';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { DashboardSection } from 'src/components/dashboard';
 import { PriceTicker, TrendTicker } from 'src/components/suite';
 import { useDevice, useDispatch, useLayoutSize } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
-import { Account } from 'src/types/wallet';
+import { type Account } from 'src/types/wallet';
 
 type TradeBoxProps = {
     account: Account;
@@ -53,7 +52,7 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
                 ),
             );
 
-            dispatch(goto(gotoRouteName));
+            dispatch(goto({ routeName: gotoRouteName }));
 
             switch (type) {
                 case 'buy':

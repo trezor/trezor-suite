@@ -1,4 +1,4 @@
-import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { type PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils';
 import {
     btcAsset,
     ethAsset,
@@ -11,7 +11,7 @@ import {
 
 import {
     TradeableAssetAccountBalance,
-    TradeableAssetAccountBalanceProps,
+    type TradeableAssetAccountBalanceProps,
 } from '../TradeableAssetAccountBalance';
 
 describe('TradeableAssetAccountBalance', () => {
@@ -19,7 +19,7 @@ describe('TradeableAssetAccountBalance', () => {
         props: Partial<TradeableAssetAccountBalanceProps> = {},
         preloadedState: PreloadedState = {},
     ) =>
-        renderWithStoreProviderAsync(
+        renderWithStoreProvider(
             <TradeableAssetAccountBalance
                 asset={undefined}
                 account={undefined}
@@ -29,8 +29,8 @@ describe('TradeableAssetAccountBalance', () => {
             { preloadedState },
         );
 
-    it('should render nothing without asset selected', async () => {
-        const { toJSON } = await renderTradeableAssetAccountBalance({});
+    it('should render nothing without asset selected', () => {
+        const { toJSON } = renderTradeableAssetAccountBalance({});
 
         expect(toJSON()).toBeNull();
     });
@@ -42,23 +42,23 @@ describe('TradeableAssetAccountBalance', () => {
         [usdcAsset, 'USDC'],
     ])(
         'should render empty balance when account is not selected, case %#',
-        async (asset, expectedSymbol) => {
-            const { getByText } = await renderTradeableAssetAccountBalance({ asset });
+        (asset, expectedSymbol) => {
+            const { getByText } = renderTradeableAssetAccountBalance({ asset });
 
             expect(getByText('Balance:')).toBeDefined();
             expect(getByText(`- ${expectedSymbol}`)).toBeDefined();
         },
     );
 
-    it('should use correct TestIDs when no balance is displayed', async () => {
-        const { getByTestId } = await renderTradeableAssetAccountBalance({ asset: btcAsset });
+    it('should use correct TestIDs when no balance is displayed', () => {
+        const { getByTestId } = renderTradeableAssetAccountBalance({ asset: btcAsset });
 
         expect(getByTestId('TEST_ID')).toHaveTextContent('Balance:- BTC');
         expect(getByTestId('TEST_ID/no-value')).toHaveTextContent('- BTC');
     });
 
-    it('should render without TestID', async () => {
-        const { getByText } = await renderTradeableAssetAccountBalance({
+    it('should render without TestID', () => {
+        const { getByText } = renderTradeableAssetAccountBalance({
             asset: btcAsset,
             testID: undefined,
         });
@@ -78,8 +78,8 @@ describe('TradeableAssetAccountBalance', () => {
             [ethAsset, '0.00000081 ETH'],
             [usdcAsset, '1 USDC'],
             [usdtAsset, '0 USDT'],
-        ])('should display correct balance for asset, case %s', async (asset, expectedBalance) => {
-            const { getByText, getByTestId } = await renderTradeableAssetAccountBalance(
+        ])('should display correct balance for asset, case %s', (asset, expectedBalance) => {
+            const { getByText, getByTestId } = renderTradeableAssetAccountBalance(
                 {
                     asset,
                     account: getEthAccount(),

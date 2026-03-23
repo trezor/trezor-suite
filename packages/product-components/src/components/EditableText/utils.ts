@@ -1,4 +1,4 @@
-import React, { ReactNode, RefObject, useEffect, useState } from 'react';
+import React, { type ReactNode, type RefObject, useEffect, useState } from 'react';
 
 export const SAVED_STATUS_TIMEOUT = 3000;
 

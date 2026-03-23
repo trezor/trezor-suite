@@ -1,22 +1,22 @@
 import {
-    Evolu,
+    type Evolu,
     NonEmptyString1000,
-    QueryRows,
+    type QueryRows,
     createIdFromString,
     id,
     nullOr,
 } from '@evolu/common';
 
 import {
-    EntityListener,
-    SuiteSyncWallet,
-    WalletTable,
+    type EntityListener,
+    type SuiteSyncWallet,
+    type WalletTable,
     createSuiteSyncUpdateError,
 } from '@suite-common/suite-sync-storage';
 import { asWalletDescriptor } from '@suite-common/wallet-types';
 import { err, ok } from '@trezor/type-utils';
 
-import { UnwrapQuery } from '../evoluUtils';
+import { type UnwrapQuery } from '../evoluUtils';
 import { normalizeLabel } from './normalizeLabel';
 
 export const WalletLabelId = id('WalletLabelId');

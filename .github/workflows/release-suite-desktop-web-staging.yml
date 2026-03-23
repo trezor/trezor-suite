@@ -53,12 +53,12 @@ jobs:
             platform: win
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           lfs: true
           submodules: recursive
       - name: Install node and yarn
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version-file: ".nvmrc"
 
@@ -76,7 +76,7 @@ jobs:
           bash packages/suite-desktop-core/scripts/gnupg-sign.sh
           mv packages/suite-desktop/build-electron/* .
       - name: Upload suite-desktop production artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: suite-desktop-${{ matrix.platform }}
           path: |
@@ -93,17 +93,17 @@ jobs:
     needs: suite-desktop
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         # checkout is only needed for the version number for draft release
       - name: Download suite-desktop apps
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           pattern: suite-desktop-*
           merge-multiple: true
           path: ./
       - name: Generate GitHub App token
         id: trezor-bot-token
-        uses: actions/create-github-app-token@v1
+        uses: actions/create-github-app-token@v2
         with:
           app-id: ${{ secrets.TREZOR_BOT_APP_ID }}
           private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
@@ -127,14 +127,14 @@ jobs:
     needs: suite-desktop
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Configure aws credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::538326561891:role/gh_actions_suite_production
           aws-region: eu-central-1
       - name: Download suite-desktop apps
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           pattern: suite-desktop-*
           merge-multiple: true
@@ -171,7 +171,7 @@ jobs:
     runs-on: trezor-suite-release-runners
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           lfs: true
       - name: Configure aws credentials
@@ -180,7 +180,7 @@ jobs:
           role-to-assume: arn:aws:iam::538326561891:role/gh_actions_suite_production
           aws-region: eu-central-1
       - name: Setup node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version-file: ".nvmrc"
           cache: yarn
@@ -216,7 +216,7 @@ jobs:
       - suite-desktop-autoupdate-release
       - build-web
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 40
+    timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:
@@ -229,12 +229,12 @@ jobs:
             platform: win
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           lfs: true
           submodules: recursive
       - name: Install node and yarn
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version-file: ".nvmrc"
 
@@ -264,7 +264,7 @@ jobs:
           mv packages/suite-desktop/build-electron/latest*.yml .
 
       - name: Upload suite-desktop autoupdate version 0.xx.x artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: AUTOUPDATE-TEST-suite-desktop-${{steps.prepare-versions.outputs.VERSION0}}-${{ matrix.platform }}
           path: |
@@ -288,7 +288,7 @@ jobs:
           mv packages/suite-desktop/build-electron/latest*.yml .
 
       - name: Upload suite-desktop autoupdate version 3x.x.x artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: AUTOUPDATE-TEST-suite-desktop-${{steps.prepare-versions.outputs.VERSION3}}-${{ matrix.platform }}
           path: |
@@ -303,11 +303,11 @@ jobs:
     needs: create-test-releases
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Download suite-desktop apps
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
-          pattern: AUTOUPDATE-TEST-suite-desktop-35*
+          pattern: AUTOUPDATE-TEST-suite-desktop-3*-*
           merge-multiple: true
           path: /home/github-runner/files/trezor-suite-release/autoupdate-test/
 

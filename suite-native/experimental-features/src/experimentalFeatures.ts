@@ -1,6 +1,6 @@
-import { TxKeyPath } from '@suite-native/intl';
-import { NativeServices } from '@suite-native/services';
-import { ExperimentalFeature } from '@suite-native/settings';
+import { type TxKeyPath } from '@suite-native/intl';
+import { type NativeServices } from '@suite-native/services';
+import { type ExperimentalFeature } from '@suite-native/settings';
 
 export type ExperimentalFeatureConfig = {
     titleKey: TxKeyPath;

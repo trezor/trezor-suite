@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 
+import { goto, selectRouterParams } from '@suite/router';
 import { yup } from '@suite-common/validators';
-import { Account, GlobalSendReceiveType } from '@suite-common/wallet-types';
+import { type Account, type GlobalSendReceiveType } from '@suite-common/wallet-types';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { Route } from 'src/types/suite';
+import { type Route } from 'src/types/suite';
 
 import { useGoToWithAnalytics } from '../../useGoToWithAnalytics';
 
@@ -36,7 +36,7 @@ const getDashboardParamModal = (param: unknown): GlobalSendReceiveType => {
 export function useGlobalSendReceiveModal() {
     const dispatch = useDispatch();
     const goToWithAnalytics = useGoToWithAnalytics();
-    const routerParams = useSelector(state => state.router.params);
+    const routerParams = useSelector(selectRouterParams);
     const [activeModal, setActiveModal] = useState<GlobalSendReceiveType>(null);
 
     useEffect(() => {
@@ -45,14 +45,15 @@ export function useGlobalSendReceiveModal() {
 
     const openModal = (modal: NonNullable<GlobalSendReceiveType>) => {
         setActiveModal(modal);
-        dispatch(goto('suite-index', { params: { modal } }));
+        dispatch(goto({ routeName: 'suite-index', params: { modal } }));
     };
 
     const closeModal = (routeName?: Route['name'], account?: Account) => {
         setActiveModal(null);
 
         if (routeName && account) {
-            goToWithAnalytics(routeName, {
+            goToWithAnalytics({
+                routeName,
                 params: {
                     symbol: account.symbol,
                     accountIndex: account.index,
@@ -60,7 +61,7 @@ export function useGlobalSendReceiveModal() {
                 },
             });
         } else {
-            dispatch(goto('suite-index'));
+            dispatch(goto({ routeName: 'suite-index' }));
         }
     };
 

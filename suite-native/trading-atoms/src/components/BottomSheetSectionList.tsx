@@ -1,14 +1,14 @@
-import { ReactElement, ReactNode } from 'react';
+import { type ReactElement, type ReactNode } from 'react';
 import { Dimensions } from 'react-native';
 
-import { BottomSheetFlashList, BottomSheetFlashListProps } from '@suite-native/atoms';
-import { NativeStyle } from '@trezor/styles';
+import { BottomSheetFlashList, type BottomSheetFlashListProps } from '@suite-native/atoms';
+import { type NativeStyle } from '@trezor/styles';
 
 import {
-    ItemRenderConfig,
-    ListInternalItemShape,
-    SectionHeaderRenderConfig,
-    SectionListData,
+    type ItemRenderConfig,
+    type ListInternalItemShape,
+    type SectionHeaderRenderConfig,
+    type SectionListData,
     useSectionList,
 } from '../hooks/useSectionList';
 

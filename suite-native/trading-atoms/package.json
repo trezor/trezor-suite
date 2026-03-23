@@ -10,11 +10,11 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "lint:js:fix": "yarn lint:js --fix",
         "type-check": "yarn g:tsc --build",
-        "test:unit": "yarn g:jest --coverage",
+        "test:unit": "yarn g:jest",
         "test:unit:watch": "yarn g:jest --watch"
     },
     "dependencies": {
-        "@react-navigation/native": "7.1.26",
+        "@react-navigation/native": "7.1.28",
         "@reduxjs/toolkit": "2.11.2",
         "@suite-common/suite-utils": "workspace:*",
         "@suite-common/trading": "workspace:*",
@@ -26,10 +26,10 @@
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
         "@trezor/type-utils": "workspace:*",
-        "react": "19.1.0",
-        "react-native": "0.81.5",
+        "react": "19.2.4",
+        "react-native": "0.83.2",
         "react-native-gesture-handler": "2.30.0",
-        "react-native-reanimated": "~4.1.5",
+        "react-native-reanimated": "~4.2.1",
         "type-fest": "4.24.0"
     },
     "devDependencies": {
@@ -37,6 +37,6 @@
         "@suite-native/test-utils": "workspace:*",
         "@suite-native/trading-fixtures": "workspace:*",
         "@suite-native/trading-types": "workspace:*",
-        "@types/invity-api": "^1.1.14"
+        "@types/invity-api": "^1.1.15"
     }
 }

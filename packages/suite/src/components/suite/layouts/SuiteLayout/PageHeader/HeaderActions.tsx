@@ -1,4 +1,5 @@
 import { Translation } from '@suite/intl';
+import { selectRouterParams } from '@suite/router';
 import { Row } from '@trezor/components';
 import { ButtonGroup } from '@trezor/components/src/components/buttons/ButtonGroup/ButtonGroup';
 
@@ -7,7 +8,7 @@ import { HeaderActionButton } from 'src/components/suite/layouts/SuiteLayout/Pag
 import { TradeActions } from 'src/components/suite/layouts/SuiteLayout/PageHeader/TradeActions';
 import { useDevice, useSelector } from 'src/hooks/suite';
 import { selectFullSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { WalletParams } from 'src/types/wallet';
+import { type WalletParams } from 'src/types/wallet';
 
 import { HeaderDropdown } from './HeaderDropdown';
 import { useGoToWithAnalytics } from './useGoToWithAnalytics';
@@ -15,7 +16,7 @@ import { useGoToWithAnalytics } from './useGoToWithAnalytics';
 export const HeaderActions = () => {
     const goToWithAnalytics = useGoToWithAnalytics();
     const selectedAccount = useSelector(selectFullSelectedAccount);
-    const routerParams = useSelector(state => state.router.params) as WalletParams;
+    const routerParams = useSelector(selectRouterParams) as WalletParams;
     const { device } = useDevice();
 
     const accountType = selectedAccount.account?.accountType || routerParams?.accountType || '';
@@ -45,7 +46,10 @@ export const HeaderActions = () => {
                             key="wallet-send"
                             icon="arrowUp"
                             onClick={() => {
-                                goToWithAnalytics('wallet-send', { preserveParams: true });
+                                goToWithAnalytics({
+                                    routeName: 'wallet-send',
+                                    preserveParams: true,
+                                });
                             }}
                             data-testid="@wallet/menu/wallet-send"
                         >
@@ -57,7 +61,10 @@ export const HeaderActions = () => {
                         key="wallet-receive"
                         icon="arrowDown"
                         onClick={() => {
-                            goToWithAnalytics('wallet-receive', { preserveParams: true });
+                            goToWithAnalytics({
+                                routeName: 'wallet-receive',
+                                preserveParams: true,
+                            });
                         }}
                         data-testid="@wallet/menu/wallet-receive"
                     >

@@ -21,7 +21,7 @@
         "@crowdin/cli": "4.13.0",
         "@formatjs/cli": "6.12.2",
         "@trezor/type-utils": "workspace:^",
-        "react": "19.1.0",
+        "react": "19.2.4",
         "react-intl": "^8.1.3"
     }
 }

@@ -1,10 +1,9 @@
+import { goto } from '@suite/router';
 import { selectDevices } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import { setDeviceAutoEjectThunk } from '@suite-common/wallet-core';
 
 import * as storageActions from 'src/actions/suite/storageActions';
-
-import { goto } from './routerActions';
 
 const AUTO_EJECT_PREFIX = '@suite/autoEject';
 
@@ -31,7 +30,7 @@ export const setAutoEjectEnabledThunk = createThunk<void, SetAutoEjectEnabledThu
         const connectedDevices = currentDevices.filter(device => device.connected && device.state);
 
         if (connectedDevices.length === 0) {
-            dispatch(goto('suite-index'));
+            dispatch(goto({ routeName: 'suite-index' }));
         }
     },
 );

@@ -1,16 +1,30 @@
 import { D } from '@mobily/ts-belt';
 import {
-    Middleware as RTKMiddleware,
-    Reducer,
-    ReducersMapObject,
+    type Middleware as RTKMiddleware,
+    type Reducer,
+    type ReducersMapObject,
     configureStore,
+    isFulfilled,
+    isPending,
 } from '@reduxjs/toolkit';
-import { ThunkDispatch } from 'redux-thunk';
+import { type ThunkDispatch } from 'redux-thunk';
 
-import { AnyAction, ExtraDependenciesPartial, createMiddleware } from '@suite-common/redux-utils';
+import {
+    type AnyAction,
+    type ExtraDependenciesPartial,
+    createMiddleware,
+} from '@suite-common/redux-utils';
 import { mergeDeepObject } from '@trezor/utils';
 
 import { extraDependenciesCommonMock } from './extraDependenciesCommonMock';
+
+/*
+ * This function is useful, because a lot of test fixtures doesn't count with added thunk pending/fulfilled action that are now
+ * dispatched everytime. This will filter out these action so we don't need to fix fixtures everywhere.
+ * It should be used only in /packages/suite everything migrated to suite-common/ should be adjusted to work with new thunk API!!!
+ */
+export const filterThunkActionTypes = (actions: AnyAction[]) =>
+    actions.filter(action => !isPending(action) && !isFulfilled(action));
 
 export type MockStoreConfig<S = any, A extends AnyAction = AnyAction> = {
     middleware?: any[];
@@ -26,7 +40,12 @@ export const initPreloadedState = ({
 }: {
     rootReducer: Reducer<any, any, any>;
     partialState: any;
-}) => mergeDeepObject(partialState, rootReducer(undefined, { type: 'test-init' }));
+}) =>
+    mergeDeepObject.withOptions(
+        { mergeArrays: false },
+        rootReducer(undefined, { type: 'test-init' }),
+        partialState,
+    );
 
 /**
  * A mock store for testing Redux async action creators and middleware.

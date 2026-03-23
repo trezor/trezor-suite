@@ -4,11 +4,11 @@ import { events } from '@suite-native/analytics';
 import { Button, InlineAlertBox, PictogramTitleHeader, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
-    DemoAccountQuestionnaireStackParamList,
+    type DemoAccountQuestionnaireStackParamList,
     DemoAccountQuestionnaireStackRoutes,
     Screen,
     ScreenHeader,
-    StackNavigationProps,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
 

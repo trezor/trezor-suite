@@ -6,7 +6,7 @@ import { MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT, claim, unstake } from '@suite-commo
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { WALLET_SDK_SOURCE } from '@suite-common/wallet-constants';
 import { selectBlockchainState } from '@suite-common/wallet-core';
-import { Account, PrecomposedLevels } from '@suite-common/wallet-types';
+import { type Account, type PrecomposedLevels } from '@suite-common/wallet-types';
 import {
     formatNetworkAmount,
     getOutputTxAmount,

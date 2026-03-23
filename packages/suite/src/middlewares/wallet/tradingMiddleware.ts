@@ -1,5 +1,6 @@
-import { MiddlewareAPI } from 'redux';
+import { type MiddlewareAPI } from 'redux';
 
+import { routerLocationChange } from '@suite/router';
 import {
     invityAPI,
     selectTradingAccountAccordingActiveSection,
@@ -13,9 +14,8 @@ import {
     tradingSellActions,
 } from '@suite-common/trading';
 
-import { ROUTER } from 'src/actions/suite/constants';
 import { selectFullSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { Action, AppState, Dispatch } from 'src/types/suite';
+import { type Action, type AppState, type Dispatch } from 'src/types/suite';
 
 export const tradingMiddleware =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
@@ -28,7 +28,7 @@ export const tradingMiddleware =
         // get the new state after the action has been processed
         const nextState = api.getState();
 
-        const isRouteChange = action.type === ROUTER.LOCATION_CHANGE;
+        const isRouteChange = action.type === routerLocationChange.type;
         let activeSection = selectTradingActiveSection(state);
 
         if (isRouteChange) {

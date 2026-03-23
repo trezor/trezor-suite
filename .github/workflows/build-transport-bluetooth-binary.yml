@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           lfs: true
           submodules: true
@@ -34,7 +34,7 @@ jobs:
           docker rmi trezor-bluetooth-image
 
       - name: Upload binaries as artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: transport-bluetooth-binaries-${{ github.sha }}
           path: |
@@ -50,7 +50,7 @@ jobs:
 
       - name: Create pull request
         if: inputs.create-pull-request == true
-        uses: peter-evans/create-pull-request@v4
+        uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ steps.trezor-bot-token.outputs.token }}
           title: "chore(transport-bluetooth): update binaries"

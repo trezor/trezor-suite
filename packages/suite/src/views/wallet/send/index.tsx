@@ -1,9 +1,10 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { FormProvider } from 'react-hook-form';
 
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { selectRouteName } from '@suite/router';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { Banner, Column } from '@trezor/components';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
@@ -11,7 +12,7 @@ import { spacings, spacingsPx } from '@trezor/theme';
 
 import { WalletLayout } from 'src/components/wallet';
 import { useSelector } from 'src/hooks/suite';
-import { SendContext, UseSendFormProps, useSendForm } from 'src/hooks/wallet/useSendForm';
+import { SendContext, type UseSendFormProps, useSendForm } from 'src/hooks/wallet/useSendForm';
 import {
     selectRegisteredUtxosByAccountKey,
     selectTargetAnonymityByAccountKey,
@@ -120,7 +121,7 @@ const SendLoaded = ({ children, selectedAccount }: SendLoadedProps) => {
 
 const Send = ({ children }: SendProps) => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
-    const currentRoute = useSelector(state => state.router.route?.name);
+    const currentRoute = useSelector(selectRouteName);
 
     // alone selectedAccount.status is not enough, currently there is a race-condition that needs to be fixed in send form
     if (selectedAccount.status !== 'loaded' || currentRoute !== 'wallet-send') {

@@ -1,18 +1,32 @@
 import { selectTradingMaxSlippagePercentage } from '@suite-common/trading';
 import {
-    TestStore,
+    type TestStore,
+    act,
     initStore,
-    renderWithStoreProviderAsync,
+    renderWithStoreProvider,
     userEvent,
 } from '@suite-native/test-utils';
 
-import { MaxSlippageForm, MaxSlippageFormProps, SLIPPAGE_INPUT_TEST_ID } from '../MaxSlippageForm';
+import {
+    MaxSlippageForm,
+    type MaxSlippageFormProps,
+    SLIPPAGE_INPUT_TEST_ID,
+} from '../MaxSlippageForm';
 
 describe('MaxSlippageForm', () => {
-    const renderMaxSlippageForm = (props: Partial<MaxSlippageFormProps>, store: TestStore) =>
-        renderWithStoreProviderAsync(<MaxSlippageForm onSubmit={jest.fn()} {...props} />, {
+    const renderMaxSlippageForm = async (
+        props: Partial<MaxSlippageFormProps>,
+        store: TestStore,
+    ) => {
+        const ret = renderWithStoreProvider(<MaxSlippageForm onSubmit={jest.fn()} {...props} />, {
             store,
         });
+
+        // wait for validators to run
+        await act(() => Promise.resolve());
+
+        return ret;
+    };
 
     it('should render value based on store', async () => {
         const { store } = initStore();

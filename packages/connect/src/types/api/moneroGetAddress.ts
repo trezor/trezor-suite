@@ -1,4 +1,4 @@
-import { MoneroAddress, MoneroGetAddress as MoneroGetAddressParams } from './monero';
+import type { MoneroAddress, MoneroGetAddress as MoneroGetAddressParams } from './monero';
 import type { BundledParams, Params, Response } from '../params';
 
 export declare function moneroGetAddress(

@@ -2,9 +2,10 @@ import { ERRORS } from '@trezor/connect-common/src/constants';
 import { getSynchronize } from '@trezor/utils';
 
 import { parseManifest, parseVersion } from '../data/connectSettings';
-import { CallMethodPayload, createErrorMessage } from '../events';
-import { ConnectFactoryDependencies } from '../factory';
-import { ConnectSettings } from '../types';
+import type { CallMethodPayload } from '../events';
+import { createErrorMessage } from '../events';
+import type { ConnectFactoryDependencies } from '../factory';
+import type { ConnectSettings } from '../types';
 import type { UpdateConnectSettings } from '../types/api/updateConnectSettings';
 import { ConnectEmitter } from '../types/emitter';
 

@@ -6,7 +6,7 @@ import Animated, {
     withTiming,
 } from 'react-native-reanimated';
 
-import { ReviewOutputState } from '@suite-common/wallet-types';
+import { type ReviewOutputState } from '@suite-common/wallet-types';
 import { ENDLESS_ANIMATION_VALUE } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';

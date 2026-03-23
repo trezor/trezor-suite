@@ -15,13 +15,14 @@
         "dev:tailwind": "TAILWIND_MODE=watch yarn postcss css/styles.css -o style.css --watch",
         "prepublishOnly": "yarn build:all",
         "type-check": "yarn g:tsc --build tsconfig.json",
-        "postinstall": "yarn build:all"
+        "postinstall": "yarn build:all",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "peerDependencies": {
         "next": ">=9.5.3",
         "nextra": "^2.13.4",
-        "react": "19.1.0",
-        "react-dom": "19.1.0"
+        "react": "19.2.4",
+        "react-dom": "19.2.4"
     },
     "dependencies": {
         "@headlessui/react": "^2.2.2",
@@ -45,7 +46,7 @@
     "devDependencies": {
         "@types/flexsearch": "^0.7.3",
         "@types/git-url-parse": "^9.0.3",
-        "@types/react": "19.1.6",
+        "@types/react": "19.2.14",
         "concurrently": "^8.0.0",
         "next": "^15.5.10",
         "nextra": "^2.13.4",
@@ -53,8 +54,8 @@
         "postcss-cli": "^10.1.0",
         "postcss-import": "^15.1.0",
         "postcss-lightningcss": "^1.0.1",
-        "react": "19.1.0",
-        "react-dom": "19.1.0"
+        "react": "19.2.4",
+        "react-dom": "19.2.4"
     },
     "sideEffects": [
         "./src/polyfill.ts"

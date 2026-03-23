@@ -1,9 +1,9 @@
-import { CryptoId } from 'invity-api';
+import { type CryptoId } from 'invity-api';
 
-import { MinimalSellFormProps } from '@suite-common/trading';
-import { act, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
+import { type MinimalSellFormProps } from '@suite-common/trading';
+import { act, renderHookWithStoreProvider } from '@suite-native/test-utils';
 import { btcAsset, getWalletState } from '@suite-native/trading-fixtures';
-import { SellFormType } from '@suite-native/trading-types';
+import { type SellFormType } from '@suite-native/trading-types';
 
 import { useSellForm } from '../../../hooks/sell/useSellForm';
 import { tradingSellFormToTradingSellFormProps } from '../quotesUtils';
@@ -12,12 +12,12 @@ describe('quoteUtils', () => {
     let form: SellFormType;
 
     const renderUseTradingSellForm = () =>
-        renderHookWithStoreProviderAsync(() => useSellForm(), {
+        renderHookWithStoreProvider(() => useSellForm(), {
             preloadedState: { wallet: getWalletState({ tradeType: 'sell' }) },
         });
 
-    beforeEach(async () => {
-        const { result } = await renderUseTradingSellForm();
+    beforeEach(() => {
+        const { result } = renderUseTradingSellForm();
         form = result.current;
     });
 
@@ -63,7 +63,7 @@ describe('quoteUtils', () => {
                     {
                         amount: '0.1',
                         fiat: undefined,
-                        currency: { value: 'usd' }, // Assuming USD is the default fiat currency
+                        currency: { value: 'usd' },
                     },
                 ],
                 countrySelect: {

@@ -1,4 +1,4 @@
-import { JSX, useCallback, useEffect } from 'react';
+import { type JSX, useCallback, useEffect } from 'react';
 
 import { AppUpdateEventStatus, asTypedDesktopAnalytics, events } from '@suite/analytics';
 import { desktopApi } from '@trezor/suite-desktop-api';

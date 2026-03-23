@@ -1,7 +1,7 @@
-import { MiddlewareAPI } from 'redux';
+import { type MiddlewareAPI } from 'redux';
 
 import { init } from '../actions/trezorConnectActions';
-import { Action, AppState, Dispatch } from '../types';
+import { type Action, type AppState, type Dispatch } from '../types';
 import { SET_METHOD, SET_SCHEMA } from '../types/actions';
 
 export const trezorConnectMiddleware =

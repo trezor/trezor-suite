@@ -1,3 +1,4 @@
+export * from './currentsApi';
 export { BackendWebsocketServerMock } from './mocks/backendServer';
 export { DropboxMock } from './mocks/dropbox';
 export { GoogleMock } from './mocks/google';
@@ -6,5 +7,5 @@ export { GitHubProject } from './githubReporter/gitHubProject';
 export { IssueRequests } from './githubReporter/issueRequests';
 export { TestReportProviderBase, createTestAnnotation } from './githubReporter/annotationBase';
 export type { TestDetailsAnnotation, TestMetadataInput } from './githubReporter/types';
-export * from './githubReporter/types';
+export type * from './githubReporter/types';
 export * from './enums/testAnnotations';

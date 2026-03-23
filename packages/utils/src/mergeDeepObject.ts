@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 // code shamelessly stolen from https://github.com/voodoocreation/ts-deepmerge
 
-import { Keys } from '@trezor/type-utils';
+import { type Keys } from '@trezor/type-utils';
 
 type TIndexValue<T, K extends PropertyKey, D = never> = T extends any
     ? K extends keyof T

@@ -6,19 +6,20 @@
         "start": "expo start",
         "android": "expo start --android",
         "ios": "expo start --ios",
-        "web": "expo start --web"
+        "web": "expo start --web",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
         "@trezor/connect-mobile": "workspace:*",
-        "expo": "~54.0.30",
-        "expo-linking": "~8.0.11",
-        "expo-status-bar": "^2.0.0",
-        "react": "19.1.0",
-        "react-native": "0.81.5"
+        "expo": "~55.0.3",
+        "expo-linking": "~55.0.7",
+        "expo-status-bar": "~55.0.4",
+        "react": "19.2.4",
+        "react-native": "0.83.2"
     },
     "devDependencies": {
-        "@babel/core": "7.28.6",
-        "@types/react": "19.1.6",
+        "@babel/core": "7.29.0",
+        "@types/react": "19.2.14",
         "typescript": "5.8.3"
     },
     "private": true

@@ -1,12 +1,12 @@
 import {
-    NativeStyleObject,
+    type NativeStyleObject,
     mergeNativeStyleObjects,
     prepareNativeStyle,
     useNativeStyles,
 } from '@trezor/styles';
 import { isNotNullOrUndefined } from '@trezor/utils';
 
-import { Box, BoxProps } from './Box';
+import { Box, type BoxProps } from './Box';
 
 export type DividerProps = Omit<BoxProps, 'style'> & {
     style?: NativeStyleObject;

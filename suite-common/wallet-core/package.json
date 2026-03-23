@@ -8,7 +8,8 @@
     "scripts": {
         "test:unit": "yarn g:jest --coverage",
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build"
+        "type-check": "yarn g:tsc --build",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
@@ -28,6 +29,7 @@
         "@suite-common/thp": "workspace:*",
         "@suite-common/toast-notifications": "workspace:*",
         "@suite-common/token-definitions": "workspace:*",
+        "@suite-common/wallet-api": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-constants": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
@@ -42,9 +44,10 @@
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "date-fns": "^4.1.0",
-        "react": "19.1.0",
-        "react-hook-form": "^7.71.1",
+        "react": "19.2.4",
+        "react-hook-form": "^7.71.2",
         "react-redux": "^9.2.0",
-        "web3-utils": "^4.3.2"
+        "web3-utils": "^4.3.2",
+        "zod": "4.3.6"
     }
 }

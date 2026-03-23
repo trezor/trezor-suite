@@ -8,7 +8,8 @@ import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert, Type } from '@trezor/schema-utils';
 
 import { PROTO } from '../../../constants';
-import { AbstractMethod, MethodPermission, Payload } from '../../../core/AbstractMethod';
+import type { MethodMessage, MethodPermission } from '../../../core/AbstractMethod';
+import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import {
     type CardanoAuxiliaryDataSupplement,
@@ -25,10 +26,8 @@ import {
 } from '../cardanoAuxiliaryData';
 import { transformCertificate } from '../cardanoCertificate';
 import type { CertificateWithPoolOwnersAndRelays } from '../cardanoCertificate';
+import type { CollateralInputWithPath, InputWithPath, Path } from '../cardanoInputs';
 import {
-    CollateralInputWithPath,
-    InputWithPath,
-    Path,
     transformCollateralInput,
     transformInput,
     transformReferenceInput,
@@ -77,7 +76,7 @@ export default class CardanoSignTransaction extends AbstractMethod<
     'cardanoSignTransaction',
     CardanoSignTransactionParams
 > {
-    constructor(message: { id?: number; payload: Payload<'cardanoSignTransaction'> }) {
+    constructor(message: MethodMessage<'cardanoSignTransaction'>) {
         super(message);
         this.requiredDeviceCapabilities = ['Capability_Cardano'];
         this.firmwareRange = getFirmwareRange(

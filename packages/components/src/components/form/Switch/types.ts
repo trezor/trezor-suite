@@ -1,4 +1,4 @@
-import { UIAlignment, UISize } from '../../../config/types';
+import { type UIAlignment, type UISize } from '../../../config/types';
 
 export const switchSizes = ['medium', 'small'] as const;
 export type SwitchSize = Extract<UISize, (typeof switchSizes)[number]>;

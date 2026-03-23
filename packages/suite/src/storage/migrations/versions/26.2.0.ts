@@ -1,7 +1,7 @@
 import { createMigration } from '@suite/idb-migration-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 
-import { SuiteDBSchema } from 'src/storage/definitions';
+import { type SuiteDBSchema } from 'src/storage/definitions';
 
 import { updateAll } from '../utils';
 

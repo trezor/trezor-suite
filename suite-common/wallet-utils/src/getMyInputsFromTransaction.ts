@@ -1,5 +1,5 @@
-import { Account } from '@suite-common/wallet-types';
-import { AccountTransaction } from '@trezor/connect';
+import type { Account } from '@suite-common/wallet-types';
+import type { AccountTransaction } from '@trezor/connect';
 
 export type GetMyInputsFromTransactionParams = {
     account: Pick<Account, 'addresses'>;

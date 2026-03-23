@@ -2,15 +2,15 @@ import { useCallback, useMemo } from 'react';
 import { FlatList } from 'react-native-gesture-handler';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { TradingType } from '@suite-common/trading';
+import { type TradingType } from '@suite-common/trading';
 import { events } from '@suite-native/analytics';
 import { HStack, IconButton, useBottomSheetModal } from '@suite-native/atoms';
 import { FeatureFlag, selectIsFeatureFlagEnabled } from '@suite-native/feature-flags';
-import { IconName } from '@suite-native/icons';
+import { type IconName } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';
 import { useAnalytics } from '@suite-native/services';
 import {
-    TradingWithFeatureFlagsRootState,
+    type TradingWithFeatureFlagsRootState,
     selectActiveTradingType,
     tradingActions,
 } from '@suite-native/trading-state';

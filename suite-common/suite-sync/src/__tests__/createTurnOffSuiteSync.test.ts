@@ -3,7 +3,7 @@ import type { Dispatch } from '@reduxjs/toolkit';
 import { createMockDeps, mock } from '@suite-common/dependency-injection';
 import type { StaticSessionId } from '@trezor/connect';
 
-import { CreateTurnOffSuiteSyncDeps, createTurnOffSuiteSync } from '../createTurnOffSuiteSync';
+import { type CreateTurnOffSuiteSyncDeps, createTurnOffSuiteSync } from '../createTurnOffSuiteSync';
 import { clearAll } from '../data/suiteSyncDataReducer';
 import { updateSuiteSyncEnabled } from '../suiteSyncSlice';
 

@@ -3,19 +3,19 @@ import { RendererContext, ThemeContext } from 'react-fela';
 
 import { darken, lighten, transparentize } from 'polished';
 
-import { NativeTheme, Theme } from '@trezor/theme';
+import { type NativeTheme, type Theme } from '@trezor/theme';
 
 import { mediaQueries } from './mediaQueries';
 import { processNativeStyles, processStyles } from './processStyles';
 import {
-    ColorTransformFunction,
-    NativeStyle,
-    NativeStyleObject,
-    NativeStyleOrStylesParam,
-    NativeStyleUtils,
-    Style,
-    StyleOrStylesParam,
-    StyleUtils,
+    type ColorTransformFunction,
+    type NativeStyle,
+    type NativeStyleObject,
+    type NativeStyleOrStylesParam,
+    type NativeStyleUtils,
+    type Style,
+    type StyleOrStylesParam,
+    type StyleUtils,
 } from './types';
 import { useDirection } from './useDirection';
 import { getValueAndUnit, isDarkColor, multiply, negative, sum } from './utils';

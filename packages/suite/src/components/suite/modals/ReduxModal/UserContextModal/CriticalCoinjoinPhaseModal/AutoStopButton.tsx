@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { Checkbox, Text } from '@trezor/components';
 
 import { toggleAutostopCoinjoin } from 'src/actions/wallet/coinjoinAccountActions';

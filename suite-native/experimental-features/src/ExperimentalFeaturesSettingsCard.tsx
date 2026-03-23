@@ -1,4 +1,4 @@
-import { LayoutChangeEvent, View } from 'react-native';
+import { type LayoutChangeEvent, View } from 'react-native';
 import { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { useDispatch, useSelector } from 'react-redux';
 

@@ -1,6 +1,7 @@
 import { bech32 } from 'bech32';
 
-import { NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
+import { type CardanoPoolStats } from '@suite-common/wallet-api';
+import { type NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
 import {
     CARDANO_EVERSTAKE_STAKING_POOL,
     CARDANO_POOL_SATURATION_SAFE_THRESHOLD,
@@ -8,11 +9,10 @@ import {
     FIVE_BINARIES_POOLS,
 } from '@suite-common/wallet-constants';
 import {
-    Account,
-    CardanoPoolInfo,
-    StakeType,
-    SupportedCardanoNetworkSymbols,
-    WalletAccountTransaction,
+    type Account,
+    type StakeType,
+    type SupportedCardanoNetworkSymbols,
+    type WalletAccountTransaction,
     supportedCardanoNetworkSymbols,
 } from '@suite-common/wallet-types';
 import { PROTO } from '@trezor/connect';
@@ -58,7 +58,7 @@ const getAccountPoolId = (account?: Account) => {
 
 export const isCardanoStakedWithEverstake = (
     account: Account,
-    cardanoStakingPools: CardanoPoolInfo[],
+    cardanoStakingPools: CardanoPoolStats[],
 ) => {
     const accountPoolId = getAccountPoolId(account);
     if (!accountPoolId) return false;
@@ -70,7 +70,7 @@ export const isCardanoStakedWithEverstake = (
 
 export const isCardanoStakedOutsideEverstake = (
     account: Account,
-    cardanoStakingPools: CardanoPoolInfo[],
+    cardanoStakingPools: CardanoPoolStats[],
 ) => {
     const accountPoolId = getAccountPoolId(account);
     if (!accountPoolId) return false;
@@ -94,7 +94,7 @@ export const poolBech32ToHex = (poolId: string): string => {
     return Buffer.from(bytes).toString('hex');
 };
 
-export const selectBestCardanoPool = (pools?: CardanoPoolInfo[]) => {
+export const selectBestCardanoPool = (pools?: CardanoPoolStats[]) => {
     if (!pools || pools.length === 0) return CARDANO_EVERSTAKE_STAKING_POOL;
 
     // sort from highest saturation to lowest

@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { TrezorDevice } from '@suite-common/suite-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { HStack, Loader, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';

@@ -1,5 +1,5 @@
 import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
-import { PreloadedState, renderWithStoreProviderAsync, screen } from '@suite-native/test-utils';
+import { type PreloadedState, renderWithStoreProvider, screen } from '@suite-native/test-utils';
 
 import { TradingScreen } from '../TradingScreen';
 
@@ -91,8 +91,8 @@ const stateWithDisabledTrading = {
 describe('TradingScreen', () => {
     let unmount: (() => void) | undefined;
 
-    const renderTradingScreen = async (preloadedState?: PreloadedState) => {
-        const result = await renderWithStoreProviderAsync(<TradingScreen />, { preloadedState });
+    const renderTradingScreen = (preloadedState?: PreloadedState) => {
+        const result = renderWithStoreProvider(<TradingScreen />, { preloadedState });
 
         ({ unmount } = result);
 
@@ -110,14 +110,14 @@ describe('TradingScreen', () => {
         expect(screen.getByText('You pay')).toBeOnTheScreen();
     };
 
-    it('should render nothing when trading feature flag is not enabled', async () => {
-        const { toJSON } = await renderTradingScreen(stateWithDisabledTrading);
+    it('should render nothing when trading feature flag is not enabled', () => {
+        const { toJSON } = renderTradingScreen(stateWithDisabledTrading);
 
         expect(toJSON()).toBeNull();
     });
 
-    it('should render Buy form by default', async () => {
-        await renderTradingScreen(stateWithEnabledBuy);
+    it('should render Buy form by default', () => {
+        renderTradingScreen(stateWithEnabledBuy);
 
         expectBuyForm();
     });

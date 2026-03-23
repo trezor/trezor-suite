@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectBaseCurrency, selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
-import { TokenAddress } from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/wallet-types';
 import { getFiatRateKey, localizePercentage } from '@suite-common/wallet-utils';
 import { Icon } from '@trezor/components';
 import { spacingsPx, typography } from '@trezor/theme';

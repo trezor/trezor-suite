@@ -1,10 +1,9 @@
-import { Column, Image, ImageKey, InfoSegments, Row, Text } from '@trezor/components';
-import { DeviceModelInternal, models } from '@trezor/device-utils';
-
-import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
+import { selectFlags } from '@suite/flags';
+import { Column, Image, type ImageKey, InfoSegments, Row, Text } from '@trezor/components';
+import { type DeviceModelInternal, models } from '@trezor/device-utils';
 
 import { BluetoothDebugInfo } from './BluetoothDebugInfo';
-import { DesktopBluetoothDevice } from '../../../actions/bluetooth/DesktopBluetoothDevice';
+import { type DesktopBluetoothDevice } from '../../../actions/bluetooth/DesktopBluetoothDevice';
 import { useSelector } from '../../../hooks/suite';
 
 type BluetoothDeviceProps = {
@@ -36,7 +35,7 @@ export const BluetoothDeviceComponent = ({ device }: BluetoothDeviceProps) => {
     const color = getTHPVideoColor(device);
     const colorName = modelConfig.colors[color.toString()];
 
-    const { showBluetoothDebugInfo } = useSelector(selectSuiteFlags);
+    const { showBluetoothDebugInfo } = useSelector(selectFlags);
 
     return (
         <Row gap={12} alignItems="stretch">

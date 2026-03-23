@@ -1,9 +1,9 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import type { FiatRatesBySymbol } from '@trezor/connect';
-import { Branded } from '@trezor/type-utils';
+import { type Branded } from '@trezor/type-utils';
 
-import { TokenAddress } from './account';
+import { type TokenAddress } from './account';
 
 export interface TickerId {
     symbol: NetworkSymbol;

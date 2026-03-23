@@ -1,4 +1,4 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 import { isIOs } from '@trezor/env-utils';
 
@@ -14,6 +14,7 @@ export const FeatureFlag = {
     IsTradingResidenceCheckEnabled: 'isTradingResidenceCheckEnabled',
     IsTradingDebugEnabled: 'isTradingDebugEnabled',
     IsEarnEnabled: 'isEarnEnabled',
+    IsStablecoinYieldEnabled: 'isStablecoinYieldEnabled',
 } as const;
 
 export type FeatureFlag = (typeof FeatureFlag)[keyof typeof FeatureFlag];
@@ -45,6 +46,8 @@ export const featureFlagsInitialState: FeatureFlagsState = {
     [FeatureFlag.IsTradingDebugEnabled]:
         process.env.EXPO_PUBLIC_FF_IS_TRADING_DEBUG_ENABLED === 'true',
     [FeatureFlag.IsEarnEnabled]: process.env.EXPO_PUBLIC_FF_IS_EARN_ENABLED === 'true',
+    [FeatureFlag.IsStablecoinYieldEnabled]:
+        process.env.EXPO_PUBLIC_FF_IS_STABLECOIN_YIELD_DEBUG_ENABLED === 'true',
 };
 
 export const featureFlagsPersistedKeys: Array<keyof FeatureFlagsState> = [
@@ -58,6 +61,7 @@ export const featureFlagsPersistedKeys: Array<keyof FeatureFlagsState> = [
     FeatureFlag.IsTradingResidenceCheckEnabled,
     FeatureFlag.IsTradingDebugEnabled,
     FeatureFlag.IsEarnEnabled,
+    FeatureFlag.IsStablecoinYieldEnabled,
 ];
 
 export const featureFlagsSlice = createSlice({

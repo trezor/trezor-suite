@@ -1,4 +1,4 @@
-import { ReactElement, ReactNode } from 'react';
+import { type ReactElement, type ReactNode } from 'react';
 
 import { Box } from '../Box/Box';
 import { Column, Row } from '../Flex/Flex';

@@ -1,8 +1,12 @@
 import { createContext, useContext } from 'react';
 
-import { NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
-import { FeeInfo, PrecomposedLevels, PrecomposedLevelsCardano } from '@suite-common/wallet-types';
-import { FeeLevel } from '@trezor/connect';
+import { type NetworkSymbol, type NetworkType } from '@suite-common/wallet-config';
+import {
+    type FeeInfo,
+    type PrecomposedLevels,
+    type PrecomposedLevelsCardano,
+} from '@suite-common/wallet-types';
+import { type FeeLevel } from '@trezor/connect';
 
 export type FeesContextType = {
     networkSymbol: NetworkSymbol;

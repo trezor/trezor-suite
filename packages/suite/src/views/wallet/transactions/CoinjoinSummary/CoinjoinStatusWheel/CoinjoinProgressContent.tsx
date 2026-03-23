@@ -3,7 +3,7 @@ import { FormattedNumber } from 'react-intl';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { Icon, Spinner, Tooltip } from '@trezor/components';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
 

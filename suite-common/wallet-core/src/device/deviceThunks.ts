@@ -14,7 +14,7 @@ import {
 } from '@suite-common/device';
 import { selectIsFirmwareInstallationRunning } from '@suite-common/firmware';
 import { createThunk } from '@suite-common/redux-utils';
-import { AcquiredDevice, TrezorDevice } from '@suite-common/suite-types';
+import { type AcquiredDevice, type TrezorDevice } from '@suite-common/suite-types';
 import {
     getDeviceInstances,
     getFirstDeviceInstance,
@@ -23,7 +23,7 @@ import {
 } from '@suite-common/suite-utils';
 import { removeThpCredentialsThunk } from '@suite-common/thp';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import {
     getAddressType,
     getDerivationType,
@@ -32,11 +32,11 @@ import {
     getStakingPath,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, {
-    Address,
-    CardanoAddress,
-    Response as ConnectResponse,
+    type Address,
+    type CardanoAddress,
+    type Response as ConnectResponse,
     DEVICE,
-    Device,
+    type Device,
     asBluetoothDeviceId,
 } from '@trezor/connect';
 import { getEnvironment } from '@trezor/env-utils';
@@ -55,26 +55,10 @@ import { selectIsDeviceAutoEjectEnabled } from '../settings/walletSettingsReduce
  */
 export const handleDeviceDisconnect = createThunk(
     `${DEVICE_MODULE_PREFIX}/handleDeviceDisconnect`,
-    (device: Device | TrezorDevice, { dispatch, getState, extra }) => {
-        const {
-            selectors: { selectRouterApp },
-        } = extra;
-
+    (device: Device | TrezorDevice, { dispatch, getState }) => {
         const selectedDevice = selectSelectedDevice(getState());
         if (!selectedDevice) return;
         if (selectedDevice.path !== device.path) return;
-
-        const routerApp = selectRouterApp(getState());
-
-        /**
-         * Under normal circumstances, after device is disconnected we want suite to select another existing device (either remembered or physically connected)
-         * This is not the case in firmware update and onboarding; In this case we simply wan't suite.device to be empty until user reconnects a device again
-         */
-        if (['onboarding', 'firmware', 'firmware-type'].includes(routerApp)) {
-            dispatch(selectDeviceThunk({ device: undefined }));
-
-            return;
-        }
 
         const devices = selectDevices(getState());
 
@@ -400,8 +384,9 @@ export const toggleAutoEjectThunk = createThunk(
         ),
 );
 
-type ForgetAllDeviceDataThunkParams = {
+type ForgetDevicePersistentDataThunkParams = {
     deviceId: TrezorDevice['id'];
+    isOsUnpairingFinished?: boolean;
 };
 
 /**
@@ -409,9 +394,12 @@ type ForgetAllDeviceDataThunkParams = {
  * This includes wallets, `persistentDeviceData`, Bluetooth, THP.
  * But not wallets, see `forgetDevice` (ejecting wallets & forgetting the rest are separate features).
  */
-export const forgetSingleDevicePersistentDataThunk = createThunk(
+export const forgetDevicePersistentDataThunk = createThunk(
     `${DEVICE_MODULE_PREFIX}/forgetSingleDevicePersistentDataThunk`,
-    async ({ deviceId }: ForgetAllDeviceDataThunkParams, { dispatch, extra, getState }) => {
+    async (
+        { deviceId, isOsUnpairingFinished }: ForgetDevicePersistentDataThunkParams,
+        { dispatch, extra, getState },
+    ) => {
         if (!deviceId) return;
 
         const device = selectDeviceById(getState(), deviceId);
@@ -426,12 +414,40 @@ export const forgetSingleDevicePersistentDataThunk = createThunk(
         if (bluetoothId !== undefined) {
             dispatch(bluetoothActions.removeKnownDeviceAction({ id: bluetoothId }));
             // try to remove OS-level Bluetooth bonds, if supported by the platform
-            await dispatch(extra.thunks.forgetBluetoothDevice({ bluetoothId }));
+            await dispatch(
+                extra.thunks.forgetBluetoothDevice({ bluetoothId, isOsUnpairingFinished }),
+            );
         }
         const credentials = matchingDevice?.thp?.credentials;
         if (credentials !== undefined) {
             await dispatch(removeThpCredentialsThunk({ device, credentials })).unwrap();
         }
+    },
+);
+
+export type ForgetDeviceThunkParams = {
+    isOsUnpairingFinished?: boolean;
+};
+
+export const forgetDeviceThunk = createThunk(
+    `${DEVICE_MODULE_PREFIX}/forgetDevice`,
+    async (
+        { isOsUnpairingFinished }: ForgetDeviceThunkParams | undefined = {},
+        { dispatch, getState },
+    ) => {
+        const device = selectSelectedDevice(getState());
+        if (!device) return;
+
+        const devices = selectDevices(getState());
+        const deviceInstances = getDeviceInstances(device, devices);
+
+        await dispatch(
+            forgetDevicePersistentDataThunk({ deviceId: device.id, isOsUnpairingFinished }),
+        );
+
+        deviceInstances.forEach(instance => {
+            dispatch(deviceActions.forgetDevice({ device: instance }));
+        });
     },
 );
 
@@ -467,7 +483,7 @@ const handlePostWipeCleanupThunk = createThunk(
         if (initialDevice.id !== undefined) {
             // Wiping a device changes bluetoothId and THP static key, so wipe BT known device & THP credentials
             // (and persistent device data as well, because device.id changed).
-            await dispatch(forgetSingleDevicePersistentDataThunk({ deviceId: initialDevice.id }));
+            await dispatch(forgetDevicePersistentDataThunk({ deviceId: initialDevice.id }));
         }
 
         dispatch(extra.actions.openModal({ type: 'wipe-device-success' }));

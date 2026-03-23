@@ -1,6 +1,6 @@
 import { css } from 'styled-components';
 
-import { CSSColor } from '@trezor/theme';
+import { type CSSColor } from '@trezor/theme';
 
 export const focusStyleTransition = 'box-shadow 0.1s ease-out, border-color 0.1s ease-out';
 

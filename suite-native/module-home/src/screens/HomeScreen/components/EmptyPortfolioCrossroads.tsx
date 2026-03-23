@@ -5,21 +5,21 @@ import { useNavigation } from '@react-navigation/native';
 
 import {
     Feature,
-    MessageSystemRootState,
+    type MessageSystemRootState,
     selectIsFeatureEnabled,
 } from '@suite-common/message-system';
 import { events } from '@suite-native/analytics';
 import { Button, Card, CenteredTitleHeader, Text, VStack } from '@suite-native/atoms';
 import { useConnectDeviceHandler } from '@suite-native/device';
-import { Translation, TxKeyPath } from '@suite-native/intl';
+import { Translation, type TxKeyPath } from '@suite-native/intl';
 import {
     AccountsImportStackRoutes,
     DemoAccountQuestionnaireStackRoutes,
-    HomeStackParamList,
-    HomeStackRoutes,
-    RootStackParamList,
+    type HomeStackParamList,
+    type HomeStackRoutes,
+    type RootStackParamList,
     RootStackRoutes,
-    StackToStackCompositeNavigationProps,
+    type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';

@@ -1,7 +1,7 @@
 /* eslint-disable no-self-assign */
 import { useEffect } from 'react';
 import {
-    SharedValue,
+    type SharedValue,
     useDerivedValue,
     useSharedValue,
     withDelay,
@@ -16,7 +16,7 @@ import {
     ColorMatrix,
     Group,
     ImageSVG,
-    MatrixColorFilterProps,
+    type MatrixColorFilterProps,
     Paint,
     Path,
     Skia,

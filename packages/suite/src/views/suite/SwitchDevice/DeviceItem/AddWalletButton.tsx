@@ -2,14 +2,14 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { Translation } from '@suite/intl';
+import { selectIsDeviceOrUiLocked } from '@suite/locks';
+import { closeModalApp, goto } from '@suite/router';
 import { selectDeviceThunk, startDiscoveryThunk } from '@suite-common/wallet-core';
 import { WalletType } from '@suite-common/wallet-types';
 import { Button, Card, Column, IconButton, Row, Text, Tooltip } from '@trezor/components';
 
-import { closeModalApp, goto } from 'src/actions/suite/routerActions';
 import { useSelector } from 'src/hooks/suite';
-import { selectIsDeviceOrUiLocked } from 'src/selectors/suite/suiteSelectors';
-import { AcquiredDevice, ForegroundAppProps, TrezorDevice } from 'src/types/suite';
+import { type AcquiredDevice, type ForegroundAppProps, type TrezorDevice } from 'src/types/suite';
 
 interface AddWalletButtonProps {
     device: TrezorDevice;
@@ -49,7 +49,7 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
                 isAddingExistingWallet: isExisting,
             }),
         );
-        dispatch(goto('suite-index'));
+        dispatch(goto({ routeName: 'suite-index' }));
     };
 
     const ExpandedPassphraseContainer = () => (

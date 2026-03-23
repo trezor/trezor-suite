@@ -1,4 +1,4 @@
-import { ReactNode, UIEventHandler, createContext, useCallback, useState } from 'react';
+import { type ReactNode, type UIEventHandler, createContext, useCallback, useState } from 'react';
 
 import styled from 'styled-components';
 

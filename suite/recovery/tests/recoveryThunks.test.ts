@@ -1,5 +1,3 @@
-import type { UnknownAction } from '@reduxjs/toolkit';
-
 import { configureMockStore } from '@suite-common/test-utils';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
@@ -20,7 +18,7 @@ const getInitialState = (custom?: any): any => ({
         },
     },
     recovery: {
-        ...recoveryReducer(undefined, {} as UnknownAction),
+        ...recoveryReducer(undefined, { type: 'foo' }),
         ...custom,
     },
     analytics: {

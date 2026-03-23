@@ -1,9 +1,9 @@
 import { selectIsDiscreteModeActive } from '@suite-common/wallet-core';
-import { Account, BaseCurrencyAmount } from '@suite-common/wallet-types';
+import { type Account, type BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Column, Row, Text } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
-import { AccountItemType } from 'src/types/wallet';
+import { type AccountItemType } from 'src/types/wallet';
 
 import { AccountItemBottomLine } from './AccountItemBottomLine';
 import { AccountItemLabel } from './AccountItemLabel';

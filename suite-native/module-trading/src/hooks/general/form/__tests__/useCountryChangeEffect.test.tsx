@@ -1,21 +1,21 @@
-import { TradingCountryCode, TradingCountryOption } from '@suite-common/trading';
-import { TestStore, initStore, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
+import { type TradingCountryCode, type TradingCountryOption } from '@suite-common/trading';
+import { type TestStore, initStore, renderHookWithStoreProvider } from '@suite-native/test-utils';
 import { selectTradingResidenceCountry } from '@suite-native/trading-state';
 
-import { CountryFormWatch, useCountryChangeEffect } from '../useCountryChangeEffect';
+import { type CountryFormWatch, useCountryChangeEffect } from '../useCountryChangeEffect';
 
 describe('useCountryChangeEffect', () => {
     let store: TestStore;
 
     const renderUseCountryChangeEffect = (watch: CountryFormWatch) =>
-        renderHookWithStoreProviderAsync(() => useCountryChangeEffect(watch), { store });
+        renderHookWithStoreProvider(() => useCountryChangeEffect(watch), { store });
 
     beforeEach(() => {
         store = initStore().store;
     });
 
-    it('should do nothing on mount', async () => {
-        await renderUseCountryChangeEffect(() => ({
+    it('should do nothing on mount', () => {
+        renderUseCountryChangeEffect(() => ({
             codeAlpha3: 'USA',
             flag: '🇺🇸',
             name: 'United States of America',
@@ -27,7 +27,7 @@ describe('useCountryChangeEffect', () => {
         expect(selectTradingResidenceCountry(store.getState())).toBeUndefined();
     });
 
-    it('should update trading residence country on country change', async () => {
+    it('should update trading residence country on country change', () => {
         let countryValue: TradingCountryCode = 'US';
         const watch: CountryFormWatch = () => ({
             value: countryValue,
@@ -38,7 +38,7 @@ describe('useCountryChangeEffect', () => {
             shortLabel: 'Short label',
         });
 
-        const { rerender } = await renderUseCountryChangeEffect(watch);
+        const { rerender } = renderUseCountryChangeEffect(watch);
 
         countryValue = 'CA';
         rerender({});
@@ -46,7 +46,7 @@ describe('useCountryChangeEffect', () => {
         expect(selectTradingResidenceCountry(store.getState())).toBe('CA');
     });
 
-    it('should not update when country becomes undefined', async () => {
+    it('should not update when country becomes undefined', () => {
         let countryOption: TradingCountryOption | undefined = {
             codeAlpha3: 'USA',
             flag: '🇺🇸',
@@ -56,7 +56,7 @@ describe('useCountryChangeEffect', () => {
             shortLabel: '🇺🇸 USA',
         };
         const watch: CountryFormWatch = () => countryOption;
-        const { rerender } = await renderUseCountryChangeEffect(watch);
+        const { rerender } = renderUseCountryChangeEffect(watch);
 
         countryOption = undefined;
         rerender({});

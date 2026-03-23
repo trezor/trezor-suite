@@ -1,12 +1,12 @@
 import { Form } from '@suite-native/forms';
 import {
-    TestStore,
+    type TestStore,
     act,
     initStore,
-    renderHookWithStoreProviderAsync,
+    renderHookWithStoreProvider,
 } from '@suite-native/test-utils';
 import { selectIsAmountInputActive } from '@suite-native/trading-state';
-import { BuyFormType } from '@suite-native/trading-types';
+import { type BuyFormType } from '@suite-native/trading-types';
 
 import { useBuyForm } from '../../buy/useBuyForm';
 import { useFocusedValueWatch } from '../useFocusedValueWatch';
@@ -17,31 +17,31 @@ describe('useFocusedValueWatch', () => {
     let form: BuyFormType;
     let store: TestStore;
 
-    const renderForm = () => renderHookWithStoreProviderAsync(() => useBuyForm());
+    const renderForm = () => renderHookWithStoreProvider(() => useBuyForm());
 
     const renderUseFocusedValueWatch = () =>
-        renderHookWithStoreProviderAsync(({ watch }) => useFocusedValueWatch(watch), {
+        renderHookWithStoreProvider(({ watch }) => useFocusedValueWatch(watch), {
             initialProps: { watch: form.watch },
             store,
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 
-    beforeEach(async () => {
-        const { result } = await renderForm();
+    beforeEach(() => {
+        const { result } = renderForm();
         form = result.current;
 
         store = initStore().store;
     });
 
-    it('should return false by default', async () => {
-        const { result } = await renderUseFocusedValueWatch();
+    it('should return false by default', () => {
+        const { result } = renderUseFocusedValueWatch();
 
         expect(result.current).toEqual(false);
         expect(selectIsAmountInputActive(store.getState())).toBe(false);
     });
 
     it('should be false right after input is focused', async () => {
-        const { result, rerender } = await renderUseFocusedValueWatch();
+        const { result, rerender } = renderUseFocusedValueWatch();
 
         act(() => {
             form.setValue('focusedValue', 'fiatValue');
@@ -56,7 +56,7 @@ describe('useFocusedValueWatch', () => {
     });
 
     it('should be true after 300ms of input focus', async () => {
-        const { result, rerender } = await renderUseFocusedValueWatch();
+        const { result, rerender } = renderUseFocusedValueWatch();
 
         await act(() => {
             form.setValue('focusedValue', 'fiatValue');
@@ -73,7 +73,7 @@ describe('useFocusedValueWatch', () => {
     });
 
     it('should set isAmountInputActive to false on unmount', async () => {
-        const { rerender, unmount } = await renderUseFocusedValueWatch();
+        const { rerender, unmount } = renderUseFocusedValueWatch();
         await act(() => {
             form.setValue('focusedValue', 'fiatValue');
         });

@@ -1,5 +1,5 @@
 import { useBannerContext } from './BannerContext';
-import { Button, ButtonProps } from '../buttons/Button/Button';
+import { Button, type ButtonProps } from '../buttons/Button/Button';
 
 export const BannerButton = ({ children, intent, size = 'small', ...rest }: ButtonProps) => {
     const { intent: bannerIntent } = useBannerContext();

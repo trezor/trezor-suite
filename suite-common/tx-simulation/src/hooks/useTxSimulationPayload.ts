@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import { type JsonRpcScanParams } from '@blockaid/client/resources/evm';
 
-import { TxSimulationAction, TxSimulationMethod } from '@suite-common/wallet-types';
+import { type TxSimulationAction, type TxSimulationMethod } from '@suite-common/wallet-types';
 
 function transformPayloadOfEthereumSignTransaction({
     payload: { transaction },

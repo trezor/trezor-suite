@@ -1,15 +1,19 @@
 import { openModal } from '@suite/modal';
-import { EarnFlow, EarnModalAction, EarnYieldContext } from '@suite-common/suite-types/src/staking';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { goto } from '@suite/router';
+import {
+    EarnFlow,
+    type EarnModalAction,
+    type EarnYieldContext,
+} from '@suite-common/suite-types/src/staking';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     DEFAULT_VOTING_OPTION,
     selectVotingDelegationOption,
     stakeActions,
 } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { exhaustive } from '@trezor/type-utils';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { earnFlowToEventTypeMap } from 'src/constants/suite/staking';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
@@ -58,7 +62,8 @@ export const useEarnProviderConsentActions = ({
             case EarnFlow.Yield:
                 if (yieldContext) {
                     dispatch(
-                        goto('earn-supply', {
+                        goto({
+                            routeName: 'earn-supply',
                             params: getEarnRouteParams({
                                 account,
                                 yieldId: yieldContext.id,

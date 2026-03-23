@@ -1,4 +1,4 @@
-import { Translation, TranslationKey } from '@suite/intl';
+import { Translation, type TranslationKey } from '@suite/intl';
 import { Icon, Row, Spinner, Text } from '@trezor/components';
 
 type PairingStateProps = {

@@ -1,7 +1,8 @@
-import { ReactElement } from 'react';
+import { type ReactElement } from 'react';
 
 import styled from 'styled-components';
 
+import { clamp } from '@suite-common/trading';
 import { Paragraph, ProgressPie, Spinner } from '@trezor/components';
 import { spacingsPx, typography } from '@trezor/theme';
 
@@ -44,8 +45,8 @@ export const TradingRefreshTime = ({
     refetchInterval,
     label,
 }: TradingRefreshTimeProps) => {
-    const remaining = refetchInterval - seconds;
-    const progress = (remaining / refetchInterval) * 100;
+    const remaining = Math.max(refetchInterval - seconds, 0);
+    const progress = refetchInterval > 0 ? clamp((remaining / refetchInterval) * 100, 0, 100) : 0;
 
     return (
         <>

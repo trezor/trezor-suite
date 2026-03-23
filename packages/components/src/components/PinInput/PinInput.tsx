@@ -1,4 +1,4 @@
-import { ChangeEvent, ClipboardEvent, useEffect, useRef, useState } from 'react';
+import { type ChangeEvent, type ClipboardEvent, useEffect, useRef, useState } from 'react';
 
 import styled from 'styled-components';
 

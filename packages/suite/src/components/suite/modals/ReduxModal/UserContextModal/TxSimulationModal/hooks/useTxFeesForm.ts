@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 
-import { NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
+import { type NetworkSymbol, type NetworkType } from '@suite-common/wallet-config';
 import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import { selectRawNetworkFeeInfo } from '@suite-common/wallet-core';
 import { getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
@@ -9,7 +9,7 @@ import { BigNumber } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
 import { useComposedLevelsPlaceholder } from 'src/hooks/wallet/form/useComposedLevelsPlaceholder';
-import { FeesFormValues, useFees } from 'src/hooks/wallet/form/useFees';
+import { type FeesFormValues, useFees } from 'src/hooks/wallet/form/useFees';
 
 interface UseTxFeesFormProps {
     networkType?: NetworkType;

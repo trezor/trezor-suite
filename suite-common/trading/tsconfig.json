@@ -4,6 +4,7 @@
     "references": [
         { "path": "../device" },
         { "path": "../geolocation" },
+        { "path": "../react-query" },
         { "path": "../redux-utils" },
         { "path": "../suite-types" },
         { "path": "../suite-utils" },

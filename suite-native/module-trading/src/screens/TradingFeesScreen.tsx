@@ -3,14 +3,14 @@ import { useSelector } from 'react-redux';
 
 import { useRoute } from '@react-navigation/native';
 
-import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { Translation } from '@suite-native/intl';
 import {
     Screen,
     ScreenHeader,
-    StackProps,
-    TradingStackParamList,
-    TradingStackRoutes,
+    type StackProps,
+    type TradingStackParamList,
+    type TradingStackRoutes,
 } from '@suite-native/navigation';
 import { useTradingAnalyticReportCallback } from '@suite-native/trading-analytics';
 import { useSubscribeForSolanaBlockUpdates } from '@suite-native/transaction-management';

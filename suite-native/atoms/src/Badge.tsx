@@ -1,15 +1,15 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
-import { NetworkSymbol, isNetworkSymbol } from '@suite-common/wallet-config';
-import { CryptoIcon, Icon, IconName, IconSize, icons } from '@suite-native/icons';
+import { type NetworkSymbol, isNetworkSymbol } from '@suite-common/wallet-config';
+import { CryptoIcon, Icon, type IconName, type IconSize, icons } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Color } from '@trezor/theme';
+import { type Color } from '@trezor/theme';
 import { isNotNullOrUndefined } from '@trezor/utils';
 
-import { BoxProps } from './Box';
+import { type BoxProps } from './Box';
 import { HStack } from './Stack';
 import { Text } from './Text';
-import { SurfaceElevation } from './types';
+import { type SurfaceElevation } from './types';
 
 export const BADGE_VARIANTS = [
     'neutral',

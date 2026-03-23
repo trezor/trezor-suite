@@ -1,7 +1,7 @@
 import { forwardRef, useImperativeHandle, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { DeviceRootState } from '@suite-common/device';
+import { type DeviceRootState } from '@suite-common/device';
 import { selectSupportChatUrl } from '@suite-common/support';
 import { CheckBox, HStack, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';

@@ -1,12 +1,12 @@
-import { ReactNode, forwardRef, useEffect, useState } from 'react';
+import { type ReactNode, forwardRef, useEffect, useState } from 'react';
 import {
-    NativeSyntheticEvent,
+    type NativeSyntheticEvent,
     Platform,
-    TargetedEvent,
+    type TargetedEvent,
     TextInput,
-    TextInputProps,
+    type TextInputProps,
 } from 'react-native';
-import { TextInput as GHTextInput } from 'react-native-gesture-handler';
+import { type TextInput as GHTextInput } from 'react-native-gesture-handler';
 import Animated, {
     Easing,
     FadeIn,
@@ -19,14 +19,14 @@ import Animated, {
 
 import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 import { D, G, S } from '@mobily/ts-belt';
-import { RequireOneOrNone } from 'type-fest';
+import { type RequireOneOrNone } from 'type-fest';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { nativeSpacings } from '@trezor/theme';
 
 import { Box } from '../Box';
 import { ACCESSIBILITY_FONTSIZE_MULTIPLIER, Text } from '../Text';
-import { SurfaceElevation } from '../types';
+import { type SurfaceElevation } from '../types';
 
 const LABEL_ANIMATION_DURATION = 200;
 const labelEnteringAnimation = FadeIn.duration(LABEL_ANIMATION_DURATION);

@@ -1,4 +1,4 @@
-import { ExtendedMessageDescriptor, Translation } from '@suite/intl';
+import { type ExtendedMessageDescriptor, Translation } from '@suite/intl';
 import { ALL_URLS } from '@trezor/urls';
 
 import { TrezorLink } from 'src/components/suite/TrezorLink';

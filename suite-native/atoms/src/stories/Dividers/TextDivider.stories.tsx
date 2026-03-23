@@ -6,7 +6,7 @@ import { COLOR_TOKENS } from '@trezor/theme';
 
 import { VStack } from '../../Stack';
 import { Text } from '../../Text';
-import { TextDivider as TextDividerComponent, TextDividerProps } from '../../TextDivider';
+import { TextDivider as TextDividerComponent, type TextDividerProps } from '../../TextDivider';
 
 type TextDividerStory = StoryObj<TextDividerProps>;
 

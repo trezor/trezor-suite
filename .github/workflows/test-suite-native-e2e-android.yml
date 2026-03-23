@@ -6,8 +6,6 @@ permissions:
   actions: write # upload/download artifacts
 
 on:
-  schedule:
-    - cron: "0 0 * * 1-5"
   pull_request:
     paths:
       - "suite-native/**"
@@ -40,10 +38,10 @@ jobs:
       skip_tests: ${{ steps.check-previous-runs.outputs.skip_tests }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Generate GitHub App token
         id: trezor-bot-token
-        uses: actions/create-github-app-token@v1
+        uses: actions/create-github-app-token@v2
         with:
           app-id: ${{ secrets.TREZOR_BOT_APP_ID }}
           private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
@@ -75,5 +73,5 @@ jobs:
       TREZOR_BOT_APP_ID: ${{ secrets.TREZOR_BOT_APP_ID }}
       TREZOR_BOT_PRIVATE_KEY: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
       CURRENTS_RECORD_KEY: ${{ secrets.CURRENTS_RECORD_KEY }}
-      SLACK_MOBILE_E2E_WEBHOOK: ${{ secrets.SLACK_MOBILE_E2E_WEBHOOK }}
+      CURRENTS_API_KEY: ${{ secrets.CURRENTS_API_KEY }}
       E2E_TEST_PASSPHRASE: ${{ secrets.E2E_TEST_PASSPHRASE }}

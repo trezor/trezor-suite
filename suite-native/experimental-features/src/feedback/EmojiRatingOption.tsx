@@ -1,4 +1,4 @@
-import { Rating } from '@suite-common/feedback';
+import { type Rating } from '@suite-common/feedback';
 import { PressableOpacity, Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 

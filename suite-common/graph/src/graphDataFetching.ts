@@ -1,16 +1,16 @@
-import { useDispatch } from 'react-redux';
+import { type useDispatch } from 'react-redux';
 
 import { A, D, F, G, O, pipe } from '@mobily/ts-belt';
 import { fromUnixTime, getUnixTime } from 'date-fns';
 
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
-import { NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { fetchTransactionsFromNowUntilTimestamp } from '@suite-common/wallet-core';
-import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
+import { type Timestamp, type TokenAddress } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
-import { AccountBalanceHistory as AccountMovementHistory } from '@trezor/blockchain-link';
+import { type AccountBalanceHistory as AccountMovementHistory } from '@trezor/blockchain-link';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
-import TrezorConnect, { AccountInfo } from '@trezor/connect';
+import TrezorConnect, { type AccountInfo } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
 import { getAccountHistoryMovementFromTransactions } from './balanceHistoryUtils';
@@ -25,7 +25,7 @@ import {
     mapCryptoBalanceMovementToFixedTimeFrame,
     mergeMultipleFiatBalanceHistories,
 } from './graphUtils';
-import {
+import type {
     AccountBalanceHistoryWithTokens,
     AccountHistoryBalancePoint,
     AccountHistoryMovementItem,
@@ -33,6 +33,7 @@ import {
     AccountWithBalanceHistory,
     FiatGraphPoint,
     FiatGraphPointWithCryptoBalance,
+    FiatRatesItem,
 } from './types';
 
 export const addBalanceForAccountMovementHistory = (
@@ -282,13 +283,6 @@ const getAccountBalanceHistory = async ({
     accountBalanceHistoryCache[cacheKey] = result;
 
     return result;
-};
-
-export type FiatRatesItem = {
-    time: number;
-    rates: {
-        [key: string]: number | undefined;
-    };
 };
 
 const fiatRatesCache: Record<string, FiatRatesItem[]> = {};

@@ -1,9 +1,9 @@
 import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
 import {
-    PreloadedState,
+    type PreloadedState,
     act,
     fireEvent,
-    renderWithStoreProviderAsync,
+    renderWithStoreProvider,
 } from '@suite-native/test-utils';
 
 import { AppTabNavigator } from '../AppTabNavigator';
@@ -12,7 +12,7 @@ jest.mock('@suite-common/tx-simulation', () => ({}));
 
 describe('AppTabNavigator', () => {
     const renderTabs = (preloadedState?: PreloadedState) =>
-        renderWithStoreProviderAsync(<AppTabNavigator />, { preloadedState });
+        renderWithStoreProvider(<AppTabNavigator />, { preloadedState });
 
     beforeEach(() => {
         global.fetch = jest.fn().mockResolvedValue({
@@ -21,16 +21,16 @@ describe('AppTabNavigator', () => {
         });
     });
 
-    it('should render 3 buttons', async () => {
-        const { getByText } = await renderTabs();
+    it('should render 3 buttons', () => {
+        const { getByText } = renderTabs();
 
         expect(getByText('Home')).toBeTruthy();
         expect(getByText('My assets')).toBeTruthy();
         expect(getByText('Settings')).toBeTruthy();
     });
 
-    it('should not render Trade tab when all trading flags are disabled', async () => {
-        const { queryByText } = await renderTabs({
+    it('should not render Trade tab when all trading flags are disabled', () => {
+        const { queryByText } = renderTabs({
             featureFlags: {
                 ...featureFlagsInitialState,
                 [FeatureFlag.IsTradingBuyEnabled]: false,
@@ -77,7 +77,7 @@ describe('AppTabNavigator', () => {
     });
 
     it('should render Trade tab when at least one trading flag is enabled', async () => {
-        const { getByText, getByTestId } = await renderTabs({
+        const { getByText, getByTestId } = renderTabs({
             featureFlags: {
                 ...featureFlagsInitialState,
                 [FeatureFlag.IsTradingBuyEnabled]: true,
@@ -94,8 +94,8 @@ describe('AppTabNavigator', () => {
         expect(getByTestId('@screen/Trading')).toBeTruthy();
     });
 
-    it('should not render Earn tab when the Earn flag is disabled', async () => {
-        const { queryByText } = await renderTabs({
+    it('should not render Earn tab when the Earn flag is disabled', () => {
+        const { queryByText } = renderTabs({
             featureFlags: {
                 ...featureFlagsInitialState,
                 [FeatureFlag.IsEarnEnabled]: false,
@@ -105,8 +105,8 @@ describe('AppTabNavigator', () => {
         expect(queryByText('Earn')).toBe(null);
     });
 
-    it('should render Earn tab when the Earn flag is enabled', async () => {
-        const { queryByText } = await renderTabs({
+    it('should render Earn tab when the Earn flag is enabled', () => {
+        const { queryByText } = renderTabs({
             featureFlags: {
                 ...featureFlagsInitialState,
                 [FeatureFlag.IsEarnEnabled]: true,

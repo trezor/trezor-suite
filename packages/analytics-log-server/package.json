@@ -1,0 +1,21 @@
+{
+    "name": "@trezor/analytics-log-server",
+    "private": true,
+    "type": "module",
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "default": "./dist/index.js"
+        }
+    },
+    "scripts": {
+        "build": "yarn g:tsc -p tsconfig.build.json",
+        "depcheck": "yarn g:depcheck",
+        "dev": "yarn g:tsx src/server.ts",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "start": "node dist/server.js",
+        "type-check": "yarn g:tsc --build"
+    }
+}

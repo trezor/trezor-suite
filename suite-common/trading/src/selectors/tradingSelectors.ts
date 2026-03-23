@@ -1,22 +1,26 @@
-import { Coins, CryptoId, FiatCurrencyCode, Platforms } from 'invity-api';
+import { type Coins, type CryptoId, type FiatCurrencyCode, type Platforms } from 'invity-api';
 
 import { type DeviceRootState, selectDeviceUnavailableCapabilities } from '@suite-common/device';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
-import { NetworkSymbolExtended, NetworkType } from '@suite-common/wallet-config';
+import { type NetworkSymbolExtended, type NetworkType } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     selectAccounts,
     selectDeviceAccounts,
 } from '@suite-common/wallet-core';
-import { Account, SelectedAccountStatus } from '@suite-common/wallet-types';
+import { type Account, type SelectedAccountStatus } from '@suite-common/wallet-types';
 import addressValidator from '@trezor/address-validator';
 import { exhaustive } from '@trezor/type-utils';
 
-import { BuyInfo, TradingBuyState } from '../reducers/buyReducer';
-import { ExchangeInfo, TradingExchangeState } from '../reducers/exchangeReducer';
-import { SellInfo, TradingSellState } from '../reducers/sellReducer';
+import { type BuyInfo, type TradingBuyState } from '../reducers/buyReducer';
+import { type ExchangeInfo, type TradingExchangeState } from '../reducers/exchangeReducer';
+import { type SellInfo, type TradingSellState } from '../reducers/sellReducer';
 import type { TradingRootState, TradingState } from '../reducers/tradingCommonReducer';
-import { TradingFiatCurrenciesProps, TradingTransaction, TradingType } from '../types';
+import {
+    type TradingFiatCurrenciesProps,
+    type TradingTransaction,
+    type TradingType,
+} from '../types';
 import { cryptoIdToNetwork, isBuyTrade, isExchangeProvider, testnetToProdCryptoId } from '../utils';
 import {
     getTradingCoinInfoByCryptoId,
@@ -280,6 +284,9 @@ export const selectTradingBuyQuotesRequest = (state: TradingRootState) =>
 export const selectTradingExchangeQuotesRequest = (state: TradingRootState) =>
     state.wallet.trading.exchange.quotesRequest;
 
+export const selectTradingExchangeQuotes = (state: TradingRootState) =>
+    state.wallet.trading.exchange.quotes;
+
 export const selectTradingSellQuotesRequest = (state: TradingRootState) =>
     state.wallet.trading.sell.quotesRequest;
 
@@ -503,6 +510,18 @@ export const selectTradingBuyQuoteByOrderId = (
 
 export const selectTradingExchangeIsLoading = (state: TradingRootState) =>
     state.wallet.trading.exchange.isLoading;
+
+export const selectTradingExchangeDexQuoteApprovalPrefetchLoading = (state: TradingRootState) =>
+    !!state.wallet.trading.exchange.dexQuoteApprovalPrefetchLoadingQuoteId;
+
+export const selectTradingExchangeDexQuoteApprovalPrefetchLoadingByQuoteId = (
+    state: TradingRootState,
+    quoteId: string | undefined,
+) => !!quoteId && state.wallet.trading.exchange.dexQuoteApprovalPrefetchLoadingQuoteId === quoteId;
+
+export const selectTradingExchangeDexQuoteApprovalPrefetchLoadingQuoteId = (
+    state: TradingRootState,
+) => state.wallet.trading.exchange.dexQuoteApprovalPrefetchLoadingQuoteId;
 
 export const selectTradingSellIsLoading = (state: TradingRootState) =>
     state.wallet.trading.sell.isLoading;

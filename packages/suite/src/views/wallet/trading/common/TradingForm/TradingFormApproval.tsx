@@ -1,19 +1,19 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
-import styled, { DefaultTheme, keyframes } from 'styled-components';
+import styled, { type DefaultTheme, keyframes } from 'styled-components';
 
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import {
-    TradingExchangeType,
+    type TradingExchangeType,
+    requiresTokenApproval,
     tokenSupportsIncreasingAllowance,
+    useApprovalStep,
     useTradingUtils,
 } from '@suite-common/trading';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
-import { AllowanceType } from '@suite-common/wallet-types';
 import { Banner, Button, Column, Icon, Link, Paragraph, Row } from '@trezor/components';
-import { useCurrentRef } from '@trezor/react-utils';
 
 import { Address } from 'src/components/suite/Address';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -53,8 +53,6 @@ const IconWrapper = styled.div`
     animation: ${loadingAnimation} 1s linear infinite;
 `;
 
-type ApprovalStep = 'REQUIRED' | 'APPROVED' | 'LOADING' | 'ERROR';
-
 export const TradingFormApproval = () => {
     const context = useTradingFormContext<TradingExchangeType>();
     const dispatch = useDispatch();
@@ -80,9 +78,6 @@ export const TradingFormApproval = () => {
 
     const getCryptoInfo = useTradingExchangeCryptoAndProviderInfo();
 
-    const refreshQuotesRef = useCurrentRef(refreshQuotes);
-
-    const currentQuoteStatus = selectedQuote?.status;
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
     const [isApproveButtonLoading, setIsApproveButtonLoading] = useState(false);
@@ -90,61 +85,17 @@ export const TradingFormApproval = () => {
     const [isSwapButtonLoading, setIsSwapButtonLoading] = useState(false);
     const [isRefreshButtonLoading, setIsRefreshButtonLoading] = useState(false);
 
-    const [approvalStep, setApprovalStep] = useState<ApprovalStep | undefined>();
-
     const { cryptoIdToSymbolAndContractAddress } = useTradingUtils();
 
-    const [txApprovalType, setTxApprovalType] = useState<AllowanceType | null>(null);
-
-    useEffect(() => {
-        if (tx.approvalTxid && tx.status.isPending && !txApprovalType) {
-            setTxApprovalType(allowanceState.approvalType);
-        }
-    }, [tx.approvalTxid, tx.status.isPending, allowanceState.approvalType, txApprovalType]);
-
-    useEffect(() => {
-        if (!tx.approvalTxid) return;
-
-        if (tx.status.isPending) {
-            setApprovalStep('LOADING');
-
-            return;
-        }
-
-        if (tx.status.isFailed) {
-            setApprovalStep('REQUIRED');
-
-            return;
-        }
-
-        if (tx.status.isConfirmed && txApprovalType) {
-            setApprovalStep(txApprovalType === 'APPROVE' ? 'APPROVED' : 'REQUIRED');
-
-            refreshQuotesRef.current().finally(() => {
-                tx.setApprovalTxid(null);
-                setTxApprovalType(null);
-            });
-        }
-    }, [tx, txApprovalType, refreshQuotesRef]);
-
-    useEffect(() => {
-        if (tx.approvalTxid) return;
-
-        if (currentQuoteStatus === 'ERROR') {
-            return setApprovalStep('ERROR');
-        }
-
-        if (currentQuoteStatus === 'APPROVAL_REQ') {
-            return setApprovalStep('REQUIRED');
-        }
-
-        if (currentQuoteStatus === 'CONFIRM' || currentQuoteStatus === 'SIGN_DATA') {
-            return setApprovalStep('APPROVED');
-        }
-    }, [currentQuoteStatus, tx.approvalTxid]);
+    const { approvalStep } = useApprovalStep({
+        tx,
+        currentApprovalType: allowanceState.approvalType,
+        quoteStatus: selectedQuote?.status,
+        refreshQuotes,
+    });
 
     const onApproveTransactionClick = async () => {
-        if (!selectedQuote || !selectedQuote.isDex) {
+        if (!selectedQuote || !requiresTokenApproval(selectedQuote)) {
             return;
         }
 

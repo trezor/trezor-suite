@@ -4,18 +4,16 @@ import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 
 import { CARDANO, PROTO } from '../../../constants';
-import { AbstractMethod, MethodPermission, Payload } from '../../../core/AbstractMethod';
+import type { MethodMessage, MethodPermission } from '../../../core/AbstractMethod';
+import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
-import {
-    CardanoMessageHeaders,
-    CardanoSignMessage as CardanoSignMessageSchema,
-    CardanoSignedMessage,
-} from '../../../types/api/cardano';
+import type { CardanoMessageHeaders, CardanoSignedMessage } from '../../../types/api/cardano';
+import { CardanoSignMessage as CardanoSignMessageSchema } from '../../../types/api/cardano';
 import { hasHexPrefix, isHexString } from '../../../utils/formatUtils';
 import { validatePath } from '../../../utils/pathUtils';
 import { getFirmwareRange } from '../../common/paramsValidator';
 import { addressParametersToProto } from '../cardanoAddressParameters';
-import { Path } from '../cardanoInputs';
+import type { Path } from '../cardanoInputs';
 import { hexStringByteLength } from '../cardanoUtils';
 
 export type CardanoSignMessageParams = {
@@ -34,7 +32,7 @@ export default class CardanoSignMessage extends AbstractMethod<
 > {
     static readonly VERSION = 1;
 
-    constructor(message: { id?: number; payload: Payload<'cardanoSignMessage'> }) {
+    constructor(message: MethodMessage<'cardanoSignMessage'>) {
         super(message);
         this.firmwareRange = getFirmwareRange(
             this.name,

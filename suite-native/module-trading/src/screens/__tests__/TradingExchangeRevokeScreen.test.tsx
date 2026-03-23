@@ -1,7 +1,7 @@
-import { RouteProp } from '@react-navigation/native';
+import { type RouteProp } from '@react-navigation/native';
 
-import { TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
-import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { type TradingStackParamList, type TradingStackRoutes } from '@suite-native/navigation';
+import { renderWithStoreProvider } from '@suite-native/test-utils';
 import {
     accounts,
     exchangeQuotes,
@@ -37,8 +37,8 @@ const preloadedState = {
 describe('TradingExchangeRevokeScreen', () => {
     let unmount: (() => void) | undefined;
 
-    const renderScreen = async () => {
-        const result = await renderWithStoreProviderAsync(
+    const renderScreen = () => {
+        const result = renderWithStoreProvider(
             <TradingExchangeRevokeScreen
                 route={
                     { params: { quote: testQuote } } as RouteProp<
@@ -65,28 +65,28 @@ describe('TradingExchangeRevokeScreen', () => {
         }
     });
 
-    it('should render the revoke screen with quote details', async () => {
-        const { getByText } = await renderScreen();
+    it('should render the revoke screen with quote details', () => {
+        const { getByText } = renderScreen();
 
         expect(getByText('BTC Account #1')).toBeOnTheScreen();
         expect(getByText('Mercuryo')).toBeOnTheScreen();
         expect(getByText('$4.76')).toBeOnTheScreen(); // Fixed fee TODO value
     });
 
-    it('should show network information when network symbol is available', async () => {
-        const { getByText } = await renderScreen();
+    it('should show network information when network symbol is available', () => {
+        const { getByText } = renderScreen();
 
         expect(getByText('Ethereum')).toBeOnTheScreen();
     });
 
-    it('should display provider information correctly', async () => {
-        const { getByText } = await renderScreen();
+    it('should display provider information correctly', () => {
+        const { getByText } = renderScreen();
 
         expect(getByText('Mercuryo')).toBeOnTheScreen();
     });
 
-    it('should show current limit and new limit with crypto icon', async () => {
-        const { getByText, getAllByText } = await renderScreen();
+    it('should show current limit and new limit with crypto icon', () => {
+        const { getByText, getAllByText } = renderScreen();
 
         expect(getByText('Current limit')).toBeOnTheScreen();
         expect(getByText('New limit')).toBeOnTheScreen();
@@ -94,15 +94,15 @@ describe('TradingExchangeRevokeScreen', () => {
         expect(usdcElements).toHaveLength(2);
     });
 
-    it('should render continue button', async () => {
-        const { getByText } = await renderScreen();
+    it('should render continue button', () => {
+        const { getByText } = renderScreen();
 
         const buttons = getByText('Continue');
         expect(buttons).toBeTruthy();
     });
 
-    it('should display warning alert about revoking permissions', async () => {
-        const { getByText } = await renderScreen();
+    it('should display warning alert about revoking permissions', () => {
+        const { getByText } = renderScreen();
 
         expect(
             getByText(

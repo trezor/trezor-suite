@@ -1,8 +1,8 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { Pressable } from 'react-native';
 
 import { Card, HStack, OrderedListIcon, Text } from '@suite-native/atoms';
-import { Icon, IconName } from '@suite-native/icons';
+import { Icon, type IconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const labelStyle = prepareNativeStyle(() => ({

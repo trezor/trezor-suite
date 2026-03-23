@@ -1,20 +1,20 @@
-import { InputHTMLAttributes, ReactElement, Ref } from 'react';
+import { type InputHTMLAttributes, type ReactElement, type Ref } from 'react';
 
 import styled from 'styled-components';
 
-import { FrameProps } from '../../../utils/frameProps';
+import { type FrameProps } from '../../../utils/frameProps';
 import { Box } from '../../Box/Box';
 import { Row } from '../../Flex/Flex';
 import { Icon } from '../../Icon/Icon';
 import { FloatingLabel } from '../FloatingLabel';
 import {
     FormCell,
-    FormCellProps,
+    type FormCellProps,
     allowedFormCellFrameProps,
     pickFormCellProps,
 } from '../FormCell/FormCell';
 import { InputWrapper } from '../InputWrapper';
-import { InputSize } from '../types';
+import { type InputSize } from '../types';
 import { INPUT_PADDING, commonInputStyles, mapSizeToHeight, mapSizeToPaddingTop } from '../utils';
 
 export const allowedInputFrameProps = allowedFormCellFrameProps;

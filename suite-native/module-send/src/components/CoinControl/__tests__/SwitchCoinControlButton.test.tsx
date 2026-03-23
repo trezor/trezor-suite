@@ -1,10 +1,10 @@
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import {
     BasicProviderForTests,
     renderHook,
     renderWithBasicProvider,
 } from '@suite-native/test-utils';
-import { NativeStyleUtils, useNativeStyles } from '@trezor/styles';
+import { type NativeStyleUtils, useNativeStyles } from '@trezor/styles';
 import { BigNumber } from '@trezor/utils';
 
 import { useUtxoSelection } from '../../../hooks/useUtxoSelection';

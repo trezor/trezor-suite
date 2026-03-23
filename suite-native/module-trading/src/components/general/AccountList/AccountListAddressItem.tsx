@@ -1,9 +1,9 @@
 import { useSelector } from 'react-redux';
 
-import { SuiteSyncDataRootState, selectSuiteSyncAddressLabel } from '@suite-common/suite-sync';
+import { type SuiteSyncDataRootState, selectSuiteSyncAddressLabel } from '@suite-common/suite-sync';
 import { Text } from '@suite-native/atoms';
 import { AccountAddress } from '@suite-native/trading-atoms';
-import { ReceiveAccount } from '@suite-native/trading-types';
+import { type ReceiveAccount } from '@suite-native/trading-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { AccountListBaseItem } from './AccountListBaseItem';

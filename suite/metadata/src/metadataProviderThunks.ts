@@ -1,16 +1,16 @@
-import { Dispatch } from '@reduxjs/toolkit';
+import { type Dispatch } from '@reduxjs/toolkit';
 
 import { asTypedDesktopAnalytics, events } from '@suite/analytics';
 import {
-    DataType,
-    MetadataProvider,
-    Error as MetadataProviderError,
-    MetadataProviderType,
-    OAuthServerEnvironment,
+    type DataType,
+    type MetadataProvider,
+    type Error as MetadataProviderError,
+    type MetadataProviderType,
+    type OAuthServerEnvironment,
     ProviderErrorAction,
-    Tokens,
+    type Tokens,
 } from '@suite-common/metadata-types';
-import { ExtraDependencies } from '@suite-common/redux-utils';
+import { type ExtraDependencies } from '@suite-common/redux-utils';
 import { triggerWebDownloadFile } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { exhaustive } from '@trezor/type-utils';
@@ -18,9 +18,9 @@ import { createDeferred, createZip, typedObjectKeys } from '@trezor/utils';
 
 import * as METADATA from './metadataConstants';
 import * as METADATA_PROVIDER from './metadataProviderConstants';
-import { MetadataRootState, selectSelectedProviderForLabels } from './metadataReducer';
+import { type MetadataRootState, selectSelectedProviderForLabels } from './metadataReducer';
 import { disposeMetadata } from './metadataThunks';
-import { FetchIntervalTrackingId } from './metadataUtils';
+import { type FetchIntervalTrackingId } from './metadataUtils';
 import { DropboxProvider } from './providers/DropboxProvider';
 import { FileSystemProvider } from './providers/FileSystemProvider';
 import { GoogleProvider } from './providers/GoogleProvider';

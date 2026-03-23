@@ -1,6 +1,6 @@
 import { METADATA, selectLabelingDataForAccount, slip15ToBip329 } from '@suite/metadata';
 import { selectSelectedDevice } from '@suite-common/device';
-import { Bip329Label } from '@suite-common/metadata-types';
+import { type Bip329Label } from '@suite-common/metadata-types';
 import { createThunk } from '@suite-common/redux-utils';
 import {
     selectAllLabelsForAccount,
@@ -10,11 +10,11 @@ import {
 } from '@suite-common/suite-sync';
 import { triggerWebDownloadFile } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { sanitizeFilename } from '@trezor/utils';
 
-import { GetDefaultAccountLabelParams } from '../../hooks/suite/useDefaultAccountLabel';
+import { type GetDefaultAccountLabelParams } from '../../hooks/suite/useDefaultAccountLabel';
 
 export const exportMetadataToBip329File = createThunk<
     void,

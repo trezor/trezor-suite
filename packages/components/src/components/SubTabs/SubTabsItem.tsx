@@ -1,12 +1,12 @@
 import styled, { css } from 'styled-components';
 
-import { Elevation, borders, mapElevationToBackground, spacings } from '@trezor/theme';
+import { type Elevation, borders, mapElevationToBackground, spacings } from '@trezor/theme';
 
 import { useSubTabsContext } from './SubTabsContext';
 import { mapSizeToIconSize, mapSizeToTypography } from './utils';
 import { useElevation } from '../ElevationContext/ElevationContext';
 import { Row } from '../Flex/Flex';
-import { Icon, IconName } from '../Icon/Icon';
+import { Icon, type IconName } from '../Icon/Icon';
 import { Text } from '../typography/Text/Text';
 
 const Item = styled.div<{ $isActive: boolean; $elevation: Elevation }>`

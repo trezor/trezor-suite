@@ -1,7 +1,7 @@
 import {
-    Dispatch,
-    ListenerEffectAPI,
-    UnknownAction,
+    type Dispatch,
+    type ListenerEffectAPI,
+    type UnknownAction,
     createListenerMiddleware,
 } from '@reduxjs/toolkit';
 
@@ -10,7 +10,6 @@ import {
     getDeviceInternalModel,
     getIsDeviceDescriptorApiTypeBluetooth,
     getIsDeviceInitialized,
-    getIsDeviceRemembered,
 } from '@suite-common/suite-utils';
 import { isThpPairingUIRequestButtonAction, selectThpAutoconnectStep } from '@suite-common/thp';
 import { selectIsAnyNetworkEnabled } from '@suite-common/wallet-core';
@@ -27,13 +26,13 @@ import {
     checkIsHomeStackFocused,
     navigationContainerRef,
 } from '@suite-native/navigation';
-import { DeviceModelInternal, hasBitcoinOnlyFirmware } from '@trezor/device-utils';
+import { type DeviceModelInternal, hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 
 import {
     DEVICE_CONNECTION_BLACKLISTED_ROUTES,
-    buildDisconnectionBlacklist,
+    DEVICE_DISCONNECTION_BLACKLISTED_ROUTES,
 } from '../deviceNavigationConfig';
-import { NativeDeviceRootState, selectCompromisedDeviceFailedCheck } from '../selectors';
+import { type NativeDeviceRootState, selectCompromisedDeviceFailedCheck } from '../selectors';
 import { getIsDeviceSetupSupported } from '../utils';
 
 export const deviceConnectionMiddleware = createListenerMiddleware<NativeDeviceRootState>();
@@ -188,15 +187,13 @@ deviceConnectionMiddleware.startListening({
             throw new Error('This listener only handles deviceDisconnect action');
         }
 
-        const device = action.payload;
-        const isDeviceRemembered = getIsDeviceRemembered(device);
         const isFirmwareInstallationRunning = selectIsFirmwareInstallationRunning(getState());
         const wasDeviceConnectedViaBluetooth = getIsDeviceDescriptorApiTypeBluetooth(
             action.payload,
         );
 
         if (
-            checkIsActiveRouteAnyOf(buildDisconnectionBlacklist(isDeviceRemembered)) ||
+            checkIsActiveRouteAnyOf(DEVICE_DISCONNECTION_BLACKLISTED_ROUTES) ||
             isFirmwareInstallationRunning
         )
             return;

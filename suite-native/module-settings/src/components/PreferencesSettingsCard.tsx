@@ -1,7 +1,7 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import { Card, HStack, Text, VStack } from '@suite-native/atoms';
-import { Icon, IconName } from '@suite-native/icons';
+import { Icon, type IconName } from '@suite-native/icons';
 
 type PreferencesSettingsCardProps = {
     iconName: IconName;

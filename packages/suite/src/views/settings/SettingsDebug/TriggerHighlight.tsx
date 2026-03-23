@@ -1,7 +1,7 @@
+import { SettingsAnchor, goto } from '@suite/router';
+
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 
-import { goto } from '../../../actions/suite/routerActions';
-import { SettingsAnchor } from '../../../constants/suite/anchors';
 import { useDispatch } from '../../../hooks/suite';
 
 export const TriggerHighlight = () => {
@@ -17,7 +17,9 @@ export const TriggerHighlight = () => {
                 <ActionButton
                     intent="brand"
                     onClick={() =>
-                        dispatch(goto('settings-index', { anchor: SettingsAnchor.Labeling }))
+                        dispatch(
+                            goto({ routeName: 'settings-index', anchor: SettingsAnchor.Labeling }),
+                        )
                     }
                 >
                     Go to Labeling

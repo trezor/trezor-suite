@@ -1,0 +1,13 @@
+version: v2
+clean: true
+plugins:
+    - local: protoc-gen-es
+      out: ../src/definitions
+      opt:
+          - target=js
+          - json_types=true
+
+    - local: ./protoc-gen-plugin.ts
+      out: ../src/definitions
+      opt:
+          - target=dts

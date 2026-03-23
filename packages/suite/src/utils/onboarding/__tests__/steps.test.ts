@@ -1,11 +1,11 @@
-import { AcquiredDevice } from '@suite-common/suite-types';
+import { type AcquiredDevice } from '@suite-common/suite-types';
 import { DeviceModelInternal, FirmwareType } from '@trezor/device-utils';
 
 import * as STEP from 'src/constants/onboarding/steps';
-import { Step, StepCategory } from 'src/types/onboarding';
+import { type Step, type StepCategory } from 'src/types/onboarding';
 
 import {
-    IsStepUsedProps,
+    type IsStepUsedProps,
     findNextStep,
     findPrevStep,
     isStepCategoryUsed,

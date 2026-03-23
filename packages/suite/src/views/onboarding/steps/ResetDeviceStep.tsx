@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import { Translation } from '@suite/intl';
+import { OnboardingCard } from '@suite/onboarding-components';
 import { selectDeviceDefaultBackupType, selectSelectedDevice } from '@suite-common/device';
-import { BackupType } from '@suite-common/suite-types';
+import { type BackupType } from '@suite-common/suite-types';
 import { Text } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { resetDevice } from 'src/actions/settings/deviceSettingsActions';
-import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/OnboardingCard';
 import * as STEP from 'src/constants/onboarding/steps';
 import { useDevice, useDispatch, useOnboarding, useSelector } from 'src/hooks/suite';
 

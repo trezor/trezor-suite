@@ -1,5 +1,5 @@
-import { TranslationKey } from '@suite/intl';
-import { BadgeIntent } from '@trezor/components';
+import { type TranslationKey } from '@suite/intl';
+import { type BadgeIntent } from '@trezor/components';
 
 type EarnDashboardBadgeState = {
     intent: BadgeIntent;

@@ -1,7 +1,7 @@
 import type { ExchangeTrade } from 'invity-api';
 
 import { act, renderHookWithBasicProvider } from '@suite-native/test-utils';
-import { QuotesByCategories } from '@suite-native/trading-types';
+import { type QuotesByCategories } from '@suite-native/trading-types';
 
 import { useProviderFilters } from '../useProviderFilters';
 

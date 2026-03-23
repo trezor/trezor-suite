@@ -105,7 +105,7 @@ export * from './components/skeletons/SkeletonCircle';
 export * from './components/skeletons/SkeletonRectangle';
 export * from './components/skeletons/SkeletonSpread';
 export * from './components/skeletons/SkeletonStack';
-export * from './components/skeletons/types';
+export type * from './components/skeletons/types';
 export * from './components/Timerange/Timerange';
 export * from './components/Toast/Toast';
 export * from './components/Toast/types';
@@ -156,4 +156,4 @@ export type { SuiteThemeColors } from './config/colors';
 export { RadioCard } from './components/RadioCard/RadioCard';
 export { PinInput } from './components/PinInput/PinInput';
 
-export { type UIIntent } from './config/types';
+export { type UIIntent, type UIVariant } from './config/types';

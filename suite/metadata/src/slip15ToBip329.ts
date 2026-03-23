@@ -1,4 +1,4 @@
-import { AccountLabels, Bip329Label } from '@suite-common/metadata-types';
+import { type AccountLabels, type Bip329Label } from '@suite-common/metadata-types';
 
 // Transforms a custom SLIP-15 like wallet label object into an array of BIP-329 label objects.
 export const slip15ToBip329 = (inputData: AccountLabels, allSpendable = true): Bip329Label[] => {

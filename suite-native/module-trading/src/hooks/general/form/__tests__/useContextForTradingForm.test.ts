@@ -1,5 +1,5 @@
-import { TradingAmountLimitProps } from '@suite-common/trading';
-import { PreloadedState, act, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
+import { type TradingAmountLimitProps } from '@suite-common/trading';
+import { type PreloadedState, act, renderHookWithStoreProvider } from '@suite-native/test-utils';
 
 import { useContextForTradingForm } from '../useContextForTradingForm';
 
@@ -8,12 +8,12 @@ describe('useContextForTradingForm', () => {
         limits: TradingAmountLimitProps | undefined,
         preloadedState: PreloadedState = {},
     ) =>
-        renderHookWithStoreProviderAsync(() => useContextForTradingForm(limits), {
+        renderHookWithStoreProvider(() => useContextForTradingForm(limits), {
             preloadedState,
         });
 
-    it('should return base context without limits and balance on initial render', async () => {
-        const { result } = await renderUseContextForTradingForm(undefined);
+    it('should return base context without limits and balance on initial render', () => {
+        const { result } = renderUseContextForTradingForm(undefined);
 
         expect(result.current.context).toEqual({
             translate: expect.any(Function),
@@ -23,7 +23,7 @@ describe('useContextForTradingForm', () => {
         });
     });
 
-    it('should append limits to context when specified', async () => {
+    it('should append limits to context when specified', () => {
         const limits: TradingAmountLimitProps = {
             minCrypto: '0.0001',
             maxCrypto: '1',
@@ -32,13 +32,13 @@ describe('useContextForTradingForm', () => {
             currency: 'BTC',
         };
 
-        const { result } = await renderUseContextForTradingForm(limits);
+        const { result } = renderUseContextForTradingForm(limits);
 
         expect(result.current.context).toEqual(expect.objectContaining(limits));
     });
 
-    it('should append balance and sendSymbol when specified', async () => {
-        const { result } = await renderUseContextForTradingForm(undefined);
+    it('should append balance and sendSymbol when specified', () => {
+        const { result } = renderUseContextForTradingForm(undefined);
 
         act(() => {
             result.current.setBalance('0.5');

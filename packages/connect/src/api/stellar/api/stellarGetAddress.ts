@@ -3,13 +3,13 @@
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 
-import { PROTO } from '../../../constants';
-import {
-    AbstractMethod,
+import type { PROTO } from '../../../constants';
+import type {
+    MethodMessage,
     MethodPermission,
     MethodReturnType,
-    Payload,
 } from '../../../core/AbstractMethod';
+import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { UI_REQUEST, createUiMessage } from '../../../events';
 import { Bundle } from '../../../types';
@@ -25,7 +25,7 @@ export default class StellarGetAddress extends AbstractMethod<'stellarGetAddress
     hasBundle?: boolean;
     progress = 0;
 
-    constructor(message: { id?: number; payload: Payload<'stellarGetAddress'> }) {
+    constructor(message: MethodMessage<'stellarGetAddress'>) {
         super(message);
         this.confirmMissingBackup = true;
         this.requiredDeviceCapabilities = ['Capability_Stellar'];

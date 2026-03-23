@@ -1,4 +1,4 @@
-import { renderWithStoreProviderAsync, screen } from '@suite-native/test-utils';
+import { renderWithStoreProvider, screen } from '@suite-native/test-utils';
 import { tradingInitialState } from '@suite-native/trading-state';
 
 import { TradingTabContent } from '../TradingTabContent';
@@ -21,7 +21,7 @@ jest.mock('../../../hooks/buy/useBuyData', () => ({
 
 describe('TradingTabContent', () => {
     const renderTradingTabContent = (isBlacklisted: boolean = false) =>
-        renderWithStoreProviderAsync(<TradingTabContent />, {
+        renderWithStoreProvider(<TradingTabContent />, {
             preloadedState: {
                 wallet: {
                     trading: {
@@ -73,32 +73,32 @@ describe('TradingTabContent', () => {
         mockIsInternetReachable = true;
     });
 
-    it('should render error screen when isInternetReachable is false', async () => {
+    it('should render error screen when isInternetReachable is false', () => {
         mockIsInternetReachable = false;
 
-        await renderTradingTabContent();
+        renderTradingTabContent();
 
         expectDeviceOffline();
     });
 
-    it('should render trading not allowed in your country warning when ff is set up', async () => {
-        await renderTradingTabContent(true);
+    it('should render trading not allowed in your country warning when ff is set up', () => {
+        renderTradingTabContent(true);
 
         expectTradingNotAllowedInCountry();
     });
 
-    it('trading not allowed should have priority over offline notice', async () => {
+    it('trading not allowed should have priority over offline notice', () => {
         mockIsInternetReachable = false;
 
-        await renderTradingTabContent(true);
+        renderTradingTabContent(true);
 
         expectTradingNotAllowedInCountry();
     });
 
-    it('should render form even when isInternetReachable is null', async () => {
+    it('should render form even when isInternetReachable is null', () => {
         mockIsInternetReachable = null;
 
-        await renderTradingTabContent();
+        renderTradingTabContent();
 
         expectBuyForm();
     });

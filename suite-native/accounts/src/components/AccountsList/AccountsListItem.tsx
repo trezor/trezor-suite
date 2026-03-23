@@ -1,8 +1,8 @@
 import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { AccountsRootState, selectFormattedAccountType } from '@suite-common/wallet-core';
-import { Account, AccountKey } from '@suite-common/wallet-types';
+import { type AccountsRootState, selectFormattedAccountType } from '@suite-common/wallet-core';
+import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { Badge } from '@suite-native/atoms';
 import {
     BaseCurrencyAmountFormatter,
@@ -13,18 +13,17 @@ import {
 import { CryptoIcon, CryptoIconWithNetwork } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { AccountLabel } from '@suite-native/labeling';
-import { NativeStakingRootState, selectAccountHasStaking } from '@suite-native/staking';
+import { type NativeStakingRootState, selectAccountHasStaking } from '@suite-native/staking';
 import {
-    TokensRootState,
+    type TokensRootState,
     isNetworkWithTokens,
-    selectAccountHasAnyKnownToken,
     selectNumberOfAccountKnownTokensWithBalance,
 } from '@suite-native/tokens';
 
 import { AccountsListItemBase } from './AccountsListItemBase';
 import { StakingBadge } from './StakingBadge';
-import { NativeAccountsRootState, selectAccountFiatBalance } from '../../selectors';
-import { OnSelectAccount } from '../../types';
+import { type NativeAccountsRootState, selectAccountFiatBalance } from '../../selectors';
+import { type OnSelectAccount } from '../../types';
 
 export type AccountListItemProps = {
     account: Account;
@@ -64,8 +63,9 @@ export const AccountsListItem = ({
     const formattedAccountType = useSelector((state: AccountsRootState) =>
         selectFormattedAccountType(state, account.key),
     );
-    const accountHasAnyTokens = useSelector((state: TokensRootState) =>
-        selectAccountHasAnyKnownToken(state, account.key),
+    const accountHasKnownTokensWithBalance = useSelector(
+        (state: TokensRootState) =>
+            selectNumberOfAccountKnownTokensWithBalance(state, account.key) > 0,
     );
 
     const accountHasStaking = useSelector((state: NativeStakingRootState) =>
@@ -79,10 +79,10 @@ export const AccountsListItem = ({
     const handleOnPress = useCallback(() => {
         onPress?.({
             account,
-            hasAnyKnownTokens: accountHasAnyTokens,
+            hasAnyKnownTokens: accountHasKnownTokensWithBalance,
             hasStaking: accountHasStaking,
         });
-    }, [account, accountHasAnyTokens, accountHasStaking, onPress]);
+    }, [account, accountHasKnownTokensWithBalance, accountHasStaking, onPress]);
 
     const icon = useMemo(
         () =>
@@ -96,7 +96,7 @@ export const AccountsListItem = ({
 
     const isNetworkSupportingTokens = isNetworkWithTokens(account.symbol);
     const shouldShowAccountLabel = !isNetworkSupportingTokens || !isNativeCoinOnly;
-    const shouldShowTokenBadge = accountHasAnyTokens && !isNativeCoinOnly;
+    const shouldShowTokenBadge = accountHasKnownTokensWithBalance && !isNativeCoinOnly;
     const shouldShowStakingBadge = accountHasStaking && !isNativeCoinOnly;
 
     return (

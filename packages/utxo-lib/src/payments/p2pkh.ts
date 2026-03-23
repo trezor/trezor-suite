@@ -10,7 +10,8 @@ import * as bcrypto from '../crypto';
 import { bitcoin as BITCOIN_NETWORK } from '../networks';
 import * as bscript from '../script';
 import * as lazy from './lazy';
-import { Payment, PaymentOpts, StackFunction, typeforce } from '../types';
+import { type Payment, type PaymentOpts, type StackFunction } from '../types';
+import { BufferNSchema, BufferSchema, Point, Type, assertType } from '../types/validation';
 
 const { OPS } = bscript;
 
@@ -22,19 +23,24 @@ export function p2pkh(a: Payment, opts?: PaymentOpts): Payment {
 
     opts = Object.assign({ validate: true }, opts || {});
 
-    typeforce(
-        {
-            network: typeforce.maybe(typeforce.Object),
-            address: typeforce.maybe(typeforce.String),
-            hash: typeforce.maybe(typeforce.BufferN(20)),
-            output: typeforce.maybe(typeforce.BufferN(25)),
-
-            pubkey: typeforce.maybe(ecc.isPoint),
-            signature: typeforce.maybe(bscript.isCanonicalScriptSignature),
-            input: typeforce.maybe(typeforce.Buffer),
-        },
+    assertType(
+        Type.Object(
+            {
+                network: Type.Optional(Type.Object({}, { additionalProperties: true })),
+                address: Type.Optional(Type.String()),
+                hash: Type.Optional(BufferNSchema(20)),
+                output: Type.Optional(BufferNSchema(25)),
+                pubkey: Type.Optional(Point),
+                signature: Type.Optional(BufferSchema),
+                input: Type.Optional(BufferSchema),
+            },
+            { additionalProperties: true },
+        ),
         a,
     );
+
+    if (a.signature && !bscript.isCanonicalScriptSignature(a.signature))
+        throw new TypeError('Expected canonical script signature');
 
     const _address = lazy.value(() => bs58check.decodeAddress(a.address!, a.network));
 

@@ -1,23 +1,23 @@
-import { WalletKitTypes } from '@reown/walletkit';
+import { type WalletKitTypes } from '@reown/walletkit';
 import type { ProposalTypes } from '@walletconnect/types';
 import bs58 from 'bs58';
 
 import * as trezorConnectPopupActions from '@suite-common/connect-popup';
 import { selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
-import { Network, getNetwork, networksCollection } from '@suite-common/wallet-config';
+import { type Network, getNetwork, networksCollection } from '@suite-common/wallet-config';
 import { selectAccounts } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
-import TrezorConnect, { CallMethodResponse } from '@trezor/connect';
-import { Result } from '@trezor/type-utils';
+import { type Account } from '@suite-common/wallet-types';
+import TrezorConnect, { type CallMethodResponse } from '@trezor/connect';
+import { type Result } from '@trezor/type-utils';
 
 import { WALLETCONNECT_MODULE } from '../walletConnectConstants';
 import { selectSessionByTopic } from '../walletConnectReducer';
 import {
-    PendingConnectionProposalNetwork,
-    WalletConnectAdapter,
-    WalletConnectNamespace,
-    WalletConnectSession,
+    type PendingConnectionProposalNetwork,
+    type WalletConnectAdapter,
+    type WalletConnectNamespace,
+    type WalletConnectSession,
 } from '../walletConnectTypes';
 
 const methods = [

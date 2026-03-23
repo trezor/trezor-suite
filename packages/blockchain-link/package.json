@@ -38,10 +38,12 @@
         "types": "./lib/index.d.ts",
         "exports": {
             ".": {
-                "import": "./libESM/index.js",
+                "import": "./libESM/index.mjs",
                 "require": "./lib/index.js",
                 "types": "./lib/index.d.ts"
-            }
+            },
+            "./lib/*": "./lib/*.js",
+            "./libESM/*": "./libESM/*"
         },
         "browser": {
             "socks-proxy-agent": "./lib/utils/socks-proxy-agent.js"
@@ -64,7 +66,8 @@
         "test:unit": "yarn g:jest --verbose -c jest.config.unit.js",
         "test:integration": "yarn g:jest -c jest.config.integration.js",
         "type-check": "yarn g:tsc --build tsconfig.json",
-        "depcheck": "yarn g:depcheck"
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "devDependencies": {
         "@trezor/e2e-utils": "workspace:*",
@@ -94,8 +97,8 @@
         "crypto-browserify": "3.12.0",
         "socks-proxy-agent": "8.0.5",
         "stream-browserify": "^3.0.0",
-        "viem": "^2.45.0",
-        "xrpl": "4.5.0"
+        "viem": "^2.46.3",
+        "xrpl": "4.6.0"
     },
     "peerDependencies": {
         "tslib": "^2.6.2"

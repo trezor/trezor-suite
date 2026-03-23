@@ -3,10 +3,10 @@ import type { CryptoId } from 'invity-api';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Form } from '@suite-native/forms';
 import {
-    TestStore,
+    type TestStore,
     initStore,
-    renderHookWithStoreProviderAsync,
-    renderWithStoreProviderAsync,
+    renderHookWithStoreProvider,
+    renderWithStoreProvider,
     userEvent,
 } from '@suite-native/test-utils';
 import {
@@ -15,7 +15,7 @@ import {
     getInitializedTradingState,
 } from '@suite-native/trading-fixtures';
 import { selectAccountsWithTokensToSellSectionCondensedListByTradingType } from '@suite-native/trading-state';
-import { ExchangeFormType, MyAssetTradeable } from '@suite-native/trading-types';
+import { type ExchangeFormType, type MyAssetTradeable } from '@suite-native/trading-types';
 import { BigNumber } from '@trezor/utils';
 
 import { useExchangeForm } from '../../../../hooks/exchange/useExchangeForm';
@@ -68,17 +68,17 @@ describe('ExchangeSendAssetPicker', () => {
     });
 
     const renderExchangeForm = () =>
-        renderHookWithStoreProviderAsync(() => useExchangeForm(), { store });
+        renderHookWithStoreProvider(() => useExchangeForm(), { store });
 
     const renderExchangeSendAssetPicker = () =>
-        renderWithStoreProviderAsync(<ExchangeSendAssetPicker />, {
+        renderWithStoreProvider(<ExchangeSendAssetPicker />, {
             store,
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 
-    beforeEach(async () => {
+    beforeEach(() => {
         store = initStore(getPreloadedState()).store;
-        const { result } = await renderExchangeForm();
+        const { result } = renderExchangeForm();
         form = result.current;
 
         mockedSelectAccountsWithTokensToSellSectionListByTradingType.mockReturnValue(
@@ -87,7 +87,7 @@ describe('ExchangeSendAssetPicker', () => {
     });
 
     it('should select asset on item press', async () => {
-        const { getByText } = await renderExchangeSendAssetPicker();
+        const { getByText } = renderExchangeSendAssetPicker();
 
         await userEvent.press(getByText('BTC'));
 
@@ -101,7 +101,7 @@ describe('ExchangeSendAssetPicker', () => {
     });
 
     it('should select account on item press', async () => {
-        const { getByText } = await renderExchangeSendAssetPicker();
+        const { getByText } = renderExchangeSendAssetPicker();
 
         await userEvent.press(getByText('BTC'));
 

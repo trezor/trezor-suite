@@ -7,11 +7,12 @@
     "main": "src/index",
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build"
+        "type-check": "yarn g:tsc --build",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
         "@trezor/transport": "workspace:*",
-        "react-native-ble-plx": "patch:react-native-ble-plx@npm%3A3.5.0#~/.yarn/patches/react-native-ble-plx-npm-3.5.0-c98fd0ae25.patch"
+        "react-native-ble-plx": "3.5.1"
     },
     "devDependencies": {
         "@trezor/type-utils": "workspace:*"

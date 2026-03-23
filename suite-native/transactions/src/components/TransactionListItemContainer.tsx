@@ -1,28 +1,33 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
 import { useFormatters } from '@suite-common/formatters';
-import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    TransactionsRootState,
+    type FiatRatesRootState,
+    type TransactionsRootState,
     selectIsPhishingTransaction,
     selectTransactionBlockTimeById,
     selectTransactionByAccountKeyAndTxid,
 } from '@suite-common/wallet-core';
-import { AccountKey, TransactionType, WalletAccountTransaction } from '@suite-common/wallet-types';
+import {
+    type AccountKey,
+    type TransactionType,
+    type WalletAccountTransaction,
+} from '@suite-common/wallet-types';
 import { isPending } from '@suite-common/wallet-utils';
 import { Badge, Box, DiscreetText, HStack, PressableOpacity, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
-    StackNavigationProps,
+    type StackNavigationProps,
     TransactionDetailStackRoutes,
 } from '@suite-native/navigation';
-import { TypedTokenTransfer } from '@suite-native/tokens';
+import { type TypedTokenTransfer } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { TransactionIcon } from './TransactionIcon';
@@ -133,7 +138,7 @@ export const TransactionListItemContainer = ({
 
     const isTransactionPending = isPending(transaction);
     const isPhishingTransaction = useSelector(
-        (state: TokenDefinitionsRootState & TransactionsRootState) =>
+        (state: TokenDefinitionsRootState & TransactionsRootState & FiatRatesRootState) =>
             selectIsPhishingTransaction(state, txid, accountKey),
     );
 

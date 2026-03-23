@@ -1,10 +1,15 @@
 import { createAction } from '@reduxjs/toolkit';
 
 import { createActionWithExtraDeps } from '@suite-common/redux-utils';
-import { TrezorDevice } from '@suite-common/suite-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
 
 import { selectVisibleNotificationsByType } from './notificationsSelectors';
-import { NotificationEntry, NotificationEventPayload, NotificationId, ToastPayload } from './types';
+import {
+    type NotificationEntry,
+    type NotificationEventPayload,
+    type NotificationId,
+    type ToastPayload,
+} from './types';
 
 export const ACTION_PREFIX = '@common/in-app-notifications';
 

@@ -1,4 +1,4 @@
-import { RefObject, useEffect, useRef } from 'react';
+import { type RefObject, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { isFulfilled } from '@reduxjs/toolkit';
@@ -6,20 +6,20 @@ import type { ExchangeTrade } from 'invity-api';
 
 import { invariant } from '@suite-common/suite-utils';
 import {
-    HandleExchangeRequestThunkProps,
+    type HandleExchangeRequestThunkProps,
     cryptoIdToNetwork,
     exchangeThunks,
     selectTradingExchangeIsLoading,
 } from '@suite-common/trading';
-import { WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
-import { AnalyticsNativeEvents, events } from '@suite-native/analytics';
+import { type WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
+import { type AnalyticsNativeEvents, events } from '@suite-native/analytics';
 import { useFormState } from '@suite-native/forms';
 import { useAnalytics } from '@suite-native/services';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import { exchangeActions, selectExchangeQuotes } from '@suite-native/trading-state';
-import { AbortablePromise, ExchangeFormType } from '@suite-native/trading-types';
-import { Analytics } from '@trezor/analytics-uploader';
-import { Timer, useDebounce } from '@trezor/react-utils';
+import { type AbortablePromise, type ExchangeFormType } from '@suite-native/trading-types';
+import { type Analytics } from '@trezor/analytics-uploader';
+import { type Timer, useDebounce } from '@trezor/react-utils';
 
 import { tradingExchangeFormToTradingExchangeFormProps } from '../../utils/exchange/quotesUtils';
 import { useQuotesInvalidator } from '../general/useQuotesInvalidator';

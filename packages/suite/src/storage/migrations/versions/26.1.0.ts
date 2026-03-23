@@ -1,6 +1,6 @@
 import { createMigration } from '@suite/idb-migration-utils';
 
-import { SuiteDBSchema } from 'src/storage/definitions';
+import { type SuiteDBSchema } from 'src/storage/definitions';
 
 import { removeNetwork } from '../networks/removeNetwork';
 import { updateAll } from '../utils';

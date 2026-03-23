@@ -10,7 +10,8 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "lint:js:fix": "yarn lint:js --fix",
         "type-check": "yarn g:tsc --build",
-        "test:unit": "yarn g:jest --coverage",
+        "test:unit": "yarn g:jest",
+        "test:unit:coverage": "yarn g:jest --coverage",
         "test:unit:watch": "yarn g:jest --watch"
     },
     "dependencies": {
@@ -37,12 +38,12 @@
         "@suite-native/trading-consts": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "react-native": "0.81.5"
+        "react-native": "0.83.2"
     },
     "devDependencies": {
         "@suite-common/test-utils": "workspace:*",
         "@suite-native/trading-fixtures": "workspace:*",
         "@suite-native/trading-types": "workspace:*",
-        "@types/invity-api": "^1.1.14"
+        "@types/invity-api": "^1.1.15"
     }
 }

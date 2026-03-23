@@ -12,7 +12,7 @@ import {
     selectTradingBuyReceiveAccountKey,
     selectTradingExchangeAccountKey,
 } from '@suite-common/trading';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { filterReceiveAccounts } from '@suite-common/wallet-utils';
 
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
@@ -20,10 +20,10 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAccountAddressDictionary } from 'src/hooks/wallet/useAccounts';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 import {
-    TradingGetTranslationIdsProps,
-    TradingVerifyAccountProps,
-    TradingVerifyAccountReturnProps,
-    TradingVerifyFormProps,
+    type TradingGetTranslationIdsProps,
+    type TradingVerifyAccountProps,
+    type TradingVerifyAccountReturnProps,
+    type TradingVerifyFormProps,
 } from 'src/types/trading/tradingVerify';
 
 const getTranslationIds = (

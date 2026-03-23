@@ -1,7 +1,14 @@
-import { CryptoId } from 'invity-api';
+import { type CryptoId } from 'invity-api';
 import { combineReducers } from 'redux';
 
-import { MODAL_CONTEXT_NONE, State as ModalState, modalReducer } from '@suite/modal';
+import { MODAL_CONTEXT_NONE, type State as ModalState, modalReducer } from '@suite/modal';
+import {
+    type LocationChangePayload,
+    type RouterState,
+    getRoute,
+    routerLocationChange,
+    routerReducer,
+} from '@suite/router';
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import {
     type TradingState,
@@ -12,18 +19,14 @@ import {
     tradingSellActions,
 } from '@suite-common/trading';
 import { prepareAccountsReducer } from '@suite-common/wallet-core';
-import { AccountKey, SelectedAccountStatus } from '@suite-common/wallet-types';
+import { type AccountKey, type SelectedAccountStatus } from '@suite-common/wallet-types';
 
-import { ROUTER } from 'src/actions/suite/constants';
 import { ACCOUNT } from 'src/actions/wallet/trading/__fixtures__/tradingCommonActions/store';
 import { tradingMiddlewareFixtures } from 'src/middlewares/wallet/__fixtures__/tradingMiddleware';
 import { tradingMiddleware } from 'src/middlewares/wallet/tradingMiddleware';
-import routerReducer, { RouterState } from 'src/reducers/suite/routerReducer';
-import suiteReducer, { SuiteState } from 'src/reducers/suite/suiteReducer';
+import suiteReducer, { type SuiteState } from 'src/reducers/suite/suiteReducer';
 import { accounts } from 'src/reducers/wallet/__fixtures__/transactionConstants';
 import selectedAccountReducer from 'src/reducers/wallet/selectedAccountReducer';
-import { Action } from 'src/types/suite';
-
 jest.mock('@suite-common/trading', () => {
     const originalModule = jest.requireActual('@suite-common/trading');
 
@@ -47,14 +50,24 @@ interface Args {
     modal?: ModalState;
 }
 
+const getRequiredRoute = <TName extends NonNullable<LocationChangePayload['route']>['name']>(
+    name: TName,
+) => {
+    const route = getRoute(name);
+
+    if (!route) {
+        throw new Error(`Missing route ${name}`);
+    }
+
+    return route as Extract<NonNullable<LocationChangePayload['route']>, { name: TName }>;
+};
+
 const getInitialState = ({ trading, selectedAccount, router }: Args = {}) => ({
     wallet: {
-        trading:
-            trading ??
-            ({
-                isLoading: false,
-                lastLoadedTimestamp: 0,
-            } as any),
+        trading: trading ?? {
+            isLoading: false,
+            lastLoadedTimestamp: 0,
+        },
         selectedAccount:
             selectedAccount ??
             ({
@@ -68,10 +81,10 @@ const getInitialState = ({ trading, selectedAccount, router }: Args = {}) => ({
             debug: {
                 invityServerEnvironment: 'dev',
             },
-        } as any,
+        },
     },
-    router: router ?? routerReducer(tradingMiddlewareFixtures.DEFAULT_ROUTE, {} as Action),
-    modal: modalReducer({ context: MODAL_CONTEXT_NONE }, {} as Action),
+    router: router ?? routerReducer(tradingMiddlewareFixtures.DEFAULT_ROUTE, { type: 'init' }),
+    modal: modalReducer({ context: MODAL_CONTEXT_NONE }, { type: 'init' }),
 });
 
 type State = ReturnType<typeof getInitialState>;
@@ -103,7 +116,7 @@ const initStore = (state: State) => {
             },
             suite: {
                 settings,
-            } as any,
+            },
             router: state.router ? { ...state.router } : {},
             modal: state.modal ? { ...state.modal } : {},
         },
@@ -118,10 +131,10 @@ describe('tradingMiddleware', () => {
         jest.clearAllMocks();
     });
 
-    it.each([
+    it.each<[string, AccountKey | CryptoId | undefined, LocationChangePayload]>([
         [
             'should stay modalAccountKey stable and modalCryptoId stable',
-            'mocked-key',
+            'mocked-key' as AccountKey,
             tradingMiddlewareFixtures.TRADING_SELL_ROUTE,
         ],
         [
@@ -129,10 +142,9 @@ describe('tradingMiddleware', () => {
             undefined,
             {
                 ...tradingMiddlewareFixtures.DEFAULT_ROUTE,
-                route: {
-                    ...tradingMiddlewareFixtures.DEFAULT_ROUTE.route,
-                    name: 'suite-start',
-                },
+                pathname: '/start',
+                app: 'start',
+                route: getRequiredRoute('suite-start'),
             },
         ],
     ])('%s', (_, result, routeChange) => {
@@ -143,28 +155,31 @@ describe('tradingMiddleware', () => {
                     modalAccountKey: 'mocked-key' as AccountKey, // Todo: create properly via `createAccountKey()`
                     modalCryptoId: 'mocked-key' as CryptoId,
                 },
-                router: routerReducer(tradingMiddlewareFixtures.TRADING_SELL_ROUTE, {} as Action),
+                router: routerReducer(tradingMiddlewareFixtures.TRADING_SELL_ROUTE, {
+                    type: 'init',
+                }),
             }),
         );
 
         // go away from trading
-        store.dispatch({
-            type: ROUTER.LOCATION_CHANGE,
-            payload: {
-                ...routeChange,
-            },
-        });
+        store.dispatch(routerLocationChange({ ...routeChange }));
 
         expect(store.getState().wallet.trading.modalCryptoId).toEqual(result);
         expect(store.getState().wallet.trading.modalAccountKey).toEqual(result);
     });
 
-    it.each([
+    type TradingRouterTestFixture = [
+        string,
+        { cryptoId: CryptoId | undefined; key: AccountKey | undefined },
+        RouterState,
+        LocationChangePayload,
+    ];
+    it.each<TradingRouterTestFixture>([
         [
             'should keep prefilledFromAccount when route is changed from sell to buy',
             {
                 cryptoId: 'bitcoin' as CryptoId,
-                key: 'descriptor',
+                key: 'descriptor' as AccountKey,
             },
             tradingMiddlewareFixtures.TRADING_BUY_ROUTE,
             tradingMiddlewareFixtures.TRADING_SELL_ROUTE,
@@ -173,7 +188,7 @@ describe('tradingMiddleware', () => {
             'should keep prefilledFromAccount when route is changed from buy to sell',
             {
                 cryptoId: 'bitcoin' as CryptoId,
-                key: 'descriptor',
+                key: 'descriptor' as AccountKey,
             },
             tradingMiddlewareFixtures.TRADING_SELL_ROUTE,
             tradingMiddlewareFixtures.TRADING_BUY_ROUTE,
@@ -191,7 +206,7 @@ describe('tradingMiddleware', () => {
             'should prefilledFromCryptoId stay stable when is page changed to the same',
             {
                 cryptoId: 'bitcoin' as CryptoId,
-                key: 'descriptor',
+                key: 'descriptor' as AccountKey,
             },
             tradingMiddlewareFixtures.TRADING_SELL_ROUTE,
             tradingMiddlewareFixtures.TRADING_SELL_ROUTE,
@@ -206,16 +221,11 @@ describe('tradingMiddleware', () => {
                         key: 'descriptor' as AccountKey, // Todo: create properly via `createAccountKey()`
                     },
                 },
-                router: routerReducer(routeDefault, {} as Action),
+                router: routerReducer(routeDefault, { type: 'init' }),
             }),
         );
 
-        store.dispatch({
-            type: ROUTER.LOCATION_CHANGE,
-            payload: {
-                ...routeChange,
-            },
-        });
+        store.dispatch(routerLocationChange({ ...routeChange }));
 
         expect(store.getState().wallet.trading.prefilledFromAccount).toEqual(result);
     });
@@ -239,12 +249,7 @@ describe('tradingMiddleware', () => {
             );
 
             // go to trading
-            store.dispatch({
-                type: ROUTER.LOCATION_CHANGE,
-                payload: {
-                    ...route,
-                },
-            });
+            store.dispatch(routerLocationChange({ ...route }));
 
             expect(store.getState().wallet.trading.activeSection).toEqual(section);
             expect(store.getState().wallet.trading[section].transactionId).toBeUndefined();

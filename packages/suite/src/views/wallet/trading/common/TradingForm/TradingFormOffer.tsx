@@ -7,12 +7,13 @@ import {
     TRADING_EXCHANGE_FORM_DEX,
     type TradingType,
     isCountrySubdivisionEmpty,
-    isSendingEvmNativeToken,
+    requiresTokenApproval,
+    selectTradingComposedTransactionInfo,
     tradingExchangeActions,
     tradingSellActions,
 } from '@suite-common/trading';
 import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/wallet-core';
-import { TokenAddress } from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/wallet-types';
 import { isAmountTooHigh } from '@suite-common/wallet-utils';
 import { Button, Card, Column, Paragraph } from '@trezor/components';
 import { breakpoints } from '@trezor/theme';
@@ -21,7 +22,7 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingDeviceDisconnected } from 'src/hooks/wallet/trading/form/common/useTradingDeviceDisconnected';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { selectTorState } from 'src/selectors/suite/suiteSelectors';
-import { TradingFormContextValues } from 'src/types/trading/tradingForm';
+import { type TradingFormContextValues } from 'src/types/trading/tradingForm';
 import {
     getCryptoQuoteAmountProps,
     getSelectQuoteTyped,
@@ -45,6 +46,9 @@ import { TradingRevokeModal } from './TradingRevokeModal';
 import { useIsContentBelowBreakpoint } from '../../../../../support/suite/ContentFlex';
 import { useReceiveAddressModalControls } from '../TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls';
 import { TradingUtilsTorWarning } from '../TradingUtils/TradingUtilsTorWarning';
+
+const isFeeRequiredButMissing = (fee: string | undefined, type: TradingType) =>
+    (type === 'sell' || type === 'exchange') && (fee === undefined || fee === '');
 
 const getQuotesFilteredByPaymentMethod = (
     quotes: BuyTrade[] | SellFiatTrade[],
@@ -114,7 +118,11 @@ export const TradingFormOffer = () => {
     const quote = preselectedQuote ?? getSelectedQuote(context);
     const bestScoredQuoteAmounts = getCryptoQuoteAmountProps(quote, context);
     const areFeesLoading = useSelector(state => selectAreFeesLoading(state, account.symbol));
+    const composedTransactionInfo = useSelector(selectTradingComposedTransactionInfo);
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
+
+    const fee = composedTransactionInfo?.composed?.fee;
+    const isFeeRequiredButMissingValue = isFeeRequiredButMissing(fee, type);
 
     const selectedCryptoId = getSelectedCryptoId(context);
     const receiveCurrency = bestScoredQuoteAmounts?.receiveCurrency;
@@ -130,13 +138,8 @@ export const TradingFormOffer = () => {
 
     const { tradingDeviceDisconnected } = useTradingDeviceDisconnected();
 
-    const requiresTokenApproval =
-        isTradingExchangeContext(context) &&
-        quote &&
-        (quote as ExchangeTrade)?.isDex &&
-        context.getValues('sendCryptoSelect') &&
-        account.networkType === 'ethereum' &&
-        !isSendingEvmNativeToken(context.getValues('sendCryptoSelect')?.id);
+    const shouldShowApprovalStep =
+        isTradingExchangeContext(context) && quote && requiresTokenApproval(quote as ExchangeTrade);
 
     const isQuoteOutdated =
         isTradingExchangeContext(context) &&
@@ -157,7 +160,7 @@ export const TradingFormOffer = () => {
         const initConfirmTrade = async () => {
             if (
                 isTradingExchangeContext(context) &&
-                requiresTokenApproval &&
+                shouldShowApprovalStep &&
                 tradingReceiveAddress?.receiveAddress
             ) {
                 dispatch(tradingExchangeActions.saveSelectedQuote(undefined));
@@ -172,7 +175,7 @@ export const TradingFormOffer = () => {
 
         initConfirmTrade();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [quote, requiresTokenApproval, tradingReceiveAddress?.receiveAddress]);
+    }, [quote, shouldShowApprovalStep, tradingReceiveAddress?.receiveAddress]);
 
     const onSelectQuote = async () => {
         if (!quote) {
@@ -241,9 +244,11 @@ export const TradingFormOffer = () => {
         tradingDeviceDisconnected ||
         state.isLoadingOrInvalid ||
         !quote ||
-        amountTooHigh;
+        amountTooHigh ||
+        areFeesLoading ||
+        isFeeRequiredButMissingValue;
 
-    const isLoading = requiresTokenApproval
+    const isLoading = shouldShowApprovalStep
         ? state.isFormLoading || isLoadingQuote || isQuoteOutdated
         : state.isFormLoading || isLoadingQuote;
 
@@ -339,7 +344,7 @@ export const TradingFormOffer = () => {
             ) : (
                 <>
                     {isTradingExchangeContext(context) &&
-                    requiresTokenApproval &&
+                    shouldShowApprovalStep &&
                     bestScoredQuote &&
                     !isLoading ? (
                         <TradingFormApproval />

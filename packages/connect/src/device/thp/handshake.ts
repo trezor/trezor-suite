@@ -2,11 +2,12 @@ import { randomBytes } from 'crypto';
 
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { encodeMessage } from '@trezor/protobuf';
-import { ThpPairingMethod, thp as protocolThp } from '@trezor/protocol';
+import type { ThpPairingMethod } from '@trezor/protocol';
+import { thp as protocolThp } from '@trezor/protocol';
 
 import { thpCall } from './thpCall';
 import { DataManager } from '../../data/DataManager';
-import type { Device } from '../Device';
+import type { IDevice } from '../../types/idevice';
 
 // intersection of device acceptable methods and host acceptable methods
 const getPairingMethods = (
@@ -25,7 +26,7 @@ const getPairingMethods = (
 // State HH0
 // TODO: link-to-public-docs
 // https://www.notion.so/satoshilabs/THP-Specification-2-1-203dc5260606804192aecaa58fb961ca
-export const createThpChannel = async (device: Device) => {
+export const createThpChannel = async (device: IDevice) => {
     const thpState = device.getThpState();
     if (!thpState) {
         throw ERRORS.TypedError('Device_ThpStateMissing');
@@ -66,7 +67,7 @@ export const createThpChannel = async (device: Device) => {
 // State HH1 and HH2
 // TODO: link-to-public-docs
 // https://www.notion.so/satoshilabs/THP-Specification-2-1-203dc5260606804192aecaa58fb961ca
-export const thpHandshake = async (device: Device, unlockPin = false) => {
+export const thpHandshake = async (device: IDevice, unlockPin = false) => {
     const thpState = device.getThpState();
     if (!thpState?.handshakeCredentials) {
         throw ERRORS.TypedError('Device_ThpStateMissing');

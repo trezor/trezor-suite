@@ -1,4 +1,4 @@
-import { WalletAccountTransaction, asAccountDescriptor } from '@suite-common/wallet-types';
+import { type WalletAccountTransaction, asAccountDescriptor } from '@suite-common/wallet-types';
 
 export const transactionWithTargetInOutputs: WalletAccountTransaction = {
     descriptor: asAccountDescriptor(

@@ -1,6 +1,6 @@
 import { isCodesignBuild } from '@trezor/env-utils';
 
-import { FeedbackType } from './feedback';
+import { type FeedbackType } from './feedback';
 
 export const FEEDBACK_ENDPOINT = 'https://data.trezor.io/suite';
 

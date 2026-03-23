@@ -1,7 +1,7 @@
 import { useRef } from 'react';
-import { TextInput } from 'react-native';
+import { type TextInput } from 'react-native';
 
-import { SurfaceElevation } from '../types';
+import { type SurfaceElevation } from '../types';
 import { BaseSearchInput } from './BaseSearchInput';
 
 export type SearchInputProps = {

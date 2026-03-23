@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 
-import { Translation, TranslationKey } from '@suite/intl';
+import { Translation, type TranslationKey } from '@suite/intl';
 import { Icon, Link, Row, Text, Tooltip } from '@trezor/components';
-import { TypographyStyle } from '@trezor/theme';
+import { type TypographyStyle } from '@trezor/theme';
 import { HELP_CENTER_TRANSACTION_FEES_URL } from '@trezor/urls';
 
 import { useFeesContext } from '../context/FeesContext';

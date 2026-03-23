@@ -1,10 +1,13 @@
-import { AccountKey, GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
-import { PreloadedState, renderWithStoreProviderAsync, userEvent } from '@suite-native/test-utils';
+import {
+    type AccountKey,
+    type GeneralPrecomposedTransactionFinal,
+} from '@suite-common/wallet-types';
+import { type PreloadedState, renderWithStoreProvider, userEvent } from '@suite-native/test-utils';
 import { getWalletState, sellQuotes } from '@suite-native/trading-fixtures';
 
 import {
     SellPreviewContinueButton,
-    SellPreviewContinueButtonProps,
+    type SellPreviewContinueButtonProps,
 } from '../SellPreviewContinueButton';
 
 const mockNavigate = jest.fn();
@@ -21,7 +24,7 @@ describe('SellPreviewContinueButton', () => {
         props: Partial<SellPreviewContinueButtonProps> = {},
         preloadedState: PreloadedState = {},
     ) =>
-        renderWithStoreProviderAsync(
+        renderWithStoreProvider(
             <SellPreviewContinueButton
                 isDisabled={false}
                 quote={sellQuotes[0]}
@@ -49,24 +52,24 @@ describe('SellPreviewContinueButton', () => {
         return preloadedState;
     };
 
-    it('should render nothing when precomposed transaction is not in final state', async () => {
+    it('should render nothing when precomposed transaction is not in final state', () => {
         const preloadedState = getPreloadedState();
         preloadedState!.wallet!.send!.precomposedTx = {
             type: 'composing',
         } as any;
-        const { toJSON } = await renderSellPreviewContinueButton({}, preloadedState);
+        const { toJSON } = renderSellPreviewContinueButton({}, preloadedState);
 
         expect(toJSON()).toBeNull();
     });
 
-    it('should render continue button', async () => {
-        const { getByText } = await renderSellPreviewContinueButton({}, getPreloadedState());
+    it('should render continue button', () => {
+        const { getByText } = renderSellPreviewContinueButton({}, getPreloadedState());
 
         expect(getByText('Continue')).toBeOnTheScreen();
     });
 
-    it('should render disabled button when isDisabled prop is specified', async () => {
-        const { getByText } = await renderSellPreviewContinueButton(
+    it('should render disabled button when isDisabled prop is specified', () => {
+        const { getByText } = renderSellPreviewContinueButton(
             { isDisabled: true },
             getPreloadedState(),
         );
@@ -77,7 +80,7 @@ describe('SellPreviewContinueButton', () => {
     it('should fire console.warn and do not navigate when quote is not specified', async () => {
         const mockOnSignTransactionNavigation = jest.fn();
         const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
-        const { getByText } = await renderSellPreviewContinueButton(
+        const { getByText } = renderSellPreviewContinueButton(
             { quote: undefined, onSignTransactionNavigation: mockOnSignTransactionNavigation },
             getPreloadedState(),
         );
@@ -97,7 +100,7 @@ describe('SellPreviewContinueButton', () => {
         const preloadedState = getPreloadedState();
         preloadedState!.wallet!.trading!.sell!.tradingAccountKey = 'non-existing-key';
         const mockOnSignTransactionNavigation = jest.fn();
-        const { getByText } = await renderSellPreviewContinueButton(
+        const { getByText } = renderSellPreviewContinueButton(
             { onSignTransactionNavigation: mockOnSignTransactionNavigation },
             preloadedState,
         );
@@ -115,7 +118,7 @@ describe('SellPreviewContinueButton', () => {
     it('should navigate to TradingOutputsReview on continue press', async () => {
         const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
         const mockOnSignTransactionNavigation = jest.fn();
-        const { getByText } = await renderSellPreviewContinueButton(
+        const { getByText } = renderSellPreviewContinueButton(
             { onSignTransactionNavigation: mockOnSignTransactionNavigation },
             getPreloadedState(),
         );

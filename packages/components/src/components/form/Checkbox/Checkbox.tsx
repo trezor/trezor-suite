@@ -1,11 +1,20 @@
-import { EventHandler, MouseEventHandler, ReactNode, SyntheticEvent } from 'react';
+import {
+    type EventHandler,
+    type MouseEventHandler,
+    type ReactNode,
+    type SyntheticEvent,
+} from 'react';
 
 import styled, { css } from 'styled-components';
 
 import { borders } from '@trezor/theme';
 
-import { LabelAlignment, VerticalAlignment } from './types';
-import { FrameProps, FramePropsKeys, pickAndPrepareFrameProps } from '../../../utils/frameProps';
+import { type LabelAlignment, type VerticalAlignment } from './types';
+import {
+    type FrameProps,
+    type FramePropsKeys,
+    pickAndPrepareFrameProps,
+} from '../../../utils/frameProps';
 import { Row } from '../../Flex/Flex';
 import { Icon } from '../../Icon/Icon';
 import { Text } from '../../typography/Text/Text';

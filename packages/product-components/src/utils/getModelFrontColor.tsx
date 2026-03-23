@@ -1,4 +1,4 @@
-import { ImageKey } from '@trezor/components';
+import { type ImageKey } from '@trezor/components';
 import { DeviceModelInternal, models } from '@trezor/device-utils';
 
 export const getModelFrontColor = (

@@ -1,6 +1,4 @@
-type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (k: infer I) => void
-    ? I
-    : never;
+import { type UnionToIntersection } from '@trezor/type-utils';
 
 type MethodFactory<Union> = UnionToIntersection<Union[keyof Union]>;
 

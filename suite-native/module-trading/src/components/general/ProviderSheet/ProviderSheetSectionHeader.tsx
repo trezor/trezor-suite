@@ -1,4 +1,4 @@
-import { QuotesCategory } from '@suite-native/trading-types';
+import { type QuotesCategory } from '@suite-native/trading-types';
 import { exhaustive } from '@trezor/type-utils';
 
 import { CexFixedSectionHeader } from './CexFixedSectionHeader';

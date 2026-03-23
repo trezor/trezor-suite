@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import type { DeviceRootState } from '@suite-common/device';
-import { AccountsRootState } from '@suite-common/wallet-core';
+import { type AccountsRootState } from '@suite-common/wallet-core';
 import { InlineAlertBox } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';

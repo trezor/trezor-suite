@@ -1,14 +1,14 @@
-import { JSX } from 'react';
+import { type JSX } from 'react';
 
-import { ExtendedMessageDescriptor, Translation, useTranslation } from '@suite/intl';
-import { NotificationEntry, notificationsActions } from '@suite-common/toast-notifications';
-import { IconName, Toast } from '@trezor/components';
+import { type ExtendedMessageDescriptor, Translation, useTranslation } from '@suite/intl';
+import { type NotificationEntry, notificationsActions } from '@suite-common/toast-notifications';
+import { type IconName, Toast } from '@trezor/components';
 
 import { useDispatch } from 'src/hooks/suite';
-import { ToastNotificationVariant } from 'src/types/suite';
+import { type ToastNotificationVariant } from 'src/types/suite';
 
 import { mapNotificationActionsToToastActions, notificationVariantToIntentMap } from './utils';
-import { NotificationViewProps } from '../Notifications/NotificationGroup/NotificationList/NotificationView';
+import { type NotificationViewProps } from '../Notifications/NotificationGroup/NotificationList/NotificationView';
 
 export type ToastNotificationViewProps = {
     notification: NotificationEntry;

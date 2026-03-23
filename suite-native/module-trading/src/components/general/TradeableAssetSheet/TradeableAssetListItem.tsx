@@ -6,8 +6,8 @@ import {
     selectIsTradingFavouriteAssetByCryptoId,
     tradingActions,
 } from '@suite-common/trading';
-import { TradingRootState } from '@suite-native/trading-state';
-import { TradeableAsset } from '@suite-native/trading-types';
+import { type TradingRootState } from '@suite-native/trading-state';
+import { type TradeableAsset } from '@suite-native/trading-types';
 
 import { AssetListItem } from '../AssetListItem';
 import { FavouriteIcon } from './FavouriteIcon';

@@ -1,8 +1,8 @@
+import { type ConfirmKey, backupActions } from '@suite/backup';
 import { Translation } from '@suite/intl';
 import { Card, Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { ConfirmKey, toggleCheckboxByKey } from 'src/actions/backup/backupActions';
 import { CheckItem } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
@@ -17,21 +17,23 @@ export const PreBackupCheckboxes = () => {
             <Column gap={spacings.xl}>
                 <CheckItem
                     data-testid="@backup/check-item/has-enough-time"
-                    onClick={() => dispatch(toggleCheckboxByKey('has-enough-time'))}
+                    onClick={() => dispatch(backupActions.toggleCheckboxByKey('has-enough-time'))}
                     title={<Translation id="TR_I_HAVE_ENOUGH_TIME_TO_DO" />}
                     description={<Translation id="TR_ONCE_YOU_BEGIN_THIS_PROCESS" />}
                     isChecked={isChecked('has-enough-time')}
                 />
                 <CheckItem
                     data-testid="@backup/check-item/is-in-private"
-                    onClick={() => dispatch(toggleCheckboxByKey('is-in-private'))}
+                    onClick={() => dispatch(backupActions.toggleCheckboxByKey('is-in-private'))}
                     title={<Translation id="TR_I_AM_IN_SAFE_PRIVATE_OR" />}
                     description={<Translation id="TR_MAKE_SURE_NO_ONE_CAN_PEEK" />}
                     isChecked={isChecked('is-in-private')}
                 />
                 <CheckItem
                     data-testid="@backup/check-item/understands-what-seed-is"
-                    onClick={() => dispatch(toggleCheckboxByKey('understands-what-seed-is'))}
+                    onClick={() =>
+                        dispatch(backupActions.toggleCheckboxByKey('understands-what-seed-is'))
+                    }
                     title={<Translation id="TR_I_UNDERSTAND_SEED_IS_IMPORTANT" />}
                     description={<Translation id="TR_BACKUP_SEED_IS_ULTIMATE" />}
                     isChecked={isChecked('understands-what-seed-is')}

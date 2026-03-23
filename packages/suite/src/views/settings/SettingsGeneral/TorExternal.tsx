@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 
 import { Translation } from '@suite/intl';
+import { SettingsAnchor } from '@suite/router';
 import { desktopApi } from '@trezor/suite-desktop-api';
-import { TorSettings } from '@trezor/suite-desktop-api/src/messages';
+import { type TorSettings } from '@trezor/suite-desktop-api/src/messages';
 
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionColumn, ActionSelect, TextColumn } from 'src/components/suite';
-import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useSelector } from 'src/hooks/suite';
 import { selectTorState } from 'src/selectors/suite/suiteSelectors';
 

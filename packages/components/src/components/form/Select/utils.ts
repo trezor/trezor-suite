@@ -1,6 +1,6 @@
-import { StylesConfig } from 'react-select';
+import { type StylesConfig } from 'react-select';
 
-import { CSSObject } from 'styled-components';
+import { type CSSObject } from 'styled-components';
 
 import { zIndices } from '@trezor/theme';
 

@@ -1,6 +1,6 @@
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
-import { FullAlertBox, FullAlertBoxProps } from './FullAlertBox';
+import { FullAlertBox, type FullAlertBoxProps } from './FullAlertBox';
 
 export const AnimatedFullAlertBox = (props: FullAlertBoxProps) => (
     <Animated.View entering={FadeIn} exiting={FadeOut}>

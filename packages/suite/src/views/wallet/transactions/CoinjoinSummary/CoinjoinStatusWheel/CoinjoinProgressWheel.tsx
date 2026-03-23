@@ -1,15 +1,15 @@
 import { useCallback, useState } from 'react';
 
 import { lighten, rgba } from 'polished';
-import styled, { DefaultTheme, css, keyframes } from 'styled-components';
+import styled, { type DefaultTheme, css, keyframes } from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { AccountKey } from '@suite-common/wallet-types';
+import { goto } from '@suite/router';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { Tooltip, useElevation } from '@trezor/components';
-import { Elevation, mapElevationToBorder } from '@trezor/theme';
+import { type Elevation, mapElevationToBorder } from '@trezor/theme';
 
-import { goto } from 'src/actions/suite/routerActions';
 import {
     coinjoinSessionAutostop,
     startCoinjoinSession,
@@ -223,7 +223,7 @@ export const CoinjoinProgressWheel = ({ accountKey }: CoinjoinProgressWheelProps
             return;
         }
 
-        dispatch(goto('wallet-anonymize', { preserveParams: true }));
+        dispatch(goto({ routeName: 'wallet-anonymize', preserveParams: true }));
     }, [
         isCoinjoinSessionBlocked,
         isAllPrivate,

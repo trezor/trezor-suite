@@ -1,10 +1,10 @@
 import type { SellFiatTrade } from 'invity-api';
 
-import { AccountsRootState } from '@suite-common/wallet-core';
-import { Account, AccountKey } from '@suite-common/wallet-types';
+import { type AccountsRootState } from '@suite-common/wallet-core';
+import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { getBtcAccount, getWalletState, sellQuotes } from '@suite-native/trading-fixtures';
 
-import { TradingRootState } from '../../reducers';
+import { type TradingRootState } from '../../reducers';
 import {
     selectSellAmountLimits,
     selectSellBestQuotesForAvailablePaymentMethods,
@@ -274,12 +274,12 @@ describe('sellSelectors', () => {
         it('should return only first quote for each payment method', () => {
             expect(selectSellBestQuotesForAvailablePaymentMethods(state)).toEqual([
                 expect.objectContaining({
-                    paymentMethod: 'creditCard',
-                    rate: 3869.9570815450643,
-                }),
-                expect.objectContaining({
                     paymentMethod: 'bankTransfer',
                     rate: 3937.6279729091198,
+                }),
+                expect.objectContaining({
+                    paymentMethod: 'creditCard',
+                    rate: 3869.9570815450643,
                 }),
             ]);
         });
@@ -310,6 +310,22 @@ describe('sellSelectors', () => {
             state.wallet.trading.sell.quotes = [quote];
 
             expect(selectSellBestQuotesForAvailablePaymentMethods(state)).toEqual([]);
+        });
+
+        it('should sort quotes by rates', () => {
+            const quote1 = {
+                ...sellQuotes[0],
+                paymentMethod: 'creditCard',
+                rate: 10000,
+            } as SellFiatTrade;
+            const quote2 = {
+                ...sellQuotes[0],
+                paymentMethod: 'bankTransfer',
+                rate: 20000,
+            } as SellFiatTrade;
+            state.wallet.trading.sell.quotes = [quote1, quote2];
+
+            expect(selectSellBestQuotesForAvailablePaymentMethods(state)).toEqual([quote2, quote1]);
         });
     });
 

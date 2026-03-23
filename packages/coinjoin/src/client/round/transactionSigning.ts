@@ -2,7 +2,9 @@ import { arrayShuffle, getWeakRandomInt } from '@trezor/utils';
 
 import { TX_SIGNING_DELAY } from '../../constants';
 import { SessionPhase, WabiSabiProtocolErrorCode } from '../../enums';
-import { CoinjoinTransactionData } from '../../types';
+import { type CoinjoinTransactionData } from '../../types';
+import type { AliceShape } from '../../types/alice';
+import type { CoinjoinRoundOptions, CoinjoinRoundShape } from '../../types/round';
 import {
     getAddressFromScriptPubKey,
     mergePubkeys,
@@ -19,13 +21,11 @@ import {
     scheduleDelay,
 } from '../../utils/roundUtils';
 import type { Account } from '../Account';
-import type { Alice } from '../Alice';
-import type { CoinjoinRound, CoinjoinRoundOptions } from '../CoinjoinRound';
 import * as coordinator from '../coordinator';
 import * as middleware from '../middleware';
 
 const getTransactionData = (
-    round: CoinjoinRound,
+    round: CoinjoinRoundShape,
     options: CoinjoinRoundOptions,
 ): CoinjoinTransactionData => {
     const registeredInputs = getRoundEvents('InputAdded', round.coinjoinState.Events);
@@ -100,7 +100,7 @@ const getTransactionData = (
 };
 
 const updateRawLiquidityClue = async (
-    round: CoinjoinRound,
+    round: CoinjoinRoundShape,
     accounts: Account[],
     tx: CoinjoinTransactionData,
     options: CoinjoinRoundOptions,
@@ -134,9 +134,9 @@ const updateRawLiquidityClue = async (
 };
 
 const sendTxSignature = async (
-    round: CoinjoinRound,
+    round: CoinjoinRoundShape,
     resolvedTime: number,
-    input: Alice,
+    input: AliceShape,
     { signal, coordinatorUrl, logger }: CoinjoinRoundOptions,
 ) => {
     // if DelayTransactionSigning is set then start sending signatures **after** 50 seconds reduced by time spent on actual signing on the device.
@@ -174,10 +174,10 @@ const sendTxSignature = async (
 };
 
 export const transactionSigning = async (
-    round: CoinjoinRound,
+    round: CoinjoinRoundShape,
     accounts: Account[],
     options: CoinjoinRoundOptions,
-): Promise<CoinjoinRound> => {
+): Promise<CoinjoinRoundShape> => {
     const { logger } = options;
 
     logger.info(`transactionSigning: ~~${round.id}~~`);

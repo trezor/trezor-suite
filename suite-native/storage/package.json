@@ -8,12 +8,13 @@
     "scripts": {
         "test:unit": "yarn g:jest",
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build"
+        "type-check": "yarn g:tsc --build",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
         "@reduxjs/toolkit": "2.11.2",
-        "@sentry/react-native": "7.11.0",
+        "@sentry/react-native": "8.2.0",
         "@suite-common/device": "workspace:*",
         "@suite-common/firmware-authenticity": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
@@ -26,12 +27,12 @@
         "@trezor/transport-native-bluetooth": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "bs58": "^6.0.0",
-        "expo-crypto": "~15.0.7",
-        "expo-secure-store": "~15.0.8",
-        "expo-splash-screen": "~31.0.13",
-        "jotai": "2.15.0",
-        "react": "19.1.0",
-        "react-native": "0.81.5",
+        "expo-crypto": "~55.0.8",
+        "expo-secure-store": "~55.0.8",
+        "expo-splash-screen": "~55.0.10",
+        "jotai": "2.17.1",
+        "react": "19.2.4",
+        "react-native": "0.83.2",
         "react-native-mmkv": "~4.1.2",
         "react-native-restart": "0.0.27",
         "redux-persist": "6.0.0"

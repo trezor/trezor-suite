@@ -1,200 +1,74 @@
 import type { ReactNode } from 'react';
-import { startTransition, useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react';
-
-import styled from 'styled-components';
+import { startTransition, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import type { SuiteThemeColors } from '@trezor/components';
 import {
-    Banner,
-    Box,
     Button,
+    ButtonGroup,
     Column,
-    Divider,
     H2,
     H3,
     IconButton,
     Modal,
+    ResizableBox,
     Row,
     Spinner,
-    Text,
     Tooltip,
     useMediaQuery,
     variables,
 } from '@trezor/components';
-import { hexToRgba } from '@trezor/utils';
 
+import { AnalyticsContent } from './app/AnalyticsContent';
+import { ContentArea, EventCardWrapper, MainWithSidebar, SidebarOuter, TopBar } from './app/layout';
+import { scrollToIdInContainer } from './app/scroll';
 import { AddEventModal } from './components/AddEventModal';
 import { EventCard } from './components/EventCard';
 import { Filter } from './components/Filter';
 import { GlobalStyle } from './components/GlobalStyle';
+import {
+    LIVE_LOG_SIDEBAR_MAX_WIDTH,
+    LIVE_LOG_SIDEBAR_MIN_WIDTH,
+    LiveLogSidebar,
+} from './components/LiveLogSidebar';
 import { ResultsInfo } from './components/ResultsInfo';
 import { ThemeSwitch } from './components/ThemeSwitch';
-import { SIDEBAR_WIDTH, VersionsSidebar } from './components/VersionsSidebar';
-import { HEADER_HEIGHT } from './constants';
+import { VersionsSidebar } from './components/VersionsSidebar';
 import type { EventDoc } from './types';
 import { getEventId, getVersionsWithEvents } from './utils/filterUtils';
 import { useFilteredEvents } from './utils/useFilteredEvents';
+
+const SIDEBAR_DEFAULT_WIDTH = 360;
+const HIGHLIGHT_DURATION_MS = 1000;
 
 type AppTheme = SuiteThemeColors & { variant: 'light' | 'dark'; mode: 'light' | 'dark' };
 
 type AppProps = { theme: AppTheme };
 
-export const TopBar = styled.div`
-    display: flex;
-    align-items: center;
-    padding: 12px 24px;
-    background: ${({ theme }) => hexToRgba(theme.backgroundSurfaceElevation0, 0.8)};
-    box-shadow: ${({ theme }) => theme.boxShadowBase};
-
-    @media (min-width: ${variables.SCREEN_SIZE.MD}) {
-        backdrop-filter: blur(20px);
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        z-index: 50; /* below theme tooltip (60) so tooltips are visible above header */
-    }
-`;
-
-export const Content = styled.div`
-    padding: 20px 10px;
-
-    @media (min-width: ${variables.SCREEN_SIZE.MD}) {
-        margin: ${HEADER_HEIGHT}px 20px 0;
-    }
-`;
-
-export const ContentContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    width: 100%;
-`;
-
-const MainWithSidebar = styled.div`
-    display: flex;
-    flex: 1;
-    min-height: 0;
-
-    @media (max-width: ${variables.SCREEN_SIZE.MD}) {
-        flex-direction: column;
-    }
-
-    @media (min-width: ${variables.SCREEN_SIZE.MD}) {
-        margin: ${HEADER_HEIGHT}px 0 0;
-    }
-`;
-
-const ContentArea = styled.div`
-    flex: 1;
-    min-width: 0;
-    margin: 0;
-    padding: 20px 10px;
-
-    @media (max-width: ${variables.SCREEN_SIZE.MD}) {
-        order: 1;
-    }
-
-    @media (min-width: ${variables.SCREEN_SIZE.MD}) {
-        margin: 0 20px 20px;
-        margin-right: ${SIDEBAR_WIDTH + 20}px;
-    }
-`;
-
-const HIGHLIGHT_DURATION_MS = 1000;
-
-const EventCardWrapper = styled.div`
-    border-radius: 18px;
-    border: 2px solid transparent;
-    transition: border-color 0.4s ease-out;
-
-    &.highlighted {
-        border-color: ${({ theme }) => theme.backgroundAlertYellowBold};
-    }
-`;
-
-const ScrollWhenReady = ({ onReady }: { onReady: () => void }) => {
-    useLayoutEffect(() => {
-        onReady();
-    }, [onReady]);
-
-    return null;
-};
-
-const formatGeneratedAt = (isoString: string): string => {
-    const d = new Date(isoString);
-    const YYYY = d.getFullYear();
-    const MM = String(d.getMonth() + 1).padStart(2, '0');
-    const DD = String(d.getDate()).padStart(2, '0');
-    const HH = String(d.getHours()).padStart(2, '0');
-    const mm = String(d.getMinutes()).padStart(2, '0');
-
-    return `${YYYY}-${MM}-${DD}, ${HH}:${mm}`;
-};
-
-type AnalyticsContentProps = {
-    isAnalyticsDataLoading: boolean;
-    isAnalyticsDataGenerated: boolean;
-    eventCards: ReactNode;
-    hasEventCards: boolean;
-    generatedAt?: string;
-    onContentReady?: () => void;
-};
-
-const AnalyticsContent = ({
-    isAnalyticsDataLoading,
-    isAnalyticsDataGenerated,
-    eventCards,
-    hasEventCards,
-    generatedAt,
-    onContentReady,
-}: AnalyticsContentProps) => {
-    if (isAnalyticsDataLoading) return <Spinner size={20} />;
-    if (!isAnalyticsDataGenerated) {
-        return (
-            <Banner
-                intent="warning"
-                icon
-                description={
-                    <>
-                        File{' '}
-                        <Text isMonospaced typographyStyle="inherit">
-                            analytics.json
-                        </Text>{' '}
-                        has not been generated. Run{' '}
-                        <Text isMonospaced typographyStyle="inherit">
-                            yarn build-data
-                        </Text>{' '}
-                        (or{' '}
-                        <Text isMonospaced typographyStyle="inherit">
-                            yarn dev
-                        </Text>
-                        ) to generate it.
-                    </>
-                }
-            />
-        );
-    }
-
-    return (
-        <Column gap={40}>
-            {eventCards}
-            {onContentReady && hasEventCards && <ScrollWhenReady onReady={onContentReady} />}
-            {generatedAt && (
-                <Box>
-                    <Divider margin={{ top: 0, bottom: 12 }} />
-                    <Text typographyStyle="body-xs" intent="neutral" priority="secondary">
-                        Docs generated at {formatGeneratedAt(generatedAt)}
-                    </Text>
-                </Box>
-            )}
-        </Column>
-    );
-};
+const ContentContainer = ({ children }: { children: ReactNode }) => (
+    <Column gap={12} width="100%">
+        {children}
+    </Column>
+);
 
 export const App = ({ theme }: AppProps) => {
     const [isAddEventModalOpen, setIsAddEventModalOpen] = useState(false);
     const [eventToEdit, setEventToEdit] = useState<EventDoc | null>(null);
+    const [sidebarWidth, setSidebarWidth] = useState(SIDEBAR_DEFAULT_WIDTH);
+    const rafRef = useRef<number | null>(null);
+    const pendingWidthRef = useRef<number | null>(null);
+    const contentScrollRef = useRef<HTMLDivElement | null>(null);
+
+    const setSidebarWidthThrottled = useCallback((w: number) => {
+        pendingWidthRef.current = w;
+        if (rafRef.current != null) return;
+        rafRef.current = requestAnimationFrame(() => {
+            if (pendingWidthRef.current != null) {
+                setSidebarWidth(pendingWidthRef.current);
+                pendingWidthRef.current = null;
+            }
+            rafRef.current = null;
+        });
+    }, []);
     const {
         filteredEvents,
         setQuery,
@@ -208,11 +82,13 @@ export const App = ({ theme }: AppProps) => {
         allEvents,
         isFiltering,
         isSidebarOpen,
+        isLiveLogOpen,
         isSidebarLoading,
         isAnalyticsDataGenerated,
         isAnalyticsDataLoading,
         generatedAt,
         setIsSidebarOpen,
+        setIsLiveLogOpen,
         setIsSidebarLoading,
     } = useFilteredEvents();
 
@@ -223,20 +99,45 @@ export const App = ({ theme }: AppProps) => {
         [filteredEvents],
     );
 
+    const scrollToEventInContent = useCallback((eventName: string) => {
+        scrollToIdInContainer({
+            container: contentScrollRef.current,
+            id: getEventId(eventName),
+            behavior: 'instant',
+            offsetTop: 20,
+        });
+    }, []);
+
     const handleSidebarEventClick = (eventName: string) => {
         const el = document.getElementById(getEventId(eventName));
         if (!el) return;
         el.classList.add('highlighted');
         setTimeout(() => el.classList.remove('highlighted'), HIGHLIGHT_DURATION_MS);
+        scrollToEventInContent(eventName);
     };
 
     const scrollToHashElement = useCallback((): boolean => {
+        const container = contentScrollRef.current;
         const hash = window.location.hash.slice(1);
         if (!hash) return true;
         const el = document.getElementById(hash);
         if (!el) return false;
-        el.scrollIntoView({ block: 'start', behavior: 'instant' });
-        window.scrollBy(0, -(HEADER_HEIGHT + 20));
+
+        if (container) {
+            if (
+                !scrollToIdInContainer({
+                    container,
+                    id: hash,
+                    behavior: 'instant',
+                    offsetTop: 20,
+                })
+            ) {
+                return false;
+            }
+        } else {
+            el.scrollIntoView({ block: 'start', behavior: 'instant' });
+        }
+
         el.classList.add('highlighted');
         setTimeout(() => el.classList.remove('highlighted'), HIGHLIGHT_DURATION_MS);
 
@@ -284,6 +185,59 @@ export const App = ({ theme }: AppProps) => {
 
     const Heading = isMobile ? H3 : H2;
 
+    let sidebar: ReactNode = null;
+    if (isSidebarOpen || isLiveLogOpen) {
+        if (isMobile) {
+            sidebar = isLiveLogOpen ? (
+                <LiveLogSidebar
+                    onEventClick={handleSidebarEventClick}
+                    filterQuery={debouncedQuery}
+                />
+            ) : (
+                <VersionsSidebar
+                    versionsWithEvents={versionsWithEvents}
+                    onEventClick={handleSidebarEventClick}
+                />
+            );
+        } else {
+            sidebar = (
+                <SidebarOuter>
+                    <ResizableBox
+                        directions={['left']}
+                        width={sidebarWidth}
+                        minWidth={LIVE_LOG_SIDEBAR_MIN_WIDTH}
+                        maxWidth={LIVE_LOG_SIDEBAR_MAX_WIDTH}
+                        minHeight={0}
+                        flex="1"
+                        onWidthResizeEnd={w => {
+                            pendingWidthRef.current = null;
+                            if (rafRef.current != null) {
+                                cancelAnimationFrame(rafRef.current);
+                                rafRef.current = null;
+                            }
+                            setSidebarWidth(w);
+                        }}
+                        onWidthResizeMove={setSidebarWidthThrottled}
+                    >
+                        <Column overflow="hidden" minHeight={0} width="100%" height="100%">
+                            {isLiveLogOpen ? (
+                                <LiveLogSidebar
+                                    onEventClick={handleSidebarEventClick}
+                                    filterQuery={debouncedQuery}
+                                />
+                            ) : (
+                                <VersionsSidebar
+                                    versionsWithEvents={versionsWithEvents}
+                                    onEventClick={handleSidebarEventClick}
+                                />
+                            )}
+                        </Column>
+                    </ResizableBox>
+                </SidebarOuter>
+            );
+        }
+    }
+
     const addButtonProps = {
         intent: 'neutral' as const,
         priority: 'secondary' as const,
@@ -303,7 +257,7 @@ export const App = ({ theme }: AppProps) => {
                     }}
                     initialEvent={eventToEdit}
                 />
-                <Box minHeight="100vh">
+                <Column height="100vh" overflow="hidden">
                     <TopBar>
                         <ContentContainer>
                             <Row
@@ -327,34 +281,54 @@ export const App = ({ theme }: AppProps) => {
                                         )}
                                     </Tooltip>
                                     <ThemeSwitch />
-                                    <Tooltip
-                                        content={
-                                            isSidebarOpen
-                                                ? 'Hide versions'
-                                                : 'Show versions by changelog'
-                                        }
-                                    >
-                                        <IconButton
-                                            icon="clockCounterClockwise"
-                                            onClick={() => {
-                                                setIsSidebarLoading(true);
-                                                if (isSidebarOpen) {
-                                                    startTransition(() => setIsSidebarOpen(false));
-                                                } else {
-                                                    requestAnimationFrame(() => {
-                                                        requestAnimationFrame(() => {
-                                                            startTransition(() =>
-                                                                setIsSidebarOpen(true),
-                                                            );
-                                                        });
+                                    <ButtonGroup intent="neutral" priority="secondary" size="small">
+                                        <Tooltip
+                                            content={
+                                                isLiveLogOpen
+                                                    ? 'Hide live log'
+                                                    : 'Show live analytics log'
+                                            }
+                                        >
+                                            <IconButton
+                                                icon="broadcast"
+                                                onClick={() => {
+                                                    startTransition(() => {
+                                                        const next = !isLiveLogOpen;
+                                                        setIsLiveLogOpen(next);
+                                                        if (next) setIsSidebarOpen(false);
                                                     });
-                                                }
-                                            }}
-                                            intent={isSidebarOpen ? 'brand' : 'neutral'}
-                                            size="small"
-                                            priority={isSidebarOpen ? 'primary' : 'secondary'}
-                                        />
-                                    </Tooltip>
+                                                }}
+                                                intent={isLiveLogOpen ? 'brand' : 'neutral'}
+                                                priority={isLiveLogOpen ? 'primary' : 'secondary'}
+                                            />
+                                        </Tooltip>
+                                        <Tooltip
+                                            content={
+                                                isSidebarOpen
+                                                    ? 'Hide changelog'
+                                                    : 'Show versions by changelog'
+                                            }
+                                        >
+                                            <IconButton
+                                                icon="clockCounterClockwise"
+                                                onClick={() => {
+                                                    setIsSidebarLoading(true);
+                                                    if (isSidebarOpen) {
+                                                        startTransition(() =>
+                                                            setIsSidebarOpen(false),
+                                                        );
+                                                    } else {
+                                                        startTransition(() => {
+                                                            setIsLiveLogOpen(false);
+                                                            setIsSidebarOpen(true);
+                                                        });
+                                                    }
+                                                }}
+                                                intent={isSidebarOpen ? 'brand' : 'neutral'}
+                                                priority={isSidebarOpen ? 'primary' : 'secondary'}
+                                            />
+                                        </Tooltip>
+                                    </ButtonGroup>
                                 </Row>
                             </Row>
                             <Row
@@ -383,27 +357,8 @@ export const App = ({ theme }: AppProps) => {
                         </ContentContainer>
                     </TopBar>
 
-                    {isSidebarOpen ? (
-                        <MainWithSidebar>
-                            <ContentArea>
-                                <ContentContainer>
-                                    <AnalyticsContent
-                                        isAnalyticsDataLoading={isAnalyticsDataLoading}
-                                        isAnalyticsDataGenerated={isAnalyticsDataGenerated}
-                                        eventCards={eventCards}
-                                        hasEventCards={filteredEvents.length > 0}
-                                        generatedAt={generatedAt}
-                                        onContentReady={handleContentReady}
-                                    />
-                                </ContentContainer>
-                            </ContentArea>
-                            <VersionsSidebar
-                                versionsWithEvents={versionsWithEvents}
-                                onEventClick={handleSidebarEventClick}
-                            />
-                        </MainWithSidebar>
-                    ) : (
-                        <Content>
+                    <MainWithSidebar>
+                        <ContentArea ref={contentScrollRef}>
                             <ContentContainer>
                                 <AnalyticsContent
                                     isAnalyticsDataLoading={isAnalyticsDataLoading}
@@ -414,9 +369,11 @@ export const App = ({ theme }: AppProps) => {
                                     onContentReady={handleContentReady}
                                 />
                             </ContentContainer>
-                        </Content>
-                    )}
-                </Box>
+                        </ContentArea>
+
+                        {sidebar}
+                    </MainWithSidebar>
+                </Column>
             </Modal.Provider>
         </>
     );

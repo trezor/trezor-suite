@@ -1,6 +1,6 @@
 import { Text } from '@trezor/components';
 
-import { TrezorDevice } from 'src/types/suite';
+import { type TrezorDevice } from 'src/types/suite';
 import { getFormattedFingerprint } from 'src/utils/firmware';
 
 type FingerprintProps = {

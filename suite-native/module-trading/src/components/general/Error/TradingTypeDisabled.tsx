@@ -1,4 +1,4 @@
-import { TradingType } from '@suite-common/trading';
+import { type TradingType } from '@suite-common/trading';
 import { useTranslate } from '@suite-native/intl';
 import { WarningCard } from '@suite-native/trading-atoms';
 import { exhaustive } from '@trezor/type-utils';

@@ -15,7 +15,8 @@
         "type-check:watch": "yarn type-check -- --watch",
         "storybook": "storybook dev -p 9004 -c .storybook",
         "storybook-build": "storybook build -c .storybook -o .build-storybook",
-        "icons:optimize": "svgo -rf ./src/images"
+        "icons:optimize": "svgo -rf ./src/images",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
         "@suite-common/suite-constants": "workspace:*",
@@ -32,8 +33,8 @@
         "@trezor/theme": "workspace:*",
         "@trezor/utils": "workspace:*",
         "framer-motion": "^12.33.0",
-        "react": "19.1.0",
-        "react-hook-form": "^7.71.1",
+        "react": "19.2.4",
+        "react-hook-form": "^7.71.2",
         "react-intl": "^8.1.3",
         "react-svg": "16.4.2",
         "styled-components": "^6.3.9",
@@ -46,7 +47,7 @@
         "@storybook/react": "^10.2.8",
         "@storybook/react-webpack5": "^10.2.8",
         "@trezor/eslint": "workspace:*",
-        "@types/react": "19.1.6",
+        "@types/react": "19.2.14",
         "@types/zxcvbn": "4.4.5",
         "babel-loader": "^10.0.0",
         "postcss-styled-syntax": "^0.7.1",

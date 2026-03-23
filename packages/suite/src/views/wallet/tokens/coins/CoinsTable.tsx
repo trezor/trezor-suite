@@ -1,7 +1,7 @@
 import { Translation } from '@suite/intl';
 import { TokenManagementAction, selectCoinDefinitions } from '@suite-common/token-definitions';
 import { selectBaseCurrency, selectCurrentFiatRates } from '@suite-common/wallet-core';
-import { SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { isTestnet } from '@suite-common/wallet-utils';
 
 import { useSelector } from 'src/hooks/suite';

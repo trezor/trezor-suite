@@ -1,6 +1,6 @@
 import { useFormContext } from '@suite-native/forms';
 
-import { TradingLocationFormValues } from '../types/tradingLocationForm';
+import { type TradingLocationFormValues } from '../types/tradingLocationForm';
 
 export const useFormCountryCode = () => {
     const { watch } = useFormContext<TradingLocationFormValues>();

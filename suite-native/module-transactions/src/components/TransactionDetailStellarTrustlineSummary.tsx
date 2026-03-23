@@ -1,6 +1,6 @@
 import { Box, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { WalletAccountTransaction } from '@suite-native/tokens';
+import { type WalletAccountTransaction } from '@suite-native/tokens';
 
 import { TransactionDetailStepper } from './TransactionDetailStepper';
 import { SummaryRow } from './TransactionSummaryRow';

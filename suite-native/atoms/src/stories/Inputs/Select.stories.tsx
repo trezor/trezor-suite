@@ -1,7 +1,11 @@
 import { type Meta, type StoryObj } from '@storybook/react-native';
 import { useArgs } from 'storybook/preview-api';
 
-import { Select as SelectComponent, SelectItemType, SelectProps } from '../../Select/Select';
+import {
+    Select as SelectComponent,
+    type SelectItemType,
+    type SelectProps,
+} from '../../Select/Select';
 
 const OPTIONS = ['option1', 'option2', 'option3'] as const;
 type SelectValue = (typeof OPTIONS)[number];

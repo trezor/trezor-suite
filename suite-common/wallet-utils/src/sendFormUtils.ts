@@ -1,15 +1,20 @@
 import {
-    FieldError,
-    FieldErrors,
-    FieldErrorsImpl,
-    FieldPath,
-    FieldValues,
-    Merge,
+    type FieldError,
+    type FieldErrors,
+    type FieldErrorsImpl,
+    type FieldPath,
+    type FieldValues,
+    type Merge,
 } from 'react-hook-form';
 
 import { fromWei, numberToHex, padLeft, toWei } from 'web3-utils';
 
-import { Network, NetworkSymbol, NetworkType, getNetwork } from '@suite-common/wallet-config';
+import {
+    type Network,
+    type NetworkSymbol,
+    type NetworkType,
+    getNetwork,
+} from '@suite-common/wallet-config';
 import {
     COMPOSE_ERROR_TYPES,
     DEFAULT_PAYMENT,
@@ -32,14 +37,18 @@ import type {
     SendFormDraftKey,
     TokenAddress,
 } from '@suite-common/wallet-types';
-import { BaseCurrencyCode, baseCurrencies } from '@trezor/blockchain-link-types';
 import {
-    ComposeOutput,
-    EthereumTransaction,
-    EthereumTransactionEIP1559,
-    FeeLevel,
-    PROTO,
-    TokenInfo,
+    type BaseCurrencyCode,
+    baseCurrencies,
+    isBaseCurrencyCode,
+} from '@trezor/blockchain-link-types';
+import {
+    type ComposeOutput,
+    type EthereumTransaction,
+    type EthereumTransactionEIP1559,
+    type FeeLevel,
+    type PROTO,
+    type TokenInfo,
 } from '@trezor/connect';
 import { BigNumber, typedObjectKeys } from '@trezor/utils';
 
@@ -527,7 +536,7 @@ export const getDefaultValues = (currency: Output['currency']): FormState => ({
 });
 
 type BuildCurrencyOptionParams = {
-    currency: BaseCurrencyCode | '';
+    currency: BaseCurrencyCode | '' | undefined;
     areSatsDisplayed: boolean;
 };
 
@@ -535,7 +544,7 @@ export const buildCurrencyShortOption = ({
     currency,
     areSatsDisplayed,
 }: BuildCurrencyOptionParams): BaseCurrencyOption => {
-    if (currency === '') return { value: '', label: '' };
+    if (!currency || !isBaseCurrencyCode(currency)) return { value: '', label: '' };
 
     return {
         value: currency,
@@ -550,7 +559,7 @@ export const buildCurrencyLongOption = ({
 }: BuildCurrencyOptionParams): BaseCurrencyOption => {
     const shortOption = buildCurrencyShortOption({ currency, areSatsDisplayed });
 
-    if (currency === '') return shortOption;
+    if (!currency || !isBaseCurrencyCode(currency)) return shortOption;
     else {
         return {
             value: shortOption.value,

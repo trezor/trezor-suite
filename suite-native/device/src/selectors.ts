@@ -1,7 +1,7 @@
 import { A, pipe } from '@mobily/ts-belt';
 
 import {
-    DeviceRootState,
+    type DeviceRootState,
     PORTFOLIO_TRACKER_DEVICE_ID,
     selectDeviceAuthenticityByDeviceId,
     selectDeviceFirmwareVersionArray,
@@ -25,16 +25,16 @@ import {
 } from '@suite-common/firmware-authenticity';
 import {
     Feature,
-    MessageSystemRootState,
+    type MessageSystemRootState,
     selectIsFeatureEnabled,
 } from '@suite-common/message-system';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
-import { ThpRootState, selectThpAutoconnectStep } from '@suite-common/thp';
+import { type ThpRootState, selectThpAutoconnectStep } from '@suite-common/thp';
 import {
-    AccountsRootState,
-    DiscoveryRootState,
-    FiatRatesRootState,
-    WalletSettingsRootState,
+    type AccountsRootState,
+    type DiscoveryRootState,
+    type FiatRatesRootState,
+    type WalletSettingsRootState,
     getAccountsByDeviceState,
     selectAccounts,
     selectAccountsByDeviceState,
@@ -45,22 +45,22 @@ import {
     selectIsDiscoveredDeviceAccountless,
 } from '@suite-common/wallet-core';
 import {
-    Account,
-    BaseCurrencyAmount,
-    RatesByKey,
+    type Account,
+    type BaseCurrencyAmount,
+    type RatesByKey,
     asBaseCurrencyAmount,
 } from '@suite-common/wallet-types';
 import { getAccountFiatBalance } from '@suite-common/wallet-utils';
-import { DeviceOnboardingSliceRootState } from '@suite-native/device-onboarding';
-import { FeatureFlagsRootState } from '@suite-native/feature-flags';
-import { NativeFirmwareRootState } from '@suite-native/firmware';
+import { type DeviceOnboardingSliceRootState } from '@suite-native/device-onboarding';
+import { type FeatureFlagsRootState } from '@suite-native/feature-flags';
+import { type NativeFirmwareRootState } from '@suite-native/firmware';
 import {
-    SettingsSliceRootState,
+    type SettingsSliceRootState,
     selectIsDeviceAuthenticityCheckEnabled,
 } from '@suite-native/settings';
 import { doesCoinSupportStaking } from '@suite-native/staking';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
-import { Device } from '@trezor/connect';
+import { type Device } from '@trezor/connect';
 import { BigNumber, isNotNullOrUndefined } from '@trezor/utils';
 
 import { getIsDeviceSetupSupported, isFirmwareVersionSupported } from './utils';

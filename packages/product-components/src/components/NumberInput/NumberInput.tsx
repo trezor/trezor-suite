@@ -1,18 +1,23 @@
 import {
-    ClipboardEvent,
-    FormEvent,
-    KeyboardEvent,
+    type ClipboardEvent,
+    type FormEvent,
+    type KeyboardEvent,
     useCallback,
     useLayoutEffect,
     useRef,
     useState,
 } from 'react';
-import { Control, FieldValues, UseControllerProps, useController } from 'react-hook-form';
+import {
+    type Control,
+    type FieldValues,
+    type UseControllerProps,
+    useController,
+} from 'react-hook-form';
 
-import { Locale } from '@suite-common/suite-types';
+import { type Locale } from '@suite-common/suite-types';
 // todo: scope packages should not import from scope suite-common
 import { localizeNumber } from '@suite-common/wallet-utils/src/localizeNumberUtils';
-import { Input, InputProps } from '@trezor/components';
+import { Input, type InputProps } from '@trezor/components';
 import { BigNumber, getLocaleSeparators } from '@trezor/utils';
 
 const isValidDecimalString = (value: string) => /^([^.]*)\.[^.]+$/.test(value);

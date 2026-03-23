@@ -4,17 +4,17 @@ import { createTransaction } from './transaction';
 import { transactionBytes } from '../coinselect/coinselectUtils';
 import {
     COMPOSE_ERROR_TYPES,
-    CoinSelectRequest,
-    CoinSelectResult,
-    ComposeChangeAddress,
-    ComposeFinalOutput,
-    ComposeInput,
-    ComposeNotFinalOutput,
-    ComposeOutput,
-    ComposeRequest,
-    ComposeResult,
-    ComposeResultError,
-    ComposeResultFinal,
+    type CoinSelectRequest,
+    type CoinSelectResult,
+    type ComposeChangeAddress,
+    type ComposeFinalOutput,
+    type ComposeInput,
+    type ComposeNotFinalOutput,
+    type ComposeOutput,
+    type ComposeRequest,
+    type ComposeResult,
+    type ComposeResultError,
+    type ComposeResultFinal,
 } from '../types';
 
 export function getErrorResult(error: unknown): ComposeResultError {

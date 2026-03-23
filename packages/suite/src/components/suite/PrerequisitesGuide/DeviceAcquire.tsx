@@ -1,4 +1,4 @@
-import { MouseEventHandler } from 'react';
+import { type MouseEventHandler } from 'react';
 
 import { Translation } from '@suite/intl';
 import { acquireDevice } from '@suite-common/wallet-core';
@@ -37,7 +37,7 @@ export const DeviceAcquire = () => {
 
     return (
         <TroubleshootingTips
-            label={<Translation id="TR_NEEDS_ATTENTION_UNABLE_TO_CONNECT" />}
+            label={<Translation id="TR_NEEDS_ATTENTION_CONNECT_USB_OR_BLUETOOTH" />}
             cta={ctaButton}
             items={tips}
         />

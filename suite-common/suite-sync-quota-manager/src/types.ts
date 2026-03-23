@@ -1,4 +1,4 @@
-import { WalletDescriptor } from '@suite-common/wallet-types';
+import { type WalletDescriptor } from '@suite-common/wallet-types';
 
 export type RegisteredDevice = {
     deviceId: string;

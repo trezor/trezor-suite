@@ -2,7 +2,8 @@
 
 import { ERRORS } from '@trezor/connect-common/src/constants';
 
-import { AbstractMethod, MethodPermission, Payload } from '../core/AbstractMethod';
+import type { MethodMessage, MethodPermission } from '../core/AbstractMethod';
+import { AbstractMethod } from '../core/AbstractMethod';
 import { validateParams } from './common/paramsValidator';
 import { reconnectAllBackends, setCustomBackend } from '../backend/BlockchainLink';
 import { getCoinInfo } from '../data/coinInfo';
@@ -16,7 +17,7 @@ export default class BlockchainSetCustomBackend extends AbstractMethod<
     'blockchainSetCustomBackend',
     Params
 > {
-    constructor(message: { id?: number; payload: Payload<'blockchainSetCustomBackend'> }) {
+    constructor(message: MethodMessage<'blockchainSetCustomBackend'>) {
         super(message);
         this.useDevice = false;
         this.useUi = false;

@@ -1,6 +1,6 @@
-import { Color } from '@trezor/theme';
+import { type Color } from '@trezor/theme';
 
-import { ComponentWithSubIconIntent } from './types';
+import { type ComponentWithSubIconIntent } from './types';
 
 export const mapIntentToBackgroundColor = (intent: ComponentWithSubIconIntent): Color => {
     const colorMap: Record<ComponentWithSubIconIntent, Color> = {

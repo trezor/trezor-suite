@@ -1,4 +1,4 @@
-import { Control, useWatch } from 'react-hook-form';
+import { type Control, useWatch } from 'react-hook-form';
 
 import styled from 'styled-components';
 
@@ -10,14 +10,14 @@ import {
     TRADING_FORM_OUTPUT_AMOUNT,
     TRADING_FORM_OUTPUT_FIAT,
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
-    TradingTradeBuySellType,
+    type TradingTradeBuySellType,
     isCountrySubdivisionRequired,
 } from '@suite-common/trading';
 import { Row } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { TradingBuySellFormProps } from 'src/types/trading/tradingForm';
+import { type TradingBuySellFormProps } from 'src/types/trading/tradingForm';
 import {
     isTradingBuyContext,
     isTradingExchangeContext,

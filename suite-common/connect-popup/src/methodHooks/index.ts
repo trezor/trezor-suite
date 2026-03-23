@@ -1,11 +1,11 @@
-import { CallMethodKeys } from '@trezor/connect';
+import { type CallMethodKeys } from '@trezor/connect';
 
 import { addressConfirmationModalHooks } from './addressConfirmation';
 import { bitcoinSignTransaction } from './bitcoinSignTransaction';
 import { ethereumSignTransaction } from './ethereumSignTransaction';
 import { requestLoginHooks } from './requestLogin';
 import { solanaSignTransaction } from './solanaSignTransaction';
-import { PostCallHookParams, PreCallHookParams } from './types';
+import { type PostCallHookParams, type PreCallHookParams } from './types';
 
 export const preCallHooks = async <M extends CallMethodKeys>(params: PreCallHookParams<M>) => {
     await bitcoinSignTransaction.preCallHook(params);

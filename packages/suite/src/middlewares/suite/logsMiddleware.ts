@@ -1,12 +1,13 @@
-import { MiddlewareAPI } from 'redux';
+import { type MiddlewareAPI } from 'redux';
 
 import { METADATA } from '@suite/metadata';
 import { MODAL_CLOSE, MODAL_OPEN_USER_CONTEXT } from '@suite/modal';
+import { routerLocationChange } from '@suite/router';
 import { addLog } from '@suite-common/logger';
 import { redactUserPathFromString } from '@trezor/utils';
 
-import { DESKTOP_UPDATE, PROTOCOL, ROUTER, SUITE } from 'src/actions/suite/constants';
-import { Action, AppState, Dispatch } from 'src/types/suite';
+import { DESKTOP_UPDATE, PROTOCOL, SUITE } from 'src/actions/suite/constants';
+import { type Action, type AppState, type Dispatch } from 'src/types/suite';
 import { redactTransactionIdFromAnchor } from 'src/utils/suite/analytics';
 
 const log =
@@ -62,7 +63,7 @@ const log =
                     }),
                 );
                 break;
-            case ROUTER.LOCATION_CHANGE:
+            case routerLocationChange.type:
                 api.dispatch(
                     addLog({
                         type: action.type,

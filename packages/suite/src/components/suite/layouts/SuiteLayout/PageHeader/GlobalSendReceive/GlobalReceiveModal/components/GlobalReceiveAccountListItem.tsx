@@ -1,6 +1,6 @@
 import { Translation } from '@suite/intl';
 import { getNetworkFeatures } from '@suite-common/wallet-config';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { CardList, Column, Row, Text } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 

@@ -9,10 +9,11 @@ import {
 } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 
+import { goto } from '@suite/router';
 import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
 import { useExcludedUtxos } from '@suite-common/transaction-search';
 import { selectCurrentFiatRates } from '@suite-common/wallet-core';
-import { FormState } from '@suite-common/wallet-types';
+import { type FormState } from '@suite-common/wallet-types';
 import {
     convertAmountSubunitsToUnits,
     convertAmountUnitsToSubunits,
@@ -23,7 +24,6 @@ import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { useDidUpdate } from '@trezor/react-utils';
 
 import { fillSendForm, resetProtocol } from 'src/actions/suite/protocolActions';
-import { goto } from 'src/actions/suite/routerActions';
 import {
     getSendFormDraftThunk,
     removeSendFormDraftThunk,
@@ -31,8 +31,8 @@ import {
     signAndPushSendFormTransactionThunk,
 } from 'src/actions/wallet/send/sendFormThunks';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { AppState } from 'src/types/suite';
-import { SendContextValues, UseSendFormState } from 'src/types/wallet/sendForm';
+import { type AppState } from 'src/types/suite';
+import { type SendContextValues, type UseSendFormState } from 'src/types/wallet/sendForm';
 
 import { useFees } from './form/useFees';
 import { useUtxoSelection } from './form/useUtxoSelection';
@@ -284,7 +284,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
             setLoading(false);
             if (result?.success) {
                 resetContext();
-                dispatch(goto('wallet-index', { preserveParams: true }));
+                dispatch(goto({ routeName: 'wallet-index', preserveParams: true }));
             }
         }
     }, [getValues, composedLevels, dispatch, resetContext, selectedAccount.account]);

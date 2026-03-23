@@ -1,6 +1,6 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
-import { Icon, IconName, List, Paragraph } from '@trezor/components';
+import { Icon, type IconName, List, Paragraph } from '@trezor/components';
 
 export type EarnInANutshellHighlight = {
     icon: IconName;

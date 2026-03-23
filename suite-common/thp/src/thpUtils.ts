@@ -1,4 +1,4 @@
-import { UnknownAction } from '@reduxjs/toolkit';
+import { type UnknownAction } from '@reduxjs/toolkit';
 
 import { UI_REQUEST } from '@trezor/connect';
 import { isNotNullOrUndefined } from '@trezor/utils';

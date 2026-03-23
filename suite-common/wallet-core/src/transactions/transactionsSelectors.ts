@@ -1,28 +1,43 @@
+import { A, D, pipe } from '@mobily/ts-belt';
+
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
-    TokenDefinitionsRootState,
-    getIsPhishingTransaction,
+    type TokenDefinitionsRootState,
+    isPhishingTransaction,
     selectNetworkTokenDefinitions,
 } from '@suite-common/token-definitions';
-import { Account, AccountKey, WalletAccountTransaction } from '@suite-common/wallet-types';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import type {
+    Account,
+    AccountKey,
+    Timestamp,
+    TokenAddress,
+    WalletAccountTransaction,
+} from '@suite-common/wallet-types';
 import {
     getConfirmations,
+    getFiatRateKey,
     isCardanoStakingTx,
     isClaimTx,
+    isNftTokenTransfer,
     isPending,
     isStakeTx,
     isStakeTypeTx,
     isUnstakeTx,
+    roundTimestampToNearestPastHour,
 } from '@suite-common/wallet-utils';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { typedObjectKeys } from '@trezor/utils';
 
-import { TransactionsRootState } from './transactionsReducer';
-import { AccountsRootState } from '../accounts/accountsReducer';
+import type { TransactionsRootState } from './transactionsReducerTypes';
+import type { AccountsRootState } from '../accounts/accountsReducer';
 import { selectAccountByKey } from '../accounts/accountsSelectors';
 import {
-    BlockchainRootState,
+    type BlockchainRootState,
     selectBlockchainHeightBySymbol,
 } from '../blockchain/blockchainReducer';
+import { selectHistoricFiatRates } from '../fiat-rates/fiatRatesSelectors';
+import type { FiatRatesRootState } from '../fiat-rates/fiatRatesTypes';
 import { isAccountStakingActive } from '../stake/stakeUtils';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<
@@ -135,20 +150,54 @@ export const selectTransactionConfirmations = (
     return getConfirmations(transaction, blockchainHeight);
 };
 
-export const selectIsPhishingTransaction = (
-    state: TokenDefinitionsRootState & TransactionsRootState & AccountsRootState,
+export const selectTransactionIsMarkedAsNotScam = (
+    state: TransactionsRootState,
     txid: string,
     accountKey: AccountKey,
 ) => {
     const transaction = selectTransactionByAccountKeyAndTxid(state, accountKey, txid);
-
     if (!transaction) return false;
 
-    const tokenDefinitions = selectNetworkTokenDefinitions(state, transaction.symbol);
+    return state.wallet.transactions.phishing[accountKey]?.includes(txid);
+};
 
-    if (!tokenDefinitions) return false;
+export const selectAccountTransactionsMarkedAsNotScam = (
+    state: TransactionsRootState,
+    accountKey: AccountKey,
+) => state.wallet.transactions.phishing[accountKey] ?? [];
 
-    return getIsPhishingTransaction(transaction, tokenDefinitions);
+export const selectPhishingTransactionsContext = (
+    state: TokenDefinitionsRootState & TransactionsRootState & FiatRatesRootState,
+    accountKey: AccountKey,
+    symbol: NetworkSymbol,
+) => {
+    const historicRates = selectHistoricFiatRates(state);
+    const tokenDefinitions = selectNetworkTokenDefinitions(state, symbol);
+    const txsMarkedAsNotScam = selectAccountTransactionsMarkedAsNotScam(state, accountKey);
+
+    return { tokenDefinitions, txsMarkedAsNotScam, historicRates };
+};
+
+export const selectIsPhishingTransaction = (
+    state: TokenDefinitionsRootState &
+        TransactionsRootState &
+        AccountsRootState &
+        FiatRatesRootState,
+    txid: string,
+    accountKey: AccountKey,
+) => {
+    const transaction = selectTransactionByAccountKeyAndTxid(state, accountKey, txid);
+    if (!transaction) return false;
+
+    const { tokenDefinitions, txsMarkedAsNotScam, historicRates } =
+        selectPhishingTransactionsContext(state, accountKey, transaction.symbol);
+
+    return isPhishingTransaction({
+        transaction,
+        tokenDefinitions,
+        historicRates,
+        txsMarkedAsNotScam,
+    });
 };
 
 export const selectAccountStakeTypeTransactions = createMemoizedSelector(
@@ -279,3 +328,46 @@ export const selectAccountTransactionsFromNowUntilTimestamp = createMemoizedSele
             transactions.filter(tx => tx.blockTime && tx.blockTime >= timestamp),
         ),
 );
+
+export const selectTransactionsWithMissingRates = (
+    state: FiatRatesRootState & TransactionsRootState & AccountsRootState,
+    localCurrency: BaseCurrencyCode,
+    accountKey?: AccountKey,
+) => {
+    const transactions = selectTransactions(state);
+    const historicFiatRates = selectHistoricFiatRates(state);
+
+    return pipe(
+        accountKey ? { [accountKey]: transactions[accountKey] } : transactions,
+        D.mapWithKey((key, txs) => ({
+            account: selectAccountByKey(state, key as AccountKey),
+            txs: txs.filter(tx => {
+                const fiatRateKey = getFiatRateKey(tx.symbol, localCurrency as BaseCurrencyCode);
+                const roundedTimestamp = roundTimestampToNearestPastHour(tx.blockTime as Timestamp);
+                const historicRate = historicFiatRates?.[fiatRateKey]?.[roundedTimestamp];
+
+                const isMissingTokenRate = tx.tokens
+                    .filter(token => !isNftTokenTransfer(token))
+                    .some(token => {
+                        const tokenFiatRateKey = getFiatRateKey(
+                            tx.symbol,
+                            localCurrency,
+                            token.contract as TokenAddress,
+                        );
+                        const historicTokenRate =
+                            historicFiatRates?.[tokenFiatRateKey]?.[roundedTimestamp];
+
+                        return historicTokenRate === undefined || historicTokenRate === 0;
+                    });
+
+                return historicRate === undefined || historicRate === 0 || isMissingTokenRate;
+            }),
+        })),
+        D.filter(({ account, txs }) => !!account && !!txs.length),
+        D.values,
+        A.filter(value => !!value),
+    ) as {
+        account: Account;
+        txs: WalletAccountTransaction[];
+    }[];
+};

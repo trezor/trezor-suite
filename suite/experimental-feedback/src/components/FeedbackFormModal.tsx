@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
-import { ExperimentalFeature, translatedExperimentalFeatures } from '@suite/experimental';
+import { type ExperimentalFeature, translatedExperimentalFeatures } from '@suite/experimental';
 import { Translation, useTranslation } from '@suite/intl';
-import { Rating } from '@suite-common/feedback';
+import { type Rating } from '@suite-common/feedback';
 import { Card, Column, Modal, Paragraph, Textarea } from '@trezor/components';
 
 import { EmojiRatingSelector } from './EmojiRatingSelector';

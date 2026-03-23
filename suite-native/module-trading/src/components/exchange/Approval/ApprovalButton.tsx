@@ -3,12 +3,12 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { parseCryptoId, selectTradingExchangeSelectedQuote } from '@suite-common/trading';
-import { TokenAddress } from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/wallet-types';
 import { Box, Button } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
-    StackNavigationProps,
-    TradingStackParamList,
+    type StackNavigationProps,
+    type TradingStackParamList,
     TradingStackRoutes,
 } from '@suite-native/navigation';
 import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';

@@ -3,12 +3,12 @@ import { useMemo } from 'react';
 import { Checkbox } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
-import { ArrayElement } from '@trezor/type-utils';
+import { type ArrayElement } from '@trezor/type-utils';
 
 import { setDebugMode } from 'src/actions/suite/suiteActions';
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { DebugModeOptions } from 'src/reducers/suite/suiteReducer';
+import { type DebugModeOptions } from 'src/reducers/suite/suiteReducer';
 import { selectActiveTransports } from 'src/selectors/suite/suiteSelectors';
 
 type Transport = ArrayElement<NonNullable<DebugModeOptions['transports']>>;

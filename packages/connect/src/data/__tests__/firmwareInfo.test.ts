@@ -6,7 +6,11 @@ import { versionUtils } from '@trezor/utils';
 import { getDeviceFeatures } from '../../../setupJest';
 import { DataManager } from '../DataManager';
 import { parseConnectSettings } from '../connectSettings';
-import { getFirmwareReleaseConfigInfo, getFirmwareStatus } from '../firmwareInfo';
+import {
+    getFirmwareReleaseConfigInfo,
+    getFirmwareStatus,
+    initializeFirmwareConfig,
+} from '../firmwareInfo';
 
 describe('data/firmwareInfo', () => {
     describe('getFirmwareStatus', () => {
@@ -30,7 +34,7 @@ describe('data/firmwareInfo', () => {
     });
     describe('getFirmwareReleaseConfigInfo', () => {
         beforeAll(async () => {
-            await DataManager.load(parseConnectSettings({}), true, true);
+            await DataManager.load(parseConnectSettings({}), true, true, initializeFirmwareConfig);
         });
         it('should offer latest compatible relase when latest one is not compatible', () => {
             const features = getDeviceFeatures({

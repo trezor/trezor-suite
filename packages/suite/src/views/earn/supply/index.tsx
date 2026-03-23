@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 
-import { goto } from 'src/actions/suite/routerActions';
+import { goto } from '@suite/router';
+
 import { useEarnRouteAccount } from 'src/components/earn/utils/useEarnRouteAccount';
 import { YieldSupply } from 'src/components/earn/yield/YieldSupply';
 import { YieldPageHeader } from 'src/components/earn/yield/common/YieldPageHeader';
@@ -14,7 +15,7 @@ export const EarnSupply = () => {
 
     useEffect(() => {
         if (!routeParams) {
-            dispatch(goto('suite-earn'));
+            dispatch(goto({ routeName: 'suite-earn' }));
         }
     }, [dispatch, routeParams]);
 

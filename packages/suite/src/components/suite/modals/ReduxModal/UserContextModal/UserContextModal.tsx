@@ -1,6 +1,6 @@
 import { MetadataProviderModal } from '@suite/metadata';
-import { MODAL_CONTEXT_USER, closeModal as closeModalAction } from '@suite/modal';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type MODAL_CONTEXT_USER, closeModal as closeModalAction } from '@suite/modal';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { UI_REQUEST } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
 

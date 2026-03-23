@@ -1,9 +1,9 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import styled, { css } from 'styled-components';
 
 import { Column, IconButton, Row, Text } from '@trezor/components';
-import { DeviceModelInternal } from '@trezor/device-utils';
+import { type DeviceModelInternal } from '@trezor/device-utils';
 import { borders, spacings, spacingsPx } from '@trezor/theme';
 
 import { RotateDeviceImage } from '../RotateDeviceImage/RotateDeviceImage';

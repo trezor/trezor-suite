@@ -2,10 +2,11 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { useDebounce } from 'react-use';
 
-import type { DexApprovalType, ExchangeTrade, FiatCurrencyCode } from 'invity-api';
+import type { DexApprovalType, ExchangeTrade } from 'invity-api';
 
 import { events } from '@suite/analytics';
-import { TranslationKey, useTranslation } from '@suite/intl';
+import { type TranslationKey, useTranslation } from '@suite/intl';
+import { goto } from '@suite/router';
 import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
@@ -18,7 +19,7 @@ import {
     TRADING_FORM_PROVIDER_SELECT,
     type TradingExchangeAmountLimitProps,
     type TradingExchangeFormProps,
-    TradingExchangeType,
+    type TradingExchangeType,
     type TradingSendRejectedProps,
     type TradingSignAndPushSendFormTransactionProps,
     type TradingTransactionExchange,
@@ -42,10 +43,9 @@ import {
     updateFeeInfoThunk,
     useFormDraft,
 } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { useCurrentRef } from '@trezor/react-utils';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
 import { submitRequestForm } from 'src/actions/wallet/trading/tradingCommonActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -60,11 +60,11 @@ import { useTradingExchangeFormDefaultValues } from 'src/hooks/wallet/trading/fo
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { selectHasExperimentalFeature } from 'src/selectors/suite/suiteSelectors';
 import { useAnalytics } from 'src/support/useAnalytics';
-import { Dispatch } from 'src/types/suite';
-import { UseTradingFormCommonProps } from 'src/types/trading/trading';
+import { type Dispatch } from 'src/types/suite';
+import { type UseTradingFormCommonProps } from 'src/types/trading/trading';
 import {
-    TradingExchangeConfirmTradeProps,
-    TradingExchangeFormContextProps,
+    type TradingExchangeConfirmTradeProps,
+    type TradingExchangeFormContextProps,
 } from 'src/types/trading/tradingForm';
 import { createQuoteLink } from 'src/utils/wallet/trading/exchangeUtils';
 
@@ -191,7 +191,7 @@ export const useTradingExchangeForm = ({
     useTradingFiatValues({
         cryptoId: receiveCryptoSelect?.id,
         amount: selectedQuote?.receiveStringAmount,
-        fiatCurrency: output?.currency?.value as FiatCurrencyCode | undefined,
+        fiatCurrency: output?.currency?.value || undefined,
     });
 
     const formIsValid = Object.keys(formState.errors).length === 0;
@@ -330,7 +330,7 @@ export const useTradingExchangeForm = ({
                 quote,
                 timer,
                 nextStep: () => {
-                    dispatch(goto('wallet-trading-exchange-confirm'));
+                    dispatch(goto({ routeName: 'wallet-trading-exchange-confirm' }));
                 },
             }),
         );
@@ -361,7 +361,7 @@ export const useTradingExchangeForm = ({
             };
 
             const nextStep = () => {
-                dispatch(goto('wallet-trading-exchange-detail'));
+                dispatch(goto({ routeName: 'wallet-trading-exchange-detail' }));
             };
 
             return {
@@ -491,7 +491,7 @@ export const useTradingExchangeForm = ({
     const goToOffers = async () => {
         await handleChange();
 
-        dispatch(goto('wallet-trading-exchange-offers'));
+        dispatch(goto({ routeName: 'wallet-trading-exchange-offers' }));
 
         analytics.report({
             type: events.tradeCompareOffersEvent.name,
@@ -762,7 +762,7 @@ export const useTradingExchangeForm = ({
 
     useEffect(() => {
         if (!quotesRequest && !isFormPage) {
-            dispatch(goto('wallet-trading-exchange'));
+            dispatch(goto({ routeName: 'wallet-trading-exchange' }));
 
             return;
         }

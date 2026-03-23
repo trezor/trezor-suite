@@ -1,3 +1,3 @@
 export { type Analytics, QueuedAnalytics } from './analytics';
-export * from './types';
+export type * from './types';
 export { getRandomId, getTrackingRandomId } from './utils';

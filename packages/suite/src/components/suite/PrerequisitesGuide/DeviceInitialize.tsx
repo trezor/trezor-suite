@@ -1,7 +1,8 @@
-import { MouseEvent } from 'react';
+import { type MouseEvent } from 'react';
 
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { goto } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
 import { Banner } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
@@ -11,7 +12,6 @@ import {
     resetOnboarding,
     updateAnalytics,
 } from 'src/actions/onboarding/onboardingActions';
-import { goto } from 'src/actions/suite/routerActions';
 import { TroubleshootingTips } from 'src/components/suite/troubleshooting/TroubleshootingTips';
 import { useDispatch } from 'src/hooks/suite';
 import { useStore } from 'src/hooks/suite/useStore';
@@ -39,7 +39,7 @@ export const DeviceInitialize = () => {
                 deviceModel: device?.features?.internal_model || DeviceModelInternal.UNKNOWN,
             },
         });
-        dispatch(goto('onboarding-index'));
+        dispatch(goto({ routeName: 'onboarding-index' }));
     };
 
     return (

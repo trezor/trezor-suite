@@ -18,7 +18,7 @@ import { Screen } from '@suite-native/navigation';
 
 import { EmptyHomeRenderer } from './components/EmptyHomeRenderer';
 import { PortfolioContent } from './components/PortfolioContent';
-import { PortfolioGraphRef } from './components/PortfolioGraph';
+import { type PortfolioGraphRef } from './components/PortfolioGraph';
 import { useHomeRefreshControl } from './useHomeRefreshControl';
 import { useShowAutoEjectAlert } from './useShowAutoEjectAlert';
 

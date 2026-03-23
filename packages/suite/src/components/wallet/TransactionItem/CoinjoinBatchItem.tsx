@@ -7,7 +7,7 @@ import { BigNumber } from '@trezor/utils';
 import { FormattedCryptoAmount } from 'src/components/suite';
 import { TransactionTimestamp } from 'src/components/wallet/TransactionTimestamp';
 import { useDispatch } from 'src/hooks/suite';
-import { WalletAccountTransaction } from 'src/types/wallet/index';
+import { type WalletAccountTransaction } from 'src/types/wallet/index';
 
 import { TransactionLayout } from './TransactionLayout';
 import { TransactionTargetLayout } from './TransactionTargetLayout';

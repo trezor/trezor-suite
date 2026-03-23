@@ -1,11 +1,15 @@
-import { RouteProp, useRoute } from '@react-navigation/native';
+import { type RouteProp, useRoute } from '@react-navigation/native';
 
 import { parseAccountKey } from '@suite-common/wallet-utils';
 import { HStack, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { AccountLabel } from '@suite-native/labeling';
-import { RootStackParamList, RootStackRoutes, ScreenHeader } from '@suite-native/navigation';
+import {
+    type RootStackParamList,
+    type RootStackRoutes,
+    ScreenHeader,
+} from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const headerStyle = prepareNativeStyle(utils => ({

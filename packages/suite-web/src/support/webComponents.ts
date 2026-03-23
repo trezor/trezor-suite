@@ -1,6 +1,6 @@
-import { ComponentType, LazyExoticComponent, lazy } from 'react';
+import { type ComponentType, type LazyExoticComponent, lazy } from 'react';
 
-import { PageName } from '@suite-common/suite-types';
+import { type PageName } from '@suite/router';
 
 export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>> = {
     'suite-index': lazy(() =>
@@ -125,6 +125,11 @@ export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>>
         import(
             /* webpackChunkName: "trading" */ 'src/views/wallet/trading/exchange/TradingExchangeConfirm'
         ).then(({ TradingExchangeConfirm }) => ({ default: TradingExchangeConfirm })),
+    ),
+    'wallet-trading-concierge': lazy(() =>
+        import(
+            /* webpackChunkName: "trading" */ 'src/views/wallet/trading/concierge/TradingConciergeDetail'
+        ).then(({ TradingConciergeDetail }) => ({ default: TradingConciergeDetail })),
     ),
     'wallet-trading-redirect': lazy(() =>
         import(

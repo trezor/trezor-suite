@@ -2,21 +2,21 @@ import { G } from '@mobily/ts-belt';
 import { isRejected } from '@reduxjs/toolkit';
 
 import { selectSelectedDevice } from '@suite-common/device';
-import { ActionsFromAsyncThunk, createThunk } from '@suite-common/redux-utils';
+import { type ActionsFromAsyncThunk, createThunk } from '@suite-common/redux-utils';
 import { UINT256_MAX } from '@suite-common/suite-constants';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
-    Account,
-    AccountKey,
-    ComposeActionContext,
-    FormState,
-    GeneralPrecomposedTransactionFinal,
-    PrecomposedLevels,
-    PrecomposedLevelsCardano,
-    PrecomposedTransactionFinal,
-    PrecomposedTransactionFinalBumpFeeRbf,
-    PrecomposedTransactionFinalCardano,
+    type Account,
+    type AccountKey,
+    type ComposeActionContext,
+    type FormState,
+    type GeneralPrecomposedTransactionFinal,
+    type PrecomposedLevels,
+    type PrecomposedLevelsCardano,
+    type PrecomposedTransactionFinal,
+    type PrecomposedTransactionFinalBumpFeeRbf,
+    type PrecomposedTransactionFinalCardano,
 } from '@suite-common/wallet-types';
 import {
     asAmountSubunit,
@@ -34,10 +34,10 @@ import {
     subunitsToUnits,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
-import { BlockbookTransaction } from '@trezor/blockchain-link-types';
-import TrezorConnect, { PROTO } from '@trezor/connect';
+import { type BlockbookTransaction } from '@trezor/blockchain-link-types';
+import TrezorConnect, { type PROTO } from '@trezor/connect';
 import { getSolanaTokenDefinition } from '@trezor/connect/src/api/solana/solanaDefinitions';
-import { Ok, exhaustive } from '@trezor/type-utils';
+import { type Ok, exhaustive } from '@trezor/type-utils';
 import { BigNumber, cloneObject, typedObjectEntries } from '@trezor/utils';
 
 import { sendFormActions } from './sendFormActions';
@@ -69,10 +69,10 @@ import {
     signSolanaSendFormTransactionThunk,
 } from './sendFormSolanaThunks';
 import {
-    ComposeFeeLevelsError,
-    PushTransactionError,
-    SignTransactionError,
-    SignTransactionTimeoutError,
+    type ComposeFeeLevelsError,
+    type PushTransactionError,
+    type SignTransactionError,
+    type SignTransactionTimeoutError,
 } from './sendFormTypes';
 import { accountsActions } from '../accounts/accountsActions';
 import { selectAccountByKey } from '../accounts/accountsSelectors';
@@ -91,13 +91,12 @@ import {
 export const convertSendFormDraftsBtcAmountUnitsThunk = createThunk(
     `${SEND_MODULE_PREFIX}/convertSendFormDraftsBtcAmountUnitsThunk`,
     (
-        { selectedAccountKey }: { selectedAccountKey?: AccountKey },
-        { dispatch, getState, extra, rejectWithValue },
+        {
+            selectedAccountKey,
+            isOnSendPage,
+        }: { selectedAccountKey?: AccountKey; isOnSendPage?: boolean },
+        { dispatch, getState, rejectWithValue },
     ) => {
-        const {
-            selectors: { selectRoute },
-        } = extra;
-        const suiteRoute = selectRoute(getState());
         const sendFormDrafts = selectSendFormDrafts(getState());
         const areSatsAmountUnit = selectAreSatsAmountUnit(getState());
 
@@ -107,16 +106,13 @@ export const convertSendFormDraftsBtcAmountUnitsThunk = createThunk(
             return rejectWithValue('Account not found.');
         }
 
-        // draft will be saved after leaving the form anyways – don't interfere with the logic
-        const isOnDesktopSendPage = suiteRoute?.name === 'wallet-send';
-
         draftEntries.forEach(([accountKey, draft]) => {
             // Todo: is this cast correct? https://github.com/trezor/trezor-suite/issues/24918
             const relatedAccount = selectAccountByKey(getState(), accountKey as AccountKey);
 
             const isSelectedAccount = selectedAccountKey === accountKey;
 
-            if ((isSelectedAccount && isOnDesktopSendPage) || !relatedAccount) {
+            if ((isSelectedAccount && isOnSendPage) || !relatedAccount) {
                 return;
             }
 

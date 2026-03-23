@@ -1,6 +1,6 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
-import { Translation, TranslationKey } from '@suite/intl';
+import { Translation, type TranslationKey } from '@suite/intl';
 import { Banner as BaseBanner, Card, Checkbox, Column, Text } from '@trezor/components';
 
 export interface TxSimulationBannerProps {

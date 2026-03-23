@@ -1,6 +1,6 @@
 import { Translation } from '@suite/intl';
+import { goto } from '@suite/router';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { AccountExceptionLayout } from 'src/components/wallet';
 import { useDispatch } from 'src/hooks/suite';
 
@@ -11,7 +11,7 @@ import { useDispatch } from 'src/hooks/suite';
 export const DiscoveryEmpty = () => {
     const dispatch = useDispatch();
 
-    const goToCoinsSettings = () => dispatch(goto('settings-coins'));
+    const goToCoinsSettings = () => dispatch(goto({ routeName: 'settings-coins' }));
 
     return (
         <AccountExceptionLayout

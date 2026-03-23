@@ -8,7 +8,7 @@ import {
     TxSimulationTitle,
 } from '@suite/tx-simulation';
 import { getSimulationErrorRiskLevel, useTxSimulation } from '@suite-common/tx-simulation';
-import { Account, TxSimulationAction } from '@suite-common/wallet-types';
+import { type Account, type TxSimulationAction } from '@suite-common/wallet-types';
 import { Column, Modal, Spinner } from '@trezor/components';
 
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';

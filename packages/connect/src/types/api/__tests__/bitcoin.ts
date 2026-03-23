@@ -1,4 +1,5 @@
-import { TrezorConnect, asDeviceUniquePath } from '../../..';
+import type { TrezorConnect } from '../../..';
+import { asDeviceUniquePath } from '../../..';
 
 export const getAddress = async (api: TrezorConnect) => {
     // regular

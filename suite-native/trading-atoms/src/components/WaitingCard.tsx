@@ -1,11 +1,11 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { FadeIn, FadeOut, FadingTransition } from 'react-native-reanimated';
 
 import {
     AnimatedText,
     AnimatedVStack,
     Spinner,
-    SpinnerLoadingState,
+    type SpinnerLoadingState,
     VStack,
 } from '@suite-native/atoms';
 

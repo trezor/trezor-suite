@@ -1,7 +1,7 @@
-import { SellFiatTrade, SellProviderInfo } from 'invity-api';
+import { type SellFiatTrade, type SellProviderInfo } from 'invity-api';
 
 import { Translation, useTranslation } from '@suite/intl';
-import { BulletListItemState, Card, Column, Paragraph } from '@trezor/components';
+import { type BulletListItemState, Card, Column, Paragraph } from '@trezor/components';
 
 import { TradingDetailProviderInfo } from '../TradingDetailProviderInfo';
 import { TradingDetailStep } from '../TradingDetailStep';
@@ -55,10 +55,7 @@ export const TradingDetailSellPaymentSuccessful = ({
                                 provider={provider}
                                 trade={trade}
                             />
-                            <TradingDetailSupportBanner
-                                provider={provider}
-                                orderId={trade.orderId}
-                            />
+                            <TradingDetailSupportBanner provider={provider} trade={trade} />
                         </Column>
                     </Card>
                 )}

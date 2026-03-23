@@ -1,52 +1,38 @@
 // original file https://github.com/trezor/connect/blob/develop/src/js/device/Device.js
 import { ERRORS } from '@trezor/connect-common/src/constants';
+import type { FirmwareRelease } from '@trezor/device-utils';
 import {
     DeviceModelInternal,
-    FirmwareRelease,
     getFirmwareOrBootloaderVersionArray,
     getFirmwareVersionArray,
     models,
 } from '@trezor/device-utils';
-import {
-    type DecodedTrezorPushNotification,
-    TransportProtocol,
-    thp as protocolThp,
-    v1 as protocolV1,
-    v2 as protocolV2,
-} from '@trezor/protocol';
-import { Session, TRANSPORT, TRANSPORT_ERROR } from '@trezor/transport';
-import { type Descriptor, type Transport } from '@trezor/transport';
-import { TransportDeviceEvent } from '@trezor/transport/src/transports/abstract';
-import { Deferred, TypedEmitter, createDeferred, isArrayMember, versionUtils } from '@trezor/utils';
+import type { TransportProtocol } from '@trezor/protocol';
+import { thp as protocolThp, v1 as protocolV1, v2 as protocolV2 } from '@trezor/protocol';
+import type { Descriptor, Session, Transport } from '@trezor/transport';
+import { TRANSPORT, TRANSPORT_ERROR } from '@trezor/transport';
+import type { TransportDeviceEvent } from '@trezor/transport/src/transports/abstract';
+import type { Deferred } from '@trezor/utils';
+import { TypedEmitter, createDeferred, isArrayMember, versionUtils } from '@trezor/utils';
 import type { VersionArray } from '@trezor/utils/src/versionUtils';
 
 import { DeviceCommands } from './DeviceCommands';
-import { FIRMWARE, PROTO } from '../constants';
-import { DeviceCurrentSession, TypedCallProvider } from './DeviceCurrentSession';
+import type { PROTO } from '../constants';
+import { FIRMWARE } from '../constants';
+import type { TypedCallProvider } from './DeviceCurrentSession';
+import { DeviceCurrentSession } from './DeviceCurrentSession';
 import { checkFirmwareRevision } from './checkFirmwareRevision';
 import { abortThpWorkflow, getThpChannel } from './thp';
+import { changeLanguage } from './workflow/changeLanguage';
 import { checkFirmwareHashWithRetries } from './workflow/checkFirmwareHashWithRetries';
 import { getAllNetworks } from '../data/coinInfo';
 import {
     getFirmwareReleaseConfigInfo,
     getFirmwareStatus,
-    getLanguage,
     getReleaseByVersion,
 } from '../data/firmwareInfo';
-import {
-    DEVICE,
-    DeviceButtonRequestPayload,
-    DeviceThpCredentialsChangedPayload,
-    DeviceThpPairingPayload,
-    DeviceThpPairingStatus,
-    DeviceVersionChanged,
-    UI_REQUEST,
-    UiResponsePassphrase,
-    UiResponsePin,
-    UiResponseThpPairingTag,
-    UiResponseWord,
-} from '../events';
-import {
+import { DEVICE, UI_REQUEST } from '../events';
+import type {
     DeviceBusyStatus,
     DeviceFirmwareStatus,
     DeviceState,
@@ -61,6 +47,7 @@ import {
     KnownDevice,
     UnavailableCapabilities,
 } from '../types';
+import type { DeviceEvents, DeviceLifecycleEvents, IDevice, RunOptions } from '../types/idevice';
 import { handshakeCancel } from './workflow/handshake';
 import { getReleaseAsset } from '../utils/assetUtils';
 import { initLog } from '../utils/debug';
@@ -75,53 +62,7 @@ import { getFirmwareMode, getFirmwareType } from '../utils/firmwareUtils';
 // custom log
 const _log = initLog('Device');
 
-type RunOptions = {
-    // skipFinalReload - normally, after action, features are reloaded again
-    //                   because some actions modify the features
-    //                   but sometimes, you don't need that and can skip that
-    skipFinalReload?: boolean;
-    keepSession?: boolean;
-    useCardanoDerivation?: boolean;
-    skipFirmwareChecks?: boolean;
-    skipLanguageChecks?: boolean;
-};
-
-type Result<T> = { success: true; payload: T } | { success: false; error: Error };
-
-export interface DeviceEvents {
-    [DEVICE.PIN]: {
-        type: PROTO.PinMatrixRequestType | undefined;
-        callback: (response: Result<UiResponsePin['payload']>) => void;
-    };
-    [DEVICE.WORD]: {
-        type: PROTO.WordRequestType;
-        callback: (response: Result<UiResponseWord['payload']>) => void;
-    };
-    [DEVICE.PASSPHRASE]: {
-        callback: (response: Result<UiResponsePassphrase['payload']>) => void;
-    };
-    [DEVICE.PASSPHRASE_ON_DEVICE]: void;
-    [DEVICE.BUTTON]: { device: Device; payload: DeviceButtonRequestPayload };
-    [DEVICE.FIRMWARE_VERSION_CHANGED]: DeviceVersionChanged['payload'];
-    [DEVICE.TREZOR_PUSH_NOTIFICATION]: {
-        device: DeviceTyped;
-        payload: DecodedTrezorPushNotification;
-    };
-    [DEVICE.THP_PAIRING]: {
-        payload: DeviceThpPairingPayload;
-        callback: (response: Result<UiResponseThpPairingTag['payload']>) => void;
-    };
-    [DEVICE.THP_CREDENTIALS_CHANGED]: DeviceThpCredentialsChangedPayload;
-    [DEVICE.THP_PAIRING_STATUS_CHANGED]: DeviceThpPairingStatus;
-}
-
-interface DeviceLifecycleEvents {
-    [DEVICE.CONNECT]: void;
-    [DEVICE.CONNECT_UNACQUIRED]: void;
-    [DEVICE.CHANGED]: void;
-    [DEVICE.DISCONNECT]: void;
-    [DEVICE.TREZOR_PUSH_NOTIFICATION]: DecodedTrezorPushNotification;
-}
+export { type DeviceEvents } from '../types/idevice';
 
 type DeviceParams = {
     id: DeviceUniquePath;
@@ -129,7 +70,7 @@ type DeviceParams = {
     descriptor: Descriptor;
 };
 
-export class Device extends TypedEmitter<DeviceEvents> {
+export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
     public readonly transport: Transport;
     private thp: protocolThp.ThpState | undefined;
     public readonly descriptor: Pick<Descriptor, 'apiType' | 'id' | 'type' | 'path' | 'model'>;
@@ -601,7 +542,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
             _log.info('language version mismatch. silently updating...');
 
             try {
-                await this.changeLanguage({ language: this.features.language });
+                await changeLanguage({ device: this, language: this.features.language });
             } catch (err) {
                 _log.error('change language failed silently', err);
             }
@@ -758,86 +699,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
             ...this.authenticityChecks,
             firmwareRevision: result,
         };
-    }
-
-    async changeLanguage({
-        language,
-        binary,
-    }: { language?: undefined; binary: ArrayBuffer } | { language: string; binary?: undefined }) {
-        if (language === 'en-US') {
-            return this._uploadTranslationData(null);
-        }
-
-        if (binary) {
-            return this._uploadTranslationData(binary);
-        }
-
-        const version = this.getVersion();
-        if (!version) {
-            throw ERRORS.TypedError('Runtime', 'changeLanguage: device version unknown');
-        }
-
-        if (!this.firmwareType) {
-            throw ERRORS.TypedError('Runtime', 'changeLanguage: firmware type unknown');
-        }
-
-        if (!this._currentRelease) {
-            throw ERRORS.TypedError('Runtime', 'changeLanguage: release not found');
-        }
-        const languageBinPath = this._currentRelease.translations[language];
-        const downloadedBinary = await getLanguage(languageBinPath);
-
-        if (!downloadedBinary) {
-            throw ERRORS.TypedError('Runtime', 'changeLanguage: translation not found');
-        }
-
-        // This is mostly to satisfy Types, since `downloadedBinary` could be ArrayBuffer or Buffer<ArrayBufferLike>
-        // but `_uploadTranslationData` takes only ArrayBuffer or null.
-        let dataToSend: ArrayBuffer;
-        if (Buffer.isBuffer(downloadedBinary)) {
-            // Creates a "copy" if given a Buffer/Uint8Array in order to guarantee dataToSend is ArrayBuffer.
-            dataToSend = new Uint8Array(downloadedBinary).buffer;
-        } else {
-            dataToSend = downloadedBinary;
-        }
-
-        return this._uploadTranslationData(dataToSend);
-    }
-
-    private async _uploadTranslationData(payload: ArrayBuffer | null) {
-        if (payload === null) {
-            const response = await this.getCurrentSession().typedCall(
-                'ChangeLanguage',
-                ['Success'],
-                { data_length: 0 }, // For en-US where we just send `ChangeLanguage(size=0)`
-            );
-
-            return response.message;
-        }
-
-        const length = payload.byteLength;
-
-        let response = await this.getCurrentSession().typedCall(
-            'ChangeLanguage',
-            ['DataChunkRequest', 'Success'],
-            { data_length: length },
-        );
-
-        while (response.type !== 'Success') {
-            const start = response.message.data_offset!;
-            const end = response.message.data_offset! + response.message.data_length!;
-            const chunk = payload.slice(start, end);
-
-            response = await this.getCurrentSession().typedCall(
-                'DataChunkAck',
-                ['DataChunkRequest', 'Success'],
-                {
-                    data_chunk: Buffer.from(chunk).toString('hex'),
-                },
-            );
-        }
-
-        return response.message;
     }
 
     private async _updateCurrentRelease(feat: Features) {

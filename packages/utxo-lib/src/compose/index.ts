@@ -2,11 +2,11 @@ import { validateAndParseRequest } from './request';
 import { getErrorResult, getResult } from './result';
 import { coinselect } from '../coinselect';
 import {
-    ComposeChangeAddress,
-    ComposeInput,
-    ComposeOutput,
-    ComposeRequest,
-    ComposeResult,
+    type ComposeChangeAddress,
+    type ComposeInput,
+    type ComposeOutput,
+    type ComposeRequest,
+    type ComposeResult,
 } from '../types';
 
 export function composeTx<

@@ -1,13 +1,13 @@
 import {
-    BleError,
+    type BleError,
     BleErrorCode,
     BleManager,
-    Characteristic,
-    ConnectionOptions,
-    Device,
+    type Characteristic,
+    type ConnectionOptions,
+    type Device,
     LogLevel,
-    State,
-    Subscription,
+    type State,
+    type Subscription,
 } from 'react-native-ble-plx';
 
 import { EventEmitter } from 'events';
@@ -16,10 +16,10 @@ import { readMessageBuffer } from '@trezor/transport/src/utils/readMessageBuffer
 import type { TimerId } from '@trezor/type-utils';
 
 import {
-    BluetoothDevice,
-    DeviceBatteryLevelChangeEvent,
-    DeviceConnectionStatusChangeEvent,
-    DevicePushNotificationEvent,
+    type BluetoothDevice,
+    type DeviceBatteryLevelChangeEvent,
+    type DeviceConnectionStatusChangeEvent,
+    type DevicePushNotificationEvent,
 } from './types';
 import { base64ToByteArray, toBluetoothDevice } from './utils';
 

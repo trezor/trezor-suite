@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
-import { getActiveTests, getAutoQuarantineActions } from './api';
+import { getAutoQuarantineActions } from './api';
 import {
+    EXPLORER_LOOKBACK_DAYS,
     PROJECTS,
     QUARANTINE_FAILURE_RATE,
     QUARANTINE_LAST_N_EXECUTIONS,
@@ -8,10 +9,13 @@ import {
     UNQUARANTINE_LAST_N_EXECUTIONS,
 } from './config';
 import { listAllQuarantinedTests } from './list';
+import { quarantineFromRun } from './manualQuarantine';
+import { nightlyUnquarantineFromLatestRun } from './nightlyUnquarantine';
 import { quarantineFailingTests, unquarantinePassingTests } from './quarantine';
 import { buildSlackSummary, sendSlackNotification } from './slack';
 import type { SlackEvent } from './types';
 import { wipeAllAutoQuarantineActions } from './wipe';
+import { getActiveTests } from '../currentsApi/api';
 
 async function main(): Promise<void> {
     const args = process.argv.slice(2);
@@ -32,8 +36,20 @@ async function main(): Promise<void> {
                 '  --list --project <name>    Same as --list but limited to the specified project.',
                 `                             Known project names: ${PROJECTS.map(p => p.name).join(', ')}.`,
                 '',
+                '  --quarantine <runId>       Quarantine all tests that failed in the given Currents run ID.',
+                '                             Combine with -i / --interactive to approve each test manually.',
+                '                             Sends a Slack notification (with a “manually triggered” note)',
+                '                             when E2E_TEST_SLACK_QUARANTINE_BOT_WEBHOOK is configured.',
+                '',
+                '  -i, --interactive          Used together with --quarantine: prompt for each failed test',
+                '                             before quarantining it.',
+                '',
                 '  --wipeAutoQuarantine       Delete ALL auto-quarantine actions (those created by this bot)',
                 '                             across every monitored project. Use with caution.',
+                '',
+                '  --nightlyUnquarantine      Find the latest run on the default (develop) branch for',
+                '                             each monitored project and unquarantine all auto-quarantined',
+                '                             tests that passed in that run.',
                 '',
                 '  --help, -h                 Show this help message and exit.',
                 '',
@@ -61,6 +77,74 @@ async function main(): Promise<void> {
         return;
     }
 
+    if (args.includes('--nightlyUnquarantine')) {
+        console.log('=== Nightly Unquarantine ===');
+        console.log(`Timestamp: ${new Date().toISOString()}`);
+        console.log(`Projects: ${PROJECTS.map(p => `${p.label} (${p.id})`).join(', ')}`);
+        console.log('');
+
+        let hasError = false;
+        const slackEvents: SlackEvent[] = [];
+
+        for (const project of PROJECTS) {
+            try {
+                await nightlyUnquarantineFromLatestRun(project.id, project.label, slackEvents);
+            } catch (err) {
+                console.error(
+                    `\n[ERROR] Failed processing project ${project.label} (${project.id}):`,
+                    err,
+                );
+                hasError = true;
+            }
+        }
+
+        const summary = buildSlackSummary(PROJECTS, slackEvents, {
+            headerNote: 'Nightly unquarantine from latest develop run.',
+        });
+        if (summary) {
+            await sendSlackNotification(summary);
+        }
+
+        console.log('\n=== Done ===');
+
+        if (hasError) {
+            process.exit(1);
+        }
+
+        return;
+    }
+
+    const quarantineFlagIndex = args.indexOf('--quarantine');
+    if (quarantineFlagIndex !== -1) {
+        const runId = args[quarantineFlagIndex + 1];
+        if (!runId || runId.startsWith('-')) {
+            console.error('[ERROR] --quarantine requires a run ID argument.');
+            process.exit(1);
+        }
+
+        const interactive = args.includes('-i') || args.includes('--interactive');
+        const slackEvents: SlackEvent[] = [];
+
+        const { projectId, projectLabel } = await quarantineFromRun(
+            runId,
+            interactive,
+            slackEvents,
+        );
+
+        // Build Slack summary using the run's project so the events are attributed correctly.
+        const projectEntry = { id: projectId, label: projectLabel };
+        const summary = buildSlackSummary([projectEntry], slackEvents, {
+            headerNote: `Manually triggered quarantine from <https://app.currents.dev/runs/${runId}|run ${runId}>.`,
+        });
+        if (summary) {
+            await sendSlackNotification(summary);
+        }
+
+        console.log('\n=== Done ===');
+
+        return;
+    }
+
     console.log('=== Currents Test Health Check ===');
     console.log(`Timestamp: ${new Date().toISOString()}`);
     console.log(`Projects: ${PROJECTS.map(p => `${p.label} (${p.id})`).join(', ')}`);
@@ -77,7 +161,7 @@ async function main(): Promise<void> {
         try {
             const [existingActions, activeTests] = await Promise.all([
                 getAutoQuarantineActions(project.id),
-                getActiveTests(project.id),
+                getActiveTests(project.id, EXPLORER_LOOKBACK_DAYS),
             ]);
             await quarantineFailingTests(
                 project.id,

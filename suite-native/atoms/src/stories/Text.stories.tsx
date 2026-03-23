@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-native';
 
 import { COLOR_TOKENS, nativeTypographyStyles } from '@trezor/theme';
 
-import { Text as TextComponent, TextProps } from '../Text';
+import { Text as TextComponent, type TextProps } from '../Text';
 
 type TextStory = StoryObj<TextProps>;
 

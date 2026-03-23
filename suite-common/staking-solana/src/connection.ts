@@ -1,11 +1,11 @@
 import { createDefaultRpcTransport, createSolanaRpcFromTransport } from '@solana/kit';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { getSuiteVersion } from '@trezor/env-utils';
-import { PartialRecord } from '@trezor/type-utils';
+import { type PartialRecord } from '@trezor/type-utils';
 
 import { DEVNET_VALIDATOR_ADDRESS, MAINNET_VALIDATOR_ADDRESS } from './constants';
-import { Network, RpcConfig, SolNetworkConfig } from './types';
+import { Network, type RpcConfig, type SolNetworkConfig } from './types';
 
 export const getSolanaValidator = (network: Network = Network.Mainnet) => {
     const networkConfig = {

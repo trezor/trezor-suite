@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 
 import { Translation } from '@suite/intl';
 import { Card, Column, Modal, Text } from '@trezor/components';

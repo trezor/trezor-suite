@@ -1,6 +1,6 @@
 import {
     WelcomeLayoutWithoutModalSwitcher,
-    WelcomeLayoutWithoutModalSwitcherProps,
+    type WelcomeLayoutWithoutModalSwitcherProps,
 } from './WelcomeLayoutWithoutModalSwitcher';
 import { ModalSwitcher } from '../../modals/ModalSwitcher/ModalSwitcher';
 import { PassphraseFlow } from '../SuiteLayout/PassphraseFlow';

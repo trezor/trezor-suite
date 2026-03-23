@@ -6,11 +6,10 @@ import type {
     FilterClient,
     FilterControllerContext,
     FilterControllerParams,
+    FilterControllerShape,
 } from '../types/backend';
 
-export type FilterController = Pick<CoinjoinFilterController, 'getFilterIterator'>;
-
-export class CoinjoinFilterController {
+export class CoinjoinFilterController implements FilterControllerShape {
     private readonly client;
     private readonly batchSize;
     private readonly baseBlock;

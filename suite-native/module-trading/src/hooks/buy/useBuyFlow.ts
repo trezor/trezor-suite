@@ -5,7 +5,7 @@ import type { BuyTrade, BuyTradeResponse } from 'invity-api';
 
 import { invariant } from '@suite-common/suite-utils';
 import {
-    TradingRootState,
+    type TradingRootState,
     buyThunks,
     selectTradingBuyIsLoading,
     selectTradingCoinInfoByCryptoId,
@@ -13,15 +13,15 @@ import {
 } from '@suite-common/trading';
 import { events } from '@suite-native/analytics';
 import {
-    RootStackParamList,
-    StackToStackCompositeNavigationProps,
-    TradingStackParamList,
+    type RootStackParamList,
+    type StackToStackCompositeNavigationProps,
+    type TradingStackParamList,
     TradingStackRoutes,
 } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import { buildTradingUrl, useBrowserAuth } from '@suite-native/trading-browser-auth';
-import { BuyFormType } from '@suite-native/trading-types';
+import { type BuyFormType } from '@suite-native/trading-types';
 import { useNullTimer } from '@trezor/react-utils';
 
 import { clearBuyFormQuoteData } from './useBuyForm';
@@ -61,10 +61,7 @@ export const useBuyFlow = (form: BuyFormType) => {
         coinInfo,
     });
 
-    const { openBrowserForFormData } = useBrowserAuth({
-        tradingType: 'buy',
-        orderId: candidateQuote?.orderId,
-    });
+    const { openBrowserForFormData } = useBrowserAuth('buy');
 
     const reportTradeConfirmation = () => {
         analytics.report({
@@ -91,7 +88,7 @@ export const useBuyFlow = (form: BuyFormType) => {
         }
 
         if (response.tradeForm) {
-            openBrowserForFormData(response.tradeForm.form, returnUrl);
+            openBrowserForFormData(response.tradeForm.form, returnUrl, response.trade.orderId);
         }
 
         clearBuyFormQuoteData(form);
@@ -162,7 +159,8 @@ export const useBuyFlow = (form: BuyFormType) => {
                 quote: candidateQuote,
                 timer,
                 returnUrl,
-                loginRequest: formResponse => openBrowserForFormData(formResponse, returnUrl),
+                loginRequest: formResponse =>
+                    openBrowserForFormData(formResponse, returnUrl, candidateQuote.orderId),
                 nextStep: () => {
                     confirmTrade(candidateQuote, addressText);
                 },

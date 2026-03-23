@@ -1,4 +1,4 @@
-import { RouterState } from 'src/reducers/suite/routerReducer';
+import { type RouterState } from '@suite/router';
 
 type Route = RouterState['route'];
 

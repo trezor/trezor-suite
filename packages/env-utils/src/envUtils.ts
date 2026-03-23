@@ -1,5 +1,5 @@
 import { publicKey } from './jws';
-import { EnvUtils, Environment } from './types';
+import { type EnvUtils, type Environment } from './types';
 
 export const isWeb = () => process.env.SUITE_TYPE === 'web';
 

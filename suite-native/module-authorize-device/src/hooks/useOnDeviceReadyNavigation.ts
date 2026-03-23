@@ -10,12 +10,12 @@ import { selectIsFirmwareInstallationRunning } from '@suite-native/firmware';
 import { useIsConnectPopupOpened } from '@suite-native/module-connect-popup';
 import {
     AppTabsRoutes,
-    AuthorizeDeviceStackParamList,
-    AuthorizeDeviceStackRoutes,
+    type AuthorizeDeviceStackParamList,
+    type AuthorizeDeviceStackRoutes,
     HomeStackRoutes,
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
-    StackToStackCompositeNavigationProps,
+    type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 
 const LOADING_TIMEOUT = 2500;

@@ -1,8 +1,8 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { type Meta, type StoryObj } from '@storybook/react';
 
 import { spacingsNew } from '@trezor/theme';
 
-import { TokenIconSet as TokenIconSetComponent, TokenIconSetProps } from './TokenIconSet';
+import { TokenIconSet as TokenIconSetComponent, type TokenIconSetProps } from './TokenIconSet';
 import { allowedAssetLogoSizes } from '../AssetLogo/AssetLogo';
 
 const getToken = (contract: string, symbol: string, decimals: number) => ({

@@ -1,4 +1,4 @@
-import { RateTypeWithoutHistoric } from '@suite-common/wallet-types';
+import { type RateTypeWithoutHistoric } from '@suite-common/wallet-types';
 
 export const FIAT_RATES_MODULE_PREFIX = '@common/wallet-core/fiat-rates';
 

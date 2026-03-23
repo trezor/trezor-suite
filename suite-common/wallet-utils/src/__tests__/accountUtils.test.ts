@@ -1,6 +1,6 @@
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { NetworkFeature } from '@suite-common/wallet-config';
-import { Account, asAccountDescriptor, createAccountKey } from '@suite-common/wallet-types';
+import { type NetworkFeature } from '@suite-common/wallet-config';
+import { type Account, asAccountDescriptor, createAccountKey } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import * as fixtures from '../__fixtures__/accountUtils';

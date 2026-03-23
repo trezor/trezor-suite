@@ -1,7 +1,8 @@
 import { isAnyOf } from '@reduxjs/toolkit';
-import { MiddlewareAPI } from 'redux';
+import { type MiddlewareAPI } from 'redux';
 
 import { featureUsed, feedbackDismissed, feedbackRequested } from '@suite/experimental-feedback';
+import { setFlag } from '@suite/flags';
 import { METADATA, metadataActions } from '@suite/metadata';
 import { analyticsActions } from '@suite-common/analytics-redux';
 import { bluetoothActions } from '@suite-common/bluetooth';
@@ -41,7 +42,7 @@ import {
     transactionsActions,
     updateTxsFiatRatesThunk,
 } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { findAccountDevice, isAccountSuccessful } from '@suite-common/wallet-utils';
 import { walletConnectActions } from '@suite-common/walletconnect';
 
@@ -117,6 +118,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
 
                 storageActions.removeAccountTransactions(account);
                 storageActions.removeAccountHistoricRates(account.key);
+                storageActions.removeAccountPhishing(account.key);
             }
 
             if (
@@ -130,6 +132,16 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 // update only transactions for remembered device
                 if (getIsDeviceRemembered(device)) {
                     storageActions.removeAccountTransactions(account);
+                    api.dispatch(storageActions.saveAccountTransactions(account));
+                }
+            }
+
+            if (transactionsActions.markTransactionAsNotScam.match(action)) {
+                const account = selectAccountByKey(api.getState(), action.payload.key);
+                const device = account
+                    ? findAccountDevice(account, selectDevices(api.getState()))
+                    : undefined;
+                if (account && getIsDeviceRemembered(device)) {
                     api.dispatch(storageActions.saveAccountTransactions(account));
                 }
             }
@@ -319,7 +331,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
 
                     break;
                 case SUITE.SET_LANGUAGE:
-                case SUITE.SET_FLAG:
+                case setFlag.type:
                 case SUITE.SET_DEBUG_MODE:
                 case SUITE.SET_EXPERIMENTAL_FEATURES:
                 case SUITE.ONION_LINKS:

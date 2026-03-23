@@ -1,6 +1,6 @@
 import { p256 } from '@noble/curves/nist.js';
 
-import { DelegatedIdentityKey } from '@suite-common/suite-types';
+import { type DelegatedIdentityKey } from '@suite-common/suite-types';
 
 /**
  * Derives the public identity key from the delegated identity key (private key).

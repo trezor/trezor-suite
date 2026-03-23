@@ -10,13 +10,13 @@ import {
     STAKE_GAS_LIMIT_RESERVE,
 } from '@suite-common/wallet-constants';
 import {
-    Account,
+    type Account,
     AddressDisplayOptions,
-    ComposeActionContext,
-    ExternalOutput,
-    PrecomposedLevels,
-    PrecomposedTransaction,
-    RbfTransactionParams,
+    type ComposeActionContext,
+    type ExternalOutput,
+    type PrecomposedLevels,
+    type PrecomposedTransaction,
+    type RbfTransactionParams,
 } from '@suite-common/wallet-types';
 import {
     asAmountSubunit,
@@ -39,15 +39,15 @@ import {
     subunitsToUnits,
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
-import TrezorConnect, { FeeLevel, TokenInfo } from '@trezor/connect';
+import TrezorConnect, { type FeeLevel, type TokenInfo } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
 import {
-    ComposeFeeLevelsError,
-    ComposeTransactionThunkArguments,
-    SignTransactionError,
-    SignTransactionThunkArguments,
+    type ComposeFeeLevelsError,
+    type ComposeTransactionThunkArguments,
+    type SignTransactionError,
+    type SignTransactionThunkArguments,
 } from './sendFormTypes';
 import { selectTransactions } from '../transactions/transactionsSelectors';
 

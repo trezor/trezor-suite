@@ -22,13 +22,16 @@
     "main": "src/index.ts",
     "publishConfig": {
         "main": "./lib/index.js",
+        "module": "./libESM/index.mjs",
         "types": "./lib/index.d.ts",
         "exports": {
             ".": {
-                "import": "./libESM/index.js",
+                "import": "./libESM/index.mjs",
                 "require": "./lib/index.js",
                 "types": "./lib/index.d.ts"
-            }
+            },
+            "./lib/impl/*": "./lib/impl/*.js",
+            "./libESM/impl/*": "./libESM/impl/*"
         }
     },
     "files": [
@@ -42,7 +45,8 @@
         "build:lib": "yarn build:lib:cjs && yarn build:lib:esm",
         "build:lib:cjs": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
         "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
-        "test:e2e": "yarn playwright install && yarn xvfb-maybe -- playwright test --config=./e2e/playwright.config.ts"
+        "test:e2e": "yarn playwright install && yarn xvfb-maybe -- playwright test --config=./e2e/playwright.config.ts",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
         "@trezor/connect": "workspace:*",
@@ -63,7 +67,7 @@
         "@types/w3c-web-usb": "^1.0.10",
         "@types/web": "^0.0.197",
         "babel-loader": "^10.0.0",
-        "rimraf": "^6.0.1",
+        "rimraf": "^6.1.2",
         "worker-loader": "^3.0.8",
         "xvfb-maybe": "^0.2.1"
     },

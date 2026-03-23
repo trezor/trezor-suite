@@ -1,17 +1,17 @@
 import { useState } from 'react';
-import { Control, useWatch } from 'react-hook-form';
+import { type Control, useWatch } from 'react-hook-form';
 
 import { Translation, useTranslation } from '@suite/intl';
+import { useGetCountryName } from '@suite/trading';
 import { TRADING_FORM_COUNTRY_SELECT } from '@suite-common/trading';
 import { Flag, GhostContainer, Icon, Row, Text, getCountryFlag } from '@trezor/components';
 
 import { FakeSelect } from 'src/components/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { useGetCountryName } from 'src/hooks/wallet/trading/useGetCountryName';
-import { TradingTradeBuySellType } from 'src/types/trading/trading';
+import { type TradingTradeBuySellType } from 'src/types/trading/trading';
 import {
-    TradingBuySellFormProps,
-    TradingFormInputDefaultProps,
+    type TradingBuySellFormProps,
+    type TradingFormInputDefaultProps,
 } from 'src/types/trading/tradingForm';
 
 import { CountrySelectModal } from './CountrySelectModal';
@@ -35,6 +35,7 @@ export const TradingFormInputCountry = ({
     });
 
     const country = countryValue ?? defaultCountry;
+
     const countryFlag = getCountryFlag(country?.value);
     const countryName = getCountryName(country);
 

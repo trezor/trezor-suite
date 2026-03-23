@@ -7,8 +7,8 @@ import { useNavigation, usePreventRemove } from '@react-navigation/native';
 
 import { selectIsDeviceBackupRequired } from '@suite-common/device';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
-import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { AccountDetailsCard } from '@suite-native/accounts';
 import {
     AnimatedBox,
@@ -26,8 +26,8 @@ import { useInAppRating } from '@suite-native/in-app-rating';
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
 import { WalletBackupNotSetWarningBottomSheet } from '@suite-native/module-device-onboarding';
-import { CloseActionType } from '@suite-native/navigation';
-import { TokensRootState, selectAccountTokenSymbol } from '@suite-native/tokens';
+import { type CloseActionType } from '@suite-native/navigation';
+import { type TokensRootState, selectAccountTokenSymbol } from '@suite-native/tokens';
 import TrezorConnect from '@trezor/connect';
 import { HELP_CENTER_OTHER_CRYPTOCURRENCIES_DESTINATION_TAGS_URL } from '@trezor/urls';
 

@@ -9,13 +9,15 @@
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build tsconfig.json",
         "type-check:watch": "yarn type-check -- --watch",
-        "lint:styles": "npx stylelint './src/**/*{.ts,.tsx}' --cache --config ../../.stylelintrc"
+        "lint:styles": "npx stylelint './src/**/*{.ts,.tsx}' --cache --config ../../.stylelintrc",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@sentry/electron": "^7.7.1",
-        "@suite-common/suite-types": "workspace:*",
+        "@sentry/electron": "^7.8.0",
         "@suite/analytics": "workspace:*",
+        "@suite/flags": "workspace:*",
         "@suite/intl": "workspace:*",
+        "@suite/router": "workspace:*",
         "@suite/sentry": "workspace:*",
         "@trezor/components": "workspace:*",
         "@trezor/connect": "workspace:*",
@@ -26,14 +28,14 @@
         "@trezor/urls": "workspace:*",
         "@trezor/utils": "workspace:*",
         "history": "^5.3.0",
-        "react": "19.1.0",
-        "react-dom": "19.1.0",
+        "react": "19.2.4",
+        "react-dom": "19.2.4",
         "react-redux": "9.2.0",
         "styled-components": "^6.3.9"
     },
     "devDependencies": {
-        "@types/react": "19.1.6",
-        "@types/react-dom": "19.1.6",
+        "@types/react": "19.2.14",
+        "@types/react-dom": "19.2.3",
         "postcss-styled-syntax": "^0.7.1",
         "stylelint": "^17.1.1",
         "stylelint-config-standard": "^40.0.0"

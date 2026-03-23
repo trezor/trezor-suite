@@ -1,5 +1,9 @@
 import { isDeviceKnown } from '@suite-common/suite-utils';
-import { Device, FirmwareHashCheckError, FirmwareRevisionCheckError } from '@trezor/connect';
+import {
+    type Device,
+    type FirmwareHashCheckError,
+    type FirmwareRevisionCheckError,
+} from '@trezor/connect';
 
 type FirmwareAuthenticityCheckErrors = {
     revisionCheckError: FirmwareRevisionCheckError | null;

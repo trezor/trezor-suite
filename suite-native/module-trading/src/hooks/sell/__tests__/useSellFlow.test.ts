@@ -1,21 +1,20 @@
 import type { SellFiatTrade, SellFiatTradeResponse } from 'invity-api';
 
 import { tradingSellActions } from '@suite-common/trading';
-import { AccountKey } from '@suite-common/wallet-types';
+import type { sellThunks } from '@suite-common/trading';
+import { type AccountKey } from '@suite-common/wallet-types';
 import {
-    TestStore,
+    type TestStore,
     act,
     initStore,
-    renderHookWithStoreProviderAsync,
+    renderHookWithStoreProvider,
 } from '@suite-native/test-utils';
 import { bankAccounts, getWalletState, sellQuotes } from '@suite-native/trading-fixtures';
 
 import { useSellFlow } from '../useSellFlow';
 
 // Store captured arguments for testing side effects (processResponseData callback)
-let capturedHandleTradeArgs:
-    | Parameters<typeof import('@suite-common/trading').sellThunks.handleTradeThunk>[0]
-    | null = null;
+let capturedHandleTradeArgs: Parameters<typeof sellThunks.handleTradeThunk>[0] | null = null;
 
 jest.mock('@suite-common/trading', () => ({
     ...jest.requireActual('@suite-common/trading'),
@@ -70,8 +69,7 @@ const btc1AccountKey = 'btc-account-1' as AccountKey; // Todo: create properly v
 describe('useSellFlow', () => {
     let store: TestStore;
 
-    const renderUseSellFlow = () =>
-        renderHookWithStoreProviderAsync(() => useSellFlow(), { store });
+    const renderUseSellFlow = () => renderHookWithStoreProvider(() => useSellFlow(), { store });
 
     beforeEach(() => {
         store = initStore({ wallet: getWalletState({ tradeType: 'sell' }) }).store;
@@ -93,7 +91,7 @@ describe('useSellFlow', () => {
                 store.dispatch(tradingSellActions.saveSelectedQuote(trade));
             });
 
-            const { result } = await renderUseSellFlow();
+            const { result } = renderUseSellFlow();
 
             await act(async () => {
                 await result.current.doSellTrade(trade);
@@ -124,7 +122,7 @@ describe('useSellFlow', () => {
                 store.dispatch(tradingSellActions.setTradingAccountKey(undefined));
             });
 
-            const { result } = await renderUseSellFlow();
+            const { result } = renderUseSellFlow();
 
             await act(async () => {
                 await result.current.doSellTrade(trade);
@@ -148,7 +146,7 @@ describe('useSellFlow', () => {
                 store.dispatch(tradingSellActions.saveSelectedQuote(undefined));
             });
 
-            const { result } = await renderUseSellFlow();
+            const { result } = renderUseSellFlow();
 
             await act(async () => {
                 await result.current.doSellTrade(trade);
@@ -176,7 +174,7 @@ describe('useSellFlow', () => {
                 store.dispatch(tradingSellActions.saveSelectedQuote(trade));
             });
 
-            const { result } = await renderUseSellFlow();
+            const { result } = renderUseSellFlow();
 
             await act(async () => {
                 await result.current.confirmTrade(bankAccount);
@@ -207,7 +205,7 @@ describe('useSellFlow', () => {
                 store.dispatch(tradingSellActions.saveSelectedQuote(undefined));
             });
 
-            const { result } = await renderUseSellFlow();
+            const { result } = renderUseSellFlow();
 
             await act(async () => {
                 await result.current.confirmTrade(bankAccount);
@@ -231,7 +229,7 @@ describe('useSellFlow', () => {
                 store.dispatch(tradingSellActions.setTradingAccountKey(undefined));
             });
 
-            const { result } = await renderUseSellFlow();
+            const { result } = renderUseSellFlow();
 
             await act(async () => {
                 await result.current.confirmTrade(bankAccount);
@@ -255,7 +253,7 @@ describe('useSellFlow', () => {
                 store.dispatch(tradingSellActions.saveSelectedQuote(trade));
             });
 
-            const { result } = await renderUseSellFlow();
+            const { result } = renderUseSellFlow();
 
             await act(async () => {
                 await result.current.doBankAccountVerificationCheck();
@@ -278,7 +276,7 @@ describe('useSellFlow', () => {
                 store.dispatch(tradingSellActions.saveSelectedQuote(trade));
             });
 
-            const { result } = await renderUseSellFlow();
+            const { result } = renderUseSellFlow();
 
             await act(async () => {
                 await result.current.doBankAccountVerificationCheck();
@@ -302,7 +300,7 @@ describe('useSellFlow', () => {
                 store.dispatch(tradingSellActions.saveSelectedQuote(trade));
             });
 
-            const { result } = await renderUseSellFlow();
+            const { result } = renderUseSellFlow();
 
             await act(async () => {
                 await result.current.doBankAccountVerificationCheck();
@@ -323,7 +321,7 @@ describe('useSellFlow', () => {
                 store.dispatch(tradingSellActions.saveSelectedQuote(undefined));
             });
 
-            const { result } = await renderUseSellFlow();
+            const { result } = renderUseSellFlow();
 
             await act(async () => {
                 await result.current.doBankAccountVerificationCheck();
@@ -346,7 +344,7 @@ describe('useSellFlow', () => {
                 store.dispatch(tradingSellActions.saveSelectedQuote(trade));
             });
 
-            const { result } = await renderUseSellFlow();
+            const { result } = renderUseSellFlow();
 
             await act(async () => {
                 await result.current.doSellTrade(trade);

@@ -1,16 +1,17 @@
-import { FC, useMemo } from 'react';
+import { type FC, useMemo } from 'react';
 
 import styled from 'styled-components';
 
+import { selectIsInitialRun } from '@suite/flags';
+import { type Route } from '@suite/router';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
-import { Route } from '@suite-common/suite-types';
 import { selectIsAnyNonBitcoinLikeNetworkEnabled } from '@suite-common/wallet-core';
 import { type SpacingPxValues, spacingsPx } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
-import { selectIsDebugModeActive, selectIsInitialRun } from 'src/selectors/suite/suiteSelectors';
+import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 
-import { NavigationItem, NavigationItemProps } from './NavigationItem';
+import { NavigationItem, type NavigationItemProps } from './NavigationItem';
 import { NotificationDropdown } from './NotificationDropdown';
 import { useResponsiveContext } from '../../../../../support/suite/ResponsiveContext';
 

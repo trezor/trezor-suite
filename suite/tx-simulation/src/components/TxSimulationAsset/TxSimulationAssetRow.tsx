@@ -1,5 +1,5 @@
 import { useFormatters } from '@suite-common/formatters';
-import { AssetDiff } from '@suite-common/tx-simulation';
+import { type AssetDiff } from '@suite-common/tx-simulation';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Text, type TextProps } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';

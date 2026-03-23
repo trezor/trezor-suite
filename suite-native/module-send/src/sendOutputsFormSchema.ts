@@ -1,7 +1,7 @@
 import { formInputsMaxLength, yup } from '@suite-common/validators';
-import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getDisplaySymbol, getNetworkType } from '@suite-common/wallet-config';
 import { U_INT_32 } from '@suite-common/wallet-constants';
-import { FeeInfo, Output } from '@suite-common/wallet-types';
+import { type FeeInfo, type Output } from '@suite-common/wallet-types';
 import {
     formatNetworkAmount,
     isAddressDeprecated,
@@ -11,7 +11,7 @@ import {
     isDecimalsValid,
     isTaprootAddress,
 } from '@suite-common/wallet-utils';
-import { FeeLevelsMaxAmount } from '@suite-native/transaction-management';
+import { type FeeLevelsMaxAmount } from '@suite-native/transaction-management';
 import { BigNumber, isNotNullOrUndefined } from '@trezor/utils';
 
 export type SendFormFormContext = {
@@ -26,6 +26,7 @@ export type SendFormFormContext = {
     isTaprootAvailable?: boolean;
     accountNativeAvailableBalance?: string;
     networkReserve?: string;
+    rippleReserve?: string;
 };
 
 const isAmountDust = (amount: string, context?: SendFormFormContext) => {
@@ -153,9 +154,9 @@ const outputSchema = yup.object({
         )
         .test(
             'ripple-higher-than-reserve',
-            'Amount is above the required unspendable reserve (1 XRP)',
+            'Amount is above the required unspendable reserve',
             function (value, { options: { context } }: yup.TestContext<SendFormFormContext>) {
-                const { symbol, availableBalance, feeLevelsMaxAmount } = context!;
+                const { symbol, availableBalance, feeLevelsMaxAmount, rippleReserve } = context!;
 
                 if (!availableBalance || !symbol || getNetworkType(symbol) !== 'ripple')
                     return true;
@@ -172,7 +173,11 @@ const outputSchema = yup.object({
                         ),
                     )
                 ) {
-                    return false;
+                    const displaySymbol = getDisplaySymbol(symbol);
+
+                    return this.createError({
+                        message: `Amount is above the required unspendable reserve${rippleReserve ? ` (${rippleReserve} ${displaySymbol})` : ''}`,
+                    });
                 }
 
                 return true;
@@ -187,7 +192,7 @@ const outputSchema = yup.object({
         )
         .test(
             'network-reserve',
-            'Not enough funds left after we reserve for network fees.',
+            'Not enough funds remaining after reserving network fees',
             function (value, { options: { context } }: yup.TestContext<SendFormFormContext>) {
                 if (!value || !context) return true;
 

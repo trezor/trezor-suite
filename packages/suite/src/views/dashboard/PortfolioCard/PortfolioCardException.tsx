@@ -1,16 +1,16 @@
-import { ComponentProps, JSX } from 'react';
+import { type ComponentProps, type JSX } from 'react';
 
-import { Translation, TranslationKey } from '@suite/intl';
-import { NetworkType, getNetwork } from '@suite-common/wallet-config';
+import { Translation, type TranslationKey } from '@suite/intl';
+import { goto } from '@suite/router';
+import { type NetworkType, getNetwork } from '@suite-common/wallet-config';
 import { startOrRestartDiscoveryThunk } from '@suite-common/wallet-core';
-import { DiscoveryStatus, FailedAccount } from '@suite-common/wallet-types';
-import { Button, Column, H3, IconCircle, IconName, Row, Text } from '@trezor/components';
+import { type DiscoveryStatus, type FailedAccount } from '@suite-common/wallet-types';
+import { Button, Column, H3, IconCircle, type IconName, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
-import { goto } from 'src/actions/suite/routerActions';
 import { useDevice, useDispatch } from 'src/hooks/suite';
-import { DiscoveryStatusType } from 'src/types/wallet';
+import { type DiscoveryStatusType } from 'src/types/wallet';
 
 interface CTA {
     label?: TranslationKey;
@@ -132,7 +132,7 @@ export const PortfolioCardException = ({
                     description="TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY_DESC"
                     cta={[
                         {
-                            action: () => dispatch(goto('settings-coins')),
+                            action: () => dispatch(goto({ routeName: 'settings-coins' })),
                             isDisabled: false,
                             icon: 'gear',
                             label: 'TR_COIN_SETTINGS',

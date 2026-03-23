@@ -1,6 +1,6 @@
-import { FieldErrors, FieldPath, useFormState } from 'react-hook-form';
+import { type FieldErrors, type FieldPath, useFormState } from 'react-hook-form';
 
-import { FormState } from '@suite-common/wallet-types';
+import { type FormState } from '@suite-common/wallet-types';
 import { Banner } from '@trezor/components';
 
 export interface FieldErrorBannerProps {

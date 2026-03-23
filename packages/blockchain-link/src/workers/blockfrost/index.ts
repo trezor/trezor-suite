@@ -13,7 +13,7 @@ import {
     transformUtxos,
 } from '@trezor/blockchain-link-utils/src/blockfrost';
 
-import { BaseWorker, CONTEXT, ContextType } from '../baseWorker';
+import { BaseWorker, CONTEXT, type ContextType } from '../baseWorker';
 import { BlockfrostAPI } from './websocket';
 
 type Context = ContextType<BlockfrostAPI>;

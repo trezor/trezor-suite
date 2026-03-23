@@ -1,12 +1,21 @@
-import { TranslationId } from '@suite/intl';
+import { type TranslationId } from '@suite/intl';
 import {
-    EnhancedTokenInfo,
-    TokenDefinition,
-    TokenDefinitionsState,
+    type EnhancedTokenInfo,
+    type TokenDefinition,
+    type TokenDefinitionsState,
     isTokenDefinitionKnown,
 } from '@suite-common/token-definitions';
-import { NetworkSymbol, NetworkType, getNetworkFeatures } from '@suite-common/wallet-config';
-import { Account, Rate, RatesByKey, TokenAddress } from '@suite-common/wallet-types';
+import {
+    type NetworkSymbol,
+    type NetworkType,
+    getNetworkFeatures,
+} from '@suite-common/wallet-config';
+import {
+    type Account,
+    type Rate,
+    type RatesByKey,
+    type TokenAddress,
+} from '@suite-common/wallet-types';
 import {
     getFiatRateKey,
     isNftMatchesSearch,
@@ -14,7 +23,7 @@ import {
     isTokenMatchesSearch,
 } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
-import { TokenInfo } from '@trezor/connect';
+import { type TokenInfo } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
 export interface TokensWithRates extends TokenInfo {

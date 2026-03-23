@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react';
 
-import { TabsSize } from './types';
+import { type TabsSize } from './types';
 
 export const TabsContext = createContext<{
     size: TabsSize;

@@ -1,6 +1,6 @@
-import { Color } from '@trezor/theme';
+import { type Color } from '@trezor/theme';
 
-import { ToastAction, ToastIconVariant, ToastIntent } from './types';
+import { type ToastAction, type ToastIconVariant, type ToastIntent } from './types';
 
 export const mapToastIntentToIcon = (intent: ToastIntent) => {
     const iconMap: Record<ToastIntent, ToastIconVariant> = {

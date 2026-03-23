@@ -1,14 +1,14 @@
 import { useMemo } from 'react';
 
-import { StakeAccountRewards } from '@suite-common/wallet-types';
+import { type SolanaStakeAccountReward } from '@suite-common/wallet-api';
 import { StakeState } from '@trezor/blockchain-link-types/src/solana';
 import { isInt } from '@trezor/utils';
 
-import { Account } from 'src/types/wallet';
+import { type Account } from 'src/types/wallet';
 
 export function useRewardsNotAvailableYet(
     account: Account,
-    latestReward?: StakeAccountRewards,
+    latestReward?: SolanaStakeAccountReward,
 ): boolean {
     if (account.networkType !== 'solana') {
         throw new Error('useRewardsNotAvailableYet can be used only with solana account');

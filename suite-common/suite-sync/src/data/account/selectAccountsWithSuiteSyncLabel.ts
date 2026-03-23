@@ -1,9 +1,9 @@
 import { createWeakMapSelector } from '@suite-common/redux-utils';
-import { SuiteSyncAccount } from '@suite-common/suite-sync-storage';
-import { Account } from '@suite-common/wallet-types';
-import { StaticSessionId } from '@trezor/connect';
+import { type SuiteSyncAccount } from '@suite-common/suite-sync-storage';
+import { type Account } from '@suite-common/wallet-types';
+import { type StaticSessionId } from '@trezor/connect';
 
-import { SuiteSyncDataRootState } from '../suiteSyncDataReducer';
+import { type SuiteSyncDataRootState } from '../suiteSyncDataReducer';
 import { findSuiteSyncAccountLabel } from './findSuiteSyncAccountLabel';
 import { selectSuiteSyncAccounts } from './selectSuiteSyncAccounts';
 

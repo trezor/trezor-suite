@@ -1,6 +1,6 @@
 import { forwardRef } from 'react';
 
-import { BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
+import { type BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 
 import { BottomSheetModal } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';

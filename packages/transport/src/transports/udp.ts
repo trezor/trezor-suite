@@ -1,6 +1,6 @@
-import { TimerId } from '@trezor/type-utils';
+import { type TimerId } from '@trezor/type-utils';
 
-import { AbstractTransportParams } from './abstract';
+import { type AbstractTransportParams } from './abstract';
 import { AbstractApiTransport } from './abstractApi';
 import { UdpApi } from '../api/udp';
 

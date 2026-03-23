@@ -1,7 +1,7 @@
 import { createMiddleware } from '@suite-common/redux-utils';
 import { isNetworkSymbol } from '@suite-common/wallet-config';
 import {
-    TransactionsRootState,
+    type TransactionsRootState,
     blockchainActions,
     onBlockchainDisconnectThunk,
     selectAllPendingTransactions,

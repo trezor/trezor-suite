@@ -1,17 +1,17 @@
 import { combineReducers } from '@reduxjs/toolkit';
-import { SellFiatTrade } from 'invity-api';
+import { type SellFiatTrade } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { getNetwork } from '@suite-common/wallet-config';
-import { Account, AccountKey } from '@suite-common/wallet-types';
+import { type Account, type AccountKey } from '@suite-common/wallet-types';
 
 import { accountBtc } from '../../../__fixtures__/utils';
 import { invityAPI } from '../../../invityAPI';
-import { TradingSellState, sellInitialState } from '../../../reducers/sellReducer';
+import { type TradingSellState, sellInitialState } from '../../../reducers/sellReducer';
 import { initialState } from '../../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../../reducers/tradingReducer';
-import { TradingSellFormProps, TradingTransactionSell } from '../../../types';
+import { type TradingSellFormProps, type TradingTransactionSell } from '../../../types';
 import { sellUtilsFixtures } from '../../../utils/sell/__fixtures__/sellUtils';
 import { tradingThunks } from '../../common';
 import { sellThunks } from '../index';

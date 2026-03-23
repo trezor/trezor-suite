@@ -29,7 +29,7 @@ runs:
           --list "${PROJECT_ARGS[@]}" > "${{ runner.temp }}/quarantine.json"
 
     - name: Update PR description with quarantine list
-      uses: actions/github-script@v7
+      uses: actions/github-script@v8
       with:
         github-token: ${{ inputs.github_token }}
         script: |

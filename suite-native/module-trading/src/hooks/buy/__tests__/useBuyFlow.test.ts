@@ -1,16 +1,16 @@
 import {
-    PreloadedState,
-    TestStore,
+    type PreloadedState,
+    type TestStore,
     act,
     initStore,
-    renderHookWithStoreProviderAsync,
+    renderHookWithStoreProvider,
 } from '@suite-native/test-utils';
 import {
     buyQuotes,
     getBtcAccount,
     getInitializedTradingStateWithQuotes,
 } from '@suite-native/trading-fixtures';
-import { BuyFormType } from '@suite-native/trading-types';
+import { type BuyFormType } from '@suite-native/trading-types';
 
 import { useBuyFlow } from '../useBuyFlow';
 import { useBuyForm } from '../useBuyForm';
@@ -44,30 +44,30 @@ describe('useBuyFlow', () => {
         return initStore(preloadedState).store;
     };
 
-    const renderBuyForm = () => renderHookWithStoreProviderAsync(() => useBuyForm(), { store });
+    const renderBuyForm = () => renderHookWithStoreProvider(() => useBuyForm(), { store });
 
     const renderUseTradingBuyFlow = () =>
-        renderHookWithStoreProviderAsync(() => useBuyFlow(buyForm), { store });
+        renderHookWithStoreProvider(() => useBuyFlow(buyForm), { store });
 
     describe('while loading quotes', () => {
-        beforeEach(async () => {
-            store = await getInitializedStore({ isLoading: true });
+        beforeEach(() => {
+            store = getInitializedStore({ isLoading: true });
 
-            const { result } = await renderBuyForm();
+            const { result } = renderBuyForm();
             buyForm = result.current;
         });
 
-        it('should canProceed be false when loading', async () => {
-            const { result } = await renderUseTradingBuyFlow();
+        it('should canProceed be false when loading', () => {
+            const { result } = renderUseTradingBuyFlow();
             expect(result.current.canProceed).toBe(false);
         });
     });
 
     describe('with quote loaded and selected', () => {
-        beforeEach(async () => {
-            store = await getInitializedStore({ isLoading: false });
+        beforeEach(() => {
+            store = getInitializedStore({ isLoading: false });
 
-            const { result } = await renderBuyForm();
+            const { result } = renderBuyForm();
             buyForm = result.current;
 
             act(() => {
@@ -75,8 +75,8 @@ describe('useBuyFlow', () => {
             });
         });
 
-        it('should canProceed be true when not loading and orderId filters one in quotes', async () => {
-            const { result } = await renderUseTradingBuyFlow();
+        it('should canProceed be true when not loading and orderId filters one in quotes', () => {
+            const { result } = renderUseTradingBuyFlow();
 
             expect(result.current.canProceed).toBe(true);
         });
@@ -92,13 +92,13 @@ describe('useBuyFlow', () => {
                 });
             });
 
-            it('should call nextStep callback with correct address', async () => {
+            it('should call nextStep callback with correct address', () => {
                 const btcAccount = getBtcAccount();
                 const dispatchSpy = jest.spyOn(store, 'dispatch');
                 const expectedAddress =
                     btcAccount.addresses?.used?.[0]?.address ?? btcAccount.descriptor;
 
-                const { result } = await renderUseTradingBuyFlow();
+                const { result } = renderUseTradingBuyFlow();
                 dispatchSpy.mockClear();
 
                 act(() => {

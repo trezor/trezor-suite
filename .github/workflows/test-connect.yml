@@ -44,7 +44,7 @@ jobs:
       modelOneMatrix: ${{ steps.set-matrix-model-one.outputs.matrix }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set daily matrix
         id: set-matrix-daily

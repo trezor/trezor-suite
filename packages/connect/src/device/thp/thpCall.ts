@@ -1,8 +1,8 @@
 import { TypedError } from '@trezor/connect-common/src/constants/errors';
-import { thp as protocolThp } from '@trezor/protocol';
+import type { thp as protocolThp } from '@trezor/protocol';
 
 import { DEVICE } from '../../events';
-import type { Device } from '../Device';
+import type { IDevice } from '../../types/idevice';
 
 type ThpTypedCall = {
     ThpCreateChannelRequest: 'ThpCreateChannelResponse';
@@ -47,7 +47,7 @@ type ThpCallResponse = {
 type ThpMessagePayload<T extends MessageKey = MessageKey> = ThpMessage[T];
 
 export const thpCall = async <T extends MessageKey>(
-    device: Device,
+    device: IDevice,
     name: T,
     data: ThpMessagePayload<T>,
 ): Promise<ThpCallResponse[T]> => {
@@ -88,7 +88,7 @@ export const thpCall = async <T extends MessageKey>(
     return result.payload as ThpCallResponse[T];
 };
 
-export const abortThpWorkflow = async (device: Device) => {
+export const abortThpWorkflow = async (device: IDevice) => {
     const thpState = device.getThpState();
     if (!thpState || !device.currentRun) {
         return Promise.resolve(); // not a THP device

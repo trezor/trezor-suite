@@ -12,8 +12,8 @@ import {
     isSellFiatTrade,
 } from '@suite-common/trading';
 import { ETHEREUM_ADJUST_GAS_LIMIT } from '@suite-common/wallet-core';
-import { AccountKey, FormState, FormStateTrading } from '@suite-common/wallet-types';
-import { FeeLevel } from '@trezor/connect';
+import { type AccountKey, type FormState, type FormStateTrading } from '@suite-common/wallet-types';
+import { type FeeLevel } from '@trezor/connect';
 
 interface CreateFormStateForSendFormParams {
     quote: ExchangeTrade | SellFiatTrade;

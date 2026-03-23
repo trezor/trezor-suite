@@ -1,7 +1,7 @@
-import { BorderWidths, Color } from '@trezor/theme';
+import { type BorderWidths, type Color } from '@trezor/theme';
 
-import { IconCircleIntent, IconCircleSize } from './types';
-import { IconSize } from '../Icon/types';
+import { type IconCircleIntent, type IconCircleSize } from './types';
+import { type IconSize } from '../Icon/types';
 
 export const mapIntentToBorderColor = (intent: IconCircleIntent): Color => {
     const colorMap: Record<IconCircleIntent, Color> = {

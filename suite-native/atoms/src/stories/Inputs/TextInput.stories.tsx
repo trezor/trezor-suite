@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-native';
 import { useArgs } from 'storybook/preview-api';
 
-import { Input as InputComponent, InputProps } from '../../Input/Input';
+import { Input as InputComponent, type InputProps } from '../../Input/Input';
 import { InputWrapper } from '../../Input/InputWrapper';
 import { SURFACE_ELEVATIONS } from '../../types';
 

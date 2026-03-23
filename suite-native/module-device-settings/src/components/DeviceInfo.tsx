@@ -8,11 +8,11 @@ import { HStack, IconButton, Text, VStack } from '@suite-native/atoms';
 import { DeviceImage } from '@suite-native/device';
 import { useIsMultiline } from '@suite-native/helpers';
 import {
-    DeviceSettingsStackParamList,
+    type DeviceSettingsStackParamList,
     DeviceSettingsStackRoutes,
-    StackNavigationProps,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
-import { DeviceModelInternal } from '@trezor/device-utils';
+import { type DeviceModelInternal } from '@trezor/device-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type DeviceInfoProps = {

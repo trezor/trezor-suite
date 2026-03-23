@@ -1,10 +1,10 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { Translation, TranslationKey } from '@suite/intl';
+import { Translation, type TranslationKey } from '@suite/intl';
 import { Badge, Icon, Row, Text, type TextProps } from '@trezor/components';
-import { TypographyStyle, spacings } from '@trezor/theme';
+import { type TypographyStyle, spacings } from '@trezor/theme';
 
 import { HiddenPlaceholder } from 'src/components/suite';
 

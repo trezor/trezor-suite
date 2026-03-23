@@ -1,7 +1,7 @@
 import {
     TRADING_DEFAULT_CRYPTO_CURRENCY,
-    TradingFiatRatesProps,
-    TradingFiatRatesReturn,
+    type TradingFiatRatesProps,
+    type TradingFiatRatesReturn,
     cryptoIdToNetworkAndContractAddress,
     useTradingFiatValues as useCommonTradingFiatValues,
 } from '@suite-common/trading';

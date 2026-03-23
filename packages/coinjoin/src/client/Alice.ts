@@ -1,25 +1,20 @@
-import { AccountUtxo } from '../types/account';
+import { type AccountUtxo } from '../types/account';
 import {
-    AllowedScriptTypes,
-    ConfirmationData,
-    RealCredentials,
-    RegistrationData,
+    type AliceConfirmationInterval,
+    type AlicePendingRequest,
+    type AliceShape,
+    type SerializedAlice,
+} from '../types/alice';
+import {
+    type AllowedScriptTypes,
+    type ConfirmationData,
+    type RealCredentials,
+    type RegistrationData,
 } from '../types/coordinator';
-import { Credentials } from '../types/middleware';
-import { CoinjoinRequestEvent, SerializedAlice } from '../types/round';
+import { type Credentials } from '../types/middleware';
 import { getInputSize, getOutputSize, getWitnessFromSignature } from '../utils/coordinatorUtils';
 
-interface AlicePendingRequest {
-    type: CoinjoinRequestEvent['type'];
-    timestamp: number;
-}
-
-export interface AliceConfirmationInterval {
-    promise: Promise<Alice>;
-    abort: () => void;
-}
-
-export class Alice {
+export class Alice implements AliceShape {
     path: string; // utxo derivation path
     outpoint: string;
     amount: number;

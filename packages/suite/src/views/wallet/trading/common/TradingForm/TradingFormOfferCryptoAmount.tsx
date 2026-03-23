@@ -1,7 +1,7 @@
-import { CryptoId } from 'invity-api';
+import { type CryptoId } from 'invity-api';
 
 import { cryptoIdToNetwork, useTradingUtils } from '@suite-common/trading';
-import { TokenAddress } from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/wallet-types';
 import { Column, Row, Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 

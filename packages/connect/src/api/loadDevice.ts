@@ -1,12 +1,13 @@
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
-import { AbstractMethod, MethodPermission, Payload } from '../core/AbstractMethod';
+import type { MethodMessage, MethodPermission } from '../core/AbstractMethod';
+import { AbstractMethod } from '../core/AbstractMethod';
 import { UI_REQUEST } from '../events';
 import { getFirmwareRange } from './common/paramsValidator';
 
 export default class LoadDevice extends AbstractMethod<'loadDevice', PROTO.LoadDevice> {
-    constructor(message: { id?: number; payload: Payload<'loadDevice'> }) {
+    constructor(message: MethodMessage<'loadDevice'>) {
         super(message);
         this.allowDeviceMode = [UI_REQUEST.INITIALIZE];
         this.useDeviceState = false;

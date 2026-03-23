@@ -1,16 +1,16 @@
-import { BuyProviderInfo } from 'invity-api';
+import { type BuyProviderInfo } from 'invity-api';
 
 import { Translation } from '@suite/intl';
+import { goto } from '@suite/router';
 import {
     type TradingTransactionBuy as TradingTxBuy,
     tradingBuyActions,
 } from '@suite-common/trading';
 import { Button } from '@trezor/components';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch } from 'src/hooks/suite';
 import { useTradingWatchTrade } from 'src/hooks/wallet/trading/useTradingWatchTrade';
-import { Account } from 'src/types/wallet';
+import { type Account } from 'src/types/wallet';
 import { TradingTransactionId } from 'src/views/wallet/trading/common';
 import { TradingTransactionAmounts } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransaction/TradingTransactionAmounts';
 import { TradingTransactionContainer } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransaction/TradingTransactionContainer';
@@ -36,7 +36,7 @@ export const TradingTransactionBuy = ({
 
     const handleViewDetailsButtonClick = () => {
         dispatch(tradingBuyActions.saveTransactionId(trade.key ?? ''));
-        dispatch(goto('wallet-trading-buy-detail'));
+        dispatch(goto({ routeName: 'wallet-trading-buy-detail' }));
     };
 
     useTradingWatchTrade({

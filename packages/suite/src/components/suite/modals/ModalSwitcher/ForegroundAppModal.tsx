@@ -1,6 +1,7 @@
-import { FunctionComponent } from 'react';
+import { type FunctionComponent } from 'react';
 
-import { closeModalApp } from 'src/actions/suite/routerActions';
+import { closeModalApp } from '@suite/router';
+
 import { useDispatch } from 'src/hooks/suite';
 import type { ForegroundAppRoute } from 'src/types/suite';
 import { Backup } from 'src/views/backup/Backup';

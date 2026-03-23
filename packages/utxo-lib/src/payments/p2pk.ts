@@ -5,9 +5,15 @@ import ecc from 'tiny-secp256k1';
 import { bitcoin as BITCOIN_NETWORK } from '../networks';
 import * as bscript from '../script';
 import * as lazy from './lazy';
-import { Payment, PaymentOpts, StackFunction, typeforce } from '../types';
+import { type Payment, type PaymentOpts, type StackFunction } from '../types';
+import { BufferSchema, Point, PredicateSchema, Type, assertType } from '../types/validation';
 
 const { OPS } = bscript;
+
+const CanonicalScriptSignature = PredicateSchema(
+    '?isCanonicalScriptSignature',
+    v => Buffer.isBuffer(v) && bscript.isCanonicalScriptSignature(v),
+);
 
 // input: {signature}
 // output: {pubKey} OP_CHECKSIG
@@ -17,15 +23,17 @@ export function p2pk(a: Payment, opts?: PaymentOpts): Payment {
 
     opts = Object.assign({ validate: true }, opts || {});
 
-    typeforce(
-        {
-            network: typeforce.maybe(typeforce.Object),
-            output: typeforce.maybe(typeforce.Buffer),
-            pubkey: typeforce.maybe(ecc.isPoint),
-
-            signature: typeforce.maybe(bscript.isCanonicalScriptSignature),
-            input: typeforce.maybe(typeforce.Buffer),
-        },
+    assertType(
+        Type.Object(
+            {
+                network: Type.Optional(Type.Object({}, { additionalProperties: true })),
+                output: Type.Optional(BufferSchema),
+                pubkey: Type.Optional(Point),
+                signature: Type.Optional(CanonicalScriptSignature),
+                input: Type.Optional(BufferSchema),
+            },
+            { additionalProperties: true },
+        ),
         a,
     );
 

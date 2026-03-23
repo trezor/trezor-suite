@@ -1,88 +1,88 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+
+import { CORE_CALL, POPUP } from '@trezor/connect';
 
 import {
-    CALL_SOURCE_WEB,
-    ManifestPartial,
-    connectPopupCallThunk,
-    connectPopupCancelThunk,
-    getPopupCallDeferred,
-    queuePopupCall,
-    selectConnectPopupCall,
-} from '@suite-common/connect-popup';
-import {
-    CORE_CALL,
-    CallMethodKeys,
-    POPUP,
-    RESPONSE_EVENT,
-    createPopupMessage,
-} from '@trezor/connect';
+    type ConnectPopupLink,
+    type ConnectPopupMessage,
+    type ConnectPopupOutgoingMessage,
+    useConnectPopup,
+} from './useConnectPopup';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
-
-const postMessageToParent = (message: any) => {
-    message.channel = {
-        here: '@trezor/connect-popup',
-        peer: '@trezor/connect-web',
-    };
-    if (window.opener) {
-        window.opener.postMessage(message, '*');
-    } else {
-        window.postMessage(message, window.location.origin);
-    }
+const webChannel = {
+    here: '@trezor/connect-popup',
+    peer: '@trezor/connect-web',
 };
 
 export const useConnectPopupWeb = () => {
-    const dispatch = useDispatch();
-    const popupCall = useSelector(selectConnectPopupCall);
-    const lifecycle = useSelector(state => state.suite.lifecycle);
-    const manifest = useRef<ManifestPartial | undefined>(undefined);
-    const [pendingHandshake, setPendingHandshake] = useState<string | undefined>();
-    const [responseSent, setResponseSent] = useState(false);
+    const [incomingMessages, setIncomingMessages] = useState<ConnectPopupMessage[]>([]);
+    // Start with '*' because we don't know the opener's origin yet.
+    // Protocol messages sent before the first incoming message (e.g.
+    // POPUP.CORE_LOADED, channel-handshake-confirm) contain no sensitive
+    // data, so '*' is safe.  Once we receive a message from the caller,
+    // originRef is narrowed to the actual event.origin — all subsequent
+    // messages (including those carrying addresses / signatures) will be
+    // scoped to that origin.
+    const originRef = useRef<string>('*');
 
+    /**
+     * Send a message back to the caller (opener window or same window).
+     *
+     * Uses `originRef.current` as the target origin so that responses are only
+     * delivered to the window that initiated the connect call. This prevents a
+     * malicious opener from a different origin from intercepting sensitive data
+     * such as addresses or signatures.
+     */
+    const postMessageToParent = useCallback((message: ConnectPopupOutgoingMessage) => {
+        message.channel = webChannel;
+        if (window.opener) {
+            window.opener.postMessage(message, originRef.current);
+        } else {
+            window.postMessage(message, window.location.origin);
+        }
+    }, []);
+
+    const popupLink = useMemo<ConnectPopupLink>(
+        () => ({
+            sendMessage: postMessageToParent,
+            get origin() {
+                return originRef.current;
+            },
+        }),
+        [postMessageToParent],
+    );
+
+    const consumeMessages = useCallback(() => {
+        setIncomingMessages(prev => prev.slice(1));
+    }, []);
+
+    useConnectPopup(popupLink, incomingMessages, consumeMessages);
+
+    // Listen for incoming window messages and normalize them.
     useEffect(() => {
-        const onMessage = async (event: MessageEvent) => {
-            if (event.data?.type === 'channel-handshake-request') {
-                postMessageToParent({ type: 'channel-handshake-confirm' });
-            } else if (
-                event.data.type === POPUP.HANDSHAKE &&
-                event.data.payload?.settings?.manifest
+        const onMessage = (event: MessageEvent) => {
+            const { data } = event;
+            if (!data?.type) return;
+
+            // Remember the actual caller origin.
+            originRef.current = event.origin;
+
+            if (
+                data.type === 'channel-handshake-request' ||
+                data.type === POPUP.HANDSHAKE ||
+                data.type === POPUP.CLOSED ||
+                data.type === CORE_CALL
             ) {
-                manifest.current = {
-                    ...event.data.payload.settings.manifest,
-                    npmVersion: event.data.payload.settings.version,
-                };
-                setPendingHandshake(event.data.id);
-            } else if (event.data?.type === CORE_CALL) {
-                if (!manifest.current) {
-                    console.warn(
-                        'Connect Popup Web: manifest is not set yet, cannot process CORE_CALL',
-                    );
-
-                    return;
-                }
-
-                await queuePopupCall();
-                const deferred = getPopupCallDeferred(true);
-                dispatch(
-                    connectPopupCallThunk({
-                        method: event.data.payload.method as CallMethodKeys,
-                        payload: event.data.payload,
-                        source: {
-                            type: CALL_SOURCE_WEB,
-                            origin: event.origin,
-                            manifest: manifest.current,
-                        },
-                    }),
-                );
-                const response = await deferred.promise;
-                postMessageToParent({
-                    id: event.data.id,
-                    type: RESPONSE_EVENT,
-                    payload: response,
-                });
-                setResponseSent(true);
-            } else if (event.data?.type === POPUP.CLOSED) {
-                dispatch(connectPopupCancelThunk(event.data.payload));
+                const normalized: ConnectPopupMessage =
+                    data.type === POPUP.HANDSHAKE
+                        ? {
+                              type: data.type,
+                              id: data.id,
+                              payload: { manifest: data.payload?.manifest },
+                              version: data.payload?.version,
+                          }
+                        : data;
+                setIncomingMessages(prev => [...prev, normalized]);
             }
         };
 
@@ -91,32 +91,5 @@ export const useConnectPopupWeb = () => {
         return () => {
             window.removeEventListener('message', onMessage);
         };
-    }, [dispatch]);
-
-    useEffect(() => {
-        if (lifecycle.status !== 'ready') return;
-
-        postMessageToParent(createPopupMessage(POPUP.CORE_LOADED));
-    }, [lifecycle.status]);
-
-    useEffect(() => {
-        // respond to handshake, but only after suite is ready
-        if (lifecycle.status !== 'ready' || !pendingHandshake) return;
-
-        postMessageToParent({
-            id: pendingHandshake,
-            type: POPUP.HANDSHAKE,
-        });
-    }, [lifecycle.status, pendingHandshake]);
-
-    // Window close control
-    useEffect(() => {
-        if (
-            popupCall?.state === 'finished' &&
-            popupCall?.source.type === CALL_SOURCE_WEB &&
-            responseSent
-        ) {
-            window.close();
-        }
-    }, [popupCall, responseSent]);
+    }, []);
 };

@@ -1,5 +1,5 @@
 import { FeatureFlag } from '@suite-native/feature-flags';
-import { PreloadedState, act, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { type PreloadedState, act, renderWithStoreProvider } from '@suite-native/test-utils';
 
 import { SellTab } from '../SellTab';
 
@@ -22,7 +22,7 @@ jest.mock('../../../hooks/sell/useSellData', () => ({
 
 describe('SellTab', () => {
     const renderSellTab = async (preloadedState: PreloadedState = {}) => {
-        const result = await renderWithStoreProviderAsync(<SellTab />, { preloadedState });
+        const result = renderWithStoreProvider(<SellTab />, { preloadedState });
 
         // wait for form reactions to run
         await act(() => Promise.resolve());

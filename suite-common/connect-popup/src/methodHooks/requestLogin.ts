@@ -1,6 +1,6 @@
 import type { CallMethodKeys } from '@trezor/connect';
 
-import { PreCallHookParams } from './types';
+import { type PreCallHookParams } from './types';
 
 const preCallHook = <M extends CallMethodKeys>({
     method,

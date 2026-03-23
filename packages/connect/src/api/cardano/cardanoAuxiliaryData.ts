@@ -8,7 +8,7 @@ import {
     modifyAddressParametersForBackwardsCompatibility,
     validateAddressParameters,
 } from './cardanoAddressParameters';
-import { PROTO } from '../../constants';
+import type { PROTO } from '../../constants';
 import {
     CardanoAuxiliaryData,
     CardanoCVoteRegistrationDelegation,

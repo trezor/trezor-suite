@@ -2,13 +2,13 @@ import { useSelector } from 'react-redux';
 
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { SettingsAnchor } from '@suite/router';
 import { selectIsDeviceProtectedByWipeCode } from '@suite-common/device';
 import { HELP_CENTER_WIPE_CODE_URL } from '@trezor/urls';
 
 import { changeWipeCode } from 'src/actions/settings/deviceSettingsActions';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionButton, ActionColumn, TextColumn } from 'src/components/suite';
-import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
 

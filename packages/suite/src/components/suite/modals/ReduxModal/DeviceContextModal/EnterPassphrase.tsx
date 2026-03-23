@@ -1,15 +1,14 @@
 import { useState } from 'react';
 
-import { Translation, TranslationKey } from '@suite/intl';
+import { Translation, type TranslationKey } from '@suite/intl';
 import { selectDeviceModel } from '@suite-common/device';
-import { TrezorDevice } from '@suite-common/suite-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { Card, Collapsible, Column, H3, H4, Icon, Paragraph, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { HELP_CENTER_PASSPHRASE_URL } from '@trezor/urls';
 import { getNonAsciiChars } from '@trezor/utils';
 
 import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
-import { TrezorLink } from 'src/components/suite/TrezorLink';
 
 import { PassphraseInputCard } from './PassphraseInputCard';
 import { useSelector } from '../../../../../hooks/suite';
@@ -53,35 +52,16 @@ export const EnterPassphrase = ({
                         </H3>
                         <Column gap={spacings.sm}>
                             {isExistingWallet ? (
-                                <>
-                                    <Row gap={spacings.sm}>
-                                        <Icon intent="info" name="warningCircle" size={16} />
-                                        <Paragraph intent="info" typographyStyle="body-sm-strong">
-                                            <Translation
-                                                id="TR_PASSPHRASE_DESCRIPTION_ITEM1"
-                                                values={{
-                                                    a: text => (
-                                                        <TrezorLink
-                                                            href={HELP_CENTER_PASSPHRASE_URL}
-                                                        >
-                                                            {text}
-                                                        </TrezorLink>
-                                                    ),
-                                                }}
-                                            />
-                                        </Paragraph>
-                                    </Row>
-                                    <Row gap={spacings.sm}>
-                                        <Icon name="warning" size={16} />
-                                        <Paragraph
-                                            intent="neutral"
-                                            priority="secondary"
-                                            typographyStyle="body-sm"
-                                        >
-                                            <Translation id="TR_PASSPHRASE_DESCRIPTION_ITEM3" />
-                                        </Paragraph>
-                                    </Row>
-                                </>
+                                <Row gap={spacings.sm}>
+                                    <Icon name="warning" size={16} />
+                                    <Paragraph
+                                        intent="neutral"
+                                        priority="secondary"
+                                        typographyStyle="body-sm"
+                                    >
+                                        <Translation id="TR_PASSPHRASE_DESCRIPTION_ITEM3" />
+                                    </Paragraph>
+                                </Row>
                             ) : (
                                 <Row gap={spacings.sm}>
                                     <Icon name="password" size={16} />

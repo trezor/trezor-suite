@@ -12,11 +12,17 @@ import {
 import styled, { css } from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { Popover, PopoverPlacement, PopoverRef, Row, Timerange } from '@trezor/components';
+import {
+    Popover,
+    type PopoverPlacement,
+    type PopoverRef,
+    Row,
+    Timerange,
+} from '@trezor/components';
 import { typography } from '@trezor/theme';
 
 import { useGraph, useLocales } from 'src/hooks/suite';
-import { GraphRange } from 'src/types/wallet/graph';
+import { type GraphRange } from 'src/types/wallet/graph';
 
 const RangeItem = styled.div<{ $selected: boolean; $separated?: boolean }>`
     display: flex;

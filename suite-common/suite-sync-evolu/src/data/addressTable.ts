@@ -1,25 +1,25 @@
 import {
-    Evolu,
+    type Evolu,
     NonEmptyString1000,
-    QueryRows,
+    type QueryRows,
     createIdFromString,
     id,
     nullOr,
 } from '@evolu/common';
 
 import {
-    AddressTable,
-    EntityListener,
-    SuiteSyncAddress,
+    type AddressTable,
+    type EntityListener,
+    type SuiteSyncAddress,
     createSuiteSyncAddressId,
     createSuiteSyncUpdateError,
 } from '@suite-common/suite-sync-storage';
-import { NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { err, ok } from '@trezor/type-utils';
 
 import { normalizeLabel } from './normalizeLabel';
-import { UnwrapQuery } from '../evoluUtils';
+import { type UnwrapQuery } from '../evoluUtils';
 
 export const AddressEvoluId = id('AddressEvoluId');
 export type AddressEvoluId = typeof AddressEvoluId.Type;

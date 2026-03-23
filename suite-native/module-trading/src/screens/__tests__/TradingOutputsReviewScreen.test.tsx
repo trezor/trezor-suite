@@ -1,12 +1,12 @@
-import { RouteProp } from '@react-navigation/native';
+import { type RouteProp } from '@react-navigation/native';
 
-import { TokenAddress } from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/wallet-types';
 import type {
     StackProps,
     TradingStackParamList,
     TradingStackRoutes,
 } from '@suite-native/navigation';
-import { TestStore, initStore, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { type TestStore, initStore, renderWithStoreProvider } from '@suite-native/test-utils';
 import { getWalletState } from '@suite-native/trading-fixtures';
 
 import {
@@ -128,13 +128,13 @@ describe('TradingSellOutputsReviewScreen', () => {
     });
 
     describe('TradingSellOutputsReviewScreen', () => {
-        const renderScreen = async (
+        const renderScreen = (
             route: StackProps<
                 TradingStackParamList,
                 TradingStackRoutes.TradingSellOutputsReview
             >['route'],
         ) => {
-            const result = await renderWithStoreProviderAsync(
+            const result = renderWithStoreProvider(
                 <TradingSellOutputsReviewScreen route={route} navigation={mockNavigation} />,
                 { store },
             );
@@ -152,11 +152,11 @@ describe('TradingSellOutputsReviewScreen', () => {
             mockNavigation.popToTop.mockClear();
         });
 
-        it('should render TradingSellOutputsReviewScreen', async () => {
+        it('should render TradingSellOutputsReviewScreen', () => {
             const params = createSellRouteParams();
             const route = createSellRoute(params);
 
-            const { toJSON } = await renderScreen(route);
+            const { toJSON } = renderScreen(route);
 
             expect(toJSON()).not.toBeNull();
             expect(mockUseSellFlowFn).toHaveBeenCalled();
@@ -171,13 +171,13 @@ describe('TradingSellOutputsReviewScreen', () => {
     });
 
     describe('TradingExchangeOutputsReviewScreen', () => {
-        const renderScreen = async (
+        const renderScreen = (
             route: StackProps<
                 TradingStackParamList,
                 TradingStackRoutes.TradingExchangeOutputsReview
             >['route'],
         ) => {
-            const result = await renderWithStoreProviderAsync(
+            const result = renderWithStoreProvider(
                 <TradingExchangeOutputsReviewScreen route={route} navigation={mockNavigation} />,
                 { store },
             );
@@ -195,11 +195,11 @@ describe('TradingSellOutputsReviewScreen', () => {
             mockNavigation.popToTop.mockClear();
         });
 
-        it('should render TradingExchangeOutputsReviewScreen', async () => {
+        it('should render TradingExchangeOutputsReviewScreen', () => {
             const params = createExchangeRouteParams();
             const route = createExchangeRoute(params);
 
-            const { toJSON } = await renderScreen(route);
+            const { toJSON } = renderScreen(route);
 
             expect(toJSON()).not.toBeNull();
             expect(mockUseExchangeFlowFn).toHaveBeenCalled();

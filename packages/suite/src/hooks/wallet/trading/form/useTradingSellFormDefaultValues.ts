@@ -1,28 +1,26 @@
 import { useMemo } from 'react';
 
-import { CryptoId } from 'invity-api';
+import { type CryptoId } from 'invity-api';
 
 import {
     TRADING_DEFAULT_PAYMENT_METHOD,
-    TradingCountryCode,
+    type TradingCountryCode,
     type TradingPaymentMethodListProps,
-    enabledTradingCurrencies,
+    buildTradingBaseCurrencyOptionFromFiat,
+    buildTradingFiatOption,
     getDefaultCountry,
     getDefaultCountrySubdivision,
+    getSupportedFiatCurrencyWithFallback,
     regional,
 } from '@suite-common/trading';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
-import { AccountKey, FormState, Output } from '@suite-common/wallet-types';
-import { isArrayMember, typedObjectValues } from '@trezor/utils';
+import { type AccountKey, type FormState, type Output } from '@suite-common/wallet-types';
 
 import { useSelector } from 'src/hooks/suite';
 import { selectTorState } from 'src/selectors/suite/suiteSelectors';
-import { TradingSellFormDefaultValuesProps } from 'src/types/trading/tradingForm';
-import {
-    buildTradingFiatOption,
-    resolveAddressAndToken,
-} from 'src/utils/wallet/trading/tradingUtils';
+import { type TradingSellFormDefaultValuesProps } from 'src/types/trading/tradingForm';
+import { resolveAddressAndToken } from 'src/utils/wallet/trading/tradingUtils';
 
 import { useTradingDefaultSellAsset } from './common/useTradingDefaultSellAsset';
 
@@ -58,18 +56,13 @@ export const useTradingSellFormDefaultValues = (
     );
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const defaultCurrency = useMemo(
-        () =>
-            buildTradingFiatOption(
-                isArrayMember(baseCurrencyCode, typedObjectValues(enabledTradingCurrencies))
-                    ? baseCurrencyCode
-                    : 'usd',
-            ),
+        () => buildTradingFiatOption(getSupportedFiatCurrencyWithFallback(baseCurrencyCode)),
         [baseCurrencyCode],
     );
     const defaultPayment: Output = useMemo(
         () => ({
             ...DEFAULT_PAYMENT,
-            currency: defaultCurrency,
+            currency: buildTradingBaseCurrencyOptionFromFiat(defaultCurrency.value),
             address,
             token,
         }),

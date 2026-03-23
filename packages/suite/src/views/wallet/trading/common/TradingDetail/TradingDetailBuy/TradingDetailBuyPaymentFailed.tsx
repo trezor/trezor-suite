@@ -1,9 +1,9 @@
-import { BuyProviderInfo, BuyTrade } from 'invity-api';
+import { type BuyProviderInfo, type BuyTrade } from 'invity-api';
 
 import { Translation } from '@suite/intl';
+import { goto } from '@suite/router';
 import { Button, Card, Column, H3, IconCircle, Paragraph } from '@trezor/components';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch } from 'src/hooks/suite';
 
 import { TradingDetailProviderInfo } from '../TradingDetailProviderInfo';
@@ -20,7 +20,7 @@ export const TradingDetailBuyPaymentFailed = ({
 }: TradingDetailBuyPaymentFailedProps) => {
     const dispatch = useDispatch();
 
-    const handleClick = () => dispatch(goto('wallet-trading-buy'));
+    const handleClick = () => dispatch(goto({ routeName: 'wallet-trading-buy' }));
 
     return (
         <Column gap={24} padding={{ top: 12, bottom: 4 }}>
@@ -45,7 +45,7 @@ export const TradingDetailBuyPaymentFailed = ({
                             trade={trade}
                         />
                     )}
-                    <TradingDetailSupportBanner provider={provider} orderId={trade.paymentId} />
+                    <TradingDetailSupportBanner provider={provider} trade={trade} />
                 </Column>
             </Card>
         </Column>

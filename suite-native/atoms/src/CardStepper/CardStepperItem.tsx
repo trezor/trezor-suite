@@ -1,11 +1,11 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { FadeInUp, FadeOutDown, LinearTransition } from 'react-native-reanimated';
 
-import { Icon, IconName } from '@suite-native/icons';
+import { Icon, type IconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Color } from '@trezor/theme';
+import { type Color } from '@trezor/theme';
 
-import { Button, ButtonColorScheme } from '../Button/Button';
+import { Button, type ButtonColorScheme } from '../Button/Button';
 import { AnimatedCard } from '../Card/Card';
 import { Divider } from '../Divider';
 import { AnimatedVStack, HStack, VStack } from '../Stack';
@@ -20,7 +20,7 @@ type CardStepperItemProps = {
     isOpened: boolean;
     icon: IconName;
     primaryButtonText: ReactNode;
-    secondaryButtonText: ReactNode;
+    secondaryButtonText?: ReactNode;
     onPressConfirmButton: () => void;
     onPressSecondaryButton: () => void;
     buttonsActionType?: CardStepperButtonsActionType;
@@ -108,20 +108,17 @@ export const CardStepperItem = ({
                         exiting={EXITING_ANIMATION}
                     >
                         <Text variant="body-md-strong">{description}</Text>
-                        <HStack
-                            flex={1}
-                            spacing="sp12"
-                            justifyContent="space-between"
-                            paddingBottom="sp4"
-                        >
-                            <Button
-                                size="small"
-                                style={applyStyle(buttonStyle)}
-                                colorScheme={buttonsColorSchemeMap[buttonsActionType].secondary}
-                                onPress={onPressSecondaryButton}
-                            >
-                                {secondaryButtonText}
-                            </Button>
+                        <HStack flex={1} spacing="sp12" paddingBottom="sp4">
+                            {secondaryButtonText && (
+                                <Button
+                                    size="small"
+                                    style={applyStyle(buttonStyle)}
+                                    colorScheme={buttonsColorSchemeMap[buttonsActionType].secondary}
+                                    onPress={onPressSecondaryButton}
+                                >
+                                    {secondaryButtonText}
+                                </Button>
+                            )}
                             <Button
                                 size="small"
                                 style={applyStyle(buttonStyle)}

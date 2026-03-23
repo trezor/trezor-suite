@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react';
 
 import { Translation } from '@suite/intl';
-import { EnhancedTokenInfo, TokenManagementAction } from '@suite-common/token-definitions';
+import {
+    type EnhancedTokenInfo,
+    type TokenManagementAction,
+} from '@suite-common/token-definitions';
 import { tradingThunks } from '@suite-common/trading';
-import { Network } from '@suite-common/wallet-config';
-import { Account } from '@suite-common/wallet-types';
+import { type Network } from '@suite-common/wallet-config';
+import { type Account } from '@suite-common/wallet-types';
 import { Card, Paragraph, Table } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 

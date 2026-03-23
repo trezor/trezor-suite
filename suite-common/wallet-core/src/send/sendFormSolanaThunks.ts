@@ -2,11 +2,11 @@ import { createThunk } from '@suite-common/redux-utils';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { SOL_COMPUTE_UNIT_LIMIT } from '@suite-common/wallet-constants';
 import {
-    Account,
-    ComposeActionContext,
-    ExternalOutput,
-    PrecomposedLevels,
-    PrecomposedTransaction,
+    type Account,
+    type ComposeActionContext,
+    type ExternalOutput,
+    type PrecomposedLevels,
+    type PrecomposedTransaction,
 } from '@suite-common/wallet-types';
 import {
     asAmountSubunit,
@@ -23,15 +23,15 @@ import {
 } from '@suite-common/wallet-utils';
 import type { TokenInfo } from '@trezor/blockchain-link-types';
 import { tokenStandardToTokenProgramName } from '@trezor/blockchain-link-utils/src/solana';
-import TrezorConnect, { FeeLevel } from '@trezor/connect';
+import TrezorConnect, { type FeeLevel } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
 import {
-    ComposeFeeLevelsError,
-    ComposeTransactionThunkArguments,
-    SignTransactionError,
-    SignTransactionThunkArguments,
+    type ComposeFeeLevelsError,
+    type ComposeTransactionThunkArguments,
+    type SignTransactionError,
+    type SignTransactionThunkArguments,
 } from './sendFormTypes';
 import { selectBlockchainBlockInfoBySymbol } from '../blockchain/blockchainReducer';
 

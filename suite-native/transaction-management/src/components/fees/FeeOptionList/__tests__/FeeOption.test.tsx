@@ -1,10 +1,15 @@
 import { yup } from '@suite-common/validators';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Form, useForm } from '@suite-native/forms';
-import { TestStore, initStore, renderWithStoreProvider, userEvent } from '@suite-native/test-utils';
+import {
+    type TestStore,
+    initStore,
+    renderWithStoreProvider,
+    userEvent,
+} from '@suite-native/test-utils';
 
 import { getWalletState } from '../../../../__fixtures__/walletState';
-import { NativeSupportedPredefinedFeeLevel } from '../../../../types';
+import { type NativeSupportedPredefinedFeeLevel } from '../../../../types';
 import { FeeOption } from '../FeeOption';
 
 // Create a simple validation schema for testing

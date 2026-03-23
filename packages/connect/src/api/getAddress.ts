@@ -3,14 +3,10 @@
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 
-import { PROTO } from '../constants';
+import type { PROTO } from '../constants';
 import { getFirmwareRange, validateCoinPath } from './common/paramsValidator';
-import {
-    AbstractMethod,
-    MethodPermission,
-    MethodReturnType,
-    Payload,
-} from '../core/AbstractMethod';
+import type { MethodMessage, MethodPermission, MethodReturnType } from '../core/AbstractMethod';
+import { AbstractMethod } from '../core/AbstractMethod';
 import { fixCoinInfoNetwork, getBitcoinNetwork, getUniqueNetworks } from '../data/coinInfo';
 import { UI_REQUEST, createUiMessage } from '../events';
 import { type BitcoinNetworkInfo, Bundle } from '../types';
@@ -27,7 +23,7 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
     hasBundle?: boolean;
     progress = 0;
 
-    constructor(message: { id?: number; payload: Payload<'getAddress'> }) {
+    constructor(message: MethodMessage<'getAddress'>) {
         super(message);
         this.confirmMissingBackup = true;
     }

@@ -12,11 +12,11 @@ import {
 import { acquireDevice } from '@suite-common/wallet-core';
 import {
     AuthorizeDeviceStackRoutes,
-    HomeStackParamList,
-    HomeStackRoutes,
-    RootStackParamList,
+    type HomeStackParamList,
+    type HomeStackRoutes,
+    type RootStackParamList,
     RootStackRoutes,
-    StackToStackCompositeNavigationProps,
+    type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 
 type NavigationProps = StackToStackCompositeNavigationProps<

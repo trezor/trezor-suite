@@ -16,7 +16,7 @@ import { DeviceUpdateRequired } from './DeviceUpdateRequired';
 import { DeviceUsedElsewhere } from './DeviceUsedElsewhere';
 import { MultiShareBackupInProgress } from './MultiShareBackupInProgress';
 import { NoTransport } from './NoTransport';
-import { PrerequisiteType } from '../../../utils/suite/prerequisites';
+import { type PrerequisiteType } from '../../../utils/suite/prerequisites';
 
 type BannerAndTroubleshootingProps = {
     prerequisite: PrerequisiteType | null;

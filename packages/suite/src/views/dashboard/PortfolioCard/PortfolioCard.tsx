@@ -1,5 +1,6 @@
 import { memo, useMemo } from 'react';
 
+import { selectFlags, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { networksCollection } from '@suite-common/wallet-config';
 import {
@@ -12,7 +13,6 @@ import { isAccountFailed } from '@suite-common/wallet-utils';
 import { Box, Card, Column, Dropdown, Switch } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { setFlag } from 'src/actions/suite/suiteActions';
 import { DashboardSection } from 'src/components/dashboard';
 import { GraphScaleDropdownItem, GraphSkeleton } from 'src/components/suite';
 import { useDevice, useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
@@ -38,7 +38,7 @@ export const PortfolioCard = memo(() => {
     const enabledNetworks = useSelector(selectEnabledNetworks);
 
     const accounts = useSelector(selectAllAccountsToList);
-    const { dashboardGraphHidden } = useSelector(s => s.suite.flags);
+    const { dashboardGraphHidden } = useSelector(selectFlags);
     const dispatch = useDispatch();
     const { device } = useDevice();
     const isDeviceEmpty = useMemo(() => accounts.every(a => a.empty), [accounts]);
@@ -159,7 +159,10 @@ export const PortfolioCard = memo(() => {
                                     size="small"
                                     onChange={() =>
                                         dispatch(
-                                            setFlag('dashboardGraphHidden', !dashboardGraphHidden),
+                                            setFlag({
+                                                key: 'dashboardGraphHidden',
+                                                value: !dashboardGraphHidden,
+                                            }),
                                         )
                                     }
                                     label={<Translation id="TR_SHOW_GRAPH" />}

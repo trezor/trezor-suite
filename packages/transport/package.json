@@ -31,25 +31,16 @@
         "types": "./lib/index.d.ts",
         "exports": {
             ".": {
-                "import": "./libESM/index.js",
+                "import": "./libESM/index.mjs",
                 "require": "./lib/index.js",
                 "types": "./lib/index.d.ts"
             },
-            "./libESM/constants.js": {
-                "import": "./libESM/constants.js",
-                "require": "./lib/constants.js",
-                "types": "./lib/constants.d.ts"
-            },
             "./lib/*": "./lib/*.js",
-            "./libESM/*.js": "./libESM/*.js",
             "./lib/thp": "./lib/thp/index.js",
             "./lib/types": "./lib/types/index.js",
-            "./libESM/thp": "./libESM/thp/index.js",
-            "./libESM/types": "./libESM/types/index.js",
             "./lib/thp.js": "./lib/thp/index.js",
             "./lib/types.js": "./lib/types/index.js",
-            "./libESM/thp.js": "./libESM/thp/index.js",
-            "./libESM/types.js": "./libESM/types/index.js"
+            "./libESM/*": "./libESM/*"
         },
         "browser": {
             "./lib/pinger/ping": "./lib/pinger/ping.browser.ts",
@@ -74,10 +65,11 @@
         "build:lib:cjs": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
         "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
         "publish:lib": "./scripts/publish-lib.sh",
-        "test:unit": "jest"
+        "test:unit": "jest",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "devDependencies": {
-        "@babel/preset-env": "7.28.6",
+        "@babel/preset-env": "7.29.0",
         "@babel/preset-typescript": "^7.28.5",
         "@trezor/eslint": "workspace:*",
         "@types/bytebuffer": "^5.0.49",

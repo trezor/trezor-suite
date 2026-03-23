@@ -7,7 +7,8 @@
     "main": "src/index",
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build"
+        "type-check": "yarn g:tsc --build",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
         "@suite-native/alerts": "workspace:*",
@@ -18,10 +19,10 @@
         "@suite-native/services": "workspace:*",
         "@suite-native/storage": "workspace:*",
         "@trezor/styles": "workspace:*",
-        "expo-local-authentication": "17.0.7",
-        "jotai": "2.15.0",
-        "react": "19.1.0",
-        "react-native": "0.81.5",
-        "react-native-svg": "15.15.2"
+        "expo-local-authentication": "~55.0.8",
+        "jotai": "2.17.1",
+        "react": "19.2.4",
+        "react-native": "0.83.2",
+        "react-native-svg": "15.15.3"
     }
 }

@@ -4,17 +4,17 @@ import { useNavigation } from '@react-navigation/native';
 import type { ExchangeTrade, SellFiatTrade } from 'invity-api';
 
 import {
-    TradingExchangeType,
-    TradingSellType,
+    type TradingExchangeType,
+    type TradingSellType,
     selectTradingComposedTransactionInfo,
 } from '@suite-common/trading';
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { AnimatedCard } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
-    StackNavigationProps,
-    TradingStackParamList,
+    type StackNavigationProps,
+    type TradingStackParamList,
     TradingStackRoutes,
 } from '@suite-native/navigation';
 import { TradeInfoHeader } from '@suite-native/trading-atoms';

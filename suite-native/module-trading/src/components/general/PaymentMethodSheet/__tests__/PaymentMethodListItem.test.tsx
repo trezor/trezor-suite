@@ -1,25 +1,23 @@
-import { act, fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
+import { act, fireEvent, renderWithStoreProvider } from '@suite-native/test-utils';
+import { buyQuotes, getInitializedTradingState } from '@suite-native/trading-fixtures';
 
-import { PaymentMethodListItem, PaymentMethodListItemProps } from '../PaymentMethodListItem';
+import { PaymentMethodListItem, type PaymentMethodListItemProps } from '../PaymentMethodListItem';
 
 describe('PaymentMethodListItem', () => {
-    const renderPaymentMethodListItem = (props: Partial<PaymentMethodListItemProps>) =>
-        renderWithBasicProvider(
-            <PaymentMethodListItem
-                paymentMethodName="Credit card"
-                orderId="orderId"
-                isSelected={false}
-                onPress={jest.fn()}
-                {...props}
-            />,
+    const getPreloadedState = () => ({ wallet: { trading: getInitializedTradingState() } });
+
+    const renderPaymentMethodListItem = (props: Partial<PaymentMethodListItemProps<any>>) =>
+        renderWithStoreProvider(
+            <PaymentMethodListItem quote={buyQuotes[0]} onPress={jest.fn()} {...props} />,
+            { preloadedState: getPreloadedState() },
         );
 
-    it('should render given name', () => {
-        const { getByText } = renderPaymentMethodListItem({
-            paymentMethodName: 'Debit card',
-        });
+    it('should render given name and rate', () => {
+        const { getByText } = renderPaymentMethodListItem({});
 
-        expect(getByText('Debit card')).toBeTruthy();
+        expect(getByText('Apple Pay')).toBeOnTheScreen();
+        expect(getByText('Rate')).toBeOnTheScreen();
+        expect(getByText('€9,998.32 / 1 BTC')).toBeOnTheScreen();
     });
 
     it('should call onPress callback on item press', () => {
@@ -27,9 +25,18 @@ describe('PaymentMethodListItem', () => {
         const { getByText } = renderPaymentMethodListItem({ onPress });
 
         act(() => {
-            fireEvent.press(getByText('Credit card'));
+            fireEvent.press(getByText('Apple Pay'));
         });
 
         expect(onPress).toHaveBeenCalledTimes(1);
+    });
+
+    it('should not render rate row when rate is unknown', () => {
+        const { getByText, queryByText } = renderPaymentMethodListItem({
+            quote: { ...buyQuotes[0], rate: undefined, receiveStringAmount: undefined },
+        });
+
+        expect(getByText('Apple Pay')).toBeOnTheScreen();
+        expect(queryByText('Rate')).toBeNull();
     });
 });

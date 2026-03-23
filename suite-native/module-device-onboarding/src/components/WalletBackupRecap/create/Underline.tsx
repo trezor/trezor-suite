@@ -1,6 +1,6 @@
 import { PixelRatio } from 'react-native';
 import {
-    SharedValue,
+    type SharedValue,
     useAnimatedStyle,
     useSharedValue,
     withDelay,

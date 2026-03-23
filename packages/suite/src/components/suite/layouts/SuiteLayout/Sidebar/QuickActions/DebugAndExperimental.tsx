@@ -1,8 +1,7 @@
 import { Translation } from '@suite/intl';
+import { SettingsAnchor, goto } from '@suite/router';
 import { Box, Column, Icon } from '@trezor/components';
 
-import { goto } from 'src/actions/suite/routerActions';
-import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 
@@ -63,7 +62,7 @@ export const DebugAndExperimental = () => {
     const position = { type: 'absolute', top: 0, left: 0 } as const;
 
     const handleEapClick = () => {
-        dispatch(goto('settings-index', { anchor: SettingsAnchor.EarlyAccess }));
+        dispatch(goto({ routeName: 'settings-index', anchor: SettingsAnchor.EarlyAccess }));
     };
 
     if (!isEapEnabled && !isExperimental && !isDebug) return null;

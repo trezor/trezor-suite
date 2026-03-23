@@ -1,7 +1,8 @@
 /* eslint-disable no-console */
 import { extractKeyFromAction } from './actions';
-import { deleteAction, getAutoQuarantineActions } from './api';
+import { getAutoQuarantineActions } from './api';
 import { PROJECTS } from './config';
+import { deleteAction } from '../currentsApi/api';
 
 export async function wipeAllAutoQuarantineActions(): Promise<void> {
     console.log('=== Wipe Auto-Quarantine Actions ===');

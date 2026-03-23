@@ -1,8 +1,8 @@
 import { useSelector } from 'react-redux';
 
 import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
-import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { Box, Card, PriceChangeBadge, Text } from '@suite-native/atoms';
 import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
 import { CryptoIconWithNetwork } from '@suite-native/icons';

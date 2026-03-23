@@ -8,13 +8,14 @@
     "scripts": {
         "test:unit": "yarn g:jest",
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build"
+        "type-check": "yarn g:tsc --build",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
-        "@react-navigation/native": "7.1.26",
+        "@react-navigation/native": "7.1.28",
         "@reduxjs/toolkit": "2.11.2",
-        "@shopify/flash-list": "2.2.0",
+        "@shopify/flash-list": "2.2.2",
         "@suite-common/formatters": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
@@ -36,9 +37,9 @@
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "react": "19.1.0",
-        "react-native": "0.81.5",
-        "react-native-svg": "15.15.2",
+        "react": "19.2.4",
+        "react-native": "0.83.2",
+        "react-native-svg": "15.15.3",
         "react-redux": "9.2.0"
     }
 }

@@ -17,11 +17,11 @@ import {
     networks,
 } from '@suite-common/wallet-config';
 import {
-    AccountsRootState,
+    type AccountsRootState,
     accountsActions,
     selectDeviceAccounts,
 } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import {
     getAvailableAccountTypes,
     isEvmNetwork,
@@ -33,16 +33,16 @@ import {
     selectDeviceEnabledDiscoveryNetworkSymbols,
     selectDiscoveryNetworkSymbols,
 } from '@suite-native/discovery';
-import { TxKeyPath, useTranslate } from '@suite-native/intl';
+import { type TxKeyPath, useTranslate } from '@suite-native/intl';
 import {
-    AddCoinAccountStackParamList,
+    type AddCoinAccountStackParamList,
     AddCoinAccountStackRoutes,
-    AddCoinFlowType,
+    type AddCoinFlowType,
     AppTabsRoutes,
     ReceiveStackRoutes,
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
-    StackToStackCompositeNavigationProps,
+    type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { exhaustive } from '@trezor/type-utils';
 
@@ -85,7 +85,7 @@ export const accountTypeTranslationKeys: Record<
     },
 };
 
-const LIMIT = 10; // or maybe find another place to put it if needed
+const LIMIT = 10; // Maximum number of manually added accounts per non-EVM network type.
 
 export const useAddCoinAccount = () => {
     const dispatch = useDispatch();
@@ -269,15 +269,16 @@ export const useAddCoinAccount = () => {
             return false;
         }
 
-        // Do not allow adding more than 10 accounts of the same type
+        // EVM networks have no manual-add limit. Users can add accounts beyond
+        if (isEvmNetwork(networkSymbol)) {
+            return true;
+        }
+
+        // Do not allow adding more than 10 accounts of the same type.
         if (accounts.filter(account => account.visible).length >= LIMIT) {
             showTooManyAccountsAlert();
 
             return false;
-        }
-
-        if (isEvmNetwork(networkSymbol)) {
-            return true;
         }
 
         const hasVisibleEmptyAccount = accounts.some(account => account.empty && account.visible);

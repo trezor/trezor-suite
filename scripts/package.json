@@ -17,7 +17,7 @@
         "chalk": "^5.6.2",
         "cross-fetch": "^4.1.0",
         "fs-extra": "^11.3.1",
-        "minimatch": "^10.1.1",
+        "minimatch": "^10.2.4",
         "prettier": "^3.8.1",
         "semver": "^7.7.1",
         "sort-package-json": "^3.6.1",

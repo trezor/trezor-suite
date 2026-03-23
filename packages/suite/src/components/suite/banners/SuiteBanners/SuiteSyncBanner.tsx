@@ -1,16 +1,16 @@
 import { useSelector } from 'react-redux';
 
-import { Translation, TranslationKey } from '@suite/intl';
+import { Translation, type TranslationKey } from '@suite/intl';
+import { goto } from '@suite/router';
 import { selectIsDeviceConnected } from '@suite-common/device';
 import {
-    WithSuiteSyncAndDeviceState,
+    type WithSuiteSyncAndDeviceState,
     selectHasDeviceSuiteSyncError,
     selectSuiteSyncInteraction,
 } from '@suite-common/suite-sync';
 import { Banner } from '@trezor/components';
-import { StaticSessionId } from '@trezor/connect';
+import { type StaticSessionId } from '@trezor/connect';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch } from 'src/hooks/suite';
 import { useSuiteServices } from 'src/support/SuiteServicesProvider';
 
@@ -123,7 +123,7 @@ export const SuiteSyncBanner = ({ deviceStaticSessionId }: SuiteSyncBannerProps)
             }
         },
         'firmware-upgrade-needed': () => {
-            dispatch(goto('firmware-index', { params: { cancelable: true } }));
+            dispatch(goto({ routeName: 'firmware-index', params: { cancelable: true } }));
         },
     };
 

@@ -8,7 +8,8 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
-        "test:unit": "yarn g:jest"
+        "test:unit": "yarn g:jest",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
@@ -25,8 +26,8 @@
         "fela-plugin-unit": "^12.2.1",
         "fela-sort-media-query-mobile-first": "^12.2.1",
         "polished": "^4.3.1",
-        "react": "19.1.0",
+        "react": "19.2.4",
         "react-fela": "^12.2.1",
-        "react-native": "0.81.5"
+        "react-native": "0.83.2"
     }
 }

@@ -8,7 +8,8 @@
     "scripts": {
         "test:unit": "yarn g:jest",
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build"
+        "type-check": "yarn g:tsc --build",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
         "@reduxjs/toolkit": "2.11.2",
@@ -19,6 +20,6 @@
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@trezor/connect": "workspace:*",
-        "react": "19.1.0"
+        "react": "19.2.4"
     }
 }

@@ -5,8 +5,9 @@ import type { BuyCryptoPaymentMethod, BuyTrade } from 'invity-api';
 import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { invariant } from '@suite-common/suite-utils';
 import {
-    TradingCountryCode,
-    TradingPaymentMethodProps,
+    type TradingCountryCode,
+    type TradingPaymentMethodProps,
+    getCurrencyLabel,
     getTradingQuotesByPaymentMethod,
     nonSanctionedRegional,
     selectTradingBuyInfo,
@@ -17,15 +18,14 @@ import { selectAccountByKey } from '@suite-common/wallet-core';
 import { FeatureFlag, selectIsFeatureFlagEnabled } from '@suite-native/feature-flags';
 import {
     coinInfoToTradeableAsset,
-    getCurrencyLabel,
     getReceiveAccountFromAccountAndAddressString,
 } from '@suite-native/trading-atoms';
-import { BuyFormValues, FiatCurrencyItem } from '@suite-native/trading-types';
+import { type BuyFormValues, type FiatCurrencyItem } from '@suite-native/trading-types';
 
 import { getAssetByEnabledNetworksFilter } from '../utils';
 import { selectTradingResidenceCountry } from './residenceSelectors';
 import {
-    TradingRootState,
+    type TradingRootState,
     createMemoizedSelector,
     createMemoizedSelectorWithAccounts,
     createTradingWithFeatureFlagsMemoizedSelector,
@@ -150,7 +150,15 @@ export const selectBuyBestQuotesForAvailablePaymentMethods = createMemoizedSelec
             return quotesByPaymentMethodMap;
         }, new Map<BuyCryptoPaymentMethod, BuyTrade>());
 
-        return [...bestQuoteByPaymentMethodMap.values()];
+        return [...bestQuoteByPaymentMethodMap.values()].sort(
+            ({ rate: aRate }, { rate: bRate }) => {
+                // note that quotes without a valid rate should be filtered out by selectValidTradingBuyQuotesNative -> selectValidTradingBuyQuotes
+                invariant(aRate, 'rate in object "a" is required for sorting');
+                invariant(bRate, 'rate in object "b" is required for sorting');
+
+                return aRate - bRate;
+            },
+        );
     },
 );
 

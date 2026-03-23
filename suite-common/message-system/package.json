@@ -12,10 +12,12 @@
         "sign-config": "yarn tsx ./scripts/sign-config.ts",
         "test:unit": "yarn g:jest",
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build"
+        "type-check": "yarn g:tsc --build",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
         "@reduxjs/toolkit": "2.11.2",
+        "@suite-common/analytics-redux": "workspace:*",
         "@suite-common/geolocation": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
@@ -30,7 +32,7 @@
         "@types/semver": "^7.7.0",
         "fs-extra": "^11.3.1",
         "json-schema-to-typescript": "^15.0.4",
-        "react": "19.1.0",
+        "react": "19.2.4",
         "react-redux": "9.2.0",
         "semver": "^7.7.1",
         "uuid": "^13.0.0"

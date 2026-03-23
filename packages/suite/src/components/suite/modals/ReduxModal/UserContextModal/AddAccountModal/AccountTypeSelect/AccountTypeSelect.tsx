@@ -3,7 +3,11 @@ import { memo } from 'react';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { NetworkAccount, NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
+import {
+    type NetworkAccount,
+    type NetworkSymbol,
+    type NetworkType,
+} from '@suite-common/wallet-config';
 import { getAccountTypeName, getAccountTypeTech } from '@suite-common/wallet-utils';
 import { Column, Paragraph, Select } from '@trezor/components';
 import { spacings, typography } from '@trezor/theme';

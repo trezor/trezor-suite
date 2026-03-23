@@ -1,6 +1,6 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { Account } from '@suite-common/wallet-types';
-import { PreloadedState, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type Account } from '@suite-common/wallet-types';
+import { type PreloadedState, renderHookWithStoreProvider } from '@suite-native/test-utils';
 import {
     MOCK_ACCOUNT_DEVICE_SESSION_ID,
     accounts,
@@ -12,7 +12,10 @@ import {
 
 const ADDRESS_COMMON = { received: '0', sent: '0', transfers: 0 };
 
-import { ReceiveAccountsListMode, useReceiveAccountsListData } from '../useReceiveAccountsListData';
+import {
+    type ReceiveAccountsListMode,
+    useReceiveAccountsListData,
+} from '../useReceiveAccountsListData';
 
 describe('useReceiveAccountsListData', () => {
     const defaultPreloadedState = {
@@ -32,7 +35,7 @@ describe('useReceiveAccountsListData', () => {
         initialMode: ReceiveAccountsListMode,
         preloadedState: PreloadedState = defaultPreloadedState,
     ) =>
-        renderHookWithStoreProviderAsync(
+        renderHookWithStoreProvider(
             ({ symbol, selectedAccount, mode }) =>
                 useReceiveAccountsListData({ symbol, selectedAccount, mode }),
             {
@@ -46,12 +49,8 @@ describe('useReceiveAccountsListData', () => {
         );
 
     describe('without account selected', () => {
-        it('should display all accounts for given symbol', async () => {
-            const { result } = await renderUseReceiveAccountsListDataHook(
-                'btc',
-                undefined,
-                'account',
-            );
+        it('should display all accounts for given symbol', () => {
+            const { result } = renderUseReceiveAccountsListDataHook('btc', undefined, 'account');
 
             expect(result.current).toEqual([
                 {
@@ -65,8 +64,8 @@ describe('useReceiveAccountsListData', () => {
             ]);
         });
 
-        it('should react to symbol change', async () => {
-            const { result, rerender } = await renderUseReceiveAccountsListDataHook(
+        it('should react to symbol change', () => {
+            const { result, rerender } = renderUseReceiveAccountsListDataHook(
                 'btc',
                 undefined,
                 'account',
@@ -86,24 +85,19 @@ describe('useReceiveAccountsListData', () => {
             ]);
         });
 
-        it('should render empty array when wallet accounts are not initialized', async () => {
-            const { result } = await renderUseReceiveAccountsListDataHook(
-                'btc',
-                undefined,
-                'account',
-                {
-                    ...defaultPreloadedState,
-                    wallet: undefined,
-                },
-            );
+        it('should render empty array when wallet accounts are not initialized', () => {
+            const { result } = renderUseReceiveAccountsListDataHook('btc', undefined, 'account', {
+                ...defaultPreloadedState,
+                wallet: undefined,
+            });
 
             expect(result.current).toEqual([]);
         });
     });
 
     describe('with account selected', () => {
-        it('should be empty array for non BTC like assets', async () => {
-            const { result } = await renderUseReceiveAccountsListDataHook(
+        it('should be empty array for non BTC like assets', () => {
+            const { result } = renderUseReceiveAccountsListDataHook(
                 'eth',
                 eth1NormalAccount,
                 'address',
@@ -112,8 +106,8 @@ describe('useReceiveAccountsListData', () => {
             expect(result.current).toEqual([]);
         });
 
-        it('should return 1 unused address and all used addresses for BTC like assets', async () => {
-            const { result } = await renderUseReceiveAccountsListDataHook(
+        it('should return 1 unused address and all used addresses for BTC like assets', () => {
+            const { result } = renderUseReceiveAccountsListDataHook(
                 'btc',
                 btc1NormalAccount,
                 'address',
@@ -164,8 +158,8 @@ describe('useReceiveAccountsListData', () => {
             ]);
         });
 
-        it('should not return empty sections', async () => {
-            const { result } = await renderUseReceiveAccountsListDataHook(
+        it('should not return empty sections', () => {
+            const { result } = renderUseReceiveAccountsListDataHook(
                 'btc',
                 btc2legacyAccount,
                 'address',
@@ -174,7 +168,7 @@ describe('useReceiveAccountsListData', () => {
             expect(result.current).toEqual([]);
         });
 
-        it('should not display not visible accounts', async () => {
+        it('should not display not visible accounts', () => {
             const preloadedState = {
                 device: {
                     selectedDevice: {
@@ -196,7 +190,7 @@ describe('useReceiveAccountsListData', () => {
                     ] as unknown as Account[],
                 },
             };
-            const { result } = await renderUseReceiveAccountsListDataHook(
+            const { result } = renderUseReceiveAccountsListDataHook(
                 'eth',
                 undefined,
                 'account',

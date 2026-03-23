@@ -10,11 +10,11 @@ import {
 } from '@suite-native/test-utils';
 
 import { useLocationForm } from '../../../hooks/useLocationForm';
-import { TradingLocationFormValues } from '../../../types/tradingLocationForm';
+import { type TradingLocationFormValues } from '../../../types/tradingLocationForm';
 import { locationFormValidationSchema } from '../../../utils/locationFormValidationSchema';
 import {
     CountryOfResidencePicker,
-    CountryOfResidencePickerProps,
+    type CountryOfResidencePickerProps,
 } from '../CountryOfResidencePicker';
 
 let mockUseCountryFilteredData: jest.Mock;

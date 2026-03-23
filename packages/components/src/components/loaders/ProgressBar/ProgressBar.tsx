@@ -1,6 +1,6 @@
 import styled, { useTheme } from 'styled-components';
 
-import { CSSColor } from '@trezor/theme';
+import { type CSSColor } from '@trezor/theme';
 
 const Wrapper = styled.div<{ $color: CSSColor }>`
     background: ${({ $color }) => $color};

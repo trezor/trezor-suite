@@ -1,12 +1,12 @@
-import { IconName, UIIntent } from '@trezor/components';
+import { goto } from '@suite/router';
+import { type IconName, type UIIntent } from '@trezor/components';
 
 import {
     installUpdate,
     justUpdated,
     setIsUpdateModalVisible,
 } from '../../../../../../../actions/suite/desktopUpdateActions';
-import { goto } from '../../../../../../../actions/suite/routerActions';
-import { Dispatch } from '../../../../../../../types/suite';
+import { type Dispatch } from '../../../../../../../types/suite';
 
 export type UpdateStatusDevice = 'up-to-date' | 'update-available' | 'disconnected';
 
@@ -42,7 +42,7 @@ type OnClickCallbackCallback = ((params: { dispatch: Dispatch }) => void) | null
 export const mapDeviceUpdateToClick: Record<UpdateStatusDevice, OnClickCallbackCallback> = {
     disconnected: null,
     'up-to-date': null,
-    'update-available': ({ dispatch }) => dispatch(goto('firmware-index')),
+    'update-available': ({ dispatch }) => dispatch(goto({ routeName: 'firmware-index' })),
 };
 
 export const mapSuiteUpdateToClick: Record<UpdateStatusSuite, OnClickCallbackCallback> = {

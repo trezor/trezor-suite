@@ -23,14 +23,15 @@ fi
 
 OVERRIDES_CONTENT=$(cat "$OVERRIDES_FILE")
 CONNECT_PATH=$(node -e "console.log(JSON.parse(require('fs').readFileSync('$OVERRIDES_FILE'))['@trezor/connect'])")
+CONNECT_WEB_PATH=$(node -e "console.log(JSON.parse(require('fs').readFileSync('$OVERRIDES_FILE'))['@trezor/connect-web'])")
 
 trap "cd .. && rm -rf connect-implementation-local" EXIT
 
 npm --version
 node --version
 
-mkdir connect-implementation-local
-cd connect-implementation-local
+mkdir ../connect-implementation-local
+cd ../connect-implementation-local
 
 cat > package.json << EOF
 {
@@ -40,6 +41,7 @@ cat > package.json << EOF
   "main": "index.js",
   "dependencies": {
     "@trezor/connect": "${CONNECT_PATH}",
+    "@trezor/connect-web": "${CONNECT_WEB_PATH}",
     "tsx": "^4.21.0"
   },
   "overrides": ${OVERRIDES_CONTENT}
@@ -52,20 +54,32 @@ npm install
 cat package.json
 
 cat > index.cjs << 'EOF'
+const assert = require('assert');
 const TrezorConnect = require('@trezor/connect').default;
+const TrezorConnectWeb = require('@trezor/connect-web').default;
 
-console.log('typeof TrezorConnect: ' + typeof TrezorConnect);
-console.log('TrezorConnect.init exists: ' + (typeof TrezorConnect.init === 'function'));
+assert.ok(TrezorConnect, 'TrezorConnect should be defined');
+assert.strictEqual(typeof TrezorConnect.init, 'function', 'TrezorConnect.init should be a function');
+
+assert.ok(TrezorConnectWeb, 'TrezorConnectWeb should be defined');
+assert.strictEqual(typeof TrezorConnectWeb.init, 'function', 'TrezorConnectWeb.init should be a function');
+
+console.log('All CJS assertions passed.');
 EOF
 
 cat > index.mjs << 'EOF'
-import TrezorConnectModule from '@trezor/connect';
+import assert from 'node:assert';
+import TrezorConnect from '@trezor/connect';
+import TrezorConnectWeb from '@trezor/connect-web';
 
-// Handle CJS/ESM interop - the default export may be nested
-const TrezorConnect = TrezorConnectModule.default || TrezorConnectModule;
+assert.ok(TrezorConnect, 'TrezorConnect should be defined');
+console.log('TrezorConnect:', TrezorConnect);
+assert.strictEqual(typeof TrezorConnect.init, 'function', 'TrezorConnect.init should be a function');
 
-console.log('typeof TrezorConnect: ' + typeof TrezorConnect);
-console.log('TrezorConnect.init exists: ' + (typeof TrezorConnect.init === 'function'));
+assert.ok(TrezorConnectWeb, 'TrezorConnectWeb should be defined');
+assert.strictEqual(typeof TrezorConnectWeb.init, 'function', 'TrezorConnectWeb.init should be a function');
+
+console.log('All ESM assertions passed.');
 EOF
 
 echo ""
@@ -74,8 +88,11 @@ node index.cjs
 
 echo ""
 echo "=== Testing ESM with tsx (npx tsx index.mjs) ==="
-# ESM has issues with pure node, using tsx to run it.
 npx tsx index.mjs
+
+echo ""
+echo "=== Testing ESM with node (node index.mjs) ==="
+node index.mjs
 
 echo ""
 echo "All tests passed!"

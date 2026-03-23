@@ -6,47 +6,51 @@ global.logger = new Logger('mute');
 
 describe('http receiver', () => {
     it('start should emit started event', async () => {
-        const receiver = createHttpReceiver();
+        const receiver = createHttpReceiver({ port: 0 });
 
         const spy = jest.spyOn(receiver, 'emit');
-        await receiver.start();
-        expect(spy).toHaveBeenCalledWith('server/listening', {
-            port: 21335,
-            address: '127.0.0.1',
-            family: 'IPv4',
-        });
-        receiver.stop();
+        const startResult = await receiver.start();
+        expect(startResult.success).toBe(true);
+        if (startResult.success) {
+            expect(spy).toHaveBeenCalledWith('server/listening', {
+                port: startResult.payload.port,
+                address: '127.0.0.1',
+                family: 'IPv4',
+            });
+        }
+        await receiver.stop();
     });
 
-    fixtures.forEach(f => {
-        it(`${f.method}: ${f.path}`, async () => {
-            const receiver = createHttpReceiver();
-            const spy = jest.spyOn(receiver, 'emit');
+    it.each(fixtures)('$method: $path', async ({ method, path, search, result }) => {
+        const receiver = createHttpReceiver({ port: 0 });
+        const spy = jest.spyOn(receiver, 'emit');
 
-            await receiver.start();
+        try {
+            const startResult = await receiver.start();
+            if (!startResult.success) {
+                throw new Error(`Server failed to start: ${startResult.message}`);
+            }
 
             const address = receiver.getServerAddress();
             if (!address) return; // ts-stuff
-            const url = `http://${address.address}:${address.port}${f.path}${f.search}`;
+            const url = `http://${address.address}:${address.port}${path}${search}`;
 
-            receiver.activateRoute(f.path);
+            receiver.activateRoute(path);
             expect(spy).toHaveBeenLastCalledWith('server/listening', {
-                port: 21335,
+                port: startResult.payload.port,
                 address: '127.0.0.1',
                 family: 'IPv4',
             });
 
-            const response = await fetch(url, {
-                method: f.method,
-            });
+            const response = await fetch(url, { method });
 
-            if (f.result.emit) {
-                expect(spy).toHaveBeenLastCalledWith(...f.result.emit);
+            if (result.emit) {
+                expect(spy).toHaveBeenLastCalledWith(...result.emit);
             }
 
-            expect(response.status).toEqual(f.result.response.status);
-
-            receiver.stop();
-        });
+            expect(response.status).toEqual(result.response.status);
+        } finally {
+            await receiver.stop();
+        }
     });
 });

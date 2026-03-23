@@ -4,7 +4,7 @@ import Constants from 'expo-constants';
 import { getLocales } from 'expo-localization';
 
 import { publicKey } from './jws';
-import { EnvUtils } from './types';
+import { type EnvUtils } from './types';
 
 const isWeb = () => false;
 

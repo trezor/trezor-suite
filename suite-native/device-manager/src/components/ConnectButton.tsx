@@ -2,7 +2,7 @@ import { FadeInUp, FadeOutUp, LinearTransition } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import { selectSelectedDevice } from '@suite-common/device';
-import { TrezorDevice } from '@suite-common/suite-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { events } from '@suite-native/analytics';
 import { AnimatedBox, Button } from '@suite-native/atoms';

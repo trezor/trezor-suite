@@ -20,6 +20,7 @@ test.describe('Suite Sync - Labelling', { tag: ['@T3W1', '@T3T1'] }, () => {
             evoluClient.writeTo('account', accountSeed);
             evoluClient.writeTo('address', addressSeed);
             evoluClient.writeTo('output', outputSeed);
+            evoluClient.seedQuotaManagerData();
         });
         await onboardingPage.completeOnboarding({ keepDebugModeEnabled: true });
     });
@@ -30,8 +31,10 @@ test.describe('Suite Sync - Labelling', { tag: ['@T3W1', '@T3T1'] }, () => {
         dashboardPage,
         walletPage,
         metadataPage,
+        devicePrompt,
     }) => {
         await test.step('Enable Suite Sync', async () => {
+            await metadataPage.setupQuotaManager();
             await metadataPage.initiateSuiteSyncSetup();
             if (isWebProject(target)) {
                 // eslint-disable-next-line playwright/no-conditional-expect
@@ -64,7 +67,7 @@ test.describe('Suite Sync - Labelling', { tag: ['@T3W1', '@T3T1'] }, () => {
                     },
                 });
             }
-            await metadataPage.confirmSuiteSyncSetup();
+            await devicePrompt.confirmSuiteSyncSetup();
         });
 
         await test.step('Verify BTC account label is synced', async () => {

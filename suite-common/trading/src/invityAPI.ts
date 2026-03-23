@@ -30,13 +30,13 @@ import type {
 import { getOsName, getSuiteVersion, isDesktop, isNative } from '@trezor/env-utils';
 
 import {
-    InvityServerEnvironment,
-    InvityServers,
-    TradingOTC,
-    TradingPaymentMethodType,
-    TradingTradeType,
-    TradingType,
-    TradingWatchTradeResponsePropsMap,
+    type InvityServerEnvironment,
+    type InvityServers,
+    type TradingOTC,
+    type TradingPaymentMethodType,
+    type TradingTradeType,
+    type TradingType,
+    type TradingWatchTradeResponsePropsMap,
 } from './types';
 
 type BodyType =

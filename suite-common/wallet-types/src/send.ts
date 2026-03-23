@@ -1,6 +1,6 @@
-import { Branded } from '@trezor/type-utils';
+import { type Branded } from '@trezor/type-utils';
 
-import { AccountKey, TokenAddress } from './account';
+import { type AccountKey, type TokenAddress } from './account';
 
 export type SendFormDraftKey =
     | AccountKey

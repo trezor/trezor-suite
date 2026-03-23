@@ -1,15 +1,16 @@
 import { useEffect, useMemo, useState } from 'react';
 
+import { selectIsCopyAddressModalShown } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { selectIsSpecificCoinDefinitionKnown } from '@suite-common/token-definitions';
 import {
-    Explorer,
+    type Explorer,
     getCoingeckoId,
     getNetwork,
     getNetworkDisplaySymbolName,
 } from '@suite-common/wallet-config';
 import { selectExplorer } from '@suite-common/wallet-core';
-import { TokenAddress } from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/wallet-types';
 import {
     getContractAddressForNetworkSymbol,
     getTokenExplorerUrl,
@@ -30,7 +31,6 @@ import {
 } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
-import { selectIsCopyAddressModalShown } from 'src/selectors/suite/suiteSelectors';
 import { getTokenAddressTranslationId } from 'src/utils/wallet/tokenUtils';
 
 import { SelectTokenAssetModal } from './SelectTokenAssetModal/SelectTokenAssetModal';

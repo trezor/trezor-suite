@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { type Meta, type StoryObj } from '@storybook/react';
 
 import { H1, LoadingContent as LoadingContentComponent } from '../../../index';
 

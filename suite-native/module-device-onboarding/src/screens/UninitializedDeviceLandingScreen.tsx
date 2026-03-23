@@ -10,13 +10,13 @@ import {
 } from '@suite-common/device';
 import { events } from '@suite-native/analytics';
 import { Box, Button, Text, TextButton, VStack } from '@suite-native/atoms';
-import { SetupSupportingDeviceModel, useCoinLabel } from '@suite-native/device';
+import { type SetupSupportingDeviceModel, useCoinLabel } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import {
-    DeviceOnboardingStackParamList,
+    type DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes,
-    RootStackParamList,
-    StackToStackCompositeScreenProps,
+    type RootStackParamList,
+    type StackToStackCompositeScreenProps,
 } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
 

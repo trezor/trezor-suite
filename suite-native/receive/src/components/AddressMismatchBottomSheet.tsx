@@ -1,6 +1,6 @@
 import {
     BottomSheetModal,
-    BottomSheetModalRef,
+    type BottomSheetModalRef,
     Box,
     BulletListItem,
     Button,

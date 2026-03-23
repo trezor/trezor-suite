@@ -4,7 +4,7 @@ import { COLOR_TOKENS, nativeTypographyStyles } from '@trezor/theme';
 
 import {
     NumberedListItem as NumberedListItemComponent,
-    NumberedListItemProps,
+    type NumberedListItemProps,
 } from '../../NumberedListItem';
 
 type NumberedListItemStory = StoryObj<NumberedListItemProps>;

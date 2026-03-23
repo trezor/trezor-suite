@@ -1,8 +1,8 @@
 import { selectLabelingDataForAccount } from '@suite/metadata';
 import { selectSuiteSyncAccountLabel } from '@suite-common/suite-sync';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
-import { BadgeSize, FlexProps, Row, Text, type TextProps } from '@trezor/components';
+import { type BadgeSize, type FlexProps, Row, Text, type TextProps } from '@trezor/components';
 import { type TypographyStyle } from '@trezor/theme';
 
 import { useDefaultAccountLabel, useSelector } from 'src/hooks/suite';

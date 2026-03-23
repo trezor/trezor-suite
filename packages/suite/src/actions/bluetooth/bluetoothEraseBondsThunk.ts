@@ -1,6 +1,6 @@
 import {
     BLUETOOTH_PREFIX,
-    ForgetBluetoothDeviceThunkParams,
+    type ForgetBluetoothDeviceThunkParams,
     bluetoothActions,
 } from '@suite-common/bluetooth';
 import {
@@ -10,7 +10,7 @@ import {
 } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import TrezorConnect, { BluetoothDeviceId } from '@trezor/connect';
+import TrezorConnect, { type BluetoothDeviceId } from '@trezor/connect';
 import { bluetoothIpc } from '@trezor/transport-bluetooth';
 
 import { bluetoothDisconnectDeviceThunk } from './bluetoothDisconnectDeviceThunk';

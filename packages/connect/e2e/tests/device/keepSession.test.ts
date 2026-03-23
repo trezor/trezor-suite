@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import TrezorConnect, { StaticSessionId } from '@trezor/connect';
+import TrezorConnect, { type StaticSessionId } from '@trezor/connect';
 
 import { conditionalTest, getController, initTrezorConnect, setup } from '../../common.setup';
 

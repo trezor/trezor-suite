@@ -1,7 +1,7 @@
 import {
     AbstractMetadataProvider,
-    OAuthServerEnvironment,
-    Tokens,
+    type OAuthServerEnvironment,
+    type Tokens,
 } from '@suite-common/metadata-types';
 
 import GoogleClient from '../google';

@@ -1,0 +1,24 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        { "path": "../../suite-common/device" },
+        {
+            "path": "../../suite-common/redux-utils"
+        },
+        {
+            "path": "../../suite-common/toast-notifications"
+        },
+        { "path": "../analytics" },
+        { "path": "../router" },
+        { "path": "../../packages/connect" },
+        {
+            "path": "../../suite-common/suite-types"
+        },
+        {
+            "path": "../../suite-common/test-utils"
+        },
+        { "path": "../../packages/device-utils" },
+        { "path": "../../packages/protobuf" }
+    ]
+}

@@ -1,8 +1,8 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
 import { selectDevices, selectSelectedDevice } from '@suite-common/device';
-import { FirmwareStatus } from '@suite-common/suite-types';
+import { type FirmwareStatus } from '@suite-common/suite-types';
 import { Modal, Tooltip } from '@trezor/components';
 
 import { updateAnalytics } from '../../../actions/onboarding/onboardingActions';

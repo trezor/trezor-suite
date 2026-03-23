@@ -1,5 +1,5 @@
 import { isRejectedWithValue } from '@reduxjs/toolkit';
-import { ExchangeTrade } from 'invity-api';
+import { type ExchangeTrade } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
 import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
@@ -18,7 +18,7 @@ import {
     selectTradingExchangeReceiveAccountKey,
     selectTradingExchangeSelectedQuote,
 } from '../../selectors/tradingSelectors';
-import { TradingSendRejectedProps } from '../../types';
+import { type TradingSendRejectedProps } from '../../types';
 import { getTradingFormState } from '../../utils';
 
 export type SendTransactionThunkProps = {

@@ -2,7 +2,7 @@ import type { Deferred } from '@trezor/utils';
 
 import type { DEVICE } from './device';
 import type { UiResponseEvent } from './ui-response';
-import type { Device } from '../device/Device';
+import type { IDevice } from '../types/idevice';
 
 export type UiPromiseResponse =
     | UiResponseEvent
@@ -12,7 +12,7 @@ export type UiPromise<T extends UiPromiseResponse['type']> = Deferred<
     Extract<UiPromiseResponse, { type: T }>,
     T
 > & {
-    device?: Device;
+    device?: IDevice;
 };
 
 // map all possible UiPromises
@@ -25,5 +25,5 @@ export type AnyUiPromise = UiPromiseMap[UiPromiseResponse['type']];
 
 export type UiPromiseCreator = <T extends UiPromiseResponse['type']>(
     type: T,
-    device?: Device,
+    device?: IDevice,
 ) => UiPromise<T>;

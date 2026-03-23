@@ -3,7 +3,7 @@
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { TypedEmitter } from '@trezor/utils';
 
-import { Blockchain } from '../../backend/BlockchainLink';
+import type { Blockchain } from '../../backend/BlockchainLink';
 import type { DeviceCommands } from '../../device/DeviceCommands';
 import type { CoinInfo, DiscoveryAccount, DiscoveryAccountType } from '../../types';
 import type { GetAccountInfo } from '../../types/api/getAccountInfo';

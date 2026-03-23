@@ -1,4 +1,4 @@
-import { AnyAction, combineReducers } from '@reduxjs/toolkit';
+import { type AnyAction, combineReducers } from '@reduxjs/toolkit';
 
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 

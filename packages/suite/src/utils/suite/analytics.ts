@@ -1,4 +1,5 @@
 import type { AppUpdateEvent, SuiteReadyPayload } from '@suite/analytics';
+import { AccountTransactionBaseAnchor } from '@suite/router';
 import {
     selectRememberedHiddenWalletsCount,
     selectRememberedStandardWalletsCount,
@@ -7,7 +8,7 @@ import {
     formatExperimentVariantsForAnalytics,
     selectActiveExperimentsWithVariants,
 } from '@suite-common/message-system';
-import { MetadataProviderType } from '@suite-common/metadata-types';
+import { type MetadataProviderType } from '@suite-common/metadata-types';
 import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
 import {
     getBrowserName,
@@ -24,10 +25,9 @@ import {
     getWindowHeight,
     getWindowWidth,
 } from '@trezor/env-utils';
-import { UpdateInfo } from '@trezor/suite-desktop-api';
+import { type UpdateInfo } from '@trezor/suite-desktop-api';
 
-import { AccountTransactionBaseAnchor } from 'src/constants/suite/anchors';
-import { AppState } from 'src/types/suite';
+import { type AppState } from 'src/types/suite';
 
 import { getIsTorEnabled } from './tor';
 

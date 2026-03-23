@@ -1,7 +1,7 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import {
-    SettingsStackParamList,
+    type SettingsStackParamList,
     SettingsStackRoutes,
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';

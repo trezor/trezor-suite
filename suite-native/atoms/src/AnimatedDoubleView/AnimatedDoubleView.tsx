@@ -6,7 +6,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import {
     ANIMATION_DURATION,
     AnimatedViewWrapper,
-    AnimatedViewWrapperProps,
+    type AnimatedViewWrapperProps,
 } from './AnimatedViewWrapper';
 import { SwitchViewsButton } from './SwitchViewsButton';
 

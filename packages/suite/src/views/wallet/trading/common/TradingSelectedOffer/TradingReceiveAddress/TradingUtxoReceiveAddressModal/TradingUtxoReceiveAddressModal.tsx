@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 
 import { Translation, useTranslation } from '@suite/intl';
-import { Address } from '@trezor/blockchain-link-types';
+import { type Address } from '@trezor/blockchain-link-types';
 import { Column, Modal } from '@trezor/components';
 import { SearchAsset } from '@trezor/product-components';
 

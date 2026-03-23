@@ -2,7 +2,7 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 import { typedObjectEntries } from '@trezor/utils';
 
 import { getExplorerUrls } from './getExplorerUrls';
-import { NetworkFeature, Networks } from './types';
+import { type NetworkFeature, type Networks } from './types';
 
 export const networks = {
     btc: {

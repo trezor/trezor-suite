@@ -1,10 +1,10 @@
-import { ReactNode } from 'react';
-import { LayoutChangeEvent } from 'react-native';
+import { type ReactNode } from 'react';
+import { type LayoutChangeEvent } from 'react-native';
 
 import { Text, VStack } from '@suite-native/atoms';
 
 import { useDynamicHeader } from './DynamicScreenHeaderContext';
-import { ScreenHeaderProps } from '../ScreenHeader';
+import { type ScreenHeaderProps } from '../ScreenHeader';
 
 type DynamicScrollableScreenContentHeaderProps = {
     subtitle?: ReactNode;

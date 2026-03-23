@@ -1,4 +1,5 @@
-import { renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
+import type { TradingTradeType } from '@suite-common/trading';
+import { renderHookWithStoreProvider } from '@suite-native/test-utils';
 import {
     getBuyTrade,
     getExchangeTrade,
@@ -9,12 +10,16 @@ import {
 import { useChangeStringsExtractor } from '../useChangeStringsExtractor';
 
 describe('useChangeStringsExtractor', () => {
-    it('should extract strings for buy trade', async () => {
+    const getPreloadedState = () => ({ wallet: { trading: getInitializedTradingState() } });
+
+    const renderUseChangeStringsExtractor = (data: TradingTradeType | undefined) =>
+        renderHookWithStoreProvider(() => useChangeStringsExtractor(data), {
+            preloadedState: getPreloadedState(),
+        });
+
+    it('should extract strings for buy trade', () => {
         const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
-        const { result } = await renderHookWithStoreProviderAsync(
-            () => useChangeStringsExtractor(buyTrade.data),
-            { preloadedState: { wallet: { trading: getInitializedTradingState() } } },
-        );
+        const { result } = renderUseChangeStringsExtractor(buyTrade.data);
 
         expect(result.current).toEqual({
             fromCurrency: 'USD',
@@ -25,15 +30,13 @@ describe('useChangeStringsExtractor', () => {
             toValue: '0.462586',
             isFromCrypto: false,
             isToCrypto: true,
+            formattedRate: '$2,667.61 / 1 ETH',
         });
     });
 
-    it('should extract strings for sell trade', async () => {
+    it('should extract strings for sell trade', () => {
         const sellTrade = getSellTrade({ status: 'SUBMITTED' });
-        const { result } = await renderHookWithStoreProviderAsync(
-            () => useChangeStringsExtractor(sellTrade.data),
-            { preloadedState: { wallet: { trading: getInitializedTradingState() } } },
-        );
+        const { result } = renderUseChangeStringsExtractor(sellTrade.data);
 
         expect(result.current).toEqual({
             fromCurrency: 'bitcoin',
@@ -44,15 +47,13 @@ describe('useChangeStringsExtractor', () => {
             toValue: '100',
             isFromCrypto: true,
             isToCrypto: false,
+            formattedRate: '0.0122 BTC / $1',
         });
     });
 
-    it('should extract strings for exchange trade', async () => {
+    it('should extract strings for exchange trade', () => {
         const exchangeTrade = getExchangeTrade({ status: 'CONFIRM' });
-        const { result } = await renderHookWithStoreProviderAsync(
-            () => useChangeStringsExtractor(exchangeTrade.data),
-            { preloadedState: { wallet: { trading: getInitializedTradingState() } } },
-        );
+        const { result } = renderUseChangeStringsExtractor(exchangeTrade.data);
 
         expect(result.current).toEqual({
             fromCurrency: 'solana--jtojtomepa8beP8AuQc6eXt5FriJwfFMwQx2v2f9mCL',
@@ -63,14 +64,12 @@ describe('useChangeStringsExtractor', () => {
             toValue: '0.462586',
             isFromCrypto: true,
             isToCrypto: true,
+            formattedRate: '21.883930771791622 JTO / 1 SOL',
         });
     });
 
-    it('should handle undefined trade', async () => {
-        const { result } = await renderHookWithStoreProviderAsync(
-            () => useChangeStringsExtractor(undefined),
-            { preloadedState: { wallet: { trading: getInitializedTradingState() } } },
-        );
+    it('should handle undefined trade', () => {
+        const { result } = renderUseChangeStringsExtractor(undefined);
 
         expect(result.current).toEqual({
             fromCurrency: undefined,
@@ -81,10 +80,11 @@ describe('useChangeStringsExtractor', () => {
             toValue: undefined,
             isFromCrypto: undefined,
             isToCrypto: undefined,
+            formattedRate: undefined,
         });
     });
 
-    it('should handle trade with missing values', async () => {
+    it('should handle trade with missing values', () => {
         const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
         const tradeWithMissingValues = {
             ...buyTrade.data,
@@ -92,10 +92,7 @@ describe('useChangeStringsExtractor', () => {
             receiveStringAmount: undefined,
         };
 
-        const { result } = await renderHookWithStoreProviderAsync(
-            () => useChangeStringsExtractor(tradeWithMissingValues),
-            { preloadedState: { wallet: { trading: getInitializedTradingState() } } },
-        );
+        const { result } = renderUseChangeStringsExtractor(tradeWithMissingValues);
 
         expect(result.current).toEqual({
             fromCurrency: 'USD',
@@ -106,6 +103,7 @@ describe('useChangeStringsExtractor', () => {
             toValue: undefined,
             isFromCrypto: false,
             isToCrypto: true,
+            formattedRate: undefined,
         });
     });
 });

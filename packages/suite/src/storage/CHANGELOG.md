@@ -1,5 +1,13 @@
 # Storage changelog
 
+## 26.4.0
+
+- create `phishing` object store for persisting user "marked as not scam" transaction IDs per account
+
+## 26.3.0.1
+
+- create `experimentalFeedback` object store
+
 ## 26.3.0
 
 - create `suiteSyncOwners` object store

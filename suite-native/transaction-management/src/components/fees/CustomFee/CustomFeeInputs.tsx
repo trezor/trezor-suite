@@ -1,8 +1,8 @@
 import { useSelector } from 'react-redux';
 
-import { NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import {
-    FeesRootState,
+    type FeesRootState,
     selectConvertedNetworkFeeInfo,
     selectIsEip1559Fee,
 } from '@suite-common/wallet-core';
@@ -15,7 +15,7 @@ import { useDebounce } from '@trezor/react-utils';
 import { isNotNullOrUndefined } from '@trezor/utils';
 
 import { EIP1559CustomInputs } from './EIP1559CustomInputs';
-import { FeesFormValues } from '../../../feesFormSchema';
+import { type FeesFormValues } from '../../../feesFormSchema';
 import { FEE_LIMIT_FIELD_NAME, FEE_PER_UNIT_FIELD_NAME } from '../../../presets';
 
 export type CustomFeeInputsProps = {

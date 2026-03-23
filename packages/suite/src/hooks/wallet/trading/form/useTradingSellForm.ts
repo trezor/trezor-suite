@@ -5,7 +5,8 @@ import type { BankAccount, CryptoId, SellFiatTrade, SellFiatTradeResponse } from
 import useDebounce from 'react-use/lib/useDebounce';
 
 import { events } from '@suite/analytics';
-import { TranslationKey, useTranslation } from '@suite/intl';
+import { type TranslationKey, useTranslation } from '@suite/intl';
+import { goto } from '@suite/router';
 import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
@@ -33,10 +34,9 @@ import {
 } from '@suite-common/trading';
 import { networks } from '@suite-common/wallet-config';
 import { selectBaseCurrency, useFormDraft } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { isChanged } from '@trezor/utils';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
 import { submitRequestForm } from 'src/actions/wallet/trading/tradingCommonActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -51,8 +51,8 @@ import { useTradingSellFormRedirectValues } from 'src/hooks/wallet/trading/form/
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { selectHasExperimentalFeature } from 'src/selectors/suite/suiteSelectors';
 import { useAnalytics } from 'src/support/useAnalytics';
-import { UseTradingFormCommonProps } from 'src/types/trading/trading';
-import { TradingSellFormContextProps } from 'src/types/trading/tradingForm';
+import { type UseTradingFormCommonProps } from 'src/types/trading/trading';
+import { type TradingSellFormContextProps } from 'src/types/trading/tradingForm';
 import { createQuoteLink } from 'src/utils/wallet/trading/sellUtils';
 
 import { useTradingAssetDecimals } from './common/useTradingAssetDecimals';
@@ -304,7 +304,7 @@ export const useTradingSellForm = ({
         await handleChange();
 
         dispatch(tradingSellActions.setTradingAccountKey(account.key)); // save account for offers page
-        dispatch(goto('wallet-trading-sell-offers'));
+        dispatch(goto({ routeName: 'wallet-trading-sell-offers' }));
 
         analytics.report({
             type: events.tradeCompareOffersEvent.name,
@@ -356,7 +356,7 @@ export const useTradingSellForm = ({
         }
 
         const nextStep = () => {
-            dispatch(goto('wallet-trading-sell-confirm'));
+            dispatch(goto({ routeName: 'wallet-trading-sell-confirm' }));
 
             // empty quoteId means the partner requests login first, requestTrade to get login screen
             if (
@@ -412,7 +412,7 @@ export const useTradingSellForm = ({
 
     const sendTransaction = async () => {
         const nextStep = () => {
-            dispatch(goto('wallet-trading-sell-detail'));
+            dispatch(goto({ routeName: 'wallet-trading-sell-detail' }));
         };
 
         const signAndPushSendFormTransaction = async ({
@@ -552,7 +552,7 @@ export const useTradingSellForm = ({
     useEffect(() => {
         // We need to clear quotes on offers page without redirecting to form page
         if (!quotesRequest && !isFormPage && !isOffersPage) {
-            dispatch(goto('wallet-trading-sell'));
+            dispatch(goto({ routeName: 'wallet-trading-sell' }));
 
             return;
         }

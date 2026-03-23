@@ -1,14 +1,18 @@
 import { Form } from '@suite-native/forms';
 import {
-    PreloadedState,
+    type PreloadedState,
     act,
     fireEvent,
-    renderHookWithStoreProviderAsync,
-    renderWithStoreProviderAsync,
+    renderHookWithStoreProvider,
+    renderWithStoreProvider,
 } from '@suite-native/test-utils';
 import { btcAsset, getBtcAccount } from '@suite-native/trading-fixtures';
 import { tradingInitialState } from '@suite-native/trading-state';
-import { BuyFormType, ReceiveAccount, TradeableAsset } from '@suite-native/trading-types';
+import {
+    type BuyFormType,
+    type ReceiveAccount,
+    type TradeableAsset,
+} from '@suite-native/trading-types';
 
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';
 import { BuyReceiveAccountPicker } from '../BuyReceiveAccountPicker';
@@ -41,14 +45,14 @@ const getTradingState = (selectedReceiveAccount: ReceiveAccount | undefined) => 
 describe('BuyReceiveAccountPicker', () => {
     let buyForm: BuyFormType;
 
-    const renderBuyForm = async () => {
-        const { result } = await renderHookWithStoreProviderAsync(() => useBuyForm());
+    const renderBuyForm = () => {
+        const { result } = renderHookWithStoreProvider(() => useBuyForm());
 
         return result.current;
     };
 
     const renderPicker = ({ preloadedState }: { preloadedState?: PreloadedState } = {}) =>
-        renderWithStoreProviderAsync(<BuyReceiveAccountPicker />, {
+        renderWithStoreProvider(<BuyReceiveAccountPicker />, {
             preloadedState,
             wrapper: ({ children }) => <Form form={buyForm}>{children}</Form>,
         });
@@ -59,29 +63,29 @@ describe('BuyReceiveAccountPicker', () => {
         });
     };
 
-    beforeEach(async () => {
+    beforeEach(() => {
         jest.resetAllMocks();
-        buyForm = await renderBuyForm();
+        buyForm = renderBuyForm();
     });
 
-    it('should display nothing when selectedSymbol is not specified', async () => {
-        const { toJSON } = await renderPicker();
+    it('should display nothing when selectedSymbol is not specified', () => {
+        const { toJSON } = renderPicker();
 
         expect(toJSON()).toBeNull();
     });
 
-    it('should display "Not selected" when asset is not specified', async () => {
+    it('should display "Not selected" when asset is not specified', () => {
         setSelectedAsset(btcAsset);
-        const { getByText } = await renderPicker();
+        const { getByText } = renderPicker();
 
         expect(getByText('Not selected')).toBeTruthy();
     });
 
     // Todo: https://github.com/trezor/trezor-suite/issues/24906
-    it.skip('should display selected account name and address', async () => {
+    it.skip('should display selected account name and address', () => {
         setSelectedAsset(btcAsset);
         const btcAccount = getBtcAccount();
-        const { getByText } = await renderPicker({
+        const { getByText } = renderPicker({
             preloadedState: getTradingState({
                 account: btcAccount,
                 address: btcAccount.addresses?.used[0],
@@ -92,10 +96,10 @@ describe('BuyReceiveAccountPicker', () => {
         expect(getByText(btcAddressAddress)).toBeTruthy();
     });
 
-    it('should call navigate with correct params on press', async () => {
+    it('should call navigate with correct params on press', () => {
         setSelectedAsset(btcAsset);
         const btcAccount = getBtcAccount();
-        const { getByText } = await renderPicker({
+        const { getByText } = renderPicker({
             preloadedState: getTradingState({
                 account: btcAccount,
                 address: btcAccount.addresses?.used[0],

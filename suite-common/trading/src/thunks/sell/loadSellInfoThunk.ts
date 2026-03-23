@@ -1,12 +1,12 @@
-import { CryptoId, FiatCurrencyCode, SellProviderInfo } from 'invity-api';
+import { type CryptoId, type FiatCurrencyCode, type SellProviderInfo } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
 
 import { TRADING_SELL_THUNK_PREFIX } from '../../constants';
 import { invityAPI } from '../../invityAPI';
-import { SellInfo } from '../../reducers/sellReducer';
+import { type SellInfo } from '../../reducers/sellReducer';
 import { regional } from '../../regional';
-import { TradingCountryCode } from '../../types';
+import { type TradingCountryCode } from '../../types';
 
 export const loadSellInfoThunk = createThunk<SellInfo>(
     `${TRADING_SELL_THUNK_PREFIX}/loadInfo`,

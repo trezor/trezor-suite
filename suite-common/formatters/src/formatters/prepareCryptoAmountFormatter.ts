@@ -1,12 +1,12 @@
 import { A, pipe } from '@mobily/ts-belt';
 
 import {
-    NetworkSymbol,
+    type NetworkSymbol,
     getNetworkOptional,
     isNetworkSymbol,
     networks,
 } from '@suite-common/wallet-config';
-import { TokenSymbol } from '@suite-common/wallet-types';
+import { type TokenSymbol } from '@suite-common/wallet-types';
 import {
     convertAmountSubunitsToUnits,
     convertAmountUnitsToSubunits,
@@ -15,7 +15,7 @@ import {
 import { PROTO } from '@trezor/connect';
 
 import { makeFormatter } from '../makeFormatter';
-import { FormatterConfig } from '../types';
+import { type FormatterConfig } from '../types';
 import { prepareDisplaySymbolFormatter } from './prepareDisplaySymbolFormatter';
 
 export type CryptoAmountFormatterInputValue = string;

@@ -1,17 +1,17 @@
+import { selectRouteName } from '@suite/router';
 import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
 import {
     hasPendingStakeTypeTransaction,
     selectAccountIsStakingActive,
     selectCardanoPoolsInfo,
 } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import {
     isCardanoStakedWithEverstake,
     isCardanoStakedWithFiveBinaries,
 } from '@suite-common/wallet-utils';
 
 import { useSelector } from 'src/hooks/suite';
-import { selectRouteName } from 'src/reducers/suite/routerReducer';
 
 import { NewProviderCard } from '../StakingDashboard/components/NewProviderCard';
 

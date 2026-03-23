@@ -3,9 +3,9 @@ import { useDispatch } from 'react-redux';
 
 import { ContinueOnTrezorScreenContent, recoverWalletThunk } from '@suite-native/device';
 import {
-    DeviceOnboardingStackParamList,
+    type DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes,
-    StackProps,
+    type StackProps,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 

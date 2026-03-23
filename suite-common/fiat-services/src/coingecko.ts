@@ -1,5 +1,5 @@
 import { getNetwork, networks } from '@suite-common/wallet-config';
-import { HistoricRates, TickerId } from '@suite-common/wallet-types';
+import { type HistoricRates, type TickerId } from '@suite-common/wallet-types';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { parseAsset } from '@trezor/blockchain-link-utils/src/blockfrost';
 

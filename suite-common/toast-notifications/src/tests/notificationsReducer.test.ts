@@ -4,7 +4,7 @@ import { notificationsActions } from '../notificationsActions';
 import { createNotificationsReducer } from '../notificationsReducer';
 import { selectNotifications } from '../notificationsSelectors';
 import { removeAccountEventsThunk, removeTransactionEventsThunk } from '../notificationsThunks';
-import { NotificationsRootState, NotificationsState } from '../types';
+import { type NotificationsRootState, type NotificationsState } from '../types';
 
 const { reducer: notificationsReducer } = createNotificationsReducer();
 

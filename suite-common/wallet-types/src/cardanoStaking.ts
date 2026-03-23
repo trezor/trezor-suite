@@ -52,9 +52,3 @@ export type CardanoStaking = {
 export const supportedCardanoNetworkSymbols = ['ada'] as const;
 
 export type SupportedCardanoNetworkSymbols = (typeof supportedCardanoNetworkSymbols)[number];
-
-export interface CardanoPoolInfo {
-    apy: number;
-    saturation: number; // in percentage
-    id: string;
-}

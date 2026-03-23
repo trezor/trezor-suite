@@ -1,6 +1,6 @@
-import { AccountWithSuiteSyncLabel } from '@suite-common/suite-sync';
+import { type AccountWithSuiteSyncLabel } from '@suite-common/suite-sync';
 
-import { TokensWithRates } from 'src/utils/wallet/tokenUtils';
+import { type TokensWithRates } from 'src/utils/wallet/tokenUtils';
 
 export type AssetGroupSpaceSize = 'md' | 'lg';
 

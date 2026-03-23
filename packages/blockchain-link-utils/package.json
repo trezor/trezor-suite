@@ -9,12 +9,12 @@
         "types": "./lib/index.d.ts",
         "exports": {
             ".": {
-                "import": "./libESM/index.js",
+                "import": "./libESM/index.mjs",
                 "require": "./lib/index.js",
                 "types": "./lib/index.d.ts"
             },
             "./lib/*": "./lib/*.js",
-            "./libESM/*.js": "./libESM/*.js"
+            "./libESM/*": "./libESM/*"
         }
     },
     "files": [
@@ -28,14 +28,15 @@
         "type-check": "yarn g:tsc --build",
         "build:lib": "yarn build:lib:cjs && yarn build:lib:esm",
         "build:lib:cjs": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
-        "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm"
+        "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
         "@stellar/stellar-sdk": "14.5.0",
         "@trezor/env-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "xrpl": "4.5.0"
+        "xrpl": "4.6.0"
     },
     "devDependencies": {
         "@solana/addresses": "^2.3.0",

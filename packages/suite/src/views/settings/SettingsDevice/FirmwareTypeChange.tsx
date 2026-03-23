@@ -1,4 +1,5 @@
 import { Translation } from '@suite/intl';
+import { SettingsAnchor, goto } from '@suite/router';
 import { firmwareActions } from '@suite-common/firmware';
 import { Button } from '@trezor/components';
 import {
@@ -8,10 +9,8 @@ import {
 } from '@trezor/device-utils';
 import { HELP_FIRMWARE_TYPE } from '@trezor/urls';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionButton, ActionColumn, TextColumn } from 'src/components/suite';
-import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import { getSuiteFirmwareTypeString } from 'src/utils/firmware';
 
@@ -35,7 +34,7 @@ export const FirmwareTypeChange = ({ isDeviceLocked }: FirmwareTypeProps) => {
         : 'TR_SWITCH_TO_BITCOIN_ONLY';
 
     const handleAction = () => {
-        dispatch(goto('firmware-type', { params: { cancelable: true } }));
+        dispatch(goto({ routeName: 'firmware-type', params: { cancelable: true } }));
         dispatch(firmwareActions.setSwitchFirmwareType(true));
     };
 

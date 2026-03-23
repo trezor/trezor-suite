@@ -1,7 +1,10 @@
-import { Dispatch } from '@reduxjs/toolkit';
+import { type Dispatch } from '@reduxjs/toolkit';
 
 import { PORTFOLIO_TRACKER_DEVICE_STATE } from '@suite-common/device';
-import { EnsureWalletSuiteSyncOnDep, TurnOnSuiteSync } from '@suite-common/suite-sync-types';
+import {
+    type EnsureWalletSuiteSyncOnDep,
+    type TurnOnSuiteSync,
+} from '@suite-common/suite-sync-types';
 import { ok } from '@trezor/type-utils';
 
 import { updateSuiteSyncEnabled } from './suiteSyncSlice';

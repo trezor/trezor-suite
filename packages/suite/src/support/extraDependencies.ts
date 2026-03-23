@@ -1,62 +1,62 @@
-import { PayloadAction } from '@reduxjs/toolkit';
+import { type PayloadAction } from '@reduxjs/toolkit';
 import { saveAs } from 'file-saver';
 
-import { DesktopAnalyticsDep, createAnalytics } from '@suite/analytics';
+import { type DesktopAnalyticsDep, createAnalytics } from '@suite/analytics';
+import type { FlagsState } from '@suite/flags';
+import { lockDevice } from '@suite/locks';
 import { metadataActions, metadataLabelingActions } from '@suite/metadata';
 import { closeModal, openModal } from '@suite/modal';
 import { createElectronPlatformEncryption } from '@suite/platform-encryption-electron';
 import { createWebauthnPlatformEncryption } from '@suite/platform-encryption-webauthn';
 import {
-    DisableLegacyMetadataIfNeededDep,
+    type HistoryDep,
+    type SuiteRouterHistoryDep,
+    asSuiteRouterHistoryService,
+    createSuiteRouterHistory,
+} from '@suite/router';
+import {
+    type DisableLegacyMetadataIfNeededDep,
     createSuiteSyncDesktopCompositionRoot,
 } from '@suite/suite-sync';
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
 import type { DeviceReducerState } from '@suite-common/device';
 import { FW_HASH_CHECK_DEFAULT_TIMEOUTS } from '@suite-common/firmware-authenticity';
 import {
-    CommonServices,
-    ConnectInitSettings,
-    ExtraDependenciesStatic,
+    type CommonServices,
+    type ConnectInitSettings,
+    type ExtraDependenciesStatic,
 } from '@suite-common/redux-utils';
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
-import { SuiteSyncAppReloaderDep } from '@suite-common/suite-sync-types';
+import { type SuiteSyncAppReloaderDep } from '@suite-common/suite-sync-types';
 import {
-    TokenDefinitionsState,
+    type TokenDefinitionsState,
     buildTokenDefinitionsFromStorage,
 } from '@suite-common/token-definitions';
 import { isNetworkSymbol } from '@suite-common/wallet-config';
 import {
-    BlockchainState,
-    ExplorerConfig,
-    FiatRatesState,
-    SendState,
-    TransactionsState,
-    WalletSettingsState,
+    type BlockchainState,
+    type ExplorerConfig,
+    type FiatRatesState,
+    type SendState,
+    type TransactionsState,
+    type WalletSettingsState,
 } from '@suite-common/wallet-core';
 import { createAccountKey } from '@suite-common/wallet-types';
 import { buildHistoricRatesFromStorage } from '@suite-common/wallet-utils';
-import TrezorConnect, { StaticSessionId } from '@trezor/connect';
+import TrezorConnect, { type StaticSessionId } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
-import { StorageLoadAction } from 'src/actions/suite/storageActions';
+import { type StorageLoadAction } from 'src/actions/suite/storageActions';
 import * as cardanoStakingActions from 'src/actions/wallet/cardanoStakingActions';
 import { selectIsWindowVisible } from 'src/reducers/suite/windowReducer';
-import { ensureRouterPath, getPrefixedURL, stripPrefixedURL } from 'src/utils/suite/router';
 import { reportSecurityCheck } from 'src/utils/suite/sentry';
 import { fixLoadedCoinjoinAccount } from 'src/utils/wallet/coinjoinUtils';
 
-import {
-    HistoryDep,
-    SuiteRouterHistory,
-    SuiteRouterHistoryDep,
-    SuiteRouterHistoryDeps,
-} from './suite/suiteRouterHistory';
 import { forgetBluetoothDeviceThunk } from '../actions/bluetooth/bluetoothEraseBondsThunk';
-import * as suiteActions from '../actions/suite/suiteActions';
 import { createDisableLegacyMetadataIfNeeded } from '../actions/suiteSync/disableLegacyMetadateIfNeeded';
 import type { BioAuthState } from '../reducers/bioAuth';
-import { AppState, TrezorDevice } from '../types/suite';
+import { type AppState, type TrezorDevice } from '../types/suite';
 
 const connectInitSettings: ConnectInitSettings = {
     transportReconnect: true,
@@ -70,25 +70,6 @@ const connectInitSettings: ConnectInitSettings = {
     enableFirmwareHashCheck: true,
     firmwareHashCheckTimeouts: FW_HASH_CHECK_DEFAULT_TIMEOUTS,
 };
-
-export const createSuiteRouterHistory = ({
-    history,
-}: SuiteRouterHistoryDeps): SuiteRouterHistory => ({
-    getLocation: () => {
-        const { location } = history;
-
-        return ensureRouterPath({ ...location, pathname: stripPrefixedURL(location.pathname) });
-    },
-    navigate: (to, state) =>
-        history.push(
-            { ...to, pathname: to.pathname ? getPrefixedURL(to.pathname) : undefined },
-            state,
-        ),
-    listen: listener =>
-        history.listen(({ location, action }) =>
-            listener({ location: ensureRouterPath(location), action }),
-        ),
-});
 
 export type StoreAPIDep = {
     getState: () => any;
@@ -171,8 +152,6 @@ export const extraDependencies: ExtraDependenciesStatic = {
         selectDevice: (state: AppState) => state.device.selectedDevice,
         selectLanguage: (state: AppState) => state.suite.settings.language,
         selectMetadata: (state: AppState) => state.metadata,
-        selectRouterApp: (state: AppState) => state.router.app,
-        selectRoute: (state: AppState) => state.router.route,
         selectAddressDisplayType: (state: AppState) => state.suite.settings.addressDisplayType,
         selectSelectedAccount: (state: AppState) => state.wallet.selectedAccount,
         selectSelectedAccountStatus: (state: AppState) => state.wallet.selectedAccount.status,
@@ -190,7 +169,7 @@ export const extraDependencies: ExtraDependenciesStatic = {
     },
     actions: {
         setAccountAddMetadata: metadataActions.setAccountAdd,
-        lockDevice: suiteActions.lockDevice,
+        lockDevice,
         onModalCancel: closeModal,
         openModal,
     },
@@ -217,7 +196,8 @@ export const extraDependencies: ExtraDependenciesStatic = {
             });
         },
         storageLoadTransactions: (state: TransactionsState, { payload }: StorageLoadAction) => {
-            const { txs } = payload;
+            const { txs, phishing } = payload;
+
             txs.forEach(item => {
                 const k = createAccountKey({
                     accountDescriptor: item.tx.descriptor,
@@ -228,6 +208,10 @@ export const extraDependencies: ExtraDependenciesStatic = {
                     state.transactions[k] = [];
                 }
                 state.transactions[k][item.order] = item.tx;
+            });
+
+            phishing.forEach(({ key, value }) => {
+                state.phishing[key] = value;
             });
         },
         storageLoadHistoricRates: (state: FiatRatesState, { payload }: StorageLoadAction) => {
@@ -310,7 +294,6 @@ export const extraDependencies: ExtraDependenciesStatic = {
         },
         storageLoadWalletSettings: (state: WalletSettingsState, { payload }: StorageLoadAction) =>
             payload.walletSettings ? { ...state, ...payload.walletSettings } : state,
-
         // this is deprecated, bioAuth settings is now stored in electron store
         storageLoadBioAuth: (state: BioAuthState, { payload }: StorageLoadAction) => {
             if (!payload?.bioAuth) return state;
@@ -325,6 +308,8 @@ export const extraDependencies: ExtraDependenciesStatic = {
 
             return state;
         },
+        storageLoadFlags: (state: FlagsState, { payload }: StorageLoadAction) =>
+            payload.suiteSettings?.flags ? { ...state, ...payload.suiteSettings.flags } : state,
     },
 };
 
@@ -332,4 +317,4 @@ export const extraDependencies: ExtraDependenciesStatic = {
 // extra.services do contain all the needed services, but in order to make the typing work properly,
 // we'd need to define dispatch() for each platform separately
 export const asSuiteServices = (services: CommonServices): SuiteServices =>
-    services as SuiteServices;
+    asSuiteRouterHistoryService(services) as SuiteServices;

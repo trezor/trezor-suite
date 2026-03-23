@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { Box, VStack } from '@suite-native/atoms';
 import {
     ConfirmOnTrezorWrapper,
@@ -10,9 +10,9 @@ import {
 import { Translation } from '@suite-native/intl';
 import {
     ScreenHeader,
-    SendStackParamList,
-    SendStackRoutes,
-    StackProps,
+    type SendStackParamList,
+    type SendStackRoutes,
+    type StackProps,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 import {

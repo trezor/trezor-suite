@@ -1,5 +1,5 @@
-import { IssueWithSeverity, PolicyConfig, PolicyResult } from '../types/policy';
-import { Issue } from '../types/validation';
+import { type IssueWithSeverity, type PolicyConfig, type PolicyResult } from '../types/policy';
+import { type Issue } from '../types/validation';
 
 const DEFAULT_POLICY: PolicyConfig = {
     // Address

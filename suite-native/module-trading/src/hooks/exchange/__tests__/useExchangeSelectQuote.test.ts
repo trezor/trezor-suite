@@ -1,15 +1,15 @@
 import React from 'react';
 
 import { tradingExchangeActions, tradingSettingsActions } from '@suite-common/trading';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { events } from '@suite-native/analytics';
 import { useAnalytics } from '@suite-native/services';
 import {
-    PreloadedState,
-    TestStore,
+    type PreloadedState,
+    type TestStore,
     act,
     initStore,
-    renderHookWithStoreProviderAsync,
+    renderHookWithStoreProvider,
 } from '@suite-native/test-utils';
 import {
     btcAsset,
@@ -18,13 +18,13 @@ import {
     getEthAccount,
     getInitializedTradingStateWithQuotes,
 } from '@suite-native/trading-fixtures';
-import { ExchangeFormType } from '@suite-native/trading-types';
+import { type ExchangeFormType } from '@suite-native/trading-types';
 
-import * as approvalStatusUtils from '../../../utils/general/approvalStatusUtils';
 import { useExchangeForm } from '../useExchangeForm';
 import { useExchangeSelectQuote } from '../useExchangeSelectQuote';
 
 const mockTokenSupportsIncreasingAllowance = jest.fn();
+const mockGetApprovalStatus = jest.fn();
 
 jest.mock('@suite-common/trading', () => ({
     ...jest.requireActual('@suite-common/trading'),
@@ -33,9 +33,13 @@ jest.mock('@suite-common/trading', () => ({
             type: 'selectQuoteThunkMock',
             payload,
         }),
+        prefetchDexQuoteApprovalThunk: () => () => ({
+            unwrap: () => Promise.resolve(undefined),
+        }),
     },
     tokenSupportsIncreasingAllowance: (contractAddress?: string) =>
         mockTokenSupportsIncreasingAllowance(contractAddress),
+    getApprovalStatus: (quote?: any) => mockGetApprovalStatus(quote),
 }));
 
 const mockNavigation = {
@@ -66,7 +70,13 @@ describe('useExchangeSelectQuote', () => {
     let exchangeForm: ExchangeFormType;
     let store: TestStore;
 
-    const getInitializedStore = ({ isLoading }: { isLoading?: boolean }) => {
+    const getInitializedStore = ({
+        isLoading,
+        dexQuoteApprovalPrefetchLoadingQuoteId,
+    }: {
+        isLoading?: boolean;
+        dexQuoteApprovalPrefetchLoadingQuoteId?: string;
+    }) => {
         const btcAccount = getBtcAccount(
             'btc-account-key' as AccountKey, // Todo: create properly via `createAccountKey()`
         );
@@ -84,6 +94,10 @@ describe('useExchangeSelectQuote', () => {
         if (isLoading !== undefined) {
             preloadedState.wallet!.trading!.exchange!.isLoading = isLoading;
         }
+        if (dexQuoteApprovalPrefetchLoadingQuoteId !== undefined) {
+            preloadedState.wallet!.trading!.exchange!.dexQuoteApprovalPrefetchLoadingQuoteId =
+                dexQuoteApprovalPrefetchLoadingQuoteId;
+        }
 
         preloadedState.wallet!.trading!.exchange!.tradingAccountKey = 'btc-account-key';
         preloadedState.wallet!.trading!.exchange!.receiveAccountKey = 'eth-account-key';
@@ -92,10 +106,10 @@ describe('useExchangeSelectQuote', () => {
     };
 
     const renderExchangeForm = () =>
-        renderHookWithStoreProviderAsync(() => useExchangeForm(), { store });
+        renderHookWithStoreProvider(() => useExchangeForm(), { store });
 
-    const renderUseExchangeSelectQuote = async () => {
-        const hook = await renderHookWithStoreProviderAsync(
+    const renderUseExchangeSelectQuote = () => {
+        const hook = renderHookWithStoreProvider(
             () => useExchangeSelectQuoteWithReportSpy(exchangeForm),
             { store },
         );
@@ -111,24 +125,87 @@ describe('useExchangeSelectQuote', () => {
     });
 
     describe('while loading quotes', () => {
-        beforeEach(async () => {
-            store = await getInitializedStore({ isLoading: true });
+        beforeEach(() => {
+            store = getInitializedStore({ isLoading: true });
 
-            const { result } = await renderExchangeForm();
+            const { result } = renderExchangeForm();
             exchangeForm = result.current;
         });
 
-        it('should canProceed be false when loading', async () => {
-            const { result } = await renderUseExchangeSelectQuote();
+        it('should canProceed be false when loading', () => {
+            const { result } = renderUseExchangeSelectQuote();
             expect(result.current.canProceed).toBe(false);
         });
     });
 
-    describe('with quote loaded and selected', () => {
+    describe('while prefetching dex quote approval info', () => {
         beforeEach(async () => {
-            store = await getInitializedStore({ isLoading: false });
+            store = await getInitializedStore({
+                isLoading: false,
+                dexQuoteApprovalPrefetchLoadingQuoteId: exchangeQuotes[3].quoteId!,
+            });
 
             const { result } = await renderExchangeForm();
+            exchangeForm = result.current;
+
+            act(() => {
+                exchangeForm.setValue('quote', exchangeQuotes[3]);
+            });
+        });
+
+        it('should canProceed be false while prefetch is loading for approval-required quote', async () => {
+            const { result } = await renderUseExchangeSelectQuote();
+
+            await act(() => Promise.resolve());
+
+            expect(result.current.canProceed).toBe(false);
+        });
+
+        it('should not dispatch selectQuoteThunk while prefetch is loading for approval-required quote', async () => {
+            const dispatchSpy = jest.spyOn(store, 'dispatch');
+            const { result } = await renderUseExchangeSelectQuote();
+
+            dispatchSpy.mockClear();
+            act(() => {
+                result.current.selectQuote();
+            });
+
+            expect(dispatchSpy).not.toHaveBeenCalled();
+        });
+
+        it('should canProceed be true while prefetch is loading for quote without approval', async () => {
+            act(() => {
+                exchangeForm.setValue('quote', exchangeQuotes[1]);
+            });
+
+            const { result } = await renderUseExchangeSelectQuote();
+
+            await act(() => Promise.resolve());
+
+            expect(result.current.canProceed).toBe(true);
+        });
+
+        it('should canProceed be true when another approval-required quote is currently prefetched', async () => {
+            act(() => {
+                exchangeForm.setValue('quote', {
+                    ...exchangeQuotes[3],
+                    quoteId: 'another-dex-quote-id',
+                });
+            });
+
+            const { result } = await renderUseExchangeSelectQuote();
+
+            await act(() => Promise.resolve());
+
+            expect(result.current.canProceed).toBe(true);
+        });
+    });
+
+    describe('with quote loaded and selected', () => {
+        beforeEach(() => {
+            store = getInitializedStore({ isLoading: false });
+
+            const { result } = renderExchangeForm();
             exchangeForm = result.current;
 
             act(() => {
@@ -137,17 +214,17 @@ describe('useExchangeSelectQuote', () => {
         });
 
         it('should canProceed be true when not loading and quote exists', async () => {
-            const { result } = await renderUseExchangeSelectQuote();
+            const { result } = renderUseExchangeSelectQuote();
 
             await act(() => Promise.resolve());
 
             expect(result.current.canProceed).toBe(true);
         });
 
-        it('should call selectQuoteThunk when selectQuote is called', async () => {
+        it('should call selectQuoteThunk when selectQuote is called', () => {
             const dispatchSpy = jest.spyOn(store, 'dispatch');
 
-            const { result } = await renderUseExchangeSelectQuote();
+            const { result } = renderUseExchangeSelectQuote();
 
             act(() => {
                 result.current.selectQuote();
@@ -164,12 +241,12 @@ describe('useExchangeSelectQuote', () => {
             );
         });
 
-        it('should call selectQuoteThunk with correct maxSlippage value', async () => {
+        it('should call selectQuoteThunk with correct maxSlippage value', () => {
             const dispatchSpy = jest.spyOn(store, 'dispatch');
             act(() => {
                 store.dispatch(tradingSettingsActions.setMaxSlippagePercentage('1.5'));
             });
-            const { result } = await renderUseExchangeSelectQuote();
+            const { result } = renderUseExchangeSelectQuote();
 
             act(() => {
                 result.current.selectQuote();
@@ -186,7 +263,7 @@ describe('useExchangeSelectQuote', () => {
             );
         });
 
-        it('should not call selectQuoteThunk when account is not fully selected', async () => {
+        it('should not call selectQuoteThunk when account is not fully selected', () => {
             act(() => {
                 [
                     tradingExchangeActions.setReceiveAccountKey(
@@ -200,7 +277,7 @@ describe('useExchangeSelectQuote', () => {
             });
 
             const dispatchSpy = jest.spyOn(store, 'dispatch');
-            const { result, reportMock } = await renderUseExchangeSelectQuote();
+            const { result, reportMock } = renderUseExchangeSelectQuote();
 
             dispatchSpy.mockClear();
             act(() => {
@@ -223,10 +300,12 @@ describe('useExchangeSelectQuote', () => {
             });
         });
 
-        it('should navigate to TradingExchangePreview when nextStep callback is executed', async () => {
+        it('should navigate to TradingExchangePreview when nextStep callback is executed', () => {
+            mockGetApprovalStatus.mockReturnValue('approved');
+
             const dispatchSpy = jest.spyOn(store, 'dispatch');
 
-            const { result } = await renderUseExchangeSelectQuote();
+            const { result } = renderUseExchangeSelectQuote();
             dispatchSpy.mockClear();
 
             act(() => {
@@ -245,22 +324,22 @@ describe('useExchangeSelectQuote', () => {
     });
 
     describe('navigation based on approval status', () => {
-        beforeEach(async () => {
-            store = await getInitializedStore({ isLoading: false });
+        beforeEach(() => {
+            store = getInitializedStore({ isLoading: false });
 
-            const { result } = await renderExchangeForm();
+            const { result } = renderExchangeForm();
             exchangeForm = result.current;
         });
 
-        it('should navigate to TradingExchangePreview when approval status is "approved"', async () => {
-            jest.spyOn(approvalStatusUtils, 'getApprovalStatus').mockReturnValue('approved');
+        it('should navigate to TradingExchangePreview when approval status is "approved"', () => {
+            mockGetApprovalStatus.mockReturnValue('approved');
 
             act(() => {
                 exchangeForm.setValue('quote', exchangeQuotes[1]);
             });
 
             const dispatchSpy = jest.spyOn(store, 'dispatch');
-            const { result } = await renderUseExchangeSelectQuote();
+            const { result } = renderUseExchangeSelectQuote();
             dispatchSpy.mockClear();
 
             act(() => {
@@ -281,15 +360,15 @@ describe('useExchangeSelectQuote', () => {
             });
         });
 
-        it('should navigate to TradingExchangePreview when approval status is "not_needed"', async () => {
-            jest.spyOn(approvalStatusUtils, 'getApprovalStatus').mockReturnValue('not_needed');
+        it('should navigate to TradingExchangePreview when approval status is "not_needed"', () => {
+            mockGetApprovalStatus.mockReturnValue('not_needed');
 
             act(() => {
                 exchangeForm.setValue('quote', exchangeQuotes[1]);
             });
 
             const dispatchSpy = jest.spyOn(store, 'dispatch');
-            const { result } = await renderUseExchangeSelectQuote();
+            const { result } = renderUseExchangeSelectQuote();
             dispatchSpy.mockClear();
 
             act(() => {
@@ -306,15 +385,15 @@ describe('useExchangeSelectQuote', () => {
             expect(mockNavigation.navigate).toHaveBeenCalledWith('TradingExchangePreview', {});
         });
 
-        it('should navigate to TradingExchangeApproval when approval status is "needs_approval"', async () => {
-            jest.spyOn(approvalStatusUtils, 'getApprovalStatus').mockReturnValue('needs_approval');
+        it('should navigate to TradingExchangeApproval when approval status is "needs_approval"', () => {
+            mockGetApprovalStatus.mockReturnValue('needs_approval');
 
             act(() => {
                 exchangeForm.setValue('quote', exchangeQuotes[1]);
             });
 
             const dispatchSpy = jest.spyOn(store, 'dispatch');
-            const { result } = await renderUseExchangeSelectQuote();
+            const { result } = renderUseExchangeSelectQuote();
             dispatchSpy.mockClear();
 
             act(() => {
@@ -336,8 +415,8 @@ describe('useExchangeSelectQuote', () => {
             });
         });
 
-        it('should navigate to TradingExchangeApproval with shouldIncreaseLimit when approval status is "needs_increase" and token supports increasing allowance', async () => {
-            jest.spyOn(approvalStatusUtils, 'getApprovalStatus').mockReturnValue('needs_increase');
+        it('should navigate to TradingExchangeApproval with shouldIncreaseLimit when approval status is "needs_increase" and token supports increasing allowance', () => {
+            mockGetApprovalStatus.mockReturnValue('needs_increase');
             mockTokenSupportsIncreasingAllowance.mockReturnValue(true);
 
             act(() => {
@@ -345,7 +424,7 @@ describe('useExchangeSelectQuote', () => {
             });
 
             const dispatchSpy = jest.spyOn(store, 'dispatch');
-            const { result } = await renderUseExchangeSelectQuote();
+            const { result } = renderUseExchangeSelectQuote();
             dispatchSpy.mockClear();
 
             act(() => {
@@ -368,8 +447,8 @@ describe('useExchangeSelectQuote', () => {
             });
         });
 
-        it('should navigate to TradingExchangeRevoke when approval status is "needs_increase" and token does not support increasing allowance', async () => {
-            jest.spyOn(approvalStatusUtils, 'getApprovalStatus').mockReturnValue('needs_increase');
+        it('should navigate to TradingExchangeRevoke when approval status is "needs_increase" and token does not support increasing allowance', () => {
+            mockGetApprovalStatus.mockReturnValue('needs_increase');
             mockTokenSupportsIncreasingAllowance.mockReturnValue(false);
 
             act(() => {
@@ -377,7 +456,7 @@ describe('useExchangeSelectQuote', () => {
             });
 
             const dispatchSpy = jest.spyOn(store, 'dispatch');
-            const { result } = await renderUseExchangeSelectQuote();
+            const { result } = renderUseExchangeSelectQuote();
             dispatchSpy.mockClear();
 
             act(() => {

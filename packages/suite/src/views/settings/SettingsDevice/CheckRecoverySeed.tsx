@@ -1,10 +1,9 @@
 import { Translation } from '@suite/intl';
+import { SettingsAnchor, goto } from '@suite/router';
 import { getCheckBackupUrl } from '@suite-common/suite-utils';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionButton, ActionColumn, TextColumn } from 'src/components/suite';
-import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 
 interface CheckRecoverySeedProps {
@@ -18,7 +17,8 @@ export const CheckRecoverySeed = ({ isDeviceLocked }: CheckRecoverySeedProps) =>
     const needsBackup = device?.features?.backup_availability === 'Required';
     const learnMoreUrl = getCheckBackupUrl(device);
 
-    const handleClick = () => dispatch(goto('recovery-index', { params: { cancelable: true } }));
+    const handleClick = () =>
+        dispatch(goto({ routeName: 'recovery-index', params: { cancelable: true } }));
 
     if (needsBackup) return null;
 

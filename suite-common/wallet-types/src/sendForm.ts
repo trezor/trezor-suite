@@ -1,10 +1,10 @@
-import { CryptoId } from 'invity-api';
+import { type CryptoId } from 'invity-api';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { AccountUtxo, FeeLevel } from '@trezor/connect';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import type { AccountUtxo, FeeLevel } from '@trezor/connect';
 
-import { AccountKey } from './account';
-import { Output, RbfTransactionParams } from './transaction';
+import { type AccountKey } from './account';
+import { type Output, type RbfTransactionParams } from './transaction';
 
 export type FormOptions =
     | 'broadcast'

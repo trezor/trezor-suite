@@ -1,4 +1,4 @@
-import { TranslationFunction } from '@suite/intl';
+import { type TranslationFunction } from '@suite/intl';
 import { BigNumber } from '@trezor/utils';
 
 interface ValidateMaxOptions {

@@ -2,9 +2,9 @@ import * as varuint from 'varuint-bitcoin';
 
 import { getChunkSize, reverseBuffer } from '../bufferutils';
 import * as bcrypto from '../crypto';
-import { bitcoin as BITCOIN_NETWORK, Network, isNetworkType } from '../networks';
+import { bitcoin as BITCOIN_NETWORK, type Network, isNetworkType } from '../networks';
 import * as bscript from '../script';
-import * as types from '../types';
+import { Hash256bit, assertType } from '../types/validation';
 
 export function varSliceSize(someScript: Buffer) {
     const { length } = someScript;
@@ -20,7 +20,7 @@ export function vectorSize(someVector: Buffer[]) {
 }
 
 export function isCoinbaseHash(buffer: Buffer): boolean {
-    types.typeforce(types.Hash256bit, buffer);
+    assertType(Hash256bit, buffer);
     for (let i = 0; i < 32; ++i) {
         if (buffer[i] !== 0) return false;
     }

@@ -1,8 +1,8 @@
-import { ThunkDispatch } from '@reduxjs/toolkit';
-import { Action, Dispatch, Middleware, MiddlewareAPI } from 'redux';
+import { type ThunkDispatch } from '@reduxjs/toolkit';
+import { type Action, type Dispatch, type Middleware, type MiddlewareAPI } from 'redux';
 
-import { ExtraDependencies } from './extraDependenciesType';
-import { AnyAction } from './types';
+import { type ExtraDependencies } from './extraDependenciesType';
+import { type AnyAction } from './types';
 
 interface SimpleMiddleware<TAction extends Action, TExtraMiddlewareAPI = {}> {
     (

@@ -1,5 +1,5 @@
-import { BluetoothDeviceId } from '@trezor/connect';
-import { DeviceModelInternal } from '@trezor/device-utils';
+import { type BluetoothDeviceId } from '@trezor/connect';
+import { type DeviceModelInternal } from '@trezor/device-utils';
 
 export type BluetoothAdapterStatus =
     | 'unknown'
@@ -62,4 +62,5 @@ export type ForgetBluetoothDeviceThunkParams = {
     // This thunk must rely on `bluetoothId` directly. When this thunk is called,
     // the device may already be disconnected, and therefore, it cannot be selected from the state.
     bluetoothId: BluetoothDeviceId;
+    isOsUnpairingFinished?: boolean;
 };

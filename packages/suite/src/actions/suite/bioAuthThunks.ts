@@ -2,7 +2,7 @@ import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
-import { Dispatch } from 'src/types/suite';
+import { type Dispatch } from 'src/types/suite';
 
 import { bioAuthActions } from './bioAuthActions';
 
@@ -34,8 +34,7 @@ export const init = createThunk(`${BIO_AUTH_PREFIX}/init`, (_args, { dispatch })
 
     const onBioAuthAvailable = (available: boolean) => {
         dispatch(bioAuthActions.setIsBioAuthAvailable(available));
-        if (!available) return;
-        // ensure this api is called only when & if BioAuthModule is available = initialized
+        // ensure this api is called regardlesss if the bio auth is available or not
         desktopApi.getBioAuthStatus().then(validated => {
             dispatch(bioAuthActions.setIsBioAuthValidationRequired(!validated));
         });
@@ -95,7 +94,6 @@ export const requestBioAuthValidationThunk = createThunk(
     `${BIO_AUTH_PREFIX}/validateAuth`,
     async ({ messageSuccess, messageError }: RequestBioAuthValidationThunkParams, { dispatch }) => {
         if (!(await desktopApi.isBioAuthAvailable())) {
-            await desktopApi.setBioAuthSettings({ enabled: false });
             dispatch(
                 notificationsActions.addToast({
                     type: 'error',

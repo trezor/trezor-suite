@@ -4,19 +4,19 @@ import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useNavigation } from '@react-navigation/native';
 
 import {
-    DemoAccountQuestionnaireQuestion,
-    DemoAccountQuestionnaireQuestionOption,
+    type DemoAccountQuestionnaireQuestion,
+    type DemoAccountQuestionnaireQuestionOption,
     events,
 } from '@suite-native/analytics';
 import { Button, HStack, ScreenFooterGradient, Text, VStack } from '@suite-native/atoms';
-import { IconName } from '@suite-native/icons';
-import { Translation, TxKeyPath } from '@suite-native/intl';
+import { type IconName } from '@suite-native/icons';
+import { Translation, type TxKeyPath } from '@suite-native/intl';
 import {
-    DemoAccountQuestionnaireStackParamList,
-    DemoAccountQuestionnaireStackRoutes,
+    type DemoAccountQuestionnaireStackParamList,
+    type DemoAccountQuestionnaireStackRoutes,
     Screen,
     ScreenHeader,
-    StackNavigationProps,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
 

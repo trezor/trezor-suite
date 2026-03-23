@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { AllowedAnimationPrimitiveFrameProps, Icon } from '@trezor/components';
+import { type AllowedAnimationPrimitiveFrameProps, Icon } from '@trezor/components';
 import { DeviceModelInternal, normalizeDeviceColorVariant } from '@trezor/device-utils';
 
 import { mapTrezorModelToIcon } from '../../utils/mapTrezorModelToIcon';

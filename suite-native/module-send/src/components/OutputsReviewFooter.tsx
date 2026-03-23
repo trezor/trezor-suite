@@ -7,22 +7,22 @@ import { isFulfilled } from '@reduxjs/toolkit';
 import { useAtomValue } from 'jotai';
 
 import {
-    AccountsRootState,
-    TransactionsRootState,
+    type AccountsRootState,
+    type TransactionsRootState,
     selectAccountByKey,
     selectTransactionByAccountKeyAndTxid,
 } from '@suite-common/wallet-core';
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { useAlert } from '@suite-native/alerts';
 import { Button, Card } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import {
     AppTabsRoutes,
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
-    SendStackParamList,
+    type SendStackParamList,
     SendStackRoutes,
-    StackToStackCompositeNavigationProps,
+    type StackToStackCompositeNavigationProps,
     TransactionDetailStackRoutes,
 } from '@suite-native/navigation';
 import { cleanupSendFormThunk, sendTransactionThunk } from '@suite-native/send';

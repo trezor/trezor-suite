@@ -6,10 +6,11 @@ import { createDeferred } from '@trezor/utils';
 
 import { abortThpWorkflow, thpCall } from './thpCall';
 import { DataManager } from '../../data/DataManager';
-import { DEVICE, UiResponseThpPairingTag } from '../../events';
-import type { Device } from '../Device';
+import type { UiResponseThpPairingTag } from '../../events';
+import { DEVICE } from '../../events';
+import type { IDevice } from '../../types/idevice';
 
-const processQrCodeTag = async (device: Device, value: string) => {
+const processQrCodeTag = async (device: IDevice, value: string) => {
     const thpState = device.getThpState();
     if (!thpState?.handshakeCredentials) {
         throw ERRORS.TypedError('Device_ThpStateMissing');
@@ -32,7 +33,7 @@ const processQrCodeTag = async (device: Device, value: string) => {
     return qrCodeSecret;
 };
 
-const processNfcTag = async (device: Device, value: string) => {
+const processNfcTag = async (device: IDevice, value: string) => {
     const thpState = device.getThpState();
     if (!thpState?.handshakeCredentials) {
         throw ERRORS.TypedError('Device_ThpStateMissing');
@@ -60,7 +61,7 @@ const processNfcTag = async (device: Device, value: string) => {
     return nfcTagTrezor;
 };
 
-const processCodeEntry = async (device: Device, value: string) => {
+const processCodeEntry = async (device: IDevice, value: string) => {
     const codeValue = Buffer.from(value, 'ascii');
 
     const thpState = device.getThpState();
@@ -90,7 +91,10 @@ const processCodeEntry = async (device: Device, value: string) => {
     return codeEntrySecret;
 };
 
-const processThpPairingResponse = (device: Device, payload: UiResponseThpPairingTag['payload']) => {
+const processThpPairingResponse = (
+    device: IDevice,
+    payload: UiResponseThpPairingTag['payload'],
+) => {
     if ('selectedMethod' in payload) {
         // change pairing method
         const selectedMethod = protocolThp.getThpPairingMethod(payload.selectedMethod);
@@ -117,7 +121,7 @@ const processThpPairingResponse = (device: Device, payload: UiResponseThpPairing
     throw ERRORS.TypedError('Device_ThpPairingMethodsException');
 };
 
-const waitForPairingCancel = (device: Device) => {
+const waitForPairingCancel = (device: IDevice) => {
     const readAbort = new AbortController();
     device.getThpState()?.setExpectedResponses([0x04]); // expect Cancel
     const readCancel = device.getCurrentSession().receive({ signal: readAbort.signal });
@@ -128,7 +132,7 @@ const waitForPairingCancel = (device: Device) => {
     };
 };
 
-const waitForPairingTag = async (device: Device) => {
+const waitForPairingTag = async (device: IDevice) => {
     const thpState = device.getThpState();
     if (!thpState?.handshakeCredentials) {
         throw ERRORS.TypedError('Device_ThpStateMissing');
@@ -223,7 +227,7 @@ const waitForPairingTag = async (device: Device) => {
     });
 };
 
-export const getThpCredentials = async (device: Device, autoconnect = false) => {
+export const getThpCredentials = async (device: IDevice, autoconnect = false) => {
     const thpState = device.getThpState();
     if (!thpState?.handshakeCredentials) {
         throw ERRORS.TypedError('Device_ThpStateMissing');
@@ -240,7 +244,7 @@ export const getThpCredentials = async (device: Device, autoconnect = false) => 
     return { ...credentials.message, autoconnect, host_static_key };
 };
 
-export const thpPairingEnd = async (device: Device) => {
+export const thpPairingEnd = async (device: IDevice) => {
     const result = await thpCall(device, 'ThpEndRequest', {});
     device.getThpState()?.setPhase('paired');
 
@@ -251,7 +255,7 @@ export const thpPairingEnd = async (device: Device) => {
 // Workflow will require user interaction
 // TODO: link-to-public-docs
 // https://www.notion.so/satoshilabs/THP-Specification-2-1-203dc5260606804192aecaa58fb961ca
-export const thpPairing = async (device: Device) => {
+export const thpPairing = async (device: IDevice) => {
     const thpState = device.getThpState();
     if (!thpState?.handshakeCredentials) {
         throw ERRORS.TypedError('Device_ThpStateMissing');

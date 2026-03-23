@@ -1,16 +1,21 @@
 import type { CryptoId } from 'invity-api';
 
-import { DeviceReducerState, deviceInitialState } from '@suite-common/device';
+import { type DeviceReducerState, deviceInitialState } from '@suite-common/device';
 import { initialSuiteSyncDataState, initialSuiteSyncState } from '@suite-common/suite-sync';
-import { Action, Feature, Message, TrezorDevice } from '@suite-common/suite-types';
 import {
-    InvityServerEnvironment,
-    TradingCountryCode,
-    TradingRootStateWithDeviceAndAccounts,
+    type Action,
+    type Feature,
+    type Message,
+    type TrezorDevice,
+} from '@suite-common/suite-types';
+import {
+    type InvityServerEnvironment,
+    type TradingCountryCode,
+    type TradingRootStateWithDeviceAndAccounts,
     selectTradingProviderMetadata,
 } from '@suite-common/trading';
-import { AccountsRootState } from '@suite-common/wallet-core';
-import { Account, AccountKey } from '@suite-common/wallet-types';
+import { type AccountsRootState } from '@suite-common/wallet-core';
+import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
 import { appSettingsInitialState } from '@suite-native/settings';
 import {
@@ -23,10 +28,10 @@ import {
     getInitializedTradingState,
     getWalletState,
 } from '@suite-native/trading-fixtures';
-import { TradeableAsset } from '@suite-native/trading-types';
+import { type TradeableAsset } from '@suite-native/trading-types';
 import { BigNumber } from '@trezor/utils';
 
-import { TradingRootState, tradingInitialState } from '../../reducers';
+import { type TradingRootState, tradingInitialState } from '../../reducers';
 import {
     selectAccountLabelWithNetworkFallback,
     selectAccountsWithTokensToSellSectionCondensedListByTradingType,

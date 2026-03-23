@@ -1,7 +1,7 @@
 export * from './FormatterProvider';
 export * from './tests/MockedFormatterProvider';
 export * from './useFormatters';
-export * from './types';
+export type * from './types';
 export * from './makeFormatter';
 export * from './utils/sign';
 export * from './utils/convert';

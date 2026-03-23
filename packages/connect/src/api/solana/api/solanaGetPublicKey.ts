@@ -2,13 +2,13 @@ import bs58 from 'bs58';
 
 import { Assert } from '@trezor/schema-utils';
 
-import { PROTO } from '../../../constants';
-import {
-    AbstractMethod,
+import type { PROTO } from '../../../constants';
+import type {
+    MethodMessage,
     MethodPermission,
     MethodReturnType,
-    Payload,
 } from '../../../core/AbstractMethod';
+import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { UI_REQUEST, createUiMessage } from '../../../events';
 import { Bundle, GetPublicKey as GetPublicKeySchema } from '../../../types';
@@ -21,7 +21,7 @@ export default class SolanaGetPublicKey extends AbstractMethod<
 > {
     hasBundle?: boolean;
 
-    constructor(message: { id?: number; payload: Payload<'solanaGetPublicKey'> }) {
+    constructor(message: MethodMessage<'solanaGetPublicKey'>) {
         super(message);
         this.confirmMissingBackup = true;
         this.requiredDeviceCapabilities = ['Capability_Solana'];

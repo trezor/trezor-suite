@@ -1,7 +1,6 @@
-import { ElementType } from 'react';
+import { type ElementType } from 'react';
 
-import { BuyProviderInfo, ExchangeProviderInfo, SellProviderInfo } from 'invity-api';
-
+import type { TradingProviderInfo } from '@suite-common/trading';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
@@ -13,7 +12,7 @@ import { TradingLayoutHeader } from 'src/views/wallet/trading/common/TradingLayo
 
 export interface TradingContainerProps {
     SectionComponent: ElementType;
-    provider?: BuyProviderInfo | SellProviderInfo | ExchangeProviderInfo;
+    provider?: TradingProviderInfo;
 }
 
 export const TradingContainer = ({ SectionComponent, provider }: TradingContainerProps) => {

@@ -1,6 +1,6 @@
-import { YieldDto } from '@suite-common/earn-api';
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { Account, TokenInfoBranded, TokenSymbol } from '@suite-common/wallet-types';
+import { type YieldDto } from '@suite-common/earn-api';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type Account, type TokenInfoBranded, type TokenSymbol } from '@suite-common/wallet-types';
 
 export type YieldAccountOpportunity = {
     key: string;

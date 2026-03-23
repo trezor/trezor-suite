@@ -18,6 +18,11 @@ on:
         required: false
         default: ""
         type: string
+      runner_config:
+        description: "Path to the Detox runner config file"
+        required: false
+        default: e2e/trezorDetoxRunner/config/runner-android-release.config.js
+        type: string
     secrets:
       TREZOR_BOT_APP_ID:
         required: true
@@ -25,7 +30,7 @@ on:
         required: true
       CURRENTS_RECORD_KEY:
         required: true
-      SLACK_MOBILE_E2E_WEBHOOK:
+      CURRENTS_API_KEY:
         required: true
       E2E_TEST_PASSPHRASE:
         required: true
@@ -40,7 +45,7 @@ jobs:
 
     steps:
       - name: Checkout project
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           submodules: "true"
 
@@ -55,7 +60,7 @@ jobs:
           large-packages: false
 
       - name: Install node and yarn
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version-file: ".nvmrc"
           cache: yarn
@@ -80,7 +85,7 @@ jobs:
 
       - name: Generate GitHub App token
         id: trezor-bot-token
-        uses: actions/create-github-app-token@v1
+        uses: actions/create-github-app-token@v2
         with:
           app-id: ${{ secrets.TREZOR_BOT_APP_ID }}
           private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
@@ -103,7 +108,7 @@ jobs:
           docker compose up --detach trezor-user-env-unix trezor-user-env-regtest
 
       - name: Download Android build artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: android-test-build-${{ github.run_id }}
           path: suite-native/app/android/app/build/
@@ -125,6 +130,7 @@ jobs:
           GITHUB_ACTION: true
           CURRENTS_PROJECT_ID: iUe1Y4
           CURRENTS_RECORD_KEY: ${{ secrets.CURRENTS_RECORD_KEY }}
+          CURRENTS_API_KEY: ${{ secrets.CURRENTS_API_KEY }}
           CURRENTS_CI_BUILD_ID: ${{ inputs.currents_ci_build_id }}
           CURRENTS_TAG: ${{ inputs.currents_tags }}
           COMMIT_INFO_BRANCH: ${{ github.head_ref }}
@@ -138,7 +144,7 @@ jobs:
           avd-name: ${{ steps.device.outputs.AVD_NAME }}
           emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -grpc 8554
           script: |
-            yarn test:e2e --config=e2e/trezorDetoxRunner/config/runner-android-release.config.js --shard=${{ matrix.TEST_GROUP }} --totalShards=4 --headless
+            yarn test:e2e --config=${{ inputs.runner_config }} --shard=${{ matrix.TEST_GROUP }} --totalShards=4 --headless --quarantine
 
       - name: Post Currents link
         if: ${{ !cancelled() && github.event_name == 'pull_request' }}
@@ -161,17 +167,8 @@ jobs:
 
       - name: "Store test artifacts"
         if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: android-tests-${{ matrix.TEST_GROUP }}
           path: suite-native/app/artifacts
           retention-days: 14
-
-  notify_scheduled_failure_to_slack:
-    runs-on: ubuntu-latest
-    if: ${{ failure() && github.event_name == 'schedule' }}
-    needs: run_android_e2e_tests
-    steps:
-      - name: Notify scheduled job failure to Slack
-        run: |
-          curl -X POST -H 'Content-type: application/json' --data '{"text":"Nightly Android E2E tests failed :pepe_flame: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} "}' "${{ secrets.SLACK_MOBILE_E2E_WEBHOOK }}"

@@ -2,7 +2,7 @@ import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { deviceActions } from '@suite-common/device';
-import { TrezorDevice } from '@suite-common/suite-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { selectIsDeviceAutoEjectEnabled } from '@suite-common/wallet-core';
 import { IconButton } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';

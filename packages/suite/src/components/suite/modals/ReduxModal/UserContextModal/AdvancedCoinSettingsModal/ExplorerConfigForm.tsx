@@ -1,12 +1,12 @@
-import { ReactNode, useMemo } from 'react';
-import { RefCallBack } from 'react-hook-form';
+import { type ReactNode, useMemo } from 'react';
+import { type RefCallBack } from 'react-hook-form';
 
 import { Translation } from '@suite/intl';
-import { Explorer } from '@suite-common/wallet-config';
+import { type Explorer } from '@suite-common/wallet-config';
 import { Button, Column, InfoItem, Input, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { useExplorerForm } from 'src/hooks/settings/useExplorerForm';
+import { type useExplorerForm } from 'src/hooks/settings/useExplorerForm';
 
 type InputRowProps = {
     value: { ref: RefCallBack; field: Omit<RefCallBack, 'ref'>; error?: string };

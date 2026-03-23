@@ -1,7 +1,7 @@
 import { createIntl, createIntlCache } from 'react-intl';
 
 import { messages } from './messages';
-import { TxKeyPath } from './types';
+import { type TxKeyPath } from './types';
 import { flatten } from './utils';
 
 const intlEn = createIntl({ locale: 'en', messages: flatten(messages) }, createIntlCache());

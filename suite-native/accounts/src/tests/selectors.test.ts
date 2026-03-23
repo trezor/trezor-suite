@@ -1,8 +1,8 @@
-import { AccountWithSuiteSyncLabel } from '@suite-common/suite-sync';
+import { type AccountWithSuiteSyncLabel } from '@suite-common/suite-sync';
 import {
-    Account,
-    AccountKey,
-    TokenInfoBranded,
+    type Account,
+    type AccountKey,
+    type TokenInfoBranded,
     asAccountDescriptor,
 } from '@suite-common/wallet-types';
 
@@ -203,6 +203,7 @@ describe('selectFreshAccountAddress', () => {
             pendingAccountAddresses: {},
             transactions: {
                 transactions: {},
+                phishing: {},
                 fetchStatusDetail: {},
             },
         },
@@ -252,6 +253,7 @@ describe('selectFreshAccountAddress', () => {
                 pendingAccountAddresses: {},
                 transactions: {
                     transactions: {},
+                    phishing: {},
                     fetchStatusDetail: {},
                 },
             },

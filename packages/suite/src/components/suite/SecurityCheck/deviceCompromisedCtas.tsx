@@ -5,7 +5,7 @@ import {
     HELP_CENTER_ENTROPY_CHECK_URL,
     TREZOR_SUPPORT_DEVICE_AUTHENTICATION_FAILED_URL,
     TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_URL,
-    Url,
+    type Url,
 } from '@trezor/urls';
 
 import { useDevice, useDispatch } from '../../../hooks/suite';

@@ -1,6 +1,6 @@
-import { Account, AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
-import { fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-utils';
-import { ReceiveAccount } from '@suite-native/trading-types';
+import { type Account, type AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
+import { fireEvent, renderWithStoreProvider } from '@suite-native/test-utils';
+import { type ReceiveAccount } from '@suite-native/trading-types';
 
 import { AccountListAddressItem } from '../AccountListAddressItem';
 
@@ -50,7 +50,7 @@ describe(AccountListAddressItem.name, () => {
     const onPressMock = jest.fn();
 
     const renderAccountListAddressItem = (receiveAccount: ReceiveAccount) =>
-        renderWithStoreProviderAsync(
+        renderWithStoreProvider(
             <AccountListAddressItem receiveAccount={receiveAccount} onPress={onPressMock} />,
         );
 
@@ -58,7 +58,7 @@ describe(AccountListAddressItem.name, () => {
         jest.resetAllMocks();
     });
 
-    it('should call onPress callback when pressed', async () => {
+    it('should call onPress callback when pressed', () => {
         const receiveAccount: ReceiveAccount = {
             account: createAccount({
                 key: 'btc1' as AccountKey, // Todo: create properly via `createAccountKey()`
@@ -75,14 +75,14 @@ describe(AccountListAddressItem.name, () => {
                 received: '',
             },
         };
-        const { getByText } = await renderAccountListAddressItem(receiveAccount);
+        const { getByText } = renderAccountListAddressItem(receiveAccount);
 
         fireEvent.press(getByText('BTC_address'));
 
         expect(onPressMock).toHaveBeenCalled();
     });
 
-    it('should not display caret for address addresses', async () => {
+    it('should not display caret for address addresses', () => {
         const receiveAccount: ReceiveAccount = {
             account: createAccount({
                 key: 'btc1' as AccountKey, // Todo: create properly via `createAccountKey()`
@@ -100,13 +100,13 @@ describe(AccountListAddressItem.name, () => {
             },
         };
         const { getByText, queryByAccessibilityHint } =
-            await renderAccountListAddressItem(receiveAccount);
+            renderAccountListAddressItem(receiveAccount);
 
         expect(getByText('BTC_address')).toBeTruthy();
         expect(queryByAccessibilityHint('Select to display account addresses')).toBeNull();
     });
 
-    it('should display address', async () => {
+    it('should display address', () => {
         const receiveAccount: ReceiveAccount = {
             account: createAccount({
                 key: 'btc1' as AccountKey, // Todo: create properly via `createAccountKey()`
@@ -124,7 +124,7 @@ describe(AccountListAddressItem.name, () => {
             },
         };
         const { getByText, queryByText, queryByAccessibilityHint, getByLabelText } =
-            await renderAccountListAddressItem(receiveAccount);
+            renderAccountListAddressItem(receiveAccount);
 
         expect(getByText('BTC_address')).toBeTruthy();
         expect(queryByText('My BTC account')).toBeNull();
@@ -133,7 +133,7 @@ describe(AccountListAddressItem.name, () => {
         expect(getByLabelText('Balance in crypto')).toHaveTextContent('0.05 BTC');
     });
 
-    it('should display zero balance', async () => {
+    it('should display zero balance', () => {
         const receiveAccount: ReceiveAccount = {
             account: createAccount({
                 key: 'btc1' as AccountKey, // Todo: create properly via `createAccountKey()`
@@ -150,13 +150,13 @@ describe(AccountListAddressItem.name, () => {
                 received: '',
             },
         };
-        const { getByLabelText } = await renderAccountListAddressItem(receiveAccount);
+        const { getByLabelText } = renderAccountListAddressItem(receiveAccount);
 
         expect(getByLabelText('Balance in fiat')).toHaveTextContent('$0.00');
         expect(getByLabelText('Balance in crypto')).toHaveTextContent('0 BTC');
     });
 
-    it('should render nothing when no address is specified', async () => {
+    it('should render nothing when no address is specified', () => {
         const receiveAccount: ReceiveAccount = {
             account: createAccount({
                 key: 'btc1' as AccountKey, // Todo: create properly via `createAccountKey()`
@@ -166,7 +166,7 @@ describe(AccountListAddressItem.name, () => {
             }),
             address: undefined,
         };
-        const { toJSON } = await renderAccountListAddressItem(receiveAccount);
+        const { toJSON } = renderAccountListAddressItem(receiveAccount);
 
         expect(toJSON()).toBeNull();
     });

@@ -1,0 +1,23 @@
+{
+    "name": "@suite-common/e2e-evolu-client",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "better-sqlite3": "^12.1.1",
+        "ws": "^8.18.0"
+    },
+    "devDependencies": {
+        "@evolu/common": "patch:@evolu/common@npm%3A7.3.0#~/.yarn/patches/@evolu-common-npm-7.3.0-dc4f142770.patch",
+        "@suite-common/suite-sync-evolu": "workspace:*",
+        "@suite-common/suite-sync-storage": "workspace:*",
+        "@types/better-sqlite3": "^7.6.13"
+    }
+}

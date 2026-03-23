@@ -1,5 +1,5 @@
-import { TradingType } from '@suite-common/trading';
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { type TradingType } from '@suite-common/trading';
+import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { Box, VStack } from '@suite-native/atoms';
 import { ConfirmOnTrezorWrapper } from '@suite-native/confirm-on-trezor';
 import { Translation } from '@suite-native/intl';
@@ -12,7 +12,7 @@ import { ReviewOutputsSkeleton } from './ReviewOutputsSkeleton';
 import type { UseTradingTransactionReturnProps } from '../../hooks/general/useTradingTransaction';
 import { useDelayedReviewOutputListDisplayFlag } from '../../hooks/reviewOutputs/useDelayedReviewOutputListDisplayFlag';
 import {
-    UseTradingOutputsReviewScreenControlsProps,
+    type UseTradingOutputsReviewScreenControlsProps,
     useTradingOutputsReviewScreenControls,
 } from '../../hooks/reviewOutputs/useTradingOutputsReviewScreenControls';
 import { getFormDraftKeyPrefixFromTradingType } from '../../utils/general/utils';

@@ -1,13 +1,13 @@
 import { Translation } from '@suite/intl';
+import { goto } from '@suite/router';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { TrezorLink } from 'src/components/suite/TrezorLink';
 import { useDispatch } from 'src/hooks/suite';
 
 export const UdevDescription = () => {
     const dispatch = useDispatch();
 
-    const handleClick = () => dispatch(goto('suite-udev'));
+    const handleClick = () => dispatch(goto({ routeName: 'suite-udev' }));
 
     return (
         <div data-testid="@connect-device-prompt/unreadable-udev">

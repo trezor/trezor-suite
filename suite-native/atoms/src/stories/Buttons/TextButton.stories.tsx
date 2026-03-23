@@ -6,7 +6,7 @@ import { BUTTON_SIZES } from '../../Button/Button';
 import {
     TEXT_BUTTON_VARIANTS,
     TextButton as TextButtonComponent,
-    TextButtonProps,
+    type TextButtonProps,
 } from '../../Button/TextButton';
 
 type TextButtonStory = StoryObj<TextButtonProps>;

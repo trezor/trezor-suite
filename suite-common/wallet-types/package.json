@@ -7,7 +7,8 @@
     "main": "src/index",
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build"
+        "type-check": "yarn g:tsc --build",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
         "@suite-common/metadata-types": "workspace:*",
@@ -17,7 +18,7 @@
         "@trezor/connect": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:^",
-        "@types/invity-api": "^1.1.14",
-        "react": "19.1.0"
+        "@types/invity-api": "^1.1.15",
+        "react": "19.2.4"
     }
 }

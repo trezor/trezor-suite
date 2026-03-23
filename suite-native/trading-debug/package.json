@@ -10,7 +10,7 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "lint:js:fix": "yarn lint:js --fix",
         "type-check": "yarn g:tsc --build",
-        "test:unit": "yarn g:jest --coverage",
+        "test:unit": "yarn g:jest",
         "test:unit:watch": "yarn g:jest --watch"
     },
     "dependencies": {
@@ -20,7 +20,7 @@
         "@suite-native/feature-flags": "workspace:*",
         "@suite-native/trading-state": "workspace:*",
         "@trezor/styles": "workspace:*",
-        "react": "19.1.0",
+        "react": "19.2.4",
         "react-redux": "9.2.0"
     },
     "devDependencies": {

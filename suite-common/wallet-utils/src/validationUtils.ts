@@ -1,11 +1,11 @@
-import { UseFormSetValue } from 'react-hook-form';
+import { type UseFormSetValue } from 'react-hook-form';
 
 import { toChecksumAddress } from 'web3-utils';
 
 import { getTestnetSymbols } from '@suite-common/wallet-config';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import addressValidator from '@trezor/address-validator';
-import { AccountInfo } from '@trezor/blockchain-link-types';
+import { type AccountInfo } from '@trezor/blockchain-link-types';
 
 const getNetworkType = (symbol: Account['symbol'], address: string) => {
     if (symbol === 'regtest') return symbol;

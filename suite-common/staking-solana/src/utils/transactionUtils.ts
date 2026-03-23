@@ -1,12 +1,12 @@
 import {
-    Account,
-    Address,
-    Blockhash,
-    CompilableTransactionMessage,
-    Instruction,
-    SignatureBytes,
-    Transaction,
-    TransactionMessageWithBlockhashLifetime,
+    type Account,
+    type Address,
+    type Blockhash,
+    type CompilableTransactionMessage,
+    type Instruction,
+    type SignatureBytes,
+    type Transaction,
+    type TransactionMessageWithBlockhashLifetime,
     address,
     appendTransactionMessageInstruction,
     compileTransactionMessage,
@@ -31,7 +31,7 @@ import {
 } from '@solana-program/compute-budget';
 import {
     STAKE_PROGRAM_ADDRESS,
-    StakeStateAccount,
+    type StakeStateAccount,
     getDeactivateInstruction,
     getDelegateStakeInstruction,
     getInitializeInstruction,
@@ -44,7 +44,7 @@ import {
     getTransferSolInstruction,
 } from '@solana-program/system';
 
-import { SolanaTxMeta } from '@suite-common/staking-solana-types';
+import { type SolanaTxMeta } from '@suite-common/staking-solana-types';
 import {
     SOL_BASE_FEE,
     SOL_COMPUTE_UNIT_LIMIT,
@@ -71,14 +71,14 @@ import {
     STAKE_HISTORY_ACCOUNT,
 } from '../constants';
 import {
-    ClaimParams,
-    ClaimResponse,
-    Connection,
-    Delegations,
-    Params,
-    StakeParams,
-    StakeResponse,
-    UnstakeResponse,
+    type ClaimParams,
+    type ClaimResponse,
+    type Connection,
+    type Delegations,
+    type Params,
+    type StakeParams,
+    type StakeResponse,
+    type UnstakeResponse,
 } from '../types';
 
 const formatEverstakeSource = (source: string): string => {

@@ -1,14 +1,18 @@
 import { Form } from '@suite-native/forms';
 import {
-    PreloadedState,
+    type PreloadedState,
     act,
     fireEvent,
-    renderHookWithStoreProviderAsync,
-    renderWithStoreProviderAsync,
+    renderHookWithStoreProvider,
+    renderWithStoreProvider,
 } from '@suite-native/test-utils';
 import { btcAsset, getBtcAccount } from '@suite-native/trading-fixtures';
 import { tradingInitialState } from '@suite-native/trading-state';
-import { ExchangeFormType, ReceiveAccount, TradeableAsset } from '@suite-native/trading-types';
+import {
+    type ExchangeFormType,
+    type ReceiveAccount,
+    type TradeableAsset,
+} from '@suite-native/trading-types';
 
 import { useExchangeForm } from '../../../../hooks/exchange/useExchangeForm';
 import { ExchangeReceiveAccountPicker } from '../ExchangeReceiveAccountPicker';
@@ -41,14 +45,14 @@ const getExchangeState = (selectedReceiveAccount: ReceiveAccount | undefined) =>
 describe('ExchangeReceiveAccountPicker', () => {
     let exchangeForm: ExchangeFormType;
 
-    const renderExchangeForm = async () => {
-        const { result } = await renderHookWithStoreProviderAsync(() => useExchangeForm());
+    const renderExchangeForm = () => {
+        const { result } = renderHookWithStoreProvider(() => useExchangeForm());
 
         return result.current;
     };
 
     const renderPicker = ({ preloadedState }: { preloadedState?: PreloadedState } = {}) =>
-        renderWithStoreProviderAsync(<ExchangeReceiveAccountPicker />, {
+        renderWithStoreProvider(<ExchangeReceiveAccountPicker />, {
             preloadedState,
             wrapper: ({ children }) => <Form form={exchangeForm}>{children}</Form>,
         });
@@ -59,29 +63,29 @@ describe('ExchangeReceiveAccountPicker', () => {
         });
     };
 
-    beforeEach(async () => {
+    beforeEach(() => {
         jest.resetAllMocks();
-        exchangeForm = await renderExchangeForm();
+        exchangeForm = renderExchangeForm();
     });
 
-    it('should display nothing when selectedSymbol is not specified', async () => {
-        const { toJSON } = await renderPicker();
+    it('should display nothing when selectedSymbol is not specified', () => {
+        const { toJSON } = renderPicker();
 
         expect(toJSON()).toBeNull();
     });
 
-    it('should display "Not selected" when asset is not specified', async () => {
+    it('should display "Not selected" when asset is not specified', () => {
         setSelectedAsset(btcAsset);
-        const { getByText } = await renderPicker();
+        const { getByText } = renderPicker();
 
         expect(getByText('Not selected')).toBeTruthy();
     });
 
     // Todo: https://github.com/trezor/trezor-suite/issues/24906
-    it.skip('should display selected account name and address', async () => {
+    it.skip('should display selected account name and address', () => {
         setSelectedAsset(btcAsset);
         const btcAccount = getBtcAccount();
-        const { getByText } = await renderPicker({
+        const { getByText } = renderPicker({
             preloadedState: getExchangeState({
                 account: btcAccount,
                 address: btcAccount.addresses?.used[0],
@@ -92,10 +96,10 @@ describe('ExchangeReceiveAccountPicker', () => {
         expect(getByText(btcAddressAddress)).toBeTruthy();
     });
 
-    it('should call navigate with correct params on press', async () => {
+    it('should call navigate with correct params on press', () => {
         setSelectedAsset(btcAsset);
         const btcAccount = getBtcAccount();
-        const { getByText } = await renderPicker({
+        const { getByText } = renderPicker({
             preloadedState: getExchangeState({
                 account: btcAccount,
                 address: btcAccount.addresses?.used[0],

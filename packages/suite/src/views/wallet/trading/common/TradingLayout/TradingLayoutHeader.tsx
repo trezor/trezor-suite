@@ -1,16 +1,14 @@
-import { PropsWithChildren } from 'react';
+import { type PropsWithChildren } from 'react';
 
-import { Translation, TranslationKey, useTranslation } from '@suite/intl';
-import { Route } from '@suite-common/suite-types';
+import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
+import { type Route, goto, selectRouteName } from '@suite/router';
 import { type TradingType, selectTradingActiveSection } from '@suite-common/trading';
 import { Box, Button, IconButton, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 import { BasicName } from 'src/components/suite/layouts/SuiteLayout/PageHeader/PageNames/BasicName';
 import { useDispatch, useLayout, useSelector } from 'src/hooks/suite';
-import { selectRouteName } from 'src/reducers/suite/routerReducer';
 
 const getBackRoute = (route?: Route['name'], activeSection?: TradingType): Route['name'] => {
     const routePrefix = 'wallet-trading-';
@@ -33,7 +31,7 @@ const TradingPageHeader = ({ fallbackTitle }: TradingPageHeaderProps) => {
     const activeSection = useSelector(selectTradingActiveSection);
 
     const goToRoute = (route: Route['name']) => () => {
-        dispatch(goto(route, { preserveParams: true }));
+        dispatch(goto({ routeName: route, preserveParams: true }));
     };
 
     return (

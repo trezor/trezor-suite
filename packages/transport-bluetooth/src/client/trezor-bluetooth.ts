@@ -2,11 +2,11 @@ import { resolveAfter } from '@trezor/utils';
 import { WebsocketClient } from '@trezor/websocket-client';
 
 import {
-    BluetoothDevice,
-    BluetoothInfo,
-    NotificationCharacteristic,
-    NotificationEvent,
-    TrezorBluetoothSettings,
+    type BluetoothDevice,
+    type BluetoothInfo,
+    type NotificationCharacteristic,
+    type NotificationEvent,
+    type TrezorBluetoothSettings,
 } from './types';
 
 // reflection of rust params ./src/server/types.rs

@@ -1,18 +1,22 @@
-import { Dispatch } from '@reduxjs/toolkit';
+import { type Dispatch } from '@reduxjs/toolkit';
 
-import { EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-key-types';
+import { type EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-key-types';
 import { toGetter } from '@suite-common/dependency-injection';
 import { selectAllDeviceStaticIds, selectDeviceByStaticSessionId } from '@suite-common/device';
-import { PlatformEncryptionDep } from '@suite-common/platform-encryption';
+import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
 import {
     selectEnforceQuotaManager,
     selectHasDeviceAllowance,
+    selectHasOwnerAllowance,
 } from '@suite-common/suite-sync-quota-manager';
-import { CreateSuiteStorage, CreateSuiteSyncOwnerDep } from '@suite-common/suite-sync-storage';
 import {
-    SuiteSync,
-    SuiteSyncAppReloaderDep,
-    SuiteSyncErrorHandler,
+    type CreateSuiteStorage,
+    type CreateSuiteSyncOwnerDep,
+} from '@suite-common/suite-sync-storage';
+import {
+    type SuiteSync,
+    type SuiteSyncAppReloaderDep,
+    type SuiteSyncErrorHandler,
 } from '@suite-common/suite-sync-types';
 
 import { createRefreshSuiteSync } from './createRefreshSuiteSyncKeys';
@@ -25,11 +29,11 @@ import { createUpdateAccountLabel } from './data/labeling/createUpdateAccountLab
 import { createUpdateAddressLabel } from './data/labeling/createUpdateAddressLabel';
 import { createUpdateOutputLabel } from './data/labeling/createUpdateOutputLabel';
 import { createUpdateWalletLabel } from './data/labeling/createUpdateWalletLabel';
-import { GetDeviceForStaticSessionId } from './getDeviceForStaticSessionId';
+import { type GetDeviceForStaticSessionId } from './getDeviceForStaticSessionId';
 import { createEnsureSuiteSyncOwner } from './owner/createEnsureSuiteSyncOwner';
 import { createLoadSuiteSyncOwnerFromState } from './owner/createLoadSuiteSyncOwnerFromState';
 import {
-    RetrieveSuiteSyncOwnerDeps,
+    type RetrieveSuiteSyncOwnerDeps,
     createRetrieveSuiteSyncOwner,
 } from './owner/createRetrieveSuiteSyncOwner';
 import { createSaveSuiteSyncOwner } from './owner/createSaveSuiteSyncOwner';
@@ -124,13 +128,15 @@ export const createSuiteSyncCompositionRoot = (
         createSuiteStorage,
         getRelayUrl: toGetter(deps.getState, selectSuiteSyncRelayUrl),
         getDeviceForStaticSessionId,
+        hasOwnerAllowance: walletDescriptor =>
+            selectHasOwnerAllowance(deps.getState(), walletDescriptor),
     });
 
     const suiteSyncListener = createSuiteSyncListener({
         dispatch: deps.dispatch,
     });
 
-    const subscribeSuiteSyncData = createEnsureSubscribeSuiteSyncData({
+    const ensureSubscribeSuiteSyncData = createEnsureSubscribeSuiteSyncData({
         subscriptionStorage,
         ensureStorage,
         suiteSyncListener,
@@ -141,7 +147,7 @@ export const createSuiteSyncCompositionRoot = (
         ensureWalletSuiteSyncOn: createEnsureWalletSuiteSyncOn({
             getState: deps.getState,
             refreshSuiteSyncKeys,
-            ensureSuiteSyncData: subscribeSuiteSyncData,
+            ensureSubscribeSuiteSyncData,
             subscriptionStorage,
         }),
     });

@@ -1,4 +1,5 @@
-import { SerializedError, serializeError } from '@trezor/connect-common/src/constants/errors';
+import type { SerializedError } from '@trezor/connect-common/src/constants/errors';
+import { serializeError } from '@trezor/connect-common/src/constants/errors';
 
 import type { CORE_CALL } from './core-call';
 import type { Device } from '../device/Device';
@@ -89,7 +90,7 @@ export const createResponseMessage = (
     id: number,
     success: boolean,
     payload: any,
-    device?: Device,
+    device?: IDevice,
 ): MethodResponseMessage => {
     const deviceIdentity = device
         ? {

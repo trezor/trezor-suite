@@ -1,12 +1,11 @@
-import { UINT256_MAX } from '@suite-common/suite-constants';
-import { AmountSubunit, asAmountSubunit } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { ValidationResult } from '../../../types/validation';
+import { type ValidationResult } from '../../../types/validation';
+import { UINT256_MAX } from '../../../validation/evm/uint256';
 
 interface ValidateUint256TestCase {
     description: string;
-    input: AmountSubunit;
+    input: BigNumber;
     context?: { balance?: bigint };
     expected: ValidationResult<bigint>;
 }
@@ -14,7 +13,7 @@ interface ValidateUint256TestCase {
 export const validateUint256TestCases: ValidateUint256TestCase[] = [
     {
         description: 'valid amount returns normalized bigint with no issues',
-        input: asAmountSubunit(new BigNumber('1000000000000000000')),
+        input: new BigNumber('1000000000000000000'),
         expected: {
             value: 1000000000000000000n,
             issues: [],
@@ -22,7 +21,7 @@ export const validateUint256TestCases: ValidateUint256TestCase[] = [
     },
     {
         description: 'negative amount returns NEGATIVE_AMOUNT issue',
-        input: asAmountSubunit(new BigNumber('-1')),
+        input: new BigNumber('-1'),
         expected: {
             value: null,
             issues: [{ code: 'NEGATIVE_AMOUNT', path: 'amount' }],
@@ -30,7 +29,7 @@ export const validateUint256TestCases: ValidateUint256TestCase[] = [
     },
     {
         description: 'non-integer amount returns NOT_INTEGER issue',
-        input: asAmountSubunit(new BigNumber('1.5')),
+        input: new BigNumber('1.5'),
         expected: {
             value: null,
             issues: [{ code: 'NOT_INTEGER', path: 'amount' }],
@@ -38,7 +37,7 @@ export const validateUint256TestCases: ValidateUint256TestCase[] = [
     },
     {
         description: 'negative decimal returns NEGATIVE_AMOUNT (first validation)',
-        input: asAmountSubunit(new BigNumber('-1.5')),
+        input: new BigNumber('-1.5'),
         expected: {
             value: null,
             issues: [{ code: 'NEGATIVE_AMOUNT', path: 'amount' }],
@@ -46,15 +45,15 @@ export const validateUint256TestCases: ValidateUint256TestCase[] = [
     },
     {
         description: 'exact UINT256_MAX is valid',
-        input: asAmountSubunit(new BigNumber(UINT256_MAX)),
+        input: UINT256_MAX,
         expected: {
-            value: BigInt(UINT256_MAX),
+            value: BigInt('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'),
             issues: [],
         },
     },
     {
         description: 'amount exceeding uint256 returns EXCEEDS_UINT256 issue',
-        input: asAmountSubunit(new BigNumber(UINT256_MAX).plus(1)),
+        input: UINT256_MAX.plus(1),
         expected: {
             value: null,
             issues: [{ code: 'EXCEEDS_UINT256', path: 'amount' }],
@@ -62,7 +61,7 @@ export const validateUint256TestCases: ValidateUint256TestCase[] = [
     },
     {
         description: 'zero amount returns ZERO_AMOUNT issue',
-        input: asAmountSubunit(new BigNumber('0')),
+        input: new BigNumber('0'),
         expected: {
             value: 0n,
             issues: [{ code: 'ZERO_AMOUNT', path: 'amount' }],
@@ -70,7 +69,7 @@ export const validateUint256TestCases: ValidateUint256TestCase[] = [
     },
     {
         description: 'amount exceeding balance returns INSUFFICIENT_BALANCE issue',
-        input: asAmountSubunit(new BigNumber('1000')),
+        input: new BigNumber('1000'),
         context: { balance: 500n },
         expected: {
             value: 1000n,
@@ -79,7 +78,7 @@ export const validateUint256TestCases: ValidateUint256TestCase[] = [
     },
     {
         description: 'no context provided works without INSUFFICIENT_BALANCE issue',
-        input: asAmountSubunit(new BigNumber('1000')),
+        input: new BigNumber('1000'),
         expected: {
             value: 1000n,
             issues: [],

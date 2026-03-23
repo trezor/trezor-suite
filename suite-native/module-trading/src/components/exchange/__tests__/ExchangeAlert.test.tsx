@@ -1,10 +1,10 @@
 import { Form } from '@suite-native/forms';
 import {
     act,
-    renderHookWithStoreProviderAsync,
+    renderHookWithStoreProvider,
     renderWithBasicProvider,
 } from '@suite-native/test-utils';
-import { ExchangeFormType } from '@suite-native/trading-types';
+import { type ExchangeFormType } from '@suite-native/trading-types';
 
 import { useExchangeForm } from '../../../hooks/exchange/useExchangeForm';
 import { ExchangeAlert } from '../ExchangeAlert';
@@ -12,15 +12,15 @@ import { ExchangeAlert } from '../ExchangeAlert';
 describe('ExchangeAlert', () => {
     let form: ExchangeFormType;
 
-    const renderFormHook = () => renderHookWithStoreProviderAsync(() => useExchangeForm());
+    const renderFormHook = () => renderHookWithStoreProvider(() => useExchangeForm());
 
     const renderTradingAlert = () =>
         renderWithBasicProvider(<ExchangeAlert />, {
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 
-    beforeEach(async () => {
-        const { result } = await renderFormHook();
+    beforeEach(() => {
+        const { result } = renderFormHook();
         form = result.current;
     });
 

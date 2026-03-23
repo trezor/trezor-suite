@@ -1,8 +1,8 @@
 import { isRejectedWithValue } from '@reduxjs/toolkit';
-import { SellFiatTrade } from 'invity-api';
+import { type SellFiatTrade } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
 
 import { TRADING_SELL_THUNK_PREFIX } from '../../constants';
@@ -14,10 +14,10 @@ import {
     selectTradingSellProviders,
     selectTradingSellSelectedQuote,
 } from '../../selectors/tradingSelectors';
-import { TradingSellFormProps } from '../../types';
+import { type TradingSellFormProps } from '../../types';
 import { getTradingFormState } from '../../utils';
 import { tradingThunks } from '../common';
-import { RecomposeAndSignTxThunkProps } from '../common/recomposeAndSignTxThunk';
+import { type RecomposeAndSignTxThunkProps } from '../common/recomposeAndSignTxThunk';
 
 export type SendSellTransactionThunkProps = {
     account: Account;

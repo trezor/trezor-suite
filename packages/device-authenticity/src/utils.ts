@@ -1,6 +1,6 @@
 import * as crypto from 'crypto';
 
-import { MessagesSchema as PROTO } from '@trezor/protobuf';
+import { type MessagesSchema as PROTO } from '@trezor/protobuf';
 
 import type { DeviceAuthenticityBlacklistConfig } from './config/deviceAuthenticityBlacklistConfigTypes';
 import type { DeviceAuthenticityConfig } from './config/deviceAuthenticityConfigTypes';

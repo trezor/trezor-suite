@@ -1,8 +1,13 @@
 import { css } from 'styled-components';
 
-import { BorderRadii, SpacingValues, SpacingValuesNew, borders } from '@trezor/theme';
+import {
+    type BorderRadii,
+    type SpacingValues,
+    type SpacingValuesNew,
+    borders,
+} from '@trezor/theme';
 
-import { TransientProps, makePropsTransient } from './transientProps';
+import { type TransientProps, makePropsTransient } from './transientProps';
 import type { FlexType } from '../components/Flex/FlexProp';
 
 export type Margin =
@@ -60,7 +65,7 @@ type Position = {
     inset?: string | number;
 };
 
-const cursors = ['pointer', 'help', 'default', 'not-allowed', 'inherit', 'text'] as const;
+const cursors = ['pointer', 'help', 'default', 'not-allowed', 'inherit', 'text', 'auto'] as const;
 type Cursor = (typeof cursors)[number];
 
 const userSelects = ['none', 'text', 'all', 'auto', 'inherit'] as const;

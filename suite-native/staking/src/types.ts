@@ -1,10 +1,10 @@
 import type { DeviceRootState } from '@suite-common/device';
 import {
-    AccountsRootState,
-    StakeRootState,
-    TransactionsRootState,
+    type AccountsRootState,
+    type StakeRootState,
+    type TransactionsRootState,
 } from '@suite-common/wallet-core';
-import { CombinedLabelingState } from '@suite-native/labeling';
+import { type CombinedLabelingState } from '@suite-native/labeling';
 
 export type NativeStakingRootState = AccountsRootState &
     DeviceRootState &

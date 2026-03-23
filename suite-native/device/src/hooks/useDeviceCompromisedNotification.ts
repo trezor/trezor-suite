@@ -2,10 +2,10 @@ import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
-    RevisionCheckErrorWithNotification,
+    type RevisionCheckErrorWithNotification,
     getIsRevisionCheckErrorWithNotification,
 } from '@suite-common/firmware-authenticity';
-import { TxKeyPath, useTranslate } from '@suite-native/intl';
+import { type TxKeyPath, useTranslate } from '@suite-native/intl';
 import { useToast } from '@suite-native/toasts';
 
 import { selectSelectedDeviceFirmwareRevisionCheckErrorIfEnabled } from '../selectors';

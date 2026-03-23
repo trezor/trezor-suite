@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { selectTradingExchangeActiveQuote } from '@suite-common/trading';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Card } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { TradeInfoHeader } from '@suite-native/trading-atoms';

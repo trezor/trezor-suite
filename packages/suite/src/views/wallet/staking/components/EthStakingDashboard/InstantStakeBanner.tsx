@@ -5,9 +5,9 @@ import { fromWei } from 'web3-utils';
 import { Translation } from '@suite/intl';
 import { getChangedInternalTx, getInstantStakeType } from '@suite-common/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { StakeType, WalletAccountTransaction } from '@suite-common/wallet-types';
+import { type StakeType, type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { Banner } from '@trezor/components';
-import { InternalTransfer } from '@trezor/connect';
+import { type InternalTransfer } from '@trezor/connect';
 
 import { useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';

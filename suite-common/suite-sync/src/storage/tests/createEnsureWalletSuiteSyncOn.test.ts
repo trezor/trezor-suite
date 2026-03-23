@@ -3,8 +3,7 @@ import type { DeviceRootState } from '@suite-common/device';
 import { deviceReducerInitialState } from '@suite-common/device';
 import type { TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import type { UnavailableCapabilities } from '@trezor/connect';
-import { StaticSessionId } from '@trezor/connect';
+import type { StaticSessionId, UnavailableCapabilities } from '@trezor/connect';
 import { err, ok } from '@trezor/type-utils';
 
 import { SuiteSyncUnavailableOnDeviceError } from '../../createRefreshSuiteSyncKeys';
@@ -27,7 +26,7 @@ describe(createEnsureWalletSuiteSyncOn.name, () => {
     it('returns error when device is not found in state', async () => {
         const deps = createMockDeps<EnsureWalletSuiteSyncOnDeps>({
             getState: () => createMockState([]),
-            ensureSuiteSyncData: null,
+            ensureSubscribeSuiteSyncData: null,
             subscriptionStorage: createSubscriptionStorageMock(),
             refreshSuiteSyncKeys: null,
         });
@@ -41,7 +40,7 @@ describe(createEnsureWalletSuiteSyncOn.name, () => {
         if (!result.success) {
             expect(result.error.type).toBe('SuiteSyncUnavailableOnDeviceError');
         }
-        expect(deps.ensureSuiteSyncData).not.toHaveBeenCalled();
+        expect(deps.ensureSubscribeSuiteSyncData).not.toHaveBeenCalled();
     });
 
     it('returns error when Suite Sync is not supported by device', async () => {
@@ -50,7 +49,7 @@ describe(createEnsureWalletSuiteSyncOn.name, () => {
         const deps = createMockDeps<EnsureWalletSuiteSyncOnDeps>({
             getState: () => createMockState([mockSuiteDevice({ unavailableCapabilities })]),
             refreshSuiteSyncKeys: null,
-            ensureSuiteSyncData: null,
+            ensureSubscribeSuiteSyncData: null,
             subscriptionStorage: createSubscriptionStorageMock(),
         });
 
@@ -63,16 +62,16 @@ describe(createEnsureWalletSuiteSyncOn.name, () => {
         if (!result.success) {
             expect(result.error.type).toBe('SuiteSyncUnavailableOnDeviceError');
         }
-        expect(deps.ensureSuiteSyncData).not.toHaveBeenCalled();
+        expect(deps.ensureSubscribeSuiteSyncData).not.toHaveBeenCalled();
     });
 
-    it('calls ensureSuiteSyncData when wallet is eligible', async () => {
+    it('calls ensureSubscribeSuiteSyncData when wallet is eligible', async () => {
         const ensureResult = ok({ data: {} } as any);
 
         const deps = createMockDeps<EnsureWalletSuiteSyncOnDeps>({
             getState: () => createMockState([DEVICE_123]),
             refreshSuiteSyncKeys: null,
-            ensureSuiteSyncData: () => Promise.resolve(ensureResult),
+            ensureSubscribeSuiteSyncData: () => Promise.resolve(ensureResult),
             subscriptionStorage: createSubscriptionStorageMock(),
         });
 
@@ -81,20 +80,20 @@ describe(createEnsureWalletSuiteSyncOn.name, () => {
             isWriteMode: false,
         });
 
-        expect(deps.ensureSuiteSyncData).toHaveBeenCalledWith({
+        expect(deps.ensureSubscribeSuiteSyncData).toHaveBeenCalledWith({
             deviceStaticSessionId: DEVICE_STATIC_SESSION_ID_123,
             isWriteMode: false,
         });
         expect(result).toBe(ensureResult);
     });
 
-    it('propagates ensureSuiteSyncData error', async () => {
+    it('propagates ensureSubscribeSuiteSyncData error', async () => {
         const ensureResult = err(SuiteSyncUnavailableOnDeviceError());
 
         const deps = createMockDeps<EnsureWalletSuiteSyncOnDeps>({
             getState: () => createMockState([DEVICE_123]),
             refreshSuiteSyncKeys: null,
-            ensureSuiteSyncData: () => Promise.resolve(ensureResult),
+            ensureSubscribeSuiteSyncData: () => Promise.resolve(ensureResult),
             subscriptionStorage: createSubscriptionStorageMock(),
         });
 
@@ -103,7 +102,7 @@ describe(createEnsureWalletSuiteSyncOn.name, () => {
             isWriteMode: false,
         });
 
-        expect(deps.ensureSuiteSyncData).toHaveBeenCalledWith({
+        expect(deps.ensureSubscribeSuiteSyncData).toHaveBeenCalledWith({
             deviceStaticSessionId: DEVICE_STATIC_SESSION_ID_123,
             isWriteMode: false,
         });

@@ -16,7 +16,7 @@ import {
 import { getScreenHeight, getScreenWidth } from '@trezor/env-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { Alert } from '../alertsAtoms';
+import { type Alert } from '../alertsAtoms';
 import { useAlert } from '../useAlert';
 import { useShakeAnimation } from '../useShakeAnimation';
 
@@ -93,12 +93,12 @@ export const AlertSheet = ({ alert }: AlertSheetProps) => {
     } = alert;
 
     const handlePressPrimaryButton = async () => {
-        onPressPrimaryButton?.();
+        await onPressPrimaryButton?.();
         await closeSheetAnimated();
     };
 
     const handlePressSecondaryButton = async () => {
-        onPressSecondaryButton?.();
+        await onPressSecondaryButton?.();
         await closeSheetAnimated();
     };
 

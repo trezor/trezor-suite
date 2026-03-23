@@ -5,7 +5,7 @@ import {
     selectPoolStatsApyData,
     selectSolAccountHasStaked,
 } from '@suite-common/wallet-core';
-import { Account, AccountKey } from '@suite-common/wallet-types';
+import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import {
     getEthereumCryptoBalanceWithStaking,
     getSolanaCryptoBalanceWithStaking,
@@ -38,7 +38,7 @@ import {
     selectSolanaTotalStakePendingByAccountKey,
     selectVisibleDeviceSolanaAccountsWithStakingByNetworkSymbol,
 } from './solanaStakingSelectors';
-import { NativeStakingRootState } from './types';
+import { type NativeStakingRootState } from './types';
 import { doesCoinSupportStaking } from './utils';
 
 // create empty array in advance so it will be always same on shallow comparison
@@ -128,11 +128,11 @@ export const selectAccountHasStaking = (state: NativeStakingRootState, accountKe
 
 export const selectIsStakePendingByAccountKey = (
     state: NativeStakingRootState,
-    accountKey: AccountKey,
+    accountKey: AccountKey | null,
 ) => {
     const account = selectAccountByKey(state, accountKey);
     const symbol = account?.symbol;
-    if (!symbol || !doesCoinSupportStaking(symbol)) {
+    if (!symbol || !doesCoinSupportStaking(symbol) || !accountKey) {
         return false;
     }
 
@@ -176,7 +176,10 @@ export const selectIsStakeConfirmingByAccountKey = (
     }
 };
 
-export const selectAPYByAccountKey = (state: NativeStakingRootState, accountKey: AccountKey) => {
+export const selectAPYByAccountKey = (
+    state: NativeStakingRootState,
+    accountKey: AccountKey | null,
+) => {
     const account = selectAccountByKey(state, accountKey);
     const symbol = account?.symbol;
     if (!symbol || !doesCoinSupportStaking(symbol)) {
@@ -186,7 +189,10 @@ export const selectAPYByAccountKey = (state: NativeStakingRootState, accountKey:
     return selectPoolStatsApyData(state, account);
 };
 
-export const selectAPYBySymbol = (state: NativeStakingRootState, symbol: StakingNetworkSymbol) => {
+export const selectAPYBySymbol = (
+    state: NativeStakingRootState,
+    symbol: StakingNetworkSymbol | null,
+) => {
     if (!symbol || !doesCoinSupportStaking(symbol)) {
         return null;
     }
@@ -195,11 +201,17 @@ export const selectAPYBySymbol = (state: NativeStakingRootState, symbol: Staking
 
     switch (symbol) {
         case 'eth':
-            return data.eth?.poolStats?.data.ethApy;
-        case 'sol':
-            return data.sol?.stakingInfo?.data.apy;
+            return data.eth?.poolStats?.data?.ethApy ?? null;
+        case 'sol': {
+            const stakingInfoData = data.sol?.stakingInfo?.data;
+
+            return stakingInfoData && 'apy' in stakingInfoData ? stakingInfoData.apy : null;
+        }
         case 'ada': {
-            const pools = data.ada?.stakingInfo?.data.pools;
+            const stakingInfoData = data.ada?.stakingInfo?.data;
+
+            const pools =
+                stakingInfoData && 'pools' in stakingInfoData ? stakingInfoData.pools : null;
 
             if (!pools || pools.length === 0) {
                 return null;
@@ -240,11 +252,11 @@ export const selectStakedBalanceByAccountKey = (
 
 export const selectRewardsBalanceByAccountKey = (
     state: NativeStakingRootState,
-    accountKey: AccountKey,
+    accountKey: AccountKey | null,
 ) => {
     const account = selectAccountByKey(state, accountKey);
     const symbol = account?.symbol;
-    if (!symbol || !doesCoinSupportStaking(symbol)) {
+    if (!symbol || !doesCoinSupportStaking(symbol) || !accountKey) {
         return '0';
     }
 
@@ -266,11 +278,11 @@ export const selectRewardsBalanceByAccountKey = (
 
 export const selectTotalStakePendingByAccountKey = (
     state: NativeStakingRootState,
-    accountKey: AccountKey,
+    accountKey: AccountKey | null,
 ) => {
     const account = selectAccountByKey(state, accountKey);
     const symbol = account?.symbol;
-    if (!symbol || !doesCoinSupportStaking(symbol)) {
+    if (!symbol || !doesCoinSupportStaking(symbol) || !accountKey) {
         return '0';
     }
 

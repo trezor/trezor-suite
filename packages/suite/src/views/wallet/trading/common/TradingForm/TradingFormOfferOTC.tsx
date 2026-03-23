@@ -1,23 +1,19 @@
-import { Fragment, useEffect, useState } from 'react';
-import { FormattedList } from 'react-intl';
-
-import { FiatCurrencyCode } from 'invity-api';
+import { type FiatCurrencyCode } from 'invity-api';
 
 import { Translation } from '@suite/intl';
+import { goto } from '@suite/router';
 import {
-    TradingOTC,
-    TradingTradeBuySellType,
+    type TradingTradeBuySellType,
     cryptoIdToNetworkAndContractAddress,
-    invityAPI,
+    getOtcProvidersByCountry,
+    useFetchOtc,
 } from '@suite-common/trading';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
-import { TokenAddress } from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/wallet-types';
 import { localizeNumber } from '@suite-common/wallet-utils';
-import { Banner, Text } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { Banner, Column, Text } from '@trezor/components';
 
-import { TrezorLink } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
@@ -27,6 +23,9 @@ import {
 } from 'src/utils/wallet/trading/tradingTypingUtils';
 
 export const TradingFormOfferOTC = () => {
+    const dispatch = useDispatch();
+    const otcQuery = useFetchOtc();
+    const { data: otcData, isSuccess } = otcQuery;
     const context = useTradingFormContext<TradingTradeBuySellType>();
     const locale = useSelector(selectLanguage);
     const baseCurrencyCode = useSelector(selectBaseCurrency);
@@ -59,8 +58,9 @@ export const TradingFormOfferOTC = () => {
         : { network: undefined, contractAddress: undefined };
 
     const countrySelect = context.getValues().countrySelect.value;
-    const [otcData, setOtcData] = useState<TradingOTC | null>(null);
-    const apiKey = invityAPI.getCurrentApiKey();
+    const otcProviders = isSuccess
+        ? getOtcProvidersByCountry(otcData, countrySelect || 'unknown')
+        : [];
 
     const { fiatAmount: fiatAmountConverted } = useFiatFromCryptoValue({
         amount: cryptoAmount || '0',
@@ -70,20 +70,6 @@ export const TradingFormOfferOTC = () => {
     });
 
     const fiatAmount = amountInCrypto ? fiatAmountConverted : fiatInput;
-
-    useEffect(() => {
-        if (!apiKey) return;
-
-        const getOtcData = async () => {
-            const otcData = await invityAPI.getOTCData();
-
-            if (!otcData) return;
-
-            setOtcData(otcData);
-        };
-
-        getOtcData();
-    }, [apiKey]);
 
     if (!otcData || !otcData.minFiatLimits || !otcData.links || !fiatAmount) {
         return null;
@@ -100,13 +86,7 @@ export const TradingFormOfferOTC = () => {
         return null;
     }
 
-    const links = otcData.links.filter(
-        link =>
-            countrySelect === 'unknown' ||
-            link.allowedCountries.includes(countrySelect.toUpperCase()),
-    );
-
-    if (links.length === 0) {
+    if (otcProviders && otcProviders.length === 0) {
         return null;
     }
 
@@ -114,42 +94,33 @@ export const TradingFormOfferOTC = () => {
         <Banner
             intent="info"
             description={
-                <Text margin={{ bottom: spacings.xxs }}>
-                    <Translation
-                        id={
-                            context.type === 'buy'
-                                ? 'TR_TRADING_OTC_INFO_BUY'
-                                : 'TR_TRADING_OTC_INFO_SELL'
-                        }
-                        values={{
-                            minimumFiat: localizeNumber(displayedFiatLimit, locale),
-                            fiatSymbol: displayedFiatCurrency.toUpperCase(),
-                        }}
-                    />{' '}
-                    <FormattedList
-                        type="disjunction"
-                        value={links.map((link, index) => (
-                            <Fragment key={index}>
-                                <TrezorLink
-                                    href={link.url}
-                                    target="_blank"
-                                    typographyStyle="body-sm"
-                                >
-                                    <Translation
-                                        id={
-                                            context.type === 'buy'
-                                                ? 'TR_TRADING_OTC_LINK_BUY'
-                                                : 'TR_TRADING_OTC_LINK_SELL'
-                                        }
-                                        values={{
-                                            providerName: link.name,
-                                        }}
-                                    />
-                                </TrezorLink>
-                            </Fragment>
-                        ))}
-                    />
-                </Text>
+                <Column gap={16}>
+                    <Text margin={{ bottom: 4 }}>
+                        <Translation
+                            id={
+                                context.type === 'buy'
+                                    ? 'TR_TRADING_OTC_INFO_BUY'
+                                    : 'TR_TRADING_OTC_INFO_SELL'
+                            }
+                            values={{
+                                minimumFiat: localizeNumber(displayedFiatLimit, locale),
+                                fiatSymbol: displayedFiatCurrency.toUpperCase(),
+                            }}
+                        />
+                    </Text>
+                    <Banner.Button
+                        intent="info"
+                        onClick={() => dispatch(goto({ routeName: 'wallet-trading-concierge' }))}
+                    >
+                        <Translation
+                            id={
+                                context.type === 'buy'
+                                    ? 'TR_TRADING_OTC_LINK_BUY'
+                                    : 'TR_TRADING_OTC_LINK_SELL'
+                            }
+                        />
+                    </Banner.Button>
+                </Column>
             }
         />
     );

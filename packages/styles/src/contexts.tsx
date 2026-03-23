@@ -1,5 +1,5 @@
 import { createContext } from 'react';
 
-import { Direction } from './types';
+import { type Direction } from './types';
 
 export const DirectionContext = createContext<Direction>('ltr');

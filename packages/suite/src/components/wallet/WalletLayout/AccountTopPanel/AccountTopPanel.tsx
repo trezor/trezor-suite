@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { Context } from '@suite-common/message-system';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { isTestnet } from '@suite-common/wallet-utils';
 import { Column, SkeletonCircle, SkeletonRectangle } from '@trezor/components';

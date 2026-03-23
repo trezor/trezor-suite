@@ -1,11 +1,11 @@
-import { ExchangeProviderInfo, ExchangeTrade } from 'invity-api';
+import { type ExchangeProviderInfo, type ExchangeTrade } from 'invity-api';
 
 import { Translation } from '@suite/intl';
+import { goto } from '@suite/router';
 import { Button, Card, Column, H3, IconCircle, Paragraph } from '@trezor/components';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch } from 'src/hooks/suite';
-import { Account } from 'src/types/wallet';
+import { type Account } from 'src/types/wallet';
 
 import { TradingDetailProviderInfo } from '../TradingDetailProviderInfo';
 
@@ -22,7 +22,7 @@ export const TradingDetailExchangePaymentSuccessful = ({
 }: TradingDetailExchangePaymentSuccessfulProps) => {
     const dispatch = useDispatch();
 
-    const handleClick = () => dispatch(goto('wallet-trading-exchange'));
+    const handleClick = () => dispatch(goto({ routeName: 'wallet-trading-exchange' }));
 
     return (
         <Column gap={24} padding={{ top: 12, bottom: 4 }}>

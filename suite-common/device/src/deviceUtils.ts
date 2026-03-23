@@ -4,7 +4,7 @@ import type {
     TrezorDevice,
     TrezorDeviceWithState,
 } from '@suite-common/suite-types';
-import { Device } from '@trezor/connect';
+import { type Device } from '@trezor/connect';
 
 export const DeviceCancelledErr = (): DeviceCancelledErrType => ({
     type: 'DeviceCancelled' as const,

@@ -1,19 +1,19 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { View } from 'react-native';
-import { Gesture, GestureDetector } from 'react-native-gesture-handler';
-import { runOnJS, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import { GestureDetector } from 'react-native-gesture-handler';
 
-import { Icon, IconName } from '@suite-native/icons';
+import { Icon, type IconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Color } from '@trezor/theme';
+import { type Color } from '@trezor/theme';
 
 import { Box } from '../Box';
-import { InlineAlertBox, InlineAlertBoxProps } from '../InlineAlertBox/InlineAlertBox';
+import { InlineAlertBox, type InlineAlertBoxProps } from '../InlineAlertBox/InlineAlertBox';
 import { Loader } from '../Loader';
 import { RoundedIcon } from '../RoundedIcon';
 import { HStack, VStack } from '../Stack';
 import { Text } from '../Text';
-import { AnimatedCard, CardProps } from './Card';
+import { useTapGesture } from '../useTapGesture';
+import { AnimatedCard, type CardProps } from './Card';
 
 export const COMPACT_CARD_VARIANTS = ['normal', 'danger', 'primary'] as const;
 type CompactCardVariant = (typeof COMPACT_CARD_VARIANTS)[number];
@@ -24,7 +24,7 @@ export type CompactCardWithIconLayoutProps = {
     subtitle?: ReactNode;
     isDisabled?: boolean;
     alertBoxProps?: Omit<InlineAlertBoxProps, 'borderRadius'>;
-    onPress?: () => void;
+    onPress: () => void;
     variant?: CompactCardVariant;
     borderColor?: Color | null;
 } & Omit<CardProps, 'children' | 'borderColor'>;
@@ -79,33 +79,13 @@ export const CompactCardWithIconLayout = ({
     ...cardProps
 }: CompactCardWithIconLayoutProps) => {
     const { applyStyle } = useNativeStyles();
-    const isPressed = useSharedValue(false);
     const { caretColor, iconColor, titleColor, subtitleColor, iconWrapperBackgroundColor } =
         cardVariantToColorsMap[variant];
 
-    const tap = Gesture.Tap()
-        .maxDuration(5000)
-        .onBegin(() => {
-            isPressed.value = true;
-        })
-        .onFinalize(() => {
-            isPressed.value = false;
-        })
-        .onTouchesCancelled(() => {
-            isPressed.value = false;
-        })
-        .onEnd(() => {
-            if (onPress) {
-                runOnJS(onPress)();
-            }
-        });
-
-    const animatedStyle = useAnimatedStyle(() => ({
-        opacity: withTiming(isPressed.value ? 0.5 : 1, { duration: 100 }),
-    }));
+    const { tapGesture, animatedStyle } = useTapGesture({ onPress, isDisabled });
 
     return (
-        <GestureDetector gesture={tap}>
+        <GestureDetector gesture={tapGesture}>
             <View collapsable={false} testID={testID}>
                 <AnimatedCard
                     noPadding

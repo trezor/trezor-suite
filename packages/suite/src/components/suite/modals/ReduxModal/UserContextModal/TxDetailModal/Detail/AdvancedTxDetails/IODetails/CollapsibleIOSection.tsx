@@ -1,8 +1,8 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import { CollapsibleBox } from '@trezor/components';
 
-import { IOGroup, IOGroupProps } from './IOGroup';
+import { IOGroup, type IOGroupProps } from './IOGroup';
 
 type CollapsibleIOSectionProps = IOGroupProps & {
     heading?: ReactNode;

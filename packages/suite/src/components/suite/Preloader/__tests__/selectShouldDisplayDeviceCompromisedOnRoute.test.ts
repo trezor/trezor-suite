@@ -3,7 +3,7 @@ import * as deviceUtils from '@suite-common/suite-utils';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { initialAppState } from 'src/support/tests/__fixtures__/defaultAppState';
-import { AcquiredDevice, AppState } from 'src/types/suite';
+import { type AcquiredDevice, type AppState } from 'src/types/suite';
 
 import { selectShouldDisplayDeviceCompromisedOnRoute } from '../selectShouldDisplayDeviceCompromisedOnRoute';
 

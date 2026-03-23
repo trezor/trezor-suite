@@ -1,7 +1,7 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import {
-    StellarManageTokenStackParamList,
+    type StellarManageTokenStackParamList,
     StellarManageTokenStackRoutes,
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';

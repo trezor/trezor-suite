@@ -1,7 +1,7 @@
-import { Dispatch } from '@reduxjs/toolkit';
+import { type Dispatch } from '@reduxjs/toolkit';
 
 import { metadataThunks } from '@suite/metadata';
-import { DisableLegacyMetadataIfNeeded } from '@suite/suite-sync';
+import { type DisableLegacyMetadataIfNeeded } from '@suite/suite-sync';
 
 type CreateDisableLegacyMetadataIfNeeded = { getState: () => any; dispatch: Dispatch };
 

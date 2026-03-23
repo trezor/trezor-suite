@@ -1,13 +1,13 @@
 import { useCallback } from 'react';
 
 import {
-    TradingAssetOption,
+    type TradingAssetOption,
     createAssetNativeTokenOption,
     createAssetTokenOption,
 } from '@suite-common/trading';
-import { NetworkConfigWithoutTestnets } from '@suite-common/wallet-config';
+import { type NetworkConfigWithoutTestnets } from '@suite-common/wallet-config';
 
-import { TradingAssetListItem } from './useBuildTradingAssetOptions';
+import { type TradingAssetListItem } from './useBuildTradingAssetOptions';
 
 export interface UseUpdateFormInputProps {
     closeModal: () => void;

@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react';
 
-import { SubTabsSize } from './types';
+import { type SubTabsSize } from './types';
 
 export const SubTabsContext = createContext<{
     activeItemId?: string;

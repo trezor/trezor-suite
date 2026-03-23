@@ -24,8 +24,16 @@
     },
     "publishConfig": {
         "main": "./lib/index.js",
-        "types": "lib/index.d.ts",
-        "typings": "lib/index.d.ts",
+        "types": "./lib/index.d.ts",
+        "exports": {
+            ".": {
+                "import": "./libESM/index.mjs",
+                "require": "./lib/index.js",
+                "types": "./lib/index.d.ts"
+            },
+            "./lib/impl/*": "./lib/impl/*.js",
+            "./libESM/impl/*": "./libESM/impl/*"
+        },
         "browser": {
             "ws": "./lib/ws-browser.js"
         },
@@ -36,13 +44,17 @@
     },
     "files": [
         "lib/",
+        "libESM/",
         "CHANGELOG.md"
     ],
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "test:unit": "yarn g:jest",
         "type-check": "yarn g:tsc --build",
-        "build:lib": "yarn g:rimraf lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs"
+        "build:lib": "yarn build:lib:cjs && yarn build:lib:esm",
+        "build:lib:cjs": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
+        "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
         "@trezor/utils": "workspace:*",

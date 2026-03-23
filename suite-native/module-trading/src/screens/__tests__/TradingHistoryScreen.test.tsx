@@ -1,7 +1,7 @@
-import { RouteProp } from '@react-navigation/native';
+import { type RouteProp } from '@react-navigation/native';
 
-import { TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
-import { PreloadedState, fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { type TradingStackParamList, type TradingStackRoutes } from '@suite-native/navigation';
+import { type PreloadedState, fireEvent, renderWithStoreProvider } from '@suite-native/test-utils';
 import { accounts, getBuyTrade, getInitializedTradingState } from '@suite-native/trading-fixtures';
 
 import { TradingHistoryScreen } from '../TradingHistoryScreen';
@@ -55,8 +55,8 @@ const getPreloadedState = (): PreloadedState => ({
 describe('TradingHistoryScreen', () => {
     let unmount: (() => void) | undefined;
 
-    const renderScreen = async (preloadedState: PreloadedState) => {
-        const result = await renderWithStoreProviderAsync(<TradingHistoryScreen />, {
+    const renderScreen = (preloadedState: PreloadedState) => {
+        const result = renderWithStoreProvider(<TradingHistoryScreen />, {
             preloadedState,
         });
 
@@ -75,16 +75,16 @@ describe('TradingHistoryScreen', () => {
         }
     });
 
-    it('should render list of trades', async () => {
-        const { getByText } = await renderScreen(getPreloadedState());
+    it('should render list of trades', () => {
+        const { getByText } = renderScreen(getPreloadedState());
 
         expect(getByText('Mercuryo')).toBeTruthy();
         expect(getByText('$1,234.00')).toBeTruthy();
         expect(getByText('0.462586 ETH')).toBeTruthy();
     });
 
-    it('should show bottom sheet when trade item is clicked', async () => {
-        const { getByText, queryAllByText } = await renderScreen(getPreloadedState());
+    it('should show bottom sheet when trade item is clicked', () => {
+        const { getByText, queryAllByText } = renderScreen(getPreloadedState());
 
         fireEvent.press(getByText('Trans. ID: d3ef3451-8f68-4250-9e08-580ece5e7d12'));
 

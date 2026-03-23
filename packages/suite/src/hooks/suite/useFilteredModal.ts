@@ -1,6 +1,6 @@
 import { MODAL_CONTEXT_USER } from '@suite/modal';
 import type { State as ModalState } from '@suite/modal';
-import { UserContextPayload } from '@suite-common/suite-types';
+import { type UserContextPayload } from '@suite-common/suite-types';
 
 import { useSelector } from 'src/hooks/suite';
 

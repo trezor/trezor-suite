@@ -1,10 +1,10 @@
-import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { Account } from '@suite-common/wallet-types';
+import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { type Account } from '@suite-common/wallet-types';
 import { Text } from '@trezor/components';
 
 import { AccountLabel, FormattedCryptoAmount } from 'src/components/suite';
 
-import { EarnTokenBalance } from './types';
+import { type EarnTokenBalance } from './types';
 
 type EarnAccountCellDetailsProps = {
     account?: Account;

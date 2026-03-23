@@ -11,24 +11,15 @@ import {
     uploadFirmware,
 } from '../api/firmware';
 import { PROTO } from '../constants';
+import { DataManager } from '../data/DataManager';
 import { getFirmwareLocation, getReleaseByVersion } from '../data/firmwareInfo';
 import type { Device } from '../device/Device';
-import { DeviceList } from '../device/DeviceList';
-import {
-    CoreEventMessage,
-    UI_REQUEST,
-    UI_RESPONSE,
-    UiPromiseCreator,
-    createUiMessage,
-} from '../events';
-import {
-    BinaryInfo,
-    CommonParams,
-    DeviceUniquePath,
-    FirmwareType,
-    FirmwareUpdateFlowType,
-} from '../types';
-import { FirmwareUpdateResponse } from '../types/api/firmwareUpdate';
+import type { DeviceList } from '../device/DeviceList';
+import type { CoreEventMessage, UiPromiseCreator } from '../events';
+import { UI_REQUEST, UI_RESPONSE, createUiMessage } from '../events';
+import type { BinaryInfo, CommonParams, DeviceUniquePath, FirmwareUpdateFlowType } from '../types';
+import { FirmwareType } from '../types';
+import type { FirmwareUpdateResponse } from '../types/api/firmwareUpdate';
 import type { Log } from '../utils/debug';
 import { isFirmwareCacheUsedForSelectedSource } from '../utils/firmwareUtils';
 
@@ -494,7 +485,10 @@ export const onCallFirmwareUpdate = async ({
     // We have completed binary download, and we should notify sending an event,
     // if desktop wants to store it. We only do this for final FW, not intermediaries.
     // We also check if `BinaryInfo.release` is present, otherwise it is custom FW, not to store.
-    if (isFirmwareCacheUsedForSelectedSource() && finalBinaryInfo.release) {
+    if (
+        isFirmwareCacheUsedForSelectedSource(DataManager.getSettings('firmwareChannel')) &&
+        finalBinaryInfo.release
+    ) {
         const message = createUiMessage(UI_REQUEST.FIRMWARE_DOWNLOADED, {
             binary: finalBinaryInfo.binary,
             binaryVersion: finalBinaryInfo.binaryVersion,

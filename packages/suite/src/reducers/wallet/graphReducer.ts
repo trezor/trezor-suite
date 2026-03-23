@@ -5,9 +5,14 @@ import { accountsActions } from '@suite-common/wallet-core';
 import { STORAGE } from 'src/actions/suite/constants';
 import { GRAPH } from 'src/actions/wallet/constants';
 import { SETTINGS } from 'src/config/suite';
-import { Action as SuiteAction } from 'src/types/suite';
-import { Account, WalletAction } from 'src/types/wallet';
-import { AccountIdentifier, GraphData, GraphRange, GraphScale } from 'src/types/wallet/graph';
+import { type Action as SuiteAction } from 'src/types/suite';
+import { type Account, type WalletAction } from 'src/types/wallet';
+import {
+    type AccountIdentifier,
+    type GraphData,
+    type GraphRange,
+    type GraphScale,
+} from 'src/types/wallet/graph';
 
 export interface State {
     data: GraphData[];

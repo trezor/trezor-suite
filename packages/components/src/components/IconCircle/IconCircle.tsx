@@ -1,14 +1,18 @@
-import { IconCircleIntent, IconCircleSize } from './types';
+import { type IconCircleIntent, type IconCircleSize } from './types';
 import {
     mapIntentToBackground,
     mapIntentToBorderColor,
     mapSizeToBorderWidth,
     mapSizeToIconSize,
 } from './utils';
-import { FrameProps, FramePropsKeys, pickAndPrepareFrameProps } from '../../utils/frameProps';
+import {
+    type FrameProps,
+    type FramePropsKeys,
+    pickAndPrepareFrameProps,
+} from '../../utils/frameProps';
 import { Box } from '../Box/Box';
 import { Center } from '../Flex/Flex';
-import { Icon, IconName } from '../Icon/Icon';
+import { Icon, type IconName } from '../Icon/Icon';
 
 export const allowedIconCircleFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedIconCircleFrameProps)[number]>;

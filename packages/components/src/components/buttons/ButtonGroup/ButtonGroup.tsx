@@ -3,16 +3,16 @@ import React from 'react';
 import styled from 'styled-components';
 
 import {
-    FrameProps,
-    FramePropsKeys,
+    type FrameProps,
+    type FramePropsKeys,
     pickAndPrepareFrameProps,
     withFrameProps,
 } from '../../../utils/frameProps';
-import { TransientProps } from '../../../utils/transientProps';
-import { Tooltip, TooltipProps } from '../../Tooltip/Tooltip';
-import { ButtonProps } from '../Button/Button';
-import { IconButtonProps } from '../IconButton/IconButton';
-import { ButtonIntent, ButtonPriority, ButtonSize } from '../types';
+import { type TransientProps } from '../../../utils/transientProps';
+import { Tooltip, type TooltipProps } from '../../Tooltip/Tooltip';
+import { type ButtonProps } from '../Button/Button';
+import { type IconButtonProps } from '../IconButton/IconButton';
+import { type ButtonIntent, type ButtonPriority, type ButtonSize } from '../types';
 import { mapSizeToBorderRadius } from '../utils';
 
 export const allowedButtonGroupFrameProps = [

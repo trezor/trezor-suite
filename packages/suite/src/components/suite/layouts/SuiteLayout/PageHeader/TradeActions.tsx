@@ -1,17 +1,16 @@
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { goto, selectIsAccountTabPage, selectRouteName } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
-import { SelectedAccountStatus } from '@suite-common/wallet-types';
+import { type SelectedAccountStatus } from '@suite-common/wallet-types';
 import { Row } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { breakpoints } from '@trezor/theme';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { AppNavigationTooltip } from 'src/components/suite/AppNavigation/AppNavigationTooltip';
 import { HeaderActionButton } from 'src/components/suite/layouts/SuiteLayout/PageHeader/HeaderActionButton';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectIsAccountTabPage, selectRouteName } from 'src/reducers/suite/routerReducer';
 import { ConditionalRender } from 'src/support/suite/ConditionalRender';
 import { useAnalytics } from 'src/support/useAnalytics';
 
@@ -27,22 +26,22 @@ export const TradeActions = ({ selectedAccount }: TradeActionsProps) => {
     const isAccountTabPage = useSelector(selectIsAccountTabPage);
     const currentRouteName = useSelector(selectRouteName);
 
-    const goToWithAnalytics = (...[routeName, options]: Parameters<typeof goto>) => {
+    const goToWithAnalytics = (...[payload]: Parameters<typeof goto>) => {
         if (currentRouteName === 'suite-index') {
             analytics.report({
                 type: events.dashboardActionsEvent.name,
-                payload: { type: routeName },
+                payload: { type: payload.routeName },
             });
         }
 
         if (isAccountTabPage && account?.symbol) {
             analytics.report({
                 type: events.accountsActionsEvent.name,
-                payload: { symbol: account?.symbol, action: routeName },
+                payload: { symbol: account?.symbol, action: payload.routeName },
             });
         }
 
-        dispatch(goto(routeName, options));
+        dispatch(goto(payload));
     };
 
     const onBuyAndSellClick = () => {
@@ -54,7 +53,7 @@ export const TradeActions = ({ selectedAccount }: TradeActionsProps) => {
             );
         }
 
-        goToWithAnalytics('wallet-trading-buy');
+        goToWithAnalytics({ routeName: 'wallet-trading-buy' });
 
         analytics.report({
             type: events.tradeNavigateEvent.name,
@@ -76,9 +75,7 @@ export const TradeActions = ({ selectedAccount }: TradeActionsProps) => {
             );
         }
 
-        goToWithAnalytics('wallet-trading-exchange', {
-            preserveParams: false,
-        });
+        goToWithAnalytics({ routeName: 'wallet-trading-exchange', preserveParams: false });
 
         analytics.report({
             type: events.tradeNavigateEvent.name,

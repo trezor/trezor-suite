@@ -1,9 +1,8 @@
 import { memo } from 'react';
 
-import type { Route as RouteType } from '@suite-common/suite-types';
+import { type Route as RouteType, selectRouteName } from '@suite/router';
 
 import { useSelector } from 'src/hooks/suite';
-import { selectRouteName } from 'src/reducers/suite/routerReducer';
 
 const RouteComponent = ({
     children,

@@ -1,52 +1,52 @@
-import { NavigatorScreenParams } from '@react-navigation/native';
+import { type NavigatorScreenParams } from '@react-navigation/native';
 import type { ExchangeTrade } from 'invity-api';
-import { RequireAllOrNone } from 'type-fest';
+import { type RequireAllOrNone } from 'type-fest';
 
-import { BackupType, Locale } from '@suite-common/suite-types';
-import { TradingType } from '@suite-common/trading';
-import { AccountType, NetworkSymbol } from '@suite-common/wallet-config';
+import { type BackupType, type Locale } from '@suite-common/suite-types';
+import { type TradingType } from '@suite-common/trading';
+import { type AccountType, type NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    AccountKey,
-    GeneralPrecomposedTransactionFinal,
-    TokenAddress,
-    XpubAddress,
+    type AccountKey,
+    type GeneralPrecomposedTransactionFinal,
+    type TokenAddress,
+    type XpubAddress,
 } from '@suite-common/wallet-types';
-import { ExperimentalFeature } from '@suite-native/settings';
-import { AccountInfo } from '@trezor/connect';
-import { DeviceModelInternal } from '@trezor/device-utils';
+import { type ExperimentalFeature } from '@suite-native/settings';
+import { type AccountInfo } from '@trezor/connect';
+import { type DeviceModelInternal } from '@trezor/device-utils';
 
 import {
-    AccountsImportStackRoutes,
-    AccountsStackRoutes,
-    AddCoinAccountStackRoutes,
-    AppTabsRoutes,
-    AuthorizeDeviceStackRoutes,
-    DemoAccountQuestionnaireStackRoutes,
-    DevUtilsStackRoutes,
-    DeviceAuthenticityStackRoutes,
-    DeviceAutoConnectStackRoutes,
-    DeviceCheckBackupStackRoutes,
-    DeviceNameStackRoutes,
-    DeviceOnboardingStackRoutes,
-    DevicePassphraseStackRoutes,
-    DevicePinProtectionStackRoutes,
-    DeviceSettingsStackRoutes,
-    EarnStackRoutes,
-    FirmwareLanguageStackRoutes,
-    FirmwareUpdateStackRoutes,
-    HomeStackRoutes,
-    OnboardingStackRoutes,
-    PassphraseStackRoutes,
-    ReceiveStackRoutes,
-    RootStackRoutes,
-    SendStackRoutes,
-    SettingsStackRoutes,
-    StellarManageTokenStackRoutes,
-    TradingStackRoutes,
-    TransactionDetailStackRoutes,
-    WipeDeviceStackRoutes,
+    type AccountsImportStackRoutes,
+    type AccountsStackRoutes,
+    type AddCoinAccountStackRoutes,
+    type AppTabsRoutes,
+    type AuthorizeDeviceStackRoutes,
+    type DemoAccountQuestionnaireStackRoutes,
+    type DevUtilsStackRoutes,
+    type DeviceAuthenticityStackRoutes,
+    type DeviceAutoConnectStackRoutes,
+    type DeviceCheckBackupStackRoutes,
+    type DeviceNameStackRoutes,
+    type DeviceOnboardingStackRoutes,
+    type DevicePassphraseStackRoutes,
+    type DevicePinProtectionStackRoutes,
+    type DeviceSettingsStackRoutes,
+    type EarnStackRoutes,
+    type FirmwareLanguageStackRoutes,
+    type FirmwareUpdateStackRoutes,
+    type HomeStackRoutes,
+    type OnboardingStackRoutes,
+    type PassphraseStackRoutes,
+    type ReceiveStackRoutes,
+    type RootStackRoutes,
+    type SendStackRoutes,
+    type SettingsStackRoutes,
+    type StellarManageTokenStackRoutes,
+    type TradingStackRoutes,
+    type TransactionDetailStackRoutes,
+    type WipeDeviceStackRoutes,
 } from './routes';
-import { NavigateParameters } from './types';
+import { type NavigateParameters } from './types';
 
 type AddCoinFlowParams = RequireAllOrNone<
     { networkSymbol: NetworkSymbol; accountType: AccountType; accountIndex: number },
@@ -252,7 +252,7 @@ export type DeviceSettingsStackParamList = {
     [DeviceSettingsStackRoutes.FirmwareLanguageStack]: {
         language: Locale;
     };
-    [DeviceSettingsStackRoutes.DeviceAutoConnect]: undefined;
+    [DeviceSettingsStackRoutes.DeviceConnection]: undefined;
     [DeviceSettingsStackRoutes.DeviceAutoConnectStack]: undefined;
     [DeviceSettingsStackRoutes.UnpairBluetoothDevice]: undefined;
     [DeviceSettingsStackRoutes.DevicePinProtection]: undefined;

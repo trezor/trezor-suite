@@ -4,7 +4,7 @@ import { nativeSpacings, nativeTypographyStyles } from '@trezor/theme';
 
 import {
     TitleHeader as TitleHeaderComponent,
-    TitleHeaderProps,
+    type TitleHeaderProps,
 } from '../../TitleHeader/TitleHeader';
 
 type TitleHeaderStory = StoryObj<TitleHeaderProps>;

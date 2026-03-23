@@ -1,4 +1,4 @@
-import { BackupType } from '@suite-common/suite-types';
+import { type BackupType } from '@suite-common/suite-types';
 
 const SHAMIR_TYPES: BackupType[] = ['shamir-single', 'shamir-advanced'];
 

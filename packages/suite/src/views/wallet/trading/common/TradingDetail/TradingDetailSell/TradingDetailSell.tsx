@@ -1,26 +1,26 @@
 import { useEffect } from 'react';
 import { usePrevious } from 'react-use';
 
-import { SellTradeStatus } from 'invity-api';
+import { type SellTradeStatus } from 'invity-api';
 import styled from 'styled-components';
 
 import { events } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
+import { goto } from '@suite/router';
 import { type TradingSellType, selectTradingComposedTransactionInfo } from '@suite-common/trading';
 import { selectAccounts } from '@suite-common/wallet-core';
 import { Box, Card, Column, H3, Paragraph } from '@trezor/components';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingDetailContext } from 'src/hooks/wallet/trading/useTradingDetail';
 import { tradeFinalStatuses } from 'src/hooks/wallet/trading/useTradingWatchTrade';
 import { useAnalytics } from 'src/support/useAnalytics';
-import { TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
+import { type TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
 import { AfterTradeExperiment } from 'src/views/wallet/trading/common/TradingDetail/AfterTradeExperiment';
 import { TradingDetailSellPaymentFailed } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailSell/TradingDetailSellPaymentFailed';
 import { TradingDetailSellPaymentSending } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailSell/TradingDetailSellPaymentSending';
 import { TradingDetailSellPaymentSuccessful } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailSell/TradingDetailSellPaymentSuccessful';
-import { TradingSelectedOfferInfo } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingSelectedOfferInfo';
+import { TradingDetailSellSidebar } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailSellSidebar';
 import { TradingWrapper } from 'src/views/wallet/trading/common/TradingWrapper';
 
 import { TradingDetailStepList } from '../TradingDetailStepList';
@@ -42,7 +42,7 @@ const getTradeStatusStep = (tradeStatus: SellTradeStatus) => {
 export const TradingDetailSell = () => {
     const analytics = useAnalytics();
     const accounts = useSelector(selectAccounts);
-    const { account, trade, info } = useTradingDetailContext<TradingSellType>();
+    const { trade, info } = useTradingDetailContext<TradingSellType>();
     const dispatch = useDispatch();
     const { translationString } = useTranslation();
 
@@ -87,7 +87,7 @@ export const TradingDetailSell = () => {
     // if trade not found, it is because user refreshed the page and stored transactionId got removed
     // go to the default trading page, the trade is shown there in the previous trades
     if (!trade) {
-        dispatch(goto('wallet-trading-sell'));
+        dispatch(goto({ routeName: 'wallet-trading-sell' }));
 
         return null;
     }
@@ -149,18 +149,12 @@ export const TradingDetailSell = () => {
                     country={country}
                 />
             </Column>
-            <Card>
-                <TradingSelectedOfferInfo
-                    account={account}
-                    selectedAccount={sendAccount}
-                    providers={info?.providerInfos}
-                    selectedQuote={trade.data}
-                    type="sell"
-                    quoteAmounts={quoteAmounts}
-                    paymentMethod={trade.data.paymentMethod}
-                    paymentMethodName={trade.data.paymentMethodName}
-                />
-            </Card>
+            <TradingDetailSellSidebar
+                sendAccount={sendAccount}
+                quoteAmounts={quoteAmounts}
+                paymentMethod={trade.data.paymentMethod}
+                paymentMethodName={trade.data.paymentMethodName}
+            />
         </Wrapper>
     );
 };

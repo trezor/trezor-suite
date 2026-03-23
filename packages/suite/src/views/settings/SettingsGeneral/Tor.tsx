@@ -2,13 +2,13 @@ import { useEffect, useState } from 'react';
 
 import { Translation } from '@suite/intl';
 import { openDeferredModal, selectModalType } from '@suite/modal';
+import { SettingsAnchor } from '@suite/router';
 import { Switch } from '@trezor/components';
 import { HELP_CENTER_TOR_URL } from '@trezor/urls';
 
 import { toggleTor } from 'src/actions/suite/suiteActions';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionColumn, TextColumn } from 'src/components/suite';
-import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectCoinjoinAccounts } from 'src/reducers/wallet/coinjoinReducer';
 import { TorStatus } from 'src/types/suite';

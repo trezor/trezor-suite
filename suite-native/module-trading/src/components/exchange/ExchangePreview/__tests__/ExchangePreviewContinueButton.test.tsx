@@ -1,10 +1,13 @@
-import { AccountKey, GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
-import { PreloadedState, renderWithStoreProviderAsync, userEvent } from '@suite-native/test-utils';
+import {
+    type AccountKey,
+    type GeneralPrecomposedTransactionFinal,
+} from '@suite-common/wallet-types';
+import { type PreloadedState, renderWithStoreProvider, userEvent } from '@suite-native/test-utils';
 import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
 
 import {
     ExchangePreviewContinueButton,
-    ExchangePreviewContinueButtonProps,
+    type ExchangePreviewContinueButtonProps,
 } from '../ExchangePreviewContinueButton';
 
 const mockNavigate = jest.fn();
@@ -21,7 +24,7 @@ describe('ExchangePreviewContinueButton', () => {
         props: Partial<ExchangePreviewContinueButtonProps> = {},
         preloadedState: PreloadedState = {},
     ) =>
-        renderWithStoreProviderAsync(
+        renderWithStoreProvider(
             <ExchangePreviewContinueButton
                 isDisabled={false}
                 quote={exchangeQuotes[0]}
@@ -50,24 +53,24 @@ describe('ExchangePreviewContinueButton', () => {
         return preloadedState;
     };
 
-    it('should render nothing when precomposed transaction is not in final state', async () => {
+    it('should render nothing when precomposed transaction is not in final state', () => {
         const preloadedState = getPreloadedState();
         preloadedState!.wallet!.send!.precomposedTx = {
             type: 'composing',
         } as any;
-        const { toJSON } = await renderExchangePreviewContinueButton({}, preloadedState);
+        const { toJSON } = renderExchangePreviewContinueButton({}, preloadedState);
 
         expect(toJSON()).toBeNull();
     });
 
-    it('should render continue button', async () => {
-        const { getByText } = await renderExchangePreviewContinueButton({}, getPreloadedState());
+    it('should render continue button', () => {
+        const { getByText } = renderExchangePreviewContinueButton({}, getPreloadedState());
 
         expect(getByText('Continue')).toBeOnTheScreen();
     });
 
-    it('should render disabled button when isDisabled prop is specified', async () => {
-        const { getByText } = await renderExchangePreviewContinueButton(
+    it('should render disabled button when isDisabled prop is specified', () => {
+        const { getByText } = renderExchangePreviewContinueButton(
             { isDisabled: true },
             getPreloadedState(),
         );
@@ -75,10 +78,24 @@ describe('ExchangePreviewContinueButton', () => {
         expect(getByText('Continue')).toBeDisabled();
     });
 
+    it('should keep continue button enabled when dex quote approval prefetch is loading', async () => {
+        const preloadedState = getPreloadedState();
+        preloadedState!.wallet!.trading!.exchange!.dexQuoteApprovalPrefetchLoadingQuoteId =
+            exchangeQuotes[0].quoteId;
+
+        const { getByTestId, queryByTestId } = await renderExchangePreviewContinueButton(
+            {},
+            preloadedState,
+        );
+
+        expect(getByTestId('@trading/exchange-preview/continue-button')).not.toBeDisabled();
+        expect(queryByTestId('@trading/exchange-preview/continue-button/loading')).toBeNull();
+    });
+
     it('should fire console.warn and do not navigate when quote is not specified', async () => {
         const mockOnSignTransactionNavigation = jest.fn();
         const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
-        const { getByText } = await renderExchangePreviewContinueButton(
+        const { getByText } = renderExchangePreviewContinueButton(
             { quote: undefined, onSignTransactionNavigation: mockOnSignTransactionNavigation },
             getPreloadedState(),
         );
@@ -98,7 +115,7 @@ describe('ExchangePreviewContinueButton', () => {
         const preloadedState = getPreloadedState();
         preloadedState!.wallet!.trading!.exchange!.tradingAccountKey = 'non-existing-key';
         const mockOnSignTransactionNavigation = jest.fn();
-        const { getByText } = await renderExchangePreviewContinueButton(
+        const { getByText } = renderExchangePreviewContinueButton(
             { onSignTransactionNavigation: mockOnSignTransactionNavigation },
             preloadedState,
         );
@@ -116,7 +133,7 @@ describe('ExchangePreviewContinueButton', () => {
     it('should navigate to TradingExchangeOutputsReview on continue press', async () => {
         const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
         const mockOnSignTransactionNavigation = jest.fn();
-        const { getByText } = await renderExchangePreviewContinueButton(
+        const { getByText } = renderExchangePreviewContinueButton(
             { onSignTransactionNavigation: mockOnSignTransactionNavigation },
             getPreloadedState(),
         );

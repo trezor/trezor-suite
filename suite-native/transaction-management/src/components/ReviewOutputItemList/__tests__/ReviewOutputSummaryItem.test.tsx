@@ -1,8 +1,11 @@
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { Text as MockText } from '@suite-native/atoms';
 import { renderWithBasicProvider } from '@suite-native/test-utils';
 
-import { ReviewOutputSummaryItem, ReviewOutputSummaryItemProps } from '../ReviewOutputSummaryItem';
+import {
+    ReviewOutputSummaryItem,
+    type ReviewOutputSummaryItemProps,
+} from '../ReviewOutputSummaryItem';
 
 jest.mock('../ReviewOutputItemValues', () => ({
     ReviewOutputItemValues: ({

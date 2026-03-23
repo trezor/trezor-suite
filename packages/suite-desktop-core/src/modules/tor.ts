@@ -8,12 +8,16 @@ import path from 'path';
 import TrezorConnect from '@trezor/connect';
 import { validateIpcMessage } from '@trezor/ipc-proxy';
 import { getFreePort } from '@trezor/node-utils';
-import { BootstrapEvent } from '@trezor/request-manager';
-import { BootstrapTorEvent, HandshakeTorModule, TorStatus } from '@trezor/suite-desktop-api';
+import { type BootstrapEvent } from '@trezor/request-manager';
+import {
+    type BootstrapTorEvent,
+    type HandshakeTorModule,
+    TorStatus,
+} from '@trezor/suite-desktop-api';
 
 import { hasSwitch } from '../libs/process-switches';
 import { TorExternalProcess } from '../libs/processes/TorExternalProcess';
-import { TorProcess, TorProcessStatus } from '../libs/processes/TorProcess';
+import { TorProcess, type TorProcessStatus } from '../libs/processes/TorProcess';
 import { app, ipcMain } from '../typed-electron';
 import type { Dependencies } from './module';
 

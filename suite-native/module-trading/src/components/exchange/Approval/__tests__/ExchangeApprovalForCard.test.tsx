@@ -1,18 +1,18 @@
-import { AccountKey } from '@suite-common/wallet-types';
-import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { type AccountKey } from '@suite-common/wallet-types';
+import { type PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils';
 import { getWalletState } from '@suite-native/trading-fixtures';
 
 import { ExchangeApprovalForCard } from '../ExchangeApprovalForCard';
 
 describe('ExchangeApprovalForCard', () => {
     const renderExchangeApprovalForCard = (preloadedState: PreloadedState = {}) =>
-        renderWithStoreProviderAsync(<ExchangeApprovalForCard />, { preloadedState });
+        renderWithStoreProvider(<ExchangeApprovalForCard />, { preloadedState });
 
-    it('should render text based on redux state', async () => {
+    it('should render text based on redux state', () => {
         const preloadedState = { wallet: getWalletState({ tradeType: 'exchange' }) };
         preloadedState.wallet.trading.exchange.tradingAccountKey = 'eth-account-1' as AccountKey; // Todo: create properly via `createAccountKey()`
 
-        const { getByText } = await renderExchangeApprovalForCard(preloadedState);
+        const { getByText } = renderExchangeApprovalForCard(preloadedState);
 
         expect(getByText('For')).toBeOnTheScreen();
         expect(getByText('Ethereum')).toBeOnTheScreen();
@@ -20,10 +20,10 @@ describe('ExchangeApprovalForCard', () => {
         expect(getByText('Ethereum #1')).toBeOnTheScreen();
     });
 
-    it('should render nothing when account is not found', async () => {
+    it('should render nothing when account is not found', () => {
         const preloadedState = { wallet: getWalletState({ tradeType: 'exchange' }) };
 
-        const { toJSON } = await renderExchangeApprovalForCard(preloadedState);
+        const { toJSON } = renderExchangeApprovalForCard(preloadedState);
 
         expect(toJSON()).toBeNull();
     });

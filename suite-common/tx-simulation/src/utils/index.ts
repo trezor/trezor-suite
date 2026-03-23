@@ -1,5 +1,5 @@
-import { Network, getNetworkByEvmChainId, networks } from '@suite-common/wallet-config';
-import { TxSimulationAction, TxSimulationMethod } from '@suite-common/wallet-types';
+import { type Network, getNetworkByEvmChainId, networks } from '@suite-common/wallet-config';
+import { type TxSimulationAction, type TxSimulationMethod } from '@suite-common/wallet-types';
 
 export function getTargetContractFromTxSimulationAction({
     method,

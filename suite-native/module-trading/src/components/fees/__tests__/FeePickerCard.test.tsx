@@ -1,9 +1,9 @@
 import React from 'react';
 
-import { TradingExchangeType, TradingSellType } from '@suite-common/trading';
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { AccountKey } from '@suite-common/wallet-types';
-import { renderWithStoreProviderAsync, userEvent } from '@suite-native/test-utils';
+import { type TradingExchangeType, type TradingSellType } from '@suite-common/trading';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type AccountKey } from '@suite-common/wallet-types';
+import { renderWithStoreProvider, userEvent } from '@suite-native/test-utils';
 
 import { FeePickerCard } from '../FeePickerCard';
 
@@ -45,10 +45,10 @@ describe('FeePickerCard', () => {
         },
     });
 
-    const renderFeePickerCard = async (props = {}, preloadedState = {}) => {
+    const renderFeePickerCard = (props = {}, preloadedState = {}) => {
         const finalProps = { ...defaultProps, ...props };
 
-        return await renderWithStoreProviderAsync(<FeePickerCard {...finalProps} />, {
+        return renderWithStoreProvider(<FeePickerCard {...finalProps} />, {
             preloadedState,
         });
     };
@@ -58,20 +58,20 @@ describe('FeePickerCard', () => {
         mockNavigate.mockClear();
     });
 
-    it('should render the details title', async () => {
-        const { getByText } = await renderFeePickerCard({}, createPreloadedState('1000'));
+    it('should render the details title', () => {
+        const { getByText } = renderFeePickerCard({}, createPreloadedState('1000'));
 
         expect(getByText('Transaction details')).toBeTruthy();
     });
 
-    it('should render fee label', async () => {
-        const { getByText } = await renderFeePickerCard({}, createPreloadedState('1000'));
+    it('should render fee label', () => {
+        const { getByText } = renderFeePickerCard({}, createPreloadedState('1000'));
 
         expect(getByText('Fee')).toBeTruthy();
     });
 
-    it('should render fee value with correct symbol', async () => {
-        const { getByText } = await renderFeePickerCard(
+    it('should render fee value with correct symbol', () => {
+        const { getByText } = renderFeePickerCard(
             {
                 symbol: 'eth' as NetworkSymbol,
             },
@@ -82,23 +82,23 @@ describe('FeePickerCard', () => {
         expect(getByText('$0.00')).toBeTruthy();
     });
 
-    it('should show loading state when fee is undefined', async () => {
-        const { getByTestId } = await renderFeePickerCard({}, {});
+    it('should show loading state when fee is undefined', () => {
+        const { getByTestId } = renderFeePickerCard({}, {});
 
         // When fee is undefined, should show skeleton
         const skeleton = getByTestId('BoxSkeleton');
         expect(skeleton).toBeTruthy();
     });
 
-    it('should not show loading state when fee is defined', async () => {
-        const { getByText } = await renderFeePickerCard({}, createPreloadedState('1000'));
+    it('should not show loading state when fee is defined', () => {
+        const { getByText } = renderFeePickerCard({}, createPreloadedState('1000'));
 
         // When fee is defined, should show the formatted fee value
         expect(getByText('$0.50')).toBeTruthy();
     });
 
     it('should handle fee picker press and navigate to fees screen', async () => {
-        const { getByText } = await renderFeePickerCard({}, createPreloadedState('1000'));
+        const { getByText } = renderFeePickerCard({}, createPreloadedState('1000'));
 
         await userEvent.press(getByText('Fee'));
 
@@ -109,7 +109,7 @@ describe('FeePickerCard', () => {
     });
 
     it('should not navigate when actualFee is undefined', async () => {
-        const { getByText } = await renderFeePickerCard({}, {});
+        const { getByText } = renderFeePickerCard({}, {});
 
         await userEvent.press(getByText('Fee'));
 

@@ -1,14 +1,14 @@
-import { ReactNode, Ref } from 'react';
+import { type ReactNode, type Ref } from 'react';
 
-import { Translation, TranslationKey } from '@suite/intl';
-import { Badge, BadgeIntent } from '@trezor/components';
+import { Translation, type TranslationKey } from '@suite/intl';
+import { selectRouteName } from '@suite/router';
+import { Badge, type BadgeIntent } from '@trezor/components';
 
 import { DashboardSection } from 'src/components/dashboard';
 import { useSelector } from 'src/hooks/suite';
-import { selectRouteName } from 'src/reducers/suite/routerReducer';
 
 import { PoweredByBadge } from '../../providers/PoweredByBadge';
-import { EarnProviderId } from '../../providers/providerMetadata';
+import { type EarnProviderId } from '../../providers/providerMetadata';
 
 type EarnDashboardSectionProps = {
     titleId: TranslationKey;

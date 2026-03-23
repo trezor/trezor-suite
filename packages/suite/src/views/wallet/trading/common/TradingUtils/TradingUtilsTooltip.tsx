@@ -2,7 +2,7 @@ import { Translation, useTranslation } from '@suite/intl';
 import { Icon, Tooltip } from '@trezor/components';
 
 import { TooltipIcon, TooltipText, TooltipWrap } from 'src/views/wallet/trading';
-import { TradingOffersItemProps } from 'src/views/wallet/trading/common/TradingOffers/TradingOffersItem';
+import { type TradingOffersItemProps } from 'src/views/wallet/trading/common/TradingOffers/TradingOffersItem';
 import { TradingUtilsTooltipFee } from 'src/views/wallet/trading/common/TradingUtils/TradingUtilsTooltipFee';
 
 // IN TESTING MODE

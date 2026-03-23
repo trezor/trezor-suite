@@ -6,8 +6,9 @@ import ecc from 'tiny-secp256k1';
 import * as bcrypto from '../crypto';
 import { bitcoin as BITCOIN_NETWORK } from '../networks';
 import * as bscript from '../script';
-import { Payment, PaymentOpts, typeforce } from '../types';
+import { type Payment, type PaymentOpts } from '../types';
 import * as lazy from './lazy';
+import { BufferNSchema, BufferSchema, Point, Type, assertType } from '../types/validation';
 
 const { OPS } = bscript;
 
@@ -22,19 +23,25 @@ export function p2wpkh(a: Payment, opts?: PaymentOpts): Payment {
 
     opts = Object.assign({ validate: true }, opts || {});
 
-    typeforce(
-        {
-            address: typeforce.maybe(typeforce.String),
-            hash: typeforce.maybe(typeforce.BufferN(20)),
-            input: typeforce.maybe(typeforce.BufferN(0)),
-            network: typeforce.maybe(typeforce.Object),
-            output: typeforce.maybe(typeforce.BufferN(22)),
-            pubkey: typeforce.maybe(ecc.isPoint),
-            signature: typeforce.maybe(bscript.isCanonicalScriptSignature),
-            witness: typeforce.maybe(typeforce.arrayOf(typeforce.Buffer)),
-        },
+    assertType(
+        Type.Object(
+            {
+                address: Type.Optional(Type.String()),
+                hash: Type.Optional(BufferNSchema(20)),
+                input: Type.Optional(BufferNSchema(0)),
+                network: Type.Optional(Type.Object({}, { additionalProperties: true })),
+                output: Type.Optional(BufferNSchema(22)),
+                pubkey: Type.Optional(Point),
+                signature: Type.Optional(BufferSchema),
+                witness: Type.Optional(Type.Array(BufferSchema)),
+            },
+            { additionalProperties: true },
+        ),
         a,
     );
+
+    if (a.signature && !bscript.isCanonicalScriptSignature(a.signature))
+        throw new TypeError('Expected canonical script signature');
 
     const _address = lazy.value(() => {
         const result = bech32.decode(a.address!);

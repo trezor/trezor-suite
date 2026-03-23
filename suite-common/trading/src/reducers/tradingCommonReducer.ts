@@ -1,20 +1,26 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { Coins, CryptoId, InfoResponse, Platforms, type ProviderMetadata } from 'invity-api';
+import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
+import {
+    type Coins,
+    type CryptoId,
+    type InfoResponse,
+    type Platforms,
+    type ProviderMetadata,
+} from 'invity-api';
 
-import { AccountKey, PrecomposedTransactionFinal } from '@suite-common/wallet-types';
-import { CardanoOutput, FeeLevel, PROTO } from '@trezor/connect';
+import { type AccountKey, type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import { type CardanoOutput, type FeeLevel, type PROTO } from '@trezor/connect';
 
 import {
-    TradingPaymentMethodListProps,
-    TradingTransaction,
-    TradingType,
-    TradingVerifiedAddress,
+    type TradingPaymentMethodListProps,
+    type TradingTransaction,
+    type TradingType,
+    type TradingVerifiedAddress,
 } from '../types';
-import { TradingBuyState, buyInitialState } from './buyReducer';
+import { type TradingBuyState, buyInitialState } from './buyReducer';
 import { TRADING_PREFIX } from '../constants';
-import { TradingExchangeState, exchangeInitialState } from './exchangeReducer';
-import { TradingSellState, sellInitialState } from './sellReducer';
-import { TradingSettingsState, settingsInitialState } from './settingsReducer';
+import { type TradingExchangeState, exchangeInitialState } from './exchangeReducer';
+import { type TradingSellState, sellInitialState } from './sellReducer';
+import { type TradingSettingsState, settingsInitialState } from './settingsReducer';
 
 type TradingComposedTransactionInfoOutputs = {
     outputs?: PROTO.TxOutputType[] | CardanoOutput[];
@@ -121,6 +127,7 @@ const tradingCommonSlice = createSlice({
         saveComposedTransactionInfo(state, action: PayloadAction<TradingComposedTransactionInfo>) {
             state.composedTransactionInfo = action.payload;
         },
+
         saveTrade(state, action: PayloadAction<TradingTransaction>) {
             if (action.payload.key) {
                 const trades = state.trades.filter(t => t.key !== action.payload.key);

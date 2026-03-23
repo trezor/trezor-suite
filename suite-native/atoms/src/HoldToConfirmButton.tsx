@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { Platform, Vibration } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import {
-    SharedValue,
+    type SharedValue,
     runOnJS,
     useAnimatedReaction,
     useAnimatedStyle,
@@ -14,7 +14,7 @@ import {
 
 import { Canvas, Circle, Path, Skia } from '@shopify/react-native-skia';
 
-import { Translation, TxKeyPath } from '@suite-native/intl';
+import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { useNativeStyles } from '@trezor/styles';
 
 import { AnimatedVStack } from './Stack';

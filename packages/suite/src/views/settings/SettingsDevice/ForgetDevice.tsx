@@ -2,10 +2,10 @@ import { useState } from 'react';
 
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import { deviceActions, selectDevices, selectSelectedDevice } from '@suite-common/device';
+import { selectSelectedDevice } from '@suite-common/device';
 import * as deviceUtils from '@suite-common/suite-utils';
-import { forgetSingleDevicePersistentDataThunk } from '@suite-common/wallet-core';
-import { Card, Icon, List, Modal, ModalProps, Paragraph } from '@trezor/components';
+import { forgetDeviceThunk } from '@suite-common/wallet-core';
+import { Card, Icon, List, Modal, type ModalProps, Paragraph } from '@trezor/components';
 
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -14,7 +14,6 @@ import { useAnalytics } from 'src/support/useAnalytics';
 export const ForgetDeviceModal = ({ onCancel }: ModalProps) => {
     const dispatch = useDispatch();
     const selectedDevice = useSelector(selectSelectedDevice);
-    const devices = useSelector(selectDevices);
     const analytics = useAnalytics();
     if (!selectedDevice) {
         return null;
@@ -24,13 +23,7 @@ export const ForgetDeviceModal = ({ onCancel }: ModalProps) => {
     const isBluetoothConnectedDevice = selectedDevice?.descriptor.apiType === 'bluetooth';
 
     const handleConfirmClick = async () => {
-        const instances = deviceUtils.getDeviceInstances(selectedDevice, devices);
-
-        await dispatch(forgetSingleDevicePersistentDataThunk({ deviceId: selectedDevice.id }));
-
-        instances.forEach(instance => {
-            dispatch(deviceActions.forgetDevice({ device: instance }));
-        });
+        await dispatch(forgetDeviceThunk());
 
         analytics.report({ type: events.switchDeviceForgetEvent.name });
         onCancel?.();

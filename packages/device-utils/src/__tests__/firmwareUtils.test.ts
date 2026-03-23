@@ -9,7 +9,7 @@ import {
     getFirmwareVersion,
     getFirmwareVersionArray,
 } from '../firmwareUtils';
-import { PartialDevice } from '../types';
+import { type PartialDevice } from '../types';
 
 describe('firmwareUtils', () => {
     describe(getFirmwareOrBootloaderVersionArray.name, () => {

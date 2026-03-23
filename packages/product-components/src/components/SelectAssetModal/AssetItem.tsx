@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
@@ -6,7 +6,7 @@ import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { Badge, Column, Row, Text } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
 
-import { AssetOptionBaseProps } from './SelectAssetModal';
+import { type AssetOptionBaseProps } from './types';
 import { isCoinSymbol } from '../../constants/coins';
 import { AssetLogo } from '../AssetLogo/AssetLogo';
 import { CoinLogo } from '../CoinLogo/CoinLogo';
@@ -30,11 +30,11 @@ const BadgeWrapper = styled.div`
     flex: none;
 `;
 
-interface AssetItemProps extends AssetOptionBaseProps {
+type AssetItemProps = AssetOptionBaseProps & {
     handleClick: (selectedAsset: AssetOptionBaseProps) => void;
     'data-testid'?: string;
     balance?: ReactNode;
-}
+};
 
 export const AssetItem = ({
     cryptoName,

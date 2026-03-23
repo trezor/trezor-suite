@@ -4,11 +4,11 @@ import { Button, VStack } from '@suite-native/atoms';
 import { useBluetoothDevice } from '@suite-native/bluetooth';
 import { Translation } from '@suite-native/intl';
 import {
-    DeviceSettingsStackParamList,
+    type DeviceSettingsStackParamList,
     DeviceSettingsStackRoutes,
     DynamicScreenHeader,
     Screen,
-    StackNavigationProps,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
 import { useToast } from '@suite-native/toasts';
 

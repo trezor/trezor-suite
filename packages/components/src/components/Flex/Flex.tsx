@@ -1,30 +1,30 @@
-import React, { HTMLAttributes } from 'react';
+import React, { type HTMLAttributes } from 'react';
 
-import styled, { DefaultTheme, css } from 'styled-components';
+import styled, { type DefaultTheme, css } from 'styled-components';
 
 import {
-    Color,
-    Elevation,
-    SpacingValues,
-    SpacingValuesNew,
+    type Color,
+    type Elevation,
+    type SpacingValues,
+    type SpacingValuesNew,
     mapElevationToBorder,
 } from '@trezor/theme';
 
 import {
-    FlexAlignItems,
-    FlexAlignSelf,
-    FlexDirection,
-    FlexJustifyContent,
-    FlexType,
-    FlexWrap,
+    type FlexAlignItems,
+    type FlexAlignSelf,
+    type FlexDirection,
+    type FlexJustifyContent,
+    type FlexType,
+    type FlexWrap,
 } from './FlexProp';
 import {
-    FrameProps,
-    FramePropsKeys,
+    type FrameProps,
+    type FramePropsKeys,
     pickAndPrepareFrameProps,
     withFrameProps,
 } from '../../utils/frameProps';
-import { TransientProps, makePropsTransient } from '../../utils/transientProps';
+import { type TransientProps, makePropsTransient } from '../../utils/transientProps';
 import { useElevation } from '../ElevationContext/ElevationContext';
 
 export const allowedFlexFrameProps = [

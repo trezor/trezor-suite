@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 import { borders } from '@trezor/theme';
 
 import { useTabsContext } from './TabsContext';
-import { TabsSize } from './types';
+import { type TabsSize } from './types';
 import { TRANSFORM_OPTIONS, mapSizeToItemPadding, mapSizeToTypography } from './utils';
 import { Text } from '../typography/Text/Text';
 

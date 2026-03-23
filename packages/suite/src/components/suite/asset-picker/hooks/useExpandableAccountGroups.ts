@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 
 export function useExpandableAccountGroups() {
     const [expandedAccountTokensGroups, setExpandedAccountTokensGroups] = useState<AccountKey[]>(

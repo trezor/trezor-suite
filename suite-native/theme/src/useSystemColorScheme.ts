@@ -1,6 +1,6 @@
 import { useColorScheme } from 'react-native';
 
-import { ThemeColorVariant } from '@trezor/theme';
+import { type ThemeColorVariant } from '@trezor/theme';
 
 export const useSystemColorScheme = (): ThemeColorVariant => {
     const colorScheme = useColorScheme();

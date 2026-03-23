@@ -1,9 +1,6 @@
 import { Form } from '@suite-native/forms';
-import {
-    renderHookWithBasicProvider,
-    renderHookWithStoreProviderAsync,
-} from '@suite-native/test-utils';
-import { BuyFormType } from '@suite-native/trading-types';
+import { renderHookWithBasicProvider, renderHookWithStoreProvider } from '@suite-native/test-utils';
+import { type BuyFormType } from '@suite-native/trading-types';
 
 import { useBuyForm } from '../useBuyForm';
 import { useBuyInputFormControls } from '../useBuyInputFormControls';
@@ -11,15 +8,15 @@ import { useBuyInputFormControls } from '../useBuyInputFormControls';
 describe('useBuyInputFormControls', () => {
     let form: BuyFormType;
 
-    const renderBuyFormHook = () => renderHookWithStoreProviderAsync(() => useBuyForm());
+    const renderBuyFormHook = () => renderHookWithStoreProvider(() => useBuyForm());
 
     const renderUseBuyInputFormControls = () =>
         renderHookWithBasicProvider(() => useBuyInputFormControls('fiatValue'), {
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 
-    beforeEach(async () => {
-        const { result } = await renderBuyFormHook();
+    beforeEach(() => {
+        const { result } = renderBuyFormHook();
         form = result.current;
     });
 

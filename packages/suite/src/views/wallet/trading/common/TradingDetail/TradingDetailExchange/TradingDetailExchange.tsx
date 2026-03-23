@@ -1,11 +1,12 @@
 import { useEffect } from 'react';
 import { usePrevious } from 'react-use';
 
-import { ExchangeTradeStatus } from 'invity-api';
+import { type ExchangeTradeStatus } from 'invity-api';
 import styled from 'styled-components';
 
 import { events } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
+import { goto } from '@suite/router';
 import {
     type TradingExchangeType,
     selectTradingComposedTransactionInfo,
@@ -13,19 +14,18 @@ import {
 import { selectAccounts } from '@suite-common/wallet-core';
 import { Box, BulletList, Card, Column, H3, Paragraph } from '@trezor/components';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingDetailContext } from 'src/hooks/wallet/trading/useTradingDetail';
 import { tradeFinalStatuses } from 'src/hooks/wallet/trading/useTradingWatchTrade';
 import { useAnalytics } from 'src/support/useAnalytics';
-import { TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
+import { type TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
 import { AfterTradeExperiment } from 'src/views/wallet/trading/common/TradingDetail/AfterTradeExperiment';
 import { TradingDetailExchangePaymentConverting } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailExchange/TradingDetailExchangePaymentConverting';
 import { TradingDetailExchangePaymentFailed } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailExchange/TradingDetailExchangePaymentFailed';
 import { TradingDetailExchangePaymentKYC } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailExchange/TradingDetailExchangePaymentKYC';
 import { TradingDetailExchangePaymentSending } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailExchange/TradingDetailExchangePaymentSending';
 import { TradingDetailExchangePaymentSuccessful } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailExchange/TradingDetailExchangePaymentSuccessful';
-import { TradingSelectedOfferInfo } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingSelectedOfferInfo';
+import { TradingDetailExchangeSidebar } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailExchangeSidebar';
 import { TradingWrapper } from 'src/views/wallet/trading/common/TradingWrapper';
 
 import { TradingDetailStepList } from '../TradingDetailStepList';
@@ -69,8 +69,6 @@ export const TradingDetailExchange = () => {
     const exchange = trade?.data?.exchange;
     const provider =
         info && info.providerInfos && exchange ? info.providerInfos[exchange] : undefined;
-    const supportUrlTemplate = provider?.statusUrl || provider?.supportUrl;
-    const supportUrl = supportUrlTemplate?.replace('{{orderId}}', trade?.data?.orderId || '');
 
     const quoteAmounts: TradingGetCryptoQuoteAmountProps = {
         sendAmount: trade?.data?.sendStringAmount ?? '',
@@ -99,7 +97,7 @@ export const TradingDetailExchange = () => {
     // if trade not found, it is because user refreshed the page and stored transactionId got removed
     // go to the default trading page, the trade is shown there in the previous trades
     if (!trade) {
-        dispatch(goto('wallet-trading-exchange'));
+        dispatch(goto({ routeName: 'wallet-trading-exchange' }));
 
         return null;
     }
@@ -131,7 +129,7 @@ export const TradingDetailExchange = () => {
                         trade={trade.data}
                         account={sendAccount}
                         provider={provider}
-                        supportUrl={supportUrl}
+                        supportUrl={provider?.supportUrl}
                     />
                 );
             default:
@@ -184,16 +182,12 @@ export const TradingDetailExchange = () => {
                     quoteAmounts={quoteAmounts}
                 />
             </Column>
-            <Card>
-                <TradingSelectedOfferInfo
-                    account={sendAccount}
-                    selectedAccount={receiveAccount}
-                    selectedQuote={trade.data}
-                    providers={info?.providerInfos}
-                    type="exchange"
-                    quoteAmounts={quoteAmounts}
-                />
-            </Card>
+            <TradingDetailExchangeSidebar
+                sendAccount={sendAccount}
+                receiveAccount={receiveAccount}
+                trade={trade.data}
+                providers={info?.providerInfos}
+            />
         </Wrapper>
     );
 };

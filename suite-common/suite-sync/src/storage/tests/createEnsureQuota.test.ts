@@ -1,15 +1,15 @@
 import { createMockDeps } from '@suite-common/dependency-injection';
 import {
-    SuiteSyncOwner,
+    type SuiteSyncOwner,
     asSuiteSyncOwnerId,
     asSuiteSyncOwnerSecretHex,
 } from '@suite-common/suite-sync-storage';
 import { asDelegatedIdentityKey } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { StaticSessionId } from '@trezor/connect';
+import { type StaticSessionId } from '@trezor/connect';
 import { ok } from '@trezor/type-utils';
 
-import { EnsureQuotaDeps, createEnsureQuota } from '../createEnsureQuota';
+import { type EnsureQuotaDeps, createEnsureQuota } from '../createEnsureQuota';
 
 const OWNER_ABCD: SuiteSyncOwner = {
     ownerId: asSuiteSyncOwnerId('owner-id-abcd'),

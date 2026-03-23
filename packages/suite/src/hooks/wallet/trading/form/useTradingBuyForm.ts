@@ -1,22 +1,24 @@
 import { useEffect, useRef } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
-import type { BuyTrade, BuyTradeResponse, FiatCurrencyCode } from 'invity-api';
+import type { BuyTrade, BuyTradeResponse } from 'invity-api';
 import useDebounce from 'react-use/lib/useDebounce';
 
 import { events } from '@suite/analytics';
+import { goto } from '@suite/router';
 import {
     TRADING_DEFAULT_CRYPTO_CURRENCY,
     TRADING_FORM_CRYPTO_INPUT,
     TRADING_FORM_FIAT_INPUT,
     TRADING_FORM_PAYMENT_METHOD_SELECT,
     TRADING_FORM_PROVIDER_SELECT,
-    TradingAmountLimitProps,
-    TradingBuyFormProps,
+    type TradingAmountLimitProps,
+    type TradingBuyFormProps,
     type TradingBuyType,
     buyThunks,
     getTradingQuotesByPaymentMethod,
     isCountrySubdivisionEmpty,
+    mapFiatCurrencyCodeToBaseCurrencyCode,
     selectTradingBuy,
     selectTradingPaymentMethods,
     selectTradingVerifiedAddress,
@@ -26,11 +28,10 @@ import {
 } from '@suite-common/trading';
 import { getNetwork } from '@suite-common/wallet-config';
 import { useFormDraft } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { isDesktop } from '@trezor/env-utils';
 import { isChanged } from '@trezor/utils';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { submitRequestForm } from 'src/actions/wallet/trading/tradingCommonActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingBuyHandleChange } from 'src/hooks/wallet/trading/form/common/useTradingBuyHandleChange';
@@ -40,11 +41,11 @@ import { useTradingBuyFormDefaultValues } from 'src/hooks/wallet/trading/form/us
 import { useTradingBuyFormRedirectValues } from 'src/hooks/wallet/trading/form/useTradingBuyFormRedirectValues';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { useAnalytics } from 'src/support/useAnalytics';
-import { Dispatch } from 'src/types/suite';
-import { UseTradingFormCommonProps } from 'src/types/trading/trading';
+import { type Dispatch } from 'src/types/suite';
+import { type UseTradingFormCommonProps } from 'src/types/trading/trading';
 import {
-    TradingBuyConfirmTradeProps,
-    TradingBuyFormContextProps,
+    type TradingBuyConfirmTradeProps,
+    type TradingBuyFormContextProps,
 } from 'src/types/trading/tradingForm';
 import { createQuoteLink, createTxLink } from 'src/utils/wallet/trading/buyUtils';
 
@@ -90,12 +91,12 @@ export const useTradingBuyForm = ({
         ? {
               cryptoId: selectedQuote.receiveCurrency,
               amount: selectedQuote.receiveAmount?.toString(),
-              fiatCurrency: selectedQuote.fiatCurrency as FiatCurrencyCode | undefined,
+              fiatCurrency: mapFiatCurrencyCodeToBaseCurrencyCode(selectedQuote.fiatCurrency),
           }
         : {
               cryptoId: quotesRequest?.receiveCurrency,
               amount: quotesRequest?.cryptoStringAmount,
-              fiatCurrency: quotesRequest?.fiatCurrency as FiatCurrencyCode | undefined,
+              fiatCurrency: mapFiatCurrencyCodeToBaseCurrencyCode(quotesRequest?.fiatCurrency),
           };
     useTradingFiatValues(fiatTradingValuesParams);
 
@@ -164,7 +165,7 @@ export const useTradingBuyForm = ({
         values.cryptoSelect?.networkSymbol ?? TRADING_DEFAULT_CRYPTO_CURRENCY,
     );
 
-    const { toggleAmountInCrypto } = useTradingCurrencySwitcher({
+    const { toggleAmountInCrypto: baseToggleAmountInCrypto } = useTradingCurrencySwitcher({
         account,
         methods,
         inputNames: {
@@ -172,6 +173,12 @@ export const useTradingBuyForm = ({
             fiatInput: TRADING_FORM_FIAT_INPUT,
         },
     });
+
+    const toggleAmountInCrypto = () => {
+        setValue(TRADING_FORM_CRYPTO_INPUT, '');
+        setValue(TRADING_FORM_FIAT_INPUT, '');
+        baseToggleAmountInCrypto();
+    };
 
     const { handleChange } = useTradingBuyHandleChange({
         formValues: values,
@@ -184,7 +191,7 @@ export const useTradingBuyForm = ({
     const goToOffers = async () => {
         await handleChange();
 
-        dispatch(goto('wallet-trading-buy-offers'));
+        dispatch(goto({ routeName: 'wallet-trading-buy-offers' }));
 
         analytics.report({
             type: events.tradeCompareOffersEvent.name,
@@ -212,7 +219,7 @@ export const useTradingBuyForm = ({
                 if (response.trade.paymentId) {
                     dispatch(tradingBuyActions.saveTransactionId(response.trade.paymentId));
                 }
-                dispatch(goto('wallet-trading-buy-detail'));
+                dispatch(goto({ routeName: 'wallet-trading-buy-detail' }));
             }
         };
 
@@ -447,7 +454,7 @@ export const useTradingBuyForm = ({
     useEffect(() => {
         // We need to clear quotes on offers page without redirecting to form page
         if (!quotesRequest && !isFormPage && !isOffersPage) {
-            dispatch(goto('wallet-trading-buy'));
+            dispatch(goto({ routeName: 'wallet-trading-buy' }));
 
             return;
         }
@@ -455,7 +462,7 @@ export const useTradingBuyForm = ({
 
     useEffect(() => {
         if (isFromRedirect && quotesRequest) {
-            dispatch(goto('wallet-trading-buy-confirm'));
+            dispatch(goto({ routeName: 'wallet-trading-buy-confirm' }));
         }
     }, [isFromRedirect, quotesRequest, dispatch]);
 

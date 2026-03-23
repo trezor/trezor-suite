@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { BankAccount } from 'invity-api';
+import { type BankAccount } from 'invity-api';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';

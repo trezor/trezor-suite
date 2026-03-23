@@ -2,20 +2,20 @@ import { useState } from 'react';
 
 import { Translation, useTranslation } from '@suite/intl';
 import { selectLabelingDataForSelectedAccount } from '@suite/metadata';
-import { MetadataAddPayload } from '@suite-common/metadata-types';
+import { type MetadataAddPayload } from '@suite-common/metadata-types';
 import { selectSuiteSyncAddressLabels } from '@suite-common/suite-sync';
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { Account } from '@suite-common/wallet-types';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type Account } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { Button, Card, Column, Row, Table, Text } from '@trezor/components';
-import { AccountAddress } from '@trezor/connect';
+import { type AccountAddress } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
 
 import { showAddress } from 'src/actions/wallet/receiveActions';
 import { Address, FormattedCryptoAmount, Labeling } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useReceiveDisabled } from 'src/hooks/suite/useReceiveDisabled';
-import { AppState } from 'src/types/suite';
+import { type AppState } from 'src/types/suite';
 
 const DEFAULT_LIMIT = 10;
 

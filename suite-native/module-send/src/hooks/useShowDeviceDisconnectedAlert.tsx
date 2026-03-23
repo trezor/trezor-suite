@@ -6,11 +6,11 @@ import {
     AppTabsRoutes,
     AuthorizeDeviceStackRoutes,
     HomeStackRoutes,
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
-    SendStackParamList,
-    SendStackRoutes,
-    StackToStackCompositeNavigationProps,
+    type SendStackParamList,
+    type SendStackRoutes,
+    type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 
 type NavigationProps = StackToStackCompositeNavigationProps<

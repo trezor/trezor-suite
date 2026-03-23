@@ -6,7 +6,7 @@ import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-ide
 import { selectSelectedDevice } from '@suite-common/device';
 import { createNativePlatformEncryption } from '@suite-common/platform-encryption-native';
 import {
-    ExtraDependenciesStatic,
+    type ExtraDependenciesStatic,
     notImplementedAction,
     notImplementedActionType,
     notImplementedReducer,
@@ -15,14 +15,13 @@ import {
 } from '@suite-common/redux-utils';
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
-import { Route } from '@suite-common/suite-types';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
 import { analytics } from '@suite-native/analytics';
 import { forgetBluetoothDeviceThunk } from '@suite-native/bluetooth';
 import { selectTokenDefinitionsEnabledNetworks } from '@suite-native/discovery';
 import { selectSupportedLanguageLocale } from '@suite-native/intl';
 import { reportSecurityCheck } from '@suite-native/sentry';
-import { NativeServices } from '@suite-native/services';
+import { type NativeServices } from '@suite-native/services';
 import type { EnsureEncryptionKeyDep, MMKVStorageDep } from '@suite-native/storage';
 import { createSuiteSyncNativeCompositionRoot } from '@suite-native/suite-sync';
 import { selectTradingEnvironment } from '@suite-native/trading-state';
@@ -132,8 +131,6 @@ export const extraDependencies: ExtraDependenciesStatic = {
         // need for this is architectural mistake. Please DO NOT add more and try
         // to remove them.
         selectDesktopBinDir: notImplementedSelector('selectDesktopBinDir', '/bin'),
-        selectRouterApp: notImplementedSelector('selectRouterApp', ''),
-        selectRoute: notImplementedSelector('selectRoute', {} as Route),
         selectMetadata: notImplementedSelector('selectMetadata', {}),
         selectAddressDisplayType: notImplementedSelector(
             'selectAddressDisplayType',
@@ -195,5 +192,6 @@ export const extraDependencies: ExtraDependenciesStatic = {
         storageLoadTokenManagement: notImplementedReducer('storageLoadTokenManagement'),
         storageLoadWalletSettings: notImplementedReducer('storageLoadWalletSettings'),
         storageLoadBioAuth: notImplementedReducer('storageLoadBioAuth'),
+        storageLoadFlags: notImplementedReducer('storageLoadFlags'),
     },
 };

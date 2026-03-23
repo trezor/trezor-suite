@@ -3,14 +3,19 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import type { CryptoId } from 'invity-api';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    FiatRatesRootState,
+    type FiatRatesRootState,
     selectBaseCurrency,
     selectFiatRatesByFiatRateKey,
     updateFiatRatesThunk,
 } from '@suite-common/wallet-core';
-import { FiatRatesResult, Rate, Timestamp, TokenAddress } from '@suite-common/wallet-types';
+import {
+    type FiatRatesResult,
+    type Rate,
+    type Timestamp,
+    type TokenAddress,
+} from '@suite-common/wallet-types';
 import {
     convertAmountUnitsToSubunits,
     getFiatRateKey,
@@ -19,7 +24,7 @@ import {
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 
 import { TRADING_DEFAULT_CRYPTO_CURRENCY } from '../constants';
-import { TradingRootState } from '../reducers/tradingCommonReducer';
+import { type TradingRootState } from '../reducers/tradingCommonReducer';
 import {
     cryptoIdToNetworkAndContractAddress,
     isCryptoIdForNativeToken,

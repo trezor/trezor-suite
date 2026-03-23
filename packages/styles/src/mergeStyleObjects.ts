@@ -2,7 +2,7 @@ import { A } from '@mobily/ts-belt';
 import { assignStyle as untypedAssignStyle } from 'css-in-js-utils';
 import felaPluginExtend from 'fela-plugin-extend';
 
-import { NativeStyleObject, StyleObject } from './types';
+import { type NativeStyleObject, type StyleObject } from './types';
 
 const applyExtendPlugin = felaPluginExtend() as <T>(styleObject: T) => T;
 const assignStyle = untypedAssignStyle as any as (...styleObjects: StyleObject[]) => StyleObject;

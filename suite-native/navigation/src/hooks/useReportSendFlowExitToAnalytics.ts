@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 
-import { AnalyticsSendFlowStep, events } from '@suite-native/analytics';
+import { type AnalyticsSendFlowStep, events } from '@suite-native/analytics';
 import { useAnalytics } from '@suite-native/services';
 import { isNotNullOrUndefined } from '@trezor/utils';
 

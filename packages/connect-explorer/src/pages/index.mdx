@@ -192,7 +192,6 @@ export const ExampleHeading = styled.h3`
 
             ```javascript
                 TrezorConnect.init({
-                    // TrezorConnect.method is called
                     manifest: {
                         email: 'developer@xyz.com',
                         appName: 'Your Application',
@@ -256,7 +255,11 @@ export const ExampleHeading = styled.h3`
         </Button>
     </SdkHeading>
 
-    <Tabs items={['Core in iframe', 'Core in popup', 'Auto mode selection']}>
+    <Tabs items={['Suite desktop popup', 'Suite Web popup', 'Auto mode selection']}>
+        <Tabs.Tab>
+            {/* todo: add image */}
+            <div> Suite desktop is focused and popup is presented to user</div>
+        </Tabs.Tab>
         <Tabs.Tab>
             <ZoomableIllustration
                 src="/images/schema-connect-web.svg"
@@ -277,15 +280,12 @@ export const ExampleHeading = styled.h3`
         <SdkDescription>
             #### About
 
-            `@trezor/connect-web` imports only a thin layer with API description into your 3rd party application.
-            It has two modes of operation: core SDK logic can be either injected into **iframe** or opened in **popup** (more info in [init method documentation](./methods/other/init)).
-            User input, such as passphrase or PIN, is handled by the popup page opened on trezor.io, isolated from your application.
-            When using iframe persistent connection between your app and core SDK is kept so device events or blockchain subscriptions are available.
-            However iframe doesn't allow WebUSB communication, so popup is automatically preferred if [Trezor Bridge](https://trezor.io/guides/trezor-suite/trezor-suite-desktop/deprecation-and-removal-of-standalone-trezor-bridge) is not running.
+            `@trezor/connect-web` ships a thin API layer that routes requests to one of two runtime modes:
+            **Suite Desktop WebSocket** (preferred when Suite Desktop is running) or **Suite Web popup** hosted on connect.trezor.io.
+            User input (PIN, passphrase, confirmations) is handled inside Suite Desktop or the popup, isolated from your application.
         </SdkDescription>
         <ExamplesAside>
             <ExampleHeading>Examples:</ExampleHeading>
-            -   [web app](https://github.com/trezor/trezor-suite/tree/develop/packages/connect-examples/browser-inline-script)
             -   [web extension mv3 (foreground)](https://github.com/trezor/trezor-suite/tree/develop/packages/connect-examples/webextension-mv3)
         </ExamplesAside>
     </SdkContainer>
@@ -309,7 +309,6 @@ export const ExampleHeading = styled.h3`
 
                 ```javascript
                 TrezorConnect.init({
-                    // TrezorConnect.method is called
                     manifest: {
                         email: 'developer@xyz.com',
                         appName: 'Your Application',
@@ -399,9 +398,7 @@ export const ExampleHeading = styled.h3`
         </SdkDescription>
         <ExamplesAside>
             <ExampleHeading>Examples:</ExampleHeading>
-            - [Simple example](https://github.com/trezor/trezor-suite/tree/develop/packages/connect-examples/webextension-mv3-sw)
-            - [Example with Webpack, TS](https://github.com/trezor/trezor-suite/tree/develop/packages/connect-examples/webextension-mv3-sw-ts)
-            - [Connect Explorer example](https://github.com/trezor/trezor-suite/tree/develop/packages/connect-explorer/src-webextension)
+            - [Simple example](https://github.com/trezor/trezor-suite/tree/develop/packages/connect-examples/webextension)
         </ExamplesAside>
     </SdkContainer>
 
@@ -417,17 +414,17 @@ export const ExampleHeading = styled.h3`
 
                 We support two methods for integrating the library into your extension - automatic content script injection and manual content script injection.
 
-                For automatic content script injection, modify your extension's `manifest.json` to include scripting permissions, specify `host_permissions`, and define your service worker script as shown below:
+                The popup flow no longer uses `connect-script` or inline iframe injection. Instead, the service worker opens
+                the Suite Web popup and the popup communicates back using the `externally_connectable` API. Make sure your
+                extension allows the Suite Web origin you use to send messages back:
 
                 ```json
-                    "permissions": ["scripting"],
-                    "host_permissions": ["*://connect.trezor.io/9/*"]
-                    "background": {
-                        "service_worker": "serviceWorker.js"
-                    }
+                "externally_connectable": {
+                    "matches": [
+                        "https://suite.trezor.io/*"
+                    ]
+                }
                 ```
-
-                For manual content script injection, you can [find more information in the README](/readme/connect-webextension).
 
                 {<h3>Import in the service worker</h3>}
 
@@ -442,7 +439,6 @@ export const ExampleHeading = styled.h3`
 
                 ```javascript
                 TrezorConnect.init({
-                    // TrezorConnect.method is called
                     manifest: {
                         email: 'developer@xyz.com',
                         appName: 'Your Application',

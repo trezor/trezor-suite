@@ -1,10 +1,9 @@
 import { Translation } from '@suite/intl';
+import { SettingsAnchor, goto } from '@suite/router';
 import { getFirmwareDowngradeUrl } from '@suite-common/suite-utils';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionButton, ActionColumn, TextColumn } from 'src/components/suite';
-import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 
 export const CustomFirmware = () => {
@@ -14,7 +13,8 @@ export const CustomFirmware = () => {
     const isDeviceLocked = isLocked();
     const firmwareDowngradeUrl = getFirmwareDowngradeUrl(device);
 
-    const openModal = () => dispatch(goto('firmware-custom', { params: { cancelable: true } }));
+    const openModal = () =>
+        dispatch(goto({ routeName: 'firmware-custom', params: { cancelable: true } }));
 
     return (
         <SettingsSectionItem anchorId={SettingsAnchor.CustomFirmware}>
