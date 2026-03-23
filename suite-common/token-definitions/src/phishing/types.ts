@@ -22,4 +22,9 @@ type PhishingDetectorFnProps = {
     tokenDefinitions?: TokenDefinitions;
 };
 
-export type PhishingDetectorFn = (props: PhishingDetectorFnProps) => boolean;
+export interface PhishingDetectorResult {
+    isPhishing: boolean;
+    transaction?: TransactionWithFiatAmount;
+}
+
+export type PhishingDetectorFn = (props: PhishingDetectorFnProps) => PhishingDetectorResult;
