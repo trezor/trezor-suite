@@ -53,9 +53,8 @@ jest.mock('@suite-common/tx-simulation', () => ({}));
 
 // TrezorConnect.composeTransaction is trying to connect to blockchain, to get current block height.
 // Mock whole module to avoid internet connection.
-jest.mock('@trezor/blockchain-link', () => ({
-    __esModule: true,
-    default: class BlockchainLink {
+jest.mock('@trezor/blockchain-link', () => {
+    class BlockchainLink {
         name = 'jest-mocked-module';
         listeners: Record<string, () => void> = {};
 
@@ -100,8 +99,13 @@ jest.mock('@trezor/blockchain-link', () => ({
         estimateFee(params: { blocks: number[] }) {
             return params.blocks.map(() => ({ feePerUnit: '-1' }));
         }
-    },
-}));
+    }
+
+    return {
+        __esModule: true,
+        BlockchainLink,
+    };
+});
 
 type RootReducerState = ReturnType<ReturnType<typeof fixtures.getRootReducer>>;
 
