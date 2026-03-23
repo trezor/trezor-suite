@@ -52,7 +52,7 @@ jobs:
 
       - name: Set daily web matrix
         id: set-matrix-daily-web
-        run: echo "matrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=T3W1 --firmware=2-latest --env=web --groups=api,init --disable_cache_tx=true --transport=node-bridge)" >> $GITHUB_OUTPUT
+        run: echo "matrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=T3W1 --firmware=2-latest --env=web --groups=api,init,thp --disable_cache_tx=true --transport=node-bridge)" >> $GITHUB_OUTPUT
 
       - name: Set nightly T3W1 matrix
         id: set-matrix-nightly-t3w1
