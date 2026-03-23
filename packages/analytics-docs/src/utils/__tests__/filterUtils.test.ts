@@ -1,4 +1,11 @@
-import { fuzzyMatch, fuzzyMatchExportName, getEventId, toEventExportName } from '../filterUtils';
+import type { EventDoc } from '../../types';
+import {
+    fuzzyMatch,
+    fuzzyMatchExportName,
+    getEventId,
+    getVersionsWithEvents,
+    toEventExportName,
+} from '../filterUtils';
 
 describe('fuzzyMatch (event name)', () => {
     it('empty query matches everything', () => {
@@ -85,5 +92,56 @@ describe('toEventExportName', () => {
 describe('getEventId', () => {
     it('produces safe DOM id from event name', () => {
         expect(getEventId('accounts/active-staking')).toBe('event-accounts-active-staking');
+    });
+});
+
+describe('getVersionsWithEvents', () => {
+    it('uses only event.changelog.entries as the source of truth', () => {
+        const eventA = {
+            name: 'accounts/active-staking',
+            descriptionTrigger: 'trigger',
+            changelog: {
+                entries: [
+                    { version: '1.0.0', notes: 'event note' },
+                    { version: '1.1.0', notes: 'attribute merged note' },
+                ],
+            },
+            attributes: {
+                someAttribute: {
+                    changelog: {
+                        // This version should be ignored because it's not present in event.changelog.entries.
+                        entries: [{ version: '2.0.0', notes: 'attribute-only note' }],
+                    },
+                },
+            },
+            platform: 'desktop',
+        } as EventDoc;
+
+        const versionsWithEvents = getVersionsWithEvents([eventA]);
+
+        expect(versionsWithEvents.map(v => v.version)).toEqual(['1.1.0', '1.0.0']);
+        expect(versionsWithEvents[0].events).toEqual([eventA]);
+        expect(versionsWithEvents[1].events).toEqual([eventA]);
+    });
+
+    it('deduplicates events for the same version', () => {
+        const eventA = {
+            name: 'accounts/active-staking',
+            descriptionTrigger: 'trigger',
+            changelog: {
+                entries: [
+                    { version: '1.0.0', notes: 'first note' },
+                    { version: '1.0.0', notes: 'second note' },
+                ],
+            },
+            attributes: {},
+            platform: 'desktop',
+        } as EventDoc;
+
+        const versionsWithEvents = getVersionsWithEvents([eventA]);
+
+        expect(versionsWithEvents).toHaveLength(1);
+        expect(versionsWithEvents[0].version).toBe('1.0.0');
+        expect(versionsWithEvents[0].events).toEqual([eventA]);
     });
 });

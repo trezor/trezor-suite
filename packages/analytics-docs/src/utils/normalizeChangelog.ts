@@ -9,6 +9,8 @@ export type NormalizedChangelog = {
     lastUpdatedInVersion?: AppVersion;
 };
 
+const UNKNOWN_VERSION: AppVersion = '?';
+
 const parseVersion = (v: string): [number, number, number] => {
     const [a = 0, b = 0, c = 0] = v.split('.').map(n => Number(n) || 0);
 
@@ -16,6 +18,10 @@ const parseVersion = (v: string): [number, number, number] => {
 };
 
 const compareVersions = (va: string, vb: string): number => {
+    if (va === UNKNOWN_VERSION && vb === UNKNOWN_VERSION) return 0;
+    if (va === UNKNOWN_VERSION) return 1; // Put unknown versions at the end.
+    if (vb === UNKNOWN_VERSION) return -1; // Put unknown versions at the end.
+
     const [a1, b1, c1] = parseVersion(va);
     const [a2, b2, c2] = parseVersion(vb);
 
@@ -38,16 +44,29 @@ export const normalizeChangelog = (
         uniqueVersions.set(entry.version, existing);
     }
 
-    const sortedVersions = Array.from(uniqueVersions.keys()).sort(compareVersions);
+    const allVersions = Array.from(uniqueVersions.keys()) as AppVersion[];
+    const numericVersions = allVersions.filter(
+        (v): v is Exclude<AppVersion, '?'> => v !== UNKNOWN_VERSION,
+    );
+    const unknownVersions = allVersions.filter(v => v === UNKNOWN_VERSION);
+
+    const sortedNumericVersions = numericVersions.sort(compareVersions);
+    const sortedVersions = [...sortedNumericVersions, ...unknownVersions];
 
     const sortedEntries = sortedVersions.flatMap(version => uniqueVersions.get(version) || []);
 
-    const first = sortedVersions[0] as AppVersion;
-    const last = sortedVersions[sortedVersions.length - 1] as AppVersion;
+    const firstNumeric = sortedNumericVersions[0] as AppVersion | undefined;
+    const lastNumeric = sortedNumericVersions[sortedNumericVersions.length - 1] as
+        | AppVersion
+        | undefined;
+    const onlyUnknown = !firstNumeric && unknownVersions.length > 0 ? UNKNOWN_VERSION : undefined;
+
+    const first = firstNumeric ?? onlyUnknown;
+    const last = lastNumeric ?? onlyUnknown;
 
     return {
         entries: sortedEntries,
         addedInVersion: first,
-        lastUpdatedInVersion: last !== first ? last : undefined,
+        lastUpdatedInVersion: last && first && last !== first ? last : undefined,
     };
 };
