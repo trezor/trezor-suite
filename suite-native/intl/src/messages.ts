@@ -106,7 +106,7 @@ export const messages = {
             secondaryButtonTitle: 'Not now',
         },
         errors: {
-            deviceCancelled: 'Activation was cancelled on the device.',
+            deviceCancelled: 'Activation was canceled on the device.',
             deviceError: 'Device communication failed.',
             suiteSyncUpdateError: 'Failed to update data.',
             suiteSyncUnavailable: 'Suite Sync unavailable on this device.',
@@ -286,7 +286,7 @@ export const messages = {
         deviceCard: {
             connect: {
                 actionButton: 'Connect',
-                pairingHint: 'Make sure the pairing code on your Trezor matches.',
+                pairingHint: 'Confirm the Bluetooth pairing request on your Trezor as well.',
             },
             remove: {
                 actionButton: 'Pair again',
@@ -909,15 +909,15 @@ export const messages = {
             info: {
                 title: 'Check device authenticity',
                 item1: 'This confirms that the secure hardware inside your device is genuine.',
-                item2: 'Once your device has passed this check and been verified, you’re all set.',
+                item2: 'Once your Trezor has passed this check and been verified, you’re all set.',
                 letsDoItButton: 'Let’s do it',
             },
             success: {
-                title: 'Device check successful',
+                title: 'Device authenticity check passed',
                 subtitle: 'You can now be sure that your device is genuine & safe to use.',
             },
             toast: {
-                canceled: 'Authenticity check canceled',
+                canceled: 'Device authenticity check canceled',
                 error: 'Unable to validate device: {error}',
                 failed: 'Device authenticity check failed: {error}',
             },
@@ -964,6 +964,30 @@ export const messages = {
                     'Although unlikely, you may need to restore your wallet in case of firmware update issue.',
                 primaryButton: 'No, create wallet backup',
                 secondaryButton: 'Yes, update firmware',
+            },
+        },
+        autoconnect: {
+            settingsCard: {
+                title: 'Auto-connect',
+                description: 'Toggle auto-connect settings',
+            },
+            screen: {
+                subtitle:
+                    'Trezor will connect automatically, so you don’t need to approve each connection.',
+            },
+            enable: {
+                pictogramTitle: 'Auto-connect turned on',
+                description:
+                    'Trezor will no longer connect automatically to Trezor Suite. You’ll confirm each connection on your device.',
+                turnOffButton: 'Turn off',
+                error: 'Auto-connect failed to turn on.',
+                successToast: 'Auto-connect turned on',
+            },
+            disable: {
+                pictogramTitle: 'Auto-connect turned off',
+                description:
+                    'Trezor will connect automatically to Trezor Suite. No need to confirm each time.',
+                turnOnButton: 'Turn on',
             },
         },
     },
@@ -1159,7 +1183,7 @@ export const messages = {
                         question: 'My Trezor device can’t connect',
                         answer: {
                             '0': 'Check the devices are in close proximity',
-                            '1': 'Make sure bluetooth is enabled on both devices',
+                            '1': 'Make sure Bluetooth is enabled on both devices',
                             '2': 'Remove old Trezor device Bluetooth connections',
                             '3': 'Restart your device(s)',
                             '4': 'Turn Bluetooth on/off again on your mobile device',
@@ -1340,7 +1364,7 @@ export const messages = {
                         titleNoConnectedTrezor: 'Enabling auto-eject will eject all wallets',
                         titleConnectedTrezor: ' after disconnecting Trezor',
                         description:
-                            'You will need to reconnect your wallets to see your balances again.',
+                            "You'll need to reconnect your Trezor to see your balances again.",
                         primaryButtonTitle: 'Enable auto-eject',
                     },
                 },
@@ -1370,26 +1394,26 @@ export const messages = {
                 toastOff: 'Check turned off',
                 turnOff: {
                     content: 'This feature is designed to protect your security.',
-                    item1: 'Only continue if the device has passed this check before',
+                    item1: 'Only continue if your Trezor has successfully passed this check before.',
                     item1Explanation:
-                        'Using an unverified device could compromise the security of your funds.',
+                        'Using an unverified device could result in the loss of your funds.',
                     item2: 'Only use for testing and development',
                     item2Explanation:
                         'This security check should only be disabled for testing and development purposes.',
-                    acknowledgement: 'I’ve read and understood the above',
+                    acknowledgement: 'I’ve read and understood the above.',
                     acknowledgementNote: 'Trezor Support will never ask you to turn this off.',
                     buttonTurnOff: 'Turn off',
                 },
                 firmware: {
                     title: 'Firmware authenticity check',
                     subtitle:
-                        'This check ensures that your firmware is legitimate. Compromised firmware won’t be able to communicate with Trezor Suite.',
+                        'Ensure that your firmware is legitimate. Compromised firmware won’t be able to communicate with Trezor Suite.',
                     turnOffTitle: 'Turn off firmware authenticity check',
                 },
                 device: {
                     title: 'Device authenticity check',
                     subtitle:
-                        'This check verifies that your Trezor device is genuine. It helps ensure you never use a compromised or fake device. ',
+                        'Verify that your Trezor device is genuine. This helps ensure you never use a compromised or fake device. ',
                     turnOffTitle: 'Turn off device authenticity check',
                 },
             },
@@ -1399,7 +1423,7 @@ export const messages = {
                     'We’ve reserved a small amount of the native token on {supportedNetworks} to cover any extra network fees when you send, swap, or sell your assets.',
             },
             mevProtection: {
-                title: 'MEV Protection',
+                title: 'MEV protection',
                 subtitle:
                     'Stay safe and secure fair prices by preventing others from interfering with your transactions. Available on {supportedNetworks}.',
             },
@@ -1419,11 +1443,9 @@ export const messages = {
                     connectButton: 'Connect',
                     invalidFormat:
                         'Incorrect format. Please enter the server address in such a way: host:port:[t|s]',
-                    unableToConnect: {
-                        clearnet:
-                            'Unable to connect to server. Check for typos and server disruptions.',
-                        tor: 'Unable to connect to server. Check for typos and ensure Orbot is running on your device.',
-                    },
+                    unableToConnect:
+                        'Unable to connect to server. Check for typos and server disruptions.',
+                    torNotSupported: "Tor isn't supported. Use a clearnet address instead.",
                 },
                 closeAction: {
                     title: 'Discard changes?',
@@ -1453,11 +1475,10 @@ export const messages = {
                 },
                 feedback: {
                     title: 'Rate your {featureName} experience',
-                    description:
-                        'It takes just a few seconds. Your feedback helps us improve the feature for everyone.',
+                    description: "Tell us what's working and what's not—we read every reply.",
                     rateButton: 'Share feedback',
                     dismissButton: 'Dismiss',
-                    ratingLabel: "How's {featureName} making you feel?",
+                    ratingLabel: 'Show us your {featureName} vibe!',
                     descriptionLabel: "Tell us what's working and what's not—we read every reply.",
                     submitButton: 'Submit',
                 },
@@ -1679,7 +1700,7 @@ export const messages = {
                     title: 'Wallet backup',
                     description: 'Recovers access to assets',
                     bullet1:
-                        'The only way to access your funds again if something happens to your Trezor.',
+                        'The only way to recover access to your assets if something happens to your Trezor.',
                 },
             },
             step4: {
@@ -1901,7 +1922,8 @@ export const messages = {
         },
         phishing: {
             badge: 'Caution!',
-            warning: 'This transaction looks suspicious. <blogLink>Learn more</blogLink>',
+            warning:
+                "Caution! This transaction may be a scam. If you’re unsure, don't engage. <blogLink>Read more</blogLink>",
             markedAsRecognized: 'You’ve confirmed this transaction is safe..',
             hideTransaction: 'Mark as suspicious',
             unhideTransaction: 'Mark as safe',
@@ -2333,7 +2355,7 @@ export const messages = {
         deviceCompromised: {
             title: 'Your device may have been compromised',
             subtitle: {
-                fwRevision: 'Your device firmware revision check failed.',
+                fwRevision: "Your Trezor's firmware authenticity check failed.",
                 deviceAuthenticity: 'Your device authentication check failed.',
                 entropy: 'Security check (entropy verification) failed.',
             },
@@ -2371,7 +2393,7 @@ export const messages = {
             infoModal: {
                 title: 'Manage {earnType} in Trezor Suite for desktop',
                 subtitle: 'Go to the link below on your computer and download the desktop app.',
-                copyLabel: 'Tap to copy',
+                copyLabel: 'Hold to copy',
             },
             adaInfo: 'Your ADA stays fully accessible while earning rewards.',
         },
@@ -2897,22 +2919,22 @@ export const messages = {
                     button: 'Why?',
                 },
                 alert: {
-                    title: 'Closing the app during installation may corrupt the firmware. Keep the app open.',
+                    title: 'Leaving the app would corrupt the firmware and you’d need to start the installation over.',
                     button: 'Got it',
                 },
             },
             trezorFacts: {
-                '1': 'Trezor was founded in Prague by SatoshiLabs and is still proudly independent today.',
-                '2': 'Trezor launched the world’s first hardware wallet in 2014.',
-                '3': 'Founders Stick & Slush started Trezor as a side project in 2011.',
-                '4': 'Trezor means “vault” in Czech, reflecting its focus on security.',
-                '5': 'Trezor’s hardware and firmware are fully open-source for maximum transparency.',
+                '1': 'Born in Prague and created by SatoshiLabs, Trezor continues to stand proudly independent.',
+                '2': 'In 2014, Trezor introduced the world’s first hardware wallet, the Trezor Model One.',
+                '3': 'Trezor began as a side project in 2011, created by its founders, Stick and Slush.',
+                '4': 'Trezor, which means "vault" in Czech, is designed with security at its core.',
+                '5': 'Trezor’s hardware and firmware are completely open-source, giving you full transparency and control.',
                 '6': 'Trezor’s initial prototypes were created on Raspberry Pi boards.',
-                '7': 'Trezor helped establish key wallet standards like BIP-39 and BIP-44.',
-                '8': 'Trezor’s co-founder Marek “Slush” Palatinus also created the first Bitcoin mining pool.',
-                '9': 'Trezor began controlling its own chip supply chain in 2023 for better security.',
-                '10': 'Trezor has sold wallets in over 150 countries.',
-                '11': 'Trezor’s Safe 5 Freedom Edition, limited to 2,100 units, launched in Jan 2025.',
+                '7': 'Trezor played a key role in shaping industry wallet standards, including BIP-39 and BIP-44.',
+                '8': 'Trezor co-founder Marek "Slush" Palatinus launched the very first Bitcoin mining pool.',
+                '9': 'Since 2023, Trezor has taken direct control of its chip supply chain to enhance security.',
+                '10': 'Trezor has earned the trust of users in over 150 countries worldwide.',
+                '11': 'In January 2025, Trezor introduced the Trezor Safe 5 Freedom Edition, a limited release of just 2,100 devices.',
                 title: 'Did you know?',
             },
             confirmOnDeviceMessage: 'Go to your device and confirm the firmware update.',
