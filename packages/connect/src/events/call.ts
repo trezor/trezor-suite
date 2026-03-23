@@ -2,7 +2,7 @@ import { SerializedError, serializeError } from '@trezor/connect-common/src/cons
 
 import type { CORE_CALL } from './core-call';
 import type { Device } from '../device/Device';
-import type { TrezorConnect } from '../types/api';
+import type { TrezorConnect, TrezorConnectManagement } from '../types/api';
 import type { CommonParams, DeviceIdentity } from '../types/params';
 
 // conditionally unwrap TrezorConnect api method Success<T> response
@@ -41,19 +41,12 @@ type CallApi = {
         ? never
         : UnwrappedMethod<TrezorConnect[K], { method: K }>;
 };
-type TopLevelMethods =
-    | 'cancel'
-    | 'dispose'
-    | 'off'
-    | 'on'
-    | 'removeAllListeners'
-    | 'updateConnectSettings'
-    | 'uiResponse';
+type TrezorConnectManagementMethods = keyof TrezorConnectManagement;
 
 // necessary part of CallMethod which shouldn't be exposed to the consumers
 type SupportParams = { useEventListener?: boolean };
 
-export type CallMethodKeys = Exclude<keyof CallApi, TopLevelMethods>;
+export type CallMethodKeys = Exclude<keyof CallApi, TrezorConnectManagementMethods>;
 export type CallMethodUnion = CallApi[CallMethodKeys];
 export type CallMethodPayload = Parameters<CallMethodUnion>[0] & SupportParams;
 export type CallMethodParams<M extends CallMethodKeys> = Parameters<CallApi[M]>[0];
