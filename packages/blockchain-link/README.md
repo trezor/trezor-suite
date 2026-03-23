@@ -20,7 +20,7 @@ yarn add @trezor/blockchain-link
 And use it.
 
 ```javascript
-import BlockchainLink from '@trezor/blockchain-link';
+import { BlockchainLink } from '@trezor/blockchain-link';
 import Blockbook from '@trezor/blockchain-link/lib/workers/blockbook';
 
 const link = new BlockchainLink({

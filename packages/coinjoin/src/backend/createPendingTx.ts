@@ -1,4 +1,4 @@
-import { transformTransaction } from '@trezor/blockchain-link-utils/src/blockbook';
+import { blockbookUtils } from '@trezor/blockchain-link-utils';
 
 import type { BroadcastedTransactionDetails } from '../types';
 import type { AccountAddresses, Transaction } from '../types/backend';
@@ -38,5 +38,5 @@ export const createPendingTransaction = (
         })),
     };
 
-    return transformTransaction(blockbookTx, addresses ?? descriptor);
+    return blockbookUtils.transformTransaction(blockbookTx, addresses ?? descriptor);
 };

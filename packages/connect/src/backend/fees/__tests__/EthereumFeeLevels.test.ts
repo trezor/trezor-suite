@@ -1,4 +1,4 @@
-import BlockchainLink from '@trezor/blockchain-link';
+import { BlockchainLink } from '@trezor/blockchain-link';
 import coinsJSONEth from '@trezor/connect-data/files/coins-eth.json';
 import coinsJSON from '@trezor/connect-data/files/coins.json';
 

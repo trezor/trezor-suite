@@ -1,4 +1,4 @@
-import BlockchainLink from '@trezor/blockchain-link';
+import { BlockchainLink } from '@trezor/blockchain-link';
 import { MESSAGES } from '@trezor/blockchain-link-types/src/constants';
 import type { ValidateEvmRpc } from '@trezor/blockchain-link-types/src/responses';
 

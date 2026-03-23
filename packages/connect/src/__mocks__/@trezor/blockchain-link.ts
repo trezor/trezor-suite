@@ -51,5 +51,5 @@ class BlockchainLink {
 
 module.exports = {
     __esModule: true,
-    default: BlockchainLink,
+    BlockchainLink,
 };

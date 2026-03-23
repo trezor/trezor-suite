@@ -1,4 +1,4 @@
-import BlockchainLink from '@trezor/blockchain-link';
+import { BlockchainLink } from '@trezor/blockchain-link';
 
 import type { CoreEventMessage } from '../../events';
 import type { CoinInfo } from '../../types';

@@ -3,7 +3,7 @@ import { Horizon, Keypair } from '@stellar/stellar-sdk';
 import { toStroops } from '@trezor/blockchain-link-utils/src/stellar';
 import * as utils from '@trezor/blockchain-link-utils/src/stellar';
 
-import BlockchainLink from '../../src';
+import { BlockchainLink } from '../../src';
 import StellarWorker from '../../src/workers/stellar';
 
 const HORIZON_URL = 'https://horizon.stellar.org';

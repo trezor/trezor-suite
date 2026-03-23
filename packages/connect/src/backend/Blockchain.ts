@@ -3,7 +3,7 @@ import type {
     ServerInfo,
     SubscriptionAccountInfo,
 } from '@trezor/blockchain-link';
-import BlockchainLink from '@trezor/blockchain-link';
+import { BlockchainLink } from '@trezor/blockchain-link';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 
 import type { CoreEventMessage } from '../events';

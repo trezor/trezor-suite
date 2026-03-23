@@ -63,7 +63,7 @@ const initWorker = async (settings: BlockchainSettings) => {
     return dfd.promise;
 };
 
-class BlockchainLink extends TypedEmitter<Events> {
+export class BlockchainLink extends TypedEmitter<Events> {
     settings: BlockchainSettings;
 
     private lazyWorker = createLazy(this.initWorker.bind(this), this.disposeWorker.bind(this));
@@ -341,8 +341,6 @@ class BlockchainLink extends TypedEmitter<Events> {
     }
 }
 
-export default BlockchainLink;
-
 export type BlockchainLinkInterface = (typeof BlockchainLink)['prototype'];
 
 export type BlockchainLinkParams<T extends keyof BlockchainLinkInterface> =
@@ -356,6 +354,8 @@ export type BlockchainLinkResponse<T extends keyof BlockchainLinkInterface> =
             ? R
             : never
         : never;
+
+export { sumAddressValues } from './workers/electrum/methods/getAccountInfo';
 
 // reexport types
 export type { Message } from '@trezor/blockchain-link-types/src/messages';
