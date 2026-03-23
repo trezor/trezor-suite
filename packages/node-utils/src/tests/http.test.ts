@@ -9,6 +9,7 @@ import {
     type RequestHandler,
     allowReferers,
     parseBodyJSON,
+    parseBodyJSONWithLimit,
     parseBodyText,
 } from '../http';
 
@@ -802,6 +803,122 @@ describe('HttpServer', () => {
             expect(res3.status).toEqual(200);
             await expect(res3.text()).resolves.toEqual('root');
             expect(rootHandler).toHaveBeenCalled();
+        });
+    });
+
+    describe('DELETE route', () => {
+        test('DELETE route matches DELETE requests', async () => {
+            const handler = jest.fn((_request, response) => {
+                response.end('deleted');
+            });
+
+            server.delete('/resource', [handler]);
+            await server.start();
+            const { address, port } = server.getServerAddress();
+
+            const res = await fetch(`http://${address}:${port}/resource`, {
+                method: 'DELETE',
+            });
+
+            expect(res.status).toEqual(200);
+            await expect(res.text()).resolves.toEqual('deleted');
+            expect(handler).toHaveBeenCalled();
+        });
+
+        test('DELETE route does not match GET, POST, or PUT', async () => {
+            const handler = jest.fn((_request, response) => {
+                response.end('deleted');
+            });
+
+            server.delete('/resource', [handler]);
+            await server.start();
+            const { address, port } = server.getServerAddress();
+
+            for (const method of ['GET', 'POST', 'PUT']) {
+                const res = await fetch(`http://${address}:${port}/resource`, { method });
+                expect(res.status).toEqual(404);
+            }
+            expect(handler).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('parseBodyJSONWithLimit', () => {
+        test('rejects body larger than limit with 413', async () => {
+            const handler = jest.fn((_request, response) => {
+                response.end('ok');
+            });
+
+            server.post('/upload', [parseBodyJSONWithLimit(100), handler]);
+            await server.start();
+            const { address, port } = server.getServerAddress();
+
+            const res = await fetch(`http://${address}:${port}/upload`, {
+                method: 'POST',
+                body: JSON.stringify({ data: 'x'.repeat(200) }),
+                headers: { 'Content-Type': 'application/json' },
+            });
+
+            expect(res.status).toEqual(413);
+            const body = await res.json();
+            expect(body.error).toContain('Payload too large');
+            expect(handler).not.toHaveBeenCalled();
+        });
+
+        test('rejects invalid JSON with 400', async () => {
+            const handler = jest.fn((_request, response) => {
+                response.end('ok');
+            });
+
+            server.post('/upload', [parseBodyJSONWithLimit(1024), handler]);
+            await server.start();
+            const { address, port } = server.getServerAddress();
+
+            const res = await fetch(`http://${address}:${port}/upload`, {
+                method: 'POST',
+                body: '{invalid json!!!',
+                headers: { 'Content-Type': 'application/json' },
+            });
+
+            expect(res.status).toEqual(400);
+            const body = await res.json();
+            expect(body.error).toContain('Invalid json body');
+            expect(handler).not.toHaveBeenCalled();
+        });
+
+        test('parses valid JSON within limit', async () => {
+            const handler = jest.fn((request, response) => {
+                response.end(JSON.stringify(request.body));
+            });
+
+            server.post('/upload', [parseBodyJSONWithLimit(1024), handler]);
+            await server.start();
+            const { address, port } = server.getServerAddress();
+
+            const res = await fetch(`http://${address}:${port}/upload`, {
+                method: 'POST',
+                body: JSON.stringify({ foo: 'bar' }),
+                headers: { 'Content-Type': 'application/json' },
+            });
+
+            expect(res.status).toEqual(200);
+            expect(await res.json()).toEqual({ foo: 'bar' });
+        });
+
+        test('treats empty body as empty object', async () => {
+            const handler = jest.fn((request, response) => {
+                response.end(JSON.stringify(request.body));
+            });
+
+            server.post('/upload', [parseBodyJSONWithLimit(1024), handler]);
+            await server.start();
+            const { address, port } = server.getServerAddress();
+
+            const res = await fetch(`http://${address}:${port}/upload`, {
+                method: 'POST',
+            });
+
+            expect(res.status).toEqual(200);
+            expect(await res.json()).toEqual({});
         });
     });
 });

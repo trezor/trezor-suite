@@ -4,6 +4,7 @@ export {
     HttpServer,
     allowReferers,
     parseBodyJSON,
+    parseBodyJSONWithLimit,
     parseBodyText,
     type RequestHandler,
     type ParamsValidatorHandler,
