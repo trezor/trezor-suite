@@ -10,6 +10,7 @@
         "files"
     ],
     "references": [
+        { "path": "../analytics-redux" },
         { "path": "../geolocation" },
         { "path": "../redux-utils" },
         { "path": "../suite-types" },
