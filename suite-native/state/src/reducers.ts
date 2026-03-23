@@ -24,6 +24,7 @@ import {
     prepareDiscoveryReducer,
     prepareExplorerReducer,
     prepareFiatRatesReducer,
+    preparePhishingReducer,
     prepareStakeReducer,
     prepareTransactionsReducer,
     prepareWalletSettingsReducer,
@@ -72,6 +73,7 @@ import { appReducer } from './appSlice';
 import { extraDependencies } from './extraDependencies';
 
 const transactionsReducer = prepareTransactionsReducer(extraDependencies);
+const phishingReducer = preparePhishingReducer(extraDependencies);
 const accountsReducer = prepareAccountsReducer(extraDependencies);
 const fiatRatesReducer = prepareFiatRatesReducer(extraDependencies);
 const blockchainReducer = prepareBlockchainReducer(extraDependencies);
@@ -151,12 +153,21 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
         storage: deps.mmkvStorage,
     });
 
+    const phishingPersistedReducer = preparePersistReducer({
+        reducer: phishingReducer,
+        persistedKeys: ['dustThreshold'],
+        key: 'phishingMetadata',
+        version: 1,
+        storage: deps.mmkvStorage,
+    });
+
     const walletReducers = combineReducers({
         accounts: accountsReducer,
         blockchain: blockchainPersistedReducer,
         explorer: explorerReducer,
         fiat: fiatRatesReducer,
         transactions: transactionsReducer,
+        phishing: phishingPersistedReducer,
         discovery: discoveryReducer,
         send: sendFormReducer,
         fees: feesReducer,

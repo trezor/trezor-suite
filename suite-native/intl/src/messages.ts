@@ -1087,6 +1087,10 @@ export const messages = {
                     title: 'Coins',
                     subtitle: 'Manage assets that you want to use',
                 },
+                phishing: {
+                    title: 'Phishing',
+                    subtitle: 'Manage phishing detection settings',
+                },
                 suiteSync: {
                     title: 'Suite Sync',
                     subtitle: 'Sync data across your devices',
@@ -1340,6 +1344,23 @@ export const messages = {
             oneNetworkSymbolAlert: {
                 title: 'You need to keep at least 1 coin enabled at all times.',
                 description: 'Otherwise the app won’t show you anything.',
+            },
+        },
+        phishing: {
+            settings: {
+                title: 'Phishing',
+                subtitle: 'Manage your phishing detection settings',
+                save: 'Save',
+                placeholder: 'Enter dust threshold in USD',
+            },
+            dustThreshold: {
+                title: 'Dust threshold',
+                subtitle:
+                    'Adjust the dust threshold for phishing detection. Currently, the dust threshold can only be defined in USD currency. Leaving this field empty will turn off dust amount detection.',
+                errors: {
+                    number: 'Please enter a valid number',
+                    positive: 'Dust threshold must be a positive number',
+                },
             },
         },
         viewOnly: {
