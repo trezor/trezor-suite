@@ -4,11 +4,13 @@ import {
     selectAdaAccountHasStaked,
     selectPoolStatsApyData,
     selectSolAccountHasStaked,
+    selectValidatorsQueueData,
 } from '@suite-common/wallet-core';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import {
     getEthereumCryptoBalanceWithStaking,
     getSolanaCryptoBalanceWithStaking,
+    getUnstakingPeriodInDays,
 } from '@suite-common/wallet-utils';
 import { exhaustive } from '@trezor/type-utils';
 
@@ -24,9 +26,11 @@ import {
     selectEthereumClaimableAmountByAccountKey,
     selectEthereumIsStakeConfirmingByAccountKey,
     selectEthereumIsStakePendingByAccountKey,
+    selectEthereumPendingDepositedBalanceByAccountKey,
     selectEthereumRewardsBalanceByAccountKey,
     selectEthereumStakedBalanceByAccountKey,
     selectEthereumTotalStakePendingByAccountKey,
+    selectEthereumUnstakingBalanceByAccountKey,
     selectVisibleDeviceEthereumAccountsWithStakingByNetworkSymbol,
 } from './ethereumStakingSelectors';
 import {
@@ -36,6 +40,7 @@ import {
     selectSolanaIsStakePendingByAccountKey,
     selectSolanaStakedBalanceByAccountKey,
     selectSolanaTotalStakePendingByAccountKey,
+    selectSolanaUnstakingBalanceByAccountKey,
     selectVisibleDeviceSolanaAccountsWithStakingByNetworkSymbol,
 } from './solanaStakingSelectors';
 import { type NativeStakingRootState } from './types';
@@ -346,6 +351,72 @@ export const selectCanClaimByAccountKey = (
             return selectSolanaCanClaimByAccountKey(state, accountKey);
         case 'ada':
             return false;
+        default:
+            return exhaustive(symbol);
+    }
+};
+
+export const selectUnstakingBalanceByAccountKey = (
+    state: NativeStakingRootState,
+    accountKey: AccountKey,
+) => {
+    const account = selectAccountByKey(state, accountKey);
+    const symbol = account?.symbol;
+    if (!symbol || !doesCoinSupportStaking(symbol)) {
+        return '0';
+    }
+
+    switch (symbol) {
+        case 'eth':
+        case 'thod':
+        case 'tsep':
+            return selectEthereumUnstakingBalanceByAccountKey(state, accountKey);
+        case 'dsol':
+        case 'sol':
+            return selectSolanaUnstakingBalanceByAccountKey(state, accountKey);
+        case 'ada':
+            return '0';
+        default:
+            return exhaustive(symbol);
+    }
+};
+
+export const selectUnstakingPeriodInDaysByAccountKey = (
+    state: NativeStakingRootState,
+    accountKey: AccountKey,
+) => {
+    const account = selectAccountByKey(state, accountKey);
+    if (!account || !doesCoinSupportStaking(account.symbol)) return null;
+
+    const validatorsQueueData = selectValidatorsQueueData(state, account.symbol);
+
+    return getUnstakingPeriodInDays({
+        networkType: account.networkType,
+        validatorWithdrawTime: validatorsQueueData?.validatorWithdrawTime ?? null,
+        validatorExitTime: validatorsQueueData?.validatorExitTime ?? null,
+    });
+};
+
+export const selectPendingDepositedBalanceByAccountKey = (
+    state: NativeStakingRootState,
+    accountKey: AccountKey,
+) => {
+    const account = selectAccountByKey(state, accountKey);
+    const symbol = account?.symbol;
+    if (!symbol || !doesCoinSupportStaking(symbol)) {
+        return '0';
+    }
+
+    switch (symbol) {
+        case 'eth':
+        case 'thod':
+        case 'tsep':
+            return selectEthereumPendingDepositedBalanceByAccountKey(state, accountKey);
+        case 'dsol':
+        case 'sol':
+            return selectSolanaTotalStakePendingByAccountKey(state, accountKey);
+        case 'ada':
+            return '0';
         default:
             return exhaustive(symbol);
     }

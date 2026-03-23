@@ -1,6 +1,7 @@
 import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS } from '@suite-common/formatters';
 import { selectAccountNetworkSymbol, useAccountsSelector } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
+import { isPositiveBalance } from '@suite-common/wallet-utils';
 import { Box, Card, PressableOpacity, Text } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
