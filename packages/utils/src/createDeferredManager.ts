@@ -22,6 +22,8 @@ export type DeferredManager<T> = {
     create: (timeout?: number) => { promiseId: number; promise: Promise<T> };
     /** Resolves (and removes) promise with given id by given value and returns whether it was present or not */
     resolve: (promiseId: number, value: T) => boolean;
+    /** Resolves (and removes) all pending promises by given value */
+    resolveAll: (getValue: (promiseId: number) => T) => void;
     /** Rejects (and removes) promise with given id by given error and returns whether it was present or not */
     reject: (promiseId: number, error: Error) => boolean;
     /** Rejects (and removes) all pending promises by given error */
@@ -99,6 +101,12 @@ export const createDeferredManager = <T = any>(
         return !!promise;
     };
 
+    const resolveAll = (getValue: (promiseId: number) => T) => {
+        promises.forEach(promise => promise.resolve(getValue(promise.id)));
+        const deleted = promises.splice(0, promises.length);
+        if (deleted.length) replanTimeout();
+    };
+
     const reject = (promiseId: number, error: Error) => {
         const promise = extract(promiseId);
         promise?.reject(error);
@@ -112,5 +120,5 @@ export const createDeferredManager = <T = any>(
         if (deleted.length) replanTimeout();
     };
 
-    return { length, nextId, create, resolve, reject, rejectAll };
+    return { length, nextId, create, resolve, reject, resolveAll, rejectAll };
 };
