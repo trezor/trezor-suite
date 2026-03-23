@@ -1,11 +1,11 @@
 // SegWit version 1 P2TR output type for Taproot defined in
 // https://github.com/bitcoin/bips/blob/master/bip-0341.mediawiki
 
-import { bech32m } from 'bech32';
-import ecc from 'tiny-secp256k1';
+import { bech32m } from '@scure/base';
 
 import * as bcrypto from '../crypto';
 import { bitcoin as BITCOIN_NETWORK } from '../networks';
+import * as ecc from '../noble-compatibility';
 import * as bscript from '../script';
 import * as lazy from './lazy';
 import { type Payment, type PaymentOpts } from '../types';
@@ -50,6 +50,10 @@ function tapTweakPubkey(pubkey: Buffer, tapTreeRoot?: Buffer) {
         tapTweak,
     );
 
+    if (tweakedPubkey === null) {
+        throw new TypeError('Invalid tweaked public key');
+    }
+
     return {
         parity: tweakedPubkey[0] === EVEN_Y_COORD_PREFIX[0] ? 0 : 1,
         pubkey: tweakedPubkey.slice(1),
@@ -86,7 +90,7 @@ export function p2tr(a: Payment, opts?: PaymentOpts): Payment {
     );
 
     const _address = lazy.value(() => {
-        const result = bech32m.decode(a.address!);
+        const result = bech32m.decode(a.address! as `${string}1${string}`);
         const version = result.words.shift();
         const data = bech32m.fromWords(result.words);
 

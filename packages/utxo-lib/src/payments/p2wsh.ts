@@ -1,10 +1,10 @@
 // upstream: https://github.com/bitcoinjs/bitcoinjs-lib/blob/master/ts_src/payments/p2wsh.ts
 
-import { bech32 } from 'bech32';
-import ecc from 'tiny-secp256k1';
+import { bech32 } from '@scure/base';
 
 import * as bcrypto from '../crypto';
 import { bitcoin as BITCOIN_NETWORK } from '../networks';
+import * as ecc from '../noble-compatibility';
 import * as bscript from '../script';
 import * as lazy from './lazy';
 import { type Payment, type PaymentOpts, type StackElement, type StackFunction } from '../types';
@@ -64,7 +64,7 @@ export function p2wsh(a: Payment, opts?: PaymentOpts): Payment {
     );
 
     const _address = lazy.value(() => {
-        const result = bech32.decode(a.address!);
+        const result = bech32.decode(a.address! as `${string}1${string}`);
         const version = result.words.shift();
         const data = bech32.fromWords(result.words);
 

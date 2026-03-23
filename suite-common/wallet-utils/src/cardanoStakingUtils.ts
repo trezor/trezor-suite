@@ -1,4 +1,4 @@
-import { bech32 } from 'bech32';
+import { bech32 } from '@scure/base';
 
 import { type AdaPools } from '@suite-common/earn-staking-api';
 import { type NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
@@ -87,7 +87,7 @@ export const isCardanoStakedWithFiveBinaries = (account: Account) => {
 };
 
 export const poolBech32ToHex = (poolId: string): string => {
-    const decoded = bech32.decode(poolId);
+    const decoded = bech32.decode(poolId as `${string}1${string}`);
     const bytes = bech32.fromWords(decoded.words);
 
     return Buffer.from(bytes).toString('hex');
@@ -117,7 +117,7 @@ export const selectBestCardanoPool = (pools?: AdaPools['pools']) => {
 
 export const validateCardanoDrep = (drepId: string): boolean => {
     try {
-        const { prefix, words } = bech32.decode(drepId);
+        const { prefix, words } = bech32.decode(drepId as `${string}1${string}`);
         if (prefix !== 'drep' && prefix !== 'drep_script') return false;
 
         const bytes = bech32.fromWords(words);
@@ -164,8 +164,8 @@ const parseDrepCip105 = (bytes: number[], prefix: string) => {
 export const parseDrepBech32 = (drepId: string): { type: PROTO.CardanoDRepType; hex: string } => {
     if (!validateCardanoDrep(drepId)) throw new Error('Not a DRep bech32');
 
-    const { words, prefix } = bech32.decode(drepId);
-    const bytes = bech32.fromWords(words);
+    const { words, prefix } = bech32.decode(drepId as `${string}1${string}`);
+    const bytes = Array.from(bech32.fromWords(words));
 
     if (bytes.length === 28) {
         return parseDrepCip105(bytes, prefix);

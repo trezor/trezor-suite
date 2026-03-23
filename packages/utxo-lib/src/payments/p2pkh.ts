@@ -3,11 +3,10 @@
 // - using bs58check.decodeAddress instead of bs58check.decode
 // - using bs58check.encodeAddress instead of bs58check.encode
 
-import ecc from 'tiny-secp256k1';
-
 import * as bs58check from '../bs58check';
 import * as bcrypto from '../crypto';
 import { bitcoin as BITCOIN_NETWORK } from '../networks';
+import * as ecc from '../noble-compatibility';
 import * as bscript from '../script';
 import * as lazy from './lazy';
 import { type Payment, type PaymentOpts, type StackFunction } from '../types';
@@ -135,7 +134,7 @@ export function p2pkh(a: Payment, opts?: PaymentOpts): Payment {
             if (chunks.length !== 2) throw new TypeError('Input is invalid');
             if (!bscript.isCanonicalScriptSignature(chunks[0] as Buffer))
                 throw new TypeError('Input has invalid signature');
-            if (!ecc.isPoint(chunks[1])) throw new TypeError('Input has invalid pubkey');
+            if (!ecc.isPoint(chunks[1] as Buffer)) throw new TypeError('Input has invalid pubkey');
 
             if (a.signature && !a.signature.equals(chunks[0] as Buffer))
                 throw new TypeError('Signature mismatch');

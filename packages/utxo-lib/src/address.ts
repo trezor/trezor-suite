@@ -2,7 +2,7 @@
 // differences:
 // - `fromBase58Check` method is using additional "network" param and bs58check.decodeAddress instead of bs58check.decode. checking multibyte version (Zcash and Decred support).
 
-import { bech32, bech32m } from 'bech32';
+import { bech32, bech32m } from '@scure/base';
 
 import * as bs58check from './bs58check';
 import { bitcoin as BITCOIN_NETWORK, type Network } from './networks';
@@ -28,7 +28,7 @@ export function fromBech32(address: string): Bech32Result {
     let result: ReturnType<typeof bech32.decode> | undefined;
     let version: number;
     try {
-        result = bech32.decode(address);
+        result = bech32.decode(address as `${string}1${string}`);
     } catch {
         // silent
     }
@@ -37,7 +37,7 @@ export function fromBech32(address: string): Bech32Result {
         [version] = result.words;
         if (version !== 0) throw new TypeError(`${address} uses wrong encoding`);
     } else {
-        result = bech32m.decode(address);
+        result = bech32m.decode(address as `${string}1${string}`);
         [version] = result.words;
         if (version === 0) throw new TypeError(`${address} uses wrong encoding`);
     }

@@ -1,4 +1,4 @@
-import bs58 from 'bs58';
+import { base58 } from '@scure/base';
 
 import { throwError } from '@trezor/utils';
 
@@ -42,7 +42,7 @@ const validateVersion = (version: number): version is VersionBytes =>
     !!BIP32_PAYMENT_TYPES[version as VersionBytes];
 
 const getVersion = (xpub: string) => {
-    const version = Buffer.from(bs58.decode(xpub)).readUInt32BE();
+    const version = Buffer.from(base58.decode(xpub)).readUInt32BE();
     if (!validateVersion(version)) throw new Error(`Unknown xpub version: ${xpub}`);
 
     return version;
