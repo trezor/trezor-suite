@@ -183,11 +183,11 @@ class DeviceOnboardingActions {
         await this.pressHoldToConfirmButton();
         await this.waitForWalletCreationScreen();
 
-        await TrezorUserEnvLink.swipeEmu('up');
-        await TrezorUserEnvLink.pressYes();
-        await TrezorUserEnvLink.pressYes();
-        await TrezorUserEnvLink.pressNo();
-        // at this point, wallet creation + entropy check on device has begun
+        await TrezorUserEnvLink.swipeEmu('up'); // begins wallet creation + entropy check on device
+        // wallet creation is finished, but because resetDevice is called with skip_backup: false, the resetDevice call is still pending
+        await TrezorUserEnvLink.pressYes(); // start backup flow
+        await TrezorUserEnvLink.pressYes(); // press Continue
+        await TrezorUserEnvLink.pressNo(); // reject backup flow early, so pending resetDevice settles
     }
 }
 
