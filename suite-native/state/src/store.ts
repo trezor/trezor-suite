@@ -8,6 +8,7 @@ import {
 import { logsMiddleware } from '@suite-common/logger';
 import {
     type ExtraDependencies,
+    type ReducerState,
     castExtraStore,
     createStoreWithExtraStoreMiddleware,
 } from '@suite-common/redux-utils';
@@ -32,10 +33,6 @@ import { createNativeCompositionRoot, extraDependencies } from './extraDependenc
 import { prepareRootReducers } from './reducers';
 
 type RootReducerShape = ReturnType<typeof prepareRootReducers>;
-
-type ReducerState<TReducer> = TReducer extends (state: any, action: any) => infer TState
-    ? TState
-    : never;
 
 export type FullPersistedAppState = ReducerState<RootReducerShape>;
 

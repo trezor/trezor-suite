@@ -3,12 +3,11 @@ import { type Transform, persistReducer } from 'redux-persist';
 import autoMergeLevel1 from 'redux-persist/lib/stateReconciler/autoMergeLevel1';
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 
+import { type ReducerState } from '@suite-common/redux-utils';
+
 import { createAsyncMigrate } from './createAsyncMigrate';
 import { type MigrationsManifest } from './migrationTypes';
 import { type MMKVStorage } from './mmkvStorage';
-
-type ReducerState<TReducer extends Reducer<any, any>> =
-    TReducer extends Reducer<infer TState, any> ? TState : never;
 
 export const preparePersistReducer = <TReducer extends Reducer<any, any>>({
     reducer,
