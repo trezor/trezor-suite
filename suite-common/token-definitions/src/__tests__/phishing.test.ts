@@ -6,12 +6,16 @@ import {
     isZeroValuePhishingFixtures,
 } from '../__fixtures__/phishing';
 import { isPhishingTransaction } from '../phishing';
+import { DUST_PHISHING_THRESHOLD } from '../phishing/constants';
 import { detectors } from '../phishing/detectors';
 
 describe('isDustValuePhishing', () => {
     isDustValuePhishingFixtures.forEach(({ testName, transaction, result }) => {
         test(testName, () => {
-            expect(detectors.dustValue({ transaction }).isPhishing).toBe(result);
+            expect(
+                detectors.dustValue({ transaction, dustThreshold: DUST_PHISHING_THRESHOLD })
+                    .isPhishing,
+            ).toBe(result);
         });
     });
 });
@@ -48,6 +52,7 @@ describe('isPhishingTransaction', () => {
                     transaction,
                     tokenDefinitions,
                     txsMarkedAsNotScam: [],
+                    dustThreshold: DUST_PHISHING_THRESHOLD,
                 }),
             ).toBe(result);
         });

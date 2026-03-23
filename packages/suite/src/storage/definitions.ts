@@ -21,6 +21,7 @@ import type {
 import { type SimpleTokenStructure } from '@suite-common/token-definitions';
 import type { TradingTransaction } from '@suite-common/trading';
 import { type Explorer, type NetworkSymbol } from '@suite-common/wallet-config';
+import { type PhishingState } from '@suite-common/wallet-core';
 import type {
     AccountKey,
     BackendSettings,
@@ -53,6 +54,10 @@ export interface SuiteDBSchema extends DBSchema {
     phishing: {
         key: AccountKey;
         value: string[];
+    };
+    phishingMetadata: {
+        key: string;
+        value: PhishingState;
     };
     txs: {
         key: string;

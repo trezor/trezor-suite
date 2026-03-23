@@ -4,7 +4,6 @@ import { isNftTokenTransfer } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { isTokenDefinitionKnown } from '../tokenDefinitionsUtils';
-import { DUST_PHISHING_THRESHOLD } from './constants';
 import {
     type PhishingDetectorFn,
     type TokenTransferWithFiatAmount,
@@ -17,8 +16,12 @@ const createResult = (isPhishing: boolean, transaction?: TransactionWithFiatAmou
     transaction,
 });
 
-const isDustValuePhishing: PhishingDetectorFn = ({ transaction }) => {
+const isDustValuePhishing: PhishingDetectorFn = ({ transaction, dustThreshold }) => {
     if (isTransactionWhitelisted(transaction)) {
+        return createResult(false);
+    }
+
+    if (!dustThreshold) {
         return createResult(false);
     }
 
@@ -48,7 +51,7 @@ const isDustValuePhishing: PhishingDetectorFn = ({ transaction }) => {
         .plus(tokensFiatAmount)
         .plus(internalTransfersFiatAmount);
 
-    const result = totalFiatAmount.isLessThanOrEqualTo(DUST_PHISHING_THRESHOLD);
+    const result = totalFiatAmount.isLessThanOrEqualTo(dustThreshold);
 
     return createResult(result, transaction);
 };
@@ -87,6 +90,11 @@ const isFakeTokenPhishing: PhishingDetectorFn = ({ transaction, tokenDefinitions
     let legitTokens: TokenTransferWithFiatAmount[] = [];
 
     for (const token of transaction.tokens) {
+        if (new BigNumber(token.amount).isEqualTo(0)) {
+            fakeTokens.push(token);
+            continue;
+        }
+
         const definition = isNftTokenTransfer(token)
             ? tokenDefinitions?.nft
             : tokenDefinitions?.coin;

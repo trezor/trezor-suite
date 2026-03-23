@@ -38,6 +38,8 @@ import {
 } from '../blockchain/blockchainReducer';
 import { selectHistoricFiatRates } from '../fiat-rates/fiatRatesSelectors';
 import type { FiatRatesRootState } from '../fiat-rates/fiatRatesTypes';
+import { type PhishingRootState } from '../phishing/phishingReducerTypes';
+import { selectPhishingDustThreshold } from '../phishing/phishingSelectors';
 import { isAccountStakingActive } from '../stake/stakeUtils';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<
@@ -182,7 +184,8 @@ export const selectIsPhishingTransaction = (
     state: TokenDefinitionsRootState &
         TransactionsRootState &
         AccountsRootState &
-        FiatRatesRootState,
+        FiatRatesRootState &
+        PhishingRootState,
     txid: string,
     accountKey: AccountKey,
 ) => {
@@ -192,11 +195,14 @@ export const selectIsPhishingTransaction = (
     const { tokenDefinitions, txsMarkedAsNotScam, historicRates } =
         selectPhishingTransactionsContext(state, accountKey, transaction.symbol);
 
+    const dustThreshold = selectPhishingDustThreshold(state);
+
     return isPhishingTransaction({
         transaction,
         tokenDefinitions,
         historicRates,
         txsMarkedAsNotScam,
+        dustThreshold,
     });
 };
 

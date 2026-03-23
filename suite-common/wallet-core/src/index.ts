@@ -66,3 +66,7 @@ export * from './transactions/transactionsSelectors';
 export * from './transactions/transactionsThunks';
 export * from './transactions/target/createTargets';
 export type * from './transactions/target/Target';
+export * from './phishing/phishingActions';
+export * from './phishing/phishingReducer';
+export * from './phishing/phishingSelectors';
+export type * from './phishing/phishingReducerTypes';

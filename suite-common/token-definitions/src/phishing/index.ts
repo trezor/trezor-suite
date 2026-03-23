@@ -59,6 +59,7 @@ interface IsPhishingTransactionProps {
     tokenDefinitions?: TokenDefinitions;
     historicRates?: RatesByTimestamps;
     txsMarkedAsNotScam: string[];
+    dustThreshold?: string;
 }
 
 /** This is the single main function that is used across Suite to determine if a transaction is phishing */
@@ -67,6 +68,7 @@ export const isPhishingTransaction = ({
     tokenDefinitions,
     historicRates,
     txsMarkedAsNotScam,
+    dustThreshold,
 }: IsPhishingTransactionProps) => {
     if (!transaction) return false;
 
@@ -90,5 +92,6 @@ export const isPhishingTransaction = ({
     return validator
         .setTransaction(transactionWithFiatAmounts)
         .setTokenDefinitions(tokenDefinitions)
+        .setDustThreshold(dustThreshold)
         .validate();
 };

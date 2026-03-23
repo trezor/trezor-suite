@@ -4,6 +4,7 @@ import { type PhishingDetectorFn, type TransactionWithFiatAmount } from './types
 export class PhishingTransactionValidator {
     private transaction?: TransactionWithFiatAmount;
     private tokenDefinitions?: TokenDefinitions;
+    private dustThreshold?: string;
     private detectors: PhishingDetectorFn[] = [];
 
     public addDetector(detector: PhishingDetectorFn) {
@@ -24,6 +25,12 @@ export class PhishingTransactionValidator {
         return this;
     }
 
+    public setDustThreshold(dustThreshold?: string) {
+        this.dustThreshold = dustThreshold;
+
+        return this;
+    }
+
     public validate() {
         if (!this.transaction) return false;
 
@@ -31,6 +38,7 @@ export class PhishingTransactionValidator {
             const { isPhishing, transaction } = detector({
                 transaction: this.transaction,
                 tokenDefinitions: this.tokenDefinitions,
+                dustThreshold: this.dustThreshold,
             });
 
             if (isPhishing) {

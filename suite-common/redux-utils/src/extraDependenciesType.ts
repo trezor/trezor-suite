@@ -102,6 +102,7 @@ export type ExtraDependenciesStatic = {
         storageLoadExplorer: StorageLoadReducer;
         storageLoadAccounts: StorageLoadReducer;
         storageLoadTransactions: StorageLoadTransactionsReducer;
+        storageLoadPhishingMetadata: StorageLoadReducer;
         storageLoadHistoricRates: StorageLoadReducer;
         setDeviceMetadataReducer: BaseReducer;
         setDeviceMetadataPasswordsReducer: BaseReducer;

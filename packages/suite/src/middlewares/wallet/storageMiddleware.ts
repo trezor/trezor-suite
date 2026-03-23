@@ -35,6 +35,7 @@ import {
     blockchainActions,
     changeNetworks,
     explorerActions,
+    phishingActions,
     selectAccountByKey,
     selectAccountsByDeviceState,
     selectHistoricFiatRates,
@@ -145,6 +146,10 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 if (account && getIsDeviceRemembered(device)) {
                     api.dispatch(storageActions.saveAccountTransactions(account));
                 }
+            }
+
+            if (phishingActions.setDustThreshold.match(action)) {
+                api.dispatch(storageActions.savePhishingMetadata(action.payload));
             }
 
             if (

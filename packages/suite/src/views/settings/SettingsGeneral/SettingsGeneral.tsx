@@ -30,6 +30,7 @@ import { ClearStorage } from './ClearStorage';
 import { ConnectLabelingProvider } from './ConnectLabelingProvider';
 import { DesktopSuiteBanner } from './DesktopSuiteBanner';
 import { DisconnectLabelingProvider } from './DisconnectLabelingProvider';
+import { DustPhishing } from './DustPhishing';
 import { EarlyAccess } from './EarlyAccess';
 import { Experimental } from './Experimental';
 import { Labeling } from './Labeling';
@@ -153,6 +154,10 @@ export const SettingsGeneral = () => {
                     <NetworkReserve />
                 </SettingsSection>
             )}
+
+            <SettingsSection title={<Translation id="TR_PHISHING" />} icon="ghost">
+                <DustPhishing />
+            </SettingsSection>
 
             {isDesktop() && (
                 <SettingsSection

@@ -145,6 +145,7 @@ export const extraDependenciesCommonMock: ExtraDependencies = {
         storageLoadExplorer: notImplementedReducer('storageLoadExplorer'),
         storageLoadAccounts: notImplementedReducer('storageLoadAccounts'),
         storageLoadTransactions: notImplementedReducer('storageLoadTransactions'),
+        storageLoadPhishingMetadata: notImplementedReducer('storageLoadPhishingMetadata'),
         storageLoadHistoricRates: notImplementedReducer('storageLoadHistoricRates'),
         setDeviceMetadataReducer: notImplementedReducer('setDeviceMetadataReducer'),
         setDeviceMetadataPasswordsReducer: notImplementedReducer(
