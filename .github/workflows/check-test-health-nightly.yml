@@ -45,4 +45,4 @@ jobs:
           E2E_TEST_SLACK_QUARANTINE_BOT_WEBHOOK: ${{ secrets.E2E_TEST_SLACK_QUARANTINE_BOT_WEBHOOK }}
           GITHUB_RUN_ID: ${{ github.run_id }}
         run: |
-          yarn workspace @trezor/e2e-utils test-health --nightlyUnquarantine
+          yarn workspace @trezor/e2e-utils test-health --nightlyUnquarantine --verbose

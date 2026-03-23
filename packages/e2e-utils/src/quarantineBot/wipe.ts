@@ -1,46 +1,47 @@
-/* eslint-disable no-console */
 import { extractKeyFromAction } from './actions';
 import { getAutoQuarantineActions } from './api';
 import { PROJECTS } from './config';
 import { deleteAction } from '../currentsApi/api';
+import { debug, error, log } from '../logger';
 
 export async function wipeAllAutoQuarantineActions(): Promise<void> {
-    console.log('=== Wipe Auto-Quarantine Actions ===');
-    console.log(`Timestamp: ${new Date().toISOString()}`);
-    console.log(`Projects: ${PROJECTS.map(p => `${p.label} (${p.id})`).join(', ')}`);
-    console.log('');
+    log('=== Wipe Auto-Quarantine Actions ===');
+    log(`Timestamp: ${new Date().toISOString()}`);
+    log(`Projects: ${PROJECTS.map(p => `${p.label} (${p.id})`).join(', ')}`);
+    log('');
 
     let hasError = false;
 
     for (const project of PROJECTS) {
         try {
-            console.log(`\n── [${project.label}] Fetching auto-quarantine actions ──`);
+            log(`\n── [${project.label}] Fetching auto-quarantine actions ──`);
             const actions = await getAutoQuarantineActions(project.id);
 
             if (actions.length === 0) {
-                console.log('  ✓ No auto-quarantine actions found.');
+                log('  ✓ No auto-quarantine actions found.');
                 continue;
             }
 
-            console.log(`  Found ${actions.length} auto-quarantine action(s). Deleting...`);
+            log(`  Found ${actions.length} auto-quarantine action(s). Deleting...`);
 
             for (const action of actions) {
                 const testKey = extractKeyFromAction(action);
                 const testTitle = testKey
                     ? (JSON.parse(testKey) as string[]).join(' > ')
                     : action.name;
-                console.log(`  ↳ Deleting: "${testTitle.slice(0, 80)}"`);
+                log(`  ↳ Deleting: "${testTitle.slice(0, 80)}"`);
+                debug(`    actionId=${action.actionId} name="${action.name}"`);
                 await deleteAction(action.actionId);
             }
 
-            console.log(`  ✓ Deleted ${actions.length} action(s) for [${project.label}].`);
+            log(`  ✓ Deleted ${actions.length} action(s) for [${project.label}].`);
         } catch (err) {
-            console.error(`\n[ERROR] Failed wiping project ${project.label} (${project.id}):`, err);
+            error(`\nFailed wiping project ${project.label} (${project.id}):`, err);
             hasError = true;
         }
     }
 
-    console.log('\n=== Done ===');
+    log('\n=== Done ===');
 
     if (hasError) {
         process.exit(1);

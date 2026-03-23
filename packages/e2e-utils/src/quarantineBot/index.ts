@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { getAutoQuarantineActions } from './api';
 import {
     EXPLORER_LOOKBACK_DAYS,
@@ -9,6 +8,7 @@ import {
     UNQUARANTINE_LAST_N_EXECUTIONS,
 } from './config';
 import { listAllQuarantinedTests } from './list';
+import { debug, error, log, setVerbose } from '../logger';
 import { quarantineFromRun } from './manualQuarantine';
 import { nightlyUnquarantineFromLatestRun } from './nightlyUnquarantine';
 import { quarantineFailingTests, unquarantinePassingTests } from './quarantine';
@@ -20,8 +20,23 @@ import { getActiveTests } from '../currentsApi/api';
 async function main(): Promise<void> {
     const args = process.argv.slice(2);
 
+    // Parse --verbose first so debug() works for everything that follows.
+    if (args.includes('--verbose')) {
+        setVerbose(true);
+    }
+
+    debug('args:', args);
+    debug(
+        'env: CURRENTS_API_KEY',
+        process.env.CURRENTS_API_KEY ? 'present' : 'MISSING',
+        '| E2E_TEST_SLACK_QUARANTINE_BOT_WEBHOOK',
+        process.env.E2E_TEST_SLACK_QUARANTINE_BOT_WEBHOOK ? 'present' : 'not set',
+        '| GITHUB_RUN_ID',
+        process.env.GITHUB_RUN_ID ?? 'not set',
+    );
+
     if (args.includes('--help') || args.includes('-h')) {
-        console.log(
+        log(
             [
                 'Usage: yarn workspace @trezor/e2e-utils test-health [options]',
                 '',
@@ -38,7 +53,7 @@ async function main(): Promise<void> {
                 '',
                 '  --quarantine <runId>       Quarantine all tests that failed in the given Currents run ID.',
                 '                             Combine with -i / --interactive to approve each test manually.',
-                '                             Sends a Slack notification (with a “manually triggered” note)',
+                '                             Sends a Slack notification (with a "manually triggered" note)',
                 '                             when E2E_TEST_SLACK_QUARANTINE_BOT_WEBHOOK is configured.',
                 '',
                 '  -i, --interactive          Used together with --quarantine: prompt for each failed test',
@@ -50,6 +65,10 @@ async function main(): Promise<void> {
                 '  --nightlyUnquarantine      Find the latest run on the default (develop) branch for',
                 '                             each monitored project and unquarantine all auto-quarantined',
                 '                             tests that passed in that run.',
+                '',
+                '  --verbose                  Enable debug logging for all features and CLI switches.',
+                '                             Debug output goes to stderr so stdout (e.g. --list JSON) is',
+                '                             unaffected.',
                 '',
                 '  --help, -h                 Show this help message and exit.',
                 '',
@@ -66,22 +85,28 @@ async function main(): Promise<void> {
     if (args.includes('--list')) {
         const projectFlagIndex = args.indexOf('--project');
         const projectNameFilter = projectFlagIndex !== -1 ? args[projectFlagIndex + 1] : undefined;
+        debug(
+            'operation: list',
+            projectNameFilter ? `project=${projectNameFilter}` : '(all projects)',
+        );
         await listAllQuarantinedTests(projectNameFilter);
 
         return;
     }
 
     if (args.includes('--wipeAutoQuarantine')) {
+        debug('operation: wipeAutoQuarantine');
         await wipeAllAutoQuarantineActions();
 
         return;
     }
 
     if (args.includes('--nightlyUnquarantine')) {
-        console.log('=== Nightly Unquarantine ===');
-        console.log(`Timestamp: ${new Date().toISOString()}`);
-        console.log(`Projects: ${PROJECTS.map(p => `${p.label} (${p.id})`).join(', ')}`);
-        console.log('');
+        debug('operation: nightlyUnquarantine');
+        log('=== Nightly Unquarantine ===');
+        log(`Timestamp: ${new Date().toISOString()}`);
+        log(`Projects: ${PROJECTS.map(p => `${p.label} (${p.id})`).join(', ')}`);
+        log('');
 
         let hasError = false;
         const slackEvents: SlackEvent[] = [];
@@ -90,10 +115,7 @@ async function main(): Promise<void> {
             try {
                 await nightlyUnquarantineFromLatestRun(project.id, project.label, slackEvents);
             } catch (err) {
-                console.error(
-                    `\n[ERROR] Failed processing project ${project.label} (${project.id}):`,
-                    err,
-                );
+                error(`\nFailed processing project ${project.label} (${project.id}):`, err);
                 hasError = true;
             }
         }
@@ -105,7 +127,7 @@ async function main(): Promise<void> {
             await sendSlackNotification(summary);
         }
 
-        console.log('\n=== Done ===');
+        log('\n=== Done ===');
 
         if (hasError) {
             process.exit(1);
@@ -118,11 +140,12 @@ async function main(): Promise<void> {
     if (quarantineFlagIndex !== -1) {
         const runId = args[quarantineFlagIndex + 1];
         if (!runId || runId.startsWith('-')) {
-            console.error('[ERROR] --quarantine requires a run ID argument.');
+            error('--quarantine requires a run ID argument.');
             process.exit(1);
         }
 
         const interactive = args.includes('-i') || args.includes('--interactive');
+        debug('operation: quarantine', `runId=${runId}`, `interactive=${interactive}`);
         const slackEvents: SlackEvent[] = [];
 
         const { projectId, projectLabel } = await quarantineFromRun(
@@ -140,29 +163,35 @@ async function main(): Promise<void> {
             await sendSlackNotification(summary);
         }
 
-        console.log('\n=== Done ===');
+        log('\n=== Done ===');
 
         return;
     }
 
-    console.log('=== Currents Test Health Check ===');
-    console.log(`Timestamp: ${new Date().toISOString()}`);
-    console.log(`Projects: ${PROJECTS.map(p => `${p.label} (${p.id})`).join(', ')}`);
-    console.log(
+    debug('operation: healthcheck');
+    log('=== Currents Test Health Check ===');
+    log(`Timestamp: ${new Date().toISOString()}`);
+    log(`Projects: ${PROJECTS.map(p => `${p.label} (${p.id})`).join(', ')}`);
+    log(
         `Thresholds: quarantine ≥${QUARANTINE_FAILURE_RATE * 100}% failures over last ${QUARANTINE_LAST_N_EXECUTIONS} executions, ` +
             `unquarantine ≤${UNQUARANTINE_FAILURE_RATE * 100}% failures over last ${UNQUARANTINE_LAST_N_EXECUTIONS} executions (using Test Results API)`,
     );
-    console.log('');
+    log('');
 
     let hasError = false;
     const slackEvents: SlackEvent[] = [];
 
     for (const project of PROJECTS) {
+        debug(`processing project: ${project.label} (${project.id})`);
         try {
             const [existingActions, activeTests] = await Promise.all([
                 getAutoQuarantineActions(project.id),
                 getActiveTests(project.id, EXPLORER_LOOKBACK_DAYS),
             ]);
+            debug(
+                `  project ${project.label}: ${existingActions.length} existing auto-quarantine action(s),`,
+                `${activeTests.length} active test(s) in explorer window`,
+            );
             await quarantineFailingTests(
                 project.id,
                 project.label,
@@ -178,10 +207,7 @@ async function main(): Promise<void> {
                 slackEvents,
             );
         } catch (err) {
-            console.error(
-                `\n[ERROR] Failed processing project ${project.label} (${project.id}):`,
-                err,
-            );
+            error(`\nFailed processing project ${project.label} (${project.id}):`, err);
             hasError = true;
         }
     }
@@ -191,7 +217,7 @@ async function main(): Promise<void> {
         await sendSlackNotification(summary);
     }
 
-    console.log('\n=== Done ===');
+    log('\n=== Done ===');
 
     if (hasError) {
         process.exit(1);
@@ -199,6 +225,6 @@ async function main(): Promise<void> {
 }
 
 main().catch(err => {
-    console.error('[FATAL]', err);
+    error('[FATAL]', err);
     process.exit(1);
 });

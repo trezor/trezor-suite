@@ -12,6 +12,7 @@ import type {
     TestResultsResponse,
     TestsExplorerResponse,
 } from './types';
+import { debug, warn } from '../logger';
 
 function getApiKey(): string {
     const key = process.env.CURRENTS_API_KEY;
@@ -26,6 +27,7 @@ export async function currentsRequest<T>(
     retries = 3,
 ): Promise<T> {
     const url = `${CURRENTS_API_BASE}${path}`;
+    debug(`  → ${options.method ?? 'GET'} ${url}`);
     const res = await fetch(url, {
         ...options,
         headers: {
@@ -39,7 +41,7 @@ export async function currentsRequest<T>(
     if (res.status === 429 && retries > 0) {
         const retryAfter = res.headers.get('Retry-After');
         const waitMs = retryAfter ? parseInt(retryAfter, 10) * 1000 : 10_000 * (4 - retries);
-        console.warn(
+        warn(
             `  [rate-limit] 429 received for ${url}. Waiting ${waitMs}ms before retry (${retries} left)…`,
         );
         await new Promise(resolve => setTimeout(resolve, waitMs));
@@ -52,7 +54,10 @@ export async function currentsRequest<T>(
         throw new Error(`Currents API ${options.method ?? 'GET'} ${url} → ${res.status}: ${body}`);
     }
 
-    return res.json() as Promise<T>;
+    const json = (await res.json()) as T;
+    debug(`  ← ${res.status} ${options.method ?? 'GET'} ${url}`, JSON.stringify(json));
+
+    return json;
 }
 
 /**
@@ -73,14 +78,24 @@ export async function* paginateTestResults(
         `limit=${TEST_RESULTS_PAGE_SIZE}`,
     ];
     let cursor: string | undefined;
+    let pageIndex = 0;
 
     do {
         const queryParts = [...baseParams, ...(cursor ? [`starting_after=${cursor}`] : [])];
+        debug(
+            `  paginateTestResults: signature=${signature.slice(0, 20)}… page=${pageIndex}`,
+            cursor ? `cursor=${cursor.slice(0, 16)}…` : '(first page)',
+        );
         const response = await currentsRequest<TestResultsResponse>(
             `/test-results/${signature}?${queryParts.join('&')}`,
         );
-        yield response.data.filter(r => r.status !== 'pending');
+        const completed = response.data.filter(r => r.status !== 'pending');
+        debug(
+            `  paginateTestResults: page=${pageIndex} raw=${response.data.length} completed=${completed.length} has_more=${response.has_more}`,
+        );
+        yield completed;
         cursor = response.has_more ? response.data.at(-1)?.cursor : undefined;
+        pageIndex++;
     } while (cursor);
 }
 
@@ -124,9 +139,16 @@ export async function getLastNResultsFromDistinctBranches(
             if (branch === DEVELOP_BRANCH || branchNotIncludedYet) {
                 uniqueBranchesSet.add(branch);
                 picked.push(result);
+                debug(
+                    `  getLastNResultsFromDistinctBranches: picked branch=${branch} picked=${picked.length}/${numberOfResults}`,
+                );
                 if (picked.length >= numberOfResults) {
                     return picked;
                 }
+            } else {
+                debug(
+                    `  getLastNResultsFromDistinctBranches: skipped branch=${branch} (already included)`,
+                );
             }
         }
     }
@@ -163,11 +185,15 @@ export async function getActiveTests(
             `limit=${limit}`,
         ].join('&');
 
+        debug(`  getActiveTests: project=${projectId} page=${page} (${items.length} items so far)`);
         response = await currentsRequest<TestsExplorerResponse>(
             `/tests/${projectId}?${queryString}`,
         );
 
         items.push(...response.data.list);
+        debug(
+            `  getActiveTests: page=${page} items=${response.data.list.length} nextPage=${response.data.nextPage} cumulative=${items.length}`,
+        );
         page++;
     } while (response.data.nextPage);
 
@@ -252,6 +278,11 @@ export async function getRunById(runId: string, mode: SpecFetchMode): Promise<Ru
         return true;
     });
 
+    debug(
+        `  getRunById: runId=${runId} mode=${mode}`,
+        `total specs=${run.specs.length} fetching=${specsToFetch.length}`,
+    );
+
     await Promise.all(
         specsToFetch.map(async spec => {
             const tests = await getInstanceTests(spec.instanceId);
@@ -295,15 +326,24 @@ export async function getResultsFromRun(
     lookbackDays: number,
 ): Promise<TestResultItem[]> {
     const results: TestResultItem[] = [];
+    let pagesScanned = 0;
     for await (const page of paginateTestResults(signature, lookbackDays)) {
         const matching = page.filter(r => r.runId === runId);
         results.push(...matching);
+        pagesScanned++;
         // Once we see a non-empty page with no matching entries the run has
         // scrolled out of view — no need to paginate further.
         if (page.length > 0 && matching.length === 0) {
+            debug(
+                `  getResultsFromRun: early exit after ${pagesScanned} page(s) — no matches in last page`,
+            );
             break;
         }
     }
+    debug(
+        `  getResultsFromRun: signature=${signature.slice(0, 20)}… runId=${runId}`,
+        `pages=${pagesScanned} results=${results.length}`,
+    );
 
     return results;
 }
