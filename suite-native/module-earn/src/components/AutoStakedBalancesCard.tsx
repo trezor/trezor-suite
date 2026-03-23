@@ -5,7 +5,7 @@ import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-nativ
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { selectIsCardanoStakedOutsideEverstake, useSelector } from '@suite-native/staking';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 const stakingItemStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',

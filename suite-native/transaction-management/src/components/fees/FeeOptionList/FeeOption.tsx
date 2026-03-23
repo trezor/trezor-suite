@@ -29,7 +29,7 @@ import {
 } from '@suite-native/formatters';
 import { FormContext } from '@suite-native/forms';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type Color } from '@trezor/theme';
 
 import { FeeOptionErrorMessage } from './FeeOptionErrorMessage';

@@ -1,0 +1,24 @@
+{
+    "name": "@trezor/styles-native",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@trezor/styles-common": "workspace:*",
+        "@trezor/theme": "workspace:*",
+        "fela": "^12.2.1",
+        "fela-native": "^12.2.1",
+        "fela-plugin-extend": "^12.2.1",
+        "polished": "^4.3.1",
+        "react": "19.2.4",
+        "react-fela": "^12.2.1",
+        "react-native": "0.83.2"
+    }
+}

@@ -9,7 +9,7 @@ import {
     DeviceOnboardingStackRoutes,
     Screen,
 } from '@suite-native/navigation';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { CreateWalletLoader, LOADER_DURATION } from '../components/CreateWalletLoader';
 

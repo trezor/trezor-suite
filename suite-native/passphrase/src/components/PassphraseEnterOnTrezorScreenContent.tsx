@@ -1,7 +1,7 @@
 import { Box, Button, Card, CenteredTitleHeader, VStack } from '@suite-native/atoms';
 import { ConfirmOnTrezorAnimation } from '@suite-native/confirm-on-trezor';
 import { Translation } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { PassphraseMismatchAlert } from './PassphraseMismatchAlert';
 

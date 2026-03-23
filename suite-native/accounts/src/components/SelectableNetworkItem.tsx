@@ -4,7 +4,7 @@ import { Badge, Box, HStack, PressableOpacity, RoundedIcon, Text } from '@suite-
 import { Icon, type IconName } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { isNetworkWithTokens } from '@suite-native/tokens';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 export type SelectableAssetItemProps = {
     symbol: NetworkSymbol;

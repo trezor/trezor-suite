@@ -1,6 +1,6 @@
 import { Icon } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { Box } from '../Box';
 import { PressableOpacity } from '../Pressable';

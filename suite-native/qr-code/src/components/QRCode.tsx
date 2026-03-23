@@ -2,7 +2,7 @@ import { Dimensions, View } from 'react-native';
 import ReactQRCode from 'react-qr-code';
 
 import { Box } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { colorVariants } from '@trezor/theme';
 
 type QRCodeProps = {

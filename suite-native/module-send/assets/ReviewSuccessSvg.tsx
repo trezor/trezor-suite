@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Svg, { ClipPath, Defs, G, Path, Rect } from 'react-native-svg';
 
-import { useNativeStyles } from '@trezor/styles';
+import { useNativeStyles } from '@trezor/styles-native';
 
 export const ReviewSuccessSvg = () => {
     const { utils } = useNativeStyles();

@@ -18,7 +18,7 @@ import {
     type StellarManageTokenStackParamList,
     StellarManageTokenStackRoutes,
 } from '@suite-native/navigation';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { TokenListItem } from '../components/TokenListItem';
 import { type StellarTokenInfo, useInactiveStellarTokens } from '../hooks/useInactiveStellarTokens';

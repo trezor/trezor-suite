@@ -19,7 +19,7 @@ import {
     type RootStackParamList,
     type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 const bottomSheetStyle = prepareNativeStyle(utils => ({
     gap: utils.spacings.sp24,

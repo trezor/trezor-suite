@@ -1,7 +1,7 @@
 import { Box, Card, Text, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { useEarnDepositsCardData } from '../hooks/useEarnDepositsCardData';
 import { type StablecoinYieldEarnItem, type StakingEarnItem } from '../types';

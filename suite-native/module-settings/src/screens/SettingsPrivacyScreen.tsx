@@ -15,7 +15,7 @@ import { useBiometricsSettings, useIsBiometricsEnabled } from '@suite-native/bio
 import { Translation } from '@suite-native/intl';
 import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
-import { useNativeStyles } from '@trezor/styles';
+import { useNativeStyles } from '@trezor/styles-native';
 
 const DiscreetTextExample = () => {
     const { utils } = useNativeStyles();

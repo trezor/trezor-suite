@@ -2,7 +2,7 @@ import { type ReactElement, type ReactNode, useMemo } from 'react';
 import { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { AnimatedBox, Text } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { exhaustive } from '@trezor/type-utils';
 
 export type ItemRenderConfig<U> = {

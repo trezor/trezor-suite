@@ -44,7 +44,7 @@
         "@suite-native/video-assets": "workspace:*",
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/connect": "workspace:*",
-        "@trezor/styles": "workspace:*",
+        "@trezor/styles-native": "workspace:*",
         "@trezor/utils": "workspace:*",
         "@trezor/utxo-lib": "workspace:*",
         "react": "19.2.4",

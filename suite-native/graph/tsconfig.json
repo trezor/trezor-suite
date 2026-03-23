@@ -38,7 +38,9 @@
         { "path": "../storage" },
         { "path": "../theme" },
         { "path": "../tokens" },
-        { "path": "../../packages/styles" },
+        {
+            "path": "../../packages/styles-native"
+        },
         { "path": "../../packages/theme" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" }

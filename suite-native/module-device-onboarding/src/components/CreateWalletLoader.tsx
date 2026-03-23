@@ -5,7 +5,7 @@ import { Canvas, Group, RoundedRect } from '@shopify/react-native-skia';
 
 import { isDetoxTestBuild } from '@suite-native/config';
 import { getScreenWidth } from '@trezor/env-utils';
-import { useNativeStyles } from '@trezor/styles';
+import { useNativeStyles } from '@trezor/styles-native';
 
 const LOADER_HEIGHT = 4;
 const LOADER_WIDTH = getScreenWidth() - 32;

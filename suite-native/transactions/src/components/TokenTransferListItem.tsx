@@ -12,7 +12,7 @@ import {
 import { type AccountKey } from '@suite-common/wallet-types';
 import { TokenAmountFormatter, TokenToFiatAmountFormatter } from '@suite-native/formatters';
 import { type TypedTokenTransfer, type WalletAccountTransaction } from '@suite-native/tokens';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { selectTransactionFiatRate } from '../selectors';
 import { getTransactionValueSign } from '../utils';

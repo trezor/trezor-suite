@@ -7,7 +7,7 @@ import { Box, Button, Text, VStack } from '@suite-native/atoms';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { getScreenHeight } from '@trezor/env-utils';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { ConnectorImage } from './ConnectorImage';
 import { DeviceImage } from './DeviceImage';

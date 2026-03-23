@@ -15,7 +15,7 @@ import {
 import { Canvas, Circle, Path, Skia } from '@shopify/react-native-skia';
 
 import { Translation, type TxKeyPath } from '@suite-native/intl';
-import { useNativeStyles } from '@trezor/styles';
+import { useNativeStyles } from '@trezor/styles-native';
 
 import { AnimatedVStack } from './Stack';
 import { Text } from './Text';

@@ -2,7 +2,7 @@ import { type ReactNode } from 'react';
 import { View } from 'react-native';
 
 import { useTranslate } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { IconButton } from '../Button/IconButton';
 import { Text } from '../Text';

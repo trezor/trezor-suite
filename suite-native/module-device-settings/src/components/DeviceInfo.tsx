@@ -13,7 +13,7 @@ import {
     type StackNavigationProps,
 } from '@suite-native/navigation';
 import { type DeviceModelInternal } from '@trezor/device-utils';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type DeviceInfoProps = {
     deviceModel: DeviceModelInternal;

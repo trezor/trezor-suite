@@ -33,7 +33,7 @@ import {
 } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { AddHiddenWalletButton } from './AddHiddenWalletButton';
 import { ConnectButton } from './ConnectButton';

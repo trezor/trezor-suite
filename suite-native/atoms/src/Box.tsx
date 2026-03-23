@@ -3,7 +3,7 @@ import { View, type ViewProps, type ViewStyle } from 'react-native';
 
 import { D, pipe } from '@mobily/ts-belt';
 
-import { type NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { type NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type NativeSpacing } from '@trezor/theme';
 
 import { DebugView, useDebugView } from './DebugView';

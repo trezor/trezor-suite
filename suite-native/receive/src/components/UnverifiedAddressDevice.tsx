@@ -11,7 +11,7 @@ import { useSelector } from 'react-redux';
 import { selectDeviceModel } from '@suite-common/device';
 import { Box, VStack } from '@suite-native/atoms';
 import { useCopyToClipboard } from '@suite-native/clipboard';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { UnverifiedAddressDeviceHint } from './UnverifiedAddressDeviceHint';
 import { DEVICE_SCREEN_BACKGROUND_COLOR } from '../constants';

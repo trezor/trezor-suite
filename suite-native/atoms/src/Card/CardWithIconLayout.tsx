@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react';
 
 import { Icon, type IconName } from '@suite-native/icons';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { Box } from '../Box';
 import { Card } from '../Card/Card';

@@ -2,7 +2,7 @@ import { type PropsWithChildren } from 'react';
 import { Pressable } from 'react-native';
 
 import { HStack } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 const infoRowStyle = prepareNativeStyle<{ noBorder?: boolean }>((utils, { noBorder }) => ({
     paddingHorizontal: utils.spacings.sp16,

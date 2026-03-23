@@ -14,7 +14,7 @@ import {
     selectActiveTradingType,
     tradingActions,
 } from '@suite-native/trading-state';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { HeaderTab } from './HeaderTab';
 import { AdvancedSettingsSheet } from '../../settings/AdvancedSettingsSheet';

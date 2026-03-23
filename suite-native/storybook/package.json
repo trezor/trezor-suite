@@ -25,7 +25,7 @@
         "@storybook/react-native-web-vite": "^10.2.8",
         "@suite-native/intl": "workspace:*",
         "@trezor/eslint": "workspace:*",
-        "@trezor/styles": "workspace:*",
+        "@trezor/styles-native": "workspace:*",
         "@trezor/theme": "workspace:*",
         "babel-plugin-react-native-web": "^0.21.2",
         "react": "19.2.4",

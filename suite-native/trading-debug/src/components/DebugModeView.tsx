@@ -1,5 +1,5 @@
 import { Box, type BoxProps } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { useTradingDebugModeFlag } from '../hooks/useTradingDebugModeFlag';
 

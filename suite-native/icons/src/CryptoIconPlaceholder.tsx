@@ -1,6 +1,6 @@
 import { Text, View } from 'react-native';
 
-import { type NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { type NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { MAX_FONT_SIZE_MULTIPLIER } from './Icon';
 

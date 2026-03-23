@@ -3,7 +3,7 @@ import { Pressable } from 'react-native';
 
 import { Card, HStack, OrderedListIcon, Text } from '@suite-native/atoms';
 import { Icon, type IconName } from '@suite-native/icons';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 const labelStyle = prepareNativeStyle(() => ({
     flex: 1,

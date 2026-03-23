@@ -2,7 +2,7 @@ import { type ReactNode } from 'react';
 
 import { G } from '@mobily/ts-belt';
 
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { Box } from '../Box';
 import { PressableOpacity } from '../Pressable';

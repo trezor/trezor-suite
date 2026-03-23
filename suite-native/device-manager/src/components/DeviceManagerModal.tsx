@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 import { selectDeviceState } from '@suite-common/device';
 import { Box, HStack, ScreenHeaderWrapper } from '@suite-native/atoms';
 import { selectShouldFactoryResetBeVisible } from '@suite-native/device';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { nativeBorders } from '@trezor/theme';
 
 import { useDeviceManager } from '../hooks/useDeviceManager';

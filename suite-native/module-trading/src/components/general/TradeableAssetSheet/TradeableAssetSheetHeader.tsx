@@ -8,7 +8,7 @@ import {
     SEARCHABLE_SHEET_HEADER_DEFAULT_HEIGHT,
     SearchableSheetHeader,
 } from '@suite-native/trading-atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { TradeableAssetFilterTabs } from './TradeableAssetFilterTabs';
 

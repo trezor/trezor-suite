@@ -6,7 +6,7 @@ import { type BarcodeScanningResult, CameraView, PermissionStatus } from 'expo-c
 import { Box, HStack, Loader, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation, useTranslate } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { nativeSpacings } from '@trezor/theme';
 
 import { CameraPermissionError } from './CameraPermissionError';

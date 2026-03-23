@@ -3,7 +3,7 @@ import { type ReactNode } from 'react';
 import { G } from '@mobily/ts-belt';
 
 import { Box, Text } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type TransactionDetailRowProps = {
     title: string;

@@ -2,7 +2,7 @@ import { type ReactNode } from 'react';
 
 import { Box, type BoxProps, Text, VStack } from '@suite-native/atoms';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type Color } from '@trezor/theme';
 
 type FirmwareInfoBoxProps = {

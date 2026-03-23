@@ -31,7 +31,9 @@
         { "path": "../navigation" },
         { "path": "../services" },
         { "path": "../../packages/device-utils" },
-        { "path": "../../packages/styles" },
+        {
+            "path": "../../packages/styles-native"
+        },
         { "path": "../../packages/theme" }
     ]
 }

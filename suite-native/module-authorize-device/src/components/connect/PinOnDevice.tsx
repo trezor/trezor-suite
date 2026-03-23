@@ -4,7 +4,7 @@ import { DevicePinImage } from '@suite-native/device-authorization';
 import { Translation } from '@suite-native/intl';
 import { type DeviceModelInternal } from '@trezor/device-utils';
 import { getScreenHeight } from '@trezor/env-utils';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 const DEVICE_IMAGE_MAX_HEIGHT = 0.42 * getScreenHeight();
 const CONNECTOR_IMAGE_MAX_HEIGHT = 0.18 * getScreenHeight();

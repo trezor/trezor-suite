@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { type LayoutChangeEvent, PixelRatio } from 'react-native';
 
-import { useNativeStyles } from '@trezor/styles';
+import { useNativeStyles } from '@trezor/styles-native';
 import { type NativeTypographyStyle } from '@trezor/theme';
 
 export const useIsMultiline = (fontType: NativeTypographyStyle = 'headline-md') => {

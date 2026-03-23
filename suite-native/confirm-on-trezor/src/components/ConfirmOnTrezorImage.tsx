@@ -3,7 +3,7 @@ import { Image } from 'react-native';
 import { SlideInDown, SlideOutDown } from 'react-native-reanimated';
 
 import { AnimatedPressable, useBottomSheetModal } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { ConfirmOnTrezorBottomSheet } from './ConfirmOnTrezorBottomSheet';
 

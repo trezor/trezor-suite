@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { selectIsDeviceConnectedViaBluetooth } from '@suite-common/device';
 import { Box, Image } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 const imageStyle = prepareNativeStyle<{ maxHeight?: number }>((_, { maxHeight }) => ({
     width: '100%',

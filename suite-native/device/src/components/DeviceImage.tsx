@@ -1,6 +1,6 @@
 import { Image } from '@suite-native/atoms';
 import { DeviceModelInternal } from '@trezor/device-utils';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 const deviceImageMap: Record<DeviceModelInternal, string> = {
     [DeviceModelInternal.UNKNOWN]: require('../assets/unknown.webp'),

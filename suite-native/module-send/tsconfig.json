@@ -57,7 +57,9 @@
         },
         { "path": "../../packages/connect" },
         { "path": "../../packages/react-utils" },
-        { "path": "../../packages/styles" },
+        {
+            "path": "../../packages/styles-native"
+        },
         { "path": "../../packages/theme" },
         { "path": "../../packages/transport" },
         { "path": "../../packages/urls" },

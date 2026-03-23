@@ -1,7 +1,11 @@
 import { useState } from 'react';
 import { type LayoutChangeEvent } from 'react-native';
 
-import { mergeNativeStyleObjects, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import {
+    mergeNativeStyleObjects,
+    prepareNativeStyle,
+    useNativeStyles,
+} from '@trezor/styles-native';
 import { nativeTypography } from '@trezor/theme';
 
 import { Box } from '../Box';

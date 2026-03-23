@@ -4,7 +4,7 @@ import { type TokenAddress } from '@suite-common/wallet-types';
 import { Card, HStack, Text, VStack } from '@suite-native/atoms';
 import { CryptoIcon, Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type TokenInfoCardProps = {
     tokenName: string;

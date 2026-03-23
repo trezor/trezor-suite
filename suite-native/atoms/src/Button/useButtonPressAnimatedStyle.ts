@@ -5,7 +5,7 @@ import {
     withTiming,
 } from 'react-native-reanimated';
 
-import { useNativeStyles } from '@trezor/styles';
+import { useNativeStyles } from '@trezor/styles-native';
 import { type Color } from '@trezor/theme';
 
 import { pressTimingConfig } from '../constants';

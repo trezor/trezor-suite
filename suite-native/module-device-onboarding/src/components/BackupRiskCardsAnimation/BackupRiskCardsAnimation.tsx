@@ -5,7 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 import { HStack, VStack } from '@suite-native/atoms';
 import { getScreenWidth } from '@trezor/env-utils';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { hexToRgba } from '@trezor/utils';
 
 import { MarqueeTile } from './MarqueeTile';

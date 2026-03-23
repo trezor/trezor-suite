@@ -34,7 +34,7 @@
         "@suite-native/settings": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/device-utils": "workspace:*",
-        "@trezor/styles": "workspace:*",
+        "@trezor/styles-native": "workspace:*",
         "@trezor/theme": "workspace:*",
         "@trezor/utils": "workspace:*",
         "@types/invity-api": "^1.1.15",

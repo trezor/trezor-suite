@@ -7,7 +7,7 @@ import { type AccountKey, isFinalPrecomposedTransaction } from '@suite-common/wa
 import { Box, Button, Card, HStack, VStack } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { CustomFeeLabel } from './CustomFeeLabel';
 import { selectFeeLevels } from '../../../selectors';

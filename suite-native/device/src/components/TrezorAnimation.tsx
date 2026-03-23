@@ -4,7 +4,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { VideoView } from 'expo-video';
 import type { VideoPlayer } from 'expo-video/src/VideoPlayer.types';
 
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 const ANIMATION_WIDTH = 2000;
 const ANIMATION_HEIGHT = 2667;

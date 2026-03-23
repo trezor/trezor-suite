@@ -19,7 +19,7 @@ import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-nativ
 import { Translation, useTranslate } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
 import { type TypedTokenTransfer, type WalletAccountTransaction } from '@suite-native/tokens';
-import { useNativeStyles } from '@trezor/styles';
+import { useNativeStyles } from '@trezor/styles-native';
 import { HELP_CENTER_ZERO_VALUE_ATTACKS } from '@trezor/urls';
 
 import { TransactionDetailIncludedCoins } from './TransactionDetailIncludedCoins';

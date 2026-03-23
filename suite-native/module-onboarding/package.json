@@ -30,7 +30,7 @@
         "@suite-native/trading-state": "workspace:*",
         "@trezor/analytics-uploader": "workspace:*",
         "@trezor/env-utils": "workspace:*",
-        "@trezor/styles": "workspace:*",
+        "@trezor/styles-native": "workspace:*",
         "@trezor/theme": "workspace:*",
         "@trezor/urls": "workspace:*",
         "@trezor/utils": "workspace:*",

@@ -13,7 +13,7 @@ import {
     selectAPYBySymbol,
     useSelector as useNativeStakingSelector,
 } from '@suite-native/staking';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { type EarnPromoItem } from '../types';
 

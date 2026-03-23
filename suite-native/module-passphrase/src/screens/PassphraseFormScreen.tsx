@@ -22,7 +22,7 @@ import {
     useHandleUiRequestPassphraseOnDevice,
 } from '@suite-native/passphrase';
 import { useAnalytics } from '@suite-native/services';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { HELP_CENTER_PASSPHRASE_URL } from '@trezor/urls';
 
 const ANIMATION_DURATION = 300;

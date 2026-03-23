@@ -19,7 +19,7 @@ import {
     selectExchangeSelectedReceiveAccount,
 } from '@suite-native/trading-state';
 import { type ReceiveAccount } from '@suite-native/trading-types';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { AccountListAddressItem } from './AccountListAddressItem';
 import { AccountListFooter } from './AccountListFooter';

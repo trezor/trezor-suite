@@ -9,7 +9,9 @@
             "path": "../../suite-common/wallet-core"
         },
         { "path": "../../packages/connect" },
-        { "path": "../../packages/styles" },
+        {
+            "path": "../../packages/styles-native"
+        },
         { "path": "../../packages/theme" },
         { "path": "../../packages/type-utils" },
         { "path": "../test-utils" }

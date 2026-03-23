@@ -10,7 +10,7 @@ import {
 } from '@suite-common/trading';
 import { Card, CardDivider, HStack, Radio, Text, VStack } from '@suite-native/atoms';
 import { ProviderLogo } from '@suite-native/trading-atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { ProviderListItemInfo } from './ProviderListItemInfo';
 import { ProviderListItemValueRow } from './ProviderListItemValueRow';

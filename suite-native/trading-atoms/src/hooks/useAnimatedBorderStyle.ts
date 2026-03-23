@@ -5,7 +5,7 @@ import {
     withTiming,
 } from 'react-native-reanimated';
 
-import { useNativeStyles } from '@trezor/styles';
+import { useNativeStyles } from '@trezor/styles-native';
 
 export const useAnimatedBorderStyle = (isAmountInputActive: boolean) => {
     const { utils } = useNativeStyles();

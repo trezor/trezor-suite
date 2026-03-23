@@ -1,7 +1,7 @@
 import { Card, HStack, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { CardTitle } from '@suite-native/trading-atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { ExchangeReceiveAccountCryptoBalance } from './ExchangeReceiveAccountCryptoBalance';
 import { ExchangeTradeableAssetPicker } from './ExchangeTradeableAssetPicker';

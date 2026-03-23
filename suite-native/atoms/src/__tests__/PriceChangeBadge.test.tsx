@@ -3,7 +3,7 @@ import {
     renderHook,
     renderWithBasicProvider,
 } from '@suite-native/test-utils';
-import { type NativeStyleUtils, useNativeStyles } from '@trezor/styles';
+import { type NativeStyleUtils, useNativeStyles } from '@trezor/styles-native';
 
 import { Box as MockBox } from '../Box';
 import { PriceChangeBadge } from '../PriceChangeBadge';

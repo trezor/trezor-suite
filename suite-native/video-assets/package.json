@@ -13,7 +13,7 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@trezor/styles": "workspace:*",
+        "@trezor/styles-native": "workspace:*",
         "expo": "~55.0.3",
         "expo-video": "~55.0.10",
         "prettier": "^3.8.1",

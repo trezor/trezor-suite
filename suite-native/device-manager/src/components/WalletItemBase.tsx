@@ -14,7 +14,7 @@ import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { WalletLabel, selectIsLabellingAllowed } from '@suite-native/labeling';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type WalletItemBaseVariant = 'standard' | 'passphrase';
 

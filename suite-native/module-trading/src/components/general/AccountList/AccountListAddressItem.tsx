@@ -4,7 +4,7 @@ import { type SuiteSyncDataRootState, selectSuiteSyncAddressLabel } from '@suite
 import { Text } from '@suite-native/atoms';
 import { AccountAddress } from '@suite-native/trading-atoms';
 import { type ReceiveAccount } from '@suite-native/trading-types';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { AccountListBaseItem } from './AccountListBaseItem';
 

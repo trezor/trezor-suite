@@ -3,7 +3,7 @@ import {
     mergeNativeStyleObjects,
     prepareNativeStyle,
     useNativeStyles,
-} from '@trezor/styles';
+} from '@trezor/styles-native';
 import { isNotNullOrUndefined } from '@trezor/utils';
 
 import { Box, type BoxProps } from './Box';

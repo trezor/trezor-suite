@@ -24,7 +24,7 @@ import {
     type StackProps,
 } from '@suite-native/navigation';
 import { ScanQRBottomSheet } from '@suite-native/qr-code';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { AccountImportScreenHeader } from '../components/AccountImportScreenHeader';
 import { DevXpub } from '../components/DevXpub';

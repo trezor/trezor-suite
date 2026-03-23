@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { selectFirmwareChangelog } from '@suite-common/device';
 import { BottomSheetModal, type BottomSheetModalRef, Button, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type FirmwareChangelogProps = {
     onClose: () => void;

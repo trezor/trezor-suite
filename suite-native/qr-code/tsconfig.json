@@ -22,7 +22,9 @@
         { "path": "../labeling" },
         { "path": "../toasts" },
         { "path": "../../packages/connect" },
-        { "path": "../../packages/styles" },
+        {
+            "path": "../../packages/styles-native"
+        },
         { "path": "../../packages/theme" }
     ]
 }

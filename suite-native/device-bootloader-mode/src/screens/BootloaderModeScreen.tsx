@@ -18,7 +18,7 @@ import {
     useInterceptNativeNavigation,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 const buttonWrapperStyle = prepareNativeStyle(() => ({
     width: '100%',

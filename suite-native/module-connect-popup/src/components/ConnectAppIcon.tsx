@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { Image, RoundedIcon } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { IMAGE_PROXY_API_AUTH_BEARER, IMAGE_PROXY_API_URL } from '@trezor/urls';
 
 const sizeMapping = {

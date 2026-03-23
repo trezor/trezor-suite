@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { Box } from '../Box';
 import { Hint } from '../Hint';

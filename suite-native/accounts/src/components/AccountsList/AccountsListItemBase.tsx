@@ -2,7 +2,7 @@ import React from 'react';
 import { type PressableProps } from 'react-native';
 
 import { Box, HStack, PressableOpacity, Text } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 export type AccountListItemBaseProps = {
     icon: React.ReactNode;

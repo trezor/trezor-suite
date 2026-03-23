@@ -16,7 +16,7 @@ import {
     type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { DeviceAction } from './DeviceAction';
 import { useDeviceManager } from '../hooks/useDeviceManager';

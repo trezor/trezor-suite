@@ -4,7 +4,7 @@ import Animated, { FadeIn, FadeOut, LinearTransition } from 'react-native-reanim
 import { BottomSheetGrabber, VStack } from '@suite-native/atoms';
 import { type IconName } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';
-import { type NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { type NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { BottomSheetSearchInputWithCancel } from './BottomSheetSearchInputWithCancel';
 import { SheetHeaderTitle } from './SheetHeaderTitle';

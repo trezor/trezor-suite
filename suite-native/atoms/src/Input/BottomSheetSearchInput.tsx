@@ -4,7 +4,7 @@ import { type TextInput } from 'react-native-gesture-handler';
 
 import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 
-import { useNativeStyles } from '@trezor/styles';
+import { useNativeStyles } from '@trezor/styles-native';
 
 import { Box } from '../Box';
 import { type SurfaceElevation } from '../types';

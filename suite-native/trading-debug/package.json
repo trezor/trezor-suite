@@ -19,7 +19,7 @@
         "@suite-native/clipboard": "workspace:*",
         "@suite-native/feature-flags": "workspace:*",
         "@suite-native/trading-state": "workspace:*",
-        "@trezor/styles": "workspace:*",
+        "@trezor/styles-native": "workspace:*",
         "react": "19.2.4",
         "react-redux": "9.2.0"
     },

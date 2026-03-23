@@ -19,7 +19,7 @@
         "@suite-native/navigation": "workspace:*",
         "@suite-native/theme": "workspace:*",
         "@trezor/env-utils": "workspace:*",
-        "@trezor/styles": "workspace:*",
+        "@trezor/styles-native": "workspace:*",
         "@trezor/theme": "workspace:*",
         "expo-haptics": "~55.0.8",
         "expo-linear-gradient": "~55.0.8",

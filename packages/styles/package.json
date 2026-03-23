@@ -8,26 +8,6 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
-        "test:unit": "yarn g:jest",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
-    },
-    "dependencies": {
-        "@mobily/ts-belt": "^3.13.1",
-        "@trezor/theme": "workspace:*",
-        "css-in-js-utils": "^3.1.0",
-        "csstype": "^3.1.3",
-        "fela": "^12.2.1",
-        "fela-enforce-longhands": "^12.2.1",
-        "fela-native": "^12.2.1",
-        "fela-plugin-embedded": "^12.2.1",
-        "fela-plugin-extend": "^12.2.1",
-        "fela-plugin-multiple-selectors": "^12.2.1",
-        "fela-plugin-placeholder-prefixer": "^12.2.1",
-        "fela-plugin-unit": "^12.2.1",
-        "fela-sort-media-query-mobile-first": "^12.2.1",
-        "polished": "^4.3.1",
-        "react": "19.2.4",
-        "react-fela": "^12.2.1",
-        "react-native": "0.83.2"
     }
 }

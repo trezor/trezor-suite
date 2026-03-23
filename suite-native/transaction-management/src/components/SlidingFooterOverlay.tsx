@@ -4,7 +4,7 @@ import Animated, { SlideOutDown, useAnimatedStyle, withTiming } from 'react-nati
 import { LinearGradient } from 'expo-linear-gradient';
 
 import { Box } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { hexToRgba } from '@trezor/utils';
 
 export type SlidingFooterOverlayProps = {

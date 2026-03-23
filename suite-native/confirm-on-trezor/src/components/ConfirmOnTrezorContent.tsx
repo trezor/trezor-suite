@@ -15,7 +15,7 @@ import { AnimatedBox, useBannerAwareSafeAreaInsets } from '@suite-native/atoms';
 import { Screen, type ScreenHeaderProps } from '@suite-native/navigation';
 import { useActiveColorScheme } from '@suite-native/theme';
 import { getScreenWidth, getWindowWidth } from '@trezor/env-utils';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type ThemeColorVariant } from '@trezor/theme';
 
 import { type BottomSheetControlProps } from '../hooks/useConfirmOnTrezorSheet';

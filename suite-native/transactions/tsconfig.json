@@ -40,7 +40,9 @@
         {
             "path": "../../packages/blockchain-link-types"
         },
-        { "path": "../../packages/styles" },
+        {
+            "path": "../../packages/styles-native"
+        },
         { "path": "../../packages/theme" },
         { "path": "../../packages/utils" }
     ]

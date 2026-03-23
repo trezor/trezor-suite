@@ -2,7 +2,7 @@ import { type ReactNode } from 'react';
 
 import { type NetworkSymbol, isNetworkSymbol } from '@suite-common/wallet-config';
 import { CryptoIcon, Icon, type IconName, type IconSize, icons } from '@suite-native/icons';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type Color } from '@trezor/theme';
 import { isNotNullOrUndefined } from '@trezor/utils';
 

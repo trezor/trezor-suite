@@ -36,7 +36,9 @@
         {
             "path": "../../packages/blockchain-link-utils"
         },
-        { "path": "../../packages/styles" },
+        {
+            "path": "../../packages/styles-native"
+        },
         { "path": "../../packages/urls" },
         { "path": "../../packages/utils" },
         { "path": "../test-utils" }

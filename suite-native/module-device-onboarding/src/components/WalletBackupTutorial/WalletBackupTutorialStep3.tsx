@@ -3,7 +3,7 @@ import { type ReactNode } from 'react';
 import { Box, Card, Divider, HStack, IconListTextItem, Text, VStack } from '@suite-native/atoms';
 import { TrezorDeviceSvg } from '@suite-native/device';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type Color } from '@trezor/theme';
 
 import { WalletBackupTutorialStep } from './WalletBackupTutorialStep';

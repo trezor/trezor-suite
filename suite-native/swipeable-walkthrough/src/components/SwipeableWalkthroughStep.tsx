@@ -4,7 +4,7 @@ import { type SharedValue, useAnimatedStyle, withSpring } from 'react-native-rea
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AnimatedBox, IconButton, VStack } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { SwipeableWalkthroughStepHeader } from './SwipeableWalkthroughStepHeader';
 import { useSwipeableWalkthroughStepHeight } from '../hooks/useSwipeableWalkthroughStepHeight';

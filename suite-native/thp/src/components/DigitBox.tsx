@@ -1,7 +1,7 @@
 import { Platform } from 'react-native';
 
 import { Box, Text } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type DigitBoxProps = {
     value?: string;

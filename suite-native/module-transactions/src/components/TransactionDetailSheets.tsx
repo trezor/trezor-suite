@@ -1,7 +1,7 @@
 import { type AccountKey, type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { isTestnet } from '@suite-common/wallet-utils';
 import { Card, VStack } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { TransactionDetailInputsSheet } from './TransactionDetailInputsSheet';
 import { TransactionDetailParametersSheet } from './TransactionDetailParametersSheet';

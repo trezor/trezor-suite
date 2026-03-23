@@ -11,7 +11,7 @@ import {
 import { Box, Loader } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { type GraphPoint, LineGraph } from '@suite-native/react-native-graph';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type TimerId } from '@trezor/type-utils';
 
 import { getExtremaFromGraphPoints } from '../utils';

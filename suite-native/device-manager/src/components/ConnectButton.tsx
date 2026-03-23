@@ -9,7 +9,7 @@ import { AnimatedBox, Button } from '@suite-native/atoms';
 import { useConnectDeviceHandler } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import { useAnalytics } from '@suite-native/services';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { useDeviceManager } from '../hooks/useDeviceManager';
 

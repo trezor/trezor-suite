@@ -1,6 +1,6 @@
 import { HStack, IconButton, Text } from '@suite-native/atoms';
 import { useCopyToClipboard } from '@suite-native/clipboard';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 export type CopyableTextProps = {
     text: string;

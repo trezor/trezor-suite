@@ -5,7 +5,7 @@ import { KeyboardEvents } from 'react-native-keyboard-controller';
 import { useFocusEffect } from '@react-navigation/native';
 
 import { HStack } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { DigitBox } from './DigitBox';
 

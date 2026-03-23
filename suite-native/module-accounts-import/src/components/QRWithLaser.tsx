@@ -24,7 +24,7 @@ import {
 } from '@shopify/react-native-skia';
 
 import { ENDLESS_ANIMATION_VALUE } from '@suite-native/atoms';
-import { useNativeStyles } from '@trezor/styles';
+import { useNativeStyles } from '@trezor/styles-native';
 
 const ROUNDED_CORNER_SIZE = 15;
 

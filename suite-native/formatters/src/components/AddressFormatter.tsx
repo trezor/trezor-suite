@@ -1,7 +1,11 @@
 import { Platform } from 'react-native';
 
 import { Text, type TextProps } from '@suite-native/atoms';
-import { mergeNativeStyleObjects, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import {
+    mergeNativeStyleObjects,
+    prepareNativeStyle,
+    useNativeStyles,
+} from '@trezor/styles-native';
 
 import { type FormatterProps } from '../types';
 

@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { Box, HStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { SCREEN_HEADER_HEIGHT } from '../constants';
 import { DeviceSwitchContent } from './DeviceSwitchContent';

@@ -1,6 +1,6 @@
 import Svg, { Path } from 'react-native-svg';
 
-import { useNativeStyles } from '@trezor/styles';
+import { useNativeStyles } from '@trezor/styles-native';
 
 export const CriticalShapeSvg = () => {
     const { utils } = useNativeStyles();

@@ -35,7 +35,9 @@
         { "path": "../tokens" },
         { "path": "../transactions" },
         { "path": "../../packages/connect" },
-        { "path": "../../packages/styles" },
+        {
+            "path": "../../packages/styles-native"
+        },
         { "path": "../../packages/urls" }
     ]
 }

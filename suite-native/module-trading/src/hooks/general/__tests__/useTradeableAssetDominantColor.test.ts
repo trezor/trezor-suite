@@ -1,7 +1,7 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { renderHookWithBasicProvider } from '@suite-native/test-utils';
-import { useNativeStyles } from '@trezor/styles';
+import { useNativeStyles } from '@trezor/styles-native';
 import { type CoinsColors, type Colors } from '@trezor/theme';
 
 import { useTradeableAssetDominantColor } from '../useTradeableAssetDominantColor';

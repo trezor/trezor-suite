@@ -1,6 +1,6 @@
 import { HStack, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { ColorSchemePickerItem } from './ColorSchemePickerItem';
 import { PreferencesSettingsCard } from './PreferencesSettingsCard';

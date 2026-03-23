@@ -8,7 +8,7 @@ import { type AccountKey } from '@suite-common/wallet-types';
 import { Box, VStack } from '@suite-native/atoms';
 import { type WalletAccountTransaction } from '@suite-native/tokens';
 import { selectTransactionAddresses } from '@suite-native/transactions';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { TransactionDetailAddressesSection } from './TransactionDetailAddressesSection';
 

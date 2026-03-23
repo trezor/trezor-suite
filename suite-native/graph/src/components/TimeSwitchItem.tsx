@@ -1,6 +1,6 @@
 import { PressableOpacity, Text } from '@suite-native/atoms';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 export type TimeSwitchValue = number | null;
 

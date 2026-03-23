@@ -1,5 +1,5 @@
 import { Box } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 const stepperDotWrapperStyle = prepareNativeStyle(utils => ({
     justifyContent: 'center',

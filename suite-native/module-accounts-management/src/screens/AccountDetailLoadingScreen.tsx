@@ -9,7 +9,7 @@ import {
     Screen,
     ScreenHeader,
 } from '@suite-native/navigation';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 

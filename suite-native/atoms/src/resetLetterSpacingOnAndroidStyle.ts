@@ -1,5 +1,5 @@
 import { isAndroid } from '@trezor/env-utils';
-import { prepareNativeStyle } from '@trezor/styles';
+import { prepareNativeStyle } from '@trezor/styles-native';
 
 export const resetLetterSpacingOnAndroidStyle = prepareNativeStyle(_ => ({
     // Because of this RN issue https://github.com/facebook/react-native/issues/46436

@@ -8,7 +8,7 @@ import {
 } from 'react-native-reanimated';
 
 import { Icon, type IconName } from '@suite-native/icons';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { AnimatedBox } from '../AnimatedBox';
 import { Box } from '../Box';

@@ -23,7 +23,9 @@
         { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../link" },
-        { "path": "../../packages/styles" },
+        {
+            "path": "../../packages/styles-native"
+        },
         { "path": "../../packages/theme" },
         { "path": "../test-utils" }
     ]

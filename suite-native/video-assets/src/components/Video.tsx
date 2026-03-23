@@ -4,7 +4,7 @@ import Animated, { FadeIn } from 'react-native-reanimated';
 import { useEvent } from 'expo';
 import { VideoView, useVideoPlayer } from 'expo-video';
 
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { type VideoName, videos } from '../videos';
 

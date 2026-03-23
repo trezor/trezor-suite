@@ -5,7 +5,7 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Button, HStack, ScreenFooterGradient, Text, VStack } from '@suite-native/atoms';
 import { CryptoAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type SendUtxoScreenFooterProps = {
     selectedTotal: string;

@@ -1,7 +1,7 @@
 import { forwardRef } from 'react';
 import { Pressable, TextInput } from 'react-native';
 
-import { useNativeStyles } from '@trezor/styles';
+import { useNativeStyles } from '@trezor/styles-native';
 
 import { Box } from '../Box';
 import { type SurfaceElevation } from '../types';

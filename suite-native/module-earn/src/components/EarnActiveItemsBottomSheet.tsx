@@ -22,7 +22,7 @@ import {
     type StackNavigationProps,
 } from '@suite-native/navigation';
 import { selectAPYByAccountKey, useSelector as useStakingSelector } from '@suite-native/staking';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { CRYPTO_BALANCE_DECIMALS } from '../constants';
 import { type EarnDepositsCardActiveItem } from '../types';

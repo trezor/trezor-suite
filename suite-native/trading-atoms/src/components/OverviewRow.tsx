@@ -4,7 +4,7 @@ import { Pressable } from 'react-native';
 import { Box, HStack, InlineAlertBox, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 export type TradeOverviewOptionProps = {
     title: string;

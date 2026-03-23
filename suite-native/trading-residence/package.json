@@ -29,7 +29,7 @@
         "@suite-native/trading-atoms": "workspace:*",
         "@suite-native/trading-consts": "workspace:*",
         "@suite-native/trading-state": "workspace:*",
-        "@trezor/styles": "workspace:*",
+        "@trezor/styles-native": "workspace:*",
         "expo-localization": "~55.0.8",
         "react": "19.2.4",
         "react-native": "0.83.2",

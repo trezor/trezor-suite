@@ -9,7 +9,7 @@ import { FeatureFlag, selectIsFeatureFlagEnabled } from '@suite-native/feature-f
 import { BottomSheetSectionList } from '@suite-native/trading-atoms';
 import { type TradingWithFeatureFlagsRootState } from '@suite-native/trading-state';
 import { type QuotesByCategories, type QuotesCategory } from '@suite-native/trading-types';
-import { prepareNativeStyle } from '@trezor/styles';
+import { prepareNativeStyle } from '@trezor/styles-native';
 
 import { useProviderFilters } from '../../../hooks/general/useProviderFilters';
 import { LegalGatewayContextMessage } from '../LegalGatewayContextMessage';

@@ -5,7 +5,7 @@ import { type SystemBarStyle, SystemBars } from 'react-native-edge-to-edge';
 import { useIsFocused } from '@react-navigation/native';
 import * as SystemUI from 'expo-system-ui';
 
-import { isDarkColor, useNativeStyles } from '@trezor/styles';
+import { isDarkColor, useNativeStyles } from '@trezor/styles-native';
 import { type CSSColor, type Color } from '@trezor/theme';
 
 const adjustSystemBarStyleToBackground = (color: CSSColor) => {

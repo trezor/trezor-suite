@@ -3,7 +3,7 @@ import React from 'react';
 import { VideoView, useVideoPlayer } from 'expo-video';
 
 import { useActiveColorScheme } from '@suite-native/theme';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type ThemeColorVariant } from '@trezor/theme';
 
 const bluetoothPairingAnimations = {

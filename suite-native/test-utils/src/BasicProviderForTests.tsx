@@ -7,7 +7,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { FormatterProvider, type FormatterProviderConfig } from '@suite-common/formatters';
 import { IntlProviderForTests } from '@suite-native/intl';
 import { NativeServicesProvider } from '@suite-native/services';
-import { StylesProvider, createRenderer } from '@trezor/styles';
+import { StylesProvider, createRenderer } from '@trezor/styles-native';
 import { prepareNativeTheme } from '@trezor/theme';
 
 import { extraDependenciesNativeMock } from './extraDependenciesNative.mock';

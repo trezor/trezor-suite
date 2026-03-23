@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react';
 import { ActivityIndicator, type ActivityIndicatorProps } from 'react-native';
 
-import { useNativeStyles } from '@trezor/styles';
+import { useNativeStyles } from '@trezor/styles-native';
 import { type Color } from '@trezor/theme';
 
 import { Box } from './Box';

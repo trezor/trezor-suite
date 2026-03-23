@@ -2,7 +2,7 @@ import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { Hint } from '@suite-native/atoms';
 import { useField } from '@suite-native/forms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { getOutputFieldName } from '../utils';
 

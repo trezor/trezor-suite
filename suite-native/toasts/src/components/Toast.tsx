@@ -3,7 +3,7 @@ import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { Box, HStack, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type Color } from '@trezor/theme';
 
 import { type Toast as ToastInterface, type ToastVariant } from '../toastsAtoms';

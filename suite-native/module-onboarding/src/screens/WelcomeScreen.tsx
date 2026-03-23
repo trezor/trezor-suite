@@ -12,7 +12,7 @@ import {
     type StackProps,
 } from '@suite-native/navigation';
 import { getWindowHeight } from '@trezor/env-utils';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { colorVariants } from '@trezor/theme';
 import { hexToRgba } from '@trezor/utils';
 

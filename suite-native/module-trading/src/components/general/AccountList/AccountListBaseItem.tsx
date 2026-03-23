@@ -10,7 +10,7 @@ import { CryptoIcon, Icon } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';
 import { type CombinedLabelingState, selectAccountLabel } from '@suite-native/labeling';
 import { type ReceiveAccount } from '@suite-native/trading-types';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 export type AccountListBaseItemProps = {
     receiveAccount: ReceiveAccount;

@@ -4,7 +4,7 @@ import { networkIcons } from '@suite-common/icons';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { useTranslate } from '@suite-native/intl';
 import { useActiveColorScheme } from '@suite-native/theme';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { type CryptoIconSize } from './CryptoIcon';
 

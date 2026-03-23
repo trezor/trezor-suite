@@ -11,7 +11,7 @@ import {
     type IconSize,
     icons,
 } from '@suite-native/icons';
-import { type NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { type NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type Color, type TypographyStyle, nativeSpacings } from '@trezor/theme';
 
 import { Text } from '../Text';

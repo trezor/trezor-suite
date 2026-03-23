@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { type TradingRootState, selectTradingTradeByOrderId } from '@suite-common/trading';
 import { BottomSheetModal, useBottomSheetModal } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { TradeDetailFooter } from './TradeDetailFooter';
 import { TradeDetailHeader } from './TradeDetailHeader';

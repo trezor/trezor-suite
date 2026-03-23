@@ -10,7 +10,7 @@ import {
 } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { type TypedTokenTransfer, type WalletAccountTransaction } from '@suite-native/tokens';
-import { useNativeStyles } from '@trezor/styles';
+import { useNativeStyles } from '@trezor/styles-native';
 
 import { TransactionDetailListItem } from './TransactionDetailListItem';
 import { cardStyle } from './TransactionOverview';

@@ -4,7 +4,7 @@ import { A } from '@mobily/ts-belt';
 
 import { selectActiveBannerMessages } from '@suite-common/message-system';
 import { Box } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 const messageBannerContainerStyle = prepareNativeStyle<{ topSafeAreaInset: number }>(
     (_, { topSafeAreaInset }) => ({

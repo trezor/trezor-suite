@@ -11,7 +11,7 @@ import Animated, {
 import { A, G } from '@mobily/ts-belt';
 import { atom, useAtom } from 'jotai';
 
-import { useNativeStyles } from '@trezor/styles';
+import { useNativeStyles } from '@trezor/styles-native';
 
 import { Text } from './Text';
 

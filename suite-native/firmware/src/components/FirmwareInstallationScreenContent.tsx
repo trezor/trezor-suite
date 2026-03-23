@@ -16,7 +16,7 @@ import { SUITE_MOBILE_SUPPORT_URL, useOpenLink } from '@suite-native/link';
 import { DynamicScreenHeader } from '@suite-native/navigation';
 import { reportSecurityCheck } from '@suite-native/sentry';
 import TrezorConnect from '@trezor/connect';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { setTemporaryRememberedDeviceThunk } from '../firmwareThunks';
 import { DoNotCloseAppBottomSheetTrigger } from './DoNotCloseAppBottomSheetTrigger';

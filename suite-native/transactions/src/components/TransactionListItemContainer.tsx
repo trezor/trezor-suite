@@ -28,7 +28,7 @@ import {
     TransactionDetailStackRoutes,
 } from '@suite-native/navigation';
 import { type TypedTokenTransfer } from '@suite-native/tokens';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { TransactionIcon } from './TransactionIcon';
 import { TransactionName } from './TransactionName';

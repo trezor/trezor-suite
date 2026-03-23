@@ -26,7 +26,9 @@
         { "path": "../link" },
         { "path": "../navigation" },
         { "path": "../passphrase" },
-        { "path": "../../packages/styles" },
+        {
+            "path": "../../packages/styles-native"
+        },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/urls" },
         { "path": "../../packages/utils" }

@@ -3,8 +3,12 @@ import { Platform, StyleSheet, View } from 'react-native';
 
 import { StoryContext } from '@storybook/react';
 
-import { StylesProvider, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { createRenderer } from '@trezor/styles/src/createRenderer.native';
+import {
+    StylesProvider,
+    createRenderer,
+    prepareNativeStyle,
+    useNativeStyles,
+} from '@trezor/styles-native';
 import { ThemeColorVariant, prepareNativeTheme } from '@trezor/theme';
 
 const renderer = createRenderer();
