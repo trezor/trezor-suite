@@ -9,3 +9,5 @@ export { extraDependenciesNativeMock } from './extraDependenciesNative.mock';
 export * from './renderBasic';
 export * from './renderWithStore';
 export { initStore } from './initStore';
+
+// Nx, consider this package affected and invalidate its cache. Thank u!
