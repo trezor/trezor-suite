@@ -11,6 +11,7 @@ type CryptoToFiatAmountFormatterProps = FormatterProps<string | number | null> &
         historicRate?: number;
         useHistoricRate?: boolean;
         isBalance?: boolean;
+        isDiscreetText?: boolean;
         isForcedDiscreetMode?: boolean;
         isLoading?: boolean;
     };

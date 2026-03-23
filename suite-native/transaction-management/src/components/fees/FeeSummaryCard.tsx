@@ -44,6 +44,7 @@ export const FeeSummaryCard = ({
                                 symbol={symbol}
                                 isBalance={false}
                                 isLoading={areFeesLoading}
+                                isDiscreetText={false}
                             />
                             <CryptoToFiatAmountFormatter
                                 variant="body-xs"
@@ -51,6 +52,7 @@ export const FeeSummaryCard = ({
                                 value={fee}
                                 symbol={symbol}
                                 isLoading={areFeesLoading}
+                                isDiscreetText={false}
                             />
                         </VStack>
                         <Icon name="caretDown" size="medium" color="iconSubdued" />

@@ -31,6 +31,7 @@ export const ReviewOutputItemValues = ({
                 tokenContract={tokenContract}
                 adjustsFontSizeToFit
                 numberOfLines={1}
+                isDiscreetText={false}
             />
             <CoinAmountFormatter
                 variant="body-sm"
@@ -41,6 +42,7 @@ export const ReviewOutputItemValues = ({
                 isBalance={false}
                 adjustsFontSizeToFit
                 numberOfLines={1}
+                isDiscreetText={false}
             />
         </VStack>
     </HStack>

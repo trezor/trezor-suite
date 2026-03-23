@@ -59,6 +59,7 @@ export const SendUtxoScreenFooter = ({
                             color={missingToAmount ? 'textSubdued' : 'textDefault'}
                             value={selectedTotal}
                             symbol={symbol}
+                            isDiscreetText={false}
                         />
                     </HStack>
                     {missingToAmount && (
@@ -72,6 +73,7 @@ export const SendUtxoScreenFooter = ({
                                     value={missingToAmount}
                                     symbol={symbol}
                                     isBalance={false}
+                                    isDiscreetText={false}
                                 />
                             </HStack>
                         </Animated.View>

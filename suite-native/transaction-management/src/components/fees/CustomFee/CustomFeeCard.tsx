@@ -51,6 +51,7 @@ export const CustomFeeCard = ({ accountKey, onEdit, onCancel }: CustomFeeCardPro
                                     value={customFeeTransaction.fee}
                                     symbol={symbol}
                                     variant="body-md"
+                                    isDiscreetText={false}
                                 />
                                 <CryptoAmountFormatter
                                     value={customFeeTransaction?.fee}
@@ -59,6 +60,7 @@ export const CustomFeeCard = ({ accountKey, onEdit, onCancel }: CustomFeeCardPro
                                     variant="body-sm"
                                     numberOfLines={1}
                                     adjustsFontSizeToFit
+                                    isDiscreetText={false}
                                 />
                             </VStack>
                         </HStack>
