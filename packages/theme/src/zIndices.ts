@@ -6,7 +6,7 @@ export const zIndices = {
     toast: 70,
     tooltip: 60, // above all content to be always fully visible when toggled
     guide: 50, // above MODAL to stay accessible when modal is open
-    guideButton: 49, // below GUIDE to get covered by the guide when it is opening
+    guideButton: 38, // below MODAL so it is hidden under the modal overlay
 
     // doesn't collide with notifications that are few pixels below
     // should be in front of modal because of switch device modal
