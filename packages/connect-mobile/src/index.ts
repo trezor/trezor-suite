@@ -10,7 +10,7 @@ import {
     DEEPLINK_VERSION,
     DEFAULT_DOMAIN_MAJOR_VER,
 } from '@trezor/connect-common/src/data/version';
-import { type Deferred, createDeferred, removeTrailingSlashes } from '@trezor/utils';
+import { createDeferredManager, removeTrailingSlashes } from '@trezor/utils';
 
 type BuildUrlParams = {
     method: string;
@@ -46,8 +46,7 @@ interface ConnectSettingsMobile {
 
 export class TrezorConnectDeeplink implements ConnectFactoryDependencies<ConnectSettingsMobile> {
     public eventEmitter = new ConnectEmitter();
-    private messagePromises: Record<number, Deferred<any>> = {};
-    private messageID = 0;
+    private messages = createDeferredManager();
 
     private manifest?: Manifest;
 
@@ -101,13 +100,12 @@ export class TrezorConnectDeeplink implements ConnectFactoryDependencies<Connect
     }
 
     public call(params: CallMethodPayload) {
-        this.messageID++;
-        this.messagePromises[this.messageID] = createDeferred();
+        const { promise, promiseId } = this.messages.create();
         const { method, ...restParams } = params;
 
-        this.openDeeplink(method, this.messageID, restParams);
+        this.openDeeplink(method, promiseId, restParams);
 
-        return this.messagePromises[this.messageID].promise;
+        return promise;
     }
 
     public uiResponse() {
@@ -115,10 +113,7 @@ export class TrezorConnectDeeplink implements ConnectFactoryDependencies<Connect
     }
 
     public cancel(error?: string) {
-        this.resolveMessagePromises({
-            success: false,
-            error,
-        });
+        this.resolveMessagePromises({ success: false, error });
     }
 
     public dispose() {
@@ -140,27 +135,18 @@ export class TrezorConnectDeeplink implements ConnectFactoryDependencies<Connect
             if (!id || isNaN(Number(id))) throw new Error('Missing `id` parameter.');
             id = Number(id);
         } catch (error) {
-            this.resolveMessagePromises({
-                success: false,
-                error,
-            });
+            this.resolveMessagePromises({ success: false, error });
 
-            return;
-        }
-
-        if (!this.messagePromises[id]) {
-            // Most likely old ID, ignore
             return;
         }
 
         const responseParam = parsedUrl.searchParams.get('response');
         if (!responseParam) {
-            this.messagePromises[id].resolve({
+            this.messages.resolve(id, {
                 id,
                 success: false,
                 error: 'The provided url is missing `response` parameter.',
             });
-            delete this.messagePromises[id];
 
             return;
         }
@@ -173,27 +159,19 @@ export class TrezorConnectDeeplink implements ConnectFactoryDependencies<Connect
         }
 
         if (!parsedParams) {
-            this.messagePromises[id].resolve({
+            this.messages.resolve(id, {
                 id,
                 success: false,
                 error: 'Error parsing deeplink params.',
             });
-            delete this.messagePromises[id];
         }
 
         const { success, payload } = parsedParams;
-        this.messagePromises[id].resolve({ id, payload, success });
-        delete this.messagePromises[id];
+        this.messages.resolve(id, { id, payload, success });
     }
 
-    private resolveMessagePromises(resolvePayload: Record<string, any>) {
-        Object.keys(this.messagePromises).forEach(id => {
-            this.messagePromises[id as any].resolve({
-                id,
-                payload: resolvePayload,
-            });
-            delete this.messagePromises[id as any];
-        });
+    private resolveMessagePromises(payload: Record<string, any>) {
+        this.messages.resolveAll(id => ({ id, payload }));
     }
 }
 
