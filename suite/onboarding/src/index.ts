@@ -1,4 +1,5 @@
 export * as STEP from './onboardingSteps';
+export * from './onboardingMiddleware';
 export * from './onboardingReducer';
 export * from './onboardingStepCategories';
 export * from './onboardingStepUtils';

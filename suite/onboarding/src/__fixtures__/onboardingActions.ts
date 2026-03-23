@@ -1,13 +1,13 @@
+import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
+
 import {
-    STEP,
     addOnboardingPath,
-    goToNextStep,
-    goToPreviousStep,
     onboardingReducer,
     removeOnboardingPath,
     resetOnboarding,
-} from '@suite/onboarding';
-import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
+} from '../onboardingReducer';
+import * as STEP from '../onboardingSteps';
+import { goToNextStep, goToPreviousStep } from '../onboardingThunks';
 
 export default [
     {

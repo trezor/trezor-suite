@@ -19,7 +19,7 @@ const ACCOUNT_TABS = [
     'wallet-staking',
 ];
 
-export const ROUTER_PREFIX = 'router';
+export const ROUTER_PREFIX = '@router';
 
 export type RouterState = RouterPath & {
     loaded: boolean;
@@ -40,7 +40,7 @@ const createMemoizedSelector = createWeakMapSelector.withTypes<RouterRootState>(
 
 // This action is meant only as an event. Actually no state changes here, it's used as an event and middlewares react to it throughout suite packages.
 export const routerAppChanged = createAction(
-    '@router/appChanged',
+    `${ROUTER_PREFIX}/appChanged`,
     (payload: RouterAppWithParams['app']) => ({
         payload,
     }),

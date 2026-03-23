@@ -12,7 +12,7 @@ import { createLogger } from 'redux-logger';
 
 import { backupMiddleware, backupReducer } from '@suite/backup';
 import { MODAL_OPEN_USER_CONTEXT } from '@suite/modal';
-import { onboardingReducer } from '@suite/onboarding';
+import { onboardingMiddleware, onboardingReducer } from '@suite/onboarding';
 import { recoveryReducer } from '@suite/recovery';
 import { type HistoryDep } from '@suite/router';
 import { prepareFirmwareReducer } from '@suite-common/firmware';
@@ -33,7 +33,6 @@ import { mergeDeepObject } from '@trezor/utils';
 
 import { suiteSyncSlice } from 'src/actions/suiteSync/suiteSyncSlice';
 import { suiteSyncQuotaManagerSlice } from 'src/actions/suiteSyncQuotaManager/suiteSyncQuotaManagerSlice';
-import onboardingMiddlewares from 'src/middlewares/onboarding';
 import { getSuiteMiddleware } from 'src/middlewares/suite';
 import { toastMiddleware } from 'src/middlewares/suite/toastMiddleware';
 import { getWalletMiddlewares } from 'src/middlewares/wallet';
@@ -85,7 +84,7 @@ const getCustomMiddleware = (getExtra: () => ExtraDependencies | null) => {
         toastMiddleware,
         ...getSuiteMiddleware(getExtra),
         ...getWalletMiddlewares(getExtra),
-        ...onboardingMiddlewares,
+        onboardingMiddleware,
         backupMiddleware,
     ];
 

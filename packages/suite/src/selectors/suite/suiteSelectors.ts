@@ -1,5 +1,5 @@
 import { getPrerequisiteName, isPrerequisiteGloballyExcluded } from '@suite/prerequisites';
-import { type RouterRootState, selectRouter } from '@suite/router';
+import { type RouterRootState, selectRouterApp } from '@suite/router';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { type TransportInfo } from '@trezor/connect';
 
@@ -46,15 +46,15 @@ export const selectPrerequisite = (
 ): PrerequisiteType | null => {
     const { transport } = state.suite;
     const device = selectSelectedDevice(state);
-    const router = selectRouter(state);
+    const routerApp = selectRouterApp(state);
 
     const prerequisite = getPrerequisiteName({
-        isAppRouteUnknown: router.app === 'unknown',
+        isAppRouteUnknown: routerApp === 'unknown',
         device,
         hasNoTransport: !transport?.transports.length,
     });
     const isExcluded = isPrerequisiteGloballyExcluded({
-        isSettingsAppRoute: router.app === 'settings',
+        isSettingsAppRoute: routerApp === 'settings',
         prerequisite,
     });
 

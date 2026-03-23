@@ -1,10 +1,14 @@
 import { type UnknownAction } from '@reduxjs/toolkit';
 
-import { onboardingReducer } from '@suite/onboarding';
-import { suiteSettingsInitialState } from '@suite/settings';
-import { configureMockStore } from '@suite-common/test-utils';
+import { prepareSuiteSettingsReducer, suiteSettingsInitialState } from '@suite/settings';
+import { prepareDeviceReducer } from '@suite-common/device';
+import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 
 import fixtures from '../__fixtures__/onboardingActions';
+import { onboardingReducer } from '../onboardingReducer';
+
+const settingsReducer = prepareSuiteSettingsReducer(extraDependenciesCommonMock);
+const deviceReducer = prepareDeviceReducer(extraDependenciesCommonMock);
 
 const getInitialState = (custom?: any) => {
     const onboarding = custom ? custom.onboarding : undefined;
@@ -27,8 +31,8 @@ describe('Onboarding Actions', () => {
             const store = configureMockStore({
                 reducer: {
                     onboarding: onboardingReducer,
-                    suiteSettings: (state = suiteSettingsInitialState) => state,
-                    device: (state = {}) => state,
+                    suiteSettings: settingsReducer,
+                    device: deviceReducer,
                 },
                 preloadedState: getInitialState(f.initialState),
             });

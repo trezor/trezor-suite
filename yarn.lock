@@ -15056,7 +15056,9 @@ __metadata:
   resolution: "@suite/onboarding@workspace:suite/onboarding"
   dependencies:
     "@reduxjs/toolkit": "npm:2.11.2"
+    "@suite-common/analytics-redux": "workspace:*"
     "@suite-common/device": "workspace:*"
+    "@suite-common/firmware": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/test-utils": "workspace:*"

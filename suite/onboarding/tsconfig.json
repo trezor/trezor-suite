@@ -2,7 +2,11 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        {
+            "path": "../../suite-common/analytics-redux"
+        },
         { "path": "../../suite-common/device" },
+        { "path": "../../suite-common/firmware" },
         {
             "path": "../../suite-common/redux-utils"
         },
