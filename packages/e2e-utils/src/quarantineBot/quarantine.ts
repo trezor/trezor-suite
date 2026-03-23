@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { computeStats, extractKeyFromAction, getTestKey, normalizeTitlePath } from './actions';
 import { createQuarantineAction } from './api';
 import {
@@ -9,6 +8,7 @@ import {
     UNQUARANTINE_FAILURE_RATE,
     UNQUARANTINE_LAST_N_EXECUTIONS,
 } from './config';
+import { debug, log, warn } from '../logger';
 import type { SlackEvent } from './types';
 import {
     deleteAction,
@@ -24,11 +24,12 @@ export async function quarantineFailingTests(
     activeTests: TestExplorerItem[],
     slackEvents: SlackEvent[],
 ): Promise<void> {
-    console.log(`\n── [${projectLabel}] Checking for failing tests to quarantine ──`);
+    log(`\n── [${projectLabel}] Checking for failing tests to quarantine ──`);
 
     const alreadyQuarantinedKeys = new Set(
         existingActions.map(a => extractKeyFromAction(a)).filter(Boolean) as string[],
     );
+    debug(`  already quarantined keys: ${alreadyQuarantinedKeys.size}`);
 
     const candidateTests = activeTests.filter(
         t =>
@@ -36,8 +37,13 @@ export async function quarantineFailingTests(
             t.metrics.executions >= QUARANTINE_LAST_N_EXECUTIONS &&
             t.metrics.failureRate >= PRE_FILTER_FAILURE_RATE,
     );
+    debug(
+        `  pre-filter: ${activeTests.length} active test(s) total,`,
+        `${activeTests.length - candidateTests.length} filtered out (no signature / <${QUARANTINE_LAST_N_EXECUTIONS} executions / <${Math.round(PRE_FILTER_FAILURE_RATE * 100)}% failure rate),`,
+        `${candidateTests.length} candidate(s) remain`,
+    );
 
-    console.log(
+    log(
         `  Found ${activeTests.length} active test(s) in the last ${EXPLORER_LOOKBACK_DAYS} days. ` +
             `${candidateTests.length} candidate(s) have ≥${Math.round(PRE_FILTER_FAILURE_RATE * 100)}% failure rate in the explorer window. ` +
             `Fetching last ${QUARANTINE_LAST_N_EXECUTIONS} individual results for each candidate...`,
@@ -49,7 +55,7 @@ export async function quarantineFailingTests(
         }
 
         if (alreadyQuarantinedKeys.has(getTestKey(test))) {
-            console.log(`  ↳ Already quarantined: "${test.title.slice(0, 80)}"`);
+            log(`  ↳ Already quarantined: "${test.title.slice(0, 80)}"`);
             continue;
         }
 
@@ -60,25 +66,32 @@ export async function quarantineFailingTests(
         );
 
         if (results.length < QUARANTINE_LAST_N_EXECUTIONS) {
-            console.log(
+            log(
                 `  ↳ Skipping "${test.title.slice(0, 80)}" — only ${results.length}/${QUARANTINE_LAST_N_EXECUTIONS} executions found.`,
             );
             continue;
         }
 
         const stats = computeStats(results);
+        debug(
+            `  candidate "${test.title.slice(0, 80)}":`,
+            `failureRate=${Math.round(stats.failureRate * 100)}%,`,
+            `failures=${stats.failures}, passes=${stats.passes}, executions=${stats.executions}`,
+            `(threshold: ≥${Math.round(QUARANTINE_FAILURE_RATE * 100)}%)`,
+        );
 
         if (stats.failureRate < QUARANTINE_FAILURE_RATE) {
             continue;
         }
 
         const failurePercent = Math.round(stats.failureRate * 100);
-        console.log(
+        log(
             `  ↳ Quarantining: "${test.title.slice(0, 80)}" ` +
                 `(${failurePercent}% fail rate, ${stats.failures}/${stats.executions} latest runs)`,
         );
 
         const action = await createQuarantineAction(projectId, test, stats);
+        debug(`  created action: actionId=${action.actionId}`);
         slackEvents.push({
             kind: 'quarantined',
             projectId,
@@ -93,7 +106,7 @@ export async function quarantineFailingTests(
 
     const quarantinedCount = slackEvents.filter(e => e.kind === 'quarantined').length;
     if (quarantinedCount === 0) {
-        console.log('  ✓ No new tests to quarantine.');
+        log('  ✓ No new tests to quarantine.');
     }
 }
 
@@ -104,22 +117,23 @@ export async function unquarantinePassingTests(
     activeTests: TestExplorerItem[],
     slackEvents: SlackEvent[],
 ): Promise<void> {
-    console.log(`\n── [${projectLabel}] Checking quarantined tests for recovery ──`);
+    log(`\n── [${projectLabel}] Checking quarantined tests for recovery ──`);
 
     if (existingActions.length === 0) {
-        console.log('  ✓ No auto-quarantined tests to check.');
+        log('  ✓ No auto-quarantined tests to check.');
 
         return;
     }
 
-    console.log(`  Found ${existingActions.length} auto-quarantined test(s).`);
+    log(`  Found ${existingActions.length} auto-quarantined test(s).`);
 
     const testsByKey = new Map(activeTests.map(t => [getTestKey(t), t]));
+    debug(`  active tests index: ${testsByKey.size} entries`);
 
     for (const action of existingActions) {
         const testKey = extractKeyFromAction(action);
         if (!testKey) {
-            console.warn(`  ↳ Could not extract title from action "${action.name}", skipping.`);
+            warn(`  ↳ Could not extract title from action "${action.name}", skipping.`);
             continue;
         }
 
@@ -130,7 +144,7 @@ export async function unquarantinePassingTests(
         const test = testsByKey.get(testKey);
 
         if (!test?.signature) {
-            console.log(
+            log(
                 `  ↳ "${testTitle.slice(0, 80)}" — not found in explorer (may not have run recently), keeping quarantine.`,
             );
             continue;
@@ -143,7 +157,7 @@ export async function unquarantinePassingTests(
         );
 
         if (results.length < UNQUARANTINE_LAST_N_EXECUTIONS) {
-            console.log(
+            log(
                 `  ↳ "${testTitle.slice(0, 80)}" — only ${results.length}/${UNQUARANTINE_LAST_N_EXECUTIONS} executions found, keeping quarantine.`,
             );
             continue;
@@ -152,14 +166,21 @@ export async function unquarantinePassingTests(
         const stats = computeStats(results);
         const failurePercent = Math.round(stats.failureRate * 100);
         const passPercent = 100 - failurePercent;
+        debug(
+            `  quarantined "${testTitle.slice(0, 80)}":`,
+            `failureRate=${failurePercent}%,`,
+            `failures=${stats.failures}, passes=${stats.passes}, executions=${stats.executions}`,
+            `(unquarantine threshold: ≤${Math.round(UNQUARANTINE_FAILURE_RATE * 100)}%)`,
+        );
 
         if (stats.failureRate <= UNQUARANTINE_FAILURE_RATE) {
-            console.log(
+            log(
                 `  ↳ Unquarantining: "${testTitle.slice(0, 80)}" ` +
                     `(${passPercent}% pass rate, ${stats.passes}/${stats.executions} latest runs) ✓`,
             );
 
             await deleteAction(action.actionId);
+            debug(`  deleted action: actionId=${action.actionId}`);
             slackEvents.push({
                 kind: 'unquarantined',
                 projectId,
@@ -170,7 +191,7 @@ export async function unquarantinePassingTests(
                 executions: stats.executions,
             });
         } else {
-            console.log(
+            log(
                 `  ↳ Still failing: "${testTitle.slice(0, 80)}" ` +
                     `(${failurePercent}% failure rate, ${stats.failures}/${stats.executions} latest runs) — keeping quarantine.`,
             );

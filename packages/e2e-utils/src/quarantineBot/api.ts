@@ -2,6 +2,7 @@ import { type computeStats, normalizeTitlePath } from './actions';
 import { AUTO_QUARANTINE_PREFIX, EXPLORER_LOOKBACK_DAYS } from './config';
 import { createAction, currentsRequest, getActions } from '../currentsApi/api';
 import type { Action, TestExplorerItem, TestsExplorerResponse } from '../currentsApi/types';
+import { debug } from '../logger';
 
 export async function getAutoQuarantineActions(projectId: string): Promise<Action[]> {
     const actions = await getActions(projectId);
@@ -99,16 +100,26 @@ export async function findSignaturesForTitleKeys(
             `limit=${limit}`,
         ].join('&');
 
+        debug(
+            `  findSignaturesForTitleKeys: fetching page ${page}`,
+            `(found ${found.size}/${titleKeys.size} so far)`,
+        );
+
         const response = await currentsRequest<TestsExplorerResponse>(
             `/tests/${projectId}?${queryString}`,
         );
 
+        const beforeSize = found.size;
         for (const item of response.data.list) {
             const key = JSON.stringify(normalizeTitlePath(item));
             if (titleKeys.has(key) && item.signature) {
                 found.set(key, item.signature);
             }
         }
+        debug(
+            `  page ${page}: ${response.data.list.length} item(s),`,
+            `resolved ${found.size - beforeSize} new signature(s)`,
+        );
 
         nextPage = response.data.nextPage;
         page++;

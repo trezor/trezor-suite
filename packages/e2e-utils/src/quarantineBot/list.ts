@@ -1,8 +1,8 @@
-/* eslint-disable no-console */
 import { extractKeyFromAction } from './actions';
 import { AUTO_QUARANTINE_PREFIX, PROJECTS } from './config';
 import { getAllQuarantineActions } from '../currentsApi/api';
 import type { Action } from '../currentsApi/types';
+import { debug, error, log, output } from '../logger';
 
 interface QuarantinedTestEntry {
     name: string;
@@ -19,8 +19,8 @@ interface ProjectQuarantineReport {
 /**
  * List all quarantined tests for every project and write a JSON report to stdout.
  *
- * Human-readable progress messages are written to stderr so that stdout contains
- * only the JSON output, making it easy to capture with shell redirection:
+ * Progress messages go to stderr; only the final JSON report goes to stdout,
+ * making it easy to capture with shell redirection:
  *   node ... --list > quarantine.json
  *   node ... --list --project web > quarantine-web.json
  */
@@ -30,15 +30,16 @@ export async function listAllQuarantinedTests(projectNameFilter?: string): Promi
         : PROJECTS;
 
     if (projectNameFilter && projects.length === 0) {
-        process.stderr.write(
-            `[ERROR] No project found with name "${projectNameFilter}". Known names: ${PROJECTS.map(p => p.name).join(', ')}\n`,
+        error(
+            `No project found with name "${projectNameFilter}". Known names: ${PROJECTS.map(p => p.name).join(', ')}`,
         );
         process.exit(1);
     }
 
-    process.stderr.write(`=== Currents Quarantine List ===\n`);
-    process.stderr.write(`Timestamp: ${new Date().toISOString()}\n`);
-    process.stderr.write(`Projects: ${projects.map(p => `${p.label} (${p.id})`).join(', ')}\n\n`);
+    log('=== Currents Quarantine List ===');
+    log(`Timestamp: ${new Date().toISOString()}`);
+    log(`Projects: ${projects.map(p => `${p.label} (${p.id})`).join(', ')}`);
+    log('');
 
     const report: ProjectQuarantineReport[] = [];
     let hasError = false;
@@ -69,21 +70,20 @@ export async function listAllQuarantinedTests(projectNameFilter?: string): Promi
                 tests,
             });
 
-            process.stderr.write(`[${project.label}] ${tests.length} quarantined test(s)\n`);
+            log(`[${project.label}] ${tests.length} quarantined test(s)`);
             for (const t of tests) {
                 const tag = t.isAutoQuarantine ? ' [auto]' : ' [manual]';
-                process.stderr.write(`  - ${t.name}${tag}\n`);
+                log(`  - ${t.name}${tag}`);
+                debug(`    spec=${t.spec ?? '(none)'} isAuto=${t.isAutoQuarantine}`);
             }
         } catch (err) {
-            process.stderr.write(
-                `[ERROR] Failed fetching quarantine actions for ${project.label}: ${err}\n`,
-            );
+            error(`Failed fetching quarantine actions for ${project.label}: ${err}`);
             hasError = true;
         }
     }
 
     // Emit the machine-readable JSON on stdout.
-    console.log(JSON.stringify(report, null, 2));
+    output(JSON.stringify(report, null, 2));
 
     if (hasError) {
         process.exit(1);

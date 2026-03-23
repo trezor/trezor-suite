@@ -1,7 +1,7 @@
-/* eslint-disable no-console */
 import { extractKeyFromAction } from './actions';
 import { findSignaturesForTitleKeys, getAutoQuarantineActions } from './api';
 import { DEVELOP_BRANCH, EXPLORER_LOOKBACK_DAYS } from './config';
+import { debug, log, warn } from '../logger';
 import type { SlackEvent } from './types';
 import { deleteAction, getLatestRunIdOnBranch, getResultsFromRun } from '../currentsApi/api';
 
@@ -31,21 +31,19 @@ export async function nightlyUnquarantineFromLatestRun(
     projectLabel: string,
     slackEvents: SlackEvent[],
 ): Promise<void> {
-    console.log(
-        `\n── [${projectLabel}] Nightly unquarantine from latest "${DEVELOP_BRANCH}" run ──`,
-    );
+    log(`\n── [${projectLabel}] Nightly unquarantine from latest "${DEVELOP_BRANCH}" run ──`);
 
     // Load the smaller set first: only the currently auto-quarantined tests.
     // This lets us bail early when there is nothing to do and avoids fetching
     // the full run just to find out there are no candidates.
     const existingActions = await getAutoQuarantineActions(projectId);
     if (existingActions.length === 0) {
-        console.log('  ✓ No auto-quarantined tests to check.');
+        log('  ✓ No auto-quarantined tests to check.');
 
         return;
     }
 
-    console.log(`  ${existingActions.length} auto-quarantined test(s) to evaluate.`);
+    log(`  ${existingActions.length} auto-quarantined test(s) to evaluate.`);
 
     // Build titleKey → action map and collect the set of keys we need signatures for.
     const quarantinedByKey = new Map<string, (typeof existingActions)[number]>();
@@ -56,9 +54,10 @@ export async function nightlyUnquarantineFromLatestRun(
             quarantinedByKey.set(key, action);
             titleKeys.add(key);
         } else {
-            console.warn(`  ↳ Could not extract title from action "${action.name}", skipping.`);
+            warn(`  ↳ Could not extract title from action "${action.name}", skipping.`);
         }
     }
+    debug(`  resolving signatures for ${titleKeys.size} title key(s)`);
 
     // Resolve the latest develop runId and each test's signature in parallel.
     // The explorer pagination stops as soon as signatures for all quarantined
@@ -68,13 +67,21 @@ export async function nightlyUnquarantineFromLatestRun(
         findSignaturesForTitleKeys(projectId, titleKeys),
     ]);
 
+    debug(
+        `  signatures resolved: ${signatureByKey.size}/${titleKeys.size}`,
+        signatureByKey.size < titleKeys.size
+            ? `(${titleKeys.size - signatureByKey.size} not found in explorer window)`
+            : '',
+    );
+
     if (!runId) {
-        console.log(`  No run found on branch "${DEVELOP_BRANCH}" for this project.`);
+        log(`  No run found on branch "${DEVELOP_BRANCH}" for this project.`);
 
         return;
     }
 
-    console.log(`  Found run: ${runId}`);
+    log(`  Found run: ${runId}`);
+    debug(`  fetching per-test results from run ${runId} for ${quarantinedByKey.size} test(s)`);
 
     // For each quarantined test, fetch only its own results filtered to the
     // latest run. One API call per test — no unrelated spec data is loaded.
@@ -83,9 +90,17 @@ export async function nightlyUnquarantineFromLatestRun(
         [...quarantinedByKey.keys()].map(async key => {
             const signature = signatureByKey.get(key);
             if (!signature) {
+                debug(`  no signature for key ${key} — leaving quarantined`);
+
                 return; // test not seen in the explorer lookback window — leave quarantined
             }
             const results = await getResultsFromRun(signature, runId, EXPLORER_LOOKBACK_DAYS);
+            debug(
+                `  key ${key.slice(0, 60)}: ${results.length} result(s) in run`,
+                results.length > 0
+                    ? `(${results.filter(r => r.status === 'passed').length} passed)`
+                    : '',
+            );
             if (results.length === 0) {
                 return;
             }
@@ -103,21 +118,22 @@ export async function nightlyUnquarantineFromLatestRun(
         const stats = instanceStats.get(testKey);
 
         if (!stats || stats.total === 0) {
-            console.log(`  ↳ Not seen in run: "${testTitle.slice(0, 80)}" — keeping quarantine.`);
+            log(`  ↳ Not seen in run: "${testTitle.slice(0, 80)}" — keeping quarantine.`);
             continue;
         }
 
         if (stats.passed < stats.total) {
-            console.log(
+            log(
                 `  ↳ Not all instances passed (${stats.passed}/${stats.total}): "${testTitle.slice(0, 80)}" — keeping quarantine.`,
             );
             continue;
         }
 
-        console.log(
+        log(
             `  ↳ Unquarantining: "${testTitle.slice(0, 80)}" (${stats.total} instance(s) all passed) ✓`,
         );
         await deleteAction(action.actionId);
+        debug(`  deleted action: actionId=${action.actionId}`);
         unquarantinedCount++;
 
         slackEvents.push({
@@ -131,6 +147,6 @@ export async function nightlyUnquarantineFromLatestRun(
     }
 
     if (unquarantinedCount === 0) {
-        console.log('  ✓ No quarantined tests found passing in all instances of the latest run.');
+        log('  ✓ No quarantined tests found passing in all instances of the latest run.');
     }
 }
