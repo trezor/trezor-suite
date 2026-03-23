@@ -89,4 +89,5 @@ export type {
     ChallengeFailedErrType,
     HttpErrType,
     ProofOfDelegatedIdentityFailedErrType,
+    NoQuotaLeftToAllocateErrType,
 } from './quotaManager/ensureOwnerHasAllocatedQuotaThunk';
