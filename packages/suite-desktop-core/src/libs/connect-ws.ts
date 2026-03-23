@@ -1,4 +1,4 @@
-import { ipcMain, nativeImage } from 'electron';
+import { ipcMain } from 'electron';
 import { WebSocketServer } from 'ws';
 
 import {
@@ -10,14 +10,14 @@ import {
     type PopupHandshake,
 } from '@trezor/connect';
 import { parseManifest, parseVersion } from '@trezor/connect/src/data/connectSettings';
-import { isLinux, isMacOs, isWindows } from '@trezor/env-utils';
+import { isLinux } from '@trezor/env-utils';
 import { type ProcessInfo, findProcessFromIncomingPort } from '@trezor/node-utils';
 import { type ConnectPopupResponse } from '@trezor/suite-desktop-api/src/messages';
 import { type Deferred, createDeferred, resolveAfter } from '@trezor/utils';
 
 import { type createHttpReceiver } from './http-receiver';
+import { getProcessIcon } from './process-icon';
 import { type Dependencies } from '../modules';
-import { app } from '../typed-electron';
 
 const LOG_PREFIX = 'connect-ws';
 
@@ -58,32 +58,6 @@ const validateIncomingMessage = (message: any): message is IncomingMessage => {
     }
 
     return false;
-};
-
-export const getProcessIcon = async (path: string) => {
-    try {
-        const iconDim = { width: 48, height: 48 };
-        if (isWindows()) {
-            const icon = await app.getFileIcon(path, {
-                size: 'normal',
-            });
-
-            if (icon.isEmpty()) {
-                return undefined;
-            }
-
-            return icon.resize(iconDim).toDataURL();
-        } else if (isMacOs()) {
-            const icon = await nativeImage.createThumbnailFromPath(path, iconDim);
-            if (icon.isEmpty()) {
-                return undefined;
-            }
-
-            return icon.toDataURL();
-        }
-    } catch (error) {
-        logger.warn(LOG_PREFIX, 'Failed to get icon of process - ' + error);
-    }
 };
 
 export const exposeConnectWs = ({
