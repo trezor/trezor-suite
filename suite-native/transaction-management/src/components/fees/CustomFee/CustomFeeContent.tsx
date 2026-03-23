@@ -31,6 +31,7 @@ export const CustomFeeContent = ({
                     value={feeValue}
                     isLoading={isFeeLoading}
                     symbol={symbol}
+                    isDiscreetText={false}
                 />
                 <CryptoAmountFormatter
                     value={feeValue}
@@ -38,6 +39,7 @@ export const CustomFeeContent = ({
                     variant="body-md"
                     isLoading={isFeeLoading}
                     isBalance={false}
+                    isDiscreetText={false}
                 />
             </VStack>
         </HStack>
