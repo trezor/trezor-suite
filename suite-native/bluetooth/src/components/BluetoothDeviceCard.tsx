@@ -8,7 +8,7 @@ import {
 } from '@suite-native/atoms';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { models } from '@trezor/device-utils';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { type BluetoothDevice } from '../types';
 import { DeviceColorImage } from './DeviceColorImage';

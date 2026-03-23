@@ -11,7 +11,7 @@ import {
 import { useCopyToClipboard } from '@suite-native/clipboard';
 import { Icon, type IconName } from '@suite-native/icons';
 import { Translation, useTranslate } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { SUITE_URL } from '@trezor/urls';
 
 export type EarnType = 'staking' | 'stablecoin-yield';

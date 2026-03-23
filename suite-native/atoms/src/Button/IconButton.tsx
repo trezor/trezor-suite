@@ -7,7 +7,7 @@ import {
     mergeNativeStyles,
     prepareNativeStyle,
     useNativeStyles,
-} from '@trezor/styles';
+} from '@trezor/styles-native';
 
 import {
     type ButtonColorScheme,

@@ -1,5 +1,5 @@
 import { PressableOpacity } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { type EarnPromoItem } from '../types';
 import { EarnItemOverviewSection } from './EarnItemOverviewSection';

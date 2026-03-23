@@ -17,7 +17,7 @@
         "@suite-native/device-manager": "workspace:*",
         "@suite-native/intl": "workspace:*",
         "@suite-native/navigation": "workspace:*",
-        "@trezor/styles": "workspace:*",
+        "@trezor/styles-native": "workspace:*",
         "react": "19.2.4",
         "react-redux": "9.2.0"
     }

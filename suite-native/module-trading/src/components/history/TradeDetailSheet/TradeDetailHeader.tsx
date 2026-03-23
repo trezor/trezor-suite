@@ -7,7 +7,7 @@ import {
 } from '@suite-common/trading';
 import { Box, CircularSpinner, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { TradeDetailAlert } from './TradeDetailAlert';
 import { type TradeStatusStep, getTradeStatusStep } from '../../../utils/general/utils';

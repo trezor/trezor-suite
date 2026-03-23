@@ -4,7 +4,7 @@ import {
     SwipeableWalkthroughStepHeader,
     type SwipeableWalkthroughStepProps,
 } from '@suite-native/swipeable-walkthrough';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 export type WalletBackupTutorialStepProps = Omit<
     SwipeableWalkthroughStepProps,

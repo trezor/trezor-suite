@@ -19,6 +19,6 @@
         { "path": "../navigation" },
         { "path": "../services" },
         { "path": "../../packages/connect" },
-        { "path": "../../packages/styles" }
+        { "path": "../../packages/styles-native" }
     ]
 }

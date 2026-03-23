@@ -11,7 +11,7 @@ import {
     selectIsCardanoStakedOutsideEverstake,
     selectIsCardanoStakedWithFiveBinaries,
 } from '@suite-native/staking';
-import { useNativeStyles } from '@trezor/styles';
+import { useNativeStyles } from '@trezor/styles-native';
 
 import { AccountsListItemBase } from './AccountsListItemBase';
 

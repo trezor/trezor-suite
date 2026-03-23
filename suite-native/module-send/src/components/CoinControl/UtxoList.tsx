@@ -8,7 +8,7 @@ import { isSameUtxo } from '@suite-common/wallet-utils';
 import { Box } from '@suite-native/atoms';
 import { type Utxo } from '@trezor/blockchain-link-types';
 import { type StaticSessionId } from '@trezor/connect';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { UtxoCard } from './UtxoCard';
 

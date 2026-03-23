@@ -5,7 +5,7 @@ import { Card, HStack, PressableOpacity, Switch, Text, VStack } from '@suite-nat
 import { CryptoIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { isNetworkWithTokens } from '@suite-native/tokens';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type NetworkSymbolSwitchItemProps = {
     symbol: NetworkSymbol;

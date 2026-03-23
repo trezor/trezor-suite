@@ -4,7 +4,7 @@ import { type SharedValue, useAnimatedStyle, withDelay, withTiming } from 'react
 import { AnimatedCard, Text, VStack } from '@suite-native/atoms';
 import { Icon, type IconName } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type InstructionCardProps = {
     index: number;

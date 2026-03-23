@@ -23,7 +23,7 @@ import {
     selectAccountTokenDecimals,
     selectAccountTokenSymbol,
 } from '@suite-native/tokens';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type BaseProps = {
     accountKey: AccountKey;

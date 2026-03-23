@@ -4,7 +4,7 @@ import type { BuyTrade, SellFiatTrade } from 'invity-api';
 
 import { HStack, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { useChangeStringsExtractor } from '../../../hooks/history/useChangeStringsExtractor';
 

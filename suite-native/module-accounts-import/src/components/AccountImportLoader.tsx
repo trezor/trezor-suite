@@ -8,7 +8,7 @@ import Animated, {
 
 import { Box, Spinner, type SpinnerLoadingState, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 const LINE_VISIBILITY_DURATION = 1000;
 

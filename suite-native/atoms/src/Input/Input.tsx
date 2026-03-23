@@ -21,7 +21,7 @@ import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 import { D, G, S } from '@mobily/ts-belt';
 import { type RequireOneOrNone } from 'type-fest';
 
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { nativeSpacings } from '@trezor/theme';
 
 import { Box } from '../Box';

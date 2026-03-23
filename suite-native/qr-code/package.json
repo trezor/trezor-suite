@@ -23,7 +23,7 @@
         "@suite-native/labeling": "workspace:*",
         "@suite-native/toasts": "workspace:*",
         "@trezor/connect": "workspace:*",
-        "@trezor/styles": "workspace:*",
+        "@trezor/styles-native": "workspace:*",
         "@trezor/theme": "workspace:*",
         "expo-camera": "~55.0.9",
         "expo-image-picker": "~55.0.10",

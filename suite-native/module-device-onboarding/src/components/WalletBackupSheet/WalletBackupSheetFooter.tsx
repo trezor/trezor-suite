@@ -5,7 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { type BackupType } from '@suite-common/suite-types';
 import { Box, Button } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { hexToRgba } from '@trezor/utils';
 
 import { walletBackupSheetCopyByType } from './presets';

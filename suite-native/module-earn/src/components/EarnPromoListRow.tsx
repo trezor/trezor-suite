@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Box, CardDivider } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { type EarnPromoItem } from '../types';
 import { EarnListItem } from './EarnListItem';

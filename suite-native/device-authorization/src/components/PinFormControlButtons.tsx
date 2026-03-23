@@ -14,7 +14,7 @@ import { useFormContext } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import TrezorConnect, { DEVICE, UI_REQUEST, UI_RESPONSE } from '@trezor/connect';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { PIN_HELP_URL } from '@trezor/urls';
 
 const buttonsWrapperStyle = prepareNativeStyle(utils => ({

@@ -2,7 +2,7 @@ import { type ReactNode } from 'react';
 import { Pressable } from 'react-native';
 
 import { HStack } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type DeviceActionProps = {
     testID: string;

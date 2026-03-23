@@ -1,6 +1,6 @@
 import { BottomSheetModal, type BottomSheetModalRef, Button, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 const bottomSheetElementStyle = prepareNativeStyle(utils => ({
     marginVertical: utils.spacings.sp8,

@@ -35,7 +35,7 @@
         "@suite-native/tokens": "workspace:*",
         "@suite-native/transactions": "workspace:*",
         "@trezor/connect": "workspace:*",
-        "@trezor/styles": "workspace:*",
+        "@trezor/styles-native": "workspace:*",
         "@trezor/urls": "workspace:*",
         "react": "19.2.4",
         "react-native": "0.83.2",

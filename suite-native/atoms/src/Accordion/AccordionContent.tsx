@@ -7,7 +7,7 @@ import {
     withTiming,
 } from 'react-native-reanimated';
 
-import { type NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { type NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { AnimatedBox } from '../AnimatedBox';
 

@@ -10,7 +10,9 @@
         { "path": "../navigation" },
         { "path": "../services" },
         { "path": "../settings" },
-        { "path": "../../packages/styles" },
+        {
+            "path": "../../packages/styles-native"
+        },
         { "path": "../../packages/urls" },
         { "path": "../../packages/utils" }
     ]

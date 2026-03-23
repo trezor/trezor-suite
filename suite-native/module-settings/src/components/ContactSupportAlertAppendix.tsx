@@ -5,7 +5,7 @@ import { type DeviceRootState } from '@suite-common/device';
 import { selectSupportChatUrl } from '@suite-common/support';
 import { CheckBox, HStack, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 const checkboxRowStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.backgroundSurfaceElevation0,

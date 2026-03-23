@@ -13,7 +13,7 @@ import { Translation } from '@suite-native/intl';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
 import { useBottomSheetControls } from '@suite-native/trading-atoms';
 import { selectTradeToBeOpened, tradingActions } from '@suite-native/trading-state';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { TradeDetailSheet } from '../components/history/TradeDetailSheet/TradeDetailSheet';
 import { TradeHistoryListItem } from '../components/history/TradeHistoryListItem/TradeHistoryListItem';

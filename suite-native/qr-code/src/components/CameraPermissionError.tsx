@@ -2,7 +2,7 @@ import { Linking } from 'react-native';
 
 import { Box, Button, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 const permissionTextContainerStyle = prepareNativeStyle(({ spacings }) => ({
     paddingTop: spacings.sp32,

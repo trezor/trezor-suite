@@ -4,7 +4,9 @@
     "references": [
         { "path": "../intl" },
         { "path": "../../packages/eslint" },
-        { "path": "../../packages/styles" },
+        {
+            "path": "../../packages/styles-native"
+        },
         { "path": "../../packages/theme" }
     ]
 }

@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { selectSelectedDevice } from '@suite-common/device';
 import { Box, HStack, Text } from '@suite-native/atoms';
-import { useNativeStyles } from '@trezor/styles';
+import { useNativeStyles } from '@trezor/styles-native';
 
 import { DeviceConnectionStatus } from './DeviceItem/DeviceConnectionStatus';
 import {

@@ -12,7 +12,7 @@ import {
 } from '@suite-native/formatters';
 import { Icon } from '@suite-native/icons';
 import { type TransactionTranfer } from '@suite-native/transactions';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type TransactionAddressAmountProps = {
     address: string;

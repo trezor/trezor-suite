@@ -3,7 +3,7 @@ import { View } from 'react-native';
 import { GestureDetector } from 'react-native-gesture-handler';
 
 import { Icon, type IconName } from '@suite-native/icons';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type Color } from '@trezor/theme';
 
 import { Box } from '../Box';

@@ -13,7 +13,7 @@ import {
     TradingStackRoutes,
 } from '@suite-native/navigation';
 import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 const footerStyle = prepareNativeStyle(utils => ({
     paddingHorizontal: utils.spacings.sp16,

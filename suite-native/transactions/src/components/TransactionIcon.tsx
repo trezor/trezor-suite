@@ -6,7 +6,7 @@ import {
 import { type TokenAddress, type TransactionType } from '@suite-common/wallet-types';
 import { Box, CircularSpinner, RoundedIcon } from '@suite-native/atoms';
 import { CryptoIcon, type IconName, type IconSize } from '@suite-native/icons';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type Color } from '@trezor/theme';
 
 type TransactionIconProps = {

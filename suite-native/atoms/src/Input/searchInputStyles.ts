@@ -1,4 +1,4 @@
-import { prepareNativeStyle } from '@trezor/styles';
+import { prepareNativeStyle } from '@trezor/styles-native';
 
 import { type SurfaceElevation } from '../types';
 

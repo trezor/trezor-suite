@@ -17,7 +17,9 @@
         { "path": "../scrollview" },
         { "path": "../../packages/env-utils" },
         { "path": "../../packages/react-utils" },
-        { "path": "../../packages/styles" },
+        {
+            "path": "../../packages/styles-native"
+        },
         { "path": "../../packages/theme" },
         { "path": "../../packages/utils" },
         { "path": "../test-utils" }

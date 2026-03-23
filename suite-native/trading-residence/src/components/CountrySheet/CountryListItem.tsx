@@ -3,7 +3,7 @@ import { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { type TradingCountryOption } from '@suite-common/trading';
 import { AnimatedBox, Box, Card, HStack, Radio, Text } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 export type CountryListItemProps = {
     isSelected: boolean;

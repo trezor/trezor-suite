@@ -35,7 +35,7 @@ import {
 } from '@suite-native/navigation';
 import { type Utxo } from '@trezor/blockchain-link-types';
 import type { StaticSessionId } from '@trezor/connect';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { UtxoCoinControlLabel } from './UtxoCoinControlLabel';
 

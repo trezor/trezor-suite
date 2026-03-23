@@ -9,7 +9,7 @@ import { TokenAmountFormatter, TokenToFiatAmountFormatter } from '@suite-native/
 import { CryptoIconWithNetwork } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { type TokensRootState, getTokenName, selectAccountTokenInfo } from '@suite-native/tokens';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type TokenReceiveCardProps = {
     accountKey: AccountKey;

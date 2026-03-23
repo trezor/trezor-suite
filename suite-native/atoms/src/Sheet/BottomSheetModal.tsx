@@ -13,7 +13,7 @@ import { type BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescrip
 
 import { useScrollDivider } from '@suite-native/scrollview';
 import { getScreenHeight } from '@trezor/env-utils';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { Box, type BoxProps } from '../Box';
 import { BottomSheetHeader } from './BottomSheetHeader';

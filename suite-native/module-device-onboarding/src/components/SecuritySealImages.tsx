@@ -5,7 +5,7 @@ import { Box, HStack, Image, InlineAlertBox, VStack } from '@suite-native/atoms'
 import { type SetupSupportingDeviceModel } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import { DeviceModelInternal } from '@trezor/device-utils';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 const securitySealImagesMap = {
     [DeviceModelInternal.T2T1]: [require('../assets/t2t1-seal.webp')],

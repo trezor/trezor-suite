@@ -52,7 +52,9 @@
         { "path": "../services" },
         { "path": "../tokens" },
         { "path": "../transactions" },
-        { "path": "../../packages/styles" },
+        {
+            "path": "../../packages/styles-native"
+        },
         { "path": "../../packages/utils" }
     ]
 }

@@ -12,7 +12,7 @@ import {
     mergeNativeStyleObjects,
     prepareNativeStyle,
     useNativeStyles,
-} from '@trezor/styles';
+} from '@trezor/styles-native';
 import { type Color, type NativeTypographyStyle } from '@trezor/theme';
 
 import { type TestProps } from './types';

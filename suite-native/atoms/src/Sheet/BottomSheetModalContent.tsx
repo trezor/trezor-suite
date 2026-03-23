@@ -3,7 +3,7 @@ import { type NativeScrollEvent, type NativeSyntheticEvent } from 'react-native'
 
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { AnimatedBox } from '../AnimatedBox';
 import { type BoxProps } from '../Box';

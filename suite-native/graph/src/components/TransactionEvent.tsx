@@ -12,7 +12,7 @@ import { Circle, Group } from '@shopify/react-native-skia';
 import { type GroupedBalanceMovementEventPayload } from '@suite-common/graph';
 import { type EventComponentProps } from '@suite-native/react-native-graph';
 import { useActiveColorScheme } from '@suite-native/theme';
-import { useNativeStyles } from '@trezor/styles';
+import { useNativeStyles } from '@trezor/styles-native';
 import { type Color, type ThemeColorVariant } from '@trezor/theme';
 
 import { GraphContextProvider } from './GraphContextProvider';

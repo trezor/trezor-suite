@@ -6,7 +6,9 @@
         { "path": "../clipboard" },
         { "path": "../feature-flags" },
         { "path": "../trading-state" },
-        { "path": "../../packages/styles" },
+        {
+            "path": "../../packages/styles-native"
+        },
         { "path": "../test-utils" },
         { "path": "../trading-consts" },
         { "path": "../trading-types" }

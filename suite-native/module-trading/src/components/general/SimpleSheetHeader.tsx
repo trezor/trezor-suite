@@ -3,7 +3,7 @@ import { type PropsWithChildren, type ReactNode } from 'react';
 import { BottomSheetGrabber, VStack } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 import { SheetHeaderTitle } from '@suite-native/trading-atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 export type SimpleSheetHeaderProps = {
     onClose: () => void;

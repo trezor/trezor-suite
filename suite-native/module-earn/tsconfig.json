@@ -33,7 +33,9 @@
         { "path": "../services" },
         { "path": "../staking" },
         { "path": "../test-utils" },
-        { "path": "../../packages/styles" },
+        {
+            "path": "../../packages/styles-native"
+        },
         { "path": "../../packages/theme" },
         { "path": "../../packages/urls" },
         { "path": "../../packages/utils" }

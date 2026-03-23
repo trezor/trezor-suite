@@ -6,7 +6,7 @@ import { HStack, Loader, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { WalletLabel } from '@suite-native/labeling';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { WalletRememberModeIconButton } from './WalletRememberModeIconButton';
 

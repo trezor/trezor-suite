@@ -5,7 +5,7 @@ import { type Rating, ratingOptions } from '@suite-common/feedback';
 import { Button, Card, HStack, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { type ExperimentalFeature } from '@suite-native/settings';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { EXPERIMENTAL_FEATURES } from '../experimentalFeatures';
 import { EmojiRatingOption } from './EmojiRatingOption';

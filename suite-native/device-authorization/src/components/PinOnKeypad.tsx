@@ -6,7 +6,7 @@ import { Box, Card, HStack, Loader, Text, VStack } from '@suite-native/atoms';
 import { Form, useForm } from '@suite-native/forms';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { DeviceModelInternal } from '@trezor/device-utils';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { DevicePinImage } from './DevicePinImage';
 import { PinFormControlButtons } from './PinFormControlButtons';

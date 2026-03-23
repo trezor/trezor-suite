@@ -2,7 +2,7 @@ import { type Account } from '@suite-common/wallet-types';
 import { RoundedIcon } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
-import { useNativeStyles } from '@trezor/styles';
+import { useNativeStyles } from '@trezor/styles-native';
 
 import { AccountsListItemBase } from './AccountsListItemBase';
 

@@ -2,7 +2,7 @@ import { type ReactElement, type ReactNode } from 'react';
 import { Dimensions } from 'react-native';
 
 import { BottomSheetFlashList, type BottomSheetFlashListProps } from '@suite-native/atoms';
-import { type NativeStyle } from '@trezor/styles';
+import { type NativeStyle } from '@trezor/styles-native';
 
 import {
     type ItemRenderConfig,

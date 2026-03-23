@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Box, CardDivider, HStack, PressableOpacity, Text } from '@suite-native/atoms';
 import { CryptoIconWithNetwork, Icon } from '@suite-native/icons';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { type EarnDepositsCardRow as EarnDepositsCardRowType } from '../types';
 

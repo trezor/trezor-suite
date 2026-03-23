@@ -14,7 +14,7 @@ import {
     useAlertAnimation,
 } from '@suite-native/atoms';
 import { getScreenHeight, getScreenWidth } from '@trezor/env-utils';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { type Alert } from '../alertsAtoms';
 import { useAlert } from '../useAlert';

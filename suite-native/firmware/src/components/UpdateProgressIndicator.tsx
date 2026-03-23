@@ -23,7 +23,7 @@ import {
     useSVG,
 } from '@shopify/react-native-skia';
 
-import { useNativeStyles } from '@trezor/styles';
+import { useNativeStyles } from '@trezor/styles-native';
 
 const CIRCLE_DIAMETER = 144;
 // 1.25 is used to make sure that the circle is not cut off when animating using withSpring

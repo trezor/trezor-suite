@@ -1,4 +1,4 @@
-import { useNativeStyles } from '@trezor/styles';
+import { useNativeStyles } from '@trezor/styles-native';
 
 export const useIllustrationColors = () => {
     const {

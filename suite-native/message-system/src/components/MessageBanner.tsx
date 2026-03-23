@@ -5,7 +5,7 @@ import { messageSystemActions } from '@suite-common/message-system';
 import { type Message, type Variant } from '@suite-common/suite-types';
 import { Box, HStack, PressableOpacity, RoundedIcon, Text, VStack } from '@suite-native/atoms';
 import { Icon, type IconName } from '@suite-native/icons';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type Color } from '@trezor/theme';
 
 import { MessageLink } from './MessageLink';

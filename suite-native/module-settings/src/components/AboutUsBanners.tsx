@@ -3,7 +3,7 @@ import { useCoinLabel } from '@suite-native/device';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type Color } from '@trezor/theme';
 import { TREZOR_INSTAGRAM_URL, TREZOR_TIKTOK_URL, TREZOR_X_URL } from '@trezor/urls';
 

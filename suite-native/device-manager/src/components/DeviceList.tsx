@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { selectInstacelessUnselectedDevices } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { AnimatedBox, Box } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { DeviceItem } from './DeviceItem/DeviceItem';
 import { MANAGER_MODAL_BOTTOM_RADIUS } from './DeviceManagerModal';

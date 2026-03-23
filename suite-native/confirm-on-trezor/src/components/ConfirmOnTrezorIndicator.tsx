@@ -10,7 +10,7 @@ import Animated, {
 
 import { AnimatedBox } from '@suite-native/atoms';
 import { isDetoxTestBuild } from '@suite-native/config';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 const containerStyle = prepareNativeStyle(() => ({
     width: 20,

@@ -9,7 +9,7 @@ import {
     selectIsLabellingAllowed,
 } from '@suite-native/labeling';
 import type { StaticSessionId } from '@trezor/connect';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 const ADDRESS_LABEL_MAX_LENGTH = 25;
 

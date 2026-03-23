@@ -1,6 +1,6 @@
 import { type PressableProps, View } from 'react-native';
 
-import { type NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { type NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type Color } from '@trezor/theme';
 
 import { PressableOpacity } from './Pressable';

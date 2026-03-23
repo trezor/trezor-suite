@@ -3,16 +3,14 @@ import { RendererProvider, ThemeProvider } from 'react-fela';
 
 import { type IRenderer } from 'fela';
 
-import { type NativeTheme, type Theme } from '@trezor/theme';
-
-import { DirectionContext } from './contexts';
-import { type Direction } from './types';
+import { type Direction, DirectionContext } from '@trezor/styles-common';
+import { type NativeTheme } from '@trezor/theme';
 
 export interface StylesProviderProps {
     children: ReactNode;
     direction?: Direction;
     renderer: IRenderer;
-    theme: Theme | NativeTheme;
+    theme: NativeTheme;
 }
 
 export const StylesProvider = ({

@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 
 import Lottie, { type AnimationObject } from 'lottie-react-native';
 
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type CSSColor } from '@trezor/theme';
 
 import { useIllustrationColors } from './useIllustrationColors';

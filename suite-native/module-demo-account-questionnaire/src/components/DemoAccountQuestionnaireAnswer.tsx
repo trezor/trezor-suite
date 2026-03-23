@@ -3,7 +3,7 @@ import { Pressable } from 'react-native';
 
 import { Card, HStack, OrderedListIcon, Radio, Text } from '@suite-native/atoms';
 import { type IconName } from '@suite-native/icons';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 const cardStyle = prepareNativeStyle<{ isSelected: boolean }>((utils, { isSelected }) => ({
     borderColor: utils.colors.borderOnElevation1,

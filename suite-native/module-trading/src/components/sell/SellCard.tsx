@@ -11,7 +11,7 @@ import {
     NetworkReserveBanner,
     useIsNetworkReserveBannerVisible,
 } from '@suite-native/transaction-management';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { SellFormFieldErrorBadge } from './SellFormFieldErrorBadge';
 import { SellFiatCurrencyPicker } from './fiat/SellFiatCurrencyPicker';

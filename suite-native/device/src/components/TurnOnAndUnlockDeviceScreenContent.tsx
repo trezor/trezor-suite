@@ -4,7 +4,7 @@ import { HStack, Loader, Text, VStack, buttonSizeToDimensionsMap } from '@suite-
 import { selectBluetoothAdapterStatus } from '@suite-native/bluetooth';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { TurnOnDeviceAnimation } from './TurnOnDeviceAnimation';
 

@@ -26,7 +26,7 @@ import {
     type WalletAccountTransaction,
     selectAccountTransactionsWithTokenTransfers,
 } from '@suite-native/tokens';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { arrayPartition } from '@trezor/utils';
 
 import { TokenTransferListItem } from './TokenTransferListItem';

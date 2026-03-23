@@ -12237,7 +12237,7 @@ __metadata:
     "@suite-native/test-utils": "workspace:*"
     "@suite-native/toasts": "workspace:*"
     "@suite-native/tokens": "workspace:*"
-    "@trezor/styles": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
     "@trezor/theme": "workspace:^"
     "@trezor/utils": "workspace:*"
     jotai: "npm:2.17.1"
@@ -12256,7 +12256,7 @@ __metadata:
     "@suite-native/atoms": "workspace:*"
     "@suite-native/icons": "workspace:*"
     "@trezor/env-utils": "workspace:*"
-    "@trezor/styles": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
     "@trezor/theme": "workspace:*"
     jotai: "npm:2.17.1"
     react: "npm:19.2.4"
@@ -12412,7 +12412,7 @@ __metadata:
     "@trezor/e2e-utils": "workspace:*"
     "@trezor/eslint": "workspace:*"
     "@trezor/react-native-usb": "workspace:*"
-    "@trezor/styles": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
     "@trezor/theme": "workspace:*"
     "@trezor/trezor-user-env-link": "workspace:*"
     "@trezor/utils": "workspace:*"
@@ -12555,7 +12555,7 @@ __metadata:
     "@suite-native/test-utils": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/react-utils": "workspace:*"
-    "@trezor/styles": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
     "@trezor/theme": "workspace:*"
     "@trezor/utils": "workspace:*"
     expo-image: "npm:~55.0.5"
@@ -12594,7 +12594,7 @@ __metadata:
     "@suite-native/intl": "workspace:*"
     "@suite-native/services": "workspace:*"
     "@suite-native/storage": "workspace:*"
-    "@trezor/styles": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
     expo-local-authentication: "npm:~55.0.8"
     jotai: "npm:2.17.1"
     react: "npm:19.2.4"
@@ -12634,7 +12634,7 @@ __metadata:
     "@suite-native/toasts": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/device-utils": "workspace:*"
-    "@trezor/styles": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
     "@trezor/transport-native-bluetooth": "workspace:*"
     expo-constants: "npm:~55.0.7"
     react: "npm:19.2.4"
@@ -12676,7 +12676,7 @@ __metadata:
     "@suite-native/services": "workspace:*"
     "@suite-native/toasts": "workspace:*"
     "@suite-native/tokens": "workspace:*"
-    "@trezor/styles": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
     react-native-reanimated: "npm:~4.2.1"
@@ -12707,7 +12707,7 @@ __metadata:
     "@suite-native/navigation": "workspace:*"
     "@suite-native/theme": "workspace:*"
     "@trezor/env-utils": "workspace:*"
-    "@trezor/styles": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
     "@trezor/theme": "workspace:*"
     expo-haptics: "npm:~55.0.8"
     expo-linear-gradient: "npm:~55.0.8"
@@ -12729,7 +12729,7 @@ __metadata:
     "@suite-native/icons": "workspace:*"
     "@suite-native/intl": "workspace:*"
     "@suite-native/settings": "workspace:*"
-    "@trezor/styles": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
     react-redux: "npm:9.2.0"
@@ -12762,7 +12762,7 @@ __metadata:
     "@suite-native/toasts": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/device-utils": "workspace:*"
-    "@trezor/styles": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
     react: "npm:19.2.4"
@@ -12782,7 +12782,7 @@ __metadata:
     "@suite-native/device-manager": "workspace:*"
     "@suite-native/intl": "workspace:*"
     "@suite-native/navigation": "workspace:*"
-    "@trezor/styles": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
     react: "npm:19.2.4"
     react-redux: "npm:9.2.0"
   languageName: unknown
@@ -12812,7 +12812,7 @@ __metadata:
     "@suite-native/navigation": "workspace:*"
     "@suite-native/services": "workspace:*"
     "@trezor/device-utils": "workspace:*"
-    "@trezor/styles": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
     "@trezor/theme": "workspace:*"
     jotai: "npm:2.17.1"
     react: "npm:19.2.4"
@@ -12886,7 +12886,7 @@ __metadata:
     "@trezor/connect-common": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     "@trezor/env-utils": "workspace:*"
-    "@trezor/styles": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
     "@trezor/theme": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/urls": "workspace:*"
@@ -12951,7 +12951,7 @@ __metadata:
     "@suite-native/navigation": "workspace:*"
     "@suite-native/services": "workspace:*"
     "@suite-native/settings": "workspace:*"
-    "@trezor/styles": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
     react: "npm:19.2.4"
@@ -13003,7 +13003,7 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     "@trezor/react-native-usb": "workspace:*"
-    "@trezor/styles": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
     "@trezor/theme": "workspace:*"
     "@trezor/utils": "workspace:^"
     expo-keep-awake: "npm:~55.0.4"
@@ -13045,7 +13045,7 @@ __metadata:
     "@suite-native/tokens": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/protobuf": "workspace:*"
-    "@trezor/styles": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
     "@trezor/theme": "workspace:*"
     "@trezor/utils": "workspace:*"
     expo-localization: "npm:~55.0.8"
@@ -13102,7 +13102,7 @@ __metadata:
     "@suite-native/storage": "workspace:*"
     "@suite-native/theme": "workspace:*"
     "@suite-native/tokens": "workspace:*"
-    "@trezor/styles": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
     "@trezor/theme": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
@@ -13126,7 +13126,7 @@ __metadata:
     "@suite-common/wallet-core": "workspace:*"
     "@suite-native/test-utils": "workspace:*"
     "@trezor/connect": "workspace:*"
-    "@trezor/styles": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
     "@trezor/theme": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     expo-file-system: "npm:~55.0.10"
@@ -13152,7 +13152,7 @@ __metadata:
     "@suite-native/theme": "workspace:*"
     "@trezor/asset-utils": "workspace:*"
     "@trezor/device-utils": "workspace:*"
-    "@trezor/styles": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
     "@trezor/theme": "workspace:*"
     expo-image: "npm:~55.0.5"
     react: "npm:19.2.4"
@@ -13232,7 +13232,7 @@ __metadata:
   resolution: "@suite-native/link@workspace:suite-native/link"
   dependencies:
     "@suite-native/toasts": "workspace:*"
-    "@trezor/styles": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
     "@trezor/theme": "workspace:*"
     "@trezor/urls": "workspace:*"
     react: "npm:19.2.4"
@@ -13261,7 +13261,7 @@ __metadata:
     "@suite-native/intl": "workspace:*"
     "@suite-native/link": "workspace:*"
     "@suite-native/test-utils": "workspace:*"
-    "@trezor/styles": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
     "@trezor/theme": "workspace:*"
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
@@ -13308,7 +13308,7 @@ __metadata:
     "@suite-native/video-assets": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/connect": "workspace:*"
-    "@trezor/styles": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@trezor/utxo-lib": "workspace:*"
     react: "npm:19.2.4"
@@ -13360,7 +13360,7 @@ __metadata:
     "@suite-native/services": "workspace:*"
     "@suite-native/tokens": "workspace:*"
     "@suite-native/transactions": "workspace:*"
-    "@trezor/styles": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
     "@trezor/utils": "workspace:*"
     date-fns: "npm:^4.1.0"
     jotai: "npm:2.17.1"
@@ -13392,7 +13392,7 @@ __metadata:
     "@suite-native/link": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@suite-native/passphrase": "workspace:*"
-    "@trezor/styles": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
@@ -13458,7 +13458,7 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     "@trezor/env-utils": "workspace:*"
-    "@trezor/styles": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
     "@trezor/theme": "workspace:*"
     "@trezor/urls": "workspace:*"
     expo-video: "npm:~55.0.10"
@@ -13492,7 +13492,7 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/connect-common": "workspace:^"
     "@trezor/device-utils": "workspace:*"
-    "@trezor/styles": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
     "@trezor/urls": "workspace:*"
     react: "npm:19.2.4"
     react-native-reanimated: "npm:~4.2.1"
@@ -13530,7 +13530,7 @@ __metadata:
     "@trezor/connect": "workspace:^"
     "@trezor/connect-common": "workspace:^"
     "@trezor/connect-mobile": "workspace:*"
-    "@trezor/styles": "workspace:^"
+    "@trezor/styles-native": "workspace:^"
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
     expo-clipboard: "npm:~55.0.8"
@@ -13556,7 +13556,7 @@ __metadata:
     "@suite-native/link": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@suite-native/services": "workspace:*"
-    "@trezor/styles": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
     "@trezor/urls": "workspace:*"
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
@@ -13600,7 +13600,7 @@ __metadata:
     "@suite-native/trading-state": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/env-utils": "workspace:*"
-    "@trezor/styles": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
     "@trezor/theme": "workspace:*"
     "@trezor/urls": "workspace:*"
     expo: "npm:~55.0.3"
@@ -13650,7 +13650,7 @@ __metadata:
     "@trezor/connect-common": "workspace:^"
     "@trezor/device-utils": "workspace:*"
     "@trezor/env-utils": "workspace:*"
-    "@trezor/styles": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
     "@trezor/theme": "workspace:*"
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
@@ -13699,7 +13699,7 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     "@trezor/env-utils": "workspace:*"
-    "@trezor/styles": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
     "@trezor/utils": "workspace:*"
     react: "npm:19.2.4"
     react-native-svg: "npm:15.15.2"
@@ -13736,7 +13736,7 @@ __metadata:
     "@suite-native/services": "workspace:*"
     "@suite-native/staking": "workspace:*"
     "@suite-native/test-utils": "workspace:*"
-    "@trezor/styles": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
     "@trezor/theme": "workspace:*"
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
@@ -13786,7 +13786,7 @@ __metadata:
     "@suite-native/test-utils": "workspace:*"
     "@suite-native/toasts": "workspace:*"
     "@trezor/device-utils": "workspace:*"
-    "@trezor/styles": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
     "@trezor/urls": "workspace:*"
     jotai: "npm:2.17.1"
     react: "npm:19.2.4"
@@ -13820,7 +13820,7 @@ __metadata:
     "@suite-native/trading-state": "workspace:*"
     "@trezor/analytics-uploader": "workspace:*"
     "@trezor/env-utils": "workspace:*"
-    "@trezor/styles": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
     "@trezor/theme": "workspace:*"
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
@@ -13850,7 +13850,7 @@ __metadata:
     "@suite-native/navigation": "workspace:*"
     "@suite-native/passphrase": "workspace:*"
     "@suite-native/services": "workspace:*"
-    "@trezor/styles": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
     "@trezor/urls": "workspace:*"
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
@@ -13902,7 +13902,7 @@ __metadata:
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/react-utils": "workspace:*"
-    "@trezor/styles": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
     "@trezor/theme": "workspace:*"
     "@trezor/transport": "workspace:*"
     "@trezor/urls": "workspace:*"
@@ -13968,7 +13968,7 @@ __metadata:
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/env-utils": "workspace:*"
-    "@trezor/styles": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
     "@trezor/theme": "workspace:*"
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
@@ -14008,7 +14008,7 @@ __metadata:
     "@suite-native/transaction-management": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/blockchain-link-utils": "workspace:*"
-    "@trezor/styles": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
     react: "npm:19.2.4"
@@ -14083,7 +14083,7 @@ __metadata:
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/react-utils": "workspace:*"
-    "@trezor/styles": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
     "@trezor/theme": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/urls": "workspace:*"
@@ -14128,7 +14128,7 @@ __metadata:
     "@suite-native/tokens": "workspace:*"
     "@suite-native/transactions": "workspace:*"
     "@trezor/connect": "workspace:*"
-    "@trezor/styles": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
     "@trezor/urls": "workspace:*"
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
@@ -14163,7 +14163,7 @@ __metadata:
     "@suite-native/settings": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/device-utils": "workspace:*"
-    "@trezor/styles": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
     "@trezor/theme": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/invity-api": "npm:^1.1.15"
@@ -14199,7 +14199,7 @@ __metadata:
     "@suite-native/navigation": "workspace:*"
     "@suite-native/services": "workspace:*"
     "@trezor/connect": "workspace:*"
-    "@trezor/styles": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
     react-native-reanimated: "npm:~4.2.1"
@@ -14223,7 +14223,7 @@ __metadata:
     "@suite-native/labeling": "workspace:*"
     "@suite-native/toasts": "workspace:*"
     "@trezor/connect": "workspace:*"
-    "@trezor/styles": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
     "@trezor/theme": "workspace:*"
     expo-camera: "npm:~55.0.9"
     expo-image-picker: "npm:~55.0.10"
@@ -14286,7 +14286,7 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     "@trezor/env-utils": "workspace:*"
-    "@trezor/styles": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
     "@trezor/theme": "workspace:*"
     "@trezor/urls": "workspace:*"
     react: "npm:19.2.4"
@@ -14302,7 +14302,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/scrollview@workspace:suite-native/scrollview"
   dependencies:
-    "@trezor/styles": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
     react-native-reanimated: "npm:~4.2.1"
@@ -14495,7 +14495,7 @@ __metadata:
     "@storybook/react-native-web-vite": "npm:^10.2.8"
     "@suite-native/intl": "workspace:*"
     "@trezor/eslint": "workspace:*"
-    "@trezor/styles": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
     "@trezor/theme": "workspace:*"
     babel-plugin-react-native-web: "npm:^0.21.2"
     react: "npm:19.2.4"
@@ -14535,7 +14535,7 @@ __metadata:
   dependencies:
     "@suite-native/atoms": "workspace:*"
     "@suite-native/navigation": "workspace:*"
-    "@trezor/styles": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
     jotai: "npm:2.17.1"
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
@@ -14559,7 +14559,7 @@ __metadata:
     "@suite-native/intl": "workspace:*"
     "@suite-native/services": "workspace:*"
     "@testing-library/react-native": "npm:13.3.3"
-    "@trezor/styles": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
     "@trezor/theme": "workspace:*"
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
@@ -14599,7 +14599,7 @@ __metadata:
     "@suite-native/atoms": "workspace:*"
     "@suite-native/intl": "workspace:*"
     "@trezor/connect": "workspace:*"
-    "@trezor/styles": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
     react-native-keyboard-controller: "npm:1.20.7"
@@ -14614,7 +14614,7 @@ __metadata:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/icons": "workspace:*"
-    "@trezor/styles": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
     "@trezor/theme": "workspace:*"
     jotai: "npm:2.17.1"
     react: "npm:19.2.4"
@@ -14675,7 +14675,7 @@ __metadata:
     "@suite-native/test-utils": "workspace:*"
     "@suite-native/trading-fixtures": "workspace:*"
     "@suite-native/trading-types": "workspace:*"
-    "@trezor/styles": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
     "@trezor/theme": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@types/invity-api": "npm:^1.1.15"
@@ -14741,7 +14741,7 @@ __metadata:
     "@suite-native/trading-consts": "workspace:*"
     "@suite-native/trading-state": "workspace:*"
     "@suite-native/trading-types": "workspace:*"
-    "@trezor/styles": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
     react: "npm:19.2.4"
     react-redux: "npm:9.2.0"
   languageName: unknown
@@ -14783,7 +14783,7 @@ __metadata:
     "@suite-native/trading-atoms": "workspace:*"
     "@suite-native/trading-consts": "workspace:*"
     "@suite-native/trading-state": "workspace:*"
-    "@trezor/styles": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
     expo-localization: "npm:~55.0.8"
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
@@ -14878,7 +14878,7 @@ __metadata:
     "@suite-native/tokens": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/react-utils": "workspace:*"
-    "@trezor/styles": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
     "@trezor/theme": "workspace:*"
     "@trezor/utils": "workspace:*"
     expo-linear-gradient: "npm:~55.0.8"
@@ -14916,7 +14916,7 @@ __metadata:
     "@suite-native/scrollview": "workspace:*"
     "@suite-native/tokens": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
-    "@trezor/styles": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
     "@trezor/theme": "workspace:*"
     "@trezor/utils": "workspace:*"
     react: "npm:19.2.4"
@@ -14930,7 +14930,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/video-assets@workspace:suite-native/video-assets"
   dependencies:
-    "@trezor/styles": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
     expo: "npm:~55.0.3"
     expo-video: "npm:~55.0.10"
     prettier: "npm:^3.8.1"
@@ -16246,27 +16246,35 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/styles@workspace:*, @trezor/styles@workspace:^, @trezor/styles@workspace:packages/styles":
+"@trezor/styles-common@workspace:*, @trezor/styles-common@workspace:packages/styles-common":
   version: 0.0.0-use.local
-  resolution: "@trezor/styles@workspace:packages/styles"
+  resolution: "@trezor/styles-common@workspace:packages/styles-common"
   dependencies:
-    "@mobily/ts-belt": "npm:^3.13.1"
     "@trezor/theme": "workspace:*"
-    css-in-js-utils: "npm:^3.1.0"
-    csstype: "npm:^3.1.3"
+    polished: "npm:^4.3.1"
+    react: "npm:19.2.4"
+  languageName: unknown
+  linkType: soft
+
+"@trezor/styles-native@workspace:*, @trezor/styles-native@workspace:^, @trezor/styles-native@workspace:packages/styles-native":
+  version: 0.0.0-use.local
+  resolution: "@trezor/styles-native@workspace:packages/styles-native"
+  dependencies:
+    "@trezor/styles-common": "workspace:*"
+    "@trezor/theme": "workspace:*"
     fela: "npm:^12.2.1"
-    fela-enforce-longhands: "npm:^12.2.1"
     fela-native: "npm:^12.2.1"
-    fela-plugin-embedded: "npm:^12.2.1"
     fela-plugin-extend: "npm:^12.2.1"
-    fela-plugin-multiple-selectors: "npm:^12.2.1"
-    fela-plugin-placeholder-prefixer: "npm:^12.2.1"
-    fela-plugin-unit: "npm:^12.2.1"
-    fela-sort-media-query-mobile-first: "npm:^12.2.1"
     polished: "npm:^4.3.1"
     react: "npm:19.2.4"
     react-fela: "npm:^12.2.1"
     react-native: "npm:0.83.2"
+  languageName: unknown
+  linkType: soft
+
+"@trezor/styles@workspace:*, @trezor/styles@workspace:packages/styles":
+  version: 0.0.0-use.local
+  resolution: "@trezor/styles@workspace:packages/styles"
   languageName: unknown
   linkType: soft
 
@@ -28027,13 +28035,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fela-enforce-longhands@npm:^12.2.1":
-  version: 12.2.1
-  resolution: "fela-enforce-longhands@npm:12.2.1"
-  checksum: 10/865a06645d45b40ac9d25bffa4eec37c48b484b86c6084c1326ae229f43daf787e2073da7872065d4f0183254c76bca5a4837b47dad8ea13717830ef19cd63de
-  languageName: node
-  linkType: hard
-
 "fela-native@npm:^12.2.1":
   version: 12.2.1
   resolution: "fela-native@npm:12.2.1"
@@ -28041,28 +28042,6 @@ __metadata:
     fast-loops: "npm:^1.0.0"
     fela-utils: "npm:^12.2.1"
   checksum: 10/7f5d5d6a71299e43fa83228622f4f49b7b60840fe5a406a74b9493131561c17f0fb7f3570ddf3da9320f8f4041ec92ac717e30ec2df4618ba0ace17db93da655
-  languageName: node
-  linkType: hard
-
-"fela-plugin-custom-property@npm:^12.2.1":
-  version: 12.2.1
-  resolution: "fela-plugin-custom-property@npm:12.2.1"
-  dependencies:
-    css-in-js-utils: "npm:^3.0.0"
-    isobject: "npm:^3.0.1"
-  peerDependencies:
-    fela: ">=11"
-  checksum: 10/3d6420e1fa9d456759c834874b1e8a89b5df2ad64fdc2b11fb03236fbeaa0474e7d357d891b2cd9097a04f681014ea38a543844d502007eaca6992a1748daeba
-  languageName: node
-  linkType: hard
-
-"fela-plugin-embedded@npm:^12.2.1":
-  version: 12.2.1
-  resolution: "fela-plugin-embedded@npm:12.2.1"
-  dependencies:
-    fast-loops: "npm:^1.0.0"
-    isobject: "npm:^3.0.1"
-  checksum: 10/b049a32ad5f02729638b9b3472fe26394523adb6ffc7cfec6a8db69bbc8962926d24fedaab9726f44cd47e933996b8af626ce5eae3935a378af3e1b4f344a0b9
   languageName: node
   linkType: hard
 
@@ -28077,54 +28056,6 @@ __metadata:
   peerDependencies:
     fela: ">=11"
   checksum: 10/8428f8b296296829f3b02ebeb5768fb3634e1e128aa064cb201a35b4202a3b927cc70319a88cffe85c04916d8b0b878c614c7f5ce35d116f48d26f594b60c32e
-  languageName: node
-  linkType: hard
-
-"fela-plugin-multiple-selectors@npm:^12.2.1":
-  version: 12.2.1
-  resolution: "fela-plugin-multiple-selectors@npm:12.2.1"
-  dependencies:
-    fast-loops: "npm:^1.0.0"
-    isobject: "npm:^3.0.1"
-  checksum: 10/aa9df68ca7e76cc514260a4b0dfaa67fad3aa6e20ccdfc9953d295e355da5c66e1ee04d4d68c940dc46e075d37fa0114fe94aedb09c8fafa4ed68f00b42f7f9a
-  languageName: node
-  linkType: hard
-
-"fela-plugin-placeholder-prefixer@npm:^12.2.1":
-  version: 12.2.1
-  resolution: "fela-plugin-placeholder-prefixer@npm:12.2.1"
-  dependencies:
-    fela-plugin-pseudo-prefixer: "npm:^12.2.1"
-  checksum: 10/25d717c20de3bfadc70ac5d3011931a2fa5fba3ef86020fa3f4d617f29c79391689c3ea5f8ecfe78e7bcc268727d43beeee027a77fd67c0e02a7d01f25b5e50e
-  languageName: node
-  linkType: hard
-
-"fela-plugin-pseudo-prefixer@npm:^12.2.1":
-  version: 12.2.1
-  resolution: "fela-plugin-pseudo-prefixer@npm:12.2.1"
-  dependencies:
-    fast-loops: "npm:^1.0.0"
-    fela-plugin-custom-property: "npm:^12.2.1"
-  checksum: 10/c6d21be3ddc0f8f11d4f417a08cf86aa2569fb628d98ce8e5749ebdefd2f1be7527302b87746ccfabdd9600fe899789c8168ec5f462d14036ef702d37d9e4031
-  languageName: node
-  linkType: hard
-
-"fela-plugin-unit@npm:^12.2.1":
-  version: 12.2.1
-  resolution: "fela-plugin-unit@npm:12.2.1"
-  dependencies:
-    css-in-js-utils: "npm:^3.0.0"
-    isobject: "npm:^4.0.0"
-  checksum: 10/220e2eed9244e728d06ef5977154e3dbd1706b1756d1d0d02759e4f01e59995cec3ee263825146327d70ebc383dfbf8d8dab7dd070db40a8958bb27e2d87af8a
-  languageName: node
-  linkType: hard
-
-"fela-sort-media-query-mobile-first@npm:^12.2.1":
-  version: 12.2.1
-  resolution: "fela-sort-media-query-mobile-first@npm:12.2.1"
-  dependencies:
-    sort-css-media-queries: "npm:^1.4.3"
-  checksum: 10/a4ff599c2047ade5f2d360e0d02929b115b5ed0b5f3a55255bfc1e573b7e21e4ada97b420cfc78d6d35b95858adc263dfddf14aab612f196adbb390e2898cf93
   languageName: node
   linkType: hard
 
@@ -31394,13 +31325,6 @@ __metadata:
   version: 3.0.1
   resolution: "isobject@npm:3.0.1"
   checksum: 10/db85c4c970ce30693676487cca0e61da2ca34e8d4967c2e1309143ff910c207133a969f9e4ddb2dc6aba670aabce4e0e307146c310350b298e74a31f7d464703
-  languageName: node
-  linkType: hard
-
-"isobject@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "isobject@npm:4.0.0"
-  checksum: 10/bbcb522e46d54fb22418ba49fb9a82057ffa201c8401fb6e018c042e2c98cf7d9c7b185aff88e035ec8adea0814506dc2aeff2d08891bbc158e1671a49e99c06
   languageName: node
   linkType: hard
 

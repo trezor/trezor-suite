@@ -40,7 +40,9 @@
         { "path": "../trading-state" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/env-utils" },
-        { "path": "../../packages/styles" },
+        {
+            "path": "../../packages/styles-native"
+        },
         { "path": "../../packages/theme" },
         { "path": "../../packages/urls" }
     ]

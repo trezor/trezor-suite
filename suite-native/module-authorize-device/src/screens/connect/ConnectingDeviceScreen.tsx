@@ -4,7 +4,7 @@ import { Box, Text, VStack, resetLetterSpacingOnAndroidStyle } from '@suite-nati
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { useInterceptNativeNavigation } from '@suite-native/navigation';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { ConnectDeviceScreenView } from '../../components/connect/ConnectDeviceScreenView';
 import { useOnDeviceReadyNavigation } from '../../hooks/useOnDeviceReadyNavigation';

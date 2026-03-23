@@ -18,7 +18,7 @@ import {
     vec,
 } from '@shopify/react-native-skia';
 
-import { useNativeStyles } from '@trezor/styles';
+import { useNativeStyles } from '@trezor/styles-native';
 import { type Color, type NativeRadius } from '@trezor/theme';
 
 import { ENDLESS_ANIMATION_VALUE } from '../constants';

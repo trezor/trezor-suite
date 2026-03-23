@@ -15,7 +15,7 @@ import {
     TradingStackRoutes,
 } from '@suite-native/navigation';
 import { selectIsAmountInputActive } from '@suite-native/trading-state';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { useWatchAllTrades } from '../../hooks/general/useWatchAllTrades';
 

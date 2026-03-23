@@ -1,6 +1,6 @@
 import Svg, { Rect } from 'react-native-svg';
 
-import { useNativeStyles } from '@trezor/styles';
+import { useNativeStyles } from '@trezor/styles-native';
 
 export const InfoShapeSvg = () => {
     const { utils } = useNativeStyles();

@@ -36,7 +36,7 @@
         "@suite-native/services": "workspace:*",
         "@suite-native/staking": "workspace:*",
         "@suite-native/test-utils": "workspace:*",
-        "@trezor/styles": "workspace:*",
+        "@trezor/styles-native": "workspace:*",
         "@trezor/theme": "workspace:*",
         "@trezor/urls": "workspace:*",
         "@trezor/utils": "workspace:*",

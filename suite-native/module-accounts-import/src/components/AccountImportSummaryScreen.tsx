@@ -2,7 +2,7 @@ import { type ReactNode } from 'react';
 
 import { Box, PictogramTitleHeader, ScreenFooterGradient, VStack } from '@suite-native/atoms';
 import { Screen } from '@suite-native/navigation';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { AccountImportScreenHeader } from './AccountImportScreenHeader';
 

@@ -37,7 +37,7 @@
         "@trezor/connect": "workspace:^",
         "@trezor/connect-common": "workspace:^",
         "@trezor/connect-mobile": "workspace:*",
-        "@trezor/styles": "workspace:^",
+        "@trezor/styles-native": "workspace:^",
         "@trezor/urls": "workspace:*",
         "@trezor/utils": "workspace:*",
         "expo-clipboard": "~55.0.8",

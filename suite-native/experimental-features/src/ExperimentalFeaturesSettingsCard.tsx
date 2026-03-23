@@ -24,7 +24,7 @@ import {
     selectAreExperimentalFeaturesAllowed,
     selectEnabledExperimentalFeatures,
 } from '@suite-native/settings';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { EXPERIMENTAL_FEATURES_KB_URL } from '@trezor/urls';
 import { typedObjectKeys } from '@trezor/utils';
 

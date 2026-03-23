@@ -11,7 +11,7 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@trezor/styles": "workspace:*",
+        "@trezor/styles-native": "workspace:*",
         "react": "19.2.4",
         "react-native": "0.83.2",
         "react-native-reanimated": "~4.2.1"

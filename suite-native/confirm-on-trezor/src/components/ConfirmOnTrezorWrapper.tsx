@@ -9,7 +9,7 @@ import {
     createRenderer,
     prepareNativeStyle,
     useNativeStyles,
-} from '@trezor/styles';
+} from '@trezor/styles-native';
 import { prepareNativeTheme } from '@trezor/theme';
 
 import { ConfirmOnTrezorContent, type ConfirmOnTrezorWrapperProps } from './ConfirmOnTrezorContent';

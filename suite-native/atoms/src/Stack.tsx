@@ -2,7 +2,7 @@ import React, { type ReactNode } from 'react';
 import { type View } from 'react-native';
 import Animated, { type AnimatedProps } from 'react-native-reanimated';
 
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type NativeSpacing } from '@trezor/theme';
 
 import { Box, type BoxProps } from './Box';

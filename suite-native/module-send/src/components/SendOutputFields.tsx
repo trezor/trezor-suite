@@ -14,7 +14,7 @@ import {
     NetworkReserveBanner,
     useIsNetworkReserveBannerVisible,
 } from '@suite-native/transaction-management';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { RecipientInputs } from './RecipientInputs';
 import { type SendOutputsFormValues } from '../sendOutputsFormSchema';

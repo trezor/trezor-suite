@@ -4,7 +4,7 @@ import { Box, CardDivider, Text, TextButton, VStack } from '@suite-native/atoms'
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { type WalletAccountTransaction } from '@suite-native/tokens';
 import { type VinVoutAddress } from '@suite-native/transactions';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { ChangeAddressesHeader } from './ChangeAddressesHeader';
 import { TransactionDetailStepper } from './TransactionDetailStepper';

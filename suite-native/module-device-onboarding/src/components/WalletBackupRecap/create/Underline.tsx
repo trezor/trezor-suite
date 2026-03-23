@@ -9,7 +9,7 @@ import {
 import Svg, { Path } from 'react-native-svg';
 
 import { AnimatedBox, Box, useIllustrationColors } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 const containerStyle = prepareNativeStyle(() => ({
     position: 'absolute',

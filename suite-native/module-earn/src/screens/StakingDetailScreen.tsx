@@ -6,7 +6,7 @@ import { type RouteProp, useRoute } from '@react-navigation/native';
 
 import { initStakeDataThunk } from '@suite-common/wallet-core';
 import { type RootStackParamList, type RootStackRoutes, Screen } from '@suite-native/navigation';
-import { useNativeStyles } from '@trezor/styles';
+import { useNativeStyles } from '@trezor/styles-native';
 
 import { StakingDetailScreenHeader } from '../components/StakingDetailScreenHeader';
 import { StakingInfo } from '../components/StakingInfo';

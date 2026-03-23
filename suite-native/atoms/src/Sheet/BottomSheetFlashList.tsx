@@ -10,7 +10,7 @@ import {
 } from '@gorhom/bottom-sheet';
 import { FlashList, type FlashListProps } from '@shopify/flash-list';
 
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 export type BottomSheetFlashListProps<TItem> = {
     isVisible: boolean;

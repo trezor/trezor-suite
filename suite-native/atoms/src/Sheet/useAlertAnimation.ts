@@ -9,7 +9,7 @@ import {
 } from 'react-native-reanimated';
 
 import { getScreenHeight } from '@trezor/env-utils';
-import { useNativeStyles } from '@trezor/styles';
+import { useNativeStyles } from '@trezor/styles-native';
 
 const ANIMATION_DURATION = 300;
 const SCREEN_HEIGHT = getScreenHeight();

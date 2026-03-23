@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react';
 
 import { useActiveColorScheme } from '@suite-native/theme';
-import { StylesProvider as StylesStyleProvider, createRenderer } from '@trezor/styles';
+import { StylesProvider as StylesStyleProvider, createRenderer } from '@trezor/styles-native';
 import { prepareNativeTheme } from '@trezor/theme';
 
 type StylesProviderProps = {

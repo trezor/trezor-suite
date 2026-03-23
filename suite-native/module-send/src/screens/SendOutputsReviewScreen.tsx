@@ -20,7 +20,7 @@ import {
     selectIsTransactionAlreadySigned,
     useOutputsReviewBackInterceptor,
 } from '@suite-native/transaction-management';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { OutputsReviewFooter } from '../components/OutputsReviewFooter';
 

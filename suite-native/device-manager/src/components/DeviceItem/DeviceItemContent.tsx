@@ -15,7 +15,7 @@ import { ACCESSIBILITY_FONTSIZE_MULTIPLIER, Box, HStack } from '@suite-native/at
 import { selectShouldFactoryResetBeVisible } from '@suite-native/device';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { WalletLabel } from '@suite-native/labeling';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type NativeTypographyStyle } from '@trezor/theme';
 
 import { DeviceItemIcon } from './DeviceItemIcon';

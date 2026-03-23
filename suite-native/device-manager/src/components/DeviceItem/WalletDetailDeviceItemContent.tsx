@@ -2,7 +2,7 @@ import { type ReactNode } from 'react';
 
 import { Box, HStack, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type NativeTypographyStyle } from '@trezor/theme';
 
 import { ConnectionDot } from './ConnectionDot';

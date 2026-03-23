@@ -2,7 +2,7 @@ import React from 'react';
 
 import { type SetRequired } from 'type-fest';
 
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type Color, type NativeSpacing } from '@trezor/theme';
 import { isNotNullOrUndefined } from '@trezor/utils';
 

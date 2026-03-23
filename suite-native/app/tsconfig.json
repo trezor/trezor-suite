@@ -91,7 +91,9 @@
         {
             "path": "../../packages/react-native-usb"
         },
-        { "path": "../../packages/styles" },
+        {
+            "path": "../../packages/styles-native"
+        },
         { "path": "../../packages/theme" },
         {
             "path": "../../packages/trezor-user-env-link"

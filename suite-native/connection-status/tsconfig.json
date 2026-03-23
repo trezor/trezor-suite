@@ -10,7 +10,7 @@
         { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../settings" },
-        { "path": "../../packages/styles" }
+        { "path": "../../packages/styles-native" }
     ],
     "include": [".", "**/*.json"]
 }

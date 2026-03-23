@@ -17,7 +17,7 @@ import {
     getTransactionValueSign,
     selectTransactionFiatRate,
 } from '@suite-native/transactions';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type TransactionDetailHeaderProps = {
     transaction: WalletAccountTransaction;

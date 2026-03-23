@@ -5,7 +5,7 @@ import { ConfirmOnTrezorWrapper } from '@suite-native/confirm-on-trezor';
 import { Translation } from '@suite-native/intl';
 import { ScreenHeader } from '@suite-native/navigation';
 import { ReviewOutputItemList } from '@suite-native/transaction-management';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { ReviewOutputsFooter } from './ReviewOutputsFooter';
 import { ReviewOutputsSkeleton } from './ReviewOutputsSkeleton';

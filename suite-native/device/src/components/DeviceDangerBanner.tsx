@@ -3,7 +3,7 @@ import { useAtomValue } from 'jotai';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { DeviceDangerBannerExtension, bannerContentPresets } from './DeviceDangerBannerExtension';
 import { type DeviceDangerBannerVariant, deviceDangerBannerAtom } from '../deviceAtoms';

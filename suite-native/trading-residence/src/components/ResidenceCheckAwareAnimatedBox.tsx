@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { AnimatedBox, type BoxProps } from '@suite-native/atoms';
 import { selectIsTradingResidenceCheckEnabled } from '@suite-native/trading-state';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 export type ResidenceCheckAwareAnimatedBoxProps = Omit<BoxProps, 'style'>;
 

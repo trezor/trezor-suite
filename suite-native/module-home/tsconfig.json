@@ -48,7 +48,9 @@
         { "path": "../settings" },
         { "path": "../toasts" },
         { "path": "../../packages/device-utils" },
-        { "path": "../../packages/styles" },
+        {
+            "path": "../../packages/styles-native"
+        },
         { "path": "../../packages/urls" },
         { "path": "../test-utils" }
     ],

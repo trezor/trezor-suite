@@ -2,7 +2,7 @@ import { Pressable } from 'react-native';
 
 import { Icon, type IconName } from '@suite-native/icons';
 import { DeviceModelInternal } from '@trezor/device-utils';
-import { type NativeStyle, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { type NativeStyle, prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type CSSColor, nativeBorders } from '@trezor/theme';
 
 import { DEVICE_SCREEN_BACKGROUND_COLOR, DEVICE_TEXT_COLOR } from '../constants';

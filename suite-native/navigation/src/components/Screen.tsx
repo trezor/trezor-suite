@@ -10,7 +10,7 @@ import { useRoute } from '@react-navigation/native';
 
 import { selectIsAnyBannerMessageActive } from '@suite-common/message-system';
 import { Box, useBannerAwareSafeAreaInsets } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type Color } from '@trezor/theme';
 
 import { type DynamicScreenHeaderProps } from './DynamicHeader/DynamicScreenHeader';

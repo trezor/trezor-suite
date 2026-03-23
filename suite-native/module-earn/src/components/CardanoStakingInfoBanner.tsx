@@ -10,7 +10,7 @@ import {
     selectIsCardanoStakedWithFiveBinaries,
     useSelector as useNativeStakingSelector,
 } from '@suite-native/staking';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { HELP_CENTER_ADA_STAKING } from '@trezor/urls';
 
 const bannerStyle = prepareNativeStyle(utils => ({

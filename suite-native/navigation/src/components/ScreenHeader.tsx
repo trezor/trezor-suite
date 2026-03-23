@@ -3,7 +3,7 @@ import { type ReactNode } from 'react';
 import { type RequireOneOrNone } from 'type-fest';
 
 import { Box } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { GoBackIcon } from './GoBackIcon';
 import { type CloseActionType } from '../navigators';

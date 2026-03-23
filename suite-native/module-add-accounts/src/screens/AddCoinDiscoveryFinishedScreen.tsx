@@ -17,7 +17,7 @@ import {
     ScreenHeader,
     type StackProps,
 } from '@suite-native/navigation';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { AccountTypeDecisionBottomSheet } from '../components/AccountTypeDecisionBottomSheet';
 import { useAddCoinAccount } from '../hooks/useAddCoinAccount';

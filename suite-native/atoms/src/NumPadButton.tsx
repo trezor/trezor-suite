@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { TouchableHighlight, type TouchableHighlightProps } from 'react-native';
 
-import { type NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { type NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { Text } from './Text';
 

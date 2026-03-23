@@ -11,7 +11,7 @@ import { useReactNavigationDevTools } from '@rozenite/react-navigation-plugin';
 import { events } from '@suite-native/analytics';
 import { addSentryBreadcrumb, setSentryTag } from '@suite-native/sentry';
 import { useAnalytics } from '@suite-native/services';
-import { useNativeStyles } from '@trezor/styles';
+import { useNativeStyles } from '@trezor/styles-native';
 
 import { useReportSendFlowExitToAnalytics } from '../hooks/useReportSendFlowExitToAnalytics';
 import { type RootStackParamList } from '../navigators';

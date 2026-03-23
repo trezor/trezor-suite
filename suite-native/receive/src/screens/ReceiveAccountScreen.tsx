@@ -14,7 +14,7 @@ import {
     Screen,
 } from '@suite-native/navigation';
 import { getScreenWidth } from '@trezor/env-utils';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { ReceiveAddressScreen } from './ReceiveAddressScreen';
 import { ReceiveScreenHeader } from '../components/ReceiveScreenHeader';

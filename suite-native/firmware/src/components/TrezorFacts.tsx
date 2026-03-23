@@ -3,7 +3,7 @@ import Animated, { FadeIn, FadeInUp, FadeOut, FadeOutDown } from 'react-native-r
 
 import { Text, VStack } from '@suite-native/atoms';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
-import { useNativeStyles } from '@trezor/styles';
+import { useNativeStyles } from '@trezor/styles-native';
 
 import { firmwareTitlesWrapperStyle } from './FirmwareInstallationProgressTitles';
 

@@ -32,7 +32,7 @@ import { UpdateProgressIndicatorDemo } from '@suite-native/firmware';
 import { CryptoIcon, Icon } from '@suite-native/icons';
 import { Link } from '@suite-native/link';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type NativeTypographyStyle } from '@trezor/theme';
 import { TREZOR_URL } from '@trezor/urls';
 
