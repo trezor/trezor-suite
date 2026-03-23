@@ -122,8 +122,6 @@ export type VersionWithEvents = {
 /**
  * Returns versions (desc) with events that were changed in that version.
  *
- * Note: `attribute.changelog.entries` are merged into `event.changelog.entries` by `normalizeEvents()`,
- * so `event.changelog.entries` is the single source of truth here.
  */
 export const getVersionsWithEvents = (events: EventDoc[]): VersionWithEvents[] => {
     const versionToEvents = new Map<string, EventDoc[]>();
@@ -138,6 +136,17 @@ export const getVersionsWithEvents = (events: EventDoc[]): VersionWithEvents[] =
             const list = versionToEvents.get(v) ?? [];
             list.push(event);
             versionToEvents.set(v, list);
+        }
+
+        for (const attribute of Object.values(event.attributes)) {
+            for (const entry of attribute.changelog?.entries ?? []) {
+                const v = entry.version;
+                if (!v || seenVersions.has(v)) continue;
+                seenVersions.add(v);
+                const list = versionToEvents.get(v) ?? [];
+                list.push(event);
+                versionToEvents.set(v, list);
+            }
         }
     }
 

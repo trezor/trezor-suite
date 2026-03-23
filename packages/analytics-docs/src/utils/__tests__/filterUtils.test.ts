@@ -96,20 +96,19 @@ describe('getEventId', () => {
 });
 
 describe('getVersionsWithEvents', () => {
-    it('uses only event.changelog.entries as the source of truth', () => {
+    it('includes both event and attribute changelog versions', () => {
         const eventA = {
             name: 'accounts/active-staking',
             descriptionTrigger: 'trigger',
             changelog: {
                 entries: [
                     { version: '1.0.0', notes: 'event note' },
-                    { version: '1.1.0', notes: 'attribute merged note' },
+                    { version: '1.1.0', notes: 'event note 2' },
                 ],
             },
             attributes: {
                 someAttribute: {
                     changelog: {
-                        // This version should be ignored because it's not present in event.changelog.entries.
                         entries: [{ version: '2.0.0', notes: 'attribute-only note' }],
                     },
                 },
@@ -119,9 +118,10 @@ describe('getVersionsWithEvents', () => {
 
         const versionsWithEvents = getVersionsWithEvents([eventA]);
 
-        expect(versionsWithEvents.map(v => v.version)).toEqual(['1.1.0', '1.0.0']);
+        expect(versionsWithEvents.map(v => v.version)).toEqual(['2.0.0', '1.1.0', '1.0.0']);
         expect(versionsWithEvents[0].events).toEqual([eventA]);
         expect(versionsWithEvents[1].events).toEqual([eventA]);
+        expect(versionsWithEvents[2].events).toEqual([eventA]);
     });
 
     it('deduplicates events for the same version', () => {
