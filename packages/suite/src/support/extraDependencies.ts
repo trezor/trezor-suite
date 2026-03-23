@@ -154,7 +154,6 @@ export const extraDependencies: ExtraDependenciesStatic = {
         selectDebugSettings,
         // FW binaries on desktop are stored in "*/static/connect/data/firmware/*/*.bin" (see "connect-common" package)
         selectDesktopBinDir: (state: AppState) => state.desktop?.paths?.binDir,
-        selectDevice: (state: AppState) => state.device.selectedDevice,
         selectLanguage,
         selectMetadata: (state: AppState) => state.metadata,
         selectAddressDisplayType,

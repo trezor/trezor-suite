@@ -10,11 +10,7 @@ import { type MetadataAddPayload } from '@suite-common/metadata-types';
 import { type PlatformEncryptionDep } from '@suite-common/platform-encryption'; // also only types
 import { type MigrateSuiteSyncLabelsForRbfTransactionDep } from '@suite-common/suite-rbf-labels-migrations-types';
 import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
-import {
-    type ReportSecurityCheckDep,
-    type TrezorDevice,
-    type UserContextPayload,
-} from '@suite-common/suite-types';
+import { type ReportSecurityCheckDep, type UserContextPayload } from '@suite-common/suite-types';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Account,
@@ -69,8 +65,6 @@ export type ExtraDependenciesStatic = {
         // but this is exactly what I need to get DebugModeOptions type instead of any
         selectDebugSettings: SuiteCompatibleSelector<any>;
         selectDesktopBinDir: SuiteCompatibleSelector<string | undefined>;
-        // a wallet-core selector that could be reused directly, but this one is used very often and would create circular deps
-        selectDevice: SuiteCompatibleSelector<TrezorDevice | undefined>;
         selectLanguage: SuiteCompatibleSelector<string>;
         selectIsWindowVisible: SuiteCompatibleSelector<boolean>;
         selectMetadata: SuiteCompatibleSelector<any>;

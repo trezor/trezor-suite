@@ -1,4 +1,4 @@
-import { deviceActions } from '@suite-common/device';
+import { deviceActions, selectSelectedDevice } from '@suite-common/device';
 import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
 import { createThunk } from '@suite-common/redux-utils';
 import { type StoredAuthenticateDeviceResult } from '@suite-common/suite-types';
@@ -22,9 +22,9 @@ export const checkDeviceAuthenticityThunk = createThunk<
     `${ACTION_PREFIX}/checkDeviceAuthenticity`,
     async (
         { allowDebugKeys, skipSuccessToast },
-        { dispatch, getState, extra, fulfillWithValue, rejectWithValue },
+        { dispatch, getState, fulfillWithValue, rejectWithValue },
     ) => {
-        const device = extra.selectors.selectDevice(getState());
+        const device = selectSelectedDevice(getState());
         if (!device) {
             throw new Error('device is not connected');
         }

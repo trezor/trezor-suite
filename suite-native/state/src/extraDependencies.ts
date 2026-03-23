@@ -3,7 +3,6 @@ import { Platform } from 'react-native';
 import * as Device from 'expo-device';
 
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
-import { selectSelectedDevice } from '@suite-common/device';
 import { createNativePlatformEncryption } from '@suite-common/platform-encryption-native';
 import {
     type ExtraDependenciesStatic,
@@ -104,7 +103,6 @@ export const extraDependencies: ExtraDependenciesStatic = {
     selectors: {
         selectLanguage: selectSupportedLanguageLocale,
         selectTokenDefinitionsEnabledNetworks,
-        selectDevice: selectSelectedDevice,
         selectDebugSettings: () => ({
             transports,
         }),

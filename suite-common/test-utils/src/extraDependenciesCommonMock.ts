@@ -15,7 +15,6 @@ import {
 } from '@suite-common/redux-utils';
 import type { SuiteSync } from '@suite-common/suite-sync-types';
 import { type ReportSecurityCheckParams, asDelegatedIdentityKey } from '@suite-common/suite-types';
-import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import {
     AddressDisplayOptions,
     type SelectedAccountLoaded,
@@ -101,9 +100,6 @@ export const extraDependenciesCommonMock: ExtraDependencies = {
         }),
         selectDesktopBinDir: notImplementedSelector('selectDesktopBinDir', '/bin'),
         selectMetadata: notImplementedSelector('selectMetadata', {}),
-        selectDevice: notImplementedSelector('selectDevice', {
-            ...mockSuiteDevice(),
-        }),
         selectLanguage: notImplementedSelector('selectLanguage', 'en'),
         selectAddressDisplayType: notImplementedSelector(
             'selectAddressDisplayType',
