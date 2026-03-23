@@ -1,4 +1,4 @@
-import { ipcMain, nativeImage } from 'electron';
+import { ipcMain } from 'electron';
 import { WebSocketServer } from 'ws';
 
 import {
@@ -10,7 +10,7 @@ import {
     type PopupHandshake,
 } from '@trezor/connect';
 import { parseManifest, parseVersion } from '@trezor/connect/src/data/connectSettings';
-import { isLinux, isMacOs, isWindows } from '@trezor/env-utils';
+import { isLinux } from '@trezor/env-utils';
 import { type ProcessInfo, findProcessFromIncomingPort } from '@trezor/node-utils';
 import { type ConnectPopupResponse } from '@trezor/suite-desktop-api/src/messages';
 import { type Deferred, createDeferred, resolveAfter } from '@trezor/utils';
