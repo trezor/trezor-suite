@@ -8,24 +8,51 @@ import { type RatesByTimestamps, type WalletAccountTransaction } from '@suite-co
 
 import { type TokenDefinitions } from '../tokenDefinitionsTypes';
 import { detectors } from './detectors';
-import { type PhishingDetectorFn } from './types';
 import { getTransactionWithFiatAmounts } from './utils';
+import { PhishingTransactionValidator } from './validator';
 
-type NetworkPhishingDetectors = Map<NetworkType, PhishingDetectorFn[]>;
+type NetworkPhishingValidators = Map<NetworkType, PhishingTransactionValidator>;
 
-const PHISHING_DETECTORS: NetworkPhishingDetectors = new Map([
-    ['ethereum', [detectors.dustValue, detectors.zeroValue, detectors.fakeToken]],
-    ['ripple', [detectors.dustValue]],
-    ['cardano', [detectors.dustValue, detectors.fakeToken]],
-    ['solana', [detectors.dustValue, detectors.fakeToken]],
-    ['stellar', [detectors.dustValue, detectors.fakeToken, detectors.unknownTx]],
-    ['tron', [detectors.dustValue, detectors.fakeToken]],
+const PHISHING_VALIDATORS: NetworkPhishingValidators = new Map([
+    [
+        'ethereum',
+        new PhishingTransactionValidator()
+            .addDetector(detectors.fakeToken)
+            .addDetector(detectors.dustValue)
+            .addDetector(detectors.zeroValue),
+    ],
+    ['ripple', new PhishingTransactionValidator().addDetector(detectors.dustValue)],
+    [
+        'cardano',
+        new PhishingTransactionValidator()
+            .addDetector(detectors.fakeToken)
+            .addDetector(detectors.dustValue),
+    ],
+    [
+        'solana',
+        new PhishingTransactionValidator()
+            .addDetector(detectors.fakeToken)
+            .addDetector(detectors.dustValue),
+    ],
+    [
+        'stellar',
+        new PhishingTransactionValidator()
+            .addDetector(detectors.unknownTx)
+            .addDetector(detectors.fakeToken)
+            .addDetector(detectors.dustValue),
+    ],
+    [
+        'tron',
+        new PhishingTransactionValidator()
+            .addDetector(detectors.fakeToken)
+            .addDetector(detectors.dustValue),
+    ],
 ]);
 
 // NOTE: This function determines for which symbols there are filters in the UI to hide/display spam transactions
 // when handling fraud for other symbols, make sure this function is updated!
 export const hasNetworkPotentialFraudTransactions = (symbol: NetworkSymbol) =>
-    PHISHING_DETECTORS.has(getNetworkType(symbol));
+    PHISHING_VALIDATORS.has(getNetworkType(symbol));
 
 interface IsPhishingTransactionProps {
     transaction?: WalletAccountTransaction;
@@ -56,11 +83,12 @@ export const isPhishingTransaction = ({
     });
 
     const networkType = getNetworkType(transactionWithFiatAmounts.symbol);
-    const networkDetectors = PHISHING_DETECTORS.get(networkType);
+    const validator = PHISHING_VALIDATORS.get(networkType);
 
-    if (!networkDetectors || networkDetectors.length === 0) return false;
+    if (!validator || validator.getDetectors().length === 0) return false;
 
-    return networkDetectors.some(detector =>
-        detector({ transaction: transactionWithFiatAmounts, tokenDefinitions }),
-    );
+    return validator
+        .setTransaction(transactionWithFiatAmounts)
+        .setTokenDefinitions(tokenDefinitions)
+        .validate();
 };

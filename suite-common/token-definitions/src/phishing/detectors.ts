@@ -5,18 +5,31 @@ import { BigNumber } from '@trezor/utils';
 
 import { isTokenDefinitionKnown } from '../tokenDefinitionsUtils';
 import { DUST_PHISHING_THRESHOLD } from './constants';
-import { type PhishingDetectorFn } from './types';
+import {
+    type PhishingDetectorFn,
+    type TokenTransferWithFiatAmount,
+    type TransactionWithFiatAmount,
+} from './types';
 import { isTransactionWhitelisted } from './utils';
 
+const createResult = (isPhishing: boolean, transaction?: TransactionWithFiatAmount) => ({
+    isPhishing,
+    transaction,
+});
+
 const isDustValuePhishing: PhishingDetectorFn = ({ transaction }) => {
-    if (isTransactionWhitelisted(transaction)) return false;
+    if (isTransactionWhitelisted(transaction)) {
+        return createResult(false);
+    }
 
     const hasFiatAmount =
         !!transaction.amountInFiat &&
         transaction.tokens.every(token => !!token.amountInFiat) &&
         transaction.internalTransfers.every(internalTransfer => !!internalTransfer.amountInFiat);
 
-    if (!hasFiatAmount) return false;
+    if (!hasFiatAmount) {
+        return createResult(false);
+    }
 
     const nativeTokenFiatAmount = new BigNumber(transaction.amountInFiat ?? '0');
 
@@ -35,42 +48,90 @@ const isDustValuePhishing: PhishingDetectorFn = ({ transaction }) => {
         .plus(tokensFiatAmount)
         .plus(internalTransfersFiatAmount);
 
-    return totalFiatAmount.isLessThanOrEqualTo(DUST_PHISHING_THRESHOLD);
+    const result = totalFiatAmount.isLessThanOrEqualTo(DUST_PHISHING_THRESHOLD);
+
+    return createResult(result, transaction);
 };
 
-const isZeroValuePhishing: PhishingDetectorFn = ({ transaction }) =>
-    !isTransactionWhitelisted(transaction) &&
-    new BigNumber(transaction.amount).isEqualTo(0) &&
-    D.isNotEmpty(transaction.tokens) &&
-    transaction.tokens.every(token => new BigNumber(token.amount).isEqualTo(0));
+const isZeroValuePhishing: PhishingDetectorFn = ({ transaction }) => {
+    if (isTransactionWhitelisted(transaction)) {
+        return createResult(false);
+    }
 
-const isFakeTokenPhishing: PhishingDetectorFn = ({ transaction, tokenDefinitions }) =>
-    !!tokenDefinitions &&
-    D.isNotEmpty(tokenDefinitions) &&
-    new BigNumber(transaction.amount).isEqualTo(0) && // native currency is zero
-    D.isNotEmpty(transaction.tokens) && // there are tokens in tx
-    !transaction.tokens.some(tokenTx => {
-        if (new BigNumber(tokenTx.amount).isEqualTo(0)) {
-            return false;
-        }
+    if (!new BigNumber(transaction.amount).isEqualTo(0)) {
+        return createResult(false);
+    }
 
-        const isNftTx = isNftTokenTransfer(tokenTx);
-        const definitions = isNftTx ? tokenDefinitions?.nft?.data : tokenDefinitions?.coin?.data;
-        const hide = isNftTx ? tokenDefinitions?.nft?.hide : tokenDefinitions?.coin?.hide;
-        const show = isNftTx ? tokenDefinitions?.nft?.show : tokenDefinitions?.coin?.show;
+    if (D.isEmpty(transaction.tokens)) {
+        return createResult(false);
+    }
 
-        const isHidden = hide?.includes(tokenTx.contract);
-        const isShown = show?.includes(tokenTx.contract);
+    if (!transaction.tokens.every(token => new BigNumber(token.amount).isEqualTo(0))) {
+        return createResult(false);
+    }
 
-        return (
-            (isTokenDefinitionKnown(definitions, transaction.symbol, tokenTx.contract) ||
+    return createResult(true, transaction);
+};
+
+const isFakeTokenPhishing: PhishingDetectorFn = ({ transaction, tokenDefinitions }) => {
+    if (
+        !tokenDefinitions ||
+        D.isEmpty(tokenDefinitions) ||
+        new BigNumber(transaction.amount).gt(0) ||
+        D.isEmpty(transaction.tokens)
+    ) {
+        return createResult(false);
+    }
+
+    const fakeTokens: TokenTransferWithFiatAmount[] = [];
+    let legitTokens: TokenTransferWithFiatAmount[] = [];
+
+    for (const token of transaction.tokens) {
+        const definition = isNftTokenTransfer(token)
+            ? tokenDefinitions?.nft
+            : tokenDefinitions?.coin;
+
+        const isHidden = definition?.hide?.includes(token.contract);
+        const isShown = definition?.show?.includes(token.contract);
+
+        const isLegit =
+            (isTokenDefinitionKnown(definition?.data, transaction.symbol, token.contract) ||
                 isShown) &&
-            !isHidden
-        );
-    }); // there is hidden or unknown token in tx
+            !isHidden;
 
-const isUnknownTxPhishing: PhishingDetectorFn = ({ transaction }) =>
-    !isTransactionWhitelisted(transaction) && transaction.type === 'unknown';
+        if (isLegit) {
+            legitTokens.push(token);
+        } else {
+            fakeTokens.push(token);
+        }
+    }
+
+    // if the transaction is a receive transaction and there is at least one fake token
+    // classify legit tokens with no fiat amount as fake tokens as well
+    if ((transaction.type === 'recv' || transaction.type === 'contract') && fakeTokens.length > 0) {
+        legitTokens = legitTokens.filter(legitToken => {
+            if (!legitToken.amountInFiat) {
+                fakeTokens.push(legitToken);
+
+                return false;
+            }
+
+            return true;
+        });
+    }
+
+    const result = legitTokens.length === 0 && fakeTokens.length === transaction.tokens.length;
+
+    return createResult(result, { ...transaction, tokens: legitTokens });
+};
+
+const isUnknownTxPhishing: PhishingDetectorFn = ({ transaction }) => {
+    if (isTransactionWhitelisted(transaction)) {
+        return createResult(false);
+    }
+
+    return createResult(transaction.type === 'unknown', transaction);
+};
 
 export const detectors = {
     dustValue: isDustValuePhishing,
