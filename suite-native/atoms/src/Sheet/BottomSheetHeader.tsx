@@ -22,7 +22,7 @@ const sheetHeaderStyle = prepareNativeStyle<{ isCloseDisplayed: boolean }>(
         flexDirection: isCloseDisplayed ? 'row' : 'column',
         justifyContent: 'space-between',
         alignItems: isCloseDisplayed ? 'center' : 'flex-start',
-        paddingHorizontal: utils.spacings.sp24,
+        paddingHorizontal: utils.spacings.sp16,
         paddingBottom: utils.spacings.sp16,
     }),
 );
