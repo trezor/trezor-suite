@@ -1,5 +1,4 @@
-import { type Action, type AsyncThunk, type ThunkAction } from '@reduxjs/toolkit';
-
+import { type Action, type AsyncThunk, type Reducer, type ThunkAction } from '@reduxjs/toolkit';
 export interface AnyAction extends Action {
     [extraProps: string]: any;
 }
@@ -46,3 +45,6 @@ export type ActionsFromAsyncThunk<T extends AnyAsyncThunk> =
     | ActionFromMatcher<T['pending']>
     | ActionFromMatcher<T['fulfilled']>
     | ActionFromMatcher<T['rejected']>;
+
+export type ReducerState<TReducer extends Reducer<any, any>> =
+    TReducer extends Reducer<infer TState, any> ? TState : never;
