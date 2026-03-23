@@ -292,6 +292,7 @@ export const isFakeTokenPhishingFixtures = [
     {
         testName: 'non-zero tx',
         transaction: {
+            type: 'sent',
             symbol: 'pol',
             amount: '1.23',
             tokens: [{ standard: 'ERC20', contract: '0xA' }],
@@ -314,6 +315,7 @@ export const isFakeTokenPhishingFixtures = [
     {
         testName: 'only fake tokens tx',
         transaction: {
+            type: 'sent',
             symbol: 'pol',
             amount: '0',
             tokens: [
@@ -339,6 +341,7 @@ export const isFakeTokenPhishingFixtures = [
     {
         testName: 'only zero-value fake tokens tx',
         transaction: {
+            type: 'sent',
             symbol: 'pol',
             amount: '0',
             tokens: [
@@ -364,6 +367,7 @@ export const isFakeTokenPhishingFixtures = [
     {
         testName: 'one fake, one legit token tx',
         transaction: {
+            type: 'sent',
             symbol: 'pol',
             amount: '0',
             tokens: [
@@ -389,6 +393,7 @@ export const isFakeTokenPhishingFixtures = [
     {
         testName: 'one fake, one zero-value legit token tx',
         transaction: {
+            type: 'sent',
             symbol: 'pol',
             amount: '0',
             tokens: [
@@ -414,6 +419,7 @@ export const isFakeTokenPhishingFixtures = [
     {
         testName: 'one zero-value fake, one legit token tx',
         transaction: {
+            type: 'sent',
             symbol: 'pol',
             amount: '0',
             tokens: [
@@ -439,6 +445,7 @@ export const isFakeTokenPhishingFixtures = [
     {
         testName: 'only legit tokens tx',
         transaction: {
+            type: 'sent',
             symbol: 'pol',
             amount: '0',
             tokens: [
@@ -464,6 +471,7 @@ export const isFakeTokenPhishingFixtures = [
     {
         testName: 'only legit tokens tx',
         transaction: {
+            type: 'sent',
             symbol: 'bsc',
             amount: '0',
             tokens: [
@@ -489,6 +497,7 @@ export const isFakeTokenPhishingFixtures = [
     {
         testName: 'only zero-value legit tokens tx',
         transaction: {
+            type: 'sent',
             symbol: 'pol',
             amount: '0',
             tokens: [
@@ -514,6 +523,7 @@ export const isFakeTokenPhishingFixtures = [
     {
         testName: 'no tokens tx',
         transaction: {
+            type: 'sent',
             symbol: 'pol',
             amount: '0',
             tokens: [],
@@ -536,6 +546,7 @@ export const isFakeTokenPhishingFixtures = [
     {
         testName: 'legit NFT token with fake token tx',
         transaction: {
+            type: 'sent',
             symbol: 'pol',
             amount: '0',
             tokens: [
@@ -561,6 +572,7 @@ export const isFakeTokenPhishingFixtures = [
     {
         testName: 'fake NFT token with legit token tx',
         transaction: {
+            type: 'sent',
             symbol: 'pol',
             amount: '0',
             tokens: [
@@ -586,6 +598,7 @@ export const isFakeTokenPhishingFixtures = [
     {
         testName: 'fake NFT token with zero-value legit token tx',
         transaction: {
+            type: 'sent',
             symbol: 'pol',
             amount: '0',
             tokens: [
@@ -611,6 +624,7 @@ export const isFakeTokenPhishingFixtures = [
     {
         testName: 'just legit NFT token tx',
         transaction: {
+            type: 'sent',
             symbol: 'pol',
             amount: '0',
             tokens: [{ standard: 'ERC721', contract: '0xN' }],
@@ -633,6 +647,7 @@ export const isFakeTokenPhishingFixtures = [
     {
         testName: 'just fake NFT token tx',
         transaction: {
+            type: 'sent',
             symbol: 'pol',
             amount: '0',
             tokens: [
@@ -658,6 +673,7 @@ export const isFakeTokenPhishingFixtures = [
     {
         testName: 'solana fake token tx',
         transaction: {
+            type: 'sent',
             symbol: 'sol',
             amount: '0',
             tokens: [{ standard: 'SPL', contract: 'AAA' }],
@@ -675,6 +691,7 @@ export const isFakeTokenPhishingFixtures = [
     {
         testName: 'solana legit token tx',
         transaction: {
+            type: 'sent',
             symbol: 'sol',
             amount: '0',
             tokens: [{ standard: 'SPL', contract: 'AAA' }],

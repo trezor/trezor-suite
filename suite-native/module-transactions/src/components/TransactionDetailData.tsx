@@ -4,6 +4,7 @@ import { useFormatters } from '@suite-common/formatters';
 import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import {
     type FiatRatesRootState,
+    type PhishingRootState,
     type TransactionsRootState,
     selectBaseCurrency,
     selectHistoricFiatRatesByTimestamp,
@@ -49,8 +50,12 @@ export const TransactionDetailData = ({
         selectTransactionBlockTimeById(state, accountKey, transaction.txid),
     );
     const isPhishingTransaction = useSelector(
-        (state: TokenDefinitionsRootState & TransactionsRootState & FiatRatesRootState) =>
-            selectIsPhishingTransaction(state, transaction.txid, accountKey),
+        (
+            state: TokenDefinitionsRootState &
+                TransactionsRootState &
+                FiatRatesRootState &
+                PhishingRootState,
+        ) => selectIsPhishingTransaction(state, transaction.txid, accountKey),
     );
 
     const isTxMarkedAsNotScam = useSelector((state: TransactionsRootState) =>

@@ -44,6 +44,7 @@ import {
     type BlockchainState,
     type ExplorerConfig,
     type FiatRatesState,
+    type PhishingState,
     type SendState,
     type TransactionsState,
     type WalletSettingsState,
@@ -216,6 +217,13 @@ export const extraDependencies: ExtraDependenciesStatic = {
             phishing.forEach(({ key, value }) => {
                 state.phishing[key] = value;
             });
+        },
+        storageLoadPhishingMetadata: (state: PhishingState, { payload }: StorageLoadAction) => {
+            if (payload.phishingMetadata) {
+                return { ...state, ...payload.phishingMetadata };
+            }
+
+            return state;
         },
         storageLoadHistoricRates: (state: FiatRatesState, { payload }: StorageLoadAction) => {
             if (payload.historicRates) {

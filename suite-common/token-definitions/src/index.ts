@@ -1,4 +1,5 @@
 export * from './phishing';
+export * from './phishing/constants';
 export * from './tokenDefinitionsActions';
 export * from './tokenDefinitionsConstants';
 export * from './tokenDefinitionsMiddleware';

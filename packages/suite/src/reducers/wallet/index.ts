@@ -8,6 +8,7 @@ import {
     prepareDiscoveryReducer,
     prepareExplorerReducer,
     prepareFiatRatesReducer,
+    preparePhishingReducer,
     prepareSendFormReducer,
     prepareStakeReducer,
     prepareTransactionsReducer,
@@ -24,6 +25,7 @@ import receiveReducer from './receiveReducer';
 import selectedAccountReducer from './selectedAccountReducer';
 
 export const transactionsReducer = prepareTransactionsReducer(extraDependencies);
+export const phishingReducer = preparePhishingReducer(extraDependencies);
 export const accountsReducer = prepareAccountsReducer(extraDependencies);
 export const blockchainReducer = prepareBlockchainReducer(extraDependencies);
 export const explorerReducer = prepareExplorerReducer(extraDependencies);
@@ -38,6 +40,7 @@ const WalletReducers = combineReducers({
     fiat: fiatRatesReducer,
     graph: graphReducer,
     transactions: transactionsReducer,
+    phishing: phishingReducer,
     discovery: discoveryReducer,
     accounts: accountsReducer,
     selectedAccount: selectedAccountReducer,

@@ -20,6 +20,7 @@ export interface TransactionWithFiatAmount extends WalletAccountTransaction {
 type PhishingDetectorFnProps = {
     transaction: TransactionWithFiatAmount;
     tokenDefinitions?: TokenDefinitions;
+    dustThreshold?: string;
 };
 
 export interface PhishingDetectorResult {

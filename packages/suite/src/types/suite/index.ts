@@ -27,6 +27,7 @@ import { type notificationsActions } from '@suite-common/toast-notifications';
 import {
     type discoveryActions,
     type feesActions,
+    type phishingActions,
     type transactionsActions,
 } from '@suite-common/wallet-core';
 import {
@@ -80,6 +81,9 @@ type TrezorConnectEvents = TransportEvent | UiEvent | FilteredDeviceEvents | Blo
 export type TransactionAction = ReturnType<
     (typeof transactionsActions)[keyof typeof transactionsActions]
 >;
+
+export type PhishingAction = ReturnType<(typeof phishingActions)[keyof typeof phishingActions]>;
+
 export type NotificationAction = ReturnType<
     (typeof notificationsActions)[keyof typeof notificationsActions]
 >;
@@ -162,6 +166,7 @@ export type Action =
     | SuiteSyncQuotaManagerAction
     | ThpAction
     | TransactionAction
+    | PhishingAction
     | TrezorConnectEvents
     | WalletAction
     | WindowAction

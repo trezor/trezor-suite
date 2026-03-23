@@ -2543,6 +2543,27 @@ export const messages = defineMessages({
             'We’ve reserved a small amount of the native token on {supportedNetworks} to cover any extra network fees when you send, swap, or sell your assets.',
         id: 'TR_NETWORK_RESERVE_DESCRIPTION',
     },
+    TR_PHISHING: {
+        id: 'TR_PHISHING',
+        defaultMessage: 'Phishing',
+    },
+    TR_DUST_PHISHING: {
+        id: 'TR_DUST_PHISHING',
+        defaultMessage: 'Dust phishing',
+    },
+    TR_DUST_PHISHING_DESCRIPTION: {
+        id: 'TR_DUST_PHISHING_DESCRIPTION',
+        defaultMessage:
+            'Adjust the dust threshold for phishing detection. Currently, the dust threshold can only be defined in USD currency. Leaving this field empty will turn off dust amount detection.',
+    },
+    TR_DUST_PHISHING_ERROR_NUMBER: {
+        id: 'TR_DUST_PHISHING_ERROR_NUMBER',
+        defaultMessage: 'Please enter a valid number',
+    },
+    TR_DUST_PHISHING_ERROR_POSITIVE: {
+        id: 'TR_DUST_PHISHING_ERROR_POSITIVE',
+        defaultMessage: 'Dust threshold must be a positive number',
+    },
     TR_CONFIRM_AUTO_EJECT: {
         defaultMessage: 'Enable auto-eject',
         id: 'TR_CONFIRM_AUTO_EJECT',
@@ -4231,6 +4252,10 @@ export const messages = defineMessages({
     TR_BACK_TO_DASHBOARD: {
         id: 'TR_BACK_TO_DASHBOARD',
         defaultMessage: 'Back to Dashboard',
+    },
+    TR_SAVE: {
+        id: 'TR_SAVE',
+        defaultMessage: 'Save',
     },
     TR_CANCEL: {
         id: 'TR_CANCEL',

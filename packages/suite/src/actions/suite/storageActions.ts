@@ -12,6 +12,7 @@ import { type DefinitionType, type TokenManagementAction } from '@suite-common/t
 import type { TradingTransaction } from '@suite-common/trading';
 import type { Explorer, NetworkSymbol } from '@suite-common/wallet-config';
 import { FormDraftPrefixKeyValues } from '@suite-common/wallet-constants';
+import { type PhishingState } from '@suite-common/wallet-core';
 import type {
     AccountKey,
     FormDraftKeyPrefix,
@@ -318,6 +319,15 @@ export const saveAccountTransactions =
                 : db.removeItemByPK('phishing', account.key);
 
         return Promise.all([transactionsPromise, phishingPromise]);
+    };
+
+export const savePhishingMetadata =
+    (phishingMetadata: Partial<PhishingState>) => (_dispatch: Dispatch, getState: GetState) => {
+        if (!db.isAccessible()) return;
+        const oldState = getState().wallet.phishing;
+        const newState = { ...oldState, ...phishingMetadata };
+
+        return db.addItem('phishingMetadata', newState, 'phishingMetadata', true);
     };
 
 export const rememberDevice =
