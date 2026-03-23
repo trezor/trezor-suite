@@ -272,7 +272,7 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
         return [baseSegments, paramsSegments];
     }
 
-    private registerRoute(pathname: string, method: 'POST' | 'GET', handler: AnyRequestHandler[]) {
+    private registerRoute(pathname: string, method: Route['method'], handler: AnyRequestHandler[]) {
         const [baseSegments, paramsSegments] = this.splitSegments(pathname);
         const basePathname = baseSegments.join('/');
         this.routes.push({
@@ -295,7 +295,9 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
         this.registerRoute(pathname, 'GET', handler);
     }
 
-    // PUT, DELETE etc are not used anywhere in our codebase, so no need to implement them now
+    public delete(pathname: string, handler: AnyRequestHandler[]) {
+        this.registerRoute(pathname, 'DELETE', handler);
+    }
 
     /**
      * Register common handlers that are run for all requests before route handlers
@@ -671,6 +673,65 @@ export const parseBodyJSON: RequestHandler<unknown, JSON> = (request, response, 
             response.end(JSON.stringify({ error: `Invalid json body: ${error.message}` }));
         });
 };
+
+/**
+ * Factory that creates a body parser middleware with a maximum body size limit.
+ * Returns 413 if the body exceeds the limit.
+ */
+export const parseBodyJSONWithLimit =
+    (maxBytes: number): RequestHandler<unknown, JSON> =>
+    (request, response, next) => {
+        const hasData =
+            (request.headers['content-length'] &&
+                Number.parseInt(request.headers['content-length']) > 0) ||
+            request.headers['transfer-encoding'] === 'chunked';
+
+        if (!hasData) {
+            next(
+                Object.assign(request, { body: {} }) as unknown as RequestWithParams<JSON>,
+                response,
+            );
+
+            return;
+        }
+
+        const chunks: Buffer[] = [];
+        let size = 0;
+        let rejected = false;
+
+        request
+            .on('data', (chunk: Buffer) => {
+                if (rejected) return;
+                size += chunk.length;
+                if (size > maxBytes) {
+                    rejected = true;
+                    request.resume();
+                    response.statusCode = 413;
+                    response.end(JSON.stringify({ error: 'Payload too large' }));
+
+                    return;
+                }
+                chunks.push(chunk);
+            })
+            .on('end', () => {
+                if (rejected) return;
+                try {
+                    const text = Buffer.concat(chunks).toString();
+                    const body = text ? JSON.parse(text) : {};
+                    next(
+                        Object.assign(request, { body }) as unknown as RequestWithParams<JSON>,
+                        response,
+                    );
+                } catch (error) {
+                    response.statusCode = 400;
+                    response.end(
+                        JSON.stringify({
+                            error: `Invalid json body: ${error instanceof Error ? error.message : String(error)}`,
+                        }),
+                    );
+                }
+            });
+    };
 
 /**
  * set request.body as string
