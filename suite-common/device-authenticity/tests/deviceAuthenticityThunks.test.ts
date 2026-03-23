@@ -11,12 +11,11 @@ import { checkDeviceAuthenticityThunk } from '../src/checkDeviceAuthenticityThun
 
 const initStore = (device?: TrezorDevice) =>
     configureMockStore({
-        extra: {
-            selectors: {
-                selectDevice: () => device,
-            },
-        },
         preloadedState: {
+            device: {
+                selectedDevice: device,
+                devices: device ? [device] : [],
+            },
             messageSystem: messageSystemInitialState,
         },
     });

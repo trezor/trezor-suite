@@ -18,7 +18,10 @@ import {
     isStakeTypeTx,
 } from '@suite-common/wallet-utils';
 import { Row } from '@trezor/components';
-import { TransactionNotification } from '@trezor/product-components';
+import {
+    TransactionNotification,
+    type TransactionNotificationType,
+} from '@trezor/product-components';
 
 import { HiddenPlaceholder } from 'src/components/suite/HiddenPlaceholder';
 import { AccountLabeling } from 'src/components/suite/labeling';
@@ -27,16 +30,7 @@ import type { NotificationViewProps } from 'src/components/suite/notifications/N
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 type TransactionRendererProps = NotificationViewProps &
-    NotificationRendererProps<
-        | 'tx-sent'
-        | 'tx-received'
-        | 'tx-confirmed'
-        | 'tx-staked'
-        | 'tx-unstaked'
-        | 'tx-claimed'
-        | 'tx-approved'
-        | 'tx-revoked'
-    >;
+    NotificationRendererProps<TransactionNotificationType>;
 
 export const TransactionRenderer = ({ render: View, ...props }: TransactionRendererProps) => {
     const { symbol, descriptor, txid, device } = props.notification;

@@ -1,10 +1,10 @@
 import { createAction } from '@reduxjs/toolkit';
 
 import { createActionWithExtraDeps } from '@suite-common/redux-utils';
-import { type TrezorDevice } from '@suite-common/suite-types';
 
 import { selectVisibleNotificationsByType } from './notificationsSelectors';
 import {
+    type AddNotificationAction,
     type NotificationEntry,
     type NotificationEventPayload,
     type NotificationId,
@@ -32,41 +32,41 @@ const remove = createAction(
 );
 
 // Shared function to transform payload to NotificationEntry
-export const toastPayloadTransform = (payload: ToastPayload, device?: TrezorDevice) =>
-    ({
-        context: 'toast' as const,
-        id: new Date().getTime(),
-        seen: true,
-        device,
-        ...payload,
-    }) satisfies NotificationEntry;
+const toastPayloadTransform = (payload: ToastPayload): NotificationEntry => ({
+    context: 'toast' as const,
+    id: new Date().getTime(),
+    seen: true,
+    ...payload,
+});
 
-export const addToast = createActionWithExtraDeps(
+export const addToast = createAction(
     `${ACTION_PREFIX}/addToast`,
-    (payload: ToastPayload, { getState, extra }): NotificationEntry =>
-        toastPayloadTransform(payload, extra.selectors.selectDevice(getState())),
+    (payload: ToastPayload): AddNotificationAction => ({
+        payload: toastPayloadTransform(payload),
+    }),
 );
 
 // Adds a Toast if there is not one of same type visible.
 export const addToastOnce = createActionWithExtraDeps(
     `${ACTION_PREFIX}/addToastOnce`,
-    (payload: ToastPayload, { getState, extra }): NotificationEntry | undefined => {
+    (payload: ToastPayload, { getState }): NotificationEntry | undefined => {
         const notifications = selectVisibleNotificationsByType(getState(), payload.type);
         if (notifications.length > 0) {
             return;
         }
 
-        return toastPayloadTransform(payload, extra.selectors.selectDevice(getState()));
+        return toastPayloadTransform(payload);
     },
 );
 
-export const addEvent = createActionWithExtraDeps(
+export const addEvent = createAction(
     `${ACTION_PREFIX}/addEvent`,
-    (payload: NotificationEventPayload, { getState, extra }): NotificationEntry => ({
-        context: 'event',
-        id: new Date().getTime(),
-        device: extra.selectors.selectDevice(getState()),
-        ...payload,
+    (payload: NotificationEventPayload): AddNotificationAction => ({
+        payload: {
+            context: 'event',
+            id: new Date().getTime(),
+            ...payload,
+        },
     }),
 );
 

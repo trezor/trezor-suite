@@ -218,6 +218,10 @@ export type NotificationEntry<TranslationKey extends string = UnknownTranslation
     | ToastNotification<TranslationKey>
     | EventNotification;
 
+export type AddNotificationAction<TranslationKey extends string = UnknownTranslationKey> = {
+    payload: NotificationEntry<TranslationKey>;
+};
+
 export type NotificationsState<TranslationKey extends string = UnknownTranslationKey> =
     NotificationEntry<TranslationKey>[];
 
