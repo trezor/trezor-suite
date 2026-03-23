@@ -1,5 +1,7 @@
 import { type ClusterUrl, type RpcTransportFromClusterUrl } from '@solana/kit';
 
+import { type TimerId } from '@trezor/type-utils';
+
 const DEFAULT_MAX_RPS = 4; // Default maximum requests per second
 const DEFAULT_INTERVAL = 1000; // Default interval in milliseconds (1 second)
 
@@ -37,7 +39,7 @@ export const getThrottledTransport = <TClusterUrl extends ClusterUrl>(
      * When the first request is made, schedule a reset of the request budget for 1 second from now,
      * and store the timer of that scheduled reset here.
      */
-    let pendingQueueRunTimerId: NodeJS.Timeout | undefined;
+    let pendingQueueRunTimerId: TimerId | undefined;
     /**
      * Keep a queue of requests and resolve/reject functions.
      */
