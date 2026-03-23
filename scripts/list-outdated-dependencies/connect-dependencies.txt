@@ -49,6 +49,7 @@ git-url-parse
 groestl-hash-js
 html-inline-script-webpack-plugin
 intersection-observer
+js-sha3
 json5
 jssha
 lodash

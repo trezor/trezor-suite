@@ -1,6 +1,6 @@
 var jsSHA = require('jssha/src/sha256');
 var Blake256 = require('./blake256');
-var keccak256 = require('./sha3')['keccak256'];
+var keccak256 = require('js-sha3')['keccak256'];
 var Blake2B = require('./blake2b');
 var base58 = require('./base58');
 var base32 = require('./base32');

@@ -15406,6 +15406,7 @@ __metadata:
     chai: "npm:^5.2.0"
     crc: "npm:^3.8.0"
     groestl-hash-js: "npm:1.0.0"
+    js-sha3: "npm:^0.8.0"
     jssha: "npm:2.3.1"
     lodash: "npm:^4.17.15"
   languageName: unknown
@@ -32262,7 +32263,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"js-sha3@npm:0.8.0":
+"js-sha3@npm:0.8.0, js-sha3@npm:^0.8.0":
   version: 0.8.0
   resolution: "js-sha3@npm:0.8.0"
   checksum: 10/a49ac6d3a6bfd7091472a28ab82a94c7fb8544cc584ee1906486536ba1cb4073a166f8c7bb2b0565eade23c5b3a7b8f7816231e0309ab5c549b737632377a20c
