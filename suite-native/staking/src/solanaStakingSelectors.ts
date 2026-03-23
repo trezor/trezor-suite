@@ -131,3 +131,15 @@ export const selectSolanaCanClaimByAccountKey = (
 
     return stakingInfo.canClaimSol;
 };
+
+export const selectSolanaUnstakingBalanceByAccountKey = (
+    state: AccountsRootState,
+    accountKey: AccountKey,
+) => {
+    const stakingInfo = selectSolStakingAccountsInfoByAccountKey(state, accountKey);
+    if (!stakingInfo) {
+        return '0';
+    }
+
+    return stakingInfo.solPendingUnstakeBalance;
+};
