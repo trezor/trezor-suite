@@ -183,11 +183,10 @@ class DeviceOnboardingActions {
         await this.pressHoldToConfirmButton();
         await this.waitForWalletCreationScreen();
 
-        await TrezorUserEnvLink.swipeEmu('up');
-        await TrezorUserEnvLink.pressYes();
-        await TrezorUserEnvLink.pressYes();
-        await TrezorUserEnvLink.pressNo();
         // at this point, wallet creation + entropy check on device has begun
+        await TrezorUserEnvLink.swipeEmu('up');
+        // backup flow confirmation, so we reject it early, so resetDevice call is resolved
+        await TrezorUserEnvLink.pressNo();
     }
 }
 
