@@ -55,3 +55,5 @@ export {
  * Constants.
  */
 export { DEFAULT_DEVICE_SIZE_QUOTA } from './constants';
+
+export { getAccountIncrementSizeQuota } from './util/getAccountIncrementSizeQuota';
