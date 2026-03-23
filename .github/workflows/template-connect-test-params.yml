@@ -79,3 +79,9 @@ jobs:
       - if: ${{ inputs.transport }}
         run: echo "ADDITIONAL_ARGS=$ADDITIONAL_ARGS -t ${{ inputs.transport }}" >> "$GITHUB_ENV"
       - run: './docker/docker-connect-test.sh ${{ inputs.testEnv }} -p "${{ inputs.testPattern }}" -f "${{ inputs.testsFirmware }}" $ADDITIONAL_ARGS'
+      - name: Extract and Upload Logs
+        if: ${{ !cancelled() }}
+        uses: ./.github/actions/upload-test-logs
+        with:
+          target: ${{ inputs.testEnv }}
+          test-group: ${{ inputs.testDescription }}

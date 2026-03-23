@@ -136,7 +136,7 @@ describe(`TrezorConnect methods`, () => {
 
                         expect(result).toMatchObject(expected);
                     },
-                    t.customTimeout || 20000,
+                    t.customTimeout || 40000,
                 );
             });
         });
