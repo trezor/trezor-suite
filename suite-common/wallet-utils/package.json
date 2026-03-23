@@ -13,6 +13,7 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
+        "@scure/base": "^2.0.0",
         "@suite-common/earn-staking-api": "workspace:*",
         "@suite-common/fiat-services": "workspace:*",
         "@suite-common/staking-solana-types": "workspace:*",
@@ -31,7 +32,6 @@
         "@trezor/type-utils": "workspace:*",
         "@trezor/urls": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "bech32": "^2.0.0",
         "date-fns": "^4.1.0",
         "react": "19.2.4",
         "react-hook-form": "^7.71.2",

@@ -1,4 +1,4 @@
-const { bech32, bech32m } = require('bech32');
+const { bech32, bech32m } = require('@scure/base');
 
 function convertbits(data, frombits, tobits, pad) {
     var acc = 0;

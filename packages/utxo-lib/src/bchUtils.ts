@@ -1,6 +1,9 @@
 /* Utils ported from unmaintained bchaddrjs library */
-import bs58check from 'bs58check';
+import { sha256 } from '@noble/hashes/sha2.js';
+import { base58check as createBase58check } from '@scure/base';
 import * as cashaddr from 'cashaddrjs';
+
+const bs58check = createBase58check(sha256);
 
 type Format = 'legacy' | 'cashaddr';
 type Network = 'mainnet' | 'testnet';

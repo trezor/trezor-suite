@@ -2,7 +2,7 @@ const { addressType } = require('./crypto/utils');
 var cbor = require('cbor');
 var CRC = require('crc');
 var base58 = require('./crypto/base58');
-var { bech32 } = require('bech32');
+var { bech32 } = require('@scure/base');
 
 var DEFAULT_NETWORK_TYPE = 'prod';
 

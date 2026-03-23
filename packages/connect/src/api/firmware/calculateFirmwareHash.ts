@@ -1,4 +1,5 @@
-import blakejs from 'blakejs';
+import { blake2s } from '@noble/hashes/blake2.js';
+import { bytesToHex } from '@noble/hashes/utils.js';
 
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { versionUtils } from '@trezor/utils';
@@ -73,7 +74,8 @@ export const calculateFirmwareHash = ({
     }
 
     return {
-        hash: key && key.length > 0 ? blakejs.blake2sHex(data, key) : blakejs.blake2sHex(data),
+        hash:
+            key && key.length > 0 ? bytesToHex(blake2s(data, { key })) : bytesToHex(blake2s(data)),
         challenge: key ? key.toString('hex') : '',
     };
 };

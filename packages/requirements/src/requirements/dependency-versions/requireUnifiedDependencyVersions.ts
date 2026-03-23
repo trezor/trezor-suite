@@ -20,6 +20,7 @@ export const ALLOWED_DRIFTS = new Set([
     'vite-plugin-node-polyfills',
     '@storybook/react',
     'storybook',
+    '@scure/base', // i think i had a cjs problem, todo: investigate later
 ]);
 
 type PackageJson = {

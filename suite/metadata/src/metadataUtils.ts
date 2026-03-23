@@ -1,8 +1,11 @@
-import base58check from 'bs58check';
+import { sha256 } from '@noble/hashes/sha2.js';
+import { base58check as createBase58check } from '@scure/base';
 import * as crypto from 'crypto';
 
 import { type DataType, type MetadataProvider } from '@suite-common/metadata-types';
 import { type StaticSessionId } from '@trezor/connect';
+
+const base58check = createBase58check(sha256);
 
 export type FetchIntervalTrackingId =
     `${DataType}-${MetadataProvider['clientId']}-${StaticSessionId}`;

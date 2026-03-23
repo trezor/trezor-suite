@@ -1,8 +1,7 @@
 // upstream: https://github.com/bitcoinjs/bitcoinjs-lib/blob/master/ts_src/payments/p2ms.ts
 
-import ecc from 'tiny-secp256k1';
-
 import { bitcoin as BITCOIN_NETWORK } from '../networks';
+import * as ecc from '../noble-compatibility';
 import * as bscript from '../script';
 import * as lazy from './lazy';
 import { type Payment, type PaymentOpts, type Stack } from '../types';

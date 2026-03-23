@@ -5,13 +5,13 @@
 // - `identifier` method is using different hashing for Decred.
 // - `fromBase58` and `toBase58` methods are using additional "network" param in bs58check.encode/decode (Decred support).
 
-import ecc from 'tiny-secp256k1';
 import * as wif from 'wif';
 
 import * as bs58check from './bs58check';
 import * as crypto from './crypto';
 import { bitcoin as BITCOIN, isNetworkType } from './networks';
 import type { Network } from './networks';
+import * as ecc from './noble-compatibility';
 import {
     BufferNSchema,
     BufferSchema,
@@ -140,7 +140,7 @@ class BIP32 implements BIP32Interface {
     }
 
     get publicKey(): Buffer {
-        if (this.__Q === undefined) this.__Q = ecc.pointFromScalar(this.__D, true);
+        if (this.__Q === undefined) this.__Q = ecc.pointFromScalar(this.__D!, true);
 
         return this.__Q!;
     }
@@ -262,7 +262,7 @@ class BIP32 implements BIP32Interface {
         let hd: BIP32Interface;
         if (!this.isNeutered()) {
             // ki = parse256(IL) + kpar (mod n)
-            const ki = ecc.privateAdd(this.privateKey, IL);
+            const ki = ecc.privateAdd(this.privateKey!, IL);
 
             // In case ki == 0, proceed with the next value for i
             if (ki == null) return this.derive(index + 1);
