@@ -19,6 +19,7 @@ import {
     fiatRatesInitialState,
     formDraftInitialState,
     initialWalletSettingsState,
+    phishingInitialState,
     stakeInitialState,
     transactionsInitialState,
 } from '@suite-common/wallet-core';
@@ -78,6 +79,7 @@ export const mockInitialAppState = (partialState?: Partial<FullAppState>): FullA
         explorer: explorerInitialState,
         fiat: fiatRatesInitialState,
         transactions: transactionsInitialState,
+        phishing: phishingInitialState,
         discovery: discoveryInitialState,
         send: sendFormInitialState,
         fees: feesInitialState,
