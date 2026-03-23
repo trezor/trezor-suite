@@ -103,6 +103,20 @@ const runTestCase = async (device: Device) => {
         result = await fwUpdate(device);
     } else if (method === 'get-credentials') {
         result = await TrezorConnect.thpGetCredentials({ device });
+    } else if (method === 'nostr-get-public-key') {
+        result = await TrezorConnect.nostrGetPublicKey({
+            device,
+            path: "m/44'/1237'/0'/0/0",
+        });
+    } else if (method === 'nostr-sign-event') {
+        result = await TrezorConnect.nostrSignEvent({
+            device,
+            path: "m/44'/1237'/0'/0/0",
+            created_at: Math.floor(Date.now() / 1000),
+            kind: 1,
+            tags: [],
+            content: 'Hello Nostr!',
+        });
     } else {
         result = await TrezorConnect.getAddress({
             device,

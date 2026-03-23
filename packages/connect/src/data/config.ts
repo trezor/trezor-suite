@@ -209,6 +209,11 @@ export const config: Config = {
             comment: ['Cardano SignMessage call added in 2.9.1'],
         },
         {
+            methods: ['nostrGetPublicKey'],
+            // TODO: this is currently in debug firmware only.
+            min: { T1B1: '0', T2T1: '0', T2B1: '0', T3B1: '0', T3T1: '0', T3W1: '0' },
+        },
+        {
             capabilities: ['evolu'],
             methods: [
                 'evoluGetNode',

@@ -44,6 +44,8 @@ import { ethereumVerifyMessage } from './ethereumVerifyMessage';
 import { evoluGetDelegatedIdentityKey } from './evoluGetDelegatedIdentityKey';
 import { evoluGetNode } from './evoluGetNode';
 import { evoluSignRegistrationRequest } from './evoluSignRegistrationRequest';
+import { nostrGetPublicKey } from './nostr/nostrGetPublicKey';
+import { nostrSignEvent } from './nostr/nostrSignEvent';
 import { firmwareUpdate } from './firmwareUpdate';
 import { getAccountDescriptor } from './getAccountDescriptor';
 import { getAccountInfo } from './getAccountInfo';
@@ -433,6 +435,16 @@ export const TrezorConnectEvolu = Type.Object({
 });
 export type TrezorConnectEvolu = Static<typeof TrezorConnectEvolu>;
 
+// Nostr protocol operations
+export const TrezorConnectNostr = Type.Object({
+    // For internal use, no public documentation.
+    nostrGetPublicKey: Type.Unsafe<typeof nostrGetPublicKey>(),
+
+    // For internal use, no public documentation.
+    nostrSignEvent: Type.Unsafe<typeof nostrSignEvent>(),
+});
+export type TrezorConnectNostr = Static<typeof TrezorConnectNostr>;
+
 // Runtime schema for key access
 export const TrezorConnectSchema = Type.Composite([
     TrezorConnectManagement,
@@ -449,6 +461,7 @@ export const TrezorConnectSchema = Type.Composite([
     TrezorConnectTezos,
     TrezorConnectTron,
     TrezorConnectEvolu,
+    TrezorConnectNostr,
 ]);
 
 // Type-level interface for precise function types.
@@ -467,4 +480,5 @@ export interface TrezorConnect
         TrezorConnectStellar,
         TrezorConnectTezos,
         TrezorConnectTron,
-        TrezorConnectEvolu {}
+        TrezorConnectEvolu,
+        TrezorConnectNostr {}

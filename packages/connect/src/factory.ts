@@ -18,6 +18,7 @@ import {
     TrezorConnectStellar,
     TrezorConnectTezos,
     TrezorConnectTron,
+    TrezorConnectNostr,
 } from './types';
 import type { ConnectEmitter } from './types/emitter';
 
@@ -50,6 +51,7 @@ const connectCallables = Type.Composite([
     TrezorConnectTezos,
     TrezorConnectTron,
     TrezorConnectEvolu,
+    TrezorConnectNostr,
 ]);
 
 export const connectCallableMethods = Object.keys(connectCallables.properties) as CallMethodKeys[];

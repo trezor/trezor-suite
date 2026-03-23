@@ -29,6 +29,8 @@ export const HELP = `@trezor/connect CLI arguments:
                                                 --method=none (retrieve device Features and exit)
                                                 --method=fw-update
                                                 --method=get-credentials
+                                                --method=nostr-get-public-key
+                                                --method=nostr-sign-event
 `;
 
 // read and parse application arguments

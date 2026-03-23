@@ -1,18 +1,13 @@
 import TrezorConnect, { DEVICE_EVENT, TRANSPORT_EVENT } from '@trezor/connect';
 
-/**
- * Please note, that this example needs:
- * - Trezor bridge running
- * - Device connected to USB
- */
-const runExample = async () => {
+const run = async () => {
     await TrezorConnect.init({
         manifest: {
             appUrl: 'my app',
             appName: 'Trezor Connect Example',
             email: 'app@myapp.meow',
         },
-        transports: ['NodeUsbTransport'],
+        transports: ['NodeUsbTransport', 'UdpTransport'],
     });
 
     // this event will be fired when bridge starts or stops or there is no bridge running
@@ -32,6 +27,16 @@ const runExample = async () => {
     // eslint-disable-next-line
     console.log(result);
 
+    const signResult = await TrezorConnect.nostrSignEvent({
+            path: "m/44'/1237'/0'/0/0",
+            created_at: Math.floor(Date.now() / 1000),
+            kind: 1,
+            tags: [],
+            content: 'Hello Nostr!',
+        });
+
+    console.log('signResult', signResult);
+
     if (!result.success) {
         process.exit(1);
     } else {
@@ -39,4 +44,4 @@ const runExample = async () => {
     }
 };
 
-runExample();
+run();

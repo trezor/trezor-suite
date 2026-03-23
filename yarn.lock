@@ -15518,6 +15518,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@trezor/nostr-key-manager@workspace:packages/nostr-key-manager":
+  version: 0.0.0-use.local
+  resolution: "@trezor/nostr-key-manager@workspace:packages/nostr-key-manager"
+  dependencies:
+    tsx: "npm:^4.21.0"
+  languageName: unknown
+  linkType: soft
+
 "@trezor/product-components@workspace:*, @trezor/product-components@workspace:packages/product-components":
   version: 0.0.0-use.local
   resolution: "@trezor/product-components@workspace:packages/product-components"

@@ -27,6 +27,8 @@ export { default as cipherKeyValue } from './cipherKeyValue';
 export { default as evoluGetNode } from './evoluGetNode';
 export { default as evoluSignRegistrationRequest } from './evoluSignRegistrationRequest';
 export { default as evoluGetDelegatedIdentityKey } from './evoluGetDelegatedIdentityKey';
+export { default as nostrGetPublicKey } from './nostr/nostrGetPublicKey';
+export { default as nostrSignEvent } from './nostr/nostrSignEvent';
 export { default as composeTransaction } from './composeTransaction';
 export { default as discoverAccounts } from './discoverAccounts';
 export { default as getAccountDescriptor } from './getAccountDescriptor';
