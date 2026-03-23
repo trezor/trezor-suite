@@ -35,7 +35,7 @@ const messageSystemMockFile = path.join(
 const config: webpack.Configuration = {
     // Electron 39 runs on Chromium 142 https://www.electronjs.org/blog/electron-39-0
     target: 'browserslist:Chrome >= 142',
-    entry: [path.join(baseDirUI, 'src', 'index.tsx')],
+    entry: { main: [path.join(baseDirUI, 'src', 'index.tsx')] },
     output: {
         // This builds JS directly `dist/` (instead `dist/js/`)
         // without this, Evolu worker import won't (for unknow reason) work
