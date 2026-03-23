@@ -15,8 +15,8 @@ export const baseDir = getPathForProject('web');
 const config: webpack.Configuration = {
     target: 'browserslist',
     entry: {
-        main: path.join(baseDir, 'src', 'index.ts'),
-        ['sessions-background-sharedworker']: {
+        main: [path.join(baseDir, 'src', 'index.ts')],
+        'sessions-background-sharedworker': {
             filename: 'workers/[name].js',
             import: path.resolve(
                 __dirname,

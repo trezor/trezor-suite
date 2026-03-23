@@ -16,7 +16,7 @@ const config: webpack.Configuration = {
     mode: 'development',
     watch: true,
     devtool: 'eval-source-map',
-    entry: ['webpack-plugin-serve/client'],
+    entry: { main: ['webpack-plugin-serve/client'] },
     output: {
         // This builds JS directly `dist/` (instead `dist/js/`)
         // without this, Evolu worker import won't (for unknow reason) work
