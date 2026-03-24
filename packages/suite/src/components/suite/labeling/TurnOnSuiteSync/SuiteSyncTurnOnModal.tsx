@@ -12,11 +12,13 @@ import { suiteSyncErrorTranslationKeyMap } from '../suiteSyncErrorTranslationKey
 type SuiteSyncTurnOnAndFwUpgradeModalProps = {
     deviceStaticSessionId: StaticSessionId;
     onClose: () => void;
+    onSuccess?: () => void;
 };
 
 export const SuiteSyncTurnOnModal = ({
     deviceStaticSessionId,
     onClose,
+    onSuccess,
 }: SuiteSyncTurnOnAndFwUpgradeModalProps) => {
     const dispatch = useDispatch();
     const { suiteSync } = useSuiteServices();
@@ -46,6 +48,8 @@ export const SuiteSyncTurnOnModal = ({
 
                 case 'WriteModeRequiredForAllocation':
                     // Do nothing, this is expected control flow error when we want allocate on-demand.
+                    onSuccess?.();
+
                     return;
 
                 case 'SuiteSyncUnavailableOnDeviceError':
@@ -63,6 +67,8 @@ export const SuiteSyncTurnOnModal = ({
                     return exhaustive(type);
             }
         }
+
+        onSuccess?.();
     };
 
     return (

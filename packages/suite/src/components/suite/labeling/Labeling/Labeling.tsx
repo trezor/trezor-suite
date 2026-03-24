@@ -1,4 +1,4 @@
-import { type ReactNode, useCallback } from 'react';
+import { type ReactNode, useCallback, useRef, useState } from 'react';
 
 import { isFulfilled } from '@reduxjs/toolkit';
 
@@ -12,16 +12,14 @@ import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { type StaticSessionId } from '@trezor/connect';
 import { EditableText, type EditableTextProps } from '@trezor/product-components';
 
-import {
-    selectDesktopSuiteSyncInteraction,
-    updateShowEnableSuiteSyncModal,
-} from 'src/actions/suiteSync/suiteSyncSlice';
+import { selectDesktopSuiteSyncInteraction } from 'src/actions/suiteSync/suiteSyncSlice';
 import { processLegacyMetadataIntoSuiteSyncThunk } from 'src/actions/wallet/processLegacyMetadataIntoSuiteSyncThunk';
 import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 import { useSuiteServices } from 'src/support/SuiteServicesProvider';
 
 import { SuiteSyncInteractionsTooltip } from './SuiteSyncInteractionsTooltip';
 import { selectIsLabelActionEnabled } from './selectIsLabelActionEnabled';
+import { TurnOnSuiteSyncModals } from '../TurnOnSuiteSync/TurnOnSuiteSyncModals';
 import { suiteSyncErrorHandler } from '../suiteSyncErrorHandler';
 
 type LabelingProps = {
@@ -41,6 +39,8 @@ export const Labeling = ({
     ...rest
 }: LabelingProps) => {
     const dispatch = useDispatch();
+    const [showEnableSuiteSyncModal, setShowEnableSuiteSyncModal] = useState(false);
+    const suiteSyncTurnOnEditResolveRef = useRef<((value: boolean) => void) | null>(null);
     const { isDiscoveryRunning } = useDiscovery();
     const { suiteSync } = useSuiteServices();
     const legacyMetadataState = useSelector(selectMetadata);
@@ -61,7 +61,7 @@ export const Labeling = ({
 
     const handleEdit = useCallback(async () => {
         if (isSuiteSyncEnabled && suiteSyncInteraction === null) {
-            return;
+            return true;
         }
 
         // When clicking on inline input edit, ensure that everything needed is already ready.
@@ -88,13 +88,14 @@ export const Labeling = ({
                         });
                     }
 
-                    return;
+                    return result.success;
                 } else {
-                    dispatch(updateShowEnableSuiteSyncModal({ deviceStaticSessionId }));
-                }
+                    setShowEnableSuiteSyncModal(true);
 
-                // user can decide if they want to enable suite sync or not, so we do not set editing state yet
-                return;
+                    return new Promise<boolean>(resolve => {
+                        suiteSyncTurnOnEditResolveRef.current = resolve;
+                    });
+                }
             } else {
                 return await dispatch(
                     metadataLabelingActions.init(
@@ -106,6 +107,8 @@ export const Labeling = ({
                 );
             }
         }
+
+        return true;
     }, [
         isSuiteSyncEnabled,
         suiteSync,
@@ -116,6 +119,14 @@ export const Labeling = ({
         deviceStaticSessionId,
         deviceState,
     ]);
+
+    const handleSuiteSyncTurnOnModalComplete = useCallback((success: boolean) => {
+        setShowEnableSuiteSyncModal(false);
+        setTimeout(() => {
+            suiteSyncTurnOnEditResolveRef.current?.(success);
+            suiteSyncTurnOnEditResolveRef.current = null;
+        }, 100);
+    }, []);
 
     const handleSubmit = useCallback(
         async (value: string | undefined) => {
@@ -149,20 +160,29 @@ export const Labeling = ({
     );
 
     return (
-        <SuiteSyncInteractionsTooltip
-            suiteSyncInteraction={suiteSyncInteraction}
-            deviceStaticSessionId={deviceStaticSessionId}
-        >
-            <EditableText
-                onSubmit={onSubmit ?? handleSubmit}
-                onEdit={handleEdit}
-                isDisabled={isDisabled || !isLabelActionEnabled}
-                isLoading={legacyMetadataState.initiating || isDiscoveryRunning}
-                data-testid={`@metadata/${payload.type}/${payload.defaultValue}/hover-container`}
-                {...rest}
+        <>
+            {showEnableSuiteSyncModal && (
+                <TurnOnSuiteSyncModals
+                    onClose={() => handleSuiteSyncTurnOnModalComplete(false)}
+                    onSuccess={() => handleSuiteSyncTurnOnModalComplete(true)}
+                    deviceStaticSessionId={deviceStaticSessionId}
+                />
+            )}
+            <SuiteSyncInteractionsTooltip
+                suiteSyncInteraction={suiteSyncInteraction}
+                deviceStaticSessionId={deviceStaticSessionId}
             >
-                {children}
-            </EditableText>
-        </SuiteSyncInteractionsTooltip>
+                <EditableText
+                    onSubmit={onSubmit ?? handleSubmit}
+                    onEdit={handleEdit}
+                    isDisabled={isDisabled || !isLabelActionEnabled}
+                    isLoading={legacyMetadataState.initiating || isDiscoveryRunning}
+                    data-testid={`@metadata/${payload.type}/${payload.defaultValue}/hover-container`}
+                    {...rest}
+                >
+                    {children}
+                </EditableText>
+            </SuiteSyncInteractionsTooltip>
+        </>
     );
 };
