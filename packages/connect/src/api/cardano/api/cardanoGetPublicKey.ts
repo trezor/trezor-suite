@@ -10,6 +10,7 @@ import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
 import type {
+    MethodContext,
     MethodMessage,
     MethodPermission,
     MethodReturnType,
@@ -85,7 +86,7 @@ export default class CardanoGetPublicKey extends AbstractMethod<'cardanoGetPubli
         };
     }
 
-    async run() {
+    async run({ sendCoreMessage }: MethodContext) {
         const responses: MethodReturnType<typeof this.name> = [];
         const cmd = this.getDevice().getCommands();
         for (let i = 0; i < this.params.length; i++) {
@@ -104,7 +105,7 @@ export default class CardanoGetPublicKey extends AbstractMethod<'cardanoGetPubli
 
             if (this.hasBundle) {
                 // send progress
-                this.postMessage(
+                sendCoreMessage(
                     createUiMessage(UI_REQUEST.BUNDLE_PROGRESS, {
                         total: this.params.length,
                         progress: i,

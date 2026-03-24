@@ -5,7 +5,7 @@ import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 
 import { initBlockchain, isBackendSupported } from '../../../backend/BlockchainLink';
-import type { MethodMessage, MethodPermission } from '../../../core/AbstractMethod';
+import type { MethodContext, MethodMessage, MethodPermission } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getCoinInfo } from '../../../data/coinInfo';
 import {
@@ -56,10 +56,10 @@ export default class SolanaComposeTransaction extends AbstractMethod<
         return 'Compose Solana transaction';
     }
 
-    async run() {
+    async run({ sendCoreMessage }: MethodContext) {
         const backend = await initBlockchain(
             this.params.coinInfo,
-            this.postMessage,
+            sendCoreMessage,
             this.params.identity,
         );
 

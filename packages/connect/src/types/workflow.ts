@@ -10,13 +10,13 @@ import type { IDevice } from './idevice';
 export interface WorkflowMethod {
     preauthorized?: boolean;
     useCardanoDerivation: boolean;
-    postMessage: (message: CoreEventMessage) => void;
 }
 
 export type WorkflowContext = {
     device: IDevice;
     method: WorkflowMethod;
     signal: AbortSignal;
+    sendCoreMessage: (message: CoreEventMessage) => void;
 };
 
 export type TpnWorkflowContext = {

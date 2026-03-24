@@ -13,7 +13,12 @@ import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 
 import { getFirmwareRange } from './common/paramsValidator';
-import type { MethodMessage, MethodPermission, MethodReturnType } from '../core/AbstractMethod';
+import type {
+    MethodContext,
+    MethodMessage,
+    MethodPermission,
+    MethodReturnType,
+} from '../core/AbstractMethod';
 import { AbstractMethod, DEFAULT_FIRMWARE_RANGE } from '../core/AbstractMethod';
 import { getCoinInfo } from '../data/coinInfo';
 import { getAccountLabel } from '../utils/accountUtils';
@@ -140,7 +145,7 @@ export default class GetAccountDescriptor extends AbstractMethod<
         return undefined;
     }
 
-    async run() {
+    async run({ sendCoreMessage }: MethodContext) {
         const responses: MethodReturnType<typeof this.name> = [];
 
         const sendProgress = (
@@ -150,7 +155,7 @@ export default class GetAccountDescriptor extends AbstractMethod<
         ) => {
             if (!this.hasBundle || this.disposed) return;
             // send progress to UI
-            this.postMessage(
+            sendCoreMessage(
                 createUiMessage(UI_REQUEST.BUNDLE_PROGRESS, {
                     total: this.params.length,
                     progress,

@@ -9,6 +9,7 @@ import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 
 import type {
+    MethodContext,
     MethodMessage,
     MethodPermission,
     MethodReturnType,
@@ -97,7 +98,7 @@ export default class TronGetAddress extends AbstractMethod<'tronGetAddress', Par
         return response.message;
     }
 
-    async run() {
+    async run({ sendCoreMessage }: MethodContext) {
         const responses: MethodReturnType<typeof this.name> = [];
         for (let i = 0; i < this.params.length; i++) {
             const batch = this.params[i];
@@ -129,7 +130,7 @@ export default class TronGetAddress extends AbstractMethod<'tronGetAddress', Par
 
             if (this.hasBundle) {
                 // send progress
-                this.postMessage(
+                sendCoreMessage(
                     createUiMessage(UI_REQUEST.BUNDLE_PROGRESS, {
                         total: this.params.length,
                         progress: i,

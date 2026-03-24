@@ -31,7 +31,7 @@ import {
 } from './bitcoin';
 import type { Blockchain } from '../backend/BlockchainLink';
 import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
-import type { MethodPermission } from '../core/AbstractMethod';
+import type { MethodContext, MethodPermission } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { getBitcoinNetwork } from '../data/coinInfo';
 import { getLabel } from '../utils/pathUtils';
@@ -273,7 +273,10 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
         return account.addresses;
     }
 
-    private async fetchRefTxs(useLegacySignProcess: boolean) {
+    private async fetchRefTxs(
+        sendCoreMessage: MethodContext['sendCoreMessage'],
+        useLegacySignProcess: boolean,
+    ) {
         const {
             params: { inputs, outputs, options, coinInfo, identity, addresses },
         } = this;
@@ -288,7 +291,7 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
 
         // validate and initialize backend
         isBackendSupported(coinInfo);
-        const blockchain = await initBlockchain(coinInfo, this.postMessage, identity);
+        const blockchain = await initBlockchain(coinInfo, sendCoreMessage, identity);
 
         const refTxs = !refTxsIds.length
             ? []
@@ -322,12 +325,13 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
         return refTxs.concat(origTxs);
     }
 
-    async run() {
+    async run({ sendCoreMessage }: MethodContext) {
         const device = this.getDevice();
         const { params } = this;
         const { inputs, outputs, coinInfo } = params;
         const useLegacySignProcess = !!device.unavailableCapabilities.replaceTransaction;
-        const refTxs = params.refTxs ?? (await this.fetchRefTxs(useLegacySignProcess));
+        const refTxs =
+            params.refTxs ?? (await this.fetchRefTxs(sendCoreMessage, useLegacySignProcess));
 
         let outputScripts: Awaited<ReturnType<typeof deriveOutputScript>>[] = [];
         if (params.options.serialize !== false) {
@@ -387,7 +391,7 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
         if (params.push) {
             // validate backend
             isBackendSupported(coinInfo);
-            const blockchain = await initBlockchain(coinInfo, this.postMessage, params.identity);
+            const blockchain = await initBlockchain(coinInfo, sendCoreMessage, params.identity);
             const txid = await blockchain.pushTransaction(response.serializedTx);
 
             return {

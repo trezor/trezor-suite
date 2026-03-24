@@ -9,7 +9,7 @@ import { Bundle } from '@trezor/connect-common/src/types/params';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
-import type { MethodMessage, MethodPermission } from '../core/AbstractMethod';
+import type { MethodContext, MethodMessage, MethodPermission } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { getFirmwareRange } from './common/paramsValidator';
 import { validatePath } from '../utils/pathUtils';
@@ -55,7 +55,7 @@ export default class CipherKeyValue extends AbstractMethod<
         return 'Cipher key value';
     }
 
-    async run() {
+    async run({ sendCoreMessage }: MethodContext) {
         const responses: PROTO.CipheredKeyValue[] = [];
         const cmd = this.getDevice().getCommands();
         for (let i = 0; i < this.params.length; i++) {
@@ -68,7 +68,7 @@ export default class CipherKeyValue extends AbstractMethod<
 
             if (this.hasBundle) {
                 // send progress
-                this.postMessage(
+                sendCoreMessage(
                     createUiMessage(UI_REQUEST.BUNDLE_PROGRESS, {
                         total: this.params.length,
                         progress: i,

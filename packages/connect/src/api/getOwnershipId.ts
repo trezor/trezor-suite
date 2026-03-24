@@ -8,7 +8,7 @@ import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
 import { getFirmwareRange } from './common/paramsValidator';
-import type { MethodPermission, MethodReturnType } from '../core/AbstractMethod';
+import type { MethodContext, MethodPermission, MethodReturnType } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { getBitcoinNetwork } from '../data/coinInfo';
 import { getScriptType, getSerializedPath, validatePath } from '../utils/pathUtils';
@@ -59,7 +59,7 @@ export default class GetOwnershipId extends AbstractMethod<
         };
     }
 
-    async run() {
+    async run({ sendCoreMessage }: MethodContext) {
         const responses: MethodReturnType<typeof this.name> = [];
         const cmd = this.getDevice().getCommands();
         for (let i = 0; i < this.params.length; i++) {
@@ -73,7 +73,7 @@ export default class GetOwnershipId extends AbstractMethod<
 
             if (this.hasBundle) {
                 // send progress
-                this.postMessage(
+                sendCoreMessage(
                     createUiMessage(UI_REQUEST.BUNDLE_PROGRESS, {
                         total: this.params.length,
                         progress: i,
