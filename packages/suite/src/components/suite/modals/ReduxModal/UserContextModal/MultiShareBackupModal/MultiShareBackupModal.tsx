@@ -20,9 +20,7 @@ import { useAnalytics } from 'src/support/useAnalytics';
 import { MultiShareBackupStep1 } from './MultiShareBackupStep1';
 import { MultiShareBackupStep2to4 } from './MultiShareBackupStep2to4';
 import { MultiShareBackupStep5 } from './MultiShareBackupStep5';
-
-const steps = ['first-info', 'second-info', 'verify-ownership', 'backup-seed', 'done'] as const;
-export type Steps = (typeof steps)[number];
+import { type Steps, steps } from './steps';
 
 type MultiShareBackupModalProps = {
     onCancel: () => void;
