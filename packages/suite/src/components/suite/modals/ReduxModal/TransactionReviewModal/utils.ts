@@ -1,7 +1,7 @@
 import { type SendState, type StakeState } from '@suite-common/wallet-core';
 import { type FormState } from '@suite-common/wallet-types';
 
-import { isStakeState } from '../types';
+export const isStakeState = (state: SendState | StakeState): state is StakeState => 'data' in state;
 
 export const hasTxValidityExpired = (deadline: number) => deadline <= Date.now();
 
