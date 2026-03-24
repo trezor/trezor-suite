@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import Animated, { SlideInDown } from 'react-native-reanimated';
+import { SlideInDown } from 'react-native-reanimated';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { CommonActions, useNavigation } from '@react-navigation/native';
@@ -14,7 +14,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { useAlert } from '@suite-native/alerts';
-import { Button, Card } from '@suite-native/atoms';
+import { AnimatedBox, Button, Card, useBannerAwareSafeAreaInsets } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import {
     AppTabsRoutes,
@@ -27,6 +27,7 @@ import {
 } from '@suite-native/navigation';
 import { cleanupSendFormThunk, sendTransactionThunk } from '@suite-native/send';
 import { SignSuccessMessage } from '@suite-native/transaction-management';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { wasAppLeftDuringReviewAtom } from '../atoms/wasAppLeftDuringReviewAtom';
 import { useUtxoSelection } from '../hooks/useUtxoSelection';
@@ -36,6 +37,10 @@ type NavigationProps = StackToStackCompositeNavigationProps<
     SendStackRoutes.SendOutputsReview,
     RootStackParamList
 >;
+
+const containerStyle = prepareNativeStyle<{ bottomInset: number }>((_, { bottomInset }) => ({
+    paddingBottom: bottomInset,
+}));
 
 const navigateOutOfSendFlowAction = ({
     accountKey,
@@ -99,6 +104,8 @@ export const OutputsReviewFooter = ({ accountKey, tokenContract }: OutputsReview
     const wasAppLeftDuringReview = useAtomValue(wasAppLeftDuringReviewAtom);
     const { setSelectedUtxos } = useUtxoSelection(accountKey);
     const { translate } = useTranslate();
+    const { applyStyle } = useNativeStyles();
+    const insets = useBannerAwareSafeAreaInsets();
 
     const isTransactionProcessedByBackend = !!useSelector((state: TransactionsRootState) =>
         selectTransactionByAccountKeyAndTxid(state, accountKey, txid),
@@ -199,7 +206,10 @@ export const OutputsReviewFooter = ({ accountKey, tokenContract }: OutputsReview
     };
 
     return (
-        <Animated.View entering={SlideInDown}>
+        <AnimatedBox
+            entering={SlideInDown}
+            style={applyStyle(containerStyle, { bottomInset: insets.bottom })}
+        >
             <Card>
                 <SignSuccessMessage />
                 <Button
@@ -212,6 +222,6 @@ export const OutputsReviewFooter = ({ accountKey, tokenContract }: OutputsReview
                     <Translation id="moduleSend.review.outputs.submitButton" />
                 </Button>
             </Card>
-        </Animated.View>
+        </AnimatedBox>
     );
 };
