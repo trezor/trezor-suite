@@ -1,4 +1,5 @@
 import type { AccountKey } from '@suite-common/wallet-types';
+import { getTranslation } from '@suite-native/intl';
 import { type PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils';
 import { eth1NormalAccount, exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
 
@@ -27,10 +28,16 @@ describe('ExchangeApprovalDetails', () => {
     it('should render approval details', () => {
         const { getByText } = renderExchangeApprovalDetails('100000', false);
 
-        expect(getByText('Account')).toBeOnTheScreen();
-        expect(getByText('Provider')).toBeOnTheScreen();
-        expect(getByText('Limit')).toBeOnTheScreen();
-        expect(getByText('Maximum fee')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.exchangeTradePreviewCard.account')),
+        ).toBeOnTheScreen();
+        expect(getByText(getTranslation('moduleTrading.tradingScreen.provider'))).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.tradingExchangeApprovalScreen.limitLabel')),
+        ).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.tradingExchangePreviewScreen.maximumFeeLabel')),
+        ).toBeOnTheScreen();
     });
 
     // TODO 25971 would be better to render some alert
