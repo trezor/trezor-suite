@@ -3,11 +3,16 @@ import { closeModalApp } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
 import { UI_REQUEST } from '@trezor/connect';
 
+import {
+    selectShowEnableSuiteSyncModal,
+    updateShowEnableSuiteSyncModal,
+} from 'src/actions/suiteSync/suiteSyncSlice';
+
 import { useDispatch, usePreferredModal, useSelector } from '../../../../hooks/suite';
 import type { AppState, ForegroundAppRoute } from '../../../../types/suite';
 import { SwitchDevice } from '../../../../views/suite/SwitchDevice/SwitchDevice';
 import { ThpGlobalModalManager } from '../../../connection/thp/ThpGlobalModalManager';
-import { TurnOnSuiteSyncModalManager } from '../../labeling/TurnOnSuiteSync/TurnOnSuiteSyncModalManager';
+import { TurnOnSuiteSyncModals } from '../../labeling/TurnOnSuiteSync/TurnOnSuiteSyncModals';
 import { ConfirmPassphraseBeforeAction } from '../../modals/ReduxModal/DeviceContextModal/ConfirmPassphraseBeforeAction';
 import { PassphraseModal } from '../../modals/ReduxModal/DeviceContextModal/PassphraseModal';
 import { PassphraseOnDeviceModal } from '../../modals/ReduxModal/DeviceContextModal/PassphraseOnDeviceModal';
@@ -54,6 +59,7 @@ type ForegroundAppModalProps = {
 
 const ForegroundAppModal = ({ app, cancelable }: ForegroundAppModalProps) => {
     const dispatch = useDispatch();
+    const deviceStaticSessionId = useSelector(selectShowEnableSuiteSyncModal);
 
     const onCancel = () => dispatch(closeModalApp());
 
@@ -63,7 +69,12 @@ const ForegroundAppModal = ({ app, cancelable }: ForegroundAppModalProps) => {
         return (
             <>
                 <SwitchDevice cancelable={cancelable} onCancel={onCancel} />
-                <TurnOnSuiteSyncModalManager />
+                <TurnOnSuiteSyncModals
+                    deviceStaticSessionId={deviceStaticSessionId}
+                    onClose={() => {
+                        dispatch(updateShowEnableSuiteSyncModal({ deviceStaticSessionId: null }));
+                    }}
+                />
                 {/* THP flow can be triggered by auto-connect and that will open THP modals.
                  *  However, this ForegroundApp takes precedes and prevents ALL other modals
                  *  to render. So we have to render it here as well.*/}

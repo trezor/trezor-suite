@@ -1,20 +1,24 @@
+import { type StaticSessionId } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
 
-import {
-    selectDesktopSuiteSyncInteraction,
-    selectShowEnableSuiteSyncModal,
-} from 'src/actions/suiteSync/suiteSyncSlice';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { selectDesktopSuiteSyncInteraction } from 'src/actions/suiteSync/suiteSyncSlice';
+import { useSelector } from 'src/hooks/suite';
 
 import { SuiteSyncFirmwareUpgradeNeededModal } from './SuiteSyncFirmwareUpgradeNeededModal';
 import { SuiteSyncTurnOnModal } from './SuiteSyncTurnOnModal';
 import { SuiteSyncTurnOnUnsupportedModal } from './SuiteSyncTurnOnUnsupportedModal';
-import { updateShowEnableSuiteSyncModal } from '../../../../actions/suiteSync/suiteSyncSlice';
 
-export const TurnOnSuiteSyncModalManager = () => {
-    const dispatch = useDispatch();
-    const deviceStaticSessionId = useSelector(selectShowEnableSuiteSyncModal);
+type TurnOnSuiteSyncModalsProps = {
+    onClose: () => void;
+    onSuccess?: () => void;
+    deviceStaticSessionId: StaticSessionId | null;
+};
 
+export const TurnOnSuiteSyncModals = ({
+    onClose,
+    onSuccess,
+    deviceStaticSessionId,
+}: TurnOnSuiteSyncModalsProps) => {
     const suiteSyncInteraction = useSelector(state =>
         selectDesktopSuiteSyncInteraction(state, deviceStaticSessionId),
     );
@@ -22,10 +26,6 @@ export const TurnOnSuiteSyncModalManager = () => {
     if (deviceStaticSessionId === null || suiteSyncInteraction === null) {
         return null;
     }
-
-    const onClose = () => {
-        dispatch(updateShowEnableSuiteSyncModal({ deviceStaticSessionId: null }));
-    };
 
     switch (suiteSyncInteraction) {
         case 'keys-needed':
@@ -37,6 +37,7 @@ export const TurnOnSuiteSyncModalManager = () => {
             return (
                 <SuiteSyncTurnOnModal
                     onClose={onClose}
+                    onSuccess={onSuccess}
                     deviceStaticSessionId={deviceStaticSessionId}
                 />
             );

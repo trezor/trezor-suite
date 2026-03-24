@@ -263,7 +263,12 @@ export const EditableText = ({
     }, [onCancel, isDirty]);
 
     const handleEdit = useCallback(async () => {
-        await onEdit?.();
+        const result = await onEdit?.();
+
+        // Needed in case onEdit is undefined
+        if (result === false) {
+            return;
+        }
 
         setIsEditable(true);
         focus();
