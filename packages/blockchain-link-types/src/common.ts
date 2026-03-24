@@ -1,6 +1,7 @@
 import type tls from 'tls';
 
 import type { BaseCurrencyCode } from './baseCurrency';
+import type { TronAccountExtraData } from './blockbook-api';
 
 /* Shared types — canonical definitions used by both common and backend-specific modules */
 
@@ -395,6 +396,7 @@ export interface AccountInfo {
         solStakingAccounts?: SolanaStakingAccount[]; // Solana staking accounts (Everstake)
         solExternalStakingAccounts?: SolanaStakingAccount[]; // Solana staking accounts (non-Everstake)
         solEpoch?: number; // Solana current epoch
+        tronResources?: TronAccountExtraData;
     };
     page?: {
         // blockbook and blockfrost
