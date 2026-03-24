@@ -9,13 +9,13 @@ export { YieldEarnProviderConsentModal } from './modals/EarnProviderConsent/Yiel
 export { UpdateEarnProviderConsentModal } from './modals/EarnProviderConsent/UpdateEarnProviderConsentModal';
 export { StakeModal } from './modals/StakeModal/StakeModal';
 export { UnstakeModal } from './modals/UnstakeModal/UnstakeModal';
-export { EarnDashboard } from './EarnDashboard/EarnDashboard';
+export { EarnDashboard } from './dashboard/EarnDashboard';
 
 export { EarnSupplyingInfo } from './modals/EarnInANutshell/components/EarnSupplyingInfo';
 export { EarnWithdrawingInfo } from './modals/EarnInANutshell/components/EarnWithdrawingInfo';
 
-export { VotingDelegations } from './VotingDelegations/VotingDelegations';
-export { VotingDelegationsOptions } from './VotingDelegations/VotingDelegationsOptions';
+export { VotingDelegations } from './modals/shared/VotingDelegations/VotingDelegations';
+export { VotingDelegationsOptions } from './modals/shared/VotingDelegations/VotingDelegationsOptions';
 
 export { PoweredByBadge } from './providers/PoweredByBadge';
 
