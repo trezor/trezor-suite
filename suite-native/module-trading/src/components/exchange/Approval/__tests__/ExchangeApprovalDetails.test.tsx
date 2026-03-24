@@ -7,6 +7,7 @@ import { ExchangeApprovalDetails } from '../ExchangeApprovalDetails';
 
 describe('ExchangeApprovalDetails', () => {
     let preloadedState: PreloadedState;
+    const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
     const renderExchangeApprovalDetails = (fee: string | undefined = '100000', isLoading = false) =>
         renderWithStoreProvider(
@@ -23,6 +24,8 @@ describe('ExchangeApprovalDetails', () => {
 
         preloadedState!.wallet!.trading!.exchange!.tradingAccountKey = eth1NormalAccount.key;
         preloadedState!.wallet!.trading!.exchange!.preselectedQuote = exchangeQuotes[0];
+
+        errorSpy.mockClear();
     });
 
     it('should render approval details', () => {
@@ -38,15 +41,24 @@ describe('ExchangeApprovalDetails', () => {
         expect(
             getByText(getTranslation('moduleTrading.tradingExchangePreviewScreen.maximumFeeLabel')),
         ).toBeOnTheScreen();
+        expect(errorSpy).not.toHaveBeenCalled();
     });
 
-    // TODO 25971 would be better to render some alert
-    it('should render nothing when account is not found', () => {
+    it('should render error when account is not found', () => {
         preloadedState!.wallet!.trading!.exchange!.tradingAccountKey =
             'unknown-account-key' as AccountKey;
 
-        const { toJSON } = renderExchangeApprovalDetails('100000', false);
+        const { getByText, queryByText } = renderExchangeApprovalDetails('100000', false);
 
-        expect(toJSON()).toBeNull();
+        expect(
+            getByText(
+                getTranslation('moduleTrading.tradingExchangeApprovalScreen.approveErrorAlert'),
+            ),
+        ).toBeOnTheScreen();
+        expect(
+            queryByText(getTranslation('moduleTrading.exchangeTradePreviewCard.account')),
+        ).toBeNull();
+        expect(errorSpy).toHaveBeenCalledTimes(1);
+        expect(errorSpy).toHaveBeenCalledWith('No account selected for exchange approval details');
     });
 });

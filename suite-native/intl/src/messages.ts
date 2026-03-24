@@ -2648,6 +2648,7 @@ export const messages = {
             unlimitedLabel: 'Unlimited',
             limitInfo:
                 'Skip future approvals and pay less fees. {companyName} will gain full access to your {symbol}.',
+            approveErrorAlert: 'Error approving token. Please try again later.',
         },
         tradingExchangeRevokeScreen: {
             title: 'Revoke {symbol} approval',

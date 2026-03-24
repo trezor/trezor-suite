@@ -26,7 +26,6 @@ export const LimitPickerUnlimitedAlert = ({ cryptoId }: LimitPickerUnlimitedAler
                     values={{ coinSymbol }}
                 />
             }
-            iconName="warning"
             variant="warning"
         />
     );
