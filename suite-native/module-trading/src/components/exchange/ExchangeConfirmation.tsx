@@ -1,7 +1,13 @@
-import { type AnimatedProps, FadeIn, FadeOutDown } from 'react-native-reanimated';
+import {
+    type AnimatedProps,
+    FadeIn,
+    FadeOut,
+    FadeOutDown,
+    LinearTransition,
+} from 'react-native-reanimated';
 
-import { getApprovalStatus } from '@suite-common/trading';
-import { AnimatedBox, Button } from '@suite-native/atoms';
+import { type ApprovalStatus, getApprovalStatus } from '@suite-common/trading';
+import { AnimatedBox, AnimatedVStack, Button } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 import { useExchangeFormContext } from '../../hooks/exchange/useExchangeFormContext';
@@ -11,7 +17,8 @@ export type ExchangeConfirmationProps = {
     enteringAnimation?: AnimatedProps<any>['entering'];
 };
 
-const CONFIRMATION_TEST_ID = '@trading/exchange/continue-button';
+export const CONFIRMATION_TEST_ID = '@trading/exchange/continue-button';
+export const REVOKE_TEST_ID = '@trading/exchange/revoke-button';
 
 export const ExchangeConfirmation = ({ enteringAnimation }: ExchangeConfirmationProps) => {
     const form = useExchangeFormContext();
@@ -20,20 +27,30 @@ export const ExchangeConfirmation = ({ enteringAnimation }: ExchangeConfirmation
 
     const quote = form.watch('quote');
     const approvalStatus = getApprovalStatus(quote);
+    const canRevoke = (['approved', 'needs_increase', 'needs_revoke'] as ApprovalStatus[]).includes(
+        approvalStatus,
+    );
 
     return (
-        <AnimatedBox entering={enteringAnimation} exiting={FadeOutDown}>
+        <AnimatedVStack entering={enteringAnimation} exiting={FadeOutDown} spacing="sp16">
             {canProceed && (
-                <AnimatedBox entering={FadeIn}>
+                <AnimatedBox entering={FadeIn} exiting={FadeOut} layout={LinearTransition}>
                     <Button onPress={selectQuote} testID={CONFIRMATION_TEST_ID}>
-                        {approvalStatus === 'needs_approval' ? (
-                            <Translation id="moduleTrading.tradingScreen.buttons.approveAndSwap" />
-                        ) : (
-                            <Translation id="moduleTrading.tradingScreen.buttons.swap" />
-                        )}
+                        <Translation id="moduleTrading.tradingScreen.buttons.continue" />
                     </Button>
                 </AnimatedBox>
             )}
-        </AnimatedBox>
+            {canRevoke && (
+                <AnimatedBox entering={FadeIn} exiting={FadeOut} layout={LinearTransition}>
+                    <Button
+                        onPress={() => {}}
+                        testID={REVOKE_TEST_ID}
+                        colorScheme="tertiaryElevation0"
+                    >
+                        <Translation id="moduleTrading.tradingScreen.buttons.revoke" />
+                    </Button>
+                </AnimatedBox>
+            )}
+        </AnimatedVStack>
     );
 };
