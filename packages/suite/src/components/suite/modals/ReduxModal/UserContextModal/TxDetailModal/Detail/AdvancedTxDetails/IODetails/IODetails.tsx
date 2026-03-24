@@ -11,8 +11,6 @@ import { CollapsibleIOSection } from './CollapsibleIOSection';
 import { IOGroup } from './IOGroup';
 import { TokenSpecificBalanceDetailsRow } from './TokenSpecificBalanceDetailsRow';
 
-export type IODetails = WalletAccountTransaction['details']['vin'][number];
-
 type IODetailsProps = {
     tx: WalletAccountTransaction;
 };
