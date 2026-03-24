@@ -5,9 +5,9 @@ import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { Table } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { type AssetData } from '../AssetsView';
 import { AssetRow } from './AssetRow';
 import { AssetRowSkeleton } from './AssetRowSkeleton';
+import { type AssetData } from '../AssetData';
 
 interface AssetTableProps {
     discoveryInProgress?: boolean;
