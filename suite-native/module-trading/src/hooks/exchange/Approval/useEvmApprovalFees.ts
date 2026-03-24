@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { type DexApprovalType } from 'invity-api';
@@ -10,11 +10,17 @@ import {
 import {
     type AccountsRootState,
     type FeesRootState,
+    type FormDraftRootState,
     selectAccountByKey,
     selectConvertedNetworkFeeInfo,
+    selectDeepCopyOfFormDraft,
 } from '@suite-common/wallet-core';
+import { type FeeLevelLabel } from '@suite-common/wallet-types';
 import { useTranslate } from '@suite-native/intl';
-import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
+import {
+    getFormDraftKeyByTradeType,
+    selectExchangeSelectedSendAccount,
+} from '@suite-native/trading-state';
 
 import { composeEvmApprovalFeeLevelsThunk } from '../../../thunks';
 
@@ -38,6 +44,30 @@ export const useEvmApprovalFees = ({ approvalTypeOverride }: UseEvmApprovalFeesP
     );
     const composedTransactionInfo = useSelector(selectTradingComposedTransactionInfo);
 
+    const formDraftKey = getFormDraftKeyByTradeType('exchange');
+    const formDraft = useSelector((state: FormDraftRootState) =>
+        selectDeepCopyOfFormDraft(state, formDraftKey),
+    );
+    const selectedFeeLevel = (formDraft?.selectedFee as FeeLevelLabel) ?? 'normal';
+
+    const feeLimit = formDraft?.feeLimit as string | undefined;
+    const feePerUnit = formDraft?.feePerUnit as string | undefined;
+    const maxFeePerGas = formDraft?.maxFeePerGas as string | undefined;
+    const maxPriorityFeePerGas = formDraft?.maxPriorityFeePerGas as string | undefined;
+
+    const customFee = useMemo(() => {
+        if (selectedFeeLevel !== 'custom' || !feeLimit || !feePerUnit) {
+            return undefined;
+        }
+
+        return {
+            feeLimit,
+            feePerUnit,
+            maxFeePerGas,
+            maxPriorityFeePerGas,
+        };
+    }, [selectedFeeLevel, feeLimit, feePerUnit, maxFeePerGas, maxPriorityFeePerGas]);
+
     const approvalType =
         approvalTypeOverride ?? ((quote?.approvalType ?? 'INFINITE') as DexApprovalType);
     const fee = composedTransactionInfo?.composed?.fee;
@@ -56,6 +86,8 @@ export const useEvmApprovalFees = ({ approvalTypeOverride }: UseEvmApprovalFeesP
                     quote,
                     account,
                     feeInfo,
+                    selectedFeeLevel,
+                    customFee,
                     approvalTypeOverride,
                 }),
             ).unwrap();
@@ -65,17 +97,26 @@ export const useEvmApprovalFees = ({ approvalTypeOverride }: UseEvmApprovalFeesP
         } finally {
             setIsComposing(false);
         }
-    }, [dispatch, quote, account, feeInfo, approvalTypeOverride, translate]);
+    }, [
+        dispatch,
+        quote,
+        account,
+        feeInfo,
+        selectedFeeLevel,
+        customFee,
+        approvalTypeOverride,
+        translate,
+    ]);
 
     // Keep a ref to the latest composeFees so the effect always calls the
     // current version without needing it as a dependency.
     const composeFeesRef = useRef(composeFees);
     composeFeesRef.current = composeFees;
 
-    // Recompose only when the approval type or dex transaction data changes.
+    // Recompose when the approval type, dex transaction data, fee level, or custom gas fields change.
     useEffect(() => {
         composeFeesRef.current();
-    }, [approvalType, quote?.dexTx?.data]);
+    }, [approvalType, quote?.dexTx?.data, selectedFeeLevel, customFee]);
 
     return {
         fee,

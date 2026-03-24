@@ -1,5 +1,6 @@
 import { tradingActions } from '@suite-common/trading';
-import { type AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { getFormDraftKey } from '@suite-common/wallet-utils';
 import {
     type PreloadedState,
     type TestStore,
@@ -21,6 +22,21 @@ jest.mock('../../../../thunks', () => ({
 describe('useEvmApprovalFees', () => {
     let store: TestStore;
     let preloadedState: PreloadedState;
+
+    const exchangeFormDraftKey = getFormDraftKey('trading-exchange', '');
+
+    const ethFeeInfoPreload = {
+        eth: {
+            status: 'loaded' as const,
+            data: {
+                blockHeight: 1000,
+                blockTime: 15,
+                minFee: 1,
+                maxFee: 100,
+                levels: [{ label: 'normal' as const, feePerUnit: '20', blocks: 1 }],
+            },
+        },
+    };
 
     const dexQuoteWithApprovalData = {
         ...exchangeQuotes[3],
@@ -120,6 +136,91 @@ describe('useEvmApprovalFees', () => {
         expect(result.current).toEqual(
             expect.objectContaining({
                 composeFees: expect.any(Function),
+            }),
+        );
+    });
+
+    it('should pass selected fee level from exchange form draft to compose thunk', async () => {
+        preloadedState!.wallet!.fees = ethFeeInfoPreload;
+        preloadedState!.wallet!.formDrafts = {
+            [exchangeFormDraftKey]: { selectedFee: 'high' },
+        };
+        store = initStore(preloadedState).store;
+
+        renderUseEvmApprovalFees();
+
+        await waitFor(() => {
+            expect(mockComposeEvmApprovalFeeLevelsThunk).toHaveBeenCalled();
+        });
+
+        expect(mockComposeEvmApprovalFeeLevelsThunk).toHaveBeenCalledWith(
+            expect.objectContaining({
+                selectedFeeLevel: 'high',
+            }),
+        );
+    });
+
+    it('should pass custom fee fields from exchange form draft when fee level is custom', async () => {
+        preloadedState!.wallet!.fees = ethFeeInfoPreload;
+        preloadedState!.wallet!.formDrafts = {
+            [exchangeFormDraftKey]: {
+                selectedFee: 'custom',
+                feeLimit: '21000',
+                feePerUnit: '25',
+                maxFeePerGas: '100',
+                maxPriorityFeePerGas: '2',
+            },
+        };
+        store = initStore(preloadedState).store;
+
+        renderUseEvmApprovalFees();
+
+        await waitFor(() => {
+            expect(mockComposeEvmApprovalFeeLevelsThunk).toHaveBeenCalled();
+        });
+
+        expect(mockComposeEvmApprovalFeeLevelsThunk).toHaveBeenCalledWith(
+            expect.objectContaining({
+                selectedFeeLevel: 'custom',
+                customFee: {
+                    feeLimit: '21000',
+                    feePerUnit: '25',
+                    maxFeePerGas: '100',
+                    maxPriorityFeePerGas: '2',
+                },
+            }),
+        );
+    });
+
+    it('should default to normal fee level when exchange form draft has no selected fee', async () => {
+        preloadedState!.wallet!.fees = ethFeeInfoPreload;
+        preloadedState!.wallet!.formDrafts = {
+            [exchangeFormDraftKey]: {
+                outputs: [
+                    {
+                        type: 'payment' as const,
+                        address: '',
+                        amount: '0',
+                        fiat: '',
+                        currency: { label: '', value: '' },
+                        label: '',
+                        token: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as TokenAddress,
+                    },
+                ],
+            },
+        };
+        store = initStore(preloadedState).store;
+
+        renderUseEvmApprovalFees();
+
+        await waitFor(() => {
+            expect(mockComposeEvmApprovalFeeLevelsThunk).toHaveBeenCalled();
+        });
+
+        expect(mockComposeEvmApprovalFeeLevelsThunk).toHaveBeenCalledWith(
+            expect.objectContaining({
+                selectedFeeLevel: 'normal',
+                customFee: undefined,
             }),
         );
     });

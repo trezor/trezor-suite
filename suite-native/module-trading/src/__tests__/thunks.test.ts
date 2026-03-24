@@ -5,15 +5,11 @@ import {
     tradingExchangeActions,
     tradingSellActions,
 } from '@suite-common/trading';
-import {
-    type Account,
-    type AccountKey,
-    type TokenAddress,
-    type TokenInfoBranded,
-} from '@suite-common/wallet-types';
+import { type Account, type TokenAddress, type TokenInfoBranded } from '@suite-common/wallet-types';
+import { getFormDraftKey } from '@suite-common/wallet-utils';
 import { type PreloadedState, type TestStore, initStore } from '@suite-native/test-utils';
 import { selectAccountTokenInfo } from '@suite-native/tokens';
-import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
+import { eth1NormalAccount, exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
 
 import { clearTradingStateThunk, composeEvmApprovalFeeLevelsThunk } from '../thunks';
 
@@ -157,7 +153,7 @@ describe('thunks', () => {
 
         beforeEach(() => {
             const walletState = getWalletState({ tradeType: 'exchange' });
-            walletState.trading.exchange.tradingAccountKey = 'eth-account-1' as AccountKey;
+            walletState.trading.exchange.tradingAccountKey = eth1NormalAccount.key;
 
             const preloadedState: PreloadedState = {
                 wallet: walletState,
@@ -179,9 +175,7 @@ describe('thunks', () => {
 
             const ethAccount = store
                 .getState()
-                .wallet.accounts.find(
-                    (account: Account) => account.key === ('eth-account-1' as AccountKey),
-                );
+                .wallet.accounts.find((account: Account) => account.key === eth1NormalAccount.key);
 
             const result = await store.dispatch(
                 composeEvmApprovalFeeLevelsThunk({
@@ -198,9 +192,7 @@ describe('thunks', () => {
         it('should compose allowance fee levels for a DEX quote', async () => {
             const ethAccount = store
                 .getState()
-                .wallet.accounts.find(
-                    (account: Account) => account.key === ('eth-account-1' as AccountKey),
-                );
+                .wallet.accounts.find((account: Account) => account.key === eth1NormalAccount.key);
 
             const result = await store.dispatch(
                 composeEvmApprovalFeeLevelsThunk({
@@ -211,6 +203,97 @@ describe('thunks', () => {
             );
 
             expect(result.type).toContain('fulfilled');
+        });
+
+        it('should merge composed approval fees into existing exchange form draft without dropping fields', async () => {
+            const formDraftKey = getFormDraftKey('trading-exchange', '');
+            const walletState = getWalletState({ tradeType: 'exchange' });
+            walletState.trading.exchange.tradingAccountKey = eth1NormalAccount.key;
+
+            const preloadedState: PreloadedState = {
+                wallet: {
+                    ...walletState,
+                    formDrafts: {
+                        [formDraftKey]: {
+                            swapOnlyField: 'keep-around',
+                            outputs: [
+                                {
+                                    type: 'payment' as const,
+                                    address: '0xabc',
+                                    amount: '1',
+                                    fiat: '',
+                                    currency: { label: '', value: '' },
+                                    label: '',
+                                    token: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as TokenAddress,
+                                },
+                            ],
+                        },
+                    },
+                },
+                device: {
+                    selectedDevice: {
+                        state: { staticSessionId: 'device1@test:123' },
+                        features: { major_version: 2, minor_version: 6, patch_version: 0 },
+                    },
+                },
+            };
+            const localStore = initStore(preloadedState).store;
+            const ethAccount = localStore
+                .getState()
+                .wallet.accounts.find((account: Account) => account.key === eth1NormalAccount.key);
+
+            const result = await localStore.dispatch(
+                composeEvmApprovalFeeLevelsThunk({
+                    quote: dexQuoteWithApprovalData,
+                    account: ethAccount!,
+                    feeInfo,
+                }),
+            );
+
+            expect(result.type).toContain('fulfilled');
+
+            const draft = localStore.getState().wallet.formDrafts[formDraftKey];
+            expect(draft.swapOnlyField).toBe('keep-around');
+            expect(draft.selectedFee).toBe('normal');
+            expect(draft.feePerUnit).toBe('20');
+            expect(draft.feeLimit).toBe('52000');
+            expect(draft.outputs[0].address).toBe('0xabc');
+        });
+
+        it('should add default payment output with token when exchange form draft has no outputs', async () => {
+            const formDraftKey = getFormDraftKey('trading-exchange', '');
+            const walletState = getWalletState({ tradeType: 'exchange' });
+            walletState.trading.exchange.tradingAccountKey = eth1NormalAccount.key;
+
+            const preloadedState: PreloadedState = {
+                wallet: {
+                    ...walletState,
+                    formDrafts: {},
+                },
+                device: {
+                    selectedDevice: {
+                        state: { staticSessionId: 'device1@test:123' },
+                        features: { major_version: 2, minor_version: 6, patch_version: 0 },
+                    },
+                },
+            };
+            const localStore = initStore(preloadedState).store;
+            const ethAccount = localStore
+                .getState()
+                .wallet.accounts.find((account: Account) => account.key === eth1NormalAccount.key);
+
+            const result = await localStore.dispatch(
+                composeEvmApprovalFeeLevelsThunk({
+                    quote: dexQuoteWithApprovalData,
+                    account: ethAccount!,
+                    feeInfo,
+                }),
+            );
+
+            expect(result.type).toContain('fulfilled');
+
+            const draft = localStore.getState().wallet.formDrafts[formDraftKey];
+            expect(draft.outputs[0].token).toBe('0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48');
         });
     });
 });
