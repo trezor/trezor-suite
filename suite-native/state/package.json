@@ -13,6 +13,7 @@
     "dependencies": {
         "@reduxjs/toolkit": "2.11.2",
         "@suite-common/analytics-redux": "workspace:*",
+        "@suite-common/bip329-types": "workspace:*",
         "@suite-common/connect-popup": "workspace:*",
         "@suite-common/delegated-identity-key": "workspace:*",
         "@suite-common/device": "workspace:*",

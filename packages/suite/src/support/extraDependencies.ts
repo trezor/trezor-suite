@@ -4,7 +4,11 @@ import { saveAs } from 'file-saver';
 import { type DesktopAnalyticsDep, createAnalytics } from '@suite/analytics';
 import type { FlagsState } from '@suite/flags';
 import { lockDevice } from '@suite/locks';
-import { metadataActions, metadataLabelingActions } from '@suite/metadata';
+import {
+    metadataActions,
+    metadataLabelingActions,
+    selectLabelingDataForAccount,
+} from '@suite/metadata';
 import { closeModal, openModal } from '@suite/modal';
 import { createElectronPlatformEncryption } from '@suite/platform-encryption-electron';
 import { createWebauthnPlatformEncryption } from '@suite/platform-encryption-webauthn';
@@ -25,7 +29,9 @@ import {
     type DisableLegacyMetadataIfNeededDep,
     createSuiteSyncDesktopCompositionRoot,
 } from '@suite/suite-sync';
+import { createBip329CompositionRoot } from '@suite-common/bip329';
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
+import { toGetter } from '@suite-common/dependency-injection';
 import type { DeviceReducerState } from '@suite-common/device';
 import { FW_HASH_CHECK_DEFAULT_TIMEOUTS } from '@suite-common/firmware-authenticity';
 import {
@@ -34,6 +40,7 @@ import {
     type ExtraDependenciesStatic,
 } from '@suite-common/redux-utils';
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
+import { selectAllLabelsForAccount, selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { type SuiteSyncAppReloaderDep } from '@suite-common/suite-sync-types';
 import {
     type TokenDefinitionsState,
@@ -121,8 +128,17 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         analytics,
     });
 
+    const { bip329 } = createBip329CompositionRoot({
+        getIsSuiteSyncEnabled: toGetter(deps.getState, selectIsSuiteSyncEnabled),
+        getLegacyAccountLabels: toGetter(deps.getState, selectLabelingDataForAccount),
+        getAllLabelsForAccount: toGetter(deps.getState, selectAllLabelsForAccount),
+        updateAddressLabel: suiteSync.labeling.updateAddressLabel,
+        updateOutputLabel: suiteSync.labeling.updateOutputLabel,
+    });
+
     return {
         suiteSync,
+        bip329,
         ensureDelegatedIdentityKey,
         platformEncryption,
         analytics,

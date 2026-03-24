@@ -1,8 +1,15 @@
 {
     "extends": "../../tsconfig.base.json",
-    "compilerOptions": {
-        "outDir": "libDev",
-        "exactOptionalPropertyTypes": true
-    },
-    "references": []
+    "compilerOptions": { "outDir": "libDev" },
+    "include": ["src/**/*"],
+    "references": [
+        { "path": "../bip329-types" },
+        { "path": "../metadata-types" },
+        { "path": "../suite-sync-storage" },
+        { "path": "../suite-sync-types" },
+        { "path": "../wallet-config" },
+        { "path": "../wallet-types" },
+        { "path": "../wallet-utils" },
+        { "path": "../../packages/type-utils" }
+    ]
 }

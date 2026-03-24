@@ -13,6 +13,7 @@
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
         "@reduxjs/toolkit": "2.11.2",
+        "@suite-common/bip329-types": "workspace:*",
         "@suite-common/platform-encryption": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-sync-types": "workspace:*",

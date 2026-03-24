@@ -13,7 +13,6 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "2.11.2",
-        "@suite-common/bip329": "workspace:*",
         "@suite-common/delegated-identity-key": "workspace:*",
         "@suite-common/delegated-identity-key-types": "workspace:*",
         "@suite-common/dependency-injection": "workspace:*",

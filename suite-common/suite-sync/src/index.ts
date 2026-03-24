@@ -51,7 +51,6 @@ export {
     selectSuiteSyncOutputLabels,
 } from './data/output/suiteSyncOutputSelectors';
 export { selectAllLabelsForAccount } from './data/labeling/selectAllLabelsForAccount';
-export { suiteSyncToBip329 } from './data/labeling/suiteSyncToBip329';
 export {
     fromSuiteSyncToSearchAccountLabels,
     fromSuiteSyncToSearchOutputLabels,

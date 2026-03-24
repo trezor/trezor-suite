@@ -13,7 +13,6 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "2.11.2",
-        "@suite-common/bip329": "workspace:*",
         "@suite-common/device": "workspace:*",
         "@suite-common/metadata-types": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",

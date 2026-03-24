@@ -19,6 +19,7 @@ export { TokenTabs, type TokenTab } from './components/SelectAssetModal/TokenTab
 export { NumberInput } from './components/NumberInput/NumberInput';
 export { InputWithOptions } from './components/InputWithOptions/InputWithOptions';
 export { EditableText, type EditableTextProps } from './components/EditableText/EditableText';
+export * from './components/JsonlReader/JsonlReader';
 export { CardList, type CardListProps } from '@trezor/components';
 export { FeeRate } from './components/FeeRate/FeeRate';
 export {

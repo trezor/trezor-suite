@@ -1,15 +1,11 @@
 {
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
+    "include": ["src/**/*"],
     "references": [
-        {
-            "path": "../delegated-identity-key-types"
-        },
         { "path": "../suite-sync-storage" },
-        { "path": "../suite-types" },
-        { "path": "../wallet-config" },
+        { "path": "../suite-sync-types" },
         { "path": "../wallet-types" },
-        { "path": "../../packages/connect" },
         { "path": "../../packages/type-utils" }
     ]
 }

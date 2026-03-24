@@ -1,1 +1,1 @@
-export type { Bip329Label } from './bip329';
+export { createBip329CompositionRoot } from './createBip329CompositionRoot';

@@ -5,6 +5,7 @@ import {
 } from '@reduxjs/toolkit';
 
 import type { AnalyticsSharedEvents } from '@suite-common/analytics';
+import { type Bip329Dep } from '@suite-common/bip329-types';
 import { type EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-key-types';
 import { type MetadataAddPayload } from '@suite-common/metadata-types';
 import { type PlatformEncryptionDep } from '@suite-common/platform-encryption'; // also only types
@@ -36,6 +37,7 @@ export type ConnectInitSettings = {
 } & Partial<ConnectSettings>;
 
 export type CommonServices = SuiteSyncDep &
+    Bip329Dep &
     EnsureDelegatedIdentityKeyDep &
     PlatformEncryptionDep & {
         analytics: Analytics<AnalyticsSharedEvents>;

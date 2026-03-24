@@ -14,6 +14,7 @@
     "dependencies": {
         "@reduxjs/toolkit": "2.11.2",
         "@suite-common/analytics": "workspace:*",
+        "@suite-common/bip329-types": "workspace:*",
         "@suite-common/delegated-identity-key-types": "workspace:*",
         "@suite-common/metadata-types": "workspace:*",
         "@suite-common/platform-encryption": "workspace:*",

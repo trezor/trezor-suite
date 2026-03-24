@@ -21,6 +21,9 @@
         { "path": "../../suite-common/assets" },
         { "path": "../../suite-common/bip329" },
         {
+            "path": "../../suite-common/bip329-types"
+        },
+        {
             "path": "../../suite-common/bluetooth"
         },
         {
@@ -31,6 +34,9 @@
         },
         {
             "path": "../../suite-common/delegated-identity-key"
+        },
+        {
+            "path": "../../suite-common/dependency-injection"
         },
         { "path": "../../suite-common/device" },
         {
