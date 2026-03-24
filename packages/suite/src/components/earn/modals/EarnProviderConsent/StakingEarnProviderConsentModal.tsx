@@ -10,8 +10,8 @@ import { type Account } from '@suite-common/wallet-types';
 import { EarnProviderConsentModalLayout } from './components/EarnProviderConsentModalLayout';
 import { StakingProviderConsentBanners } from './components/StakingProviderConsentBanners';
 import { useEarnProviderConsentActions } from './hooks/useEarnProviderConsentActions';
-import { VotingDelegations } from '../../VotingDelegations/VotingDelegations';
 import { getEarnProviderName } from '../../utils/getEarnProviderName';
+import { VotingDelegations } from '../shared/VotingDelegations/VotingDelegations';
 
 interface StakingEarnProviderConsentModalProps {
     account: Account;

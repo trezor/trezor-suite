@@ -14,8 +14,8 @@ import { useSelector } from 'src/hooks/suite';
 import { EarnProviderConsentModalLayout } from './components/EarnProviderConsentModalLayout';
 import { YieldProviderConsentBanners } from './components/YieldProviderConsentBanners';
 import { useEarnProviderConsentActions } from './hooks/useEarnProviderConsentActions';
-import { VotingDelegations } from '../../VotingDelegations/VotingDelegations';
 import { getEarnProviderName } from '../../utils/getEarnProviderName';
+import { VotingDelegations } from '../shared/VotingDelegations/VotingDelegations';
 
 interface YieldEarnProviderConsentModalProps {
     account: Account;
