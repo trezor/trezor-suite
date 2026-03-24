@@ -101,14 +101,15 @@ export const TradingExchangeApprovalScreen = ({
                     closeActionType="back"
                 />
             }
+            footer={<ApprovalButton isReady={isApprovalReady} isDisabled={!!error} />}
         >
             <VStack spacing="sp12">
                 {!!shouldIncreaseLimit && (
                     <InlineAlertBox
+                        variant="info"
                         title={
                             <Translation id="moduleTrading.tradingExchangeApprovalScreen.lowLimitInfoAlert" />
                         }
-                        variant="info"
                     />
                 )}
 
@@ -127,7 +128,6 @@ export const TradingExchangeApprovalScreen = ({
                     exchange={quote.exchange}
                 />
             </VStack>
-            <ApprovalButton isReady={isApprovalReady} isDisabled={!!error} />
         </Screen>
     );
 };

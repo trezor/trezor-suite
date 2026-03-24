@@ -1,10 +1,11 @@
+import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
 import { parseCryptoId, selectTradingExchangeSelectedQuote } from '@suite-common/trading';
 import { type TokenAddress } from '@suite-common/wallet-types';
-import { Box, Button } from '@suite-native/atoms';
+import { Box, Button, ScreenFooterGradient } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     type StackNavigationProps,
@@ -12,6 +13,12 @@ import {
     TradingStackRoutes,
 } from '@suite-native/navigation';
 import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+
+const footerStyle = prepareNativeStyle(utils => ({
+    paddingHorizontal: utils.spacings.sp16,
+    paddingBottom: utils.spacings.sp16,
+}));
 
 export type ApprovalButtonProps = {
     isReady: boolean;
@@ -26,6 +33,7 @@ export const ApprovalButton = ({ isReady, isDisabled }: ApprovalButtonProps) => 
 
     const quote = useSelector(selectTradingExchangeSelectedQuote);
     const fromAccount = useSelector(selectExchangeSelectedSendAccount);
+    const { applyStyle } = useNativeStyles();
 
     if (!quote || !isReady) {
         return null;
@@ -48,10 +56,13 @@ export const ApprovalButton = ({ isReady, isDisabled }: ApprovalButtonProps) => 
     };
 
     return (
-        <Box paddingTop="sp20">
-            <Button onPress={handleContinue} isDisabled={isDisabled}>
-                <Translation id="generic.buttons.continue" />
-            </Button>
-        </Box>
+        <Animated.View entering={FadeInDown}>
+            <ScreenFooterGradient />
+            <Box style={applyStyle(footerStyle)}>
+                <Button onPress={handleContinue} isDisabled={isDisabled}>
+                    <Translation id="generic.buttons.continue" />
+                </Button>
+            </Box>
+        </Animated.View>
     );
 };
