@@ -24,6 +24,7 @@
         "@suite-common/analytics": "workspace:*",
         "@suite-common/analytics-redux": "workspace:*",
         "@suite-common/assets": "workspace:*",
+        "@suite-common/bip329": "workspace:*",
         "@suite-common/bluetooth": "workspace:*",
         "@suite-common/connect-init": "workspace:*",
         "@suite-common/connect-popup": "workspace:*",
