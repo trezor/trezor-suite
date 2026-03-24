@@ -1,5 +1,6 @@
 import { type RouteProp } from '@react-navigation/native';
 
+import { getTranslation } from '@suite-native/intl';
 import { type TradingStackParamList, type TradingStackRoutes } from '@suite-native/navigation';
 import { renderWithStoreProvider } from '@suite-native/test-utils';
 import {
@@ -16,6 +17,15 @@ jest.mock('@react-navigation/native', () => ({
         ({
             params: undefined,
         }) as RouteProp<TradingStackParamList, TradingStackRoutes.TradingHistory>,
+    useNavigation: () => ({
+        setOptions: jest.fn(),
+    }),
+}));
+
+let mockIsDeviceConnected = true;
+jest.mock('@suite-common/device', () => ({
+    ...jest.requireActual('@suite-common/device'),
+    selectIsDeviceConnected: () => mockIsDeviceConnected,
 }));
 
 const testQuote = exchangeQuotes[0];
@@ -57,6 +67,12 @@ describe('TradingExchangeRevokeScreen', () => {
 
         return result;
     };
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+
+        mockIsDeviceConnected = true;
+    });
 
     afterEach(() => {
         if (unmount) {
@@ -108,6 +124,16 @@ describe('TradingExchangeRevokeScreen', () => {
             getByText(
                 'This stops the provider from using your USDC. You’ll need to approve again to swap.',
             ),
+        ).toBeOnTheScreen();
+    });
+
+    it('should display device guard when device is not connected', () => {
+        mockIsDeviceConnected = false;
+
+        const { getByText } = renderScreen();
+
+        expect(
+            getByText(getTranslation('moduleConnectDevice.connectAndUnlockScreen.title')),
         ).toBeOnTheScreen();
     });
 });
