@@ -10,4 +10,4 @@ plugins:
     - local: ./protoc-gen-plugin.ts
       out: ../src/definitions
       opt:
-          - target=dts
+          - target=ts+dts
