@@ -1,22 +1,13 @@
 import {
     MODAL_CONTEXT_DEVICE,
     MODAL_CONTEXT_DEVICE_CONFIRMATION,
-    type MODAL_CONTEXT_NONE,
     MODAL_CONTEXT_USER,
 } from '@suite/modal';
 
-import type { AppState } from 'src/types/suite';
-
 import { DeviceConfirmationModal } from './DeviceConfirmationModal/DeviceConfirmationModal';
 import { DeviceContextModal } from './DeviceContextModal/DeviceContextModal';
+import type { ReduxModalProps } from './ReduxModalProps';
 import { UserContextModal } from './UserContextModal/UserContextModal';
-
-export type ReduxModalProps<
-    T extends AppState['modal']['context'] = Exclude<
-        AppState['modal']['context'],
-        typeof MODAL_CONTEXT_NONE
-    >,
-> = Extract<AppState['modal'], { context: T }>;
 
 /** Modals initiated by redux state.modal */
 export const ReduxModal = (modal: ReduxModalProps) => {
