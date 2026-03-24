@@ -3,6 +3,7 @@ import React from 'react';
 import { type TradingExchangeType, type TradingSellType } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
+import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider, userEvent } from '@suite-native/test-utils';
 
 import { FeePickerCard } from '../FeePickerCard';
@@ -61,13 +62,17 @@ describe('FeePickerCard', () => {
     it('should render the details title', () => {
         const { getByText } = renderFeePickerCard({}, createPreloadedState('1000'));
 
-        expect(getByText('Transaction details')).toBeTruthy();
+        expect(
+            getByText(getTranslation('moduleTrading.tradingExchangePreviewScreen.details')),
+        ).toBeTruthy();
     });
 
     it('should render fee label', () => {
         const { getByText } = renderFeePickerCard({}, createPreloadedState('1000'));
 
-        expect(getByText('Fee')).toBeTruthy();
+        expect(
+            getByText(getTranslation('transactionManagement.fees.description.title.general')),
+        ).toBeTruthy();
     });
 
     it('should render fee value with correct symbol', () => {
@@ -83,11 +88,11 @@ describe('FeePickerCard', () => {
     });
 
     it('should show loading state when fee is undefined', () => {
-        const { getByTestId } = renderFeePickerCard({}, {});
+        const { getAllByTestId } = renderFeePickerCard({}, {});
 
         // When fee is undefined, should show skeleton
-        const skeleton = getByTestId('BoxSkeleton');
-        expect(skeleton).toBeTruthy();
+        const skeletons = getAllByTestId('BoxSkeleton');
+        expect(skeletons.length).toBe(2);
     });
 
     it('should not show loading state when fee is defined', () => {
@@ -100,7 +105,9 @@ describe('FeePickerCard', () => {
     it('should handle fee picker press and navigate to fees screen', async () => {
         const { getByText } = renderFeePickerCard({}, createPreloadedState('1000'));
 
-        await userEvent.press(getByText('Fee'));
+        await userEvent.press(
+            getByText(getTranslation('transactionManagement.fees.description.title.general')),
+        );
 
         expect(mockNavigate).toHaveBeenCalledWith('TradingFees', {
             accountKey: 'btc1',
@@ -111,7 +118,9 @@ describe('FeePickerCard', () => {
     it('should not navigate when actualFee is undefined', async () => {
         const { getByText } = renderFeePickerCard({}, {});
 
-        await userEvent.press(getByText('Fee'));
+        await userEvent.press(
+            getByText(getTranslation('transactionManagement.fees.description.title.general')),
+        );
 
         expect(mockNavigate).not.toHaveBeenCalled();
     });

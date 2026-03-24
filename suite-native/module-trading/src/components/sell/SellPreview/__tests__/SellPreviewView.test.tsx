@@ -1,3 +1,4 @@
+import { getTranslation } from '@suite-native/intl';
 import { type PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils';
 import {
     eth1NormalAccount,
@@ -51,11 +52,23 @@ describe('SellPreviewView', () => {
     it('should render all sections except alert', () => {
         const { getByText } = renderSellPreviewView({});
 
-        expect(getByText('From')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.tradingSellPreviewScreen.fromAccount')),
+        ).toBeOnTheScreen();
         expect(getByText('ETH Account #1')).toBeOnTheScreen();
-        expect(getByText('To')).toBeOnTheScreen();
-        expect(getByText('Bank Transfer')).toBeOnTheScreen();
-        expect(getByText('Fee')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.tradingSellPreviewScreen.toFiat')),
+        ).toBeOnTheScreen();
+        expect(
+            getByText(
+                getTranslation(
+                    'moduleTrading.tradingSellPreviewScreen.paymentMethods.bankTransfer',
+                ),
+            ),
+        ).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('transactionManagement.fees.description.title.ethereum')),
+        ).toBeOnTheScreen();
     });
 
     it('should render txnErrorString when isTxnError is true', () => {
@@ -63,13 +76,25 @@ describe('SellPreviewView', () => {
             txnErrorString: 'Transaction error occurred',
         });
 
-        expect(getByText('From')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.tradingSellPreviewScreen.fromAccount')),
+        ).toBeOnTheScreen();
         expect(getByText('ETH Account #1')).toBeOnTheScreen();
-        expect(getByText('To')).toBeOnTheScreen();
-        expect(getByText('Bank Transfer')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.tradingSellPreviewScreen.toFiat')),
+        ).toBeOnTheScreen();
+        expect(
+            getByText(
+                getTranslation(
+                    'moduleTrading.tradingSellPreviewScreen.paymentMethods.bankTransfer',
+                ),
+            ),
+        ).toBeOnTheScreen();
         expect(getByText('Transaction error occurred')).toBeOnTheScreen();
         // Fee picker should be hidden when there's a transaction error
-        expect(queryByText('Fee')).not.toBeOnTheScreen();
+        expect(
+            queryByText(getTranslation('transactionManagement.fees.description.title.ethereum')),
+        ).not.toBeOnTheScreen();
     });
 
     it('should not render bank account picker when form step is not BANK_ACCOUNT', () => {
@@ -101,9 +126,15 @@ describe('SellPreviewView', () => {
         });
 
         // Verify component renders with the passed quote
-        expect(getByText('From')).toBeOnTheScreen();
-        expect(getByText('To')).toBeOnTheScreen();
-        expect(getByText('Fee')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.tradingSellPreviewScreen.fromAccount')),
+        ).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.tradingSellPreviewScreen.toFiat')),
+        ).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('transactionManagement.fees.description.title.ethereum')),
+        ).toBeOnTheScreen();
     });
 
     it('should not render fee picker when quote has no cryptoCurrency', () => {
@@ -115,6 +146,8 @@ describe('SellPreviewView', () => {
             quote: quoteWithoutCrypto as (typeof sellQuotes)[0],
         });
 
-        expect(queryByText('Fee')).not.toBeOnTheScreen();
+        expect(
+            queryByText(getTranslation('transactionManagement.fees.description.title.ethereum')),
+        ).not.toBeOnTheScreen();
     });
 });

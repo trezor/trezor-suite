@@ -2584,7 +2584,6 @@ export const messages = {
             fromAccount: 'From',
             toAccount: 'To',
             details: 'Transaction details',
-            maximumFeeLabel: 'Maximum fee',
             providerNamePlaceholder: 'Provider',
             providerReceiveAddressLabel: "{providerName}'s receive address",
             confirmationAlertTitle: 'Failed to confirm offer.',

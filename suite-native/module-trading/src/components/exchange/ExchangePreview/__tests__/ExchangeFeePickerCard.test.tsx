@@ -1,3 +1,4 @@
+import { getTranslation } from '@suite-native/intl';
 import { type PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils';
 import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
 
@@ -46,6 +47,8 @@ describe('ExchangeFeePickerCard', () => {
     it('should render FeePickerCard otherwise', () => {
         const { getByText } = renderExchangeFeePickerCard({ quote: exchangeQuotes[0] });
 
-        expect(getByText('Fee')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('transactionManagement.fees.description.title.general')),
+        ).toBeOnTheScreen();
     });
 });

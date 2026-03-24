@@ -32,11 +32,19 @@ describe('FeePicker', () => {
         jest.clearAllMocks();
     });
 
-    it('should render fee label', () => {
+    it('should render fee label for bitcoin', () => {
         const { getByText } = renderFeePicker();
 
         expect(
-            getByText(getTranslation('moduleTrading.tradingExchangePreviewScreen.maximumFeeLabel')),
+            getByText(getTranslation('transactionManagement.fees.description.title.general')),
+        ).toBeOnTheScreen();
+    });
+
+    it('should render fee label for ethereum', () => {
+        const { getByText } = renderFeePicker({ symbol: 'eth' as NetworkSymbol });
+
+        expect(
+            getByText(getTranslation('transactionManagement.fees.description.title.ethereum')),
         ).toBeOnTheScreen();
     });
 
