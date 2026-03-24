@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider, userEvent } from '@suite-native/test-utils';
 
 import { FEE_PICKER_TEST_ID, FeePicker } from '../FeePicker';
@@ -34,7 +35,9 @@ describe('FeePicker', () => {
     it('should render fee label', () => {
         const { getByText } = renderFeePicker();
 
-        expect(getByText('Maximum fee')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.tradingExchangePreviewScreen.maximumFeeLabel')),
+        ).toBeOnTheScreen();
     });
 
     it('should render fee value with correct symbol', () => {
