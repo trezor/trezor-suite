@@ -155,7 +155,7 @@ const prepareContent = (
                     tokenDefinitions,
                     historicRates: historicFiatRates,
                     txsMarkedAsNotScam,
-                }),
+                }).isPhishing,
         )
         .map(formatAmounts(symbol))
         .flatMap(t => {

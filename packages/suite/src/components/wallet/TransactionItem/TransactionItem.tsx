@@ -109,7 +109,7 @@ export const TransactionItem = memo(
                 }),
             );
         };
-        const isPhishingTransaction = useSelector(state =>
+        const { isPhishing: isPhishingTransaction } = useSelector(state =>
             selectIsPhishingTransaction(state, transaction.txid, accountKey),
         );
 

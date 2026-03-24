@@ -185,7 +185,7 @@ export const useVisibleTransactions = ({
                               tokenDefinitions,
                               txsMarkedAsNotScam,
                               historicRates,
-                          }),
+                          }).isPhishing,
                   )
                 : allTransactions,
         [enableFiltering, allTransactions, tokenDefinitions, txsMarkedAsNotScam, historicRates],

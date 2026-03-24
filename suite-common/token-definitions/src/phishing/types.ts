@@ -29,3 +29,15 @@ export interface PhishingDetectorResult {
 }
 
 export type PhishingDetectorFn = (props: PhishingDetectorFnProps) => PhishingDetectorResult;
+
+export type PhishingDetectorId = 'FAKE_TOKEN' | 'UNKNOWN_TX' | 'DUST_AMOUNT' | 'ZERO_AMOUNT';
+
+export type PhishingDetector = {
+    id: PhishingDetectorId;
+    validator: PhishingDetectorFn;
+};
+
+export type PhishingTransactionValidatorResult = {
+    isPhishing: boolean;
+    detectorId?: PhishingDetectorId;
+};

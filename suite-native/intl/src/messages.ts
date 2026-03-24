@@ -1943,7 +1943,15 @@ export const messages = {
         phishing: {
             badge: 'Caution!',
             warning: 'This transaction looks suspicious. <blogLink>Learn more</blogLink>',
-            markedAsRecognized: 'You’ve confirmed this transaction is safe..',
+            warningFakeToken:
+                'This transaction may include hidden or unrecognized tokens. <blogLink>Learn more</blogLink>',
+            warningUnknownTx:
+                "This transaction couldn't be fully verified. <blogLink>Learn more</blogLink>",
+            warningDustAmount:
+                'This transaction contains dust amounts, which can be used in scams. <blogLink>Learn more</blogLink>',
+            warningZeroAmount:
+                'This transaction has a zero amount and may be suspicious. <blogLink>Learn more</blogLink>',
+            markedAsRecognized: 'You’ve confirmed this transaction is safe.',
             hideTransaction: 'Mark as suspicious',
             unhideTransaction: 'Mark as safe',
         },

@@ -51,7 +51,7 @@ export const TokenTransferListItemValues = ({
         selectTransactionFiatRate(state, transaction, tokenTransfer?.contract),
     );
 
-    const isPhishingTransaction = useSelector(
+    const { isPhishing: isPhishingTransaction } = useSelector(
         (
             state: TokenDefinitionsRootState &
                 TransactionsRootState &

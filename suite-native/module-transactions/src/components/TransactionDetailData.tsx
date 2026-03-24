@@ -1,7 +1,10 @@
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useFormatters } from '@suite-common/formatters';
-import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
+import {
+    type PhishingDetectorId,
+    type TokenDefinitionsRootState,
+} from '@suite-common/token-definitions';
 import {
     type FiatRatesRootState,
     type PhishingRootState,
@@ -28,6 +31,21 @@ import { TransactionDetailRow } from './TransactionDetailRow';
 import { TransactionDetailSheets } from './TransactionDetailSheets';
 import { TransactionOverview, cardStyle } from './TransactionOverview';
 
+const getPhishingWarningTranslationId = (detectorId?: PhishingDetectorId) => {
+    switch (detectorId) {
+        case 'FAKE_TOKEN':
+            return 'transactions.phishing.warningFakeToken';
+        case 'UNKNOWN_TX':
+            return 'transactions.phishing.warningUnknownTx';
+        case 'DUST_AMOUNT':
+            return 'transactions.phishing.warningDustAmount';
+        case 'ZERO_AMOUNT':
+            return 'transactions.phishing.warningZeroAmount';
+        default:
+            return 'transactions.phishing.warning';
+    }
+};
+
 type TransactionDetailDataProps = {
     transaction: WalletAccountTransaction;
     accountKey: AccountKey;
@@ -49,7 +67,7 @@ export const TransactionDetailData = ({
     const transactionBlockTime = useSelector((state: TransactionsRootState) =>
         selectTransactionBlockTimeById(state, accountKey, transaction.txid),
     );
-    const isPhishingTransaction = useSelector(
+    const { isPhishing: isPhishingTransaction, detectorId: phishingDetectorId } = useSelector(
         (
             state: TokenDefinitionsRootState &
                 TransactionsRootState &
@@ -103,7 +121,7 @@ export const TransactionDetailData = ({
                     variant="critical"
                     title={
                         <Translation
-                            id="transactions.phishing.warning"
+                            id={getPhishingWarningTranslationId(phishingDetectorId)}
                             values={{
                                 blogLink: chunks => (
                                     <Link
