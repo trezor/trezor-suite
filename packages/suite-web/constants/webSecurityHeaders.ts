@@ -52,7 +52,6 @@ const PRODUCTION_SECURITY_HEADERS = {
         'style-src': ['self', 'unsafe-inline'],
         'style-src-elem': ['self', 'unsafe-inline'],
         'img-src': ['self', 'blob:', 'data:', 'https://*.trezor.io'],
-        'connect-src': ['data:', '*'],
         'upgrade-insecure-requests': true,
         'script-src': ['self', 'unsafe-eval'],
         'report-uri': SENTRY_REPORT_URL,

@@ -5,7 +5,6 @@ export type ContentSecurityPolicyRules = {
     'style-src': string[];
     'style-src-elem': string[];
     'img-src': string[];
-    'connect-src': string[];
     'upgrade-insecure-requests': true;
     'report-uri': string;
     'report-to': string;
