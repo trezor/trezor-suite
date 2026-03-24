@@ -18,7 +18,7 @@ import {
 import { arrayPartition, getSynchronize, versionUtils } from '@trezor/utils';
 
 import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
-import type { MethodMessage, MethodPermission } from '../core/AbstractMethod';
+import type { MethodContext, MethodMessage, MethodPermission } from '../core/AbstractMethod';
 import { AbstractMethod, DEFAULT_FIRMWARE_RANGE } from '../core/AbstractMethod';
 import { getCoinInfo } from '../data/coinInfo';
 import type { AccountDescriptor } from '../device/DeviceCommands';
@@ -164,13 +164,16 @@ export default class DiscoverAccounts extends AbstractMethod<
         this.progress[key] = progress;
     }
 
-    private sendProgress(response: DiscoverAccountsProgress) {
+    private sendProgress(
+        response: DiscoverAccountsProgress,
+        sendCoreMessage: MethodContext['sendCoreMessage'],
+    ) {
         const progress =
             Object.values(this.progress).reduce((sum, typeProgress) => sum + typeProgress, 0) /
             // if no items in progress, divide by 1 instead of 0 as the numerator will be 0 anyway
             (Object.keys(this.progress).length || 1);
 
-        this.postMessage(
+        sendCoreMessage(
             createUiMessage(UI_REQUEST.BUNDLE_PROGRESS, {
                 total: 100,
                 progress: 100 * progress,
@@ -179,14 +182,17 @@ export default class DiscoverAccounts extends AbstractMethod<
         );
     }
 
-    async run() {
+    async run({ sendCoreMessage }: MethodContext) {
         const [unsupported, supported] = this.filterUnsupportedAccounts(this.params.coins);
 
         unsupported.forEach(
             ({ account: { path: bip43, ...rest }, error, coinInfo, skip, offset }) => {
                 const path = substituteBip43Path(bip43, skip + offset);
                 const backendType = coinInfo.blockchainLink?.type;
-                this.sendProgress({ ...rest, index: skip, failed: true, error, path, backendType });
+                this.sendProgress(
+                    { ...rest, index: skip, failed: true, error, path, backendType },
+                    sendCoreMessage,
+                );
             },
         );
 
@@ -196,7 +202,9 @@ export default class DiscoverAccounts extends AbstractMethod<
 
         accounts.forEach(({ account, skip }) => this.updateProgress(account, skip));
 
-        const counts = await Promise.all(accounts.map(account => this.discoverAccount(account)));
+        const counts = await Promise.all(
+            accounts.map(account => this.discoverAccount(account, sendCoreMessage)),
+        );
         const nonempty = counts.reduce((sum, acc) => sum + acc.nonempty, 0);
         const failed = counts.filter(acc => acc.error).length;
         const empty = counts.length - failed;
@@ -312,21 +320,27 @@ export default class DiscoverAccounts extends AbstractMethod<
         return { path, ...descriptorRest };
     }
 
-    private async discoverAccount(request: Request): Promise<{ nonempty: number; error?: string }> {
+    private async discoverAccount(
+        request: Request,
+        sendCoreMessage: MethodContext['sendCoreMessage'],
+    ): Promise<{ nonempty: number; error?: string }> {
         const { details, identity, pageSize, coinInfo, derivation, offset, skip } = request;
         const { path: bip43, ...accountKey } = request.account;
         const backendType = coinInfo.blockchainLink?.type;
         const utxoRequired = isUtxoBased(coinInfo) && details && details !== 'basic';
         let index = skip;
 
+        const sendProgress = (response: DiscoverAccountsProgress) =>
+            this.sendProgress(response, sendCoreMessage);
+
         let blockchain;
         try {
-            blockchain = await initBlockchain(coinInfo, this.postMessage, identity);
+            blockchain = await initBlockchain(coinInfo, sendCoreMessage, identity);
         } catch (err) {
             const path = substituteBip43Path(bip43, offset + index);
             this.updateProgress(accountKey, index + 1, true);
             const error = err.message;
-            this.sendProgress({ ...accountKey, index, failed: true, error, path, backendType });
+            sendProgress({ ...accountKey, index, failed: true, error, path, backendType });
 
             return { nonempty: 0, error };
         }
@@ -349,7 +363,7 @@ export default class DiscoverAccounts extends AbstractMethod<
                       : await blockchain.getAccountUtxo(descriptor);
 
                 this.updateProgress(accountKey, index + 1, info.empty);
-                this.sendProgress({
+                sendProgress({
                     ...info,
                     descriptor,
                     ...descRest,
@@ -370,7 +384,7 @@ export default class DiscoverAccounts extends AbstractMethod<
                 const { message: error, code } = err;
                 const failed = true;
                 this.updateProgress(accountKey, index + 1, true);
-                this.sendProgress({ ...accountKey, index, failed, error, code, path, backendType });
+                sendProgress({ ...accountKey, index, failed, error, code, path, backendType });
 
                 return { nonempty: index - skip, error };
             }

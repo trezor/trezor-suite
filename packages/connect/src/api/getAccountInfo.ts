@@ -12,7 +12,12 @@ import { ERRORS } from '@trezor/connect-common/src/constants';
 import { resolveAfter } from '@trezor/utils/src/resolveAfter';
 
 import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
-import type { MethodMessage, MethodPermission, MethodReturnType } from '../core/AbstractMethod';
+import type {
+    MethodContext,
+    MethodMessage,
+    MethodPermission,
+    MethodReturnType,
+} from '../core/AbstractMethod';
 import { AbstractMethod, DEFAULT_FIRMWARE_RANGE } from '../core/AbstractMethod';
 import { getCoinInfo } from '../data/coinInfo';
 import { Discovery } from './common/Discovery';
@@ -194,10 +199,10 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
         }
     }
 
-    async run() {
+    async run(context: MethodContext) {
         // address_n and descriptor are not set. use discovery
         if (this.params.length === 1 && !this.params[0].path && !this.params[0].descriptor) {
-            return this.discover(this.params[0]);
+            return this.discover(this.params[0], context);
         }
 
         const responses: MethodReturnType<typeof this.name> = [];
@@ -205,7 +210,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
         const sendProgress = (progress: number, response: AccountInfo | null, error?: string) => {
             if (!this.hasBundle || this.getDevice()?.getCurrentSession().isDisposed()) return;
             // send progress to UI
-            this.postMessage(
+            context.sendCoreMessage(
                 createUiMessage(UI_REQUEST.BUNDLE_PROGRESS, {
                     total: this.params.length,
                     progress,
@@ -257,7 +262,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
                 // initialize backend
                 const blockchain = await initBlockchain(
                     request.coinInfo,
-                    this.postMessage,
+                    context.sendCoreMessage,
                     request.identity,
                 );
 
@@ -320,10 +325,10 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
         return this.hasBundle ? responses : responses[0]!;
     }
 
-    async discover(request: Request) {
+    private async discover(request: Request, context: MethodContext) {
         const { coinInfo, identity, defaultAccountType, derivationType } = request;
-        const blockchain = await initBlockchain(coinInfo, this.postMessage, identity);
-        const dfd = this.createUiPromise(UI_RESPONSE.RECEIVE_ACCOUNT, this.getDevice());
+        const blockchain = await initBlockchain(coinInfo, context.sendCoreMessage, identity);
+        const dfd = context.createUiPromise(UI_RESPONSE.RECEIVE_ACCOUNT, this.getDevice());
 
         const discovery = new Discovery({
             blockchain,
@@ -332,7 +337,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
         });
 
         discovery.on('progress', accounts => {
-            this.postMessage(
+            context.sendCoreMessage(
                 createUiMessage(UI_REQUEST.SELECT_ACCOUNT, {
                     type: 'progress',
                     coinInfo,
@@ -341,7 +346,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
             );
         });
         discovery.on('complete', () => {
-            this.postMessage(
+            context.sendCoreMessage(
                 createUiMessage(UI_REQUEST.SELECT_ACCOUNT, {
                     type: 'end',
                     coinInfo,
@@ -355,7 +360,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
 
         // set select account view
         // this view will be updated from discovery events
-        this.postMessage(
+        context.sendCoreMessage(
             createUiMessage(UI_REQUEST.SELECT_ACCOUNT, {
                 type: 'start',
                 accountTypes: discovery.types.map(t => t.type),

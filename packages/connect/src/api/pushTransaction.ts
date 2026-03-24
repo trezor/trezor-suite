@@ -6,7 +6,7 @@ import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 
 import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
-import type { MethodMessage, MethodPermission } from '../core/AbstractMethod';
+import type { MethodContext, MethodMessage, MethodPermission } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { getCoinInfo } from '../data/coinInfo';
 
@@ -53,10 +53,10 @@ export default class PushTransaction extends AbstractMethod<'pushTransaction', P
         };
     }
 
-    async run() {
+    async run({ sendCoreMessage }: MethodContext) {
         const backend = await initBlockchain(
             this.params.coinInfo,
-            this.postMessage,
+            sendCoreMessage,
             this.params.identity,
         );
         const txid = await backend.pushTransaction(this.params.tx);

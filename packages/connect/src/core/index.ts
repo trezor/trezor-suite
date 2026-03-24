@@ -129,20 +129,19 @@ const inner = async (context: CoreContext, method: AbstractMethod<any>, device: 
         sendCoreMessage(createUiMessage(UI_REQUEST.FIRMWARE_OUTDATED, device.toMessageObject()));
     }
 
-    const workflowCtx = {
-        device,
-        method,
-        signal: context.signal,
-    };
-
     // Make sure that device will display pin/passphrase
     if (method.useDeviceState) {
-        await workflows.validateState(workflowCtx);
+        await workflows.validateState({
+            device,
+            method,
+            signal: context.signal,
+            sendCoreMessage,
+        });
     }
 
     // run method
     try {
-        const response = await method.run();
+        const response = await method.run({ sendCoreMessage, createUiPromise: uiPromises.create });
 
         return createResponseMessage(method.responseID, true, response, {
             path: device.getUniquePath(),
@@ -183,10 +182,7 @@ const onCall = async (context: CoreContext, message: CoreCallMessage) => {
     try {
         method = await methodSynchronize(async () => {
             _log.debug('loading method...');
-            const method2 = await getMethod(message, {
-                postMessage: sendCoreMessage,
-                createUiPromise: uiPromises.create,
-            });
+            const method2 = await getMethod(message);
             _log.debug('method selected', method2.name);
             // start validation process
             method2.init();
@@ -216,7 +212,10 @@ const onCall = async (context: CoreContext, message: CoreCallMessage) => {
     // this method is not using the device, there is no need to acquire
     if (!method.useDevice) {
         try {
-            const response = await method.run();
+            const response = await method.run({
+                sendCoreMessage,
+                createUiPromise: uiPromises.create,
+            });
             sendCoreMessage(createResponseMessage(method.responseID, true, response));
         } catch (error) {
             sendCoreMessage(createResponseMessage(method.responseID, false, { error }));

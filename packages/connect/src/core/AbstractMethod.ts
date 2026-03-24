@@ -39,14 +39,14 @@ export type MethodInfo = {
 };
 
 export type MethodContext = {
-    postMessage: (message: CoreEventMessage) => void;
+    sendCoreMessage: (message: CoreEventMessage) => void;
     createUiPromise: UiPromiseCreator;
 };
 
 export type MethodMessage<Name extends CallMethodPayload['method']> = {
     id?: number;
     payload: Payload<Name>;
-} & MethodContext;
+};
 
 export const DEFAULT_FIRMWARE_RANGE: FirmwareRange = {
     UNKNOWN: { min: '1.0.0', max: '0' },
@@ -162,11 +162,6 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
 
     public getButtonRequestData?(code: string, name?: string): UiRequestButtonData | undefined;
 
-    // callbacks
-    public postMessage: (message: CoreEventMessage) => void;
-
-    public createUiPromise: UiPromiseCreator;
-
     public initAsync?(): Promise<void>;
 
     constructor(message: MethodMessage<Name>) {
@@ -174,8 +169,6 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         this.name = payload.method;
         this.payload = payload;
         this.responseID = message.id || 0;
-        this.postMessage = message.postMessage;
-        this.createUiPromise = message.createUiPromise;
         this.deviceState = validateDeviceState(payload.device);
         this.keepSession = typeof payload.keepSession === 'boolean' ? payload.keepSession : false;
         this.skipFinalReload = true;
@@ -300,7 +293,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         }
     }
 
-    public abstract run(): Promise<MethodReturnType<Name>>;
+    public abstract run(context: MethodContext): Promise<MethodReturnType<Name>>;
 
     public dispose() {}
 }
