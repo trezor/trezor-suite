@@ -1,50 +1,189 @@
 import { useMemo } from 'react';
 
-import { type YieldDto } from '@suite-common/earn-api';
+import { type TokenDto, type YieldDto } from '@suite-common/earn-api';
 import {
     NORMAL_ACCOUNT_TYPE,
     type NetworkSymbol,
     getNetworkByYieldXyzId,
 } from '@suite-common/wallet-config';
 import { type Account, type TokenInfoBranded, toTokenSymbol } from '@suite-common/wallet-types';
+import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { getApyPercent } from '../../../utils/earnApyUtils';
 import {
     compareYieldRowsByAvailableBalanceDesc,
     compareYieldRowsBySuppliedAmountDesc,
-    getYieldAddressKey,
 } from '../../utils/earnYieldUtils';
-import { type YieldAccountOpportunity, type YieldInactiveVaultOpportunity } from '../types';
+import {
+    type YieldAccountOpportunity,
+    type YieldInactiveVaultOpportunity,
+    type YieldOpportunityData,
+} from '../types';
 
-const getMatchedTokenForVault = (
-    account: Account,
-    vault: YieldDto,
-): TokenInfoBranded | undefined => {
-    const accountTokens = account.tokens as TokenInfoBranded[] | undefined;
-
-    if (!accountTokens?.length) {
+const getNormalizedTokenAddress = ({
+    networkSymbol,
+    tokenAddress,
+}: {
+    networkSymbol: NetworkSymbol;
+    tokenAddress?: string;
+}) => {
+    if (!tokenAddress) {
         return undefined;
     }
 
-    const vaultTokenAddress = vault.token.address?.toLowerCase();
-    const vaultTokenSymbol = vault.token.symbol.toLowerCase();
+    return getContractAddressForNetworkSymbol(networkSymbol, tokenAddress);
+};
 
-    return accountTokens.find(token => {
-        const tokenAddress = token.contract?.toLowerCase();
+const doTokensMatch = ({
+    networkSymbol,
+    firstToken,
+    secondToken,
+}: {
+    networkSymbol: NetworkSymbol;
+    firstToken?: Pick<TokenDto, 'address' | 'symbol' | 'decimals'>;
+    secondToken?: Pick<TokenDto, 'address' | 'symbol' | 'decimals'>;
+}) => {
+    if (!firstToken || !secondToken) {
+        return false;
+    }
 
-        if (vaultTokenAddress && tokenAddress) {
-            return tokenAddress === vaultTokenAddress;
-        }
-
-        return token.symbol.toLowerCase() === vaultTokenSymbol;
+    const firstTokenAddress = getNormalizedTokenAddress({
+        networkSymbol,
+        tokenAddress: firstToken.address,
     });
+    const secondTokenAddress = getNormalizedTokenAddress({
+        networkSymbol,
+        tokenAddress: secondToken.address,
+    });
+
+    if (firstTokenAddress && secondTokenAddress) {
+        return firstTokenAddress === secondTokenAddress;
+    }
+
+    return (
+        firstToken.symbol.toLowerCase() === secondToken.symbol.toLowerCase() &&
+        firstToken.decimals === secondToken.decimals
+    );
+};
+
+const hasTokenSymbol = (
+    accountToken: NonNullable<Account['tokens']>[number],
+): accountToken is TokenInfoBranded => accountToken.symbol !== undefined;
+
+const getMatchedAccountToken = ({
+    account,
+    networkSymbol,
+    token,
+}: {
+    account: Account;
+    networkSymbol: NetworkSymbol;
+    token?: Pick<TokenDto, 'address' | 'symbol' | 'decimals'>;
+}): TokenInfoBranded | undefined => {
+    if (!account.tokens?.length || !token) {
+        return undefined;
+    }
+
+    return account.tokens.find(
+        (accountToken): accountToken is TokenInfoBranded =>
+            hasTokenSymbol(accountToken) &&
+            doTokensMatch({
+                networkSymbol,
+                firstToken: {
+                    address: accountToken.contract,
+                    symbol: accountToken.symbol,
+                    decimals: accountToken.decimals,
+                },
+                secondToken: token,
+            }),
+    );
+};
+
+const getConvertedOutputTokenBalanceToInputTokenAmount = ({
+    matchedOutputToken,
+    networkSymbol,
+    vault,
+}: {
+    matchedOutputToken: TokenInfoBranded | undefined;
+    networkSymbol: NetworkSymbol;
+    vault: YieldDto;
+}) => {
+    if (!matchedOutputToken) {
+        return '0';
+    }
+
+    if (
+        doTokensMatch({
+            networkSymbol,
+            firstToken: vault.outputToken,
+            secondToken: vault.token,
+        })
+    ) {
+        return matchedOutputToken.balance ?? '0';
+    }
+
+    const pricePerShareState = vault.state?.pricePerShareState;
+
+    if (
+        !pricePerShareState ||
+        !doTokensMatch({
+            networkSymbol,
+            firstToken: pricePerShareState.shareToken,
+            secondToken: vault.outputToken,
+        }) ||
+        !doTokensMatch({
+            networkSymbol,
+            firstToken: pricePerShareState.quoteToken,
+            secondToken: vault.token,
+        })
+    ) {
+        return '0';
+    }
+
+    return new BigNumber(matchedOutputToken.balance ?? '0')
+        .times(pricePerShareState.price)
+        .decimalPlaces(vault.token.decimals, BigNumber.ROUND_DOWN)
+        .toString();
+};
+
+const getYieldOpportunityData = ({
+    account,
+    networkSymbol,
+    vault,
+}: {
+    account: Account;
+    networkSymbol: NetworkSymbol;
+    vault: YieldDto;
+}) => {
+    const matchedInputToken = getMatchedAccountToken({
+        account,
+        networkSymbol,
+        token: vault.token,
+    });
+    const matchedOutputToken = getMatchedAccountToken({
+        account,
+        networkSymbol,
+        token: vault.outputToken,
+    });
+    const hasVaultPosition = new BigNumber(matchedOutputToken?.balance ?? '0').gt(0);
+
+    return {
+        matchedInputToken,
+        hasVaultPosition,
+        suppliedAmount: getConvertedOutputTokenBalanceToInputTokenAmount({
+            matchedOutputToken,
+            networkSymbol,
+            vault,
+        }),
+        additionalSupplyAmount: matchedInputToken?.balance ?? '0',
+        suppliedSymbol: matchedInputToken?.symbol ?? toTokenSymbol(vault.token.symbol),
+        suppliedContractAddress: matchedInputToken?.contract ?? vault.token.address ?? null,
+    } satisfies YieldOpportunityData;
 };
 
 type UseYieldTableDataProps = {
     availableVaults: YieldDto[];
     deviceSupportedNetworkSymbols: NetworkSymbol[];
-    suppliedBalancesByYieldAndAddress: Map<string, string>;
     visibleAccounts: Account[];
     visibleAccountSymbols: Set<NetworkSymbol>;
 };
@@ -52,7 +191,6 @@ type UseYieldTableDataProps = {
 export const useYieldTableData = ({
     availableVaults,
     deviceSupportedNetworkSymbols,
-    suppliedBalancesByYieldAndAddress,
     visibleAccounts,
     visibleAccountSymbols,
 }: UseYieldTableDataProps) => {
@@ -70,26 +208,18 @@ export const useYieldTableData = ({
                     account.symbol === network.symbol,
             );
 
-            return networkAccounts.map(account => {
-                const matchedToken = getMatchedTokenForVault(account, vault);
-                const suppliedAmount =
-                    suppliedBalancesByYieldAndAddress.get(
-                        getYieldAddressKey(vault.id, account.descriptor),
-                    ) ?? '0';
-
-                return {
-                    key: `${vault.id}:${account.key}`,
+            return networkAccounts.map(account => ({
+                key: `${vault.id}:${account.key}`,
+                account,
+                networkSymbol: network.symbol,
+                vault,
+                ...getYieldOpportunityData({
                     account,
                     networkSymbol: network.symbol,
                     vault,
-                    matchedToken,
-                    suppliedAmount,
-                    additionalSupplyAmount: matchedToken?.balance ?? '0',
-                    suppliedSymbol: matchedToken?.symbol ?? toTokenSymbol(vault.token.symbol),
-                    suppliedContractAddress: matchedToken?.contract ?? vault.token.address ?? null,
-                    apyPercentage: getApyPercent(vault.rewardRate.total),
-                };
-            });
+                }),
+                apyPercentage: getApyPercent(vault.rewardRate.total),
+            }));
         });
 
         const activeOpportunities: YieldAccountOpportunity[] = [];
@@ -97,17 +227,16 @@ export const useYieldTableData = ({
         const buyOnlyOpportunities: YieldAccountOpportunity[] = [];
 
         allOpportunities.forEach(opportunity => {
-            const hasSuppliedBalance = new BigNumber(opportunity.suppliedAmount).gt(0);
-            const hasMatchedToken = opportunity.matchedToken !== undefined;
+            const hasMatchedInputToken = opportunity.matchedInputToken !== undefined;
             const hasSupplyableBalance = new BigNumber(opportunity.additionalSupplyAmount).gt(0);
 
-            if (hasSuppliedBalance) {
+            if (opportunity.hasVaultPosition) {
                 activeOpportunities.push(opportunity);
 
                 return;
             }
 
-            if (hasMatchedToken && hasSupplyableBalance) {
+            if (hasMatchedInputToken && hasSupplyableBalance) {
                 supplyableOpportunities.push(opportunity);
 
                 return;
@@ -121,12 +250,7 @@ export const useYieldTableData = ({
             ...supplyableOpportunities.toSorted(compareYieldRowsByAvailableBalanceDesc),
             ...buyOnlyOpportunities.toSorted(compareYieldRowsByAvailableBalanceDesc),
         ];
-    }, [
-        availableVaults,
-        suppliedBalancesByYieldAndAddress,
-        visibleAccounts,
-        visibleAccountSymbols,
-    ]);
+    }, [availableVaults, visibleAccounts, visibleAccountSymbols]);
 
     const yieldInactiveVaultOpportunities = useMemo<YieldInactiveVaultOpportunity[]>(() => {
         const opportunities = availableVaults.flatMap(vault => {
@@ -157,10 +281,7 @@ export const useYieldTableData = ({
     }, [availableVaults, deviceSupportedNetworkSymbols, visibleAccountSymbols]);
 
     const isYieldActive = useMemo(
-        () =>
-            yieldAccountOpportunities.some(opportunity =>
-                new BigNumber(opportunity.suppliedAmount).gt(0),
-            ),
+        () => yieldAccountOpportunities.some(opportunity => opportunity.hasVaultPosition),
         [yieldAccountOpportunities],
     );
 

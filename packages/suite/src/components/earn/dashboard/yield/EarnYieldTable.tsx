@@ -13,7 +13,6 @@ import { useSelector } from 'src/hooks/suite';
 
 import { EarnYieldTableBody } from './EarnYieldTableBody';
 import { useAllYieldOpportunities } from './hooks/useAllYieldOpportunities';
-import { useBalances } from './hooks/useBalances';
 import { useYieldAccountsVisibility } from './hooks/useYieldAccountsVisibility';
 import { useYieldTableData } from './hooks/useYieldTableData';
 import { EarnDashboardSection } from '../common/EarnDashboardSection';
@@ -41,16 +40,10 @@ export const EarnYieldTable = () => {
         [normalAccounts],
     );
 
-    const { suppliedBalancesByYieldAndAddress } = useBalances({
-        vaults: availableVaults,
-        accounts: normalAccounts,
-    });
-
     const { yieldAccountOpportunities, yieldInactiveVaultOpportunities, isYieldActive } =
         useYieldTableData({
             availableVaults,
             deviceSupportedNetworkSymbols,
-            suppliedBalancesByYieldAndAddress,
             visibleAccounts: normalAccounts,
             visibleAccountSymbols,
         });
