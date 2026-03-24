@@ -141,7 +141,7 @@ export const TransactionListItemContainer = ({
     );
 
     const isTransactionPending = isPending(transaction);
-    const isPhishingTransaction = useSelector(
+    const { isPhishing: isPhishingTransaction } = useSelector(
         (
             state: TokenDefinitionsRootState &
                 TransactionsRootState &

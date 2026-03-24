@@ -14,7 +14,7 @@ import {
 import { BigNumber } from '@trezor/utils';
 
 import { DUST_PHISHING_THRESHOLD_CURRENCY, PHISHING_WHITELISTED_TX_TYPES } from './constants';
-import { type TransactionWithFiatAmount } from './types';
+import { type PhishingDetectorId, type TransactionWithFiatAmount } from './types';
 
 export const isTransactionWhitelisted = (transaction: TransactionWithFiatAmount) =>
     PHISHING_WHITELISTED_TX_TYPES.includes(transaction.type);
@@ -93,4 +93,9 @@ export const getTransactionWithFiatAmounts = ({
             historicRates,
         }),
     })),
+});
+
+export const createPhishingResult = (isPhishing: boolean, detectorId?: PhishingDetectorId) => ({
+    isPhishing,
+    detectorId,
 });

@@ -1,13 +1,17 @@
 import { type TokenDefinitions } from '../tokenDefinitionsTypes';
-import { type PhishingDetectorFn, type TransactionWithFiatAmount } from './types';
-
+import type {
+    PhishingDetector,
+    PhishingTransactionValidatorResult,
+    TransactionWithFiatAmount,
+} from './types';
+import { createPhishingResult } from './utils';
 export class PhishingTransactionValidator {
     private transaction?: TransactionWithFiatAmount;
     private tokenDefinitions?: TokenDefinitions;
     private dustThreshold?: string;
-    private detectors: PhishingDetectorFn[] = [];
+    private detectors: PhishingDetector[] = [];
 
-    public addDetector(detector: PhishingDetectorFn) {
+    public addDetector(detector: PhishingDetector) {
         this.detectors.push(detector);
 
         return this;
@@ -31,18 +35,18 @@ export class PhishingTransactionValidator {
         return this;
     }
 
-    public validate() {
-        if (!this.transaction) return false;
+    public validate(): PhishingTransactionValidatorResult {
+        if (!this.transaction) return createPhishingResult(false);
 
         for (const detector of this.detectors) {
-            const { isPhishing, transaction } = detector({
+            const { isPhishing, transaction } = detector.validator({
                 transaction: this.transaction,
                 tokenDefinitions: this.tokenDefinitions,
                 dustThreshold: this.dustThreshold,
             });
 
             if (isPhishing) {
-                return true;
+                return createPhishingResult(true, detector.id);
             }
 
             if (transaction) {
@@ -50,7 +54,7 @@ export class PhishingTransactionValidator {
             }
         }
 
-        return false;
+        return createPhishingResult(false);
     }
 
     public getDetectors() {

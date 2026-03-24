@@ -57,7 +57,7 @@ export const TransactionListItemValues = ({
         selectIsTestnetAccount(state, accountKey),
     );
 
-    const isPhishingTransaction = useSelector(
+    const { isPhishing: isPhishingTransaction } = useSelector(
         (
             state: TokenDefinitionsRootState &
                 TransactionsRootState &

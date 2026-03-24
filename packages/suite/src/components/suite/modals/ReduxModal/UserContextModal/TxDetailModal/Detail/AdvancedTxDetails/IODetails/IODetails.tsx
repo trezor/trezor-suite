@@ -23,7 +23,7 @@ export const IODetails = ({ tx }: IODetailsProps) => {
         networkSymbol: tx.symbol,
         deviceStaticSessionId: tx.deviceState,
     });
-    const isPhishingTransaction = useSelector(state =>
+    const { isPhishing: isPhishingTransaction } = useSelector(state =>
         selectIsPhishingTransaction(state, tx.txid, accountKey),
     );
 

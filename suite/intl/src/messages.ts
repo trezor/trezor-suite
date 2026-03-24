@@ -8813,6 +8813,26 @@ export const messages = defineMessages({
         id: 'TR_ZERO_PHISHING_BANNER',
         defaultMessage: 'This transaction looks suspicious. <a>Learn more</a>',
     },
+    TR_PHISHING_BANNER_FAKE_TOKEN: {
+        id: 'TR_PHISHING_BANNER_FAKE_TOKEN',
+        defaultMessage:
+            'Proceed with caution. This transaction may include hidden or unrecognized tokens. <a>Learn more</a>',
+    },
+    TR_PHISHING_BANNER_UNKNOWN_TX: {
+        id: 'TR_PHISHING_BANNER_UNKNOWN_TX',
+        defaultMessage:
+            "Proceed with caution. This transaction couldn't be fully verified. <a>Learn more</a>",
+    },
+    TR_PHISHING_BANNER_DUST_AMOUNT: {
+        id: 'TR_PHISHING_BANNER_DUST_AMOUNT',
+        defaultMessage:
+            'Proceed with caution. This transaction contains dust amounts, which can be used in scams. <a>Learn more</a>',
+    },
+    TR_PHISHING_BANNER_ZERO_AMOUNT: {
+        id: 'TR_PHISHING_BANNER_ZERO_AMOUNT',
+        defaultMessage:
+            'Proceed with caution. This transaction has a zero amount and may be suspicious. <a>Learn more</a>',
+    },
     TR_HIDE_TRANSACTION: {
         id: 'TR_HIDE_TRANSACTION',
         defaultMessage: 'Mark as suspicious',

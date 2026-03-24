@@ -4,10 +4,11 @@ import { isNftTokenTransfer } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { isTokenDefinitionKnown } from '../tokenDefinitionsUtils';
-import {
-    type PhishingDetectorFn,
-    type TokenTransferWithFiatAmount,
-    type TransactionWithFiatAmount,
+import type {
+    PhishingDetector,
+    PhishingDetectorFn,
+    TokenTransferWithFiatAmount,
+    TransactionWithFiatAmount,
 } from './types';
 import { isTransactionWhitelisted } from './utils';
 
@@ -61,7 +62,7 @@ const isZeroValuePhishing: PhishingDetectorFn = ({ transaction }) => {
         return createResult(false);
     }
 
-    if (!new BigNumber(transaction.amount).isEqualTo(0)) {
+    if (!new BigNumber(transaction.amount).isZero()) {
         return createResult(false);
     }
 
@@ -69,7 +70,7 @@ const isZeroValuePhishing: PhishingDetectorFn = ({ transaction }) => {
         return createResult(false);
     }
 
-    if (!transaction.tokens.every(token => new BigNumber(token.amount).isEqualTo(0))) {
+    if (!transaction.tokens.every(token => new BigNumber(token.amount).isZero())) {
         return createResult(false);
     }
 
@@ -114,8 +115,9 @@ const isFakeTokenPhishing: PhishingDetectorFn = ({ transaction, tokenDefinitions
         }
     }
 
-    // if the transaction is a receive transaction and there is at least one fake token
+    // if the transaction is a receive/contract transaction and there is at least one fake token
     // classify legit tokens with no fiat amount as fake tokens as well
+    // so that only tokens with fiat amounts are sent to the next (dust amount) detector
     if ((transaction.type === 'recv' || transaction.type === 'contract') && fakeTokens.length > 0) {
         legitTokens = legitTokens.filter(legitToken => {
             if (!legitToken.amountInFiat) {
@@ -142,8 +144,20 @@ const isUnknownTxPhishing: PhishingDetectorFn = ({ transaction }) => {
 };
 
 export const detectors = {
-    dustValue: isDustValuePhishing,
-    zeroValue: isZeroValuePhishing,
-    fakeToken: isFakeTokenPhishing,
-    unknownTx: isUnknownTxPhishing,
-} as const satisfies Record<string, PhishingDetectorFn>;
+    dustValue: {
+        id: 'DUST_AMOUNT',
+        validator: isDustValuePhishing,
+    },
+    zeroValue: {
+        id: 'ZERO_AMOUNT',
+        validator: isZeroValuePhishing,
+    },
+    fakeToken: {
+        id: 'FAKE_TOKEN',
+        validator: isFakeTokenPhishing,
+    },
+    unknownTx: {
+        id: 'UNKNOWN_TX',
+        validator: isUnknownTxPhishing,
+    },
+} as const satisfies Record<string, PhishingDetector>;

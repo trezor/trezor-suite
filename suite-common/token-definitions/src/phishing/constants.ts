@@ -11,6 +11,5 @@ export const DUST_PHISHING_THRESHOLD_CURRENCY = 'usd' satisfies BaseCurrencyCode
 export const PHISHING_WHITELISTED_TX_TYPES: WalletAccountTransaction['type'][] = [
     'sent',
     'self',
-    'contract',
     'failed',
 ];

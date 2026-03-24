@@ -2,6 +2,7 @@ import { type ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
 import { selectIsDeviceRemembered } from '@suite-common/device';
+import { type PhishingDetectorId } from '@suite-common/token-definitions';
 import { type Explorer, getNetwork } from '@suite-common/wallet-config';
 import { getExplorerUrl } from '@suite-common/wallet-config/src/getExplorerUrls';
 import {
@@ -22,6 +23,21 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { type Account, type WalletAccountTransaction } from 'src/types/wallet';
 
 import { BasicTxDetails } from './BasicTxDetails';
+
+const getPhishingBannerTranslationId = (detectorId?: PhishingDetectorId) => {
+    switch (detectorId) {
+        case 'FAKE_TOKEN':
+            return 'TR_PHISHING_BANNER_FAKE_TOKEN';
+        case 'UNKNOWN_TX':
+            return 'TR_PHISHING_BANNER_UNKNOWN_TX';
+        case 'DUST_AMOUNT':
+            return 'TR_PHISHING_BANNER_DUST_AMOUNT';
+        case 'ZERO_AMOUNT':
+            return 'TR_PHISHING_BANNER_ZERO_AMOUNT';
+        default:
+            return 'TR_ZERO_PHISHING_BANNER';
+    }
+};
 
 type TxDetailModalProps = {
     tx: WalletAccountTransaction;
@@ -53,8 +69,8 @@ export const TxDetailModalBase = ({
     const explorer = useSelector(state => selectExplorer(state, account.symbol)) as Explorer;
     const isDeviceRemembered = useSelector(selectIsDeviceRemembered);
 
-    const isPhishingTransaction = useSelector(state =>
-        selectIsPhishingTransaction(state, tx.txid, accountKey),
+    const { isPhishing: isPhishingTransaction, detectorId: phishingDetectorId } = useSelector(
+        state => selectIsPhishingTransaction(state, tx.txid, accountKey),
     );
     const isTxMarkedAsNotScam = useSelector(state =>
         selectTransactionIsMarkedAsNotScam(state, tx.txid, accountKey),
@@ -107,7 +123,7 @@ export const TxDetailModalBase = ({
                         intent="warning"
                         description={
                             <Translation
-                                id="TR_ZERO_PHISHING_BANNER"
+                                id={getPhishingBannerTranslationId(phishingDetectorId)}
                                 values={{
                                     a: chunks => (
                                         <TrezorLink href={HELP_CENTER_ZERO_VALUE_ATTACKS}>

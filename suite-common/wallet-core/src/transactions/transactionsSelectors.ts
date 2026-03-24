@@ -3,6 +3,7 @@ import { A, D, pipe } from '@mobily/ts-belt';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
     type TokenDefinitionsRootState,
+    createPhishingResult,
     isPhishingTransaction,
     selectNetworkTokenDefinitions,
 } from '@suite-common/token-definitions';
@@ -190,7 +191,7 @@ export const selectIsPhishingTransaction = (
     accountKey: AccountKey,
 ) => {
     const transaction = selectTransactionByAccountKeyAndTxid(state, accountKey, txid);
-    if (!transaction) return false;
+    if (!transaction) return createPhishingResult(false);
 
     const { tokenDefinitions, txsMarkedAsNotScam, historicRates } =
         selectPhishingTransactionsContext(state, accountKey, transaction.symbol);
