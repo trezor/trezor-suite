@@ -3111,6 +3111,37 @@
                 }
             }
         },
+        "DebugLinkN4W1Connected": {
+            "fields": {}
+        },
+        "DebugLinkN4W1Write": {
+            "fields": {
+                "key": {
+                    "type": "string",
+                    "id": 1
+                },
+                "value": {
+                    "type": "bytes",
+                    "id": 2
+                }
+            }
+        },
+        "DebugLinkN4W1Read": {
+            "fields": {
+                "key": {
+                    "type": "string",
+                    "id": 1
+                }
+            }
+        },
+        "DebugLinkN4W1Response": {
+            "fields": {
+                "value": {
+                    "type": "bytes",
+                    "id": 1
+                }
+            }
+        },
         "DefinitionType": {
             "values": {
                 "ETHEREUM_NETWORK": 0,
@@ -4339,10 +4370,6 @@
                 "thp_credential": {
                     "type": "bytes",
                     "id": 1
-                },
-                "host_static_public_key": {
-                    "type": "bytes",
-                    "id": 2
                 }
             }
         },
@@ -4363,6 +4390,12 @@
                 "Slip39_Single_Extendable": 3,
                 "Slip39_Basic_Extendable": 4,
                 "Slip39_Advanced_Extendable": 5
+            }
+        },
+        "BackupMethod": {
+            "values": {
+                "Display": 0,
+                "N4W1": 1
             }
         },
         "SafetyCheckLevel": {
@@ -5037,6 +5070,13 @@
                 "entropy_check": {
                     "type": "bool",
                     "id": 11
+                },
+                "backup_method": {
+                    "type": "BackupMethod",
+                    "id": 12,
+                    "options": {
+                        "default": "Display"
+                    }
                 }
             }
         },
@@ -5050,6 +5090,13 @@
                     "rule": "repeated",
                     "type": "Slip39Group",
                     "id": 2
+                },
+                "backup_method": {
+                    "type": "BackupMethod",
+                    "id": 3,
+                    "options": {
+                        "default": "Display"
+                    }
                 }
             },
             "nested": {
@@ -5143,6 +5190,13 @@
                     "id": 10,
                     "options": {
                         "default": "NormalRecovery"
+                    }
+                },
+                "backup_method": {
+                    "type": "BackupMethod",
+                    "id": 11,
+                    "options": {
+                        "default": "Display"
                     }
                 }
             },
@@ -7563,6 +7617,36 @@
                 }
             }
         },
+        "TronVoteWitnessContract": {
+            "fields": {
+                "owner_address": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 1
+                },
+                "votes": {
+                    "rule": "repeated",
+                    "type": "TronVote",
+                    "id": 2
+                }
+            },
+            "nested": {
+                "TronVote": {
+                    "fields": {
+                        "address": {
+                            "rule": "required",
+                            "type": "bytes",
+                            "id": 1
+                        },
+                        "count": {
+                            "rule": "required",
+                            "type": "uint64",
+                            "id": 2
+                        }
+                    }
+                }
+            }
+        },
         "TronTriggerSmartContract": {
             "fields": {
                 "owner_address": {
@@ -7716,6 +7800,7 @@
                         "TronRawContractType": {
                             "values": {
                                 "TransferContract": 1,
+                                "VoteWitnessContract": 4,
                                 "TriggerSmartContract": 31,
                                 "FreezeBalanceV2Contract": 54,
                                 "UnfreezeBalanceV2Contract": 55,
@@ -7840,6 +7925,10 @@
                 "DebugLinkGetPairingInfo": 9011,
                 "DebugLinkPairingInfo": 9012,
                 "DebugLinkSetLogFilter": 9013,
+                "DebugLinkN4W1Connected": 9014,
+                "DebugLinkN4W1Write": 9015,
+                "DebugLinkN4W1Read": 9016,
+                "DebugLinkN4W1Response": 9017,
                 "EthereumGetPublicKey": 450,
                 "EthereumPublicKey": 451,
                 "EthereumGetAddress": 56,
@@ -7984,6 +8073,7 @@
                 "TronFreezeBalanceV2Contract": 2207,
                 "TronUnfreezeBalanceV2Contract": 2208,
                 "TronWithdrawUnfreeze": 2209,
+                "TronVoteWitnessContract": 2210,
                 "TelemetryGet": 1100,
                 "Telemetry": 1101
             }

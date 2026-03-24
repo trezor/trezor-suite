@@ -1056,6 +1056,21 @@ export type DebugLinkSetLogFilter = {
     filter?: string;
 };
 
+export type DebugLinkN4W1Connected = {};
+
+export type DebugLinkN4W1Write = {
+    key?: string;
+    value?: string;
+};
+
+export type DebugLinkN4W1Read = {
+    key?: string;
+};
+
+export type DebugLinkN4W1Response = {
+    value?: string;
+};
+
 export enum DefinitionType {
     ETHEREUM_NETWORK = 0,
     ETHEREUM_TOKEN = 1,
@@ -1439,7 +1454,6 @@ export type EvoluRegistrationRequest = {
 
 export type EvoluGetDelegatedIdentityKey = {
     thp_credential?: string;
-    host_static_public_key?: string;
 };
 
 export type EvoluDelegatedIdentityKey = {
@@ -1456,6 +1470,11 @@ export enum Enum_BackupType {
 }
 
 export type BackupType = keyof typeof Enum_BackupType;
+
+export enum BackupMethod {
+    Display = 0,
+    N4W1 = 1,
+}
 
 export enum Enum_SafetyCheckLevel {
     Strict = 0,
@@ -1558,6 +1577,7 @@ export type RecoveryDevice = {
     input_method?: RecoveryDeviceInputMethod;
     u2f_counter?: number;
     type?: RecoveryType;
+    backup_method?: BackupMethod;
 };
 
 export type Features = {
@@ -1744,6 +1764,7 @@ export type ResetDevice = {
     no_backup?: boolean;
     backup_type?: Enum_BackupType;
     entropy_check?: boolean;
+    backup_method?: BackupMethod;
 };
 
 export type Slip39Group = {
@@ -1754,6 +1775,7 @@ export type Slip39Group = {
 export type BackupDevice = {
     group_threshold?: number;
     groups?: Slip39Group[];
+    backup_method?: BackupMethod;
 };
 
 export type EntropyRequest = {
@@ -2556,6 +2578,16 @@ export type TronTransferContract = {
     amount: UintType;
 };
 
+export type TronVote = {
+    address: string;
+    count: number;
+};
+
+export type TronVoteWitnessContract = {
+    owner_address: string;
+    votes: TronVote[];
+};
+
 export type TronTriggerSmartContract = {
     owner_address: string;
     contract_address: string;
@@ -2594,6 +2626,7 @@ export type TronRawParameter = {
 
 export enum TronRawContractType {
     TransferContract = 1,
+    VoteWitnessContract = 4,
     TriggerSmartContract = 31,
     FreezeBalanceV2Contract = 54,
     UnfreezeBalanceV2Contract = 55,
@@ -2733,6 +2766,10 @@ export type MessageType = {
     DebugLinkGcInfoItem: DebugLinkGcInfoItem;
     DebugLinkGcInfo: DebugLinkGcInfo;
     DebugLinkSetLogFilter: DebugLinkSetLogFilter;
+    DebugLinkN4W1Connected: DebugLinkN4W1Connected;
+    DebugLinkN4W1Write: DebugLinkN4W1Write;
+    DebugLinkN4W1Read: DebugLinkN4W1Read;
+    DebugLinkN4W1Response: DebugLinkN4W1Response;
     EthereumNetworkInfo: EthereumNetworkInfo;
     EthereumTokenInfo: EthereumTokenInfo;
     SolanaTokenInfo: SolanaTokenInfo;
@@ -2945,6 +2982,8 @@ export type MessageType = {
     TronSignTx: TronSignTx;
     TronContractRequest: TronContractRequest;
     TronTransferContract: TronTransferContract;
+    TronVote: TronVote;
+    TronVoteWitnessContract: TronVoteWitnessContract;
     TronTriggerSmartContract: TronTriggerSmartContract;
     TronFreezeBalanceV2Contract: TronFreezeBalanceV2Contract;
     TronUnfreezeBalanceV2Contract: TronUnfreezeBalanceV2Contract;
