@@ -1,6 +1,6 @@
 import { METADATA, selectLabelingDataForAccount, slip15ToBip329 } from '@suite/metadata';
+import { type Bip329Label } from '@suite-common/bip329';
 import { selectSelectedDevice } from '@suite-common/device';
-import { type Bip329Label } from '@suite-common/metadata-types';
 import { createThunk } from '@suite-common/redux-utils';
 import {
     selectAllLabelsForAccount,

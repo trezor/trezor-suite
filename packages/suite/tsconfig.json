@@ -19,6 +19,7 @@
             "path": "../../suite-common/analytics-redux"
         },
         { "path": "../../suite-common/assets" },
+        { "path": "../../suite-common/bip329" },
         {
             "path": "../../suite-common/bluetooth"
         },

@@ -11216,6 +11216,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-common/bip329@workspace:*, @suite-common/bip329@workspace:suite-common/bip329":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/bip329@workspace:suite-common/bip329"
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/bluetooth@workspace:*, @suite-common/bluetooth@workspace:suite-common/bluetooth":
   version: 0.0.0-use.local
   resolution: "@suite-common/bluetooth@workspace:suite-common/bluetooth"
@@ -11814,11 +11820,11 @@ __metadata:
   resolution: "@suite-common/suite-sync@workspace:suite-common/suite-sync"
   dependencies:
     "@reduxjs/toolkit": "npm:2.11.2"
+    "@suite-common/bip329": "workspace:*"
     "@suite-common/delegated-identity-key": "workspace:*"
     "@suite-common/delegated-identity-key-types": "workspace:*"
     "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/device": "workspace:*"
-    "@suite-common/metadata-types": "workspace:*"
     "@suite-common/platform-encryption": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-sync-quota-manager": "workspace:*"
@@ -15046,6 +15052,7 @@ __metadata:
   resolution: "@suite/metadata@workspace:suite/metadata"
   dependencies:
     "@reduxjs/toolkit": "npm:2.11.2"
+    "@suite-common/bip329": "workspace:*"
     "@suite-common/device": "workspace:*"
     "@suite-common/metadata-types": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
@@ -16519,6 +16526,7 @@ __metadata:
     "@suite-common/analytics": "workspace:*"
     "@suite-common/analytics-redux": "workspace:*"
     "@suite-common/assets": "workspace:*"
+    "@suite-common/bip329": "workspace:*"
     "@suite-common/bluetooth": "workspace:*"
     "@suite-common/connect-init": "workspace:*"
     "@suite-common/connect-popup": "workspace:*"
