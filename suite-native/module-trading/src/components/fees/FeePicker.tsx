@@ -1,9 +1,9 @@
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { HStack, Text, VStack } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Icon } from '@suite-native/icons';
-import { Translation } from '@suite-native/intl';
 import { TradeInfoRow } from '@suite-native/trading-atoms';
+import { FeeLabelTranslation } from '@suite-native/transaction-management';
 
 type FeePickerProps = {
     fee: string;
@@ -24,7 +24,7 @@ export const FeePicker = ({
 }: FeePickerProps) => (
     <TradeInfoRow onPress={onPress} testID={FEE_PICKER_TEST_ID} noBorder={noBorder}>
         <Text variant="body-sm">
-            <Translation id="moduleTrading.tradingExchangePreviewScreen.maximumFeeLabel" />
+            <FeeLabelTranslation networkType={getNetworkType(symbol)} />
         </Text>
         <HStack alignItems="center">
             <VStack alignItems="flex-end" spacing="sp2">

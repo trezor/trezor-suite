@@ -180,27 +180,43 @@ describe('TradingExchangePreviewScreen', () => {
     it('should render continue button', () => {
         const { result } = renderTradingExchangePreviewScreen();
 
-        expect(result.getByText('Continue')).toBeOnTheScreen();
+        expect(result.getByText(getTranslation('generic.buttons.continue'))).toBeOnTheScreen();
     });
 
     it('should render screen title correctly', () => {
         const { result } = renderTradingExchangePreviewScreen();
 
-        expect(result.getByText('Swap')).toBeOnTheScreen();
+        expect(
+            result.getByText(getTranslation('moduleTrading.tradingExchangePreviewScreen.title')),
+        ).toBeOnTheScreen();
     });
 
     it('should render from and to account labels', () => {
         const { result } = renderTradingExchangePreviewScreen();
 
-        expect(result.getByText('From')).toBeOnTheScreen();
-        expect(result.getByText('To')).toBeOnTheScreen();
+        expect(
+            result.getByText(
+                getTranslation('moduleTrading.tradingExchangePreviewScreen.fromAccount'),
+            ),
+        ).toBeOnTheScreen();
+        expect(
+            result.getByText(
+                getTranslation('moduleTrading.tradingExchangePreviewScreen.toAccount'),
+            ),
+        ).toBeOnTheScreen();
     });
 
     it('should render transaction details section', () => {
         const { result } = renderTradingExchangePreviewScreen();
 
-        expect(result.getByText('Transaction details')).toBeOnTheScreen();
-        expect(result.getByText('Fee')).toBeOnTheScreen();
+        expect(
+            result.getByText(getTranslation('moduleTrading.tradingExchangePreviewScreen.details')),
+        ).toBeOnTheScreen();
+        expect(
+            result.getByText(
+                getTranslation('transactionManagement.fees.description.title.ethereum'),
+            ),
+        ).toBeOnTheScreen();
     });
 
     describe('Error Alert Functionality', () => {

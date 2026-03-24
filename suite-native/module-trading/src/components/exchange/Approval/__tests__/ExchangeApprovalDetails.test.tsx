@@ -39,7 +39,7 @@ describe('ExchangeApprovalDetails', () => {
             getByText(getTranslation('moduleTrading.tradingExchangeApprovalScreen.limitLabel')),
         ).toBeOnTheScreen();
         expect(
-            getByText(getTranslation('moduleTrading.tradingExchangePreviewScreen.maximumFeeLabel')),
+            getByText(getTranslation('transactionManagement.fees.description.title.ethereum')),
         ).toBeOnTheScreen();
         expect(errorSpy).not.toHaveBeenCalled();
     });

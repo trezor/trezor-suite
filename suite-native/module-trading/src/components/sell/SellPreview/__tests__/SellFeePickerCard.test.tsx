@@ -1,3 +1,4 @@
+import { getTranslation } from '@suite-native/intl';
 import { type PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils';
 import { getWalletState, sellQuotes } from '@suite-native/trading-fixtures';
 import type { ProviderConfirmationStatus } from '@suite-native/trading-types';
@@ -68,6 +69,8 @@ describe('SellFeePickerCard', () => {
     it('should render FeePickerCard otherwise', () => {
         const { getByText } = renderSellFeePickerCard({ quote: sellQuotes[0] });
 
-        expect(getByText('Fee')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('transactionManagement.fees.description.title.ethereum')),
+        ).toBeOnTheScreen();
     });
 });
