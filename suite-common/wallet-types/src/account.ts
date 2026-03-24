@@ -10,6 +10,7 @@ import type {
     ContractInfo,
     SolanaStakingAccount,
     StakingPool,
+    TronAccountExtraData,
 } from '@trezor/blockchain-link-types';
 import type { AccountInfo, PROTO, StaticSessionId, TokenInfo } from '@trezor/connect';
 import { type Branded } from '@trezor/type-utils';
@@ -83,6 +84,7 @@ type AccountNetworkSpecific =
           networkType: 'tron';
           misc: {
               contractInfo?: ContractInfo;
+              tronResources?: TronAccountExtraData;
           };
           marker: undefined;
           stellarCursor: undefined;

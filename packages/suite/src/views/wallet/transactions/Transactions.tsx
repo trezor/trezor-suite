@@ -17,6 +17,7 @@ import { WalletTransactionList } from './TransactionList/WalletTransactionList';
 import { AccountEmpty } from './components/AccountEmpty';
 import { NoTransactions } from './components/NoTransactions';
 import { TransactionSummary } from './components/TransactionSummary';
+import { TronResources } from './components/TronResources';
 import { CardanoNewProviderCard } from '../staking/components/AdaStakingDashboard/CardanoNewProviderCard';
 
 interface LayoutProps {
@@ -72,6 +73,7 @@ export const Transactions = () => {
         return (
             <Layout selectedAccount={selectedAccount}>
                 <CardanoNewProviderCard account={account} />
+                <TronResources account={account} />
                 <TransactionSummary account={account} />
                 <TradeBox account={account} />
                 <SolanaLimitedHistoryBanner account={account} />

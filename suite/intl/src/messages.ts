@@ -5192,6 +5192,24 @@ export const messages = defineMessages({
         id: 'TR_EXPERIMENTAL_SUITE_SYNC_TITLE',
         defaultMessage: 'Suite Sync',
     },
+    TR_TRON_BANDWIDTH: {
+        id: 'TR_TRON_BANDWIDTH',
+        defaultMessage: 'Bandwidth',
+    },
+    TR_TRON_ENERGY: {
+        id: 'TR_TRON_ENERGY',
+        defaultMessage: 'Energy',
+    },
+    TR_TRON_BANDWIDTH_TOOLTIP: {
+        id: 'TR_TRON_BANDWIDTH_TOOLTIP',
+        defaultMessage:
+            'Used for basic transactions like sending TRX. If you run out, TRX is burned as a network fee. Refills within 24 hours.',
+    },
+    TR_TRON_ENERGY_TOOLTIP: {
+        id: 'TR_TRON_ENERGY_TOOLTIP',
+        defaultMessage:
+            'Used for smart contract actions like sending tokens. If you run out, TRX is burned as a network fee. Refills within 24 hours.',
+    },
     TR_EXPERIMENTAL_TRON_VIEW_ONLY: {
         id: 'TR_EXPERIMENTAL_TRON_VIEW_ONLY',
         defaultMessage: 'Tron View-Only (Beta)',
