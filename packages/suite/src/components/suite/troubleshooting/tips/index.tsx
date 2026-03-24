@@ -6,7 +6,7 @@ import { TrezorLink } from 'src/components/suite/TrezorLink';
 
 import { SuiteDesktopTip } from './BridgeTip';
 import { UdevDescription } from './UdevDescription';
-import { type TroubleshootingTipsItem } from '../TroubleshootingTips';
+import { type TroubleshootingTipsItem } from '../TroubleshootingTipsItem';
 
 export const TROUBLESHOOTING_TIP_WEBUSB_ENVIRONMENT: TroubleshootingTipsItem = {
     key: 'webusb-environment',

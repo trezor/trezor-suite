@@ -11,7 +11,7 @@ import {
 import { useDevice } from 'src/hooks/suite';
 
 import { AcquireDeviceButton } from '../AcquireDeviceButton';
-import { type TroubleshootingTipsItem } from '../troubleshooting/TroubleshootingTips';
+import { type TroubleshootingTipsItem } from '../troubleshooting/TroubleshootingTipsItem';
 
 export const DeviceUsedElsewhere = () => {
     const { device } = useDevice();

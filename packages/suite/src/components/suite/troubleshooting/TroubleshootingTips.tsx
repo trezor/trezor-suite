@@ -1,26 +1,11 @@
 import { type ReactNode, useState } from 'react';
 
 import { Translation } from '@suite/intl';
-import {
-    Banner,
-    type BannerIntent,
-    Box,
-    Button,
-    Column,
-    type IconName,
-    Modal,
-} from '@trezor/components';
+import { Banner, type BannerIntent, Box, Button, Column, Modal } from '@trezor/components';
 
 import { TroubleshootingTipsFooter } from './TroubleshootingTipsFooter';
+import { type TroubleshootingTipsItem } from './TroubleshootingTipsItem';
 import { TroubleshootingTipsList } from './TroubleshootingTipsList';
-
-export type TroubleshootingTipsItem = {
-    key: string;
-    heading?: ReactNode;
-    description?: ReactNode;
-    hide?: boolean;
-    icon?: IconName;
-};
 
 type TroubleshootingTipsBaseProps = {
     label?: ReactNode;
