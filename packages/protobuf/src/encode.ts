@@ -1,6 +1,5 @@
 import * as protobuf from 'protobufjs/light';
 
-import { protobufManager } from './bufbuild-loader';
 import { createMessageFromName, isPrimitiveField } from './utils';
 
 type Type = protobuf.Type;
@@ -102,18 +101,6 @@ export const encodeMessage = (
 ) => {
     const { Message, messageType } = createMessageFromName(messages, messageName);
     const message = encode(Message, data);
-
-    // This should be removed once we have confidence in the new implementation.
-    if (protobufManager) {
-        try {
-            const bufbuildResult = protobufManager.encode(messageName, data);
-            if (message.compare(bufbuildResult.message) !== 0) {
-                console.error(`[bufbuild] encode mismatch for "${messageName}"`);
-            }
-        } catch (error) {
-            console.error(`[bufbuild] encode failed for "${messageName}":`, error);
-        }
-    }
 
     return { messageType, message };
 };
