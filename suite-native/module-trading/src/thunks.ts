@@ -360,11 +360,30 @@ export const composeEvmApprovalFeeLevelsThunk = createThunk(
                     );
 
                     const formDraftKey = getFormDraftKeyByTradeType('exchange');
+                    const existingDraft = selectDeepCopyOfFormDraft(getState(), formDraftKey) ?? {};
+                    // Preserve swap form fields (especially outputs[0].token). A full replace would drop
+                    // outputs; composeSendFormTransactionFeeLevelsThunk then cannot resolve the ERC-20
+                    // contract for approval fee composition and custom gas shows insufficient balance.
+                    const outputs =
+                        existingDraft.outputs?.[0]?.token != null
+                            ? existingDraft.outputs
+                            : [
+                                  {
+                                      type: 'payment' as const,
+                                      address: '',
+                                      amount: '0',
+                                      fiat: '',
+                                      currency: { label: '', value: '' },
+                                      label: '',
+                                      token: contractAddress as TokenAddress,
+                                  },
+                              ];
 
                     dispatch(
                         formDraftActions.storeDraft({
                             key: formDraftKey,
                             formDraft: {
+                                ...existingDraft,
                                 selectedFee: selectedFeeLevel,
                                 feePerUnit: composed.feePerByte,
                                 feeLimit: composed.feeLimit ?? '',
@@ -372,6 +391,7 @@ export const composeEvmApprovalFeeLevelsThunk = createThunk(
                                 maxPriorityFeePerGas: composed.maxPriorityFeePerGas ?? '',
                                 estimatedFeeLimit: composed.estimatedFeeLimit,
                                 transactionData: data,
+                                outputs,
                             },
                         }),
                     );

@@ -1,8 +1,15 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
+import { useNavigation } from '@react-navigation/native';
+
 import { Card, InlineAlertBox } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+import {
+    type StackNavigationProps,
+    type TradingStackParamList,
+    TradingStackRoutes,
+} from '@suite-native/navigation';
 import { NetworkAndAccountCard } from '@suite-native/trading-atoms';
 import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
 
@@ -16,14 +23,27 @@ type ExchangeApprovalDetailsProps = {
     exchange: string | undefined;
 };
 
-const noop = () => {};
-
 export const ExchangeApprovalDetails = ({
     fee,
     isLoading,
     exchange,
 }: ExchangeApprovalDetailsProps) => {
     const account = useSelector(selectExchangeSelectedSendAccount);
+
+    const navigation =
+        useNavigation<
+            StackNavigationProps<TradingStackParamList, TradingStackRoutes.TradingExchangeApproval>
+        >();
+
+    const navigateToFees = () => {
+        if (fee === undefined || !account?.key) {
+            return;
+        }
+        navigation.navigate(TradingStackRoutes.TradingFees, {
+            accountKey: account.key,
+            tradingType: 'exchange',
+        });
+    };
 
     useEffect(() => {
         if (!account) {
@@ -56,7 +76,7 @@ export const ExchangeApprovalDetails = ({
                 <FeePicker
                     fee={fee ?? '0'}
                     symbol={account.symbol}
-                    onPress={noop}
+                    onPress={navigateToFees}
                     isLoading={isLoading}
                     noBorder
                 />
