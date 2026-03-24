@@ -6,7 +6,7 @@ import { Column, Icon, InfoSegments, Row, Text } from '@trezor/components';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectFullSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
-import { type IODetails } from './IODetails';
+import { type IODetailsType } from './IODetailsType';
 import { IOItem } from './IOItem';
 
 export type IOGroupProps = {
@@ -15,8 +15,8 @@ export type IOGroupProps = {
      */
     tx: Omit<WalletAccountTransaction, 'symbol'> & { symbol: NetworkSymbolExtended };
     contractAddress?: string;
-    inputs: IODetails[];
-    outputs: IODetails[];
+    inputs: IODetailsType[];
+    outputs: IODetailsType[];
     hasHeadings?: boolean;
     isUtxoBased?: boolean;
     isPhishingTransaction?: boolean;
