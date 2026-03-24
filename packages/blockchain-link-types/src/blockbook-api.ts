@@ -1,5 +1,34 @@
 /* Do not change, this code is generated from Golang structs */
 
+export interface TronVoteExtra {
+    address?: string;
+    count?: string;
+}
+export interface TronChainExtraData {
+    contractType?: string;
+    operation?: string;
+    resource?: string;
+    stakeAmount?: string;
+    unstakeAmount?: string;
+    delegateAmount?: string;
+    delegateTo?: string;
+    assetIssueID?: string;
+    totalFee?: string;
+    feeLimit?: string;
+    energyUsage?: string;
+    energyUsageTotal?: string;
+    energyFee?: string;
+    bandwidthUsage?: string;
+    bandwidthFee?: string;
+    result?: string;
+    votes?: TronVoteExtra[];
+}
+export interface TronAccountExtraData {
+    availableBandwidth: number;
+    totalBandwidth: number;
+    availableEnergy: number;
+    totalEnergy: number;
+}
 export interface APIError {
     /** Human-readable error message describing the issue. */
     Text: string;
@@ -189,6 +218,10 @@ export interface Tx {
     rbf?: boolean;
     /** Blockchain-specific extended data. */
     coinSpecificData?: any;
+    /** Additional normalized chain-specific transaction data. Use payloadType as discriminator for payload. */
+    chainExtraData?:
+        | { payloadType: 'tron'; payload?: TronChainExtraData }
+        | { payloadType: string; payload?: any };
     /** List of token transfers that occurred in this transaction. */
     tokenTransfers?: TokenTransfer[];
     /** Ethereum-like blockchain specific data (if applicable). */
@@ -333,6 +366,10 @@ export interface Address {
     addressAliases?: { [key: string]: AddressAlias };
     /** List of staking pool data if address interacts with staking. */
     stakingPools?: StakingPool[];
+    /** Additional normalized chain-specific account/address data. Use payloadType as discriminator for payload. */
+    chainExtraData?:
+        | { payloadType: 'tron'; payload?: TronAccountExtraData }
+        | { payloadType: string; payload?: any };
 }
 export interface Utxo {
     /** Transaction ID in which this UTXO was created. */

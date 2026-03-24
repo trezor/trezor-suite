@@ -5,6 +5,7 @@ export type { Response } from './responses';
 export * from './baseCurrency';
 
 export type { Transaction as BlockbookTransaction } from './blockbook';
+export type { TronAccountExtraData } from './blockbook-api';
 export type {
     AssetBalance,
     BlockfrostAccountInfo,

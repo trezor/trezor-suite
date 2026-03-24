@@ -379,7 +379,11 @@ export const transformAccountInfo = (payload: BlockbookAccountInfo): AccountInfo
     // However, the nonce is specific to Ethereum, so we can determine the network type based on its availability.
     const isEVM = typeof payload.nonce === 'string';
     let misc: AccountInfo['misc'];
-    if (isEVM) {
+    if (payload.chainExtraData?.payloadType === 'tron') {
+        misc = {
+            tronResources: payload.chainExtraData.payload,
+        };
+    } else if (isEVM) {
         misc = {
             nonce: payload.nonce,
             contractInfo: payload.contractInfo,
