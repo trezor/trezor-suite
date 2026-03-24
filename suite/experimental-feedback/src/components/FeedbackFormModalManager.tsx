@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import type { ExperimentalFeature } from '@suite/experimental';
+import type { FeedbackFeatureName } from '@suite/experimental';
 import {
     type ExperimentalFeedbackRootState,
     type Rating,
@@ -19,7 +19,7 @@ export const FeedbackFormManager = () => {
 
     const dispatch = useDispatch();
     const pendingFeature = useSelector(
-        (state: ExperimentalFeedbackRootState<ExperimentalFeature>) =>
+        (state: ExperimentalFeedbackRootState<FeedbackFeatureName>) =>
             selectPendingFeedbackFeature(state),
     );
 

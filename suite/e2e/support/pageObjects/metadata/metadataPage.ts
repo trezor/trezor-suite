@@ -62,11 +62,6 @@ export class MetadataPage {
 
     @step()
     async initiateSuiteSyncSetup() {
-        // Enable Suite Sync in Experimental Features
-        await this.settingsPage.navigateTo('application');
-        await this.settingsPage.experimentalFeaturesSwitch.click();
-        await this.settingsPage.suiteSyncCheckbox.click();
-
         // Configure Suite Sync relay URL in Debug settings
         await this.settingsPage.navigateTo('debug');
         await this.settingsPage.debugTab.suiteSyncUrlInput.fill(RELAY_URL);

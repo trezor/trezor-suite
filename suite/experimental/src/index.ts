@@ -11,14 +11,12 @@ export type ExperimentalFeature =
     | 'nft-section'
     | 'slip24'
     | 'experimental-networks'
-    | 'suite-sync'
     | 'tron-view-only';
 
 /**
  * Maps Experimental feature to its generic product name TranslationKey.
  */
 export const translatedExperimentalFeatures: ExperimentalFeatureTranslation = {
-    'suite-sync': 'TR_EXPERIMENTAL_SUITE_SYNC_TITLE',
     'experimental-networks': 'TR_EXPERIMENTAL_NETWORKS',
     'nft-section': 'TR_EXPERIMENTAL_NFT_SECTION',
     'tor-external': 'TR_EXPERIMENTAL_TOR_EXTERNAL',
@@ -26,4 +24,15 @@ export const translatedExperimentalFeatures: ExperimentalFeatureTranslation = {
     'testnet-networks': 'TR_EXPERIMENTAL_TESTNET_NETWORKS',
     slip24: 'TR_EXPERIMENTAL_SLIP24',
     'tron-view-only': 'TR_EXPERIMENTAL_TRON_VIEW_ONLY',
+};
+
+export type FeedbackFeatureName = ExperimentalFeature | 'suite-sync';
+
+type FeedbackFeatureTranslation = {
+    [key in FeedbackFeatureName]: TranslationKey;
+};
+
+export const translatedFeedbackFeatures: FeedbackFeatureTranslation = {
+    ...translatedExperimentalFeatures,
+    'suite-sync': 'TR_EXPERIMENTAL_SUITE_SYNC_TITLE',
 };

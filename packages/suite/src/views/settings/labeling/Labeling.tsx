@@ -3,10 +3,12 @@ import { useState } from 'react';
 import { Translation, useTranslation } from '@suite/intl';
 import { metadataLabelingActions } from '@suite/metadata';
 import { SettingsAnchor } from '@suite/router';
-import { selectHasExperimentalFeature } from '@suite/settings';
 import { SuiteSyncServers } from '@suite/suite-sync';
 import { events } from '@suite-common/analytics';
-import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
+import {
+    selectIsSuiteSyncEnabled,
+    selectIsSuiteSyncFeatureAvailable,
+} from '@suite-common/suite-sync';
 import { LoadingContent } from '@trezor/components';
 import { ActionColumn, ActionSelect, TextColumn } from '@trezor/product-components';
 import { exhaustive } from '@trezor/type-utils';
@@ -39,7 +41,7 @@ export const Labeling = () => {
     const deviceStaticSessionId = device?.state?.staticSessionId;
     const { isDeviceLabelingDisabled } = useLabelingDeviceState();
 
-    const showSuiteSync = useSelector(selectHasExperimentalFeature('suite-sync'));
+    const showSuiteSync = useSelector(selectIsSuiteSyncFeatureAvailable);
     const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
 
     const legacyMetadataState = useSelector(state => state.metadata);

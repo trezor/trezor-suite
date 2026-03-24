@@ -6,6 +6,7 @@ export {
     selectSuiteSyncOwnerForDeviceStaticId,
     selectIsSuiteSyncDebugEnabled,
     selectHasDeviceSuiteSyncError,
+    selectIsSuiteSyncFeatureAvailable,
     type WithSuiteSyncState,
 } from './suiteSyncSelectors';
 export type { WithSuiteSyncAndDeviceState } from './suiteSyncSelectors';

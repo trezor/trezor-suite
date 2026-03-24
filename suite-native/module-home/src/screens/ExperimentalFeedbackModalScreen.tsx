@@ -5,8 +5,8 @@ import { type RouteProp, useNavigation, useRoute } from '@react-navigation/nativ
 import { type Rating, buildUserFeedbackData, sendFeedbackAction } from '@suite-common/feedback';
 import { Text, VStack } from '@suite-native/atoms';
 import {
-    EXPERIMENTAL_FEATURES,
     ExperimentalFeatureRatingForm,
+    FEEDBACK_FEATURE_CONFIGS,
     feedbackDismissed,
 } from '@suite-native/experimental-features';
 import { Translation } from '@suite-native/intl';
@@ -25,13 +25,13 @@ export const ExperimentalFeedbackModalScreen = () => {
     const route = useRoute<RouteProps>();
     const { feature } = route.params;
 
-    if (!feature || !EXPERIMENTAL_FEATURES[feature]) {
+    if (!feature || !FEEDBACK_FEATURE_CONFIGS[feature]) {
         navigation.goBack();
 
         return null;
     }
 
-    const { titleKey } = EXPERIMENTAL_FEATURES[feature];
+    const { titleKey } = FEEDBACK_FEATURE_CONFIGS[feature];
 
     const handleSubmit = (rating: Rating, description: string) => {
         const userData = buildUserFeedbackData();

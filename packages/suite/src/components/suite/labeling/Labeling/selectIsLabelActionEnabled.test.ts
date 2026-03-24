@@ -8,6 +8,11 @@ import {
 } from '@suite/metadata';
 import { type SuiteSettingsRootState, suiteSettingsInitialState } from '@suite/settings';
 import { deviceReducerInitialState } from '@suite-common/device';
+import {
+    type MessageSystemRootState,
+    messageSystemInitialState,
+} from '@suite-common/message-system';
+import { Feature } from '@suite-common/message-system';
 import { type SuiteSyncState, type WithSuiteSyncAndDeviceState } from '@suite-common/suite-sync';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { type StaticSessionId, type UnavailableCapabilities } from '@trezor/connect';
@@ -31,10 +36,52 @@ jest.mock('@suite/metadata', () => ({
 
 const DEVICE_STATIC_SESSION_ID_123: StaticSessionId = '1@2:3';
 
+const SUITE_SYNC_FEATURE_TOGGLE_MESSAGE_ID = 'test-toggle-suite-sync';
+
+const createMessageSystemState = (isSuiteSyncFeatureAvailable: boolean) => {
+    if (isSuiteSyncFeatureAvailable) {
+        return messageSystemInitialState;
+    }
+
+    return {
+        ...messageSystemInitialState,
+        validMessages: {
+            ...messageSystemInitialState.validMessages,
+            feature: [SUITE_SYNC_FEATURE_TOGGLE_MESSAGE_ID],
+        },
+        config: {
+            version: 1,
+            sequence: 1,
+            timestamp: '2020-01-01T00:00:00.000Z',
+            actions: [
+                {
+                    conditions: [
+                        {
+                            duration: {
+                                from: '2020-01-01T00:00:00.000Z',
+                                to: '2030-01-01T00:00:00.000Z',
+                            },
+                        },
+                    ],
+                    message: {
+                        id: SUITE_SYNC_FEATURE_TOGGLE_MESSAGE_ID,
+                        category: 'feature',
+                        priority: 1,
+                        dismissible: true,
+                        variant: 'info',
+                        content: { en: 't', es: 't', cs: 't', de: 't', fr: 't', pt: 't' },
+                        feature: [{ domain: Feature.suiteSync, flag: false }],
+                    },
+                },
+            ],
+        },
+    };
+};
+
 const createMockState = (
     deviceOverrides: Parameters<typeof mockSuiteDevice>[0] = {},
     suiteSyncOverrides: Partial<SuiteSyncState> = {},
-    isSuiteSyncFeatureEnabled = false,
+    isSuiteSyncFeatureAvailable = false,
 ) =>
     ({
         device: {
@@ -52,7 +99,6 @@ const createMockState = (
         },
         suiteSettings: {
             ...suiteSettingsInitialState,
-            experimental: isSuiteSyncFeatureEnabled ? ['suite-sync'] : undefined,
         },
         suite: suiteInitialState,
         wallet: {
@@ -61,13 +107,15 @@ const createMockState = (
         metadata: {
             ...initialMetadataState,
         },
+        messageSystem: createMessageSystemState(isSuiteSyncFeatureAvailable),
         // This HARD CAST is here because MetadataRootState is HUGE,
         // and I do not want to refactor Legacy Labeling
     }) as WithSuiteSyncAndDeviceState &
         MetadataRootState &
         SuiteRootState &
         SuiteSettingsRootState &
-        DesktopSuiteSyncRootState;
+        DesktopSuiteSyncRootState &
+        MessageSystemRootState;
 
 describe(selectIsLabelActionEnabled.name, () => {
     beforeEach(() => {
