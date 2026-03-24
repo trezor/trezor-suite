@@ -5,6 +5,8 @@ import { diff } from 'jest-diff';
 import { isEqualWith } from 'lodash';
 
 import { type TranslationKey, messages } from '@suite/intl';
+import { type Account } from '@suite-common/wallet-types';
+import { isAddressValid } from '@suite-common/wallet-utils';
 import { Model } from '@trezor/trezor-user-env-link';
 
 import { formatAddress, isEqualWithOmit, normalizeWhitespace } from '../common';
@@ -319,6 +321,18 @@ export const expect = baseExpect.extend({
         return {
             pass: true,
             message: () => 'errors are handled in expects above',
+        };
+    },
+
+    async toHaveValidAddress(locator: Locator, symbol: Account['symbol']) {
+        await baseExpect(locator).toBeVisible();
+        const text = await locator.textContent();
+        const stripped = text?.replace(/\s/g, '') ?? '';
+
+        return {
+            pass: isAddressValid(stripped, symbol),
+            message: () =>
+                `expected locator text to be a valid '${symbol}' address, but got '${text}' (stripped: '${stripped}')`,
         };
     },
 

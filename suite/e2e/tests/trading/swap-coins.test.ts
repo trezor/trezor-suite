@@ -146,18 +146,10 @@ test.describe('Trading - Swap coins', { tag: ['@webOnly', '@T3T1', '@T3W1'] }, (
         await test.step('Send crypto to provider', async () => {
             await page.clock.install();
             await devicePrompt.sendButton.click();
-            await expect(page.getByTestId('@toast/tx-exchange/send-account')).toContainText(
-                'Solana #1',
-            );
-            await expect(page.getByTestId('@toast/tx-exchange/receive-account')).toContainText(
-                'Bitcoin #1',
-            );
-            await expect(page.getByTestId('@toast/tx-exchange/send-amount')).toContainText(
-                sendAmount,
-            );
-            await expect(page.getByTestId('@toast/tx-exchange/receive-amount')).toContainText(
-                receiveAmount,
-            );
+            await expect(tradingPage.swapToastSendAccount).toContainText('Solana #1');
+            await expect(tradingPage.swapToastReceiveAccount).toContainText('Bitcoin #1');
+            await expect(tradingPage.swapToastSendAmount).toContainText(sendAmount);
+            await expect(tradingPage.swapToastReceiveAmount).toContainText(receiveAmount);
         });
 
         for (const { transactionStatus, displayedText, translationValues } of transactionStates) {

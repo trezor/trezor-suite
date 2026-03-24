@@ -42,6 +42,7 @@ export const TradingInfoItem = ({
 
     const showAccountLabel = !!account;
     const isExternalExchange = type === 'exchange' && !account && !!receiveAddress;
+    const testIdPrefix = `@trading/detail/${isReceive ? 'receive' : 'send'}`;
 
     const {
         id,
@@ -62,13 +63,19 @@ export const TradingInfoItem = ({
     if (!amount || !currency) return null;
 
     return (
-        <Column width="100%" gap={8}>
+        <Column width="100%" gap={8} data-testid={`${testIdPrefix}-info`}>
             <Row justifyContent="space-between">
                 <Text intent="neutral" priority="secondary" typographyStyle="body-sm">
                     <Translation id={label} />
                 </Text>
                 {(showAccountLabel || isExternalExchange) && (
-                    <Text intent="neutral" priority="secondary" typographyStyle="body-sm" as="div">
+                    <Text
+                        intent="neutral"
+                        priority="secondary"
+                        typographyStyle="body-sm"
+                        as="div"
+                        data-testid={`${testIdPrefix}-account`}
+                    >
                         <Row>
                             {accountLabelPrefix}&nbsp;
                             {isExternalExchange && (
@@ -115,12 +122,15 @@ export const TradingInfoItem = ({
                                 />
                             )}
                             <Column alignItems="start">
-                                <Text>{displayName}</Text>
+                                <Text data-testid={`${testIdPrefix}-asset-name`}>
+                                    {displayName}
+                                </Text>
                                 {showNetwork && (
                                     <Text
                                         intent="neutral"
                                         priority="secondary"
                                         typographyStyle="body-sm"
+                                        data-testid={`${testIdPrefix}-network-name`}
                                     >
                                         {networkName}
                                     </Text>

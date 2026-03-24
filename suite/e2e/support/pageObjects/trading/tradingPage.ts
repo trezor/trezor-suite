@@ -11,6 +11,7 @@ import { FeeSection } from './feeSection';
 import { TradingFormInputs } from './formInputs';
 import { TradingQuotesSection } from './quotesSection';
 import { TradingReceiveAccount } from './receiveAccount';
+import { TransactionDetailSidebar } from './transactionDetailSidebar';
 import { invityEndpoint } from '../../../fixtures/invity';
 import { step } from '../../common';
 import { expect } from '../../testExtends/customMatchers';
@@ -23,6 +24,7 @@ export class TradingPage {
     readonly quotes: TradingQuotesSection;
     readonly confirmation: TradingConfirmationModal;
     readonly inputs: TradingFormInputs;
+    readonly transactionDetailSidebar: TransactionDetailSidebar;
 
     // Navigation and action buttons
     readonly section: Locator;
@@ -46,6 +48,12 @@ export class TradingPage {
     // Transactions
     readonly transactionDetailStatus: Locator;
 
+    // Swap toast notifications
+    readonly swapToastSendAccount: Locator;
+    readonly swapToastReceiveAccount: Locator;
+    readonly swapToastSendAmount: Locator;
+    readonly swapToastReceiveAmount: Locator;
+
     constructor(
         private page: Page,
         devicePrompt: DevicePrompt,
@@ -56,6 +64,7 @@ export class TradingPage {
         this.quotes = new TradingQuotesSection(page);
         this.confirmation = new TradingConfirmationModal(page, devicePrompt);
         this.inputs = new TradingFormInputs(page);
+        this.transactionDetailSidebar = new TransactionDetailSidebar(page);
 
         this.section = this.page.getByTestId('@trading');
         this.buyButton = this.page.getByTestId('@trading/menu/wallet-trading-buy');
@@ -75,6 +84,12 @@ export class TradingPage {
 
         // Transactions
         this.transactionDetailStatus = this.page.getByTestId('@trading/transaction/detail/status');
+
+        // Swap toast notifications
+        this.swapToastSendAccount = this.page.getByTestId('@toast/tx-exchange/send-account');
+        this.swapToastReceiveAccount = this.page.getByTestId('@toast/tx-exchange/receive-account');
+        this.swapToastSendAmount = this.page.getByTestId('@toast/tx-exchange/send-amount');
+        this.swapToastReceiveAmount = this.page.getByTestId('@toast/tx-exchange/receive-amount');
     }
 
     /**

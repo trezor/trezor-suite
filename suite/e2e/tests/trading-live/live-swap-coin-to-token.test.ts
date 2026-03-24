@@ -62,9 +62,7 @@ test.describe(
             await test.step('Initiate send', async () => {
                 await tradingPage.confirmation.initiateSendConfirmation();
                 await expect(devicePrompt.headerParagraph).toContainText(accountLabel);
-                await expect(devicePrompt.outputValueOf('address')).toHaveText(
-                    /^[1-9A-HJ-NP-Za-km-z\s]{53,54}$/,
-                ); // base58 with spaces/newlines
+                await expect(devicePrompt.outputValueOf('address')).toHaveValidAddress('sol');
 
                 await expect(devicePrompt.cryptoAmountWithSymbolOf('total')).toHaveText(
                     formattedSendAmount,
@@ -75,18 +73,10 @@ test.describe(
             await test.step('Send crypto to provider', async () => {
                 await devicePrompt.sendButton.click();
 
-                await expect(page.getByTestId('@toast/tx-exchange/send-account')).toContainText(
-                    accountLabel,
-                );
-                await expect(page.getByTestId('@toast/tx-exchange/receive-account')).toContainText(
-                    'Base #1',
-                );
-                await expect(page.getByTestId('@toast/tx-exchange/send-amount')).toContainText(
-                    sendAmount,
-                );
-                await expect(page.getByTestId('@toast/tx-exchange/receive-amount')).toContainText(
-                    receiveAmount,
-                );
+                await expect(tradingPage.swapToastSendAccount).toContainText(accountLabel);
+                await expect(tradingPage.swapToastReceiveAccount).toContainText('Base #1');
+                await expect(tradingPage.swapToastSendAmount).toContainText(sendAmount);
+                await expect(tradingPage.swapToastReceiveAmount).toContainText(receiveAmount);
 
                 await expect(tradingPage.transactionDetailStatus).toHaveTranslation(
                     'TR_EXCHANGE_DETAIL_SUCCESS_TITLE',
