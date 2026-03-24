@@ -6,10 +6,10 @@
     "tsConfig": "./tsconfig.base.json",
     "detectiveOptions": {
         "ts": {
-            "skipTypeImports": true
+            "skipTypeImports": false
         },
         "tsx": {
-            "skipTypeImports": true
+            "skipTypeImports": false
         }
     }
 }
