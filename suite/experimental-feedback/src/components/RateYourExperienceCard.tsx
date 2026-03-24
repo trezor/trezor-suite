@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { type ExperimentalFeature, translatedExperimentalFeatures } from '@suite/experimental';
+import { type FeedbackFeatureName, translatedFeedbackFeatures } from '@suite/experimental';
 import { Translation, useTranslation } from '@suite/intl';
 import {
     Box,
@@ -22,7 +22,7 @@ const EmojiIconContainer = styled.div<{ theme: SuiteThemeColors }>`
 `;
 
 type RateYourExperienceCardProps = {
-    feature: ExperimentalFeature;
+    feature: FeedbackFeatureName;
     onRate: () => void;
     onSkip: () => void;
 };
@@ -50,7 +50,7 @@ export const RateYourExperienceCard = ({
                         <Translation
                             id="TR_EXPERIMENTAL_FEEDBACK_CARD_HEADING"
                             values={{
-                                feature: translationString(translatedExperimentalFeatures[feature]),
+                                feature: translationString(translatedFeedbackFeatures[feature]),
                             }}
                         />
                     </Paragraph>

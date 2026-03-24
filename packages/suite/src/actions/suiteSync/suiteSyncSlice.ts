@@ -1,10 +1,11 @@
-import { type SuiteSettingsRootState, selectHasExperimentalFeature } from '@suite/settings';
+import { type MessageSystemRootState } from '@suite-common/message-system';
 import { type AnyAction, createSliceWithExtraDeps } from '@suite-common/redux-utils';
 import {
     type SuiteSyncInteraction,
     type SuiteSyncState,
     type WithSuiteSyncAndDeviceState,
     initialSuiteSyncState as commonInitialState,
+    selectIsSuiteSyncFeatureAvailable,
     selectSuiteSyncInteraction,
     suiteSyncReducer,
 } from '@suite-common/suite-sync';
@@ -81,10 +82,10 @@ export const selectDesktopSuiteSyncInteraction = (
     state: DesktopSuiteSyncRootState &
         WithSuiteSyncAndDeviceState &
         SuiteRootState &
-        SuiteSettingsRootState,
+        MessageSystemRootState,
     deviceStaticSessionId: StaticSessionId | null,
 ): SuiteSyncInteraction | null => {
-    const isSuiteSyncFeatureEnabled = selectHasExperimentalFeature('suite-sync')(state);
+    const isSuiteSyncFeatureEnabled = selectIsSuiteSyncFeatureAvailable(state);
     if (!isSuiteSyncFeatureEnabled) return null;
 
     return selectSuiteSyncInteraction(state, deviceStaticSessionId);

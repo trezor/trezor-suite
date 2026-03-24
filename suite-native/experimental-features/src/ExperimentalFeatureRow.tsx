@@ -21,7 +21,11 @@ export const ExperimentalFeatureRow = ({ featureKey }: { featureKey: Experimenta
         selectIsExperimentalFeatureEnabled(state, featureKey),
     );
 
-    const { titleKey, descriptionKey, onToggle } = EXPERIMENTAL_FEATURES[featureKey];
+    const config = EXPERIMENTAL_FEATURES[featureKey];
+    if (!config) {
+        return null;
+    }
+    const { titleKey, descriptionKey, onToggle } = config;
 
     const handleChange = () => {
         onToggle?.({ newValue: !isFeatureEnabled, services });

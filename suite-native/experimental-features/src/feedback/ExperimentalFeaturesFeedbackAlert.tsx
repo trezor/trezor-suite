@@ -8,7 +8,7 @@ import { Translation } from '@suite-native/intl';
 import { type RootStackParamList, RootStackRoutes } from '@suite-native/navigation';
 import { type ExperimentalFeature } from '@suite-native/settings';
 
-import { EXPERIMENTAL_FEATURES } from '../experimentalFeatures';
+import { FEEDBACK_FEATURE_CONFIGS } from '../experimentalFeatures';
 import { feedbackDismissed } from './experimentalFeedbackSlice';
 
 type ExperimentalFeaturesFeedbackAlertProps = {
@@ -31,7 +31,7 @@ export const ExperimentalFeaturesFeedbackAlert = ({
         dispatch(feedbackDismissed(pendingFeature));
     };
 
-    const { titleKey } = EXPERIMENTAL_FEATURES[pendingFeature];
+    const { titleKey } = FEEDBACK_FEATURE_CONFIGS[pendingFeature];
 
     return (
         <AnimatedFullAlertBox

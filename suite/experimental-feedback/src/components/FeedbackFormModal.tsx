@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { type ExperimentalFeature, translatedExperimentalFeatures } from '@suite/experimental';
+import { type FeedbackFeatureName, translatedFeedbackFeatures } from '@suite/experimental';
 import { Translation, useTranslation } from '@suite/intl';
 import { type Rating } from '@suite-common/feedback';
 import { Card, Column, Modal, Paragraph, Textarea } from '@trezor/components';
@@ -8,7 +8,7 @@ import { Card, Column, Modal, Paragraph, Textarea } from '@trezor/components';
 import { EmojiRatingSelector } from './EmojiRatingSelector';
 
 export interface FeedbackFormModalProps {
-    feature: ExperimentalFeature;
+    feature: FeedbackFeatureName;
     onDismiss: () => void;
     onSubmit: (rating: Rating, description: string) => void;
 }
@@ -34,7 +34,7 @@ export const FeedbackFormModal = ({ onDismiss, onSubmit, feature }: FeedbackForm
                 <Translation
                     id="TR_EXPERIMENTAL_FEEDBACK_MODAL_HEADING"
                     values={{
-                        feature: translationString(translatedExperimentalFeatures[feature]),
+                        feature: translationString(translatedFeedbackFeatures[feature]),
                     }}
                 />
             }

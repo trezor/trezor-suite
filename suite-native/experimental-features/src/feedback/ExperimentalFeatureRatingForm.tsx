@@ -7,7 +7,7 @@ import { Translation } from '@suite-native/intl';
 import { type ExperimentalFeature } from '@suite-native/settings';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { EXPERIMENTAL_FEATURES } from '../experimentalFeatures';
+import { FEEDBACK_FEATURE_CONFIGS } from '../experimentalFeatures';
 import { EmojiRatingOption } from './EmojiRatingOption';
 
 type ExperimentalFeatureRatingFormProps = {
@@ -34,7 +34,7 @@ export const ExperimentalFeatureRatingForm = ({
     onDismiss,
 }: ExperimentalFeatureRatingFormProps) => {
     const { applyStyle } = useNativeStyles();
-    const { titleKey } = EXPERIMENTAL_FEATURES[feature];
+    const { titleKey } = FEEDBACK_FEATURE_CONFIGS[feature];
     const [rating, setRating] = useState<Rating | undefined>();
     const [description, setDescription] = useState('');
 

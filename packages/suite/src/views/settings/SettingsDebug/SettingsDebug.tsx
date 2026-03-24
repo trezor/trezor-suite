@@ -1,6 +1,5 @@
 import { selectFlags } from '@suite/flags';
 import { Translation } from '@suite/intl';
-import { selectHasExperimentalFeature } from '@suite/settings';
 import { SuiteSyncSettings } from '@suite/suite-sync';
 import { Context } from '@suite-common/message-system';
 import { isDesktop } from '@trezor/env-utils';
@@ -46,7 +45,6 @@ import { WipeData } from './WipeData';
 export const SettingsDebug = () => {
     const { isBelowLaptop } = useLayoutSize();
     const flags = useSelector(selectFlags);
-    const isSuiteSyncFeatureEnabled = useSelector(selectHasExperimentalFeature('suite-sync'));
     const { suiteSync } = useSuiteServices();
 
     return (
@@ -127,10 +125,7 @@ export const SettingsDebug = () => {
             <SettingsSection isBelowLaptop={isBelowLaptop} title="Firmware channel">
                 <FirmwareUpdateEnvironmentSelect />
             </SettingsSection>
-            <SuiteSyncSettings
-                isSuiteSyncFeatureEnabled={isSuiteSyncFeatureEnabled}
-                suiteSync={suiteSync}
-            />
+            <SuiteSyncSettings suiteSync={suiteSync} />
             <QuotaManagerSettings />
             <PlatformEncrypton />
         </SettingsLayout>

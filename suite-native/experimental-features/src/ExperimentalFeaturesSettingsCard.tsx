@@ -91,6 +91,10 @@ export const ExperimentalFeaturesSettingsCard = () => {
 
     const experimentalFeatureKeys = typedObjectKeys(EXPERIMENTAL_FEATURES);
 
+    if (experimentalFeatureKeys.length === 0) {
+        return null;
+    }
+
     return (
         <Card borderColor="borderElevation1" noPadding testID="@settings/experimental-features">
             <PressableOpacity onPress={handleToggleExperimental} accessibilityRole="togglebutton">

@@ -95,7 +95,6 @@ export class SettingsPage {
         );
     readonly settingsLoader: Locator;
     readonly experimentalFeaturesSwitch: Locator;
-    readonly suiteSyncCheckbox: Locator;
     readonly resetAppButton: Locator;
 
     constructor(
@@ -147,9 +146,6 @@ export class SettingsPage {
         this.settingsLoader = this.page.getByTestId('@settings/loader');
         this.experimentalFeaturesSwitch = this.page.getByTestId(
             '@settings/experimental-features/toggle-switch',
-        );
-        this.suiteSyncCheckbox = this.page.getByTestId(
-            '@settings/experimental-features/suite-sync-checkbox',
         );
         this.resetAppButton = this.page.getByTestId('@settings/reset-app-button');
     }

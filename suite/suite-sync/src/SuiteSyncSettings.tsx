@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
     DEFAULT_SUITE_SYNC_RELAY_URL,
     selectIsSuiteSyncDebugEnabled,
+    selectIsSuiteSyncFeatureAvailable,
     selectSuiteSyncRelayUrl,
     updateSuiteSyncDebugEnabled,
 } from '@suite-common/suite-sync';
@@ -16,19 +17,16 @@ import { spacings } from '@trezor/theme';
 const selectIsBelowLaptop = (state: { window: BreakpointFlags }) => state.window.isBelowLaptop;
 
 type SuiteSyncSettingsProps = {
-    isSuiteSyncFeatureEnabled: boolean;
     suiteSync: SuiteSync;
 };
 
-export const SuiteSyncSettings = ({
-    isSuiteSyncFeatureEnabled,
-    suiteSync,
-}: SuiteSyncSettingsProps) => {
+export const SuiteSyncSettings = ({ suiteSync }: SuiteSyncSettingsProps) => {
     const [isLoading, setIsLoading] = useState(false);
 
     const dispatch = useDispatch();
     const isBelowLaptop = useSelector(selectIsBelowLaptop);
 
+    const isSuiteSyncFeatureEnabled = useSelector(selectIsSuiteSyncFeatureAvailable);
     const isSuiteSyncDebugEnabled = useSelector(selectIsSuiteSyncDebugEnabled);
     const suiteSyncRelayUrl = useSelector(selectSuiteSyncRelayUrl);
 
@@ -53,13 +51,7 @@ export const SuiteSyncSettings = ({
         }, 300);
     };
 
-    if (!isSuiteSyncFeatureEnabled) {
-        return (
-            <SettingsSection title="Suite Sync" isBelowLaptop={isBelowLaptop}>
-                <p>Suite Sync is disabled. Enable it in the Experimental Features settings.</p>
-            </SettingsSection>
-        );
-    }
+    if (!isSuiteSyncFeatureEnabled) return null;
 
     return (
         <SettingsSection title="Suite Sync" isBelowLaptop={isBelowLaptop}>

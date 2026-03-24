@@ -74,16 +74,6 @@ export const EXPERIMENTAL_FEATURES: Record<ExperimentalFeature, ExperimentalFeat
         },
         isDisabled: () => experimentalNetworks.length === 0,
     },
-    'suite-sync': {
-        title: { id: 'TR_EXPERIMENTAL_SUITE_SYNC_TITLE' },
-        description: { id: 'TR_EXPERIMENTAL_SUITE_SYNC_DESCRIPTION' },
-        onToggle: ({ newValue, services }) => {
-            if (!newValue) {
-                // Turn off Suite Sync
-                services.suiteSync.turnOffSuiteSync();
-            }
-        },
-    },
     'tron-view-only': {
         title: { id: 'TR_EXPERIMENTAL_TRON_VIEW_ONLY' },
         description: { id: 'TR_EXPERIMENTAL_TRON_VIEW_ONLY_DESCRIPTION' },

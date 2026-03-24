@@ -9,6 +9,7 @@
         },
         { "path": "../dependency-injection" },
         { "path": "../device" },
+        { "path": "../message-system" },
         { "path": "../platform-encryption" },
         { "path": "../redux-utils" },
         { "path": "../suite-sync-quota-manager" },

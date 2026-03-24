@@ -89,6 +89,7 @@ export const Feature = {
         slip24: 'trading.slip24',
     },
     mevProtection: 'settings.mevProtection',
+    suiteSync: 'settings.suiteSync',
 
     // Feature flags implemented only for mobile app
     firmwareUpdate: 'device.firmware.update',

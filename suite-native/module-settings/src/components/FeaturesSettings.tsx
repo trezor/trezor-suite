@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { useAtomValue } from 'jotai';
 
+import { selectIsSuiteSyncFeatureAvailable } from '@suite-common/suite-sync';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { TitledSection } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
@@ -12,10 +13,6 @@ import {
     SettingsStackRoutes,
     type StackNavigationProps,
 } from '@suite-native/navigation';
-import {
-    type SettingsSliceRootState,
-    selectIsExperimentalFeatureEnabled,
-} from '@suite-native/settings';
 
 import { AppSettingsCardWithIconLayout } from './AppSettingsCardWithIconLayout';
 import { isDevButtonVisibleAtom } from './ProductionDebug';
@@ -24,9 +21,7 @@ import { useSettingsNavigateTo } from '../navigation/useSettingsNavigateTo';
 export const FeaturesSettings = () => {
     const isDevButtonVisible = useAtomValue(isDevButtonVisibleAtom);
     const hasDiscovery = useSelector(selectHasRunningDiscovery);
-    const isExperimentalFeatureSuiteSyncEnabled = useSelector((state: SettingsSliceRootState) =>
-        selectIsExperimentalFeatureEnabled(state, 'suite-sync'),
-    );
+    const isSuiteSyncFeatureAvailable = useSelector(selectIsSuiteSyncFeatureAvailable);
 
     const navigation = useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes>>();
     const navigateTo = useSettingsNavigateTo();
@@ -57,7 +52,7 @@ export const FeaturesSettings = () => {
                 isDisabled={hasDiscovery}
                 testID="@settings/coin-enabling"
             />
-            {isExperimentalFeatureSuiteSyncEnabled && (
+            {isSuiteSyncFeatureAvailable && (
                 <AppSettingsCardWithIconLayout
                     icon="arrowsClockwise"
                     title={<Translation id="moduleSettings.items.features.suiteSync.title" />}

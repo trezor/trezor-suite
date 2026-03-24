@@ -9,4 +9,4 @@ export {
     feedbackRequested,
     feedbackDismissed,
 } from './feedback/experimentalFeedbackSlice';
-export { EXPERIMENTAL_FEATURES } from './experimentalFeatures';
+export { EXPERIMENTAL_FEATURES, FEEDBACK_FEATURE_CONFIGS } from './experimentalFeatures';

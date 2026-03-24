@@ -1,6 +1,7 @@
 import type { CryptoId } from 'invity-api';
 
 import { type DeviceReducerState, deviceInitialState } from '@suite-common/device';
+import { type MessageSystemState } from '@suite-common/message-system';
 import { initialSuiteSyncDataState, initialSuiteSyncState } from '@suite-common/suite-sync';
 import {
     type Action,
@@ -54,6 +55,23 @@ import {
 
 const actionId = 'ActionId_1';
 const contentText = 'Content Text';
+
+const messageSystemState: MessageSystemState = {
+    config: null,
+    currentSequence: 0,
+    timestamp: 0,
+    validMessages: {
+        banner: [],
+        context: [],
+        modal: [],
+        feature: [],
+    },
+    dismissedMessages: {},
+    validExperiments: [],
+    configSource: 'remote',
+    manuallyAddedMessageIds: {},
+    manuallyAddedExperimentIds: {},
+};
 
 const getPreloadedState = ({
     buy,
@@ -1267,6 +1285,7 @@ describe('commonSelectors', () => {
                         suiteSync: initialSuiteSyncState,
                         device: deviceInitialState,
                         appSettings: appSettingsInitialState,
+                        messageSystem: messageSystemState,
                     },
                     'eth-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
                     'eth' as CryptoId,
@@ -1289,6 +1308,7 @@ describe('commonSelectors', () => {
                             suiteSync: initialSuiteSyncState,
                             device: deviceInitialState,
                             appSettings: appSettingsInitialState,
+                            messageSystem: messageSystemState,
                         },
                         'eth-account-2' as AccountKey, // Todo: create properly via `createAccountKey()`
                         asset as CryptoId,
@@ -1306,6 +1326,7 @@ describe('commonSelectors', () => {
                         suiteSync: initialSuiteSyncState,
                         device: deviceInitialState,
                         appSettings: appSettingsInitialState,
+                        messageSystem: messageSystemState,
                     },
                     undefined,
                     undefined,

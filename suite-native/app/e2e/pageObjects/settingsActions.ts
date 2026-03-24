@@ -122,20 +122,6 @@ class SettingsActions {
 
         await onTabBar.tapBackButton();
 
-        await this.openSection('advanced');
-        const experimentalFeaturesToggleElement = element(
-            by.id('@settings/experimental-features/toggle-switch'),
-        );
-        await scrollUntilVisible(experimentalFeaturesToggleElement);
-        await experimentalFeaturesToggleElement.tap();
-
-        const suiteSyncCheckboxElement = element(
-            by.id('@settings/experimental-features/suite-sync/checkbox'),
-        );
-        await scrollUntilVisible(suiteSyncCheckboxElement);
-        await suiteSyncCheckboxElement.tap();
-        await onTabBar.tapBackButton();
-
         await this.openSection('suite-sync');
         await wait(1000);
         await element(by.id('settings/suite-sync-touchable-row')).tap();

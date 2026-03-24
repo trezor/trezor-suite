@@ -3,11 +3,12 @@ import {
     selectIsLabelingAvailableForEntity,
     selectIsLabelingInitPossible,
 } from '@suite/metadata';
-import { selectHasExperimentalFeature } from '@suite/settings';
+import { type MessageSystemRootState } from '@suite-common/message-system';
 import {
     type WithSuiteSyncAndDeviceState,
     getIsSuiteSyncLabelingActionEnabled,
     selectIsSuiteSyncEnabled,
+    selectIsSuiteSyncFeatureAvailable,
 } from '@suite-common/suite-sync';
 import { type StaticSessionId } from '@trezor/connect';
 
@@ -21,7 +22,8 @@ export const selectIsLabelActionEnabled = (
     state: WithSuiteSyncAndDeviceState &
         MetadataRootState &
         SuiteRootState &
-        DesktopSuiteSyncRootState,
+        DesktopSuiteSyncRootState &
+        MessageSystemRootState,
     deviceStaticSessionId: StaticSessionId,
     legacyEntityKey: string,
 ): boolean => {
@@ -36,9 +38,8 @@ export const selectIsLabelActionEnabled = (
         deviceStaticSessionId,
     );
 
-    const isSuiteSyncFeatureEnabled = selectHasExperimentalFeature('suite-sync')(state);
+    const isSuiteSyncFeatureEnabled = selectIsSuiteSyncFeatureAvailable(state);
 
-    // Turn ON in Experimental Features
     if (isSuiteSyncFeatureEnabled) {
         const suiteSyncInteraction = selectDesktopSuiteSyncInteraction(
             state,
