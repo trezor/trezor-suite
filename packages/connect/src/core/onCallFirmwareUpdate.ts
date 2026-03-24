@@ -65,9 +65,13 @@ const waitForThpPairingConfirmation = async ({
 }) => {
     const uiPromise = uiPromises.create(UI_RESPONSE.RECEIVE_CONFIRMATION, device);
     postMessage(
-        createUiMessage(UI_REQUEST.REQUEST_CONFIRMATION, {
-            view: thpPairingError ? 'thp-pairing-failed' : 'thp-pairing-start',
-        }),
+        createUiMessage(
+            UI_REQUEST.REQUEST_CONFIRMATION,
+            {
+                view: thpPairingError ? 'thp-pairing-failed' : 'thp-pairing-start',
+            },
+            uiPromise.requestId,
+        ),
     );
 
     const devicePath = device.getUniquePath();
