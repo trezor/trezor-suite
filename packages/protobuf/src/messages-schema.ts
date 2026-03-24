@@ -1601,6 +1601,34 @@ export const DebugLinkSetLogFilter = Type.Object(
     { $id: 'DebugLinkSetLogFilter' },
 );
 
+export type DebugLinkN4W1Connected = Static<typeof DebugLinkN4W1Connected>;
+export const DebugLinkN4W1Connected = Type.Object({}, { $id: 'DebugLinkN4W1Connected' });
+
+export type DebugLinkN4W1Write = Static<typeof DebugLinkN4W1Write>;
+export const DebugLinkN4W1Write = Type.Object(
+    {
+        key: Type.Optional(Type.String()),
+        value: Type.Optional(Type.String()),
+    },
+    { $id: 'DebugLinkN4W1Write' },
+);
+
+export type DebugLinkN4W1Read = Static<typeof DebugLinkN4W1Read>;
+export const DebugLinkN4W1Read = Type.Object(
+    {
+        key: Type.Optional(Type.String()),
+    },
+    { $id: 'DebugLinkN4W1Read' },
+);
+
+export type DebugLinkN4W1Response = Static<typeof DebugLinkN4W1Response>;
+export const DebugLinkN4W1Response = Type.Object(
+    {
+        value: Type.Optional(Type.String()),
+    },
+    { $id: 'DebugLinkN4W1Response' },
+);
+
 export enum DefinitionType {
     ETHEREUM_NETWORK = 0,
     ETHEREUM_TOKEN = 1,
@@ -2186,6 +2214,7 @@ export type EvoluGetNode = Static<typeof EvoluGetNode>;
 export const EvoluGetNode = Type.Object(
     {
         proof_of_delegated_identity: Type.String(),
+        node_rotation_index: Type.Optional(Type.Number()),
     },
     { $id: 'EvoluGetNode' },
 );
@@ -2221,7 +2250,8 @@ export type EvoluGetDelegatedIdentityKey = Static<typeof EvoluGetDelegatedIdenti
 export const EvoluGetDelegatedIdentityKey = Type.Object(
     {
         thp_credential: Type.Optional(Type.String()),
-        host_static_public_key: Type.Optional(Type.String()),
+        rotation_index: Type.Optional(Type.Number()),
+        rotate: Type.Optional(Type.Boolean()),
     },
     { $id: 'EvoluGetDelegatedIdentityKey' },
 );
@@ -2230,8 +2260,25 @@ export type EvoluDelegatedIdentityKey = Static<typeof EvoluDelegatedIdentityKey>
 export const EvoluDelegatedIdentityKey = Type.Object(
     {
         private_key: Type.String(),
+        rotation_index: Type.Optional(Type.Number()),
     },
     { $id: 'EvoluDelegatedIdentityKey' },
+);
+
+export type EvoluIndexManagement = Static<typeof EvoluIndexManagement>;
+export const EvoluIndexManagement = Type.Object(
+    {
+        rotation_index: Type.Optional(Type.Number()),
+    },
+    { $id: 'EvoluIndexManagement' },
+);
+
+export type EvoluIndexManagementResponse = Static<typeof EvoluIndexManagementResponse>;
+export const EvoluIndexManagementResponse = Type.Object(
+    {
+        rotation_index: Type.Optional(Type.Number()),
+    },
+    { $id: 'EvoluIndexManagementResponse' },
 );
 
 export enum Enum_BackupType {
@@ -2248,6 +2295,14 @@ export const EnumEnum_BackupType = Type.Enum(Enum_BackupType);
 
 export type BackupType = Static<typeof BackupType>;
 export const BackupType = Type.KeyOfEnum(Enum_BackupType, { $id: 'BackupType' });
+
+export enum BackupMethod {
+    Display = 0,
+    N4W1 = 1,
+}
+
+export type EnumBackupMethod = Static<typeof EnumBackupMethod>;
+export const EnumBackupMethod = Type.Enum(BackupMethod);
 
 export enum Enum_SafetyCheckLevel {
     Strict = 0,
@@ -2390,6 +2445,7 @@ export const RecoveryDevice = Type.Object(
         input_method: Type.Optional(EnumRecoveryDeviceInputMethod),
         u2f_counter: Type.Optional(Type.Number()),
         type: Type.Optional(RecoveryType),
+        backup_method: Type.Optional(EnumBackupMethod),
     },
     { $id: 'RecoveryDevice' },
 );
@@ -2659,6 +2715,7 @@ export const ResetDevice = Type.Object(
         no_backup: Type.Optional(Type.Boolean()),
         backup_type: Type.Optional(EnumEnum_BackupType),
         entropy_check: Type.Optional(Type.Boolean()),
+        backup_method: Type.Optional(EnumBackupMethod),
     },
     { $id: 'ResetDevice' },
 );
@@ -2677,6 +2734,7 @@ export const BackupDevice = Type.Object(
     {
         group_threshold: Type.Optional(Type.Number()),
         groups: Type.Optional(Type.Array(Slip39Group)),
+        backup_method: Type.Optional(EnumBackupMethod),
     },
     { $id: 'BackupDevice' },
 );
@@ -3970,6 +4028,24 @@ export const TronTransferContract = Type.Object(
     { $id: 'TronTransferContract' },
 );
 
+export type TronVote = Static<typeof TronVote>;
+export const TronVote = Type.Object(
+    {
+        address: Type.String(),
+        count: Type.Number(),
+    },
+    { $id: 'TronVote' },
+);
+
+export type TronVoteWitnessContract = Static<typeof TronVoteWitnessContract>;
+export const TronVoteWitnessContract = Type.Object(
+    {
+        owner_address: Type.String(),
+        votes: Type.Array(TronVote),
+    },
+    { $id: 'TronVoteWitnessContract' },
+);
+
 export type TronTriggerSmartContract = Static<typeof TronTriggerSmartContract>;
 export const TronTriggerSmartContract = Type.Object(
     {
@@ -4035,6 +4111,7 @@ export const TronRawParameter = Type.Object(
 
 export enum TronRawContractType {
     TransferContract = 1,
+    VoteWitnessContract = 4,
     TriggerSmartContract = 31,
     FreezeBalanceV2Contract = 54,
     UnfreezeBalanceV2Contract = 55,
@@ -4186,6 +4263,10 @@ export const MessageType = Type.Object(
         DebugLinkGcInfoItem,
         DebugLinkGcInfo,
         DebugLinkSetLogFilter,
+        DebugLinkN4W1Connected,
+        DebugLinkN4W1Write,
+        DebugLinkN4W1Read,
+        DebugLinkN4W1Response,
         EthereumNetworkInfo,
         EthereumTokenInfo,
         SolanaTokenInfo,
@@ -4245,6 +4326,8 @@ export const MessageType = Type.Object(
         EvoluRegistrationRequest,
         EvoluGetDelegatedIdentityKey,
         EvoluDelegatedIdentityKey,
+        EvoluIndexManagement,
+        EvoluIndexManagementResponse,
         Initialize,
         GetFeatures,
         RecoveryDevice,
@@ -4398,6 +4481,8 @@ export const MessageType = Type.Object(
         TronSignTx,
         TronContractRequest,
         TronTransferContract,
+        TronVote,
+        TronVoteWitnessContract,
         TronTriggerSmartContract,
         TronFreezeBalanceV2Contract,
         TronUnfreezeBalanceV2Contract,
