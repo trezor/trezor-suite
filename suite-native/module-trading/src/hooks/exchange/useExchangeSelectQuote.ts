@@ -114,11 +114,14 @@ export const useExchangeSelectQuote = (form: ExchangeFormType) => {
                             });
 
                         case 'needs_approval':
-                        case null:
                             return navigation.navigate(
                                 TradingStackRoutes.TradingExchangeApproval,
                                 {},
                             );
+
+                        case null:
+                            // do nothing (should not happen when quote is defined)
+                            return;
 
                         default:
                             return exhaustive(approvalStatus);

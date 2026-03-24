@@ -2497,6 +2497,7 @@ export const messages = {
                 continue: 'Continue',
                 swap: 'Swap',
                 approveAndSwap: 'Approve and swap',
+                revoke: 'Revoke approval',
             },
             countryOfResidence: 'Country of residence',
             noCountryOfResidence: 'No country of residence selected',
