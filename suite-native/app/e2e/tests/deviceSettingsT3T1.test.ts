@@ -26,6 +26,8 @@ describe('Device settings T3T1 [@androidOnly @smoke @T3T1]', () => {
     // Firmware 2.9.4 brought instability in firmware/emu interaction, this will be discussed with firmware team
     // We would have to put wait(500) in each step interacting with emulator
     test('Enable, change & disable PIN', async () => {
+        await onDeviceSettings.redirectToPinProtectionScreen();
+
         await onDeviceSettings.tapEnablePinProtectionButton();
         await TrezorUserEnvLink.pressNo();
         await onAlertSheet.tapPrimaryButton();

@@ -39,7 +39,7 @@ class DeviceSettingsActions {
         const redirectToPinScreenButton = element(
             by.id('@device-pin-protection/redirectToPinScreen'),
         );
-        await waitForVisible(redirectToPinScreenButton);
+        await scrollUntilVisible(redirectToPinScreenButton);
         await redirectToPinScreenButton.tap();
     }
 
@@ -49,11 +49,8 @@ class DeviceSettingsActions {
     }
 
     async tapEnablePinProtectionButton() {
-        await waitForVisible(by.id('@screen/PinProtection'));
-
         const enablePinProtectionButton = element(by.id('@device-pin-protection/enable-button'));
         await waitForVisible(enablePinProtectionButton);
-
         await enablePinProtectionButton.tap();
     }
 
