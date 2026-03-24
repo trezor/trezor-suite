@@ -4,8 +4,8 @@ import { type FormState } from '@suite-common/wallet-types';
 import { useDispatch } from 'src/hooks/suite';
 import { useTradingSellForm } from 'src/hooks/wallet/trading/form/useTradingSellForm';
 
-import { type TransactionReviewModalProps } from './TransactionReviewModal';
 import { TransactionReviewModalBody } from './TransactionReviewModalBody';
+import { type TransactionReviewModalProps } from './TransactionReviewModalProps';
 
 type TransactionReviewModalSellProps = {
     txInfoState: SendState | StakeState;

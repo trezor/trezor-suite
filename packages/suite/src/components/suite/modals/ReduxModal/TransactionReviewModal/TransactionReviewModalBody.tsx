@@ -19,7 +19,7 @@ import { useAnalytics } from 'src/support/useAnalytics';
 import { redactRouterUrl } from 'src/utils/suite/analytics';
 
 import { TransactionReviewModalBodyInner } from './TransactionReviewModalBodyInner';
-import { isStakeState } from './types';
+import { isStakeState } from './utils';
 import { ConfirmActionModal } from '../DeviceContextModal/ConfirmActionModal';
 
 export type TransactionReviewModalBodyProps = {

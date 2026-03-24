@@ -1,4 +1,3 @@
-import { type UserContextPayload } from '@suite-common/suite-types';
 import {
     cancelSignSendFormTransactionThunk,
     selectPrecomposedSendForm,
@@ -18,19 +17,12 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { TransactionReviewModalBody } from './TransactionReviewModalBody';
 import { TransactionReviewModalExchange } from './TransactionReviewModalExchange';
+import { type TransactionReviewModalProps } from './TransactionReviewModalProps';
 import { TransactionReviewModalSell } from './TransactionReviewModalSell';
-import { isStakeState } from './types';
+import { isStakeState } from './utils';
 
 // This modal is opened either in Device (button request) or User (push tx) context
 // contexts are distinguished by `type` prop
-export type TransactionReviewModalProps =
-    | Extract<UserContextPayload, { type: 'review-transaction' }>
-    | { type: 'sign-transaction'; decision?: undefined }
-    | Extract<
-          UserContextPayload,
-          { type: 'review-transaction-rbf-previous-transaction-mined-error' }
-      >;
-
 export const TransactionReviewModal = ({ type, decision }: TransactionReviewModalProps) => {
     const send = useSelector(state => state.wallet.send);
     const stake = useSelector(selectStake);
