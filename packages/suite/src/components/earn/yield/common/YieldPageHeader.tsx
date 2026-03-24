@@ -10,11 +10,11 @@ import { getCoingeckoId } from '@suite-common/wallet-config';
 import { Box, Button, Column, IconButton, Row, Text } from '@trezor/components';
 import { AssetLogo, CoinLogo } from '@trezor/product-components';
 
-import { useAllYieldOpportunities } from 'src/components/earn/dashboard/yield/hooks/useAllYieldOpportunities';
 import { AccountLabel } from 'src/components/suite';
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 import { useDispatch } from 'src/hooks/suite';
 
+import { useAllYieldOpportunities } from '../../dashboard/yield/hooks/useAllYieldOpportunities';
 import { useEarnRouteAccount } from '../../utils/useEarnRouteAccount';
 
 interface YieldPageHeaderProps {
