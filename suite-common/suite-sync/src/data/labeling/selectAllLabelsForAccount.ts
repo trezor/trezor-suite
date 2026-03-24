@@ -8,7 +8,7 @@ import { selectSuiteSyncAccountAddressesByAccount } from '../address/suiteSyncAd
 import { selectSuiteSyncOutputLabelsByAccount } from '../output/suiteSyncOutputSelectors';
 import { type SuiteSyncDataRootState } from '../suiteSyncDataReducer';
 
-type SelectAllLabelsForAccountParams = {
+export type SelectAllLabelsForAccountParams = {
     walletDescriptor: WalletDescriptor;
     accountDescriptor: AccountDescriptor;
     networkSymbol: NetworkSymbol;

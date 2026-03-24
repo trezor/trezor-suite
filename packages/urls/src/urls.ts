@@ -208,7 +208,7 @@ export const HELP_CENTER_XPUB_URL: Url = withPlatformUtm(
     'https://trezor.io/learn/supported-assets/bitcoin/what-is-a-public-key-xpub',
 );
 export const HELP_CENTER_BIP329_URL: Url = withPlatformUtm(
-    'https://trezor.io/learn/advanced/standards-proposals/what-is-bip329',
+    'https://trezor.io/learn/advanced/standards-proposals/what-is-bip-329',
 );
 export const HELP_CENTER_BIP32_URL: Url = withPlatformUtm(
     'https://trezor.io/learn/advanced/standards-proposals/what-is-bip32',

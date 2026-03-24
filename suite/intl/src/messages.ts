@@ -3725,6 +3725,23 @@ export const messages = defineMessages({
         id: 'TR_ACCOUNT_DETAILS_EXPORT_LABELS_DESCRIPTION',
         defaultMessage: 'Export label files to your computer using the BIP-329 standard.',
     },
+    TR_ACCOUNT_DETAILS_IMPORT_LABELS_BUTTON: {
+        id: 'TR_ACCOUNT_DETAILS_IMPORT_LABELS_BUTTON',
+        defaultMessage: 'Import',
+    },
+    TR_BIP_329_HEADER: {
+        id: 'TR_BIP_329_HEADER',
+        defaultMessage: 'Transaction labels',
+    },
+    TR_BIP_329_DESCRIPTION: {
+        id: 'TR_BIP_329_DESCRIPTION',
+        defaultMessage:
+            'Import or export transaction labels for this account. Compatible with other wallet applications that support the BIP-329 format.',
+    },
+    TR_BIP_329_LABELS_IMPORTED: {
+        id: 'TR_BIP_329_LABELS_IMPORTED',
+        defaultMessage: 'BIP 329 labels imported successfully.',
+    },
     TR_ACCOUNT_DETAILS_XPUB: {
         id: 'TR_ACCOUNT_DETAILS_XPUB',
         defaultMessage:

@@ -160,6 +160,11 @@ export const createSuiteSyncCompositionRoot = (
     const getIsSuiteSyncEnabled = toGetter(deps.getState, selectIsSuiteSyncEnabled);
     const getAllDeviceSessionIds = toGetter(deps.getState, selectAllDeviceStaticIds);
 
+    const updateWalletLabel = createUpdateWalletLabel({ ensureWalletSuiteSyncOn });
+    const updateAccountLabel = createUpdateAccountLabel({ ensureWalletSuiteSyncOn });
+    const updateOutputLabel = createUpdateOutputLabel({ ensureWalletSuiteSyncOn });
+    const updateAddressLabel = createUpdateAddressLabel({ ensureWalletSuiteSyncOn });
+
     return {
         changeRelayUrl: createChangeRelayUrl({
             suiteSyncStorageRepository,
@@ -181,10 +186,10 @@ export const createSuiteSyncCompositionRoot = (
             ensureWalletSuiteSyncOn,
         }),
         labeling: {
-            updateWalletLabel: createUpdateWalletLabel({ ensureWalletSuiteSyncOn }),
-            updateAccountLabel: createUpdateAccountLabel({ ensureWalletSuiteSyncOn }),
-            updateOutputLabel: createUpdateOutputLabel({ ensureWalletSuiteSyncOn }),
-            updateAddressLabel: createUpdateAddressLabel({ ensureWalletSuiteSyncOn }),
+            updateWalletLabel,
+            updateAccountLabel,
+            updateOutputLabel,
+            updateAddressLabel,
         },
     };
 };

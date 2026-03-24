@@ -1,11 +1,7 @@
 {
     "extends": "../../tsconfig.base.json",
-    "compilerOptions": {
-        "outDir": "libDev",
-        "exactOptionalPropertyTypes": true
-    },
+    "compilerOptions": { "outDir": "libDev" },
     "references": [
-        { "path": "../bip329" },
         { "path": "../delegated-identity-key" },
         {
             "path": "../delegated-identity-key-types"

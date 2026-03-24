@@ -119,7 +119,8 @@ export type ToastPayload<TranslationKey extends UnknownTranslationKey = UnknownT
               | 'could-not-parse-csv'
               | 'thp-credentials-reset'
               | 'sign-transaction-timeout'
-              | 'suite-sync-keys-error';
+              | 'suite-sync-keys-error'
+              | 'bip-329-labels-imported';
       }
     | SentTransactionNotification
     | ApproveTransactionNotification

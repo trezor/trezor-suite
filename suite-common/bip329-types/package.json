@@ -1,0 +1,20 @@
+{
+    "name": "@suite-common/bip329-types",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "type-check": "yarn g:tsc --build",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
+    },
+    "dependencies": {
+        "@suite-common/suite-sync-storage": "workspace:*",
+        "@suite-common/suite-sync-types": "workspace:*",
+        "@suite-common/wallet-types": "workspace:*",
+        "@trezor/type-utils": "workspace:*",
+        "yup": "1.7.1"
+    }
+}

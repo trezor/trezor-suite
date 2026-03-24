@@ -1,7 +1,8 @@
-import { type Bip329Label } from '@suite-common/bip329';
+import { type Bip329Label } from '@suite-common/bip329-types';
 import { type AccountLabels } from '@suite-common/metadata-types';
 
 // Transforms a custom SLIP-15 like wallet label object into an array of BIP-329 label objects.
+
 export const slip15ToBip329 = (inputData: AccountLabels, allSpendable = true): Bip329Label[] => {
     const bip329Labels: Bip329Label[] = [];
 
@@ -10,6 +11,7 @@ export const slip15ToBip329 = (inputData: AccountLabels, allSpendable = true): B
         for (const txid in inputData.outputLabels) {
             if (Object.prototype.hasOwnProperty.call(inputData.outputLabels, txid)) {
                 const outputs = inputData.outputLabels[txid];
+
                 for (const vout in outputs) {
                     if (Object.prototype.hasOwnProperty.call(outputs, vout)) {
                         bip329Labels.push({

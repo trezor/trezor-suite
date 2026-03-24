@@ -8,7 +8,6 @@ export * as metadataLabelingConstants from './metadataLabelingConstants';
 export * as METADATA from './metadataConstants';
 export { moveLabelsForRbfOldMetadataThunk } from './moveLabelsForRbfOldMetadataThunk';
 export { MetadataProviderModal } from './MetadataProviderModal';
-export { slip15ToBip329 } from './slip15ToBip329';
 export { metadataMiddleware } from './metadataMiddleware';
 export * from './fromLegacyMetadataToSearchLabels';
 

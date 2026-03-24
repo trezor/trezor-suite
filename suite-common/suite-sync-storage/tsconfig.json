@@ -1,9 +1,6 @@
 {
     "extends": "../../tsconfig.base.json",
-    "compilerOptions": {
-        "outDir": "libDev",
-        "exactOptionalPropertyTypes": true
-    },
+    "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../wallet-config" },
         { "path": "../wallet-types" },

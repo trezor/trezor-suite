@@ -11,7 +11,6 @@
     },
     "include": [".", "**/*.json"],
     "references": [
-        { "path": "../../suite-common/bip329" },
         { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/metadata-types"

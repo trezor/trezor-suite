@@ -1,3 +1,4 @@
+import { type Bip329 } from '@suite-common/bip329-types';
 import {
     type EncryptableBranded,
     type EncryptedHex,
@@ -39,6 +40,11 @@ const suiteSyncMock: SuiteSync = {
     },
 };
 
+const bip329Mock: Bip329 = {
+    export: () => ({ accountLabel: null, labelsToExport: [] }),
+    import: () => Promise.resolve(ok()),
+};
+
 const platformEncryptionMock: PlatformEncryption = {
     encrypt: <T extends EncryptableBranded>({ value }: { value: T }) =>
         Promise.resolve(ok(asEncryptedHex(value as T))),
@@ -75,6 +81,7 @@ export const extraDependenciesCommonMock: ExtraDependencies = {
     },
     services: {
         suiteSync: suiteSyncMock,
+        bip329: bip329Mock,
         ensureDelegatedIdentityKey: () =>
             Promise.resolve(ok(asDelegatedIdentityKey('mockDelegatedIdentityKey'))),
         platformEncryption: platformEncryptionMock,

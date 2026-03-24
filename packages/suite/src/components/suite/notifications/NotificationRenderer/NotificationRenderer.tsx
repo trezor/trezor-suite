@@ -606,6 +606,12 @@ export const NotificationRenderer = ({
                 values: { appName: notification.appName },
             });
 
+        case 'bip-329-labels-imported':
+            return renderNotificationView(render, notification, {
+                variant: 'success',
+                message: 'TR_BIP_329_LABELS_IMPORTED',
+            });
+
         default:
             return exhaustive(type);
     }

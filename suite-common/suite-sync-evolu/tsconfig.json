@@ -1,9 +1,6 @@
 {
     "extends": "../../tsconfig.base.json",
-    "compilerOptions": {
-        "outDir": "libDev",
-        "exactOptionalPropertyTypes": true
-    },
+    "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../suite-sync-storage" },
         { "path": "../suite-sync-types" },

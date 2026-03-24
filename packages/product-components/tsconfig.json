@@ -39,6 +39,7 @@
         { "path": "../device-utils" },
         { "path": "../env-utils" },
         { "path": "../theme" },
+        { "path": "../type-utils" },
         { "path": "../utils" },
         { "path": "../eslint" }
     ]
