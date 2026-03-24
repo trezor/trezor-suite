@@ -19,7 +19,7 @@ import { ESHOP_KEEP_METAL_MULTI_SHARE_URL, HELP_CENTER_SEED_CARD_URL } from '@tr
 
 import { TrezorLink } from 'src/components/suite/TrezorLink';
 
-import type { Steps } from './MultiShareBackupModal';
+import type { Steps } from './steps';
 
 type InstructionItemProps = {
     direction?: FlexDirection;
