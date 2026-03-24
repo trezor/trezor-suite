@@ -13,6 +13,7 @@ import {
     DynamicScreenHeader,
     type RootStackParamList,
     Screen,
+    ScreenHeader,
     type StackToStackCompositeScreenProps,
     type TradingStackParamList,
     type TradingStackRoutes,
@@ -69,11 +70,16 @@ export const TradingExchangeApprovalScreen = ({
     );
 
     if (!quote) {
-        {
-            // TODO 25971 would be better to render some alert
-        }
-
-        return null;
+        return (
+            <Screen header={<ScreenHeader closeActionType="back" />}>
+                <InlineAlertBox
+                    title={
+                        <Translation id="moduleTrading.tradingExchangeApprovalScreen.approveErrorAlert" />
+                    }
+                    variant="critical"
+                />
+            </Screen>
+        );
     }
 
     return (

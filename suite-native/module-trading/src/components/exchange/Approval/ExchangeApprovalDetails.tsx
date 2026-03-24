@@ -1,6 +1,7 @@
+import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { Card } from '@suite-native/atoms';
+import { Card, InlineAlertBox } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { NetworkAndAccountCard } from '@suite-native/trading-atoms';
 import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
@@ -24,8 +25,21 @@ export const ExchangeApprovalDetails = ({
 }: ExchangeApprovalDetailsProps) => {
     const account = useSelector(selectExchangeSelectedSendAccount);
 
+    useEffect(() => {
+        if (!account) {
+            console.error('No account selected for exchange approval details');
+        }
+    }, [account]);
+
     if (!account) {
-        return null;
+        return (
+            <InlineAlertBox
+                title={
+                    <Translation id="moduleTrading.tradingExchangeApprovalScreen.approveErrorAlert" />
+                }
+                variant="critical"
+            />
+        );
     }
 
     return (

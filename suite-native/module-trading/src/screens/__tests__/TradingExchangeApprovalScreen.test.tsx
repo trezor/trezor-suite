@@ -1,6 +1,7 @@
 import { type RouteProp } from '@react-navigation/native';
 
 import { selectTradingExchangeSelectedQuote, tradingExchangeActions } from '@suite-common/trading';
+import { getTranslation } from '@suite-native/intl';
 import { type TradingStackParamList, type TradingStackRoutes } from '@suite-native/navigation';
 import {
     type TestStore,
@@ -57,6 +58,8 @@ describe('TradingExchangeApprovalScreen', () => {
     let store: TestStore;
     let unmount: (() => void) | undefined;
 
+    const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+
     const renderScreen = () => {
         const result = renderWithStoreProvider(
             <TradingExchangeApprovalScreen route={{ params: {} } as any} navigation={{} as any} />,
@@ -94,6 +97,7 @@ describe('TradingExchangeApprovalScreen', () => {
 
         expect(getByText('ETH Account #1')).toBeOnTheScreen();
         expect(getByText('Mercuryo')).toBeOnTheScreen();
+        expect(errorSpy).not.toHaveBeenCalled();
     });
 
     it('should display provider information correctly', () => {
@@ -114,17 +118,23 @@ describe('TradingExchangeApprovalScreen', () => {
     it('should render continue button', () => {
         const { getByText } = renderScreen();
 
-        const buttons = getByText('Continue');
-        expect(buttons).toBeTruthy();
+        expect(getByText(getTranslation('generic.buttons.continue'))).toBeOnTheScreen();
     });
 
-    it('should render nothing when no quote is provided', () => {
+    it('should render alert when no quote is provided', () => {
         store.dispatch(tradingExchangeActions.savePreselectedQuote(undefined));
         store.dispatch(tradingExchangeActions.saveSelectedQuote(undefined));
 
-        const { toJSON } = renderScreen();
+        const { getByText, queryByText } = renderScreen();
 
-        expect(toJSON()).toBeNull();
+        expect(
+            getByText(
+                getTranslation('moduleTrading.tradingExchangeApprovalScreen.approveErrorAlert'),
+            ),
+        ).toBeOnTheScreen();
+        expect(queryByText(getTranslation('generic.buttons.continue'))).toBeNull();
+        expect(errorSpy).toHaveBeenCalledTimes(1);
+        expect(errorSpy).toHaveBeenCalledWith('No quote to confirm approval');
     });
 
     it('should clear selected quote on unmount', () => {
