@@ -8,7 +8,6 @@ import TrezorConnect, { UI_REQUEST } from '@trezor/connect';
 import { useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
-import type { ReduxModalProps } from '../ReduxModal';
 import { ConfirmActionModal } from './ConfirmActionModal';
 import { ConfirmFingerprintModal } from './ConfirmFingerprintModal';
 import { PassphraseOnDeviceModal } from './PassphraseOnDeviceModal';
@@ -16,6 +15,7 @@ import { PinModal } from './PinModal';
 import { SignMessageModal } from './SignMessageModal';
 import { ConfirmAddressModal } from '../ConfirmAddressModal';
 import { ConfirmXpubModal } from '../ConfirmXpubModal';
+import type { ReduxModalProps } from '../ReduxModalProps';
 import { TransactionReviewModal } from '../TransactionReviewModal/TransactionReviewModal';
 
 /** Modals requested by Device from `trezor-connect` */

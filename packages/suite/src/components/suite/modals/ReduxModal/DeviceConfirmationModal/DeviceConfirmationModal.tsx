@@ -1,10 +1,10 @@
 import { type MODAL_CONTEXT_DEVICE_CONFIRMATION } from '@suite/modal';
 import { UI_REQUEST } from '@trezor/connect';
 
+import { NoBackupModal } from './NoBackupModal';
 import { SelectAccountModal } from './SelectAccountModal';
 import { SelectFeeModal } from './SelectFeeModal';
-import type { ReduxModalProps } from '../ReduxModal';
-import { NoBackupModal } from './NoBackupModal';
+import type { ReduxModalProps } from '../ReduxModalProps';
 
 /** Modals requested from `trezor-connect` */
 export const DeviceConfirmationModal = ({
