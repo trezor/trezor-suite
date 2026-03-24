@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { type CryptoId } from 'invity-api';
@@ -19,6 +19,7 @@ import {
 } from '@suite-common/trading';
 import { type Account } from '@suite-common/wallet-types';
 import { filterReceiveAccounts } from '@suite-common/wallet-utils';
+import addressValidator from '@trezor/address-validator';
 
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -49,7 +50,6 @@ const getTranslationIds = (
 interface UseTradingReceiveAddressProps {
     cryptoId?: CryptoId;
     nonSuiteAccount: boolean;
-    isPreviousRouteFromTradeSection: boolean;
     pageType: TradingPageType;
     type: TradingType;
 }
@@ -58,7 +58,6 @@ export const useTradingReceiveAddress = ({
     type,
     cryptoId,
     nonSuiteAccount,
-    isPreviousRouteFromTradeSection,
     pageType,
 }: UseTradingReceiveAddressProps) => {
     const dispatch = useDispatch();
@@ -90,13 +89,6 @@ export const useTradingReceiveAddress = ({
     const [selectedAccount, setSelectedAccount] = useState<Account | null | undefined>(undefined);
     const [hasSelectionInitialized, setHasSelectionInitialized] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState<boolean | undefined>(undefined);
-    const initialSymbolRef = useRef<typeof symbol>(undefined);
-
-    useEffect(() => {
-        if (initialSymbolRef.current === undefined && symbol !== undefined) {
-            initialSymbolRef.current = symbol;
-        }
-    }, [symbol]);
 
     const isSupportedNetwork = [...supportedMainnets, ...supportedTestnets].some(
         network => network.symbol === symbol,
@@ -147,10 +139,14 @@ export const useTradingReceiveAddress = ({
     useEffect(() => {
         setSelectedAccount(undefined);
         setHasSelectionInitialized(false);
-    }, [symbol]);
+        methods.setValue('address', '', { shouldValidate: false });
+        methods.setValue('extraField', '', { shouldValidate: false });
+    }, [symbol, methods]);
 
     useEffect(() => {
-        if (!sendAccountKey) return;
+        if (!sendAccountKey || hasSelectionInitialized) {
+            return; // Don't override user selection
+        }
 
         const sendAccount =
             type === 'exchange'
@@ -168,14 +164,21 @@ export const useTradingReceiveAddress = ({
         if (!matchingAccount) return;
 
         selectSuiteAccount(matchingAccount);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [sendAccountKey, symbol]);
+    }, [
+        sendAccountKey,
+        symbol,
+        accounts,
+        suiteReceiveAccounts,
+        hasSelectionInitialized,
+        type,
+        selectSuiteAccount,
+    ]);
 
     useEffect(() => {
         if (!symbol) return;
         if (hasSelectionInitialized) return;
 
-        if (isPreviousRouteFromTradeSection && persistedReceiveAccountKey) {
+        if (persistedReceiveAccountKey) {
             const matchingAccount = suiteReceiveAccounts?.find(
                 account => account.key === persistedReceiveAccountKey,
             );
@@ -187,15 +190,17 @@ export const useTradingReceiveAddress = ({
             }
         }
 
-        if (
-            isPreviousRouteFromTradeSection &&
-            persistedReceiveAddress &&
-            canUseNonSuiteAccount &&
-            symbol === initialSymbolRef.current
-        ) {
-            selectNonSuiteAddress(persistedReceiveAddress);
+        if (persistedReceiveAddress && canUseNonSuiteAccount && symbol) {
+            const isValidForCurrentSymbol = addressValidator.validate(
+                persistedReceiveAddress,
+                symbol,
+            );
 
-            return;
+            if (isValidForCurrentSymbol) {
+                selectNonSuiteAddress(persistedReceiveAddress);
+
+                return;
+            }
         }
 
         const preferredReceiveAccountKey =
@@ -247,7 +252,6 @@ export const useTradingReceiveAddress = ({
         suiteReceiveAccounts,
         persistedReceiveAccountKey,
         persistedReceiveAddress,
-        isPreviousRouteFromTradeSection,
         walletSelectedAccount.account?.key,
         selectSuiteAccount,
         selectNonSuiteAddress,

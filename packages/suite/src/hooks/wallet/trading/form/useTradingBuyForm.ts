@@ -140,7 +140,6 @@ export const useTradingBuyForm = ({
     const tradingReceiveAddress = useTradingReceiveAddress({
         type: 'buy',
         cryptoId: values.cryptoSelect?.id,
-        isPreviousRouteFromTradeSection,
         nonSuiteAccount: !selectedQuote?.tags?.includes('noExternalAddress'),
         pageType,
     });
