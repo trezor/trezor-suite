@@ -1,4 +1,4 @@
-import { Translation, type TranslationFunction, useTranslation } from '@suite/intl';
+import { Translation, useTranslation } from '@suite/intl';
 import { getFeeUnits, isInteger } from '@suite-common/wallet-utils';
 import { Column, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
@@ -8,16 +8,6 @@ import { CustomFeeEthereum } from './CustomFeeEthereum';
 import { CustomFeeMisc } from './CustomFeeMisc';
 import { CustomFeeTooLowBanner } from './CustomFeeTooLowBanner';
 import { useFeesContext } from '../../context/FeesContext';
-
-export type CustomFeeBasicProps = {
-    composedFeePerByte: string | undefined;
-    translationString: TranslationFunction;
-    feeUnits: string;
-    sharedRules: {
-        required: string;
-        validate: (value: string) => string | undefined;
-    };
-};
 
 type CustomFeeProps = {
     showCurrentFee: boolean;

@@ -9,7 +9,7 @@ import { BigNumber } from '@trezor/utils';
 import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 import { validateDecimals } from 'src/utils/suite/validation';
 
-import { type CustomFeeBasicProps } from './CustomFee';
+import { type CustomFeeBasicProps } from './CustomFeeBasicProps';
 import { FEE_LIMIT, FEE_PER_UNIT } from './constants';
 import { DustPreventionNotice } from '../../DustPreventionNotice';
 import { useFeesContext } from '../../context/FeesContext';
