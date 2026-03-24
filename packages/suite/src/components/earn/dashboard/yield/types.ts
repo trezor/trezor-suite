@@ -7,7 +7,8 @@ export type YieldAccountOpportunity = {
     account?: Account;
     networkSymbol: NetworkSymbol;
     vault: YieldDto;
-    matchedToken: TokenInfoBranded | undefined;
+    matchedInputToken: TokenInfoBranded | undefined;
+    hasVaultPosition: boolean;
     suppliedAmount: string;
     additionalSupplyAmount: string;
     suppliedSymbol: TokenSymbol;
@@ -18,4 +19,14 @@ export type YieldAccountOpportunity = {
 export type YieldInactiveVaultOpportunity = Pick<
     YieldAccountOpportunity,
     'key' | 'networkSymbol' | 'vault' | 'apyPercentage'
+>;
+
+export type YieldOpportunityData = Pick<
+    YieldAccountOpportunity,
+    | 'matchedInputToken'
+    | 'hasVaultPosition'
+    | 'suppliedAmount'
+    | 'additionalSupplyAmount'
+    | 'suppliedSymbol'
+    | 'suppliedContractAddress'
 >;

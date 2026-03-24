@@ -28,11 +28,12 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
     const dispatch = useDispatch();
     const { CryptoAmountFormatter } = useFormatters();
 
-    const hasSuppliedBalance = new BigNumber(opportunity.suppliedAmount).gt(0);
+    const hasSuppliedBalance = opportunity.hasVaultPosition;
+    const hasDisplayableSuppliedAmount = new BigNumber(opportunity.suppliedAmount).gt(0);
     const hasMatchedTokenWithBalance = new BigNumber(opportunity.additionalSupplyAmount).gt(0);
-    const hasRewardsData = hasMatchedTokenWithBalance || hasSuppliedBalance;
+    const hasRewardsData = hasMatchedTokenWithBalance || hasDisplayableSuppliedAmount;
     const hasApy = opportunity.apyPercentage !== null;
-    const yearlyRewards = hasRewardsData
+    const yearlyRewards = hasDisplayableSuppliedAmount
         ? new BigNumber(opportunity.suppliedAmount)
               .times(opportunity.vault.rewardRate.total)
               .toString()
@@ -57,6 +58,7 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
             isBalance: true,
         },
     );
+
     const navigateToTradingBuy = () => {
         const networkSymbol = opportunity.account?.symbol ?? opportunity.networkSymbol;
         const accountIndex = opportunity.account?.index ?? 0;
@@ -176,7 +178,7 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
                                     apy={opportunity.apyPercentage}
                                 />
 
-                                {hasSuppliedBalance && (
+                                {hasDisplayableSuppliedAmount && (
                                     <Paragraph
                                         typographyStyle="body-sm"
                                         intent="neutral"
