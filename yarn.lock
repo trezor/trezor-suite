@@ -15851,6 +15851,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@trezor/connect-skills@workspace:packages/connect-skills":
+  version: 0.0.0-use.local
+  resolution: "@trezor/connect-skills@workspace:packages/connect-skills"
+  languageName: unknown
+  linkType: soft
+
 "@trezor/connect-web@workspace:*, @trezor/connect-web@workspace:^, @trezor/connect-web@workspace:packages/connect-web":
   version: 0.0.0-use.local
   resolution: "@trezor/connect-web@workspace:packages/connect-web"

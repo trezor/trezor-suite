@@ -1,0 +1,11 @@
+{
+    "name": "@trezor/connect-skills",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "description": "AI agent skills for integrating @trezor/connect",
+    "files": [
+        "skills/",
+        "README.md"
+    ]
+}
