@@ -314,11 +314,19 @@ export type UiEvent =
     | UiRequestFirmwareDownloaded
     | UiRequestDiscoveryAccounts;
 
-export type UiEventMessage = UiEvent & { event: typeof UI_EVENT };
+export type UiEventMessage = UiEvent & {
+    event: typeof UI_EVENT;
+    requestId?: string;
+};
 
-export const createUiMessage: MessageFactoryFn<typeof UI_EVENT, UiEvent> = (type, payload) =>
+export const createUiMessage: MessageFactoryFn<typeof UI_EVENT, UiEvent> = (
+    type,
+    payload,
+    requestId,
+) =>
     ({
         event: UI_EVENT,
         type,
         payload,
+        requestId,
     }) as any;

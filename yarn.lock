@@ -15666,6 +15666,7 @@ __metadata:
     process: "npm:^0.11.10"
     stream-browserify: "npm:^3.0.0"
     tsx: "npm:^4.21.0"
+    uuid: "npm:^13.0.0"
     vite-plugin-node-polyfills: "npm:^0.25.0"
     vite-plugin-wasm: "npm:^3.6.0"
     vitest: "npm:^4.1.0"
