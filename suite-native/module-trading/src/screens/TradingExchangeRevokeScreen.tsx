@@ -28,6 +28,7 @@ import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
 import { BigNumber } from '@trezor/utils';
 
 import { TradingCoinAmountFormatter } from '../components/general/TradingCoinAmountFormatter';
+import { TradingDeviceConnectionGuard } from '../components/general/TradingDeviceConnectionGuard';
 
 type TradingExchangeRevokeScreenProps = StackToStackCompositeScreenProps<
     TradingStackParamList,
@@ -76,145 +77,149 @@ export const TradingExchangeRevokeScreen = ({
     const fee = '4.76'; // TODO
 
     return (
-        <Screen
-            header={
-                <DynamicScreenHeader
-                    title={
-                        <Translation
-                            id="moduleTrading.tradingExchangeRevokeScreen.title"
-                            values={{ symbol: coinSymbol }}
-                        />
-                    }
-                    subtitle={
-                        <Translation
-                            id="moduleTrading.tradingExchangeRevokeScreen.subtitle"
-                            values={{ symbol: coinSymbol }}
-                        />
-                    }
-                    closeActionType="back"
-                />
-            }
-        >
-            <VStack spacing="sp16">
-                {!!shouldIncreaseLimit && (
-                    <Animated.View>
-                        <InlineAlertBox
-                            title={
-                                <Translation id="moduleTrading.tradingExchangeRevokeScreen.infoAlert" />
-                            }
-                            variant="warning"
-                        />
-                    </Animated.View>
-                )}
-                <Card noPadding>
-                    <TradeInfoHeader
-                        title={<Translation id="moduleTrading.tradingExchangeRevokeScreen.from" />}
-                        rightContent={
-                            !!network?.symbol && (
-                                <HStack alignItems="center">
-                                    <NetworkIcon symbol={network.symbol} size="extraLarge" />
-                                    <Text variant="body-sm">{network.name}</Text>
-                                </HStack>
-                            )
-                        }
-                    />
-                    <TradeInfoRow>
-                        <VStack spacing="sp4">
-                            <Text variant="body-sm">
-                                <Translation id="moduleTrading.exchangeTradePreviewCard.account" />
-                            </Text>
-                            <Text variant="body-sm" color="textSubdued">
-                                {account?.accountLabel}
-                            </Text>
-                        </VStack>
-                    </TradeInfoRow>
-                </Card>
-
-                <Card noPadding>
-                    <TradeInfoHeader
+        <TradingDeviceConnectionGuard>
+            <Screen
+                header={
+                    <DynamicScreenHeader
                         title={
-                            <Translation id="moduleTrading.tradingExchangeRevokeScreen.details" />
+                            <Translation
+                                id="moduleTrading.tradingExchangeRevokeScreen.title"
+                                values={{ symbol: coinSymbol }}
+                            />
                         }
+                        subtitle={
+                            <Translation
+                                id="moduleTrading.tradingExchangeRevokeScreen.subtitle"
+                                values={{ symbol: coinSymbol }}
+                            />
+                        }
+                        closeActionType="back"
                     />
-                    <TradeInfoRow>
-                        <Text variant="body-sm">
-                            <Translation id="moduleTrading.tradingScreen.provider" />
-                        </Text>
-                        <HStack alignItems="center">
-                            {!!providerInfo?.logo && (
-                                <ProviderLogo logo={providerInfo.logo} size="body-sm" />
-                            )}
-                            <Text variant="body-sm" color="textSubdued">
-                                {providerInfo?.companyName}
+                }
+            >
+                <VStack spacing="sp16">
+                    {!!shouldIncreaseLimit && (
+                        <Animated.View>
+                            <InlineAlertBox
+                                title={
+                                    <Translation id="moduleTrading.tradingExchangeRevokeScreen.infoAlert" />
+                                }
+                                variant="warning"
+                            />
+                        </Animated.View>
+                    )}
+                    <Card noPadding>
+                        <TradeInfoHeader
+                            title={
+                                <Translation id="moduleTrading.tradingExchangeRevokeScreen.from" />
+                            }
+                            rightContent={
+                                !!network?.symbol && (
+                                    <HStack alignItems="center">
+                                        <NetworkIcon symbol={network.symbol} size="extraLarge" />
+                                        <Text variant="body-sm">{network.name}</Text>
+                                    </HStack>
+                                )
+                            }
+                        />
+                        <TradeInfoRow>
+                            <VStack spacing="sp4">
+                                <Text variant="body-sm">
+                                    <Translation id="moduleTrading.exchangeTradePreviewCard.account" />
+                                </Text>
+                                <Text variant="body-sm" color="textSubdued">
+                                    {account?.accountLabel}
+                                </Text>
+                            </VStack>
+                        </TradeInfoRow>
+                    </Card>
+
+                    <Card noPadding>
+                        <TradeInfoHeader
+                            title={
+                                <Translation id="moduleTrading.tradingExchangeRevokeScreen.details" />
+                            }
+                        />
+                        <TradeInfoRow>
+                            <Text variant="body-sm">
+                                <Translation id="moduleTrading.tradingScreen.provider" />
                             </Text>
-                        </HStack>
-                    </TradeInfoRow>
-                    <TradeInfoRow>
-                        <Text variant="body-sm">
-                            <Translation id="moduleTrading.tradingExchangeRevokeScreen.currentLimit" />
-                        </Text>
-                        <HStack alignItems="center">
-                            {!!network?.symbol && (
-                                <CryptoIcon
-                                    symbol={network.symbol}
-                                    contractAddress={contractAddress}
-                                    size="extraSmall"
-                                />
-                            )}
-                            <Text variant="body-sm" color="textSubdued">
+                            <HStack alignItems="center">
+                                {!!providerInfo?.logo && (
+                                    <ProviderLogo logo={providerInfo.logo} size="body-sm" />
+                                )}
+                                <Text variant="body-sm" color="textSubdued">
+                                    {providerInfo?.companyName}
+                                </Text>
+                            </HStack>
+                        </TradeInfoRow>
+                        <TradeInfoRow>
+                            <Text variant="body-sm">
+                                <Translation id="moduleTrading.tradingExchangeRevokeScreen.currentLimit" />
+                            </Text>
+                            <HStack alignItems="center">
+                                {!!network?.symbol && (
+                                    <CryptoIcon
+                                        symbol={network.symbol}
+                                        contractAddress={contractAddress}
+                                        size="extraSmall"
+                                    />
+                                )}
+                                <Text variant="body-sm" color="textSubdued">
+                                    <TradingCoinAmountFormatter
+                                        amount={quote.preapprovedStringAmount}
+                                        cryptoId={quote.send}
+                                        variant="body-sm"
+                                        color="textSubdued"
+                                    />
+                                </Text>
+                            </HStack>
+                        </TradeInfoRow>
+                        <TradeInfoRow>
+                            <Text variant="body-sm">
+                                <Translation id="moduleTrading.tradingExchangeRevokeScreen.newLimit" />
+                            </Text>
+                            <HStack alignItems="center">
+                                {!!network?.symbol && (
+                                    <CryptoIcon
+                                        symbol={network.symbol}
+                                        contractAddress={contractAddress}
+                                        size="extraSmall"
+                                    />
+                                )}
                                 <TradingCoinAmountFormatter
-                                    amount={quote.preapprovedStringAmount}
+                                    amount="0"
                                     cryptoId={quote.send}
                                     variant="body-sm"
                                     color="textSubdued"
                                 />
+                            </HStack>
+                        </TradeInfoRow>
+                        <TradeInfoRow>
+                            <Text variant="body-sm">
+                                <Translation id="transactions.detail.feeLabel" />
                             </Text>
-                        </HStack>
-                    </TradeInfoRow>
-                    <TradeInfoRow>
-                        <Text variant="body-sm">
-                            <Translation id="moduleTrading.tradingExchangeRevokeScreen.newLimit" />
-                        </Text>
-                        <HStack alignItems="center">
-                            {!!network?.symbol && (
-                                <CryptoIcon
-                                    symbol={network.symbol}
-                                    contractAddress={contractAddress}
-                                    size="extraSmall"
+                            <HStack alignItems="center" spacing="sp8">
+                                <Text variant="body-sm" color="textSubdued">
+                                    ≈
+                                </Text>
+                                <BaseCurrencyAmountFormatter
+                                    value={asBaseCurrencyAmount(new BigNumber(fee))}
+                                    variant="body-sm"
+                                    color="textSubdued"
                                 />
-                            )}
-                            <TradingCoinAmountFormatter
-                                amount="0"
-                                cryptoId={quote.send}
-                                variant="body-sm"
-                                color="textSubdued"
-                            />
-                        </HStack>
-                    </TradeInfoRow>
-                    <TradeInfoRow>
-                        <Text variant="body-sm">
-                            <Translation id="transactions.detail.feeLabel" />
-                        </Text>
-                        <HStack alignItems="center" spacing="sp8">
-                            <Text variant="body-sm" color="textSubdued">
-                                ≈
-                            </Text>
-                            <BaseCurrencyAmountFormatter
-                                value={asBaseCurrencyAmount(new BigNumber(fee))}
-                                variant="body-sm"
-                                color="textSubdued"
-                            />
-                            <Icon name="caretDown" size="medium" />
-                        </HStack>
-                    </TradeInfoRow>
-                </Card>
-            </VStack>
+                                <Icon name="caretDown" size="medium" />
+                            </HStack>
+                        </TradeInfoRow>
+                    </Card>
+                </VStack>
 
-            <Box paddingTop="sp20">
-                <Button onPress={handleContinue}>
-                    <Translation id="generic.buttons.continue" />
-                </Button>
-            </Box>
-        </Screen>
+                <Box paddingTop="sp20">
+                    <Button onPress={handleContinue}>
+                        <Translation id="generic.buttons.continue" />
+                    </Button>
+                </Box>
+            </Screen>
+        </TradingDeviceConnectionGuard>
     );
 };

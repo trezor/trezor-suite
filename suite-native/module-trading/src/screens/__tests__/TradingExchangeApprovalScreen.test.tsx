@@ -41,6 +41,9 @@ jest.mock('@react-navigation/native', () => ({
         ({
             params: undefined,
         }) as RouteProp<TradingStackParamList, TradingStackRoutes.TradingHistory>,
+    useNavigation: () => ({
+        setOptions: jest.fn(),
+    }),
 }));
 
 jest.mock('@suite-native/trading-atoms', () => ({
@@ -50,6 +53,12 @@ jest.mock('@suite-native/trading-atoms', () => ({
         showSheet: mockShowSheet,
         hideSheet: mockHideSheet,
     }),
+}));
+
+let mockIsDeviceConnected = true;
+jest.mock('@suite-common/device', () => ({
+    ...jest.requireActual('@suite-common/device'),
+    selectIsDeviceConnected: () => mockIsDeviceConnected,
 }));
 
 const testQuote = exchangeQuotes[0];
@@ -73,6 +82,8 @@ describe('TradingExchangeApprovalScreen', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
+
+        mockIsDeviceConnected = true;
 
         const preloadedState = {
             wallet: getWalletState({
@@ -146,5 +157,15 @@ describe('TradingExchangeApprovalScreen', () => {
 
         const selectedQuote = selectTradingExchangeSelectedQuote(store.getState());
         expect(selectedQuote).toBeUndefined();
+    });
+
+    it('should display device guard when device is not connected', () => {
+        mockIsDeviceConnected = false;
+
+        const { getByText } = renderScreen();
+
+        expect(
+            getByText(getTranslation('moduleConnectDevice.connectAndUnlockScreen.title')),
+        ).toBeOnTheScreen();
     });
 });

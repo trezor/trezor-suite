@@ -21,6 +21,7 @@ import {
 
 import { ApprovalButton } from '../components/exchange/Approval/ApprovalButton';
 import { ExchangeApprovalDetails } from '../components/exchange/Approval/ExchangeApprovalDetails';
+import { TradingDeviceConnectionGuard } from '../components/general/TradingDeviceConnectionGuard';
 import { useApprovalFlow } from '../hooks/exchange/Approval/useApprovalFlow';
 import { useEvmApprovalFees } from '../hooks/exchange/Approval/useEvmApprovalFees';
 
@@ -83,51 +84,53 @@ export const TradingExchangeApprovalScreen = ({
     }
 
     return (
-        <Screen
-            header={
-                <DynamicScreenHeader
-                    title={
-                        <Translation
-                            id="moduleTrading.tradingExchangeApprovalScreen.approveTitle"
-                            values={{ symbol: coinSymbol }}
-                        />
-                    }
-                    subtitle={
-                        <Translation
-                            id="moduleTrading.tradingExchangeApprovalScreen.approveSubtitle"
-                            values={{ symbol: coinSymbol }}
-                        />
-                    }
-                    closeActionType="back"
-                />
-            }
-            footer={<ApprovalButton isReady={isApprovalReady} isDisabled={!!error} />}
-        >
-            <VStack spacing="sp12">
-                {!!shouldIncreaseLimit && (
-                    <InlineAlertBox
-                        variant="info"
+        <TradingDeviceConnectionGuard>
+            <Screen
+                header={
+                    <DynamicScreenHeader
                         title={
-                            <Translation id="moduleTrading.tradingExchangeApprovalScreen.lowLimitInfoAlert" />
+                            <Translation
+                                id="moduleTrading.tradingExchangeApprovalScreen.approveTitle"
+                                values={{ symbol: coinSymbol }}
+                            />
                         }
-                    />
-                )}
-
-                {!!isRevoked && (
-                    <InlineAlertBox
-                        variant="success"
-                        title={
-                            <Translation id="moduleTrading.tradingExchangeApprovalScreen.revokeSuccessAlert" />
+                        subtitle={
+                            <Translation
+                                id="moduleTrading.tradingExchangeApprovalScreen.approveSubtitle"
+                                values={{ symbol: coinSymbol }}
+                            />
                         }
+                        closeActionType="back"
                     />
-                )}
+                }
+                footer={<ApprovalButton isReady={isApprovalReady} isDisabled={!!error} />}
+            >
+                <VStack spacing="sp12">
+                    {!!shouldIncreaseLimit && (
+                        <InlineAlertBox
+                            variant="info"
+                            title={
+                                <Translation id="moduleTrading.tradingExchangeApprovalScreen.lowLimitInfoAlert" />
+                            }
+                        />
+                    )}
 
-                <ExchangeApprovalDetails
-                    fee={fee}
-                    isLoading={isLoading}
-                    exchange={quote.exchange}
-                />
-            </VStack>
-        </Screen>
+                    {!!isRevoked && (
+                        <InlineAlertBox
+                            variant="success"
+                            title={
+                                <Translation id="moduleTrading.tradingExchangeApprovalScreen.revokeSuccessAlert" />
+                            }
+                        />
+                    )}
+
+                    <ExchangeApprovalDetails
+                        fee={fee}
+                        isLoading={isLoading}
+                        exchange={quote.exchange}
+                    />
+                </VStack>
+            </Screen>
+        </TradingDeviceConnectionGuard>
     );
 };
