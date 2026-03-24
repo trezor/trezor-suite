@@ -108,7 +108,7 @@ export const TradingExchangeApprovalScreen = ({
                         title={
                             <Translation id="moduleTrading.tradingExchangeApprovalScreen.lowLimitInfoAlert" />
                         }
-                        variant="warning"
+                        variant="info"
                     />
                 )}
 
