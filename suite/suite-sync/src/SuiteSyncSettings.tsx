@@ -1,29 +1,35 @@
 import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { selectHasExperimentalFeature } from '@suite/settings';
 import {
     DEFAULT_SUITE_SYNC_RELAY_URL,
     selectIsSuiteSyncDebugEnabled,
     selectSuiteSyncRelayUrl,
     updateSuiteSyncDebugEnabled,
 } from '@suite-common/suite-sync';
+import { type SuiteSync } from '@suite-common/suite-sync-types';
 import { Button, Checkbox, Code, Column, Input, Text } from '@trezor/components';
+import { ActionColumn, SectionItem, SettingsSection, TextColumn } from '@trezor/product-components';
+import { type BreakpointFlags } from '@trezor/theme';
 import { spacings } from '@trezor/theme';
 
-import { SettingsSection } from 'src/components/settings/SettingsSection';
-import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
-import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useSuiteServices } from 'src/support/SuiteServicesProvider';
+const selectIsBelowLaptop = (state: { window: BreakpointFlags }) => state.window.isBelowLaptop;
 
-export const SuiteSyncSettings = () => {
+type SuiteSyncSettingsProps = {
+    isSuiteSyncFeatureEnabled: boolean;
+    suiteSync: SuiteSync;
+};
+
+export const SuiteSyncSettings = ({
+    isSuiteSyncFeatureEnabled,
+    suiteSync,
+}: SuiteSyncSettingsProps) => {
     const [isLoading, setIsLoading] = useState(false);
 
     const dispatch = useDispatch();
-    const { suiteSync } = useSuiteServices();
+    const isBelowLaptop = useSelector(selectIsBelowLaptop);
 
-    const isSuiteSyncFeatureEnabled = useSelector(selectHasExperimentalFeature('suite-sync'));
     const isSuiteSyncDebugEnabled = useSelector(selectIsSuiteSyncDebugEnabled);
-
     const suiteSyncRelayUrl = useSelector(selectSuiteSyncRelayUrl);
 
     const [relayUrl, setRelayUrl] = useState(suiteSyncRelayUrl ?? '');
@@ -49,14 +55,14 @@ export const SuiteSyncSettings = () => {
 
     if (!isSuiteSyncFeatureEnabled) {
         return (
-            <SettingsSection title="Suite Sync">
+            <SettingsSection title="Suite Sync" isBelowLaptop={isBelowLaptop}>
                 <p>Suite Sync is disabled. Enable it in the Experimental Features settings.</p>
             </SettingsSection>
         );
     }
 
     return (
-        <SettingsSection title="Suite Sync">
+        <SettingsSection title="Suite Sync" isBelowLaptop={isBelowLaptop}>
             <SectionItem>
                 <TextColumn title="Relay URL" />
                 <ActionColumn>

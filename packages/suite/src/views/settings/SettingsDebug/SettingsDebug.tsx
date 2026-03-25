@@ -1,13 +1,14 @@
 import { selectFlags } from '@suite/flags';
 import { Translation } from '@suite/intl';
+import { selectHasExperimentalFeature } from '@suite/settings';
+import { SuiteSyncSettings } from '@suite/suite-sync';
 import { Context } from '@suite-common/message-system';
 import { isDesktop } from '@trezor/env-utils';
+import { SettingsSection } from '@trezor/product-components';
 
 import { SettingsLayout } from 'src/components/settings/SettingsLayout';
-import { SettingsSection } from 'src/components/settings/SettingsSection';
 import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useLayoutSize, useSelector } from 'src/hooks/suite';
-import { selectHasExperimentalFeature } from 'src/selectors/suite/suiteSelectors';
 import { useSuiteServices } from 'src/support/SuiteServicesProvider';
 
 import { AnalyticsLogging } from './AnalyticsLogging';
@@ -31,7 +32,6 @@ import { PreField } from './PreField';
 import { QuotaManagerSettings } from './QuotaManagerSettings';
 import { ResetThpCredentials } from './ResetThpCredentials';
 import { ShowBluetoothDebugInfo } from './ShowBluetoothDebugInfo';
-import { SuiteSyncSettings } from './SuiteSyncSettings';
 import { ThrowTestingError } from './ThrowTestingError';
 import { Tor } from './Tor';
 import { TradeApi } from './TradeApi';
@@ -45,6 +45,8 @@ import { WipeData } from './WipeData';
 export const SettingsDebug = () => {
     const { isBelowLaptop } = useLayoutSize();
     const flags = useSelector(selectFlags);
+    const isSuiteSyncFeatureEnabled = useSelector(selectHasExperimentalFeature('suite-sync'));
+    const { suiteSync } = useSuiteServices();
 
     return (
         <SettingsLayout>
@@ -123,7 +125,10 @@ export const SettingsDebug = () => {
             <SettingsSection isBelowLaptop={isBelowLaptop} title="Firmware channel">
                 <FirmwareUpdateEnvironmentSelect />
             </SettingsSection>
-            <SuiteSyncSettings />
+            <SuiteSyncSettings
+                isSuiteSyncFeatureEnabled={isSuiteSyncFeatureEnabled}
+                suiteSync={suiteSync}
+            />
             <QuotaManagerSettings />
             <PlatformEncrypton />
         </SettingsLayout>
