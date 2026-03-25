@@ -1,6 +1,8 @@
 import { useMemo } from 'react';
 
-import { Translation } from '@suite/intl';
+import { Translation, useTranslation } from '@suite/intl';
+import { selectLabelingDataForSelectedAccount } from '@suite/metadata';
+import { selectSuiteSyncAddressLabels } from '@suite-common/suite-sync';
 import { getNetwork } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectIsAccountUtxoBased } from '@suite-common/wallet-core';
 import { getFirstFreshAddress } from '@suite-common/wallet-utils';
@@ -18,7 +20,7 @@ import {
 import { spacings } from '@trezor/theme';
 
 import { showAddress } from 'src/actions/wallet/receiveActions';
-import { Address, ReadMoreLink } from 'src/components/suite';
+import { Address, Labeling, ReadMoreLink } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite/';
 import { useReceiveDisabled } from 'src/hooks/suite/useReceiveDisabled';
 import { type AppState } from 'src/types/suite';
@@ -86,7 +88,12 @@ export const FreshAddress = ({
     const isAccountUtxoBased = useSelector((state: AccountsRootState) =>
         selectIsAccountUtxoBased(state, account?.key ?? null),
     );
+    const { addressLabels } = useSelector(selectLabelingDataForSelectedAccount);
+    const suiteSyncAddressLabels = useSelector(state =>
+        account ? selectSuiteSyncAddressLabels(state, account.deviceState) : [],
+    );
     const { isReceiveDisabled, receiveDisabledTooltipContent } = useReceiveDisabled();
+    const { translationString } = useTranslation();
     const dispatch = useDispatch();
 
     const firstFreshAddress = useMemo(() => {
@@ -132,6 +139,10 @@ export const FreshAddress = ({
         minWidth: 220,
         size: 'large',
     };
+    const firstFreshAddressLabel = firstFreshAddress?.address
+        ? (suiteSyncAddressLabels.find(it => it.address === firstFreshAddress.address)?.label ??
+          addressLabels[firstFreshAddress.address])
+        : undefined;
 
     return (
         <Card>
@@ -148,7 +159,25 @@ export const FreshAddress = ({
                 >
                     <Text typographyStyle="headline-md">
                         {firstFreshAddress?.address ? (
-                            <Address value={firstFreshAddress.address} isTruncated />
+                            <Labeling
+                                payload={{
+                                    type: 'addressLabel',
+                                    entityKey: account.key,
+                                    defaultValue: firstFreshAddress.address,
+                                    networkSymbol: account.symbol,
+                                    accountDescriptor: account.descriptor,
+                                    value: firstFreshAddressLabel,
+                                }}
+                                deviceStaticSessionId={account.deviceState}
+                                displayValue={
+                                    <Address value={firstFreshAddress.address} isTruncated />
+                                }
+                                placeholder={translationString('TR_LABELING_ADDRESS_LABEL')}
+                                minHeight={28}
+                                maxWidth={300}
+                            >
+                                {firstFreshAddressLabel}
+                            </Labeling>
                         ) : (
                             <Translation id="RECEIVE_ADDRESS_UNAVAILABLE" />
                         )}
