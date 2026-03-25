@@ -26,7 +26,11 @@ export class WebPopup extends Popup {
         const url = this.buildPopupUrl(this.popupSrc);
 
         if (!this.tryOpenPopup(url)) {
-            this.showPopupBlockedModal(url);
+            if (this.allowUI) {
+                this.showPopupBlockedModal(url);
+            } else {
+                this.handleOpenFailure('Popup window blocked by browser');
+            }
         }
     }
 

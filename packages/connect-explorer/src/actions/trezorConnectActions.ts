@@ -44,9 +44,11 @@ export const init =
         // Get default coreMode from URL params (?core-mode=auto)
         const urlParams = new URLSearchParams(window.location.search);
         const coreMode = (urlParams.get('core-mode') as ConnectOptions['coreMode']) || 'auto';
+        const allowUI = urlParams.get('allowUI') === 'true';
 
         const connectOptions = {
             coreMode,
+            allowUI,
             transportReconnect: true,
             debug: true,
             manifest: {

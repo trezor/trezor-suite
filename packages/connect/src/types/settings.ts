@@ -52,6 +52,9 @@ export interface ConnectSettingsPublic {
     enableFirmwareHashCheck?: boolean;
     firmwareHashCheckTimeouts?: FirmwareHashCheckTimeouts;
     thp?: ThpSettings;
+    // Allow showing fallback UI (e.g. error overlay when popup is blocked).
+    // Defaults to false – implementors must opt in explicitly.
+    allowUI?: boolean;
 }
 
 // internal part, not to be accepted from .init()

@@ -14,6 +14,7 @@ import { type Deferred, createDeferred } from '@trezor/utils';
 
 export type Params = Pick<ConnectSettings, 'manifest' | 'popupSrc' | 'version'> & {
     logger: Log;
+    allowUI?: boolean;
 };
 
 // How often to check if popup window is still open (ms).
@@ -28,6 +29,7 @@ export abstract class Popup extends EventEmitter {
     public handshakePromise: Deferred<void> | undefined;
     protected logger: Log;
     protected readonly popupSrc: Params['popupSrc'];
+    protected readonly allowUI: boolean;
 
     private readonly manifest: Params['manifest'];
     private readonly version: Params['version'];
@@ -36,12 +38,13 @@ export abstract class Popup extends EventEmitter {
     private closedEmitted = false;
     private pendingFocusOrCreate: Promise<void> = Promise.resolve();
 
-    constructor({ popupSrc, manifest, version, logger }: Params) {
+    constructor({ popupSrc, manifest, version, logger, allowUI }: Params) {
         super();
         this.logger = logger;
         this.popupSrc = popupSrc;
         this.manifest = manifest;
         this.version = version;
+        this.allowUI = allowUI ?? false;
         this.channel = this.createChannel(getOrigin(popupSrc));
         this.handshakePromise = createDeferred();
         // Prevent unhandled rejection when the promise is rejected before

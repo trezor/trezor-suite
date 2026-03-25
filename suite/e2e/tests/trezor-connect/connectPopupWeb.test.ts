@@ -22,8 +22,13 @@ function getConnectExplorerUrl() {
     return getConnectExplorerUrlSldev(branchMatch[1]);
 }
 
-async function gotoConnectExplorer(page: Page, method: string) {
-    const url = `methods/${method}/?core-mode=suite-web`;
+async function gotoConnectExplorer(
+    page: Page,
+    method: string,
+    extraParams: Record<string, string> = {},
+) {
+    const params = new URLSearchParams({ 'core-mode': 'suite-web', ...extraParams });
+    const url = `methods/${method}/?${params.toString()}`;
     try {
         await page.goto(`${getConnectExplorerUrl()}${url}`, { waitUntil: 'load' });
     } catch {
@@ -338,7 +343,7 @@ test.describe(
                 // is displayed on the caller's page. Closing the overlay propagates
                 // the error back to the caller.
 
-                await gotoConnectExplorer(page, 'bitcoin/getAddress');
+                await gotoConnectExplorer(page, 'bitcoin/getAddress', { allowUI: 'true' });
                 await page.getByTestId('@api-playground/collapsible-box').click();
 
                 // Block popups
@@ -385,7 +390,7 @@ test.describe(
                 // the error overlay should reappear, giving the user another
                 // chance to retry or dismiss.
 
-                await gotoConnectExplorer(page, 'bitcoin/getAddress');
+                await gotoConnectExplorer(page, 'bitcoin/getAddress', { allowUI: 'true' });
                 await page.getByTestId('@api-playground/collapsible-box').click();
 
                 // Block popups
