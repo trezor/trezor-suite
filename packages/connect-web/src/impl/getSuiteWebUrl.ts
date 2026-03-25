@@ -12,7 +12,7 @@ const DEV_CONNECT_PREFIX = `${DEV_CONNECT_ORIGIN}/connect/`;
  * Returns undefined if the URL doesn't match the expected pattern.
  */
 export const extractBranch = (href: string): string | undefined =>
-    href.match(/\/connect\/(.+?)(?:\/methods\/|\/settings\/|$)/)?.[1];
+    href.match(/\/connect\/(.+)(?:\/methods\/.*|\/settings\/?$)/)?.[1];
 
 /**
  * Resolve the Suite Web popup URL based on the current window location.
