@@ -114,6 +114,7 @@ export class OnboardingPage {
             await this.enableAutoconnect();
         }
     }
+
     @step()
     async completeOnboarding(options?: { keepDebugModeEnabled?: boolean }) {
         await this.disableNecessaryFirmwareChecks();
