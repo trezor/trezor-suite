@@ -2703,15 +2703,21 @@ export const messages = {
         },
         tradingExchangeRevokeScreen: {
             title: 'Revoke {symbol} approval',
+            revokeTitle: 'Revoke {symbol} spending',
+            revokeSubtitle: 'Revoke provider to spend your {symbol} to swap.',
             subtitle:
                 'This stops the provider from using your {symbol}. You’ll need to approve again to swap.',
             infoAlert:
                 'The approved amount is too low. To increase it, first revoke the current approval, then set a higher limit.',
+            lowLimitInfoAlert:
+                'The spending limit too low. Revoke the current spending limit and approve a higher amount.',
             from: 'From',
             details: 'Details',
             currentLimit: 'Current limit',
             newLimit: 'New limit',
+            limitLabel: 'Limit',
             unlimited: 'Unlimited',
+            revokeErrorAlert: 'Error revoking spending limit. Please try again later.',
         },
         tradingFeesScreen: {
             title: 'Fee picker',

@@ -1,5 +1,4 @@
 import { type NavigatorScreenParams } from '@react-navigation/native';
-import type { ExchangeTrade } from 'invity-api';
 import { type RequireAllOrNone } from 'type-fest';
 
 import { type BackupType, type Locale } from '@suite-common/suite-types';
@@ -438,7 +437,6 @@ export type TradingStackParamList = {
         isRevoked?: boolean;
     };
     [TradingStackRoutes.TradingExchangeRevoke]: {
-        quote: ExchangeTrade;
         shouldIncreaseLimit?: boolean;
     };
     [TradingStackRoutes.TradingSellPreview]: undefined;

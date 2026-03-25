@@ -109,7 +109,6 @@ export const useExchangeSelectQuote = (form: ExchangeFormType) => {
 
                         case 'needs_revoke':
                             return navigation.navigate(TradingStackRoutes.TradingExchangeRevoke, {
-                                quote: candidateQuote,
                                 shouldIncreaseLimit: true,
                             });
 
