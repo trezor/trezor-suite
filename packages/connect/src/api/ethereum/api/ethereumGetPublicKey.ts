@@ -20,7 +20,8 @@ import { getNetworkLabel } from '../../../utils/ethereumUtils';
 import { getSerializedPath, validatePath } from '../../../utils/pathUtils';
 import { getFirmwareRange } from '../../common/paramsValidator';
 
-type Params = PROTO.EthereumGetPublicKey & {
+type Params = {
+    proto: PROTO.EthereumGetPublicKey;
     network?: EthereumNetworkInfo;
 };
 
@@ -51,11 +52,12 @@ export default class EthereumGetPublicKey extends AbstractMethod<'ethereumGetPub
             const network = getEthereumNetwork(path);
             this.firmwareRange = getFirmwareRange(this.name, network, this.firmwareRange);
 
-            return {
+            const proto = {
                 address_n: path,
                 show_display: typeof batch.showOnTrezor === 'boolean' ? batch.showOnTrezor : false,
-                network,
             };
+
+            return { proto, network };
         });
     }
 
@@ -85,7 +87,7 @@ export default class EthereumGetPublicKey extends AbstractMethod<'ethereumGetPub
         const cmd = this.getDevice().getCommands();
 
         for (let i = 0; i < this.params.length; i++) {
-            const { address_n, show_display } = this.params[i];
+            const { address_n, show_display } = this.params[i].proto;
 
             const publicKey = await cmd.ethereumGetPublicKey({ address_n, show_display });
 

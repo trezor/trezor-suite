@@ -15,7 +15,8 @@ import { getSerializedPath, getSlip44ByPath, validatePath } from '../../../utils
 import { getFirmwareRange } from '../../common/paramsValidator';
 import { getEthereumDefinitions } from '../ethereumDefinitions';
 
-type Params = PROTO.EthereumSignMessage & {
+type Params = {
+    proto: PROTO.EthereumSignMessage;
     network?: EthereumNetworkInfo;
     definitions?: MessagesSchema.EthereumDefinitions;
 };
@@ -36,31 +37,31 @@ export default class EthereumSignMessage extends AbstractMethod<'ethereumSignMes
         // validate incoming parameters
         Assert(EthereumSignMessageSchema, payload);
 
-        const path = validatePath(payload.path, 3);
-        const network = getEthereumNetwork(path);
+        const address_n = validatePath(payload.path, 3);
+        const network = getEthereumNetwork(address_n);
         this.firmwareRange = getFirmwareRange(this.name, network, this.firmwareRange);
 
-        const messageHex = payload.hex
+        const message = payload.hex
             ? messageToHex(payload.message)
             : Buffer.from(payload.message, 'utf8').toString('hex');
-        this.params = {
-            address_n: path,
-            message: messageHex,
-        };
+
+        this.params = { proto: { address_n, message } };
     }
 
     async initAsync() {
         if (this.params.network) return;
 
-        const { address_n } = this.params;
+        const { address_n } = this.params.proto;
         const slip44 = getSlip44ByPath(address_n);
-        this.params.definitions = await getEthereumDefinitions({
-            slip44,
-        });
+        const definitions = await getEthereumDefinitions({ slip44 });
+        this.params.proto.encoded_network = definitions.encoded_network;
     }
 
     get info() {
-        return getNetworkLabel('Sign #NETWORK message', getEthereumNetwork(this.params.address_n));
+        return getNetworkLabel(
+            'Sign #NETWORK message',
+            getEthereumNetwork(this.params.proto.address_n),
+        );
     }
 
     getButtonRequestData(code: string, name?: string) {
@@ -68,23 +69,22 @@ export default class EthereumSignMessage extends AbstractMethod<'ethereumSignMes
             return {
                 type: 'message' as const,
                 coin: this.params.network?.shortcut ?? 'ETH',
-                serializedPath: getSerializedPath(this.params.address_n),
+                serializedPath: getSerializedPath(this.params.proto.address_n),
                 message: this.payload.hex ? hexToText(this.payload.message) : this.payload.message,
             };
         }
     }
 
     async run() {
-        validateModelOneMessageSize(this.getDevice(), this.params.message);
+        validateModelOneMessageSize(this.getDevice(), this.params.proto.message);
 
         const cmd = this.getDevice().getCommands();
-        const { address_n, message } = this.params;
 
-        const response = await cmd.typedCall('EthereumSignMessage', 'EthereumMessageSignature', {
-            encoded_network: this.params.definitions?.encoded_network,
-            address_n,
-            message,
-        });
+        const response = await cmd.typedCall(
+            'EthereumSignMessage',
+            'EthereumMessageSignature',
+            this.params.proto,
+        );
 
         return response.message;
     }
