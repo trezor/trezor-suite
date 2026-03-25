@@ -44,7 +44,7 @@ import { FirmwareRevisionOptOutModal } from './FirmwareRevisionOptOutModal';
 import { ImportTransactionModal } from './ImportTransactionModal/ImportTransactionModal';
 import { MoreRoundsNeededModal } from './MoreRoundsNeededModal';
 import { PinMismatchModal } from './PinMismatchModal';
-import { QrScannerModal } from './QrScannerModal';
+import { QrScannerModal } from './QrScannerModal/QrScannerModal';
 import { RequestEnableTorModal } from './RequestEnableTorModal';
 import { SafetyChecksModal } from './SafetyChecksModal';
 import { StakeChangeDelegateModal } from './StakeChangeDelegateModal/StakeChangeDelegateModal';

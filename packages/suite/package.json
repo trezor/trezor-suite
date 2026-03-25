@@ -121,6 +121,7 @@
         "@trezor/type-utils": "workspace:*",
         "@trezor/urls": "workspace:*",
         "@trezor/utils": "workspace:*",
+        "@zxing/library": "^0.21.3",
         "date-fns": "^4.1.0",
         "file-saver": "^2.0.5",
         "framer-motion": "^12.33.0",
