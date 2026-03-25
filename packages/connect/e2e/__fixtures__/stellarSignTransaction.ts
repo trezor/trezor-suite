@@ -168,6 +168,8 @@ const legacyResultsMap: Record<string, LegacyResult[]> = {
     ],
     // newly added message in 2.6.5
     StellarClaimClaimableBalanceOp: [{ rules: ['<2.6.5'], payload: false }],
+    // contains StellarPathPaymentStrictSendOp, newly added in 2.4.3
+    all_sending_like_operations: legacyResults,
     op_source_account_not_equal_signing_key: [
         {
             rules: ['2.3.0'],
@@ -187,43 +189,46 @@ export default {
         mnemonic: commonFixtures.setup.mnemonic,
     },
     tests: [
-        ...commonFixtures.tests.map(({ name, parameters, result }) => ({
-            description: name,
-            params: {
-                path: parameters.address_n,
-                networkPassphrase: parameters.network_passphrase,
-                transaction: {
-                    source: parameters.tx.source_account,
-                    fee: parameters.tx.fee,
-                    sequence: parameters.tx.sequence_number,
-                    timebounds: {
-                        minTime: parameters.tx.timebounds_start,
-                        maxTime: parameters.tx.timebounds_end,
+        ...commonFixtures.tests
+            .filter((test: any) => !test.experimental)
+            .map(({ name, parameters, result }: any) => ({
+                description: name,
+                params: {
+                    path: parameters.address_n,
+                    networkPassphrase: parameters.network_passphrase,
+                    transaction: {
+                        source: parameters.tx.source_account,
+                        fee: parameters.tx.fee,
+                        sequence: parameters.tx.sequence_number,
+                        timebounds: {
+                            minTime: parameters.tx.timebounds_start,
+                            maxTime: parameters.tx.timebounds_end,
+                        },
+                        memo: {
+                            type: Messages.StellarMemoType[
+                                parameters.tx.memo_type as keyof typeof Messages.StellarMemoType
+                            ],
+                            text: parameters.tx.memo_text,
+                            id: parameters.tx.memo_id,
+                            hash: parameters.tx.memo_hash,
+                        },
+                        operations: parameters.operations.flatMap(transformOperation),
                     },
-                    memo: {
-                        // @ts-expect-error
-                        type: Messages.StellarMemoType[parameters.tx.memo_type],
-                        text: parameters.tx.memo_text,
-                        id: parameters.tx.memo_id,
-                        hash: parameters.tx.memo_hash,
-                    },
-                    operations: parameters.operations.flatMap(transformOperation),
                 },
-            },
-            result: {
-                publicKey: result.public_key,
-                signature: Buffer.from(result.signature, 'base64').toString('hex'),
-            },
-            legacyResults: legacyResultsMap[name]
-                ? legacyResultsMap[name]
-                : [
-                      {
-                          // stellar has required update
-                          rules: ['<2.3.0'],
-                          payload: false,
-                      },
-                  ],
-        })),
+                result: {
+                    publicKey: result.public_key,
+                    signature: Buffer.from(result.signature, 'base64').toString('hex'),
+                },
+                legacyResults: legacyResultsMap[name]
+                    ? legacyResultsMap[name]
+                    : [
+                          {
+                              // stellar has required update
+                              rules: ['<2.3.0'],
+                              payload: false,
+                          },
+                      ],
+            })),
         {
             description: 'Sequence is over Number.MAX_SAFE_INTEGER and is sent as string',
             setup: {
