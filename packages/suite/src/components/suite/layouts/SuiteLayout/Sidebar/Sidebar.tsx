@@ -23,16 +23,16 @@ import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
 
 import { Navigation } from './Navigation';
 import { QuickActions } from './QuickActions/QuickActions';
+import { UpdateNotificationBanner } from './QuickActions/Update/UpdateNotificationBanner';
+import { useUpdateStatus } from './QuickActions/Update/useUpdateStatus';
 import {
     SIDEBAR_AUTO_COLLAPSE_BREAKPOINT,
     SIDEBAR_COLLAPSED_WIDTH,
     SIDEBAR_MAX_WIDTH,
     SIDEBAR_MIN_WIDTH,
 } from './consts';
-import { DeviceSelector } from '../DeviceSelector/DeviceSelector';
-import { UpdateNotificationBanner } from './QuickActions/Update/UpdateNotificationBanner';
 import { TrafficLightOffset } from '../../../TrafficLightOffset';
-import { useUpdateStatus } from './QuickActions/Update/useUpdateStatus';
+import { DeviceSelector } from '../DeviceSelector/DeviceSelector';
 
 const Container = styled.nav<{ $elevation: Elevation }>`
     overflow-x: hidden;
