@@ -22,6 +22,7 @@
 @types/pdfmake
 @types/react-date-range
 @types/zxcvbn
+@zxing/library
 autoprefixer
 babel-plugin-react-native-web
 babel-plugin-styled-components
