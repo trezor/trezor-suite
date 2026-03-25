@@ -95,6 +95,18 @@ describe('getApprovalStatus', () => {
         expect(result).toBe('needs_increase');
     });
 
+    it('should return "needs_revoke" when quote has preapprovedStringAmount !== "0" and status is APPROVAL_REQ and tokenSupportsIncreasingAllowance is false', () => {
+        const quote = {
+            orderId: 'test-order',
+            preapprovedStringAmount: '0.001',
+            isDex: true,
+            send: 'ethereum--0xdac17f958d2ee523a2206206994597c13d831ec7' as CryptoId,
+            status: 'APPROVAL_REQ' as const,
+        };
+        const result = getApprovalStatus(quote);
+        expect(result).toBe('needs_revoke');
+    });
+
     it('should return "needs_approval" when preapprovedStringAmount is "0" and isDex is true', () => {
         const quote = {
             orderId: 'test-order',

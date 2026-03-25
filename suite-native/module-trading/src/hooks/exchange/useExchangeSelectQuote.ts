@@ -6,12 +6,10 @@ import {
     type TradingRootState,
     exchangeThunks,
     getApprovalStatus,
-    parseCryptoId,
     requiresTokenApproval,
     selectTradingExchangeDexQuoteApprovalPrefetchLoadingByQuoteId,
     selectTradingExchangeIsLoading,
     selectTradingMaxSlippagePercentage,
-    tokenSupportsIncreasingAllowance,
     tradingExchangeActions,
 } from '@suite-common/trading';
 import {
@@ -28,6 +26,7 @@ import {
 } from '@suite-native/trading-state';
 import { type ExchangeFormType } from '@suite-native/trading-types';
 import { useNullTimer } from '@trezor/react-utils';
+import { exhaustive } from '@trezor/type-utils';
 
 import { clearExchangeFormQuoteData } from './useExchangeForm';
 import { isFullySelectedReceiveAccount } from '../../utils/general/receiveAccountUtils';
@@ -100,29 +99,30 @@ export const useExchangeSelectQuote = (form: ExchangeFormType) => {
                         return navigation.navigate(TradingStackRoutes.TradingExchangePreview, {});
                     }
 
-                    const { contractAddress } = candidateQuote.send
-                        ? parseCryptoId(candidateQuote.send)
-                        : {};
-
-                    const isIncreasingAllowanceSupported =
-                        tokenSupportsIncreasingAllowance(contractAddress);
-
                     dispatch(tradingExchangeActions.savePreselectedQuote(candidateQuote));
 
-                    if (approvalStatus === 'needs_increase' && isIncreasingAllowanceSupported) {
-                        return navigation.navigate(TradingStackRoutes.TradingExchangeApproval, {
-                            shouldIncreaseLimit: true,
-                        });
-                    }
+                    switch (approvalStatus) {
+                        case 'needs_increase':
+                            return navigation.navigate(TradingStackRoutes.TradingExchangeApproval, {
+                                shouldIncreaseLimit: true,
+                            });
 
-                    if (approvalStatus === 'needs_increase') {
-                        return navigation.navigate(TradingStackRoutes.TradingExchangeRevoke, {
-                            quote: candidateQuote,
-                            shouldIncreaseLimit: true,
-                        });
-                    }
+                        case 'needs_revoke':
+                            return navigation.navigate(TradingStackRoutes.TradingExchangeRevoke, {
+                                quote: candidateQuote,
+                                shouldIncreaseLimit: true,
+                            });
 
-                    return navigation.navigate(TradingStackRoutes.TradingExchangeApproval, {});
+                        case 'needs_approval':
+                        case null:
+                            return navigation.navigate(
+                                TradingStackRoutes.TradingExchangeApproval,
+                                {},
+                            );
+
+                        default:
+                            return exhaustive(approvalStatus);
+                    }
                 },
             }),
         );

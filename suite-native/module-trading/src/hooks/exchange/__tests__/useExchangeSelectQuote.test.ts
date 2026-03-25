@@ -23,7 +23,6 @@ import { type ExchangeFormType } from '@suite-native/trading-types';
 import { useExchangeForm } from '../useExchangeForm';
 import { useExchangeSelectQuote } from '../useExchangeSelectQuote';
 
-const mockTokenSupportsIncreasingAllowance = jest.fn();
 const mockGetApprovalStatus = jest.fn();
 
 jest.mock('@suite-common/trading', () => ({
@@ -37,8 +36,6 @@ jest.mock('@suite-common/trading', () => ({
             unwrap: () => Promise.resolve(undefined),
         }),
     },
-    tokenSupportsIncreasingAllowance: (contractAddress?: string) =>
-        mockTokenSupportsIncreasingAllowance(contractAddress),
     getApprovalStatus: (quote?: any) => mockGetApprovalStatus(quote),
 }));
 
@@ -417,7 +414,6 @@ describe('useExchangeSelectQuote', () => {
 
         it('should navigate to TradingExchangeApproval with shouldIncreaseLimit when approval status is "needs_increase" and token supports increasing allowance', () => {
             mockGetApprovalStatus.mockReturnValue('needs_increase');
-            mockTokenSupportsIncreasingAllowance.mockReturnValue(true);
 
             act(() => {
                 exchangeForm.setValue('quote', exchangeQuotes[1]);
@@ -448,8 +444,7 @@ describe('useExchangeSelectQuote', () => {
         });
 
         it('should navigate to TradingExchangeRevoke when approval status is "needs_increase" and token does not support increasing allowance', () => {
-            mockGetApprovalStatus.mockReturnValue('needs_increase');
-            mockTokenSupportsIncreasingAllowance.mockReturnValue(false);
+            mockGetApprovalStatus.mockReturnValue('needs_revoke');
 
             act(() => {
                 exchangeForm.setValue('quote', exchangeQuotes[1]);
