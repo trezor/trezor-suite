@@ -6,10 +6,11 @@ import { SettingsAnchor } from '@suite/router';
 import { networksCollection } from '@suite-common/wallet-config';
 import { selectIsNetworkReserveEnabled, setNetworkReserve } from '@suite-common/wallet-core';
 import { Switch } from '@trezor/components';
+import { ActionColumn, TextColumn } from '@trezor/product-components';
 import { NETWORK_RESERVE_URL } from '@trezor/urls';
 
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
-import { ActionColumn, TextColumn } from 'src/components/suite';
+import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
 
@@ -47,7 +48,7 @@ export const NetworkReserve = () => {
                         }}
                     />
                 }
-                buttonLink={NETWORK_RESERVE_URL}
+                bottomContent={<LearnMoreButton url={NETWORK_RESERVE_URL} />}
             />
             <ActionColumn>
                 <Switch isChecked={isNetworkReserveEnabled} onChange={handleSwitchChange} />

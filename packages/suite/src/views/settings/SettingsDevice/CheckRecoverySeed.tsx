@@ -1,9 +1,10 @@
 import { Translation } from '@suite/intl';
 import { SettingsAnchor, goto } from '@suite/router';
 import { getCheckBackupUrl } from '@suite-common/suite-utils';
+import { ActionButton, ActionColumn, TextColumn } from '@trezor/product-components';
 
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
-import { ActionButton, ActionColumn, TextColumn } from 'src/components/suite';
+import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 
 interface CheckRecoverySeedProps {
@@ -27,7 +28,7 @@ export const CheckRecoverySeed = ({ isDeviceLocked }: CheckRecoverySeedProps) =>
             <TextColumn
                 title={<Translation id="TR_CHECK_RECOVERY_SEED" />}
                 description={<Translation id="TR_CHECK_RECOVERY_SEED_DESCRIPTION" />}
-                buttonLink={learnMoreUrl}
+                bottomContent={learnMoreUrl ? <LearnMoreButton url={learnMoreUrl} /> : undefined}
             />
             <ActionColumn>
                 <ActionButton

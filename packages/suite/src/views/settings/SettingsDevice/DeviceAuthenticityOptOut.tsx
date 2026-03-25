@@ -40,7 +40,7 @@ export const DeviceAuthenticityOptOut = () => {
                         }
                     />
                 }
-                learnMoreButton={<LearnMoreButton url={HELP_CENTER_DEVICE_AUTHENTICATION} />}
+                bottomContent={<LearnMoreButton url={HELP_CENTER_DEVICE_AUTHENTICATION} />}
             />
             <ActionColumn>
                 <ActionButton

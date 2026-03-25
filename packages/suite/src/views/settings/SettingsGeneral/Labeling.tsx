@@ -7,11 +7,12 @@ import { selectHasExperimentalFeature } from '@suite/settings';
 import { events } from '@suite-common/analytics';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { LoadingContent } from '@trezor/components';
+import { ActionColumn, ActionSelect, TextColumn } from '@trezor/product-components';
 import { exhaustive } from '@trezor/type-utils';
 import { HELP_CENTER_LABELING } from '@trezor/urls';
 
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
-import { ActionColumn, ActionSelect, TextColumn } from 'src/components/suite';
+import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 import {
     LABELING_LEGACY_OPTION_LABEL,
     LABELING_SELECT_OPTIONS,
@@ -155,7 +156,7 @@ export const Labeling = () => {
                         </LoadingContent>
                     }
                     description={<Translation id="TR_LABELING_FEATURE_ALLOWS" />}
-                    buttonLink={HELP_CENTER_LABELING}
+                    bottomContent={<LearnMoreButton url={HELP_CENTER_LABELING} />}
                 />
                 <ActionColumn>
                     <ActionSelect

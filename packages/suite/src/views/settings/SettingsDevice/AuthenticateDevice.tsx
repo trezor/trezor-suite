@@ -24,7 +24,7 @@ export const AuthenticateDevice = ({ isDeviceLocked }: AuthenticateDeviceProps) 
                 <TextColumn
                     title={<Translation id="TR_CHECK_DEVICE_ORIGIN_TITLE" />}
                     description={<Translation id="TR_CHECK_DEVICE_ORIGIN_DESCRIPTION" />}
-                    learnMoreButton={<LearnMoreButton url={HELP_CENTER_DEVICE_AUTHENTICATION} />}
+                    bottomContent={<LearnMoreButton url={HELP_CENTER_DEVICE_AUTHENTICATION} />}
                 />
                 <ActionColumn>
                     <ActionButton
