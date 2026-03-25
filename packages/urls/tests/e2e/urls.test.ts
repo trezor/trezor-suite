@@ -1,5 +1,11 @@
 import * as URLS from '../../src/urls';
 
+/**
+ * This test is considered an E2E test and not meant to be run in test:unit.
+ * It's because it depends on external services, so it must not block PR code validation.
+ * It is run separately, see: * .github/workflows/test-urls.yml
+ */
+
 // Excluded urls
 const excluded = [
     // DATA_URL because it returns 403 on itself (forbidden listing)
