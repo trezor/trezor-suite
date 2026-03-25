@@ -222,7 +222,7 @@ export class UsbApi extends AbstractApi {
     public async read(path: string, signal?: AbortSignal) {
         const device = this.findDevice(path);
         if (!device) {
-            return error({ error: ERRORS.DEVICE_NOT_FOUND });
+            return error({ code: ERRORS.DEVICE_NOT_FOUND });
         }
 
         try {
@@ -252,7 +252,7 @@ export class UsbApi extends AbstractApi {
     public async write(path: string, buffer: Buffer, signal?: AbortSignal) {
         const device = this.findDevice(path);
         if (!device) {
-            return error({ error: ERRORS.DEVICE_NOT_FOUND });
+            return error({ code: ERRORS.DEVICE_NOT_FOUND });
         }
 
         let newArray: Uint8Array<ArrayBuffer>;
@@ -321,7 +321,7 @@ export class UsbApi extends AbstractApi {
     ) {
         const device = this.findDevice(path);
         if (!device) {
-            return error({ error: ERRORS.DEVICE_NOT_FOUND });
+            return error({ code: ERRORS.DEVICE_NOT_FOUND });
         }
 
         try {
@@ -331,11 +331,11 @@ export class UsbApi extends AbstractApi {
         } catch (err) {
             this.logger?.error(`usb: device.open error ${err}`);
             if (err.message.includes('LIBUSB_ERROR_ACCESS')) {
-                return error({ error: ERRORS.LIBUSB_ERROR_ACCESS });
+                return error({ code: ERRORS.LIBUSB_ERROR_ACCESS });
             }
 
             return error({
-                error: ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE,
+                code: ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE,
                 message: err.message,
             });
         }
@@ -379,7 +379,7 @@ export class UsbApi extends AbstractApi {
                 this.logger?.error(`usb: device.claimInterface error ${err}.`);
 
                 return error({
-                    error: ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE,
+                    code: ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE,
                     message: err.message,
                 });
             }
@@ -391,7 +391,7 @@ export class UsbApi extends AbstractApi {
     public async closeDevice(path: string) {
         let device = this.findDevice(path);
         if (!device) {
-            return error({ error: ERRORS.DEVICE_NOT_FOUND });
+            return error({ code: ERRORS.DEVICE_NOT_FOUND });
         }
 
         this.logger?.debug(`usb: closeDevice. device.opened: ${device.opened}`);
@@ -432,7 +432,7 @@ export class UsbApi extends AbstractApi {
                 this.logger?.debug(`usb: device.close error ${err}.`);
 
                 return error({
-                    error: ERRORS.INTERFACE_UNABLE_TO_CLOSE_DEVICE,
+                    code: ERRORS.INTERFACE_UNABLE_TO_CLOSE_DEVICE,
                     message: err.message,
                 });
             }
@@ -514,7 +514,7 @@ export class UsbApi extends AbstractApi {
             await this.abortableMethod(
                 () =>
                     device
-                        // @ts-expect-error: this is not part of common types between webusb and usb.
+                        // @ts-expect-error:  this is not part of common types between webusb and usb.
                         .getStringDescriptor(device.device.deviceDescriptor.iSerialNumber),
                 { signal },
             );
@@ -587,7 +587,7 @@ export class UsbApi extends AbstractApi {
                 'The device was disconnected.',
             ].some(disconnectedErr => err.message.includes(disconnectedErr))
         ) {
-            return error({ error: ERRORS.DEVICE_DISCONNECTED_DURING_ACTION });
+            return error({ code: ERRORS.DEVICE_DISCONNECTED_DURING_ACTION });
         }
 
         return this.unknownError(err, [

@@ -89,20 +89,20 @@ export class BluetoothApi extends AbstractApi {
         this.logger?.debug('read');
 
         if (!bluetoothManager.isDeviceConnected(path)) {
-            return error({ error: ERRORS.DEVICE_NOT_FOUND });
+            return error({ code: ERRORS.DEVICE_NOT_FOUND });
         }
 
         try {
             const result = await bluetoothManager.read(path, signal);
             if (!result.success) {
-                return error({ error: ERRORS.INTERFACE_DATA_TRANSFER });
+                return error({ code: ERRORS.INTERFACE_DATA_TRANSFER });
             }
 
             return result;
         } catch (err) {
             this.logger?.error('read error', err);
 
-            return error({ error: ERRORS.INTERFACE_DATA_TRANSFER, message: err.message });
+            return error({ code: ERRORS.INTERFACE_DATA_TRANSFER, message: err.message });
         }
     }
 
@@ -110,7 +110,7 @@ export class BluetoothApi extends AbstractApi {
         this.logger?.debug('write', buffer);
 
         if (!bluetoothManager.isDeviceConnected(path)) {
-            return error({ error: ERRORS.DEVICE_NOT_FOUND });
+            return error({ code: ERRORS.DEVICE_NOT_FOUND });
         }
 
         try {
@@ -123,7 +123,7 @@ export class BluetoothApi extends AbstractApi {
         } catch (err) {
             this.logger?.error('write error', err);
 
-            return error({ error: ERRORS.INTERFACE_DATA_TRANSFER, message: err.message });
+            return error({ code: ERRORS.INTERFACE_DATA_TRANSFER, message: err.message });
         }
     }
 

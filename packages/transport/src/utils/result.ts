@@ -8,10 +8,10 @@ import type { TransportError } from '../types';
 export const success = <T>(payload: T): Ok<T> => ok(payload) as Ok<T>;
 
 export const error = <E extends string>({
-    error: code,
+    code,
     message,
 }: {
-    error: E;
+    code: E;
     message?: string;
 }): Result<never, TransportError<E>> => err({ code, message });
 
@@ -21,8 +21,8 @@ export const unknownError = <E extends string = never>(
 ) => {
     const expectedErr = expectedErrors.find(eE => eE === thrownError.message);
     if (expectedErr) {
-        return error({ error: expectedErr });
+        return error({ code: expectedErr });
     }
 
-    return error({ error: UNEXPECTED_ERROR, message: thrownError.message });
+    return error({ code: UNEXPECTED_ERROR, message: thrownError.message });
 };

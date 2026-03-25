@@ -43,7 +43,7 @@ export async function receive<T extends Receiver>(receiver: T, protocol: Transpo
             payload: readResult.payload.toString('hex'),
         });
 
-        return error({ error: PROTOCOL_MALFORMED, message: e.message });
+        return error({ code: PROTOCOL_MALFORMED, message: e.message });
     }
 }
 

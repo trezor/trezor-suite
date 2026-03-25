@@ -47,7 +47,7 @@ export class BluetoothApi extends AbstractApi {
         try {
             await api.connect();
         } catch (err) {
-            return error({ error: ERRORS.UNEXPECTED_ERROR, message: err.message });
+            return error({ code: ERRORS.UNEXPECTED_ERROR, message: err.message });
         }
 
         return success(true);
@@ -110,7 +110,7 @@ export class BluetoothApi extends AbstractApi {
         return this.api
             .send('write', { id: path, data: Array.from(chunk) })
             .then(() => success(undefined))
-            .catch(e => error({ error: ERRORS.INTERFACE_DATA_TRANSFER, message: e.message }));
+            .catch(e => error({ code: ERRORS.INTERFACE_DATA_TRANSFER, message: e.message }));
     }
 
     openDevice(path: string, options?: { channel?: OpenDeviceChannel }) {
@@ -129,7 +129,7 @@ export class BluetoothApi extends AbstractApi {
             .send('open_device', { id: path, characteristic: options?.channel })
             .then(() => success(undefined))
             .catch(e =>
-                error({ error: ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE, message: e.message }),
+                error({ code: ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE, message: e.message }),
             );
     }
 
@@ -146,7 +146,7 @@ export class BluetoothApi extends AbstractApi {
             .send('close_device', { id: path, characteristic: options?.channel })
             .then(() => success(undefined))
             .catch(e =>
-                error({ error: ERRORS.INTERFACE_UNABLE_TO_CLOSE_DEVICE, message: e.message }),
+                error({ code: ERRORS.INTERFACE_UNABLE_TO_CLOSE_DEVICE, message: e.message }),
             );
     }
 }

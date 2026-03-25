@@ -123,7 +123,8 @@ describe('DeviceList', () => {
 
     it('.init() with pendingTransportEvent (unacquired device)', async () => {
         const transport = createTestTransport({
-            openDevice: () => Promise.resolve({ success: false, error: 'wrong previous session' }),
+            openDevice: () =>
+                Promise.resolve({ success: false, error: { code: 'wrong previous session' } }),
         });
 
         list.init({ transports: [transport], pendingTransportEvent: true });
@@ -135,7 +136,8 @@ describe('DeviceList', () => {
 
     it('.init() with pendingTransportEvent (disconnected device)', async () => {
         const transport = createTestTransport({
-            openDevice: () => Promise.resolve({ success: false, error: 'device not found' }),
+            openDevice: () =>
+                Promise.resolve({ success: false, error: { code: 'device not found' } }),
         });
 
         list.init({ transports: [transport], pendingTransportEvent: true });
@@ -198,7 +200,7 @@ describe('DeviceList', () => {
             }),
             openDevice: (path: string) =>
                 path === '2'
-                    ? Promise.resolve({ success: false, error: 'device not found' })
+                    ? Promise.resolve({ success: false, error: { code: 'device not found' } })
                     : Promise.resolve({ success: true, payload: [{ path }] }),
             type: 'usb2',
         });
