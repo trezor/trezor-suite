@@ -41,6 +41,20 @@ export const HeaderActions = () => {
                     intent={isDeviceConnected ? 'brand' : 'neutral'}
                     priority={isDeviceConnected ? 'primary' : 'secondary'}
                 >
+                    <HeaderActionButton
+                        key="wallet-receive"
+                        icon="arrowDown"
+                        onClick={() => {
+                            goToWithAnalytics({
+                                routeName: 'wallet-receive',
+                                preserveParams: true,
+                            });
+                        }}
+                        data-testid="@wallet/menu/wallet-receive"
+                    >
+                        <Translation id="TR_NAV_RECEIVE" />
+                    </HeaderActionButton>
+
                     {isSendVisible ? (
                         <HeaderActionButton
                             key="wallet-send"
@@ -56,20 +70,6 @@ export const HeaderActions = () => {
                             <Translation id="TR_NAV_SEND" />
                         </HeaderActionButton>
                     ) : null}
-
-                    <HeaderActionButton
-                        key="wallet-receive"
-                        icon="arrowDown"
-                        onClick={() => {
-                            goToWithAnalytics({
-                                routeName: 'wallet-receive',
-                                preserveParams: true,
-                            });
-                        }}
-                        data-testid="@wallet/menu/wallet-receive"
-                    >
-                        <Translation id="TR_NAV_RECEIVE" />
-                    </HeaderActionButton>
                 </ButtonGroup>
             </AppNavigationTooltip>
         </Row>
