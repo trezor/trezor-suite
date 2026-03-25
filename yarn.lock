@@ -11327,6 +11327,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-common/earn-staking-api@workspace:suite-common/earn-staking-api":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/earn-staking-api@workspace:suite-common/earn-staking-api"
+  dependencies:
+    "@suite-common/http-client": "workspace:*"
+    orval: "npm:8.5.0"
+    prettier: "npm:3.8.1"
+    zod: "npm:4.3.6"
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/feedback@workspace:*, @suite-common/feedback@workspace:suite-common/feedback":
   version: 0.0.0-use.local
   resolution: "@suite-common/feedback@workspace:suite-common/feedback"
@@ -11440,6 +11451,14 @@ __metadata:
     date-fns: "npm:^4.1.0"
     react: "npm:19.2.4"
     react-redux: "npm:9.2.0"
+  languageName: unknown
+  linkType: soft
+
+"@suite-common/http-client@workspace:*, @suite-common/http-client@workspace:suite-common/http-client":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/http-client@workspace:suite-common/http-client"
+  dependencies:
+    up-fetch: "npm:2.6.0"
   languageName: unknown
   linkType: soft
 
@@ -45955,6 +45974,13 @@ __metadata:
     graceful-fs: "npm:^4.2.2"
     node-int64: "npm:^0.4.0"
   checksum: 10/b210c421308e1913e01b54faad4ae79e758c674311892414a0697acacba9f82fa0051b677faa77e62fab422eef928c858f2d5cda9ddb47a2f3db95b0e9b36359
+  languageName: node
+  linkType: hard
+
+"up-fetch@npm:2.6.0":
+  version: 2.6.0
+  resolution: "up-fetch@npm:2.6.0"
+  checksum: 10/d06daf761e7de780172c44cecc9f4199d00f9f8daccb7b2c8243cabc5588ad468bf3aaac1651a78f807c246b918c752ebd953fc071e0377ace37b757061b0aaa
   languageName: node
   linkType: hard
 
