@@ -201,12 +201,12 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
     }
 
     // Used in *getAddress methods
-    protected getUseUi(params: { address?: string; show_display?: boolean }[]) {
+    protected getUseUi(params: { address?: string; proto: { show_display?: boolean } }[]) {
         const useEventListener =
             this.payload.useEventListener &&
             params.length === 1 &&
             typeof params[0].address === 'string' &&
-            params[0].show_display;
+            params[0].proto.show_display;
 
         return !useEventListener;
     }

@@ -41,7 +41,7 @@ import { transformAdditionalInfo } from '../additionalInfo';
 import { getSolanaTokenDefinition } from '../solanaDefinitions';
 import { SOLANA_BASE_FEE, createTransactionShimFromHex } from '../solanaUtils';
 
-type Params = PROTO.SolanaSignTx & { serialize: boolean };
+type Params = { proto: PROTO.SolanaSignTx; serialize: boolean };
 
 export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTransaction', Params> {
     constructor(message: MethodMessage<'solanaSignTransaction'>) {
@@ -66,17 +66,18 @@ export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTra
 
         const path = validatePath(payload.path, 2);
 
-        this.params = {
+        const proto = {
             address_n: path,
             serialized_tx: payload.serializedTx,
             additional_info: transformAdditionalInfo(payload.additionalInfo),
             payment_req: payload.payment_req,
-            serialize: !!payload.serialize,
         };
+
+        this.params = { proto, serialize: !!payload.serialize };
     }
 
     async initAsync(): Promise<void> {
-        const token = this.params.additional_info?.token_accounts_infos?.[0];
+        const token = this.params.proto.additional_info?.token_accounts_infos?.[0];
 
         if (token) {
             const tokenDefinition = await getSolanaTokenDefinition({
@@ -85,7 +86,7 @@ export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTra
 
             if (!tokenDefinition) return;
 
-            this.params.additional_info!.encoded_token = tokenDefinition;
+            this.params.proto.additional_info!.encoded_token = tokenDefinition;
         }
     }
 
@@ -250,16 +251,16 @@ export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTra
         const cmd = this.getDevice().getCommands();
 
         if (this.params.serialize) {
-            const tx = await createTransactionShimFromHex(this.params.serialized_tx);
+            const tx = await createTransactionShimFromHex(this.params.proto.serialized_tx);
 
             const addressCall = await cmd.typedCall('SolanaGetAddress', 'SolanaAddress', {
-                address_n: this.params.address_n,
+                address_n: this.params.proto.address_n,
                 show_display: false,
                 chunkify: false,
             });
             const { address } = addressCall.message;
             const { message } = await cmd.typedCall('SolanaSignTx', 'SolanaTxSignature', {
-                ...this.params,
+                ...this.params.proto,
                 serialized_tx: tx.serializeMessage(),
             });
 
@@ -269,7 +270,11 @@ export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTra
             return { signature: message.signature, serializedTx: signedSerializedTx };
         }
 
-        const { message } = await cmd.typedCall('SolanaSignTx', 'SolanaTxSignature', this.params);
+        const { message } = await cmd.typedCall(
+            'SolanaSignTx',
+            'SolanaTxSignature',
+            this.params.proto,
+        );
 
         return { signature: message.signature };
     }

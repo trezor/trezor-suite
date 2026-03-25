@@ -16,7 +16,8 @@ import type {
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { fromHardened, getSerializedPath, validatePath } from '../../../utils/pathUtils';
 
-type Params = PROTO.TronGetAddress & {
+type Params = {
+    proto: PROTO.TronGetAddress;
     address?: string;
 };
 
@@ -47,20 +48,16 @@ export default class TronGetAddress extends AbstractMethod<'tronGetAddress', Par
         this.params = payload.bundle.map(batch => {
             const path = validatePath(batch.path, 2);
 
-            return {
+            const proto = {
                 address_n: path,
-                address: batch.address,
                 show_display: typeof batch.showOnTrezor === 'boolean' ? batch.showOnTrezor : true,
                 chunkify: typeof batch.chunkify === 'boolean' ? batch.chunkify : false,
             };
+
+            return { proto, address: batch.address };
         });
 
-        const useEventListener =
-            payload.useEventListener &&
-            this.params.length === 1 &&
-            typeof this.params[0].address === 'string' &&
-            this.params[0].show_display;
-        this.useUi = !useEventListener;
+        this.useUi = this.getUseUi(this.params);
     }
 
     get info() {
@@ -75,7 +72,7 @@ export default class TronGetAddress extends AbstractMethod<'tronGetAddress', Par
         if (code === 'ButtonRequest_Address') {
             return {
                 type: 'address' as const,
-                serializedPath: getSerializedPath(this.params[this.progress].address_n),
+                serializedPath: getSerializedPath(this.params[this.progress].proto.address_n),
                 address: this.params[this.progress].address || 'not-set',
             };
         }
@@ -88,18 +85,14 @@ export default class TronGetAddress extends AbstractMethod<'tronGetAddress', Par
                 this.params.length > 1
                     ? 'Export multiple Tron addresses'
                     : `Export Tron address for account #${
-                          fromHardened(this.params[0].address_n[2]) + 1
+                          fromHardened(this.params[0].proto.address_n[2]) + 1
                       }`,
         };
     }
 
-    async _call({ address_n, show_display, chunkify }: Params) {
+    async _call({ proto }: Params) {
         const cmd = this.getDevice().getCommands();
-        const response = await cmd.typedCall('TronGetAddress', 'TronAddress', {
-            address_n,
-            show_display,
-            chunkify,
-        });
+        const response = await cmd.typedCall('TronGetAddress', 'TronAddress', proto);
 
         return response.message;
     }
@@ -111,10 +104,10 @@ export default class TronGetAddress extends AbstractMethod<'tronGetAddress', Par
 
             // silently get address and compare with requested address
             // or display as default inside popup
-            if (batch.show_display) {
+            if (batch.proto.show_display) {
                 const silent = await this._call({
                     ...batch,
-                    show_display: false,
+                    proto: { ...batch.proto, show_display: false },
                 });
                 if (typeof batch.address === 'string') {
                     if (batch.address !== silent.address) {
@@ -128,8 +121,8 @@ export default class TronGetAddress extends AbstractMethod<'tronGetAddress', Par
 
             const message = await this._call(batch);
             responses.push({
-                path: batch.address_n,
-                serializedPath: getSerializedPath(batch.address_n),
+                path: batch.proto.address_n,
+                serializedPath: getSerializedPath(batch.proto.address_n),
                 address: message.address,
                 mac: message.mac,
             });

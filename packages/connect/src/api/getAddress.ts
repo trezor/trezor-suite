@@ -15,7 +15,8 @@ import { AbstractMethod } from '../core/AbstractMethod';
 import { fixCoinInfoNetwork, getBitcoinNetwork, getUniqueNetworks } from '../data/coinInfo';
 import { getLabel, getSerializedPath, validatePath } from '../utils/pathUtils';
 
-type Params = PROTO.GetAddress & {
+type Params = {
+    proto: PROTO.GetAddress;
     address?: string;
     coinInfo: BitcoinNetworkInfo;
     unlockPath?: PROTO.UnlockPath;
@@ -74,16 +75,19 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
 
             // fix coinInfo network values (segwit/legacy)
             coinInfo = fixCoinInfoNetwork(coinInfo, path);
-
-            return {
+            const proto = {
                 address_n: path,
-                address: batch.address,
                 show_display: typeof batch.showOnTrezor === 'boolean' ? batch.showOnTrezor : true,
                 multisig: batch.multisig,
                 script_type: batch.scriptType,
+                chunkify: typeof batch.chunkify === 'boolean' ? batch.chunkify : false,
+            };
+
+            return {
+                proto,
+                address: batch.address,
                 coinInfo,
                 unlockPath: batch.unlockPath,
-                chunkify: typeof batch.chunkify === 'boolean' ? batch.chunkify : false,
             };
         });
 
@@ -108,7 +112,7 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
         if (code === 'ButtonRequest_Address') {
             return {
                 type: 'address' as const,
-                serializedPath: getSerializedPath(this.params[this.progress].address_n),
+                serializedPath: getSerializedPath(this.params[this.progress].proto.address_n),
                 address: this.params[this.progress].address || 'not-set',
             };
         }
@@ -123,28 +127,17 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
               };
     }
 
-    async _call({
-        address_n,
-        show_display,
-        multisig,
-        script_type,
-        coinInfo,
-        unlockPath,
-        chunkify,
-    }: Params) {
+    async _call({ proto, coinInfo, unlockPath }: Params) {
         const cmd = this.getDevice().getCommands();
         if (unlockPath) {
             await cmd.unlockPath(unlockPath);
         }
 
-        const response = await cmd.getAddress(
-            { address_n, show_display, multisig, script_type, chunkify },
-            coinInfo,
-        );
+        const response = await cmd.getAddress(proto, coinInfo);
 
         return {
-            path: address_n,
-            serializedPath: getSerializedPath(address_n),
+            path: proto.address_n,
+            serializedPath: getSerializedPath(proto.address_n),
             address: response.address,
             mac: response.mac,
         };
@@ -157,10 +150,10 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
             const batch = this.params[i];
             // silently get address and compare with requested address
             // or display as default inside popup
-            if (batch.show_display) {
+            if (batch.proto.show_display) {
                 const silent = await this._call({
                     ...batch,
-                    show_display: false,
+                    proto: { ...batch.proto, show_display: false },
                 });
                 if (typeof batch.address === 'string') {
                     if (batch.address !== silent.address) {

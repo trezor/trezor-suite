@@ -9,8 +9,8 @@ import { getMiscNetwork } from '../../../data/coinInfo';
 import { HD_HARDENED, validatePath } from '../../../utils/pathUtils';
 import { getFirmwareRange } from '../../common/paramsValidator';
 
-type Params = PROTO.MoneroGetWatchKey & {
-    address?: string;
+type Params = {
+    proto: PROTO.MoneroGetWatchKey;
 };
 
 export default class MoneroGetWatchKeyMethod extends AbstractMethod<'moneroGetWatchKey', Params> {
@@ -41,10 +41,11 @@ export default class MoneroGetWatchKeyMethod extends AbstractMethod<'moneroGetWa
             );
         }
 
-        this.params = {
+        const proto = {
             address_n: path,
             network_type: payload.networkType || PROTO.MoneroNetworkType.MAINNET,
         };
+        this.params = { proto };
     }
 
     get info() {
@@ -53,10 +54,11 @@ export default class MoneroGetWatchKeyMethod extends AbstractMethod<'moneroGetWa
 
     async run(): Promise<MoneroWatchKey> {
         const cmd = this.getDevice().getCommands();
-        const response = await cmd.typedCall('MoneroGetWatchKey', 'MoneroWatchKey', {
-            address_n: this.params.address_n,
-            network_type: this.params.network_type,
-        });
+        const response = await cmd.typedCall(
+            'MoneroGetWatchKey',
+            'MoneroWatchKey',
+            this.params.proto,
+        );
 
         // The device returns address as hex-encoded bytes, decode it to string
         const addressHex = response.message.address;

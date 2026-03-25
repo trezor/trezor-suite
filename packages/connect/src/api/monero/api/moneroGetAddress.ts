@@ -9,7 +9,8 @@ import { getMiscNetwork } from '../../../data/coinInfo';
 import { HD_HARDENED, getSerializedPath, validatePath } from '../../../utils/pathUtils';
 import { getFirmwareRange } from '../../common/paramsValidator';
 
-type Params = PROTO.MoneroGetAddress & {
+type Params = {
+    proto: PROTO.MoneroGetAddress;
     address?: string;
 };
 
@@ -54,9 +55,8 @@ export default class MoneroGetAddress extends AbstractMethod<'moneroGetAddress',
                 );
             }
 
-            return {
+            const proto = {
                 address_n: path,
-                address: batch.address,
                 show_display: typeof batch.showOnTrezor === 'boolean' ? batch.showOnTrezor : true,
                 network_type: batch.networkType || PROTO.MoneroNetworkType.MAINNET,
                 account: batch.account,
@@ -64,6 +64,8 @@ export default class MoneroGetAddress extends AbstractMethod<'moneroGetAddress',
                 payment_id: batch.paymentId,
                 chunkify: typeof batch.chunkify === 'boolean' ? batch.chunkify : false,
             };
+
+            return { proto, address: batch.address };
         });
 
         this.params = bundle;
@@ -76,11 +78,11 @@ export default class MoneroGetAddress extends AbstractMethod<'moneroGetAddress',
 
     getButtonRequestData(code: string) {
         if (code === 'ButtonRequest_Address') {
-            const { address_n, address } = this.params[this.progress];
+            const { proto, address } = this.params[this.progress];
 
             return {
                 type: 'address' as const,
-                serializedPath: getSerializedPath(address_n),
+                serializedPath: getSerializedPath(proto.address_n),
                 address: address || 'not-set',
             };
         }
@@ -93,34 +95,16 @@ export default class MoneroGetAddress extends AbstractMethod<'moneroGetAddress',
         };
     }
 
-    async _call({
-        address_n,
-        show_display,
-        network_type,
-        account,
-        minor,
-        payment_id,
-        chunkify,
-    }: Params) {
+    async _call({ proto }: Params) {
         const cmd = this.getDevice().getCommands();
-        const response = await cmd.typedCall('MoneroGetAddress', 'MoneroAddress', {
-            address_n,
-            show_display,
-            network_type,
-            account,
-            minor,
-            payment_id,
-            chunkify,
-        });
+        const response = await cmd.typedCall('MoneroGetAddress', 'MoneroAddress', proto);
 
         // The device returns address as hex-encoded bytes, decode it to string
         const addressHex = response.message.address;
         const addressBytes = Buffer.from(addressHex, 'hex');
         const address = addressBytes.toString('utf8');
 
-        return {
-            address,
-        };
+        return { address };
     }
 
     async run() {
@@ -130,10 +114,10 @@ export default class MoneroGetAddress extends AbstractMethod<'moneroGetAddress',
             const batch = this.params[i];
             // silently get address and compare with requested address
             // or display as default inside popup
-            if (batch.show_display) {
+            if (batch.proto.show_display) {
                 const silent = await this._call({
                     ...batch,
-                    show_display: false,
+                    proto: { ...batch.proto, show_display: false },
                 });
                 if (typeof batch.address === 'string') {
                     if (batch.address !== silent.address) {
@@ -147,8 +131,8 @@ export default class MoneroGetAddress extends AbstractMethod<'moneroGetAddress',
             const response = await this._call(batch);
             responses.push({
                 address: response.address,
-                path: batch.address_n,
-                serializedPath: getSerializedPath(batch.address_n),
+                path: batch.proto.address_n,
+                serializedPath: getSerializedPath(batch.proto.address_n),
             });
 
             this.progress++;
