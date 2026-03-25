@@ -32,7 +32,6 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@mobily/ts-belt": "^3.13.1",
         "@stellar/stellar-sdk": "14.5.0",
         "@trezor/env-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
