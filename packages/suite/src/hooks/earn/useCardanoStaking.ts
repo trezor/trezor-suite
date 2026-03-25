@@ -70,7 +70,7 @@ export const useCardanoStaking = (): CardanoStaking => {
 
             const addressParameters = getAddressParameters(account, changeAddress.path);
 
-            const selectedPool = selectBestCardanoPool(cardanoPools);
+            const selectedPool = selectBestCardanoPool(cardanoPools, account.misc?.staking?.poolId);
 
             let certificates: CardanoCertificate[] = [];
 

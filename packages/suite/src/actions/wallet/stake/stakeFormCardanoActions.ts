@@ -115,7 +115,7 @@ export const prepareTxPlan = async (
 
     const addressParameters = getAddressParameters(account, changeAddress.path);
 
-    const selectedPool = selectBestCardanoPool(cardanoPools);
+    const selectedPool = selectBestCardanoPool(cardanoPools, account.misc?.staking?.poolId);
 
     const certificates = [];
 

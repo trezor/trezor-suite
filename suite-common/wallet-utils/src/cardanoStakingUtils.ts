@@ -94,8 +94,22 @@ export const poolBech32ToHex = (poolId: string): string => {
     return Buffer.from(bytes).toString('hex');
 };
 
-export const selectBestCardanoPool = (pools?: CardanoPoolStats[]) => {
+export const selectBestCardanoPool = (
+    pools?: CardanoPoolStats[],
+    currentPoolId?: string | null,
+) => {
     if (!pools || pools.length === 0) return CARDANO_EVERSTAKE_STAKING_POOL;
+
+    // If the user is already staked with an Everstake pool that is not oversaturated, keep them in it
+    if (currentPoolId) {
+        const currentPool = pools.find(pool => pool.id === currentPoolId);
+        if (currentPool && currentPool.saturation < CARDANO_POOL_SATURATION_SAFE_THRESHOLD) {
+            return {
+                hex: poolBech32ToHex(currentPool.id),
+                bech32: currentPool.id,
+            };
+        }
+    }
 
     // sort from highest saturation to lowest
     const sortedPools = [...pools].sort((a, b) => b.saturation - a.saturation);
