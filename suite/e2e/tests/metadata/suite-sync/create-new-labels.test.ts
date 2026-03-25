@@ -4,7 +4,8 @@ import {
     buildExpectedOutput,
     buildExpectedWallet,
     ownerSecret,
-} from '../../../fixtures/metadata/suite-sync-data';
+} from '@suite-common/e2e-evolu-client';
+
 import { AccountLabelId } from '../../../support/enums/accountLabelId';
 import { expect, test } from '../../../support/fixtures';
 

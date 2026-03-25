@@ -1,9 +1,11 @@
-import { createOwnerIdFromSecret } from '@suite-common/e2e-evolu-client';
+import {
+    buildExpectedWallet,
+    createOwnerIdFromSecret,
+    ownerSecret as defaultWalletOwnerSecret,
+} from '@suite-common/e2e-evolu-client';
 import { asSuiteSyncOwnerSecretHex } from '@suite-common/suite-sync-storage';
 import { asAccountDescriptor, asWalletDescriptor } from '@suite-common/wallet-types';
 
-import { ownerSecret as defaultWalletOwnerSecret } from '../../../fixtures/metadata/default-metadata-ids';
-import { buildExpectedWallet } from '../../../fixtures/metadata/suite-sync-data';
 import { AccountLabelId } from '../../../support/enums/accountLabelId';
 import { expect, test } from '../../../support/fixtures';
 

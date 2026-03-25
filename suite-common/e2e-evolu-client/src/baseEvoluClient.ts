@@ -5,6 +5,7 @@ import {
     createOwnerWebSocketTransport,
 } from '@evolu/common/local-first';
 import { execSync } from 'child_process';
+import path from 'path';
 
 import { Schema, createEvoluAppOwnerFromTrezorData } from '@suite-common/suite-sync-evolu';
 import { type SuiteSyncOwnerSecretHex } from '@suite-common/suite-sync-storage';
@@ -108,29 +109,31 @@ const QUOTA_TOTAL_STORAGE_SIZE = 1048576;
 const QUOTA_UNSPENT_STORAGE_SIZE = 1038090;
 const QUOTA_DB_CREDENTIALS = '-U suite-sync -d suite-sync-gate';
 
+const REPO_ROOT = path.resolve(__dirname, '../../../');
+
 export const wipeAndRestartEvoluRelayServer = () => {
     execSync(
         'docker compose -f docker/docker-compose.suite-ci-e2e.yml exec -T suite-sync rm -rf /app/data',
-        { cwd: '../../' },
+        { cwd: REPO_ROOT },
     );
     execSync(
         `docker compose -f docker/docker-compose.suite-ci-e2e.yml exec -T quota-db psql ${QUOTA_DB_CREDENTIALS} -c "TRUNCATE challenges, owner_storage_limits, pubkey_storage_limits RESTART IDENTITY CASCADE;"`,
-        { cwd: '../../' },
+        { cwd: REPO_ROOT },
     );
     execSync(
         'docker compose -f docker/docker-compose.suite-ci-e2e.yml restart quota-db suite-sync',
-        { cwd: '../../' },
+        { cwd: REPO_ROOT },
     );
 };
 
 export const seedQuotaManagerData = () => {
     execSync(
         `docker compose -f docker/docker-compose.suite-ci-e2e.yml exec -T quota-db psql ${QUOTA_DB_CREDENTIALS} -c "INSERT INTO owner_storage_limits (\\"ownerId\\", \\"storageLimit\\") VALUES ('${QUOTA_OWNER_ID}', ${QUOTA_STORAGE_LIMIT}) ON CONFLICT DO NOTHING;"`,
-        { cwd: '../../' },
+        { cwd: REPO_ROOT },
     );
     execSync(
         `docker compose -f docker/docker-compose.suite-ci-e2e.yml exec -T quota-db psql ${QUOTA_DB_CREDENTIALS} -c "INSERT INTO pubkey_storage_limits (\\"publicKey\\", \\"totalStorageSize\\", \\"unspentStorageSize\\") VALUES ('${QUOTA_PUBLIC_KEY}', ${QUOTA_TOTAL_STORAGE_SIZE}, ${QUOTA_UNSPENT_STORAGE_SIZE}) ON CONFLICT DO NOTHING;"`,
-        { cwd: '../../' },
+        { cwd: REPO_ROOT },
     );
 };
 

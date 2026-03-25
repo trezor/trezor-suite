@@ -1,19 +1,22 @@
 import {
     accountSeed,
-    addressSeed,
     buildExpectedAccount,
     buildExpectedAddress,
     buildExpectedOutput,
     buildExpectedWallet,
+    createAddressSeed,
     outputSeed,
     ownerSecret,
     walletSeed,
-} from '../../../fixtures/metadata/suite-sync-data';
+} from '@suite-common/e2e-evolu-client';
+
 import { AccountLabelId } from '../../../support/enums/accountLabelId';
 import { expect, test } from '../../../support/fixtures';
 
 const defaultWalletIndex = 0;
 
+const BTC_ADDRESS = 'bc1qkkr2uvry034tsj4p52za2pg42ug4pxg5qfxyfa';
+const addressSeed = createAddressSeed(BTC_ADDRESS);
 const expectedAccount = buildExpectedAccount({ label: null });
 const expectedWallet = buildExpectedWallet({ label: null });
 const expectedAddress = buildExpectedAddress({ address: addressSeed.address, label: null });

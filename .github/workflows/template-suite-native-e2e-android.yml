@@ -104,8 +104,8 @@ jobs:
         env:
           COMPOSE_FILE: ./docker/docker-compose.suite-native-ci.yml
         run: |
-          docker compose pull trezor-user-env-unix trezor-user-env-regtest
-          docker compose up --detach trezor-user-env-unix trezor-user-env-regtest
+          docker compose pull trezor-user-env-unix trezor-user-env-regtest quota-db suite-sync
+          docker compose up --detach trezor-user-env-unix trezor-user-env-regtest quota-db suite-sync
 
       - name: Download Android build artifact
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
