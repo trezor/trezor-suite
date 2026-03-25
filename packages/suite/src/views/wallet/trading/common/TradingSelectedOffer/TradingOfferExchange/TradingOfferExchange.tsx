@@ -20,6 +20,7 @@ import { type TradingOfferExchangeProps } from 'src/types/trading/tradingForm';
 import { tradingGetAmountLabels } from 'src/utils/wallet/trading/tradingUtils';
 
 import { TradingOfferExchangeDetails } from './TradingOfferExchangeDetails';
+import { TradingFiatDeviationWarning } from '../../TradingFiatDeviationWarning';
 import { TradingInfoItem } from '../TradingInfo/TradingInfoItem';
 
 export const TradingOfferExchange = ({
@@ -98,7 +99,7 @@ export const TradingOfferExchange = ({
                 receiveAddress={selectedQuote.receiveAddress}
                 isReceive
             />
-
+            <TradingFiatDeviationWarning selectedQuote={selectedQuote} />
             <TradingOfferExchangeDetails
                 exchangeQuote={selectedQuote}
                 providers={providers as TradingExchangeProvidersInfoProps}
