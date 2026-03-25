@@ -174,7 +174,6 @@ export const FreshAddress = ({
                                 }
                                 placeholder={translationString('TR_LABELING_ADDRESS_LABEL')}
                                 minHeight={28}
-                                maxWidth={300}
                             >
                                 {firstFreshAddressLabel}
                             </Labeling>
