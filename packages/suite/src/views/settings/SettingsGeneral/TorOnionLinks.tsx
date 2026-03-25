@@ -3,9 +3,9 @@ import { Translation } from '@suite/intl';
 import { SettingsAnchor } from '@suite/router';
 import { selectTorOnionLinks, suiteSettingsActions } from '@suite/settings';
 import { Switch } from '@trezor/components';
+import { ActionColumn, TextColumn } from '@trezor/product-components';
 
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
-import { ActionColumn, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
 

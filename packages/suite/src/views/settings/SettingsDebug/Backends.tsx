@@ -6,10 +6,10 @@ import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { selectEnabledNetworks, selectNetworkBlockchainInfo } from '@suite-common/wallet-core';
 import { type ConnectionStatus } from '@suite-common/wallet-types';
 import { Button } from '@trezor/components';
-import { CoinLogo } from '@trezor/product-components';
+import { CoinLogo, SectionItem } from '@trezor/product-components';
 import { typography } from '@trezor/theme';
 
-import { SectionItem, StatusLight } from 'src/components/suite';
+import { StatusLight } from 'src/components/suite';
 import { useBackendReconnection } from 'src/hooks/settings/backends';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 

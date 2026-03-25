@@ -1,8 +1,8 @@
 import { Translation } from '@suite/intl';
 import { Row } from '@trezor/components';
+import { ActionButton, ActionColumn, TextColumn } from '@trezor/product-components';
 
 import { rescanCoinjoinAccount } from 'src/actions/wallet/coinjoinAccountActions';
-import { ActionButton, ActionColumn, TextColumn } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite/useDispatch';
 import type { Account } from 'src/types/wallet';
 

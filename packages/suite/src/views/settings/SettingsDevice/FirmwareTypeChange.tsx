@@ -7,10 +7,10 @@ import {
     hasBitcoinOnlyFirmware,
     isBitcoinOnlyDevice,
 } from '@trezor/device-utils';
+import { ActionButton, ActionColumn, TextColumn } from '@trezor/product-components';
 import { HELP_FIRMWARE_TYPE } from '@trezor/urls';
 
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
-import { ActionButton, ActionColumn, TextColumn } from 'src/components/suite';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import { getSuiteFirmwareTypeString } from 'src/utils/firmware';
 

@@ -8,9 +8,9 @@ import {
 import { Checkbox } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
+import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { type ArrayElement } from '@trezor/type-utils';
 
-import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectActiveTransports } from 'src/selectors/suite/suiteSelectors';
 

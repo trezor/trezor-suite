@@ -5,10 +5,10 @@ import styled from 'styled-components';
 import { Translation } from '@suite/intl';
 import { SettingsAnchor } from '@suite/router';
 import { Paragraph, Tooltip } from '@trezor/components';
+import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
-import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import {
     ImageValidationError,

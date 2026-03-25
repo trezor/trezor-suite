@@ -3,8 +3,8 @@ import { useState } from 'react';
 import { selectMessageSystemConfig } from '@suite-common/message-system';
 import { Box, Button, ButtonGroup, Paragraph, Row } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
+import { SectionItem } from '@trezor/product-components';
 
-import { SectionItem } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 
 import { MessageSystemExperiments } from './MessageSystemExperiment/MessageSystemExperiments';

@@ -14,16 +14,16 @@ import {
 } from '@suite-common/wallet-core';
 import { Button, Column, Tooltip, motionEasing } from '@trezor/components';
 import { hasBitcoinOnlyFirmware, isBitcoinOnlyDevice } from '@trezor/device-utils';
+import { SettingsSection } from '@trezor/product-components';
 import { spacingsPx } from '@trezor/theme';
 
 import { DeviceBanner } from 'src/components/settings/DeviceBanner';
 import { SettingsLayout } from 'src/components/settings/SettingsLayout';
-import { SettingsSection } from 'src/components/settings/SettingsSection';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { CoinGroup } from 'src/components/suite';
 import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
-import { useDevice, useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
+import { useDevice, useDiscovery, useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 import { isCoinjoinSupportedSymbol } from 'src/utils/wallet/coinjoinUtils';
 
 import { FirmwareTypeSuggestion } from './FirmwareTypeSuggestion';
@@ -74,6 +74,7 @@ const getDiscoveryButtonAnimationConfig = (isConfirmed: boolean): MotionProps =>
 });
 
 export const SettingsCoins = () => {
+    const { isBelowLaptop } = useLayoutSize();
     const { firmwareTypeBannerClosed } = useSelector(selectFlags);
     const enabledNetworks = useSelector(selectEnabledNetworks);
     const { showUnsupportedCoins, supportedMainnets, unsupportedMainnets, supportedTestnets } =
@@ -128,7 +129,11 @@ export const SettingsCoins = () => {
                 {showFirmwareTypeBanner && <FirmwareTypeSuggestion />}
             </Column>
 
-            <SettingsSection title={<Translation id="TR_COINS" />} icon="coin">
+            <SettingsSection
+                isBelowLaptop={isBelowLaptop}
+                title={<Translation id="TR_COINS" />}
+                icon="coin"
+            >
                 <SettingsSectionItem anchorId={SettingsAnchor.Crypto}>
                     <CoinGroup networks={supportedMainnets} enabledNetworks={enabledNetworks} />
                 </SettingsSectionItem>
@@ -136,6 +141,7 @@ export const SettingsCoins = () => {
 
             {useTestnetNetworks && (
                 <SettingsSection
+                    isBelowLaptop={isBelowLaptop}
                     tooltipText={<Translation id="TR_TESTNET_COINS_DESCRIPTION" />}
                     title={<Translation id="TR_TESTNET_COINS" />}
                     icon="coin"
@@ -148,6 +154,7 @@ export const SettingsCoins = () => {
 
             {showUnsupportedCoins && (
                 <SettingsSection
+                    isBelowLaptop={isBelowLaptop}
                     tooltipText={<Translation id="TR_UNSUPPORTED_COINS_DESCRIPTION" />}
                     title={<Translation id="TR_UNSUPPORTED_COINS" />}
                     icon="coin"

@@ -1,16 +1,10 @@
-import styled from 'styled-components';
-
 import { firmwareActions, selectEffectiveFirmwareChannel } from '@suite-common/firmware';
 import { Column, Text } from '@trezor/components';
 import { type FirmwareChannel } from '@trezor/connect/src/types/firmware';
+import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
 
-import { ActionColumn, ActionSelect, SectionItem, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectDesktopUpdateAllowPrerelease } from 'src/reducers/suite/desktopUpdateReducer';
-
-const StyledActionSelect = styled(ActionSelect)`
-    min-width: 256px;
-`;
 
 const effectiveFirmwareChannel = selectEffectiveFirmwareChannel(selectDesktopUpdateAllowPrerelease);
 
@@ -56,7 +50,7 @@ export const FirmwareUpdateEnvironmentSelect = () => {
                 }
             />
             <ActionColumn>
-                <StyledActionSelect
+                <ActionSelect
                     onChange={handleChange}
                     value={selectedOption}
                     options={options}

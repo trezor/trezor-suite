@@ -2,9 +2,9 @@ import { Translation } from '@suite/intl';
 import { metadataLabelingActions } from '@suite/metadata';
 import { SettingsAnchor } from '@suite/router';
 import { Tooltip } from '@trezor/components';
+import { ActionButton, ActionColumn, TextColumn } from '@trezor/product-components';
 
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
-import { ActionButton, ActionColumn, TextColumn } from 'src/components/suite';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 
 export const ConnectLabelingProvider = () => {

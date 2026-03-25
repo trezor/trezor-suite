@@ -7,8 +7,8 @@ import {
     selectLoggerEnabled,
 } from '@suite-common/analytics-redux';
 import { Badge, Button, Column, Input, Switch } from '@trezor/components';
+import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
-import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
 

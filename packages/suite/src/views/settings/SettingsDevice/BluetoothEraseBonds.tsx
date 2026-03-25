@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
 import { Translation } from '@suite/intl';
+import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
-import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { bluetoothEraseBondsThunk } from '../../../actions/bluetooth/bluetoothEraseBondsThunk';

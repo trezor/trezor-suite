@@ -1,6 +1,5 @@
 import { notificationsActions } from '@suite-common/toast-notifications';
-
-import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
+import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 import { useDispatch } from '../../../hooks/suite';
 

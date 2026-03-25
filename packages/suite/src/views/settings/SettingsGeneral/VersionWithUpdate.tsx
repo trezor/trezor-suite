@@ -3,6 +3,7 @@ import { SettingsAnchor } from '@suite/router';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { Button, type ButtonProps } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
+import { ActionButton, ActionColumn, TextColumn } from '@trezor/product-components';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
 import {
@@ -11,7 +12,6 @@ import {
     setIsVersionInfoModalVisible,
 } from 'src/actions/suite/desktopUpdateActions';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
-import { ActionButton, ActionColumn, TextColumn } from 'src/components/suite';
 import { useDispatch, useExternalLink, useSelector } from 'src/hooks/suite';
 import { type DesktopUpdateState, UpdateState } from 'src/reducers/suite/desktopUpdateReducer';
 import { getReleaseUrl } from 'src/services/github';

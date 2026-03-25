@@ -6,10 +6,10 @@ import { SettingsAnchor } from '@suite/router';
 import { Icon, SelectBar, Tooltip } from '@trezor/components';
 import { type DisplayRotation as DisplayRotationType, PROTO } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
+import { ActionColumn, TextColumn } from '@trezor/product-components';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
-import { ActionColumn, TextColumn } from 'src/components/suite';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
 

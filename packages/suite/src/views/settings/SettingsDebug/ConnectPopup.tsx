@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
 
 import { Switch } from '@trezor/components';
+import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { desktopApi } from '@trezor/suite-desktop-api';
-
-import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 
 export const ConnectPopup = () => {
     const [isEnabled, setIsEnabled] = useState(false);

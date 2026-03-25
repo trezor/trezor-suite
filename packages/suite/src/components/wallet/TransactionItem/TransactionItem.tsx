@@ -14,9 +14,9 @@ import {
 import { type AccountKey } from '@suite-common/wallet-types';
 import { formatNetworkAmount, isTxFeePaid } from '@suite-common/wallet-utils';
 import { Button, Link, Row, Tooltip } from '@trezor/components';
+import { OutlineHighlight } from '@trezor/product-components';
 import { HELP_CENTER_REPLACE_BY_FEE_ETHEREUM } from '@trezor/urls';
 
-import { OutlineHighlight } from 'src/components/OutlineHighlight';
 import { SUBPAGE_NAV_HEIGHT } from 'src/constants/suite/layout';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnchor } from 'src/hooks/suite/useAnchor';

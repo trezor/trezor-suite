@@ -1,7 +1,7 @@
 import { selectFlags, setFlag } from '@suite/flags';
 import { Checkbox } from '@trezor/components';
+import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
-import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 export const ShowBluetoothDebugInfo = () => {

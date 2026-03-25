@@ -10,14 +10,14 @@ import {
     updateQuotaManagerBaseUrl,
 } from '@suite-common/suite-sync-quota-manager';
 import { Button, Checkbox, Column, Input } from '@trezor/components';
+import { ActionColumn, SectionItem, SettingsSection, TextColumn } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
-import { SettingsSection } from 'src/components/settings/SettingsSection';
-import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 
 export const QuotaManagerSettings = () => {
     const dispatch = useDispatch();
+    const { isBelowLaptop } = useLayoutSize();
     const quotaManagerBaseUrl = useSelector(selectQuotaManagerBaseUrl);
     const registeredDevices = useSelector(selectRegisteredDevices);
     const ownersAllowance = useSelector(selectOwnersAllowance);
@@ -50,7 +50,7 @@ export const QuotaManagerSettings = () => {
         );
 
     return (
-        <SettingsSection title="Quota Manager">
+        <SettingsSection isBelowLaptop={isBelowLaptop} title="Quota Manager">
             <SectionItem>
                 <TextColumn title="Quota Manager URL" />
                 <ActionColumn>

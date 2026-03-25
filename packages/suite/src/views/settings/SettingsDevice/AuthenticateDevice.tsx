@@ -1,9 +1,10 @@
 import { useState } from 'react';
 
 import { Translation } from '@suite/intl';
+import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { HELP_CENTER_DEVICE_AUTHENTICATION } from '@trezor/urls';
 
-import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
+import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 
 import { AuthenticateDeviceModal } from './AuthenticateDevice/AuthenticateDeviceModal';
 
@@ -23,7 +24,7 @@ export const AuthenticateDevice = ({ isDeviceLocked }: AuthenticateDeviceProps) 
                 <TextColumn
                     title={<Translation id="TR_CHECK_DEVICE_ORIGIN_TITLE" />}
                     description={<Translation id="TR_CHECK_DEVICE_ORIGIN_DESCRIPTION" />}
-                    buttonLink={HELP_CENTER_DEVICE_AUTHENTICATION}
+                    learnMoreButton={<LearnMoreButton url={HELP_CENTER_DEVICE_AUTHENTICATION} />}
                 />
                 <ActionColumn>
                     <ActionButton

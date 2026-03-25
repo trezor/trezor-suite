@@ -1,4 +1,5 @@
-import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
+import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+
 import { useDevice, useSelector } from 'src/hooks/suite';
 import { selectActiveTransports } from 'src/selectors/suite/suiteSelectors';
 import { openGithubIssue } from 'src/services/github';

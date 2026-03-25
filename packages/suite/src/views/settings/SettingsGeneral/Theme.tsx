@@ -7,11 +7,11 @@ import {
     selectThemeSettings,
     suiteSettingsActions,
 } from '@suite/settings';
+import { ActionColumn, ActionSelect, TextColumn } from '@trezor/product-components';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { type ThemeColorVariant } from '@trezor/theme';
 
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
-import { ActionColumn, ActionSelect, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
 import { getOsTheme } from 'src/utils/suite/env';

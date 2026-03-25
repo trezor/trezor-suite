@@ -5,8 +5,8 @@ import styled from 'styled-components';
 import { Translation } from '@suite/intl';
 import { EntryForm, PasswordsList, TagsList, getNextId, usePasswords } from '@suite/metadata';
 import { Button, Tooltip } from '@trezor/components';
+import { ActionColumn, TextColumn } from '@trezor/product-components';
 
-import { ActionColumn, TextColumn } from 'src/components/suite';
 import { useDevice } from 'src/hooks/suite';
 
 const PasswordManagerBody = styled.div`

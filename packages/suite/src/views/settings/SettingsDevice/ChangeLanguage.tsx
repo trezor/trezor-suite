@@ -1,9 +1,9 @@
 import { Translation } from '@suite/intl';
 import { SettingsAnchor } from '@suite/router';
 import { LANGUAGES, type Locale } from '@suite-common/suite-types';
+import { ActionColumn, ActionSelect, TextColumn } from '@trezor/product-components';
 
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
-import { ActionColumn, ActionSelect, TextColumn } from 'src/components/suite';
 
 import { changeLanguage } from '../../../actions/settings/deviceSettingsActions';
 import { useDevice, useDispatch } from '../../../hooks/suite';

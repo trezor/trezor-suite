@@ -1,10 +1,11 @@
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { selectIsDeviceAuthenticityCheckEnabled } from '@suite/settings';
+import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { HELP_CENTER_DEVICE_AUTHENTICATION } from '@trezor/urls';
 
 import { toggleDeviceAuthenticityCheck } from 'src/actions/suite/suiteActions';
-import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
+import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 export const DeviceAuthenticityOptOut = () => {
@@ -39,7 +40,7 @@ export const DeviceAuthenticityOptOut = () => {
                         }
                     />
                 }
-                buttonLink={HELP_CENTER_DEVICE_AUTHENTICATION}
+                learnMoreButton={<LearnMoreButton url={HELP_CENTER_DEVICE_AUTHENTICATION} />}
             />
             <ActionColumn>
                 <ActionButton

@@ -12,11 +12,12 @@ import {
     suiteSettingsActions,
 } from '@suite/settings';
 import { Banner, Button, Checkbox, Column, Row, Switch } from '@trezor/components';
+import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 import { EXPERIMENTAL_FEATURES_KB_URL } from '@trezor/urls';
 import { typedObjectKeys } from '@trezor/utils';
 
-import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
+import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 import { EXPERIMENTAL_FEATURES } from 'src/constants/suite/experimental';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useSuiteServices } from 'src/support/SuiteServicesProvider';
@@ -64,8 +65,7 @@ const FeatureLine = ({ feature, enabledFeatures }: FeatureLineProps) => {
             <TextColumn
                 title={title ? <Translation {...title} /> : feature}
                 description={description ? <Translation {...description} /> : undefined}
-                buttonLink={url}
-                buttonTitle={<Translation id="TR_LEARN_MORE" />}
+                learnMoreButton={url ? <LearnMoreButton url={url} /> : undefined}
             />
             <ActionColumn>
                 {config.routeName ? (
@@ -173,7 +173,7 @@ export const Experimental = () => {
                             </AnimatePresence>
                         </>
                     }
-                    buttonLink={EXPERIMENTAL_FEATURES_KB_URL}
+                    learnMoreButton={<LearnMoreButton url={EXPERIMENTAL_FEATURES_KB_URL} />}
                 />
                 <ActionColumn>
                     <Switch

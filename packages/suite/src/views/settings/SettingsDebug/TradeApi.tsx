@@ -1,15 +1,9 @@
-import styled from 'styled-components';
-
 import { selectInvityServerEnvironment, suiteSettingsActions } from '@suite/settings';
 import { type InvityServerEnvironment, invityAPI } from '@suite-common/trading';
+import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
 
-import { ActionColumn, ActionSelect, SectionItem, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { reloadApp } from 'src/utils/suite/reload';
-
-const StyledActionSelect = styled(ActionSelect)`
-    min-width: 256px;
-`;
 
 export const TradeApi = () => {
     const invityServerEnvironment = useSelector(selectInvityServerEnvironment);
@@ -39,7 +33,7 @@ export const TradeApi = () => {
                 description="Set the server url for buy and exchange features"
             />
             <ActionColumn>
-                <StyledActionSelect
+                <ActionSelect
                     onChange={handleChange}
                     value={selectedInvityApiServer}
                     options={invityApiServerOptions}
