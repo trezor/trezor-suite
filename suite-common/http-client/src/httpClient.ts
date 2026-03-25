@@ -1,12 +1,14 @@
-import { type DefaultOptions, type UpFetch, up } from 'up-fetch';
+import { type DefaultOptions, type FetcherOptions, type StandardSchemaV1, up } from 'up-fetch';
+import type z from 'zod';
+
+import { type GenerateRouteParams, composePathnameFromRoute } from './routeParams';
 
 type FetchLike = typeof globalThis.fetch;
 
 const HTTP_CLIENT_DEFAULTS = {
     timeout: 10_000,
     retry: {
-        attempts: 3,
-        delay: 1000,
+        attempts: 0,
     },
     credentials: 'omit',
     referrerPolicy: 'no-referrer',
@@ -26,11 +28,52 @@ export function createHttpClient<
         any,
         any
     >,
->(options: TOptions): UpFetch<FetchLike, HttpClientDefaults & TOptions> {
-    return up<FetchLike, HttpClientDefaults & TOptions>(globalThis.fetch, () => ({
+>(defaultFetcherOptions: TOptions) {
+    const fetcher = up<FetchLike, HttpClientDefaults & TOptions>(globalThis.fetch, () => ({
         ...HTTP_CLIENT_DEFAULTS,
-        ...options,
+        ...defaultFetcherOptions,
     }));
+
+    type Fetch = typeof fetch;
+
+    function createEndpointFetcher<
+        T extends z.infer<Schema>,
+        EndpointFetcherOptions extends FetcherOptions<
+            Fetch,
+            Required<StandardSchemaV1<any, any>>,
+            T,
+            any
+        >,
+        Schema extends EndpointFetcherOptions['schema'] extends infer S
+            ? S extends StandardSchemaV1<infer I, infer O>
+                ? Required<StandardSchemaV1<I, O>>
+                : never
+            : never,
+        Endpoint extends string,
+    >(endpoint: Endpoint, options: EndpointFetcherOptions) {
+        return <
+            Options extends FetcherOptions<Fetch, Schema, T, any>,
+            RouteParams extends GenerateRouteParams<Endpoint>,
+        >(
+            fetcherOptions?: Options &
+                ([RouteParams] extends [never] ? {} : { routeParams: RouteParams }),
+        ) => {
+            const opts = fetcherOptions as
+                | (Options & { routeParams?: Record<string, string> })
+                | undefined;
+
+            const pathname = opts?.routeParams
+                ? composePathnameFromRoute(endpoint, opts.routeParams)
+                : endpoint;
+
+            return fetcher<T, Schema>(pathname, {
+                ...(fetcherOptions as FetcherOptions<Fetch, Schema, T, any>),
+                ...options,
+            });
+        };
+    }
+
+    return createEndpointFetcher;
 }
 
 export function requestInitToFetcherOptions(init?: RequestInit) {
