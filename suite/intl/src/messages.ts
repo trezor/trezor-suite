@@ -2549,7 +2549,7 @@ export const messages = defineMessages({
     },
     TR_DUST_PHISHING: {
         id: 'TR_DUST_PHISHING',
-        defaultMessage: 'Dust phishing',
+        defaultMessage: 'Dust phishing threshold',
     },
     TR_DUST_PHISHING_DESCRIPTION: {
         id: 'TR_DUST_PHISHING_DESCRIPTION',
@@ -4256,6 +4256,10 @@ export const messages = defineMessages({
     TR_SAVE: {
         id: 'TR_SAVE',
         defaultMessage: 'Save',
+    },
+    TR_TURN_OFF: {
+        id: 'TR_TURN_OFF',
+        defaultMessage: 'Turn off',
     },
     TR_CANCEL: {
         id: 'TR_CANCEL',

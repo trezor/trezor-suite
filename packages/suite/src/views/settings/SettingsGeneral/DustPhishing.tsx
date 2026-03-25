@@ -1,11 +1,11 @@
 import { useMemo, useState } from 'react';
 
-import { phishingActions, selectPhishingDustThreshold } from '@suite-common/wallet-core';
 import { Translation } from '@suite/intl';
 import { SettingsAnchor } from '@suite/router';
+import { phishingActions, selectPhishingDustThreshold } from '@suite-common/wallet-core';
 import { Button, Column, Input } from '@trezor/components';
-
 import { ActionColumn, TextColumn } from '@trezor/product-components';
+
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
@@ -34,6 +34,7 @@ export const DustPhishing = () => {
 
     const isSame = dustThreshold.trim() === (phishingDustThreshold ?? '');
     const isButtonDisabled = !!errorMessage || isSame;
+    const isTurningOff = dustThreshold.trim() === '' && !isSame;
 
     const onSaveClick = () => {
         if (isButtonDisabled) return;
@@ -61,12 +62,12 @@ export const DustPhishing = () => {
                         rightContent={
                             <Button
                                 onClick={onSaveClick}
-                                intent="info"
+                                intent={isTurningOff ? 'warning' : 'brand'}
                                 priority="primary"
                                 size="small"
                                 isDisabled={isButtonDisabled}
                             >
-                                <Translation id="TR_SAVE" />
+                                <Translation id={isTurningOff ? 'TR_TURN_OFF' : 'TR_SAVE'} />
                             </Button>
                         }
                         bottomText={errorMessage ? <Translation id={errorMessage} /> : undefined}
