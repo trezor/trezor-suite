@@ -32,6 +32,7 @@ const suiteSyncMock: SuiteSync = {
     turnOffSuiteSyncForWallet: () => Promise.resolve(),
     turnOnSuiteSync: () => Promise.resolve(ok()),
     turnOffSuiteSync: () => Promise.resolve(),
+    dangerouslyWipeAllLabelsFromWallet: () => Promise.resolve(ok()),
     labeling: {
         updateAccountLabel: () => Promise.resolve(ok()),
         updateAddressLabel: () => Promise.resolve(ok()),

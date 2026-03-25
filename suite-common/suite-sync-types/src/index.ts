@@ -31,6 +31,11 @@ export type {
     SubscriptionStorageParams,
 } from './storage/subscriptionStorage';
 export type {
+    DangerouslyWipeAllLabelsFromWallet,
+    DangerouslyWipeAllLabelsFromWalletDep,
+    DangerouslyWipeAllLabelsFromWalletParams,
+} from './data/dangerouslyWipeAllLabelsFromWallet';
+export type {
     TurnOffSuiteSyncForWallet,
     TurnOffSuiteSyncForWalletDep,
 } from './storage/turnOffSuiteSyncForWallet';

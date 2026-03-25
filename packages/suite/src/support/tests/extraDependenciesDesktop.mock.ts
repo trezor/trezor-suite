@@ -1,5 +1,6 @@
 import { type ExtraDependenciesStatic } from '@suite-common/redux-utils';
 import { analyticsMock, extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { ok } from '@trezor/type-utils';
 
 import { type SuiteServices } from '../extraDependencies';
 
@@ -19,5 +20,6 @@ export const extraDependenciesDesktopMock: ExtraDependenciesSuiteMock = {
             navigate: (to, state) => console.warn(`Mock navigating to ${to} with state`, state),
             listen: (_: {}) => () => {},
         },
+        migrateLegacyLabelsToSuiteSync: () => Promise.resolve(ok({ changed: 0, skipped: 0 })),
     },
 };
