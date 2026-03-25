@@ -1,4 +1,6 @@
-import { type CryptoId, type ExchangeTrade, type ExchangeTradeStatus } from 'invity-api';
+import type { CryptoId, ExchangeTrade, ExchangeTradeStatus } from 'invity-api';
+
+import { invariant } from '@suite-common/suite-utils';
 
 import { CONTRACT_ADDRESS_FOR_NATIVE_TOKEN } from '../../constants';
 import { type ExchangeInfo } from '../../reducers/exchangeReducer';
@@ -109,7 +111,13 @@ export const tokenSupportsIncreasingAllowance = (contractAddress?: string): bool
     return contractAddress.trim().toLowerCase() !== ethereumUsdtContractAddress.toLowerCase();
 };
 
-export type ApprovalStatus = 'approved' | 'needs_approval' | 'needs_increase' | 'not_needed' | null;
+export type ApprovalStatus =
+    | 'approved'
+    | 'needs_approval'
+    | 'needs_increase'
+    | 'needs_revoke'
+    | 'not_needed'
+    | null;
 
 export const requiresTokenApproval = (quote?: ExchangeTrade): boolean =>
     !!quote && !!quote.isDex && !!quote.send && !isSendingEvmNativeToken(quote.send);
@@ -127,7 +135,13 @@ export const getApprovalStatus = (candidateQuote?: ExchangeTrade): ApprovalStatu
         candidateQuote.preapprovedStringAmount && candidateQuote.preapprovedStringAmount !== '0';
 
     if (isApprovalTxPreApproved && candidateQuote.status === 'APPROVAL_REQ') {
-        return 'needs_increase';
+        // send is defined as requiresTokenApproval checks for it, but we need to assert it for TypeScript
+        invariant(candidateQuote.send, 'candidateQuote.send not defined!');
+        const { contractAddress } = parseCryptoId(candidateQuote.send);
+
+        return tokenSupportsIncreasingAllowance(contractAddress)
+            ? 'needs_increase'
+            : 'needs_revoke';
     }
 
     if (isApprovalTxPreApproved) {
