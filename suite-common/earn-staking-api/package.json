@@ -1,0 +1,25 @@
+{
+    "name": "@suite-common/earn-staking-api",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "type-check": "yarn g:tsc --build",
+        "format": "prettier --write './**/*.ts'",
+        "orval": "orval --config ./orval.config.ts",
+        "api:generate": "yarn orval",
+        "api:update": "yarn api:generate && yarn lint:js --fix && yarn format"
+    },
+    "dependencies": {
+        "@suite-common/http-client": "workspace:*",
+        "zod": "4.3.6"
+    },
+    "devDependencies": {
+        "orval": "8.5.0",
+        "prettier": "3.8.1"
+    }
+}
