@@ -7,6 +7,7 @@
         { "path": "../redux-utils" },
         { "path": "../toast-notifications" },
         { "path": "../wallet-config" },
+        { "path": "../wallet-constants" },
         { "path": "../wallet-core" },
         { "path": "../wallet-types" },
         { "path": "../../packages/connect" },
