@@ -48,7 +48,7 @@ test.describe('Onboarding - recover wallet T2T1', { tag: ['@T2T1'] }, () => {
             // Finalize recovery, skip pin, and check success
             await onboardingPage.continueRecoveryButton.click();
             await onboardingPage.pin.skip();
-            await expect(onboardingPage.completeOnboardingButton).toBeVisible();
+            await expect(onboardingPage.suiteLoadedIndicator).toBeVisible({ timeout: 30_000 });
         },
     );
 });

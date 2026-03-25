@@ -27,11 +27,6 @@ const backupStep: Step = {
     ],
 };
 
-const coinsStep: Step = {
-    id: STEP.ID_COINS_STEP,
-    supportedFirmwareTypes: [FirmwareType.Universal],
-};
-
 const stepCategory: StepCategory = {
     id: 'device',
     labelTranslationId: 'TR_DEVICE',
@@ -142,15 +137,19 @@ describe('steps', () => {
 
         it('should exclude steps as per firmware type', () => {
             const btcOnlyDevice = { ...defaultDevice, firmwareType: FirmwareType.BitcoinOnly };
-            const btcOnlyStep = {
-                ...coinsStep,
+            const universalStep: Step = {
+                id: STEP.ID_SET_PIN_STEP,
+                supportedFirmwareTypes: [FirmwareType.Universal],
+            };
+            const btcOnlyStep: Step = {
+                id: STEP.ID_SET_PIN_STEP,
                 supportedFirmwareTypes: [FirmwareType.BitcoinOnly],
             };
             const propsBtcOnly = { ...propsMock, device: btcOnlyDevice };
 
-            expect(isStepUsed(coinsStep, propsMock)).toEqual(true);
+            expect(isStepUsed(universalStep, propsMock)).toEqual(true);
             expect(isStepUsed(btcOnlyStep, propsMock)).toEqual(false);
-            expect(isStepUsed(coinsStep, propsBtcOnly)).toEqual(false);
+            expect(isStepUsed(universalStep, propsBtcOnly)).toEqual(false);
             expect(isStepUsed(btcOnlyStep, propsBtcOnly)).toEqual(true);
         });
     });
@@ -179,7 +178,7 @@ describe('steps', () => {
 
             const modifiedStepCategory: StepCategory = {
                 ...stepCategory,
-                steps: [backupStep, coinsStep],
+                steps: [backupStep],
             };
             expect(isStepCategoryUsed(modifiedStepCategory, propsWithBtcOnlyT1B1)).toEqual(false);
         });
@@ -188,9 +187,8 @@ describe('steps', () => {
     describe(resolveNextAvailableStep.name, () => {
         const setPinStep: Step = { id: STEP.ID_SET_PIN_STEP, path: [] };
         const backupStepInSteps: Step = { id: STEP.ID_BACKUP_STEP, path: [] };
-        const coinsStepInSteps: Step = { id: STEP.ID_COINS_STEP, path: [] };
 
-        const steps: Step[] = [backupStepInSteps, setPinStep, coinsStepInSteps];
+        const steps: Step[] = [backupStepInSteps, setPinStep];
 
         it('should return requested step if it is accessible', () => {
             const device = {
@@ -217,9 +215,7 @@ describe('steps', () => {
                 },
             } as AcquiredDevice;
 
-            expect(resolveNextAvailableStep(STEP.ID_SET_PIN_STEP, steps, device)).toEqual(
-                coinsStepInSteps,
-            );
+            expect(resolveNextAvailableStep(STEP.ID_SET_PIN_STEP, steps, device)).toEqual(null);
         });
 
         it('should NOT skip Backup step when device does not require backup - you cant do backup on the device', () => {

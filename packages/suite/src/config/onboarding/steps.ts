@@ -1,4 +1,4 @@
-import { DeviceModelInternal, FirmwareType } from '@trezor/device-utils';
+import { DeviceModelInternal } from '@trezor/device-utils';
 
 import * as STEP from 'src/constants/onboarding/steps';
 import { type Step, type StepCategory } from 'src/types/onboarding';
@@ -103,17 +103,6 @@ export const stepCategories: StepCategory[] = [
                 id: STEP.ID_SET_PIN_STEP,
                 path: [STEP.PATH_RECOVERY, STEP.PATH_CREATE],
                 prerequisites: [...commonPrerequisites, ...afterInitializePrerequisites],
-            },
-        ],
-    },
-    {
-        id: 'coins',
-        labelTranslationId: 'TR_COINS',
-        steps: [
-            {
-                id: STEP.ID_COINS_STEP,
-                prerequisites: [...commonPrerequisites, ...afterInitializePrerequisites],
-                supportedFirmwareTypes: [FirmwareType.Universal],
             },
         ],
     },

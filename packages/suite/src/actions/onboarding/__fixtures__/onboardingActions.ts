@@ -26,7 +26,8 @@ export default [
         },
     },
     {
-        description: 'goToNextStep: from backup step skip set-pin when pin is already set',
+        description:
+            'goToNextStep: from backup step skip set-pin when pin is already set, no more steps → goToSuite resets to initial state',
         initialState: {
             onboarding: {
                 activeStepId: STEP.ID_BACKUP_STEP,
@@ -39,7 +40,7 @@ export default [
         },
         action: () => onboardingActions.goToNextStep(),
         expect: {
-            toMatchObject: { activeStepId: STEP.ID_COINS_STEP },
+            toMatchObject: { activeStepId: STEP.ID_FIRMWARE_STEP },
         },
     },
     {

@@ -9,7 +9,6 @@ export const ID_SET_PIN_STEP = 'set-pin';
 export const ID_SECURITY_STEP = 'security';
 export const ID_CONNECT_STEP = 'connect';
 export const ID_RECOVERY_STEP = 'recovery';
-export const ID_COINS_STEP = 'coins';
 
 export const DISALLOWED_IS_NOT_SAME_DEVICE = 'is-not-same-device';
 export const DISALLOWED_DEVICE_IS_NOT_CONNECTED = 'device-is-not-connected';
