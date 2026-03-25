@@ -14,3 +14,17 @@ export {
     createAddressRowId,
     createOutputRowId,
 } from './createEvoluRowIds';
+export {
+    ownerSecret,
+    ownerId,
+    walletDescriptor,
+    accountDescriptor,
+    walletSeed,
+    accountSeed,
+    createAddressSeed,
+    outputSeed,
+    buildExpectedWallet,
+    buildExpectedAccount,
+    buildExpectedAddress,
+    buildExpectedOutput,
+} from './suiteSyncFixtures';

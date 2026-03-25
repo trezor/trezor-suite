@@ -1,4 +1,5 @@
-import { accountSeed, ownerSecret } from '../../fixtures/metadata/suite-sync-data';
+import { accountSeed, ownerSecret } from '@suite-common/e2e-evolu-client';
+
 import { AccountLabelId } from '../../support/enums/accountLabelId';
 import { expect, test } from '../../support/fixtures';
 import { MetadataProvider } from '../../support/mocks/metadataMock';

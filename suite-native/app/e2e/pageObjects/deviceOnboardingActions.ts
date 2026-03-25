@@ -89,7 +89,9 @@ class DeviceOnboardingActions {
             ),
         );
 
-        await scrollUntilVisible(selectedTypeElement, '@bottom-sheet/scroll-view');
+        await scrollUntilVisible(selectedTypeElement, {
+            scrollViewTestId: '@bottom-sheet/scroll-view',
+        });
         await selectedTypeElement.tap();
     }
 

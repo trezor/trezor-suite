@@ -4,12 +4,18 @@ import { isEqual, omit } from 'lodash';
 
 import {
     BaseEvoluClient,
+    accountSeed,
+    buildExpectedAccount,
+    buildExpectedAddress,
+    buildExpectedOutput,
     checkEvoluRelayServerRunning,
-    restartEvoluRelayServer,
-    wipeEvoluRelayData,
+    createAddressSeed,
+    outputSeed,
+    ownerSecret,
+    seedQuotaManagerData,
+    walletSeed,
+    wipeAndRestartEvoluRelayServer,
 } from '@suite-common/e2e-evolu-client';
-import { asSuiteSyncOwnerSecretHex } from '@suite-common/suite-sync-storage';
-import { asAccountDescriptor, asWalletDescriptor } from '@suite-common/wallet-types';
 import { Model, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { scheduleAction } from '@trezor/utils';
 
@@ -64,43 +70,8 @@ class NativeEvoluClient extends BaseEvoluClient {
     }
 }
 
-// Fixture values for mnemonic_12
-const walletDescriptor = asWalletDescriptor('mkqRFzxmkCGX9jxgpqqFHcxRUmLJcLDBer');
-const accountDescriptor = asAccountDescriptor(
-    'zpub6qSSRL9wLd6LNee7qjDEuULWccP5Vbm5nuX4geBu8zMCQBWsF5Jo5UswLVxFzcbCMr2yQPG27ZhDs1cUGKVH1RmqkG1PFHkEXyHG7EV3ogY',
-);
-const ownerSecret = asSuiteSyncOwnerSecretHex(
-    'd5cafbfc837fcdba7fd54025ce352fac369db9383d41d73dbd4f3353b63bc4644585f41195021419707ccdf76bbdf0b1cb0e11f07ff19a41b5f22602dfee3b63',
-);
 const FIRST_BTC_RECEIVE_ADDRESS = 'bc1q7ceqvaq7fqyywxqcx7qnfxkfk2ykpsla9pe80q';
-
-// Seed data for 'Sync labels from relay' test
-const syncWalletSeed = {
-    id: 'ya1CCDTCVPyRa6egTac7yg',
-    walletDescriptor,
-    label: 'Evolu synced wallet',
-};
-const syncAccountSeed = {
-    id: 'RSZ0aKqUcO_e0WoQO32x4w',
-    accountDescriptor,
-    networkSymbol: 'btc',
-    label: 'Evolu synced BTC account',
-};
-const syncAddressSeed = {
-    id: 'wQhzbcEjrzXw8Kb48WxRQw',
-    accountDescriptor,
-    networkSymbol: 'btc',
-    label: 'Evolu synced BTC address',
-    address: FIRST_BTC_RECEIVE_ADDRESS,
-};
-const syncOutputSeed = {
-    id: 'TR7Axj6suVoVTBJO5saruA',
-    accountDescriptor,
-    label: 'Evolu synced output',
-    networkSymbol: 'btc',
-    outputIndex: '0',
-    txId: 'aa545d95cf07892e1ae70b40e856b9b476f703e2e20647d0985830fd7b734393',
-};
+const addressSeed = createAddressSeed(FIRST_BTC_RECEIVE_ADDRESS);
 
 const preloadedState = preparePreloadedReduxState(
     onboardingCompletedState,
@@ -110,13 +81,12 @@ const preloadedState = preparePreloadedReduxState(
     deviceChecksDisabledState,
 );
 
-describe('Suite Sync - Labelling [@androidOnly @T3T1]', () => {
+describe('Suite Sync - Labelling [@androidOnly @T3T1 @smoke]', () => {
     let evoluClient: NativeEvoluClient;
 
     beforeEach(async () => {
         await checkEvoluRelayServerRunning();
-        wipeEvoluRelayData();
-        restartEvoluRelayServer();
+        wipeAndRestartEvoluRelayServer();
 
         evoluClient = new NativeEvoluClient();
 
@@ -130,6 +100,16 @@ describe('Suite Sync - Labelling [@androidOnly @T3T1]', () => {
         const ADDRESS_LABEL = 'Evolu write BTC address';
         const OUTPUT_LABEL = 'Evolu write BTC output';
         const TX_ID = 'aa545d95cf07892e1ae70b40e856b9b476f703e2e20647d0985830fd7b734393';
+        const expectedAccountData = buildExpectedAccount({ label: ACCOUNT_LABEL });
+        const expectedAddressData = buildExpectedAddress({
+            address: FIRST_BTC_RECEIVE_ADDRESS,
+            label: ADDRESS_LABEL,
+        });
+        const expectedOutputData = buildExpectedOutput({
+            txId: TX_ID,
+            outputIndex: '0',
+            label: OUTPUT_LABEL,
+        });
 
         await onTabBar.navigateToSettings();
         await onSettings.enableSuiteSync();
@@ -171,45 +151,19 @@ describe('Suite Sync - Labelling [@androidOnly @T3T1]', () => {
 
         // Verify labels were synced to the relay
         evoluClient.init({ ownerSecret });
-        await evoluClient.expectInTable('account', [
-            {
-                accountDescriptor,
-                networkSymbol: 'btc',
-                label: ACCOUNT_LABEL,
-                isDeleted: null,
-                updatedAt: null,
-            },
-        ]);
-        await evoluClient.expectInTable('address', [
-            {
-                accountDescriptor,
-                networkSymbol: 'btc',
-                label: ADDRESS_LABEL,
-                address: FIRST_BTC_RECEIVE_ADDRESS,
-                isDeleted: null,
-                updatedAt: null,
-            },
-        ]);
-        await evoluClient.expectInTable('output', [
-            {
-                accountDescriptor,
-                networkSymbol: 'btc',
-                label: OUTPUT_LABEL,
-                outputIndex: '0',
-                txId: TX_ID,
-                isDeleted: null,
-                updatedAt: null,
-            },
-        ]);
+        await evoluClient.expectInTable('account', [expectedAccountData]);
+        await evoluClient.expectInTable('address', [expectedAddressData]);
+        await evoluClient.expectInTable('output', [expectedOutputData]);
     });
 
     test('Sync labels from relay', async () => {
         // Seed the relay before enabling SuiteSync so the labels are ready to sync on connect.
         evoluClient.init({ ownerSecret });
-        evoluClient.writeTo('wallet', syncWalletSeed);
-        evoluClient.writeTo('account', syncAccountSeed);
-        evoluClient.writeTo('address', syncAddressSeed);
-        evoluClient.writeTo('output', syncOutputSeed);
+        evoluClient.writeTo('wallet', walletSeed);
+        evoluClient.writeTo('account', accountSeed);
+        evoluClient.writeTo('address', addressSeed);
+        evoluClient.writeTo('output', outputSeed);
+        seedQuotaManagerData();
 
         await onTabBar.navigateToSettings();
         await onSettings.enableSuiteSync();
@@ -218,28 +172,28 @@ describe('Suite Sync - Labelling [@androidOnly @T3T1]', () => {
         // Wait for account label to sync and appear in the account list
         await onTabBar.navigateToMyAssets();
         const firstAccountTitle = element(by.id('@accountList/item/title')).atIndex(0);
-        await waitToHaveText(firstAccountTitle, syncAccountSeed.label, { timeout: 30_000 });
+        await waitToHaveText(firstAccountTitle, accountSeed.label, { timeout: 30_000 });
 
         // Wait for wallet label to sync and appear in the device switcher
         await onDeviceManager.tapDeviceSwitch();
-        await waitToHaveText(by.id('@wallet/label'), syncWalletSeed.label);
+        await waitToHaveText(by.id('@wallet/label'), walletSeed.label);
         await element(by.id('@wallet/label')).tap();
 
         // Verify address label synced
-        await onMyAssets.openAccountDetail({ accountName: syncAccountSeed.label });
+        await onMyAssets.openAccountDetail({ accountName: accountSeed.label });
         await onAccountDetail.openReceive();
         await onAccountReceive.tapShowAddressButton();
         await TrezorUserEnvLink.pressYes();
-        await onAccountReceive.verifyReceiveAddressLabel(syncAddressSeed.label);
+        await onAccountReceive.verifyReceiveAddressLabel(addressSeed.label);
 
         // Verify output label synced
         await onTabBar.tapBackButton();
-        const transaction = element(by.id(`@transactions/item/${syncOutputSeed.txId}`));
-        await scrollUntilVisible(transaction);
+        await onAccountDetail.waitForScreen();
+        const transaction = element(by.id(`@transactions/item/${outputSeed.txId}`));
+        // Detail page has area that cannot be dragged
+        await scrollUntilVisible(transaction, { startPositionY: 0.8 });
         await transaction.tap();
-        const outputLabel = element(
-            by.id(`@transactions/output-label/${syncOutputSeed.txId}/0/text`),
-        );
-        await waitToHaveText(outputLabel, syncOutputSeed.label);
+        const outputLabel = element(by.id(`@transactions/output-label/${outputSeed.txId}/0/text`));
+        await waitToHaveText(outputLabel, outputSeed.label);
     });
 });

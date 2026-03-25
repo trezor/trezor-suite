@@ -55,8 +55,17 @@ export const SuiteSyncQuotaManager = () => {
                 <Text variant="headline-sm">Suite Sync Quota Manager</Text>
                 <Form form={form}>
                     <VStack>
-                        <TextInputField label="Quota Manager URL" name="suiteSyncQuotaManagerUrl" />
-                        <Button colorScheme="tertiaryElevation0" size="small" onPress={onSubmit}>
+                        <TextInputField
+                            testID="@suiteSyncQuotaManager/url-input"
+                            label="Quota Manager URL"
+                            name="suiteSyncQuotaManagerUrl"
+                        />
+                        <Button
+                            testID="@suiteSyncQuotaManager/save-button"
+                            colorScheme="tertiaryElevation0"
+                            size="small"
+                            onPress={onSubmit}
+                        >
                             Save
                         </Button>
                     </VStack>
@@ -104,6 +113,7 @@ export const SuiteSyncQuotaManager = () => {
                         </Text>
                     </Box>
                     <Switch
+                        testID="@suiteSyncQuotaManager/enforce-switch"
                         isChecked={enforceQuotaManager}
                         onChange={onToggleEnforceQuotaManager}
                     />

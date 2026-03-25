@@ -14,3 +14,34 @@ services:
       - "19021:19021" # internal blockbook port
       - "19121:19121" # public blockbook port for website dashboard
       - "18021:18021" # bitcoin-d rpc port
+
+  quota-db:
+    image: postgres
+    environment:
+      POSTGRES_USER: suite-sync
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: suite-sync-gate
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U suite-sync -d suite-sync-gate"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  suite-sync:
+    image: ghcr.io/trezor/suite-sync:main
+    environment:
+      POSTGRES_GATE_USER: suite-sync
+      POSTGRES_GATE_PASSWORD: password
+      POSTGRES_GATE_HOST: quota-db
+      POSTGRES_GATE_PORT: 5432
+      POSTGRES_GATE_DB: suite-sync-gate
+      SERVER_ENV: dev
+    ports:
+      - "4000:4000"
+      - "4001:4001"
+      - "4002:4002"
+    depends_on:
+      quota-db:
+        condition: service_healthy
