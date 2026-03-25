@@ -442,6 +442,7 @@ export type ForgetDeviceThunkParams = {
     isOsUnpairingFinished?: boolean;
     skipToggleModalConnection?: boolean;
     skipDisconnect?: boolean;
+    deviceId?: TrezorDevice['id'];
 };
 
 export const forgetDeviceThunk = createThunk(
@@ -451,13 +452,18 @@ export const forgetDeviceThunk = createThunk(
             skipToggleModalConnection,
             isOsUnpairingFinished,
             skipDisconnect,
+            deviceId,
         }: ForgetDeviceThunkParams | undefined = {},
         { dispatch, getState },
     ) => {
-        const device = selectSelectedDevice(getState());
+        const devices = selectDevices(getState());
+
+        const explicitDevice = deviceId
+            ? devices.find(candidateDevice => candidateDevice.id === deviceId)
+            : undefined;
+        const device = explicitDevice ?? selectSelectedDevice(getState());
         if (!device) return;
 
-        const devices = selectDevices(getState());
         const deviceInstances = getDeviceInstances(device, devices);
 
         await dispatch(

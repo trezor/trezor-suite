@@ -2,6 +2,7 @@ export const INIT = '@suite/init';
 export const READY = '@suite/ready';
 export const ERROR = '@suite/error';
 export const DESKTOP_HANDSHAKE = '@suite/desktop-handshake';
+export const SUITE_FORGET_DEVICE = '@suite/forget-device-thunk';
 export const TOGGLE_BIO_AUTH_VALIDATION_REQUESTED = '@suite/toggle-bio-auth-validation-requested';
 export const SET_RECENTLY_CONNECTED_DEVICE = '@suite/set-recently-connected-device';
 export const SET_RECENTLY_DISCONNECTED_DEVICE = '@suite/set-recently-disconnected-device';

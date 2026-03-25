@@ -9,14 +9,15 @@ import { type TrezorDevice } from '@suite-common/suite-types';
 import * as deviceUtils from '@suite-common/suite-utils';
 import { getIsDeviceConnectedViaBluetooth, getIsThpDevice } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { forgetDeviceThunk, selectHasRunningDiscovery } from '@suite-common/wallet-core';
+import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Button, Card, Column, Icon, List, Modal, Paragraph } from '@trezor/components';
-import TrezorConnect, { DEVICE, DEVICE_EVENT } from '@trezor/connect';
+import TrezorConnect, { DEVICE, DEVICE_EVENT, type DeviceEventMessage } from '@trezor/connect';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { exhaustive } from '@trezor/type-utils';
 
 import { unpairCurrentBondThunk } from 'src/actions/bluetooth/bluetoothEraseBondsThunk';
 import { openSystemSettingsThunk } from 'src/actions/bluetooth/openSystemSettingsThunk';
+import { suiteForgetDeviceThunk } from 'src/actions/suite/suiteForgetDeviceThunk';
 import { TrezorLink } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
@@ -73,6 +74,11 @@ type ForgetFlowProps = {
     onCancel: () => void;
 };
 
+/**
+ * Hook that wraps `forgetDeviceThunk` with toast and analytics.
+ * Accepts an optional `device` param for cases where the selected device
+ * is no longer available (e.g. after disconnect).
+ */
 const useForgetDevice = () => {
     const dispatch = useDispatch();
     const analytics = useAnalytics();
@@ -81,20 +87,24 @@ const useForgetDevice = () => {
         skipToggleModalConnection,
         isOsUnpairingFinished,
         skipDisconnect,
+        deviceId,
         toastType = 'device-forgotten',
     }: {
         skipToggleModalConnection?: boolean;
         isOsUnpairingFinished?: boolean;
         skipDisconnect?: boolean;
+        deviceId?: string;
         toastType?: 'device-forgotten' | null;
     } = {}) => {
         await dispatch(
-            forgetDeviceThunk({
+            suiteForgetDeviceThunk({
                 skipToggleModalConnection: Boolean(skipToggleModalConnection),
                 isOsUnpairingFinished: Boolean(isOsUnpairingFinished),
                 skipDisconnect: Boolean(skipDisconnect),
+                deviceId,
             }),
         );
+
         if (toastType) {
             dispatch(notificationsActions.addToast({ type: toastType }));
         }
@@ -252,31 +262,33 @@ const OsAndTrezorCleanupModal = ({
     );
 };
 
+/**
+ * Prompts the user to unplug the device. Calls `onDisconnect` when the
+ * device is physically disconnected.
+ */
 const UnplugDeviceModal = ({
     onCancel,
-    toastType,
+    onDisconnect,
 }: {
     onCancel: () => void;
-    toastType?: 'device-forgotten' | null;
+    onDisconnect: (deviceId: string) => void;
 }) => {
-    const dispatch = useDispatch();
     useEffect(() => {
-        const handleDisconnect = ({ ...eventData }: { type: string }) => {
-            if (eventData.type === DEVICE.DISCONNECT) {
-                dispatch(goto({ routeName: 'suite-index' }));
-                if (toastType) {
-                    dispatch(notificationsActions.addToast({ type: toastType }));
+        const handleDeviceEvent = (event: DeviceEventMessage) => {
+            if (event.type === DEVICE.DISCONNECT) {
+                if (event.payload.id) {
+                    onDisconnect(event.payload.id);
                 }
                 onCancel();
             }
         };
 
-        TrezorConnect.on(DEVICE_EVENT, handleDisconnect);
+        TrezorConnect.on(DEVICE_EVENT, handleDeviceEvent);
 
         return () => {
-            TrezorConnect.off(DEVICE_EVENT, handleDisconnect);
+            TrezorConnect.off(DEVICE_EVENT, handleDeviceEvent);
         };
-    }, [dispatch, onCancel, toastType]);
+    }, [onCancel, onDisconnect]);
 
     return (
         <Modal width={400} height={420}>
@@ -292,58 +304,6 @@ const UnplugDeviceModal = ({
                 </Column>
             </Column>
         </Modal>
-    );
-};
-
-// --- Flow components (one per device state group) ---
-
-/**
- * Non-THP disconnected devices and THP devices with no BT history.
- * Confirmation → forget immediately.
- */
-const ImmediateForgetFlow = ({ onCancel }: ForgetFlowProps) => {
-    const { dispatch, forgetDevice } = useForgetDevice();
-
-    return (
-        <ConfirmationModal
-            onConfirm={() => {
-                forgetDevice({
-                    toastType: null,
-                });
-                dispatch(goto({ routeName: 'suite-index' }));
-                onCancel();
-            }}
-            onCancel={onCancel}
-            isBluetoothDevice={false}
-            isBluetoothConnectedDevice={false}
-        />
-    );
-};
-
-/**
- * Non-THP device currently connected via cable.
- * Confirmation → forget → prompt to unplug.
- */
-const NonThpConnectedForgetFlow = ({ onCancel }: ForgetFlowProps) => {
-    const [showUnplug, setShowUnplug] = useState(false);
-    const { forgetDevice } = useForgetDevice();
-
-    if (showUnplug) {
-        return <UnplugDeviceModal toastType="device-forgotten" onCancel={onCancel} />;
-    }
-
-    return (
-        <ConfirmationModal
-            onConfirm={async () => {
-                await forgetDevice({
-                    toastType: null,
-                });
-                setShowUnplug(true);
-            }}
-            onCancel={onCancel}
-            isBluetoothDevice={false}
-            isBluetoothConnectedDevice={false}
-        />
     );
 };
 
@@ -380,6 +340,75 @@ const RemoveFromBluetoothSettingsModal = ({
                 <Translation id="TR_BLUETOOTH_REMOVE_FROM_BLUETOOTH_SETTINGS_DESCRIPTION" />
             </Paragraph>
         </Modal>
+    );
+};
+
+// --- Flow components (one per device state group) ---
+
+/**
+ * Non-THP disconnected devices and THP devices with no BT history.
+ * Confirmation → forget immediately.
+ */
+const ImmediateForgetFlow = ({ onCancel }: ForgetFlowProps) => {
+    const { dispatch, forgetDevice } = useForgetDevice();
+
+    return (
+        <ConfirmationModal
+            onConfirm={() => {
+                forgetDevice({
+                    toastType: null,
+                });
+                dispatch(goto({ routeName: 'suite-index' }));
+                onCancel();
+            }}
+            onCancel={onCancel}
+            isBluetoothDevice={false}
+            isBluetoothConnectedDevice={false}
+        />
+    );
+};
+
+/**
+ * Device currently connected via cable (non-THP or THP without BT).
+ * Confirmation → prompt to unplug → forget on disconnect.
+ *
+ * We defer the actual forget to after disconnect to avoid a race condition:
+ * while the device is still plugged in, TrezorConnect fires `connectDevice`
+ * which re-adds the device, and `updateSelectedDevice` re-saves it to IndexedDB.
+ * The device reference is captured in a ref while still connected so
+ * `forgetDeviceThunk` can use it after disconnect (when `selectSelectedDevice`
+ * would return null).
+ */
+const ConnectedCableForgetFlow = ({
+    onCancel,
+    isBluetoothDevice,
+}: ForgetFlowProps & { isBluetoothDevice: boolean }) => {
+    const [showUnplug, setShowUnplug] = useState(false);
+    const { dispatch, forgetDevice } = useForgetDevice();
+
+    if (showUnplug) {
+        return (
+            <UnplugDeviceModal
+                onCancel={onCancel}
+                onDisconnect={deviceId => {
+                    forgetDevice({
+                        deviceId,
+                        toastType: 'device-forgotten',
+                    });
+                    dispatch(goto({ routeName: 'suite-index' }));
+                    onCancel();
+                }}
+            />
+        );
+    }
+
+    return (
+        <ConfirmationModal
+            onConfirm={() => setShowUnplug(true)}
+            onCancel={onCancel}
+            isBluetoothDevice={isBluetoothDevice}
+            isBluetoothConnectedDevice={false}
+        />
     );
 };
 
@@ -435,27 +464,18 @@ const ThpBtConnectedForgetFlow = ({ onCancel }: ForgetFlowProps) => {
 };
 
 /**
- * THP device connected via USB cable.
- * Confirmation → forget from Suite → OS + Trezor cleanup steps → unplug prompt.
+ * THP device connected via USB cable with BT credentials.
+ * Confirmation → OS + Trezor cleanup steps → prompt to unplug → forget on disconnect.
  */
 const ThpCableConnectedForgetFlow = ({ onCancel }: ForgetFlowProps) => {
     type Step = 'confirmation' | 'cleanup' | 'unplug';
     const [step, setStep] = useState<Step>('confirmation');
-    const dispatch = useDispatch();
-
-    const handleConfirm = () => {
-        dispatch(
-            forgetDeviceThunk({
-                isOsUnpairingFinished: true,
-            }),
-        );
-        setStep('cleanup');
-    };
+    const { dispatch, forgetDevice } = useForgetDevice();
 
     if (step === 'confirmation') {
         return (
             <ConfirmationModal
-                onConfirm={handleConfirm}
+                onConfirm={() => setStep('cleanup')}
                 onCancel={onCancel}
                 isBluetoothDevice
                 isBluetoothConnectedDevice={false}
@@ -472,7 +492,19 @@ const ThpCableConnectedForgetFlow = ({ onCancel }: ForgetFlowProps) => {
         );
     }
 
-    return <UnplugDeviceModal onCancel={onCancel} />;
+    return (
+        <UnplugDeviceModal
+            onCancel={onCancel}
+            onDisconnect={deviceId => {
+                forgetDevice({
+                    deviceId,
+                    toastType: 'device-forgotten',
+                });
+                dispatch(goto({ routeName: 'suite-index' }));
+                onCancel();
+            }}
+        />
+    );
 };
 
 /**
@@ -521,6 +553,7 @@ export const ForgetDeviceModal = ({ onCancel }: ForgetModalProps) => {
     const persistentData = useSelector(state =>
         selectPersistentDeviceDataById(state, selectedDevice?.id),
     );
+
     const knownBluetoothDevice = useSelector(state =>
         selectKnownDeviceByDeviceId(state, selectedDevice?.id ?? undefined),
     );
@@ -545,7 +578,7 @@ export const ForgetDeviceModal = ({ onCancel }: ForgetModalProps) => {
 
     switch (deviceState) {
         case 'non-thp-connected':
-            return <NonThpConnectedForgetFlow onCancel={onCancel} />;
+            return <ConnectedCableForgetFlow onCancel={onCancel} isBluetoothDevice={false} />;
 
         case 'non-thp-disconnected':
         case 'thp-disconnected':
