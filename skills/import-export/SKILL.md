@@ -1,8 +1,13 @@
+---
+name: import-export
+description: Named export conventions and barrel file usage rules for the Trezor Suite codebase. Use when writing imports, exports, or deciding on module structure.
+---
+
 # Import/Export
 
 ## Use named export only
 
-1. **Consistency.** With named exports you can always be sure that the exported value will not be renamed at one point. It’s much easier to refactor with named exports because you can mass-replace and be more confident that it covered everything. Same goes for searching for a value.
+1. **Consistency.** With named exports you can always be sure that the exported value will not be renamed at one point. It's much easier to refactor with named exports because you can mass-replace and be more confident that it covered everything. Same goes for searching for a value.
 2. **Tree-shaking.** With named exports, Webpack can recognize which exported values are unused and eliminate them. If you want to import all exports from a file and not use default exports, – use:
 
     ```tsx

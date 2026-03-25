@@ -1,3 +1,8 @@
+---
+name: development-commands
+description: Commands for running apps, linting, testing, and building in the Trezor Suite monorepo. Use when you need to run, build, or check code quality.
+---
+
 # Development Commands
 
 ## Running Applications

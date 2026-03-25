@@ -1,3 +1,8 @@
+---
+name: tests-native
+description: TDD practices and test utilities for suite-native packages, including @suite-native/test-utils usage and translation ID conventions. Use when writing tests for suite-native packages.
+---
+
 # Writing Native Tests (TDD)
 
 This skill enforces Test-Driven Development (TDD) practices for suite-native packages and ensures proper usage of the

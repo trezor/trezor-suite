@@ -1,3 +1,8 @@
+---
+name: project-structure
+description: Overview of the Trezor Suite monorepo structure and key directories. Use when navigating the codebase or deciding where to place new code.
+---
+
 # Project Structure
 
 ## Key (root) directories
