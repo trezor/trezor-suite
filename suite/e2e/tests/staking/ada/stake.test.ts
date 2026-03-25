@@ -1,4 +1,7 @@
-import { CARDANO_STAKING_REGISTRATION_DEPOSIT } from '@suite-common/wallet-constants';
+import {
+    CARDANO_STAKING_REGISTRATION_DEPOSIT,
+    EVERSTAKE_POOLS,
+} from '@suite-common/wallet-constants';
 import { TestCategory, TestPriority, TestStream, createTestAnnotation } from '@trezor/e2e-utils';
 
 import { toADA } from '../../../support/common';
@@ -99,6 +102,13 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
             });
 
             await test.step('Confirm staking on device', async () => {
+                const everstakePoolWrapped = EVERSTAKE_POOLS.map(pool => device.wrapText(pool));
+                const everstakePoolBodyItem = everstakePoolWrapped[0].map((element, i) =>
+                    element === '\n'
+                        ? '\n'
+                        : new RegExp(everstakePoolWrapped.map(wrapped => wrapped[i]).join('|')),
+                );
+
                 await stakingSection.continueButton.click();
                 await expect(device).toShowOnDisplay({
                     T3W1: {
@@ -139,12 +149,7 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
                 await expect(device).toShowOnDisplay({
                     T3W1: {
                         header: { title: 'Confirm transaction' },
-                        body: [
-                            ['To pool'],
-                            device.wrapText(
-                                'pool13rt3ngkek4l876980ect869cu978d36dcyh22ts4nwuf7ncq02u',
-                            ),
-                        ],
+                        body: [['To pool'], everstakePoolBodyItem],
                         actions: { right_button: 'Confirm' },
                     },
                 });
@@ -222,7 +227,7 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
                             address: 'stake1uytalm0k75njyj7v8z580ajs09v5v4lz6yp9akh8cgty43qunjqys',
                             rewards: '0',
                             isActive: true,
-                            poolId: 'pool13rt3ngkek4l876980ect869cu978d36dcyh22ts4nwuf7ncq02u',
+                            poolId: everstakePoolWrapped,
                             drep: {
                                 drep_id: 'drep1ectemlv45xsnvenfgkhwsxncfvxev4qllj7x5w6vlfc7kmd9zcs',
                                 hex: '22ce179dfd95a1a136666945aee81a784b0d96541ffcbc6a3b4cfa71eb',
