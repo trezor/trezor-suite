@@ -4178,6 +4178,98 @@ export const messages = defineMessages({
         id: 'TR_TRANSACTIONS_NOT_AVAILABLE',
         defaultMessage: 'Transaction history not available',
     },
+    TR_TX_FILTER_ADD: {
+        id: 'TR_TX_FILTER_ADD',
+        defaultMessage: 'Add filter',
+    },
+    TR_TX_FILTER_ADDRESS: {
+        id: 'TR_TX_FILTER_ADDRESS',
+        defaultMessage: 'Address',
+    },
+    TR_TX_FILTER_AMOUNT: {
+        id: 'TR_TX_FILTER_AMOUNT',
+        defaultMessage: 'Amount',
+    },
+    TR_TX_FILTER_APPLY: {
+        id: 'TR_TX_FILTER_APPLY',
+        defaultMessage: 'Apply filter',
+    },
+    TR_TX_FILTER_BUTTON: {
+        id: 'TR_TX_FILTER_BUTTON',
+        defaultMessage: 'Filters',
+    },
+    TR_TX_FILTER_CLEAR_ALL: {
+        id: 'TR_TX_FILTER_CLEAR_ALL',
+        defaultMessage: 'Clear all',
+    },
+    TR_TX_FILTER_DATE: {
+        id: 'TR_TX_FILTER_DATE',
+        defaultMessage: 'Date range',
+    },
+    TR_TX_FILTER_EDIT: {
+        id: 'TR_TX_FILTER_EDIT',
+        defaultMessage: 'Edit filter',
+    },
+    TR_TX_FILTER_PICK_DATES: {
+        id: 'TR_TX_FILTER_PICK_DATES',
+        defaultMessage: 'Pick dates',
+    },
+    TR_TX_FILTER_REMOVE: {
+        id: 'TR_TX_FILTER_REMOVE',
+        defaultMessage: 'Remove filter',
+    },
+    TR_TX_FILTER_STATUS: {
+        id: 'TR_TX_FILTER_STATUS',
+        defaultMessage: 'Status',
+    },
+    TR_TX_FILTER_STATUS_CONFIRMED: {
+        id: 'TR_TX_FILTER_STATUS_CONFIRMED',
+        defaultMessage: 'Confirmed',
+    },
+    TR_TX_FILTER_STATUS_PENDING: {
+        id: 'TR_TX_FILTER_STATUS_PENDING',
+        defaultMessage: 'Pending',
+    },
+    TR_TX_FILTER_TX_ID: {
+        id: 'TR_TX_FILTER_TX_ID',
+        defaultMessage: 'Transaction ID',
+    },
+    TR_TX_FILTER_TX_ID_PLACEHOLDER: {
+        id: 'TR_TX_FILTER_TX_ID_PLACEHOLDER',
+        defaultMessage: 'Enter transaction ID',
+    },
+    TR_TX_FILTER_TX_TYPE: {
+        id: 'TR_TX_FILTER_TX_TYPE',
+        defaultMessage: 'Type',
+    },
+    TR_TX_FILTER_TYPE_RECV: {
+        id: 'TR_TX_FILTER_TYPE_RECV',
+        defaultMessage: 'Income',
+    },
+    TR_TX_FILTER_TYPE_SELF: {
+        id: 'TR_TX_FILTER_TYPE_SELF',
+        defaultMessage: 'Sent to myself',
+    },
+    TR_TX_FILTER_TYPE_SENT: {
+        id: 'TR_TX_FILTER_TYPE_SENT',
+        defaultMessage: 'Cost',
+    },
+    TR_TX_FILTER_PRESET_THIS_MONTH: {
+        id: 'TR_TX_FILTER_PRESET_THIS_MONTH',
+        defaultMessage: 'This month',
+    },
+    TR_TX_FILTER_PRESET_LAST_MONTH: {
+        id: 'TR_TX_FILTER_PRESET_LAST_MONTH',
+        defaultMessage: 'Last month',
+    },
+    TR_TX_FILTER_PRESET_THIS_YEAR: {
+        id: 'TR_TX_FILTER_PRESET_THIS_YEAR',
+        defaultMessage: 'This year',
+    },
+    TR_TX_FILTER_PRESET_LAST_YEAR: {
+        id: 'TR_TX_FILTER_PRESET_LAST_YEAR',
+        defaultMessage: 'Last year',
+    },
     TR_N_TRANSACTIONS: {
         id: 'TR_N_TRANSACTIONS',
         defaultMessage: '{value} {value, plural, one {transaction} other {transactions}}',
