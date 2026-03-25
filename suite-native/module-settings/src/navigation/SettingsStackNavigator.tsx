@@ -12,7 +12,6 @@ import { SettingsAdvancedScreen } from '../screens/SettingsAdvancedScreen';
 import { SettingsAppLogScreen } from '../screens/SettingsAppLogScreen';
 import { SettingsAutoEjectScreen } from '../screens/SettingsAutoEjectScreen';
 import { SettingsCoinEnablingScreen } from '../screens/SettingsCoinEnablingScreen';
-import { SettingsPhishingScreen } from '../screens/SettingsPhishingScreen';
 import { SettingsPreferencesScreen } from '../screens/SettingsPreferencesScreen';
 import { SettingsPrivacyScreen } from '../screens/SettingsPrivacyScreen';
 import { SettingsSuiteSyncScreen } from '../screens/SettingsSuiteSyncScreen';
@@ -54,11 +53,6 @@ export const SettingsStackNavigator = () => (
             options={{ title: SettingsStackRoutes.SettingsCoinEnabling }}
             name={SettingsStackRoutes.SettingsCoinEnabling}
             component={SettingsCoinEnablingScreen}
-        />
-        <SettingsStack.Screen
-            options={{ title: SettingsStackRoutes.SettingsPhishing }}
-            name={SettingsStackRoutes.SettingsPhishing}
-            component={SettingsPhishingScreen}
         />
         <SettingsStack.Screen
             options={{ title: SettingsStackRoutes.SettingsSuiteSync }}

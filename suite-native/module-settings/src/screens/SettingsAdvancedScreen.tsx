@@ -1,13 +1,17 @@
 import { useSelector } from 'react-redux';
 
 import { selectIsMevProtectionSettingsVisible } from '@suite-common/mev';
-import { selectIsNetworkReserveSettingsVisible } from '@suite-common/wallet-core';
+import {
+    selectIsDustPhishingThresholdSettingsVisible,
+    selectIsNetworkReserveSettingsVisible,
+} from '@suite-common/wallet-core';
 import { VStack } from '@suite-native/atoms';
 import { ExperimentalFeaturesSettingsCard } from '@suite-native/experimental-features';
 import { Translation } from '@suite-native/intl';
 import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
 
 import { BitcoinBackendsCard } from '../components/BitcoinBackendsCard';
+import { DustPhishingThresholdCard } from '../components/DustPhishingThresholdCard';
 import { ToggleDeviceAuthenticityCheckCard } from '../components/ToggleDeviceAuthenticityCheckCard';
 import { ToggleFirmwareAuthenticityCheckCard } from '../components/ToggleFirmwareAuthenticityCheckCard';
 import { ToggleMevProtectionCard } from '../components/ToggleMevProtectionCard';
@@ -18,6 +22,9 @@ export const SettingsAdvancedScreen = () => {
     const isMevProtectionSettingsVisible = useSelector(selectIsMevProtectionSettingsVisible);
     const isBitcoinBackendsConfigVisible = useSelector(selectIsBitcoinBackendsConfigVisible);
     const isNetworkReserveSettingsVisible = useSelector(selectIsNetworkReserveSettingsVisible);
+    const isDustPhishingThresholdSettingsVisible = useSelector(
+        selectIsDustPhishingThresholdSettingsVisible,
+    );
 
     return (
         <Screen
@@ -29,6 +36,7 @@ export const SettingsAdvancedScreen = () => {
                 {isBitcoinBackendsConfigVisible && <BitcoinBackendsCard />}
                 <ExperimentalFeaturesSettingsCard />
                 {isMevProtectionSettingsVisible && <ToggleMevProtectionCard />}
+                {isDustPhishingThresholdSettingsVisible && <DustPhishingThresholdCard />}
                 <ToggleFirmwareAuthenticityCheckCard />
                 <ToggleDeviceAuthenticityCheckCard />
                 {isNetworkReserveSettingsVisible && <ToggleNetworkReserveCheckCard />}

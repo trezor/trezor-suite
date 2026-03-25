@@ -14,7 +14,11 @@ import {
 import { BigNumber } from '@trezor/utils';
 
 import { DUST_PHISHING_THRESHOLD_CURRENCY, PHISHING_WHITELISTED_TX_TYPES } from './constants';
-import { type PhishingDetectorId, type TransactionWithFiatAmount } from './types';
+import {
+    type PhishingDetectorId,
+    type PhishingTransactionValidatorResult,
+    type TransactionWithFiatAmount,
+} from './types';
 
 export const isTransactionWhitelisted = (transaction: TransactionWithFiatAmount) =>
     PHISHING_WHITELISTED_TX_TYPES.includes(transaction.type);
@@ -95,7 +99,35 @@ export const getTransactionWithFiatAmounts = ({
     })),
 });
 
-export const createPhishingResult = (isPhishing: boolean, detectorId?: PhishingDetectorId) => ({
-    isPhishing,
-    detectorId,
-});
+// stable references so Redux selectors / useSelector do not see a new object each run
+const PHISHING_RESULT_FALSE: PhishingTransactionValidatorResult = { isPhishing: false };
+
+const PHISHING_RESULT_TRUE_BY_DETECTOR: Record<
+    PhishingDetectorId,
+    PhishingTransactionValidatorResult
+> = {
+    FAKE_TOKEN: { isPhishing: true, detectorId: 'FAKE_TOKEN' },
+    UNKNOWN_TX: { isPhishing: true, detectorId: 'UNKNOWN_TX' },
+    DUST_AMOUNT: { isPhishing: true, detectorId: 'DUST_AMOUNT' },
+    ZERO_AMOUNT: { isPhishing: true, detectorId: 'ZERO_AMOUNT' },
+};
+
+// fallback when `isPhishing` is true without a detector id
+const PHISHING_RESULT_TRUE_UNSPECIFIED: PhishingTransactionValidatorResult = {
+    isPhishing: true,
+    detectorId: undefined,
+};
+
+export const createPhishingResult = (
+    isPhishing: boolean,
+    detectorId?: PhishingDetectorId,
+): PhishingTransactionValidatorResult => {
+    if (!isPhishing) {
+        return PHISHING_RESULT_FALSE;
+    }
+    if (detectorId !== undefined) {
+        return PHISHING_RESULT_TRUE_BY_DETECTOR[detectorId];
+    }
+
+    return PHISHING_RESULT_TRUE_UNSPECIFIED;
+};

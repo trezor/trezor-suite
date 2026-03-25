@@ -57,13 +57,6 @@ export const FeaturesSettings = () => {
                 isDisabled={hasDiscovery}
                 testID="@settings/coin-enabling"
             />
-            <AppSettingsCardWithIconLayout
-                icon="warning"
-                title={<Translation id="moduleSettings.items.features.phishing.title" />}
-                subtitle={<Translation id="moduleSettings.items.features.phishing.subtitle" />}
-                onPress={() => navigateTo(SettingsStackRoutes.SettingsPhishing)}
-                testID="@settings/phishing"
-            />
             {isExperimentalFeatureSuiteSyncEnabled && (
                 <AppSettingsCardWithIconLayout
                     icon="arrowsClockwise"
