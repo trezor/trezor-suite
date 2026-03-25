@@ -1,3 +1,4 @@
+import { type DangerouslyWipeAllLabelsFromWalletDep } from './data/dangerouslyWipeAllLabelsFromWallet';
 import { type UpdateAccountLabelDep } from './data/updateAccountLabel';
 import { type UpdateAddressLabelDep } from './data/updateAddressLabel';
 import { type UpdateOutputLabelDep } from './data/updateOutputLabel';
@@ -12,6 +13,7 @@ export type SuiteSync = ChangeRelayUrlDep &
     TurnOnSuiteSyncDep &
     TurnOffSuiteSyncDep &
     EnsureWalletSuiteSyncOnDep &
+    DangerouslyWipeAllLabelsFromWalletDep &
     TurnOffSuiteSyncForWalletDep & {
         labeling: UpdateWalletLabelDep &
             UpdateAccountLabelDep &

@@ -135,6 +135,11 @@ export type ToastPayload<TranslationKey extends UnknownTranslationKey = UnknownT
               | 'suite-sync-keys-error'
               | 'bip-329-labels-imported';
       }
+    | {
+          type: 'legacy-labeling-migration-success';
+          added: number;
+          skipped: number;
+      }
     | SentTransactionNotification
     | ApproveTransactionNotification
     | RevokeTransactionNotification

@@ -2,12 +2,16 @@ import { selectFlags } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { SuiteSyncSettings } from '@suite/suite-sync';
 import { Context } from '@suite-common/message-system';
+import { type SuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
+import { type EnsureWalletSuiteSyncOnErrors } from '@suite-common/suite-sync-types';
+import { type StaticSessionId } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
 import { SettingsSection } from '@trezor/product-components';
 
 import { SettingsLayout } from 'src/components/settings/SettingsLayout';
+import { suiteSyncErrorHandler } from 'src/components/suite/labeling/suiteSyncErrorHandler';
 import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
-import { useLayoutSize, useSelector } from 'src/hooks/suite';
+import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 import { useSuiteServices } from 'src/support/SuiteServicesProvider';
 
 import { AnalyticsLogging } from './AnalyticsLogging';
@@ -42,9 +46,24 @@ import { TriggerToast } from './TriggerToast';
 import { WipeData } from './WipeData';
 
 export const SettingsDebug = () => {
+    const dispatch = useDispatch();
     const { isBelowLaptop } = useLayoutSize();
     const flags = useSelector(selectFlags);
     const { suiteSync } = useSuiteServices();
+
+    const handleWipeSuiteSyncLabelsError = ({
+        error,
+        deviceStaticSessionId,
+    }: {
+        error: EnsureWalletSuiteSyncOnErrors | SuiteSyncUpdateError;
+        deviceStaticSessionId: StaticSessionId;
+    }) => {
+        suiteSyncErrorHandler({
+            error,
+            dispatch,
+            deviceStaticSessionId,
+        });
+    };
 
     return (
         <SettingsLayout>
@@ -123,7 +142,7 @@ export const SettingsDebug = () => {
             <SettingsSection isBelowLaptop={isBelowLaptop} title="Firmware channel">
                 <FirmwareUpdateEnvironmentSelect />
             </SettingsSection>
-            <SuiteSyncSettings suiteSync={suiteSync} />
+            <SuiteSyncSettings onError={handleWipeSuiteSyncLabelsError} suiteSync={suiteSync} />
             <QuotaManagerSettings />
             <PlatformEncrypton />
         </SettingsLayout>

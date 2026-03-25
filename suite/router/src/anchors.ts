@@ -20,6 +20,7 @@ export const SettingsAnchor = {
     LabelingServers: '@general-settings/labeling-servers',
     LabelingDisconnect: '@general-settings/labeling-disconnect',
     LabelingConnect: '@general-settings/labeling-connect',
+    LabelingMigration: '@general-settings/labeling-migration',
     Tor: '@general-settings/tor',
     TorExternal: '@general-settings/tor-external',
     TorOnionLinks: '@general-settings/tor-onion-links',
