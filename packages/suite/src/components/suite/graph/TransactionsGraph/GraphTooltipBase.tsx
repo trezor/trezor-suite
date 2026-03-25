@@ -47,8 +47,6 @@ interface WrapperProps {
 
 const CustomTooltipWrapper = styled.div<WrapperProps>`
     display: flex;
-    position: relative;
-    z-index: 100000000;
     flex-direction: column;
     color: ${paletteV2.globalWhiteAlpha1000};
     background: ${paletteV1.darkGray300};
@@ -64,7 +62,6 @@ const CustomTooltipWrapper = styled.div<WrapperProps>`
 
     &::after {
         position: absolute;
-        z-index: 100000000;
         content: '';
         top: 100%;
         ${({ $positionX, $boxWidth }) => getTooltipArrowXPosition($positionX, $boxWidth)}

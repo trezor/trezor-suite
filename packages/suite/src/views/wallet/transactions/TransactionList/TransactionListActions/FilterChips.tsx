@@ -1,84 +1,10 @@
 import { Fragment } from 'react';
 
-import styled from 'styled-components';
-
 import { useTranslation } from '@suite/intl';
-import { Button, Icon, Row } from '@trezor/components';
-import { spacings, spacingsPx } from '@trezor/theme';
+import { Button, ButtonGroup, IconButton, Row, TextButton } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
 import { type ConditionLogic, type FilterCondition } from './useTransactionFilters';
-
-// ─── Styled components ───────────────────────────────────────────────────────
-
-const LogicToggle = styled.button`
-    padding: 1px ${spacingsPx.xs};
-    border-radius: 4px;
-    border: 1px solid ${({ theme }) => theme.borderElevation2};
-    background: transparent;
-    color: ${({ theme }) => theme.textSubdued};
-    cursor: pointer;
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    flex-shrink: 0;
-
-    &:hover {
-        background: ${({ theme }) => theme.backgroundSurfaceElevation2};
-        color: ${({ theme }) => theme.textDefault};
-    }
-`;
-
-const ChipWrapper = styled.button`
-    display: inline-flex;
-    align-items: center;
-    gap: ${spacingsPx.xxs};
-    padding: ${spacingsPx.xxs} ${spacingsPx.xs};
-    border-radius: 99px;
-    border: 1px solid ${({ theme }) => theme.borderElevation2};
-    background: ${({ theme }) => theme.backgroundSurfaceElevation1};
-    color: ${({ theme }) => theme.textDefault};
-    cursor: pointer;
-    font-size: 13px;
-    white-space: nowrap;
-    max-width: 220px;
-
-    &:hover {
-        background: ${({ theme }) => theme.backgroundSurfaceElevation2};
-        border-color: ${({ theme }) => theme.borderFocus};
-    }
-`;
-
-const ChipLabel = styled.span`
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    font-size: 13px;
-    line-height: 1.4;
-`;
-
-const Separator = styled.span`
-    width: 1px;
-    height: 12px;
-    background: ${({ theme }) => theme.borderElevation2};
-    flex-shrink: 0;
-`;
-
-const RemoveButton = styled.button`
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    color: ${({ theme }) => theme.textSubdued};
-    flex-shrink: 0;
-
-    &:hover {
-        color: ${({ theme }) => theme.textDefault};
-    }
-`;
 
 // ─── Label formatting ────────────────────────────────────────────────────────
 
@@ -176,29 +102,31 @@ export const FilterChips = ({
         <Row gap={spacings.xs} flexWrap="wrap" alignItems="center">
             {conditions.map((condition, index) => (
                 <Fragment key={condition.id}>
-                    <ChipWrapper onClick={() => onEditCondition(condition.id)}>
-                        <Icon
-                            name={getConditionIcon(condition)}
-                            size={12}
-                            intent="neutral"
-                            priority="secondary"
-                        />
-                        <ChipLabel>{formatConditionLabel(condition, labelStrings)}</ChipLabel>
-                        <Separator />
-                        <RemoveButton
+                    <ButtonGroup intent="neutral" priority="secondary" size="small">
+                        <Button
+                            iconLeft={getConditionIcon(condition)}
+                            onClick={() => onEditCondition(condition.id)}
+                        >
+                            {formatConditionLabel(condition, labelStrings)}
+                        </Button>
+                        <IconButton
+                            icon="x"
+                            aria-label={translationString('TR_TX_FILTER_REMOVE')}
                             onClick={e => {
                                 e.stopPropagation();
                                 onRemove(condition.id);
                             }}
-                            aria-label={translationString('TR_TX_FILTER_REMOVE')}
-                        >
-                            <Icon name="x" size={12} intent="neutral" />
-                        </RemoveButton>
-                    </ChipWrapper>
+                        />
+                    </ButtonGroup>
                     {index < conditions.length - 1 && (
-                        <LogicToggle onClick={() => onToggleLogic(index)}>
+                        <TextButton
+                            size="small"
+                            intent="neutral"
+                            priority="secondary"
+                            onClick={() => onToggleLogic(index)}
+                        >
                             {logics[index] ?? 'AND'}
-                        </LogicToggle>
+                        </TextButton>
                     )}
                 </Fragment>
             ))}

@@ -6,16 +6,21 @@ import { useTranslation } from '@suite/intl';
 import {
     Button,
     Column,
-    Icon,
+    type DropdownMenuItemProps,
+    IconButton,
     type IconName,
     Input,
+    Menu,
     Popover,
     type PopoverRef,
+    Row,
+    Select,
     SelectBar,
     Text,
+    TextButton,
     Timerange,
 } from '@trezor/components';
-import { borders, spacings, spacingsPx } from '@trezor/theme';
+import { borders, spacings, spacingsPx, zIndices } from '@trezor/theme';
 
 import { useLocales } from 'src/hooks/suite';
 
@@ -29,74 +34,10 @@ import {
 
 // ─── Styled components ───────────────────────────────────────────────────────
 
-const PanelWrapper = styled.div`
-    width: 280px;
-    border-radius: ${borders.radii.md};
-    background: ${({ theme }) => theme.backgroundSurfaceElevation1};
-    box-shadow: ${({ theme }) => theme.boxShadowElevated};
-    outline: 1px solid ${({ theme }) => theme.baseBorderSurfaceAction};
-    overflow: hidden;
-`;
-
-const PanelHeader = styled.div`
+const DateRangeTrigger = styled.button`
     display: flex;
     align-items: center;
     gap: ${spacingsPx.xs};
-    padding: ${spacingsPx.sm} ${spacingsPx.md};
-    border-bottom: 1px solid ${({ theme }) => theme.borderElevation2};
-`;
-
-const BackButton = styled.button`
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2px;
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    color: ${({ theme }) => theme.textSubdued};
-    border-radius: ${borders.radii.xs};
-    flex-shrink: 0;
-
-    &:hover {
-        color: ${({ theme }) => theme.textDefault};
-        background: ${({ theme }) => theme.backgroundSurfaceElevation2};
-    }
-`;
-
-const FilterTypeItem = styled.button`
-    display: flex;
-    align-items: center;
-    gap: ${spacingsPx.sm};
-    width: 100%;
-    padding: ${spacingsPx.sm} ${spacingsPx.md};
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    text-align: left;
-    color: ${({ theme }) => theme.textDefault};
-    font-size: 14px;
-    line-height: 1.4;
-
-    &:hover {
-        background: ${({ theme }) => theme.backgroundSurfaceElevation2};
-    }
-
-    &:not(:last-child) {
-        border-bottom: 1px solid ${({ theme }) => theme.borderElevation1};
-    }
-`;
-
-const FilterTypeChevron = styled.div`
-    margin-left: auto;
-    color: ${({ theme }) => theme.textSubdued};
-`;
-
-const ConfigBody = styled.div`
-    padding: ${spacingsPx.md};
-`;
-
-const DateInput = styled.input`
     width: 100%;
     height: 36px;
     padding: 0 ${spacingsPx.sm};
@@ -105,63 +46,26 @@ const DateInput = styled.input`
     background: ${({ theme }) => theme.backgroundSurfaceElevation2};
     color: ${({ theme }) => theme.textDefault};
     font-size: 13px;
-    outline: none;
     cursor: pointer;
     box-sizing: border-box;
 
-    &:focus {
+    &:hover,
+    &:focus-visible {
         border-color: ${({ theme }) => theme.borderFocus};
-    }
-
-    &::-webkit-calendar-picker-indicator {
-        opacity: 0.6;
-        cursor: pointer;
+        outline: none;
     }
 `;
 
-const ToggleGroup = styled.div`
-    display: flex;
-    gap: ${spacingsPx.xxs};
-    flex-wrap: wrap;
-`;
-
-const PresetGroup = styled.div`
-    display: flex;
-    gap: ${spacingsPx.xxs};
-    flex-wrap: wrap;
-`;
-
-const PresetButton = styled.button`
-    padding: 2px ${spacingsPx.xs};
-    border-radius: ${borders.radii.xs};
-    border: 1px solid ${({ theme }) => theme.borderElevation2};
-    background: transparent;
-    color: ${({ theme }) => theme.textSubdued};
-    cursor: pointer;
-    font-size: 12px;
-
-    &:hover {
-        background: ${({ theme }) => theme.backgroundSurfaceElevation2};
-        color: ${({ theme }) => theme.textDefault};
-        border-color: ${({ theme }) => theme.borderFocus};
-    }
-`;
-
-const ToggleButton = styled.button<{ $selected: boolean }>`
-    padding: ${spacingsPx.xs} ${spacingsPx.sm};
-    border-radius: ${borders.radii.xs};
-    border: 1px solid
-        ${({ theme, $selected }) => ($selected ? theme.borderFocus : theme.borderElevation2)};
-    background: ${({ theme, $selected }) =>
-        $selected ? theme.backgroundPrimarySubtleOnElevation1 : theme.backgroundSurfaceElevation2};
-    color: ${({ theme, $selected }) => ($selected ? theme.textPrimaryDefault : theme.textDefault)};
-    cursor: pointer;
+const DateRangePart = styled.span<{ $hasValue: boolean }>`
+    flex: 1;
+    text-align: center;
+    color: ${({ theme, $hasValue }) => ($hasValue ? theme.textDefault : theme.textSubdued)};
     font-size: 13px;
-    font-weight: ${({ $selected }) => ($selected ? 600 : 400)};
+`;
 
-    &:hover {
-        border-color: ${({ theme }) => theme.borderFocus};
-    }
+const DateRangeSeparator = styled.span`
+    color: ${({ theme }) => theme.textSubdued};
+    flex-shrink: 0;
 `;
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -189,7 +93,12 @@ const FILTER_TYPES: FilterTypeConfig[] = [
     { type: 'txId', labelKey: 'TR_TX_FILTER_TX_ID', icon: 'hash' },
 ];
 
-const AMOUNT_OPERATORS = ['>', '<', '=', '!='] as const satisfies AmountOperator[];
+const AMOUNT_OPERATOR_LABEL_KEYS = {
+    '>': 'TR_TX_FILTER_OPERATOR_GT',
+    '<': 'TR_TX_FILTER_OPERATOR_LT',
+    '=': 'TR_TX_FILTER_OPERATOR_EQ',
+    '!=': 'TR_TX_FILTER_OPERATOR_NEQ',
+} as const satisfies Record<AmountOperator, string>;
 
 // ─── Date preset helpers ──────────────────────────────────────────────────────
 
@@ -249,11 +158,14 @@ const DateConfig = ({ initial, locale, onSubmit }: DateConfigProps) => {
     ];
 
     return (
-        <Column gap={spacings.sm}>
-            <PresetGroup>
+        <Column gap={12}>
+            <Row gap={20} flexWrap="wrap">
                 {presets.map(p => (
-                    <PresetButton
+                    <TextButton
                         key={p.key}
+                        size="small"
+                        intent="neutral"
+                        priority="secondary"
                         onClick={() => {
                             const range = getDatePreset(p.key);
                             setFrom(range.from);
@@ -261,31 +173,9 @@ const DateConfig = ({ initial, locale, onSubmit }: DateConfigProps) => {
                         }}
                     >
                         {translationString(p.labelKey)}
-                    </PresetButton>
+                    </TextButton>
                 ))}
-            </PresetGroup>
-            <Column gap={spacings.xs}>
-                <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
-                    {translationString('TR_FROM')}
-                </Text>
-                <DateInput
-                    type="date"
-                    value={from}
-                    max={to || undefined}
-                    onChange={e => setFrom(e.target.value)}
-                />
-            </Column>
-            <Column gap={spacings.xs}>
-                <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
-                    {translationString('TR_TO')}
-                </Text>
-                <DateInput
-                    type="date"
-                    value={to}
-                    min={from || undefined}
-                    onChange={e => setTo(e.target.value)}
-                />
-            </Column>
+            </Row>
             <Popover
                 ref={timerangePopoverRef}
                 content={
@@ -300,17 +190,18 @@ const DateConfig = ({ initial, locale, onSubmit }: DateConfigProps) => {
                     />
                 }
             >
-                <Button
-                    size="small"
-                    intent="neutral"
-                    priority="secondary"
-                    iconLeft="calendarBlank"
-                    width="100%"
-                >
-                    {translationString('TR_TX_FILTER_PICK_DATES')}
-                </Button>
+                <DateRangeTrigger>
+                    <DateRangePart $hasValue={!!from}>
+                        {from || translationString('TR_FROM')}
+                    </DateRangePart>
+                    <DateRangeSeparator>–</DateRangeSeparator>
+                    <DateRangePart $hasValue={!!to}>
+                        {to || translationString('TR_TO')}
+                    </DateRangePart>
+                </DateRangeTrigger>
             </Popover>
             <Button
+                margin={{ top: 8 }}
                 intent="brand"
                 priority="primary"
                 isDisabled={!canSubmit}
@@ -331,31 +222,41 @@ const DateConfig = ({ initial, locale, onSubmit }: DateConfigProps) => {
 
 type AmountConfigProps = {
     initial?: { operator: AmountOperator; value: string };
+    symbol: string;
     onSubmit: (condition: Extract<NewFilterCondition, { type: 'amount' }>) => void;
 };
 
-const AmountConfig = ({ initial, onSubmit }: AmountConfigProps) => {
+const AmountConfig = ({ initial, symbol, onSubmit }: AmountConfigProps) => {
     const { translationString } = useTranslation();
     const [operator, setOperator] = useState<AmountOperator>(initial?.operator ?? '>');
     const [value, setValue] = useState(initial?.value ?? '');
 
     const canSubmit = value.trim() !== '' && !Number.isNaN(Number(value.trim()));
 
+    const operatorOptions = (Object.keys(AMOUNT_OPERATOR_LABEL_KEYS) as AmountOperator[]).map(
+        op => ({ value: op, label: translationString(AMOUNT_OPERATOR_LABEL_KEYS[op]) }),
+    );
+
     return (
         <Column gap={spacings.sm}>
-            <SelectBar
-                options={AMOUNT_OPERATORS.map(op => ({ label: op, value: op }))}
-                selectedOption={operator}
-                onChange={v => setOperator(v as AmountOperator)}
+            <Select
                 size="small"
-                isFullWidth
+                value={operatorOptions.find(o => o.value === operator)}
+                options={operatorOptions}
+                onChange={option => setOperator(option.value as AmountOperator)}
+                isSearchable={false}
+                menuPortalTarget={typeof document !== 'undefined' ? document.body : undefined}
+                menuPortalZIndex={zIndices.popover}
             />
             <Input
                 size="small"
-                type="number"
-                placeholder="0.00"
                 value={value}
                 onChange={e => setValue(e.target.value)}
+                rightContent={
+                    <Text intent="neutral" priority="secondary">
+                        {symbol.toUpperCase()}
+                    </Text>
+                }
             />
             <Button
                 intent="brand"
@@ -423,7 +324,7 @@ type TxTypeConfigProps = {
 
 const TxTypeConfig = ({ initial, onSubmit }: TxTypeConfigProps) => {
     const { translationString } = useTranslation();
-    const [selected, setSelected] = useState<TxTypeFilter | null>(initial ?? null);
+    const [selected, setSelected] = useState<TxTypeFilter | undefined>(initial);
 
     const options: { value: TxTypeFilter; label: string }[] = [
         { value: 'recv', label: translationString('TR_TX_FILTER_TYPE_RECV') },
@@ -433,21 +334,17 @@ const TxTypeConfig = ({ initial, onSubmit }: TxTypeConfigProps) => {
 
     return (
         <Column gap={spacings.sm}>
-            <ToggleGroup>
-                {options.map(opt => (
-                    <ToggleButton
-                        key={opt.value}
-                        $selected={selected === opt.value}
-                        onClick={() => setSelected(opt.value)}
-                    >
-                        {opt.label}
-                    </ToggleButton>
-                ))}
-            </ToggleGroup>
+            <SelectBar
+                options={options}
+                selectedOption={selected}
+                onChange={v => setSelected(v as TxTypeFilter)}
+                size="small"
+                isFullWidth
+            />
             <Button
                 intent="brand"
                 priority="primary"
-                isDisabled={selected === null}
+                isDisabled={selected === undefined}
                 width="100%"
                 onClick={() => selected && onSubmit({ type: 'txType', value: selected })}
             >
@@ -464,7 +361,7 @@ type StatusConfigProps = {
 
 const StatusConfig = ({ initial, onSubmit }: StatusConfigProps) => {
     const { translationString } = useTranslation();
-    const [selected, setSelected] = useState<TxStatusFilter | null>(initial ?? null);
+    const [selected, setSelected] = useState<TxStatusFilter | undefined>(initial);
 
     const options: { value: TxStatusFilter; label: string }[] = [
         { value: 'confirmed', label: translationString('TR_TX_FILTER_STATUS_CONFIRMED') },
@@ -473,21 +370,17 @@ const StatusConfig = ({ initial, onSubmit }: StatusConfigProps) => {
 
     return (
         <Column gap={spacings.sm}>
-            <ToggleGroup>
-                {options.map(opt => (
-                    <ToggleButton
-                        key={opt.value}
-                        $selected={selected === opt.value}
-                        onClick={() => setSelected(opt.value)}
-                    >
-                        {opt.label}
-                    </ToggleButton>
-                ))}
-            </ToggleGroup>
+            <SelectBar
+                options={options}
+                selectedOption={selected}
+                onChange={v => setSelected(v as TxStatusFilter)}
+                size="small"
+                isFullWidth
+            />
             <Button
                 intent="brand"
                 priority="primary"
-                isDisabled={selected === null}
+                isDisabled={selected === undefined}
                 width="100%"
                 onClick={() => selected && onSubmit({ type: 'status', value: selected })}
             >
@@ -504,6 +397,7 @@ type SearchFilterPanelProps = {
     onUpdate: (condition: NewFilterCondition) => void;
     editingCondition?: FilterCondition;
     onClose: () => void;
+    symbol: string;
 };
 
 export const SearchFilterPanel = ({
@@ -511,6 +405,7 @@ export const SearchFilterPanel = ({
     onUpdate,
     editingCondition,
     onClose,
+    symbol,
 }: SearchFilterPanelProps) => {
     const { translationString } = useTranslation();
     const locale = useLocales();
@@ -539,88 +434,92 @@ export const SearchFilterPanel = ({
         return translationString('TR_TX_FILTER_ADD');
     };
 
-    return (
-        <PanelWrapper>
-            <PanelHeader>
-                {filterType !== null && (
-                    <BackButton onClick={() => setFilterType(null)} aria-label="Back">
-                        <Icon name="arrowLeft" size={16} intent="neutral" />
-                    </BackButton>
-                )}
-                <Text typographyStyle="body-sm-strong">{getHeaderTitle()}</Text>
-            </PanelHeader>
+    // ── Level 1: build items array ───────────────────────────────────────────
+    const filterTypeItems: DropdownMenuItemProps[] = FILTER_TYPES.map(ft => ({
+        label: translationString(ft.labelKey),
+        icon: ft.icon as IconName,
+        iconRight: 'caretRight' as IconName,
+        closeOnClick: false,
+        onClick: () => setFilterType(ft.type),
+    }));
 
-            {filterType === null ? (
-                // ── Level 1: filter type selection ──────────────────────────
-                FILTER_TYPES.map(ft => (
-                    <FilterTypeItem key={ft.type} onClick={() => setFilterType(ft.type)}>
-                        <Icon name={ft.icon} size={16} intent="neutral" priority="secondary" />
-                        <span>{translationString(ft.labelKey)}</span>
-                        <FilterTypeChevron>
-                            <Icon name="caretRight" size={12} intent="neutral" />
-                        </FilterTypeChevron>
-                    </FilterTypeItem>
-                ))
-            ) : (
-                // ── Level 2: filter configuration ───────────────────────────
-                <ConfigBody>
-                    {filterType === 'date' && (
-                        <DateConfig
-                            initial={
-                                editingCondition?.type === 'date'
-                                    ? { from: editingCondition.from, to: editingCondition.to }
-                                    : undefined
-                            }
-                            locale={locale}
-                            onSubmit={handleSubmit}
-                        />
-                    )}
-                    {filterType === 'amount' && (
-                        <AmountConfig
-                            initial={
-                                editingCondition?.type === 'amount'
-                                    ? {
-                                          operator: editingCondition.operator,
-                                          value: editingCondition.value,
-                                      }
-                                    : undefined
-                            }
-                            onSubmit={handleSubmit}
-                        />
-                    )}
-                    {(filterType === 'address' || filterType === 'txId') && (
-                        <TextConfig
-                            filterType={filterType}
-                            initial={
-                                editingCondition?.type === filterType
-                                    ? editingCondition.value
-                                    : undefined
-                            }
-                            onSubmit={handleSubmit}
-                        />
-                    )}
-                    {filterType === 'txType' && (
-                        <TxTypeConfig
-                            initial={
-                                editingCondition?.type === 'txType'
-                                    ? editingCondition.value
-                                    : undefined
-                            }
-                            onSubmit={handleSubmit}
-                        />
-                    )}
-                    {filterType === 'status' && (
-                        <StatusConfig
-                            initial={
-                                editingCondition?.type === 'status'
-                                    ? editingCondition.value
-                                    : undefined
-                            }
-                            onSubmit={handleSubmit}
-                        />
-                    )}
-                </ConfigBody>
-            )}
-        </PanelWrapper>
+    // ── Level 2: config form shown as content ────────────────────────────────
+    console.log('filterType', filterType);
+    console.log('editingCondition', editingCondition);
+    console.log('filterTypeItems', filterTypeItems);
+    const configContent =
+        filterType !== null ? (
+            <Column gap={spacings.sm}>
+                <Row gap={spacings.xs} alignItems="center">
+                    <IconButton
+                        icon="arrowLeft"
+                        size="small"
+                        intent="neutral"
+                        priority="secondary"
+                        onClick={() => setFilterType(null)}
+                    />
+                    <Text typographyStyle="body-sm-strong">{getHeaderTitle()}</Text>
+                </Row>
+                {filterType === 'date' && (
+                    <DateConfig
+                        initial={
+                            editingCondition?.type === 'date'
+                                ? { from: editingCondition.from, to: editingCondition.to }
+                                : undefined
+                        }
+                        locale={locale}
+                        onSubmit={handleSubmit}
+                    />
+                )}
+                {filterType === 'amount' && (
+                    <AmountConfig
+                        initial={
+                            editingCondition?.type === 'amount'
+                                ? {
+                                      operator: editingCondition.operator,
+                                      value: editingCondition.value,
+                                  }
+                                : undefined
+                        }
+                        symbol={symbol}
+                        onSubmit={handleSubmit}
+                    />
+                )}
+                {(filterType === 'address' || filterType === 'txId') && (
+                    <TextConfig
+                        filterType={filterType}
+                        initial={
+                            editingCondition?.type === filterType
+                                ? editingCondition.value
+                                : undefined
+                        }
+                        onSubmit={handleSubmit}
+                    />
+                )}
+                {filterType === 'txType' && (
+                    <TxTypeConfig
+                        initial={
+                            editingCondition?.type === 'txType' ? editingCondition.value : undefined
+                        }
+                        onSubmit={handleSubmit}
+                    />
+                )}
+                {filterType === 'status' && (
+                    <StatusConfig
+                        initial={
+                            editingCondition?.type === 'status' ? editingCondition.value : undefined
+                        }
+                        onSubmit={handleSubmit}
+                    />
+                )}
+            </Column>
+        ) : undefined;
+
+    return (
+        <Menu
+            minWidth={300}
+            items={filterType === null ? filterTypeItems : undefined}
+            content={configContent}
+        />
     );
 };

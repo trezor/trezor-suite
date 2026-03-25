@@ -4254,6 +4254,22 @@ export const messages = defineMessages({
         id: 'TR_TX_FILTER_TYPE_SENT',
         defaultMessage: 'Cost',
     },
+    TR_TX_FILTER_OPERATOR_GT: {
+        id: 'TR_TX_FILTER_OPERATOR_GT',
+        defaultMessage: 'Greater than',
+    },
+    TR_TX_FILTER_OPERATOR_LT: {
+        id: 'TR_TX_FILTER_OPERATOR_LT',
+        defaultMessage: 'Less than',
+    },
+    TR_TX_FILTER_OPERATOR_EQ: {
+        id: 'TR_TX_FILTER_OPERATOR_EQ',
+        defaultMessage: 'Equal to',
+    },
+    TR_TX_FILTER_OPERATOR_NEQ: {
+        id: 'TR_TX_FILTER_OPERATOR_NEQ',
+        defaultMessage: 'Not equal to',
+    },
     TR_TX_FILTER_PRESET_THIS_MONTH: {
         id: 'TR_TX_FILTER_PRESET_THIS_MONTH',
         defaultMessage: 'This month',

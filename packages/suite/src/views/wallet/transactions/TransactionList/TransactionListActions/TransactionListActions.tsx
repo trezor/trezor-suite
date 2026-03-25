@@ -192,23 +192,26 @@ export const TransactionListActions = ({
                                 onUpdate={handleUpdateCondition}
                                 editingCondition={editingCondition}
                                 onClose={handlePanelClose}
+                                symbol={account.symbol}
                             />
                         }
                         placement={{ position: 'bottom', alignment: 'end' }}
                     >
                         <Button
-                            size="small"
+                            size="medium"
                             intent={hasActiveFilters ? 'brand' : 'neutral'}
                             priority="secondary"
                             iconLeft="slidersHorizontal"
                             data-testid="@wallet/accounts/filter-button"
                         >
-                            {translationString('TR_TX_FILTER_BUTTON')}
-                            {hasActiveFilters && (
-                                <Badge size="small" intent="brand">
-                                    {conditions.length}
-                                </Badge>
-                            )}
+                            <Row gap={4} alignItems="center">
+                                {translationString('TR_TX_FILTER_BUTTON')}
+                                {hasActiveFilters && (
+                                    <Badge size="small" intent="brand">
+                                        {conditions.length}
+                                    </Badge>
+                                )}
+                            </Row>
                         </Button>
                     </Popover>
                 )}
