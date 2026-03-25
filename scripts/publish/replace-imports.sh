@@ -53,4 +53,7 @@ if [ "$2" == "esm" ]; then
     # rename all esm js files to mjs
     find "$1" -name "*.js" -type f -exec sh -c 'mv "$0" "${0%.js}.mjs"' {} \;
     find "$1" -name "*.js.map" -type f -exec sh -c 'mv "$0" "${0%.js.map}.mjs.map"' {} \;
+    # rename declaration files to .d.mts so TypeScript treats them as ESM, matching the .mjs runtime files
+    find "$1" -name "*.d.ts.map" -type f -exec sh -c 'mv "$0" "${0%.d.ts.map}.d.mts.map"' {} \;
+    find "$1" -name "*.d.ts" -type f -exec sh -c 'mv "$0" "${0%.d.ts}.d.mts"' {} \;
 fi
