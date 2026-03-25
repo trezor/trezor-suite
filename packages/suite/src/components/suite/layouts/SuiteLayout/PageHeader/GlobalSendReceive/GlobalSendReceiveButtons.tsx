@@ -22,19 +22,6 @@ export const GlobalSendReceiveButtons = ({
     return (
         <ButtonGroup intent={intent} priority={priority}>
             <HeaderActionButton
-                key="wallet-send"
-                icon="arrowUp"
-                onClick={() => {
-                    setActiveModal('send');
-
-                    analytics.report({ type: events.dashboardSendModalEvent.name });
-                }}
-                data-testid="@wallet/menu/wallet-global-send"
-            >
-                <Translation id="TR_NAV_SEND" />
-            </HeaderActionButton>
-
-            <HeaderActionButton
                 key="wallet-receive"
                 icon="arrowDown"
                 onClick={() => {
@@ -45,6 +32,19 @@ export const GlobalSendReceiveButtons = ({
                 data-testid="@wallet/menu/wallet-global-receive"
             >
                 <Translation id="TR_NAV_RECEIVE" />
+            </HeaderActionButton>
+
+            <HeaderActionButton
+                key="wallet-send"
+                icon="arrowUp"
+                onClick={() => {
+                    setActiveModal('send');
+
+                    analytics.report({ type: events.dashboardSendModalEvent.name });
+                }}
+                data-testid="@wallet/menu/wallet-global-send"
+            >
+                <Translation id="TR_NAV_SEND" />
             </HeaderActionButton>
         </ButtonGroup>
     );
