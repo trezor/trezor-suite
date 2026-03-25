@@ -52,91 +52,47 @@ const config = {
                 originModulePath: context.originModulePath,
             });
 
-            // web3-validator package handling
             const rootNodeModulesPath = context.nodeModulesPaths[1];
+            const getSourceFile = filePath => ({
+                filePath: require.resolve(filePath),
+                type: 'sourceFile',
+            });
 
-            // web3-validator package is by default trying to use non-existing minified index file. This fixes that.
-            // Can be removed once web3-validator fixup PR is merged: https://github.com/web3/web3.js/pull/7016.
-            if (moduleName.startsWith('web3-validator')) {
-                return {
-                    filePath: require.resolve(
-                        rootNodeModulesPath + '/web3-validator/lib/commonjs/index.js',
-                    ),
-                    type: 'sourceFile',
-                };
+            const overrides = {
+                // TODO: unstable_enablePackageExports: true
+                // See: https://github.com/trezor/trezor-suite/issues/20733
+                // modules exports defined in the package `exports` map.
+                '@bufbuild/protobuf/codegenv2': `${rootNodeModulesPath}/@bufbuild/protobuf/dist/cjs/codegenv2/index.js`,
+                '@bufbuild/protobuf/wkt': `${rootNodeModulesPath}/@bufbuild/protobuf/dist/cjs/wkt/index.js`,
+                '@evolu/react-native/expo-sqlite': `${rootNodeModulesPath}/@evolu/react-native/dist/exports/expo-sqlite.js`,
+                '@evolu/common': `${rootNodeModulesPath}/@evolu/common/dist/src/index.js`,
+                '@evolu/common/evolu': `${rootNodeModulesPath}/@evolu/common/dist/src/Evolu/Internal.js`,
+                '@evolu/common/local-first': `${rootNodeModulesPath}/@evolu/common/dist/src/local-first/index.js`,
+                uuid: `${rootNodeModulesPath}/uuid/dist/index.js`,
+
+                // tiny-secp256k1 used by @trezor/utxo-lib is terribly slow because WASM is not supported.
+                // @bitcoinerlab/secp256k1 is approximately 5× faster but requires additional tweaking.
+                'tiny-secp256k1': './secp256k1Shim.js',
+
+                // web3-validator package is by default trying to use non-existing minified index file. This fixes that.
+                // Can be removed once web3-validator fixup PR is merged: https://github.com/web3/web3.js/pull/7016.
+                'web3-validator': `${rootNodeModulesPath}/web3-validator/lib/commonjs/index.js`,
+            };
+
+            if (overrides[moduleName]) {
+                return getSourceFile(overrides[moduleName]);
             }
 
             if (moduleName.startsWith('@emurgo/cardano')) {
                 // Cardano libs doesn't have main field in package.json which will cause error in metro
                 // Also they use WASM which doesn't work in RN so we polyfill it with empty file to build errors
                 // In future we will need JS implementation of Cardano libs or C++ implementation
-                return {
-                    filePath: require.resolve('./cardanoPolyfills.js'),
-                    type: 'sourceFile',
-                };
+                return getSourceFile('./cardanoPolyfills.js');
             }
-
-            // tiny-secp256k1 used by @trezor/utxo-lib is terribly slow because WASM is not supported.
-            // @bitcoinerlab/secp256k1 is approximately 5× faster but requires additional tweaking.
-            if (moduleName === 'tiny-secp256k1') {
-                return {
-                    filePath: require.resolve('./secp256k1Shim.js'),
-                    type: 'sourceFile',
-                };
-            }
-
-            // Todo: This is hack because of the `unstable_enablePackageExports: false`.
-            //       See: https://github.com/trezor/trezor-suite/issues/20733
-            if (moduleName === '@evolu/react-native/expo-sqlite') {
-                return {
-                    filePath: require.resolve(
-                        rootNodeModulesPath + `/@evolu/react-native/dist/exports/expo-sqlite.js`,
-                    ),
-                    type: 'sourceFile',
-                };
-            }
-
-            if (moduleName === '@evolu/common') {
-                return {
-                    filePath: require.resolve(
-                        rootNodeModulesPath + `/@evolu/common/dist/src/index.js`,
-                    ),
-                    type: 'sourceFile',
-                };
-            }
-
-            if (moduleName === '@evolu/common/evolu') {
-                return {
-                    filePath: require.resolve(
-                        rootNodeModulesPath + `/@evolu/common/dist/src/Evolu/Internal.js`,
-                    ),
-                    type: 'sourceFile',
-                };
-            }
-
-            if (moduleName === '@evolu/common/local-first') {
-                return {
-                    filePath: require.resolve(
-                        rootNodeModulesPath + `/@evolu/common/dist/src/local-first/index.js`,
-                    ),
-                    type: 'sourceFile',
-                };
-            }
-
-            if (moduleName === 'uuid') {
-                return {
-                    filePath: require.resolve(rootNodeModulesPath + '/uuid/dist/index.js'),
-                    type: 'sourceFile',
-                };
-            }
-            // Todo: ----- End of hack -----
 
             if (process.env.EXPO_PUBLIC_IS_DETOX_BUILD && moduleName === '@trezor/connect') {
                 // Mock some Trezor Connect methods to avoid network flakiness during e2e tests.
-                return {
-                    filePath: require.resolve('./e2e/mocks/trezor-connect.js'),
-                    type: 'sourceFile',
-                };
+                return getSourceFile('./e2e/mocks/trezor-connect.js');
             }
 
             // Optionally, chain to the standard Metro resolver.
