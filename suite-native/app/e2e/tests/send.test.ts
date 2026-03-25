@@ -54,6 +54,7 @@ const signTransactionAndSendIt = async () => {
     await onSendAddressReview.nextStep();
     await onSendAddressReview.nextStep();
     await TrezorUserEnvLink.pressYes();
+    await TrezorUserEnvLink.pressYes();
 
     await onSendOutputsReview.waitForScreen();
     await onSendOutputsReview.confirmTransactionOutputs();
