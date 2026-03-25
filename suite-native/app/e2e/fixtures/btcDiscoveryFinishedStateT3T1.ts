@@ -8,15 +8,15 @@ export const btcDiscoveryFinishedStateT3T1: PreloadedState = {
     wallet: {
         accounts: [
             {
-                deviceState: 'mt5WPmXL77AJwhCPPv6Gct3UtiuVUMieXJ@448CCE89D32A733A1632F345:0',
+                deviceState: 'mt5WPmXL77AJwhCPPv6Gct3UtiuVUMieXJ@7ED4F891C5F1098B60B881DE:0',
                 symbol: 'btc',
                 index: 0,
-                accountType: 'segwit',
-                path: "m/49'/0'/0'",
+                accountType: 'normal',
+                path: "m/84'/0'/0'",
                 backendType: 'blockbook',
                 visible: true,
                 descriptor:
-                    'ypub6X4Sd4gegPV8ZwEhuq8rUCHwWb2Re8u7TtEaRNugmWSxor2w2PAQnx7qyqHqLDw7s9JWK7u6TvP5nYFF92jmM7Z6U42bYhHTNhQijYTLHAL',
+                    'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
                 empty: true,
                 balance: '0',
                 availableBalance: '0',
@@ -24,7 +24,7 @@ export const btcDiscoveryFinishedStateT3T1: PreloadedState = {
                     total: 0,
                     unconfirmed: 0,
                 },
-                key: 'ypub6X4Sd4gegPV8ZwEhuq8rUCHwWb2Re8u7TtEaRNugmWSxor2w2PAQnx7qyqHqLDw7s9JWK7u6TvP5nYFF92jmM7Z6U42bYhHTNhQijYTLHAL-btc-mt5WPmXL77AJwhCPPv6Gct3UtiuVUMieXJ@448CCE89D32A733A1632F345:0',
+                key: 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT-btc-mt5WPmXL77AJwhCPPv6Gct3UtiuVUMieXJ@7ED4F891C5F1098B60B881DE:0',
                 formattedBalance: '0',
                 tokens: [],
                 addresses: {
@@ -59,13 +59,13 @@ export const btcDiscoveryFinishedStateT3T1: PreloadedState = {
                     apiType: 'usb',
                 },
                 type: 'acquired',
-                id: '448CCE89D32A733A1632F345',
+                id: '7ED4F891C5F1098B60B881DE',
                 label: 'Trezor T - Tester',
                 state: {
                     deriveCardano: false,
                     sessionId: '86034a5d2d85aecea8a4c045e73f3a9d1a3c69abb15c43bd5c2e12bd0bf6cf9b',
                     staticSessionId:
-                        'mt5WPmXL77AJwhCPPv6Gct3UtiuVUMieXJ@448CCE89D32A733A1632F345:0',
+                        'mt5WPmXL77AJwhCPPv6Gct3UtiuVUMieXJ@7ED4F891C5F1098B60B881DE:0',
                 },
                 status: 'available',
                 mode: 'normal',
@@ -119,7 +119,7 @@ export const btcDiscoveryFinishedStateT3T1: PreloadedState = {
                     minor_version: 9,
                     patch_version: 0,
                     bootloader_mode: null,
-                    device_id: '448CCE89D32A733A1632F345',
+                    device_id: '7ED4F891C5F1098B60B881DE',
                     pin_protection: false,
                     passphrase_protection: false,
                     language: 'en-US',

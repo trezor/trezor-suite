@@ -24,7 +24,7 @@ class DeviceSettingsActions {
     }
 
     async waitForPinProtectionScreen() {
-        await waitForVisible(by.id('@screen/PinProtection'));
+        await waitForVisible(by.id('@screen/DevicePinProtection'));
     }
 
     async waitForWipeDeviceContinueOnTrezor() {
@@ -49,8 +49,7 @@ class DeviceSettingsActions {
     }
 
     async tapEnablePinProtectionButton() {
-        await waitForVisible(by.id('@screen/PinProtection'));
-
+        await this.waitForPinProtectionScreen();
         const enablePinProtectionButton = element(by.id('@device-pin-protection/enable-button'));
         await waitForVisible(enablePinProtectionButton);
 

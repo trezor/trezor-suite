@@ -14,7 +14,7 @@ export const regtestDiscoveryFinishedStateT3T1: PreloadedState = {
         },
         accounts: [
             {
-                deviceState: 'mt5WPmXL77AJwhCPPv6Gct3UtiuVUMieXJ@448CCE89D32A733A1632F345:0',
+                deviceState: 'mt5WPmXL77AJwhCPPv6Gct3UtiuVUMieXJ@7ED4F891C5F1098B60B881DE:0',
                 symbol: 'regtest',
                 index: 0,
                 accountType: 'normal',
@@ -30,7 +30,7 @@ export const regtestDiscoveryFinishedStateT3T1: PreloadedState = {
                     unconfirmed: 0,
                     addrTxCount: 1,
                 },
-                key: 'vpub5YHfp9RSUHcKc7Nu9KbS7TsiBENUMJiQAMiJhCNdQA8cDzqzL4rr7VZThZPbMCXYnASdHQurixwwjPKFr8THXUUT4567PsM4gfqDi87kXxS-regtest-mt5WPmXL77AJwhCPPv6Gct3UtiuVUMieXJ@448CCE89D32A733A1632F345:0',
+                key: 'vpub5YHfp9RSUHcKc7Nu9KbS7TsiBENUMJiQAMiJhCNdQA8cDzqzL4rr7VZThZPbMCXYnASdHQurixwwjPKFr8THXUUT4567PsM4gfqDi87kXxS-regtest-mt5WPmXL77AJwhCPPv6Gct3UtiuVUMieXJ@7ED4F891C5F1098B60B881DE:0',
                 formattedBalance: '3.14',
                 tokens: [],
                 addresses: {
@@ -131,15 +131,16 @@ export const regtestDiscoveryFinishedStateT3T1: PreloadedState = {
                 name: 'Trezor Safe 5',
                 descriptor: {
                     apiType: 'usb',
+                    id: '127.0.0.1:21324',
                 },
                 type: 'acquired',
-                id: '448CCE89D32A733A1632F345',
-                label: 'Trezor T - Tester',
+                id: '7ED4F891C5F1098B60B881DE',
+                label: 'My Trezor',
                 state: {
                     deriveCardano: false,
-                    sessionId: '86034a5d2d85aecea8a4c045e73f3a9d1a3c69abb15c43bd5c2e12bd0bf6cf9b',
+                    sessionId: '01',
                     staticSessionId:
-                        'mt5WPmXL77AJwhCPPv6Gct3UtiuVUMieXJ@448CCE89D32A733A1632F345:0',
+                        'mt5WPmXL77AJwhCPPv6Gct3UtiuVUMieXJ@7ED4F891C5F1098B60B881DE:0',
                 },
                 status: 'available',
                 mode: 'normal',
@@ -193,11 +194,11 @@ export const regtestDiscoveryFinishedStateT3T1: PreloadedState = {
                     minor_version: 9,
                     patch_version: 0,
                     bootloader_mode: null,
-                    device_id: '448CCE89D32A733A1632F345',
+                    device_id: '7ED4F891C5F1098B60B881DE',
                     pin_protection: false,
                     passphrase_protection: false,
                     language: 'en-US',
-                    label: 'Trezor T - Tester',
+                    label: null,
                     initialized: true,
                     revision: 'a09e6f04d4204607d821d9b742dcf7ffe9c4e2f5',
                     bootloader_hash: null,

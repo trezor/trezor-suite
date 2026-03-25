@@ -8,15 +8,15 @@ export const btcDiscoveryFinishedStateT3W1: PreloadedState = {
     wallet: {
         accounts: [
             {
-                deviceState: 'mt5WPmXL77AJwhCPPv6Gct3UtiuVUMieXJ@7ED4F891C5F1098B60B881DE:0',
+                deviceState: 'mt5WPmXL77AJwhCPPv6Gct3UtiuVUMieXJ@7ED4F891C5F1098B60B881DE:1',
                 symbol: 'btc',
                 index: 0,
-                accountType: 'segwit',
-                path: "m/49'/0'/0'",
+                accountType: 'normal',
+                path: "m/84'/0'/0'",
                 backendType: 'blockbook',
                 visible: true,
                 descriptor:
-                    'ypub6X4Sd4gegPV8ZwEhuq8rUCHwWb2Re8u7TtEaRNugmWSxor2w2PAQnx7qyqHqLDw7s9JWK7u6TvP5nYFF92jmM7Z6U42bYhHTNhQijYTLHAL',
+                    'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
                 empty: true,
                 balance: '0',
                 availableBalance: '0',
@@ -24,7 +24,7 @@ export const btcDiscoveryFinishedStateT3W1: PreloadedState = {
                     total: 0,
                     unconfirmed: 0,
                 },
-                key: 'ypub6X4Sd4gegPV8ZwEhuq8rUCHwWb2Re8u7TtEaRNugmWSxor2w2PAQnx7qyqHqLDw7s9JWK7u6TvP5nYFF92jmM7Z6U42bYhHTNhQijYTLHAL-btc-mt5WPmXL77AJwhCPPv6Gct3UtiuVUMieXJ@7ED4F891C5F1098B60B881DE:0',
+                key: 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT-btc-mt5WPmXL77AJwhCPPv6Gct3UtiuVUMieXJ@7ED4F891C5F1098B60B881DE:1',
                 formattedBalance: '0',
                 tokens: [],
                 addresses: {
