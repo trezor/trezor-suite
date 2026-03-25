@@ -10,10 +10,10 @@ import {
     fiatBaseCurrencies,
     valuablesBaseCurrencies,
 } from '@trezor/blockchain-link-types';
+import { ActionColumn, ActionSelect, TextColumn } from '@trezor/product-components';
 import { typedObjectKeys } from '@trezor/utils';
 
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
-import { ActionColumn, ActionSelect, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
 

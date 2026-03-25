@@ -4,10 +4,10 @@ import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { SettingsAnchor } from '@suite/router';
 import { formatDurationStrict } from '@suite-common/suite-utils';
+import { ActionColumn, ActionSelect, TextColumn } from '@trezor/product-components';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
-import { ActionColumn, ActionSelect, TextColumn } from 'src/components/suite';
 import { useDevice, useDispatch, useLocales } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
 

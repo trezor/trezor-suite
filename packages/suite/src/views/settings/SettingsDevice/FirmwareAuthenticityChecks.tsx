@@ -4,10 +4,11 @@ import {
     selectIsFirmwareHashCheckEnabled,
     selectIsFirmwareRevisionCheckEnabled,
 } from '@suite/settings';
+import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { HELP_CENTER_FIRMWARE_REVISION_CHECK } from '@trezor/urls';
 
 import { toggleFirmwareAuthenticityChecks } from 'src/actions/suite/suiteActions';
-import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
+import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 export const FirmwareAuthenticityChecks = () => {
@@ -48,7 +49,7 @@ export const FirmwareAuthenticityChecks = () => {
                         }
                     />
                 }
-                buttonLink={HELP_CENTER_FIRMWARE_REVISION_CHECK}
+                learnMoreButton={<LearnMoreButton url={HELP_CENTER_FIRMWARE_REVISION_CHECK} />}
             />
             <ActionColumn>
                 <ActionButton

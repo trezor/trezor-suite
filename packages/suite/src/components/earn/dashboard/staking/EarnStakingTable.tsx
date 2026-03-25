@@ -10,8 +10,8 @@ import {
 } from '@suite-common/wallet-core';
 import { isCardanoStakedWithFiveBinaries } from '@suite-common/wallet-utils';
 import { Button, Card, Column, Table } from '@trezor/components';
+import { OutlineHighlight } from '@trezor/product-components';
 
-import { OutlineHighlight } from 'src/components/OutlineHighlight';
 import { useSelector } from 'src/hooks/suite';
 import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';

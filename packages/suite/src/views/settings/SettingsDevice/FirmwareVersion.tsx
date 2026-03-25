@@ -3,9 +3,9 @@ import { SettingsAnchor, goto } from '@suite/router';
 import { getChangelogUrl } from '@suite-common/suite-utils';
 import { Button, Tooltip } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
+import { ActionButton, ActionColumn, TextColumn } from '@trezor/product-components';
 
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
-import { ActionButton, ActionColumn, TextColumn } from 'src/components/suite';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import { type AcquiredDevice } from 'src/types/suite';
 

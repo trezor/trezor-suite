@@ -3,9 +3,9 @@ import { FormProvider } from 'react-hook-form';
 
 import { Translation } from '@suite/intl';
 import { SettingsAnchor } from '@suite/router';
+import { ActionColumn, TextColumn } from '@trezor/product-components';
 
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
-import { ActionColumn, TextColumn } from 'src/components/suite';
 import { ChangeDeviceLabelForm } from 'src/components/suite/ChangeDeviceLabelForm';
 import { MAX_LABEL_LENGTH } from 'src/constants/suite/device';
 import { useChangeDeviceLabel } from 'src/hooks/suite/useChangeDeviceLabel';

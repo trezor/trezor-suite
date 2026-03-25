@@ -1,9 +1,9 @@
 import styled from 'styled-components';
 
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
-import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 const UserDataLink = styled.span`

@@ -1,9 +1,9 @@
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { SettingsAnchor } from '@suite/router';
+import { ActionButton, ActionColumn, TextColumn } from '@trezor/product-components';
 
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
-import { ActionButton, ActionColumn, TextColumn } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
 
 export const ShowApplicationLog = () => {

@@ -3,11 +3,11 @@ import styled from 'styled-components';
 import { BITCOIN_ONLY_SYMBOLS } from '@suite-common/suite-constants';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { Button } from '@trezor/components';
+import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 import { typedObjectKeys } from '@trezor/utils';
 
 import { setDebugSettings } from 'src/actions/wallet/coinjoinClientActions';
-import { ActionColumn, ActionSelect, SectionItem, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { COINJOIN_NETWORKS, type CoinjoinSymbol } from 'src/services/coinjoin';
 import {
@@ -16,10 +16,6 @@ import {
 } from 'src/types/wallet/coinjoin';
 import { reloadApp } from 'src/utils/suite/reload';
 import { isCoinjoinSupportedSymbol } from 'src/utils/wallet/coinjoinUtils';
-
-const StyledActionSelect = styled(ActionSelect)`
-    min-width: 256px;
-`;
 
 const CoordinatorVersionContainer = styled.div`
     display: flex;
@@ -84,7 +80,7 @@ const CoordinatorServer = ({
                 }
             />
             <ActionColumn>
-                <StyledActionSelect
+                <ActionSelect
                     isDisabled={options.length < 2}
                     onChange={({ value }) => onChange(symbol, value)}
                     value={selectedOption}

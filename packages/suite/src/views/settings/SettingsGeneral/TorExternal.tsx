@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react';
 
 import { Translation } from '@suite/intl';
 import { SettingsAnchor } from '@suite/router';
+import { ActionColumn, ActionSelect, TextColumn } from '@trezor/product-components';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { type TorSettings } from '@trezor/suite-desktop-api/src/messages';
 
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
-import { ActionColumn, ActionSelect, TextColumn } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { selectTorState } from 'src/selectors/suite/suiteSelectors';
 

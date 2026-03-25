@@ -6,8 +6,8 @@ import { selectSelectedDevice } from '@suite-common/device';
 import * as deviceUtils from '@suite-common/suite-utils';
 import { forgetDeviceThunk } from '@suite-common/wallet-core';
 import { Card, Icon, List, Modal, type ModalProps, Paragraph } from '@trezor/components';
+import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
-import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
 

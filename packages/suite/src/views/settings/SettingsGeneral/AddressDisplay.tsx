@@ -4,9 +4,9 @@ import { SettingsAnchor } from '@suite/router';
 import { selectAddressDisplayType, suiteSettingsActions } from '@suite/settings';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
 import { SelectBar } from '@trezor/components';
+import { ActionColumn, TextColumn } from '@trezor/product-components';
 
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
-import { ActionColumn, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
 

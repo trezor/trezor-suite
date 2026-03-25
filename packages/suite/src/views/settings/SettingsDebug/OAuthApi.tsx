@@ -1,15 +1,9 @@
-import styled from 'styled-components';
-
 import { GoogleClient } from '@suite/metadata';
 import { selectOAuthServerEnvironment, suiteSettingsActions } from '@suite/settings';
 import { type OAuthServerEnvironment } from '@suite-common/metadata-types';
+import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
 
-import { ActionColumn, ActionSelect, SectionItem, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-
-const StyledActionSelect = styled(ActionSelect)`
-    min-width: 256px;
-`;
 
 export const OAuthApi = () => {
     const oauthServerEnvironment = useSelector(selectOAuthServerEnvironment);
@@ -34,11 +28,7 @@ export const OAuthApi = () => {
                 description="Set the authorisation server url for labeling in Google Drive"
             />
             <ActionColumn>
-                <StyledActionSelect
-                    onChange={handleChange}
-                    value={selectedOption}
-                    options={options}
-                />
+                <ActionSelect onChange={handleChange} value={selectedOption} options={options} />
             </ActionColumn>
         </SectionItem>
     );

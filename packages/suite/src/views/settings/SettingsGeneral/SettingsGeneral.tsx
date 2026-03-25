@@ -10,9 +10,9 @@ import {
     selectIsNetworkReserveSettingsVisible,
 } from '@suite-common/wallet-core';
 import { isDesktop, isLinux, isWeb } from '@trezor/env-utils';
+import { SettingsSection } from '@trezor/product-components';
 
 import { SettingsLayout } from 'src/components/settings/SettingsLayout';
-import { SettingsSection } from 'src/components/settings/SettingsSection';
 import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useLayoutSize, useSelector } from 'src/hooks/suite';
 import { selectTorState } from 'src/selectors/suite/suiteSelectors';
@@ -54,7 +54,7 @@ export const SettingsGeneral = () => {
     const enabledNetworks = useSelector(selectEnabledNetworks);
     const desktopUpdate = useSelector(state => state.desktopUpdate);
     const isMetadataEnabled = useSelector(selectIsMetadataEnabled);
-    const { isBelowTablet } = useLayoutSize();
+    const { isBelowLaptop, isBelowTablet } = useLayoutSize();
 
     const hasBitcoinNetworks = enabledNetworks.some(symbol => {
         const networkFeatures = getNetwork(symbol).features;
@@ -79,14 +79,22 @@ export const SettingsGeneral = () => {
                     <DesktopSuiteBanner />
                 )}
 
-                <SettingsSection title={<Translation id="TR_LOCALIZATION" />} icon="flag">
+                <SettingsSection
+                    isBelowLaptop={isBelowLaptop}
+                    title={<Translation id="TR_LOCALIZATION" />}
+                    icon="flag"
+                >
                     <Language />
                     <BaseCurrency />
                     {hasBitcoinNetworks && <BitcoinAmountUnit />}
                 </SettingsSection>
             </div>
 
-            <SettingsSection title={<Translation id="TR_LABELING" />} icon="tag">
+            <SettingsSection
+                isBelowLaptop={isBelowLaptop}
+                title={<Translation id="TR_LABELING" />}
+                icon="tag"
+            >
                 <Labeling />
                 {isMetadataEnabled &&
                     (isProviderConnected ? (
@@ -96,7 +104,11 @@ export const SettingsGeneral = () => {
                     ))}
             </SettingsSection>
 
-            <SettingsSection title={<Translation id="TR_PRIVACY" />} icon="lock">
+            <SettingsSection
+                isBelowLaptop={isBelowLaptop}
+                title={<Translation id="TR_PRIVACY" />}
+                icon="lock"
+            >
                 <AutoEject />
                 {isDesktop() && !isLinux() && <BioAuthSettings />}
                 {(isDesktop() || (isWeb() && isTorEnabled)) && (
@@ -108,7 +120,11 @@ export const SettingsGeneral = () => {
                 )}
             </SettingsSection>
 
-            <SettingsSection title={<Translation id="TR_APPLICATION" />} icon="appWindow">
+            <SettingsSection
+                isBelowLaptop={isBelowLaptop}
+                title={<Translation id="TR_APPLICATION" />}
+                icon="appWindow"
+            >
                 <Theme />
                 <AddressDisplay />
                 <Analytics />
@@ -119,25 +135,41 @@ export const SettingsGeneral = () => {
             </SettingsSection>
 
             {isMevProtectionSettingsVisible && (
-                <SettingsSection title={<Translation id="TR_SECURITY" />} icon="shield">
+                <SettingsSection
+                    isBelowLaptop={isBelowLaptop}
+                    title={<Translation id="TR_SECURITY" />}
+                    icon="shield"
+                >
                     <MevProtection />
                 </SettingsSection>
             )}
 
             {isNetworkReserveSettingsVisible && (
-                <SettingsSection title={<Translation id="TR_NETWORKS" />} icon="graph">
+                <SettingsSection
+                    isBelowLaptop={isBelowLaptop}
+                    title={<Translation id="TR_NETWORKS" />}
+                    icon="graph"
+                >
                     <NetworkReserve />
                 </SettingsSection>
             )}
 
             {isDesktop() && (
-                <SettingsSection title={<Translation id="TR_TREZOR_CONNECT" />} icon="plugs">
+                <SettingsSection
+                    isBelowLaptop={isBelowLaptop}
+                    title={<Translation id="TR_TREZOR_CONNECT" />}
+                    icon="plugs"
+                >
                     <AutoStart />
                     <ShowOnTray />
                 </SettingsSection>
             )}
 
-            <SettingsSection title={<Translation id="TR_EXPERIMENTAL_FEATURES" />} icon="atom">
+            <SettingsSection
+                isBelowLaptop={isBelowLaptop}
+                title={<Translation id="TR_EXPERIMENTAL_FEATURES" />}
+                icon="atom"
+            >
                 {desktopUpdate.enabled && <EarlyAccess />}
                 <Experimental />
             </SettingsSection>

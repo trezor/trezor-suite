@@ -6,10 +6,10 @@ import { SettingsAnchor } from '@suite/router';
 import { selectDevices } from '@suite-common/device';
 import { selectIsDeviceAutoEjectEnabled } from '@suite-common/wallet-core';
 import { Modal, Switch } from '@trezor/components';
+import { ActionColumn, TextColumn } from '@trezor/product-components';
 
 import { setAutoEjectEnabledThunk } from 'src/actions/suite/autoEjectThunks';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
-import { ActionColumn, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
 

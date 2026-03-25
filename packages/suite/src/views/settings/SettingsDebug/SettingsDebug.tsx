@@ -6,7 +6,9 @@ import { isDesktop } from '@trezor/env-utils';
 import { SettingsLayout } from 'src/components/settings/SettingsLayout';
 import { SettingsSection } from 'src/components/settings/SettingsSection';
 import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
-import { useSelector } from 'src/hooks/suite';
+import { useLayoutSize, useSelector } from 'src/hooks/suite';
+import { selectHasExperimentalFeature } from 'src/selectors/suite/suiteSelectors';
+import { useSuiteServices } from 'src/support/SuiteServicesProvider';
 
 import { AnalyticsLogging } from './AnalyticsLogging';
 import { Backends } from './Backends';
@@ -41,80 +43,84 @@ import { TriggerToast } from './TriggerToast';
 import { WipeData } from './WipeData';
 
 export const SettingsDebug = () => {
+    const { isBelowLaptop } = useLayoutSize();
     const flags = useSelector(selectFlags);
 
     return (
         <SettingsLayout>
             <ContextMessage context={Context.getSettings('debug')} />
 
-            <SettingsSection title="Debug">
+            <SettingsSection isBelowLaptop={isBelowLaptop} title="Debug">
                 <GithubIssue />
                 {isDesktop() && <WipeData />}
                 <TriggerHighlight />
                 <TriggerToast />
             </SettingsSection>
-            <SettingsSection title="Analytics">
+            <SettingsSection isBelowLaptop={isBelowLaptop} title="Analytics">
                 <AnalyticsLogging />
             </SettingsSection>
-            <SettingsSection title="Trade">
+            <SettingsSection isBelowLaptop={isBelowLaptop} title="Trade">
                 <TradeApi />
             </SettingsSection>
-            <SettingsSection title="OAuth">
+            <SettingsSection isBelowLaptop={isBelowLaptop} title="OAuth">
                 <OAuthApi />
             </SettingsSection>
-            <SettingsSection title="Coinjoin">
+            <SettingsSection isBelowLaptop={isBelowLaptop} title="Coinjoin">
                 <CoinjoinApi />
             </SettingsSection>
-            <SettingsSection title="Device">
+            <SettingsSection isBelowLaptop={isBelowLaptop} title="Device">
                 <DeviceAuthenticity />
                 <Devkit />
                 <CheckFirmwareAuthenticity />
                 <ClearDevicePersistentData />
                 <N4w1Backup />
             </SettingsSection>
-            <SettingsSection title="Testing">
+            <SettingsSection isBelowLaptop={isBelowLaptop} title="Testing">
                 <ThrowTestingError />
             </SettingsSection>
             {isDesktop() && (
-                <SettingsSection title="Transport backends">
+                <SettingsSection isBelowLaptop={isBelowLaptop} title="Transport backends">
                     <TransportBackends />
                 </SettingsSection>
             )}
-            <SettingsSection title="Transport clients">
+            <SettingsSection isBelowLaptop={isBelowLaptop} title="Transport clients">
                 <Transport />
             </SettingsSection>
             {isDesktop() && (
-                <SettingsSection title="Tor">
+                <SettingsSection isBelowLaptop={isBelowLaptop} title="Tor">
                     <Tor />
                 </SettingsSection>
             )}
-            <SettingsSection title="Backends">
+            <SettingsSection isBelowLaptop={isBelowLaptop} title="Backends">
                 <Backends />
             </SettingsSection>
-            <SettingsSection title="Flags JSON">
+            <SettingsSection isBelowLaptop={isBelowLaptop} title="Flags JSON">
                 <PreField>{JSON.stringify(flags)}</PreField>
             </SettingsSection>
-            <SettingsSection title="Metadata">
+            <SettingsSection isBelowLaptop={isBelowLaptop} title="Metadata">
                 <Metadata />
             </SettingsSection>
-            <SettingsSection title="Message system info">
+            <SettingsSection isBelowLaptop={isBelowLaptop} title="Message system info">
                 <MessageSystemConfigSourceSelect />
                 <MessageSystemDebug />
             </SettingsSection>
             {isDesktop() && (
-                <SettingsSection title={<Translation id="TR_BLUETOOTH" />}>
+                <SettingsSection
+                    isBelowLaptop={isBelowLaptop}
+                    title={<Translation id="TR_BLUETOOTH" />}
+                >
                     <ShowBluetoothDebugInfo />
                     <ForgetAllDevicesButton />
                 </SettingsSection>
             )}
-            <SettingsSection title="Trezor Host Protocol">
+            <SettingsSection isBelowLaptop={isBelowLaptop} title="Trezor Host Protocol">
                 <ResetThpCredentials />
             </SettingsSection>
-            <SettingsSection title="TrezorConnect">
+            <SettingsSection isBelowLaptop={isBelowLaptop} title="TrezorConnect">
                 <TrezorConnectLogs />
                 {isDesktop() && <ConnectPopup />}
             </SettingsSection>
-            <SettingsSection title="Firmware channel">
+            <SettingsSection isBelowLaptop={isBelowLaptop} title="Firmware channel">
                 <FirmwareUpdateEnvironmentSelect />
             </SettingsSection>
             <SuiteSyncSettings />

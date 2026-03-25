@@ -3,9 +3,10 @@ import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
+import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { HELP_CENTER_MULTI_SHARE_BACKUP_URL } from '@trezor/urls';
 
-import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
+import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
 
@@ -54,7 +55,7 @@ export const MultiShareBackup = ({ isDeviceLocked }: { isDeviceLocked: boolean }
             <TextColumn
                 title={<Translation id="TR_MULTI_SHARE_BACKUP" />}
                 description={<Translation id="TR_MULTI_SHARE_BACKUP_DESCRIPTION" />}
-                buttonLink={HELP_CENTER_MULTI_SHARE_BACKUP_URL}
+                learnMoreButton={<LearnMoreButton url={HELP_CENTER_MULTI_SHARE_BACKUP_URL} />}
             />
             <ActionColumn>
                 <ActionButton

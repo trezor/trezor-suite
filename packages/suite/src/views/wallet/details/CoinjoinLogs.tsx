@@ -1,9 +1,9 @@
 import { Translation } from '@suite/intl';
 import { selectIsDebugModeActive } from '@suite/settings';
 import { Card, Column } from '@trezor/components';
+import { ActionButton, ActionColumn, TextColumn } from '@trezor/product-components';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
-import { ActionButton, ActionColumn, TextColumn } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
 
 export const CoinjoinLogs = () => {

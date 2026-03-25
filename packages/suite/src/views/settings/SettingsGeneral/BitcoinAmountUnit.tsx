@@ -2,9 +2,9 @@ import { Translation } from '@suite/intl';
 import { SettingsAnchor } from '@suite/router';
 import { UNIT_LABELS, UNIT_OPTIONS } from '@suite-common/suite-constants';
 import { type PROTO } from '@trezor/connect';
+import { ActionColumn, ActionSelect, TextColumn } from '@trezor/product-components';
 
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
-import { ActionColumn, ActionSelect, TextColumn } from 'src/components/suite';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 
 export const BitcoinAmountUnit = () => {
