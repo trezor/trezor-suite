@@ -26,12 +26,23 @@
         "types": "./lib/index.d.ts",
         "exports": {
             ".": {
-                "import": "./libESM/index.mjs",
-                "require": "./lib/index.js",
-                "types": "./lib/index.d.ts"
+                "import": {
+                    "types": "./libESM/index.d.mts",
+                    "default": "./libESM/index.mjs"
+                },
+                "require": {
+                    "types": "./lib/index.d.ts",
+                    "default": "./lib/index.js"
+                }
             },
-            "./lib/impl/*": "./lib/impl/*.js",
-            "./libESM/impl/*": "./libESM/impl/*"
+            "./lib/impl/*": {
+                "types": "./lib/impl/*.d.ts",
+                "default": "./lib/impl/*.js"
+            },
+            "./libESM/impl/*": {
+                "types": "./libESM/impl/*.d.mts",
+                "default": "./libESM/impl/*.mjs"
+            }
         }
     },
     "files": [
