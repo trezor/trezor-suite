@@ -1,5 +1,3 @@
-import { A, D, F, pipe } from '@mobily/ts-belt';
-
 import {
     type StakeType,
     type Target,
@@ -147,59 +145,45 @@ export const transformTokenInfo = (
     tokenAccounts: readonly ApiTokenAccount[],
     tokenDetailByMint: TokenDetailByMint,
 ) => {
-    const tokens: TokenInfo[] = F.toMutable(
-        pipe(
-            tokenAccounts,
-            // since ApiTokenAccount type is not precise enough, we type-guard the account to make sure they contain all the necessary data
-            A.filter(isSplTokenAccount),
-            A.map(tokenAccount => {
-                const {
-                    parsed: { info },
-                    program,
-                } = tokenAccount.account.data;
-
-                return {
-                    type: tokenProgramsInfo[program].tokenStandard,
-                    contract: info.mint,
-                    balance: info.tokenAmount.amount,
-                    decimals: info.tokenAmount.decimals,
-                    ...getTokenNameAndSymbol(info.mint, tokenDetailByMint),
-                    address: tokenAccount.pubkey,
-                    standard: tokenProgramsInfo[program].tokenStandard,
-                };
-            }),
-            A.reduce(
-                {},
-                (acc: { [mint: string]: TokenInfo }, token: TokenInfo & { address: string }) => {
-                    if (acc[token.contract] != null) {
-                        acc[token.contract].balance = new BigNumber(
-                            acc[token.contract].balance || '0',
-                        )
-                            .plus(token.balance || '0')
-                            .toString();
-                        acc[token.contract].accounts!.push({
-                            publicKey: token.address,
-                            balance: token.balance || '0',
-                        });
-                    } else {
-                        const { standard, contract, balance, decimals, name, symbol } = token;
-                        acc[token.contract] = {
-                            standard,
-                            contract,
-                            balance,
-                            decimals,
-                            name,
-                            symbol,
-                            accounts: [{ publicKey: token.address, balance: balance || '0' }],
-                        };
-                    }
-
-                    return acc;
-                },
-            ),
-            D.values,
-        ),
-    );
+    const acc: { [mint: string]: TokenInfo } = {};
+    // since ApiTokenAccount type is not precise enough, we type-guard the account to make sure they contain all the necessary data
+    for (const tokenAccount of tokenAccounts) {
+        if (!isSplTokenAccount(tokenAccount)) continue;
+        const {
+            parsed: { info },
+            program,
+        } = tokenAccount.account.data;
+        const token = {
+            type: tokenProgramsInfo[program].tokenStandard,
+            contract: info.mint,
+            balance: info.tokenAmount.amount,
+            decimals: info.tokenAmount.decimals,
+            ...getTokenNameAndSymbol(info.mint, tokenDetailByMint),
+            address: tokenAccount.pubkey,
+            standard: tokenProgramsInfo[program].tokenStandard,
+        };
+        if (acc[token.contract] != null) {
+            acc[token.contract].balance = new BigNumber(acc[token.contract].balance || '0')
+                .plus(token.balance || '0')
+                .toString();
+            acc[token.contract].accounts!.push({
+                publicKey: token.address,
+                balance: token.balance || '0',
+            });
+        } else {
+            const { standard, contract, balance, decimals, name, symbol } = token;
+            acc[token.contract] = {
+                standard,
+                contract,
+                balance,
+                decimals,
+                name,
+                symbol,
+                accounts: [{ publicKey: token.address, balance: balance || '0' }],
+            };
+        }
+    }
+    const tokens: TokenInfo[] = Object.values(acc);
 
     return tokens;
 };
