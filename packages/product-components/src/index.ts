@@ -36,3 +36,10 @@ export { ExchangeInfoNotification } from './components/Notifications/ExchangeInf
 export { TransactionNotification } from './components/Notifications/TransactionNotification';
 export type { TransactionNotificationProps } from './components/Notifications/TransactionNotification';
 export type { TransactionNotificationType } from './components/Notifications/notificationsTypes';
+export { ActionButton } from './components/Settings/ActionButton';
+export { ActionColumn } from './components/Settings/ActionColumn';
+export { ActionSelect } from './components/Settings/ActionSelect';
+export { OutlineHighlight } from './components/Settings/OutlineHighlight';
+export { SectionItem } from './components/Settings/SectionItem';
+export { SettingsSection } from './components/Settings/SettingsSection';
+export { TextColumn } from './components/Settings/TextColumn';
