@@ -7,6 +7,7 @@ import { selectIsMevProtectionSettingsVisible } from '@suite-common/mev';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     selectEnabledNetworks,
+    selectIsDustPhishingThresholdSettingsVisible,
     selectIsNetworkReserveSettingsVisible,
 } from '@suite-common/wallet-core';
 import { isDesktop, isLinux, isWeb } from '@trezor/env-utils';
@@ -70,6 +71,12 @@ export const SettingsGeneral = () => {
     const isProviderConnected = useSelector(selectSelectedProviderForLabels);
     const isMevProtectionSettingsVisible = useSelector(selectIsMevProtectionSettingsVisible);
     const isNetworkReserveSettingsVisible = useSelector(selectIsNetworkReserveSettingsVisible);
+    const isDustPhishingThresholdSettingsVisible = useSelector(
+        selectIsDustPhishingThresholdSettingsVisible,
+    );
+
+    const isSecuritySettingsSectionVisible =
+        isMevProtectionSettingsVisible || isDustPhishingThresholdSettingsVisible;
 
     return (
         <SettingsLayout data-testid="@settings/index">
@@ -135,13 +142,14 @@ export const SettingsGeneral = () => {
                 <VersionWithUpdate />
             </SettingsSection>
 
-            {isMevProtectionSettingsVisible && (
+            {isSecuritySettingsSectionVisible && (
                 <SettingsSection
-                    isBelowLaptop={isBelowLaptop}
                     title={<Translation id="TR_SECURITY" />}
                     icon="shield"
+                    isBelowLaptop={isBelowLaptop}
                 >
-                    <MevProtection />
+                    {isMevProtectionSettingsVisible && <MevProtection />}
+                    {isDustPhishingThresholdSettingsVisible && <DustPhishing />}
                 </SettingsSection>
             )}
 
@@ -154,10 +162,6 @@ export const SettingsGeneral = () => {
                     <NetworkReserve />
                 </SettingsSection>
             )}
-
-            <SettingsSection title={<Translation id="TR_PHISHING" />} icon="ghost">
-                <DustPhishing />
-            </SettingsSection>
 
             {isDesktop() && (
                 <SettingsSection
