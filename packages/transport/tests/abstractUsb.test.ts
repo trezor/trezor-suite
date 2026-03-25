@@ -95,8 +95,7 @@ describe('Usb', () => {
 
             expect(res).toEqual({
                 success: false,
-                error: 'unexpected error',
-                message: 'crazy error nobody expects',
+                error: { code: 'unexpected error', message: 'crazy error nobody expects' },
             });
         });
     });
@@ -187,7 +186,10 @@ describe('Usb', () => {
                 session: Session('1'),
                 protocol: v1Protocol,
             });
-            expect(res).toEqual({ success: false, error: 'device disconnected during action' });
+            expect(res).toEqual({
+                success: false,
+                error: { code: 'device disconnected during action' },
+            });
         });
 
         it('call - with valid and invalid message.', async () => {
@@ -228,8 +230,7 @@ describe('Usb', () => {
             });
             expect(res2).toEqual({
                 success: false,
-                error: 'unexpected error',
-                message: 'no such type: Foo-bar message',
+                error: { code: 'unexpected error', message: 'no such type: Foo-bar message' },
             });
         });
 
@@ -351,7 +352,7 @@ describe('Usb', () => {
 
             await expect(promise).resolves.toMatchObject({
                 success: false,
-                error: 'Aborted by signal',
+                error: { code: 'Aborted by signal' },
             });
 
             const promise2 = transport.call({

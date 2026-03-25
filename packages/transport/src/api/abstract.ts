@@ -162,7 +162,7 @@ export abstract class AbstractApi extends TypedEmitter<{
         }
         // check already existing lock
         if ((this.lock[path].read && lock.read) || (this.lock[path].write && lock.write)) {
-            return error({ error: ERRORS.OTHER_CALL_IN_PROGRESS });
+            return error({ code: ERRORS.OTHER_CALL_IN_PROGRESS });
         }
         // add to the current lock
         this.lock[path] = {

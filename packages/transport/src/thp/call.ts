@@ -12,11 +12,11 @@ export const callThpMessage = async ({
     logger,
 }: CommonProps) => {
     if (!thpState) {
-        return error({ error: THP_STATE_ERROR, message: 'ThpStateMissing' });
+        return error({ code: THP_STATE_ERROR, message: 'ThpStateMissing' });
     }
 
     const result = await thpLoop({ chunks, thpState, apiWrite, apiRead, signal, logger });
 
     // NOTE: result should never be empty
-    return result ?? error({ error: THP_STATE_ERROR, message: 'MissingResponse' });
+    return result ?? error({ code: THP_STATE_ERROR, message: 'MissingResponse' });
 };

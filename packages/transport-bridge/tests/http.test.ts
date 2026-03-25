@@ -308,8 +308,10 @@ describe('http', () => {
             });
             expect(res).toMatchObject({
                 success: false,
-                error: 'unexpected error',
-                message: 'Invalid BridgeProtocolMessage protocol',
+                error: {
+                    code: 'unexpected error',
+                    message: 'Invalid BridgeProtocolMessage protocol',
+                },
             });
 
             // invalid protocol message (not a hex)
@@ -320,7 +322,7 @@ describe('http', () => {
             });
             expect(res).toMatchObject({
                 success: false,
-                message: 'Invalid BridgeProtocolMessage data',
+                error: { message: 'Invalid BridgeProtocolMessage data' },
             });
 
             // invalid protocol message (malformed json)
@@ -331,7 +333,7 @@ describe('http', () => {
             });
             expect(res).toMatchObject({
                 success: false,
-                message: 'Invalid BridgeProtocolMessage body',
+                error: { message: 'Invalid BridgeProtocolMessage body' },
             });
             res = await bridgeApiCall({
                 url: `${url}post/1`,
@@ -339,7 +341,7 @@ describe('http', () => {
             });
             expect(res).toMatchObject({
                 success: false,
-                message: 'Invalid BridgeProtocolMessage body',
+                error: { message: 'Invalid BridgeProtocolMessage body' },
             });
             res = await bridgeApiCall({
                 url: `${url}post/1`,
@@ -349,7 +351,7 @@ describe('http', () => {
             });
             expect(res).toMatchObject({
                 success: false,
-                message: 'Invalid BridgeProtocolMessage body',
+                error: { message: 'Invalid BridgeProtocolMessage body' },
             });
 
             await trezordNode.stop();

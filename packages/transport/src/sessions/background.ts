@@ -109,7 +109,7 @@ export class SessionsBackground
             // catch unexpected errors and notify client.
             // background should never stay in "hanged" state
             return {
-                ...error({ error: ERRORS.UNEXPECTED_ERROR }),
+                ...error({ code: ERRORS.UNEXPECTED_ERROR }),
                 id: message.type,
             } as HandleMessageResponse<M>;
         } finally {
@@ -168,17 +168,17 @@ export class SessionsBackground
         const pathInternal = this.getInternal(payload.path);
 
         if (!pathInternal) {
-            return error({ error: ERRORS.DEVICE_NOT_FOUND });
+            return error({ code: ERRORS.DEVICE_NOT_FOUND });
         }
 
         const previous = this.descriptors[pathInternal];
 
         if (!previous) {
-            return error({ error: ERRORS.DEVICE_NOT_FOUND });
+            return error({ code: ERRORS.DEVICE_NOT_FOUND });
         }
 
         if (payload.previous !== previous.session) {
-            return error({ error: ERRORS.SESSION_WRONG_PREVIOUS });
+            return error({ code: ERRORS.SESSION_WRONG_PREVIOUS });
         }
 
         await this.waitInQueue();
@@ -187,7 +187,7 @@ export class SessionsBackground
         if (previous.session !== this.descriptors[pathInternal]?.session) {
             this.clearLock();
 
-            return error({ error: ERRORS.SESSION_WRONG_PREVIOUS });
+            return error({ code: ERRORS.SESSION_WRONG_PREVIOUS });
         }
 
         this.lastSessionId++;
@@ -207,7 +207,7 @@ export class SessionsBackground
         const pathInternal = this.getInternal(payload.path);
 
         if (!pathInternal || !this.descriptors[pathInternal]) {
-            return error({ error: ERRORS.DEVICE_NOT_FOUND });
+            return error({ code: ERRORS.DEVICE_NOT_FOUND });
         }
         this.descriptors[pathInternal].session = Session(`${this.lastSessionId}`);
         this.descriptors[pathInternal].sessionOwner = payload.sessionOwner;
@@ -247,7 +247,7 @@ export class SessionsBackground
         );
 
         if (!path) {
-            return error({ error: ERRORS.SESSION_NOT_FOUND });
+            return error({ code: ERRORS.SESSION_NOT_FOUND });
         }
 
         return success({ path });

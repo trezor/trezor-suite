@@ -37,7 +37,7 @@ describe('api/udp', () => {
         abortController.abort();
         const result = await promise;
         if (result.success) throw new Error('Unexpected success');
-        expect(result.error).toContain('Aborted by signal');
+        expect(result.error.code).toContain('Aborted by signal');
     });
 
     it('write aborted', async () => {
@@ -65,7 +65,7 @@ describe('api/udp', () => {
 
         const result = await promise;
         if (result.success) throw new Error('Unexpected success');
-        expect(result.error).toContain('Aborted by signal');
+        expect(result.error.code).toContain('Aborted by signal');
         expect(listeners).toBe(1); // only the global listener is present
     });
 
@@ -86,6 +86,6 @@ describe('api/udp', () => {
 
         const result = await promise;
         if (result.success) throw new Error('Unexpected success');
-        expect(result.error).toContain('Aborted by signal');
+        expect(result.error.code).toContain('Aborted by signal');
     });
 });

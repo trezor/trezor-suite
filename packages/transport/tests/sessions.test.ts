@@ -21,7 +21,7 @@ describe('sessions', () => {
         expect(acquireIntent).toEqual({
             success: false,
             id: 1,
-            error: 'device not found',
+            error: { code: 'device not found' },
         });
     });
 
@@ -93,7 +93,7 @@ describe('sessions', () => {
         });
         expect(acquire2).toMatchObject({
             success: false,
-            error: 'wrong previous session',
+            error: { code: 'wrong previous session' },
         });
 
         await client1.acquireDone({ path: PathPublic('1') });

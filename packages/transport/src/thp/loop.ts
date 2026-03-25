@@ -48,7 +48,7 @@ export const thpLoop = async ({
     let readAttempt = 0;
     const deadline = Date.now() + THP_ACK_DEADLINE;
     const isDeadlineReached = () => Date.now() >= deadline;
-    const thpStateError = (message: string) => error({ error: THP_STATE_ERROR, message });
+    const thpStateError = (message: string) => error({ code: THP_STATE_ERROR, message });
     let result;
 
     while (phase !== ThpLoopState.DONE) {

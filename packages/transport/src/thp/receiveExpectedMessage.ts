@@ -68,18 +68,18 @@ export const receiveExpectedMessage = async (
         },
     ).catch(e =>
         error({
-            error: e.message as ScheduleActionError,
+            code: e.message as ScheduleActionError,
         }),
     );
 
     if (!receiveResult.success) {
         // apiRead received gibberish for example continuation packet or empty data
         if (receiveResult.error.code === PROTOCOL_MALFORMED) {
-            return error({ error: 'UnexpectedChunk' });
+            return error({ code: 'UnexpectedChunk' });
         }
 
         if (receiveResult.error.code === SCHEDULE_ACTION_TIMEOUT_ERROR_MESSAGE) {
-            return error({ error: 'Timeout' });
+            return error({ code: 'Timeout' });
         }
 
         return receiveResult as ReceiveError;
@@ -90,13 +90,13 @@ export const receiveExpectedMessage = async (
 
     const isExpectedChannel = thpHeader.channel.compare(thpState.channel) === 0;
     if (!isExpectedChannel) {
-        return error({ error: 'UnexpectedChannel' });
+        return error({ code: 'UnexpectedChannel' });
     }
 
     try {
         protocolThp.validateCrc(encodedMessage);
     } catch {
-        return error({ error: 'UnexpectedCRC' });
+        return error({ code: 'UnexpectedCRC' });
     }
 
     if (encodedMessage.messageType === THP_CONTROL_BYTE.ERROR) {
@@ -113,18 +113,18 @@ export const receiveExpectedMessage = async (
 
     if (!isExpectedCtrlByte) {
         if (isRecentMessage(receiveResult, thpState)) {
-            return error({ error: 'UnexpectedRecentMessage' });
+            return error({ code: 'UnexpectedRecentMessage' });
         }
 
-        return error({ error: 'UnexpectedMessage' });
+        return error({ code: 'UnexpectedMessage' });
     }
 
     if (thpHeader.sequenceBit !== thpState.recvBit) {
         if (isRecentMessage(receiveResult, thpState)) {
-            return error({ error: 'UnexpectedRecentMessage' });
+            return error({ code: 'UnexpectedRecentMessage' });
         }
 
-        return error({ error: 'UnexpectedRecvBit' });
+        return error({ code: 'UnexpectedRecvBit' });
     }
 
     return receiveResult;

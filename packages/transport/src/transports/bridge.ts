@@ -115,7 +115,7 @@ export class BridgeTransport extends AbstractTransport {
     // https://github.com/trezor/trezord-go/blob/f559ee5079679aeb5f897c65318d3310f78223ca/core/core.go#L373
     public listen() {
         if (this.listening) {
-            return error({ error: ERRORS.ALREADY_LISTENING });
+            return error({ code: ERRORS.ALREADY_LISTENING });
         }
 
         this.listening = true;
@@ -436,7 +436,7 @@ export class BridgeTransport extends AbstractTransport {
                 return this.unknownError(response.error.code);
             }
             if (response.error.code === ERRORS.HTTP_ERROR) {
-                return error({ error: response.error.code });
+                return error({ code: response.error.code });
             }
 
             switch (endpoint) {
@@ -472,7 +472,7 @@ export class BridgeTransport extends AbstractTransport {
                     ]);
                 default:
                     return error({
-                        error: ERRORS.WRONG_RESULT_TYPE,
+                        code: ERRORS.WRONG_RESULT_TYPE,
                         message: 'just for type safety, should never happen',
                     });
                 // should never get here
@@ -498,7 +498,7 @@ export class BridgeTransport extends AbstractTransport {
                 return bridgeApiResult.empty(response.payload);
             default:
                 return error({
-                    error: ERRORS.WRONG_RESULT_TYPE,
+                    code: ERRORS.WRONG_RESULT_TYPE,
                     message: 'just for type safety, should never happen',
                 });
             // should never get here

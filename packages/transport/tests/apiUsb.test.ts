@@ -78,7 +78,7 @@ describe('api/usb', () => {
 
         const result = await promise;
         if (result.success) throw new Error('Unexpected success');
-        expect(result.error).toContain('Aborted by signal');
+        expect(result.error.code).toContain('Aborted by signal');
         expect(reset).toHaveBeenCalledTimes(1);
     });
 
@@ -106,7 +106,7 @@ describe('api/usb', () => {
 
         const result = await promise;
         if (result.success) throw new Error('Unexpected success');
-        expect(result.error).toContain('Aborted by signal');
+        expect(result.error.code).toContain('Aborted by signal');
         expect(reset).toHaveBeenCalledTimes(1);
     });
 

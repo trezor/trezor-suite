@@ -248,7 +248,7 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
 
             if (protocol.name === 'v2') {
                 if (!thpState) {
-                    return error({ error: THP_STATE_ERROR, message: 'ThpStateMissing' });
+                    return error({ code: THP_STATE_ERROR, message: 'ThpStateMissing' });
                 }
 
                 const state = new protocolThp.ThpState();
@@ -319,7 +319,7 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
         const { path } = sessionsResult.payload;
         if (protocol.name === 'v2') {
             if (!thpState) {
-                return error({ error: THP_STATE_ERROR, message: 'ThpStateMissing' });
+                return error({ code: THP_STATE_ERROR, message: 'ThpStateMissing' });
             }
 
             const state = new protocolThp.ThpState();
@@ -373,7 +373,7 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
         return api.runInIsolation({ lock: { read: true, write: false }, path }, async () => {
             if (protocol.name === 'v2') {
                 if (!thpState) {
-                    return error({ error: THP_STATE_ERROR, message: 'ThpStateMissing' });
+                    return error({ code: THP_STATE_ERROR, message: 'ThpStateMissing' });
                 }
 
                 const state = new protocolThp.ThpState();

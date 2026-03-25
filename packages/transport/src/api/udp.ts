@@ -69,7 +69,7 @@ export class UdpApi extends AbstractApi {
             const listener = () => {
                 resolve(
                     error({
-                        error: ERRORS.ABORTED_BY_SIGNAL,
+                        code: ERRORS.ABORTED_BY_SIGNAL,
                     }),
                 );
             };
@@ -97,7 +97,7 @@ export class UdpApi extends AbstractApi {
 
                     resolve(
                         error({
-                            error: ERRORS.INTERFACE_DATA_TRANSFER,
+                            code: ERRORS.INTERFACE_DATA_TRANSFER,
                             message: err.message,
                         }),
                     );
@@ -178,7 +178,7 @@ export class UdpApi extends AbstractApi {
         } catch {
             this.handleDevicesChange([]);
 
-            return error({ error: ERRORS.ABORTED_BY_SIGNAL });
+            return error({ code: ERRORS.ABORTED_BY_SIGNAL });
         }
     }
 

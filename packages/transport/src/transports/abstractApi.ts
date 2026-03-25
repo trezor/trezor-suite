@@ -58,7 +58,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
 
     public listen() {
         if (this.listening) {
-            return error({ error: ERRORS.ALREADY_LISTENING });
+            return error({ code: ERRORS.ALREADY_LISTENING });
         }
 
         this.api.listen();
@@ -118,7 +118,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                 const acquireIntentResponse = await this.sessionsClient.acquireIntent(input);
 
                 if (!acquireIntentResponse.success) {
-                    return error({ error: acquireIntentResponse.error.code });
+                    return error({ code: acquireIntentResponse.error.code });
                 }
 
                 const reset = !!input.previous;
@@ -187,7 +187,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                 });
 
                 if (!releaseIntentResponse.success) {
-                    return error({ error: releaseIntentResponse.error.code });
+                    return error({ code: releaseIntentResponse.error.code });
                 }
 
                 await this.api.closeDevice(releaseIntentResponse.payload.path, { channel: 'read' });
@@ -232,10 +232,10 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                 if (!getPathBySessionResponse.success) {
                     // session not found means that device was disconnected
                     if (getPathBySessionResponse.error.code === 'session not found') {
-                        return error({ error: ERRORS.DEVICE_DISCONNECTED_DURING_ACTION });
+                        return error({ code: ERRORS.DEVICE_DISCONNECTED_DURING_ACTION });
                     }
 
-                    return error({ error: ERRORS.UNEXPECTED_ERROR });
+                    return error({ code: ERRORS.UNEXPECTED_ERROR });
                 }
                 const { path } = getPathBySessionResponse.payload;
 
@@ -332,7 +332,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                     session,
                 });
                 if (!getPathBySessionResponse.success) {
-                    return error({ error: getPathBySessionResponse.error.code });
+                    return error({ code: getPathBySessionResponse.error.code });
                 }
                 const { path } = getPathBySessionResponse.payload;
 
@@ -401,7 +401,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                     session,
                 });
                 if (!getPathBySessionResponse.success) {
-                    return error({ error: getPathBySessionResponse.error.code });
+                    return error({ code: getPathBySessionResponse.error.code });
                 }
                 const { path } = getPathBySessionResponse.payload;
 

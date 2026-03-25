@@ -63,7 +63,7 @@ export async function bridgeApiCall(options: HttpRequestOptions) {
     try {
         res = await fetch(options.url, fetchOptions);
     } catch (err) {
-        return error({ error: ERRORS.HTTP_ERROR, message: err.message });
+        return error({ code: ERRORS.HTTP_ERROR, message: err.message });
     }
 
     let resParsed: Record<string, unknown> | string;
@@ -71,7 +71,7 @@ export async function bridgeApiCall(options: HttpRequestOptions) {
         resParsed = await res.text();
         resParsed = parseResult(resParsed);
     } catch (err) {
-        return error({ error: ERRORS.HTTP_ERROR, message: err.message });
+        return error({ code: ERRORS.HTTP_ERROR, message: err.message });
     }
 
     const getErrorStr = (err: typeof resParsed) => {
@@ -99,13 +99,13 @@ export async function bridgeApiCall(options: HttpRequestOptions) {
         // this block only changes error messages from old bridge to the same messages returned by new bridge / connect usb stack
         const errStr = getErrorStr(resParsed);
         if (errStr === BRIDGE_ERROR_DEVICE_CLOSED) {
-            return error({ error: ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE });
+            return error({ code: ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE });
         }
         if (errStr === BRIDGE_MALFORMED_PROTOBUF || errStr === PROTOCOL_MALFORMED) {
-            return error({ error: PROTOCOL_MALFORMED });
+            return error({ code: PROTOCOL_MALFORMED });
         }
         if (errStr === BRIDGE_MALFORMED_WIRE_FORMAT) {
-            return error({ error: PROTOCOL_MALFORMED });
+            return error({ code: PROTOCOL_MALFORMED });
         }
 
         if (
@@ -114,7 +114,7 @@ export async function bridgeApiCall(options: HttpRequestOptions) {
             typeof resParsed.error === 'string'
         ) {
             return error({
-                error: resParsed.error,
+                code: resParsed.error,
                 message:
                     'message' in resParsed && typeof resParsed.message === 'string'
                         ? resParsed.message
