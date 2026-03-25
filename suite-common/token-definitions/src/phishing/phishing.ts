@@ -49,6 +49,12 @@ const PHISHING_VALIDATORS: NetworkPhishingValidators = new Map([
     ],
 ]);
 
+export const NETWORKS_WITH_DUST_PHISHING_DETECTION = Array.from(PHISHING_VALIDATORS.entries())
+    .filter(([_, validator]) =>
+        validator.getDetectors().some(detector => detector.id === 'DUST_AMOUNT'),
+    )
+    .map(([networkType]) => networkType);
+
 // NOTE: This function determines for which symbols there are filters in the UI to hide/display spam transactions
 // when handling fraud for other symbols, make sure this function is updated!
 export const hasNetworkPotentialFraudTransactions = (symbol: NetworkSymbol) =>

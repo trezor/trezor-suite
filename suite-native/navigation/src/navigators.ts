@@ -103,7 +103,6 @@ export type SettingsStackParamList = {
     [SettingsStackRoutes.SettingsSupport]: undefined;
     [SettingsStackRoutes.SettingsAppLog]: undefined;
     [SettingsStackRoutes.SettingsCoinEnabling]: undefined;
-    [SettingsStackRoutes.SettingsPhishing]: undefined;
     [SettingsStackRoutes.SettingsSuiteSync]: undefined;
     [SettingsStackRoutes.SettingsAdvanced]: undefined;
     [SettingsStackRoutes.TurnOffDeviceAuthenticityCheck]: undefined;

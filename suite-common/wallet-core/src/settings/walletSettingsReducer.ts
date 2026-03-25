@@ -5,6 +5,7 @@ import {
     createWeakMapSelector,
     returnStableArrayIfEmpty,
 } from '@suite-common/redux-utils';
+import { NETWORKS_WITH_DUST_PHISHING_DETECTION } from '@suite-common/token-definitions';
 import {
     type NetworkSymbol,
     getNetwork,
@@ -173,4 +174,12 @@ export const selectIsNetworkReserveSettingsVisible = createMemoizedSelector(
     [selectEnabledNetworks],
     enabledNetworks =>
         enabledNetworks.some(enabledNetwork => !!getNetwork(enabledNetwork)?.nativeTokenReserve),
+);
+
+export const selectIsDustPhishingThresholdSettingsVisible = createMemoizedSelector(
+    [selectEnabledNetworks],
+    enabledNetworks =>
+        enabledNetworks.some(enabledNetwork =>
+            NETWORKS_WITH_DUST_PHISHING_DETECTION.includes(getNetworkType(enabledNetwork)),
+        ),
 );

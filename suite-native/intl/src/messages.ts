@@ -1351,10 +1351,11 @@ export const messages = {
                 title: 'Phishing',
                 subtitle: 'Manage your phishing detection settings',
                 save: 'Save',
+                turnOff: 'Turn off',
                 placeholder: 'Enter dust threshold in USD',
             },
             dustThreshold: {
-                title: 'Dust threshold',
+                title: 'Dust phishing threshold',
                 subtitle:
                     'Adjust the dust threshold for phishing detection. Currently, the dust threshold can only be defined in USD currency. Leaving this field empty will turn off dust amount detection.',
                 errors: {
@@ -1942,15 +1943,12 @@ export const messages = {
         },
         phishing: {
             badge: 'Caution!',
-            warning: 'This transaction looks suspicious. <blogLink>Learn more</blogLink>',
-            warningFakeToken:
-                'This transaction may include hidden or unrecognized tokens. <blogLink>Learn more</blogLink>',
-            warningUnknownTx:
-                "This transaction couldn't be fully verified. <blogLink>Learn more</blogLink>",
+            warning: 'This transaction looks suspicious.',
+            warningFakeToken: 'This transaction may include hidden or unrecognized tokens.',
+            warningUnknownTx: "This transaction couldn't be fully verified.",
             warningDustAmount:
-                'This transaction contains dust amounts, which can be used in scams. <blogLink>Learn more</blogLink>',
-            warningZeroAmount:
-                'This transaction has a zero amount and may be suspicious. <blogLink>Learn more</blogLink>',
+                'This transaction contains dust amounts, which can be used in scams.',
+            warningZeroAmount: 'This transaction has a zero amount and may be suspicious.',
             markedAsRecognized: 'You’ve confirmed this transaction is safe.',
             hideTransaction: 'Mark as suspicious',
             unhideTransaction: 'Mark as safe',
