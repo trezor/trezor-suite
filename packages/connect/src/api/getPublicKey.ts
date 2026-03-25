@@ -17,7 +17,8 @@ import { getFirmwareRange, validateCoinPath } from './common/paramsValidator';
 import { getPublicKeyLabel } from '../utils/accountUtils';
 import { validatePath } from '../utils/pathUtils';
 
-type Params = PROTO.GetPublicKey & {
+type Params = {
+    proto: PROTO.GetPublicKey;
     coinInfo?: BitcoinNetworkInfo;
     suppressBackupWarning?: boolean;
     unlockPath?: PROTO.UnlockPath;
@@ -60,21 +61,25 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
             // set required firmware from coinInfo support
             this.firmwareRange = getFirmwareRange(this.name, coinInfo, this.firmwareRange);
 
-            return {
+            const proto = {
                 address_n,
                 coin_name: coinInfo?.name,
                 show_display: batch.showOnTrezor,
                 script_type: batch.scriptType,
                 ignore_xpub_magic: batch.ignoreXpubMagic,
                 ecdsa_curve_name: batch.ecdsaCurveName,
+            };
+
+            return {
+                proto,
                 coinInfo,
                 unlockPath: batch.unlockPath,
-                suppress_backup_warning: batch.suppressBackupWarning,
+                suppressBackupWarning: batch.suppressBackupWarning,
             };
         });
 
         this.confirmMissingBackup = !this.params.every(
-            batch => batch.suppressBackupWarning || !batch.show_display,
+            batch => batch.suppressBackupWarning || !batch.proto.show_display,
         );
     }
 
@@ -88,7 +93,7 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
             label:
                 this.params.length > 1
                     ? 'Export multiple public keys'
-                    : getPublicKeyLabel(this.params[0].address_n, this.params[0].coinInfo),
+                    : getPublicKeyLabel(this.params[0].proto.address_n, this.params[0].coinInfo),
         };
     }
 
@@ -96,10 +101,10 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
         const responses: MethodReturnType<typeof this.name> = [];
         const cmd = this.getDevice().getCommands();
         for (let i = 0; i < this.params.length; i++) {
-            const { coinInfo, unlockPath, ...batch } = this.params[i];
+            const { coinInfo, unlockPath, proto } = this.params[i];
             // if coinInfo is not provided, use fallback (see above in init method)
             const coinInfoFallback = coinInfo ?? getBitcoinNetwork('btc')!;
-            const response = await cmd.getHDNode(batch, { coinInfo: coinInfoFallback, unlockPath });
+            const response = await cmd.getHDNode(proto, { coinInfo: coinInfoFallback, unlockPath });
             responses.push(response);
 
             if (this.hasBundle) {
