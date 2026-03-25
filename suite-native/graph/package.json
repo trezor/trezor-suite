@@ -12,7 +12,7 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@mobily/ts-belt": "^3.13.1",
+        "@mobily/ts-belt": "^v4.0.0-rc.5",
         "@react-navigation/native": "7.1.28",
         "@reduxjs/toolkit": "2.11.2",
         "@sentry/react-native": "8.2.0",

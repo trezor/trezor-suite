@@ -13,7 +13,7 @@
     },
     "dependencies": {
         "@formatjs/intl": "4.1.2",
-        "@mobily/ts-belt": "^3.13.1",
+        "@mobily/ts-belt": "^v4.0.0-rc.5",
         "@suite-common/suite-constants": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",

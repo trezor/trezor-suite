@@ -136,7 +136,7 @@ export const mergeMultipleFiatBalanceHistories = (
                 : 0;
 
             return {
-                date: fromUnixTime(timestamp),
+                date: fromUnixTime(Number(timestamp)),
                 value: fiatBalance,
             };
         }),

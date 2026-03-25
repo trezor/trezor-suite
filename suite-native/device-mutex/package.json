@@ -6,7 +6,7 @@
     "private": true,
     "sideEffects": false,
     "dependencies": {
-        "@mobily/ts-belt": "^3.13.1",
+        "@mobily/ts-belt": "^v4.0.0-rc.5",
         "expo-keep-awake": "~55.0.4",
         "uuid": "^13.0.0"
     },

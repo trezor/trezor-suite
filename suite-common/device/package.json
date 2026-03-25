@@ -12,7 +12,7 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@mobily/ts-belt": "^3.13.1",
+        "@mobily/ts-belt": "^v4.0.0-rc.5",
         "@reduxjs/toolkit": "2.11.2",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-types": "workspace:*",

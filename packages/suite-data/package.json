@@ -27,7 +27,7 @@
         "semver": "^7.7.1"
     },
     "devDependencies": {
-        "@mobily/ts-belt": "^3.13.1",
+        "@mobily/ts-belt": "^v4.0.0-rc.5",
         "@trezor/eslint": "workspace:*",
         "@types/fs-extra": "^11.0.4",
         "autoprefixer": "^10.4.24",

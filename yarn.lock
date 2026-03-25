@@ -6300,10 +6300,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mobily/ts-belt@npm:^3.13.1":
-  version: 3.13.1
-  resolution: "@mobily/ts-belt@npm:3.13.1"
-  checksum: 10/d851e4f8b80f99646a67ecebc824994771f93509fe839680dcd3c21ab055099a0f04cd93ffa87e3529248fed0ea26abd62788302d7eb1bd2ffe42ad109229306
+"@mobily/ts-belt@npm:^v4.0.0-rc.5":
+  version: 4.0.0-rc.5
+  resolution: "@mobily/ts-belt@npm:4.0.0-rc.5"
+  checksum: 10/18abd05416b8ef4368c8aa70fe26e11eb1c06000647f47f34d2615524a53ed99fec8edd5fc44ee8b330f3eae23852503b36be2b63fae11ca2d989b8c86a33036
   languageName: node
   linkType: hard
 
@@ -11350,7 +11350,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/device@workspace:suite-common/device"
   dependencies:
-    "@mobily/ts-belt": "npm:^3.13.1"
+    "@mobily/ts-belt": "npm:^v4.0.0-rc.5"
     "@reduxjs/toolkit": "npm:2.11.2"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
@@ -11463,7 +11463,7 @@ __metadata:
   resolution: "@suite-common/formatters@workspace:suite-common/formatters"
   dependencies:
     "@formatjs/intl": "npm:4.1.2"
-    "@mobily/ts-belt": "npm:^3.13.1"
+    "@mobily/ts-belt": "npm:^v4.0.0-rc.5"
     "@suite-common/suite-constants": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
@@ -11492,7 +11492,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/graph@workspace:suite-common/graph"
   dependencies:
-    "@mobily/ts-belt": "npm:^3.13.1"
+    "@mobily/ts-belt": "npm:^v4.0.0-rc.5"
     "@reduxjs/toolkit": "npm:2.11.2"
     "@suite-common/device": "workspace:*"
     "@suite-common/fiat-services": "workspace:*"
@@ -11526,7 +11526,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/logger@workspace:suite-common/logger"
   dependencies:
-    "@mobily/ts-belt": "npm:^3.13.1"
+    "@mobily/ts-belt": "npm:^v4.0.0-rc.5"
     "@reduxjs/toolkit": "npm:2.11.2"
     "@suite-common/analytics-redux": "workspace:*"
     "@suite-common/device": "workspace:*"
@@ -11904,7 +11904,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/test-utils@workspace:suite-common/test-utils"
   dependencies:
-    "@mobily/ts-belt": "npm:^3.13.1"
+    "@mobily/ts-belt": "npm:^v4.0.0-rc.5"
     "@reduxjs/toolkit": "npm:2.11.2"
     "@suite-common/platform-encryption": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
@@ -11964,7 +11964,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/token-definitions@workspace:suite-common/token-definitions"
   dependencies:
-    "@mobily/ts-belt": "npm:^3.13.1"
+    "@mobily/ts-belt": "npm:^v4.0.0-rc.5"
     "@reduxjs/toolkit": "npm:2.11.2"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
@@ -12089,7 +12089,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/wallet-core@workspace:suite-common/wallet-core"
   dependencies:
-    "@mobily/ts-belt": "npm:^3.13.1"
+    "@mobily/ts-belt": "npm:^v4.0.0-rc.5"
     "@reduxjs/toolkit": "npm:2.11.2"
     "@suite-common/analytics": "workspace:*"
     "@suite-common/bluetooth": "workspace:*"
@@ -12209,7 +12209,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/accounts@workspace:suite-native/accounts"
   dependencies:
-    "@mobily/ts-belt": "npm:^3.13.1"
+    "@mobily/ts-belt": "npm:^v4.0.0-rc.5"
     "@react-navigation/native": "npm:7.1.28"
     "@reduxjs/toolkit": "npm:2.11.2"
     "@suite-common/device": "workspace:*"
@@ -12506,7 +12506,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/assets@workspace:suite-native/assets"
   dependencies:
-    "@mobily/ts-belt": "npm:^3.13.1"
+    "@mobily/ts-belt": "npm:^v4.0.0-rc.5"
     "@react-navigation/native": "npm:7.1.28"
     "@suite-common/assets": "workspace:*"
     "@suite-common/device": "workspace:*"
@@ -12540,7 +12540,7 @@ __metadata:
   resolution: "@suite-native/atoms@workspace:suite-native/atoms"
   dependencies:
     "@gorhom/bottom-sheet": "npm:5.2.8"
-    "@mobily/ts-belt": "npm:^3.13.1"
+    "@mobily/ts-belt": "npm:^v4.0.0-rc.5"
     "@reduxjs/toolkit": "npm:2.11.2"
     "@shopify/flash-list": "npm:2.3.0"
     "@shopify/react-native-skia": "npm:2.5.1"
@@ -12689,7 +12689,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/config@workspace:suite-native/config"
   dependencies:
-    "@mobily/ts-belt": "npm:^3.13.1"
+    "@mobily/ts-belt": "npm:^v4.0.0-rc.5"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
     react-native-launch-arguments: "npm:^4.1.1"
@@ -12792,7 +12792,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/device-manager@workspace:suite-native/device-manager"
   dependencies:
-    "@mobily/ts-belt": "npm:^3.13.1"
+    "@mobily/ts-belt": "npm:^v4.0.0-rc.5"
     "@react-navigation/native": "npm:7.1.28"
     "@reduxjs/toolkit": "npm:2.11.2"
     "@suite-common/device": "workspace:*"
@@ -12827,7 +12827,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/device-mutex@workspace:suite-native/device-mutex"
   dependencies:
-    "@mobily/ts-belt": "npm:^3.13.1"
+    "@mobily/ts-belt": "npm:^v4.0.0-rc.5"
     expo-keep-awake: "npm:~55.0.4"
     uuid: "npm:^13.0.0"
   languageName: unknown
@@ -12845,7 +12845,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/device@workspace:suite-native/device"
   dependencies:
-    "@mobily/ts-belt": "npm:^3.13.1"
+    "@mobily/ts-belt": "npm:^v4.0.0-rc.5"
     "@react-navigation/native": "npm:7.1.28"
     "@reduxjs/toolkit": "npm:2.11.2"
     "@suite-common/analytics": "workspace:*"
@@ -12910,7 +12910,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/discovery@workspace:suite-native/discovery"
   dependencies:
-    "@mobily/ts-belt": "npm:^3.13.1"
+    "@mobily/ts-belt": "npm:^v4.0.0-rc.5"
     "@reduxjs/toolkit": "npm:2.11.2"
     "@suite-common/device": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
@@ -13031,7 +13031,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/formatters@workspace:suite-native/formatters"
   dependencies:
-    "@mobily/ts-belt": "npm:^3.13.1"
+    "@mobily/ts-belt": "npm:^v4.0.0-rc.5"
     "@reduxjs/toolkit": "npm:2.11.2"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
@@ -13061,7 +13061,7 @@ __metadata:
   resolution: "@suite-native/forms@workspace:suite-native/forms"
   dependencies:
     "@hookform/resolvers": "npm:^5.2.2"
-    "@mobily/ts-belt": "npm:^3.13.1"
+    "@mobily/ts-belt": "npm:^v4.0.0-rc.5"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/icons": "workspace:*"
     react: "npm:19.2.4"
@@ -13077,7 +13077,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/graph@workspace:suite-native/graph"
   dependencies:
-    "@mobily/ts-belt": "npm:^3.13.1"
+    "@mobily/ts-belt": "npm:^v4.0.0-rc.5"
     "@react-navigation/native": "npm:7.1.28"
     "@reduxjs/toolkit": "npm:2.11.2"
     "@sentry/react-native": "npm:8.2.0"
@@ -13120,7 +13120,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/helpers@workspace:suite-native/helpers"
   dependencies:
-    "@mobily/ts-belt": "npm:^3.13.1"
+    "@mobily/ts-belt": "npm:^v4.0.0-rc.5"
     "@reduxjs/toolkit": "npm:2.11.2"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
@@ -13247,7 +13247,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/message-system@workspace:suite-native/message-system"
   dependencies:
-    "@mobily/ts-belt": "npm:^3.13.1"
+    "@mobily/ts-belt": "npm:^v4.0.0-rc.5"
     "@reduxjs/toolkit": "npm:2.11.2"
     "@suite-common/device": "workspace:*"
     "@suite-common/geolocation": "workspace:*"
@@ -13274,7 +13274,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/module-accounts-import@workspace:suite-native/module-accounts-import"
   dependencies:
-    "@mobily/ts-belt": "npm:^3.13.1"
+    "@mobily/ts-belt": "npm:^v4.0.0-rc.5"
     "@react-navigation/native": "npm:7.1.28"
     "@react-navigation/native-stack": "npm:7.12.0"
     "@reduxjs/toolkit": "npm:2.11.2"
@@ -13375,7 +13375,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/module-add-accounts@workspace:suite-native/module-add-accounts"
   dependencies:
-    "@mobily/ts-belt": "npm:^3.13.1"
+    "@mobily/ts-belt": "npm:^v4.0.0-rc.5"
     "@react-navigation/native": "npm:7.1.28"
     "@react-navigation/native-stack": "npm:7.12.0"
     "@reduxjs/toolkit": "npm:2.11.2"
@@ -13568,7 +13568,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/module-dev-utils@workspace:suite-native/module-dev-utils"
   dependencies:
-    "@mobily/ts-belt": "npm:^3.13.1"
+    "@mobily/ts-belt": "npm:^v4.0.0-rc.5"
     "@react-navigation/native": "npm:7.1.28"
     "@react-navigation/native-stack": "npm:7.12.0"
     "@reduxjs/toolkit": "npm:2.11.2"
@@ -13670,7 +13670,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/module-device-settings@workspace:suite-native/module-device-settings"
   dependencies:
-    "@mobily/ts-belt": "npm:^3.13.1"
+    "@mobily/ts-belt": "npm:^v4.0.0-rc.5"
     "@react-navigation/native": "npm:7.1.28"
     "@react-navigation/native-stack": "npm:7.12.0"
     "@reduxjs/toolkit": "npm:2.11.2"
@@ -13863,7 +13863,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/module-send@workspace:suite-native/module-send"
   dependencies:
-    "@mobily/ts-belt": "npm:^3.13.1"
+    "@mobily/ts-belt": "npm:^v4.0.0-rc.5"
     "@react-navigation/native": "npm:7.1.28"
     "@react-navigation/native-stack": "npm:7.12.0"
     "@reduxjs/toolkit": "npm:2.11.2"
@@ -13922,7 +13922,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/module-settings@workspace:suite-native/module-settings"
   dependencies:
-    "@mobily/ts-belt": "npm:^3.13.1"
+    "@mobily/ts-belt": "npm:^v4.0.0-rc.5"
     "@react-navigation/native": "npm:7.1.28"
     "@react-navigation/native-stack": "npm:7.12.0"
     "@reduxjs/toolkit": "npm:2.11.2"
@@ -14104,7 +14104,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/module-transactions@workspace:suite-native/module-transactions"
   dependencies:
-    "@mobily/ts-belt": "npm:^3.13.1"
+    "@mobily/ts-belt": "npm:^v4.0.0-rc.5"
     "@react-navigation/native": "npm:7.1.28"
     "@react-navigation/native-stack": "npm:7.12.0"
     "@suite-common/formatters": "workspace:*"
@@ -14253,7 +14253,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/receive@workspace:suite-native/receive"
   dependencies:
-    "@mobily/ts-belt": "npm:^3.13.1"
+    "@mobily/ts-belt": "npm:^v4.0.0-rc.5"
     "@react-navigation/native": "npm:7.1.28"
     "@react-navigation/native-stack": "npm:7.12.0"
     "@reduxjs/toolkit": "npm:2.11.2"
@@ -14453,7 +14453,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/storage@workspace:suite-native/storage"
   dependencies:
-    "@mobily/ts-belt": "npm:^3.13.1"
+    "@mobily/ts-belt": "npm:^v4.0.0-rc.5"
     "@reduxjs/toolkit": "npm:2.11.2"
     "@sentry/react-native": "npm:8.2.0"
     "@suite-common/device": "workspace:*"
@@ -14611,7 +14611,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/toasts@workspace:suite-native/toasts"
   dependencies:
-    "@mobily/ts-belt": "npm:^3.13.1"
+    "@mobily/ts-belt": "npm:^v4.0.0-rc.5"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/icons": "workspace:*"
     "@trezor/styles": "workspace:*"
@@ -14627,7 +14627,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/tokens@workspace:suite-native/tokens"
   dependencies:
-    "@mobily/ts-belt": "npm:^3.13.1"
+    "@mobily/ts-belt": "npm:^v4.0.0-rc.5"
     "@suite-common/device": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/token-definitions": "workspace:*"
@@ -14849,7 +14849,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/transaction-management@workspace:suite-native/transaction-management"
   dependencies:
-    "@mobily/ts-belt": "npm:^3.13.1"
+    "@mobily/ts-belt": "npm:^v4.0.0-rc.5"
     "@react-navigation/native": "npm:7.1.26"
     "@reduxjs/toolkit": "npm:2.11.2"
     "@suite-common/device": "workspace:*"
@@ -14894,7 +14894,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/transactions@workspace:suite-native/transactions"
   dependencies:
-    "@mobily/ts-belt": "npm:^3.13.1"
+    "@mobily/ts-belt": "npm:^v4.0.0-rc.5"
     "@react-navigation/native": "npm:7.1.28"
     "@reduxjs/toolkit": "npm:2.11.2"
     "@shopify/flash-list": "npm:2.3.0"
@@ -15562,7 +15562,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/blockchain-link-utils@workspace:packages/blockchain-link-utils"
   dependencies:
-    "@mobily/ts-belt": "npm:^3.13.1"
+    "@mobily/ts-belt": "npm:^v4.0.0-rc.5"
     "@solana/addresses": "npm:^2.3.0"
     "@solana/keys": "npm:^2.3.0"
     "@solana/rpc-api": "npm:^2.3.0"
@@ -15918,7 +15918,7 @@ __metadata:
     "@ethereumjs/common": "npm:^10.1.1"
     "@ethereumjs/tx": "npm:^10.1.1"
     "@fivebinaries/coin-selection": "npm:3.0.0"
-    "@mobily/ts-belt": "npm:^3.13.1"
+    "@mobily/ts-belt": "npm:^v4.0.0-rc.5"
     "@noble/hashes": "npm:^2.0.1"
     "@scure/bip39": "npm:^1.5.1"
     "@solana-program/compute-budget": "npm:^0.8.0"
@@ -16212,7 +16212,7 @@ __metadata:
   resolution: "@trezor/scripts@workspace:scripts"
   dependencies:
     "@babel/cli": "npm:7.28.6"
-    "@mobily/ts-belt": "npm:^3.13.1"
+    "@mobily/ts-belt": "npm:^v4.0.0-rc.5"
     "@trezor/eslint": "workspace:*"
     "@types/semver": "npm:^7.7.0"
     chalk: "npm:^5.6.2"
@@ -16231,7 +16231,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/styles@workspace:packages/styles"
   dependencies:
-    "@mobily/ts-belt": "npm:^3.13.1"
+    "@mobily/ts-belt": "npm:^v4.0.0-rc.5"
     "@trezor/theme": "workspace:*"
     css-in-js-utils: "npm:^3.1.0"
     csstype: "npm:^3.1.3"
@@ -16292,7 +16292,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/suite-data@workspace:packages/suite-data"
   dependencies:
-    "@mobily/ts-belt": "npm:^3.13.1"
+    "@mobily/ts-belt": "npm:^v4.0.0-rc.5"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
     "@suite/intl": "workspace:*"
@@ -16524,7 +16524,7 @@ __metadata:
     "@floating-ui/react": "npm:^0.27.17"
     "@formatjs/intl": "npm:4.1.2"
     "@hookform/resolvers": "npm:^5.2.2"
-    "@mobily/ts-belt": "npm:^3.13.1"
+    "@mobily/ts-belt": "npm:^v4.0.0-rc.5"
     "@reduxjs/toolkit": "npm:2.11.2"
     "@sentry/core": "npm:10.40.0"
     "@solana/kit": "npm:^2.3.0"
@@ -16682,7 +16682,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/theme@workspace:packages/theme"
   dependencies:
-    "@mobily/ts-belt": "npm:^3.13.1"
+    "@mobily/ts-belt": "npm:^v4.0.0-rc.5"
     "@suite-common/wallet-config": "workspace:*"
   languageName: unknown
   linkType: soft

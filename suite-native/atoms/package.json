@@ -13,7 +13,7 @@
     },
     "dependencies": {
         "@gorhom/bottom-sheet": "5.2.8",
-        "@mobily/ts-belt": "^3.13.1",
+        "@mobily/ts-belt": "^v4.0.0-rc.5",
         "@reduxjs/toolkit": "2.11.2",
         "@shopify/flash-list": "2.3.0",
         "@shopify/react-native-skia": "2.5.1",
