@@ -1,3 +1,8 @@
+---
+name: skills-and-code-style-contribution
+description: How to contribute to the Trezor Suite code style guide, including issue proposals and pull request workflows. Use when proposing code style changes.
+---
+
 # Skills and Code Style Contribution
 
 ## How to Contribute

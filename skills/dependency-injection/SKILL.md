@@ -1,3 +1,8 @@
+---
+name: dependency-injection
+description: Dependency Injection pattern for service definitions, factories, and composition roots. Use when working with packages that use the DI pattern.
+---
+
 # Dependency injection
 
 Some parts of the codebase use the Dependency Injection (DI) pattern. Instead of importing dependencies directly, pass them to the service as parameters. This allows better testability and separation of concerns.

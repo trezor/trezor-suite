@@ -1,3 +1,8 @@
+---
+name: setup-requirements
+description: Prerequisites and initial environment setup for the Trezor Suite monorepo, including Node.js, Yarn, Git LFS, and submodules. Use when setting up or troubleshooting the development environment.
+---
+
 # Setup Requirements
 
 - **Node.js** (version specified in `.nvmrc`, use NVM: `nvm install`)

@@ -1,3 +1,8 @@
+---
+name: common-tasks
+description: Dependency management, package creation, and troubleshooting commands for the Trezor Suite monorepo. Use when managing dependencies or debugging build issues.
+---
+
 # Common Tasks
 
 ## Managing Dependencies

@@ -1,3 +1,8 @@
+---
+name: git-and-commit-guidelines
+description: Conventional Commits format, commit types, scopes, and PR best practices for Trezor Suite. Use when committing code or creating pull requests.
+---
+
 # Git and Commit Guidelines
 
 **IMPORTANT**: This project uses [Conventional Commits](https://www.conventionalcommits.org/). All commits MUST follow this format:
@@ -32,4 +37,4 @@ Common scopes: `suite`, `suite-native`, `connect`, `components`, `analytics`
 
 ## Pull requests
 
-- When creating a pull request to GitHub, follow this [PR description template](../.github/pull_request_template.md)
+- When creating a pull request to GitHub, follow this [PR description template](../../.github/pull_request_template.md)

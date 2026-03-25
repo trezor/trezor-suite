@@ -1,3 +1,8 @@
+---
+name: defensive-programming
+description: Type safety practices including exhaustive checks, explicit return types, and Result-based error handling. Use when writing TypeScript logic that handles multiple cases or error conditions.
+---
+
 # Defensive Programming
 
 ## Do not fall back to default

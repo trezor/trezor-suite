@@ -1,3 +1,8 @@
+---
+name: tests-common
+description: TDD practices and test utilities for suite-common packages, including Red-Green-Refactor workflow and @suite-common/test-utils usage. Use when writing tests for suite-common packages.
+---
+
 # Writing Common Tests (TDD)
 
 This skill enforces Test-Driven Development (TDD) practices for suite-common packages and ensures proper usage of the

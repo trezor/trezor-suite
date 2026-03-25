@@ -1,12 +1,17 @@
+---
+name: naming
+description: Naming conventions for variables, functions, booleans, components, and domain-specific terms in Trezor Suite. Use when naming anything in the codebase.
+---
+
 # Naming
 
 ## Obscure naming
 
-Avoid using weirdly shortened words and especially single letter variables. It’s not that obvious why there is a `device` located in object `s`.
+Avoid using weirdly shortened words and especially single letter variables. It's not that obvious why there is a `device` located in object `s`.
 
 ## Generic vs lengthy naming
 
-Often picking a generic name clashes with picking a long name. Code benefits from clarity of intent, treating every block like it’s unique helps dive into the context and pick a name specific to that context. Also, don’t be afraid of long names, it doesn’t have to be < 8 characters all the time. If you think that a variable is better described by that 25 character-long abomination and nothing could describe it with the same clarity - go with it.
+Often picking a generic name clashes with picking a long name. Code benefits from clarity of intent, treating every block like it's unique helps dive into the context and pick a name specific to that context. Also, don't be afraid of long names, it doesn't have to be < 8 characters all the time. If you think that a variable is better described by that 25 character-long abomination and nothing could describe it with the same clarity - go with it.
 
 ## Values = nouns, functions = verbs
 
@@ -14,10 +19,10 @@ That should be pretty self-explanatory. Try to prefix functions returning a valu
 
 ## Boolean values = questions
 
-_Yes_ or _no_, _true_ or _false_, ask a question, get an answer. If that’s not applicable to the data you are trying to describe, perhaps it would be better to pick another data type, like an `enum`.
+_Yes_ or _no_, _true_ or _false_, ask a question, get an answer. If that's not applicable to the data you are trying to describe, perhaps it would be better to pick another data type, like an `enum`.
 
-- 🛑 `const disabled = true` → ✅ `const isDisabled = true`
-- 🛑 `const finished = true` → ✅ `const hasFinished = true`
+- 🛑 `const disabled = true` → ✅ `const isDisabled = true`
+- 🛑 `const finished = true` → ✅ `const hasFinished = true`
 
 ## Component interface
 
@@ -25,7 +30,7 @@ Should be named in the form of `${componentName}Props`
 
 ## Abbreviations in names
 
-It is a matter of taste but we aim for consistency, so we voted and using all capital letters for abbreviations won. Consistency is important so we don’t need to think about it anymore.
+It is a matter of taste but we aim for consistency, so we voted and using all capital letters for abbreviations won. Consistency is important so we don't need to think about it anymore.
 
 ```tsx
 // bad

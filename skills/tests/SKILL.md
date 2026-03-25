@@ -1,3 +1,8 @@
+---
+name: tests
+description: Test style guidelines including naming conventions, mock organization, translation handling, and file structure. Use when writing or organizing tests in the Trezor Suite codebase.
+---
+
 # Tests
 
 ## Reading

@@ -1,3 +1,8 @@
+---
+name: redux
+description: Redux Toolkit patterns including slices, selectors, thunks, and middleware conventions for Trezor Suite. Use when writing or reviewing Redux state management code.
+---
+
 # Redux
 
 ## Introduction
@@ -8,7 +13,7 @@
 
 ### Single-(Folder/Package) Logic for features
 
-Co-locating logic for a given feature in one place typically makes it easier to maintain that code. This is also known as the ["ducks" pattern](https://github.com/erikras/ducks-modular-redux). While older Redux codebases often used a "file-by-type" approach with separate folders for "actions" and "reducers", keeping related logic together makes it easier to find and update that code.
+Co-locating logic for a given feature in one place typically makes it easier to maintain that code. This is also known as the ["ducks" pattern](https://github.com/erikras/ducks-modular-redux). While older Redux codebases often used a "file-by-type" approach with separate folders for "actions" and "reducers", keeping related logic together makes it easier to find and update that code.
 
 This [Single-File approach](https://redux.js.org/style-guide/#structure-files-as-feature-folders-with-single-file-logic) is **strongly recommended by official Redux Style Guide** and offers many benefits over a "file-by-type" structure. In our case, in our monorepo, we do something similar but with packages and folders. Usually we have one package per feature or in some specific cases we have packages where you have multiple feature folders. Benefits of this approach:
 
