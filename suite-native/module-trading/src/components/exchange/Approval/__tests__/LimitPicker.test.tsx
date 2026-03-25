@@ -28,10 +28,29 @@ describe('LimitPicker', () => {
         store = initStore(preloadedState).store;
     });
 
-    it('should render Unlimited when no limit is specified', () => {
+    it('should render limit by default', () => {
         const { getByTestId } = renderLimitPicker();
 
         const picker = getByTestId('ExchangeApproval/LimitPicker');
+
+        expect(within(picker).getByText('100 USDC')).toBeOnTheScreen();
+        expect(
+            within(picker).getByText(
+                getTranslation('moduleTrading.exchangeApprovalLimitSheet.limitedCard.info'),
+            ),
+        ).toBeOnTheScreen();
+        expect(selectTradingExchangeSelectedQuote(store.getState())).toEqual(
+            expect.objectContaining({ approvalType: 'MINIMAL' }),
+        );
+    });
+
+    it('should render Unlimited when selected by user', async () => {
+        const { getByTestId } = renderLimitPicker();
+
+        const picker = getByTestId('ExchangeApproval/LimitPicker');
+        const sheet = getByTestId('ExchangeApproval/LimitSheet');
+
+        await userEvent.press(within(sheet).getByText('Unlimited'));
 
         expect(within(picker).getByText('Unlimited')).toBeOnTheScreen();
         expect(
