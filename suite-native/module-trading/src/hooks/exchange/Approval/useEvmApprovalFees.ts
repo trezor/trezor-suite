@@ -10,17 +10,13 @@ import {
 import {
     type AccountsRootState,
     type FeesRootState,
-    type FormDraftRootState,
     selectAccountByKey,
     selectConvertedNetworkFeeInfo,
-    selectDeepCopyOfFormDraft,
+    useFormDraft,
 } from '@suite-common/wallet-core';
-import { type FeeLevelLabel } from '@suite-common/wallet-types';
+import { type FormState } from '@suite-common/wallet-types';
 import { useTranslate } from '@suite-native/intl';
-import {
-    getFormDraftKeyByTradeType,
-    selectExchangeSelectedSendAccount,
-} from '@suite-native/trading-state';
+import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
 
 import { composeEvmApprovalFeeLevelsThunk } from '../../../thunks';
 
@@ -44,16 +40,10 @@ export const useEvmApprovalFees = ({ approvalTypeOverride }: UseEvmApprovalFeesP
     );
     const composedTransactionInfo = useSelector(selectTradingComposedTransactionInfo);
 
-    const formDraftKey = getFormDraftKeyByTradeType('exchange');
-    const formDraft = useSelector((state: FormDraftRootState) =>
-        selectDeepCopyOfFormDraft(state, formDraftKey),
-    );
-    const selectedFeeLevel = (formDraft?.selectedFee as FeeLevelLabel) ?? 'normal';
+    const { draft } = useFormDraft<FormState>('trading-exchange', '');
+    const selectedFeeLevel = draft?.selectedFee ?? 'normal';
 
-    const feeLimit = formDraft?.feeLimit as string | undefined;
-    const feePerUnit = formDraft?.feePerUnit as string | undefined;
-    const maxFeePerGas = formDraft?.maxFeePerGas as string | undefined;
-    const maxPriorityFeePerGas = formDraft?.maxPriorityFeePerGas as string | undefined;
+    const { feeLimit, feePerUnit, maxFeePerGas, maxPriorityFeePerGas } = draft ?? {};
 
     const customFee = useMemo(() => {
         if (selectedFeeLevel !== 'custom' || !feeLimit || !feePerUnit) {
