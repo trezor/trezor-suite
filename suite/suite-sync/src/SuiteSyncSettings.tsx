@@ -16,16 +16,19 @@ import { ActionColumn, SectionItem, SettingsSection, TextColumn } from '@trezor/
 import { type BreakpointFlags } from '@trezor/theme';
 import { spacings } from '@trezor/theme';
 
+import { WipeSuiteSyncLabels, type WipeSuiteSyncLabelsOnError } from './WipeSuiteSyncLabels';
+
 const selectIsBelowLaptop = (state: { window: BreakpointFlags }) => state.window.isBelowLaptop;
 
 const LOCAL_SUITE_SYNC_RELAY_URL = 'http://127.0.0.1:4000/evolu/';
 
 type SuiteSyncSettingsProps = {
+    onError: WipeSuiteSyncLabelsOnError;
     suiteSync: SuiteSync;
 };
 
-export const SuiteSyncSettings = ({ suiteSync }: SuiteSyncSettingsProps) => {
-    const [isLoading, setIsLoading] = useState(false);
+export const SuiteSyncSettings = ({ onError, suiteSync }: SuiteSyncSettingsProps) => {
+    const [isRelayUrlLoading, setIsRelayUrlLoading] = useState(false);
 
     const dispatch = useDispatch();
     const isBelowLaptop = useSelector(selectIsBelowLaptop);
@@ -41,7 +44,7 @@ export const SuiteSyncSettings = ({ suiteSync }: SuiteSyncSettingsProps) => {
     };
 
     const onRelayUrlSave = async (url = relayUrl) => {
-        setIsLoading(true);
+        setIsRelayUrlLoading(true);
 
         setRelayUrl(url);
 
@@ -49,7 +52,7 @@ export const SuiteSyncSettings = ({ suiteSync }: SuiteSyncSettingsProps) => {
 
         // Fake it, to make some UI interaction for the user
         setTimeout(() => {
-            setIsLoading(false);
+            setIsRelayUrlLoading(false);
         }, 300);
     };
 
@@ -68,13 +71,13 @@ export const SuiteSyncSettings = ({ suiteSync }: SuiteSyncSettingsProps) => {
                     <Column gap={spacings.xxs}>
                         <Input
                             data-testid="@settings/debug/suite-sync/relay-url-input"
-                            isDisabled={isLoading}
+                            isDisabled={isRelayUrlLoading}
                             value={relayUrl}
                             onChange={e => setRelayUrl(e.target.value)}
                             rightContent={
                                 <Button
                                     data-testid="@settings/debug/suite-sync/save-button"
-                                    isLoading={isLoading}
+                                    isLoading={isRelayUrlLoading}
                                     onClick={() => onRelayUrlSave()}
                                     size="small"
                                 >
@@ -88,7 +91,7 @@ export const SuiteSyncSettings = ({ suiteSync }: SuiteSyncSettingsProps) => {
                         <ButtonGroup size="small" priority="secondary">
                             <Button
                                 intent="critical"
-                                isDisabled={isLoading}
+                                isDisabled={isRelayUrlLoading}
                                 onClick={() =>
                                     onRelayUrlPresetClick(DEFAULT_SUITE_SYNC_RELAY_URL_PROD)
                                 }
@@ -97,7 +100,7 @@ export const SuiteSyncSettings = ({ suiteSync }: SuiteSyncSettingsProps) => {
                             </Button>
                             <Button
                                 intent="brand"
-                                isDisabled={isLoading}
+                                isDisabled={isRelayUrlLoading}
                                 onClick={() =>
                                     onRelayUrlPresetClick(DEFAULT_SUITE_SYNC_RELAY_URL_DEV)
                                 }
@@ -106,7 +109,7 @@ export const SuiteSyncSettings = ({ suiteSync }: SuiteSyncSettingsProps) => {
                             </Button>
                             <Button
                                 intent="info"
-                                isDisabled={isLoading}
+                                isDisabled={isRelayUrlLoading}
                                 onClick={() => onRelayUrlPresetClick(LOCAL_SUITE_SYNC_RELAY_URL)}
                             >
                                 Local
@@ -115,6 +118,7 @@ export const SuiteSyncSettings = ({ suiteSync }: SuiteSyncSettingsProps) => {
                     </Column>
                 </ActionColumn>
             </SectionItem>
+            <WipeSuiteSyncLabels onError={onError} suiteSync={suiteSync} />
             <SectionItem>
                 <TextColumn title="Suite Sync (Evolu) Debug" />
                 <ActionColumn>

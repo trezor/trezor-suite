@@ -1,12 +1,10 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { Translation } from '@suite/intl';
 import { type MetadataProviderType } from '@suite-common/metadata-types';
-import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
-import { Banner, Column, H3, Modal, Paragraph } from '@trezor/components';
 import type { Deferred } from '@trezor/utils';
 
+import { MetadataProviderSelectionModal } from './MetadataProviderSelectionModal';
 import { connectProvider } from './metadataProviderThunks';
 
 type MetadataProviderModalProps = {
@@ -15,7 +13,7 @@ type MetadataProviderModalProps = {
 };
 
 export const MetadataProviderModal = ({ onCancel, decision }: MetadataProviderModalProps) => {
-    const [isLoading, setIsLoading] = useState('');
+    const [isLoading, setIsLoading] = useState<MetadataProviderType | ''>('');
     // error from authorization popup
     const [error, setError] = useState('');
 
@@ -48,62 +46,11 @@ export const MetadataProviderModal = ({ onCancel, decision }: MetadataProviderMo
     };
 
     return (
-        <Modal
+        <MetadataProviderSelectionModal
             onCancel={onModalCancel}
-            data-testid="@modal/metadata-provider"
-            width={600}
-            iconName="tag"
-            bottomContent={
-                <>
-                    <Modal.Button
-                        intent="neutral"
-                        priority="secondary"
-                        onClick={() => connect('dropbox')}
-                        isLoading={isLoading === 'dropbox'}
-                        isDisabled={!!isLoading}
-                        data-testid="@modal/metadata-provider/dropbox-button"
-                        iconLeft="dropboxLogoFilled"
-                    >
-                        <Translation id="TR_DROPBOX" />
-                    </Modal.Button>
-
-                    <Modal.Button
-                        intent="neutral"
-                        priority="secondary"
-                        onClick={() => connect('google')}
-                        isLoading={isLoading === 'google'}
-                        isDisabled={!!isLoading}
-                        data-testid="@modal/metadata-provider/google-button"
-                        iconLeft="googleDriveLogoFilled"
-                    >
-                        <Translation id="TR_GOOGLE_DRIVE" />
-                    </Modal.Button>
-
-                    {/* desktop only */}
-                    {isFeatureFlagEnabled('FILE_SYSTEM_SYNC') && (
-                        <Modal.Button
-                            intent="neutral"
-                            priority="secondary"
-                            onClick={() => connect('fileSystem')}
-                            isLoading={isLoading === 'fileSystem'}
-                            isDisabled={!!isLoading}
-                            data-testid="@modal/metadata-provider/file-system-button"
-                        >
-                            <Translation id="TR_LOCAL_FILE_SYSTEM" />
-                        </Modal.Button>
-                    )}
-                </>
-            }
-        >
-            <Column gap={4}>
-                <H3>
-                    <Translation id="METADATA_MODAL_HEADING" />
-                </H3>
-                <Paragraph typographyStyle="body-sm" intent="neutral" priority="secondary">
-                    <Translation id="METADATA_MODAL_DESCRIPTION" />
-                </Paragraph>
-                {error && <Banner intent="critical" icon description={error} />}
-            </Column>
-        </Modal>
+            onSelect={connect}
+            isLoading={isLoading}
+            error={error}
+        />
     );
 };

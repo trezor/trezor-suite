@@ -86,6 +86,7 @@
         "@suite/intl": "workspace:*",
         "@suite/locks": "workspace:*",
         "@suite/metadata": "workspace:*",
+        "@suite/metadata-migration": "workspace:*",
         "@suite/modal": "workspace:*",
         "@suite/onboarding-components": "workspace:*",
         "@suite/platform-encryption-electron": "workspace:*",

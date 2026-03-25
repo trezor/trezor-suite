@@ -11,6 +11,7 @@ import {
     type CreateSuiteSyncOwnerDep,
 } from '@suite-common/suite-sync-storage';
 import { type SuiteSync } from '@suite-common/suite-sync-types';
+import { selectAccounts } from '@suite-common/wallet-core';
 import { type Analytics } from '@trezor/analytics-uploader';
 
 import { createEnsureSuiteSyncKeys } from './createEnsureSuiteSyncKeys';
@@ -20,10 +21,12 @@ import { selectSuiteSyncAccountLabel } from './data/account/selectSuiteSyncAccou
 import { selectSuiteSyncAddressLabel } from './data/address/suiteSyncAddressSelectors';
 import { createEnsureSubscribedStorage } from './data/createEnsureSubscribedStorage';
 import { createSuiteSyncListener } from './data/createSuiteSyncListener';
+import { createDangerouslyWipeAllLabelsFromWallet } from './data/labeling/createDangerouslyWipeAllLabelsFromWallet';
 import { createUpdateAccountLabel } from './data/labeling/createUpdateAccountLabel';
 import { createUpdateAddressLabel } from './data/labeling/createUpdateAddressLabel';
 import { createUpdateOutputLabel } from './data/labeling/createUpdateOutputLabel';
 import { createUpdateWalletLabel } from './data/labeling/createUpdateWalletLabel';
+import { selectAllLabelsForAccount } from './data/labeling/selectAllLabelsForAccount';
 import { selectSuiteSyncOutputLabel } from './data/output/suiteSyncOutputSelectors';
 import { selectSuiteSyncWalletLabel } from './data/wallet/suiteSyncWalletSelectors';
 import { type GetDeviceForStaticSessionId } from './getDeviceForStaticSessionId';
@@ -144,6 +147,7 @@ export const createSuiteSyncCompositionRoot = (
 
     const getIsSuiteSyncEnabled = toGetter(deps.getState, selectIsSuiteSyncEnabled);
     const getAllDeviceSessionIds = toGetter(deps.getState, selectAllDeviceStaticIds);
+    const getAccounts = toGetter(deps.getState, selectAccounts);
 
     const labelingDeps = {
         ensureWalletSuiteSyncOn,
@@ -153,6 +157,11 @@ export const createSuiteSyncCompositionRoot = (
         getAddressLabel: toGetter(deps.getState, selectSuiteSyncAddressLabel),
         getOutputLabel: toGetter(deps.getState, selectSuiteSyncOutputLabel),
     };
+
+    const updateWalletLabel = createUpdateWalletLabel(labelingDeps);
+    const updateAccountLabel = createUpdateAccountLabel(labelingDeps);
+    const updateOutputLabel = createUpdateOutputLabel(labelingDeps);
+    const updateAddressLabel = createUpdateAddressLabel(labelingDeps);
 
     return {
         changeRelayUrl: createChangeRelayUrl({
@@ -174,11 +183,20 @@ export const createSuiteSyncCompositionRoot = (
             ensureWalletSuiteSyncOn,
             getDeviceForStaticSessionId,
         }),
+        dangerouslyWipeAllLabelsFromWallet: createDangerouslyWipeAllLabelsFromWallet({
+            getWalletLabel: labelingDeps.getWalletLabel,
+            getAccounts,
+            getAllLabelsForAccount: toGetter(deps.getState, selectAllLabelsForAccount),
+            updateWalletLabel,
+            updateAccountLabel,
+            updateOutputLabel,
+            updateAddressLabel,
+        }),
         labeling: {
-            updateWalletLabel: createUpdateWalletLabel(labelingDeps),
-            updateAccountLabel: createUpdateAccountLabel(labelingDeps),
-            updateOutputLabel: createUpdateOutputLabel(labelingDeps),
-            updateAddressLabel: createUpdateAddressLabel(labelingDeps),
+            updateWalletLabel,
+            updateAccountLabel,
+            updateOutputLabel,
+            updateAddressLabel,
         },
     };
 };

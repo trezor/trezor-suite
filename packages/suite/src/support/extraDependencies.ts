@@ -8,7 +8,12 @@ import {
     metadataActions,
     metadataLabelingActions,
     selectLabelingDataForAccount,
+    selectLabelingDataForWallet,
 } from '@suite/metadata';
+import {
+    type MetadataMigrationDep,
+    createMetadataMigrationCompositionRoot,
+} from '@suite/metadata-migration';
 import { closeModal, openModal } from '@suite/modal';
 import { createElectronPlatformEncryption } from '@suite/platform-encryption-electron';
 import { createWebauthnPlatformEncryption } from '@suite/platform-encryption-webauthn';
@@ -29,7 +34,7 @@ import { createSuiteSyncDesktopCompositionRoot } from '@suite/suite-sync';
 import { createBip329CompositionRoot } from '@suite-common/bip329';
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
 import { toGetter } from '@suite-common/dependency-injection';
-import type { DeviceReducerState } from '@suite-common/device';
+import { type DeviceReducerState, selectDevices } from '@suite-common/device';
 import { FW_HASH_CHECK_DEFAULT_TIMEOUTS } from '@suite-common/firmware-authenticity';
 import {
     type CommonServices,
@@ -37,7 +42,11 @@ import {
     type ExtraDependenciesStatic,
 } from '@suite-common/redux-utils';
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
-import { selectAllLabelsForAccount, selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
+import {
+    selectAllLabelsForAccount,
+    selectIsSuiteSyncEnabled,
+    selectSuiteSyncWalletLabel,
+} from '@suite-common/suite-sync';
 import {
     type TokenDefinitionsState,
     buildTokenDefinitionsFromStorage,
@@ -51,6 +60,7 @@ import {
     type SendState,
     type TransactionsState,
     type WalletSettingsState,
+    selectAccountsByDeviceState,
 } from '@suite-common/wallet-core';
 import { createAccountKey } from '@suite-common/wallet-types';
 import { buildHistoricRatesFromStorage } from '@suite-common/wallet-utils';
@@ -87,7 +97,10 @@ export type StoreAPIDep = {
 
 export type SuiteAppDeps = StoreAPIDep & HistoryDep;
 
-export type SuiteServices = CommonServices & DesktopAnalyticsDep & SuiteRouterHistoryDep;
+export type SuiteServices = CommonServices &
+    DesktopAnalyticsDep &
+    MetadataMigrationDep &
+    SuiteRouterHistoryDep;
 
 export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteServices => {
     const platformEncryption = isDesktop()
@@ -120,9 +133,23 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         updateOutputLabel: suiteSync.labeling.updateOutputLabel,
     });
 
+    const { migrateLegacyLabelsToSuiteSync } = createMetadataMigrationCompositionRoot({
+        getDevices: () => selectDevices(deps.getState()),
+        getAccountsByDeviceState: toGetter(deps.getState, selectAccountsByDeviceState),
+        getLegacyWalletLabels: toGetter(deps.getState, selectLabelingDataForWallet),
+        getLegacyAccountLabels: toGetter(deps.getState, selectLabelingDataForAccount),
+        getCurrentWalletLabel: toGetter(deps.getState, selectSuiteSyncWalletLabel),
+        getCurrentAccountLabels: toGetter(deps.getState, selectAllLabelsForAccount),
+        updateWalletLabel: suiteSync.labeling.updateWalletLabel,
+        updateAccountLabel: suiteSync.labeling.updateAccountLabel,
+        updateAddressLabel: suiteSync.labeling.updateAddressLabel,
+        updateOutputLabel: suiteSync.labeling.updateOutputLabel,
+    });
+
     return {
         suiteSync,
         bip329,
+        migrateLegacyLabelsToSuiteSync,
         ensureDelegatedIdentityKey,
         platformEncryption,
         analytics,
@@ -130,7 +157,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
             history: deps.history,
         }),
         reportSecurityCheck,
-        saveAs: (data, fileName) => saveAs(data, fileName),
+        saveAs: (data: Blob, fileName: string) => saveAs(data, fileName),
         connectInitSettings,
         migrateSuiteSyncLabelsForRbfTransaction:
             createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot({

@@ -36,6 +36,7 @@ import { DustPhishing } from './DustPhishing';
 import { EarlyAccess } from './EarlyAccess';
 import { Experimental } from './Experimental';
 import { Language } from './Language';
+import { LegacyLabelingMigration } from './LegacyLabelingMigration';
 import { McpServer } from './McpServer';
 import { MevProtection } from './MevProtection';
 import { NetworkReserve } from './NetworkReserve';
@@ -113,6 +114,7 @@ export const SettingsGeneral = () => {
                     ) : (
                         <ConnectLabelingProvider />
                     ))}
+                <LegacyLabelingMigration />
             </SettingsSection>
 
             <SettingsSection

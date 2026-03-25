@@ -664,6 +664,16 @@ export const NotificationRenderer = ({
                 message: 'TR_BIP_329_LABELS_IMPORTED',
             });
 
+        case 'legacy-labeling-migration-success':
+            return renderNotificationView(render, notification, {
+                variant: 'success',
+                message: 'TR_LABELING_MIGRATION_SUCCESS',
+                values: {
+                    added: notification.added,
+                    skipped: notification.skipped,
+                },
+            });
+
         default:
             return exhaustive(type);
     }

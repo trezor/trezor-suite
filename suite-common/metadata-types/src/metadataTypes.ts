@@ -197,6 +197,9 @@ export interface AccountLabels {
     addressLabels: Record<string, MetadataItem>;
 }
 
+/**
+ * @deprecated Legacy Labeling
+ */
 export interface WalletLabels {
     walletLabel?: string;
 }
