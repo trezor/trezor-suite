@@ -9,6 +9,7 @@ export * from './hooks/useCountryFilteredData';
 export * from './hooks/useCountrySubdivisionFilteredData';
 export * from './hooks/useProviderMetadataChangeEffect';
 export * from './hooks/useTradingFiatValues';
+export * from './hooks/useExchangeFiatDeviation';
 export * from './hooks/useApprovalStep';
 export * from './invityAPI';
 export * from './reducers/buyReducer';

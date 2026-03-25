@@ -1002,6 +1002,10 @@ export const messages = defineMessages({
         defaultMessage: 'You get',
         id: 'TR_TRADING_YOU_GET',
     },
+    TR_TRADING_FIAT_DEVIATION_WARNING: {
+        defaultMessage: 'Receiving over {percentage}% less in estimated fiat value',
+        id: 'TR_TRADING_FIAT_DEVIATION_WARNING',
+    },
     TR_TRADING_COUNTRY: {
         defaultMessage: 'Country of residence',
         id: 'TR_TRADING_COUNTRY',
