@@ -316,6 +316,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                     deviceActions.deviceChanged,
                     deviceActions.setEntropyCheckResult,
                     deviceActions.clearDevicePersistentData,
+                    deviceActions.forgetDevicePersistentData,
                 )(action)
             ) {
                 api.dispatch(storageActions.savePersistentDeviceData());
