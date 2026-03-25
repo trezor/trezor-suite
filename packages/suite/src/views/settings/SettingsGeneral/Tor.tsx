@@ -4,11 +4,12 @@ import { Translation } from '@suite/intl';
 import { openDeferredModal, selectModalType } from '@suite/modal';
 import { SettingsAnchor } from '@suite/router';
 import { Switch } from '@trezor/components';
+import { ActionColumn, TextColumn } from '@trezor/product-components';
 import { HELP_CENTER_TOR_URL } from '@trezor/urls';
 
 import { toggleTor } from 'src/actions/suite/suiteActions';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
-import { ActionColumn, TextColumn } from 'src/components/suite';
+import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectCoinjoinAccounts } from 'src/reducers/wallet/coinjoinReducer';
 import { TorStatus } from 'src/types/suite';
@@ -67,7 +68,7 @@ export const Tor = () => {
                         }}
                     />
                 }
-                buttonLink={HELP_CENTER_TOR_URL}
+                bottomContent={<LearnMoreButton url={HELP_CENTER_TOR_URL} />}
             />
             <ActionColumn>
                 <Switch

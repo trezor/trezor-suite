@@ -1,9 +1,10 @@
 import { Translation } from '@suite/intl';
 import { SettingsAnchor, goto } from '@suite/router';
 import { getFirmwareDowngradeUrl } from '@suite-common/suite-utils';
+import { ActionButton, ActionColumn, TextColumn } from '@trezor/product-components';
 
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
-import { ActionButton, ActionColumn, TextColumn } from 'src/components/suite';
+import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 
 export const CustomFirmware = () => {
@@ -21,7 +22,11 @@ export const CustomFirmware = () => {
             <TextColumn
                 title={<Translation id="TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_TITLE" />}
                 description={<Translation id="TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_DESCRIPTION" />}
-                buttonLink={firmwareDowngradeUrl}
+                bottomContent={
+                    firmwareDowngradeUrl ? (
+                        <LearnMoreButton url={firmwareDowngradeUrl} />
+                    ) : undefined
+                }
             />
             <ActionColumn>
                 <ActionButton

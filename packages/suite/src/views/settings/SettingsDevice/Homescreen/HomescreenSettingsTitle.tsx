@@ -28,7 +28,7 @@ export const HomescreenSettingsTitle = ({ deviceModelInternal }: HomescreenSetti
                 ' ' +
                 translationString('TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_BW')
             }
-            learnMoreButton={
+            bottomContent={
                 <LearnMoreButton url={HOMESCREEN_EDITOR_URL}>
                     <Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_EDITOR" />
                 </LearnMoreButton>

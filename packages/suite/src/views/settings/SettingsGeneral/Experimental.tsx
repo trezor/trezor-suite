@@ -65,7 +65,7 @@ const FeatureLine = ({ feature, enabledFeatures }: FeatureLineProps) => {
             <TextColumn
                 title={title ? <Translation {...title} /> : feature}
                 description={description ? <Translation {...description} /> : undefined}
-                learnMoreButton={url ? <LearnMoreButton url={url} /> : undefined}
+                bottomContent={url ? <LearnMoreButton url={url} /> : undefined}
             />
             <ActionColumn>
                 {config.routeName ? (
@@ -173,7 +173,7 @@ export const Experimental = () => {
                             </AnimatePresence>
                         </>
                     }
-                    learnMoreButton={<LearnMoreButton url={EXPERIMENTAL_FEATURES_KB_URL} />}
+                    bottomContent={<LearnMoreButton url={EXPERIMENTAL_FEATURES_KB_URL} />}
                 />
                 <ActionColumn>
                     <Switch

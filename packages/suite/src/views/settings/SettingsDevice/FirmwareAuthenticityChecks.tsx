@@ -49,7 +49,7 @@ export const FirmwareAuthenticityChecks = () => {
                         }
                     />
                 }
-                learnMoreButton={<LearnMoreButton url={HELP_CENTER_FIRMWARE_REVISION_CHECK} />}
+                bottomContent={<LearnMoreButton url={HELP_CENTER_FIRMWARE_REVISION_CHECK} />}
             />
             <ActionColumn>
                 <ActionButton

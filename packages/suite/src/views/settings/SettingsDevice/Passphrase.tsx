@@ -2,11 +2,12 @@ import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { SettingsAnchor } from '@suite/router';
 import { Switch, Tooltip } from '@trezor/components';
+import { ActionColumn, TextColumn } from '@trezor/product-components';
 import { HELP_CENTER_PASSPHRASE_URL } from '@trezor/urls';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
-import { ActionColumn, TextColumn } from 'src/components/suite';
+import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
 
@@ -35,7 +36,7 @@ export const Passphrase = ({ isDeviceLocked }: PassphraseProps) => {
             <TextColumn
                 title={<Translation id="TR_DEVICE_SETTINGS_PASSPHRASE_TITLE" />}
                 description={<Translation id="TR_DEVICE_SETTINGS_PASSPHRASE_DESC" />}
-                buttonLink={HELP_CENTER_PASSPHRASE_URL}
+                bottomContent={<LearnMoreButton url={HELP_CENTER_PASSPHRASE_URL} />}
             />
             <ActionColumn>
                 <Tooltip

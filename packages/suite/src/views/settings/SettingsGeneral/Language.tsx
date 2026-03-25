@@ -6,11 +6,12 @@ import { SettingsAnchor } from '@suite/router';
 import { selectAutodetectLanguage, selectLanguage, suiteSettingsActions } from '@suite/settings';
 import { LANGUAGES, type Locale, type LocaleInfo } from '@suite-common/suite-types';
 import { getPlatformLanguages } from '@trezor/env-utils';
+import { ActionColumn, ActionSelect, TextColumn } from '@trezor/product-components';
 import { CROWDIN_URL } from '@trezor/urls';
 import { typedObjectEntries } from '@trezor/utils';
 
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
-import { ActionColumn, ActionSelect, TextColumn } from 'src/components/suite';
+import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
 import { getOsLocale } from 'src/utils/suite/l10n';
@@ -99,8 +100,13 @@ export const Language = () => {
             <TextColumn
                 title={<Translation id="TR_LANGUAGE" />}
                 description={isCommunityLanguage && <Translation id="TR_LANGUAGE_DESCRIPTION" />}
-                buttonTitle={<Translation id="TR_LANGUAGE_CREDITS" />}
-                buttonLink={isCommunityLanguage ? CROWDIN_URL : undefined}
+                bottomContent={
+                    isCommunityLanguage ? (
+                        <LearnMoreButton url={CROWDIN_URL}>
+                            <Translation id="TR_LANGUAGE_CREDITS" />
+                        </LearnMoreButton>
+                    ) : undefined
+                }
             />
             <ActionColumn>
                 <ActionSelect
