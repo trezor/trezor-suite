@@ -1,15 +1,34 @@
 import { type RouteProp } from '@react-navigation/native';
 
+import { selectTradingExchangeSelectedQuote, tradingExchangeActions } from '@suite-common/trading';
 import { getTranslation } from '@suite-native/intl';
 import { type TradingStackParamList, type TradingStackRoutes } from '@suite-native/navigation';
-import { renderWithStoreProvider } from '@suite-native/test-utils';
-import {
-    accounts,
-    exchangeQuotes,
-    getInitializedTradingState,
-} from '@suite-native/trading-fixtures';
+import { type TestStore, initStore, renderWithStoreProvider } from '@suite-native/test-utils';
+import { eth1NormalAccount, exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
 
 import { TradingExchangeRevokeScreen } from '../TradingExchangeRevokeScreen';
+
+const mockShowSheet = jest.fn();
+const mockHideSheet = jest.fn();
+const mockConfirmApproval = jest.fn().mockResolvedValue({});
+
+jest.mock('../../hooks/exchange/Approval/useApprovalFlow', () => ({
+    useApprovalFlow: () => ({
+        quote: undefined,
+        isConfirming: false,
+        error: null,
+        confirmApproval: mockConfirmApproval,
+    }),
+}));
+
+jest.mock('../../hooks/exchange/Approval/useEvmApprovalFees', () => ({
+    useEvmApprovalFees: () => ({
+        fee: '100000',
+        isLoading: false,
+        error: null,
+        composeFees: jest.fn(),
+    }),
+}));
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
@@ -22,6 +41,15 @@ jest.mock('@react-navigation/native', () => ({
     }),
 }));
 
+jest.mock('@suite-native/trading-atoms', () => ({
+    ...jest.requireActual('@suite-native/trading-atoms'),
+    useBottomSheetControls: () => ({
+        isSheetVisible: false,
+        showSheet: mockShowSheet,
+        hideSheet: mockHideSheet,
+    }),
+}));
+
 let mockIsDeviceConnected = true;
 jest.mock('@suite-common/device', () => ({
     ...jest.requireActual('@suite-common/device'),
@@ -30,37 +58,16 @@ jest.mock('@suite-common/device', () => ({
 
 const testQuote = exchangeQuotes[0];
 
-const preloadedState = {
-    wallet: {
-        trading: {
-            ...getInitializedTradingState('exchange'),
-            exchange: {
-                ...getInitializedTradingState('exchange').exchange,
-                selectedQuote: testQuote,
-                tradingAccountKey: accounts[0].key,
-            },
-        },
-        accounts,
-    },
-};
-
 describe('TradingExchangeRevokeScreen', () => {
+    let store: TestStore;
     let unmount: (() => void) | undefined;
+
+    const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
     const renderScreen = () => {
         const result = renderWithStoreProvider(
-            <TradingExchangeRevokeScreen
-                route={
-                    { params: { quote: testQuote } } as RouteProp<
-                        TradingStackParamList,
-                        TradingStackRoutes.TradingExchangeRevoke
-                    >
-                }
-                navigation={{} as any}
-            />,
-            {
-                preloadedState,
-            },
+            <TradingExchangeRevokeScreen route={{ params: {} } as any} navigation={{} as any} />,
+            { store },
         );
 
         ({ unmount } = result);
@@ -72,6 +79,16 @@ describe('TradingExchangeRevokeScreen', () => {
         jest.clearAllMocks();
 
         mockIsDeviceConnected = true;
+
+        const preloadedState = {
+            wallet: getWalletState({
+                tradeType: 'exchange',
+            }),
+        };
+
+        store = initStore(preloadedState).store;
+        store.dispatch(tradingExchangeActions.savePreselectedQuote(testQuote));
+        store.dispatch(tradingExchangeActions.setTradingAccountKey(eth1NormalAccount.key));
     });
 
     afterEach(() => {
@@ -84,15 +101,9 @@ describe('TradingExchangeRevokeScreen', () => {
     it('should render the revoke screen with quote details', () => {
         const { getByText } = renderScreen();
 
-        expect(getByText('BTC Account #1')).toBeOnTheScreen();
+        expect(getByText('ETH Account #1')).toBeOnTheScreen();
         expect(getByText('Mercuryo')).toBeOnTheScreen();
-        expect(getByText('$4.76')).toBeOnTheScreen(); // Fixed fee TODO value
-    });
-
-    it('should show network information when network symbol is available', () => {
-        const { getByText } = renderScreen();
-
-        expect(getByText('Ethereum')).toBeOnTheScreen();
+        expect(errorSpy).not.toHaveBeenCalled();
     });
 
     it('should display provider information correctly', () => {
@@ -101,30 +112,35 @@ describe('TradingExchangeRevokeScreen', () => {
         expect(getByText('Mercuryo')).toBeOnTheScreen();
     });
 
-    it('should show current limit and new limit with crypto icon', () => {
-        const { getByText, getAllByText } = renderScreen();
-
-        expect(getByText('Current limit')).toBeOnTheScreen();
-        expect(getByText('New limit')).toBeOnTheScreen();
-        const usdcElements = getAllByText('0 USDC');
-        expect(usdcElements).toHaveLength(2);
-    });
-
     it('should render continue button', () => {
         const { getByText } = renderScreen();
 
-        const buttons = getByText('Continue');
-        expect(buttons).toBeTruthy();
+        expect(getByText(getTranslation('generic.buttons.continue'))).toBeOnTheScreen();
     });
 
-    it('should display warning alert about revoking permissions', () => {
-        const { getByText } = renderScreen();
+    it('should render alert when no quote is provided', () => {
+        store.dispatch(tradingExchangeActions.savePreselectedQuote(undefined));
+        store.dispatch(tradingExchangeActions.saveSelectedQuote(undefined));
+
+        const { getByText, queryByText } = renderScreen();
 
         expect(
-            getByText(
-                'This stops the provider from using your USDC. You’ll need to approve again to swap.',
-            ),
+            getByText(getTranslation('moduleTrading.tradingExchangeRevokeScreen.revokeErrorAlert')),
         ).toBeOnTheScreen();
+        expect(queryByText(getTranslation('generic.buttons.continue'))).toBeNull();
+        expect(errorSpy).toHaveBeenCalledTimes(1);
+        expect(errorSpy).toHaveBeenCalledWith('No quote to revoke approval');
+    });
+
+    it('should clear selected quote on unmount', () => {
+        store.dispatch(tradingExchangeActions.saveSelectedQuote(testQuote));
+        const { unmount: localUnmount } = renderScreen();
+
+        localUnmount();
+        unmount = undefined;
+
+        const selectedQuote = selectTradingExchangeSelectedQuote(store.getState());
+        expect(selectedQuote).toBeUndefined();
     });
 
     it('should display device guard when device is not connected', () => {

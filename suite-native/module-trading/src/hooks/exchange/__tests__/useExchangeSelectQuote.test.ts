@@ -466,7 +466,6 @@ describe('useExchangeSelectQuote', () => {
             });
 
             expect(mockNavigation.navigate).toHaveBeenCalledWith('TradingExchangeRevoke', {
-                quote: exchangeQuotes[1],
                 shouldIncreaseLimit: true,
             });
         });

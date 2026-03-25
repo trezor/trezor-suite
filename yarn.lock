@@ -14153,7 +14153,6 @@ __metadata:
     "@trezor/styles-native": "workspace:*"
     "@trezor/theme": "workspace:*"
     "@trezor/utils": "workspace:*"
-    "@types/invity-api": "npm:^1.1.15"
     expo-system-ui: "npm:~55.0.9"
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
