@@ -15,7 +15,7 @@ export const useApprovalTypeControls = (quote: ExchangeTrade | undefined) => {
             dispatch(
                 tradingExchangeActions.saveSelectedQuote({
                     ...quote,
-                    approvalType: 'INFINITE',
+                    approvalType: 'MINIMAL',
                 }),
             );
         }
@@ -37,7 +37,7 @@ export const useApprovalTypeControls = (quote: ExchangeTrade | undefined) => {
     );
 
     return {
-        approvalType: quote?.approvalType ?? 'INFINITE',
+        approvalType: quote?.approvalType ?? 'MINIMAL',
         isSheetVisible,
         showSheet,
         hideSheet,

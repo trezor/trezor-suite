@@ -34,18 +34,18 @@ describe('useApprovalTypeControls', () => {
         store.dispatch(tradingExchangeActions.savePreselectedQuote(exchangeQuotes[0]));
     });
 
-    it('should use INFINITE as default', () => {
+    it('should use MINIMAL as default', () => {
         const { result } = renderUseApprovalTypeControls();
 
         expect(result.current).toEqual({
-            approvalType: 'INFINITE',
+            approvalType: 'MINIMAL',
             isSheetVisible: false,
             showSheet: expect.any(Function),
             hideSheet: expect.any(Function),
             handleApprovalTypeChange: expect.any(Function),
         });
         expect(selectTradingExchangeActiveQuote(store.getState())).toEqual(
-            expect.objectContaining({ approvalType: 'INFINITE' }),
+            expect.objectContaining({ approvalType: 'MINIMAL' }),
         );
     });
 
@@ -53,16 +53,16 @@ describe('useApprovalTypeControls', () => {
         const { result } = renderUseApprovalTypeControls();
 
         act(() => {
-            result.current.handleApprovalTypeChange('MINIMAL');
+            result.current.handleApprovalTypeChange('INFINITE');
         });
 
         expect(result.current).toEqual(
             expect.objectContaining({
-                approvalType: 'MINIMAL',
+                approvalType: 'INFINITE',
             }),
         );
         expect(selectTradingExchangeActiveQuote(store.getState())).toEqual(
-            expect.objectContaining({ approvalType: 'MINIMAL' }),
+            expect.objectContaining({ approvalType: 'INFINITE' }),
         );
     });
 
@@ -71,7 +71,7 @@ describe('useApprovalTypeControls', () => {
         const { result } = renderUseApprovalTypeControls();
 
         expect(result.current).toEqual({
-            approvalType: 'INFINITE',
+            approvalType: 'MINIMAL',
             isSheetVisible: false,
             showSheet: expect.any(Function),
             hideSheet: expect.any(Function),
@@ -80,12 +80,12 @@ describe('useApprovalTypeControls', () => {
         expect(selectTradingExchangeActiveQuote(store.getState())).toBeUndefined();
 
         act(() => {
-            result.current.handleApprovalTypeChange('MINIMAL');
+            result.current.handleApprovalTypeChange('INFINITE');
         });
 
         expect(result.current).toEqual(
             expect.objectContaining({
-                approvalType: 'INFINITE',
+                approvalType: 'MINIMAL',
             }),
         );
         expect(selectTradingExchangeActiveQuote(store.getState())).toBeUndefined();
