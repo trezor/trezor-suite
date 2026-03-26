@@ -30,35 +30,9 @@ export const getOauthReceiverUrl = () => {
     return desktopApi.getHttpReceiverAddress('/oauth');
 };
 
-let interval: number;
-
-/**
- * Use this function to workaround impossibility to detect beforeunload event
- * for windows loaded on another domains
- * @param uri
- * @param name
- * @param options
- * @param closeCallback
- */
-const openWindowOnAnotherDomain = (
-    url: URL,
-    name: string,
-    options: string,
-    closeCallback: () => void,
-) => {
-    const win = window.open(url, name, options);
-    clearInterval(interval);
-    interval = window.setInterval(() => {
-        // todo: for some reason, when used in electron, win has closed=true right from the start and thus closeCallback
-        // is invoked immediately. temporary workaround is not to use openWindowOnAnotherDomain in electron
-        if (!win) {
-            window.clearInterval(interval);
-            closeCallback();
-        }
-    }, 1000);
-
-    return win;
-};
+const POPUP_POLL_INTERVAL_MS = 500;
+const POPUP_TIMEOUT_MS = 60 * 1000;
+const OAUTH_BROADCAST_CHANNEL_NAME = 'trezor-oauth';
 
 const oauthResponseMessage = z
     .object({
@@ -131,7 +105,10 @@ const handleResponse = (
             return onError(new Error('Invalid response from data provider'));
         }
 
-        handleResponseError(error, error_description);
+        const responseError = handleResponseError(error, error_description);
+        if (responseError) {
+            return onError(responseError);
+        }
 
         onSuccess({ code, access_token });
     } catch (error) {
@@ -199,6 +176,36 @@ const getWebHandlerInstance = (
     return webHandlerInstance;
 };
 
+const getWebBroadcastChannelHandlerInstance = (
+    dfd: Deferred<OAuthCredentials>,
+    originalParams: URLSearchParams,
+) => {
+    const channel = new BroadcastChannel(OAUTH_BROADCAST_CHANNEL_NAME);
+    const messageHandler = (e: MessageEvent) => {
+        try {
+            const parsedMessage = oauthResponseMessage.parse(e.data);
+            handleResponse(
+                parsedMessage,
+                originalParams,
+                credentials => {
+                    channel.close();
+                    dfd.resolve(credentials);
+                },
+                error => {
+                    channel.close();
+                    dfd.reject(error);
+                },
+            );
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    channel.addEventListener('message', messageHandler);
+
+    return channel;
+};
+
 /**
  * Handle extraction of authorization code from Oauth2 protocol
  */
@@ -213,21 +220,55 @@ export const extractCredentialsFromAuthorizationFlow = (url: URL) => {
         window.open(url, METADATA_PROVIDER.AUTH_WINDOW_TITLE, METADATA_PROVIDER.AUTH_WINDOW_PROPS);
     } else {
         const messageHandler = getWebHandlerInstance(dfd, url.searchParams);
+        const broadcastChannel = getWebBroadcastChannelHandlerInstance(dfd, url.searchParams);
 
-        window.addEventListener('message', messageHandler);
-        openWindowOnAnotherDomain(
+        const popup = window.open(
             url,
             METADATA_PROVIDER.AUTH_WINDOW_TITLE,
             METADATA_PROVIDER.AUTH_WINDOW_PROPS,
-            () => {
-                // note that this rejection happens even on successful authorization.
-                // 'window closed' error message may be used to differentiate between errors
-                setTimeout(() => {
-                    window.removeEventListener('message', messageHandler);
-                    dfd.reject(new Error('window closed'));
-                }, 5000);
-            },
         );
+
+        window.addEventListener('message', messageHandler);
+
+        if (!popup) {
+            window.removeEventListener('message', messageHandler);
+            broadcastChannel.close();
+            dfd.reject(new Error('window closed'));
+
+            return dfd.promise;
+        }
+
+        let pollIntervalId = 0;
+        let timeoutId = 0;
+
+        const cleanup = () => {
+            window.removeEventListener('message', messageHandler);
+            broadcastChannel.close();
+            window.clearInterval(pollIntervalId);
+            window.clearTimeout(timeoutId);
+        };
+
+        // Poll for popup being closed by the user (e.g. manually closing the window).
+        pollIntervalId = window.setInterval(() => {
+            if (popup.closed) {
+                cleanup();
+                dfd.reject(new Error('window closed'));
+            }
+        }, POPUP_POLL_INTERVAL_MS);
+
+        // Safety timeout to avoid hanging indefinitely.
+        timeoutId = window.setTimeout(() => {
+            cleanup();
+            dfd.reject(new Error('window closed'));
+        }, POPUP_TIMEOUT_MS);
+
+        void dfd.promise.finally(() => {
+            cleanup();
+
+            if (!popup.closed) {
+                popup.close();
+            }
+        });
     }
 
     return dfd.promise;

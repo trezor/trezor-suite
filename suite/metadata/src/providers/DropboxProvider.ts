@@ -70,7 +70,6 @@ export class DropboxProvider extends AbstractMetadataProvider {
         try {
             // dropbox supports authorization code flow for both web and desktop
             const { code } = await extractCredentialsFromAuthorizationFlow(new URL(url.toString()));
-
             if (!code)
                 return this.error('AUTH_ERROR', 'Failed to extract code from authorization flow');
 
