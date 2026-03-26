@@ -7,7 +7,7 @@ import Animated, {
     withTiming,
 } from 'react-native-reanimated';
 
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { Button, Card, HStack, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
@@ -51,6 +51,7 @@ export const EarnConsentsDelegatingCard = ({
     const { applyStyle } = useNativeStyles();
     const measuredHeight = useSharedValue(-1);
     const expandableHeight = useSharedValue(0);
+    const displaySymbol = symbol ? getNetworkDisplaySymbol(symbol) : undefined;
 
     const handleLayout = (event: LayoutChangeEvent) => {
         if (measuredHeight.value === -1) {
@@ -102,9 +103,7 @@ export const EarnConsentsDelegatingCard = ({
                         <Translation
                             id="earn.earnConsentsScreen.delegatingCard.firstItem"
                             values={{
-                                symbol: symbol ? (
-                                    symbol.toUpperCase()
-                                ) : (
+                                displaySymbol: displaySymbol ?? (
                                     <Translation id="earn.notAvailableShort" />
                                 ),
                             }}

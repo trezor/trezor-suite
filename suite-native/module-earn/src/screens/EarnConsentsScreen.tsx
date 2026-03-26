@@ -12,7 +12,7 @@ import {
     RootStackRoutes,
     Screen,
     ScreenHeader,
-    StackNavigationProps,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
 import {
     type NativeStakingRootState,

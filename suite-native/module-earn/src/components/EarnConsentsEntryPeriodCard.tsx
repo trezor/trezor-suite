@@ -116,7 +116,6 @@ export const EarnConsentsEntryPeriodCard = ({
                             size="small"
                             onPress={handleLearnMore}
                             style={applyStyle(learnMoreButtonStyle)}
-                            adjustsFontSizeToFit
                         >
                             <Translation id="generic.buttons.learnMore" />
                         </Button>
@@ -126,7 +125,6 @@ export const EarnConsentsEntryPeriodCard = ({
                         size="small"
                         onPress={handleConfirm}
                         style={applyStyle(confirmButtonStyle)}
-                        adjustsFontSizeToFit
                     >
                         <Translation id="generic.buttons.understand" />
                     </Button>
