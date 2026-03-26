@@ -1,5 +1,5 @@
 import { yup } from '@suite-common/validators';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { getStakingLimitsByNetworkSymbol, isDecimalsValid } from '@suite-common/wallet-utils';
 import { type Translate } from '@suite-native/intl';
 import { BigNumber } from '@trezor/utils';
@@ -28,7 +28,7 @@ export const earnFormValidationSchema = yup.object({
                 return this.createError({
                     message: translate('earn.earnFormScreen.validation.amountBelowMinimum', {
                         amount: limits.MIN_AMOUNT_FOR_STAKING.toString(),
-                        symbol: symbol.toUpperCase(),
+                        symbol: getNetworkDisplaySymbol(symbol),
                     }),
                 });
             }

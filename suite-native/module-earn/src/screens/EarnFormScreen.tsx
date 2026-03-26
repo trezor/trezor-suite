@@ -1,7 +1,14 @@
+import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+
 import { AccountDetailsCard } from '@suite-native/accounts';
 import { Box } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
-import { type RootStackParamList, type RootStackRoutes, Screen } from '@suite-native/navigation';
+import {
+    type RootStackParamList,
+    RootStackRoutes,
+    Screen,
+    type StackNavigationProps,
+} from '@suite-native/navigation';
 
 import { EarnFormScreenFooter } from '../components/EarnFormScreenFooter';
 import { EarnFormScreenHeader } from '../components/EarnFormScreenHeader';
