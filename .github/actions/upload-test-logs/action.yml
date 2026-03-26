@@ -24,7 +24,7 @@ runs:
     - name: Upload logs of testing environment
       uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
       with:
-        name: test-env-logs-${{ github.job }}-${{ inputs.target }}-${{ inputs.test-group }}
+        name: test-env-logs-${{ github.job }}-${{ github.run_attempt }}-${{ inputs.target }}-${{ inputs.test-group }}
         path: |
           trezor-user-env-debugging.log
           tenv-emulator-bridge-debugging.log
