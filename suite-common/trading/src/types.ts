@@ -324,6 +324,7 @@ export type HandleBuyRequestThunkProps = {
 export type HandleExchangeRequestThunkProps = {
     formValues: MinimalExchangeFormProps;
     network: Network;
+    account: Account;
     timer: Timer;
     shouldSendInSats: boolean | undefined;
     composeRequestCallback: () => void;

@@ -256,6 +256,7 @@ export const useTradingExchangeForm = ({
     const { handleChange } = useTradingExchangeHandleChange({
         formValues: values,
         network,
+        account,
         timer,
         shouldSendInSats,
         composeRequestCallback: () => {
@@ -631,9 +632,13 @@ export const useTradingExchangeForm = ({
             case 'stellar':
                 return setValueRef.current('fromAddress', account.descriptor);
             default:
-                return setValueRef.current('fromAddress', undefined);
+                if (networkType !== 'bitcoin') {
+                    return setValueRef.current('fromAddress', undefined);
+                }
+
+                return;
         }
-    }, [account.symbol, account.descriptor, setValueRef]);
+    }, [account.symbol, account.descriptor, account.addresses, setValueRef]);
 
     // set transactionData from DEX quote for correct fees fetching
     useEffect(() => {
@@ -662,10 +667,13 @@ export const useTradingExchangeForm = ({
         }
 
         const { dexTx } = quote;
+        const isEthereum = network?.networkType === 'ethereum';
 
         setValue('transactionData', dexTx.data);
         setValue(TRADING_FORM_OUTPUT_ADDRESS, dexTx.to);
-        setValue('ethereumAdjustGasLimit', ETHEREUM_ADJUST_GAS_LIMIT);
+        if (isEthereum) {
+            setValue('ethereumAdjustGasLimit', ETHEREUM_ADJUST_GAS_LIMIT);
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
         dexQuotes,
