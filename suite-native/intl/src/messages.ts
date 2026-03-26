@@ -2645,6 +2645,7 @@ export const messages = {
                 bullet2: 'No gas fees - the smart contract handles everything for you',
                 bullet3: 'Your swap might be partially filled based on the market conditions',
             },
+            fiatDeviationWarning: 'Receiving {percent} less in estimated value.',
         },
         tradingSellPreviewScreen: {
             title: 'Sell',

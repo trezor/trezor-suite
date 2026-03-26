@@ -7,6 +7,7 @@ import { InlineAlertBox, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 import { ExchangeFeePickerCard } from './ExchangeFeePickerCard';
+import { ExchangeFiatDeviationWarning } from './ExchangeFiatDeviationWarning';
 import { ExchangeFromAccountTradePreviewCard } from './ExchangeFromAccountTradePreviewCard';
 import { ExchangeFusionPlusInfo } from './ExchangeFusionPlusInfo';
 import { ExchangeToAccountTradePreviewCard } from './ExchangeToAccountTradePreviewCard';
@@ -41,6 +42,7 @@ export const ExchangePreviewView = memo(
                 )}
                 <ExchangeFromAccountTradePreviewCard quote={quote} />
                 <ExchangeToAccountTradePreviewCard quote={quote} />
+                <ExchangeFiatDeviationWarning quote={quote} />
                 <ExchangeFeePickerCard quote={quote} isTxnError={isTxnError} />
                 {isFusionPlus && <ExchangeFusionPlusInfo />}
             </VStack>
