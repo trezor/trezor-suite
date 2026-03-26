@@ -38,6 +38,7 @@ const verificationSuccessResponse: Ok<AuthenticateDeviceResult> = {
             rootPubKey: 'recognized-root-pub-key',
         },
         tropicResult: null,
+        MLDSA44Result: null,
     },
 };
 
@@ -50,6 +51,7 @@ const verifyFailureResponseNotFound: Ok<AuthenticateDeviceResult> = {
             caPubKey: 'bad-ca-pub-key',
         },
         tropicResult: null,
+        MLDSA44Result: null,
     },
 };
 
@@ -62,6 +64,7 @@ const verifyFailureResponseBlacklisted: Ok<AuthenticateDeviceResult> = {
             caPubKey: 'blacklisted-root-pub-key',
         },
         tropicResult: null,
+        MLDSA44Result: null,
     },
 };
 

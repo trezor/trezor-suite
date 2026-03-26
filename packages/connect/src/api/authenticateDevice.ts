@@ -81,9 +81,16 @@ export default class AuthenticateDevice extends AbstractMethod<
 
             return null;
         };
+
+        // TODO https://github.com/trezor/trezor-suite/issues/26169
+        // when firmware support for STM32U5 MLDSA-44 is added, regenerate protobuf and get the results from message
+        const getMLDSA44Result = (): Promise<VerifyAuthenticityProofResult | null> =>
+            Promise.resolve(null);
+
         const optigaResult = await getOptigaResult();
         const tropicResult = await getTropicResult();
+        const MLDSA44Result = await getMLDSA44Result();
 
-        return { optigaResult, tropicResult };
+        return { optigaResult, tropicResult, MLDSA44Result };
     }
 }
