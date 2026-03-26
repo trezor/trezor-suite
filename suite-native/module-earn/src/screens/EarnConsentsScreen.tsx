@@ -36,7 +36,6 @@ const STAKING_LEARN_MORE_URLS: Partial<Record<string, Url>> = {
 };
 
 const titleStyle = prepareNativeStyle(utils => ({
-    ...utils.typography['title-xl'],
     marginBottom: utils.spacings.sp44,
 }));
 
