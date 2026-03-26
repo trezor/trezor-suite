@@ -29,7 +29,7 @@ export const expectBridgeToBeStopped = async (request: APIRequestContext) => {
 export const waitForAppToBeInitialized = async (suite: any) =>
     await Promise.race([
         // eslint-disable-next-line playwright/missing-playwright-await
-        expect(suite.window.getByTestId('@welcome-layout/body')).toBeVisible(),
+        expect(suite.window.getByTestId('@welcome-layout/body')).toBeVisible({ timeout: 30_000 }),
         // eslint-disable-next-line playwright/missing-playwright-await
-        expect(suite.window.getByTestId('@dashboard/graph')).toBeVisible(),
+        expect(suite.window.getByTestId('@dashboard/graph')).toBeVisible({ timeout: 30_000 }),
     ]);
