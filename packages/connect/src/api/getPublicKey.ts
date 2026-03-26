@@ -13,7 +13,7 @@ import { Assert } from '@trezor/schema-utils';
 import type { MethodContext, MethodPermission, MethodReturnType } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { getBitcoinNetwork } from '../data/coinInfo';
-import { getFirmwareRange, validateCoinPath } from './common/paramsValidator';
+import { bundlify, getFirmwareRange, validateCoinPath } from './common/paramsValidator';
 import { getPublicKeyLabel } from '../utils/accountUtils';
 import { validatePath } from '../utils/pathUtils';
 
@@ -32,11 +32,8 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
     }
 
     init() {
-        // create a bundle with only one batch if bundle doesn't exists
-        this.hasBundle = !!this.payload.bundle;
-        const payload = !this.payload.bundle
-            ? { ...this.payload, bundle: [this.payload] }
-            : this.payload;
+        const { hasBundle, payload } = bundlify(this.payload);
+        this.hasBundle = hasBundle;
 
         // validate bundle type
         Assert(Bundle(GetPublicKeySchema), payload);

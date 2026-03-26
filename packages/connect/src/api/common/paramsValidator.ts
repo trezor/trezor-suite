@@ -19,6 +19,14 @@ type Param = {
 
 const invalidParameter = (message: string) => ERRORS.TypedError('Method_InvalidParameter', message);
 
+export const bundlify = <T extends { bundle?: unknown[] }>(payload: T) => ({
+    hasBundle: !!payload.bundle,
+    payload: {
+        ...payload,
+        bundle: payload.bundle ?? [payload],
+    },
+});
+
 export function validateParams<P extends Record<string, any>>(params: P, schema: Param[]): P {
     schema.forEach(field => {
         const value = params[field.name];

@@ -16,6 +16,7 @@ import type {
 } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { fromHardened, getSerializedPath, validatePath } from '../../../utils/pathUtils';
+import { bundlify } from '../../common/paramsValidator';
 
 type Params = {
     proto: PROTO.TronGetAddress;
@@ -37,11 +38,8 @@ export default class TronGetAddress extends AbstractMethod<'tronGetAddress', Par
     }
 
     init() {
-        // create a bundle with only one batch if bundle doesn't exists
-        this.hasBundle = !!this.payload.bundle;
-        const payload = !this.payload.bundle
-            ? { ...this.payload, bundle: [this.payload] }
-            : this.payload;
+        const { hasBundle, payload } = bundlify(this.payload);
+        this.hasBundle = hasBundle;
 
         // validate bundle type
         Assert(Bundle(GetAddressSchema), payload);
