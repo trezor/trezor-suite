@@ -250,7 +250,7 @@ export class SettingsPage {
     @step()
     async toggleTestnetNetworks() {
         await this.navigateTo('application');
-        await this.page.getByTestId('@settings/experimental-features/toggle-switch').click();
+        await this.experimentalFeaturesSwitch.click();
         await this.page
             .getByTestId('@settings/experimental-features/testnet-networks-checkbox')
             .click();
