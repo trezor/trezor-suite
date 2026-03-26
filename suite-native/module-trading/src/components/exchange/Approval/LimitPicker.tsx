@@ -1,4 +1,7 @@
+import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
+
+import type { DexApprovalType } from 'invity-api';
 
 import {
     cryptoIdToNetworkAndContractAddress,
@@ -7,18 +10,31 @@ import {
 import { HStack, Text, VStack } from '@suite-native/atoms';
 import { CryptoIcon, Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { TradeInfoRow } from '@suite-native/trading-atoms';
+import { TradeInfoRow, useBottomSheetControls } from '@suite-native/trading-atoms';
 
 import { ExchangeApprovalLimitSheet } from './ExchangeApprovalLimitSheet/ExchangeApprovalLimitSheet';
 import { LimitPickerUnlimitedAlert } from './LimitPickerUnlimitedAlert';
-import { useApprovalTypeControls } from '../../../hooks/exchange/Approval/useApprovalTypeControls';
 import { TradingCoinAmountFormatter } from '../../general/TradingCoinAmountFormatter';
 
-export const LimitPicker = () => {
-    const quote = useSelector(selectTradingExchangeActiveQuote);
+type LimitPickerProps = {
+    onApprovalTypeChange: (approvalType: DexApprovalType) => void;
+};
 
-    const { approvalType, isSheetVisible, showSheet, hideSheet, handleApprovalTypeChange } =
-        useApprovalTypeControls(quote);
+export const LimitPicker = ({ onApprovalTypeChange }: LimitPickerProps) => {
+    const quote = useSelector(selectTradingExchangeActiveQuote);
+    const { isSheetVisible, showSheet, hideSheet } = useBottomSheetControls();
+
+    const handleApprovalTypeChange = useCallback(
+        (newApprovalType: DexApprovalType) => {
+            if (quote) {
+                onApprovalTypeChange(newApprovalType);
+            }
+            hideSheet();
+        },
+        [hideSheet, onApprovalTypeChange, quote],
+    );
+
+    const approvalType = quote?.approvalType ?? 'MINIMAL';
 
     if (!quote?.send) {
         return null;

@@ -94,9 +94,15 @@ export const confirmApprovalThunk = createThunk(
         }
 
         if (response.status === 'APPROVAL_REQ' || response.status === 'APPROVAL_PENDING') {
-            dispatch(tradingExchangeActions.saveSelectedQuote(response));
+            // Preserve approvalType — the API response may omit it.
+            const normalizedResponse = {
+                ...response,
+                approvalType: response.approvalType ?? trade.approvalType,
+            };
 
-            return response;
+            dispatch(tradingExchangeActions.saveSelectedQuote(normalizedResponse));
+
+            return normalizedResponse;
         }
 
         if (response.status === 'SIGN_DATA') {

@@ -14,11 +14,18 @@ jest.mock('@suite-native/transaction-management', () => ({
 describe('ExchangeApprovalDetails', () => {
     let preloadedState: PreloadedState;
     const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    const mockOnApprovalTypeChange = jest.fn();
 
     const renderExchangeApprovalDetails = () =>
-        renderWithStoreProvider(<ExchangeApprovalDetails exchange="mercuryo" />, {
-            preloadedState,
-        });
+        renderWithStoreProvider(
+            <ExchangeApprovalDetails
+                exchange="mercuryo"
+                onApprovalTypeChange={mockOnApprovalTypeChange}
+            />,
+            {
+                preloadedState,
+            },
+        );
 
     beforeEach(() => {
         preloadedState = {

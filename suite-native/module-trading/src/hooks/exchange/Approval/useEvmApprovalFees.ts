@@ -58,8 +58,6 @@ export const useEvmApprovalFees = ({ approvalTypeOverride }: UseEvmApprovalFeesP
         };
     }, [selectedFeeLevel, feeLimit, feePerUnit, maxFeePerGas, maxPriorityFeePerGas]);
 
-    const approvalType =
-        approvalTypeOverride ?? ((quote?.approvalType ?? 'INFINITE') as DexApprovalType);
     const fee = composedTransactionInfo?.composed?.fee;
     const isLoading = isComposing || (fee === undefined && !error);
 
@@ -98,15 +96,20 @@ export const useEvmApprovalFees = ({ approvalTypeOverride }: UseEvmApprovalFeesP
         translate,
     ]);
 
-    // Keep a ref to the latest composeFees so the effect always calls the
-    // current version without needing it as a dependency.
     const composeFeesRef = useRef(composeFees);
     composeFeesRef.current = composeFees;
 
-    // Recompose when the approval type, dex transaction data, fee level, or custom gas fields change.
     useEffect(() => {
         composeFeesRef.current();
-    }, [approvalType, quote?.dexTx?.data, selectedFeeLevel, customFee]);
+    }, [
+        quote?.dexTx?.data,
+        quote?.approvalType,
+        account,
+        feeInfo,
+        selectedFeeLevel,
+        customFee,
+        approvalTypeOverride,
+    ]);
 
     return {
         fee,

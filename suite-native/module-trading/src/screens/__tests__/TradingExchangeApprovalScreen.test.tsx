@@ -16,13 +16,16 @@ import { TradingExchangeApprovalScreen } from '../TradingExchangeApprovalScreen'
 const mockShowSheet = jest.fn();
 const mockHideSheet = jest.fn();
 const mockConfirmApproval = jest.fn().mockResolvedValue({});
+const mockOnApprovalTypeChange = jest.fn();
 
 jest.mock('../../hooks/exchange/Approval/useApprovalFlow', () => ({
     useApprovalFlow: () => ({
         quote: undefined,
+        isReady: true,
         isConfirming: false,
         error: null,
         confirmApproval: mockConfirmApproval,
+        onApprovalTypeChange: mockOnApprovalTypeChange,
     }),
 }));
 
@@ -101,6 +104,15 @@ describe('TradingExchangeApprovalScreen', () => {
             unmount();
             unmount = undefined;
         }
+    });
+
+    it('should confirm approval on mount', () => {
+        renderScreen();
+
+        expect(mockConfirmApproval).toHaveBeenCalledTimes(1);
+        expect(mockConfirmApproval).toHaveBeenCalledWith(
+            expect.objectContaining({ approvalType: 'MINIMAL' }),
+        );
     });
 
     it('should render the approval screen with quote details', () => {
