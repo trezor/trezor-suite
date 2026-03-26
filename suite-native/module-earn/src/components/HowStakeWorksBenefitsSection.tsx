@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
 import { useFormatters } from '@suite-common/formatters';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { calculateRewards } from '@suite-common/wallet-utils';
 import { HStack, OrderedListIcon, Text, VStack } from '@suite-native/atoms';
@@ -41,7 +41,7 @@ export const HowStakeWorksBenefitsSection = ({
     accountKey,
 }: HowStakeWorksBenefitsSectionProps) => {
     const { CryptoAmountFormatter } = useFormatters();
-    const uppercasedSymbol = symbol.toUpperCase();
+    const displaySymbol = getNetworkDisplaySymbol(symbol);
     const totalBalance = useNativeStakingSelector(state =>
         selectAccountCryptoBalanceWithStaking(state, accountKey),
     );
@@ -75,16 +75,13 @@ export const HowStakeWorksBenefitsSection = ({
                             <Translation
                                 id={item.titleKey}
                                 values={{
-                                    symbol: uppercasedSymbol,
+                                    displaySymbol,
                                     potentialRewards,
                                 }}
                             />
                         </Text>
                         <Text variant="body-sm" color="textSubdued">
-                            <Translation
-                                id={item.descriptionKey}
-                                values={{ symbol: uppercasedSymbol }}
-                            />
+                            <Translation id={item.descriptionKey} values={{ displaySymbol }} />
                         </Text>
                     </VStack>
                 </HStack>

@@ -1,4 +1,8 @@
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import {
+    type NetworkSymbol,
+    getNetworkDisplaySymbol,
+    getNetworkDisplaySymbolName,
+} from '@suite-common/wallet-config';
 import { InlineAlertBox, Text, VStack } from '@suite-native/atoms';
 import { CryptoIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
@@ -12,17 +16,14 @@ export const HowStakeWorksHeaderSection = ({
     symbol,
     totalStakedAmount,
 }: HowStakeWorksHeaderSectionProps) => {
-    const uppercasedSymbol = symbol.toUpperCase();
-    const networkName = getNetwork(symbol).name;
+    const displaySymbol = getNetworkDisplaySymbol(symbol);
+    const networkName = getNetworkDisplaySymbolName(symbol);
 
     return (
         <VStack spacing="sp24" paddingTop="sp16">
             <VStack justifyContent="flex-start" alignItems="flex-start" spacing={0}>
                 <Text variant="headline-md">
-                    <Translation
-                        id="earn.howStakeWorksScreen.title"
-                        values={{ symbol: uppercasedSymbol }}
-                    />
+                    <Translation id="earn.howStakeWorksScreen.title" values={{ displaySymbol }} />
                 </Text>
                 <Text variant="body-sm" color="textSubdued">
                     <Translation id="earn.howStakeWorksScreen.subtitle" values={{ networkName }} />

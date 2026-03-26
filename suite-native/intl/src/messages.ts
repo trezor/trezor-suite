@@ -2451,13 +2451,13 @@ export const messages = {
             title: 'Before you continue',
             entryPeriodCard: {
                 title: 'Entry period',
-                firstItem: 'The entry period can currently take up to 72 days.',
+                firstItem: 'The entry period can currently take up to {entryPeriodInDays} days.',
                 secondItem: 'You can not cancel your stake during this period.',
             },
             delegatingCard: {
                 title: 'Delegating to Everstake',
                 firstItem:
-                    "Staking transfers the direct control of your ETH from your Trezor device to Everstake's smart contract environment.",
+                    "Staking transfers the direct control of your {displaySymbol} from your Trezor device to Everstake's smart contract environment.",
                 secondItem: 'Everstake maintains and secures your funds.',
             },
         },
@@ -2525,21 +2525,21 @@ export const messages = {
             adaInfo: 'Your ADA stays fully accessible while earning rewards.',
         },
         howStakeWorksScreen: {
-            title: 'How {symbol} staking works?',
+            title: 'How {displaySymbol} staking works?',
             subtitle:
                 'Support the {networkName} network. Lock in your funds and earn staking rewards.',
             infoBannerTitle: '<b>{totalStakedAmount}</b> currently staked with Trezor',
             benefits: {
                 first: {
-                    title: 'Earn up to ~{potentialRewards} {symbol} annually',
-                    description: 'When staking your total {symbol} balance',
+                    title: 'Earn up to ~{potentialRewards} {displaySymbol} annually',
+                    description: 'When staking your total {displaySymbol} balance',
                 },
                 second: {
                     title: 'Compounds automatically',
                     description: 'Rewards are re-staked for you',
                 },
                 third: {
-                    title: 'Put your {symbol} to work',
+                    title: 'Put your {displaySymbol} to work',
                     description: 'Enjoy weekly growth while you hold',
                 },
             },
