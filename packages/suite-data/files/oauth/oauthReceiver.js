@@ -5,15 +5,20 @@
  *   - Dropbox authorization code flow - search
  */
 
+const OAUTH_BROADCAST_CHANNEL_NAME = 'trezor-oauth';
+
+const payload = {
+    key: 'trezor-oauth',
+    hash: window.location.hash,
+    search: window.location.search,
+};
+
+const channel = new BroadcastChannel(OAUTH_BROADCAST_CHANNEL_NAME);
+channel.postMessage(payload);
+channel.close();
+
 if (window.opener) {
-    window.opener.postMessage(
-        {
-            key: 'trezor-oauth',
-            hash: window.location.hash,
-            search: window.location.search,
-        },
-        window.location.origin,
-    );
+    window.opener.postMessage(payload, window.location.origin);
 }
 
 window.close();
