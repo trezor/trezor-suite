@@ -10,14 +10,18 @@ test.describe('Receive transaction', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () =
             permissions: ['clipboard-read', 'clipboard-write'],
         },
     });
-    test.beforeEach(async ({ onboardingPage }) => {
+    test.beforeEach(async ({ onboardingPage, settingsPage, page }) => {
         await onboardingPage.completeOnboarding();
+        await settingsPage.navigateTo('application');
+        await settingsPage.experimentalFeaturesSwitch.click();
+        await page.getByTestId('@settings/experimental-features/tron-view-only-checkbox').click();
     });
 
     const testCases: Array<{ coin: NetworkSymbol; category: TestCategory }> = [
         { coin: 'btc', category: TestCategory.BTC },
         { coin: 'eth', category: TestCategory.ETH },
         { coin: 'sol', category: TestCategory.Solana },
+        { coin: 'trx', category: TestCategory.Coins },
     ];
     testCases.forEach(({ coin, category }) => {
         test(
