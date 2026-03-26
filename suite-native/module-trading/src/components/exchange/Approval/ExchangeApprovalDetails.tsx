@@ -1,6 +1,8 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
+import type { DexApprovalType } from 'invity-api';
+
 import { useFormDraft } from '@suite-common/wallet-core';
 import type { FormState } from '@suite-common/wallet-types';
 import { Card, InlineAlertBox } from '@suite-native/atoms';
@@ -15,9 +17,13 @@ import { ProviderInfoRow } from '../../general/TradeInfo/ProviderInfoRow';
 
 type ExchangeApprovalDetailsProps = {
     exchange: string | undefined;
+    onApprovalTypeChange: (approvalType: DexApprovalType) => void;
 };
 
-export const ExchangeApprovalDetails = ({ exchange }: ExchangeApprovalDetailsProps) => {
+export const ExchangeApprovalDetails = ({
+    exchange,
+    onApprovalTypeChange,
+}: ExchangeApprovalDetailsProps) => {
     const account = useSelector(selectExchangeSelectedSendAccount);
     const { draft: formDraft, formDraftKey } = useFormDraft<FormState>('trading-exchange');
 
@@ -45,7 +51,7 @@ export const ExchangeApprovalDetails = ({ exchange }: ExchangeApprovalDetailsPro
                 title={<Translation id="moduleTrading.exchangeTradePreviewCard.account" />}
             >
                 <ProviderInfoRow exchange={exchange} />
-                <LimitPicker />
+                <LimitPicker onApprovalTypeChange={onApprovalTypeChange} />
             </NetworkAndAccountCard>
 
             <Card noPadding>

@@ -1,4 +1,4 @@
-import { selectTradingExchangeSelectedQuote, tradingExchangeActions } from '@suite-common/trading';
+import { selectTradingExchangeActiveQuote, tradingExchangeActions } from '@suite-common/trading';
 import { getTranslation } from '@suite-native/intl';
 import {
     type TestStore,
@@ -13,10 +13,28 @@ import { LimitPicker } from '../LimitPicker';
 
 describe('LimitPicker', () => {
     let store: TestStore;
+    const mockOnApprovalTypeChange = jest.fn();
 
-    const renderLimitPicker = () => renderWithStoreProvider(<LimitPicker />, { store });
+    const renderLimitPicker = () =>
+        renderWithStoreProvider(
+            <LimitPicker
+                onApprovalTypeChange={approvalType => {
+                    mockOnApprovalTypeChange(approvalType);
+                    const quote = selectTradingExchangeActiveQuote(store.getState());
+                    if (!quote) {
+                        return;
+                    }
+                    store.dispatch(
+                        tradingExchangeActions.saveSelectedQuote({ ...quote, approvalType }),
+                    );
+                }}
+            />,
+            { store },
+        );
 
     beforeEach(() => {
+        mockOnApprovalTypeChange.mockReset();
+
         const preloadedState = {
             wallet: getWalletState({
                 tradeType: 'exchange',
@@ -26,6 +44,7 @@ describe('LimitPicker', () => {
         preloadedState!.wallet!.trading.exchange.preselectedQuote = exchangeQuotes[0];
 
         store = initStore(preloadedState).store;
+        store.dispatch(tradingExchangeActions.saveSelectedQuote(exchangeQuotes[0]));
     });
 
     it('should render limit by default', () => {
@@ -39,9 +58,6 @@ describe('LimitPicker', () => {
                 getTranslation('moduleTrading.exchangeApprovalLimitSheet.limitedCard.info'),
             ),
         ).toBeOnTheScreen();
-        expect(selectTradingExchangeSelectedQuote(store.getState())).toEqual(
-            expect.objectContaining({ approvalType: 'MINIMAL' }),
-        );
     });
 
     it('should render Unlimited when selected by user', async () => {
@@ -52,6 +68,8 @@ describe('LimitPicker', () => {
 
         await userEvent.press(within(sheet).getByText('Unlimited'));
 
+        expect(mockOnApprovalTypeChange).toHaveBeenCalledTimes(1);
+        expect(mockOnApprovalTypeChange).toHaveBeenCalledWith('INFINITE');
         expect(within(picker).getByText('Unlimited')).toBeOnTheScreen();
         expect(
             within(picker).getByText(
@@ -65,7 +83,7 @@ describe('LimitPicker', () => {
                 }),
             ),
         ).toBeOnTheScreen();
-        expect(selectTradingExchangeSelectedQuote(store.getState())).toEqual(
+        expect(selectTradingExchangeActiveQuote(store.getState())).toEqual(
             expect.objectContaining({ approvalType: 'INFINITE' }),
         );
     });
@@ -78,19 +96,22 @@ describe('LimitPicker', () => {
 
         await userEvent.press(within(sheet).getByText('100 USDC'));
 
+        expect(mockOnApprovalTypeChange).toHaveBeenCalledTimes(1);
+        expect(mockOnApprovalTypeChange).toHaveBeenCalledWith('MINIMAL');
         expect(within(picker).getByText('100 USDC')).toBeOnTheScreen();
         expect(
             within(picker).getByText(
                 getTranslation('moduleTrading.exchangeApprovalLimitSheet.limitedCard.info'),
             ),
         ).toBeOnTheScreen();
-        expect(selectTradingExchangeSelectedQuote(store.getState())).toEqual(
+        expect(selectTradingExchangeActiveQuote(store.getState())).toEqual(
             expect.objectContaining({ approvalType: 'MINIMAL' }),
         );
     });
 
     it('should render nothing without quote', () => {
         store.dispatch(tradingExchangeActions.savePreselectedQuote(undefined));
+        store.dispatch(tradingExchangeActions.saveSelectedQuote(undefined));
 
         const { toJSON } = renderLimitPicker();
 
