@@ -1,5 +1,5 @@
 {
-    "ignore-patterns": ["libDev", "lib", "libESM"],
+    "ignore-patterns": ["libDev", "lib", "libESM", "build"],
     "ignores": [
         "babel*",
         "@babel/*",
