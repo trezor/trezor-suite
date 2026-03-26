@@ -1,12 +1,12 @@
 import { sanitizeUrl } from '@braintree/sanitize-url';
 import * as http from 'http';
 import type * as net from 'net';
-import * as url from 'url';
 
 import type { RequiredKey } from '@trezor/type-utils';
 import { type Log, TypedEmitter, arrayPartition } from '@trezor/utils';
 
 import { findProcessFromIncomingPort } from './findProcessFromIncomingPort';
+import { formatRequestUrl, parseRequestUrl } from './parseRequestUrl';
 
 type Request = RequiredKey<http.IncomingMessage, 'url'>;
 const isRequest = (request: http.IncomingMessage): request is Request => request.url !== undefined;
@@ -408,7 +408,7 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
             this.logger.info(`Request ${request.method} ${request.url} aborted`);
         });
 
-        const { protocol, hostname, pathname, query } = url.parse(request.url, true);
+        const { protocol, hostname, pathname, query } = parseRequestUrl(request.url);
 
         if (query) {
             for (const key in query) {
@@ -433,7 +433,7 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
                 }
             }
         }
-        request.url = url.format({ protocol, hostname, pathname, query });
+        request.url = formatRequestUrl({ protocol, hostname, pathname, query });
 
         if (!pathname) {
             const msg = `url ${request.url} could not be parsed`;

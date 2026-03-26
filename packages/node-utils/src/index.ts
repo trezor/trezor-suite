@@ -15,3 +15,4 @@ export { checkFileExists } from './checkFileExists';
 export { checkSocks5Proxy } from './checkSocks5Proxy';
 export { validateJsonSchema } from './validateJsonSchema';
 export { findProcessFromIncomingPort, type ProcessInfo } from './findProcessFromIncomingPort';
+export { parseRequestUrl, formatRequestUrl, type ParsedRequestUrl } from './parseRequestUrl';
