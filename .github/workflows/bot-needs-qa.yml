@@ -62,7 +62,7 @@ jobs:
           CONTENT_ID="${{ steps.context.outputs.content_id }}"
 
           RESPONSE=$(gh api graphql -f query='
-            query($content_id: ID!, $project_id: ID!) {
+            query($content_id: ID!) {
               node(id: $content_id) {
                 ... on Issue {
                   projectItems(first: 10) {
@@ -76,8 +76,7 @@ jobs:
                 }
               }
             }' \
-            -f content_id="$CONTENT_ID" \
-            -f project_id="${{ env.PROJECT_ID }}")
+            -f content_id="$CONTENT_ID")
 
           ITEM_ID=$(echo "$RESPONSE" | jq -r \
             ".data.node.projectItems.nodes[] | select(.project.id == \"${{ env.PROJECT_ID }}\") | .id")
@@ -127,6 +126,6 @@ jobs:
             }' -f project=${{ env.PROJECT_ID }} \
                -f item=$ITEM_ID \
                -f field=${{ env.STATUS_FIELD_ID }} \
-               -f value=${{ steps.target-status.outputs.option_id }} \
+               -f value=${{ steps.target-status.outputs.option_id }}
 
           echo "✅ Status set to '${{ steps.target-status.outputs.status_name }}' for ${{ steps.context.outputs.event_type }}"
