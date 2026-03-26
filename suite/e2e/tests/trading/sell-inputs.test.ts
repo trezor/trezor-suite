@@ -1,11 +1,11 @@
-import { localizeNumber } from '@suite-common/wallet-utils';
+// import { localizeNumber } from '@suite-common/wallet-utils';
 
 import { expect, test } from '../../support/fixtures';
 import { fulfillWithResult } from '../../support/mocks/solanaStakingMock';
 
 const solanaBalanceAddress = '41baq3croaLZEj8dPWZnXn8e6xdAtvtWu2h941vm3Ngw';
-const customFeeRate = 1;
-let bitcoinBalance: string | null;
+// const customFeeRate = 1;
+// let bitcoinBalance: string | null;
 let solanaBalance: string | null;
 
 test.describe('Trading - Sell inputs', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
@@ -34,8 +34,8 @@ test.describe('Trading - Sell inputs', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, 
 
     test('Sell form % inputs and limits', async ({ page, walletPage, tradingPage }) => {
         await test.step('Find out btc and sol balances', async () => {
-            await walletPage.openAccount({ symbol: 'btc' });
-            bitcoinBalance = await walletPage.topPanelBalance.textContent();
+            // await walletPage.openAccount({ symbol: 'btc' });
+            // bitcoinBalance = await walletPage.topPanelBalance.textContent();
             await walletPage.openAccount({ symbol: 'sol' });
             solanaBalance = await walletPage.topPanelBalance.textContent();
             await walletPage.openTrading();
@@ -64,43 +64,44 @@ test.describe('Trading - Sell inputs', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, 
             await expect.soft(tradingPage.inputs.bottomText).toBeHidden();
         });
 
-        await test.step('Try all % inputs for Bitcoin', async () => {
-            await tradingPage.inputs.selectFiatCurrency('eur');
-            for (const percentage of [10, 25, 50]) {
-                await test.step(`${percentage}% of BTC balance`, async () => {
-                    await tradingPage.inputs.fractionButtons
-                        .getByRole('button', { name: percentage + '%' })
-                        .click();
-                    await tradingPage.inputs.expectInputToBe({
-                        percentage,
-                        balance: bitcoinBalance,
-                        symbol: 'btc',
-                    });
-                });
-            }
-            await tradingPage.fees.switchToCustom();
-            await tradingPage.fees.customInput.fill(customFeeRate.toString());
+        // does not fork until https://github.com/trezor/trezor-suite/issues/26163 is resolved
+        // await test.step('Try all % inputs for Bitcoin', async () => {
+        //     await tradingPage.inputs.selectFiatCurrency('eur');
+        //     for (const percentage of [10, 25, 50]) {
+        //         await test.step(`${percentage}% of BTC balance`, async () => {
+        //             await tradingPage.inputs.fractionButtons
+        //                 .getByRole('button', { name: percentage + '%' })
+        //                 .click();
+        //             await tradingPage.inputs.expectInputToBe({
+        //                 percentage,
+        //                 balance: bitcoinBalance,
+        //                 symbol: 'btc',
+        //             });
+        //         });
+        //     }
+        //     await tradingPage.fees.switchToCustom();
+        //     await tradingPage.fees.customInput.fill(customFeeRate.toString());
 
-            await test.step('Max of BTC balance', async () => {
-                await tradingPage.inputs.fractionButtons
-                    .getByRole('button', { name: 'Max' })
-                    .click();
-                await expect
-                    .soft(async () => {
-                        const resultingFee = await tradingPage.fees.maxFee.textContent();
-                        if (!resultingFee) {
-                            throw new Error('Custom Fee amount is undefined or null');
-                        }
-                        const maxValue = (
-                            parseFloat(bitcoinBalance!) - parseFloat(resultingFee)
-                        ).toString();
-                        await expect(tradingPage.inputs.cryptoAmount).toHaveValue(
-                            localizeNumber(maxValue, 'en-US', 0, 8),
-                        );
-                    })
-                    .toPass({ timeout: 15_000 });
-            });
-        });
+        //     await test.step('Max of BTC balance', async () => {
+        //         await tradingPage.inputs.fractionButtons
+        //             .getByRole('button', { name: 'Max' })
+        //             .click();
+        //         await expect
+        //             .soft(async () => {
+        //                 const resultingFee = await tradingPage.fees.maxFee.textContent();
+        //                 if (!resultingFee) {
+        //                     throw new Error('Custom Fee amount is undefined or null');
+        //                 }
+        //                 const maxValue = (
+        //                     parseFloat(bitcoinBalance!) - parseFloat(resultingFee)
+        //                 ).toString();
+        //                 await expect(tradingPage.inputs.cryptoAmount).toHaveValue(
+        //                     localizeNumber(maxValue, 'en-US', 0, 8),
+        //                 );
+        //             })
+        //             .toPass({ timeout: 15_000 });
+        //     });
+        // });
 
         await test.step('Try all % inputs on Solana', async () => {
             await walletPage.openAccount({ symbol: 'sol', atIndex: 0 });
