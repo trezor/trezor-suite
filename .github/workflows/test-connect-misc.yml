@@ -67,6 +67,10 @@ jobs:
       - name: Pack packages
         run: yarn tsx ./scripts/ci/pack-packages.ts
 
+      - name: Check exports
+        # Fow now only testing @trezor/connect-web
+        run: npx --yes @arethetypeswrong/cli --pack ./tmp/packed-packages/trezor-connect-web.tgz 
+
       - name: Test local install
         run: ./packages/connect/e2e/test-connect-local.sh
 
