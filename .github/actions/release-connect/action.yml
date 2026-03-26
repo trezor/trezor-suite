@@ -33,6 +33,10 @@ inputs:
     description: "Full URL to connect popup (for webextension examples)"
     type: string
     required: false
+  suiteWebUrl:
+    description: "Full URL where Suite will be deployed (for webextension examples)"
+    type: string
+    required: false
 
 runs:
   using: "composite"
@@ -107,7 +111,7 @@ runs:
       shell: bash
       env:
         NODE_ENV: "production"
-        __SUITE_WEB_URL__: https://${{ inputs.serverHostname }}/suite-web/${{ needs.extract-branch.outputs.branch }}/web
+        __SUITE_WEB_URL__: ${{ inputs.suiteWebUrl }}
       run: |
         yarn workspace @trezor/connect-explorer build:webextension
 

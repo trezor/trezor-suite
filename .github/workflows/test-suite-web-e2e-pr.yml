@@ -100,6 +100,7 @@ jobs:
           buildArtifacts: "true"
           nodeEnv: "development"
           connectPopupUrl: "https://dev.suite.sldev.cz/suite-web/${{ needs.extract-branch.outputs.branch }}/web/connect-popup"
+          suiteWebUrl: "https://dev.suite.sldev.cz/suite-web/${{ needs.extract-branch.outputs.branch }}/web"
 
   post-currents-pr-info:
     if: github.repository == 'trezor/trezor-suite' && github.event_name == 'pull_request' && needs.check-previous-runs.outputs.skip_tests != 'true'
