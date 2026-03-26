@@ -72,7 +72,6 @@ type FilterChipsProps = {
     logics: ConditionLogic[];
     onRemove: (id: string) => void;
     onToggleLogic: (index: number) => void;
-    onClearAll: () => void;
     onEditCondition: (id: string) => void;
 };
 
@@ -81,7 +80,6 @@ export const FilterChips = ({
     logics,
     onRemove,
     onToggleLogic,
-    onClearAll,
     onEditCondition,
 }: FilterChipsProps) => {
     const { translationString } = useTranslation();
@@ -99,7 +97,7 @@ export const FilterChips = ({
     };
 
     return (
-        <Row gap={spacings.xs} flexWrap="wrap" alignItems="center">
+        <Row gap={spacings.xs} flexWrap="wrap" alignItems="center" justifyContent="flex-end">
             {conditions.map((condition, index) => (
                 <Fragment key={condition.id}>
                     <ButtonGroup intent="neutral" priority="secondary" size="small">
@@ -130,15 +128,6 @@ export const FilterChips = ({
                     )}
                 </Fragment>
             ))}
-            <Button
-                size="small"
-                intent="neutral"
-                priority="secondary"
-                iconLeft="x"
-                onClick={onClearAll}
-            >
-                {translationString('TR_TX_FILTER_CLEAR_ALL')}
-            </Button>
         </Row>
     );
 };

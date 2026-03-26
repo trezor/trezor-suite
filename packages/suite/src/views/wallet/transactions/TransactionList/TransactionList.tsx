@@ -19,7 +19,11 @@ import { type Account, type WalletAccountTransaction } from 'src/types/wallet';
 import { NoSearchResults } from './NoSearchResults';
 import { SkeletonTransactionItem } from './SkeletonTransactionItem';
 import { TransactionGroupedList } from './TransactionGroupedList';
-import { TransactionListActions } from './TransactionListActions/TransactionListActions';
+import { FilterChips } from './TransactionListActions/FilterChips';
+import {
+    TransactionListActions,
+    type TransactionListActionsRef,
+} from './TransactionListActions/TransactionListActions';
 import {
     applyNonTextFilters,
     useTransactionFilters,
@@ -79,6 +83,7 @@ export const TransactionList = ({
     const [searchedTransactions, setSearchedTransactions] = useState(transactions);
 
     const sectionRef = useRef<HTMLDivElement>(null);
+    const actionsRef = useRef<TransactionListActionsRef>(null);
 
     useDebounce(
         () => {
@@ -166,6 +171,7 @@ export const TransactionList = ({
             heading={<Translation id="TR_ALL_TRANSACTIONS" />}
             actions={
                 <TransactionListActions
+                    ref={actionsRef}
                     account={account}
                     searchQuery={fulltext}
                     setSearch={setFulltext}
@@ -173,16 +179,22 @@ export const TransactionList = ({
                     isExportable={isExportable}
                     isTxFilteringEnabled={isTxFilteringEnabled}
                     conditions={conditions}
-                    logics={logics}
                     onAddCondition={addCondition}
                     onUpdateCondition={updateCondition}
-                    onRemoveCondition={removeCondition}
-                    onToggleLogic={toggleLogic}
                     onClearConditions={clearConditions}
                 />
             }
             data-testid="@wallet/accounts/transaction-list"
         >
+            {conditions.length > 0 && (
+                <FilterChips
+                    conditions={conditions}
+                    logics={logics}
+                    onRemove={removeCondition}
+                    onToggleLogic={toggleLogic}
+                    onEditCondition={id => actionsRef.current?.editCondition(id)}
+                />
+            )}
             <Column gap={32} padding={{ top: 16 }}>
                 {/* TODO: show this skeleton also while searching in txs */}
                 {isLoading ||
