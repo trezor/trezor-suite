@@ -16,12 +16,15 @@ import { useSelector } from 'src/hooks/suite/useSelector';
 import { useAnalytics } from 'src/support/useAnalytics';
 import { type Account } from 'src/types/wallet';
 
+import { type FilterCondition } from './useTransactionFilters';
+
 export interface ExportActionProps {
     account: Account;
     searchQuery: string;
+    conditions?: FilterCondition[];
 }
 
-export const ExportAction = ({ account, searchQuery }: ExportActionProps) => {
+export const ExportAction = ({ account, searchQuery, conditions = [] }: ExportActionProps) => {
     const [isExportRunning, setIsExportRunning] = useState(false);
     const dispatch = useDispatch();
     const analytics = useAnalytics();
@@ -69,6 +72,7 @@ export const ExportAction = ({ account, searchQuery }: ExportActionProps) => {
                         accountName,
                         type,
                         searchQuery,
+                        conditions,
                     }),
                 );
             } catch (error) {
@@ -87,6 +91,7 @@ export const ExportAction = ({ account, searchQuery }: ExportActionProps) => {
             isExportRunning,
             analytics,
             account,
+            conditions,
             dispatch,
             accountLabel,
             getAccountTitle,
@@ -102,15 +107,9 @@ export const ExportAction = ({ account, searchQuery }: ExportActionProps) => {
         <Dropdown
             placement={{ position: 'bottom', alignment: 'start' }}
             content={
-                searchQuery ? (
+                searchQuery || conditions.length > 0 ? (
                     <Note iconName="checks">
-                        <Translation
-                            id={
-                                searchQuery
-                                    ? 'TR_EXPORT_SEARCH_FILTER_ACTIVE'
-                                    : 'TR_EXPORT_SEARCH_FILTER_INACTIVE'
-                            }
-                        />
+                        <Translation id="TR_EXPORT_SEARCH_FILTER_ACTIVE" />
                     </Note>
                 ) : (
                     <Text isDisabled>

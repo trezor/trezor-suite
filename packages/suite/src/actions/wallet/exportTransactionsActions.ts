@@ -13,6 +13,10 @@ import { getAccountTransactions } from '@suite-common/wallet-utils';
 
 import { selectAccountLabelsForSearch } from 'src/selectors/suite/selectAccountLabelsForSearch';
 import { formatData, getExportedFileName } from 'src/utils/wallet/exportTransactionsUtils';
+import {
+    type FilterCondition,
+    applyNonTextFilters,
+} from 'src/views/wallet/transactions/TransactionList/TransactionListActions/useTransactionFilters';
 
 export const exportTransactionsThunk = createThunk(
     `${TRANSACTIONS_MODULE_PREFIX}/exportTransactions`,
@@ -22,11 +26,13 @@ export const exportTransactionsThunk = createThunk(
             accountName,
             type,
             searchQuery,
+            conditions = [],
         }: {
             account: Account;
             accountName: string;
             type: ExportFileType;
             searchQuery: string;
+            conditions?: FilterCondition[];
         },
         { getState, extra },
     ) => {
@@ -69,10 +75,11 @@ export const exportTransactionsThunk = createThunk(
 
         const searchLabels = selectAccountLabelsForSearch(getState(), account);
 
+        const preFiltered = applyNonTextFilters(transactions, conditions);
         const filteredTransaction =
             searchQuery.trim() !== ''
-                ? advancedSearchTransactions(transactions, searchLabels, searchQuery)
-                : transactions;
+                ? advancedSearchTransactions(preFiltered, searchLabels, searchQuery)
+                : preFiltered;
 
         // getAccountTransactions doesn't guarantee transactions will be sorted
         filteredTransaction.sort((t1, t2) => (t2.blockTime || 0) - (t1.blockTime || 0));

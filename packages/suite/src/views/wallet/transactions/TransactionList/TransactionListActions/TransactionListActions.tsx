@@ -31,7 +31,12 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { ExportAction } from './ExportAction';
 import { FilterAction } from './FilterAction';
 import { SearchFilterPanel } from './SearchFilterPanel';
-import { type FilterCondition, type NewFilterCondition } from './useTransactionFilters';
+import {
+    type ConditionLogic,
+    type FilterCondition,
+    type NewFilterCondition,
+    compileFilters,
+} from './useTransactionFilters';
 
 export type TransactionListActionsRef = {
     editCondition: (id: string) => void;
@@ -45,6 +50,7 @@ interface TransactionListActionsProps {
     isExportable?: boolean;
     isTxFilteringEnabled?: boolean;
     conditions: FilterCondition[];
+    logics: ConditionLogic[];
     onAddCondition: (condition: NewFilterCondition) => void;
     onUpdateCondition: (id: string, condition: NewFilterCondition) => void;
     onClearConditions: () => void;
@@ -63,12 +69,15 @@ export const TransactionListActions = forwardRef<
             isExportable = true,
             isTxFilteringEnabled = true,
             conditions,
+            logics,
             onAddCondition,
             onUpdateCondition,
             onClearConditions,
         },
         ref,
     ) => {
+        const compiledSearchQuery = compileFilters(conditions, logics, searchQuery);
+
         const [hasFetchedAll, setHasFetchedAll] = useState(false);
         const [editingConditionId, setEditingConditionId] = useState<string | null>(null);
         const filterPopoverRef = useRef<PopoverRef>(undefined);
@@ -185,10 +194,7 @@ export const TransactionListActions = forwardRef<
                         />
                     }
                 />*/}
-                {isTxFilteringEnabled && hasNetworkPotentialFraudTransactions(account.symbol) && (
-                    <FilterAction />
-                )}
-                {isExportable && <ExportAction account={account} searchQuery={searchQuery} />}
+
                 {isTxFilteringEnabled && (
                     <ButtonGroup size="medium">
                         <Popover
@@ -234,6 +240,16 @@ export const TransactionListActions = forwardRef<
                             </Tooltip>
                         ) : null}
                     </ButtonGroup>
+                )}
+                {isTxFilteringEnabled && hasNetworkPotentialFraudTransactions(account.symbol) && (
+                    <FilterAction />
+                )}
+                {isExportable && (
+                    <ExportAction
+                        account={account}
+                        searchQuery={compiledSearchQuery}
+                        conditions={conditions}
+                    />
                 )}
             </Row>
         );

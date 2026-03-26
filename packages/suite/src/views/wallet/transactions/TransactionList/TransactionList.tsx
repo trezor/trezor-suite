@@ -179,6 +179,7 @@ export const TransactionList = ({
                     isExportable={isExportable}
                     isTxFilteringEnabled={isTxFilteringEnabled}
                     conditions={conditions}
+                    logics={logics}
                     onAddCondition={addCondition}
                     onUpdateCondition={updateCondition}
                     onClearConditions={clearConditions}
