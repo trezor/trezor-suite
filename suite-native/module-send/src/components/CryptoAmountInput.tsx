@@ -70,8 +70,9 @@ export const CryptoAmountInput = ({
 
         if (transformedValue) {
             const fiatValue = converters?.convertCryptoToFiat?.(new BigNumber(transformedValue));
-            if (fiatValue && !fiatValue.isNaN())
+            if (fiatValue && !fiatValue.isNaN()) {
                 setValue(fiatFieldName, fiatValue.toFixed(baseCurrencyDecimals));
+            }
         } else {
             setValue(fiatFieldName, '');
         }

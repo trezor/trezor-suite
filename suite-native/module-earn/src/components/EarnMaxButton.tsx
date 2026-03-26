@@ -64,7 +64,7 @@ export const EarnMaxButton = ({ accountKey, symbol, isChecked, onChange }: EarnM
 
         if (!value || !account) {
             setValue('amount', '', { shouldValidate: false });
-            setValue('fiat', '');
+            setValue('fiat', '', { shouldValidate: false });
 
             return;
         }
