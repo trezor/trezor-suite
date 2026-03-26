@@ -25,7 +25,7 @@ describe('ExchangeFiatDeviationWarning', () => {
         jest.clearAllMocks();
 
         mockExchangeFiatDeviation.mockReturnValue({
-            deviation: 15,
+            deviation: 0.15,
             exceedsThreshold: true,
             exceedsHighThreshold: false,
         });
@@ -39,7 +39,7 @@ describe('ExchangeFiatDeviationWarning', () => {
 
     it('should render nothing when rate does not deviate', () => {
         mockExchangeFiatDeviation.mockReturnValue({
-            deviation: 1,
+            deviation: 0.01,
             exceedsThreshold: false,
             exceedsHighThreshold: false,
         });
@@ -85,7 +85,7 @@ describe('ExchangeFiatDeviationWarning', () => {
 
     it('should call display error when high threshold is exceeded', () => {
         mockExchangeFiatDeviation.mockReturnValue({
-            deviation: 25,
+            deviation: 0.25,
             exceedsThreshold: true,
             exceedsHighThreshold: true,
         });
