@@ -60,7 +60,7 @@ export const HowStakeWorksBenefitsSection = ({
     }, [totalBalance, apy, CryptoAmountFormatter, symbol]);
 
     return (
-        <VStack spacing={16}>
+        <VStack spacing="sp16">
             {benefitItems.map(item => (
                 <HStack key={item.titleKey} spacing="sp12" alignItems="center">
                     <OrderedListIcon

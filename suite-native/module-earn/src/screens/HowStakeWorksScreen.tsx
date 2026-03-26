@@ -65,7 +65,7 @@ export const HowStakeWorksScreen = () => {
     return (
         <Screen header={<ScreenHeader closeActionType="back" />}>
             <VStack flex={1} justifyContent="space-between">
-                <VStack alignItems="flex-start" spacing={32}>
+                <VStack alignItems="flex-start" spacing="sp32">
                     {/* TODO: replace with actual data */}
                     <HowStakeWorksHeaderSection
                         symbol={symbol}
