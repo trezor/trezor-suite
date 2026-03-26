@@ -19,7 +19,7 @@ import type {
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { fromHardened, getSerializedPath, validatePath } from '../../../utils/pathUtils';
-import { getFirmwareRange } from '../../common/paramsValidator';
+import { bundlify, getFirmwareRange } from '../../common/paramsValidator';
 
 type Params = {
     proto: PROTO.RippleGetAddress;
@@ -46,11 +46,8 @@ export default class RippleGetAddress extends AbstractMethod<'rippleGetAddress',
     }
 
     init() {
-        // create a bundle with only one batch if bundle doesn't exists
-        this.hasBundle = !!this.payload.bundle;
-        const payload = !this.payload.bundle
-            ? { ...this.payload, bundle: [this.payload] }
-            : this.payload;
+        const { hasBundle, payload } = bundlify(this.payload);
+        this.hasBundle = hasBundle;
 
         // validate bundle type
         Assert(Bundle(GetAddressSchema), payload);

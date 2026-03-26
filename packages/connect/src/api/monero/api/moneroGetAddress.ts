@@ -7,7 +7,7 @@ import type { MethodMessage, MethodPermission } from '../../../core/AbstractMeth
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { HD_HARDENED, getSerializedPath, validatePath } from '../../../utils/pathUtils';
-import { getFirmwareRange } from '../../common/paramsValidator';
+import { bundlify, getFirmwareRange } from '../../common/paramsValidator';
 
 type Params = {
     proto: PROTO.MoneroGetAddress;
@@ -34,11 +34,8 @@ export default class MoneroGetAddress extends AbstractMethod<'moneroGetAddress',
     }
 
     init() {
-        // create a bundle with only one batch if bundle doesn't exists
-        this.hasBundle = !!this.payload.bundle;
-        const payload = !this.payload.bundle
-            ? { ...this.payload, bundle: [this.payload] }
-            : this.payload;
+        const { hasBundle, payload } = bundlify(this.payload);
+        this.hasBundle = hasBundle;
 
         // validate bundle type and map to Monero-specific params
         const bundle = payload.bundle.map(batch => {

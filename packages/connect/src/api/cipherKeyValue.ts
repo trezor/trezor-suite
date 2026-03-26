@@ -11,7 +11,7 @@ import { Assert } from '@trezor/schema-utils';
 
 import type { MethodContext, MethodMessage, MethodPermission } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
-import { getFirmwareRange } from './common/paramsValidator';
+import { bundlify, getFirmwareRange } from './common/paramsValidator';
 import { validatePath } from '../utils/pathUtils';
 
 export default class CipherKeyValue extends AbstractMethod<
@@ -29,11 +29,8 @@ export default class CipherKeyValue extends AbstractMethod<
     }
 
     init() {
-        // create a bundle with only one batch if bundle doesn't exists
-        this.hasBundle = !!this.payload.bundle;
-        const payload = !this.payload.bundle
-            ? { ...this.payload, bundle: [this.payload] }
-            : this.payload;
+        const { hasBundle, payload } = bundlify(this.payload);
+        this.hasBundle = hasBundle;
 
         // validate bundle type
         Assert(Bundle(CipherKeyValueSchema), payload);

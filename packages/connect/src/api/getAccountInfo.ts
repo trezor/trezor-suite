@@ -21,7 +21,7 @@ import type {
 import { AbstractMethod, DEFAULT_FIRMWARE_RANGE } from '../core/AbstractMethod';
 import { getCoinInfo } from '../data/coinInfo';
 import { Discovery } from './common/Discovery';
-import { getFirmwareRange, validateParams } from './common/paramsValidator';
+import { bundlify, getFirmwareRange, validateParams } from './common/paramsValidator';
 import { getAccountLabel, isUtxoBased } from '../utils/accountUtils';
 import { getSerializedPath, validatePath } from '../utils/pathUtils';
 
@@ -46,11 +46,8 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
         // assume that device will not be used
         let willUseDevice = false;
 
-        // create a bundle with only one batch if bundle doesn't exists
-        this.hasBundle = !!this.payload.bundle;
-        const payload = !this.payload.bundle
-            ? { ...this.payload, bundle: [this.payload] }
-            : this.payload;
+        const { hasBundle, payload } = bundlify(this.payload);
+        this.hasBundle = hasBundle;
 
         // validate bundle type
         validateParams(payload, [{ name: 'bundle', type: 'array' }]);

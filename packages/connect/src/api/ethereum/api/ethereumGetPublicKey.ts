@@ -19,7 +19,7 @@ import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getEthereumNetwork, getUniqueNetworks } from '../../../data/coinInfo';
 import { getNetworkLabel } from '../../../utils/ethereumUtils';
 import { getSerializedPath, validatePath } from '../../../utils/pathUtils';
-import { getFirmwareRange } from '../../common/paramsValidator';
+import { bundlify, getFirmwareRange } from '../../common/paramsValidator';
 
 type Params = {
     proto: PROTO.EthereumGetPublicKey;
@@ -39,11 +39,8 @@ export default class EthereumGetPublicKey extends AbstractMethod<'ethereumGetPub
     }
 
     init() {
-        // create a bundle with only one batch if bundle doesn't exists
-        this.hasBundle = !!this.payload.bundle;
-        const payload = !this.payload.bundle
-            ? { ...this.payload, bundle: [this.payload] }
-            : this.payload;
+        const { hasBundle, payload } = bundlify(this.payload);
+        this.hasBundle = hasBundle;
 
         // validate bundle type
         Assert(Bundle(GetPublicKeySchema), payload);
