@@ -1,11 +1,12 @@
-import { type JSX, useEffect } from 'react';
+import { type JSX, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 
 import { type TooltipProps } from 'recharts';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { Row, Text } from '@trezor/components';
-import { paletteV1, paletteV2, spacings } from '@trezor/theme';
+import { Box, Row, Text } from '@trezor/components';
+import { paletteV1, paletteV2, spacings, zIndices } from '@trezor/theme';
 
 import { FormattedDate } from 'src/components/suite/FormattedDate';
 import { type CommonAggregatedHistory, type GraphRange } from 'src/types/wallet/graph';
@@ -87,7 +88,9 @@ const Title = ({ children }: { children: React.ReactNode }) => (
 );
 
 const Value = ({ children }: { children: React.ReactNode }) => (
-    <Text typographyStyle="body-md-strong">{children}</Text>
+    <Text typographyStyle="body-md-strong" textWrap="nowrap">
+        {children}
+    </Text>
 );
 
 const ColsWrapper = styled.div`
@@ -127,6 +130,9 @@ interface GraphTooltipBaseProps extends TooltipProps<number, any> {
 }
 
 export const GraphTooltipBase = (props: GraphTooltipBaseProps) => {
+    const measureRef = useRef<HTMLDivElement>(null);
+    const [chartPosition, setChartPosition] = useState<{ top: number; left: number } | null>(null);
+
     useEffect(() => {
         if (!props.onShow || !props.extendedDataForInterval) {
             return;
@@ -139,8 +145,22 @@ export const GraphTooltipBase = (props: GraphTooltipBaseProps) => {
         );
     }, [props]);
 
+    useLayoutEffect(() => {
+        if (!props.active || !measureRef.current) {
+            setChartPosition(null);
+
+            return;
+        }
+
+        const wrapper = measureRef.current.closest('.recharts-wrapper');
+        if (wrapper) {
+            const rect = wrapper.getBoundingClientRect();
+            setChartPosition({ top: rect.top, left: rect.left });
+        }
+    }, [props.active, props.coordinate?.x]);
+
     if (!props.active || !props.payload) {
-        return null;
+        return <div ref={measureRef} />;
     }
 
     const date = new Date(props.payload[0].payload.time * 1000);
@@ -149,7 +169,7 @@ export const GraphTooltipBase = (props: GraphTooltipBaseProps) => {
             ? 'month'
             : 'day';
 
-    return (
+    const tooltipContent = (
         <CustomTooltipWrapper
             $positionX={props.coordinate!.x!}
             $boxWidth={props.viewBox!.width!}
@@ -215,5 +235,25 @@ export const GraphTooltipBase = (props: GraphTooltipBaseProps) => {
                 </Col>
             </ColsWrapper>
         </CustomTooltipWrapper>
+    );
+
+    return (
+        <>
+            <div ref={measureRef} />
+            {chartPosition &&
+                createPortal(
+                    <Box
+                        position={{
+                            type: 'fixed',
+                            top: chartPosition.top,
+                            left: chartPosition.left,
+                        }}
+                        zIndex={zIndices.tooltip}
+                    >
+                        {tooltipContent}
+                    </Box>,
+                    document.body,
+                )}
+        </>
     );
 };
