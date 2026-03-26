@@ -18,6 +18,7 @@ export const AuthenticateDeviceParams = Type.Object({
 export type AuthenticateDeviceResult = {
     optigaResult: VerifyAuthenticityProofResult;
     tropicResult: VerifyAuthenticityProofResult | null;
+    MLDSA44Result: VerifyAuthenticityProofResult | null;
 };
 
 export declare function authenticateDevice(
