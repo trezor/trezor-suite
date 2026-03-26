@@ -53,6 +53,7 @@ export const LimitPicker = () => {
                                     amount={sendStringAmount}
                                     cryptoId={send}
                                     variant="body-sm-strong"
+                                    color="textDefault"
                                 />
                             )}
 
