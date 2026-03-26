@@ -17,7 +17,7 @@ jobs:
       LATEST_VERSION: 9
     steps:
       - name: Configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@8df5847569e6427dd6c4fb1cf565c83acfa8afa7 # v6
         with:
           role-to-assume: arn:aws:iam::538326561891:role/gh_actions_connect_prod_deploy
           aws-region: eu-central-1

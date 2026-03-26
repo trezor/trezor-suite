@@ -6,7 +6,7 @@ runs:
   using: "composite"
   steps:
     - name: Setup Node.js
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
       with:
         node-version-file: ".nvmrc"
 
@@ -16,7 +16,7 @@ runs:
       run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
 
     - name: Yarn Cache
-      uses: actions/cache@v4
+      uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5
       with:
         path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
         key: yarn-cache-folder-${{ hashFiles('**/yarn.lock', '.yarnrc.yml') }}

@@ -52,7 +52,7 @@ jobs:
             core.setFailed(`User ${commenter} is not authorized to trigger a rebase.`);
 
       - name: Respond in pull request
-        uses: actions/github-script@v8
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
         with:
           script: |
             github.rest.issues.createComment({
@@ -63,13 +63,13 @@ jobs:
             })
       - name: Generate GitHub App token
         id: trezor-bot-token
-        uses: actions/create-github-app-token@v2
+        uses: actions/create-github-app-token@f8d387b68d61c58ab83c6c016672934102569859 # v3
         with:
           app-id: ${{ secrets.TREZOR_BOT_APP_ID }}
           private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
 
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           fetch-depth: 0
           token: ${{ steps.trezor-bot-token.outputs.token }}
@@ -81,7 +81,7 @@ jobs:
           bash scripts/ci/bot-rebase.sh
       - name: Report failure
         if: ${{ failure() }}
-        uses: actions/github-script@v8
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
         with:
           script: |
             github.rest.issues.createComment({
