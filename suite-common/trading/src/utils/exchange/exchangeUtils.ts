@@ -1,11 +1,17 @@
 import type { CryptoId, ExchangeTrade, ExchangeTradeStatus } from 'invity-api';
 
 import { invariant } from '@suite-common/suite-utils';
+import { type Network } from '@suite-common/wallet-config';
+import { type Account } from '@suite-common/wallet-types';
+import { asAmountUnit, unitsToSubunits } from '@suite-common/wallet-utils';
+import TrezorConnect from '@trezor/connect';
+import { getSerializedPath } from '@trezor/connect/src/utils/pathUtils';
+import { BigNumber } from '@trezor/utils';
 
 import { CONTRACT_ADDRESS_FOR_NATIVE_TOKEN } from '../../constants';
 import { type ExchangeInfo } from '../../reducers/exchangeReducer';
 import { type TradingExchangeAmountLimitProps } from '../../types';
-import { cryptoIdToNetwork, parseCryptoId } from '../../utils';
+import { cryptoIdToNetwork, getUnusedAddressFromAccount, parseCryptoId } from '../../utils';
 
 type GetAmountLimitsProps = {
     quotes: ExchangeTrade[];
@@ -151,6 +157,135 @@ export const getApprovalStatus = (candidateQuote?: ExchangeTrade): ApprovalStatu
     return 'needs_approval';
 };
 
+type DeriveBitcoinSwapFromAddressesParams = {
+    account: Account;
+    network: Network;
+    sendStringAmount: string;
+    decimals: number;
+    setMaxOutputId?: number;
+};
+
+/**
+ * Calculates the fromAddress for a Bitcoin swap transaction by simulating transaction composition.
+ * This is necessary for some DEXes to provide accurate quotes.
+ * It returns an object containing an array of addresses used as inputs and the total amount of the first output.
+ */
+export const deriveBitcoinSwapFromAddresses = async ({
+    account,
+    network,
+    sendStringAmount,
+    decimals,
+    setMaxOutputId,
+}: DeriveBitcoinSwapFromAddressesParams): Promise<{ addresses: string[]; amount?: string } | undefined> => {
+    const BITCOIN_SWAP_DUMMY_OP_RETURN_DATA =
+        '3078306632656166663639313734646264333963366533346661366465653966326266626566663363313139366462303666636238356339313364376531663466643d7c6c6966696351';
+    const BITCOIN_SWAP_DUMMY_FEE_PERCENTAGE = 2;
+
+    if (!account.addresses || !account.utxo || (!sendStringAmount && setMaxOutputId === undefined)) {
+        return undefined;
+    }
+
+    // we need to use some address from the account as a placeholder for the simulation
+    const { address: placeholderAddress } = getUnusedAddressFromAccount(account);
+    const simulationAddress =
+        placeholderAddress ||
+        account.addresses.used[0]?.address ||
+        account.addresses.change[0]?.address;
+
+    if (!simulationAddress) {
+        return undefined;
+    }
+
+    // we need to use utxos from the account for the simulation
+    const usedAddressSet = new Set([
+        ...account.addresses.used.map(a => a.address),
+        ...account.addresses.change.map(a => a.address),
+    ]);
+    const usedUtxos = account.utxo.filter(u => usedAddressSet.has(u.address));
+
+    if (usedUtxos.length === 0) {
+        return undefined;
+    }
+
+    const amountSubunitRaw = sendStringAmount
+        ? unitsToSubunits({
+              value: asAmountUnit(new BigNumber(sendStringAmount)),
+              decimals,
+          })
+        : new BigNumber(account.availableBalance);
+
+    const feeAmount = amountSubunitRaw
+        .multipliedBy(BITCOIN_SWAP_DUMMY_FEE_PERCENTAGE / 100)
+        .integerValue(BigNumber.ROUND_CEIL)
+        .toString();
+
+    const amountSubunit = amountSubunitRaw.toString();
+
+    const composeParams: Parameters<typeof TrezorConnect.composeTransaction>[0] = {
+        outputs: [
+            setMaxOutputId === 0
+                ? {
+                      type: 'send-max',
+                      address: simulationAddress,
+                  }
+                : {
+                      type: 'payment',
+                      amount: amountSubunit,
+                      address: simulationAddress,
+                  },
+            {
+                type: 'opreturn',
+                dataHex: BITCOIN_SWAP_DUMMY_OP_RETURN_DATA,
+            },
+            {
+                type: 'payment',
+                amount: feeAmount,
+                address: simulationAddress,
+            }, // 1. fee address
+            {
+                type: 'payment',
+                amount: feeAmount,
+                address: simulationAddress,
+            }, // 2. fee address
+        ],
+        coin: network.symbol,
+        account: {
+            path: account.path,
+            addresses: account.addresses,
+            utxo: usedUtxos,
+        },
+        feeLevels: [{ feePerUnit: '1' }],
+    };
+
+    const precomposed = await TrezorConnect.composeTransaction(composeParams);
+
+    console.log('precomposed', precomposed);
+
+    if (precomposed.success && precomposed.payload.length > 0) {
+        const tx = precomposed.payload[0];
+        if (tx.type === 'final' || tx.type === 'nonfinal') {
+            const addresses = await Promise.all(
+                tx.inputs.map(i => {
+                    if (!i.address_n) {
+                        return undefined;
+                    }
+                    const path = getSerializedPath(i.address_n);
+
+                    return usedUtxos.find(a => a.path === path)?.address;
+                }),
+            );
+
+            const inputAddresses = Array.from(new Set(addresses.filter((a): a is string => !!a)));
+            const firstOutputAmount =
+                'outputs' in tx && tx.outputs[0]?.amount ? tx.outputs[0].amount.toString() : undefined;
+
+            return { addresses: inputAddresses, amount: firstOutputAmount };
+        }
+    }
+
+    return undefined;
+};
+
 export const exchangeUtils = {
     getAmountLimits,
     isQuoteError,
@@ -160,4 +295,5 @@ export const exchangeUtils = {
     tokenSupportsIncreasingAllowance,
     requiresTokenApproval,
     getApprovalStatus,
+    deriveBitcoinSwapFromAddresses,
 };

@@ -83,7 +83,7 @@ export const composeBitcoinTransactionFeeLevelsThunk = createThunk<
             });
 
         const composeOutputs = getBitcoinComposeOutputs(formState, account.symbol, isSatoshis);
-        if (composeOutputs.length < 1)
+        if (composeOutputs.length < 1 && !formState.transactionData)
             return rejectWithValue({
                 error: 'fee-levels-compose-failed',
                 message: 'Unable to compose output.',
@@ -133,6 +133,7 @@ export const composeBitcoinTransactionFeeLevelsThunk = createThunk<
             outputs: composeOutputs,
             sortingStrategy: formState.rbfParams !== undefined ? 'none' : DEFAULT_SORTING_STRATEGY,
             coin: account.symbol,
+            psbtTransactionData: formState.transactionData,
         };
 
         const response = await TrezorConnect.composeTransaction(params);

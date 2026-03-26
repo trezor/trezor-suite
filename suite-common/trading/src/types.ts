@@ -34,6 +34,7 @@ import {
 import { type PROTO } from '@trezor/connect';
 import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
 import { type Err, type Ok, type PrimitiveType } from '@trezor/type-utils';
+import { type Timer } from '@trezor/react-utils';
 
 import type * as constants from './constants';
 
@@ -322,6 +323,8 @@ export type HandleBuyRequestThunkProps = {
 export type HandleExchangeRequestThunkProps = {
     formValues: MinimalExchangeFormProps;
     network: Network;
+    account: Account;
+    timer: Timer;
     shouldSendInSats: boolean | undefined;
     composeRequestCallback: () => void;
 };

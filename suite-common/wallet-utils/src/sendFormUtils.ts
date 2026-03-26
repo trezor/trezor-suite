@@ -351,6 +351,7 @@ export const getBitcoinComposeOutputs = (
     symbol: Account['symbol'],
     isSatoshis?: boolean,
 ) => {
+    if (values.transactionData) return [];
     const result: ComposeOutput[] = [];
     if (!values || !Array.isArray(values.outputs)) return result;
 

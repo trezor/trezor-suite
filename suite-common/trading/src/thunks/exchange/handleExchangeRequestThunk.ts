@@ -2,6 +2,7 @@ import { type ExchangeTrade, type ExchangeTradeQuoteRequest } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
 import { type Network } from '@suite-common/wallet-config';
+import { type Account } from '@suite-common/wallet-types';
 import { convertAmountSubunitsToUnits } from '@suite-common/wallet-utils';
 
 import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';
@@ -28,16 +29,17 @@ const getQuotesRequest = ({ requestData, signal }: GetQuotesRequest) =>
 type GetQuoteRequestData = {
     formValues: MinimalExchangeFormProps;
     network: Network;
+    account: Account;
     shouldSendInSats: boolean | undefined;
 };
 
-export const getQuoteRequestData = ({
+const getQuoteRequestData = async ({
     formValues,
     network,
+    account,
     shouldSendInSats,
-}: GetQuoteRequestData): ExchangeTradeQuoteRequest | undefined => {
-    const { outputs, receiveCryptoSelect, sendCryptoSelect, receiveAddress, fromAddress } =
-        formValues;
+}: GetQuoteRequestData): Promise<ExchangeTradeQuoteRequest | undefined> => {
+    const { outputs, receiveCryptoSelect, sendCryptoSelect, receiveAddress } = formValues;
     const decimals = getNetworkDecimalsWithFallback(network.symbol);
 
     const unformattedOutputAmount = outputs[0].amount ?? '';
@@ -46,19 +48,39 @@ export const getQuoteRequestData = ({
             ? convertAmountSubunitsToUnits(unformattedOutputAmount, decimals)
             : unformattedOutputAmount;
 
+    const { setMaxOutputId } = formValues;
+
     if (
         !receiveCryptoSelect?.id ||
         !sendCryptoSelect?.id ||
-        !sendStringAmount ||
-        Number(sendStringAmount) === 0
+        ((!sendStringAmount || Number(sendStringAmount) === 0) && setMaxOutputId === undefined)
     ) {
         return undefined;
+    }
+
+    let { fromAddress } = formValues;
+    let finalSendStringAmount = sendStringAmount;
+
+    if (network.networkType === 'bitcoin') {
+        const bitcoinSwapData = await exchangeUtils.deriveBitcoinSwapFromAddresses({
+            account,
+            network,
+            sendStringAmount,
+            decimals,
+            setMaxOutputId,
+        });
+        if (bitcoinSwapData) {
+            fromAddress = bitcoinSwapData.addresses.join(';');
+            if (bitcoinSwapData.amount && setMaxOutputId === 0) {
+                finalSendStringAmount = convertAmountSubunitsToUnits(bitcoinSwapData.amount, decimals);
+            }
+        }
     }
 
     const request: ExchangeTradeQuoteRequest = {
         receive: receiveCryptoSelect.id,
         send: sendCryptoSelect.id,
-        sendStringAmount,
+        sendStringAmount: finalSendStringAmount,
         dex: 'enable',
         receiveAddress,
         fromAddress,
@@ -79,14 +101,19 @@ export const handleExchangeRequestThunk = createThunk<
         {
             formValues,
             network,
+            account,
+            timer,
             shouldSendInSats,
             composeRequestCallback,
         }: HandleExchangeRequestThunkProps,
         { dispatch, getState, fulfillWithValue, rejectWithValue, signal },
     ) => {
-        const requestData = getQuoteRequestData({
+        timer.loading();
+
+        const requestData = await getQuoteRequestData({
             formValues,
             network,
+            account,
             shouldSendInSats,
         });
 

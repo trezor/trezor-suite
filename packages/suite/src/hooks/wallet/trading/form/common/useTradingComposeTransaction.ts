@@ -4,6 +4,7 @@ import { type UseFormReturn } from 'react-hook-form';
 import { isTranslationKey, useTranslation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
 import {
+    TRADING_EXCHANGE_FROM_ADDRESS,
     TRADING_FORM_OUTPUT_ADDRESS,
     TRADING_FORM_OUTPUT_AMOUNT,
     type TradingExchangeFormProps,
@@ -16,9 +17,11 @@ import {
     selectAddressDisplayType,
     selectRawNetworkFeeInfo,
 } from '@suite-common/wallet-core';
-import { AddressDisplayOptions } from '@suite-common/wallet-types';
+import { AddressDisplayOptions, type PrecomposedTransaction } from '@suite-common/wallet-types';
 import { getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
+import type { PROTO } from '@trezor/connect';
+import { getSerializedPath } from '@trezor/connect/src/utils/pathUtils';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useCompose } from 'src/hooks/wallet/form/useCompose';
@@ -138,8 +141,8 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
     useEffect(() => {
         if (!composedLevels) return;
 
-        const values = getValues();
-        const { setMaxOutputId } = values;
+        const formValues = getValues();
+        const { setMaxOutputId } = formValues;
         const selectedFeeLevel = selectedFee || 'normal';
         const composed = composedLevels[selectedFeeLevel];
 
@@ -153,6 +156,30 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
         }
 
         if (composed.type === 'final' || composed.type === 'nonfinal') {
+            if (type === 'exchange' && account.networkType === 'bitcoin') {
+                const btcComposed = composed as PrecomposedTransaction;
+                if ('inputs' in btcComposed && btcComposed.inputs) {
+                    const addresses = Array.from(
+                        new Set(
+                            btcComposed.inputs
+                                .map((i: PROTO.TxInputType) => {
+                                    if (!i.address_n) return undefined;
+                                    const path = getSerializedPath(i.address_n);
+
+                                    return account.utxo?.find(u => u.path === path)?.address;
+                                })
+                                .filter(Boolean),
+                        ),
+                    );
+
+                    const fromAddress = addresses.join(';');
+                    if (fromAddress) {
+                        // TODO: change to array of addresses
+                        setValue(TRADING_EXCHANGE_FROM_ADDRESS, fromAddress, { shouldDirty: true });
+                    }
+                }
+            }
+
             const currentOutputAmount = values.outputs?.[0]?.amount;
 
             if (typeof setMaxOutputId === 'number' && composed.max) {
@@ -181,6 +208,9 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
         account.symbol,
+        account.networkType,
+        account.utxo,
+        type,
         composedLevels,
         selectedFee,
         clearErrors,

@@ -36,8 +36,8 @@ import type {
 
 export type RecomposeAndSignTxThunkProps = {
     account: Account;
-    address: string;
-    amount: string;
+    address?: string;
+    amount?: string;
     destinationTag?: string;
     transactionData?: string;
     recalculateCustomLimit?: boolean;
@@ -123,15 +123,18 @@ export const recomposeAndSignTxThunk = createThunk<
         // WORKAROUND: sendFormEthereumActions and sendFormRippleActions use form outputs instead of composed transaction data
         const formState: FormState = {
             ...DEFAULT_VALUES,
-            outputs: [
-                {
-                    ...DEFAULT_PAYMENT,
-                    address,
-                    amount,
-                    currency: DEFAULT_PAYMENT.currency,
-                    token: shouldIncludeToken ? (composed.token?.contract ?? null) : null,
-                },
-            ],
+            outputs:
+                account.networkType === 'bitcoin' && transactionData
+                    ? []
+                    : [
+                          {
+                              ...DEFAULT_PAYMENT,
+                              address: address ?? '',
+                              amount: amount ?? '',
+                              currency: DEFAULT_PAYMENT.currency,
+                              token: shouldIncludeToken ? (composed.token?.contract ?? null) : null,
+                          },
+                      ],
             setMaxOutputId: !composed.token?.contract ? setMaxOutputId : undefined,
             selectedFee,
             feePerUnit: composed.feePerByte,

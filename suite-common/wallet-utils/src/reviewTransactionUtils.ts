@@ -232,6 +232,7 @@ const constructOldFlow = ({
         outputs.push({ type: 'note', value: precomposedForm.tronDataAscii });
     } else {
         if (
+            networkType !== 'bitcoin' &&
             precomposedForm.transactionData &&
             (!precomposedTx.token || precomposedForm.yieldMetadata)
         ) {
@@ -342,11 +343,12 @@ const constructNewFlow = ({
         outputs.push({ type: 'note', value: precomposedForm.tronDataAscii });
     } else {
         if (
-            (precomposedForm.transactionData && !precomposedTx.token && !isEvmApproval) ||
-            (precomposedForm.transactionData && isEvmApproval && !isApprovalFlowSupported) ||
-            (precomposedForm.transactionData &&
-                precomposedForm.yieldMetadata &&
-                !isUpdatedEthereumSendFlow)
+            networkType !== 'bitcoin' &&
+            ((precomposedForm.transactionData && !precomposedTx.token && !isEvmApproval) ||
+                (precomposedForm.transactionData && isEvmApproval && !isApprovalFlowSupported) ||
+                (precomposedForm.transactionData &&
+                    precomposedForm.yieldMetadata &&
+                    !isUpdatedEthereumSendFlow))
         ) {
             outputs.push({ type: 'data', value: precomposedForm.transactionData });
         }
@@ -435,6 +437,7 @@ const constructNewFlow = ({
                     outputs.push({ type: 'address', value: o.address });
                 } else if (
                     !isTron &&
+                    networkType !== 'bitcoin' &&
                     ((precomposedForm.transactionData && !isEvmApproval) ||
                         (isEvmApproval && !isApprovalFlowSupported))
                 ) {
