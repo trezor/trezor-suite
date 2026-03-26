@@ -46,26 +46,26 @@ export const useShowDeviceDisconnectedDuringEarnReviewAlert = () => {
         });
     }, [navigation]);
 
-    return useCallback(
-        () =>
-            setTimeout(
-                () =>
-                    showAlert({
-                        title: <Translation id="moduleSend.review.deviceDisconnectedAlert.title" />,
-                        description: (
-                            <Translation id="moduleSend.review.deviceDisconnectedAlert.description" />
-                        ),
-                        primaryButtonTitle: (
-                            <Translation id="moduleSend.review.deviceDisconnectedAlert.primaryButton" />
-                        ),
-                        primaryButtonVariant: 'redBold',
-                        secondaryButtonVariant: 'redElevation0',
-                        secondaryButtonTitle: <Translation id="generic.buttons.cancel" />,
-                        onPressPrimaryButton: handleReconnect,
-                        onPressSecondaryButton: handleCancel,
-                    }),
-                1000,
-            ),
-        [handleCancel, handleReconnect, showAlert],
-    );
+    return useCallback(() => {
+        const timerId = setTimeout(
+            () =>
+                showAlert({
+                    title: <Translation id="moduleSend.review.deviceDisconnectedAlert.title" />,
+                    description: (
+                        <Translation id="moduleSend.review.deviceDisconnectedAlert.description" />
+                    ),
+                    primaryButtonTitle: (
+                        <Translation id="moduleSend.review.deviceDisconnectedAlert.primaryButton" />
+                    ),
+                    primaryButtonVariant: 'redBold',
+                    secondaryButtonVariant: 'redElevation0',
+                    secondaryButtonTitle: <Translation id="generic.buttons.cancel" />,
+                    onPressPrimaryButton: handleReconnect,
+                    onPressSecondaryButton: handleCancel,
+                }),
+            1000,
+        );
+
+        return () => clearTimeout(timerId);
+    }, [handleCancel, handleReconnect, showAlert]);
 };

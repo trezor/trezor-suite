@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
+import { getNetworkDecimals } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { Button, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
@@ -67,7 +68,10 @@ export const EarnTransactionDataReviewStepList = ({
         }
     };
 
-    const amountInWei = new BigNumber(amount).times(new BigNumber(10).pow(18)).toFixed(0);
+    const networkDecimals = accountSymbol ? (getNetworkDecimals(accountSymbol) ?? 18) : 18;
+    const amountInWei = new BigNumber(amount)
+        .times(new BigNumber(10).pow(networkDecimals))
+        .toFixed(0);
 
     return (
         <View>

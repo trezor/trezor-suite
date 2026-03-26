@@ -1,6 +1,10 @@
 import { STAKE_GAS_LIMIT_RESERVE } from '@suite-common/wallet-constants';
-import { PrecomposedTransactionFinal, StakeFormState } from '@suite-common/wallet-types';
-import { EthereumTransaction, EthereumTransactionEIP1559, FeeLevel } from '@trezor/connect';
+import { type PrecomposedTransactionFinal, type StakeFormState } from '@suite-common/wallet-types';
+import {
+    type EthereumTransaction,
+    type EthereumTransactionEIP1559,
+    type FeeLevel,
+} from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
 /** The web version derives this at runtime via @everstake/wallet-sdk-ethereum, which is not React Native compatible, so we use the pre-computed constant here. **/

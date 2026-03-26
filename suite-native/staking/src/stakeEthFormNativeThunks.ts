@@ -99,7 +99,14 @@ export const signEthStakeTransactionNativeThunk = createThunk<
             });
         }
 
-        const rawGasLimit = estimatedFee.payload.levels[0]?.feeLimit ?? '0';
+        const rawGasLimit = estimatedFee.payload.levels[0]?.feeLimit;
+
+        if (!rawGasLimit) {
+            return rejectWithValue({
+                error: 'sign-transaction-failed',
+                message: 'Gas limit estimation returned empty value.',
+            });
+        }
 
         const stakeFormState = buildStakeFormState(feeLevel, rawGasLimit);
         const precomposedTx = buildStakePrecomposedTx(

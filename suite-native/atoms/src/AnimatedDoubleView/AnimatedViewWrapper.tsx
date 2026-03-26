@@ -6,7 +6,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 export type RenderViewProps = {
     isDisabled?: boolean;
-    onPress?: (() => void) | undefined;
+    onPress?: () => void;
 };
 
 export type AnimatedViewWrapperProps = {
