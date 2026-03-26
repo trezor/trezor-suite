@@ -2,30 +2,67 @@
 
 ## How to create packages
 
-Use command `yarn generate-package @scope/newPackageName`. For example using name `@suite-common/wallet` will create package in `/suite-common` folder. Full list of scopes:
+Use command `yarn generate-package @scope/newPackageName`. For example using name `@suite-common/wallet` will create package in `/suite-common` folder.
 
-| Scope         | Folder        | Description                                   | Imports from              |
-| ------------- | ------------- | --------------------------------------------- | ------------------------- |
-| @trezor\*     | /packages     | public packages used by Suite & third parties | No other scope!           |
-| @suite-common | /suite-common | code shared between @suite and @suite native  | @trezor                   |
-| @suite-native | /suite-native | mobile Suite                                  | @trezor and @suite-common |
-| @suite        | /suite        | desktop & web Suite                           | @trezor and @suite-common |
+For top-level package placement, see `project-structure.md`.
 
-\* TODO: @trezor was originally the only scope in the monorepo and some packages (including desktop entry point!) should be in the @suite scope instead
+When you add a dependency on another workspace package, run `yarn refs`.
+
+This updates project references so TypeScript and workspace builds stay in sync.
+
+## Package placement
+
+When deciding where a new package belongs:
+
+1. Domain-agnostic code belongs in `packages/`.
+2. Shared Suite-domain code belongs in `suite-common/`.
+3. Web/desktop-specific Suite code belongs in `suite/`.
+4. Mobile-specific Suite code belongs in `suite-native/`.
+
+## Import directions
+
+- `@trezor/*` packages must stay domain-agnostic and must not import app scopes.
+- `@suite-common/*` may import `@trezor/*`.
+- `@suite/*` may import `@trezor/*` and `@suite-common/*`.
+- `@suite-native/*` may import `@trezor/*` and `@suite-common/*`.
+
+## Package boundaries
+
+Some packages mainly assemble screens, routes, stacks, flows, or other app-specific wiring. Other packages provide reusable domain logic, state, UI, or helpers.
+
+Composition packages (`module-*` prefix) should stay thin and should not become dependencies of other composition packages.
+
+Shared code used by multiple module packages belongs in a reusable package.
+
+This keeps dependencies one-directional, avoids circular references, and makes extraction easier.
+
+In mobile, `module-*` packages are usually packages routing packages for React Navigation navigators (e. g. `StackNavigator`). If code from one `module-*` package is needed in another, that code belongs in a reusable package, not in either module.
+
+## Refactoring heuristics
+
+- Code shared by two composition packages (modules) should be extracted into a reusable package.
+- Packages that mostly wire screens, routes, stacks, or providers together should stay thin.
+- Reusable state and domain logic should move lower instead of staying in app wiring.
+- Many imports from sibling feature packages usually mean the boundary is wrong.
+- Broad topics like `device` should not become dumping grounds. Decide whether the code truly belongs there or should be a separate package.
+
+## Circular dependencies
+
+- Do not patch circular dependencies with deeper or more specific imports.
+- Find the shared code both sides need and move it into a lower-level reusable package.
+- When a module is part of the cycle, keep the wiring there and move reusable logic out.
+- When a broad package is part of the cycle, split its responsibility instead of adding more exceptions.
 
 ## Packages size
 
 Smaller is better.
 
-Big packages usually lead to cyclic dependencies. Imagine this pattern:
+Large packages tend to become monoliths and create cyclic dependencies.
 
-1. I have `packageA` which has type `FormInput` and there are multiple forms in this package that need this type
-2. I have `packageB` which also has a form that needs to use `FormInput` so you import it from `packageA`
-3. Now you want to add this form, alongside others into your main `packageA` but you can't because it will cause cyclic dependency.
+If two packages need to share a type or helper, prefer extracting a smaller package with that shared responsibility instead of merging more code into an already large package.
 
-Now you have two options how to solve it:
+Smaller packages usually mean:
 
-1. You can merge `packageB` into `packageA`, but it will only amplify this cyclic deps issue for other packages. More things you will have in `packageA`, then more often you need to use `packageA` in other packages, but that will prevent you from importing any of that packages back into `packageA` because of cyclic dependency. That will force you to place everything into `packageA` which will grow into a monolith (that's the exact thing that happened in packages/suite).
-2. You can create `packageC` which will contain this `FormInput` and both `packageA` and `packageB` can use it.
-
-So creating smaller packages from start is always better, because you have much lower chances to run into issue with cyclic dependencies, but not only that. Smaller packages give you better control of what you will use in other packages, you can run smaller subsets of tests, lints etc which is faster.
+1. clearer boundaries,
+2. fewer cyclic dependencies,
+3. smaller and faster lint, test, and type-check scope.
