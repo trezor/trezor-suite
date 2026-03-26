@@ -49,7 +49,7 @@ describe('useExchangeFiatDeviation', () => {
         const { result } = renderUseExchangeFiatDeviation();
 
         expect(result.current).toEqual({
-            deviation: 2,
+            deviation: 0.02,
             exceedsThreshold: false,
             exceedsHighThreshold: false,
         });
@@ -63,7 +63,7 @@ describe('useExchangeFiatDeviation', () => {
         const { result } = renderUseExchangeFiatDeviation();
 
         expect(result.current).toEqual({
-            deviation: 10,
+            deviation: 0.1,
             exceedsThreshold: true,
             exceedsHighThreshold: false,
         });
@@ -77,7 +77,7 @@ describe('useExchangeFiatDeviation', () => {
         const { result } = renderUseExchangeFiatDeviation();
 
         expect(result.current).toEqual({
-            deviation: 20,
+            deviation: 0.2,
             exceedsThreshold: true,
             exceedsHighThreshold: true,
         });

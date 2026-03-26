@@ -36,7 +36,7 @@ export const ExchangeFiatDeviationWarning = ({ quote }: ExchangeFiatDeviationWar
         return null;
     }
 
-    const percent = percentFormatter.format(exchangeDeviation.deviation / 100);
+    const percent = percentFormatter.format(exchangeDeviation.deviation);
 
     return (
         <InlineAlertBox

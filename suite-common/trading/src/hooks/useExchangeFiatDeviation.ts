@@ -4,8 +4,8 @@ import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 
 import { useTradingFiatValues } from './useTradingFiatValues';
 
-const FIAT_DEVIATION_THRESHOLD_PERCENT = 10;
-const FIAT_DEVIATION_HIGH_THRESHOLD_PERCENT = 20;
+const FIAT_DEVIATION_THRESHOLD_RATIO = 0.1;
+const FIAT_DEVIATION_HIGH_THRESHOLD_RATIO = 0.2;
 
 type ExchangeFiatDeviationProps = {
     sendCryptoId?: CryptoId;
@@ -54,11 +54,11 @@ export const useExchangeFiatDeviation = ({
         return null;
     }
 
-    const deviationPercent = ((sendFiatValue - receiveFiatValue) / sendFiatValue) * 100;
+    const deviation = (sendFiatValue - receiveFiatValue) / sendFiatValue;
 
     return {
-        deviation: deviationPercent,
-        exceedsThreshold: deviationPercent >= FIAT_DEVIATION_THRESHOLD_PERCENT,
-        exceedsHighThreshold: deviationPercent >= FIAT_DEVIATION_HIGH_THRESHOLD_PERCENT,
+        deviation,
+        exceedsThreshold: deviation >= FIAT_DEVIATION_THRESHOLD_RATIO,
+        exceedsHighThreshold: deviation >= FIAT_DEVIATION_HIGH_THRESHOLD_RATIO,
     };
 };
