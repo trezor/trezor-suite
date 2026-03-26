@@ -8,4 +8,5 @@
 
 ### 🔧 Bug fixes
 
+- Fixed transaction simulation in Connect Popup for EVM transactions requiring higher than default gas limit.
 - Minor issues have been resolved, along with general usability improvements for a more stable and seamless experience.
