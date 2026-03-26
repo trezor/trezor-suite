@@ -15,13 +15,13 @@ jobs:
       version: ${{ steps.set-version.outputs.version }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           # Number of commits to fetch. 0 indicates all history for all branches and tags.
           fetch-depth: 0
 
       - name: Setup node
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
         with:
           node-version-file: ".nvmrc"
 
@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [extract-version]
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
       - name: Check connect version match
         uses: ./.github/actions/check-connect-version-match
@@ -50,12 +50,12 @@ jobs:
     # Branch should have been created by workflow .github/workflows/release-connect-v10-init.yml
     if: startsWith(github.ref, 'refs/heads/release/connect/')
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           ref: release/connect/${{  needs.extract-version.outputs.version }}
 
       - name: Setup node
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
         with:
           node-version-file: ".nvmrc"
 
@@ -79,12 +79,12 @@ jobs:
     # Branch should have been created by workflow .github/workflows/release-connect-v10-init.yml
     if: startsWith(github.ref, 'refs/heads/release/connect/')
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           ref: release/connect/${{  needs.extract-version.outputs.version }}
 
       - name: Setup node
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
         with:
           node-version-file: ".nvmrc"
 

@@ -45,12 +45,12 @@ jobs:
 
     steps:
       - name: Checkout project
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           submodules: "true"
 
       - name: Free Disk Space
-        uses: jlumbroso/free-disk-space@main
+        uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be # main
         with:
           dotnet: true
           haskell: true
@@ -60,13 +60,13 @@ jobs:
           large-packages: false
 
       - name: Install node and yarn
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
         with:
           node-version-file: ".nvmrc"
           cache: yarn
 
       - name: Load node modules cache
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5
         with:
           path: node_modules
           key: node_modules-${{ hashFiles('yarn.lock') }}
@@ -85,7 +85,7 @@ jobs:
 
       - name: Generate GitHub App token
         id: trezor-bot-token
-        uses: actions/create-github-app-token@v2
+        uses: actions/create-github-app-token@f8d387b68d61c58ab83c6c016672934102569859 # v3
         with:
           app-id: ${{ secrets.TREZOR_BOT_APP_ID }}
           private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
@@ -108,7 +108,7 @@ jobs:
           docker compose up --detach trezor-user-env-unix trezor-user-env-regtest
 
       - name: Download Android build artifact
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
         with:
           name: android-test-build-${{ github.run_id }}
           path: suite-native/app/android/app/build/
@@ -120,7 +120,7 @@ jobs:
           sudo udevadm trigger --name-match=kvm
 
       - name: Run Detox E2E Android tests
-        uses: reactivecircus/android-emulator-runner@v2
+        uses: reactivecircus/android-emulator-runner@e89f39f1abbbd05b1113a29cf4db69e7540cae5a # v2
         env:
           RUNNER_TEMP: /tmp
           GITHUB_TOKEN: ${{ steps.trezor-bot-token.outputs.token }}
@@ -167,7 +167,7 @@ jobs:
 
       - name: "Store test artifacts"
         if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
         with:
           name: android-tests-${{ matrix.TEST_GROUP }}
           path: suite-native/app/artifacts

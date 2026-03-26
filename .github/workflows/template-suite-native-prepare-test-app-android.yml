@@ -17,12 +17,12 @@ jobs:
       COMMIT_HASH: "e2e-test" # it has to be hardcoded to avoid the fingerprint change
     steps:
       - name: Checkout project
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           submodules: "true"
 
       - name: Free Disk Space
-        uses: jlumbroso/free-disk-space@main
+        uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be # main
         with:
           # The free GH runner has limited disk space, so we need to uninstall some preinstalled tools.
           dotnet: true
@@ -33,13 +33,13 @@ jobs:
           large-packages: false
 
       - name: Install node and yarn
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
         with:
           node-version-file: ".nvmrc"
           cache: yarn
 
       - name: Setup node_modules cache
-        uses: actions/cache@v5
+        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5
         with:
           path: node_modules
           key: node_modules-${{ hashFiles('yarn.lock') }}
@@ -52,7 +52,7 @@ jobs:
           yarn install
 
       - name: Setup Java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5
         with:
           distribution: temurin
           java-version: 17
@@ -71,7 +71,7 @@ jobs:
         run: npx @expo/fingerprint ./ > expo-fingerprint.json && node -e "console.log('HASH=' + require('./expo-fingerprint.json').hash)" >> $GITHUB_OUTPUT
 
       - name: Configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@8df5847569e6427dd6c4fb1cf565c83acfa8afa7 # v6
         with:
           role-to-assume: arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy
           aws-region: eu-central-1
@@ -90,7 +90,7 @@ jobs:
 
       - name: Setup Android SDK
         if: steps.s3_build_cache.outputs.hit == 'true'
-        uses: android-actions/setup-android@v3
+        uses: android-actions/setup-android@651bceb6f9ca583f16b8d75b62c36ded2ae6fc9c # v4
 
       - name: Download Apktool
         if: steps.s3_build_cache.outputs.hit == 'true'
@@ -156,7 +156,7 @@ jobs:
         run: aws s3 cp . s3://dev.suite.sldev.cz/suite-mobile/${{ steps.expo-fingerprint.outputs.HASH }}/ --recursive
 
       - name: Upload Android build artifact
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
         with:
           name: android-test-build-${{ github.run_id }}
           path: suite-native/app/android/app/build/

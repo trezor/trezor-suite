@@ -13,13 +13,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           lfs: true
           submodules: true
 
       - name: Setup Docker
-        uses: docker/setup-docker-action@v4
+        uses: docker/setup-docker-action@1a6edb0ba9ac496f6850236981f15d8f9a82254d # v5
 
       - name: Build transport-bluetooth binary
         working-directory: packages/transport-bluetooth
@@ -34,7 +34,7 @@ jobs:
           docker rmi trezor-bluetooth-image
 
       - name: Upload binaries as artifacts
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
         with:
           name: transport-bluetooth-binaries-${{ github.sha }}
           path: |
@@ -43,14 +43,14 @@ jobs:
       - name: Generate GitHub App token
         if: inputs.create-pull-request == true
         id: trezor-bot-token
-        uses: actions/create-github-app-token@v2
+        uses: actions/create-github-app-token@f8d387b68d61c58ab83c6c016672934102569859 # v3
         with:
           app-id: ${{ secrets.TREZOR_BOT_APP_ID }}
           private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
 
       - name: Create pull request
         if: inputs.create-pull-request == true
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@c0f553fe549906ede9cf27b5156039d195d2ece0 # v8
         with:
           token: ${{ steps.trezor-bot-token.outputs.token }}
           title: "chore(transport-bluetooth): update binaries"

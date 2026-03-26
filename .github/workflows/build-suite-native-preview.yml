@@ -38,13 +38,13 @@ jobs:
       pull-requests: write
       actions: write
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
         with:
           node-version-file: ".nvmrc"
           cache: yarn
       - name: Setup EAS
-        uses: expo/expo-github-action@v8
+        uses: expo/expo-github-action@c7b66a9c327a43a8fa7c0158e7f30d6040d2481e # v8
         with:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN_DEVELOP }}
@@ -73,7 +73,7 @@ jobs:
       - name: Create preview builds if fingerprint changed
         # Only create preview builds if there is no build with the same runtimeVersion on EAS already
         if: env.RUNTIME_BUILD_EXISTS == 'false'
-        uses: expo/expo-github-action/preview-build@main
+        uses: expo/expo-github-action/preview-build@b184ff86a3c926240f1b6db41764c83a01c02eef # main
         with:
           command: eas build --profile preview --platform all
           working-directory: suite-native/app
@@ -82,7 +82,7 @@ jobs:
         run: yarn message-system-sign-config
 
       - name: Create preview update
-        uses: expo/expo-github-action/preview@v8
+        uses: expo/expo-github-action/preview@c7b66a9c327a43a8fa7c0158e7f30d6040d2481e # v8
         with:
           command: eas update --auto --branch ${{ env.BRANCH_NAME }}
           working-directory: suite-native/app

@@ -38,7 +38,7 @@ runs:
   using: "composite"
   steps:
     - name: Checkout
-      uses: actions/checkout@v6
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
       with:
         submodules: true
 
@@ -48,13 +48,13 @@ runs:
       run: git lfs pull --include "packages/connect-data/files/**/*"
 
     - name: Configure aws credentials
-      uses: aws-actions/configure-aws-credentials@v4
+      uses: aws-actions/configure-aws-credentials@8df5847569e6427dd6c4fb1cf565c83acfa8afa7 # v6
       with:
         role-to-assume: ${{ inputs.awsRoleToAssume }}
         aws-region: ${{ inputs.awsRegion }}
 
     - name: Setup node
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
       with:
         node-version-file: ".nvmrc"
         cache: yarn
@@ -113,7 +113,7 @@ runs:
 
     - name: Upload connect-example webextension artifacts
       if: inputs.uploadArtifacts == 'true'
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
       with:
         name: connect-example-webextension-${{ inputs.serverHostname }}
         path: |
@@ -121,7 +121,7 @@ runs:
 
     - name: Upload connect-explorer webextension artifacts
       if: inputs.uploadArtifacts == 'true'
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
       with:
         name: connect-explorer-webextension-${{ inputs.serverHostname }}
         path: |
