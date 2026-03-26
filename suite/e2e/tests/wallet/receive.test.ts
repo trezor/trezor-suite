@@ -17,13 +17,26 @@ test.describe('Receive transaction', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () =
         await page.getByTestId('@settings/experimental-features/tron-view-only-checkbox').click();
     });
 
-    const testCases: Array<{ coin: NetworkSymbol; category: TestCategory }> = [
-        { coin: 'btc', category: TestCategory.BTC },
-        { coin: 'eth', category: TestCategory.ETH },
-        { coin: 'sol', category: TestCategory.Solana },
-        { coin: 'trx', category: TestCategory.Coins },
-    ];
-    testCases.forEach(({ coin, category }) => {
+    const testCases: Array<{ coin: NetworkSymbol; category: TestCategory; addressFormat: RegExp }> =
+        [
+            {
+                coin: 'btc',
+                category: TestCategory.BTC,
+                addressFormat: /^(bc1[a-z0-9]{39,59}|[13][a-km-zA-HJ-NP-Z1-9]{25,34})$/,
+            },
+            { coin: 'eth', category: TestCategory.ETH, addressFormat: /^0x[a-fA-F0-9]{40}$/ },
+            {
+                coin: 'sol',
+                category: TestCategory.Solana,
+                addressFormat: /^[1-9A-HJ-NP-Za-km-z]{32,44}$/,
+            },
+            {
+                coin: 'trx',
+                category: TestCategory.Coins,
+                addressFormat: /^T[1-9A-HJ-NP-Za-km-z]{33}$/,
+            },
+        ];
+    testCases.forEach(({ coin, category, addressFormat }) => {
         test(
             `Receive a ${coin.toUpperCase()} transaction`,
             {
@@ -49,7 +62,8 @@ test.describe('Receive transaction', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () =
                 await walletPage.copyAddressButton.click();
                 await expect(walletPage.copyToCliboardToast).toBeVisible();
                 const clipboardText = await page.evaluate(() => navigator.clipboard.readText());
-                expect(clipboardText).toEqual(address);
+                expect.soft(clipboardText).toEqual(address);
+                expect.soft(address).toMatch(addressFormat);
             },
         );
     });
