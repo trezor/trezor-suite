@@ -1,7 +1,5 @@
-import * as url from 'url';
-
 import { trezorLogo } from '@suite-common/suite-constants';
-import { HttpServer, allowReferers } from '@trezor/node-utils';
+import { HttpServer, allowReferers, parseRequestUrl } from '@trezor/node-utils';
 import { type RendererChannels } from '@trezor/suite-desktop-api';
 import { xssFilters } from '@trezor/utils';
 
@@ -81,7 +79,7 @@ export const createHttpReceiver = (options?: { port?: number }) => {
     httpReceiver.get('/oauth', [
         allowReferers(['', '127.0.0.1', 'www.dropbox.com']), // No referer is sent by Google, Dropbox sends referer when using Safari
         (request, response) => {
-            const { search, hash } = url.parse(request.url, true);
+            const { search, hash } = parseRequestUrl(request.url);
 
             // send data back to main window
             httpReceiver.emit('oauth/response', {
@@ -98,7 +96,7 @@ export const createHttpReceiver = (options?: { port?: number }) => {
     httpReceiver.get('/buy-redirect', [
         allowReferers(['', 'localhost:3000', '*.invity.io', 'invity.io']),
         (request, response) => {
-            const { query } = url.parse(request.url, true);
+            const { query } = parseRequestUrl(request.url);
             if (query && query.p) {
                 httpReceiver.emit('buy/redirect', query.p.toString());
             }
@@ -150,7 +148,7 @@ export const createHttpReceiver = (options?: { port?: number }) => {
     httpReceiver.get('/sell-redirect', [
         allowReferers(['']), // No referer
         (request, response) => {
-            const { query } = url.parse(request.url, true);
+            const { query } = parseRequestUrl(request.url);
             if (query && query.p) {
                 httpReceiver.emit('sell/redirect', query.p.toString());
             }
@@ -164,7 +162,7 @@ export const createHttpReceiver = (options?: { port?: number }) => {
     httpReceiver.get('/exchange-redirect', [
         allowReferers(['']), // No referer
         (request, response) => {
-            const { query } = url.parse(request.url, true);
+            const { query } = parseRequestUrl(request.url);
             if (query && query.p) {
                 httpReceiver.emit('exchange/redirect', query.p.toString());
             }
