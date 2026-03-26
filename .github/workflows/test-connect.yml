@@ -88,6 +88,7 @@ jobs:
       transport: ${{ matrix.transport }}
       testEnv: ${{ matrix.env }}
       testFirmwareModel: ${{ matrix.model }}
+      testGroup: PR-check
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(needs.set-matrix.outputs.dailyMatrix) }}
@@ -106,6 +107,7 @@ jobs:
       transport: ${{ matrix.transport }}
       testEnv: ${{ matrix.env }}
       testFirmwareModel: ${{ matrix.model }}
+      testGroup: PR-check-web
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(needs.set-matrix.outputs.dailyWebMatrix) }}
@@ -124,6 +126,7 @@ jobs:
       transport: ${{ matrix.transport }}
       testEnv: ${{ matrix.env }}
       testFirmwareModel: ${{ matrix.model }}
+      testGroup: PR-nightly-t3w1
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(needs.set-matrix.outputs.nightlyT3W1Matrix) }}
@@ -143,6 +146,7 @@ jobs:
       testEnv: ${{ matrix.env }}
       testFirmwareModel: ${{ matrix.model }}
       testRandomizedOrder: true
+      testGroup: randomized-order
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(needs.set-matrix.outputs.dailyMatrix) }}
@@ -161,6 +165,7 @@ jobs:
       transport: ${{ matrix.transport }}
       testEnv: ${{ matrix.env }}
       testFirmwareModel: ${{ matrix.model }}
+      testGroup: all-fws
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(needs.set-matrix.outputs.allFwsMatrix) }}
@@ -179,6 +184,7 @@ jobs:
       transport: ${{ matrix.transport }}
       testEnv: ${{ matrix.env }}
       testFirmwareModel: ${{ matrix.model }}
+      testGroup: all-models-api
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(needs.set-matrix.outputs.otherDevicesMatrix) }}
@@ -197,6 +203,7 @@ jobs:
       transport: ${{ matrix.transport }}
       testEnv: ${{ matrix.env }}
       testFirmwareModel: ${{ matrix.model }}
+      testGroup: all-transports
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(needs.set-matrix.outputs.allTransportsMatrix) }}
@@ -215,6 +222,7 @@ jobs:
       transport: ${{ matrix.transport }}
       testEnv: ${{ matrix.env }}
       testFirmwareModel: ${{ matrix.model }}
+      testGroup: model-one-api
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(needs.set-matrix.outputs.modelOneMatrix) }}
