@@ -34,7 +34,7 @@ on:
         description: "Disable Cache transactions (when `true` tests don't use cache for transactions)"
         type: "string"
         required: false
-        default: false
+        default: "false"
       transport:
         description: "Transport to use (example: bridge, node-bridge)"
         type: "string"
@@ -42,6 +42,10 @@ on:
         default: "node-bridge"
       testEnv:
         description: "Environment to test (example: node, web)"
+        type: "string"
+        required: true
+      testGroup:
+        description: "Test group name used for artifact naming (example: PR-check, all-fws)"
         type: "string"
         required: true
 
@@ -84,4 +88,4 @@ jobs:
         uses: ./.github/actions/upload-test-logs
         with:
           target: ${{ inputs.testEnv }}
-          test-group: ${{ inputs.testDescription }}
+          test-group: ${{ inputs.testGroup }}-${{ inputs.testDescription }}
