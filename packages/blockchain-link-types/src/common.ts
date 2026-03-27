@@ -1,4 +1,4 @@
-import type tls from 'tls';
+import type { SocksProxyAgentOptions } from 'socks-proxy-agent';
 
 import type { BaseCurrencyCode } from './baseCurrency';
 import type { TronAccountExtraData, TronChainExtraData } from './blockbook-api';
@@ -136,30 +136,11 @@ export interface ContractInfo {
 
 /* Common types used in both params and responses */
 
-type AgentOptions = {
-    timeout?: number | undefined;
-};
-
-interface BaseSocksProxyAgentOptions {
-    host?: string | null;
-    port?: string | number | null;
-    username?: string | null;
-    tls?: tls.ConnectionOptions | null;
-    ipaddress?: string;
-    type: 4 | 5;
-    userId?: string;
-    password?: string;
-}
-
-// todo: connect10 here we are using the old `SocksProxyAgentOptions` from older version of socks-proxy-agent
-// but we keep the old API so we do not introduce breaking changes.
-interface SocksProxyAgentOptions extends AgentOptions, BaseSocksProxyAgentOptions {}
-
 export interface BlockchainSettings {
     name: string;
     worker: string | (() => any);
     server: string[];
-    proxy?: string | SocksProxyAgentOptions;
+    proxy?: { uri: string | URL; opts?: SocksProxyAgentOptions };
     debug?: boolean;
     timeout?: number;
     pingTimeout?: number;
