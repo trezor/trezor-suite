@@ -1,4 +1,4 @@
-import type { SubscriptionAccountInfo } from '@trezor/blockchain-link-types';
+import type { SubscriptionAccountInfo } from '@trezor/blockchain-link-types/src/common';
 import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
 import { Cache } from '@trezor/utils';
 

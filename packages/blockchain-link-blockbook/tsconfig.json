@@ -12,6 +12,10 @@
         { "path": "../env-utils" },
         { "path": "../type-utils" },
         { "path": "../utils" },
+        {
+            "path": "../blockchain-link-blockfrost"
+        },
+        { "path": "../blockchain-link-ripple" },
         { "path": "../e2e-utils" },
         { "path": "../eslint" }
     ]

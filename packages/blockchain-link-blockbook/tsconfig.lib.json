@@ -26,6 +26,12 @@
             "path": "../utils"
         },
         {
+            "path": "../blockchain-link-blockfrost"
+        },
+        {
+            "path": "../blockchain-link-ripple"
+        },
+        {
             "path": "../e2e-utils"
         },
         {

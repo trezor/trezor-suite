@@ -14,6 +14,7 @@
         },
         { "path": "../blockchain-link-ripple" },
         { "path": "../e2e-utils" },
+        { "path": "../blockchain-link-types" },
         { "path": "../eslint" }
     ]
 }

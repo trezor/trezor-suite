@@ -14,13 +14,17 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
+        "@stellar/stellar-sdk": "14.5.0",
         "@trezor/blockchain-link": "workspace:*",
         "@trezor/blockchain-link-blockbook": "workspace:*",
         "@trezor/blockchain-link-blockfrost": "workspace:*",
         "@trezor/blockchain-link-ripple": "workspace:*",
-        "@trezor/e2e-utils": "workspace:*"
+        "@trezor/e2e-utils": "workspace:*",
+        "tiny-worker": "^2.3.0",
+        "xrpl": "4.6.0"
     },
     "devDependencies": {
+        "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/eslint": "workspace:*",
         "@types/jest": "29.5.12",
         "@types/node": "22.13.10",

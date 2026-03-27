@@ -5,13 +5,10 @@
         "lib": ["webworker"],
         "types": ["jest", "node", "web"]
     },
-    "include": [".", "**/*.json"],
+    "include": ["src", "**/*.json"],
     "references": [
         { "path": "../blockchain-link-types" },
-        { "path": "../blockchain-link-utils" },
-        { "path": "../env-utils" },
         { "path": "../utils" },
-        { "path": "../utxo-lib" },
         { "path": "../websocket-client" },
         { "path": "../e2e-utils" },
         { "path": "../eslint" },

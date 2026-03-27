@@ -69,12 +69,10 @@ yarn workspace @trezor/blockchain-link type-check
 yarn workspace @trezor/blockchain-link test:unit
 ```
 
-### Integration tests
+### E2E tests
 
-Testing `lib` and `build` outputs:
+E2E tests have been moved to the respective coin packages (e.g. `@trezor/blockchain-link-electrum`, `@trezor/blockchain-link-stellar`, etc.):
 
 ```
-yarn workspace @trezor/blockchain-link build:lib
-yarn workspace @trezor/blockchain-link build:workers
-yarn workspace @trezor/blockchain-link test:integration
+yarn workspace @trezor/blockchain-link-electrum test:unit
 ```

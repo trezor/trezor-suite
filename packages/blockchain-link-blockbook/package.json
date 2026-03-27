@@ -1,10 +1,10 @@
 {
     "name": "@trezor/blockchain-link-blockbook",
-    "version": "10.0.0-alpha.1",
+    "version": "0.0.0",
     "author": "Trezor <info@trezor.io>",
     "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/blockchain-link-blockbook",
-    "description": "Blockchain link Blockbook worker implementation",
-    "npmPublishAccess": "public",
+    "description": "Temporary package, tests should be probably dissolved into their respective per coin packages",
+    "npmPublishAccess": "private",
     "license": "See LICENSE.md in repo root",
     "repository": {
         "type": "git",
@@ -51,6 +51,8 @@
         "@trezor/utils": "workspace:*"
     },
     "devDependencies": {
+        "@trezor/blockchain-link-blockfrost": "workspace:*",
+        "@trezor/blockchain-link-ripple": "workspace:*",
         "@trezor/e2e-utils": "workspace:*",
         "@trezor/eslint": "workspace:*",
         "@types/jest": "29.5.12",

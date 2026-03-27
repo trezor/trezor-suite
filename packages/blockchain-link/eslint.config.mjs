@@ -21,4 +21,12 @@ export default [
             ],
         },
     },
+    {
+        // Backend packages can't be in devDependencies (Nx circular dependency),
+        // but are resolved via yarn workspaces for dev/test use.
+        files: ['**/src/ui/**', '**/tests/**'],
+        rules: {
+            'import/no-extraneous-dependencies': 'off',
+        },
+    },
 ];

@@ -1,4 +1,4 @@
-import type { BlockchainSettings } from '@trezor/blockchain-link-types';
+import type { BlockchainSettings } from '@trezor/blockchain-link-types/src/common';
 import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/src/constants';
 import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
 import type { Events } from '@trezor/blockchain-link-types/src/events';
@@ -355,31 +355,14 @@ export type BlockchainLinkResponse<T extends keyof BlockchainLinkInterface> =
             : never
         : never;
 
-export { sumAddressValues } from './workers/electrum/methods/getAccountInfo';
+// reexport values from blockchain-link-types
+export { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/src/constants';
+export { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
+export * from '@trezor/blockchain-link-types/src/constants/messages';
 
-// reexport types
-export type { Message } from '@trezor/blockchain-link-types/src/messages';
-export type {
-    Response,
-    BlockEvent,
-    NotificationEvent,
-    FiatRatesEvent,
-} from '@trezor/blockchain-link-types/src/responses';
-export type {
-    Address,
-    AccountAddresses,
-    AccountInfo,
-    AccountBalanceHistory,
-    AnonymitySet,
-    BlockchainSettings,
-    FiatRatesBySymbol,
-    ServerInfo,
-    SubscriptionAccountInfo,
-    Target,
-    TokenInfo,
-    TokenTransfer,
-    InternalTransfer,
-    Transaction,
-    TransactionDetail,
-    Utxo,
-} from '@trezor/blockchain-link-types/src/common';
+// Worker infrastructure - used by backend packages
+export { BaseWorker, CONTEXT } from './workers/baseWorker';
+export type { ContextType } from './workers/baseWorker';
+export { BaseWebsocket } from './workers/baseWebsocket';
+export { WorkerState } from './workers/state';
+export { prioritizeEndpoints } from './workers/utils';

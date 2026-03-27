@@ -1,4 +1,4 @@
 {
-    "ignore-patterns": ["libDev", "lib"],
+    "ignore-patterns": ["libDev", "lib", "libESM"],
     "ignores": ["@trezor/blockchain-link"]
 }
