@@ -117,11 +117,7 @@ export const TradingExchangeRevokeScreen = ({
                         />
                     )}
 
-                    <ExchangeRevokeDetails
-                        fee={fee}
-                        isLoading={isLoading}
-                        exchange={quote.exchange}
-                    />
+                    <ExchangeRevokeDetails exchange={quote.exchange} />
                 </VStack>
             </Screen>
         </TradingDeviceConnectionGuard>
