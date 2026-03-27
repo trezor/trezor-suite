@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 
+import { selectModalRequestId } from '@suite/modal';
 import { goto } from '@suite/router';
 import { selectHasDevicePassphraseEntryCapability } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
@@ -21,6 +22,7 @@ import { PassphraseMismatchModal } from '../UserContextModal/PassphraseMismatchM
 
 export const PassphraseModal = ({ device }: { device: TrezorDevice }) => {
     const discovery = useSelector(state => selectDiscoveryByDevicePath(state, device?.path));
+    const requestId = useSelector(selectModalRequestId);
     const dispatch = useDispatch();
 
     const onPassphraseConfirm = useCallback(
@@ -32,10 +34,11 @@ export const PassphraseModal = ({ device }: { device: TrezorDevice }) => {
                     device,
                     passphrase: value,
                     passphraseOnDevice,
+                    requestId,
                 }),
             );
         },
-        [discovery, dispatch, device],
+        [discovery, dispatch, device, requestId],
     );
 
     const confirmEmptyPassphrase = useSelector(state =>
@@ -68,10 +71,11 @@ export const PassphraseModal = ({ device }: { device: TrezorDevice }) => {
                     device,
                     passphrase: value,
                     passphraseOnDevice,
+                    requestId,
                 }),
             );
         },
-        [device, confirmEmptyPassphrase, dispatch, discovery, onPassphraseConfirm],
+        [device, confirmEmptyPassphrase, dispatch, discovery, onPassphraseConfirm, requestId],
     );
 
     const offerPassphraseOnDevice = useSelector(selectHasDevicePassphraseEntryCapability);
