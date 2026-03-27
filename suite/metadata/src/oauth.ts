@@ -126,7 +126,6 @@ const handleResponse = (
 
 // keep handler function instance in top level scope
 let desktopHandlerInstance: (message: OAuthResponseMessage) => void;
-let webHandlerInstance: (e: MessageEvent<OAuthResponseMessage>) => void;
 
 const getDesktopHandlerInstance = (
     dfd: Deferred<OAuthCredentials>,
@@ -150,60 +149,54 @@ const getDesktopHandlerInstance = (
     return desktopHandlerInstance;
 };
 
-const getWebHandlerInstance = (
-    dfd: Deferred<OAuthCredentials>,
-    originalParams: URLSearchParams,
-) => {
-    if (webHandlerInstance) {
-        window.removeEventListener('message', webHandlerInstance);
-    }
-    webHandlerInstance = (e: MessageEvent<OAuthResponseMessage>) => {
-        if (window.location.origin !== e.origin) return;
-        if (!oauthResult.safeParse(e.data).success) return;
-
-        handleResponse(
-            e.data,
-            originalParams,
-            credentials => {
-                dfd.resolve(credentials);
-            },
-            error => {
-                dfd.reject(error);
-            },
-        );
-    };
-
-    return webHandlerInstance;
-};
-
-const getWebBroadcastChannelHandlerInstance = (
+const createWebBroadcastChannel = (
     dfd: Deferred<OAuthCredentials>,
     originalParams: URLSearchParams,
 ) => {
     const channel = new BroadcastChannel(OAUTH_BROADCAST_CHANNEL_NAME);
-    const messageHandler = (e: MessageEvent) => {
+
+    channel.addEventListener('message', (e: MessageEvent) => {
         try {
             const parsedMessage = oauthResponseMessage.parse(e.data);
             handleResponse(
                 parsedMessage,
                 originalParams,
-                credentials => {
-                    channel.close();
-                    dfd.resolve(credentials);
-                },
-                error => {
-                    channel.close();
-                    dfd.reject(error);
-                },
+                credentials => dfd.resolve(credentials),
+                error => dfd.reject(error),
             );
         } catch (error) {
             console.error(error);
         }
-    };
-
-    channel.addEventListener('message', messageHandler);
+    });
 
     return channel;
+};
+
+/**
+ * Watch popup window and call onClose when it is closed by the user or after a timeout.
+ * Returns a cleanup function to clear the timers.
+ */
+const watchPopup = (popup: Window, onClose: () => void) => {
+    const timers = { pollIntervalId: 0, timeoutId: 0 };
+
+    const clear = () => {
+        window.clearInterval(timers.pollIntervalId);
+        window.clearTimeout(timers.timeoutId);
+    };
+
+    timers.pollIntervalId = window.setInterval(() => {
+        if (popup.closed) {
+            clear();
+            onClose();
+        }
+    }, POPUP_POLL_INTERVAL_MS);
+
+    timers.timeoutId = window.setTimeout(() => {
+        clear();
+        onClose();
+    }, POPUP_TIMEOUT_MS);
+
+    return clear;
 };
 
 /**
@@ -219,8 +212,7 @@ export const extractCredentialsFromAuthorizationFlow = (url: URL) => {
         desktopApi.once('oauth/response', getDesktopHandlerInstance(dfd, url.searchParams));
         window.open(url, METADATA_PROVIDER.AUTH_WINDOW_TITLE, METADATA_PROVIDER.AUTH_WINDOW_PROPS);
     } else {
-        const messageHandler = getWebHandlerInstance(dfd, url.searchParams);
-        const broadcastChannel = getWebBroadcastChannelHandlerInstance(dfd, url.searchParams);
+        const channel = createWebBroadcastChannel(dfd, url.searchParams);
 
         const popup = window.open(
             url,
@@ -228,42 +220,21 @@ export const extractCredentialsFromAuthorizationFlow = (url: URL) => {
             METADATA_PROVIDER.AUTH_WINDOW_PROPS,
         );
 
-        window.addEventListener('message', messageHandler);
-
         if (!popup) {
-            window.removeEventListener('message', messageHandler);
-            broadcastChannel.close();
+            channel.close();
             dfd.reject(new Error('window closed'));
 
             return dfd.promise;
         }
 
-        let pollIntervalId = 0;
-        let timeoutId = 0;
-
-        const cleanup = () => {
-            window.removeEventListener('message', messageHandler);
-            broadcastChannel.close();
-            window.clearInterval(pollIntervalId);
-            window.clearTimeout(timeoutId);
-        };
-
-        // Poll for popup being closed by the user (e.g. manually closing the window).
-        pollIntervalId = window.setInterval(() => {
-            if (popup.closed) {
-                cleanup();
-                dfd.reject(new Error('window closed'));
-            }
-        }, POPUP_POLL_INTERVAL_MS);
-
-        // Safety timeout to avoid hanging indefinitely.
-        timeoutId = window.setTimeout(() => {
-            cleanup();
+        const clearTimers = watchPopup(popup, () => {
+            channel.close();
             dfd.reject(new Error('window closed'));
-        }, POPUP_TIMEOUT_MS);
+        });
 
         void dfd.promise.finally(() => {
-            cleanup();
+            channel.close();
+            clearTimers();
 
             if (!popup.closed) {
                 popup.close();
