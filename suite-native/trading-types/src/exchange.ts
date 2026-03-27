@@ -19,3 +19,5 @@ export type ExchangeFormValues = BaseFormValues<
     };
 
 export type ExchangeFormType = UseFormReturn<ExchangeFormValues>;
+
+export type ConfirmationVariant = 'approve' | 'revoke';
