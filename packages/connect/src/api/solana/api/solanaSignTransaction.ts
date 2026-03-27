@@ -26,7 +26,10 @@ import {
     parseTransferCheckedInstruction,
 } from '@solana-program/token';
 
-import { SolanaSignTransaction as SolanaSignTransactionSchema } from '@trezor/connect-common';
+import {
+    SolanaSignTransaction as SolanaSignTransactionSchema,
+    SolanaTxAdditionalInfo,
+} from '@trezor/connect-common';
 import type { PROTO, TokenInfo } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
@@ -37,11 +40,10 @@ import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { validatePath } from '../../../utils/pathUtils';
 import { getFirmwareRange } from '../../common/paramsValidator';
-import { transformAdditionalInfo } from '../additionalInfo';
 import { getSolanaTokenDefinition } from '../solanaDefinitions';
 import { SOLANA_BASE_FEE, createTransactionShimFromHex } from '../solanaUtils';
 
-type Params = { proto: PROTO.SolanaSignTx; serialize: boolean };
+type Params = { proto: PROTO.SolanaSignTx; serialize: boolean; symbols?: (string | undefined)[] };
 
 export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTransaction', Params> {
     constructor(message: MethodMessage<'solanaSignTransaction'>) {
@@ -66,14 +68,36 @@ export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTra
 
         const path = validatePath(payload.path, 2);
 
+        let additional_info;
+        let symbols;
+
+        if (payload.additionalInfo) {
+            Assert(SolanaTxAdditionalInfo, payload.additionalInfo);
+
+            const token_accounts_infos =
+                payload.additionalInfo.tokenAccountsInfos?.map(tokenAccountInfo => ({
+                    base_address: tokenAccountInfo.baseAddress,
+                    token_program: tokenAccountInfo.tokenProgram,
+                    token_mint: tokenAccountInfo.tokenMint,
+                    token_account: tokenAccountInfo.tokenAccount,
+                })) ?? [];
+
+            symbols =
+                payload.additionalInfo.tokenAccountsInfos?.map(
+                    tokenAccountInfo => tokenAccountInfo.symbol,
+                ) ?? [];
+
+            additional_info = { token_accounts_infos };
+        }
+
         const proto = {
             address_n: path,
             serialized_tx: payload.serializedTx,
-            additional_info: transformAdditionalInfo(payload.additionalInfo),
+            additional_info,
             payment_req: payload.payment_req,
         };
 
-        this.params = { proto, serialize: !!payload.serialize };
+        this.params = { proto, serialize: !!payload.serialize, symbols };
     }
 
     async initAsync(): Promise<void> {
@@ -97,15 +121,15 @@ export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTra
     payloadToPrecomposed() {
         try {
             let messageBytes;
-            if (this.payload.serialize) {
+            if (this.params.serialize) {
                 const transaction = pipe(
-                    this.payload.serializedTx,
+                    this.params.proto.serialized_tx,
                     getBase16Encoder().encode,
                     getTransactionDecoder().decode,
                 );
                 messageBytes = transaction.messageBytes;
             } else {
-                messageBytes = getBase16Encoder().encode(this.payload.serializedTx);
+                messageBytes = getBase16Encoder().encode(this.params.proto.serialized_tx);
             }
             const compiledMessage = pipe(
                 messageBytes,
@@ -189,11 +213,14 @@ export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTra
                     if (type === TokenInstruction.TransferChecked) {
                         const parsed = parseTransferCheckedInstruction(instructionSafe);
                         const destinationATA = parsed.accounts.destination.address;
-                        const tokenInfo = this.payload.additionalInfo?.tokenAccountsInfos?.find(
+                        const tokenAccountInfos =
+                            this.params.proto.additional_info?.token_accounts_infos ?? [];
+                        const tokenInfoIndex = tokenAccountInfos.findIndex(
                             t =>
-                                t.tokenAccount === destinationATA &&
-                                t.tokenMint === parsed.accounts.mint.address,
+                                t.token_account === destinationATA &&
+                                t.token_mint === parsed.accounts.mint.address,
                         );
+                        const tokenInfo = tokenAccountInfos[tokenInfoIndex];
                         if (!sendAmount.isZero()) {
                             throw ERRORS.TypedError(
                                 'Runtime',
@@ -201,7 +228,7 @@ export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTra
                             );
                         }
                         outputs.push({
-                            address: tokenInfo?.baseAddress || destinationATA,
+                            address: tokenInfo?.base_address || destinationATA,
                             amount: parsed.data.amount.toString(),
                             script_type: 'PAYTOADDRESS' as const,
                         });
@@ -210,7 +237,7 @@ export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTra
                             standard: 'SPL',
                             contract: parsed.accounts.mint.address,
                             decimals: parsed.data.decimals,
-                            symbol: tokenInfo?.symbol,
+                            symbol: this.params.symbols?.[tokenInfoIndex],
                         };
                     }
                 }

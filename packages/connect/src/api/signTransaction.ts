@@ -194,9 +194,7 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
     }
 
     get info() {
-        const coinInfo = getBitcoinNetwork(this.payload.coin);
-
-        return getLabel('Sign #NETWORK transaction', coinInfo);
+        return getLabel('Sign #NETWORK transaction', this.params.coinInfo);
     }
 
     payloadToPrecomposed() {
