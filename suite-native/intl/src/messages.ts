@@ -2622,6 +2622,7 @@ export const messages = {
         },
         notAvailable: 'Not available',
         apyNotAvailable: 'APY not available',
+        apyPercentage: '{apy}% APY',
         notAvailableShort: 'N/A',
         stakePendingCard: {
             totalStakePending: 'Total stake pending',

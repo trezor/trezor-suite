@@ -111,6 +111,7 @@ export const useEarnDepositsCardData = ({
                         tokenSymbol: item.tokenSymbol,
                         contractAddress: item.contractAddress,
                         accountKey: item.accountKey,
+                        accountLabel: item.accountLabel,
                         balance: item.tokenBalance,
                         fiatAmount,
                         apy: item.apy,
