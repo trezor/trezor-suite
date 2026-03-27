@@ -20,7 +20,7 @@ const definition: PlaywrightProjectDefinition[] = [
     { model: Model.T3B1, currentsTags: tagsNightly },
     { model: Model.T2T1, currentsTags: tagsNightly },
     { model: Model.T1B1, currentsTags: tagsNightly },
-    { name: 'no_device', currentsTags: tagsNightly, grep: /(?=.*@noDevice)/ },
+    { name: 'no_device', currentsTags: tagsNightly, grep: /^(?=.*@noDevice)/ },
     // FW Canary projects
     {
         model: Model.T3W1,
@@ -33,7 +33,7 @@ const definition: PlaywrightProjectDefinition[] = [
         model: Model.T3T1,
         nameSuffix: 'fw_canary_smoke',
         firmware: '2-main',
-        grep: /(?=.*@T3T1)(?=.*@smoke)/,
+        grep: /^(?=.*@T3T1)(?=.*@smoke)/,
         additionalGrepInvert: /@specificFirmware/,
         currentsTags: tagsCanary,
     },

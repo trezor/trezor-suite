@@ -67,7 +67,7 @@ export class PlaywrightProjectBuilder {
             const defaultFirmwareMajorVersion = model === Model.T1B1 ? 1 : 2;
             this.setFirmwareVersion(`${defaultFirmwareMajorVersion}-latest`);
             this.setModel(model);
-            this.setGrep(new RegExp(`(?=.*@${model})`));
+            this.setGrep(new RegExp(`^(?=.*@${model})`));
         }
     }
 

@@ -16036,6 +16036,7 @@ __metadata:
     "@octokit/rest": "npm:^21.1.1"
     "@playwright/test": "npm:1.57.0"
     "@trezor/node-utils": "workspace:*"
+    "@trezor/trezor-user-env-link": "workspace:*"
     "@trezor/utils": "workspace:*"
     dotenv: "npm:^16.4.7"
     express: "npm:^5.2.1"

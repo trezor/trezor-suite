@@ -1,5 +1,6 @@
 import { defineConfig } from '@playwright/test';
 
+import { noOtherDevice } from '@trezor/e2e-utils';
 import { Model } from '@trezor/trezor-user-env-link';
 
 import { baseConfig } from './playwright-base.config';
@@ -20,38 +21,38 @@ const definition: PlaywrightProjectDefinition[] = [
         model: Model.T3W1,
         additionalGrepInvert: /@nightlyOnly/,
         currentsTags: tagsPr,
-        grep: /(?=.*@T3W1)(?=.*@webOnly)/,
+        grep: /^(?=.*@T3W1)(?=.*@webOnly)/,
     },
     {
         model: Model.T3T1,
         additionalGrepInvert: /@nightlyOnly/,
         currentsTags: tagsPr,
         nameSuffix: 'smoke',
-        grep: /(?=.*@T3T1)(?=.*@smoke)(?=.*@webOnly)/,
+        grep: new RegExp(`^(?=.*@T3T1)(?=.*@webOnly)((?=.*@smoke)|${noOtherDevice()})`),
     },
     {
         model: Model.T3B1,
         additionalGrepInvert: /@nightlyOnly/,
         currentsTags: tagsPr,
-        grep: /(?=.*@T3B1)(?=.*@webOnly)/,
+        grep: /^(?=.*@T3B1)(?=.*@webOnly)/,
     },
     {
         model: Model.T2T1,
         additionalGrepInvert: /@nightlyOnly/,
         currentsTags: tagsPr,
-        grep: /(?=.*@T2T1)(?=.*@webOnly)/,
+        grep: /^(?=.*@T2T1)(?=.*@webOnly)/,
     },
     {
         model: Model.T1B1,
         additionalGrepInvert: /@nightlyOnly/,
         currentsTags: tagsPr,
-        grep: /(?=.*@T1B1)(?=.*@webOnly)/,
+        grep: /^(?=.*@T1B1)(?=.*@webOnly)/,
     },
     {
         name: 'no_device',
         additionalGrepInvert: /@nightlyOnly/,
         currentsTags: tagsPr,
-        grep: /(?=.*@noDevice)(?=.*@webOnly)/,
+        grep: /^(?=.*@noDevice)(?=.*@webOnly)/,
     },
 ];
 

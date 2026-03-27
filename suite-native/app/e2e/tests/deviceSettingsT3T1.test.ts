@@ -14,7 +14,7 @@ const preloadedStateT3T1 = preparePreloadedReduxState(
     regtestDiscoveryFinishedStateT3T1,
 );
 
-describe('Device settings T3T1 [@androidOnly @smoke @T3T1]', () => {
+describe('Device settings T3T1 [@androidOnly @T3T1]', () => {
     beforeEach(async () => {
         await openApp({ args: { preloadedState: preloadedStateT3T1 } });
         await prepareTrezorEmulator({ model: Model.T3T1 });
