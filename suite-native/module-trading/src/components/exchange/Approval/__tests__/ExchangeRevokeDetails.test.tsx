@@ -9,11 +9,8 @@ describe('ExchangeRevokeDetails', () => {
     let preloadedState: PreloadedState;
     const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
-    const renderExchangeRevokeDetails = (fee: string | undefined = '100000', isLoading = false) =>
-        renderWithStoreProvider(
-            <ExchangeRevokeDetails fee={fee} isLoading={isLoading} exchange="mercuryo" />,
-            { preloadedState },
-        );
+    const renderExchangeRevokeDetails = () =>
+        renderWithStoreProvider(<ExchangeRevokeDetails exchange="mercuryo" />, { preloadedState });
 
     beforeEach(() => {
         preloadedState = {
@@ -29,7 +26,7 @@ describe('ExchangeRevokeDetails', () => {
     });
 
     it('should render revoke details', () => {
-        const { getByText } = renderExchangeRevokeDetails('100000', false);
+        const { getByText } = renderExchangeRevokeDetails();
 
         expect(
             getByText(getTranslation('moduleTrading.exchangeTradePreviewCard.account')),
@@ -48,7 +45,7 @@ describe('ExchangeRevokeDetails', () => {
         preloadedState!.wallet!.trading!.exchange!.tradingAccountKey =
             'unknown-account-key' as AccountKey;
 
-        const { getByText, queryByText } = renderExchangeRevokeDetails('100000', false);
+        const { getByText, queryByText } = renderExchangeRevokeDetails();
 
         expect(
             getByText(getTranslation('moduleTrading.tradingExchangeRevokeScreen.revokeErrorAlert')),

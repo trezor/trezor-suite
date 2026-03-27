@@ -1,15 +1,12 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { type FormDraftRootState, selectDeepCopyOfFormDraft } from '@suite-common/wallet-core';
-import type { FeeLevelLabel } from '@suite-common/wallet-types';
+import { useFormDraft } from '@suite-common/wallet-core';
+import type { FormState } from '@suite-common/wallet-types';
 import { AnimatedCard, Divider, InlineAlertBox } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { NetworkAndAccountCard } from '@suite-native/trading-atoms';
-import {
-    getFormDraftKeyByTradeType,
-    selectExchangeSelectedSendAccount,
-} from '@suite-native/trading-state';
+import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
 import { FeeSelector } from '@suite-native/transaction-management';
 
 import { LimitPicker } from './LimitPicker';
@@ -22,10 +19,7 @@ type ExchangeApprovalDetailsProps = {
 
 export const ExchangeApprovalDetails = ({ exchange }: ExchangeApprovalDetailsProps) => {
     const account = useSelector(selectExchangeSelectedSendAccount);
-    const formDraftKey = getFormDraftKeyByTradeType('exchange');
-    const formDraft = useSelector((state: FormDraftRootState) =>
-        selectDeepCopyOfFormDraft(state, formDraftKey),
-    );
+    const { draft: formDraft, formDraftKey } = useFormDraft<FormState>('trading-exchange');
 
     useEffect(() => {
         if (!account) {
@@ -59,7 +53,7 @@ export const ExchangeApprovalDetails = ({ exchange }: ExchangeApprovalDetailsPro
                 <FeeSelector
                     accountKey={account.key}
                     updateThunk={updateTradingSelectedFeeLevelThunk}
-                    selectedFee={(formDraft?.selectedFee as FeeLevelLabel | undefined) ?? 'normal'}
+                    selectedFee={formDraft?.selectedFee ?? 'normal'}
                     selectedFeePerUnit={formDraft?.feePerUnit}
                     formDraft={formDraft}
                     formDraftKey={formDraftKey}

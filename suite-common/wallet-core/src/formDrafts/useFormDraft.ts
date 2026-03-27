@@ -32,5 +32,5 @@ export const useFormDraft = <T extends FieldValues>(
         dispatch(formDraftActions.removeDraft({ key: formDraftKey }));
     }, [dispatch, formDraftKey]);
 
-    return { draft, saveDraft, removeDraft };
+    return { draft, formDraftKey, saveDraft, removeDraft };
 };

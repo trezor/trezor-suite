@@ -77,4 +77,10 @@ describe('useFormDraft', () => {
             payload: { key: 'stake/' },
         });
     });
+
+    it('should return formDraftKey', () => {
+        const { formDraftKey } = useFormDraft('stake', 'eth');
+
+        expect(formDraftKey).toBe('stake/eth');
+    });
 });
