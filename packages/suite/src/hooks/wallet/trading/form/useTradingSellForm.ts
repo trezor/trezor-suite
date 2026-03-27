@@ -36,6 +36,7 @@ import {
 import { networks } from '@suite-common/wallet-config';
 import { selectBaseCurrency, useFormDraft } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
+import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
 import { isChanged } from '@trezor/utils';
 
 import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
@@ -193,6 +194,15 @@ export const useTradingSellForm = ({
         dispatch(tradingSellActions.setAmountLimits(limits));
     };
 
+    const quoteAmount = useMemo(() => {
+        if (pageType !== 'confirm' && pageType !== 'retry') return undefined;
+        if (!selectedQuote?.cryptoStringAmount) return undefined;
+
+        return shouldSendInSats
+            ? convertAmountUnitsToSubunits(selectedQuote.cryptoStringAmount, decimals)
+            : selectedQuote.cryptoStringAmount;
+    }, [pageType, selectedQuote?.cryptoStringAmount, shouldSendInSats, decimals]);
+
     const {
         isComposing,
         composedLevels,
@@ -207,6 +217,7 @@ export const useTradingSellForm = ({
         values: values as TradingSellFormProps,
         methods,
         setShowReserveBanner,
+        quoteAmount,
     });
 
     const { toggleAmountInCrypto } = useTradingCurrencySwitcher<TradingSellFormProps>({
@@ -430,6 +441,9 @@ export const useTradingSellForm = ({
                 }),
             ).unwrap();
 
+        const isQuoteActiveConfirm =
+            (pageType === 'confirm' || pageType === 'retry') && !!quoteAmount;
+
         try {
             await dispatch(
                 sellThunks.sendTransactionThunk({
@@ -437,7 +451,10 @@ export const useTradingSellForm = ({
                     trade: trade?.data,
                     shouldSendInSats,
                     decimals,
-                    formValues: values as TradingSellFormProps,
+                    formValues: {
+                        ...(values as TradingSellFormProps),
+                        ...(isQuoteActiveConfirm ? { setMaxOutputId: undefined } : {}),
+                    },
                     // TODO: slip24 - exclude from debug mode
                     isSlip24Active,
                     nextStep,

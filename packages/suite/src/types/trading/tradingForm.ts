@@ -367,6 +367,7 @@ export interface TradingUseComposeTransactionProps<T extends TradingSellExchange
     methods: UseFormReturn<T>;
     values: T;
     setShowReserveBanner: (showReserveBanner: boolean) => void;
+    quoteAmount?: string;
 }
 
 export interface TradingUseComposeTransactionStateProps {

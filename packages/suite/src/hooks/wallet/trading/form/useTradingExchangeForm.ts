@@ -45,6 +45,7 @@ import {
     useFormDraft,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
 import { useCurrentRef } from '@trezor/react-utils';
 
 import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
@@ -225,6 +226,22 @@ export const useTradingExchangeForm = ({
         setValue,
     });
 
+    const quoteAmount = useMemo(() => {
+        if (pageType !== 'confirm' && pageType !== 'retry') return undefined;
+        if (selectedQuote?.isDex) return undefined;
+        if (!selectedQuote?.sendStringAmount) return undefined;
+
+        return shouldSendInSats
+            ? convertAmountUnitsToSubunits(selectedQuote.sendStringAmount, decimals)
+            : selectedQuote.sendStringAmount;
+    }, [
+        pageType,
+        selectedQuote?.isDex,
+        selectedQuote?.sendStringAmount,
+        shouldSendInSats,
+        decimals,
+    ]);
+
     const {
         composedLevels,
         feeInfo,
@@ -239,6 +256,7 @@ export const useTradingExchangeForm = ({
         values,
         methods,
         setShowReserveBanner,
+        quoteAmount,
     });
 
     const { toggleAmountInCrypto } = useTradingCurrencySwitcher({
@@ -432,13 +450,16 @@ export const useTradingExchangeForm = ({
                 }),
             ).unwrap();
 
+        const isQuoteActiveConfirm =
+            (pageType === 'confirm' || pageType === 'retry') && !!quoteAmount;
+
         try {
             await dispatch(
                 exchangeThunks.sendTransactionThunk({
                     account,
                     trade: trade?.data,
                     returnUrl,
-                    setMaxOutputId: values.setMaxOutputId,
+                    setMaxOutputId: isQuoteActiveConfirm ? undefined : values.setMaxOutputId,
                     decimals,
                     shouldSendInSats,
                     // TODO: slip24 - exclude from debug mode

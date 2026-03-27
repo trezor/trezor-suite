@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { type UseFormReturn } from 'react-hook-form';
 
 import { isTranslationKey, useTranslation } from '@suite/intl';
@@ -35,6 +35,7 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
     values,
     methods,
     setShowReserveBanner,
+    quoteAmount,
 }: TradingUseComposeTransactionProps<T>): TradingUseComposeTransactionReturnProps => {
     const dispatch = useDispatch();
     const accounts = useSelector(selectAccounts);
@@ -61,6 +62,25 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
     const [state, setState] = useState<TradingUseComposeTransactionStateProps>(initState);
     const [shouldUpdateMaxAmount, setShouldUpdateMaxAmount] = useState(true);
 
+    const patchedGetValues = useCallback(
+        (...args: Parameters<typeof getValues>) => {
+            if (args.length > 0) return getValues(...args);
+
+            const formValues = getValues();
+
+            if (!quoteAmount) return formValues;
+
+            return {
+                ...formValues,
+                setMaxOutputId: undefined,
+                outputs: formValues.outputs?.map((output, index) =>
+                    index === 0 ? { ...output, amount: quoteAmount } : output,
+                ),
+            };
+        },
+        [getValues, quoteAmount],
+    ) as typeof getValues;
+
     // sub-hook, Composing transaction
     const {
         isLoading: isComposing,
@@ -70,6 +90,7 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
         setComposedLevels,
     } = useCompose({
         ...methods,
+        getValues: patchedGetValues as unknown as UseFormReturn<T>['getValues'],
         state,
     });
 
@@ -132,10 +153,19 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
         type,
     ]);
 
+    const prevQuoteAmountRef = useRef(quoteAmount);
+
+    useEffect(() => {
+        if (quoteAmount !== prevQuoteAmountRef.current) {
+            composeRequest(TRADING_FORM_OUTPUT_AMOUNT);
+        }
+        prevQuoteAmountRef.current = quoteAmount;
+    }, [quoteAmount, composeRequest]);
+
     useEffect(() => {
         if (!composedLevels) return;
 
-        const values = getValues();
+        const values = patchedGetValues();
         const { setMaxOutputId } = values;
         const selectedFeeLevel = selectedFee || 'normal';
         const composed = composedLevels[selectedFeeLevel];
@@ -150,7 +180,12 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
         }
 
         if (composed.type === 'final' || composed.type === 'nonfinal') {
-            if (typeof setMaxOutputId === 'number' && composed.max && shouldUpdateMaxAmount) {
+            if (
+                !quoteAmount &&
+                typeof setMaxOutputId === 'number' &&
+                composed.max &&
+                shouldUpdateMaxAmount
+            ) {
                 setShouldUpdateMaxAmount(false);
                 setShowReserveBanner(true);
                 setValue(TRADING_FORM_OUTPUT_AMOUNT, composed.max, {
@@ -158,7 +193,7 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
                     shouldDirty: true,
                 });
                 clearErrors(TRADING_FORM_OUTPUT_AMOUNT);
-            } else {
+            } else if (!quoteAmount) {
                 setShouldUpdateMaxAmount(true);
             }
 
@@ -178,7 +213,8 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
         selectedFee,
         clearErrors,
         dispatch,
-        getValues,
+        patchedGetValues,
+        quoteAmount,
         setError,
         setValue,
         translationString,
