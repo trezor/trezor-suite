@@ -30,7 +30,6 @@ export const getOauthReceiverUrl = () => {
     return desktopApi.getHttpReceiverAddress('/oauth');
 };
 
-const POPUP_POLL_INTERVAL_MS = 500;
 const POPUP_TIMEOUT_MS = 60 * 1000;
 const OAUTH_BROADCAST_CHANNEL_NAME = 'trezor-oauth';
 
@@ -173,33 +172,6 @@ const createWebBroadcastChannel = (
 };
 
 /**
- * Watch popup window and call onClose when it is closed by the user or after a timeout.
- * Returns a cleanup function to clear the timers.
- */
-const watchPopup = (popup: Window, onClose: () => void) => {
-    const timers = { pollIntervalId: 0, timeoutId: 0 };
-
-    const clear = () => {
-        window.clearInterval(timers.pollIntervalId);
-        window.clearTimeout(timers.timeoutId);
-    };
-
-    timers.pollIntervalId = window.setInterval(() => {
-        if (popup.closed) {
-            clear();
-            onClose();
-        }
-    }, POPUP_POLL_INTERVAL_MS);
-
-    timers.timeoutId = window.setTimeout(() => {
-        clear();
-        onClose();
-    }, POPUP_TIMEOUT_MS);
-
-    return clear;
-};
-
-/**
  * Handle extraction of authorization code from Oauth2 protocol
  */
 export const extractCredentialsFromAuthorizationFlow = (url: URL) => {
@@ -227,17 +199,21 @@ export const extractCredentialsFromAuthorizationFlow = (url: URL) => {
             return dfd.promise;
         }
 
-        const clearTimers = watchPopup(popup, () => {
+        // Safety timeout — COOP prevents detecting popup closure via popup.closed,
+        // so we rely on BroadcastChannel as the primary signal and timeout as fallback.
+        const timeoutId = window.setTimeout(() => {
             channel.close();
             dfd.reject(new Error('window closed'));
-        });
+        }, POPUP_TIMEOUT_MS);
 
         void dfd.promise.finally(() => {
+            window.clearTimeout(timeoutId);
             channel.close();
-            clearTimers();
 
-            if (!popup.closed) {
+            try {
                 popup.close();
+            } catch {
+                // COOP may block access to the popup.
             }
         });
     }
