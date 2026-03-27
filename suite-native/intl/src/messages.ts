@@ -1534,6 +1534,11 @@ export const messages = {
         experimental: {
             title: 'Experimental features',
             subtitle: 'For experienced users only. Use at your own risk.',
+            tronViewOnly: {
+                title: 'Tron View-Only (Beta)',
+                description:
+                    'Enable the Tron network. The latest firmware is required. You can receive funds, check your balance, view tokens, charts, and transaction history (may contain bugs). Full support coming soon (or available via third-party wallets).',
+            },
         },
         appLog: {
             sensitiveDataToggle: {

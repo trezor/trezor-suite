@@ -13,9 +13,9 @@ import {
     type StackNavigationProps,
 } from '@suite-native/navigation';
 
-import { useSettingsNavigateTo } from '../navigation/useSettingsNavigateTo';
 import { AppSettingsCardWithIconLayout } from './AppSettingsCardWithIconLayout';
 import { isDevButtonVisibleAtom } from './ProductionDebug';
+import { useSettingsNavigateTo } from '../navigation/useSettingsNavigateTo';
 
 export const FeaturesSettings = () => {
     const isDevButtonVisible = useAtomValue(isDevButtonVisibleAtom);

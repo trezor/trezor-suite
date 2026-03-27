@@ -15,13 +15,18 @@ import {
     selectDeviceSupportedNetworks,
     selectEnabledNetworks,
 } from '@suite-common/wallet-core';
+import { isViewOnlySymbol } from '@suite-common/wallet-utils';
 import { filterTestnetNetworks, sortNetworks } from '@suite-native/config';
 import {
     FeatureFlag,
     type FeatureFlagsRootState,
     selectIsFeatureFlagEnabled,
 } from '@suite-native/feature-flags';
-import { type SettingsSliceRootState, selectAreTestnetsEnabled } from '@suite-native/settings';
+import {
+    type SettingsSliceRootState,
+    selectAreTestnetsEnabled,
+    selectIsTronEnabled,
+} from '@suite-native/settings';
 import {
     isNetworkWithTokens,
     selectNetworkSymbolsOfAccountsWithTokensAllowed,
@@ -65,6 +70,7 @@ const createMemoizedSelector = createWeakMapSelector.withTypes<
 export const selectDiscoverySupportedNetworks = createMemoizedSelector(
     [
         selectDeviceSupportedNetworks,
+        selectIsTronEnabled,
         selectAreTestnetsEnabled,
         (_state, forcedAreTestnetsEnabled?: boolean) => forcedAreTestnetsEnabled,
         state => selectIsFeatureFlagEnabled(state, FeatureFlag.AreDebugOnlyNetworksEnabled),
@@ -72,6 +78,7 @@ export const selectDiscoverySupportedNetworks = createMemoizedSelector(
     ],
     (
         deviceNetworks,
+        isTronEnabled,
         defaultAreTestnetsEnabled,
         forcedAreTestnetsEnabled,
         areDebugOnlyNetworksEnabled,
@@ -81,6 +88,8 @@ export const selectDiscoverySupportedNetworks = createMemoizedSelector(
 
         return pipe(
             deviceNetworks,
+            networkSymbols =>
+                networkSymbols.filter(symbol => isTronEnabled || !isViewOnlySymbol(symbol)),
             networkSymbols => filterTestnetNetworks(networkSymbols, areTestnetsEnabled),
             networkSymbols =>
                 networkSymbols.filter(symbol => {
