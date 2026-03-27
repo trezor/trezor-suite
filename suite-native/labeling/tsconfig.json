@@ -40,6 +40,9 @@
         { "path": "../settings" },
         { "path": "../toasts" },
         { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/styles-native"
+        },
         { "path": "../../packages/type-utils" },
         { "path": "../test-utils-store" }
     ]

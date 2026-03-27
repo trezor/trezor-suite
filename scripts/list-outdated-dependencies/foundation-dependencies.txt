@@ -50,6 +50,8 @@ eslint-plugin-mdx
 eslint-plugin-react
 eslint-plugin-react-hooks
 expo-sqlite
+expo-file-system
+expo-sharing
 express
 fake-indexeddb
 file-saver

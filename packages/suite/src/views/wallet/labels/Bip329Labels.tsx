@@ -1,7 +1,8 @@
 import { type ReactElement } from 'react';
 
 import { Translation } from '@suite/intl';
-import { selectIsLegacyLabelingVisible } from '@suite/metadata';
+import { selectIsMetadataEnabled } from '@suite/metadata';
+import { shouldDisplayExportBip329Labels } from '@suite-common/bip329';
 import { type Bip329Label, bip329LabelSchema } from '@suite-common/bip329-types';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -35,7 +36,7 @@ type Bip329LabelsProps = {
 
 export const Bip329Labels = ({ account, isLoading }: Bip329LabelsProps) => {
     const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
-    const isLegacyLabelingVisible = useSelector(selectIsLegacyLabelingVisible);
+    const isMetadataEnabled = useSelector(selectIsMetadataEnabled);
 
     const dispatch = useDispatch();
     const { bip329 } = useSuiteServices();
@@ -44,10 +45,13 @@ export const Bip329Labels = ({ account, isLoading }: Bip329LabelsProps) => {
 
     const canImportBip329Labels = isSuiteSyncEnabled;
 
-    const shouldDisplayBip329Labels =
-        account.networkType === 'bitcoin' && (isLegacyLabelingVisible || isSuiteSyncEnabled);
+    const shouldDisplayExport = shouldDisplayExportBip329Labels({
+        account,
+        isSuiteSyncEnabled,
+        isMetadataEnabled,
+    });
 
-    if (!shouldDisplayBip329Labels) {
+    if (!shouldDisplayExport) {
         return null;
     }
 
