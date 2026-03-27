@@ -28,14 +28,14 @@ export const FeeSummaryCard = ({
         <Card>
             <HStack justifyContent="space-between" alignItems="center">
                 <VStack spacing="sp4">
-                    <Text variant="body-sm-strong">
+                    <Text variant="body-sm">
                         <FeeLabelTranslation networkType={networkType} />
                     </Text>
                 </VStack>
                 <HStack alignItems="center" spacing="sp8">
                     <VStack alignItems="flex-end" spacing="sp2">
                         <CryptoAmountFormatter
-                            variant="body-sm-strong"
+                            variant="body-sm"
                             color="textDefault"
                             value={fee}
                             symbol={symbol}
@@ -44,7 +44,7 @@ export const FeeSummaryCard = ({
                             isDiscreetText={false}
                         />
                         <CryptoToFiatAmountFormatter
-                            variant="body-xs"
+                            variant="body-sm"
                             color="textSubdued"
                             value={fee}
                             symbol={symbol}
