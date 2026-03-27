@@ -14997,7 +14997,7 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@trezor/utxo-lib": "workspace:*"
-    socks-proxy-agent: "npm:^9.0.0"
+    socks-proxy-agent: "npm:8.0.5"
   peerDependencies:
     tslib: ^2.6.2
   languageName: unknown
@@ -18900,13 +18900,6 @@ __metadata:
   dependencies:
     debug: "npm:4"
   checksum: 10/21fb903e0917e5cb16591b4d0ef6a028a54b83ac30cd1fca58dece3d4e0990512a8723f9f83130d88a41e2af8b1f7be1386fda3ea2d181bb1a62155e75e95e23
-  languageName: node
-  linkType: hard
-
-"agent-base@npm:8.0.0":
-  version: 8.0.0
-  resolution: "agent-base@npm:8.0.0"
-  checksum: 10/a660ae60d389c4ce0f5a178efd5e6ebeefeddf0f6defbb105c638056ec0ebd3828d00d029cf5b26e3ce52d09c393735bf9c187ed1000a0be2c6cf5d95ac15bff
   languageName: node
   linkType: hard
 
@@ -41671,17 +41664,6 @@ __metadata:
     debug: "npm:^4.3.4"
     socks: "npm:^2.8.3"
   checksum: 10/ee99e1dacab0985b52cbe5a75640be6e604135e9489ebdc3048635d186012fbaecc20fbbe04b177dee434c319ba20f09b3e7dfefb7d932466c0d707744eac05c
-  languageName: node
-  linkType: hard
-
-"socks-proxy-agent@npm:^9.0.0":
-  version: 9.0.0
-  resolution: "socks-proxy-agent@npm:9.0.0"
-  dependencies:
-    agent-base: "npm:8.0.0"
-    debug: "npm:^4.3.4"
-    socks: "npm:^2.8.3"
-  checksum: 10/ed4a661de91b04186ef6901c7a97ee70017535348708afdd1dcd30dd1f17ff97037dc37d9cd9eab21554e979b9aa39e0d847d6f759749452362070439944639f
   languageName: node
   linkType: hard
 

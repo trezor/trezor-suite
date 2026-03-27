@@ -76,9 +76,9 @@ const load = async ({ mainWindowProxy, store, mainThreadEmitter }: Dependencies)
 
         return shouldEnableTor
             ? {
-                  proxy: `socks://${host}:${useExternalTor ? externalPort : port}`,
+                  uri: `socks://${host}:${useExternalTor ? externalPort : port}`,
               }
-            : { proxy: '' };
+            : { uri: '' };
     };
     const handleTorProcessStatus = (status: TorProcessStatus, shouldEnableTor: boolean) => {
         const { useExternalTor } = store.getTorSettings();
@@ -266,11 +266,11 @@ const load = async ({ mainWindowProxy, store, mainThreadEmitter }: Dependencies)
             const proxySettings = getProxySettings(shouldEnableTor);
 
             // Proxy is also set in packages/suite-desktop-core/src/modules/trezor-connect.ts
-            await TrezorConnect.updateConnectSettings(proxySettings);
+            await TrezorConnect.updateConnectSettings({ proxy: proxySettings });
 
             logger.info(
                 'tor',
-                `${shouldEnableTor ? 'Enabled' : 'Disabled'} proxy ${proxySettings.proxy}`,
+                `${shouldEnableTor ? 'Enabled' : 'Disabled'} proxy ${proxySettings.uri}`,
             );
         } catch (error) {
             // When `setupTor` fails to initialize we do not want to dissable it
