@@ -222,7 +222,7 @@ export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTra
             const fee = baseFee.plus(feePerUnit.multipliedBy(feeLimit).dividedBy(1e6));
             const totalSpent = sendAmount.plus(rent).plus(fee);
 
-            return Promise.resolve({
+            return {
                 type: 'final' as const,
                 inputs: [],
                 outputsPermutation: [0],
@@ -238,12 +238,10 @@ export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTra
                 // Countdown for blockhash-constrained transactions
                 createdTimestamp:
                     'blockhash' in message.lifetimeConstraint ? new Date().getTime() : undefined,
-            });
+            };
         } catch (e) {
             // Don't throw errors from this method
             console.error('Error in payloadToPrecomposed', e);
-
-            return Promise.resolve(undefined);
         }
     }
 
