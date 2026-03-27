@@ -499,6 +499,8 @@ const ThpCableConnectedForgetFlow = ({ onCancel }: ForgetFlowProps) => {
                 forgetDevice({
                     deviceId,
                     toastType: 'device-forgotten',
+                    isOsUnpairingFinished: true,
+                    skipDisconnect: true,
                 });
                 dispatch(goto({ routeName: 'suite-index' }));
                 onCancel();

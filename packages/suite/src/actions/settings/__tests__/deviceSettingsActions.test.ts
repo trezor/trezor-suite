@@ -36,6 +36,7 @@ const getInitialState = (state: Partial<DeviceSettingsFixtureState> = {}) => ({
     },
     router: {},
     messageSystem: { validMessages: { feature: [] } },
+    bluetooth: { knownDevices: [] },
 });
 
 const mockStore = configureStore<DeviceSettingsFixtureState, any>();

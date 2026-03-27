@@ -1,4 +1,4 @@
-import { bluetoothActions } from '@suite-common/bluetooth';
+import { bluetoothActions, selectKnownDeviceByDeviceId } from '@suite-common/bluetooth';
 import {
     DEVICE_MODULE_PREFIX,
     PORTFOLIO_TRACKER_DEVICE_ID,
@@ -419,12 +419,19 @@ export const forgetDevicePersistentDataThunk = createThunk(
                 ? asBluetoothDeviceId(matchingDevice.descriptor.id)
                 : undefined;
 
-        if (bluetoothId !== undefined) {
-            dispatch(bluetoothActions.removeKnownDeviceAction({ id: bluetoothId }));
+        // Also check for a known BT device by trezor device ID.
+        // The device may have been paired via BT previously but is now
+        // connected via USB — the persistent descriptor won't be 'bluetooth'.
+        const knownBtDevice = selectKnownDeviceByDeviceId(getState(), deviceId);
+        const btIdToRemove =
+            bluetoothId ?? (knownBtDevice ? asBluetoothDeviceId(knownBtDevice.id) : undefined);
+
+        if (btIdToRemove !== undefined) {
+            dispatch(bluetoothActions.removeKnownDeviceAction({ id: btIdToRemove }));
             // try to remove OS-level Bluetooth bonds, if supported by the platform
             await dispatch(
                 extra.thunks.forgetBluetoothDevice({
-                    bluetoothId,
+                    bluetoothId: btIdToRemove,
                     skipToggleModalConnection,
                     isOsUnpairingFinished,
                     skipDisconnect,
