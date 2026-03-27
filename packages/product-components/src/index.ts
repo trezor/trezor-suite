@@ -43,3 +43,4 @@ export { OutlineHighlight } from './components/Settings/OutlineHighlight';
 export { SectionItem } from './components/Settings/SectionItem';
 export { SettingsSection } from './components/Settings/SettingsSection';
 export { TextColumn } from './components/Settings/TextColumn';
+export { StepCard } from './components/StepCard/StepCard';
