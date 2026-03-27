@@ -1125,6 +1125,10 @@ export const messages = {
                     title: 'Advanced',
                     subtitle: 'Expert features for power users ',
                 },
+                experimental: {
+                    title: 'Experimental',
+                    subtitle: 'Get early access to new features',
+                },
                 labeling: {
                     title: 'Labeling',
                     subtitle: 'Name your wallets, accounts and more',
@@ -1526,6 +1530,10 @@ export const messages = {
                     submitButton: 'Submit',
                 },
             },
+        },
+        experimental: {
+            title: 'Experimental features',
+            subtitle: 'For experienced users only. Use at your own risk.',
         },
         appLog: {
             sensitiveDataToggle: {

@@ -29,6 +29,7 @@ export const ToggleSuiteSyncCard = () => {
                 suiteSync.turnOffSuiteSync({
                     ensureSettingsPersisted: () => persistor?.flush(),
                 });
+
                 analytics.report({
                     type: events.settingsGeneralLabelingEvent.name,
                     payload: {
