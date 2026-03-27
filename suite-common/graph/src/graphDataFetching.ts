@@ -8,8 +8,10 @@ import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config'
 import { fetchTransactionsFromNowUntilTimestamp } from '@suite-common/wallet-core';
 import { type Timestamp, type TokenAddress } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
-import { type AccountBalanceHistory as AccountMovementHistory } from '@trezor/blockchain-link';
-import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
+import {
+    type AccountBalanceHistory as AccountMovementHistory,
+    type BaseCurrencyCode,
+} from '@trezor/blockchain-link-types';
 import TrezorConnect, { type AccountInfo } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 

@@ -8,6 +8,7 @@ import type {
     TokenTransfer as BlockbookTokenTransfer,
     Tx as BlockbookTx,
     Utxo as BlockbookUtxo,
+    Eip1559Fees,
     FiatTicker,
     MempoolTxidFilterEntries,
     WsAccountUtxoReq,
@@ -18,7 +19,17 @@ import type {
     WsInfoRes,
     WsMempoolFiltersReq,
 } from './blockbook-api';
-import type { AccountBalanceHistory, FiatRatesBySymbol, TokenStandard } from './common';
+import type {
+    AccountBalanceHistory,
+    AccountInfo,
+    AddressAlias,
+    ContractInfo,
+    EthereumSpecific,
+    FiatRatesBySymbol,
+    StakingPool,
+    TokenStandard,
+    Transaction,
+} from './common';
 import type {
     AccountBalanceHistoryParams,
     AccountInfoParams,
@@ -28,6 +39,31 @@ import type {
     GetFiatRatesTickersListParams,
     RpcCallParams,
 } from './params';
+
+// Re-export EVM-specific types from common.ts for backward compatibility
+export type {
+    EthereumInternalTransfer,
+    EthereumParsedInputData,
+    EthereumParsedInputParam,
+    EthereumSpecific,
+    StakingPool,
+    ContractInfo,
+    AddressAlias,
+} from './common';
+
+export interface EvmMisc {
+    nonce?: string;
+    contractInfo?: ContractInfo;
+    stakingPools?: StakingPool[];
+    addressAliases?: Record<string, AddressAlias>;
+}
+
+export type EvmTransaction = Transaction<{ ethereumSpecific: EthereumSpecific }>;
+export type EvmAccountInfo = AccountInfo<EvmMisc>;
+
+// ---- Blockbook wire-protocol types (moved from blockchain-link-types/src/blockbook.ts) ----
+
+export type { Eip1559Fees };
 
 export type AccountUtxo = RequiredKey<BlockbookUtxo, 'address' | 'height' | 'value' | 'path'>[];
 
@@ -44,7 +80,7 @@ export type Block = Omit<
     'txs' | 'confirmations' | 'size' | 'version' | 'merkleRoot' | 'nonce' | 'bits' | 'difficulty'
 > & {
     txCount: number;
-    txs: Transaction[];
+    txs: BlockbookTransaction[];
 };
 
 type ScriptType = 'taproot' | 'taproot-noordinals';
@@ -116,17 +152,17 @@ export type BEP1155 = BaseERC & {
     standard: 'BEP1155';
 } & Required<Pick<BlockbookToken, 'multiTokenValues'>>;
 
-export type AccountInfo = Omit<
+export type BlockbookAccountInfo = Omit<
     RequiredKey<BlockbookAddress, 'totalReceived' | 'totalSent' | 'itemsOnPage' | 'totalPages'>,
     'tokens' | 'transactions'
 > & {
     tokens?: (XPUBAddress | ERC20 | ERC721 | ERC1155 | BEP20 | BEP721 | BEP1155)[];
-    transactions?: Transaction[];
+    transactions?: BlockbookTransaction[];
 };
 
 export type AccountUtxoParams = WsAccountUtxoReq;
 
-export type Transaction = Omit<RequiredKey<BlockbookTx, 'fees'>, 'tokenTransfers'> & {
+export type BlockbookTransaction = Omit<RequiredKey<BlockbookTx, 'fees'>, 'tokenTransfers'> & {
     tokenTransfers?: (BlockbookTokenTransfer & {
         type: TokenStandard; // string in Tx, seems to always be ERC20 | ERC721 | ERC1155
         standard: TokenStandard;
@@ -142,13 +178,13 @@ export type Fee = Omit<RequiredKey<WsEstimateFeeRes, 'feePerUnit'>, 'eip1559'>[]
 export type BlockNotification = Pick<BlockbookBlock, 'hash' | 'height'>;
 
 export type MempoolTransactionNotification = RequiredKey<
-    Transaction,
+    BlockbookTransaction,
     'confirmationETASeconds' | 'confirmationETABlocks'
 >;
 
 export interface AddressNotification {
     address: string;
-    tx: Transaction;
+    tx: BlockbookTransaction;
 }
 
 export interface FiatRatesNotification {
@@ -181,9 +217,15 @@ declare function FSend(
     method: 'getMempoolFilters',
     params: MempoolFiltersParams,
 ): Promise<FilterResponse & MempoolTxidFilterEntries>;
-declare function FSend(method: 'getAccountInfo', params: AccountInfoParams): Promise<AccountInfo>;
+declare function FSend(
+    method: 'getAccountInfo',
+    params: AccountInfoParams,
+): Promise<BlockbookAccountInfo>;
 declare function FSend(method: 'getAccountUtxo', params: AccountUtxoParams): Promise<AccountUtxo>;
-declare function FSend(method: 'getTransaction', params: { txid: string }): Promise<Transaction>;
+declare function FSend(
+    method: 'getTransaction',
+    params: { txid: string },
+): Promise<BlockbookTransaction>;
 declare function FSend(
     method: 'sendTransaction',
     params: { hex: string; disableAlternativeRPC?: boolean },

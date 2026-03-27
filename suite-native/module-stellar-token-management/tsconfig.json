@@ -31,10 +31,10 @@
         { "path": "../navigation" },
         { "path": "../transaction-management" },
         {
-            "path": "../../packages/blockchain-link-types"
+            "path": "../../packages/blockchain-link-stellar"
         },
         {
-            "path": "../../packages/blockchain-link-utils"
+            "path": "../../packages/blockchain-link-types"
         },
         {
             "path": "../../packages/styles-native"

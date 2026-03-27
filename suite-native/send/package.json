@@ -22,7 +22,7 @@
         "@suite-native/device-mutex": "workspace:*",
         "@suite-native/tokens": "workspace:*",
         "@suite-native/transaction-management": "workspace:*",
-        "@trezor/blockchain-link-types": "workspace:*",
+        "@trezor/blockchain-link-blockbook": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*"
     }

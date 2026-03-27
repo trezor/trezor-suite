@@ -12,7 +12,7 @@ import {
     getOutputTxAmount,
     getSolanaStakingAccountsByStatus,
 } from '@suite-common/wallet-utils';
-import { StakeState } from '@trezor/blockchain-link-types/src/solana';
+import { StakeState } from '@trezor/blockchain-link-solana/src/types';
 import { Banner } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 

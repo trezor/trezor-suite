@@ -1,0 +1,19 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "outDir": "libDev",
+        "types": ["jest", "node", "web"]
+    },
+    "references": [
+        { "path": "../blockchain-link" },
+        {
+            "path": "../blockchain-link-blockbook"
+        },
+        {
+            "path": "../blockchain-link-blockfrost"
+        },
+        { "path": "../blockchain-link-ripple" },
+        { "path": "../e2e-utils" },
+        { "path": "../eslint" }
+    ]
+}

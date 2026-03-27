@@ -17,7 +17,7 @@ import {
     formatNetworkAmount,
     networkAmountToSmallestUnit,
 } from '@suite-common/wallet-utils';
-import { parseAsset } from '@trezor/blockchain-link-utils/src/blockfrost';
+import { parseAsset } from '@trezor/blockchain-link-blockfrost/src/utils';
 import { FirmwareType } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { isDesktop } from '@trezor/env-utils';

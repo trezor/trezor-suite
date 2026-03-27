@@ -9,7 +9,7 @@ import { type Network } from '@suite-common/wallet-config';
 import { selectAnyAccountIsStakingActive, useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { type Account, type RatesByKey } from '@suite-common/wallet-types';
 import { type AmountUnit, isTestnet } from '@suite-common/wallet-utils';
-import type { BaseCurrencyCode, TokenInfo } from '@trezor/blockchain-link-types';
+import { type BaseCurrencyCode, type TokenInfo } from '@trezor/blockchain-link-types';
 import { Column, Icon, IconButton, Row, Table, Text } from '@trezor/components';
 
 import {

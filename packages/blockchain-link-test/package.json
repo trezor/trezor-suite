@@ -1,0 +1,29 @@
+{
+    "name": "@trezor/blockchain-link-test",
+    "version": "1.0.0",
+    "private": true,
+    "author": "Trezor <info@trezor.io>",
+    "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/blockchain-link-test",
+    "description": "Shared e2e tests for blockchain-link backends",
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "scripts": {
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "yarn g:jest",
+        "depcheck": "yarn g:depcheck",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@trezor/blockchain-link": "workspace:*",
+        "@trezor/blockchain-link-blockbook": "workspace:*",
+        "@trezor/blockchain-link-blockfrost": "workspace:*",
+        "@trezor/blockchain-link-ripple": "workspace:*",
+        "@trezor/e2e-utils": "workspace:*"
+    },
+    "devDependencies": {
+        "@trezor/eslint": "workspace:*",
+        "@types/jest": "29.5.12",
+        "@types/node": "22.13.10",
+        "@types/web": "^0.0.197"
+    }
+}

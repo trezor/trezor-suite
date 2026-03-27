@@ -22,7 +22,7 @@
             "path": "../../suite-common/wallet-utils"
         },
         {
-            "path": "../../packages/blockchain-link"
+            "path": "../../packages/blockchain-link-types"
         }
     ]
 }

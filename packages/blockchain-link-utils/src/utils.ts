@@ -68,38 +68,3 @@ export const sortTxsFromLatest = (transactions: Transaction[]) => {
 
     return txs;
 };
-
-const isOutgoing = (lowerCasedDescriptor: string, tx: Transaction) =>
-    tx.details?.vin?.[0]?.addresses?.[0]?.toLowerCase() === lowerCasedDescriptor;
-
-export const filterShadowedPendingTxsByNonce = (
-    txs: Transaction[],
-    lowerCasedDescriptor: string,
-) => {
-    // txs should come sorted by nonce
-    const myLatestMinedTx = txs.find(
-        tx =>
-            isOutgoing(lowerCasedDescriptor, tx) &&
-            tx.ethereumSpecific &&
-            (tx.ethereumSpecific.status === 0 || tx.ethereumSpecific.status === 1) &&
-            Number.isInteger(tx.ethereumSpecific.nonce),
-    );
-
-    if (!myLatestMinedTx?.ethereumSpecific) return txs;
-
-    const latestMinedNonce = myLatestMinedTx.ethereumSpecific.nonce;
-
-    return txs.filter(tx => {
-        const es = tx.ethereumSpecific;
-        if (!es) return true;
-
-        const isOutgoingTx = isOutgoing(lowerCasedDescriptor, tx);
-        const isPending = es.status === -1;
-
-        if (isOutgoingTx && isPending && es.nonce <= latestMinedNonce) {
-            return false;
-        }
-
-        return true;
-    });
-};

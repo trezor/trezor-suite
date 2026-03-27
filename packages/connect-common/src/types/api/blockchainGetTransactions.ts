@@ -1,4 +1,4 @@
-import type { Transaction } from '@trezor/blockchain-link';
+import type { Transaction } from '@trezor/blockchain-link-types';
 
 import type { CommonParamsWithCoin, Response } from '../params';
 

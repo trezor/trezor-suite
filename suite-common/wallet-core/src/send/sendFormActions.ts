@@ -6,7 +6,7 @@ import {
     type GeneralPrecomposedTransactionFinal,
     type TokenAddress,
 } from '@suite-common/wallet-types';
-import { type BlockbookTransaction } from '@trezor/blockchain-link-types';
+import { type BlockbookTransaction } from '@trezor/blockchain-link-blockbook';
 
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
 import { type SerializedTx } from './sendFormTypes';

@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import * as toml from 'toml';
 
-import { blockfrostUtils } from '@trezor/blockchain-link-utils';
+import * as blockfrostUtils from '@trezor/blockchain-link-blockfrost/src/utils';
 
 import {
     AdvancedTokenStructure,

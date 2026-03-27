@@ -1,4 +1,4 @@
-import { filterShadowedPendingTxsByNonce, filterTargets, sortTxsFromLatest } from '../utils';
+import { filterTargets, sortTxsFromLatest } from '../utils';
 import * as fixtures from './fixtures/utils';
 
 describe('blockbook/utils', () => {
@@ -14,14 +14,5 @@ describe('blockbook/utils', () => {
 
     it('sortTxsFromLatest', () => {
         expect(sortTxsFromLatest(fixtures.unsortedTxs as any)).toMatchObject(fixtures.sortedTxs);
-    });
-
-    describe('filterShadowedPendingTxsByNonce', () => {
-        fixtures.filterShadowedPendingTxsByNonce.forEach(f => {
-            it(f.description, () => {
-                const out = filterShadowedPendingTxsByNonce(f.input, f.lowerCasedDescriptor);
-                expect(out.map(tx => tx.txid).sort()).toEqual(f.expectedTxids.sort());
-            });
-        });
     });
 });

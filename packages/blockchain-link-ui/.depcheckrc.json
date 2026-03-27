@@ -1,0 +1,14 @@
+{
+    "ignore-patterns": ["libDev", "build"],
+    "ignores": [
+        "@trezor/blockchain-link-ui",
+        "tslib",
+        "buffer",
+        "process",
+        "@babel/preset-typescript",
+        "babel-loader",
+        "webpack-cli",
+        "webpack-plugin-serve",
+        "worker-loader"
+    ]
+}

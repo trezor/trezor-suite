@@ -19,7 +19,7 @@ import {
     type WalletAccountTransaction,
     asBaseCurrencyAmount,
 } from '@suite-common/wallet-types';
-import type { BaseCurrencyCode, TokenStandard } from '@trezor/blockchain-link-types';
+import { type BaseCurrencyCode, type TokenStandard } from '@trezor/blockchain-link-types';
 import {
     type AccountAddress,
     type AccountTransaction,

@@ -1,5 +1,5 @@
 import { type Network, type NetworkSymbol } from '@suite-common/wallet-config';
-import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import type {
     AccountAddress,
     AccountTransaction,

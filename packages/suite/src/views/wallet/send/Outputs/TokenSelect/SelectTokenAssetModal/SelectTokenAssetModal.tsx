@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Translation, useTranslation } from '@suite/intl';
 import { updateFiatRatesThunk } from '@suite-common/wallet-core';
 import { type Timestamp, type TokenAddress } from '@suite-common/wallet-types';
-import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import {
     type AssetOptionBaseProps,
     SearchAsset,

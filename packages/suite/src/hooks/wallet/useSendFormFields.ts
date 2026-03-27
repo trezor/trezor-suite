@@ -14,7 +14,7 @@ import {
     parseBaseCurrencyToFormattedCrypto,
     parseCryptoToFormattedBaseCurrency,
 } from '@suite-common/wallet-utils';
-import type { BaseCurrencyCode, TokenInfo } from '@trezor/blockchain-link-types';
+import { type BaseCurrencyCode, type TokenInfo } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils';
 
 import { type SendContextValues, type UseSendFormState } from 'src/types/wallet/sendForm';

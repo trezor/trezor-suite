@@ -6,7 +6,7 @@ import { fromUnixTime, getUnixTime } from 'date-fns';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { fetchTransactionsFromNowUntilTimestamp } from '@suite-common/wallet-core';
 import type { AccountKey, Timestamp, TokenAddress } from '@suite-common/wallet-types';
-import { type AccountBalanceHistory as AccountMovementHistory } from '@trezor/blockchain-link';
+import { type AccountBalanceHistory as AccountMovementHistory } from '@trezor/blockchain-link-types';
 import TrezorConnect from '@trezor/connect';
 
 import { getAccountHistoryMovementFromTransactions } from './balanceHistoryUtils';

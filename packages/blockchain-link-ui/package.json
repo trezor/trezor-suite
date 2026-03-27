@@ -1,0 +1,49 @@
+{
+    "name": "@trezor/blockchain-link-ui",
+    "version": "1.0.0",
+    "private": true,
+    "description": "Blockchain Link UI demo for testing blockchain workers",
+    "license": "SEE LICENSE IN LICENSE.md",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/trezor/trezor-suite.git"
+    },
+    "scripts": {
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "dev": "webpack --config ./webpack/dev.js",
+        "dev:module": "USE_MODULES=true webpack --config ./webpack/dev.js",
+        "build": "webpack --config ./webpack/prod.js",
+        "build:workers": "yarn build:workers-web && yarn build:workers-module",
+        "build:workers-web": "webpack --config ./webpack/workers.web.js",
+        "build:workers-module": "webpack --config ./webpack/workers.module.js",
+        "type-check": "yarn g:tsc --build tsconfig.json",
+        "depcheck": "yarn g:depcheck"
+    },
+    "devDependencies": {
+        "@babel/preset-typescript": "^7.28.5",
+        "@trezor/eslint": "workspace:*",
+        "@types/node": "22.13.10",
+        "babel-loader": "^10.0.0",
+        "html-webpack-plugin": "5.6.6",
+        "webpack": "5.104.1",
+        "webpack-cli": "6.0.1",
+        "webpack-plugin-serve": "^1.6.0",
+        "worker-loader": "^3.0.8"
+    },
+    "dependencies": {
+        "@trezor/blockchain-link": "workspace:*",
+        "@trezor/blockchain-link-blockbook": "workspace:*",
+        "@trezor/blockchain-link-blockfrost": "workspace:*",
+        "@trezor/blockchain-link-evm-rpc": "workspace:*",
+        "@trezor/blockchain-link-ripple": "workspace:*",
+        "@trezor/blockchain-link-solana": "workspace:*",
+        "@trezor/blockchain-link-stellar": "workspace:*",
+        "buffer": "^6.0.3",
+        "crypto-browserify": "3.12.0",
+        "process": "^0.11.10",
+        "stream-browserify": "3.0.0"
+    },
+    "peerDependencies": {
+        "tslib": "^2.6.2"
+    }
+}

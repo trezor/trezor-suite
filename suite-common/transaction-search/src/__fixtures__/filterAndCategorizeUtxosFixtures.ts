@@ -1,4 +1,4 @@
-import { type Utxo } from '@trezor/blockchain-link';
+import { type Utxo } from '@trezor/blockchain-link-types';
 
 import {
     type FilterAndCategorizeUtxosParams,

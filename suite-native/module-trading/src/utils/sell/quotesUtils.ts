@@ -1,8 +1,7 @@
 import { invariant } from '@suite-common/suite-utils';
 import { type MinimalSellFormProps } from '@suite-common/trading';
 import { type SellFormType } from '@suite-native/trading-types';
-import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
-import { isBaseCurrencyCode } from '@trezor/blockchain-link-types';
+import { type BaseCurrencyCode, isBaseCurrencyCode } from '@trezor/blockchain-link-types';
 
 export const tradingSellFormToTradingSellFormProps = (
     getValues: SellFormType['getValues'],

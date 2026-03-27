@@ -6,7 +6,7 @@ import {
     type SendFormDraftKey,
 } from '@suite-common/wallet-types';
 import { getSendFormDraftKey } from '@suite-common/wallet-utils';
-import { type BlockbookTransaction } from '@trezor/blockchain-link-types';
+import { type BlockbookTransaction } from '@trezor/blockchain-link-blockbook';
 import { cloneObject } from '@trezor/utils';
 
 import { sendFormActions } from './sendFormActions';

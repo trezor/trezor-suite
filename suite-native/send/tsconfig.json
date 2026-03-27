@@ -21,7 +21,7 @@
         { "path": "../tokens" },
         { "path": "../transaction-management" },
         {
-            "path": "../../packages/blockchain-link-types"
+            "path": "../../packages/blockchain-link-blockbook"
         },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" }

@@ -1,5 +1,5 @@
 import type { Block, MempoolTransactionNotification } from './blockbook';
-import { type Eip1559Fees } from './blockbook-api';
+import type { Eip1559Fees } from './blockbook-api';
 import type {
     AccountBalanceHistory,
     AccountInfo,
@@ -9,7 +9,7 @@ import type {
     Transaction,
     Utxo,
 } from './common';
-import { type HANDSHAKE } from './constants/messages';
+import type { HANDSHAKE } from './constants/messages';
 import type * as RESPONSES from './constants/responses';
 
 // messages sent from worker to blockchain.js

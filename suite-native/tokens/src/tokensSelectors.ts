@@ -26,7 +26,7 @@ import {
     type TokenSymbol,
 } from '@suite-common/wallet-types';
 import { shouldUppercaseTokenSymbol } from '@suite-common/wallet-utils';
-import { type TokenInfo, type TokenTransfer } from '@trezor/blockchain-link';
+import { type TokenInfo, type TokenTransfer } from '@trezor/blockchain-link-types';
 
 import { type TypedTokenTransfer, type WalletAccountTransaction } from './types';
 import { isNetworkWithTokens } from './utils';

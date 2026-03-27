@@ -9,9 +9,6 @@
         { "path": "../wallet-types" },
         { "path": "../wallet-utils" },
         {
-            "path": "../../packages/blockchain-link"
-        },
-        {
             "path": "../../packages/blockchain-link-types"
         },
         { "path": "../../packages/connect" },

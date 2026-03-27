@@ -1,0 +1,499 @@
+import type {
+    AccountAddresses,
+    AccountInfo,
+    Address,
+    InternalTransfer,
+    TokenInfo,
+    TokenTransfer,
+    Transaction,
+    Utxo,
+    VinVout,
+} from '@trezor/blockchain-link-types';
+import {
+    type Addresses,
+    enhanceVinVout,
+    filterTargets,
+    sumVinVout,
+    transformTarget,
+} from '@trezor/blockchain-link-utils';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
+
+import type {
+    BlockbookAccountInfo,
+    AccountUtxo as BlockbookAccountUtxo,
+    BlockbookTransaction,
+    EvmTransaction,
+    ServerInfo,
+} from './types';
+
+const isOutgoing = (lowerCasedDescriptor: string, tx: EvmTransaction) =>
+    tx.details?.vin?.[0]?.addresses?.[0]?.toLowerCase() === lowerCasedDescriptor;
+
+export const filterShadowedPendingTxsByNonce = (
+    txs: EvmTransaction[],
+    lowerCasedDescriptor: string,
+) => {
+    // txs should come sorted by nonce
+    const myLatestMinedTx = txs.find(
+        tx =>
+            isOutgoing(lowerCasedDescriptor, tx) &&
+            tx.extra?.ethereumSpecific &&
+            (tx.extra.ethereumSpecific.status === 0 || tx.extra.ethereumSpecific.status === 1) &&
+            Number.isInteger(tx.extra.ethereumSpecific.nonce),
+    );
+
+    if (!myLatestMinedTx?.extra?.ethereumSpecific) return txs;
+
+    const latestMinedNonce = myLatestMinedTx.extra.ethereumSpecific.nonce;
+
+    return txs.filter(tx => {
+        const es = tx.extra?.ethereumSpecific;
+        if (!es) return true;
+
+        const isOutgoingTx = isOutgoing(lowerCasedDescriptor, tx);
+        const isPending = es.status === -1;
+
+        if (isOutgoingTx && isPending && es.nonce <= latestMinedNonce) {
+            return false;
+        }
+
+        return true;
+    });
+};
+
+export const transformServerInfo = (payload: ServerInfo) => ({
+    name: payload.name,
+    shortcut: payload.shortcut,
+    network: payload.network ?? payload.shortcut, // some instances don't send network (e.g. regtest)
+    testnet: payload.testnet,
+    version: payload.version,
+    decimals: payload.decimals,
+    blockHeight: payload.bestHeight,
+    blockHash: payload.bestHash,
+    consensusBranchId: payload.backend?.consensus
+        ? parseInt(payload.backend.consensus.chaintip, 16) // parse from hex string
+        : undefined,
+});
+
+export const filterTokenTransfers = (
+    addresses: Addresses,
+    transfers: BlockbookTransaction['tokenTransfers'],
+): TokenTransfer[] => {
+    if (typeof addresses === 'string') {
+        addresses = [addresses];
+    }
+    // neither addresses or transfers are missing
+    if (!addresses || !Array.isArray(addresses) || !transfers || !Array.isArray(transfers))
+        return [];
+
+    const all: (string | null)[] = addresses.map(a => {
+        if (typeof a === 'string') return a;
+        if (typeof a === 'object' && typeof a.address === 'string') return a.address;
+
+        return null;
+    });
+
+    return transfers
+        .filter(transfer => {
+            if (transfer && typeof transfer === 'object') {
+                return (
+                    (transfer.from && all.indexOf(transfer.from) >= 0) ||
+                    (transfer.to && all.indexOf(transfer.to) >= 0)
+                );
+            }
+
+            return false;
+        })
+        .map(transfer => {
+            const isIncoming = transfer.from && all.indexOf(transfer.from) >= 0;
+            const isOutgoing = transfer.to && all.indexOf(transfer.to) >= 0;
+
+            let type: TokenTransfer['type'];
+            if (isIncoming && isOutgoing) {
+                type = 'self';
+            } else if (isIncoming) {
+                type = 'sent';
+            } else {
+                type = 'recv';
+            }
+
+            const tokenTransfer = {
+                ...transfer,
+                type,
+                decimals: transfer.decimals || 0,
+                amount: transfer.value || '',
+                standard: transfer.standard,
+            };
+            delete tokenTransfer.value;
+
+            return tokenTransfer;
+        });
+};
+
+const ethereumStakingAddresses = {
+    poolInstance: [
+        '0xD523794C879D9eC028960a231F866758e405bE34',
+        '0xAFA848357154a6a624686b348303EF9a13F63264',
+    ],
+    withdrawTreasury: [
+        '0x19449f0f696703Aa3b1485DfA2d855F33659397a',
+        '0x66cb3AeD024740164EBcF04e292dB09b5B63A2e1',
+    ],
+};
+
+export const isEthereumStakingInternalTransfer = (from: string, to: string) => {
+    const { poolInstance, withdrawTreasury } = ethereumStakingAddresses;
+
+    return poolInstance.includes(from) && withdrawTreasury.includes(to);
+};
+
+export const filterEthereumInternalTransfers = (
+    address: string | undefined,
+    ethereumSpecific: BlockbookTransaction['ethereumSpecific'],
+): InternalTransfer[] => {
+    const internalTransfers = ethereumSpecific?.internalTransfers;
+
+    // neither addresses or transfers are missing
+    if (!address || !internalTransfers?.length) {
+        return [];
+    }
+
+    return (
+        internalTransfers
+            // type 1 and 2 are filtered out (contract creating and destruction)
+            .filter(
+                ({ type, from, to }) =>
+                    type === 0 &&
+                    ([from, to].includes(address) || isEthereumStakingInternalTransfer(from, to)),
+            )
+            .map(({ from, to, value }) => {
+                const isIncoming = from === address;
+                const isOutgoing = to === address;
+
+                let type: InternalTransfer['type'];
+                if (isIncoming && isOutgoing) {
+                    type = 'self';
+                } else if (isIncoming) {
+                    type = 'sent';
+                } else if (isOutgoing) {
+                    type = 'recv';
+                } else {
+                    // For transfers where both 'from' and 'to' addresses are not the account address (like instant staking)
+                    type = 'external';
+                }
+
+                return {
+                    type,
+                    amount: value,
+                    from,
+                    to,
+                };
+            })
+    );
+};
+
+// Lighter version of AccountAddresses for tx classification
+type TransformAddresses = {
+    used: { address: string }[];
+    unused: { address: string }[];
+    change: { address: string }[];
+};
+
+export const isTxFailed = (tx: BlockbookTransaction) =>
+    !(!tx.blockHeight || tx.blockHeight < 0) && tx.ethereumSpecific?.status === 0;
+
+const getTransactionFee = (tx: BlockbookTransaction): string => {
+    if (tx.chainExtraData?.payloadType === 'tron') {
+        return tx.chainExtraData.payload?.totalFee || tx.fees;
+    }
+    if (tx.ethereumSpecific && !tx.ethereumSpecific.gasUsed) {
+        return new BigNumber(
+            tx.ethereumSpecific.maxFeePerGas ?? tx.ethereumSpecific.gasPrice ?? '0',
+        )
+            .times(tx.ethereumSpecific.gasLimit)
+            .toString();
+    }
+
+    return tx.fees;
+};
+
+export const transformTransaction = (
+    tx: BlockbookTransaction,
+    addressesOrDescriptor?: TransformAddresses | string,
+): Transaction => {
+    const [addresses, descriptor] =
+        typeof addressesOrDescriptor === 'object'
+            ? [addressesOrDescriptor, undefined]
+            : [undefined, addressesOrDescriptor];
+
+    // combine all addresses into array
+    const myAddresses = addresses
+        ? addresses.change.concat(addresses.used, addresses.unused).map(a => a.address)
+        : (descriptor && [descriptor]) || [];
+
+    const inputs = Array.isArray(tx.vin) ? tx.vin : [];
+    const totalInput = inputs.reduce(sumVinVout, 0);
+    const myInputs = filterTargets(myAddresses, tx.vin);
+    const myTotalInput = myInputs.reduce(sumVinVout, 0);
+
+    const outputs = Array.isArray(tx.vout) ? tx.vout : [];
+    const totalOutput = outputs.reduce(sumVinVout, 0);
+    const myOutputs = filterTargets(myAddresses, tx.vout);
+    const myTotalOutput = myOutputs.reduce(sumVinVout, 0);
+
+    const myTokens = filterTokenTransfers(myAddresses, tx.tokenTransfers);
+    const myInternalTransfers = filterEthereumInternalTransfers(descriptor, tx.ethereumSpecific);
+
+    const isNonChangeOutput = (o: VinVout) =>
+        addresses ? filterTargets(addresses.change, tx.vout).indexOf(o) < 0 : true;
+
+    const isNonZero = (o: VinVout) => o.value && o.value !== '0';
+
+    let type: Transaction['type'];
+    let amount: string;
+    let targets: VinVout[];
+
+    if (tx.ethereumSpecific?.createdContract) {
+        type = 'contract';
+        amount = tx.value;
+        targets = [];
+    } else if (myInputs.length) {
+        // Some input is mine -> sent, self or joint
+
+        if (myInputs.length < inputs.length) {
+            // Some input is external -> joint
+            // later we could use Wasabi heuristics:
+            // https://github.com/zkSNACKs/WalletWasabi/blob/1edaaabd901fe7d129e30eb84e3ff317897971a9/WalletWasabi/Blockchain/Transactions/SmartTransaction.cs#L46-L49
+
+            type = 'joint';
+            targets = [];
+            amount = new BigNumber(myTotalOutput).minus(myTotalInput).toString();
+        } else if (myOutputs.length < outputs.length || !outputs.length) {
+            // Some output is external or no output at all -> sent
+
+            type = 'sent';
+            targets = myTokens.length
+                ? outputs.filter(isNonZero)
+                : outputs.filter(isNonChangeOutput);
+            amount =
+                !outputs.length || tx.ethereumSpecific
+                    ? tx.value
+                    : new BigNumber(myTotalInput)
+                          .minus(myTotalOutput)
+                          .minus(tx.fees ?? '0')
+                          .toString();
+        } else {
+            // All inputs & outputs are mine -> self
+
+            type = 'self';
+            amount = tx.fees;
+            const intentionalOutputs = outputs.filter(isNonChangeOutput);
+            targets = intentionalOutputs.length ? intentionalOutputs : outputs;
+        }
+    } else if (myOutputs.length || myTokens.length || myInternalTransfers.length) {
+        type = 'recv';
+        amount = myTotalOutput.toString();
+        targets = myOutputs;
+
+        const transfers = [...myTokens, ...myInternalTransfers];
+        const isSentTransferAvailable = transfers.find(t => t.type === 'sent');
+        const isNoRecvTransferAvailable = transfers.find(t => t.type !== 'recv');
+
+        if (isSentTransferAvailable) {
+            type = 'sent';
+        } else if (!myOutputs.length && isNoRecvTransferAvailable) {
+            type = 'self';
+        }
+    } else {
+        // No input or output is mine -> unknown
+        type = 'unknown';
+        amount = tx.value;
+        targets = [];
+    }
+
+    type = isTxFailed(tx) ? 'failed' : type;
+
+    const rbf =
+        tx.rbf || inputs.find(i => typeof i.sequence === 'number' && i.sequence < 0xffffffff - 1)
+            ? true
+            : undefined;
+
+    const fee = getTransactionFee(tx);
+
+    // some instances of bb don't send vsize yet
+    const feeRate = tx.vsize
+        ? new BigNumber(fee).div(tx.vsize).decimalPlaces(2).toString()
+        : undefined;
+
+    // some instances of bb don't send size yet
+    const size = tx.size || (typeof tx.hex === 'string' ? tx.hex.length / 2 : 0);
+
+    return {
+        type,
+        txid: tx.txid,
+        hex: tx.hex,
+        blockTime: tx.blockTime,
+        blockHeight: tx.blockHeight,
+        blockHash: tx.blockHash,
+        lockTime: tx.lockTime,
+        amount,
+        fee,
+        vsize: tx.vsize, // some instances of bb don't send vsize yet
+        feeRate,
+        targets: targets
+            .filter(target => typeof target === 'object')
+            .map(target => transformTarget(target, myOutputs)),
+        tokens: myTokens,
+        internalTransfers: myInternalTransfers,
+        rbf,
+        ethereumSpecific: tx.ethereumSpecific && {
+            ...tx.ethereumSpecific,
+            gasPrice: tx.ethereumSpecific.gasPrice ?? '0', // even if it shouldn't, `null` sometimes came from Erigon
+        },
+        tronSpecific:
+            tx.chainExtraData?.payloadType === 'tron' ? tx.chainExtraData.payload : undefined,
+        details: {
+            vin: inputs.map(enhanceVinVout(myAddresses)),
+            vout: outputs.map(enhanceVinVout(myAddresses)),
+            size,
+            totalInput: totalInput.toString(),
+            totalOutput: totalOutput.toString(),
+        },
+    };
+};
+
+export const transformTokenInfo = (
+    tokens: BlockbookAccountInfo['tokens'],
+): TokenInfo[] | undefined => {
+    if (!tokens || !Array.isArray(tokens)) return undefined;
+    const info = tokens.reduce((arr, token) => {
+        if (token.type === 'XPUBAddress') return arr;
+
+        return arr.concat([
+            {
+                ...token,
+                decimals: token.decimals || 0,
+                standard: token.standard,
+            },
+        ]);
+    }, [] as TokenInfo[]);
+
+    return info.length > 0 ? info : undefined;
+};
+
+export const transformAddresses = (
+    tokens: BlockbookAccountInfo['tokens'],
+): AccountAddresses | undefined => {
+    if (!tokens || !Array.isArray(tokens)) return undefined;
+    const addresses = tokens.reduce((arr, t) => {
+        if (t.type !== 'XPUBAddress') return arr;
+
+        return arr.concat([
+            {
+                address: t.name,
+                path: t.path,
+                transfers: t.transfers,
+                balance: t.balance,
+                sent: t.totalSent,
+                received: t.totalReceived,
+            },
+        ]);
+    }, [] as Address[]);
+
+    if (addresses.length < 1) return undefined;
+    const internal = addresses.filter(a => a.path.split('/')[4] === '1');
+    const external = addresses.filter(a => internal.indexOf(a) < 0);
+
+    return {
+        change: internal,
+        used: external.filter(a => a.transfers > 0),
+        unused: external.filter(a => a.transfers === 0),
+    };
+};
+
+export const transformAccountInfo = (payload: BlockbookAccountInfo): AccountInfo => {
+    let page;
+    if (typeof payload.page === 'number') {
+        page = {
+            index: payload.page,
+            size: payload.itemsOnPage,
+            total: payload.totalPages,
+        };
+    }
+    // Blockbook is used for both Bitcoin-like and Ethereum-like networks; there is no parameter to distinguish them.
+    // However, the nonce is specific to Ethereum, so we can determine the network type based on its availability.
+    const isEVM = typeof payload.nonce === 'string';
+    let misc: AccountInfo['misc'];
+    if (payload.chainExtraData?.payloadType === 'tron') {
+        misc = {
+            tronResources: payload.chainExtraData.payload,
+            contractInfo: payload.contractInfo,
+        };
+    } else if (isEVM) {
+        misc = {
+            nonce: payload.nonce,
+            contractInfo: payload.contractInfo,
+            stakingPools: payload.stakingPools,
+            addressAliases: payload.addressAliases,
+        };
+    }
+
+    const descriptor = payload.address;
+    const addresses = transformAddresses(payload.tokens);
+    const tokens = transformTokenInfo(payload.tokens);
+    const unconfirmedBalance = new BigNumber(payload.unconfirmedBalance);
+
+    let availableBalance = payload.balance;
+    if (!unconfirmedBalance.isNaN() && !isEVM) {
+        availableBalance = unconfirmedBalance.plus(payload.balance).toString();
+    }
+    const empty =
+        payload.txs === 0 &&
+        payload.unconfirmedTxs === 0 &&
+        new BigNumber(availableBalance).isZero();
+
+    const unfilteredTransactions = payload.transactions
+        ? payload.transactions.map(t => transformTransaction(t, addresses ?? descriptor))
+        : undefined;
+
+    const transactions =
+        isEVM && unfilteredTransactions
+            ? filterShadowedPendingTxsByNonce(
+                  unfilteredTransactions as EvmTransaction[],
+                  descriptor.toLowerCase(),
+              )
+            : unfilteredTransactions;
+
+    return {
+        descriptor,
+        balance: payload.balance,
+        availableBalance,
+        empty,
+        tokens,
+        addresses,
+        history: {
+            addrTxCount: payload.addrTxCount,
+            total: payload.txs,
+            tokens:
+                typeof payload.nonTokenTxs === 'number'
+                    ? payload.txs - payload.nonTokenTxs
+                    : undefined,
+            unconfirmed: payload.unconfirmedTxs,
+            transactions,
+        },
+        misc,
+        page,
+    };
+};
+
+export const transformAccountUtxo = (payload: BlockbookAccountUtxo): Utxo[] =>
+    payload.map(utxo => ({
+        txid: utxo.txid,
+        vout: utxo.vout,
+        amount: utxo.value,
+        blockHeight: utxo.height,
+        address: utxo.address,
+        path: utxo.path,
+        confirmations: utxo.confirmations,
+        coinbase: utxo.coinbase,
+    }));

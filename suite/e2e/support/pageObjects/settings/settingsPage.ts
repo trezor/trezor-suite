@@ -1,7 +1,7 @@
 import { Locator, Page, test } from '@playwright/test';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { BaseCurrencyCode } from '@trezor/blockchain-link-types';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { LabelingSelectValue } from '@trezor/suite/src/constants/suite/labeling';
 import { capitalizeFirstLetter } from '@trezor/utils';
 

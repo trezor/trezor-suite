@@ -11,7 +11,7 @@ import {
 import {
     buildAddTrustlineTransaction,
     buildRemoveTrustlineTransaction,
-} from '@trezor/blockchain-link-utils/src/stellar';
+} from '@trezor/blockchain-link-stellar/src/utils';
 import TrezorConnect from '@trezor/connect';
 import { StellarAssetType } from '@trezor/protobuf/src/definitions';
 

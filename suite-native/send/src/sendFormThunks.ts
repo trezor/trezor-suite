@@ -30,7 +30,7 @@ import {
     type UpdateSelectedFeeLevelThunkParams,
     addTransactionLabelingThunk,
 } from '@suite-native/transaction-management';
-import { type BlockbookTransaction } from '@trezor/blockchain-link-types';
+import { type BlockbookTransaction } from '@trezor/blockchain-link-blockbook';
 import { type Ok } from '@trezor/type-utils';
 import { isNotNullOrUndefined, typedObjectKeys } from '@trezor/utils';
 

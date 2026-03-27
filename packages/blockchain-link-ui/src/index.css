@@ -1,0 +1,142 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+html,
+body {
+    width: 100%;
+    height: 100%;
+    font-family:
+        -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #333;
+}
+
+header {
+    color: #fff;
+    background: rgb(26, 26, 26);
+    display: flex;
+    align-items: center;
+    padding: 10px;
+}
+
+header span {
+    font-size: 16px;
+    font-weight: bold;
+    padding: 0px 10px;
+    padding-bottom: 2px;
+}
+
+header svg {
+    fill: #fff;
+    width: 100px;
+}
+
+div.row {
+    padding: 10px;
+}
+label {
+    display: block;
+    text-transform: uppercase;
+    font-size: 14px;
+}
+select,
+input,
+textarea,
+button {
+    font-family: inherit;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    padding: 5px 10px;
+    vertical-align: middle;
+}
+select {
+    width: auto;
+    background: #fff;
+}
+input {
+    width: 300px;
+}
+textarea {
+    display: block;
+    width: 300px;
+    height: 200px;
+    font-size: 12px;
+    margin-top: 4px;
+}
+button {
+    cursor: pointer;
+    background: #fff;
+}
+button:hover {
+    background: #f0f0f0;
+}
+
+#estimate-fee-options {
+    margin-top: 4px;
+}
+
+#get-account-info-advanced {
+    padding-top: 4px;
+    display: none;
+}
+
+.response {
+    display: block;
+    position: relative;
+    margin: 4px 0px;
+    border: 1px solid green;
+    border-radius: 4px;
+    font-size: 12px;
+    padding: 4px;
+    min-height: 24px;
+}
+
+.response .close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 1;
+    cursor: pointer;
+    padding: 4px 10px;
+}
+.response .close::after {
+    color: green;
+    content: '\00d7';
+}
+
+.response.error {
+    border: 1px solid red;
+}
+
+.response.error .close::after {
+    color: red;
+}
+
+#notification-status .response {
+    background: rgba(0, 255, 0, 0.05);
+}
+
+#notification-status .response.error {
+    background: rgba(255, 0, 0, 0.05);
+}
+
+#clear {
+    position: fixed;
+    cursor: pointer;
+    padding: 4px;
+    border-left: 1px solid #5755d9;
+    border-bottom: 1px solid #5755d9;
+    border-bottom-left-radius: 4px;
+    border-top: 0px;
+    border-right: 0px;
+
+    width: 28px;
+    height: 28px;
+    right: 0;
+    top: 0;
+    z-index: 1;
+}

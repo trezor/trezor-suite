@@ -21,8 +21,8 @@ import {
     subunitsToUnits,
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
+import { tokenStandardToTokenProgramName } from '@trezor/blockchain-link-solana/src/solanaUtils';
 import type { TokenInfo } from '@trezor/blockchain-link-types';
-import { tokenStandardToTokenProgramName } from '@trezor/blockchain-link-utils/src/solana';
 import TrezorConnect, { type FeeLevel } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 

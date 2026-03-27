@@ -17,7 +17,7 @@ import {
     type StellarManageTokenStackParamList,
     StellarManageTokenStackRoutes,
 } from '@suite-native/navigation';
-import { isValidAddress, isValidAssetCode } from '@trezor/blockchain-link-utils/src/stellar';
+import { isValidAddress, isValidAssetCode } from '@trezor/blockchain-link-stellar/src/utils';
 
 import { composeStellarTrustlineFeesThunk } from '../thunks';
 

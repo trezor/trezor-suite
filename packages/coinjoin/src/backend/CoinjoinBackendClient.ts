@@ -1,4 +1,4 @@
-import type { BlockbookAPI } from '@trezor/blockchain-link/src/workers/blockbook/websocket';
+import type { BlockbookAPI } from '@trezor/blockchain-link-blockbook/src/websocket';
 import {
     TypedEmitter,
     arrayShuffle,

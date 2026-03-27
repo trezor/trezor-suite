@@ -7,10 +7,10 @@
         { "path": "../wallet-types" },
         { "path": "../wallet-utils" },
         {
-            "path": "../../packages/blockchain-link-types"
+            "path": "../../packages/blockchain-link-blockfrost"
         },
         {
-            "path": "../../packages/blockchain-link-utils"
+            "path": "../../packages/blockchain-link-types"
         },
         { "path": "../../packages/connect" },
         { "path": "../../packages/env-utils" },

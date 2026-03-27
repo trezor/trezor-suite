@@ -1,7 +1,7 @@
 import { type RouterState, routerLocationChange } from '@suite/router';
 import { accountsActions } from '@suite-common/wallet-core';
 import { type AccountKey, type SelectedAccountLoaded } from '@suite-common/wallet-types';
-import { type AnonymitySet } from '@trezor/blockchain-link';
+import { type AnonymitySet } from '@trezor/blockchain-link-types';
 import { DEVICE, type StaticSessionId } from '@trezor/connect';
 
 import { SUITE } from 'src/actions/suite/constants';

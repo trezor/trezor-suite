@@ -34,7 +34,7 @@ import {
     subunitsToUnits,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
-import { type BlockbookTransaction } from '@trezor/blockchain-link-types';
+import { type BlockbookTransaction } from '@trezor/blockchain-link-blockbook';
 import TrezorConnect, { type PROTO } from '@trezor/connect';
 import { getSolanaTokenDefinition } from '@trezor/connect/src/api/solana/solanaDefinitions';
 import { type Ok, exhaustive } from '@trezor/type-utils';

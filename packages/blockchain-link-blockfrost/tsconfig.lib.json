@@ -1,0 +1,32 @@
+{
+    "extends": "../../tsconfig.lib.json",
+    "compilerOptions": {
+        "outDir": "./lib",
+        "lib": ["webworker"],
+        "types": ["node", "web"]
+    },
+    "include": ["./src"],
+    "references": [
+        {
+            "path": "../blockchain-link"
+        },
+        {
+            "path": "../blockchain-link-types"
+        },
+        {
+            "path": "../blockchain-link-utils"
+        },
+        {
+            "path": "../env-utils"
+        },
+        {
+            "path": "../utils"
+        },
+        {
+            "path": "../e2e-utils"
+        },
+        {
+            "path": "../eslint"
+        }
+    ]
+}

@@ -1,0 +1,23 @@
+{
+    "extends": "../../tsconfig.libESM.json",
+    "compilerOptions": {
+        "outDir": "./libESM",
+        "lib": ["webworker"],
+        "types": ["node", "web"]
+    },
+    "include": ["./src"],
+    "references": [
+        {
+            "path": "../blockchain-link"
+        },
+        {
+            "path": "../blockchain-link-blockbook"
+        },
+        {
+            "path": "../blockchain-link-types"
+        },
+        {
+            "path": "../eslint"
+        }
+    ]
+}

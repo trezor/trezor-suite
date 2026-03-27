@@ -1,4 +1,4 @@
-import type { BlockchainSettings } from '@trezor/blockchain-link';
+import type { BlockchainSettings } from '@trezor/blockchain-link-types';
 import type { DeviceModelInternal } from '@trezor/device-utils';
 import type { ThpCredentials, ThpPairingMethod } from '@trezor/protocol';
 import type { Static } from '@trezor/schema-utils';

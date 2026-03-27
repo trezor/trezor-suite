@@ -17,7 +17,7 @@ import {
     WALLET_SDK_SOURCE,
 } from '@suite-common/wallet-constants';
 import { networkAmountToSmallestUnit } from '@suite-common/wallet-utils';
-import { type Fee } from '@trezor/blockchain-link-types/src/blockbook';
+import { type Fee } from '@trezor/blockchain-link-blockbook';
 
 import { claim, createTransactionShimCommon, stake, unstake } from './transactionUtils';
 

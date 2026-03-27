@@ -1,0 +1,23 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "outDir": "libDev",
+        "lib": ["dom", "es2020"],
+        "types": ["node"]
+    },
+    "include": ["src"],
+    "references": [
+        { "path": "../blockchain-link" },
+        {
+            "path": "../blockchain-link-blockbook"
+        },
+        {
+            "path": "../blockchain-link-blockfrost"
+        },
+        { "path": "../blockchain-link-evm-rpc" },
+        { "path": "../blockchain-link-ripple" },
+        { "path": "../blockchain-link-solana" },
+        { "path": "../blockchain-link-stellar" },
+        { "path": "../eslint" }
+    ]
+}

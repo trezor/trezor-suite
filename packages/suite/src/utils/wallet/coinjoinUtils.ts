@@ -5,7 +5,7 @@ import { BITCOIN_ONLY_SYMBOLS } from '@suite-common/suite-constants';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { getBip43Type, getUtxoOutpoint } from '@suite-common/wallet-utils';
-import { type AnonymitySet } from '@trezor/blockchain-link';
+import { type AnonymitySet } from '@trezor/blockchain-link-types';
 import {
     type CoinjoinStatusEvent,
     type CoinjoinTransactionData,

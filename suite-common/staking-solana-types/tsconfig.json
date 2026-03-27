@@ -5,7 +5,7 @@
         { "path": "../wallet-config" },
         { "path": "../wallet-types" },
         {
-            "path": "../../packages/blockchain-link-types"
+            "path": "../../packages/blockchain-link-blockbook"
         },
         { "path": "../../packages/connect" }
     ]

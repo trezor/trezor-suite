@@ -2,8 +2,7 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        { "path": "../utils" },
-        { "path": "../utxo-lib" },
-        { "path": "../type-utils" }
+        { "path": "../type-utils" },
+        { "path": "../utils" }
     ]
 }

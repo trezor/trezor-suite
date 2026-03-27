@@ -5,8 +5,7 @@ import {
 import { type NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
 import { SOLANA_EPOCH_DAYS } from '@suite-common/wallet-constants';
 import { type Account } from '@suite-common/wallet-types';
-import { type SolanaStakingAccount } from '@trezor/blockchain-link-types';
-import { StakeState } from '@trezor/blockchain-link-types/src/solana';
+import { type SolanaStakingAccount, StakeState } from '@trezor/blockchain-link-solana/src/types';
 import { BigNumber, isArrayMember } from '@trezor/utils';
 
 import { formatNetworkAmount } from './amountUtils';

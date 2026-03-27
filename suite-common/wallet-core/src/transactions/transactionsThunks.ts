@@ -25,8 +25,8 @@ import {
     replaceEthereumSpecific,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
+import * as blockbookUtils from '@trezor/blockchain-link-blockbook/src/utils';
 import { type TokenInfo, type TokenStandard } from '@trezor/blockchain-link-types';
-import { blockbookUtils } from '@trezor/blockchain-link-utils';
 import TrezorConnect, {
     type AccountInfo,
     type AccountTransaction,

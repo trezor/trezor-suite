@@ -26,7 +26,7 @@ import {
     isSupportedSolStakingNetworkSymbol,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
-import type { BaseCurrencyCode, TokenInfo } from '@trezor/blockchain-link-types';
+import { type BaseCurrencyCode, type TokenInfo } from '@trezor/blockchain-link-types';
 import { Button, Card, Icon, IconButton, LoadingContent, Row } from '@trezor/components';
 import { spacingsPx, typography } from '@trezor/theme';
 import { type PartialRecord } from '@trezor/type-utils';

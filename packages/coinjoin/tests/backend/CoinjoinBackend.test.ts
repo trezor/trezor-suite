@@ -1,5 +1,5 @@
-import { BlockbookAPI } from '@trezor/blockchain-link/src/workers/blockbook/websocket';
-import { blockbookUtils } from '@trezor/blockchain-link-utils';
+import * as blockbookUtils from '@trezor/blockchain-link-blockbook/src/utils';
+import { BlockbookAPI } from '@trezor/blockchain-link-blockbook/src/websocket';
 
 import { CoinjoinBackend } from '../../src';
 import { COINJOIN_BACKEND_SETTINGS } from '../fixtures/config.fixture';

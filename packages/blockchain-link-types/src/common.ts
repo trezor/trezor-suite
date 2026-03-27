@@ -347,23 +347,8 @@ export interface TokenInfo {
  * This is Backend data for the account. Data can change over time as transactions happen.
  * Suite is subscribed to this and updates Account regularly.
  */
-export interface AccountInfo {
-    descriptor: string;
-    balance: string;
-    availableBalance: string;
-    empty: boolean;
-    tokens?: TokenInfo[]; // ethereum and blockfrost tokens
-
-    addresses?: AccountAddresses; // bitcoin and blockfrost addresses
-    history: {
-        total: number; // total transactions (unknown in ripple)
-        tokens?: number; // tokens transactions
-        unconfirmed: number; // unconfirmed transactions
-        transactions?: Transaction[]; // list of transactions
-        txids?: string[]; // not implemented
-        addrTxCount?: number; // number of confirmed address/transaction pairs, only for bitcoin-like
-    };
-    misc?: {
+export interface AccountInfo<
+    TMisc extends object = {
         // EVM
         nonce?: string;
         contractInfo?: ContractInfo;
@@ -398,7 +383,24 @@ export interface AccountInfo {
         solExternalStakingAccounts?: SolanaStakingAccount[]; // Solana staking accounts (non-Everstake)
         solEpoch?: number; // Solana current epoch
         tronResources?: TronAccountExtraData;
+    },
+> {
+    descriptor: string;
+    balance: string;
+    availableBalance: string;
+    empty: boolean;
+    tokens?: TokenInfo[]; // ethereum and blockfrost tokens
+
+    addresses?: AccountAddresses; // bitcoin and blockfrost addresses
+    history: {
+        total: number; // total transactions (unknown in ripple)
+        tokens?: number; // tokens transactions
+        unconfirmed: number; // unconfirmed transactions
+        transactions?: Transaction[]; // list of transactions
+        txids?: string[]; // not implemented
+        addrTxCount?: number; // number of confirmed address/transaction pairs, only for bitcoin-like
     };
+    misc?: TMisc;
     page?: {
         // blockbook and blockfrost
         index: number;

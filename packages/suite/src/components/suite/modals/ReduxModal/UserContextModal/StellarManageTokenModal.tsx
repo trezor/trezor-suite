@@ -18,7 +18,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type Account, type FormState } from '@suite-common/wallet-types';
 import { formatNetworkAmount, getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
-import { BASE_INFO } from '@trezor/blockchain-link-utils/src/stellar';
+import { BASE_INFO } from '@trezor/blockchain-link-stellar/src/utils';
 import { Banner, Button, Column, Modal, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';

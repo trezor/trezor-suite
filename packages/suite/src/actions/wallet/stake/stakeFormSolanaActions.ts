@@ -39,7 +39,7 @@ import {
     type StakeFormState,
 } from '@suite-common/wallet-types';
 import { networkAmountToSmallestUnit } from '@suite-common/wallet-utils';
-import { type Fee } from '@trezor/blockchain-link-types/src/blockbook';
+import { type Fee } from '@trezor/blockchain-link-blockbook';
 import TrezorConnect, { type FeeLevel } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 

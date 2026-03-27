@@ -2,14 +2,14 @@ import type {
     AccountAddresses,
     AccountInfo as AccountInfoBase,
     Utxo as AccountUtxo,
-} from '@trezor/blockchain-link';
+} from '@trezor/blockchain-link-types';
 
 export type {
     AccountAddresses,
     Utxo as AccountUtxo,
     Address as AccountAddress,
     Transaction as AccountTransaction,
-} from '@trezor/blockchain-link';
+} from '@trezor/blockchain-link-types';
 
 export type DiscoveryAccountType = 'p2pkh' | 'p2sh' | 'p2tr' | 'p2wpkh';
 

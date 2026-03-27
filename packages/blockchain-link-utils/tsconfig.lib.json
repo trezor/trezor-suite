@@ -6,19 +6,13 @@
     "include": ["./src"],
     "references": [
         {
-            "path": "../env-utils"
+            "path": "../blockchain-link-types"
         },
         {
             "path": "../utils"
         },
         {
-            "path": "../blockchain-link-types"
-        },
-        {
             "path": "../eslint"
-        },
-        {
-            "path": "../type-utils"
         }
     ]
 }

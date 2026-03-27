@@ -20,7 +20,7 @@ import {
     type StellarManageTokenStackParamList,
     type StellarManageTokenStackRoutes,
 } from '@suite-native/navigation';
-import { BASE_INFO } from '@trezor/blockchain-link-utils/src/stellar';
+import { BASE_INFO } from '@trezor/blockchain-link-stellar/src/utils';
 import { HELP_CENTER_XLM_URL } from '@trezor/urls';
 
 import { FeeOptionsSection } from '../components/FeeOptionsSection';

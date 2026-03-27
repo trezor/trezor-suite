@@ -11,8 +11,18 @@
     },
     "references": [
         { "path": "../blockchain-link" },
+        {
+            "path": "../blockchain-link-blockbook"
+        },
+        {
+            "path": "../blockchain-link-blockfrost"
+        },
+        { "path": "../blockchain-link-electrum" },
+        { "path": "../blockchain-link-evm-rpc" },
+        { "path": "../blockchain-link-ripple" },
+        { "path": "../blockchain-link-solana" },
+        { "path": "../blockchain-link-stellar" },
         { "path": "../blockchain-link-types" },
-        { "path": "../blockchain-link-utils" },
         { "path": "../connect-common" },
         { "path": "../connect-data" },
         { "path": "../crypto-utils" },

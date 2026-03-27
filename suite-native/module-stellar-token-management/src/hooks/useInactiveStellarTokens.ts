@@ -8,7 +8,7 @@ import {
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey, type StellarTokenInfo } from '@suite-common/wallet-types';
 import { type TokenDetailByMint } from '@trezor/blockchain-link-types';
-import { STELLAR_DECIMALS, getTokenMetadata } from '@trezor/blockchain-link-utils/src/stellar';
+import { STELLAR_DECIMALS, getTokenMetadata } from '@trezor/blockchain-link-stellar/src/utils';
 import { createLazy } from '@trezor/utils';
 
 export const lazyTokenMetadata = createLazy(getTokenMetadata);

@@ -1,5 +1,5 @@
 import { type AccountKey } from '@suite-common/wallet-types';
-import { type AccountBalanceHistory } from '@trezor/blockchain-link';
+import { type AccountBalanceHistory } from '@trezor/blockchain-link-types';
 
 import {
     formatBalanceMovementEventsAmounts,
