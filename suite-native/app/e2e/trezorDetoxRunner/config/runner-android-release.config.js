@@ -1,3 +1,5 @@
+const { noOtherDevice } = require('@trezor/e2e-utils');
+
 const target = 'android.emu.release';
 
 /*
@@ -20,7 +22,7 @@ module.exports = {
             target,
             model: 'T3T1',
             firmwareVersion: '2-latest',
-            grep: '^(?=.*@T3T1)(?=.*@smoke)(?!.*@iosOnly)',
+            grep: `^(?=.*@T3T1)((?=.*@smoke)|${noOtherDevice()})(?!.*@iosOnly)`,
         },
         {
             projectName: 'T1B1',

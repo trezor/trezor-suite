@@ -9,3 +9,4 @@ export { TestReportProviderBase, createTestAnnotation } from './githubReporter/a
 export type { TestDetailsAnnotation, TestMetadataInput } from './githubReporter/types';
 export type * from './githubReporter/types';
 export * from './enums/testAnnotations';
+export * from './grepUtils';

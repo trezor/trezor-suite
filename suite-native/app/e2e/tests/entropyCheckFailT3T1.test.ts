@@ -16,7 +16,7 @@ const getPreloadedState = (payload: DeviceReducerState['simulatedEntropyCheckFai
 
 const LONG_RUNNING_TEST_TIMEOUT = 5 * 60 * 1000; // [ms]
 
-describe('Simulated entropy check failure on T3T1 [@androidOnly @smoke @T3T1]', () => {
+describe('Simulated entropy check failure on T3T1 [@androidOnly @T3T1]', () => {
     beforeEach(async () => {
         await prepareTrezorEmulator({ model: Model.T3T1, seed: '' });
     });
