@@ -23,6 +23,7 @@ export const CARDANO_EVERSTAKE_DREP = {
 };
 
 export const CARDANO_POOL_SATURATION_SAFE_THRESHOLD = 75; // in percentage
+export const CARDANO_POOL_OVERSATURATION_THRESHOLD = 95; // in percentage - migrate only above this
 
 export const MIN_CARDANO_AMOUNT_FOR_SEND = new BigNumber(1_000_000);
 

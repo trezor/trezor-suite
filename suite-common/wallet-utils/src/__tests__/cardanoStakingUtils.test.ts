@@ -11,7 +11,7 @@ describe('selectBestCardanoPool', () => {
         expect(selectBestCardanoPool([])).toEqual(CARDANO_EVERSTAKE_STAKING_POOL);
     });
 
-    it('returns the best (most saturated below threshold) pool when no current pool is given', () => {
+    it('returns the best (most saturated below 75% threshold) pool when no current pool is given', () => {
         const pools = [
             { id: POOL_A, saturation: 50, apy: 4.2 },
             { id: POOL_B, saturation: 30, apy: 4.3 },
@@ -22,24 +22,35 @@ describe('selectBestCardanoPool', () => {
         expect(result?.bech32).toEqual(POOL_A);
     });
 
-    it("keeps the user's current pool when it is not oversaturated", () => {
+    it("keeps the user's current pool when it is below the 75% threshold", () => {
         const pools = [
             { id: POOL_A, saturation: 50, apy: 4.2 },
             { id: POOL_B, saturation: 30, apy: 4.3 },
         ];
 
-        // User is in POOL_B (30% saturation < 75% threshold) → should stay in POOL_B
+        // User is in POOL_B (30% saturation < 95% migration threshold) → should stay in POOL_B
         const result = selectBestCardanoPool(pools, POOL_B);
         expect(result?.bech32).toEqual(POOL_B);
     });
 
-    it('migrates the user when their current pool is oversaturated', () => {
+    it("keeps the user's current pool when it is saturated but below 95%", () => {
         const pools = [
-            { id: POOL_A, saturation: 80, apy: 4.2 }, // oversaturated
-            { id: POOL_B, saturation: 30, apy: 4.3 }, // not oversaturated
+            { id: POOL_A, saturation: 80, apy: 4.2 }, // above 75% safe threshold but below 95% migration threshold
+            { id: POOL_B, saturation: 30, apy: 4.3 },
         ];
 
-        // User is in POOL_A (80% saturation > 75% threshold) → should migrate to POOL_B
+        // User is in POOL_A (80% saturation < 95% threshold) → should stay in POOL_A
+        const result = selectBestCardanoPool(pools, POOL_A);
+        expect(result?.bech32).toEqual(POOL_A);
+    });
+
+    it('migrates the user only when their current pool exceeds 95% saturation', () => {
+        const pools = [
+            { id: POOL_A, saturation: 96, apy: 4.2 }, // critically oversaturated (> 95%)
+            { id: POOL_B, saturation: 30, apy: 4.3 }, // healthy
+        ];
+
+        // User is in POOL_A (96% saturation ≥ 95% threshold) → should migrate to POOL_B
         const result = selectBestCardanoPool(pools, POOL_A);
         expect(result?.bech32).toEqual(POOL_B);
     });
@@ -55,25 +66,25 @@ describe('selectBestCardanoPool', () => {
         expect(result?.bech32).toEqual(POOL_A);
     });
 
-    it('falls back to the least saturated pool when all pools are oversaturated', () => {
+    it('falls back to the least saturated pool when all pools are above 75% and no current pool', () => {
         const pools = [
             { id: POOL_A, saturation: 80, apy: 4.2 },
             { id: POOL_B, saturation: 90, apy: 4.3 },
         ];
 
-        // All pools above threshold → pick least saturated
+        // All pools above 75% threshold and no current pool → pick least saturated
         const result = selectBestCardanoPool(pools);
         expect(result?.bech32).toEqual(POOL_A);
     });
 
-    it('falls back to least saturated pool when current pool is oversaturated and all others are too', () => {
+    it('falls back to least saturated pool when current pool exceeds 95% and all others are above 75% too', () => {
         const pools = [
-            { id: POOL_A, saturation: 80, apy: 4.2 },
+            { id: POOL_A, saturation: 96, apy: 4.2 },
             { id: POOL_B, saturation: 90, apy: 4.3 },
         ];
 
-        // Current pool is POOL_A (oversaturated), all pools oversaturated → pick least saturated (POOL_A)
+        // Current pool POOL_A is critically oversaturated (96%), all above 75% → pick least saturated (POOL_B)
         const result = selectBestCardanoPool(pools, POOL_A);
-        expect(result?.bech32).toEqual(POOL_A);
+        expect(result?.bech32).toEqual(POOL_B);
     });
 });
