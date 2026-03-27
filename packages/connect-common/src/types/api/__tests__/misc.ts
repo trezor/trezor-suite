@@ -31,22 +31,24 @@ export const cipherKeyValue = async (api: TrezorConnect) => {
 
 export const updateConnectSettings = async (api: TrezorConnect) => {
     // proxy settings
-    const proxy = await api.updateConnectSettings({ proxy: 'socks://localhost:9050' });
+    const proxy = await api.updateConnectSettings({ proxy: { uri: 'socks://localhost:9050' } });
     if (proxy.success) {
         proxy.payload.message.toLowerCase();
     } else {
         proxy.error.message.toLowerCase();
     }
+
+    const type = 5;
+    const host = 'localhost';
+    const port = 9050;
+    const username = 'johndoe';
     api.updateConnectSettings({
         proxy: {
-            type: 5,
-            host: 'localhost',
-            port: 9050,
-            username: 'johndoe',
-            timeout: 100000,
+            uri: `socks${type}://${username}@${host}:${port}`,
+            opts: { timeout: 100000 },
         },
     });
-    api.updateConnectSettings({ proxy: 'socks://localhost:9050' });
+    api.updateConnectSettings({ proxy: { uri: 'socks://localhost:9050' } });
     api.updateConnectSettings({ proxy: undefined });
 
     // transports settings
@@ -57,7 +59,10 @@ export const updateConnectSettings = async (api: TrezorConnect) => {
     api.updateConnectSettings({ transports: ['InvalidTransport'] });
 
     // both proxy and transports together
-    api.updateConnectSettings({ proxy: 'socks://localhost:9050', transports: ['BridgeTransport'] });
+    api.updateConnectSettings({
+        proxy: { uri: 'socks://localhost:9050' },
+        transports: ['BridgeTransport'],
+    });
 
     // empty object is valid (no-op)
     api.updateConnectSettings({});
