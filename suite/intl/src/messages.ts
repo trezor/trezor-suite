@@ -9090,10 +9090,6 @@ export const messages = defineMessages({
         id: 'TR_EARN_YIELD_DASHBOARD_WITHDRAW',
         defaultMessage: 'Withdraw',
     },
-    TR_EARN_YIELD_WITHDRAW_ASSET: {
-        id: 'TR_EARN_YIELD_WITHDRAW_ASSET',
-        defaultMessage: 'Withdraw {symbol}',
-    },
     TR_EARN_YIELD_WITHDRAW: {
         id: 'TR_EARN_YIELD_WITHDRAW',
         defaultMessage: 'Withdraw',
