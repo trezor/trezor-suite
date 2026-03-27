@@ -105,6 +105,4 @@ export const Text = React.forwardRef<RNText, TextProps>(
 
 Text.displayName = 'Text';
 
-export const AnimatedText = Object.assign(Animated.createAnimatedComponent(Text), {
-    displayName: 'AnimatedText',
-});
+export const AnimatedText = Animated.createAnimatedComponent(Text);

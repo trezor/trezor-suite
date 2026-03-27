@@ -167,6 +167,4 @@ export const Card = React.forwardRef<View, CardProps>(
 );
 
 Card.displayName = 'Card';
-export const AnimatedCard = Object.assign(Animated.createAnimatedComponent(Card), {
-    displayName: 'AnimatedCard',
-});
+export const AnimatedCard = Animated.createAnimatedComponent(Card);
