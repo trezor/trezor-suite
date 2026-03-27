@@ -1,10 +1,13 @@
 import { UI_REQUEST } from '@trezor/connect-common';
+import type { ThpCredentials } from '@trezor/protocol';
 
 import type { MethodMessage, MethodPermission } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { DataManager } from '../data/DataManager';
 
-export default class ThpRemoveCredentials extends AbstractMethod<'thpRemoveCredentials'> {
+type Params = { credentials: ThpCredentials[] };
+
+export default class ThpRemoveCredentials extends AbstractMethod<'thpRemoveCredentials', Params> {
     constructor(message: MethodMessage<'thpRemoveCredentials'>) {
         super(message);
         this.useDevice = this.payload.device !== undefined;
@@ -15,10 +18,12 @@ export default class ThpRemoveCredentials extends AbstractMethod<'thpRemoveCrede
         return ['management'];
     }
 
-    init() {}
+    init() {
+        this.params = { credentials: this.payload.credentials || [] };
+    }
 
     run() {
-        const requestedCredentials = this.payload.credentials || [];
+        const requestedCredentials = this.params.credentials;
         if (this.useDevice) {
             const thpState = this.getDevice().getThpState();
             if (thpState) {

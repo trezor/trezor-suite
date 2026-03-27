@@ -13,7 +13,9 @@ import { validateModelOneMessageSize } from '../device/validateMessageSize';
 import { hexToText, messageToHex } from '../utils/formatUtils';
 import { getLabel, getScriptType, getSerializedPath, validatePath } from '../utils/pathUtils';
 
-export default class SignMessage extends AbstractMethod<'signMessage', PROTO.SignMessage> {
+type Params = { proto: PROTO.SignMessage; readableMessage: string };
+
+export default class SignMessage extends AbstractMethod<'signMessage', Params> {
     coinInfo: BitcoinNetworkInfo | undefined;
 
     get requiredPermissions(): MethodPermission[] {
@@ -45,38 +47,45 @@ export default class SignMessage extends AbstractMethod<'signMessage', PROTO.Sig
         const messageHex = payload.hex
             ? messageToHex(payload.message)
             : Buffer.from(payload.message, 'utf8').toString('hex');
+
+        const readableMessage = payload.hex ? hexToText(payload.message) : payload.message;
+
         const scriptType = getScriptType(path);
-        this.params = {
+        const proto = {
             address_n: path,
             message: messageHex,
             coin_name: this.coinInfo ? this.coinInfo.name : undefined,
             script_type: scriptType && scriptType !== 'SPENDMULTISIG' ? scriptType : 'SPENDADDRESS', // script_type 'SPENDMULTISIG' throws Failure_FirmwareError
             no_script_type: payload.no_script_type,
         };
+
+        this.params = { proto, readableMessage };
     }
 
     get info() {
-        const coinInfo = getBitcoinNetwork(this.payload.coin ?? this.params.address_n);
-
-        return getLabel('Sign #NETWORK message', coinInfo);
+        return getLabel('Sign #NETWORK message', this.coinInfo);
     }
 
     getButtonRequestData(code: string, name?: string) {
         if (code === 'ButtonRequest_Other' && name === 'sign_message') {
             return {
                 type: 'message' as const,
-                serializedPath: getSerializedPath(this.params.address_n),
+                serializedPath: getSerializedPath(this.params.proto.address_n),
                 coin: this.coinInfo?.shortcut ?? 'BTC',
-                message: this.payload.hex ? hexToText(this.payload.message) : this.payload.message,
+                message: this.params.readableMessage,
             };
         }
     }
 
     async run() {
-        validateModelOneMessageSize(this.getDevice(), this.params.message);
+        validateModelOneMessageSize(this.getDevice(), this.params.proto.message);
 
         const cmd = this.getDevice().getCommands();
-        const { message } = await cmd.typedCall('SignMessage', 'MessageSignature', this.params);
+        const { message } = await cmd.typedCall(
+            'SignMessage',
+            'MessageSignature',
+            this.params.proto,
+        );
         // convert signature to base64
         const signatureBuffer = Buffer.from(message.signature, 'hex');
         message.signature = signatureBuffer.toString('base64');

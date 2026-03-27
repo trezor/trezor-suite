@@ -148,20 +148,19 @@ export default class EthereumSignTransaction extends AbstractMethod<
 
     payloadToPrecomposed() {
         try {
-            const feePerByte = new BigNumber(
-                this.payload.transaction.gasPrice || this.payload.transaction.maxFeePerGas!,
-            );
-            const fee = feePerByte.multipliedBy(this.payload.transaction.gasLimit);
-            const data = this.payload.transaction.data?.replace(/^0x/, '');
-            let recipient = this.payload.transaction.to!;
-            let amount = new BigNumber(this.payload.transaction.value);
+            const transaction = this.params.tx;
+            const feePerByte = new BigNumber(transaction.gasPrice || transaction.maxFeePerGas!);
+            const fee = feePerByte.multipliedBy(transaction.gasLimit);
+            const { data } = transaction;
+            let recipient = transaction.to!;
+            let amount = new BigNumber(transaction.value);
             let totalSpent = amount.plus(fee);
             let token: TokenInfo | undefined;
 
             // ERC-20 transfer
             // TODO: consider refactoring to shared util package together with `suite-common/wallet-constants/src/sendForm.ts`
             if (
-                this.payload.transaction.to &&
+                transaction.to &&
                 data?.startsWith('a9059cbb') &&
                 amount.eq(0) &&
                 this.params.definitions
@@ -195,17 +194,17 @@ export default class EthereumSignTransaction extends AbstractMethod<
                 feePerByte: feePerByte
                     .dividedBy(1e9) // wei to Gwei
                     .toString(),
-                maxFeePerGas: this.payload.transaction.maxFeePerGas
-                    ? new BigNumber(this.payload.transaction.maxFeePerGas)
+                maxFeePerGas: transaction.maxFeePerGas
+                    ? new BigNumber(transaction.maxFeePerGas)
                           .dividedBy(1e9) // wei to Gwei
                           .toString()
                     : undefined,
-                maxPriorityFeePerGas: this.payload.transaction.maxPriorityFeePerGas
-                    ? new BigNumber(this.payload.transaction.maxPriorityFeePerGas)
+                maxPriorityFeePerGas: transaction.maxPriorityFeePerGas
+                    ? new BigNumber(transaction.maxPriorityFeePerGas)
                           .dividedBy(1e9) // wei to Gwei
                           .toString()
                     : undefined,
-                feeLimit: new BigNumber(this.payload.transaction.gasLimit).toString(),
+                feeLimit: new BigNumber(transaction.gasLimit).toString(),
                 bytes: 0,
                 max: undefined,
                 isTokenKnown: !!token,

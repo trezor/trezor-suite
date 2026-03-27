@@ -17,6 +17,7 @@ import { getEthereumDefinitions } from '../ethereumDefinitions';
 
 type Params = {
     proto: PROTO.EthereumSignMessage;
+    readableMessage: string;
     network?: EthereumNetworkInfo;
     definitions?: MessagesSchema.EthereumDefinitions;
 };
@@ -45,7 +46,9 @@ export default class EthereumSignMessage extends AbstractMethod<'ethereumSignMes
             ? messageToHex(payload.message)
             : Buffer.from(payload.message, 'utf8').toString('hex');
 
-        this.params = { proto: { address_n, message } };
+        const readableMessage = payload.hex ? hexToText(payload.message) : payload.message;
+
+        this.params = { proto: { address_n, message }, readableMessage };
     }
 
     async initAsync() {
@@ -70,7 +73,7 @@ export default class EthereumSignMessage extends AbstractMethod<'ethereumSignMes
                 type: 'message' as const,
                 coin: this.params.network?.shortcut ?? 'ETH',
                 serializedPath: getSerializedPath(this.params.proto.address_n),
-                message: this.payload.hex ? hexToText(this.payload.message) : this.payload.message,
+                message: this.params.readableMessage,
             };
         }
     }
