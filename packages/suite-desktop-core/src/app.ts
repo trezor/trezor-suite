@@ -2,6 +2,7 @@ import { randomBytes } from 'crypto';
 import { BrowserWindow, app, nativeTheme } from 'electron';
 import debounce from 'lodash/debounce';
 import path from 'path';
+import { isTrezorDeviceWithState } from '@suite-common/wallet-utils';
 
 import { isDevEnv } from '@suite-common/suite-utils';
 import { isMacOs } from '@trezor/env-utils';
@@ -30,6 +31,8 @@ import { initBioAuthModule } from './modules/bioAuthModule';
 import { mainThreadEmitter } from './modules/module';
 import { init as initTorModule } from './modules/tor';
 import { ipcMain } from './typed-electron';
+
+console.log(isTrezorDeviceWithState.name);
 
 process.traceProcessWarnings = true;
 
