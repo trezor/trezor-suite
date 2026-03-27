@@ -37,7 +37,7 @@ export const ContactSupportAlertAppendix = forwardRef<ContactSupportAlertAppendi
                     onChange={setIsChecked}
                     testID="@contact-support-alert/share-info-switch"
                 />
-                <Text variant="body-md-strong">
+                <Text variant="body-md-strong" style={{ flex: 1 }}>
                     <Translation id="moduleSettings.faq.needHelp.contactSupportAlert.toggleLabel" />
                 </Text>
             </HStack>
