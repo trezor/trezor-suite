@@ -19,6 +19,8 @@ class SendOutputsFormActions {
             }
             if (amount) {
                 await element(by.id(`outputs.${index}.amount`)).typeText(amount);
+                // Dismiss keyboard so it doesn't cover the amount input below.
+                await device.pressBack();
             }
         }
     }
@@ -29,6 +31,7 @@ class SendOutputsFormActions {
     }
 
     async submitForm() {
+        await element(by.id('@screen/mainScrollView')).scrollTo('bottom');
         await element(by.id('@send/form-submit-button')).tap();
     }
 }
