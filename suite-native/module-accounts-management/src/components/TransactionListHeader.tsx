@@ -12,6 +12,7 @@ import {
     useDisplayBaseCurrency,
 } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { isViewOnlySymbol } from '@suite-common/wallet-utils';
 import { events } from '@suite-native/analytics';
 import { Box, Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice } from '@suite-native/device';
@@ -192,6 +193,7 @@ export const TransactionListHeader = memo(
                                     <Button
                                         viewLeft="arrowLineUp"
                                         onPress={handleSend}
+                                        isDisabled={isViewOnlySymbol(account.symbol)}
                                         testID="@account-detail/send-button"
                                     >
                                         <Translation id="transactions.send" />

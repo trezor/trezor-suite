@@ -3,7 +3,7 @@ import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { isDetoxTestBuild } from '@suite-native/config';
 import { DEVICE } from '@trezor/connect';
 
-export type ExperimentalFeature = 'suite-sync';
+export type ExperimentalFeature = 'suite-sync' | 'tron-view-only';
 
 export interface AppSettingsState {
     isOnboardingFinished: boolean;
@@ -13,6 +13,7 @@ export interface AppSettingsState {
     areTestnetsEnabled: boolean;
     shouldShowAutoEjectAlert: boolean;
     hasAutoEjectAlertBeenDisplayed: boolean;
+    isTronEnabled: boolean;
 }
 
 export type SettingsSliceRootState = {
@@ -29,6 +30,7 @@ export const appSettingsInitialState: AppSettingsState = {
     areTestnetsEnabled: isDetoxTestBuild(),
     shouldShowAutoEjectAlert: false,
     hasAutoEjectAlertBeenDisplayed: false,
+    isTronEnabled: false,
 };
 
 export const appSettingsPersistWhitelist: Array<keyof AppSettingsState> = [
@@ -38,6 +40,7 @@ export const appSettingsPersistWhitelist: Array<keyof AppSettingsState> = [
     'isFirmwareHashCheckEnabled',
     'areTestnetsEnabled',
     'hasAutoEjectAlertBeenDisplayed',
+    'isTronEnabled',
 ];
 
 export const appSettingsSlice = createSlice({
@@ -63,6 +66,9 @@ export const appSettingsSlice = createSlice({
         setHasAutoEjectAlertBeenDisplayed: (state, { payload }: PayloadAction<boolean>) => {
             state.hasAutoEjectAlertBeenDisplayed = payload;
         },
+        toggleIsTronEnabled: state => {
+            state.isTronEnabled = !state.isTronEnabled;
+        },
     },
     extraReducers: builder => {
         builder.addCase(DEVICE.CONNECT, state => {
@@ -85,6 +91,9 @@ export const selectAreTestnetsEnabled = (state: SettingsSliceRootState) =>
 export const selectHasAutoEjectAlertBeenDisplayed = (state: SettingsSliceRootState) =>
     state.appSettings.hasAutoEjectAlertBeenDisplayed;
 
+export const selectIsTronEnabled = (state: SettingsSliceRootState) =>
+    state.appSettings.isTronEnabled;
+
 /**
  * Determine if either FW revision or FW hash check is disabled
  * (both are controlled by the same setting, see setCheckFirmwareAuthenticityEnabled reducer)
@@ -100,5 +109,6 @@ export const {
     toggleAreTestnetsEnabled,
     setShouldShowAutoEjectAlert,
     setHasAutoEjectAlertBeenDisplayed,
+    toggleIsTronEnabled,
 } = appSettingsSlice.actions;
 export const appSettingsReducer = appSettingsSlice.reducer;

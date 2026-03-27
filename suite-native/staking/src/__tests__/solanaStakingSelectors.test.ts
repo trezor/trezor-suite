@@ -169,6 +169,7 @@ const getTestState = ({
         areTestnetsEnabled: false,
         shouldShowAutoEjectAlert: false,
         hasAutoEjectAlertBeenDisplayed: false,
+        isTronEnabled: false,
     },
 });
 

@@ -33,3 +33,4 @@ export * from './bigNumberUtils';
 export * from './feeUnitUtils';
 export * from './stellarTokens';
 export * from './tronUtils';
+export * from './viewOnlyUtils';
