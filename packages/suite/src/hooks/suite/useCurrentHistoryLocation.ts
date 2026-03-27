@@ -10,7 +10,7 @@ import { useSuiteServices } from '../../support/SuiteServicesProvider';
  *
  * Uses useSyncExternalStore to properly synchronize with the router history.
  */
-export const useLocation = (): RouterPath => {
+export const useCurrentHistoryLocation = (): RouterPath => {
     const { suiteRouterHistory } = useSuiteServices();
 
     return useSyncExternalStore(

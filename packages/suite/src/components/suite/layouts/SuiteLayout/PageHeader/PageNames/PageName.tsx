@@ -1,7 +1,7 @@
 import { Translation } from '@suite/intl';
 import { selectDeviceAccountForNetworkSymbolAndAccountTypeWithIndex } from '@suite-common/wallet-core';
 
-import { useLocation, useSelector } from 'src/hooks/suite';
+import { useCurrentHistoryLocation, useSelector } from 'src/hooks/suite';
 import {
     selectEffectiveRouteName,
     selectIsAccountTabPageWithLocation,
@@ -14,7 +14,7 @@ import { BasicName } from './BasicName';
 import { SettingsName } from './SettingsName';
 
 export const PageName = () => {
-    const location = useLocation();
+    const location = useCurrentHistoryLocation();
 
     const selectedAccount = useSelector(selectSelectedAccount);
     const effectiveRouteName = useSelector(state => selectEffectiveRouteName(state, location));
