@@ -59,6 +59,7 @@ export type EarnDepositsCardActiveItem =
           tokenSymbol: TokenSymbol;
           contractAddress: TokenAddress;
           accountKey: AccountKey;
+          accountLabel?: string;
           balance: string;
           fiatAmount: BaseCurrencyAmount;
           apy: number | null;

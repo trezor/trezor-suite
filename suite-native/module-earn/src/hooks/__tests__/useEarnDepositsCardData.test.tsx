@@ -167,6 +167,7 @@ describe('useEarnDepositsCardData', () => {
             tokenSymbol: 'USDC',
             contractAddress: testContractAddress,
             accountKey: 'usdc-account',
+            accountLabel: 'Ethereum #3',
             balance: '400',
             apy: 4,
         });

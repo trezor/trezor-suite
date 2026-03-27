@@ -13,7 +13,6 @@ import {
     Text,
     VStack,
 } from '@suite-native/atoms';
-import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
 import { CryptoIconWithNetwork, Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
@@ -71,18 +70,19 @@ const formatActiveItemBalance = (item: EarnDepositsCardActiveItem) => {
 const EarnActiveItemCard = ({ item, onPress }: EarnActiveItemCardProps) => {
     const { applyStyle } = useNativeStyles();
     const isStakingItem = item.type === 'staking';
+    const isStablecoinYieldItem = item.type === 'stablecoin-yield';
 
     const stakingApy = useStakingSelector(state =>
         isStakingItem ? selectAPYByAccountKey(state, item.accountKey) : null,
     );
 
     const apyValue = isStakingItem ? (stakingApy ?? item.apy) : item.apy;
-    const apyText = apyValue === null ? null : `${apyValue}% APY`;
+    const hasApy = apyValue != null;
     const symbol = isStakingItem ? item.symbol : item.networkSymbol;
     const contractAddress = isStakingItem ? undefined : item.contractAddress;
-    const secondaryDescription = isStakingItem
-        ? apyText
-        : getNetworkDisplaySymbolName(item.networkSymbol);
+    const secondaryDescription = isStablecoinYieldItem
+        ? item.accountLabel || getNetworkDisplaySymbolName(item.networkSymbol)
+        : null;
 
     return (
         <Card borderColor="borderElevation1" noPadding style={applyStyle(itemCardStyle)}>
@@ -97,33 +97,19 @@ const EarnActiveItemCard = ({ item, onPress }: EarnActiveItemCardProps) => {
 
                 <VStack spacing="sp2" style={applyStyle(contentStyle)}>
                     <Text>{item.title}</Text>
-                    {!isStakingItem && (
-                        <Text variant="body-sm" color="textSecondaryHighlight">
+                    {secondaryDescription && (
+                        <Text variant="body-sm" color="textSubdued">
                             {secondaryDescription}
-                        </Text>
-                    )}
-                    {isStakingItem && apyText !== null && (
-                        <Text variant="body-sm" color="textSecondaryHighlight">
-                            {apyText}
                         </Text>
                     )}
                 </VStack>
 
                 <VStack spacing="sp2" style={applyStyle(valuesStyle)}>
                     <Text variant="body-md">{formatActiveItemBalance(item)}</Text>
-                    {isStakingItem ? (
-                        <BaseCurrencyAmountFormatter
-                            value={item.fiatAmount}
-                            variant="body-sm"
-                            color="textSubdued"
-                            isDiscreetText={false}
-                        />
-                    ) : (
-                        apyText !== null && (
-                            <Text variant="body-sm" color="textSecondaryHighlight">
-                                {apyText}
-                            </Text>
-                        )
+                    {hasApy && (
+                        <Text variant="body-sm" color="textSubdued">
+                            <Translation id="earn.apyPercentage" values={{ apy: apyValue }} />
+                        </Text>
                     )}
                 </VStack>
 

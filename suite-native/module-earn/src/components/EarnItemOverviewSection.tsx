@@ -8,6 +8,7 @@ import {
 import { Badge, Box, BoxSkeleton, HStack, Text } from '@suite-native/atoms';
 import { NetworkDisplaySymbolNameFormatter } from '@suite-native/formatters';
 import { CryptoIconWithNetwork } from '@suite-native/icons';
+import { Translation } from '@suite-native/intl';
 import {
     selectAPYByAccountKey,
     selectAPYBySymbol,
@@ -125,7 +126,9 @@ export const EarnItemOverviewSection = (item: EarnPromoItem) => {
                         <Text
                             variant={accountKey ? 'body-sm' : 'body-md'}
                             color={accountKey ? 'textSubdued' : 'textDefault'}
-                        >{`${apyValue}% APY`}</Text>
+                        >
+                            <Translation id="earn.apyPercentage" values={{ apy: apyValue }} />
+                        </Text>
                     )}
                 </Box>
             )}
