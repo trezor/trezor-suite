@@ -4,16 +4,9 @@
     "references": [
         { "path": "../../suite-common/feedback" },
         { "path": "../atoms" },
-        { "path": "../icons" },
         { "path": "../intl" },
-        { "path": "../link" },
         { "path": "../navigation" },
-        { "path": "../services" },
         { "path": "../settings" },
-        {
-            "path": "../../packages/styles-native"
-        },
-        { "path": "../../packages/urls" },
-        { "path": "../../packages/utils" }
+        { "path": "../../packages/styles-native" }
     ]
 }

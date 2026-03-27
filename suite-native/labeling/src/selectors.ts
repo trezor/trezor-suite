@@ -5,7 +5,6 @@ import {
     type WithSuiteSyncAndDeviceState,
     getIsSuiteSyncLabelingActionEnabled,
     selectSuiteSyncAccountLabel as selectAccountLabelLocalFirst,
-    selectIsSuiteSyncFeatureAvailable,
     selectSuiteSyncInteraction,
 } from '@suite-common/suite-sync';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
@@ -24,19 +23,14 @@ export type CombinedLabelingState = SuiteSyncDataRootState &
 export const selectIsLabellingAllowed = (
     state: WithSuiteSyncAndDeviceState & SettingsSliceRootState & MessageSystemRootState,
 ) => {
-    const isSuiteSyncFeatureAvailable = selectIsSuiteSyncFeatureAvailable(state);
     const device = selectSelectedDevice(state);
 
-    if (isSuiteSyncFeatureAvailable) {
-        const suiteSyncInteraction = selectSuiteSyncInteraction(
-            state,
-            device?.state?.staticSessionId ?? null,
-        );
+    const suiteSyncInteraction = selectSuiteSyncInteraction(
+        state,
+        device?.state?.staticSessionId ?? null,
+    );
 
-        return getIsSuiteSyncLabelingActionEnabled(suiteSyncInteraction);
-    }
-
-    return false;
+    return getIsSuiteSyncLabelingActionEnabled(suiteSyncInteraction);
 };
 
 export const selectAccountLabel = (

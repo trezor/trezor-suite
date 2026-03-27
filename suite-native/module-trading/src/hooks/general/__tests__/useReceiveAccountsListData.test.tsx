@@ -20,6 +20,7 @@ import {
 describe('useReceiveAccountsListData', () => {
     const defaultPreloadedState = {
         device: {
+            devices: [],
             selectedDevice: {
                 state: {
                     staticSessionId: MOCK_ACCOUNT_DEVICE_SESSION_ID,
@@ -171,6 +172,7 @@ describe('useReceiveAccountsListData', () => {
         it('should not display not visible accounts', () => {
             const preloadedState = {
                 device: {
+                    devices: [],
                     selectedDevice: {
                         state: {
                             staticSessionId: MOCK_ACCOUNT_DEVICE_SESSION_ID,

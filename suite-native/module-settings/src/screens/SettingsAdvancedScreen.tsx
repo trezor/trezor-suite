@@ -6,7 +6,6 @@ import {
     selectIsNetworkReserveSettingsVisible,
 } from '@suite-common/wallet-core';
 import { VStack } from '@suite-native/atoms';
-import { ExperimentalFeaturesSettingsCard } from '@suite-native/experimental-features';
 import { Translation } from '@suite-native/intl';
 import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
 
@@ -34,7 +33,6 @@ export const SettingsAdvancedScreen = () => {
         >
             <VStack spacing="sp16">
                 {isBitcoinBackendsConfigVisible && <BitcoinBackendsCard />}
-                <ExperimentalFeaturesSettingsCard />
                 {isMevProtectionSettingsVisible && <ToggleMevProtectionCard />}
                 {isDustPhishingThresholdSettingsVisible && <DustPhishingThresholdCard />}
                 <ToggleFirmwareAuthenticityCheckCard />

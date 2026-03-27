@@ -104,8 +104,8 @@ export type SettingsStackParamList = {
     [SettingsStackRoutes.SettingsSupport]: undefined;
     [SettingsStackRoutes.SettingsAppLog]: undefined;
     [SettingsStackRoutes.SettingsCoinEnabling]: undefined;
-    [SettingsStackRoutes.SettingsSuiteSync]: undefined;
     [SettingsStackRoutes.SettingsAdvanced]: undefined;
+    [SettingsStackRoutes.SettingsExperimental]: undefined;
     [SettingsStackRoutes.TurnOffDeviceAuthenticityCheck]: undefined;
     [SettingsStackRoutes.TurnOffFirmwareAuthenticityCheck]: undefined;
     [SettingsStackRoutes.BitcoinBackends]: undefined;

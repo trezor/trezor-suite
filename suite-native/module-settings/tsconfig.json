@@ -42,7 +42,6 @@
         { "path": "../device" },
         { "path": "../device-manager" },
         { "path": "../discovery" },
-        { "path": "../experimental-features" },
         { "path": "../forms" },
         { "path": "../helpers" },
         { "path": "../icons" },

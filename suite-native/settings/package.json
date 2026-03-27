@@ -12,7 +12,6 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "2.11.2",
-        "@suite-common/redux-utils": "workspace:*",
         "@suite-native/config": "workspace:*",
         "@trezor/connect": "workspace:*",
         "react": "19.2.4"
