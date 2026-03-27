@@ -1,7 +1,9 @@
 import { type ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
+import { shouldDisplayExportBip329Labels } from '@suite-common/bip329';
 import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
+import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { type NetworkSymbol, networks } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -22,6 +24,7 @@ import {
 } from '@suite-native/navigation';
 
 import { AccountRenameButton } from '../components/AccountRenameButton';
+import { AccountSettingsExportBip329Card } from '../components/AccountSettingsExportBip329Card';
 import { AccountSettingsRemoveCoinButton } from '../components/AccountSettingsRemoveCoinButton';
 import { AccountSettingsShowXpubButton } from '../components/AccountSettingsShowXpubButton';
 
@@ -71,7 +74,13 @@ export const AccountSettingsScreen = ({
         selectIsAccountUtxoBased(state, accountKey),
     );
 
+    const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
     if (!account) return null;
+
+    const shouldDisplayExport = shouldDisplayExportBip329Labels({
+        account,
+        isSuiteSyncEnabled,
+    });
 
     return (
         <Screen
@@ -83,26 +92,35 @@ export const AccountSettingsScreen = ({
             }
         >
             <Box flex={1} justifyContent="space-between">
-                <Card>
-                    <VStack spacing="sp4">
-                        <AccountDetailSettingsRow
-                            title={
-                                <Translation id="moduleAccountManagement.accountSettingsScreen.coin" />
-                            }
-                        >
-                            <CryptoNameWithIcon symbol={account.symbol} />
-                        </AccountDetailSettingsRow>
-                        {formattedAccountType && (
+                <VStack spacing="sp12">
+                    <Card>
+                        <VStack spacing="sp4">
                             <AccountDetailSettingsRow
                                 title={
-                                    <Translation id="moduleAccountManagement.accountSettingsScreen.accountType" />
+                                    <Translation id="moduleAccountManagement.accountSettingsScreen.coin" />
                                 }
                             >
-                                <Text variant="body-sm">{formattedAccountType}</Text>
+                                <CryptoNameWithIcon symbol={account.symbol} />
                             </AccountDetailSettingsRow>
-                        )}
-                    </VStack>
-                </Card>
+                            {formattedAccountType && (
+                                <AccountDetailSettingsRow
+                                    title={
+                                        <Translation id="moduleAccountManagement.accountSettingsScreen.accountType" />
+                                    }
+                                >
+                                    <Text variant="body-sm">{formattedAccountType}</Text>
+                                </AccountDetailSettingsRow>
+                            )}
+                        </VStack>
+                    </Card>
+                    {shouldDisplayExport && (
+                        <AccountSettingsExportBip329Card
+                            accountDescriptor={account.descriptor}
+                            networkSymbol={account.symbol}
+                            deviceStaticSessionId={account.deviceState}
+                        />
+                    )}
+                </VStack>
                 <VStack spacing="sp16">
                     {isUtxoBasedAccount && (
                         <AccountSettingsShowXpubButton accountKey={account.key} />

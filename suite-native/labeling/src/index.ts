@@ -9,3 +9,4 @@ export type { CombinedLabelingState } from './selectors';
 export { AccountLabel } from './components/AccountLabel';
 export { useTurnOnSuiteSyncGuard } from './hooks/useTurnOnSuiteSyncGuard';
 export { useSuiteSyncErrorHandler } from './hooks/useSuiteSyncLabelErrorHandler';
+export { ExportBip329BottomSheet } from './components/ExportBip329BottomSheet';
