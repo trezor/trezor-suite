@@ -818,10 +818,12 @@ export const submitPassphrase = createThunk(
             device,
             passphrase,
             passphraseOnDevice,
+            requestId,
         }: {
             device: TrezorDevice;
             passphrase: string;
             passphraseOnDevice?: boolean;
+            requestId?: string;
         },
         { dispatch, getState },
     ) => {
@@ -847,6 +849,7 @@ export const submitPassphrase = createThunk(
                 save: true,
                 passphraseOnDevice,
             },
+            requestId,
         });
     },
 );

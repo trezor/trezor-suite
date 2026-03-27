@@ -33,6 +33,7 @@ export type ModalState =
           device: TrezorDevice | Device;
           windowType?: string;
           data?: UiRequestButtonData;
+          requestId?: string;
       }
     | {
           context: typeof MODAL_CONTEXT_DEVICE_CONFIRMATION;
@@ -85,6 +86,7 @@ const modalReducer = (state: State = initialState, action: AnyAction): State => 
                 device: action.payload.device,
                 windowType: action.type,
                 preserve: state.preserve,
+                requestId: action.requestId,
             };
         case UI_REQUEST.REQUEST_BUTTON:
             // THP ButtonRequests handled separately in the `thpReducer`
@@ -159,6 +161,9 @@ const modalReducer = (state: State = initialState, action: AnyAction): State => 
 
 export const selectHasActiveModal = (state: ModalRootState) =>
     state.modal.context !== MODAL_CONTEXT_NONE;
+
+export const selectModalRequestId = (state: ModalRootState) =>
+    state.modal.context === MODAL_CONTEXT_DEVICE ? state.modal.requestId : undefined;
 
 export const selectModalType = (state: ModalRootState) => {
     if ('payload' in state.modal) {
