@@ -270,9 +270,9 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         };
     }
 
-    public payloadToPrecomposed(): Promise<PrecomposeResultFinal | undefined> {
+    public payloadToPrecomposed(): PrecomposeResultFinal | undefined {
         // Suite uses precomposed result for transaction review modals
-        return Promise.resolve(undefined);
+        return undefined;
     }
 
     public checkDeviceCapability() {

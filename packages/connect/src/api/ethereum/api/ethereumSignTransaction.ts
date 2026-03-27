@@ -146,7 +146,7 @@ export default class EthereumSignTransaction extends AbstractMethod<
         return getNetworkLabel('Sign #NETWORK transaction', this.params.network);
     }
 
-    async payloadToPrecomposed() {
+    payloadToPrecomposed() {
         try {
             const feePerByte = new BigNumber(
                 this.payload.transaction.gasPrice || this.payload.transaction.maxFeePerGas!,
@@ -160,12 +160,13 @@ export default class EthereumSignTransaction extends AbstractMethod<
 
             // ERC-20 transfer
             // TODO: consider refactoring to shared util package together with `suite-common/wallet-constants/src/sendForm.ts`
-            if (this.payload.transaction.to && data?.startsWith('a9059cbb') && amount.eq(0)) {
-                const definitions = await getEthereumDefinitions({
-                    chainId: this.payload.transaction.chainId,
-                    contractAddress: this.payload.transaction.to.replace(/^0x/, ''),
-                });
-                const decoded = decodeEthereumDefinition(definitions);
+            if (
+                this.payload.transaction.to &&
+                data?.startsWith('a9059cbb') &&
+                amount.eq(0) &&
+                this.params.definitions
+            ) {
+                const decoded = decodeEthereumDefinition(this.params.definitions);
                 if (decoded.token) {
                     recipient = '0x' + data.slice(32, 72);
                     amount = new BigNumber(data.slice(72, 136), 16);
@@ -224,8 +225,6 @@ export default class EthereumSignTransaction extends AbstractMethod<
         } catch (e) {
             // Don't throw errors from this method
             console.error('Error in payloadToPrecomposed', e);
-
-            return Promise.resolve(undefined);
         }
     }
 
