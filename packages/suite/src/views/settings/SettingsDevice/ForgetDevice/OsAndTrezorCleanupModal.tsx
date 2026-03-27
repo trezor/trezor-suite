@@ -2,12 +2,11 @@ import { useState } from 'react';
 
 import { Translation } from '@suite/intl';
 import { Button, Column, Modal } from '@trezor/components';
+import { StepCard } from '@trezor/product-components';
 
 import { openSystemSettingsThunk } from 'src/actions/bluetooth/openSystemSettingsThunk';
 import { TrezorLink } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
-
-import { StepCard } from '../WipeDevice/WipeDeviceModal';
 
 export const OsAndTrezorCleanupModal = ({
     onCancel,
