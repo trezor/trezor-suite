@@ -4,9 +4,8 @@ import { type NetworkSymbol, type NetworkType } from '@suite-common/wallet-confi
 import { AnimatedPressable, Card, HStack, Text, VStack } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Icon } from '@suite-native/icons';
-import { useTranslate } from '@suite-native/intl';
 
-import { getFeeLabelTranslationId } from './feesLabelUtils';
+import { FeeLabelTranslation } from './FeeLabelTranslation';
 
 export type FeeSummaryCardProps = {
     fee: string;
@@ -24,41 +23,38 @@ export const FeeSummaryCard = ({
     areFeesLoading,
     onPress,
     testID,
-}: FeeSummaryCardProps) => {
-    const { translate } = useTranslate();
-    const labelKey = getFeeLabelTranslationId(networkType);
-
-    return (
-        <AnimatedPressable exiting={FadeOut} entering={FadeIn} onPress={onPress} testID={testID}>
-            <Card>
-                <HStack justifyContent="space-between" alignItems="center">
-                    <VStack spacing="sp4">
-                        <Text variant="body-sm-strong">{translate(labelKey)}</Text>
+}: FeeSummaryCardProps) => (
+    <AnimatedPressable exiting={FadeOut} entering={FadeIn} onPress={onPress} testID={testID}>
+        <Card>
+            <HStack justifyContent="space-between" alignItems="center">
+                <VStack spacing="sp4">
+                    <Text variant="body-sm-strong">
+                        <FeeLabelTranslation networkType={networkType} />
+                    </Text>
+                </VStack>
+                <HStack alignItems="center" spacing="sp8">
+                    <VStack alignItems="flex-end" spacing="sp2">
+                        <CryptoAmountFormatter
+                            variant="body-sm-strong"
+                            color="textDefault"
+                            value={fee}
+                            symbol={symbol}
+                            isBalance={false}
+                            isLoading={areFeesLoading}
+                            isDiscreetText={false}
+                        />
+                        <CryptoToFiatAmountFormatter
+                            variant="body-xs"
+                            color="textSubdued"
+                            value={fee}
+                            symbol={symbol}
+                            isLoading={areFeesLoading}
+                            isDiscreetText={false}
+                        />
                     </VStack>
-                    <HStack alignItems="center" spacing="sp8">
-                        <VStack alignItems="flex-end" spacing="sp2">
-                            <CryptoAmountFormatter
-                                variant="body-sm-strong"
-                                color="textDefault"
-                                value={fee}
-                                symbol={symbol}
-                                isBalance={false}
-                                isLoading={areFeesLoading}
-                                isDiscreetText={false}
-                            />
-                            <CryptoToFiatAmountFormatter
-                                variant="body-xs"
-                                color="textSubdued"
-                                value={fee}
-                                symbol={symbol}
-                                isLoading={areFeesLoading}
-                                isDiscreetText={false}
-                            />
-                        </VStack>
-                        <Icon name="caretDown" size="medium" color="iconSubdued" />
-                    </HStack>
+                    <Icon name="caretDown" size="medium" color="iconSubdued" />
                 </HStack>
-            </Card>
-        </AnimatedPressable>
-    );
-};
+            </HStack>
+        </Card>
+    </AnimatedPressable>
+);

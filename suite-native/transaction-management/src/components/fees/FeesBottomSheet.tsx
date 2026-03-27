@@ -19,8 +19,8 @@ import { Form, useFormState } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 
 import { CustomFeeTabContent } from './CustomFee/CustomFeeTabContent';
+import { FeeLabelTranslation } from './FeeLabelTranslation';
 import { FeeOptionsList } from './FeeOptionList/FeeOptionsList';
-import { getFeeLabelTranslationId } from './feesLabelUtils';
 import { type FeesFormType, type FeesFormValues } from '../../feesFormSchema';
 import { type CustomFeeParams } from '../../hooks';
 
@@ -119,7 +119,6 @@ export const FeesBottomSheet = ({
         form.reset(snapshotRef.current);
     }, [confirmedRef, form, snapshotRef, showCustomTab]);
 
-    const titleKey = getFeeLabelTranslationId(networkType);
     const confirmButtonTranslationId =
         activeTab === 'custom'
             ? 'transactionManagement.fees.custom.bottomSheet.confirmButton'
@@ -130,7 +129,7 @@ export const FeesBottomSheet = ({
             ref={ref}
             onClose={handleDismiss}
             onDismiss={handleDismiss}
-            title={<Translation id={titleKey} />}
+            title={<FeeLabelTranslation networkType={networkType} />}
             subtitle={<Translation id="transactionManagement.fees.description.body" />}
             isCloseDisplayed
             bottomSheetCustomProps={{
