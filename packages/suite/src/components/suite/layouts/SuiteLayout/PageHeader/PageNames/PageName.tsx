@@ -1,14 +1,9 @@
 import { Translation } from '@suite/intl';
-import {
-    resolveEffectiveBackgroundRouteName,
-    selectIsAccountTabPage,
-    selectRoute,
-} from '@suite/router';
+import { selectEffectiveRouteName, selectIsAccountTabPageWithLocation } from '@suite/router';
 import { selectDeviceAccountForNetworkSymbolAndAccountTypeWithIndex } from '@suite-common/wallet-core';
 
-import { useSelector } from 'src/hooks/suite';
+import { useCurrentHistoryLocation, useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { useSuiteServices } from 'src/support/SuiteServicesProvider';
 
 import { AccountName } from './AccountName/AccountName';
 import { AccountSubpageName } from './AccountName/AccountSubpageName';
@@ -16,14 +11,13 @@ import { BasicName } from './BasicName';
 import { SettingsName } from './SettingsName';
 
 export const PageName = () => {
-    const route = useSelector(selectRoute);
-    const { suiteRouterHistory } = useSuiteServices();
-    const currentRoute = resolveEffectiveBackgroundRouteName(
-        route,
-        suiteRouterHistory.getLocation(),
-    );
+    const location = useCurrentHistoryLocation();
+
     const selectedAccount = useSelector(selectSelectedAccount);
-    const isAccountTabPage = useSelector(selectIsAccountTabPage);
+    const effectiveRouteName = useSelector(state => selectEffectiveRouteName(state, location));
+    const isAccountTabPage = useSelector(state =>
+        selectIsAccountTabPageWithLocation(state, location),
+    );
     const { params } = useSelector(state => state.wallet.selectedAccount);
 
     const fallbackAccount = useSelector(state =>
@@ -38,11 +32,11 @@ export const PageName = () => {
     // TODO: does not work properly with foreground apps, e.g. FW update,
     // as the `route` does not indicate the current page
     // (however location.pathname does)
-    if (currentRoute?.includes('settings')) {
+    if (effectiveRouteName?.includes('settings')) {
         return <SettingsName />;
     }
 
-    if (currentRoute?.includes('earn')) {
+    if (effectiveRouteName?.includes('earn')) {
         return (
             <BasicName>
                 <Translation id="TR_EARN" />

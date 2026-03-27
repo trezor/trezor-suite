@@ -5,7 +5,13 @@ import { type ModalRootState, selectHasActiveModal } from '@suite/modal';
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 
 import { type AnchorType } from './anchors';
-import { type RouterPath, type RouterPathOptional } from './router';
+import {
+    type HashString,
+    type PathString,
+    type RouterPath,
+    type RouterPathOptional,
+    resolveEffectiveBackgroundRouteName,
+} from './router';
 import { type RouterAppWithParams, type SettingsBackRoute } from './routes';
 
 const ACCOUNT_TABS = [
@@ -115,3 +121,35 @@ export type RouterAction =
           payload: AnchorType | undefined;
       }
     | ReturnType<typeof routerAppChanged>;
+
+/**
+ * Selector that determines if the effective background route is an account tab page.
+ * Use this when foreground apps (like switch-device modal) are open and the Redux route
+ * doesn't reflect the actual background page.
+ *
+ * @param location - The current browser location from suiteRouterHistory.getLocation()
+ */
+export const selectIsAccountTabPageWithLocation = (
+    state: RouterRootState,
+    location: { pathname: PathString; hash?: HashString },
+) => {
+    const route = selectRoute(state);
+    const effectiveRouteName = resolveEffectiveBackgroundRouteName(route, location);
+
+    return effectiveRouteName !== undefined && ACCOUNT_TABS.includes(effectiveRouteName);
+};
+
+/**
+ * Selector that returns the effective route name, accounting for foreground apps.
+ * When a foreground app is open, returns the background route name from the browser URL.
+ *
+ * @param location - The current browser location from suiteRouterHistory.getLocation()
+ */
+export const selectEffectiveRouteName = (
+    state: RouterRootState,
+    location: { pathname: PathString; hash?: HashString },
+) => {
+    const route = selectRoute(state);
+
+    return resolveEffectiveBackgroundRouteName(route, location);
+};

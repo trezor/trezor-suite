@@ -18,6 +18,7 @@ export { useDebugLanguageShortcut } from './useDebugLanguageShortcut';
 export { useDisplayMode } from './useDisplayMode';
 export { useDefaultAccountLabel } from './useDefaultAccountLabel';
 export { useFirmwareInstallationProgressCheck } from './useFirmwareInstallationProgressCheck';
+export { useCurrentHistoryLocation } from './useCurrentHistoryLocation';
 
 // replaced in suite-native
 export { useLocales } from 'src/hooks/suite/useLocales';
