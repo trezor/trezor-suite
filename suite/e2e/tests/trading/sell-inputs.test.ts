@@ -64,7 +64,7 @@ test.describe('Trading - Sell inputs', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, 
             await expect.soft(tradingPage.inputs.bottomText).toBeHidden();
         });
 
-        // does not fork until https://github.com/trezor/trezor-suite/issues/26163 is resolved
+        // BUG https://github.com/trezor/trezor-suite/issues/26163
         // await test.step('Try all % inputs for Bitcoin', async () => {
         //     await tradingPage.inputs.selectFiatCurrency('eur');
         //     for (const percentage of [10, 25, 50]) {
