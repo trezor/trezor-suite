@@ -15,6 +15,7 @@ import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
 import { selectAccounts, selectRawNetworkFeeInfo } from '@suite-common/wallet-core';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
 import { getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
+import { BigNumber } from '@trezor/utils';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useCompose } from 'src/hooks/wallet/form/useCompose';
@@ -59,7 +60,6 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
     const initState = useMemo(() => ({ account, network, feeInfo }), [account, network, feeInfo]);
     const outputAddress = values?.outputs?.[0].address;
     const [state, setState] = useState<TradingUseComposeTransactionStateProps>(initState);
-    const [shouldUpdateMaxAmount, setShouldUpdateMaxAmount] = useState(true);
 
     // sub-hook, Composing transaction
     const {
@@ -150,16 +150,20 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
         }
 
         if (composed.type === 'final' || composed.type === 'nonfinal') {
-            if (typeof setMaxOutputId === 'number' && composed.max && shouldUpdateMaxAmount) {
-                setShouldUpdateMaxAmount(false);
-                setShowReserveBanner(true);
-                setValue(TRADING_FORM_OUTPUT_AMOUNT, composed.max, {
-                    shouldValidate: true,
-                    shouldDirty: true,
-                });
+            const currentOutputAmount = values.outputs?.[0]?.amount;
+
+            if (typeof setMaxOutputId === 'number' && composed.max) {
+                const currentBN = new BigNumber(currentOutputAmount || '0');
+                const composedMaxBN = new BigNumber(composed.max);
+
+                if (!currentBN.isEqualTo(composedMaxBN)) {
+                    setShowReserveBanner(true);
+                    setValue(TRADING_FORM_OUTPUT_AMOUNT, composed.max, {
+                        shouldValidate: true,
+                        shouldDirty: true,
+                    });
+                }
                 clearErrors(TRADING_FORM_OUTPUT_AMOUNT);
-            } else {
-                setShouldUpdateMaxAmount(true);
             }
 
             dispatch(
