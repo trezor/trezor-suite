@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { useFormDraft } from '@suite-common/wallet-core';
 import type { FormState } from '@suite-common/wallet-types';
-import { AnimatedCard, Divider, InlineAlertBox } from '@suite-native/atoms';
+import { Card, InlineAlertBox } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { NetworkAndAccountCard } from '@suite-native/trading-atoms';
 import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
@@ -48,8 +48,7 @@ export const ExchangeApprovalDetails = ({ exchange }: ExchangeApprovalDetailsPro
                 <LimitPicker />
             </NetworkAndAccountCard>
 
-            <AnimatedCard noPadding>
-                <Divider />
+            <Card noPadding>
                 <FeeSelector
                     accountKey={account.key}
                     updateThunk={updateTradingSelectedFeeLevelThunk}
@@ -58,7 +57,7 @@ export const ExchangeApprovalDetails = ({ exchange }: ExchangeApprovalDetailsPro
                     formDraft={formDraft}
                     formDraftKey={formDraftKey}
                 />
-            </AnimatedCard>
+            </Card>
         </>
     );
 };
