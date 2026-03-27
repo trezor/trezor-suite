@@ -114,6 +114,40 @@ describe('Testing trading reducer', () => {
         );
     });
 
+    it('sellThunks.handleRequestThunk.pending should clear payment methods and set isLoading to true', () => {
+        const store = configureMockStore({
+            extra: {},
+            reducer: combineReducers({
+                wallet: combineReducers({
+                    trading: tradingReducer,
+                }),
+            }),
+            preloadedState: {
+                wallet: {
+                    trading: {
+                        ...initialState,
+                        info: { paymentMethods: [{ value: 'creditCard', label: 'Credit Card' }] },
+                        sell: {
+                            ...sellInitialState,
+                            isLoading: false,
+                        },
+                    },
+                },
+            },
+        });
+
+        store.dispatch({ type: sellThunks.handleRequestThunk.pending.type });
+
+        expect(store.getState().wallet.trading.sell).toEqual(
+            expect.objectContaining({
+                isLoading: true,
+            }),
+        );
+        expect(store.getState().wallet.trading.info).toEqual(
+            expect.objectContaining({ paymentMethods: [] }),
+        );
+    });
+
     describe('action delegation', () => {
         let store: ReturnType<
             typeof configureMockStore<{ wallet: { trading: typeof initialState } }>
