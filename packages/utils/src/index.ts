@@ -18,6 +18,7 @@ export * from './comparison';
 export * from './convertTaprootXpub';
 export * from './countBytesInString';
 export * from './createCooldown';
+export * from './createDebounce';
 export * from './createDeferred';
 export * from './createDeferredManager';
 export * from './createLazy';

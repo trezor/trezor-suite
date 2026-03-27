@@ -1,19 +1,13 @@
 import { createThunk } from '@suite-common/redux-utils';
-import {
-    type NetworkSymbol,
-    getNetworkOptional,
-    isNetworkSymbol,
-} from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetworkOptional } from '@suite-common/wallet-config';
 import {
     blockchainActions,
     fetchAndUpdateAccountThunk,
     selectAccountsSymbols,
-    selectDeviceAccountByDescriptorAndNetworkSymbol,
     selectDeviceAccountsByNetworkSymbol,
     subscribeBlockchainThunk,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { type BlockchainNotification } from '@trezor/connect';
 
 const BLOCKCHAIN_MODULE_PREFIX = '@suite-native/blockchain';
 
@@ -80,30 +74,5 @@ export const onBlockchainConnectThunk = createThunk(
         // update accounts for connected network
         await dispatch(syncAccountsWithBlockchainThunk({ symbol: network.symbol }));
         dispatch(blockchainActions.connected(network.symbol));
-    },
-);
-
-export const onBlockchainNotificationThunk = createThunk(
-    `${BLOCKCHAIN_MODULE_PREFIX}/onNotificationThunk`,
-    (payload: BlockchainNotification, { dispatch, getState }) => {
-        const { descriptor } = payload.notification;
-        const symbol = payload.coin.shortcut.toLowerCase();
-        if (!isNetworkSymbol(symbol)) {
-            return;
-        }
-
-        const account = selectDeviceAccountByDescriptorAndNetworkSymbol(
-            getState(),
-            descriptor,
-            symbol,
-        );
-
-        if (!account) return;
-        if (!shouldRefetchAccount({ accountKey: account.key })) return;
-
-        // Sometimes we randomly get notifications for all transactions in account at once, which would trigger lot of fetches.
-        // We are throttling per account, we don't want to fetch account too often to save resources.
-        dispatch(fetchAndUpdateAccountThunk({ accountKey: account.key }));
-        accountLastFetchTime[account.key] = Date.now();
     },
 );

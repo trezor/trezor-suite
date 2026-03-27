@@ -1,5 +1,5 @@
 import { createMiddleware } from '@suite-common/redux-utils';
-import { isNetworkSymbol } from '@suite-common/wallet-config';
+import { onBlockchainNotificationThunk } from '@suite-common/wallet-core';
 import {
     type TransactionsRootState,
     blockchainActions,
@@ -10,11 +10,7 @@ import {
 import { BLOCKCHAIN as TREZOR_CONNECT_BLOCKCHAIN_ACTIONS } from '@trezor/connect';
 import { typedObjectKeys } from '@trezor/utils';
 
-import {
-    onBlockchainConnectThunk,
-    onBlockchainNotificationThunk,
-    syncAccountsWithBlockchainThunk,
-} from './blockchainThunks';
+import { onBlockchainConnectThunk, syncAccountsWithBlockchainThunk } from './blockchainThunks';
 
 export const selectNetworksWithPendingTransactions = (state: TransactionsRootState) => {
     const pendingTransactions = selectAllPendingTransactions(state);
@@ -25,21 +21,15 @@ export const selectNetworksWithPendingTransactions = (state: TransactionsRootSta
 };
 
 // Be very careful when adding new stuff here, it could affect performance a lot on mobile
-export const blockchainMiddleware = createMiddleware((action, { dispatch, next, getState }) => {
+export const blockchainMiddleware = createMiddleware((action, { dispatch, next }) => {
     switch (action.type) {
         case TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.CONNECT:
             dispatch(onBlockchainConnectThunk({ symbol: action.payload.coin.shortcut }));
 
             break;
         case TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.BLOCK: {
-            const networksWithPendingTransactions =
-                selectNetworksWithPendingTransactions(getState());
             const symbol = action.payload.coin.shortcut.toLowerCase();
-
-            if (isNetworkSymbol(symbol) && networksWithPendingTransactions.includes(symbol)) {
-                dispatch(syncAccountsWithBlockchainThunk({ symbol }));
-            }
-
+            dispatch(syncAccountsWithBlockchainThunk({ symbol }));
             break;
         }
         case TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.NOTIFICATION:

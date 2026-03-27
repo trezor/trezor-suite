@@ -36,7 +36,7 @@ export type BlockchainState = BlockchainNetworks;
 
 const initialStatePredefined: Partial<BlockchainState> = {};
 
-export type BlockchainRootState = { wallet: { blockchain: BlockchainState } };
+export type BlockchainRootState = { wallet: { blockchain: { coins: BlockchainState; should } } };
 
 // fill initial state, those values will be changed by BLOCKCHAIN.UPDATE_FEE action
 export const blockchainInitialState: BlockchainNetworks = networksCollection.reduce(

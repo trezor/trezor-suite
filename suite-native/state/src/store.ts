@@ -21,6 +21,7 @@ import { blockchainMiddleware } from '@suite-native/blockchain';
 import { deviceConnectionMiddleware, prepareDeviceMiddleware } from '@suite-native/device';
 import { prepareDiscoveryMiddleware } from '@suite-native/discovery';
 import { messageSystemMiddleware } from '@suite-native/message-system';
+import { notificationsMiddleware } from '@suite-native/notifications';
 import { sendFormMiddleware } from '@suite-native/send';
 import { createEnsureEncryptionKey, createMMKVStorage } from '@suite-native/storage';
 import {
@@ -63,6 +64,7 @@ const getMiddlewares = (getExtra: () => ExtraDependencies | null) => {
     const middlewares: Middleware[] = [
         messageSystemMiddleware,
         blockchainMiddleware,
+        notificationsMiddleware,
         prepareFiatRatesMiddleware(getExtra),
         prepareDeviceMiddleware(getExtra),
         prepareDiscoveryMiddleware(getExtra),
@@ -77,7 +79,7 @@ const getMiddlewares = (getExtra: () => ExtraDependencies | null) => {
     if (__DEV__) {
         // eslint-disable-next-line import/no-extraneous-dependencies
         const { rozeniteDevToolsEnhancer } = require('@rozenite/redux-devtools-plugin');
-        enhancers.push(rozeniteDevToolsEnhancer());
+        enhancers.push(rozeniteDevToolsEnhancer({ maxAge: 30 }));
 
         if (ENABLE_REDUX_LOGGER) {
             const { createLogger } = require('redux-logger');

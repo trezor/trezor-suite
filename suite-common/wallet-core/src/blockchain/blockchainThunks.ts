@@ -29,16 +29,21 @@ import TrezorConnect, {
     type BlockchainNotification,
 } from '@trezor/connect';
 import type { TimerId } from '@trezor/type-utils';
-import { arrayDistinct, arrayToDictionary } from '@trezor/utils';
+import { arrayDistinct, arrayToDictionary, createDebounce } from '@trezor/utils';
 
 import { BLOCKCHAIN_MODULE_PREFIX, blockchainActions } from './blockchainActions';
 import { selectBlockchainState, selectNetworkBlockchainInfo } from './blockchainReducer';
-import { selectAccounts } from '../accounts/accountsSelectors';
+import {
+    selectAccounts,
+    selectDeviceAccountByDescriptorAndNetworkSymbol,
+} from '../accounts/accountsSelectors';
 import { fetchAndUpdateAccountThunk } from '../accounts/accountsThunks';
 import { preloadFeeInfoThunk } from '../fees/feesThunks';
 import { selectBitcoinAmountUnit } from '../settings/walletSettingsReducer';
 
 export const DEFAULT_ACCOUNT_SYNC_INTERVAL = 60 * 1000; // 1 minute
+
+const debounceSyncBySymbol: Partial<Record<NetworkSymbol, ReturnType<typeof createDebounce>>> = {};
 
 const CUSTOM_ACCOUNT_SYNC_INTERVALS: Partial<Record<NetworkSymbol, number>> = {
     bsc: DEFAULT_ACCOUNT_SYNC_INTERVAL / 1.5,
@@ -311,13 +316,13 @@ export const onBlockchainNotificationThunk = createThunk(
             return;
         }
 
-        const networkAccounts = findAccountsByNetwork(symbol, selectAccounts(getState()));
-        const accounts = findAccountsByDescriptor(descriptor, networkAccounts);
-        if (!accounts.length) {
-            return;
-        }
+        const account = selectDeviceAccountByDescriptorAndNetworkSymbol(
+            getState(),
+            descriptor,
+            symbol,
+        );
 
-        const account = accounts[0];
+        if (!account) return;
 
         // ripple worker sends two notifications for the same tx (pending + confirmed/rejected)
         // dispatch only recv notifications
@@ -352,7 +357,8 @@ export const onBlockchainNotificationThunk = createThunk(
         // TODO: investigate more how to keep ripple pending tx until they are confirmed/rejected
         // xrpl.js doesn't send "pending" txs in history
         if (account.networkType !== 'ripple') {
-            dispatch(syncAccountsWithBlockchainThunk(symbol));
+            debounceSyncBySymbol[symbol] ??= createDebounce(500);
+            debounceSyncBySymbol[symbol](() => dispatch(syncAccountsWithBlockchainThunk(symbol)));
         }
     },
 );

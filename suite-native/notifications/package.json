@@ -1,0 +1,34 @@
+{
+    "name": "@suite-native/notifications",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@react-navigation/native": "7.1.18",
+        "@suite-common/redux-utils": "workspace:*",
+        "@suite-common/toast-notifications": "workspace:*",
+        "@suite-common/wallet-config": "workspace:*",
+        "@suite-common/wallet-core": "workspace:*",
+        "@suite-common/wallet-types": "workspace:*",
+        "@suite-native/atoms": "workspace:*",
+        "@suite-native/formatters": "workspace:*",
+        "@suite-native/icons": "workspace:*",
+        "@suite-native/intl": "workspace:*",
+        "@suite-native/navigation": "workspace:*",
+        "@suite-native/theme": "workspace:*",
+        "@suite-native/transactions": "workspace:*",
+        "@trezor/styles": "workspace:*",
+        "expo-notifications": "~55.0.0",
+        "react": "19.1.0",
+        "react-native": "0.81.4",
+        "react-native-gesture-handler": "2.29.0",
+        "react-native-reanimated": "~3.19.3",
+        "react-redux": "9.2.0"
+    }
+}

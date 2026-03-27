@@ -142,6 +142,7 @@ export const connectInitThunk = createThunk<void, ConnectInitHooks | void, void>
         });
 
         TrezorConnect.on(BLOCKCHAIN_EVENT, ({ event: _, ...action }) => {
+            console.log('TCL: action', action.type, action.payload.coin.shortcut);
             // dispatch event as action
             dispatch(action);
         });
