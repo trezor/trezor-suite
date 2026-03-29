@@ -4,6 +4,7 @@
     "references": [
         { "path": "../analytics" },
         { "path": "../bluetooth" },
+        { "path": "../calldata" },
         { "path": "../device" },
         { "path": "../fiat-services" },
         { "path": "../firmware" },
@@ -22,6 +23,9 @@
         { "path": "../wallet-constants" },
         { "path": "../wallet-types" },
         { "path": "../wallet-utils" },
+        {
+            "path": "../../packages/blockchain-link"
+        },
         {
             "path": "../../packages/blockchain-link-types"
         },

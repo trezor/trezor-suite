@@ -11452,6 +11452,7 @@ __metadata:
     "@suite-common/wallet-constants": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
+    "@trezor/blockchain-link": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/blockchain-link-utils": "workspace:*"
     "@trezor/connect": "workspace:*"
@@ -14951,7 +14952,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/blockchain-link-utils@workspace:packages/blockchain-link-utils"
   dependencies:
-    "@mobily/ts-belt": "npm:^3.13.1"
     "@noble/hashes": "npm:^2.0.1"
     "@solana/addresses": "npm:^2.3.0"
     "@solana/keys": "npm:^2.3.0"
