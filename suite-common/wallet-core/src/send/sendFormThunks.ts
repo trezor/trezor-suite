@@ -69,6 +69,10 @@ import {
     signSolanaSendFormTransactionThunk,
 } from './sendFormSolanaThunks';
 import {
+    composeTronTransactionFeeLevelsThunk,
+    signTronSendFormTransactionThunk,
+} from './sendFormTronThunks';
+import {
     type ComposeFeeLevelsError,
     type PushTransactionError,
     type SignTransactionError,
@@ -148,6 +152,7 @@ type CoinSpecificComposeResponse = ActionsFromAsyncThunk<
     | typeof composeEthereumTransactionFeeLevelsThunk
     | typeof composeCardanoTransactionFeeLevelsThunk
     | typeof composeSolanaTransactionFeeLevelsThunk
+    | typeof composeTronTransactionFeeLevelsThunk
 >;
 
 export const composeSendFormTransactionFeeLevelsThunk = createThunk<
@@ -198,7 +203,9 @@ export const composeSendFormTransactionFeeLevelsThunk = createThunk<
                 }),
             );
         } else if (networkType === 'tron') {
-            // TODO: Tron send not yet implemented
+            response = await dispatch(
+                composeTronTransactionFeeLevelsThunk({ formState, composeContext }),
+            );
         } else {
             return exhaustive(networkType);
         }
@@ -499,6 +506,7 @@ type CoinSpecificSignResponse = ActionsFromAsyncThunk<
     | typeof signEthereumSendFormTransactionThunk
     | typeof signRippleStellarSendFormTransactionThunk
     | typeof signSolanaSendFormTransactionThunk
+    | typeof signTronSendFormTransactionThunk
 >;
 
 type SignTransactionThunkParams = {
@@ -558,6 +566,8 @@ export const signTransactionThunk = createThunk<
                 response = await dispatch(
                     signRippleStellarSendFormTransactionThunk(thunkArguments),
                 );
+            } else if (networkType === 'tron') {
+                response = await dispatch(signTronSendFormTransactionThunk(thunkArguments));
             }
         }
 
