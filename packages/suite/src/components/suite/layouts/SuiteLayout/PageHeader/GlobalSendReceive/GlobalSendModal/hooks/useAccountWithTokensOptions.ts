@@ -69,7 +69,7 @@ export function useAccountWithTokensOptions({
         const networkAccounts = filterAccountsByNetworkSymbol(
             throttledAccounts,
             networkSymbolFilter,
-        ).filter(acc => acc.networkType !== 'tron');
+        );
 
         return networkAccounts
             .toSorted(function sortByFiatBalanceInDescOrder(accountA, accountB) {
