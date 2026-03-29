@@ -4,14 +4,14 @@ import {
     isNegativeTestCases,
     isNotIntegerTestCases,
     isZeroTestCases,
-} from '../../../fixtures/validation/evm/uint256.fixture';
+} from '../../../fixtures/validation/shared/uint256.fixture';
 import {
     exceedsUint256,
     hasBalance,
     isNegative,
     isNotInteger,
     isZero,
-} from '../../../validation/evm/uint256';
+} from '../../../validation/shared/uint256';
 
 describe('isNegative', () => {
     it.each(isNegativeTestCases)('$description', ({ input, expected }) => {

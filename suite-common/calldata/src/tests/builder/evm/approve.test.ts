@@ -2,7 +2,7 @@ import { BigNumber } from '@trezor/utils';
 
 import { buildApprove } from '../../../builder/evm/approve';
 import { asEvmAddress } from '../../../types/evm';
-import { UINT256_MAX } from '../../../validation/evm/uint256';
+import { UINT256_MAX } from '../../../validation/shared/uint256';
 
 const SPENDER = asEvmAddress('0x1231deb6f5749ef6ce6943a275a1d3e7486f4eae');
 const SENDER = asEvmAddress('0x9eA3721B5Bf3b64b4418c38B603154d2D597FAE3');

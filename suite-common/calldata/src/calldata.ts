@@ -3,6 +3,7 @@ import { buildDeposit } from './builder/evm/deposit';
 import { buildRedeem } from './builder/evm/redeem';
 import { buildTransfer } from './builder/evm/transfer';
 import { buildWithdraw } from './builder/evm/withdraw';
+import { buildTrc20Transfer } from './builder/tron/trc20/transfer';
 
 export const Calldata = {
     evm: {
@@ -14,6 +15,11 @@ export const Calldata = {
             deposit: buildDeposit,
             withdraw: buildWithdraw,
             redeem: buildRedeem,
+        },
+    },
+    tron: {
+        trc20: {
+            transfer: buildTrc20Transfer,
         },
     },
 } as const;

@@ -5,7 +5,7 @@ import { createEvmEncoder } from '../../encoder/evm';
 import { createPolicy } from '../../policy/createPolicy';
 import { type EvmAddress } from '../../types/evm';
 import { validateAddress } from '../../validation/evm/address';
-import { validateUint256 } from '../../validation/evm/uint256';
+import { validateUint256 } from '../../validation/shared/uint256';
 import { createBuilder } from '../createBuilder';
 import { createParam } from '../createParam';
 
