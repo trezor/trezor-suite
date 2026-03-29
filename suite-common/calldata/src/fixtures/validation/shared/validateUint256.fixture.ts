@@ -1,7 +1,7 @@
 import { BigNumber } from '@trezor/utils';
 
 import { type ValidationResult } from '../../../types/validation';
-import { UINT256_MAX } from '../../../validation/evm/uint256';
+import { UINT256_MAX } from '../../../validation/shared/uint256';
 
 interface ValidateUint256TestCase {
     description: string;
