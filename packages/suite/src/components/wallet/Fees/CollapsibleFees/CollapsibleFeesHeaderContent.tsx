@@ -4,6 +4,8 @@ import { type TypographyStyle } from '@trezor/theme';
 
 import { CollapsibleFeesHeader } from './CollapsibleFeesHeader';
 import { MaximumFee } from './MaximumFee';
+import { TronFee } from './TronFee/TronFee';
+import { useFeesContext } from '../context/FeesContext';
 import { type useTransactionMaxFee } from './hooks/useTransactionMaxFee';
 
 export type CollapsibleFeesHeaderContentProps = {
@@ -21,6 +23,8 @@ export const CollapsibleFeesHeaderContent = ({
     txMaxFee,
     isOpen,
 }: CollapsibleFeesHeaderContentProps) => {
+    const { networkType } = useFeesContext();
+
     const content = (
         <Row
             justifyContent="space-between"
@@ -29,7 +33,11 @@ export const CollapsibleFeesHeaderContent = ({
         >
             <CollapsibleFeesHeader label={label} typographyStyle={headerTypographyStyle} />
             <Row gap={16}>
-                <MaximumFee typographyStyle={headerTypographyStyle} txMaxFee={txMaxFee} />
+                {networkType === 'tron' ? (
+                    <TronFee typographyStyle={headerTypographyStyle} />
+                ) : (
+                    <MaximumFee typographyStyle={headerTypographyStyle} txMaxFee={txMaxFee} />
+                )}
                 {supportsAdjustableFees && (
                     <Collapsible.ToggleIcon iconName="caretDown" size={20} />
                 )}
