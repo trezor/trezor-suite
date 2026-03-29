@@ -5333,6 +5333,14 @@ export const messages = defineMessages({
         defaultMessage:
             'Used for smart contract actions like sending tokens. If you run out, TRX is burned as a network fee. Refills within 24 hours.',
     },
+    TR_TRON_FEE_BANDWIDTH: {
+        id: 'TR_TRON_FEE_BANDWIDTH',
+        defaultMessage: '{count} bandwidth',
+    },
+    TR_TRON_FEE_ENERGY: {
+        id: 'TR_TRON_FEE_ENERGY',
+        defaultMessage: '{count} energy',
+    },
     TR_EXPERIMENTAL_TRON_VIEW_ONLY: {
         id: 'TR_EXPERIMENTAL_TRON_VIEW_ONLY',
         defaultMessage: 'Tron View-Only (Beta)',

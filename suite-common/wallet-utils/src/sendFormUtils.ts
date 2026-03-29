@@ -289,7 +289,7 @@ export const isLowAnonymityWarning = (error?: Merge<FieldError, FieldErrorsImpl<
     error?.amount?.type === COMPOSE_ERROR_TYPES.ANONYMITY;
 
 export const getFee = (networkType: NetworkType, tx: GeneralPrecomposedTransactionFinal) => {
-    if (networkType === 'solana') {
+    if (networkType === 'solana' || networkType === 'tron') {
         return tx.fee;
     }
 

@@ -12,7 +12,7 @@ import {
 } from './CollapsibleFeesHeaderContent';
 import { CustomFee } from './CustomFee/CustomFee';
 import { StandardFee } from './StandardFee/StandardFee';
-import { FeesContext, type FeesContextType } from '../context/FeesContext';
+import { FeesContext, type FeesContextType, type TronResources } from '../context/FeesContext';
 import { useTransactionMaxFee } from './hooks/useTransactionMaxFee';
 
 export type CollapsibleFeesProps = {
@@ -20,6 +20,7 @@ export type CollapsibleFeesProps = {
     networkType: NetworkType;
     rbfForm?: boolean;
     isOpen?: boolean;
+    tronResources?: TronResources;
 } & Pick<FeesContextType, 'feeInfo' | 'composedLevels' | 'changeFeeLevel'> &
     Omit<CollapsibleFeesHeaderContentProps, 'supportsAdjustableFees' | 'txMaxFee' | 'isOpen'>;
 
@@ -33,12 +34,13 @@ export function CollapsibleFees({
     rbfForm,
     headerTypographyStyle = 'body-md',
     isOpen,
+    tronResources,
 }: CollapsibleFeesProps) {
     const selectedFee = useWatch<FormState, 'selectedFee'>({
         name: 'selectedFee',
         defaultValue: 'normal',
     });
-    const supportsAdjustableFees = networkType !== 'solana';
+    const supportsAdjustableFees = networkType !== 'solana' && networkType !== 'tron';
     const isCustomFee = supportsAdjustableFees && selectedFee === 'custom';
 
     // when fees are loading, feeInfo.levels = [], but CustomFee requires at least the 'normal' level to have some default
@@ -67,6 +69,7 @@ export function CollapsibleFees({
                 changeFeeLevel,
                 selectedFeeLevel,
                 composedLevels,
+                tronResources,
             }}
         >
             <Collapsible gap={12} isOpen={isOpen} data-testid="@wallet/fees/collapsible-fees">
