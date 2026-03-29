@@ -86,6 +86,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     const recipientId = outputId + 1;
     const label = watch(`outputs.${outputId}.label`, '');
     const address = watch(inputName);
+    const selectedToken = watch(`outputs.${outputId}.token`);
     const options = getDefaultValue('options', []);
     const broadcastEnabled = options.includes('broadcast');
     const isOnline = useSelector(state => state.suite.online);
@@ -98,6 +99,12 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     useEffect(() => {
         setIsExternalAddressCheckWarningDismissed(false);
     }, [address]);
+
+    useEffect(() => {
+        if (networkType === 'tron' && address) {
+            trigger(inputName);
+        }
+    }, [selectedToken, networkType, inputName, trigger, address]);
 
     const handleQrClick = useCallback(async () => {
         const uri = await dispatch(openDeferredModal({ type: 'qr-reader' }));
@@ -376,8 +383,11 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                     }
                 }
             },
-            rippleToSelf: (value: string) => {
-                if (networkType === 'ripple' && value === descriptor) {
+            noSelfTransfer: (value: string) => {
+                if (
+                    (networkType === 'ripple' || (networkType === 'tron' && !selectedToken)) &&
+                    value === descriptor
+                ) {
                     return translationString('RECIPIENT_CANNOT_SEND_TO_MYSELF');
                 }
             },
