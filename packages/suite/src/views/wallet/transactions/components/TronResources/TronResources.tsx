@@ -15,7 +15,17 @@ export const TronResources = ({ account }: TronResourcesProps) => {
 
     if (!tronResources) return null;
 
-    const { availableBandwidth, totalBandwidth, availableEnergy, totalEnergy } = tronResources;
+    const {
+        availableStakedBandwidth,
+        availableFreeBandwidth,
+        totalStakedBandwidth,
+        totalFreeBandwidth,
+        availableEnergy,
+        totalEnergy,
+    } = tronResources;
+
+    const availableBandwidth = availableStakedBandwidth + availableFreeBandwidth;
+    const totalBandwidth = totalStakedBandwidth + totalFreeBandwidth;
 
     return (
         <Card>
