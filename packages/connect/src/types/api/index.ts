@@ -89,6 +89,7 @@ import type { tezosGetPublicKey } from './tezosGetPublicKey';
 import type { tezosSignTransaction } from './tezosSignTransaction';
 import type { thpGetCredentials } from './thpGetCredentials';
 import type { thpRemoveCredentials } from './thpRemoveCredentials';
+import type { tronComposeTransaction } from './tronComposeTransaction';
 import type { tronGetAddress } from './tronGetAddress';
 import type { tronSignTransaction } from './tronSignTransaction';
 import type { uiResponse } from './uiResponse';
@@ -418,6 +419,8 @@ export const TrezorConnectTron = Type.Object({
 
     // https://connect.trezor.io/9/methods/tron/tronSignTransaction/
     tronSignTransaction: Type.Unsafe<typeof tronSignTransaction>(),
+
+    tronComposeTransaction: Type.Unsafe<typeof tronComposeTransaction>(),
 });
 export type TrezorConnectTron = Static<typeof TrezorConnectTron>;
 

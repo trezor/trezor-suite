@@ -24,8 +24,10 @@ export interface TronChainExtraData {
     votes?: TronVoteExtra[];
 }
 export interface TronAccountExtraData {
-    availableBandwidth: number;
-    totalBandwidth: number;
+    availableStakedBandwidth: number;
+    totalStakedBandwidth: number;
+    availableFreeBandwidth: number;
+    totalFreeBandwidth: number;
     availableEnergy: number;
     totalEnergy: number;
 }
