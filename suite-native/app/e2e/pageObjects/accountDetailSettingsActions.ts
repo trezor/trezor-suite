@@ -4,8 +4,7 @@ class AccountDetailSettingsActions {
         await element(by.id('@account-detail/settings/edit-button')).tap();
 
         const accountNameInput = element(by.id('@account-detail/settings/account-rename/input'));
-        await accountNameInput.clearText();
-        await accountNameInput.typeText(newAccountName);
+        await accountNameInput.replaceText(newAccountName);
 
         const confirmButton = element(
             by.id('@account-detail/settings/account-rename/confirm-button'),

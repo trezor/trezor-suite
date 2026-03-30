@@ -4,16 +4,9 @@ import { isEqual, omit } from 'lodash';
 
 import {
     BaseEvoluClient,
-    accountSeed,
-    buildExpectedAccount,
-    buildExpectedAddress,
-    buildExpectedOutput,
     checkEvoluRelayServerRunning,
-    createAddressSeed,
-    outputSeed,
-    ownerSecret,
+    immuneFixtures,
     seedQuotaManagerData,
-    walletSeed,
     wipeAndRestartEvoluRelayServer,
 } from '@suite-common/e2e-evolu-client';
 import { Model, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
@@ -46,7 +39,7 @@ class NativeEvoluClient extends BaseEvoluClient {
         expectedData: Record<string, unknown>[],
         options?: { omit?: string[]; timeout?: number },
     ) {
-        const omitFields = options?.omit ?? ['createdAt']; //'id',
+        const omitFields = options?.omit ?? ['createdAt'];
         const timeout = options?.timeout ?? 10_000;
 
         let lastError: Error | undefined;
@@ -70,8 +63,7 @@ class NativeEvoluClient extends BaseEvoluClient {
     }
 }
 
-const FIRST_BTC_RECEIVE_ADDRESS = 'bc1q7ceqvaq7fqyywxqcx7qnfxkfk2ykpsla9pe80q';
-const addressSeed = createAddressSeed(FIRST_BTC_RECEIVE_ADDRESS);
+const FIRST_BTC_RECEIVE_ADDRESS = 'bc1qs9alwrln4e28se4tq2nc8dnnvskg83qexuj7s9';
 
 const preloadedState = preparePreloadedReduxState(
     onboardingCompletedState,
@@ -91,22 +83,21 @@ describe('Suite Sync - Labelling [@androidOnly @T3T1 @smoke]', () => {
         evoluClient = new NativeEvoluClient();
 
         await openApp({ args: { preloadedState } });
-        await prepareTrezorEmulator({ seed: 'mnemonic_12' });
+        await prepareTrezorEmulator({ seed: 'mnemonic_immune' });
         await onDeviceManager.assertDeviceSwitcherState({ title: 'Connected' });
     });
 
-    test.skip('Create new labels', async () => {
+    test('Create new labels', async () => {
         const ACCOUNT_LABEL = 'Evolu write BTC account';
         const ADDRESS_LABEL = 'Evolu write BTC address';
         const OUTPUT_LABEL = 'Evolu write BTC output';
-        const TX_ID = 'aa545d95cf07892e1ae70b40e856b9b476f703e2e20647d0985830fd7b734393';
-        const expectedAccountData = buildExpectedAccount({ label: ACCOUNT_LABEL });
-        const expectedAddressData = buildExpectedAddress({
+        const expectedAccountData = immuneFixtures.buildExpectedAccount({ label: ACCOUNT_LABEL });
+        const expectedAddressData = immuneFixtures.buildExpectedAddress({
             address: FIRST_BTC_RECEIVE_ADDRESS,
             label: ADDRESS_LABEL,
         });
-        const expectedOutputData = buildExpectedOutput({
-            txId: TX_ID,
+        const expectedOutputData = immuneFixtures.buildExpectedOutput({
+            txId: immuneFixtures.defaultTxId,
             outputIndex: '0',
             label: OUTPUT_LABEL,
         });
@@ -131,26 +122,30 @@ describe('Suite Sync - Labelling [@androidOnly @T3T1 @smoke]', () => {
         await onAccountDetail.openReceive();
         await onAccountReceive.tapShowAddressButton();
         await TrezorUserEnvLink.pressYes();
-        await element(by.id('@receive/address-label')).tap();
+
+        const receiveAddressLabel = element(by.id('@receive/address-label/button'));
+        await waitForVisible(receiveAddressLabel);
+        await receiveAddressLabel.tap();
         await element(by.id('@label-edit-form/input')).replaceText(ADDRESS_LABEL);
         await element(by.id('@label-edit-form/confirm-button')).tap();
 
-        // Change output label
+        // Navigate to transaction with outputs
         await onTabBar.tapBackButton();
-        const transaction = element(by.id(`@transactions/item/${TX_ID}`));
-
-        await scrollUntilVisible(transaction);
+        const transaction = element(by.id(`@transactions/item/${immuneFixtures.defaultTxId}`));
+        await scrollUntilVisible(transaction, { startPositionY: 0.8 });
         await transaction.tap();
 
-        const outputLabelButton = element(by.id(`@transactions/output-label/${TX_ID}/0/button`));
-
+        // Change output label
+        const outputLabelButton = element(
+            by.id(`@transactions/output-label/${immuneFixtures.defaultTxId}/0/button`),
+        );
         await waitForVisible(outputLabelButton);
         await outputLabelButton.tap();
         await element(by.id('@label-edit-form/input')).replaceText(OUTPUT_LABEL);
         await element(by.id('@label-edit-form/confirm-button')).tap();
 
         // Verify labels were synced to the relay
-        evoluClient.init({ ownerSecret });
+        evoluClient.init({ ownerSecret: immuneFixtures.ownerSecret });
         await evoluClient.expectInTable('account', [expectedAccountData]);
         await evoluClient.expectInTable('address', [expectedAddressData]);
         await evoluClient.expectInTable('output', [expectedOutputData]);
@@ -158,12 +153,14 @@ describe('Suite Sync - Labelling [@androidOnly @T3T1 @smoke]', () => {
 
     test('Sync labels from relay', async () => {
         // Seed the relay before enabling SuiteSync so the labels are ready to sync on connect.
-        evoluClient.init({ ownerSecret });
-        evoluClient.writeTo('wallet', walletSeed);
-        evoluClient.writeTo('account', accountSeed);
+        const addressSeed = immuneFixtures.createAddressSeed(FIRST_BTC_RECEIVE_ADDRESS);
+        const outputSeed = immuneFixtures.createOutputSeed();
+        evoluClient.init({ ownerSecret: immuneFixtures.ownerSecret });
+        evoluClient.writeTo('wallet', immuneFixtures.walletSeed);
+        evoluClient.writeTo('account', immuneFixtures.accountSeed);
         evoluClient.writeTo('address', addressSeed);
         evoluClient.writeTo('output', outputSeed);
-        seedQuotaManagerData();
+        seedQuotaManagerData({ ownerId: immuneFixtures.ownerId });
 
         await onTabBar.navigateToSettings();
         await onSettings.enableSuiteSync();
@@ -172,19 +169,23 @@ describe('Suite Sync - Labelling [@androidOnly @T3T1 @smoke]', () => {
         // Wait for account label to sync and appear in the account list
         await onTabBar.navigateToMyAssets();
         const firstAccountTitle = element(by.id('@accountList/item/title')).atIndex(0);
-        await waitToHaveText(firstAccountTitle, accountSeed.label, { timeout: 30_000 });
+        await waitToHaveText(firstAccountTitle, immuneFixtures.accountSeed.label, {
+            timeout: 30_000,
+        });
 
         // Wait for wallet label to sync and appear in the device switcher
         await onDeviceManager.tapDeviceSwitch();
-        await waitToHaveText(by.id('@wallet/label'), walletSeed.label);
+        await waitToHaveText(by.id('@wallet/label'), immuneFixtures.walletSeed.label);
         await element(by.id('@wallet/label')).tap();
 
         // Verify address label synced
-        await onMyAssets.openAccountDetail({ accountName: accountSeed.label });
+        await onMyAssets.openAccountDetail({ accountName: immuneFixtures.accountSeed.label });
         await onAccountDetail.openReceive();
         await onAccountReceive.tapShowAddressButton();
         await TrezorUserEnvLink.pressYes();
-        await onAccountReceive.verifyReceiveAddressLabel(addressSeed.label);
+        await onAccountReceive.verifyReceiveAddressLabel(
+            immuneFixtures.createAddressSeed(FIRST_BTC_RECEIVE_ADDRESS).label,
+        );
 
         // Verify output label synced
         await onTabBar.tapBackButton();

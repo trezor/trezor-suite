@@ -1,13 +1,10 @@
-import {
-    buildExpectedAccount,
-    buildExpectedAddress,
-    buildExpectedOutput,
-    buildExpectedWallet,
-    ownerSecret,
-} from '@suite-common/e2e-evolu-client';
+import { mnemonic12Fixtures } from '@suite-common/e2e-evolu-client';
 
 import { AccountLabelId } from '../../../support/enums/accountLabelId';
 import { expect, test } from '../../../support/fixtures';
+
+const { buildExpectedAccount, buildExpectedAddress, buildExpectedOutput, buildExpectedWallet } =
+    mnemonic12Fixtures;
 
 const defaultWalletIndex = 0;
 
@@ -84,7 +81,7 @@ test.describe('Suite Sync - Labelling', { tag: ['@T3W1', '@T3T1'] }, () => {
         });
 
         await test.step('Verify data are sync to Relay', async () => {
-            evoluClient.init({ ownerSecret });
+            evoluClient.init({ ownerSecret: mnemonic12Fixtures.ownerSecret });
             await evoluClient.expectInTable('account', [expectedAccount], { softExpect: true });
             await evoluClient.expectInTable('address', [expectedAddress], { softExpect: true });
             await evoluClient.expectInTable('wallet', [expectedWallet], { softExpect: true });

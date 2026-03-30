@@ -1,7 +1,8 @@
 import {
-    buildExpectedWallet,
+    createAccountRowId,
     createOwnerIdFromSecret,
-    ownerSecret as defaultWalletOwnerSecret,
+    createWalletRowId,
+    mnemonic12Fixtures,
 } from '@suite-common/e2e-evolu-client';
 import { asSuiteSyncOwnerSecretHex } from '@suite-common/suite-sync-storage';
 import { asAccountDescriptor, asWalletDescriptor } from '@suite-common/wallet-types';
@@ -9,6 +10,7 @@ import { asAccountDescriptor, asWalletDescriptor } from '@suite-common/wallet-ty
 import { AccountLabelId } from '../../../support/enums/accountLabelId';
 import { expect, test } from '../../../support/fixtures';
 
+const defaultWalletOwnerSecret = mnemonic12Fixtures.ownerSecret;
 const walletOneOwnerSecret = asSuiteSyncOwnerSecretHex(
     'a42c516df49ec13ef4df8d2edfd33a893ddb3c5bb5423fb55e5f33a1852e2bc2d2fc70db8b35db609c730763f81c2d2bb491abf4f07505b0449386d54285b267',
 );
@@ -29,9 +31,12 @@ const walletTwo = {
     ownerId: createOwnerIdFromSecret(walletTwoOwnerSecret),
 };
 
-const expectedDefaultWalletLabel = buildExpectedWallet({ label: 'Evolu Default wallet' });
+const expectedDefaultWalletLabel = mnemonic12Fixtures.buildExpectedWallet({
+    label: 'Evolu Default wallet',
+});
 
 const expectedWalletOneLabel = {
+    id: createWalletRowId(asWalletDescriptor('mokyaSGybeX7XrG5VWGoMtQepBXXK1RNW9')),
     updatedAt: null,
     isDeleted: null,
     ownerId: walletOne.ownerId,
@@ -40,6 +45,12 @@ const expectedWalletOneLabel = {
 };
 
 const expectedAccountLabelWalletOne = {
+    id: createAccountRowId(
+        asAccountDescriptor(
+            'zpub6r4imip23CwVmWTfqudEXK2PKZaw2bn8PEC1tju3d4oxQMfLK1QME9aN2o8t7potfCfz6f8T4jNafTyBVfEnqfXVUT8y4PWZ1JSc2HR8pRB',
+        ),
+        'btc',
+    ),
     updatedAt: null,
     isDeleted: null,
     ownerId: walletOne.ownerId,
@@ -51,6 +62,7 @@ const expectedAccountLabelWalletOne = {
 };
 
 const expectedWalletTwoLabel = {
+    id: createWalletRowId(asWalletDescriptor('n4YWykLsjHxToK8LwXJ7e8gwabBbAUDTk2')),
     updatedAt: null,
     isDeleted: null,
     ownerId: walletTwo.ownerId,
