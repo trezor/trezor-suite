@@ -1,5 +1,5 @@
 import { type ReactNode } from 'react';
-import { View } from 'react-native';
+import { Platform, View } from 'react-native';
 import { GestureDetector } from 'react-native-gesture-handler';
 
 import { Icon, type IconName } from '@suite-native/icons';
@@ -35,7 +35,13 @@ export const PressableCardWithIconLayout = ({
     return (
         <GestureDetector gesture={tapGesture}>
             <View collapsable={false}>
-                <AnimatedCard borderColor="borderElevation1" noPadding style={animatedStyle}>
+                <AnimatedCard
+                    borderColor="borderElevation1"
+                    noPadding
+                    style={animatedStyle}
+                    // Android shadow does not work well with the Reanimated opacity animation.
+                    noShadow={Platform.OS === 'android'}
+                >
                     <HStack margin="sp16" spacing="sp12">
                         <Box marginVertical="sp2">
                             <Icon name={icon} size="mediumLarge" />
