@@ -1,15 +1,14 @@
-import { corsValidator, parseManifest } from '@trezor/connect/src/data/connectSettings';
-import { createErrorMessage } from '@trezor/connect/src/events';
-import type { CallMethodPayload } from '@trezor/connect/src/events/call';
-import { type ConnectFactoryDependencies, factory } from '@trezor/connect/src/factory';
-import type { Manifest } from '@trezor/connect/src/types';
-import type { UpdateConnectSettings } from '@trezor/connect/src/types/api/updateConnectSettings';
-import { ConnectEmitter } from '@trezor/connect/src/types/emitter';
-import * as ERRORS from '@trezor/connect-common/src/constants/errors';
+import { ERRORS } from '@trezor/connect-common/src/constants';
+import { corsValidator, parseManifest } from '@trezor/connect-common/src/data';
 import {
     DEEPLINK_VERSION,
     DEFAULT_DOMAIN_MAJOR_VER,
 } from '@trezor/connect-common/src/data/version';
+import { type CallMethodPayload } from '@trezor/connect-common/src/events';
+import { createErrorMessage } from '@trezor/connect-common/src/events';
+import { type ConnectFactoryDependencies, factory } from '@trezor/connect-common/src/factory';
+import { type Manifest, type UpdateConnectSettings } from '@trezor/connect-common/src/types';
+import { ConnectEmitter } from '@trezor/connect-common/src/types/emitter';
 import { createDeferredManager, removeTrailingSlashes } from '@trezor/utils';
 
 type BuildUrlParams = {
@@ -191,4 +190,6 @@ const TrezorConnect = factory<ConnectSettingsMobile, { handleDeeplink: (url: str
 
 // eslint-disable-next-line import/no-default-export
 export default TrezorConnect;
-export * from '@trezor/connect/src/exports';
+export * from '@trezor/connect-common/src/constants';
+export * from '@trezor/connect-common/src/events';
+export * from '@trezor/connect-common/src/types';

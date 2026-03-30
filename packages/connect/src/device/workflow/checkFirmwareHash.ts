@@ -1,13 +1,13 @@
 import { randomBytes } from 'crypto';
 
+import type { FirmwareHashCheckError, FirmwareHashCheckResult } from '@trezor/connect-common';
+import type { Log } from '@trezor/connect-common/src/utils/debug';
 import { serializeError } from '@trezor/utils';
 
 import { calculateFirmwareHash, getBinaryOptional, stripFwHeaders } from '../../api/firmware';
 import { DataManager } from '../../data/DataManager';
 import { getFirmwareLocation, getReleaseByVersion } from '../../data/firmwareInfo';
-import type { FirmwareHashCheckError, FirmwareHashCheckResult } from '../../types';
 import type { IDevice } from '../../types/idevice';
-import type { Log } from '../../utils/debug';
 import { getFirmwareType } from '../../utils/firmwareUtils';
 
 const createFailResult = (error: FirmwareHashCheckError, errorPayload?: unknown) => ({

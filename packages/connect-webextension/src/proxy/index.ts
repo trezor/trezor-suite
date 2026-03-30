@@ -1,11 +1,11 @@
-// NOTE: @trezor/connect part is intentionally not imported from the index
-import { CORE_CALL, type CallMethod, POPUP, createErrorMessage } from '@trezor/connect/src/exports';
-import { factory } from '@trezor/connect/src/factory';
-import { type ConnectDynamicSettings } from '@trezor/connect/src/impl/dynamic';
-import type { UpdateConnectSettings } from '@trezor/connect/src/types/api/updateConnectSettings';
-import { ConnectEmitter } from '@trezor/connect/src/types/emitter';
 import { ERRORS, WEBEXTENSION } from '@trezor/connect-common/src/constants';
+import { CORE_CALL, type CallMethod, POPUP } from '@trezor/connect-common/src/events';
+import { createErrorMessage } from '@trezor/connect-common/src/events';
+import { factory } from '@trezor/connect-common/src/factory';
+import { type ConnectDynamicSettings } from '@trezor/connect-common/src/impl/dynamic';
 import { WindowServiceWorkerChannel } from '@trezor/connect-common/src/messageChannel/window-serviceworker';
+import type { UpdateConnectSettings } from '@trezor/connect-common/src/types';
+import { ConnectEmitter } from '@trezor/connect-common/src/types/emitter';
 
 const eventEmitter = new ConnectEmitter();
 let _channel: any;
@@ -113,4 +113,6 @@ const TrezorConnect = factory({
 
 // eslint-disable-next-line import/no-default-export
 export default TrezorConnect;
-export * from '@trezor/connect/src/exports';
+export * from '@trezor/connect-common/src/constants';
+export * from '@trezor/connect-common/src/events';
+export * from '@trezor/connect-common/src/types';

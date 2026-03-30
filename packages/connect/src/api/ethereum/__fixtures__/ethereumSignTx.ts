@@ -1,6 +1,6 @@
 import { Hardfork } from '@ethereumjs/common';
 
-import type { EthereumTransaction, EthereumTransactionEIP1559 } from '../../../types';
+import type { EthereumTransaction, EthereumTransactionEIP1559 } from '@trezor/connect-common';
 
 interface EthereumTxFixture {
     description: string;

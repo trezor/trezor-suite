@@ -1,7 +1,7 @@
+import { DEVICE } from '@trezor/connect-common';
 import { TypedError } from '@trezor/connect-common/src/constants/errors';
 import type { thp as protocolThp } from '@trezor/protocol';
 
-import { DEVICE } from '../../events';
 import type { IDevice } from '../../types/idevice';
 
 type ThpTypedCall = {

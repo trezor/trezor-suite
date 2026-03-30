@@ -1,16 +1,19 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/GetPublicKey.js
 
+import type { BitcoinNetworkInfo } from '@trezor/connect-common';
+import {
+    Bundle,
+    GetPublicKey as GetPublicKeySchema,
+    UI_REQUEST,
+    createUiMessage,
+} from '@trezor/connect-common';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
 import type { MethodPermission, MethodReturnType } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { getBitcoinNetwork } from '../data/coinInfo';
-import { UI_REQUEST, createUiMessage } from '../events';
-import type { BitcoinNetworkInfo } from '../types';
-import { Bundle } from '../types';
 import { getFirmwareRange, validateCoinPath } from './common/paramsValidator';
-import { GetPublicKey as GetPublicKeySchema } from '../types/api/getPublicKey';
 import { getPublicKeyLabel } from '../utils/accountUtils';
 import { validatePath } from '../utils/pathUtils';
 

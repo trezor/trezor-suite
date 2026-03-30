@@ -1,5 +1,6 @@
+import type { CoreEventMessage } from '@trezor/connect-common';
+
 import type { IDevice } from './idevice';
-import type { CoreEventMessage } from '../events/core';
 
 /**
  * Minimal method interface for device workflows.

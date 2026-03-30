@@ -1,10 +1,10 @@
+import { CancelCoinjoinAuthorization as CancelCoinjoinAuthorizationSchema } from '@trezor/connect-common';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
 import type { MethodMessage, MethodPermission } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { getFirmwareRange } from './common/paramsValidator';
-import { CancelCoinjoinAuthorization as CancelCoinjoinAuthorizationSchema } from '../types/api/cancelCoinjoinAuthorization';
 
 export default class CancelCoinjoinAuthorization extends AbstractMethod<
     'cancelCoinjoinAuthorization',

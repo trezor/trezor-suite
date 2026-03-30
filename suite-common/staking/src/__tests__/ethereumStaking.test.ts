@@ -5,11 +5,11 @@ import TrezorConnect, {
     type InternalTransfer,
     type OkWithDevice,
 } from '@trezor/connect';
+import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
 import {
     type BlockchainEstimatedFee,
     type BlockchainEstimatedFeeLevel,
-} from '@trezor/connect/src/types/api/blockchainEstimateFee';
-import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
+} from '@trezor/connect-common/src/types/api/blockchainEstimateFee';
 import { type Err, type Ok, type Result } from '@trezor/type-utils';
 
 import {

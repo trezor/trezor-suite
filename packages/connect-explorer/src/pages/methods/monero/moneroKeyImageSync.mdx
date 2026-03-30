@@ -1,5 +1,5 @@
-import { Bundle } from '@trezor/connect/src/types';
-import { MoneroKeyImageSync } from '@trezor/connect/src/types/api/monero';
+import { Bundle } from '@trezor/connect-common/src/types';
+import { MoneroKeyImageSync } from '@trezor/connect-common/src/types/api/monero';
 
 import { ApiPlayground } from '../../../components/ApiPlayground';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
@@ -108,7 +108,7 @@ TrezorConnect.moneroKeyImageSync({
 
 ### Result
 
-[MoneroKeyImageSyncResult type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/monero/index.ts)
+[MoneroKeyImageSyncResult type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/src/types/api/monero/index.ts)
 
 The result contains encrypted key images. Each key image is encrypted using ChaCha20-Poly1305 AEAD.
 

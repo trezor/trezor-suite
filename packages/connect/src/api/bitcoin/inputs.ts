@@ -1,10 +1,13 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/tx/inputs.js
 
+import type {
+    BitcoinNetworkInfo,
+    ComposeUtxo,
+    ProtoWithDerivationPath,
+} from '@trezor/connect-common';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import type { Transaction as BitcoinJsTransaction } from '@trezor/utxo-lib';
 
-import type { BitcoinNetworkInfo, ProtoWithDerivationPath } from '../../types';
-import type { ComposeUtxo } from '../../types/api/composeTransaction';
 import { convertMultisigPubKey } from '../../utils/hdnodeUtils';
 import {
     fixPath,

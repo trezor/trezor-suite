@@ -1,3 +1,4 @@
+import { AuthenticateDeviceParams, UI_REQUEST } from '@trezor/connect-common';
 import type { VerifyAuthenticityProofResult } from '@trezor/device-authenticity';
 import {
     deviceAuthenticityBlacklistConfig,
@@ -10,9 +11,7 @@ import { Assert } from '@trezor/schema-utils';
 
 import type { MethodMessage, MethodPermission } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
-import { UI_REQUEST } from '../events';
 import { getFirmwareRange } from './common/paramsValidator';
-import { AuthenticateDeviceParams } from '../types/api/authenticateDevice';
 
 export default class AuthenticateDevice extends AbstractMethod<
     'authenticateDevice',

@@ -4,12 +4,10 @@ import type {
     SubscriptionAccountInfo,
 } from '@trezor/blockchain-link';
 import { BlockchainLink } from '@trezor/blockchain-link';
+import type { CoinInfo, CoreEventMessage, Proxy, PushTransaction } from '@trezor/connect-common';
+import { BLOCKCHAIN, createBlockchainMessage } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 
-import type { CoreEventMessage } from '../events';
-import { BLOCKCHAIN, createBlockchainMessage } from '../events';
-import type { CoinInfo, Proxy } from '../types';
-import type { PushTransaction } from '../types/api/pushTransaction';
 import {
     BlockbookWorker,
     BlockfrostWorker,

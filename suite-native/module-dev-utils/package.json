@@ -41,7 +41,7 @@
         "@suite-native/storage": "workspace:*",
         "@suite-native/toasts": "workspace:*",
         "@suite-native/trading-state": "workspace:*",
-        "@trezor/connect": "workspace:*",
+        "@trezor/connect-common": "workspace:^",
         "@trezor/env-utils": "workspace:*",
         "@trezor/styles-native": "workspace:*",
         "@trezor/theme": "workspace:*",

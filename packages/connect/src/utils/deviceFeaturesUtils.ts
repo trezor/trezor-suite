@@ -1,9 +1,9 @@
+import type { CoinInfo, Features, UnavailableCapabilities } from '@trezor/connect-common';
 import { DeviceModelInternal, getFirmwareOrBootloaderVersionArray } from '@trezor/device-utils';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { isArrayMember, versionUtils } from '@trezor/utils';
 
 import { config } from '../data/config';
-import type { CoinInfo, Features, UnavailableCapabilities } from '../types';
 
 const DEFAULT_CAPABILITIES_T1: PROTO.Capability[] = [
     'Capability_Bitcoin',

@@ -1,7 +1,7 @@
+import type { DeviceUniquePath } from '@trezor/connect-common';
 import type { Descriptor } from '@trezor/transport';
 import { Log } from '@trezor/utils';
 
-import type { DeviceUniquePath } from '../../types';
 import { Device } from '../Device';
 import * as checkFirmwareHashModule from '../workflow/checkFirmwareHash';
 import { checkFirmwareHashWithRetries } from '../workflow/checkFirmwareHashWithRetries';

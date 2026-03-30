@@ -1,15 +1,13 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/uploadFirmware.js
 
+import { DEVICE, UI_REQUEST, createUiMessage } from '@trezor/connect-common';
+import type { CoreEventMessage, FirmwareUpdateFlowType, PROTO } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { getFirmwareVersionArray } from '@trezor/device-utils';
 import { TRANSPORT } from '@trezor/transport';
 import { isWithinRange } from '@trezor/utils/src/versionUtils';
 
-import type { PROTO } from '../../constants';
 import type { TypedCall } from '../../device/DeviceCommands';
-import type { CoreEventMessage } from '../../events';
-import { DEVICE, UI_REQUEST, createUiMessage } from '../../events';
-import type { FirmwareUpdateFlowType } from '../../types';
 import type { IDevice } from '../../types/idevice';
 
 // Each FW update flow starts with confirmation to restart into bootloader, and in some cases a confirmation for the FW

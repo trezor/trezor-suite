@@ -1,5 +1,6 @@
+import { parseConnectSettings } from '@trezor/connect-common/src/data/connectSettings';
+
 import { DataManager } from '../../data/DataManager';
-import { parseConnectSettings } from '../../data/connectSettings';
 import { initializeFirmwareConfig } from '../../data/firmwareInfo';
 import { DeviceList } from '../DeviceList';
 

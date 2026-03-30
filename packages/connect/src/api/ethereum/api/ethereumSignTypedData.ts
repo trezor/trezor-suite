@@ -1,20 +1,19 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/EthereumSignTypedData.js
 
+import {
+    EthereumNetworkInfo,
+    EthereumSignTypedData as EthereumSignTypedDataParams,
+    EthereumSignTypedHash as EthereumSignTypedHashParams,
+} from '@trezor/connect-common';
+import type { EthereumSignTypedDataTypes, PROTO } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { MessagesSchema } from '@trezor/protobuf';
 import { Assert, Type } from '@trezor/schema-utils';
 
-import type { PROTO } from '../../../constants';
 import type { MethodMessage, MethodPermission } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getEthereumNetwork } from '../../../data/coinInfo';
-import { EthereumNetworkInfo } from '../../../types';
-import type { EthereumSignTypedDataTypes } from '../../../types/api/ethereum';
-import {
-    EthereumSignTypedData as EthereumSignTypedDataParams,
-    EthereumSignTypedHash as EthereumSignTypedHashParams,
-} from '../../../types/api/ethereum';
 import { getNetworkLabel } from '../../../utils/ethereumUtils';
 import { messageToHex } from '../../../utils/formatUtils';
 import { getSerializedPath, getSlip44ByPath, validatePath } from '../../../utils/pathUtils';

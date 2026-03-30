@@ -1,10 +1,8 @@
-import { ERRORS } from '@trezor/connect-common/src/constants';
+import { ERRORS, type UpdateConnectSettings, factory } from '@trezor/connect-common';
+import { TRANSPORT } from '@trezor/transport';
 
 import { config } from './data/config';
-import { TRANSPORT } from './events';
-import { factory } from './factory';
 import { CoreInModule } from './impl/core-in-module';
-import type { UpdateConnectSettings } from './types/api/updateConnectSettings';
 
 class CoreInModuleWeb extends CoreInModule {
     protected get defaultTransports() {

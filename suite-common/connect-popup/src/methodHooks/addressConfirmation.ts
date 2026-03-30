@@ -1,5 +1,5 @@
 import { type Address, type CallMethodKeys, type SolanaPublicKey } from '@trezor/connect';
-import { type HDNodeResponse } from '@trezor/connect/src/types/api/getPublicKey';
+import { type HDNodeResponse } from '@trezor/connect-common/src/types/api/getPublicKey';
 
 import { connectPopupActions } from '../connectPopupActions';
 import { getPermissionDeferred } from '../connectPopupPromiseManager';

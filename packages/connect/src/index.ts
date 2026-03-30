@@ -1,10 +1,10 @@
+import type { UpdateConnectSettings } from '@trezor/connect-common';
+import { factory } from '@trezor/connect-common';
 import { deepEqual } from '@trezor/utils';
 
 import { reconnectAllBackends } from './backend/BlockchainLink';
 import { DataManager } from './data/DataManager';
-import { factory } from './factory';
 import { CoreInModule } from './impl/core-in-module';
-import type { UpdateConnectSettings } from './types/api/updateConnectSettings';
 
 class CoreInModuleNode extends CoreInModule {
     protected get defaultTransports() {

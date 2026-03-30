@@ -1,9 +1,9 @@
+import type { CoreCallMessage } from '@trezor/connect-common';
 import { TypedError } from '@trezor/connect-common/src/constants/errors';
+import type { ModuleName } from '@trezor/connect-common/src/constants/network';
+import { MODULES } from '@trezor/connect-common/src/constants/network';
 
 import * as Methods from '../api';
-import type { ModuleName } from '../constants/network';
-import { MODULES } from '../constants/network';
-import type { CoreCallMessage } from '../events';
 import type { MethodContext } from './AbstractMethod';
 
 const moduleMethods = {

@@ -1,11 +1,10 @@
+import { TronSignTransaction as TronSignTransactionSchema } from '@trezor/connect-common';
+import type { PROTO, TronContractsParameters, TronContractsTypes } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 
-import type { PROTO } from '../../../constants';
 import type { MethodMessage, MethodPermission } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
-import type { TronContractsParameters, TronContractsTypes } from '../../../types/api/tron';
-import { TronSignTransaction as TronSignTransactionSchema } from '../../../types/api/tron';
 import { validatePath } from '../../../utils/pathUtils';
 
 const contractMapping = {

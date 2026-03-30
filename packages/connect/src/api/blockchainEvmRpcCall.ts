@@ -1,9 +1,9 @@
+import type { CoinInfo } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 
 import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
 import type { MethodMessage, MethodPermission, Payload } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
-import type { CoinInfo } from '../types';
 import { validateParams } from './common/paramsValidator';
 import { getCoinInfo } from '../data/coinInfo';
 

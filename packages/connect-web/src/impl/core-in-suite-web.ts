@@ -1,13 +1,13 @@
+import * as ERRORS from '@trezor/connect-common/src/constants/errors';
 import {
     CORE_CALL,
     type CallMethodAnyResponse,
     type CallMethodPayload,
     POPUP,
     createErrorMessage,
-} from '@trezor/connect/src/events';
-import type { ConnectImpl, ConnectImplSettings } from '@trezor/connect/src/impl/dynamic';
-import { type Log, initLog } from '@trezor/connect/src/utils/debug';
-import * as ERRORS from '@trezor/connect-common/src/constants/errors';
+} from '@trezor/connect-common/src/events';
+import type { ConnectImpl, ConnectImplSettings } from '@trezor/connect-common/src/impl/dynamic';
+import { type Log, initLog } from '@trezor/connect-common/src/utils/debug';
 
 import { getEnv } from '../connectSettings';
 import { getSuiteWebUrl } from './getSuiteWebUrl';

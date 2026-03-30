@@ -1,10 +1,10 @@
 import { bytesToHex } from '@noble/hashes/utils.js';
 
+import { TronComposeTransaction as TronComposeTransactionSchema } from '@trezor/connect-common/src/types/api/tron';
 import { Assert } from '@trezor/schema-utils';
 
 import type { MethodMessage, MethodPermission } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
-import { TronComposeTransaction as TronComposeTransactionSchema } from '../../../types/api/tron';
 import { encodeTransferRawData, encodeTriggerSmartContractRawData } from '../tronEncode';
 
 export default class TronComposeTransaction extends AbstractMethod<

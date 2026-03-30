@@ -1,7 +1,6 @@
+import type { DEVICE, UiResponseEvent } from '@trezor/connect-common';
 import type { Deferred } from '@trezor/utils';
 
-import type { DEVICE } from './device';
-import type { UiResponseEvent } from './ui-response';
 import type { IDevice } from '../types/idevice';
 
 export type UiPromiseResponse =

@@ -47,7 +47,7 @@ import TrezorConnect, {
     UI_REQUEST,
     UI_RESPONSE,
 } from '@trezor/connect';
-import { type DiscoverAccountsProgress } from '@trezor/connect/src/types/api/discoverAccounts';
+import { type DiscoverAccountsProgress } from '@trezor/connect-common/src/types/api/discoverAccounts';
 import { BigNumber, typedObjectEntries } from '@trezor/utils';
 
 import { DISCOVERY_MODULE_PREFIX, discoveryActions } from './discoveryActions';

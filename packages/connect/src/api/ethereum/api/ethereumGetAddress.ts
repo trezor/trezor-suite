@@ -1,9 +1,15 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/EthereumGetAddress.js
 
+import {
+    Bundle,
+    GetAddress as GetAddressSchema,
+    UI_REQUEST,
+    createUiMessage,
+} from '@trezor/connect-common';
+import type { EthereumNetworkInfoDefinitionValues, PROTO } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 
-import type { PROTO } from '../../../constants';
 import type {
     MethodMessage,
     MethodPermission,
@@ -11,10 +17,6 @@ import type {
 } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getEthereumNetwork, getUniqueNetworks } from '../../../data/coinInfo';
-import { UI_REQUEST, createUiMessage } from '../../../events';
-import type { EthereumNetworkInfoDefinitionValues } from '../../../types';
-import { Bundle } from '../../../types';
-import { GetAddress as GetAddressSchema } from '../../../types/api/getAddress';
 import { getNetworkLabel } from '../../../utils/ethereumUtils';
 import { stripHexPrefix } from '../../../utils/formatUtils';
 import { getSerializedPath, getSlip44ByPath, validatePath } from '../../../utils/pathUtils';

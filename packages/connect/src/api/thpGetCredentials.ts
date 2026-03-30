@@ -1,10 +1,10 @@
+import { DEVICE, UI_REQUEST } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 
 import type { MethodMessage, MethodPermission } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { DataManager } from '../data/DataManager';
 import { getThpCredentials } from '../device/thp';
-import { DEVICE, UI_REQUEST } from '../events';
 
 export default class ThpGetCredentials extends AbstractMethod<'thpGetCredentials'> {
     constructor(message: MethodMessage<'thpGetCredentials'>) {

@@ -1,16 +1,18 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/GetAddress.js
 
+import { type BitcoinNetworkInfo, Bundle, type PROTO } from '@trezor/connect-common';
+import {
+    GetAddress as GetAddressSchema,
+    UI_REQUEST,
+    createUiMessage,
+} from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 
-import type { PROTO } from '../constants';
 import { getFirmwareRange, validateCoinPath } from './common/paramsValidator';
 import type { MethodMessage, MethodPermission, MethodReturnType } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { fixCoinInfoNetwork, getBitcoinNetwork, getUniqueNetworks } from '../data/coinInfo';
-import { UI_REQUEST, createUiMessage } from '../events';
-import { type BitcoinNetworkInfo, Bundle } from '../types';
-import { GetAddress as GetAddressSchema } from '../types/api/getAddress';
 import { getLabel, getSerializedPath, validatePath } from '../utils/pathUtils';
 
 type Params = PROTO.GetAddress & {

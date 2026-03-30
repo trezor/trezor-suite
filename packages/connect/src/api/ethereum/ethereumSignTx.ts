@@ -5,16 +5,16 @@ import { Hardfork, Mainnet, createCustomCommon } from '@ethereumjs/common';
 import type { FeeMarketEIP1559TxData, LegacyTxData } from '@ethereumjs/tx';
 import { createTx } from '@ethereumjs/tx';
 
-import { ERRORS } from '@trezor/connect-common/src/constants';
-import type { MessagesSchema } from '@trezor/protobuf';
-
-import type { PROTO } from '../../constants';
-import type { TypedCall } from '../../device/DeviceCommands';
 import type {
     EthereumAccessList,
     EthereumTransaction,
     EthereumTransactionEIP1559,
-} from '../../types/api/ethereum';
+    PROTO,
+} from '@trezor/connect-common';
+import { ERRORS } from '@trezor/connect-common/src/constants';
+import type { MessagesSchema } from '@trezor/protobuf';
+
+import type { TypedCall } from '../../device/DeviceCommands';
 import { addHexPrefix, deepTransform } from '../../utils/formatUtils';
 
 const splitString = (str?: string, len?: number) => {

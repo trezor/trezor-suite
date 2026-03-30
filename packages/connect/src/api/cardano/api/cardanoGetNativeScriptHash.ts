@@ -1,13 +1,13 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/CardanoGetNativeScriptHash.js
 
+import type { CardanoNativeScript } from '@trezor/connect-common/src/types/api/cardano';
+import { CardanoGetNativeScriptHash as CardanoGetNativeScriptHashSchema } from '@trezor/connect-common/src/types/api/cardano';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
-import { PROTO } from '../../../constants';
 import type { MethodMessage, MethodPermission } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
-import type { CardanoNativeScript } from '../../../types/api/cardano';
-import { CardanoGetNativeScriptHash as CardanoGetNativeScriptHashSchema } from '../../../types/api/cardano';
 import { validatePath } from '../../../utils/pathUtils';
 import { getFirmwareRange } from '../../common/paramsValidator';
 

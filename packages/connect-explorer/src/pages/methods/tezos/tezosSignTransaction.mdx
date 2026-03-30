@@ -1,4 +1,4 @@
-import { TezosSignTransaction } from '@trezor/connect/src/types/api/tezos';
+import { TezosSignTransaction } from '@trezor/connect-common/src/types/api/tezos';
 
 import { ApiPlayground } from '../../../components/ApiPlayground';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
@@ -20,7 +20,7 @@ export const paramDescriptions = {
     path: '',
     branch: '',
     operation:
-        'type of [TezosOperation](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/tezos/index.ts)',
+        'type of [TezosOperation](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/src/types/api/tezos/index.ts)',
     chunkify:
         'determines if recipient address will be displayed in chunks of 4 characters. Default is set to `false`',
 };

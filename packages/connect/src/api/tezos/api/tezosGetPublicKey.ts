@@ -1,5 +1,11 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/TezosGetPublicKey.js
 
+import {
+    Bundle,
+    GetPublicKey as GetPublicKeySchema,
+    UI_REQUEST,
+    createUiMessage,
+} from '@trezor/connect-common';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
@@ -10,8 +16,6 @@ import type {
 } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
-import { UI_REQUEST, createUiMessage } from '../../../events';
-import { Bundle, GetPublicKey as GetPublicKeySchema } from '../../../types';
 import { fromHardened, getSerializedPath, validatePath } from '../../../utils/pathUtils';
 import { getFirmwareRange } from '../../common/paramsValidator';
 

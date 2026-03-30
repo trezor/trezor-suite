@@ -3,7 +3,7 @@ import { Callout } from 'nextra/components';
 import {
     EthereumSignTypedData,
     EthereumSignTypedHash,
-} from '@trezor/connect/src/types/api/ethereum';
+} from '@trezor/connect-common/src/types/api/ethereum';
 
 import { ApiPlayground } from '../../../components/ApiPlayground';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
@@ -28,7 +28,7 @@ import signTypedData from '../../../data/methods/ethereum/signTypedData.ts';
 
 export const paramDescriptions = {
     path: 'minimum length is `3`. [read more](/details/path)',
-    data: 'type of [`EthereumSignTypedDataMessage`](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/ethereum/index.ts)`. A JSON Schema definition can be found in the [EIP-712 spec](https://eips.ethereum.org/EIPS/eip-712).',
+    data: 'type of [`EthereumSignTypedDataMessage`](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/src/types/api/ethereum/index.ts)`. A JSON Schema definition can be found in the [EIP-712 spec](https://eips.ethereum.org/EIPS/eip-712).',
     metamask_v4_compat:
         "set to `true` for compatibility with [MetaMask's signTypedData_v4](https://docs.metamask.io/guide/signing-data.html#sign-typed-data-v4).",
     domain_separator_hash: 'hex-encoded 32-byte hash of the EIP-712 domain.',

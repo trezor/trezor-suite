@@ -1,5 +1,13 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/GetAccountInfo.js
 
+import { UI_REQUEST, UI_RESPONSE, createUiMessage } from '@trezor/connect-common';
+import type {
+    AccountInfo,
+    AccountUtxo,
+    CoinInfo,
+    DerivationPath,
+    GetAccountInfo as GetAccountInfoParams,
+} from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { resolveAfter } from '@trezor/utils/src/resolveAfter';
 
@@ -7,11 +15,8 @@ import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
 import type { MethodMessage, MethodPermission, MethodReturnType } from '../core/AbstractMethod';
 import { AbstractMethod, DEFAULT_FIRMWARE_RANGE } from '../core/AbstractMethod';
 import { getCoinInfo } from '../data/coinInfo';
-import { UI_REQUEST, UI_RESPONSE, createUiMessage } from '../events';
-import type { AccountInfo, AccountUtxo, CoinInfo, DerivationPath } from '../types';
 import { Discovery } from './common/Discovery';
 import { getFirmwareRange, validateParams } from './common/paramsValidator';
-import type { GetAccountInfo as GetAccountInfoParams } from '../types/api/getAccountInfo';
 import { getAccountLabel, isUtxoBased } from '../utils/accountUtils';
 import { getSerializedPath, validatePath } from '../utils/pathUtils';
 

@@ -4,20 +4,20 @@
 
 import { trezorUtils } from '@fivebinaries/coin-selection';
 
-import { ERRORS } from '@trezor/connect-common/src/constants';
-import { Assert, Type } from '@trezor/schema-utils';
-
-import { PROTO } from '../../../constants';
-import type { MethodMessage, MethodPermission } from '../../../core/AbstractMethod';
-import { AbstractMethod } from '../../../core/AbstractMethod';
-import { getMiscNetwork } from '../../../data/coinInfo';
 import {
     type CardanoAuxiliaryDataSupplement,
     CardanoSignTransactionExtended,
     CardanoSignTransaction as CardanoSignTransactionSchema,
     type CardanoSignedTxData,
     type CardanoSignedTxWitness,
-} from '../../../types/api/cardano';
+} from '@trezor/connect-common';
+import { ERRORS } from '@trezor/connect-common/src/constants';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
+import { Assert, Type } from '@trezor/schema-utils';
+
+import type { MethodMessage, MethodPermission } from '../../../core/AbstractMethod';
+import { AbstractMethod } from '../../../core/AbstractMethod';
+import { getMiscNetwork } from '../../../data/coinInfo';
 import { validatePath } from '../../../utils/pathUtils';
 import { getFirmwareRange } from '../../common/paramsValidator';
 import {

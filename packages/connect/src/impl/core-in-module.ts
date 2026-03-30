@@ -1,31 +1,33 @@
-import { ERRORS } from '@trezor/connect-common/src/constants';
-import { cloneObject, createDeferredManager } from '@trezor/utils';
-
-import { initCoreState } from '../core';
-import { parseConnectSettings } from '../data/connectSettings';
-import type {
-    CallMethodPayload,
-    CoreEventMessage,
-    CoreRequestMessage,
-    MethodResponseMessage,
-    UiResponseEvent,
-} from '../events';
 import {
     BLOCKCHAIN_EVENT,
     CORE_CALL,
     DEVICE_EVENT,
     POPUP,
     RESPONSE_EVENT,
-    TRANSPORT,
     TRANSPORT_EVENT,
     UI_EVENT,
     createErrorMessage,
-} from '../events';
-import type { ConnectFactoryDependencies } from '../factory';
-import type { ConnectSettings, ConnectSettingsPublic, ConnectSettingsTransport } from '../types';
-import type { UpdateConnectSettings } from '../types/api/updateConnectSettings';
-import { ConnectEmitter } from '../types/emitter';
-import { initLog } from '../utils/debug';
+} from '@trezor/connect-common';
+import type {
+    CallMethodPayload,
+    ConnectFactoryDependencies,
+    ConnectSettings,
+    ConnectSettingsPublic,
+    ConnectSettingsTransport,
+    CoreEventMessage,
+    CoreRequestMessage,
+    MethodResponseMessage,
+    UiResponseEvent,
+    UpdateConnectSettings,
+} from '@trezor/connect-common';
+import { ERRORS } from '@trezor/connect-common/src/constants';
+import { parseConnectSettings } from '@trezor/connect-common/src/data/connectSettings';
+import { ConnectEmitter } from '@trezor/connect-common/src/types/emitter';
+import { initLog } from '@trezor/connect-common/src/utils/debug';
+import { TRANSPORT } from '@trezor/transport';
+import { cloneObject, createDeferredManager } from '@trezor/utils';
+
+import { initCoreState } from '../core';
 
 export abstract class CoreInModule implements ConnectFactoryDependencies<ConnectSettingsPublic> {
     public readonly eventEmitter = new ConnectEmitter();

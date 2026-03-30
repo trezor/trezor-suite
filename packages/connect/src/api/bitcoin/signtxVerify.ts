@@ -1,5 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/signtxVerify.js
 
+import type { Network, PROTO } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import {
     address as BitcoinJsAddress,
@@ -8,9 +9,7 @@ import {
     bip32,
 } from '@trezor/utxo-lib';
 
-import type { PROTO } from '../../constants';
 import type { DeviceCommands } from '../../device/DeviceCommands';
-import type { Network } from '../../types';
 
 type GetHDNode = (
     address_n: number[],

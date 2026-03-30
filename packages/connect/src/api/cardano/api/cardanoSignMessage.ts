@@ -1,14 +1,18 @@
 import * as cbor from 'cbor';
 
+import { CARDANO } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
+import {
+    type CardanoMessageHeaders,
+    CardanoSignMessage as CardanoSignMessageSchema,
+    type CardanoSignedMessage,
+} from '@trezor/connect-common/src/types/api/cardano';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
-import { CARDANO, PROTO } from '../../../constants';
 import type { MethodMessage, MethodPermission } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
-import type { CardanoMessageHeaders, CardanoSignedMessage } from '../../../types/api/cardano';
-import { CardanoSignMessage as CardanoSignMessageSchema } from '../../../types/api/cardano';
 import { hasHexPrefix, isHexString } from '../../../utils/formatUtils';
 import { validatePath } from '../../../utils/pathUtils';
 import { getFirmwareRange } from '../../common/paramsValidator';

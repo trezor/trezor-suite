@@ -4,9 +4,8 @@ import { randomBytes } from '@noble/hashes/utils.js';
 import { entropyToMnemonic, mnemonicToSeed } from '@scure/bip39';
 
 import { bip39 } from '@trezor/crypto-utils';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { bip32 } from '@trezor/utxo-lib';
-
-import { PROTO } from '../../constants';
 
 export const generateEntropy = (len: number) => {
     try {

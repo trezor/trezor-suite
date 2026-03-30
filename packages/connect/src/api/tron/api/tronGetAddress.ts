@@ -1,16 +1,19 @@
+import {
+    Bundle,
+    GetAddress as GetAddressSchema,
+    UI_REQUEST,
+    createUiMessage,
+} from '@trezor/connect-common';
+import type { PROTO } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 
-import type { PROTO } from '../../../constants';
 import type {
     MethodMessage,
     MethodPermission,
     MethodReturnType,
 } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
-import { UI_REQUEST, createUiMessage } from '../../../events';
-import { Bundle } from '../../../types';
-import { GetAddress as GetAddressSchema } from '../../../types/api/getAddress';
 import { fromHardened, getSerializedPath, validatePath } from '../../../utils/pathUtils';
 
 type Params = PROTO.TronGetAddress & {

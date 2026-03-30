@@ -1,16 +1,16 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/cardanoCertificate.js
 
-import { ERRORS } from '@trezor/connect-common/src/constants';
-import { Assert } from '@trezor/schema-utils';
-
-import { PROTO } from '../../constants';
-import type { CardanoPoolOwner } from '../../types/api/cardano';
+import type { CardanoPoolOwner } from '@trezor/connect-common';
 import {
     CardanoCertificate,
     CardanoDRep,
     CardanoPoolParameters,
     CardanoPoolRelay,
-} from '../../types/api/cardano';
+} from '@trezor/connect-common';
+import { ERRORS } from '@trezor/connect-common/src/constants';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
+import { Assert } from '@trezor/schema-utils';
+
 import { validatePath } from '../../utils/pathUtils';
 
 const ipv4AddressToHex = (ipv4Address: string) =>

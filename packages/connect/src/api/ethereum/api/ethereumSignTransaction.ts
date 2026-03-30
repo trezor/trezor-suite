@@ -1,5 +1,12 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/EthereumSignTransaction.js
 
+import { EthereumSignTransaction as EthereumSignTransactionSchema } from '@trezor/connect-common';
+import type {
+    EthereumNetworkInfoDefinitionValues,
+    EthereumTransaction,
+    EthereumTransactionEIP1559,
+    TokenInfo,
+} from '@trezor/connect-common';
 import type { MessagesSchema } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 import { BigNumber } from '@trezor/utils';
@@ -7,9 +14,6 @@ import { BigNumber } from '@trezor/utils';
 import type { MethodMessage, MethodPermission } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getEthereumNetwork } from '../../../data/coinInfo';
-import type { EthereumNetworkInfoDefinitionValues, TokenInfo } from '../../../types';
-import { EthereumSignTransaction as EthereumSignTransactionSchema } from '../../../types';
-import type { EthereumTransaction, EthereumTransactionEIP1559 } from '../../../types/api/ethereum';
 import { getNetworkLabel } from '../../../utils/ethereumUtils';
 import { deepTransform, stripHexPrefix } from '../../../utils/formatUtils';
 import { getSlip44ByPath, validatePath } from '../../../utils/pathUtils';

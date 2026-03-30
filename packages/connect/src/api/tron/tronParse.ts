@@ -1,5 +1,6 @@
 import { bytesToHex, hexToBytes } from '@noble/hashes/utils.js';
 
+import { type TronContracts } from '@trezor/connect-common/src/types/api/tron';
 import { Assert, Optional, Type } from '@trezor/schema-utils';
 
 import {
@@ -9,7 +10,6 @@ import {
     TransferContractType,
     TriggerSmartContractType,
 } from './tronProtobuf';
-import { type TronContracts } from '../../types/api/tron';
 
 const DecodedTransferContractSchema = Type.Object({
     ownerAddress: Type.Uint8Array(),

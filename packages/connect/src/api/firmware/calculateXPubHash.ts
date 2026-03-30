@@ -1,6 +1,6 @@
 import { createHash } from 'crypto';
 
-import type { XPubHashesPerBip43Path } from '../../types';
+import type { XPubHashesPerBip43Path } from '@trezor/connect-common';
 
 /**
  * For cases where we want to store and compare xpubs to each other, it's better to hash them to ensure privacy.
