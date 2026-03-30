@@ -31159,27 +31159,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jotai@npm:^2.18.0":
-  version: 2.18.0
-  resolution: "jotai@npm:2.18.0"
-  peerDependencies:
-    "@babel/core": ">=7.0.0"
-    "@babel/template": ">=7.0.0"
-    "@types/react": ">=17.0.0"
-    react: ">=17.0.0"
-  peerDependenciesMeta:
-    "@babel/core":
-      optional: true
-    "@babel/template":
-      optional: true
-    "@types/react":
-      optional: true
-    react:
-      optional: true
-  checksum: 10/dfa48f53604824f15450a79bbf4ca447d8382c9fd54e0bd726c2e97caaaeef4018f192cf9de925df3d6bfac01367ee35fbefbe3a28d665c1c98ab8ef820d86a7
-  languageName: node
-  linkType: hard
-
 "jpeg-exif@npm:^1.1.4":
   version: 1.1.4
   resolution: "jpeg-exif@npm:1.1.4"

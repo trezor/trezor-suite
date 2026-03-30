@@ -53,10 +53,6 @@ export const EarnConsentsDelegatingCard = ({
     const expandableHeight = useSharedValue(0);
     const displaySymbol = symbol ? getNetworkDisplaySymbol(symbol) : undefined;
 
-    const handleUnderstand = () => {
-        // TODO: redirect to the next screen
-    };
-
     const handleLayout = (event: LayoutChangeEvent) => {
         if (measuredHeight.value === -1) {
             measuredHeight.value = event.nativeEvent.layout.height;

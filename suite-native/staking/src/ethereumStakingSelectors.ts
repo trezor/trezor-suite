@@ -129,20 +129,20 @@ export const selectEthereumPendingDepositedBalanceByAccountKey = (
 };
 
 export const selectUnstakingPeriodInDaysBySymbol = (
-    state: StakeRootState,
+    state: NativeStakingRootState,
     symbol: NetworkSymbol | undefined,
 ) => {
-    const { validatorWithdrawTime, validatorExitTime } = selectValidatorsQueueData(state, symbol);
+    const validatorsQueue = selectValidatorsQueueData(state, symbol);
 
     return getUnstakingPeriodInDays({
         networkType: symbol ? getNetworkType(symbol) : undefined,
-        validatorWithdrawTime,
-        validatorExitTime,
+        validatorWithdrawTime: validatorsQueue?.validatorWithdrawTime,
+        validatorExitTime: validatorsQueue?.validatorExitTime,
     });
 };
 
 export const selectEntryPeriodInDaysBySymbol = (
-    state: StakeRootState,
+    state: NativeStakingRootState,
     symbol: NetworkSymbol | undefined,
 ) => {
     const validatorsQueue = selectValidatorsQueueData(state, symbol);

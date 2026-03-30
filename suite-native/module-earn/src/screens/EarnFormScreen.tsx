@@ -48,8 +48,8 @@ export const EarnFormScreen = () => {
                     accountKey={accountKey}
                     symbol={account.symbol}
                     amountValue={amountValue}
-                    isFormValid={isValid}
-                    onPress={handleSubmit}
+                    isDisabled={!isValid}
+                    onPress={() => handleSubmit()}
                 />
             }
         >
