@@ -16,7 +16,11 @@ import {
     updateFeeInfoThunk,
 } from '@suite-common/wallet-core';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
-import { getAccountIdentity, getFormDraftKey } from '@suite-common/wallet-utils';
+import {
+    getAccountIdentity,
+    getEthereumEstimateFeeParams,
+    getFormDraftKey,
+} from '@suite-common/wallet-utils';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import TrezorConnect from '@trezor/connect';
 
@@ -26,7 +30,6 @@ import {
     buildEthStakeTx,
     buildStakeFormState,
     buildStakePrecomposedTx,
-    etherToWeiHex,
     selectPreferredFeeLevel,
 } from './stakeFormNativeUtils';
 
@@ -85,9 +88,12 @@ export const signEthStakeTransactionNativeThunk = createThunk<
                 blocks: [2],
                 specific: {
                     from: account.descriptor,
-                    to: addressContractPool,
-                    value: etherToWeiHex(amount),
-                    data: STAKE_CALLDATA,
+                    ...getEthereumEstimateFeeParams(
+                        addressContractPool,
+                        amount,
+                        undefined,
+                        STAKE_CALLDATA,
+                    ),
                 },
             },
         });

@@ -2,13 +2,10 @@ import { useState } from 'react';
 import { View } from 'react-native';
 import { useSelector } from 'react-redux';
 
-import { type RouteProp, useRoute } from '@react-navigation/native';
-
-import { getNetworkDecimals } from '@suite-common/wallet-config';
-import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
+import { type NetworkSymbol, getNetworkDecimals } from '@suite-common/wallet-config';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { Button, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { type RootStackParamList, type RootStackRoutes } from '@suite-native/navigation';
 import {
     LIST_VERTICAL_SPACING,
     SlidingFooterOverlay,
@@ -25,28 +22,25 @@ import { useHandleOnEarnTransactionReview } from '../hooks/useHandleOnEarnTransa
 
 const NUMBER_OF_STEPS = 2;
 
-type RouteProps = RouteProp<RootStackParamList, RootStackRoutes.EarnTransactionDataReview>;
-
 type EarnTransactionDataReviewStepListProps = {
+    accountKey: AccountKey;
+    amount: string;
+    accountSymbol: NetworkSymbol;
     onTransactionSubmitted: (txid: string) => void;
 };
 
 export const EarnTransactionDataReviewStepList = ({
+    accountKey,
+    amount,
+    accountSymbol,
     onTransactionSubmitted,
 }: EarnTransactionDataReviewStepListProps) => {
-    const route = useRoute<RouteProps>();
-    const { accountKey, amount } = route.params;
-
     const isTransactionReviewInProgress = useSelector((state: TransactionReviewOutputsState) =>
         selectIsTransactionReviewInProgress(state, 'stake', accountKey),
     );
 
     const summaryOutput = useSelector((state: TransactionReviewOutputsState) =>
         selectReviewSummaryOutput(state, 'stake', accountKey),
-    );
-
-    const accountSymbol = useSelector((state: AccountsRootState) =>
-        selectAccountNetworkSymbol(state, accountKey),
     );
 
     const [stepIndex, setStepIndex] = useState(0);
@@ -68,7 +62,7 @@ export const EarnTransactionDataReviewStepList = ({
         }
     };
 
-    const networkDecimals = accountSymbol ? (getNetworkDecimals(accountSymbol) ?? 18) : 18;
+    const networkDecimals = getNetworkDecimals(accountSymbol) ?? 18;
     const amountInWei = new BigNumber(amount)
         .times(new BigNumber(10).pow(networkDecimals))
         .toFixed(0);
@@ -76,23 +70,19 @@ export const EarnTransactionDataReviewStepList = ({
     return (
         <View>
             <VStack spacing={LIST_VERTICAL_SPACING}>
-                {!!accountSymbol && (
-                    <EarnStakeOutputItem
-                        symbol={accountSymbol}
-                        outputState={stepIndex > 0 ? 'success' : 'active'}
-                        onLayout={event => handleReadListItemHeight(event, 0)}
-                    />
-                )}
+                <EarnStakeOutputItem
+                    symbol={accountSymbol}
+                    outputState={stepIndex > 0 ? 'success' : 'active'}
+                    onLayout={event => handleReadListItemHeight(event, 0)}
+                />
 
-                {!!accountSymbol && (
-                    <EarnSummaryOutputItem
-                        accountKey={accountKey}
-                        amount={amountInWei}
-                        fee={summaryOutput?.fee ?? '0'}
-                        outputState={summaryOutput?.state}
-                        onLayout={event => handleReadListItemHeight(event, 1)}
-                    />
-                )}
+                <EarnSummaryOutputItem
+                    accountKey={accountKey}
+                    amount={amountInWei}
+                    fee={summaryOutput?.fee ?? '0'}
+                    outputState={summaryOutput?.state}
+                    onLayout={event => handleReadListItemHeight(event, 1)}
+                />
             </VStack>
             {!areAllStepsDone && (
                 <SlidingFooterOverlay activeStepOffset={activeStepBottomOffset}>

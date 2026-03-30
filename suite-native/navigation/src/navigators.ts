@@ -5,6 +5,7 @@ import { type BackupType, type Locale } from '@suite-common/suite-types';
 import { type TradingType } from '@suite-common/trading';
 import { type AccountType, type NetworkSymbol } from '@suite-common/wallet-config';
 import {
+    type Account,
     type AccountKey,
     type GeneralPrecomposedTransactionFinal,
     type TokenAddress,
@@ -394,6 +395,7 @@ export type RootStackParamList = {
     [RootStackRoutes.EarnConsents]: {
         accountKey: AccountKey;
         amount: string;
+        account: Account;
     };
     [RootStackRoutes.EarnTransactionDataReview]: {
         accountKey: AccountKey;

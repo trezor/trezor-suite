@@ -1,3 +1,4 @@
+import { transformTx } from '@suite-common/staking';
 import { STAKE_GAS_LIMIT_RESERVE } from '@suite-common/wallet-constants';
 import { type PrecomposedTransactionFinal, type StakeFormState } from '@suite-common/wallet-types';
 import {
@@ -10,20 +11,6 @@ import { BigNumber } from '@trezor/utils';
 /** The web version derives this at runtime via @everstake/wallet-sdk-ethereum, which is not React Native compatible, so we use the pre-computed constant here. **/
 export const STAKE_CALLDATA =
     '0x3a29dbae0000000000000000000000000000000000000000000000000000000000000001';
-
-export const etherToWeiHex = (amount: string): string => {
-    const wei = new BigNumber(amount).times(new BigNumber(10).pow(18)).integerValue();
-
-    return `0x${BigInt(wei.toFixed(0)).toString(16)}`;
-};
-
-const gweiToWeiHex = (gwei: string): string => {
-    const wei = new BigNumber(gwei).times(new BigNumber(10).pow(9)).integerValue();
-
-    return `0x${BigInt(wei.toFixed(0)).toString(16)}`;
-};
-
-const toHex = (value: string | number): string => `0x${BigInt(value).toString(16)}`;
 
 export type StakePushTransactionError =
     | { error: 'push-transaction-failed'; message?: string }
@@ -108,33 +95,27 @@ export const buildEthStakeTx = ({
     rawGasLimit: string;
     feeLevel: FeeLevel;
 }): EthereumTransaction | EthereumTransactionEIP1559 => {
-    const gasLimit = toHex(
-        new BigNumber(rawGasLimit)
-            .plus(STAKE_GAS_LIMIT_RESERVE)
-            .integerValue(BigNumber.ROUND_DOWN)
-            .toNumber(),
-    );
-
-    const commonTxData = {
+    const adjustedGasLimit = new BigNumber(rawGasLimit)
+        .plus(STAKE_GAS_LIMIT_RESERVE)
+        .integerValue(BigNumber.ROUND_DOWN)
+        .toNumber();
+    const amountWei = new BigNumber(amount)
+        .times(new BigNumber(10).pow(18))
+        .integerValue()
+        .toFixed(0);
+    const tx = {
         to: contractAddress,
-        value: etherToWeiHex(amount),
-        chainId,
-        nonce: toHex(nonce),
-        gasLimit,
+        value: amountWei,
+        gasLimit: adjustedGasLimit,
         data: STAKE_CALLDATA,
     };
 
-    if (feeLevel.maxFeePerGas) {
-        return {
-            ...commonTxData,
-            gasPrice: undefined,
-            maxFeePerGas: gweiToWeiHex(feeLevel.maxFeePerGas),
-            maxPriorityFeePerGas: gweiToWeiHex(feeLevel.maxPriorityFeePerGas ?? '0'),
-        } as EthereumTransactionEIP1559;
-    }
-
-    return {
-        ...commonTxData,
-        gasPrice: gweiToWeiHex(feeLevel.feePerUnit),
-    } as EthereumTransaction;
+    return transformTx(
+        tx,
+        String(nonce),
+        chainId,
+        feeLevel.maxFeePerGas ? undefined : feeLevel.feePerUnit,
+        feeLevel.maxFeePerGas,
+        feeLevel.maxPriorityFeePerGas,
+    );
 };

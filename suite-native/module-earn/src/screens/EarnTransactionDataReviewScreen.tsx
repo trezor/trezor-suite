@@ -29,9 +29,9 @@ import {
     selectIsReceiveAddressOutputConfirmed,
     selectIsTransactionAlreadySigned,
     selectIsTransactionReviewInProgress,
+    sendArrowsLottie,
 } from '@suite-native/transaction-management';
 
-import sendArrowsLottie from '../assets/send-arrows-lottie.json';
 import { EarnTransactionDataReviewStepList } from '../components/EarnTransactionDataReviewStepList';
 
 const navigateToStakedTransactionAction = ({
@@ -68,7 +68,7 @@ export const EarnTransactionDataReviewScreen = ({
 }: StackProps<RootStackParamList, RootStackRoutes.EarnTransactionDataReview>) => {
     const { confirmOnTrezorRef, revealConfirmOnTrezorSheet, closeSheet } =
         useConfirmOnTrezorController();
-    const { accountKey } = route.params;
+    const { accountKey, amount } = route.params;
     const navigateToInitialScreen = useNavigateToInitialScreen();
     const [txid, setTxid] = useState<string>('');
 
@@ -135,7 +135,14 @@ export const EarnTransactionDataReviewScreen = ({
         >
             <VStack flex={1} justifyContent="space-between">
                 <VStack justifyContent="center" spacing="sp24">
-                    <EarnTransactionDataReviewStepList onTransactionSubmitted={setTxid} />
+                    {account && (
+                        <EarnTransactionDataReviewStepList
+                            accountKey={accountKey}
+                            amount={amount}
+                            accountSymbol={account.symbol}
+                            onTransactionSubmitted={setTxid}
+                        />
+                    )}
                 </VStack>
                 {txid && (
                     <Card>
