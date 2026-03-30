@@ -83,7 +83,7 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
         super(message, params);
 
         this.hasBundle = hasBundle;
-        this.useUi = this.getUseUi(this.params);
+        this.useUi = this.getUseUi(this.params, payload.useEventListener);
         this.firmwareRange = params.reduce(
             (prev, { coinInfo }) => getFirmwareRange(this.name, coinInfo, prev),
             this.firmwareRange,
