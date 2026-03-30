@@ -113,7 +113,6 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
 
     public device: Device | undefined;
 
-    // @ts-expect-error: strictPropertyInitialization
     protected params: Params;
 
     public deviceState?: DeviceState;
@@ -128,7 +127,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
 
     public name: Name; // method name
 
-    public payload: Payload<Name>; // method payload
+    private useEventListener: any; // TODO
 
     protected get info() {
         return '';
@@ -164,10 +163,11 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
 
     public initAsync?(): Promise<void>;
 
-    constructor(message: MethodMessage<Name>) {
+    constructor(message: MethodMessage<Name>, params: Params) {
         const { payload } = message;
         this.name = payload.method;
-        this.payload = payload;
+        this.params = params;
+        this.useEventListener = payload.useEventListener;
         this.responseID = message.id || 0;
         this.deviceState = validateDeviceState(payload.device);
         this.keepSession = typeof payload.keepSession === 'boolean' ? payload.keepSession : false;
@@ -196,7 +196,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
     // Used in *getAddress methods
     protected getUseUi(params: { address?: string; proto: { show_display?: boolean } }[]) {
         const useEventListener =
-            this.payload.useEventListener &&
+            this.useEventListener &&
             params.length === 1 &&
             typeof params[0].address === 'string' &&
             params[0].proto.show_display;
@@ -254,8 +254,6 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
             return UI_REQUEST.FIRMWARE_NOT_COMPATIBLE;
         }
     }
-
-    public abstract init(): void;
 
     public getMethodInfo(): MethodInfo {
         return {

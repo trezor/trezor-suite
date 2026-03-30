@@ -16,7 +16,10 @@ export default class CardanoComposeTransaction extends AbstractMethod<
     CardanoComposeTransactionParams
 > {
     constructor(message: MethodMessage<'cardanoComposeTransaction'>) {
-        super(message);
+        // validate incoming parameters
+        Assert(CardanoComposeTransactionParamsSchema, message.payload);
+
+        super(message, message.payload);
         this.useDevice = false;
         this.useDeviceState = false;
         this.useUi = false;
@@ -24,15 +27,6 @@ export default class CardanoComposeTransaction extends AbstractMethod<
 
     get requiredPermissions(): MethodPermission[] {
         return [];
-    }
-
-    init() {
-        const { payload } = this;
-
-        // validate incoming parameters
-        Assert(CardanoComposeTransactionParamsSchema, payload);
-
-        this.params = payload;
     }
 
     get info() {

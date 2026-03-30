@@ -29,28 +29,12 @@ export default class SolanaGetAddress extends AbstractMethod<'solanaGetAddress',
     progress = 0;
 
     constructor(message: MethodMessage<'solanaGetAddress'>) {
-        super(message);
-        this.confirmMissingBackup = true;
-        this.requiredDeviceCapabilities = ['Capability_Solana'];
-        this.firmwareRange = getFirmwareRange(
-            this.name,
-            getMiscNetwork('Solana'),
-            this.firmwareRange,
-        );
-    }
-
-    get requiredPermissions(): MethodPermission[] {
-        return ['read'];
-    }
-
-    init() {
-        const { hasBundle, payload } = bundlify(this.payload);
-        this.hasBundle = hasBundle;
+        const { hasBundle, payload } = bundlify(message.payload);
 
         // validate bundle type
         Assert(Bundle(GetAddressSchema), payload);
 
-        this.params = payload.bundle.map(batch => {
+        const params = payload.bundle.map(batch => {
             const path = validatePath(batch.path, 2);
 
             const proto = {
@@ -62,7 +46,20 @@ export default class SolanaGetAddress extends AbstractMethod<'solanaGetAddress',
             return { proto, address: batch.address };
         });
 
+        super(message, params);
+        this.hasBundle = hasBundle;
         this.useUi = this.getUseUi(this.params);
+        this.confirmMissingBackup = true;
+        this.requiredDeviceCapabilities = ['Capability_Solana'];
+        this.firmwareRange = getFirmwareRange(
+            this.name,
+            getMiscNetwork('Solana'),
+            this.firmwareRange,
+        );
+    }
+
+    get requiredPermissions(): MethodPermission[] {
+        return ['read'];
     }
 
     get info() {

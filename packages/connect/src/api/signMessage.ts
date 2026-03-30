@@ -5,7 +5,7 @@ import { SignMessage as SignMessageSchema } from '@trezor/connect-common';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
-import type { MethodPermission } from '../core/AbstractMethod';
+import type { MethodMessage, MethodPermission } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { getFirmwareRange, validateCoinPath } from './common/paramsValidator';
 import { getBitcoinNetwork } from '../data/coinInfo';
@@ -16,33 +16,20 @@ import { getLabel, getScriptType, getSerializedPath, validatePath } from '../uti
 type Params = { proto: PROTO.SignMessage; readableMessage: string };
 
 export default class SignMessage extends AbstractMethod<'signMessage', Params> {
-    coinInfo: BitcoinNetworkInfo | undefined;
-
-    get requiredPermissions(): MethodPermission[] {
-        return ['read', 'write'];
-    }
-
-    init() {
-        const { payload } = this;
+    constructor(message: MethodMessage<'signMessage'>) {
+        const { payload } = message;
 
         // validate incoming parameters
         Assert(SignMessageSchema, payload);
 
         const path = validatePath(payload.path);
+        let coinInfo;
         if (payload.coin) {
-            this.coinInfo = getBitcoinNetwork(payload.coin);
-            validateCoinPath(path, this.coinInfo);
+            coinInfo = getBitcoinNetwork(payload.coin);
+            validateCoinPath(path, coinInfo);
         } else {
-            this.coinInfo = getBitcoinNetwork(path);
+            coinInfo = getBitcoinNetwork(path);
         }
-
-        // firmware range depends on used no_script_type parameter
-        // no_script_type is possible since 1.10.4 / 2.4.3
-        this.firmwareRange = getFirmwareRange(
-            payload.no_script_type ? 'signMessageNoScriptType' : this.name,
-            this.coinInfo,
-            this.firmwareRange,
-        );
 
         const messageHex = payload.hex
             ? messageToHex(payload.message)
@@ -54,12 +41,29 @@ export default class SignMessage extends AbstractMethod<'signMessage', Params> {
         const proto = {
             address_n: path,
             message: messageHex,
-            coin_name: this.coinInfo ? this.coinInfo.name : undefined,
+            coin_name: coinInfo ? coinInfo.name : undefined,
             script_type: scriptType && scriptType !== 'SPENDMULTISIG' ? scriptType : 'SPENDADDRESS', // script_type 'SPENDMULTISIG' throws Failure_FirmwareError
             no_script_type: payload.no_script_type,
         };
 
-        this.params = { proto, readableMessage };
+        const params = { proto, readableMessage };
+
+        super(message, params);
+
+        this.coinInfo = coinInfo;
+        // firmware range depends on used no_script_type parameter
+        // no_script_type is possible since 1.10.4 / 2.4.3
+        this.firmwareRange = getFirmwareRange(
+            payload.no_script_type ? 'signMessageNoScriptType' : this.name,
+            this.coinInfo,
+            this.firmwareRange,
+        );
+    }
+
+    coinInfo: BitcoinNetworkInfo | undefined;
+
+    get requiredPermissions(): MethodPermission[] {
+        return ['read', 'write'];
     }
 
     get info() {

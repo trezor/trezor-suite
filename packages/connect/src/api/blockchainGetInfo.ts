@@ -14,17 +14,7 @@ type Params = {
 
 export default class BlockchainGetInfo extends AbstractMethod<'blockchainGetInfo', Params> {
     constructor(message: MethodMessage<'blockchainGetInfo'>) {
-        super(message);
-        this.useDevice = false;
-        this.useUi = false;
-    }
-
-    get requiredPermissions(): MethodPermission[] {
-        return [];
-    }
-
-    init() {
-        const { payload } = this;
+        const { payload } = message;
 
         // validate incoming parameters
         validateParams(payload, [
@@ -39,10 +29,18 @@ export default class BlockchainGetInfo extends AbstractMethod<'blockchainGetInfo
         // validate backend
         isBackendSupported(coinInfo);
 
-        this.params = {
+        const params = {
             coinInfo,
             identity: payload.identity,
         };
+
+        super(message, params);
+        this.useDevice = false;
+        this.useUi = false;
+    }
+
+    get requiredPermissions(): MethodPermission[] {
+        return [];
     }
 
     async run({ sendCoreMessage }: MethodContext) {

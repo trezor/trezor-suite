@@ -26,17 +26,7 @@ export default class BlockchainGetCurrentFiatRates extends AbstractMethod<
     Params
 > {
     constructor(message: MethodMessage<'blockchainGetCurrentFiatRates'>) {
-        super(message);
-        this.useDevice = false;
-        this.useUi = false;
-    }
-
-    get requiredPermissions(): MethodPermission[] {
-        return [];
-    }
-
-    init() {
-        const { payload } = this;
+        const { payload } = message;
 
         // validate incoming parameters
         validateParams(payload, [
@@ -53,12 +43,20 @@ export default class BlockchainGetCurrentFiatRates extends AbstractMethod<
         // validate backend
         isBackendSupported(coinInfo);
 
-        this.params = {
+        const params = {
             currencies: payload.currencies,
             token: payload.token,
             coinInfo,
             identity: payload.identity,
         };
+
+        super(message, params);
+        this.useDevice = false;
+        this.useUi = false;
+    }
+
+    get requiredPermissions(): MethodPermission[] {
+        return [];
     }
 
     async run({ sendCoreMessage }: MethodContext) {

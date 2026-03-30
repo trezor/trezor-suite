@@ -24,17 +24,7 @@ export default class SolanaComposeTransaction extends AbstractMethod<
     SolanaComposeTransactionParams
 > {
     constructor(message: MethodMessage<'solanaComposeTransaction'>) {
-        super(message);
-        this.useDevice = false;
-        this.useUi = false;
-    }
-
-    get requiredPermissions(): MethodPermission[] {
-        return [];
-    }
-
-    init() {
-        const { payload } = this;
+        const { payload } = message;
 
         // validate bundle type
         Assert(SolanaComposeTransactionSchema, payload);
@@ -46,10 +36,15 @@ export default class SolanaComposeTransaction extends AbstractMethod<
         // validate backend
         isBackendSupported(coinInfo);
 
-        this.params = {
-            coinInfo,
-            ...payload,
-        };
+        const params = { coinInfo, ...payload };
+
+        super(message, params);
+        this.useDevice = false;
+        this.useUi = false;
+    }
+
+    get requiredPermissions(): MethodPermission[] {
+        return [];
     }
 
     get info() {

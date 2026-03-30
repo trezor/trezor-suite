@@ -11,7 +11,7 @@ export default class EvoluGetDelegatedIdentityKey extends AbstractMethod<
     hasBundle?: boolean;
 
     constructor(message: MethodMessage<'evoluGetDelegatedIdentityKey'>) {
-        super(message);
+        super(message, {});
         this.useDevice = true;
         this.useUi = true;
         this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
@@ -19,8 +19,6 @@ export default class EvoluGetDelegatedIdentityKey extends AbstractMethod<
     get requiredPermissions(): MethodPermission[] {
         return ['read'];
     }
-
-    init() {}
 
     get info() {
         return 'Evolu get delegated identity key';

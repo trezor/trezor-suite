@@ -25,17 +25,7 @@ export default class BlockchainSubscribeFiatRates extends AbstractMethod<
     Params
 > {
     constructor(message: MethodMessage<'blockchainSubscribeFiatRates'>) {
-        super(message);
-        this.useDevice = false;
-        this.useUi = false;
-    }
-
-    get requiredPermissions(): MethodPermission[] {
-        return [];
-    }
-
-    init() {
-        const { payload } = this;
+        const { payload } = message;
 
         // validate incoming parameters
         validateParams(payload, [
@@ -51,12 +41,22 @@ export default class BlockchainSubscribeFiatRates extends AbstractMethod<
         // validate backend
         isBackendSupported(coinInfo);
 
-        this.params = {
+        const params = {
             currency: payload.currency,
             coinInfo,
             identity: payload.identity,
         };
+
+        super(message, params);
+        this.useDevice = false;
+        this.useUi = false;
     }
+
+    get requiredPermissions(): MethodPermission[] {
+        return [];
+    }
+
+    init() {}
 
     async run({ sendCoreMessage }: MethodContext) {
         const backend = await initBlockchain(

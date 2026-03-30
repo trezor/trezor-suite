@@ -7,7 +7,11 @@ import { getFirmwareRange } from './common/paramsValidator';
 
 export default class SetBusy extends AbstractMethod<'setBusy', PROTO.SetBusy> {
     constructor(message: MethodMessage<'setBusy'>) {
-        super(message);
+        const { payload } = message;
+
+        const params = { expiry_ms: payload.expiry_ms };
+
+        super(message, params);
         this.useDeviceState = false;
         this.skipFinalReload = false;
         this.overridePreviousCall = true;
@@ -15,14 +19,6 @@ export default class SetBusy extends AbstractMethod<'setBusy', PROTO.SetBusy> {
     }
     get requiredPermissions(): MethodPermission[] {
         return ['management'];
-    }
-
-    init() {
-        const { payload } = this;
-
-        this.params = {
-            expiry_ms: payload.expiry_ms,
-        };
     }
 
     async run({ sendCoreMessage }: MethodContext) {

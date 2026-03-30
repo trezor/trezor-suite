@@ -37,28 +37,12 @@ export default class CardanoGetAddress extends AbstractMethod<'cardanoGetAddress
     progress = 0;
 
     constructor(message: MethodMessage<'cardanoGetAddress'>) {
-        super(message);
-        this.confirmMissingBackup = true;
-        this.requiredDeviceCapabilities = ['Capability_Cardano'];
-        this.firmwareRange = getFirmwareRange(
-            this.name,
-            getMiscNetwork('Cardano'),
-            this.firmwareRange,
-        );
-    }
-
-    get requiredPermissions(): MethodPermission[] {
-        return ['read'];
-    }
-
-    init() {
-        const { hasBundle, payload } = bundlify(this.payload);
-        this.hasBundle = hasBundle;
+        const { hasBundle, payload } = bundlify(message.payload);
 
         // validate bundle type
         Assert(Bundle(CardanoGetAddressSchema), payload);
 
-        this.params = payload.bundle.map(batch => {
+        const params = payload.bundle.map(batch => {
             validateAddressParameters(batch.addressParameters);
 
             const proto = {
@@ -76,7 +60,21 @@ export default class CardanoGetAddress extends AbstractMethod<'cardanoGetAddress
             return { proto, address: batch.address };
         });
 
+        super(message, params);
+
+        this.hasBundle = hasBundle;
         this.useUi = this.getUseUi(this.params);
+        this.confirmMissingBackup = true;
+        this.requiredDeviceCapabilities = ['Capability_Cardano'];
+        this.firmwareRange = getFirmwareRange(
+            this.name,
+            getMiscNetwork('Cardano'),
+            this.firmwareRange,
+        );
+    }
+
+    get requiredPermissions(): MethodPermission[] {
+        return ['read'];
     }
 
     get info() {

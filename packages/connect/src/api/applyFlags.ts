@@ -8,7 +8,13 @@ import { AbstractMethod } from '../core/AbstractMethod';
 
 export default class ApplyFlags extends AbstractMethod<'applyFlags', PROTO.ApplyFlags> {
     constructor(message: MethodMessage<'applyFlags'>) {
-        super(message);
+        const { payload } = message;
+
+        Assert(PROTO.ApplyFlags, payload);
+
+        const params = { flags: payload.flags };
+
+        super(message, params);
         this.useDeviceState = false;
         this.skipFinalReload = false;
     }
@@ -17,15 +23,7 @@ export default class ApplyFlags extends AbstractMethod<'applyFlags', PROTO.Apply
         return ['management'];
     }
 
-    init() {
-        const { payload } = this;
-
-        Assert(PROTO.ApplyFlags, payload);
-
-        this.params = {
-            flags: payload.flags,
-        };
-    }
+    init() {}
 
     get confirmation() {
         return {

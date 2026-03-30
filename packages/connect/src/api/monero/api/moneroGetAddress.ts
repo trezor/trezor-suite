@@ -19,26 +19,10 @@ export default class MoneroGetAddress extends AbstractMethod<'moneroGetAddress',
     progress = 0;
 
     constructor(message: MethodMessage<'moneroGetAddress'>) {
-        super(message);
-        this.confirmMissingBackup = true;
-        this.requiredDeviceCapabilities = ['Capability_Monero'];
-        this.firmwareRange = getFirmwareRange(
-            this.name,
-            getMiscNetwork('Monero'),
-            this.firmwareRange,
-        );
-    }
-
-    get requiredPermissions(): MethodPermission[] {
-        return ['read'];
-    }
-
-    init() {
-        const { hasBundle, payload } = bundlify(this.payload);
-        this.hasBundle = hasBundle;
+        const { hasBundle, payload } = bundlify(message.payload);
 
         // validate bundle type and map to Monero-specific params
-        const bundle = payload.bundle.map(batch => {
+        const params = payload.bundle.map(batch => {
             // path is m/44'/128'/0' (3 components)
             // account and minor are passed as separate parameters
             const path = validatePath(batch.path, 3);
@@ -65,8 +49,21 @@ export default class MoneroGetAddress extends AbstractMethod<'moneroGetAddress',
             return { proto, address: batch.address };
         });
 
-        this.params = bundle;
-        this.useUi = this.getUseUi(this.params);
+        super(message, params);
+
+        this.hasBundle = hasBundle;
+        this.useUi = this.getUseUi(params);
+        this.confirmMissingBackup = true;
+        this.requiredDeviceCapabilities = ['Capability_Monero'];
+        this.firmwareRange = getFirmwareRange(
+            this.name,
+            getMiscNetwork('Monero'),
+            this.firmwareRange,
+        );
+    }
+
+    get requiredPermissions(): MethodPermission[] {
+        return ['read'];
     }
 
     get info() {

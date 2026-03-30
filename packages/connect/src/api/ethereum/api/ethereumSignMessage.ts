@@ -24,31 +24,29 @@ type Params = {
 
 export default class EthereumSignMessage extends AbstractMethod<'ethereumSignMessage', Params> {
     constructor(message: MethodMessage<'ethereumSignMessage'>) {
-        super(message);
-        this.requiredDeviceCapabilities = ['Capability_Ethereum'];
-    }
-
-    get requiredPermissions(): MethodPermission[] {
-        return ['read', 'write'];
-    }
-
-    init() {
-        const { payload } = this;
+        const { payload } = message;
 
         // validate incoming parameters
         Assert(EthereumSignMessageSchema, payload);
 
         const address_n = validatePath(payload.path, 3);
         const network = getEthereumNetwork(address_n);
-        this.firmwareRange = getFirmwareRange(this.name, network, this.firmwareRange);
 
-        const message = payload.hex
+        const messageHex = payload.hex
             ? messageToHex(payload.message)
             : Buffer.from(payload.message, 'utf8').toString('hex');
 
         const readableMessage = payload.hex ? hexToText(payload.message) : payload.message;
 
-        this.params = { proto: { address_n, message }, readableMessage };
+        const params = { proto: { address_n, message: messageHex }, readableMessage };
+
+        super(message, params);
+        this.firmwareRange = getFirmwareRange(this.name, network, this.firmwareRange);
+        this.requiredDeviceCapabilities = ['Capability_Ethereum'];
+    }
+
+    get requiredPermissions(): MethodPermission[] {
+        return ['read', 'write'];
     }
 
     async initAsync() {

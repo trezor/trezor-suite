@@ -18,16 +18,7 @@ type Params = {
 
 export default class PushTransaction extends AbstractMethod<'pushTransaction', Params> {
     constructor(message: MethodMessage<'pushTransaction'>) {
-        super(message);
-        this.useUi = false;
-        this.useDevice = false;
-    }
-    get requiredPermissions(): MethodPermission[] {
-        return ['push_tx'];
-    }
-
-    init() {
-        const { payload } = this;
+        const { payload } = message;
 
         // validate incoming parameters
         Assert(PushTransactionSchema, payload);
@@ -46,11 +37,18 @@ export default class PushTransaction extends AbstractMethod<'pushTransaction', P
             throw ERRORS.TypedError('Method_InvalidParameter', 'Transaction must be hexadecimal');
         }
 
-        this.params = {
+        const params = {
             tx: payload.tx,
             coinInfo,
             identity: payload.identity,
         };
+
+        super(message, params);
+        this.useUi = false;
+        this.useDevice = false;
+    }
+    get requiredPermissions(): MethodPermission[] {
+        return ['push_tx'];
     }
 
     async run({ sendCoreMessage }: MethodContext) {

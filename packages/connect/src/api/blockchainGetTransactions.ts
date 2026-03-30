@@ -20,17 +20,7 @@ export default class BlockchainGetTransactions extends AbstractMethod<
     Params
 > {
     constructor(message: MethodMessage<'blockchainGetTransactions'>) {
-        super(message);
-        this.useDevice = false;
-        this.useUi = false;
-    }
-
-    get requiredPermissions(): MethodPermission[] {
-        return [];
-    }
-
-    init() {
-        const { payload } = this;
+        const { payload } = message;
 
         // validate incoming parameters
         validateParams(payload, [
@@ -46,12 +36,22 @@ export default class BlockchainGetTransactions extends AbstractMethod<
         // validate backend
         isBackendSupported(coinInfo);
 
-        this.params = {
+        const params = {
             txs: payload.txs,
             coinInfo,
             identity: payload.identity,
         };
+
+        super(message, params);
+        this.useDevice = false;
+        this.useUi = false;
     }
+
+    get requiredPermissions(): MethodPermission[] {
+        return [];
+    }
+
+    init() {}
 
     async run({ sendCoreMessage }: MethodContext) {
         const backend = await initBlockchain(

@@ -25,17 +25,7 @@ export default class BlockchainGetAccountBalanceHistory extends AbstractMethod<
     Params
 > {
     constructor(message: MethodMessage<'blockchainGetAccountBalanceHistory'>) {
-        super(message);
-        this.useDevice = false;
-        this.useUi = false;
-    }
-
-    get requiredPermissions(): MethodPermission[] {
-        return [];
-    }
-
-    init() {
-        const { payload } = this;
+        const { payload } = message;
 
         // validate incoming parameters
         validateParams(payload, [
@@ -55,7 +45,7 @@ export default class BlockchainGetAccountBalanceHistory extends AbstractMethod<
         // validate backend
         isBackendSupported(coinInfo);
 
-        this.params = {
+        const params = {
             coinInfo,
             identity: payload.identity,
             request: {
@@ -66,6 +56,14 @@ export default class BlockchainGetAccountBalanceHistory extends AbstractMethod<
                 currencies: payload.currencies,
             },
         };
+
+        super(message, params);
+        this.useDevice = false;
+        this.useUi = false;
+    }
+
+    get requiredPermissions(): MethodPermission[] {
+        return [];
     }
 
     async run({ sendCoreMessage }: MethodContext) {

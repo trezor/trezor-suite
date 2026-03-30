@@ -81,17 +81,7 @@ export default class DiscoverAccounts extends AbstractMethod<
     disposed = false;
 
     constructor(message: MethodMessage<'discoverAccounts'>) {
-        super(message);
-        this.useDevice = true;
-        this.useDeviceState = true;
-        this.useUi = false;
-    }
-    get requiredPermissions(): MethodPermission[] {
-        return ['read'];
-    }
-
-    init() {
-        const { payload } = this;
+        const { payload } = message;
         const { entropyCheckResult } = payload;
 
         // validate bundle type
@@ -122,7 +112,11 @@ export default class DiscoverAccounts extends AbstractMethod<
             // validate backend
             isBackendSupported(coinInfo);
 
-            const firmwareRange = getFirmwareRange(this.name, coinInfo, DEFAULT_FIRMWARE_RANGE);
+            const firmwareRange = getFirmwareRange(
+                payload.method,
+                coinInfo,
+                DEFAULT_FIRMWARE_RANGE,
+            );
 
             // Take all the defined account types based on requested coin symbol
             const symbolAccounts = ACCOUNT_TYPES.filter(a => a.symbol === symbol);
@@ -154,7 +148,15 @@ export default class DiscoverAccounts extends AbstractMethod<
                 }));
         });
 
-        this.params = { coins, entropyCheckResult };
+        const params = { coins, entropyCheckResult };
+
+        super(message, params);
+        this.useDevice = true;
+        this.useDeviceState = true;
+        this.useUi = false;
+    }
+    get requiredPermissions(): MethodPermission[] {
+        return ['read'];
     }
 
     private progress: Partial<{ [key in ReturnType<typeof getAccountTypeKey>]: number }> = {};

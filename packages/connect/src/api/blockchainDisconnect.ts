@@ -17,18 +17,7 @@ type Params = {
 
 export default class BlockchainDisconnect extends AbstractMethod<'blockchainDisconnect', Params> {
     constructor(message: MethodMessage<'blockchainDisconnect'>) {
-        super(message);
-
-        this.useDevice = false;
-        this.useUi = false;
-    }
-
-    get requiredPermissions(): MethodPermission[] {
-        return [];
-    }
-
-    init() {
-        const { payload } = this;
+        const { payload } = message;
 
         // validate incoming parameters
         Assert(CoinObj, payload);
@@ -40,10 +29,19 @@ export default class BlockchainDisconnect extends AbstractMethod<'blockchainDisc
         // validate backend
         isBackendSupported(coinInfo);
 
-        this.params = {
+        const params = {
             coinInfo,
             identity: payload.identity,
         };
+
+        super(message, params);
+
+        this.useDevice = false;
+        this.useUi = false;
+    }
+
+    get requiredPermissions(): MethodPermission[] {
+        return [];
     }
 
     get info() {

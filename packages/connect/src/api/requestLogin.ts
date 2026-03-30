@@ -12,16 +12,7 @@ import { DataManager } from '../data/DataManager';
 
 export default class RequestLogin extends AbstractMethod<'requestLogin', PROTO.SignIdentity> {
     constructor(message: MethodMessage<'requestLogin'>) {
-        super(message);
-        this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
-        this.useEmptyPassphrase = true;
-    }
-    get requiredPermissions(): MethodPermission[] {
-        return ['read', 'write'];
-    }
-
-    init() {
-        const { payload } = this;
+        const { payload } = message;
 
         // validate incoming parameters
         Assert(RequestLoginSchema, payload);
@@ -41,11 +32,18 @@ export default class RequestLogin extends AbstractMethod<'requestLogin', PROTO.S
             identity.index = 0;
         }
 
-        this.params = {
+        const params = {
             identity,
             challenge_hidden: payload.challengeHidden || '',
             challenge_visual: payload.challengeVisual || '',
         };
+
+        super(message, params);
+        this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
+        this.useEmptyPassphrase = true;
+    }
+    get requiredPermissions(): MethodPermission[] {
+        return ['read', 'write'];
     }
 
     get info() {

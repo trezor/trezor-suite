@@ -5,7 +5,7 @@ import type { CoinInfo, PROTO } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 
-import type { MethodPermission } from '../core/AbstractMethod';
+import type { MethodMessage, MethodPermission } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { getFirmwareRange } from './common/paramsValidator';
 import { getBitcoinNetwork } from '../data/coinInfo';
@@ -19,12 +19,8 @@ type Params = {
 };
 
 export default class VerifyMessage extends AbstractMethod<'verifyMessage', Params> {
-    get requiredPermissions(): MethodPermission[] {
-        return ['read', 'write'];
-    }
-
-    init() {
-        const { payload } = this;
+    constructor(message: MethodMessage<'verifyMessage'>) {
+        const { payload } = message;
 
         // validate incoming parameters for each batch
         Assert(VerifyMessageSchema, payload);
@@ -32,9 +28,6 @@ export default class VerifyMessage extends AbstractMethod<'verifyMessage', Param
         const coinInfo = getBitcoinNetwork(payload.coin);
         if (!coinInfo) {
             throw ERRORS.TypedError('Method_UnknownCoin');
-        } else {
-            // check required firmware with coinInfo support
-            this.firmwareRange = getFirmwareRange(this.name, coinInfo, this.firmwareRange);
         }
         const messageHex = payload.hex
             ? messageToHex(payload.message)
@@ -48,7 +41,16 @@ export default class VerifyMessage extends AbstractMethod<'verifyMessage', Param
             coin_name: coinInfo.name,
         };
 
-        this.params = { proto, coinInfo };
+        const params = { proto, coinInfo };
+
+        super(message, params);
+
+        // check required firmware with coinInfo support
+        this.firmwareRange = getFirmwareRange(this.name, coinInfo, this.firmwareRange);
+    }
+
+    get requiredPermissions(): MethodPermission[] {
+        return ['read', 'write'];
     }
 
     get info() {

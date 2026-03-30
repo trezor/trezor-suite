@@ -18,17 +18,7 @@ export default class BlockchainSetCustomBackend extends AbstractMethod<
     Params
 > {
     constructor(message: MethodMessage<'blockchainSetCustomBackend'>) {
-        super(message);
-        this.useDevice = false;
-        this.useUi = false;
-    }
-
-    get requiredPermissions(): MethodPermission[] {
-        return [];
-    }
-
-    init() {
-        const { payload } = this;
+        const { payload } = message;
 
         // validate incoming parameters
         validateParams(payload, [
@@ -43,9 +33,15 @@ export default class BlockchainSetCustomBackend extends AbstractMethod<
 
         setCustomBackend(coinInfo, payload.blockchainLink);
 
-        this.params = {
-            coinInfo,
-        };
+        const params = { coinInfo };
+
+        super(message, params);
+        this.useDevice = false;
+        this.useUi = false;
+    }
+
+    get requiredPermissions(): MethodPermission[] {
+        return [];
     }
 
     get info() {

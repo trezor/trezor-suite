@@ -24,17 +24,7 @@ type Params = {
 
 export default class BlockchainEstimateFee extends AbstractMethod<'blockchainEstimateFee', Params> {
     constructor(message: MethodMessage<'blockchainEstimateFee'>) {
-        super(message);
-        this.useDevice = false;
-        this.useUi = false;
-    }
-
-    get requiredPermissions(): MethodPermission[] {
-        return [];
-    }
-
-    init() {
-        const { payload } = this;
+        const { payload } = message;
 
         // validate incoming parameters
         validateParams(payload, [
@@ -70,11 +60,19 @@ export default class BlockchainEstimateFee extends AbstractMethod<'blockchainEst
         // validate backend
         isBackendSupported(coinInfo);
 
-        this.params = {
+        const params = {
             coinInfo,
             identity,
             request,
         };
+
+        super(message, params);
+        this.useDevice = false;
+        this.useUi = false;
+    }
+
+    get requiredPermissions(): MethodPermission[] {
+        return [];
     }
 
     async run({ sendCoreMessage }: MethodContext) {
