@@ -1,4 +1,10 @@
-import { OUTPUT_SCRIPT_LENGTH } from './coinselect/coinselectUtils';
+const OUTPUT_SCRIPT_LENGTH = {
+    p2pkh: 25,
+    p2sh: 23,
+    p2tr: 34,
+    p2wpkh: 22,
+    p2wsh: 34,
+} as const;
 
 // transaction header size: 4 byte version
 const _TXSIZE_HEADER = 4;
