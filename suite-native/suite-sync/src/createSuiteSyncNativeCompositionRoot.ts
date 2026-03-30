@@ -4,7 +4,10 @@ import { reloadAppAsync } from 'expo';
 
 import { type EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-key-types';
 import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
-import { createSuiteSyncCompositionRoot } from '@suite-common/suite-sync';
+import {
+    type SuiteSyncAnalyticsDep,
+    createSuiteSyncCompositionRoot,
+} from '@suite-common/suite-sync';
 import {
     createEvoluInstanceFactory,
     createEvoluStorageFactory,
@@ -17,7 +20,8 @@ type SuiteSyncNativeCompositionRootDeps = {
     getState: () => any;
     dispatch: Dispatch;
     trezorConnect: TrezorConnect;
-} & PlatformEncryptionDep &
+} & SuiteSyncAnalyticsDep &
+    PlatformEncryptionDep &
     EnsureDelegatedIdentityKeyDep;
 
 export const createSuiteSyncNativeCompositionRoot = (
