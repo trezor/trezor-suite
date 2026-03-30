@@ -1,4 +1,3 @@
-import { selectTradingExchangeActiveQuote } from '@suite-common/trading';
 import { type TestStore, initStore, renderWithStoreProvider } from '@suite-native/test-utils';
 import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
 
@@ -21,14 +20,6 @@ describe('RevokeLimitInfoRow', () => {
             preapprovedStringAmount: '100',
         };
         ({ store } = initStore(preloadedState));
-    });
-
-    it('should set ZERO approvalType on mount', () => {
-        renderRevokeLimitInfoRow();
-
-        expect(selectTradingExchangeActiveQuote(store.getState())).toEqual(
-            expect.objectContaining({ approvalType: 'ZERO' }),
-        );
     });
 
     it('should render that new limit is 0', () => {

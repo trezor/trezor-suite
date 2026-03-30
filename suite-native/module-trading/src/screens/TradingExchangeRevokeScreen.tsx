@@ -1,5 +1,7 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+
+import type { ExchangeTrade } from 'invity-api';
 
 import {
     type TradingRootState,
@@ -39,34 +41,73 @@ export const TradingExchangeRevokeScreen = ({
 
     const quote = useSelector(selectTradingExchangeActiveQuote);
 
-    const { isConfirming, error: confirmError, confirmApproval } = useApprovalFlow();
+    const { isReady, isConfirming, error: confirmError, confirmApproval } = useApprovalFlow();
 
     const coinSymbol = useSelector((state: TradingRootState) =>
         selectTradingCoinSymbolByCryptoId(state, quote?.send),
     );
 
-    const { fee, isLoading: isComposingFees, error: feeError } = useEvmApprovalFees();
+    const {
+        fee,
+        isLoading: isComposingFees,
+        error: feeError,
+    } = useEvmApprovalFees({
+        approvalTypeOverride: 'ZERO',
+    });
 
     const isLoading = isConfirming || isComposingFees;
     const error = confirmError || feeError;
     const isRevokeReady = !isLoading && !error && fee !== undefined;
 
-    useEffect(
-        () => {
-            if (!quote) {
-                console.error('No quote to revoke approval');
+    const hasConfirmedRef = useRef(false);
 
+    useEffect(() => {
+        if (hasConfirmedRef.current) {
+            return;
+        }
+
+        if (!quote) {
+            console.error('No quote to revoke approval');
+
+            return;
+        }
+
+        if (!isReady) {
+            return;
+        }
+
+        hasConfirmedRef.current = true;
+
+        const quoteWithType =
+            quote.approvalType === 'ZERO'
+                ? quote
+                : ({ ...quote, approvalType: 'ZERO' } satisfies ExchangeTrade);
+
+        if (quote.approvalType !== 'ZERO') {
+            dispatch(tradingExchangeActions.saveSelectedQuote(quoteWithType));
+        }
+
+        let isActive = true;
+
+        confirmApproval(quoteWithType).then(response => {
+            if (!isActive) {
                 return;
             }
 
-            confirmApproval(quote);
+            if (response === undefined) {
+                hasConfirmedRef.current = false;
+            }
+        });
 
-            return () => {
-                dispatch(tradingExchangeActions.saveSelectedQuote(undefined));
-            };
+        return () => {
+            isActive = false;
+        };
+    }, [quote, isReady, dispatch, confirmApproval]);
+
+    useEffect(
+        () => () => {
+            dispatch(tradingExchangeActions.saveSelectedQuote(undefined));
         },
-        // We only want to confirm once on mount, not on every quote change.
-        // eslint-disable-next-line react-hooks/exhaustive-deps
         [dispatch],
     );
 

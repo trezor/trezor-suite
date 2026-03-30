@@ -15,6 +15,7 @@ const mockConfirmApproval = jest.fn().mockResolvedValue({});
 jest.mock('../../hooks/exchange/Approval/useApprovalFlow', () => ({
     useApprovalFlow: () => ({
         quote: undefined,
+        isReady: true,
         isConfirming: false,
         error: null,
         confirmApproval: mockConfirmApproval,
@@ -96,6 +97,15 @@ describe('TradingExchangeRevokeScreen', () => {
             unmount();
             unmount = undefined;
         }
+    });
+
+    it('should confirm revoke with ZERO approval type', () => {
+        renderScreen();
+
+        expect(mockConfirmApproval).toHaveBeenCalledTimes(1);
+        expect(mockConfirmApproval).toHaveBeenCalledWith(
+            expect.objectContaining({ approvalType: 'ZERO' }),
+        );
     });
 
     it('should render the revoke screen with quote details', () => {

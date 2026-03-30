@@ -1,10 +1,8 @@
-import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import {
     cryptoIdToNetworkAndContractAddress,
     selectTradingExchangeActiveQuote,
-    tradingExchangeActions,
 } from '@suite-common/trading';
 import { HStack, Text } from '@suite-native/atoms';
 import { CryptoIcon, Icon } from '@suite-native/icons';
@@ -15,18 +13,6 @@ import { TradingCoinAmountFormatter } from '../../general/TradingCoinAmountForma
 
 export const RevokeLimitInfoRow = () => {
     const quote = useSelector(selectTradingExchangeActiveQuote);
-    const dispatch = useDispatch();
-
-    useEffect(() => {
-        if (quote && !quote.approvalType) {
-            dispatch(
-                tradingExchangeActions.saveSelectedQuote({
-                    ...quote,
-                    approvalType: 'ZERO',
-                }),
-            );
-        }
-    }, [dispatch, quote]);
 
     if (!quote?.send) {
         return null;
