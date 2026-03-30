@@ -1,6 +1,6 @@
 import { Translation } from '@suite/intl';
 import { type EarnFlow } from '@suite-common/suite-types/src/staking';
-import { selectPoolStatsApyData } from '@suite-common/wallet-core';
+import { selectPoolStatsApy } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { CollapsibleBox, Column, H3 } from '@trezor/components';
 
@@ -15,7 +15,7 @@ type StakeInfoCardsProps = {
 };
 
 export const StakeInfoCards = ({ account, flow }: StakeInfoCardsProps) => {
-    const apy = useSelector(state => selectPoolStatsApyData(state, account));
+    const apy = useSelector(state => selectPoolStatsApy(state, { account }));
 
     const cards = [
         {

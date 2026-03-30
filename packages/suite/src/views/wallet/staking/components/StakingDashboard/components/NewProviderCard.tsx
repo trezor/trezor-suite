@@ -2,7 +2,7 @@ import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { selectPoolStatsApyData } from '@suite-common/wallet-core';
+import { selectPoolStatsApy } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { isCardanoStakedWithFiveBinaries } from '@suite-common/wallet-utils';
 import { Button, Card, Column, H3, Icon, Paragraph, Row, Tooltip } from '@trezor/components';
@@ -21,7 +21,7 @@ export const NewProviderCard = ({ account }: NewProviderCardProps) => {
 
     const { isStakingDisabled, stakingMessageContent } = useMessageSystemStaking(account?.symbol);
 
-    const apy = useSelector(state => selectPoolStatsApyData(state, account));
+    const apy = useSelector(state => selectPoolStatsApy(state, { account }));
 
     const isStakedWithFiveBinaries = isCardanoStakedWithFiveBinaries(account);
 

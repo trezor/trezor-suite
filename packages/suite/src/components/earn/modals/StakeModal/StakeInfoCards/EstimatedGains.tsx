@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 
 import { Translation } from '@suite/intl';
 import { calculateGains, getNetworkAdjustedStakingBalance } from '@suite-common/staking';
-import { selectPoolStatsApyData } from '@suite-common/wallet-core';
+import { selectPoolStatsApy } from '@suite-common/wallet-core';
 import { Column, Grid, Image, Paragraph, Text } from '@trezor/components';
 
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
@@ -34,7 +34,7 @@ export const EstimatedGains = () => {
         return '0';
     }, [hasInvalidFormState, value, account]);
 
-    const apy = useSelector(state => selectPoolStatsApyData(state, account));
+    const apy = useSelector(state => selectPoolStatsApy(state, { account }));
 
     const gains = [
         {
