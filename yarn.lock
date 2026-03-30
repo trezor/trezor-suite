@@ -10748,6 +10748,7 @@ __metadata:
   resolution: "@suite-common/earn-staking-api@workspace:suite-common/earn-staking-api"
   dependencies:
     "@suite-common/http-client": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
     orval: "npm:8.5.0"
     prettier: "npm:^3.8.1"
     zod: "npm:4.3.6"
@@ -11459,6 +11460,7 @@ __metadata:
     "@suite-common/bluetooth": "workspace:*"
     "@suite-common/calldata": "workspace:*"
     "@suite-common/device": "workspace:*"
+    "@suite-common/earn-staking-api": "workspace:*"
     "@suite-common/fiat-services": "workspace:*"
     "@suite-common/firmware": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
