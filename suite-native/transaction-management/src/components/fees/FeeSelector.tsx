@@ -113,16 +113,15 @@ export const FeeSelector = ({
                     feeLimitSunOverride={feeLimitSunOverride}
                     supportsAdjustableFees={isTrc20}
                 />
-            ) : (
-                <FeeSummaryCard
-                    fee={fee}
-                    symbol={symbol}
-                    networkType={networkType}
-                    areFeesLoading={areFeesLoading}
-                    onPress={handleOpen}
-                    testID="@transactionManagement/fee-selector-card"
-                />
-            )}
+            ) : (<FeeSummaryCard
+                fee={fee}
+                symbol={symbol}
+                networkType={networkType}
+                areFeesLoading={areFeesLoading}
+                onPress={handleOpen}
+                testID="@transactionManagement/fee-selector-card"
+                withCaret
+            />)}
             <FeesBottomSheet
                 ref={bottomSheetRef}
                 form={form}
