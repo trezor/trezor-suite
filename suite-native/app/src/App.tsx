@@ -1,5 +1,4 @@
-import { useEffect, useRef } from 'react';
-import { Freeze } from 'react-freeze';
+import { Activity, useEffect, useRef } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -80,9 +79,9 @@ const AppComponent = () => {
             {__DEV__ && <InitRosenitePlugin />}
             <BannersRenderer />
             <BottomSheetModalProvider>
-                <Freeze freeze={isBiometricsOverlayVisible}>
+                <Activity mode={isBiometricsOverlayVisible ? 'hidden' : 'visible'}>
                     <RootStackNavigator />
-                </Freeze>
+                </Activity>
             </BottomSheetModalProvider>
             <ModalsRenderer />
             {/* NOTE: Rendered as last item so that it covers the whole app screen */}

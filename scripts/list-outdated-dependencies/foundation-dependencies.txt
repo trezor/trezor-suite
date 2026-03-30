@@ -62,7 +62,6 @@ openpgp
 prettier
 react-native-ble-plx
 react-native-mmkv
-react-freeze
 react-native-nitro-modules
 set.prototype.difference
 set.prototype.intersection
