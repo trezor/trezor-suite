@@ -181,7 +181,7 @@
         "tsx": "^4.21.0",
         "vite-plugin-node-polyfills": "^0.25.0",
         "vite-plugin-wasm": "^3.6.0",
-        "vitest": "^3.2.4",
+        "vitest": "^4.1.0",
         "vm-browserify": "^1.1.2",
         "web3-utils": "^4.3.2",
         "ws": "^8.18.0"
