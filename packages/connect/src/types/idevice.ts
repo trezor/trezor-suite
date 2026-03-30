@@ -138,7 +138,7 @@ export interface IDevice {
     interrupt(reason: Error): Promise<void>;
     reset(): void;
     setBusy(value?: DeviceBusyStatus): void;
-    setupThp(): Promise<void>;
+    setupThp(): void;
     handshake(): Promise<boolean>;
     setInstance(instance?: number): void;
 

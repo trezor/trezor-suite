@@ -52,11 +52,6 @@ const getOrCreateTransport = (
             return existing;
         }
 
-        // custom Transport might be initialized without messages, update them if so
-        if (!transportType.getMessage()) {
-            transportType.updateMessages(params.messages);
-        }
-
         return transportType;
     }
 

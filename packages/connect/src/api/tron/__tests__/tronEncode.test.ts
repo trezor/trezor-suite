@@ -1,5 +1,6 @@
 import { bytesToHex } from '@noble/hashes/utils.js';
 
+import { loadProtobufModules } from '../../../data/protobufLoader';
 import {
     estimateTronTransferBandwidth,
     estimateTronTrc20Bandwidth,
@@ -35,6 +36,10 @@ const TRX_TRANSFER = {
 const TRC20_TRIGGER = {
     data: 'a9059cbb000000000000000000000000d093f24888ab06073a4bdffbb8107db1ea9dc0a000000000000000000000000000000000000000000000000000000000013bb450',
 };
+
+beforeAll(async () => {
+    await loadProtobufModules();
+});
 
 describe('tron/estimateTronTransferBandwidth', () => {
     it('returns the expected bandwidth for a TRX transfer', () => {

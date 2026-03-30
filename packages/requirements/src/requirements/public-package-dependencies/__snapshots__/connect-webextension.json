@@ -13,8 +13,6 @@
         "@trezor/utils",
         "@trezor/websocket-client",
         "bignumber.js",
-        "long",
-        "protobufjs",
         "ts-mixer",
         "tslib",
         "ws"

@@ -2,7 +2,7 @@ import { create, toBinary } from '@bufbuild/protobuf';
 import { hexToBytes } from '@noble/hashes/utils.js';
 
 import type { TronContracts } from '@trezor/connect-common/src/types/api/tron';
-import { protobufManager } from '@trezor/protobuf/src/bufbuild-loader';
+import { protobufManager } from '@trezor/protobuf';
 import { TronRawContractType } from '@trezor/protobuf/src/definitions/messages-tron';
 
 // DATA_HEX_PROTOBUF_EXTRA + MAX_RESULT_SIZE_IN_TX + A_SIGNATURE
@@ -18,13 +18,7 @@ type BlockParams = {
 
 const contractTypeUrl = (name: string) => `type.googleapis.com/protocol.${name}`;
 
-const getSchema = (name: string) => {
-    if (!protobufManager) {
-        throw new Error('ProtobufManager not initialized');
-    }
-
-    return protobufManager.findSchema(name).schema;
-};
+const getSchema = (name: string) => protobufManager.findSchema(name).schema;
 
 type InnerContract = { type: TronRawContractType; bytes: Uint8Array };
 

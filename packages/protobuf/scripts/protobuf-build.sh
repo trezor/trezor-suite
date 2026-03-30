@@ -47,13 +47,6 @@ cp  "$REPO_PATH"/common/protob/*.proto ./build
 # remove unused files
 rm -f ./build/messages-{webauthn,benchmark,nem,nostr}.proto
 
-# build `protobufjs` definitions and types
-yarn g:tsx ./protobuf-definitions.ts ./build --skip=thp
-
-yarn workspace @trezor/protobuf g:prettier --write messages.json
-
-yarn g:tsx ./protobuf-thp-definitions.ts ./build
-
 # build `@bufbuild`` definitions
 buf generate
 cd ..

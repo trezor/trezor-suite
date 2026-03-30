@@ -1,7 +1,7 @@
 import { randomBytes } from 'crypto';
 
 import { ERRORS } from '@trezor/connect-common/src/constants';
-import { encodeMessage } from '@trezor/protobuf';
+import { protobufManager } from '@trezor/protobuf';
 import type { ThpPairingMethod } from '@trezor/protocol';
 import { thp as protocolThp } from '@trezor/protocol';
 
@@ -98,7 +98,7 @@ export const thpHandshake = async (device: IDevice, unlockPin = false) => {
         hostEphemeralKeys,
         knownCredentials,
         tryToUnlock,
-        protobufEncoder: (name, data) => encodeMessage(device.transport.getMessages(), name, data),
+        protobufEncoder: (name, data) => protobufManager.encode(name, data),
     });
 
     // update thpState

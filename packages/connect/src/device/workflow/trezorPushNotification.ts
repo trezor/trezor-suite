@@ -21,7 +21,7 @@ const setupDeviceMode = async (
         (!device.features || !device.getThpState())
     ) {
         device.setBusy('rebooting');
-        await device.setupThp();
+        device.setupThp();
         await device.acquire();
 
         // wait. THP may not be ready yet

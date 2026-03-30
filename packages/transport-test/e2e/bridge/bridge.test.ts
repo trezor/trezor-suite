@@ -1,4 +1,3 @@
-import * as messages from '@trezor/protobuf/messages.json';
 import { BridgeTransport, Descriptor } from '@trezor/transport';
 import { Session } from '@trezor/transport/src/types';
 import { Model } from '@trezor/trezor-user-env-link';
@@ -20,7 +19,7 @@ describe('bridge', () => {
         await TrezorUserEnvLink.startEmu(emulatorStartOpts);
         await TrezorUserEnvLink.startBridge();
 
-        bridge = new BridgeTransport({ messages, id: '' });
+        bridge = new BridgeTransport({ id: '' });
         await bridge.init();
 
         const enumerateResult = await bridge.enumerate();

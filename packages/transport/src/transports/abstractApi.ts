@@ -241,7 +241,6 @@ export abstract class AbstractApiTransport extends AbstractTransport {
 
                 const protocol = customProtocol || v1Protocol;
                 const bytes = buildMessage({
-                    messages: this.messages,
                     name,
                     data,
                     protocol,
@@ -287,7 +286,6 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                         thpState?.sync('send', name);
                     }
                     const message = parseThpMessage({
-                        messages: this.messages,
                         decoded: callResult.payload,
                         thpState,
                     });
@@ -303,7 +301,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                     return sendResult;
                 }
 
-                const readResult = await receiveAndParse(this.messages, apiRead, protocol);
+                const readResult = await receiveAndParse(apiRead, protocol);
 
                 if (!readResult.success) {
                     handleError(readResult.error.code);
@@ -338,7 +336,6 @@ export abstract class AbstractApiTransport extends AbstractTransport {
 
                 const protocol = customProtocol || v1Protocol;
                 const bytes = buildMessage({
-                    messages: this.messages,
                     name,
                     data,
                     protocol,
@@ -430,7 +427,6 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                     }
 
                     const message = parseThpMessage({
-                        messages: this.messages,
                         decoded: decoded.payload,
                         thpState,
                     });
@@ -438,7 +434,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                     return success(message);
                 }
 
-                const message = await receiveAndParse(this.messages, apiRead, protocol);
+                const message = await receiveAndParse(apiRead, protocol);
 
                 if (!message.success) {
                     if (message.error.code === ERRORS.DEVICE_DISCONNECTED_DURING_ACTION) {

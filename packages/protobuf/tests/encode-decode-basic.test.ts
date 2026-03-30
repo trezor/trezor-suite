@@ -1,326 +1,286 @@
-import * as ProtoBuf from 'protobufjs/light';
+import { AnyDesc } from '@bufbuild/protobuf';
 
-import { decode } from '../src/decode';
-import { encode } from '../src/encode';
+import { ProtobufManager } from '../src/manager';
 
-const messages = {
-    nested: {
-        messages: {
-            nested: {
-                String: {
-                    fields: {
-                        field: {
-                            rule: 'required',
-                            type: 'string',
-                            id: 1,
-                        },
-                    },
-                },
-                Uint32: {
-                    fields: {
-                        field: {
-                            rule: 'required',
-                            type: 'uint32',
-                            id: 2,
-                        },
-                    },
-                },
-                Uint64: {
-                    fields: {
-                        field: {
-                            rule: 'required',
-                            type: 'uint64',
-                            id: 3,
-                        },
-                    },
-                },
-                Bool: {
-                    fields: {
-                        field: {
-                            rule: 'required',
-                            type: 'bool',
-                            id: 4,
-                        },
-                    },
-                },
-                Sint32: {
-                    fields: {
-                        field: {
-                            rule: 'required',
-                            type: 'sint32',
-                            id: 5,
-                        },
-                    },
-                },
-                Sint64: {
-                    fields: {
-                        field: {
-                            rule: 'required',
-                            type: 'sint64',
-                            id: 6,
-                        },
-                    },
-                },
-                Bytes: {
-                    fields: {
-                        field: {
-                            rule: 'required',
-                            type: 'bytes',
-                            id: 7,
-                        },
-                    },
-                },
+const getAllProtoModules = () => {
+    const protoFiles = [
+        'messages-bitcoin',
+        'messages-ble',
+        'messages-bootloader',
+        'messages-cardano',
+        'messages-common',
+        'messages-crypto',
+        'messages-debug',
+        'messages-definitions',
+        'messages-eos',
+        'messages-ethereum-eip712',
+        'messages-ethereum',
+        'messages-evolu',
+        'messages-management',
+        'messages-monero',
+        'messages',
+        'messages-ripple',
+        'messages-solana',
+        'messages-stellar',
+        'messages-telemetry',
+        'messages-tezos',
+        'messages-thp',
+        'messages-tron',
+        'options',
+    ];
 
-                //  complex and real life examples
-                ComplexFieldOfOptionals: {
-                    fields: {
-                        bool: {
-                            rule: 'optional',
-                            type: 'bool',
-                            id: 8,
-                        },
-                        number: {
-                            rule: 'optional',
-                            type: 'uint32',
-                            id: 9,
-                        },
-                    },
-                },
-
-                Repeated: {
-                    fields: {
-                        bool: {
-                            rule: 'repeated',
-                            type: 'bool',
-                            id: 8,
-                        },
-                    },
-                },
-
-                Defaults: {
-                    fields: {
-                        string: {
-                            type: 'string',
-                            id: 8,
-                            options: {
-                                defaults: 'hello world',
-                            },
-                        },
-                    },
-                },
-            },
-        },
-    },
+    return protoFiles.map(
+        name => require(`../src/definitions/${name}_pb`) as Record<string, AnyDesc>,
+    );
 };
 
-const basicFixtures = [
-    {
-        name: 'String',
-        params: { field: 'foo' },
-        encoded: '0a03666f6f',
-    },
-    {
-        name: 'Uint32',
-        params: { field: 4294967295 },
-        encoded: '10ffffffff0f',
-    },
-    {
-        name: 'Uint64',
-        params: { field: 1844674407370955 },
-        encoded: '18cba19cd68bb7a303',
-    },
-    {
-        name: 'Uint64',
-        params: { field: '166054873161269248' }, // over Number.MAX_SAFE_INTEGER is sent as string
-        encoded: '1880808080f0c0fca602',
-    },
-    {
-        name: 'Sint64',
-        params: { field: '-166054873161269248' }, // over Number.MAX_SAFE_INTEGER is sent as string
-        encoded: '30ffffffffdf81f9cd04',
-    },
-    {
-        name: 'Bool',
-        params: { field: true },
-        encoded: '2001',
-    },
-    {
-        name: 'Bool',
-        params: { field: false },
-        encoded: '2000',
-    },
-    {
-        name: 'Sint32',
-        params: { field: -4294967 },
-        encoded: '28eda48c04',
-    },
-    {
-        name: 'Sint64',
-        params: { field: -1844674407370955 },
-        encoded: '3095c3b8ac97eec606',
-    },
-    {
-        name: 'Bytes',
-        params: {
-            field: '851fc9542342321af63ecbba7d3ece545f2a42bad01ba32cff5535b18e54b6d3106e10b6a4525993d185a1443d9a125186960e028eabfdd8d76cf70a3a7e3100',
-        },
-        encoded:
-            '3a40851fc9542342321af63ecbba7d3ece545f2a42bad01ba32cff5535b18e54b6d3106e10b6a4525993d185a1443d9a125186960e028eabfdd8d76cf70a3a7e3100',
-    },
-];
+const protobufManager = ProtobufManager();
+protobufManager.load(getAllProtoModules());
 
 const bytesHex =
     '851fc9542342321af63ecbba7d3ece545f2a42bad01ba32cff5535b18e54b6d3106e10b6a4525993d185a1443d9a125186960e028eabfdd8d76cf70a3a7e3100';
-const bytesEncoded =
-    '3a40851fc9542342321af63ecbba7d3ece545f2a42bad01ba32cff5535b18e54b6d3106e10b6a4525993d185a1443d9a125186960e028eabfdd8d76cf70a3a7e3100';
 
-// note: difference in bool encoding. if type === bool && field = optional && not message of only one field, bool is encoded as ""
-const advancedFixtures = [
+// Fixtures test encoding of real protobuf message types using known hex-encoded binary outputs
+const basicFixtures = [
     {
-        name: 'ComplexFieldOfOptionals',
-        in: { number: 1 },
-        encoded: '4801',
-        out: { bool: null, number: 1 },
+        name: 'Address',
+        description: 'string field',
+        in: { address: 'foo' },
+        encoded: '0a03666f6f',
     },
     {
-        name: 'Repeated',
-        in: { bool: [true, false, true, false] },
-        encoded: '420401000100',
-        out: { bool: [true, false, true, false] },
+        name: 'GetPublicKey',
+        description: 'uint32 field (address_n)',
+        in: { address_n: [4294967295] },
+        encoded: '08ffffffff0f',
     },
     {
-        name: 'Defaults',
-        in: { string: '' },
-        encoded: '4200',
-        out: { string: '' },
+        name: 'GetPublicKey',
+        description: 'bool field (show_display true)',
+        in: { address_n: [], show_display: true },
+        encoded: '1801',
+    },
+    {
+        name: 'GetPublicKey',
+        description: 'bool field (show_display false)',
+        in: { address_n: [], show_display: false },
+        encoded: '1800',
+    },
+    {
+        name: 'TxAckPrevExtraData',
+        description: 'bytes field',
+        in: {
+            tx: {
+                extra_data_chunk: bytesHex,
+            },
+        },
+        encoded:
+            '0a424240851fc9542342321af63ecbba7d3ece545f2a42bad01ba32cff5535b18e54b6d3106e10b6a4525993d185a1443d9a125186960e028eabfdd8d76cf70a3a7e3100',
+    },
+    {
+        name: 'CardanoTxWitnessRequest',
+        description: 'sint32 field (path with high values)',
+        in: {
+            path: [2147485500, 2147485463, 2147483648, 2, 0],
+        },
+        encoded: '08bc8e80800808978e80800808808080800808020800',
     },
 ];
 
-describe('basic concepts', () => {
-    const Messages = ProtoBuf.Root.fromJSON(messages);
+const advancedFixtures = [
+    {
+        name: 'Ping',
+        description: 'optional field present',
+        in: { message: 'hello' },
+        encoded: '0a0568656c6c6f',
+        out: { message: 'hello' },
+    },
+    {
+        name: 'Ping',
+        description: 'optional field absent',
+        in: {},
+        encoded: '',
+        out: { message: null },
+    },
+    {
+        name: 'Features',
+        description: 'repeated enum field',
+        in: {
+            capabilities: ['Capability_Bitcoin'],
+            safety_checks: 'Strict',
+            major_version: 1,
+            minor_version: 0,
+            patch_version: 0,
+        },
+        encoded: '100118002000f00101a80200',
+        out: { capabilities: ['Capability_Bitcoin'], safety_checks: 'Strict' },
+    },
+    {
+        name: 'TxRequest',
+        description: 'nested message with enum and optional fields',
+        in: {
+            request_type: 0,
+            details: { request_index: 0 },
+            serialized: {
+                serialized_tx: bytesHex,
+            },
+        },
+        encoded:
+            '0800120208001a421a40851fc9542342321af63ecbba7d3ece545f2a42bad01ba32cff5535b18e54b6d3106e10b6a4525993d185a1443d9a125186960e028eabfdd8d76cf70a3a7e3100',
+        out: {
+            request_type: 'TXINPUT',
+            details: {
+                request_index: 0,
+                tx_hash: null,
+                extra_data_len: null,
+                extra_data_offset: null,
+            },
+            serialized: {
+                serialized_tx: bytesHex,
+                signature: null,
+                signature_index: null,
+            },
+        },
+    },
+    {
+        name: 'MultisigRedeemScriptType',
+        description: 'complex nested with repeated bytes (empty signatures)',
+        in: {
+            pubkeys: [
+                {
+                    node: {
+                        depth: 4,
+                        child_num: 2147483648,
+                        fingerprint: 2559962404,
+                        public_key:
+                            '02d598ec0f8f418c80859b690e8ee731e2bf7c8e2233d7fa722249bc3f27a65151',
+                        chain_code:
+                            'fd5fd24c06088bce57f3d817df206d0891adf5a77f5391bdc12793ef1917460e',
+                    },
+                    address_n: [0, 0],
+                },
+                {
+                    node: {
+                        depth: 4,
+                        child_num: 2147483648,
+                        fingerprint: 3563901430,
+                        public_key:
+                            '03e2a1f110b6e42de5bcf7a15881c66e2455fb62137e55678692a5f690fc8de10f',
+                        chain_code:
+                            'ca9268e9c323cfceb971ee96c418a91b2f3415dfbb0dc1d11dd8fcdff73a9ab9',
+                    },
+                    address_n: [0, 0],
+                },
+                {
+                    node: {
+                        depth: 4,
+                        child_num: 2147483648,
+                        fingerprint: 598174955,
+                        public_key:
+                            '032b9bdd9510f75f4d32631ffe11a56b11d332c8c0f0e0801b686f6eec806e7a2f',
+                        chain_code:
+                            '267ba0b69f9b0c9aa6add7d7162ff5ac675aa420c8d7a468778a6630d5c82f60',
+                    },
+                    address_n: [0, 0],
+                },
+            ],
+            signatures: ['', '', ''],
+            m: 2,
+        },
+        encoded:
+            '0a590a53080410a4dad7c4091880808080082220fd5fd24c06088bce57f3d817df206d0891adf5a77f5391bdc12793ef1917460e322102d598ec0f8f418c80859b690e8ee731e2bf7c8e2233d7fa722249bc3f27a65151100010000a590a53080410f6a3b3a30d1880808080082220ca9268e9c323cfceb971ee96c418a91b2f3415dfbb0dc1d11dd8fcdff73a9ab9322103e2a1f110b6e42de5bcf7a15881c66e2455fb62137e55678692a5f690fc8de10f100010000a590a53080410ebd99d9d021880808080082220267ba0b69f9b0c9aa6add7d7162ff5ac675aa420c8d7a468778a6630d5c82f603221032b9bdd9510f75f4d32631ffe11a56b11d332c8c0f0e0801b686f6eec806e7a2f100010001200120012001802',
+        out: {
+            address_n: [],
+            nodes: [],
+            pubkeys: [
+                {
+                    node: {
+                        depth: 4,
+                        child_num: 2147483648,
+                        fingerprint: 2559962404,
+                        public_key:
+                            '02d598ec0f8f418c80859b690e8ee731e2bf7c8e2233d7fa722249bc3f27a65151',
+                        chain_code:
+                            'fd5fd24c06088bce57f3d817df206d0891adf5a77f5391bdc12793ef1917460e',
+                        private_key: null,
+                    },
+                    address_n: [0, 0],
+                },
+                {
+                    node: {
+                        depth: 4,
+                        child_num: 2147483648,
+                        fingerprint: 3563901430,
+                        public_key:
+                            '03e2a1f110b6e42de5bcf7a15881c66e2455fb62137e55678692a5f690fc8de10f',
+                        chain_code:
+                            'ca9268e9c323cfceb971ee96c418a91b2f3415dfbb0dc1d11dd8fcdff73a9ab9',
+                        private_key: null,
+                    },
+                    address_n: [0, 0],
+                },
+                {
+                    node: {
+                        depth: 4,
+                        child_num: 2147483648,
+                        fingerprint: 598174955,
+                        public_key:
+                            '032b9bdd9510f75f4d32631ffe11a56b11d332c8c0f0e0801b686f6eec806e7a2f',
+                        chain_code:
+                            '267ba0b69f9b0c9aa6add7d7162ff5ac675aa420c8d7a468778a6630d5c82f60',
+                        private_key: null,
+                    },
+                    address_n: [0, 0],
+                },
+            ],
+            signatures: ['', '', ''],
+            m: 2,
+        },
+    },
+];
 
-    describe('primitives encode/decode', () => {
+describe('basic encode/decode', () => {
+    describe('primitives', () => {
         basicFixtures.forEach(f => {
-            describe(f.name, () => {
-                const Message = Messages.lookupType(`messages.${f.name}`);
+            test(`${f.name} - ${f.description}`, () => {
+                const encoded = protobufManager.encode(f.name, f.in);
+                expect(encoded.message.toString('hex')).toEqual(f.encoded);
 
-                test(f.name, () => {
-                    // serialize new way - this is to confirm new lib won't break old behavior
-                    const encoded = encode(Message, f.params);
-                    expect(encoded.toString('hex')).toEqual(f.encoded);
-
-                    // deserialize new way - this is to confirm new lib won't break old behavior
-                    const decoded = decode(Message, encoded);
-                    expect(decoded).toEqual(f.params);
-                });
+                const decoded = protobufManager.decode(f.name, encoded.message);
+                expect(decoded.message).toMatchObject(f.in);
             });
         });
 
-        describe('bytes field accepts Buffer and Uint8Array', () => {
-            const Message = Messages.lookupType('messages.Bytes');
-
-            test('encoding with Buffer produces same output as hex string', () => {
-                const encoded = encode(Message, { field: Buffer.from(bytesHex, 'hex') });
-                expect(encoded.toString('hex')).toEqual(bytesEncoded);
+        test('bytes field accepts Buffer', () => {
+            const encoded = protobufManager.encode('TxAckPrevExtraData', {
+                tx: { extra_data_chunk: Buffer.from(bytesHex, 'hex') },
             });
-
-            test('encoding with Uint8Array produces same output as hex string', () => {
-                const encoded = encode(Message, {
-                    field: new Uint8Array(Buffer.from(bytesHex, 'hex')),
-                });
-                expect(encoded.toString('hex')).toEqual(bytesEncoded);
+            const encodedFromHex = protobufManager.encode('TxAckPrevExtraData', {
+                tx: { extra_data_chunk: bytesHex },
             });
+            expect(encoded.message.toString('hex')).toEqual(encodedFromHex.message.toString('hex'));
+        });
+
+        test('bytes field accepts Uint8Array', () => {
+            const encoded = protobufManager.encode('TxAckPrevExtraData', {
+                tx: { extra_data_chunk: new Uint8Array(Buffer.from(bytesHex, 'hex')) },
+            });
+            const encodedFromHex = protobufManager.encode('TxAckPrevExtraData', {
+                tx: { extra_data_chunk: bytesHex },
+            });
+            expect(encoded.message.toString('hex')).toEqual(encodedFromHex.message.toString('hex'));
         });
     });
 
     describe('advanced', () => {
         advancedFixtures.forEach(f => {
-            describe(f.name, () => {
-                const Message = Messages.lookupType(`messages.${f.name}`);
+            test(`${f.name} - ${f.description}`, () => {
+                const encoded = protobufManager.encode(f.name, f.in);
+                expect(encoded.message.toString('hex')).toEqual(f.encoded);
 
-                test(f.name, () => {
-                    // serialize new way - this is to confirm new lib won't break old behavior
-                    const encoded = encode(Message, f.in);
-
-                    expect(encoded.toString('hex')).toEqual(f.encoded);
-
-                    // deserialize new way - this is to confirm new lib won't break old behavior
-                    const decoded = decode(Message, encoded);
-
-                    expect(decoded).toEqual(f.out);
-                });
+                const decoded = protobufManager.decode(f.name, encoded.message);
+                expect(decoded.message).toMatchObject(f.out);
             });
-        });
-
-        test('Different protobuf between receiving ends', () => {
-            const customMessages = (fields?: any) => ({
-                nested: {
-                    messages: {
-                        nested: {
-                            ButtonRequest: {
-                                fields: {
-                                    code: {
-                                        type: 'string',
-                                        id: 1,
-                                    },
-                                    pages: {
-                                        type: 'uint32',
-                                        id: 2,
-                                    },
-                                    ...fields,
-                                },
-                            },
-                        },
-                    },
-                },
-            });
-
-            const SenderMessages = ProtoBuf.Root.fromJSON(customMessages());
-            const senderEncoded = encode(SenderMessages.lookupType('messages.ButtonRequest'), {
-                type: 'foo',
-                pages: 123,
-            });
-
-            // now change field type from uint32 to string
-            const ReceiverMessages = ProtoBuf.Root.fromJSON(
-                customMessages({ pages: { type: 'string', id: 2 } }),
-            );
-
-            expect(() => {
-                decode(ReceiverMessages.lookupType('messages.ButtonRequest'), senderEncoded);
-            }).toThrow();
-        });
-
-        test('message with repeated enum field', () => {
-            const protobufRoot = ProtoBuf.Root.fromJSON({
-                nested: {
-                    RepeatedEnum: {
-                        values: {
-                            RepeatedEnum_1: 1,
-                            RepeatedEnum_2: 2,
-                            RepeatedEnum_3: 3,
-                        },
-                    },
-                    MessageWithRepeatedEnum: {
-                        fields: {
-                            repeated_enum: {
-                                rule: 'repeated',
-                                type: 'RepeatedEnum',
-                                id: 1,
-                                options: {
-                                    packed: false,
-                                },
-                            },
-                        },
-                    },
-                },
-            });
-
-            const m = protobufRoot.lookupType('MessageWithRepeatedEnum');
-            const encoded = encode(m, { repeated_enum: [3, 'RepeatedEnum_2'] });
-            const decoded = decode(m, encoded);
-
-            expect(decoded.repeated_enum).toEqual(['RepeatedEnum_3', 'RepeatedEnum_2']);
         });
     });
 });

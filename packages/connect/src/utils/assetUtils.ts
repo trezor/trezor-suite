@@ -4,7 +4,6 @@ import connectDataCoins from '@trezor/connect-data/files/coins.json';
 import firmwareReleaseConfigAssetsJson from '@trezor/connect-data/files/firmware/release/releases.v1.json';
 import type { DeviceModelInternal, FirmwareRelease } from '@trezor/device-utils';
 import { FirmwareType } from '@trezor/device-utils';
-import protobufMessages from '@trezor/protobuf/messages.json';
 import { versionUtils } from '@trezor/utils';
 import type { VersionArray } from '@trezor/utils/src/versionUtils';
 
@@ -70,8 +69,6 @@ export const tryLocalAssetRequire = (url: string): unknown => {
             return connectDataCoins;
         case './data/coins-eth.json':
             return connectDataCoinsEth;
-        case './data/messages/messages.json':
-            return protobufMessages;
     }
 
     return null;

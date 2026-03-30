@@ -67,7 +67,6 @@ export const init: ModuleInit = () => {
                   id: 'BluetoothTransport',
                   url: api.process.getUrl(),
                   logger: desktopLogger,
-                  messages: {}, // will be added by @trezor/connect transport initialization
                   // writeWithResponse: isMacOs(),
                   // writeWithDelay: isWindows(),
               })

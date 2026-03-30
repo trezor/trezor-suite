@@ -11,8 +11,6 @@
         "@trezor/type-utils",
         "@trezor/utils",
         "bignumber.js",
-        "long",
-        "protobufjs",
         "ts-mixer",
         "tslib"
     ]

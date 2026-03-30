@@ -83,7 +83,7 @@ export const handshakeCancel = async ({ device, logger, signal }: Context) => {
                 result.payload.message.code === 'Failure_InvalidProtocol'
             ) {
                 logger?.debug(`handshake Cancel protocol v2 detected`);
-                await device.setupThp();
+                device.setupThp();
             }
 
             if (
