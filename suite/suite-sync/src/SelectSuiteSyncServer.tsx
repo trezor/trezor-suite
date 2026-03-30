@@ -5,22 +5,22 @@ import { useSelector } from 'react-redux';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 import { Translation, useTranslation } from '@suite/intl';
-import { selectSuiteSyncCustomRelayUrl } from '@suite-common/suite-sync';
 import {
     type ChangeServerModalFields,
     SUITE_SYNC_SERVER_TYPE_OPTIONS_MAP,
-    type SuiteSync,
     type SuiteSyncServerTypeOption,
     createChangeSuiteSyncServerSchema,
-} from '@suite-common/suite-sync-types';
+    selectSuiteSyncCustomRelayUrl,
+} from '@suite-common/suite-sync';
+import { type SuiteSync } from '@suite-common/suite-sync-types';
 import { Card, Column, Input, Modal, Select } from '@trezor/components';
 
-type ChangeServerModalProps = {
+type SelectSuiteSyncServerProps = {
     suiteSync: SuiteSync;
     onCancel: () => void;
 };
 
-export const ChangeServerModal = ({ suiteSync, onCancel }: ChangeServerModalProps) => {
+export const SelectSuiteSyncServer = ({ suiteSync, onCancel }: SelectSuiteSyncServerProps) => {
     const { translationString } = useTranslation();
     const customRelayUrl = useSelector(selectSuiteSyncCustomRelayUrl);
 
@@ -107,7 +107,7 @@ export const ChangeServerModal = ({ suiteSync, onCancel }: ChangeServerModalProp
                                     onChange={(selected: SuiteSyncServerTypeOption<string>) =>
                                         field.onChange(selected.value)
                                     }
-                                    data-testid="@settings/labeling/server-type-select"
+                                    data-testid="@settings/suite-sync/server-type-select"
                                     openMenuOnFocus={false}
                                 />
                             )}
