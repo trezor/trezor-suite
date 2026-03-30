@@ -273,6 +273,7 @@ const constructNewFlow = ({
     const isCardano = isCardanoTx(account, precomposedTx);
     const isSolana = account.networkType === 'solana';
     const isStellar = account.networkType === 'stellar';
+    const isTron = account.networkType === 'tron';
     const evmApprovalTxData = getEvmApprovalTxData(precomposedForm.transactionData);
     const isEvmApproval = isEvmApprovalTx(precomposedForm.transactionData);
     const stakeType = getStakeType(precomposedForm, outputs);
@@ -385,7 +386,13 @@ const constructNewFlow = ({
                 };
 
                 // this is displayed only for tokens without definitions
-                if (precomposedTx.token && !precomposedTx.isTokenKnown && !isSolana && !isStellar) {
+                if (
+                    precomposedTx.token &&
+                    !precomposedTx.isTokenKnown &&
+                    !isSolana &&
+                    !isStellar &&
+                    !isTron
+                ) {
                     outputs.push(tokenOutput);
                     outputs.push({ type: 'address', value: o.address });
                 } else if (
