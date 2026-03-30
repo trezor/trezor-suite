@@ -15373,6 +15373,7 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@trezor/utxo-lib": "workspace:*"
+    "@trezor/utxo-selection": "workspace:*"
     "@types/jws": "npm:^3.2.11"
     "@types/node": "npm:22.13.10"
     "@types/node-fetch": "npm:^2.6.12"
@@ -16303,6 +16304,16 @@ __metadata:
     tiny-secp256k1: "npm:^1.1.7"
     varuint-bitcoin: "npm:2.0.0"
     wif: "npm:^5.0.0"
+  peerDependencies:
+    tslib: ^2.6.2
+  languageName: unknown
+  linkType: soft
+
+"@trezor/utxo-selection@workspace:*, @trezor/utxo-selection@workspace:packages/utxo-selection":
+  version: 0.0.0-use.local
+  resolution: "@trezor/utxo-selection@workspace:packages/utxo-selection"
+  dependencies:
+    "@trezor/utils": "workspace:*"
   peerDependencies:
     tslib: ^2.6.2
   languageName: unknown

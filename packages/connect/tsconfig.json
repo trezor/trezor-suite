@@ -25,6 +25,7 @@
         { "path": "../type-utils" },
         { "path": "../utils" },
         { "path": "../utxo-lib" },
+        { "path": "../utxo-selection" },
         { "path": "../eslint" },
         { "path": "../trezor-user-env-link" }
     ]

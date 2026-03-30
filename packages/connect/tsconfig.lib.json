@@ -50,6 +50,9 @@
             "path": "../utxo-lib"
         },
         {
+            "path": "../utxo-selection"
+        },
+        {
             "path": "../eslint"
         },
         {

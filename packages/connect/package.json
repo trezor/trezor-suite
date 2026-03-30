@@ -145,6 +145,7 @@
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "@trezor/utxo-lib": "workspace:*",
+        "@trezor/utxo-selection": "workspace:*",
         "blakejs": "^1.2.1",
         "bs58": "^6.0.0",
         "bs58check": "^4.0.0",

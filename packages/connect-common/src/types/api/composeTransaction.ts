@@ -11,7 +11,7 @@ import type {
     ComposeResultFinal as ComposeResultFinalBase,
     ComposeResultNonFinal as ComposeResultNonFinalBase,
     TransactionInputOutputSortingStrategy,
-} from '@trezor/utxo-lib';
+} from '@trezor/utxo-selection';
 
 import type { Params, Response } from '../params';
 

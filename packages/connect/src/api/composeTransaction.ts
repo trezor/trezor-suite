@@ -18,7 +18,7 @@ import {
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { promiseAllSequence } from '@trezor/utils/src/promiseAllSequence';
 import { resolveAfter } from '@trezor/utils/src/resolveAfter';
-import type { ComposeOutput, TransactionInputOutputSortingStrategy } from '@trezor/utxo-lib';
+import type { ComposeOutput, TransactionInputOutputSortingStrategy } from '@trezor/utxo-selection';
 
 import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
 import type { MethodPermission } from '../core/AbstractMethod';
