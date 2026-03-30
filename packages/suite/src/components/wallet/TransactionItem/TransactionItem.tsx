@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { AccountTransactionBaseAnchor } from '@suite/router';
+import { AccountTransactionBaseAnchor, useAnchor } from '@suite/router';
 import { type AccountType, type Network } from '@suite-common/wallet-config';
 import {
     createTargets,
@@ -19,7 +19,6 @@ import { HELP_CENTER_REPLACE_BY_FEE_ETHEREUM } from '@trezor/urls';
 
 import { SUBPAGE_NAV_HEIGHT } from 'src/constants/suite/layout';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { type WalletAccountTransaction } from 'src/types/wallet';
 

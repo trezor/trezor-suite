@@ -8,4 +8,6 @@ export * from './routerParams';
 export * from './routerReducer';
 export * from './routerThunks';
 export * from './routes';
+export * from './scrollContext';
 export * from './suiteRouterHistory';
+export * from './useAnchor';
