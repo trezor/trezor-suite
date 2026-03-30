@@ -1,4 +1,4 @@
-import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     BottomSheetModal,
     Card,
@@ -57,7 +57,7 @@ export const HowStakeWorksTimelineCard = ({
                 <VStack spacing="sp24">
                     <HowStakeWorksStakingTimeline entryPeriodInDays={entryPeriodInDays} apy={apy} />
                     <HowStakeWorksUnstakingTimeline
-                        symbol={getNetworkDisplaySymbol(symbol)}
+                        symbol={symbol}
                         unstakingPeriodInDays={unstakingPeriodInDays}
                     />
                 </VStack>

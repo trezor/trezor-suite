@@ -11,12 +11,10 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { AccountsListItem } from './AccountsList/AccountsListItem';
 import { TokenReceiveCard } from './TokenReceiveCard';
 
-type AccountDetailsCardVariant = 'default' | 'stake';
-
 type AccountDetailsCardProps = {
     accountKey: AccountKey;
     tokenContract?: TokenAddress;
-    variant?: AccountDetailsCardVariant;
+    isStakeVariant?: boolean;
 };
 
 const stakeCardStyle = prepareNativeStyle(utils => ({
@@ -26,7 +24,7 @@ const stakeCardStyle = prepareNativeStyle(utils => ({
 export const AccountDetailsCard = ({
     accountKey,
     tokenContract,
-    variant = 'default',
+    isStakeVariant = false,
 }: AccountDetailsCardProps) => {
     const { translate } = useTranslate();
     const { applyStyle } = useNativeStyles();
@@ -40,8 +38,6 @@ export const AccountDetailsCard = ({
                 errorMessage={translate('moduleAccounts.accountNotFound', { accountKey })}
             />
         );
-
-    const isStakeVariant = variant === 'stake';
 
     return (
         <VStack spacing="sp16">
