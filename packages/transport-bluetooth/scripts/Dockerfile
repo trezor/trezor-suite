@@ -4,17 +4,11 @@ FROM joseluisq/rust-linux-darwin-builder:1.85.1
 
 RUN apt-get update && apt-get install -y mingw-w64 curl ca-certificates
 
-# Node.js
-RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
-    && apt-get install -y nodejs \
-    && corepack enable
-
 WORKDIR /app
 
 COPY ./src ./src
 COPY ./Cargo.toml ./Cargo.toml
 COPY ./Cargo.lock ./Cargo.lock
-COPY ./build.rs ./build.rs
 COPY ./build/ ./build/
 
 ARG BUILD_VERSION_TAG
