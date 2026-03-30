@@ -10,7 +10,7 @@ const isTrezorLibESMImport = src => trezorLibESMPattern.test(src);
 
 // External CJS packages that need .js extension for Node ESM compatibility
 // These packages don't have proper "exports" in their package.json
-const externalCjsSubpaths = ['protobufjs/light', 'protobufjs/minimal'];
+const externalCjsSubpaths = [];
 const isExternalCjsSubpath = src => externalCjsSubpaths.includes(src);
 
 const externalJsonImports = ['bitcoin-ops'];
@@ -69,7 +69,7 @@ const addJSExtensionPlugin = ({ types }) => {
             return;
         }
 
-        // External CJS subpaths (protobufjs/light, protobufjs/minimal) need .js for ESM
+        // External CJS subpaths need .js for ESM
         if (isExternalCjsSubpath(src)) {
             nodePath.node.source = types.stringLiteral(src + '.js');
 

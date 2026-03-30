@@ -1,6 +1,6 @@
 // receive with ThpAck
 
-import { decodeMessage } from '@trezor/protobuf';
+import { protobufManager } from '@trezor/protobuf';
 import { thp as protocolThp } from '@trezor/protocol';
 
 import { THP_STATE_ERROR } from '../errors';
@@ -37,15 +37,14 @@ export const receiveThpMessage = async ({
 };
 
 export type ParseThpMessageProps = {
-    messages: Parameters<typeof decodeMessage>[0];
     decoded: Extract<Awaited<ReturnType<typeof receive>>, { success: true }>['payload'];
     thpState?: protocolThp.ThpState;
 };
 
-export const parseThpMessage = ({ decoded, messages, thpState }: ParseThpMessageProps) => {
+export const parseThpMessage = ({ decoded, thpState }: ParseThpMessageProps) => {
     const message = protocolThp.decode(
         decoded,
-        (messageType, data) => decodeMessage(messages, messageType, data),
+        (messageType, data) => protobufManager.decode(messageType, data),
         thpState,
     );
 

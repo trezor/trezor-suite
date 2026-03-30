@@ -56,7 +56,6 @@
         "@suite-native/trading-state": "workspace:*",
         "@suite-native/transaction-management": "workspace:*",
         "@trezor/connect": "workspace:*",
-        "@trezor/protobuf": "workspace:^",
         "@trezor/transport": "workspace:^",
         "@trezor/transport-native-bluetooth": "workspace:*",
         "@trezor/transport-native-usb": "workspace:*",

@@ -78,7 +78,6 @@
         { "path": "../trading-state" },
         { "path": "../transaction-management" },
         { "path": "../../packages/connect" },
-        { "path": "../../packages/protobuf" },
         { "path": "../../packages/transport" },
         {
             "path": "../../packages/transport-native-bluetooth"

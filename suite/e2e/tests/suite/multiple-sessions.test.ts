@@ -1,5 +1,4 @@
 import { TestCategory, TestPriority } from '@trezor/e2e-utils';
-import * as messages from '@trezor/protobuf/src/definitions';
 import { BridgeTransport } from '@trezor/transport';
 
 import { expect, test } from '../../support/fixtures';
@@ -10,7 +9,7 @@ import { enhancePage } from '../../support/testExtends/enhancePage';
 
 const stealBridgeSession = async () => {
     await test.step('Steal Bridge session', async () => {
-        const bridge = new BridgeTransport({ messages, id: 'foo-bar' });
+        const bridge = new BridgeTransport({ id: 'foo-bar' });
         await bridge.init();
         const enumerateRes = await bridge.enumerate();
         if (!enumerateRes.success) return null;

@@ -38,14 +38,17 @@
                 "types": "./libESM/definitions/index.d.mts",
                 "default": "./libESM/definitions/index.mjs"
             },
-            "./messages.json": "./messages.json"
+            "./lib/definitions/*": {
+                "types": "./lib/definitions/*.d.ts",
+                "default": "./lib/definitions/*.js"
+            },
+            "./libESM/definitions/*": "./libESM/definitions/*"
         }
     },
     "files": [
         "lib/",
         "libESM/",
-        "CHANGELOG.md",
-        "messages.json"
+        "CHANGELOG.md"
     ],
     "scripts": {
         "test:unit": "yarn g:jest",
@@ -59,16 +62,13 @@
     },
     "dependencies": {
         "@bufbuild/protobuf": "^2.11.0",
-        "@trezor/schema-utils": "workspace:*",
-        "long": "5.3.2",
-        "protobufjs": "7.5.5"
+        "@trezor/schema-utils": "workspace:*"
     },
     "devDependencies": {
         "@bufbuild/buf": "^1.67.0",
         "@bufbuild/protoc-gen-es": "2.11.0",
         "@bufbuild/protoplugin": "2.11.0",
         "@trezor/eslint": "workspace:*",
-        "protobufjs-cli": "^1.2.0",
         "tsx": "^4.21.0"
     },
     "peerDependencies": {

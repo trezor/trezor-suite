@@ -1,4 +1,3 @@
-import { loadDefinitions, parseConfigure } from '@trezor/protobuf';
 import { type PROTOCOL_MALFORMED, type ThpState, type TransportProtocol } from '@trezor/protocol';
 import {
     type ScheduleActionParams,
@@ -35,7 +34,6 @@ export type ReleaseInput = {
 };
 
 export interface AbstractTransportParams {
-    messages: Record<string, any>;
     logger?: Logger;
     debugLink?: boolean;
     id: string;
@@ -125,7 +123,6 @@ export abstract class AbstractTransport extends TypedEmitter<TransportEvents> {
      * once transport is listening, it will be emitting TRANSPORT.UPDATE events
      */
     protected listening = false;
-    protected messages: protobuf.Root;
     /**
      * minimal data to track device on transport layer
      */
@@ -148,10 +145,9 @@ export abstract class AbstractTransport extends TypedEmitter<TransportEvents> {
 
     public readonly deviceEvents;
 
-    constructor({ messages, logger, id }: AbstractTransportParams) {
+    constructor({ logger, id }: AbstractTransportParams) {
         super();
         this.descriptors = [];
-        this.messages = parseConfigure(messages);
         this.abortController = new AbortController();
         this.logger = logger;
         this.id = id;
@@ -373,26 +369,6 @@ export abstract class AbstractTransport extends TypedEmitter<TransportEvents> {
 
     public getDescriptor(path: PathPublic) {
         return this.descriptors.find(d => d.path === path);
-    }
-
-    /**
-     * Check if protobuf message is present in protobuf.Root
-     * default: GetFeatures - this message should be always present.
-     */
-    public getMessage(message = 'GetFeatures') {
-        return !!this.messages.get(message);
-    }
-
-    public getMessages() {
-        return this.messages;
-    }
-
-    public updateMessages(messages: Record<string, any>) {
-        this.messages = parseConfigure(messages);
-    }
-
-    public loadMessages(packageName: string, packageLoader: Parameters<typeof loadDefinitions>[2]) {
-        return loadDefinitions(this.messages, packageName, packageLoader);
     }
 
     protected unknownError = <E extends AnyError = never>(

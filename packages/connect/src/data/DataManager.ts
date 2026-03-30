@@ -12,7 +12,6 @@ import type {
     IntermediaryReleaseConfig,
     ReleasesConfig,
 } from '@trezor/device-utils';
-import messages from '@trezor/protobuf/messages.json';
 
 import { parseCoinsJson } from './coinInfo';
 import {
@@ -32,7 +31,6 @@ export class DataManager {
     private static settings: ConnectSettings;
     // at the moment, messages is readonly but it might make sense to modify this in the future, when
     // we implement additive protobufs handling as a part of modularization effort
-    private static readonly messages: Record<string, any> = messages;
     private static localFirmwares: LocalFirmwares = { firmwareDir: '', firmwareList: [] };
     private static firmwareReleasesConfig: Partial<
         Record<keyof typeof DeviceModelInternal, Record<FirmwareType, ConditionalRelease>>
@@ -80,10 +78,6 @@ export class DataManager {
         const firmwareConfig = await this.initializeFirmwareConfig(config, isRemote);
         this.firmwareReleasesConfig = firmwareConfig.releases;
         this.firmwareIntermediaryReleasesConfig = firmwareConfig.intermediaries;
-    }
-
-    public static getProtobufMessages() {
-        return this.messages;
     }
 
     public static updateSettings(update: Partial<ConnectSettings>) {

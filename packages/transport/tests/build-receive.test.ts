@@ -1,79 +1,12 @@
-import { parseConfigure } from '@trezor/protobuf';
+import { protobufManager } from '@trezor/protobuf';
+import * as stellarProto from '@trezor/protobuf/src/definitions/messages-stellar_pb';
+import * as messagesProto from '@trezor/protobuf/src/definitions/messages_pb';
 import { bridge as bridgeProtocol, v1 as protocolV1, v2 as protocolV2 } from '@trezor/protocol';
 
 import { receive, receiveAndParse } from '../src/utils/receive';
 import { buildMessage, createChunks } from '../src/utils/send';
 
-const messages = {
-    StellarPaymentOp: {
-        fields: {
-            source_account: {
-                type: 'string',
-                id: 1,
-            },
-            destination_account: {
-                rule: 'required',
-                type: 'string',
-                id: 2,
-            },
-            asset: {
-                rule: 'required',
-                type: 'StellarAsset',
-                id: 3,
-            },
-            amount: {
-                rule: 'required',
-                type: 'sint64',
-                id: 4,
-            },
-        },
-    },
-    StellarAssetType: {
-        values: {
-            NATIVE: 0,
-            ALPHANUM4: 1,
-            ALPHANUM12: 2,
-        },
-    },
-    StellarAsset: {
-        fields: {
-            type: {
-                rule: 'required',
-                type: 'StellarAssetType',
-                id: 1,
-            },
-            code: {
-                type: 'string',
-                id: 2,
-            },
-            issuer: {
-                type: 'string',
-                id: 3,
-            },
-        },
-    },
-    MessageType: {
-        values: {
-            StellarSignTx: 202,
-            StellarTxOpRequest: 203,
-            StellarGetAddress: 207,
-            StellarAddress: 208,
-            StellarCreateAccountOp: 210,
-            StellarPaymentOp: 211,
-            StellarPathPaymentOp: 212,
-            StellarManageOfferOp: 213,
-            StellarCreatePassiveOfferOp: 214,
-            StellarSetOptionsOp: 215,
-            StellarChangeTrustOp: 216,
-            StellarAllowTrustOp: 217,
-            StellarAccountMergeOp: 218,
-            StellarManageDataOp: 220,
-            StellarBumpSequenceOp: 221,
-            StellarClaimClaimableBalanceOp: 225,
-            StellarSignedTx: 230,
-        },
-    },
-};
+protobufManager.load([messagesProto, stellarProto]);
 
 const fixtures = Array(100)
     .fill(undefined)
@@ -91,16 +24,11 @@ const fixtures = Array(100)
         },
     }));
 
-const parsedMessages = parseConfigure({
-    nested: { hw: { nested: { trezor: { nested: { messages: { nested: messages } } } } } },
-});
-
 describe('encoding json -> protobuf -> json', () => {
     fixtures.forEach(f => {
         describe(`${f.name} - payload length ${f.in.source_account.length}`, () => {
             test('bridgeProtocol: buildMessage - receiveAndParse', async () => {
                 const result = buildMessage({
-                    messages: parsedMessages,
                     name: f.name,
                     data: f.in,
                     protocol: bridgeProtocol,
@@ -110,7 +38,6 @@ describe('encoding json -> protobuf -> json', () => {
                 // additional bytes are expected (encoded Uint32) if message length is greater
                 expect(result.length).toBeGreaterThanOrEqual(28 + length);
                 const decoded = await receiveAndParse(
-                    parsedMessages,
                     () => Promise.resolve({ success: true, payload: result }),
                     bridgeProtocol,
                 );
@@ -125,7 +52,6 @@ describe('encoding json -> protobuf -> json', () => {
 
             test('v1Protocol: buildMessage - createChunks - receiveAndParse', async () => {
                 const result = buildMessage({
-                    messages: parsedMessages,
                     name: f.name,
                     data: f.in,
                     protocol: protocolV1,
@@ -137,15 +63,11 @@ describe('encoding json -> protobuf -> json', () => {
                     expect(chunk.length).toEqual(64);
                 });
                 let i = -1;
-                const decoded = await receiveAndParse(
-                    parsedMessages,
-                    () => {
-                        i++;
+                const decoded = await receiveAndParse(() => {
+                    i++;
 
-                        return Promise.resolve({ success: true, payload: chunks[i] });
-                    },
-                    protocolV1,
-                );
+                    return Promise.resolve({ success: true, payload: chunks[i] });
+                }, protocolV1);
                 if (!decoded.success) {
                     throw new Error('Decoding failed');
                 }

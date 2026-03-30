@@ -1,165 +1,27 @@
-import * as ProtoBuf from 'protobufjs/light';
+import { ProtobufManager } from '../src/manager';
 
-import { decode } from '../src/decode';
-import { encode } from '../src/encode';
-
-const HDNodeType = {
-    fields: {
-        depth: {
-            rule: 'required',
-            type: 'uint32',
-            id: 1,
-        },
-        fingerprint: {
-            rule: 'required',
-            type: 'uint32',
-            id: 2,
-        },
-        child_num: {
-            rule: 'required',
-            type: 'uint32',
-            id: 3,
-        },
-        chain_code: {
-            rule: 'required',
-            type: 'bytes',
-            id: 4,
-        },
-        private_key: {
-            type: 'bytes',
-            id: 5,
-        },
-        public_key: {
-            rule: 'required',
-            type: 'bytes',
-            id: 6,
-        },
-    },
-};
-
-const MultisigRedeemScriptType = {
-    fields: {
-        pubkeys: {
-            rule: 'repeated',
-            type: 'HDNodePathType',
-            id: 1,
-        },
-        signatures: {
-            rule: 'repeated',
-            type: 'bytes',
-            id: 2,
-        },
-        m: {
-            rule: 'required',
-            type: 'uint32',
-            id: 3,
-        },
-        nodes: {
-            rule: 'repeated',
-            type: 'HDNodeType',
-            id: 4,
-        },
-        address_n: {
-            rule: 'repeated',
-            type: 'uint32',
-            id: 5,
-            options: {
-                packed: false,
-            },
-        },
-    },
-    nested: {
-        HDNodePathType: {
-            fields: {
-                node: {
-                    rule: 'required',
-                    type: 'HDNodeType',
-                    id: 1,
-                },
-                address_n: {
-                    rule: 'repeated',
-                    type: 'uint32',
-                    id: 2,
-                    options: {
-                        packed: false,
-                    },
-                },
-            },
-        },
-    },
-};
+const protobufManager = ProtobufManager();
+protobufManager.load([
+    require('../src/definitions/messages-bitcoin_pb'),
+    require('../src/definitions/messages-cardano_pb'),
+    require('../src/definitions/messages-management_pb'),
+]);
 
 const fixtures = [
     {
         name: 'Initialize',
-        message: {
-            Initialize: {
-                fields: {
-                    session_id: {
-                        type: 'bytes',
-                        id: 0,
-                    },
-                },
-            },
-        },
         in: {},
         encoded: '',
         out: { session_id: null },
     },
     {
         name: 'Address',
-        message: {
-            Address: {
-                fields: {
-                    address: {
-                        rule: 'required',
-                        type: 'string',
-                        id: 1,
-                    },
-                },
-            },
-        },
         in: { address: 'abcd' },
         encoded: '0a0461626364',
         out: { address: 'abcd' },
     },
     {
         name: 'GetAddress',
-        message: {
-            GetAddress: {
-                fields: {
-                    address_n: {
-                        rule: 'repeated',
-                        type: 'uint32',
-                        id: 1,
-                        options: {
-                            packed: false,
-                        },
-                    },
-                    coin_name: {
-                        type: 'string',
-                        id: 2,
-                        options: {
-                            default: 'Bitcoin',
-                        },
-                    },
-                    show_display: {
-                        type: 'bool',
-                        id: 3,
-                    },
-                    multisig: {
-                        type: 'MultisigRedeemScriptType',
-                        id: 4,
-                    },
-                    ignore_xpub_magic: {
-                        type: 'bool',
-                        id: 6,
-                    },
-                },
-            },
-            MultisigRedeemScriptType,
-            HDNodeType,
-        },
         in: {
             address_n: [1],
             coin_name: 'btc',
@@ -207,73 +69,6 @@ const fixtures = [
     },
     {
         name: 'TxRequest',
-        message: {
-            TxRequest: {
-                fields: {
-                    request_type: {
-                        type: 'RequestType',
-                        id: 1,
-                    },
-                    details: {
-                        type: 'TxRequestDetailsType',
-                        id: 2,
-                    },
-                    serialized: {
-                        type: 'TxRequestSerializedType',
-                        id: 3,
-                    },
-                },
-                nested: {
-                    RequestType: {
-                        values: {
-                            TXINPUT: 0,
-                            TXOUTPUT: 1,
-                            TXMETA: 2,
-                            TXFINISHED: 3,
-                            TXEXTRADATA: 4,
-                            TXORIGINPUT: 5,
-                            TXORIGOUTPUT: 6,
-                        },
-                    },
-                    TxRequestDetailsType: {
-                        fields: {
-                            request_index: {
-                                type: 'uint32',
-                                id: 1,
-                            },
-                            tx_hash: {
-                                type: 'bytes',
-                                id: 2,
-                            },
-                            extra_data_len: {
-                                type: 'uint32',
-                                id: 3,
-                            },
-                            extra_data_offset: {
-                                type: 'uint32',
-                                id: 4,
-                            },
-                        },
-                    },
-                    TxRequestSerializedType: {
-                        fields: {
-                            signature_index: {
-                                type: 'uint32',
-                                id: 1,
-                            },
-                            signature: {
-                                type: 'bytes',
-                                id: 2,
-                            },
-                            serialized_tx: {
-                                type: 'bytes',
-                                id: 3,
-                            },
-                        },
-                    },
-                },
-            },
-        },
         in: {
             request_type: 0,
             details: { request_index: 0 },
@@ -303,10 +98,6 @@ const fixtures = [
     {
         // taken from TrezorConnect fixtures signTransactionsMultisig.js. There is interesting part signatures: ['', '', ''];
         name: 'MultisigRedeemScriptType',
-        message: {
-            HDNodeType,
-            MultisigRedeemScriptType,
-        },
         in: {
             pubkeys: [
                 {
@@ -408,62 +199,18 @@ const fixtures = [
     },
     {
         name: 'Features',
-        message: {
-            SafetyCheckLevel: {
-                values: {
-                    Strict: 0,
-                    PromptAlways: 1,
-                    PromptTemporarily: 2,
-                },
-            },
-            Features: {
-                fields: {
-                    capabilities: {
-                        rule: 'repeated',
-                        type: 'Capability',
-                        id: 30,
-                        options: {
-                            packed: false,
-                        },
-                    },
-                    safety_checks: {
-                        type: 'SafetyCheckLevel',
-                        id: 37,
-                    },
-                },
-                nested: {
-                    Capability: {
-                        options: {
-                            '(has_bitcoin_only_values)': true,
-                        },
-                        values: {
-                            Capability_Bitcoin: 1,
-                            Capability_Bitcoin_like: 2,
-                        },
-                    },
-                },
-            },
+        in: {
+            capabilities: ['Capability_Bitcoin'],
+            safety_checks: 'Strict',
+            major_version: 1,
+            minor_version: 0,
+            patch_version: 0,
         },
-        in: { capabilities: ['Capability_Bitcoin'], safety_checks: 'Strict' },
-        encoded: 'f00101a80200',
+        encoded: '100118002000f00101a80200',
         out: { capabilities: ['Capability_Bitcoin'], safety_checks: 'Strict' },
     },
     {
         name: 'CardanoTxWitnessRequest',
-        message: {
-            CardanoTxWitnessRequest: {
-                fields: {
-                    path: {
-                        rule: 'repeated',
-                        type: 'uint32',
-                        id: 1,
-                        options: {
-                            packed: false,
-                        },
-                    },
-                },
-            },
-        },
         in: {
             path: [2147485500, 2147485463, 2147483648, 2, 0],
         },
@@ -474,32 +221,6 @@ const fixtures = [
     },
     {
         name: 'TxAckPrevExtraData',
-        message: {
-            TxAckPrevExtraData: {
-                options: {
-                    '(wire_type)': 22,
-                    '(include_in_bitcoin_only)': true,
-                },
-                fields: {
-                    tx: {
-                        rule: 'required',
-                        type: 'TxAckPrevExtraDataWrapper',
-                        id: 1,
-                    },
-                },
-                nested: {
-                    TxAckPrevExtraDataWrapper: {
-                        fields: {
-                            extra_data_chunk: {
-                                rule: 'required',
-                                type: 'bytes',
-                                id: 8,
-                            },
-                        },
-                    },
-                },
-            },
-        },
         in: {
             tx: {
                 extra_data_chunk:
@@ -520,19 +241,14 @@ const fixtures = [
 describe('Real messages', () => {
     fixtures.forEach(f => {
         describe(f.name, () => {
-            const Messages = ProtoBuf.Root.fromJSON({
-                // @ts-expect-error
-                nested: { messages: { nested: { ...f.message } } },
-            });
-            const Message = Messages.lookupType(`messages.${f.name}`);
-
             test('encode and decode', () => {
                 // serialize
-                const encoded = encode(Message, f.in);
-                expect(encoded.toString('hex')).toEqual(f.encoded);
+                // const encoded = encode(Message, f.in);
+                const encoded = protobufManager.encode(f.name, f.in);
+                expect(encoded.message.toString('hex')).toEqual(f.encoded);
                 // deserialize
-                const decoded = decode(Message, encoded);
-                expect(decoded).toEqual(f.out ? f.out : f.in);
+                const decoded = protobufManager.decode(f.name, encoded.message);
+                expect(decoded.message).toMatchObject(f.out ? f.out : f.in);
             });
         });
     });

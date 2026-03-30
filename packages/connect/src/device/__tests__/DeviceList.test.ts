@@ -2,6 +2,7 @@ import { parseConnectSettings } from '@trezor/connect-common/src/data/connectSet
 
 import { DataManager } from '../../data/DataManager';
 import { initializeFirmwareConfig } from '../../data/firmwareInfo';
+import { loadProtobufModules } from '../../data/protobufLoader';
 import { DeviceList } from '../DeviceList';
 
 const { createTestTransport, createTestTransportClass } = global.JestMocks;
@@ -32,6 +33,7 @@ describe('DeviceList', () => {
             true,
             initializeFirmwareConfig,
         );
+        await loadProtobufModules();
     });
 
     let list: DeviceList;
@@ -41,7 +43,6 @@ describe('DeviceList', () => {
         list = new DeviceList({
             ...parseConnectSettings({}),
             priority: 0,
-            messages: DataManager.getProtobufMessages(),
         });
         eventsSpy = jest.fn();
         list.on('transport-start', ({ apiType }) => eventsSpy('transport-start', apiType));

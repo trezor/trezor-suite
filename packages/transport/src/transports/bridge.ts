@@ -241,7 +241,6 @@ export class BridgeTransport extends AbstractTransport {
             async signal => {
                 const protocol = this.getProtocol(customProtocol);
                 const bytes = buildMessage({
-                    messages: this.messages,
                     name,
                     data,
                     protocol,
@@ -268,7 +267,6 @@ export class BridgeTransport extends AbstractTransport {
                     }
                     const message = parseThpMessage({
                         decoded: protocol.decode(respBytes),
-                        messages: this.messages,
                         thpState,
                     });
                     thpState?.sync('recv', message.type);
@@ -282,11 +280,7 @@ export class BridgeTransport extends AbstractTransport {
                     return success(message);
                 }
 
-                return receiveAndParse(
-                    this.messages,
-                    () => Promise.resolve(success(respBytes)),
-                    protocol,
-                );
+                return receiveAndParse(() => Promise.resolve(success(respBytes)), protocol);
             },
             { signal, timeout },
         );
@@ -305,7 +299,6 @@ export class BridgeTransport extends AbstractTransport {
             async signal => {
                 const protocol = this.getProtocol(customProtocol);
                 const bytes = buildMessage({
-                    messages: this.messages,
                     name,
                     data,
                     protocol,
@@ -358,7 +351,6 @@ export class BridgeTransport extends AbstractTransport {
                     // see readThpMessage in @trezor/transport-bridge
                     const message = parseThpMessage({
                         decoded: protocol.decode(respBytes),
-                        messages: this.messages,
                         thpState,
                     });
                     thpState?.sync('recv', message.type);
@@ -366,11 +358,7 @@ export class BridgeTransport extends AbstractTransport {
                     return success(message);
                 }
 
-                return receiveAndParse(
-                    this.messages,
-                    () => Promise.resolve(success(respBytes)),
-                    protocol,
-                );
+                return receiveAndParse(() => Promise.resolve(success(respBytes)), protocol);
             },
             { signal, timeout },
         );

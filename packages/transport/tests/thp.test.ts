@@ -1,4 +1,5 @@
-import { parseConfigure } from '@trezor/protobuf';
+import { protobufManager } from '@trezor/protobuf';
+import * as thpProto from '@trezor/protobuf/src/definitions/messages-thp_pb';
 import { thp as protocolThp, v2 } from '@trezor/protocol';
 
 import { parseThpMessage, receiveThpMessage, sendThpMessage } from '../src/thp';
@@ -7,6 +8,8 @@ import {
     THP_ACK_DEADLINE,
     THP_ACK_TIMEOUT,
 } from '../src/thp/receiveExpectedMessage';
+
+protobufManager.load([thpProto]);
 
 describe('thp', () => {
     const HANDSHAKE_COMP_RES = Buffer.from(
@@ -343,12 +346,7 @@ describe('thp', () => {
                 'hex',
             );
 
-            const protobufRoot = parseConfigure({
-                nested: protocolThp.getProtobufDefinitions(),
-            });
-
             const result = await parseThpMessage({
-                messages: protobufRoot,
                 decoded: v2.decode(readResult),
                 thpState,
             });
@@ -362,12 +360,7 @@ describe('thp', () => {
                 'hex',
             );
 
-            const protobufRoot = parseConfigure({
-                nested: protocolThp.getProtobufDefinitions(),
-            });
-
             const result = await parseThpMessage({
-                messages: protobufRoot,
                 decoded: v2.decode(readResult),
                 thpState,
             });

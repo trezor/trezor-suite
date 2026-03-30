@@ -309,7 +309,7 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
         return this.releasePromise;
     }
 
-    async setupThp() {
+    setupThp() {
         _log.info('Setup THP device');
         this._protocol = protocolV2;
 
@@ -321,7 +321,6 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
             this.unreadableError = 'THP incompatible with bridge ' + this.transport.version;
         } else {
             try {
-                await this.transport.loadMessages('thp', protocolThp.getProtobufDefinitions);
                 this.thp = new protocolThp.ThpState();
             } catch (error) {
                 // THP messages not loaded

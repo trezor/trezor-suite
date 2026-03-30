@@ -1,85 +1,19 @@
 /**
  * Comprehensive Unit Tests for ProtobufManager (@bufbuild implementation)
- * Tests verify equivalence with protobufjs implementation using REAL messages from messages.json
- *
- * This test should be removed once we have confidence in the new implementation and full coverage of all messages and enums.
+ * Tests verify that all message types can be encoded/decoded, enums are available,
+ * and error handling works correctly.
  */
 
 import { AnyDesc, ScalarType } from '@bufbuild/protobuf';
-import * as ProtoBuf from 'protobufjs/light';
 
-import * as messagesJson from '../messages.json';
-import { RULE_PATCH } from '../scripts/protobuf-patches';
-import { decode as decodeProtobufJs } from '../src/decode';
-import { encode as encodeProtobufJs } from '../src/encode';
 import { ProtobufManager } from '../src/manager';
 
-type JsonFieldDefinition = {
-    type?: string;
-    rule?: string;
-};
-
-type JsonMessageDefinition = {
-    fields?: Record<string, JsonFieldDefinition>;
-    nested?: Record<string, JsonMessageDefinition | JsonEnumDefinition>;
-};
-
-type JsonEnumDefinition = {
-    values?: Record<string, number>;
-};
-
-type JsonSchema = {
-    nested?: Record<string, JsonMessageDefinition | JsonEnumDefinition>;
-};
-
 type TestPayload = Record<string, unknown>;
-
-const messagesJsonSchema = messagesJson as unknown as JsonSchema;
-
-const isJsonMessageDefinition = (
-    definition: JsonMessageDefinition | JsonEnumDefinition | undefined,
-): definition is JsonMessageDefinition => !!definition && 'fields' in definition;
-
-const getMessageDefinition = (messageName: string): JsonMessageDefinition | undefined => {
-    const definition = messagesJsonSchema.nested?.[messageName];
-    if (!isJsonMessageDefinition(definition)) {
-        return undefined;
-    }
-
-    return definition;
-};
 
 const getErrorMessage = (error: unknown) =>
     error instanceof Error ? error.message : String(error);
 
-const getDefaultValueForScalarType = (scalarType?: string): unknown => {
-    switch (scalarType) {
-        case 'string':
-            return 'test';
-        case 'bytes':
-            return 'aa';
-        case 'uint32':
-        case 'int32':
-        case 'sint32':
-            return 0;
-        case 'uint64':
-        case 'int64':
-        case 'sint64':
-            return '0';
-        case 'bool':
-            return false;
-        case 'float':
-        case 'double':
-            return 0.0;
-        default:
-            return undefined;
-    }
-};
-
 const getAllProtoModules = () => {
-    const modules: Record<string, Record<string, AnyDesc>> = {};
-
-    // All available proto definition files
     const protoFiles = [
         'messages-bitcoin',
         'messages-ble',
@@ -106,11 +40,9 @@ const getAllProtoModules = () => {
         'options',
     ];
 
-    protoFiles.forEach(name => {
-        modules[name] = require(`../src/definitions/${name}_pb`);
-    });
-
-    return Object.values(modules);
+    return protoFiles.map(
+        name => require(`../src/definitions/${name}_pb`) as Record<string, AnyDesc>,
+    );
 };
 
 describe('ProtobufManager comprehensive tests', () => {
@@ -118,15 +50,27 @@ describe('ProtobufManager comprehensive tests', () => {
     const protobufManager = ProtobufManager();
     protobufManager.load(allProtoModules);
 
-    const protobufJs = ProtoBuf.Root.fromJSON(messagesJson);
+    const getAllMessageNames = (): string[] => {
+        const names: string[] = [];
+        allProtoModules.forEach(mod => {
+            Object.values(mod).forEach(desc => {
+                if (desc.kind === 'message') {
+                    names.push(desc.name);
+                }
+            });
+        });
 
-    const lookupType = (messageName: string): ProtoBuf.Type => {
-        const reflectionObject = protobufJs.lookup(messageName);
-        if (!(reflectionObject instanceof ProtoBuf.Type)) {
-            throw new Error(`Type ${messageName} not found in protobufjs root.`);
+        return [...new Set(names)];
+    };
+
+    const getRequiredFieldNames = (messageName: string): string[] => {
+        try {
+            const { schema } = protobufManager.findSchema(messageName);
+
+            return schema.fields.filter(f => f.presence === 'LEGACY_REQUIRED').map(f => f.name);
+        } catch {
+            return [];
         }
-
-        return reflectionObject;
     };
 
     const buildPayloadFromBufSchema = (schema: { fields?: Array<any> }): TestPayload => {
@@ -136,8 +80,6 @@ describe('ProtobufManager comprehensive tests', () => {
             if (field.fieldKind === 'list') {
                 if (field.name === 'address_n') {
                     payload[field.name] = [1];
-                } else if (field.listKind === 'message') {
-                    payload[field.name] = [];
                 } else {
                     payload[field.name] = [];
                 }
@@ -183,120 +125,6 @@ describe('ProtobufManager comprehensive tests', () => {
         return payload;
     };
 
-    const getAllMessageNames = (): string[] => Object.keys(messagesJsonSchema.nested ?? {});
-
-    const getAllEnumNames = () => {
-        const schema = messagesJsonSchema;
-        const enums = new Set<string>();
-
-        Object.keys(schema.nested ?? {}).forEach(key => {
-            const item = schema.nested?.[key];
-            if (item && 'values' in item && !('fields' in item)) {
-                enums.add(key);
-            }
-        });
-
-        return Array.from(enums);
-    };
-
-    const messageExistsInBufbuild = (messageName: string): boolean => {
-        try {
-            protobufManager.findSchema(messageName);
-
-            return true;
-        } catch {
-            return false;
-        }
-    };
-
-    const enumExistsInBufbuild = (enumName: string): boolean => {
-        const enumDef = protobufManager.findEnum(enumName);
-
-        return enumDef !== undefined;
-    };
-
-    const isFieldRequired = (messageName: string, fieldName: string): boolean => {
-        const patchKey = `${messageName}.${fieldName}`;
-
-        // Check if there's an explicit patch (highest priority)
-        if (patchKey in RULE_PATCH) {
-            return RULE_PATCH[patchKey as keyof typeof RULE_PATCH] === 'required';
-        }
-
-        // Fallback: Check messages.json as primary source for proto2 field rules
-        const messageDef = getMessageDefinition(messageName);
-        if (!messageDef?.fields) {
-            return false;
-        }
-
-        const field = messageDef.fields?.[fieldName];
-        if (!field) {
-            return false;
-        }
-
-        // Repeated fields are always optional
-        if (field.rule === 'repeated') {
-            return false;
-        }
-
-        return field.rule === 'required';
-    };
-
-    const getRequiredFields = (messageName: string): string[] => {
-        const messageDef = getMessageDefinition(messageName);
-        if (!messageDef?.fields) {
-            return [];
-        }
-
-        return Object.keys(messageDef.fields ?? {}).filter(fieldName =>
-            isFieldRequired(messageName, fieldName),
-        );
-    };
-
-    const buildPayloadFromJsonDefinition = (
-        messageName: string,
-        messageDefinition: JsonMessageDefinition,
-        requiredOnly: boolean,
-    ): TestPayload => {
-        const payload: TestPayload = {};
-
-        Object.entries(messageDefinition.fields ?? {}).forEach(([fieldName, field]) => {
-            if (requiredOnly && !isFieldRequired(messageName, fieldName)) {
-                return;
-            }
-
-            if (field.rule === 'repeated') {
-                payload[fieldName] = [];
-
-                return;
-            }
-
-            const scalarValue = getDefaultValueForScalarType(field.type);
-            if (scalarValue !== undefined) {
-                payload[fieldName] = scalarValue;
-
-                return;
-            }
-
-            const nestedTypeName = field.type ?? '';
-            const nestedDefinition = messageDefinition.nested?.[nestedTypeName];
-
-            if (isJsonMessageDefinition(nestedDefinition)) {
-                payload[fieldName] = buildPayloadFromJsonDefinition(
-                    nestedTypeName,
-                    nestedDefinition,
-                    false,
-                );
-
-                return;
-            }
-
-            payload[fieldName] = {};
-        });
-
-        return payload;
-    };
-
     const buildMinimalTestData = (messageName: string): TestPayload | null => {
         try {
             const { schema } = protobufManager.findSchema(messageName);
@@ -306,90 +134,16 @@ describe('ProtobufManager comprehensive tests', () => {
 
             return buildPayloadFromBufSchema(schema);
         } catch {
-            const messageDef = getMessageDefinition(messageName);
-            if (!messageDef?.fields) {
-                return null;
-            }
-
-            return buildPayloadFromJsonDefinition(messageName, messageDef, true);
+            return null;
         }
     };
 
-    it('identify all available and missing messages in @bufbuild definitions', () => {
-        const allMessages = getAllMessageNames();
-        const missingMessages: string[] = [];
-        const availableMessages: Array<{ name: string; requirementStatus: string }> = [];
-
-        allMessages.forEach(msgName => {
-            const requiredFields = getRequiredFields(msgName);
-            const hasRequired = requiredFields.length > 0;
-            const requirementStatus = hasRequired
-                ? `required=[${requiredFields.join(', ')}]`
-                : 'optional_only';
-
-            if (messageExistsInBufbuild(msgName)) {
-                availableMessages.push({ name: msgName, requirementStatus });
-            } else {
-                missingMessages.push(msgName);
-            }
-        });
-
-        const allEnums = getAllEnumNames();
-        const missingEnums: string[] = [];
-        const availableEnums: Array<{ name: string; valueCount: number }> = [];
-
-        allEnums.forEach(enumName => {
-            if (enumExistsInBufbuild(enumName)) {
-                const enumDef = protobufManager.findEnum(enumName);
-                const valueCount = enumDef ? Object.keys(enumDef.values || {}).length : 0;
-                availableEnums.push({ name: enumName, valueCount });
-            } else {
-                missingEnums.push(enumName);
-            }
-        });
-        const failures: string[] = [];
-
-        availableMessages.slice(0, 10).forEach(({ name: messageName }) => {
-            const testData = buildMinimalTestData(messageName);
-
-            if (!testData || Object.keys(testData).length === 0) {
-                console.warn(`   ⊘ ${messageName} - skipped (no required fields to test)`);
-
-                return;
-            }
-
-            try {
-                const pbLookup = lookupType(messageName);
-                const newEncoded = protobufManager.encode(messageName, testData);
-                const oldEncoded = encodeProtobufJs(pbLookup, testData);
-                const encodesMatch = newEncoded.message.compare(oldEncoded) === 0;
-
-                const newDecoded = protobufManager.decode(messageName, newEncoded.message);
-                const oldDecoded = decodeProtobufJs(pbLookup, oldEncoded);
-                const decodesMatch =
-                    JSON.stringify(newDecoded.message) === JSON.stringify(oldDecoded);
-
-                if (!encodesMatch || !decodesMatch) {
-                    failures.push(messageName);
-                }
-            } catch {
-                failures.push(messageName);
-            }
-        });
-
-        expect(failures.length).toBe(0);
-        expect(availableMessages.length).toBeGreaterThan(0);
-        expect(availableEnums.length).toBeGreaterThan(0);
-    });
-
     describe('messages -> JSON round-trip', () => {
-        const allMessages = getAllMessageNames().filter(name => messageExistsInBufbuild(name));
+        const allMessages = getAllMessageNames();
 
-        const samplesToTest = allMessages;
-
-        samplesToTest.forEach(messageName => {
+        allMessages.forEach(messageName => {
             const testData = buildMinimalTestData(messageName);
-            const requiredFields = getRequiredFields(messageName);
+            const requiredFields = getRequiredFieldNames(messageName);
 
             if (!testData || Object.keys(testData).length === 0) {
                 return;
@@ -421,68 +175,60 @@ describe('ProtobufManager comprehensive tests', () => {
     });
 
     describe('nested messages', () => {
-        const compositionTests = [
-            {
-                description: 'GetAddress with multisig (nested)',
-                messageName: 'GetAddress',
-                data: {
-                    address_n: [44, 0, 0],
-                    coin_name: 'Bitcoin',
-                    multisig: {
-                        m: 1,
-                        nodes: [
-                            {
-                                depth: 0,
-                                fingerprint: 0,
-                                child_num: 0,
-                                chain_code: '00',
-                                public_key: '00',
-                            },
-                        ],
-                        pubkeys: [
-                            {
-                                address_n: [1],
-                                node: {
-                                    depth: 1,
-                                    fingerprint: 1,
-                                    child_num: 1,
-                                    chain_code: '11',
-                                    public_key: '11',
-                                },
-                            },
-                        ],
-                        signatures: [''],
-                        address_n: [0],
-                        pubkeys_order: 'LEXICOGRAPHIC',
-                    },
-                },
-            },
-            {
-                description: 'TxAckInput with nested input',
-                messageName: 'TxAckInput',
-                data: {
-                    tx: {
-                        input: {
-                            prev_hash: '00',
-                            prev_index: 0,
-                            amount: 1000,
+        it('GetAddress with multisig (nested)', () => {
+            const data = {
+                address_n: [44, 0, 0],
+                coin_name: 'Bitcoin',
+                multisig: {
+                    m: 1,
+                    nodes: [
+                        {
+                            depth: 0,
+                            fingerprint: 0,
+                            child_num: 0,
+                            chain_code: '00',
+                            public_key: '00',
                         },
+                    ],
+                    pubkeys: [
+                        {
+                            address_n: [1],
+                            node: {
+                                depth: 1,
+                                fingerprint: 1,
+                                child_num: 1,
+                                chain_code: '11',
+                                public_key: '11',
+                            },
+                        },
+                    ],
+                    signatures: [''],
+                    address_n: [0],
+                    pubkeys_order: 'LEXICOGRAPHIC',
+                },
+            };
+
+            const encoded = protobufManager.encode('GetAddress', data);
+            const decoded = protobufManager.decode('GetAddress', encoded.message);
+            expect(decoded.message).toMatchObject(data);
+        });
+
+        it('TxAckInput with nested input', () => {
+            const data = {
+                tx: {
+                    input: {
+                        prev_hash: '00',
+                        prev_index: 0,
+                        amount: 1000,
                     },
                 },
-            },
-        ];
+            };
 
-        compositionTests.forEach(({ description, messageName, data }) => {
-            if (!messageExistsInBufbuild(messageName)) {
-                return;
-            }
+            const encoded = protobufManager.encode('TxAckInput', data);
+            expect(encoded.message).toBeDefined();
 
-            it(description, () => {
-                const newResult = protobufManager.encode(messageName, data);
-                const oldResult = encodeProtobufJs(lookupType(messageName), data);
-
-                expect(newResult.message.compare(oldResult)).toEqual(0);
-            });
+            const decoded = protobufManager.decode('TxAckInput', encoded.message);
+            expect(decoded.message).toMatchObject(data);
         });
     });
 
@@ -496,10 +242,9 @@ describe('ProtobufManager comprehensive tests', () => {
 
         criticalEnums.forEach(enumName => {
             it(`${enumName} - should exist in @bufbuild definitions`, () => {
-                const exists = enumExistsInBufbuild(enumName);
-                expect(exists).toBe(true);
-
                 const enumDef = protobufManager.findEnum(enumName);
+                expect(enumDef).toBeDefined();
+
                 const valueCount = enumDef ? Object.keys(enumDef.values || {}).length : 0;
                 expect(enumDef).toBeDefined();
                 expect(valueCount).toBeGreaterThan(0);
@@ -507,54 +252,60 @@ describe('ProtobufManager comprehensive tests', () => {
         });
     });
 
-    describe('TxRequest with undefined optional fields', () => {
-        const messageName = 'TxRequest';
+    describe('string encoding in ThpPairingRequest', () => {
+        const messageName = 'ThpPairingRequest';
 
         const cases = [
             {
-                description: 'encodes with all fields undefined',
-                data: {},
+                description: 'encodes ASCII host_name and app_name',
+                data: { host_name: 'Chrome', app_name: 'Trezor Suite' },
             },
             {
-                description: 'encodes with only request_type',
-                data: { request_type: 0 },
+                description: 'encodes Unicode host_name',
+                data: { host_name: 'Prohlížeč', app_name: 'Suite' },
             },
             {
-                description: 'encodes with details but no serialized',
-                data: {
-                    request_type: 0,
-                    details: { request_index: 0 },
-                },
+                description: 'encodes empty strings',
+                data: { host_name: '', app_name: '' },
             },
             {
-                description: 'encodes with serialized but no details',
-                data: {
-                    request_type: 0,
-                    serialized: { serialized_tx: 'deadbeef' },
-                },
+                description: 'encodes host_name at 32-byte boundary',
+                data: { host_name: 'a'.repeat(32), app_name: 'app' },
             },
             {
-                description: 'encodes with empty nested messages',
-                data: {
-                    request_type: 0,
-                    details: {},
-                    serialized: {},
-                },
+                description: 'encodes special characters in host_name',
+                data: { host_name: 'My Browser (v1.0)', app_name: 'Trezor Suite - Desktop' },
             },
         ];
 
         cases.forEach(({ description, data }) => {
-            it(`${description}`, () => {
-                const newResult = protobufManager.encode(messageName, data);
-                const oldResult = encodeProtobufJs(lookupType(messageName), data);
+            it(description, () => {
+                const encoded = protobufManager.encode(messageName, data);
+                const decoded = protobufManager.decode(messageName, encoded.message);
+                expect(decoded.message).toEqual(data);
+            });
+        });
+    });
 
-                expect(newResult.message.compare(oldResult)).toEqual(0);
+    describe('real device binary decode', () => {
+        it('decodes real Features response from OneKey device', () => {
+            const realDeviceBytes = Buffer.from(
+                '0a097472657a6f722e696f1002186320633218343632444644393544434333363133323437423732463833380140004a02656e520a4f6e654b65792050726f60016a141ab6e1bf23f6b2b1187819b35d93fd1601d8adcd800101980100a00100aa010154d80100e00100e80100f00101f00102f00103f00104f00105f00106f00107f0010af0010bf0010cf0010df0010ef0010ff00110f001e807f00111f80100800201880200900200a00200a80200b002e0d403b80200c00200c80200aa1f0850726f2044304336b21f05322e332e36b81f01e21f06342e31392e30f21f05322e382e33fa1f0b5443423335423036313142b2200731616236653162ba2005312e362e32d0203ad82001e020e0a712c02505c82500d22505312e362e32e22505322e382e33f22505312e312e378a2606342e31392e30a2260b5052423335423036313142b2260850726f2044304336ba2605322e332e36d22605312e312e33da2605312e312e33e22605312e312e37882700902700',
+                'hex',
+            );
 
-                const decoded = protobufManager.decode(messageName, newResult.message);
-
-                const decoded1 = decodeProtobufJs(lookupType(messageName), newResult.message);
-                //expect(decoded.message).toEqual(data);
-                expect(decoded1).toEqual(decoded.message);
+            const decoded = protobufManager.decode('Features', realDeviceBytes);
+            expect(decoded.type).toBe('Features');
+            expect(decoded.message).toBeDefined();
+            // Verify key fields from the real device response
+            expect(decoded.message).toMatchObject({
+                vendor: 'trezor.io',
+                major_version: 2,
+                patch_version: 99,
+                label: 'OneKey Pro',
+                device_id: '462DFD95DCC3613247B72F83',
+                pin_protection: true,
+                initialized: true,
             });
         });
     });
@@ -583,32 +334,27 @@ describe('ProtobufManager comprehensive tests', () => {
             expect(result).toBeUndefined();
         });
 
-        [
-            {
-                description: 'matches protobufjs for unsafe uint64 decode',
-                payload: { asset_name_bytes: 'aa', amount: '9223372036854775807' },
-            },
-            {
-                description: 'matches protobufjs for unsafe sint64 decode',
-                payload: { asset_name_bytes: 'aa', mint_amount: '-9223372036854775807' },
-            },
-            {
-                description: 'matches protobufjs for mixed safe and unsafe 64-bit decode',
-                payload: {
-                    asset_name_bytes: 'aa',
-                    amount: 42,
-                    mint_amount: '-9223372036854775807',
-                },
-            },
-        ].forEach(({ description, payload }) => {
-            it(description, () => {
-                const messageType = lookupType('CardanoToken');
-                const encoded = encodeProtobufJs(messageType, payload);
+        it('handles unsafe uint64 decode', () => {
+            const encoded = protobufManager.encode('CardanoToken', {
+                asset_name_bytes: 'aa',
+                amount: '9223372036854775807',
+            });
+            const decoded = protobufManager.decode('CardanoToken', encoded.message);
+            expect(decoded.message).toMatchObject({
+                asset_name_bytes: 'aa',
+                amount: '9223372036854775807',
+            });
+        });
 
-                const protobufJsDecoded = decodeProtobufJs(messageType, encoded);
-                const managerDecoded = protobufManager.decode('CardanoToken', encoded).message;
-
-                expect(managerDecoded).toEqual(protobufJsDecoded);
+        it('handles unsafe sint64 decode', () => {
+            const encoded = protobufManager.encode('CardanoToken', {
+                asset_name_bytes: 'aa',
+                mint_amount: '-9223372036854775807',
+            });
+            const decoded = protobufManager.decode('CardanoToken', encoded.message);
+            expect(decoded.message).toMatchObject({
+                asset_name_bytes: 'aa',
+                mint_amount: '-9223372036854775807',
             });
         });
     });

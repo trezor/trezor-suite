@@ -52,7 +52,6 @@ intersection-observer
 json5
 jssha
 lodash
-long
 match-sorter
 next
 next-seo
@@ -64,8 +63,6 @@ postcss
 postcss-cli
 postcss-import
 postcss-lightningcss
-protobufjs
-protobufjs-cli
 pushdata-bitcoin
 react-inspector
 remark-gemoji
