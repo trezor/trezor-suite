@@ -32,6 +32,7 @@ import { type SuiteRootState, suiteInitialState } from '../../../../reducers/sui
 jest.mock('@suite/metadata', () => ({
     selectIsLabelingAvailableForEntity: jest.fn(),
     selectIsLabelingInitPossible: jest.fn(),
+    selectIsMetadataEnabled: jest.fn().mockReturnValue(false),
 }));
 
 const DEVICE_STATIC_SESSION_ID_123: StaticSessionId = '1@2:3';

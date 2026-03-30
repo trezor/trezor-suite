@@ -1,3 +1,4 @@
+import { type MetadataRootState, selectIsMetadataEnabled } from '@suite/metadata';
 import { type MessageSystemRootState } from '@suite-common/message-system';
 import { type AnyAction, createSliceWithExtraDeps } from '@suite-common/redux-utils';
 import {
@@ -82,13 +83,20 @@ export const selectDesktopSuiteSyncInteraction = (
     state: DesktopSuiteSyncRootState &
         WithSuiteSyncAndDeviceState &
         SuiteRootState &
+        MetadataRootState &
         MessageSystemRootState,
     deviceStaticSessionId: StaticSessionId | null,
 ): SuiteSyncInteraction | null => {
     const isSuiteSyncFeatureEnabled = selectIsSuiteSyncFeatureAvailable(state);
     if (!isSuiteSyncFeatureEnabled) return null;
 
-    return selectSuiteSyncInteraction(state, deviceStaticSessionId);
+    const interaction = selectSuiteSyncInteraction(state, deviceStaticSessionId);
+
+    // When legacy labeling is enabled (user explicitly chose it in settings)
+    // and suite sync is off, don't expose suite sync interactions — respect the user's choice.
+    if (interaction === 'suite-sync-off' && selectIsMetadataEnabled(state)) return null;
+
+    return interaction;
 };
 
 export const { updateShowEnableSuiteSyncModal } = suiteSyncSlice.actions;

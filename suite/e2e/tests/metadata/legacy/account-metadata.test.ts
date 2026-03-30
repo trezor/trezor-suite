@@ -19,6 +19,7 @@ test.describe('Account metadata', { tag: ['@webOnly', '@T3W1', '@T3T1', '@smoke'
         walletPage,
     }) => {
         await onboardingPage.completeOnboarding();
+        await metadataPage.enableLegacyLabeling(MetadataProvider.DROPBOX);
 
         await test.step('Open account and initialize metadata flow', async () => {
             await walletPage.accountLabel({ symbol: 'btc', type: 'normal', atIndex: 0 }).click();
@@ -29,7 +30,6 @@ test.describe('Account metadata', { tag: ['@webOnly', '@T3W1', '@T3T1', '@smoke'
             // wait until account page is fully loaded
             await expect(walletPage.fiatAmount).toBeVisible();
             await metadataPage.account.clickEditLabelButton(AccountLabelId.BitcoinDefault1);
-            await metadataPage.passThroughInitMetadata(MetadataProvider.DROPBOX);
         });
 
         await test.step('Edit label with Enter submit', async () => {
