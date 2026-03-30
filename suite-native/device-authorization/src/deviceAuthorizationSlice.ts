@@ -23,6 +23,7 @@ export enum DeviceAuthorizationStep {
 
 export type DeviceAuthorizationState = {
     deviceAuthorizationStep: DeviceAuthorizationStep;
+    passphraseRequestId?: string;
 };
 
 export type DeviceAuthorizationRootState = {
@@ -43,6 +44,9 @@ export const deviceAuthorizationSlice = createSlice({
                 state.deviceAuthorizationStep = DeviceAuthorizationStep.PinRequested;
             })
             .addCase(UI_REQUEST.REQUEST_PASSPHRASE, (state, action) => {
+                state.passphraseRequestId = (
+                    action as typeof action & { requestId?: string }
+                ).requestId;
                 if (isPassphraseRequest(action) && action.payload?.device?.state?.staticSessionId) {
                     state.deviceAuthorizationStep = DeviceAuthorizationStep.PassphraseRequested;
                 } else if (state.deviceAuthorizationStep === DeviceAuthorizationStep.PinRequested) {
@@ -53,6 +57,7 @@ export const deviceAuthorizationSlice = createSlice({
             })
             .addCase(UI_REQUEST.CLOSE_UI_WINDOW, state => {
                 state.deviceAuthorizationStep = DeviceAuthorizationStep.Idle;
+                state.passphraseRequestId = undefined;
             })
             .addCase(UI_REQUEST.REQUEST_BUTTON, (state, action) => {
                 if (isPinButtonRequestCode(action)) {
@@ -84,5 +89,8 @@ export const selectDeviceAuthorizationStep = (state: DeviceAuthorizationRootStat
 
 export const selectDeviceRequestedPin = (state: DeviceAuthorizationRootState) =>
     state.deviceAuthorization.deviceAuthorizationStep === DeviceAuthorizationStep.PinRequested;
+
+export const selectPassphraseRequestId = (state: DeviceAuthorizationRootState) =>
+    state.deviceAuthorization.passphraseRequestId;
 
 export const deviceAuthorizationReducer = deviceAuthorizationSlice.reducer;
