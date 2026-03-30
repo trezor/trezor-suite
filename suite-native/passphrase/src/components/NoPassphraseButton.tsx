@@ -2,12 +2,14 @@ import { useSelector } from 'react-redux';
 
 import { selectDeviceInternalModel } from '@suite-common/device';
 import { Button } from '@suite-native/atoms';
+import { selectPassphraseRequestId } from '@suite-native/device-authorization';
 import { Translation } from '@suite-native/intl';
 import { useNavigateToInitialScreen } from '@suite-native/navigation';
 import TrezorConnect, { UI_RESPONSE } from '@trezor/connect';
 
 export const NoPassphraseButton = () => {
     const deviceModel = useSelector(selectDeviceInternalModel);
+    const requestId = useSelector(selectPassphraseRequestId);
 
     const navigateToInitialScreen = useNavigateToInitialScreen();
     const handleSubmitOnDevice = () => {
@@ -17,6 +19,7 @@ export const NoPassphraseButton = () => {
                 value: '',
                 passphraseOnDevice: false,
             },
+            requestId,
         });
         navigateToInitialScreen();
     };
