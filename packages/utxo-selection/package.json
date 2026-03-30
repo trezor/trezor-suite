@@ -1,0 +1,68 @@
+{
+    "name": "@trezor/utxo-selection",
+    "version": "0.1.0",
+    "author": "Trezor <info@trezor.io>",
+    "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/utxo-selection",
+    "description": "UTXO selection and transaction composition for Bitcoin-like cryptocurrencies",
+    "npmPublishAccess": "public",
+    "license": "SEE LICENSE IN LICENSE.md",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/trezor/trezor-suite.git"
+    },
+    "bugs": {
+        "url": "https://github.com/trezor/trezor-suite/issues"
+    },
+    "keywords": [
+        "Trezor",
+        "bitcoin",
+        "utxo",
+        "coinselect",
+        "javascript"
+    ],
+    "main": "./src/index.ts",
+    "files": [
+        "lib/",
+        "libESM/",
+        "CHANGELOG.md"
+    ],
+    "publishConfig": {
+        "main": "./lib/index.js",
+        "types": "./lib/index.d.ts",
+        "exports": {
+            ".": {
+                "import": {
+                    "default": "./libESM/index.mjs",
+                    "types": "./lib/index.d.ts"
+                },
+                "require": {
+                    "default": "./lib/index.js",
+                    "types": "./lib/index.d.ts"
+                }
+            },
+            "./lib/*": {
+                "default": "./lib/*.js",
+                "types": "./lib/*.d.ts"
+            },
+            "./libESM/*": {
+                "default": "./libESM/*.mjs",
+                "types": "./libESM/*.d.mts"
+            }
+        }
+    },
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "test:unit": "yarn g:jest --verbose",
+        "type-check": "yarn g:tsc --build tsconfig.json",
+        "build:lib": "yarn build:lib:cjs && yarn build:lib:esm",
+        "build:lib:cjs": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
+        "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
+    },
+    "dependencies": {
+        "@trezor/utils": "workspace:*"
+    },
+    "peerDependencies": {
+        "tslib": "^2.6.2"
+    }
+}
