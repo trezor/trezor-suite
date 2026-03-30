@@ -17,8 +17,6 @@
     "dependencies": {
         "@suite-common/http-client": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
-        "@suite-common/wallet-utils": "workspace:*",
-        "@trezor/utils": "workspace:*",
         "zod": "4.3.6"
     },
     "devDependencies": {
