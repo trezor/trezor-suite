@@ -27,6 +27,7 @@ export * from './components/OverviewValueSkeleton';
 export * from './components/ProviderLogo';
 export * from './components/SearchableSheetHeader';
 export * from './components/SheetHeaderTitle';
+export { IconWithSpinner, type IconWithSpinnerProps } from './components/IconWithSpinner';
 export { WaitingCard, type WaitingCardProps } from './components/WaitingCard';
 
 export * from './hooks/useAnimatedBorderStyle';
