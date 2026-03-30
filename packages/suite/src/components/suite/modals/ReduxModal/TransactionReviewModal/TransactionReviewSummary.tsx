@@ -29,6 +29,8 @@ import { useLocales } from 'src/hooks/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { type Account } from 'src/types/wallet';
 
+import { TransactionReviewTronFeeNotes } from './TransactionReviewTronFeeNotes';
+
 const getEstimatedTime = (
     networkType: NetworkType,
     feeInfo: FeeInfo | undefined,
@@ -130,10 +132,14 @@ export const TransactionReviewSummary = ({
                         </>
                     )}
 
-                    {!['ethereum', 'solana'].includes(networkType) && (
+                    {!['ethereum', 'solana', 'tron'].includes(networkType) && (
                         <Note iconName="receipt">
                             <FeeRate feeRate={fee} networkType={network.networkType} />
                         </Note>
+                    )}
+
+                    {networkType === 'tron' && (
+                        <TransactionReviewTronFeeNotes tx={tx} account={account} />
                     )}
 
                     {isComposedFeeRateDifferent && network.networkType === 'bitcoin' && (

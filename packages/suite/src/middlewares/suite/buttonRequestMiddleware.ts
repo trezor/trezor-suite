@@ -37,7 +37,7 @@ const buttonRequest =
                 router: { route },
             } = api.getState();
             const isInSuite =
-                ['cardano', 'ethereum', 'stellar'].includes(account?.networkType || '') &&
+                ['cardano', 'ethereum', 'stellar', 'tron'].includes(account?.networkType || '') &&
                 [
                     'wallet-send',
                     'wallet-staking',
