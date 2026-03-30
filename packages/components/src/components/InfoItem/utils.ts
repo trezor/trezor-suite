@@ -19,7 +19,6 @@ export const mapVerticalAlignmentToAlignItems = (
 export const mapTypographyStyleToIconSize = (typographyStyle: TypographyStyle): IconSize => {
     const iconSizeMap: Record<TypographyStyle, IconSize> = {
         'headline-lg': 48,
-        'title-xl': 32,
         'headline-md': 32,
         'headline-sm': 24,
         'body-md-strong': 20,
@@ -36,7 +35,6 @@ export const mapTypographyStyleToIconSize = (typographyStyle: TypographyStyle): 
 export const mapTypographyStyleToIconGap = (typographyStyle: TypographyStyle): SpacingValues => {
     const gapMap: Record<TypographyStyle, SpacingValues> = {
         'headline-lg': spacings.lg,
-        'title-xl': spacings.lg,
         'headline-md': spacings.md,
         'headline-sm': spacings.sm,
         'body-md-strong': spacings.xs,
@@ -53,7 +51,6 @@ export const mapTypographyStyleToIconGap = (typographyStyle: TypographyStyle): S
 export const mapTypographyStyleToLabelGap = (typographyStyle: TypographyStyle): SpacingValues => {
     const gapMap: Record<TypographyStyle, SpacingValues> = {
         'headline-lg': spacings.lg,
-        'title-xl': spacings.lg,
         'headline-md': spacings.md,
         'headline-sm': spacings.sm,
         'body-md-strong': spacings.xxs,

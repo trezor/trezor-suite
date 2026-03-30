@@ -42,7 +42,6 @@ export const TEXT_MAX_FONT_MULTIPLIER = 2;
  */
 const variantToMaxFontSizeMultiplier = {
     'headline-lg': TITLE_MAX_FONT_MULTIPLIER,
-    'title-xl': TITLE_MAX_FONT_MULTIPLIER,
     'headline-md': TITLE_MAX_FONT_MULTIPLIER,
     'headline-sm': TITLE_MAX_FONT_MULTIPLIER,
     'body-md-strong': TITLE_MAX_FONT_MULTIPLIER,

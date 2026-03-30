@@ -59,7 +59,7 @@ export const EarnConsentsScreen = () => {
     return (
         <Screen header={<ScreenHeader closeActionType="back" />}>
             <VStack marginTop="sp32" spacing="sp16">
-                <Text variant="title-xl" style={applyStyle(titleStyle)}>
+                <Text variant="headline-md" style={applyStyle(titleStyle)}>
                     <Translation id="earn.earnConsentsScreen.title" />
                 </Text>
                 <EarnConsentsEntryPeriodCard
