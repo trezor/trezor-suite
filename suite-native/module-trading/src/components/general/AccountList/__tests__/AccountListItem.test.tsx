@@ -23,6 +23,7 @@ const btc10000000Account = mockWalletAccount({
 
 const defaultPreloadedState = {
     device: {
+        devices: [],
         selectedDevice: {
             state: {
                 staticSessionId: DEVICE_SESSION_ID,

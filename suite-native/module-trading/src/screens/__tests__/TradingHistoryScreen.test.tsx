@@ -44,6 +44,7 @@ const getPreloadedState = (): PreloadedState => ({
         accounts,
     },
     device: {
+        devices: [],
         selectedDevice: {
             state: {
                 staticSessionId: '1@2:3',

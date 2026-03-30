@@ -25,6 +25,7 @@ import { AccountList, type AccountsListProps, keyExtractor } from '../AccountLis
 
 const defaultPreloadedState = {
     device: {
+        devices: [],
         selectedDevice: {
             state: {
                 staticSessionId: MOCK_ACCOUNT_DEVICE_SESSION_ID,

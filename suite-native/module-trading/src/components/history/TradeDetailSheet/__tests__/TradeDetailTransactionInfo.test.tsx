@@ -16,6 +16,7 @@ import {
 
 const getPreloadedState = (trades: TradingTransaction[]): PreloadedState => ({
     device: {
+        devices: [],
         selectedDevice: {
             state: {
                 staticSessionId: 'staticSessionId' as StaticSessionId,
