@@ -109,7 +109,9 @@ export type TradingParsedCryptoIdProps = {
 };
 
 export type TradingFiatCurrenciesProps = Map<FiatCurrencyCode, string>;
-export type TradingPaymentMethodProps = BuyCryptoPaymentMethod | '';
+export type TradingBuyPaymentMethodProps = BuyCryptoPaymentMethod | '';
+export type TradingSellPaymentMethodProps = SellCryptoPaymentMethod | '';
+export type TradingPaymentMethodProps = TradingPaymentMethodType | '';
 export type TradingPaymentMethodListProps = {
     value: TradingPaymentMethodProps;
     label: string;
