@@ -51,6 +51,7 @@ const getTransactionStatus = (
         case TransactionDtoType.APPROVAL:
             return verifyApproval(parsed.data, vaultAddress, amountBigInt);
         case TransactionDtoType.SUPPLY:
+        case TransactionDtoType.DEPOSIT:
             return verifySupply(parsed.data, parsed.to, vaultAddress, address, amountBigInt);
         default:
             return 'skipped';
