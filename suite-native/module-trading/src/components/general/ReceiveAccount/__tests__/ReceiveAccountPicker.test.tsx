@@ -10,6 +10,7 @@ import { ReceiveAccountPicker, type ReceiveAccountPickerProps } from '../Receive
 
 const defaultPreloadedState = {
     device: {
+        devices: [],
         selectedDevice: {
             state: { staticSessionId: btc1NormalAccount.deviceState },
             connected: true,

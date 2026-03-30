@@ -23,6 +23,7 @@ jest.mock('@react-navigation/native', () => ({
 
 const getPreloadedState = (preloadedAccounts: Account[]): PreloadedState => ({
     device: {
+        devices: [],
         selectedDevice: {
             state: {
                 staticSessionId: '1@2:3',
