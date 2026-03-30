@@ -21,7 +21,7 @@ export {
     setSuiteSyncOwner,
 } from './suiteSyncSlice';
 export type { SuiteSyncState, SuiteSyncSettings } from './suiteSyncSlice';
-export { DEFAULT_SUITE_SYNC_RELAY_URL } from './relay/relayUrl';
+export { DEFAULT_SUITE_SYNC_RELAY_URL, SUITE_SYNC_RELAY_SERVERS } from './relay/relayUrl';
 export type {
     SuiteSyncServerTypeSelectValue,
     SuiteSyncServerTypeOption,
