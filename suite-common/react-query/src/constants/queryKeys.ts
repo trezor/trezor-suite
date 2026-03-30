@@ -9,6 +9,8 @@ export const commonQueryKeys = {
         accountKey,
         timestamp ?? 'no-ts',
     ],
+    solanaRewards: (...args: any[]) => ['solana-rewards', ...args],
+    solanaRewardsTotal: (address: string) => ['solana-rewards-total', address],
 } as const satisfies Record<string, AllowedQueryKey>;
 
 export const desktopQueryKeys = {

@@ -1,24 +1,30 @@
+import { useEffect } from 'react';
+
+import { withScope } from '@sentry/core';
+
+import { EARN_API_BASE_URL } from '@suite-common/earn-staking-api/src/constants';
+import { useSolanaRewardsHistory } from '@suite-common/earn-staking-api/src/staking';
 import { SOLANA_EPOCH_DAYS } from '@suite-common/wallet-constants';
 import {
     selectAccountIsStakingActive,
     selectHasRunningDiscovery,
     selectHasSolExternalStakingAccounts,
-    selectPoolStatsApyData,
+    selectPoolStatsApy,
     selectSolExternalStakingAccountsTotalStaked,
 } from '@suite-common/wallet-core';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { getStakingDataForNetwork } from '@suite-common/wallet-utils';
 import { Column, Flex, Grid } from '@trezor/components';
+import { useCurrentRef } from '@trezor/react-utils';
 import { spacings } from '@trezor/theme';
 
 import { DashboardSection } from 'src/components/dashboard';
+import { usePagination } from 'src/hooks/general/usePagination';
 import { useLayoutSize, useSelector } from 'src/hooks/suite';
-import { useSolanaRewards } from 'src/hooks/wallet/useSolanaRewards';
 
 import { StakingDashboard } from '../StakingDashboard/StakingDashboard';
 import { RewardsList } from './Rewards/RewardsList';
 import { StakingRewardsWarning } from './StakingRewardsWarning';
-import { useRewardsNotAvailableYet } from './hooks/useRewardsNotAvailableYet';
 import { ApyCard } from '../StakingDashboard/components/ApyCard';
 import { ClaimCard } from '../StakingDashboard/components/ClaimCard';
 import { DiscoveryWarning } from '../StakingDashboard/components/DiscoveryWarning';
@@ -38,15 +44,37 @@ export const SolStakingDashboard = ({ selectedAccount }: SolStakingDashboardProp
 
     const { canClaim = false } = getStakingDataForNetwork(account) ?? {};
 
-    const apy = useSelector(state => selectPoolStatsApyData(state, account));
+    const apy = useSelector(state => selectPoolStatsApy(state, { account }));
 
     const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
 
-    const rewards = useSolanaRewards(account);
-    const rewardsNotAvailableYet = useRewardsNotAvailableYet(
-        account,
-        rewards.selectedAccountRewards?.[0],
-    );
+    const initialPage = 1;
+    const pagination = usePagination({ pageSize: 10, initialPage });
+    const rewardsQueryResult = useSolanaRewardsHistory(account, {
+        limit: pagination.pageSize,
+        offset: pagination.offset,
+        onTotalCount: pagination.setTotalCount,
+        onOutOfSync() {
+            withScope(scope => {
+                scope.setTag('error.code', 'solana_rewards_history_out_of_sync');
+                scope.setTag('error.source', EARN_API_BASE_URL);
+                scope.setTag('error.network', account.networkType);
+                scope.setTag('error.service', 'rewards_history');
+                scope.captureException(
+                    new Error(
+                        'Solana rewards history is out of sync with the current active epoch. Everstake API might return stale data.',
+                    ),
+                );
+            });
+        },
+    });
+
+    const pagintionRef = useCurrentRef(pagination);
+
+    useEffect(() => {
+        // reset solana rewards page on account change
+        pagintionRef.current.changePage(initialPage);
+    }, [account.descriptor, account.symbol, initialPage, pagintionRef]);
 
     const hasExternalStakingAccounts = useSelector(state =>
         selectHasSolExternalStakingAccounts(state, account.key),
@@ -71,7 +99,10 @@ export const SolStakingDashboard = ({ selectedAccount }: SolStakingDashboardProp
                             <DashboardSection>
                                 <Column alignItems="normal" gap={spacings.sm}>
                                     {isDiscoveryRunning && <DiscoveryWarning />}
-                                    {rewardsNotAvailableYet && <StakingRewardsWarning />}
+                                    {rewardsQueryResult.isSuccess &&
+                                        rewardsQueryResult.data.notAvailableYet && (
+                                            <StakingRewardsWarning />
+                                        )}
 
                                     <Grid
                                         columns={isBelowLaptop || !canClaim ? 1 : 2}
@@ -96,7 +127,11 @@ export const SolStakingDashboard = ({ selectedAccount }: SolStakingDashboardProp
                                     />
                                 </Column>
                             </DashboardSection>
-                            <RewardsList account={account} rewards={rewards} />
+                            <RewardsList
+                                account={account}
+                                rewardsQueryResult={rewardsQueryResult}
+                                pagination={pagination}
+                            />
                         </>
                     ) : (
                         <>
