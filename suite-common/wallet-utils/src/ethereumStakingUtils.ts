@@ -1,6 +1,6 @@
 import { fromWei, hexToNumberString } from 'web3-utils';
 
-import { type NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Account,
     type FormState,
@@ -74,18 +74,6 @@ export function isSupportedEthStakingNetworkSymbol(
 ): symbol is SupportedEthereumNetworkSymbol {
     return isArrayMember(symbol, supportedNetworkSymbols);
 }
-
-export const getStakingSymbols = (symbols: NetworkSymbol[]) =>
-    symbols.reduce((acc, symbol) => {
-        if (
-            isSupportedEthStakingNetworkSymbol(symbol) &&
-            getNetworkFeatures(symbol).includes('staking')
-        ) {
-            acc.push(symbol);
-        }
-
-        return acc;
-    }, [] as SupportedEthereumNetworkSymbol[]);
 
 // Define signature constants
 const STAKE_SIGNATURE = '0x3a29dbae';
