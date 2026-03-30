@@ -95,6 +95,7 @@ export const FeeSelector = ({
                 areFeesLoading={areFeesLoading}
                 onPress={handleOpen}
                 testID="@transactionManagement/fee-selector-card"
+                withCaret
             />
             <FeesBottomSheet
                 ref={bottomSheetRef}

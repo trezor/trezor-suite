@@ -12,8 +12,9 @@ export type FeeSummaryCardProps = {
     symbol: NetworkSymbol;
     networkType: NetworkType;
     areFeesLoading: boolean;
-    onPress: () => void;
+    onPress?: () => void;
     testID?: string;
+    withCaret?: boolean;
 };
 
 export const FeeSummaryCard = ({
@@ -23,6 +24,7 @@ export const FeeSummaryCard = ({
     areFeesLoading,
     onPress,
     testID,
+    withCaret,
 }: FeeSummaryCardProps) => (
     <AnimatedPressable exiting={FadeOut} entering={FadeIn} onPress={onPress} testID={testID}>
         <Card>
@@ -53,7 +55,7 @@ export const FeeSummaryCard = ({
                             isDiscreetText={false}
                         />
                     </VStack>
-                    <Icon name="caretDown" size="medium" color="iconSubdued" />
+                    {!!withCaret && <Icon name="caretDown" size="medium" color="iconSubdued" />}
                 </HStack>
             </HStack>
         </Card>
