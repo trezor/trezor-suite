@@ -22,7 +22,9 @@
         "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@suite-common/wallet-utils": "workspace:*",
+        "@suite-native/device-mutex": "workspace:*",
         "@suite-native/labeling": "workspace:*",
+        "@trezor/connect": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "react-redux": "9.2.0"

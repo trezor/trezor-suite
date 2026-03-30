@@ -17,6 +17,9 @@
             "path": "../../suite-common/wallet-config"
         },
         {
+            "path": "../../suite-common/wallet-constants"
+        },
+        {
             "path": "../../suite-common/wallet-core"
         },
         {
@@ -25,7 +28,9 @@
         {
             "path": "../../suite-common/wallet-utils"
         },
+        { "path": "../device-mutex" },
         { "path": "../labeling" },
+        { "path": "../../packages/connect" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" },
         {

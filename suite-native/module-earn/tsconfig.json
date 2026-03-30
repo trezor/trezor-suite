@@ -1,6 +1,7 @@
 {
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
+    "include": [".", "**/*.json"],
     "references": [
         { "path": "../../suite-common/device" },
         { "path": "../../suite-common/earn-api" },

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { type RouteProp, useRoute } from '@react-navigation/native';
+import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import { getNetwork } from '@suite-common/wallet-config';
 import { Text, VStack } from '@suite-native/atoms';

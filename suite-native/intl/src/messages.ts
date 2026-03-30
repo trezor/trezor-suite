@@ -2461,6 +2461,29 @@ export const messages = {
                 secondItem: 'Everstake maintains and secures your funds.',
             },
         },
+        earnTransactionDataReviewScreen: {
+            title: 'Review with Trezor',
+            successMessage: 'You’re all set.',
+            viewTransactionButton: 'Stake now',
+            pushTransactionFailedAlert: {
+                title: 'Transaction failed',
+                description: 'Failed to submit your stake transaction. Please try again.',
+                primaryButton: 'Go to home',
+            },
+            pendingTransactionConflictAlert: {
+                title: 'Pending transaction detected',
+                description:
+                    'A stake transaction is already pending for this account. Please wait for it to be confirmed before staking again.',
+                primaryButton: 'Go to home',
+            },
+        },
+        earnStakeOutputItem: {
+            title: 'Stake',
+            description: 'Stake {symbol} on Everstake?',
+        },
+        earnSummaryOutputItem: {
+            title: 'Total including fee',
+        },
         earnFormScreen: {
             title: '{assetName} staking',
             amountLabel: 'Amount',
