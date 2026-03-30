@@ -45,8 +45,8 @@
         { "path": "../services" },
         { "path": "../staking" },
         { "path": "../test-utils" },
-        { "path": "../transactions" },
         { "path": "../transaction-management" },
+        { "path": "../transactions" },
         { "path": "../../packages/react-utils" },
         {
             "path": "../../packages/styles-native"

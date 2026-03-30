@@ -154,9 +154,5 @@ export const selectEntryPeriodInDaysBySymbol = (
         return undefined;
     }
 
-    const daysToWait = secondsToDays(validatorActivationTime + validatorAddingDelay);
-
-    return daysToWait <= 0 ? 1 : daysToWait;
-
     return getDaysToAddToPoolInitial(validatorsQueue);
 };
