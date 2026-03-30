@@ -168,7 +168,7 @@ export const Option = ({
 
     useEffect(() => {
         if (props.isSelected) {
-            ref.current?.scrollIntoView();
+            ref.current?.scrollIntoView({ block: 'nearest' });
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
