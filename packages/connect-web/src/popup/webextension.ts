@@ -1,4 +1,4 @@
-import { type CoreEventMessage } from '@trezor/connect/src/events';
+import { type CoreEventMessage } from '@trezor/connect-common/src/events';
 import { type AbstractMessageChannel } from '@trezor/connect-common/src/messageChannel/abstract';
 import { ServiceWorkerWindowExtConnectableChannel } from '@trezor/connect-common/src/messageChannel/serviceworker-window-ext-connectable';
 import { createDeferred } from '@trezor/utils';

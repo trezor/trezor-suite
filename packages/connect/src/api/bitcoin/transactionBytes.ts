@@ -1,8 +1,7 @@
+import type { BitcoinNetworkInfo, PROTO } from '@trezor/connect-common';
 import * as baddress from '@trezor/utxo-lib/src/address';
 import { TxWeightCalculator } from '@trezor/utxo-lib/src/txWeightCalculator';
 
-import type { PROTO } from '../../constants';
-import type { BitcoinNetworkInfo } from '../../types';
 import { getOutputScriptType, getScriptType } from '../../utils/pathUtils';
 
 export function mapOutputScriptToKey(script_type: string) {

@@ -1,5 +1,10 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/data/FirmwareInfo.js
 
+import type { Features, StrictFeatures } from '@trezor/connect-common/src/types/device';
+import type {
+    CurrentVersion,
+    FirmwareReleaseConfigInfo,
+} from '@trezor/connect-common/src/types/firmware';
 import type {
     ConditionalRelease,
     FirmwareRelease,
@@ -17,8 +22,6 @@ import { getIntegerInRangeFromString, removeTrailingSlashes, versionUtils } from
 import type { VersionArray } from '@trezor/utils/src/versionUtils';
 
 import { DataManager } from './DataManager';
-import type { Features, StrictFeatures } from '../types/device';
-import type { CurrentVersion, FirmwareReleaseConfigInfo } from '../types/firmware';
 import { getReleaseAsset, getReleasesAssetByDeviceModelAndFirmwareType } from '../utils/assetUtils';
 import { httpRequest } from '../utils/assets';
 import { getOnlineFirmwareBaseUrl } from '../utils/firmwareReleaseConfigUtils';
@@ -301,7 +304,7 @@ export const getLanguage = (languageBinPath: string) => {
     return httpRequest(url, 'binary');
 };
 
-export type { CurrentVersion } from '../types/firmware';
+export type { CurrentVersion } from '@trezor/connect-common/src/types/firmware';
 
 const getCurrentVersion = (features: Features): CurrentVersion => {
     if (!isStrictFeatures(features)) {

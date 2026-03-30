@@ -1,4 +1,4 @@
-import { StellarSignTransaction } from '@trezor/connect/src/types/api/stellar';
+import { StellarSignTransaction } from '@trezor/connect-common/src/types/api/stellar';
 
 import { ApiPlayground } from '../../../components/ApiPlayground';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
@@ -20,7 +20,7 @@ export const paramDescriptions = {
     path: 'minimum length is `3`. [read more](/details/path)',
     networkPassphrase: 'network passphrase',
     transaction:
-        'type of [StellarTransaction](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/stellar/index.ts)',
+        'type of [StellarTransaction](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/src/types/api/stellar/index.ts)',
 };
 
 ## Stellar: Sign transaction
@@ -88,7 +88,7 @@ TrezorConnect.stellarSignTransaction(
 
 ### Result
 
-[StellarSignedTx type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/stellar/index.ts)
+[StellarSignedTx type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/src/types/api/stellar/index.ts)
 
 ```javascript
 {

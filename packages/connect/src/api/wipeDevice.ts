@@ -1,9 +1,10 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/WipeDevice.js
 
+import { DEVICE, UI_REQUEST } from '@trezor/connect-common';
+
 import type { MethodMessage, MethodPermission } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import type { Device } from '../device/Device';
-import { DEVICE, UI_REQUEST } from '../events';
 import { getFirmwareRange } from './common/paramsValidator';
 
 export default class WipeDevice extends AbstractMethod<'wipeDevice'> {

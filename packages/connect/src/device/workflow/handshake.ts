@@ -1,10 +1,10 @@
 import { TypedError } from '@trezor/connect-common/src/constants/errors';
+import type { Log } from '@trezor/connect-common/src/utils/debug';
 import { PROTOCOL_MALFORMED } from '@trezor/protocol/src/errors';
 import { TRANSPORT_ERROR } from '@trezor/transport';
 import { resolveAfter, versionUtils } from '@trezor/utils';
 
 import type { WorkflowContext } from '../../types/workflow';
-import type { Log } from '../../utils/debug';
 
 const CANCEL_TIMEOUT = 1_000;
 const ATTEMPTS_LIMIT = 10;

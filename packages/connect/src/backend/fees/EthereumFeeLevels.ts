@@ -1,6 +1,6 @@
+import type { EthereumNetworkInfo, FeeLevel } from '@trezor/connect-common';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import type { EthereumNetworkInfo, FeeLevel } from '../../types';
 import type { Blockchain } from '../Blockchain';
 import { MiscFeeLevels } from './MiscFeeLevels';
 

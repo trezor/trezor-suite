@@ -18,7 +18,6 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@trezor/connect": "workspace:^",
         "@trezor/connect-common": "workspace:^",
         "@trezor/utils": "workspace:^"
     },

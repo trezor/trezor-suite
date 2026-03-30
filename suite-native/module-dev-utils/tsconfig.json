@@ -38,7 +38,9 @@
         { "path": "../storage" },
         { "path": "../toasts" },
         { "path": "../trading-state" },
-        { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/connect-common"
+        },
         { "path": "../../packages/env-utils" },
         {
             "path": "../../packages/styles-native"

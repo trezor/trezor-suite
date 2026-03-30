@@ -1,10 +1,16 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/SignTransaction.js
 
+import type {
+    AccountAddresses,
+    BitcoinNetworkInfo,
+    PROTO,
+    RefTransaction,
+    TransactionOptions,
+} from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { promiseAllSequence } from '@trezor/utils/src/promiseAllSequence';
 
-import type { PROTO } from '../constants';
 import {
     createPendingTransaction,
     deriveOutputScript,
@@ -27,12 +33,10 @@ import type { Blockchain } from '../backend/BlockchainLink';
 import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
 import type { MethodPermission } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
-import type { AccountAddresses, BitcoinNetworkInfo } from '../types';
-import { getFirmwareRange, validateParams } from './common/paramsValidator';
 import { getBitcoinNetwork } from '../data/coinInfo';
-import type { RefTransaction, TransactionOptions } from '../types/api/bitcoin';
 import { getLabel } from '../utils/pathUtils';
 import { getTransactionVbytes } from './bitcoin/transactionBytes';
+import { getFirmwareRange, validateParams } from './common/paramsValidator';
 
 type Params = {
     inputs: PROTO.TxInputType[];

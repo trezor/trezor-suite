@@ -51,7 +51,6 @@ export default withNextra({
                 ),
             }),
         );
-
         if (process.env.BUILD_TARGET === 'webextension') {
             config.plugins.push(
                 new webpack.NormalModuleReplacementPlugin(

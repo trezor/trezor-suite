@@ -7,7 +7,8 @@ import {
     type RatesByKey,
     type WalletSettings,
 } from '@suite-common/wallet-types';
-import { PROTO, type StaticSessionId } from '@trezor/connect';
+import { type StaticSessionId } from '@trezor/connect';
+import { PROTO } from '@trezor/connect';
 
 import { getBaseAccount, getBtcAccount, getEthAccount, getSolAccount } from './account';
 import { btc1NormalAccount, eth1NormalAccount, eth2legacyAccount } from './accounts';

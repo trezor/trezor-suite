@@ -12979,7 +12979,7 @@ __metadata:
     "@suite-native/storage": "workspace:*"
     "@suite-native/toasts": "workspace:*"
     "@suite-native/trading-state": "workspace:*"
-    "@trezor/connect": "workspace:*"
+    "@trezor/connect-common": "workspace:^"
     "@trezor/env-utils": "workspace:*"
     "@trezor/styles-native": "workspace:*"
     "@trezor/theme": "workspace:*"
@@ -15003,7 +15003,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/blockchain-link@workspace:*, @trezor/blockchain-link@workspace:packages/blockchain-link":
+"@trezor/blockchain-link@workspace:*, @trezor/blockchain-link@workspace:^, @trezor/blockchain-link@workspace:packages/blockchain-link":
   version: 0.0.0-use.local
   resolution: "@trezor/blockchain-link@workspace:packages/blockchain-link"
   dependencies:
@@ -15131,9 +15131,18 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/connect-common@workspace:packages/connect-common"
   dependencies:
-    "@trezor/protobuf": "workspace:^"
+    "@fivebinaries/coin-selection": "npm:3.0.0"
+    "@trezor/blockchain-link": "workspace:^"
+    "@trezor/blockchain-link-types": "workspace:^"
+    "@trezor/device-authenticity": "workspace:^"
+    "@trezor/device-utils": "workspace:*"
+    "@trezor/protobuf": "workspace:*"
     "@trezor/protocol": "workspace:^"
+    "@trezor/schema-utils": "workspace:*"
+    "@trezor/transport": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
+    "@trezor/utxo-lib": "workspace:*"
     "@types/chrome": "npm:^0.0.299"
     "@types/jest": "npm:29.5.12"
     "@types/node": "npm:22.13.10"
@@ -15254,7 +15263,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/connect-mobile@workspace:packages/connect-mobile"
   dependencies:
-    "@trezor/connect": "workspace:^"
     "@trezor/connect-common": "workspace:^"
     "@trezor/utils": "workspace:^"
   peerDependencies:
@@ -15296,7 +15304,6 @@ __metadata:
     "@playwright/browser-firefox": "npm:1.57.0"
     "@playwright/browser-webkit": "npm:1.57.0"
     "@playwright/test": "npm:1.57.0"
-    "@trezor/connect": "workspace:*"
     "@trezor/connect-common": "workspace:*"
     "@trezor/eslint": "workspace:*"
     "@trezor/type-utils": "workspace:*"
@@ -15320,7 +15327,6 @@ __metadata:
   resolution: "@trezor/connect-webextension@workspace:packages/connect-webextension"
   dependencies:
     "@babel/preset-typescript": "npm:^7.28.5"
-    "@trezor/connect": "workspace:*"
     "@trezor/connect-common": "workspace:*"
     "@trezor/connect-web": "workspace:*"
     "@trezor/eslint": "workspace:*"
@@ -15402,7 +15408,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/device-authenticity@workspace:*, @trezor/device-authenticity@workspace:packages/device-authenticity":
+"@trezor/device-authenticity@workspace:*, @trezor/device-authenticity@workspace:^, @trezor/device-authenticity@workspace:packages/device-authenticity":
   version: 0.0.0-use.local
   resolution: "@trezor/device-authenticity@workspace:packages/device-authenticity"
   dependencies:
@@ -15777,6 +15783,7 @@ __metadata:
     "@suite/sentry": "workspace:*"
     "@trezor/coinjoin": "workspace:*"
     "@trezor/connect": "workspace:*"
+    "@trezor/connect-common": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/eslint": "workspace:*"
     "@trezor/ipc-proxy": "workspace:*"

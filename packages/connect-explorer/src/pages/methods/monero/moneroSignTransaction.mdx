@@ -1,5 +1,5 @@
-import { Bundle } from '@trezor/connect/src/types';
-import { MoneroSignTransaction } from '@trezor/connect/src/types/api/monero';
+import { Bundle } from '@trezor/connect-common/src/types';
+import { MoneroSignTransaction } from '@trezor/connect-common/src/types/api/monero';
 
 import { ApiPlayground } from '../../../components/ApiPlayground';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
@@ -354,7 +354,7 @@ TrezorConnect.moneroSignTransaction({
 
 ### Result
 
-[MoneroSignedTransaction type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/monero/index.ts)
+[MoneroSignedTransaction type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/src/types/api/monero/index.ts)
 
 The result contains the complete signed transaction data ready for broadcast:
 

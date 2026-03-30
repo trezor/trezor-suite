@@ -25,6 +25,7 @@
         { "path": "../../suite/sentry" },
         { "path": "../coinjoin" },
         { "path": "../connect" },
+        { "path": "../connect-common" },
         { "path": "../env-utils" },
         { "path": "../eslint" },
         { "path": "../ipc-proxy" },

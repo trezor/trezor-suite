@@ -32,7 +32,7 @@ import TrezorConnect, {
     type EthereumTransactionEIP1559,
     type InternalTransfer,
 } from '@trezor/connect';
-import { type BlockchainEstimatedFee } from '@trezor/connect/src/types/api/blockchainEstimateFee';
+import { type BlockchainEstimatedFee } from '@trezor/connect-common/src/types/api/blockchainEstimateFee';
 import { type Ok, type PartialRecord } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 

@@ -1,5 +1,6 @@
 import fetch from 'cross-fetch';
 
+import type { EthereumNetworkInfoDefinitionValues } from '@trezor/connect-common';
 import type { MessagesSchema } from '@trezor/protobuf';
 import { decodeMessage, parseConfigure } from '@trezor/protobuf';
 import { trzd } from '@trezor/protocol';
@@ -8,7 +9,6 @@ import { Assert, Type } from '@trezor/schema-utils';
 
 import { DataManager } from '../../data/DataManager';
 import { ethereumNetworkInfoBase } from '../../data/coinInfo';
-import type { EthereumNetworkInfoDefinitionValues } from '../../types';
 
 interface GetEthereumDefinitions {
     chainId?: number;

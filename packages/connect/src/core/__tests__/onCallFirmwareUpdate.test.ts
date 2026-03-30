@@ -1,3 +1,4 @@
+import { parseConnectSettings } from '@trezor/connect-common/src/data/connectSettings';
 import { DeviceModelInternal, FirmwareType } from '@trezor/device-utils';
 import { parseConfigure } from '@trezor/protobuf';
 import { v1 as protocolV1 } from '@trezor/protocol';
@@ -6,7 +7,6 @@ import { Log } from '@trezor/utils';
 
 import * as mockFwHash from '../../api/firmware/calculateFirmwareHash';
 import { DataManager } from '../../data/DataManager';
-import { parseConnectSettings } from '../../data/connectSettings';
 import { getBundledRelease, initializeFirmwareConfig } from '../../data/firmwareInfo';
 import { DeviceList } from '../../device/DeviceList';
 // mocks

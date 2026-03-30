@@ -1,5 +1,22 @@
 // original file https://github.com/trezor/connect/blob/develop/src/js/device/Device.js
-import { ERRORS } from '@trezor/connect-common/src/constants';
+import type {
+    DeviceBusyStatus,
+    DeviceFirmwareStatus,
+    DeviceState,
+    DeviceStatus,
+    DeviceThpState,
+    Device as DeviceTyped,
+    DeviceUniquePath,
+    Features,
+    FirmwareHashCheckResult,
+    FirmwareReleaseConfigInfo,
+    FirmwareType,
+    KnownDevice,
+    PROTO,
+    UnavailableCapabilities,
+} from '@trezor/connect-common';
+import { DEVICE, ERRORS, FIRMWARE, UI_REQUEST } from '@trezor/connect-common';
+import { initLog } from '@trezor/connect-common/src/utils/debug';
 import type { FirmwareRelease } from '@trezor/device-utils';
 import {
     DeviceModelInternal,
@@ -17,8 +34,6 @@ import { TypedEmitter, createDeferred, isArrayMember, versionUtils } from '@trez
 import type { VersionArray } from '@trezor/utils/src/versionUtils';
 
 import { DeviceCommands } from './DeviceCommands';
-import type { PROTO } from '../constants';
-import { FIRMWARE } from '../constants';
 import type { TypedCallProvider } from './DeviceCurrentSession';
 import { DeviceCurrentSession } from './DeviceCurrentSession';
 import { checkFirmwareRevision } from './checkFirmwareRevision';
@@ -31,26 +46,9 @@ import {
     getFirmwareStatus,
     getReleaseByVersion,
 } from '../data/firmwareInfo';
-import { DEVICE, UI_REQUEST } from '../events';
-import type {
-    DeviceBusyStatus,
-    DeviceFirmwareStatus,
-    DeviceState,
-    DeviceStatus,
-    DeviceThpState,
-    Device as DeviceTyped,
-    DeviceUniquePath,
-    Features,
-    FirmwareHashCheckResult,
-    FirmwareReleaseConfigInfo,
-    FirmwareType,
-    KnownDevice,
-    UnavailableCapabilities,
-} from '../types';
 import type { DeviceEvents, DeviceLifecycleEvents, IDevice, RunOptions } from '../types/idevice';
 import { handshakeCancel } from './workflow/handshake';
 import { getReleaseAsset } from '../utils/assetUtils';
-import { initLog } from '../utils/debug';
 import {
     ensureInternalModelFeature,
     getUnavailableCapabilities,

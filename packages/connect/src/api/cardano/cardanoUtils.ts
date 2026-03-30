@@ -1,8 +1,8 @@
 import type { types } from '@fivebinaries/coin-selection';
 import { coinSelection } from '@fivebinaries/coin-selection';
 
-import { PROTO } from '../../constants';
-import type { AccountUtxo, CardanoCertificate } from '../../types';
+import type { AccountUtxo, CardanoCertificate } from '@trezor/connect-common';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 
 const CARDANO_DEFAULT_TTL_OFFSET = 7200;
 

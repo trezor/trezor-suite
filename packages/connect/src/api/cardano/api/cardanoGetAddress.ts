@@ -1,9 +1,15 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/CardanoGetAddress.js
 
+import {
+    Bundle,
+    CardanoGetAddress as CardanoGetAddressSchema,
+    UI_REQUEST,
+    createUiMessage,
+} from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
-import { PROTO } from '../../../constants';
 import type {
     MethodMessage,
     MethodPermission,
@@ -11,9 +17,6 @@ import type {
 } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
-import { UI_REQUEST, createUiMessage } from '../../../events';
-import { Bundle } from '../../../types';
-import { CardanoGetAddress as CardanoGetAddressSchema } from '../../../types/api/cardano';
 import { fromHardened, getSerializedPath } from '../../../utils/pathUtils';
 import { getFirmwareRange } from '../../common/paramsValidator';
 import {

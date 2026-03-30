@@ -1,13 +1,12 @@
 /* WARNING! This file should be imported ONLY in tests! */
 
+import type { Features } from '@trezor/connect-common';
 import { firmwareAssets } from '@trezor/connect-data';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import type { FirmwareRelease } from '@trezor/device-utils';
 import { AbstractApiTransport } from '@trezor/transport';
 import type { UsbApi } from '@trezor/transport';
 import { versionUtils } from '@trezor/utils';
-
-import type { Features } from './src/types';
 
 // mock of navigator.usb
 const createTransportApi = (override = {}) =>

@@ -1,7 +1,7 @@
 import {
     CardanoSignTransaction,
     CardanoSignTransactionExtended,
-} from '@trezor/connect/src/types/api/cardano';
+} from '@trezor/connect-common/src/types/api/cardano';
 
 import { ApiPlayground } from '../../../components/ApiPlayground';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
@@ -25,26 +25,26 @@ import signTransaction from '../../../data/methods/cardano/signTransaction.ts';
 />
 
 export const paramDescriptions = {
-    inputs: 'of [CardanoInput](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/cardano/index.ts)',
+    inputs: 'of [CardanoInput](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/src/types/api/cardano/index.ts)',
     outputs:
-        'of [CardanoOutput](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/cardano/index.ts)',
+        'of [CardanoOutput](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/src/types/api/cardano/index.ts)',
     fee: '',
     protocolMagic: '764824073 for Mainnet, 1 for Preprod Testnet, 2 for Preview Testnet',
     networkId: '1 for Mainnet, 0 for Testnet',
     ttl: '',
     validityIntervalStart: '',
     certificates:
-        'of [CardanoCertificate](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/cardano/index.ts)',
+        'of [CardanoCertificate](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/src/types/api/cardano/index.ts)',
     withdrawals:
-        'of [CardanoWithdrawal](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/cardano/index.ts)',
+        'of [CardanoWithdrawal](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/src/types/api/cardano/index.ts)',
     scriptDataHash: '',
     collateralInputs:
-        'of [CardanoCollateralInput](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/cardano/index.ts)',
+        'of [CardanoCollateralInput](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/src/types/api/cardano/index.ts)',
     requiredSigners:
-        'of [CardanoRequiredSigner](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/cardano/index.ts)',
+        'of [CardanoRequiredSigner](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/src/types/api/cardano/index.ts)',
     totalCollateral: '',
     referenceInputs:
-        'of [CardanoReferenceInput](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/cardano/index.ts)',
+        'of [CardanoReferenceInput](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/src/types/api/cardano/index.ts)',
     additionalWitnessRequests:
         'of `string | Array<number>` (paths). Used for multi-sig and token minting witness requests as those can not be determined from the transaction parameters.',
     metadata: 'instead',
@@ -149,8 +149,8 @@ Trezor supports signing of stake pool registration certificates as a pool owner.
 
 Trezor supports signing transactions with auxiliary data containing a vote key registration. Vote key registrations used to follow [CIP-15](https://cips.cardano.org/cips/cip15/), which has been superseded by [CIP-36](https://cips.cardano.org/cips/cip36/). Currently, Trezor supports both CIP-15 and CIP-36 formats, the intended standard can be specified in the `format` field (with CIP-15 being the default). They differ in the following:
 
-- CIP-36 allows delegating the voting power to several vote public keys with different voting power ([CardanoCVoteRegistrationDelegation](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/cardano/index.ts)) as an alternative to providing only a single vote public key. Note that Trezor Firmware supports at most 32 delegations in a single registration.
-- CIP-36 registrations contain the [votingPurpose](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/cardano/index.ts) field. The value 0 is intended for Catalyst voting and the value 1 is intended for other purposes. If no value is provided, Trezor serializes 0 by default (if the CIP-36 format is used).
+- CIP-36 allows delegating the voting power to several vote public keys with different voting power ([CardanoCVoteRegistrationDelegation](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/src/types/api/cardano/index.ts)) as an alternative to providing only a single vote public key. Note that Trezor Firmware supports at most 32 delegations in a single registration.
+- CIP-36 registrations contain the [votingPurpose](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/src/types/api/cardano/index.ts) field. The value 0 is intended for Catalyst voting and the value 1 is intended for other purposes. If no value is provided, Trezor serializes 0 by default (if the CIP-36 format is used).
 
 Trezor does not support the 1694 derivation paths at the moment.
 
@@ -590,7 +590,7 @@ TrezorConnect.cardanoSignTransaction({
 
 Since transaction streaming has been introduced to the Cardano implementation on Trezor because of memory constraints, Trezor no longer returns the whole serialized transaction as a result of the `CardanoSignTransaction` call. Instead the transaction hash, transaction witnesses and auxiliary data supplement are returned and the serialized transaction needs to be assembled by the client.
 
-[CardanoSignedTxData type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/cardano/index.ts)
+[CardanoSignedTxData type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/src/types/api/cardano/index.ts)
 
 ```javascript
 {

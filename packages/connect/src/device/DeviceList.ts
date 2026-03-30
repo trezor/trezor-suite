@@ -1,6 +1,16 @@
 // original file https://github.com/trezor/connect/blob/develop/src/js/device/DeviceList.js
 
+import { DEVICE, asDeviceUniquePath } from '@trezor/connect-common';
+import type {
+    ConnectSettings,
+    DecodedTrezorPushNotification,
+    DeviceUniquePath,
+    StaticSessionId,
+    TransportError,
+    TransportInfo,
+} from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
+import { initLog } from '@trezor/connect-common/src/utils/debug';
 import type { Transport } from '@trezor/transport';
 import { TRANSPORT } from '@trezor/transport';
 import type { Descriptor, ApiType as TransportApiType } from '@trezor/transport/src/types';
@@ -14,14 +24,9 @@ import {
     typedObjectKeys,
 } from '@trezor/utils';
 
-import type { DecodedTrezorPushNotification, TransportError, TransportInfo } from '../events';
-import { DEVICE } from '../events';
 import { Device } from './Device';
-import type { ConnectSettings, DeviceUniquePath, StaticSessionId } from '../types';
-import { asDeviceUniquePath } from '../types';
 import { createTransportList } from './TransportList';
 import { TransportManager } from './TransportManager';
-import { initLog } from '../utils/debug';
 import { trezorPushNotificationHandler } from './workflow/trezorPushNotification';
 
 const createAuthPenaltyManager = (priority: number) => {

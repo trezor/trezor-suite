@@ -1,5 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/blockchain/BlockchainUnsubscribeFiatRates.js
 
+import type { CoinInfo } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 
 import type { MethodMessage, MethodPermission } from '../core/AbstractMethod';
@@ -7,7 +8,6 @@ import { AbstractMethod } from '../core/AbstractMethod';
 import { validateParams } from './common/paramsValidator';
 import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
 import { getCoinInfo } from '../data/coinInfo';
-import type { CoinInfo } from '../types';
 
 type Params = {
     coinInfo: CoinInfo;

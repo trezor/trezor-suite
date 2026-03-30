@@ -1,3 +1,9 @@
+import {
+    Bundle,
+    GetOwnershipId as GetOwnershipIdSchema,
+    UI_REQUEST,
+    createUiMessage,
+} from '@trezor/connect-common';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
@@ -5,9 +11,6 @@ import { getFirmwareRange } from './common/paramsValidator';
 import type { MethodPermission, MethodReturnType } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { getBitcoinNetwork } from '../data/coinInfo';
-import { UI_REQUEST, createUiMessage } from '../events';
-import { Bundle } from '../types';
-import { GetOwnershipId as GetOwnershipIdSchema } from '../types/api/getOwnershipId';
 import { getScriptType, getSerializedPath, validatePath } from '../utils/pathUtils';
 
 export default class GetOwnershipId extends AbstractMethod<

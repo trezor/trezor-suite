@@ -1,14 +1,12 @@
-// NOTE: @trezor/connect part is intentionally not imported from the index so we do include the whole library.
-
+import * as ERRORS from '@trezor/connect-common/src/constants/errors';
 import {
     CORE_CALL,
     type CallMethodAnyResponse,
     type CallMethodPayload,
     POPUP,
-} from '@trezor/connect/src/events';
-import type { ConnectImpl, ConnectImplSettings } from '@trezor/connect/src/impl/dynamic';
-import type { Manifest } from '@trezor/connect/src/types/settings';
-import * as ERRORS from '@trezor/connect-common/src/constants/errors';
+} from '@trezor/connect-common/src/events';
+import type { ConnectImpl, ConnectImplSettings } from '@trezor/connect-common/src/impl/dynamic';
+import type { Manifest } from '@trezor/connect-common/src/types/settings';
 import { WebsocketClient, WebsocketError } from '@trezor/websocket-client';
 
 /**

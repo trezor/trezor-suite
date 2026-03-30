@@ -1,4 +1,5 @@
-import type { CoinInfo } from '../../../types';
+import type { CoinInfo } from '@trezor/connect-common';
+
 import { MiscFeeLevels } from '../MiscFeeLevels';
 
 const SOL_COIN_INFO: CoinInfo = {

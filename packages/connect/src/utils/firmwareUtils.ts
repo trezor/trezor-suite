@@ -1,10 +1,11 @@
-import { FirmwareType } from '@trezor/device-utils';
-import type { DeviceModelInternal, FirmwareRelease } from '@trezor/device-utils';
-import { versionUtils } from '@trezor/utils';
-import type { VersionArray } from '@trezor/utils/src/versionUtils';
-
-import type { Features, StrictFeatures } from '../types/device';
-import type { CurrentVersion, FirmwareChannel } from '../types/firmware';
+import type {
+    CurrentVersion,
+    Features,
+    FirmwareChannel,
+    StrictFeatures,
+} from '@trezor/connect-common';
+import { type DeviceModelInternal, type FirmwareRelease, FirmwareType } from '@trezor/device-utils';
+import { type VersionArray, versionUtils } from '@trezor/utils';
 
 export const isStrictFeatures = (extFeatures: Features): extFeatures is StrictFeatures =>
     [1, 2].includes(extFeatures.major_version) &&

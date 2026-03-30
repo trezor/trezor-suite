@@ -1,14 +1,14 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/ResetDevice.js
+import { UI_REQUEST } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { TransportError } from '@trezor/connect-common/src/constants/errors';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 import { getRandomInt } from '@trezor/utils';
 
 import { generateEntropy, verifyEntropy } from '../api/firmware/verifyEntropy';
-import { PROTO } from '../constants';
 import type { MethodMessage, MethodPermission } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
-import { UI_REQUEST } from '../events';
 import { getFirmwareRange } from './common/paramsValidator';
 import { validatePath } from '../utils/pathUtils';
 import { calculateXPubHashes } from './firmware/calculateXPubHash';

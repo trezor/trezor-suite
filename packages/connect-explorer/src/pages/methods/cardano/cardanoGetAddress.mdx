@@ -1,5 +1,5 @@
-import { Bundle } from '@trezor/connect/src/types';
-import { CardanoGetAddress } from '@trezor/connect/src/types/api/cardano';
+import { Bundle } from '@trezor/connect-common/src/types';
+import { CardanoGetAddress } from '@trezor/connect-common/src/types/api/cardano';
 
 import { ApiPlayground } from '../../../components/ApiPlayground';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
@@ -284,7 +284,7 @@ const result = await TrezorConnect.cardanoGetAddress({
 
 ### Result
 
-[CardanoAddress type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/cardano/index.ts)
+[CardanoAddress type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/src/types/api/cardano/index.ts)
 
 Result with only one address
 

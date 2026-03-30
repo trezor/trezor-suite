@@ -1,10 +1,9 @@
-// NOTE: @trezor/connect part is intentionally not imported from the index so we do include the whole library.
-import { POPUP } from '@trezor/connect/src/exports';
-import { factory } from '@trezor/connect/src/factory';
-import {
-    type ConnectDynamicSettings,
-    TrezorConnectDynamic,
-} from '@trezor/connect/src/impl/dynamic';
+// note: at the moment, there is something in the root of @trezor/connect-common that pulls entire PROTO runtime, thus
+// these targeted imports
+import { POPUP } from '@trezor/connect-common/src/events';
+import { factory } from '@trezor/connect-common/src/factory';
+import { type ConnectDynamicSettings } from '@trezor/connect-common/src/impl/dynamic';
+import { TrezorConnectDynamic } from '@trezor/connect-common/src/impl/dynamic';
 // Import as src not lib due to webpack issues with inlining content script later
 import { ServiceWorkerWindowChannel } from '@trezor/connect-common/src/messageChannel/serviceworker-window';
 import { CoreInSuiteDesktop } from '@trezor/connect-web/src/impl/core-in-suite-desktop';
@@ -102,4 +101,6 @@ initProxyChannel();
 
 // eslint-disable-next-line import/no-default-export
 export default TrezorConnect;
-export * from '@trezor/connect/src/exports';
+export * from '@trezor/connect-common/src/constants';
+export * from '@trezor/connect-common/src/events';
+export type * from '@trezor/connect-common/src/types';

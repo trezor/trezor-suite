@@ -1,4 +1,4 @@
-import { PROTO } from '@trezor/connect/src/constants';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Type } from '@trezor/schema-utils';
 
 import { ApiPlayground } from '../../../components/ApiPlayground';
@@ -52,7 +52,7 @@ export const paramDescriptions = {
     paymentRequests:
         'of [PROTO.PaymentRequest](https://github.com/trezor/trezor-suite/blob/develop/packages/protobuf/src/messages.ts). See [SLIP-24](https://github.com/satoshilabs/slips/blob/slip24/slip-0024.md)',
     refTxs:
-        'of [RefTransaction](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/bitcoin/index.ts).\n' +
+        'of [RefTransaction](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/src/types/api/bitcoin/index.ts).\n' +
         "> If you don't want to use build-in `blockbook` backend you can optionally provide those data from your own backend transformed to `Trezor` format.\n" +
         '> Since Firmware 2.3.0/1.9.0 referenced transactions are required.\n' +
         '> Zcash refTxs should also contains `expiry`, `version_group_id` and `extra_data` fields.',
@@ -87,7 +87,7 @@ const result = await TrezorConnect.signTransaction(params);
 
 #### SignTransaction
 
-[SignTransaction type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/bitcoin/index.ts)
+[SignTransaction type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/src/types/api/bitcoin/index.ts)
 
 <ParamsTable schema={SignTransactionSchema} descriptions={paramDescriptions} />
 
@@ -242,7 +242,7 @@ TrezorConnect.signTransaction({
 
 ### Result
 
-[SignedTransaction type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/bitcoin/index.ts)
+[SignedTransaction type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/src/types/api/bitcoin/index.ts)
 
 ```javascript
 {

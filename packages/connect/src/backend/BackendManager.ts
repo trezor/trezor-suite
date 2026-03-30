@@ -1,11 +1,11 @@
+import { BLOCKCHAIN, createBlockchainMessage } from '@trezor/connect-common';
+import type { BlockchainLink, CoinInfo } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import type { TimerId } from '@trezor/type-utils';
 
 import type { BlockchainOptions } from './Blockchain';
 import { Blockchain } from './Blockchain';
 import { DataManager } from '../data/DataManager';
-import { BLOCKCHAIN, createBlockchainMessage } from '../events';
-import type { BlockchainLink, CoinInfo } from '../types';
 
 type CoinShortcut = CoinInfo['shortcut'];
 type Identity = string;

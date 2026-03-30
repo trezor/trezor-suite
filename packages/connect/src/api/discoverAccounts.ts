@@ -1,31 +1,33 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/GetAccountInfo.js
 
-import { ERRORS } from '@trezor/connect-common/src/constants';
+import {
+    ACCOUNT_TYPES,
+    type AccountTypeItem,
+    type AccountTypeKey,
+    type AdditionalParams,
+    CARDANO_DERIVATIONS,
+    type CoinInfo,
+    type DiscoverAccountsProgress,
+    ERRORS,
+    type EntropyCheckResult,
+    type FirmwareRange,
+    PAGING,
+    UI_REQUEST,
+    createUiMessage,
+} from '@trezor/connect-common';
 import { arrayPartition, getSynchronize, versionUtils } from '@trezor/utils';
 
 import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
-import {
-    CARDANO_TXS_PER_PAGE,
-    DEFAULT_TXS_PER_PAGE,
-    SOLANA_TXS_PER_PAGE,
-} from '../constants/paging';
 import type { MethodMessage, MethodPermission } from '../core/AbstractMethod';
 import { AbstractMethod, DEFAULT_FIRMWARE_RANGE } from '../core/AbstractMethod';
 import { getCoinInfo } from '../data/coinInfo';
 import type { AccountDescriptor } from '../device/DeviceCommands';
-import { UI_REQUEST, createUiMessage } from '../events';
-import { checkXPubWithHashes } from './firmware';
-import type { CoinInfo, EntropyCheckResult, FirmwareRange } from '../types';
-import type {
-    AccountTypeItem,
-    AccountTypeKey,
-    AdditionalParams,
-    DiscoverAccountsProgress,
-} from '../types/api/discoverAccounts';
-import { ACCOUNT_TYPES, CARDANO_DERIVATIONS } from '../types/api/discoverAccounts';
 import { isUtxoBased } from '../utils/accountUtils';
 import { validatePath } from '../utils/pathUtils';
 import { getFirmwareRange, validateParams } from './common/paramsValidator';
+import { checkXPubWithHashes } from './firmware/calculateXPubHash';
+
+const { CARDANO_TXS_PER_PAGE, DEFAULT_TXS_PER_PAGE, SOLANA_TXS_PER_PAGE } = PAGING;
 
 const ACCOUNT_LIMIT = 10;
 const DETAILS = 'txs';

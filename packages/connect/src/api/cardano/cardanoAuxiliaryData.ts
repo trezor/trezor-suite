@@ -1,5 +1,11 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/cardanoAuxiliaryData.js
 
+import {
+    CardanoAuxiliaryData,
+    CardanoCVoteRegistrationDelegation,
+    CardanoCVoteRegistrationParameters,
+} from '@trezor/connect-common';
+import type { PROTO } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 
@@ -8,12 +14,6 @@ import {
     modifyAddressParametersForBackwardsCompatibility,
     validateAddressParameters,
 } from './cardanoAddressParameters';
-import type { PROTO } from '../../constants';
-import {
-    CardanoAuxiliaryData,
-    CardanoCVoteRegistrationDelegation,
-    CardanoCVoteRegistrationParameters,
-} from '../../types/api/cardano';
 import { validatePath } from '../../utils/pathUtils';
 
 const MAX_DELEGATION_COUNT = 32;

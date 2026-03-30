@@ -1,5 +1,13 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/tx/TransactionComposer.js
 
+import type {
+    BitcoinNetworkInfo,
+    ComposeResult,
+    ComposeUtxo,
+    ComposedInputs,
+    DiscoveryAccount,
+    SelectFeeLevel,
+} from '@trezor/connect-common';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import type { ComposeOutput, TransactionInputOutputSortingStrategy } from '@trezor/utxo-lib';
 import { composeTx } from '@trezor/utxo-lib';
@@ -7,12 +15,6 @@ import { composeTx } from '@trezor/utxo-lib';
 import type { Blockchain } from '../../backend/BlockchainLink';
 import { getOrInitBitcoinFeeLevels } from '../../backend/fees';
 import type { BitcoinFeeLevels } from '../../backend/fees/BitcoinFeeLevels';
-import type { BitcoinNetworkInfo, DiscoveryAccount, SelectFeeLevel } from '../../types';
-import type {
-    ComposeResult,
-    ComposeUtxo,
-    ComposedInputs,
-} from '../../types/api/composeTransaction';
 
 type Options = {
     account: DiscoveryAccount;

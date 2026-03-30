@@ -1,44 +1,46 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/ComposeTransaction.js
 
-import { ERRORS } from '@trezor/connect-common/src/constants';
+import {
+    type AccountUtxo,
+    type BitcoinNetworkInfo,
+    type ComposeResult,
+    DEFAULT_SORTING_STRATEGY,
+    type DiscoveryAccount,
+    ERRORS,
+    type PrecomposeParams,
+    type PrecomposedResult,
+    type RefTransaction,
+    type SignedTransaction,
+    UI_REQUEST,
+    UI_RESPONSE,
+    createUiMessage,
+} from '@trezor/connect-common';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { promiseAllSequence } from '@trezor/utils/src/promiseAllSequence';
 import { resolveAfter } from '@trezor/utils/src/resolveAfter';
 import type { ComposeOutput, TransactionInputOutputSortingStrategy } from '@trezor/utxo-lib';
 
 import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
-import { DEFAULT_SORTING_STRATEGY } from '../constants/utxo';
 import type { MethodPermission } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
-import { UI_REQUEST, UI_RESPONSE, createUiMessage } from '../events';
-import {
-    TransactionComposer,
-    deriveOutputScript,
-    enhanceSignTx,
-    getReferencedTransactions,
-    inputToTrezor,
-    outputToTrezor,
-    parseTransactionHexes,
-    requireReferencedTransactions,
-    signTx,
-    signTxLegacy,
-    transformReferencedTransactions,
-    validateHDOutput,
-    verifyTx,
-} from './bitcoin';
-import type { AccountUtxo, BitcoinNetworkInfo, DiscoveryAccount } from '../types';
-import { Discovery } from './common/Discovery';
-import { getFirmwareRange, validateParams } from './common/paramsValidator';
 import { fixCoinInfoNetwork, getBitcoinNetwork } from '../data/coinInfo';
-import type { RefTransaction } from '../types/api/bitcoin';
-import type {
-    ComposeResult,
-    PrecomposeParams,
-    PrecomposedResult,
-    SignedTransaction,
-} from '../types/api/composeTransaction';
 import { formatAmount } from '../utils/formatUtils';
 import * as pathUtils from '../utils/pathUtils';
+import { TransactionComposer } from './bitcoin/TransactionComposer';
+import { enhanceSignTx } from './bitcoin/enhanceSignTx';
+import { inputToTrezor } from './bitcoin/inputs';
+import { outputToTrezor, validateHDOutput } from './bitcoin/outputs';
+import {
+    getReferencedTransactions,
+    parseTransactionHexes,
+    requireReferencedTransactions,
+    transformReferencedTransactions,
+} from './bitcoin/refTx';
+import { signTx } from './bitcoin/signtx';
+import { signTxLegacy } from './bitcoin/signtxLegacy';
+import { deriveOutputScript, verifyTx } from './bitcoin/signtxVerify';
+import { Discovery } from './common/Discovery';
+import { getFirmwareRange, validateParams } from './common/paramsValidator';
 
 type Params = {
     outputs: ComposeOutput[];

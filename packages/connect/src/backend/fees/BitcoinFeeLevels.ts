@@ -1,8 +1,8 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/tx/Fees.js
 
+import type { BitcoinNetworkInfo } from '@trezor/connect-common';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import type { BitcoinNetworkInfo } from '../../types';
 import type { Blockchain } from '../Blockchain';
 import { MiscFeeLevels } from './MiscFeeLevels';
 import { DEFAULT_BITCOIN_LONGTERM_FEE_RATE } from '../../data/defaultFeeLevels';

@@ -1,6 +1,6 @@
+import type { PROTO } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 
-import type { PROTO } from '../../../constants';
 import type {
     MethodMessage,
     MethodPermission,

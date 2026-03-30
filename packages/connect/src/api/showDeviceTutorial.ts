@@ -1,8 +1,8 @@
+import { UI_REQUEST } from '@trezor/connect-common';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 
 import type { MethodMessage, MethodPermission } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
-import { UI_REQUEST } from '../events';
 import { getFirmwareRange } from './common/paramsValidator';
 
 export default class ShowDeviceTutorial extends AbstractMethod<

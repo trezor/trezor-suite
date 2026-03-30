@@ -1,3 +1,14 @@
+import type {
+    CoinInfo,
+    DerivationPath,
+    GetAccountDescriptorResponse,
+} from '@trezor/connect-common';
+import {
+    Bundle,
+    GetAccountDescriptorParams,
+    UI_REQUEST,
+    createUiMessage,
+} from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 
@@ -5,10 +16,6 @@ import { getFirmwareRange } from './common/paramsValidator';
 import type { MethodMessage, MethodPermission, MethodReturnType } from '../core/AbstractMethod';
 import { AbstractMethod, DEFAULT_FIRMWARE_RANGE } from '../core/AbstractMethod';
 import { getCoinInfo } from '../data/coinInfo';
-import { UI_REQUEST, createUiMessage } from '../events';
-import { Bundle, type CoinInfo, type DerivationPath } from '../types';
-import type { GetAccountDescriptorResponse } from '../types/api/getAccountDescriptor';
-import { GetAccountDescriptorParams } from '../types/api/getAccountDescriptor';
 import { getAccountLabel } from '../utils/accountUtils';
 import { getSerializedPath, validatePath } from '../utils/pathUtils';
 

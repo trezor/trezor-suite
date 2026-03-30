@@ -33,11 +33,27 @@
                 "types": "./lib/index.d.ts"
             },
             "./lib/*": "./lib/*.js",
+            "./lib/events": {
+                "types": "./lib/events/index.d.ts",
+                "default": "./lib/events/index.js"
+            },
+            "./lib/types": {
+                "types": "./lib/types/index.d.ts",
+                "default": "./lib/types/index.js"
+            },
             "./lib/data": "./lib/data/index.js",
             "./lib/data/*": "./lib/data/*.js",
             "./lib/constants": "./lib/constants/index.js",
             "./lib/constants/*": "./lib/constants/*.js",
             "./libESM/*": "./libESM/*",
+            "./libESM/events": {
+                "types": "./libESM/events/index.d.mts",
+                "default": "./libESM/events/index.mjs"
+            },
+            "./libESM/types": {
+                "types": "./libESM/types/index.d.mts",
+                "default": "./libESM/types/index.mjs"
+            },
             "./libESM/constants/*": "./libESM/constants/*",
             "./libESM/data/*": "./libESM/data/*"
         }
@@ -47,18 +63,30 @@
         "build:lib:cjs": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
         "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
         "type-check": "yarn g:tsc --build tsconfig.json",
+        "test:unit": "yarn g:jest",
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
+    "__dependencies_note__": "We are in the middle of migration, in a followup, @trezor/transport, @trezor/utxo-lib, @trezor/protobuf should not be dependencies of this package",
     "dependencies": {
-        "@trezor/utils": "workspace:*"
+        "@trezor/device-utils": "workspace:*",
+        "@trezor/protobuf": "workspace:*",
+        "@trezor/protocol": "workspace:^",
+        "@trezor/schema-utils": "workspace:*",
+        "@trezor/transport": "workspace:*",
+        "@trezor/type-utils": "workspace:*",
+        "@trezor/utils": "workspace:*",
+        "@trezor/utxo-lib": "workspace:*"
     },
     "peerDependencies": {
         "tslib": "^2.6.2"
     },
+    "__devDependencies_note__": "even here, coin specific libs should not be listed, we need to find another way, probably copying of types",
     "devDependencies": {
-        "@trezor/protobuf": "workspace:^",
-        "@trezor/protocol": "workspace:^",
+        "@fivebinaries/coin-selection": "3.0.0",
+        "@trezor/blockchain-link": "workspace:^",
+        "@trezor/blockchain-link-types": "workspace:^",
+        "@trezor/device-authenticity": "workspace:^",
         "@types/chrome": "^0.0.299",
         "@types/jest": "29.5.12",
         "@types/node": "22.13.10"

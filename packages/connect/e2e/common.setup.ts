@@ -1,12 +1,12 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import TrezorConnect from '@trezor/connect';
+import { UI_REQUEST, UI_RESPONSE } from '@trezor/connect-common';
 import type { ApplySettings } from '@trezor/protobuf/src/messages-schema';
 import type { EmuStartOptsType, TrezorUserEnvLinkClass } from '@trezor/trezor-user-env-link';
 import { MNEMONICS, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { versionUtils } from '@trezor/utils';
 
 // import TrezorConnect from '../src';
-import { UI_REQUEST, UI_RESPONSE } from '../src/events';
 
 // Read emulator start options from EMULATOR_START_OPTS env var (JSON string set by run.ts).
 // In browser mode, Vite's `define` replaces process.env.EMULATOR_START_OPTS at build time.

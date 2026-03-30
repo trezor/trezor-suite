@@ -1,6 +1,5 @@
+import { SolanaTxAdditionalInfo } from '@trezor/connect-common';
 import { Assert } from '@trezor/schema-utils';
-
-import { SolanaTxAdditionalInfo } from '../../types/api/solana';
 
 export const transformAdditionalInfo = (additionalInfo?: SolanaTxAdditionalInfo) => {
     if (!additionalInfo) {
