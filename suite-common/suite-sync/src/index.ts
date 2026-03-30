@@ -22,6 +22,15 @@ export {
 } from './suiteSyncSlice';
 export type { SuiteSyncState, SuiteSyncSettings } from './suiteSyncSlice';
 export { DEFAULT_SUITE_SYNC_RELAY_URL } from './relay/relayUrl';
+export type {
+    SuiteSyncServerTypeSelectValue,
+    SuiteSyncServerTypeOption,
+    ChangeServerModalFields,
+} from './relay/relayServerSettings';
+export {
+    SUITE_SYNC_SERVER_TYPE_OPTIONS_MAP,
+    createChangeSuiteSyncServerSchema,
+} from './relay/relayServerSettings';
 export { prepareSuiteSyncMiddleware } from './suiteSyncMiddleware';
 export {
     suiteSyncDataReducer,

@@ -1,7 +1,7 @@
 import {
     SUITE_SYNC_SERVER_TYPE_OPTIONS_MAP,
-    SuiteSyncServerTypeSelectValue,
-} from '@suite-common/suite-sync-types';
+    type SuiteSyncServerTypeSelectValue,
+} from '@suite-common/suite-sync';
 import { Button, Card, Select, VStack } from '@suite-native/atoms';
 import { Form, TextInputField } from '@suite-native/forms';
 import { Translation, useTranslate } from '@suite-native/intl';
