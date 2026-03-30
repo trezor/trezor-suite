@@ -76,6 +76,16 @@ export class MetadataPage {
     }
 
     @step()
+    async enableLegacyLabeling(provider: MetadataProvider) {
+        await this.settingsPage.navigateTo('application');
+        await this.page.selectDropdownOptionWithRetry(
+            this.settingsPage.metadataSelectInput,
+            this.settingsPage.metadataSelectInputOption('legacy'),
+        );
+        await this.passThroughInitMetadata(provider);
+    }
+
+    @step()
     async enableSuiteSync() {
         await this.setupQuotaManager();
         await this.initiateSuiteSyncSetup();
