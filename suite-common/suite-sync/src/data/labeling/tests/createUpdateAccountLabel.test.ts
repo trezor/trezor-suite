@@ -9,6 +9,7 @@ import { SuiteSyncUnavailableOnDeviceError } from '../../../createRefreshSuiteSy
 import { type UpdateAccountLabelDeps, createUpdateAccountLabel } from '../createUpdateAccountLabel';
 
 const deviceStaticSessionId: StaticSessionId = '1@2:3';
+const getAccountLabel = () => null;
 
 describe(createUpdateAccountLabel.name, () => {
     it('updates account label and propagates update result', async () => {
@@ -20,6 +21,7 @@ describe(createUpdateAccountLabel.name, () => {
 
         const deps = createMockDeps<UpdateAccountLabelDeps>({
             ensureWalletSuiteSyncOn: () => Promise.resolve(ok(storage)),
+            getAccountLabel,
         });
 
         const updateAccountLabel = createUpdateAccountLabel(deps);
@@ -52,6 +54,7 @@ describe(createUpdateAccountLabel.name, () => {
 
         const deps = createMockDeps<UpdateAccountLabelDeps>({
             ensureWalletSuiteSyncOn: () => Promise.resolve(ensureWalletSuiteSyncOnResult),
+            getAccountLabel,
         });
 
         const updateAccountLabel = createUpdateAccountLabel(deps);

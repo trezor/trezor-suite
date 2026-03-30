@@ -74,6 +74,7 @@ export const createNativeCompositionRoot = (deps: NativeAppDeps): NativeServices
         platformEncryption,
         trezorConnect: TrezorConnect,
         ensureDelegatedIdentityKey,
+        analytics,
     });
 
     return {

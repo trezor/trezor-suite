@@ -13,6 +13,7 @@ import { createUpdateOutputLabel } from '../createUpdateOutputLabel';
 const deviceStaticSessionId: StaticSessionId = '1@2:3';
 const networkSymbol: NetworkSymbol = 'btc';
 const accountDescriptor = asAccountDescriptor('accountDescriptor');
+const getOutputLabel = () => null;
 
 describe(createUpdateOutputLabel.name, () => {
     it('updates output label', async () => {
@@ -24,6 +25,7 @@ describe(createUpdateOutputLabel.name, () => {
 
         const deps = createMockDeps<UpdateOutputLabelDeps>({
             ensureWalletSuiteSyncOn: () => Promise.resolve(ok(storage)),
+            getOutputLabel,
         });
 
         const updateOutputLabel = createUpdateOutputLabel(deps);
@@ -57,6 +59,7 @@ describe(createUpdateOutputLabel.name, () => {
 
         const deps = createMockDeps<UpdateOutputLabelDeps>({
             ensureWalletSuiteSyncOn: () => Promise.resolve(ensureWalletSuiteSyncOnResult),
+            getOutputLabel,
         });
 
         const updateOutputLabel = createUpdateOutputLabel(deps);

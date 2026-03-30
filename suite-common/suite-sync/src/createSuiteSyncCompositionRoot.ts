@@ -1,5 +1,6 @@
 import { type Dispatch } from '@reduxjs/toolkit';
 
+import { type AnalyticsSharedEvents } from '@suite-common/analytics';
 import { type EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-key-types';
 import { toGetter } from '@suite-common/dependency-injection';
 import { selectAllDeviceStaticIds, selectDeviceByStaticSessionId } from '@suite-common/device';
@@ -18,17 +19,29 @@ import {
     type SuiteSyncAppReloaderDep,
     type SuiteSyncErrorHandler,
 } from '@suite-common/suite-sync-types';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import {
+    type AccountDescriptor,
+    type TxTargetId,
+    type WalletDescriptor,
+} from '@suite-common/wallet-types';
+import { type Analytics } from '@trezor/analytics-uploader';
+import { type StaticSessionId } from '@trezor/connect';
 
 import { createRefreshSuiteSync } from './createRefreshSuiteSyncKeys';
 import { createSuiteSyncErrorHandler } from './createSuiteSyncErrorHandler';
 import { createTurnOffSuiteSync } from './createTurnOffSuiteSync';
 import { createTurnOnSuiteSync } from './createTurnOnSuiteSync';
+import { selectSuiteSyncAccountLabel } from './data/account/selectSuiteSyncAccountLabel';
+import { selectSuiteSyncAddressLabel } from './data/address/suiteSyncAddressSelectors';
 import { createEnsureSubscribeSuiteSyncData } from './data/createEnsureSubscribeSuiteSyncData';
 import { createSuiteSyncListener } from './data/createSuiteSyncListener';
 import { createUpdateAccountLabel } from './data/labeling/createUpdateAccountLabel';
 import { createUpdateAddressLabel } from './data/labeling/createUpdateAddressLabel';
 import { createUpdateOutputLabel } from './data/labeling/createUpdateOutputLabel';
 import { createUpdateWalletLabel } from './data/labeling/createUpdateWalletLabel';
+import { selectSuiteSyncOutputLabel } from './data/output/suiteSyncOutputSelectors';
+import { selectSuiteSyncWalletLabel } from './data/wallet/suiteSyncWalletSelectors';
 import { type GetDeviceForStaticSessionId } from './getDeviceForStaticSessionId';
 import { createEnsureSuiteSyncOwner } from './owner/createEnsureSuiteSyncOwner';
 import { createLoadSuiteSyncOwnerFromState } from './owner/createLoadSuiteSyncOwnerFromState';
@@ -60,11 +73,18 @@ type CreateSuiteStorageFactoryDep = {
     createSuiteStorageFactory: CreateSuiteStorageFactory;
 };
 
+export type SuiteSyncAnalytics = Pick<Analytics<AnalyticsSharedEvents>, 'report'>;
+
+export type SuiteSyncAnalyticsDep = {
+    analytics?: SuiteSyncAnalytics;
+};
+
 type CreateSuiteSyncCompositionRootDeps = {
     getState: () => any;
     dispatch: Dispatch;
     trezorConnect: RetrieveSuiteSyncOwnerDeps['trezorConnect'];
-} & EnsureDelegatedIdentityKeyDep &
+} & SuiteSyncAnalyticsDep &
+    EnsureDelegatedIdentityKeyDep &
     CreateSuiteStorageFactoryDep &
     CreateSuiteSyncOwnerDep &
     PlatformEncryptionDep &
@@ -160,10 +180,30 @@ export const createSuiteSyncCompositionRoot = (
     const getIsSuiteSyncEnabled = toGetter(deps.getState, selectIsSuiteSyncEnabled);
     const getAllDeviceSessionIds = toGetter(deps.getState, selectAllDeviceStaticIds);
 
-    const updateWalletLabel = createUpdateWalletLabel({ ensureWalletSuiteSyncOn });
-    const updateAccountLabel = createUpdateAccountLabel({ ensureWalletSuiteSyncOn });
-    const updateOutputLabel = createUpdateOutputLabel({ ensureWalletSuiteSyncOn });
-    const updateAddressLabel = createUpdateAddressLabel({ ensureWalletSuiteSyncOn });
+    const labelingDeps = {
+        ensureWalletSuiteSyncOn,
+        analytics: deps.analytics,
+        getWalletLabel: (walletDescriptor: WalletDescriptor) =>
+            selectSuiteSyncWalletLabel(deps.getState(), walletDescriptor),
+        getAccountLabel: (
+            walletDescriptor: WalletDescriptor | null,
+            accountDescriptor: AccountDescriptor,
+            networkSymbol: NetworkSymbol,
+        ) =>
+            selectSuiteSyncAccountLabel(
+                deps.getState(),
+                walletDescriptor,
+                accountDescriptor,
+                networkSymbol,
+            ),
+        getAddressLabel: (deviceStaticSessionId: StaticSessionId, address: string) =>
+            selectSuiteSyncAddressLabel(deps.getState(), deviceStaticSessionId, address),
+        getOutputLabel: (
+            txId: string,
+            txTargetId: TxTargetId,
+            deviceStaticSessionId: StaticSessionId,
+        ) => selectSuiteSyncOutputLabel(deps.getState(), txId, txTargetId, deviceStaticSessionId),
+    };
 
     return {
         changeRelayUrl: createChangeRelayUrl({
@@ -186,10 +226,10 @@ export const createSuiteSyncCompositionRoot = (
             ensureWalletSuiteSyncOn,
         }),
         labeling: {
-            updateWalletLabel,
-            updateAccountLabel,
-            updateOutputLabel,
-            updateAddressLabel,
+            updateWalletLabel: createUpdateWalletLabel(labelingDeps),
+            updateAccountLabel: createUpdateAccountLabel(labelingDeps),
+            updateOutputLabel: createUpdateOutputLabel(labelingDeps),
+            updateAddressLabel: createUpdateAddressLabel(labelingDeps),
         },
     };
 };

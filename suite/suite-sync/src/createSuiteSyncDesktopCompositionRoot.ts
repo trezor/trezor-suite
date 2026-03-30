@@ -44,6 +44,7 @@ export const createSuiteSyncDesktopCompositionRoot = (
             return createEvoluStorageFactory({ createEvoluInstance });
         },
         createSuiteSyncOwner: evoluCreateSuiteSyncOwner,
+        analytics: deps.analytics,
     });
 
     return {

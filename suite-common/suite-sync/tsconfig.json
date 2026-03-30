@@ -2,6 +2,7 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../analytics" },
         { "path": "../delegated-identity-key" },
         {
             "path": "../delegated-identity-key-types"
@@ -21,6 +22,9 @@
         { "path": "../wallet-core" },
         { "path": "../wallet-types" },
         { "path": "../wallet-utils" },
+        {
+            "path": "../../packages/analytics-uploader"
+        },
         { "path": "../../packages/connect" },
         { "path": "../../packages/env-utils" },
         { "path": "../../packages/type-utils" },

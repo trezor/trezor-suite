@@ -20,6 +20,7 @@ describe(createUpdateWalletLabel.name, () => {
 
         const deps = createMockDeps<UpdateWalletLabelDeps>({
             ensureWalletSuiteSyncOn: () => Promise.resolve(ok(storage)),
+            getWalletLabel: () => null,
         });
 
         const updateWalletLabel = createUpdateWalletLabel(deps);
@@ -46,6 +47,7 @@ describe(createUpdateWalletLabel.name, () => {
 
         const deps = createMockDeps<UpdateWalletLabelDeps>({
             ensureWalletSuiteSyncOn: () => Promise.resolve(ensureWalletSuiteSyncOnResult),
+            getWalletLabel: () => null,
         });
 
         const updateWalletLabel = createUpdateWalletLabel(deps);
