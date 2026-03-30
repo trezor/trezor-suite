@@ -4,6 +4,7 @@ import { Translation, useTranslation } from '@suite/intl';
 import { metadataLabelingActions } from '@suite/metadata';
 import { SettingsAnchor } from '@suite/router';
 import { selectHasExperimentalFeature } from '@suite/settings';
+import { SuiteSyncServers } from '@suite/suite-sync';
 import { events } from '@suite-common/analytics';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { LoadingContent } from '@trezor/components';
@@ -25,7 +26,6 @@ import { useLabelingDeviceState } from 'src/hooks/suite/useLabelingDeviceState';
 import { useSuiteServices } from 'src/support/SuiteServicesProvider';
 import { useAnalytics } from 'src/support/useAnalytics';
 
-import { LabelingServers } from './LabelingServers';
 import { LabelingSwitchToLegacyModal } from '../../../components/suite/labeling/LabelingSwitchToLegacyModal';
 import { suiteSyncErrorHandler } from '../../../components/suite/labeling/suiteSyncErrorHandler';
 
@@ -170,7 +170,7 @@ export const Labeling = () => {
                     />
                 </ActionColumn>
             </SettingsSectionItem>
-            {isSuiteSyncEnabled && <LabelingServers suiteSync={suiteSync} />}
+            {isSuiteSyncEnabled && <SuiteSyncServers suiteSync={suiteSync} />}
         </>
     );
 };
