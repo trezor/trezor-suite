@@ -184,8 +184,7 @@ const onCall = async (context: CoreContext, message: CoreCallMessage) => {
             _log.debug('loading method...');
             const method2 = await getMethod(message);
             _log.debug('method selected', method2.name);
-            // start validation process
-            method2.init();
+
             await method2.initAsync?.();
 
             return method2;
@@ -198,10 +197,10 @@ const onCall = async (context: CoreContext, message: CoreCallMessage) => {
         return Promise.resolve();
     }
 
-    if (method.payload.__info) {
+    if (message.payload.__info) {
         const response = method.getMethodInfo();
 
-        if (method.payload.__precomposed) {
+        if (message.payload.__precomposed) {
             response.precomposed = method.payloadToPrecomposed();
         }
         sendCoreMessage(createResponseMessage(method.responseID, true, response));

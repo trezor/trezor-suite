@@ -9,21 +9,19 @@ export default class EvoluGetNode extends AbstractMethod<'evoluGetNode', PROTO.E
     hasBundle?: boolean;
 
     constructor(message: MethodMessage<'evoluGetNode'>) {
-        super(message);
+        const { payload } = message;
+
+        Assert(PROTO.EvoluGetNode, payload);
+
+        const params = {
+            proof_of_delegated_identity: payload.proof_of_delegated_identity,
+        };
+
+        super(message, params);
         this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
     }
     get requiredPermissions(): MethodPermission[] {
         return ['read'];
-    }
-
-    init() {
-        const { payload } = this;
-
-        Assert(PROTO.EvoluGetNode, payload);
-
-        this.params = {
-            proof_of_delegated_identity: payload.proof_of_delegated_identity,
-        };
     }
 
     get info() {

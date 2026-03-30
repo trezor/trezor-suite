@@ -33,26 +33,15 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
     discovery?: Discovery;
 
     constructor(message: MethodMessage<'getAccountInfo'>) {
-        super(message);
-        this.useDevice = true;
-        this.useUi = true;
-    }
-
-    get requiredPermissions(): MethodPermission[] {
-        return ['read'];
-    }
-
-    init() {
         // assume that device will not be used
         let willUseDevice = false;
 
-        const { hasBundle, payload } = bundlify(this.payload);
-        this.hasBundle = hasBundle;
+        const { hasBundle, payload } = bundlify(message.payload);
 
         // validate bundle type
         validateParams(payload, [{ name: 'bundle', type: 'array' }]);
 
-        this.params = payload.bundle.map(batch => {
+        const params = payload.bundle.map(batch => {
             // validate incoming parameters
             validateParams(batch, [
                 { name: 'coin', type: 'string', required: true },
@@ -96,9 +85,6 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
                 willUseDevice = true;
             }
 
-            // set firmware range
-            this.firmwareRange = getFirmwareRange(this.name, coinInfo, this.firmwareRange);
-
             return {
                 ...batch,
                 address_n,
@@ -106,10 +92,21 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
             };
         });
 
+        super(message, params);
+
+        this.hasBundle = hasBundle;
         this.useDevice = willUseDevice;
         this.useDeviceState = willUseDevice;
         this.useUi = willUseDevice;
-        this.confirmMissingBackup = !this.params.every(batch => batch.suppressBackupWarning);
+        this.confirmMissingBackup = !params.every(batch => batch.suppressBackupWarning);
+        this.firmwareRange = params.reduce(
+            (prev, { coinInfo }) => getFirmwareRange(this.name, coinInfo, prev),
+            this.firmwareRange,
+        );
+    }
+
+    get requiredPermissions(): MethodPermission[] {
+        return ['read'];
     }
 
     get info() {

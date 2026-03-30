@@ -32,17 +32,7 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
     progress = 0;
 
     constructor(message: MethodMessage<'getAddress'>) {
-        super(message);
-        this.confirmMissingBackup = true;
-    }
-
-    get requiredPermissions(): MethodPermission[] {
-        return ['read'];
-    }
-
-    init() {
-        const { hasBundle, payload } = bundlify(this.payload);
-        this.hasBundle = hasBundle;
+        const { hasBundle, payload } = bundlify(message.payload);
 
         // Workaround to allow empty signature in multisig (issue #10841)
         payload.bundle.forEach(bundleElement => {
@@ -55,7 +45,7 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
         // validate bundle type
         Assert(Bundle(GetAddressSchema), payload);
 
-        this.params = payload.bundle.map(batch => {
+        const params = payload.bundle.map(batch => {
             const path = validatePath(batch.path, 1);
             let coinInfo: BitcoinNetworkInfo | undefined;
             if (batch.coin) {
@@ -70,9 +60,6 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
 
             if (!coinInfo) {
                 throw ERRORS.TypedError('Method_UnknownCoin');
-            } else if (coinInfo) {
-                // set required firmware from coinInfo support
-                this.firmwareRange = getFirmwareRange(this.name, coinInfo, this.firmwareRange);
             }
 
             // fix coinInfo network values (segwit/legacy)
@@ -93,7 +80,19 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
             };
         });
 
+        super(message, params);
+
+        this.hasBundle = hasBundle;
         this.useUi = this.getUseUi(this.params);
+        this.firmwareRange = params.reduce(
+            (prev, { coinInfo }) => getFirmwareRange(this.name, coinInfo, prev),
+            this.firmwareRange,
+        );
+        this.confirmMissingBackup = true;
+    }
+
+    get requiredPermissions(): MethodPermission[] {
+        return ['read'];
     }
 
     get info() {

@@ -8,7 +8,13 @@ import { AbstractMethod } from '../core/AbstractMethod';
 
 export default class SetBrightness extends AbstractMethod<'setBrightness', PROTO.SetBrightness> {
     constructor(message: MethodMessage<'setBrightness'>) {
-        super(message);
+        const { payload } = message;
+
+        Assert(PROTO.SetBrightness, payload);
+
+        const params = { value: payload.value };
+
+        super(message, params);
         this.skipFinalReload = false;
         this.useDeviceState = false;
     }
@@ -16,15 +22,7 @@ export default class SetBrightness extends AbstractMethod<'setBrightness', PROTO
         return ['management'];
     }
 
-    init() {
-        const { payload } = this;
-
-        Assert(PROTO.SetBrightness, payload);
-
-        this.params = {
-            value: payload.value,
-        };
-    }
+    init() {}
 
     async run() {
         const cmd = this.getDevice().getCommands();

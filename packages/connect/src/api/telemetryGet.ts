@@ -6,21 +6,17 @@ import { AbstractMethod } from '../core/AbstractMethod';
 
 export default class TelemetryGet extends AbstractMethod<'telemetryGet', PROTO.TelemetryGet> {
     constructor(message: MethodMessage<'telemetryGet'>) {
-        super(message);
+        const { payload } = message;
+
+        Assert(PROTO.TelemetryGet, payload);
+
+        const params = { ...payload };
+
+        super(message, params);
         this.useDeviceState = false;
     }
     get requiredPermissions(): MethodPermission[] {
         return ['management'];
-    }
-
-    init() {
-        const { payload } = this;
-
-        Assert(PROTO.TelemetryGet, payload);
-
-        this.params = {
-            ...payload,
-        };
     }
 
     async run() {

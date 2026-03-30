@@ -47,21 +47,7 @@ type Params = { proto: PROTO.SolanaSignTx; serialize: boolean; symbols?: (string
 
 export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTransaction', Params> {
     constructor(message: MethodMessage<'solanaSignTransaction'>) {
-        super(message);
-        this.requiredDeviceCapabilities = ['Capability_Solana'];
-        this.firmwareRange = getFirmwareRange(
-            this.name,
-            getMiscNetwork('Solana'),
-            this.firmwareRange,
-        );
-    }
-
-    get requiredPermissions(): MethodPermission[] {
-        return ['read', 'write'];
-    }
-
-    init() {
-        const { payload } = this;
+        const { payload } = message;
 
         // validate bundle type
         Assert(SolanaSignTransactionSchema, payload);
@@ -97,7 +83,20 @@ export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTra
             payment_req: payload.payment_req,
         };
 
-        this.params = { proto, serialize: !!payload.serialize, symbols };
+        const params = { proto, serialize: !!payload.serialize, symbols };
+
+        super(message, params);
+
+        this.requiredDeviceCapabilities = ['Capability_Solana'];
+        this.firmwareRange = getFirmwareRange(
+            this.name,
+            getMiscNetwork('Solana'),
+            this.firmwareRange,
+        );
+    }
+
+    get requiredPermissions(): MethodPermission[] {
+        return ['read', 'write'];
     }
 
     async initAsync(): Promise<void> {

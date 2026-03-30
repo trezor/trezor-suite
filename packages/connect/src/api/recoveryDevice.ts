@@ -10,21 +10,10 @@ import { AbstractMethod } from '../core/AbstractMethod';
 
 export default class RecoveryDevice extends AbstractMethod<'recoveryDevice', PROTO.RecoveryDevice> {
     constructor(message: MethodMessage<'recoveryDevice'>) {
-        super(message);
-        this.allowDeviceMode = [...this.allowDeviceMode, UI_REQUEST.INITIALIZE];
-        this.useDeviceState = false;
-        this.skipFinalReload = false;
-        this.useEmptyPassphrase = true;
-    }
-    get requiredPermissions(): MethodPermission[] {
-        return ['management'];
-    }
-
-    init() {
-        const { payload } = this;
+        const { payload } = message;
 
         Assert(RecoveryDeviceSchema, payload);
-        this.params = {
+        const params = {
             word_count: payload.word_count,
             passphrase_protection: payload.passphrase_protection,
             pin_protection: payload.pin_protection,
@@ -35,6 +24,15 @@ export default class RecoveryDevice extends AbstractMethod<'recoveryDevice', PRO
             type: payload.type,
             u2f_counter: payload.u2f_counter,
         };
+
+        super(message, params);
+        this.allowDeviceMode = [...this.allowDeviceMode, UI_REQUEST.INITIALIZE];
+        this.useDeviceState = false;
+        this.skipFinalReload = false;
+        this.useEmptyPassphrase = true;
+    }
+    get requiredPermissions(): MethodPermission[] {
+        return ['management'];
     }
 
     get confirmation() {

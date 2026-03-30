@@ -29,7 +29,22 @@ export default class StellarSignTransaction extends AbstractMethod<
     Params
 > {
     constructor(message: MethodMessage<'stellarSignTransaction'>) {
-        super(message);
+        const { payload } = message;
+        // validate incoming parameters
+        Assert(StellarSignTransactionSchema, payload);
+
+        const path = validatePath(payload.path, 3);
+        // incoming data should be in stellar-sdk format
+        const { transaction } = payload;
+        const params = {
+            path,
+            networkPassphrase: payload.networkPassphrase,
+            transaction,
+            payment_req: payload.payment_req,
+        };
+
+        super(message, params);
+
         this.requiredDeviceCapabilities = ['Capability_Stellar'];
         this.firmwareRange = getFirmwareRange(
             this.name,
@@ -40,22 +55,6 @@ export default class StellarSignTransaction extends AbstractMethod<
 
     get requiredPermissions(): MethodPermission[] {
         return ['read', 'write'];
-    }
-
-    init() {
-        const { payload } = this;
-        // validate incoming parameters
-        Assert(StellarSignTransactionSchema, payload);
-
-        const path = validatePath(payload.path, 3);
-        // incoming data should be in stellar-sdk format
-        const { transaction } = payload;
-        this.params = {
-            path,
-            networkPassphrase: payload.networkPassphrase,
-            transaction,
-            payment_req: payload.payment_req,
-        };
     }
 
     get info() {

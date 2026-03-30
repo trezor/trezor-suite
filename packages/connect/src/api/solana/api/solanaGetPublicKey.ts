@@ -27,7 +27,23 @@ export default class SolanaGetPublicKey extends AbstractMethod<
     hasBundle?: boolean;
 
     constructor(message: MethodMessage<'solanaGetPublicKey'>) {
-        super(message);
+        const { hasBundle, payload } = bundlify(message.payload);
+
+        // validate bundle type
+        Assert(Bundle(GetPublicKeySchema), payload);
+
+        const params = payload.bundle.map(batch => {
+            const path = validatePath(batch.path, 2);
+
+            return {
+                address_n: path,
+                show_display: typeof batch.showOnTrezor === 'boolean' ? batch.showOnTrezor : false,
+            };
+        });
+
+        super(message, params);
+
+        this.hasBundle = hasBundle;
         this.confirmMissingBackup = true;
         this.requiredDeviceCapabilities = ['Capability_Solana'];
         this.firmwareRange = getFirmwareRange(
@@ -39,23 +55,6 @@ export default class SolanaGetPublicKey extends AbstractMethod<
 
     get requiredPermissions(): MethodPermission[] {
         return ['read'];
-    }
-
-    init() {
-        const { hasBundle, payload } = bundlify(this.payload);
-        this.hasBundle = hasBundle;
-
-        // validate bundle type
-        Assert(Bundle(GetPublicKeySchema), payload);
-
-        this.params = payload.bundle.map(batch => {
-            const path = validatePath(batch.path, 2);
-
-            return {
-                address_n: path,
-                show_display: typeof batch.showOnTrezor === 'boolean' ? batch.showOnTrezor : false,
-            };
-        });
     }
 
     get info() {

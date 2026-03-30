@@ -21,7 +21,7 @@ import { resolveAfter } from '@trezor/utils/src/resolveAfter';
 import type { ComposeOutput, TransactionInputOutputSortingStrategy } from '@trezor/utxo-lib';
 
 import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
-import type { MethodContext, MethodPermission } from '../core/AbstractMethod';
+import type { MethodContext, MethodMessage, MethodPermission } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { fixCoinInfoNetwork, getBitcoinNetwork } from '../data/coinInfo';
 import { formatAmount } from '../utils/formatUtils';
@@ -57,19 +57,8 @@ type Params = {
 };
 
 export default class ComposeTransaction extends AbstractMethod<'composeTransaction', Params> {
-    discovery?: Discovery;
-
-    get requiredPermissions(): MethodPermission[] {
-        const permissions: MethodPermission[] = ['read', 'write'];
-        if (this.params.push) {
-            permissions.push('push_tx');
-        }
-
-        return permissions;
-    }
-
-    init() {
-        const { payload } = this;
+    constructor(message: MethodMessage<'composeTransaction'>) {
+        const { payload } = message;
         // validate incoming parameters
         validateParams(payload, [
             { name: 'outputs', type: 'array', required: true },
@@ -90,9 +79,6 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         }
         // validate backend
         isBackendSupported(coinInfo);
-
-        // set required firmware from coinInfo support
-        this.firmwareRange = getFirmwareRange(this.name, coinInfo, this.firmwareRange);
 
         // validate each output and transform into @trezor/utxo-lib/compose format
         const outputs: ComposeOutput[] = [];
@@ -116,11 +102,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         //     throw error 'Total amount is too low';
         // }
 
-        this.useDevice = !payload.account && !payload.feeLevels;
-
-        this.useUi = this.useDevice;
-
-        this.params = {
+        const params = {
             outputs,
             coinInfo,
             identity: payload.identity,
@@ -133,6 +115,26 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
             push: typeof payload.push === 'boolean' ? payload.push : false,
             total,
         };
+
+        super(message, params);
+
+        this.useDevice = !payload.account && !payload.feeLevels;
+
+        this.useUi = this.useDevice;
+
+        // set required firmware from coinInfo support
+        this.firmwareRange = getFirmwareRange(this.name, coinInfo, this.firmwareRange);
+    }
+
+    discovery?: Discovery;
+
+    get requiredPermissions(): MethodPermission[] {
+        const permissions: MethodPermission[] = ['read', 'write'];
+        if (this.params.push) {
+            permissions.push('push_tx');
+        }
+
+        return permissions;
     }
 
     get info() {

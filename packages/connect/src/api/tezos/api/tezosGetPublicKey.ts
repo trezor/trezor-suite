@@ -27,7 +27,24 @@ export default class TezosGetPublicKey extends AbstractMethod<
     hasBundle?: boolean;
 
     constructor(message: MethodMessage<'tezosGetPublicKey'>) {
-        super(message);
+        const { hasBundle, payload } = bundlify(message.payload);
+
+        // validate bundle type
+        Assert(Bundle(GetPublicKeySchema), payload);
+
+        const params = payload.bundle.map(batch => {
+            const path = validatePath(batch.path, 3);
+
+            return {
+                address_n: path,
+                show_display: typeof batch.showOnTrezor === 'boolean' ? batch.showOnTrezor : true,
+                chunkify: typeof batch.chunkify === 'boolean' ? batch.chunkify : false,
+            };
+        });
+
+        super(message, params);
+
+        this.hasBundle = hasBundle;
         this.requiredDeviceCapabilities = ['Capability_Tezos'];
         this.firmwareRange = getFirmwareRange(
             this.name,
@@ -40,23 +57,7 @@ export default class TezosGetPublicKey extends AbstractMethod<
         return ['read'];
     }
 
-    init() {
-        const { hasBundle, payload } = bundlify(this.payload);
-        this.hasBundle = hasBundle;
-
-        // validate bundle type
-        Assert(Bundle(GetPublicKeySchema), payload);
-
-        this.params = payload.bundle.map(batch => {
-            const path = validatePath(batch.path, 3);
-
-            return {
-                address_n: path,
-                show_display: typeof batch.showOnTrezor === 'boolean' ? batch.showOnTrezor : true,
-                chunkify: typeof batch.chunkify === 'boolean' ? batch.chunkify : false,
-            };
-        });
-    }
+    init() {}
 
     get info() {
         return 'Export Tezos public key';

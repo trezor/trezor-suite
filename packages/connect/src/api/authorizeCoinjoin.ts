@@ -2,7 +2,7 @@ import { AuthorizeCoinjoin as AuthorizeCoinjoinSchema } from '@trezor/connect-co
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
-import type { MethodPermission } from '../core/AbstractMethod';
+import type { MethodMessage, MethodPermission } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { getFirmwareRange } from './common/paramsValidator';
 import { getBitcoinNetwork } from '../data/coinInfo';
@@ -12,21 +12,15 @@ export default class AuthorizeCoinjoin extends AbstractMethod<
     'authorizeCoinjoin',
     PROTO.AuthorizeCoinJoin
 > {
-    get requiredPermissions(): MethodPermission[] {
-        return ['management'];
-    }
-
-    init() {
-        const { payload } = this;
+    constructor(message: MethodMessage<'authorizeCoinjoin'>) {
+        const { payload } = message;
 
         Assert(AuthorizeCoinjoinSchema, payload);
         const address_n = validatePath(payload.path, 3);
         const script_type = payload.scriptType || getScriptType(address_n);
         const coinInfo = getBitcoinNetwork(payload.coin || address_n);
-        this.firmwareRange = getFirmwareRange(this.name, coinInfo, this.firmwareRange);
-        this.preauthorized = payload.preauthorized;
 
-        this.params = {
+        const params = {
             coordinator: payload.coordinator,
             max_rounds: payload.maxRounds,
             max_coordinator_fee_rate: payload.maxCoordinatorFeeRate,
@@ -36,6 +30,15 @@ export default class AuthorizeCoinjoin extends AbstractMethod<
             script_type,
             amount_unit: payload.amountUnit,
         };
+
+        super(message, params);
+
+        this.firmwareRange = getFirmwareRange(this.name, coinInfo, this.firmwareRange);
+        this.preauthorized = payload.preauthorized;
+    }
+
+    get requiredPermissions(): MethodPermission[] {
+        return ['management'];
     }
 
     async run() {

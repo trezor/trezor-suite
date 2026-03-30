@@ -17,27 +17,25 @@ export default class BlockchainValidateEvmRpcUrl extends AbstractMethod<
     Params
 > {
     constructor(message: MethodMessage<'blockchainValidateEvmRpcUrl'>) {
-        super(message);
-        this.useDevice = false;
-        this.useUi = false;
-    }
-
-    get requiredPermissions(): MethodPermission[] {
-        return [];
-    }
-
-    init() {
-        const { payload } = this;
+        const { payload } = message;
 
         validateParams(payload, [
             { name: 'url', type: 'string', required: true },
             { name: 'chainId', type: 'number', required: true },
         ]);
 
-        this.params = {
+        const params = {
             url: payload.url,
             chainId: payload.chainId,
         };
+
+        super(message, params);
+        this.useDevice = false;
+        this.useUi = false;
+    }
+
+    get requiredPermissions(): MethodPermission[] {
+        return [];
     }
 
     get info() {

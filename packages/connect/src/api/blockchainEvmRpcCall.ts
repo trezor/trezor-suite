@@ -20,17 +20,7 @@ type Params = {
 
 export default class BlockchainEvmRpcCall extends AbstractMethod<'blockchainEvmRpcCall', Params> {
     constructor(message: MethodMessage<'blockchainEvmRpcCall'>) {
-        super(message);
-        this.useDevice = false;
-        this.useUi = false;
-    }
-
-    get requiredPermissions(): MethodPermission[] {
-        return [];
-    }
-
-    init() {
-        const { payload } = this;
+        const { payload } = message;
 
         // validate incoming parameters
         validateParams(payload, [
@@ -49,7 +39,7 @@ export default class BlockchainEvmRpcCall extends AbstractMethod<'blockchainEvmR
         // validate backend
         isBackendSupported(coinInfo);
 
-        this.params = {
+        const params = {
             coinInfo,
             identity: payload.identity,
             request: {
@@ -58,6 +48,14 @@ export default class BlockchainEvmRpcCall extends AbstractMethod<'blockchainEvmR
                 data: payload.data,
             },
         };
+
+        super(message, params);
+        this.useDevice = false;
+        this.useUi = false;
+    }
+
+    get requiredPermissions(): MethodPermission[] {
+        return [];
     }
 
     get info() {

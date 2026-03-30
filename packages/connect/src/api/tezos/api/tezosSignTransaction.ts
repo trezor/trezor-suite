@@ -16,7 +16,15 @@ export default class TezosSignTransaction extends AbstractMethod<
     PROTO.TezosSignTx
 > {
     constructor(message: MethodMessage<'tezosSignTransaction'>) {
-        super(message);
+        const { payload } = message;
+
+        // validate incoming parameters
+        Assert(TezosSignTransactionSchema, payload);
+
+        const path = validatePath(payload.path, 3);
+        const params = helper.createTx(path, payload.branch, payload.operation);
+
+        super(message, params);
         this.requiredDeviceCapabilities = ['Capability_Tezos'];
         this.firmwareRange = getFirmwareRange(
             this.name,
@@ -27,16 +35,6 @@ export default class TezosSignTransaction extends AbstractMethod<
 
     get requiredPermissions(): MethodPermission[] {
         return ['read', 'write'];
-    }
-
-    init() {
-        const { payload } = this;
-
-        // validate incoming parameters
-        Assert(TezosSignTransactionSchema, payload);
-
-        const path = validatePath(payload.path, 3);
-        this.params = helper.createTx(path, payload.branch, payload.operation);
     }
 
     get info() {

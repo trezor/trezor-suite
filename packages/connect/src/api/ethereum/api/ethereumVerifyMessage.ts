@@ -15,17 +15,7 @@ export default class EthereumVerifyMessage extends AbstractMethod<
     PROTO.EthereumVerifyMessage
 > {
     constructor(message: MethodMessage<'ethereumVerifyMessage'>) {
-        super(message);
-        this.requiredDeviceCapabilities = ['Capability_Ethereum'];
-        this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
-    }
-
-    get requiredPermissions(): MethodPermission[] {
-        return ['read'];
-    }
-
-    init() {
-        const { payload } = this;
+        const { payload } = message;
 
         // validate incoming parameters
         Assert(EthereumVerifyMessageSchema, payload);
@@ -33,11 +23,19 @@ export default class EthereumVerifyMessage extends AbstractMethod<
         const messageHex = payload.hex
             ? messageToHex(payload.message)
             : Buffer.from(payload.message, 'utf8').toString('hex');
-        this.params = {
+        const params = {
             address: stripHexPrefix(payload.address),
             signature: stripHexPrefix(payload.signature),
             message: messageHex,
         };
+
+        super(message, params);
+        this.requiredDeviceCapabilities = ['Capability_Ethereum'];
+        this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
+    }
+
+    get requiredPermissions(): MethodPermission[] {
+        return ['read'];
     }
 
     get info() {

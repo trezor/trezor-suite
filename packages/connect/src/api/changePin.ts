@@ -8,21 +8,17 @@ import { AbstractMethod } from '../core/AbstractMethod';
 
 export default class ChangePin extends AbstractMethod<'changePin', PROTO.ChangePin> {
     constructor(message: MethodMessage<'changePin'>) {
-        super(message);
+        const { payload } = message;
+        Assert(PROTO.ChangePin, payload);
+
+        const params = { remove: payload.remove };
+
+        super(message, params);
         this.useDeviceState = false;
         this.skipFinalReload = false;
     }
     get requiredPermissions(): MethodPermission[] {
         return ['management'];
-    }
-
-    init() {
-        const { payload } = this;
-        Assert(PROTO.ChangePin, payload);
-
-        this.params = {
-            remove: payload.remove,
-        };
     }
 
     async run() {

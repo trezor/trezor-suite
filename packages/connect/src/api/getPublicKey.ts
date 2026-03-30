@@ -10,7 +10,12 @@ import {
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
-import type { MethodContext, MethodPermission, MethodReturnType } from '../core/AbstractMethod';
+import type {
+    MethodContext,
+    MethodMessage,
+    MethodPermission,
+    MethodReturnType,
+} from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { getBitcoinNetwork } from '../data/coinInfo';
 import { bundlify, getFirmwareRange, validateCoinPath } from './common/paramsValidator';
@@ -25,20 +30,13 @@ type Params = {
 };
 
 export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[]> {
-    hasBundle?: boolean;
-
-    get requiredPermissions(): MethodPermission[] {
-        return ['read'];
-    }
-
-    init() {
-        const { hasBundle, payload } = bundlify(this.payload);
-        this.hasBundle = hasBundle;
+    constructor(message: MethodMessage<'getPublicKey'>) {
+        const { hasBundle, payload } = bundlify(message.payload);
 
         // validate bundle type
         Assert(Bundle(GetPublicKeySchema), payload);
 
-        this.params = payload.bundle.map(batch => {
+        const params = payload.bundle.map(batch => {
             let coinInfo: BitcoinNetworkInfo | undefined;
             if (batch.coin) {
                 coinInfo = getBitcoinNetwork(batch.coin);
@@ -54,9 +52,6 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
                 // lead to getPublicKeyLabel returning a label based on the path
                 coinInfo = getBitcoinNetwork(address_n); // ?? getBitcoinNetwork('btc')!;
             }
-
-            // set required firmware from coinInfo support
-            this.firmwareRange = getFirmwareRange(this.name, coinInfo, this.firmwareRange);
 
             const proto = {
                 address_n,
@@ -75,9 +70,22 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
             };
         });
 
+        super(message, params);
+
+        this.firmwareRange = params.reduce(
+            (prev, { coinInfo }) => getFirmwareRange(this.name, coinInfo, prev),
+            this.firmwareRange,
+        );
+        this.hasBundle = hasBundle;
         this.confirmMissingBackup = !this.params.every(
             batch => batch.suppressBackupWarning || !batch.proto.show_display,
         );
+    }
+
+    hasBundle?: boolean;
+
+    get requiredPermissions(): MethodPermission[] {
+        return ['read'];
     }
 
     get info() {

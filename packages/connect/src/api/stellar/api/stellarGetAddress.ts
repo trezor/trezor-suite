@@ -31,28 +31,12 @@ export default class StellarGetAddress extends AbstractMethod<'stellarGetAddress
     progress = 0;
 
     constructor(message: MethodMessage<'stellarGetAddress'>) {
-        super(message);
-        this.confirmMissingBackup = true;
-        this.requiredDeviceCapabilities = ['Capability_Stellar'];
-        this.firmwareRange = getFirmwareRange(
-            this.name,
-            getMiscNetwork('Stellar'),
-            this.firmwareRange,
-        );
-    }
-
-    get requiredPermissions(): MethodPermission[] {
-        return ['read'];
-    }
-
-    init() {
-        const { hasBundle, payload } = bundlify(this.payload);
-        this.hasBundle = hasBundle;
+        const { hasBundle, payload } = bundlify(message.payload);
 
         // validate bundle type
         Assert(Bundle(GetAddressSchema), payload);
 
-        this.params = payload.bundle.map(batch => {
+        const params = payload.bundle.map(batch => {
             const path = validatePath(batch.path, 3);
 
             const proto = {
@@ -64,7 +48,21 @@ export default class StellarGetAddress extends AbstractMethod<'stellarGetAddress
             return { proto, address: batch.address };
         });
 
+        super(message, params);
+
+        this.hasBundle = hasBundle;
         this.useUi = this.getUseUi(this.params);
+        this.confirmMissingBackup = true;
+        this.requiredDeviceCapabilities = ['Capability_Stellar'];
+        this.firmwareRange = getFirmwareRange(
+            this.name,
+            getMiscNetwork('Stellar'),
+            this.firmwareRange,
+        );
+    }
+
+    get requiredPermissions(): MethodPermission[] {
+        return ['read'];
     }
 
     get info() {

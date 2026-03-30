@@ -15,21 +15,7 @@ type Params = {
 
 export default class MoneroGetWatchKeyMethod extends AbstractMethod<'moneroGetWatchKey', Params> {
     constructor(message: MethodMessage<'moneroGetWatchKey'>) {
-        super(message);
-        this.requiredDeviceCapabilities = ['Capability_Monero'];
-        this.firmwareRange = getFirmwareRange(
-            this.name,
-            getMiscNetwork('Monero'),
-            this.firmwareRange,
-        );
-    }
-
-    get requiredPermissions(): MethodPermission[] {
-        return ['read'];
-    }
-
-    init() {
-        const { payload } = this;
+        const { payload } = message;
         const path = validatePath(payload.path, 3);
 
         // require all path components to be hardened
@@ -45,7 +31,20 @@ export default class MoneroGetWatchKeyMethod extends AbstractMethod<'moneroGetWa
             address_n: path,
             network_type: payload.networkType || PROTO.MoneroNetworkType.MAINNET,
         };
-        this.params = { proto };
+        const params = { proto };
+
+        super(message, params);
+
+        this.requiredDeviceCapabilities = ['Capability_Monero'];
+        this.firmwareRange = getFirmwareRange(
+            this.name,
+            getMiscNetwork('Monero'),
+            this.firmwareRange,
+        );
+    }
+
+    get requiredPermissions(): MethodPermission[] {
+        return ['read'];
     }
 
     get info() {

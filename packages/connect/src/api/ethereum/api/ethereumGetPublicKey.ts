@@ -30,25 +30,14 @@ export default class EthereumGetPublicKey extends AbstractMethod<'ethereumGetPub
     hasBundle?: boolean;
 
     constructor(message: MethodMessage<'ethereumGetPublicKey'>) {
-        super(message);
-        this.requiredDeviceCapabilities = ['Capability_Ethereum'];
-    }
-
-    get requiredPermissions(): MethodPermission[] {
-        return ['read'];
-    }
-
-    init() {
-        const { hasBundle, payload } = bundlify(this.payload);
-        this.hasBundle = hasBundle;
+        const { hasBundle, payload } = bundlify(message.payload);
 
         // validate bundle type
         Assert(Bundle(GetPublicKeySchema), payload);
 
-        this.params = payload.bundle.map(batch => {
+        const params = payload.bundle.map(batch => {
             const path = validatePath(batch.path, 3);
             const network = getEthereumNetwork(path);
-            this.firmwareRange = getFirmwareRange(this.name, network, this.firmwareRange);
 
             const proto = {
                 address_n: path,
@@ -57,6 +46,19 @@ export default class EthereumGetPublicKey extends AbstractMethod<'ethereumGetPub
 
             return { proto, network };
         });
+
+        super(message, params);
+
+        this.firmwareRange = params.reduce(
+            (prev, { network }) => getFirmwareRange(this.name, network, prev),
+            this.firmwareRange,
+        );
+        this.hasBundle = hasBundle;
+        this.requiredDeviceCapabilities = ['Capability_Ethereum'];
+    }
+
+    get requiredPermissions(): MethodPermission[] {
+        return ['read'];
     }
 
     get info() {

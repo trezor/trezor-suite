@@ -9,17 +9,15 @@ type Params = { credentials: ThpCredentials[] };
 
 export default class ThpRemoveCredentials extends AbstractMethod<'thpRemoveCredentials', Params> {
     constructor(message: MethodMessage<'thpRemoveCredentials'>) {
-        super(message);
-        this.useDevice = this.payload.device !== undefined;
+        const params = { credentials: message.payload.credentials || [] };
+
+        super(message, params);
+        this.useDevice = message.payload.device !== undefined;
         this.allowDeviceMode = [UI_REQUEST.INITIALIZE, UI_REQUEST.SEEDLESS];
         this.useDeviceState = false;
     }
     get requiredPermissions(): MethodPermission[] {
         return ['management'];
-    }
-
-    init() {
-        this.params = { credentials: this.payload.credentials || [] };
     }
 
     run() {

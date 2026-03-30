@@ -34,23 +34,12 @@ export default class GetAccountDescriptor extends AbstractMethod<
     hasBundle?: boolean;
 
     constructor(message: MethodMessage<'getAccountDescriptor'>) {
-        super(message);
-        this.useDevice = true;
-        this.useUi = true;
-    }
-
-    get requiredPermissions(): MethodPermission[] {
-        return ['read'];
-    }
-
-    init() {
-        const { hasBundle, payload } = bundlify(this.payload);
-        this.hasBundle = hasBundle;
+        const { hasBundle, payload } = bundlify(message.payload);
 
         // validate bundle type
         Assert(Bundle(GetAccountDescriptorParams), payload);
 
-        this.params = payload.bundle.map(batch => {
+        const params = payload.bundle.map(batch => {
             // validate coin info
             const coinInfo = getCoinInfo(batch.coin);
             if (!coinInfo) {
@@ -59,9 +48,6 @@ export default class GetAccountDescriptor extends AbstractMethod<
             // validate path
             const address_n = validatePath(batch.path, 3);
 
-            // set firmware range
-            this.firmwareRange = getFirmwareRange(this.name, coinInfo, this.firmwareRange);
-
             return {
                 ...batch,
                 address_n,
@@ -69,7 +55,21 @@ export default class GetAccountDescriptor extends AbstractMethod<
             };
         });
 
+        super(message, params);
+
+        // set firmware range
+        this.firmwareRange = params.reduce(
+            (prev, { coinInfo }) => getFirmwareRange(this.name, coinInfo, prev),
+            this.firmwareRange,
+        );
+        this.hasBundle = hasBundle;
         this.confirmMissingBackup = !this.params.every(batch => batch.suppressBackupWarning);
+        this.useDevice = true;
+        this.useUi = true;
+    }
+
+    get requiredPermissions(): MethodPermission[] {
+        return ['read'];
     }
 
     get info() {

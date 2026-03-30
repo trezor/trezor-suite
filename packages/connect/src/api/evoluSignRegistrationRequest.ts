@@ -12,7 +12,17 @@ export default class EvoluSignRegistrationRequest extends AbstractMethod<
     hasBundle?: boolean;
 
     constructor(message: MethodMessage<'evoluSignRegistrationRequest'>) {
-        super(message);
+        const { payload } = message;
+
+        Assert(PROTO.EvoluSignRegistrationRequest, payload);
+
+        const params = {
+            challenge_from_server: payload.challenge_from_server,
+            size_to_acquire: payload.size_to_acquire,
+            proof_of_delegated_identity: payload.proof_of_delegated_identity,
+        };
+
+        super(message, params);
         this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
         this.useEmptyPassphrase = true;
     }
@@ -20,17 +30,7 @@ export default class EvoluSignRegistrationRequest extends AbstractMethod<
         return ['read'];
     }
 
-    init() {
-        const { payload } = this;
-
-        Assert(PROTO.EvoluSignRegistrationRequest, payload);
-
-        this.params = {
-            challenge_from_server: payload.challenge_from_server,
-            size_to_acquire: payload.size_to_acquire,
-            proof_of_delegated_identity: payload.proof_of_delegated_identity,
-        };
-    }
+    init() {}
 
     get info() {
         return 'Evolu sign registration request';

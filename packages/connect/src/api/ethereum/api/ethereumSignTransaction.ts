@@ -56,16 +56,7 @@ export default class EthereumSignTransaction extends AbstractMethod<
     Params
 > {
     constructor(message: MethodMessage<'ethereumSignTransaction'>) {
-        super(message);
-        this.requiredDeviceCapabilities = ['Capability_Ethereum'];
-    }
-
-    get requiredPermissions(): MethodPermission[] {
-        return ['read', 'write'];
-    }
-
-    init() {
-        const { payload } = this;
+        const { payload } = message;
         // validate incoming parameters
         Assert(EthereumSignTransactionSchema, payload);
 
@@ -79,6 +70,26 @@ export default class EthereumSignTransaction extends AbstractMethod<
         const isEIP1559 =
             typeof tx.maxFeePerGas === 'string' && typeof tx.maxPriorityFeePerGas === 'string';
 
+        const params = {
+            path,
+            network,
+            type: isEIP1559 ? 'eip1559' : 'legacy',
+            tx: {
+                ...strip(tx),
+                payment_req: tx.payment_req,
+            },
+            chunkify,
+        } as Params;
+
+        // Since FW 2.4.3+ chainId will be required
+        // TODO: this should be removed after next major/minor version (or after few months)
+        // TODO: add "required: true" to chainId validation
+        if (typeof tx.chainId !== 'number') {
+            console.warn('TrezorConnect.ethereumSignTransaction: Missing chainId parameter!');
+        }
+
+        super(message, params);
+
         // get firmware range depending on used transaction type
         // eip1559 is possible since 2.4.2
         this.firmwareRange = getFirmwareRange(
@@ -87,36 +98,11 @@ export default class EthereumSignTransaction extends AbstractMethod<
             this.firmwareRange,
         );
 
-        if (isEIP1559) {
-            this.params = {
-                path,
-                network,
-                type: 'eip1559',
-                tx: {
-                    ...strip(tx),
-                    payment_req: tx.payment_req,
-                },
-                chunkify,
-            };
-        } else {
-            this.params = {
-                path,
-                network,
-                type: 'legacy',
-                tx: {
-                    ...strip(tx),
-                    payment_req: tx.payment_req,
-                },
-                chunkify,
-            };
-        }
+        this.requiredDeviceCapabilities = ['Capability_Ethereum'];
+    }
 
-        // Since FW 2.4.3+ chainId will be required
-        // TODO: this should be removed after next major/minor version (or after few months)
-        // TODO: add "required: true" to chainId validation
-        if (typeof tx.chainId !== 'number') {
-            console.warn('TrezorConnect.ethereumSignTransaction: Missing chainId parameter!');
-        }
+    get requiredPermissions(): MethodPermission[] {
+        return ['read', 'write'];
     }
 
     async initAsync(): Promise<void> {

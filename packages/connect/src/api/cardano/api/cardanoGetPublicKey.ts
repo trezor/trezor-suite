@@ -28,27 +28,12 @@ export default class CardanoGetPublicKey extends AbstractMethod<'cardanoGetPubli
     hasBundle?: boolean;
 
     constructor(message: MethodMessage<'cardanoGetPublicKey'>) {
-        super(message);
-        this.requiredDeviceCapabilities = ['Capability_Cardano'];
-        this.firmwareRange = getFirmwareRange(
-            this.name,
-            getMiscNetwork('Cardano'),
-            this.firmwareRange,
-        );
-    }
-
-    get requiredPermissions(): MethodPermission[] {
-        return ['read'];
-    }
-
-    init() {
-        const { hasBundle, payload } = bundlify(this.payload);
-        this.hasBundle = hasBundle;
+        const { hasBundle, payload } = bundlify(message.payload);
 
         // validate bundle type
         Assert(Bundle(CardanoGetPublicKeySchema), payload);
 
-        this.params = payload.bundle.map(batch => {
+        const params = payload.bundle.map(batch => {
             const path = validatePath(batch.path, 3);
             const proto = {
                 address_n: path,
@@ -62,9 +47,22 @@ export default class CardanoGetPublicKey extends AbstractMethod<'cardanoGetPubli
             return { proto, suppressBackupWarning: batch.suppressBackupWarning };
         });
 
+        super(message, params);
+
+        this.hasBundle = hasBundle;
         this.confirmMissingBackup = !this.params.every(
             batch => batch.suppressBackupWarning || !batch.proto.show_display,
         );
+        this.requiredDeviceCapabilities = ['Capability_Cardano'];
+        this.firmwareRange = getFirmwareRange(
+            this.name,
+            getMiscNetwork('Cardano'),
+            this.firmwareRange,
+        );
+    }
+
+    get requiredPermissions(): MethodPermission[] {
+        return ['read'];
     }
 
     get info() {
