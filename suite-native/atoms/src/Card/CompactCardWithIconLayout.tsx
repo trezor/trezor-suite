@@ -1,5 +1,5 @@
 import { type ReactNode } from 'react';
-import { View } from 'react-native';
+import { Platform, View } from 'react-native';
 import { GestureDetector } from 'react-native-gesture-handler';
 
 import { Icon, type IconName } from '@suite-native/icons';
@@ -72,10 +72,11 @@ export const CompactCardWithIconLayout = ({
     subtitle,
     alertBoxProps,
     onPress,
+    noShadow,
+    testID,
     isDisabled = false,
     variant = 'normal',
     borderColor = 'borderElevation1',
-    testID,
     ...cardProps
 }: CompactCardWithIconLayoutProps) => {
     const { applyStyle } = useNativeStyles();
@@ -91,6 +92,8 @@ export const CompactCardWithIconLayout = ({
                     noPadding
                     borderColor={borderColor ?? undefined}
                     style={animatedStyle}
+                    // Android shadow does not work well with the Reanimated opacity animation.
+                    noShadow={Platform.OS === 'android' ? true : noShadow}
                     {...cardProps}
                 >
                     <HStack
