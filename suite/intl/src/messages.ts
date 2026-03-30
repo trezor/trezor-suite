@@ -9339,9 +9339,9 @@ export const messages = defineMessages({
         id: 'TR_STAKING_MODAL_OUTDATED_BUTTON',
         defaultMessage: 'Update provider',
     },
-    TR_EARN_DASHBOARD_TABLE_ACCOUNT_BALANCE: {
-        id: 'TR_EARN_DASHBOARD_TABLE_ACCOUNT_BALANCE',
-        defaultMessage: 'Account & balance',
+    TR_EARN_DASHBOARD_TABLE_ACCOUNT_VAULT: {
+        id: 'TR_EARN_DASHBOARD_TABLE_ACCOUNT_VAULT',
+        defaultMessage: 'Account & vault',
     },
     TR_EARN_DASHBOARD_TABLE_APY: {
         id: 'TR_EARN_DASHBOARD_TABLE_APY',
