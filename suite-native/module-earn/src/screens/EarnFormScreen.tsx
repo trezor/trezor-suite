@@ -33,7 +33,11 @@ export const EarnFormScreen = () => {
     } = form;
 
     const handleSubmit = form.handleSubmit(() => {
-        navigation.navigate(RootStackRoutes.EarnConsents, { accountKey, amount: amountValue });
+        navigation.navigate(RootStackRoutes.EarnConsents, {
+            accountKey,
+            amount: amountValue,
+            account,
+        });
     });
 
     return (
@@ -49,7 +53,7 @@ export const EarnFormScreen = () => {
                 />
             }
         >
-            <AccountDetailsCard accountKey={accountKey} variant="stake" />
+            <AccountDetailsCard accountKey={accountKey} isStakeVariant />
 
             <Box marginTop="sp16">
                 <Form form={form}>

@@ -37,6 +37,11 @@ export type AccountListItemProps = {
     isCryptoBalancePrimary?: boolean;
 };
 
+const CRYPTO_PRIMARY_BALANCE_TEXT_PROPS = [
+    { variant: 'body-md-strong' as const, color: 'textDefault' as const },
+    { variant: 'body-sm' as const, color: 'textSubdued' as const },
+];
+
 const TokenBadge = React.memo(({ accountKey }: { accountKey: AccountKey }) => {
     const numberOfTokens = useSelector((state: TokensRootState) =>
         selectNumberOfAccountKnownTokensWithBalance(state, accountKey),
@@ -101,10 +106,7 @@ export const AccountsListItem = ({
     const shouldShowTokenBadge = accountHasKnownTokensWithBalance && !isNativeCoinOnly;
     const shouldShowStakingBadge = accountHasStaking && !isNativeCoinOnly;
     const [primaryBalanceTextProps, secondaryBalanceTextProps] = isCryptoBalancePrimary
-        ? [
-              { variant: 'body-md-strong' as const, color: 'textDefault' as const },
-              { variant: 'body-sm' as const, color: 'textSubdued' as const },
-          ]
+        ? CRYPTO_PRIMARY_BALANCE_TEXT_PROPS
         : [undefined, undefined];
     const fiatBalanceValue =
         shouldShowTokenBadge && fiatBalance !== undefined ? (
