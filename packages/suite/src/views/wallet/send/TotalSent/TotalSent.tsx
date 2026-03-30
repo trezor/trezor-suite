@@ -3,17 +3,21 @@ import { type PropsWithChildren, useMemo } from 'react';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { selectAreFeesLoading, useDisplayBaseCurrency } from '@suite-common/wallet-core';
-import { convertAmountSubunitsToUnits, formatNetworkAmount } from '@suite-common/wallet-utils';
+import { selectAreFeesLoading } from '@suite-common/wallet-core';
+import {
+    calculateTronFeeBreakdown,
+    convertAmountSubunitsToUnits,
+    formatNetworkAmount,
+} from '@suite-common/wallet-utils';
 import { Card, Column, InfoItem, SkeletonRectangle } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
-import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
+import { FormattedCryptoAmount } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 
 import { CardanoSentTokenInfo } from './CardanoSentTokenInfo';
 import { ReviewButton } from './ReviewButton';
+import { TotalSentFeeContent } from './TotalSentFeeContent';
 
 type ChildOrSkeletonProps = PropsWithChildren<{ isLoading?: boolean }>;
 
@@ -27,12 +31,11 @@ const Container = styled.div`
 
 export const TotalSent = () => {
     const {
-        account: { symbol, networkType },
+        account: { symbol, networkType, misc },
         composedLevels,
         getValues,
     } = useSendFormContext();
     const areFeesLoading = useSelector(state => selectAreFeesLoading(state, symbol));
-    const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(symbol);
 
     const selectedFee = getValues().selectedFee || 'normal';
     const transactionInfo = composedLevels ? composedLevels[selectedFee] : undefined;
@@ -40,6 +43,12 @@ export const TotalSent = () => {
     const hasTransactionInfo = transactionInfo !== undefined && transactionInfo.type !== 'error';
     const tokenInfo = hasTransactionInfo ? transactionInfo.token : undefined;
     const includingRent = networkType === 'solana';
+
+    const tronResources = misc && 'tronResources' in misc ? misc.tronResources : undefined;
+    const tronFees =
+        networkType === 'tron'
+            ? calculateTronFeeBreakdown(transactionInfo, tronResources, symbol)
+            : null;
 
     const feeLabelId = useMemo(() => {
         if (isTokenTransfer) {
@@ -56,7 +65,7 @@ export const TotalSent = () => {
     return (
         <Container>
             <Card height="min-content" fillType="flat">
-                <Column gap={spacings.xxs} margin={{ bottom: spacings.xl }}>
+                <Column gap={4} margin={{ bottom: 24 }}>
                     <InfoItem
                         label={<Translation id="TOTAL_SENT" />}
                         direction="row"
@@ -91,27 +100,21 @@ export const TotalSent = () => {
                         </ChildOrSkeleton>
                     </InfoItem>
 
-                    <InfoItem label={<Translation id={feeLabelId} />} direction="row">
+                    <InfoItem
+                        label={<Translation id={feeLabelId} />}
+                        direction="row"
+                        verticalAlignment="start"
+                    >
                         <ChildOrSkeleton isLoading={areFeesLoading}>
-                            {hasTransactionInfo &&
-                                (tokenInfo ? (
-                                    <FormattedCryptoAmount
-                                        disableHiddenPlaceholder
-                                        value={formatNetworkAmount(transactionInfo.fee, symbol)}
-                                        symbol={symbol}
-                                    />
-                                ) : (
-                                    shallDisplayBaseCurrency && (
-                                        <BaseCurrencyValue
-                                            disableHiddenPlaceholder
-                                            amount={formatNetworkAmount(
-                                                transactionInfo.totalSpent,
-                                                symbol,
-                                            )}
-                                            symbol={symbol}
-                                        />
-                                    )
-                                ))}
+                            {hasTransactionInfo && (
+                                <TotalSentFeeContent
+                                    transactionInfo={transactionInfo}
+                                    networkType={networkType}
+                                    networkSymbol={symbol}
+                                    tokenInfo={tokenInfo}
+                                    tronFees={tronFees}
+                                />
+                            )}
                         </ChildOrSkeleton>
                     </InfoItem>
                 </Column>
