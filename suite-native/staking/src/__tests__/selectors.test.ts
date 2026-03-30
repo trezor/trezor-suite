@@ -1,8 +1,8 @@
 import {
-    type CardanoPoolStats,
-    type EthereumPoolStats,
-    type SolanaStakingInfo,
-} from '@suite-common/wallet-api';
+    type AdaPools,
+    type EthPoolStats,
+    type SolChainStats,
+} from '@suite-common/earn-staking-api';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 
 import {
@@ -81,16 +81,16 @@ const getTestState = (accounts: Account[]) => ({
                 eth: {
                     poolStats: {
                         data: {
-                            ethApy: 3.08,
+                            apy: 3.08,
                             nextRewardPayout: 5,
-                        } satisfies EthereumPoolStats,
+                        } satisfies EthPoolStats,
                     },
                 },
                 sol: {
                     stakingInfo: {
                         data: {
                             apy: 6.24,
-                        } satisfies SolanaStakingInfo,
+                        } satisfies SolChainStats,
                     },
                 },
                 ada: {
@@ -111,8 +111,8 @@ const getTestState = (accounts: Account[]) => ({
                                     apy: 5.8,
                                     saturation: 1.92,
                                     id: '',
-                                } satisfies CardanoPoolStats,
-                            ],
+                                },
+                            ] satisfies AdaPools['pools'],
                         },
                     },
                 },

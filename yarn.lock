@@ -10743,7 +10743,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-common/earn-staking-api@workspace:suite-common/earn-staking-api":
+"@suite-common/earn-staking-api@workspace:*, @suite-common/earn-staking-api@workspace:suite-common/earn-staking-api":
   version: 0.0.0-use.local
   resolution: "@suite-common/earn-staking-api@workspace:suite-common/earn-staking-api"
   dependencies:
@@ -11064,8 +11064,8 @@ __metadata:
   resolution: "@suite-common/staking@workspace:suite-common/staking"
   dependencies:
     "@everstake/wallet-sdk-ethereum": "npm:1.0.5"
+    "@suite-common/earn-staking-api": "workspace:*"
     "@suite-common/staking-solana-types": "workspace:*"
-    "@suite-common/wallet-api": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-constants": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
@@ -11429,16 +11429,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-common/wallet-api@workspace:*, @suite-common/wallet-api@workspace:^, @suite-common/wallet-api@workspace:suite-common/wallet-api":
-  version: 0.0.0-use.local
-  resolution: "@suite-common/wallet-api@workspace:suite-common/wallet-api"
-  dependencies:
-    orval: "npm:8.5.0"
-    prettier: "npm:^3.8.1"
-    zod: "npm:4.3.6"
-  languageName: unknown
-  linkType: soft
-
 "@suite-common/wallet-config@workspace:*, @suite-common/wallet-config@workspace:^, @suite-common/wallet-config@workspace:suite-common/wallet-config":
   version: 0.0.0-use.local
   resolution: "@suite-common/wallet-config@workspace:suite-common/wallet-config"
@@ -11481,7 +11471,6 @@ __metadata:
     "@suite-common/thp": "workspace:*"
     "@suite-common/toast-notifications": "workspace:*"
     "@suite-common/token-definitions": "workspace:*"
-    "@suite-common/wallet-api": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-constants": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
@@ -11524,13 +11513,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/wallet-utils@workspace:suite-common/wallet-utils"
   dependencies:
+    "@suite-common/earn-staking-api": "workspace:*"
     "@suite-common/fiat-services": "workspace:*"
     "@suite-common/staking-solana-types": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
-    "@suite-common/wallet-api": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-constants": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
@@ -13771,11 +13760,11 @@ __metadata:
   resolution: "@suite-native/staking@workspace:suite-native/staking"
   dependencies:
     "@suite-common/device": "workspace:*"
+    "@suite-common/earn-staking-api": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/staking": "workspace:*"
     "@suite-common/suite-sync": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
-    "@suite-common/wallet-api": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-constants": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
@@ -16000,6 +15989,7 @@ __metadata:
     "@suite-common/device": "workspace:*"
     "@suite-common/device-authenticity": "workspace:*"
     "@suite-common/earn-api": "workspace:*"
+    "@suite-common/earn-staking-api": "workspace:*"
     "@suite-common/feedback": "workspace:*"
     "@suite-common/fiat-services": "workspace:*"
     "@suite-common/firmware": "workspace:*"
@@ -16035,7 +16025,6 @@ __metadata:
     "@suite-common/transaction-search": "workspace:*"
     "@suite-common/tx-simulation": "workspace:^"
     "@suite-common/validators": "workspace:*"
-    "@suite-common/wallet-api": "workspace:^"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-constants": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"

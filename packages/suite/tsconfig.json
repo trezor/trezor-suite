@@ -43,6 +43,9 @@
             "path": "../../suite-common/device-authenticity"
         },
         { "path": "../../suite-common/earn-api" },
+        {
+            "path": "../../suite-common/earn-staking-api"
+        },
         { "path": "../../suite-common/feedback" },
         {
             "path": "../../suite-common/fiat-services"
@@ -129,9 +132,6 @@
         },
         {
             "path": "../../suite-common/validators"
-        },
-        {
-            "path": "../../suite-common/wallet-api"
         },
         {
             "path": "../../suite-common/wallet-config"

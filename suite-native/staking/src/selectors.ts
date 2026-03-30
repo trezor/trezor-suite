@@ -2,7 +2,7 @@ import type { NetworkSymbol, StakingNetworkSymbol } from '@suite-common/wallet-c
 import {
     selectAccountByKey,
     selectAdaAccountHasStaked,
-    selectPoolStatsApyData,
+    selectPoolStatsApy,
     selectSolAccountHasStaked,
     selectValidatorsQueueData,
 } from '@suite-common/wallet-core';
@@ -193,7 +193,7 @@ export const selectAPYByAccountKey = (
         return null;
     }
 
-    return selectPoolStatsApyData(state, account);
+    return selectPoolStatsApy(state, { account });
 };
 
 export const selectAPYBySymbol = (
@@ -204,32 +204,7 @@ export const selectAPYBySymbol = (
         return null;
     }
 
-    const { data } = state.wallet.stake;
-
-    switch (symbol) {
-        case 'eth':
-            return data.eth?.poolStats?.data?.ethApy ?? null;
-        case 'sol': {
-            const stakingInfoData = data.sol?.stakingInfo?.data;
-
-            return stakingInfoData && 'apy' in stakingInfoData ? stakingInfoData.apy : null;
-        }
-        case 'ada': {
-            const stakingInfoData = data.ada?.stakingInfo?.data;
-
-            const pools =
-                stakingInfoData && 'pools' in stakingInfoData ? stakingInfoData.pools : null;
-
-            if (!pools || pools.length === 0) {
-                return null;
-            }
-
-            // returning the Highest value
-            return Math.max(...pools.map(pool => pool.apy ?? 0));
-        }
-        default:
-            return null;
-    }
+    return selectPoolStatsApy(state, { networkSymbol: symbol });
 };
 
 export const selectStakedBalanceByAccountKey = (

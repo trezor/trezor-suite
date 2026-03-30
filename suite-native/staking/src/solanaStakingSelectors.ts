@@ -5,7 +5,7 @@ import {
     type StakeRootState,
     selectAccountByKey,
     selectDeviceAccounts,
-    selectPoolStatsApyData,
+    selectPoolStatsApy,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import {
@@ -61,7 +61,7 @@ export const selectSolanaAPYByAccountKey = (
     const account = selectAccountByKey(state, accountKey);
     if (!account) return 0;
 
-    return selectPoolStatsApyData(state, account);
+    return selectPoolStatsApy(state, { account });
 };
 
 export const selectSolanaStakedBalanceByAccountKey = (

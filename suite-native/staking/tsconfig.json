@@ -4,14 +4,14 @@
     "references": [
         { "path": "../../suite-common/device" },
         {
+            "path": "../../suite-common/earn-staking-api"
+        },
+        {
             "path": "../../suite-common/redux-utils"
         },
         { "path": "../../suite-common/staking" },
         {
             "path": "../../suite-common/suite-sync"
-        },
-        {
-            "path": "../../suite-common/wallet-api"
         },
         {
             "path": "../../suite-common/wallet-config"

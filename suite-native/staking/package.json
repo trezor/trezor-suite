@@ -13,10 +13,10 @@
     },
     "dependencies": {
         "@suite-common/device": "workspace:*",
+        "@suite-common/earn-staking-api": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/staking": "workspace:*",
         "@suite-common/suite-sync": "workspace:*",
-        "@suite-common/wallet-api": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-constants": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
