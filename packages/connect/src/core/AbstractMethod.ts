@@ -127,8 +127,6 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
 
     public name: Name; // method name
 
-    private useEventListener: any; // TODO
-
     protected get info() {
         return '';
     } // method info, displayed in popup info-panel
@@ -167,7 +165,6 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         const { payload } = message;
         this.name = payload.method;
         this.params = params;
-        this.useEventListener = payload.useEventListener;
         this.responseID = message.id || 0;
         this.deviceState = validateDeviceState(payload.device);
         this.keepSession = typeof payload.keepSession === 'boolean' ? payload.keepSession : false;
@@ -194,14 +191,17 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
     }
 
     // Used in *getAddress methods
-    protected getUseUi(params: { address?: string; proto: { show_display?: boolean } }[]) {
-        const useEventListener =
-            this.useEventListener &&
+    protected getUseUi(
+        params: { address?: string; proto: { show_display?: boolean } }[],
+        useEventListener: boolean | undefined,
+    ) {
+        const notUseUi =
+            useEventListener &&
             params.length === 1 &&
             typeof params[0].address === 'string' &&
             params[0].proto.show_display;
 
-        return !useEventListener;
+        return !notUseUi;
     }
 
     public setDevice(device: Device) {
