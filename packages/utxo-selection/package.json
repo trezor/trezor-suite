@@ -1,0 +1,53 @@
+{
+    "name": "@trezor/utxo-selection",
+    "version": "10.0.0-alpha.1",
+    "type": "module",
+    "author": "Trezor <info@trezor.io>",
+    "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/utxo-selection",
+    "description": "UTXO selection and transaction composition for Bitcoin-like cryptocurrencies",
+    "npmPublishAccess": "public",
+    "license": "SEE LICENSE IN LICENSE.md",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/trezor/trezor-suite.git"
+    },
+    "bugs": {
+        "url": "https://github.com/trezor/trezor-suite/issues"
+    },
+    "keywords": [
+        "Trezor",
+        "bitcoin",
+        "utxo",
+        "coinselect",
+        "javascript"
+    ],
+    "main": "./src/index.ts",
+    "files": [
+        "lib/",
+        "CHANGELOG.md"
+    ],
+    "publishConfig": {
+        "main": "./lib/index.mjs",
+        "types": "./lib/index.d.mts",
+        "exports": {
+            ".": {
+                "types": "./lib/index.d.mts",
+                "default": "./lib/index.mjs"
+            },
+            "./lib/*": "./lib/*"
+        }
+    },
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "test:unit": "yarn g:jest --verbose",
+        "type-check": "yarn g:tsc --build tsconfig.json",
+        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
+    },
+    "dependencies": {
+        "@trezor/utils": "workspace:*"
+    },
+    "peerDependencies": {
+        "tslib": "^2.6.2"
+    }
+}

@@ -16784,6 +16784,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@trezor/utxo-selection@workspace:packages/utxo-selection":
+  version: 0.0.0-use.local
+  resolution: "@trezor/utxo-selection@workspace:packages/utxo-selection"
+  dependencies:
+    "@trezor/utils": "workspace:*"
+  peerDependencies:
+    tslib: ^2.6.2
+  languageName: unknown
+  linkType: soft
+
 "@trezor/webextension-mv3-sw-ts@workspace:packages/connect-examples/webextension":
   version: 0.0.0-use.local
   resolution: "@trezor/webextension-mv3-sw-ts@workspace:packages/connect-examples/webextension"
