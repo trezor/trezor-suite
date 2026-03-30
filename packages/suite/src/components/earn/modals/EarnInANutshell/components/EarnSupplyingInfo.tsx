@@ -9,7 +9,7 @@ import {
     CARDANO_EPOCH_DAYS,
     SOLANA_EPOCH_DAYS,
 } from '@suite-common/wallet-constants';
-import { selectPoolStatsApyData, selectValidatorsQueueData } from '@suite-common/wallet-core';
+import { selectEthValidatorsQueue, selectPoolStatsApy } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { BulletList } from '@trezor/components';
 
@@ -179,9 +179,9 @@ const CardanoSupplyingRows = ({ flow, isExpanded, apy }: EarnSupplyingRowsProps)
 );
 
 export const EarnSupplyingInfo = ({ account, isExpanded, flow }: EarnSupplyingInfoProps) => {
-    const validatorsQueue = useSelector(state => selectValidatorsQueueData(state, account?.symbol));
+    const validatorsQueue = useSelector(selectEthValidatorsQueue);
 
-    const apy = useSelector(state => selectPoolStatsApyData(state, account));
+    const apy = useSelector(state => selectPoolStatsApy(state, { account }));
 
     const daysToAddToPoolInitial = getDaysToAddToPoolInitial(validatorsQueue);
     const displaySymbol = getNetworkDisplaySymbol(account.symbol);

@@ -7,7 +7,7 @@ import {
     selectAccountIsStakingActive,
     selectCardanoPoolsInfo,
     selectHasRunningDiscovery,
-    selectPoolStatsApyData,
+    selectPoolStatsApy,
 } from '@suite-common/wallet-core';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { getStakingDataForNetwork, isCardanoStakedWithEverstake } from '@suite-common/wallet-utils';
@@ -54,7 +54,7 @@ export const AdaStakingDashboard = ({ selectedAccount }: AdaStakingDashboardProp
 
     const { canClaim = false } = getStakingDataForNetwork(account) ?? {};
 
-    const apy = useSelector(state => selectPoolStatsApyData(state, account));
+    const apy = useSelector(state => selectPoolStatsApy(state, { account }));
 
     const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
     const hasPendingTx = useSelector(state => hasPendingStakeTypeTransaction(state, account.key));

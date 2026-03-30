@@ -7,7 +7,7 @@ import { Context } from '@suite-common/message-system';
 import { getNetworkAdjustedStakingBalance } from '@suite-common/staking';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { selectHasRunningDiscovery, selectPoolStatsApyData } from '@suite-common/wallet-core';
+import { selectHasRunningDiscovery, selectPoolStatsApy } from '@suite-common/wallet-core';
 import {
     calculateRewards,
     getStakingDataForNetwork,
@@ -49,7 +49,7 @@ export const EmptyStakingCard = () => {
 
     const isCardano = account?.networkType === 'cardano';
 
-    const apy = useSelector(state => selectPoolStatsApyData(state, account));
+    const apy = useSelector(state => selectPoolStatsApy(state, { account }));
     const stakingData = getStakingDataForNetwork(account);
 
     const accountBalance = account?.formattedBalance ?? '0';

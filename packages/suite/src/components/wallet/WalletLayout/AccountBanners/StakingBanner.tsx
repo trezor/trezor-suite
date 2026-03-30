@@ -7,7 +7,7 @@ import { goto } from '@suite/router';
 import { useFormatters } from '@suite-common/formatters';
 import { getNetworkAdjustedStakingBalance } from '@suite-common/staking';
 import { type NetworkType, getDisplaySymbol } from '@suite-common/wallet-config';
-import { selectAccountIsStakingActive, selectPoolStatsApyData } from '@suite-common/wallet-core';
+import { selectAccountIsStakingActive, selectPoolStatsApy } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import {
     calculateRewards,
@@ -34,7 +34,7 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
     const { stakeEthBannerClosed, stakeSolBannerClosed, stakeCardanoBannerClosed } =
         useSelector(selectFlags);
     const { route } = useSelector(state => state.router);
-    const apy = useSelector(state => selectPoolStatsApyData(state, account));
+    const apy = useSelector(state => selectPoolStatsApy(state, { account }));
     const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
 
     const displaySymbol = getDisplaySymbol(account.symbol);

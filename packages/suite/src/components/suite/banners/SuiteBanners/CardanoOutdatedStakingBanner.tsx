@@ -1,7 +1,7 @@
 import { Translation } from '@suite/intl';
 import { DashboardAnchor, goto } from '@suite/router';
 import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
-import { selectPoolStatsApyData } from '@suite-common/wallet-core';
+import { selectPoolStatsApy } from '@suite-common/wallet-core';
 import { Banner } from '@trezor/components';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -9,7 +9,7 @@ import { formatApyValue } from 'src/views/wallet/staking/utils/formatStakeValues
 
 export const CardanoOutdatedStakingBanner = () => {
     const dispatch = useDispatch();
-    const apy = useSelector(state => selectPoolStatsApyData(state, undefined, 'ada'));
+    const apy = useSelector(state => selectPoolStatsApy(state, { networkSymbol: 'ada' }));
 
     const isNewProviderBannerEnabled = useSelector(state =>
         selectIsFeatureEnabled(state, Feature.banners.staking.ada.newProvider, true),
