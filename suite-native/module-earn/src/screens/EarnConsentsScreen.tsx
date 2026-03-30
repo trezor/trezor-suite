@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import { getNetwork } from '@suite-common/wallet-config';
-import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -45,23 +44,17 @@ export const EarnConsentsScreen = () => {
     const route = useRoute<RouteProp<RootStackParamList, RootStackRoutes.EarnConsents>>();
     const navigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.EarnConsents>>();
-    const { accountKey, amount } = route.params;
+    const { accountKey, amount, account } = route.params;
 
     const handleConfirm = () => {
         navigation.navigate(RootStackRoutes.EarnTransactionDataReview, { accountKey, amount });
     };
 
-    const account = useSelector((state: AccountsRootState) =>
-        selectAccountByKey(state, accountKey),
-    );
-
     const entryPeriodInDays = useSelector((state: NativeStakingRootState) =>
-        selectEntryPeriodInDaysBySymbol(state, account?.symbol),
+        selectEntryPeriodInDaysBySymbol(state, account.symbol),
     );
 
-    const learnMoreUrl = account
-        ? STAKING_LEARN_MORE_URLS[getNetwork(account.symbol).networkType]
-        : undefined;
+    const learnMoreUrl = STAKING_LEARN_MORE_URLS[getNetwork(account.symbol).networkType];
 
     return (
         <Screen header={<ScreenHeader closeActionType="back" />}>
@@ -76,7 +69,7 @@ export const EarnConsentsScreen = () => {
                 />
                 <EarnConsentsDelegatingCard
                     isExpanded={isSecondCardExpanded}
-                    symbol={account?.symbol}
+                    symbol={account.symbol}
                     onConfirm={handleConfirm}
                 />
             </VStack>
