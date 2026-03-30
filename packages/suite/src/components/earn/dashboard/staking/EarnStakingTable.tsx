@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
 import { Translation } from '@suite/intl';
-import { DashboardAnchor } from '@suite/router';
+import { DashboardAnchor, useAnchor } from '@suite/router';
 import { type StakingNetworkSymbol } from '@suite-common/wallet-config';
 import {
     selectAccountIsStakingActive,
@@ -13,7 +13,6 @@ import { Button, Card, Column, Table } from '@trezor/components';
 import { OutlineHighlight } from '@trezor/product-components';
 
 import { useSelector } from 'src/hooks/suite';
-import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
 import { EarnStakingAccountRow } from './EarnStakingAccountRow';

@@ -14512,6 +14512,8 @@ __metadata:
     "@suite/router-config": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     history: "npm:^5.3.0"
+    react: "npm:19.2.4"
+    react-redux: "npm:9.2.0"
   languageName: unknown
   linkType: soft
 
