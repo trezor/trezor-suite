@@ -22,6 +22,7 @@
         "@suite-common/suite-sync-quota-manager": "workspace:*",
         "@suite-common/suite-sync-storage": "workspace:*",
         "@suite-common/suite-sync-types": "workspace:*",
+        "@suite-common/validators": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/toast-notifications": "workspace:*",
         "@suite-common/transaction-search": "workspace:*",

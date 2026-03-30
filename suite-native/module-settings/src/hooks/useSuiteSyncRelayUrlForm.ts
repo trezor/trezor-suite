@@ -1,13 +1,13 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { selectSuiteSyncCustomRelayUrl } from '@suite-common/suite-sync';
 import {
     type ChangeServerModalFields,
     SUITE_SYNC_SERVER_TYPE_OPTIONS_MAP,
     type SuiteSyncServerTypeSelectValue,
     createChangeSuiteSyncServerSchema,
-} from '@suite-common/suite-sync-types';
+    selectSuiteSyncCustomRelayUrl,
+} from '@suite-common/suite-sync';
 import { type SelectItemType } from '@suite-native/atoms';
 import { useForm } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
