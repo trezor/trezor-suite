@@ -749,5 +749,7 @@ export const [STAKING_SYMBOLS, STAKING_TYPES, PROD_STAKING_SYMBOLS] = typedObjec
 ) as readonly [
     readonly StakingNetworkSymbol[],
     readonly StakingNetworkType[],
-    readonly StakingNetworkSymbol[],
+    readonly (StakingNetworkSymbol & NetworkConfigWithoutTestnets['symbol'])[],
 ];
+
+export type ProdStakingNetworkSymbol = (typeof PROD_STAKING_SYMBOLS)[number];
