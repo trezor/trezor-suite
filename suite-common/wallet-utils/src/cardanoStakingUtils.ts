@@ -1,6 +1,6 @@
 import { bech32 } from 'bech32';
 
-import { type CardanoPoolStats } from '@suite-common/wallet-api';
+import { type AdaPools } from '@suite-common/earn-staking-api';
 import { type NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
 import {
     CARDANO_EVERSTAKE_STAKING_POOL,
@@ -47,9 +47,8 @@ export const isCardanoStakingActive = (account: Account | null) => {
     return isActive;
 };
 
-const getAccountPoolId = (account?: Account) => {
-    if (!account) return null;
-    if (account.networkType !== 'cardano') return null;
+export const getCardanoAccountPoolId = (account?: Account) => {
+    if (account?.networkType !== 'cardano') return null;
 
     const poolId = account.misc?.staking?.poolId;
 
@@ -58,9 +57,9 @@ const getAccountPoolId = (account?: Account) => {
 
 export const isCardanoStakedWithEverstake = (
     account: Account,
-    cardanoStakingPools: CardanoPoolStats[],
+    cardanoStakingPools?: AdaPools['pools'],
 ) => {
-    const accountPoolId = getAccountPoolId(account);
+    const accountPoolId = getCardanoAccountPoolId(account);
     if (!accountPoolId) return false;
 
     if (!cardanoStakingPools?.length) return EVERSTAKE_POOLS.includes(accountPoolId);
@@ -70,9 +69,9 @@ export const isCardanoStakedWithEverstake = (
 
 export const isCardanoStakedOutsideEverstake = (
     account: Account,
-    cardanoStakingPools: CardanoPoolStats[],
+    cardanoStakingPools: AdaPools['pools'],
 ) => {
-    const accountPoolId = getAccountPoolId(account);
+    const accountPoolId = getCardanoAccountPoolId(account);
     if (!accountPoolId) return false;
 
     if (!cardanoStakingPools?.length) return EVERSTAKE_POOLS.includes(accountPoolId) === false;
@@ -81,7 +80,7 @@ export const isCardanoStakedOutsideEverstake = (
 };
 
 export const isCardanoStakedWithFiveBinaries = (account: Account) => {
-    const accountPoolId = getAccountPoolId(account);
+    const accountPoolId = getCardanoAccountPoolId(account);
     if (!accountPoolId) return false;
 
     return FIVE_BINARIES_POOLS.includes(accountPoolId);
@@ -94,16 +93,11 @@ export const poolBech32ToHex = (poolId: string): string => {
     return Buffer.from(bytes).toString('hex');
 };
 
-export const selectBestCardanoPool = (pools?: CardanoPoolStats[]) => {
+export const selectBestCardanoPool = (pools?: AdaPools['pools']) => {
     if (!pools || pools.length === 0) return CARDANO_EVERSTAKE_STAKING_POOL;
 
-    // sort from highest saturation to lowest
-    const sortedPools = [...pools].sort((a, b) => b.saturation - a.saturation);
-
     // find the one within the threshold
-    const bestPool = sortedPools.find(
-        pool => pool.saturation < CARDANO_POOL_SATURATION_SAFE_THRESHOLD,
-    );
+    const bestPool = pools.find(pool => pool.saturation < CARDANO_POOL_SATURATION_SAFE_THRESHOLD);
 
     if (bestPool) {
         return {
@@ -113,7 +107,7 @@ export const selectBestCardanoPool = (pools?: CardanoPoolStats[]) => {
     }
 
     // pick the last one (lowest saturation)
-    const fallback = sortedPools[sortedPools.length - 1];
+    const fallback = pools[pools.length - 1];
 
     return {
         hex: poolBech32ToHex(fallback.id),
