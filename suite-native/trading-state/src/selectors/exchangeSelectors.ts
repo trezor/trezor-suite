@@ -1,8 +1,8 @@
 import type { ExchangeTrade } from 'invity-api';
 
 import {
+    selectGroupedTradingExchangeQuotes,
     selectTradingExchangeBuyCryptoIds,
-    selectTradingExchangeProviders,
 } from '@suite-common/trading';
 import { selectAccounts } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -91,37 +91,26 @@ export const selectExchangeQuotes = (state: TradingRootState) =>
 
 export const selectGroupedExchangeQuotes = createTradingWithFeatureFlagsMemoizedSelector(
     [
-        selectExchangeQuotes,
-        selectTradingExchangeProviders as unknown as (
+        selectGroupedTradingExchangeQuotes as unknown as (
             state: TradingRootState,
-        ) => ReturnType<typeof selectTradingExchangeProviders>,
+        ) => ReturnType<typeof selectGroupedTradingExchangeQuotes>,
         (state: TradingWithFeatureFlagsRootState) =>
             selectIsFeatureFlagEnabled(state, FeatureFlag.AreTradingExchangeDexesEnabled),
     ],
-    (quotes, providers = {}, areTradingExchangeDexesEnabled) => {
-        const groups = {
-            fixed: [] as ExchangeTrade[],
-            float: [] as ExchangeTrade[],
+    (groupedQuotes, areTradingExchangeDexesEnabled) => {
+        if (!groupedQuotes) {
+            return { fixed: [], float: [], dex: [] as ExchangeTrade[] };
+        }
+
+        if (areTradingExchangeDexesEnabled) {
+            return groupedQuotes;
+        }
+
+        return {
+            fixed: groupedQuotes.fixed,
+            float: groupedQuotes.float,
             dex: [] as ExchangeTrade[],
         };
-
-        quotes.forEach(quote => {
-            const { exchange = '', isDex } = quote;
-            const { isFixedRate } = providers[exchange] || {};
-
-            if (isDex) {
-                if (!areTradingExchangeDexesEnabled) {
-                    return;
-                }
-                groups.dex.push(quote);
-            } else if (isFixedRate) {
-                groups.fixed.push(quote);
-            } else {
-                groups.float.push(quote);
-            }
-        });
-
-        return groups;
     },
 );
 

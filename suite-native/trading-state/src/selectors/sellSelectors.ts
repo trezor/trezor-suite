@@ -1,10 +1,10 @@
-import type { FiatCurrencyCode, SellCryptoPaymentMethod, SellFiatTrade } from 'invity-api';
+import type { FiatCurrencyCode } from 'invity-api';
 
 import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
-import { invariant } from '@suite-common/suite-utils';
 import {
     type TradingCountryCode,
     type TradingPaymentMethodProps,
+    bestSellQuotePerPaymentMethodProjection,
     getCurrencyLabel,
     getTradingQuotesByPaymentMethod,
     nonSanctionedRegional,
@@ -76,29 +76,7 @@ export const selectSellSelectedSendAccount = createMemoizedSelectorWithAccounts(
 
 export const selectSellBestQuotesForAvailablePaymentMethods = createMemoizedSelector(
     [selectValidTradingSellQuotes],
-    quotes => {
-        const bestQuoteByPaymentMethodMap = quotes.reduce((quotesByPaymentMethodMap, quote) => {
-            const { paymentMethod, paymentMethodName } = quote;
-            const isValidPaymentMethod = paymentMethod && paymentMethodName;
-
-            // we only want one quote per payment method (and the 1st is considered the best)
-            if (isValidPaymentMethod && !quotesByPaymentMethodMap.has(paymentMethod)) {
-                quotesByPaymentMethodMap.set(paymentMethod, quote);
-            }
-
-            return quotesByPaymentMethodMap;
-        }, new Map<SellCryptoPaymentMethod, SellFiatTrade>());
-
-        return [...bestQuoteByPaymentMethodMap.values()].sort(
-            ({ rate: aRate }, { rate: bRate }) => {
-                // note that quotes without a valid rate should be filtered out by selectValidTradingSellQuotes
-                invariant(aRate, 'rate in object "a" is required for sorting');
-                invariant(bRate, 'rate in object "b" is required for sorting');
-
-                return bRate - aRate;
-            },
-        );
-    },
+    bestSellQuotePerPaymentMethodProjection,
 );
 
 export const selectSellQuotesByPaymentMethod = createMemoizedSelector(
