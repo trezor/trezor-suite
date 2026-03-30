@@ -1,5 +1,7 @@
 import { asSuiteSyncOwnerSecretHex } from '@suite-common/suite-sync-storage';
+import type { SuiteSyncOwnerSecretHex } from '@suite-common/suite-sync-storage';
 import { asAccountDescriptor, asTxTargetId, asWalletDescriptor } from '@suite-common/wallet-types';
+import type { AccountDescriptor, WalletDescriptor } from '@suite-common/wallet-types';
 
 import {
     createAccountRowId,
@@ -10,97 +12,149 @@ import {
 } from './createEvoluRowIds';
 
 const networkSymbol = 'btc' as const;
-const BTC_TX_ID = 'aa545d95cf07892e1ae70b40e856b9b476f703e2e20647d0985830fd7b734393';
 const BTC_TX_TARGET_ID = '0';
 
-// Ids for default mnemonic_12: 'alcohol woman abuse must during monitor noble actual mixed trade anger aisle'
-export const ownerSecret = asSuiteSyncOwnerSecretHex(
-    'd5cafbfc837fcdba7fd54025ce352fac369db9383d41d73dbd4f3353b63bc4644585f41195021419707ccdf76bbdf0b1cb0e11f07ff19a41b5f22602dfee3b63',
-);
-export const ownerId = createOwnerIdFromSecret(ownerSecret);
-export const walletDescriptor = asWalletDescriptor('mkqRFzxmkCGX9jxgpqqFHcxRUmLJcLDBer');
-export const accountDescriptor = asAccountDescriptor(
-    'zpub6qSSRL9wLd6LNee7qjDEuULWccP5Vbm5nuX4geBu8zMCQBWsF5Jo5UswLVxFzcbCMr2yQPG27ZhDs1cUGKVH1RmqkG1PFHkEXyHG7EV3ogY',
-);
+type SuiteSyncFixtureParams = {
+    ownerSecret: SuiteSyncOwnerSecretHex;
+    walletDescriptor: WalletDescriptor;
+    accountDescriptor: AccountDescriptor;
+    defaultTxId: string;
+};
 
-export const walletSeed = {
-    id: createWalletRowId(walletDescriptor),
+const createSuiteSyncFixtures = ({
+    ownerSecret,
     walletDescriptor,
-    label: 'Evolu synced wallet',
+    accountDescriptor,
+    defaultTxId,
+}: SuiteSyncFixtureParams) => {
+    const ownerId = createOwnerIdFromSecret(ownerSecret);
+
+    const walletSeed = {
+        id: createWalletRowId(walletDescriptor),
+        walletDescriptor,
+        label: 'Evolu synced wallet',
+    };
+
+    const accountSeed = {
+        id: createAccountRowId(accountDescriptor, networkSymbol),
+        accountDescriptor,
+        networkSymbol,
+        label: 'Evolu synced BTC account',
+    };
+
+    const createAddressSeed = (address: string) => ({
+        id: createAddressRowId(address, networkSymbol),
+        label: 'Evolu synced BTC address',
+        address,
+        accountDescriptor,
+        networkSymbol,
+    });
+
+    const createOutputSeed = (
+        txId: string = defaultTxId,
+        outputIndex: string = BTC_TX_TARGET_ID,
+    ) => ({
+        id: createOutputRowId(txId, asTxTargetId(outputIndex)),
+        accountDescriptor,
+        label: 'Evolu synced output',
+        networkSymbol,
+        outputIndex,
+        txId,
+    });
+
+    const buildExpectedWallet = <T extends string | null>({ label }: { label: T }) => ({
+        id: createWalletRowId(walletDescriptor),
+        updatedAt: null,
+        isDeleted: null,
+        ownerId,
+        walletDescriptor,
+        label,
+    });
+
+    const buildExpectedAccount = <T extends string | null>({ label }: { label: T }) => ({
+        id: createAccountRowId(accountDescriptor, networkSymbol),
+        updatedAt: null,
+        isDeleted: null,
+        ownerId,
+        accountDescriptor,
+        networkSymbol,
+        label,
+    });
+
+    const buildExpectedAddress = <T extends string | null>({
+        address,
+        label,
+    }: {
+        address: string;
+        label: T;
+    }) => ({
+        id: createAddressRowId(address, networkSymbol),
+        updatedAt: null,
+        isDeleted: null,
+        ownerId,
+        accountDescriptor,
+        networkSymbol,
+        address,
+        label,
+    });
+
+    const buildExpectedOutput = <T extends string | null>({
+        txId,
+        outputIndex,
+        label,
+    }: {
+        txId: string;
+        outputIndex: string;
+        label: T;
+    }) => ({
+        id: createOutputRowId(txId, asTxTargetId(outputIndex)),
+        updatedAt: null,
+        isDeleted: null,
+        ownerId,
+        accountDescriptor,
+        networkSymbol,
+        txId,
+        outputIndex,
+        label,
+    });
+
+    return {
+        ownerSecret,
+        ownerId,
+        walletDescriptor,
+        accountDescriptor,
+        defaultTxId,
+        walletSeed,
+        accountSeed,
+        createAddressSeed,
+        createOutputSeed,
+        buildExpectedWallet,
+        buildExpectedAccount,
+        buildExpectedAddress,
+        buildExpectedOutput,
+    };
 };
 
-export const accountSeed = {
-    id: createAccountRowId(accountDescriptor, networkSymbol),
-    accountDescriptor,
-    networkSymbol,
-    label: 'Evolu synced BTC account',
-};
-
-export const createAddressSeed = (address: string) => ({
-    id: createAddressRowId(address, networkSymbol),
-    label: 'Evolu synced BTC address',
-    address,
-    accountDescriptor,
-    networkSymbol,
+// mnemonic_12: 'alcohol woman abuse must during monitor noble actual mixed trade anger aisle'
+export const mnemonic12Fixtures = createSuiteSyncFixtures({
+    ownerSecret: asSuiteSyncOwnerSecretHex(
+        'd5cafbfc837fcdba7fd54025ce352fac369db9383d41d73dbd4f3353b63bc4644585f41195021419707ccdf76bbdf0b1cb0e11f07ff19a41b5f22602dfee3b63',
+    ),
+    walletDescriptor: asWalletDescriptor('mkqRFzxmkCGX9jxgpqqFHcxRUmLJcLDBer'),
+    accountDescriptor: asAccountDescriptor(
+        'zpub6qSSRL9wLd6LNee7qjDEuULWccP5Vbm5nuX4geBu8zMCQBWsF5Jo5UswLVxFzcbCMr2yQPG27ZhDs1cUGKVH1RmqkG1PFHkEXyHG7EV3ogY',
+    ),
+    defaultTxId: 'aa545d95cf07892e1ae70b40e856b9b476f703e2e20647d0985830fd7b734393',
 });
 
-export const outputSeed = {
-    id: createOutputRowId(BTC_TX_ID, asTxTargetId(BTC_TX_TARGET_ID)),
-    accountDescriptor,
-    label: 'Evolu synced output',
-    networkSymbol,
-    outputIndex: BTC_TX_TARGET_ID,
-    txId: BTC_TX_ID,
-};
-
-export const buildExpectedWallet = <T extends string | null>({ label }: { label: T }) => ({
-    updatedAt: null,
-    isDeleted: null,
-    ownerId,
-    walletDescriptor,
-    label,
-});
-
-export const buildExpectedAccount = <T extends string | null>({ label }: { label: T }) => ({
-    updatedAt: null,
-    isDeleted: null,
-    ownerId,
-    accountDescriptor,
-    networkSymbol,
-    label,
-});
-
-export const buildExpectedAddress = <T extends string | null>({
-    address,
-    label,
-}: {
-    address: string;
-    label: T;
-}) => ({
-    updatedAt: null,
-    isDeleted: null,
-    ownerId,
-    accountDescriptor,
-    networkSymbol,
-    address,
-    label,
-});
-
-export const buildExpectedOutput = <T extends string | null>({
-    txId,
-    outputIndex,
-    label,
-}: {
-    txId: string;
-    outputIndex: string;
-    label: T;
-}) => ({
-    updatedAt: null,
-    isDeleted: null,
-    ownerId,
-    accountDescriptor,
-    networkSymbol,
-    txId,
-    outputIndex,
-    label,
+// mnemonic_immune: 'immune enlist rule measure fan swarm mandate track point menu security fan'
+export const immuneFixtures = createSuiteSyncFixtures({
+    ownerSecret: asSuiteSyncOwnerSecretHex(
+        '74996d3c1cba903286c811606d22faf8b0e4d4405a2f25d13debd625481557f7d73990b87caa057dba5d61bac6ec2563f538fc5e365c73ff59479f1e482673b0',
+    ),
+    walletDescriptor: asWalletDescriptor('mt5WPmXL77AJwhCPPv6Gct3UtiuVUMieXJ'), // TODO: verify
+    accountDescriptor: asAccountDescriptor(
+        'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
+    ),
+    defaultTxId: 'ab832618b1b6e5f82c39f87ec9fda14c0df44a2ce9c32f663bf234ca0b1fe1ab',
 });

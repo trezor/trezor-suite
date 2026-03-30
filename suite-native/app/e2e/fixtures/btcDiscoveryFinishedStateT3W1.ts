@@ -17,19 +17,77 @@ export const btcDiscoveryFinishedStateT3W1: PreloadedState = {
                 visible: true,
                 descriptor:
                     'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
-                empty: true,
+                empty: false,
                 balance: '0',
                 availableBalance: '0',
                 history: {
-                    total: 0,
+                    total: 1,
                     unconfirmed: 0,
+                    transactions: [
+                        {
+                            type: 'sent',
+                            txid: 'aa545d95cf07892e1ae70b40e856b9b476f703e2e20647d0985830fd7b734393',
+                            hex: '02000000000101f604f9e8332711fb73805dd859ee448da3098dbcbb4bcc3903c8912b0ab7afb60100000000ffffffff012704000000000000160014f8ade73f8a8a039dd444d490904cffbbf5fc7ef602483045022100ac07717deb0e56168e7b6c955514898d45b1ec61e85eef21a01eb7979c22680c0220302fbc006a9dd42fbbd36617eacd147b1134d18aff3a006010723736c6c3b574012103940149b62893ed8ca405da2c989fce46964ff77b7f2a2f554abfdf1cd746092100000000',
+                            blockTime: 1644984426,
+                            blockHeight: 723535,
+                            blockHash:
+                                '000000000000000000072040469b223ea7102586584ffe1c544a01bc8a027f35',
+                            amount: '1063',
+                            fee: '129',
+                            vsize: 110,
+                            feeRate: '1.17',
+                            targets: [
+                                {
+                                    n: 0,
+                                    addresses: ['bc1qlzk7w0u23gpem4zy6jgfqn8lh06lclhkntm5xq'],
+                                    isAddress: true,
+                                    amount: '1063',
+                                },
+                            ],
+                            tokens: [],
+                            internalTransfers: [],
+                            details: {
+                                vin: [
+                                    {
+                                        txid: 'b6afb70a2b91c80339cc4bbbbc8d09a38d44ee59d85d8073fb112733e8f904f6',
+                                        vout: 1,
+                                        sequence: 4294967295,
+                                        n: 0,
+                                        addresses: ['bc1qkkr2uvry034tsj4p52za2pg42ug4pxg5qfxyfa'],
+                                        isAddress: true,
+                                        isOwn: true,
+                                        value: '1192',
+                                        isAccountOwned: true,
+                                    },
+                                ],
+                                vout: [
+                                    {
+                                        value: '1063',
+                                        n: 0,
+                                        hex: '0014f8ade73f8a8a039dd444d490904cffbbf5fc7ef6',
+                                        addresses: ['bc1qlzk7w0u23gpem4zy6jgfqn8lh06lclhkntm5xq'],
+                                        isAddress: true,
+                                    },
+                                ],
+                                size: 192,
+                                totalInput: '1192',
+                                totalOutput: '1063',
+                            },
+                        },
+                    ],
                 },
                 key: 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT-btc-mt5WPmXL77AJwhCPPv6Gct3UtiuVUMieXJ@7ED4F891C5F1098B60B881DE:1',
                 formattedBalance: '0',
                 tokens: [],
                 addresses: {
                     change: [],
-                    used: [],
+                    used: [
+                        {
+                            address: 'bc1qkkr2uvry034tsj4p52za2pg42ug4pxg5qfxyfa',
+                            path: "m/84'/0'/0'/0/0",
+                            transfers: 1,
+                        },
+                    ],
                     unused: [],
                 },
                 utxo: [],

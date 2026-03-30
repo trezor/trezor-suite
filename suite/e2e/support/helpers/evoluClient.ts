@@ -29,8 +29,8 @@ export class EvoluClient extends BaseEvoluClient {
     }
 
     @step()
-    seedQuotaManagerData() {
-        seedQuotaManagerData();
+    seedQuotaManagerData({ ownerId }: { ownerId: string }) {
+        seedQuotaManagerData({ ownerId });
     }
 
     @step()
@@ -72,7 +72,7 @@ export class EvoluClient extends BaseEvoluClient {
             timeout?: number;
         },
     ) {
-        const omitFields = options?.omit ?? ['id', 'createdAt'];
+        const omitFields = options?.omit ?? ['createdAt'];
         const timeout = options?.timeout ?? 5_000;
         const expectFn = options?.softExpect ? expect.soft : expect;
 

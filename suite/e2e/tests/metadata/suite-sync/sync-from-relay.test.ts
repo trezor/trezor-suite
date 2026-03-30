@@ -1,17 +1,15 @@
-import {
-    accountSeed,
-    createAddressSeed,
-    outputSeed,
-    ownerSecret,
-    walletSeed,
-} from '@suite-common/e2e-evolu-client';
+import { mnemonic12Fixtures } from '@suite-common/e2e-evolu-client';
 
 import { isWebProject } from '../../../support/common';
 import { expect, test } from '../../../support/fixtures';
 
+const { accountSeed, createAddressSeed, createOutputSeed, ownerSecret, walletSeed } =
+    mnemonic12Fixtures;
+
 const defaultWalletIndex = 0;
 const BTC_ADDRESS = 'bc1qkkr2uvry034tsj4p52za2pg42ug4pxg5qfxyfa';
 const addressSeed = createAddressSeed(BTC_ADDRESS);
+const outputSeed = createOutputSeed();
 
 test.describe('Suite Sync - Labelling', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({ wipeEvoluRelay: true });
@@ -23,7 +21,7 @@ test.describe('Suite Sync - Labelling', { tag: ['@T3W1', '@T3T1'] }, () => {
             evoluClient.writeTo('account', accountSeed);
             evoluClient.writeTo('address', addressSeed);
             evoluClient.writeTo('output', outputSeed);
-            evoluClient.seedQuotaManagerData();
+            evoluClient.seedQuotaManagerData({ ownerId: mnemonic12Fixtures.ownerId });
         });
         await onboardingPage.completeOnboarding({ keepDebugModeEnabled: true });
     });

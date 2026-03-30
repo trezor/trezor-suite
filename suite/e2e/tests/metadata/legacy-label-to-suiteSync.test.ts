@@ -1,8 +1,10 @@
-import { accountSeed, ownerSecret } from '@suite-common/e2e-evolu-client';
+import { mnemonic12Fixtures } from '@suite-common/e2e-evolu-client';
 
 import { AccountLabelId } from '../../support/enums/accountLabelId';
 import { expect, test } from '../../support/fixtures';
 import { MetadataProvider } from '../../support/mocks/metadataMock';
+
+const { accountSeed, ownerSecret, ownerId } = mnemonic12Fixtures;
 
 test.describe('Labeling migration', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
     test.use({ wipeEvoluRelay: true });
@@ -12,7 +14,7 @@ test.describe('Labeling migration', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () 
         await test.step('Seed Evolu relay server', () => {
             evoluClient.init({ ownerSecret });
             evoluClient.writeTo('account', accountSeed);
-            evoluClient.seedQuotaManagerData();
+            evoluClient.seedQuotaManagerData({ ownerId });
         });
         await onboardingPage.completeOnboarding({ keepDebugModeEnabled: true });
     });
