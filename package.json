@@ -111,6 +111,8 @@
         "node-addon-api": "8.5.0",
         "node-gyp": "12.2.0",
         "reselect": "5.1.1",
+        "### Packages with known compromised versions newer the currently installed to prevent automatic resolution": "1.0.0",
+        "axios": "1.13.5",
         "### We need promise to be same version in mobile unless it produces undefined behavior, check PR #15815": "1.0.0",
         "promise": "8.3.0",
         "elliptic": "6.6.1",
