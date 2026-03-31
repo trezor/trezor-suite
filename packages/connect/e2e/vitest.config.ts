@@ -1,4 +1,4 @@
-/// <reference types="@vitest/browser/providers/playwright" />
+import { playwright } from '@vitest/browser-playwright';
 import fs from 'fs';
 import { createRequire } from 'module';
 import path from 'path';
@@ -237,16 +237,13 @@ export default defineConfig({
             ? {
                   browser: {
                       enabled: true,
-                      provider: 'playwright',
-                      headless: true,
-                      instances: [
-                          {
-                              browser: 'chromium',
-                              launch: {
-                                  args: ['--no-sandbox'],
-                              },
+                      provider: playwright({
+                          launchOptions: {
+                              args: ['--no-sandbox'],
                           },
-                      ],
+                      }),
+                      headless: true,
+                      instances: [{ browser: 'chromium' }],
                   },
               }
             : {

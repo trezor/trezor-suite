@@ -1714,6 +1714,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@blazediff/core@npm:1.9.1":
+  version: 1.9.1
+  resolution: "@blazediff/core@npm:1.9.1"
+  checksum: 10/6bb615f104da313934bcabc09627f3c803461bf85182453d5c13a6a354be4d32b35504b84f1043c21e95d0f6c0acb45083caeb72e72c1d6a76ca5e1f61f25510
+  languageName: node
+  linkType: hard
+
 "@blockaid/client@npm:^0.56.0":
   version: 0.56.0
   resolution: "@blockaid/client@npm:0.56.0"
@@ -14751,7 +14758,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/dom@npm:^10.4.0, @testing-library/dom@npm:^10.4.1":
+"@testing-library/dom@npm:^10.4.1":
   version: 10.4.1
   resolution: "@testing-library/dom@npm:10.4.1"
   dependencies:
@@ -15336,7 +15343,7 @@ __metadata:
     "@types/node": "npm:22.13.10"
     "@types/node-fetch": "npm:^2.6.12"
     "@types/w3c-web-usb": "npm:^1.0.10"
-    "@vitest/browser": "npm:^3.2.4"
+    "@vitest/browser-playwright": "npm:^4.1.0"
     blakejs: "npm:^1.2.1"
     bs58: "npm:^6.0.0"
     bs58check: "npm:^4.0.0"
@@ -17812,30 +17819,38 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vitest/browser@npm:^3.2.4":
-  version: 3.2.4
-  resolution: "@vitest/browser@npm:3.2.4"
+"@vitest/browser-playwright@npm:^4.1.0":
+  version: 4.1.0
+  resolution: "@vitest/browser-playwright@npm:4.1.0"
   dependencies:
-    "@testing-library/dom": "npm:^10.4.0"
-    "@testing-library/user-event": "npm:^14.6.1"
-    "@vitest/mocker": "npm:3.2.4"
-    "@vitest/utils": "npm:3.2.4"
-    magic-string: "npm:^0.30.17"
-    sirv: "npm:^3.0.1"
-    tinyrainbow: "npm:^2.0.0"
-    ws: "npm:^8.18.2"
+    "@vitest/browser": "npm:4.1.0"
+    "@vitest/mocker": "npm:4.1.0"
+    tinyrainbow: "npm:^3.0.3"
   peerDependencies:
     playwright: "*"
-    vitest: 3.2.4
-    webdriverio: ^7.0.0 || ^8.0.0 || ^9.0.0
+    vitest: 4.1.0
   peerDependenciesMeta:
     playwright:
-      optional: true
-    safaridriver:
-      optional: true
-    webdriverio:
-      optional: true
-  checksum: 10/f8ec0bff4006a81c3b843b5cf04f4ba1ffd8226eb5d4a98b134eddb83de8decced8788d2569aa632920ed6a346d3cfd856fcd53ee9083080a78c5baae3aae2de
+      optional: false
+  checksum: 10/93428110a9248d522edf851520f9f681a9aad9e22ed2eab32f3858937180224be67a448cf90d0bfd8d1f6093cf60f5762991c43e451108148cd113ce19a8b61b
+  languageName: node
+  linkType: hard
+
+"@vitest/browser@npm:4.1.0":
+  version: 4.1.0
+  resolution: "@vitest/browser@npm:4.1.0"
+  dependencies:
+    "@blazediff/core": "npm:1.9.1"
+    "@vitest/mocker": "npm:4.1.0"
+    "@vitest/utils": "npm:4.1.0"
+    magic-string: "npm:^0.30.21"
+    pngjs: "npm:^7.0.0"
+    sirv: "npm:^3.0.2"
+    tinyrainbow: "npm:^3.0.3"
+    ws: "npm:^8.19.0"
+  peerDependencies:
+    vitest: 4.1.0
+  checksum: 10/74dfb91c28bd2498e4c5b242b68a760ec5268402017eff7fde3907d2db6a6a85cfdb951c94a71d51504760a9f55f8f91d766ead9a71751e4bbf81142b932b06b
   languageName: node
   linkType: hard
 
@@ -17863,25 +17878,6 @@ __metadata:
     chai: "npm:^6.2.2"
     tinyrainbow: "npm:^3.0.3"
   checksum: 10/6090a1fb0d9885ac5a3826938cf74e506e57907cd0a132fdb3042a9448488d4e39b1d3866e3788398fa6771a488301d96f0b0e05eedb5c65685bec0df20332a9
-  languageName: node
-  linkType: hard
-
-"@vitest/mocker@npm:3.2.4":
-  version: 3.2.4
-  resolution: "@vitest/mocker@npm:3.2.4"
-  dependencies:
-    "@vitest/spy": "npm:3.2.4"
-    estree-walker: "npm:^3.0.3"
-    magic-string: "npm:^0.30.17"
-  peerDependencies:
-    msw: ^2.4.9
-    vite: ^5.0.0 || ^6.0.0 || ^7.0.0-0
-  peerDependenciesMeta:
-    msw:
-      optional: true
-    vite:
-      optional: true
-  checksum: 10/5e92431b6ed9fc1679060e4caef3e4623f4750542a5d7cd944774f8217c4d231e273202e8aea00bab33260a5a9222ecb7005d80da0348c3c829bd37d123071a8
   languageName: node
   linkType: hard
 
@@ -32604,7 +32600,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"magic-string@npm:^0.30.0, magic-string@npm:^0.30.10, magic-string@npm:^0.30.11, magic-string@npm:^0.30.17, magic-string@npm:^0.30.21, magic-string@npm:^0.30.3, magic-string@npm:^0.30.5, magic-string@npm:~0.30.8":
+"magic-string@npm:^0.30.0, magic-string@npm:^0.30.10, magic-string@npm:^0.30.11, magic-string@npm:^0.30.21, magic-string@npm:^0.30.3, magic-string@npm:^0.30.5, magic-string@npm:~0.30.8":
   version: 0.30.21
   resolution: "magic-string@npm:0.30.21"
   dependencies:
@@ -41512,7 +41508,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sirv@npm:^3.0.1, sirv@npm:^3.0.2":
+"sirv@npm:^3.0.2":
   version: 3.0.2
   resolution: "sirv@npm:3.0.2"
   dependencies:
@@ -46333,7 +46329,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ws@npm:^8.11.0, ws@npm:^8.12.1, ws@npm:^8.13.0, ws@npm:^8.17.1, ws@npm:^8.18.0, ws@npm:^8.18.2, ws@npm:^8.18.3, ws@npm:^8.19.0":
+"ws@npm:^8.11.0, ws@npm:^8.12.1, ws@npm:^8.13.0, ws@npm:^8.17.1, ws@npm:^8.18.0, ws@npm:^8.18.3, ws@npm:^8.19.0":
   version: 8.19.0
   resolution: "ws@npm:8.19.0"
   peerDependencies:
