@@ -2451,6 +2451,7 @@ export const messages = {
             totalRewardsLabel: 'Total rewards',
             nextRewardLabel: 'Next reward in {value, plural, one {# day} other {# days}}',
             unstakeButton: 'Unstake',
+            stakeButton: 'Stake',
             stakeMoreButton: 'Stake more',
             stakingHistory: 'Staking history',
             pendingActions: 'Pending actions',
@@ -2514,17 +2515,46 @@ export const messages = {
                 primaryButton: 'Go to home',
             },
         },
+        unstakeTransactionDataReviewScreen: {
+            title: 'Review with Trezor',
+            successMessage: "You're all set.",
+            viewTransactionButton: 'Unstake now',
+            pushTransactionFailedAlert: {
+                title: 'Transaction failed',
+                description: 'Failed to submit your unstake transaction. Please try again.',
+                primaryButton: 'Go to home',
+            },
+            pendingTransactionConflictAlert: {
+                title: 'Pending transaction detected',
+                description:
+                    'An unstake transaction is already pending for this account. Please wait for it to be confirmed before unstaking again.',
+                primaryButton: 'Go to home',
+            },
+        },
+        earnUnstakeOutputItem: {
+            title: 'Unstake',
+            description: 'Unstake {displaySymbol} from stake account?',
+        },
         earnStakeOutputItem: {
             title: 'Stake',
-            description: 'Stake {symbol} on Everstake?',
+            description: 'Stake {displaySymbol} on Everstake?',
         },
         earnSummaryOutputItem: {
             title: 'Total including fee',
         },
         earnFormScreen: {
             title: '{assetName} staking',
+            unstakeTitle: 'Unstake {displaySymbol}',
+            availableBalance: 'Available balance',
+            unstakingTimeline: 'Unstaking timeline',
+            unstakingPeriodInfo:
+                'The unstaking period is currently {days, plural, one {~# day} other {~# days}}',
+            networkFeeWarning:
+                'Network fees may exceed this amount. Your balance may decrease. Enter higher amount.',
+            reviewAndSign: 'Review & Sign',
             amountLabel: 'Amount',
             stakeMaxButton: 'Stake max',
+            unstakeMaxButton: 'Unstake max',
             withdrawalFeesBanner:
                 "We've left {amount} {displaySymbol} in your account so you can pay for withdrawal fees.",
             estimatedRewardsLabel: 'Estimated yearly rewards',
@@ -2534,6 +2564,13 @@ export const messages = {
                 amountBelowMinimum: 'Amount must be at least {amount} {symbol}.',
                 insufficientBalance: "You don't have enough balance to stake this amount.",
                 feeBufferReserve: 'Not enough funds left after we reserve for withdrawal fees.',
+                tooManyDecimals: 'Too many decimals.',
+            },
+        },
+        unstakeFormScreen: {
+            validation: {
+                amountIsZero: 'Amount must be greater than 0.',
+                insufficientBalance: "You don't have enough staked balance to unstake this amount.",
                 tooManyDecimals: 'Too many decimals.',
             },
         },
@@ -2563,6 +2600,7 @@ export const messages = {
                 copyLabel: 'Tap to copy',
             },
             adaInfo: 'Your ADA stays fully accessible while earning rewards.',
+            unstakeButton: 'Unstake',
         },
         howStakeWorksScreen: {
             title: 'How {displaySymbol} staking works?',

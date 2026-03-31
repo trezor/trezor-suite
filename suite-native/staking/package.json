@@ -27,7 +27,8 @@
         "@trezor/connect": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "react-redux": "9.2.0"
+        "react-redux": "9.2.0",
+        "web3-utils": "^4.3.3"
     },
     "devDependencies": {
         "@suite-common/suite-types": "workspace:*"

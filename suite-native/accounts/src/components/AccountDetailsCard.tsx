@@ -1,3 +1,4 @@
+import { type ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
 import { G } from '@mobily/ts-belt';
@@ -15,16 +16,27 @@ type AccountDetailsCardProps = {
     accountKey: AccountKey;
     tokenContract?: TokenAddress;
     isStakeVariant?: boolean;
+    titleLabel?: ReactNode;
 };
 
-const stakeCardStyle = prepareNativeStyle(utils => ({
-    backgroundColor: utils.colors.backgroundTertiaryDefaultOnElevation1,
-}));
+const stakeCardStyle = prepareNativeStyle<{ isStakeVariant: boolean }>(
+    (utils, { isStakeVariant }) => ({
+        extend: {
+            condition: isStakeVariant,
+            style: {
+                backgroundColor: utils.colors.backgroundTertiaryDefaultOnElevation1,
+                borderColor: utils.colors.backgroundTertiaryDefaultOnElevation0,
+                borderWidth: utils.borders.widths.small,
+            },
+        },
+    }),
+);
 
 export const AccountDetailsCard = ({
     accountKey,
     tokenContract,
     isStakeVariant = false,
+    titleLabel,
 }: AccountDetailsCardProps) => {
     const { translate } = useTranslate();
     const { applyStyle } = useNativeStyles();
@@ -44,8 +56,7 @@ export const AccountDetailsCard = ({
             <Card
                 noPadding={!tokenContract}
                 noShadow={isStakeVariant}
-                borderColor={isStakeVariant ? 'backgroundTertiaryDefaultOnElevation0' : undefined}
-                style={isStakeVariant ? applyStyle(stakeCardStyle) : undefined}
+                style={applyStyle(stakeCardStyle, { isStakeVariant })}
             >
                 {tokenContract ? (
                     <TokenReceiveCard contract={tokenContract} accountKey={accountKey} />
@@ -54,6 +65,7 @@ export const AccountDetailsCard = ({
                         account={account}
                         isNativeCoinOnly
                         isCryptoBalancePrimary={isStakeVariant}
+                        titleLabel={titleLabel}
                     />
                 )}
             </Card>

@@ -404,6 +404,11 @@ export type RootStackParamList = {
         accountKey: AccountKey;
         amount: string;
     };
+    [RootStackRoutes.UnstakeFlow]: { accountKey: AccountKey };
+    [RootStackRoutes.UnstakeTransactionDataReview]: {
+        accountKey: AccountKey;
+        amount: string;
+    };
     [RootStackRoutes.DeviceSettingsStack]: NavigatorScreenParams<DeviceSettingsStackParamList>;
     [RootStackRoutes.AddCoinAccountStack]: NavigatorScreenParams<AddCoinAccountStackParamList>;
     [RootStackRoutes.ReceiveStack]: NavigatorScreenParams<ReceiveStackParamList>;

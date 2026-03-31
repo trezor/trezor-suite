@@ -6,29 +6,25 @@ import { Text } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { ReviewOutputCard } from '@suite-native/transaction-management';
 
-type EarnStakeOutputItemProps = {
+type UnstakeOutputItemProps = {
     symbol: NetworkSymbol;
     outputState: ReviewOutputState;
     onLayout: (event: LayoutChangeEvent) => void;
 };
 
-export const EarnStakeOutputItem = ({
-    symbol,
-    outputState,
-    onLayout,
-}: EarnStakeOutputItemProps) => {
+export const UnstakeOutputItem = ({ symbol, outputState, onLayout }: UnstakeOutputItemProps) => {
     const { translate } = useTranslate();
     const displaySymbol = getNetworkDisplaySymbol(symbol);
 
     return (
         <View onLayout={onLayout}>
             <ReviewOutputCard
-                title={translate('earn.earnStakeOutputItem.title')}
+                title={translate('earn.earnUnstakeOutputItem.title')}
                 outputState={outputState}
             >
                 <Text variant="body-sm" color="textSubdued">
                     <Translation
-                        id="earn.earnStakeOutputItem.description"
+                        id="earn.earnUnstakeOutputItem.description"
                         values={{ displaySymbol }}
                     />
                 </Text>

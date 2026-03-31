@@ -7,7 +7,7 @@ import {
     selectBaseCurrency,
     selectIsBaseCurrencyInSats,
 } from '@suite-common/wallet-core';
-import { type AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey, type StakeType } from '@suite-common/wallet-types';
 import {
     formatNetworkAmount,
     getDecimalsForBaseCurrency,
@@ -17,22 +17,38 @@ import { HStack, Switch, Text } from '@suite-native/atoms';
 import { useCryptoFiatConverters } from '@suite-native/formatters';
 import { useFormContext } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
+import {
+    type NativeStakingRootState,
+    selectStakedBalanceByAccountKey,
+} from '@suite-native/staking';
 import { BigNumber } from '@trezor/utils';
 
 import { type EarnFormValues } from '../earnFormSchema';
+
+export type EarnMaxButtonVariant = Extract<StakeType, 'stake' | 'unstake'>;
 
 type EarnMaxButtonProps = {
     accountKey: AccountKey;
     symbol: NetworkSymbol;
     isChecked: boolean;
     onChange: (value: boolean) => void;
+    variant?: EarnMaxButtonVariant;
 };
 
-export const EarnMaxButton = ({ accountKey, symbol, isChecked, onChange }: EarnMaxButtonProps) => {
+export const EarnMaxButton = ({
+    accountKey,
+    symbol,
+    isChecked,
+    onChange,
+    variant = 'stake',
+}: EarnMaxButtonProps) => {
     const { setValue } = useFormContext<EarnFormValues>();
 
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
+    );
+    const stakedBalance = useSelector((state: NativeStakingRootState) =>
+        selectStakedBalanceByAccountKey(state, accountKey),
     );
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const isBaseCurrencyInSats = useSelector(selectIsBaseCurrencyInSats);
@@ -43,13 +59,22 @@ export const EarnMaxButton = ({ accountKey, symbol, isChecked, onChange }: EarnM
         isInSats: isBaseCurrencyInSats,
     });
 
-    const setMaxStakeAmount = () => {
-        if (!account) return;
+    const getMaxAmount = (): string => {
+        if (variant === 'unstake') {
+            return stakedBalance ?? '0';
+        }
 
         const limits = getStakingLimitsByNetworkSymbol(symbol);
-        const availableAmount = formatNetworkAmount(account.availableBalance, symbol);
+        const availableAmount = formatNetworkAmount(account!.availableBalance, symbol);
         const buffer = limits?.MIN_BALANCE_FOR_FEE_BUFFER ?? 0;
-        const maxAmount = BigNumber.max(new BigNumber(availableAmount).minus(buffer), 0).toFixed();
+
+        return BigNumber.max(new BigNumber(availableAmount).minus(buffer), 0).toFixed();
+    };
+
+    const setMaxAmount = () => {
+        if (!account) return;
+
+        const maxAmount = getMaxAmount();
 
         setValue('amount', maxAmount, { shouldValidate: true });
 
@@ -69,13 +94,17 @@ export const EarnMaxButton = ({ accountKey, symbol, isChecked, onChange }: EarnM
             return;
         }
 
-        setMaxStakeAmount();
+        setMaxAmount();
     };
 
     return (
         <HStack alignItems="center" spacing="sp8">
             <Text variant="body-sm">
-                <Translation id="earn.earnFormScreen.stakeMaxButton" />
+                {variant === 'unstake' ? (
+                    <Translation id="earn.earnFormScreen.unstakeMaxButton" />
+                ) : (
+                    <Translation id="earn.earnFormScreen.stakeMaxButton" />
+                )}
             </Text>
             <Switch isChecked={isChecked} onChange={handleChange} />
         </HStack>

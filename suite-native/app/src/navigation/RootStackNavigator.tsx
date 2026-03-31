@@ -34,6 +34,8 @@ import {
     StakingDetailScreen,
     StakingInsufficientBalanceScreen,
     StakingManagementScreen,
+    UnstakeFlowScreen,
+    UnstakeTransactionDataReviewScreen,
 } from '@suite-native/module-earn';
 import { ExperimentalFeedbackModalScreen } from '@suite-native/module-home';
 import { OnboardingStackNavigator } from '@suite-native/module-onboarding';
@@ -117,6 +119,11 @@ export const RootStackNavigator = () => {
                 component={StakingInsufficientBalanceScreen}
             />
             <RootStack.Screen
+                options={{ title: RootStackRoutes.UnstakeFlow }}
+                name={RootStackRoutes.UnstakeFlow}
+                component={UnstakeFlowScreen}
+            />
+            <RootStack.Screen
                 options={{ title: RootStackRoutes.HowStakeWorksScreen }}
                 name={RootStackRoutes.HowStakeWorksScreen}
                 component={HowStakeWorksScreen}
@@ -135,6 +142,11 @@ export const RootStackNavigator = () => {
                 options={{ title: RootStackRoutes.EarnTransactionDataReview }}
                 name={RootStackRoutes.EarnTransactionDataReview}
                 component={EarnTransactionDataReviewScreen}
+            />
+            <RootStack.Screen
+                options={{ title: RootStackRoutes.UnstakeTransactionDataReview }}
+                name={RootStackRoutes.UnstakeTransactionDataReview}
+                component={UnstakeTransactionDataReviewScreen}
             />
             <RootStack.Screen
                 name={RootStackRoutes.DevUtilsStack}
