@@ -35,6 +35,7 @@ export type ThpState = {
     autoconnectStep: ThpAutoconnectStep | null;
     lastThpCode?: string;
     credentials: ThpSuiteCredentials[];
+    pairingRequestId?: string;
 };
 
 export const initialThpState: ThpState = {
@@ -79,8 +80,9 @@ export const prepareThpReducer = createReducerWithExtraDeps<ThpState>(
             })
             .addMatcher(
                 action => action.type === UI_REQUEST.REQUEST_THP_PAIRING,
-                state => {
+                (state, action: { type: string; requestId?: string }) => {
                     state.step = 'CodeEntry';
+                    state.pairingRequestId = action.requestId;
                 },
             )
             .addMatcher(
