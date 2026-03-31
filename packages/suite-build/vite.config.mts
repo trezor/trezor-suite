@@ -1,5 +1,6 @@
 import { viteCommonjs } from '@originjs/vite-plugin-commonjs';
 import react from '@vitejs/plugin-react';
+import babel from '@rolldown/plugin-babel';
 import { execSync } from 'child_process';
 import fs, { readdirSync } from 'fs';
 import { createRequire } from 'module';
@@ -169,7 +170,7 @@ const sessionsSharedWorkerPlugin = () => {
                         fileName: () => `${workerFileName}.js`,
                         name: 'TrezorSharedWorker',
                     },
-                    rollupOptions: {
+                    rolldownOptions: {
                         output: {
                             inlineDynamicImports: true,
                         },
@@ -280,7 +281,7 @@ const faviconPlugin = (): Plugin => {
                             fileName: () => faviconFileName,
                             name: 'TrezorSuiteFavicon',
                         },
-                        rollupOptions: {
+                        rolldownOptions: {
                             output: {
                                 inlineDynamicImports: true,
                             },
@@ -547,18 +548,17 @@ export default defineConfig({
         viteCommonjs(),
         workerPlugin(),
         wasm(),
-        react({
-            babel: {
-                plugins: [
-                    [
-                        'babel-plugin-styled-components',
-                        {
-                            displayName: true,
-                            fileName: false,
-                        },
-                    ],
+        react(),
+        babel({
+            plugins: [
+                [
+                    'babel-plugin-styled-components',
+                    {
+                        displayName: true,
+                        fileName: false,
+                    },
                 ],
-            },
+            ],
         }),
     ],
     resolve: {
