@@ -39,16 +39,19 @@ export type ModalState =
           context: typeof MODAL_CONTEXT_DEVICE_CONFIRMATION;
           windowType: typeof UI_REQUEST.SELECT_ACCOUNT;
           data?: UiRequestSelectAccount['payload'];
+          requestId?: string;
       }
     | {
           context: typeof MODAL_CONTEXT_DEVICE_CONFIRMATION;
           windowType: typeof UI_REQUEST.SELECT_FEE;
           data?: UiRequestSelectFee['payload'];
+          requestId?: string;
       }
     | {
           context: typeof MODAL_CONTEXT_DEVICE_CONFIRMATION;
           windowType: UiRequestConfirmation['payload']['view'];
           data?: undefined;
+          requestId?: string;
       }
     | {
           context: typeof MODAL_CONTEXT_USER;
@@ -112,6 +115,7 @@ const modalReducer = (state: State = initialState, action: AnyAction): State => 
                 context: MODAL_CONTEXT_DEVICE_CONFIRMATION,
                 windowType: action.payload.view,
                 preserve: state.preserve,
+                requestId: action.requestId,
             };
         case UI_REQUEST.REQUEST_WORD:
             return {
@@ -165,6 +169,9 @@ export const selectHasActiveModal = (state: ModalRootState) =>
 
 export const selectModalRequestId = (state: ModalRootState) =>
     state.modal.context === MODAL_CONTEXT_DEVICE ? state.modal.requestId : undefined;
+
+export const selectModalConfirmationRequestId = (state: ModalRootState) =>
+    state.modal.context === MODAL_CONTEXT_DEVICE_CONFIRMATION ? state.modal.requestId : undefined;
 
 export const selectModalType = (state: ModalRootState) => {
     if ('payload' in state.modal) {

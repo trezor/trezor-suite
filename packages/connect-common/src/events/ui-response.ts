@@ -23,6 +23,7 @@ export const UI_RESPONSE = {
 export interface UiResponseConfirmation {
     type: typeof UI_RESPONSE.RECEIVE_CONFIRMATION;
     payload: boolean;
+    requestId?: string;
 }
 
 export interface UiResponseFirmwares {
