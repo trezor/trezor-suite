@@ -26,23 +26,32 @@ test.describe('Metadata lifecycle', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () 
         await settingsPage.navigateTo('application');
         await expect(settingsPage.metadataSelectInput).toHaveTranslation('TR_LABELING_OFF');
 
-        await test.step('Decline labeling', async () => {
+        await test.step('enable legacy labeling via settings', async () => {
+            await metadataPage.enableLegacyLabeling(MetadataProvider.DROPBOX);
+        });
+
+        await test.step('verify labeling is active', async () => {
             await walletPage.openAccount();
             await metadataPage.account.clickEditLabelButton(AccountLabelId.BitcoinDefault1);
-            await devicePrompt.confirmOnDevicePromptIsShown();
-            await device.pressNo();
-            await devicePrompt.confirmOnDevicePromptIsHidden();
+            await metadataPage.account.fillLabelInput('test label');
+            await metadataPage.account.successIconIsVisible(AccountLabelId.BitcoinDefault1);
         });
 
         await test.step('add another wallet, enable labeling on the new device', async () => {
             await dashboardPage.deviceSwitchingOpenButton.click();
             await dashboardPage.addUnusedHiddenWallet('abc');
             await expect(dashboardPage.passphraseInput).toBeHidden();
-            await walletPage.openAccount();
-            await metadataPage.account.clickEditLabelButton(AccountLabelId.BitcoinDefault1);
             await devicePrompt.confirmOnDevicePromptIsShown();
             await device.pressYes();
-            await devicePrompt.closeModal();
+        });
+
+        await test.step('disable metadata in settings', async () => {
+            await settingsPage.navigateTo('application');
+            await page.selectDropdownOptionWithRetry(
+                settingsPage.metadataSelectInput,
+                settingsPage.metadataSelectInputOption('off'),
+            );
+            await expect(settingsPage.metadataSelectInput).toHaveTranslation('TR_LABELING_OFF');
         });
 
         await test.step('forget device and reload', async () => {
@@ -55,16 +64,13 @@ test.describe('Metadata lifecycle', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () 
             await page.discoveryShouldFinish();
         });
 
-        await test.step('enable labeling on standard Wallet', async () => {
-            await walletPage.openAccount();
-            await metadataPage.account.clickEditLabelButton(AccountLabelId.BitcoinDefault1);
-            await devicePrompt.confirmOnDevicePromptIsShown({ timeout: 15_000 });
-            await device.pressNo();
-            await devicePrompt.confirmOnDevicePromptIsHidden();
+        await test.step('re-enable labeling on standard Wallet via settings', async () => {
+            await metadataPage.enableLegacyLabeling(MetadataProvider.DROPBOX);
+            await settingsPage.navigateTo('application');
+            await expect(settingsPage.metadataSelectInput).toHaveTranslation('TR_LABELING_LEGACY');
         });
 
         await test.step('disable metadata in settings', async () => {
-            await settingsPage.navigateTo('application');
             await page.selectDropdownOptionWithRetry(
                 settingsPage.metadataSelectInput,
                 settingsPage.metadataSelectInputOption('off'),
@@ -72,10 +78,10 @@ test.describe('Metadata lifecycle', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () 
             await expect(settingsPage.metadataSelectInput).toHaveTranslation('TR_LABELING_OFF');
         });
 
-        await test.step('verify labeling can be re-enabled', async () => {
-            await walletPage.openAccount();
-            await metadataPage.account.clickEditLabelButton(AccountLabelId.BitcoinDefault1);
-            await devicePrompt.confirmOnDevicePromptIsShown();
+        await test.step('verify labeling can be re-enabled via settings', async () => {
+            await metadataPage.enableLegacyLabeling(MetadataProvider.DROPBOX);
+            await settingsPage.navigateTo('application');
+            await expect(settingsPage.metadataSelectInput).toHaveTranslation('TR_LABELING_LEGACY');
         });
     });
 });
