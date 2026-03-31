@@ -53,6 +53,7 @@ export const useTradingStellarActivateToken = ({
         !!quote &&
         !!selectedReceiveAccount &&
         !!receiveContractAddress &&
+        selectedReceiveAccount.account.symbol === 'xlm' &&
         !!inactiveTokens.find(token => token.contract === receiveContractAddress);
 
     const [isComposingFees, setIsComposingFees] = useState(false);

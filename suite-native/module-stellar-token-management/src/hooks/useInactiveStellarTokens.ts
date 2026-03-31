@@ -23,8 +23,10 @@ export const useInactiveStellarTokens = (accountKey?: AccountKey) => {
         selectAccountByKey(state, accountKey),
     );
 
+    const isXlmAccount = account?.symbol === 'xlm';
+
     const coinDefinitions = useSelector((state: TokenDefinitionsRootState) =>
-        selectCoinDefinitions(state, account?.symbol ?? 'xlm'),
+        isXlmAccount ? selectCoinDefinitions(state, 'xlm') : undefined,
     );
 
     const isCoinDefinitionsLoading = coinDefinitions?.isLoading ?? false;
