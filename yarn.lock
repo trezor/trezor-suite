@@ -10581,6 +10581,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/calldata@workspace:suite-common/calldata"
   dependencies:
+    "@trezor/blockchain-link-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     viem: "npm:^2.46.3"

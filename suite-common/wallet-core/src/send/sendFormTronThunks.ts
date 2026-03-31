@@ -353,6 +353,17 @@ export const signTronSendFormTransactionThunk = createThunk<
             composed.payload;
 
         const ownerHex = tronUtils.tronAddressToHex(selectedAccount.descriptor);
+        const recipientHex = token
+            ? tronUtils.tronAddressToHex(token.contract)
+            : tronUtils.tronAddressToHex(output.address);
+
+        if (!ownerHex || !recipientHex) {
+            return rejectWithValue({
+                error: 'sign-transaction-failed',
+                message: 'Invalid address checksum.',
+            });
+        }
+
         const contract = token
             ? [
                   {
@@ -360,7 +371,7 @@ export const signTronSendFormTransactionThunk = createThunk<
                       parameter: {
                           value: {
                               owner_address: ownerHex,
-                              contract_address: tronUtils.tronAddressToHex(token.contract),
+                              contract_address: recipientHex,
                               data: tokenData!,
                           },
                       },
@@ -372,7 +383,7 @@ export const signTronSendFormTransactionThunk = createThunk<
                       parameter: {
                           value: {
                               owner_address: ownerHex,
-                              to_address: tronUtils.tronAddressToHex(output.address),
+                              to_address: recipientHex,
                               amount: amountInSubunits,
                           },
                       },

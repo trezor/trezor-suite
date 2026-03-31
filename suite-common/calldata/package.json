@@ -12,6 +12,7 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
+        "@trezor/blockchain-link-utils": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "viem": "^2.46.3"

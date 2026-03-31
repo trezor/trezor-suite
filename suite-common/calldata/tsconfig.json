@@ -2,6 +2,9 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        {
+            "path": "../../packages/blockchain-link-utils"
+        },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" }
     ]
