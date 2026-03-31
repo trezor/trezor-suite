@@ -1,8 +1,13 @@
-import { YieldPageHeader, YieldSupply } from 'src/components/earn';
-import { useLayout } from 'src/hooks/suite';
+import { YieldSupply } from 'src/components/earn';
+
+import { useEarnLayout } from '../useEarnLayout';
 
 export const EarnSupply = () => {
-    useLayout('Earn', <YieldPageHeader analyticsStep="yield-supply" />);
+    const { account, routeParams } = useEarnLayout({ analyticsStep: 'yield-supply' });
 
-    return <YieldSupply />;
+    if (!account || !routeParams) {
+        return null;
+    }
+
+    return <YieldSupply account={account} routeParams={routeParams} />;
 };

@@ -1,8 +1,13 @@
-import { YieldPageHeader, YieldWithdraw } from 'src/components/earn';
-import { useLayout } from 'src/hooks/suite';
+import { YieldWithdraw } from 'src/components/earn';
+
+import { useEarnLayout } from '../useEarnLayout';
 
 export const EarnWithdraw = () => {
-    useLayout('Earn', <YieldPageHeader analyticsStep="yield-withdraw" />);
+    const { account, routeParams } = useEarnLayout({ analyticsStep: 'yield-withdraw' });
 
-    return <YieldWithdraw />;
+    if (!account || !routeParams) {
+        return null;
+    }
+
+    return <YieldWithdraw account={account} routeParams={routeParams} />;
 };
