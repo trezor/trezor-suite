@@ -14,8 +14,8 @@ const actionPrefix = '@suite/recovery';
 
 export const submitThunk = createThunk(
     `${actionPrefix}/submitThunk`,
-    ({ word }: { word: string }) => {
-        TrezorConnect.uiResponse({ type: UI_RESPONSE.RECEIVE_WORD, payload: word });
+    ({ word, requestId }: { word: string; requestId?: string }) => {
+        TrezorConnect.uiResponse({ type: UI_RESPONSE.RECEIVE_WORD, payload: word, requestId });
     },
 );
 

@@ -38,6 +38,7 @@ export interface UiResponsePin {
 export interface UiResponseWord {
     type: typeof UI_RESPONSE.RECEIVE_WORD;
     payload: string;
+    requestId?: string;
 }
 
 export interface UiResponsePassphrase {

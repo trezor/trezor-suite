@@ -119,6 +119,7 @@ const modalReducer = (state: State = initialState, action: AnyAction): State => 
                 device: action.payload.device,
                 windowType: action.payload.type,
                 preserve: state.preserve,
+                requestId: action.requestId,
             };
         case UI_REQUEST.SELECT_ACCOUNT:
             return {
