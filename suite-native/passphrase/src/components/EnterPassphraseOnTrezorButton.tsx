@@ -4,8 +4,8 @@ import { selectDeviceInternalModel, selectSelectedDevice } from '@suite-common/d
 import { submitPassphrase } from '@suite-common/wallet-core';
 import { events } from '@suite-native/analytics';
 import { Button } from '@suite-native/atoms';
-import { deviceModelToIconName } from '@suite-native/icons';
 import { selectPassphraseRequestId } from '@suite-native/device-authorization';
+import { deviceModelToIconName } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { useAnalytics } from '@suite-native/services';
 

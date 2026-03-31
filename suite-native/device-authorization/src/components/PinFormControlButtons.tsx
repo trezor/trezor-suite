@@ -7,6 +7,7 @@ import Animated, {
     useSharedValue,
     withTiming,
 } from 'react-native-reanimated';
+import { useSelector } from 'react-redux';
 
 import { useAlert } from '@suite-native/alerts';
 import { Box, Button, HStack, IconButton } from '@suite-native/atoms';
@@ -16,6 +17,8 @@ import { useOpenLink } from '@suite-native/link';
 import TrezorConnect, { DEVICE, UI_REQUEST, UI_RESPONSE } from '@trezor/connect';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { PIN_HELP_URL } from '@trezor/urls';
+
+import { selectPinRequestId } from '../deviceAuthorizationSlice';
 
 const buttonsWrapperStyle = prepareNativeStyle(utils => ({
     position: 'absolute',
@@ -34,6 +37,7 @@ export const PinFormControlButtons = ({ onSuccess }: PinFormControlButtonsProps)
     const animatedHeight = useSharedValue(0);
 
     const { applyStyle } = useNativeStyles();
+    const requestId = useSelector(selectPinRequestId);
 
     const openLink = useOpenLink();
     const { showAlert } = useAlert();
@@ -89,7 +93,7 @@ export const PinFormControlButtons = ({ onSuccess }: PinFormControlButtonsProps)
     }, [handleInvalidPin]);
 
     const onSubmit = handleSubmit(values => {
-        TrezorConnect.uiResponse({ type: UI_RESPONSE.RECEIVE_PIN, payload: values.pin });
+        TrezorConnect.uiResponse({ type: UI_RESPONSE.RECEIVE_PIN, payload: values.pin, requestId });
     });
 
     const handleDelete = () => {
