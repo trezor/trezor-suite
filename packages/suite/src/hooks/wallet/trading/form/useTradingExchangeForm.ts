@@ -29,8 +29,15 @@ import {
     invityAPI,
     isSendingEvmNativeToken,
     selectTradingComposedTransactionInfo,
-    selectTradingExchange,
+    selectTradingExchangeAmountLimits,
     selectTradingExchangeInfo,
+    selectTradingExchangeIsFromRedirect,
+    selectTradingExchangeIsLoading,
+    selectTradingExchangePreselectedQuote,
+    selectTradingExchangeQuotes,
+    selectTradingExchangeQuotesRequest,
+    selectTradingExchangeSelectedQuote,
+    selectTradingExchangeTransactionId,
     selectTradingIsSlip24Allowed,
     selectTradingTrades,
     selectTradingVerifiedAddress,
@@ -82,16 +89,14 @@ export const useTradingExchangeForm = ({
     const isFormPage = pageType === 'form';
     const dispatch = useDispatch();
     const { translationString } = useTranslation();
-    const {
-        quotesRequest,
-        isFromRedirect,
-        quotes,
-        transactionId,
-        selectedQuote,
-        preselectedQuote,
-        amountLimits,
-        isLoading,
-    } = useSelector(selectTradingExchange);
+    const quotesRequest = useSelector(selectTradingExchangeQuotesRequest);
+    const isFromRedirect = useSelector(selectTradingExchangeIsFromRedirect);
+    const quotes = useSelector(selectTradingExchangeQuotes);
+    const transactionId = useSelector(selectTradingExchangeTransactionId);
+    const selectedQuote = useSelector(selectTradingExchangeSelectedQuote);
+    const preselectedQuote = useSelector(selectTradingExchangePreselectedQuote);
+    const amountLimits = useSelector(selectTradingExchangeAmountLimits);
+    const isLoading = useSelector(selectTradingExchangeIsLoading);
     const verifiedAddress = useSelector(selectTradingVerifiedAddress);
     const exchangeInfo = useSelector(selectTradingExchangeInfo);
     const composedTransactionInfo = useSelector(selectTradingComposedTransactionInfo);
@@ -220,8 +225,6 @@ export const useTradingExchangeForm = ({
 
     const { cexQuotes, dexQuotes } = useTradingExchangeQuotesFilter({
         exchangeType,
-        quotes,
-        exchangeInfo,
         setValue,
     });
 

@@ -586,8 +586,8 @@ export const selectTradingExchangeDexQuotes = createMemoizedSelector(
 );
 
 export const selectTradingExchangeCexQuotes = createMemoizedSelector(
-    [selectGroupedTradingExchangeQuotes],
-    groupedQuotes => returnStableArrayIfEmpty([...groupedQuotes.fixed, ...groupedQuotes.float]),
+    [selectTradingExchangeQuotes],
+    quotes => returnStableArrayIfEmpty(quotes.filter(quote => !quote.isDex)),
 );
 
 export const selectTradingExchangeDexQuoteApprovalPrefetchLoading = (state: TradingRootState) =>
