@@ -1,6 +1,6 @@
 // TODO: suite-common imports in non-suite packages should not be allowed
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
-import { icons } from '@suite-common/icons/src/icons';
+import { iconNames } from '@suite-common/icons/src/iconNames';
 import { aboveBreakpoint, belowBreakpoint, breakpoints } from '@trezor/theme';
 
 /**
@@ -34,4 +34,4 @@ export const LAYOUT_SIZE = {
     GUIDE_PANEL_CONTENT_WIDTH: '349px',
 } as const;
 
-export const ICONS = Object.keys(icons).sort();
+export const ICONS = [...iconNames].sort();

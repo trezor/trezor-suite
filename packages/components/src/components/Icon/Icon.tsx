@@ -1,11 +1,13 @@
-import { type MouseEvent } from 'react';
+import { type MouseEvent, useEffect, useState } from 'react';
 import { ReactSVG } from 'react-svg';
 
 import styled, { css } from 'styled-components';
 
 // TODO: suite-common imports in non-suite packages should not be allowed
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
-import { type IconName, icons } from '@suite-common/icons/src/icons';
+import { type IconName } from '@suite-common/icons/src/icons';
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
+import { getCachedIcon, loadIcon } from '@suite-common/icons/src/iconsLazy';
 import { type Color } from '@trezor/theme';
 
 import {
@@ -121,6 +123,21 @@ export const Icon = ({
     cursor,
     ...rest
 }: IconProps) => {
+    const [src, setSrc] = useState(() => getCachedIcon(name) ?? '');
+
+    useEffect(() => {
+        let cancelled = false;
+        loadIcon(name)
+            .then(url => {
+                if (!cancelled) setSrc(url);
+            })
+            .catch(() => undefined);
+
+        return () => {
+            cancelled = true;
+        };
+    }, [name]);
+
     const handleOnKeyDown = (e: React.KeyboardEvent) => {
         if (e.key === 'Enter' || e.key === ' ') {
             onClick?.(e);
@@ -155,12 +172,14 @@ export const Icon = ({
             {...frameProps}
             $cursor={cursor ?? (onClick && !isDisabled ? 'pointer' : undefined)}
         >
-            <SVG
-                tabIndex={onClick && !isDisabled ? 0 : undefined}
-                onKeyDown={handleOnKeyDown}
-                src={icons[name as IconName]}
-                beforeInjection={handleInjection}
-            />
+            {src && (
+                <SVG
+                    tabIndex={onClick && !isDisabled ? 0 : undefined}
+                    onKeyDown={handleOnKeyDown}
+                    src={src}
+                    beforeInjection={handleInjection}
+                />
+            )}
         </Container>
     );
 };
