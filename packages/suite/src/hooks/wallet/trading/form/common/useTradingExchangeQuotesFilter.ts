@@ -1,7 +1,5 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 import type { UseFormSetValue } from 'react-hook-form';
-
-import { type ExchangeTrade } from 'invity-api';
 
 import {
     TRADING_EXCHANGE_FORM,
@@ -9,25 +7,23 @@ import {
     TRADING_EXCHANGE_FORM_DEX,
     type TradingExchangeFormProps,
     type TradingExchangeFormType,
+    selectTradingExchangeCexQuotes,
+    selectTradingExchangeDexQuotes,
 } from '@suite-common/trading';
-import { arrayPartition } from '@trezor/utils';
+
+import { useSelector } from 'src/hooks/suite';
 
 interface TradingExchangeQuotesFilterProps {
-    quotes: ExchangeTrade[];
     exchangeType: TradingExchangeFormType;
-    exchangeInfo: any;
     setValue: UseFormSetValue<TradingExchangeFormProps>;
 }
 
 export const useTradingExchangeQuotesFilter = ({
     exchangeType,
-    quotes,
     setValue,
 }: TradingExchangeQuotesFilterProps) => {
-    const [dexQuotes, cexQuotes] = useMemo(
-        () => arrayPartition(quotes, quote => quote?.isDex ?? false),
-        [quotes],
-    );
+    const dexQuotes = useSelector(selectTradingExchangeDexQuotes);
+    const cexQuotes = useSelector(selectTradingExchangeCexQuotes);
 
     // handle edge case when there are no longer quotes of selected exchange type
     useEffect(() => {
