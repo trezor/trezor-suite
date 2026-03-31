@@ -1,12 +1,14 @@
 import { Horizon, Networks, Transaction as StellarTransaction } from '@stellar/stellar-sdk';
 
-import { CustomError, MESSAGES, RESPONSES } from '@trezor/blockchain-link-types';
 import type {
+    AccountBalanceHistory,
     AccountInfo,
-    MessageTypes,
     Response,
     TokenDetailByMint,
 } from '@trezor/blockchain-link-types';
+import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/src/constants';
+import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
+import type * as MessageTypes from '@trezor/blockchain-link-types/src/messages';
 import * as utils from '@trezor/blockchain-link-utils/src/stellar';
 import { getSuiteVersion, isDesktop, isNative } from '@trezor/env-utils';
 import { type IntervalId } from '@trezor/type-utils';
@@ -173,6 +175,92 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
     } as const;
 };
 
+const getAccountBalanceHistory = async (
+    request: Request<MessageTypes.GetAccountBalanceHistory>,
+    isTestnet: boolean,
+) => {
+    const api = await request.connect();
+    const groupBy = request.payload.groupBy ?? 3600 * 24;
+    const history = new Map<number, AccountBalanceHistory>();
+    const pageSize = 200;
+
+    let cursor: string | undefined;
+    let reachedFromBoundary = false;
+
+    while (!reachedFromBoundary) {
+        const requestBuilder = api
+            .transactions()
+            .forAccount(request.payload.descriptor)
+            .includeFailed(true)
+            .limit(pageSize)
+            .order('desc');
+
+        if (cursor) {
+            requestBuilder.cursor(cursor);
+        }
+
+        const transactions = await requestBuilder.call();
+
+        if (transactions.records.length === 0) {
+            break;
+        }
+
+        for (const record of transactions.records) {
+            const blockTime = Math.floor(Date.parse(record.created_at) / 1000);
+
+            if (!Number.isFinite(blockTime) || blockTime <= 0) {
+                continue;
+            }
+
+            if (request.payload.to && blockTime > request.payload.to) {
+                continue;
+            }
+
+            if (request.payload.from && blockTime < request.payload.from) {
+                reachedFromBoundary = true;
+                break;
+            }
+
+            const delta = utils.extractNativeBalanceDelta(
+                record,
+                request.payload.descriptor,
+                isTestnet,
+            );
+
+            const bucketTime = Math.floor(blockTime / groupBy) * groupBy;
+            const bucket = history.get(bucketTime) ?? {
+                time: bucketTime,
+                txs: 0,
+                received: '0',
+                sent: '0',
+                sentToSelf: '0',
+                rates: {},
+            };
+
+            bucket.txs += 1;
+
+            if (delta.isGreaterThan(0)) {
+                bucket.received = new BigNumber(bucket.received).plus(delta).toFixed(0);
+            } else if (delta.isLessThan(0)) {
+                bucket.sent = new BigNumber(bucket.sent).plus(delta.abs()).toFixed(0);
+            }
+
+            history.set(bucketTime, bucket);
+        }
+
+        cursor = transactions.records[transactions.records.length - 1]?.paging_token;
+
+        if (!cursor) {
+            break;
+        }
+    }
+
+    return {
+        type: RESPONSES.GET_ACCOUNT_BALANCE_HISTORY,
+        payload: Array.from(history.values()).sort((a, b) => a.time - b.time),
+    } as const;
+};
+
 const estimateFee = async (request: Request<MessageTypes.EstimateFee>) => {
     const api = await request.connect();
     const feeStats = await api.feeStats();
@@ -306,6 +394,8 @@ const onRequest = (request: Request<MessageTypes.Message>, isTestnet: boolean) =
     switch (request.type) {
         case MESSAGES.GET_INFO:
             return getInfo(request, isTestnet);
+        case MESSAGES.GET_ACCOUNT_BALANCE_HISTORY:
+            return getAccountBalanceHistory(request, isTestnet);
         case MESSAGES.GET_ACCOUNT_INFO:
             return getAccountInfo(request);
         case MESSAGES.ESTIMATE_FEE:

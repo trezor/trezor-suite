@@ -13,10 +13,14 @@ import { typography } from '@trezor/theme';
 
 import { updateGraphData } from 'src/actions/wallet/graphActions';
 import { HiddenPlaceholder, TransactionsGraph } from 'src/components/suite';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useDispatch, useGraph, useSelector } from 'src/hooks/suite';
+import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
+import { type AppState } from 'src/types/suite';
 import { type Account } from 'src/types/wallet';
 import { type AggregatedDashboardHistory } from 'src/types/wallet/graph';
 import { getMinMaxValueFromData, prepareGraphDataAsync } from 'src/utils/wallet/graph';
+
+import { DashboardLiveFiatGraph } from './DashboardLiveFiatGraph';
 
 const Wrapper = styled.div`
     display: flex;
@@ -27,6 +31,7 @@ const Wrapper = styled.div`
 const GraphWrapper = styled(HiddenPlaceholder)`
     display: flex;
     flex: 1 1 auto;
+    padding: 16px 0;
     height: 320px;
 `;
 
@@ -44,56 +49,70 @@ const ErrorMessage = styled.div`
 
 type DashboardGraphProps = {
     accounts: Account[];
+    isLive: boolean;
+    isNewBalanceGraphEnabled: boolean;
 };
 
-export const DashboardGraph = memo(({ accounts }: DashboardGraphProps) => {
-    const graph = useSelector(state => state.wallet.graph);
-    const selectedDevice = useSelector(selectSelectedDevice);
-    const baseCurrencyCode = useSelector(selectBaseCurrency);
-    const dispatch = useDispatch();
+const areGraphAccountsEqual = (previousAccounts: Account[], nextAccounts: Account[]) => {
+    if (previousAccounts.length !== nextAccounts.length) {
+        return false;
+    }
 
-    const [data, setData] = useState<AggregatedDashboardHistory[]>([]);
-    const [isProcessing, setIsProcessing] = useState(false);
-    const [xTicks, setXticks] = useState<number[]>([]);
+    return previousAccounts.every((account, index) => {
+        const nextAccount = nextAccounts[index];
 
-    const selectedDeviceState = selectedDevice?.state?.staticSessionId;
-    const failedAccounts = graph.error?.filter(a => a.deviceState === selectedDeviceState);
-    const allFailed =
-        failedAccounts !== undefined &&
-        accounts.every(a => failedAccounts.some(fa => fa.descriptor === a.descriptor));
+        return (
+            account.key === nextAccount.key &&
+            account.symbol === nextAccount.symbol &&
+            account.descriptor === nextAccount.descriptor &&
+            account.deviceState === nextAccount.deviceState &&
+            account.backendType === nextAccount.backendType &&
+            account.visible === nextAccount.visible &&
+            account.formattedBalance === nextAccount.formattedBalance
+        );
+    });
+};
 
-    const onRefresh = useCallback(
-        () => dispatch(updateGraphData({ accounts })).unwrap(),
-        [accounts, dispatch],
-    );
+const selectGraph = (state: AppState) => state.wallet.graph;
 
-    const receivedValueFn = useCallback(
-        (sourceData: AggregatedDashboardHistory) => sourceData.receivedFiat[baseCurrencyCode],
-        [baseCurrencyCode],
-    );
+export const DashboardGraph = memo(
+    ({ accounts, isLive, isNewBalanceGraphEnabled }: DashboardGraphProps) => {
+        const graph = useSelector(selectGraph);
+        const selectedDevice = useSelector(selectSelectedDevice);
+        const baseCurrencyCode = useSelector(selectBaseCurrency);
+        const dispatch = useDispatch();
+        const { selectedRange } = useGraph();
+        const isContentBelowBreakpoint = useIsContentBelowBreakpoint();
+        const [data, setData] = useState<AggregatedDashboardHistory[]>([]);
+        const [isProcessing, setIsProcessing] = useState(false);
+        const [xTicks, setXticks] = useState<number[]>([]);
 
-    const sentValueFn = useCallback(
-        (sourceData: AggregatedDashboardHistory) => sourceData.sentFiat[baseCurrencyCode],
-        [baseCurrencyCode],
-    );
+        const selectedDeviceState = selectedDevice?.state?.staticSessionId;
+        const failedAccounts = graph.error?.filter(a => a.deviceState === selectedDeviceState);
+        const allFailed =
+            failedAccounts !== undefined &&
+            accounts.every(a => failedAccounts.some(fa => fa.descriptor === a.descriptor));
 
-    const balanceValueFn = useCallback(
-        (sourceData: AggregatedDashboardHistory) => sourceData.balanceFiat?.[baseCurrencyCode],
-        [baseCurrencyCode],
-    );
+        const onRefresh = useCallback(
+            () => dispatch(updateGraphData({ accounts })).unwrap(),
+            [accounts, dispatch],
+        );
 
-    const minMaxValues = getMinMaxValueFromData(
-        data,
-        'dashboard',
-        sentValueFn,
-        receivedValueFn,
-        () => BASE_CURRENCY_ZERO,
-    );
+        useEffect(() => {
+            dispatch(
+                updateGraphData({
+                    accounts,
+                    selectedRange,
+                }),
+            );
+        }, [accounts, dispatch, selectedRange]);
 
-    useEffect(() => {
-        if (!graph.isLoading) {
+        useEffect(() => {
+            if (isNewBalanceGraphEnabled || graph.isLoading) {
+                return;
+            }
+
             setIsProcessing(true);
-
             prepareGraphDataAsync({ graph, deviceState: selectedDeviceState }).then(
                 aggregatedData => {
                     const graphTicks =
@@ -109,42 +128,88 @@ export const DashboardGraph = memo(({ accounts }: DashboardGraphProps) => {
                     setIsProcessing(false);
                 },
             );
-        }
-    }, [graph, selectedDeviceState]);
+        }, [graph, isNewBalanceGraphEnabled, selectedDeviceState]);
 
-    return (
-        <Wrapper data-testid="@dashboard/graph">
-            <GraphWrapper>
-                {allFailed ? (
-                    <ErrorMessage>
-                        <Translation id="TR_COULD_NOT_RETRIEVE_DATA" />
-                        <Button
-                            onClick={onRefresh}
-                            iconLeft="repeat"
-                            intent="neutral"
-                            priority="secondary"
+        const receivedValueFn = useCallback(
+            (sourceData: AggregatedDashboardHistory) => sourceData.receivedFiat[baseCurrencyCode],
+            [baseCurrencyCode],
+        );
+        const sentValueFn = useCallback(
+            (sourceData: AggregatedDashboardHistory) => sourceData.sentFiat[baseCurrencyCode],
+            [baseCurrencyCode],
+        );
+        const balanceValueFn = useCallback(
+            (sourceData: AggregatedDashboardHistory) => sourceData.balanceFiat?.[baseCurrencyCode],
+            [baseCurrencyCode],
+        );
+        const minMaxValues = getMinMaxValueFromData(
+            data,
+            'dashboard',
+            sentValueFn,
+            receivedValueFn,
+            () => BASE_CURRENCY_ZERO,
+        );
+
+        return (
+            <Wrapper data-testid="@dashboard/graph">
+                <GraphWrapper>
+                    {allFailed ? (
+                        <ErrorMessage>
+                            <Translation id="TR_COULD_NOT_RETRIEVE_DATA" />
+                            <Button
+                                onClick={onRefresh}
+                                iconLeft="repeat"
+                                intent="neutral"
+                                priority="secondary"
+                            >
+                                <Translation id="TR_RETRY" />
+                            </Button>
+                        </ErrorMessage>
+                    ) : (
+                        <Box
+                            margin={
+                                isContentBelowBreakpoint
+                                    ? undefined
+                                    : { vertical: 12, horizontal: 20 }
+                            }
+                            width="100%"
+                            height="100%"
                         >
-                            <Translation id="TR_RETRY" />
-                        </Button>
-                    </ErrorMessage>
-                ) : (
-                    <Box width="100%" height="100%">
-                        <TransactionsGraph
-                            variant="all-assets"
-                            onRefresh={onRefresh}
-                            isLoading={graph.isLoading || isProcessing}
-                            localCurrency={baseCurrencyCode}
-                            xTicks={xTicks}
-                            minMaxValues={[minMaxValues[0].toNumber(), minMaxValues[1].toNumber()]}
-                            data={data}
-                            selectedRange={graph.selectedRange}
-                            receivedValueFn={receivedValueFn}
-                            sentValueFn={sentValueFn}
-                            balanceValueFn={balanceValueFn}
-                        />
-                    </Box>
-                )}
-            </GraphWrapper>
-        </Wrapper>
-    );
-});
+                            {isNewBalanceGraphEnabled ? (
+                                <DashboardLiveFiatGraph accounts={accounts} isLive={isLive} />
+                            ) : (
+                                <TransactionsGraph
+                                    hideToolbar
+                                    variant="all-assets"
+                                    onRefresh={onRefresh}
+                                    isLoading={graph.isLoading || isProcessing}
+                                    localCurrency={baseCurrencyCode}
+                                    xTicks={xTicks}
+                                    minMaxValues={[
+                                        minMaxValues[0].toNumber(),
+                                        minMaxValues[1].toNumber(),
+                                    ]}
+                                    data={data}
+                                    selectedRange={graph.selectedRange}
+                                    receivedValueFn={receivedValueFn}
+                                    sentValueFn={sentValueFn}
+                                    balanceValueFn={balanceValueFn}
+                                />
+                            )}
+                        </Box>
+                    )}
+                </GraphWrapper>
+            </Wrapper>
+        );
+    },
+    (previousProps, nextProps) => {
+        if (previousProps.isLive !== nextProps.isLive) {
+            return false;
+        }
+        if (previousProps.isNewBalanceGraphEnabled !== nextProps.isNewBalanceGraphEnabled) {
+            return false;
+        }
+
+        return areGraphAccountsEqual(previousProps.accounts, nextProps.accounts);
+    },
+);

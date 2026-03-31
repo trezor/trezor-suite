@@ -8,7 +8,7 @@ import { Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
-import type { CryptoGraphProps } from 'src/components/suite/graph/types';
+import { type CryptoGraphProps } from 'src/components/suite/graph/types';
 import { type CommonAggregatedHistory, type GraphRange } from 'src/types/wallet/graph';
 
 import { GraphTooltipBase } from './GraphTooltipBase';
@@ -46,7 +46,7 @@ const formatAmount = (
     );
 };
 
-interface GraphTooltipAccountProps extends TooltipProps<number, any> {
+interface GraphTooltipAccountProps extends TooltipProps<number, string> {
     selectedRange: GraphRange;
     localCurrency: string;
     symbol: NetworkSymbol;
@@ -69,7 +69,6 @@ export const GraphTooltipAccount = ({
 }: GraphTooltipAccountProps) => {
     const formatters = useFormatters();
 
-    // Note: payload is [] when discovery is paused.
     if (!active || !payload?.length) {
         return null;
     }

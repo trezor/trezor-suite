@@ -9,6 +9,7 @@ import {
     StrKey,
     TransactionBuilder,
     extractBaseAddress,
+    xdr,
 } from '@stellar/stellar-sdk';
 
 import type { TokenDetailByMint, Transaction } from '@trezor/blockchain-link-types';
@@ -34,6 +35,63 @@ export const toStroops = (value: string) => {
 export const BASE_INFO = {
     BASE_RESERVE: toStroops('0.5'), // 0.5 XLM, https://developers.stellar.org/docs/learn/fundamentals/stellar-data-structures/accounts#base-reserves
     MINIMUM_RESERVE: toStroops('1'), // 1 XLM
+};
+
+const isNativeXdrAsset = (asset: xdr.Asset) => asset.switch().name === 'assetTypeNative';
+
+const getOperationResults = (rawTx: Horizon.ServerApi.TransactionRecord) => {
+    try {
+        const transactionResult = xdr.TransactionResult.fromXDR(rawTx.result_xdr, 'base64');
+        const result = transactionResult.result();
+        const resultType = result.switch().name;
+
+        if (resultType === 'txSuccess' || resultType === 'txFailed') {
+            return result.results();
+        }
+    } catch {
+        return undefined;
+    }
+
+    return undefined;
+};
+
+const getStrictReceiveSettledNativeSendAmount = (
+    result: xdr.PathPaymentStrictReceiveResult | undefined,
+) => {
+    if (!result || result.switch().name !== 'pathPaymentStrictReceiveSuccess') {
+        return undefined;
+    }
+
+    const success = result.success();
+    const soldNativeAmount = success.offers().reduce((sum, claimAtom) => {
+        const claim = claimAtom.value();
+
+        return isNativeXdrAsset(claim.assetSold()) ? sum.plus(claim.amountSold().toString()) : sum;
+    }, new BigNumber(0));
+
+    if (soldNativeAmount.isGreaterThan(0)) {
+        return soldNativeAmount;
+    }
+
+    const finalPayment = success.last();
+
+    return isNativeXdrAsset(finalPayment.asset())
+        ? new BigNumber(finalPayment.amount().toString())
+        : undefined;
+};
+
+const getStrictSendSettledNativeReceiveAmount = (
+    result: xdr.PathPaymentStrictSendResult | undefined,
+) => {
+    if (!result || result.switch().name !== 'pathPaymentStrictSendSuccess') {
+        return undefined;
+    }
+
+    const finalPayment = result.success().last();
+
+    return isNativeXdrAsset(finalPayment.asset())
+        ? new BigNumber(finalPayment.amount().toString())
+        : undefined;
 };
 
 const isoToTimestamp = (isoDate: string): number => {
@@ -243,6 +301,110 @@ export const transformTransaction = (
     }
 
     return baseTx;
+};
+
+export const extractNativeBalanceDelta = (
+    rawTx: Horizon.ServerApi.TransactionRecord,
+    descriptor: string,
+    isTestnet = false,
+) => {
+    let delta = new BigNumber(
+        rawTx.source_account === descriptor ? rawTx.fee_charged : 0,
+    ).negated();
+    const operationResults = getOperationResults(rawTx);
+
+    if (!rawTx.successful) {
+        return delta;
+    }
+
+    const parsedTx = new StellarTransaction(
+        rawTx.envelope_xdr,
+        isTestnet ? Networks.TESTNET : Networks.PUBLIC,
+    );
+
+    for (const [index, rawOp] of parsedTx.operations.entries()) {
+        const opSource = extractBaseAddress(rawOp.source || rawTx.source_account);
+        const operationResult = operationResults?.[index];
+        const operationResultTr =
+            operationResult?.switch().name === 'opInner' ? operationResult.tr() : undefined;
+
+        switch (rawOp.type) {
+            case 'createAccount': {
+                const amount = toStroops(rawOp.startingBalance);
+                const destination = extractBaseAddress(rawOp.destination);
+
+                if (opSource === descriptor) {
+                    delta = delta.minus(amount);
+                }
+                if (destination === descriptor) {
+                    delta = delta.plus(amount);
+                }
+                break;
+            }
+            case 'payment': {
+                if (!rawOp.asset.isNative()) {
+                    break;
+                }
+
+                const amount = toStroops(rawOp.amount);
+                const destination = extractBaseAddress(rawOp.destination);
+
+                if (opSource === descriptor) {
+                    delta = delta.minus(amount);
+                }
+                if (destination === descriptor) {
+                    delta = delta.plus(amount);
+                }
+                break;
+            }
+            case 'pathPaymentStrictReceive': {
+                const destination = extractBaseAddress(rawOp.destination);
+                if (opSource === descriptor && rawOp.sendAsset.isNative()) {
+                    const settledNativeSendAmount = getStrictReceiveSettledNativeSendAmount(
+                        operationResultTr?.switch().name === 'pathPaymentStrictReceive'
+                            ? operationResultTr.pathPaymentStrictReceiveResult()
+                            : undefined,
+                    );
+
+                    if (settledNativeSendAmount) {
+                        delta = delta.minus(settledNativeSendAmount);
+                    }
+                }
+                if (destination === descriptor && rawOp.destAsset.isNative()) {
+                    delta = delta.plus(toStroops(rawOp.destAmount));
+                }
+                break;
+            }
+            case 'pathPaymentStrictSend': {
+                const destination = extractBaseAddress(rawOp.destination);
+                if (opSource === descriptor && rawOp.sendAsset.isNative()) {
+                    delta = delta.minus(toStroops(rawOp.sendAmount));
+                }
+                if (destination === descriptor && rawOp.destAsset.isNative()) {
+                    const settledNativeReceiveAmount = getStrictSendSettledNativeReceiveAmount(
+                        operationResultTr?.switch().name === 'pathPaymentStrictSend'
+                            ? operationResultTr.pathPaymentStrictSendResult()
+                            : undefined,
+                    );
+
+                    if (settledNativeReceiveAmount) {
+                        delta = delta.plus(settledNativeReceiveAmount);
+                    }
+                }
+                break;
+            }
+            case 'createClaimableBalance': {
+                if (rawOp.asset.isNative() && opSource === descriptor) {
+                    delta = delta.minus(toStroops(rawOp.amount));
+                }
+                break;
+            }
+            default:
+                break;
+        }
+    }
+
+    return delta;
 };
 
 type CreateTransactionBuilderParams = {

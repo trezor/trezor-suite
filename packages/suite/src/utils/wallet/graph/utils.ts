@@ -1,4 +1,4 @@
-import { differenceInMonths, fromUnixTime, isWithinInterval } from 'date-fns';
+import { fromUnixTime, isWithinInterval } from 'date-fns';
 
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
 import { resetTime } from '@suite-common/suite-utils';
@@ -12,9 +12,9 @@ import { type Account } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import type { BlockchainAccountBalanceHistory, StaticSessionId } from '@trezor/connect';
+import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { type AppState } from 'src/reducers/store';
 import { type State as GraphState } from 'src/reducers/wallet/graphReducer';
 import {
     type CommonAggregatedHistory,
@@ -65,13 +65,6 @@ export const accountGraphDataFilterFn = (d: GraphData, account: Account) =>
     d.account.deviceState === account.deviceState;
 
 /**
- * Extract only accounts for which we don't have any data for given interval
- */
-export function getPristineAccounts(graph: AppState['wallet']['graph'], accounts: Account[]) {
-    return accounts.filter(account => !graph.data.find(d => accountGraphDataFilterFn(d, account)));
-}
-
-/**
  * Does given network has backend type with support for retrieving transactions history, e.g. for showing graph?
  */
 export function isNetworkWithGraphFeature(symbol: NetworkSymbol, backendType?: BackendType) {
@@ -82,6 +75,31 @@ export function isNetworkWithGraphFeature(symbol: NetworkSymbol, backendType?: B
 
     return backendType !== 'evm-rpc';
 }
+
+const legacyChartSupportedNetworks: ReadonlySet<NetworkSymbol> = new Set([
+    'arb',
+    'avax',
+    'base',
+    'bch',
+    'bsc',
+    'btc',
+    'doge',
+    'etc',
+    'eth',
+    'ltc',
+    'op',
+    'pol',
+    'regtest',
+    'test',
+    'thod',
+    'trx',
+    'tsep',
+    'ttrx',
+    'zec',
+]);
+
+export const isNetworkWithLegacyGraphFeature = (symbol: NetworkSymbol, backendType?: BackendType) =>
+    legacyChartSupportedNetworks.has(symbol) && isNetworkWithGraphFeature(symbol, backendType);
 
 export const enhanceBlockchainAccountHistory = (
     data: BlockchainAccountBalanceHistory[],
@@ -110,6 +128,61 @@ export const enhanceBlockchainAccountHistory = (
             balance,
         };
     });
+
+    return enhancedResponse;
+};
+
+export const enhanceBlockchainAccountHistoryFromCurrentBalance = (
+    data: BlockchainAccountBalanceHistory[],
+    symbol: NetworkSymbol,
+    currentBalance = '0',
+    anchorTime?: number,
+) => {
+    let balance = new BigNumber(currentBalance);
+    const sortedData = [...data].sort((a, b) => a.time - b.time);
+    const enhancedResponse = Array<BlockchainAccountBalanceHistory & { balance: string }>(
+        sortedData.length,
+    );
+
+    for (let i = sortedData.length - 1; i >= 0; i--) {
+        const dataPoint = sortedData[i];
+        const normalizedReceived = dataPoint.sentToSelf
+            ? new BigNumber(dataPoint.received).minus(dataPoint.sentToSelf || 0).toFixed()
+            : dataPoint.received;
+        const normalizedSent = dataPoint.sentToSelf
+            ? new BigNumber(dataPoint.sent).minus(dataPoint.sentToSelf || 0).toFixed()
+            : dataPoint.sent;
+
+        const formattedReceived = formatNetworkAmount(normalizedReceived, symbol);
+        const formattedSent = formatNetworkAmount(normalizedSent, symbol);
+
+        enhancedResponse[i] = {
+            ...dataPoint,
+            received: formattedReceived,
+            sent: formattedSent,
+            time: resetTime(dataPoint.time),
+            balance: balance.toFixed(),
+        };
+
+        balance = balance.minus(formattedReceived).plus(formattedSent);
+    }
+
+    if (anchorTime !== undefined) {
+        const shouldPrependAnchor =
+            enhancedResponse.length === 0 || enhancedResponse[0].time > anchorTime;
+
+        if (shouldPrependAnchor) {
+            enhancedResponse.unshift({
+                balance: balance.toFixed(),
+                rates: {},
+                received: '0',
+                sent: '0',
+                sentToSelf: '0',
+                time: anchorTime,
+                txs: 0,
+            });
+        }
+    }
 
     return enhancedResponse;
 };
@@ -183,29 +256,41 @@ export const sumFiatValueMap = (valueMap: FiatValueMap, obj: FiatValueMap) => {
     return newMap;
 };
 
+const calcMinYDomain = (minMaxValues: [number, number]) => {
+    const [minDataValue] = minMaxValues;
+    const decimals = minDataValue.toString().split('.')[1]?.length;
+    const min = decimals && decimals > 0 ? 1 / 10 ** decimals : 0.00000001;
+
+    return min;
+};
+
 export const calcYDomain = (
+    type: 'fiat' | 'crypto',
+    scale: 'linear' | 'log',
     minMaxValues: [number, number],
     lastBalance?: string,
 ): [number, number] => {
     const [, maxDataValue] = minMaxValues;
-    const maxValueMultiplier = 1.2;
-    const minValue = 0;
+    const maxValueMultiplier = scale === 'linear' ? 1.2 : 10;
+
+    let minValue: number;
+    if (scale === 'linear') {
+        minValue = 0;
+    } else if (type === 'fiat') {
+        minValue = 0.01;
+    } else {
+        minValue = calcMinYDomain(minMaxValues);
+    }
 
     if (maxDataValue > 0) {
         return [minValue, maxDataValue * maxValueMultiplier];
     }
 
-    // no txs, but there could be non zero balance we still need to show
     const lastBalanceBn = lastBalance ? new BigNumber(lastBalance) : null;
     if (lastBalanceBn && lastBalanceBn.gt(0)) {
         return [minValue, lastBalanceBn.toNumber() * 1.2];
     }
 
-    // got maxValue === 0, zero balance
-    // We basically don't handle the value of tokens txs.
-    // They'll create dataPoints for the graph, but the sent/received amounts are always 0
-    // This make sure we show nice fake y axis in cases in which there are only tokens txs.
-    // Second usecase is on the dashboard when someone picks a range in which there are no txs
     return [minValue, 10 * maxValueMultiplier];
 };
 
@@ -217,32 +302,25 @@ export const calcXDomain = (
     const start = ticks[0];
     const lastTick = ticks[ticks.length - 1];
     const lastData = data[data.length - 1];
-    // if the last data point is after last tick/label use datapoint's timestamp to mark the end of the interval
     const end = lastData && lastTick < lastData.time ? lastData.time : lastTick;
 
-    let xPadding;
-    switch (range.label) {
-        case 'all':
-            xPadding = 3600 * 24 * 30; // 30 days
-            break;
-        case 'year':
-            xPadding = 3600 * 24 * 14; // 14 days
-            break;
-        case 'month':
-        case 'day':
-            xPadding = 3600 * 24; // 1 day
-            break;
-        case 'range':
-            if (differenceInMonths(range.endDate, range.startDate) <= 1) {
-                xPadding = 3600 * 24; // 1 day
-            } else {
-                xPadding = 3600 * 24 * 14; // 14 days
-            }
-            break;
-        case 'week':
-            xPadding = 3600 * 12;
-            break;
-    }
+    const xPadding = (() => {
+        switch (range.label) {
+            case 'all':
+                return 3600 * 24 * 30;
+            case 'year':
+                return 3600 * 24 * 14;
+            case 'month':
+            case 'day':
+                return 3600 * 24;
+            case 'week':
+                return 3600 * 12;
+            case 'hour':
+                return 3600;
+            default:
+                return exhaustive(range);
+        }
+    })();
 
     return [start - xPadding, end + xPadding];
 };

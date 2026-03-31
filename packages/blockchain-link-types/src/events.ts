@@ -1,6 +1,13 @@
-import type { BlockEvent, FiatRatesEvent, MempoolEvent, NotificationEvent } from './responses';
+import type {
+    AccountBalanceHistoryProgressEvent,
+    BlockEvent,
+    FiatRatesEvent,
+    MempoolEvent,
+    NotificationEvent,
+} from './responses';
 
 export interface Events {
+    accountBalanceHistoryProgress: AccountBalanceHistoryProgressEvent['payload'];
     connected: undefined;
     disconnected: undefined;
     notification: NotificationEvent['payload'];

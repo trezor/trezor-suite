@@ -54,3 +54,23 @@ export type TickerResult = {
 
 export type RatesByKey = Record<CryptoBaseCurrencyPair, Rate>;
 export type RatesByTimestamps = Record<CryptoBaseCurrencyPair, Record<Timestamp, number>>;
+
+export type GraphFiatResolution = 'day' | 'month' | 'max';
+
+export type GraphFiatPoint = {
+    time: number;
+    price: number;
+};
+
+export type GraphFiatResolutionEntry = {
+    points: GraphFiatPoint[];
+    fetchedAt: Timestamp | null;
+    lastPointTimestamp: number | null;
+    isLoading: boolean;
+    error: string | null;
+};
+
+export type GraphFiatCoinEntry = {
+    currency: BaseCurrencyCode;
+    resolutions: Record<GraphFiatResolution, GraphFiatResolutionEntry>;
+};

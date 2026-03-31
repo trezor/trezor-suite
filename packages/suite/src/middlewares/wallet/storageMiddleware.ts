@@ -52,6 +52,7 @@ import { STORAGE, SUITE } from 'src/actions/suite/constants';
 import * as storageActions from 'src/actions/suite/storageActions';
 import { GRAPH } from 'src/actions/wallet/constants';
 import * as COINJOIN from 'src/actions/wallet/constants/coinjoinConstants';
+import { refreshGraphFiatResolution } from 'src/actions/wallet/graphFiatActions';
 import { db } from 'src/storage';
 import type { AppState, Dispatch, Action as SuiteAction } from 'src/types/suite';
 import type { WalletAction } from 'src/types/wallet';
@@ -176,6 +177,19 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                             );
                         }
                     }
+                }
+            }
+
+            if (refreshGraphFiatResolution.fulfilled.match(action)) {
+                const graphFiatKey = `${action.payload.coinId}:${action.payload.baseCurrencyCode}`;
+                const graphFiatEntry = api.getState().wallet.graphFiat[graphFiatKey];
+
+                if (graphFiatEntry) {
+                    storageActions.saveGraphFiatRates({
+                        baseCurrencyCode: action.payload.baseCurrencyCode,
+                        coinId: action.payload.coinId,
+                        graphFiatEntry,
+                    });
                 }
             }
 

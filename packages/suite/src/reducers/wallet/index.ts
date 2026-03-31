@@ -21,6 +21,7 @@ import { extraDependencies } from 'src/support/extraDependencies';
 import accountSearchReducer from './accountSearchReducer';
 import { coinjoinReducer } from './coinjoinReducer';
 import formDraftReducer from './formDraftReducer';
+import { graphFiatReducer } from './graphFiatReducer';
 import graphReducer from './graphReducer';
 import receiveReducer from './receiveReducer';
 import selectedAccountReducer from './selectedAccountReducer';
@@ -40,6 +41,7 @@ export const walletSettingsReducer = prepareWalletSettingsReducer(extraDependenc
 const WalletReducers = combineReducers({
     fiat: fiatRatesReducer,
     graph: graphReducer,
+    graphFiat: graphFiatReducer,
     transactions: transactionsReducer,
     phishing: phishingReducer,
     discovery: discoveryReducer,

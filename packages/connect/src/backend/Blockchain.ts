@@ -207,6 +207,18 @@ export class Blockchain {
     }
 
     getAccountBalanceHistory(params: BlockchainLinkParams<'getAccountBalanceHistory'>) {
+        if (this.link.listenerCount('accountBalanceHistoryProgress') === 0) {
+            this.link.on('accountBalanceHistoryProgress', progress => {
+                this.postMessage(
+                    createBlockchainMessage(BLOCKCHAIN.ACCOUNT_GRAPH_PROGRESS, {
+                        coin: this.coinInfo,
+                        identity: this.identity,
+                        progress,
+                    }),
+                );
+            });
+        }
+
         return this.link.getAccountBalanceHistory(params);
     }
 

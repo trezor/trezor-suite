@@ -1,7 +1,8 @@
 import { FormattedDate } from 'react-intl';
 
-import { differenceInMonths } from 'date-fns';
 import { useTheme } from 'styled-components';
+
+import { exhaustive } from '@trezor/type-utils';
 
 import { type GraphRange } from 'src/types/wallet/graph';
 
@@ -15,24 +16,26 @@ const getFormattedDate = (range: GraphRange, date: Date) => {
             return <FormattedDate value={date} day="2-digit" month="short" />;
         case 'week':
         case 'day':
+        case 'hour':
             return <FormattedDate value={date} weekday="short" />;
-        case 'range':
-            if (differenceInMonths(range.endDate, range.startDate) <= 1) {
-                return <FormattedDate value={date} day="2-digit" month="short" />;
-            }
-
-            return <FormattedDate value={date} month="short" year="numeric" />;
-        // no default
+        default:
+            return exhaustive(range);
     }
 };
 
 interface GraphXAxisProps {
     selectedRange: GraphRange;
-    [k: string]: any;
+    payload?: {
+        value: number;
+    };
+    x?: number;
+    y?: number;
 }
 
-export const GraphXAxisTick = ({ x, y, payload, selectedRange }: GraphXAxisProps) => {
+export const GraphXAxisTick = ({ x = 0, y = 0, payload, selectedRange }: GraphXAxisProps) => {
     const theme = useTheme();
+
+    if (!payload) return null;
 
     const date = new Date(0);
     date.setUTCSeconds(payload.value);
@@ -47,7 +50,7 @@ export const GraphXAxisTick = ({ x, y, payload, selectedRange }: GraphXAxisProps
                 fill={theme.contentSecondary}
                 style={{ fontVariantNumeric: 'tabular-nums' }}
             >
-                {date && getFormattedDate(selectedRange, date)}
+                {getFormattedDate(selectedRange, date)}
             </text>
         </g>
     );

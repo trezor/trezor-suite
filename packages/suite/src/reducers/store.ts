@@ -31,6 +31,7 @@ import { mergeDeepObject } from '@trezor/utils';
 
 import { suiteSyncSlice } from 'src/actions/suiteSync/suiteSyncSlice';
 import { suiteSyncQuotaManagerSlice } from 'src/actions/suiteSyncQuotaManager/suiteSyncQuotaManagerSlice';
+import { SET_SELECTED_RANGE } from 'src/actions/wallet/constants/graphConstants';
 import onboardingMiddlewares from 'src/middlewares/onboarding';
 import { getSuiteMiddleware } from 'src/middlewares/suite';
 import { toastMiddleware } from 'src/middlewares/suite/toastMiddleware';
@@ -169,11 +170,13 @@ export const initStore = (
             getDefaultMiddleware({
                 immutableCheck: false,
                 serializableCheck: {
-                    ignoredActions: [MODAL_OPEN_USER_CONTEXT],
+                    ignoredActions: [MODAL_OPEN_USER_CONTEXT, SET_SELECTED_RANGE],
                     ignoredPaths: [
                         'modal.payload.decision.promise',
                         'modal.payload.decision.resolve',
                         'modal.payload.decision.reject',
+                        'wallet.graph.selectedRange.startDate',
+                        'wallet.graph.selectedRange.endDate',
                     ],
                 },
             })

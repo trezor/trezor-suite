@@ -17,6 +17,11 @@ export interface GraphData {
     error: boolean;
     isLoading: boolean;
     data: AccountHistoryWithBalance[];
+    rawData: BlockchainAccountBalanceHistory[];
+    fetchedRange: {
+        from: null | number;
+        to: null | number;
+    };
 }
 
 export interface CommonAggregatedHistory {
@@ -32,7 +37,7 @@ export interface CommonAggregatedHistory {
 
 export type GraphRange =
     | {
-          label: 'day' | 'week' | 'month' | 'year' | 'range';
+          label: 'day' | 'week' | 'month' | 'year' | 'hour';
           startDate: Date;
           endDate: Date;
           groupBy: 'month' | 'day';

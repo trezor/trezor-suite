@@ -1,4 +1,4 @@
-import { type JSX, useEffect } from 'react';
+import { type JSX, type ReactNode, useEffect } from 'react';
 
 import { type TooltipProps } from 'recharts';
 import styled from 'styled-components';
@@ -10,15 +10,11 @@ import { paletteV1, paletteV2, spacings } from '@trezor/theme';
 import { FormattedDate } from 'src/components/suite/FormattedDate';
 import { type CommonAggregatedHistory, type GraphRange } from 'src/types/wallet/graph';
 
-// Used for triggering custom Tooltip alignment
 const OFFSET_LIMIT_HORIZONTAL = 125;
 
-// When the Tooltip gets triggered near to the horizontal boundaries, it might overflow outside of the screen
-// These positioning functions are used to align it properly from each side
 const calculateXPosition = (x: number, offset = 0) => `calc(${x}px - ${x / 2}px + ${offset}px)`;
 const calculateXPositionRight = (x: number, offset = 0) => `calc(${x}px + 25% + ${offset}px)`;
 
-// Tooltip should be centered and above the chart bars but should not overflow horizontally thanks to the positioning functions
 const getTooltipXPosition = (x: number, width: number): string => {
     if (x <= OFFSET_LIMIT_HORIZONTAL) {
         return calculateXPosition(x, -30);
@@ -31,7 +27,6 @@ const getTooltipXPosition = (x: number, width: number): string => {
     return `calc(${x}px - 50%)`;
 };
 
-// Align the triangle arrow in a similar manner
 const getTooltipArrowXPosition = (x: number, width: number): string => {
     if (x <= OFFSET_LIMIT_HORIZONTAL) {
         return `left: ${calculateXPosition(x, -30)};`;
@@ -80,13 +75,13 @@ const Col = styled.div`
     flex-direction: column;
 `;
 
-const Title = ({ children }: { children: React.ReactNode }) => (
+const Title = ({ children }: { children: ReactNode }) => (
     <Text typographyStyle="body-md" margin={{ right: 20 }}>
         {children}
     </Text>
 );
 
-const Value = ({ children }: { children: React.ReactNode }) => (
+const Value = ({ children }: { children: ReactNode }) => (
     <Text typographyStyle="body-md-strong">{children}</Text>
 );
 
@@ -117,7 +112,7 @@ const formatDate = (date: Date, dateFormat: 'day' | 'month') => {
     return <FormattedDate value={date} date day={undefined} />;
 };
 
-interface GraphTooltipBaseProps extends TooltipProps<number, any> {
+interface GraphTooltipBaseProps extends TooltipProps<number, string> {
     selectedRange: GraphRange;
     receivedAmount: JSX.Element;
     sentAmount: JSX.Element;
@@ -126,42 +121,49 @@ interface GraphTooltipBaseProps extends TooltipProps<number, any> {
     extendedDataForInterval?: CommonAggregatedHistory[];
 }
 
-export const GraphTooltipBase = (props: GraphTooltipBaseProps) => {
+export const GraphTooltipBase = ({
+    active,
+    balance,
+    coordinate,
+    extendedDataForInterval,
+    onShow,
+    payload,
+    selectedRange,
+    receivedAmount,
+    sentAmount,
+    viewBox,
+}: GraphTooltipBaseProps) => {
     useEffect(() => {
-        if (!props.onShow || !props.extendedDataForInterval) {
+        if (!onShow || !extendedDataForInterval || !payload?.[0]) {
             return;
         }
 
-        props.onShow(
-            props.extendedDataForInterval.findIndex(
-                item => item.time === props.payload?.[0].payload.time,
-            ),
-        );
-    }, [props]);
+        onShow(extendedDataForInterval.findIndex(item => item.time === payload[0].payload.time));
+    }, [extendedDataForInterval, onShow, payload]);
 
-    if (!props.active || !props.payload) {
+    if (!active || !payload?.[0] || !coordinate || !viewBox) {
         return null;
     }
 
-    const date = new Date(props.payload[0].payload.time * 1000);
+    const date = new Date(payload[0].payload.time * 1000);
+    const positionX = coordinate.x ?? 0;
+    const boxWidth = viewBox.width ?? 0;
     const dateFormat =
-        props.selectedRange?.label === 'year' || props.selectedRange?.label === 'all'
-            ? 'month'
-            : 'day';
+        selectedRange.label === 'year' || selectedRange.label === 'all' ? 'month' : 'day';
 
     return (
         <CustomTooltipWrapper
-            $positionX={props.coordinate!.x!}
-            $boxWidth={props.viewBox!.width!}
+            $positionX={positionX}
+            $boxWidth={boxWidth}
             data-testid="@dashboard/customtooltip"
         >
             <Row margin={{ bottom: spacings.xxs, left: spacings.xs, right: spacings.xs }}>
-                <Title>{date && formatDate(date, dateFormat)}</Title>
+                <Title>{formatDate(date, dateFormat)}</Title>
             </Row>
 
             <ColsWrapper>
                 <Col>
-                    {props.balance && (
+                    {balance && (
                         <Row
                             margin={{ bottom: spacings.xxs, left: spacings.xs, right: spacings.xs }}
                         >
@@ -189,13 +191,13 @@ export const GraphTooltipBase = (props: GraphTooltipBaseProps) => {
                 </Col>
 
                 <Col>
-                    {props.balance && (
+                    {balance && (
                         <Row
                             margin={{ bottom: spacings.xxs, left: spacings.xs, right: spacings.xs }}
                         >
                             <Value>
                                 <Row margin={{ left: spacings.xs, right: spacings.xs }}>
-                                    {props.balance}
+                                    {balance}
                                 </Row>
                             </Value>
                         </Row>
@@ -205,11 +207,11 @@ export const GraphTooltipBase = (props: GraphTooltipBaseProps) => {
                         <Row
                             margin={{ bottom: spacings.xxs, left: spacings.xs, right: spacings.xs }}
                         >
-                            <Value>{props.receivedAmount}</Value>
+                            <Value>{receivedAmount}</Value>
                         </Row>
 
                         <Row margin={{ left: spacings.xs, right: spacings.xs }}>
-                            <Value>{props.sentAmount}</Value>
+                            <Value>{sentAmount}</Value>
                         </Row>
                     </HighlightedAreaRight>
                 </Col>

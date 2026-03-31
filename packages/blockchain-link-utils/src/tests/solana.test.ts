@@ -3,6 +3,7 @@ import type {
     ParsedTransactionWithMeta,
     SolanaValidParsedTxWithMeta,
 } from '@trezor/coins-solana/types';
+import { BigNumber } from '@trezor/utils';
 
 import {
     type ApiTokenAccount,
@@ -40,6 +41,62 @@ describe('solana/utils', () => {
                 expect(result).toEqual(expectedOutput);
             });
         });
+
+        it('matches descriptor against account keys via string normalization', () => {
+            const result = extractAccountBalanceDiff(
+                {
+                    transaction: {
+                        message: {
+                            accountKeys: [
+                                {
+                                    pubkey: {
+                                        toString: () => 'descriptor-address',
+                                    },
+                                },
+                            ],
+                        },
+                    },
+                    meta: {
+                        preBalances: [1000n],
+                        postBalances: [2500n],
+                    },
+                } as unknown as ParsedTransactionWithMeta,
+                'descriptor-address',
+            );
+
+            expect(result).toEqual({
+                preBalance: new BigNumber(1000),
+                postBalance: new BigNumber(2500),
+            });
+        });
+
+        it('matches descriptor against wrapped pubkey objects', () => {
+            const result = extractAccountBalanceDiff(
+                {
+                    transaction: {
+                        message: {
+                            accountKeys: [
+                                {
+                                    pubkey: {
+                                        address: 'wrapped-descriptor-address',
+                                    },
+                                },
+                            ],
+                        },
+                    },
+                    meta: {
+                        preBalances: [11n],
+                        postBalances: [22n],
+                    },
+                } as unknown as ParsedTransactionWithMeta,
+                'wrapped-descriptor-address',
+            );
+
+            expect(result).toEqual({
+                preBalance: new BigNumber(11),
+                postBalance: new BigNumber(22),
+            });
+        });
     });
 
     describe('getTransactionEffects', () => {
@@ -58,9 +115,7 @@ describe('solana/utils', () => {
         fixtures.getTxType.forEach(({ description, input, expectedOutput }) => {
             it(description, () => {
                 const result = getTxType(
-                    // @ts-expect-error Fixtures don't fully implement this interface.
-                    input.transaction as SolanaValidParsedTxWithMeta,
-                    // @ts-expect-error Fixtures don't fully implement this interface.
+                    input.transaction as unknown as SolanaValidParsedTxWithMeta,
                     input.effects,
                     input.accountAddress,
                     input.tokenEffects as TokenTransfer[],
@@ -74,7 +129,6 @@ describe('solana/utils', () => {
         fixtures.getTargets.forEach(({ description, input, expectedOutput }) => {
             it(description, () => {
                 const result = getTargets(
-                    // @ts-expect-error Fixtures don't fully implement this interface.
                     input.effects,
                     input.txType as Transaction['type'],
                     input.accountAddress,
@@ -87,11 +141,7 @@ describe('solana/utils', () => {
     describe('getAmount', () => {
         fixtures.getAmount.forEach(({ description, input, expectedOutput }) => {
             it(description, () => {
-                const result = getAmount(
-                    // @ts-expect-error Fixtures don't fully implement this interface.
-                    input.accountEffect,
-                    input.txType as Transaction['type'],
-                );
+                const result = getAmount(input.accountEffect, input.txType as Transaction['type']);
 
                 expect(result).toEqual(expectedOutput);
             });
@@ -102,9 +152,7 @@ describe('solana/utils', () => {
         fixtures.getDetails.forEach(({ description, input, expectedOutput }) => {
             it(description, () => {
                 const result = getDetails(
-                    // @ts-expect-error Fixtures don't fully implement this interface.
-                    input.transaction as SolanaValidParsedTxWithMeta,
-                    // @ts-expect-error Fixtures don't fully implement this interface.
+                    input.transaction as unknown as SolanaValidParsedTxWithMeta,
                     input.effects,
                     input.accountAddress,
                     input.txType,

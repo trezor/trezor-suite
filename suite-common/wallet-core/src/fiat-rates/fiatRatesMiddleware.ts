@@ -1,5 +1,6 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 
+import { cancelPendingCoinGeckoRequests } from '@suite-common/fiat-services';
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { type TickerId, type Timestamp, type TokenAddress } from '@suite-common/wallet-types';
 import { isNative } from '@trezor/env-utils';
@@ -73,6 +74,7 @@ export const prepareFiatRatesMiddleware = createMiddlewareWithExtraDeps(
 
         if (setBaseCurrency.match(action)) {
             const { localCurrency } = action.payload;
+            cancelPendingCoinGeckoRequests();
             // We need to pass localCurrency as a parameter, because it is not yet updated in the store
             dispatch(fetchFiatRatesThunk({ rateType: 'current', localCurrency }));
             if (!isNative()) {

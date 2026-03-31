@@ -84,10 +84,6 @@ export const messages = defineMessages({
         description: 'Used as a variable for device name',
         id: 'TR_ANY_TREZOR',
     },
-    TR_FILTER: {
-        defaultMessage: 'Filter',
-        id: 'TR_FILTER',
-    },
     TR_HIDE_SCAM_TRANSACTIONS_TOOLTIP: {
         defaultMessage: 'Hide suspicious transactions for a cleaner view.',
         id: 'TR_HIDE_SCAM_TRANSACTIONS_TOOLTIP',
@@ -169,10 +165,6 @@ export const messages = defineMessages({
         defaultMessage: 'Standard wallet',
         id: 'TR_ADD_WALLET',
     },
-    TR_PASSPHRASE_WALLET_NEEDS_ENABLED_NETWORK: {
-        defaultMessage: 'Activate at least one coin before adding a passphrase wallet.',
-        id: 'TR_PASSPHRASE_WALLET_NEEDS_ENABLED_NETWORK',
-    },
     TR_RECIPIENT_ADDRESS: {
         defaultMessage: 'Recipient address',
         description: 'Used as label for send address input',
@@ -235,6 +227,11 @@ export const messages = defineMessages({
         id: 'TR_EXCHANGE_FLOAT_OFFERS_INFO',
         defaultMessage:
             'Floating-rate offers may result in slight changes to the final amount due to market fluctuations, but they’re typically higher, so you could receive more crypto.',
+    },
+    TR_EXCHANGE_FEES_INFO: {
+        id: 'TR_EXCHANGE_FEES_INFO',
+        defaultMessage:
+            'All fees included. Estimated transaction fee: {feeAmount} ({feeAmountFiat}).',
     },
     TR_TRADING_DISABLED_DEFAULT: {
         defaultMessage: '{type} is currently disabled.',
@@ -642,6 +639,30 @@ export const messages = defineMessages({
         id: 'TR_TRADING_EXCHANGE_DEX_OFFERS_HEADING_TOOLTIP',
         dynamic: true,
     },
+    TR_TRADING_EXCHANGE_COMPARATOR_FILTER_KYC_ALL: {
+        defaultMessage: 'All KYC options',
+        id: 'TR_TRADING_EXCHANGE_COMPARATOR_FILTER_KYC_ALL',
+    },
+    TR_TRADING_EXCHANGE_COMPARATOR_FILTER_NO_KYC: {
+        defaultMessage: 'KYC is never required',
+        id: 'TR_TRADING_EXCHANGE_COMPARATOR_FILTER_NO_KYC',
+    },
+    TR_TRADING_EXCHANGE_COMPARATOR_FILTER_RATE_ALL: {
+        defaultMessage: 'All CEX & DEX offers',
+        id: 'TR_TRADING_EXCHANGE_COMPARATOR_FILTER_RATE_ALL',
+    },
+    TR_TRADING_EXCHANGE_COMPARATOR_FILTER_RATE_FIXED_CEX: {
+        defaultMessage: 'Fixed-rate CEX',
+        id: 'TR_TRADING_EXCHANGE_COMPARATOR_FILTER_RATE_FIXED_CEX',
+    },
+    TR_TRADING_EXCHANGE_COMPARATOR_FILTER_RATE_FLOATING_CEX: {
+        defaultMessage: 'Floating-rate CEX',
+        id: 'TR_TRADING_EXCHANGE_COMPARATOR_FILTER_RATE_FLOATING_CEX',
+    },
+    TR_TRADING_EXCHANGE_COMPARATOR_FILTER_RATE_DEX: {
+        defaultMessage: 'DEX',
+        id: 'TR_TRADING_EXCHANGE_COMPARATOR_FILTER_RATE_DEX',
+    },
     TR_TRADING_EXCHANGE_SIGN_BANNER_TITLE: {
         defaultMessage: 'You’re swapping with {provider}',
         id: 'TR_TRADING_EXCHANGE_SIGN_BANNER_TITLE',
@@ -940,6 +961,10 @@ export const messages = defineMessages({
         defaultMessage: "Go to the provider's website",
         id: 'TR_BUY_DETAIL_WAITING_FOR_USER_GATE',
     },
+    TR_TRADING_OFFERS_EMPTY: {
+        defaultMessage: 'Select your from/to assets and amount to search for your best offer.',
+        id: 'TR_TRADING_OFFERS_EMPTY',
+    },
     TR_BUY_SELL_OFFERS_EMPTY: {
         defaultMessage: 'Select your assets and amount to search for your best offer.',
         id: 'TR_BUY_SELL_OFFERS_EMPTY',
@@ -1099,6 +1124,14 @@ export const messages = defineMessages({
         defaultMessage: 'Trade fee',
         id: 'TR_TRADING_TRADE_FEE',
     },
+    TR_TRADING_OFFERS_REFRESH: {
+        defaultMessage: 'Offers refresh in',
+        id: 'TR_TRADING_OFFERS_REFRESH',
+    },
+    TR_TRADING_OFFERS_SELECT: {
+        defaultMessage: 'Select',
+        id: 'TR_TRADING_OFFERS_SELECT',
+    },
     TR_TRADING_POPULAR_CURRENCIES: {
         defaultMessage: 'Popular currencies',
         id: 'TR_TRADING_POPULAR_CURRENCIES',
@@ -1143,6 +1176,20 @@ export const messages = defineMessages({
     TR_TRADING_DEX_TOOLTIP: {
         id: 'TR_TRADING_DEX_TOOLTIP',
         defaultMessage: 'Decentralized exchange',
+        dynamic: true,
+    },
+    TR_TRADING_FEATURED_OFFERS_HEADING: {
+        defaultMessage: 'Featured offers',
+        id: 'TR_TRADING_FEATURED_OFFERS_HEADING',
+    },
+    TR_TRADING_FEATURED_OFFER_PAYMENT_METHOD_BUY_LABEL: {
+        defaultMessage: 'Payment:',
+        id: 'TR_TRADING_FEATURED_OFFER_PAYMENT_METHOD_BUY_LABEL',
+        dynamic: true,
+    },
+    TR_TRADING_FEATURED_OFFER_PAYMENT_METHOD_SELL_LABEL: {
+        defaultMessage: 'Payout method:',
+        id: 'TR_TRADING_FEATURED_OFFER_PAYMENT_METHOD_SELL_LABEL',
         dynamic: true,
     },
     TR_TRADING_NO_METHODS_AVAILABLE: {
@@ -2789,15 +2836,15 @@ export const messages = defineMessages({
         id: 'TR_INCLUDING_TOKENS_AND_STAKING',
     },
     TR_BALANCE_EXCLUDES_TOKENS: {
-        defaultMessage: "Token amounts aren't included.",
+        defaultMessage: "Token amounts aren't included in the balance.",
         id: 'TR_BALANCE_EXCLUDES_TOKENS',
     },
     TR_BALANCE_EXCLUDES_STAKING: {
-        defaultMessage: "Staked amounts aren't included.",
+        defaultMessage: "Staked amounts aren't included in the balance.",
         id: 'TR_BALANCE_EXCLUDES_STAKING',
     },
     TR_BALANCE_EXCLUDES_TOKENS_AND_STAKING: {
-        defaultMessage: "Token and staked amounts aren't included.",
+        defaultMessage: "Token and staked amounts aren't included in the balance.",
         id: 'TR_BALANCE_EXCLUDES_TOKENS_AND_STAKING',
     },
     TR_NETWORK_TITLE: {
@@ -2956,8 +3003,12 @@ export const messages = defineMessages({
         id: 'TR_RECEIVE',
     },
     TR_RECEIVE_DESCRIPTION: {
-        defaultMessage: 'Learn how to <a>choose the right network</a> to receive your tokens',
+        defaultMessage: 'Learn how to <a>select the right network</a> to receive your tokens',
         id: 'TR_RECEIVE_DESCRIPTION',
+    },
+    TR_SWAP_TO_NETWORK_DESCRIPTION: {
+        defaultMessage: 'Learn how to <a>choose the right network</a> to receive your tokens',
+        id: 'TR_SWAP_TO_NETWORK_DESCRIPTION',
     },
     TR_RECEIVE_SEARCH: {
         defaultMessage: 'Search account',
@@ -5492,6 +5543,14 @@ export const messages = defineMessages({
         defaultMessage:
             'Enable the MCP (Model Context Protocol) server to allow AI agents interact with your Trezor. The server runs on localhost only.',
     },
+    TR_EXPERIMENTAL_NEW_BALANCE_GRAPH: {
+        id: 'TR_EXPERIMENTAL_NEW_BALANCE_GRAPH',
+        defaultMessage: 'New balance graph',
+    },
+    TR_EXPERIMENTAL_NEW_BALANCE_GRAPH_DESCRIPTION: {
+        id: 'TR_EXPERIMENTAL_NEW_BALANCE_GRAPH_DESCRIPTION',
+        defaultMessage: 'Enable the redesigned balance graph in portfolio and account views.',
+    },
     TR_MCP_CLIENT_CONFIGURATION: {
         id: 'TR_MCP_CLIENT_CONFIGURATION',
         defaultMessage: 'Client configuration',
@@ -5832,6 +5891,10 @@ export const messages = defineMessages({
     TR_BALANCE: {
         id: 'TR_BALANCE',
         defaultMessage: 'Balance',
+    },
+    TR_MY_PORTFOLIO: {
+        id: 'TR_MY_PORTFOLIO',
+        defaultMessage: 'Portfolio',
     },
     TR_REWARD: {
         id: 'TR_REWARD',
@@ -7225,7 +7288,7 @@ export const messages = defineMessages({
     },
     TR_RANGE: {
         id: 'TR_RANGE',
-        defaultMessage: 'Range',
+        defaultMessage: 'range',
     },
     TR_BUMP_FEE: {
         id: 'TR_BUMP_FEE',
@@ -7473,6 +7536,30 @@ export const messages = defineMessages({
     TR_BYTES: {
         id: 'TR_BYTES',
         defaultMessage: 'bytes',
+    },
+    TR_GRAPH_LINEAR: {
+        id: 'TR_GRAPH_LINEAR',
+        defaultMessage: 'Linear',
+    },
+    TR_GRAPH_LOGARITHMIC: {
+        id: 'TR_GRAPH_LOGARITHMIC',
+        defaultMessage: 'Logarithmic',
+    },
+    TR_GRAPH_SHOW_TRANSACTIONS: {
+        id: 'TR_GRAPH_SHOW_TRANSACTIONS',
+        defaultMessage: 'Show transactions',
+    },
+    TR_GRAPH_VIEW: {
+        id: 'TR_GRAPH_VIEW',
+        defaultMessage: 'Graph view',
+    },
+    TR_SHOW_GRAPH: {
+        id: 'TR_SHOW_GRAPH',
+        defaultMessage: 'Show graph',
+    },
+    TR_HIDE_GRAPH: {
+        id: 'TR_HIDE_GRAPH',
+        defaultMessage: 'Hide graph',
     },
     TR_DATE_DAY_LONG: {
         id: 'TR_DATE_DAY_LONG',
@@ -9524,10 +9611,6 @@ export const messages = defineMessages({
         id: 'TR_EARN_YIELD_WITHDRAW',
         defaultMessage: 'Withdraw',
     },
-    TR_EARN_YIELD_REDEEM: {
-        id: 'TR_EARN_YIELD_REDEEM',
-        defaultMessage: 'Redeem',
-    },
     TR_EARN_YIELD_DASHBOARD_SUPPLY_NOW: {
         id: 'TR_EARN_YIELD_DASHBOARD_SUPPLY_NOW',
         defaultMessage: 'Deposit now',
@@ -9560,13 +9643,18 @@ export const messages = defineMessages({
         id: 'TR_EARN_YIELD_AMOUNT_TO_WITHDRAW',
         defaultMessage: 'Withdrawal amount',
     },
-    TR_EARN_YIELD_ENTER_AMOUNT_IN_TOKEN: {
-        id: 'TR_EARN_YIELD_ENTER_AMOUNT_IN_TOKEN',
-        defaultMessage: 'Enter amount in {tokenSymbol}',
-    },
     TR_EARN_YIELD_APPROVED_AMOUNT: {
         id: 'TR_EARN_YIELD_APPROVED_AMOUNT',
         defaultMessage: 'Approved amount',
+    },
+    TR_EARN_YIELD_NETWORK_FEE_WARNING_TITLE: {
+        id: 'TR_EARN_YIELD_NETWORK_FEE_WARNING_TITLE',
+        defaultMessage: 'You only have {amount} {networkDisplaySymbol} available.',
+    },
+    TR_EARN_YIELD_NETWORK_FEE_WARNING_DESCRIPTION: {
+        id: 'TR_EARN_YIELD_NETWORK_FEE_WARNING_DESCRIPTION',
+        defaultMessage:
+            'This balance may not cover network fees. Consider adding more {networkDisplaySymbol} before you continue.',
     },
     TR_EARN_YIELD_SUPPLY_COMPLETE: {
         id: 'TR_EARN_YIELD_SUPPLY_COMPLETE',
@@ -9678,27 +9766,15 @@ export const messages = defineMessages({
     },
     TR_EARN_YIELD_REVIEW_WITHDRAW_TITLE: {
         id: 'TR_EARN_YIELD_REVIEW_WITHDRAW_TITLE',
-        defaultMessage: 'Withdraw',
+        defaultMessage: 'Redeem',
     },
     TR_EARN_YIELD_REVIEW_WITHDRAW_DESCRIPTION: {
         id: 'TR_EARN_YIELD_REVIEW_WITHDRAW_DESCRIPTION',
-        defaultMessage: 'Review details to withdraw from vault.',
-    },
-    TR_EARN_YIELD_REVIEW_REDEEM_TITLE: {
-        id: 'TR_EARN_YIELD_REVIEW_REDEEM_TITLE',
-        defaultMessage: 'Redeem',
-    },
-    TR_EARN_YIELD_REVIEW_REDEEM_DESCRIPTION: {
-        id: 'TR_EARN_YIELD_REVIEW_REDEEM_DESCRIPTION',
         defaultMessage: 'Review details to redeem from vault.',
     },
     TR_EARN_YIELD_DEPOSIT_TO: {
         id: 'TR_EARN_YIELD_DEPOSIT_TO',
         defaultMessage: 'Deposit to',
-    },
-    TR_EARN_YIELD_WITHDRAW_FROM: {
-        id: 'TR_EARN_YIELD_WITHDRAW_FROM',
-        defaultMessage: 'Withdraw from',
     },
     TR_EARN_YIELD_REDEEM_FROM: {
         id: 'TR_EARN_YIELD_REDEEM_FROM',
@@ -9714,10 +9790,6 @@ export const messages = defineMessages({
     },
     TR_EARN_YIELD_REVIEW_WITHDRAW_AMOUNT: {
         id: 'TR_EARN_YIELD_REVIEW_WITHDRAW_AMOUNT',
-        defaultMessage: 'Withdraw amount',
-    },
-    TR_EARN_YIELD_REVIEW_REDEEM_AMOUNT: {
-        id: 'TR_EARN_YIELD_REVIEW_REDEEM_AMOUNT',
         defaultMessage: 'Redeem amount',
     },
     TR_EARN_DASHBOARD_ACTIVE: {

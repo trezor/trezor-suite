@@ -248,6 +248,8 @@ export interface Transaction {
         status: 'confirmed';
         stakeOperation?: { type: StakeType; amount: string };
         memo?: string;
+        /** Native SOL balance after this transaction (in lamports). */
+        postBalance?: string;
     };
     details: TransactionDetail;
     vsize?: number;

@@ -13,7 +13,8 @@ export type ExperimentalFeature =
     | 'experimental-networks'
     | 'tron-view-only'
     | 'mcp-server'
-    | 'gap-limit';
+    | 'gap-limit'
+    | 'new-balance-graph';
 
 /**
  * Set of features that are truly experimental (as opposed to regular features
@@ -28,6 +29,7 @@ export const experimentalFeatureSet: ReadonlySet<ExperimentalFeature> =
         'slip24',
         'experimental-networks',
         'tron-view-only',
+        'new-balance-graph',
     ]);
 
 /**
@@ -43,6 +45,7 @@ export const translatedExperimentalFeatures: ExperimentalFeatureTranslation = {
     'tron-view-only': 'TR_EXPERIMENTAL_TRON_VIEW_ONLY',
     'mcp-server': 'TR_EXPERIMENTAL_MCP_SERVER',
     'gap-limit': 'TR_EXPERIMENTAL_GAP_LIMIT',
+    'new-balance-graph': 'TR_EXPERIMENTAL_NEW_BALANCE_GRAPH',
 };
 
 export type FeedbackFeatureName = ExperimentalFeature | 'suite-sync' | 'stablecoin-yield';

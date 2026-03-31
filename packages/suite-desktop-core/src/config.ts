@@ -38,6 +38,9 @@ export const allowedDomains = [
     'xrplcluster.com', // XRP Ledger cluster, hosted by XRP Ledger Foundation
     'xrpl.ws', // XRP Ledger cluster, hosted by XRP Ledger Foundation
     's2.ripple.com', // XRP Ledger cluster, hosted by Ripple
+    'coinbase.com', // Coinbase API for real-time BTC price (WebSocket + REST)
+    'coingecko.com', // CoinGecko API for historical BTC price data
+    'frankfurter.dev', // Frankfurter API for live USD-to-fiat conversion
     ...(isDevEnv ? allowedDomainsDev : []),
 ];
 

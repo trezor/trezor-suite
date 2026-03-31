@@ -1,3 +1,5 @@
+import { endOfToday, startOfDay, subMonths } from 'date-fns';
+
 import { settingsCommonConfig } from '@suite-common/suite-config';
 import { type NotificationEntry } from '@suite-common/toast-notifications';
 
@@ -17,10 +19,10 @@ const IMPORTANT_NOTIFICATION_TYPES: Array<NotificationEntry['type']> = [
 export default {
     ...settingsCommonConfig,
     DEFAULT_GRAPH_RANGE: {
-        label: 'all',
-        startDate: null,
-        endDate: null,
-        groupBy: 'month',
+        label: 'month',
+        startDate: startOfDay(subMonths(endOfToday(), 1)),
+        endDate: endOfToday(),
+        groupBy: 'day',
     },
     IMPORTANT_NOTIFICATION_TYPES,
 } as const;

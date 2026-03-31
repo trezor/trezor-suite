@@ -26,6 +26,7 @@ import type {
     AccountKey,
     BackendSettings,
     FormState,
+    GraphFiatCoinEntry,
     RatesByTimestamps,
     WalletSettings,
 } from '@suite-common/wallet-types';
@@ -90,6 +91,10 @@ export interface SuiteDBSchema extends DBSchema {
     historicRates: {
         key: string;
         value: RatesByTimestamps;
+    };
+    graphFiatRates: {
+        key: string;
+        value: GraphFiatCoinEntry;
     };
     walletSettings: {
         key: string;

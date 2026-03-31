@@ -4,12 +4,18 @@ import { useTheme } from 'styled-components';
 
 import { useFormatters } from '@suite-common/formatters';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 
 interface CommonProps {
+    payload?: {
+        value: number;
+    };
     setWidth: (n: number) => void;
-    [k: string]: any;
+    x?: number;
+    y?: number;
 }
 
 type GraphYAxisTickProps =
@@ -17,8 +23,8 @@ type GraphYAxisTickProps =
     | ({ symbol: NetworkSymbol; localCurrency?: never } & CommonProps);
 
 export const GraphYAxisTick = ({
-    x,
-    y,
+    x = 0,
+    y = 0,
     payload,
     setWidth,
     localCurrency,
@@ -31,10 +37,11 @@ export const GraphYAxisTick = ({
 
     useLayoutEffect(() => {
         if (ref.current) {
-            const rect = ref.current.getBoundingClientRect();
-            setWidth(rect.width);
+            setWidth(ref.current.getBoundingClientRect().width);
         }
-    }, [ref, setWidth]);
+    }, [setWidth]);
+
+    if (!payload) return null;
 
     return (
         <g ref={ref} transform={`translate(${x},${y})`}>
@@ -48,7 +55,7 @@ export const GraphYAxisTick = ({
             >
                 {localCurrency && (
                     <BaseCurrencyAmountFormatter
-                        value={payload.value}
+                        value={asBaseCurrencyAmount(new BigNumber(payload.value))}
                         currency={localCurrency}
                         minimumFractionDigits={0}
                     />

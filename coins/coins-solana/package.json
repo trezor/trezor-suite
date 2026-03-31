@@ -54,6 +54,7 @@
         "@solana-program/token-2022": "^0.4.2",
         "@solana/kit": "^2.3.0",
         "@solana/rpc-api": "^2.3.0",
+        "@solana/rpc-spec-types": "^2.3.0",
         "@solana/rpc-types": "^2.3.0",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*"
