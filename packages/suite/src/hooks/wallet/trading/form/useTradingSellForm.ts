@@ -25,7 +25,15 @@ import {
     selectTradingComposedTransactionInfo,
     selectTradingIsSlip24Allowed,
     selectTradingPaymentMethods,
-    selectTradingSell,
+    selectTradingSellAmountLimits,
+    selectTradingSellInfo,
+    selectTradingSellIsFromRedirect,
+    selectTradingSellIsLoading,
+    selectTradingSellPreselectedQuote,
+    selectTradingSellQuotes,
+    selectTradingSellQuotesRequest,
+    selectTradingSellSelectedQuote,
+    selectTradingSellTransactionId,
     selectTradingTrades,
     sellThunks,
     sellUtils,
@@ -68,17 +76,15 @@ export const useTradingSellForm = ({
     const isOffersPage = pageType === 'offers';
     const dispatch = useDispatch();
     const { translationString } = useTranslation();
-    const {
-        isLoading,
-        quotesRequest,
-        isFromRedirect,
-        quotes,
-        transactionId,
-        preselectedQuote,
-        selectedQuote,
-        sellInfo,
-        amountLimits,
-    } = useSelector(selectTradingSell);
+    const isLoading = useSelector(selectTradingSellIsLoading);
+    const quotesRequest = useSelector(selectTradingSellQuotesRequest);
+    const isFromRedirect = useSelector(selectTradingSellIsFromRedirect);
+    const quotes = useSelector(selectTradingSellQuotes);
+    const transactionId = useSelector(selectTradingSellTransactionId);
+    const preselectedQuote = useSelector(selectTradingSellPreselectedQuote);
+    const selectedQuote = useSelector(selectTradingSellSelectedQuote);
+    const sellInfo = useSelector(selectTradingSellInfo);
+    const amountLimits = useSelector(selectTradingSellAmountLimits);
     const paymentMethods = useSelector(selectTradingPaymentMethods);
 
     const isPreviousRouteFromTradeSection = useTradingPreviousRoute(type);
