@@ -2543,10 +2543,6 @@ export const messages = defineMessages({
             'We’ve reserved a small amount of the native token on {supportedNetworks} to cover any extra network fees when you send, swap, or sell your assets.',
         id: 'TR_NETWORK_RESERVE_DESCRIPTION',
     },
-    TR_PHISHING: {
-        id: 'TR_PHISHING',
-        defaultMessage: 'Phishing',
-    },
     TR_DUST_PHISHING: {
         id: 'TR_DUST_PHISHING',
         defaultMessage: 'Dust phishing threshold',
@@ -3713,17 +3709,9 @@ export const messages = defineMessages({
         id: 'TR_ACCOUNT_DETAILS_XPUB_HEADER',
         defaultMessage: 'Public key (XPUB)',
     },
-    TR_ACCOUNT_DETAILS_EXPORT_LABELS_HEADER: {
-        id: 'TR_ACCOUNT_DETAILS_EXPORT_LABELS_HEADER',
-        defaultMessage: 'Export labels (BIP 329)',
-    },
     TR_ACCOUNT_DETAILS_EXPORT_LABELS_BUTTON: {
         id: 'TR_ACCOUNT_DETAILS_EXPORT_LABELS_BUTTON',
         defaultMessage: 'Export',
-    },
-    TR_ACCOUNT_DETAILS_EXPORT_LABELS_DESCRIPTION: {
-        id: 'TR_ACCOUNT_DETAILS_EXPORT_LABELS_DESCRIPTION',
-        defaultMessage: 'Export label files to your computer using the BIP-329 standard.',
     },
     TR_ACCOUNT_DETAILS_IMPORT_LABELS_BUTTON: {
         id: 'TR_ACCOUNT_DETAILS_IMPORT_LABELS_BUTTON',
@@ -4585,10 +4573,6 @@ export const messages = defineMessages({
         id: 'TR_DEVICE_HAS_BEEN_FORGOTTEN',
         defaultMessage: 'Device forgotten',
     },
-    TR_DEVICE_WILL_BE_FORGOTTEN: {
-        id: 'TR_DEVICE_WILL_BE_FORGOTTEN',
-        defaultMessage: 'Will be forgotten after disconnecting Trezor',
-    },
     TR_FORGET_DEVICE_MODAL_FINISH_HEADING: {
         id: 'TR_FORGET_DEVICE_MODAL_FINISH_HEADING',
         defaultMessage: 'Remove from Bluetooth settings',
@@ -4614,10 +4598,6 @@ export const messages = defineMessages({
     TR_FORGET_DEVICE_MODAL_IVE_REMOVED_IT: {
         id: 'TR_FORGET_DEVICE_MODAL_IVE_REMOVED_IT',
         defaultMessage: "I've removed it",
-    },
-    TR_FORGET_DEVICE_MODAL_FORGOTTEN_AFTER_DISCONNECT: {
-        id: 'TR_FORGET_DEVICE_MODAL_FORGOTTEN_AFTER_DISCONNECT',
-        defaultMessage: 'This device will be forgotten after you disconnect it.',
     },
     TR_FORGET_DEVICE_MODAL_FINISH_FORGETTING_HEADING: {
         id: 'TR_FORGET_DEVICE_MODAL_FINISH_FORGETTING_HEADING',
@@ -10496,18 +10476,6 @@ export const messages = defineMessages({
         id: 'TR_BLUETOOTH_REMOVE_FROM_BLUETOOTH_SETTINGS_DESCRIPTION',
         defaultMessage:
             'If you don’t remove your Trezor from your Bluetooth settings, you might have trouble pairing it again in the future.',
-    },
-    TR_BLUETOOTH_ERASE_BONDS_SETTINGS: {
-        defaultMessage: 'Unpair Bluetooth connection',
-        id: 'TR_BLUETOOTH_ERASE_BONDS_SETTINGS',
-    },
-    TR_BLUETOOTH_ERASE_BONDS_SETTINGS_DESCRIPTION: {
-        defaultMessage: 'This removes your Trezor from the list of paired devices in Trezor Suite.',
-        id: 'TR_BLUETOOTH_ERASE_BONDS_SETTINGS_DESCRIPTION',
-    },
-    TR_BLUETOOTH_ERASE_BONDS_SETTINGS_UNPAIR: {
-        defaultMessage: 'Unpair',
-        id: 'TR_BLUETOOTH_ERASE_BONDS_SETTINGS_UNPAIR',
     },
     TR_BLUETOOTH_VERSION_NOT_COMPATIBLE_LINE1: {
         id: 'TR_BLUETOOTH_VERSION_NOT_COMPATIBLE_LINE1',
