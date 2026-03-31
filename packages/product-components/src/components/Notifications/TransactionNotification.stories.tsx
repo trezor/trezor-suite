@@ -15,14 +15,13 @@ const meta: Meta<typeof TransactionNotification> = {
 export default meta;
 
 type Story = StoryObj<typeof TransactionNotification>;
-type TransactionNotificationType = TransactionNotificationProps['notificationType'];
 
 type TransactionToastStoryArgs = {
-    notificationType: TransactionNotificationType;
+    notificationType: TransactionNotificationProps['notificationType'];
 };
 
 const transactionNotificationConfig: Record<
-    TransactionNotificationType,
+    TransactionNotificationProps['notificationType'],
     {
         toastIcon?: IconName;
         intent: ToastProps['intent'];
@@ -136,6 +135,54 @@ const transactionNotificationConfig: Record<
             },
         },
     },
+    'tx-yield-supply': {
+        toastIcon: 'arrowUp',
+        intent: 'brand',
+        message: 'Supplied from Base #1',
+        amount: '150 USDC',
+        transaction: {
+            notificationType: 'tx-yield-supply',
+            symbol: 'base',
+            accountSymbol: 'base',
+            token: {
+                contract: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+                name: 'USD Coin',
+                symbol: 'USDC',
+            },
+        },
+    },
+    'tx-yield-withdraw': {
+        toastIcon: 'arrowUp',
+        intent: 'brand',
+        message: 'Withdrawn from Base #1',
+        amount: '150 USDC',
+        transaction: {
+            notificationType: 'tx-yield-withdraw',
+            symbol: 'base',
+            accountSymbol: 'base',
+            token: {
+                contract: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+                name: 'USD Coin',
+                symbol: 'USDC',
+            },
+        },
+    },
+    'tx-yield-claim': {
+        toastIcon: 'arrowUp',
+        intent: 'brand',
+        message: 'Claimed from Base #1',
+        amount: '150 USDC',
+        transaction: {
+            notificationType: 'tx-yield-claim',
+            symbol: 'base',
+            accountSymbol: 'base',
+            token: {
+                contract: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+                name: 'USD Coin',
+                symbol: 'USDC',
+            },
+        },
+    },
 };
 
 export const Default: Story = {
@@ -162,16 +209,9 @@ export const InToast: StoryObj<TransactionToastStoryArgs> = {
             control: {
                 type: 'select',
             },
-            options: [
-                'tx-sent',
-                'tx-received',
-                'tx-revoked',
-                'tx-claimed',
-                'tx-unstaked',
-                'tx-staked',
-                'tx-approved',
-                'tx-confirmed',
-            ],
+            options: Object.keys(
+                transactionNotificationConfig,
+            ) as (keyof typeof transactionNotificationConfig)[],
         },
     },
     render: ({ notificationType }) => {

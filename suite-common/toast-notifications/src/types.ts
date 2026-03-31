@@ -62,6 +62,18 @@ type ClaimedTransactionNotification = {
     type: 'tx-claimed';
 } & TransactionNotificationPayload;
 
+type YieldSupplyTransactionNotification = {
+    type: 'tx-yield-supply';
+} & TransactionNotificationPayload;
+
+type YieldWithdrawTransactionNotification = {
+    type: 'tx-yield-withdraw';
+} & TransactionNotificationPayload;
+
+type YieldClaimTransactionNotification = {
+    type: 'tx-yield-claim';
+} & TransactionNotificationPayload;
+
 export type ErrorToastPayload = {
     type:
         | 'error'
@@ -176,6 +188,9 @@ export type ToastPayload<TranslationKey extends UnknownTranslationKey = UnknownT
     | StakedTransactionNotification
     | UnstakedTransactionNotification
     | ClaimedTransactionNotification
+    | YieldSupplyTransactionNotification
+    | YieldWithdrawTransactionNotification
+    | YieldClaimTransactionNotification
     | {
           type: 'cannot-open-bluetooth-settings-error';
       }

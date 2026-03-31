@@ -26,8 +26,12 @@ const shouldDisplayAssetLogo = ({ notificationType, token }: ShouldDisplayAssetL
     const isApprovalType = notificationType === 'tx-approved' || notificationType === 'tx-revoked';
     const isTransferTokenType =
         notificationType === 'tx-sent' || notificationType === 'tx-received';
+    const isYieldType =
+        notificationType === 'tx-yield-supply' ||
+        notificationType === 'tx-yield-withdraw' ||
+        notificationType === 'tx-yield-claim';
 
-    return (isApprovalType || isTransferTokenType) && !!token;
+    return (isApprovalType || isTransferTokenType || isYieldType) && !!token;
 };
 
 export const TransactionIcon = ({
