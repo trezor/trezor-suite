@@ -1,30 +1,36 @@
 import { Translation } from '@suite/intl';
-import { BulletList, Button, Column, Row, Text } from '@trezor/components';
+import { Banner, Column, Text } from '@trezor/components';
+
+import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 
 import { useYieldWithdrawContext } from './useYieldWithdrawContext';
 import { YieldActionStep } from '../common/YieldActionStep';
-import { YieldApproveStep } from '../common/YieldApproveStep';
+import { YieldActionStepWarning } from '../common/YieldActionStepWarning';
 import { YieldFlowComplete } from '../common/YieldFlowComplete';
+import { splitYieldPendingTransaction } from '../yieldFlowUtils';
 
 export const YieldWithdrawForm = () => {
     const {
         token,
         receiptToken,
         maxAmount,
-        approveAmount,
-        withdrawAmount,
+        liveAmount,
         completedAmount,
-        setApproveAmount,
-        setApproveMaxAmount,
-        setWithdrawAmount,
-        setWithdrawMaxAmount,
+        completedReceiptAmount,
+        errorMessage,
+        pendingTransaction,
+        isAmountTooHigh,
+        isSubmittingAction,
+        setAmountInput,
+        submitAction,
+        openPendingTransaction,
         flow,
     } = useYieldWithdrawContext();
-    const {
-        approve: approveStepState,
-        action: actionStepState,
-        complete: completeStepState,
-    } = flow.stepStates;
+
+    const { actionPendingTransaction: withdrawPendingTransaction } = splitYieldPendingTransaction(
+        pendingTransaction,
+        'withdraw',
+    );
 
     return (
         <Column width="100%" alignItems="center">
@@ -34,11 +40,11 @@ export const YieldWithdrawForm = () => {
                         flowType="withdraw"
                         input={{
                             token: receiptToken,
-                            value: `${completedAmount} ${receiptToken.symbol}`,
+                            amount: completedReceiptAmount,
                         }}
                         output={{
                             token,
-                            value: `${completedAmount} ${token.symbol}`,
+                            amount: completedAmount,
                         }}
                     />
                 ) : (
@@ -47,66 +53,28 @@ export const YieldWithdrawForm = () => {
                             <Translation id="TR_EARN_YIELD_WITHDRAW" />
                         </Text>
 
-                        <BulletList bulletSize="small" bulletGap={12} gap={24} titleGap={16}>
-                            <BulletList.Item
-                                state={approveStepState}
-                                title={
-                                    <Row
-                                        justifyContent="space-between"
-                                        alignItems="center"
-                                        width="100%"
-                                    >
-                                        <Translation id="TR_EARN_YIELD_SELECT_AMOUNT_AND_APPROVE" />
-                                        {approveStepState === 'done' && (
-                                            <Button
-                                                size="small"
-                                                intent="neutral"
-                                                priority="secondary"
-                                                onClick={() => flow.goToStep('approve')}
-                                            >
-                                                <Translation id="TR_MODIFY" />
-                                            </Button>
-                                        )}
-                                    </Row>
-                                }
-                            >
-                                <YieldApproveStep
-                                    flowType="withdraw"
-                                    token={token}
-                                    variant={approveStepState === 'done' ? 'done' : 'active'}
-                                    amount={approveAmount}
-                                    summaryValue={`${maxAmount} ${token.symbol}`}
-                                    approvedAmount={approveAmount}
-                                    switchCurrencyLabel={receiptToken.symbol}
-                                    isSwitchDisabled
-                                    onAmountSelect={setApproveAmount}
-                                    onMaxClick={setApproveMaxAmount}
-                                    onApprove={flow.goToNextStep}
-                                />
-                            </BulletList.Item>
-
-                            <BulletList.Item
-                                state={actionStepState}
-                                title={<Translation id="TR_EARN_YIELD_WITHDRAW" />}
-                            >
-                                {actionStepState === 'active' && (
-                                    <YieldActionStep
-                                        flowType="withdraw"
-                                        token={token}
-                                        amount={withdrawAmount}
-                                        summaryValue={`${maxAmount} ${token.symbol}`}
-                                        onAmountSelect={setWithdrawAmount}
-                                        onMaxClick={setWithdrawMaxAmount}
-                                        onSubmit={flow.goToNextStep}
-                                    />
-                                )}
-                            </BulletList.Item>
-
-                            <BulletList.Item
-                                state={completeStepState}
-                                title={<Translation id="TR_EARN_YIELD_WITHDRAW_COMPLETE" />}
+                        {errorMessage && (
+                            <Banner
+                                intent="warning"
+                                description={<Translation id={errorMessage} />}
                             />
-                        </BulletList>
+                        )}
+
+                        <YieldActionStep
+                            flowType="withdraw"
+                            token={token}
+                            summaryValue={
+                                <FormattedCryptoAmount value={maxAmount} symbol={token.symbol} />
+                            }
+                            warning={
+                                <YieldActionStepWarning isInsufficientFunds={isAmountTooHigh} />
+                            }
+                            isDisabled={!liveAmount || isAmountTooHigh || isSubmittingAction}
+                            pendingTransaction={withdrawPendingTransaction}
+                            onMaxClick={() => setAmountInput(maxAmount)}
+                            onSubmit={submitAction}
+                            onPendingTxClick={openPendingTransaction}
+                        />
                     </>
                 )}
             </Column>

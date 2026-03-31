@@ -1,65 +1,157 @@
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 
-import { goto } from '@suite/router';
-import { useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
+import { type EarnParams } from '@suite/router';
+import {
+    type TokenDto,
+    type YieldDto,
+    useAllYieldOpportunities,
+} from '@suite-common/earn-stablecoin-api';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import type { Account, TokenInfoBranded } from '@suite-common/wallet-types';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import type { TokenInfo } from '@trezor/connect';
+import { BigNumber } from '@trezor/utils';
 
 import { getApyPercent } from 'src/components/earn/utils/earnApyUtils';
-import { useDispatch } from 'src/hooks/suite';
 
-import { useEarnRouteAccount } from '../../utils/useEarnRouteAccount';
-import type { YieldFlowDisplayToken, YieldFlowToken } from '../common/types';
+import type { YieldFlowDisplayToken, YieldFlowToken } from '../types';
+import { doTokensMatch } from '../yieldFlowUtils';
+
+const hasTokenSymbol = (
+    accountToken: NonNullable<Account['tokens']>[number],
+): accountToken is TokenInfoBranded => accountToken.symbol !== undefined;
+
+const getMatchedAccountToken = ({
+    account,
+    token,
+}: {
+    account: Account;
+    token?: Pick<TokenDto, 'address' | 'symbol' | 'decimals'>;
+}) => {
+    if (!account.tokens?.length || !token) {
+        return undefined;
+    }
+
+    return account.tokens.find(
+        (accountToken): accountToken is TokenInfoBranded =>
+            hasTokenSymbol(accountToken) &&
+            doTokensMatch({
+                networkSymbol: account.symbol,
+                firstToken: {
+                    address: accountToken.contract,
+                    symbol: accountToken.symbol,
+                    decimals: accountToken.decimals,
+                },
+                secondToken: token,
+            }),
+    );
+};
+
+const getConvertedOutputTokenBalanceToInputTokenAmount = ({
+    account,
+    vault,
+    matchedOutputToken,
+}: {
+    account: Account;
+    vault: YieldDto;
+    matchedOutputToken: TokenInfoBranded | undefined;
+}) => {
+    if (!matchedOutputToken) {
+        return '0';
+    }
+
+    if (
+        doTokensMatch({
+            networkSymbol: account.symbol,
+            firstToken: vault.outputToken,
+            secondToken: vault.token,
+        })
+    ) {
+        return matchedOutputToken.balance ?? '0';
+    }
+
+    const pricePerShareState = vault.state?.pricePerShareState;
+
+    if (
+        !pricePerShareState ||
+        !doTokensMatch({
+            networkSymbol: account.symbol,
+            firstToken: pricePerShareState.shareToken,
+            secondToken: vault.outputToken,
+        }) ||
+        !doTokensMatch({
+            networkSymbol: account.symbol,
+            firstToken: pricePerShareState.quoteToken,
+            secondToken: vault.token,
+        })
+    ) {
+        return '0';
+    }
+
+    return new BigNumber(matchedOutputToken.balance ?? '0')
+        .times(pricePerShareState.price)
+        .decimalPlaces(vault.token.decimals, BigNumber.ROUND_DOWN)
+        .toString();
+};
 
 type UseResolvedYieldFlowDataResult = {
+    account: Account;
+    vault: YieldDto | null;
     token: YieldFlowToken | null;
     receiptToken: YieldFlowDisplayToken | null;
     apy: number | null;
-    flowKey?: string;
+    suppliedAmount: string;
+    flowKey: string;
 };
 
-export const useResolvedYieldFlowData = (): UseResolvedYieldFlowDataResult => {
-    const dispatch = useDispatch();
-    const { account, routeParams } = useEarnRouteAccount();
+type UseResolvedYieldFlowDataProps = {
+    account: Account;
+    routeParams: EarnParams;
+};
+
+export const useResolvedYieldFlowData = ({
+    account,
+    routeParams,
+}: UseResolvedYieldFlowDataProps): UseResolvedYieldFlowDataResult => {
     const { yieldOpportunities } = useAllYieldOpportunities();
 
-    const vault = yieldOpportunities.find(opportunity => opportunity.id === routeParams?.yieldId);
-    const resolvedContractAddress = routeParams?.contractAddress ?? vault?.token.address;
+    const vault = yieldOpportunities.find(opportunity => opportunity.id === routeParams.yieldId);
+    const resolvedContractAddress = routeParams.contractAddress ?? vault?.token.address;
 
-    const matchedToken = useMemo(
-        () =>
-            account?.tokens?.find((token): token is TokenInfo => {
+    const matchedToken = useMemo(() => {
+        if (resolvedContractAddress) {
+            return account.tokens?.find((token): token is TokenInfo => {
                 const normalizedTokenAddress =
                     token.contract &&
                     getContractAddressForNetworkSymbol(account.symbol, token.contract);
-                const normalizedRouteAddress =
-                    resolvedContractAddress &&
-                    getContractAddressForNetworkSymbol(account.symbol, resolvedContractAddress);
-                const normalizedVaultTokenSymbol = vault?.token.symbol?.toLowerCase();
-                const normalizedTokenSymbol = token.symbol?.toLowerCase();
+                const normalizedRouteAddress = getContractAddressForNetworkSymbol(
+                    account.symbol,
+                    resolvedContractAddress,
+                );
 
-                if (normalizedTokenAddress && normalizedRouteAddress) {
-                    return normalizedTokenAddress === normalizedRouteAddress;
-                }
+                return normalizedTokenAddress === normalizedRouteAddress;
+            });
+        }
 
-                if (normalizedVaultTokenSymbol && normalizedTokenSymbol) {
-                    return normalizedTokenSymbol === normalizedVaultTokenSymbol;
-                }
+        return getMatchedAccountToken({
+            account,
+            token: vault?.token,
+        });
+    }, [account, resolvedContractAddress, vault?.token]);
 
-                return false;
-            }),
-        [account, resolvedContractAddress, vault?.token.symbol],
+    const matchedOutputToken = useMemo(
+        () =>
+            vault
+                ? getMatchedAccountToken({
+                      account,
+                      token: vault.outputToken,
+                  })
+                : undefined,
+        [account, vault],
     );
 
-    useEffect(() => {
-        if (!routeParams) {
-            dispatch(goto({ routeName: 'suite-earn' }));
-        }
-    }, [dispatch, routeParams]);
-
     const token = useMemo<YieldFlowToken | null>(() => {
-        if (!account || !vault) {
+        if (!vault) {
             return null;
         }
 
@@ -77,7 +169,7 @@ export const useResolvedYieldFlowData = (): UseResolvedYieldFlowDataResult => {
     }, [account, matchedToken, resolvedContractAddress, vault]);
 
     const receiptToken = useMemo<YieldFlowDisplayToken | null>(() => {
-        if (!account || !vault || !token) {
+        if (!vault || !token) {
             return null;
         }
 
@@ -90,16 +182,25 @@ export const useResolvedYieldFlowData = (): UseResolvedYieldFlowDataResult => {
         };
     }, [account, token, vault]);
 
-    const flowKey = routeParams
-        ? `${account?.key ?? ''}:${routeParams.yieldId}:${resolvedContractAddress ?? ''}`
-        : undefined;
+    const suppliedAmount = vault
+        ? getConvertedOutputTokenBalanceToInputTokenAmount({
+              account,
+              vault,
+              matchedOutputToken,
+          })
+        : '0';
+
+    const flowKey = `${account.key}:${routeParams.yieldId}:${resolvedContractAddress ?? ''}`;
 
     const apy = vault?.rewardRate?.total != null ? getApyPercent(vault.rewardRate.total) : null;
 
     return {
+        account,
+        vault: vault ?? null,
         token,
         receiptToken,
         apy,
+        suppliedAmount,
         flowKey,
     };
 };

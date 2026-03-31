@@ -10,6 +10,9 @@ import { isPending } from '@suite-common/wallet-utils';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
+import type { YieldFlowType } from '../types';
+import { selectYieldSession, yieldActions } from '../yieldReducer';
+
 const DEFAULT_PENDING_TX_POLL_INTERVAL_MS = 3_000;
 const MIN_PENDING_TX_POLL_INTERVAL_MS = 2_000;
 const BLOCK_TIME_TO_POLL_INTERVAL_RATIO = 2;
@@ -23,20 +26,21 @@ const getPollIntervalMs = (blockTime: number | undefined): number => {
     );
 };
 
-type PendingTransaction = {
-    txid: string;
-};
-
 type UseYieldPendingTransactionTrackingProps = {
     account: Account;
-    pendingTransaction: PendingTransaction | null;
+    flowType: YieldFlowType;
+    flowKey: string;
 };
 
 export const useYieldPendingTransactionTracking = ({
     account,
-    pendingTransaction,
+    flowType,
+    flowKey,
 }: UseYieldPendingTransactionTrackingProps) => {
     const dispatch = useDispatch();
+    const pendingTransaction = useSelector(
+        state => selectYieldSession(state, flowType, flowKey).action.pendingTransaction,
+    );
     const trackedPendingTransaction = useSelector(state =>
         pendingTransaction
             ? selectTransactionByAccountKeyAndTxid(state, account.key, pendingTransaction.txid)
@@ -45,7 +49,6 @@ export const useYieldPendingTransactionTracking = ({
     const feeInfo = useSelector(state => selectConvertedNetworkFeeInfo(state, account.symbol));
     const pollIntervalMs = getPollIntervalMs(feeInfo?.blockTime);
 
-    // Keep polling even before the tx appears in wallet.transactions.
     const isCurrentlyPending =
         !!pendingTransaction &&
         (!trackedPendingTransaction || isPending(trackedPendingTransaction));
@@ -61,4 +64,52 @@ export const useYieldPendingTransactionTracking = ({
 
         return () => clearInterval(interval);
     }, [account.key, dispatch, isCurrentlyPending, pollIntervalMs]);
+
+    useEffect(() => {
+        if (!pendingTransaction || !trackedPendingTransaction) {
+            return;
+        }
+
+        if (isPending(trackedPendingTransaction)) {
+            return;
+        }
+
+        if (trackedPendingTransaction.type === 'failed') {
+            dispatch(yieldActions.transactionFailed({ flowType, flowKey }));
+
+            return;
+        }
+
+        if (pendingTransaction.type === 'revoke' || pendingTransaction.type === 'revoke-only') {
+            dispatch(yieldActions.revokeSuccess({ flowType, flowKey }));
+
+            return;
+        }
+
+        if (pendingTransaction.type === 'approve') {
+            dispatch(
+                yieldActions.completeApproval({
+                    flowType,
+                    flowKey,
+                    amount: pendingTransaction.amount,
+                }),
+            );
+
+            return;
+        }
+
+        if (pendingTransaction.type === flowType) {
+            dispatch(
+                yieldActions.completeAction({
+                    flowType,
+                    flowKey,
+                    amount: pendingTransaction.amount,
+                }),
+            );
+
+            return;
+        }
+
+        dispatch(yieldActions.resetSession({ flowType, flowKey }));
+    }, [flowKey, flowType, pendingTransaction, dispatch, trackedPendingTransaction]);
 };

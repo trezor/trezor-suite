@@ -22,6 +22,7 @@ import { type CoinjoinClientAction } from 'src/actions/wallet/coinjoinClientActi
 import { type GraphAction } from 'src/actions/wallet/graphActions';
 import { type ReceiveAction } from 'src/actions/wallet/receiveActions';
 import { type SignVerifyAction } from 'src/actions/wallet/signVerifyActions';
+import { type yieldActions } from 'src/components/earn/yield/yieldReducer';
 import { type accountSearchActions } from 'src/reducers/wallet/accountSearchReducer';
 
 // reexport
@@ -73,6 +74,7 @@ type ConnectPopupAction = ReturnType<
 type AccountSearchAction = ReturnType<
     (typeof accountSearchActions)[keyof typeof accountSearchActions]
 >;
+type YieldAction = ReturnType<(typeof yieldActions)[keyof typeof yieldActions]>;
 
 export type WalletAction =
     | TokenDefinitionsAction
@@ -94,4 +96,5 @@ export type WalletAction =
     | AccountsAction
     | StakeAction
     | ConnectPopupAction
-    | WalletSettingsAction;
+    | WalletSettingsAction
+    | YieldAction;
