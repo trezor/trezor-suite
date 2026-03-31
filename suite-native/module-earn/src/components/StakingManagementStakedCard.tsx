@@ -18,6 +18,7 @@ import {
     useSelector,
 } from '@suite-native/staking';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+import { BigNumber } from '@trezor/utils';
 
 import { ApyValue } from './ApyValue';
 import { CRYPTO_BALANCE_DECIMALS } from '../constants';
@@ -47,14 +48,19 @@ export const StakingManagementStakedCard = ({
     const { applyStyle } = useNativeStyles();
     const navigation = useNavigation<NavigationProp>();
 
-    const handleStakeMore = () => {
+    const handleStake = () => {
         navigation.navigate(RootStackRoutes.HowStakeWorksScreen, {
             accountKey,
             symbol: networkSymbol,
         });
     };
 
+    const handleUnstake = () => {
+        navigation.navigate(RootStackRoutes.UnstakeFlow, { accountKey });
+    };
+
     const stakedBalance = useSelector(state => selectStakedBalanceByAccountKey(state, accountKey));
+    const hasStakedBalance = new BigNumber(stakedBalance ?? '0').gt(0);
     const rewardsBalance = useSelector(state =>
         selectRewardsBalanceByAccountKey(state, accountKey),
     );
@@ -116,12 +122,19 @@ export const StakingManagementStakedCard = ({
                 )}
             </HStack>
             <HStack style={applyStyle(buttonsRowStyle)}>
-                {/* TODO: wire up unstake action */}
-                <Button flex={1} colorScheme="primaryElevation0">
-                    <Translation id="earn.stakingManagementScreen.unstakeButton" />
-                </Button>
-                <Button flex={1} colorScheme="primaryElevation0" onPress={handleStakeMore}>
-                    <Translation id="earn.stakingManagementScreen.stakeMoreButton" />
+                {hasStakedBalance && (
+                    <Button flex={1} colorScheme="primaryElevation0" onPress={handleUnstake}>
+                        <Translation id="earn.stakingManagementScreen.unstakeButton" />
+                    </Button>
+                )}
+                <Button flex={1} colorScheme="primaryElevation0" onPress={handleStake}>
+                    <Translation
+                        id={
+                            hasStakedBalance
+                                ? 'earn.stakingManagementScreen.stakeMoreButton'
+                                : 'earn.stakingManagementScreen.stakeButton'
+                        }
+                    />
                 </Button>
             </HStack>
         </Card>
