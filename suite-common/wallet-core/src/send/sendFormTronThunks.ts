@@ -7,6 +7,7 @@ import {
     getNetworkDisplaySymbol,
 } from '@suite-common/wallet-config';
 import {
+    type Account,
     type ExternalOutput,
     type PrecomposedLevels,
     type PrecomposedTransaction,
@@ -126,12 +127,18 @@ const calculateTrc20Transfer = (
     return payloadData;
 };
 
+const TRON_ACCOUNT_ACTIVATION_FEE_SUN = 1_000_000;
+
 const calculateTrxTransfer = (
     availableBalance: string,
     output: ExternalOutput,
     feeLevel: EstimateFeeLevel,
+    isNewAccount: boolean,
 ): PrecomposedTransaction => {
-    const totalFeeInSun = feeLevel.feePerTx || '0';
+    const baseFeeInSun = feeLevel.feePerTx || '0';
+    const totalFeeInSun = isNewAccount
+        ? new BigNumber(baseFeeInSun).plus(TRON_ACCOUNT_ACTIVATION_FEE_SUN).toString()
+        : baseFeeInSun;
     const isSendMax = output.type === 'send-max' || output.type === 'send-max-noaddress';
 
     let amount: string;
@@ -175,16 +182,28 @@ const calculateTrxTransfer = (
     return payloadData;
 };
 
+const isNewTronAccount = async (address: string, account: Account): Promise<boolean> => {
+    if (!address) return false;
+    const result = await TrezorConnect.getAccountInfo({
+        coin: account.symbol,
+        identity: getAccountIdentity(account),
+        descriptor: address,
+    });
+
+    return result.success && (result.payload.empty ?? false);
+};
+
 const calculate = (
     availableBalance: string,
     output: ExternalOutput,
     feeLevel: EstimateFeeLevel,
     networkSymbol: NetworkSymbol,
     token?: TokenInfo,
+    isNewAccount?: boolean,
 ): PrecomposedTransaction =>
     token
         ? calculateTrc20Transfer(availableBalance, output, feeLevel, token, networkSymbol)
-        : calculateTrxTransfer(availableBalance, output, feeLevel);
+        : calculateTrxTransfer(availableBalance, output, feeLevel, isNewAccount ?? false);
 
 export const composeTronTransactionFeeLevelsThunk = createThunk<
     PrecomposedLevels,
@@ -262,7 +281,17 @@ export const composeTronTransactionFeeLevelsThunk = createThunk<
             };
         }
 
-        const tx = calculate(account.availableBalance, output, feeLevel, account.symbol, tokenInfo);
+        const isNewAccount =
+            !tokenInfo && (await isNewTronAccount(formState.outputs[0].address, account));
+
+        const tx = calculate(
+            account.availableBalance,
+            output,
+            feeLevel,
+            account.symbol,
+            tokenInfo,
+            isNewAccount,
+        );
 
         if (tx.type !== 'error' && tx.max !== undefined) {
             tx.max = subunitsToUnits({
