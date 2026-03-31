@@ -1,3 +1,7 @@
+import { useCallback } from 'react';
+
+import { useNavigation } from '@react-navigation/native';
+
 import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS } from '@suite-common/formatters';
 import { selectAccountNetworkSymbol, useAccountsSelector } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
@@ -6,6 +10,11 @@ import { Box, Card, PressableOpacity, Text } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 import {
+    type RootStackParamList,
+    RootStackRoutes,
+    type StackNavigationProps,
+} from '@suite-native/navigation';
+import {
     selectClaimableAmountByAccountKey,
     useSelector as useNativeStakingSelector,
 } from '@suite-native/staking';
@@ -13,7 +22,6 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type StakeClaimableCardProps = {
     accountKey: AccountKey;
-    handleToggleBottomSheet: (value: boolean) => void;
 };
 
 const stakingItemStyle = prepareNativeStyle(utils => ({
@@ -29,11 +37,10 @@ const valuesContainerStyle = prepareNativeStyle(utils => ({
     paddingLeft: utils.spacings.sp8,
 }));
 
-export const StakeClaimableCard = ({
-    accountKey,
-    handleToggleBottomSheet,
-}: StakeClaimableCardProps) => {
+export const StakeClaimableCard = ({ accountKey }: StakeClaimableCardProps) => {
     const { applyStyle } = useNativeStyles();
+    const navigation =
+        useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.StakingDetail>>();
 
     const symbol = useAccountsSelector(state => selectAccountNetworkSymbol(state, accountKey));
 
@@ -41,12 +48,19 @@ export const StakeClaimableCard = ({
         selectClaimableAmountByAccountKey(state, accountKey),
     );
 
+    const handlePress = useCallback(() => {
+        if (!symbol) {
+            return;
+        }
+        navigation.navigate(RootStackRoutes.ClaimReview, { accountKey, symbol });
+    }, [accountKey, navigation, symbol]);
+
     if (!symbol || !isPositiveBalance(claimableAmount)) {
         return null;
     }
 
     return (
-        <PressableOpacity onPress={() => handleToggleBottomSheet(true)}>
+        <PressableOpacity onPress={handlePress}>
             <Card>
                 <Box style={applyStyle(stakingItemStyle)}>
                     <Box flex={1}>

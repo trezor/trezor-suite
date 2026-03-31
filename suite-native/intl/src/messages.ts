@@ -2542,6 +2542,13 @@ export const messages = {
         earnSummaryOutputItem: {
             title: 'Total including fee',
         },
+        claimOutputItem: {
+            title: 'Claim',
+            description: 'Claim {displaySymbol} from account?',
+        },
+        claimSummaryOutputItem: {
+            title: 'Total including fee',
+        },
         earnFormScreen: {
             title: '{assetName} staking',
             unstakeTitle: 'Unstake {displaySymbol}',
@@ -2688,8 +2695,31 @@ export const messages = {
             transactionPending: 'Transaction pending',
             unknownStatus: 'Unknown status',
         },
+        claimReviewScreen: {
+            title: 'Claim {displaySymbol}',
+            reviewAndSignButton: 'Review & Sign',
+            amountLabel: 'Amount',
+            instantClaimBanner: "You'll claim the {displaySymbol} instantly",
+        },
+        claimTransactionDataReviewScreen: {
+            title: 'Review with Trezor',
+            successMessage: "You're all set.",
+            viewTransactionButton: 'Claim now',
+            pushTransactionFailedAlert: {
+                title: 'Transaction failed',
+                description: 'Failed to submit your claim transaction. Please try again.',
+                primaryButton: 'Go to home',
+            },
+            pendingTransactionConflictAlert: {
+                title: 'Pending transaction detected',
+                description:
+                    'A claim transaction is already pending for this account. Please wait for it to be confirmed before claiming again.',
+                primaryButton: 'Go to home',
+            },
+        },
         claimableCard: {
             claimable: 'Claimable',
+            claimButton: 'Claim',
         },
         stakingBottomSheet: {
             title: 'To manage your staked funds, please use Trezor Suite for desktop.',

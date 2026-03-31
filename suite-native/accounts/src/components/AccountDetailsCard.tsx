@@ -17,6 +17,7 @@ type AccountDetailsCardProps = {
     tokenContract?: TokenAddress;
     isStakeVariant?: boolean;
     titleLabel?: ReactNode;
+    cryptoAmount?: string;
 };
 
 const stakeCardStyle = prepareNativeStyle<{ isStakeVariant: boolean }>(
@@ -37,6 +38,7 @@ export const AccountDetailsCard = ({
     tokenContract,
     isStakeVariant = false,
     titleLabel,
+    cryptoAmount,
 }: AccountDetailsCardProps) => {
     const { translate } = useTranslate();
     const { applyStyle } = useNativeStyles();
@@ -66,6 +68,7 @@ export const AccountDetailsCard = ({
                         isNativeCoinOnly
                         isCryptoBalancePrimary={isStakeVariant}
                         titleLabel={titleLabel}
+                        cryptoAmount={cryptoAmount}
                     />
                 )}
             </Card>
