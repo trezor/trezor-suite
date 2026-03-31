@@ -1,7 +1,9 @@
 import { type JSX } from 'react';
 
 import { selectSelectedDevice } from '@suite-common/device';
+import { selectThpStep } from '@suite-common/thp';
 
+import { ThpPairingStep } from 'src/components/onboarding/ThpPairingStep/ThpPairingStep';
 import { useOnboarding, useSelector } from 'src/hooks/suite';
 import { selectPrerequisite } from 'src/selectors/suite/suiteSelectors';
 
@@ -19,6 +21,7 @@ type UnexpectedStateProps = {
 export const UnexpectedState = ({ children }: UnexpectedStateProps) => {
     const device = useSelector(selectSelectedDevice);
     const prerequisite = useSelector(selectPrerequisite);
+    const thpStep = useSelector(selectThpStep);
 
     const { prevDeviceId, activeStep, activeStepId, showPinMatrix } = useOnboarding();
 
@@ -38,6 +41,11 @@ export const UnexpectedState = ({ children }: UnexpectedStateProps) => {
 
     // otherwise handle common prerequisite which are determined and passed as prop from Preloader component
     if (prerequisite && activeStep?.prerequisites?.includes(prerequisite)) {
+        // ThpPairingStep renders default view. we want to show it only if thpStep is set
+        if (thpStep && prerequisite === 'device-thp-locked') {
+            return <ThpPairingStep />;
+        }
+
         return <DeviceDisconnectedStep />;
     }
 
