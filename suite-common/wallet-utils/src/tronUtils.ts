@@ -31,13 +31,12 @@ export const calculateTronFeeBreakdown = (
     const coveredBandwidth = new BigNumber(isBandwidthCovered ? bandwidthBytes : 0);
     const coveredEnergy = new BigNumber(Math.min(availableEnergy, energyConsumed));
 
-    const bandwidthBurnSun = isBandwidthCovered
-        ? 0
-        : bandwidthBytes * tronUtils.TRON_BANDWIDTH_SUN_PRICE;
-    const energyBurnSun = new BigNumber(energyConsumed - coveredEnergy.toNumber()).multipliedBy(
-        tx.feePerByte ?? '0',
-    );
-    const totalBurnSun = energyBurnSun.plus(bandwidthBurnSun);
+    const isTokenTransfer = 'token' in tx && tx.token !== undefined;
+    const totalBurnSun = isTokenTransfer
+        ? new BigNumber(energyConsumed - coveredEnergy.toNumber())
+              .multipliedBy(tx.feePerByte ?? '0')
+              .plus(isBandwidthCovered ? 0 : bandwidthBytes * tronUtils.TRON_BANDWIDTH_SUN_PRICE)
+        : new BigNumber(tx.fee);
     const trxBurned = new BigNumber(
         subunitsToUnits({ value: asAmountSubunit(totalBurnSun), symbol }),
     );
