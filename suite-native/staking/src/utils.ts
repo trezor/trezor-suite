@@ -1,3 +1,5 @@
+import { toWei } from 'web3-utils';
+
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { isArrayMember } from '@trezor/utils';
 
@@ -15,3 +17,5 @@ export const doesCoinSupportStaking = (symbol: NetworkSymbol): symbol is Network
     isArrayMember(symbol, stakingCoins);
 
 export const AUTO_STAKED_SYMBOLS: NetworkSymbol[] = ['ada'] as const;
+
+export const ethToWei = (amount: string): string => toWei(amount, 'ether');

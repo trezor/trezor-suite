@@ -1,0 +1,56 @@
+import { useSelector } from 'react-redux';
+
+import { getNetwork } from '@suite-common/wallet-config';
+import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import { type AccountKey } from '@suite-common/wallet-types';
+import { getStakingLimitsByNetworkSymbol } from '@suite-common/wallet-utils';
+import { useForm, useWatch } from '@suite-native/forms';
+import { useTranslate } from '@suite-native/intl';
+import {
+    type NativeStakingRootState,
+    selectStakedBalanceByAccountKey,
+} from '@suite-native/staking';
+import { BigNumber } from '@trezor/utils';
+
+import { NETWORK_FEE_WARNING_MULTIPLIER } from '../constants';
+import { type EarnFormValues } from '../earnFormSchema';
+import { unstakeFormValidationSchema } from '../unstakeFormSchema';
+
+export const useUnstakeForm = (accountKey: AccountKey) => {
+    const { translate } = useTranslate();
+    const account = useSelector((state: AccountsRootState) =>
+        selectAccountByKey(state, accountKey),
+    );
+    const stakedBalance = useSelector((state: NativeStakingRootState) =>
+        selectStakedBalanceByAccountKey(state, accountKey),
+    );
+
+    const network = account ? getNetwork(account.symbol) : null;
+
+    const form = useForm<EarnFormValues>({
+        validation: unstakeFormValidationSchema,
+        mode: 'onTouched',
+        context: {
+            stakedBalance,
+            decimals: network?.decimals,
+            translate,
+        },
+        defaultValues: { amount: '', fiat: '' },
+    });
+
+    const amountValue = useWatch({ control: form.control, name: 'amount' });
+
+    if (!account) return null;
+
+    const limits = getStakingLimitsByNetworkSymbol(account.symbol);
+    const networkFeeWarningThreshold = limits?.MIN_BALANCE_FOR_FEE_BUFFER.times(
+        NETWORK_FEE_WARNING_MULTIPLIER,
+    );
+    const showNetworkFeeWarning =
+        !!networkFeeWarningThreshold &&
+        !!amountValue &&
+        new BigNumber(amountValue).gt(0) &&
+        new BigNumber(amountValue).lt(networkFeeWarningThreshold);
+
+    return { form, amountValue, showNetworkFeeWarning };
+};

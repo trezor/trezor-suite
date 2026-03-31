@@ -13776,6 +13776,7 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     react-redux: "npm:9.2.0"
+    web3-utils: "npm:^4.3.3"
   languageName: unknown
   linkType: soft
 

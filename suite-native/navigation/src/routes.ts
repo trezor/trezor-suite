@@ -34,6 +34,8 @@ export enum RootStackRoutes {
     PassphraseStack = 'PassphraseStack',
     StellarManageTokenStack = 'StellarManageTokenStack',
     ExperimentalFeedbackModal = 'ExperimentalFeedbackModal',
+    UnstakeFlow = 'UnstakeFlow',
+    UnstakeTransactionDataReview = 'UnstakeTransactionDataReview',
 }
 
 export enum AppTabsRoutes {

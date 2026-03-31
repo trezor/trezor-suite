@@ -8,16 +8,23 @@ import { Translation } from '@suite-native/intl';
 import { EarnAmountErrorMessage } from './EarnAmountErrorMessage';
 import { EarnCryptoAmountInput } from './EarnCryptoAmountInput';
 import { EarnFiatAmountInput } from './EarnFiatAmountInput';
-import { EarnMaxButton } from './EarnMaxButton';
+import { EarnMaxButton, type EarnMaxButtonVariant } from './EarnMaxButton';
 import { EarnWithdrawalFeesBanner } from './EarnWithdrawalFeesBanner';
 
 type EarnAmountInputsProps = {
     accountKey: AccountKey;
     symbol: NetworkSymbol;
+    maxButtonVariant?: EarnMaxButtonVariant;
+    isWithdrawalFeesBannerVisible?: boolean;
 };
 
-export const EarnAmountInputs = ({ accountKey, symbol }: EarnAmountInputsProps) => {
-    const [isStakeMax, setIsStakeMax] = useState(false);
+export const EarnAmountInputs = ({
+    accountKey,
+    symbol,
+    maxButtonVariant,
+    isWithdrawalFeesBannerVisible = true,
+}: EarnAmountInputsProps) => {
+    const [isMaxSelected, setIsMaxSelected] = useState(false);
 
     return (
         <VStack spacing="sp12">
@@ -31,8 +38,9 @@ export const EarnAmountInputs = ({ accountKey, symbol }: EarnAmountInputsProps) 
                         <EarnMaxButton
                             accountKey={accountKey}
                             symbol={symbol}
-                            isChecked={isStakeMax}
-                            onChange={setIsStakeMax}
+                            isChecked={isMaxSelected}
+                            onChange={setIsMaxSelected}
+                            variant={maxButtonVariant}
                         />
                     </>
                 )}
@@ -40,7 +48,7 @@ export const EarnAmountInputs = ({ accountKey, symbol }: EarnAmountInputsProps) 
                     <EarnCryptoAmountInput
                         symbol={symbol}
                         inputRef={inputRef}
-                        isDisabled={isStakeMax || isDisabled}
+                        isDisabled={isMaxSelected || isDisabled}
                         onPress={onPress}
                     />
                 )}
@@ -48,7 +56,7 @@ export const EarnAmountInputs = ({ accountKey, symbol }: EarnAmountInputsProps) 
                     <EarnFiatAmountInput
                         symbol={symbol}
                         inputRef={inputRef}
-                        isDisabled={isStakeMax || isDisabled}
+                        isDisabled={isMaxSelected || isDisabled}
                         onPress={onPress}
                     />
                 )}
@@ -56,7 +64,9 @@ export const EarnAmountInputs = ({ accountKey, symbol }: EarnAmountInputsProps) 
                     <EarnAmountErrorMessage isFiatDisplayed={isFiatDisplayed} />
                 )}
             />
-            <EarnWithdrawalFeesBanner accountKey={accountKey} symbol={symbol} />
+            {isWithdrawalFeesBannerVisible && (
+                <EarnWithdrawalFeesBanner accountKey={accountKey} symbol={symbol} />
+            )}
         </VStack>
     );
 };

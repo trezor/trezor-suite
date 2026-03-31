@@ -6,6 +6,7 @@
 export * from './utils';
 export * from './selectors';
 export { signEthStakeTransactionNativeThunk } from './stakeEthFormNativeThunks';
+export { signEthUnstakeTransactionNativeThunk } from './unstakeEthFormNativeThunk';
 export type * from './types';
 export * from './hooks/useSelector';
 

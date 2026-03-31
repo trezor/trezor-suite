@@ -5,5 +5,7 @@ export { EarnConsentsScreen } from './screens/EarnConsentsScreen';
 export { EarnFormScreen } from './screens/EarnFormScreen';
 export { HowStakeWorksScreen } from './screens/HowStakeWorksScreen';
 export { StakingDetailScreen } from './screens/StakingDetailScreen';
+export { UnstakeFlowScreen } from './screens/UnstakeFlowScreen';
+export { UnstakeTransactionDataReviewScreen } from './screens/UnstakeTransactionDataReviewScreen';
 export { FiveBinariesHomeBanner } from './components/FiveBinariesHomeBanner';
 export { EarnStackNavigator } from './navigation/EarnStackNavigator';
