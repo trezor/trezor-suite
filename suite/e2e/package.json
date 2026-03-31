@@ -20,12 +20,12 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "devDependencies": {
-        "@currents/playwright": "^1.21.2",
+        "@currents/playwright": "^1.22.2",
         "@evolu/common": "8.0.0-next.3",
-        "@playwright/browser-chromium": "1.57.0",
-        "@playwright/browser-firefox": "1.57.0",
-        "@playwright/browser-webkit": "1.57.0",
-        "@playwright/test": "1.57.0",
+        "@playwright/browser-chromium": "1.58.2",
+        "@playwright/browser-firefox": "1.58.2",
+        "@playwright/browser-webkit": "1.58.2",
+        "@playwright/test": "1.58.2",
         "@solana-program/stake": "^0.5.0",
         "@solana/addresses": "^2.3.0",
         "@solana/kit": "^2.3.0",
