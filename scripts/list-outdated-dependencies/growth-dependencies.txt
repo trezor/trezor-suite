@@ -11,6 +11,7 @@
 @originjs/vite-plugin-commonjs
 @react-native-community/datetimepicker
 @react-native-community/slider
+@rolldown/plugin-babel
 @storybook/addon-docs
 @storybook/addon-ondevice-controls
 @storybook/addon-links
