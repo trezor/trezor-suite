@@ -36,6 +36,7 @@ export type ThpState = {
     lastThpCode?: string;
     credentials: ThpSuiteCredentials[];
     pairingRequestId?: string;
+    confirmationRequestId?: string;
 };
 
 export const initialThpState: ThpState = {
@@ -147,10 +148,11 @@ export const prepareThpReducer = createReducerWithExtraDeps<ThpState>(
             // This is the THP flow in Firmware Update
             .addMatcher(
                 action => action.type === UI_REQUEST.REQUEST_CONFIRMATION,
-                state => {
+                (state, action: { type: string; requestId?: string }) => {
                     if (state.step !== 'CodeInvalid') {
                         state.step = 'BeforeConnectionInfo';
                     }
+                    state.confirmationRequestId = action.requestId;
                 },
             )
             .addMatcher(

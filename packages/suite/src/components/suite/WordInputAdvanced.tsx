@@ -26,10 +26,13 @@ export const WordInputAdvanced = ({ count }: WordInputAdvancedProps) => {
     const learnMoreUrl = useExternalLink(HELP_CENTER_ADVANCED_RECOVERY_URL);
     const requestId = useSelector(selectModalRequestId);
 
-    const onSubmit = useCallback(async (value: string) => {
-        await resolveAfter(600);
-        TrezorConnect.uiResponse({ type: UI_RESPONSE.RECEIVE_WORD, payload: value, requestId });
-    }, [requestId]);
+    const onSubmit = useCallback(
+        async (value: string) => {
+            await resolveAfter(600);
+            TrezorConnect.uiResponse({ type: UI_RESPONSE.RECEIVE_WORD, payload: value, requestId });
+        },
+        [requestId],
+    );
 
     const backspace = useCallback(() => {
         onSubmit(String.fromCharCode(8));

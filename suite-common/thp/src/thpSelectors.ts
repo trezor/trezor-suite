@@ -17,3 +17,6 @@ export const selectThpLastCode = (state: ThpRootState) => state.thp.lastThpCode;
 export const selectThpCredentials = (state: ThpRootState) => state.thp.credentials;
 
 export const selectThpPairingRequestId = (state: ThpRootState) => state.thp.pairingRequestId;
+
+export const selectThpConfirmationRequestId = (state: ThpRootState) =>
+    state.thp.confirmationRequestId;
