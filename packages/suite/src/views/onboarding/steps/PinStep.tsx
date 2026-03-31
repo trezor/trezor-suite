@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { Translation } from '@suite/intl';
+import { selectModalRequestId } from '@suite/modal';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { selectSelectedDevice } from '@suite-common/device';
 import { Button, Column } from '@trezor/components';
@@ -20,6 +21,7 @@ export const PinStep = () => {
     const [pin, setPin] = useState('');
     const device = useSelector(selectSelectedDevice);
     const modal = useSelector(state => state.modal);
+    const requestId = useSelector(selectModalRequestId);
     const dispatch = useDispatch();
 
     const { goToNextStep, showPinMatrix, updateAnalytics } = useOnboarding();
@@ -39,7 +41,7 @@ export const PinStep = () => {
     };
 
     const handlePinSubmit = () => {
-        TrezorConnect.uiResponse({ type: UI_RESPONSE.RECEIVE_PIN, payload: pin });
+        TrezorConnect.uiResponse({ type: UI_RESPONSE.RECEIVE_PIN, payload: pin, requestId });
 
         setPin('');
     };
