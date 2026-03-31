@@ -42,6 +42,7 @@ export const FeeSummaryCard = ({
                             isBalance={false}
                             isLoading={areFeesLoading}
                             isDiscreetText={false}
+                            testID="@transactionManagement/fee-crypto-amount"
                         />
                         <CryptoToFiatAmountFormatter
                             variant="body-sm"
