@@ -15,20 +15,24 @@ import { Fees } from 'src/components/wallet/Fees/Fees';
 import { useAllowanceModal } from 'src/hooks/wallet/allowance';
 import { TradingCoinLogo } from 'src/views/wallet/trading/common/TradingCoinLogo';
 
-import { AllowanceModalProviderInfo } from './AllowanceModalProviderInfo';
+import {
+    AllowanceModalProviderInfo,
+    type ProviderLogoSourceType,
+} from './AllowanceModalProviderInfo';
 
 interface RevokeModalProps {
     cryptoId: CryptoId;
     account: Account;
     provider: ProviderMetadata;
     spender: string;
+    logoSourceType?: ProviderLogoSourceType;
     preapprovedAmount?: string;
     onConfirm?: () => void;
     onCancel?: () => void;
 }
 
 export const RevokeModal = (props: RevokeModalProps) => {
-    const { account, provider, spender, cryptoId, preapprovedAmount } = props;
+    const { account, provider, spender, cryptoId, logoSourceType, preapprovedAmount } = props;
     const { device } = useDevice();
 
     const context = useAllowanceModal({
@@ -92,7 +96,11 @@ export const RevokeModal = (props: RevokeModalProps) => {
                 shadowBottom={false}
             >
                 <Column gap={12}>
-                    <AllowanceModalProviderInfo spender={spender} provider={provider} />
+                    <AllowanceModalProviderInfo
+                        spender={spender}
+                        provider={provider}
+                        logoSourceType={logoSourceType}
+                    />
 
                     <Box
                         borderWidth={borders.widths.large}

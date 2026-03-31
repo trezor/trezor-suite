@@ -14,7 +14,10 @@ import { AccountLabeling } from 'src/components/suite/labeling';
 import { Fees } from 'src/components/wallet/Fees/Fees';
 import { useAllowanceModal } from 'src/hooks/wallet/allowance';
 
-import { AllowanceModalProviderInfo } from './AllowanceModalProviderInfo';
+import {
+    AllowanceModalProviderInfo,
+    type ProviderLogoSourceType,
+} from './AllowanceModalProviderInfo';
 import { ApproveModalTypeSelector } from './ApproveModalTypeSelector';
 
 interface ApproveModalProps {
@@ -23,13 +26,14 @@ interface ApproveModalProps {
     account: Account;
     provider: ProviderMetadata;
     spender: string;
+    logoSourceType?: ProviderLogoSourceType;
     onSelectApprovalType?: (type: DexApprovalType) => void;
     onConfirm?: () => void;
     onCancel?: () => void;
 }
 
 export const ApproveModal = (props: ApproveModalProps) => {
-    const { account, provider, spender, cryptoId } = props;
+    const { account, provider, spender, cryptoId, logoSourceType } = props;
     const { device } = useDevice();
     const context = useAllowanceModal({ ...props, type: 'APPROVE' });
 
@@ -91,7 +95,11 @@ export const ApproveModal = (props: ApproveModalProps) => {
                 shadowBottom={false}
             >
                 <Column gap={12}>
-                    <AllowanceModalProviderInfo spender={spender} provider={provider} />
+                    <AllowanceModalProviderInfo
+                        spender={spender}
+                        provider={provider}
+                        logoSourceType={logoSourceType}
+                    />
                     <ApproveModalTypeSelector
                         approvalType={approvalType}
                         isLoading={isLoading}
