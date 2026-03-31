@@ -85,5 +85,5 @@ ws
 xvfb-maybe
 zod
 @types/cors
-@vitest/browser
+@vitest/browser-playwright
 vitest
