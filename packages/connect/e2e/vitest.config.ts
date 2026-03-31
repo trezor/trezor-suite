@@ -1,4 +1,3 @@
-import { playwright } from '@vitest/browser-playwright';
 import fs from 'fs';
 import { createRequire } from 'module';
 import path from 'path';
@@ -147,107 +146,124 @@ function requireToImportPlugin(): Plugin {
     };
 }
 
-export default defineConfig({
-    resolve: {
-        alias: [
-            {
-                // Replace getRandomInt with a deterministic mock so output permutation
-                // fixtures are stable. This works at the Vite module graph level, affecting
-                // all transitive workspace consumers (e.g. @trezor/utxo-lib).
-                find: /.*\/getRandomInt$/,
-                replacement: path.resolve(__dirname, './__mocks__/getRandomInt.ts'),
+export default defineConfig(
+    // Wrapped in an async IIFE so @vitest/browser-playwright is dynamically imported rather
+    // than statically resolved. This prevents tsx's CJS loader from encountering the ESM-only
+    // estree-walker@3 transitive dep (@vitest/browser-playwright → @vitest/mocker → estree-walker).
+    (async () => {
+        const { playwright } = isWebProject
+            ? await import('@vitest/browser-playwright')
+            : { playwright: undefined as never };
+
+        return {
+            resolve: {
+                alias: [
+                    {
+                        // Replace getRandomInt with a deterministic mock so output permutation
+                        // fixtures are stable. This works at the Vite module graph level, affecting
+                        // all transitive workspace consumers (e.g. @trezor/utxo-lib).
+                        find: /.*\/getRandomInt$/,
+                        replacement: path.resolve(__dirname, './__mocks__/getRandomInt.ts'),
+                    },
+                    {
+                        // "usb" package sets event listeners on the top level causing memory leaks.
+                        // See: https://github.com/trezor/trezor-suite/pull/25952
+                        find: /^usb$/,
+                        replacement: nodeRequire.resolve('../../transport/mocks/usb.js'),
+                    },
+                ],
             },
-            {
-                // "usb" package sets event listeners on the top level causing memory leaks.
-                // See: https://github.com/trezor/trezor-suite/pull/25952
-                find: /^usb$/,
-                replacement: nodeRequire.resolve('../../transport/mocks/usb.js'),
+            plugins: [
+                txCachePlugin(),
+                ...(isWebProject
+                    ? [
+                          wasm(),
+                          nodePolyfills({
+                              include: ['crypto', 'stream', 'vm', 'buffer', 'process', 'util'],
+                              globals: {
+                                  Buffer: true,
+                                  process: true,
+                              },
+                              overrides: {
+                                  // Use the same polyfill packages that webpack used
+                                  crypto: 'crypto-browserify',
+                                  stream: 'stream-browserify',
+                                  vm: 'vm-browserify',
+                              },
+                          }),
+                          wsCacheTransformPlugin(),
+                          requireToImportPlugin(),
+                      ]
+                    : []),
+            ],
+            define: {
+                'process.env.TESTS_FIRMWARE': JSON.stringify(process.env.TESTS_FIRMWARE),
+                'process.env.TESTS_INCLUDED_METHODS': JSON.stringify(
+                    process.env.TESTS_INCLUDED_METHODS,
+                ),
+                'process.env.TESTS_EXCLUDED_METHODS': JSON.stringify(
+                    process.env.TESTS_EXCLUDED_METHODS,
+                ),
+                'process.env.TESTS_USE_TX_CACHE': JSON.stringify(process.env.TESTS_USE_TX_CACHE),
+                'process.env.TESTS_USE_WS_CACHE': JSON.stringify(process.env.TESTS_USE_WS_CACHE),
+                'process.env.TESTS_TRANSPORT': JSON.stringify(process.env.TESTS_TRANSPORT),
+                'process.env.EMULATOR_START_OPTS': JSON.stringify(process.env.EMULATOR_START_OPTS),
+                ...(isWebProject
+                    ? {
+                          'process.version': JSON.stringify(process.version),
+                          'process.browser': 'true',
+                      }
+                    : {}),
             },
-        ],
-    },
-    plugins: [
-        txCachePlugin(),
-        ...(isWebProject
-            ? [
-                  wasm(),
-                  nodePolyfills({
-                      include: ['crypto', 'stream', 'vm', 'buffer', 'process', 'util'],
-                      globals: {
-                          Buffer: true,
-                          process: true,
-                      },
-                      overrides: {
-                          // Use the same polyfill packages that webpack used
-                          crypto: 'crypto-browserify',
-                          stream: 'stream-browserify',
-                          vm: 'vm-browserify',
-                      },
-                  }),
-                  wsCacheTransformPlugin(),
-                  requireToImportPlugin(),
-              ]
-            : []),
-    ],
-    define: {
-        'process.env.TESTS_FIRMWARE': JSON.stringify(process.env.TESTS_FIRMWARE),
-        'process.env.TESTS_INCLUDED_METHODS': JSON.stringify(process.env.TESTS_INCLUDED_METHODS),
-        'process.env.TESTS_EXCLUDED_METHODS': JSON.stringify(process.env.TESTS_EXCLUDED_METHODS),
-        'process.env.TESTS_USE_TX_CACHE': JSON.stringify(process.env.TESTS_USE_TX_CACHE),
-        'process.env.TESTS_USE_WS_CACHE': JSON.stringify(process.env.TESTS_USE_WS_CACHE),
-        'process.env.TESTS_TRANSPORT': JSON.stringify(process.env.TESTS_TRANSPORT),
-        'process.env.EMULATOR_START_OPTS': JSON.stringify(process.env.EMULATOR_START_OPTS),
-        ...(isWebProject
-            ? {
-                  'process.version': JSON.stringify(process.version),
-                  'process.browser': 'true',
-              }
-            : {}),
-    },
-    optimizeDeps: isWebProject
-        ? {
-              include: [
-                  'vite-plugin-node-polyfills/shims/buffer',
-                  'vite-plugin-node-polyfills/shims/global',
-                  'vite-plugin-node-polyfills/shims/process',
-                  'crypto',
-              ],
-          }
-        : undefined,
-    test: {
-        root: path.resolve(__dirname, '..'),
-        include: process.env.TESTS_PATTERN
-            ? process.env.TESTS_PATTERN.split(' ').map(p =>
-                  p.endsWith('.test') ? `e2e/tests/**/${p}.ts` : `e2e/tests/**/${p}*.test.ts`,
-              )
-            : ['e2e/tests/**/*.test.ts'],
-        globals: true,
-        fileParallelism: false,
-        testTimeout: 30000,
-        hookTimeout: 40000,
-        reporters: ['verbose'],
-        sequence: {
-            shuffle: false,
-        },
-        setupFiles: [
-            path.resolve(__dirname, './vitest.setup.ts'),
-            path.resolve(__dirname, './common.setup.ts'),
-        ],
-        globalSetup: path.resolve(__dirname, './vitest.globalSetup.ts'),
-        ...(isWebProject
-            ? {
-                  browser: {
-                      enabled: true,
-                      provider: playwright({
-                          launchOptions: {
-                              args: ['--no-sandbox'],
+            optimizeDeps: isWebProject
+                ? {
+                      include: [
+                          'vite-plugin-node-polyfills/shims/buffer',
+                          'vite-plugin-node-polyfills/shims/global',
+                          'vite-plugin-node-polyfills/shims/process',
+                          'crypto',
+                      ],
+                  }
+                : undefined,
+            test: {
+                root: path.resolve(__dirname, '..'),
+                include: process.env.TESTS_PATTERN
+                    ? process.env.TESTS_PATTERN.split(' ').map(p =>
+                          p.endsWith('.test')
+                              ? `e2e/tests/**/${p}.ts`
+                              : `e2e/tests/**/${p}*.test.ts`,
+                      )
+                    : ['e2e/tests/**/*.test.ts'],
+                globals: true,
+                fileParallelism: false,
+                testTimeout: 30000,
+                hookTimeout: 40000,
+                reporters: ['verbose'],
+                sequence: {
+                    shuffle: false,
+                },
+                setupFiles: [
+                    path.resolve(__dirname, './vitest.setup.ts'),
+                    path.resolve(__dirname, './common.setup.ts'),
+                ],
+                globalSetup: path.resolve(__dirname, './vitest.globalSetup.ts'),
+                ...(isWebProject
+                    ? {
+                          browser: {
+                              enabled: true,
+                              provider: playwright({
+                                  launchOptions: {
+                                      args: ['--no-sandbox'],
+                                  },
+                              }),
+                              headless: true,
+                              instances: [{ browser: 'chromium' }],
                           },
+                      }
+                    : {
+                          environment: 'node',
                       }),
-                      headless: true,
-                      instances: [{ browser: 'chromium' }],
-                  },
-              }
-            : {
-                  environment: 'node',
-              }),
-    },
-});
+            },
+        };
+    })(),
+);
