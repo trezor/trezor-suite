@@ -155,7 +155,7 @@ const setDiscovered = createAction(
 
 const setDeviceAuthenticityResult = createAction(
     `${DEVICE_MODULE_PREFIX}/setDeviceAuthenticityResult`,
-    (payload: { device: TrezorDevice; result: StoredAuthenticateDeviceResult }) => ({
+    (payload: { deviceId: TrezorDevice['id']; result: StoredAuthenticateDeviceResult }) => ({
         payload,
     }),
 );

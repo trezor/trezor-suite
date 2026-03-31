@@ -48,7 +48,12 @@ export const checkDeviceAuthenticityThunk = createThunk<
                   { valid: false, error: result.error.message }
                 : // or internal error (then skip the check by storing undefined)
                   undefined;
-            dispatch(deviceActions.setDeviceAuthenticityResult({ device, result: storedResult }));
+            dispatch(
+                deviceActions.setDeviceAuthenticityResult({
+                    deviceId: device.id,
+                    result: storedResult,
+                }),
+            );
 
             return rejectWithValue(storedResult);
         }
@@ -78,7 +83,12 @@ export const checkDeviceAuthenticityThunk = createThunk<
                 }),
             );
 
-            dispatch(deviceActions.setDeviceAuthenticityResult({ device, result: storedResult }));
+            dispatch(
+                deviceActions.setDeviceAuthenticityResult({
+                    deviceId: device.id,
+                    result: storedResult,
+                }),
+            );
 
             return rejectWithValue(storedResult);
         }
@@ -87,7 +97,12 @@ export const checkDeviceAuthenticityThunk = createThunk<
         if (!skipSuccessToast) {
             dispatch(notificationsActions.addToast({ type: 'device-authenticity-success' }));
         }
-        dispatch(deviceActions.setDeviceAuthenticityResult({ device, result: storedResult }));
+        dispatch(
+            deviceActions.setDeviceAuthenticityResult({
+                deviceId: device.id,
+                result: storedResult,
+            }),
+        );
 
         return fulfillWithValue(storedResult);
     },

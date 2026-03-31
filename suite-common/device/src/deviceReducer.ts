@@ -35,7 +35,6 @@ export type DeviceReducerState = {
     persistentDeviceData: PersistentDeviceData[]; // is an array since there is not a single primary id, device can be matched by various criteria
 
     selectedDevice?: TrezorDevice;
-    deviceAuthenticity?: Record<string, StoredAuthenticateDeviceResult>;
     dismissedSecurityChecks?: {
         firmwareAuthenticity?: string[];
     };
@@ -554,14 +553,15 @@ const removeButtonRequests = (
 
 export const setDeviceAuthenticity = (
     draft: DeviceReducerState,
-    device: TrezorDevice,
+    deviceId: TrezorDevice['id'],
     result?: StoredAuthenticateDeviceResult,
 ) => {
-    if (!device.id) return;
-    draft.deviceAuthenticity = {
-        ...draft.deviceAuthenticity,
-        [device.id]: result,
-    };
+    const data = draft.persistentDeviceData.find(
+        persistentDeviceData => persistentDeviceData.device_id === deviceId,
+    );
+    // expected to exist; device must have been connected or changed for this action to happen
+    if (data === undefined) return;
+    data.authenticityResult = result;
 };
 
 // called after successful wipeDevice
@@ -664,7 +664,8 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(
                 state.selectedDevice = payload;
             })
             .addCase(deviceActions.setDeviceAuthenticityResult, (state, { payload }) => {
-                setDeviceAuthenticity(state, payload.device, payload.result);
+                // nullish deviceId is impossible unless meta checks (id) are disabled. If it is nullish, it's no-op.
+                setDeviceAuthenticity(state, payload.deviceId, payload.result);
             })
             .addCase(deviceActions.dismissFirmwareAuthenticityCheck, (state, { payload }) => {
                 if (!state.dismissedSecurityChecks) {

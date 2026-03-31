@@ -2,7 +2,7 @@ import { type UnknownAction } from '@reduxjs/toolkit';
 
 import { deviceActions, prepareDeviceReducer } from '@suite-common/device';
 import { prepareMessageSystemReducer } from '@suite-common/message-system';
-import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
+import { defaultDevicePersistentData, mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { prepareThpReducer } from '@suite-common/thp';
 import { prepareWalletSettingsReducer } from '@suite-common/wallet-core';
@@ -362,9 +362,12 @@ export const deviceConnectCompromisedFixtures: NavigationFixture[] = [
             },
             device: {
                 selectedDevice: mockSuiteDevice(),
-                deviceAuthenticity: {
-                    [mockSuiteDevice().id ?? '']: { valid: false, error: 'foo' },
-                },
+                persistentDeviceData: [
+                    {
+                        ...defaultDevicePersistentData,
+                        authenticityResult: { valid: false, error: 'ROOT_PUBKEY_NOT_FOUND' },
+                    },
+                ],
             },
         }),
         action: {
