@@ -19,7 +19,14 @@ import {
     getTradingQuotesByPaymentMethod,
     isCountrySubdivisionEmpty,
     mapFiatCurrencyCodeToBaseCurrencyCode,
-    selectTradingBuy,
+    selectTradingBuyAmountLimits,
+    selectTradingBuyInfo,
+    selectTradingBuyIsFromRedirect,
+    selectTradingBuyIsLoading,
+    selectTradingBuyPreselectedQuote,
+    selectTradingBuyQuotes,
+    selectTradingBuyQuotesRequest,
+    selectTradingBuySelectedQuote,
     selectTradingPaymentMethods,
     selectTradingVerifiedAddress,
     tradingActions,
@@ -62,16 +69,16 @@ export const useTradingBuyForm = ({
     const isFormPage = pageType === 'form';
     const isOffersPage = pageType === 'offers';
     const dispatch = useDispatch();
-    const {
-        buyInfo,
-        isFromRedirect,
-        quotes,
-        quotesRequest,
-        preselectedQuote,
-        selectedQuote,
-        amountLimits,
-        isLoading,
-    } = useSelector(selectTradingBuy);
+
+    const buyInfo = useSelector(selectTradingBuyInfo);
+    const isFromRedirect = useSelector(selectTradingBuyIsFromRedirect);
+    const quotes = useSelector(selectTradingBuyQuotes);
+    const quotesRequest = useSelector(selectTradingBuyQuotesRequest);
+    const preselectedQuote = useSelector(selectTradingBuyPreselectedQuote);
+    const selectedQuote = useSelector(selectTradingBuySelectedQuote);
+    const amountLimits = useSelector(selectTradingBuyAmountLimits);
+    const isLoading = useSelector(selectTradingBuyIsLoading);
+
     const verifiedAddress = useSelector(selectTradingVerifiedAddress);
     const paymentMethods = useSelector(selectTradingPaymentMethods);
 
