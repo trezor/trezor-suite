@@ -555,6 +555,51 @@ export const NotificationRenderer = ({
                 />
             );
 
+        case 'tx-yield-supply':
+            return (
+                <TransactionRenderer
+                    render={render}
+                    notification={notification}
+                    icon="arrowUp"
+                    variant="success"
+                    message="TOAST_TX_YIELD_SUPPLY"
+                    messageValues={{
+                        amount: notification.formattedAmount,
+                        account: notification.descriptor,
+                    }}
+                />
+            );
+
+        case 'tx-yield-withdraw':
+            return (
+                <TransactionRenderer
+                    render={render}
+                    notification={notification}
+                    icon="arrowUp"
+                    variant="success"
+                    message="TOAST_TX_YIELD_WITHDRAW"
+                    messageValues={{
+                        amount: notification.formattedAmount,
+                        account: notification.descriptor,
+                    }}
+                />
+            );
+
+        case 'tx-yield-claim':
+            return (
+                <TransactionRenderer
+                    render={render}
+                    notification={notification}
+                    icon="arrowUp"
+                    variant="success"
+                    message="TOAST_TX_YIELD_CLAIM"
+                    messageValues={{
+                        amount: notification.formattedAmount,
+                        account: notification.descriptor,
+                    }}
+                />
+            );
+
         case 'successful-claim':
             return renderNotificationView(render, notification, {
                 variant: 'success',

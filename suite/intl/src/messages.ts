@@ -10133,6 +10133,18 @@ export const messages = defineMessages({
         id: 'TOAST_TX_CLAIMED',
         defaultMessage: 'Claimed from {account}',
     },
+    TOAST_TX_YIELD_SUPPLY: {
+        id: 'TOAST_TX_YIELD_SUPPLY',
+        defaultMessage: 'Supply broadcasted from {account}',
+    },
+    TOAST_TX_YIELD_WITHDRAW: {
+        id: 'TOAST_TX_YIELD_WITHDRAW',
+        defaultMessage: 'Withdrawal broadcasted from {account}',
+    },
+    TOAST_TX_YIELD_CLAIM: {
+        id: 'TOAST_TX_YIELD_CLAIM',
+        defaultMessage: 'Claim broadcasted from {account}',
+    },
     TOAST_SUCCESSFUL_CLAIM: {
         id: 'TOAST_SUCCESSFUL_CLAIM',
         defaultMessage: '{networkDisplaySymbol} claimed successfully',

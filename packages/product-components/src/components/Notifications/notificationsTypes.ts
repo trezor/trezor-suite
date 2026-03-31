@@ -24,7 +24,10 @@ export type TransactionNotificationType =
     | 'tx-unstaked'
     | 'tx-claimed'
     | 'tx-approved'
-    | 'tx-revoked';
+    | 'tx-revoked'
+    | 'tx-yield-supply'
+    | 'tx-yield-withdraw'
+    | 'tx-yield-claim';
 
 type TransactionNotificationWithToken = Extract<
     NotificationEntry,
