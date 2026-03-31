@@ -382,6 +382,7 @@ export const transformAccountInfo = (payload: BlockbookAccountInfo): AccountInfo
     if (payload.chainExtraData?.payloadType === 'tron') {
         misc = {
             tronResources: payload.chainExtraData.payload,
+            contractInfo: payload.contractInfo,
         };
     } else if (isEVM) {
         misc = {
