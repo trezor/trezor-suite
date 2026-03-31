@@ -154,7 +154,12 @@ export const useDeviceAuthenticityCheck = () => {
             }
 
             // Clear previous result
-            dispatch(deviceActions.setDeviceAuthenticityResult({ device, result: undefined }));
+            dispatch(
+                deviceActions.setDeviceAuthenticityResult({
+                    deviceId: device.id,
+                    result: undefined,
+                }),
+            );
 
             const deviceAccessResponse = await requestPrioritizedDeviceAccess(() =>
                 TrezorConnect.authenticateDevice({
@@ -180,7 +185,12 @@ export const useDeviceAuthenticityCheck = () => {
 
             const storedResult: StoredAuthenticateDeviceResult = createStoredResult(result);
 
-            dispatch(deviceActions.setDeviceAuthenticityResult({ device, result: storedResult }));
+            dispatch(
+                deviceActions.setDeviceAuthenticityResult({
+                    deviceId: device.id,
+                    result: storedResult,
+                }),
+            );
 
             if (storedResult?.valid === false) {
                 handleFailure();

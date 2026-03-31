@@ -102,7 +102,7 @@ export type PersistentDeviceData = Pick<AcquiredDevice, PersistedDeviceKey> &
         lastEntropyCheckResult?: EntropyCheckResult;
         delegatedIdentityKey: EncryptedHex<DelegatedIdentityKey> | null;
         descriptor?: AcquiredDevice['descriptor'];
-        // TODO move deviceAuthenticity to this object and newly introduce persistence
+        authenticityResult?: StoredAuthenticateDeviceResult;
     };
 
 export type TrezorDeviceWithState = AcquiredDevice & {
