@@ -9535,13 +9535,49 @@ export const messages = defineMessages({
         id: 'TR_EARN_VAULT_NAME',
         defaultMessage: '{vaultName} Vault',
     },
+    TR_EARN_YIELD_PENDING_SUPPLY: {
+        id: 'TR_EARN_YIELD_PENDING_SUPPLY',
+        defaultMessage: 'Confirming supply...',
+    },
+    TR_EARN_YIELD_PENDING_WITHDRAW: {
+        id: 'TR_EARN_YIELD_PENDING_WITHDRAW',
+        defaultMessage: 'Confirming withdrawal...',
+    },
+    TR_EARN_YIELD_APPROVAL_INSUFFICIENT: {
+        id: 'TR_EARN_YIELD_APPROVAL_INSUFFICIENT',
+        defaultMessage: 'Approval amount is lower than the requested amount.',
+    },
+    TR_EARN_YIELD_APPROVAL_TOO_LOW: {
+        id: 'TR_EARN_YIELD_APPROVAL_TOO_LOW',
+        defaultMessage: 'Approval is too low. Modify approval or lower the amount.',
+    },
+    TR_EARN_YIELD_MODIFY_APPROVAL: {
+        id: 'TR_EARN_YIELD_MODIFY_APPROVAL',
+        defaultMessage: 'Modify approval',
+    },
     TR_MODIFY: {
         id: 'TR_MODIFY',
         defaultMessage: 'Modify',
     },
+    TR_EARN_YIELD_INCREASE_APPROVAL: {
+        id: 'TR_EARN_YIELD_INCREASE_APPROVAL',
+        defaultMessage: 'Increase approval',
+    },
+    TR_EARN_YIELD_REVOKE_APPROVAL: {
+        id: 'TR_EARN_YIELD_REVOKE_APPROVAL',
+        defaultMessage: 'Revoke approval',
+    },
     TR_EARN_YIELD_DASHBOARD_SUPPLIED: {
         id: 'TR_EARN_YIELD_DASHBOARD_SUPPLIED',
         defaultMessage: '{amount} {displaySymbol} supplied',
+    },
+    TR_EARN_YIELD_ERROR_GENERIC: {
+        id: 'TR_EARN_YIELD_ERROR_GENERIC',
+        defaultMessage: 'Something went wrong. Please try again.',
+    },
+    TR_EARN_YIELD_ERROR_TRANSACTION_FAILED: {
+        id: 'TR_EARN_YIELD_ERROR_TRANSACTION_FAILED',
+        defaultMessage: 'Transaction failed.',
     },
     TR_EARN_DASHBOARD_ACTIVE: {
         id: 'TR_EARN_DASHBOARD_ACTIVE',

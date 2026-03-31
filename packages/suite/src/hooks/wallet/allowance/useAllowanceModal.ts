@@ -34,7 +34,8 @@ export const useAllowanceModal = ({
     onCancel,
 }: UseAllowanceModalProps) => {
     const { state, tx } = useAllowanceContext();
-    const closeModal = type === 'REVOKE' ? state.closeRevokeModal : state.closeApproveModal;
+    const closeModal = type === 'APPROVE' ? state.closeApproveModal : state.closeRevokeModal;
+    const openModal = type === 'APPROVE' ? state.openApproveModal : state.openRevokeModal;
     const [approvalType, setApprovalType] = useState<DexApprovalType>(
         type === 'REVOKE' ? 'ZERO' : 'MINIMAL',
     );
@@ -93,16 +94,25 @@ export const useAllowanceModal = ({
         closeModal();
         state.setIsWaitingForDevice(true);
 
+        let txid: string | null = null;
+
         try {
             const result = await send({ composedTransaction });
 
             if (result?.txid) {
+                txid = result.txid;
                 tx.setApprovalTxid(result.txid);
             }
+        } catch {
+            // Device flow failed or was rejected — re-open the modal so user can retry or cancel
         } finally {
             state.setIsWaitingForDevice(false);
+
+            if (!txid) {
+                openModal();
+            }
         }
-    }, [composedTransaction, send, state, tx, closeModal, onConfirmRef]);
+    }, [composedTransaction, send, state, tx, closeModal, openModal, onConfirmRef]);
 
     const handleClose = useCallback(() => {
         closeModal();

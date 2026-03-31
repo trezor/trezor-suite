@@ -1,7 +1,7 @@
 import { FormProvider } from 'react-hook-form';
 
-import { Context } from '@suite-common/message-system';
 import { type EarnParams } from '@suite/router';
+import { Context } from '@suite-common/message-system';
 import { type Account } from '@suite-common/wallet-types';
 import { Column } from '@trezor/components';
 

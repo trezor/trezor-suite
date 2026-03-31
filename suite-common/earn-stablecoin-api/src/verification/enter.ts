@@ -1,7 +1,7 @@
 import { Verifier, asEvmAddress } from '@suite-common/calldata';
 import { BigNumber } from '@trezor/utils';
 
-import { type EnterYieldResponseSuccess, TransactionDtoType } from '../api';
+import { type EnterYieldResponseSuccess, TransactionDtoStatus, TransactionDtoType } from '../api';
 import { parseUnsignedEvmTransaction } from './schema';
 import {
     type TransactionVerificationStatus,
@@ -43,6 +43,8 @@ const getTransactionStatus = (
     address: `0x${string}`,
     amountBigInt: bigint,
 ): TransactionVerificationStatus => {
+    if (tx.status === TransactionDtoStatus.SKIPPED) return 'skipped';
+
     const parsed = parseUnsignedEvmTransaction(tx.unsignedTransaction);
 
     if (!parsed || !vaultAddress) return 'skipped';

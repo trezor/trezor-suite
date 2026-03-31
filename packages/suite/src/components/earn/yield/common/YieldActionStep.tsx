@@ -1,9 +1,11 @@
+import type { ReactNode } from 'react';
+
 import { Translation } from '@suite/intl';
-import type { YieldFlowType } from '@suite-common/suite-types';
 import { Button, Column } from '@trezor/components';
 
 import { YieldAmountCard } from './YieldAmountCard';
-import type { YieldFlowDisplayToken } from './types';
+import { YieldPendingTransaction } from './YieldPendingTransaction';
+import type { YieldFlowDisplayToken, YieldFlowType, YieldPendingTransactionState } from '../types';
 
 const actionStepTranslationMap = {
     supply: {
@@ -21,23 +23,25 @@ const actionStepTranslationMap = {
 export type YieldActionStepProps = {
     flowType: YieldFlowType;
     token: YieldFlowDisplayToken;
-    amount: string;
-    summaryValue: string;
+    summaryValue: ReactNode;
     isDisabled?: boolean;
-    onAmountSelect: (amount: string) => void;
+    warning?: ReactNode;
+    pendingTransaction?: YieldPendingTransactionState;
     onMaxClick?: () => void;
     onSubmit: () => void;
+    onPendingTxClick?: (txid: string) => void;
 };
 
 export const YieldActionStep = ({
     flowType,
     token,
-    amount,
     summaryValue,
     isDisabled = false,
-    onAmountSelect,
+    warning,
+    pendingTransaction,
     onMaxClick,
     onSubmit,
+    onPendingTxClick,
 }: YieldActionStepProps) => {
     const { amountLabelTranslationId, submitTranslationId, balanceLabelTranslationId } =
         actionStepTranslationMap[flowType];
@@ -45,22 +49,34 @@ export const YieldActionStep = ({
     return (
         <Column gap={16}>
             <YieldAmountCard
-                amount={amount}
                 tokenSymbol={token.symbol}
                 summary={{
                     labelTranslationId: balanceLabelTranslationId,
                     value: summaryValue,
-                    onMaxClick,
+                    onMaxClick: pendingTransaction ? undefined : onMaxClick,
                 }}
                 heading={{
                     amountLabelTranslationId,
                 }}
-                onAmountChange={onAmountSelect}
+                warning={warning}
+                isDisabled={!!pendingTransaction}
             />
 
-            <Button size="large" width="100%" onClick={onSubmit} isDisabled={isDisabled}>
+            <Button
+                size="large"
+                width="100%"
+                onClick={onSubmit}
+                isDisabled={isDisabled || !!pendingTransaction}
+            >
                 <Translation id={submitTranslationId} />
             </Button>
+
+            {pendingTransaction && (
+                <YieldPendingTransaction
+                    pendingTransaction={pendingTransaction}
+                    onTxClick={onPendingTxClick}
+                />
+            )}
         </Column>
     );
 };

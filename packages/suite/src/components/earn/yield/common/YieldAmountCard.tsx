@@ -1,51 +1,44 @@
-import { useEffect } from 'react';
+import { type ReactNode } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 import { Translation } from '@suite/intl';
 import type { TranslationKey } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import { formInputsMaxLength } from '@suite-common/validators';
-import { Button, Card, Column, Row, Text, TextButton } from '@trezor/components';
+import { Button, Card, Column, Row, Text } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';
 
 import { useSelector } from 'src/hooks/suite';
 
-import type { YieldFlowFormValues } from './types';
+import type { YieldFlowFormValues } from '../types';
 
 type YieldAmountCardSummaryProps = {
-    value: string;
+    value: ReactNode;
     labelTranslationId?: TranslationKey;
     onMaxClick?: () => void;
 };
 
 type YieldAmountCardHeadingProps = {
     amountLabelTranslationId?: TranslationKey;
-    switchCurrencyLabel?: string;
-    isSwitchDisabled?: boolean;
-    onSwitchCurrency?: () => void;
 };
 
 type YieldAmountCardProps = {
-    amount: string;
     tokenSymbol: string;
     summary?: YieldAmountCardSummaryProps;
     heading?: YieldAmountCardHeadingProps;
-    onAmountChange: (amount: string) => void;
+    warning?: ReactNode;
+    isDisabled?: boolean;
 };
 
 export const YieldAmountCard = ({
-    amount,
     tokenSymbol,
     summary,
     heading,
-    onAmountChange,
+    warning,
+    isDisabled = false,
 }: YieldAmountCardProps) => {
     const locale = useSelector(selectLanguage);
-    const { control, setValue } = useFormContext<YieldFlowFormValues>();
-
-    useEffect(() => {
-        setValue('amountInput', amount);
-    }, [amount, setValue]);
+    const { control } = useFormContext<YieldFlowFormValues>();
 
     return (
         <Card paddingType="none">
@@ -59,26 +52,13 @@ export const YieldAmountCard = ({
                             }
                         />
                     </Text>
-                    {heading?.switchCurrencyLabel && heading.onSwitchCurrency && (
-                        <TextButton
-                            size="small"
-                            type="button"
-                            onClick={heading.onSwitchCurrency}
-                            isDisabled={heading.isSwitchDisabled === true}
-                        >
-                            <Translation
-                                id="TR_TRADING_ENTER_AMOUNT_IN"
-                                values={{ currency: heading.switchCurrencyLabel }}
-                            />
-                        </TextButton>
-                    )}
                 </Row>
                 <NumberInput
                     name="amountInput"
                     locale={locale}
                     control={control}
-                    onChange={onAmountChange}
                     maxLength={formInputsMaxLength.amount}
+                    isDisabled={isDisabled}
                     rightContent={
                         <Text typographyStyle="body-md" intent="neutral" priority="secondary">
                             {tokenSymbol}
@@ -90,7 +70,8 @@ export const YieldAmountCard = ({
                     <Row alignItems="center" gap={8} flexWrap="wrap">
                         <Text typographyStyle="body-md" intent="neutral" priority="secondary">
                             <Translation id={summary.labelTranslationId ?? 'TR_STAKE_AVAILABLE'} />
-                            {`: ${summary.value}`}
+                            {': '}
+                            {summary.value}
                         </Text>
                         {summary.onMaxClick && (
                             <Button
@@ -105,6 +86,8 @@ export const YieldAmountCard = ({
                         )}
                     </Row>
                 )}
+
+                {warning}
             </Column>
         </Card>
     );

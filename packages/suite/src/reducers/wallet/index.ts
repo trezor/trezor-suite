@@ -15,6 +15,7 @@ import {
     prepareWalletSettingsReducer,
 } from '@suite-common/wallet-core';
 
+import { yieldReducer } from 'src/components/earn/yield/yieldReducer';
 import { extraDependencies } from 'src/support/extraDependencies';
 
 import accountSearchReducer from './accountSearchReducer';
@@ -55,6 +56,7 @@ const WalletReducers = combineReducers({
     coinjoin: coinjoinReducer,
     stake: stakeReducer,
     settings: walletSettingsReducer,
+    yield: yieldReducer,
 });
 
 export default WalletReducers;
