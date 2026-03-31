@@ -409,6 +409,13 @@ export type RootStackParamList = {
         accountKey: AccountKey;
         amount: string;
     };
+    [RootStackRoutes.ClaimReview]: {
+        accountKey: AccountKey;
+        symbol: NetworkSymbol;
+    };
+    [RootStackRoutes.ClaimTransactionDataReview]: {
+        accountKey: AccountKey;
+    };
     [RootStackRoutes.DeviceSettingsStack]: NavigatorScreenParams<DeviceSettingsStackParamList>;
     [RootStackRoutes.AddCoinAccountStack]: NavigatorScreenParams<AddCoinAccountStackParamList>;
     [RootStackRoutes.ReceiveStack]: NavigatorScreenParams<ReceiveStackParamList>;

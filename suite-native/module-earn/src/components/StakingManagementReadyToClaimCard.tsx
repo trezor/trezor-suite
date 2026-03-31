@@ -1,3 +1,7 @@
+import { useCallback } from 'react';
+
+import { useNavigation } from '@react-navigation/native';
+
 import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS, useFormatters } from '@suite-common/formatters';
 import { selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
@@ -6,11 +10,18 @@ import { Box, Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
+    type RootStackParamList,
+    RootStackRoutes,
+    type StackNavigationProps,
+} from '@suite-native/navigation';
+import {
     type NativeStakingRootState,
     selectClaimableAmountByAccountKey,
     useSelector,
 } from '@suite-native/staking';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+
+type NavigationProp = StackNavigationProps<RootStackParamList, RootStackRoutes.StakingManagement>;
 
 type StakingManagementReadyToClaimCardProps = {
     accountKey: AccountKey;
@@ -26,6 +37,7 @@ export const StakingManagementReadyToClaimCard = ({
     accountKey,
 }: StakingManagementReadyToClaimCardProps) => {
     const { applyStyle } = useNativeStyles();
+    const navigation = useNavigation<NavigationProp>();
     const { CryptoAmountFormatter: amountFormatter } = useFormatters();
 
     const symbol = useSelector((state: NativeStakingRootState) =>
@@ -35,7 +47,16 @@ export const StakingManagementReadyToClaimCard = ({
         selectClaimableAmountByAccountKey(state, accountKey),
     );
 
-    if (!symbol || !isPositiveBalance(claimableAmount)) return null;
+    const handleClaimPress = useCallback(() => {
+        if (!symbol) {
+            return;
+        }
+        navigation.navigate(RootStackRoutes.ClaimReview, { accountKey, symbol });
+    }, [accountKey, navigation, symbol]);
+
+    if (!symbol || !isPositiveBalance(claimableAmount)) {
+        return null;
+    }
 
     const formattedAmount = amountFormatter.format(claimableAmount, {
         isBalance: true,
@@ -57,8 +78,12 @@ export const StakingManagementReadyToClaimCard = ({
                             }}
                         />
                     </Text>
-                    {/* TODO: wire up claim action */}
-                    <Button colorScheme="primary" size="small" isFullWidth>
+                    <Button
+                        colorScheme="primary"
+                        size="small"
+                        isFullWidth
+                        onPress={handleClaimPress}
+                    >
                         <Text variant="body-sm-strong" color="textOnPrimary">
                             <Translation id="earn.stakingManagementScreen.claim.claimButton" />
                         </Text>

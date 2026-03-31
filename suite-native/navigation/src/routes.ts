@@ -12,6 +12,8 @@ export enum RootStackRoutes {
     EarnForm = 'EarnForm',
     EarnConsents = 'EarnConsents',
     EarnTransactionDataReview = 'EarnTransactionDataReview',
+    ClaimReview = 'ClaimReview',
+    ClaimTransactionDataReview = 'ClaimTransactionDataReview',
     DevUtilsStack = 'DevUtilsStack',
     AccountSettings = 'AccountSettings',
     TransactionDetailStack = 'TransactionDetailStack',

@@ -27,6 +27,8 @@ import {
 } from '@suite-native/module-device-onboarding';
 import { DeviceSettingsStackNavigator } from '@suite-native/module-device-settings';
 import {
+    ClaimReviewScreen,
+    ClaimTransactionDataReviewScreen,
     EarnConsentsScreen,
     EarnFormScreen,
     EarnTransactionDataReviewScreen,
@@ -147,6 +149,16 @@ export const RootStackNavigator = () => {
                 options={{ title: RootStackRoutes.UnstakeTransactionDataReview }}
                 name={RootStackRoutes.UnstakeTransactionDataReview}
                 component={UnstakeTransactionDataReviewScreen}
+            />
+            <RootStack.Screen
+                options={{ title: RootStackRoutes.ClaimReview }}
+                name={RootStackRoutes.ClaimReview}
+                component={ClaimReviewScreen}
+            />
+            <RootStack.Screen
+                options={{ title: RootStackRoutes.ClaimTransactionDataReview }}
+                name={RootStackRoutes.ClaimTransactionDataReview}
+                component={ClaimTransactionDataReviewScreen}
             />
             <RootStack.Screen
                 name={RootStackRoutes.DevUtilsStack}

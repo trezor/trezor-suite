@@ -39,7 +39,7 @@ export const StakingInfo = ({ accountKey }: StakingInfoProps) => {
         <Box style={applyStyle(sectionStyle)}>
             <StakePendingCard accountKey={accountKey} handleToggleBottomSheet={openModal} />
 
-            <StakeClaimableCard accountKey={accountKey} handleToggleBottomSheet={openModal} />
+            <StakeClaimableCard accountKey={accountKey} />
 
             <CardanoStakingInfoBanner accountKey={accountKey} />
 

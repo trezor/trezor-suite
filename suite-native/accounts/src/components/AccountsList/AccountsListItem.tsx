@@ -36,6 +36,7 @@ export type AccountListItemProps = {
     showDivider?: boolean;
     isCryptoBalancePrimary?: boolean;
     titleLabel?: React.ReactNode;
+    cryptoAmount?: string;
 };
 
 const CRYPTO_PRIMARY_BALANCE_TEXT_PROPS = [
@@ -68,6 +69,7 @@ export const AccountsListItem = ({
     showDivider = false,
     isCryptoBalancePrimary = false,
     titleLabel,
+    cryptoAmount,
 }: AccountListItemProps) => {
     const formattedAccountType = useSelector((state: AccountsRootState) =>
         selectFormattedAccountType(state, account.key),
@@ -110,6 +112,7 @@ export const AccountsListItem = ({
     const [primaryBalanceTextProps, secondaryBalanceTextProps] = isCryptoBalancePrimary
         ? CRYPTO_PRIMARY_BALANCE_TEXT_PROPS
         : [undefined, undefined];
+    const balanceValue = cryptoAmount ?? account.formattedBalance;
     const fiatBalanceValue =
         shouldShowTokenBadge && fiatBalance !== undefined ? (
             <BaseCurrencyAmountFormatter
@@ -120,7 +123,7 @@ export const AccountsListItem = ({
             />
         ) : (
             <CryptoToFiatAmountFormatter
-                value={account.formattedBalance}
+                value={balanceValue}
                 isBalance={true}
                 symbol={account.symbol}
                 {...secondaryBalanceTextProps}
@@ -128,7 +131,7 @@ export const AccountsListItem = ({
         );
     const cryptoBalanceValue = (
         <CryptoAmountFormatter
-            value={account.formattedBalance}
+            value={balanceValue}
             symbol={account.symbol}
             numberOfLines={1}
             adjustsFontSizeToFit
