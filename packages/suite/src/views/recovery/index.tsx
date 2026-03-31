@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useIntl } from 'react-intl';
 
 import { Translation, messages } from '@suite/intl';
-import { MODAL_CONTEXT_DEVICE } from '@suite/modal';
+import { MODAL_CONTEXT_DEVICE, selectModalRequestId } from '@suite/modal';
 import {
     type RecoveryType,
     type SeedInputStatus,
@@ -40,7 +40,8 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
     const [wordCount, setWordCount] = useState<WordCount | undefined>();
     const [recoveryType, setRecoveryType] = useState<RecoveryType | undefined>();
     const intl = useIntl();
-    const { pin, setPin, handlePinSubmit } = usePin(device?.buttonRequests ?? []);
+    const pinRequestId = useSelector(selectModalRequestId);
+    const { pin, setPin, handlePinSubmit } = usePin(device?.buttonRequests ?? [], pinRequestId);
 
     const deviceModelInternal = device?.features?.internal_model;
     const isT1B1 = deviceModelInternal === DeviceModelInternal.T1B1;

@@ -1,9 +1,11 @@
 import { Translation } from '@suite/intl';
+import { selectModalRequestId } from '@suite/modal';
 import { usePin } from '@suite-common/device';
 import { Modal } from '@trezor/components';
 import { ConfirmOnDevicePill } from '@trezor/product-components';
 
 import { PinMatrix } from 'src/components/suite/PinMatrix/PinMatrix';
+import { useSelector } from 'src/hooks/suite';
 import { type TrezorDevice } from 'src/types/suite';
 
 type PinModalProps = {
@@ -11,6 +13,7 @@ type PinModalProps = {
 };
 
 export const PinModal = ({ device }: PinModalProps) => {
+    const requestId = useSelector(selectModalRequestId);
     const {
         isSettingNewPin,
         isSettingNewWipeCode,
@@ -20,7 +23,7 @@ export const PinModal = ({ device }: PinModalProps) => {
         setPin,
         pin,
         submitted,
-    } = usePin(device.buttonRequests);
+    } = usePin(device.buttonRequests, requestId);
     if (!device.features) return null;
 
     const getHeading = () => {

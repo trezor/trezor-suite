@@ -34,6 +34,7 @@ export interface UiResponseFirmwares {
 export interface UiResponsePin {
     type: typeof UI_RESPONSE.RECEIVE_PIN;
     payload: string;
+    requestId?: string;
 }
 
 export interface UiResponseWord {
