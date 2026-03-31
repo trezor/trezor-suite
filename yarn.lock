@@ -12376,7 +12376,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-native/device-authorization@workspace:*, @suite-native/device-authorization@workspace:suite-native/device-authorization":
+"@suite-native/device-authorization@workspace:*, @suite-native/device-authorization@workspace:^, @suite-native/device-authorization@workspace:suite-native/device-authorization":
   version: 0.0.0-use.local
   resolution: "@suite-native/device-authorization@workspace:suite-native/device-authorization"
   dependencies:
@@ -13856,6 +13856,7 @@ __metadata:
     "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/confirm-on-trezor": "workspace:*"
+    "@suite-native/device-authorization": "workspace:^"
     "@suite-native/forms": "workspace:*"
     "@suite-native/icons": "workspace:*"
     "@suite-native/intl": "workspace:*"
