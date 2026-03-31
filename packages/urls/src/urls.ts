@@ -184,19 +184,19 @@ export const HELP_CENTER_TOR_URL: Url = withPlatformUtm(
     'https://trezor.io/learn/security-privacy/how-trezor-keeps-you-safe/tor-in-trezor-suite',
 );
 export const HELP_CENTER_FW_DOWNGRADE_T1B1_URL: Url = withPlatformUtm(
-    'https://trezor.io/support/troubleshooting/device-issues/downgrade-firmware-model-one',
+    'https://trezor.io/support/troubleshooting/device-issues/install-custom-firmware-on-trezor-model-one',
 );
 export const HELP_CENTER_FW_DOWNGRADE_T2T1_URL: Url = withPlatformUtm(
-    'https://trezor.io/support/troubleshooting/device-issues/downgrade-firmware-model-t',
+    'https://trezor.io/support/troubleshooting/device-issues/install-custom-firmware-on-trezor-model-t',
 );
 export const HELP_CENTER_FW_DOWNGRADE_T3B1_URL: Url = withPlatformUtm(
-    'https://trezor.io/support/troubleshooting/device-issues/downgrade-firmware-trezor-safe-3',
+    'https://trezor.io/support/troubleshooting/device-issues/install-custom-firmware-on-trezor-safe-3',
 );
 export const HELP_CENTER_FW_DOWNGRADE_T3T1_URL: Url = withPlatformUtm(
-    'https://trezor.io/support/troubleshooting/device-issues/downgrade-firmware-trezor-safe-5',
+    'https://trezor.io/support/troubleshooting/device-issues/install-custom-firmware-on-trezor-safe-5',
 );
 export const HELP_CENTER_FW_DOWNGRADE_T3W1_URL: Url = withPlatformUtm(
-    'https://trezor.io/support/troubleshooting/device-issues/downgrade-firmware-trezor-safe-7',
+    'https://trezor.io/support/troubleshooting/device-issues/install-custom-firmware-on-trezor-safe-7',
 );
 export const HELP_CENTER_RECOVERY_ISSUES_URL: Url = withPlatformUtm(
     'https://trezor.io/support/troubleshooting/trezor-suite-issues/trezor-recovery-issues',
