@@ -1,11 +1,11 @@
+import { tronUtils } from '@trezor/blockchain-link-utils';
+
 import { type TronAddress } from '../../types/tron';
 import { type ContextWith } from '../../types/validation';
 import { type InspectFn, type ValidateFn, createValidator } from '../createValidator';
 
-const BASE58_REGEX = /^[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{34}$/;
-
 export const isValidTronAddress: ValidateFn<string> = input =>
-    BASE58_REGEX.test(input) && input.startsWith('T') ? null : 'INVALID_ADDRESS';
+    tronUtils.tronAddressToBytes(input) !== null ? null : 'INVALID_ADDRESS';
 
 type SenderContext = ContextWith<{ sender?: TronAddress }>;
 

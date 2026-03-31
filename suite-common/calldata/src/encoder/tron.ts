@@ -1,19 +1,14 @@
+import { tronUtils } from '@trezor/blockchain-link-utils';
+
 import { type Encoder } from '../types/encoder';
 import { type TronAddress, type TronFunctionAbi, type TronParamName } from '../types/tron';
 
-const BASE58_ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
-
-// Decodes a Tron base58 address to the 20-byte EVM address hex string (no prefix).
-// Tron address is 25 bytes base58-encoded: 1-byte network prefix (0x41) + 20-byte hash + 4-byte checksum.
 const tronBase58ToEvmHex = (address: TronAddress): string => {
-    let num = BigInt(0);
+    const hex = tronUtils.tronAddressToHex(address);
 
-    for (const char of address) {
-        num = num * BigInt(58) + BigInt(BASE58_ALPHABET.indexOf(char));
-    }
+    if (!hex) throw new Error('Invalid Tron address checksum.');
 
-    // Full hex is 50 chars (25 bytes); skip first byte (0x41 network prefix), take next 20 bytes
-    return num.toString(16).padStart(50, '0').slice(2, 42);
+    return hex.slice(2);
 };
 
 const encodeParam = (type: string, value: unknown): string => {

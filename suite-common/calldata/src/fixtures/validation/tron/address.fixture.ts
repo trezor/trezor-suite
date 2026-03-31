@@ -43,6 +43,11 @@ export const isValidTronAddressTestCases: IsValidTronAddressTestCase[] = [
         expected: 'INVALID_ADDRESS',
     },
     {
+        description: 'corrupted checksum returns INVALID_ADDRESS',
+        input: 'TKWJhMU8NAviZ9TN5hroaFQPZ83FNctzz5',
+        expected: 'INVALID_ADDRESS',
+    },
+    {
         description: 'EVM address returns INVALID_ADDRESS',
         input: '0x1111111111111111111111111111111111111111',
         expected: 'INVALID_ADDRESS',

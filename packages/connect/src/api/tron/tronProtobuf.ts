@@ -92,10 +92,14 @@ export const encodeTransferRawData = ({
     expiration,
     timestamp,
 }: EncodeTransferRawDataParams): Uint8Array => {
+    const ownerBytes = tronUtils.tronAddressToBytes(from);
+    const toBytes = tronUtils.tronAddressToBytes(to);
+    if (!ownerBytes || !toBytes) throw new Error('Invalid Tron address checksum.');
+
     const contractBytes = TransferContractType.encode(
         TransferContractType.fromObject({
-            ownerAddress: Buffer.from(tronUtils.tronAddressToBytes(from)),
-            toAddress: Buffer.from(tronUtils.tronAddressToBytes(to)),
+            ownerAddress: Buffer.from(ownerBytes),
+            toAddress: Buffer.from(toBytes),
             amount,
         }),
     ).finish();
@@ -140,10 +144,14 @@ export const encodeTriggerSmartContractRawData = ({
     timestamp,
     feeLimit,
 }: EncodeTriggerSmartContractRawDataParams): Uint8Array => {
+    const ownerBytes = tronUtils.tronAddressToBytes(from);
+    const contractAddressBytes = tronUtils.tronAddressToBytes(contractAddress);
+    if (!ownerBytes || !contractAddressBytes) throw new Error('Invalid Tron address checksum.');
+
     const contractBytes = TriggerSmartContractType.encode(
         TriggerSmartContractType.fromObject({
-            ownerAddress: Buffer.from(tronUtils.tronAddressToBytes(from)),
-            contractAddress: Buffer.from(tronUtils.tronAddressToBytes(contractAddress)),
+            ownerAddress: Buffer.from(ownerBytes),
+            contractAddress: Buffer.from(contractAddressBytes),
             data: Buffer.from(hexToBytes(data)),
         }),
     ).finish();
