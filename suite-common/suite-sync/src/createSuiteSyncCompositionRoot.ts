@@ -19,14 +19,7 @@ import {
     type SuiteSyncAppReloaderDep,
     type SuiteSyncErrorHandler,
 } from '@suite-common/suite-sync-types';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
-import {
-    type AccountDescriptor,
-    type TxTargetId,
-    type WalletDescriptor,
-} from '@suite-common/wallet-types';
 import { type Analytics } from '@trezor/analytics-uploader';
-import { type StaticSessionId } from '@trezor/connect';
 
 import { createRefreshSuiteSync } from './createRefreshSuiteSyncKeys';
 import { createSuiteSyncErrorHandler } from './createSuiteSyncErrorHandler';
@@ -128,8 +121,7 @@ export const createSuiteSyncCompositionRoot = (
     const ensureQuota = createEnsureQuota({
         dispatch: deps.dispatch,
         getDeviceForStaticSessionId,
-        hasAllowance: ({ walletDescriptor, deviceId }) =>
-            selectHasDeviceAllowance(deps.getState(), deviceId ?? null, walletDescriptor),
+        hasAllowance: toGetter(deps.getState, selectHasDeviceAllowance),
         getIsDefaultRelayUrlSet: () =>
             isUsingTrezorServer(selectSuiteSyncRelayUrl(deps.getState())),
         getEnforceQuotaManager: toGetter(deps.getState, selectEnforceQuotaManager),
@@ -183,26 +175,10 @@ export const createSuiteSyncCompositionRoot = (
     const labelingDeps = {
         ensureWalletSuiteSyncOn,
         analytics: deps.analytics,
-        getWalletLabel: (walletDescriptor: WalletDescriptor) =>
-            selectSuiteSyncWalletLabel(deps.getState(), walletDescriptor),
-        getAccountLabel: (
-            walletDescriptor: WalletDescriptor | null,
-            accountDescriptor: AccountDescriptor,
-            networkSymbol: NetworkSymbol,
-        ) =>
-            selectSuiteSyncAccountLabel(
-                deps.getState(),
-                walletDescriptor,
-                accountDescriptor,
-                networkSymbol,
-            ),
-        getAddressLabel: (deviceStaticSessionId: StaticSessionId, address: string) =>
-            selectSuiteSyncAddressLabel(deps.getState(), deviceStaticSessionId, address),
-        getOutputLabel: (
-            txId: string,
-            txTargetId: TxTargetId,
-            deviceStaticSessionId: StaticSessionId,
-        ) => selectSuiteSyncOutputLabel(deps.getState(), txId, txTargetId, deviceStaticSessionId),
+        getWalletLabel: toGetter(deps.getState, selectSuiteSyncWalletLabel),
+        getAccountLabel: toGetter(deps.getState, selectSuiteSyncAccountLabel),
+        getAddressLabel: toGetter(deps.getState, selectSuiteSyncAddressLabel),
+        getOutputLabel: toGetter(deps.getState, selectSuiteSyncOutputLabel),
     };
 
     return {

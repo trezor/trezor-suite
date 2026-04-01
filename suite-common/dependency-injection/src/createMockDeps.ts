@@ -1,7 +1,7 @@
 import { type NullablePropsRecursive } from '@trezor/type-utils';
 
 import { mockNotExpected } from './mock';
-import { type RecursiveDeps, type ServiceFunction } from '../service';
+import { type RecursiveDeps, type ServiceFunction } from './service';
 
 export type MockDeps<T extends RecursiveDeps> = {
     [K in keyof T]: T[K] extends ServiceFunction<any, any>
