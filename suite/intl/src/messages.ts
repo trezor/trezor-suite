@@ -9223,10 +9223,7 @@ export const messages = defineMessages({
         defaultMessage:
             'Grow your crypto by locking it to help secure the network—and earn rewards in return.',
     },
-    TR_EARN_YIELD_DASHBOARD_TITLE: {
-        id: 'TR_EARN_YIELD_DASHBOARD_TITLE',
-        defaultMessage: 'Stablecoin yield',
-    },
+
     TR_EARN_YIELD_DASHBOARD_TEXT: {
         id: 'TR_EARN_YIELD_DASHBOARD_TEXT',
         defaultMessage: 'Put your stablecoins to work and earn rewards.',
@@ -9298,6 +9295,10 @@ export const messages = defineMessages({
     TR_EARN_YIELD_BACK_TO_OVERVIEW: {
         id: 'TR_EARN_YIELD_BACK_TO_OVERVIEW',
         defaultMessage: 'Back to overview',
+    },
+    TR_EARN_STABLECOIN_YIELD_TITLE: {
+        id: 'TR_EARN_STABLECOIN_YIELD_TITLE',
+        defaultMessage: 'Stablecoin Yield',
     },
     TR_MODIFY: {
         id: 'TR_MODIFY',

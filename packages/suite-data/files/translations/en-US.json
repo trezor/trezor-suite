@@ -1002,6 +1002,7 @@
   "TR_EARN_YIELD_DASHBOARD_SUPPLY_MORE": "Supply more",
   "TR_EARN_YIELD_DASHBOARD_SUPPLY_NOW": "Supply now",
   "TR_EARN_YIELD_DASHBOARD_TEXT": "Put your stablecoins to work and earn rewards.",
+  "TR_EARN_STABLECOIN_YIELD_TITLE": "Stablecoin Yield",
   "TR_EARN_YIELD_DASHBOARD_WITHDRAW": "Withdraw",
   "TR_EARN_YOUR_DEPOSIT_IS_RETURNED": "Your deposit of 2 {networkDisplaySymbol} is returned",
   "TR_EARN_YOUR_FUNDS_STAY_ACCESSIBLE": "Your {networkDisplaySymbol} stays accessible to you at all times.",

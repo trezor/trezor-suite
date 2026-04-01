@@ -63,7 +63,7 @@ export const EarnYieldTable = () => {
 
     return (
         <EarnDashboardSection
-            titleId="TR_EARN_YIELD_DASHBOARD_TITLE"
+            titleId="TR_EARN_STABLECOIN_YIELD_TITLE"
             subheadingId="TR_EARN_YIELD_DASHBOARD_TEXT"
             provider="morpho"
             statusBadge={badge}

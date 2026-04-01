@@ -1003,6 +1003,7 @@
   "TR_EARN_YIELD_DASHBOARD_SUPPLY_MORE": "Надати більше",
   "TR_EARN_YIELD_DASHBOARD_SUPPLY_NOW": "Надати зараз",
   "TR_EARN_YIELD_DASHBOARD_TEXT": "Запустіть ваші стейблкоїни в роботу та отримуйте винагороди.",
+  "TR_EARN_STABLECOIN_YIELD_TITLE": "Дохідність стейблкоїнів",
   "TR_EARN_YIELD_DASHBOARD_WITHDRAW": "Вивести",
   "TR_EARN_YOUR_DEPOSIT_IS_RETURNED": "Ваш депозит 2 {networkDisplaySymbol} повертається",
   "TR_EARN_YOUR_FUNDS_STAY_ACCESSIBLE": "Ваші {networkDisplaySymbol} залишаються доступними вам у будь-який момент.",
