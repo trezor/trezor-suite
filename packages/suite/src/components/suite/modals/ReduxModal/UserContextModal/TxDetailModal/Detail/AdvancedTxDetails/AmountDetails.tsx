@@ -325,7 +325,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                                 <FormattedCryptoAmount
                                     value={fee}
                                     symbol={tx.symbol}
-                                    signValue="negative"
+                                    signValue={new BigNumber(fee).isZero() ? undefined : 'negative'}
                                 />
                             </Text>
                         </Table.Cell>

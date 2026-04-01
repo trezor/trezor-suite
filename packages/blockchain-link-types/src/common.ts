@@ -1,7 +1,7 @@
 import type tls from 'tls';
 
 import type { BaseCurrencyCode } from './baseCurrency';
-import type { TronAccountExtraData } from './blockbook-api';
+import type { TronAccountExtraData, TronChainExtraData } from './blockbook-api';
 
 /* Shared types — canonical definitions used by both common and backend-specific modules */
 
@@ -282,6 +282,7 @@ export interface Transaction {
             isRemoval: boolean;
         };
     };
+    tronSpecific?: TronChainExtraData;
 }
 
 /* Account */
