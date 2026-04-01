@@ -1,6 +1,8 @@
-import { Translation } from '@suite/intl';
+import { Translation, useTranslation } from '@suite/intl';
 import { goto } from '@suite/router';
+import { type Rating, buildUserFeedbackData, sendFeedbackAction } from '@suite-common/feedback';
 import { Button, Card, Column, Icon, IconCircle, Row, Text } from '@trezor/components';
+import { FeedbackCard } from '@trezor/product-components';
 
 import { useDispatch } from 'src/hooks/suite';
 import { ApyValue } from 'src/views/wallet/staking/components/ApyValue';
@@ -32,10 +34,26 @@ type YieldFlowCompleteProps = {
 
 export const YieldFlowComplete = ({ flowType, input, output, apy }: YieldFlowCompleteProps) => {
     const dispatch = useDispatch();
+    const { translationString } = useTranslation();
     const flowContent = flowTypeContentMap[flowType];
 
     const handleBackToOverview = () => {
         dispatch(goto({ routeName: 'suite-earn' }));
+    };
+
+    const handleFeedbackSubmit = (rating: Rating, description: string) => {
+        dispatch(
+            sendFeedbackAction({
+                type: 'SUGGESTION',
+                payload: {
+                    category: 'experimental',
+                    feature: 'stablecoin-yield',
+                    rating,
+                    description,
+                    ...buildUserFeedbackData(),
+                },
+            }),
+        );
     };
 
     return (
@@ -123,6 +141,22 @@ export const YieldFlowComplete = ({ flowType, input, output, apy }: YieldFlowCom
             <Button intent="neutral" priority="secondary" onClick={handleBackToOverview}>
                 <Translation id="TR_EARN_YIELD_BACK_TO_OVERVIEW" />
             </Button>
+
+            <FeedbackCard
+                heading={
+                    <Translation
+                        id="TR_EXPERIMENTAL_FEEDBACK_CARD_HEADING"
+                        values={{
+                            feature: translationString('TR_EARN_STABLECOIN_YIELD_TITLE'),
+                        }}
+                    />
+                }
+                description={<Translation id="TR_FEEDBACK_CARD_DESCRIPTION" />}
+                submitLabel={<Translation id="TR_FEEDBACK_CARD_SEND" />}
+                successHeading={<Translation id="TR_FEEDBACK_CARD_SUCCESS_TITLE" />}
+                successDescription={<Translation id="TR_FEEDBACK_CARD_SUCCESS_DESCRIPTION" />}
+                onSubmit={handleFeedbackSubmit}
+            />
         </Column>
     );
 };

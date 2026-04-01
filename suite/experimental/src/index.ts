@@ -26,7 +26,7 @@ export const translatedExperimentalFeatures: ExperimentalFeatureTranslation = {
     'tron-view-only': 'TR_EXPERIMENTAL_TRON_VIEW_ONLY',
 };
 
-export type FeedbackFeatureName = ExperimentalFeature | 'suite-sync';
+export type FeedbackFeatureName = ExperimentalFeature | 'suite-sync' | 'stablecoin-yield';
 
 type FeedbackFeatureTranslation = {
     [key in FeedbackFeatureName]: TranslationKey;
@@ -35,4 +35,5 @@ type FeedbackFeatureTranslation = {
 export const translatedFeedbackFeatures: FeedbackFeatureTranslation = {
     ...translatedExperimentalFeatures,
     'suite-sync': 'TR_EXPERIMENTAL_SUITE_SYNC_TITLE',
+    'stablecoin-yield': 'TR_EARN_STABLECOIN_YIELD_TITLE',
 };
