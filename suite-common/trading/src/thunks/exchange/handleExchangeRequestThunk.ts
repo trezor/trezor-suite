@@ -2,7 +2,14 @@ import { type ExchangeTrade, type ExchangeTradeQuoteRequest } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
 import { type Network } from '@suite-common/wallet-config';
-import { convertAmountSubunitsToUnits } from '@suite-common/wallet-utils';
+import { type Account } from '@suite-common/wallet-types';
+import {
+    asAmountUnit,
+    convertAmountSubunitsToUnits,
+    unitsToSubunits,
+} from '@suite-common/wallet-utils';
+import TrezorConnect from '@trezor/connect';
+import { getSerializedPath } from '@trezor/connect/src/utils/pathUtils';
 
 import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';
 import { invityAPI } from '../../invityAPI';
@@ -27,14 +34,16 @@ const getQuotesRequest = ({ requestData, signal }: GetQuotesRequest) =>
 type GetQuoteRequestData = {
     formValues: MinimalExchangeFormProps;
     network: Network;
+    account: Account;
     shouldSendInSats: boolean | undefined;
 };
 
-export const getQuoteRequestData = ({
+const getQuoteRequestData = async ({
     formValues,
     network,
+    account,
     shouldSendInSats,
-}: GetQuoteRequestData): ExchangeTradeQuoteRequest | undefined => {
+}: GetQuoteRequestData): Promise<ExchangeTradeQuoteRequest | undefined> => {
     const { outputs, receiveCryptoSelect, sendCryptoSelect, receiveAddress } = formValues;
     const decimals = getNetworkDecimalsWithFallback(network.symbol);
 
@@ -53,7 +62,74 @@ export const getQuoteRequestData = ({
         return undefined;
     }
 
-    const { fromAddress } = formValues;
+    let { fromAddress } = formValues;
+
+    if (network.networkType === 'bitcoin') {
+        if (!account.addresses || !account.utxo) {
+            return undefined;
+        }
+
+        const usedAddressSet = new Set([
+            ...account.addresses.used.map(a => a.address),
+            ...account.addresses.change.map(a => a.address),
+        ]);
+        const usedUtxo = account.utxo.filter(u => usedAddressSet.has(u.address));
+
+        if (usedUtxo.length === 0) {
+            return undefined;
+        }
+
+        const amountSubunit = unitsToSubunits({
+            value: asAmountUnit(new BigNumber(sendStringAmount)),
+            decimals,
+        });
+        // TODO: move the values somewhere else
+        const composeParams: Parameters<typeof TrezorConnect.composeTransaction>[0] = {
+            outputs: [
+                {
+                    type: 'opreturn',
+                    dataHex:
+                        '3078306632656166663639313734646264333963366533346661366465653966326266626566663363313139366462303666636238356339313364376531663466643d7c6c6966696351',
+                },
+                { type: 'payment-noaddress', amount: amountSubunit.toString() },
+                {
+                    type: 'payment',
+                    amount: '2000',
+                    address: 'bc1qrxm8l37stwxhpkh5sfmt2lvpf5g292x2w60pe7', // partner fee
+                },
+                {
+                    type: 'payment',
+                    amount: '2000',
+                    address: 'bc1qrxm8l37stwxhpkh5sfmt2lvpf5g292x2w60pe7', // our fee
+                },
+            ],
+            coin: network.symbol,
+            account: {
+                path: account.path,
+                addresses: account.addresses,
+                utxo: usedUtxo,
+            },
+            feeLevels: [{ feePerUnit: '1' }],
+        };
+
+        const precomposed = await TrezorConnect.composeTransaction(composeParams);
+        console.log('precomposed', precomposed);
+
+        if (precomposed.success && precomposed.payload.length > 0) {
+            const tx = precomposed.payload[0];
+            if (tx.type === 'final' || tx.type === 'nonfinal') {
+                const addresses = await Promise.all(
+                    tx.inputs.map(async (i: any) => {
+                        const path = getSerializedPath(i.address_n);
+
+                        return usedUtxo.find(a => a.path === path)?.address;
+                    }),
+                );
+                // TODO: change to array of addresses
+                fromAddress = Array.from(new Set(addresses)).join(';');
+            }
+        }
+    }
 
     const request: ExchangeTradeQuoteRequest = {
         receive: receiveCryptoSelect.id,
@@ -79,6 +155,7 @@ export const handleExchangeRequestThunk = createThunk<
         {
             formValues,
             network,
+            account,
             timer,
             shouldSendInSats,
             composeRequestCallback,
@@ -87,9 +164,10 @@ export const handleExchangeRequestThunk = createThunk<
     ) => {
         timer.loading();
 
-        const requestData = getQuoteRequestData({
+        const requestData = await getQuoteRequestData({
             formValues,
             network,
+            account,
             shouldSendInSats,
         });
 

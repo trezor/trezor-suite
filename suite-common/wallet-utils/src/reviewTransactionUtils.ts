@@ -228,7 +228,7 @@ const constructOldFlow = ({
             });
     }
 
-    if (precomposedForm.transactionData && !precomposedTx.token) {
+    if (networkType !== 'bitcoin' && precomposedForm.transactionData && !precomposedTx.token) {
         outputs.push({ type: 'data', value: precomposedForm.transactionData });
     }
 
@@ -308,8 +308,9 @@ const constructNewFlow = ({
     }
 
     if (
-        (precomposedForm.transactionData && !precomposedTx.token && !isEvmApproval) ||
-        (precomposedForm.transactionData && isEvmApproval && !isApprovalFlowSupported)
+        networkType !== 'bitcoin' &&
+        ((precomposedForm.transactionData && !precomposedTx.token && !isEvmApproval) ||
+            (precomposedForm.transactionData && isEvmApproval && !isApprovalFlowSupported))
     ) {
         outputs.push({ type: 'data', value: precomposedForm.transactionData });
     }
@@ -396,8 +397,9 @@ const constructNewFlow = ({
                     outputs.push(tokenOutput);
                     outputs.push({ type: 'address', value: o.address });
                 } else if (
-                    (precomposedForm.transactionData && !isEvmApproval) ||
-                    (isEvmApproval && !isApprovalFlowSupported)
+                    networkType !== 'bitcoin' &&
+                    ((precomposedForm.transactionData && !isEvmApproval) ||
+                        (isEvmApproval && !isApprovalFlowSupported))
                 ) {
                     // EVM contract call
                     outputs.push({ type: 'contract', value: o.address });
