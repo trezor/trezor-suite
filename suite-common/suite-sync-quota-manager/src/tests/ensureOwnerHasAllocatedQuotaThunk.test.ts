@@ -52,7 +52,7 @@ describe(ensureOwnerHasAllocatedQuotaThunk.name, () => {
         const getState = createGetState();
         const dispatch = jest.fn();
 
-        checkStorageByOwnerIdMock.mockResolvedValue(ok({ totalSpace: 2048 }));
+        checkStorageByOwnerIdMock.mockResolvedValue(ok({ status: 'Allocated', totalSpace: 2048 }));
 
         await ensureOwnerHasAllocatedQuotaThunk({
             ownerId,
@@ -91,9 +91,7 @@ describe(ensureOwnerHasAllocatedQuotaThunk.name, () => {
         });
         const dispatch = jest.fn();
 
-        checkStorageByOwnerIdMock.mockResolvedValue(
-            err({ type: 'HttpError', code: 404, message: 'Not Found' }),
-        );
+        checkStorageByOwnerIdMock.mockResolvedValue(ok({ status: 'NoQuota' }));
         const result = await ensureOwnerHasAllocatedQuotaThunk({
             ownerId,
             delegatedKey: DELEGATED_IDENTITY_KEY,
@@ -132,9 +130,7 @@ describe(ensureOwnerHasAllocatedQuotaThunk.name, () => {
             return action;
         });
 
-        checkStorageByOwnerIdMock.mockResolvedValue(
-            err({ type: 'HttpError', code: 404, message: 'Not Found' }),
-        );
+        checkStorageByOwnerIdMock.mockResolvedValue(ok({ status: 'NoQuota' }));
         prepareChallengeSessionMock.mockResolvedValue(
             ok({ sessionId: 'session-123', challenge: 'aa55' }),
         );
@@ -187,9 +183,7 @@ describe(ensureOwnerHasAllocatedQuotaThunk.name, () => {
             return action;
         });
 
-        checkStorageByOwnerIdMock.mockResolvedValue(
-            err({ type: 'HttpError', code: 404, message: 'Not Found' }),
-        );
+        checkStorageByOwnerIdMock.mockResolvedValue(ok({ status: 'NoQuota' }));
         prepareChallengeSessionMock.mockResolvedValue(
             ok({ sessionId: 'session-456', challenge: 'bb66' }),
         );

@@ -34,8 +34,14 @@ export const ensureDeviceHasQuotaThunk =
             publicKey: delegatedKeyPublic,
         });
 
+        if (!hasPublicKeyStorage.success) {
+            dispatch(quotaManagerFetchError({ error: hasPublicKeyStorage.error.message }));
+
+            return;
+        }
+
         // already registered, don't need to register again
-        if (hasPublicKeyStorage.success) {
+        if (hasPublicKeyStorage.payload.status === 'Allocated') {
             dispatch(
                 quotaManagerDeviceFetched({
                     deviceId: device.id,
@@ -43,18 +49,6 @@ export const ensureDeviceHasQuotaThunk =
                     unspentStorageSize: hasPublicKeyStorage.payload.unspentSpace,
                 }),
             );
-
-            return;
-        }
-
-        // 404 is expected when device is not registered yet, other errors should be shown to the user
-        // as quota manager unavailability
-        const isHttp404 =
-            hasPublicKeyStorage.error.type === 'HttpError' &&
-            hasPublicKeyStorage.error.code === 404;
-
-        if (!isHttp404) {
-            dispatch(quotaManagerFetchError({ error: hasPublicKeyStorage.error.message }));
 
             return;
         }
