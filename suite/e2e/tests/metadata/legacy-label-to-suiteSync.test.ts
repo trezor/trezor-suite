@@ -9,7 +9,7 @@ const { accountSeed, ownerSecret, ownerId } = mnemonic12Fixtures;
 test.describe('Labeling migration', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
     test.use({ wipeEvoluRelay: true });
 
-    test.beforeEach(async ({ metadataMock, evoluClient, onboardingPage }) => {
+    test.beforeEach(async ({ metadataMock, metadataPage, evoluClient, onboardingPage }) => {
         await metadataMock.start(MetadataProvider.DROPBOX);
         await test.step('Seed Evolu relay server', () => {
             evoluClient.init({ ownerSecret });
@@ -17,6 +17,7 @@ test.describe('Labeling migration', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () 
             evoluClient.seedQuotaManagerData({ ownerId });
         });
         await onboardingPage.completeOnboarding({ keepDebugModeEnabled: true });
+        await metadataPage.enableLegacyLabeling(MetadataProvider.DROPBOX);
     });
 
     test('Migration from Dropbox', async ({ page, walletPage, metadataPage }) => {
@@ -29,7 +30,6 @@ test.describe('Labeling migration', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () 
             // wait until account page is fully loaded
             await expect(walletPage.fiatAmount).toBeVisible();
             await metadataPage.account.clickEditLabelButton(AccountLabelId.BitcoinDefault1);
-            await metadataPage.passThroughInitMetadata(MetadataProvider.DROPBOX);
         });
 
         await test.step('Add legacy account label', async () => {

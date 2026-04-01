@@ -86,6 +86,17 @@ export class MetadataPage {
     }
 
     @step()
+    async reEnableLegacyLabeling() {
+        await this.settingsPage.navigateTo('application');
+        await this.page.selectDropdownOptionWithRetry(
+            this.settingsPage.metadataSelectInput,
+            this.settingsPage.metadataSelectInputOption('legacy'),
+        );
+        await this.devicePrompt.confirmOnDevicePromptIsShown();
+        await this.device.pressYes();
+    }
+
+    @step()
     async enableSuiteSync() {
         await this.setupQuotaManager();
         await this.initiateSuiteSyncSetup();

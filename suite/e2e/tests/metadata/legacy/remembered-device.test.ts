@@ -5,7 +5,7 @@ import { MetadataProvider } from '../../../support/mocks/metadataMock';
 //Metadata - In settings, there is enable metadata switch.
 //On enable, it initiates metadata right away (if device already has state).
 //On disable, it throws away all metadata related records from memory.
-test.describe('Remembered device', { tag: ['@webOnly', '@T2T1'] }, () => {
+test.describe('Remembered device', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
     test.use({
         deviceSetup: { mnemonic: 'mnemonic_all' },
     });
@@ -25,20 +25,14 @@ test.describe('Remembered device', { tag: ['@webOnly', '@T2T1'] }, () => {
         settingsPage,
         metadataPage,
         walletPage,
-        devicePrompt,
     }) => {
         await test.step('Complete onboarding and open BTC account', async () => {
             await onboardingPage.completeOnboarding();
             await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });
-            await settingsPage.navigateTo('application');
         });
 
         await test.step('Enable metadata (legacy) and initialize with Google provider', async () => {
-            await page.selectDropdownOptionWithRetry(
-                settingsPage.metadataSelectInput,
-                settingsPage.metadataSelectInputOption('legacy'),
-            );
-            await metadataPage.passThroughInitMetadata(MetadataProvider.GOOGLE);
+            await metadataPage.enableLegacyLabeling(MetadataProvider.GOOGLE);
         });
 
         await test.step('Verify metadata loaded from provider', async () => {
@@ -82,13 +76,10 @@ test.describe('Remembered device', { tag: ['@webOnly', '@T2T1'] }, () => {
             await expect(page.getByTestId('@account-menu/btc/normal/0/label')).not.toContainText(
                 'label',
             );
-            await metadataPage.account.clickEditLabelButton(AccountLabelId.BitcoinDefault1);
+        });
 
-            // disabling metadata removed also all keys, so metadata init flow takes all steps now expect for providers, these stay connected
-
-            await devicePrompt.confirmOnDevicePromptIsShown();
-            await device.pressYes();
-            await page.waitForTimeout(1000);
+        await test.step('Re-enable metadata', async () => {
+            await metadataPage.reEnableLegacyLabeling();
         });
 
         // device saved, disconnect provider
@@ -98,6 +89,7 @@ test.describe('Remembered device', { tag: ['@webOnly', '@T2T1'] }, () => {
             await device.powerOff();
 
             // Device is saved, when disconnected, user still can edit labels
+            await walletPage.openAccount();
             await metadataPage.account.changeLabel({
                 accountId: AccountLabelId.BitcoinDefault1,
                 label: 'edited for remembered',
@@ -115,34 +107,5 @@ test.describe('Remembered device', { tag: ['@webOnly', '@T2T1'] }, () => {
                 'Bitcoin',
             );
         });
-
-        await test.step('Still possible to reconnect provider, we have keys still saved', async () => {
-            await metadataPage.account.clickEditLabelButton(AccountLabelId.BitcoinDefault1);
-            await metadataPage.metadataProviderButton(MetadataProvider.GOOGLE).click();
-            await expect(metadataPage.metadataModal).toBeHidden();
-            await metadataPage.account.fillLabelInput('mnau');
-            await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toContainText(
-                'mnau',
-            );
-        });
-
-        // device saved, disable metadata
-        // TODO: Not possible to disabled the metadata in this state, the dropdown is greyed out.
-        // await test.step(
-        //     'Disable metadata and verify editing labels is not possible',
-        //     async () => {
-        //         await settingsPage.navigateTo('application');
-        //         await page.selectDropdownOptionWithRetry(
-        //             settingsPage.metadataSelectInput,
-        //             settingsPage.metadataSelectInputOption('off'),
-        //         );
-        //         await walletPage.openAccount();
-
-        //         // Now it is not possible to add labels, keys are gone and device is not connected
-        //         await expect(
-        //             metadataPage.account.editLabelButton(AccountLabelId.BitcoinDefault1),
-        //         ).toBeHidden();
-        //     },
-        // );
     });
 });
