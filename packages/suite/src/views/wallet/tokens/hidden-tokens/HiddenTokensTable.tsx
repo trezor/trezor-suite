@@ -76,6 +76,7 @@ export const HiddenTokensTable = ({ selectedAccount, searchQuery }: HiddenTokens
                         description={<Translation id="TR_TOKEN_UNRECOGNIZED_BY_TREZOR_TOOLTIP" />}
                     />
                     <TokensTable
+                        type="hidden"
                         account={account}
                         hideRates
                         tokenStatusType={TokenManagementAction.SHOW}

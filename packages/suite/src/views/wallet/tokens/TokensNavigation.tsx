@@ -8,8 +8,10 @@ import { selectIsDebugModeActive } from '@suite/settings';
 import { selectCoinDefinitions, selectNftDefinitions } from '@suite-common/token-definitions';
 import { type NetworkType } from '@suite-common/wallet-config';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { isErc4626 } from '@suite-common/wallet-utils';
 import { Button, Icon, IconButton, type IconName, Input, Row, SubTabs } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+import { arrayPartition } from '@trezor/utils';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
@@ -31,14 +33,27 @@ type SubTabItem = {
 };
 
 const getSubTabConfig = ({ isNft, tokens, goToRoute, networkType }: SubTabConfig) => {
+    const [erc4626Tokens, normalTokens] = arrayPartition(tokens.shownWithBalance, isErc4626);
+
     const baseConfig: SubTabItem[] = [
         {
             id: isNft ? 'wallet-nfts' : 'wallet-tokens',
             iconName: isNft ? 'pictureFrame' : 'coins',
             onClick: goToRoute(isNft ? 'wallet-nfts' : 'wallet-tokens'),
-            count: tokens.shownWithBalance.length,
+            count: normalTokens.length,
             labelId: isNft ? 'TR_NAV_COLLECTIONS' : 'TR_NAV_TOKENS',
         },
+        ...(erc4626Tokens.length
+            ? [
+                  {
+                      id: 'wallet-tokens-defi',
+                      iconName: 'percent',
+                      onClick: goToRoute('wallet-tokens-defi'),
+                      count: erc4626Tokens.length,
+                      labelId: 'TR_DEFI',
+                  } as const,
+              ]
+            : []),
         {
             id: isNft ? 'wallet-nfts-hidden' : 'wallet-tokens-hidden',
             iconName: 'eyeSlash',

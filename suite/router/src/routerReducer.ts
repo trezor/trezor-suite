@@ -16,6 +16,7 @@ const ACCOUNT_TABS = [
     'wallet-nfts-hidden',
     'wallet-tokens-hidden',
     'wallet-tokens-inactive',
+    'wallet-tokens-defi',
     'wallet-staking',
 ];
 
