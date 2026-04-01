@@ -286,6 +286,18 @@ export const BasicTxDetails = ({
                         {tx.txid}
                     </Link>
                 </Item>
+
+                {tx.tronSpecific?.energyUsage && (
+                    <Item label={<Translation id="TR_TRON_ENERGY" />} iconName="gasPump">
+                        {tx.tronSpecific.energyUsage}
+                    </Item>
+                )}
+
+                {tx.tronSpecific?.bandwidthUsage && (
+                    <Item label={<Translation id="TR_TRON_BANDWIDTH" />} iconName="gasPump">
+                        {tx.tronSpecific.bandwidthUsage}
+                    </Item>
+                )}
             </Grid>
         </Card>
     );
