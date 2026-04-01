@@ -1,5 +1,6 @@
+import * as data from '../../../data/config';
 import * as fixtures from '../__fixtures__/paramsValidator';
-import { validateParams } from '../paramsValidator';
+import { getFirmwareRange, validateParams } from '../paramsValidator';
 
 describe('helpers/paramsValidator', () => {
     describe('validateParams', () => {
@@ -20,33 +21,16 @@ describe('helpers/paramsValidator', () => {
 
     describe('getFirmwareRange', () => {
         afterEach(() => {
-            jest.clearAllMocks();
+            jest.restoreAllMocks();
         });
+
         fixtures.getFirmwareRange.forEach(f => {
-            it(
-                f.description,
-                () =>
-                    new Promise<void>(done => {
-                        jest.resetModules();
+            it(f.description, () => {
+                if (f.config) jest.replaceProperty(data, 'config', f.config as any);
 
-                        const mock = f.config;
-                        jest.mock('../../../data/config', () => {
-                            const actualConfig = jest.requireActual('../../../data/config').config;
-
-                            return {
-                                __esModule: true,
-                                config: mock || actualConfig,
-                            };
-                        });
-
-                        import('../paramsValidator').then(({ getFirmwareRange }) => {
-                            // added new capability
-                            // @ts-expect-error
-                            expect(getFirmwareRange(...f.params)).toEqual(f.result);
-                            done();
-                        });
-                    }),
-            );
+                // @ts-expect-error
+                expect(getFirmwareRange(...f.params)).toEqual(f.result);
+            });
         });
     });
 });
