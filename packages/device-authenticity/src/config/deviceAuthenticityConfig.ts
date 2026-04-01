@@ -53,19 +53,26 @@ export const deviceAuthenticityConfig: DeviceAuthenticityConfig = {
         rootPubKeysOptiga: [
             // upstream: DEV_AUTH_ROOT_PROD_P256
             '040dde0d3e0d4da593fac6fd02a461d0e7eef238aca55c7c50b4e9ec37f3873303b6429ef1c9b78b4411a7dcbbc5dde5225979c1c2da3b073e82b1ed3f5f9825bb',
+            // upstream: DEV_AUTH_ROOT_PROD_BACKUP_P256
+            '04c6a673af4ec44b10441b1d78676e15173ad0e36df9f7f2fa1cd819955f20fe32917b60da5fed3b3aa54a9ab8b3ed27d198b3768cad26eef5935cd87af0af065e',
         ],
         rootPubKeysTropic: [
             // upstream: DEV_AUTH_ROOT_PROD_ED25519
             '59237acd17134061d655b3f8d624573ca06ce8d862f38ba4e05140ce1d3d609d',
+            // upstream: DEV_AUTH_ROOT_PROD_BACKUP_ED25519
+            '5612606584ee7e0bc313b13f7ac94156bb4cb75bd77585ddbe579301306e85f1',
         ],
         debug: {
             rootPubKeysOptiga: [
                 // upstream: DEV_AUTH_ROOT_DEBUG_P256
                 '04521192e173a9da4e3023f747d836563725372681eba3079c56ff11b2fc137ab189eb4155f371127651b5594f8c332fc1e9c0f3b80d4212822668b63189706578',
+                // upstream: DEV_AUTH_ROOT_STAGING_P256
+                '0465e88f9b2cea67e8364f0cfcfacd500af24e9040b357beee629ccc4fce1704d1a7ef7284f387708f92ef14600e2caad6894016fee819d623b95d66210c3e7519',
             ],
-            // TODO copy "Root debug keys for T3W1" from firmware repo when it is available (_pk_ed25519)
-            // https://github.com/trezor/trezor-firmware/blob/main/python/src/trezorlib/authentication.py
-            rootPubKeysTropic: [],
+            rootPubKeysTropic: [
+                // upstream: DEV_AUTH_ROOT_STAGING_ED25519
+                'cd318dc8405ae4f4144e3284dcb7b0cb0f0c2195c2ca14a0f6fccd9104e32a4b',
+            ],
         },
     },
 };
