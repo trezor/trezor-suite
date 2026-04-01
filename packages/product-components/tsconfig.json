@@ -13,6 +13,7 @@
     },
     "include": [".", "**/*.json"],
     "references": [
+        { "path": "../../suite-common/feedback" },
         {
             "path": "../../suite-common/suite-constants"
         },

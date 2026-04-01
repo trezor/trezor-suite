@@ -73,6 +73,6 @@ export function createExperimentalFeedbackSlice<FeatureName extends string>(opti
                 }
             },
         },
-        extraReducers: options?.extraReducers,
+        ...(options?.extraReducers !== undefined ? { extraReducers: options.extraReducers } : {}),
     });
 }
