@@ -91,9 +91,9 @@ const parseMessage = (
         return parseEnum(messageName, message);
     }
 
-    if (DEFINITION_PATCH[messageName]) {
+    if (DEFINITION_PATCH[messageName as keyof typeof DEFINITION_PATCH]) {
         // replace whole declaration with patch
-        lines.push(DEFINITION_PATCH[messageName]());
+        lines.push(DEFINITION_PATCH[messageName as keyof typeof DEFINITION_PATCH]());
     } else if (!fields || !Object.keys(fields).length) {
         // few types are just empty objects, make it one line
         lines.push(`export type ${messageName} = {};`, '');
@@ -104,12 +104,21 @@ const parseMessage = (
             const field = fields[fieldName];
             const fieldKey = `${messageName}.${fieldName}`;
             // find patch for "rule"
-            const fieldRule = RULE_PATCH[fieldKey] || field.rule || options?.defaultRule;
+            const fieldRule =
+                RULE_PATCH[fieldKey as keyof typeof RULE_PATCH] ||
+                field.rule ||
+                options?.defaultRule;
             const rule = fieldRule === 'required' || fieldRule === 'repeated' ? ': ' : '?: ';
             // find patch for "type"
-            let type = TYPE_PATCH[fieldKey] || FIELD_TYPES[field.type || ''] || field.type;
+            let type =
+                TYPE_PATCH[fieldKey as keyof typeof TYPE_PATCH] ||
+                FIELD_TYPES[field.type as keyof typeof FIELD_TYPES] ||
+                (field.type as string);
             // automatically convert all amount and fee fields to UINT_TYPE
-            if (!TYPE_PATCH[fieldKey] && ['amount', 'fee'].includes(fieldName)) {
+            if (
+                !TYPE_PATCH[fieldKey as keyof typeof TYPE_PATCH] &&
+                ['amount', 'fee'].includes(fieldName)
+            ) {
                 type = UINT_TYPE;
             }
             // array
@@ -133,7 +142,7 @@ const parseMessage = (
 };
 
 const fixOrder = (types: TypeItem[]) => {
-    Object.keys(ORDER).forEach(key => {
+    (Object.keys(ORDER) as (keyof typeof ORDER)[]).forEach(key => {
         if (key === ORDER[key]) {
             logError(`ORDER map cannot have key=value`);
         }
@@ -169,7 +178,9 @@ export const createTypes = (
     options?: ParseMessageOptions,
 ) => {
     const root = def.nested ? def.nested : def;
-    const types = Object.keys(root).flatMap(key => parseMessage(key, root[key], options));
+    const types = (Object.keys(root) as (keyof typeof root)[]).flatMap(key =>
+        parseMessage(key, root[key] as Definition, options),
+    );
     skipTypes(types);
     if (options?.fixOrder) {
         fixOrder(types);
@@ -190,12 +201,19 @@ const createCustomTypes = () => {
     return lines;
 };
 
+const lookupMessageType = (name: string) => {
+    const root = json.nested;
+    const field = root[name as keyof typeof root] as Definition | undefined;
+
+    return name in root.MessageType.values || field?.options?.['(wire_type)'];
+};
+
 const createMessageType = (types: TypeItem[]) => {
     const lines: string[] = [];
     lines.push('// custom connect definitions');
     lines.push('export type MessageType = {');
     types
-        .flatMap(t => (t && t.type === 'message' ? t : []))
+        .flatMap(t => (t && t.type === 'message' && lookupMessageType(t.name) ? t : []))
         .forEach(t => {
             lines.push(`    ${t.name}: ${t.name};`);
         });
