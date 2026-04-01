@@ -362,6 +362,7 @@ export const networks = {
         coingeckoId: 'tron',
         tradeCryptoId: 'tron',
         yieldXyzId: 'tron',
+        caipId: 'tron:0x2b6653dc',
     },
     ada: {
         // icarus derivation

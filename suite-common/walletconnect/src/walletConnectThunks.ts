@@ -233,8 +233,9 @@ export const switchSelectedAccountThunk = createThunk<
             return console.warn(`No chains found for namespace ${adapter.namespaceId}`);
         }
 
+        const approvedEvents = session.namespaces[adapter.namespaceId]?.events ?? [];
         for (const chainId of chains) {
-            if (network.chainId) {
+            if (network.chainId && approvedEvents.includes('chainChanged')) {
                 await walletKit.emitSessionEvent({
                     topic: sessionTopic,
                     event: {
@@ -244,14 +245,16 @@ export const switchSelectedAccountThunk = createThunk<
                     chainId,
                 });
             }
-            await walletKit.emitSessionEvent({
-                topic: sessionTopic,
-                event: {
-                    name: 'accountsChanged',
-                    data: [...updatedNamespaces[adapter.namespaceId].accounts],
-                },
-                chainId,
-            });
+            if (approvedEvents.includes('accountsChanged')) {
+                await walletKit.emitSessionEvent({
+                    topic: sessionTopic,
+                    event: {
+                        name: 'accountsChanged',
+                        data: [...updatedNamespaces[adapter.namespaceId].accounts],
+                    },
+                    chainId,
+                });
+            }
         }
     },
 );
