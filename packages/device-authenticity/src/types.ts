@@ -17,7 +17,7 @@ export type PrepareDeviceAuthenticityDataParams = {
 export type VerifyAuthenticityProofParams = {
     certificates: string[];
     signature: string;
-    data: Uint8Array;
+    signedData: Uint8Array;
     deviceModel: keyof typeof PROTO.DeviceModelInternal; // Device.features.internal_model
     config: DeviceAuthenticityConfig;
     blacklistConfig: DeviceAuthenticityBlacklistConfig;
@@ -27,7 +27,7 @@ export type VerifyAuthenticityProofParams = {
 export type VerifyAuthenticityProofResult =
     | {
           valid: true;
-          caPubKey: string;
+          caPubKey?: string;
           rootPubKey: string;
           error?: typeof undefined;
       }

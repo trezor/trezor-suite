@@ -7,6 +7,7 @@
 @codemirror/state
 @hbsnow/rehype-sectionize
 @headlessui/react
+@noble/post-quantum
 @reown/walletkit
 @react-native-async-storage/async-storage
 @scure/base

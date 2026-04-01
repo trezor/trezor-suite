@@ -6489,10 +6489,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/ciphers@npm:^2.1.1":
-  version: 2.1.1
-  resolution: "@noble/ciphers@npm:2.1.1"
-  checksum: 10/efca189b2719ed7309616a6824328d713bd37156e1bcead453725e51fc93311fb2f54e4d46bef0391fa17ce18bd9c2364511290774504a8600264b572f6a1db5
+"@noble/ciphers@npm:^2.1.1, @noble/ciphers@npm:~2.2.0":
+  version: 2.2.0
+  resolution: "@noble/ciphers@npm:2.2.0"
+  checksum: 10/d75348aa682b41ad3e24cdd0a56c6d9ca033fb629ab93f37d6690be41c4882359b27598a11af0f5439ba82df4f9e3875dea1f875064310f68fef63cf24e3481a
   languageName: node
   linkType: hard
 
@@ -6541,12 +6541,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/curves@npm:^2.0.1":
-  version: 2.0.1
-  resolution: "@noble/curves@npm:2.0.1"
+"@noble/curves@npm:^2.0.1, @noble/curves@npm:~2.2.0":
+  version: 2.2.0
+  resolution: "@noble/curves@npm:2.2.0"
   dependencies:
-    "@noble/hashes": "npm:2.0.1"
-  checksum: 10/e826af523f40a671601a6d07f98df16c3afe1cbd0349c3ba4d7b31f6dba7dc743822719f260bd291716b6b42b8dc327f94a76b4852359aa85f79df461eb22bfc
+    "@noble/hashes": "npm:2.2.0"
+  checksum: 10/f9545e55bb8b6cdf2618c936870b9229339c90b25f129fc368b4b534e723f274e5c0daf8abca2f891bcf0a59c3b49c5ac5205899aec07f5251f545ec616e3aa9
   languageName: node
   linkType: hard
 
@@ -6571,10 +6571,28 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/hashes@npm:2.0.1, @noble/hashes@npm:^2.0.1":
+"@noble/hashes@npm:2.0.1":
   version: 2.0.1
   resolution: "@noble/hashes@npm:2.0.1"
   checksum: 10/f4d00e7564eb4ff4e6d16be151dd0e404aede35f91e4372b0a8a6ec888379c1dd1e02c721b480af8e7853bea9637185b5cb9533970c5b77d60c254ead0cfd8f7
+  languageName: node
+  linkType: hard
+
+"@noble/hashes@npm:2.2.0, @noble/hashes@npm:^2.0.1, @noble/hashes@npm:~2.2.0":
+  version: 2.2.0
+  resolution: "@noble/hashes@npm:2.2.0"
+  checksum: 10/b1b78bedc2a01394be047429f3d888905015fe8a09f1b7e43e0b5736b54133df62f73dcc73ede43af38e96e86156afb45b86973fdeaa95d9f0880333c3fc0907
+  languageName: node
+  linkType: hard
+
+"@noble/post-quantum@npm:^0.6.1":
+  version: 0.6.1
+  resolution: "@noble/post-quantum@npm:0.6.1"
+  dependencies:
+    "@noble/ciphers": "npm:~2.2.0"
+    "@noble/curves": "npm:~2.2.0"
+    "@noble/hashes": "npm:~2.2.0"
+  checksum: 10/befe191f3a648082938e45b837fbec42f55b3f57e3bfb9efcbcf1227f633013abaa57d0a1c449e0c0fe0d5bd066bed8d433e462d3c5f019cbb3b31bfa0770fbc
   languageName: node
   linkType: hard
 
@@ -16173,6 +16191,7 @@ __metadata:
   resolution: "@trezor/device-authenticity@workspace:packages/device-authenticity"
   dependencies:
     "@noble/curves": "npm:^2.0.1"
+    "@noble/post-quantum": "npm:^0.6.1"
     "@trezor/crypto-utils": "workspace:*"
     "@trezor/protobuf": "workspace:*"
     "@trezor/schema-utils": "workspace:*"
