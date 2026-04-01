@@ -65,22 +65,7 @@ test.describe('Metadata lifecycle', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () 
         });
 
         await test.step('re-enable labeling on standard Wallet via settings', async () => {
-            await metadataPage.enableLegacyLabeling(MetadataProvider.DROPBOX);
-            await settingsPage.navigateTo('application');
-            await expect(settingsPage.metadataSelectInput).toHaveTranslation('TR_LABELING_LEGACY');
-        });
-
-        await test.step('disable metadata in settings', async () => {
-            await page.selectDropdownOptionWithRetry(
-                settingsPage.metadataSelectInput,
-                settingsPage.metadataSelectInputOption('off'),
-            );
-            await expect(settingsPage.metadataSelectInput).toHaveTranslation('TR_LABELING_OFF');
-        });
-
-        await test.step('verify labeling can be re-enabled via settings', async () => {
-            await metadataPage.enableLegacyLabeling(MetadataProvider.DROPBOX);
-            await settingsPage.navigateTo('application');
+            await metadataPage.reEnableLegacyLabeling();
             await expect(settingsPage.metadataSelectInput).toHaveTranslation('TR_LABELING_LEGACY');
         });
     });
