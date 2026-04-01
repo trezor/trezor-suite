@@ -29,7 +29,7 @@ import {
     encodeBroadcastTransaction,
     estimateTronTransferBandwidth,
     estimateTronTrc20Bandwidth,
-} from '@trezor/connect/src/api/tron/tronProtobuf';
+} from '@trezor/connect/src/api/tron/tronEncode';
 import { BigNumber } from '@trezor/utils';
 
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
