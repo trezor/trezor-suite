@@ -117,6 +117,8 @@ export enum EventType {
     SettingsChangeTheme = 'settings/change_theme',
     // eslint-disable-next-line local-rules/analytics-event-name
     SettingsDataPermission = 'settings/data_permission',
+
+    SettingsToggleExperimentalFeature = 'settings/experimental-feature',
     // eslint-disable-next-line local-rules/analytics-event-name
     SettingsDiscreetToggle = 'settings/discreet_toggle',
     // eslint-disable-next-line local-rules/analytics-event-name
