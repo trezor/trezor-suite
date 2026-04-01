@@ -10,6 +10,7 @@ import {
 } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 import { getSerializedPath } from '@trezor/connect/src/utils/pathUtils';
+import { BigNumber } from '@trezor/utils';
 
 import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';
 import { invityAPI } from '../../invityAPI';
@@ -73,9 +74,9 @@ const getQuoteRequestData = async ({
             ...account.addresses.used.map(a => a.address),
             ...account.addresses.change.map(a => a.address),
         ]);
-        const usedUtxo = account.utxo.filter(u => usedAddressSet.has(u.address));
+        const usedUtxos = account.utxo.filter(u => usedAddressSet.has(u.address));
 
-        if (usedUtxo.length === 0) {
+        if (usedUtxos.length === 0) {
             return undefined;
         }
 
@@ -107,26 +108,29 @@ const getQuoteRequestData = async ({
             account: {
                 path: account.path,
                 addresses: account.addresses,
-                utxo: usedUtxo,
+                utxo: usedUtxos,
             },
             feeLevels: [{ feePerUnit: '1' }],
         };
 
         const precomposed = await TrezorConnect.composeTransaction(composeParams);
-        console.log('precomposed', precomposed);
 
         if (precomposed.success && precomposed.payload.length > 0) {
             const tx = precomposed.payload[0];
             if (tx.type === 'final' || tx.type === 'nonfinal') {
                 const addresses = await Promise.all(
-                    tx.inputs.map(async (i: any) => {
+                    tx.inputs.map(i => {
+                        if (!i.address_n) {
+                            return undefined;
+                        }
                         const path = getSerializedPath(i.address_n);
 
-                        return usedUtxo.find(a => a.path === path)?.address;
+                        return usedUtxos.find(a => a.path === path)?.address;
                     }),
                 );
-                // TODO: change to array of addresses
-                fromAddress = Array.from(new Set(addresses)).join(';');
+                fromAddress = Array.from(new Set(addresses.filter((a): a is string => !!a))).join(
+                    ';',
+                );
             }
         }
     }

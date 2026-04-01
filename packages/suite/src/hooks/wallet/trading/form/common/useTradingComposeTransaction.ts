@@ -5,6 +5,7 @@ import { isTranslationKey, useTranslation } from '@suite/intl';
 import { selectAddressDisplayType } from '@suite/settings';
 import { selectSelectedDevice } from '@suite-common/device';
 import {
+    TRADING_EXCHANGE_FROM_ADDRESS,
     TRADING_FORM_OUTPUT_ADDRESS,
     TRADING_FORM_OUTPUT_AMOUNT,
     type TradingExchangeFormProps,
@@ -13,8 +14,9 @@ import {
 } from '@suite-common/trading';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
 import { selectAccounts, selectRawNetworkFeeInfo } from '@suite-common/wallet-core';
-import { AddressDisplayOptions } from '@suite-common/wallet-types';
+import { AddressDisplayOptions, type PrecomposedTransaction } from '@suite-common/wallet-types';
 import { getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
+import type { PROTO } from '@trezor/connect';
 import { getSerializedPath } from '@trezor/connect/src/utils/pathUtils';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -152,11 +154,12 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
 
         if (composed.type === 'final' || composed.type === 'nonfinal') {
             if (type === 'exchange' && account.networkType === 'bitcoin') {
-                if (composed.inputs) {
+                const btcComposed = composed as PrecomposedTransaction;
+                if ('inputs' in btcComposed && btcComposed.inputs) {
                     const addresses = Array.from(
                         new Set(
-                            composed.inputs
-                                .map((i: any) => {
+                            btcComposed.inputs
+                                .map((i: PROTO.TxInputType) => {
                                     if (!i.address_n) return undefined;
                                     const path = getSerializedPath(i.address_n);
 
@@ -169,7 +172,7 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
                     const fromAddress = addresses.join(';');
                     if (fromAddress) {
                         // TODO: change to array of addresses
-                        setValue('fromAddress', fromAddress, { shouldDirty: true });
+                        setValue(TRADING_EXCHANGE_FROM_ADDRESS, fromAddress, { shouldDirty: true });
                     }
                 }
             }
