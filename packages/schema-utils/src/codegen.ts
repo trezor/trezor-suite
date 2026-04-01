@@ -2,7 +2,11 @@
 import * as Codegen from '@sinclair/typebox-codegen/typescript';
 import fs from 'fs';
 
-export function generate(code: string) {
+type GenerateTypeBoxOptions = {
+    appendHelpersForMessageType?: boolean;
+};
+
+const preprocessCode = (code: string) => {
     // Make some replacements to make the code processable by the generator
     // Since there are some issues with typeof
     code = code.replace(/typeof undefined/g, 'undefined');
@@ -14,6 +18,11 @@ export function generate(code: string) {
         helpers = code.substring(helpersIndex);
         code = code.substring(0, helpersIndex);
     }
+
+    return { code, helpers };
+};
+
+const runTypeBoxCodegen = (code: string) => {
     // Make generator aware of custom types
     const customTypesMapping = {
         ArrayBuffer: 'Type.ArrayBuffer()',
@@ -36,6 +45,11 @@ export function generate(code: string) {
     Object.entries(customTypesMapping).forEach(([key, value]) => {
         output = output.replace(new RegExp(`\\b${key}\\b`, 'g'), value);
     });
+
+    return output;
+};
+
+const normalizeEnums = (output: string) => {
     // Find enum occurences
     const enums = [...output.matchAll(/enum Enum(\w+) {/g)].map(m => m[1]);
     // Replace possible keyof for each enum
@@ -56,16 +70,34 @@ export function generate(code: string) {
             `Type.KeyOfEnum(${e}$1)`,
         );
     });
+
+    return output;
+};
+
+export function generateTypeBox(rawCode: string, options: GenerateTypeBoxOptions = {}) {
+    const { code, helpers } = preprocessCode(rawCode);
+    let output = runTypeBoxCodegen(code);
+    output = normalizeEnums(output);
+
     // Add import of lib
-    output = `import { Type, Static, CloneType } from '@trezor/schema-utils';\n\n${output}`;
-    // Add eslint ignore for camelcase, since some type names use underscores
-    output = `/* eslint-disable camelcase */\n${output}`;
+    const schemaUtilsImports = ['Type', 'Static'];
+    if (/\bCloneType\b/.test(output)) {
+        schemaUtilsImports.push('CloneType');
+    }
+    output = `import { ${schemaUtilsImports.join(', ')} } from '@trezor/schema-utils';\n\n${output}`;
+
+    const { appendHelpersForMessageType = true } = options;
+
     // Add types for message schema
-    if (output.indexOf('export type MessageType =') > -1) {
+    if (appendHelpersForMessageType && output.indexOf('export type MessageType =') > -1) {
         output = `${output}\n\n${helpers}`;
     }
 
     return output;
+}
+
+export function generate(code: string) {
+    return generateTypeBox(code);
 }
 
 export function generateForFile(fileName: string) {
