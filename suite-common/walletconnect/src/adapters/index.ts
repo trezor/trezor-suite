@@ -6,6 +6,7 @@ import { bitcoinAdapter } from './bitcoin';
 import { ethereumAdapter } from './ethereum';
 import { solanaAdapter } from './solana';
 import { stellarAdapter } from './stellar';
+import { tronAdapter } from './tron';
 import {
     type PendingConnectionProposalNetwork,
     type WalletConnectAdapter,
@@ -16,6 +17,7 @@ export const adapters: WalletConnectAdapter[] = [
     solanaAdapter,
     bitcoinAdapter,
     stellarAdapter,
+    tronAdapter,
 ];
 
 export const getAdapterByMethod = (method: string) =>

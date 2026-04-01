@@ -28,3 +28,21 @@ export const tronAddressToHex = (address: string): string | null => {
 
     return bytes ? bytesToHex(bytes) : null;
 };
+
+// Inverse of tronAddressToBytes: 21-byte raw address → base58check Tron address.
+export const tronBytesToAddress = (bytes: Uint8Array): string | null => {
+    if (bytes.length !== 21) return null;
+    const BASE58 = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+    const checksum = sha256(sha256(bytes)).slice(0, 4);
+    const full = new Uint8Array(25);
+    full.set(bytes);
+    full.set(checksum, 21);
+    let num = BigInt(`0x${bytesToHex(full)}`);
+    let result = '';
+    while (num > 0n) {
+        result = BASE58[Number(num % 58n)] + result;
+        num /= 58n;
+    }
+
+    return result;
+};
