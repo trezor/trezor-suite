@@ -693,3 +693,8 @@ export const selectSupportChatDeviceUtmParams = createMemoizedSelector(
         return result;
     },
 );
+
+export const selectIsReconnectRequested = createMemoizedSelector(
+    [selectSelectedDevice],
+    device => !!device?.reconnectRequested,
+);

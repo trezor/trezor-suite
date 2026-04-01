@@ -7,6 +7,7 @@ import {
     selectIsDeviceAuthorized,
     selectIsDeviceInitialized,
     selectIsDeviceUnlocked,
+    selectIsReconnectRequested,
 } from '@suite-common/device';
 import { selectIsDiscoveredDeviceAccountless } from '@suite-common/wallet-core';
 import {
@@ -32,12 +33,14 @@ export const HomeScreen = () => {
     const isBluetoothDeviceOsUnpairingRequired = useSelector(
         selectIsBluetoothDeviceOsUnpairingRequired,
     );
+    const isReconnectRequested = useSelector(selectIsReconnectRequested);
 
     const isEmptyHomeRendererShown =
         (isDiscoveredDeviceAccountless && // There has to be no accounts and discovery not active.
             (isDeviceAuthorized || // Initial state is empty portfolio device, that is authorized.
                 !isDeviceUnlocked)) ||
-        !isDeviceInitialized;
+        !isDeviceInitialized ||
+        isReconnectRequested;
 
     const portfolioContentRef = useRef<PortfolioGraphRef>(null);
     const refreshControl = useHomeRefreshControl({

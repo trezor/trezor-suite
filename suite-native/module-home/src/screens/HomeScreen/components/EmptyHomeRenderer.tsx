@@ -7,6 +7,7 @@ import {
     selectIsDeviceInitialized,
     selectIsDeviceThpLocked,
     selectIsPortfolioTrackerDevice,
+    selectIsReconnectRequested,
 } from '@suite-common/device';
 import { selectHasOnlyEmptyPortfolioTracker } from '@suite-common/wallet-core';
 import { Box } from '@suite-native/atoms';
@@ -28,6 +29,7 @@ export const EmptyHomeRenderer = () => {
     const isDeviceConnected = useSelector(selectIsDeviceConnected);
     const isDeviceThpLocked = useSelector(selectIsDeviceThpLocked);
     const isDeviceSetupSupported = useSelector(selectIsDeviceSetupSupported);
+    const isReconnectRequested = useSelector(selectIsReconnectRequested);
 
     // This state is present only for a fraction of second while redirecting to the Connecting screen is already happening.
     // Because the animation takes some time, this makes sure that the screen content of newly selected device does not flash during the redirect.
@@ -37,12 +39,19 @@ export const EmptyHomeRenderer = () => {
 
     let ScreenContent = EmptyPortfolioTrackerState;
 
-    if (
+    // the reconnect requested flag is set only after the device is wiped. The flag is indicating that the old data state
+    // is still present in the redux state but the physical device is already in the `initialize` state and ready for setup.
+    const wasDeviceWiped = isReconnectRequested;
+
+    const isUninitializedDeviceSetupReady =
+        !isDeviceInitialized &&
+        (isDeviceInBootloader || (isDeviceAuthorized && !isDeviceThpLocked));
+    const shouldShowUninitializedState =
         isDeviceSetupSupported &&
         isDeviceConnected &&
-        !isDeviceInitialized &&
-        (isDeviceInBootloader || (isDeviceAuthorized && !isDeviceThpLocked))
-    ) {
+        (wasDeviceWiped || isUninitializedDeviceSetupReady);
+
+    if (shouldShowUninitializedState) {
         ScreenContent = UninitializedConnectedDeviceState;
     }
     // Crossroads should be displayed if there is no real device connected and portfolio tracker has no accounts
