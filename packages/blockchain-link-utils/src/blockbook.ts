@@ -167,6 +167,21 @@ type TransformAddresses = {
 export const isTxFailed = (tx: BlockbookTransaction) =>
     !(!tx.blockHeight || tx.blockHeight < 0) && tx.ethereumSpecific?.status === 0;
 
+const getTransactionFee = (tx: BlockbookTransaction): string => {
+    if (tx.chainExtraData?.payloadType === 'tron') {
+        return tx.chainExtraData.payload?.totalFee || tx.fees;
+    }
+    if (tx.ethereumSpecific && !tx.ethereumSpecific.gasUsed) {
+        return new BigNumber(
+            tx.ethereumSpecific.maxFeePerGas ?? tx.ethereumSpecific.gasPrice ?? '0',
+        )
+            .times(tx.ethereumSpecific.gasLimit)
+            .toString();
+    }
+
+    return tx.fees;
+};
+
 export const transformTransaction = (
     tx: BlockbookTransaction,
     addressesOrDescriptor?: TransformAddresses | string,
@@ -268,14 +283,7 @@ export const transformTransaction = (
             ? true
             : undefined;
 
-    const fee =
-        tx.ethereumSpecific && !tx.ethereumSpecific.gasUsed
-            ? new BigNumber(
-                  tx.ethereumSpecific?.maxFeePerGas ?? tx.ethereumSpecific?.gasPrice ?? '0',
-              )
-                  .times(tx.ethereumSpecific.gasLimit)
-                  .toString()
-            : tx.fees;
+    const fee = getTransactionFee(tx);
 
     // some instances of bb don't send vsize yet
     const feeRate = tx.vsize
@@ -307,6 +315,8 @@ export const transformTransaction = (
             ...tx.ethereumSpecific,
             gasPrice: tx.ethereumSpecific.gasPrice ?? '0', // even if it shouldn't, `null` sometimes came from Erigon
         },
+        tronSpecific:
+            tx.chainExtraData?.payloadType === 'tron' ? tx.chainExtraData.payload : undefined,
         details: {
             vin: inputs.map(enhanceVinVout(myAddresses)),
             vout: outputs.map(enhanceVinVout(myAddresses)),
