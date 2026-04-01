@@ -708,18 +708,8 @@ export const isAccountOutdated = (account: Account, freshInfo: AccountInfo) => {
         case 'tron':
             return (
                 freshInfo.balance !== account.balance ||
-                freshInfo.misc?.tronResources?.availableStakedBandwidth !==
-                    account.misc?.tronResources?.availableStakedBandwidth ||
-                freshInfo.misc?.tronResources?.availableFreeBandwidth !==
-                    account.misc?.tronResources?.availableFreeBandwidth ||
-                freshInfo.misc?.tronResources?.availableEnergy !==
-                    account.misc?.tronResources?.availableEnergy ||
-                freshInfo.misc?.tronResources?.totalStakedBandwidth !==
-                    account.misc?.tronResources?.totalStakedBandwidth ||
-                freshInfo.misc?.tronResources?.totalFreeBandwidth !==
-                    account.misc?.tronResources?.totalFreeBandwidth ||
-                freshInfo.misc?.tronResources?.totalEnergy !==
-                    account.misc?.tronResources?.totalEnergy
+                JSON.stringify(freshInfo.misc?.tronResources) !==
+                    JSON.stringify(account.misc?.tronResources)
             );
         default:
             return false;
