@@ -6,13 +6,13 @@ import { type TradingType } from '@suite-common/trading';
 import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useSelector } from 'src/hooks/suite';
 import { useMessageSystemTrading } from 'src/hooks/suite/useMessageSystemTrading';
-import { TradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useTradingSellForm } from 'src/hooks/wallet/trading/form/useTradingSellForm';
 import { selectIsDeviceCompromised } from 'src/selectors/suite/suiteAuthenticityChecksSelectors';
 import { TradingContainer } from 'src/views/wallet/trading/common/TradingContainer';
 import { TradingFormLayout } from 'src/views/wallet/trading/common/TradingForm/TradingFormLayout';
 import { TradingLayout } from 'src/views/wallet/trading/common/TradingLayout/TradingLayout';
 
+import { TradingSellContextProvider } from './TradingSellContext';
 import { TradingDisabled } from '../common/TradingDisabled';
 import { TradingSellFormInputs } from '../common/TradingForm/TradingSellFormInputs';
 
@@ -26,11 +26,11 @@ const TradingSellFormWrapper = () => {
     const tradingSellContextValues = useTradingSellForm({});
 
     return (
-        <TradingFormContext.Provider value={tradingSellContextValues}>
+        <TradingSellContextProvider value={tradingSellContextValues}>
             <FormProvider {...tradingSellContextValues.methods}>
                 <TradingContainer SectionComponent={TradingSellFormContent} />
             </FormProvider>
-        </TradingFormContext.Provider>
+        </TradingSellContextProvider>
     );
 };
 

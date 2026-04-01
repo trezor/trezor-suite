@@ -1,9 +1,10 @@
 import { FormProvider } from 'react-hook-form';
 
-import { TradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useTradingSellForm } from 'src/hooks/wallet/trading/form/useTradingSellForm';
 import { TradingContainer } from 'src/views/wallet/trading/common/TradingContainer';
-import { TradingOffers } from 'src/views/wallet/trading/common/TradingOffers/TradingOffers';
+import { TradingSellOffersContent } from 'src/views/wallet/trading/common/TradingOffers/TradingSellOffersContent';
+
+import { TradingSellContextProvider } from './TradingSellContext';
 
 const TradingSellOffersComponent = () => {
     const tradingSellFormContextValues = useTradingSellForm({
@@ -11,11 +12,11 @@ const TradingSellOffersComponent = () => {
     });
 
     return (
-        <TradingFormContext.Provider value={tradingSellFormContextValues}>
+        <TradingSellContextProvider value={tradingSellFormContextValues}>
             <FormProvider {...tradingSellFormContextValues.methods}>
-                <TradingOffers />
+                <TradingSellOffersContent />
             </FormProvider>
-        </TradingFormContext.Provider>
+        </TradingSellContextProvider>
     );
 };
 export const TradingSellOffers = () => (
