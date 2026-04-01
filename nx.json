@@ -52,7 +52,7 @@
         },
         "lint:js": {
             "inputs": [
-                "default",
+                "{projectRoot}/**/*",
                 "{workspaceRoot}/eslint.config.mjs",
                 "{workspaceRoot}/packages/eslint/**/*"
             ],
