@@ -5,6 +5,7 @@ type CertPubKeys = Static<typeof CertPubKeys>;
 const CertPubKeys = Type.Object({
     rootPubKeysOptiga: Type.Array(Type.String()),
     rootPubKeysTropic: Type.Optional(Type.Array(Type.String())),
+    rootPubKeysMLDSA: Type.Optional(Type.Array(Type.String())),
 });
 
 type ModelPubKeys = Static<typeof ModelPubKeys>;
