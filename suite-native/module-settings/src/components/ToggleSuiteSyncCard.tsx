@@ -5,6 +5,7 @@ import { events } from '@suite-common/analytics';
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { useAlert } from '@suite-native/alerts';
+import { events as nativeEvents } from '@suite-native/analytics';
 import { TouchableSwitchRow } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useSuiteSyncErrorHandler } from '@suite-native/labeling';
@@ -41,7 +42,7 @@ export const ToggleSuiteSyncCard = () => {
         });
     };
 
-    const toggleSuiteSync = async () => {
+    const toggleSuiteSync = async (value: boolean) => {
         if (isSuiteSyncEnabled) {
             showSuiteSyncDisableConfirmationAlert();
         } else {
@@ -60,6 +61,11 @@ export const ToggleSuiteSyncCard = () => {
                 handleSuiteSyncError(result.error);
             }
         }
+
+        analytics.report({
+            type: nativeEvents.settingsToggleExperimentalFeatureEvent.name,
+            payload: { feature: 'suite-sync', value },
+        });
     };
 
     return (
