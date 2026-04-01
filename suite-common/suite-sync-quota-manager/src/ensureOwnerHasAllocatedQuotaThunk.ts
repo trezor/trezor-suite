@@ -64,22 +64,20 @@ export const ensureOwnerHasAllocatedQuotaThunk =
             ownerId,
         });
 
-        if (hasOwnerStorage.success) {
+        if (!hasOwnerStorage.success) {
+            return err(HttpError());
+        }
+
+        // Storage exists for this owner
+        if (hasOwnerStorage.payload.status === 'Allocated') {
             dispatch(
                 quotaManagerOwnerFetched({
                     walletDescriptor,
-                    totalSpace: hasOwnerStorage.payload.totalSpace ?? 0,
+                    totalSpace: hasOwnerStorage.payload.totalSpace,
                 }),
             );
 
             return ok();
-        }
-
-        const isHttp404 =
-            hasOwnerStorage.error.type === 'HttpError' && hasOwnerStorage.error.code === 404;
-
-        if (!isHttp404) {
-            return err(HttpError());
         }
 
         if (isWriteMode === false) {
