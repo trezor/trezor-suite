@@ -2,15 +2,12 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { Translation } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
-import { goto } from '@suite/router';
-import { selectIsDebugModeActive } from '@suite/settings';
 import { selectDeviceDefaultBackupType, selectSelectedDevice } from '@suite-common/device';
 import { type BackupType } from '@suite-common/suite-types';
 import { Badge, Column, Text } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-import { resetDevice } from 'src/actions/settings/deviceSettingsActions';
-import { useDevice, useDispatch, useOnboarding, useSelector } from 'src/hooks/suite';
+import { useDevice, useOnboarding, useSelector } from 'src/hooks/suite';
 
 import { SelectBackupType } from './SelectBackupType/SelectBackupType';
 import { isShamirBackupType } from './utils';
@@ -27,26 +24,8 @@ export const ResetDeviceStep = () => {
 
     const [backupType, setBackupType] = useState<BackupType>(deviceDefaultBackupType);
     const { goToPreviousStep, goToNextStep, updateAnalytics, updateBackupType } = useOnboarding();
-    const dispatch = useDispatch();
-    const isDebugModeActive = useSelector(selectIsDebugModeActive);
-    const [debugInProgress, setDebugInProgress] = useState(false);
 
     const isDeviceLocked = isLocked();
-
-    const getResetDeviceParams = useCallback((type: BackupType) => {
-        switch (type) {
-            case 'shamir-single':
-            case 'shamir-advanced':
-                // We do not send `_Extendable` versions of the `backup_type` to be compatible
-                // with older firmwares. New firmware creates always extensible Shamir. Even for
-                // original, non-extendable enum values.
-                return { backup_type: 1 as const };
-            case '12-words':
-                return { backup_type: 0 as const, strength: 128 };
-            case '24-words':
-                return { backup_type: 0 as const, strength: 256 };
-        }
-    }, []);
 
     // Only saves the selected backup type and navigates to the security step.
     // The actual resetDevice call (with skip_backup: false) happens in SecurityStep,
@@ -103,52 +82,22 @@ export const ResetDeviceStep = () => {
                 )
             }
             device={device}
-            isConfirmedOnDevice={debugInProgress}
             innerActions={
-                !debugInProgress && (
-                    <OnboardingCard.Button
-                        isDisabled={isDeviceLocked}
-                        onClick={() => handleSubmit(backupType)}
-                        data-testid="@onboarding/select-seed-type-confirm"
-                    >
-                        <Translation id="TR_ONBOARDING_SELECT_SEED_TYPE_CONTINUE" />
-                    </OnboardingCard.Button>
-                )
+                <OnboardingCard.Button
+                    isDisabled={isDeviceLocked}
+                    onClick={() => handleSubmit(backupType)}
+                    data-testid="@onboarding/select-seed-type-confirm"
+                >
+                    <Translation id="TR_ONBOARDING_SELECT_SEED_TYPE_CONTINUE" />
+                </OnboardingCard.Button>
             }
             outerActions={
-                !debugInProgress && (
-                    <>
-                        <OnboardingCard.SecondaryButton onClick={() => goToPreviousStep()}>
-                            <Translation id="TR_BACK" />
-                        </OnboardingCard.SecondaryButton>
-                        {isDebugModeActive && (
-                            <OnboardingCard.SecondaryButton
-                                onClick={async () => {
-                                    updateBackupType(backupType);
-                                    setDebugInProgress(true);
-                                    const result = await dispatch(
-                                        resetDevice({
-                                            ...getResetDeviceParams(backupType),
-                                            skip_backup: true,
-                                        }),
-                                    );
-                                    setDebugInProgress(false);
-                                    if (result?.success) {
-                                        goToNextStep('set-pin');
-                                    } else {
-                                        dispatch(goto({ routeName: 'suite-index' }));
-                                    }
-                                }}
-                                data-testid="@onboarding/skip-backup-debug"
-                            >
-                                <Translation id="TR_CREATE_WALLET" /> (debug, no backup)
-                            </OnboardingCard.SecondaryButton>
-                        )}
-                    </>
-                )
+                <OnboardingCard.SecondaryButton onClick={() => goToPreviousStep()}>
+                    <Translation id="TR_BACK" />
+                </OnboardingCard.SecondaryButton>
             }
         >
-            {!debugInProgress && canChoseBackupType && (
+            {canChoseBackupType && (
                 <SelectBackupType
                     selected={backupType}
                     onOpen={() => updateAnalytics({ wasSelectTypeOpened: true })}
