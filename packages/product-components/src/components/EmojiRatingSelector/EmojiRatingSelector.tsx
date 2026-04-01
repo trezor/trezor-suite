@@ -2,19 +2,19 @@ import styled from 'styled-components';
 
 import { type Rating, ratingOptions } from '@suite-common/feedback';
 import { Row, useElevation } from '@trezor/components';
-import { type Elevation, mapElevationToBorder, spacings } from '@trezor/theme';
+import { type Elevation, borders, mapElevationToBorder } from '@trezor/theme';
 
 const Item = styled.button<{ $selected?: boolean; $elevation: Elevation }>`
-    width: 48px;
-    height: 47px;
-    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    border-radius: ${borders.radii.full};
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    font-size: 30px;
-    padding: 1px 4px;
-    border: 1px solid
+    font-size: 22px;
+    padding: 0;
+    border: ${borders.widths.small} solid
         ${({ $selected, theme, $elevation }) =>
             $selected
                 ? theme.backgroundPrimaryDefault
@@ -24,19 +24,14 @@ const Item = styled.button<{ $selected?: boolean; $elevation: Elevation }>`
                   })};
 
     background: ${({ $selected, theme }) =>
-        $selected ? theme.backgroundPrimaryDefault : theme.backgroundNeutralBoldInverted};
-
-    &:hover {
-        background: ${({ $selected, theme }) =>
-            $selected ? theme.backgroundPrimaryDefault : theme.backgroundNeutralBoldInverted};
-    }
+        $selected ? theme.backgroundPrimaryDefault : theme.backgroundNeutralSubtleOnElevation0};
 `;
 
-export interface EmojiRatingSelectorProps {
+export type EmojiRatingSelectorProps = {
     value: Rating | undefined;
     onChange: (rating: Rating) => void;
     'data-testid'?: string;
-}
+};
 
 export const EmojiRatingSelector = ({
     value,
@@ -46,7 +41,7 @@ export const EmojiRatingSelector = ({
     const { elevation } = useElevation();
 
     return (
-        <Row gap={spacings.xs} data-testid={dataTestId}>
+        <Row gap={8} data-testid={dataTestId}>
             {ratingOptions.map(({ id, emoji }) => (
                 <Item
                     key={id}

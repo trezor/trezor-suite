@@ -10897,20 +10897,20 @@ export const messages = defineMessages({
         id: 'TR_EXCHANGE_DETAIL_FEEDBACK_TITLE',
         defaultMessage: 'How was your trading experience?',
     },
-    TR_EXCHANGE_DETAIL_FEEDBACK_DESCRIPTION: {
-        id: 'TR_EXCHANGE_DETAIL_FEEDBACK_DESCRIPTION',
+    TR_FEEDBACK_CARD_DESCRIPTION: {
+        id: 'TR_FEEDBACK_CARD_DESCRIPTION',
         defaultMessage: 'Your feedback helps us improve—tell us what you think.',
     },
-    TR_EXCHANGE_DETAIL_FEEDBACK_INPUT_BUTTON: {
-        id: 'TR_EXCHANGE_DETAIL_FEEDBACK_INPUT_BUTTON',
+    TR_FEEDBACK_CARD_SEND: {
+        id: 'TR_FEEDBACK_CARD_SEND',
         defaultMessage: 'Send feedback',
     },
-    TR_EXCHANGE_DETAIL_FEEDBACK_SUCCESS_TITLE: {
-        id: 'TR_EXCHANGE_DETAIL_FEEDBACK_SUCCESS_TITLE',
+    TR_FEEDBACK_CARD_SUCCESS_TITLE: {
+        id: 'TR_FEEDBACK_CARD_SUCCESS_TITLE',
         defaultMessage: 'Thanks!',
     },
-    TR_EXCHANGE_DETAIL_FEEDBACK_SUCCESS_DESCRIPTION: {
-        id: 'TR_EXCHANGE_DETAIL_FEEDBACK_SUCCESS_DESCRIPTION',
+    TR_FEEDBACK_CARD_SUCCESS_DESCRIPTION: {
+        id: 'TR_FEEDBACK_CARD_SUCCESS_DESCRIPTION',
         defaultMessage: 'We value your feedback.',
     },
     TR_APPROVE_TITLE: {

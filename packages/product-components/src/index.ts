@@ -45,3 +45,8 @@ export { SectionItem } from './components/Settings/SectionItem';
 export { SettingsSection } from './components/Settings/SettingsSection';
 export { TextColumn } from './components/Settings/TextColumn';
 export { StepCard } from './components/StepCard/StepCard';
+export { FeedbackCard, type FeedbackCardProps } from './components/FeedbackCard/FeedbackCard';
+export {
+    EmojiRatingSelector,
+    type EmojiRatingSelectorProps,
+} from './components/EmojiRatingSelector/EmojiRatingSelector';

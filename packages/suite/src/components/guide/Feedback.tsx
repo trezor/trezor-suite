@@ -12,14 +12,13 @@ import {
     sendFeedbackAction,
 } from '@suite-common/feedback';
 import { Button, CollapsibleBox, Select, Textarea } from '@trezor/components';
+import { EmojiRatingSelector } from '@trezor/product-components';
 import { typography } from '@trezor/theme';
 
 import { setView } from 'src/actions/suite/guideActions';
 import { GuideContent, GuideHeader, GuideViewWrapper } from 'src/components/guide';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
-
-import { EmojiRatingSelector } from '../suite/EmojiRatingSelector';
 
 const Headline = styled.div`
     ${typography['body-xs']}
