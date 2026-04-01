@@ -24,41 +24,70 @@ export const prepareDeviceAuthenticityData = ({
     );
 };
 
+type ParsedCertificate = ReturnType<typeof parseCertificate>;
+
+type MatchRootPubKeyToCertificateParams = {
+    cert: ParsedCertificate;
+    allRootPubKeys: string[];
+};
 /**
- * Parses certificate, matches them against known root public keys, and verifies the signature over the prepared data.
- * P-256 and Ed25519 algorithms are supported and automatically detected from the certificate.
+ * Finds a root public key that can verify the signature of the provided certificate.
  */
-export const verifyAuthenticityProof = async ({
-    certificates,
+export const matchRootPubKeyToCertificate = async ({
+    cert,
+    allRootPubKeys,
+}: MatchRootPubKeyToCertificateParams): Promise<string | undefined> => {
+    const verifySignatureFn = getVerifyFn(cert.signatureAlgorithm.algorithmName);
+    const isCertSignedByRootPubkey = await Promise.all(
+        allRootPubKeys.map(rootPubKey =>
+            verifySignatureFn(
+                Buffer.from(rootPubKey, 'hex'),
+                cert.tbsCertificate.asn1.raw,
+                cert.signatureValue.bits.bytes,
+            ),
+        ),
+    );
+
+    const rootPubKeyIndex = isCertSignedByRootPubkey.findIndex(valid => !!valid);
+
+    return allRootPubKeys[rootPubKeyIndex];
+};
+
+/**
+ * Validates DEVICE certificate subject (Trezor features internal_model) and return the model
+ */
+const parseModelFromDeviceCertSubject = (deviceCert: ParsedCertificate) => {
+    const [subject] = deviceCert.tbsCertificate.subject;
+    // subject algorithm (OID) https://www.alvestrand.no/objectid/2.5.4.3.html
+    if (!subject.parameters || subject.algorithmOid !== '2.5.4.3') {
+        throw new Error('Missing certificate subject');
+    }
+
+    // slice 4 bytes from the subject (internal model)
+    return Buffer.from(subject.parameters.asn1.contents.subarray(0, 4)).toString();
+};
+
+type VerifyDeviceAndCACertificatesParams = {
+    deviceCert: ParsedCertificate;
+    caCert: ParsedCertificate;
+    allRootPubKeys: string[];
+    caPubKeyBlacklist: string[];
+} & Pick<VerifyAuthenticityProofParams, 'deviceModel' | 'signedData' | 'signature'>;
+/**
+ * Given a device certificate and CA certificate, it verifies the following signing scheme:
+ * rootPubKey (matched from list of possible keys) → CA pub key → device key → supplied signature of prefixed challenge.
+ * Additional validation is done on the certificates payload.
+ */
+const verifyDeviceAndCACertificates = async ({
+    deviceCert,
+    caCert,
     signature,
-    data,
+    signedData,
     deviceModel,
-    allowDebugKeys,
-    config,
-    blacklistConfig,
-}: VerifyAuthenticityProofParams): Promise<VerifyAuthenticityProofResult> => {
-    // Parse config with given device model, type of secure element and debug mode.
-    const allRootPubKeys = getRootPubKeys({
-        config,
-        deviceModel,
-        allowDebugKeys,
-    });
-    const caPubKeyBlacklist = getCaPubKeyBlacklist({
-        blacklistConfig,
-        allowDebugKeys,
-    });
-
-    // 1. parse all x509 certificates received from AuthenticityProof
-    const [deviceCert, caCert] = certificates.map((c, i) => {
-        const cert = parseCertificate(new Uint8Array(Buffer.from(c, 'hex')));
-        if (i === 0) {
-            // deviceCert is always at index 0
-            return cert;
-        }
-        validateCaCertExtensions(cert, i - 1);
-
-        return cert;
-    });
+    allRootPubKeys,
+    caPubKeyBlacklist,
+}: VerifyDeviceAndCACertificatesParams): Promise<VerifyAuthenticityProofResult> => {
+    validateCaCertExtensions(caCert, 0); // pathLenConstraint is always 0 (we don't expect a chain of multiple CA certs)
     const deviceCertAlgName = deviceCert.signatureAlgorithm.algorithmName;
     const caCertAlgName = caCert.signatureAlgorithm.algorithmName;
     if (deviceCertAlgName !== caCertAlgName) {
@@ -66,47 +95,30 @@ export const verifyAuthenticityProof = async ({
     }
     const verifySignatureFn = getVerifyFn(deviceCertAlgName);
 
-    // 2. validate that CA certificate was created using one of rootPubkeys
-    const caPubKey = Buffer.from(caCert.tbsCertificate.subjectPublicKeyInfo.bits.bytes).toString(
-        'hex',
-    );
+    // Validate that CA certificate was created using one of rootPubkeys
+    const caPubKeyBytes = caCert.tbsCertificate.subjectPublicKeyInfo.bits.bytes;
+    const caPubKey = Buffer.from(caPubKeyBytes).toString('hex');
 
-    const isCertSignedByRootPubkey = await Promise.all(
-        allRootPubKeys.map(rootPubKey =>
-            verifySignatureFn(
-                Buffer.from(rootPubKey, 'hex'),
-                caCert.tbsCertificate.asn1.raw,
-                caCert.signatureValue.bits.bytes,
-            ),
-        ),
-    );
-
-    const rootPubKeyIndex = isCertSignedByRootPubkey.findIndex(valid => !!valid);
-    //TS evaluates string[][number] as string, but it can also be undefined (when index is -1)
-    const rootPubKeyMatch: string | undefined = allRootPubKeys[rootPubKeyIndex];
-    const caCertValidityFrom = caCert.tbsCertificate.validity.from.getTime();
-
-    if (caCertValidityFrom > new Date().getTime()) {
-        throw new Error(`CA validity from ${caCertValidityFrom} can't be in the future!`);
-    }
-
+    const rootPubKeyMatch = await matchRootPubKeyToCertificate({ allRootPubKeys, cert: caCert });
     if (rootPubKeyMatch === undefined) {
+        return { valid: false, caPubKey, error: 'ROOT_PUBKEY_NOT_FOUND' };
+    }
+    // Check if this specific CA pubKey is not on the blacklist
+    if (caPubKeyBlacklist.includes(caPubKey)) {
         return {
             valid: false,
             caPubKey,
-            error: 'ROOT_PUBKEY_NOT_FOUND',
+            rootPubKey: rootPubKeyMatch,
+            error: 'CA_PUBKEY_BLACKLISTED',
         };
     }
 
-    // 3. validate DEVICE certificate subject (Trezor features internal_model)
-    const [subject] = deviceCert.tbsCertificate.subject;
-    // subject algorithm (OID) https://www.alvestrand.no/objectid/2.5.4.3.html
-    if (!subject.parameters || subject.algorithmOid !== '2.5.4.3') {
-        throw new Error('Missing certificate subject');
+    const caCertValidityFrom = caCert.tbsCertificate.validity.from.getTime();
+    if (caCertValidityFrom > new Date().getTime()) {
+        throw new Error(`CA validity from ${caCertValidityFrom} can't be in the future!`);
     }
-    // slice 4 bytes from the subject (internal model)
-    const subjectValue = Buffer.from(subject.parameters.asn1.contents.subarray(0, 4)).toString();
-    if (subjectValue !== deviceModel) {
+    const modelFromSubject = parseModelFromDeviceCertSubject(deviceCert);
+    if (modelFromSubject !== deviceModel) {
         return {
             valid: false,
             caPubKey,
@@ -115,38 +127,12 @@ export const verifyAuthenticityProof = async ({
         };
     }
 
-    // 4. validate that DEVICE certificate was created using pubKey from CA certificate
+    // Validate that DEVICE certificate was created using the pubKey from CA certificate
     const isDeviceCertValid = await verifySignatureFn(
-        Buffer.from(caCert.tbsCertificate.subjectPublicKeyInfo.bits.bytes),
+        Buffer.from(caPubKeyBytes),
         deviceCert.tbsCertificate.asn1.raw,
         deviceCert.signatureValue.bits.bytes,
     );
-
-    // 5. validate that the signature from AuthenticityProof was created using prefixed challenge
-    const isSignatureValid = await verifySignatureFn(
-        Buffer.from(deviceCert.tbsCertificate.subjectPublicKeyInfo.bits.bytes),
-        data,
-        Buffer.from(signature, 'hex'),
-    );
-
-    // 6. checks if DEVICES pubKey is not on blacklist
-    if (isDeviceCertValid && isSignatureValid) {
-        if (caPubKeyBlacklist.includes(caPubKey)) {
-            return {
-                valid: false,
-                caPubKey,
-                rootPubKey: rootPubKeyMatch,
-                error: 'CA_PUBKEY_BLACKLISTED',
-            };
-        }
-
-        return {
-            valid: true,
-            caPubKey,
-            rootPubKey: rootPubKeyMatch,
-        };
-    }
-
     if (!isDeviceCertValid) {
         return {
             valid: false,
@@ -156,10 +142,134 @@ export const verifyAuthenticityProof = async ({
         };
     }
 
+    // Validate that the signature from AuthenticityProof was created using prefixed challenge
+    const deviceCertBytes = deviceCert.tbsCertificate.subjectPublicKeyInfo.bits.bytes;
+    const isSignatureValid = await verifySignatureFn(
+        Buffer.from(deviceCertBytes),
+        signedData,
+        Buffer.from(signature, 'hex'),
+    );
+    if (isSignatureValid) {
+        return { valid: true, caPubKey, rootPubKey: rootPubKeyMatch };
+    }
+
     return {
         valid: false,
         caPubKey,
         rootPubKey: rootPubKeyMatch,
         error: 'INVALID_DEVICE_SIGNATURE',
     };
+};
+
+type VerifyOnlyDeviceCertificateParams = {
+    deviceCert: ParsedCertificate;
+    allRootPubKeys: string[];
+} & Pick<VerifyAuthenticityProofParams, 'deviceModel' | 'signedData' | 'signature'>;
+/**
+ * Given only a device certificate, it verifies the following signing scheme:
+ * rootPubKey (matched from list of possible keys) → device key → supplied signature of prefixed challenge.
+ * Additional validation is done on the device certificate payload.
+ */
+const verifyOnlyDeviceCertificate = async ({
+    deviceCert,
+    signature,
+    signedData,
+    deviceModel,
+    allRootPubKeys,
+}: VerifyOnlyDeviceCertificateParams): Promise<VerifyAuthenticityProofResult> => {
+    const deviceCertAlgName = deviceCert.signatureAlgorithm.algorithmName;
+    const verifySignatureFn = getVerifyFn(deviceCertAlgName);
+
+    const rootPubKeyMatch = await matchRootPubKeyToCertificate({
+        allRootPubKeys,
+        cert: deviceCert,
+    });
+    // In this case, deviceCert should be signed with a rootPubKey, so ROOT_PUBKEY_NOT_FOUND has
+    // the same meaning as INVALID_DEVICE_CERTIFICATE for `verifyDeviceAndCACertificates`.
+    if (rootPubKeyMatch === undefined) {
+        return { valid: false, error: 'ROOT_PUBKEY_NOT_FOUND' };
+    }
+    const modelFromSubject = parseModelFromDeviceCertSubject(deviceCert);
+    if (modelFromSubject !== deviceModel) {
+        return {
+            valid: false,
+            rootPubKey: rootPubKeyMatch,
+            error: 'INVALID_DEVICE_MODEL',
+        };
+    }
+
+    // Validate that the signature from AuthenticityProof was created using prefixed challenge
+    const deviceCertBytes = deviceCert.tbsCertificate.subjectPublicKeyInfo.bits.bytes;
+    const isSignatureValid = await verifySignatureFn(
+        Buffer.from(deviceCertBytes),
+        signedData,
+        Buffer.from(signature, 'hex'),
+    );
+    if (isSignatureValid) {
+        return { valid: true, rootPubKey: rootPubKeyMatch };
+    }
+
+    return {
+        valid: false,
+        rootPubKey: rootPubKeyMatch,
+        error: 'INVALID_DEVICE_SIGNATURE',
+    };
+};
+
+/**
+ * Parses certificate, matches them against known root public keys, and verifies the signature over the prepared data.
+ * P-256, Ed25519 and ML-DSA-44 algorithms are supported and automatically detected from the certificate.
+ * Certificates are expected to be either [device, CA] or only [device]
+ * Following signing schemes are verified:
+ * - With CA certificate: rootPubKey → CA pub key → device key → prefixed challenge
+ * - Without CA certificate: rootPubKey → device key → prefixed challenge
+ *
+ * Reference implementation in firmware repo (trezorctl):
+ * https://github.com/trezor/trezor-firmware/blob/3e0a170eabbd719da7155b754e30139c24a30f17/python/src/trezorlib/authentication.py
+ */
+export const verifyAuthenticityProof = async ({
+    certificates,
+    signature,
+    signedData,
+    deviceModel,
+    allowDebugKeys,
+    config,
+    blacklistConfig,
+}: VerifyAuthenticityProofParams): Promise<VerifyAuthenticityProofResult> => {
+    // Parse config with given device model, type of secure element and debug mode.
+    const allRootPubKeys = getRootPubKeys({ config, deviceModel, allowDebugKeys });
+    const caPubKeyBlacklist = getCaPubKeyBlacklist({ blacklistConfig, allowDebugKeys });
+
+    // Parse all x509 certificates received from AuthenticityProof
+    const parsedCertificates = certificates.map(c =>
+        parseCertificate(new Uint8Array(Buffer.from(c, 'hex'))),
+    );
+
+    // Certificates are assumed to be in this form and comply with the signing scheme above; verification will fail otherwise.
+    if (certificates.length === 2) {
+        const [deviceCert, caCert] = parsedCertificates;
+
+        return await verifyDeviceAndCACertificates({
+            deviceCert,
+            caCert,
+            signature,
+            signedData,
+            deviceModel,
+            allRootPubKeys,
+            caPubKeyBlacklist,
+        });
+    }
+    if (certificates.length === 1) {
+        const [deviceCert] = parsedCertificates;
+
+        return await verifyOnlyDeviceCertificate({
+            deviceCert,
+            signature,
+            signedData,
+            deviceModel,
+            allRootPubKeys,
+        });
+    }
+
+    throw new Error('Invalid number of certificates provided. Expected 1 or 2 certificates.');
 };

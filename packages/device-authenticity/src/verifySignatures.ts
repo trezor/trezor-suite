@@ -1,4 +1,5 @@
 import { ed25519 } from '@noble/curves/ed25519.js';
+import { ml_dsa44 } from '@noble/post-quantum/ml-dsa.js';
 import crypto from 'crypto';
 
 import { getSubtleCrypto } from '@trezor/crypto-utils';
@@ -56,8 +57,18 @@ export const verifySignatureEd25519: VerifySignature = (rawKey, data, signature)
     }
 };
 
+export const verifySignatureMLDSA44: VerifySignature = (rawKey, data, signature) => {
+    try {
+        return ml_dsa44.verify(signature, data, rawKey);
+    } catch {
+        // same as verifySignatureEd25519
+        return false;
+    }
+};
+
 export const getVerifyFn = (algorithmName: AlgorithmName): VerifySignature => {
     if (algorithmName === 'P-256') return verifySignatureP256;
     if (algorithmName === 'Ed25519') return verifySignatureEd25519;
+    if (algorithmName === 'MLDSA44') return verifySignatureMLDSA44;
     throw new Error(`Unsupported signature algorithm.`);
 };

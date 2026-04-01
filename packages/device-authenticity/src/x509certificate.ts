@@ -14,12 +14,12 @@ interface Asn1 {
     raw: Uint8Array; // original byte array
 }
 
-type Oid =
-    | `${number}.${number}.${number}.${number}`
-    | `${number}.${number}.${number}.${number}.${number}.${number}`;
+type OneOrTwoNumbers = `${number}` | `${number}.${number}`;
+// type that allows between 4 to 8 numbers to specify an OID
+type Oid = `${OneOrTwoNumbers}.${OneOrTwoNumbers}.${OneOrTwoNumbers}.${OneOrTwoNumbers}`;
 
 // algorithms supported by Suite to verify certificates and signatures
-export type AlgorithmName = 'P-256' | 'Ed25519' | 'unknown';
+export type AlgorithmName = 'P-256' | 'Ed25519' | 'MLDSA44' | 'unknown';
 
 type Extension =
     | {
@@ -41,6 +41,7 @@ type Extension =
 const parseOidToAlgorithmName = (oid: Oid): AlgorithmName => {
     if (oid === '1.2.840.10045.4.3.2') return 'P-256'; // https://oid-base.com/get/1.2.840.10045.4.3.2
     if (oid === '1.3.101.112') return 'Ed25519'; // https://oid-base.com/get/1.3.101.112
+    if (oid === '2.16.840.1.101.3.4.3.17') return 'MLDSA44'; // https://oid-base.com/get/2.16.840.1.101.3.4.3.17
 
     return 'unknown';
 };

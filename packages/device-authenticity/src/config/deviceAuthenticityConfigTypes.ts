@@ -1,7 +1,7 @@
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { type Static, Type } from '@trezor/schema-utils';
 
-type CertPubKeys = Static<typeof CertPubKeys>;
+export type CertPubKeys = Static<typeof CertPubKeys>;
 const CertPubKeys = Type.Object({
     rootPubKeysOptiga: Type.Array(Type.String()),
     rootPubKeysTropic: Type.Optional(Type.Array(Type.String())),

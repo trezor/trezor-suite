@@ -49,7 +49,7 @@ export default class AuthenticateDevice extends AbstractMethod<
         const config = this.params.config || deviceAuthenticityConfig;
         const blacklistConfig = this.params.blacklistConfig || deviceAuthenticityBlacklistConfig;
         const commonParams = {
-            data: prepareDeviceAuthenticityData({ payload: challenge }),
+            signedData: prepareDeviceAuthenticityData({ payload: challenge }),
             deviceModel: this.getDevice().features.internal_model,
             allowDebugKeys: this.params.allowDebugKeys,
             config,
