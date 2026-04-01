@@ -4,7 +4,7 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
-    playwright-web-flake.url = "github:pietdevries94/playwright-web-flake/1.57.0";
+    playwright-web-flake.url = "github:pietdevries94/playwright-web-flake/1.58.2";
     old-gcc-nixpkgs.url = "github:NixOS/nixpkgs/a78ed5cbdd5427c30ca02a47ce6cccc9b7d17de4"; # For GCC 10.2.0
   };
 
@@ -21,13 +21,7 @@
       system:
       let
         overlay = final: prev: {
-          # Overlay playwright packages with chromium from nixpkgs unstable
-          playwright-driver = (
-            playwright-web-flake.packages.${system}.playwright-driver.override {
-              chromium = prev.chromium;
-            }
-          );
-          playwright-test = playwright-web-flake.packages.${system}.playwright-test;
+          inherit (playwright-web-flake.packages.${system}) playwright-test playwright-driver;
 
           # Override GCC with older version
           gccPkgs = import old-gcc-nixpkgs { system = prev.system; };
