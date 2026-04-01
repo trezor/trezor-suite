@@ -52,7 +52,7 @@ on:
         required: false
         type: string
       enable-coverage:
-        description: "Enable code coverage collection with Currents"
+        description: "Enable code coverage collection with Currents and upload the coverage map. Only works for web and requires instrumentation of the code."
         required: false
         default: "false"
         type: string
@@ -188,6 +188,8 @@ jobs:
           GITHUB_TOKEN: ${{ steps.trezor-bot-token.outputs.token || secrets.github-token }}
           RELEASE_BUILD: ${{ inputs.release-build }}
           ELECTRON_DISABLE_SANDBOX: 1
+          COLLECT_COVERAGE_MAP: ${{ inputs.enable-coverage == 'true' && 'true' || '' }}
+          COVERAGE_MAP_DIR: ${{ github.workspace }}/coverage-map
         run: |
           if [[ -z "${{ inputs.base-url }}" ]]; then
             BASE_URL="https://dev.suite.sldev.cz/suite-web/${{ env.branch }}/web/"
@@ -232,6 +234,14 @@ jobs:
         with:
           target: ${{ inputs.target }}
           test-group: ${{ inputs.test-group }}
+
+      - name: Upload per-test coverage map
+        if: inputs.enable-coverage == 'true' && !cancelled()
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
+        with:
+          name: coverage-map-group-${{ inputs.test-group }}
+          path: coverage-map/
+          if-no-files-found: warn
 
       - name: Docker Compose Down
         shell: bash

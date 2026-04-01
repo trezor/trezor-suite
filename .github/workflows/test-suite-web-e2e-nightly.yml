@@ -86,3 +86,46 @@ jobs:
       currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
       e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}
       e2e-passphrase-live: ${{ secrets.E2E_TEST_PASSPHRASE_LIVE }}
+
+  build-and-publish-coverage-map:
+    if: always() && github.repository == 'trezor/trezor-suite' && needs.run-e2e-suite-web-tests.result != 'skipped'
+    needs: [run-e2e-suite-web-tests]
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@8df5847569e6427dd6c4fb1cf565c83acfa8afa7 # v6
+        with:
+          role-to-assume: "arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy"
+          aws-region: "eu-central-1"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
+        with:
+          node-version-file: ".nvmrc"
+          cache: yarn
+
+      - name: Install dependencies
+        run: yarn workspaces focus @trezor/suite-e2e
+
+      - name: Download per-test coverage map artifacts
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          pattern: coverage-map-group-*
+          merge-multiple: true
+          path: coverage-map/
+
+      - name: Build coverage map index
+        run: |
+          npx tsx packages/e2e-utils/src/testCoverage/buildCoverageMap.ts \
+            --input coverage-map \
+            --output coverage-map/index.json
+
+      - name: Upload coverage map to S3
+        run: |
+          aws s3 cp coverage-map/index.json s3://dev.suite.sldev.cz/coverage/e2e/index.json
