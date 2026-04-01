@@ -131,6 +131,28 @@ describe('EmptyHomeRenderer', () => {
         expectEmptyPortfolioCrossroadsState();
     });
 
+    it('should display UninitializedConnectedDeviceState when reconnect is requested and device is initialized (happens after wipe device flow)', () => {
+        renderEmptyHomeRenderer({
+            device: {
+                selectedDevice: {
+                    connected: true,
+                    reconnectRequested: true,
+                    features: {
+                        initialized: true,
+                        internal_model: DeviceModelInternal.T3B1,
+                        major_version: 2,
+                        minor_version: 6,
+                        patch_version: 3,
+                    },
+                    state: {},
+                },
+                devices: [{ id: 'device_id' }],
+            },
+        });
+
+        expectUninitializedConnectedDeviceState();
+    });
+
     it('should display EmptyConnectedDeviceState when device is connected and authorized', () => {
         renderEmptyHomeRenderer({
             device: {
