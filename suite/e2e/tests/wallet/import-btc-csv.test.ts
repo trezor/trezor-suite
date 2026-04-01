@@ -9,10 +9,11 @@ import { MetadataProvider } from '../../support/mocks/metadataMock';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
 test.describe('Import a BTC csv file', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
-    test.beforeEach(async ({ metadataMock, onboardingPage, settingsPage }) => {
+    test.beforeEach(async ({ metadataMock, onboardingPage, settingsPage, metadataPage }) => {
         await metadataMock.start(MetadataProvider.DROPBOX);
         await onboardingPage.completeOnboarding();
         await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
+        await metadataPage.enableLegacyLabeling(MetadataProvider.DROPBOX);
     });
 
     test(
@@ -46,8 +47,11 @@ test.describe('Import a BTC csv file', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, 
                 convertedData[0]?.amount ?? '',
             );
             await expect(page.getByTestId('outputs.0.fiat')).toBeVisible();
-            // TODO: Uncomment this when https://github.com/trezor/trezor-suite/issues/19146 is fixed
-            //await expect(page.getByTestId('outputs.0.fiat')).toHaveValue(/^\d+(\.\d+)?$/);
+            await expect(page.getByTestId('outputs.0.fiat')).toHaveValue(/^[\d,]+(\.\d+)?$/);
+            await expect(page.getByTestId('@metadata/outputLabel/0/hover-container')).toBeVisible();
+            await expect(page.getByTestId('@metadata/outputLabel/0/hover-container')).toHaveText(
+                convertedData[0]?.label ?? '',
+            );
 
             await expect(page.getByTestId('outputs.1.address')).toBeVisible();
             await expect(page.getByTestId('outputs.1.address')).toHaveValue(
@@ -58,6 +62,10 @@ test.describe('Import a BTC csv file', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, 
             await expect(page.getByTestId('outputs.1.fiat')).toBeVisible();
             await expect(page.getByTestId('outputs.1.fiat')).toHaveValue(
                 convertedData[1]?.amount ?? '',
+            );
+            await expect(page.getByTestId('@metadata/outputLabel/1/hover-container')).toBeVisible();
+            await expect(page.getByTestId('@metadata/outputLabel/1/hover-container')).toHaveText(
+                convertedData[1]?.label ?? '',
             );
         },
     );
