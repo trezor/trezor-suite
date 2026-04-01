@@ -1,10 +1,12 @@
 import { useMemo } from 'react';
 
 import { Translation } from '@suite/intl';
+import { useAllYieldOpportunities } from '@suite-common/earn-api';
 import { TokenManagementAction, selectCoinDefinitions } from '@suite-common/token-definitions';
 import { selectBaseCurrency, selectCurrentFiatRates } from '@suite-common/wallet-core';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
-import { isErc4626, isTestnet } from '@suite-common/wallet-utils';
+import { isErc4626 } from '@suite-common/wallet-utils';
+import { Banner, Column } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
 import {
@@ -13,27 +15,27 @@ import {
     sortTokensWithRates,
 } from 'src/utils/wallet/tokenUtils';
 
-import { NoTokens } from '../common/NoTokens';
 import { TokensTable } from '../common/TokensTable/TokensTable';
 
-interface CoinsTableProps {
+interface DefiTokensTableProps {
     selectedAccount: SelectedAccountLoaded;
     searchQuery: string;
 }
 
-export const CoinsTable = ({ selectedAccount, searchQuery }: CoinsTableProps) => {
-    const fiatRates = useSelector(selectCurrentFiatRates);
-    const baseCurrencyCode = useSelector(selectBaseCurrency);
-
+export const DefiTokensTable = ({ selectedAccount, searchQuery }: DefiTokensTableProps) => {
     const { account, network } = selectedAccount;
 
+    const fiatRates = useSelector(selectCurrentFiatRates);
+    const baseCurrencyCode = useSelector(selectBaseCurrency);
     const coinDefinitions = useSelector(state => selectCoinDefinitions(state, account.symbol));
 
+    const { yieldOpportunities } = useAllYieldOpportunities();
+
     const enhancedTokens = useMemo(() => {
-        const accountTokens = account.tokens?.filter(token => !isErc4626(token));
+        const erc4626Tokens = account.tokens?.filter(isErc4626);
 
         const tokensWithRates = enhanceTokensWithRates(
-            accountTokens,
+            erc4626Tokens,
             baseCurrencyCode,
             account.symbol,
             fiatRates,
@@ -53,31 +55,20 @@ export const CoinsTable = ({ selectedAccount, searchQuery }: CoinsTableProps) =>
         [enhancedTokens, account.symbol, coinDefinitions, searchQuery],
     );
 
-    const hiddenTokensCount =
-        tokens.unverifiedWithBalance.length +
-        tokens.hiddenWithBalance.length +
-        tokens.unverifiedWithoutBalance.length +
-        tokens.hiddenWithoutBalance.length;
+    return (
+        <Column gap={14}>
+            <Banner intent="info" description={<Translation id="TR_DEFI_BANNER_TEXT" />} />
 
-    return tokens.shownWithBalance.length > 0 ||
-        tokens.shownWithoutBalance.length > 0 ||
-        searchQuery ? (
-        <TokensTable
-            account={account}
-            hideRates={isTestnet(account.symbol)}
-            tokenStatusType={TokenManagementAction.HIDE}
-            tokensWithBalance={tokens.shownWithBalance}
-            tokensWithoutBalance={tokens.shownWithoutBalance}
-            network={network}
-            searchQuery={searchQuery}
-        />
-    ) : (
-        <NoTokens
-            title={
-                <Translation
-                    id={hiddenTokensCount > 0 ? 'TR_TOKENS_EMPTY_CHECK_HIDDEN' : 'TR_TOKENS_EMPTY'}
-                />
-            }
-        />
+            <TokensTable
+                type="defi"
+                account={account}
+                tokenStatusType={TokenManagementAction.SHOW}
+                tokensWithBalance={tokens.shownWithBalance}
+                tokensWithoutBalance={tokens.shownWithoutBalance}
+                network={network}
+                searchQuery={searchQuery}
+                yieldOpportunities={yieldOpportunities}
+            />
+        </Column>
     );
 };

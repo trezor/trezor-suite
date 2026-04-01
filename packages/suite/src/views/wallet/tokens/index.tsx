@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { TokensNavigation } from './TokensNavigation';
 import { CoinsTable } from './coins/CoinsTable';
+import { DefiTokensTable } from './defi/DefiTokensTable';
 import { HiddenTokensTable } from './hidden-tokens/HiddenTokensTable';
 import { InactiveTokensTable } from './inactive-tokens/InactiveTokensTable';
 
@@ -85,6 +86,9 @@ export const Tokens = () => {
                         selectedAccount={selectedAccount}
                         searchQuery={searchQuery}
                     />
+                </Route>
+                <Route name="wallet-tokens-defi">
+                    <DefiTokensTable selectedAccount={selectedAccount} searchQuery={searchQuery} />
                 </Route>
             </Column>
 

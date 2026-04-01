@@ -322,6 +322,7 @@ export interface TokenInfo {
     accounts?: TokenAccount[];
     policyId?: string;
     fingerprint?: string;
+    erc4626?: any;
 }
 
 /**

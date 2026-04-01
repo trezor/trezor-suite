@@ -113,8 +113,11 @@ export const selectDiscoveryAccountsParam = (
         const { networkType } = networks[symbol];
         const identity = tryGetAccountIdentity({ networkType, deviceState });
 
+        const includeErc4626 = networkType === 'ethereum' ? true : undefined;
+
         // undiscovered network; discover as a whole
-        if (!accounts) return { symbol, identity } as DiscoveryAccountsParam[number];
+        if (!accounts)
+            return { symbol, identity, includeErc4626 } as DiscoveryAccountsParam[number];
 
         const known = getLastAccountsPerAccountType(accounts).map(({ type, lastAccount }) => {
             // last account is a failed one; try to discover it again
@@ -125,7 +128,13 @@ export const selectDiscoveryAccountsParam = (
             else return { type };
         });
 
-        return { symbol, identity, known, knownOnly } as DiscoveryAccountsParam[number];
+        return {
+            symbol,
+            identity,
+            includeErc4626,
+            known,
+            knownOnly,
+        } as DiscoveryAccountsParam[number];
     });
 
 export const selectShowRediscoverButton = (
