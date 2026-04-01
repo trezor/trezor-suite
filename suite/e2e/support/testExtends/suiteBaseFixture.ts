@@ -8,6 +8,7 @@ import { SetupEmu, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { getUrl, getVideoPath, isDesktopProject, mockRemoteMessageSystem } from '../common';
 import { Suite, launchSuite } from '../electron';
+import { collectCoverageMap } from './coverageMapFixture';
 import { currentsTest } from './currentsFixture';
 import { enhancePage } from './enhancePage';
 import { BRIDGE_VERSION } from '../bridge';
@@ -29,6 +30,7 @@ type SuiteBaseFixture = {
     trezorUserEnv: TrezorUserEnv;
     page: Page;
     exceptionLogger: void;
+    coverageMapCollector: void;
 };
 
 const electronSetup = async (
@@ -291,6 +293,13 @@ const suiteBaseTest = currentsTest.extend<SuiteTestOptions & SuiteBaseFixture>({
                     \n${errors.map(error => `${error.message}\n${error.stack}`).join('\n-----\n')}`,
                 );
             }
+        },
+        { auto: true },
+    ],
+    coverageMapCollector: [
+        async ({ page }, use, testInfo) => {
+            await use();
+            await collectCoverageMap(page, testInfo);
         },
         { auto: true },
     ],
