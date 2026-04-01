@@ -55,10 +55,7 @@ export const createEnsureQuota =
         const isQuotaManagerEnabled =
             deps.getIsDefaultRelayUrlSet() || deps.getEnforceQuotaManager();
 
-        if (
-            deps.hasAllowance({ walletDescriptor, deviceId: device.id }) ||
-            !isQuotaManagerEnabled
-        ) {
+        if (deps.hasAllowance(device.id, walletDescriptor) || !isQuotaManagerEnabled) {
             return ok();
         }
 

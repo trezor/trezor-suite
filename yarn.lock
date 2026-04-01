@@ -10667,6 +10667,7 @@ __metadata:
     "@noble/curves": "npm:^2.0.1"
     "@reduxjs/toolkit": "npm:2.11.2"
     "@suite-common/delegated-identity-key-types": "workspace:*"
+    "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/device": "workspace:*"
     "@suite-common/platform-encryption": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
