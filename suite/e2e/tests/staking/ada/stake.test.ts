@@ -154,6 +154,14 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
                     },
                 });
 
+                const poolDisplayContent = await device.getDisplayContent();
+                const actualPool = poolDisplayContent.body
+                    .map(paragraph => paragraph.join('').replace(/\n/g, ''))
+                    .find(text => EVERSTAKE_POOLS.includes(text));
+                if (!actualPool) {
+                    throw new Error('Could not find Everstake pool in display content');
+                }
+
                 await devicePrompt.waitForPromptAndClick();
                 await expect(device).toShowOnDisplay({
                     T3W1: {
@@ -227,7 +235,7 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
                             address: 'stake1uytalm0k75njyj7v8z580ajs09v5v4lz6yp9akh8cgty43qunjqys',
                             rewards: '0',
                             isActive: true,
-                            poolId: everstakePoolWrapped,
+                            poolId: actualPool,
                             drep: {
                                 drep_id: 'drep1ectemlv45xsnvenfgkhwsxncfvxev4qllj7x5w6vlfc7kmd9zcs',
                                 hex: '22ce179dfd95a1a136666945aee81a784b0d96541ffcbc6a3b4cfa71eb',
