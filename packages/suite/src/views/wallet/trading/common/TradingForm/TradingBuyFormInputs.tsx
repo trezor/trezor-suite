@@ -7,6 +7,7 @@ import {
     TRADING_FORM_FIAT_INPUT,
     type TradingBuyType,
     isCountrySubdivisionRequired,
+    selectTradingBuyQuotes,
     selectTradingBuySupportedCryptoIds,
     selectTradingLoadingAndTimestamp,
     tradingActions,
@@ -38,8 +39,9 @@ export const TradingBuyFormInputs = () => {
     const { defaultCountry } = context;
 
     const { isLoading } = useSelector(selectTradingLoadingAndTimestamp);
+    const quotes = useSelector(selectTradingBuyQuotes);
 
-    const { device, setAmountLimits, getValues, setValue, quotes } = context;
+    const { device, setAmountLimits, getValues, setValue } = context;
     const {
         [TRADING_FORM_CRYPTO_CURRENCY_SELECT]: cryptoSelect,
         [TRADING_FORM_CRYPTO_INPUT]: cryptoInput,

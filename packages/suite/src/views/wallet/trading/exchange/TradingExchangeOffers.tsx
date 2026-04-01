@@ -1,7 +1,8 @@
-import { TradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useTradingExchangeForm } from 'src/hooks/wallet/trading/form/useTradingExchangeForm';
 import { TradingContainer } from 'src/views/wallet/trading/common/TradingContainer';
-import { TradingOffers } from 'src/views/wallet/trading/common/TradingOffers/TradingOffers';
+import { TradingExchangeOffersContent } from 'src/views/wallet/trading/common/TradingOffers/TradingExchangeOffersContent';
+
+import { TradingExchangeContextProvider } from './TradingExchangeContext';
 
 const TradingExchangeOffersComponent = () => {
     const tradingExchangeContextValues = useTradingExchangeForm({
@@ -9,9 +10,9 @@ const TradingExchangeOffersComponent = () => {
     });
 
     return (
-        <TradingFormContext.Provider value={tradingExchangeContextValues}>
-            <TradingOffers />
-        </TradingFormContext.Provider>
+        <TradingExchangeContextProvider value={tradingExchangeContextValues}>
+            <TradingExchangeOffersContent />
+        </TradingExchangeContextProvider>
     );
 };
 

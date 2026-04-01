@@ -7,12 +7,12 @@ import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanner
 import { useSelector } from 'src/hooks/suite';
 import { useMessageSystemTrading } from 'src/hooks/suite/useMessageSystemTrading';
 import { useTradingBuyForm } from 'src/hooks/wallet/trading/form/useTradingBuyForm';
-import { TradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { selectIsDeviceCompromised } from 'src/selectors/suite/suiteAuthenticityChecksSelectors';
 import { TradingContainer } from 'src/views/wallet/trading/common/TradingContainer';
 import { TradingFormLayout } from 'src/views/wallet/trading/common/TradingForm/TradingFormLayout';
 import { TradingLayout } from 'src/views/wallet/trading/common/TradingLayout/TradingLayout';
 
+import { TradingBuyContextProvider } from './TradingBuyContext';
 import { TradingDisabled } from '../common/TradingDisabled';
 import { TradingBuyFormInputs } from '../common/TradingForm/TradingBuyFormInputs';
 
@@ -26,11 +26,11 @@ const TradingBuyFormWrapper = () => {
     const tradingBuyContextValues = useTradingBuyForm();
 
     return (
-        <TradingFormContext.Provider value={tradingBuyContextValues}>
+        <TradingBuyContextProvider value={tradingBuyContextValues}>
             <FormProvider {...tradingBuyContextValues.methods}>
                 <TradingContainer SectionComponent={TradingBuyFormContent} />
             </FormProvider>
-        </TradingFormContext.Provider>
+        </TradingBuyContextProvider>
     );
 };
 
