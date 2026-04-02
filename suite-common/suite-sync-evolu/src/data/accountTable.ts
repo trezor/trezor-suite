@@ -1,5 +1,6 @@
 import {
     type Evolu,
+    type InferRow,
     NonEmptyString100,
     NonEmptyString1000,
     type QueryRows,
@@ -21,7 +22,6 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { err, ok } from '@trezor/type-utils';
 
-import { type UnwrapQuery } from '../evoluUtils';
 import { normalizeLabel } from './normalizeLabel';
 
 export const AccountEvoluId = id('AccountEvoluId');
@@ -79,7 +79,7 @@ export class EvoluAccountTable implements AccountTable {
     subscribe = ({ onChange }: EntityListener<SuiteSyncAccount>) => {
         const query = this.getQuery();
 
-        const process = (accounts: QueryRows<UnwrapQuery<typeof query>>) => {
+        const process = (accounts: QueryRows<InferRow<typeof query>>) => {
             const acc: SuiteSyncAccount[] = [];
 
             for (const account of accounts) {
