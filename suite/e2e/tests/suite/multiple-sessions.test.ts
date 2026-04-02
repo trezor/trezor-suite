@@ -1,5 +1,5 @@
 import { TestCategory, TestPriority } from '@trezor/e2e-utils';
-import * as messages from '@trezor/protobuf/src/messages';
+import * as messages from '@trezor/protobuf/src/definitions';
 import { BridgeTransport } from '@trezor/transport';
 
 import { expect, test } from '../../support/fixtures';

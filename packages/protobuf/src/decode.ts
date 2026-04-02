@@ -1,7 +1,7 @@
 import type * as protobuf from 'protobufjs/light';
 
 import { protobufManager } from './bufbuild-loader';
-import type { MessageResponse } from './messages';
+import type { MessageResponse } from './definitions';
 import { createMessageFromType, isPrimitiveField } from './utils';
 
 type Field = protobuf.Field;

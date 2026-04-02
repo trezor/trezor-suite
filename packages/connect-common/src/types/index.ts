@@ -80,4 +80,4 @@ export type {
 } from '@trezor/blockchain-link';
 
 export { ThpPairingMethod } from '@trezor/protocol';
-export type { Messages as PROTO } from '@trezor/protobuf';
+export type { MessagesSchema as PROTO } from '@trezor/protobuf';

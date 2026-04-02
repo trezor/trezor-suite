@@ -11,7 +11,7 @@ import {
     toJson,
 } from '@bufbuild/protobuf';
 
-import type { MessageResponse } from './messages';
+import type { MessageResponse } from './definitions';
 
 const patchLongValue = (value: unknown) => {
     if (typeof value === 'number') {

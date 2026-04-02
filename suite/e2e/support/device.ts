@@ -1,6 +1,6 @@
 import { expect } from '@playwright/test';
 
-import { ApplySettings } from '@trezor/protobuf/src/messages-schema';
+import type { ApplySettings } from '@trezor/protobuf/src/definitions';
 import {
     Model,
     ReadAndConfirmShamirMnemonicEmu,

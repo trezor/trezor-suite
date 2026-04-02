@@ -1,4 +1,4 @@
-import type { Messages } from '@trezor/protobuf';
+import type { FailureType } from '@trezor/protobuf/src/definitions';
 import type { thp } from '@trezor/protocol';
 
 export const ERROR_CODES = {
@@ -63,7 +63,7 @@ export const ERROR_CODES = {
 
 type TypedErrorCode = keyof typeof ERROR_CODES;
 
-export type ErrorCode = TypedErrorCode | Messages.FailureType | thp.ThpError['code'];
+export type ErrorCode = TypedErrorCode | FailureType | thp.ThpError['code'];
 
 export class TrezorError extends Error {
     code: ErrorCode;

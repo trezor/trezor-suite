@@ -1,7 +1,7 @@
 import { parseConnectSettings } from '@trezor/connect-common/src/data/connectSettings';
 import { firmwareAssets } from '@trezor/connect-data';
 import { FirmwareType } from '@trezor/device-utils';
-import { DeviceModelInternal } from '@trezor/protobuf/src/messages-schema';
+import { DeviceModelInternal } from '@trezor/protobuf/src/definitions';
 import { versionUtils } from '@trezor/utils';
 
 import { getDeviceFeatures } from '../../../setupJest';

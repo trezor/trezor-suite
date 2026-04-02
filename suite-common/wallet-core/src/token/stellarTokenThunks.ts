@@ -13,7 +13,7 @@ import {
     buildRemoveTrustlineTransaction,
 } from '@trezor/blockchain-link-utils/src/stellar';
 import TrezorConnect from '@trezor/connect';
-import { StellarAssetType } from '@trezor/protobuf/src/messages';
+import { StellarAssetType } from '@trezor/protobuf/src/definitions';
 
 import { selectRawNetworkFeeInfo } from '../fees/feesReducer';
 
