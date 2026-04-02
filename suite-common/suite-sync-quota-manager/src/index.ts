@@ -1,67 +1,38 @@
-/**
- * QuotaManager API thunks / functions.
- */
-export { checkStorageByOwnerId, checkStorageByPublicKey } from './storage/checkStorage';
-export { registerStorageThunk } from './storage/registerStorageThunk';
-export { transferStorageThunk } from './storage/transferStorageThunk';
-export { prepareChallengeSession } from './challenge/prepareChallengeSession';
-export { ensureDeviceHasQuotaThunk } from './ensureDeviceHasQuotaThunk';
-export {
-    ensureOwnerHasAllocatedQuotaThunk,
-    WriteModeRequiredForAllocation,
-} from './ensureOwnerHasAllocatedQuotaThunk';
-export { increaseOwnerQuotaThunk } from './increaseOwnerQuotaThunk';
-export type { EnsureQuotaDep } from './createEnsureQuota';
 export { createSuiteSyncQuotaManagerCompositionRoot } from './createSuiteSyncQuotaManagerCompositionRoot';
-export type { GetOwnerHasAllowanceDep } from './getOwnerHasAllowance';
+export type { EnsureQuotaDep } from './createEnsureQuota';
+export type {
+    AllocateOwnerQuota,
+    AllocateOwnerQuotaDep,
+    AllocateOwnerQuotaErr,
+} from './owner/createAllocateOwnerQuota';
+export type { GetOwnerHasAllowanceDep } from './owner/getOwnerHasAllowance';
+export type { FetchDep } from './quotaManagerFetch';
 
-/**
- * Actions.
- */
 export {
-    updateQuotaManagerBaseUrl,
-    quotaManagerDeviceFetched,
-    quotaManagerFetchError,
-    suiteSyncQuotaManagerActions,
+    enforceQuotaManagerUpdated,
     eraseFetchedData,
     noQuotaLeftWarningDismissed,
-    enforceQuotaManagerUpdated,
+    suiteSyncQuotaManagerActions,
+    updateQuotaManagerBaseUrl,
 } from './quotaManagerActions';
 
-/**
- * Selectors.
- */
 export {
-    selectQuotaManagerBaseUrl,
-    selectOwnersAllowance,
-    selectRegisteredDevices,
-    selectIsDeviceRegistered,
-    selectHasOwnerAllowance,
-    selectHasDeviceAllowance,
-    selectLeftDeviceQuota,
-    selectDeviceDismissedNoQuotaLeftWarning,
-    selectShouldDisplayOutOfQuotaAlert,
     selectEnforceQuotaManager,
+    selectOwnersAllowance,
+    selectQuotaManagerBaseUrl,
+    selectRegisteredDevices,
+    selectShouldDisplayOutOfQuotaAlert,
+    type WithSuiteSyncQuotaManagerState,
 } from './quotaManagerSelectors';
-export type { WithSuiteSyncQuotaManagerState } from './quotaManagerSelectors';
 
-/**
- * Reducers.
- */
 export {
-    suiteSyncQuotaManagerReducer,
     quotaManagerInitialState,
+    suiteSyncQuotaManagerReducer,
     type SuiteSyncQuotaManagerState,
 } from './quotaManagerReducer';
 
-/**
- * Constants.
- */
 export {
-    DEFAULT_DEVICE_SIZE_QUOTA,
     DEFAULT_QUOTA_MANAGER_URL,
     DEV_QUOTA_MANAGER_URL,
     PRODUCTION_QUOTA_MANAGER_URL,
 } from './constants';
-
-export { getAccountIncrementSizeQuota } from './util/getAccountIncrementSizeQuota';

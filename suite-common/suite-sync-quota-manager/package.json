@@ -25,6 +25,7 @@
         "@suite-common/wallet-types": "workspace:*",
         "@suite-common/wallet-utils": "workspace:*",
         "@trezor/connect": "workspace:*",
+        "@trezor/connect-common": "workspace:*",
         "@trezor/device-utils": "workspace:*",
         "@trezor/env-utils": "workspace:*",
         "@trezor/type-utils": "workspace:*",
@@ -32,7 +33,6 @@
         "react-redux": "9.2.0"
     },
     "devDependencies": {
-        "@trezor/requirements": "workspace:*",
-        "jest-mock": "^29.7.0"
+        "@trezor/requirements": "workspace:*"
     }
 }

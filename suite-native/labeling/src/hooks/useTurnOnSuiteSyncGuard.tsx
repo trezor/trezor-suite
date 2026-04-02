@@ -78,6 +78,7 @@ export const useTurnOnSuiteSyncGuard = () => {
                 case 'SuiteSyncUnavailableOnDeviceError':
                 case 'DeviceCancelled':
                 case 'DeviceError':
+                case 'QuotaManagerCommunicationFailed':
                     showToast({
                         intent: 'critical',
                         icon: 'warning',

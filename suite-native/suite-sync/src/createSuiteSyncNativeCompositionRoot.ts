@@ -7,8 +7,8 @@ import { type EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-iden
 import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
 import {
     type SuiteSyncAnalyticsDep,
+    type SuiteSyncAsyncErrorHandlerDep,
     createSuiteSyncCompositionRoot,
-    createSuiteSyncErrorHandler,
 } from '@suite-common/suite-sync';
 import {
     createEvoluErrorHandler,
@@ -16,6 +16,7 @@ import {
     createEvoluStorageFactory,
     evoluCreateSuiteSyncOwner,
 } from '@suite-common/suite-sync-evolu';
+import { type FetchDep } from '@suite-common/suite-sync-quota-manager';
 import { type SuiteSync } from '@suite-common/suite-sync-types';
 import { type TrezorConnect } from '@trezor/connect';
 
@@ -25,7 +26,9 @@ type SuiteSyncNativeCompositionRootDeps = {
     trezorConnect: TrezorConnect;
 } & SuiteSyncAnalyticsDep &
     PlatformEncryptionDep &
-    EnsureDelegatedIdentityKeyDep;
+    EnsureDelegatedIdentityKeyDep &
+    FetchDep &
+    SuiteSyncAsyncErrorHandlerDep;
 
 export const createSuiteSyncNativeCompositionRoot = (
     deps: SuiteSyncNativeCompositionRootDeps,
@@ -38,16 +41,17 @@ export const createSuiteSyncNativeCompositionRoot = (
     const evoluDeps = createEvoluDeps({ console });
     const run = createRun(evoluDeps);
 
-    const suiteSyncErrorHandler = createSuiteSyncErrorHandler({ dispatch: deps.dispatch });
-    evoluDeps.evoluError.subscribe(
-        createEvoluErrorHandler(evoluDeps.evoluError, suiteSyncErrorHandler),
-    );
-
     return createSuiteSyncCompositionRoot({
         ...deps,
         createSuiteStorage: createEvoluStorageFactory({
             createEvoluInstance: createEvoluInstanceFactory({ run }),
         }),
         createSuiteSyncOwner: evoluCreateSuiteSyncOwner,
+        subscribeError: errorHandler => {
+            evoluDeps.evoluError.subscribe(
+                createEvoluErrorHandler(evoluDeps.evoluError, errorHandler),
+            );
+        },
+        suiteSyncAsyncErrorHandler: deps.suiteSyncAsyncErrorHandler,
     });
 };

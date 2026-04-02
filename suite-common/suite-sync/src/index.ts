@@ -81,4 +81,8 @@ export {
     isFwUpgradeNeededForSuiteSync,
     getIsSuiteSyncLabelingActionEnabled,
 } from './suiteSyncUtils';
-export { createSuiteSyncErrorHandler } from './createSuiteSyncErrorHandler';
+export { createSuiteSyncInternalErrorHandler } from './createSuiteSyncInternalErrorHandler';
+export type {
+    SuiteSyncAsyncErrorHandlerDep,
+    SuiteSyncAsyncError,
+} from './createSuiteSyncInternalErrorHandler';

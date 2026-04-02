@@ -25,9 +25,7 @@ export const createEvoluStorageFactory =
 
         let unuseOwner = () => {};
 
-        const evolu = await deps.createEvoluInstance({
-            suiteSyncOwner,
-        });
+        const evolu = await deps.createEvoluInstance({ suiteSyncOwner });
 
         const updateRelayUrl = async (url: string) => {
             const owner = await evolu.appOwner;

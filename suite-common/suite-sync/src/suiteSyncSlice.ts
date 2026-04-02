@@ -28,7 +28,7 @@ export type SuiteSyncSettings = {
     /**
      * This is URL for backend/relay.
      *
-     * Todo: This is kinda reladed to Evolu, and other libraries
+     * Todo: This is kinda related to Evolu, and other libraries
      *       can have different config. So this may better be in some
      *       Provider-Config place in the future.
      */

@@ -72,6 +72,9 @@ export const createNativeCompositionRoot = (deps: NativeAppDeps): NativeServices
         trezorConnect: TrezorConnect,
         ensureDelegatedIdentityKey,
         analytics,
+        fetch: globalThis.fetch.bind(globalThis),
+        // Todo: we need to reuse useSuiteSyncErrorHandler somehow, but we do not have showAlert here.
+        suiteSyncAsyncErrorHandler: () => {},
     });
 
     return {

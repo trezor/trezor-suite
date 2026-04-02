@@ -1,10 +1,13 @@
-import { type SuiteSyncStorage, type SuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
+import { type SuiteSyncStorage } from '@suite-common/suite-sync-storage';
 import { type DeviceCancelledErrType, type DeviceErrorType } from '@suite-common/suite-types';
-import { type StaticSessionId } from '@trezor/connect';
+import { type StaticSessionId } from '@trezor/connect-common';
 import { type Result } from '@trezor/type-utils';
 
 import { type SuiteSyncUnavailableOnDeviceErrorType } from '../ensureSuiteSyncKeys';
-import { type WriteModeRequiredForAllocationErrType } from '../quotaManager/quotaManagerTypes';
+import {
+    type QuotaManagerCommunicationFailedErrType,
+    type WriteModeRequiredForAllocationErrType,
+} from '../quotaManager/errors';
 
 export type SuiteSyncFirmwareUpgradeNeededDeviceErrorType = {
     type: 'SuiteSyncFirmwareUpgradeNeededDeviceErrorType';
@@ -25,7 +28,8 @@ export type EnsureWalletSuiteSyncOnErrors =
     | SuiteSyncFirmwareUpgradeNeededDeviceErrorType
     | DeviceErrorType
     | DeviceCancelledErrType
-    | WriteModeRequiredForAllocationErrType;
+    | WriteModeRequiredForAllocationErrType
+    | QuotaManagerCommunicationFailedErrType;
 
 export type EnsureWalletSuiteSyncOn = (
     params: EnsureWalletSuiteSyncOnParams,
@@ -33,6 +37,16 @@ export type EnsureWalletSuiteSyncOn = (
 
 export type EnsureWalletSuiteSyncOnDep = { ensureWalletSuiteSyncOn: EnsureWalletSuiteSyncOn };
 
+export type EnsureWalletSuiteSyncOnAsync = (params: EnsureWalletSuiteSyncOnParams) => Promise<void>;
+
+export type EnsureWalletSuiteSyncOnAsyncDep = {
+    ensureWalletSuiteSyncOnAsync: EnsureWalletSuiteSyncOnAsync;
+};
+
 export type SuiteSyncUserFacingErrorType =
-    | Exclude<EnsureWalletSuiteSyncOnErrors['type'], 'WriteModeRequiredForAllocation'>
-    | SuiteSyncUpdateError['type'];
+    | 'SuiteSyncUnavailableOnDeviceError'
+    | 'SuiteSyncFirmwareUpgradeNeededDeviceErrorType'
+    | 'DeviceCancelled'
+    | 'DeviceError'
+    | 'SuiteSyncUpdateError'
+    | 'QuotaManagerCommunicationFailed';

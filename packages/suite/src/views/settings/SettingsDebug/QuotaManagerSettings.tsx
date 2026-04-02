@@ -18,7 +18,7 @@ import { spacings } from '@trezor/theme';
 
 import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 
-const LOCAL_QUOTA_MANAGER_URL = 'http://127.0.0.1:4001/quota-manager/';
+const LOCAL_QUOTA_MANAGER_URL = 'http://127.0.0.1:4001/';
 
 export const QuotaManagerSettings = () => {
     const dispatch = useDispatch();
@@ -125,10 +125,15 @@ export const QuotaManagerSettings = () => {
                                 <div key={device.deviceId} style={{ marginBottom: 8 }}>
                                     <strong>Device ID:</strong> {device.deviceId}
                                     <br />
-                                    <strong>Total Storage Size:</strong> {device.totalStorageSize}
+                                    <strong>Total Storage Size:</strong>{' '}
+                                    <>
+                                        <Code>{device.totalStorageSize}</Code>&nbsp;B
+                                    </>
                                     <br />
                                     <strong>Unspent Storage Size:</strong>{' '}
-                                    {device.unspentStorageSize}
+                                    <>
+                                        <Code>{device.unspentStorageSize}</Code>&nbsp;B
+                                    </>
                                 </div>
                             ))
                         )}
@@ -146,7 +151,10 @@ export const QuotaManagerSettings = () => {
                                 <div key={owner.walletDescriptor} style={{ marginBottom: 8 }}>
                                     <strong>walletDescriptor:</strong> {owner.walletDescriptor}
                                     <br />
-                                    <strong>Total Space:</strong> {owner.totalSpace}
+                                    <strong>Total Space:</strong>{' '}
+                                    <>
+                                        <Code>{owner.totalSpace}</Code>&nbsp;B
+                                    </>
                                 </div>
                             ))
                         )}

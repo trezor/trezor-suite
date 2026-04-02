@@ -1,10 +1,11 @@
 import { type EvoluError, type ReadonlyStore } from '@evolu/common';
 
 import { asSuiteSyncOwnerId } from '@suite-common/suite-sync-storage';
-import { type SuiteSyncErrorHandler } from '@suite-common/suite-sync-types';
+import { type SuiteSyncInternalErrorHandler } from '@suite-common/suite-sync-types';
 
 export const createEvoluErrorHandler =
-    (evoluError: ReadonlyStore<EvoluError | null>, errorHandler: SuiteSyncErrorHandler) => () => {
+    (evoluError: ReadonlyStore<EvoluError | null>, errorHandler: SuiteSyncInternalErrorHandler) =>
+    () => {
         const error = evoluError.get();
 
         if (error == null) {

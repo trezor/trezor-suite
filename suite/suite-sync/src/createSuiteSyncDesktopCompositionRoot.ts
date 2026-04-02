@@ -6,8 +6,8 @@ import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { type EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-key-types';
 import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
 import {
+    type SuiteSyncAsyncErrorHandlerDep,
     createSuiteSyncCompositionRoot,
-    createSuiteSyncErrorHandler,
 } from '@suite-common/suite-sync';
 import {
     createEvoluErrorHandler,
@@ -15,6 +15,7 @@ import {
     createEvoluStorageFactory,
     evoluCreateSuiteSyncOwner,
 } from '@suite-common/suite-sync-evolu';
+import { type FetchDep } from '@suite-common/suite-sync-quota-manager';
 import { type SuiteSync } from '@suite-common/suite-sync-types';
 import { type TrezorConnect } from '@trezor/connect';
 
@@ -27,7 +28,9 @@ type SuiteSyncDesktopCompositionRootDeps = {
     trezorConnect: TrezorConnect;
 } & PlatformEncryptionDep &
     EnsureDelegatedIdentityKeyDep &
-    DesktopAnalyticsDep;
+    DesktopAnalyticsDep &
+    FetchDep &
+    SuiteSyncAsyncErrorHandlerDep;
 
 export const createSuiteSyncDesktopCompositionRoot = (
     deps: SuiteSyncDesktopCompositionRootDeps,
@@ -45,12 +48,6 @@ export const createSuiteSyncDesktopCompositionRoot = (
     });
 
     const run = createRun(evoluDeps);
-
-    const suiteSyncErrorHandler = createSuiteSyncErrorHandler({ dispatch: deps.dispatch });
-    evoluDeps.evoluError.subscribe(
-        createEvoluErrorHandler(evoluDeps.evoluError, suiteSyncErrorHandler),
-    );
-
     // This sets up Evolu as a SuiteSync Storage. We provide a factory that
     // accepts `suiteSyncErrorHandler` and creates the evolu instance accordingly.
     const suiteSync = createSuiteSyncCompositionRoot({
@@ -60,6 +57,12 @@ export const createSuiteSyncDesktopCompositionRoot = (
         }),
         createSuiteSyncOwner: evoluCreateSuiteSyncOwner,
         analytics: deps.analytics,
+        subscribeError: suiteSyncErrorHandler => {
+            evoluDeps.evoluError.subscribe(
+                createEvoluErrorHandler(evoluDeps.evoluError, suiteSyncErrorHandler),
+            );
+        },
+        suiteSyncAsyncErrorHandler: deps.suiteSyncAsyncErrorHandler,
     });
 
     return {

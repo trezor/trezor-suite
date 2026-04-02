@@ -2,15 +2,16 @@ import type { Dispatch } from '@reduxjs/toolkit';
 
 import { type SuiteSyncOwnerId } from '@suite-common/suite-sync-storage';
 import { type WalletDescriptor } from '@suite-common/wallet-types';
-import { err, ok } from '@trezor/type-utils';
+import { type Result, ok } from '@trezor/type-utils';
 
 import {
     quotaManagerDeviceUnspentStorageFetched,
-    quotaManagerFetchError,
     quotaManagerOwnerFetched,
 } from '../quotaManagerActions';
-import { quotaManagerFetch } from '../quotaManagerFetch';
-import { selectQuotaManagerBaseUrl } from '../quotaManagerSelectors';
+import {
+    type QuotaManagerFetchCommunicationError,
+    type QuotaManagerFetchDep,
+} from '../quotaManagerFetch';
 
 type TransferStorageBody = {
     publicKey: string;
@@ -21,38 +22,56 @@ type TransferStorageBody = {
     proof: string;
 };
 
-type TransferStorageResponse = {
+type TransferStorageFetchResponse = {
     publicKeyUnspentSpace: number | null;
     ownerTotalSpace: number | null;
 };
 
-type TransferStorageThunkParams = {
+export type TransferStorageFetchParams = {
     params: TransferStorageBody;
     walletDescriptor: WalletDescriptor;
     deviceId?: string;
 };
 
-export const transferStorageThunk =
-    ({ params, walletDescriptor, deviceId }: TransferStorageThunkParams) =>
-    async (dispatch: Dispatch, getState: () => any) => {
-        const baseUrl = selectQuotaManagerBaseUrl(getState());
+export type TransferStorageResult = Result<
+    TransferStorageFetchResponse,
+    QuotaManagerFetchCommunicationError
+>;
 
-        const result = await quotaManagerFetch({
-            baseUrl,
+export type TransferStorageFetch = (
+    params: TransferStorageFetchParams,
+) => Promise<TransferStorageResult>;
+
+export type TransferStorageDeps = {
+    dispatch: Dispatch;
+} & QuotaManagerFetchDep;
+
+export type TransferStorageFetchDep = {
+    transferStorageFetch: TransferStorageFetch;
+};
+
+/**
+ * This service transfers storage from a device to an owner.
+ *
+ * Can be used to increase the quota of the owner by transferring unspent storage from the device.
+ */
+export const createTransferStorageFetch =
+    (deps: TransferStorageDeps): TransferStorageFetch =>
+    async ({ params, walletDescriptor, deviceId }) => {
+        const result = await deps.quotaManagerFetch({
             path: '/storage/add',
             method: 'POST',
             body: params,
         });
 
         if (!result.success) {
-            dispatch(quotaManagerFetchError({ error: result.error.message }));
-
-            return err(result.error);
+            return result;
         }
 
-        const response = result.payload as TransferStorageResponse;
+        const response = result.payload as TransferStorageFetchResponse;
 
-        dispatch(
+        // Todo: shall be in separate service
+        deps.dispatch(
             quotaManagerOwnerFetched({
                 walletDescriptor,
                 totalSpace: response.ownerTotalSpace ?? 0,
@@ -60,7 +79,7 @@ export const transferStorageThunk =
         );
 
         if (deviceId !== undefined && response.publicKeyUnspentSpace !== null) {
-            dispatch(
+            deps.dispatch(
                 quotaManagerDeviceUnspentStorageFetched({
                     deviceId,
                     unspentStorageSize: response.publicKeyUnspentSpace,

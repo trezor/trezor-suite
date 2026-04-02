@@ -8,6 +8,7 @@ import {
 } from '@suite-common/suite-sync-storage';
 import {
     type EnsureSuiteSyncKeysDep,
+    type QuotaManagerCommunicationFailedErrType,
     type SuiteSyncStorageRepositoryDep,
     type SuiteSyncUnavailableOnDeviceErrorType,
     type WriteModeRequiredForAllocationErrType,
@@ -15,7 +16,7 @@ import {
 import { type DeviceCancelledErrType, type DeviceErrorType } from '@suite-common/suite-types';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { type StaticSessionId } from '@trezor/connect';
-import { type Result, err, ok } from '@trezor/type-utils';
+import { type Result, err, exhaustive, ok } from '@trezor/type-utils';
 import { isNotNull } from '@trezor/utils';
 
 import { createStorageIdFromDeviceStaticSessionId } from './createStorageIdFromDeviceStaticSessionId';
@@ -45,6 +46,7 @@ export type CreateEnsureStorage = (
         | DeviceErrorType
         | DeviceCancelledErrType
         | WriteModeRequiredForAllocationErrType
+        | QuotaManagerCommunicationFailedErrType
     >
 >;
 
@@ -101,7 +103,23 @@ export const createEnsureStorage =
         // `WriteModeRequiredForAllocation` means we won't connect Storage to server,
         // but other errors are bad and need to be propagated
         if (!quotaResult.success && quotaResult.error.type !== 'WriteModeRequiredForAllocation') {
-            return err(quotaResult.error);
+            const { type } = quotaResult.error;
+
+            // Error mapping for the Suite Sync / Quota Manager domain boundary
+            switch (type) {
+                // Probably bug in the code or data corruption
+                case 'ProofOfDelegatedSignFailed': {
+                    console.error(quotaResult.error);
+
+                    return err(SuiteSyncUnavailableOnDeviceError());
+                }
+                case 'DeviceError':
+                case 'QuotaManagerCommunicationFailed':
+                    return err(quotaResult.error);
+
+                default:
+                    return exhaustive(type);
+            }
         }
 
         // Only connect to the relay if quota is actually allocated.

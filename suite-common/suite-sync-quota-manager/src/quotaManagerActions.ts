@@ -9,13 +9,6 @@ export const updateQuotaManagerBaseUrl = createAction(
     (payload: { baseUrl: string }) => ({ payload }),
 );
 
-// this action is used for displaying toasts when any fetch to the Quota Manager fails
-// each platform can subscribe to this action and show appropriate error message to the user
-export const quotaManagerFetchError = createAction(
-    `${QUOTA_MANAGER_PREFIX}/fetchError`,
-    (payload: { error: string; path?: string }) => ({ payload }),
-);
-
 export const quotaManagerDeviceFetched = createAction(
     `${QUOTA_MANAGER_PREFIX}/deviceFetched`,
     (payload: { deviceId: string; totalStorageSize: number; unspentStorageSize: number }) => ({
@@ -24,8 +17,7 @@ export const quotaManagerDeviceFetched = createAction(
 );
 
 /**
- * When we call for transferStorageThunk with deviceId, we want to update device quota info
- * after successful storage transfer.
+ * When storage is transferred for a device, update the device quota info afterwards.
  */
 export const quotaManagerDeviceUnspentStorageFetched = createAction(
     `${QUOTA_MANAGER_PREFIX}/deviceQuotaUpdate`,
@@ -57,7 +49,6 @@ export const enforceQuotaManagerUpdated = createAction(
 
 export const suiteSyncQuotaManagerActions = {
     updateQuotaManagerBaseUrl,
-    quotaManagerFetchError,
     quotaManagerDeviceFetched,
     quotaManagerOwnerFetched,
     eraseFetchedData,

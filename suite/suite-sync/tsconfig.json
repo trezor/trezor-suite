@@ -17,6 +17,9 @@
             "path": "../../suite-common/suite-sync-evolu"
         },
         {
+            "path": "../../suite-common/suite-sync-quota-manager"
+        },
+        {
             "path": "../../suite-common/suite-sync-storage"
         },
         {

@@ -73,6 +73,7 @@ import { reportSecurityCheck } from 'src/utils/suite/sentry';
 import { fixLoadedCoinjoinAccount } from 'src/utils/wallet/coinjoinUtils';
 
 import { forgetBluetoothDeviceThunk } from '../actions/bluetooth/bluetoothEraseBondsThunk';
+import { suiteSyncErrorHandler } from '../components/suite/labeling/suiteSyncErrorHandler';
 import type { BioAuthState } from '../reducers/bioAuth';
 import { type AppState, type TrezorDevice } from '../types/suite';
 
@@ -122,6 +123,13 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         trezorConnect: TrezorConnect,
         ensureDelegatedIdentityKey,
         analytics,
+        fetch: globalThis.fetch.bind(globalThis),
+        suiteSyncAsyncErrorHandler: ({ device, error }) =>
+            suiteSyncErrorHandler({
+                error,
+                dispatch: deps.dispatch,
+                deviceStaticSessionId: device?.state?.staticSessionId ?? null,
+            }),
     });
 
     const { bip329 } = createBip329CompositionRoot({

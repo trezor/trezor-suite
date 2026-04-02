@@ -2,13 +2,10 @@ import type { ForbiddenDepsConfig } from '@trezor/requirements';
 
 export const forbiddenDepsConfig: ForbiddenDepsConfig = {
     'forbidden-deps': [
-        // Todo: Remove this temporary violation after https://github.com/trezor/trezor-suite/pull/25540 is fully addressed.
-        // {
-        //     packageName: '@suite-common/suite-sync-types',
-        //     reason: 'Quota Manager is dependency of the Suite Sync, not the other way around.',
-        // },
         {
             packageName: '@suite-common/suite-sync',
+            // But `@suite-common/suite-sync-storage` is ok, as we need Owner from it.
+            // More correct would be, however, to split Owner to own package (`@suite-common/suite-sync-owner`)
             reason: 'Quota Manager is dependency of the Suite Sync, not the other way around.',
         },
     ],
