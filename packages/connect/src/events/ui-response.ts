@@ -1,8 +1,7 @@
 import type { ThpPairingMethod } from '@trezor/protocol';
 
-import { UI_EVENT } from './ui-request';
+import type { UI_EVENT } from './ui-request';
 import type { LocalFirmwares } from '../types/settings';
-import type { MessageFactoryFn } from '../types/utils';
 
 /*
  * messages from UI sent by popup or using .uiResponse method
@@ -90,13 +89,3 @@ export type UiResponseEvent =
     | UiResponseFirmwares;
 
 export type UiResponseMessage = UiResponseEvent & { event: typeof UI_EVENT };
-
-export const createUiResponse: MessageFactoryFn<typeof UI_EVENT, UiResponseEvent> = (
-    type,
-    payload,
-) =>
-    ({
-        event: UI_EVENT,
-        type,
-        payload,
-    }) as any;
