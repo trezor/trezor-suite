@@ -224,6 +224,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                     suiteSyncQuotaManagerActions.quotaManagerDeviceFetched,
                     suiteSyncQuotaManagerActions.updateQuotaManagerBaseUrl,
                     suiteSyncQuotaManagerActions.enforceQuotaManagerUpdated,
+                    suiteSyncQuotaManagerActions.eraseFetchedData,
                 )(action)
             ) {
                 api.dispatch(storageActions.saveSuiteSyncQuotaManager());
