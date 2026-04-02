@@ -14,6 +14,7 @@ import {
 } from '@shopify/react-native-skia';
 
 import { type CryptoIconName, cryptoIcons } from '@suite-common/icons';
+import { useActiveColorScheme } from '@suite-native/theme';
 import { useNativeStyles } from '@trezor/styles-native';
 import { paletteV1 } from '@trezor/theme';
 
@@ -36,6 +37,7 @@ export const CryptoIconWithPercentage = ({
 }: CryptoIconProps) => {
     const iconSvg = useSVG(cryptoIcons[iconName]);
     const { utils } = useNativeStyles();
+    const colorScheme = useActiveColorScheme();
     // @ts-expect-error: coinsColors uses "NetworkSymbol" type. However, here we use deprecated "CryptoIconName".
     // Not worth fixing it as this package will be removed soon.
     const percentageColor = utils.coinsColors[iconName] ?? utils.colors.textSubdued;
@@ -71,7 +73,10 @@ export const CryptoIconWithPercentage = ({
 
     return (
         <Pressable onPress={handleIconPress}>
-            <Canvas style={{ height: CANVAS_SIZE, width: CANVAS_SIZE }}>
+            {/* key forces the canvas to remount on theme change so Skia picks up the new colors.
+                Without this, the canvas in sometime won't repaint the colors when the
+                animation has already completed and no shared values are actively changing.*/}
+            <Canvas key={colorScheme} style={{ height: CANVAS_SIZE, width: CANVAS_SIZE }}>
                 {/* show pizza instead of BTC icon on pizza day. */}
                 {isPizzaDay && isBitcoin && isPizzaIconSelected ? (
                     <PizzaIcon
