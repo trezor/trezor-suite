@@ -21,7 +21,7 @@ const getPreloadedState = (trades: TradingTransaction[]) => ({
 
 describe('TradeDetailFooter', () => {
     beforeEach(() => {
-        jest.resetAllMocks();
+        jest.clearAllMocks();
     });
 
     it('should not render when trade is not found', () => {

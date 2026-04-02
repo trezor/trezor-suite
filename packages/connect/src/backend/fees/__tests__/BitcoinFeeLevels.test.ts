@@ -40,7 +40,7 @@ describe('BitcoinFeeLevels', () => {
 
     afterAll(() => {
         dispose();
-        jest.resetAllMocks();
+        jest.clearAllMocks();
     });
 
     it('fetches Bitcoin smart FeeLevels with exact match', async () => {

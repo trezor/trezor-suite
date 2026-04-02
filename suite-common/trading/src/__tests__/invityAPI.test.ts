@@ -27,7 +27,7 @@ describe('InvityAPI', () => {
     });
 
     afterEach(() => {
-        jest.resetAllMocks();
+        jest.clearAllMocks();
     });
 
     it('should create an API key', () => {

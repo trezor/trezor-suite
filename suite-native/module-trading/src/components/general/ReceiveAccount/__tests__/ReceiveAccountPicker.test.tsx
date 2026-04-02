@@ -54,7 +54,7 @@ describe('ReceiveAccountPicker', () => {
     };
 
     beforeEach(() => {
-        jest.resetAllMocks();
+        jest.clearAllMocks();
     });
 
     it('should display nothing when selectedSymbol is not specified', () => {
