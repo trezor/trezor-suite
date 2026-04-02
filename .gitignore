@@ -152,3 +152,6 @@ packages/suite-data/files/translations/master.json
 
 # local config for Claude
 .claude/
+
+# AI agent plans
+/plans
