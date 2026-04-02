@@ -1,5 +1,5 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/paramsValidator.js
-import type { CoinInfo, FirmwareRange } from '@trezor/connect-common';
+import type { CoinInfo, FirmwareBoundary, FirmwareRange } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import type { DeviceModelInternal } from '@trezor/device-utils';
 import { typedObjectKeys, versionUtils } from '@trezor/utils';
@@ -127,7 +127,7 @@ export const getFirmwareRange = (
                 typeof supportVersion === 'string' &&
                 versionUtils.isNewer(supportVersion, range[model].min)
             ) {
-                range[model].min = supportVersion;
+                range[model].min = supportVersion as FirmwareBoundary;
             }
         });
     }
@@ -153,15 +153,12 @@ export const getFirmwareRange = (
         .filter(rule => {
             // REF_TODO: there is no coinType in config. possibly obsolete code?
             // probably still useful, we just need to define type for config and not infer it.
-            // @ts-expect-error
             if (rule.coinType) {
                 // rule for coin type
-                // @ts-expect-error
                 return rule.coinType === coinType;
             }
             if (rule.coin) {
                 // rule for coin shortcut
-                // @ts-expect-error
                 return (typeof rule.coin === 'string' ? [rule.coin] : rule.coin).includes(shortcut);
             }
 
@@ -184,14 +181,13 @@ export const getFirmwareRange = (
                         range[model].min === '0' ||
                         !versionUtils.isNewerOrEqual(range[model].min, modelMin)
                     ) {
-                        range[model].min = modelMin;
+                        range[model].min = modelMin as FirmwareBoundary;
                     }
                 }
             });
         }
         if (rule.max) {
             models.forEach(model => {
-                // @ts-expect-error same issue as in coinType above, config needs to be typed not inferred.
                 const modelMax = rule.max[model];
                 if (modelMax) {
                     if (

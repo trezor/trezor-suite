@@ -1,16 +1,9 @@
-import type { DeviceModelInternal } from '@trezor/device-utils';
+import type { FirmwareRule } from '@trezor/connect-common';
 import { TREZOR_USB_DESCRIPTORS } from '@trezor/transport/src/constants';
 
 type Config = {
     webusb: typeof TREZOR_USB_DESCRIPTORS;
-    supportedFirmware: Array<{
-        coin?: string[];
-        capabilities?: string[];
-        methods?: string[];
-        min: Partial<Record<DeviceModelInternal, string>>;
-        max?: undefined; // NOTE: max field is not used anywhere at the moment, it is here for type compatibility
-        comment?: string[];
-    }>;
+    supportedFirmware: Array<FirmwareRule>;
 };
 
 export const config: Config = {
