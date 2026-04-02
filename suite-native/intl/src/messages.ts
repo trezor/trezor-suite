@@ -106,6 +106,7 @@ export const messages = {
             deviceError: 'Device communication failed.',
             suiteSyncUpdateError: 'Failed to update data.',
             suiteSyncUnavailable: 'Suite Sync unavailable on this device.',
+            quotaManagerCommunicationFailed: 'Quota Manager communication failed.',
         },
     },
     moduleHome: {

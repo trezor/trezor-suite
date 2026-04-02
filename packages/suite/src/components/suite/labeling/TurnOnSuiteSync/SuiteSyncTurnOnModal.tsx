@@ -53,9 +53,10 @@ export const SuiteSyncTurnOnModal = ({
 
                     return;
 
-                case 'SuiteSyncUnavailableOnDeviceError':
                 case 'DeviceCancelled':
                 case 'DeviceError':
+                case 'SuiteSyncUnavailableOnDeviceError':
+                case 'QuotaManagerCommunicationFailed':
                     dispatch(
                         notificationsActions.addToast({
                             type: 'error',

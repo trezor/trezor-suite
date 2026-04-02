@@ -15,6 +15,9 @@ import { type GetDeviceForStaticSessionIdDep } from './getDeviceForStaticSession
 /**
  * Device is not connected or device is in a state/configuration, that does not
  * support Suite Sync.
+ *
+ * This is also used as try-again error for user,
+ * when we get some non-recoverable error during keys ensuring.
  */
 export const SuiteSyncUnavailableOnDeviceError = (): SuiteSyncUnavailableOnDeviceErrorType => ({
     type: 'SuiteSyncUnavailableOnDeviceError',
@@ -71,6 +74,7 @@ export const createEnsureSuiteSyncKeys =
         if (!result.success) {
             const errType = result.error.type;
 
+            // Error mapping for the Suite Sync / Keys & Connect domain boundary
             switch (errType) {
                 case 'DeviceError':
                 case 'DeviceCancelled':

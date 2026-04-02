@@ -12,12 +12,10 @@ export type {
     EnsureSuiteSyncKeysDep,
     EnsureSuiteSyncKeysResult,
 } from './ensureSuiteSyncKeys';
-export type { WriteModeRequiredForAllocationErrType } from './quotaManager/quotaManagerTypes';
 export type { TurnOffSuiteSyncDep, TurnOffSuiteSync } from './turnOffSuiteSync';
 export type { TurnOnSuiteSyncDep, TurnOnSuiteSync } from './turnOnSuiteSync';
 export type { SuiteSyncUnavailableOnDeviceErrorType } from './ensureSuiteSyncKeys';
 export type { ChangeRelayUrl, ChangeRelayUrlDep } from './relay/changeRelayUrl';
-export type { ProofOfDelegatedSignFailed } from './getProofOfDelegatedIdentity';
 
 export type {
     EnsureSuiteSyncOwnerDep,
@@ -40,6 +38,8 @@ export type {
     TurnOffSuiteSyncForWalletDep,
 } from './storage/turnOffSuiteSyncForWallet';
 export type {
+    EnsureWalletSuiteSyncOnAsync,
+    EnsureWalletSuiteSyncOnAsyncDep,
     EnsureWalletSuiteSyncOn,
     EnsureWalletSuiteSyncOnErrors,
     EnsureWalletSuiteSyncOnDep,
@@ -79,18 +79,13 @@ export type {
 } from './data/updateWalletLabel';
 
 export type {
-    SuiteSyncErrorHandler,
+    SuiteSyncInternalErrorHandler,
     SuiteSyncOtherError,
     RelayQuotaExceededError,
     Errors,
-    CreateSuiteSyncErrorHandlerDep,
 } from './SuiteSyncErrorHandler';
 
 export type {
-    EnsureOwnerHasAllocatedQuotaParams,
-    EnsureOwnerHasAllocatedQuota,
-    ChallengeFailedErrType,
-    HttpErrType,
-    ProofOfDelegatedIdentityFailedErrType,
-    NoQuotaLeftToAllocateErrType,
-} from './quotaManager/ensureOwnerHasAllocatedQuotaThunk';
+    QuotaManagerCommunicationFailedErrType,
+    WriteModeRequiredForAllocationErrType,
+} from './quotaManager/errors';

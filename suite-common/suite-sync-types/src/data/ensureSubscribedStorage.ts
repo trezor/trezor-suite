@@ -1,11 +1,14 @@
 import { type SuiteSyncSchema, type SuiteSyncStorage } from '@suite-common/suite-sync-storage';
 import { type DeviceCancelledErrType, type DeviceErrorType } from '@suite-common/suite-types';
 import { type WalletDescriptor } from '@suite-common/wallet-types';
-import { type StaticSessionId } from '@trezor/connect';
+import { type StaticSessionId } from '@trezor/connect-common';
 import { type Result } from '@trezor/type-utils';
 
 import { type SuiteSyncUnavailableOnDeviceErrorType } from '../ensureSuiteSyncKeys';
-import { type WriteModeRequiredForAllocationErrType } from '../quotaManager/quotaManagerTypes';
+import {
+    type QuotaManagerCommunicationFailedErrType,
+    type WriteModeRequiredForAllocationErrType,
+} from '../quotaManager/errors';
 
 type EnsureSubscribedStorageParams = {
     deviceStaticSessionId: StaticSessionId;
@@ -37,6 +40,7 @@ export type EnsureSubscribedStorage = (
         | DeviceErrorType
         | DeviceCancelledErrType
         | WriteModeRequiredForAllocationErrType
+        | QuotaManagerCommunicationFailedErrType
     >
 >;
 

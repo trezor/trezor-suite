@@ -8,4 +8,5 @@ export const suiteSyncErrorTranslationKeyMap: Record<SuiteSyncUserFacingErrorTyp
         SuiteSyncUpdateError: 'TR_SUITE_SYNC_ERROR_UPDATE_FAILED',
         SuiteSyncUnavailableOnDeviceError: 'TR_SUITE_SYNC_ERROR_UNAVAILABLE',
         SuiteSyncFirmwareUpgradeNeededDeviceErrorType: 'TR_SUITE_SYNC_ERROR_UNAVAILABLE',
+        QuotaManagerCommunicationFailed: 'TR_SUITE_SYNC_ERROR_QUOTA_MANAGER_COMMUNICATION_FAILED',
     };

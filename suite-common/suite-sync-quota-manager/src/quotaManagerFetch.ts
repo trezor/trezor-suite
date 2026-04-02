@@ -9,72 +9,87 @@ type SupportedMethod = 'GET' | 'POST' | 'DELETE';
 // explicit list of supported endpoints and their methods
 type SupportedPath = '/challenge' | '/storage/ask' | '/storage/register' | '/storage/add' | '/sync';
 
-type QuotaManagerFetchParams = {
-    baseUrl: string | null;
+export type QuotaManagerHttpError = {
+    type: 'HttpError';
+    code: number;
+    message: string;
+};
+
+export type QuotaManagerFetchError = {
+    type: 'FetchError';
+    message: string;
+};
+
+export type QuotaManagerFetchCommunicationError = QuotaManagerHttpError | QuotaManagerFetchError;
+
+export type QuotaManagerFetchResult = Result<unknown, QuotaManagerFetchCommunicationError>;
+
+export type QuotaManagerFetchParams = {
     path: SupportedPath;
     method: SupportedMethod;
     body?: unknown;
     queryParams?: Record<string, string | number | boolean>;
 };
 
-type HttpError = {
-    type: 'HttpError';
-    code: number;
-    message: string;
+export type QuotaManagerFetch = (
+    params: QuotaManagerFetchParams,
+) => Promise<QuotaManagerFetchResult>;
+
+export type QuotaManagerFetchDep = {
+    quotaManagerFetch: QuotaManagerFetch;
 };
 
-type FetchError = {
-    type: 'FetchError';
-    message: string;
+export type FetchDep = {
+    fetch: typeof fetch;
 };
 
-type QuotaManagerFetchResult = Result<unknown, HttpError | FetchError>;
+type GetQuotaManagerBaseUrl = () => string | null;
 
-export const quotaManagerFetch = async ({
-    baseUrl,
-    path,
-    method,
-    body,
-    queryParams,
-}: QuotaManagerFetchParams): Promise<QuotaManagerFetchResult> => {
-    const base = baseUrl ?? DEFAULT_QUOTA_MANAGER_URL;
+export type CreateQuotaManagerFetchDeps = {
+    getQuotaManagerBaseUrl: GetQuotaManagerBaseUrl;
+} & FetchDep;
 
-    const normalizedBase = base.endsWith('/') ? base : `${base}/`;
-    const normalizedPath = path.replace(/^\/+/, '');
+export const createQuotaManagerFetch =
+    (deps: CreateQuotaManagerFetchDeps): QuotaManagerFetch =>
+    async ({ path, method, body, queryParams }) => {
+        const base = deps.getQuotaManagerBaseUrl() ?? DEFAULT_QUOTA_MANAGER_URL;
 
-    const url = new URL(normalizedPath, normalizedBase);
+        const normalizedBase = base.endsWith('/') ? base : `${base}/`;
+        const normalizedPath = path.replace(/^\/+/, '');
 
-    if (queryParams !== undefined) {
-        typedObjectEntries(queryParams).forEach(([key, value]) => {
-            url.searchParams.append(key, value.toString());
-        });
-    }
+        try {
+            const url = new URL(normalizedPath, normalizedBase); // can fail for invalid URL, needs to be in try-catch
 
-    try {
-        const response = await fetch(url.toString(), {
-            method,
-            headers: {
-                'Content-Type': 'application/json',
-                'Suite-Version': getSuiteVersion(),
-            },
-            body: body ? JSON.stringify(body) : null,
-        });
+            if (queryParams !== undefined) {
+                typedObjectEntries(queryParams).forEach(([key, value]) => {
+                    url.searchParams.append(key, value.toString());
+                });
+            }
 
-        if (!response.ok) {
+            const response = await deps.fetch(url.toString(), {
+                method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Suite-Version': getSuiteVersion(),
+                },
+                body: body ? JSON.stringify(body) : null,
+            });
+
+            if (!response.ok) {
+                return err({
+                    type: 'HttpError' as const,
+                    code: response.status,
+                    message: response.statusText,
+                });
+            }
+
+            const data = (await response.json()) as unknown;
+
+            return ok(data);
+        } catch (e) {
             return err({
-                type: 'HttpError' as const,
-                code: response.status,
-                message: response.statusText,
+                type: 'FetchError' as const,
+                message: e.message,
             });
         }
-
-        const data = (await response.json()) as unknown;
-
-        return ok(data);
-    } catch (e) {
-        return err({
-            type: 'FetchError' as const,
-            message: e.message,
-        });
-    }
-};
+    };

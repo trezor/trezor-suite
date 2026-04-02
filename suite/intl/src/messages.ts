@@ -3331,6 +3331,10 @@ export const messages = defineMessages({
             'Suite Sync storage is full. New labels will be saved locally on this computer, but not synced to your other devices.',
         id: 'TR_SUITE_SYNC_OUT_OF_QUOTA_BANNER_DESCRIPTION',
     },
+    TR_SUITE_SYNC_ERROR_QUOTA_MANAGER_COMMUNICATION_FAILED: {
+        id: 'TR_SUITE_SYNC_ERROR_QUOTA_MANAGER_COMMUNICATION_FAILED',
+        defaultMessage: 'Failed to communicate with storage quota manager.',
+    },
     TR_TAKE_ME_BACK_TO_WALLET: {
         defaultMessage: 'Take me back to Suite',
         id: 'TR_TAKE_ME_BACK_TO_WALLET',
