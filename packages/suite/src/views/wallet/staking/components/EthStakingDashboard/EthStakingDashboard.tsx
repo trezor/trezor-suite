@@ -1,18 +1,15 @@
 import { useEffect, useMemo } from 'react';
 
-import { useQuery } from '@tanstack/react-query';
-
-import { commonQueryKeys } from '@suite-common/react-query';
+import { useEthereumValidatorsQueue } from '@suite-common/earn-staking-api/src/staking';
 import { getDaysToAddToPool, getDaysToUnstake } from '@suite-common/staking';
 import {
     fetchAllTransactionsForAccountThunk,
-    fetchEthereumValidatorsQueue,
     selectAccountIsStakingActive,
     selectAccountStakeTransactions,
     selectAccountUnstakeTransactions,
+    selectEthNextRewardPayout,
     selectHasRunningDiscovery,
-    selectPoolStatsApyData,
-    selectPoolStatsNextRewardPayout,
+    selectPoolStatsApy,
 } from '@suite-common/wallet-core';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import {
@@ -45,34 +42,19 @@ export const EthStakingDashboard = ({ selectedAccount }: EthStakingDashboardProp
     const { isBelowLaptop } = useLayoutSize();
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
-    const apy = useSelector(state => selectPoolStatsApyData(state, account));
-    const nextRewardPayout = useSelector(state =>
-        selectPoolStatsNextRewardPayout(state, account?.symbol),
-    );
+    const apy = useSelector(state => selectPoolStatsApy(state, { account }));
+    const nextRewardPayout = useSelector(selectEthNextRewardPayout);
 
     const stakeTxs = useSelector(state => selectAccountStakeTransactions(state, accountKey));
     const unstakeTxs = useSelector(state => selectAccountUnstakeTransactions(state, accountKey));
 
     const dispatch = useDispatch();
 
-    const lastTxBlockTime = useMemo(() => {
-        if (!stakeTxs?.length) return undefined;
+    const lastTxBlockTime = stakeTxs[0]?.blockTime;
+    const timestamp = hasStakeInPendingDepositedState(account!) ? lastTxBlockTime : undefined;
 
-        return stakeTxs[0]?.blockTime;
-    }, [stakeTxs]);
-
-    const { data: validatorQueueData, isLoading: isValidatorQueueLoading } = useQuery({
-        enabled: !!account,
-        queryKey: commonQueryKeys.validatorsQueue(accountKey, lastTxBlockTime),
-        staleTime: 60 * 1000, // 1 minute
-        queryFn: () => {
-            const timestamp = hasStakeInPendingDepositedState(account!)
-                ? lastTxBlockTime
-                : undefined;
-
-            return fetchEthereumValidatorsQueue({ timestamp });
-        },
-    });
+    const { data: validatorQueueData, isLoading: isValidatorQueueLoading } =
+        useEthereumValidatorsQueue({ account, timestamp });
 
     useEffect(() => {
         if (accountKey) {
@@ -116,9 +98,7 @@ export const EthStakingDashboard = ({ selectedAccount }: EthStakingDashboardProp
                                         <PayoutCardNextRewards
                                             nextRewardPayout={nextRewardPayout}
                                             daysToAddToPool={daysToAddToPool}
-                                            validatorWithdrawTime={
-                                                validatorQueueData?.validatorWithdrawTime
-                                            }
+                                            validatorWithdrawTime={validatorQueueData?.withdrawTime}
                                         />
                                     </Flex>
                                 </Grid>

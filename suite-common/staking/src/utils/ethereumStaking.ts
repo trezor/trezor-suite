@@ -553,7 +553,7 @@ export const getDaysToAddToPool = (
     if (
         !validatorsQueue ||
         validatorsQueue?.addingDelay === undefined ||
-        validatorsQueue?.activatedAt === undefined
+        validatorsQueue?.activationTime === undefined
     ) {
         return undefined;
     }
@@ -562,7 +562,7 @@ export const getDaysToAddToPool = (
     const lastTxBlockTime = stakeTxs[0]?.blockTime || now;
 
     const secondsToWait =
-        lastTxBlockTime + validatorsQueue.addingDelay + validatorsQueue.activatedAt - now;
+        lastTxBlockTime + validatorsQueue.addingDelay + validatorsQueue.activationTime - now;
     const daysToWait = secondsToDays(secondsToWait);
 
     return daysToWait <= 0 ? 1 : daysToWait;
@@ -572,7 +572,7 @@ export const getDaysToUnstake = (
     unstakeTxs: WalletAccountTransaction[],
     validatorsQueue?: EthValidatorsQueue | null,
 ) => {
-    if (typeof validatorsQueue?.withdrewAt !== 'number') {
+    if (typeof validatorsQueue?.withdrawTime !== 'number') {
         return undefined;
     }
 
@@ -580,7 +580,7 @@ export const getDaysToUnstake = (
     const lastTxBlockTime = unstakeTxs[0]?.blockTime || now;
 
     const secondsToWait =
-        lastTxBlockTime + validatorsQueue.withdrewAt + (validatorsQueue?.exitedAt || 0) - now;
+        lastTxBlockTime + validatorsQueue.withdrawTime + (validatorsQueue?.exitTime || 0) - now;
     const daysToWait = secondsToDays(secondsToWait);
 
     return daysToWait <= 0 ? 1 : daysToWait;
@@ -590,12 +590,12 @@ export const getDaysToAddToPoolInitial = (validatorsQueue?: EthValidatorsQueue |
     if (
         !validatorsQueue ||
         validatorsQueue?.addingDelay === undefined ||
-        validatorsQueue?.activatedAt === undefined
+        validatorsQueue?.activationTime === undefined
     ) {
         return DAYS_TO_ADD_TO_POOL_DEFAULT;
     }
 
-    const secondsToWait = validatorsQueue.addingDelay + validatorsQueue.activatedAt;
+    const secondsToWait = validatorsQueue.addingDelay + validatorsQueue.activationTime;
     const daysToWait = secondsToDays(secondsToWait);
 
     return daysToWait <= 0 ? 1 : daysToWait;

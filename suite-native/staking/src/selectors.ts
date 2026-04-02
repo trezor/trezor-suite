@@ -2,9 +2,9 @@ import type { NetworkSymbol, StakingNetworkSymbol } from '@suite-common/wallet-c
 import {
     selectAccountByKey,
     selectAdaAccountHasStaked,
+    selectEthValidatorsQueue,
     selectPoolStatsApy,
     selectSolAccountHasStaked,
-    selectValidatorsQueueData,
 } from '@suite-common/wallet-core';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import {
@@ -365,13 +365,9 @@ export const selectUnstakingPeriodInDaysByAccountKey = (
     const account = selectAccountByKey(state, accountKey);
     if (!account || !doesCoinSupportStaking(account.symbol)) return null;
 
-    const validatorsQueueData = selectValidatorsQueueData(state, account.symbol);
+    const validatorsQueueData = selectEthValidatorsQueue(state);
 
-    return getUnstakingPeriodInDays({
-        networkType: account.networkType,
-        validatorWithdrawTime: validatorsQueueData?.validatorWithdrawTime ?? null,
-        validatorExitTime: validatorsQueueData?.validatorExitTime ?? null,
-    });
+    return getUnstakingPeriodInDays(account.networkType, validatorsQueueData);
 };
 
 export const selectPendingDepositedBalanceByAccountKey = (

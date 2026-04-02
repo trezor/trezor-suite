@@ -32,12 +32,7 @@ export const useEarnInANutshell = ({
 }: UseEarnInANutshellProps) => {
     const validatorsQueueData = useSelector(selectEthValidatorsQueue);
     const apy = useSelector(state => selectPoolStatsApy(state, { account }));
-
-    const unstakingPeriod = getUnstakingPeriodInDays({
-        networkType: account.networkType,
-        validatorWithdrawTime: validatorsQueueData?.withdrewAt,
-        validatorExitTime: validatorsQueueData?.exitedAt,
-    });
+    const unstakingPeriod = getUnstakingPeriodInDays(account.networkType, validatorsQueueData);
 
     const dispatch = useDispatch();
     const analytics = useAnalytics();

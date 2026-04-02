@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { selectPoolStatsNextRewardPayout } from '@suite-common/wallet-core';
+import { selectEthNextRewardPayout } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Button, Card, HStack, Text, VStack } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
@@ -65,9 +65,7 @@ export const StakingManagementStakedCard = ({
         selectRewardsBalanceByAccountKey(state, accountKey),
     );
     const apy = useSelector(state => selectAPYByAccountKey(state, accountKey));
-    const nextRewardPayout = useSelector(state =>
-        selectPoolStatsNextRewardPayout(state, networkSymbol),
-    );
+    const nextRewardPayout = useSelector(state => selectEthNextRewardPayout(state));
 
     return (
         <Card noPadding>

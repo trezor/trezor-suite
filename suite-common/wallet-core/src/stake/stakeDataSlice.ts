@@ -1,6 +1,6 @@
 import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 
-import { type StakingBatch, type StakingBatchItem } from '@suite-common/earn-staking-api';
+import { type StakingBatch, type StakingBatchDataItem } from '@suite-common/earn-staking-api';
 
 export type StakeDataState = {
     error: null | string;
@@ -8,9 +8,9 @@ export type StakeDataState = {
     lastSuccessAt: null | number;
 
     data: {
-        eth: Omit<Extract<StakingBatchItem, { symbol: 'eth' }>, 'symbol'> | undefined;
-        sol: Omit<Extract<StakingBatchItem, { symbol: 'sol' }>, 'symbol'> | undefined;
-        ada: Omit<Extract<StakingBatchItem, { symbol: 'ada' }>, 'symbol'> | undefined;
+        eth: Omit<Extract<StakingBatchDataItem, { symbol: 'eth' }>, 'symbol'> | undefined;
+        sol: Omit<Extract<StakingBatchDataItem, { symbol: 'sol' }>, 'symbol'> | undefined;
+        ada: Omit<Extract<StakingBatchDataItem, { symbol: 'ada' }>, 'symbol'> | undefined;
     };
 };
 
@@ -34,7 +34,7 @@ export const stakeDataSlice = createSlice({
             state.isLoading = true;
             state.lastSuccessAt = null;
         },
-        fetchStakeDataSuccess: (state, action: PayloadAction<StakingBatch>) => {
+        fetchStakeDataSuccess: (state, action: PayloadAction<StakingBatch['data']>) => {
             state.error = null;
             state.isLoading = false;
             state.lastSuccessAt = Date.now();

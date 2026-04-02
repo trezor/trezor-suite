@@ -18,6 +18,9 @@
         {
             "path": "../../suite-common/e2e-evolu-client"
         },
+        {
+            "path": "../../suite-common/earn-staking-api"
+        },
         { "path": "../../suite-common/feedback" },
         {
             "path": "../../suite-common/message-system"

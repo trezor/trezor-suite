@@ -223,6 +223,7 @@ test.describe('TrezorConnect popup web', { tag: ['@smoke', '@T3T1', '@webOnly'] 
 
             await gotoConnectExplorer(page, 'bitcoin/getAddress');
             await page.getByTestId('@api-playground/collapsible-box').click();
+            await expect(page.getByTestId('@submit-button')).toBeVisible();
 
             // First call — close the popup window directly
             const [suite1] = await Promise.all([
@@ -271,6 +272,7 @@ test.describe('TrezorConnect popup web', { tag: ['@smoke', '@T3T1', '@webOnly'] 
         async ({ page, device }) => {
             await gotoConnectExplorer(page, 'bitcoin/getAddress');
             await page.getByTestId('@api-playground/collapsible-box').click();
+            await expect(page.getByTestId('@submit-button')).toBeVisible();
 
             // Open the popup for the first call, but do not close it
             const [popup1] = await Promise.all([

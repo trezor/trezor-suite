@@ -30,19 +30,19 @@ export const stakingBatchResponse = zod.object({
                         ),
                 }),
                 validators: zod.object({
-                    activatedAt: zod
+                    activationTime: zod
                         .number()
                         .optional()
                         .describe(
                             'Seconds — estimated delay before a validator becomes active (Everstake `validator_activation_time`).',
                         ),
-                    exitedAt: zod
+                    exitTime: zod
                         .number()
                         .optional()
                         .describe(
                             'Seconds — estimated delay before a validator is exited (`validator_exit_time`).',
                         ),
-                    withdrewAt: zod
+                    withdrawTime: zod
                         .number()
                         .optional()
                         .describe(
@@ -137,19 +137,19 @@ export const stakingEthereumValidatorsQueueQueryParams = zod.object({
 });
 
 export const stakingEthereumValidatorsQueueResponse = zod.object({
-    activatedAt: zod
+    activationTime: zod
         .number()
         .optional()
         .describe(
             'Seconds — estimated delay before a validator becomes active (Everstake `validator_activation_time`).',
         ),
-    exitedAt: zod
+    exitTime: zod
         .number()
         .optional()
         .describe(
             'Seconds — estimated delay before a validator is exited (`validator_exit_time`).',
         ),
-    withdrewAt: zod
+    withdrawTime: zod
         .number()
         .optional()
         .describe('Seconds — withdraw period from beacon chain (`validator_withdraw_time`).'),

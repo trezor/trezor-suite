@@ -545,7 +545,7 @@ export const getDaysToAddToPoolFixture = [
             stakeTxs: [{}], // blockTime is undefined
             validatorsQueue: {
                 addingDelay: 86400,
-                activatedAt: 86400,
+                activationTime: 86400,
             } satisfies EthValidatorsQueue,
         },
         result: 2,
@@ -556,7 +556,7 @@ export const getDaysToAddToPoolFixture = [
             stakeTxs: [{ blockTime: 1721393017 }], // 2024-07-19 (2024-07-10 + 9 days)
             validatorsQueue: {
                 addingDelay: 86400,
-                activatedAt: 86400,
+                activationTime: 86400,
             } satisfies EthValidatorsQueue, // + 2 days
         },
         result: 11, // 9 + 2
@@ -565,7 +565,7 @@ export const getDaysToAddToPoolFixture = [
         description: 'should return 1 if the number of days to wait is less than or equal to 0',
         args: {
             stakeTxs: [{ blockTime: 1720615417 }], // 2024-07-10
-            validatorsQueue: { addingDelay: 0, activatedAt: 0 } satisfies EthValidatorsQueue,
+            validatorsQueue: { addingDelay: 0, activationTime: 0 } satisfies EthValidatorsQueue,
         },
         result: 1,
     },
@@ -584,7 +584,7 @@ export const getDaysToUnstakeFixture = [
         description: 'should return 1 if blockTime is undefined',
         args: {
             unstakeTxs: [{}], // blockTime is undefined
-            validatorsQueue: { withdrewAt: 86400 } satisfies EthValidatorsQueue,
+            validatorsQueue: { withdrawTime: 86400 } satisfies EthValidatorsQueue,
         },
         result: 1,
     },
@@ -592,7 +592,7 @@ export const getDaysToUnstakeFixture = [
         description: 'should return the number of days to wait',
         args: {
             unstakeTxs: [{ blockTime: 1721393017 }], // 2024-07-19 (2024-07-10 + 9 days)
-            validatorsQueue: { withdrewAt: 86400 } satisfies EthValidatorsQueue, // 1 day
+            validatorsQueue: { withdrawTime: 86400 } satisfies EthValidatorsQueue, // 1 day
         },
         result: 10,
     },
@@ -600,7 +600,7 @@ export const getDaysToUnstakeFixture = [
         description: 'should return 1 if the number of days to wait is less than or equal to 0',
         args: {
             unstakeTxs: [{ blockTime: 1720615417 }], // 2024-07-10
-            validatorsQueue: { withdrewAt: 0 } satisfies EthValidatorsQueue,
+            validatorsQueue: { withdrawTime: 0 } satisfies EthValidatorsQueue,
         },
         result: 1,
     },
@@ -620,7 +620,7 @@ export const getDaysToAddToPoolInitialFixture = [
         args: {
             validatorsQueue: {
                 addingDelay: 86400,
-                activatedAt: 86400,
+                activationTime: 86400,
             } satisfies EthValidatorsQueue, // 2 days
         },
         result: 2, // replace with expected number of days
@@ -628,7 +628,7 @@ export const getDaysToAddToPoolInitialFixture = [
     {
         description: 'should return 1 if the number of days to wait is less than or equal to 0',
         args: {
-            validatorsQueue: { addingDelay: 0, activatedAt: 0 } satisfies EthValidatorsQueue,
+            validatorsQueue: { addingDelay: 0, activationTime: 0 } satisfies EthValidatorsQueue,
         },
         result: 1,
     },
