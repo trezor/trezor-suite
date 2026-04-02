@@ -159,12 +159,7 @@ const CardanoWithdrawingRows = ({ flow, displaySymbol, isExpanded }: EarnWithdra
 
 export const EarnWithdrawingInfo = ({ account, isExpanded, flow }: EarnWithdrawingInfoProps) => {
     const validatorsQueue = useSelector(selectEthValidatorsQueue);
-
-    const daysToUnstake = getUnstakingPeriodInDays({
-        networkType: account.networkType,
-        validatorWithdrawTime: validatorsQueue?.withdrewAt,
-        validatorExitTime: validatorsQueue?.exitedAt,
-    });
+    const daysToUnstake = getUnstakingPeriodInDays(account.networkType, validatorsQueue);
 
     const displaySymbol = getNetworkDisplaySymbol(account.symbol);
 

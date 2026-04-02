@@ -55,7 +55,7 @@ export const HowStakeWorksScreen = () => {
     );
 
     const entryPeriodInDays = useSelector((state: NativeStakingRootState) =>
-        selectEntryPeriodInDaysBySymbol(state, symbol),
+        selectEntryPeriodInDaysBySymbol(state),
     );
 
     const apy = useSelector((state: NativeStakingRootState) =>

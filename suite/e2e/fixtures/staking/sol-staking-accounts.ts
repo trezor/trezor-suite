@@ -238,7 +238,7 @@ export const solStakingAccountDeactivating = new SolanaStakingAccountFixture(
 );
 
 export const totalReward = {
-    url: '**/staking/sol/rewards/8NapsSamBA2jd8VR8SZw4aXSvSAHiskUZXaiYW1HxTGe/total',
+    url: '**/sol/rewards/8NapsSamBA2jd8VR8SZw4aXSvSAHiskUZXaiYW1HxTGe/total',
     response: { total: '1139693' },
 };
 
@@ -246,7 +246,7 @@ export const rewards: {
     url: string;
     response: { rewards: SolanaReward[]; totalCount: number };
 } = {
-    url: '**/staking/sol/rewards/8NapsSamBA2jd8VR8SZw4aXSvSAHiskUZXaiYW1HxTGe**',
+    url: '**/sol/rewards/8NapsSamBA2jd8VR8SZw4aXSvSAHiskUZXaiYW1HxTGe**',
     response: {
         rewards: [
             {

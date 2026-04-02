@@ -6,12 +6,15 @@ import { type GenerateRouteParams, composePathnameFromRoute } from './routeParam
 type FetchLike = typeof globalThis.fetch;
 
 const HTTP_CLIENT_DEFAULTS = {
-    timeout: 10_000,
     retry: {
         attempts: 0,
     },
-    credentials: 'omit',
-    referrerPolicy: 'no-referrer',
+
+    /**
+     * Mocking Playwright's `route` for Electron causes responses to have status 0.
+     * Prevent up-fetch from rejecting them.
+     */
+    reject: response => !response.ok && response.status !== 0,
 } as const satisfies Partial<DefaultOptions<FetchLike, unknown, unknown>>;
 
 type HttpClientDefaults = typeof HTTP_CLIENT_DEFAULTS;

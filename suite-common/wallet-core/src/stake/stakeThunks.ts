@@ -46,7 +46,12 @@ export const initStakeDataThunk = createThunk(
                 params: { networks: Array.from(enabledStakingNetworks) },
             });
 
-            dispatch(stakeDataSlice.actions.fetchStakeDataSuccess(stakingData));
+            // A part of the batch requests failed
+            if (stakingData.errors.length) {
+                console.error('Upstream error', stakingData.errors);
+            }
+
+            dispatch(stakeDataSlice.actions.fetchStakeDataSuccess(stakingData.data));
         } catch (error) {
             console.error(error);
             dispatch(

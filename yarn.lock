@@ -15875,6 +15875,7 @@ __metadata:
     "@suite-common/analytics": "workspace:*"
     "@suite-common/device": "workspace:*"
     "@suite-common/e2e-evolu-client": "workspace:*"
+    "@suite-common/earn-staking-api": "workspace:*"
     "@suite-common/feedback": "workspace:*"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/suite-sync-evolu": "workspace:*"

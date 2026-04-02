@@ -8,7 +8,11 @@ import { testMocks } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type Network, getNetwork } from '@suite-common/wallet-config';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
-import { accountsActions, prepareSendFormReducer } from '@suite-common/wallet-core';
+import {
+    accountsActions,
+    prepareSendFormReducer,
+    stakeInitialState,
+} from '@suite-common/wallet-core';
 import {
     type FeesState,
     type FormState,
@@ -299,6 +303,7 @@ export const getRootReducer: any = (selectedAccount = BTC_ACCOUNT, fees = DEFAUL
             ),
             selectedAccount: createReducer(selectedAccount, () => ({})),
             coinjoin: createReducer({ accounts: [] }, () => ({})),
+            stake: createReducer(stakeInitialState, () => ({})),
             discovery: createReducer([], () => ({})),
             settings: createReducer(
                 {

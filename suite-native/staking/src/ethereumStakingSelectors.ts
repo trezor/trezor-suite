@@ -5,7 +5,7 @@ import {
     selectAccountByKey,
     selectAccountStakeTransactions,
     selectDeviceAccounts,
-    selectValidatorsQueueData,
+    selectEthValidatorsQueue,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import {
@@ -132,24 +132,17 @@ export const selectUnstakingPeriodInDaysBySymbol = (
     state: NativeStakingRootState,
     symbol: NetworkSymbol | undefined,
 ) => {
-    const validatorsQueue = selectValidatorsQueueData(state, symbol);
+    const validatorsQueue = selectEthValidatorsQueue(state);
 
-    return getUnstakingPeriodInDays({
-        networkType: symbol ? getNetworkType(symbol) : undefined,
-        validatorWithdrawTime: validatorsQueue?.validatorWithdrawTime,
-        validatorExitTime: validatorsQueue?.validatorExitTime,
-    });
+    return getUnstakingPeriodInDays(symbol ? getNetworkType(symbol) : undefined, validatorsQueue);
 };
 
-export const selectEntryPeriodInDaysBySymbol = (
-    state: NativeStakingRootState,
-    symbol: NetworkSymbol | undefined,
-) => {
-    const validatorsQueue = selectValidatorsQueueData(state, symbol);
+export const selectEntryPeriodInDaysBySymbol = (state: NativeStakingRootState) => {
+    const validatorsQueue = selectEthValidatorsQueue(state);
 
     if (
-        validatorsQueue?.validatorActivationTime === undefined ||
-        validatorsQueue?.validatorAddingDelay === undefined
+        validatorsQueue?.activationTime === undefined ||
+        validatorsQueue?.addingDelay === undefined
     ) {
         return undefined;
     }

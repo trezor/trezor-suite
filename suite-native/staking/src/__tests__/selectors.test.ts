@@ -1,8 +1,4 @@
-import {
-    type AdaPools,
-    type EthPoolStats,
-    type SolChainStats,
-} from '@suite-common/earn-staking-api';
+import { type StakeDataState } from '@suite-common/wallet-core';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 
 import {
@@ -78,45 +74,43 @@ const getTestState = (accounts: Account[]) => ({
         },
         stake: {
             data: {
-                eth: {
-                    poolStats: {
-                        data: {
+                error: null,
+                isLoading: false,
+                lastSuccessAt: null,
+                data: {
+                    eth: {
+                        stats: {
                             apy: 3.08,
                             nextRewardPayout: 5,
-                        } satisfies EthPoolStats,
+                        },
+                        validators: {},
                     },
-                },
-                sol: {
-                    stakingInfo: {
-                        data: {
+                    sol: {
+                        stats: {
                             apy: 6.24,
-                        } satisfies SolChainStats,
-                    },
-                },
-                ada: {
-                    stakingInfo: {
-                        data: {
-                            pools: [
-                                {
-                                    apy: 2.43,
-                                    saturation: 0.05,
-                                    id: '',
-                                },
-                                {
-                                    apy: 2.43,
-                                    saturation: 81.08999999999999,
-                                    id: '',
-                                },
-                                {
-                                    apy: 5.8,
-                                    saturation: 1.92,
-                                    id: '',
-                                },
-                            ] satisfies AdaPools['pools'],
                         },
                     },
+                    ada: {
+                        pools: [
+                            {
+                                apy: 2.43,
+                                saturation: 81.09,
+                                id: 'pool1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzqs6cy',
+                            },
+                            {
+                                apy: 5.8,
+                                saturation: 1.92,
+                                id: 'pool13rt3ngkek4l876980ect869cu978d36dcyh22ts4nwuf7ncq02u',
+                            },
+                            {
+                                apy: 2.43,
+                                saturation: 0.05,
+                                id: 'pool1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq2crtxv',
+                            },
+                        ],
+                    },
                 },
-            },
+            } satisfies StakeDataState,
         },
         transactions: { transactions: {}, fetchStatusDetail: {} },
     },
