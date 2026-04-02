@@ -1,18 +1,20 @@
 import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import type { ExchangeTrade } from 'invity-api';
 
 import {
     type TradingSendRejectedProps,
     exchangeThunks,
-    selectTradingExchangePreselectedQuote,
-    selectTradingExchangeSelectedQuote,
+    selectTradingExchangeActiveQuote,
 } from '@suite-common/trading';
 import { events } from '@suite-native/analytics';
+import { TradingStackRoutes } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
 import { buildTradingUrl, useBrowserAuth } from '@suite-native/trading-browser-auth';
 import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
+import type { TradingStackNavigationProp } from '@suite-native/trading-types';
 
 import { useTradingTransaction } from '../general/useTradingTransaction';
 
@@ -30,15 +32,33 @@ export type TradingExchangeSignAndSendTransactionProps = {
 };
 
 export const useExchangeFlow = () => {
+    const navigation =
+        useNavigation<
+            TradingStackNavigationProp<
+                | TradingStackRoutes.TradingExchangePreview
+                | TradingStackRoutes.TradingExchangeOutputsReview
+            >
+        >();
     const dispatch = useDispatch();
     const analytics = useAnalytics();
-    const selectedQuote = useSelector(selectTradingExchangeSelectedQuote);
-    const preSelectedQuote = useSelector(selectTradingExchangePreselectedQuote);
-    const quote = selectedQuote ?? preSelectedQuote;
+    const quote = useSelector(selectTradingExchangeActiveQuote);
 
     const sendAccount = useSelector(selectExchangeSelectedSendAccount);
 
     const { openBrowserForFormData } = useBrowserAuth('exchange');
+    const quoteStatus = quote?.status;
+
+    // TODO 25742 should it be here or in component?
+    // TODO tests
+    useFocusEffect(
+        useCallback(() => {
+            if (quoteStatus === 'APPROVAL_PENDING') {
+                navigation.navigate(TradingStackRoutes.TradingConfirming, {
+                    variant: 'approve',
+                });
+            }
+        }, [quoteStatus, navigation]),
+    );
 
     const getCommonFunctions = useCallback(
         (trade?: ExchangeTrade) => {
