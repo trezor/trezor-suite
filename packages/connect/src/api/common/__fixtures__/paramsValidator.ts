@@ -347,7 +347,7 @@ export const getFirmwareRange = [
         description: 'range from config.json (by methods)',
         config: {
             supportedFirmware: [
-                // this one is ignored, no data
+                // this one is always used (but is made impossible by types)
                 { min: { T1B1: '1.11.0', T2T1: '2.5.0' } },
                 // this one is ignored, different excludedMethod
                 { coin: ['btc'], methods: ['showAddress'], min: { T1B1: '1.11.0', T2T1: '2.5.0' } },
@@ -363,21 +363,21 @@ export const getFirmwareRange = [
                     methods: ['showAddress'],
                     min: { T1B1: '1.11.0', T2T1: '2.5.0' },
                 },
-                { methods: ['signTransaction'], min: { T1B1: '1.10.0', T2T1: '2.4.0' } },
+                { methods: ['signTransaction'], min: { T1B1: '1.10.0', T2T1: '2.6.0' } },
             ],
         },
         params: ['signTransaction', DEFAULT_COIN_INFO, DEFAULT_RANGE],
         result: {
             ...DEFAULT_RANGE,
-            T1B1: { min: '1.10.0', max: '0' },
-            T2T1: { min: '2.4.0', max: '0' },
+            T1B1: { min: '1.11.0', max: '0' },
+            T2T1: { min: '2.6.0', max: '0' },
         },
     },
     {
         description: 'range from config.json (by capabilities)',
         config: {
             supportedFirmware: [
-                // this one is ignored, no data
+                // this one is always used (but is made impossible by types)
                 { min: { T1B1: '1.11.0', T2T1: '2.5.0' } },
                 // this one is ignored, different excludedMethod
                 { coin: ['btc'], methods: ['showAddress'], min: { T1B1: '1.11.0', T2T1: '2.5.0' } },
@@ -393,14 +393,14 @@ export const getFirmwareRange = [
                     methods: ['showAddress'],
                     min: { T1B1: '1.11.0', T2T1: '2.5.0' },
                 },
-                { capabilities: ['decreaseOutput'], min: { T1B1: '1.10.0', T2T1: '2.4.0' } },
+                { capabilities: ['decreaseOutput'], min: { T1B1: '1.10.0', T2T1: '2.6.0' } },
             ],
         },
         params: ['decreaseOutput', DEFAULT_COIN_INFO, DEFAULT_RANGE],
         result: {
             ...DEFAULT_RANGE,
-            T1B1: { min: '1.10.0', max: '0' },
-            T2T1: { min: '2.4.0', max: '0' },
+            T1B1: { min: '1.11.0', max: '0' },
+            T2T1: { min: '2.6.0', max: '0' },
         },
     },
     {
@@ -454,7 +454,25 @@ export const getFirmwareRange = [
                 T2T1: { min: '1.0.0', max: '2.10.0' },
             },
         ],
-        result: { T1B1: { min: '1.6.2', max: '1.10.0' }, T2T1: { min: '2.1.0', max: '2.10.0' } },
+        result: { T1B1: { min: '1.6.2', max: '1.0.1' }, T2T1: { min: '2.1.0', max: '2.0.1' } },
+    },
+    {
+        description: 'range from config.json (handle zeros in both min and max)',
+        config: {
+            supportedFirmware: [
+                {
+                    methods: ['signTransaction'],
+                    min: { T1B1: '1.6.0', T2T1: '0' },
+                    max: { T1B1: '1.10.0', T2T1: '2.8.0' },
+                },
+            ],
+        },
+        params: [
+            'signTransaction',
+            null,
+            { T1B1: { min: '0', max: '0' }, T2T1: { min: '2.6.0', max: '0' } },
+        ],
+        result: { T1B1: { min: '0', max: '1.10.0' }, T2T1: { min: '0', max: '2.8.0' } },
     },
     // real config.json data
     {
