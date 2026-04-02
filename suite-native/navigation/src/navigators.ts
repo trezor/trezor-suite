@@ -12,6 +12,7 @@ import {
     type XpubAddress,
 } from '@suite-common/wallet-types';
 import { type ExperimentalFeature } from '@suite-native/settings';
+import type { ConfirmationVariant } from '@suite-native/trading-types';
 import { type AccountInfo } from '@trezor/connect';
 import { type DeviceModelInternal } from '@trezor/device-utils';
 
@@ -474,6 +475,9 @@ export type TradingStackParamList = {
         accountKey: AccountKey;
         tokenContract?: TokenAddress;
         orderId: string;
+    };
+    [TradingStackRoutes.TradingConfirming]: {
+        variant: ConfirmationVariant;
     };
 };
 
