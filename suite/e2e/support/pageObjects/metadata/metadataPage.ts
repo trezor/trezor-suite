@@ -28,6 +28,8 @@ export class MetadataPage {
     readonly closeLegacyNotificationButton: Locator;
     readonly suiteSyncNotification: Locator;
     readonly closeSuiteSyncNotificationButton: Locator;
+    readonly migrateLabelsButton: Locator;
+    readonly migrateFromLocalFileButton: Locator;
 
     constructor(
         private readonly page: Page,
@@ -51,6 +53,10 @@ export class MetadataPage {
         this.suiteSyncNotification = this.page.getByTestId('@notification/feedback-banner');
         this.closeSuiteSyncNotificationButton = this.page.getByTestId(
             '@notification/feedback-banner/close-button',
+        );
+        this.migrateLabelsButton = page.getByTestId('@settings/metadata/migrate-button');
+        this.migrateFromLocalFileButton = page.getByTestId(
+            '@modal/legacy-labeling-migration/file-system-button',
         );
     }
 
