@@ -1,32 +1,43 @@
 import { useContext } from 'react';
 
 import type { TradingType } from '@suite-common/trading';
+import { exhaustive } from '@trezor/type-utils';
 
 import { type TradingFormContextValues } from 'src/types/trading/tradingForm';
 import { TradingBuyFormContext } from 'src/views/wallet/trading/buy/TradingBuyContext';
 import { TradingExchangeFormContext } from 'src/views/wallet/trading/exchange/TradingExchangeContext';
 import { TradingSellFormContext } from 'src/views/wallet/trading/sell/TradingSellContext';
 
-export const useTradingFormContext = <T extends TradingType>() => {
+export function useTradingFormContext(
+    tradingType: TradingType,
+): TradingFormContextValues<TradingType> {
     const buyCtx = useContext(TradingBuyFormContext);
     const sellCtx = useContext(TradingSellFormContext);
     const exchangeCtx = useContext(TradingExchangeFormContext);
 
-    let context;
+    switch (tradingType) {
+        case 'buy':
+            if (!buyCtx) {
+                throw Error('useTradingFormContext used without Context');
+            }
 
-    switch (true) {
-        case buyCtx !== null:
-            context = buyCtx;
-            break;
-        case sellCtx !== null:
-            context = sellCtx;
-            break;
-        case exchangeCtx !== null:
-            context = exchangeCtx;
-            break;
+            return buyCtx;
+
+        case 'sell':
+            if (!sellCtx) {
+                throw Error('useTradingFormContext used without Context');
+            }
+
+            return sellCtx;
+
+        case 'exchange':
+            if (!exchangeCtx) {
+                throw Error('useTradingFormContext used without Context');
+            }
+
+            return exchangeCtx;
+
         default:
-            throw Error('TradingFormContext used without Context');
+            return exhaustive(tradingType);
     }
-
-    return context as TradingFormContextValues<T>;
-};
+}
