@@ -146,7 +146,6 @@ export const ethereumNetworkInfoFromDefinition = (
     slip44: definition.slip44,
     shortcut: definition.symbol,
     support: {
-        connect: true,
         T1B1: '1.6.2',
         T2T1: '2.0.7',
         T2B1: '2.0.0',

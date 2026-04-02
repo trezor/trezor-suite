@@ -30,15 +30,10 @@ export const CoinObj = Type.Object({
 });
 
 export type CoinSupport = Static<typeof CoinSupport>;
-export const CoinSupport = Type.Composite([
-    Type.Object({
-        connect: Type.Boolean(),
-    }),
-    Type.Record(
-        Type.KeyOfEnum(DeviceModelInternal),
-        Type.Union([Type.String(), Type.Literal(false)]),
-    ),
-]);
+export const CoinSupport = Type.Record(
+    Type.KeyOfEnum(DeviceModelInternal),
+    Type.Union([Type.String(), Type.Literal(false)]),
+);
 
 export type BlockchainLink = Static<typeof BlockchainLink>;
 export const BlockchainLink = Type.Object({
