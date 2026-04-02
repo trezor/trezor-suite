@@ -15,14 +15,12 @@ import { type Result, err, ok } from '@trezor/type-utils';
 import { isNotNull, isNotNullOrUndefined } from '@trezor/utils';
 
 import { type GetDeviceForStaticSessionIdDep } from '../getDeviceForStaticSessionId';
-import { type GetDeviceHasAllowance } from '../getDeviceHasAllowance';
+import { type GetDeviceHasAllowanceDep } from '../getDeviceHasAllowance';
 
 export type EnsureQuotaDeps = {
     dispatch: Dispatch;
-    hasAllowance: GetDeviceHasAllowance;
-    getIsDefaultRelayUrlSet: () => boolean;
-    getEnforceQuotaManager: () => boolean;
-} & GetDeviceForStaticSessionIdDep;
+} & GetDeviceForStaticSessionIdDep &
+    GetDeviceHasAllowanceDep;
 
 export type EnsureQuotaParams = {
     deviceStaticSessionId: StaticSessionId;
@@ -50,12 +48,7 @@ export const createEnsureQuota =
             return ok();
         }
 
-        // We only want to use QM for our own relay servers. In case custom URL has been set, QM is ignored,
-        // unless enforceQuotaManager is set (used for e2e tests with a local relay).
-        const isQuotaManagerEnabled =
-            deps.getIsDefaultRelayUrlSet() || deps.getEnforceQuotaManager();
-
-        if (deps.hasAllowance(device.id, walletDescriptor) || !isQuotaManagerEnabled) {
+        if (deps.getDeviceHasAllowance(device.id, walletDescriptor)) {
             return ok();
         }
 

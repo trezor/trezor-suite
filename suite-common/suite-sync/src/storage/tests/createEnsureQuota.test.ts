@@ -40,9 +40,7 @@ describe(createEnsureQuota.name, () => {
     ])('returns ok without dispatching when $description', async ({ getDevice }) => {
         const deps = createMockDeps<EnsureQuotaDeps>({
             dispatch: null,
-            hasAllowance: null,
-            getIsDefaultRelayUrlSet: () => true,
-            getEnforceQuotaManager: () => false,
+            getDeviceHasAllowance: null,
             getDeviceForStaticSessionId: () => getDevice(),
         });
 
@@ -52,23 +50,12 @@ describe(createEnsureQuota.name, () => {
         expect(deps.dispatch).not.toHaveBeenCalled();
     });
 
-    it.each([
-        {
-            description: 'device has allowance',
-            hasAllowance: () => true,
-        },
-        {
-            description: 'quota manager is disabled (custom relay URL)',
-            hasAllowance: () => false,
-        },
-    ])('returns ok without dispatching when $description', async ({ hasAllowance }) => {
+    it('returns ok without dispatching when allowance is granted', async () => {
         const device = mockSuiteDevice();
 
         const deps = createMockDeps<EnsureQuotaDeps>({
             dispatch: null,
-            hasAllowance,
-            getIsDefaultRelayUrlSet: () => false,
-            getEnforceQuotaManager: () => false,
+            getDeviceHasAllowance: () => true,
             getDeviceForStaticSessionId: () => device,
         });
 
@@ -78,14 +65,12 @@ describe(createEnsureQuota.name, () => {
         expect(deps.dispatch).not.toHaveBeenCalled();
     });
 
-    it('dispatches when enforceQuotaManager is set with custom relay URL', async () => {
+    it('dispatches when allowance is not granted', async () => {
         const device = mockSuiteDevice();
 
         const deps = createMockDeps<EnsureQuotaDeps>({
             dispatch: () => Promise.resolve({ success: true }),
-            hasAllowance: () => false,
-            getIsDefaultRelayUrlSet: () => false,
-            getEnforceQuotaManager: () => true,
+            getDeviceHasAllowance: () => false,
             getDeviceForStaticSessionId: () => device,
         });
 
@@ -104,9 +89,7 @@ describe(createEnsureQuota.name, () => {
                     success: false,
                     error: { type: 'WriteModeRequiredForAllocation' },
                 }),
-            hasAllowance: () => false,
-            getIsDefaultRelayUrlSet: () => true,
-            getEnforceQuotaManager: () => false,
+            getDeviceHasAllowance: () => false,
             getDeviceForStaticSessionId: () => device,
         });
 
@@ -125,9 +108,7 @@ describe(createEnsureQuota.name, () => {
                     success: false,
                     error: { type: 'HttpError' },
                 }),
-            hasAllowance: () => false,
-            getIsDefaultRelayUrlSet: () => true,
-            getEnforceQuotaManager: () => false,
+            getDeviceHasAllowance: () => false,
             getDeviceForStaticSessionId: () => device,
         });
 
@@ -136,19 +117,17 @@ describe(createEnsureQuota.name, () => {
         expect(result).toEqual(ok(undefined));
     });
 
-    it('checks the current relay URL state when deciding whether quota manager is enabled', async () => {
+    it('uses the current allowance state when deciding whether to dispatch', async () => {
         const device = mockSuiteDevice();
-        let isDefaultRelayUrlSet = true;
+        let hasDeviceAllowance = false;
 
         const deps = createMockDeps<EnsureQuotaDeps>({
             dispatch: null,
-            hasAllowance: () => false,
-            getIsDefaultRelayUrlSet: () => isDefaultRelayUrlSet,
-            getEnforceQuotaManager: () => false,
+            getDeviceHasAllowance: () => hasDeviceAllowance,
             getDeviceForStaticSessionId: () => device,
         });
 
-        isDefaultRelayUrlSet = false;
+        hasDeviceAllowance = true;
 
         const result = await createEnsureQuota(deps)(DEFAULT_PARAMS);
 
