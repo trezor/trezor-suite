@@ -3881,7 +3881,7 @@ __metadata:
 
 "@evolu/common@github:evoluhq/evolu#workspace=@evolu/common&head=common-v8":
   version: 7.4.1
-  resolution: "@evolu/common@https://github.com/evoluhq/evolu.git#workspace=%40evolu%2Fcommon&commit=5cb304afdcff78aeec365cf482cf21ebf1fa6e58"
+  resolution: "@evolu/common@https://github.com/evoluhq/evolu.git#workspace=%40evolu%2Fcommon&commit=c3d3bae855eb76f2f7b9370402ca81ce897c1cef"
   dependencies:
     "@noble/ciphers": "npm:^2.1.1"
     "@noble/hashes": "npm:^2.0.1"
@@ -3889,13 +3889,13 @@ __metadata:
     kysely: "npm:^0.28.10"
     msgpackr: "npm:^1.11.8"
     random: "npm:^5.4.1"
-  checksum: 10/c69b49e5548c19c6ba6d61f638e53bea4d31535c6277c52207302d1c87f21c19e91feb5a6a4d8bc4d5bc2a2ae6e4165d8144e5021c3a22b9a3d80ae6535012e9
+  checksum: 10/5e571b0cc30ae9fa340448b91b509fbb8c175691fc4201740b1ef5cde3b1febce5dddef02c5db7ca0254fad4070666b1edfff5ba0192488087d6a2a596128ff3
   languageName: node
   linkType: hard
 
 "@evolu/react-native@github:evoluhq/evolu#workspace=@evolu/react-native&head=common-v8":
   version: 14.3.0
-  resolution: "@evolu/react-native@https://github.com/evoluhq/evolu.git#workspace=%40evolu%2Freact-native&commit=5cb304afdcff78aeec365cf482cf21ebf1fa6e58"
+  resolution: "@evolu/react-native@https://github.com/evoluhq/evolu.git#workspace=%40evolu%2Freact-native&commit=c3d3bae855eb76f2f7b9370402ca81ce897c1cef"
   dependencies:
     array-from-async: "npm:^3.0.0"
     array.prototype.tosorted: "npm:^1.1.4"
@@ -3950,7 +3950,7 @@ __metadata:
 
 "@evolu/web@github:evoluhq/evolu#workspace=@evolu/web&head=common-v8":
   version: 2.4.0
-  resolution: "@evolu/web@https://github.com/evoluhq/evolu.git#workspace=%40evolu%2Fweb&commit=5cb304afdcff78aeec365cf482cf21ebf1fa6e58"
+  resolution: "@evolu/web@https://github.com/evoluhq/evolu.git#workspace=%40evolu%2Fweb&commit=c3d3bae855eb76f2f7b9370402ca81ce897c1cef"
   dependencies:
     "@evolu/sqlite-wasm": "npm:2.2.4"
     idb-keyval: "npm:^6.2.2"
