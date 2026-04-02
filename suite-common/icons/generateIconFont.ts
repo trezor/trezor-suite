@@ -68,6 +68,7 @@ const usedIcons = [
     'code',
     'coin',
     'coins',
+    'coinSlash',
     'coinVerticalCheck',
     'copy',
     'currencyBtc',

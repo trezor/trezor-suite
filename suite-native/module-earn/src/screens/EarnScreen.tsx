@@ -10,13 +10,15 @@ import { Translation } from '@suite-native/intl';
 import { Screen } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
 
-import { EarnItemInfoModal, type EarnType } from '../components/EarnItemInfoModal';
+import { ChooseStakingAccountBottomSheet } from '../components/ChooseStakingAccountBottomSheet';
+import { EarnItemInfoModal } from '../components/EarnItemInfoModal';
 import { EarnPromoListHeader } from '../components/EarnPromoListHeader';
 import { EarnPromoListRow } from '../components/EarnPromoListRow';
 import { EarnScreenListHeader } from '../components/EarnScreenListHeader';
 import { useStablecoinYieldListData } from '../hooks/useStablecoinYieldListData';
 import { useStakingListData } from '../hooks/useStakingListData';
-import { type EarnPromoListDataItem } from '../types';
+import { useStakingPromoNavigation } from '../hooks/useStakingPromoNavigation';
+import { type EarnPromoItem, type EarnPromoListDataItem } from '../types';
 
 const getEarnListItemType = (item: EarnPromoListDataItem) =>
     typeof item === 'string' ? 'section-header' : `row-${item.type}`;
@@ -26,10 +28,12 @@ const getEarnListItemKey = (item: EarnPromoListDataItem) =>
 
 export const EarnScreen = () => {
     const analytics = useAnalytics();
-    const { bottomSheetRef: stakingBottomSheetRef, openModal: openStakingModal } =
-        useBottomSheetModal();
-    const { bottomSheetRef: stablecoinYieldBottomSheetRef, openModal: openStablecoinYieldModal } =
-        useBottomSheetModal();
+    const {
+        bottomSheetRef: stablecoinYieldBottomSheetRef,
+        openModal: openStablecoinYieldModal,
+        closeModal: closeStablecoinYieldModal,
+    } = useBottomSheetModal();
+
     const {
         promoListData: stakingPromoItems,
         activeItems: stakingActiveItems,
@@ -37,6 +41,20 @@ export const EarnScreen = () => {
     } = useStakingListData();
     const { promoListData: stablecoinYieldPromoItems, activeItems: stablecoinYieldActiveItems } =
         useStablecoinYieldListData();
+
+    const {
+        handleStakingPromoPress,
+        handleAccountSelected,
+        chosenAccounts,
+        infoSheetRef,
+        chooseAccountSheetRef,
+        closeChooseAccountModal,
+    } = useStakingPromoNavigation();
+
+    const dismissAllModals = useCallback(() => {
+        closeStablecoinYieldModal();
+        closeChooseAccountModal();
+    }, [closeStablecoinYieldModal, closeChooseAccountModal]);
 
     const earnListData = useMemo(
         (): EarnPromoListDataItem[] => [...stakingPromoItems, ...stablecoinYieldPromoItems],
@@ -49,22 +67,26 @@ export const EarnScreen = () => {
         }, [analytics]),
     );
 
-    const handleInfoRequested = useCallback(
-        (type: EarnType) => {
+    const handlePromoItemPress = useCallback(
+        (item: EarnPromoItem) => {
+            dismissAllModals();
+
+            if (item.type === 'stablecoin-yield') {
+                analytics.report({
+                    type: events.earnStablecoinYieldTilePressedEvent.name,
+                });
+                openStablecoinYieldModal();
+
+                return;
+            }
+
             analytics.report({
-                type:
-                    type === 'staking'
-                        ? events.earnStakeTilePressedEvent.name
-                        : events.earnStablecoinYieldTilePressedEvent.name,
+                type: events.earnStakeTilePressedEvent.name,
             });
 
-            if (type === 'staking') {
-                openStakingModal();
-            } else {
-                openStablecoinYieldModal();
-            }
+            handleStakingPromoPress(item);
         },
-        [analytics, openStakingModal, openStablecoinYieldModal],
+        [analytics, dismissAllModals, handleStakingPromoPress, openStablecoinYieldModal],
     );
 
     const renderItem = useCallback(
@@ -84,11 +106,11 @@ export const EarnScreen = () => {
                 <EarnPromoListRow
                     item={item}
                     isLastInSection={isLastInSection}
-                    onInfoPress={handleInfoRequested}
+                    onPress={handlePromoItemPress}
                 />
             );
         },
-        [earnListData, handleInfoRequested],
+        [earnListData, handlePromoItemPress],
     );
 
     return (
@@ -116,8 +138,14 @@ export const EarnScreen = () => {
                     renderItem={renderItem}
                 />
 
-                <EarnItemInfoModal ref={stakingBottomSheetRef} type="staking" />
+                <EarnItemInfoModal ref={infoSheetRef} type="staking" />
                 <EarnItemInfoModal ref={stablecoinYieldBottomSheetRef} type="stablecoin-yield" />
+                <ChooseStakingAccountBottomSheet
+                    ref={chooseAccountSheetRef}
+                    accounts={chosenAccounts}
+                    onAccountSelected={handleAccountSelected}
+                    onClose={closeChooseAccountModal}
+                />
             </VStack>
         </Screen>
     );
