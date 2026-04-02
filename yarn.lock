@@ -10748,6 +10748,7 @@ __metadata:
   resolution: "@suite-common/earn-staking-api@workspace:suite-common/earn-staking-api"
   dependencies:
     "@suite-common/http-client": "workspace:*"
+    "@suite-common/react-query": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     orval: "npm:8.5.0"
     prettier: "npm:^3.8.1"
@@ -11465,7 +11466,6 @@ __metadata:
     "@suite-common/firmware": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/staking": "workspace:*"
-    "@suite-common/staking-solana-types": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
@@ -11491,7 +11491,6 @@ __metadata:
     react-hook-form: "npm:^7.71.2"
     react-redux: "npm:9.2.0"
     web3-utils: "npm:^4.3.2"
-    zod: "npm:4.3.6"
   languageName: unknown
   linkType: soft
 
@@ -13762,7 +13761,6 @@ __metadata:
   resolution: "@suite-native/staking@workspace:suite-native/staking"
   dependencies:
     "@suite-common/device": "workspace:*"
-    "@suite-common/earn-staking-api": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/staking": "workspace:*"
     "@suite-common/suite-sync": "workspace:*"

@@ -4,9 +4,6 @@
     "references": [
         { "path": "../../suite-common/device" },
         {
-            "path": "../../suite-common/earn-staking-api"
-        },
-        {
             "path": "../../suite-common/redux-utils"
         },
         { "path": "../../suite-common/staking" },

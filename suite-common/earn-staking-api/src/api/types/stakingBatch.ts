@@ -4,6 +4,11 @@
  * Trezor Earn API
  * OpenAPI spec version: 0.1.0
  */
-import type { StakingBatchItem } from './stakingBatchItem';
+import type { StakingBatchDataItem } from './stakingBatchDataItem';
+import type { StakingBatchErrorsItem } from './stakingBatchErrorsItem';
 
-export type StakingBatch = StakingBatchItem[];
+export type StakingBatch = {
+    data: StakingBatchDataItem[];
+    /** Errors from upstream services. */
+    errors: StakingBatchErrorsItem[];
+};

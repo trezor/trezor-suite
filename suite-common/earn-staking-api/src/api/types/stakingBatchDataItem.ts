@@ -5,7 +5,7 @@
  * OpenAPI spec version: 0.1.0
  */
 
-export type StakingBatchItem =
+export type StakingBatchDataItem =
     | {
           stats: {
               /** Pool APY as a percentage number (e.g. 3.08). Derived from Everstake pool APR decimal × 100, rounded down to 3 decimal places. */
@@ -28,8 +28,11 @@ export type StakingBatchItem =
           symbol: 'eth';
       }
     | {
-          /** Same as SolChainStats.apy. */
-          apy: number;
+          /** Solana chain stats. */
+          stats: {
+              /** Same as SolChainStats.apy. */
+              apy: number;
+          };
           symbol: 'sol';
       }
     | {
