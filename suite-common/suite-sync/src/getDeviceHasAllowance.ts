@@ -4,3 +4,7 @@ export type GetDeviceHasAllowance = (
     deviceId: string,
     walletDescriptor: WalletDescriptor,
 ) => boolean;
+
+export type GetDeviceHasAllowanceDep = {
+    getDeviceHasAllowance: GetDeviceHasAllowance;
+};

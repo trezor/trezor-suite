@@ -9,7 +9,6 @@ import {
     type WriteModeRequiredForAllocationErrType,
 } from '@suite-common/suite-sync-types';
 import { type DeviceCancelledErrType, type DeviceErrorType } from '@suite-common/suite-types';
-import { type WalletDescriptor } from '@suite-common/wallet-types';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { type StaticSessionId } from '@trezor/connect';
 import { type Result, err, ok } from '@trezor/type-utils';
@@ -19,14 +18,15 @@ import { type EnsureQuotaDep } from './createEnsureQuota';
 import { createStorageIdFromDeviceStaticSessionId } from './createStorageIdFromDeviceStaticSessionId';
 import { SuiteSyncUnavailableOnDeviceError } from '../createRefreshSuiteSyncKeys';
 import { type GetDeviceForStaticSessionIdDep } from '../getDeviceForStaticSessionId';
+import { type GetOwnerHasAllowanceDep } from '../getOwnerHasAllowance';
 
 export type EnsureStorageDeps = {
     getRelayUrl: () => string;
-    hasOwnerAllowance: (walletDescriptor: WalletDescriptor) => boolean;
 } & SuiteSyncStorageRepositoryDep &
     CreateSuiteStorageDep &
     RefreshSuiteSyncKeysDep &
     GetDeviceForStaticSessionIdDep &
+    GetOwnerHasAllowanceDep &
     EnsureQuotaDep;
 
 export type EnsureStorageParams = {
@@ -61,7 +61,8 @@ export const createEnsureStorage =
         // Return cached storage if it exists and user has owner quota.
         // We intentionally skip the isWriteMode check here because deps.ensureQuota also refreshes
         // the owner quota from QM server (we do it so other user devices can allocate more quota, thus here it would be outdated).
-        if (isNotNull(storage) && deps.hasOwnerAllowance(walletDescriptor)) {
+
+        if (isNotNull(storage) && deps.getOwnerHasAllowance(walletDescriptor)) {
             return ok(storage);
         }
 
