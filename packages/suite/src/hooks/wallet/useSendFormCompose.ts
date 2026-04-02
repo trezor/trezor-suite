@@ -233,6 +233,8 @@ export const useSendFormCompose = ({
                 setAmount(setMaxOutputId, composed.max);
                 setShowReserveBanner(true);
                 setDraftSaveRequest(true);
+            } else {
+                setShowReserveBanner(false);
             }
             setLoading(false);
         },
