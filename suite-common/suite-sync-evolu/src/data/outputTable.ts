@@ -1,5 +1,6 @@
 import {
     type Evolu,
+    type InferRow,
     NonEmptyString1000,
     type QueryRows,
     createIdFromString,
@@ -24,7 +25,6 @@ import {
 } from '@suite-common/wallet-types';
 import { err, ok } from '@trezor/type-utils';
 
-import { type UnwrapQuery } from '../evoluUtils';
 import { normalizeLabel } from './normalizeLabel';
 
 export const OutputEvoluId = id('OutputLabelId');
@@ -88,7 +88,7 @@ export class OutputEvoluTable implements OutputTable {
     subscribe = ({ onChange }: EntityListener<SuiteSyncOutput>) => {
         const query = this.getQuery();
 
-        const process = (labels: QueryRows<UnwrapQuery<typeof query>>) => {
+        const process = (labels: QueryRows<InferRow<typeof query>>) => {
             const acc: SuiteSyncOutput[] = [];
 
             for (const label of labels) {

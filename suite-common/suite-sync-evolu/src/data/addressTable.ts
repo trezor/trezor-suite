@@ -1,5 +1,6 @@
 import {
     type Evolu,
+    type InferRow,
     NonEmptyString1000,
     type QueryRows,
     createIdFromString,
@@ -21,7 +22,6 @@ import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { err, ok } from '@trezor/type-utils';
 
 import { normalizeLabel } from './normalizeLabel';
-import { type UnwrapQuery } from '../evoluUtils';
 
 export const AddressEvoluId = id('AddressEvoluId');
 export type AddressEvoluId = typeof AddressEvoluId.Type;
@@ -81,7 +81,7 @@ export class AddressEvoluTable implements AddressTable {
     subscribe = ({ onChange }: EntityListener<SuiteSyncAddress>) => {
         const query = this.getQuery();
 
-        const process = (labels: QueryRows<UnwrapQuery<typeof query>>) => {
+        const process = (labels: QueryRows<InferRow<typeof query>>) => {
             const acc: SuiteSyncAddress[] = [];
 
             for (const label of labels) {
