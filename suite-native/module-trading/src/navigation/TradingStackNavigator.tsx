@@ -6,6 +6,7 @@ import {
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
 
+import { TradingConfirmingScreen } from '../screens/TradingConfirmingScreen';
 import { TradingExchangeApprovalScreen } from '../screens/TradingExchangeApprovalScreen';
 import { TradingExchangePreviewScreen } from '../screens/TradingExchangePreviewScreen';
 import { TradingExchangeRevokeScreen } from '../screens/TradingExchangeRevokeScreen';
@@ -69,6 +70,11 @@ export const TradingStackNavigator = () => (
             options={{ title: TradingStackRoutes.TradingExchangeOutputsReview }}
             name={TradingStackRoutes.TradingExchangeOutputsReview}
             component={TradingExchangeOutputsReviewScreen}
+        />
+        <TradingStack.Screen
+            options={{ title: TradingStackRoutes.TradingConfirming }}
+            name={TradingStackRoutes.TradingConfirming}
+            component={TradingConfirmingScreen}
         />
     </TradingStack.Navigator>
 );
