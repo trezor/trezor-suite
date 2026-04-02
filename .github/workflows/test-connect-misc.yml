@@ -99,4 +99,3 @@ jobs:
 
       - run: yarn install --immutable
       - run: yarn workspace @trezor/protobuf update:protobuf
-      - run: yarn workspace @trezor/protobuf update:schema

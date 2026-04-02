@@ -49,10 +49,8 @@ rm -f ./build/messages-{webauthn,benchmark,nem,nostr}.proto
 
 # build `protobufjs` definitions and types
 yarn g:tsx ./protobuf-definitions.ts ./build --skip=thp
-yarn g:tsx ./protobuf-types.ts
 
-yarn workspace @trezor/protobuf g:prettier --write {messages.json,src/messages.ts}
-yarn workspace @trezor/protobuf g:eslint --fix ./src/messages.ts
+yarn workspace @trezor/protobuf g:prettier --write messages.json
 
 yarn g:tsx ./protobuf-thp-definitions.ts ./build
 
