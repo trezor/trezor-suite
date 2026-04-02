@@ -6,6 +6,7 @@
         {
             "path": "../delegated-identity-key-types"
         },
+        { "path": "../dependency-injection" },
         { "path": "../device" },
         { "path": "../redux-utils" },
         { "path": "../suite-sync-storage" },

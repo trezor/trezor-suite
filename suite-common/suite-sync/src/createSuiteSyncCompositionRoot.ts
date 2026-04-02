@@ -5,11 +5,7 @@ import { type EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-iden
 import { toGetter } from '@suite-common/dependency-injection';
 import { selectAllDeviceStaticIds, selectDeviceByStaticSessionId } from '@suite-common/device';
 import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
-import {
-    selectEnforceQuotaManager,
-    selectHasDeviceAllowance,
-    selectHasOwnerAllowance,
-} from '@suite-common/suite-sync-quota-manager';
+import { createSuiteSyncQuotaManagerCompositionRoot } from '@suite-common/suite-sync-quota-manager';
 import {
     type CreateSuiteStorage,
     type CreateSuiteSyncOwnerDep,
@@ -19,7 +15,6 @@ import {
     type SuiteSyncAppReloaderDep,
     type SuiteSyncErrorHandler,
 } from '@suite-common/suite-sync-types';
-import { type WalletDescriptor } from '@suite-common/wallet-types';
 import { type Analytics } from '@trezor/analytics-uploader';
 
 import { createRefreshSuiteSync } from './createRefreshSuiteSyncKeys';
@@ -37,9 +32,6 @@ import { createUpdateWalletLabel } from './data/labeling/createUpdateWalletLabel
 import { selectSuiteSyncOutputLabel } from './data/output/suiteSyncOutputSelectors';
 import { selectSuiteSyncWalletLabel } from './data/wallet/suiteSyncWalletSelectors';
 import { type GetDeviceForStaticSessionId } from './getDeviceForStaticSessionId';
-import { type GetDeviceHasAllowance } from './getDeviceHasAllowance';
-import { type GetIsQuotaManagerEnabled } from './getIsQuotaManagerEnabled';
-import { type GetOwnerHasAllowance } from './getOwnerHasAllowance';
 import { createEnsureSuiteSyncOwner } from './owner/createEnsureSuiteSyncOwner';
 import { createLoadSuiteSyncOwnerFromState } from './owner/createLoadSuiteSyncOwnerFromState';
 import {
@@ -49,7 +41,6 @@ import {
 import { createSaveSuiteSyncOwner } from './owner/createSaveSuiteSyncOwner';
 import { createChangeRelayUrl } from './relay/createChangeRelayUrl';
 import { isUsingTrezorServer } from './relay/isUsingTrezorServer';
-import { createEnsureQuota } from './storage/createEnsureQuota';
 import { createEnsureStorage } from './storage/createEnsureStorage';
 import { createEnsureWalletSuiteSyncOn } from './storage/createEnsureWalletSuiteSyncOn';
 import { createEnsureWalletSuiteSyncOnWithErrorHandler } from './storage/createEnsureWalletSuiteSyncOnWithErrorHandler';
@@ -122,23 +113,11 @@ export const createSuiteSyncCompositionRoot = (
         getDeviceForStaticSessionId,
     });
 
-    // We only want to use QM for our own relay servers. In case custom URL has been set, QM is ignored,
-    // unless enforceQuotaManager is set (used for e2e tests with a local relay).
-    const getIsQuotaManagerEnabled: GetIsQuotaManagerEnabled = () =>
-        isUsingTrezorServer(selectSuiteSyncRelayUrl(deps.getState())) ||
-        selectEnforceQuotaManager(deps.getState());
-
-    const getDeviceHasAllowance: GetDeviceHasAllowance = (deviceId, walletDescriptor) =>
-        !getIsQuotaManagerEnabled() ||
-        selectHasDeviceAllowance(deps.getState(), deviceId, walletDescriptor);
-
-    const getOwnerHasAllowance: GetOwnerHasAllowance = (walletDescriptor: WalletDescriptor) =>
-        !getIsQuotaManagerEnabled() || selectHasOwnerAllowance(deps.getState(), walletDescriptor);
-
-    const ensureQuota = createEnsureQuota({
+    const { ensureQuota, getOwnerHasAllowance } = createSuiteSyncQuotaManagerCompositionRoot({
         dispatch: deps.dispatch,
+        getState: deps.getState,
         getDeviceForStaticSessionId,
-        getDeviceHasAllowance,
+        getIsUsingTrezorRelay: () => isUsingTrezorServer(selectSuiteSyncRelayUrl(deps.getState())),
     });
 
     const suiteSyncErrorHandler: SuiteSyncErrorHandler = createSuiteSyncErrorHandler({

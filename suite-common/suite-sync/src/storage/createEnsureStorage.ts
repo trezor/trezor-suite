@@ -1,4 +1,8 @@
 import {
+    type EnsureQuotaDep,
+    type GetOwnerHasAllowanceDep,
+} from '@suite-common/suite-sync-quota-manager';
+import {
     type CreateSuiteStorageDep,
     type SuiteSyncStorage,
 } from '@suite-common/suite-sync-storage';
@@ -14,11 +18,9 @@ import { type StaticSessionId } from '@trezor/connect';
 import { type Result, err, ok } from '@trezor/type-utils';
 import { isNotNull } from '@trezor/utils';
 
-import { type EnsureQuotaDep } from './createEnsureQuota';
 import { createStorageIdFromDeviceStaticSessionId } from './createStorageIdFromDeviceStaticSessionId';
 import { SuiteSyncUnavailableOnDeviceError } from '../createRefreshSuiteSyncKeys';
 import { type GetDeviceForStaticSessionIdDep } from '../getDeviceForStaticSessionId';
-import { type GetOwnerHasAllowanceDep } from '../getOwnerHasAllowance';
 
 export type EnsureStorageDeps = {
     getRelayUrl: () => string;

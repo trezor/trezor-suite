@@ -11,6 +11,9 @@ export {
     WriteModeRequiredForAllocation,
 } from './ensureOwnerHasAllocatedQuotaThunk';
 export { increaseOwnerQuotaThunk } from './increaseOwnerQuotaThunk';
+export type { EnsureQuotaDep } from './createEnsureQuota';
+export { createSuiteSyncQuotaManagerCompositionRoot } from './createSuiteSyncQuotaManagerCompositionRoot';
+export type { GetOwnerHasAllowanceDep } from './getOwnerHasAllowance';
 
 /**
  * Actions.
