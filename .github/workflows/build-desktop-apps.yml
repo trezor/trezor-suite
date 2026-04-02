@@ -25,9 +25,39 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # An optimization needed to save RAM on the macOS runner, which is most constrained: build the Webpack Renderer bundle only once in Linux.
+  # The Renderer bundle is the heaviest part of the build, and also the only part which can be safely shared (not platform dependent).
+  build-and-cache-renderer:
+    name: Build and cache Elecron Renderer process bundle
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          lfs: true
+          submodules: true
+      - name: Install node and yarn
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
+        with:
+          node-version-file: ".nvmrc"
+      - name: Install deps and build libs
+        run: |
+          yarn install --immutable
+          yarn message-system-sign-config
+          yarn workspace @trezor/suite-data build:lib
+          yarn workspace @trezor/transport-bridge build:lib
+      - name: Build Electron Renderer bundle
+        run: yarn workspace @trezor/suite-desktop build:ui
+      - name: Cache Electron renderer bundle
+        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5
+        with:
+          path: packages/suite-desktop/build
+          key: renderer-bundle-${{ github.sha }}
+
   suite-desktop:
     if: (github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'build-desktop') || (github.event_name == 'push' && github.ref == 'refs/heads/develop')) && (github.repository == 'trezor/trezor-suite' || github.repository == 'trezor/trezor-suite-private')
     name: Build suite-desktop-${{ matrix.platform }}
+    needs: build-and-cache-renderer
     runs-on: ${{ matrix.os }}
     timeout-minutes: 20
     strategy:
@@ -50,6 +80,13 @@ jobs:
         with:
           node-version-file: ".nvmrc"
 
+      - name: Restore Electron renderer bundle
+        uses: actions/cache/restore@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5
+        with:
+          path: packages/suite-desktop/build
+          key: renderer-bundle-${{ github.sha }}
+          fail-on-cache-miss: true
+
       - name: Install deps and build libs
         run: |
           yarn install --immutable
@@ -61,7 +98,8 @@ jobs:
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         run: |
-          yarn workspace @trezor/suite-desktop build:${{ matrix.platform }}
+          yarn workspace @trezor/suite-desktop build:app
+          yarn workspace @trezor/suite-desktop build:app:electron:${{ matrix.platform }}
           bash packages/suite-desktop-core/scripts/gnupg-sign.sh
           mv packages/suite-desktop/build-electron/* .
 
@@ -117,6 +155,7 @@ jobs:
       - name: Build ${{env.platform}} suite-desktop
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+        # TODO solve caching here as well: the container interferes with file permissions due to the --user 1001 option and cache/restore fails.
         run: |
           yarn workspace @trezor/suite-desktop build:${{env.platform}}
           bash packages/suite-desktop-core/scripts/gnupg-sign.sh
