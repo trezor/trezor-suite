@@ -90,7 +90,7 @@ describe('Stellar', () => {
                     decimals: 7,
                     name: 'USDC',
                     standard: 'STELLAR-CLASSIC',
-                    symbol: 'usdc',
+                    symbol: 'USDC',
                 },
             ],
         });
@@ -171,7 +171,7 @@ describe('Stellar', () => {
                     decimals: 7,
                     name: 'USDC',
                     standard: 'STELLAR-CLASSIC',
-                    symbol: 'usdc',
+                    symbol: 'USDC',
                 },
             ],
         });
