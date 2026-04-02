@@ -2,7 +2,7 @@
 
 import * as protobuf from 'protobufjs/light';
 
-import type { MessageKey } from './messages';
+import type { MessageKey } from './definitions';
 
 const primitiveTypes = [
     'bool',

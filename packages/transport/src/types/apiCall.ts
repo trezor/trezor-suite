@@ -1,4 +1,4 @@
-import { type Messages } from '@trezor/protobuf';
+import type { MessagesSchema } from '@trezor/protobuf';
 import {
     type PROTOCOL_MALFORMED,
     type ThpChannelState,
@@ -32,4 +32,4 @@ export type BridgeCommonErrors =
     | typeof ERRORS.WRONG_RESULT_TYPE
     | typeof ERRORS.UNEXPECTED_ERROR;
 
-export type MessageResponse = Messages.MessageResponse | protocolThp.ThpMessageResponse;
+export type MessageResponse = MessagesSchema.MessageResponse | protocolThp.ThpMessageResponse;

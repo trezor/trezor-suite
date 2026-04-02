@@ -46,11 +46,11 @@ export const paramDescriptions = {
     coin:
         '> Determines network definition specified in [coins.json](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-data/files/coins.json) file.\n' +
         '> Coin `shortcut`, `name` or `label` can be used.\n',
-    inputs: 'of [PROTO.TxInputType](https://github.com/trezor/trezor-suite/blob/develop/packages/protobuf/src/messages.ts)',
+    inputs: 'of [PROTO.TxInputType](https://github.com/trezor/trezor-suite/blob/develop/packages/protobuf/src/definitions/messages-bitcoin.ts)',
     outputs:
-        'of [PROTO.TxOutputType](https://github.com/trezor/trezor-suite/blob/develop/packages/protobuf/src/messages.ts)',
+        'of [PROTO.TxOutputType](https://github.com/trezor/trezor-suite/blob/develop/packages/protobuf/src/definitions/messages-bitcoin.ts)',
     paymentRequests:
-        'of [PROTO.PaymentRequest](https://github.com/trezor/trezor-suite/blob/develop/packages/protobuf/src/messages.ts). See [SLIP-24](https://github.com/satoshilabs/slips/blob/slip24/slip-0024.md)',
+        'of [PROTO.PaymentRequest](https://github.com/trezor/trezor-suite/blob/develop/packages/protobuf/src/definitions/messages-bitcoin.ts). See [SLIP-24](https://github.com/satoshilabs/slips/blob/slip24/slip-0024.md)',
     refTxs:
         'of [RefTransaction](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/src/types/api/bitcoin/index.ts).\n' +
         "> If you don't want to use build-in `blockbook` backend you can optionally provide those data from your own backend transformed to `Trezor` format.\n" +

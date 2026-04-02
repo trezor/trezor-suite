@@ -5,7 +5,7 @@ import {
     initStore,
     renderHookWithStoreProvider,
 } from '@suite-native/test-utils';
-import { AmountUnit } from '@trezor/protobuf/src/messages';
+import { AmountUnit } from '@trezor/protobuf/src/definitions';
 
 import { useFormattedGraphHeaderValues } from '../useFormattedGraphHeaderValues';
 

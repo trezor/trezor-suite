@@ -10,7 +10,7 @@ import type {
     UiRequestButtonData,
     UiRequestConfirmation,
 } from '@trezor/connect-common';
-import type { Capability } from '@trezor/protobuf/src/messages';
+import type { Capability } from '@trezor/protobuf/src/definitions';
 import { versionUtils } from '@trezor/utils';
 
 import type { Device } from '../device/Device';
