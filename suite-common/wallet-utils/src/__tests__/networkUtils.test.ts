@@ -34,7 +34,7 @@ const setMock = (mock: any) => {
 describe('networkUtils', () => {
     describe('httpRequest', () => {
         beforeEach(() => {
-            jest.resetAllMocks();
+            jest.clearAllMocks();
         });
 
         it('should resolve response with json', async () => {

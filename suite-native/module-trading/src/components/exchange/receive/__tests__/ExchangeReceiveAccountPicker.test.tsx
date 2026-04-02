@@ -64,7 +64,7 @@ describe('ExchangeReceiveAccountPicker', () => {
     };
 
     beforeEach(() => {
-        jest.resetAllMocks();
+        jest.clearAllMocks();
         exchangeForm = renderExchangeForm();
     });
 

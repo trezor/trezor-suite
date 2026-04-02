@@ -13,7 +13,7 @@ describe('CopyableText', () => {
         renderWithBasicProvider(<CopyableText text="TEST TEXT" {...props} />);
 
     beforeEach(() => {
-        jest.resetAllMocks();
+        jest.clearAllMocks();
     });
 
     it('should render title, text and copy button', () => {

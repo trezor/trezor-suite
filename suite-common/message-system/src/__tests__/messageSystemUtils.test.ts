@@ -117,7 +117,7 @@ describe('Message system utils', () => {
         });
 
         afterEach(() => {
-            jest.resetAllMocks();
+            jest.clearAllMocks();
             jest.resetModules();
             process.env = OLD_ENV;
         });
@@ -148,7 +148,7 @@ describe('Message system utils', () => {
         });
 
         afterEach(() => {
-            jest.resetAllMocks();
+            jest.clearAllMocks();
             jest.resetModules();
             process.env = OLD_ENV;
         });

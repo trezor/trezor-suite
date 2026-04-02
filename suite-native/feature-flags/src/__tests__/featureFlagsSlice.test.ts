@@ -4,7 +4,7 @@ describe('featureFlagsSlice', () => {
     afterEach(() => {
         Platform.OS = 'ios';
         jest.resetModules();
-        jest.resetAllMocks();
+        jest.clearAllMocks();
     });
 
     describe('initial state', () => {

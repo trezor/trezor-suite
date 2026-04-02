@@ -25,7 +25,7 @@ const getMockedDevice = (): Device => {
 
 describe(checkFirmwareHashWithRetries.name, () => {
     afterEach(() => {
-        jest.resetAllMocks();
+        jest.clearAllMocks();
     });
 
     it('performs check successfully from initial state', async () => {

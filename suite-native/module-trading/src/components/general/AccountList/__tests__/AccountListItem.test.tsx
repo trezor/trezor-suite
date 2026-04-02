@@ -75,7 +75,7 @@ describe('AccountListItem', () => {
     };
 
     beforeEach(() => {
-        jest.resetAllMocks();
+        jest.clearAllMocks();
     });
 
     it('should call onPress callback when pressed', () => {

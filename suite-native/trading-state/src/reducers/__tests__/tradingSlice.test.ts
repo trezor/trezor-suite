@@ -26,7 +26,7 @@ describe('tradingSlice', () => {
     });
 
     afterEach(() => {
-        jest.resetAllMocks();
+        jest.clearAllMocks();
     });
 
     describe('initial state', () => {

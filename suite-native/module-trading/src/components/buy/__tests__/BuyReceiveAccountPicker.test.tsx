@@ -64,7 +64,7 @@ describe('BuyReceiveAccountPicker', () => {
     };
 
     beforeEach(() => {
-        jest.resetAllMocks();
+        jest.clearAllMocks();
         buyForm = renderBuyForm();
     });
 
