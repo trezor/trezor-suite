@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import {
+    DEFAULT_QUOTA_MANAGER_URL,
     enforceQuotaManagerUpdated,
     eraseFetchedData,
     selectEnforceQuotaManager,
@@ -9,7 +10,7 @@ import {
     selectRegisteredDevices,
     updateQuotaManagerBaseUrl,
 } from '@suite-common/suite-sync-quota-manager';
-import { Button, Checkbox, Column, Input } from '@trezor/components';
+import { Button, Checkbox, Code, Column, Input, Text } from '@trezor/components';
 import { ActionColumn, SectionItem, SettingsSection, TextColumn } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
@@ -28,9 +29,14 @@ export const QuotaManagerSettings = () => {
 
     const onQuotaManagerBaseUrlSave = () => {
         setIsUpdateUrlLoading(true);
+
+        const normalizedUrl =
+            quotaManagerUrl.trim() === '' ? DEFAULT_QUOTA_MANAGER_URL : quotaManagerUrl;
+
+        setQuotaManagerUrl(normalizedUrl);
         dispatch(
             updateQuotaManagerBaseUrl({
-                baseUrl: quotaManagerUrl,
+                baseUrl: normalizedUrl,
             }),
         );
 
@@ -71,6 +77,9 @@ export const QuotaManagerSettings = () => {
                                 </Button>
                             }
                         />
+                        <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
+                            Default is: <Code>{DEFAULT_QUOTA_MANAGER_URL}</Code>
+                        </Text>
                     </Column>
                 </ActionColumn>
             </SectionItem>
