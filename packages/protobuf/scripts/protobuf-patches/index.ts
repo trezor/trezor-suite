@@ -273,10 +273,16 @@ export const TYPE_PATCH = {
     'PaymentRequest.amount': 'string',
 };
 
-export const readPatch = (file: string) =>
-    fs
-        .readFileSync(path.join(__dirname, file), 'utf8')
+export const readPatch = (file: string) => {
+    const filePath = path.join(__dirname, file);
+    if (!fs.existsSync(filePath)) {
+        throw new Error(`Patch file not found: ${filePath}`);
+    }
+
+    return fs
+        .readFileSync(filePath, 'utf8')
         .replace(/^\/\/ (@ts-nocheck|eslint-disable-next-line).*\n?/gm, '');
+};
 
 export const DEFINITION_PATCH = {
     TxInputType: () => readPatch('./TxInputType.ts'),
