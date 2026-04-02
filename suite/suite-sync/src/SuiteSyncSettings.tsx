@@ -123,6 +123,7 @@ export const SuiteSyncSettings = ({ onError, suiteSync }: SuiteSyncSettingsProps
                 <TextColumn title="Suite Sync (Evolu) Debug" />
                 <ActionColumn>
                     <Checkbox
+                        data-testid="@settings/debug/suite-sync/debug-toggle"
                         isChecked={isSuiteSyncDebugEnabled}
                         onChange={handleToggleSuiteSyncDebug}
                     />

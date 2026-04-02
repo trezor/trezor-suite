@@ -9,6 +9,7 @@ import { step } from '../common';
 export enum MetadataProvider {
     DROPBOX = 'dropbox',
     GOOGLE = 'google',
+    LOCAL = 'file-system',
 }
 
 export type ProviderMocks = DropboxMock | GoogleMock;

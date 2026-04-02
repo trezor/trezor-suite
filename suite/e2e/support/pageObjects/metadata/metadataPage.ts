@@ -24,6 +24,8 @@ export class MetadataPage {
     readonly suiteSyncBannerButton: Locator;
     readonly metadataProviderButton = (provider: MetadataProvider) =>
         this.page.getByTestId(`@modal/metadata-provider/${provider}-button`);
+    readonly migrateLabelsButton: Locator;
+    readonly migrateFromLocalFileButton: Locator;
 
     constructor(
         private readonly page: Page,
@@ -40,6 +42,10 @@ export class MetadataPage {
         this.copyAddressButton = page.getByTestId('@metadata/copy-address-button');
         this.suiteSyncBanner = page.getByTestId('@notification/suite-sync-keys');
         this.suiteSyncBannerButton = page.getByTestId('@notification/suite-sync-keys/button');
+        this.migrateLabelsButton = page.getByTestId('@settings/metadata/migrate-button');
+        this.migrateFromLocalFileButton = page.getByTestId(
+            '@modal/legacy-labeling-migration/file-system-button',
+        );
     }
 
     @step()
