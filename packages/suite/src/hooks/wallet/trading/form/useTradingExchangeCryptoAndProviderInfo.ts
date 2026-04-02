@@ -1,12 +1,10 @@
 import { useCallback } from 'react';
 
-import { type TradingExchangeType } from '@suite-common/trading';
-
-import { useTradingFormContext } from './useTradingCommonForm';
+import { useTradingExchangeFormContext } from 'src/views/wallet/trading/exchange/TradingExchangeContext';
 
 export const useTradingExchangeCryptoAndProviderInfo = () => {
     const { selectedQuote, preselectedQuote, exchangeInfo, getValues } =
-        useTradingFormContext<TradingExchangeType>();
+        useTradingExchangeFormContext();
 
     const getCryptoInfo = useCallback(() => {
         const { sendCryptoSelect, receiveCryptoSelect, selectedFee } = getValues();

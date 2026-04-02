@@ -3,7 +3,6 @@ import { type CryptoId } from 'invity-api';
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import {
-    type TradingExchangeType,
     selectTradingExchangeFormStep,
     selectTradingExchangeReceiveAccountKey,
 } from '@suite-common/trading';
@@ -13,11 +12,11 @@ import { useAsyncClickHandler } from '@trezor/react-utils';
 import { spacings } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
-import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useAnalytics } from 'src/support/useAnalytics';
 import { type TradingExchangeProvidersInfoProps } from 'src/types/trading/trading';
 import { type TradingOfferExchangeProps } from 'src/types/trading/tradingForm';
 import { tradingGetAmountLabels } from 'src/utils/wallet/trading/tradingUtils';
+import { useTradingExchangeFormContext } from 'src/views/wallet/trading/exchange/TradingExchangeContext';
 
 import { TradingOfferExchangeDetails } from './TradingOfferExchangeDetails';
 import { TradingFiatDeviationWarning } from '../../TradingFiatDeviationWarning';
@@ -45,7 +44,7 @@ export const TradingOfferExchange = ({
         },
         sendTransaction,
         signDataAndConfirm,
-    } = useTradingFormContext<TradingExchangeType>();
+    } = useTradingExchangeFormContext();
 
     const amountInCrypto = quoteAmounts?.amountInCrypto ?? true;
     const amountLabels = tradingGetAmountLabels({ type, amountInCrypto });

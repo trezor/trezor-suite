@@ -5,7 +5,6 @@ import {
     TRADING_FORM_CRYPTO_CURRENCY_SELECT,
     TRADING_FORM_CRYPTO_INPUT,
     TRADING_FORM_FIAT_INPUT,
-    type TradingBuyType,
     isCountrySubdivisionRequired,
     selectTradingBuyQuotes,
     selectTradingBuySupportedCryptoIds,
@@ -18,7 +17,7 @@ import { hasBitcoinOnlyFirmware } from '@trezor/device-utils/src/firmwareUtils';
 import { useCurrentRef } from '@trezor/react-utils';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { useTradingBuyFormContext } from 'src/views/wallet/trading/buy/TradingBuyContext';
 import { TradingBalance } from 'src/views/wallet/trading/common/TradingBalance';
 import { TradingFormInputCountry } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCountry/TradingFormInputCountry';
 import { TradingFormInputFiatCrypto } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputFiatCrypto';
@@ -35,7 +34,7 @@ import {
 import { TradingFormInputCountrySubdivision } from './TradingFormInput/TradingFormInputCountry/TradingFormInputCountrySubdivision';
 
 export const TradingBuyFormInputs = () => {
-    const context = useTradingFormContext<TradingBuyType>();
+    const context = useTradingBuyFormContext();
     const { defaultCountry } = context;
 
     const { isLoading } = useSelector(selectTradingLoadingAndTimestamp);

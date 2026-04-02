@@ -7,7 +7,6 @@ import {
     TRADING_FORM_OUTPUT_FIAT,
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
     type TradingSellFormProps,
-    type TradingSellType,
     isCountrySubdivisionRequired,
     selectTradingSellSupportedCryptoIds,
 } from '@suite-common/trading';
@@ -18,12 +17,12 @@ import { useCurrentRef } from '@trezor/react-utils';
 
 import { useSelector } from 'src/hooks/suite';
 import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
-import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useAnalytics } from 'src/support/useAnalytics';
 import { TradingBalance } from 'src/views/wallet/trading/common/TradingBalance';
 import { TradingFormInputCountry } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCountry/TradingFormInputCountry';
 import { TradingFormInputFiatCrypto } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputFiatCrypto';
 import { TradingFormInputPaymentMethod } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputPaymentMethod/TradingFormInputPaymentMethod';
+import { useTradingSellFormContext } from 'src/views/wallet/trading/sell/TradingSellContext';
 
 import { TradingFormCard } from './TradingFormCard';
 import { TradingFormFees } from './TradingFormFees';
@@ -39,7 +38,7 @@ import { TradingNetworkReserveBanner } from './TradingNetworkReserveBanner';
 import { generateFractionButtons } from './tradingFormInputsUtils';
 
 export const TradingSellFormInputs = () => {
-    const context = useTradingFormContext<TradingSellType>();
+    const context = useTradingSellFormContext();
     const analytics = useAnalytics();
 
     const {

@@ -10,17 +10,16 @@ import {
     TRADING_EXCHANGE_COMPARATOR_RATE_FILTER_DEX,
     TRADING_EXCHANGE_COMPARATOR_RATE_FILTER_FIXED_CEX,
     TRADING_EXCHANGE_COMPARATOR_RATE_FILTER_FLOATING_CEX,
-    type TradingExchangeType,
 } from '@suite-common/trading';
 
 import { KYC_DEX, KYC_NO_KYC } from 'src/constants/wallet/trading/kyc';
-import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { TradingOffersExchangeQuotesByTypeSection } from 'src/views/wallet/trading/common/TradingOffers/TradingOffersExchangeQuotesByTypeSection';
+import { useTradingExchangeFormContext } from 'src/views/wallet/trading/exchange/TradingExchangeContext';
 
 import { TradingUtilsTorWarning } from '../TradingUtils/TradingUtilsTorWarning';
 
 export const TradingOffersExchange = () => {
-    const { quotes, exchangeInfo, getValues } = useTradingFormContext<TradingExchangeType>();
+    const { quotes, exchangeInfo, getValues } = useTradingExchangeFormContext();
     const exchangeTypeFilter = getValues(TRADING_EXCHANGE_COMPARATOR_RATE_FILTER);
     const kycFilter = getValues(TRADING_EXCHANGE_COMPARATOR_KYC_FILTER);
     const showAll = exchangeTypeFilter === TRADING_EXCHANGE_COMPARATOR_RATE_FILTER_ALL;

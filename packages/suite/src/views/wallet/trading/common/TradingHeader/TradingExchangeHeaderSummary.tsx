@@ -1,18 +1,15 @@
 import { type CryptoId } from 'invity-api';
 
 import { Translation } from '@suite/intl';
-import {
-    type TradingExchangeType,
-    selectTradingComposedTransactionInfo,
-} from '@suite-common/trading';
+import { selectTradingComposedTransactionInfo } from '@suite-common/trading';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { H3, Icon, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
-import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { TradingCryptoAmount } from 'src/views/wallet/trading/common/TradingCryptoAmount';
+import { useTradingExchangeFormContext } from 'src/views/wallet/trading/exchange/TradingExchangeContext';
 
 interface TradingExchangeHeaderSummaryProps {
     sendAmount: string | number | undefined;
@@ -25,7 +22,7 @@ export const TradingExchangeHeaderSummary = ({
     sendCurrency,
     receiveCurrency,
 }: TradingExchangeHeaderSummaryProps) => {
-    const context = useTradingFormContext<TradingExchangeType>();
+    const context = useTradingExchangeFormContext();
     const { account } = context;
     const { symbol } = account;
     const fee = useSelector(selectTradingComposedTransactionInfo)?.composed?.fee;

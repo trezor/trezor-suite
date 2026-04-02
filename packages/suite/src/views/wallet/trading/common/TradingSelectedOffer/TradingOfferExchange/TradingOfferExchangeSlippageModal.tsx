@@ -3,11 +3,7 @@ import { type FieldError } from 'react-hook-form';
 import { useDebounce } from 'react-use';
 
 import { Translation, type TranslationKey } from '@suite/intl';
-import {
-    TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
-    type TradingExchangeType,
-    useTradingUtils,
-} from '@suite-common/trading';
+import { TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT, useTradingUtils } from '@suite-common/trading';
 import { Column, InfoItem, Input, Modal, Row, SelectBar, Text } from '@trezor/components';
 import { BottomText } from '@trezor/components/src/components/form/BottomText';
 import { spacings } from '@trezor/theme';
@@ -15,8 +11,8 @@ import { BigNumber } from '@trezor/utils';
 
 import { FormattedCryptoAmount } from 'src/components/suite';
 import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
-import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { formatCryptoAmountAsAmount } from 'src/views/wallet/trading/common/formatCryptoAmountAsAmount';
+import { useTradingExchangeFormContext } from 'src/views/wallet/trading/exchange/TradingExchangeContext';
 
 const SLIPPAGE_MIN = '0.01';
 const SLIPPAGE_MAX = '50';
@@ -44,7 +40,7 @@ export const TradingOfferExchangeSlippageModal = ({
         selectedQuote,
         getValues,
         confirmTrade,
-    } = useTradingFormContext<TradingExchangeType>();
+    } = useTradingExchangeFormContext();
 
     const { cryptoIdToSymbolAndContractAddress } = useTradingUtils();
 

@@ -4,12 +4,12 @@ import { type BankAccount } from 'invity-api';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { type TradingSellType, sellUtils } from '@suite-common/trading';
+import { sellUtils } from '@suite-common/trading';
 import { Button, Icon, Row, Select } from '@trezor/components';
 import { fontWeights, spacingsPx, typography } from '@trezor/theme';
 
 import { QuestionTooltip } from 'src/components/suite';
-import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { useTradingSellFormContext } from 'src/views/wallet/trading/sell/TradingSellContext';
 
 const Wrapper = styled.div`
     display: flex;
@@ -123,7 +123,7 @@ export const TradingOfferSellBankAccount = () => {
         confirmTrade,
         addBankAccount,
         selectedQuote,
-    } = useTradingFormContext<TradingSellType>();
+    } = useTradingSellFormContext();
     const [bankAccount, setBankAccount] = useState<BankAccount | undefined>(
         selectedQuote?.bankAccounts ? selectedQuote?.bankAccounts[0] : undefined,
     );

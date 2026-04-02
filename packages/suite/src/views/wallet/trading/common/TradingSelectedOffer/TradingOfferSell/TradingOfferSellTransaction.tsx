@@ -2,7 +2,6 @@ import styled from 'styled-components';
 
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import type { TradingSellType } from '@suite-common/trading';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Button, Column, Spinner, Text } from '@trezor/components';
 import { useAsyncClickHandler } from '@trezor/react-utils';
@@ -10,9 +9,9 @@ import { spacings, spacingsPx, typography } from '@trezor/theme';
 
 import { AccountLabeling } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
-import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useTradingWatchTrade } from 'src/hooks/wallet/trading/useTradingWatchTrade';
 import { useAnalytics } from 'src/support/useAnalytics';
+import { useTradingSellFormContext } from 'src/views/wallet/trading/sell/TradingSellContext';
 
 const Wrapper = styled.div`
     display: flex;
@@ -59,7 +58,7 @@ export const TradingSelectedOfferSellTransaction = () => {
         sellInfo,
         sendTransaction,
         trade,
-    } = useTradingFormContext<TradingSellType>();
+    } = useTradingSellFormContext();
 
     useTradingWatchTrade({
         account,

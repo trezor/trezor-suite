@@ -4,7 +4,6 @@ import { Translation } from '@suite/intl';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import {
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
-    type TradingExchangeType,
     cryptoIdToNetwork,
     selectTradingComposedTransactionInfo,
     selectTradingExchangeFormStep,
@@ -19,9 +18,9 @@ import { spacings } from '@trezor/theme';
 import { BannerPoints } from 'src/components/wallet/WalletLayout/AccountBanners/BannerPoints';
 import { useSelector } from 'src/hooks/suite';
 import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
-import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { type TradingExchangeProvidersInfoProps } from 'src/types/trading/trading';
 import { formatCryptoAmountAsAmount } from 'src/views/wallet/trading/common/formatCryptoAmountAsAmount';
+import { useTradingExchangeFormContext } from 'src/views/wallet/trading/exchange/TradingExchangeContext';
 
 import { TradingUtilsKyc } from '../../TradingUtils/TradingUtilsKyc';
 import { TradingExchangeMevProtectionInfoItem } from '../TradingInfo/TradingExchangeMevProtectionInfoItem';
@@ -48,7 +47,7 @@ export const TradingOfferExchangeDetails = ({
     const composedTransactionInfo = useSelector(selectTradingComposedTransactionInfo);
     const { cryptoIdToSymbolAndContractAddress } = useTradingUtils();
 
-    const context = useTradingFormContext<TradingExchangeType>();
+    const context = useTradingExchangeFormContext();
     const { account, exchangeInfo, getValues } = context;
     const { symbol } = account;
 

@@ -10,12 +10,11 @@ import {
     TRADING_EXCHANGE_COMPARATOR_RATE_FILTER_DEX,
     TRADING_EXCHANGE_COMPARATOR_RATE_FILTER_FIXED_CEX,
     TRADING_EXCHANGE_COMPARATOR_RATE_FILTER_FLOATING_CEX,
-    type TradingExchangeType,
 } from '@suite-common/trading';
 import { Row, Select } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { useTradingExchangeFormContext } from 'src/views/wallet/trading/exchange/TradingExchangeContext';
 
 const SelectWrapper = styled.div`
     width: 224px;
@@ -52,7 +51,7 @@ const offerTypeOptions = [
 ];
 
 export const TradingOffersExchangeFiltersPanel = () => {
-    const context = useTradingFormContext<TradingExchangeType>();
+    const context = useTradingExchangeFormContext();
     const { getValues, setValue } = context;
     const kycValue = getValues(TRADING_EXCHANGE_COMPARATOR_KYC_FILTER);
     const exchangeType = getValues(TRADING_EXCHANGE_COMPARATOR_RATE_FILTER);

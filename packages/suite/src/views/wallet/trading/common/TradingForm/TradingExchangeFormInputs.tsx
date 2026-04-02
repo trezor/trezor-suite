@@ -9,7 +9,6 @@ import {
     TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT,
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
     type TradingExchangeFormProps,
-    type TradingExchangeType,
     selectTradingExchangeBuyCryptoIds,
     selectTradingExchangeSellCryptoIds,
     selectTradingLoadingAndTimestamp,
@@ -22,10 +21,10 @@ import { useCurrentRef } from '@trezor/react-utils';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
-import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useAnalytics } from 'src/support/useAnalytics';
 import { TradingBalance } from 'src/views/wallet/trading/common/TradingBalance';
 import { TradingFormInputFiatCrypto } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputFiatCrypto';
+import { useTradingExchangeFormContext } from 'src/views/wallet/trading/exchange/TradingExchangeContext';
 
 import { TradingFormCard } from './TradingFormCard';
 import { TradingFormFees } from './TradingFormFees';
@@ -45,7 +44,7 @@ import { TradingNetworkReserveBanner } from './TradingNetworkReserveBanner';
 import { generateFractionButtons } from './tradingFormInputsUtils';
 
 export const TradingExchangeFormInputs = () => {
-    const context = useTradingFormContext<TradingExchangeType>();
+    const context = useTradingExchangeFormContext();
     const analytics = useAnalytics();
 
     const { isLoading } = useSelector(selectTradingLoadingAndTimestamp);
