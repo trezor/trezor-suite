@@ -32,6 +32,7 @@ import {
     EarnTransactionDataReviewScreen,
     HowStakeWorksScreen,
     StakingDetailScreen,
+    StakingInsufficientBalanceScreen,
     StakingManagementScreen,
 } from '@suite-native/module-earn';
 import { ExperimentalFeedbackModalScreen } from '@suite-native/module-home';
@@ -109,6 +110,11 @@ export const RootStackNavigator = () => {
                 options={{ title: RootStackRoutes.StakingManagement }}
                 name={RootStackRoutes.StakingManagement}
                 component={StakingManagementScreen}
+            />
+            <RootStack.Screen
+                options={{ title: RootStackRoutes.StakingInsufficientBalance }}
+                name={RootStackRoutes.StakingInsufficientBalance}
+                component={StakingInsufficientBalanceScreen}
             />
             <RootStack.Screen
                 options={{ title: RootStackRoutes.HowStakeWorksScreen }}

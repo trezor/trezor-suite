@@ -10,15 +10,14 @@ const promoItemStyle = prepareNativeStyle(utils => ({
 }));
 
 type EarnListItemProps = EarnPromoItem & {
-    onPress: (type: EarnPromoItem['type']) => void;
+    onPress: (item: EarnPromoItem) => void;
 };
 
-export const EarnListItem = (item: EarnListItemProps) => {
-    const { onPress, type } = item;
+export const EarnListItem = ({ onPress, ...item }: EarnListItemProps) => {
     const { applyStyle } = useNativeStyles();
 
     const handlePress = () => {
-        onPress(type);
+        onPress(item);
     };
 
     return (

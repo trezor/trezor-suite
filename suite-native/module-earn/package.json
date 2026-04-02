@@ -8,7 +8,8 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
-        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "yarn g:jest -c jest.config.js"
     },
     "dependencies": {
         "@react-navigation/native": "7.1.28",

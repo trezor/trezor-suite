@@ -2476,6 +2476,14 @@ export const messages = {
                 stepReadyToClaim: 'Ready to claim',
             },
         },
+        stakingInsufficientBalance: {
+            title: "You don't have enough {displaySymbol} balance",
+            subtitle: 'The minimum amount for staking is {minAmount} {displaySymbol}',
+            getButton: 'Get {displaySymbol}',
+        },
+        stakingAccountSelection: {
+            title: 'Choose account',
+        },
         earnConsentsScreen: {
             title: 'Before you continue',
             entryPeriodCard: {
@@ -2541,6 +2549,9 @@ export const messages = {
             activeSheet: {
                 stakingTitle: 'Your stakes',
                 stablecoinYieldTitle: 'Your yields',
+            },
+            chooseAccountSheet: {
+                title: 'Choose account',
             },
             earnItem: {
                 rewards: 'Rewards',

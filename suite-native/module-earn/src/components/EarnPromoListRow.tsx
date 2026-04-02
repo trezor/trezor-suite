@@ -23,17 +23,17 @@ const rowContainerStyle = prepareNativeStyle(
 type EarnPromoListRowProps = {
     item: EarnPromoItem;
     isLastInSection: boolean;
-    onInfoPress: (type: EarnPromoItem['type']) => void;
+    onPress: (item: EarnPromoItem) => void;
 };
 
 export const EarnPromoListRow = React.memo(
-    ({ item, isLastInSection, onInfoPress }: EarnPromoListRowProps) => {
+    ({ item, isLastInSection, onPress }: EarnPromoListRowProps) => {
         const { applyStyle } = useNativeStyles();
 
         return (
             <Box style={applyStyle(rowContainerStyle, { isLastInSection })}>
                 <CardDivider />
-                <EarnListItem {...item} onPress={onInfoPress} />
+                <EarnListItem {...item} onPress={onPress} />
             </Box>
         );
     },

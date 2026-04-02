@@ -1,3 +1,4 @@
+export { StakingInsufficientBalanceScreen } from './screens/StakingInsufficientBalanceScreen';
 export { StakingManagementScreen } from './screens/StakingManagementScreen';
 export { EarnTransactionDataReviewScreen } from './screens/EarnTransactionDataReviewScreen';
 export { EarnConsentsScreen } from './screens/EarnConsentsScreen';
