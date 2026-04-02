@@ -221,6 +221,10 @@ describe('TrezorConnect.cancel', () => {
         const recoveryDeviceCall = TrezorConnect.recoveryDevice({
             passphrase_protection: false,
             pin_protection: false,
+            // Since Version 1.14.1 — 18th March 2026 - if `word_count` is less than 24 words it requires Matrix input,
+            // So we have to provide `word_count: 24,` so this tests stays as it is.
+            // https://github.com/trezor/trezor-firmware/blob/main/legacy/firmware/recovery.c#L481
+            word_count: 24,
         });
 
         await wordPromise;
