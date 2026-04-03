@@ -98,13 +98,12 @@ export const handleSellRequestThunk = createThunk<
         {
             formValues,
             network,
-            timer,
             shouldSendInSats,
             composeRequestCallback,
         }: HandleSellRequestThunkProps,
         { dispatch, getState, fulfillWithValue, rejectWithValue, signal },
     ) => {
-        timer.loading();
+        dispatch(tradingActions.setQuotesTimer({ status: 'loading' }));
 
         const requestData = getQuoteRequestData({
             formValues,
@@ -113,7 +112,7 @@ export const handleSellRequestThunk = createThunk<
         });
 
         if (!requestData) {
-            timer.stop();
+            dispatch(tradingActions.setQuotesTimer({ status: 'stopped' }));
 
             return rejectWithValue('Invalid request data');
         }
@@ -121,13 +120,11 @@ export const handleSellRequestThunk = createThunk<
         const allQuotes = await getQuotesRequest({ requestData, signal });
 
         if (signal.aborted) {
-            timer.reset();
-
             return rejectWithValue('Request was aborted');
         }
 
         if (!Array.isArray(allQuotes) || allQuotes.length === 0) {
-            timer.stop();
+            dispatch(tradingActions.setQuotesTimer({ status: 'stopped' }));
 
             const quotesSuccess: SellFiatTrade[] = [];
             dispatch(tradingSellActions.setAmountLimits(undefined));
@@ -170,7 +167,8 @@ export const handleSellRequestThunk = createThunk<
             composeRequestCallback();
         }
 
-        timer.reset();
+        dispatch(tradingActions.setQuotesTimer({ status: 'running', fetchedAt: Date.now() }));
+        dispatch(tradingActions.incrementFetchCount());
 
         return fulfillWithValue(successQuotes);
     },

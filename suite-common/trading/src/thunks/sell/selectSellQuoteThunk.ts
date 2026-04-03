@@ -1,10 +1,10 @@
 import { type SellFiatTrade } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
-import { type Timer } from '@trezor/react-utils';
 
 import { TRADING_SELL_THUNK_PREFIX } from '../../constants';
 import { tradingSellActions } from '../../reducers/sellReducer';
+import { tradingActions } from '../../reducers/tradingCommonReducer';
 import {
     selectTradingSellInfo,
     selectTradingSellQuotesRequest,
@@ -12,13 +12,12 @@ import {
 
 export type SelectSellQuoteThunkProps = {
     quote: SellFiatTrade;
-    timer: Timer;
     nextStep: () => void;
 };
 
 export const selectSellQuoteThunk = createThunk(
     `${TRADING_SELL_THUNK_PREFIX}/selectQuote`,
-    ({ quote, timer, nextStep }: SelectSellQuoteThunkProps, { dispatch, getState }) => {
+    ({ quote, nextStep }: SelectSellQuoteThunkProps, { dispatch, getState }) => {
         const sellInfo = selectTradingSellInfo(getState());
         const quotesRequest = selectTradingSellQuotesRequest(getState());
         const provider = quote.exchange ? sellInfo?.providerInfos[quote.exchange] : undefined;
@@ -26,7 +25,7 @@ export const selectSellQuoteThunk = createThunk(
         if (!quotesRequest || !provider || !quote.cryptoCurrency) return;
 
         dispatch(tradingSellActions.saveSelectedQuote(quote));
-        timer.stop();
+        dispatch(tradingActions.setQuotesTimer({ status: 'stopped' }));
         nextStep();
     },
 );

@@ -1,11 +1,11 @@
 import { type BuyTrade, type FormResponse } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
-import { type Timer } from '@trezor/react-utils';
 
 import { TRADING_BUY_THUNK_PREFIX } from '../../constants';
 import { invityAPI } from '../../invityAPI';
 import { tradingBuyActions } from '../../reducers/buyReducer';
+import { tradingActions } from '../../reducers/tradingCommonReducer';
 import {
     selectTradingBuyInfo,
     selectTradingBuyQuotesRequest,
@@ -14,7 +14,6 @@ import { logErrorThunk } from '../common/logErrorThunk';
 
 export type SelectBuyQuoteThunkProps = {
     quote: BuyTrade;
-    timer: Timer;
     returnUrl: string;
 
     loginRequest: (form: FormResponse['form']) => void;
@@ -24,7 +23,7 @@ export type SelectBuyQuoteThunkProps = {
 export const selectBuyQuoteThunk = createThunk(
     `${TRADING_BUY_THUNK_PREFIX}/selectQuote`,
     async (
-        { quote, returnUrl, timer, loginRequest, nextStep }: SelectBuyQuoteThunkProps,
+        { quote, returnUrl, loginRequest, nextStep }: SelectBuyQuoteThunkProps,
         { dispatch, getState },
     ) => {
         const buyInfo = selectTradingBuyInfo(getState());
@@ -57,7 +56,7 @@ export const selectBuyQuoteThunk = createThunk(
         }
 
         dispatch(tradingBuyActions.saveSelectedQuote(quote));
-        timer.stop();
+        dispatch(tradingActions.setQuotesTimer({ status: 'stopped' }));
         nextStep();
     },
 );

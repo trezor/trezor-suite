@@ -52,6 +52,12 @@ export interface TradingPrefilledFromAccount {
     key: AccountKey | undefined;
 }
 
+export type QuotesTimerStatus =
+    | { status: 'idle' }
+    | { status: 'loading' }
+    | { status: 'stopped' }
+    | { status: 'running'; fetchedAt: number };
+
 export interface TradingState {
     info: TradingInfo;
     buy: TradingBuyState;
@@ -69,6 +75,8 @@ export interface TradingState {
     settings: TradingSettingsState;
     currentProviderMetadata?: ProviderMetadata;
     favouriteAssets: Record<CryptoId, true>;
+    quotesTimer: QuotesTimerStatus;
+    fetchCount: number;
 }
 
 export type TradingRootState = {
@@ -100,6 +108,8 @@ export const initialState: TradingState = {
     verifiedAddress: undefined,
     settings: settingsInitialState,
     favouriteAssets: {},
+    quotesTimer: { status: 'idle' },
+    fetchCount: 0,
 };
 
 const tradingCommonSlice = createSlice({
@@ -170,6 +180,16 @@ const tradingCommonSlice = createSlice({
             { payload }: PayloadAction<ProviderMetadata | undefined>,
         ) => {
             state.currentProviderMetadata = payload;
+        },
+        setQuotesTimer(state, action: PayloadAction<QuotesTimerStatus>) {
+            state.quotesTimer = action.payload;
+        },
+        incrementFetchCount(state) {
+            state.fetchCount += 1;
+        },
+        resetQuotesTimer(state) {
+            state.quotesTimer = { status: 'idle' };
+            state.fetchCount = 0;
         },
     },
 });

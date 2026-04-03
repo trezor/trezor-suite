@@ -9,7 +9,6 @@ import { type SellInfo, type TradingSellState } from '../../../reducers/sellRedu
 import { initialState } from '../../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../../reducers/tradingReducer';
 import { sellUtilsFixtures } from '../../../utils/sell/__fixtures__/sellUtils';
-import { type SelectSellQuoteThunkProps } from '../selectSellQuoteThunk';
 
 const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
 
@@ -89,44 +88,36 @@ describe('selectSellQuoteThunk', () => {
             },
         });
 
-        const mockTimerStop = jest.fn();
-        const mockTimer = {
-            stop: mockTimerStop,
-        } as unknown as SelectSellQuoteThunkProps['timer'];
-
         const mockNextStep = jest.fn();
 
         return {
             store,
-            mockTimer,
-            mockTimerStop,
             mockNextStep,
         };
     };
 
     it('should successfully select quote', async () => {
         const { quote, state } = getDataMocks();
-        const { store, mockTimer, mockNextStep, mockTimerStop } = getMocks(state);
+        const { store, mockNextStep } = getMocks(state);
 
         await store
             .dispatch(
                 sellThunks.selectQuoteThunk({
                     quote,
-                    timer: mockTimer,
                     nextStep: mockNextStep,
                 }),
             )
             .unwrap();
 
         expect(mockNextStep).toHaveBeenCalledTimes(1);
-        expect(mockTimerStop).toHaveBeenCalledTimes(1);
+        expect(store.getState().wallet.trading.quotesTimer.status).toBe('stopped');
         expect(store.getState().wallet.trading.sell.selectedQuote).toEqual(quote);
     });
 
     describe('should not be possible to save selected quote', () => {
         it('when sellInfo is undefined', async () => {
             const { quote, state } = getDataMocks();
-            const { store, mockTimer, mockNextStep, mockTimerStop } = getMocks({
+            const { store, mockNextStep } = getMocks({
                 ...state,
                 sellInfo: undefined,
             });
@@ -135,20 +126,19 @@ describe('selectSellQuoteThunk', () => {
                 .dispatch(
                     sellThunks.selectQuoteThunk({
                         quote,
-                        timer: mockTimer,
                         nextStep: mockNextStep,
                     }),
                 )
                 .unwrap();
 
             expect(mockNextStep).toHaveBeenCalledTimes(0);
-            expect(mockTimerStop).toHaveBeenCalledTimes(0);
+            expect(store.getState().wallet.trading.quotesTimer.status).toBe('idle');
             expect(store.getState().wallet.trading.sell.selectedQuote).toEqual(undefined);
         });
 
         it('when quote exchange is undefined', async () => {
             const { quote, state } = getDataMocks();
-            const { store, mockTimer, mockNextStep, mockTimerStop } = getMocks({
+            const { store, mockNextStep } = getMocks({
                 ...state,
                 quotesRequest: undefined,
             });
@@ -160,20 +150,19 @@ describe('selectSellQuoteThunk', () => {
                             ...quote,
                             exchange: undefined,
                         },
-                        timer: mockTimer,
                         nextStep: mockNextStep,
                     }),
                 )
                 .unwrap();
 
             expect(mockNextStep).toHaveBeenCalledTimes(0);
-            expect(mockTimerStop).toHaveBeenCalledTimes(0);
+            expect(store.getState().wallet.trading.quotesTimer.status).toBe('idle');
             expect(store.getState().wallet.trading.sell.selectedQuote).toEqual(undefined);
         });
 
         it('when quoteRequest is undefined', async () => {
             const { quote, state } = getDataMocks();
-            const { store, mockTimer, mockNextStep, mockTimerStop } = getMocks({
+            const { store, mockNextStep } = getMocks({
                 ...state,
                 quotesRequest: undefined,
             });
@@ -182,20 +171,19 @@ describe('selectSellQuoteThunk', () => {
                 .dispatch(
                     sellThunks.selectQuoteThunk({
                         quote,
-                        timer: mockTimer,
                         nextStep: mockNextStep,
                     }),
                 )
                 .unwrap();
 
             expect(mockNextStep).toHaveBeenCalledTimes(0);
-            expect(mockTimerStop).toHaveBeenCalledTimes(0);
+            expect(store.getState().wallet.trading.quotesTimer.status).toBe('idle');
             expect(store.getState().wallet.trading.sell.selectedQuote).toEqual(undefined);
         });
 
         it('when quote cryptoCurrency is undefined', async () => {
             const { quote, state } = getDataMocks();
-            const { store, mockTimer, mockNextStep, mockTimerStop } = getMocks(state);
+            const { store, mockNextStep } = getMocks(state);
 
             await store
                 .dispatch(
@@ -204,14 +192,13 @@ describe('selectSellQuoteThunk', () => {
                             ...quote,
                             cryptoCurrency: undefined,
                         },
-                        timer: mockTimer,
                         nextStep: mockNextStep,
                     }),
                 )
                 .unwrap();
 
             expect(mockNextStep).toHaveBeenCalledTimes(0);
-            expect(mockTimerStop).toHaveBeenCalledTimes(0);
+            expect(store.getState().wallet.trading.quotesTimer.status).toBe('idle');
             expect(store.getState().wallet.trading.sell.selectedQuote).toEqual(undefined);
         });
     });

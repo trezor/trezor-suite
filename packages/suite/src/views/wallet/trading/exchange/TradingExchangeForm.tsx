@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { FormProvider } from 'react-hook-form';
 
 import { Context } from '@suite-common/message-system';
@@ -23,8 +24,8 @@ const TradingExchangeFormContent = () => (
     </TradingFormLayout>
 );
 
-const TradingExchangeFormWrapper = () => {
-    const tradingExchangeContextValue = useTradingExchangeForm({});
+const TradingExchangeFormLoaded = memo(() => {
+    const tradingExchangeContextValue = useTradingExchangeForm();
     const allowanceContextValue = useAllowance({ account: tradingExchangeContextValue.account });
 
     return (
@@ -36,7 +37,7 @@ const TradingExchangeFormWrapper = () => {
             </AllowanceContext.Provider>
         </TradingFormContext.Provider>
     );
-};
+});
 
 export const TradingExchangeForm = () => {
     const type: TradingType = 'exchange';
@@ -49,7 +50,7 @@ export const TradingExchangeForm = () => {
             {isDisabled || isDeviceCompromised ? (
                 <TradingDisabled type={type} content={content} />
             ) : (
-                <TradingExchangeFormWrapper />
+                <TradingExchangeFormLoaded />
             )}
         </TradingLayout>
     );

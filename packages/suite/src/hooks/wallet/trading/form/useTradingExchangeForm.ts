@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { useDebounce } from 'react-use';
 
@@ -83,7 +83,7 @@ import { useTradingReceiveAddress } from './useTradingReceiveAddress';
 
 export const useTradingExchangeForm = ({
     pageType = 'form',
-}: UseTradingFormCommonProps): TradingExchangeFormContextProps => {
+}: UseTradingFormCommonProps = {}): TradingExchangeFormContextProps => {
     const analytics = useAnalytics();
     const type = 'exchange';
     const isFormPage = pageType === 'form';
@@ -110,7 +110,7 @@ export const useTradingExchangeForm = ({
     const [isScheduledQuotesRefresh, setIsScheduledQuotesRefresh] = useState(false);
     const [showReserveBanner, setShowReserveBanner] = useState<boolean>(false);
 
-    const { timer, device, checkQuotesTimer } = useTradingInitializer({
+    const { device, checkQuotesTimer } = useTradingInitializer({
         pageType,
         isLoading,
     });
@@ -256,7 +256,6 @@ export const useTradingExchangeForm = ({
     const { handleChange } = useTradingExchangeHandleChange({
         formValues: values,
         network,
-        timer,
         shouldSendInSats,
         composeRequestCallback: () => {
             composeRequest(TRADING_FORM_OUTPUT_AMOUNT);
@@ -330,7 +329,6 @@ export const useTradingExchangeForm = ({
         await dispatch(
             exchangeThunks.selectQuoteThunk({
                 quote,
-                timer,
                 nextStep: () => {
                     dispatch(goto({ routeName: 'wallet-trading-exchange-confirm' }));
                 },
@@ -770,11 +768,25 @@ export const useTradingExchangeForm = ({
         }
     }, [isFormPage, quotesRequest, dispatch]);
 
-    useEffect(() => {
-        if (preselectedQuote || approvalInitiated) return;
+    const checkQuotesTimerRef = useRef(checkQuotesTimer);
+    checkQuotesTimerRef.current = checkQuotesTimer;
+    const handleChangeRef = useRef(handleChange);
+    handleChangeRef.current = handleChange;
+    const preselectedQuoteRef = useRef(preselectedQuote);
+    preselectedQuoteRef.current = preselectedQuote;
+    const approvalInitiatedRef = useRef(approvalInitiated);
+    approvalInitiatedRef.current = approvalInitiated;
 
-        checkQuotesTimer(handleChange);
-    }, [checkQuotesTimer, handleChange, preselectedQuote, approvalInitiated]);
+    useEffect(() => {
+        const run = () => {
+            if (preselectedQuoteRef.current || approvalInitiatedRef.current) return;
+            checkQuotesTimerRef.current(handleChangeRef.current);
+        };
+        run();
+        const id = setInterval(run, 1000);
+
+        return () => clearInterval(id);
+    }, []);
 
     useEffect(() => {
         if (isFromRedirect) {
@@ -804,7 +816,6 @@ export const useTradingExchangeForm = ({
         },
         methods,
         device,
-        timer,
         exchangeInfo,
         quotes,
         dexQuotes,

@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { FormProvider } from 'react-hook-form';
 
 import { useTradingBuyForm } from 'src/hooks/wallet/trading/form/useTradingBuyForm';
@@ -5,7 +6,7 @@ import { TradingFormContext } from 'src/hooks/wallet/trading/form/useTradingComm
 import { TradingContainer } from 'src/views/wallet/trading/common/TradingContainer';
 import { TradingOffers } from 'src/views/wallet/trading/common/TradingOffers/TradingOffers';
 
-const TradingBuyOffersComponent = () => {
+const TradingBuyOffersLoaded = memo(() => {
     const tradingBuyFormContextValues = useTradingBuyForm({
         pageType: 'offers',
     });
@@ -17,10 +18,10 @@ const TradingBuyOffersComponent = () => {
             </FormProvider>
         </TradingFormContext.Provider>
     );
-};
+});
 
 export const TradingBuyOffers = () => (
     <span data-testid="@trading/buy-offers">
-        <TradingContainer SectionComponent={TradingBuyOffersComponent} />
+        <TradingContainer SectionComponent={TradingBuyOffersLoaded} />
     </span>
 );

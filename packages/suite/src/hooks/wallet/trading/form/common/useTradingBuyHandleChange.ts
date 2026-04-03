@@ -10,7 +10,6 @@ import {
     isCountrySubdivisionEmpty,
 } from '@suite-common/trading';
 import { type Network } from '@suite-common/wallet-config';
-import { type Timer } from '@trezor/react-utils';
 
 import { useDispatch } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
@@ -18,7 +17,6 @@ import { useAnalytics } from 'src/support/useAnalytics';
 type TradingBuyUseHandleChangeProps = {
     formValues: TradingBuyFormProps;
     network: Network;
-    timer: Timer;
     shouldSendInSats: boolean | undefined;
 
     setValue: UseFormSetValue<TradingBuyFormProps>;
@@ -35,7 +33,6 @@ type PromiseType = {
 export const useTradingBuyHandleChange = ({
     formValues,
     network,
-    timer,
     shouldSendInSats,
     setValue,
 }: TradingBuyUseHandleChangeProps) => {
@@ -60,7 +57,6 @@ export const useTradingBuyHandleChange = ({
             buyThunks.handleRequestThunk({
                 formValues,
                 network,
-                timer,
                 shouldSendInSats,
             }),
         );
@@ -98,7 +94,7 @@ export const useTradingBuyHandleChange = ({
         } catch (error) {
             console.warn('Request was aborted:', error.message);
         }
-    }, [dispatch, formValues, network, timer, shouldSendInSats, analytics, setValue]);
+    }, [dispatch, formValues, network, shouldSendInSats, analytics, setValue]);
 
     // cleanup signal
     useEffect(

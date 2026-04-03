@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { FormProvider } from 'react-hook-form';
 
 import { Context } from '@suite-common/message-system';
@@ -22,8 +23,8 @@ const TradingSellFormContent = () => (
     </TradingFormLayout>
 );
 
-const TradingSellFormWrapper = () => {
-    const tradingSellContextValues = useTradingSellForm({});
+const TradingSellFormLoaded = memo(() => {
+    const tradingSellContextValues = useTradingSellForm();
 
     return (
         <TradingFormContext.Provider value={tradingSellContextValues}>
@@ -32,7 +33,7 @@ const TradingSellFormWrapper = () => {
             </FormProvider>
         </TradingFormContext.Provider>
     );
-};
+});
 
 export const TradingSellForm = () => {
     const type: TradingType = 'sell';
@@ -45,7 +46,7 @@ export const TradingSellForm = () => {
             {isDisabled || isDeviceCompromised ? (
                 <TradingDisabled type={type} content={content} />
             ) : (
-                <TradingSellFormWrapper />
+                <TradingSellFormLoaded />
             )}
         </TradingLayout>
     );

@@ -144,6 +144,11 @@ export const selectTradingBuyLoadingTimestampAndStatus = createMemoizedSelector(
     }),
 );
 
+export const selectTradingQuotesTimer = (state: TradingRootState) =>
+    state.wallet.trading.quotesTimer;
+
+export const selectTradingFetchCount = (state: TradingRootState) => state.wallet.trading.fetchCount;
+
 export const selectTradingInfo = (state: TradingRootState) => state.wallet?.trading?.info;
 
 export const selectTradingBuyInfo = createMemoizedSelector(

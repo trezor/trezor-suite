@@ -3,7 +3,6 @@ import { useCallback, useEffect, useRef } from 'react';
 import { events } from '@suite/analytics';
 import { type TradingExchangeFormProps, exchangeThunks } from '@suite-common/trading';
 import { type Network } from '@suite-common/wallet-config';
-import { type Timer } from '@trezor/react-utils';
 
 import { useDispatch } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
@@ -11,7 +10,6 @@ import { useAnalytics } from 'src/support/useAnalytics';
 type TradingExchangeUseHandleChangeProps = {
     formValues: TradingExchangeFormProps;
     network: Network;
-    timer: Timer;
     shouldSendInSats: boolean | undefined;
 
     composeRequestCallback: () => void;
@@ -30,7 +28,6 @@ type PromiseType = {
 export const useTradingExchangeHandleChange = ({
     formValues,
     network,
-    timer,
     shouldSendInSats,
     composeRequestCallback,
     setApprovalInitiated,
@@ -51,7 +48,6 @@ export const useTradingExchangeHandleChange = ({
             exchangeThunks.handleRequestThunk({
                 formValues,
                 network,
-                timer,
                 shouldSendInSats,
                 composeRequestCallback,
             }),
@@ -79,7 +75,6 @@ export const useTradingExchangeHandleChange = ({
         dispatch,
         formValues,
         network,
-        timer,
         shouldSendInSats,
         composeRequestCallback,
         setIsScheduledQuotesRefresh,

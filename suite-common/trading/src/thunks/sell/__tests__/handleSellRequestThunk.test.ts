@@ -62,15 +62,6 @@ describe('handleSellRequestThunk', () => {
             },
         });
 
-        const mockTimerLoading = jest.fn();
-        const mockTimerStop = jest.fn();
-        const mockTimerReset = jest.fn();
-        const mockTimer = {
-            loading: mockTimerLoading,
-            stop: mockTimerStop,
-            reset: mockTimerReset,
-        } as unknown as HandleSellRequestThunkProps['timer'];
-
         const mockComposeRequestCallback = jest.fn();
 
         const formValues: TradingSellFormProps = {
@@ -124,22 +115,18 @@ describe('handleSellRequestThunk', () => {
         const input: HandleSellRequestThunkProps = {
             formValues,
             network: getNetwork('btc'),
-            timer: mockTimer,
             shouldSendInSats: false,
             composeRequestCallback: mockComposeRequestCallback,
         };
 
         return {
             input,
-            mockTimerLoading,
-            mockTimerStop,
-            mockTimerReset,
             store,
         };
     };
 
     it('should successfully request sell quotes and save them', async () => {
-        const { input, store, mockTimerLoading, mockTimerReset } = getMocks();
+        const { input, store } = getMocks();
         const mockQuotes = [...sellUtilsFixtures.MIN_MAX_QUOTES_OK];
 
         invityAPI.getSellQuotes = () => Promise.resolve(mockQuotes);
@@ -148,7 +135,8 @@ describe('handleSellRequestThunk', () => {
 
         const state = store.getState().wallet.trading;
 
-        expect(mockTimerLoading).toHaveBeenCalledTimes(1);
+        expect(state.quotesTimer.status).toBe('running');
+        expect(state.fetchCount).toBe(1);
         expect(state.sell.amountLimits).toBeUndefined();
         expect(state.sell.quotes.length).toEqual(1);
         expect(quotesResponse?.length).toEqual(1);
@@ -162,12 +150,11 @@ describe('handleSellRequestThunk', () => {
             flows: ['BANK_ACCOUNT', 'PAYMENT_GATE'],
         });
         expect(input.composeRequestCallback).toHaveBeenCalledTimes(1);
-        expect(mockTimerReset).toHaveBeenCalledTimes(1);
         expect(state.isLoading).toBe(false);
     });
 
     it('should successfully request sell quotes and save them with shouldSendInSats', async () => {
-        const { input, store, mockTimerLoading, mockTimerReset } = getMocks();
+        const { input, store } = getMocks();
         const mockQuotes = sellUtilsFixtures.MIN_MAX_QUOTES_OK.map(quote => ({
             ...quote,
             orderId: undefined,
@@ -193,7 +180,8 @@ describe('handleSellRequestThunk', () => {
 
         const state = store.getState().wallet.trading;
 
-        expect(mockTimerLoading).toHaveBeenCalledTimes(1);
+        expect(state.quotesTimer.status).toBe('running');
+        expect(state.fetchCount).toBe(1);
         expect(state.sell.amountLimits).toBeUndefined();
         expect(state.sell.quotes.length).toEqual(1);
         expect(quotesResponse?.length).toEqual(1);
@@ -207,12 +195,11 @@ describe('handleSellRequestThunk', () => {
             flows: ['BANK_ACCOUNT', 'PAYMENT_GATE'],
         });
         expect(input.composeRequestCallback).toHaveBeenCalledTimes(1);
-        expect(mockTimerReset).toHaveBeenCalledTimes(1);
         expect(state.isLoading).toBe(false);
     });
 
     it('should successfully request sell quotes and save them when there is not currency in coins', async () => {
-        const { input, store, mockTimerLoading, mockTimerReset } = getMocks();
+        const { input, store } = getMocks();
         const mockQuotes = sellUtilsFixtures.MIN_MAX_QUOTES_OK.map(quote => ({
             ...quote,
             cryptoCurrency: 'ethereum',
@@ -241,7 +228,7 @@ describe('handleSellRequestThunk', () => {
 
         const state = store.getState().wallet.trading;
 
-        expect(mockTimerLoading).toHaveBeenCalledTimes(1);
+        expect(state.quotesTimer.status).toBe('running');
         expect(state.sell.amountLimits).toBeUndefined();
         expect(state.sell.quotes.length).toEqual(1);
         expect(quotesResponse?.length).toEqual(1);
@@ -255,12 +242,11 @@ describe('handleSellRequestThunk', () => {
             flows: ['BANK_ACCOUNT', 'PAYMENT_GATE'],
         });
         expect(input.composeRequestCallback).toHaveBeenCalledTimes(1);
-        expect(mockTimerReset).toHaveBeenCalledTimes(1);
         expect(state.isLoading).toBe(false);
     });
 
     it('should request sell quotes and include subdivision when country has subdivisions and subdivision is selected', async () => {
-        const { input, store, mockTimerLoading, mockTimerReset } = getMocks();
+        const { input, store } = getMocks();
         const mockQuotes = sellUtilsFixtures.MIN_MAX_QUOTES_OK.map(quote => ({
             ...quote,
             orderId: undefined,
@@ -294,7 +280,7 @@ describe('handleSellRequestThunk', () => {
 
         const state = store.getState().wallet.trading;
 
-        expect(mockTimerLoading).toHaveBeenCalledTimes(1);
+        expect(state.quotesTimer.status).toBe('running');
         expect(state.sell.quotes.length).toEqual(1);
         expect(quotesResponse?.length).toEqual(1);
         expect(state.sell.quotesRequest).toEqual({
@@ -307,12 +293,11 @@ describe('handleSellRequestThunk', () => {
             fiatStringAmount: '50',
             flows: ['BANK_ACCOUNT', 'PAYMENT_GATE'],
         });
-        expect(mockTimerReset).toHaveBeenCalledTimes(1);
         expect(state.isLoading).toBe(false);
     });
 
     it('should not save quotes when country has subdivisions but no subdivision is selected', async () => {
-        const { input, store, mockTimerLoading, mockTimerStop } = getMocks();
+        const { input, store } = getMocks();
         const incorrectData = {
             ...input,
             formValues: {
@@ -337,8 +322,7 @@ describe('handleSellRequestThunk', () => {
         const state = store.getState().wallet.trading;
 
         expect(invityAPI.getSellQuotes).not.toHaveBeenCalled();
-        expect(mockTimerLoading).toHaveBeenCalledTimes(1);
-        expect(mockTimerStop).toHaveBeenCalledTimes(1);
+        expect(state.quotesTimer.status).toBe('stopped');
         expect(state.sell.quotesRequest).toBeUndefined();
         expect(state.sell.quotes.length).toEqual(0);
         expect(state.isLoading).toBe(false);
@@ -346,7 +330,7 @@ describe('handleSellRequestThunk', () => {
     });
 
     it('should not save quotes when request is aborted', async () => {
-        const { input, store, mockTimerLoading, mockTimerReset } = getMocks();
+        const { input, store } = getMocks();
 
         invityAPI.getSellQuotes = () => Promise.resolve([]);
 
@@ -358,15 +342,14 @@ describe('handleSellRequestThunk', () => {
 
         const state = store.getState().wallet.trading;
 
-        expect(mockTimerLoading).toHaveBeenCalledTimes(1);
-        expect(mockTimerReset).toHaveBeenCalledTimes(1);
+        expect(state.quotesTimer.status).toBe('loading');
         expect(state.sell.quotes.length).toEqual(0);
         expect(state.sell.quotesRequest).toBeUndefined();
         expect(state.isLoading).toBe(false);
     });
 
     it('should not save quotes when output fiat amount and output amount are incorrect at the same time', async () => {
-        const { input, store, mockTimerLoading, mockTimerStop } = getMocks();
+        const { input, store } = getMocks();
         const incorrectData = {
             ...input,
             formValues: {
@@ -387,8 +370,7 @@ describe('handleSellRequestThunk', () => {
         const state = store.getState().wallet.trading;
 
         expect(invityAPI.getSellQuotes).not.toHaveBeenCalled();
-        expect(mockTimerLoading).toHaveBeenCalledTimes(1);
-        expect(mockTimerStop).toHaveBeenCalledTimes(1);
+        expect(state.quotesTimer.status).toBe('stopped');
         expect(state.sell.quotesRequest).toBeUndefined();
         expect(state.sell.quotes.length).toEqual(0);
         expect(state.isLoading).toBe(false);
@@ -396,7 +378,7 @@ describe('handleSellRequestThunk', () => {
     });
 
     it('should not proceed when requestData is null', async () => {
-        const { input, store, mockTimerStop } = getMocks();
+        const { input, store } = getMocks();
 
         const modifiedInput = {
             ...input,
@@ -417,7 +399,7 @@ describe('handleSellRequestThunk', () => {
 
         const state = store.getState().wallet.trading;
 
-        expect(mockTimerStop).toHaveBeenCalledTimes(1);
+        expect(state.quotesTimer.status).toBe('stopped');
         expect(state.sell.quotes.length).toEqual(0);
         expect(state.sell.quotesRequest).toBeUndefined();
         expect(state.isLoading).toBe(false);
@@ -425,7 +407,7 @@ describe('handleSellRequestThunk', () => {
     });
 
     it('should not save quotes when empty array is returned from the response', async () => {
-        const { input, store, mockTimerLoading, mockTimerStop } = getMocks();
+        const { input, store } = getMocks();
 
         invityAPI.getSellQuotes = () => Promise.resolve([]);
 
@@ -433,8 +415,7 @@ describe('handleSellRequestThunk', () => {
 
         const state = store.getState().wallet.trading;
 
-        expect(mockTimerLoading).toHaveBeenCalledTimes(1);
-        expect(mockTimerStop).toHaveBeenCalledTimes(1);
+        expect(state.quotesTimer.status).toBe('stopped');
         expect(state.sell.quotes.length).toEqual(0);
         expect(state.sell.quotesRequest).toBeDefined();
         expect(state.isLoading).toBe(false);
@@ -442,7 +423,7 @@ describe('handleSellRequestThunk', () => {
     });
 
     it('should save quotes but not call composeRequestCallback when setMaxOutputId is defined', async () => {
-        const { input, store, mockTimerLoading, mockTimerReset } = getMocks();
+        const { input, store } = getMocks();
         const mockQuotes = sellUtilsFixtures.MIN_MAX_QUOTES_OK.map(quote => ({
             ...quote,
             orderId: undefined,
@@ -464,11 +445,10 @@ describe('handleSellRequestThunk', () => {
 
         const state = store.getState().wallet.trading;
 
-        expect(mockTimerLoading).toHaveBeenCalledTimes(1);
+        expect(state.quotesTimer.status).toBe('running');
         expect(state.sell.quotes.length).toEqual(1);
         expect(quotesResponse?.length).toEqual(1);
         expect(input.composeRequestCallback).toHaveBeenCalledTimes(0); // Callback should not be called
-        expect(mockTimerReset).toHaveBeenCalledTimes(1);
         expect(state.isLoading).toBe(false);
     });
 });

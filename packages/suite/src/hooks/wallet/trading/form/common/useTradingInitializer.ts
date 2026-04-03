@@ -3,9 +3,11 @@ import { useCallback } from 'react';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import {
     INVITY_API_RELOAD_QUOTES_AFTER_SECONDS,
+    selectTradingFetchCount,
+    selectTradingQuotesTimer,
+    tradingActions,
     tradingExchangeActions,
 } from '@suite-common/trading';
-import { type Timer, useTimer } from '@trezor/react-utils';
 
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { useServerEnvironment } from 'src/hooks/wallet/trading/useServerEnviroment';
@@ -17,70 +19,64 @@ export type UseTradingCommonProps = {
     isLoading: boolean;
 };
 export interface UseTradingCommonReturnProps {
-    timer: Timer;
     device: TrezorDevice | undefined;
     checkQuotesTimer: (callback: () => Promise<void>) => void;
 }
+
+const MAX_FETCH_COUNT = 40;
 
 export const useTradingInitializer = ({
     pageType,
     isLoading,
 }: UseTradingCommonProps): UseTradingCommonReturnProps => {
     const dispatch = useDispatch();
-    const timer = useTimer();
     const { device } = useDevice();
 
     const isWindowVisible = useSelector(selectIsWindowVisible);
+    const quotesTimer = useSelector(selectTradingQuotesTimer);
+    const fetchCount = useSelector(selectTradingFetchCount);
 
     const checkQuotesTimer = useCallback(
         (callback: () => Promise<void>) => {
             if (isLoading) return;
 
-            if (timer.isLoading) {
-                return;
-            }
+            if (quotesTimer.status === 'loading') return;
 
-            if (timer.resetCount >= 40) {
-                timer.stop();
+            if (fetchCount >= MAX_FETCH_COUNT) {
+                dispatch(tradingActions.setQuotesTimer({ status: 'stopped' }));
 
                 return;
             }
 
             if (pageType === 'confirm' || pageType === 'retry') {
-                timer.stop();
+                dispatch(tradingActions.setQuotesTimer({ status: 'stopped' }));
 
                 return;
             }
 
+            if (quotesTimer.status !== 'running') return;
+
+            const elapsedSeconds = Math.floor((Date.now() - quotesTimer.fetchedAt) / 1000);
             const hasRefreshIntervalElapsed =
-                timer.timeSpent.seconds >= INVITY_API_RELOAD_QUOTES_AFTER_SECONDS;
+                elapsedSeconds >= INVITY_API_RELOAD_QUOTES_AFTER_SECONDS;
 
-            if (!hasRefreshIntervalElapsed) {
-                return;
-            }
+            if (!hasRefreshIntervalElapsed) return;
 
             if (!isWindowVisible) {
-                if (!timer.isStopped) {
-                    timer.stop();
-                }
+                dispatch(tradingActions.setQuotesTimer({ status: 'stopped' }));
 
                 return;
-            }
-
-            if (timer.isStopped) {
-                timer.reset();
             }
 
             dispatch(tradingExchangeActions.savePreselectedQuote(undefined));
             callback();
         },
-        [timer, isWindowVisible, pageType, isLoading, dispatch],
+        [quotesTimer, fetchCount, isWindowVisible, pageType, isLoading, dispatch],
     );
 
     useServerEnvironment();
 
     return {
-        timer,
         device,
         checkQuotesTimer,
     };

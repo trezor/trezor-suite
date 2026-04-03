@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { FormProvider } from 'react-hook-form';
 
 import { Context } from '@suite-common/message-system';
@@ -22,7 +23,7 @@ export const TradingBuyFormContent = () => (
     </TradingFormLayout>
 );
 
-const TradingBuyFormWrapper = () => {
+const TradingBuyFormLoaded = memo(() => {
     const tradingBuyContextValues = useTradingBuyForm();
 
     return (
@@ -32,7 +33,7 @@ const TradingBuyFormWrapper = () => {
             </FormProvider>
         </TradingFormContext.Provider>
     );
-};
+});
 
 export const TradingBuyForm = () => {
     const type: TradingType = 'buy';
@@ -45,7 +46,7 @@ export const TradingBuyForm = () => {
             {isDisabled || isDeviceCompromised ? (
                 <TradingDisabled type={type} content={content} />
             ) : (
-                <TradingBuyFormWrapper />
+                <TradingBuyFormLoaded />
             )}
         </TradingLayout>
     );

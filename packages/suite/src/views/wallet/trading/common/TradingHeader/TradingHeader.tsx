@@ -1,11 +1,17 @@
+import { useEffect, useState } from 'react';
+
 import styled from 'styled-components';
 
 import { type ExtendedMessageDescriptor, Translation } from '@suite/intl';
-import { INVITY_API_RELOAD_QUOTES_AFTER_SECONDS } from '@suite-common/trading';
+import {
+    INVITY_API_RELOAD_QUOTES_AFTER_SECONDS,
+    selectTradingQuotesTimer,
+} from '@suite-common/trading';
 import { H2 } from '@trezor/components';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { spacingsPx } from '@trezor/theme';
 
+import { useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import {
     getCryptoQuoteAmountProps,
@@ -58,9 +64,43 @@ interface TradingHeaderProps {
     titleTimer: ExtendedMessageDescriptor['id'];
 }
 
+const TradingHeaderTimer = ({ titleTimer }: Pick<TradingHeaderProps, 'titleTimer'>) => {
+    const quotesTimer = useSelector(selectTradingQuotesTimer);
+    const [now, setNow] = useState(0);
+
+    useEffect(() => {
+        if (quotesTimer.status !== 'running') {
+            return;
+        }
+
+        setNow(Date.now());
+
+        const interval = setInterval(() => {
+            setNow(Date.now());
+        }, 1000);
+
+        return () => clearInterval(interval);
+    }, [quotesTimer.status]);
+
+    const isLoading = quotesTimer.status === 'loading';
+    const seconds =
+        quotesTimer.status === 'running'
+            ? Math.max(0, Math.floor((now - quotesTimer.fetchedAt) / 1000))
+            : 0;
+
+    return (
+        <TradingRefreshTime
+            isLoading={isLoading}
+            refetchInterval={INVITY_API_RELOAD_QUOTES_AFTER_SECONDS}
+            seconds={seconds}
+            label={<Translation id={titleTimer} />}
+        />
+    );
+};
+
 export const TradingHeader = ({ title, titleTimer }: TradingHeaderProps) => {
     const context = useTradingFormContext();
-    const { timer, quotes } = context;
+    const { quotes } = context;
     const headerProps = getCryptoQuoteAmountProps(quotes?.[0], context);
 
     return (
@@ -76,12 +116,7 @@ export const TradingHeader = ({ title, titleTimer }: TradingHeaderProps) => {
             <HeaderBottom>
                 <TradingHeaderFilter />
                 <HeaderTradingRefreshTime>
-                    <TradingRefreshTime
-                        isLoading={timer.isLoading}
-                        refetchInterval={INVITY_API_RELOAD_QUOTES_AFTER_SECONDS}
-                        seconds={timer.timeSpent.seconds}
-                        label={<Translation id={titleTimer} />}
-                    />
+                    <TradingHeaderTimer titleTimer={titleTimer} />
                 </HeaderTradingRefreshTime>
             </HeaderBottom>
         </Header>

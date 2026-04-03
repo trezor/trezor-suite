@@ -89,10 +89,10 @@ export const handleBuyRequestThunk = createThunk<
 >(
     `${TRADING_BUY_THUNK_PREFIX}/handleRequest`,
     async (
-        { formValues, network, timer, shouldSendInSats }: HandleBuyRequestThunkProps,
+        { formValues, network, shouldSendInSats }: HandleBuyRequestThunkProps,
         { dispatch, getState, fulfillWithValue, rejectWithValue, signal },
     ) => {
-        timer.loading();
+        dispatch(tradingActions.setQuotesTimer({ status: 'loading' }));
 
         const quotesRequest = selectTradingBuyQuotesRequest(getState());
 
@@ -104,7 +104,7 @@ export const handleBuyRequestThunk = createThunk<
         });
 
         if (!requestData) {
-            timer.stop();
+            dispatch(tradingActions.setQuotesTimer({ status: 'stopped' }));
 
             return rejectWithValue('Invalid request data');
         }
@@ -115,13 +115,11 @@ export const handleBuyRequestThunk = createThunk<
         });
 
         if (signal.aborted) {
-            timer.reset();
-
             return rejectWithValue('Request was aborted');
         }
 
         if (!Array.isArray(allQuotes) || allQuotes.length === 0) {
-            timer.stop();
+            dispatch(tradingActions.setQuotesTimer({ status: 'stopped' }));
 
             const quotesSuccess: BuyTrade[] = [];
             dispatch(tradingBuyActions.setAmountLimits(undefined));
@@ -154,7 +152,8 @@ export const handleBuyRequestThunk = createThunk<
         dispatch(tradingBuyActions.saveQuoteRequest(requestData));
         dispatch(tradingActions.savePaymentMethods(paymentMethodsFromQuotes));
 
-        timer.reset();
+        dispatch(tradingActions.setQuotesTimer({ status: 'running', fetchedAt: Date.now() }));
+        dispatch(tradingActions.incrementFetchCount());
 
         return fulfillWithValue(quotesSuccess);
     },

@@ -26,7 +26,6 @@ import type {
 } from '@suite-common/trading';
 import { type Account } from '@suite-common/wallet-types';
 import { type AssetLogoProps, type AssetOptionBaseProps } from '@trezor/product-components';
-
 export type TradingPageType = 'form' | 'offers' | 'confirm' | 'retry';
 
 export type UseTradingFormCommonProps = {

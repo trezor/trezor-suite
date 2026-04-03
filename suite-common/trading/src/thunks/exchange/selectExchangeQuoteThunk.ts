@@ -1,21 +1,20 @@
 import { type ExchangeTrade } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
-import { type Timer } from '@trezor/react-utils';
 
 import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';
 import { tradingExchangeActions } from '../../reducers/exchangeReducer';
+import { tradingActions } from '../../reducers/tradingCommonReducer';
 import { selectTradingExchangeInfo } from '../../selectors/tradingSelectors';
 
 export type SelectExchangeQuoteThunkProps = {
     quote: ExchangeTrade;
-    timer: Timer;
     nextStep: () => void;
 };
 
 export const selectExchangeQuoteThunk = createThunk(
     `${TRADING_EXCHANGE_THUNK_PREFIX}/selectQuote`,
-    ({ quote, timer, nextStep }: SelectExchangeQuoteThunkProps, { dispatch, getState }) => {
+    ({ quote, nextStep }: SelectExchangeQuoteThunkProps, { dispatch, getState }) => {
         const exchangeInfo = selectTradingExchangeInfo(getState());
         const provider =
             exchangeInfo?.providerInfos && quote.exchange
@@ -30,7 +29,7 @@ export const selectExchangeQuoteThunk = createThunk(
             dispatch(tradingExchangeActions.saveSelectedQuote(quote));
         }
 
-        timer.stop();
+        dispatch(tradingActions.setQuotesTimer({ status: 'stopped' }));
         nextStep();
     },
 );

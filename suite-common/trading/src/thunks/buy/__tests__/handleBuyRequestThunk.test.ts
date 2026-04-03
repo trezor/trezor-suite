@@ -62,15 +62,6 @@ describe('handleBuyRequestThunk', () => {
             },
         });
 
-        const mockTimerLoading = jest.fn();
-        const mockTimerStop = jest.fn();
-        const mockTimerReset = jest.fn();
-        const mockTimer = {
-            loading: mockTimerLoading,
-            stop: mockTimerStop,
-            reset: mockTimerReset,
-        } as unknown as HandleBuyRequestThunkProps['timer'];
-
         const formValues: TradingBuyFormProps = {
             fiatInput: '1000',
             cryptoInput: '0',
@@ -106,21 +97,17 @@ describe('handleBuyRequestThunk', () => {
         const input: HandleBuyRequestThunkProps = {
             formValues,
             network: getNetwork('btc'),
-            timer: mockTimer,
             shouldSendInSats: false,
         };
 
         return {
             input,
-            mockTimerLoading,
-            mockTimerStop,
-            mockTimerReset,
             store,
         };
     };
 
     it('should successfully request quotes and save them', async () => {
-        const { input, store, mockTimerLoading, mockTimerReset } = getMocks();
+        const { input, store } = getMocks();
         const mockQuotes = createMockQuotes();
 
         invityAPI.getBuyQuotes = () => Promise.resolve(mockQuotes);
@@ -129,7 +116,8 @@ describe('handleBuyRequestThunk', () => {
 
         const state = store.getState().wallet.trading;
 
-        expect(mockTimerLoading).toHaveBeenCalledTimes(1);
+        expect(state.quotesTimer.status).toBe('running');
+        expect(state.fetchCount).toBe(1);
         expect(state.buy.amountLimits).toBeUndefined();
         expect(state.buy.quotes?.length).toEqual(2);
         expect(state.buy.quotesRequest).toEqual({
@@ -142,7 +130,6 @@ describe('handleBuyRequestThunk', () => {
         });
         expect(state.info.paymentMethods.length).toEqual(1);
         expect(state.isLoading).toBe(false);
-        expect(mockTimerReset).toHaveBeenCalledTimes(1);
         expect(quotesResponse).toEqual([
             expect.objectContaining(mockQuotes[1]),
             expect.objectContaining(mockQuotes[6]),
@@ -178,7 +165,7 @@ describe('handleBuyRequestThunk', () => {
             },
         ],
     ])('should not save quotes when %s', async (_, incorrectFormValues) => {
-        const { input, store, mockTimerLoading, mockTimerStop } = getMocks();
+        const { input, store } = getMocks();
         const inputWithIncorrectData = {
             ...input,
             formValues: {
@@ -192,8 +179,7 @@ describe('handleBuyRequestThunk', () => {
 
         const state = store.getState().wallet.trading;
 
-        expect(mockTimerLoading).toHaveBeenCalledTimes(1);
-        expect(mockTimerStop).toHaveBeenCalledTimes(1);
+        expect(state.quotesTimer.status).toBe('stopped');
         expect(state.buy.quotesRequest).toBeUndefined();
         expect(state.buy.quotes?.length).toEqual(0);
         expect(state.isLoading).toBe(false);
@@ -201,7 +187,7 @@ describe('handleBuyRequestThunk', () => {
     });
 
     it('should request quotes and include subdivision when country has subdivisions and subdivision is selected', async () => {
-        const { input, store, mockTimerLoading, mockTimerReset } = getMocks();
+        const { input, store } = getMocks();
         const mockQuotes = createMockQuotes();
 
         invityAPI.getBuyQuotes = () => Promise.resolve(mockQuotes);
@@ -232,7 +218,8 @@ describe('handleBuyRequestThunk', () => {
 
         const state = store.getState().wallet.trading;
 
-        expect(mockTimerLoading).toHaveBeenCalledTimes(1);
+        expect(state.quotesTimer.status).toBe('running');
+        expect(state.fetchCount).toBe(1);
         expect(state.buy.amountLimits).toBeUndefined();
         expect(state.buy.quotes?.length).toEqual(2);
         expect(state.buy.quotesRequest).toEqual({
@@ -244,7 +231,6 @@ describe('handleBuyRequestThunk', () => {
             receiveCurrency: 'bitcoin',
             wantCrypto: false,
         });
-        expect(mockTimerReset).toHaveBeenCalledTimes(1);
         expect(quotesResponse).toEqual([
             expect.objectContaining(mockQuotes[1]),
             expect.objectContaining(mockQuotes[6]),
@@ -252,7 +238,7 @@ describe('handleBuyRequestThunk', () => {
     });
 
     it('should save empty quotes when empty array is returned from in the response', async () => {
-        const { input, store, mockTimerLoading, mockTimerStop } = getMocks();
+        const { input, store } = getMocks();
 
         invityAPI.getBuyQuotes = () => Promise.resolve([]);
 
@@ -260,8 +246,7 @@ describe('handleBuyRequestThunk', () => {
 
         const state = store.getState().wallet.trading;
 
-        expect(mockTimerLoading).toHaveBeenCalledTimes(1);
-        expect(mockTimerStop).toHaveBeenCalledTimes(1);
+        expect(state.quotesTimer.status).toBe('stopped');
         expect(state.buy.quotes?.length).toEqual(0);
         expect(state.buy.quotesRequest).toEqual({
             country: 'CZ',
@@ -276,7 +261,7 @@ describe('handleBuyRequestThunk', () => {
     });
 
     it('should not save quotes, when request is aborted', async () => {
-        const { input, store, mockTimerLoading, mockTimerReset } = getMocks();
+        const { input, store } = getMocks();
 
         invityAPI.getBuyQuotes = () => Promise.resolve([]);
 
@@ -287,8 +272,7 @@ describe('handleBuyRequestThunk', () => {
 
         const state = store.getState().wallet.trading;
 
-        expect(mockTimerLoading).toHaveBeenCalledTimes(1);
-        expect(mockTimerReset).toHaveBeenCalledTimes(1);
+        expect(state.quotesTimer.status).toBe('loading');
         expect(state.buy.quotes?.length).toEqual(0);
         expect(state.buy.quotesRequest).toBeUndefined();
         expect(state.isLoading).toBe(false);

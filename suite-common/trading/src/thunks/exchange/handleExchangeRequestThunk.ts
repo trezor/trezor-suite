@@ -7,6 +7,7 @@ import { convertAmountSubunitsToUnits } from '@suite-common/wallet-utils';
 import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';
 import { invityAPI } from '../../invityAPI';
 import { tradingExchangeActions } from '../../reducers/exchangeReducer';
+import { tradingActions } from '../../reducers/tradingCommonReducer';
 import { selectTradingCoinSymbolByCryptoId } from '../../selectors/tradingSelectors';
 import {
     type HandleExchangeRequestThunkProps,
@@ -78,13 +79,12 @@ export const handleExchangeRequestThunk = createThunk<
         {
             formValues,
             network,
-            timer,
             shouldSendInSats,
             composeRequestCallback,
         }: HandleExchangeRequestThunkProps,
         { dispatch, getState, fulfillWithValue, rejectWithValue, signal },
     ) => {
-        timer.loading();
+        dispatch(tradingActions.setQuotesTimer({ status: 'loading' }));
 
         const requestData = getQuoteRequestData({
             formValues,
@@ -93,7 +93,7 @@ export const handleExchangeRequestThunk = createThunk<
         });
 
         if (!requestData) {
-            timer.stop();
+            dispatch(tradingActions.setQuotesTimer({ status: 'stopped' }));
 
             return rejectWithValue('Invalid request data');
         }
@@ -101,13 +101,11 @@ export const handleExchangeRequestThunk = createThunk<
         const allQuotes = await getQuotesRequest({ requestData, signal });
 
         if (signal.aborted) {
-            timer.reset();
-
             return rejectWithValue('Request was aborted');
         }
 
         if (!Array.isArray(allQuotes) || allQuotes.length === 0) {
-            timer.stop();
+            dispatch(tradingActions.setQuotesTimer({ status: 'stopped' }));
             dispatch(tradingExchangeActions.saveQuotes([]));
 
             return fulfillWithValue([]);
@@ -136,7 +134,8 @@ export const handleExchangeRequestThunk = createThunk<
             composeRequestCallback();
         }
 
-        timer.reset();
+        dispatch(tradingActions.setQuotesTimer({ status: 'running', fetchedAt: Date.now() }));
+        dispatch(tradingActions.incrementFetchCount());
 
         return fulfillWithValue(successQuotes);
     },

@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { FormProvider } from 'react-hook-form';
 
 import { TradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
@@ -7,7 +8,7 @@ import { getTradeProvider } from 'src/utils/wallet/trading/tradingUtils';
 import { TradingContainer } from 'src/views/wallet/trading/common/TradingContainer';
 import { TradingSelectedOffer } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingSelectedOffer';
 
-const TradingSellConfirmLoaded = () => {
+export const TradingSellConfirm = memo(() => {
     const tradingSellContextValues = useTradingSellForm({
         pageType: 'confirm',
     });
@@ -24,6 +25,4 @@ const TradingSellConfirmLoaded = () => {
             </FormProvider>
         </TradingFormContext.Provider>
     );
-};
-
-export const TradingSellConfirm = () => <TradingSellConfirmLoaded />;
+});

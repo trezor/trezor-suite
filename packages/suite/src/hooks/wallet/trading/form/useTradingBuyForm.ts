@@ -82,7 +82,7 @@ export const useTradingBuyForm = ({
     const verifiedAddress = useSelector(selectTradingVerifiedAddress);
     const paymentMethods = useSelector(selectTradingPaymentMethods);
 
-    const { timer, device, checkQuotesTimer } = useTradingInitializer({
+    const { device, checkQuotesTimer } = useTradingInitializer({
         pageType,
         isLoading,
     });
@@ -189,7 +189,6 @@ export const useTradingBuyForm = ({
     const { handleChange } = useTradingBuyHandleChange({
         formValues: values,
         network,
-        timer,
         shouldSendInSats,
         setValue,
     });
@@ -296,7 +295,6 @@ export const useTradingBuyForm = ({
         await dispatch(
             buyThunks.selectQuoteThunk({
                 quote,
-                timer,
                 returnUrl,
                 loginRequest: form => {
                     dispatch(submitRequestForm(form));
@@ -472,9 +470,18 @@ export const useTradingBuyForm = ({
         }
     }, [isFromRedirect, quotesRequest, dispatch]);
 
+    const checkQuotesTimerRef = useRef(checkQuotesTimer);
+    checkQuotesTimerRef.current = checkQuotesTimer;
+    const handleChangeRef = useRef(handleChange);
+    handleChangeRef.current = handleChange;
+
     useEffect(() => {
-        checkQuotesTimer(handleChange);
-    }, [checkQuotesTimer, handleChange]);
+        const run = () => checkQuotesTimerRef.current(handleChangeRef.current);
+        run();
+        const id = setInterval(run, 1000);
+
+        return () => clearInterval(id);
+    }, []);
 
     useDebounce(
         () => {
@@ -515,7 +522,6 @@ export const useTradingBuyForm = ({
         cryptoInputValue: values.cryptoInput,
         device,
         verifiedAddress,
-        timer,
         quotes: quotesByPaymentMethod,
         quotesRequest,
         preselectedQuote,
