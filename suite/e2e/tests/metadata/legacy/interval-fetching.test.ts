@@ -1,7 +1,6 @@
 // Hack: direct import to prevent some nasty import cascade resulting in error while importing icons
 import * as METADATA_LABELING from '@suite/metadata/src/metadataLabelingConstants';
 
-import { AccountLabelId } from '../../../support/enums/accountLabelId';
 import { expect, test } from '../../../support/fixtures';
 import { MetadataProvider } from '../../../support/mocks/metadataMock';
 
@@ -35,13 +34,8 @@ test.describe('Account metadata', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =>
             );
 
             await onboardingPage.completeOnboarding();
-
+            await metadataPage.enableLegacyLabeling(p.provider);
             await page.getByTestId('@account-menu/btc/normal/0/label').click();
-            await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toHaveText(
-                'Bitcoin #1',
-            );
-            await metadataPage.account.clickEditLabelButton(AccountLabelId.BitcoinDefault1);
-            await metadataPage.passThroughInitMetadata(p.provider);
             await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toHaveText(
                 'already existing label',
             );
