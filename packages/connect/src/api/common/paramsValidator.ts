@@ -1,7 +1,12 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/paramsValidator.js
-import type { CoinInfo, FirmwareBoundary, FirmwareRange } from '@trezor/connect-common';
+import type {
+    CoinInfo,
+    FirmwareBoundary,
+    FirmwareRange,
+    FirmwareRule,
+} from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
-import { typedObjectKeys, versionUtils } from '@trezor/utils';
+import { typedObjectTransformValues, versionUtils } from '@trezor/utils';
 
 import { config } from '../../data/config';
 import { fromHardened } from '../../utils/pathUtils';
@@ -108,94 +113,84 @@ export const validateCoinPath = (path: number[], coinInfo?: CoinInfo) => {
     }
 };
 
+export const DEFAULT_FIRMWARE_RANGE: FirmwareRange = {
+    UNKNOWN: { min: '1.0.0', max: '0' },
+    T1B1: { min: '1.0.0', max: '0' },
+    T2T1: { min: '2.0.0', max: '0' },
+    T2B1: { min: '2.6.1', max: '0' },
+    T3B1: { min: '2.8.1', max: '0' },
+    T3T1: { min: '2.7.1', max: '0' },
+    T3W1: { min: '2.7.1', max: '0' },
+};
+
+const intersectMin = (a: FirmwareBoundary, b: FirmwareBoundary) =>
+    a === '0' || (b !== '0' && versionUtils.isNewer(a, b)) ? a : b;
+
+const intersectMax = (a: FirmwareBoundary, b: FirmwareBoundary) =>
+    a === '0' || (b !== '0' && versionUtils.isNewer(a, b)) ? b : a;
+
+const intersectRange = (a: FirmwareRange, b: FirmwareRange) =>
+    typedObjectTransformValues(a, (value, model) => ({
+        min: intersectMin(value.min, b[model].min),
+        max: intersectMax(value.max, b[model].max),
+    }));
+
+const ensureArray = <T>(item: T | T[] = []) => (Array.isArray(item) ? item : [item]);
+
+const filterByCoins = (coins: CoinInfo[]) => {
+    const coinSet = new Set(coins.map(coin => coin.shortcut.toLowerCase()));
+    const coinTypeSet = new Set<string>(coins.map(coin => coin.type));
+
+    return (rule: FirmwareRule) =>
+        (!rule.coin && !rule.coinType) ||
+        ensureArray(rule.coin).some(coinSet.has.bind(coinSet)) ||
+        ensureArray(rule.coinType).some(coinTypeSet.has.bind(coinTypeSet));
+};
+
+const filterByMethods = (methodsOrCapabilities: string[]) => {
+    const methodSet = new Set(methodsOrCapabilities);
+
+    return (rule: FirmwareRule) =>
+        (!rule.methods && !rule.capabilities) ||
+        ensureArray(rule.methods).some(methodSet.has.bind(methodSet)) ||
+        ensureArray(rule.capabilities).some(methodSet.has.bind(methodSet));
+};
+
+const getCoinRules = (coins: CoinInfo[], currentRange: FirmwareRange): FirmwareRange[] =>
+    coins.map(({ support = typedObjectTransformValues(DEFAULT_FIRMWARE_RANGE, () => false) }) => ({
+        ...currentRange,
+        ...typedObjectTransformValues(support, value => ({
+            min: (value || '0') as FirmwareBoundary,
+            max: '0' as const,
+        })),
+    }));
+
+const getConfigRules = (
+    methodsOrCapabilities: string[],
+    coins: CoinInfo[],
+    currentRange: FirmwareRange,
+): FirmwareRange[] =>
+    config.supportedFirmware
+        .filter(filterByCoins(coins))
+        .filter(filterByMethods(methodsOrCapabilities))
+        .map(({ min, max }) =>
+            typedObjectTransformValues(currentRange, (value, key) => ({
+                min: min?.[key] ?? value.min,
+                max: max?.[key] ?? value.max,
+            })),
+        );
+
+const getFirmwareRangeNEW = (
+    methodsOrCapabilities: string[],
+    coins: CoinInfo[],
+    currentRange = DEFAULT_FIRMWARE_RANGE,
+) =>
+    getCoinRules(coins, currentRange)
+        .concat(getConfigRules(methodsOrCapabilities, coins, currentRange))
+        .reduce(intersectRange, currentRange);
+
 export const getFirmwareRange = (
     method: string,
     coinInfo: CoinInfo | null | undefined,
     currentRange: FirmwareRange,
-) => {
-    const range = JSON.parse(JSON.stringify(currentRange)) as FirmwareRange;
-    const models = typedObjectKeys(range);
-    // set minimum required firmware from coins.json (coinInfo)
-    if (coinInfo) {
-        models.forEach(model => {
-            const supportVersion = coinInfo.support ? coinInfo.support[model] : false;
-            if (supportVersion === false) {
-                range[model].min = '0';
-            } else if (
-                range[model].min !== '0' &&
-                typeof supportVersion === 'string' &&
-                versionUtils.isNewer(supportVersion, range[model].min)
-            ) {
-                range[model].min = supportVersion as FirmwareBoundary;
-            }
-        });
-    }
-
-    const coinType = coinInfo?.type;
-    const shortcut = coinInfo?.shortcut.toLowerCase();
-    // find firmware range in config.json
-    const configRules = config.supportedFirmware
-        .filter(rule => {
-            // check if rule applies to requested method
-            if (rule.methods) {
-                return rule.methods.includes(method);
-            }
-            // check if rule applies to capability
-            if (rule.capabilities) {
-                return rule.capabilities.includes(method);
-            }
-
-            // rule doesn't have specified methods
-            // it may be a global rule for coin or coinType
-            return true;
-        })
-        .filter(rule => {
-            // REF_TODO: there is no coinType in config. possibly obsolete code?
-            // probably still useful, we just need to define type for config and not infer it.
-            if (rule.coinType) {
-                // rule for coin type
-                return rule.coinType === coinType;
-            }
-            if (rule.coin) {
-                // rule for coin shortcut
-                return (typeof rule.coin === 'string' ? [rule.coin] : rule.coin).includes(shortcut);
-            }
-
-            return true;
-        });
-
-    configRules.forEach(rule => {
-        // override defaults
-        // NOTE:
-        // 0 may be confusing. means: no-support for "min" and unlimited support for "max"
-        if (rule.min) {
-            models.forEach(model => {
-                const modelMin = rule.min?.[model];
-                if (modelMin && range[model].min !== '0') {
-                    if (
-                        modelMin === '0' ||
-                        !versionUtils.isNewerOrEqual(range[model].min, modelMin)
-                    ) {
-                        range[model].min = modelMin as FirmwareBoundary;
-                    }
-                }
-            });
-        }
-        if (rule.max) {
-            models.forEach(model => {
-                const modelMax = rule.max[model];
-                if (modelMax) {
-                    if (
-                        modelMax === '0' ||
-                        range[model].max === '0' ||
-                        versionUtils.isNewerOrEqual(range[model].max, modelMax)
-                    ) {
-                        range[model].max = modelMax;
-                    }
-                }
-            });
-        }
-    });
-
-    return range;
-};
+) => getFirmwareRangeNEW([method], coinInfo ? [coinInfo] : [], currentRange);
