@@ -2,3 +2,5 @@
 ios/csl_cpp/
 ios/csl_ios/
 vendor/csl-mobile-bridge/src/
+# Override root .gitignore "build/" to track pre-compiled binaries
+!ios/build/
