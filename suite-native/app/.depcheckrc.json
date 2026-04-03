@@ -38,6 +38,7 @@
         "react-native-restart",
         "react-native-screens",
         "react-native-svg",
+        "@suite-native/react-native-cardano",
         "redux-persist",
         "@config-plugins/detox",
         "@currents/cmd",

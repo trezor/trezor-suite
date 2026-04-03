@@ -86,11 +86,9 @@ const config = {
                 return getSourceFile(overrides[moduleName]);
             }
 
+            // Redirect @emurgo/cardano-* WASM libs to JSI native bridge (csl-mobile-bridge).
             if (moduleName.startsWith('@emurgo/cardano')) {
-                // Cardano libs doesn't have main field in package.json which will cause error in metro
-                // Also they use WASM which doesn't work in RN so we polyfill it with empty file to build errors
-                // In future we will need JS implementation of Cardano libs or C++ implementation
-                return getSourceFile('./cardanoPolyfills.js');
+                return getSourceFile('@emurgo/csl-mobile-bridge');
             }
 
             if (process.env.EXPO_PUBLIC_IS_DETOX_BUILD && moduleName === '@trezor/connect') {

@@ -88,6 +88,7 @@
         "@suite-native/module-trading": "workspace:*",
         "@suite-native/module-transactions": "workspace:*",
         "@suite-native/navigation": "workspace:*",
+        "@suite-native/react-native-cardano": "workspace:*",
         "@suite-native/receive": "workspace:*",
         "@suite-native/sentry": "workspace:*",
         "@suite-native/services": "workspace:*",

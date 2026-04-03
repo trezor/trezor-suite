@@ -71,6 +71,7 @@
         { "path": "../module-trading" },
         { "path": "../module-transactions" },
         { "path": "../navigation" },
+        { "path": "../react-native-cardano" },
         { "path": "../receive" },
         { "path": "../sentry" },
         { "path": "../services" },

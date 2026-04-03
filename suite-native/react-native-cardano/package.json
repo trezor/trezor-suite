@@ -1,0 +1,31 @@
+{
+    "name": "@suite-native/react-native-cardano",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": true,
+    "main": "src/index",
+    "scripts": {
+        "postinstall": "./scripts/postinstall.sh",
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "type-check": "yarn g:tsc --build",
+        "build": "./scripts/build.sh",
+        "build:ios": "./scripts/build.sh --ios-only",
+        "build:android": "./scripts/build.sh --android-only"
+    },
+    "codegenConfig": {
+        "name": "RNCslMobileBridgeSpec",
+        "type": "modules",
+        "jsSrcsDir": "vendor/csl-mobile-bridge/src"
+    },
+    "devDependencies": {
+        "@trezor/eslint": "workspace:*"
+    },
+    "dependencies": {
+        "@emurgo/csl-mobile-bridge": "9.0.1"
+    },
+    "peerDependencies": {
+        "react-native": "*"
+    }
+}

@@ -1,6 +1,7 @@
 @bitcoinerlab/secp256k1
 @ethereumjs/common
 @ethereumjs/tx
+@emurgo/csl-mobile-bridge
 @everstake/wallet-sdk-ethereum
 @exodus/patch-broken-hermes-typed-arrays
 @fivebinaries/coin-selection

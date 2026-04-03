@@ -2658,6 +2658,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@emurgo/csl-mobile-bridge@npm:9.0.1":
+  version: 9.0.1
+  resolution: "@emurgo/csl-mobile-bridge@npm:9.0.1"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: 10/82c08d7fd2b6a06d2def418556b54f5e6901ba3b75a777abb6ea59853ba444afbc14b68704b96f7b2da27bdf1d4e711680904cb8f6464587c04d8113e9c6e580
+  languageName: node
+  linkType: hard
+
 "@esbuild/aix-ppc64@npm:0.25.12":
   version: 0.25.12
   resolution: "@esbuild/aix-ppc64@npm:0.25.12"
@@ -11779,6 +11789,7 @@ __metadata:
     "@suite-native/module-trading": "workspace:*"
     "@suite-native/module-transactions": "workspace:*"
     "@suite-native/navigation": "workspace:*"
+    "@suite-native/react-native-cardano": "workspace:*"
     "@suite-native/receive": "workspace:*"
     "@suite-native/sentry": "workspace:*"
     "@suite-native/services": "workspace:*"
@@ -13631,6 +13642,17 @@ __metadata:
     react-native: "npm:0.83.2"
     react-qr-code: "npm:2.0.18"
     react-redux: "npm:9.2.0"
+  languageName: unknown
+  linkType: soft
+
+"@suite-native/react-native-cardano@workspace:*, @suite-native/react-native-cardano@workspace:suite-native/react-native-cardano":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/react-native-cardano@workspace:suite-native/react-native-cardano"
+  dependencies:
+    "@emurgo/csl-mobile-bridge": "npm:9.0.1"
+    "@trezor/eslint": "workspace:*"
+  peerDependencies:
+    react-native: "*"
   languageName: unknown
   linkType: soft
 
