@@ -695,7 +695,7 @@ export const init =
                     return;
                 }
                 dispatch(fetchAndSaveMetadata(device.state.staticSessionId));
-            }, 60_000);
+            }, METADATA_LABELING.FETCH_INTERVAL);
         }
 
         return true;
