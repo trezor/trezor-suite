@@ -22,8 +22,8 @@ type CreateSuiteSyncQuotaManagerCompositionRootDeps = {
 export const createSuiteSyncQuotaManagerCompositionRoot = (
     deps: CreateSuiteSyncQuotaManagerCompositionRootDeps,
 ) => {
-    // We only want to use QM for our own relay servers. In case custom URL has been set, QM is ignored,
-    // unless enforceQuotaManager is set (used for e2e tests with a local relay).
+    // We only want to use QM for our own server servers. In case custom URL has been set, QM is ignored,
+    // unless enforceQuotaManager is set (used for e2e tests with a local server).
     const getIsQuotaManagerEnabled: GetIsQuotaManagerEnabled = () =>
         deps.getIsUsingTrezorRelay() || selectEnforceQuotaManager(deps.getState());
 

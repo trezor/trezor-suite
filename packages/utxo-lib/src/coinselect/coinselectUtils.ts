@@ -128,7 +128,7 @@ export function getDustAmount(
     });
     // use current feeRate if it is lower than longTermFeeRate
     const longTermFee = longTermFeeRate ? Math.min(feeRate, longTermFeeRate) : 0;
-    // use default dust relay fee if it is lower than long term fee
+    // use default dust server fee if it is lower than long term fee
     const dustRelayFeeRate = Math.max(longTermFee, DUST_RELAY_FEE_RATE);
 
     // use explicit dustThreshold if it is higher than calculated from script type

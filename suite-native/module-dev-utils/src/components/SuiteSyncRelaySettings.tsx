@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
-    DEFAULT_SUITE_SYNC_RELAY_URL,
+    DEFAULT_SUITE_SYNC_SERVER_URL,
     selectIsSuiteSyncDebugEnabled,
     selectSuiteSyncRelayUrl,
     updateSuiteSyncDebugEnabled,
@@ -33,7 +33,7 @@ export const SuiteSyncRelaySettings = () => {
     const onSubmit = form.handleSubmit(async values => {
         await suiteSync.changeRelayUrl({ relayUrl: values.suiteSyncRelayUrl });
         showToast({
-            message: 'Suite Sync relay URL updated',
+            message: 'Suite Sync server URL updated',
             variant: 'success',
         });
     });
@@ -47,10 +47,10 @@ export const SuiteSyncRelaySettings = () => {
     };
 
     const handleResetToDefault = async () => {
-        await suiteSync.changeRelayUrl({ relayUrl: DEFAULT_SUITE_SYNC_RELAY_URL });
-        form.reset({ suiteSyncRelayUrl: DEFAULT_SUITE_SYNC_RELAY_URL });
+        await suiteSync.changeRelayUrl({ relayUrl: DEFAULT_SUITE_SYNC_SERVER_URL });
+        form.reset({ suiteSyncRelayUrl: DEFAULT_SUITE_SYNC_SERVER_URL });
         showToast({
-            message: 'Suite Sync relay URL reset to default',
+            message: 'Suite Sync server URL reset to default',
             variant: 'success',
         });
     };
@@ -99,7 +99,7 @@ export const SuiteSyncRelaySettings = () => {
                                 color="textSubdued"
                                 style={{ fontFamily: 'monospace' }}
                             >
-                                {DEFAULT_SUITE_SYNC_RELAY_URL}
+                                {DEFAULT_SUITE_SYNC_SERVER_URL}
                             </Text>
                         </Text>
                     </VStack>

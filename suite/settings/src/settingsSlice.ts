@@ -48,7 +48,6 @@ export interface SuiteSettingsState {
     experimental?: ExperimentalFeature[];
     sidebarWidth: number;
     isCoinsFilterVisible: boolean;
-    suiteSyncRelayUrl: string | null;
     autoEject: boolean;
 }
 
@@ -86,7 +85,6 @@ export const suiteSettingsInitialState: SuiteSettingsState = {
     addressDisplayType: AddressDisplayOptions.CHUNKED,
     sidebarWidth: SIDEBAR_WIDTH_NUMERIC,
     isCoinsFilterVisible: false,
-    suiteSyncRelayUrl: null,
     autoEject: false,
 };
 

@@ -6,8 +6,9 @@ import {
 } from '@suite-common/suite-sync-types';
 import { type StaticSessionId } from '@trezor/connect';
 
-import { setSuiteSyncRelayUrl } from '../suiteSyncSlice';
-import { DEFAULT_SUITE_SYNC_RELAY_URL } from './relayUrl';
+import { type SuiteSyncServer, setSuiteSyncServer } from '../suiteSyncSlice';
+import { isUsingTrezorSuiteSyncServer } from './isUsingTrezorSuiteSyncServer';
+import { DEFAULT_SUITE_SYNC_SERVER_URL } from './serverUrl';
 import { createStorageIdFromDeviceStaticSessionId } from '../storage/createStorageIdFromDeviceStaticSessionId';
 
 export type ChangeRelayUrlDeps = {
@@ -15,14 +16,23 @@ export type ChangeRelayUrlDeps = {
     getAllDeviceSessionIds: () => StaticSessionId[];
 } & SuiteSyncStorageRepositoryDep;
 
-export const createChangeRelayUrl =
+const deriveServer = (relayUrl: string | null): SuiteSyncServer => {
+    if (relayUrl === null || relayUrl.trim() === '' || isUsingTrezorSuiteSyncServer(relayUrl)) {
+        return { type: 'default', customUrl: null };
+    }
+
+    return { type: 'custom', customUrl: relayUrl };
+};
+
+export const createChangeServerUrl =
     (deps: ChangeRelayUrlDeps): ChangeRelayUrl =>
     async ({ relayUrl }) => {
-        deps.dispatch(setSuiteSyncRelayUrl({ url: relayUrl }));
+        const server = deriveServer(relayUrl);
+        deps.dispatch(setSuiteSyncServer(server));
 
-        // We save empty, but we need to reconnect to DEFAULT in case user clears relay form to empty
+        // We need to reconnect to DEFAULT in case user clears server form to empty
         const normalizedUrl =
-            relayUrl === null || relayUrl.trim() === '' ? DEFAULT_SUITE_SYNC_RELAY_URL : relayUrl;
+            server.type === 'default' ? DEFAULT_SUITE_SYNC_SERVER_URL : server.customUrl!;
 
         const deviceStaticSessionIds = deps.getAllDeviceSessionIds();
 

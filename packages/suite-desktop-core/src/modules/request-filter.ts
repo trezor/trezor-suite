@@ -12,7 +12,7 @@ export const SERVICE_NAME = 'request-filter';
 
 /**
  * This module handles request interception for the Electron Renderer thread. Requests are happening
- * in the Chromium browser (the Electron binary itself), so we have to relay on the api we get from Electron
+ * in the Chromium browser (the Electron binary itself), so we have to server on the api we get from Electron
  * (it falls down to `session.defaultSession.webRequest.onBeforeRequest`).
  *
  * The actual interception is done in `createElectronSessionInterceptor`, injected when loading modules.

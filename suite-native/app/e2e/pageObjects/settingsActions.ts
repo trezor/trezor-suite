@@ -104,12 +104,12 @@ class SettingsActions {
 
     async enableSuiteSync(url = LOCAL_RELAY_URL, quotaUrl = LOCAL_QUOTA_URL) {
         await this.openSection('dev-utils');
-        const saveSuiteSyncUrl = element(by.id('@suiteSync/custom-relay-url-save-button'));
+        const saveSuiteSyncUrl = element(by.id('@suiteSync/custom-server-url-save-button'));
         await scrollUntilVisible(saveSuiteSyncUrl);
-        await element(by.id('@suiteSync/custom-relay-url-input')).replaceText(url);
+        await element(by.id('@suiteSync/custom-server-url-input')).replaceText(url);
         // Workaround: close keyboard by clicking on section header before tapping Save
         await element(by.id('@suiteSync/header')).tap();
-        await element(by.id('@suiteSync/custom-relay-url-save-button')).tap();
+        await element(by.id('@suiteSync/custom-server-url-save-button')).tap();
 
         const enforceQuotaManagerSwitcher = element(by.id('@suiteSyncQuotaManager/save-button'));
         await scrollUntilVisible(enforceQuotaManagerSwitcher);

@@ -6,7 +6,7 @@ type TestState = {
 };
 
 const state: TestState = {
-    relayUrl: 'wss://relay.example.com',
+    relayUrl: 'wss://server.example.com',
     selectedWalletDescriptor: 'wallet-1',
 };
 
@@ -16,7 +16,7 @@ describe(toGetter.name, () => {
     it('creates a getter for selectors without extra params', () => {
         const getRelayUrl = toGetter(getState, currentState => currentState.relayUrl);
 
-        expect(getRelayUrl()).toBe('wss://relay.example.com');
+        expect(getRelayUrl()).toBe('wss://server.example.com');
     });
 
     it('creates a getter for selectors with one extra param', () => {
@@ -41,6 +41,6 @@ describe(toGetter.name, () => {
                 `${label}:${currentState.relayUrl}:${suffix}`,
         );
 
-        expect(getRelayLabel('relay', 2)).toBe('relay:wss://relay.example.com:2');
+        expect(getRelayLabel('server', 2)).toBe('server:wss://server.example.com:2');
     });
 });

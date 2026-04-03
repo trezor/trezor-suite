@@ -39,7 +39,7 @@ export const TorLoader = ({ callback }: TorLoadingScreenProps) => {
     useEffect(() => {
         // When Tor is disabling there might still be some bootstrap event coming but
         // we will ignore them since when disabling started there is no way back in this component
-        // We only relay on fakeProgress when disabling.
+        // We only server on fakeProgress when disabling.
         if (isDisabling) {
             return;
         }

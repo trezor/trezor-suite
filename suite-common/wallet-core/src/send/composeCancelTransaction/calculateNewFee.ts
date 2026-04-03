@@ -27,12 +27,12 @@ export const calculateNewFee = ({
     /**
      * Rules:
      °   3. The replacement transaction pays an absolute fee of at least the sum paid by the original transactions.
-     *   4. The replacement transaction must also pay for its own bandwidth at or above the rate set by the node's minimum relay fee setting.
+     *   4. The replacement transaction must also pay for its own bandwidth at or above the rate set by the node's minimum server fee setting.
      *
      * @see https://github.com/bitcoin/bips/blob/master/bip-0125.mediawiki#implementation-details
      */
     const newFeeRate = new BigNumber(originalFee) // BIP-125 rule 3 (paying for original transaction)
-        .plus(newTransactionSize * relayFee) // BIP-125 rule 4 (paying the relay fee)
+        .plus(newTransactionSize * relayFee) // BIP-125 rule 4 (paying the server fee)
         .div(newTransactionSize);
 
     const chainedTransactionFees =

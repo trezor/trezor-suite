@@ -6,7 +6,7 @@ import {
     SUITE_SYNC_SERVER_TYPE_OPTIONS_MAP,
     type SuiteSyncServerTypeSelectValue,
     createChangeSuiteSyncServerSchema,
-    selectSuiteSyncCustomRelayUrl,
+    selectSuiteSyncCustomServerUrl,
 } from '@suite-common/suite-sync';
 import { type SelectItemType } from '@suite-native/atoms';
 import { useForm } from '@suite-native/forms';
@@ -16,7 +16,7 @@ import { useToast } from '@suite-native/toasts';
 
 export const useSuiteSyncRelayUrlForm = () => {
     const { translate } = useTranslate();
-    const customRelayUrl = useSelector(selectSuiteSyncCustomRelayUrl);
+    const customRelayUrl = useSelector(selectSuiteSyncCustomServerUrl);
     const { suiteSync } = useNativeServices();
     const { showToast } = useToast();
 

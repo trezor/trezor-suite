@@ -145,15 +145,15 @@ describe.skip('Suite Sync - Labelling [@androidOnly @T3T1 @smoke]', () => {
         await element(by.id('@label-edit-form/input')).replaceText(OUTPUT_LABEL);
         await element(by.id('@label-edit-form/confirm-button')).tap();
 
-        // Verify labels were synced to the relay
+        // Verify labels were synced to the server
         await evoluClient.init({ ownerSecret: immuneFixtures.ownerSecret });
         await evoluClient.expectInTable('account', [expectedAccountData]);
         await evoluClient.expectInTable('address', [expectedAddressData]);
         await evoluClient.expectInTable('output', [expectedOutputData]);
     });
 
-    test('Sync labels from relay', async () => {
-        // Seed the relay before enabling SuiteSync so the labels are ready to sync on connect.
+    test('Sync labels from server', async () => {
+        // Seed the server before enabling SuiteSync so the labels are ready to sync on connect.
         const addressSeed = immuneFixtures.createAddressSeed(FIRST_BTC_RECEIVE_ADDRESS);
         const outputSeed = immuneFixtures.createOutputSeed();
         await evoluClient.init({ ownerSecret: immuneFixtures.ownerSecret });

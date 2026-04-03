@@ -19,7 +19,7 @@ export const createSuiteSyncErrorHandler =
                 return;
 
             default:
-                console.error('SuiteSync relay error', error.message);
+                console.error('SuiteSync server error', error.message);
 
                 return;
         }

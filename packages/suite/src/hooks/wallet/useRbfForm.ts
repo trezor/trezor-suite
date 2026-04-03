@@ -33,7 +33,7 @@ import { useCompose } from './form/useCompose';
 import { useFees } from './form/useFees';
 import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';
 
-const MIN_FEE_RATE_PER_VB = 1; // minimum fee rate in sat/vB, introduced because nodes lowered min relay tx fee, but not incremental fee
+const MIN_FEE_RATE_PER_VB = 1; // minimum fee rate in sat/vB, introduced because nodes lowered min server tx fee, but not incremental fee
 
 export type UseRbfProps = {
     selectedAccount: SelectedAccountLoaded;

@@ -1097,12 +1097,12 @@ export const messages = {
                     relayUrl: {
                         card: {
                             title: 'Relay server',
-                            subtitle: 'Default or custom relay server',
+                            subtitle: 'Default or custom server server',
                         },
                         screen: {
                             title: 'Relay server',
                             subtitle:
-                                'Choose between the default Trezor relay server or set up a custom one.',
+                                'Choose between the default Trezor server server or set up a custom one.',
                         },
                         serverType: {
                             label: 'Server type',
@@ -1110,7 +1110,7 @@ export const messages = {
                             custom: 'Custom',
                         },
                         customUrlInput: {
-                            label: 'Custom relay URL',
+                            label: 'Custom server URL',
                             required: 'This field is required.',
                             invalidUrl: 'Please enter a valid URL.',
                         },

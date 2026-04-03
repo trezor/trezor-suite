@@ -26,7 +26,7 @@ export const RELAY_URL = 'http://localhost:4000';
 export const QUOTA_URL = 'http://localhost:4001';
 const RELAY_HEALTH_URL = 'http://localhost:4002';
 const EVOLU_LOCAL_SERVER_NOT_RUNNING_ERROR =
-    'Evolu relay is not running on localhost. Please start the Docker environment:\n' +
+    'Evolu server is not running on localhost. Please start the Docker environment:\n' +
     'yarn workspace "@trezor/suite-e2e" docker:suite-sync';
 
 export const createQuery = createQueryBuilder(Schema);

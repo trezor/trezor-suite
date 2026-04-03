@@ -10,7 +10,7 @@ import {
     SUITE_SYNC_SERVER_TYPE_OPTIONS_MAP,
     type SuiteSyncServerTypeOption,
     createChangeSuiteSyncServerSchema,
-    selectSuiteSyncCustomRelayUrl,
+    selectSuiteSyncCustomServerUrl,
 } from '@suite-common/suite-sync';
 import { type SuiteSync } from '@suite-common/suite-sync-types';
 import { Card, Column, Input, Modal, Select } from '@trezor/components';
@@ -22,7 +22,7 @@ type SelectSuiteSyncServerProps = {
 
 export const SelectSuiteSyncServer = ({ suiteSync, onCancel }: SelectSuiteSyncServerProps) => {
     const { translationString } = useTranslation();
-    const customRelayUrl = useSelector(selectSuiteSyncCustomRelayUrl);
+    const customRelayUrl = useSelector(selectSuiteSyncCustomServerUrl);
 
     const formSchema = useMemo(
         () =>
