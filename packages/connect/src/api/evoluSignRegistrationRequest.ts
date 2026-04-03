@@ -3,7 +3,6 @@ import { Assert } from '@trezor/schema-utils';
 
 import type { MethodMessage, MethodPermission } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
-import { getFirmwareRange } from './common/paramsValidator';
 
 export default class EvoluSignRegistrationRequest extends AbstractMethod<
     'evoluSignRegistrationRequest',
@@ -23,7 +22,6 @@ export default class EvoluSignRegistrationRequest extends AbstractMethod<
         };
 
         super(message, params);
-        this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
         this.useEmptyPassphrase = true;
     }
     get requiredPermissions(): MethodPermission[] {

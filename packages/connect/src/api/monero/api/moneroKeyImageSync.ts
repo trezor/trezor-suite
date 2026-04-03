@@ -9,7 +9,6 @@ import type { MethodMessage, MethodPermission } from '../../../core/AbstractMeth
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { HD_HARDENED, validatePath } from '../../../utils/pathUtils';
-import { getFirmwareRange } from '../../common/paramsValidator';
 
 // Encode unsigned integer as varint (LEB128 format)
 function encodeVarint(n: number): Uint8Array {
@@ -111,11 +110,7 @@ export default class MoneroKeyImageSyncMethod extends AbstractMethod<'moneroKeyI
         super(message, params);
 
         this.requiredDeviceCapabilities = ['Capability_Monero'];
-        this.firmwareRange = getFirmwareRange(
-            this.name,
-            getMiscNetwork('Monero'),
-            this.firmwareRange,
-        );
+        this.requiredFirmwareCoins = [getMiscNetwork('Monero')];
     }
 
     get requiredPermissions(): MethodPermission[] {

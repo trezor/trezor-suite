@@ -180,7 +180,7 @@ const getConfigRules = (
             })),
         );
 
-const getFirmwareRangeNEW = (
+export const getFirmwareRange = (
     methodsOrCapabilities: string[],
     coins: CoinInfo[],
     currentRange = DEFAULT_FIRMWARE_RANGE,
@@ -188,9 +188,3 @@ const getFirmwareRangeNEW = (
     getCoinRules(coins, currentRange)
         .concat(getConfigRules(methodsOrCapabilities, coins, currentRange))
         .reduce(intersectRange, currentRange);
-
-export const getFirmwareRange = (
-    method: string,
-    coinInfo: CoinInfo | null | undefined,
-    currentRange: FirmwareRange,
-) => getFirmwareRangeNEW([method], coinInfo ? [coinInfo] : [], currentRange);

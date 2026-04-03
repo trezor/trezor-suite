@@ -4,7 +4,6 @@ import { Assert } from '@trezor/schema-utils';
 
 import type { MethodMessage, MethodPermission } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
-import { getFirmwareRange } from './common/paramsValidator';
 
 export default class GetFirmwareHash extends AbstractMethod<
     'getFirmwareHash',
@@ -21,7 +20,6 @@ export default class GetFirmwareHash extends AbstractMethod<
         this.useEmptyPassphrase = true;
         this.useDeviceState = false;
         this.allowDeviceMode = [UI_REQUEST.INITIALIZE];
-        this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
     }
     get requiredPermissions(): MethodPermission[] {
         return ['management'];

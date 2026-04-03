@@ -19,7 +19,6 @@ import type { MethodMessage, MethodPermission } from '../../../core/AbstractMeth
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { validatePath } from '../../../utils/pathUtils';
-import { getFirmwareRange } from '../../common/paramsValidator';
 import {
     modifyAuxiliaryDataForBackwardsCompatibility,
     transformAuxiliaryData,
@@ -225,11 +224,7 @@ export default class CardanoSignTransaction extends AbstractMethod<
         super(message, params);
 
         this.requiredDeviceCapabilities = ['Capability_Cardano'];
-        this.firmwareRange = getFirmwareRange(
-            this.name,
-            getMiscNetwork('Cardano'),
-            this.firmwareRange,
-        );
+        this.requiredFirmwareCoins = [getMiscNetwork('Cardano')];
     }
 
     get requiredPermissions(): MethodPermission[] {

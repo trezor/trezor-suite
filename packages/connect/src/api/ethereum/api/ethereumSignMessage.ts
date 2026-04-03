@@ -12,7 +12,6 @@ import { validateModelOneMessageSize } from '../../../device/validateMessageSize
 import { getNetworkLabel } from '../../../utils/ethereumUtils';
 import { hexToText, messageToHex } from '../../../utils/formatUtils';
 import { getSerializedPath, getSlip44ByPath, validatePath } from '../../../utils/pathUtils';
-import { getFirmwareRange } from '../../common/paramsValidator';
 import { getEthereumDefinitions } from '../ethereumDefinitions';
 
 type Params = {
@@ -41,7 +40,7 @@ export default class EthereumSignMessage extends AbstractMethod<'ethereumSignMes
         const params = { proto: { address_n, message: messageHex }, readableMessage };
 
         super(message, params);
-        this.firmwareRange = getFirmwareRange(this.name, network, this.firmwareRange);
+        this.requiredFirmwareCoins = [network];
         this.requiredDeviceCapabilities = ['Capability_Ethereum'];
     }
 

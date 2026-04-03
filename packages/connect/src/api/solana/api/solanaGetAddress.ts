@@ -17,7 +17,7 @@ import type {
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { fromHardened, getSerializedPath, validatePath } from '../../../utils/pathUtils';
-import { bundlify, getFirmwareRange } from '../../common/paramsValidator';
+import { bundlify } from '../../common/paramsValidator';
 
 type Params = {
     proto: PROTO.SolanaGetAddress;
@@ -51,11 +51,7 @@ export default class SolanaGetAddress extends AbstractMethod<'solanaGetAddress',
         this.useUi = this.getUseUi(this.params, payload.useEventListener);
         this.confirmMissingBackup = true;
         this.requiredDeviceCapabilities = ['Capability_Solana'];
-        this.firmwareRange = getFirmwareRange(
-            this.name,
-            getMiscNetwork('Solana'),
-            this.firmwareRange,
-        );
+        this.requiredFirmwareCoins = [getMiscNetwork('Solana')];
     }
 
     get requiredPermissions(): MethodPermission[] {

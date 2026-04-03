@@ -7,7 +7,7 @@ import { Assert } from '@trezor/schema-utils';
 
 import type { MethodMessage, MethodPermission } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
-import { getFirmwareRange, validateCoinPath } from './common/paramsValidator';
+import { validateCoinPath } from './common/paramsValidator';
 import { getBitcoinNetwork } from '../data/coinInfo';
 import { validateModelOneMessageSize } from '../device/validateMessageSize';
 import { hexToText, messageToHex } from '../utils/formatUtils';
@@ -51,13 +51,12 @@ export default class SignMessage extends AbstractMethod<'signMessage', Params> {
         super(message, params);
 
         this.coinInfo = coinInfo;
+        this.requiredFirmwareCoins = [coinInfo];
         // firmware range depends on used no_script_type parameter
         // no_script_type is possible since 1.10.4 / 2.4.3
-        this.firmwareRange = getFirmwareRange(
-            payload.no_script_type ? 'signMessageNoScriptType' : this.name,
-            this.coinInfo,
-            this.firmwareRange,
-        );
+        if (payload.no_script_type) {
+            this.requiredFirmwareCapabilities = ['signMessageNoScriptType'];
+        }
     }
 
     coinInfo: BitcoinNetworkInfo | undefined;

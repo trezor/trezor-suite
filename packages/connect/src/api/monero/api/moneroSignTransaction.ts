@@ -9,7 +9,6 @@ import type {
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { HD_HARDENED, validatePath } from '../../../utils/pathUtils';
-import { getFirmwareRange } from '../../common/paramsValidator';
 
 type Params = {
     address_n: number[];
@@ -183,11 +182,7 @@ export default class MoneroSignTransactionMethod extends AbstractMethod<
         super(message, params);
 
         this.requiredDeviceCapabilities = ['Capability_Monero'];
-        this.firmwareRange = getFirmwareRange(
-            this.name,
-            getMiscNetwork('Monero'),
-            this.firmwareRange,
-        );
+        this.requiredFirmwareCoins = [getMiscNetwork('Monero')];
     }
 
     get info() {
