@@ -19,7 +19,7 @@ import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getEthereumNetwork, getUniqueNetworks } from '../../../data/coinInfo';
 import { getNetworkLabel } from '../../../utils/ethereumUtils';
 import { getSerializedPath, validatePath } from '../../../utils/pathUtils';
-import { bundlify, getFirmwareRange } from '../../common/paramsValidator';
+import { bundlify } from '../../common/paramsValidator';
 
 type Params = {
     proto: PROTO.EthereumGetPublicKey;
@@ -49,10 +49,7 @@ export default class EthereumGetPublicKey extends AbstractMethod<'ethereumGetPub
 
         super(message, params);
 
-        this.firmwareRange = params.reduce(
-            (prev, { network }) => getFirmwareRange(this.name, network, prev),
-            this.firmwareRange,
-        );
+        this.requiredFirmwareCoins = params.map(({ network }) => network);
         this.hasBundle = hasBundle;
         this.requiredDeviceCapabilities = ['Capability_Ethereum'];
     }

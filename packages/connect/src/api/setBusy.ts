@@ -3,7 +3,6 @@ import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 
 import type { MethodContext, MethodMessage, MethodPermission } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
-import { getFirmwareRange } from './common/paramsValidator';
 
 export default class SetBusy extends AbstractMethod<'setBusy', PROTO.SetBusy> {
     constructor(message: MethodMessage<'setBusy'>) {
@@ -15,7 +14,6 @@ export default class SetBusy extends AbstractMethod<'setBusy', PROTO.SetBusy> {
         this.useDeviceState = false;
         this.skipFinalReload = false;
         this.overridePreviousCall = true;
-        this.firmwareRange = getFirmwareRange(this.name, undefined, this.firmwareRange);
     }
     get requiredPermissions(): MethodPermission[] {
         return ['management'];

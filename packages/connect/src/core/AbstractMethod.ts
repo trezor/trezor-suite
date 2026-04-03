@@ -2,19 +2,22 @@ import { ERRORS, UI_REQUEST } from '@trezor/connect-common';
 import type {
     CallMethodPayload,
     CallMethodResponse,
+    CoinInfo,
     CoreEventMessage,
     DeviceState,
-    FirmwareRange,
     PrecomposeResultFinal,
     StaticSessionId,
     UiRequestButtonData,
     UiRequestConfirmation,
 } from '@trezor/connect-common';
 import type { Capability } from '@trezor/protobuf/src/definitions';
-import { versionUtils } from '@trezor/utils';
+import { isNotUndefined, versionUtils } from '@trezor/utils';
 
+import { DEFAULT_FIRMWARE_RANGE, getFirmwareRange } from '../api/common/paramsValidator';
 import type { Device } from '../device/Device';
 import type { UiPromiseCreator } from '../events';
+
+export { DEFAULT_FIRMWARE_RANGE };
 
 export type Payload<M> = Extract<CallMethodPayload, { method: M }> & { override?: boolean };
 export type MethodReturnType<M extends CallMethodPayload['method']> = CallMethodResponse<M>;
@@ -46,16 +49,6 @@ export type MethodContext = {
 export type MethodMessage<Name extends CallMethodPayload['method']> = {
     id?: number;
     payload: Payload<Name>;
-};
-
-export const DEFAULT_FIRMWARE_RANGE: FirmwareRange = {
-    UNKNOWN: { min: '1.0.0', max: '0' },
-    T1B1: { min: '1.0.0', max: '0' },
-    T2T1: { min: '2.0.0', max: '0' },
-    T2B1: { min: '2.6.1', max: '0' },
-    T3B1: { min: '2.8.1', max: '0' },
-    T3T1: { min: '2.7.1', max: '0' },
-    T3W1: { min: '2.7.1', max: '0' }, // TODO T3W1
 };
 
 function validateStaticSessionId(input: unknown): StaticSessionId {
@@ -125,7 +118,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
 
     public overridden: boolean;
 
-    public name: Name; // method name
+    public readonly name: Name; // method name
 
     protected get info() {
         return '';
@@ -145,13 +138,13 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
 
     public useEmptyPassphrase: boolean;
 
-    protected firmwareRange: FirmwareRange;
-
     abstract get requiredPermissions(): MethodPermission[];
 
     public allowDeviceMode: DeviceMode[]; // used in device management (like ResetDevice allow !UI_REQUEST.INITIALIZED)
 
     protected requiredDeviceCapabilities: Capability[] = [];
+    protected requiredFirmwareCapabilities: string[] = [];
+    protected requiredFirmwareCoins: (CoinInfo | undefined)[] = [];
 
     public useCardanoDerivation: boolean;
 
@@ -178,7 +171,6 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         this.allowDeviceMode = [UI_REQUEST.SEEDLESS]; // Allow seedless by default
 
         // default values for all methods
-        this.firmwareRange = DEFAULT_FIRMWARE_RANGE;
         this.useDevice = true;
         this.useDeviceState = true;
         this.useUi = true;
@@ -225,7 +217,11 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         // seedless devices do not offer firmware update - it is not desirable to update something that does not have seed
         if (device.isSeedless()) return;
 
-        const range = this.firmwareRange[device.features.internal_model];
+        const firmwareRange = getFirmwareRange(
+            [this.name, ...this.requiredFirmwareCapabilities],
+            this.requiredFirmwareCoins.filter(isNotUndefined),
+        );
+        const range = firmwareRange[device.features.internal_model];
 
         if (device.firmwareStatus === 'none') {
             return UI_REQUEST.FIRMWARE_NOT_INSTALLED;

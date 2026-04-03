@@ -4,7 +4,6 @@ import { Assert } from '@trezor/schema-utils';
 
 import type { MethodMessage, MethodPermission } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
-import { getFirmwareRange } from './common/paramsValidator';
 
 export default class LoadDevice extends AbstractMethod<'loadDevice', PROTO.LoadDevice> {
     constructor(message: MethodMessage<'loadDevice'>) {
@@ -28,7 +27,6 @@ export default class LoadDevice extends AbstractMethod<'loadDevice', PROTO.LoadD
         this.allowDeviceMode = [UI_REQUEST.INITIALIZE];
         this.useDeviceState = false;
         this.skipFinalReload = false;
-        this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
     }
     get requiredPermissions(): MethodPermission[] {
         return ['management'];

@@ -7,7 +7,6 @@ import { Assert } from '@trezor/schema-utils';
 
 import type { MethodMessage, MethodPermission } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
-import { getFirmwareRange } from './common/paramsValidator';
 import { DataManager } from '../data/DataManager';
 
 export default class RequestLogin extends AbstractMethod<'requestLogin', PROTO.SignIdentity> {
@@ -39,7 +38,6 @@ export default class RequestLogin extends AbstractMethod<'requestLogin', PROTO.S
         };
 
         super(message, params);
-        this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
         this.useEmptyPassphrase = true;
     }
     get requiredPermissions(): MethodPermission[] {

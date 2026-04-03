@@ -19,7 +19,7 @@ import type {
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { fromHardened, getSerializedPath, validatePath } from '../../../utils/pathUtils';
-import { bundlify, getFirmwareRange } from '../../common/paramsValidator';
+import { bundlify } from '../../common/paramsValidator';
 
 type Params = {
     proto: PROTO.TezosGetAddress;
@@ -54,11 +54,7 @@ export default class TezosGetAddress extends AbstractMethod<'tezosGetAddress', P
         this.useUi = this.getUseUi(this.params, payload.useEventListener);
         this.confirmMissingBackup = true;
         this.requiredDeviceCapabilities = ['Capability_Tezos'];
-        this.firmwareRange = getFirmwareRange(
-            this.name,
-            getMiscNetwork('Tezos'),
-            this.firmwareRange,
-        );
+        this.requiredFirmwareCoins = [getMiscNetwork('Tezos')];
     }
 
     get requiredPermissions(): MethodPermission[] {

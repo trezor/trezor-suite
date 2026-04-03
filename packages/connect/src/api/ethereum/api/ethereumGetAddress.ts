@@ -21,7 +21,7 @@ import { getEthereumNetwork, getUniqueNetworks } from '../../../data/coinInfo';
 import { getNetworkLabel } from '../../../utils/ethereumUtils';
 import { stripHexPrefix } from '../../../utils/formatUtils';
 import { getSerializedPath, getSlip44ByPath, validatePath } from '../../../utils/pathUtils';
-import { bundlify, getFirmwareRange } from '../../common/paramsValidator';
+import { bundlify } from '../../common/paramsValidator';
 import {
     decodeEthereumDefinition,
     ethereumNetworkInfoFromDefinition,
@@ -59,10 +59,7 @@ export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddre
 
         super(message, params);
 
-        this.firmwareRange = params.reduce(
-            (prev, { network }) => getFirmwareRange(this.name, network, prev),
-            this.firmwareRange,
-        );
+        this.requiredFirmwareCoins = params.map(({ network }) => network);
         this.hasBundle = hasBundle;
         this.useUi = this.getUseUi(this.params, payload.useEventListener);
         this.confirmMissingBackup = true;

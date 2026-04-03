@@ -28,8 +28,10 @@ describe('helpers/paramsValidator', () => {
             it(f.description, () => {
                 if (f.config) jest.replaceProperty(data, 'config', f.config as any);
 
-                // @ts-expect-error
-                expect(getFirmwareRange(...f.params)).toEqual(f.result);
+                expect(
+                    // @ts-expect-error
+                    getFirmwareRange([f.params[0]], f.params[1] ? [f.params[1]] : [], f.params[2]),
+                ).toEqual(f.result);
             });
         });
     });

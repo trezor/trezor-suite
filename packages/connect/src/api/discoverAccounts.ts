@@ -19,7 +19,7 @@ import { arrayPartition, getSynchronize, versionUtils } from '@trezor/utils';
 
 import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
 import type { MethodContext, MethodMessage, MethodPermission } from '../core/AbstractMethod';
-import { AbstractMethod, DEFAULT_FIRMWARE_RANGE } from '../core/AbstractMethod';
+import { AbstractMethod } from '../core/AbstractMethod';
 import { getCoinInfo } from '../data/coinInfo';
 import type { AccountDescriptor } from '../device/DeviceCommands';
 import { isUtxoBased } from '../utils/accountUtils';
@@ -112,11 +112,7 @@ export default class DiscoverAccounts extends AbstractMethod<
             // validate backend
             isBackendSupported(coinInfo);
 
-            const firmwareRange = getFirmwareRange(
-                payload.method,
-                coinInfo,
-                DEFAULT_FIRMWARE_RANGE,
-            );
+            const firmwareRange = getFirmwareRange([payload.method], [coinInfo]);
 
             // Take all the defined account types based on requested coin symbol
             const symbolAccounts = ACCOUNT_TYPES.filter(a => a.symbol === symbol);

@@ -12,14 +12,14 @@ import {
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 
-import { bundlify, getFirmwareRange } from './common/paramsValidator';
+import { bundlify } from './common/paramsValidator';
 import type {
     MethodContext,
     MethodMessage,
     MethodPermission,
     MethodReturnType,
 } from '../core/AbstractMethod';
-import { AbstractMethod, DEFAULT_FIRMWARE_RANGE } from '../core/AbstractMethod';
+import { AbstractMethod } from '../core/AbstractMethod';
 import { getCoinInfo } from '../data/coinInfo';
 import { getAccountLabel } from '../utils/accountUtils';
 import { getSerializedPath, validatePath } from '../utils/pathUtils';
@@ -57,11 +57,7 @@ export default class GetAccountDescriptor extends AbstractMethod<
 
         super(message, params);
 
-        // set firmware range
-        this.firmwareRange = params.reduce(
-            (prev, { coinInfo }) => getFirmwareRange(this.name, coinInfo, prev),
-            this.firmwareRange,
-        );
+        this.requiredFirmwareCoins = params.map(({ coinInfo }) => coinInfo);
         this.hasBundle = hasBundle;
         this.confirmMissingBackup = !this.params.every(batch => batch.suppressBackupWarning);
         this.useDevice = true;
@@ -109,37 +105,6 @@ export default class GetAccountDescriptor extends AbstractMethod<
             view: 'export-account-info' as const,
             label: `Export descriptor for: ${str.join('')}`,
         };
-    }
-
-    // override AbstractMethod function
-    // this is a special case where we want to check firmwareRange in bundle
-    // and return error with bundle indexes
-    checkFirmwareRange() {
-        // check each batch and return error with invalid bundle indexes
-        // find invalid ranges
-        const invalid = [];
-        for (let i = 0; i < this.params.length; i++) {
-            // set FW range for current batch
-            this.firmwareRange = getFirmwareRange(
-                this.name,
-                this.params[i].coinInfo,
-                DEFAULT_FIRMWARE_RANGE,
-            );
-            const exception = super.checkFirmwareRange();
-            if (exception) {
-                invalid.push({
-                    index: i,
-                    exception,
-                    coin: this.params[i].coin,
-                });
-            }
-        }
-        // return invalid ranges in custom error
-        if (invalid.length > 0) {
-            throw ERRORS.TypedError('Method_Discovery_BundleException', JSON.stringify(invalid));
-        }
-
-        return undefined;
     }
 
     async run({ sendCoreMessage }: MethodContext) {

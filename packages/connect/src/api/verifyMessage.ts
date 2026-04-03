@@ -7,7 +7,6 @@ import { Assert } from '@trezor/schema-utils';
 
 import type { MethodMessage, MethodPermission } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
-import { getFirmwareRange } from './common/paramsValidator';
 import { getBitcoinNetwork } from '../data/coinInfo';
 import { validateModelOneMessageSize } from '../device/validateMessageSize';
 import { messageToHex } from '../utils/formatUtils';
@@ -45,8 +44,7 @@ export default class VerifyMessage extends AbstractMethod<'verifyMessage', Param
 
         super(message, params);
 
-        // check required firmware with coinInfo support
-        this.firmwareRange = getFirmwareRange(this.name, coinInfo, this.firmwareRange);
+        this.requiredFirmwareCoins = [coinInfo];
     }
 
     get requiredPermissions(): MethodPermission[] {

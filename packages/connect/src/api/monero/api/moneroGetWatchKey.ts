@@ -7,7 +7,6 @@ import type { MethodMessage, MethodPermission } from '../../../core/AbstractMeth
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { HD_HARDENED, validatePath } from '../../../utils/pathUtils';
-import { getFirmwareRange } from '../../common/paramsValidator';
 
 type Params = {
     proto: PROTO.MoneroGetWatchKey;
@@ -36,11 +35,7 @@ export default class MoneroGetWatchKeyMethod extends AbstractMethod<'moneroGetWa
         super(message, params);
 
         this.requiredDeviceCapabilities = ['Capability_Monero'];
-        this.firmwareRange = getFirmwareRange(
-            this.name,
-            getMiscNetwork('Monero'),
-            this.firmwareRange,
-        );
+        this.requiredFirmwareCoins = [getMiscNetwork('Monero')];
     }
 
     get requiredPermissions(): MethodPermission[] {
