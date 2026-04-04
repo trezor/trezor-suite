@@ -58,6 +58,7 @@
         "@suite-native/atoms": "workspace:*",
         "@suite-native/biometrics": "workspace:*",
         "@suite-native/bluetooth": "workspace:*",
+        "@suite-native/cardano-wasm": "workspace:*",
         "@suite-native/config": "workspace:*",
         "@suite-native/connection-status": "workspace:*",
         "@suite-native/device": "workspace:*",

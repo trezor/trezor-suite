@@ -1,0 +1,17 @@
+{
+    "name": "@suite-native/cardano-wasm",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "main": "src/shim",
+    "scripts": {
+        "postinstall": "node scripts/generateWasmBase64.js",
+        "test:unit": "yarn g:jest",
+        "depcheck": "yarn g:depcheck",
+        "type-check": "yarn g:tsc --build",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
+    },
+    "dependencies": {
+        "@emurgo/cardano-serialization-lib-browser": "^13.2.0"
+    }
+}

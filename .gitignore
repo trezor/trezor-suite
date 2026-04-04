@@ -152,3 +152,6 @@ packages/suite-data/files/translations/master.json
 
 # local config for Claude
 .claude/
+
+# Generated WASM base64 module (regenerate with: yarn workspace @suite-native/cardano-wasm generate-wasm)
+suite-native/cardano-wasm/src/generated/
