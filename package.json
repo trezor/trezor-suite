@@ -107,7 +107,7 @@
         "react": "19.2.4",
         "electron": "40.6.1",
         "@types/node": "22.13.10",
-        "bn.js": "5.2.2",
+        "bn.js": "5.2.3",
         "node-addon-api": "8.5.0",
         "node-gyp": "12.2.0",
         "reselect": "5.1.1",

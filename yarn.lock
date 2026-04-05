@@ -16288,7 +16288,7 @@ __metadata:
     bitcoin-ops: "npm:^1.4.1"
     blake-hash: "npm:^2.0.0"
     blakejs: "npm:^1.2.1"
-    bn.js: "npm:^5.2.3"
+    bn.js: "npm:5.2.3"
     bs58: "npm:^6.0.0"
     bs58check: "npm:^4.0.0"
     cashaddrjs: "npm:0.4.4"
@@ -20282,10 +20282,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bn.js@npm:5.2.2":
-  version: 5.2.2
-  resolution: "bn.js@npm:5.2.2"
-  checksum: 10/51ebb2df83b33e5d8581165206e260d5e9c873752954616e5bf3758952b84d7399a9c6d00852815a0aeefb1150a7f34451b62d4287342d457fa432eee869e83e
+"bn.js@npm:5.2.3":
+  version: 5.2.3
+  resolution: "bn.js@npm:5.2.3"
+  checksum: 10/dfb3927e0d531e6ec4f191597ce6f7f7665310c356fef5f968ada676b8058027f959af42eaa37b5f5c63617e819d3741813025ab15dd71a90f2e74698df0b58e
   languageName: node
   linkType: hard
 
