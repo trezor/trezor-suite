@@ -83,7 +83,7 @@ export const getUnavailableCapabilities = (features: Features, coins: CoinInfo[]
             return !capabilities.includes('Capability_Ethereum');
         }
         // misc
-        if (info.shortcut === 'TRX' && info.type === 'misc') {
+        if ((info.shortcut === 'TRX' || info.shortcut === 'tTRX') && info.type === 'misc') {
             return !capabilities.includes('Capability_Tron');
         }
         if (info.shortcut === 'BNB' && info.type === 'misc') {

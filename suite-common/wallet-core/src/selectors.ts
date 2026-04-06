@@ -114,7 +114,7 @@ export const selectDiscoveryAccountsParam = (
         const identity = tryGetAccountIdentity({ networkType, deviceState });
 
         // undiscovered network; discover as a whole
-        if (!accounts) return { symbol, identity };
+        if (!accounts) return { symbol, identity } as DiscoveryAccountsParam[number];
 
         const known = getLastAccountsPerAccountType(accounts).map(({ type, lastAccount }) => {
             // last account is a failed one; try to discover it again

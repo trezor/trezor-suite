@@ -23,6 +23,7 @@ export type NetworkSymbol =
     | 'test'
     | 'regtest'
     | 'trx'
+    | 'ttrx'
     | 'tsep'
     | 'thod'
     | 'txrp'

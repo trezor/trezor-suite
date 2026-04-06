@@ -94,9 +94,15 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
 
     const [isExternalAddressCheckWarningDismissed, setIsExternalAddressCheckWarningDismissed] =
         useState(false);
-    const isExternalAddressCheckEnabled = ['eth', 'tsep', 'thod', 'sol', 'dsol', 'trx'].includes(
-        symbol,
-    );
+    const isExternalAddressCheckEnabled = [
+        'eth',
+        'tsep',
+        'thod',
+        'sol',
+        'dsol',
+        'trx',
+        'ttrx',
+    ].includes(symbol);
 
     useEffect(() => {
         setIsExternalAddressCheckWarningDismissed(false);
