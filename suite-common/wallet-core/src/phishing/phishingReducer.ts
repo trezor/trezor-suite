@@ -5,15 +5,18 @@ import { phishingActions } from './phishingActions';
 import { type PhishingState } from './phishingReducerTypes';
 
 export const phishingInitialState: PhishingState = {
-    dustThreshold: DUST_PHISHING_THRESHOLD,
+    dustPhishing: {
+        isEnabled: true,
+        dustThreshold: DUST_PHISHING_THRESHOLD,
+    },
 };
 
 export const preparePhishingReducer = createReducerWithExtraDeps(
     phishingInitialState,
     (builder, extra) => {
         builder
-            .addCase(phishingActions.setDustThreshold, (state, { payload }) => {
-                state.dustThreshold = payload.dustThreshold;
+            .addCase(phishingActions.setDustPhishing, (state, { payload }) => {
+                state.dustPhishing = payload;
             })
             .addMatcher(
                 action => action.type === extra.actionTypes.storageLoad,

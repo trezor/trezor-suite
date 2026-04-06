@@ -256,6 +256,7 @@ export enum SettingsStackRoutes {
     SettingsCoinEnabling = 'SettingsCoinEnabling',
     SettingsSuiteSync = 'SettingsSuiteSync',
     SettingsAdvanced = 'SettingsAdvanced',
+    SettingsDustPhishing = 'SettingsDustPhishing',
     SettingsExperimental = 'SettingsExperimental',
     TurnOffDeviceAuthenticityCheck = 'TurnOffDeviceAuthenticityCheck',
     TurnOffFirmwareAuthenticityCheck = 'TurnOffFirmwareAuthenticityCheck',

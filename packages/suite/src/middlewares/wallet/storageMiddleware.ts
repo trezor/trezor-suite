@@ -148,8 +148,12 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 }
             }
 
-            if (phishingActions.setDustThreshold.match(action)) {
-                api.dispatch(storageActions.savePhishingMetadata(action.payload));
+            if (phishingActions.setDustPhishing.match(action)) {
+                api.dispatch(
+                    storageActions.savePhishingMetadata({
+                        dustPhishing: action.payload,
+                    }),
+                );
             }
 
             if (
