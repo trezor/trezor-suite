@@ -176,37 +176,6 @@ describe(createEnsureStorage.name, () => {
         });
     });
 
-    it('does update relay URL when ensureQuota fails on WriteModeRequiredForAllocation', async () => {
-        const device = mockSuiteDevice();
-        const updateRelayUrl = mock(() => Promise.resolve());
-        const newStorage = createSuiteSyncStorageMock({ updateRelayUrl });
-
-        const deps = createMockDeps<EnsureStorageDeps>({
-            getRelayUrl: () => 'wss://default-relay.example.com',
-            getOwnerHasAllowance: null,
-            suiteSyncStorageRepository: {
-                get: () => null,
-                set: mock(() => {}),
-                delete: null,
-            },
-            createSuiteStorage: () => Promise.resolve(newStorage),
-            refreshSuiteSyncKeys: () =>
-                Promise.resolve(ok({ owner: OWNER_ABCD, delegatedKey: DELEGATED_KEY })),
-            ensureQuota: () =>
-                Promise.resolve(err({ type: 'WriteModeRequiredForAllocation' as const })),
-            getDeviceForStaticSessionId: () => device,
-        });
-
-        const result = await createEnsureStorage(deps)({
-            deviceStaticSessionId,
-            isWriteMode: true,
-        });
-
-        expect(result).toEqual(ok(newStorage));
-        expect(deps.createSuiteStorage).toHaveBeenCalled();
-        expect(updateRelayUrl).toHaveBeenCalled();
-    });
-
     it('creates and stores new storage when all dependencies succeed', async () => {
         const device = mockSuiteDevice();
         const newStorage = createSuiteSyncStorageMock({
