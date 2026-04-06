@@ -139,7 +139,11 @@ const inner = async (context: CoreContext, method: AbstractMethod<any>, device: 
     try {
         const response = await method.run();
 
-        return createResponseMessage(method.responseID, true, response, device);
+        return createResponseMessage(method.responseID, true, response, {
+            path: device.getUniquePath(),
+            state: device.getState(),
+            instance: device.getInstance(),
+        });
     } catch (error) {
         return Promise.reject(error);
     }

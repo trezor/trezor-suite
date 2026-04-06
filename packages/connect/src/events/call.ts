@@ -2,8 +2,8 @@ import type { SerializedError } from '@trezor/connect-common/src/constants/error
 import { serializeError } from '@trezor/connect-common/src/constants/errors';
 
 import type { CORE_CALL } from './core-call';
+import type { DeviceState, DeviceUniquePath } from '../types';
 import type { TrezorConnect, TrezorConnectManagement } from '../types/api';
-import type { IDevice } from '../types/idevice';
 import type { CommonParams, DeviceIdentity } from '../types/params';
 
 // conditionally unwrap TrezorConnect api method Success<T> response
@@ -90,15 +90,10 @@ export const createResponseMessage = (
     id: number,
     success: boolean,
     payload: any,
-    device?: IDevice,
+    deviceIdentity:
+        | { path: DeviceUniquePath; state?: DeviceState; instance: number }
+        | undefined = undefined,
 ): MethodResponseMessage => {
-    const deviceIdentity = device
-        ? {
-              path: device?.getUniquePath(),
-              state: device?.getState(),
-              instance: device?.getInstance(),
-          }
-        : undefined;
     if (success)
         return {
             event: RESPONSE_EVENT,
