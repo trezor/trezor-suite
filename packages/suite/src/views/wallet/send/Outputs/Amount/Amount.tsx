@@ -182,6 +182,10 @@ export const Amount = ({ output, outputId }: AmountProps) => {
 
         setMax(outputId, isSendMaxActive, clearInput);
         composeTransaction(amountName);
+
+        if (isSendMaxActive) {
+            setShowReserveBanner(false);
+        }
     };
 
     const sendMaxSwitch = (
