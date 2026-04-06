@@ -35,6 +35,7 @@ export const SettingsAnchor = {
     AutoEject: '@general-settings/auto-eject',
     MevProtection: '@general-settings/mev-protection',
     NetworkReserve: '@general-settings/network-reserve',
+    DustPhishing: '@general-settings/dust-phishing',
 
     BackupFailed: '@device-settings/backup-failed',
     BackupRecoverySeed: '@device-settings/backup-recovery-seed',

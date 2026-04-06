@@ -47,7 +47,7 @@ export const DustPhishing = () => {
     };
 
     return (
-        <SettingsSectionItem anchorId={SettingsAnchor.NetworkReserve}>
+        <SettingsSectionItem anchorId={SettingsAnchor.DustPhishing}>
             <TextColumn
                 title={<Translation id="TR_DUST_PHISHING" />}
                 description={<Translation id="TR_DUST_PHISHING_DESCRIPTION" />}
