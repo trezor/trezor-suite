@@ -93,8 +93,8 @@ export const createEnsureStorage =
         const resolvedStorage =
             storage ?? (await deps.createSuiteStorage({ suiteSyncOwner: owner }));
 
-        // Set the relay URL if quota is allocated or if storage was not yet initialized.
-        if (quotaResult.success || quotaResult.error.type === 'WriteModeRequiredForAllocation') {
+        // Only connect to the relay if quota is actually allocated.
+        if (quotaResult.success) {
             await resolvedStorage.updateRelayUrl(deps.getRelayUrl());
         }
 
