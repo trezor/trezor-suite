@@ -68,7 +68,7 @@ jobs:
       - name: get Expo app fingerprint
         id: expo-fingerprint
         working-directory: ./suite-native/app
-        run: npx @expo/fingerprint ./ > expo-fingerprint.json && node -e "console.log('HASH=' + require('./expo-fingerprint.json').hash)" >> $GITHUB_OUTPUT
+        run: npx @expo/fingerprint@0.16.5 ./ > expo-fingerprint.json && node -e "console.log('HASH=' + require('./expo-fingerprint.json').hash)" >> $GITHUB_OUTPUT
 
       - name: Configure aws credentials
         uses: aws-actions/configure-aws-credentials@8df5847569e6427dd6c4fb1cf565c83acfa8afa7 # v6
@@ -123,7 +123,7 @@ jobs:
           EXPO_PUBLIC_FF_IS_CONNECT_POPUP_ENABLED: true
           EXPO_PUBLIC_FF_IS_DEBUG_KEYS_ALLOWED: true
           EXPO_PUBLIC_ENVIRONMENT: debug
-        run: npx react-native bundle --platform android --dev false --entry-file $ENTRY_FILE_PATH --bundle-output $JS_BUNDLE_PATH --assets-dest $ASSETS_DEST_PATH
+        run: npx react-native@0.83.2 bundle --platform android --dev false --entry-file $ENTRY_FILE_PATH --bundle-output $JS_BUNDLE_PATH --assets-dest $ASSETS_DEST_PATH
 
       - name: fix native library bundling (extractNativeLibs=true)
         if: steps.s3_build_cache.outputs.hit == 'true'
@@ -148,7 +148,7 @@ jobs:
       - name: Build a new Detox test .apk
         if: steps.s3_build_cache.outputs.hit == 'false'
         working-directory: ./suite-native/app
-        run: npx detox build -PreactNativeArchitectures=x86_64 --configuration android.emu.release
+        run: npx detox@20.45.1 build -PreactNativeArchitectures=x86_64 --configuration android.emu.release
 
       - name: save .apk to the aws s3 bucket
         if: steps.s3_build_cache.outputs.hit == 'false'

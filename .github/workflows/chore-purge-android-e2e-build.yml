@@ -50,7 +50,7 @@ jobs:
       - name: get Expo app fingerprint
         id: expo-fingerprint
         working-directory: ./suite-native/app
-        run: npx @expo/fingerprint ./ > expo-fingerprint.json && node -e "console.log('HASH=' + require('./expo-fingerprint.json').hash)" >> $GITHUB_OUTPUT
+        run: npx @expo/fingerprint@0.16.6 ./ > expo-fingerprint.json && node -e "console.log('HASH=' + require('./expo-fingerprint.json').hash)" >> $GITHUB_OUTPUT
 
       - name: Configure aws credentials
         uses: aws-actions/configure-aws-credentials@8df5847569e6427dd6c4fb1cf565c83acfa8afa7 # v6
