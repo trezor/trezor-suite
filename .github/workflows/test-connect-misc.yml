@@ -8,6 +8,16 @@ on:
     branches: [release/connect/**]
   pull_request:
     paths:
+      - "packages/connect-common/**"
+      - "packages/connect-data/**"
+      - "packages/connect-mobile/**"
+      - "packages/connect-web/**"
+      - "packages/connect-webextension/**"
+      - "packages/connect/**"
+      - "scripts/ci/helpers.ts"
+      - "scripts/ci/pack-packages.ts"
+      - "scripts/publish/**"
+      - "packages/connect/e2e/test-connect-local.sh"
       - ".github/workflows/test-connect-misc.yml"
   workflow_dispatch:
 
@@ -69,7 +79,7 @@ jobs:
 
       - name: Check exports
         # Fow now only testing @trezor/connect-web
-        run: npx --yes @arethetypeswrong/cli --pack ./tmp/packed-packages/trezor-connect-web.tgz 
+        run: npx --yes @arethetypeswrong/cli --pack ./tmp/packed-packages/trezor-connect-web.tgz
 
       - name: Test local install
         run: ./packages/connect/e2e/test-connect-local.sh
