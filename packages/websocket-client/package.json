@@ -30,9 +30,7 @@
                 "import": "./libESM/index.mjs",
                 "require": "./lib/index.js",
                 "types": "./lib/index.d.ts"
-            },
-            "./lib/impl/*": "./lib/impl/*.js",
-            "./libESM/impl/*": "./libESM/impl/*"
+            }
         },
         "browser": {
             "ws": "./lib/ws-browser.js"
