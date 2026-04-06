@@ -14931,7 +14931,7 @@ __metadata:
     react-dom: "npm:19.2.4"
     styled-components: "npm:^6.3.9"
     ts-morph: "npm:^27.0.2"
-    tsx: "npm:^4.20.3"
+    tsx: "npm:^4.21.0"
     vite: "npm:^8.0.0"
     vite-plugin-node-polyfills: "npm:^0.25.0"
   languageName: unknown
@@ -43689,7 +43689,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tsx@npm:^4.20.3, tsx@npm:^4.21.0":
+"tsx@npm:^4.21.0":
   version: 4.21.0
   resolution: "tsx@npm:4.21.0"
   dependencies:
