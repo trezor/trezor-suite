@@ -103,6 +103,7 @@ const networkTypeMap: Record<NetworkSymbol, NetworkSpecificDefault> = {
     op: networkSpecificDefaultBitcoin,
     avax: networkSpecificDefaultBitcoin,
     trx: networkSpecificDefaultBitcoin,
+    ttrx: networkSpecificDefaultBitcoin,
     tsep: networkSpecificDefaultBitcoin,
     thod: networkSpecificDefaultBitcoin,
     txrp: networkSpecificDefaultBitcoin,

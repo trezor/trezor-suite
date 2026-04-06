@@ -255,7 +255,7 @@ export const DeviceCommands = (deviceTypedCall: TypedCallProvider) => {
             };
         }
 
-        if (coinInfo.shortcut === 'TRX') {
+        if (coinInfo.shortcut === 'TRX' || coinInfo.shortcut === 'tTRX') {
             const { message } = await typedCall('TronGetAddress', 'TronAddress', {
                 address_n,
             });

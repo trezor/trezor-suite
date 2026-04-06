@@ -2806,6 +2806,26 @@
         },
         {
             "blockchain_link": {
+                "type": "blockbook",
+                "url": ["https://tron-nile.trezor.io"]
+            },
+            "curve": "secp256k1",
+            "decimals": 6,
+            "is_testnet": false,
+            "name": "Tron Nile",
+            "shortcut": "tTRX",
+            "slip44": 195,
+            "support": {
+                "T1B1": false,
+                "T2B1": "2.11.0",
+                "T2T1": "2.11.0",
+                "T3B1": "2.11.0",
+                "T3T1": "2.11.0",
+                "T3W1": "2.11.0"
+            }
+        },
+        {
+            "blockchain_link": {
                 "type": "stellar",
                 "url": ["https://horizon-testnet.stellar.org"]
             },
