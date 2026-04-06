@@ -80,11 +80,11 @@ export const ReviewButton = () => {
     const isLowAnonymity =
         Array.isArray(errors.outputs) &&
         errors.outputs.some(output => isLowAnonymityWarning(output));
-
     const possibleToSubmit =
         composedTx?.type === 'final' &&
         online &&
         !isLowAnonymity &&
+        !errors.feeLimit &&
         (isDeviceConnected ? !isLocked() : true);
 
     const confirmationRequired =

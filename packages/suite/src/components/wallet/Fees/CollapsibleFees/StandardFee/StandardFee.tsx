@@ -26,6 +26,9 @@ export const StandardFee = () => {
         case 'ethereum':
             return <EthereumFeeCards feeOptions={feeOptions} />;
 
+        case 'tron':
+            return null;
+
         default:
             return <MiscFeeCards feeOptions={feeOptions} />;
     }

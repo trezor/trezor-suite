@@ -300,9 +300,20 @@ export const composeTronTransactionFeeLevelsThunk = createThunk<
             }).toString();
         }
 
+        if (tokenInfo && tx.type !== 'error') {
+            tx.estimatedFeeLimit = tx.fee;
+        }
+
         return { normal: tx };
     },
 );
+
+const getTrc20FeeLimitSun = (feeLimit: string, estimatedFee: string): number | undefined => {
+    if (feeLimit !== '') return Number(feeLimit);
+    if (estimatedFee !== '') return Number(estimatedFee);
+
+    return undefined;
+};
 
 export const signTronSendFormTransactionThunk = createThunk<
     { serializedTx: string },
@@ -354,6 +365,10 @@ export const signTronSendFormTransactionThunk = createThunk<
             tokenData = calldataResult.data.slice(2); // strip the "0x" prefix; firmware expects raw hex
         }
 
+        const tokenFeeLimitSun = token
+            ? getTrc20FeeLimitSun(formState.feeLimit, precomposedTransaction.fee)
+            : undefined;
+
         const composed = await TrezorConnect.tronComposeTransaction({
             from: selectedAccount.descriptor,
             to: token ? token.contract : output.address,
@@ -364,9 +379,7 @@ export const signTronSendFormTransactionThunk = createThunk<
                 ? {
                       contract: token.contract,
                       data: tokenData ?? '',
-                      feeLimit: precomposedTransaction.fee
-                          ? Number(precomposedTransaction.fee)
-                          : undefined,
+                      feeLimit: tokenFeeLimitSun,
                   }
                 : undefined,
         });
@@ -431,11 +444,7 @@ export const signTronSendFormTransactionThunk = createThunk<
             ref_block_hash,
             expiration,
             timestamp,
-            // fee_limit is in SUN (not energy units); use the total estimated fee as the cap
-            fee_limit:
-                token && precomposedTransaction.fee
-                    ? Number(precomposedTransaction.fee)
-                    : undefined,
+            fee_limit: tokenFeeLimitSun,
             contract,
         });
 
