@@ -5341,6 +5341,14 @@ export const messages = defineMessages({
         id: 'TR_TRON_FEE_ENERGY',
         defaultMessage: '{count} energy',
     },
+    TR_TRON_FEE_LIMIT: {
+        id: 'TR_TRON_FEE_LIMIT',
+        defaultMessage: 'Energy fee limit (SUN)',
+    },
+    TR_TRON_FEE_LIMIT_BELOW_RECOMMENDED: {
+        id: 'TR_TRON_FEE_LIMIT_BELOW_RECOMMENDED',
+        defaultMessage: 'Fee limit too low',
+    },
     TR_EXPERIMENTAL_TRON_VIEW_ONLY: {
         id: 'TR_EXPERIMENTAL_TRON_VIEW_ONLY',
         defaultMessage: 'Tron (Beta)',

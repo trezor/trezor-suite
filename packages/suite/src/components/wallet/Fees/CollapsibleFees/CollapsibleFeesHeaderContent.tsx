@@ -45,5 +45,9 @@ export const CollapsibleFeesHeaderContent = ({
         </Row>
     );
 
-    return isOpen !== undefined ? content : <Collapsible.Toggle>{content}</Collapsible.Toggle>;
+    return isOpen !== undefined || !supportsAdjustableFees ? (
+        content
+    ) : (
+        <Collapsible.Toggle>{content}</Collapsible.Toggle>
+    );
 };

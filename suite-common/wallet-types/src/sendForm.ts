@@ -63,8 +63,8 @@ export interface FormState {
     maxPriorityFeePerGas?: string; // ethereum eip1559 only
     maxFeePerGas?: string; // ethereum eip1559 only
     baseFeePerGas?: string; // ethereum eip1559 only
-    feeLimit: string; // ethereum only (gasLimit)
-    estimatedFeeLimit?: string; // ethereum only (gasLimit)
+    feeLimit: string; // ethereum: gas limit; tron: fee_limit cap in SUN for TRC-20 transfers
+    estimatedFeeLimit?: string; // ethereum: estimated gas limit; tron: estimated fee_limit cap in SUN for TRC-20 transfers
 
     /**
      * Fee that was paid by chained transactions. To perform RBF transaction (bump fee or cancel)
