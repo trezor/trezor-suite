@@ -19,6 +19,7 @@
         "@trezor/blockchain-link-blockbook": "workspace:*",
         "@trezor/blockchain-link-blockfrost": "workspace:*",
         "@trezor/blockchain-link-ripple": "workspace:*",
+        "@trezor/blockchain-link-stellar": "workspace:*",
         "@trezor/e2e-utils": "workspace:*",
         "tiny-worker": "^2.3.0",
         "xrpl": "4.6.0"

@@ -10,9 +10,14 @@
             "path": "../blockchain-link-blockbook"
         },
         {
-            "path": "../blockchain-link-blockfrost"
+            "path": "../blockchain-link-blockfrost/tsconfig.json"
         },
-        { "path": "../blockchain-link-ripple" },
+        {
+            "path": "../blockchain-link-ripple/tsconfig.json"
+        },
+        {
+            "path": "../blockchain-link-stellar/tsconfig.json"
+        },
         { "path": "../e2e-utils" },
         { "path": "../blockchain-link-types" },
         { "path": "../eslint" }

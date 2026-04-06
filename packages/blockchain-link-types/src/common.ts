@@ -236,7 +236,7 @@ export type TransactionDetail = {
     totalOutput: string;
 };
 
-export interface Transaction {
+export interface Transaction<TExtra extends object = Record<string, unknown>> {
     type: 'sent' | 'recv' | 'self' | 'joint' | 'contract' | 'failed' | 'unknown';
     txid: string;
     hex?: string;
@@ -283,6 +283,7 @@ export interface Transaction {
         };
     };
     tronSpecific?: TronChainExtraData;
+    extra?: TExtra;
 }
 
 /* Account */
