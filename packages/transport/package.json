@@ -43,10 +43,10 @@
             "./libESM/*": "./libESM/*"
         },
         "browser": {
-            "./lib/pinger/ping": "./lib/pinger/ping.browser.ts",
-            "./lib/transports/nodeusb": "./lib/transports/nodeusb.browser.ts",
-            "./lib/transports/udp": "./lib/transports/udp.browser.ts",
-            "./lib/transports/webusb": "./lib/transports/webusb.browser.ts"
+            "./lib/pinger/ping": "./lib/pinger/ping.browser.js",
+            "./lib/transports/nodeusb": "./lib/transports/nodeusb.browser.js",
+            "./lib/transports/udp": "./lib/transports/udp.browser.js",
+            "./lib/transports/webusb": "./lib/transports/webusb.browser.js"
         },
         "react-native": {
             "./lib/transports/nodeusb": "./lib/transports/nodeusb.browser.js",
