@@ -1,9 +1,13 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { Translation } from '@suite/intl';
 import { SettingsAnchor } from '@suite/router';
-import { phishingActions, selectPhishingDustThreshold } from '@suite-common/wallet-core';
-import { Button, Column, Input } from '@trezor/components';
+import {
+    phishingActions,
+    selectDustPhishingIsEnabled,
+    selectDustPhishingThreshold,
+} from '@suite-common/wallet-core';
+import { Button, Input, Row, Switch, Text } from '@trezor/components';
 import { ActionColumn, TextColumn } from '@trezor/product-components';
 
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
@@ -12,12 +16,19 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 export const DustPhishing = () => {
     const dispatch = useDispatch();
 
-    const phishingDustThreshold = useSelector(selectPhishingDustThreshold);
+    const dustPhishingIsEnabled = useSelector(selectDustPhishingIsEnabled);
+    const dustPhishingThreshold = useSelector(selectDustPhishingThreshold);
 
-    const [dustThreshold, setDustThreshold] = useState(phishingDustThreshold ?? '');
+    const [dustThreshold, setDustThreshold] = useState(dustPhishingThreshold);
+
+    useEffect(() => {
+        setDustThreshold(dustPhishingThreshold);
+    }, [dustPhishingIsEnabled, dustPhishingThreshold]);
 
     const errorMessage = useMemo(() => {
-        if (dustThreshold.trim() === '') return undefined;
+        if (dustThreshold.trim() === '') {
+            return 'TR_DUST_PHISHING_ERROR_EMPTY';
+        }
 
         const number = Number(dustThreshold.trim());
 
@@ -32,48 +43,76 @@ export const DustPhishing = () => {
         return undefined;
     }, [dustThreshold]);
 
-    const isSame = dustThreshold.trim() === (phishingDustThreshold ?? '');
-    const isButtonDisabled = !!errorMessage || isSame;
-    const isTurningOff = dustThreshold.trim() === '' && !isSame;
+    const isSame = dustThreshold.trim() === dustPhishingThreshold;
+    const isDisabled = !!errorMessage || isSame;
 
-    const onSaveClick = () => {
-        if (isButtonDisabled) return;
-
+    const onConfirm = () => {
+        if (isDisabled) return;
         dispatch(
-            phishingActions.setDustThreshold({
-                dustThreshold: dustThreshold.trim() === '' ? undefined : dustThreshold.trim(),
+            phishingActions.setDustPhishing({
+                isEnabled: dustPhishingIsEnabled,
+                dustThreshold: dustThreshold.trim(),
+            }),
+        );
+    };
+
+    const onSwitchChange = (value: boolean) => {
+        dispatch(
+            phishingActions.setDustPhishing({
+                isEnabled: value,
+                dustThreshold: dustPhishingThreshold,
             }),
         );
     };
 
     return (
-        <SettingsSectionItem anchorId={SettingsAnchor.DustPhishing}>
-            <TextColumn
-                title={<Translation id="TR_DUST_PHISHING" />}
-                description={<Translation id="TR_DUST_PHISHING_DESCRIPTION" />}
-            />
-            <ActionColumn>
-                <Column gap={4}>
-                    <Input
-                        value={dustThreshold}
-                        placeholder="e.g. 0.005"
-                        onChange={e => setDustThreshold(e.target.value)}
-                        hasError={!!errorMessage}
-                        rightContent={
-                            <Button
-                                onClick={onSaveClick}
-                                intent={isTurningOff ? 'warning' : 'brand'}
-                                priority="primary"
-                                size="small"
-                                isDisabled={isButtonDisabled}
-                            >
-                                <Translation id={isTurningOff ? 'TR_TURN_OFF' : 'TR_SAVE'} />
-                            </Button>
-                        }
-                        bottomText={errorMessage ? <Translation id={errorMessage} /> : undefined}
+        <>
+            <SettingsSectionItem anchorId={SettingsAnchor.DustPhishing}>
+                <TextColumn
+                    title={<Translation id="TR_DUST_PHISHING_PROTECTION" />}
+                    description={<Translation id="TR_DUST_PHISHING_PROTECTION_DESCRIPTION" />}
+                />
+                <ActionColumn>
+                    <Switch
+                        isChecked={dustPhishingIsEnabled}
+                        onChange={onSwitchChange}
+                        data-testid="@settings/auto-eject-switch"
                     />
-                </Column>
-            </ActionColumn>
-        </SettingsSectionItem>
+                </ActionColumn>
+            </SettingsSectionItem>
+
+            {dustPhishingIsEnabled && (
+                <SettingsSectionItem anchorId={SettingsAnchor.DustPhishingThreshold}>
+                    <TextColumn
+                        title={<Translation id="TR_DUST_PHISHING_THRESHOLD" />}
+                        description={<Translation id="TR_DUST_PHISHING_THRESHOLD_DESCRIPTION" />}
+                    />
+                    <ActionColumn>
+                        <Row gap={6} alignItems="start">
+                            <Input
+                                value={dustThreshold}
+                                size="small"
+                                onChange={e => setDustThreshold(e.target.value)}
+                                hasError={!!errorMessage}
+                                bottomText={
+                                    errorMessage ? <Translation id={errorMessage} /> : undefined
+                                }
+                                rightContent={<Text color="textSubdued">USD</Text>}
+                                width={125}
+                            />
+
+                            <Button
+                                size="medium"
+                                intent="brand"
+                                onClick={onConfirm}
+                                isDisabled={isDisabled}
+                            >
+                                <Translation id="TR_SAVE" />
+                            </Button>
+                        </Row>
+                    </ActionColumn>
+                </SettingsSectionItem>
+            )}
+        </>
     );
 };

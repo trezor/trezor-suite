@@ -1,5 +1,8 @@
 export interface PhishingState {
-    dustThreshold?: string;
+    dustPhishing: {
+        isEnabled: boolean;
+        dustThreshold: string;
+    };
 }
 
 export interface PhishingRootState {

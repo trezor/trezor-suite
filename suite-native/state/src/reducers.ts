@@ -155,7 +155,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
 
     const phishingPersistedReducer = preparePersistReducer({
         reducer: phishingReducer,
-        persistedKeys: ['dustThreshold'],
+        persistedKeys: ['dustPhishing'],
         key: 'phishingMetadata',
         version: 1,
         storage: deps.mmkvStorage,

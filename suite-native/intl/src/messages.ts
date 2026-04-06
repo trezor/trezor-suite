@@ -1087,10 +1087,6 @@ export const messages = {
                     title: 'Coins',
                     subtitle: 'Manage assets that you want to use',
                 },
-                phishing: {
-                    title: 'Phishing',
-                    subtitle: 'Manage phishing detection settings',
-                },
                 suiteSync: {
                     title: 'Suite Sync',
                     subtitle: 'Sync data across your devices',
@@ -1372,24 +1368,6 @@ export const messages = {
                 description: 'Otherwise the app won’t show you anything.',
             },
         },
-        phishing: {
-            settings: {
-                title: 'Phishing',
-                subtitle: 'Manage your phishing detection settings',
-                save: 'Save',
-                turnOff: 'Turn off',
-                placeholder: 'Enter dust threshold in USD',
-            },
-            dustThreshold: {
-                title: 'Dust phishing threshold',
-                subtitle:
-                    'Adjust the dust threshold for phishing detection. Currently, the dust threshold can only be defined in USD currency. Leaving this field empty will turn off dust amount detection.',
-                errors: {
-                    number: 'Please enter a valid number',
-                    positive: 'Dust threshold must be a positive number',
-                },
-            },
-        },
         viewOnly: {
             wallet: {
                 standard: 'Standard wallet',
@@ -1470,6 +1448,22 @@ export const messages = {
                 title: 'MEV Protection',
                 subtitle:
                     'Stay safe and secure fair prices by preventing others from interfering with your transactions. Available on {supportedNetworks}.',
+            },
+            dustPhishing: {
+                title: 'Dust phishing protection',
+                subtitle:
+                    'Hide suspicious micro transactions used in scams from your transaction history.',
+                enableProtection: 'Enable protection',
+                dustThresholdTitle: 'Dust phishing threshold',
+                dustThresholdDescription:
+                    'Transactions below this amount are marked as suspicious and hidden.',
+                save: 'Save',
+                placeholder: 'Enter dust threshold in USD',
+                errors: {
+                    empty: 'Dust threshold is required',
+                    number: 'Please enter a valid number',
+                    positive: 'Dust threshold must be a positive number',
+                },
             },
             bitcoinBackends: {
                 title: 'Bitcoin backends',

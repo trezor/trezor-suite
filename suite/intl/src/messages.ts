@@ -2544,14 +2544,22 @@ export const messages = defineMessages({
             'Reserve a small amount of the native token on {supportedNetworks} to cover any extra network fees when you send, swap, or sell your assets.',
         id: 'TR_NETWORK_RESERVE_DESCRIPTION',
     },
-    TR_DUST_PHISHING: {
-        id: 'TR_DUST_PHISHING',
+    TR_DUST_PHISHING_PROTECTION: {
+        defaultMessage: 'Dust phishing protection',
+        id: 'TR_DUST_PHISHING_PROTECTION',
+    },
+    TR_DUST_PHISHING_PROTECTION_DESCRIPTION: {
+        defaultMessage:
+            'Hide suspicious micro transactions used in scams from your transaction history.',
+        id: 'TR_DUST_PHISHING_PROTECTION_DESCRIPTION',
+    },
+    TR_DUST_PHISHING_THRESHOLD: {
+        id: 'TR_DUST_PHISHING_THRESHOLD',
         defaultMessage: 'Dust phishing threshold',
     },
-    TR_DUST_PHISHING_DESCRIPTION: {
-        id: 'TR_DUST_PHISHING_DESCRIPTION',
-        defaultMessage:
-            'Adjust the dust threshold for phishing detection. Currently, the dust threshold can only be defined in USD currency. Leaving this field empty will turn off dust amount detection.',
+    TR_DUST_PHISHING_THRESHOLD_DESCRIPTION: {
+        id: 'TR_DUST_PHISHING_THRESHOLD_DESCRIPTION',
+        defaultMessage: 'Transactions below this amount are marked as suspicious and hidden.',
     },
     TR_DUST_PHISHING_ERROR_NUMBER: {
         id: 'TR_DUST_PHISHING_ERROR_NUMBER',
@@ -2560,6 +2568,10 @@ export const messages = defineMessages({
     TR_DUST_PHISHING_ERROR_POSITIVE: {
         id: 'TR_DUST_PHISHING_ERROR_POSITIVE',
         defaultMessage: 'Dust threshold must be a positive number',
+    },
+    TR_DUST_PHISHING_ERROR_EMPTY: {
+        id: 'TR_DUST_PHISHING_ERROR_EMPTY',
+        defaultMessage: 'Dust threshold cannot be empty',
     },
     TR_CONFIRM_AUTO_EJECT: {
         defaultMessage: 'Enable auto-eject',
