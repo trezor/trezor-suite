@@ -43,7 +43,7 @@ jobs:
       - name: Install libs
         run: |
           yarn workspaces focus @suite-native/app
-          npx patch-package # Apply global patches.
+          npx patch-package@8.0.1 # Apply global patches.
       - name: Build on EAS iOS
         run: eas build
           --platform ios
@@ -73,7 +73,7 @@ jobs:
       - name: Install libs
         run: |
           yarn workspaces focus @suite-native/app
-          npx patch-package # Apply global patches.
+          npx patch-package@8.0.1 # Apply global patches.
       - name: Build on EAS Android
         run: eas build
           --platform android
@@ -109,7 +109,7 @@ jobs:
       - name: Install libs
         run: |
           yarn workspaces focus @suite-native/app
-          npx patch-package # Apply global patches.
+          npx patch-package@8.0.1 # Apply global patches.
 
       - name: Get Suite version
         id: get_version
