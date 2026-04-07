@@ -8,4 +8,5 @@ const baseConfig = require('../../jest.config.native');
 
 module.exports = {
     ...baseConfig,
+    setupFiles: [...baseConfig.setupFiles, '<rootDir>/../../suite-native/atoms/src/jestSetup.jsx'],
 };

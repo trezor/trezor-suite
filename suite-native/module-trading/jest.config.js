@@ -2,6 +2,10 @@ const baseConfig = require('../../jest.config.native');
 
 module.exports = {
     ...baseConfig,
+    setupFiles: [
+        ...baseConfig.setupFiles,
+        '<rootDir>/../../suite-native/module-trading/src/jest.setup.tsx',
+    ],
     coverageThreshold: {
         global: {
             statements: 80,

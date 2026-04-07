@@ -117,7 +117,15 @@ jobs:
     continue-on-error: true
     strategy:
       matrix:
-        test-task: [suite, native]
+        include:
+          - test-task: suite
+            test-command: yarn test:unit:suite --output-style=stream
+          - test-task: native-trading
+            test-command: >-
+              AFFECTED_TRADING_PROJECTS=$(yarn nx show projects --affected --withTarget=test:unit --projects='@suite-native/module-trading,@suite-native/trading-*' --sep=,) && if [[ -n "$AFFECTED_TRADING_PROJECTS" ]]; then yarn nx run-many --target=test:unit --projects="$AFFECTED_TRADING_PROJECTS" --output-style=stream; else echo "No affected trading native unit-test projects"; fi
+          - test-task: native-rest
+            test-command: >-
+              yarn nx affected --target=test:unit --exclude='@trezor/*,@suite/*,@suite-common/*,@suite-native/module-trading,@suite-native/trading-*' --output-style=stream
     steps:
       - name: Checkout repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
@@ -128,7 +136,7 @@ jobs:
       - name: "Minimal yarn install"
         uses: ./.github/actions/minimal-yarn-install
       - name: Unit Tests
-        run: yarn test:unit:${{ matrix.test-task }} --output-style=stream
+        run: ${{ matrix.test-command }}
 
   build-libs-for-publishing:
     name: "Build libs for publishing"
