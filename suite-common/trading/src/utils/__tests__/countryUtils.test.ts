@@ -7,6 +7,7 @@ import {
     isCountryCode,
     isCountrySubdivisionEmpty,
     isCountrySubdivisionRequired,
+    toTradingCountryCode,
 } from '../countryUtils';
 
 describe('countryUtils', () => {
@@ -19,6 +20,23 @@ describe('countryUtils', () => {
 
         it('returns false for invalid country code', () => {
             expect(isCountryCode('INVALID')).toBe(false);
+        });
+    });
+
+    describe('toTradingCountryCode', () => {
+        it('returns known country code', () => {
+            expect(toTradingCountryCode('US')).toBe('US');
+        });
+
+        it('returns worldwide region country code', () => {
+            expect(toTradingCountryCode('XX')).toBe('XX');
+            expect(toTradingCountryCode('T1')).toBe('T1');
+        });
+
+        it('returns unknown fallback for invalid value', () => {
+            expect(toTradingCountryCode('INVALID')).toBe('unknown');
+            expect(toTradingCountryCode(undefined)).toBe('unknown');
+            expect(toTradingCountryCode(123)).toBe('unknown');
         });
     });
 

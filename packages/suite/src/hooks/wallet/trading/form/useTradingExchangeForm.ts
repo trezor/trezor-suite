@@ -21,12 +21,12 @@ import {
     type TradingExchangeAmountLimitProps,
     type TradingExchangeFormProps,
     type TradingExchangeType,
-    type TradingSendRejectedProps,
     type TradingSignAndPushSendFormTransactionProps,
     type TradingTransactionExchange,
     cryptoIdToNetwork,
     exchangeThunks,
     invityAPI,
+    isSendRejectedError,
     isSendingEvmNativeToken,
     selectTradingComposedTransactionInfo,
     selectTradingExchangeAmountLimits,
@@ -457,13 +457,15 @@ export const useTradingExchangeForm = ({
 
             return true;
         } catch (e) {
-            const errorTyped = e as TradingSendRejectedProps<TranslationKey>;
+            if (!isSendRejectedError<TranslationKey>(e)) {
+                return false;
+            }
 
-            if (errorTyped.type !== 'sign-transaction-timeout') {
+            if (e.type !== 'sign-transaction-timeout') {
                 dispatch(
                     notificationsActions.addToast({
-                        type: errorTyped.type,
-                        error: translationString(errorTyped.error.id, errorTyped.error.values),
+                        type: e.type,
+                        error: translationString(e.error.id, e.error.values),
                     }),
                 );
             }

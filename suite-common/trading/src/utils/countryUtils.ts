@@ -6,8 +6,23 @@ import {
     subdivisionsByCountry,
 } from '@suite-common/geolocation';
 
+import { regional } from '../regional';
+import { type TradingCountryCode } from '../types';
+
 export const isCountryCode = (countryCode: string): countryCode is CountryCode =>
     countryCode in countries || countryCode === 'XX' || countryCode === 'T1';
+
+export const toTradingCountryCode = (countryCode: unknown): TradingCountryCode => {
+    if (countryCode === regional.UNKNOWN_COUNTRY) {
+        return countryCode;
+    }
+
+    if (typeof countryCode === 'string' && isCountryCode(countryCode)) {
+        return countryCode;
+    }
+
+    return regional.UNKNOWN_COUNTRY;
+};
 
 export const hasCountrySubdivisions = (
     countryCode: CountryCode,
