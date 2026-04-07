@@ -1,20 +1,12 @@
 import { bytesToHex, hexToBytes } from '@noble/hashes/utils.js';
 
-import { tronUtils } from '@trezor/blockchain-link-utils';
-
 import { encodeTransferRawData, encodeTriggerSmartContractRawData } from '../tronEncode';
 import { parseTronTransaction } from '../tronParse';
 import { AnyType, TransactionRawType } from '../tronProtobuf';
 
-const OWNER_ADDRESS = tronUtils.tronBytesToAddress(
-    hexToBytes('41f2cd810c48c401d392ead3c6e1e1cb9f57750a58'),
-)!;
-const TO_ADDRESS = tronUtils.tronBytesToAddress(
-    hexToBytes('4141f82674a30ae1328745d08afe2d1a0a24195283'),
-)!;
-const CONTRACT_ADDRESS = tronUtils.tronBytesToAddress(
-    hexToBytes('4142a1e39aefa49290f2b3f9ed688d7cecf86cd6e0'),
-)!;
+const OWNER_ADDRESS = '41f2cd810c48c401d392ead3c6e1e1cb9f57750a58';
+const TO_ADDRESS = '4141f82674a30ae1328745d08afe2d1a0a24195283';
+const CONTRACT_ADDRESS = '4142a1e39aefa49290f2b3f9ed688d7cecf86cd6e0';
 
 const TRX_TRANSFER = {
     from: OWNER_ADDRESS,

@@ -25,11 +25,6 @@ import {
 import { type BlockchainLinkResponse } from '@trezor/blockchain-link';
 import { tronUtils } from '@trezor/blockchain-link-utils';
 import TrezorConnect, { type TokenInfo } from '@trezor/connect';
-import {
-    encodeBroadcastTransaction,
-    estimateTronTransferBandwidth,
-    estimateTronTrc20Bandwidth,
-} from '@trezor/connect/src/api/tron/tronEncode';
 import { BigNumber } from '@trezor/utils';
 
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
@@ -72,6 +67,7 @@ const calculateTrc20Transfer = (
     feeLevel: EstimateFeeLevel,
     token: TokenInfo,
     networkSymbol: NetworkSymbol,
+    bytes: number,
 ): PrecomposedTransaction => {
     const totalFeeInSun = feeLevel.feePerTx || '0';
     const isSendMax = output.type === 'send-max' || output.type === 'send-max-noaddress';
@@ -109,7 +105,7 @@ const calculateTrc20Transfer = (
         feePerByte: feeLevel.feePerUnit,
         feeLimit: feeLevel.feeLimit, // energy cap in energy units; fee_limit in the signed tx uses the equivalent in SUN (feeLimit × feePerUnit)
         energyConsumed,
-        bytes: estimateTronTrc20Bandwidth(totalFeeInSun),
+        bytes,
         inputs: [],
         token,
     };
@@ -134,6 +130,7 @@ const calculateTrxTransfer = (
     output: ExternalOutput,
     feeLevel: EstimateFeeLevel,
     isNewAccount: boolean,
+    bytes: number,
 ): PrecomposedTransaction => {
     const baseFeeInSun = feeLevel.feePerTx || '0';
     const totalFeeInSun = isNewAccount
@@ -165,7 +162,7 @@ const calculateTrxTransfer = (
         max,
         fee: totalFeeInSun,
         feePerByte: feeLevel.feePerUnit,
-        bytes: estimateTronTransferBandwidth(amount),
+        bytes,
         inputs: [],
     };
 
@@ -198,12 +195,13 @@ const calculate = (
     output: ExternalOutput,
     feeLevel: EstimateFeeLevel,
     networkSymbol: NetworkSymbol,
+    bytes: number,
     token?: TokenInfo,
     isNewAccount?: boolean,
 ): PrecomposedTransaction =>
     token
-        ? calculateTrc20Transfer(availableBalance, output, feeLevel, token, networkSymbol)
-        : calculateTrxTransfer(availableBalance, output, feeLevel, isNewAccount ?? false);
+        ? calculateTrc20Transfer(availableBalance, output, feeLevel, token, networkSymbol, bytes)
+        : calculateTrxTransfer(availableBalance, output, feeLevel, isNewAccount ?? false, bytes);
 
 export const composeTronTransactionFeeLevelsThunk = createThunk<
     PrecomposedLevels,
@@ -245,8 +243,58 @@ export const composeTronTransactionFeeLevelsThunk = createThunk<
 
         let feeLevel: EstimateFeeLevel;
 
+        const ownerHex = tronUtils.tronAddressToHex(account.descriptor) ?? '';
+
+        // Dummy block values — block fields are fixed-size in protobuf so bandwidth is identical
+        // to what we'd get with real block data.
+        const DUMMY_BLOCK_HASH = '0'.repeat(64);
+        const DUMMY_BLOCK_HEIGHT = 0;
+
+        const contract = tokenInfo
+            ? {
+                  type: 'TriggerSmartContract' as const,
+                  parameter: {
+                      value: {
+                          owner_address: ownerHex,
+                          contract_address: tronUtils.tronAddressToHex(tokenInfo.contract) ?? '',
+                          data:
+                              getTronEstimateFeeParams(
+                                  to,
+                                  amountForEstimation,
+                                  tokenInfo,
+                              ).data?.slice(2) ?? '',
+                      },
+                  },
+              }
+            : {
+                  type: 'TransferContract' as const,
+                  parameter: {
+                      value: {
+                          owner_address: ownerHex,
+                          to_address: tronUtils.tronAddressToHex(to) ?? '',
+                          amount: amountForEstimation,
+                      },
+                  },
+              };
+
+        const bandwidthEstimate = await TrezorConnect.tronComposeTransaction({
+            contract,
+            blockHash: DUMMY_BLOCK_HASH,
+            blockHeight: DUMMY_BLOCK_HEIGHT,
+        });
+
+        if (!bandwidthEstimate.success) {
+            return rejectWithValue({
+                error: 'fee-levels-compose-failed',
+                message: bandwidthEstimate.error.message,
+            });
+        }
+
+        const bytes = bandwidthEstimate.payload.bandwidth;
+
         if (tokenInfo) {
             const estimateFeeParams = getTronEstimateFeeParams(to, amountForEstimation, tokenInfo);
+
             const estimatedFee = await TrezorConnect.blockchainEstimateFee({
                 coin: account.symbol,
                 identity: getAccountIdentity(account),
@@ -267,7 +315,6 @@ export const composeTronTransactionFeeLevelsThunk = createThunk<
 
             feeLevel = estimatedFee.payload.levels[0];
         } else {
-            const bytes = estimateTronTransferBandwidth(amountForEstimation);
             const availableBandwidth = Math.max(
                 account.misc?.tronResources?.availableStakedBandwidth ?? 0,
                 account.misc?.tronResources?.availableFreeBandwidth ?? 0,
@@ -289,6 +336,7 @@ export const composeTronTransactionFeeLevelsThunk = createThunk<
             output,
             feeLevel,
             account.symbol,
+            bytes,
             tokenInfo,
             isNewAccount,
         );
@@ -369,31 +417,6 @@ export const signTronSendFormTransactionThunk = createThunk<
             ? getTrc20FeeLimitSun(formState.feeLimit, precomposedTransaction.fee)
             : undefined;
 
-        const composed = await TrezorConnect.tronComposeTransaction({
-            from: selectedAccount.descriptor,
-            to: token ? token.contract : output.address,
-            amount: amountInSubunits,
-            blockHash,
-            blockHeight,
-            token: token
-                ? {
-                      contract: token.contract,
-                      data: tokenData ?? '',
-                      feeLimit: tokenFeeLimitSun,
-                  }
-                : undefined,
-        });
-
-        if (!composed.success) {
-            return rejectWithValue({
-                error: 'sign-transaction-failed',
-                message: composed.error.message,
-            });
-        }
-
-        const { rawDataHex, ref_block_bytes, ref_block_hash, expiration, timestamp } =
-            composed.payload;
-
         const ownerHex = tronUtils.tronAddressToHex(selectedAccount.descriptor);
         const recipientHex = token
             ? tronUtils.tronAddressToHex(token.contract)
@@ -407,30 +430,42 @@ export const signTronSendFormTransactionThunk = createThunk<
         }
 
         const contract = token
-            ? [
-                  {
-                      type: 'TriggerSmartContract' as const,
-                      parameter: {
-                          value: {
-                              owner_address: ownerHex,
-                              contract_address: recipientHex,
-                              data: tokenData!,
-                          },
+            ? {
+                  type: 'TriggerSmartContract' as const,
+                  parameter: {
+                      value: {
+                          owner_address: ownerHex,
+                          contract_address: recipientHex,
+                          data: tokenData!,
                       },
                   },
-              ]
-            : [
-                  {
-                      type: 'TransferContract' as const,
-                      parameter: {
-                          value: {
-                              owner_address: ownerHex,
-                              to_address: recipientHex,
-                              amount: amountInSubunits,
-                          },
+              }
+            : {
+                  type: 'TransferContract' as const,
+                  parameter: {
+                      value: {
+                          owner_address: ownerHex,
+                          to_address: recipientHex,
+                          amount: amountInSubunits,
                       },
                   },
-              ];
+              };
+
+        const composed = await TrezorConnect.tronComposeTransaction({
+            contract,
+            blockHash,
+            blockHeight,
+            fee_limit: tokenFeeLimitSun,
+        });
+
+        if (!composed.success) {
+            return rejectWithValue({
+                error: 'sign-transaction-failed',
+                message: composed.error.message,
+            });
+        }
+
+        const { ref_block_bytes, ref_block_hash, expiration, timestamp } = composed.payload;
 
         const signed = await TrezorConnect.tronSignTransaction({
             device: {
@@ -445,7 +480,7 @@ export const signTronSendFormTransactionThunk = createThunk<
             expiration,
             timestamp,
             fee_limit: tokenFeeLimitSun,
-            contract,
+            contract: [contract],
         });
 
         if (!signed.success) {
@@ -455,6 +490,13 @@ export const signTronSendFormTransactionThunk = createThunk<
             });
         }
 
-        return { serializedTx: encodeBroadcastTransaction(rawDataHex, signed.payload.signature) };
+        if (!signed.payload.serializedTx) {
+            return rejectWithValue({
+                error: 'sign-transaction-failed',
+                message: 'Failed to serialize transaction.',
+            });
+        }
+
+        return { serializedTx: signed.payload.serializedTx };
     },
 );

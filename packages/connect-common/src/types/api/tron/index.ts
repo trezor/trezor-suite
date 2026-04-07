@@ -74,22 +74,15 @@ export const TronSignTransaction = Type.Object({
 export type TronSignedTx = Static<typeof TronSignedTx>;
 export const TronSignedTx = Type.Object({
     signature: Type.String(),
+    serializedTx: Type.Optional(Type.String()),
 });
 
 export type TronComposeTransaction = Static<typeof TronComposeTransaction>;
 export const TronComposeTransaction = Type.Object({
-    from: Type.String(),
-    to: Type.String(),
-    amount: Type.String(), // in SUN for native TRX, token subunits for TRC-20
+    contract: TronContracts,
     blockHash: Type.String(),
     blockHeight: Type.Number(),
-    token: Type.Optional(
-        Type.Object({
-            contract: Type.String(),
-            data: Type.String(), // calldata hex (without 0x)
-            feeLimit: Type.Optional(Type.Number()), // in SUN; absent means no fee_limit field in tx
-        }),
-    ),
+    fee_limit: Type.Optional(Type.Number()),
 });
 
 export type TronComposedTransaction = Static<typeof TronComposedTransaction>;
@@ -99,4 +92,5 @@ export const TronComposedTransaction = Type.Object({
     ref_block_hash: Type.String(),
     expiration: Type.Number(),
     timestamp: Type.Number(),
+    bandwidth: Type.Number(),
 });
