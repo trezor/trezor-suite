@@ -30,7 +30,7 @@
         "@trezor/product-components": "workspace:*",
         "@trezor/theme": "workspace:*",
         "react": "19.2.4",
-        "react-hook-form": "^7.50.1",
+        "react-hook-form": "^7.71.2",
         "react-redux": "9.2.0"
     }
 }

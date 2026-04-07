@@ -2222,7 +2222,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@currents/playwright@npm:^1.19.0, @currents/playwright@npm:^1.21.2":
+"@currents/playwright@npm:^1.21.2":
   version: 1.21.2
   resolution: "@currents/playwright@npm:1.21.2"
   dependencies:
@@ -8175,7 +8175,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-navigation/core@npm:^7.13.7, @react-navigation/core@npm:^7.14.0":
+"@react-navigation/core@npm:^7.14.0":
   version: 7.15.1
   resolution: "@react-navigation/core@npm:7.15.1"
   dependencies:
@@ -8228,22 +8228,6 @@ __metadata:
     react-native-safe-area-context: ">= 4.0.0"
     react-native-screens: ">= 4.0.0"
   checksum: 10/b080ad286c90a59186617f239a61272610cd9f52a577ce26861e9a4941a6cc62624665bfbe62cd3bc543c7303a7b2f089871428411c3268134bc44ae4eaa588b
-  languageName: node
-  linkType: hard
-
-"@react-navigation/native@npm:7.1.26":
-  version: 7.1.26
-  resolution: "@react-navigation/native@npm:7.1.26"
-  dependencies:
-    "@react-navigation/core": "npm:^7.13.7"
-    escape-string-regexp: "npm:^4.0.0"
-    fast-deep-equal: "npm:^3.1.3"
-    nanoid: "npm:^3.3.11"
-    use-latest-callback: "npm:^0.2.4"
-  peerDependencies:
-    react: ">= 18.2.0"
-    react-native: "*"
-  checksum: 10/1409223c9f0dc7017f2726741e48157b5aedd2d68733965e35be57b2352c81071956874ac4caa3d16a7ebe402dc2b9847d5de1f12a2a33b1e86804ac41c52920
   languageName: node
   linkType: hard
 
@@ -10715,7 +10699,7 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     react: "npm:19.2.4"
-    react-redux: "npm:^9.2.0"
+    react-redux: "npm:9.2.0"
   languageName: unknown
   linkType: soft
 
@@ -11139,7 +11123,7 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/better-sqlite3": "npm:^7.6.13"
-    better-sqlite3: "npm:^12.1.1"
+    better-sqlite3: "npm:^12.8.0"
   languageName: unknown
   linkType: soft
 
@@ -11502,7 +11486,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     react: "npm:19.2.4"
     react-hook-form: "npm:^7.71.2"
-    react-redux: "npm:^9.2.0"
+    react-redux: "npm:9.2.0"
     web3-utils: "npm:^4.3.2"
     zod: "npm:4.3.6"
   languageName: unknown
@@ -12332,7 +12316,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/experimental-features@workspace:suite-native/experimental-features"
   dependencies:
-    "@react-navigation/native": "npm:7.1.26"
+    "@react-navigation/native": "npm:7.1.28"
     "@suite-common/feedback": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/intl": "workspace:*"
@@ -13087,7 +13071,7 @@ __metadata:
     "@trezor/styles-native": "workspace:*"
     "@trezor/utils": "workspace:*"
     react: "npm:19.2.4"
-    react-native-svg: "npm:15.15.2"
+    react-native-svg: "npm:15.15.3"
     react-redux: "npm:9.2.0"
   languageName: unknown
   linkType: soft
@@ -14250,7 +14234,7 @@ __metadata:
   resolution: "@suite-native/transaction-management@workspace:suite-native/transaction-management"
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
-    "@react-navigation/native": "npm:7.1.26"
+    "@react-navigation/native": "npm:7.1.28"
     "@reduxjs/toolkit": "npm:2.11.2"
     "@suite-common/device": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
@@ -14402,7 +14386,7 @@ __metadata:
     "@trezor/theme": "workspace:*"
     "@types/react": "npm:19.2.14"
     react: "npm:19.2.4"
-    react-redux: "npm:^9.2.0"
+    react-redux: "npm:9.2.0"
     styled-components: "npm:^6.3.9"
   languageName: unknown
   linkType: soft
@@ -14635,7 +14619,7 @@ __metadata:
     "@trezor/product-components": "workspace:*"
     "@trezor/theme": "workspace:*"
     react: "npm:19.2.4"
-    react-hook-form: "npm:^7.50.1"
+    react-hook-form: "npm:^7.71.2"
     react-redux: "npm:9.2.0"
   languageName: unknown
   linkType: soft
@@ -14650,7 +14634,7 @@ __metadata:
     "@suite/router": "workspace:*"
     "@testing-library/dom": "npm:^10.4.1"
     "@testing-library/react": "npm:^16.3.2"
-    "@testing-library/user-event": "npm:^14.5.2"
+    "@testing-library/user-event": "npm:^14.6.1"
     "@trezor/suite": "workspace:*"
     history: "npm:^5.3.0"
     react: "npm:19.2.4"
@@ -14858,7 +14842,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/user-event@npm:^14.5.2, @testing-library/user-event@npm:^14.6.1":
+"@testing-library/user-event@npm:^14.6.1":
   version: 14.6.1
   resolution: "@testing-library/user-event@npm:14.6.1"
   peerDependencies:
@@ -14924,7 +14908,7 @@ __metadata:
     "@trezor/theme": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/jest": "npm:29.5.12"
-    "@types/react-dom": "npm:^19.1.0"
+    "@types/react-dom": "npm:19.2.3"
     "@vitejs/plugin-react": "npm:^6.0.1"
     date-fns: "npm:^4.1.0"
     react: "npm:19.2.4"
@@ -15036,7 +15020,7 @@ __metadata:
     stream-browserify: "npm:^3.0.0"
     tiny-worker: "npm:^2.3.0"
     viem: "npm:^2.46.3"
-    webpack: "npm:5.104.1"
+    webpack: "npm:5.105.3"
     xrpl: "npm:4.6.0"
   peerDependencies:
     tslib: ^2.6.2
@@ -15869,7 +15853,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/suite-e2e@workspace:suite/e2e"
   dependencies:
-    "@currents/playwright": "npm:^1.19.0"
+    "@currents/playwright": "npm:^1.21.2"
     "@evolu/common": "github:evoluhq/evolu#workspace=@evolu/common&head=common-v8"
     "@playwright/browser-chromium": "npm:1.57.0"
     "@playwright/browser-firefox": "npm:1.57.0"
@@ -17326,7 +17310,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-dom@npm:19.2.3, @types/react-dom@npm:^19.1.0":
+"@types/react-dom@npm:19.2.3":
   version: 19.2.3
   resolution: "@types/react-dom@npm:19.2.3"
   peerDependencies:
@@ -20169,7 +20153,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"better-sqlite3@npm:^12.1.1, better-sqlite3@npm:^12.8.0":
+"better-sqlite3@npm:^12.8.0":
   version: 12.8.0
   resolution: "better-sqlite3@npm:12.8.0"
   dependencies:
@@ -24373,7 +24357,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"enhanced-resolve@npm:^5.17.4, enhanced-resolve@npm:^5.19.0":
+"enhanced-resolve@npm:^5.19.0":
   version: 5.20.0
   resolution: "enhanced-resolve@npm:5.20.0"
   dependencies:
@@ -38886,7 +38870,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-hook-form@npm:^7.50.1, react-hook-form@npm:^7.71.2":
+"react-hook-form@npm:^7.71.2":
   version: 7.71.2
   resolution: "react-hook-form@npm:7.71.2"
   peerDependencies:
@@ -39253,20 +39237,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-svg@npm:15.15.2":
-  version: 15.15.2
-  resolution: "react-native-svg@npm:15.15.2"
-  dependencies:
-    css-select: "npm:^5.1.0"
-    css-tree: "npm:^1.1.3"
-    warn-once: "npm:0.1.1"
-  peerDependencies:
-    react: "*"
-    react-native: "*"
-  checksum: 10/d3d6d29f036c3a9f7c877351eb179cb676c187ec4844a677b13f1766eaa0fb1cd531d7f87d68d69410ec95aed9cc9797f9e35e6354229ed702e4990ea6dbe40c
-  languageName: node
-  linkType: hard
-
 "react-native-svg@npm:15.15.3":
   version: 15.15.3
   resolution: "react-native-svg@npm:15.15.3"
@@ -39431,7 +39401,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-redux@npm:9.2.0, react-redux@npm:^9.2.0":
+"react-redux@npm:9.2.0":
   version: 9.2.0
   resolution: "react-redux@npm:9.2.0"
   dependencies:
@@ -45441,7 +45411,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"watchpack@npm:^2.4.4, watchpack@npm:^2.5.1":
+"watchpack@npm:^2.5.1":
   version: 2.5.1
   resolution: "watchpack@npm:2.5.1"
   dependencies:
@@ -45906,7 +45876,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webpack-sources@npm:^3.3.3, webpack-sources@npm:^3.3.4":
+"webpack-sources@npm:^3.3.4":
   version: 3.3.4
   resolution: "webpack-sources@npm:3.3.4"
   checksum: 10/714427b235b04c2d7cf229f204b9e65145ea3643da3c7b139ebfa8a51056238d1e3a2a47c3cc3fc8eab71ed4300f66405cdc7cff29cd2f7f6b71086252f81cf1
@@ -45955,44 +45925,6 @@ __metadata:
   bin:
     webpack: bin/webpack.js
   checksum: 10/0c465ce3f5522f6ae1cd9dde59096040855e8eda0a74c9c083796f1028564da92943e04a965fa4205a83393157e94c5b73128ed489138de0d46f8482b382e284
-  languageName: node
-  linkType: hard
-
-"webpack@npm:5.104.1":
-  version: 5.104.1
-  resolution: "webpack@npm:5.104.1"
-  dependencies:
-    "@types/eslint-scope": "npm:^3.7.7"
-    "@types/estree": "npm:^1.0.8"
-    "@types/json-schema": "npm:^7.0.15"
-    "@webassemblyjs/ast": "npm:^1.14.1"
-    "@webassemblyjs/wasm-edit": "npm:^1.14.1"
-    "@webassemblyjs/wasm-parser": "npm:^1.14.1"
-    acorn: "npm:^8.15.0"
-    acorn-import-phases: "npm:^1.0.3"
-    browserslist: "npm:^4.28.1"
-    chrome-trace-event: "npm:^1.0.2"
-    enhanced-resolve: "npm:^5.17.4"
-    es-module-lexer: "npm:^2.0.0"
-    eslint-scope: "npm:5.1.1"
-    events: "npm:^3.2.0"
-    glob-to-regexp: "npm:^0.4.1"
-    graceful-fs: "npm:^4.2.11"
-    json-parse-even-better-errors: "npm:^2.3.1"
-    loader-runner: "npm:^4.3.1"
-    mime-types: "npm:^2.1.27"
-    neo-async: "npm:^2.6.2"
-    schema-utils: "npm:^4.3.3"
-    tapable: "npm:^2.3.0"
-    terser-webpack-plugin: "npm:^5.3.16"
-    watchpack: "npm:^2.4.4"
-    webpack-sources: "npm:^3.3.3"
-  peerDependenciesMeta:
-    webpack-cli:
-      optional: true
-  bin:
-    webpack: bin/webpack.js
-  checksum: 10/c22b58fdf41d993971516154cb621d13b7b61dd744b7e2c6be972e9afcc9942694a8aaa322c07fba46448c69d663023ff53d0aeeb00eb0b125d83ace5ca8fa3c
   languageName: node
   linkType: hard
 

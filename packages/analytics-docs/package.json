@@ -30,7 +30,7 @@
     },
     "devDependencies": {
         "@types/jest": "29.5.12",
-        "@types/react-dom": "^19.1.0",
+        "@types/react-dom": "19.2.3",
         "tsx": "^4.21.0"
     }
 }
