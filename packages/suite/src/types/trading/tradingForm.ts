@@ -52,8 +52,8 @@ import {
     type PrecomposedLevelsCardano,
 } from '@suite-common/wallet-types';
 import { type FeeLevel } from '@trezor/connect';
-import { type Timer } from '@trezor/react-utils';
 
+import { type TradingTimer } from 'src/hooks/wallet/trading/form/common/useTradingTimer';
 import { type useTradingReceiveAddress } from 'src/hooks/wallet/trading/form/useTradingReceiveAddress';
 import { type AppState } from 'src/reducers/store';
 import { type Dispatch, type GetState, type TrezorDevice } from 'src/types/suite';
@@ -106,7 +106,7 @@ interface TradingFormStateProps {
 
 interface TradingCommonFormProps {
     device: TrezorDevice | undefined;
-    timer: Timer;
+    timer: TradingTimer;
     account: Account;
     network: Network;
 

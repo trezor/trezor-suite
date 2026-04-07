@@ -75,6 +75,7 @@ import {
 } from 'src/types/trading/tradingForm';
 import { createQuoteLink } from 'src/utils/wallet/trading/exchangeUtils';
 
+import { mapTradingTimerToTimer } from './common/mapTradingTimerToTimer';
 import { useTradingAssetDecimals } from './common/useTradingAssetDecimals';
 import { useTradingInitializer } from './common/useTradingInitializer';
 import { useTradingPreviousRoute } from './common/useTradingPreviousRoute';
@@ -330,7 +331,7 @@ export const useTradingExchangeForm = ({
         await dispatch(
             exchangeThunks.selectQuoteThunk({
                 quote,
-                timer,
+                timer: mapTradingTimerToTimer(timer),
                 nextStep: () => {
                     dispatch(goto({ routeName: 'wallet-trading-exchange-confirm' }));
                 },
@@ -771,9 +772,17 @@ export const useTradingExchangeForm = ({
     }, [isFormPage, quotesRequest, dispatch]);
 
     useEffect(() => {
-        if (preselectedQuote || approvalInitiated) return;
+        if (preselectedQuote || approvalInitiated) {
+            return;
+        }
 
-        checkQuotesTimer(handleChange);
+        const interval = setInterval(() => {
+            checkQuotesTimer(handleChange);
+        }, 1000);
+
+        return () => {
+            clearInterval(interval);
+        };
     }, [checkQuotesTimer, handleChange, preselectedQuote, approvalInitiated]);
 
     useEffect(() => {

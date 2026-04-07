@@ -63,6 +63,7 @@ import { type UseTradingFormCommonProps } from 'src/types/trading/trading';
 import { type TradingSellFormContextProps } from 'src/types/trading/tradingForm';
 import { createQuoteLink } from 'src/utils/wallet/trading/sellUtils';
 
+import { mapTradingTimerToTimer } from './common/mapTradingTimerToTimer';
 import { useTradingAssetDecimals } from './common/useTradingAssetDecimals';
 import { useTradingInitializer } from './common/useTradingInitializer';
 import { useTradingFormAccount } from './useTradingFormAccount';
@@ -376,7 +377,7 @@ export const useTradingSellForm = ({
         await dispatch(
             sellThunks.selectQuoteThunk({
                 quote,
-                timer,
+                timer: mapTradingTimerToTimer(timer),
                 nextStep,
             }),
         );
@@ -576,7 +577,13 @@ export const useTradingSellForm = ({
     }, [isFromRedirect, trade, transactionId, pageType, dispatch]);
 
     useEffect(() => {
-        checkQuotesTimer(handleChange);
+        const interval = setInterval(() => {
+            checkQuotesTimer(handleChange);
+        }, 1000);
+
+        return () => {
+            clearInterval(interval);
+        };
     }, [checkQuotesTimer, handleChange]);
 
     // Subscribe to blocks for Solana, since they are not fetched globally

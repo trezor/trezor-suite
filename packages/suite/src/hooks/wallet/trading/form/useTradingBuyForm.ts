@@ -56,6 +56,7 @@ import {
 } from 'src/types/trading/tradingForm';
 import { createQuoteLink, createTxLink } from 'src/utils/wallet/trading/buyUtils';
 
+import { mapTradingTimerToTimer } from './common/mapTradingTimerToTimer';
 import { useTradingFiatValues } from './common/useTradingFiatValues';
 import { useTradingInitializer } from './common/useTradingInitializer';
 import { useTradingFormAccount } from './useTradingFormAccount';
@@ -296,7 +297,7 @@ export const useTradingBuyForm = ({
         await dispatch(
             buyThunks.selectQuoteThunk({
                 quote,
-                timer,
+                timer: mapTradingTimerToTimer(timer),
                 returnUrl,
                 loginRequest: form => {
                     dispatch(submitRequestForm(form));
@@ -473,7 +474,13 @@ export const useTradingBuyForm = ({
     }, [isFromRedirect, quotesRequest, dispatch]);
 
     useEffect(() => {
-        checkQuotesTimer(handleChange);
+        const interval = setInterval(() => {
+            checkQuotesTimer(handleChange);
+        }, 1000);
+
+        return () => {
+            clearInterval(interval);
+        };
     }, [checkQuotesTimer, handleChange]);
 
     useDebounce(

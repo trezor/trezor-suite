@@ -10,15 +10,17 @@ import {
     sellThunks,
 } from '@suite-common/trading';
 import { type Network } from '@suite-common/wallet-config';
-import { type Timer } from '@trezor/react-utils';
 
 import { useDispatch } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
 
+import { mapTradingTimerToTimer } from './mapTradingTimerToTimer';
+import { type TradingTimer } from './useTradingTimer';
+
 type TradingSellUseHandleChangeProps = {
     formValues: TradingSellFormProps;
     network: Network;
-    timer: Timer;
+    timer: TradingTimer;
     shouldSendInSats: boolean | undefined;
 
     setValue: UseFormSetValue<TradingSellFormProps>;
@@ -62,7 +64,7 @@ export const useTradingSellHandleChange = ({
             sellThunks.handleRequestThunk({
                 formValues,
                 network,
-                timer,
+                timer: mapTradingTimerToTimer(timer),
                 shouldSendInSats,
                 composeRequestCallback,
             }),

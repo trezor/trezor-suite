@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 
 import { type ExtendedMessageDescriptor, Translation } from '@suite/intl';
-import { INVITY_API_RELOAD_QUOTES_AFTER_SECONDS } from '@suite-common/trading';
 import { H2 } from '@trezor/components';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { spacingsPx } from '@trezor/theme';
@@ -11,9 +10,10 @@ import {
     getCryptoQuoteAmountProps,
     isTradingExchangeContext,
 } from 'src/utils/wallet/trading/tradingTypingUtils';
-import { TradingRefreshTime } from 'src/views/wallet/trading/common';
 import { TradingHeaderFilter } from 'src/views/wallet/trading/common/TradingHeader/TradingHeaderFilter';
 import { TradingHeaderSummary } from 'src/views/wallet/trading/common/TradingHeader/TradingHeaderSummary';
+
+import { TradingHeaderRefreshTime } from './TradingHeaderRefreshTime';
 
 const Header = styled.div`
     padding-top: ${spacingsPx.sm};
@@ -76,12 +76,7 @@ export const TradingHeader = ({ title, titleTimer }: TradingHeaderProps) => {
             <HeaderBottom>
                 <TradingHeaderFilter />
                 <HeaderTradingRefreshTime>
-                    <TradingRefreshTime
-                        isLoading={timer.isLoading}
-                        refetchInterval={INVITY_API_RELOAD_QUOTES_AFTER_SECONDS}
-                        seconds={timer.timeSpent.seconds}
-                        label={<Translation id={titleTimer} />}
-                    />
+                    <TradingHeaderRefreshTime timer={timer} titleTimer={titleTimer} />
                 </HeaderTradingRefreshTime>
             </HeaderBottom>
         </Header>

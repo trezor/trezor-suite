@@ -5,19 +5,20 @@ import {
     INVITY_API_RELOAD_QUOTES_AFTER_SECONDS,
     tradingExchangeActions,
 } from '@suite-common/trading';
-import { type Timer, useTimer } from '@trezor/react-utils';
 
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { useServerEnvironment } from 'src/hooks/wallet/trading/useServerEnviroment';
 import { selectIsWindowVisible } from 'src/reducers/suite/windowReducer';
 import { type TradingPageType } from 'src/types/trading/trading';
 
+import { type TradingTimer, useTradingTimer } from './useTradingTimer';
+
 export type UseTradingCommonProps = {
     pageType: TradingPageType;
     isLoading: boolean;
 };
 export interface UseTradingCommonReturnProps {
-    timer: Timer;
+    timer: TradingTimer;
     device: TrezorDevice | undefined;
     checkQuotesTimer: (callback: () => Promise<void>) => void;
 }
@@ -27,7 +28,7 @@ export const useTradingInitializer = ({
     isLoading,
 }: UseTradingCommonProps): UseTradingCommonReturnProps => {
     const dispatch = useDispatch();
-    const timer = useTimer();
+    const timer = useTradingTimer();
     const { device } = useDevice();
 
     const isWindowVisible = useSelector(selectIsWindowVisible);
@@ -53,7 +54,7 @@ export const useTradingInitializer = ({
             }
 
             const hasRefreshIntervalElapsed =
-                timer.timeSpent.seconds >= INVITY_API_RELOAD_QUOTES_AFTER_SECONDS;
+                timer.secondsElapsed >= INVITY_API_RELOAD_QUOTES_AFTER_SECONDS;
 
             if (!hasRefreshIntervalElapsed) {
                 return;

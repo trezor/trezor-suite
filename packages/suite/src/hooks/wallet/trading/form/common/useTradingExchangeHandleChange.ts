@@ -3,15 +3,17 @@ import { useCallback, useEffect, useRef } from 'react';
 import { events } from '@suite/analytics';
 import { type TradingExchangeFormProps, exchangeThunks } from '@suite-common/trading';
 import { type Network } from '@suite-common/wallet-config';
-import { type Timer } from '@trezor/react-utils';
 
 import { useDispatch } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
 
+import { mapTradingTimerToTimer } from './mapTradingTimerToTimer';
+import { type TradingTimer } from './useTradingTimer';
+
 type TradingExchangeUseHandleChangeProps = {
     formValues: TradingExchangeFormProps;
     network: Network;
-    timer: Timer;
+    timer: TradingTimer;
     shouldSendInSats: boolean | undefined;
 
     composeRequestCallback: () => void;
@@ -51,7 +53,7 @@ export const useTradingExchangeHandleChange = ({
             exchangeThunks.handleRequestThunk({
                 formValues,
                 network,
-                timer,
+                timer: mapTradingTimerToTimer(timer),
                 shouldSendInSats,
                 composeRequestCallback,
             }),
