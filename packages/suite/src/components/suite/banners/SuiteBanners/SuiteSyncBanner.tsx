@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { goto } from '@suite/router';
 import { selectIsDeviceConnected } from '@suite-common/device';
+import { type MessageSystemRootState } from '@suite-common/message-system';
 import {
     type WithSuiteSyncAndDeviceState,
     selectHasDeviceSuiteSyncError,
@@ -93,8 +94,9 @@ export const SuiteSyncBanner = ({ deviceStaticSessionId }: SuiteSyncBannerProps)
     const hasSuiteSyncError = useSelector((state: WithSuiteSyncAndDeviceState) =>
         selectHasDeviceSuiteSyncError(state, deviceStaticSessionId),
     );
-    const suiteSyncInteraction = useSelector((state: WithSuiteSyncAndDeviceState) =>
-        selectSuiteSyncInteraction(state, deviceStaticSessionId),
+    const suiteSyncInteraction = useSelector(
+        (state: WithSuiteSyncAndDeviceState & MessageSystemRootState) =>
+            selectSuiteSyncInteraction(state, deviceStaticSessionId),
     );
     const isDeviceConnected = useSelector(selectIsDeviceConnected);
 

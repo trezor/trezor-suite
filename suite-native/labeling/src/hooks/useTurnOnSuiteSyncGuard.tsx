@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { selectDeviceStaticSessionId } from '@suite-common/device';
+import { type MessageSystemRootState } from '@suite-common/message-system';
 import {
     type WithSuiteSyncAndDeviceState,
     selectSuiteSyncInteraction,
@@ -36,8 +37,9 @@ export const useTurnOnSuiteSyncGuard = () => {
         >();
     const deviceStaticSessionId = useSelector(selectDeviceStaticSessionId);
 
-    const suiteSyncInteraction = useSelector((state: WithSuiteSyncAndDeviceState) =>
-        selectSuiteSyncInteraction(state, deviceStaticSessionId),
+    const suiteSyncInteraction = useSelector(
+        (state: WithSuiteSyncAndDeviceState & MessageSystemRootState) =>
+            selectSuiteSyncInteraction(state, deviceStaticSessionId),
     );
 
     const showSuiteSyncFirmwareUpgradeAlert = () => {

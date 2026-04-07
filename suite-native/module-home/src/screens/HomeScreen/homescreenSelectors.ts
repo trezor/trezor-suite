@@ -54,7 +54,7 @@ export const selectShouldDisplaySuiteSyncAlert = createMemoizedSelector(
         (state: WithSuiteSyncState & DeviceRootState) =>
             selectHasDeviceSuiteSyncError(state, selectDeviceStaticSessionId(state)),
         selectIsDeviceConnected,
-        (state: WithSuiteSyncState & DeviceRootState) =>
+        (state: WithSuiteSyncState & DeviceRootState & MessageSystemRootState) =>
             selectSuiteSyncInteraction(state, selectDeviceStaticSessionId(state)),
     ],
     (hasSuiteSyncError, isDeviceConnected, interactionNeeded) =>
@@ -63,7 +63,7 @@ export const selectShouldDisplaySuiteSyncAlert = createMemoizedSelector(
 
 export const selectShouldDisplaySuiteSyncFirmwareUpdateAlert = createMemoizedSelector(
     [
-        (state: WithSuiteSyncState & DeviceRootState) =>
+        (state: WithSuiteSyncState & DeviceRootState & MessageSystemRootState) =>
             selectSuiteSyncInteraction(state, selectDeviceStaticSessionId(state)),
     ],
     interactionNeeded => interactionNeeded === 'firmware-upgrade-needed',

@@ -1,4 +1,8 @@
 import { deviceReducerInitialState } from '@suite-common/device';
+import {
+    type MessageSystemRootState,
+    messageSystemInitialState,
+} from '@suite-common/message-system';
 import { asEncryptedHex } from '@suite-common/platform-encryption';
 import type { SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-storage';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
@@ -13,7 +17,7 @@ const DEVICE_STATIC_SESSION_ID_123: StaticSessionId = '1@2:3';
 const createMockState = (
     deviceOverrides: Parameters<typeof mockSuiteDevice>[0] = {},
     suiteSyncOverrides: Partial<SuiteSyncState> = {},
-): WithSuiteSyncAndDeviceState => ({
+): WithSuiteSyncAndDeviceState & MessageSystemRootState => ({
     device: {
         ...deviceReducerInitialState,
         devices: [
@@ -27,6 +31,7 @@ const createMockState = (
         ...initialSuiteSyncState,
         ...suiteSyncOverrides,
     },
+    messageSystem: messageSystemInitialState,
 });
 
 describe(selectSuiteSyncInteraction.name, () => {
