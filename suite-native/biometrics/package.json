@@ -23,6 +23,6 @@
         "jotai": "2.17.1",
         "react": "19.2.4",
         "react-native": "0.83.2",
-        "react-native-svg": "15.15.3"
+        "react-native-svg": "^15.15.4"
     }
 }
