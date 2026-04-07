@@ -103,6 +103,7 @@ describe('useTradingStellarActivateToken', () => {
         mockSelectExchangeSelectedReceiveAccount.mockReturnValue({ account: { key: ACCOUNT_KEY } });
 
         mockCryptoIdToNetworkAndContractAddress.mockReturnValue({
+            network: { networkType: 'stellar' },
             contractAddress: TOKEN_CONTRACT,
         });
 
