@@ -19,6 +19,6 @@
         "@trezor/product-components": "workspace:*",
         "@trezor/theme": "workspace:*",
         "react": "18.2.0",
-        "react-intl": "6.8.7"
+        "react-intl": "^10.1.0"
     }
 }
