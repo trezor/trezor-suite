@@ -23,6 +23,7 @@ import {
 import { Button, Column, Icon, Paragraph, Row, Table } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
+import { HiddenPlaceholder } from 'src/components/suite/HiddenPlaceholder';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
 import { ApyValue } from 'src/views/wallet/staking/components/ApyValue';
@@ -165,13 +166,15 @@ export const EarnStakingAccountRow = ({ account }: { account: Account }) => {
                                 intent="neutral"
                                 priority="secondary"
                             >
-                                <Translation
-                                    id="TR_EARN_STAKING_DASHBOARD_STAKED"
-                                    values={{
-                                        amount: formatCryptoAmount(stakingBalance),
-                                        displaySymbol,
-                                    }}
-                                />
+                                <HiddenPlaceholder>
+                                    <Translation
+                                        id="TR_EARN_STAKING_DASHBOARD_STAKED"
+                                        values={{
+                                            amount: formatCryptoAmount(stakingBalance),
+                                            displaySymbol,
+                                        }}
+                                    />
+                                </HiddenPlaceholder>
                             </Paragraph>
                         )}
                     </Column>
@@ -205,13 +208,15 @@ export const EarnStakingAccountRow = ({ account }: { account: Account }) => {
 
                     {!isCardanoNetworkType && apy && (
                         <Paragraph typographyStyle="body-sm" intent="neutral" priority="secondary">
-                            <Translation
-                                id="TR_EARN_STAKING_DASHBOARD_IF_YOU_ADD"
-                                values={{
-                                    amount: formatCryptoAmount(accountBalance),
-                                    displaySymbol,
-                                }}
-                            />
+                            <HiddenPlaceholder>
+                                <Translation
+                                    id="TR_EARN_STAKING_DASHBOARD_IF_YOU_ADD"
+                                    values={{
+                                        amount: formatCryptoAmount(accountBalance),
+                                        displaySymbol,
+                                    }}
+                                />
+                            </HiddenPlaceholder>
                         </Paragraph>
                     )}
                 </Column>

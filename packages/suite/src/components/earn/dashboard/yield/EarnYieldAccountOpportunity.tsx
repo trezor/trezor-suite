@@ -12,6 +12,7 @@ import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import { Button, Column, Icon, Paragraph, Row, Table } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
+import { HiddenPlaceholder } from 'src/components/suite/HiddenPlaceholder';
 import { useDispatch } from 'src/hooks/suite';
 import { ApyValue } from 'src/views/wallet/staking/components/ApyValue';
 
@@ -184,13 +185,15 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
                                         intent="neutral"
                                         priority="secondary"
                                     >
-                                        <Translation
-                                            id="TR_EARN_YIELD_DASHBOARD_SUPPLIED"
-                                            values={{
-                                                amount: formattedSuppliedAmount,
-                                                displaySymbol: opportunity.suppliedSymbol,
-                                            }}
-                                        />
+                                        <HiddenPlaceholder>
+                                            <Translation
+                                                id="TR_EARN_YIELD_DASHBOARD_SUPPLIED"
+                                                values={{
+                                                    amount: formattedSuppliedAmount,
+                                                    displaySymbol: opportunity.suppliedSymbol,
+                                                }}
+                                            />
+                                        </HiddenPlaceholder>
                                     </Paragraph>
                                 )}
                             </Column>
@@ -221,13 +224,15 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
                                     intent="neutral"
                                     priority="secondary"
                                 >
-                                    <Translation
-                                        id="TR_EARN_STAKING_DASHBOARD_IF_YOU_ADD"
-                                        values={{
-                                            amount: formattedAdditionalSupplyAmount,
-                                            displaySymbol: opportunity.suppliedSymbol,
-                                        }}
-                                    />
+                                    <HiddenPlaceholder>
+                                        <Translation
+                                            id="TR_EARN_STAKING_DASHBOARD_IF_YOU_ADD"
+                                            values={{
+                                                amount: formattedAdditionalSupplyAmount,
+                                                displaySymbol: opportunity.suppliedSymbol,
+                                            }}
+                                        />
+                                    </HiddenPlaceholder>
                                 </Paragraph>
                             </Column>
                         )}
