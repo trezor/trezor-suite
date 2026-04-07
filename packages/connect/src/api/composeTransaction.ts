@@ -23,6 +23,7 @@ import type { ComposeOutput, TransactionInputOutputSortingStrategy } from '@trez
 import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
 import type { MethodContext, MethodMessage, MethodPermission } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
+import { requestExistingAccounts } from './common/requestExistingAccounts';
 import { fixCoinInfoNetwork, getBitcoinNetwork } from '../data/coinInfo';
 import { formatAmount } from '../utils/formatUtils';
 import * as pathUtils from '../utils/pathUtils';
@@ -231,6 +232,54 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
     private async selectAccount(context: MethodContext) {
         const { coinInfo } = this.params;
         const blockchain = await this.getBlockchain(context.sendCoreMessage);
+
+        // Try to get existing accounts from the host (e.g. Suite) to skip device discovery
+        if (!this.discovery) {
+            const existingAccounts = await requestExistingAccounts({
+                postMessage: context.sendCoreMessage,
+                createUiPromise: context.createUiPromise,
+                device: this.getDevice(),
+                coinInfo,
+            });
+
+            if (existingAccounts) {
+                return this.selectFromExistingAccounts(existingAccounts, blockchain, context);
+            }
+        }
+
+        return this.selectFromDiscovery(blockchain, context);
+    }
+
+    private async selectFromExistingAccounts(
+        accounts: DiscoveryAccount[],
+        blockchain: Awaited<ReturnType<typeof this.getBlockchain>>,
+        context: MethodContext,
+    ) {
+        const { coinInfo } = this.params;
+        const dfd = context.createUiPromise(UI_RESPONSE.RECEIVE_ACCOUNT, this.getDevice());
+
+        context.sendCoreMessage(
+            createUiMessage(UI_REQUEST.SELECT_ACCOUNT, {
+                type: 'complete',
+                accountTypes: [...new Set(accounts.map(a => a.type))],
+                coinInfo,
+                accounts,
+            }),
+        );
+
+        const uiResp = await dfd.promise;
+        const account = accounts[uiResp.payload];
+        this.params.coinInfo = fixCoinInfoNetwork(this.params.coinInfo, account.address_n);
+        const utxo = await blockchain.getAccountUtxo(account.descriptor);
+
+        return { account, utxo };
+    }
+
+    private async selectFromDiscovery(
+        blockchain: Awaited<ReturnType<typeof this.getBlockchain>>,
+        context: MethodContext,
+    ) {
+        const { coinInfo } = this.params;
         const dfd = context.createUiPromise(UI_RESPONSE.RECEIVE_ACCOUNT, this.getDevice());
 
         if (this.discovery && this.discovery.completed) {
@@ -247,12 +296,8 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
             const account = discovery.accounts[uiResp.payload];
             const utxo = await blockchain.getAccountUtxo(account.descriptor);
 
-            return {
-                account,
-                utxo,
-            };
+            return { account, utxo };
         }
-        // initialize backend
 
         const discovery =
             this.discovery ||
@@ -267,7 +312,6 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
             context.sendCoreMessage(
                 createUiMessage(UI_REQUEST.SELECT_ACCOUNT, {
                     type: 'progress',
-                    // preventEmpty: true,
                     coinInfo,
                     accounts,
                 }),
@@ -311,10 +355,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         this.params.coinInfo = fixCoinInfoNetwork(this.params.coinInfo, account.address_n);
         const utxo = await blockchain.getAccountUtxo(account.descriptor);
 
-        return {
-            account,
-            utxo,
-        };
+        return { account, utxo };
     }
 
     private async selectFee(

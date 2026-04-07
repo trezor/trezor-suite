@@ -155,7 +155,7 @@ export const SelectAccountModal = ({ data }: SelectAccountModalProps) => {
                                         </Table.Row>
                                     );
                                 })}
-                                {data.type !== 'end' && (
+                                {data.type !== 'end' && data.type !== 'complete' && (
                                     <Table.Row>
                                         <Table.Cell>
                                             <SkeletonRectangle width="100px" animate />

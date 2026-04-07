@@ -53,6 +53,7 @@ export const UI_REQUEST = {
 
     BUNDLE_PROGRESS: 'ui-bundle_progress',
     ADDRESS_VALIDATION: 'ui-address_validation',
+    REQUEST_DISCOVERY_ACCOUNTS: 'ui-request_discovery_accounts',
 } as const;
 
 export type UiRequestWithoutPayload =
@@ -206,14 +207,22 @@ export interface FirmwareException {
 
 export interface UiRequestSelectAccount {
     type: typeof UI_REQUEST.SELECT_ACCOUNT;
-    payload: {
-        type: 'start' | 'progress' | 'end';
-        coinInfo: CoinInfo;
-        accountTypes?: DiscoveryAccountType[];
-        defaultAccountType?: DiscoveryAccountType;
-        accounts?: DiscoveryAccount[];
-        preventEmpty?: boolean;
-    };
+    payload:
+        | {
+              type: 'start' | 'progress' | 'end';
+              coinInfo: CoinInfo;
+              accountTypes?: DiscoveryAccountType[];
+              defaultAccountType?: DiscoveryAccountType;
+              accounts?: DiscoveryAccount[];
+              preventEmpty?: boolean;
+          }
+        | {
+              type: 'complete';
+              coinInfo: CoinInfo;
+              accountTypes: DiscoveryAccountType[];
+              defaultAccountType?: DiscoveryAccountType;
+              accounts: DiscoveryAccount[];
+          };
 }
 
 export interface UiRequestSelectFee {
@@ -278,6 +287,13 @@ export interface FirmwareDisconnect {
     };
 }
 
+export interface UiRequestDiscoveryAccounts {
+    type: typeof UI_REQUEST.REQUEST_DISCOVERY_ACCOUNTS;
+    payload: {
+        coinInfo: CoinInfo;
+    };
+}
+
 export type UiEvent =
     | UiRequestWithoutPayload
     | UiRequestDeviceAction
@@ -295,7 +311,8 @@ export type UiEvent =
     | FirmwareReconnect
     | FirmwareDisconnect
     | UiRequestAddressValidation
-    | UiRequestFirmwareDownloaded;
+    | UiRequestFirmwareDownloaded
+    | UiRequestDiscoveryAccounts;
 
 export type UiEventMessage = UiEvent & { event: typeof UI_EVENT };
 
