@@ -90,8 +90,8 @@ class InvityAPI {
     // otc service
     private readonly OTC_INFO = '/api/v2/otc';
 
-    private static accountDescriptor: string;
-    private static apiKey: string;
+    private static accountDescriptor: string | undefined;
+    private static apiKey: string | undefined;
 
     private getInvityAPIKey() {
         if (!InvityAPI.apiKey) {
@@ -120,6 +120,10 @@ class InvityAPI {
             InvityAPI.apiKey = hash.digest('hex');
             InvityAPI.accountDescriptor = accountDescriptor;
         }
+    }
+
+    resetCurrentAccount() {
+        InvityAPI.accountDescriptor = undefined;
     }
 
     setInvityServersEnvironment(serverEnvironment: InvityServerEnvironment) {

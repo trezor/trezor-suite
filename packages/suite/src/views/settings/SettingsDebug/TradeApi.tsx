@@ -3,7 +3,6 @@ import { type InvityServerEnvironment, invityAPI } from '@suite-common/trading';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { reloadApp } from 'src/utils/suite/reload';
 
 export const TradeApi = () => {
     const invityServerEnvironment = useSelector(selectInvityServerEnvironment);
@@ -22,8 +21,7 @@ export const TradeApi = () => {
     const handleChange = (item: { value: InvityServerEnvironment; label: string }) => {
         dispatch(suiteSettingsActions.setDebugMode({ invityServerEnvironment: item.value }));
         invityAPI.setInvityServersEnvironment(item.value);
-        // reload the Suite to reinitialize everything, with a slight delay to let the browser save the settings
-        reloadApp(100);
+        invityAPI.resetCurrentAccount();
     };
 
     return (

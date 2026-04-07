@@ -44,6 +44,22 @@ describe('InvityAPI', () => {
         expect(descriptor).toEqual('test-account');
     });
 
+    describe('resetCurrentAccount', () => {
+        it('should clear the account descriptor', () => {
+            invityAPI.resetCurrentAccount();
+
+            expect(invityAPI.getCurrentAccountDescriptor()).toBeUndefined();
+        });
+
+        it('should recreate the descriptor and api key after createInvityAPIKey is called', () => {
+            invityAPI.resetCurrentAccount();
+            invityAPI.createInvityAPIKey(accountDescriptor);
+
+            expect(invityAPI.getCurrentAccountDescriptor()).toEqual(accountDescriptor);
+            expect(typeof invityAPI.getCurrentApiKey()).toBe('string');
+        });
+    });
+
     describe('getInvityAPIKey', () => {
         it('should return the default API', () => {
             expect(typeof invityAPI['getInvityAPIKey']()).toBe('string');
