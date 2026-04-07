@@ -15178,6 +15178,7 @@ __metadata:
     "@trezor/components": "workspace:*"
     "@trezor/product-components": "workspace:*"
     "@trezor/theme": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
     "@types/flexsearch": "npm:^0.7.3"
     "@types/git-url-parse": "npm:^9.0.3"
     "@types/react": "npm:19.2.14"
@@ -15202,7 +15203,7 @@ __metadata:
     scroll-into-view-if-needed: "npm:^3.1.0"
     styled-components: "npm:^6.3.9"
     tailwindcss: "npm:^3.4.10"
-    zod: "npm:^3.24.2"
+    zod: "npm:4.3.6"
   peerDependencies:
     next: ">=9.5.3"
     nextra: ^2.13.4
@@ -46797,7 +46798,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zod@npm:^3.21.4, zod@npm:^3.22.3, zod@npm:^3.24.2, zod@npm:^3.25.76":
+"zod@npm:^3.21.4, zod@npm:^3.22.3, zod@npm:^3.25.76":
   version: 3.25.76
   resolution: "zod@npm:3.25.76"
   checksum: 10/f0c963ec40cd96858451d1690404d603d36507c1fc9682f2dae59ab38b578687d542708a7fdbf645f77926f78c9ed558f57c3d3aa226c285f798df0c4da16995
