@@ -15,8 +15,14 @@ export const interceptFetch: Interceptor = ({ context, validateRequest }) => {
         const isTorEnabled = context.getTorSettings().running;
         const isTorRequired = getIsTorRequired(options as Readonly<RequestOptions>);
 
-        if (isTorEnabled || isTorRequired) {
+        if (isTorEnabled) {
             return nodeFetch(url as string, options as RequestInit) as Promise<any>;
+        }
+
+        if (isTorRequired && !context.allowTorBypass) {
+            return Promise.reject(
+                new Error('Blocked request with Proxy-Authorization. TOR not enabled.'),
+            );
         }
 
         let hostname = 'unknown';
