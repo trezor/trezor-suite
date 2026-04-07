@@ -52,6 +52,6 @@
         "react-native-gesture-handler": "2.30.0",
         "react-native-reanimated": "~4.2.1",
         "react-redux": "9.2.0",
-        "type-fest": "4.24.0"
+        "type-fest": "5.5.0"
     }
 }

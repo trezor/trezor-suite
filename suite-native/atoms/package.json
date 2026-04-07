@@ -43,7 +43,7 @@
         "react-native-svg": "15.15.3",
         "react-redux": "9.2.0",
         "storybook": "^10.2.8",
-        "type-fest": "4.24.0"
+        "type-fest": "5.5.0"
     },
     "devDependencies": {
         "@suite-native/test-utils": "workspace:*"
