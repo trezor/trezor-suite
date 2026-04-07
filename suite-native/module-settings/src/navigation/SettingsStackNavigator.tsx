@@ -15,6 +15,7 @@ import { SettingsCoinEnablingScreen } from '../screens/SettingsCoinEnablingScree
 import { SettingsExperimentalScreen } from '../screens/SettingsExperimentalScreen';
 import { SettingsPreferencesScreen } from '../screens/SettingsPreferencesScreen';
 import { SettingsPrivacyScreen } from '../screens/SettingsPrivacyScreen';
+import { SettingsSuiteSyncScreen } from '../screens/SettingsSuiteSyncScreen';
 import { SettingsSupportScreen } from '../screens/SettingsSupportScreen';
 import { TurnOffDeviceAuthenticityCheckScreen } from '../screens/TurnOffDeviceAuthenticityCheckScreen';
 import { TurnOffFirmwareAuthenticityCheckScreen } from '../screens/TurnOffFirmwareAuthenticityCheckScreen';
@@ -53,6 +54,11 @@ export const SettingsStackNavigator = () => (
             options={{ title: SettingsStackRoutes.SettingsCoinEnabling }}
             name={SettingsStackRoutes.SettingsCoinEnabling}
             component={SettingsCoinEnablingScreen}
+        />
+        <SettingsStack.Screen
+            options={{ title: SettingsStackRoutes.SettingsSuiteSync }}
+            name={SettingsStackRoutes.SettingsSuiteSync}
+            component={SettingsSuiteSyncScreen}
         />
         <SettingsStack.Screen
             name={SettingsStackRoutes.SettingsAdvanced}

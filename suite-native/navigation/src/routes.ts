@@ -254,6 +254,7 @@ export enum SettingsStackRoutes {
     SettingsSupport = 'SettingsSupport',
     SettingsAppLog = 'SettingsAppLog',
     SettingsCoinEnabling = 'SettingsCoinEnabling',
+    SettingsSuiteSync = 'SettingsSuiteSync',
     SettingsAdvanced = 'SettingsAdvanced',
     SettingsExperimental = 'SettingsExperimental',
     TurnOffDeviceAuthenticityCheck = 'TurnOffDeviceAuthenticityCheck',
