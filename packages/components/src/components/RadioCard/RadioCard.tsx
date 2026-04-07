@@ -44,7 +44,7 @@ const Wrapper = styled.div<
     padding: ${spacingsPx.md};
     outline: ${borders.widths.small} solid ${mapElevationToBorder};
     outline-offset: -${borders.widths.small};
-    background: ${({ theme }) => theme.baseFillSurfacePage};
+    background: ${({ theme }) => theme.surfaceFillPage};
     ${({ onClick }) => onClick && 'cursor: pointer;'}
 
     ${({ $isDisabled }) =>
@@ -52,14 +52,14 @@ const Wrapper = styled.div<
         css`
             &:hover,
             &:focus {
-                outline-color: ${({ theme }) => theme.baseContentEmphasis};
+                outline-color: ${({ theme }) => theme.contentBrand};
             }
         `}
 
     ${({ $isActive }) =>
         $isActive &&
         css`
-            outline-color: ${({ theme }) => theme.baseContentBrand} !important;
+            outline-color: ${({ theme }) => theme.contentBrand} !important;
         `}
 
     ${({ $isDisabled }) =>
@@ -74,7 +74,7 @@ const Wrapper = styled.div<
 
 const IconBackground = styled.div`
     border-radius: ${borders.radii.full};
-    background: ${({ theme }) => theme.baseFillSurfacePage};
+    background: ${({ theme }) => theme.surfaceFillPage};
 `;
 
 export const RadioCard = ({
@@ -100,7 +100,7 @@ export const RadioCard = ({
             {isActive && (
                 <Box position={{ type: 'absolute', top: '-6px', right: '-6px' }}>
                     <IconBackground>
-                        <Icon name="checkCircleFilled" size={20} color="baseContentBrand" />
+                        <Icon name="checkCircleFilled" size={20} color="contentBrand" />
                     </IconBackground>
                 </Box>
             )}

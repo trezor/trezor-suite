@@ -55,7 +55,7 @@ export const mapFillTypeToCSS = ({
     const cssMap: Record<FillType, RuleSet<object>> = {
         default: css`
             background: ${mapElevationToBackground({ $elevation, theme })};
-            outline: 1px solid ${theme.baseBorderSurfaceAction};
+            outline: 1px solid ${theme.surfaceBorderAction};
 
             ${$isClickable &&
             css`

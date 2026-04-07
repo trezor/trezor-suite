@@ -7,7 +7,6 @@ export const textIntents = [
     'warning',
     'critical',
     'accentViolet',
-    'accentOrange',
 ] as const satisfies UIIntent[];
 export type TextIntent = Extract<UIIntent, (typeof textIntents)[number]>;
 

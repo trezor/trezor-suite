@@ -34,91 +34,85 @@ export const mapSizeToTypographyStyle = (size: TextButtonSize): TypographyStyle 
 
 const colorMap: Record<InverseKey, Record<Exclude<ButtonIntent, 'neutral'>, Color>> = {
     normal: {
-        brand: 'baseContentBrand',
-        info: 'baseContentInfo',
-        warning: 'baseContentWarning',
-        critical: 'baseContentNegative',
-        accentViolet: 'baseContentAccentViolet',
-        accentOrange: 'baseContentAccentOrange',
+        brand: 'contentBrand',
+        info: 'contentInfo',
+        warning: 'contentWarning',
+        critical: 'contentCritical',
+        accentViolet: 'contentAccentViolet',
     },
     inverse: {
-        brand: 'baseContentBrandInverse',
-        info: 'baseContentInfoInverse',
-        warning: 'baseContentWarningInverse',
-        critical: 'baseContentNegativeInverse',
-        accentViolet: 'baseContentAccentVioletInverse',
-        accentOrange: 'baseContentAccentOrangeInverse',
+        brand: 'contentOnDarkBrand',
+        info: 'contentOnDarkInfo',
+        warning: 'contentOnDarkWarning',
+        critical: 'contentOnDarkCritical',
+        accentViolet: 'contentOnDarkAccentViolet',
     },
 };
 
 const neutralColorMap: Record<InverseKey, Record<ButtonPriority, Color>> = {
     normal: {
-        primary: 'baseContentPrimary',
-        secondary: 'baseContentSecondary',
+        primary: 'contentPrimary',
+        secondary: 'contentSecondary',
     },
     inverse: {
-        primary: 'baseContentPrimaryInverse',
-        secondary: 'baseContentSecondaryInverse',
+        primary: 'contentOnDarkPrimary',
+        secondary: 'contentOnDarkSecondary',
     },
 };
 
 const colorMapHovered: Record<InverseKey, Record<Exclude<ButtonIntent, 'neutral'>, Color>> = {
     normal: {
-        brand: 'stateContentBrandHovered',
-        info: 'stateContentInfoHovered',
-        warning: 'stateContentWarningHovered',
-        critical: 'stateContentNegativeHovered',
-        accentViolet: 'stateContentAccentVioletHovered',
-        accentOrange: 'stateContentAccentOrangeHovered',
+        brand: 'contentBrandHovered',
+        info: 'contentInfoHovered',
+        warning: 'contentWarningHovered',
+        critical: 'contentCriticalHovered',
+        accentViolet: 'contentAccentVioletHovered',
     },
     inverse: {
-        brand: 'stateContentBrandInverseHovered',
-        info: 'stateContentInfoInverseHovered',
-        warning: 'stateContentWarningInverseHovered',
-        critical: 'stateContentNegativeInverseHovered',
-        accentViolet: 'stateContentAccentVioletInverseHovered',
-        accentOrange: 'stateContentAccentOrangeInverseHovered',
+        brand: 'contentOnDarkBrandHovered',
+        info: 'contentOnDarkInfoHovered',
+        warning: 'contentOnDarkWarningHovered',
+        critical: 'contentOnDarkCriticalHovered',
+        accentViolet: 'contentOnDarkAccentVioletHovered',
     },
 };
 
 const neutralColorMapHovered: Record<InverseKey, Record<ButtonPriority, Color>> = {
     normal: {
-        primary: 'stateContentPrimaryHovered',
-        secondary: 'stateContentSecondaryHovered',
+        primary: 'contentPrimaryHovered',
+        secondary: 'contentSecondaryHovered',
     },
     inverse: {
-        primary: 'stateContentPrimaryInverseHovered',
-        secondary: 'stateContentSecondaryInverseHovered',
+        primary: 'contentOnDarkPrimaryHovered',
+        secondary: 'contentOnDarkSecondaryHovered',
     },
 };
 
 const colorMapPressed: Record<InverseKey, Record<Exclude<ButtonIntent, 'neutral'>, Color>> = {
     normal: {
-        brand: 'stateContentBrandPressed',
-        info: 'stateContentInfoPressed',
-        warning: 'stateContentWarningPressed',
-        critical: 'stateContentNegativePressed',
-        accentViolet: 'stateContentAccentVioletPressed',
-        accentOrange: 'stateContentAccentOrangePressed',
+        brand: 'contentBrandPressed',
+        info: 'contentInfoPressed',
+        warning: 'contentWarningPressed',
+        critical: 'contentCriticalPressed',
+        accentViolet: 'contentAccentVioletPressed',
     },
     inverse: {
-        brand: 'stateContentBrandInversePressed',
-        info: 'stateContentInfoInversePressed',
-        warning: 'stateContentWarningInversePressed',
-        critical: 'stateContentNegativeInversePressed',
-        accentViolet: 'stateContentAccentVioletInversePressed',
-        accentOrange: 'stateContentAccentOrangeInversePressed',
+        brand: 'contentOnDarkBrandPressed',
+        info: 'contentOnDarkInfoPressed',
+        warning: 'contentOnDarkWarningPressed',
+        critical: 'contentOnDarkCriticalPressed',
+        accentViolet: 'contentOnDarkAccentVioletPressed',
     },
 };
 
 const neutralColorMapPressed: Record<InverseKey, Record<ButtonPriority, Color>> = {
     normal: {
-        primary: 'stateContentSecondaryPressed',
-        secondary: 'stateContentNeutralPressed',
+        primary: 'contentSecondaryPressed',
+        secondary: 'contentNeutralPressed',
     },
     inverse: {
-        primary: 'stateContentSecondaryInversePressed',
-        secondary: 'stateContentNeutralInversePressed',
+        primary: 'contentOnDarkSecondaryPressed',
+        secondary: 'contentOnDarkNeutralPressed',
     },
 };
 
@@ -134,7 +128,7 @@ export const mapIntentToCSS = (
 
     if (isDisabled) {
         return css`
-            color: ${theme.stateContentDisabled};
+            color: ${theme.contentDisabled};
         `;
     }
 

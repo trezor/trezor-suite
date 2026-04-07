@@ -95,7 +95,7 @@ const defaultItemStyle = prepareNativeStyle<ItemRenderConfig<unknown>>(
             {
                 condition: !isEnabled,
                 style: {
-                    backgroundColor: colors.baseFillSurfacePage,
+                    backgroundColor: colors.surfaceFillPage,
                 },
             },
         ],

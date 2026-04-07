@@ -9,7 +9,7 @@ import { Row } from '../Flex/Flex';
 import { Text } from '../typography/Text/Text';
 
 const ShortcutContainer = styled.div`
-    background-color: ${({ theme }) => addAlphaToHex(theme.baseFillElementNeutralDark, 0.09)};
+    background-color: ${({ theme }) => addAlphaToHex(theme.borderNeutralDark, 0.09)};
     border-radius: ${borders.radii.xxs};
     padding: 0 ${spacingsPx.xxs};
 `;

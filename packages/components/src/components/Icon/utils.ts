@@ -9,8 +9,7 @@ const colorMap: Record<Exclude<IconIntent, 'neutral'>, Color> = {
     info: 'iconAlertBlue',
     warning: 'iconAlertYellow',
     critical: 'iconAlertRed',
-    accentViolet: 'baseContentAccentViolet',
-    accentOrange: 'baseContentAccentOrange',
+    accentViolet: 'contentAccentViolet',
 };
 
 const neutralColorMap: Record<IconPriority, Color> = {

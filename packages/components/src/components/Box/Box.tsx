@@ -94,7 +94,7 @@ const Container = styled.div<
         `}
 
     &:focus-visible {
-        outline: 4px solid ${({ theme }) => theme.stateBorderElementFocused};
+        outline: 4px solid ${({ theme }) => theme.elementBorderFocusRing};
         outline-offset: 2px;
     }
 

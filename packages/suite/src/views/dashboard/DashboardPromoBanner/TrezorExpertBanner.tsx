@@ -44,7 +44,7 @@ const Title = () => {
     return (
         <Text
             typographyStyle={isBelowLaptop ? 'headline-sm' : 'headline-md'}
-            color="baseContentPrimaryInverse"
+            color="contentOnDarkPrimary"
             flex="1"
         >
             <Translation
@@ -64,7 +64,7 @@ const Description = () => {
     return (
         <Text
             typographyStyle={isBelowDesktop ? 'body-sm-strong' : 'headline-sm'}
-            color="baseContentBrandInverse"
+            color="contentOnDarkBrand"
         >
             <Translation id="TR_PROMO_BANNER_DASHBOARD_TEX_DESCRIPTION" />
         </Text>
@@ -101,7 +101,7 @@ export const TrezorExpertBanner = ({ onClose, onCTAClick, isVisible }: TrezorExp
             <Box
                 height={213}
                 padding={{ horizontal: 24 }}
-                backgroundColor="baseFillSurfaceBrandDark"
+                backgroundColor="surfaceFillBrandDark"
                 data-testid="@dashboard/promo-banner/trezor-expert"
             >
                 <Row
