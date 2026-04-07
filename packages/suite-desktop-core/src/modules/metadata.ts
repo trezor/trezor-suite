@@ -19,7 +19,7 @@ const HEX_STRING_REGEX = /^[0-9a-fA-F]+$/;
  * or raw binary data (e.g. copied from Dropbox).
  */
 const isHexString = (buffer: Buffer): boolean => {
-    const str = buffer.toString('utf-8');
+    const str = buffer.toString('ascii');
 
     return str.length > 0 && str.length % 2 === 0 && HEX_STRING_REGEX.test(str);
 };
@@ -53,7 +53,7 @@ export const init: ModuleInit = () => {
 
         if (isHexString(buffer)) {
             // File contains a hex-encoded string saved by FileSystemProvider.
-            return { success: true, payload: buffer.toString('utf-8') };
+            return { success: true, payload: buffer.toString('ascii') };
         }
 
         // File contains raw binary data (e.g. from Dropbox). Convert to hex.
