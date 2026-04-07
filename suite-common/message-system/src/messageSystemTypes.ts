@@ -3,6 +3,7 @@ import type {
     ExperimentsItem,
     MessageSystem,
     TradingType,
+    YieldFlowType,
 } from '@suite-common/suite-types';
 import type { AccountType, NetworkSymbol, StakingNetworkSymbol } from '@suite-common/wallet-config';
 
@@ -88,6 +89,12 @@ export const Feature = {
         survey: 'trading.survey',
         slip24: 'trading.slip24',
     },
+    earn: {
+        yield: {
+            supply: 'earn.yield.supply',
+            withdraw: 'earn.yield.withdraw',
+        },
+    },
     mevProtection: 'settings.mevProtection',
     suiteSync: 'settings.suiteSync',
 
@@ -119,6 +126,8 @@ const getStakingContext = (networkSymbol: StakingNetworkSymbol) =>
 
 const getTradingContext = (type: TradingType) => `trading.${type}` as const;
 
+const getEarnYieldContext = (type: YieldFlowType) => `earn.yield.${type}` as const;
+
 export type SettingsCategory = 'general' | 'device' | 'networks' | 'debug';
 const getSettingsContext = (category: SettingsCategory) => `settings.${category}` as const;
 
@@ -137,6 +146,7 @@ const getLegalContext = (key: LegalContextKey) => `legal.${key}` as const;
  * - `getAccounts('btc', 'legacy')` → 'accounts.btc.legacy'
  * - `getStaking('eth')` → 'accounts.eth.staking'
  * - `getTrading('buy')` → 'trading.buy'
+ * - `getEarnYield('supply')` → 'earn.yield.supply'
  * - `getSettings('device')` → 'settings.device'
 
  */
@@ -145,6 +155,7 @@ export const Context = {
     getAccount: getAccountContext,
     getStaking: getStakingContext,
     getTrading: getTradingContext,
+    getEarnYield: getEarnYieldContext,
     getSettings: getSettingsContext,
     getLegal: getLegalContext,
 } as const;

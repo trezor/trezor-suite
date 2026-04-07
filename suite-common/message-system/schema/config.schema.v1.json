@@ -786,6 +786,10 @@
         "tradingType": {
             "type": "string",
             "enum": ["buy", "sell", "exchange"]
+        },
+        "yieldFlowType": {
+            "type": "string",
+            "enum": ["supply", "withdraw"]
         }
     }
 }

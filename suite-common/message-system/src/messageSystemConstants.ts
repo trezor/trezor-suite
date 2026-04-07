@@ -63,6 +63,10 @@ export const CONTEXT_PATTERNS = {
         pattern: 'trading.{type}',
         regex: /^trading\.(buy|sell|exchange)$/,
     },
+    getEarnYield: {
+        pattern: 'earn.yield.{type}',
+        regex: /^earn\.yield\.(supply|withdraw)$/,
+    },
     getSettings: {
         pattern: 'settings.{category}',
         regex: /^settings\.(general|device|networks|debug)$/,
