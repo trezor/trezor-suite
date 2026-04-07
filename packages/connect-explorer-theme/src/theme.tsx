@@ -199,6 +199,7 @@ export const DEFAULT_THEME: DocsThemeConfig = {
     toc: {
         backToTop: false,
         component: TOC,
+        extraContent: null,
         float: true,
         title: 'On This Page',
     },

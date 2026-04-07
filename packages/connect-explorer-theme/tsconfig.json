@@ -13,6 +13,7 @@
     "references": [
         { "path": "../components" },
         { "path": "../product-components" },
-        { "path": "../theme" }
+        { "path": "../theme" },
+        { "path": "../type-utils" }
     ]
 }

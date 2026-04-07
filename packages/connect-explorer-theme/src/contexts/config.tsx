@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 import type { PageMapItem, PageOpts } from 'nextra';
 import { metaSchema } from 'nextra/normalize-pages';
-import type { ZodError } from 'zod';
+import { ZodError } from 'zod';
 
 import type { DocsThemeConfig } from '../schema';
 import { themeSchema } from '../schema';
@@ -15,13 +15,25 @@ let theme: DocsThemeConfig;
 let isValidated = false;
 
 function normalizeZodMessage(error: unknown): string {
-    return (error as ZodError).issues
+    if (!(error instanceof ZodError)) {
+        return String(error);
+    }
+
+    return error.issues
         .flatMap(issue => {
             const themePath = issue.path.length > 0 && `Path: "${issue.path.join('.')}"`;
-            const unionErrors =
-                'unionErrors' in issue ? issue.unionErrors.map(normalizeZodMessage) : [];
+            const nestedErrors =
+                issue.code === 'invalid_union'
+                    ? issue.errors.flatMap(errs =>
+                          errs.map(e =>
+                              [e.message, e.path.length > 0 && `Path: "${e.path.join('.')}"`]
+                                  .filter(Boolean)
+                                  .join('. '),
+                          ),
+                      )
+                    : [];
 
-            return [[issue.message, themePath].filter(Boolean).join('. '), ...unionErrors];
+            return [[issue.message, themePath].filter(Boolean).join('. '), ...nestedErrors];
         })
         .join('\n');
 }
