@@ -12,6 +12,7 @@
 @electron/notarize
 @eslint/js
 @evolu/common
+@evolu/nodejs
 @evolu/react-native
 @evolu/web
 @noble/curves
@@ -60,9 +61,9 @@ minimatch
 nx
 openpgp
 prettier
+react-freeze
 react-native-ble-plx
 react-native-mmkv
-react-freeze
 react-native-nitro-modules
 set.prototype.difference
 set.prototype.intersection

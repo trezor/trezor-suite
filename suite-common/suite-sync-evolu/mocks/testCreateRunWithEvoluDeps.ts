@@ -19,8 +19,7 @@ import {
     initSharedWorker,
     startDbWorker,
 } from '@evolu/common/local-first';
-
-import { createBetterSqliteDriver } from './createBetterSqliteDriver';
+import { createBetterSqliteDriver } from '@evolu/nodejs';
 
 export const testCreateSqliteDeps: CreateSqliteDriverDep = {
     createSqliteDriver: name => createBetterSqliteDriver(name, { mode: 'memory' }),
