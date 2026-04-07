@@ -30,6 +30,7 @@ export const useContactSupportAlert = () => {
                 }
             },
             secondaryButtonTitle: <Translation id="generic.buttons.cancel" />,
+            shouldExecuteCallbackBeforeClosing: true,
             testID: '@contact-support-alert',
         });
     }, [showAlert, openLink]);

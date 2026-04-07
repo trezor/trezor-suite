@@ -90,16 +90,27 @@ export const AlertSheet = ({ alert }: AlertSheetProps) => {
         secondaryButtonVariant = 'tertiaryElevation1',
         appendix,
         testID,
+        shouldExecuteCallbackBeforeClosing = false,
     } = alert;
 
     const handlePressPrimaryButton = async () => {
-        await onPressPrimaryButton?.();
-        await closeSheetAnimated();
+        if (shouldExecuteCallbackBeforeClosing) {
+            onPressPrimaryButton?.();
+            await closeSheetAnimated();
+        } else {
+            await closeSheetAnimated();
+            await onPressPrimaryButton?.();
+        }
     };
 
     const handlePressSecondaryButton = async () => {
-        await onPressSecondaryButton?.();
-        await closeSheetAnimated();
+        if (shouldExecuteCallbackBeforeClosing) {
+            onPressSecondaryButton?.();
+            await closeSheetAnimated();
+        } else {
+            await closeSheetAnimated();
+            await onPressSecondaryButton?.();
+        }
     };
 
     return (

@@ -25,16 +25,14 @@ export const EditableLabelLayout = ({ children, label, testID }: EditableLabelLa
 
     if (!isLabellingAllowed) return null;
 
+    const handlePress = () => {
+        Keyboard.dismiss();
+        handleAddLabel(openModal);
+    };
+
     return (
         <>
-            <TextButton
-                onPress={() => {
-                    Keyboard.dismiss();
-                    handleAddLabel(openModal);
-                }}
-                viewRight="pencil"
-                testID={testID}
-            >
+            <TextButton onPress={handlePress} viewRight="pencil" testID={testID}>
                 {label ?? <Translation id="suiteSync.addLabel" />}
             </TextButton>
             <BottomSheetModal

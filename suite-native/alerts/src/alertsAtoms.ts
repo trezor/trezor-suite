@@ -32,6 +32,7 @@ export type Alert = {
     secondaryButtonTitle?: ReactNode;
     secondaryButtonVariant?: ButtonColorScheme;
     onPressSecondaryButton?: () => void;
+    shouldExecuteCallbackBeforeClosing?: boolean;
     appendix?: ReactNode;
     testID?: string;
     titleSpacing?: NativeSpacing;
