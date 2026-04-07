@@ -396,12 +396,7 @@ export const useTradingBuyForm = ({
             return;
         }
 
-        if (
-            !values.cryptoSelect ||
-            !values.countrySelect ||
-            !values.receiveAddress ||
-            !values.currencySelect
-        ) {
+        if (!values.cryptoSelect || !values.countrySelect || !values.currencySelect) {
             return;
         }
 
