@@ -9377,6 +9377,14 @@ export const messages = defineMessages({
         id: 'TR_EARN_YIELD_BACK_TO_OVERVIEW',
         defaultMessage: 'Back to overview',
     },
+    TR_EARN_YIELD_SUPPLY_DISABLED: {
+        id: 'TR_EARN_YIELD_SUPPLY_DISABLED',
+        defaultMessage: 'Supply is currently disabled.',
+    },
+    TR_EARN_YIELD_WITHDRAW_DISABLED: {
+        id: 'TR_EARN_YIELD_WITHDRAW_DISABLED',
+        defaultMessage: 'Withdrawal is currently disabled.',
+    },
     TR_EARN_STABLECOIN_YIELD_TITLE: {
         id: 'TR_EARN_STABLECOIN_YIELD_TITLE',
         defaultMessage: 'Stablecoin yield',

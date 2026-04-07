@@ -303,6 +303,11 @@ export type CTAAction = 'internal-link' | 'external-link';
  * via the `definition` "tradingType".
  */
 export type TradingType = 'buy' | 'sell' | 'exchange';
+/**
+ * This interface was referenced by `MessageSystem`'s JSON-Schema
+ * via the `definition` "yieldFlowType".
+ */
+export type YieldFlowType = 'supply' | 'withdraw';
 
 /**
  * JSON schema of the Trezor Suite messaging system.
