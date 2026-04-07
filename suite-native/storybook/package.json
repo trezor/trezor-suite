@@ -20,7 +20,7 @@
         "@react-native-community/datetimepicker": "^8.6.0",
         "@react-native-community/slider": "^5.1.2",
         "@storybook/addon-ondevice-controls": "^10.2.1",
-        "@storybook/react": "10.2.8",
+        "@storybook/react": "^10.2.8",
         "@storybook/react-native": "^10.2.1",
         "@storybook/react-native-web-vite": "^10.2.8",
         "@suite-native/intl": "workspace:*",

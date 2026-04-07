@@ -192,7 +192,7 @@
         "@suite-native/test-utils": "workspace:*",
         "@trezor/connect-mobile": "workspace:^",
         "@trezor/eslint": "workspace:*",
-        "@types/lodash": "^4",
+        "@types/lodash": "^4.17.16",
         "@types/minimist": "^1.2.5",
         "@types/node": "22.13.10",
         "@types/xml2js": "^0.4.14",
