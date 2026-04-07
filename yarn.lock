@@ -11013,7 +11013,7 @@ __metadata:
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/analytics-uploader": "workspace:*"
     "@trezor/connect": "workspace:*"
-    lodash: "npm:^4.17.21"
+    lodash: "npm:^4.18.1"
     react: "npm:19.2.4"
     react-redux: "npm:9.2.0"
     redux: "npm:^5.0.1"
@@ -11845,7 +11845,7 @@ __metadata:
     jest-diff: "npm:^30.2.0"
     jest-junit: "npm:^16.0.0"
     jotai: "npm:2.17.1"
-    lodash: "npm:^4.17.23"
+    lodash: "npm:^4.18.1"
     lottie-react-native: "npm:7.3.5"
     metro-config: "npm:^0.83.0"
     minimist: "npm:^1.2.8"
@@ -14909,7 +14909,7 @@ __metadata:
     crc: "npm:^3.8.0"
     groestl-hash-js: "npm:1.0.0"
     jssha: "npm:2.3.1"
-    lodash: "npm:^4.17.15"
+    lodash: "npm:^4.18.1"
   languageName: unknown
   linkType: soft
 
@@ -15759,7 +15759,7 @@ __metadata:
   dependencies:
     "@suite-common/platform-encryption": "workspace:*"
     "@trezor/type-utils": "workspace:*"
-    electron: "npm:40.6.1"
+    electron: "npm:40.8.5"
   languageName: unknown
   linkType: soft
 
@@ -15796,13 +15796,13 @@ __metadata:
     "@trezor/utils": "workspace:*"
     "@types/electron-localshortcut": "npm:^3.1.3"
     chalk: "npm:^5.6.2"
-    electron: "npm:40.6.1"
+    electron: "npm:40.8.5"
     electron-devtools-installer: "npm:^4.0.0"
     electron-localshortcut: "npm:^3.2.1"
     electron-store: "npm:11.0.2"
     electron-updater: "npm:6.8.3"
     glob: "npm:^13.0.1"
-    lodash: "npm:^4.17.21"
+    lodash: "npm:^4.18.1"
     node-loader: "npm:^2.1.0"
     openpgp: "npm:^6.3.0"
     rimraf: "npm:^6.1.2"
@@ -15858,7 +15858,7 @@ __metadata:
   resolution: "@trezor/suite-desktop@workspace:packages/suite-desktop"
   dependencies:
     blake-hash: "npm:^2.0.0"
-    electron: "npm:40.6.1"
+    electron: "npm:40.8.5"
     electron-builder: "npm:26.8.1"
     openpgp: "npm:^6.3.0"
     usb: "npm:^2.15.0"
@@ -15917,7 +15917,7 @@ __metadata:
     dotenv: "npm:^16.4.7"
     fs-extra: "npm:^11.3.1"
     jest-diff: "npm:^29.7.0"
-    lodash: "npm:^4.17.21"
+    lodash: "npm:^4.18.1"
     react-intl: "npm:^8.1.3"
     tsx: "npm:^4.21.0"
     type-fest: "npm:^5.4.1"
@@ -21936,7 +21936,7 @@ __metadata:
   dependencies:
     "@trezor/connect": "workspace:*"
     "@trezor/eslint": "workspace:*"
-    electron: "npm:40.6.1"
+    electron: "npm:40.8.5"
     electron-builder: "npm:26.8.1"
   languageName: unknown
   linkType: soft
@@ -23449,9 +23449,9 @@ __metadata:
   linkType: hard
 
 "defu@npm:^6.1.4":
-  version: 6.1.4
-  resolution: "defu@npm:6.1.4"
-  checksum: 10/aeffdb47300f45b4fdef1c5bd3880ac18ea7a1fd5b8a8faf8df29350ff03bf16dd34f9800205cab513d476e4c0a3783aa0cff0a433aff0ac84a67ddc4c8a2d64
+  version: 6.1.6
+  resolution: "defu@npm:6.1.6"
+  checksum: 10/8fc81f8e4484a008d13fceeb79261677c9b887ea6a0c6841b8a87802366d7b4ce63317ba87f08a59f9448b78cf9bbaecf0e0f840a091bbb2edf9a9adff108343
   languageName: node
   linkType: hard
 
@@ -24236,16 +24236,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron@npm:40.6.1":
-  version: 40.6.1
-  resolution: "electron@npm:40.6.1"
+"electron@npm:40.8.5":
+  version: 40.8.5
+  resolution: "electron@npm:40.8.5"
   dependencies:
     "@electron/get": "npm:^2.0.0"
     "@types/node": "npm:^24.9.0"
     extract-zip: "npm:^2.0.1"
   bin:
     electron: cli.js
-  checksum: 10/d3a9cbce8c95b4e6e7a4fe0c78772722fe3b9678ce3b4566c87a051559c65c6a8b23d46b2b8bd45f9e99ed7af4754f54653dda1c7f2fd672f38dc5bf9eaaaeee
+  checksum: 10/13782668afa2ba8404e129eb3c67269d52f009734d0e100193fc382d98efc51b79d2afce3dc1c7a091e74f6028b10f9fe0cf1a32330af873d4df5ee9a83e93c2
   languageName: node
   linkType: hard
 
@@ -28355,8 +28355,8 @@ __metadata:
   linkType: hard
 
 "h3@npm:^1.12.0, h3@npm:^1.13.0":
-  version: 1.15.5
-  resolution: "h3@npm:1.15.5"
+  version: 1.15.10
+  resolution: "h3@npm:1.15.10"
   dependencies:
     cookie-es: "npm:^1.2.2"
     crossws: "npm:^0.3.5"
@@ -28367,13 +28367,13 @@ __metadata:
     radix3: "npm:^1.1.2"
     ufo: "npm:^1.6.3"
     uncrypto: "npm:^0.1.3"
-  checksum: 10/95a6a1b6db286d71983f41b6e25d85ecc554c088675811eabf5d871dec6657a88b659b94536e1ec10a1cae7d1269a51d4f5d96d6b4a1e15c10c80719da9b4326
+  checksum: 10/058ddf8025518ece17f50fcdd14f13609a3d04054177a3ea347d90f110284307a623b36c2f1cedac8b143119b221659faffe279a5d794e2234d149b095f6e26b
   languageName: node
   linkType: hard
 
 "handlebars@npm:^4.7.8":
-  version: 4.7.8
-  resolution: "handlebars@npm:4.7.8"
+  version: 4.7.9
+  resolution: "handlebars@npm:4.7.9"
   dependencies:
     minimist: "npm:^1.2.5"
     neo-async: "npm:^2.6.2"
@@ -28385,7 +28385,7 @@ __metadata:
       optional: true
   bin:
     handlebars: bin/handlebars
-  checksum: 10/bd528f4dd150adf67f3f857118ef0fa43ff79a153b1d943fa0a770f2599e38b25a7a0dbac1a3611a4ec86970fd2325a81310fb788b5c892308c9f8743bd02e11
+  checksum: 10/e755433d652e8a15fc02f83d7478e652359e7a4d354c4328818853ed4f8a39d4a09e1d22dad3c7213c5240864a65b3c840970b8b181745575dd957dd258f2b8d
   languageName: node
   linkType: hard
 
@@ -31957,9 +31957,9 @@ __metadata:
   linkType: hard
 
 "kysely@npm:^0.28.10":
-  version: 0.28.11
-  resolution: "kysely@npm:0.28.11"
-  checksum: 10/c6f58d77c04b0be5af3b67062f0f981678095c081141f04d5a1effeddecca21b838fcd62be62f6be60bdc266cb5318a345bf61edf0e5dce6c3842973881cfd5c
+  version: 0.28.14
+  resolution: "kysely@npm:0.28.14"
+  checksum: 10/d76ff120c4c295091e0c8ecf9f2fb920547247d0cf6f0cf0098cb6d85fd77f18da09ddd18345477a527b82eddc087a145783772fc0e09e9280239fb87df83be9
   languageName: node
   linkType: hard
 
@@ -32363,9 +32363,9 @@ __metadata:
   linkType: hard
 
 "lodash-es@npm:^4.17.21":
-  version: 4.17.21
-  resolution: "lodash-es@npm:4.17.21"
-  checksum: 10/03f39878ea1e42b3199bd3f478150ab723f93cc8730ad86fec1f2804f4a07c6e30deaac73cad53a88e9c3db33348bb8ceeb274552390e7a75d7849021c02df43
+  version: 4.18.1
+  resolution: "lodash-es@npm:4.18.1"
+  checksum: 10/8bfad225ef09ef42b04283cdaf7830efcc2ba29ae41b56501c74422155ee1ccaa1f0f6e8319def3451a1fe54dec501c8e4bee622bae2b2d98ac993731e0a5cce
   languageName: node
   linkType: hard
 
@@ -32446,10 +32446,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash@npm:^4.17.10, lodash@npm:^4.17.11, lodash@npm:^4.17.15, lodash@npm:^4.17.19, lodash@npm:^4.17.20, lodash@npm:^4.17.21, lodash@npm:^4.17.23":
-  version: 4.17.23
-  resolution: "lodash@npm:4.17.23"
-  checksum: 10/82504c88250f58da7a5a4289f57a4f759c44946c005dd232821c7688b5fcfbf4a6268f6a6cdde4b792c91edd2f3b5398c1d2a0998274432cff76def48735e233
+"lodash@npm:^4.17.10, lodash@npm:^4.17.11, lodash@npm:^4.17.15, lodash@npm:^4.17.19, lodash@npm:^4.17.20, lodash@npm:^4.17.21, lodash@npm:^4.17.23, lodash@npm:^4.18.1":
+  version: 4.18.1
+  resolution: "lodash@npm:4.18.1"
+  checksum: 10/306fea53dfd39dad1f03d45ba654a2405aebd35797b673077f401edb7df2543623dc44b9effbb98f69b32152295fff725a4cec99c684098947430600c6af0c3f
   languageName: node
   linkType: hard
 
@@ -35768,9 +35768,9 @@ __metadata:
   linkType: hard
 
 "node-forge@npm:^1.3.1, node-forge@npm:^1.3.3":
-  version: 1.3.3
-  resolution: "node-forge@npm:1.3.3"
-  checksum: 10/f41c31b9296771a4b8c955d58417471712f54f324603a35f8e6cbac19d5e6eaaf5fd5fd14584dfedecbf46a05438ded6eee60a5f2f0822fc5061aaa073cfc75d
+  version: 1.4.0
+  resolution: "node-forge@npm:1.4.0"
+  checksum: 10/d70fd769768e646eda73343d4d4105ccb6869315d975905a22117431c04ae5b6df6c488e34ed275b1a66b50195a09b84b5c8aeca3b8605c20605fcb8e9f109d9
   languageName: node
   linkType: hard
 
@@ -37077,9 +37077,9 @@ __metadata:
   linkType: hard
 
 "path-to-regexp@npm:^8.0.0":
-  version: 8.2.0
-  resolution: "path-to-regexp@npm:8.2.0"
-  checksum: 10/23378276a172b8ba5f5fb824475d1818ca5ccee7bbdb4674701616470f23a14e536c1db11da9c9e6d82b82c556a817bbf4eee6e41b9ed20090ef9427cbb38e13
+  version: 8.4.2
+  resolution: "path-to-regexp@npm:8.4.2"
+  checksum: 10/70fd2cbce0b962cbcf4d312af07818bfce2bae11c09cf3bd86be99c0e30168238a1a7b02b18b452e73f075897df04597d30d63e56da7be41eecfc37998693389
   languageName: node
   linkType: hard
 
