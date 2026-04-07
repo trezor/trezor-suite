@@ -24,8 +24,6 @@ export const uiIntents = [
     'critical',
     // TODO: Replace with intent-like label
     'accentViolet',
-    // TODO: Replace with intent-like label
-    'accentOrange',
 ] as const;
 export type UIIntent = (typeof uiIntents)[number];
 

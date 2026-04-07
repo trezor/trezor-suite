@@ -38,7 +38,7 @@ export const RateYourExperienceCard = ({
         <Card fillType="default">
             <Column gap={12}>
                 <Box
-                    backgroundColor="baseFillElementNeutralSoft"
+                    backgroundColor="elementFillNeutralSoft"
                     width={32}
                     height={32}
                     borderRadius={8}

@@ -22,13 +22,13 @@ const Wrapper = styled.div<{ $size: FlagSize }>`
 const FlagImage = styled.img<{ $size: FlagSize }>`
     width: 100%;
     display: block;
-    background: ${({ theme }) => theme.baseFillElementNeutralLight};
+    background: ${({ theme }) => theme.elementFillOnDarkContrast};
 
     ${({ $size, theme }) => css`
-        outline: ${mapSizeToOutlineWidth($size)}px solid ${theme.baseBorderElementNeutralSofter};
+        outline: ${mapSizeToOutlineWidth($size)}px solid ${theme.elementBorderNeutralSofter};
         outline-offset: -${mapSizeToOutlineWidth($size)}px;
         border-radius: ${mapSizeToBorderRadius($size)}px;
-        background: ${theme.baseFillElementNeutralLight};
+        background: ${theme.elementFillOnDarkContrast};
     `}
 `;
 

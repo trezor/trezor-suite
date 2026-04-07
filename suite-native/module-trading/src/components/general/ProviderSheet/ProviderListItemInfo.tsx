@@ -49,8 +49,8 @@ export const ProviderListItemInfo = <T extends TradingTradeType>({
                 <InfoLineItem
                     iconName="info"
                     text={<Translation id="moduleTrading.providerListItem.anonymous" />}
-                    iconColor="baseContentBrand"
-                    textColor="baseContentBrand"
+                    iconColor="contentBrand"
+                    textColor="contentBrand"
                 />
             )}
             {kycWarning && (

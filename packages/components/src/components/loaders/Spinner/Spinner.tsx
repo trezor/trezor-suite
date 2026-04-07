@@ -56,9 +56,9 @@ export const Spinner = ({
     ...rest
 }: SpinnerProps) => {
     const theme = useTheme();
-    const defaultBodyColor = theme.baseContentBrand;
-    const defaultWarningColor = theme.baseContentWarning;
-    const defaultWarningForegroundColor = theme.baseContentReversePrimary;
+    const defaultBodyColor = theme.contentBrand;
+    const defaultWarningColor = theme.contentWarning;
+    const defaultWarningForegroundColor = theme.contentPrimaryInverse;
 
     const frameProps = pickAndPrepareFrameProps(rest, allowedSpinnerFrameProps);
 

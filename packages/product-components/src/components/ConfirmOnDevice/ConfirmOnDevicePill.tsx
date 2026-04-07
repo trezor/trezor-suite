@@ -38,11 +38,11 @@ export const ConfirmOnDevicePill = ({ isConfirmed, ...props }: ConfirmOnDevicePr
                 }}
             >
                 <Box
-                    backgroundColor="baseFillSurfaceModeless"
+                    backgroundColor="surfaceFillModeless"
                     padding={isCancelable ? 16 : { vertical: 16, left: 16, right: 24 }}
                     borderRadius={20}
                     borderWidth={1}
-                    borderColor="baseBorderSurfaceModeless"
+                    borderColor="surfaceBorderModeless"
                     // TODO: Use new shadow tokens
                     shadow={theme.boxShadowElevated}
                     data-testid="@prompts/confirm-on-device"

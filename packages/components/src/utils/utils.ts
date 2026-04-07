@@ -12,7 +12,7 @@ export const getFocusShadowStyle = (selector = '&:focus-visible') => css`
 `;
 
 export const commonFocusStyles = css`
-    outline: 4px solid ${({ theme }) => theme.stateBorderElementFocused};
+    outline: 4px solid ${({ theme }) => theme.elementBorderFocusRing};
     outline-offset: 2px;
 `;
 

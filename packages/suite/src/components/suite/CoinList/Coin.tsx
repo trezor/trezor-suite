@@ -182,7 +182,7 @@ export const Coin = ({
             <ImageWrapper>
                 <CoinLogo size={24} symbol={symbol} type="token" />
                 <Check $visible={toggled}>
-                    <Icon size={8} color="baseContentReversePrimary" name="check" />
+                    <Icon size={8} color="contentPrimaryInverse" name="check" />
                 </Check>
             </ImageWrapper>
             {label ? (

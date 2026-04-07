@@ -55,9 +55,9 @@ export const GhostContainer = ({
     return (
         <Box
             onClick={isDisabled ? undefined : onClick}
-            backgroundColor={isActive ? 'stateFillElementGhostSelectedAlt' : 'baseFillElementGhost'}
+            backgroundColor={isActive ? 'elementFillElevated' : 'transparent'}
             backgroundColorOnInteraction={
-                isActive || isDisabled ? undefined : 'stateFillElementGhostHovered'
+                isActive || isDisabled ? undefined : 'elementFillGhostHovered'
             }
             as={as}
             data-testid={dataTestId}

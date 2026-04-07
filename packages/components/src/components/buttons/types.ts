@@ -9,7 +9,6 @@ export const buttonIntents = [
     'warning',
     'critical',
     'accentViolet',
-    'accentOrange',
 ] as const;
 export type ButtonIntent = Extract<UIIntent, (typeof buttonIntents)[number]>;
 
