@@ -12,6 +12,7 @@ import {
 } from '@suite-native/navigation';
 
 import { useOnDeviceOnboardingFinishedNavigation } from './useOnDeviceOnboardingFinishedNavigation';
+import { useReportOnboardingSuccessAnalytics } from './useReportOnboardingSuccessAnalytics';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     DeviceOnboardingStackParamList,
@@ -25,14 +26,21 @@ export const useOnWalletRecapFinishedNavigation = () => {
     const isDeviceProtectedByPin = useSelector(selectIsDeviceProtectedByPin);
 
     const { onDeviceOnboardingFinishedNavigation } = useOnDeviceOnboardingFinishedNavigation();
+    const reportOnboardingSuccessAnalytics = useReportOnboardingSuccessAnalytics();
 
     const onWalletRecapFinishedNavigation = useCallback(() => {
         if (isDeviceProtectedByPin) {
             onDeviceOnboardingFinishedNavigation();
+            reportOnboardingSuccessAnalytics({ wasPinSkipped: false });
         } else {
             navigation.navigate(DeviceOnboardingStackRoutes.CreatePin);
         }
-    }, [isDeviceProtectedByPin, navigation, onDeviceOnboardingFinishedNavigation]);
+    }, [
+        isDeviceProtectedByPin,
+        navigation,
+        onDeviceOnboardingFinishedNavigation,
+        reportOnboardingSuccessAnalytics,
+    ]);
 
     return { onWalletRecapFinishedNavigation };
 };

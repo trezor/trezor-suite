@@ -25,10 +25,17 @@ export const CreatePinScreen = () => {
     const { showAlert } = useAlert();
     const { onDeviceOnboardingFinishedNavigation } = useOnDeviceOnboardingFinishedNavigation();
 
-    const handlePinCreated = useCallback(() => {
-        onDeviceOnboardingFinishedNavigation();
-        reportOnboardingSuccessAnalytics();
-    }, [onDeviceOnboardingFinishedNavigation, reportOnboardingSuccessAnalytics]);
+    const handlePinCreated = useCallback(
+        ({ wasPinSkipped }: { wasPinSkipped: boolean }) => {
+            onDeviceOnboardingFinishedNavigation();
+            reportOnboardingSuccessAnalytics({ wasPinSkipped });
+        },
+        [onDeviceOnboardingFinishedNavigation, reportOnboardingSuccessAnalytics],
+    );
+
+    const handlePinSuccess = useCallback(() => {
+        handlePinCreated({ wasPinSkipped: false });
+    }, [handlePinCreated]);
 
     const handlePinCanceled = useCallback(
         (_: TxKeyPath, tryAgainAction: () => void) => {
@@ -49,7 +56,7 @@ export const CreatePinScreen = () => {
                 secondaryButtonVariant: 'redElevation0',
                 onPressSecondaryButton: tryAgainAction,
                 onPressPrimaryButton: () => {
-                    handlePinCreated();
+                    handlePinCreated({ wasPinSkipped: true });
                 },
             });
         },
@@ -58,7 +65,7 @@ export const CreatePinScreen = () => {
 
     usePinAction({
         type: 'enable',
-        onSuccess: handlePinCreated,
+        onSuccess: handlePinSuccess,
         onError: handlePinCanceled,
     });
 
