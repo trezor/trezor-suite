@@ -11,10 +11,6 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { WalletBackupCard } from './WalletBackupCard/WalletBackupCard';
 import { WalletBackupSheetFooter } from './WalletBackupSheetFooter';
 
-const containerStyle = prepareNativeStyle(utils => ({
-    marginBottom: utils.spacings.sp32,
-}));
-
 const legacyButtonStyle = prepareNativeStyle(utils => ({
     alignSelf: 'center',
     marginTop: utils.spacings.sp32,
@@ -56,7 +52,6 @@ export const WalletBackupSheet = ({
             title={translate('moduleDeviceOnboarding.walletBackupSheet.title')}
             ref={ref}
             footer={<WalletBackupSheetFooter selectedType={selectedType} onSubmit={onCloseModal} />}
-            style={applyStyle(containerStyle)}
             isCloseDisplayed
         >
             <VStack spacing="sp16">
