@@ -348,7 +348,7 @@ export const SecurityCheck = () => {
 
     if (isAuthenticityCheckStep) {
         return (
-            <Box padding={{ top: 40 }}>
+            <Box padding={{ top: 40 }} width="100%">
                 <DeviceAuthenticityStep
                     goToNext={() => goToSuiteOrNextDevice(() => setIsAuthenticityCheckStep(false))}
                 />
