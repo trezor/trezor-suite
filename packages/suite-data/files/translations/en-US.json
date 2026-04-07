@@ -61,7 +61,7 @@
   "FEE_LEVEL_STANDARD": "Select standard fee",
   "FIRMWARE_CONNECT_IN_NORMAL_MODEL_NO_BUTTON": "Don't hold any buttons while connecting the cable.",
   "FIRMWARE_NEEDS_UPGRADE_FOR_SUITE_SYNC": "Upgrade your Trezor's firmware to use Suite Sync.",
-  "FIRMWARE_UNSUPPORTED_DEVICE_SUITE_SYNC": "The device {name} isn’t compatible with Suite Sync. Suite Sync supports Trezor Safe 3, 5, and 7 devices.",
+  "FIRMWARE_UNSUPPORTED_DEVICE_SUITE_SYNC": "Suite Sync supports Trezor Safe 3, 5, and 7 devices.",
   "FIRMWARE_USER_HAS_SEED_CHECKBOX_DESC": "Yes, I do.",
   "FIRMWARE_USER_TAKES_RESPONSIBILITY_CHECKBOX_DESC": "I accept the risk.",
   "FW_CAPABILITY_CONNECT_OUTDATED": "Application update required",
