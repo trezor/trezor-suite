@@ -686,9 +686,7 @@ export const selectSupportChatDeviceUtmParams = createMemoizedSelector(
             result.utm_rev = firmwareRevision;
         }
 
-        if (isDeviceUsingPassphrase) {
-            result.utm_passphrase = isDeviceUsingPassphrase ? 'true' : 'false';
-        }
+        result.utm_passphrase = isDeviceUsingPassphrase ? 'true' : 'false';
 
         return result;
     },

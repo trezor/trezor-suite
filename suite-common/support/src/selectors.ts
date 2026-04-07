@@ -49,9 +49,7 @@ export const selectSupportChatUrl = createMemoizedSelector(
             if (firmwareRevision) {
                 deviceUtmParams.utm_rev = firmwareRevision;
             }
-            if (isDeviceUsingPassphrase) {
-                deviceUtmParams.utm_passphrase = isDeviceUsingPassphrase ? 'true' : 'false';
-            }
+            deviceUtmParams.utm_passphrase = isDeviceUsingPassphrase ? 'true' : 'false';
         }
 
         return withUtmParams(supportChatUrl, deviceUtmParams);
