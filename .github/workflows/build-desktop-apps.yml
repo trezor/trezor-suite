@@ -129,7 +129,7 @@ jobs:
     env:
       platform: win
     container:
-      image: electronuserland/builder:18-wine
+      image: electronuserland/builder:22-wine
       options: --user 1001
     steps:
       - name: Checkout code
@@ -155,7 +155,7 @@ jobs:
       - name: Build ${{env.platform}} suite-desktop
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-        # TODO solve caching here as well: the container interferes with file permissions due to the --user 1001 option and cache/restore fails.
+        # Caching would be beneficial here as well, maybe not possible: the container interferes actions/cache (even in docker root mode).
         run: |
           yarn workspace @trezor/suite-desktop build:${{env.platform}}
           bash packages/suite-desktop-core/scripts/gnupg-sign.sh
