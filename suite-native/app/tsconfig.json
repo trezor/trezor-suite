@@ -32,6 +32,7 @@
         { "path": "../app-init" },
         { "path": "../atoms" },
         { "path": "../biometrics" },
+        { "path": "../blockchain" },
         { "path": "../bluetooth" },
         { "path": "../config" },
         { "path": "../connection-status" },
