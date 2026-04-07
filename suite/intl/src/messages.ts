@@ -6343,8 +6343,7 @@ export const messages = defineMessages({
     },
     FIRMWARE_UNSUPPORTED_DEVICE_SUITE_SYNC: {
         id: 'FIRMWARE_UNSUPPORTED_DEVICE_SUITE_SYNC',
-        defaultMessage:
-            'The device {name} isn’t compatible with Suite Sync. Suite Sync supports Trezor Safe 3, 5, and 7 devices.',
+        defaultMessage: 'Suite Sync supports Trezor Safe 3, 5, and 7 devices.',
     },
     TR_DISABLED_SWITCH_TOOLTIP: {
         id: 'TR_DISABLED_SWITCH_TOOLTIP',
