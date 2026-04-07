@@ -1,5 +1,6 @@
 import type { ThpPairingMethod } from '@trezor/protocol';
 
+import type { DiscoveryAccount } from '../types/account';
 import type { LocalFirmwares } from '../types/settings';
 
 /*
@@ -15,6 +16,7 @@ export const UI_RESPONSE = {
     RECEIVE_ACCOUNT: 'ui-receive_account',
     RECEIVE_FEE: 'ui-receive_fee',
     RECEIVE_WORD: 'ui-receive_word',
+    RECEIVE_DISCOVERY_ACCOUNTS: 'ui-receive_discovery_accounts',
 } as const;
 
 export interface UiResponseConfirmation {
@@ -78,6 +80,11 @@ export interface UiResponseFee {
           };
 }
 
+export interface UiResponseDiscoveryAccounts {
+    type: typeof UI_RESPONSE.RECEIVE_DISCOVERY_ACCOUNTS;
+    payload: { accounts: DiscoveryAccount[] } | null;
+}
+
 export type UiResponseEvent =
     | UiResponseConfirmation
     | UiResponsePin
@@ -86,4 +93,5 @@ export type UiResponseEvent =
     | UiResponseThpPairingTag
     | UiResponseAccount
     | UiResponseFee
-    | UiResponseFirmwares;
+    | UiResponseFirmwares
+    | UiResponseDiscoveryAccounts;

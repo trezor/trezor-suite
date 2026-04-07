@@ -6,12 +6,13 @@ import type {
     AccountUtxo,
     CoinInfo,
     DerivationPath,
+    DiscoveryAccount,
     GetAccountInfo as GetAccountInfoParams,
 } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { resolveAfter } from '@trezor/utils/src/resolveAfter';
 
-import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
+import { type Blockchain, initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
 import type {
     MethodContext,
     MethodMessage,
@@ -22,6 +23,7 @@ import { AbstractMethod } from '../core/AbstractMethod';
 import { getCoinInfo } from '../data/coinInfo';
 import { Discovery } from './common/Discovery';
 import { bundlify, validateParams } from './common/paramsValidator';
+import { requestExistingAccounts } from './common/requestExistingAccounts';
 import { getAccountLabel, isUtxoBased } from '../utils/accountUtils';
 import { getSerializedPath, validatePath } from '../utils/pathUtils';
 
@@ -285,8 +287,51 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
     }
 
     private async discover(request: Request, context: MethodContext) {
-        const { coinInfo, identity, defaultAccountType, derivationType } = request;
+        const { coinInfo, identity } = request;
         const blockchain = await initBlockchain(coinInfo, context.sendCoreMessage, identity);
+
+        // Try to get existing accounts from the host (e.g. Suite) to skip device discovery
+        const existingAccounts = await requestExistingAccounts({
+            postMessage: context.sendCoreMessage,
+            createUiPromise: context.createUiPromise,
+            device: this.getDevice(),
+            coinInfo,
+        });
+
+        if (existingAccounts) {
+            return this.selectExistingAccount(existingAccounts, request, blockchain, context);
+        }
+
+        return this.runDiscovery(request, blockchain, context);
+    }
+
+    private async selectExistingAccount(
+        accounts: DiscoveryAccount[],
+        request: Request,
+        blockchain: Blockchain,
+        context: MethodContext,
+    ) {
+        const { coinInfo, defaultAccountType } = request;
+        const dfd = context.createUiPromise(UI_RESPONSE.RECEIVE_ACCOUNT, this.getDevice());
+
+        context.sendCoreMessage(
+            createUiMessage(UI_REQUEST.SELECT_ACCOUNT, {
+                type: 'complete',
+                accountTypes: [...new Set(accounts.map(a => a.type))],
+                defaultAccountType,
+                coinInfo,
+                accounts,
+            }),
+        );
+
+        const uiResp = await dfd.promise;
+        const account = accounts[uiResp.payload];
+
+        return this.fetchAccountInfo(account, request, blockchain);
+    }
+
+    private async runDiscovery(request: Request, blockchain: Blockchain, context: MethodContext) {
+        const { coinInfo, defaultAccountType, derivationType } = request;
         const dfd = context.createUiPromise(UI_RESPONSE.RECEIVE_ACCOUNT, this.getDevice());
 
         const discovery = new Discovery({
@@ -337,6 +382,16 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
         if (!discovery.completed) {
             await resolveAfter(501); // temporary solution, TODO: immediately resolve will cause "device call in progress"
         }
+
+        return this.fetchAccountInfo(account, request, blockchain);
+    }
+
+    private async fetchAccountInfo(
+        account: DiscoveryAccount,
+        request: Request,
+        blockchain: Blockchain,
+    ) {
+        const { coinInfo } = request;
 
         // get account info from backend
         const info = await blockchain.getAccountInfo({
