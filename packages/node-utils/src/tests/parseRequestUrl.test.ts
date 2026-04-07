@@ -148,6 +148,30 @@ const parseFixtures: ParseFixture[] = [
             hash: null,
         },
     },
+    {
+        description: 'plus sign in query value is decoded as space (querystring.parse semantics)',
+        input: '/oauth?code=a+b&state=x+y',
+        expected: {
+            protocol: null,
+            hostname: null,
+            pathname: '/oauth',
+            query: { code: 'a b', state: 'x y' },
+            search: '?code=a+b&state=x+y',
+            hash: null,
+        },
+    },
+    {
+        description: 'space encoded as %20 in query value is decoded',
+        input: '/foo?q=hello%20world',
+        expected: {
+            protocol: null,
+            hostname: null,
+            pathname: '/foo',
+            query: { q: 'hello world' },
+            search: '?q=hello%20world',
+            hash: null,
+        },
+    },
 ];
 
 type FormatFixture = {
@@ -196,6 +220,16 @@ const formatFixtures: FormatFixture[] = [
         description: 'root path',
         input: { protocol: null, hostname: null, pathname: '/', query: {} },
         expected: '/',
+    },
+    {
+        description: 'space in query value is encoded as %20 (not +)',
+        input: { protocol: null, hostname: null, pathname: '/foo', query: { q: 'hello world' } },
+        expected: '/foo?q=hello%20world',
+    },
+    {
+        description: 'literal plus sign in query value is percent-encoded',
+        input: { protocol: null, hostname: null, pathname: '/oauth', query: { code: 'a+b' } },
+        expected: '/oauth?code=a%2Bb',
     },
 ];
 
