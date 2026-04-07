@@ -7,15 +7,15 @@ import {
     selectTradingExchangeActiveQuote,
 } from '@suite-common/trading';
 import { Card, Text, VStack } from '@suite-native/atoms';
+import type { TradingConfirmationVariant } from '@suite-native/navigation';
 import { TradeInfoRow } from '@suite-native/trading-atoms';
-import type { ConfirmationVariant } from '@suite-native/trading-types';
 import { FeeSummaryCard } from '@suite-native/transaction-management';
 
 import { ProviderInfoRow } from '../../general/TradeInfo/ProviderInfoRow';
 import { LimitInfoRow } from '../Approval/LimitInfoRow';
 
 export type ExchangeConfirmationInfoCardProps = {
-    variant: ConfirmationVariant;
+    variant: TradingConfirmationVariant;
 };
 
 export const ExchangeConfirmationInfo = ({ variant }: ExchangeConfirmationInfoCardProps) => {
