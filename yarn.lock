@@ -15589,11 +15589,11 @@ __metadata:
     "@trezor/eslint": "workspace:*"
     "@trezor/node-utils": "workspace:^"
     "@trezor/utils": "workspace:*"
-    "@types/node-fetch": "npm:^2.6.12"
-    node-fetch: "npm:^2.6.4"
+    "@types/node-fetch": "npm:2.6.12"
+    node-fetch: "npm:2.6.4"
     socks-proxy-agent: "npm:8.0.5"
-    ts-node: "npm:^10.9.2"
-    ws: "npm:^8.18.0"
+    ts-node: "npm:10.9.2"
+    ws: "npm:8.18.0"
   languageName: unknown
   linkType: soft
 
@@ -17187,6 +17187,16 @@ __metadata:
   dependencies:
     "@types/node": "npm:*"
   checksum: 10/a8c743501036f494bb8b26ee04ce914c9cce88955d9ba48ff77d2b5b1bc403d4d99804dbf02238c1491fa93e2242983b1492ad8c2b39755dabd68683dada9e8f
+  languageName: node
+  linkType: hard
+
+"@types/node-fetch@npm:2.6.12":
+  version: 2.6.12
+  resolution: "@types/node-fetch@npm:2.6.12"
+  dependencies:
+    "@types/node": "npm:*"
+    form-data: "npm:^4.0.0"
+  checksum: 10/8107c479da83a3114fcbfa882eba95ee5175cccb5e4dd53f737a96f2559ae6262f662176b8457c1656de09ec393cc7b20a266c077e4bfb21e929976e1cf4d0f9
   languageName: node
   linkType: hard
 
@@ -35737,6 +35747,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"node-fetch@npm:2.6.4":
+  version: 2.6.4
+  resolution: "node-fetch@npm:2.6.4"
+  dependencies:
+    whatwg-url: "npm:^5.0.0"
+  checksum: 10/f98475a15f0c520aa9e6c6003f6cdeaa7d93080905c7fe620b6f7eb580d16ec031424a6037bc60355249fe8bedd5a75492bd6d6e0e5e26f5d8429a35ef8bc227
+  languageName: node
+  linkType: hard
+
 "node-fetch@npm:2.7.0, node-fetch@npm:^2.5.0, node-fetch@npm:^2.6.1, node-fetch@npm:^2.6.4, node-fetch@npm:^2.6.7, node-fetch@npm:^2.7.0":
   version: 2.7.0
   resolution: "node-fetch@npm:2.7.0"
@@ -43556,7 +43575,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-node@npm:^10.9.2":
+"ts-node@npm:10.9.2, ts-node@npm:^10.9.2":
   version: 10.9.2
   resolution: "ts-node@npm:10.9.2"
   dependencies:
