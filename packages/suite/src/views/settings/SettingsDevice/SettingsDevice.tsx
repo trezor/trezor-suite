@@ -3,13 +3,15 @@ import { isRecoveryInProgress } from '@suite/recovery';
 import { Context } from '@suite-common/message-system';
 import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
 import { getIsDeviceRemembered } from '@suite-common/suite-utils';
+import { Banner } from '@trezor/components';
 import { isBitcoinOnlyDevice } from '@trezor/device-utils';
 import { SettingsSection } from '@trezor/product-components';
 
+import { setConnectionModal } from 'src/actions/device/deviceSlice';
 import { DeviceBanner } from 'src/components/settings/DeviceBanner';
 import { SettingsLayout } from 'src/components/settings/SettingsLayout';
 import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
-import { useDevice, useLayoutSize, useSelector } from 'src/hooks/suite';
+import { useDevice, useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 import { selectHasActiveTransport } from 'src/selectors/suite/suiteSelectors';
 import type { TrezorDevice } from 'src/types/suite';
 import { getHowToGetFromBootloaderInstructionsMap } from 'src/utils/device/bootloader';
@@ -51,6 +53,7 @@ const deviceSettingsUnavailable = (device?: TrezorDevice) => {
 };
 
 export const SettingsDevice = () => {
+    const dispatch = useDispatch();
     const { isBelowLaptop } = useLayoutSize();
     const { device, isLocked } = useDevice();
     const noTransportAvailable = !useSelector(selectHasActiveTransport);
@@ -79,7 +82,16 @@ export const SettingsDevice = () => {
         return (
             <SettingsLayout>
                 <DeviceBanner
+                    intent="info"
                     title={<Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_DISCONNECTED" />}
+                    description={
+                        <Translation id="TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_DISCONNECTED" />
+                    }
+                    rightContent={
+                        <Banner.Button onClick={() => dispatch(setConnectionModal(true))}>
+                            <Translation id="TR_CONNECT" />
+                        </Banner.Button>
+                    }
                 />
             </SettingsLayout>
         );

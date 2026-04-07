@@ -3102,8 +3102,12 @@ export const messages = defineMessages({
         id: 'TR_SETTINGS_TOOLTIP_DESCRIPTION_WEB',
     },
     TR_SETTINGS_DEVICE_BANNER_TITLE_DISCONNECTED: {
-        defaultMessage: 'Connect your Trezor to access device settings',
+        defaultMessage: 'Trezor disconnected',
         id: 'TR_SETTINGS_DEVICE_BANNER_TITLE_DISCONNECTED',
+    },
+    TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_DISCONNECTED: {
+        defaultMessage: 'Connect your Trezor to access Device Settings',
+        id: 'TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_DISCONNECTED',
     },
     TR_SETTINGS_DEVICE_BANNER_TITLE_UNAVAILABLE: {
         defaultMessage: 'Your Trezor is in an incorrect state',

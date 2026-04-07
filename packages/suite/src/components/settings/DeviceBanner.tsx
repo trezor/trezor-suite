@@ -2,7 +2,7 @@ import { type ReactNode } from 'react';
 
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
-import { Banner } from '@trezor/components';
+import { Banner, type BannerIntent } from '@trezor/components';
 import { mapTrezorModelToIcon } from '@trezor/product-components';
 
 import { WebUsbButton } from 'src/components/suite/WebUsbButton';
@@ -14,9 +14,16 @@ import { AcquireDeviceButton } from '../suite/AcquireDeviceButton';
 type DeviceBannerProps = {
     title: ReactNode;
     description?: ReactNode;
+    intent?: BannerIntent;
+    rightContent?: ReactNode;
 };
 
-export const DeviceBanner = ({ title, description }: DeviceBannerProps) => {
+export const DeviceBanner = ({
+    title,
+    description,
+    intent = 'warning',
+    rightContent,
+}: DeviceBannerProps) => {
     const { device } = useDevice();
     const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
     const deviceConnectedButNotAcquired = device && !isDeviceAcquired(device);
@@ -25,17 +32,19 @@ export const DeviceBanner = ({ title, description }: DeviceBannerProps) => {
     return (
         <Banner
             data-testid="@settings/device/disconnected-device-banner"
-            intent="warning"
+            intent={intent}
             icon={mapTrezorModelToIcon[selectedDeviceModelInternal]}
             title={title}
             description={description}
             rightContent={
-                <>
-                    {deviceConnectedButNotAcquired && <AcquireDeviceButton />}
-                    {isWebUsbTransport && !device?.connected && (
-                        <WebUsbButton intent="warning" size="small" />
-                    )}
-                </>
+                rightContent ?? (
+                    <>
+                        {deviceConnectedButNotAcquired && <AcquireDeviceButton />}
+                        {isWebUsbTransport && !device?.connected && (
+                            <WebUsbButton intent={intent} size="small" />
+                        )}
+                    </>
+                )
             }
         />
     );
