@@ -5358,11 +5358,6 @@ export const messages = defineMessages({
         defaultMessage:
             'Enable the Tron Network with the latest firmware to check your balance, send and receive Tron and TRC-20 tokens, view charts and your transaction history. Full support is coming soon.',
     },
-    TR_EXPERIMENTAL_SUITE_SYNC_DESCRIPTION: {
-        id: 'TR_EXPERIMENTAL_SUITE_SYNC_DESCRIPTION',
-        defaultMessage:
-            'Keep your wallet, account, and transaction labels updated in Trezor Suite on all your devices. Your data stays safe—only your Trezor can decrypt it.',
-    },
     TR_EXPERIMENTAL_SLIP24: {
         id: 'TR_EXPERIMENTAL_SLIP24',
         defaultMessage: 'SLIP-24 (clear signing)',
