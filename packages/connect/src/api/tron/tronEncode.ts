@@ -1,6 +1,6 @@
 import { bytesToHex, hexToBytes } from '@noble/hashes/utils.js';
 
-import { tronUtils } from '@trezor/blockchain-link-utils';
+import type { TronContracts } from '@trezor/connect-common/src/types/api/tron';
 
 import {
     AnyType,
@@ -33,9 +33,8 @@ export const encodeTransferRawData = ({
     expiration,
     timestamp,
 }: EncodeTransferRawDataParams): Uint8Array => {
-    const ownerBytes = tronUtils.tronAddressToBytes(from);
-    const toBytes = tronUtils.tronAddressToBytes(to);
-    if (!ownerBytes || !toBytes) throw new Error('Invalid Tron address checksum.');
+    const ownerBytes = hexToBytes(from);
+    const toBytes = hexToBytes(to);
 
     const contractBytes = TransferContractType.encode(
         TransferContractType.fromObject({
@@ -85,9 +84,8 @@ export const encodeTriggerSmartContractRawData = ({
     timestamp,
     feeLimit,
 }: EncodeTriggerSmartContractRawDataParams): Uint8Array => {
-    const ownerBytes = tronUtils.tronAddressToBytes(from);
-    const contractAddressBytes = tronUtils.tronAddressToBytes(contractAddress);
-    if (!ownerBytes || !contractAddressBytes) throw new Error('Invalid Tron address checksum.');
+    const ownerBytes = hexToBytes(from);
+    const contractAddressBytes = hexToBytes(contractAddress);
 
     const contractBytes = TriggerSmartContractType.encode(
         TriggerSmartContractType.fromObject({
@@ -118,40 +116,55 @@ export const encodeTriggerSmartContractRawData = ({
 };
 
 // DATA_HEX_PROTOBUF_EXTRA + MAX_RESULT_SIZE_IN_TX + A_SIGNATURE
-const TRON_BANDWIDTH_FORMULA_OVERHEAD = 3 + 64 + 67;
+export const TRON_BANDWIDTH_FORMULA_OVERHEAD = 3 + 64 + 67;
 
-const TRON_DUMMY_ADDRESS = 'T9yD14Nj9j7xAB4dbGeiX9h8unkKHxuWwb'; // Tron zero address
-const TRON_DUMMY_BLOCK_BYTES = '0000';
-const TRON_DUMMY_BLOCK_HASH = '0000000000000000';
-const TRON_DUMMY_TIMESTAMP = 1700000000000;
-
-export const estimateTronTransferBandwidth = (amountInSun: string): number => {
-    const rawData = encodeTransferRawData({
-        from: TRON_DUMMY_ADDRESS,
-        to: TRON_DUMMY_ADDRESS,
-        amount: amountInSun,
-        refBlockBytes: TRON_DUMMY_BLOCK_BYTES,
-        refBlockHash: TRON_DUMMY_BLOCK_HASH,
-        expiration: TRON_DUMMY_TIMESTAMP + 3_600_000,
-        timestamp: TRON_DUMMY_TIMESTAMP,
-    });
-
-    return rawData.length + TRON_BANDWIDTH_FORMULA_OVERHEAD;
+type BlockParams = {
+    ref_block_bytes: string;
+    ref_block_hash: string;
+    expiration: number;
+    timestamp: number;
+    fee_limit?: number;
 };
 
-export const estimateTronTrc20Bandwidth = (feeLimitInSun: string): number => {
-    const rawData = encodeTriggerSmartContractRawData({
-        from: TRON_DUMMY_ADDRESS,
-        contractAddress: TRON_DUMMY_ADDRESS,
-        data: '00'.repeat(68), // TRC-20 transfer calldata is always 68 bytes
-        refBlockBytes: TRON_DUMMY_BLOCK_BYTES,
-        refBlockHash: TRON_DUMMY_BLOCK_HASH,
-        expiration: TRON_DUMMY_TIMESTAMP + 3_600_000,
-        timestamp: TRON_DUMMY_TIMESTAMP,
-        feeLimit: Number(feeLimitInSun),
-    });
+export const encodeTronContractRawData = (
+    contract: TronContracts,
+    blockParams: BlockParams,
+): Uint8Array => {
+    const { ref_block_bytes, ref_block_hash, expiration, timestamp, fee_limit } = blockParams;
 
-    return rawData.length + TRON_BANDWIDTH_FORMULA_OVERHEAD;
+    switch (contract.type) {
+        case 'TransferContract': {
+            const { owner_address, to_address, amount } = contract.parameter.value;
+
+            return encodeTransferRawData({
+                from: owner_address ?? '',
+                to: to_address ?? '',
+                amount: String(amount ?? 0),
+                refBlockBytes: ref_block_bytes,
+                refBlockHash: ref_block_hash,
+                expiration,
+                timestamp,
+            });
+        }
+        case 'TriggerSmartContract': {
+            const { owner_address, contract_address, data } = contract.parameter.value;
+
+            return encodeTriggerSmartContractRawData({
+                from: owner_address ?? '',
+                contractAddress: contract_address ?? '',
+                data: data ?? '',
+                refBlockBytes: ref_block_bytes,
+                refBlockHash: ref_block_hash,
+                expiration,
+                timestamp,
+                feeLimit: fee_limit ?? 0,
+            });
+        }
+        default:
+            throw new Error(
+                `Unsupported contract type for encoding: ${(contract as { type: string }).type}`,
+            );
+    }
 };
 
 export const encodeBroadcastTransaction = (rawDataHex: string, signatureHex: string): string =>

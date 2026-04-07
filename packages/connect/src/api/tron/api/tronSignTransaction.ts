@@ -1,11 +1,14 @@
+import { bytesToHex } from '@noble/hashes/utils.js';
+
 import { TronSignTransaction as TronSignTransactionSchema } from '@trezor/connect-common';
-import type { PROTO, TronContractsParameters, TronContractsTypes } from '@trezor/connect-common';
+import type { PROTO, TronContracts, TronContractsTypes } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 
 import type { MethodMessage, MethodPermission } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { validatePath } from '../../../utils/pathUtils';
+import { encodeBroadcastTransaction, encodeTronContractRawData } from '../tronEncode';
 
 const contractMapping = {
     TransferContract: 'TronTransferContract',
@@ -18,8 +21,7 @@ const contractMapping = {
 
 type Params = {
     tx: PROTO.TronSignTx;
-    contractType: TronContractsTypes;
-    contract: TronContractsParameters;
+    contract: TronContracts;
 };
 
 export default class TronSignTransaction extends AbstractMethod<'tronSignTransaction', Params> {
@@ -60,8 +62,7 @@ export default class TronSignTransaction extends AbstractMethod<'tronSignTransac
                 fee_limit: payload.fee_limit,
                 data: payload.data,
             },
-            contractType: payload.contract[0].type,
-            contract: payload.contract[0].parameter.value,
+            contract: payload.contract[0],
         };
     }
 
@@ -75,11 +76,21 @@ export default class TronSignTransaction extends AbstractMethod<'tronSignTransac
         await cmd.typedCall('TronSignTx', 'TronContractRequest', this.params.tx);
 
         const { message } = await cmd.typedCall(
-            contractMapping[this.params.contractType],
+            contractMapping[this.params.contract.type],
             'TronSignature',
-            this.params.contract,
+            this.params.contract.parameter.value,
         );
 
-        return { signature: message.signature };
+        const { signature } = message;
+
+        let serializedTx: string | undefined;
+        try {
+            const rawData = encodeTronContractRawData(this.params.contract, this.params.tx);
+            serializedTx = encodeBroadcastTransaction(bytesToHex(rawData), signature);
+        } catch {
+            // unsupported contract type
+        }
+
+        return { signature, serializedTx };
     }
 }

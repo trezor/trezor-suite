@@ -5,7 +5,7 @@ import { Assert } from '@trezor/schema-utils';
 
 import type { MethodMessage, MethodPermission } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
-import { encodeTransferRawData, encodeTriggerSmartContractRawData } from '../tronEncode';
+import { TRON_BANDWIDTH_FORMULA_OVERHEAD, encodeTronContractRawData } from '../tronEncode';
 
 export default class TronComposeTransaction extends AbstractMethod<
     'tronComposeTransaction',
@@ -35,7 +35,7 @@ export default class TronComposeTransaction extends AbstractMethod<
 
     // eslint-disable-next-line require-await
     async run() {
-        const { from, to, amount, blockHash, blockHeight, token } = this.params;
+        const { contract, blockHash, blockHeight, fee_limit } = this.params;
 
         const ref_block_bytes = blockHeight.toString(16).padStart(16, '0').slice(12, 16);
         const ref_block_hash = blockHash.replace(/^0x/, '').slice(16, 32);
@@ -43,26 +43,13 @@ export default class TronComposeTransaction extends AbstractMethod<
         const timestamp = Date.now();
         const expiration = timestamp + 60 * 60 * 1000; // 1 hour
 
-        const rawData = token
-            ? encodeTriggerSmartContractRawData({
-                  from,
-                  contractAddress: token.contract,
-                  data: token.data,
-                  refBlockBytes: ref_block_bytes,
-                  refBlockHash: ref_block_hash,
-                  expiration,
-                  timestamp,
-                  feeLimit: token.feeLimit ?? 0,
-              })
-            : encodeTransferRawData({
-                  from,
-                  to,
-                  amount,
-                  refBlockBytes: ref_block_bytes,
-                  refBlockHash: ref_block_hash,
-                  expiration,
-                  timestamp,
-              });
+        const rawData = encodeTronContractRawData(contract, {
+            ref_block_bytes,
+            ref_block_hash,
+            expiration,
+            timestamp,
+            fee_limit,
+        });
 
         return {
             rawDataHex: bytesToHex(rawData),
@@ -70,6 +57,7 @@ export default class TronComposeTransaction extends AbstractMethod<
             ref_block_hash,
             expiration,
             timestamp,
+            bandwidth: rawData.length + TRON_BANDWIDTH_FORMULA_OVERHEAD,
         };
     }
 }

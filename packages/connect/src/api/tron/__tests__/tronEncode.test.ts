@@ -1,24 +1,14 @@
 import { bytesToHex, hexToBytes } from '@noble/hashes/utils.js';
 
-import { tronUtils } from '@trezor/blockchain-link-utils';
-
 import {
-    encodeBroadcastTransaction,
-    encodeTransferRawData,
     estimateTronTransferBandwidth,
     estimateTronTrc20Bandwidth,
-} from '../tronEncode';
+} from '../estimateTronBandwidth';
+import { encodeBroadcastTransaction, encodeTransferRawData } from '../tronEncode';
 import { TransactionType } from '../tronProtobuf';
 
-const OWNER_ADDRESS = tronUtils.tronBytesToAddress(
-    hexToBytes('41f2cd810c48c401d392ead3c6e1e1cb9f57750a58'),
-)!;
-const TO_ADDRESS = tronUtils.tronBytesToAddress(
-    hexToBytes('4141f82674a30ae1328745d08afe2d1a0a24195283'),
-)!;
-const CONTRACT_ADDRESS = tronUtils.tronBytesToAddress(
-    hexToBytes('4142a1e39aefa49290f2b3f9ed688d7cecf86cd6e0'),
-)!;
+const OWNER_ADDRESS = '41f2cd810c48c401d392ead3c6e1e1cb9f57750a58';
+const TO_ADDRESS = '4141f82674a30ae1328745d08afe2d1a0a24195283';
 
 const TRX_TRANSFER = {
     from: OWNER_ADDRESS,
@@ -33,14 +23,7 @@ const TRX_TRANSFER = {
 };
 
 const TRC20_TRIGGER = {
-    from: OWNER_ADDRESS,
-    contractAddress: CONTRACT_ADDRESS,
     data: 'a9059cbb000000000000000000000000d093f24888ab06073a4bdffbb8107db1ea9dc0a000000000000000000000000000000000000000000000000000000000013bb450',
-    feeLimit: 50_000_000,
-    refBlockBytes: 'dae0',
-    refBlockHash: '9ab5c70b3a11405f',
-    expiration: 1766454906000,
-    timestamp: 1766453046721,
 };
 
 describe('tron/estimateTronTransferBandwidth', () => {
@@ -51,7 +34,7 @@ describe('tron/estimateTronTransferBandwidth', () => {
 
 describe('tron/estimateTronTrc20Bandwidth', () => {
     it('returns the expected bandwidth for a TRC-20 trigger', () => {
-        expect(estimateTronTrc20Bandwidth(String(TRC20_TRIGGER.feeLimit))).toBe(345);
+        expect(estimateTronTrc20Bandwidth(TRC20_TRIGGER.data)).toBe(345);
     });
 });
 
