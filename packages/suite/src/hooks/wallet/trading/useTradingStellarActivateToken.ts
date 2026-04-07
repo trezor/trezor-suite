@@ -25,12 +25,13 @@ export const useTradingStellarActivateToken = ({
         initialData: [],
     });
 
-    const { contractAddress: selectedAssetContractAddress } =
+    const { network: selectedAssetNetwork, contractAddress: selectedAssetContractAddress } =
         cryptoIdToNetworkAndContractAddress(receiveCryptoId);
 
-    const inactiveToken = inactiveTokens?.find(
-        token => token.contract === selectedAssetContractAddress,
-    );
+    const inactiveToken =
+        selectedAssetNetwork?.networkType === 'stellar'
+            ? inactiveTokens?.find(token => token.contract === selectedAssetContractAddress)
+            : undefined;
 
     const onModalOpen = () => setIsModalOpen(true);
 

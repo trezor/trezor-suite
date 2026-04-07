@@ -44,12 +44,13 @@ export const useTradingStellarActivateToken = ({
 
     const selectedReceiveAccount = useSelector(selectExchangeSelectedReceiveAccount);
 
-    const { contractAddress: receiveContractAddress } =
+    const { network: receiveNetwork, contractAddress: receiveContractAddress } =
         cryptoIdToNetworkAndContractAddress(receiveCryptoId);
 
     const { inactiveTokens } = useInactiveStellarTokens(selectedReceiveAccount?.account.key);
 
     const isReceivingInactiveStellarToken =
+        receiveNetwork?.networkType === 'stellar' &&
         !!quote &&
         !!selectedReceiveAccount &&
         !!receiveContractAddress &&
