@@ -37,6 +37,8 @@ const originalJson = {
     },
 };
 
+const aesKeyHex = '9bc3736f0b45cd681854a724b5bba67b9da1e50bc9983fd2dd56e53e74b75480';
+
 describe('metadata', () => {
     it('decrypt real file data from dropbox', async () => {
         const file = fs.readFileSync(path.resolve(__dirname, `../__fixtures__/${filename}.mtdt`));
@@ -53,7 +55,7 @@ describe('metadata', () => {
 
         // deriveAesKey
         const aesKey = deriveAesKey(metadataKey);
-        expect(aesKey).toEqual('9bc3736f0b45cd681854a724b5bba67b9da1e50bc9983fd2dd56e53e74b75480');
+        expect(aesKey).toEqual(aesKeyHex);
 
         // decrypt
         const decrypted = decrypt(file, Buffer.from(aesKey, 'hex'));
@@ -61,18 +63,52 @@ describe('metadata', () => {
         expect(decrypted).toEqual(originalJson);
 
         // after new round of encryption, resulting data differ from the original
-        const encryptedAgain = await encrypt(
-            decrypted,
-            '9bc3736f0b45cd681854a724b5bba67b9da1e50bc9983fd2dd56e53e74b75480',
-        );
+        const encryptedAgain = await encrypt(decrypted, aesKeyHex);
         expect(encryptedAgain).not.toEqual(file);
 
         // but when decrypted again, original json appears;
-        const againDecrypted = await decrypt(
-            encryptedAgain,
-            '9bc3736f0b45cd681854a724b5bba67b9da1e50bc9983fd2dd56e53e74b75480',
-        );
+        const againDecrypted = await decrypt(encryptedAgain, aesKeyHex);
         expect(againDecrypted).toEqual(originalJson);
+    });
+
+    it('decrypt binary file after hex round-trip (simulates Dropbox-to-local conversion)', async () => {
+        // Simulate the flow: binary file from Dropbox → convert to hex → convert back → decrypt.
+        const binaryFile = fs.readFileSync(
+            path.resolve(__dirname, `../__fixtures__/${filename}.mtdt`),
+        );
+
+        // This is what the metadata module now does: convert binary to hex string.
+        const hexString = binaryFile.toString('hex');
+
+        // This is what FileSystemProvider.getFileContent does: convert hex string back to Buffer.
+        const restoredBuffer = Buffer.from(hexString, 'hex');
+
+        expect(restoredBuffer).toEqual(binaryFile);
+
+        const decrypted = decrypt(restoredBuffer, aesKeyHex);
+        expect(decrypted).toEqual(originalJson);
+    });
+
+    it('decrypt hex-encoded file (simulates local FileSystemProvider round-trip)', async () => {
+        const data = { version: '1.0.0', accountLabel: 'test' };
+        const encrypted = await encrypt(data, aesKeyHex);
+
+        // FileSystemProvider.setFileContent converts to hex.
+        const hexString = encrypted.toString('hex');
+
+        // FileSystemProvider.getFileContent converts back from hex.
+        const restoredBuffer = Buffer.from(hexString, 'hex');
+
+        const decrypted = decrypt(restoredBuffer, aesKeyHex);
+        expect(decrypted).toEqual(data);
+    });
+
+    it('decrypt throws descriptive error for corrupted data', () => {
+        const corruptedBuffer = Buffer.from('this is not encrypted data');
+
+        expect(() => decrypt(corruptedBuffer, aesKeyHex)).toThrow(
+            /Failed to decrypt metadata file/,
+        );
     });
 
     it('encrypt and decrypt', async () => {
@@ -80,14 +116,11 @@ describe('metadata', () => {
 
         const encrypted = await encrypt(
             data,
-            Buffer.from('9bc3736f0b45cd681854a724b5bba67b9da1e50bc9983fd2dd56e53e74b75480', 'hex'), // coverage
+            Buffer.from(aesKeyHex, 'hex'), // coverage
         );
         expect(data).not.toEqual(encrypted);
 
-        const decrypted = await decrypt(
-            encrypted,
-            '9bc3736f0b45cd681854a724b5bba67b9da1e50bc9983fd2dd56e53e74b75480',
-        );
+        const decrypted = await decrypt(encrypted, aesKeyHex);
         expect(data).toEqual(decrypted);
     });
 

@@ -1,4 +1,4 @@
-import { open, read, readDir, rename, save } from '../libs/user-data';
+import { open, read, readBinary, readDir, rename, save } from '../libs/user-data';
 
 jest.mock('electron', () => ({
     app: {
@@ -38,6 +38,15 @@ describe('user-data path traversal protection', () => {
 
     it('rejects file path traversal in read()', async () => {
         const result = await read('/metadata', '../../outside.txt');
+
+        expect(result).toStrictEqual({
+            success: false,
+            error: 'Path traversal attempt detected, file: "../../outside.txt"',
+        });
+    });
+
+    it('rejects file path traversal in readBinary()', async () => {
+        const result = await readBinary('/metadata', '../../outside.txt');
 
         expect(result).toStrictEqual({
             success: false,

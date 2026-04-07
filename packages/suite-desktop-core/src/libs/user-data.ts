@@ -130,6 +130,33 @@ export const read = async (directory: string, name: string): Promise<InvokeResul
     }
 };
 
+export const readBinary = async (
+    directory: string,
+    name: string,
+): Promise<InvokeResult<Buffer>> => {
+    const resolvedPathResult = resolvePathInUserDataDir(directory, name);
+    if (!resolvedPathResult.success) {
+        return { success: false, error: resolvedPathResult.error };
+    }
+    const { file } = resolvedPathResult.payload;
+
+    try {
+        await fs.promises.access(file, fs.constants.R_OK);
+    } catch (error) {
+        return { success: false, error: error.message, code: error.code };
+    }
+
+    try {
+        const payload = await fs.promises.readFile(file);
+
+        return { success: true, payload };
+    } catch (error) {
+        global.logger.error('user-data', `Read failed: ${error.message}`);
+
+        return { success: false, error: error.message, code: error.code };
+    }
+};
+
 export const readDir = async (directory: string): Promise<InvokeResult<string[]>> => {
     const resolvedDirResult = resolveDirectoryInUserDataDir(directory);
     if (!resolvedDirResult.success) {

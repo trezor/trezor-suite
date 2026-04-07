@@ -106,21 +106,28 @@ export const decrypt = (input: Buffer, key: string | Buffer) => {
         key = Buffer.from(key, 'hex');
     }
 
-    const iv = input.subarray(0, CIPHER_IVSIZE);
-    // tag is always 128-bits
-    const authTag = input.subarray(CIPHER_IVSIZE, CIPHER_IVSIZE + AUTH_SIZE);
-    const cText = input.subarray(CIPHER_IVSIZE + AUTH_SIZE);
-    const decipher = crypto.createDecipheriv(CIPHER_TYPE, key, iv);
-    const start = decipher.update(cText);
+    try {
+        const iv = input.subarray(0, CIPHER_IVSIZE);
+        // Tag is always 128-bits.
+        const authTag = input.subarray(CIPHER_IVSIZE, CIPHER_IVSIZE + AUTH_SIZE);
+        const cText = input.subarray(CIPHER_IVSIZE + AUTH_SIZE);
+        const decipher = crypto.createDecipheriv(CIPHER_TYPE, key, iv);
+        const start = decipher.update(cText);
 
-    // throws when tampered
-    decipher.setAuthTag(authTag);
-    const end = decipher.final();
+        decipher.setAuthTag(authTag);
+        const end = decipher.final();
 
-    const res = Buffer.concat([start, end]);
-    const stringified = res.toString('utf8');
+        const res = Buffer.concat([start, end]);
+        const stringified = res.toString('utf8');
 
-    return JSON.parse(stringified);
+        return JSON.parse(stringified);
+    } catch (error) {
+        throw new Error(
+            `Failed to decrypt metadata file. The file may be corrupted or in an incompatible format. ` +
+                `If you copied this file from a cloud provider (e.g. Dropbox), make sure you are using a compatible version of Trezor Suite. ` +
+                `Original error: ${error instanceof Error ? error.message : error}`,
+        );
+    }
 };
 
 export const getFetchTrackingId = (
