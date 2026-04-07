@@ -19,8 +19,8 @@ import {
 import {
     type DbWorkerInit,
     type SharedWorkerInput,
-    initDbWorker,
     initSharedWorker,
+    startDbWorker,
 } from '@evolu/common/local-first';
 import BetterSqlite3, { type Statement } from 'better-sqlite3';
 import { WebSocket } from 'ws';
@@ -90,7 +90,7 @@ export const createNodeEvoluDeps = () => {
 
     const createDbWorker = () =>
         createWorker<DbWorkerInit>(self => {
-            workerRun(initDbWorker(self));
+            workerRun(startDbWorker(self));
         });
 
     const sharedWorker = createSharedWorker<SharedWorkerInput>(self => {

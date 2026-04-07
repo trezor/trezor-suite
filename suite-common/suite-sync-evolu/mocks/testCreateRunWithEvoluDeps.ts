@@ -16,8 +16,8 @@ import {
 import {
     DbWorkerInit,
     SharedWorkerInput,
-    initDbWorker,
     initSharedWorker,
+    startDbWorker,
 } from '@evolu/common/local-first';
 
 import { createBetterSqliteDriver } from './createBetterSqliteDriver';
@@ -52,7 +52,7 @@ export const testCreateRunWithEvoluDeps = async ({
 
     const createDbWorker = () =>
         createWorker<DbWorkerInit>(self => {
-            workerRun(initDbWorker(self));
+            workerRun(startDbWorker(self));
         });
 
     const sharedWorker = createSharedWorker<SharedWorkerInput>(self => {
