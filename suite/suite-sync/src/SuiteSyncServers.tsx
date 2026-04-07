@@ -1,6 +1,8 @@
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import { Translation } from '@suite/intl';
+import { selectSuiteSyncCustomRelayUrl } from '@suite-common/suite-sync';
 import { type SuiteSync } from '@suite-common/suite-sync-types';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
@@ -12,6 +14,8 @@ type SuiteSyncServersProps = {
 
 export const SuiteSyncServers = ({ suiteSync }: SuiteSyncServersProps) => {
     const [isSelectServerOpen, setShowChangeServerModal] = useState(false);
+    const customRelayUrl = useSelector(selectSuiteSyncCustomRelayUrl);
+    const isCustomServer = !!customRelayUrl;
 
     const toggleSelectServer = () => {
         setShowChangeServerModal(!isSelectServerOpen);
@@ -24,7 +28,15 @@ export const SuiteSyncServers = ({ suiteSync }: SuiteSyncServersProps) => {
             )}
             <SectionItem data-testid="@settings/labeling-servers">
                 <TextColumn
-                    title={<Translation id="TR_LABELING_SYNCED_THROUGH_TREZOR_SERVERS" />}
+                    title={
+                        <Translation
+                            id={
+                                isCustomServer
+                                    ? 'TR_LABELING_SYNCED_THROUGH_CUSTOM_SERVER'
+                                    : 'TR_LABELING_SYNCED_THROUGH_TREZOR_SERVERS'
+                            }
+                        />
+                    }
                     description={<Translation id="TR_LABELING_SERVERS_DESCRIPTION" />}
                 />
                 <ActionColumn>

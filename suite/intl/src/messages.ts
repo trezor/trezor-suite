@@ -6304,6 +6304,10 @@ export const messages = defineMessages({
             'Sync your labels via Trezor servers by default. Connect to your own server for more privacy and control.',
         id: 'TR_LABELING_SERVERS_DESCRIPTION',
     },
+    TR_LABELING_SYNCED_THROUGH_CUSTOM_SERVER: {
+        defaultMessage: 'Label synced through your custom server',
+        id: 'TR_LABELING_SYNCED_THROUGH_CUSTOM_SERVER',
+    },
     TR_LABELING_SERVERS_CHANGE: {
         defaultMessage: 'Change server',
         id: 'TR_LABELING_SERVERS_CHANGE',
