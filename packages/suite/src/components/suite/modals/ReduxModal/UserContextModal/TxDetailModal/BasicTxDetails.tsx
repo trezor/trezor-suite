@@ -5,7 +5,6 @@ import { Translation } from '@suite/intl';
 import { type Network } from '@suite-common/wallet-config';
 import { getFeeRate, getTxIcon, isEip1559, isPending } from '@suite-common/wallet-utils';
 import {
-    Box,
     Card,
     Divider,
     Grid,
@@ -49,16 +48,15 @@ const Item = ({ label, iconName, children }: Partial<InfoItemProps>) => (
     <InfoItem
         label={label}
         iconName={iconName}
-        labelWidth={120}
+        labelWidth={135}
         typographyStyle="body-xs"
         direction="row"
         verticalAlignment="start"
+        ellipsisLineCount={2}
     >
-        <Box padding={{ top: spacings.xxxs }}>
-            <Text as="div" typographyStyle="body-xs">
-                {children}
-            </Text>
-        </Box>
+        <Text as="div" typographyStyle="body-xs">
+            {children}
+        </Text>
     </InfoItem>
 );
 
@@ -135,7 +133,7 @@ export const BasicTxDetails = ({
 
             <Divider />
 
-            <Grid columns={2} columnGap={32} rowGap={4} forceEqualColumns>
+            <Grid columns={2} columnGap={32} rowGap={12} forceEqualColumns>
                 {/* MINED TIME */}
                 <Item
                     label={

@@ -91,7 +91,6 @@ export const InfoItem = ({
                     gap={mapTypographyStyleToIconGap(typographyStyle)}
                     width={labelWidth}
                     flex={labelWidth ? '0 0 auto' : '1 0 auto'}
-                    height={24}
                 >
                     {iconName && (
                         <Icon
