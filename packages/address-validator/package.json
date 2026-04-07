@@ -19,7 +19,7 @@
         "crc": "^3.8.0",
         "groestl-hash-js": "1.0.0",
         "jssha": "2.3.1",
-        "lodash": "^4.17.15"
+        "lodash": "^4.18.1"
     },
     "devDependencies": {
         "@trezor/eslint": "workspace:*"
