@@ -19,6 +19,7 @@
         "@suite-common/suite-sync-evolu": "workspace:*",
         "@suite-common/suite-sync-storage": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
-        "@suite-common/wallet-types": "workspace:*"
+        "@suite-common/wallet-types": "workspace:*",
+        "@types/better-sqlite3": "^7.6.13"
     }
 }

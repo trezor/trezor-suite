@@ -3893,6 +3893,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@evolu/nodejs@npm:3.0.0-next.0":
+  version: 3.0.0-next.0
+  resolution: "@evolu/nodejs@npm:3.0.0-next.0"
+  dependencies:
+    better-sqlite3: "npm:^12.6.2"
+    ws: "npm:^8.19.0"
+  peerDependencies:
+    "@evolu/common": ^8.0.0-next.0
+  checksum: 10/915ef6430baab1bba264e0cc71190f5b565bbbf93c1f31dfc02070c5be91de59b466041cf5bd418eb3f621e48eb888e6eeedcb98c488df5702b3399390378762
+  languageName: node
+  linkType: hard
+
 "@evolu/react-native@npm:15.0.0-next.0":
   version: 15.0.0-next.0
   resolution: "@evolu/react-native@npm:15.0.0-next.0"
@@ -10712,6 +10724,7 @@ __metadata:
     "@suite-common/suite-sync-storage": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
+    "@types/better-sqlite3": "npm:^7.6.13"
     better-sqlite3: "npm:^12.8.0"
     ws: "npm:^8.18.0"
   languageName: unknown
@@ -11115,6 +11128,7 @@ __metadata:
   resolution: "@suite-common/suite-sync-evolu@workspace:suite-common/suite-sync-evolu"
   dependencies:
     "@evolu/common": "npm:8.0.0-next.0"
+    "@evolu/nodejs": "npm:3.0.0-next.0"
     "@suite-common/suite-sync-storage": "workspace:*"
     "@suite-common/suite-sync-types": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
@@ -11122,8 +11136,6 @@ __metadata:
     "@trezor/eslint": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
-    "@types/better-sqlite3": "npm:^7.6.13"
-    better-sqlite3: "npm:^12.8.0"
   languageName: unknown
   linkType: soft
 
@@ -20153,7 +20165,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"better-sqlite3@npm:^12.8.0":
+"better-sqlite3@npm:^12.6.2, better-sqlite3@npm:^12.8.0":
   version: 12.8.0
   resolution: "better-sqlite3@npm:12.8.0"
   dependencies:
