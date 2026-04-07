@@ -102,7 +102,7 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
             openModal({
                 type: 'earn-in-a-nutshell',
                 flow: EarnFlow.Yield,
-                provider: EarnProvider.YieldXyz,
+                provider: EarnProvider.Morpho,
                 account: opportunity.account,
                 analyticsStep: 'earn-dashboard',
                 yieldContext: {
