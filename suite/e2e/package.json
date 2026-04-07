@@ -21,7 +21,7 @@
     },
     "devDependencies": {
         "@currents/playwright": "^1.21.2",
-        "@evolu/common": "github:evoluhq/evolu#workspace=@evolu/common&head=common-v8",
+        "@evolu/common": "8.0.0-next.0",
         "@playwright/browser-chromium": "1.57.0",
         "@playwright/browser-firefox": "1.57.0",
         "@playwright/browser-webkit": "1.57.0",

@@ -12,7 +12,7 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@evolu/common": "github:evoluhq/evolu#workspace=@evolu/common&head=common-v8",
+        "@evolu/common": "8.0.0-next.0",
         "@suite-common/suite-sync-storage": "workspace:*",
         "@suite-common/suite-sync-types": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
