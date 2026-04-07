@@ -4,6 +4,8 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenSymbol } from '@suite-common/wallet-types';
 import { H4, type TextProps } from '@trezor/components';
 
+import { HiddenPlaceholder } from 'src/components/suite/HiddenPlaceholder';
+
 type EarnRewardsAmountProps = {
     symbol: NetworkSymbol | TokenSymbol;
     rewards: string;
@@ -32,13 +34,16 @@ export const EarnRewardsAmount = ({
 
     return (
         <H4 intent={intent} priority={priority} isDisabled={isDisabled}>
-            {CryptoAmountFormatter.format(rewards, {
-                symbol,
-                isBalance: true,
-                withSymbol: true,
-                isEllipsisAppended: false,
-                maxDisplayedDecimals: 8,
-            })}
+            <HiddenPlaceholder>
+                <CryptoAmountFormatter
+                    value={rewards}
+                    symbol={symbol}
+                    isBalance
+                    withSymbol
+                    isEllipsisAppended={false}
+                    maxDisplayedDecimals={8}
+                />
+            </HiddenPlaceholder>
         </H4>
     );
 };
