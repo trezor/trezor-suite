@@ -43,7 +43,7 @@ export const YieldPageHeader = ({ analyticsStep }: YieldPageHeaderProps) => {
             openModal({
                 type: 'earn-in-a-nutshell',
                 flow: EarnFlow.Yield,
-                provider: EarnProvider.YieldXyz,
+                provider: EarnProvider.Morpho,
                 account,
                 analyticsStep,
                 actionType: 'close',

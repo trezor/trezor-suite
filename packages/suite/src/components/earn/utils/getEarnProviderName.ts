@@ -5,8 +5,8 @@ export const getEarnProviderName = (provider: EarnProvider): string => {
     switch (provider) {
         case EarnProvider.Everstake:
             return 'Everstake';
-        case EarnProvider.YieldXyz:
-            return 'Yield.xyz';
+        case EarnProvider.Morpho:
+            return 'Morpho';
         default:
             return exhaustive(provider);
     }
