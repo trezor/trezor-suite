@@ -1,14 +1,14 @@
 import { Badge, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+import type { TradingConfirmationVariant } from '@suite-native/navigation';
 import { IconWithSpinner } from '@suite-native/trading-atoms';
-import type { ConfirmationVariant } from '@suite-native/trading-types';
 import { exhaustive } from '@trezor/type-utils';
 
 export type ExchangeConfirmationTitleProps = {
-    variant: ConfirmationVariant;
+    variant: TradingConfirmationVariant;
 };
 
-const TitleTranslation = ({ variant }: { variant: ConfirmationVariant }) => {
+const TitleTranslation = ({ variant }: ExchangeConfirmationTitleProps) => {
     switch (variant) {
         case 'approve':
             return <Translation id="moduleTrading.tradingConfirmationScreen.approveTitle" />;

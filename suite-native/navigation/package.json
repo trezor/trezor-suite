@@ -31,7 +31,6 @@
         "@suite-native/sentry": "workspace:*",
         "@suite-native/services": "workspace:*",
         "@suite-native/settings": "workspace:*",
-        "@suite-native/trading-types": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/device-utils": "workspace:*",
         "@trezor/styles-native": "workspace:*",
