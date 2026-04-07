@@ -9,8 +9,10 @@ import { InterceptorOptions } from '../src/types';
 const WHITELISTED_DOMAIN = 'url-that-is-valid-and-white-listed-but-does-not-exists.com';
 const NOT_WHITELISTED_DOMAIN = 'not-white-listed-but-does-not-exists.com';
 
-const OK_ERROR_SHORT = `getaddrinfo ENOTFOUND ${WHITELISTED_DOMAIN}`;
-const OK_ERROR_HTTPS = new RegExp(`.*${OK_ERROR_SHORT}`);
+// The specific DNS error code (ENOTFOUND, EBUSY, etc.) is irrelevant.
+// what matters is that the error is not "Request blocked, not whitelisted domain: ...".
+const OK_ERROR_SHORT = new RegExp(`getaddrinfo E\\w+ ${WHITELISTED_DOMAIN}`);
+const OK_ERROR_HTTPS = OK_ERROR_SHORT;
 
 const createWebSocket = (url: string) =>
     new Promise<void>((resolve, reject) => {
