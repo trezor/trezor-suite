@@ -73,7 +73,7 @@ export const YieldEarnProviderConsentModal = ({
             banners={
                 <YieldProviderConsentBanners
                     networkType={account.networkType}
-                    displaySymbol={displaySymbol}
+                    displaySymbol={supplySymbol}
                     providerName={providerName}
                 />
             }

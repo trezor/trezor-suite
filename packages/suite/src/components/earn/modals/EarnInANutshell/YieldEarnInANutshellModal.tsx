@@ -1,4 +1,5 @@
 import { Translation } from '@suite/intl';
+import { RewardDtoYieldSource } from '@suite-common/earn-api';
 import {
     EarnFlow,
     type EarnModalAction,
@@ -9,15 +10,16 @@ import { type Account } from '@suite-common/wallet-types';
 import { isStakingNetworkType } from '@suite-common/wallet-utils';
 import { Divider } from '@trezor/components';
 
+import { getApyPercent } from 'src/components/earn/utils/earnApyUtils';
+
 import { EarnInANutshellModalLayout } from './components/EarnInANutshellModalLayout';
 import {
     type EarnInANutshellProcess,
     EarnInANutshellProcesses,
 } from './components/EarnInANutshellProcesses';
-import { EarnInANutshellWithdrawalBadge } from './components/EarnInANutshellWithdrawalBadge';
-import { EarnSupplyingInfo } from './components/EarnSupplyingInfo';
-import { EarnWithdrawingInfo } from './components/EarnWithdrawingInfo';
 import { YieldEarnInANutshellHighlights } from './components/YieldEarnInANutshellHighlights';
+import { YieldSupplyingInfo } from './components/YieldSupplyingInfo';
+import { YieldWithdrawingInfo } from './components/YieldWithdrawingInfo';
 import { useEarnInANutshell } from './hooks/useEarnInANutshell';
 
 interface YieldEarnInANutshellModalProps {
@@ -35,7 +37,7 @@ export const YieldEarnInANutshellModal = ({
     actionType,
     yieldContext,
 }: YieldEarnInANutshellModalProps) => {
-    const { handleAction, onCancelClick, unstakingPeriod } = useEarnInANutshell({
+    const { handleAction, onCancelClick, vault } = useEarnInANutshell({
         flow: EarnFlow.Yield,
         provider,
         onCancel,
@@ -46,16 +48,24 @@ export const YieldEarnInANutshellModal = ({
 
     if (!isStakingNetworkType(account.networkType)) return null;
 
+    const supplySymbol = vault?.token.symbol ?? '';
+    const vaultSymbol = vault?.outputToken?.symbol;
+    const rewardsSymbols = vault?.rewardRate.components
+        .filter(c => c.yieldSource === RewardDtoYieldSource.protocol_incentive)
+        .map(c => c.token.symbol);
+    const yieldApy =
+        vault?.rewardRate?.total != null ? getApyPercent(vault.rewardRate.total) : null;
+
     const processes: EarnInANutshellProcess[] = [
         {
             heading: <Translation id="TR_EARN_SUPPLYING_PROCESS" />,
             badge: <Translation id="TR_TX_FEE" />,
-            content: <EarnSupplyingInfo account={account} flow={EarnFlow.Yield} />,
+            content: <YieldSupplyingInfo apy={yieldApy} />,
         },
         {
             heading: <Translation id="TR_EARN_WITHDRAWING_PROCESS" />,
-            badge: <EarnInANutshellWithdrawalBadge networkType={account.networkType} />,
-            content: <EarnWithdrawingInfo account={account} flow={EarnFlow.Yield} />,
+            badge: <Translation id="TR_TX_FEE" />,
+            content: <YieldWithdrawingInfo supplySymbol={supplySymbol} />,
         },
     ];
 
@@ -67,9 +77,9 @@ export const YieldEarnInANutshellModal = ({
             onAction={handleAction}
         >
             <YieldEarnInANutshellHighlights
-                networkType={account.networkType}
-                networkSymbol={account.symbol}
-                unstakingPeriod={unstakingPeriod}
+                supplySymbol={supplySymbol}
+                vaultSymbol={vaultSymbol}
+                rewardsSymbols={rewardsSymbols}
             />
             <Divider margin={{ top: 24, bottom: 16 }} />
             <EarnInANutshellProcesses items={processes} />
