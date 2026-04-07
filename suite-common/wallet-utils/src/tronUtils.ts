@@ -13,6 +13,12 @@ export type TronFeeBreakdown = {
     coveredBandwidth: BigNumber;
 };
 
+const { TRON_BANDWIDTH_SUN_PRICE } = tronUtils;
+
+export { TRON_BANDWIDTH_SUN_PRICE };
+
+export const tronAddressToHex = (address: string) => tronUtils.tronAddressToHex(address);
+
 export const calculateTronFeeBreakdown = (
     tx: GeneralPrecomposedTransaction | undefined,
     tronResources: TronAccountExtraData | undefined,

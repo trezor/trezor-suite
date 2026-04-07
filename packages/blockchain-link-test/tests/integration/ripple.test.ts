@@ -1,10 +1,10 @@
+import { BlockchainLink } from '@trezor/blockchain-link';
 import { BackendWebsocketServerMock } from '@trezor/e2e-utils';
 
 import {
     // rippleWorkerFactory,
     rippleModuleFactory,
 } from './worker';
-import { BlockchainLink } from '../../src';
 
 const backends = [
     // TODO: nodejs tests are failing, fix it.

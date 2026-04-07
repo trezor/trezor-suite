@@ -13,6 +13,7 @@ import {
     type PrecomposedTransaction,
 } from '@suite-common/wallet-types';
 import {
+    TRON_BANDWIDTH_SUN_PRICE,
     asAmountSubunit,
     asAmountUnit,
     calculateMax,
@@ -20,10 +21,10 @@ import {
     getAccountIdentity,
     getExternalComposeOutput,
     subunitsToUnits,
+    tronAddressToHex,
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
 import { type BlockchainLinkResponse } from '@trezor/blockchain-link';
-import { tronUtils } from '@trezor/blockchain-link-utils';
 import TrezorConnect, { type TokenInfo } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
@@ -319,12 +320,11 @@ export const composeTronTransactionFeeLevelsThunk = createThunk<
                 account.misc?.tronResources?.availableStakedBandwidth ?? 0,
                 account.misc?.tronResources?.availableFreeBandwidth ?? 0,
             );
-            const feeInSun =
-                availableBandwidth < bytes ? bytes * tronUtils.TRON_BANDWIDTH_SUN_PRICE : 0;
+            const feeInSun = availableBandwidth < bytes ? bytes * TRON_BANDWIDTH_SUN_PRICE : 0;
 
             feeLevel = {
                 feePerTx: String(feeInSun),
-                feePerUnit: String(tronUtils.TRON_BANDWIDTH_SUN_PRICE),
+                feePerUnit: String(TRON_BANDWIDTH_SUN_PRICE),
             };
         }
 
@@ -417,10 +417,10 @@ export const signTronSendFormTransactionThunk = createThunk<
             ? getTrc20FeeLimitSun(formState.feeLimit, precomposedTransaction.fee)
             : undefined;
 
-        const ownerHex = tronUtils.tronAddressToHex(selectedAccount.descriptor);
+        const ownerHex = tronAddressToHex(selectedAccount.descriptor);
         const recipientHex = token
-            ? tronUtils.tronAddressToHex(token.contract)
-            : tronUtils.tronAddressToHex(output.address);
+            ? tronAddressToHex(token.contract)
+            : tronAddressToHex(output.address);
 
         if (!ownerHex || !recipientHex) {
             return rejectWithValue({

@@ -23,6 +23,7 @@
         { "path": "../blockchain-link-solana" },
         { "path": "../blockchain-link-stellar" },
         { "path": "../blockchain-link-types" },
+        { "path": "../blockchain-link-utils" },
         { "path": "../connect-common" },
         { "path": "../connect-data" },
         { "path": "../crypto-utils" },

@@ -23,7 +23,13 @@
             "path": "../../packages/blockchain-link-solana"
         },
         {
+            "path": "../../packages/blockchain-link-stellar"
+        },
+        {
             "path": "../../packages/blockchain-link-types"
+        },
+        {
+            "path": "../../packages/blockchain-link-utils"
         },
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },

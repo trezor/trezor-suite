@@ -32,6 +32,7 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
+        "@noble/hashes": "^2.0.1",
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/utils": "workspace:*"
     },

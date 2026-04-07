@@ -35,6 +35,9 @@
             "path": "../blockchain-link-types"
         },
         {
+            "path": "../blockchain-link-utils"
+        },
+        {
             "path": "../connect-common"
         },
         {

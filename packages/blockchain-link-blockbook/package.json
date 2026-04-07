@@ -48,7 +48,8 @@
         "@trezor/blockchain-link-utils": "workspace:*",
         "@trezor/env-utils": "workspace:*",
         "@trezor/type-utils": "workspace:*",
-        "@trezor/utils": "workspace:*"
+        "@trezor/utils": "workspace:*",
+        "tiny-worker": "^2.3.0"
     },
     "devDependencies": {
         "@trezor/blockchain-link-blockfrost": "workspace:*",

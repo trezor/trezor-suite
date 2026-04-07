@@ -32,8 +32,8 @@ export function decode(buffer: Buffer) {
     if (hashTypeMod <= 0 || hashTypeMod >= 4) throw new Error(`Invalid hashType ${hashType}`);
 
     const decoded = bip66.decode(buffer.subarray(0, -1));
-    const r = fromDER(decoded.r);
-    const s = fromDER(decoded.s);
+    const r = fromDER(Buffer.from(decoded.r));
+    const s = fromDER(Buffer.from(decoded.s));
     const signature = Buffer.concat([r, s], 64);
 
     return { signature, hashType };

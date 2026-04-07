@@ -2,22 +2,26 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": {
         "outDir": "libDev",
+        "disableSourceOfProjectReferenceRedirect": true,
         "types": ["jest", "node", "web"]
     },
+    "include": [
+        "tests/**/*.ts",
+        "tests/**/*.d.ts",
+        "tests/**/*.json"
+    ],
     "references": [
         { "path": "../blockchain-link" },
         {
             "path": "../blockchain-link-blockbook"
         },
         {
-            "path": "../blockchain-link-blockfrost/tsconfig.json"
+            "path": "../blockchain-link-blockfrost"
         },
-        {
-            "path": "../blockchain-link-ripple/tsconfig.json"
-        },
-        {
-            "path": "../blockchain-link-stellar/tsconfig.json"
-        },
+        { "path": "../blockchain-link-electrum" },
+        { "path": "../blockchain-link-ripple" },
+        { "path": "../blockchain-link-solana" },
+        { "path": "../blockchain-link-stellar" },
         { "path": "../e2e-utils" },
         { "path": "../blockchain-link-types" },
         { "path": "../eslint" }

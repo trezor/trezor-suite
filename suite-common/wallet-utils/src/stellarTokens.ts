@@ -1,6 +1,6 @@
 import type { Account, StellarTokenInfo } from '@suite-common/wallet-types';
-import type { TokenDetailByMint } from '@trezor/blockchain-link-types';
 import { STELLAR_DECIMALS, getTokenMetadata } from '@trezor/blockchain-link-stellar/src/utils';
+import type { TokenDetailByMint } from '@trezor/blockchain-link-types';
 
 /** Get the list of inactive Stellar tokens for the user account */
 export const getStellarInactiveTokens = async (account: Account): Promise<StellarTokenInfo[]> => {
