@@ -6,6 +6,7 @@ import { TRADING_BUY_THUNK_PREFIX } from '../../constants';
 import { invityAPI } from '../../invityAPI';
 import { type BuyInfo } from '../../reducers/buyReducer';
 import { regional } from '../../regional';
+import { toTradingCountryCode } from '../../utils/countryUtils';
 
 export const loadBuyInfoThunk = createThunk<BuyInfo>(
     `${TRADING_BUY_THUNK_PREFIX}/loadInfo`,
@@ -41,7 +42,10 @@ export const loadBuyInfoThunk = createThunk<BuyInfo>(
         });
 
         return fulfillWithValue({
-            buyInfo,
+            buyInfo: {
+                ...buyInfo,
+                country: toTradingCountryCode(buyInfo.country),
+            },
             providerInfos,
             supportedFiatCurrencies,
             supportedCryptoCurrencies,
