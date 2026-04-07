@@ -108,7 +108,7 @@
         "electron": "40.8.5",
         "@types/node": "22.13.10",
         "bn.js": "5.2.3",
-        "node-addon-api": "8.5.0",
+        "node-addon-api": "8.6.0",
         "node-gyp": "12.2.0",
         "reselect": "5.1.1",
         "### We need promise to be same version in mobile unless it produces undefined behavior, check PR #15815": "1.0.0",

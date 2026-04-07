@@ -40,10 +40,10 @@
         "expo-system-ui": "~55.0.9",
         "react": "19.2.4",
         "react-native": "0.83.2",
-        "react-native-edge-to-edge": "1.7.0",
-        "react-native-keyboard-controller": "1.20.7",
-        "react-native-reanimated": "~4.2.1",
-        "react-native-safe-area-context": "5.6.2",
+        "react-native-edge-to-edge": "^1.8.1",
+        "react-native-keyboard-controller": "^1.21.2",
+        "react-native-reanimated": "^4.2.3",
+        "react-native-safe-area-context": "^5.7.0",
         "react-redux": "9.2.0",
         "type-fest": "4.24.0"
     }

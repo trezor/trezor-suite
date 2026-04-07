@@ -37,14 +37,14 @@
         "react-dom": "19.2.4",
         "react-inspector": "^6.0.2",
         "react-markdown": "^10.1.0",
-        "react-medium-image-zoom": "^5.4.0",
+        "react-medium-image-zoom": "^5.4.1",
         "react-redux": "9.2.0",
         "redux": "^5.0.1",
         "redux-logger": "^3.0.6",
         "redux-thunk": "^3.1.0",
         "remark-gemoji": "^8.0.0",
         "remark-gfm": "^4.0.1",
-        "styled-components": "^6.3.9",
+        "styled-components": "^6.3.12",
         "swr": "^2.3.3"
     },
     "devDependencies": {

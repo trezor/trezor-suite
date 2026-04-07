@@ -32,7 +32,7 @@
         "babel-plugin-styled-components": "^2.1.4",
         "copy-webpack-plugin": "^13.0.1",
         "crypto-browserify": "3.12.0",
-        "css-minimizer-webpack-plugin": "^7.0.4",
+        "css-minimizer-webpack-plugin": "^8.0.0",
         "dotenv": "17.2.3",
         "html-webpack-plugin": "5.6.6",
         "raw-loader": "^4.0.2",
@@ -48,14 +48,14 @@
     "devDependencies": {
         "@originjs/vite-plugin-commonjs": "^1.0.3",
         "@pmmmwh/react-refresh-webpack-plugin": "^0.6.2",
-        "@rolldown/plugin-babel": "^0.2.1",
+        "@rolldown/plugin-babel": "^0.2.2",
         "@sentry/webpack-plugin": "^5.1.1",
         "@trezor/eslint": "workspace:*",
         "@types/webpack-bundle-analyzer": "^4.7.0",
         "@types/webpack-plugin-serve": "^1.4.7",
         "@vitejs/plugin-react": "^6.0.1",
         "react-refresh": "^0.18.0",
-        "vite": "^8.0.0",
+        "vite": "^8.0.2",
         "vite-plugin-wasm": "^3.6.0"
     }
 }

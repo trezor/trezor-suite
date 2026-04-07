@@ -44,7 +44,7 @@
         "expo-linking": "~55.0.7",
         "react": "19.2.4",
         "react-native": "0.83.2",
-        "react-native-reanimated": "~4.2.1",
+        "react-native-reanimated": "^4.2.3",
         "react-redux": "9.2.0",
         "web3-utils": "^4.3.2"
     }

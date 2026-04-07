@@ -56,9 +56,9 @@
         "jotai": "2.17.1",
         "react": "19.2.4",
         "react-native": "0.83.2",
-        "react-native-reanimated": "~4.2.1",
-        "react-native-safe-area-context": "5.6.2",
-        "react-native-svg": "15.15.3",
+        "react-native-reanimated": "^4.2.3",
+        "react-native-safe-area-context": "^5.7.0",
+        "react-native-svg": "^15.15.4",
         "react-redux": "9.2.0"
     }
 }

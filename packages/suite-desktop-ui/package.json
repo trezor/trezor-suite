@@ -31,13 +31,13 @@
         "react": "19.2.4",
         "react-dom": "19.2.4",
         "react-redux": "9.2.0",
-        "styled-components": "^6.3.9"
+        "styled-components": "^6.3.12"
     },
     "devDependencies": {
         "@types/react": "19.2.14",
         "@types/react-dom": "19.2.3",
         "postcss-styled-syntax": "^0.7.1",
-        "stylelint": "^17.1.1",
+        "stylelint": "^17.5.0",
         "stylelint-config-standard": "^40.0.0"
     }
 }

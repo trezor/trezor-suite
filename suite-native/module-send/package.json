@@ -59,8 +59,8 @@
         "react": "19.2.4",
         "react-hook-form": "^7.71.2",
         "react-native": "0.83.2",
-        "react-native-reanimated": "~4.2.1",
-        "react-native-svg": "15.15.3",
+        "react-native-reanimated": "^4.2.3",
+        "react-native-svg": "^15.15.4",
         "react-redux": "9.2.0",
         "web3-utils": "^4.3.2"
     },
