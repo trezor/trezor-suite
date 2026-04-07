@@ -43,7 +43,6 @@ export const useExchangeFlow = () => {
     const quoteStatus = quote?.status;
 
     // TODO 25742 should it be here or in component?
-    // TODO 25742 similar logic to redirect from confirming screen
     // TODO tests
     useFocusEffect(
         useCallback(() => {
