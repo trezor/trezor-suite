@@ -37,7 +37,7 @@
         "type-check:all": "yarn nx run-many --target=type-check",
         "test:unit": "yarn nx affected --target=test:unit",
         "test:unit:suite": "yarn nx affected --target=test:unit --exclude='@suite-native/*'",
-        "test:unit:native": "yarn nx affected --target=test:unit --exclude='@trezor/*,@suite/*,@suite-common/*'",
+        "test:unit:native": "yarn nx affected --target=test:unit --exclude='@trezor/*,@suite/*,@suite-common/*,@suite-native/module-trading'",
         "test:unit:all": "yarn nx run-many --target=test:unit",
         "lint:js": "yarn nx affected --target=lint:js",
         "lint:js:fix": "yarn lint:js --fix",
