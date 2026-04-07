@@ -1,10 +1,6 @@
+import { FormattedList } from 'react-intl';
+
 import { Translation } from '@suite/intl';
-import {
-    type NetworkSymbol,
-    type StakingNetworkType,
-    getNetworkDisplaySymbol,
-} from '@suite-common/wallet-config';
-import { exhaustive } from '@trezor/type-utils';
 
 import {
     type EarnInANutshellHighlight,
@@ -12,114 +8,58 @@ import {
 } from './EarnInANutshellHighlights';
 
 interface YieldEarnInANutshellHighlightsProps {
-    networkType: StakingNetworkType;
-    networkSymbol: NetworkSymbol;
-    unstakingPeriod?: number;
+    supplySymbol: string;
+    vaultSymbol?: string;
+    rewardsSymbols?: string[];
 }
 
 export const YieldEarnInANutshellHighlights = ({
-    networkType,
-    networkSymbol,
-    unstakingPeriod,
+    supplySymbol,
+    vaultSymbol,
+    rewardsSymbols,
 }: YieldEarnInANutshellHighlightsProps) => {
-    const networkDisplaySymbol = getNetworkDisplaySymbol(networkSymbol);
-
-    const highlights: EarnInANutshellHighlight[] = (() => {
-        switch (networkType) {
-            case 'ethereum':
-                return [
-                    {
-                        icon: 'lockSimple',
-                        content: (
-                            <Translation
-                                id="TR_EARN_STAKED_AMOUNT_LOCKED"
-                                values={{ networkDisplaySymbol }}
-                            />
-                        ),
-                    },
-                    {
-                        icon: 'handCoins',
-                        content: (
-                            <Translation
-                                id="TR_EARN_STAKE_REWARDS"
-                                values={{ networkDisplaySymbol }}
-                            />
-                        ),
-                    },
-                    {
-                        icon: 'arrowBendDoubleUpLeft',
-                        content: (
-                            <Translation
-                                id="TR_EARN_ETH_UNSTAKING_TAKES"
-                                values={{ count: unstakingPeriod }}
-                            />
-                        ),
-                    },
-                ];
-            case 'solana':
-                return [
-                    {
-                        icon: 'lockSimple',
-                        content: (
-                            <Translation
-                                id="TR_EARN_STAKED_AMOUNT_LOCKED"
-                                values={{ networkDisplaySymbol }}
-                            />
-                        ),
-                    },
-                    {
-                        icon: 'handCoins',
-                        content: (
-                            <Translation
-                                id="TR_EARN_STAKE_REWARDS"
-                                values={{ networkDisplaySymbol }}
-                            />
-                        ),
-                    },
-                    {
-                        icon: 'arrowBendDoubleUpLeft',
-                        content: (
-                            <Translation
-                                id="TR_EARN_SOL_UNSTAKING_TAKES"
-                                values={{ count: unstakingPeriod }}
-                            />
-                        ),
-                    },
-                ];
-            case 'cardano':
-                return [
-                    {
-                        icon: 'wallet',
-                        content: (
-                            <Translation
-                                id="TR_EARN_YOUR_FUNDS_STAY_ACCESSIBLE"
-                                values={{ networkDisplaySymbol }}
-                            />
-                        ),
-                    },
-                    {
-                        icon: 'handCoins',
-                        content: (
-                            <Translation
-                                id="TR_EARN_STAKE_ALL_YOUR_FUNDS_IS_STAKED"
-                                values={{ networkDisplaySymbol }}
-                            />
-                        ),
-                    },
-                    {
-                        icon: 'scroll',
-                        content: (
-                            <Translation
-                                id="TR_EARN_RETURNABLE_DEPOSIT_IS_REQUIRED"
-                                values={{ networkDisplaySymbol }}
-                            />
-                        ),
-                    },
-                ];
-            default:
-                return exhaustive(networkType);
-        }
-    })();
+    const highlights: EarnInANutshellHighlight[] = [
+        {
+            icon: 'lockSimple',
+            content: (
+                <Translation id="TR_EARN_YIELD_NUTSHELL_AMOUNT_LOCKED" values={{ supplySymbol }} />
+            ),
+        },
+        {
+            icon: 'handCoins',
+            content: <Translation id="TR_EARN_YIELD_NUTSHELL_COMPOUND_INTEREST" />,
+        },
+        ...(vaultSymbol !== undefined
+            ? [
+                  {
+                      icon: 'coins' as const,
+                      content: (
+                          <Translation
+                              id="TR_EARN_YIELD_NUTSHELL_VAULT_TOKENS"
+                              values={{ supplySymbol, vaultSymbol }}
+                          />
+                      ),
+                  },
+              ]
+            : []),
+        ...(rewardsSymbols !== undefined && rewardsSymbols.length > 0
+            ? [
+                  {
+                      icon: 'plusCircle' as const,
+                      content: (
+                          <Translation
+                              id="TR_EARN_YIELD_NUTSHELL_PROTOCOL_REWARDS"
+                              values={{
+                                  rewardsSymbol: (
+                                      <FormattedList type="conjunction" value={rewardsSymbols} />
+                                  ),
+                              }}
+                          />
+                      ),
+                  },
+              ]
+            : []),
+    ];
 
     return <EarnInANutshellHighlights items={highlights} />;
 };
