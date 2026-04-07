@@ -7,11 +7,10 @@ import {
     selectTradingExchangeActiveQuote,
 } from '@suite-common/trading';
 import { Translation } from '@suite-native/intl';
-import { ScreenHeader } from '@suite-native/navigation';
-import type { ConfirmationVariant } from '@suite-native/trading-types';
+import { ScreenHeader, type TradingConfirmationVariant } from '@suite-native/navigation';
 
 export type ExchangeConfirmationHeaderProps = {
-    variant: ConfirmationVariant;
+    variant: TradingConfirmationVariant;
 };
 
 export const ExchangeConfirmationHeader = ({ variant }: ExchangeConfirmationHeaderProps) => {

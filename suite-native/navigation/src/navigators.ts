@@ -12,7 +12,6 @@ import {
     type XpubAddress,
 } from '@suite-common/wallet-types';
 import { type ExperimentalFeature } from '@suite-native/settings';
-import type { ConfirmationVariant } from '@suite-native/trading-types';
 import { type AccountInfo } from '@trezor/connect';
 import { type DeviceModelInternal } from '@trezor/device-utils';
 
@@ -67,6 +66,8 @@ export type DeviceCompromisedModalFailedCheck =
     | 'device-authenticity'
     | 'entropy'
     | 'firmware-authenticity';
+
+export type TradingConfirmationVariant = 'approve' | 'revoke';
 
 type AccountDetailParams = {
     accountKey?: AccountKey;
@@ -477,7 +478,7 @@ export type TradingStackParamList = {
         orderId: string;
     };
     [TradingStackRoutes.TradingConfirming]: {
-        variant: ConfirmationVariant;
+        variant: TradingConfirmationVariant;
     };
 };
 
