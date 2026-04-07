@@ -20,8 +20,14 @@ export type WithSuiteSyncState = {
 
 export type WithSuiteSyncAndDeviceState = WithSuiteSyncState & DeviceRootState;
 
-export const selectIsSuiteSyncEnabled = (state: WithSuiteSyncAndDeviceState): boolean =>
-    state.suiteSync.settings.isSuiteSyncEnabled;
+/** Suite Sync is enabled by default; the message system can remotely disable it via `settings.suiteSync`. */
+export const selectIsSuiteSyncFeatureAvailable = (state: MessageSystemRootState) =>
+    selectIsFeatureEnabled(state, Feature.suiteSync, true);
+
+export const selectIsSuiteSyncEnabled = (
+    state: WithSuiteSyncAndDeviceState & MessageSystemRootState,
+): boolean =>
+    state.suiteSync.settings.isSuiteSyncEnabled && selectIsSuiteSyncFeatureAvailable(state);
 
 export const selectIsSuiteSyncDebugEnabled = (state: WithSuiteSyncAndDeviceState): boolean =>
     state.suiteSync.settings.isSuiteSyncDebugEnabled;
@@ -46,7 +52,7 @@ export const selectSuiteSyncOwnerForDeviceStaticId = (
         : null;
 
 export const selectSuiteSyncInteraction = (
-    state: WithSuiteSyncAndDeviceState,
+    state: WithSuiteSyncAndDeviceState & MessageSystemRootState,
     deviceStaticSessionId: StaticSessionId | null,
 ): SuiteSyncInteraction | null => {
     if (deviceStaticSessionId === null) {
@@ -90,7 +96,3 @@ export const selectHasDeviceSuiteSyncError = (
 
     return state.suiteSync.suiteSyncErrors[deviceStaticSessionId] !== undefined;
 };
-
-/** Suite Sync is enabled by default; the message system can remotely disable it via `settings.suiteSync`. */
-export const selectIsSuiteSyncFeatureAvailable = (state: MessageSystemRootState) =>
-    selectIsFeatureEnabled(state, Feature.suiteSync, true);

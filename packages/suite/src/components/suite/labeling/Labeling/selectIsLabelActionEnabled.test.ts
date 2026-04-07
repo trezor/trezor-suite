@@ -126,11 +126,22 @@ describe(selectIsLabelActionEnabled.name, () => {
     const testLabelActionEnabled = ({
         unavailableCapabilities,
         isSuiteSyncFeatureEnabled,
+        isSuiteSyncEnabled = false,
     }: {
         unavailableCapabilities: UnavailableCapabilities;
         isSuiteSyncFeatureEnabled: boolean;
+        isSuiteSyncEnabled?: boolean;
     }) => {
-        const state = createMockState({ unavailableCapabilities }, {}, isSuiteSyncFeatureEnabled);
+        const state = createMockState(
+            { unavailableCapabilities },
+            {
+                settings: {
+                    ...initialSuiteSyncDesktopState.settings,
+                    isSuiteSyncEnabled,
+                },
+            },
+            isSuiteSyncFeatureEnabled,
+        );
 
         return selectIsLabelActionEnabled(state, DEVICE_STATIC_SESSION_ID_123, 'address-123');
     };
@@ -139,6 +150,7 @@ describe(selectIsLabelActionEnabled.name, () => {
         const result = testLabelActionEnabled({
             unavailableCapabilities: { evolu: 'update-required' },
             isSuiteSyncFeatureEnabled: true,
+            isSuiteSyncEnabled: true,
         });
 
         expect(result).toBe(true);
@@ -148,6 +160,7 @@ describe(selectIsLabelActionEnabled.name, () => {
         const result = testLabelActionEnabled({
             unavailableCapabilities: { evolu: 'no-capability' },
             isSuiteSyncFeatureEnabled: true,
+            isSuiteSyncEnabled: true,
         });
 
         expect(result).toBe(false);
@@ -184,6 +197,18 @@ describe(selectIsLabelActionEnabled.name, () => {
         const result = testLabelActionEnabled({
             unavailableCapabilities: {},
             isSuiteSyncFeatureEnabled: false,
+        });
+
+        expect(result).toBe(true);
+    });
+
+    it('falls back to legacy labeling when Suite Sync feature is available but disabled', () => {
+        mocked(selectIsLabelingAvailableForEntity).mockReturnValue(true);
+        mocked(selectIsLabelingInitPossible).mockReturnValue(false);
+
+        const result = testLabelActionEnabled({
+            unavailableCapabilities: {},
+            isSuiteSyncFeatureEnabled: true,
         });
 
         expect(result).toBe(true);
