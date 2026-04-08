@@ -1,8 +1,12 @@
 # Storage changelog
 
-## 26.4.0.1
+## 26.4.0.2
 
 - rename `experimentalFeedback` object store to `featureFeedback`
+
+## 26.4.0.1
+
+- ensure `descriptor.apiType` is set to `usb` for remembered devices from old Suite versions
 
 ## 26.4.0
 
