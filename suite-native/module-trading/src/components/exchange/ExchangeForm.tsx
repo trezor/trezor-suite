@@ -14,6 +14,7 @@ import { AmountEditingDoneButton } from '@suite-native/trading-atoms';
 import { ExchangeAlert } from './ExchangeAlert';
 import { ExchangeCard } from './ExchangeCard';
 import { ExchangeConfirmation } from './ExchangeConfirmation';
+import { ExchangeFormQuoteDebugView } from './ExchangeFormQuoteDebugView';
 import { ExchangeRateAndProviderPicker } from './ExchangeRateAndProviderPicker';
 import { ExchangeReceiveAccountPicker } from './receive/ExchangeReceiveAccountPicker';
 import { useExchangeFormContext } from '../../hooks/exchange/useExchangeFormContext';
@@ -33,6 +34,7 @@ const cardExitingAnimation = Platform.OS === 'android' ? StretchOutY : FadeOutUp
 const ExchangeFormMemoized = memo(({ isAmountInputActive }: ExchangeFormMemoizedProps) => (
     <AnimatedBox layout={LinearTransition}>
         <VStack spacing="sp16" testID={EXCHANGE_FORM_TEST_ID}>
+            <ExchangeFormQuoteDebugView />
             <ExchangeAlert />
             <ExchangeCard isAmountInputActive={isAmountInputActive} />
             {isAmountInputActive ? (
