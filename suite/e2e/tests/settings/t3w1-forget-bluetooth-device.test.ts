@@ -24,19 +24,17 @@ test.describe('Forget TS7 with Bluetooth credentials', { tag: ['@T3W1', '@deskto
         const deviceId: string = await test.step('Get device ID from Redux', async () => {
             await page.ensureStoreOnDesktop();
 
-            return page.evaluate(() => window.store.getState().device.selectedDevice?.id);
+            return page.getReduxObject('device.selectedDevice.id');
         });
 
         await test.step('Inject Bluetooth state to simulate known BT device', async () => {
             await page.evaluate(
                 ({ deviceId: devId }) => {
-                    // Set BT adapter as enabled
                     window.store.dispatch({
                         type: '@suite/bluetooth/adapter-event',
                         payload: { status: 'enabled' },
                     });
 
-                    // Add a known BT device linked to the emulator device
                     window.store.dispatch({
                         type: '@suite/bluetooth/known-devices-update',
                         payload: {
@@ -56,7 +54,6 @@ test.describe('Forget TS7 with Bluetooth credentials', { tag: ['@T3W1', '@deskto
                         },
                     });
 
-                    // Set lastConnectedVia to 'bluetooth' in persistent device data
                     const entry = window.store
                         .getState()
                         .device.persistentDeviceData?.find(
@@ -75,35 +72,26 @@ test.describe('Forget TS7 with Bluetooth credentials', { tag: ['@T3W1', '@deskto
         });
 
         await test.step('Click Forget device button', async () => {
-            await page.getByTestId('@settings/device/forget-button').scrollIntoViewIfNeeded();
-            await page.getByTestId('@settings/device/forget-button').click();
+            await settingsPage.deviceTab.forgetDeviceButton.scrollIntoViewIfNeeded();
+            await settingsPage.deviceTab.forgetDeviceButton.click();
         });
 
         await test.step('Confirm forget in the confirmation modal', async () => {
-            // ThpCableConnectedForgetFlow step 1: ConfirmationModal
-            await page
-                .getByTestId('@settings/device/forget-confirmation-modal')
-                .waitFor({ state: 'visible' });
-            await page.getByTestId('@settings/device/forget-confirm').click();
+            await expect(settingsPage.deviceTab.forgetConfirmationModal).toBeVisible();
+            await settingsPage.deviceTab.forgetConfirmButton.click();
         });
 
         await test.step('Complete OS removal step', async () => {
-            // ThpCableConnectedForgetFlow step 2: OsAndTrezorCleanupModal
-            await page
-                .getByTestId('@settings/device/forget-cleanup-modal')
-                .waitFor({ state: 'visible' });
-            await page.getByTestId('@settings/device/forget-os-removal-confirm').click();
+            await expect(settingsPage.deviceTab.forgetCleanupModal).toBeVisible();
+            await settingsPage.deviceTab.forgetOsRemovalConfirmButton.click();
         });
 
         await test.step('Complete Trezor removal step', async () => {
-            await page.getByTestId('@settings/device/forget-trezor-removal-confirm').click();
+            await settingsPage.deviceTab.forgetTrezorRemovalConfirmButton.click();
         });
 
         await test.step('Unplug device to complete forget', async () => {
-            // ThpCableConnectedForgetFlow step 3: UnplugDeviceModal
-            await page
-                .getByTestId('@settings/device/forget-unplug-modal')
-                .waitFor({ state: 'visible' });
+            await expect(settingsPage.deviceTab.forgetUnplugModal).toBeVisible();
             await device.powerOff();
         });
 

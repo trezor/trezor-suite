@@ -16,24 +16,17 @@ test.describe('Forget TS5', { tag: ['@T3T1', '@desktopOnly'] }, () => {
         });
 
         await test.step('Click Forget device button', async () => {
-            await page.getByTestId('@settings/device/forget-button').scrollIntoViewIfNeeded();
-            await page.getByTestId('@settings/device/forget-button').click();
+            await settingsPage.deviceTab.forgetDeviceButton.scrollIntoViewIfNeeded();
+            await settingsPage.deviceTab.forgetDeviceButton.click();
         });
 
         await test.step('Confirm forget in the confirmation modal', async () => {
-            // ConnectedCableForgetFlow step 1: ConfirmationModal
-            await page
-                .getByTestId('@settings/device/forget-confirmation-modal')
-                .waitFor({ state: 'visible' });
-            await page.getByTestId('@settings/device/forget-confirm').click();
+            await expect(settingsPage.deviceTab.forgetConfirmationModal).toBeVisible();
+            await settingsPage.deviceTab.forgetConfirmButton.click();
         });
 
         await test.step('Unplug device to complete forget', async () => {
-            // ConnectedCableForgetFlow step 2: UnplugDeviceModal
-            // Power off the emulator to simulate unplugging the cable
-            await page
-                .getByTestId('@settings/device/forget-unplug-modal')
-                .waitFor({ state: 'visible' });
+            await expect(settingsPage.deviceTab.forgetUnplugModal).toBeVisible();
             await device.powerOff();
         });
 
@@ -68,16 +61,13 @@ test.describe('Forget TS5', { tag: ['@T3T1', '@desktopOnly'] }, () => {
         });
 
         await test.step('Click Forget device button', async () => {
-            await page.getByTestId('@settings/device/forget-button').scrollIntoViewIfNeeded();
-            await page.getByTestId('@settings/device/forget-button').click();
+            await settingsPage.deviceTab.forgetDeviceButton.scrollIntoViewIfNeeded();
+            await settingsPage.deviceTab.forgetDeviceButton.click();
         });
 
         await test.step('Confirm forget in the confirmation modal', async () => {
-            // ImmediateForgetFlow: ConfirmationModal → forget immediately
-            await page
-                .getByTestId('@settings/device/forget-confirmation-modal')
-                .waitFor({ state: 'visible' });
-            await page.getByTestId('@settings/device/forget-confirm').click();
+            await expect(settingsPage.deviceTab.forgetConfirmationModal).toBeVisible();
+            await settingsPage.deviceTab.forgetConfirmButton.click();
         });
 
         await test.step('Verify landing on starting screen', async () => {

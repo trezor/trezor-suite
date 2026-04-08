@@ -15,6 +15,17 @@ export class DeviceTab {
     readonly firmwareReconnectDevice: Locator;
     readonly autoconnectSwitch: Locator;
 
+    // Forget device flow
+    readonly forgetDeviceButton: Locator;
+    readonly forgetConfirmButton: Locator;
+    readonly forgetConfirmationModal: Locator;
+    readonly forgetCleanupModal: Locator;
+    readonly forgetUnplugModal: Locator;
+    readonly forgetBtRemovalModal: Locator;
+    readonly forgetOsRemovalConfirmButton: Locator;
+    readonly forgetTrezorRemovalConfirmButton: Locator;
+    readonly forgetBtRemovalGotItButton: Locator;
+
     constructor(private readonly page: Page) {
         this.createMultiShareBackupButton = page.getByTestId(
             '@settings/device/create-multi-share-backup-button',
@@ -35,6 +46,25 @@ export class DeviceTab {
         this.firmwareConfirmSeedButton = page.getByTestId('@firmware/confirm-seed-button');
         this.firmwareReconnectDevice = page.getByTestId('@firmware/reconnect-device');
         this.autoconnectSwitch = page.getByTestId('@settings/device/thp-autoconnect');
+
+        // Forget device flow
+        this.forgetDeviceButton = page.getByTestId('@settings/device/forget-button');
+        this.forgetConfirmButton = page.getByTestId('@settings/device/forget-confirm');
+        this.forgetConfirmationModal = page.getByTestId(
+            '@settings/device/forget-confirmation-modal',
+        );
+        this.forgetCleanupModal = page.getByTestId('@settings/device/forget-cleanup-modal');
+        this.forgetUnplugModal = page.getByTestId('@settings/device/forget-unplug-modal');
+        this.forgetBtRemovalModal = page.getByTestId('@settings/device/forget-bt-removal-modal');
+        this.forgetOsRemovalConfirmButton = page.getByTestId(
+            '@settings/device/forget-os-removal-confirm',
+        );
+        this.forgetTrezorRemovalConfirmButton = page.getByTestId(
+            '@settings/device/forget-trezor-removal-confirm',
+        );
+        this.forgetBtRemovalGotItButton = page.getByTestId(
+            '@settings/device/forget-bt-removal-got-it',
+        );
     }
 
     @step()

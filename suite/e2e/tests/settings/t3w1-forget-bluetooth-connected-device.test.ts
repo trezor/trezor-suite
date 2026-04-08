@@ -26,7 +26,7 @@ test.describe('Forget TS7', { tag: ['@T3W1', '@desktopOnly'] }, () => {
         const deviceId: string = await test.step('Get device ID from Redux', async () => {
             await page.ensureStoreOnDesktop();
 
-            return page.evaluate(() => window.store.getState().device.selectedDevice?.id);
+            return page.getReduxObject('device.selectedDevice.id');
         });
 
         await test.step('Power off emulator to stop USB events', async () => {
@@ -36,13 +36,11 @@ test.describe('Forget TS7', { tag: ['@T3W1', '@desktopOnly'] }, () => {
         await test.step('Inject Bluetooth state', async () => {
             await page.evaluate(
                 ({ deviceId: devId }) => {
-                    // Set BT adapter as enabled
                     window.store.dispatch({
                         type: '@suite/bluetooth/adapter-event',
                         payload: { status: 'enabled' },
                     });
 
-                    // Add a known BT device linked to the emulator device
                     window.store.dispatch({
                         type: '@suite/bluetooth/known-devices-update',
                         payload: {
@@ -62,7 +60,6 @@ test.describe('Forget TS7', { tag: ['@T3W1', '@desktopOnly'] }, () => {
                         },
                     });
 
-                    // Set lastConnectedVia to 'bluetooth' in persistent device data
                     const entry = window.store
                         .getState()
                         .device.persistentDeviceData?.find(
@@ -81,28 +78,22 @@ test.describe('Forget TS7', { tag: ['@T3W1', '@desktopOnly'] }, () => {
         });
 
         await test.step('Click Forget device button', async () => {
-            await page.getByTestId('@settings/device/forget-button').scrollIntoViewIfNeeded();
-            await page.getByTestId('@settings/device/forget-button').click();
+            await settingsPage.deviceTab.forgetDeviceButton.scrollIntoViewIfNeeded();
+            await settingsPage.deviceTab.forgetDeviceButton.click();
         });
 
         await test.step('Confirm forget in the confirmation modal', async () => {
-            // ThpBtKnownForgetFlow step 1: ConfirmationModal
-            await page
-                .getByTestId('@settings/device/forget-confirmation-modal')
-                .waitFor({ state: 'visible' });
-            await page.getByTestId('@settings/device/forget-confirm').click();
+            await expect(settingsPage.deviceTab.forgetConfirmationModal).toBeVisible();
+            await settingsPage.deviceTab.forgetConfirmButton.click();
         });
 
         await test.step('Complete OS removal step', async () => {
-            // ThpBtKnownForgetFlow step 2: OsAndTrezorCleanupModal
-            await page
-                .getByTestId('@settings/device/forget-cleanup-modal')
-                .waitFor({ state: 'visible' });
-            await page.getByTestId('@settings/device/forget-os-removal-confirm').click();
+            await expect(settingsPage.deviceTab.forgetCleanupModal).toBeVisible();
+            await settingsPage.deviceTab.forgetOsRemovalConfirmButton.click();
         });
 
         await test.step('Complete Trezor removal step', async () => {
-            await page.getByTestId('@settings/device/forget-trezor-removal-confirm').click();
+            await settingsPage.deviceTab.forgetTrezorRemovalConfirmButton.click();
         });
 
         await test.step('Verify landing on starting screen', async () => {
@@ -141,16 +132,13 @@ test.describe('Forget TS7', { tag: ['@T3W1', '@desktopOnly'] }, () => {
         });
 
         await test.step('Click Forget device button', async () => {
-            await page.getByTestId('@settings/device/forget-button').scrollIntoViewIfNeeded();
-            await page.getByTestId('@settings/device/forget-button').click();
+            await settingsPage.deviceTab.forgetDeviceButton.scrollIntoViewIfNeeded();
+            await settingsPage.deviceTab.forgetDeviceButton.click();
         });
 
         await test.step('Confirm forget in the confirmation modal', async () => {
-            // ImmediateForgetFlow: ConfirmationModal → forget immediately
-            await page
-                .getByTestId('@settings/device/forget-confirmation-modal')
-                .waitFor({ state: 'visible' });
-            await page.getByTestId('@settings/device/forget-confirm').click();
+            await expect(settingsPage.deviceTab.forgetConfirmationModal).toBeVisible();
+            await settingsPage.deviceTab.forgetConfirmButton.click();
         });
 
         await test.step('Verify landing on starting screen', async () => {
