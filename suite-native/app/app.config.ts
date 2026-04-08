@@ -141,6 +141,8 @@ const getPlugins = (): ExpoPlugins => {
                 ios: {
                     deploymentTarget: '15.1',
                 },
+                buildReactNativeFromSource: true,
+                useHermesV1: true,
             },
         ],
         '@trezor/react-native-usb/plugins/withUSBDevice.js',

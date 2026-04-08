@@ -99,6 +99,7 @@
         "s": "yarn native:start"
     },
     "resolutions": {
+        "hermes-compiler": "250829098.0.4",
         "typescript": "5.8.3",
         "prettier": "3.8.1",
         "react-native": "0.83.2",
