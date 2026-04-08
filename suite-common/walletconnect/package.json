@@ -35,6 +35,10 @@
         "@walletconnect/core": "^2.21.5",
         "@walletconnect/types": "2.21.4",
         "@walletconnect/utils": "^2.21.5",
-        "bs58": "^6.0.0"
+        "bs58": "^6.0.0",
+        "json-bigint": "^1.0.0"
+    },
+    "devDependencies": {
+        "@types/json-bigint": "^1"
     }
 }
