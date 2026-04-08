@@ -27,7 +27,12 @@ export const RemoveFromBluetoothSettingsModal = ({
                     <Modal.Button onClick={handleOpenBluetoothSettings}>
                         <Translation id="TR_BLUETOOTH_OPEN_BLUETOOTH_SETTINGS" />
                     </Modal.Button>
-                    <Modal.Button intent="neutral" priority="secondary" onClick={onGotIt}>
+                    <Modal.Button
+                        data-testid="@settings/device/forget-bt-removal-got-it"
+                        intent="neutral"
+                        priority="secondary"
+                        onClick={onGotIt}
+                    >
                         <Translation id="TR_GOT_IT" />
                     </Modal.Button>
                 </>
