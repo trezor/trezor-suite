@@ -22,7 +22,7 @@
         "@suite-common/suite-sync-types": "workspace:*",
         "@trezor/connect": "workspace:*",
         "expo": "~55.0.3",
-        "expo-sqlite": "~55.0.10",
+        "expo-sqlite": "~55.0.11",
         "react-redux": "9.2.0"
     }
 }
