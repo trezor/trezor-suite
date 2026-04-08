@@ -52,7 +52,7 @@
         "@trezor/eslint": "workspace:*",
         "@types/react": "19.2.14",
         "@types/zxcvbn": "4.4.5",
-        "babel-loader": "^10.0.0",
+        "babel-loader": "^10.1.1",
         "postcss-styled-syntax": "^0.7.1",
         "storybook": "^10.2.8",
         "stylelint": "^17.1.1",

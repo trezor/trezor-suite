@@ -28,7 +28,7 @@
         "@suite/router-config": "workspace:*",
         "@trezor/bundler-security": "workspace:*",
         "@trezor/env-utils": "workspace:*",
-        "babel-loader": "^10.0.0",
+        "babel-loader": "^10.1.1",
         "babel-plugin-styled-components": "^2.1.4",
         "copy-webpack-plugin": "^13.0.1",
         "crypto-browserify": "3.12.0",
