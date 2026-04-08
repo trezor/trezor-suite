@@ -35,7 +35,7 @@ export const UnplugDeviceModal = ({
     }, [onCancel, onDisconnect]);
 
     return (
-        <Modal width={400} height={420}>
+        <Modal data-testid="@settings/device/forget-unplug-modal" width={400} height={420}>
             <Column gap={24} alignItems="center">
                 <DisconnectTrezorSvg />
                 <Column gap={8} alignItems="center">

@@ -90,13 +90,17 @@ test.describe(
 
             await test.step('Confirm forget in the confirmation modal', async () => {
                 // ThpBtKnownForgetFlow step 1: ConfirmationModal
-                await page.modal.waitFor({ state: 'visible' });
+                await page
+                    .getByTestId('@settings/device/forget-confirmation-modal')
+                    .waitFor({ state: 'visible' });
                 await page.getByTestId('@settings/device/forget-confirm').click();
             });
 
             await test.step('Complete OS removal step', async () => {
                 // ThpBtKnownForgetFlow step 2: OsAndTrezorCleanupModal
-                await page.modal.waitFor({ state: 'visible' });
+                await page
+                    .getByTestId('@settings/device/forget-cleanup-modal')
+                    .waitFor({ state: 'visible' });
                 await page.getByTestId('@settings/device/forget-os-removal-confirm').click();
             });
 

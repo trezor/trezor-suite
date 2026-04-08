@@ -19,6 +19,7 @@ export const RemoveFromBluetoothSettingsModal = ({
 
     return (
         <Modal
+            data-testid="@settings/device/forget-bt-removal-modal"
             onCancel={onCancel}
             heading={<Translation id="TR_FORGET_DEVICE_MODAL_FINISH_HEADING" />}
             width={600}

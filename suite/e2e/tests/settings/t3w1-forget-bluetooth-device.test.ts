@@ -81,13 +81,17 @@ test.describe('Forget TS7 with Bluetooth credentials', { tag: ['@T3W1', '@deskto
 
         await test.step('Confirm forget in the confirmation modal', async () => {
             // ThpCableConnectedForgetFlow step 1: ConfirmationModal
-            await page.modal.waitFor({ state: 'visible' });
+            await page
+                .getByTestId('@settings/device/forget-confirmation-modal')
+                .waitFor({ state: 'visible' });
             await page.getByTestId('@settings/device/forget-confirm').click();
         });
 
         await test.step('Complete OS removal step', async () => {
             // ThpCableConnectedForgetFlow step 2: OsAndTrezorCleanupModal
-            await page.modal.waitFor({ state: 'visible' });
+            await page
+                .getByTestId('@settings/device/forget-cleanup-modal')
+                .waitFor({ state: 'visible' });
             await page.getByTestId('@settings/device/forget-os-removal-confirm').click();
         });
 
@@ -97,8 +101,9 @@ test.describe('Forget TS7 with Bluetooth credentials', { tag: ['@T3W1', '@deskto
 
         await test.step('Unplug device to complete forget', async () => {
             // ThpCableConnectedForgetFlow step 3: UnplugDeviceModal
-            // Power off the emulator to simulate unplugging
-            await page.modal.waitFor({ state: 'visible' });
+            await page
+                .getByTestId('@settings/device/forget-unplug-modal')
+                .waitFor({ state: 'visible' });
             await device.powerOff();
         });
 

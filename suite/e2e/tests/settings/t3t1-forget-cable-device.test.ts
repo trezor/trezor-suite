@@ -22,14 +22,18 @@ test.describe('Forget TS5 connected via cable', { tag: ['@T3T1', '@desktopOnly']
 
         await test.step('Confirm forget in the confirmation modal', async () => {
             // ConnectedCableForgetFlow step 1: ConfirmationModal
-            await page.modal.waitFor({ state: 'visible' });
+            await page
+                .getByTestId('@settings/device/forget-confirmation-modal')
+                .waitFor({ state: 'visible' });
             await page.getByTestId('@settings/device/forget-confirm').click();
         });
 
         await test.step('Unplug device to complete forget', async () => {
             // ConnectedCableForgetFlow step 2: UnplugDeviceModal
             // Power off the emulator to simulate unplugging the cable
-            await page.modal.waitFor({ state: 'visible' });
+            await page
+                .getByTestId('@settings/device/forget-unplug-modal')
+                .waitFor({ state: 'visible' });
             await device.powerOff();
         });
 

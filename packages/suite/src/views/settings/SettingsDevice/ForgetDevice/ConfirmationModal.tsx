@@ -64,6 +64,7 @@ export const ConfirmationModal = ({
     isBluetoothConnectedDevice: boolean;
 }) => (
     <Modal
+        data-testid="@settings/device/forget-confirmation-modal"
         onCancel={onCancel}
         heading={<Translation id="TR_FORGET_DEVICE_MODAL_HEADING" />}
         intent="warning"
