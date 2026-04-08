@@ -93,12 +93,12 @@ export const AlertSheet = ({ alert }: AlertSheetProps) => {
     } = alert;
 
     const handlePressPrimaryButton = async () => {
-        await onPressPrimaryButton?.();
+        onPressPrimaryButton?.();
         await closeSheetAnimated();
     };
 
     const handlePressSecondaryButton = async () => {
-        await onPressSecondaryButton?.();
+        onPressSecondaryButton?.();
         await closeSheetAnimated();
     };
 
