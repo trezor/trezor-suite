@@ -16,7 +16,7 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@sentry/browser": "10.40.0",
+        "@sentry/browser": "10.46.0",
         "@suite/router": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/suite": "workspace:*",
