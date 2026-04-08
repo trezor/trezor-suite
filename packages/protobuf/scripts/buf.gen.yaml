@@ -11,3 +11,4 @@ plugins:
       out: ../src/definitions
       opt:
           - target=ts+dts
+          - types=messages-thp
