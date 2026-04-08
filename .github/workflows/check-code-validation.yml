@@ -125,10 +125,10 @@ jobs:
               AFFECTED_MODULE_TRADING_PROJECTS=$(yarn nx show projects --affected --withTarget=test:unit --projects='@suite-native/module-trading' --sep=,) && if [[ -n "$AFFECTED_MODULE_TRADING_PROJECTS" ]]; then yarn nx run-many --target=test:unit --projects="$AFFECTED_MODULE_TRADING_PROJECTS" --parallel=1 --output-style=stream; else echo "No affected module-trading unit-test projects"; fi
           - test-task: native-trading-rest
             test-command: >-
-              AFFECTED_TRADING_PROJECTS=$(yarn nx show projects --affected --withTarget=test:unit --projects='@suite-native/trading-*' --sep=,) && if [[ -n "$AFFECTED_TRADING_PROJECTS" ]]; then yarn nx run-many --target=test:unit --projects="$AFFECTED_TRADING_PROJECTS" --parallel=2 --output-style=stream; else echo "No affected trading native unit-test projects"; fi
+              AFFECTED_TRADING_PROJECTS=$(yarn nx show projects --affected --withTarget=test:unit --projects='@suite-native/trading-*' --sep=,) && if [[ -n "$AFFECTED_TRADING_PROJECTS" ]]; then yarn nx run-many --target=test:unit --projects="$AFFECTED_TRADING_PROJECTS" --parallel=1 --output-style=stream; else echo "No affected trading native unit-test projects"; fi
           - test-task: native-rest
             test-command: >-
-              yarn nx affected --target=test:unit --exclude='@trezor/*,@suite/*,@suite-common/*,@suite-native/module-trading,@suite-native/trading-*' --parallel=2 --output-style=stream
+              yarn nx affected --target=test:unit --exclude='@trezor/*,@suite/*,@suite-common/*,@suite-native/module-trading,@suite-native/trading-*' --parallel=1 --output-style=stream
     steps:
       - name: Checkout repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
