@@ -3,32 +3,6 @@
 // DO NOT EDIT
 import { type Static, Type } from '@trezor/schema-utils';
 
-export enum ThpMessageType {
-    ThpMessageType_Cancel = 20,
-    ThpMessageType_ButtonRequest = 26,
-    ThpMessageType_ButtonAck = 27,
-    ThpMessageType_ThpPairingRequest = 1008,
-    ThpMessageType_ThpPairingRequestApproved = 1009,
-    ThpMessageType_ThpSelectMethod = 1010,
-    ThpMessageType_ThpPairingPreparationsFinished = 1011,
-    ThpMessageType_ThpCredentialRequest = 1016,
-    ThpMessageType_ThpCredentialResponse = 1017,
-    ThpMessageType_ThpEndRequest = 1018,
-    ThpMessageType_ThpEndResponse = 1019,
-    ThpMessageType_ThpCodeEntryCommitment = 1024,
-    ThpMessageType_ThpCodeEntryChallenge = 1025,
-    ThpMessageType_ThpCodeEntryCpaceTrezor = 1026,
-    ThpMessageType_ThpCodeEntryCpaceHostTag = 1027,
-    ThpMessageType_ThpCodeEntrySecret = 1028,
-    ThpMessageType_ThpQrCodeTag = 1032,
-    ThpMessageType_ThpQrCodeSecret = 1033,
-    ThpMessageType_ThpNfcTagHost = 1040,
-    ThpMessageType_ThpNfcTagTrezor = 1041,
-}
-
-export type EnumThpMessageType = Static<typeof EnumThpMessageType>;
-export const EnumThpMessageType = Type.Enum(ThpMessageType);
-
 export enum ThpPairingMethod {
     SkipPairing = 1,
     CodeEntry = 2,
@@ -38,25 +12,6 @@ export enum ThpPairingMethod {
 
 export type EnumThpPairingMethod = Static<typeof EnumThpPairingMethod>;
 export const EnumThpPairingMethod = Type.Enum(ThpPairingMethod);
-
-export type ThpCredentialMetadata = Static<typeof ThpCredentialMetadata>;
-export const ThpCredentialMetadata = Type.Object(
-    {
-        host_name: Type.String(),
-        autoconnect: Type.Optional(Type.Boolean()),
-        app_name: Type.String(),
-    },
-    { $id: 'ThpCredentialMetadata' },
-);
-
-export type ThpAuthenticatedCredentialData = Static<typeof ThpAuthenticatedCredentialData>;
-export const ThpAuthenticatedCredentialData = Type.Object(
-    {
-        host_static_public_key: Type.String(),
-        cred_metadata: ThpCredentialMetadata,
-    },
-    { $id: 'ThpAuthenticatedCredentialData' },
-);
 
 export type ThpCodeEntryChallenge = Static<typeof ThpCodeEntryChallenge>;
 export const ThpCodeEntryChallenge = Type.Object(
@@ -142,7 +97,7 @@ export type ThpDeviceProperties = Static<typeof ThpDeviceProperties>;
 export const ThpDeviceProperties = Type.Object(
     {
         internal_model: Type.String(),
-        model_variant: Type.Optional(Type.Number()),
+        model_variant: Type.Number(),
         protocol_version_major: Type.Number(),
         protocol_version_minor: Type.Number(),
         pairing_methods: Type.Array(Type.KeyOfEnum(ThpPairingMethod)),
@@ -180,33 +135,6 @@ export const ThpNfcTagTrezor = Type.Object(
         tag: Type.String(),
     },
     { $id: 'ThpNfcTagTrezor' },
-);
-
-export type ThpPairedCacheEntry = Static<typeof ThpPairedCacheEntry>;
-export const ThpPairedCacheEntry = Type.Object(
-    {
-        mac_addr: Type.String(),
-        host_name: Type.String(),
-        app_name: Type.String(),
-    },
-    { $id: 'ThpPairedCacheEntry' },
-);
-
-export type ThpPairedCache = Static<typeof ThpPairedCache>;
-export const ThpPairedCache = Type.Object(
-    {
-        entries: Type.Array(ThpPairedCacheEntry),
-    },
-    { $id: 'ThpPairedCache' },
-);
-
-export type ThpPairingCredential = Static<typeof ThpPairingCredential>;
-export const ThpPairingCredential = Type.Object(
-    {
-        cred_metadata: ThpCredentialMetadata,
-        mac: Type.String(),
-    },
-    { $id: 'ThpPairingCredential' },
 );
 
 export type ThpPairingPreparationsFinished = Static<typeof ThpPairingPreparationsFinished>;
