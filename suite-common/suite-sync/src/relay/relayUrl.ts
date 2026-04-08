@@ -1,7 +1,7 @@
 import { isCodesignBuild } from '@trezor/env-utils';
 
-const DEFAULT_SUITE_SYNC_RELAY_URL_DEV = 'https://suite-sync-dev.suite.sldev.cz/evolu/';
-const DEFAULT_SUITE_SYNC_RELAY_URL_PROD = 'https://suite-sync.trezor.io/evolu/';
+export const DEFAULT_SUITE_SYNC_RELAY_URL_DEV = 'https://suite-sync-dev.suite.sldev.cz/evolu/';
+export const DEFAULT_SUITE_SYNC_RELAY_URL_PROD = 'https://suite-sync.trezor.io/evolu/';
 
 export const SUITE_SYNC_RELAY_SERVERS = [
     DEFAULT_SUITE_SYNC_RELAY_URL_DEV,
