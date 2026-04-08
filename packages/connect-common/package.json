@@ -28,34 +28,52 @@
         "types": "./lib/index.d.ts",
         "exports": {
             ".": {
-                "import": "./libESM/index.mjs",
-                "require": "./lib/index.js",
-                "types": "./lib/index.d.ts"
+                "import": {
+                    "types": "./libESM/index.d.mts",
+                    "default": "./libESM/index.mjs"
+                },
+                "require": {
+                    "types": "./lib/index.d.ts",
+                    "default": "./lib/index.js"
+                }
             },
-            "./lib/*": "./lib/*.js",
+            "./lib/*": {
+                "types": "./lib/*.d.ts",
+                "default": "./lib/*.js"
+            },
+            "./libESM/*": "./libESM/*",
+            "./lib/constants": {
+                "types": "./lib/constants/index.d.ts",
+                "default": "./lib/constants/index.js"
+            },
+            "./libESM/constants": {
+                "types": "./libESM/constants/index.d.mts",
+                "default": "./libESM/constants/index.mjs"
+            },
+            "./lib/data": {
+                "types": "./lib/data/index.d.ts",
+                "default": "./lib/data/index.js"
+            },
+            "./libESM/data": {
+                "types": "./libESM/data/index.d.mts",
+                "default": "./libESM/data/index.mjs"
+            },
             "./lib/events": {
                 "types": "./lib/events/index.d.ts",
                 "default": "./lib/events/index.js"
+            },
+            "./libESM/events": {
+                "types": "./libESM/events/index.d.mts",
+                "default": "./libESM/events/index.mjs"
             },
             "./lib/types": {
                 "types": "./lib/types/index.d.ts",
                 "default": "./lib/types/index.js"
             },
-            "./lib/data": "./lib/data/index.js",
-            "./lib/data/*": "./lib/data/*.js",
-            "./lib/constants": "./lib/constants/index.js",
-            "./lib/constants/*": "./lib/constants/*.js",
-            "./libESM/*": "./libESM/*",
-            "./libESM/events": {
-                "types": "./libESM/events/index.d.mts",
-                "default": "./libESM/events/index.mjs"
-            },
             "./libESM/types": {
                 "types": "./libESM/types/index.d.mts",
                 "default": "./libESM/types/index.mjs"
-            },
-            "./libESM/constants/*": "./libESM/constants/*",
-            "./libESM/data/*": "./libESM/data/*"
+            }
         }
     },
     "scripts": {

@@ -31,16 +31,36 @@
         "types": "./lib/index.d.ts",
         "exports": {
             ".": {
-                "import": "./libESM/index.mjs",
-                "require": "./lib/index.js",
-                "types": "./lib/index.d.ts"
+                "import": {
+                    "types": "./libESM/index.d.mts",
+                    "default": "./libESM/index.mjs"
+                },
+                "require": {
+                    "types": "./lib/index.d.ts",
+                    "default": "./lib/index.js"
+                }
             },
-            "./lib/*": "./lib/*.js",
-            "./lib/thp": "./lib/thp/index.js",
-            "./lib/types": "./lib/types/index.js",
-            "./lib/thp.js": "./lib/thp/index.js",
-            "./lib/types.js": "./lib/types/index.js",
-            "./libESM/*": "./libESM/*"
+            "./lib/*": {
+                "types": "./lib/*.d.ts",
+                "default": "./lib/*.js"
+            },
+            "./libESM/*": "./libESM/*",
+            "./lib/thp": {
+                "types": "./lib/thp/index.d.ts",
+                "default": "./lib/thp/index.js"
+            },
+            "./libESM/thp": {
+                "types": "./libESM/thp/index.d.mts",
+                "default": "./libESM/thp/index.mjs"
+            },
+            "./lib/types": {
+                "types": "./lib/types/index.d.ts",
+                "default": "./lib/types/index.js"
+            },
+            "./libESM/types": {
+                "types": "./libESM/types/index.d.mts",
+                "default": "./libESM/types/index.mjs"
+            }
         },
         "browser": {
             "./lib/pinger/ping": "./lib/pinger/ping.browser.js",

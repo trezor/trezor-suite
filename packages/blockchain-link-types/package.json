@@ -9,13 +9,28 @@
         "types": "./lib/index.d.ts",
         "exports": {
             ".": {
-                "import": "./libESM/index.mjs",
-                "require": "./lib/index.js",
-                "types": "./lib/index.d.ts"
+                "import": {
+                    "types": "./libESM/index.d.mts",
+                    "default": "./libESM/index.mjs"
+                },
+                "require": {
+                    "types": "./lib/index.d.ts",
+                    "default": "./lib/index.js"
+                }
             },
-            "./lib/*": "./lib/*.js",
-            "./lib/constants": "./lib/constants/index.js",
-            "./libESM/*": "./libESM/*"
+            "./lib/*": {
+                "types": "./lib/*.d.ts",
+                "default": "./lib/*.js"
+            },
+            "./libESM/*": "./libESM/*",
+            "./lib/constants": {
+                "types": "./lib/constants/index.d.ts",
+                "default": "./lib/constants/index.js"
+            },
+            "./libESM/constants": {
+                "types": "./libESM/constants/index.d.mts",
+                "default": "./libESM/constants/index.mjs"
+            }
         }
     },
     "files": [
