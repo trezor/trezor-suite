@@ -5394,6 +5394,10 @@ export const messages = defineMessages({
         id: 'TR_TRON_FEE_LIMIT_BELOW_RECOMMENDED',
         defaultMessage: 'Fee limit too low',
     },
+    TR_FEE_LIMIT: {
+        id: 'TR_FEE_LIMIT',
+        defaultMessage: 'Fee limit',
+    },
     TR_EXPERIMENTAL_TRON_VIEW_ONLY: {
         id: 'TR_EXPERIMENTAL_TRON_VIEW_ONLY',
         defaultMessage: 'Tron (Beta)',

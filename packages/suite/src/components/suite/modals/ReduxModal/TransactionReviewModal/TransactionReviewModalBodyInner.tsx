@@ -183,6 +183,9 @@ export const TransactionReviewModalBodyInner = ({
     };
 
     const isCancelRbfAction = isRbfCancelTransaction(precomposedTx);
+    const showSummary =
+        !(isBumpFeeRbfAction && networkType === 'bitcoin') &&
+        !(networkType === 'tron' && !precomposedTx.feeLimit);
 
     const isTxExpired = hasTxValidityExpired(deadline);
 
@@ -229,7 +232,7 @@ export const TransactionReviewModalBodyInner = ({
         <ConnectModalBackdrop canSwitchDevice>
             {!isRbfConfirmedError && (
                 <TransactionReviewModalConfirmOnDevice
-                    outputs={outputs}
+                    totalSteps={outputs.length + (showSummary ? 1 : 0)}
                     serializedTx={serializedTx}
                     isSending={isSending}
                     reviewStep={reviewStep}
