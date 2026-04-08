@@ -1,7 +1,12 @@
 import { bytesToHex } from '@noble/hashes/utils.js';
 
 import { TronSignTransaction as TronSignTransactionSchema } from '@trezor/connect-common';
-import type { PROTO, TronContracts, TronContractsTypes } from '@trezor/connect-common';
+import type {
+    PROTO,
+    TronContractInput,
+    TronContracts,
+    TronContractsTypes,
+} from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 
@@ -52,6 +57,8 @@ export default class TronSignTransaction extends AbstractMethod<'tronSignTransac
 
         const path = validatePath(payload.path, 3);
 
+        const contract = this.transformContract(payload.contract[0]);
+
         this.params = {
             tx: {
                 address_n: path,
@@ -62,8 +69,66 @@ export default class TronSignTransaction extends AbstractMethod<'tronSignTransac
                 fee_limit: payload.fee_limit,
                 data: payload.data,
             },
-            contract: payload.contract[0],
+            contract,
         };
+    }
+
+    // Transform official Tron field names to protobuf field names.
+    private transformContract(input: TronContractInput): TronContracts {
+        switch (input.type) {
+            case 'FreezeBalanceV2Contract': {
+                const { value } = input.parameter;
+
+                return {
+                    type: 'FreezeBalanceV2Contract',
+                    parameter: {
+                        value: {
+                            owner_address: value.owner_address,
+                            balance:
+                                'frozen_balance' in value ? value.frozen_balance : value.balance,
+                            resource: value.resource,
+                        },
+                    },
+                };
+            }
+            case 'UnfreezeBalanceV2Contract': {
+                const { value } = input.parameter;
+
+                return {
+                    type: 'UnfreezeBalanceV2Contract',
+                    parameter: {
+                        value: {
+                            owner_address: value.owner_address,
+                            balance:
+                                'unfreeze_balance' in value
+                                    ? value.unfreeze_balance
+                                    : value.balance,
+                            resource: value.resource,
+                        },
+                    },
+                };
+            }
+            case 'VoteWitnessContract': {
+                const { value } = input.parameter;
+
+                return {
+                    type: 'VoteWitnessContract',
+                    parameter: {
+                        value: {
+                            owner_address: value.owner_address,
+                            votes: value.votes.map(vote => ({
+                                address: 'vote_address' in vote ? vote.vote_address : vote.address,
+                                count: 'vote_count' in vote ? vote.vote_count : vote.count,
+                            })),
+                        },
+                    },
+                };
+            }
+            case 'TransferContract':
+            case 'TriggerSmartContract':
+            case 'WithdrawExpireUnfreezeContract':
+                return input;
+        }
     }
 
     get info() {

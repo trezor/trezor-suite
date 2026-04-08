@@ -57,7 +57,64 @@ export const TronContracts = Type.Union([
 ]);
 
 export type TronContractsTypes = TronContracts['type'];
-export type TronContractsParameters = TronContracts['parameter']['value'];
+
+const TronFreezeBalanceV2ContractInput = Type.Object({
+    type: Type.Literal('FreezeBalanceV2Contract'),
+    parameter: Type.Object({
+        value: Type.Union([
+            Type.Object({
+                owner_address: Type.String(),
+                frozen_balance: Type.Number(),
+                balance: Type.Optional(Type.Number()),
+                resource: Type.Optional(PROTO.EnumTronResourceCode),
+            }),
+            PROTO.TronFreezeBalanceV2Contract,
+        ]),
+    }),
+});
+
+const TronUnfreezeBalanceV2ContractInput = Type.Object({
+    type: Type.Literal('UnfreezeBalanceV2Contract'),
+    parameter: Type.Object({
+        value: Type.Union([
+            Type.Object({
+                owner_address: Type.String(),
+                unfreeze_balance: Type.Number(),
+                balance: Type.Optional(Type.Number()),
+                resource: Type.Optional(PROTO.EnumTronResourceCode),
+            }),
+            PROTO.TronUnfreezeBalanceV2Contract,
+        ]),
+    }),
+});
+
+const TronVoteWitnessContractInput = Type.Object({
+    type: Type.Literal('VoteWitnessContract'),
+    parameter: Type.Object({
+        value: Type.Union([
+            Type.Object({
+                owner_address: Type.String(),
+                votes: Type.Array(
+                    Type.Object({
+                        vote_address: Type.String(),
+                        vote_count: Type.Number(),
+                    }),
+                ),
+            }),
+            PROTO.TronVoteWitnessContract,
+        ]),
+    }),
+});
+
+export type TronContractInput = Static<typeof TronContractInput>;
+export const TronContractInput = Type.Union([
+    TronTransferContract,
+    TronTriggerSmartContract,
+    TronFreezeBalanceV2ContractInput,
+    TronUnfreezeBalanceV2ContractInput,
+    TronWithdrawExpireUnfreezeContract,
+    TronVoteWitnessContractInput,
+]);
 
 export type TronSignTransaction = Static<typeof TronSignTransaction>;
 export const TronSignTransaction = Type.Object({
@@ -68,7 +125,7 @@ export const TronSignTransaction = Type.Object({
     timestamp: Type.Number(),
     fee_limit: Type.Optional(Type.Number()),
     data: Type.Optional(Type.String()),
-    contract: Type.Array(TronContracts, { length: 1 }),
+    contract: Type.Array(TronContractInput, { length: 1 }),
 });
 
 export type TronSignedTx = Static<typeof TronSignedTx>;
