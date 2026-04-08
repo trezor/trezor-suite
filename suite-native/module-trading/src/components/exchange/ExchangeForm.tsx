@@ -6,6 +6,7 @@ import { AmountEditingDoneButton } from '@suite-native/trading-atoms';
 
 import { ExchangeAlert } from './ExchangeAlert';
 import { ExchangeConfirmation } from './ExchangeConfirmation';
+import { ExchangeFormQuoteDebugView } from './ExchangeFormQuoteDebugView';
 import { ExchangeRateAndProviderPicker } from './ExchangeRateAndProviderPicker';
 import { ExchangeReceiveAccountPicker } from './receive/ExchangeReceiveAccountPicker';
 import { ExchangeReceiveCard } from './receive/ExchangeReceiveCard';
@@ -47,6 +48,7 @@ const ExchangeFormMemoized = memo(
         return (
             <AnimatedBox layout={LinearTransition}>
                 <VStack spacing="sp16" testID={EXCHANGE_FORM_TEST_ID}>
+                    <ExchangeFormQuoteDebugView />
                     <ExchangeAlert />
                     <ExchangeSendCard isAmountInputActive={isAmountInputActive} />
                     <ExchangeReceiveCard />
