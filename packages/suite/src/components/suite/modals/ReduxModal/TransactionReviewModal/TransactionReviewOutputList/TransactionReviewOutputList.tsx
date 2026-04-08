@@ -25,6 +25,7 @@ import type { Account } from 'src/types/wallet';
 
 import { TransactionReviewOutput } from './TransactionReviewOutput';
 import { TransactionReviewTotalOutput } from './TransactionReviewTotalOutput';
+import { TransactionReviewTronFeeLimitOutput } from './TransactionReviewTronFeeLimitOutput';
 import { TransactionReviewVerifyAddress } from './TransactionReviewVerifyAddress';
 import { getTransactionReviewState } from './getTransactionReviewState';
 
@@ -186,7 +187,7 @@ export const TransactionReviewOutputList = ({
                 );
             })}
 
-            {!(isRbfAction && networkType === 'bitcoin') && (
+            {!(isRbfAction && networkType === 'bitcoin') && networkType !== 'tron' && (
                 <Wrapper ref={totalOutputRef}>
                     <Column gap={spacings.sm}>
                         {isMultirecipient && summaryIndex === -1 && (
@@ -203,6 +204,17 @@ export const TransactionReviewOutputList = ({
                             isRbf={isRbfAction}
                         />
                     </Column>
+                </Wrapper>
+            )}
+
+            {networkType === 'tron' && 'token' in precomposedTx && precomposedTx.token && (
+                <Wrapper ref={totalOutputRef}>
+                    <TransactionReviewTronFeeLimitOutput
+                        account={account}
+                        state={reviewState}
+                        precomposedForm={precomposedForm}
+                        precomposedTx={precomposedTx}
+                    />
                 </Wrapper>
             )}
         </Column>
