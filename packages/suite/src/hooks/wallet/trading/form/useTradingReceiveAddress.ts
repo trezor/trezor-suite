@@ -110,6 +110,7 @@ export const useTradingReceiveAddress = ({
 
     const canAddSuiteAccount = !!(device?.connected && isSupportedNetwork);
     const canUseNonSuiteAccount = nonSuiteAccount;
+    const hasSuiteReceiveAccount = !!suiteReceiveAccounts?.length;
 
     const selectSuiteAccount = useCallback(
         (account: Account) => {
@@ -144,7 +145,7 @@ export const useTradingReceiveAddress = ({
         setHasSelectionInitialized(false);
         methods.setValue('address', '', { shouldValidate: false });
         methods.setValue('extraField', '', { shouldValidate: false });
-    }, [symbol, methods]);
+    }, [cryptoId, methods]);
 
     useEffect(() => {
         if (!sendAccountKey || hasSelectionInitialized) {
@@ -181,6 +182,21 @@ export const useTradingReceiveAddress = ({
         if (!symbol) return;
         if (hasSelectionInitialized) return;
 
+        if (!hasSuiteReceiveAccount) {
+            if (canUseNonSuiteAccount) {
+                selectNonSuiteAddress('');
+
+                return;
+            }
+
+            methods.setValue('address', '', { shouldValidate: true });
+            methods.setValue('extraField', '', { shouldValidate: true });
+            setSelectedAccount(undefined);
+            setHasSelectionInitialized(true);
+
+            return;
+        }
+
         if (persistedReceiveAccountKey) {
             const matchingAccount = suiteReceiveAccounts?.find(
                 account => account.key === persistedReceiveAccountKey,
@@ -194,10 +210,16 @@ export const useTradingReceiveAddress = ({
         }
 
         if (persistedReceiveAddress && canUseNonSuiteAccount && symbol) {
-            const isValidForCurrentSymbol = addressValidator.validate(
-                persistedReceiveAddress,
-                symbol,
-            );
+            let isValidForCurrentSymbol = false;
+
+            try {
+                isValidForCurrentSymbol = addressValidator.validate(
+                    persistedReceiveAddress,
+                    symbol,
+                );
+            } catch {
+                isValidForCurrentSymbol = false;
+            }
 
             if (isValidForCurrentSymbol) {
                 selectNonSuiteAddress(persistedReceiveAddress);
@@ -259,6 +281,7 @@ export const useTradingReceiveAddress = ({
         selectSuiteAccount,
         selectNonSuiteAddress,
         canUseNonSuiteAccount,
+        hasSuiteReceiveAccount,
         hasSelectionInitialized,
         methods,
     ]);

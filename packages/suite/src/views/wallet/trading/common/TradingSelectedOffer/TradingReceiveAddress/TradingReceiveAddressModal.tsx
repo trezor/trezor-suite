@@ -41,7 +41,15 @@ export const TradingReceiveAddressModal = () => {
             if (cryptoId) {
                 const symbol =
                     cryptoIdToNetwork(cryptoId)?.symbol ?? cryptoIdToNativeCoinSymbol(cryptoId);
-                if (value && !addressValidator.validate(value, symbol)) {
+                let isValid = true;
+
+                try {
+                    isValid = value ? addressValidator.validate(value, symbol) : true;
+                } catch {
+                    isValid = false;
+                }
+
+                if (!isValid) {
                     return translationString('TR_EXCHANGE_RECEIVING_ADDRESS_INVALID');
                 }
             }
