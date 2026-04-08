@@ -12,6 +12,6 @@
         "test:unit": "yarn g:jest"
     },
     "dependencies": {
-        "webpack": "5.105.3"
+        "webpack": "5.105.4"
     }
 }

@@ -57,7 +57,7 @@
         "glob": "^13.0.1",
         "lodash": "^4.18.1",
         "rimraf": "^6.1.2",
-        "terser-webpack-plugin": "^5.3.16",
-        "webpack": "5.105.3"
+        "terser-webpack-plugin": "^5.4.0",
+        "webpack": "5.105.4"
     }
 }

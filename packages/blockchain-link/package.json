@@ -77,7 +77,7 @@
         "@types/node": "22.13.10",
         "html-webpack-plugin": "5.6.6",
         "tiny-worker": "^2.3.0",
-        "webpack": "5.105.3"
+        "webpack": "5.105.4"
     },
     "dependencies": {
         "@solana-program/compute-budget": "^0.8.0",
