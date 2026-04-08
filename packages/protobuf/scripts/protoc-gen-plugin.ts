@@ -249,6 +249,7 @@ const sortTypeItems = (types: TypeItem[]) => {
 type SchemaContext = {
     files: string[];
     owners: Map<string, string>;
+    internalMessages: Set<string>;
     messageType: {
         wireMessages: Set<string>;
         wireIn: Set<string>;
@@ -264,6 +265,7 @@ const getSchemaContext = (schema: Schema<PluginOptions>): SchemaContext => {
     const wireIn = new Set<string>();
     const wireOut = new Set<string>();
     const wireMessages = new Set<string>();
+    const internalMessages = new Set<string>();
     const files: string[] = [];
 
     const enums = new Map<string, DescEnum>();
@@ -324,6 +326,13 @@ const getSchemaContext = (schema: Schema<PluginOptions>): SchemaContext => {
             continue;
         }
 
+        const [isInternal] = findOptions(desc.proto, ['internal_only']);
+        if (isInternal) {
+            internalMessages.add(name);
+
+            continue;
+        }
+
         const isMessageType = findMessageType(name);
         if (isMessageType) {
             const [isWireIn, isWireOut] = findOptions(isMessageType.proto, ['wire_in', 'wire_out']);
@@ -366,6 +375,7 @@ const getSchemaContext = (schema: Schema<PluginOptions>): SchemaContext => {
     return {
         files,
         owners,
+        internalMessages,
         messageType: { wireIn, wireOut, wireMessages },
     };
 };
@@ -426,13 +436,18 @@ const buildImportLines = (
 const buildTypeFile = (
     schema: Schema<PluginOptions>,
     file: Schema<PluginOptions>['files'][number],
-    { owners }: SchemaContext,
+    { owners, internalMessages }: SchemaContext,
 ): TypeFileBuild => {
     const typeItems: TypeItem[] = [];
     for (const desc of schema.typesInFile(file)) {
         if (SKIP.includes(desc.name)) {
             continue;
         }
+
+        if (internalMessages.has(desc.name)) {
+            continue;
+        }
+
         if (desc.kind === 'enum') {
             typeItems.push(generateEnumItem(desc));
         } else if (desc.kind === 'message') {
