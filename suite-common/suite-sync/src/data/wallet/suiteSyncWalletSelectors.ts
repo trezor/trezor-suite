@@ -1,3 +1,4 @@
+import { type MessageSystemRootState } from '@suite-common/message-system';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
     type SuiteSyncAccount,
@@ -7,6 +8,10 @@ import {
 import { type WalletDescriptor } from '@suite-common/wallet-types';
 import { typedObjectValues } from '@trezor/utils';
 
+import {
+    type WithSuiteSyncAndDeviceState,
+    selectIsSuiteSyncEnabled,
+} from '../../suiteSyncSelectors';
 import { type SuiteSyncDataRootState, type WalletData } from '../suiteSyncDataReducer';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<SuiteSyncDataRootState>();
@@ -51,9 +56,13 @@ export const selectAllOutputsForWallet = createMemoizedSelector(
 );
 
 export const selectSuiteSyncWalletLabel = (
-    state: SuiteSyncDataRootState,
+    state: SuiteSyncDataRootState & WithSuiteSyncAndDeviceState & MessageSystemRootState,
     walletDescriptor: WalletDescriptor,
 ) => {
+    if (!selectIsSuiteSyncEnabled(state)) {
+        return null;
+    }
+
     const walletData = selectWalletById(state, walletDescriptor);
 
     return walletData?.wallet.label ?? null;

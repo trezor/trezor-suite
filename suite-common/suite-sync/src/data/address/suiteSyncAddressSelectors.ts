@@ -1,56 +1,82 @@
-import { createWeakMapSelector } from '@suite-common/redux-utils';
+import { type MessageSystemRootState } from '@suite-common/message-system';
+import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
+import type { SuiteSyncAddress } from '@suite-common/suite-sync-storage';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { AccountDescriptor, WalletDescriptor } from '@suite-common/wallet-types';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { type StaticSessionId } from '@trezor/connect';
 
+import {
+    type WithSuiteSyncAndDeviceState,
+    selectIsSuiteSyncEnabled,
+} from '../../suiteSyncSelectors';
 import { type SuiteSyncDataRootState } from '../suiteSyncDataReducer';
 import { selectAllAddressesForWallet } from '../wallet/suiteSyncWalletSelectors';
 
-const createMemoizedSelector = createWeakMapSelector.withTypes<SuiteSyncDataRootState>();
+type SuiteSyncAddressRootState = SuiteSyncDataRootState &
+    WithSuiteSyncAndDeviceState &
+    MessageSystemRootState;
+
+const createMemoizedSelector = createWeakMapSelector.withTypes<SuiteSyncAddressRootState>();
 
 export const selectSuiteSyncAccountAddressesByAccount = createMemoizedSelector(
     [
-        (state: SuiteSyncDataRootState, walletDescriptor: WalletDescriptor) =>
+        (state: SuiteSyncAddressRootState, walletDescriptor: WalletDescriptor) =>
             selectAllAddressesForWallet(state, walletDescriptor),
         (
-            _state: SuiteSyncDataRootState,
+            _state: SuiteSyncAddressRootState,
             _walletDescriptor: WalletDescriptor,
             accountDescriptor: AccountDescriptor,
         ) => accountDescriptor,
         (
-            _state: SuiteSyncDataRootState,
+            _state: SuiteSyncAddressRootState,
             _walletDescriptor: WalletDescriptor,
             _accountDescriptor: AccountDescriptor,
             networkSymbol: NetworkSymbol,
         ) => networkSymbol,
+        selectIsSuiteSyncEnabled,
     ],
-    (walletAddresses, accountDescriptor, networkSymbol) =>
-        walletAddresses.filter(
-            address =>
-                address.accountDescriptor === accountDescriptor &&
-                address.networkSymbol === networkSymbol,
-        ),
+    (walletAddresses, accountDescriptor, networkSymbol, isSuiteSyncEnabled) => {
+        if (!isSuiteSyncEnabled) {
+            return returnStableArrayIfEmpty<SuiteSyncAddress>();
+        }
+
+        return returnStableArrayIfEmpty(
+            walletAddresses.filter(
+                address =>
+                    address.accountDescriptor === accountDescriptor &&
+                    address.networkSymbol === networkSymbol,
+            ),
+        );
+    },
 );
 
 export const selectSuiteSyncAddressLabel = createMemoizedSelector(
     [
-        (state: SuiteSyncDataRootState, deviceStaticId: StaticSessionId) => {
+        (state: SuiteSyncAddressRootState, deviceStaticId: StaticSessionId) => {
             const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticId);
 
             return selectAllAddressesForWallet(state, walletDescriptor);
         },
-        (_state: SuiteSyncDataRootState, _deviceStaticId: StaticSessionId, address: string) =>
+        (_state: SuiteSyncAddressRootState, _deviceStaticId: StaticSessionId, address: string) =>
             address,
+        selectIsSuiteSyncEnabled,
     ],
-    (walletAddresses, address) =>
-        walletAddresses.find(addr => addr.address === address)?.label ?? null,
+    (walletAddresses, address, isSuiteSyncEnabled) => {
+        if (!isSuiteSyncEnabled) return null;
+
+        return walletAddresses.find(addr => addr.address === address)?.label ?? null;
+    },
 );
 
 export const selectSuiteSyncAddressLabels = (
-    state: SuiteSyncDataRootState,
+    state: SuiteSyncAddressRootState,
     deviceStaticId: StaticSessionId,
 ) => {
+    if (!selectIsSuiteSyncEnabled(state)) {
+        return returnStableArrayIfEmpty<SuiteSyncAddress>();
+    }
+
     const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticId);
 
     return selectAllAddressesForWallet(state, walletDescriptor);

@@ -1,8 +1,10 @@
+import { type MessageSystemRootState } from '@suite-common/message-system';
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 import type { SuiteSyncAddress, SuiteSyncOutput } from '@suite-common/suite-sync-storage';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { AccountDescriptor, WalletDescriptor } from '@suite-common/wallet-types';
 
+import { type WithSuiteSyncAndDeviceState } from '../../suiteSyncSelectors';
 import { selectSuiteSyncAccountLabel } from '../account/selectSuiteSyncAccountLabel';
 import { selectSuiteSyncAccountAddressesByAccount } from '../address/suiteSyncAddressSelectors';
 import { selectSuiteSyncOutputLabelsByAccount } from '../output/suiteSyncOutputSelectors';
@@ -20,7 +22,11 @@ export type AllLabelsForAccount = {
     outputLabels: SuiteSyncOutput[];
 };
 
-const createMemoizedSelector = createWeakMapSelector.withTypes<SuiteSyncDataRootState>();
+type AllLabelsForAccountRootState = SuiteSyncDataRootState &
+    WithSuiteSyncAndDeviceState &
+    MessageSystemRootState;
+
+const createMemoizedSelector = createWeakMapSelector.withTypes<AllLabelsForAccountRootState>();
 
 export const selectAllLabelsForAccount = createMemoizedSelector(
     [
