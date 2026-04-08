@@ -15,6 +15,7 @@ import { Amount } from './Amount/Amount';
 import { CardanoMinAmountInfo } from './CardanoMinAmountInfo';
 import { OpReturn } from './OpReturn';
 import { TokenSelect } from './TokenSelect/TokenSelect';
+import { TronNewAccountInfo } from './TronNewAccountInfo';
 import { DestinationTag } from '../Options/MiscNetworkOptions/DestinationTag';
 
 const Container = styled.div<{ $height: number }>`
@@ -99,6 +100,7 @@ export const Outputs = ({ disableAnim }: OutputsProps) => {
                                             {outputs.length === 1 && isSendingTokens && (
                                                 <CardanoMinAmountInfo />
                                             )}
+                                            <TronNewAccountInfo />
                                             <DestinationTag networkSymbol={symbol} />
                                         </Column>
                                     )}
