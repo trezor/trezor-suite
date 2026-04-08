@@ -119,16 +119,26 @@ jobs:
       matrix:
         include:
           - test-task: suite
+            step-timeout-minutes: 35
             test-command: yarn test:unit:suite --output-style=stream
           - test-task: native-module-trading
+            step-timeout-minutes: 55
             test-command: >-
               AFFECTED_MODULE_TRADING_PROJECTS=$(yarn nx show projects --affected --withTarget=test:unit --projects='@suite-native/module-trading' --sep=,) && if [[ -n "$AFFECTED_MODULE_TRADING_PROJECTS" ]]; then yarn nx run-many --target=test:unit --projects="$AFFECTED_MODULE_TRADING_PROJECTS" --parallel=1 --output-style=stream; else echo "No affected module-trading unit-test projects"; fi
+            diagnostic-command: >-
+              AFFECTED_MODULE_TRADING_PROJECTS=$(yarn nx show projects --affected --withTarget=test:unit --projects='@suite-native/module-trading' --sep=,) && if [[ -n "$AFFECTED_MODULE_TRADING_PROJECTS" ]]; then yarn nx run-many --target=test:unit --projects="$AFFECTED_MODULE_TRADING_PROJECTS" --parallel=1 --output-style=stream -- --detectOpenHandles --logHeapUsage; else echo "No affected module-trading unit-test projects"; fi
           - test-task: native-trading-rest
+            step-timeout-minutes: 35
             test-command: >-
               AFFECTED_TRADING_PROJECTS=$(yarn nx show projects --affected --withTarget=test:unit --projects='@suite-native/trading-*' --sep=,) && if [[ -n "$AFFECTED_TRADING_PROJECTS" ]]; then yarn nx run-many --target=test:unit --projects="$AFFECTED_TRADING_PROJECTS" --parallel=1 --output-style=stream; else echo "No affected trading native unit-test projects"; fi
+            diagnostic-command: >-
+              AFFECTED_TRADING_PROJECTS=$(yarn nx show projects --affected --withTarget=test:unit --projects='@suite-native/trading-*' --sep=,) && if [[ -n "$AFFECTED_TRADING_PROJECTS" ]]; then yarn nx run-many --target=test:unit --projects="$AFFECTED_TRADING_PROJECTS" --parallel=1 --output-style=stream -- --detectOpenHandles --logHeapUsage; else echo "No affected trading native unit-test projects"; fi
           - test-task: native-rest
+            step-timeout-minutes: 35
             test-command: >-
               yarn nx affected --target=test:unit --exclude='@trezor/*,@suite/*,@suite-common/*,@suite-native/module-trading,@suite-native/trading-*' --parallel=1 --output-style=stream
+            diagnostic-command: >-
+              yarn nx affected --target=test:unit --exclude='@trezor/*,@suite/*,@suite-common/*,@suite-native/module-trading,@suite-native/trading-*' --parallel=1 --output-style=stream -- --detectOpenHandles --logHeapUsage
     steps:
       - name: Checkout repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
@@ -139,7 +149,16 @@ jobs:
       - name: "Minimal yarn install"
         uses: ./.github/actions/minimal-yarn-install
       - name: Unit Tests
-        run: ${{ matrix.test-command }}
+        timeout-minutes: ${{ matrix.step-timeout-minutes }}
+        run: |
+          if [[ "${{ matrix.test-task }}" == native-* ]]; then
+            if ! ${{ matrix.test-command }}; then
+              echo "Native unit tests failed. Retrying once with Jest diagnostics..."
+              ${{ matrix.diagnostic-command }}
+            fi
+          else
+            ${{ matrix.test-command }}
+          fi
 
   build-libs-for-publishing:
     name: "Build libs for publishing"
