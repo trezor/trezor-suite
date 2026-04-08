@@ -1,7 +1,5 @@
 import { expect, test } from '../../support/fixtures';
 
-test.use({ deviceSetup: { mnemonic: 'mnemonic_all' } });
-
 test.describe('Forget TS7', { tag: ['@T3W1', '@desktopOnly'] }, () => {
     /**
      * Tests the forget flow for a TS7 that was previously connected via Bluetooth
@@ -169,8 +167,9 @@ test.describe('Forget TS7', { tag: ['@T3W1', '@desktopOnly'] }, () => {
     }) => {
         await onboardingPage.completeOnboarding();
 
-        await test.step('Disconnect device', async () => {
+        await test.step('Disconnect device and wait for it to be recognized', async () => {
             await device.powerOff();
+            await page.expectReduxObjectToEqual('device.selectedDevice.connected', false);
         });
 
         await test.step('Navigate to device settings', async () => {
@@ -185,6 +184,7 @@ test.describe('Forget TS7', { tag: ['@T3W1', '@desktopOnly'] }, () => {
         await test.step('Confirm forget — no unplug modal should appear', async () => {
             await expect(settingsPage.deviceTab.forgetConfirmationModal).toBeVisible();
             await settingsPage.deviceTab.forgetConfirmButton.click();
+            await expect(settingsPage.deviceTab.forgetUnplugModal).toBeHidden();
         });
 
         await test.step('Verify landing on starting screen', async () => {
