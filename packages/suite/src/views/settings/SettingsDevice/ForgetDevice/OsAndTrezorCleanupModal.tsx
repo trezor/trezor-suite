@@ -52,6 +52,7 @@ export const OsAndTrezorCleanupModal = ({
                     }
                     actions={
                         <Button
+                            data-testid="@settings/device/forget-os-removal-confirm"
                             intent="brand"
                             onClick={() => setOsRemovalConfirmed(true)}
                             size="large"
@@ -74,7 +75,12 @@ export const OsAndTrezorCleanupModal = ({
                         />
                     }
                     actions={
-                        <Button intent="brand" onClick={onTrezorRemovalConfirm} size="large">
+                        <Button
+                            data-testid="@settings/device/forget-trezor-removal-confirm"
+                            intent="brand"
+                            onClick={onTrezorRemovalConfirm}
+                            size="large"
+                        >
                             <Translation id="TR_FORGET_DEVICE_MODAL_IVE_REMOVED_IT" />
                         </Button>
                     }

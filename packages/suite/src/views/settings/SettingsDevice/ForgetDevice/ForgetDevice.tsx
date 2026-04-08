@@ -25,13 +25,14 @@ export const ForgetDevice = () => {
     return (
         <>
             {isModalOpen && <ForgetDeviceModal onCancel={handleModalCancel} />}
-            <SectionItem data-test="@settings/device/forget">
+            <SectionItem data-testid="@settings/device/forget">
                 <TextColumn
                     title={<Translation id="TR_FORGET_DEVICE_HEADING" />}
                     description={<Translation id="TR_FORGET_DEVICE_DESCRIPTION" />}
                 />
                 <ActionColumn>
                     <ActionButton
+                        data-testid="@settings/device/forget-button"
                         onClick={handleClick}
                         intent="warning"
                         isDisabled={hasRunningDiscovery}

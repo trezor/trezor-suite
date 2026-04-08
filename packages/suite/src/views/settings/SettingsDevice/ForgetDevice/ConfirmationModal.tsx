@@ -70,7 +70,7 @@ export const ConfirmationModal = ({
         width={680}
         bottomContent={
             <>
-                <Modal.Button onClick={onConfirm}>
+                <Modal.Button data-testid="@settings/device/forget-confirm" onClick={onConfirm}>
                     <Translation id="TR_FORGET_DEVICE_MODAL_CONFIRM" />
                 </Modal.Button>
                 <Modal.Button intent="neutral" priority="secondary" onClick={onCancel}>
