@@ -304,13 +304,11 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                 bottomContent={
                     <>
                         {getBottomContentPrimaryButton()}
-                        <Modal.Button
-                            intent={hasFinished ? undefined : 'neutral'}
-                            priority={hasFinished ? 'primary' : 'secondary'}
-                            onClick={handleClose}
-                        >
-                            <Translation id={hasFinished ? 'TR_CLOSE' : 'TR_CANCEL'} />
-                        </Modal.Button>
+                        {hasFinished && (
+                            <Modal.Button priority="primary" onClick={handleClose}>
+                                <Translation id="TR_CLOSE" />
+                            </Modal.Button>
+                        )}
                     </>
                 }
                 onBackClick={hasBackClick ? handleBackClick : undefined}
