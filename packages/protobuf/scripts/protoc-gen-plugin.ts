@@ -584,9 +584,7 @@ const generateTs = (schema: Schema<PluginOptions>) => {
         // Step 3: generate schema definitions from typescript definitions
         // collect imports for referenced items
         // apply manual patches for specific cases
-        const schemaContent = generateTypeBox(source, {
-            appendHelpersForMessageType: false,
-        });
+        const schemaContent = generateTypeBox(source);
 
         const schemaImports = buildImportLines(
             result.externalTypes,

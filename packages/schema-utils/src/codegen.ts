@@ -2,24 +2,13 @@
 import * as Codegen from '@sinclair/typebox-codegen/typescript';
 import fs from 'fs';
 
-type GenerateTypeBoxOptions = {
-    appendHelpersForMessageType?: boolean;
-};
-
 const preprocessCode = (code: string) => {
     // Make some replacements to make the code processable by the generator
     // Since there are some issues with typeof
     code = code.replace(/typeof undefined/g, 'undefined');
     code = code.replace(/keyof typeof/g, 'keyof');
-    let helpers = '';
-    // Duplicate types added at end of message.ts, as these are too complex for the generator
-    const helpersIndex = code.indexOf('// @COPY');
-    if (helpersIndex >= 0) {
-        helpers = code.substring(helpersIndex);
-        code = code.substring(0, helpersIndex);
-    }
 
-    return { code, helpers };
+    return { code };
 };
 
 const runTypeBoxCodegen = (code: string) => {
@@ -74,8 +63,8 @@ const normalizeEnums = (output: string) => {
     return output;
 };
 
-export function generateTypeBox(rawCode: string, options: GenerateTypeBoxOptions = {}) {
-    const { code, helpers } = preprocessCode(rawCode);
+export function generateTypeBox(rawCode: string) {
+    const { code } = preprocessCode(rawCode);
     let output = runTypeBoxCodegen(code);
     output = normalizeEnums(output);
 
@@ -85,13 +74,6 @@ export function generateTypeBox(rawCode: string, options: GenerateTypeBoxOptions
         schemaUtilsImports.push('CloneType');
     }
     output = `import { ${schemaUtilsImports.join(', ')} } from '@trezor/schema-utils';\n\n${output}`;
-
-    const { appendHelpersForMessageType = true } = options;
-
-    // Add types for message schema
-    if (appendHelpersForMessageType && output.indexOf('export type MessageType =') > -1) {
-        output = `${output}\n\n${helpers}`;
-    }
 
     return output;
 }
