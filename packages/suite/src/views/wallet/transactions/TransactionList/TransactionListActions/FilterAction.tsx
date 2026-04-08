@@ -19,7 +19,7 @@ import {
     Text,
     Tooltip,
 } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { spacings, zIndices } from '@trezor/theme';
 
 const options = [
     {
@@ -59,6 +59,7 @@ export const FilterAction = () => {
             hasArrow
             isOpen={isOpen}
             placement="bottom-end"
+            zIndex={zIndices.popover}
             content={
                 <Row gap={spacings.sm} padding={spacings.xs}>
                     <Box maxWidth={290}>
