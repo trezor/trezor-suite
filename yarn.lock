@@ -3879,9 +3879,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@evolu/common@npm:8.0.0-next.1":
-  version: 8.0.0-next.1
-  resolution: "@evolu/common@npm:8.0.0-next.1"
+"@evolu/common@npm:8.0.0-next.3":
+  version: 8.0.0-next.3
+  resolution: "@evolu/common@npm:8.0.0-next.3"
   dependencies:
     "@noble/ciphers": "npm:^2.1.1"
     "@noble/hashes": "npm:^2.0.1"
@@ -3889,19 +3889,19 @@ __metadata:
     kysely: "npm:^0.28.15"
     msgpackr: "npm:^1.11.8"
     random: "npm:^5.4.1"
-  checksum: 10/6bd9c5e9a4fd2d2f09bbcd57a66c55626086a932d918254ce94394c65e39ee3492716fffc3c603155c4061c10a831950e5a2709035c9562092e32677b1ab17cf
+  checksum: 10/b76e0553bc1fc6a41bbf00eb554d842f103f624d96c892fffc44919a53c74de71a3033c7fba0d7fcf60b607ae69a4359945a35b8fdb482b740c6b3f28cff5594
   languageName: node
   linkType: hard
 
-"@evolu/nodejs@npm:3.0.0-next.1":
-  version: 3.0.0-next.1
-  resolution: "@evolu/nodejs@npm:3.0.0-next.1"
+"@evolu/nodejs@npm:3.0.0-next.2":
+  version: 3.0.0-next.2
+  resolution: "@evolu/nodejs@npm:3.0.0-next.2"
   dependencies:
     better-sqlite3: "npm:^12.6.2"
     ws: "npm:^8.19.0"
   peerDependencies:
     "@evolu/common": ^8.0.0-next.0
-  checksum: 10/74033b87898199e1099f41f9beba5a1114770e0c8763405a73053575860871336571b35db9eaa9d68dbb4ad0aecfc462c5afd7b26400718fd13c53a0687f8cb3
+  checksum: 10/316a9451ee84224b711bbb8c4528a6993c3a5d78420f30b00f05c69f8c182d672386bace6e6715423f83e33d14a664631f4963970cd65e1a334ebc5e17507af7
   languageName: node
   linkType: hard
 
@@ -10719,7 +10719,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/e2e-evolu-client@workspace:suite-common/e2e-evolu-client"
   dependencies:
-    "@evolu/common": "npm:8.0.0-next.1"
+    "@evolu/common": "npm:8.0.0-next.3"
     "@suite-common/suite-sync-evolu": "workspace:*"
     "@suite-common/suite-sync-storage": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
@@ -11127,8 +11127,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/suite-sync-evolu@workspace:suite-common/suite-sync-evolu"
   dependencies:
-    "@evolu/common": "npm:8.0.0-next.1"
-    "@evolu/nodejs": "npm:3.0.0-next.1"
+    "@evolu/common": "npm:8.0.0-next.3"
+    "@evolu/nodejs": "npm:3.0.0-next.2"
     "@suite-common/suite-sync-storage": "workspace:*"
     "@suite-common/suite-sync-types": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
@@ -11706,7 +11706,7 @@ __metadata:
     "@bitcoinerlab/secp256k1": "npm:1.2.0"
     "@config-plugins/detox": "npm:^11.0.0"
     "@currents/cmd": "npm:^1.9.4"
-    "@evolu/common": "npm:8.0.0-next.1"
+    "@evolu/common": "npm:8.0.0-next.3"
     "@evolu/react-native": "npm:15.0.0-next.0"
     "@exodus/patch-broken-hermes-typed-arrays": "npm:^1.0.0-alpha.1"
     "@gorhom/bottom-sheet": "npm:5.2.8"
@@ -13922,7 +13922,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/suite-sync@workspace:suite-native/suite-sync"
   dependencies:
-    "@evolu/common": "npm:8.0.0-next.1"
+    "@evolu/common": "npm:8.0.0-next.3"
     "@evolu/react-native": "npm:15.0.0-next.0"
     "@reduxjs/toolkit": "npm:2.11.2"
     "@suite-common/delegated-identity-key-types": "workspace:*"
@@ -14624,7 +14624,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite/suite-sync@workspace:suite/suite-sync"
   dependencies:
-    "@evolu/common": "npm:8.0.0-next.1"
+    "@evolu/common": "npm:8.0.0-next.3"
     "@evolu/web": "npm:3.0.0-next.0"
     "@hookform/resolvers": "npm:^3.3.4"
     "@reduxjs/toolkit": "npm:2.11.2"
@@ -15885,7 +15885,7 @@ __metadata:
   resolution: "@trezor/suite-e2e@workspace:suite/e2e"
   dependencies:
     "@currents/playwright": "npm:^1.21.2"
-    "@evolu/common": "npm:8.0.0-next.1"
+    "@evolu/common": "npm:8.0.0-next.3"
     "@playwright/browser-chromium": "npm:1.57.0"
     "@playwright/browser-firefox": "npm:1.57.0"
     "@playwright/browser-webkit": "npm:1.57.0"
