@@ -44,7 +44,7 @@ test.describe('Forget TS5', { tag: ['@T3T1', '@desktopOnly'] }, () => {
         });
     });
 
-    test('User can forget a disconnected TS5 immediately and no wallet is remembered', async ({
+    test('User can forget an already disconnected TS5 immediately without unplug modal', async ({
         onboardingPage,
         settingsPage,
         page,
@@ -52,7 +52,7 @@ test.describe('Forget TS5', { tag: ['@T3T1', '@desktopOnly'] }, () => {
     }) => {
         await onboardingPage.completeOnboarding();
 
-        await test.step('Power off emulator to simulate disconnected device', async () => {
+        await test.step('Disconnect device', async () => {
             await device.powerOff();
         });
 
@@ -65,7 +65,7 @@ test.describe('Forget TS5', { tag: ['@T3T1', '@desktopOnly'] }, () => {
             await settingsPage.deviceTab.forgetDeviceButton.click();
         });
 
-        await test.step('Confirm forget in the confirmation modal', async () => {
+        await test.step('Confirm forget — no unplug modal should appear', async () => {
             await expect(settingsPage.deviceTab.forgetConfirmationModal).toBeVisible();
             await settingsPage.deviceTab.forgetConfirmButton.click();
         });
