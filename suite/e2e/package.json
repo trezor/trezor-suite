@@ -21,7 +21,7 @@
     },
     "devDependencies": {
         "@currents/playwright": "^1.21.2",
-        "@evolu/common": "8.0.0-next.0",
+        "@evolu/common": "8.0.0-next.1",
         "@playwright/browser-chromium": "1.57.0",
         "@playwright/browser-firefox": "1.57.0",
         "@playwright/browser-webkit": "1.57.0",
