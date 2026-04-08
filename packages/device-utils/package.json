@@ -9,9 +9,14 @@
         "types": "./lib/index.d.ts",
         "exports": {
             ".": {
-                "import": "./libESM/index.mjs",
-                "require": "./lib/index.js",
-                "types": "./lib/index.d.ts"
+                "import": {
+                    "types": "./libESM/index.d.mts",
+                    "default": "./libESM/index.mjs"
+                },
+                "require": {
+                    "types": "./lib/index.d.ts",
+                    "default": "./lib/index.js"
+                }
             }
         }
     },

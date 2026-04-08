@@ -31,18 +31,28 @@
         "types": "./lib/index.d.ts",
         "exports": {
             ".": {
-                "import": "./libESM/index.mjs",
-                "require": "./lib/index.js",
-                "types": "./lib/index.d.ts"
+                "import": {
+                    "types": "./libESM/index.d.mts",
+                    "default": "./libESM/index.mjs"
+                },
+                "require": {
+                    "types": "./lib/index.d.ts",
+                    "default": "./lib/index.js"
+                }
             },
-            "./lib/*": "./lib/*.js",
-            "./lib/types": "./lib/types/index.js",
-            "./lib/transaction": "./lib/transaction/index.js",
-            "./lib/payments": "./lib/payments/index.js",
-            "./lib/compose": "./lib/compose/index.js",
-            "./lib/coinselect": "./lib/coinselect/index.js",
-            "./lib/script": "./lib/script/index.js",
-            "./libESM/*": "./libESM/*"
+            "./lib/*": {
+                "types": "./lib/*.d.ts",
+                "default": "./lib/*.js"
+            },
+            "./libESM/*": "./libESM/*",
+            "./lib/compose": {
+                "types": "./lib/compose/index.d.ts",
+                "default": "./lib/compose/index.js"
+            },
+            "./libESM/compose": {
+                "types": "./libESM/compose/index.d.mts",
+                "default": "./libESM/compose/index.mjs"
+            }
         }
     },
     "scripts": {

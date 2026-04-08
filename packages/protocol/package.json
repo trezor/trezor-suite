@@ -16,15 +16,44 @@
         "types": "./lib/index.d.ts",
         "exports": {
             ".": {
-                "import": "./libESM/index.mjs",
-                "require": "./lib/index.js",
-                "types": "./lib/index.d.ts"
+                "import": {
+                    "types": "./libESM/index.d.mts",
+                    "default": "./libESM/index.mjs"
+                },
+                "require": {
+                    "types": "./lib/index.d.ts",
+                    "default": "./lib/index.js"
+                }
             },
-            "./lib/*": "./lib/*.js",
-            "./lib/protocol-thp": "./lib/protocol-thp/index.js",
-            "./lib/protocol-thp/messages": "./lib/protocol-thp/messages/index.js",
-            "./lib/protocol-tpn": "./lib/protocol-tpn/index.js",
-            "./libESM/*": "./libESM/*"
+            "./lib/*": {
+                "types": "./lib/*.d.ts",
+                "default": "./lib/*.js"
+            },
+            "./libESM/*": "./libESM/*",
+            "./lib/protocol-thp": {
+                "types": "./lib/protocol-thp/index.d.ts",
+                "default": "./lib/protocol-thp/index.js"
+            },
+            "./libESM/protocol-thp": {
+                "types": "./libESM/protocol-thp/index.d.mts",
+                "default": "./libESM/protocol-thp/index.mjs"
+            },
+            "./lib/protocol-thp/messages": {
+                "types": "./lib/protocol-thp/messages/index.d.ts",
+                "default": "./lib/protocol-thp/messages/index.js"
+            },
+            "./libESM/protocol-thp/messages": {
+                "types": "./libESM/protocol-thp/messages/index.d.mts",
+                "default": "./libESM/protocol-thp/messages/index.mjs"
+            },
+            "./lib/protocol-tpn": {
+                "types": "./lib/protocol-tpn/index.d.ts",
+                "default": "./lib/protocol-tpn/index.js"
+            },
+            "./libESM/protocol-tpn": {
+                "types": "./libESM/protocol-tpn/index.d.mts",
+                "default": "./libESM/protocol-tpn/index.mjs"
+            }
         }
     },
     "npmPublishAccess": "public",
