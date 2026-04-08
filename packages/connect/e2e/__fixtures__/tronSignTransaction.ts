@@ -67,7 +67,34 @@ export default {
             legacyResults,
         },
         {
-            description: 'Freeze for energy',
+            description: 'Freeze for energy (official field name)',
+            params: {
+                path: "m/44'/195'/0'/0/0",
+                ref_block_bytes: '7e0b',
+                ref_block_hash: 'ed0f599cb230d512',
+                expiration: 1770551739000,
+                timestamp: 1770551679000,
+                contract: [
+                    {
+                        type: 'FreezeBalanceV2Contract',
+                        parameter: {
+                            value: {
+                                owner_address: '41f2cd810c48c401d392ead3c6e1e1cb9f57750a58',
+                                frozen_balance: 50000000,
+                                resource: 'ENERGY',
+                            },
+                        },
+                    },
+                ],
+            },
+            result: {
+                signature:
+                    '39114ab6d33aafc741057c7245272b286d71fd4242052445cd058170073bbee1534e6752f2d1a305916fbac06fb0803641df604c713ee927e872a0ad972d18d01c',
+            },
+            legacyResults,
+        },
+        {
+            description: 'Freeze for energy (legacy balance field)',
             params: {
                 path: "m/44'/195'/0'/0/0",
                 ref_block_bytes: '7e0b',
@@ -94,7 +121,33 @@ export default {
             legacyResults,
         },
         {
-            description: 'Unfreeze for bandwidth',
+            description: 'Unfreeze for bandwidth (official field name)',
+            params: {
+                path: "m/44'/195'/0'/0/0",
+                ref_block_bytes: 'f2b7',
+                ref_block_hash: 'fb75c38816f843ef',
+                expiration: 1771437825000,
+                timestamp: 1771436565000,
+                contract: [
+                    {
+                        type: 'UnfreezeBalanceV2Contract',
+                        parameter: {
+                            value: {
+                                owner_address: '41f2cd810c48c401d392ead3c6e1e1cb9f57750a58',
+                                unfreeze_balance: 10000000,
+                            },
+                        },
+                    },
+                ],
+            },
+            result: {
+                signature:
+                    'b4d10dbd35e1c4e925f45c38809e648df9936f6e5a9fa49ffd90f6ca81abc0595aa388f797114963a5a2be71b982832112846dfdd5b8125c0bcedb2822047a591b',
+            },
+            legacyResults,
+        },
+        {
+            description: 'Unfreeze for bandwidth (legacy balance field)',
             params: {
                 path: "m/44'/195'/0'/0/0",
                 ref_block_bytes: 'f2b7',
