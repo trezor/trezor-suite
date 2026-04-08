@@ -11,7 +11,7 @@ test.describe('Labeling migration', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () 
 
     test.beforeEach(async ({ metadataMock, metadataPage, evoluClient, onboardingPage }) => {
         await metadataMock.start(MetadataProvider.DROPBOX);
-        await test.step('Seed Evolu relay server', async () => {
+        await test.step('Seed Evolu server server', async () => {
             await evoluClient.init({ ownerSecret });
             evoluClient.writeTo('account', accountSeed);
             evoluClient.seedQuotaManagerData({ ownerId });

@@ -1,7 +1,8 @@
 export {
     selectIsSuiteSyncEnabled,
-    selectSuiteSyncCustomRelayUrl,
+    selectSuiteSyncCustomServerUrl,
     selectSuiteSyncRelayUrl,
+    selectSuiteSyncServerType,
     selectSuiteSyncInteraction,
     selectSuiteSyncOwnerForDeviceStaticId,
     selectIsSuiteSyncDebugEnabled,
@@ -19,20 +20,20 @@ export {
     initialSuiteSyncState,
     updateSuiteSyncDebugEnabled,
     updateSuiteSyncEnabled,
-    setSuiteSyncRelayUrl,
+    setSuiteSyncServer,
     setSuiteSyncOwner,
 } from './suiteSyncSlice';
 export type { SuiteSyncState, SuiteSyncSettings } from './suiteSyncSlice';
-export { DEFAULT_SUITE_SYNC_RELAY_URL, SUITE_SYNC_RELAY_SERVERS } from './relay/relayUrl';
+export { DEFAULT_SUITE_SYNC_SERVER_URL, SUITE_SYNC_SERVERS } from './server/serverUrl';
 export type {
     SuiteSyncServerTypeSelectValue,
     SuiteSyncServerTypeOption,
     ChangeServerModalFields,
-} from './relay/relayServerSettings';
+} from './server/relayServerSettings';
 export {
     SUITE_SYNC_SERVER_TYPE_OPTIONS_MAP,
     createChangeSuiteSyncServerSchema,
-} from './relay/relayServerSettings';
+} from './server/relayServerSettings';
 export { prepareSuiteSyncMiddleware } from './suiteSyncMiddleware';
 export {
     suiteSyncDataReducer,

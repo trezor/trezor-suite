@@ -13,11 +13,12 @@ export default createMigration<SuiteDBSchema>('25.12.0', (db, tx) => {
         db.createObjectStore('suiteSyncSettings');
 
         tx.objectStore('suiteSyncSettings').put(
+            // Uses old schema shape; migration 26.5.0 converts `suiteSyncRelayUrl` → `suiteSyncServer`
             {
                 isSuiteSyncEnabled: false,
                 isSuiteSyncDebugEnabled: false,
                 suiteSyncRelayUrl: null,
-            },
+            } as any,
             'suiteSyncSettings',
         );
     }

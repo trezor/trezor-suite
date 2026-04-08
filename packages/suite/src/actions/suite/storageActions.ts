@@ -506,7 +506,7 @@ export const saveSuiteSyncSettings = () => (_dispatch: Dispatch, getState: GetSt
         {
             isSuiteSyncEnabled: suiteSync.settings.isSuiteSyncEnabled,
             isSuiteSyncDebugEnabled: suiteSync.settings.isSuiteSyncDebugEnabled,
-            suiteSyncRelayUrl: suiteSync.settings.suiteSyncRelayUrl,
+            suiteSyncServer: suiteSync.settings.suiteSyncServer,
         },
         'suiteSyncSettings',
         true,

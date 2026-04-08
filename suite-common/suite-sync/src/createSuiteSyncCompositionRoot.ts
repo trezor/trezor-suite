@@ -34,8 +34,8 @@ import {
     createRetrieveSuiteSyncOwner,
 } from './owner/createRetrieveSuiteSyncOwner';
 import { createSaveSuiteSyncOwner } from './owner/createSaveSuiteSyncOwner';
-import { createChangeRelayUrl } from './relay/createChangeRelayUrl';
-import { isUsingTrezorServer } from './relay/isUsingTrezorServer';
+import { createChangeServerUrl } from './server/createChangeServerUrl';
+import { isUsingTrezorSuiteSyncServer } from './server/isUsingTrezorSuiteSyncServer';
 import { createEnsureStorage } from './storage/createEnsureStorage';
 import { createEnsureWalletSuiteSyncOn } from './storage/createEnsureWalletSuiteSyncOn';
 import { createEnsureWalletSuiteSyncOnWithErrorHandler } from './storage/createEnsureWalletSuiteSyncOnWithErrorHandler';
@@ -103,7 +103,9 @@ export const createSuiteSyncCompositionRoot = (
         dispatch: deps.dispatch,
         getState: deps.getState,
         getDeviceForStaticSessionId,
-        getIsUsingTrezorRelay: () => isUsingTrezorServer(selectSuiteSyncRelayUrl(deps.getState())),
+        getIsUsingTrezorRelay: toGetter(deps.getState, state =>
+            isUsingTrezorSuiteSyncServer(selectSuiteSyncRelayUrl(state)),
+        ),
     });
 
     const ensureStorage = createEnsureStorage({
@@ -154,7 +156,7 @@ export const createSuiteSyncCompositionRoot = (
     };
 
     return {
-        changeRelayUrl: createChangeRelayUrl({
+        changeRelayUrl: createChangeServerUrl({
             suiteSyncStorageRepository,
             getAllDeviceSessionIds,
             dispatch: deps.dispatch,

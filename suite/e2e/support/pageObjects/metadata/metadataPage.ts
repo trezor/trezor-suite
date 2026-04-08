@@ -62,7 +62,7 @@ export class MetadataPage {
 
     @step()
     async initiateSuiteSyncSetup() {
-        // Configure Suite Sync relay URL in Debug settings
+        // Configure Suite Sync server URL in Debug settings
         await this.settingsPage.navigateTo('debug');
         await this.settingsPage.debugTab.suiteSyncUrlInput.fill(RELAY_URL);
         await this.settingsPage.debugTab.suiteSyncUrlSaveButton.click();

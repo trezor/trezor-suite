@@ -68,7 +68,7 @@ export interface FormState {
 
     /**
      * Fee that was paid by chained transactions. To perform RBF transaction (bump fee or cancel)
-     * we must pay higher fee than all previous transactions + its own relay fee (see BIP-125 rules)
+     * we must pay higher fee than all previous transactions + its own server fee (see BIP-125 rules)
      *
      * This is passed down to `utxo-lib` as `baseFee` parameter (see `CoinSelectOptions`).
      */

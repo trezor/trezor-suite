@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
-    DEFAULT_SUITE_SYNC_RELAY_URL,
+    DEFAULT_SUITE_SYNC_SERVER_URL,
     selectIsSuiteSyncDebugEnabled,
     selectIsSuiteSyncFeatureAvailable,
     selectSuiteSyncRelayUrl,
@@ -76,7 +76,7 @@ export const SuiteSyncSettings = ({ suiteSync }: SuiteSyncSettingsProps) => {
                             }
                         />
                         <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
-                            Default is: <Code>{DEFAULT_SUITE_SYNC_RELAY_URL}</Code>
+                            Default is: <Code>{DEFAULT_SUITE_SYNC_SERVER_URL}</Code>
                         </Text>
                     </Column>
                 </ActionColumn>
