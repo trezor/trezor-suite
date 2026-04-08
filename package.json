@@ -104,7 +104,7 @@
         "type-fest": "5.5.0",
         "bcrypto": "5.4.0",
         "react": "19.2.4",
-        "electron": "40.8.5",
+        "electron": "41.0.4",
         "@types/node": "22.13.10",
         "bn.js": "5.2.3",
         "node-addon-api": "8.5.0",

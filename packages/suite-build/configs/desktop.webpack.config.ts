@@ -33,8 +33,8 @@ const messageSystemMockFile = path.join(
 );
 
 const config: webpack.Configuration = {
-    // Electron 39 runs on Chromium 142 https://www.electronjs.org/blog/electron-39-0
-    target: 'browserslist:Chrome >= 142',
+    // Electron 41 runs on Chromium 146 https://www.electronjs.org/blog/electron-41-0
+    target: 'browserslist:Chrome >= 146',
     entry: { main: [path.join(baseDirUI, 'src', 'index.tsx')] },
     output: {
         // This builds JS directly `dist/` (instead `dist/js/`)
