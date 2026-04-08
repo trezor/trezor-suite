@@ -41,14 +41,13 @@ const Container = styled.div<ContainerProps>`
         content: '';
         position: absolute;
         bottom: 0;
-        left: 0;
-        width: 1px;
+        left: ${({ $indicatorPosition }) => $indicatorPosition}px;
+        width: ${({ $indicatorWidth }) => $indicatorWidth}px;
         height: ${borders.widths.large};
         background: ${({ theme }) => theme.iconDefault};
-        transform: ${({ $indicatorWidth, $indicatorPosition }) =>
-            `translateX(${$indicatorPosition}px) scaleX(${$indicatorWidth})`};
-        transform-origin: left;
-        transition: transform ${TRANSFORM_OPTIONS};
+        transition:
+            left ${TRANSFORM_OPTIONS},
+            width ${TRANSFORM_OPTIONS};
     }
 
     ${withFrameProps}
@@ -88,11 +87,20 @@ const Tabs = ({
         if (!activeItemId) return;
 
         const activeItemEl = tabsRefs.current.get(activeItemId);
-        const width = activeItemEl?.offsetWidth;
-        const position = activeItemEl?.offsetLeft;
+        const containerEl = containerRef.current;
 
-        setIndicatorWidth(width ?? 0);
-        setIndicatorPosition(position ?? 0);
+        if (!activeItemEl || !containerEl) {
+            setIndicatorWidth(0);
+            setIndicatorPosition(0);
+
+            return;
+        }
+
+        const tabRect = activeItemEl.getBoundingClientRect();
+        const containerRect = containerEl.getBoundingClientRect();
+
+        setIndicatorWidth(tabRect.width);
+        setIndicatorPosition(tabRect.left - containerRect.left);
     }, [activeItemId]);
 
     useEffect(() => {
