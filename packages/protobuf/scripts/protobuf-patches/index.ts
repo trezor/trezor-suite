@@ -124,8 +124,7 @@ export const RULE_PATCH = {
     'StellarAssetType.code': 'required',
     'StellarPathPaymentStrictReceiveOp.paths': 'optional', // its valid to be undefined according to implementation/tests
     'StellarPathPaymentStrictSendOp.paths': 'optional', // its valid to be undefined according to implementation/tests
-    'ThpHandshakeCompletionReqNoisePayload.host_pairing_credential': 'optional',
-    'ThpCredentialRequest.credential': 'optional',
+    'ThpDeviceProperties.model_variant': 'required', // default = 0
     'MoneroTransactionSetInputAck.vini': 'required',
     'MoneroTransactionSetInputAck.vini_hmac': 'required',
     'MoneroTransactionSetInputAck.pseudo_out': 'required',
@@ -294,6 +293,7 @@ export const DEFINITION_PATCH = {
 // skip unnecessary types
 export const SKIP = [
     'MessageType', // connect uses custom definition
+    'ThpMessageType', // connect uses custom definition
     'TransactionType', // connect uses custom definition
     'TxInput', // declared in TxInputType patch
     'TxOutput', // declared in TxOutputType patch
