@@ -12,7 +12,7 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@evolu/common": "8.0.0-next.1",
+        "@evolu/common": "8.0.0-next.3",
         "@suite-common/suite-sync-storage": "workspace:*",
         "@suite-common/suite-sync-types": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
@@ -21,7 +21,7 @@
         "@trezor/utils": "workspace:*"
     },
     "devDependencies": {
-        "@evolu/nodejs": "3.0.0-next.1",
+        "@evolu/nodejs": "3.0.0-next.2",
         "@trezor/eslint": "workspace:*"
     }
 }
