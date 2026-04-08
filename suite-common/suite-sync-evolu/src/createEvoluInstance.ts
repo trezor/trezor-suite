@@ -1,4 +1,11 @@
-import { AppName, type Evolu, type Run, createEvolu, getOrThrow } from '@evolu/common';
+import {
+    type AbortError,
+    AppName,
+    type Evolu,
+    type Result,
+    type Run,
+    createEvolu,
+} from '@evolu/common';
 import { type EvoluPlatformDeps } from '@evolu/common/local-first';
 
 import { type SuiteSyncOwner } from '@suite-common/suite-sync-storage';
@@ -17,8 +24,7 @@ type CreateEvoluInstanceFactoryDeps = {
 
 export type CreateEvoluInstance = (params: {
     suiteSyncOwner: SuiteSyncOwner;
-}) => Promise<Evolu<typeof Schema>>;
-
+}) => Promise<Result<Evolu<typeof Schema>, AbortError>>;
 export type CreateEvoluInstanceDep = {
     createEvoluInstance: CreateEvoluInstance;
 };
@@ -42,15 +48,13 @@ export const createEvoluInstanceFactory =
             throw appName.error;
         }
 
-        return getOrThrow(
-            await deps.run(
-                createEvolu(Schema, {
-                    appName: appName.value,
-                    // Intentionally no transport, transport will be passed
-                    // later on, so we can change the RelayUrl at any time.
-                    transports: [],
-                    appOwner: owner.value,
-                }),
-            ),
+        return await deps.run(
+            createEvolu(Schema, {
+                appName: appName.value,
+                // Intentionally no transport, transport will be passed
+                // later on, so we can change the RelayUrl at any time.
+                transports: [],
+                appOwner: owner.value,
+            }),
         );
     };

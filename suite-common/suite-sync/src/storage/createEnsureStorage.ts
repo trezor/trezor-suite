@@ -89,9 +89,9 @@ export const createEnsureStorage =
             isWriteMode,
         });
 
-        // correct approach would be to create a new storage anyway, but currently there is bug regarding the dispose function
-        const resolvedStorage =
-            storage ?? (await deps.createSuiteStorage({ suiteSyncOwner: owner }));
+        console.log('before new storage');
+        const resolvedStorage = await deps.createSuiteStorage({ suiteSyncOwner: owner });
+        console.log('after new storage');
 
         // Only connect to the relay if quota is actually allocated.
         if (quotaResult.success) {

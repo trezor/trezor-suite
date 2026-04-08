@@ -127,7 +127,16 @@ export class AddressEvoluTable implements AddressTable {
             const deviceLabels = this.evolu.getQueryRows(query);
             process(deviceLabels);
         });
-        this.evolu.loadQuery(query).then(process);
+
+        console.log('start');
+        this.evolu
+            .loadQuery(query)
+            .then(labels => {
+                console.log('tada');
+                process(labels);
+            })
+            .catch(() => console.log('e'));
+        console.log('end');
 
         return unsubscribe;
     };

@@ -25,9 +25,15 @@ export const createEvoluStorageFactory =
 
         let unuseOwner = () => {};
 
-        const evolu = await deps.createEvoluInstance({
+        const evoluResult = await deps.createEvoluInstance({
             suiteSyncOwner,
         });
+
+        if (!evoluResult.ok) {
+            throw evoluResult.error;
+        }
+
+        const evolu = evoluResult.value;
 
         const updateRelayUrl = async (url: string) => {
             const owner = await evolu.appOwner;
@@ -51,10 +57,9 @@ export const createEvoluStorageFactory =
             },
 
             updateRelayUrl,
-            dispose: async () => {
+            dispose: async (): Promise<void> => {
                 unuseOwner();
-                evolu[Symbol.asyncDispose]();
-                await Promise.resolve();
+                await evolu[Symbol.asyncDispose]();
             },
         };
     };

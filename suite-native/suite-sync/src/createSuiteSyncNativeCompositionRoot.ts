@@ -31,7 +31,7 @@ export const createSuiteSyncNativeCompositionRoot = (
     deps: SuiteSyncNativeCompositionRootDeps,
 ): SuiteSync => {
     const console = createConsole({
-        level: 'warn',
+        level: 'debug',
         formatter: createConsoleFormatter()({ timestampFormat: 'absolute' }),
     });
 

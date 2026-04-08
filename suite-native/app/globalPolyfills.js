@@ -41,6 +41,7 @@ isSupersetOf.shim();
 symmetricDifference.shim();
 union.shim();
 
+// TODO understand this
 // Evolu requires Explicit Resource Management polyfills (Symbol.dispose, Symbol.asyncDispose,
 // AsyncDisposableStack, etc.) that Hermes doesn't support natively yet.
 installReactNativePolyfills();
@@ -51,6 +52,8 @@ if (typeof Promise.try !== 'function') {
         return new Promise(resolve => resolve(callbackfn(...args)));
     };
 }
+
+console.log(globalThis.AsyncDisposableStack);
 
 // Promise.withResolvers is an ES2024 feature that may not be supported by Hermes.
 if (typeof Promise.withResolvers !== 'function') {
