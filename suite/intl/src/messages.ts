@@ -3119,7 +3119,7 @@ export const messages = defineMessages({
         id: 'TR_SETTINGS_TOOLTIP_DESCRIPTION_WEB',
     },
     TR_SETTINGS_DEVICE_BANNER_TITLE_DISCONNECTED: {
-        defaultMessage: 'Trezor disconnected',
+        defaultMessage: 'Connect your Trezor to access device settings',
         id: 'TR_SETTINGS_DEVICE_BANNER_TITLE_DISCONNECTED',
     },
     TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_DISCONNECTED: {
@@ -5405,7 +5405,7 @@ export const messages = defineMessages({
     TR_EXPERIMENTAL_TRON_VIEW_ONLY_DESCRIPTION: {
         id: 'TR_EXPERIMENTAL_TRON_VIEW_ONLY_DESCRIPTION',
         defaultMessage:
-            'Enable the Tron Network with the latest firmware to check your balance, send and receive TRX and tokens, view charts and transaction history, and use Wallet Connect. Full support, including freezing and voting, is coming soon.',
+            'Enable the Tron Network with the latest firmware to check your balance, send and receive TRX and tokens, view charts and transaction history, and use WalletConnect. Full support, including freezing and voting, is coming soon.',
     },
     TR_EXPERIMENTAL_SLIP24: {
         id: 'TR_EXPERIMENTAL_SLIP24',
@@ -6341,7 +6341,7 @@ export const messages = defineMessages({
         id: 'TR_LABELING_NOT_SYNCED',
     },
     TR_LABELING_SYNCED_THROUGH_TREZOR_SERVERS: {
-        defaultMessage: 'Synced through Trezor servers (default)',
+        defaultMessage: 'Label server',
         id: 'TR_LABELING_SYNCED_THROUGH_TREZOR_SERVERS',
     },
     TR_LABELING_SERVERS_DESCRIPTION: {
@@ -6396,7 +6396,8 @@ export const messages = defineMessages({
     },
     FIRMWARE_UNSUPPORTED_DEVICE_SUITE_SYNC: {
         id: 'FIRMWARE_UNSUPPORTED_DEVICE_SUITE_SYNC',
-        defaultMessage: 'Suite Sync supports Trezor Safe 3, 5, and 7 devices.',
+        defaultMessage:
+            'The device {name} isn’t compatible with Suite Sync. Suite Sync supports Trezor Safe 3, 5, and 7 devices.',
     },
     TR_DISABLED_SWITCH_TOOLTIP: {
         id: 'TR_DISABLED_SWITCH_TOOLTIP',
@@ -6591,7 +6592,7 @@ export const messages = defineMessages({
     TR_GRAPH_MISSING_DATA_WITH_TOKENS: {
         id: 'TR_GRAPH_MISSING_DATA_WITH_TOKENS',
         defaultMessage:
-            "{networks}, all token and staking amounts are included in the portfolio balance, but aren't currently supported in graph view.",
+            "{networks}, all token, and staking amounts are included in the portfolio balance, but aren't currently supported in graph view.",
     },
     TR_GRAPH_MISSING_DATA_NETWORKS: {
         id: 'TR_GRAPH_MISSING_DATA_NETWORKS',
@@ -9353,7 +9354,7 @@ export const messages = defineMessages({
     },
     TR_EARN_STABLECOIN_YIELD_TITLE: {
         id: 'TR_EARN_STABLECOIN_YIELD_TITLE',
-        defaultMessage: 'Stablecoin Yield',
+        defaultMessage: 'Stablecoin yield',
     },
     TR_MODIFY: {
         id: 'TR_MODIFY',
@@ -10954,11 +10955,11 @@ export const messages = defineMessages({
     },
     TR_FEEDBACK_CARD_DESCRIPTION: {
         id: 'TR_FEEDBACK_CARD_DESCRIPTION',
-        defaultMessage: 'Your feedback helps us improve—tell us what you think.',
+        defaultMessage: 'Tell us what’s working and what’s not—we read every reply.',
     },
     TR_FEEDBACK_CARD_SEND: {
         id: 'TR_FEEDBACK_CARD_SEND',
-        defaultMessage: 'Send feedback',
+        defaultMessage: 'Submit',
     },
     TR_FEEDBACK_CARD_SUCCESS_TITLE: {
         id: 'TR_FEEDBACK_CARD_SUCCESS_TITLE',
