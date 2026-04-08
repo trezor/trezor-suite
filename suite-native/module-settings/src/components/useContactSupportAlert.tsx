@@ -23,10 +23,10 @@ export const useContactSupportAlert = () => {
                 <Translation id="moduleSettings.faq.needHelp.contactSupportAlert.primaryButton" />
             ),
             primaryButtonViewRight: 'arrowLineUpRight',
-            onPressPrimaryButton: async () => {
+            onPressPrimaryButton: () => {
                 if (appendixRef.current) {
                     // We need to access the URL via a ref to ensure it's always up to date, even if the value changes while the alert is already displayed.
-                    await openLink(appendixRef.current.getSupportChatUrl());
+                    openLink(appendixRef.current.getSupportChatUrl());
                 }
             },
             secondaryButtonTitle: <Translation id="generic.buttons.cancel" />,
