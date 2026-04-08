@@ -57,7 +57,7 @@
         "storybook": "^10.2.8",
         "stylelint": "^17.1.1",
         "stylelint-config-standard": "^40.0.0",
-        "svgo": "4.0.0",
+        "svgo": "^4.0.1",
         "typescript-styled-plugin": "^0.18.3"
     }
 }
