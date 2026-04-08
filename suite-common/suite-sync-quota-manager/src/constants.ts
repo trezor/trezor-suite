@@ -16,9 +16,13 @@ export const DEFAULT_ACCOUNT_SIZE_QUOTA = Math.round(DEFAULT_DEVICE_SIZE_QUOTA /
  */
 export const DEFAULT_ACCOUNT_INCREMENT_SIZE_QUOTA = DEFAULT_ACCOUNT_SIZE_QUOTA;
 
+export const PRODUCTION_QUOTA_MANAGER_URL = 'https://suite-sync.trezor.io/quota-manager/';
+
+export const DEV_QUOTA_MANAGER_URL = 'https://suite-sync-dev.suite.sldev.cz/quota-manager/';
+
 export const DEFAULT_QUOTA_MANAGER_URL = isCodesignBuild()
-    ? 'https://suite-sync.trezor.io/quota-manager/'
-    : 'https://suite-sync-dev.suite.sldev.cz/quota-manager/';
+    ? PRODUCTION_QUOTA_MANAGER_URL
+    : DEV_QUOTA_MANAGER_URL;
 
 /**
  * Header used for signing add space to owner requests.

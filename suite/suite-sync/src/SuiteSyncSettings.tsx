@@ -3,18 +3,22 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import {
     DEFAULT_SUITE_SYNC_RELAY_URL,
+    DEFAULT_SUITE_SYNC_RELAY_URL_DEV,
+    DEFAULT_SUITE_SYNC_RELAY_URL_PROD,
     selectIsSuiteSyncDebugEnabled,
     selectIsSuiteSyncFeatureAvailable,
     selectSuiteSyncRelayUrl,
     updateSuiteSyncDebugEnabled,
 } from '@suite-common/suite-sync';
 import { type SuiteSync } from '@suite-common/suite-sync-types';
-import { Button, Checkbox, Code, Column, Input, Text } from '@trezor/components';
+import { Button, ButtonGroup, Checkbox, Code, Column, Input, Text } from '@trezor/components';
 import { ActionColumn, SectionItem, SettingsSection, TextColumn } from '@trezor/product-components';
 import { type BreakpointFlags } from '@trezor/theme';
 import { spacings } from '@trezor/theme';
 
 const selectIsBelowLaptop = (state: { window: BreakpointFlags }) => state.window.isBelowLaptop;
+
+const LOCAL_SUITE_SYNC_RELAY_URL = 'http://127.0.0.1:4000/evolu/';
 
 type SuiteSyncSettingsProps = {
     suiteSync: SuiteSync;
@@ -33,22 +37,25 @@ export const SuiteSyncSettings = ({ suiteSync }: SuiteSyncSettingsProps) => {
     const [relayUrl, setRelayUrl] = useState(suiteSyncRelayUrl ?? '');
 
     const handleToggleSuiteSyncDebug = () => {
-        dispatch(
-            updateSuiteSyncDebugEnabled({
-                isEnabled: !isSuiteSyncDebugEnabled,
-            }),
-        );
+        dispatch(updateSuiteSyncDebugEnabled({ isEnabled: !isSuiteSyncDebugEnabled }));
     };
 
-    const onRelayUrlSave = async () => {
+    const onRelayUrlSave = async (url = relayUrl) => {
         setIsLoading(true);
 
-        await suiteSync.changeRelayUrl({ relayUrl });
+        setRelayUrl(url);
+
+        await suiteSync.changeRelayUrl({ relayUrl: url });
 
         // Fake it, to make some UI interaction for the user
         setTimeout(() => {
             setIsLoading(false);
         }, 300);
+    };
+
+    const onRelayUrlPresetClick = (url: string) => {
+        setRelayUrl(url);
+        void onRelayUrlSave(url);
     };
 
     if (!isSuiteSyncFeatureEnabled) return null;
@@ -68,7 +75,7 @@ export const SuiteSyncSettings = ({ suiteSync }: SuiteSyncSettingsProps) => {
                                 <Button
                                     data-testid="@settings/debug/suite-sync/save-button"
                                     isLoading={isLoading}
-                                    onClick={onRelayUrlSave}
+                                    onClick={() => onRelayUrlSave()}
                                     size="small"
                                 >
                                     Save
@@ -78,6 +85,33 @@ export const SuiteSyncSettings = ({ suiteSync }: SuiteSyncSettingsProps) => {
                         <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
                             Default is: <Code>{DEFAULT_SUITE_SYNC_RELAY_URL}</Code>
                         </Text>
+                        <ButtonGroup size="small" priority="secondary">
+                            <Button
+                                intent="critical"
+                                isDisabled={isLoading}
+                                onClick={() =>
+                                    onRelayUrlPresetClick(DEFAULT_SUITE_SYNC_RELAY_URL_PROD)
+                                }
+                            >
+                                Production
+                            </Button>
+                            <Button
+                                intent="brand"
+                                isDisabled={isLoading}
+                                onClick={() =>
+                                    onRelayUrlPresetClick(DEFAULT_SUITE_SYNC_RELAY_URL_DEV)
+                                }
+                            >
+                                Dev
+                            </Button>
+                            <Button
+                                intent="info"
+                                isDisabled={isLoading}
+                                onClick={() => onRelayUrlPresetClick(LOCAL_SUITE_SYNC_RELAY_URL)}
+                            >
+                                Local
+                            </Button>
+                        </ButtonGroup>
                     </Column>
                 </ActionColumn>
             </SectionItem>

@@ -2,6 +2,8 @@ import { useState } from 'react';
 
 import {
     DEFAULT_QUOTA_MANAGER_URL,
+    DEV_QUOTA_MANAGER_URL,
+    PRODUCTION_QUOTA_MANAGER_URL,
     enforceQuotaManagerUpdated,
     eraseFetchedData,
     selectEnforceQuotaManager,
@@ -10,11 +12,13 @@ import {
     selectRegisteredDevices,
     updateQuotaManagerBaseUrl,
 } from '@suite-common/suite-sync-quota-manager';
-import { Button, Checkbox, Code, Column, Input, Text } from '@trezor/components';
+import { Button, ButtonGroup, Checkbox, Code, Column, Input, Text } from '@trezor/components';
 import { ActionColumn, SectionItem, SettingsSection, TextColumn } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
 import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
+
+const LOCAL_QUOTA_MANAGER_URL = 'http://127.0.0.1:4001/quota-manager/';
 
 export const QuotaManagerSettings = () => {
     const dispatch = useDispatch();
@@ -27,18 +31,13 @@ export const QuotaManagerSettings = () => {
 
     const [isUpdateUrlLoading, setIsUpdateUrlLoading] = useState(false);
 
-    const onQuotaManagerBaseUrlSave = () => {
+    const onQuotaManagerBaseUrlSave = (baseUrl = quotaManagerUrl) => {
         setIsUpdateUrlLoading(true);
 
-        const normalizedUrl =
-            quotaManagerUrl.trim() === '' ? DEFAULT_QUOTA_MANAGER_URL : quotaManagerUrl;
+        const normalizedUrl = baseUrl.trim() === '' ? DEFAULT_QUOTA_MANAGER_URL : baseUrl;
 
         setQuotaManagerUrl(normalizedUrl);
-        dispatch(
-            updateQuotaManagerBaseUrl({
-                baseUrl: normalizedUrl,
-            }),
-        );
+        dispatch(updateQuotaManagerBaseUrl({ baseUrl: normalizedUrl }));
 
         // fake ui loading delay
         setTimeout(() => {
@@ -47,6 +46,11 @@ export const QuotaManagerSettings = () => {
     };
 
     const onEraseFetchedData = () => dispatch(eraseFetchedData());
+
+    const onQuotaManagerUrlPresetClick = (baseUrl: string) => {
+        setQuotaManagerUrl(baseUrl);
+        onQuotaManagerBaseUrlSave(baseUrl);
+    };
 
     const onToggleEnforceQuotaManager = () =>
         dispatch(
@@ -69,7 +73,7 @@ export const QuotaManagerSettings = () => {
                             rightContent={
                                 <Button
                                     data-testid="@settings/debug/quota-manager-url-save-button"
-                                    onClick={onQuotaManagerBaseUrlSave}
+                                    onClick={() => onQuotaManagerBaseUrlSave()}
                                     size="small"
                                     isLoading={isUpdateUrlLoading}
                                 >
@@ -80,6 +84,33 @@ export const QuotaManagerSettings = () => {
                         <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
                             Default is: <Code>{DEFAULT_QUOTA_MANAGER_URL}</Code>
                         </Text>
+                        <ButtonGroup size="small" priority="secondary">
+                            <Button
+                                intent="critical"
+                                isDisabled={isUpdateUrlLoading}
+                                onClick={() =>
+                                    onQuotaManagerUrlPresetClick(PRODUCTION_QUOTA_MANAGER_URL)
+                                }
+                            >
+                                Production
+                            </Button>
+                            <Button
+                                intent="brand"
+                                isDisabled={isUpdateUrlLoading}
+                                onClick={() => onQuotaManagerUrlPresetClick(DEV_QUOTA_MANAGER_URL)}
+                            >
+                                Dev
+                            </Button>
+                            <Button
+                                intent="info"
+                                isDisabled={isUpdateUrlLoading}
+                                onClick={() =>
+                                    onQuotaManagerUrlPresetClick(LOCAL_QUOTA_MANAGER_URL)
+                                }
+                            >
+                                Local
+                            </Button>
+                        </ButtonGroup>
                     </Column>
                 </ActionColumn>
             </SectionItem>
