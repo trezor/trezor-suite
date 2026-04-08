@@ -96,14 +96,14 @@ test.describe('Forget TS7 with Bluetooth credentials', { tag: ['@T3W1', '@deskto
         });
 
         await test.step('Verify landing on starting screen', async () => {
-            await expect(page.getByTestId('@welcome-layout/body')).toBeVisible({
+            await expect(onboardingPage.welcomeBody).toBeVisible({
                 timeout: 30_000,
             });
         });
 
         await test.step('Reload and verify no wallet is remembered', async () => {
             await page.reload();
-            await expect(page.getByTestId('@welcome-layout/body')).toBeVisible({
+            await expect(onboardingPage.welcomeBody).toBeVisible({
                 timeout: 30_000,
             });
         });
