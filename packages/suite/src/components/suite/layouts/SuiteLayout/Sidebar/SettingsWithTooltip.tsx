@@ -3,7 +3,7 @@ import { type FC, useState } from 'react';
 import { Translation } from '@suite/intl';
 import { SettingsAnchor, goto, selectRouteName } from '@suite/router';
 import { selectIsDeviceInitialized } from '@suite-common/device';
-import { Button, Column, Icon, Link, Paragraph, Row, Text, Tooltip } from '@trezor/components';
+import { Button, Column, Link, Paragraph, Text, Tooltip } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -24,50 +24,48 @@ export const SettingsWithTooltip: FC<NavigationItemProps> = props => {
         <Tooltip
             isOpen={isTooltipOpen}
             content={
-                <Column padding={8} gap={16}>
-                    <Row gap={10}>
-                        <Icon name="lightning" size={32} intent="brand" />
-                        <Paragraph textWrap="pretty">
-                            <Translation
-                                id={
-                                    isDesktop()
-                                        ? 'TR_SETTINGS_TOOLTIP_DESCRIPTION_DESKTOP'
-                                        : 'TR_SETTINGS_TOOLTIP_DESCRIPTION_WEB'
-                                }
-                                values={{
-                                    strong: chunks => (
-                                        <Text typographyStyle="body-sm-strong">{chunks}</Text>
-                                    ),
-                                    tor: chunks => (
-                                        <Link
-                                            onClick={() =>
-                                                dispatch(
-                                                    goto({
-                                                        routeName: 'settings-index',
-                                                        anchor: SettingsAnchor.Tor,
-                                                    }),
-                                                )
-                                            }
-                                        >
-                                            {chunks}
-                                        </Link>
-                                    ),
-                                    networks: chunks => (
-                                        <Link
-                                            onClick={() =>
-                                                dispatch(goto({ routeName: 'settings-coins' }))
-                                            }
-                                        >
-                                            {chunks}
-                                        </Link>
-                                    ),
-                                }}
-                            />
-                        </Paragraph>
-                    </Row>
+                <Column padding={2} gap={6}>
+                    <Paragraph textWrap="pretty">
+                        <Translation
+                            id={
+                                isDesktop()
+                                    ? 'TR_SETTINGS_TOOLTIP_DESCRIPTION_DESKTOP'
+                                    : 'TR_SETTINGS_TOOLTIP_DESCRIPTION_WEB'
+                            }
+                            values={{
+                                strong: chunks => (
+                                    <Text typographyStyle="body-sm-strong">{chunks}</Text>
+                                ),
+                                tor: chunks => (
+                                    <Link
+                                        onClick={() =>
+                                            dispatch(
+                                                goto({
+                                                    routeName: 'settings-index',
+                                                    anchor: SettingsAnchor.Tor,
+                                                }),
+                                            )
+                                        }
+                                    >
+                                        {chunks}
+                                    </Link>
+                                ),
+                                networks: chunks => (
+                                    <Link
+                                        onClick={() =>
+                                            dispatch(goto({ routeName: 'settings-coins' }))
+                                        }
+                                    >
+                                        {chunks}
+                                    </Link>
+                                ),
+                            }}
+                        />
+                    </Paragraph>
                     <Button
                         size="small"
-                        intent="brand"
+                        intent="neutral"
+                        priority="secondary"
                         onClick={handleTooltipClose}
                         margin={{ left: 'auto' }}
                     >
@@ -77,7 +75,7 @@ export const SettingsWithTooltip: FC<NavigationItemProps> = props => {
             }
             hasArrow
             placement="bottom-start"
-            tooltipMaxWidth={240}
+            tooltipMaxWidth={210}
         >
             <NavigationItem {...props} />
         </Tooltip>
