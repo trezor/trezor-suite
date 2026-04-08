@@ -63,3 +63,5 @@ perl -0777 -pi -e 's{/\*.*?\*/}{}gs; s/^\s*\n//mg' src/definitions/*.js
 
 yarn workspace @trezor/protobuf g:eslint --fix src/definitions/*
 yarn workspace @trezor/protobuf g:prettier --write src/definitions/*
+
+mv src/definitions/messages-thp_types.ts ../protocol/src/protocol-thp/messages/protobufTypes.ts
