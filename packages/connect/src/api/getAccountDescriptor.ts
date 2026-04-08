@@ -1,11 +1,9 @@
-import type {
-    CoinInfo,
-    DerivationPath,
-    GetAccountDescriptorResponse,
-} from '@trezor/connect-common';
 import {
     Bundle,
+    type CoinInfo,
+    type DerivationPath,
     GetAccountDescriptorParams,
+    type GetAccountDescriptorResponse,
     UI_REQUEST,
     createUiMessage,
 } from '@trezor/connect-common';

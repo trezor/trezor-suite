@@ -2,8 +2,7 @@
 
 // allow for...of statements
 
-import { CardanoAddressParameters, CardanoAssetGroup } from '@trezor/connect-common';
-import type { PROTO } from '@trezor/connect-common';
+import { CardanoAddressParameters, CardanoAssetGroup, type PROTO } from '@trezor/connect-common';
 import { Assert, Type } from '@trezor/schema-utils';
 
 import { addressParametersToProto, validateAddressParameters } from './cardanoAddressParameters';

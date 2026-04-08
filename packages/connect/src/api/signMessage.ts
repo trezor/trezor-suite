@@ -1,7 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/SignMessage.js
 
-import type { BitcoinNetworkInfo } from '@trezor/connect-common';
-import { SignMessage as SignMessageSchema } from '@trezor/connect-common';
+import { type BitcoinNetworkInfo, SignMessage as SignMessageSchema } from '@trezor/connect-common';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 

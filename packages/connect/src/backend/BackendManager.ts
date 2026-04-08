@@ -1,5 +1,9 @@
-import { BLOCKCHAIN, createBlockchainMessage } from '@trezor/connect-common';
-import type { BlockchainLink, CoinInfo } from '@trezor/connect-common';
+import {
+    BLOCKCHAIN,
+    type BlockchainLink,
+    type CoinInfo,
+    createBlockchainMessage,
+} from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import type { TimerId } from '@trezor/type-utils';
 

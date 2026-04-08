@@ -1,5 +1,4 @@
-import type { UpdateConnectSettings } from '@trezor/connect-common';
-import { factory } from '@trezor/connect-common';
+import { type UpdateConnectSettings, factory } from '@trezor/connect-common';
 import { deepEqual } from '@trezor/utils';
 
 import { reconnectAllBackends } from './backend/BlockchainLink';

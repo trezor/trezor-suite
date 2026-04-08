@@ -1,7 +1,9 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/EthereumSignMessage.js
 
-import type { EthereumNetworkInfo } from '@trezor/connect-common';
-import { EthereumSignMessage as EthereumSignMessageSchema } from '@trezor/connect-common';
+import {
+    type EthereumNetworkInfo,
+    EthereumSignMessage as EthereumSignMessageSchema,
+} from '@trezor/connect-common';
 import type { MessagesSchema, MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 

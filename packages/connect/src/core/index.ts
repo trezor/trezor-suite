@@ -4,23 +4,21 @@ import EventEmitter from 'events';
 import {
     CORE_CALL,
     CORE_EVENT,
+    type ConnectSettings,
+    type CoreCallMessage,
+    type CoreEventMessage,
+    type CoreRequestMessage,
     DEVICE,
+    type DeviceIdentity,
     POPUP,
     RESPONSE_EVENT,
+    type TransportInfo,
     UI_REQUEST,
     UI_RESPONSE,
     createDeviceMessage,
     createResponseMessage,
     createTransportMessage,
     createUiMessage,
-} from '@trezor/connect-common';
-import type {
-    ConnectSettings,
-    CoreCallMessage,
-    CoreEventMessage,
-    CoreRequestMessage,
-    DeviceIdentity,
-    TransportInfo,
 } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { parseLocalFirmwares } from '@trezor/connect-common/src/data/connectSettings';

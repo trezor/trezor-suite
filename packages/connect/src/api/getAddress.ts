@@ -1,8 +1,10 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/GetAddress.js
 
-import { type BitcoinNetworkInfo, Bundle, type PROTO } from '@trezor/connect-common';
 import {
+    type BitcoinNetworkInfo,
+    Bundle,
     GetAddress as GetAddressSchema,
+    type PROTO,
     UI_REQUEST,
     createUiMessage,
 } from '@trezor/connect-common';

@@ -1,9 +1,9 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/cardanoCertificate.js
 
-import type { CardanoPoolOwner } from '@trezor/connect-common';
 import {
     CardanoCertificate,
     CardanoDRep,
+    type CardanoPoolOwner,
     CardanoPoolParameters,
     CardanoPoolRelay,
 } from '@trezor/connect-common';

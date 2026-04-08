@@ -1,7 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/GetPublicKey.js
 
-import type { BitcoinNetworkInfo } from '@trezor/connect-common';
 import {
+    type BitcoinNetworkInfo,
     Bundle,
     GetPublicKey as GetPublicKeySchema,
     UI_REQUEST,

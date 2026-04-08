@@ -3,10 +3,10 @@ import bs58 from 'bs58';
 import {
     Bundle,
     GetPublicKey as GetPublicKeySchema,
+    type PROTO,
     UI_REQUEST,
     createUiMessage,
 } from '@trezor/connect-common';
-import type { PROTO } from '@trezor/connect-common';
 import { Assert } from '@trezor/schema-utils';
 
 import type {

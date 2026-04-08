@@ -1,12 +1,14 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/GetAccountInfo.js
 
-import { UI_REQUEST, UI_RESPONSE, createUiMessage } from '@trezor/connect-common';
-import type {
-    AccountInfo,
-    AccountUtxo,
-    CoinInfo,
-    DerivationPath,
-    GetAccountInfo as GetAccountInfoParams,
+import {
+    type AccountInfo,
+    type AccountUtxo,
+    type CoinInfo,
+    type DerivationPath,
+    type GetAccountInfo as GetAccountInfoParams,
+    UI_REQUEST,
+    UI_RESPONSE,
+    createUiMessage,
 } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { resolveAfter } from '@trezor/utils/src/resolveAfter';

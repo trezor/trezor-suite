@@ -1,21 +1,24 @@
 // original file https://github.com/trezor/connect/blob/develop/src/js/device/Device.js
-import type {
-    DeviceBusyStatus,
-    DeviceFirmwareStatus,
-    DeviceState,
-    DeviceStatus,
-    DeviceThpState,
-    Device as DeviceTyped,
-    DeviceUniquePath,
-    Features,
-    FirmwareHashCheckResult,
-    FirmwareReleaseConfigInfo,
-    FirmwareType,
-    KnownDevice,
-    PROTO,
-    UnavailableCapabilities,
+import {
+    DEVICE,
+    type DeviceBusyStatus,
+    type DeviceFirmwareStatus,
+    type DeviceState,
+    type DeviceStatus,
+    type DeviceThpState,
+    type Device as DeviceTyped,
+    type DeviceUniquePath,
+    ERRORS,
+    FIRMWARE,
+    type Features,
+    type FirmwareHashCheckResult,
+    type FirmwareReleaseConfigInfo,
+    type FirmwareType,
+    type KnownDevice,
+    type PROTO,
+    UI_REQUEST,
+    type UnavailableCapabilities,
 } from '@trezor/connect-common';
-import { DEVICE, ERRORS, FIRMWARE, UI_REQUEST } from '@trezor/connect-common';
 import { initLog } from '@trezor/connect-common/src/utils/debug';
 import type { FirmwareRelease } from '@trezor/device-utils';
 import {

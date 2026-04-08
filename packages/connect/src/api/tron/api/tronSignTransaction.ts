@@ -1,11 +1,11 @@
 import { bytesToHex } from '@noble/hashes/utils.js';
 
-import { TronSignTransaction as TronSignTransactionSchema } from '@trezor/connect-common';
-import type {
-    PROTO,
-    TronContractInput,
-    TronContracts,
-    TronContractsTypes,
+import {
+    type PROTO,
+    type TronContractInput,
+    type TronContracts,
+    type TronContractsTypes,
+    TronSignTransaction as TronSignTransactionSchema,
 } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';

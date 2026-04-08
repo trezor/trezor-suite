@@ -26,8 +26,11 @@ import {
     parseTransferCheckedInstruction,
 } from '@solana-program/token';
 
-import { SolanaSignTransaction as SolanaSignTransactionSchema } from '@trezor/connect-common';
-import type { PROTO, TokenInfo } from '@trezor/connect-common';
+import {
+    type PROTO,
+    SolanaSignTransaction as SolanaSignTransactionSchema,
+    type TokenInfo,
+} from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 import { BigNumber } from '@trezor/utils';

@@ -1,7 +1,13 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/uploadFirmware.js
 
-import { DEVICE, UI_REQUEST, createUiMessage } from '@trezor/connect-common';
-import type { CoreEventMessage, FirmwareUpdateFlowType, PROTO } from '@trezor/connect-common';
+import {
+    type CoreEventMessage,
+    DEVICE,
+    type FirmwareUpdateFlowType,
+    type PROTO,
+    UI_REQUEST,
+    createUiMessage,
+} from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { getFirmwareVersionArray } from '@trezor/device-utils';
 import { TRANSPORT } from '@trezor/transport';

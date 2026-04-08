@@ -3,9 +3,10 @@
 import {
     EthereumNetworkInfo,
     EthereumSignTypedData as EthereumSignTypedDataParams,
+    type EthereumSignTypedDataTypes,
     EthereumSignTypedHash as EthereumSignTypedHashParams,
+    type PROTO,
 } from '@trezor/connect-common';
-import type { EthereumSignTypedDataTypes, PROTO } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { MessagesSchema } from '@trezor/protobuf';

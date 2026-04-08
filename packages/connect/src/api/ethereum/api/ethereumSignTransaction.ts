@@ -1,11 +1,11 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/EthereumSignTransaction.js
 
-import { EthereumSignTransaction as EthereumSignTransactionSchema } from '@trezor/connect-common';
-import type {
-    EthereumNetworkInfoDefinitionValues,
-    EthereumTransaction,
-    EthereumTransactionEIP1559,
-    TokenInfo,
+import {
+    type EthereumNetworkInfoDefinitionValues,
+    EthereumSignTransaction as EthereumSignTransactionSchema,
+    type EthereumTransaction,
+    type EthereumTransactionEIP1559,
+    type TokenInfo,
 } from '@trezor/connect-common';
 import type { MessagesSchema } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';

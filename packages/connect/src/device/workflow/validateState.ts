@@ -1,5 +1,10 @@
-import { DEVICE, UI_REQUEST, createDeviceMessage, createUiMessage } from '@trezor/connect-common';
-import type { StaticSessionId } from '@trezor/connect-common';
+import {
+    DEVICE,
+    type StaticSessionId,
+    UI_REQUEST,
+    createDeviceMessage,
+    createUiMessage,
+} from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 
 import type { WorkflowContext } from '../../types/workflow';

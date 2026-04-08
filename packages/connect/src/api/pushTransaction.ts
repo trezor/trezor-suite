@@ -1,7 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/PushTransaction.js
 
-import type { CoinInfo } from '@trezor/connect-common';
-import { PushTransaction as PushTransactionSchema } from '@trezor/connect-common';
+import { type CoinInfo, PushTransaction as PushTransactionSchema } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 

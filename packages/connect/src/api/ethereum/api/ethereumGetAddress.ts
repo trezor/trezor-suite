@@ -2,11 +2,12 @@
 
 import {
     Bundle,
+    type EthereumNetworkInfoDefinitionValues,
     GetAddress as GetAddressSchema,
+    type PROTO,
     UI_REQUEST,
     createUiMessage,
 } from '@trezor/connect-common';
-import type { EthereumNetworkInfoDefinitionValues, PROTO } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 

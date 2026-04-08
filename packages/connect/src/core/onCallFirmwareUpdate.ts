@@ -1,12 +1,15 @@
-import type {
-    BinaryInfo,
-    CommonParams,
-    CoreEventMessage,
-    DeviceUniquePath,
-    FirmwareUpdateFlowType,
-    FirmwareUpdateResponse,
+import {
+    type BinaryInfo,
+    type CommonParams,
+    type CoreEventMessage,
+    type DeviceUniquePath,
+    FirmwareType,
+    type FirmwareUpdateFlowType,
+    type FirmwareUpdateResponse,
+    UI_REQUEST,
+    UI_RESPONSE,
+    createUiMessage,
 } from '@trezor/connect-common';
-import { FirmwareType, UI_REQUEST, UI_RESPONSE, createUiMessage } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import type { Log } from '@trezor/connect-common/src/utils/debug';
 import { getFirmwareOrBootloaderVersionArray } from '@trezor/device-utils';

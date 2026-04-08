@@ -1,13 +1,14 @@
 // original file https://github.com/trezor/connect/blob/develop/src/js/device/DeviceList.js
 
-import { DEVICE, asDeviceUniquePath } from '@trezor/connect-common';
-import type {
-    ConnectSettings,
-    DecodedTrezorPushNotification,
-    DeviceUniquePath,
-    StaticSessionId,
-    TransportError,
-    TransportInfo,
+import {
+    type ConnectSettings,
+    DEVICE,
+    type DecodedTrezorPushNotification,
+    type DeviceUniquePath,
+    type StaticSessionId,
+    type TransportError,
+    type TransportInfo,
+    asDeviceUniquePath,
 } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { initLog } from '@trezor/connect-common/src/utils/debug';

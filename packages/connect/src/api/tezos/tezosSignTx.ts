@@ -1,7 +1,6 @@
 import bs58check from 'bs58check';
 
-import { TezosOperation } from '@trezor/connect-common';
-import type { PROTO } from '@trezor/connect-common';
+import { type PROTO, TezosOperation } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 

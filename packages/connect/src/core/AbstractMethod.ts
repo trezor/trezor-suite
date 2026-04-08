@@ -1,14 +1,15 @@
-import { ERRORS, UI_REQUEST } from '@trezor/connect-common';
-import type {
-    CallMethodPayload,
-    CallMethodResponse,
-    CoreEventMessage,
-    DeviceState,
-    FirmwareRange,
-    PrecomposeResultFinal,
-    StaticSessionId,
-    UiRequestButtonData,
-    UiRequestConfirmation,
+import {
+    type CallMethodPayload,
+    type CallMethodResponse,
+    type CoreEventMessage,
+    type DeviceState,
+    ERRORS,
+    type FirmwareRange,
+    type PrecomposeResultFinal,
+    type StaticSessionId,
+    UI_REQUEST,
+    type UiRequestButtonData,
+    type UiRequestConfirmation,
 } from '@trezor/connect-common';
 import type { Capability } from '@trezor/protobuf/src/definitions';
 import { versionUtils } from '@trezor/utils';

@@ -1,24 +1,22 @@
 import {
     BLOCKCHAIN_EVENT,
     CORE_CALL,
+    type CallMethodPayload,
+    type ConnectFactoryDependencies,
+    type ConnectSettings,
+    type ConnectSettingsPublic,
+    type ConnectSettingsTransport,
+    type CoreEventMessage,
+    type CoreRequestMessage,
     DEVICE_EVENT,
+    type MethodResponseMessage,
     POPUP,
     RESPONSE_EVENT,
     TRANSPORT_EVENT,
     UI_EVENT,
+    type UiResponseEvent,
+    type UpdateConnectSettings,
     createErrorMessage,
-} from '@trezor/connect-common';
-import type {
-    CallMethodPayload,
-    ConnectFactoryDependencies,
-    ConnectSettings,
-    ConnectSettingsPublic,
-    ConnectSettingsTransport,
-    CoreEventMessage,
-    CoreRequestMessage,
-    MethodResponseMessage,
-    UiResponseEvent,
-    UpdateConnectSettings,
 } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { parseConnectSettings } from '@trezor/connect-common/src/data/connectSettings';

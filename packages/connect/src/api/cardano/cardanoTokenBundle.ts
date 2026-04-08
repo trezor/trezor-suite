@@ -1,7 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/cardanoTokenBundle.js
 
-import type { CardanoToken } from '@trezor/connect-common';
-import { CardanoAssetGroup } from '@trezor/connect-common';
+import { CardanoAssetGroup, type CardanoToken } from '@trezor/connect-common';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import type { Static } from '@trezor/schema-utils';
 import { Assert, Type } from '@trezor/schema-utils';
