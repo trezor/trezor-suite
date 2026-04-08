@@ -131,7 +131,7 @@
         "idb": "^8.0.3",
         "immer": "11.0.0",
         "pako": "^2.1.0",
-        "pdfmake": "^0.3.3",
+        "pdfmake": "^0.3.7",
         "polished": "^4.3.1",
         "qrcode.react": "^4.2.0",
         "react": "19.2.4",
