@@ -88,7 +88,7 @@ const Tabs = ({
         if (!activeItemId) return;
 
         const activeItemEl = tabsRefs.current.get(activeItemId);
-        const width = activeItemEl?.getBoundingClientRect()?.width;
+        const width = activeItemEl?.offsetWidth;
         const position = activeItemEl?.offsetLeft;
 
         setIndicatorWidth(width ?? 0);
