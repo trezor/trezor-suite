@@ -53,6 +53,7 @@ import { BigNumber, typedObjectEntries } from '@trezor/utils';
 import { DISCOVERY_MODULE_PREFIX, discoveryActions } from './discoveryActions';
 import { isDiscoveryInProgress, selectDiscoveryByDevicePath } from './discoverySelectors';
 import { selectDeviceThunk } from './selectDeviceThunk';
+import { reportWalletBalanceState } from '../accounts/accountBalanceAnalytics';
 import { type CreateAccountActionProps, accountsActions } from '../accounts/accountsActions';
 import { selectAccountsByDeviceState } from '../accounts/accountsSelectors';
 import { selectAccountsToBeForgotten, selectDiscoveryAccountsParam } from '../selectors';
@@ -339,6 +340,11 @@ const completeDiscovery = (
 
     trackCompleteDiscoveryResult(deviceState.staticSessionId, {
         getState,
+        analytics,
+    });
+
+    reportWalletBalanceState({
+        accounts: selectAccountsByDeviceState(getState(), deviceState.staticSessionId),
         analytics,
     });
 };
