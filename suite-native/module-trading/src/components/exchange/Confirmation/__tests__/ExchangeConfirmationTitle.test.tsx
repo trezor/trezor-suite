@@ -1,5 +1,5 @@
 import { getTranslation } from '@suite-native/intl';
-import { renderWithBasicProvider, screen } from '@suite-native/test-utils';
+import { renderWithBasicProvider } from '@suite-native/test-utils';
 
 import {
     ExchangeConfirmationTitle,
@@ -11,28 +11,66 @@ describe('ExchangeConfirmationTitle', () => {
         renderWithBasicProvider(<ExchangeConfirmationTitle {...props} />);
 
     it('should display approve title when variant is approve', () => {
-        renderTitle({ variant: 'approve' });
+        const { getByText } = renderTitle({ variant: 'approve', isFailed: false, isPending: true });
 
         expect(
-            screen.getByText(
-                getTranslation('moduleTrading.tradingConfirmationScreen.approveTitle'),
-            ),
+            getByText(getTranslation('moduleTrading.tradingConfirmationScreen.approveTitle')),
         ).toBeOnTheScreen();
     });
 
     it('should display revoke title when variant is revoke', () => {
-        renderTitle({ variant: 'revoke' });
+        const { getByText } = renderTitle({ variant: 'revoke', isFailed: false, isPending: true });
 
         expect(
-            screen.getByText(getTranslation('moduleTrading.tradingConfirmationScreen.revokeTitle')),
+            getByText(getTranslation('moduleTrading.tradingConfirmationScreen.revokeTitle')),
         ).toBeOnTheScreen();
     });
 
     it('should display subtitle', () => {
-        renderTitle({ variant: 'approve' });
+        const { getByText } = renderTitle({ variant: 'approve', isFailed: false, isPending: true });
 
         expect(
-            screen.getByText(getTranslation('moduleTrading.tradingConfirmationScreen.subtitle')),
+            getByText(getTranslation('moduleTrading.tradingConfirmationScreen.subtitle')),
         ).toBeOnTheScreen();
+    });
+
+    it('should display pending badge when isPending', () => {
+        const { getByText } = renderTitle({ variant: 'approve', isFailed: false, isPending: true });
+
+        expect(
+            getByText(getTranslation('moduleTrading.tradingConfirmationScreen.pending')),
+        ).toBeOnTheScreen();
+    });
+
+    it('should not display pending badge when isPending is false', () => {
+        const { queryByText } = renderTitle({
+            variant: 'approve',
+            isFailed: false,
+            isPending: false,
+        });
+
+        expect(
+            queryByText(getTranslation('moduleTrading.tradingConfirmationScreen.pending')),
+        ).not.toBeOnTheScreen();
+    });
+
+    it('should display error alert when isFailed', () => {
+        const { getByText } = renderTitle({ variant: 'approve', isFailed: true, isPending: false });
+
+        expect(
+            getByText(getTranslation('moduleTrading.tradingConfirmationScreen.error')),
+        ).toBeOnTheScreen();
+    });
+
+    it('should not display pending alert when isFailed is false', () => {
+        const { queryByText } = renderTitle({
+            variant: 'approve',
+            isFailed: false,
+            isPending: false,
+        });
+
+        expect(
+            queryByText(getTranslation('moduleTrading.tradingConfirmationScreen.error')),
+        ).not.toBeOnTheScreen();
     });
 });
