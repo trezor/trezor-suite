@@ -4,7 +4,6 @@
     "author": "Trezor <info@trezor.io>",
     "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/device-authenticity",
     "description": "Utils for authenticity verification of trezor device secure element response.",
-    "npmPublishAccess": "public",
     "license": "See LICENSE.md in repo root",
     "repository": {
         "type": "git",

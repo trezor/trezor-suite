@@ -2,7 +2,6 @@
     "name": "@trezor/transport",
     "version": "10.0.0-alpha.1",
     "description": "Low level library facilitating protocol buffers based communication with Trezor devices",
-    "npmPublishAccess": "public",
     "license": "SEE LICENSE IN LICENSE.md",
     "repository": {
         "type": "git",

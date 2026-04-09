@@ -14,7 +14,6 @@
     "bugs": {
         "url": "https://github.com/trezor/trezor-suite/issues"
     },
-    "npmPublishAccess": "public",
     "license": "SEE LICENSE IN LICENSE.md",
     "description": "Collection of assets and utils used by trezor-connect library.",
     "main": "./src/index.ts",
