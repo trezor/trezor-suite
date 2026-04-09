@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { PROD_STAKING_SYMBOLS } from '@suite-common/wallet-config';
+import { PROD_STAKING_SYMBOLS, STAKING_SYMBOLS } from '@suite-common/wallet-config';
 import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import {
@@ -9,6 +9,7 @@ import {
     isCardanoStakedWithFiveBinaries,
     isStakingSymbol,
 } from '@suite-common/wallet-utils';
+import { selectAreTestnetsEnabled } from '@suite-native/settings';
 
 import { type EarnPromoListDataItem, type StakingEarnItem } from '../types';
 
@@ -20,9 +21,11 @@ type UseStakingListDataReturn = {
 
 export const useStakingListData = () => {
     const accounts = useSelector(selectVisibleDeviceAccounts);
+    const areTestnetsEnabled = useSelector(selectAreTestnetsEnabled);
 
     return useMemo<UseStakingListDataReturn>(() => {
         const stakingAccounts = accounts.filter(acc => isStakingSymbol(acc.symbol));
+        const stakingSymbols = areTestnetsEnabled ? STAKING_SYMBOLS : PROD_STAKING_SYMBOLS;
 
         const accountStakedWithFiveBinaries = stakingAccounts.find(
             account => account.visible && isCardanoStakedWithFiveBinaries(account),
@@ -31,7 +34,7 @@ export const useStakingListData = () => {
         const activeItems: StakingEarnItem[] = [];
         const promoItems: StakingEarnItem[] = [];
 
-        PROD_STAKING_SYMBOLS.forEach(symbol => {
+        stakingSymbols.forEach(symbol => {
             promoItems.push({
                 id: symbol,
                 type: 'staking',
@@ -70,5 +73,5 @@ export const useStakingListData = () => {
             promoListData,
             accountStakedWithFiveBinaries,
         };
-    }, [accounts]);
+    }, [accounts, areTestnetsEnabled]);
 };
