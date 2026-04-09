@@ -7,6 +7,7 @@ import {
     selectTradingExchangeActiveQuote,
 } from '@suite-common/trading';
 import { Card, Text, VStack } from '@suite-native/atoms';
+import { Translation } from '@suite-native/intl';
 import type { TradingConfirmationVariant } from '@suite-native/navigation';
 import { TradeInfoRow } from '@suite-native/trading-atoms';
 import { FeeSummaryCard } from '@suite-native/transaction-management';
@@ -42,7 +43,9 @@ export const ExchangeConfirmationInfo = ({ variant }: ExchangeConfirmationInfoCa
         <VStack spacing="sp16" paddingVertical="sp16">
             <Card noPadding>
                 <TradeInfoRow>
-                    <Text variant="body-sm">Date</Text>
+                    <Text variant="body-sm">
+                        <Translation id="moduleTrading.tradingConfirmationScreen.date" />
+                    </Text>
                     <VStack>
                         <Text variant="body-sm" textAlign="right">
                             <DateFormatter value={date} />
