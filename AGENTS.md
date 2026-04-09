@@ -15,6 +15,7 @@
 - [Naming](skills/naming/SKILL.md) – Naming conventions for variables, functions, and files
 - [Packages](skills/packages/SKILL.md) – How to create and structure packages
 - [Project Overview](skills/project-structure/SKILL.md) – What Trezor Suite is and how the monorepo is organized
+- [Publish Config](skills/publish-config/SKILL.md) – publishConfig rules for public npm packages
 - [Redux](skills/redux/SKILL.md) – Redux Toolkit patterns and best practices
 - [Setup Requirements](skills/setup-requirements/SKILL.md) – Prerequisites and initial environment setup
 - [Tests](skills/tests/SKILL.md) – Test style guidelines and best practices
