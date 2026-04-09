@@ -27,6 +27,8 @@ import { useDefaultAccountLabel, useDispatch, useSelector } from 'src/hooks/suit
 import { useSuiteServices } from 'src/support/SuiteServicesProvider';
 import { ContentFlex, useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 
+import { selectIsLegacyLabelingVisible } from '../../../actions/labels/selectIsLegacyLabelingVisible';
+
 type Bip329LabelsProps = {
     account: Account;
     isLoading: boolean;
@@ -34,7 +36,7 @@ type Bip329LabelsProps = {
 
 export const Bip329Labels = ({ account, isLoading }: Bip329LabelsProps) => {
     const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
-    const isMetadataEnabled = useSelector(state => state.metadata.enabled);
+    const isLegacyLabelingVisible = useSelector(selectIsLegacyLabelingVisible);
 
     const dispatch = useDispatch();
     const { bip329 } = useSuiteServices();
@@ -44,7 +46,7 @@ export const Bip329Labels = ({ account, isLoading }: Bip329LabelsProps) => {
     const canImportBip329Labels = isSuiteSyncEnabled;
 
     const shouldDisplayBip329Labels =
-        account.networkType === 'bitcoin' && (isMetadataEnabled || canImportBip329Labels);
+        account.networkType === 'bitcoin' && (isLegacyLabelingVisible || isSuiteSyncEnabled);
 
     if (!shouldDisplayBip329Labels) {
         return null;

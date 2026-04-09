@@ -19,6 +19,5 @@ export const extraDependenciesDesktopMock: ExtraDependenciesSuiteMock = {
             navigate: (to, state) => console.warn(`Mock navigating to ${to} with state`, state),
             listen: (_: {}) => () => {},
         },
-        disableLegacyMetadataIfNeeded: () => {},
     },
 };

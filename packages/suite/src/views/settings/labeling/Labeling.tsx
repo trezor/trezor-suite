@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { Translation, useTranslation } from '@suite/intl';
-import { metadataLabelingActions } from '@suite/metadata';
+import { metadataLabelingActions, metadataThunks } from '@suite/metadata';
 import { SettingsAnchor } from '@suite/router';
 import { SuiteSyncServers } from '@suite/suite-sync';
 import { events } from '@suite-common/analytics';
@@ -33,7 +33,7 @@ import { suiteSyncErrorHandler } from '../../../components/suite/labeling/suiteS
 
 export const Labeling = () => {
     const { translationString } = useTranslation();
-    const { suiteSync, disableLegacyMetadataIfNeeded } = useSuiteServices();
+    const { suiteSync } = useSuiteServices();
     const dispatch = useDispatch();
     const analytics = useAnalytics();
     const [legacyModalWarningVisible, setLegacyModalWarningVisible] = useState(false);
@@ -73,7 +73,10 @@ export const Labeling = () => {
 
         switch (value) {
             case 'off':
-                disableLegacyMetadataIfNeeded();
+                if (legacyMetadataState.enabled) {
+                    dispatch(metadataThunks.disableMetadata());
+                }
+
                 await suiteSync.turnOffSuiteSync();
                 break;
 

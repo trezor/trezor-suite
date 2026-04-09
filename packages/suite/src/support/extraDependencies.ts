@@ -25,10 +25,7 @@ import {
     selectInvityServerEnvironment,
     selectLanguage,
 } from '@suite/settings';
-import {
-    type DisableLegacyMetadataIfNeededDep,
-    createSuiteSyncDesktopCompositionRoot,
-} from '@suite/suite-sync';
+import { createSuiteSyncDesktopCompositionRoot } from '@suite/suite-sync';
 import { createBip329CompositionRoot } from '@suite-common/bip329';
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
 import { toGetter } from '@suite-common/dependency-injection';
@@ -67,7 +64,6 @@ import { reportSecurityCheck } from 'src/utils/suite/sentry';
 import { fixLoadedCoinjoinAccount } from 'src/utils/wallet/coinjoinUtils';
 
 import { forgetBluetoothDeviceThunk } from '../actions/bluetooth/bluetoothEraseBondsThunk';
-import { createDisableLegacyMetadataIfNeeded } from '../actions/suiteSync/disableLegacyMetadateIfNeeded';
 import type { BioAuthState } from '../reducers/bioAuth';
 import { type AppState, type TrezorDevice } from '../types/suite';
 
@@ -91,10 +87,7 @@ export type StoreAPIDep = {
 
 export type SuiteAppDeps = StoreAPIDep & HistoryDep;
 
-export type SuiteServices = CommonServices &
-    DesktopAnalyticsDep &
-    DisableLegacyMetadataIfNeededDep &
-    SuiteRouterHistoryDep;
+export type SuiteServices = CommonServices & DesktopAnalyticsDep & SuiteRouterHistoryDep;
 
 export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteServices => {
     const platformEncryption = isDesktop()
@@ -108,12 +101,6 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         trezorConnect: TrezorConnect,
     });
 
-    /** @deprecated Compatibility for Legacy Labeling */
-    const disableLegacyMetadataIfNeeded = createDisableLegacyMetadataIfNeeded({
-        dispatch: deps.dispatch,
-        getState: deps.getState,
-    });
-
     const analytics = createAnalytics();
 
     const suiteSync = createSuiteSyncDesktopCompositionRoot({
@@ -122,7 +109,6 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         platformEncryption,
         trezorConnect: TrezorConnect,
         ensureDelegatedIdentityKey,
-        disableLegacyMetadataIfNeeded,
         analytics,
     });
 
@@ -140,7 +126,6 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         ensureDelegatedIdentityKey,
         platformEncryption,
         analytics,
-        disableLegacyMetadataIfNeeded,
         suiteRouterHistory: createSuiteRouterHistory({
             history: deps.history,
         }),

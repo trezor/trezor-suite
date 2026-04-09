@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import { useTranslation } from '@suite/intl';
 import { selectLabelingDataForAccount, selectLabelingValueBeingEdited } from '@suite/metadata';
-import { selectSuiteSyncOutputLabels } from '@suite-common/suite-sync';
+import { selectIsSuiteSyncEnabled, selectSuiteSyncOutputLabels } from '@suite-common/suite-sync';
 import {
     type Target,
     selectBaseCurrency,
@@ -21,6 +21,7 @@ import {
 import { Icon } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 
+import { selectIsLegacyLabelingVisible } from 'src/actions/labels/selectIsLegacyLabelingVisible';
 import {
     AddressLabeling,
     BaseCurrencyValue,
@@ -56,6 +57,8 @@ export const TransactionTarget = ({
     const { translationString } = useTranslation();
 
     const accountMetadata = useSelector(state => selectLabelingDataForAccount(state, accountKey));
+    const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
+    const isLegacyLabelingVisible = useSelector(selectIsLegacyLabelingVisible);
 
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const fiatRateKey = getFiatRateKey(
@@ -72,7 +75,7 @@ export const TransactionTarget = ({
     const labelingValueBeingEdited = useSelector(selectLabelingValueBeingEdited);
 
     const suiteSyncOutputLabels = useSelector(state =>
-        selectSuiteSyncOutputLabels(state, transaction.deviceState),
+        isSuiteSyncEnabled ? selectSuiteSyncOutputLabels(state, transaction.deviceState) : [],
     );
 
     const isSolanaUnstakeTx = transaction?.solanaSpecific?.stakeOperation?.type === 'unstake';
@@ -188,7 +191,7 @@ export const TransactionTarget = ({
 
     const outputLabel =
         suiteSyncOutputLabels.find(it => it.txId === transaction.txid && it.txTargetId === targetId)
-            ?.label ?? targetMetadata;
+            ?.label ?? (isLegacyLabelingVisible ? targetMetadata : undefined);
 
     return (
         <TransactionTargetLayout

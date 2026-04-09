@@ -5,13 +5,14 @@ import styled from 'styled-components';
 
 import { useTranslation } from '@suite/intl';
 import { selectLabelingDataForAccount } from '@suite/metadata';
-import { selectSuiteSyncAccountLabel } from '@suite-common/suite-sync';
+import { selectIsSuiteSyncEnabled, selectSuiteSyncAccountLabel } from '@suite-common/suite-sync';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { Column, H2, Row, Text, motionEasing } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 
+import { selectIsLegacyLabelingVisible } from 'src/actions/labels/selectIsLegacyLabelingVisible';
 import { AccountTypeBadge } from 'src/components/suite/AccountTypeBadge';
 import { AmountUnitSwitchWrapper } from 'src/components/suite/AmountUnitSwitchWrapper';
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
@@ -33,10 +34,15 @@ type AccountDetailsProps = {
 export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetailsProps) => {
     const hasMountedRef = useRef(false);
     const controls = useAnimation();
+
+    const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
+    const isLegacyLabelingVisible = useSelector(selectIsLegacyLabelingVisible);
+
     const selectedAccountLegacyLabels = useSelector(state =>
         selectLabelingDataForAccount(state, selectedAccount.key),
     );
     const { getDefaultAccountLabel } = useDefaultAccountLabel();
+
     const isContentBelowBreakpoint = useIsContentBelowBreakpoint();
     const { translationString } = useTranslation();
     const { walletDescriptor } = parseDeviceStaticSessionId(selectedAccount.deviceState);
@@ -53,12 +59,13 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
     const { symbol, key, path, index, accountType, formattedBalance, deviceState, networkType } =
         selectedAccount;
     const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(symbol);
-    const label = suiteSyncAccountLabel ?? selectedAccountLegacyLabels.accountLabel;
-    const defaultLabel = getDefaultAccountLabel({
-        accountType,
-        symbol,
-        index,
-    });
+
+    const defaultLabel = getDefaultAccountLabel({ accountType, symbol, index });
+
+    const label =
+        (isSuiteSyncEnabled ? suiteSyncAccountLabel : null) ||
+        (isLegacyLabelingVisible ? selectedAccountLegacyLabels.accountLabel : null) ||
+        defaultLabel;
 
     const getTypographyStyle = () => {
         if (isBalanceShown) {
@@ -93,7 +100,7 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
                 gap={8}
                 placeholder={translationString('TR_LABELING_ACCOUNT_LABEL')}
             >
-                {label || defaultLabel}
+                {label}
             </Labeling>
         ),
         [

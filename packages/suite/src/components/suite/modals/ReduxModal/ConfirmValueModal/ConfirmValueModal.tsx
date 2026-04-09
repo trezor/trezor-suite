@@ -42,6 +42,8 @@ import { useAnalytics } from 'src/support/useAnalytics';
 import { type ThunkAction } from 'src/types/suite';
 import { DESTINATION_TAG_GUIDE_PATH } from 'src/views/wallet/send/Options/MiscNetworkOptions/DestinationTag';
 
+import { selectIsLegacyLabelingVisible } from '../../../../../actions/labels/selectIsLegacyLabelingVisible';
+
 export type ConfirmValueModalProps = Pick<ModalProps, 'onCancel' | 'heading'> & {
     account?: Account;
     'data-testid'?: string;
@@ -75,7 +77,10 @@ export const ConfirmValueModal = ({
     const { openNodeById } = useGuideOpenNode();
     const { translationString } = useTranslation();
     const analytics = useAnalytics();
+
     const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
+    const isLegacyLabelingVisible = useSelector(selectIsLegacyLabelingVisible);
+
     const legacyMetadataState = useSelector(state => state.metadata);
 
     // block labeling if metadata needs to be enabled on device until receive address is confirmed (device locked)
@@ -85,7 +90,9 @@ export const ConfirmValueModal = ({
         (!legacyMetadataState.enabled || legacyMetadataState.providers.length === 0);
 
     const suiteSyncAddressLabels = useSelector(state =>
-        account ? selectSuiteSyncAddressLabels(state, account.deviceState) : undefined,
+        account && isSuiteSyncEnabled
+            ? selectSuiteSyncAddressLabels(state, account.deviceState)
+            : undefined,
     );
 
     const canConfirmOnDevice = !!(device?.connected && device?.available);
@@ -119,7 +126,8 @@ export const ConfirmValueModal = ({
     }, [canConfirmOnDevice, dispatch, isConfirmed, modalContext, validateOnDevice]);
 
     const addressLabel =
-        suiteSyncAddressLabels?.find(it => it.address === value)?.label ?? addressLabels[value];
+        suiteSyncAddressLabels?.find(it => it.address === value)?.label ??
+        (isLegacyLabelingVisible ? addressLabels[value] : undefined);
 
     return (
         <Modal.Backdrop onClick={onCancel}>
