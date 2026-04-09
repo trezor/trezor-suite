@@ -31,6 +31,8 @@ const rejectPermissions = createAction(`${ACTION_PREFIX}/rejectPermissions`, (pa
 
 const finishCall = createAction(`${ACTION_PREFIX}/finishCall`);
 
+const clearCall = createAction(`${ACTION_PREFIX}/clearCall`);
+
 const confirmAddresses = createAction(
     `${ACTION_PREFIX}/confirmAddresses`,
     (
@@ -106,4 +108,5 @@ export const connectPopupActions = {
     txSimulation,
     setSelectedFee,
     switchDevice,
+    clearCall,
 } as const;

@@ -12,7 +12,11 @@ import {
     selectModalType,
 } from '@suite/modal';
 import { goto, selectRouteName } from '@suite/router';
-import { connectPopupCallThunkInner, selectConnectPopupCall } from '@suite-common/connect-popup';
+import {
+    connectPopupActions,
+    connectPopupCallThunkInner,
+    selectConnectPopupCall,
+} from '@suite-common/connect-popup';
 import { isDiscoveryInProgress, selectDiscoveryForSelectedDevice } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 
@@ -132,6 +136,10 @@ export const useConnectPopupModals = () => {
                     dispatch(removePreserveModal());
                     dispatch(cancelModal());
                 }
+                // Clear state after allowing everything to update
+                setTimeout(() => {
+                    dispatch(connectPopupActions.clearCall());
+                }, 100);
 
                 return;
             }
