@@ -8,8 +8,8 @@ import { HStack, OrderedListIcon, Text, VStack } from '@suite-native/atoms';
 import { type IconName } from '@suite-native/icons';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 import {
-    selectAPYByAccountKey,
     selectAccountCryptoBalanceWithStaking,
+    selectApy,
     useSelector as useNativeStakingSelector,
 } from '@suite-native/staking';
 
@@ -45,7 +45,9 @@ export const HowStakeWorksBenefitsSection = ({
     const totalBalance = useNativeStakingSelector(state =>
         selectAccountCryptoBalanceWithStaking(state, accountKey),
     );
-    const apy = useNativeStakingSelector(state => selectAPYByAccountKey(state, accountKey));
+    const apy = useNativeStakingSelector(state =>
+        selectApy(state, { accountKey, networkSymbol: symbol }),
+    );
 
     const potentialRewards = useMemo(() => {
         const amount = calculateRewards(totalBalance, apy);

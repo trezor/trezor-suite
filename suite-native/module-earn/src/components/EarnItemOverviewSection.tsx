@@ -9,11 +9,7 @@ import { Badge, Box, BoxSkeleton, HStack, Text } from '@suite-native/atoms';
 import { NetworkDisplaySymbolNameFormatter } from '@suite-native/formatters';
 import { CryptoIconWithNetwork } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import {
-    selectAPYByAccountKey,
-    selectAPYBySymbol,
-    useSelector as useNativeStakingSelector,
-} from '@suite-native/staking';
+import { selectApy, useSelector as useNativeStakingSelector } from '@suite-native/staking';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { type EarnPromoItem } from '../types';
@@ -76,14 +72,16 @@ export const EarnItemOverviewSection = (item: EarnPromoItem) => {
         selectFormattedAccountType(state, accountKey),
     );
 
-    const apy = useNativeStakingSelector(state => selectAPYByAccountKey(state, accountKey));
-    const fallbackApy = useNativeStakingSelector(state =>
-        item.type === 'staking' ? selectAPYBySymbol(state, item.symbol) : null,
+    const apy = useNativeStakingSelector(state =>
+        selectApy(state, {
+            accountKey: accountKey ?? undefined,
+            networkSymbol: item.type === 'staking' ? item.symbol : undefined,
+        }),
     );
 
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
-    const apyValue = item.type === 'staking' ? (apy ?? fallbackApy) : item.apy;
+    const apyValue = item.type === 'staking' ? apy : item.apy;
 
     const iconProps =
         item.type === 'staking'

@@ -71,7 +71,6 @@ export const useEarnDepositsCardData = ({
                         accountKey: item.accountKey,
                         balance: item.balance,
                         fiatAmount,
-                        apy: null,
                     } satisfies EarnDepositsCardActiveItem,
                 ];
             }),

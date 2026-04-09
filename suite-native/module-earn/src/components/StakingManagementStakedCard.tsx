@@ -12,7 +12,7 @@ import {
     type StackNavigationProps,
 } from '@suite-native/navigation';
 import {
-    selectAPYByAccountKey,
+    selectApy,
     selectRewardsBalanceByAccountKey,
     selectStakedBalanceByAccountKey,
     useSelector,
@@ -20,8 +20,8 @@ import {
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { BigNumber } from '@trezor/utils';
 
-import { ApyValue } from './ApyValue';
 import { CRYPTO_BALANCE_DECIMALS } from '../constants';
+import { ApyValue } from './ApyValue';
 
 type StakingManagementStakedCardProps = {
     accountKey: AccountKey;
@@ -64,7 +64,7 @@ export const StakingManagementStakedCard = ({
     const rewardsBalance = useSelector(state =>
         selectRewardsBalanceByAccountKey(state, accountKey),
     );
-    const apy = useSelector(state => selectAPYByAccountKey(state, accountKey));
+    const apy = useSelector(state => selectApy(state, { accountKey, networkSymbol }));
     const nextRewardPayout = useSelector(state => selectEthNextRewardPayout(state));
 
     return (
@@ -107,7 +107,7 @@ export const StakingManagementStakedCard = ({
             </VStack>
             <HStack justifyContent="space-between" style={applyStyle(stakedSectionStyle)}>
                 <Text variant="body-sm">
-                    {apy != null && 'APY'}
+                    {apy != null && 'APY '}
                     <ApyValue apy={apy} />
                 </Text>
                 {nextRewardPayout != null && (
