@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 
 import styled from 'styled-components';
 
-import { Button, Modal } from '@trezor/components';
+import { Translation } from '@suite/intl';
+import { Button, Column, Modal, SelectBar } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { desktopApi } from '@trezor/suite-desktop-api';
@@ -12,17 +13,22 @@ import { GITHUB_MCP_DOCS_URL } from '@trezor/urls';
 import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 
 const ConfigBox = styled.div`
-    position: relative;
+    display: flex;
+    flex-direction: column;
     background: ${({ theme }) => theme.backgroundNeutralSubtleOnElevation0};
     border-radius: 8px;
     padding: ${spacings.sm}px ${spacings.md}px;
+    height: 180px;
 `;
 
 const ConfigSnippet = styled.pre`
     font-size: 13px;
     line-height: 1.5;
-    overflow-x: auto;
     margin: 0;
+    white-space: pre-wrap;
+    word-break: break-all;
+    flex: 1;
+    overflow-y: auto;
 `;
 
 const CopyButtonWrapper = styled.div`
@@ -32,20 +38,35 @@ const CopyButtonWrapper = styled.div`
     margin-top: ${spacings.xs}px;
 `;
 
+type McpClient = 'claude-code' | 'claude-desktop' | 'other';
+
+const clientOptions: { label: string; value: McpClient }[] = [
+    { label: 'Claude Code', value: 'claude-code' },
+    { label: 'Claude Desktop', value: 'claude-desktop' },
+    { label: 'Other', value: 'other' },
+];
+
 const getAuthUrl = (url: string, token: string | null) => (token ? `${url}?token=${token}` : url);
 
-const getCliCommand = (url: string, token: string | null) =>
-    `claude mcp add trezor-suite ${getAuthUrl(url, token)} -t http`;
-
-const getDesktopConfig = (url: string, token: string | null) => {
+const getSnippet = (client: McpClient, url: string, token: string | null) => {
     const authUrl = getAuthUrl(url, token);
-    const args = ['mcp-remote', authUrl, '--transport', 'http-only', '--allow-http'];
 
-    return JSON.stringify({ mcpServers: { 'trezor-suite': { command: 'npx', args } } }, null, 4);
+    if (client === 'claude-code') {
+        return `claude mcp add trezor-suite ${authUrl} -t http`;
+    }
+
+    if (client === 'claude-desktop') {
+        const args = ['mcp-remote', authUrl, '--transport', 'http-only', '--allow-http'];
+
+        return JSON.stringify(
+            { mcpServers: { 'trezor-suite': { command: 'npx', args } } },
+            null,
+            4,
+        );
+    }
+
+    return JSON.stringify({ mcpServers: { 'trezor-suite': { url: authUrl } } }, null, 4);
 };
-
-const getJsonConfig = (url: string, token: string | null) =>
-    JSON.stringify({ mcpServers: { 'trezor-suite': { url: getAuthUrl(url, token) } } }, null, 4);
 
 const RegenerateTokenModal = ({
     onCancel,
@@ -55,7 +76,7 @@ const RegenerateTokenModal = ({
     onSubmit: () => void;
 }) => (
     <Modal
-        heading="Regenerate MCP Token"
+        heading={<Translation id="TR_MCP_REGENERATE_TOKEN_HEADING" />}
         onCancel={onCancel}
         intent="warning"
         width={600}
@@ -67,16 +88,15 @@ const RegenerateTokenModal = ({
                         onCancel();
                     }}
                 >
-                    Regenerate
+                    <Translation id="TR_MCP_REGENERATE_TOKEN" />
                 </Modal.Button>
                 <Modal.Button onClick={onCancel} intent="neutral" priority="secondary">
-                    Cancel
+                    <Translation id="TR_CANCEL" />
                 </Modal.Button>
             </>
         }
     >
-        This will invalidate the current token. All connected MCP clients will be disconnected and
-        you will need to update their configuration with the new token.
+        <Translation id="TR_MCP_REGENERATE_TOKEN_DESCRIPTION" />
     </Modal>
 );
 
@@ -88,6 +108,7 @@ export const McpServer = () => {
         url: string | null;
         token: string | null;
     } | null>(null);
+    const [selectedClient, setSelectedClient] = useState<McpClient>('claude-code');
     const [isRegenerateModalOpen, setIsRegenerateModalOpen] = useState(false);
 
     useEffect(() => {
@@ -96,19 +117,9 @@ export const McpServer = () => {
         }
     }, []);
 
-    const handleCopyCliCommand = () => {
+    const handleCopy = () => {
         if (!settings?.url) return;
-        copyToClipboard(getCliCommand(settings.url, settings.token));
-    };
-
-    const handleCopyDesktopConfig = () => {
-        if (!settings?.url) return;
-        copyToClipboard(getDesktopConfig(settings.url, settings.token));
-    };
-
-    const handleCopyJsonConfig = () => {
-        if (!settings?.url) return;
-        copyToClipboard(getJsonConfig(settings.url, settings.token));
+        copyToClipboard(getSnippet(selectedClient, settings.url, settings.token));
     };
 
     const handleRegenerateToken = async () => {
@@ -124,76 +135,50 @@ export const McpServer = () => {
         <>
             <SectionItem>
                 <TextColumn
-                    title="Claude Code"
-                    description="Run this command in your terminal to add the Trezor MCP server."
+                    title={<Translation id="TR_MCP_CLIENT_CONFIGURATION" />}
+                    description={
+                        <Translation
+                            id={
+                                selectedClient === 'claude-code'
+                                    ? 'TR_MCP_PASTE_COMMAND'
+                                    : 'TR_MCP_ADD_JSON_CONFIG'
+                            }
+                        />
+                    }
                     bottomContent={<LearnMoreButton url={GITHUB_MCP_DOCS_URL} />}
                 />
                 <ActionColumn>
-                    <ConfigBox>
-                        <ConfigSnippet>{getCliCommand(settings.url, settings.token)}</ConfigSnippet>
-                        <CopyButtonWrapper>
-                            <Button
-                                size="small"
-                                iconLeft="arrowsClockwise"
-                                intent="neutral"
-                                onClick={() => setIsRegenerateModalOpen(true)}
-                            >
-                                Regenerate token
-                            </Button>
-                            <Button
-                                size="small"
-                                iconLeft="copy"
-                                intent="neutral"
-                                onClick={handleCopyCliCommand}
-                            >
-                                Copy
-                            </Button>
-                        </CopyButtonWrapper>
-                    </ConfigBox>
-                </ActionColumn>
-            </SectionItem>
-            <SectionItem>
-                <TextColumn
-                    title="Claude Desktop"
-                    description="Add this to your claude_desktop_config.json. Requires npx (Node.js)."
-                />
-                <ActionColumn>
-                    <ConfigBox>
-                        <ConfigSnippet>
-                            {getDesktopConfig(settings.url, settings.token)}
-                        </ConfigSnippet>
-                        <CopyButtonWrapper>
-                            <Button
-                                size="small"
-                                iconLeft="copy"
-                                intent="neutral"
-                                onClick={handleCopyDesktopConfig}
-                            >
-                                Copy
-                            </Button>
-                        </CopyButtonWrapper>
-                    </ConfigBox>
-                </ActionColumn>
-            </SectionItem>
-            <SectionItem>
-                <TextColumn
-                    title="Other MCP Clients"
-                    description="Add this JSON to your MCP client config (Cursor, VS Code, etc.)."
-                />
-                <ActionColumn>
-                    <ConfigBox>
-                        <ConfigSnippet>{getJsonConfig(settings.url, settings.token)}</ConfigSnippet>
-                        <CopyButtonWrapper>
-                            <Button
-                                size="small"
-                                iconLeft="copy"
-                                intent="neutral"
-                                onClick={handleCopyJsonConfig}
-                            >
-                                Copy
-                            </Button>
-                        </CopyButtonWrapper>
-                    </ConfigBox>
+                    <Column gap={spacings.sm}>
+                        <SelectBar
+                            selectedOption={selectedClient}
+                            options={clientOptions}
+                            onChange={setSelectedClient}
+                            size="small"
+                        />
+                        <ConfigBox>
+                            <ConfigSnippet>
+                                {getSnippet(selectedClient, settings.url, settings.token)}
+                            </ConfigSnippet>
+                            <CopyButtonWrapper>
+                                <Button
+                                    size="small"
+                                    iconLeft="arrowsClockwise"
+                                    intent="neutral"
+                                    onClick={() => setIsRegenerateModalOpen(true)}
+                                >
+                                    <Translation id="TR_MCP_REGENERATE_TOKEN" />
+                                </Button>
+                                <Button
+                                    size="small"
+                                    iconLeft="copy"
+                                    intent="neutral"
+                                    onClick={handleCopy}
+                                >
+                                    <Translation id="TR_COPY_TO_CLIPBOARD" />
+                                </Button>
+                            </CopyButtonWrapper>
+                        </ConfigBox>
+                    </Column>
                 </ActionColumn>
             </SectionItem>
             {isRegenerateModalOpen && (

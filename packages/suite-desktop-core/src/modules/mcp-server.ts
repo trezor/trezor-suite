@@ -359,6 +359,7 @@ const MCP_TOOLS = [
             'handled by composeTransaction — account, UTXOs, and fees are resolved by Suite. ' +
             'For Ethereum/EVM chains (eth, pol, bsc, arb, base, op, avax, etc): ' +
             'nonce and EIP-1559 gas fees are auto-filled; use "accountIndex" to select account. ' +
+            'For ERC-20 token transfers: set "tokenContract" and "tokenDecimals" — the server encodes the transfer calldata automatically. ' +
             'For XRP: sequence and fee are auto-filled. ' +
             'The transaction is signed on the Trezor device (user confirms on screen) ' +
             'and broadcast to the network by default.',
@@ -418,7 +419,20 @@ const MCP_TOOLS = [
                 },
                 data: {
                     type: 'string',
-                    description: 'Contract call data hex string (EVM only).',
+                    description:
+                        'Contract call data hex string (EVM only). Not needed for ERC-20 transfers — use tokenContract instead.',
+                },
+                tokenContract: {
+                    type: 'string',
+                    description:
+                        'ERC-20 token contract address for token transfers. ' +
+                        'When set, "to" is the recipient, "value" is the token amount in human units (e.g. "10" for 10 USDC), ' +
+                        'and the transfer calldata is encoded automatically by the server.',
+                },
+                tokenDecimals: {
+                    type: 'number',
+                    description:
+                        'Token decimal places (e.g. 6 for USDC/USDT, 18 for DAI). Required when tokenContract is set.',
                 },
                 chainId: {
                     type: 'number',
@@ -578,6 +592,75 @@ const handleEvmSend = async (
     coin: string,
     path: string,
 ): Promise<PopupResult> => {
+    // ERC-20 token transfer: encode transfer(address,uint256) calldata server-side
+    if (params.tokenContract) {
+        const tokenContract = params.tokenContract as string;
+        const recipient = params.to as string;
+        const tokenDecimals = params.tokenDecimals as number | undefined;
+        const tokenValue = params.value as string;
+
+        if (!recipient || !tokenValue) {
+            return {
+                success: false,
+                error: 'ERC-20 transfer requires "to" (recipient) and "value" (token amount).',
+            };
+        }
+        if (!/^0x[0-9a-fA-F]{40}$/.test(recipient)) {
+            return {
+                success: false,
+                error: 'ERC-20 transfer requires "to" to be a valid EVM address (0x + 40 hex chars).',
+            };
+        }
+        if (tokenDecimals === undefined || !Number.isInteger(tokenDecimals) || tokenDecimals < 0) {
+            return {
+                success: false,
+                error: 'ERC-20 transfer requires "tokenDecimals" (integer, e.g. 6 for USDC, 18 for DAI).',
+            };
+        }
+        if (
+            typeof tokenValue !== 'string' ||
+            !/^\d*(?:\.\d*)?$/.test(tokenValue) ||
+            !/\d/.test(tokenValue)
+        ) {
+            return {
+                success: false,
+                error: 'ERC-20 transfer requires "value" to be a non-negative decimal string.',
+            };
+        }
+
+        // String-based decimal-to-integer conversion to avoid floating-point errors
+        const [rawIntPart = '', rawFracPart = ''] = tokenValue.split('.');
+        const intPart = rawIntPart === '' ? '0' : rawIntPart;
+        const fracPart = rawFracPart;
+
+        if (tokenDecimals === 0 && fracPart.length > 0) {
+            return {
+                success: false,
+                error: 'ERC-20 transfer "value" cannot include fractional digits when "tokenDecimals" is 0.',
+            };
+        }
+        if (fracPart.length > tokenDecimals) {
+            return {
+                success: false,
+                error: `ERC-20 transfer "value" has too many fractional digits for tokenDecimals=${tokenDecimals}.`,
+            };
+        }
+
+        const padded = fracPart.padEnd(tokenDecimals, '0');
+        const amount = BigInt(intPart + padded);
+
+        const selector = 'a9059cbb';
+        const addressPadded = recipient.replace('0x', '').toLowerCase().padStart(64, '0');
+        const amountPadded = amount.toString(16).padStart(64, '0');
+
+        params.to = tokenContract;
+        params.value = '0';
+        params.data = '0x' + selector + addressPadded + amountPadded;
+        if (!params.gasLimit) {
+            params.gasLimit = '100000';
+        }
+    }
+
     const to = params.to as string;
     const value = params.value as string;
     if (!to || !value) {
@@ -1095,25 +1178,32 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
 
                 return;
             }
+            // Accept token via Authorization header OR ?token= query parameter.
+            // Query parameter allows MCP clients that don't support custom headers
+            // (e.g. Claude Code HTTP transport) to authenticate via the URL itself.
+            const url = new URL(req.url ?? '/', 'http://127.0.0.1');
+            const queryToken = url.searchParams.get('token');
             const authHeader = req.headers.authorization;
-            const expected = Buffer.from(`Bearer ${token}`);
-            const received = Buffer.from(authHeader ?? '');
+            const receivedToken = queryToken ?? authHeader?.replace('Bearer ', '') ?? '';
+
+            const expected = Buffer.from(token);
+            const received = Buffer.from(receivedToken);
             if (
                 expected.length !== received.length ||
                 !crypto.timingSafeEqual(expected, received)
             ) {
-                logger.error(LOG_PREFIX, 'Rejected request: invalid or missing Bearer token');
+                logger.error(LOG_PREFIX, 'Rejected request: invalid or missing token');
                 res.writeHead(401, { 'Content-Type': 'application/json' });
                 res.end(
                     JSON.stringify({
-                        error: 'Unauthorized. A valid Authorization: Bearer <token> header is required. Copy the token from Trezor Suite: Settings → Debug → MCP Server config snippet.',
+                        error: 'Unauthorized. Provide token via ?token= query parameter or Authorization: Bearer header. Copy the token from Trezor Suite: Settings → Experimental Features → MCP Server.',
                     }),
                 );
 
                 return;
             }
 
-            const pathname = req.url?.split('?')[0];
+            const { pathname } = url;
 
             // Handle /mcp endpoint
             if (pathname === '/mcp') {
@@ -1144,15 +1234,6 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
                 return;
             }
 
-            // Per MCP spec, clients MUST include Mcp-Session-Id once assigned.
-            const requestSessionId = req.headers['mcp-session-id'] as string | undefined;
-            if (sessionId && requestSessionId !== sessionId) {
-                res.writeHead(404, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ error: 'Session not found' }));
-
-                return;
-            }
-
             try {
                 const body = await readJsonBody(req);
                 const jsonRpcRequest = body as {
@@ -1162,6 +1243,20 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
                 };
 
                 logger.debug(LOG_PREFIX, `Request: ${jsonRpcRequest.method}`);
+
+                // Per MCP spec, clients MUST include Mcp-Session-Id once assigned.
+                // Allow missing session ID only for initialize (new client connecting).
+                const requestSessionId = req.headers['mcp-session-id'] as string | undefined;
+                if (
+                    sessionId &&
+                    requestSessionId !== sessionId &&
+                    jsonRpcRequest.method !== 'initialize'
+                ) {
+                    res.writeHead(404, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ error: 'Session not found' }));
+
+                    return;
+                }
 
                 // Assign session ID and resolve calling process on initialize
                 if (jsonRpcRequest.method === 'initialize') {

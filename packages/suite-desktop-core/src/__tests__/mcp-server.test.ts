@@ -218,6 +218,30 @@ describe('MCP server', () => {
             expect(res.status).toBe(200);
         });
 
+        it('accepts requests with token in query parameter', async () => {
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            const res = await mcpFetch(server.port, jsonRpc('initialize'), {
+                token: null,
+                path: `/mcp?token=${TEST_TOKEN}`,
+            });
+
+            expect(res.status).toBe(200);
+        });
+
+        it('rejects requests with wrong query parameter token', async () => {
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            const res = await mcpFetch(server.port, jsonRpc('initialize'), {
+                token: null,
+                path: '/mcp?token=wrong-token',
+            });
+
+            expect(res.status).toBe(401);
+        });
+
         it('returns 500 when store returns empty token at request time', async () => {
             const server = await startMcpServer();
             cleanup = server.cleanup;
@@ -380,7 +404,7 @@ describe('MCP server', () => {
             expect(body.error).toBe('Session not found');
         });
 
-        it('rejects request without session ID after initialization with 404', async () => {
+        it('rejects non-initialize request without session ID with 404', async () => {
             const server = await startMcpServer();
             cleanup = server.cleanup;
 
@@ -389,8 +413,17 @@ describe('MCP server', () => {
             const res = await mcpFetch(server.port, jsonRpc('tools/list', undefined, 2));
 
             expect(res.status).toBe(404);
-            const body = await res.json();
-            expect(body.error).toBe('Session not found');
+        });
+
+        it('allows re-initialization without session ID (new client connecting)', async () => {
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            await mcpFetch(server.port, jsonRpc('initialize'));
+
+            const res = await mcpFetch(server.port, jsonRpc('initialize', undefined, 2));
+
+            expect(res.status).toBe(200);
         });
 
         it('allows re-initialization after DELETE', async () => {
@@ -503,6 +536,101 @@ describe('MCP server', () => {
             expect(res.status).toBe(202);
             const text = await res.text();
             expect(text).toBe('');
+        });
+    });
+
+    describe('ERC-20 token transfer validation', () => {
+        const callSendTransaction = (
+            port: number,
+            sessionId: string,
+            args: Record<string, unknown>,
+        ) =>
+            mcpFetch(
+                port,
+                jsonRpc('tools/call', {
+                    name: 'trezor_send_transaction',
+                    arguments: args,
+                }),
+                { sessionId },
+            );
+
+        it('rejects ERC-20 transfer with missing tokenDecimals', async () => {
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            const initRes = await mcpFetch(server.port, jsonRpc('initialize'));
+            const sessionId = initRes.headers.get('mcp-session-id')!;
+
+            const res = await callSendTransaction(server.port, sessionId, {
+                coin: 'eth',
+                to: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
+                value: '10',
+                tokenContract: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+            });
+
+            const body = await res.json();
+            expect(body.result.isError).toBe(true);
+            expect(body.result.content[0].text).toContain('tokenDecimals');
+        });
+
+        it('rejects ERC-20 transfer with invalid recipient address', async () => {
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            const initRes = await mcpFetch(server.port, jsonRpc('initialize'));
+            const sessionId = initRes.headers.get('mcp-session-id')!;
+
+            const res = await callSendTransaction(server.port, sessionId, {
+                coin: 'eth',
+                to: 'not-an-address',
+                value: '10',
+                tokenContract: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+                tokenDecimals: 6,
+            });
+
+            const body = await res.json();
+            expect(body.result.isError).toBe(true);
+            expect(body.result.content[0].text).toContain('valid EVM address');
+        });
+
+        it('rejects ERC-20 transfer with non-numeric value', async () => {
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            const initRes = await mcpFetch(server.port, jsonRpc('initialize'));
+            const sessionId = initRes.headers.get('mcp-session-id')!;
+
+            const res = await callSendTransaction(server.port, sessionId, {
+                coin: 'eth',
+                to: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
+                value: 'abc',
+                tokenContract: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+                tokenDecimals: 6,
+            });
+
+            const body = await res.json();
+            expect(body.result.isError).toBe(true);
+            expect(body.result.content[0].text).toContain('non-negative decimal');
+        });
+
+        it('rejects ERC-20 transfer with too many fractional digits', async () => {
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            const initRes = await mcpFetch(server.port, jsonRpc('initialize'));
+            const sessionId = initRes.headers.get('mcp-session-id')!;
+
+            const res = await callSendTransaction(server.port, sessionId, {
+                coin: 'eth',
+                to: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
+                value: '1.1234567',
+                tokenContract: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+                tokenDecimals: 6,
+            });
+
+            const body = await res.json();
+            expect(body.result.isError).toBe(true);
+            expect(body.result.content[0].text).toContain('too many fractional digits');
         });
     });
 });

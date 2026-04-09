@@ -5424,6 +5424,31 @@ export const messages = defineMessages({
         defaultMessage:
             'Enable an MCP (Model Context Protocol) server that allows AI agents to interact with your Trezor device. The server runs on localhost only.',
     },
+    TR_MCP_CLIENT_CONFIGURATION: {
+        id: 'TR_MCP_CLIENT_CONFIGURATION',
+        defaultMessage: 'Client Configuration',
+    },
+    TR_MCP_PASTE_COMMAND: {
+        id: 'TR_MCP_PASTE_COMMAND',
+        defaultMessage: 'Paste this command into your terminal.',
+    },
+    TR_MCP_ADD_JSON_CONFIG: {
+        id: 'TR_MCP_ADD_JSON_CONFIG',
+        defaultMessage: 'Add this JSON to your client config file.',
+    },
+    TR_MCP_REGENERATE_TOKEN: {
+        id: 'TR_MCP_REGENERATE_TOKEN',
+        defaultMessage: 'Regenerate token',
+    },
+    TR_MCP_REGENERATE_TOKEN_HEADING: {
+        id: 'TR_MCP_REGENERATE_TOKEN_HEADING',
+        defaultMessage: 'Regenerate MCP Token',
+    },
+    TR_MCP_REGENERATE_TOKEN_DESCRIPTION: {
+        id: 'TR_MCP_REGENERATE_TOKEN_DESCRIPTION',
+        defaultMessage:
+            'This will invalidate the current token. All connected MCP clients will be disconnected and you will need to update their configuration with the new token.',
+    },
     TR_EXPERIMENTAL_SLIP24: {
         id: 'TR_EXPERIMENTAL_SLIP24',
         defaultMessage: 'SLIP-24 (clear signing)',
