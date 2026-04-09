@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { type CryptoId } from 'invity-api';
@@ -91,6 +91,8 @@ export const useTradingReceiveAddress = ({
     const [hasSelectionInitialized, setHasSelectionInitialized] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState<boolean | undefined>(undefined);
 
+    const prevCryptoIdRef = useRef<CryptoId | undefined>(undefined);
+
     const receiveAccount = useSelector(state => selectAccountByKey(state, selectedAccount?.key));
 
     const isSupportedNetwork = [...supportedMainnets, ...supportedTestnets].some(
@@ -141,13 +143,6 @@ export const useTradingReceiveAddress = ({
     );
 
     useEffect(() => {
-        setSelectedAccount(undefined);
-        setHasSelectionInitialized(false);
-        methods.setValue('address', '', { shouldValidate: false });
-        methods.setValue('extraField', '', { shouldValidate: false });
-    }, [cryptoId, methods]);
-
-    useEffect(() => {
         if (!sendAccountKey || hasSelectionInitialized) {
             return; // Don't override user selection
         }
@@ -179,8 +174,18 @@ export const useTradingReceiveAddress = ({
     ]);
 
     useEffect(() => {
+        const isNewAsset = prevCryptoIdRef.current !== cryptoId;
+
+        if (isNewAsset) {
+            prevCryptoIdRef.current = cryptoId;
+            setSelectedAccount(undefined);
+            setHasSelectionInitialized(false);
+            methods.setValue('address', '', { shouldValidate: false });
+            methods.setValue('extraField', '', { shouldValidate: false });
+        }
+
         if (!symbol) return;
-        if (hasSelectionInitialized) return;
+        if (hasSelectionInitialized && !isNewAsset) return;
 
         if (!hasSuiteReceiveAccount) {
             if (canUseNonSuiteAccount) {
@@ -197,7 +202,7 @@ export const useTradingReceiveAddress = ({
             return;
         }
 
-        if (persistedReceiveAccountKey) {
+        if (!isNewAsset && persistedReceiveAccountKey) {
             const matchingAccount = suiteReceiveAccounts?.find(
                 account => account.key === persistedReceiveAccountKey,
             );
@@ -209,7 +214,7 @@ export const useTradingReceiveAddress = ({
             }
         }
 
-        if (persistedReceiveAddress && canUseNonSuiteAccount && symbol) {
+        if (!isNewAsset && persistedReceiveAddress && canUseNonSuiteAccount && symbol) {
             let isValidForCurrentSymbol = false;
 
             try {
@@ -270,6 +275,7 @@ export const useTradingReceiveAddress = ({
         setSelectedAccount(undefined);
         setHasSelectionInitialized(true);
     }, [
+        cryptoId,
         type,
         symbol,
         accounts,
