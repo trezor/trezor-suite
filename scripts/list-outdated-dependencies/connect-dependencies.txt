@@ -1,3 +1,4 @@
+@arethetypeswrong/cli
 @blockaid/client
 @bufbuild/buf
 @bufbuild/protobuf

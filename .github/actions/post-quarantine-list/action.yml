@@ -24,6 +24,7 @@ runs:
         if [ -n "${{ inputs.project_name }}" ]; then
           PROJECT_ARGS+=(--project "${{ inputs.project_name }}")
         fi
+        # npx used because `yarn` does not run in this action; the pinned version may be updated if it changes in root package.json
         npx tsx@4.21.0 \
           "${{ github.workspace }}/packages/e2e-utils/src/quarantineBot/index.ts" \
           --list "${PROJECT_ARGS[@]}" > "${{ runner.temp }}/quarantine.json"

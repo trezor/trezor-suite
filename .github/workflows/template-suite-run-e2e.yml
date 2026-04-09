@@ -153,13 +153,13 @@ jobs:
         if: inputs.target == 'web' && steps.playwright-cache.outputs.cache-hit != 'true'
         shell: bash
         run: |
-          npx playwright@1.57.0 install --with-deps
+          yarn workspace @trezor/suite-e2e exec playwright install --with-deps
 
       - name: Install Playwright system dependencies
         if: inputs.target == 'web' && steps.playwright-cache.outputs.cache-hit == 'true'
         shell: bash
         run: |
-          npx playwright@1.57.0 install-deps
+          yarn workspace @trezor/suite-e2e exec playwright install-deps
 
       - name: Build Message System Config
         shell: bash

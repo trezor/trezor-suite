@@ -122,7 +122,7 @@ jobs:
 
       - name: Build coverage map index
         run: |
-          npx tsx packages/e2e-utils/src/testCoverage/buildCoverageMap.ts \
+          yarn tsx packages/e2e-utils/src/testCoverage/buildCoverageMap.ts \
             --input coverage-map \
             --output coverage-map/index.json
 

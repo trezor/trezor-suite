@@ -124,6 +124,7 @@
         "react-test-renderer": "19.2.4"
     },
     "devDependencies": {
+        "@arethetypeswrong/cli": "^0.18.2",
         "@babel/cli": "7.28.6",
         "@babel/core": "7.29.0",
         "@babel/node": "^7.29.0",

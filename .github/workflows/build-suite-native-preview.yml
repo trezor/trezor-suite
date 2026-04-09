@@ -51,13 +51,13 @@ jobs:
       - name: Install libs
         run: |
           yarn workspaces focus @suite-native/app
-          npx patch-package@8.0.1 # Apply global patches.
+          yarn exec patch-package # Apply global patches.
 
       - name: Check runtimeVersion builds
         run: |
           cd suite-native/app
           # Read runtimeVersion from dynamic app.json
-          RUNTIME_VERSION=$(npx expo@55.0.3 config --json | jq -r '.runtimeVersion')
+          RUNTIME_VERSION=$(yarn exec expo config --json | jq -r '.runtimeVersion')
           echo "Current runtimeVersion is $RUNTIME_VERSION"
           # Check if there is a build with the same runtimeVersion on EAS already
           EXISTING_BUILD=$(eas build:list --status=finished  --build-profile=preview --channel=preview --limit=1  --non-interactive --json --runtime-version=$RUNTIME_VERSION)
