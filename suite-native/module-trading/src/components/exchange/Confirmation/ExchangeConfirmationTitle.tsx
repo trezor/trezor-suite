@@ -1,4 +1,4 @@
-import { Badge, Text, VStack } from '@suite-native/atoms';
+import { Badge, InlineAlertBox, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import type { TradingConfirmationVariant } from '@suite-native/navigation';
 import { IconWithSpinner } from '@suite-native/trading-atoms';
@@ -6,9 +6,11 @@ import { exhaustive } from '@trezor/type-utils';
 
 export type ExchangeConfirmationTitleProps = {
     variant: TradingConfirmationVariant;
+    isPending: boolean;
+    isFailed: boolean;
 };
 
-const TitleTranslation = ({ variant }: ExchangeConfirmationTitleProps) => {
+const TitleTranslation = ({ variant }: { variant: TradingConfirmationVariant }) => {
     switch (variant) {
         case 'approve':
             return <Translation id="moduleTrading.tradingConfirmationScreen.approveTitle" />;
@@ -19,14 +21,28 @@ const TitleTranslation = ({ variant }: ExchangeConfirmationTitleProps) => {
     }
 };
 
-export const ExchangeConfirmationTitle = ({ variant }: ExchangeConfirmationTitleProps) => (
+export const ExchangeConfirmationTitle = ({
+    variant,
+    isFailed,
+    isPending,
+}: ExchangeConfirmationTitleProps) => (
     <VStack spacing="sp16" paddingVertical="sp16" alignItems="center">
-        <IconWithSpinner iconName="arrowUp" />
-        <Badge
-            label={<Translation id="moduleTrading.tradingConfirmationScreen.pending" />}
-            size="medium"
-            variant="yellow"
-        />
+        {isFailed && (
+            <InlineAlertBox
+                title={<Translation id="moduleTrading.tradingConfirmationScreen.error" />}
+                variant="critical"
+            />
+        )}
+        {isPending && (
+            <>
+                <IconWithSpinner iconName="arrowUp" />
+                <Badge
+                    label={<Translation id="moduleTrading.tradingConfirmationScreen.pending" />}
+                    size="medium"
+                    variant="yellow"
+                />
+            </>
+        )}
         <VStack spacing="sp6" alignItems="center">
             <Text variant="headline-md">
                 <TitleTranslation variant={variant} />
