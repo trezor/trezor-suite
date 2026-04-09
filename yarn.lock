@@ -11076,7 +11076,7 @@ __metadata:
     "@trezor/connect-common": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
-    web3-utils: "npm:^4.3.2"
+    web3-utils: "npm:^4.3.3"
   languageName: unknown
   linkType: soft
 
@@ -11490,7 +11490,7 @@ __metadata:
     react: "npm:19.2.4"
     react-hook-form: "npm:^7.71.2"
     react-redux: "npm:9.2.0"
-    web3-utils: "npm:^4.3.2"
+    web3-utils: "npm:^4.3.3"
   languageName: unknown
   linkType: soft
 
@@ -11537,7 +11537,7 @@ __metadata:
     react: "npm:19.2.4"
     react-hook-form: "npm:^7.71.2"
     web3-eth-abi: "npm:^4.4.1"
-    web3-utils: "npm:^4.3.2"
+    web3-utils: "npm:^4.3.3"
   languageName: unknown
   linkType: soft
 
@@ -12437,7 +12437,7 @@ __metadata:
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
     react-redux: "npm:9.2.0"
-    web3-utils: "npm:^4.3.2"
+    web3-utils: "npm:^4.3.3"
   languageName: unknown
   linkType: soft
 
@@ -12925,7 +12925,7 @@ __metadata:
     react-native: "npm:0.83.2"
     react-native-reanimated: "npm:~4.2.1"
     react-redux: "npm:9.2.0"
-    web3-utils: "npm:^4.3.2"
+    web3-utils: "npm:^4.3.3"
   languageName: unknown
   linkType: soft
 
@@ -13312,7 +13312,7 @@ __metadata:
     react-native-reanimated: "npm:~4.2.1"
     react-native-svg: "npm:15.15.3"
     react-redux: "npm:9.2.0"
-    web3-utils: "npm:^4.3.2"
+    web3-utils: "npm:^4.3.3"
   languageName: unknown
   linkType: soft
 
@@ -15399,7 +15399,7 @@ __metadata:
     vite-plugin-wasm: "npm:^3.6.0"
     vitest: "npm:^4.1.0"
     vm-browserify: "npm:^1.1.2"
-    web3-utils: "npm:^4.3.2"
+    web3-utils: "npm:^4.3.3"
     ws: "npm:^8.18.0"
   peerDependencies:
     tslib: ^2.6.2
@@ -15613,11 +15613,11 @@ __metadata:
     "@trezor/eslint": "workspace:*"
     "@trezor/node-utils": "workspace:^"
     "@trezor/utils": "workspace:*"
-    "@types/node-fetch": "npm:2.6.12"
+    "@types/node-fetch": "npm:^2.6.12"
     node-fetch: "npm:2.6.7"
     socks-proxy-agent: "npm:8.0.5"
-    ts-node: "npm:10.9.2"
-    ws: "npm:8.18.0"
+    ts-node: "npm:^10.9.2"
+    ws: "npm:^8.18.0"
   languageName: unknown
   linkType: soft
 
@@ -16132,7 +16132,7 @@ __metadata:
     styled-components: "npm:^6.3.9"
     stylelint: "npm:^17.1.1"
     stylelint-config-standard: "npm:^40.0.0"
-    web3-utils: "npm:^4.3.2"
+    web3-utils: "npm:^4.3.3"
   languageName: unknown
   linkType: soft
 
@@ -17213,16 +17213,6 @@ __metadata:
   dependencies:
     "@types/node": "npm:*"
   checksum: 10/a8c743501036f494bb8b26ee04ce914c9cce88955d9ba48ff77d2b5b1bc403d4d99804dbf02238c1491fa93e2242983b1492ad8c2b39755dabd68683dada9e8f
-  languageName: node
-  linkType: hard
-
-"@types/node-fetch@npm:2.6.12":
-  version: 2.6.12
-  resolution: "@types/node-fetch@npm:2.6.12"
-  dependencies:
-    "@types/node": "npm:*"
-    form-data: "npm:^4.0.0"
-  checksum: 10/8107c479da83a3114fcbfa882eba95ee5175cccb5e4dd53f737a96f2559ae6262f662176b8457c1656de09ec393cc7b20a266c077e4bfb21e929976e1cf4d0f9
   languageName: node
   linkType: hard
 
@@ -43581,7 +43571,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-node@npm:10.9.2, ts-node@npm:^10.9.2":
+"ts-node@npm:^10.9.2":
   version: 10.9.2
   resolution: "ts-node@npm:10.9.2"
   dependencies:
@@ -45694,7 +45684,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"web3-utils@npm:^4.0.7, web3-utils@npm:^4.3.0, web3-utils@npm:^4.3.1, web3-utils@npm:^4.3.2, web3-utils@npm:^4.3.3":
+"web3-utils@npm:^4.0.7, web3-utils@npm:^4.3.0, web3-utils@npm:^4.3.1, web3-utils@npm:^4.3.3":
   version: 4.3.3
   resolution: "web3-utils@npm:4.3.3"
   dependencies:

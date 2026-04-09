@@ -23,6 +23,6 @@
         "@trezor/connect-common": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "web3-utils": "^4.3.2"
+        "web3-utils": "^4.3.3"
     }
 }
