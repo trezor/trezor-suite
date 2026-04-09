@@ -10,14 +10,25 @@ const ConfirmationContent = ({
 }) => (
     <Card paddingType="normal">
         <List gap={24}>
-            <List.Item bulletComponent={<Icon name="linkBreak" priority="secondary" size={20} />}>
+            <List.Item
+                bulletComponent={
+                    <Icon name="linkBreak" intent="neutral" priority="secondary" size={20} />
+                }
+            >
                 <Paragraph intent="neutral" priority="secondary">
                     <Translation id="TR_FORGET_DEVICE_MODAL_BULLET_FORGET" />
                 </Paragraph>
             </List.Item>
             {isBluetoothDevice && (
                 <List.Item
-                    bulletComponent={<Icon name="bluetoothSlash" priority="secondary" size={20} />}
+                    bulletComponent={
+                        <Icon
+                            name="bluetoothSlash"
+                            intent="neutral"
+                            priority="secondary"
+                            size={20}
+                        />
+                    }
                 >
                     <Paragraph intent="neutral" priority="secondary">
                         {isBluetoothConnectedDevice ? (
@@ -28,7 +39,11 @@ const ConfirmationContent = ({
                     </Paragraph>
                 </List.Item>
             )}
-            <List.Item bulletComponent={<Icon name="scroll" priority="secondary" size={20} />}>
+            <List.Item
+                bulletComponent={
+                    <Icon name="scroll" intent="neutral" priority="secondary" size={20} />
+                }
+            >
                 <Paragraph intent="neutral" priority="secondary">
                     <Translation id="TR_FORGET_DEVICE_MODAL_BULLET_NOT_WIPE" />
                 </Paragraph>
