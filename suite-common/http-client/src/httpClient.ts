@@ -10,6 +10,10 @@ const HTTP_CLIENT_DEFAULTS = {
         attempts: 0,
     },
 
+    referrerPolicy: 'no-referrer',
+
+    credentials: 'omit',
+
     /**
      * Mocking Playwright's `route` for Electron causes responses to have status 0.
      * Prevent up-fetch from rejecting them.
