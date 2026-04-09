@@ -43,6 +43,7 @@ export class TradingPage {
     readonly sendAmountInput: Locator;
     readonly sendButton: Locator;
     readonly sendBalance: Locator;
+    readonly tronActivationFee: Locator;
     readonly setMax: Locator;
 
     // Transactions
@@ -80,6 +81,7 @@ export class TradingPage {
         this.sendAmountInput = this.page.getByTestId('outputs.0.amount');
         this.sendButton = this.page.getByTestId('@send/review-button');
         this.sendBalance = this.page.getByTestId('outputs.0.token');
+        this.tronActivationFee = this.page.getByTestId('@send/tron/activation-fee');
         this.setMax = this.page.getByTestId('outputs.0.setMax');
 
         // Transactions

@@ -32,6 +32,7 @@ export const TronNewAccountInfo = () => {
             direction="row"
             typographyStyle="body-md"
             priority="primary"
+            data-testid="@send/tron/activation-fee"
             label={
                 <Tooltip
                     hasIcon
