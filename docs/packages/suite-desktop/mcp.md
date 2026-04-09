@@ -52,7 +52,7 @@ Claude Desktop only supports stdio transport, so it needs the `mcp-remote` bridg
 
 ### Other MCP Clients (Cursor, VS Code, Windsurf)
 
-````json
+```json
 {
     "mcpServers": {
         "trezor-suite": {
@@ -60,12 +60,13 @@ Claude Desktop only supports stdio transport, so it needs the `mcp-remote` bridg
         }
     }
 }
+```
 
 ### Cursor
 
 1. Open **Cursor Settings**
 2. Navigate to the **MCP** section
-3. Add a new server with the URL `http://127.0.0.1:21340/mcp` and configure the Bearer token header
+3. Add a new server with the URL `http://127.0.0.1:21340/mcp?token=<token>`
 
 ### VS Code (GitHub Copilot)
 
@@ -75,18 +76,15 @@ Create or edit `.vscode/mcp.json` in your workspace:
 {
     "mcpServers": {
         "trezor-suite": {
-            "url": "http://127.0.0.1:21340/mcp",
-            "headers": {
-                "Authorization": "Bearer <token>"
-            }
+            "url": "http://127.0.0.1:21340/mcp?token=<token>"
         }
     }
 }
-````
+```
 
 ### Windsurf
 
-Add the MCP server via **Windsurf Settings → MCP** using the URL `http://127.0.0.1:21340/mcp`. Configure the Bearer token header with the token from Trezor Suite.
+Add the MCP server via **Windsurf Settings → MCP** using the URL `http://127.0.0.1:21340/mcp?token=<token>`.
 
 ## Available Tools
 

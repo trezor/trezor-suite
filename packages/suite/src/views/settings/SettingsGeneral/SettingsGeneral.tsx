@@ -186,7 +186,11 @@ export const SettingsGeneral = () => {
             </SettingsSection>
 
             {mcpServerEnabled && isDesktop() && (
-                <SettingsSection isBelowLaptop={isBelowLaptop} title="MCP Server" icon="plugs">
+                <SettingsSection
+                    isBelowLaptop={isBelowLaptop}
+                    title={<Translation id="TR_EXPERIMENTAL_MCP_SERVER" />}
+                    icon="plugs"
+                >
                     <McpServer />
                 </SettingsSection>
             )}
