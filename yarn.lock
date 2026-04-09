@@ -11733,6 +11733,7 @@ __metadata:
     "@suite-common/wallet-constants": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
+    "@trezor/analytics-uploader": "workspace:*"
     "@trezor/blockchain-link": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/blockchain-link-utils": "workspace:*"

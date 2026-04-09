@@ -17,9 +17,10 @@ import {
 } from '@suite-common/wallet-utils';
 import TrezorConnect, { type AccountInfo, type TokenInfo } from '@trezor/connect';
 
+import { reportWalletBalanceChangeIfNeeded } from './accountBalanceAnalytics';
 import { accountsActions } from './accountsActions';
 import { ACCOUNTS_MODULE_PREFIX } from './accountsConstants';
-import { selectAccountByKey } from './accountsSelectors';
+import { selectAccountByKey, selectAccounts } from './accountsSelectors';
 import { selectBlockchainHeightBySymbol } from '../blockchain/blockchainReducer';
 import { selectBitcoinAmountUnit } from '../settings/walletSettingsReducer';
 import { transactionsActions } from '../transactions/transactionsActions';
@@ -72,7 +73,7 @@ const fetchAccountTokens = async (account: Account, payloadTokens: AccountInfo['
 // as we usually want to update all accounts for a single coin at once
 export const fetchAndUpdateAccountThunk = createThunk(
     `${ACCOUNTS_MODULE_PREFIX}/fetchAndUpdateAccountThunk`,
-    async ({ accountKey }: { accountKey: AccountKey }, { dispatch, getState }) => {
+    async ({ accountKey }: { accountKey: AccountKey }, { dispatch, getState, extra }) => {
         const account = selectAccountByKey(getState(), accountKey);
 
         if (!account || account.failed || account.accountType === 'placeholder') return;
@@ -126,6 +127,7 @@ export const fetchAndUpdateAccountThunk = createThunk(
 
         if (response.success) {
             const { payload } = response;
+            const prevAccounts = selectAccounts(getState());
             const blockHeight = selectBlockchainHeightBySymbol(getState(), account.symbol);
 
             const analyze = analyzeTransactions(payload.history.transactions || [], accountTxs, {
@@ -185,6 +187,12 @@ export const fetchAndUpdateAccountThunk = createThunk(
             } else {
                 dispatch(accountsActions.updateAccountRefreshTimestamp(account));
             }
+
+            reportWalletBalanceChangeIfNeeded({
+                prevAccounts,
+                getState,
+                analytics: extra.services.analytics,
+            });
         }
     },
 );

@@ -23,6 +23,9 @@
         { "path": "../wallet-types" },
         { "path": "../wallet-utils" },
         {
+            "path": "../../packages/analytics-uploader"
+        },
+        {
             "path": "../../packages/blockchain-link"
         },
         {
