@@ -13,7 +13,6 @@ export type LaunchArguments = {
     areTradingExchangeDexesEnabled?: boolean;
     isTradingResidenceCheckEnabled?: boolean;
     isTradingDebugEnabled?: boolean;
-    isEarnEnabled?: boolean;
     isN4w1BackupEnabled?: boolean;
     isStablecoinYieldEnabled?: boolean;
     isN4W1BackupEnabled?: boolean;

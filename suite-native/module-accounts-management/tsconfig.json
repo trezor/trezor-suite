@@ -44,6 +44,7 @@
         { "path": "../labeling" },
         { "path": "../link" },
         { "path": "../module-device-onboarding" },
+        { "path": "../module-earn" },
         {
             "path": "../module-stellar-token-management"
         },

@@ -13,7 +13,6 @@ export const FeatureFlag = {
     AreTradingExchangeDexesEnabled: 'areTradingExchangeDexesEnabled',
     IsTradingResidenceCheckEnabled: 'isTradingResidenceCheckEnabled',
     IsTradingDebugEnabled: 'isTradingDebugEnabled',
-    IsEarnEnabled: 'isEarnEnabled',
     IsStablecoinYieldEnabled: 'isStablecoinYieldEnabled',
     IsN4w1BackupEnabled: 'isN4w1BackupEnabled',
 } as const;
@@ -46,7 +45,6 @@ export const featureFlagsInitialState: FeatureFlagsState = {
         (isIOs() && process.env.EXPO_PUBLIC_FF_IS_TRADING_RESIDENCE_CHECK_ENABLED !== 'false'),
     [FeatureFlag.IsTradingDebugEnabled]:
         process.env.EXPO_PUBLIC_FF_IS_TRADING_DEBUG_ENABLED === 'true',
-    [FeatureFlag.IsEarnEnabled]: process.env.EXPO_PUBLIC_FF_IS_EARN_ENABLED === 'true',
     [FeatureFlag.IsStablecoinYieldEnabled]:
         process.env.EXPO_PUBLIC_FF_IS_STABLECOIN_YIELD_DEBUG_ENABLED === 'true',
     [FeatureFlag.IsN4w1BackupEnabled]: process.env.EXPO_PUBLIC_FF_IS_N4W1_BACKUP_ENABLED === 'true',
@@ -62,7 +60,6 @@ export const featureFlagsPersistedKeys: Array<keyof FeatureFlagsState> = [
     FeatureFlag.AreTradingExchangeDexesEnabled,
     FeatureFlag.IsTradingResidenceCheckEnabled,
     FeatureFlag.IsTradingDebugEnabled,
-    FeatureFlag.IsEarnEnabled,
     FeatureFlag.IsStablecoinYieldEnabled,
     FeatureFlag.IsN4w1BackupEnabled,
 ];
