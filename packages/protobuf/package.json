@@ -41,7 +41,6 @@
             "./messages.json": "./messages.json"
         }
     },
-    "npmPublishAccess": "public",
     "files": [
         "lib/",
         "libESM/",
