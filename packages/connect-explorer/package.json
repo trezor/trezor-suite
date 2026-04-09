@@ -7,7 +7,7 @@
         "dev": "NODE_OPTIONS=\"--no-experimental-global-navigator\" next -p 8088",
         "build": "NODE_OPTIONS=\"--no-experimental-global-navigator\" next build && rm -rf build && mv out build",
         "build:webextension": "BUILD_TARGET=webextension yarn build && yarn g:rimraf build-webextension && TS_NODE_PROJECT=\"tsconfig.json\" yarn webpack --config ./webpack/webextension.webpack.config.ts && bash ./webpack/replace-next-filenames.sh",
-        "lint:styles": "npx stylelint './src/**/*{.ts,.tsx}' --cache --config ../../.stylelintrc",
+        "lint:styles": "stylelint './src/**/*{.ts,.tsx}' --cache --config ../../.stylelintrc",
         "type-check": "yarn g:tsc --build tsconfig.json",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
@@ -45,6 +45,8 @@
         "remark-gemoji": "^8.0.0",
         "remark-gfm": "^4.0.1",
         "styled-components": "^6.3.9",
+        "stylelint": "^17.1.1",
+        "stylelint-config-standard": "^40.0.0",
         "swr": "^2.3.3"
     },
     "devDependencies": {

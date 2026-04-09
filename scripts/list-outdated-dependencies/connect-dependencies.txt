@@ -49,6 +49,7 @@ focus-visible
 git-url-parse
 groestl-hash-js
 html-inline-script-webpack-plugin
+http-server
 intersection-observer
 json5
 jssha

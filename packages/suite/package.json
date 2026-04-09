@@ -6,7 +6,7 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "lint": "yarn lint:styles && yarn lint:js",
-        "lint:styles": "npx stylelint './src/**/*{.ts,.tsx}' --cache --config ../../.stylelintrc",
+        "lint:styles": "stylelint './src/**/*{.ts,.tsx}' --cache --config ../../.stylelintrc",
         "make:migration": "yarn workspace @suite/idb-migration-utils make:migration",
         "type-check": "yarn g:tsc --build tsconfig.json",
         "test:unit": "yarn g:jest",

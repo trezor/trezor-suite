@@ -9,8 +9,7 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "lint": "yarn lint:js && yarn lint:styles",
-        "lint:styles": "npx stylelint './src/**/*{.ts,.tsx}' --cache --config ../../.stylelintrc",
-        "lint-fix": "npx eslint ./src --fix",
+        "lint:styles": "stylelint './src/**/*{.ts,.tsx}' --cache --config ../../.stylelintrc",
         "type-check": "yarn g:tsc --build tsconfig.json",
         "type-check:watch": "yarn type-check -- --watch",
         "storybook": "storybook dev -p 9004 -c .storybook",

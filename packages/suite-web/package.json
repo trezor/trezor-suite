@@ -6,7 +6,7 @@
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build tsconfig.json",
         "type-check:watch": "yarn type-check -- --watch",
-        "lint:styles": "npx stylelint './src/**/*{.ts,.tsx}' --cache --config ../../.stylelintrc",
+        "lint:styles": "stylelint './src/**/*{.ts,.tsx}' --cache --config ../../.stylelintrc",
         "dev": "yarn rimraf ./build && yarn workspace @trezor/suite-build run dev:web",
         "dev:vite": "PROJECT=web yarn rimraf ./build && yarn workspace @trezor/suite-build run dev:web:vite",
         "analyze": "ANALYZE=true yarn build",
