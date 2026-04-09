@@ -1,4 +1,4 @@
-import { PROTO } from '@trezor/connect/src/exports';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 
 export const UNIT_ABBREVIATIONS = {
     [PROTO.AmountUnit.BITCOIN]: 'BTC',

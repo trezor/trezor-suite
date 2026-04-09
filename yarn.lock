@@ -11089,8 +11089,8 @@ __metadata:
   resolution: "@suite-common/suite-constants@workspace:suite-common/suite-constants"
   dependencies:
     "@suite-common/wallet-config": "workspace:*"
-    "@trezor/connect": "workspace:*"
     "@trezor/device-utils": "workspace:*"
+    "@trezor/protobuf": "workspace:*"
   languageName: unknown
   linkType: soft
 
