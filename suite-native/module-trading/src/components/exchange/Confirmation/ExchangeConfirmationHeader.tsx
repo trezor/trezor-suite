@@ -1,19 +1,36 @@
 import type { ComponentProps } from 'react';
 import { useSelector } from 'react-redux';
 
+import { useNavigation } from '@react-navigation/native';
+
 import {
     type TradingRootState,
     selectTradingCoinSymbolByCryptoId,
     selectTradingExchangeActiveQuote,
 } from '@suite-common/trading';
 import { Translation } from '@suite-native/intl';
-import { ScreenHeader, type TradingConfirmationVariant } from '@suite-native/navigation';
+import {
+    type RootStackParamList,
+    ScreenHeader,
+    type StackToStackCompositeNavigationProps,
+    type TradingConfirmationVariant,
+    type TradingStackParamList,
+    type TradingStackRoutes,
+} from '@suite-native/navigation';
 
 export type ExchangeConfirmationHeaderProps = {
     variant: TradingConfirmationVariant;
 };
 
+type NavigationProp = StackToStackCompositeNavigationProps<
+    TradingStackParamList,
+    TradingStackRoutes.TradingConfirming,
+    RootStackParamList
+>;
+
 export const ExchangeConfirmationHeader = ({ variant }: ExchangeConfirmationHeaderProps) => {
+    const navigation = useNavigation<NavigationProp>();
+
     const quote = useSelector(selectTradingExchangeActiveQuote);
 
     const symbol = useSelector((state: TradingRootState) =>
@@ -36,5 +53,5 @@ export const ExchangeConfirmationHeader = ({ variant }: ExchangeConfirmationHead
             );
     }
 
-    return <ScreenHeader title={title} closeActionType="close" />;
+    return <ScreenHeader title={title} closeActionType="close" closeAction={navigation.popToTop} />;
 };
