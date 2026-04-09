@@ -1,9 +1,10 @@
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
 
-export const MOBILE_SUPPORTED_STAKING_NETWORKS: readonly NetworkSymbol[] = ['eth'] as const;
+export const MOBILE_SUPPORTED_STAKING_NETWORKS: readonly NetworkSymbol[] = ['eth', 'thod'] as const;
 
 export const isMobileSupportedStakingNetwork = (symbol: NetworkSymbol): boolean =>
-    MOBILE_SUPPORTED_STAKING_NETWORKS.includes(symbol);
+    MOBILE_SUPPORTED_STAKING_NETWORKS.includes(symbol) &&
+    getNetworkFeatures(symbol).includes('staking');
 
 export const CRYPTO_BALANCE_DECIMALS = 5;
 export const NETWORK_FEE_WARNING_MULTIPLIER = 4;
