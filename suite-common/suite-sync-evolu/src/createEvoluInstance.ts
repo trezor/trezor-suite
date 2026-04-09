@@ -1,4 +1,5 @@
-import { AppName, type Evolu, type Run, createEvolu, getOrThrow } from '@evolu/common';
+import { AppName, createEvolu, deriveShardOwner, getOrThrow } from '@evolu/common';
+import { type Evolu, type Run, type ShardOwner } from '@evolu/common';
 import { type EvoluPlatformDeps } from '@evolu/common/local-first';
 
 import { type SuiteSyncOwner } from '@suite-common/suite-sync-storage';
@@ -15,9 +16,10 @@ type CreateEvoluInstanceFactoryDeps = {
     run: Run<EvoluPlatformDeps>;
 };
 
-export type CreateEvoluInstance = (params: {
-    suiteSyncOwner: SuiteSyncOwner;
-}) => Promise<Evolu<typeof Schema>>;
+export type CreateEvoluInstance = (params: { suiteSyncOwner: SuiteSyncOwner }) => Promise<{
+    evolu: Evolu<typeof Schema>;
+    shardOwner: ShardOwner;
+}>;
 
 export type CreateEvoluInstanceDep = {
     createEvoluInstance: CreateEvoluInstance;
@@ -26,13 +28,15 @@ export type CreateEvoluInstanceDep = {
 export const createEvoluInstanceFactory =
     (deps: CreateEvoluInstanceFactoryDeps): CreateEvoluInstance =>
     async ({ suiteSyncOwner }) => {
-        const owner = createEvoluAppOwnerFromTrezorData({ data: suiteSyncOwner.ownerSecret });
+        const appOwner = createEvoluAppOwnerFromTrezorData({ data: suiteSyncOwner.ownerSecret });
 
-        if (!owner.ok) {
-            console.error(owner.error);
+        if (!appOwner.ok) {
+            console.error(appOwner.error);
 
-            throw owner.error;
+            throw appOwner.error;
         }
+
+        const shardOwner = deriveShardOwner(appOwner.value, ['trezor-suite', '1']);
 
         const appName = AppName.from(`trezor-suite-v${VERSION}`);
 
@@ -42,15 +46,20 @@ export const createEvoluInstanceFactory =
             throw appName.error;
         }
 
-        return getOrThrow(
+        const evolu = getOrThrow(
             await deps.run(
                 createEvolu(Schema, {
                     appName: appName.value,
                     // Intentionally no transport, transport will be passed
                     // later on, so we can change the RelayUrl at any time.
                     transports: [],
-                    appOwner: owner.value,
+                    appOwner: appOwner.value,
                 }),
             ),
         );
+
+        return {
+            evolu,
+            shardOwner,
+        };
     };

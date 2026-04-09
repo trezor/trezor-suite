@@ -25,16 +25,16 @@ export const createEvoluStorageFactory =
 
         let unuseOwner = () => {};
 
-        const evolu = await deps.createEvoluInstance({
+        const { evolu, shardOwner } = await deps.createEvoluInstance({
             suiteSyncOwner,
         });
 
         const updateRelayUrl = async (url: string) => {
-            const owner = await evolu.appOwner;
+            const appOwner = await evolu.appOwner;
 
             unuseOwner();
-            unuseOwner = evolu.useOwner(owner, [
-                createOwnerWebSocketTransport({ url, ownerId: owner.id }),
+            unuseOwner = evolu.useOwner(appOwner, [
+                createOwnerWebSocketTransport({ url, ownerId: appOwner.id }),
             ]);
         };
 
@@ -42,11 +42,19 @@ export const createEvoluStorageFactory =
             data: {
                 accounts: new EvoluAccountTable(
                     evolu as unknown as Evolu<typeof AccountTableSchema>,
+                    shardOwner,
                 ),
-                wallets: new EvoluWalletTable(evolu as unknown as Evolu<typeof WalletTableSchema>),
-                outputs: new OutputEvoluTable(evolu as unknown as Evolu<typeof OutputTableSchema>),
+                wallets: new EvoluWalletTable(
+                    evolu as unknown as Evolu<typeof WalletTableSchema>,
+                    shardOwner,
+                ),
+                outputs: new OutputEvoluTable(
+                    evolu as unknown as Evolu<typeof OutputTableSchema>,
+                    shardOwner,
+                ),
                 addresses: new AddressEvoluTable(
                     evolu as unknown as Evolu<typeof AddressTableSchema>,
+                    shardOwner,
                 ),
             },
 
