@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import { Translation, useTranslation } from '@suite/intl';
 import { selectLabelingDataForSelectedAccount } from '@suite/metadata';
-import { selectSuiteSyncAddressLabels } from '@suite-common/suite-sync';
+import { selectIsSuiteSyncEnabled, selectSuiteSyncAddressLabels } from '@suite-common/suite-sync';
 import { getNetwork } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectIsAccountUtxoBased } from '@suite-common/wallet-core';
 import { getFirstFreshAddress } from '@suite-common/wallet-utils';
@@ -19,6 +19,7 @@ import {
 } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
+import { selectIsLegacyLabelingVisible } from 'src/actions/labels/selectIsLegacyLabelingVisible';
 import { showAddress } from 'src/actions/wallet/receiveActions';
 import { Address, Labeling, ReadMoreLink } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite/';
@@ -88,10 +89,17 @@ export const FreshAddress = ({
     const isAccountUtxoBased = useSelector((state: AccountsRootState) =>
         selectIsAccountUtxoBased(state, account?.key ?? null),
     );
+
+    const isLegacyLabelingVisible = useSelector(selectIsLegacyLabelingVisible);
     const { addressLabels } = useSelector(selectLabelingDataForSelectedAccount);
+
+    const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
     const suiteSyncAddressLabels = useSelector(state =>
-        account ? selectSuiteSyncAddressLabels(state, account.deviceState) : [],
+        account && isSuiteSyncEnabled
+            ? selectSuiteSyncAddressLabels(state, account.deviceState)
+            : [],
     );
+
     const { isReceiveDisabled, receiveDisabledTooltipContent } = useReceiveDisabled();
     const { translationString } = useTranslation();
     const dispatch = useDispatch();
@@ -141,7 +149,7 @@ export const FreshAddress = ({
     };
     const firstFreshAddressLabel = firstFreshAddress?.address
         ? (suiteSyncAddressLabels.find(it => it.address === firstFreshAddress.address)?.label ??
-          addressLabels[firstFreshAddress.address])
+          (isLegacyLabelingVisible ? addressLabels[firstFreshAddress.address] : undefined))
         : undefined;
 
     return (

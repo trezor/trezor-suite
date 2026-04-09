@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Translation, useTranslation } from '@suite/intl';
 import { selectLabelingDataForSelectedAccount } from '@suite/metadata';
 import { type MetadataAddPayload } from '@suite-common/metadata-types';
-import { selectSuiteSyncAddressLabels } from '@suite-common/suite-sync';
+import { selectIsSuiteSyncEnabled, selectSuiteSyncAddressLabels } from '@suite-common/suite-sync';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
@@ -11,6 +11,7 @@ import { Button, Card, Column, Row, Table, Text } from '@trezor/components';
 import { type AccountAddress } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
 
+import { selectIsLegacyLabelingVisible } from 'src/actions/labels/selectIsLegacyLabelingVisible';
 import { showAddress } from 'src/actions/wallet/receiveActions';
 import { Address, FormattedCryptoAmount, Labeling } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -103,9 +104,11 @@ export const UsedAddresses = ({
 }: UsedAddressesProps) => {
     const [limit, setLimit] = useState(DEFAULT_LIMIT);
     const dispatch = useDispatch();
+    const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
+    const isLegacyLabelingVisible = useSelector(selectIsLegacyLabelingVisible);
     const { addressLabels } = useSelector(selectLabelingDataForSelectedAccount);
     const suiteSyncAddressLabels = useSelector(state =>
-        selectSuiteSyncAddressLabels(state, account.deviceState),
+        isSuiteSyncEnabled ? selectSuiteSyncAddressLabels(state, account.deviceState) : [],
     );
 
     if (
@@ -171,7 +174,10 @@ export const UsedAddresses = ({
                                     value:
                                         suiteSyncAddressLabels.find(
                                             it => it.address === addr.address,
-                                        )?.label ?? addressLabels[addr.address],
+                                        )?.label ??
+                                        (isLegacyLabelingVisible
+                                            ? addressLabels[addr.address]
+                                            : undefined),
                                 }}
                                 onClick={() => dispatch(showAddress(addr.path, addr.address))}
                             />

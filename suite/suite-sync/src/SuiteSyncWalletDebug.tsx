@@ -18,12 +18,12 @@ import { spacings } from '@trezor/theme';
 type SuiteSyncWalletDebugProps = {
     device: AcquiredDevice;
     /** @deprecated this prop is a hack so we do not depend on Legacy Metadata Labeling */
-    isLegacyLabelingEnabled: boolean;
+    isLegacyLabelingVisible: boolean;
 };
 
 export const SuiteSyncWalletDebug = ({
     device,
-    isLegacyLabelingEnabled,
+    isLegacyLabelingVisible,
 }: SuiteSyncWalletDebugProps) => {
     const dispatch = useDispatch();
 
@@ -68,7 +68,7 @@ export const SuiteSyncWalletDebug = ({
     return isSuiteSyncEnabled ? (
         <Row gap={spacings.xxs}>
             🐞
-            {isLegacyLabelingEnabled && <Text intent="accentViolet">[Legacy]</Text>}
+            {isLegacyLabelingVisible && <Text intent="accentViolet">[Legacy]</Text>}
             {isSuiteSyncEnabled && (
                 <>
                     <Text typographyStyle="body-sm" intent="warning">

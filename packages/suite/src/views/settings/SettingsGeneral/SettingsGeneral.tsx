@@ -1,6 +1,6 @@
 import { selectIsSettingsDesktopAppPromoBannerShown } from '@suite/flags';
 import { Translation } from '@suite/intl';
-import { selectIsMetadataEnabled, selectSelectedProviderForLabels } from '@suite/metadata';
+import { selectSelectedProviderForLabels } from '@suite/metadata';
 import { selectHasExperimentalFeature } from '@suite/settings';
 import { Context } from '@suite-common/message-system';
 import { selectIsMevProtectionSettingsVisible } from '@suite-common/mev';
@@ -45,6 +45,7 @@ import { Tor } from './Tor';
 import { TorExternal } from './TorExternal';
 import { TorOnionLinks } from './TorOnionLinks';
 import { VersionWithUpdate } from './VersionWithUpdate';
+import { selectIsLegacyLabelingVisible } from '../../../actions/labels/selectIsLegacyLabelingVisible';
 import { Labeling } from '../labeling/Labeling';
 
 export const SettingsGeneral = () => {
@@ -56,7 +57,7 @@ export const SettingsGeneral = () => {
     const torStatus = useSelector(state => state.suite.torStatus);
     const enabledNetworks = useSelector(selectEnabledNetworks);
     const desktopUpdate = useSelector(state => state.desktopUpdate);
-    const isMetadataEnabled = useSelector(selectIsMetadataEnabled);
+    const isLegacyLabelingVisible = useSelector(selectIsLegacyLabelingVisible);
     const { isBelowLaptop, isBelowTablet } = useLayoutSize();
 
     const hasBitcoinNetworks = enabledNetworks.some(symbol => {
@@ -106,7 +107,7 @@ export const SettingsGeneral = () => {
                 icon="tag"
             >
                 <Labeling />
-                {isMetadataEnabled &&
+                {isLegacyLabelingVisible &&
                     (isProviderConnected ? (
                         <DisconnectLabelingProvider />
                     ) : (

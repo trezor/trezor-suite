@@ -37,11 +37,12 @@ import { type UpdateInfo } from '@trezor/suite-desktop-api';
 import { type AppState } from 'src/types/suite';
 
 import { getIsTorEnabled } from './tor';
+import { selectIsLegacyLabelingVisible } from '../../actions/labels/selectIsLegacyLabelingVisible';
 
 const resolveLabelingType = (
     state: AppState,
 ): MetadataProviderType | 'missing-provider' | 'suite-sync' | 'off' => {
-    if (state.metadata.enabled) {
+    if (selectIsLegacyLabelingVisible(state)) {
         return (
             state.metadata.providers.find(
                 p => p.clientId === state.metadata.selectedProvider.labels,

@@ -18,10 +18,7 @@ import {
 import { type SuiteSync } from '@suite-common/suite-sync-types';
 import { type TrezorConnect } from '@trezor/connect';
 
-import {
-    type DisableLegacyMetadataIfNeededDep,
-    createTurnOnDesktopSuiteSync,
-} from './turnOnDesktopSuiteSync';
+import { createTurnOnDesktopSuiteSync } from './turnOnDesktopSuiteSync';
 
 type SuiteSyncDesktopCompositionRootDeps = {
     getState: () => any;
@@ -29,8 +26,7 @@ type SuiteSyncDesktopCompositionRootDeps = {
     trezorConnect: TrezorConnect;
 } & PlatformEncryptionDep &
     EnsureDelegatedIdentityKeyDep &
-    DesktopAnalyticsDep &
-    DisableLegacyMetadataIfNeededDep;
+    DesktopAnalyticsDep;
 
 export const createSuiteSyncDesktopCompositionRoot = (
     deps: SuiteSyncDesktopCompositionRootDeps,
@@ -65,7 +61,6 @@ export const createSuiteSyncDesktopCompositionRoot = (
         turnOnSuiteSync: createTurnOnDesktopSuiteSync({
             turnOnSuiteSync: suiteSync.turnOnSuiteSync,
             analytics: deps.analytics,
-            disableLegacyMetadataIfNeeded: deps.disableLegacyMetadataIfNeeded,
         }),
     };
 };
