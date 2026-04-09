@@ -54,7 +54,6 @@ export const EarnFormScreen = () => {
             }
         >
             <AccountDetailsCard accountKey={accountKey} isStakeVariant />
-
             <Box marginTop="sp16">
                 <Form form={form}>
                     <EarnOutputFields accountKey={accountKey} />

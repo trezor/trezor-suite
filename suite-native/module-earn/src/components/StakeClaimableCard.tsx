@@ -6,7 +6,7 @@ import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS } from '@suite-common/formatters';
 import { selectAccountNetworkSymbol, useAccountsSelector } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { isPositiveBalance } from '@suite-common/wallet-utils';
-import { Box, Card, PressableOpacity, Text } from '@suite-native/atoms';
+import { Box, Card, InlineAlertBox, PressableOpacity, Text } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 import {
@@ -19,6 +19,8 @@ import {
     useSelector as useNativeStakingSelector,
 } from '@suite-native/staking';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+
+import { useMessageSystemStaking } from '../hooks/useMessageSystemStaking';
 
 type StakeClaimableCardProps = {
     accountKey: AccountKey;
@@ -48,19 +50,21 @@ export const StakeClaimableCard = ({ accountKey }: StakeClaimableCardProps) => {
         selectClaimableAmountByAccountKey(state, accountKey),
     );
 
+    const { isClaimingDisabled, claimingMessageContent } = useMessageSystemStaking(symbol);
+
     const handlePress = useCallback(() => {
-        if (!symbol) {
+        if (!symbol || isClaimingDisabled) {
             return;
         }
         navigation.navigate(RootStackRoutes.ClaimReview, { accountKey, symbol });
-    }, [accountKey, navigation, symbol]);
+    }, [accountKey, navigation, symbol, isClaimingDisabled]);
 
     if (!symbol || !isPositiveBalance(claimableAmount)) {
         return null;
     }
 
     return (
-        <PressableOpacity onPress={handlePress}>
+        <PressableOpacity onPress={handlePress} disabled={isClaimingDisabled}>
             <Card>
                 <Box style={applyStyle(stakingItemStyle)}>
                     <Box flex={1}>
@@ -87,6 +91,9 @@ export const StakeClaimableCard = ({ accountKey }: StakeClaimableCardProps) => {
                         </Box>
                     </Box>
                 </Box>
+                {isClaimingDisabled && claimingMessageContent && (
+                    <InlineAlertBox variant="warning" title={claimingMessageContent} />
+                )}
             </Card>
         </PressableOpacity>
     );

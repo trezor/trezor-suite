@@ -8,7 +8,7 @@ import {
     type AccountsRootState,
     selectDeviceAccountsByNetworkSymbol,
 } from '@suite-common/wallet-core';
-import { Button, VStack } from '@suite-native/atoms';
+import { Button, InlineAlertBox, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     type RootStackParamList,
@@ -27,6 +27,7 @@ import {
 import { HowStakeWorksBenefitsSection } from '../components/HowStakeWorksBenefitsSection';
 import { HowStakeWorksHeaderSection } from '../components/HowStakeWorksHeaderSection';
 import { HowStakeWorksTimelineCard } from '../components/HowStakeWorksTimelineCard';
+import { useMessageSystemStaking } from '../hooks/useMessageSystemStaking';
 
 export const HowStakeWorksScreen = () => {
     const route = useRoute<RouteProp<RootStackParamList, RootStackRoutes.HowStakeWorksScreen>>();
@@ -62,6 +63,8 @@ export const HowStakeWorksScreen = () => {
         selectApy(state, { accountKey: resolvedAccountKey, networkSymbol: symbol }),
     );
 
+    const { isStakingDisabled, stakingMessageContent } = useMessageSystemStaking(symbol);
+
     return (
         <Screen header={<ScreenHeader closeActionType="back" />}>
             <VStack flex={1} justifyContent="space-between">
@@ -79,7 +82,13 @@ export const HowStakeWorksScreen = () => {
                         apy={apy}
                     />
                 </VStack>
-                <Button onPress={handleContinue} isDisabled={!resolvedAccountKey}>
+                {isStakingDisabled && stakingMessageContent && (
+                    <InlineAlertBox variant="warning" title={stakingMessageContent} />
+                )}
+                <Button
+                    onPress={handleContinue}
+                    isDisabled={!resolvedAccountKey || isStakingDisabled}
+                >
                     <Translation id="generic.buttons.continue" />
                 </Button>
             </VStack>

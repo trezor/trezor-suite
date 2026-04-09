@@ -26,7 +26,6 @@ describe('featureFlagsSlice', () => {
                 isTradingSellEnabled: false,
                 isTradingDebugEnabled: false,
                 isN4w1BackupEnabled: false,
-                isEarnEnabled: false,
                 isStablecoinYieldEnabled: false,
             });
         });
@@ -49,7 +48,6 @@ describe('featureFlagsSlice', () => {
                 isTradingResidenceCheckEnabled: false,
                 isTradingDebugEnabled: false,
                 isN4w1BackupEnabled: false,
-                isEarnEnabled: false,
                 isStablecoinYieldEnabled: false,
             });
         });

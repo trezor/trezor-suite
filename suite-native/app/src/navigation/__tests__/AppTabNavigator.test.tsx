@@ -94,24 +94,8 @@ describe('AppTabNavigator', () => {
         expect(getByTestId('@screen/Trading')).toBeTruthy();
     });
 
-    it('should not render Earn tab when the Earn flag is disabled', () => {
-        const { queryByText } = renderTabs({
-            featureFlags: {
-                ...featureFlagsInitialState,
-                [FeatureFlag.IsEarnEnabled]: false,
-            },
-        });
-
-        expect(queryByText('Earn')).toBe(null);
-    });
-
-    it('should render Earn tab when the Earn flag is enabled', () => {
-        const { queryByText } = renderTabs({
-            featureFlags: {
-                ...featureFlagsInitialState,
-                [FeatureFlag.IsEarnEnabled]: true,
-            },
-        });
+    it('should render Earn tab', () => {
+        const { queryByText } = renderTabs();
 
         expect(queryByText('Earn')).toBeTruthy();
     });

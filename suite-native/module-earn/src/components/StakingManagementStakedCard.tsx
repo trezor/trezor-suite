@@ -3,7 +3,7 @@ import { useNavigation } from '@react-navigation/native';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectEthNextRewardPayout } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { Button, Card, HStack, Text, VStack } from '@suite-native/atoms';
+import { Button, Card, HStack, InlineAlertBox, Text, VStack } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 import {
@@ -22,6 +22,7 @@ import { BigNumber } from '@trezor/utils';
 
 import { CRYPTO_BALANCE_DECIMALS } from '../constants';
 import { ApyValue } from './ApyValue';
+import { useMessageSystemStaking } from '../hooks/useMessageSystemStaking';
 
 type StakingManagementStakedCardProps = {
     accountKey: AccountKey;
@@ -66,6 +67,13 @@ export const StakingManagementStakedCard = ({
     );
     const apy = useSelector(state => selectApy(state, { accountKey, networkSymbol }));
     const nextRewardPayout = useSelector(state => selectEthNextRewardPayout(state));
+
+    const {
+        isStakingDisabled,
+        isUnstakingDisabled,
+        stakingMessageContent,
+        unstakingMessageContent,
+    } = useMessageSystemStaking(networkSymbol);
 
     return (
         <Card noPadding>
@@ -119,22 +127,40 @@ export const StakingManagementStakedCard = ({
                     </Text>
                 )}
             </HStack>
-            <HStack style={applyStyle(buttonsRowStyle)}>
-                {hasStakedBalance && (
-                    <Button flex={1} priority="secondary" onPress={handleUnstake}>
-                        <Translation id="earn.stakingManagementScreen.unstakeButton" />
-                    </Button>
+            <VStack style={applyStyle(buttonsRowStyle)}>
+                {isUnstakingDisabled && unstakingMessageContent && (
+                    <InlineAlertBox variant="warning" title={unstakingMessageContent} />
                 )}
-                <Button flex={1} priority="secondary" onPress={handleStake}>
-                    <Translation
-                        id={
-                            hasStakedBalance
-                                ? 'earn.stakingManagementScreen.stakeMoreButton'
-                                : 'earn.stakingManagementScreen.stakeButton'
-                        }
-                    />
-                </Button>
-            </HStack>
+                {isStakingDisabled && stakingMessageContent && (
+                    <InlineAlertBox variant="warning" title={stakingMessageContent} />
+                )}
+                <HStack spacing="sp12">
+                    {hasStakedBalance && (
+                        <Button
+                            flex={1}
+                            priority="secondary"
+                            onPress={handleUnstake}
+                            isDisabled={isUnstakingDisabled}
+                        >
+                            <Translation id="earn.stakingManagementScreen.unstakeButton" />
+                        </Button>
+                    )}
+                    <Button
+                        flex={1}
+                        priority="secondary"
+                        onPress={handleStake}
+                        isDisabled={isStakingDisabled}
+                    >
+                        <Translation
+                            id={
+                                hasStakedBalance
+                                    ? 'earn.stakingManagementScreen.stakeMoreButton'
+                                    : 'earn.stakingManagementScreen.stakeButton'
+                            }
+                        />
+                    </Button>
+                </HStack>
+            </VStack>
         </Card>
     );
 };

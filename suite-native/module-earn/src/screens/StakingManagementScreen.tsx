@@ -2,9 +2,11 @@ import { useMemo } from 'react';
 
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
-import { parseAccountKey } from '@suite-common/wallet-utils';
+import { Context } from '@suite-common/message-system';
+import { isStakingSymbol, parseAccountKey } from '@suite-common/wallet-utils';
 import { Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+import { ContextMessage } from '@suite-native/message-system';
 import { type RootStackParamList, type RootStackRoutes, Screen } from '@suite-native/navigation';
 import { TransactionList } from '@suite-native/transactions';
 
@@ -20,6 +22,9 @@ export const StakingManagementScreen = () => {
     const listHeaderComponent = useMemo(
         () => (
             <VStack spacing="sp48" marginTop="sp32" paddingHorizontal="sp16">
+                {isStakingSymbol(networkSymbol) && (
+                    <ContextMessage context={Context.getStaking(networkSymbol)} />
+                )}
                 <StakingManagementPendingSection accountKey={accountKey} />
                 <VStack spacing="sp16">
                     <Text variant="headline-sm">

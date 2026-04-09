@@ -4,7 +4,10 @@ import { useDispatch } from 'react-redux';
 
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
+import { Context } from '@suite-common/message-system';
 import { initStakeDataThunk } from '@suite-common/wallet-core';
+import { isStakingSymbol, parseAccountKey } from '@suite-common/wallet-utils';
+import { ContextMessage } from '@suite-native/message-system';
 import { type RootStackParamList, type RootStackRoutes, Screen } from '@suite-native/navigation';
 import { useNativeStyles } from '@trezor/styles-native';
 
@@ -16,6 +19,7 @@ const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 export const StakingDetailScreen = () => {
     const route = useRoute<RouteProp<RootStackParamList, RootStackRoutes.StakingDetail>>();
     const { accountKey } = route.params;
+    const { networkSymbol } = parseAccountKey(accountKey);
     const [isRefreshing, setIsRefreshing] = useState(false);
     const { utils } = useNativeStyles();
 
@@ -46,6 +50,9 @@ export const StakingDetailScreen = () => {
 
     return (
         <Screen header={<StakingDetailScreenHeader />} refreshControl={refreshControl}>
+            {isStakingSymbol(networkSymbol) && (
+                <ContextMessage context={Context.getStaking(networkSymbol)} />
+            )}
             <StakingInfo accountKey={accountKey} />
         </Screen>
     );

@@ -6,7 +6,7 @@ import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS, useFormatters } from '@suite-common
 import { selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { isPositiveBalance } from '@suite-common/wallet-utils';
-import { Box, Button, HStack, Text, VStack } from '@suite-native/atoms';
+import { Box, Button, HStack, InlineAlertBox, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
@@ -20,6 +20,8 @@ import {
     useSelector,
 } from '@suite-native/staking';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+
+import { useMessageSystemStaking } from '../hooks/useMessageSystemStaking';
 
 type NavigationProp = StackNavigationProps<RootStackParamList, RootStackRoutes.StakingManagement>;
 
@@ -46,6 +48,8 @@ export const StakingManagementReadyToClaimCard = ({
     const claimableAmount = useSelector((state: NativeStakingRootState) =>
         selectClaimableAmountByAccountKey(state, accountKey),
     );
+
+    const { isClaimingDisabled, claimingMessageContent } = useMessageSystemStaking(symbol);
 
     const handleClaimPress = useCallback(() => {
         if (!symbol) {
@@ -78,7 +82,15 @@ export const StakingManagementReadyToClaimCard = ({
                             }}
                         />
                     </Text>
-                    <Button size="medium" isFullWidth onPress={handleClaimPress}>
+                    {isClaimingDisabled && claimingMessageContent && (
+                        <InlineAlertBox variant="warning" title={claimingMessageContent} />
+                    )}
+                    <Button
+                        size="small"
+                        isFullWidth
+                        onPress={handleClaimPress}
+                        isDisabled={isClaimingDisabled}
+                    >
                         <Text variant="body-sm-strong" color="textOnPrimary">
                             <Translation id="earn.stakingManagementScreen.claim.claimButton" />
                         </Text>

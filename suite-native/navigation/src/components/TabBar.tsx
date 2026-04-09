@@ -5,7 +5,6 @@ import { type BottomTabBarProps } from '@react-navigation/bottom-tabs';
 
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { Box } from '@suite-native/atoms';
-import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { type TxKeyPath, useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -47,9 +46,8 @@ export const TabBar = ({ state, navigation, tabItemOptions }: TabBarProps) => {
     const insets = useSafeAreaInsets();
 
     const isBitcoinOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);
-    const isEarnEnabled = useFeatureFlag(FeatureFlag.IsEarnEnabled);
 
-    const shouldHideEarnTab = isBitcoinOnlyFirmware || !isEarnEnabled;
+    const shouldHideEarnTab = isBitcoinOnlyFirmware;
 
     return (
         <Box
