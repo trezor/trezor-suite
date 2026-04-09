@@ -408,14 +408,14 @@ No auto-fill is available. You must provide a complete `transaction` object with
 
 ### HTTP Status Codes
 
-| Status | Meaning                                                                                                               |
-| ------ | --------------------------------------------------------------------------------------------------------------------- |
-| `200`  | Success                                                                                                               |
-| `202`  | Notification accepted (request without `id`)                                                                          |
-| `401`  | Unauthorized — include `Authorization: Bearer <token>` header (token from Trezor Suite Settings → Debug → MCP Server) |
-| `403`  | Forbidden — request not from localhost                                                                                |
-| `404`  | Session not found — `Mcp-Session-Id` header doesn't match server session                                              |
-| `405`  | Method not allowed — `GET` is not supported                                                                           |
+| Status | Meaning                                                                                                                               |
+| ------ | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `200`  | Success                                                                                                                               |
+| `202`  | Notification accepted (request without `id`)                                                                                          |
+| `401`  | Unauthorized — include `Authorization: Bearer <token>` header (token from Trezor Suite Settings → Experimental Features → MCP Server) |
+| `403`  | Forbidden — request not from localhost                                                                                                |
+| `404`  | Session not found — `Mcp-Session-Id` header doesn't match server session                                                              |
+| `405`  | Method not allowed — `GET` is not supported                                                                                           |
 
 ### Tool-Level Errors
 

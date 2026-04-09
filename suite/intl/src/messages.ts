@@ -5374,6 +5374,15 @@ export const messages = defineMessages({
         defaultMessage:
             'Enable the Tron Network with the latest firmware to check your balance, send and receive TRX and tokens, view charts and transaction history, and use Wallet Connect. Full support, including freezing and voting, is coming soon.',
     },
+    TR_EXPERIMENTAL_MCP_SERVER: {
+        id: 'TR_EXPERIMENTAL_MCP_SERVER',
+        defaultMessage: 'MCP Server',
+    },
+    TR_EXPERIMENTAL_MCP_SERVER_DESCRIPTION: {
+        id: 'TR_EXPERIMENTAL_MCP_SERVER_DESCRIPTION',
+        defaultMessage:
+            'Enable an MCP (Model Context Protocol) server that allows AI agents to interact with your Trezor device. The server runs on localhost only.',
+    },
     TR_EXPERIMENTAL_SLIP24: {
         id: 'TR_EXPERIMENTAL_SLIP24',
         defaultMessage: 'SLIP-24 (clear signing)',
