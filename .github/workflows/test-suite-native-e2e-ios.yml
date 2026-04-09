@@ -86,7 +86,7 @@ jobs:
 
       - name: Build a Detox test app
         working-directory: ./suite-native/app
-        run: npx detox@20.45.1 build --configuration ios.sim.release
+        run: yarn exec detox build --configuration ios.sim.release
 
       - name: Store build artifact
         uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
@@ -161,7 +161,7 @@ jobs:
           key: detox-framework-${{ hashFiles('**/node_modules/detox/package.json') }}
 
       - name: Build Detox framework cache
-        run: npx detox@20.45.1 clean-framework-cache && npx detox@20.45.1 build-framework-cache
+        run: yarn exec detox clean-framework-cache && yarn exec detox build-framework-cache
         working-directory: ./suite-native/app
 
       - name: Download app build artifact

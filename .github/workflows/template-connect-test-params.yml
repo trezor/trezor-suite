@@ -71,7 +71,7 @@ jobs:
           yarn && yarn build:libs
       - name: Install Playwright chromium
         if: ${{ inputs.testEnv == 'web' }}
-        run: npx playwright@1.57.0 install --with-deps chromium
+        run: yarn workspace @trezor/connect-web exec playwright install --with-deps chromium
       - if: ${{ inputs.disable_cache_tx == 'true' }}
         run: echo "ADDITIONAL_ARGS=-c" >> "$GITHUB_ENV"
       - if: ${{ inputs.testFirmwareModel }}

@@ -36,7 +36,7 @@ jobs:
       - name: Install libs
         run: |
           yarn workspaces focus @suite-native/app
-          npx patch-package@8.0.1 # Apply global patches.
+          yarn exec patch-package # Apply global patches.
       - name: Build on EAS Android
         run: eas build
           --platform android

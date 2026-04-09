@@ -15,6 +15,7 @@
         "uuid",
         "uint8array-tools",
         "bitcore-lib",
-        "@types/node-fetch"
+        "@types/node-fetch",
+        "@arethetypeswrong/cli"
     ]
 }
