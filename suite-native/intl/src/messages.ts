@@ -2947,8 +2947,8 @@ export const messages = {
             approveTitle: 'Confirming approval',
             revokeTitle: 'Confirming revoke',
             subtitle: 'This may take a few moments.',
-            // TODO 25742 - Should be pending with some kind of time
             pending: 'Pending',
+            date: 'Date',
             exploreInBlockchain: 'Explore in blockchain',
         },
         exchangeApprovalLimitSheet: {
