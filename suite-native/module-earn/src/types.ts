@@ -49,7 +49,6 @@ export type EarnDepositsCardActiveItem =
           accountKey: AccountKey;
           balance: string;
           fiatAmount: BaseCurrencyAmount;
-          apy: number | null;
       }
     | {
           id: string;

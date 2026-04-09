@@ -1,4 +1,4 @@
-import type { NetworkSymbol, StakingNetworkSymbol } from '@suite-common/wallet-config';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     selectAccountByKey,
     selectAdaAccountHasStaked,
@@ -183,28 +183,13 @@ export const selectIsStakeConfirmingByAccountKey = (
     }
 };
 
-export const selectAPYByAccountKey = (
+export const selectApy = (
     state: NativeStakingRootState,
-    accountKey: AccountKey | null,
+    { accountKey, networkSymbol }: { accountKey?: AccountKey; networkSymbol?: NetworkSymbol },
 ) => {
-    const account = selectAccountByKey(state, accountKey);
-    const symbol = account?.symbol;
-    if (!symbol || !doesCoinSupportStaking(symbol)) {
-        return null;
-    }
+    const account = selectAccountByKey(state, accountKey) ?? undefined;
 
-    return selectPoolStatsApy(state, { account });
-};
-
-export const selectAPYBySymbol = (
-    state: NativeStakingRootState,
-    symbol: StakingNetworkSymbol | null,
-) => {
-    if (!symbol || !doesCoinSupportStaking(symbol)) {
-        return null;
-    }
-
-    return selectPoolStatsApy(state, { networkSymbol: symbol });
+    return selectPoolStatsApy(state, { account, networkSymbol });
 };
 
 export const selectStakedBalanceByAccountKey = (

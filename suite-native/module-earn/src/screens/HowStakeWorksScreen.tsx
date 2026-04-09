@@ -19,7 +19,7 @@ import {
 } from '@suite-native/navigation';
 import {
     type NativeStakingRootState,
-    selectAPYByAccountKey,
+    selectApy,
     selectEntryPeriodInDaysBySymbol,
     selectUnstakingPeriodInDaysBySymbol,
 } from '@suite-native/staking';
@@ -59,7 +59,7 @@ export const HowStakeWorksScreen = () => {
     );
 
     const apy = useSelector((state: NativeStakingRootState) =>
-        resolvedAccountKey ? selectAPYByAccountKey(state, resolvedAccountKey) : null,
+        selectApy(state, { accountKey: resolvedAccountKey, networkSymbol: symbol }),
     );
 
     return (

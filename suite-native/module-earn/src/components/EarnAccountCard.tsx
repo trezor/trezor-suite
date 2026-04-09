@@ -2,7 +2,7 @@ import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { Box, Card, PressableOpacity, Text, VStack } from '@suite-native/atoms';
 import { CryptoIconWithNetwork, Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { selectAPYByAccountKey, useSelector as useStakingSelector } from '@suite-native/staking';
+import { selectApy, useSelector as useStakingSelector } from '@suite-native/staking';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { CRYPTO_BALANCE_DECIMALS } from '../constants';
@@ -52,11 +52,13 @@ export const EarnAccountCard = ({ item, onPress }: EarnAccountCardProps) => {
     const isStakingItem = item.type === 'staking';
     const isStablecoinYieldItem = item.type === 'stablecoin-yield';
 
-    const stakingApy = useStakingSelector(state =>
-        isStakingItem ? selectAPYByAccountKey(state, item.accountKey) : null,
+    const apy = useStakingSelector(state =>
+        isStakingItem
+            ? selectApy(state, { accountKey: item.accountKey, networkSymbol: item.symbol })
+            : null,
     );
 
-    const apyValue = isStakingItem ? (stakingApy ?? item.apy) : item.apy;
+    const apyValue = isStakingItem ? apy : item.apy;
     const symbol = isStakingItem ? item.symbol : item.networkSymbol;
     const contractAddress = isStakingItem ? undefined : item.contractAddress;
     const secondaryDescription = isStablecoinYieldItem

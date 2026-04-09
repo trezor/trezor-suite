@@ -7,7 +7,7 @@ import { type AccountKey } from '@suite-common/wallet-types';
 import { calculateRewards } from '@suite-common/wallet-utils';
 import { Box, Button, ScreenFooterGradient, Text, VStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
-import { selectAPYByAccountKey, useSelector } from '@suite-native/staking';
+import { selectApy, useSelector } from '@suite-native/staking';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 const screenFooterStyle = prepareNativeStyle(utils => ({
@@ -43,7 +43,7 @@ export const EarnFormScreenFooter = ({
     const { translate } = useTranslate();
     const { CryptoAmountFormatter } = useFormatters();
 
-    const apy = useSelector(state => selectAPYByAccountKey(state, accountKey));
+    const apy = useSelector(state => selectApy(state, { accountKey, networkSymbol: symbol }));
 
     const estimatedRewards = useMemo(() => {
         if (!amountValue) return null;
