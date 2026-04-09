@@ -52,9 +52,7 @@ export const createEvoluStorageFactory =
 
             updateRelayUrl,
             dispose: async () => {
-                unuseOwner();
-                evolu[Symbol.asyncDispose]();
-                await Promise.resolve();
+                await evolu[Symbol.asyncDispose]();
             },
         };
     };
