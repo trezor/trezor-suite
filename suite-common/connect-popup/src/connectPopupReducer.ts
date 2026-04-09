@@ -103,6 +103,15 @@ export const prepareConnectPopupReducer = createReducerWithExtraDeps(
             .addCase(connectPopupActions.finishCall, state => {
                 if (state.activeCall) state.activeCall.state = 'finished';
             })
+            .addCase(connectPopupActions.clearCall, state => {
+                if (
+                    state.activeCall?.state === 'finished' ||
+                    state.activeCall?.state === 'call-error' ||
+                    state.activeCall?.state === 'error'
+                ) {
+                    state.activeCall = undefined;
+                }
+            })
             .addCase(connectPopupActions.deeplinkCallback, (state, { payload }) => {
                 if (
                     state.activeCall?.state === 'finished' ||
