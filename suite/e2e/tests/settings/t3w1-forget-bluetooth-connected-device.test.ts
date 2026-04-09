@@ -169,7 +169,11 @@ test.describe('Forget TS7', { tag: ['@T3W1', '@desktopOnly'] }, () => {
 
         await test.step('Disconnect device and wait for it to be recognized', async () => {
             await device.powerOff();
-            await page.expectReduxObjectToEqual('device.selectedDevice.connected', false);
+            // T3W1 may either set connected=false or remove selectedDevice entirely on disconnect
+            await expect(async () => {
+                const connected = await page.getReduxObject('device.selectedDevice.connected');
+                expect(connected === false || connected === undefined).toBe(true);
+            }).toPass({ timeout: 15_000 });
         });
 
         await test.step('Navigate to device settings', async () => {
