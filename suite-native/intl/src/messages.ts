@@ -2948,6 +2948,7 @@ export const messages = {
             revokeTitle: 'Confirming revoke',
             subtitle: 'This may take a few moments.',
             pending: 'Pending',
+            error: 'Error confirming transaction. Please try again.',
             date: 'Date',
             exploreInBlockchain: 'Explore in blockchain',
         },

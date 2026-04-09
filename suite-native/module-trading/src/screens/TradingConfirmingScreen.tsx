@@ -3,15 +3,23 @@ import { useSelector } from 'react-redux';
 
 import { useFocusEffect } from '@react-navigation/native';
 
-import { selectTradingExchangeActiveQuote } from '@suite-common/trading';
+import { useAllowanceTxTracking } from '@suite-common/trading';
+import {
+    type AccountsRootState,
+    type TransactionsRootState,
+    selectTransactionByAccountKeyAndTxid,
+} from '@suite-common/wallet-core';
+import type { AccountKey } from '@suite-common/wallet-types';
 import {
     type RootStackParamList,
     Screen,
     type StackToStackCompositeScreenProps,
     type TradingStackParamList,
-    TradingStackRoutes,
+    type TradingStackRoutes,
 } from '@suite-native/navigation';
+import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
 
+import { ConfirmationQuoteDebugView } from '../components/exchange/Confirmation/ConfirmationQuoteDebugView';
 import { ExchangeConfirmationHeader } from '../components/exchange/Confirmation/ExchangeConfirmationHeader';
 import { ExchangeConfirmationInfo } from '../components/exchange/Confirmation/ExchangeConfirmationInfo';
 import { ExchangeConfirmationTitle } from '../components/exchange/Confirmation/ExchangeConfirmationTitle';
@@ -30,43 +38,38 @@ export const TradingConfirmingScreen = ({
 }: TradingConfirmingScreenProps) => {
     const { variant } = params;
 
-    const quote = useSelector(selectTradingExchangeActiveQuote);
-    const quoteStatus = quote?.status;
+    const sendAccount = useSelector(selectExchangeSelectedSendAccount);
+    const accountKey = sendAccount?.key ?? ('' as AccountKey);
 
-    // TODO 25742 should it be here?
+    const { status, approvalTxid } = useAllowanceTxTracking({
+        accountKey,
+    });
+
+    // TODO 25742 use this
+    const _transaction = useSelector((state: TransactionsRootState & AccountsRootState) =>
+        selectTransactionByAccountKeyAndTxid(state, accountKey, approvalTxid ?? ''),
+    );
+
+    const { isConfirmed, isFailed, isPending } = status;
+
     // TODO 25742 tests
     useFocusEffect(
         useCallback(() => {
-            switch (quoteStatus) {
-                case 'SUCCESS':
-                    navigation.popToTop();
-                    break;
-
-                case 'APPROVAL_REQ':
-                    // TODO 25742 should there be some delay and e.g. animation?
-                    navigation.navigate(TradingStackRoutes.TradingExchangeApproval, {
-                        isRevoked: variant === 'revoke',
-                    });
-                    break;
-
-                // TODO 25742 what is the right one?
-                case 'SIGN_DATA':
-                    // TODO 25742 should there be some delay and e.g. animation?
-                    navigation.navigate(TradingStackRoutes.TradingExchangePreview, {
-                        isApproved: true,
-                    });
-                    break;
-
-                default:
-                    break;
+            if (isConfirmed) {
+                navigation.popToTop();
             }
-        }, [quoteStatus, navigation, variant]),
+        }, [isConfirmed, navigation]),
     );
 
     return (
         <TradingDeviceConnectionGuard>
             <Screen header={<ExchangeConfirmationHeader variant={variant} />}>
-                <ExchangeConfirmationTitle variant={variant} />
+                <ConfirmationQuoteDebugView />
+                <ExchangeConfirmationTitle
+                    variant={variant}
+                    isFailed={isFailed}
+                    isPending={isPending}
+                />
                 <ExchangeConfirmationInfo variant={variant} />
                 <ExploreInBlockchainButton />
             </Screen>
