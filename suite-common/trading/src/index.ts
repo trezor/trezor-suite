@@ -12,6 +12,11 @@ export * from './hooks/useTradingFiatValues';
 export * from './hooks/useExchangeFiatDeviation';
 export * from './hooks/useApprovalStep';
 export * from './hooks/useTradingRefetchScheduler';
+export {
+    type TransactionStatus,
+    type UseAllowanceTxTrackingParams,
+    useAllowanceTxTracking,
+} from './hooks/useAllowanceTxTracking';
 export * from './invityAPI';
 export * from './reducers/buyReducer';
 export * from './reducers/exchangeReducer';

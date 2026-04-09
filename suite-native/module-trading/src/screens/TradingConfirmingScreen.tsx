@@ -28,7 +28,26 @@ export const TradingConfirmingScreen = ({
     route: { params },
     navigation,
 }: TradingConfirmingScreenProps) => {
-    const { variant } = params;
+    const { flowType } = params;
+
+    const sendAccount = useSelector(selectExchangeSelectedSendAccount);
+    const activeQuote = useSelector(selectTradingExchangeActiveQuote);
+    const accountKey = sendAccount?.key ?? null;
+    const approvalSendTxHash = activeQuote?.approvalSendTxHash;
+
+    const {
+        status: originalStatus,
+        approvalTxid,
+        setApprovalTxid,
+    } = useAllowanceTxTracking({
+        accountKey,
+    });
+
+    useEffect(() => {
+        if (approvalSendTxHash) {
+            setApprovalTxid(approvalSendTxHash);
+        }
+    }, [approvalSendTxHash, setApprovalTxid]);
 
     const quote = useSelector(selectTradingExchangeActiveQuote);
     const quoteStatus = quote?.status;
