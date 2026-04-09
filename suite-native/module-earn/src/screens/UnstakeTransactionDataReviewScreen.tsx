@@ -32,6 +32,7 @@ import {
 } from '@suite-native/transaction-management';
 
 import { UnstakeTransactionDataReviewStepList } from '../components/UnstakeTransactionDataReviewStepList';
+import { useStakingDetailNavigation } from '../hooks/useStakingDetailNavigation';
 
 const navigateToUnstakedTransactionAction = ({
     accountKey,
@@ -68,6 +69,7 @@ export const UnstakeTransactionDataReviewScreen = ({
     const { confirmOnTrezorRef, revealConfirmOnTrezorSheet, closeSheet } =
         useConfirmOnTrezorController();
     const { accountKey } = route.params;
+    const { navigateToStakingDetail } = useStakingDetailNavigation();
     const [txid, setTxid] = useState<string>('');
 
     const isAddressConfirmed = useSelector((state: TransactionReviewOutputsState) =>
@@ -92,10 +94,10 @@ export const UnstakeTransactionDataReviewScreen = ({
 
     useFocusEffect(
         useCallback(() => {
-            if (isAddressConfirmed) {
-                navigation.navigate(RootStackRoutes.StakingDetail, { accountKey });
+            if (isAddressConfirmed && account) {
+                navigateToStakingDetail({ accountKey, symbol: account.symbol });
             }
-        }, [accountKey, isAddressConfirmed, navigation]),
+        }, [account, accountKey, isAddressConfirmed, navigateToStakingDetail]),
     );
 
     useEffect(() => {

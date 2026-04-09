@@ -33,6 +33,7 @@ import {
 } from '@suite-native/transaction-management';
 
 import { EarnTransactionDataReviewStepList } from '../components/EarnTransactionDataReviewStepList';
+import { useStakingDetailNavigation } from '../hooks/useStakingDetailNavigation';
 
 const navigateToStakedTransactionAction = ({
     accountKey,
@@ -69,6 +70,7 @@ export const EarnTransactionDataReviewScreen = ({
     const { confirmOnTrezorRef, revealConfirmOnTrezorSheet, closeSheet } =
         useConfirmOnTrezorController();
     const { accountKey, amount } = route.params;
+    const { navigateToStakingDetail } = useStakingDetailNavigation();
     const navigateToInitialScreen = useNavigateToInitialScreen();
     const [txid, setTxid] = useState<string>('');
 
@@ -94,10 +96,10 @@ export const EarnTransactionDataReviewScreen = ({
 
     useFocusEffect(
         useCallback(() => {
-            if (isAddressConfirmed) {
-                navigation.navigate(RootStackRoutes.StakingDetail, { accountKey });
+            if (isAddressConfirmed && account) {
+                navigateToStakingDetail({ accountKey, symbol: account.symbol });
             }
-        }, [accountKey, isAddressConfirmed, navigation]),
+        }, [account, accountKey, isAddressConfirmed, navigateToStakingDetail]),
     );
 
     useEffect(() => {
