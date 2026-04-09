@@ -63,6 +63,10 @@ export const CONTEXT_PATTERNS = {
         pattern: 'trading.{type}',
         regex: /^trading\.(buy|sell|exchange)$/,
     },
+    getEarnDashboard: {
+        pattern: 'earn.dashboard.{type}',
+        regex: /^earn\.dashboard\.(staking|yield)$/,
+    },
     getEarnYield: {
         pattern: 'earn.yield.{type}',
         regex: /^earn\.yield\.(supply|withdraw)$/,

@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 
 import { Translation } from '@suite/intl';
 import { DashboardAnchor, useAnchor } from '@suite/router';
+import { Context } from '@suite-common/message-system';
 import { type StakingNetworkSymbol } from '@suite-common/wallet-config';
 import {
     selectAccountIsStakingActive,
@@ -12,19 +13,24 @@ import { isCardanoStakedWithFiveBinaries } from '@suite-common/wallet-utils';
 import { Button, Card, Column, Table } from '@trezor/components';
 import { OutlineHighlight } from '@trezor/product-components';
 
+import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useSelector } from 'src/hooks/suite';
+import { useMessageSystemEarnDashboard } from 'src/hooks/suite/useMessageSystemEarnDashboard';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
 import { EarnStakingAccountRow } from './EarnStakingAccountRow';
 import { EarnStakingActivateRow } from './EarnStakingActivateRow';
 import { EarnDashboardSection } from '../common/EarnDashboardSection';
 import { EarnDashboardTableHeader } from '../common/EarnDashboardTableHeader';
+import { EarnFeatureDisabledBanner } from '../common/EarnFeatureDisabledBanner';
 import { getEarnDashboardBadgeState } from '../utils/earnDashboardBadgeUtils';
 import { useCryptoCurrentRate } from './hooks/useCryptoCurrencyRate';
 import { useStakingAccountsVisibility } from './hooks/useStakingAccountsVisibility';
 
 export const EarnStakingTable = () => {
     const { anchorRef, shouldHighlight } = useAnchor(DashboardAnchor.Staking);
+    const { isDisabled: isStakingDashboardDisabled, content } =
+        useMessageSystemEarnDashboard('staking');
 
     const ethCurrentRate = useCryptoCurrentRate('eth');
     const solCurrentRate = useCryptoCurrentRate('sol');
@@ -93,12 +99,17 @@ export const EarnStakingTable = () => {
         return null;
     }
 
-    if (isEthStakingDisabled && isSolStakingDisabled && isAdaStakingDisabled) {
+    if (
+        !isStakingDashboardDisabled &&
+        isEthStakingDisabled &&
+        isSolStakingDisabled &&
+        isAdaStakingDisabled
+    ) {
         return null;
     }
 
     const badge = getEarnDashboardBadgeState({
-        isSectionActive: isStakingActive,
+        isSectionActive: !isStakingDashboardDisabled && isStakingActive,
         isSectionOutdated: stakingAccounts.some(account =>
             isCardanoStakedWithFiveBinaries(account),
         ),
@@ -108,40 +119,57 @@ export const EarnStakingTable = () => {
     });
 
     return (
-        <OutlineHighlight shouldHighlight={shouldHighlight}>
-            <EarnDashboardSection
-                titleId="TR_EARN_STAKING_DASHBOARD_TITLE"
-                subheadingId="TR_EARN_STAKING_DASHBOARD_TEXT"
-                provider="everstake"
-                statusBadge={badge}
-                sectionRef={anchorRef}
-            >
-                <Column gap={16} alignItems="center">
-                    <Card paddingType="none">
-                        <Table isRowHighlightedOnHover margin={{ top: 8 }}>
-                            <EarnDashboardTableHeader
-                                showRewardsColumns={!stakingAccountsNotActivated}
-                            />
+        <Column gap={16}>
+            <ContextMessage context={Context.getEarnDashboard('staking')} />
 
-                            <Table.Body>
-                                {displayedAccounts.map(account => (
-                                    <EarnStakingAccountRow account={account} key={account.key} />
-                                ))}
+            <OutlineHighlight shouldHighlight={shouldHighlight}>
+                <EarnDashboardSection
+                    titleId="TR_EARN_STAKING_DASHBOARD_TITLE"
+                    subheadingId="TR_EARN_STAKING_DASHBOARD_TEXT"
+                    provider="everstake"
+                    statusBadge={badge}
+                    sectionRef={anchorRef}
+                >
+                    {isStakingDashboardDisabled ? (
+                        <EarnFeatureDisabledBanner content={content} />
+                    ) : (
+                        <Column gap={16} alignItems="center">
+                            <Card paddingType="none">
+                                <Table isRowHighlightedOnHover margin={{ top: 8 }}>
+                                    <EarnDashboardTableHeader
+                                        showRewardsColumns={!stakingAccountsNotActivated}
+                                    />
 
-                                {ethNotActivated && <EarnStakingActivateRow symbol="eth" />}
-                                {adaNotActivated && <EarnStakingActivateRow symbol="ada" />}
-                                {solNotActivated && <EarnStakingActivateRow symbol="sol" />}
-                            </Table.Body>
-                        </Table>
-                    </Card>
+                                    <Table.Body>
+                                        {displayedAccounts.map(account => (
+                                            <EarnStakingAccountRow
+                                                account={account}
+                                                key={account.key}
+                                            />
+                                        ))}
 
-                    {isExpandable && (
-                        <Button intent="neutral" priority="secondary" onClick={toggleExpanded}>
-                            <Translation id={isExpanded ? 'TR_SHOW_LESS' : 'TR_SHOW_MORE'} />
-                        </Button>
+                                        {ethNotActivated && <EarnStakingActivateRow symbol="eth" />}
+                                        {adaNotActivated && <EarnStakingActivateRow symbol="ada" />}
+                                        {solNotActivated && <EarnStakingActivateRow symbol="sol" />}
+                                    </Table.Body>
+                                </Table>
+                            </Card>
+
+                            {isExpandable && (
+                                <Button
+                                    intent="neutral"
+                                    priority="secondary"
+                                    onClick={toggleExpanded}
+                                >
+                                    <Translation
+                                        id={isExpanded ? 'TR_SHOW_LESS' : 'TR_SHOW_MORE'}
+                                    />
+                                </Button>
+                            )}
+                        </Column>
                     )}
-                </Column>
-            </EarnDashboardSection>
-        </OutlineHighlight>
+                </EarnDashboardSection>
+            </OutlineHighlight>
+        </Column>
     );
 };
