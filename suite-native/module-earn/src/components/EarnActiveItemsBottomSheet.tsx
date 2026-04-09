@@ -11,6 +11,7 @@ import {
     type StackNavigationProps,
 } from '@suite-native/navigation';
 
+import { useStakingDetailNavigation } from '../hooks/useStakingDetailNavigation';
 import { type EarnDepositsCardActiveItem } from '../types';
 import { EarnAccountCard } from './EarnAccountCard';
 
@@ -30,6 +31,7 @@ export const EarnActiveItemsBottomSheet = ({
     onClose,
 }: EarnActiveItemsBottomSheetProps) => {
     const navigation = useNavigation<NavigationProp>();
+    const { navigateToStakingDetail } = useStakingDetailNavigation();
 
     const title = useMemo(
         () =>
@@ -47,8 +49,9 @@ export const EarnActiveItemsBottomSheet = ({
 
             switch (item.type) {
                 case 'staking':
-                    navigation.navigate(RootStackRoutes.StakingManagement, {
+                    navigateToStakingDetail({
                         accountKey: item.accountKey,
+                        symbol: item.symbol,
                     });
                     break;
                 case 'stablecoin-yield':
@@ -60,7 +63,7 @@ export const EarnActiveItemsBottomSheet = ({
                     break;
             }
         },
-        [navigation, onClose],
+        [navigateToStakingDetail, navigation, onClose],
     );
 
     const renderItem = useCallback(

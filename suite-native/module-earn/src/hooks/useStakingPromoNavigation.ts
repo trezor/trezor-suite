@@ -18,6 +18,7 @@ import {
 } from '@suite-native/navigation';
 import { BigNumber } from '@trezor/utils';
 
+import { isMobileSupportedStakingNetwork } from '../constants';
 import { type StakingEarnItem } from '../types';
 
 type NavigateFunction = StackNavigationProps<
@@ -83,6 +84,12 @@ export const useStakingPromoNavigation = () => {
 
     const handleStakingPromoPress = useCallback(
         (item: StakingEarnItem) => {
+            if (!isMobileSupportedStakingNetwork(item.symbol)) {
+                openInfoModal();
+
+                return;
+            }
+
             const accountsForSymbol = accounts.filter(acc => acc.symbol === item.symbol);
 
             if (accountsForSymbol.length === 0) {

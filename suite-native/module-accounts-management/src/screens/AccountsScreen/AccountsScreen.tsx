@@ -11,6 +11,7 @@ import { Box } from '@suite-native/atoms';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { AccountsRediscoveryNeededWarning } from '@suite-native/discovery';
 import { Translation } from '@suite-native/intl';
+import { useStakingDetailNavigation } from '@suite-native/module-earn';
 import {
     type RootStackParamList,
     RootStackRoutes,
@@ -21,13 +22,15 @@ import {
 export const AccountsScreen = () => {
     const navigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.AccountDetail>>();
+    const { navigateToStakingDetail } = useStakingDetailNavigation();
 
     const [accountsFilterValue, setAccountsFilterValue] = useState<string>('');
 
     const handleSelectAccount: OnSelectAccount = ({ account, tokenAddress, isStaking }) => {
         if (isStaking) {
-            navigation.navigate(RootStackRoutes.StakingDetail, {
+            navigateToStakingDetail({
                 accountKey: account.key,
+                symbol: account.symbol,
             });
 
             return;
