@@ -35,6 +35,7 @@ import { DustPhishing } from './DustPhishing';
 import { EarlyAccess } from './EarlyAccess';
 import { Experimental } from './Experimental';
 import { Language } from './Language';
+import { McpServer } from './McpServer';
 import { MevProtection } from './MevProtection';
 import { NetworkReserve } from './NetworkReserve';
 import { ShowApplicationLog } from './ShowApplicationLog';
@@ -67,6 +68,7 @@ export const SettingsGeneral = () => {
     const torExternalExperimentalFeature = useSelector(
         selectHasExperimentalFeature('tor-external'),
     );
+    const mcpServerEnabled = useSelector(selectHasExperimentalFeature('mcp-server'));
 
     const isProviderConnected = useSelector(selectSelectedProviderForLabels);
     const isMevProtectionSettingsVisible = useSelector(selectIsMevProtectionSettingsVisible);
@@ -182,6 +184,12 @@ export const SettingsGeneral = () => {
                 {desktopUpdate.enabled && <EarlyAccess />}
                 <Experimental />
             </SettingsSection>
+
+            {mcpServerEnabled && isDesktop() && (
+                <SettingsSection isBelowLaptop={isBelowLaptop} title="MCP Server" icon="plugs">
+                    <McpServer />
+                </SettingsSection>
+            )}
         </SettingsLayout>
     );
 };

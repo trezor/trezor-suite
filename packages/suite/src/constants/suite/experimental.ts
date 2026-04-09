@@ -4,7 +4,12 @@ import { type Route } from '@suite/router';
 import { networksCollection } from '@suite-common/wallet-config';
 import { isDesktop } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
-import { EXPERIMENTAL_PASSWORD_MANAGER_KB_URL, HELP_CENTER_TOR_URL, type Url } from '@trezor/urls';
+import {
+    EXPERIMENTAL_PASSWORD_MANAGER_KB_URL,
+    GITHUB_MCP_DOCS_URL,
+    HELP_CENTER_TOR_URL,
+    type Url,
+} from '@trezor/urls';
 
 import { type SuiteServices } from '../../support/extraDependencies';
 
@@ -77,5 +82,14 @@ export const EXPERIMENTAL_FEATURES: Record<ExperimentalFeature, ExperimentalFeat
     'tron-view-only': {
         title: { id: 'TR_EXPERIMENTAL_TRON_VIEW_ONLY' },
         description: { id: 'TR_EXPERIMENTAL_TRON_VIEW_ONLY_DESCRIPTION' },
+    },
+    'mcp-server': {
+        title: { id: 'TR_EXPERIMENTAL_MCP_SERVER' },
+        description: { id: 'TR_EXPERIMENTAL_MCP_SERVER_DESCRIPTION' },
+        knowledgeBaseUrl: GITHUB_MCP_DOCS_URL,
+        isDisabled: () => !isDesktop(),
+        onToggle: async ({ newValue }) => {
+            await desktopApi.mcpSetEnabled(newValue);
+        },
     },
 };
