@@ -35,7 +35,7 @@ Agents use MCP tools to store insights during sessions and recall them in future
 cd ai
 
 # 1. Copy environment and install dependencies
-cp .env.example .env
+cp env.example .env
 yarn install
 
 # 2. Start databases

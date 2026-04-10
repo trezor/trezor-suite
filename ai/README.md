@@ -6,7 +6,7 @@ Designed to run on an internal VM behind a company VPN.
 ## Quick start
 
 ```bash
-cp .env.example .env   # edit credentials
+cp env.example .env   # edit credentials
 docker compose up -d
 ```
 
