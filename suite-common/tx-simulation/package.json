@@ -15,6 +15,6 @@
         "@suite-common/react-query": "workspace:^",
         "@suite-common/wallet-config": "workspace:^",
         "@suite-common/wallet-types": "workspace:*",
-        "react": "18.2.0"
+        "react": "19.2.4"
     }
 }
