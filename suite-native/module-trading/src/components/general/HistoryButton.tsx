@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { AnimatedBox, HStack, Text } from '@suite-native/atoms';
+import { AnimatedBox, HStack, Text, buttonSizeToDimensionsMap } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
@@ -32,13 +32,10 @@ export type NavigationProps = StackToStackCompositeNavigationProps<
 const TRADE_HISTORY_BUTTON_TEST_ID = '@trading/history/button';
 
 const buttonStyle = prepareNativeStyle(utils => ({
+    ...buttonSizeToDimensionsMap.large,
     backgroundColor: utils.colors.backgroundSurfaceElevationNegative,
     borderColor: utils.colors.borderOnElevationNegative,
     borderWidth: utils.borders.widths.small,
-    borderRadius: utils.borders.radii.round,
-    paddingHorizontal: utils.spacings.sp16,
-    paddingVertical: utils.spacings.sp8,
-    minHeight: 56,
     justifyContent: 'space-between',
     alignItems: 'center',
 }));
