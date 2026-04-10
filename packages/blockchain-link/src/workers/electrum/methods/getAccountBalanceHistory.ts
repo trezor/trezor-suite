@@ -1,11 +1,11 @@
 import {
     type AccountAddresses,
     type Address,
+    type ElectrumHistoryTx as HistoryTx,
+    type MessageTypes,
+    type ResponseTypes,
     type Transaction,
-} from '@trezor/blockchain-link-types/src/common';
-import type { HistoryTx } from '@trezor/blockchain-link-types/src/electrum';
-import type { GetAccountBalanceHistory as Req } from '@trezor/blockchain-link-types/src/messages';
-import type { GetAccountBalanceHistory as Res } from '@trezor/blockchain-link-types/src/responses';
+} from '@trezor/blockchain-link-types';
 import { sumVinVout } from '@trezor/blockchain-link-utils';
 import { transformTransaction } from '@trezor/blockchain-link-utils/src/blockbook';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
@@ -18,6 +18,9 @@ import {
     getTransactions,
     tryGetScripthash,
 } from '../utils';
+
+type Req = MessageTypes.GetAccountBalanceHistory;
+type Res = ResponseTypes.GetAccountBalanceHistory;
 
 const transformAddress = (addr: AddressHistory): Address => ({
     address: addr.address,

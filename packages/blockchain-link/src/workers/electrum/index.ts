@@ -1,7 +1,5 @@
-import type { Response } from '@trezor/blockchain-link-types';
-import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/src/constants';
-import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
-import { type Message } from '@trezor/blockchain-link-types/src/messages';
+import type { Message, Response } from '@trezor/blockchain-link-types';
+import { CustomError, MESSAGES, RESPONSES } from '@trezor/blockchain-link-types';
 import { type Without } from '@trezor/type-utils';
 import { type AddressCache, createAddressCache } from '@trezor/utxo-lib';
 

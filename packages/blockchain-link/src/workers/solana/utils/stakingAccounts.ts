@@ -13,7 +13,7 @@ import {
 } from '@solana-program/stake';
 
 import { type SolanaStakingAccount } from '@trezor/blockchain-link-types';
-import { StakeState } from '@trezor/blockchain-link-types/src/solana';
+import { StakeState } from '@trezor/blockchain-link-types';
 
 export const STAKE_ACCOUNT_V2_SIZE = 200;
 export const FILTER_DATA_SIZE = 200n;

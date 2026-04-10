@@ -37,18 +37,17 @@ import {
 import { getTokenSize as _getTokenSize } from '@solana-program/token';
 import { getTokenSize as _getToken2022Size } from '@solana-program/token-2022';
 
+import { CustomError, MESSAGES, RESPONSES } from '@trezor/blockchain-link-types';
 import type {
     AccountInfo,
+    MessageTypes,
     Response,
+    SolanaTokenAccountInfo,
     SubscriptionAccountInfo,
     TokenDetailByMint,
     TokenInfo,
     Transaction,
 } from '@trezor/blockchain-link-types';
-import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/src/constants';
-import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
-import type * as MessageTypes from '@trezor/blockchain-link-types/src/messages';
-import type { SolanaTokenAccountInfo } from '@trezor/blockchain-link-types/src/solana';
 import { solanaUtils } from '@trezor/blockchain-link-utils';
 import {
     type TokenProgramName,
