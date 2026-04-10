@@ -48,5 +48,5 @@ class Transaction extends TransactionBase<dash.DashSpecific | zcash.ZcashSpecifi
     }
 }
 
-export type { TransactionOptions } from './base';
+export type { TransactionOptions, TxInput, TxOutput } from './base';
 export { Transaction };
