@@ -34,7 +34,7 @@ const initialState: WalletSettingsState = {
     localCurrency: 'usd',
     discreetMode: false,
     // Suite Mobile did not have BTC enabled by default
-    enabledNetworks: isNative() ? [] : ['btc'],
+    enabledNetworks: isNative() ? [] : ['btc', 'eth'],
     hideSuspiciousTransactions: false,
     bitcoinAmountUnit: PROTO.AmountUnit.BITCOIN,
     mevProtection: true,
