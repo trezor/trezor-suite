@@ -16,7 +16,7 @@ export const SkipButton = ({ onPress }: SkipButtonProps) => {
     };
 
     return (
-        <Button intent="neutral" priority="secondary" size="medium" onPress={skipLocation}>
+        <Button intent="neutral" priority="secondary" onPress={skipLocation}>
             <Translation id="tradingResidence.locationSettings.skipButton" />
         </Button>
     );

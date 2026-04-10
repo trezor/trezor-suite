@@ -66,7 +66,6 @@ export const BottomSheetHeader = ({
                             onPress={onCloseSheet}
                             intent="neutral"
                             priority="secondary"
-                            size="medium"
                             accessibilityRole="button"
                             accessibilityLabel={translate('generic.buttons.close')}
                             testID="@bottom-sheet/header/close-button"

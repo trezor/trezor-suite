@@ -58,7 +58,6 @@ export const AccountSettingsRemoveCoinButton = ({
 
     return (
         <Button
-            size="large"
             onPress={handleShowAlert}
             intent="critical"
             priority="secondary"

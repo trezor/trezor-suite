@@ -25,7 +25,7 @@ const FilterTab = ({ active, onPress, children }: FilterTabProps) => (
     <Button
         intent="neutral"
         priority={active ? 'primary' : 'secondary'}
-        size="small"
+        size="medium"
         onPress={onPress}
         accessibilityRole="tab"
         accessibilityState={{ selected: active }}

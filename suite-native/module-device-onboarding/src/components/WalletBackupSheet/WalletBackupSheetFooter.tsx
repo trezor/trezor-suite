@@ -45,7 +45,7 @@ export const WalletBackupSheetFooter = ({ onSubmit, selectedType }: CardFooterPr
                 start={{ x: 0, y: 0 }}
                 end={{ x: 0, y: 1 }}
             />
-            <Button onPress={onSubmit} size="medium" style={applyStyle(buttonStyle)}>
+            <Button onPress={onSubmit} style={applyStyle(buttonStyle)}>
                 <Translation id={walletBackupSheetCopyByType[selectedType].submitButton} />
             </Button>
         </Box>

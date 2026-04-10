@@ -52,7 +52,6 @@ export const LabelEditForm = ({ label, onSubmit }: LabelEditFormParam) => {
                     />
                     <Button
                         onPress={onConfirm}
-                        size="large"
                         isDisabled={!isValid}
                         testID="@label-edit-form/confirm-button"
                     >

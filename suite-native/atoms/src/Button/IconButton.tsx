@@ -50,7 +50,7 @@ export const IconButton = ({
     intent = 'brand',
     priority = 'primary',
     isInverse = false,
-    size = 'medium',
+    size = 'large',
     isLoading = false,
     isDisabled = false,
     ...pressableProps

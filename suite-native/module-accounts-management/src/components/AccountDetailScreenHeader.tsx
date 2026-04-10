@@ -51,7 +51,6 @@ export const AccountDetailScreenHeader = ({ account }: AccountDetailScreenHeader
                 <IconButton
                     intent="neutral"
                     priority="secondary"
-                    size="medium"
                     iconName="gear"
                     onPress={handleSettingsNavigation}
                     testID="@account-detail/settings-button"

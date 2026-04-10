@@ -27,7 +27,6 @@ export const GoBackIcon = ({ closeActionType = 'back', closeAction, testID }: Go
         <IconButton
             testID={testID}
             iconName={closeActionType === 'back' ? 'caretLeft' : 'x'}
-            size="medium"
             intent="neutral"
             priority="secondary"
             onPress={handleGoBack}

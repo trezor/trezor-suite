@@ -76,7 +76,7 @@ export const AddressConfirmation = () => {
                                 {item.address}
                             </Text>
                             <IconButton
-                                size="small"
+                                size="medium"
                                 intent={item.validated === 'valid' ? 'brand' : 'neutral'}
                                 priority={item.validated === 'valid' ? 'primary' : 'secondary'}
                                 iconName={

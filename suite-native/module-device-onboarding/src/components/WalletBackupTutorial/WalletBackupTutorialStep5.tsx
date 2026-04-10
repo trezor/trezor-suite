@@ -121,7 +121,7 @@ export const WalletBackupTutorialStep5 = ({
                     iconLeft="caretDown"
                     intent="neutral"
                     priority="secondary"
-                    size="small"
+                    size="medium"
                     style={applyStyle(moreOptionsStyle)}
                     onPress={openBackupSelection}
                 >

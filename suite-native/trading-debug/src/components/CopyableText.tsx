@@ -29,7 +29,6 @@ export const CopyableText = ({ text, title }: CopyableTextProps) => {
             </Text>
             <IconButton
                 iconName="copy"
-                size="medium"
                 intent="neutral"
                 priority="secondary"
                 accessibilityLabel="Copy to clipboard"

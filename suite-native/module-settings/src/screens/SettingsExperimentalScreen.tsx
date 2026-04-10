@@ -22,7 +22,6 @@ export const SettingsExperimentalScreen = () => {
                     rightIcon={
                         <IconButton
                             iconName="info"
-                            size="medium"
                             intent="neutral"
                             priority="secondary"
                             onPress={onInfoPress}

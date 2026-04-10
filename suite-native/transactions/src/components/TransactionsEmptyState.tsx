@@ -51,7 +51,6 @@ export const TransactionsEmptyState = ({ accountKey }: { accountKey: AccountKey 
                 <Button
                     iconLeft="arrowLineDown"
                     onPress={handleReceive}
-                    size="large"
                     testID="@account-detail/receive-button"
                 >
                     <Translation id="transactions.emptyState.button" />

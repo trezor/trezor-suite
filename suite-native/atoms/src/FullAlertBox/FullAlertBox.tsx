@@ -69,7 +69,7 @@ export const FullAlertBox = ({
                         <HStack marginTop="sp12">
                             {secondaryButtonLabel && (
                                 <Button
-                                    size="small"
+                                    size="medium"
                                     {...secondaryButtonColorProps}
                                     flex={1}
                                     onPress={onPressSecondaryButton}
@@ -79,7 +79,7 @@ export const FullAlertBox = ({
                                 </Button>
                             )}
                             <Button
-                                size="small"
+                                size="medium"
                                 {...primaryButtonColorProps}
                                 flex={1}
                                 onPress={onPressPrimaryButton}

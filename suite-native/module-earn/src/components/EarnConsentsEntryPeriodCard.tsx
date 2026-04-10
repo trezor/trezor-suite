@@ -114,7 +114,7 @@ export const EarnConsentsEntryPeriodCard = ({
                         <Button
                             intent="info"
                             priority="secondary"
-                            size="small"
+                            size="medium"
                             onPress={handleLearnMore}
                             style={applyStyle(learnMoreButtonStyle)}
                         >
@@ -123,7 +123,7 @@ export const EarnConsentsEntryPeriodCard = ({
                     )}
                     <Button
                         intent="info"
-                        size="small"
+                        size="medium"
                         onPress={handleConfirm}
                         style={applyStyle(confirmButtonStyle)}
                     >

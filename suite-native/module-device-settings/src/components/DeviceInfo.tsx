@@ -55,7 +55,6 @@ export const DeviceInfo = ({ deviceModel, deviceName }: DeviceInfoProps) => {
                         onPress={navigateToDeviceNameStack}
                         isLoading={isDiscoveryRunning}
                         testID="@device-name/change-button"
-                        size="medium"
                         iconName="pencilSimpleLine"
                         intent="neutral"
                         priority="secondary"

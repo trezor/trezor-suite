@@ -45,7 +45,7 @@ export const EmptyConnectedDeviceState = () => {
                     title={<Translation id="moduleHome.emptyState.emptyDevice.title" />}
                     subtitle={<Translation id="moduleHome.emptyState.emptyDevice.subtitle" />}
                 />
-                <Button size="large" onPress={handleAddAccount}>
+                <Button onPress={handleAddAccount}>
                     <Translation id="moduleHome.emptyState.emptyDevice.button" />
                 </Button>
             </VStack>

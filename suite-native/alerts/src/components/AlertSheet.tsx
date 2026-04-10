@@ -139,7 +139,6 @@ export const AlertSheet = ({ alert }: AlertSheetProps) => {
                             </VStack>
                             <VStack spacing="sp12">
                                 <Button
-                                    size="medium"
                                     {...primaryButtonColorProps}
                                     onPress={handlePressPrimaryButton}
                                     iconLeft={primaryButtonIconLeft}
@@ -150,7 +149,6 @@ export const AlertSheet = ({ alert }: AlertSheetProps) => {
                                 </Button>
                                 {secondaryButtonTitle && (
                                     <Button
-                                        size="medium"
                                         {...secondaryButtonColorProps}
                                         onPress={handlePressSecondaryButton}
                                         testID="@alert-sheet/secondary-button"

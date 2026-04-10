@@ -49,7 +49,7 @@ export const ContinueOnTrezorScreenContent = ({
             </Text>
             {onActionPress && (
                 <Button
-                    size="small"
+                    size="medium"
                     intent="neutral"
                     priority="secondary"
                     style={applyStyle(actionButtonStyle)}

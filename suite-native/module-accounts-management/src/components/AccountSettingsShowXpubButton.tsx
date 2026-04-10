@@ -97,7 +97,6 @@ export const AccountSettingsShowXpubButton = ({ accountKey }: { accountKey: Acco
                 />
             )}
             <Button
-                size="large"
                 onPress={
                     hasFirmwareAuthenticityCheckHardFailed
                         ? showFirmwareAuthenticityCheckAlert

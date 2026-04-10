@@ -41,7 +41,6 @@ export const SendUtxoScreenHeader = ({ onDelete, accountKey }: SendUtxoScreenHea
                         iconName="trash"
                         intent="critical"
                         priority="secondary"
-                        size="medium"
                         onPress={handleDelete}
                         testID="coin-control-delete-button"
                     />

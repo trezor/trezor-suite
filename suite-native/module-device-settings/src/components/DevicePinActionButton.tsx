@@ -45,7 +45,6 @@ export const DevicePinActionButton = ({
         <Button
             onPress={navigateToPinStack}
             {...buttonColorProps}
-            size="medium"
             testID={`@device-pin-protection/${type}-button`}
             isDisabled={isDiscoveryRunning}
             isLoading={isDiscoveryRunning}

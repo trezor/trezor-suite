@@ -58,7 +58,6 @@ export const AboutUsBanners = () => {
                         </Text>
                         <HStack spacing="sp24">
                             <IconButton
-                                size="large"
                                 intent="neutral"
                                 priority="secondary"
                                 iconName="twitterLogo"
@@ -67,7 +66,6 @@ export const AboutUsBanners = () => {
                                 onPress={() => openLink(TREZOR_X_URL, { enforce: true })}
                             />
                             <IconButton
-                                size="large"
                                 intent="neutral"
                                 priority="secondary"
                                 iconName="tiktokLogo"
@@ -80,7 +78,6 @@ export const AboutUsBanners = () => {
                                 }
                             />
                             <IconButton
-                                size="large"
                                 intent="neutral"
                                 priority="secondary"
                                 iconName="instagramLogo"

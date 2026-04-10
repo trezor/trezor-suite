@@ -77,7 +77,7 @@ export const CardanoStakingInfoBanner = ({ accountKey }: CardanoStakingInfoBanne
                     priority="primary"
                     onPress={handleUpdateProviderPress}
                     isFullWidth
-                    size="small"
+                    size="medium"
                 >
                     <Text variant="body-sm-strong" color="textOnYellow">
                         <Translation id="earn.infoBanner.updateProviderButton" />

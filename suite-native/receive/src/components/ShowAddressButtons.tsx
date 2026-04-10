@@ -38,7 +38,6 @@ export const ShowAddressButtons = ({ onShowAddress, isLoading }: ShowAddressButt
             <Button
                 testID="@receive/show-address-button"
                 iconLeft="eye"
-                size="large"
                 onPress={handleShowAddress}
                 isLoading={isLoading}
             >

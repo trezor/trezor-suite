@@ -75,7 +75,7 @@ export const WalletBackupSheet = ({
                     iconLeft="caretDown"
                     intent="neutral"
                     priority="secondary"
-                    size="small"
+                    size="medium"
                     style={applyStyle(legacyButtonStyle)}
                     onPress={displayLegacyOptions}
                 >

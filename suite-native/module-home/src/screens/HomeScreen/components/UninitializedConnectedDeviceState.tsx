@@ -62,11 +62,7 @@ export const UninitializedConnectedDeviceState = () => {
                     testID="@homescreen/uninitializedConnectedDeviceText"
                     alignSelf="stretch"
                 />
-                <Button
-                    size="large"
-                    onPress={navigateToDeviceOnboarding}
-                    style={applyStyle(buttonStyle)}
-                >
+                <Button onPress={navigateToDeviceOnboarding} style={applyStyle(buttonStyle)}>
                     <Translation id="moduleHome.emptyState.uninitializedDevice.button" />
                 </Button>
             </VStack>

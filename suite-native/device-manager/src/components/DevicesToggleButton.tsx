@@ -8,7 +8,7 @@ type DevicesToggleButtonProps = {
 
 export const DevicesToggleButton = ({ isOpened, onDeviceButtonTap }: DevicesToggleButtonProps) => (
     <Button
-        size="small"
+        size="medium"
         intent="neutral"
         priority="secondary"
         iconRight={isOpened ? 'caretUp' : 'caretDown'}

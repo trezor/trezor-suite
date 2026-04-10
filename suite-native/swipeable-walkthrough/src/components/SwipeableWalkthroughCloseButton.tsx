@@ -46,7 +46,6 @@ export const SwipeableWalkthroughCloseButton = ({
         <Animated.View>
             <IconButton
                 iconName="caretUp"
-                size="medium"
                 intent="neutral"
                 priority="secondary"
                 onPress={onPressBack}
@@ -57,7 +56,6 @@ export const SwipeableWalkthroughCloseButton = ({
             <IconButton
                 style={animatedXStyle}
                 iconName="x"
-                size="medium"
                 intent="neutral"
                 priority="secondary"
                 onPress={onPressBack}
