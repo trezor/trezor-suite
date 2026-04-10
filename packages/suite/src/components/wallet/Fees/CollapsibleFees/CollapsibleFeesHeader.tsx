@@ -10,9 +10,14 @@ import { useFeesContext } from '../context/FeesContext';
 export interface CollapsibleFeesHeaderProps {
     label?: TranslationKey;
     typographyStyle: TypographyStyle;
+    supportsAdjustableFees?: boolean;
 }
 
-export function CollapsibleFeesHeader({ label, typographyStyle }: CollapsibleFeesHeaderProps) {
+export function CollapsibleFeesHeader({
+    label,
+    typographyStyle,
+    supportsAdjustableFees,
+}: CollapsibleFeesHeaderProps) {
     const { networkType } = useFeesContext();
 
     const feeTooltipTextId = useMemo(() => {
@@ -32,12 +37,14 @@ export function CollapsibleFeesHeader({ label, typographyStyle }: CollapsibleFee
         switch (networkType) {
             case 'ethereum':
                 return 'MAX_FEE';
+            case 'tron':
+                return supportsAdjustableFees ? 'MAX_FEE' : 'NETWORK_FEE';
             case 'solana':
                 return 'TR_TX_FEE_INCLUDING_RENT';
             default:
                 return 'FEE';
         }
-    }, [networkType]);
+    }, [networkType, supportsAdjustableFees]);
 
     return (
         <Row flexWrap="wrap" justifyContent="space-between" gap={12} minHeight={44}>
