@@ -183,6 +183,10 @@ export const getAccountMovementEvents = async ({
 
     const accountHistoryMovements = await getBalanceHistory();
 
+    if (accountHistoryMovements.length === 0) {
+        return [];
+    }
+
     /** Determines relative maximum distance of adjacent balance movements to be grouped together. */
     const GROUPING_THRESHOLD =
         (endOfTimeFrameDate.getTime() -
