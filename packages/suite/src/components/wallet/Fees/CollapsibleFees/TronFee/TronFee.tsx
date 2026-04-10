@@ -1,7 +1,11 @@
+import { useWatch } from 'react-hook-form';
+
 import { selectAreFeesLoading } from '@suite-common/wallet-core';
+import { type FormState } from '@suite-common/wallet-types';
 import { calculateTronFeeBreakdown } from '@suite-common/wallet-utils';
 import { LoadingContent } from '@trezor/components';
 import { type TypographyStyle } from '@trezor/theme';
+import { BigNumber } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -15,9 +19,15 @@ type TronFeeProps = {
 export function TronFee({ typographyStyle }: TronFeeProps) {
     const { networkSymbol, composedLevels, tronResources } = useFeesContext();
     const areFeesLoading = useSelector(state => selectAreFeesLoading(state, networkSymbol));
+    const formFeeLimit = useWatch<FormState, 'feeLimit'>({ name: 'feeLimit' });
 
     const tx = composedLevels?.normal;
-    const fees = calculateTronFeeBreakdown(tx, tronResources, networkSymbol);
+    const estimatedFeeLimit = tx?.type !== 'error' ? tx?.estimatedFeeLimit : undefined;
+    const feeLimitSun =
+        formFeeLimit && estimatedFeeLimit && new BigNumber(formFeeLimit).gt(estimatedFeeLimit)
+            ? formFeeLimit
+            : estimatedFeeLimit;
+    const fees = calculateTronFeeBreakdown(tx, tronResources, networkSymbol, feeLimitSun);
 
     return (
         <LoadingContent

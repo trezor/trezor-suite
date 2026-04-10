@@ -6143,6 +6143,10 @@ export const messages = defineMessages({
         description: 'Label in Send form for Ethereum network type',
         id: 'MAX_FEE',
     },
+    NETWORK_FEE: {
+        defaultMessage: 'Network fee',
+        id: 'NETWORK_FEE',
+    },
     TO_BE_CALCULATED: {
         defaultMessage: 'To be calculated',
         description: 'Placeholder for (maximum) fee when it could not have been calculated yet',
