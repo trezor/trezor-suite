@@ -497,7 +497,7 @@ export const getMultipleAccountBalanceHistoryWithFiat = async ({
 
     const coinsFiatRates: Record<CoinKey, FiatRatesItem[]> = D.fromPairs(
         // Some coins might not have fiat rates, so we need to filter them out
-        pairs.filter(([, res]) => res?.[0].rates?.[baseCurrencyCode] !== -1),
+        pairs.filter(([, res]) => res?.[0]?.rates?.[baseCurrencyCode] !== -1),
     );
 
     if (A.length(accountsWithBalanceHistoryFlattened) === 1) {
