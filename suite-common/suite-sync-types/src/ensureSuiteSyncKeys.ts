@@ -7,7 +7,7 @@ import {
 } from '@suite-common/suite-types';
 import { type Result } from '@trezor/type-utils';
 
-type RefreshSuiteSyncKeysParams = {
+type EnsureSuiteSyncKeysParams = {
     device: TrezorDevice;
 };
 
@@ -21,20 +21,20 @@ export type SuiteSyncUnavailableOnDeviceErrorType = {
     type: 'SuiteSyncUnavailableOnDeviceError';
 };
 
-export type RefreshSuiteSyncKeysResult = {
+export type EnsureSuiteSyncKeysResult = {
     owner: SuiteSyncOwner;
     delegatedKey: DelegatedIdentityKey;
 };
 
-export type RefreshSuiteSyncKeys = (
-    params: RefreshSuiteSyncKeysParams,
+export type EnsureSuiteSyncKeys = (
+    params: EnsureSuiteSyncKeysParams,
 ) => Promise<
     Result<
-        RefreshSuiteSyncKeysResult,
+        EnsureSuiteSyncKeysResult,
         SuiteSyncUnavailableOnDeviceErrorType | DeviceErrorType | DeviceCancelledErrType
     >
 >;
 
-export type RefreshSuiteSyncKeysDep = {
-    refreshSuiteSyncKeys: RefreshSuiteSyncKeys;
+export type EnsureSuiteSyncKeysDep = {
+    ensureSuiteSyncKeys: EnsureSuiteSyncKeys;
 };

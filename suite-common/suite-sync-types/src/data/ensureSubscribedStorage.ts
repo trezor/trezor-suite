@@ -4,10 +4,10 @@ import { type WalletDescriptor } from '@suite-common/wallet-types';
 import { type StaticSessionId } from '@trezor/connect';
 import { type Result } from '@trezor/type-utils';
 
+import { type SuiteSyncUnavailableOnDeviceErrorType } from '../ensureSuiteSyncKeys';
 import { type WriteModeRequiredForAllocationErrType } from '../quotaManager/quotaManagerTypes';
-import { type SuiteSyncUnavailableOnDeviceErrorType } from '../refreshSuiteSyncKeys';
 
-type SubscribeSuiteSyncDataParams = {
+type EnsureSubscribedStorageParams = {
     deviceStaticSessionId: StaticSessionId;
     isWriteMode: boolean;
 };
@@ -28,8 +28,8 @@ export type SuiteSyncListenerDep = {
     suiteSyncListener: SuiteSyncListener;
 };
 
-export type SubscribeSuiteSyncData = (
-    params: SubscribeSuiteSyncDataParams,
+export type EnsureSubscribedStorage = (
+    params: EnsureSubscribedStorageParams,
 ) => Promise<
     Result<
         SuiteSyncStorage,
@@ -40,6 +40,6 @@ export type SubscribeSuiteSyncData = (
     >
 >;
 
-export type SubscribeSuiteSyncDataDep = {
-    ensureSubscribeSuiteSyncData: SubscribeSuiteSyncData;
+export type EnsureSubscribedStorageDep = {
+    ensureSubscribedStorage: EnsureSubscribedStorage;
 };

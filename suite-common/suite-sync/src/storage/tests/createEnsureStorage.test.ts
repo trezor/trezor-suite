@@ -10,7 +10,7 @@ import type { StaticSessionId } from '@trezor/connect';
 import { err, ok } from '@trezor/type-utils';
 
 import { createSuiteSyncStorageMock } from '../../../tests/createSuiteSyncStorageMock.mock';
-import { SuiteSyncUnavailableOnDeviceError } from '../../createRefreshSuiteSyncKeys';
+import { SuiteSyncUnavailableOnDeviceError } from '../../createEnsureSuiteSyncKeys';
 import type { EnsureStorageDeps } from '../createEnsureStorage';
 import { createEnsureStorage } from '../createEnsureStorage';
 
@@ -36,7 +36,7 @@ describe(createEnsureStorage.name, () => {
                 delete: null,
             },
             createSuiteStorage: null,
-            refreshSuiteSyncKeys: null,
+            ensureSuiteSyncKeys: null,
             ensureQuota: null,
             getDeviceForStaticSessionId: null,
         });
@@ -49,7 +49,7 @@ describe(createEnsureStorage.name, () => {
         expect(result).toEqual(ok(existingStorage));
         expect(deps.suiteSyncStorageRepository.get).toHaveBeenCalled();
         expect(deps.createSuiteStorage).not.toHaveBeenCalled();
-        expect(deps.refreshSuiteSyncKeys).not.toHaveBeenCalled();
+        expect(deps.ensureSuiteSyncKeys).not.toHaveBeenCalled();
         expect(deps.getDeviceForStaticSessionId).not.toHaveBeenCalled();
     });
 
@@ -68,7 +68,7 @@ describe(createEnsureStorage.name, () => {
                 delete: null,
             },
             createSuiteStorage: null,
-            refreshSuiteSyncKeys: () =>
+            ensureSuiteSyncKeys: () =>
                 Promise.resolve(ok({ owner: OWNER_ABCD, delegatedKey: DELEGATED_KEY })),
             ensureQuota: () => Promise.resolve(ok(undefined)),
             getDeviceForStaticSessionId: () => device,
@@ -82,7 +82,7 @@ describe(createEnsureStorage.name, () => {
         expect(result).toEqual(ok(existingStorage));
         expect(deps.suiteSyncStorageRepository.get).toHaveBeenCalled();
         expect(deps.createSuiteStorage).not.toHaveBeenCalled();
-        expect(deps.refreshSuiteSyncKeys).toHaveBeenCalled();
+        expect(deps.ensureSuiteSyncKeys).toHaveBeenCalled();
         expect(deps.getDeviceForStaticSessionId).toHaveBeenCalled();
     });
 
@@ -96,7 +96,7 @@ describe(createEnsureStorage.name, () => {
                 delete: null,
             },
             createSuiteStorage: null,
-            refreshSuiteSyncKeys: null,
+            ensureSuiteSyncKeys: null,
             ensureQuota: null,
             getDeviceForStaticSessionId: () => null,
         });
@@ -109,11 +109,11 @@ describe(createEnsureStorage.name, () => {
         expect(result.success).toBe(false);
         expect(!result.success && result.error.type).toBe('SuiteSyncUnavailableOnDeviceError');
         expect(deps.getDeviceForStaticSessionId).toHaveBeenCalledWith(deviceStaticSessionId);
-        expect(deps.refreshSuiteSyncKeys).not.toHaveBeenCalled();
+        expect(deps.ensureSuiteSyncKeys).not.toHaveBeenCalled();
         expect(deps.createSuiteStorage).not.toHaveBeenCalled();
     });
 
-    it('returns error when refreshSuiteSyncKeys fails', async () => {
+    it('returns error when ensureSuiteSyncKeys fails', async () => {
         const device = mockSuiteDevice();
         const refreshError = err(SuiteSyncUnavailableOnDeviceError());
 
@@ -126,7 +126,7 @@ describe(createEnsureStorage.name, () => {
                 delete: null,
             },
             createSuiteStorage: null,
-            refreshSuiteSyncKeys: () => Promise.resolve(refreshError),
+            ensureSuiteSyncKeys: () => Promise.resolve(refreshError),
             ensureQuota: null,
             getDeviceForStaticSessionId: () => device,
         });
@@ -138,11 +138,11 @@ describe(createEnsureStorage.name, () => {
 
         expect(result).toBe(refreshError);
         expect(deps.getDeviceForStaticSessionId).toHaveBeenCalledWith(deviceStaticSessionId);
-        expect(deps.refreshSuiteSyncKeys).toHaveBeenCalledWith({ device });
+        expect(deps.ensureSuiteSyncKeys).toHaveBeenCalledWith({ device });
         expect(deps.createSuiteStorage).not.toHaveBeenCalled();
     });
 
-    it('calls ensureQuota with correct params after refreshSuiteSyncKeys succeeds', async () => {
+    it('calls ensureQuota with correct params after ensureSuiteSyncKeys succeeds', async () => {
         const device = mockSuiteDevice();
         const newStorage = createSuiteSyncStorageMock({
             updateRelayUrl: mock(() => Promise.resolve()),
@@ -157,7 +157,7 @@ describe(createEnsureStorage.name, () => {
                 delete: null,
             },
             createSuiteStorage: () => Promise.resolve(newStorage),
-            refreshSuiteSyncKeys: () =>
+            ensureSuiteSyncKeys: () =>
                 Promise.resolve(ok({ owner: OWNER_ABCD, delegatedKey: DELEGATED_KEY })),
             ensureQuota: () => Promise.resolve(ok(undefined)),
             getDeviceForStaticSessionId: () => device,
@@ -191,7 +191,7 @@ describe(createEnsureStorage.name, () => {
                 delete: null,
             },
             createSuiteStorage: () => Promise.resolve(newStorage),
-            refreshSuiteSyncKeys: () =>
+            ensureSuiteSyncKeys: () =>
                 Promise.resolve(ok({ owner: OWNER_ABCD, delegatedKey: DELEGATED_KEY })),
             ensureQuota: () => Promise.resolve(ok(undefined)),
             getDeviceForStaticSessionId: () => device,
@@ -204,7 +204,7 @@ describe(createEnsureStorage.name, () => {
 
         expect(result).toEqual(ok(newStorage));
         expect(deps.getDeviceForStaticSessionId).toHaveBeenCalledWith(deviceStaticSessionId);
-        expect(deps.refreshSuiteSyncKeys).toHaveBeenCalledWith({ device });
+        expect(deps.ensureSuiteSyncKeys).toHaveBeenCalledWith({ device });
         expect(deps.createSuiteStorage).toHaveBeenCalledWith({
             suiteSyncOwner: OWNER_ABCD,
         });
@@ -228,7 +228,7 @@ describe(createEnsureStorage.name, () => {
                 delete: null,
             },
             createSuiteStorage: () => Promise.resolve(newStorage),
-            refreshSuiteSyncKeys: () =>
+            ensureSuiteSyncKeys: () =>
                 Promise.resolve(ok({ owner: OWNER_ABCD, delegatedKey: DELEGATED_KEY })),
             ensureQuota: () => Promise.resolve(ok(undefined)),
             getDeviceForStaticSessionId: () => device,

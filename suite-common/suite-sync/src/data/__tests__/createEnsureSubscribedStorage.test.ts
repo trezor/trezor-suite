@@ -15,13 +15,13 @@ import { type StaticSessionId } from '@trezor/connect';
 import { err, ok } from '@trezor/type-utils';
 
 import { createSuiteSyncStorageMock } from '../../../tests/createSuiteSyncStorageMock.mock';
-import { SuiteSyncUnavailableOnDeviceError } from '../../createRefreshSuiteSyncKeys';
+import { SuiteSyncUnavailableOnDeviceError } from '../../createEnsureSuiteSyncKeys';
 import { createStorageIdFromDeviceStaticSessionId } from '../../storage/createStorageIdFromDeviceStaticSessionId';
 import { createSubscriptionStorage } from '../../storage/createSubscriptionStorage';
 import {
-    type CreateSubscribeSuiteSyncDataDeps,
-    createEnsureSubscribeSuiteSyncData,
-} from '../createEnsureSubscribeSuiteSyncData';
+    type CreateEnsureSubscribedStorageDeps,
+    createEnsureSubscribedStorage,
+} from '../createEnsureSubscribedStorage';
 
 const deviceStaticSessionId: StaticSessionId = '1@2:3';
 
@@ -74,19 +74,19 @@ const createStorageWithEmitters = (storageEmitter: StorageSubscriptions) =>
         },
     });
 
-describe(createEnsureSubscribeSuiteSyncData.name, () => {
+describe(createEnsureSubscribedStorage.name, () => {
     it('fails when storage is not available', async () => {
         const suiteSyncListener = createListenerMock();
         const storageResult = err(SuiteSyncUnavailableOnDeviceError());
 
-        const deps = createMockDeps<CreateSubscribeSuiteSyncDataDeps>({
+        const deps = createMockDeps<CreateEnsureSubscribedStorageDeps>({
             ensureStorage: () => Promise.resolve(storageResult),
             subscriptionStorage: createSubscriptionStorage(),
             suiteSyncListener,
         });
 
-        const subscribeLabeling = createEnsureSubscribeSuiteSyncData(deps);
-        const result = await subscribeLabeling({ deviceStaticSessionId, isWriteMode: false });
+        const ensureSubscribedStorage = createEnsureSubscribedStorage(deps);
+        const result = await ensureSubscribedStorage({ deviceStaticSessionId, isWriteMode: false });
 
         expect(deps.ensureStorage).toHaveBeenCalledWith({
             deviceStaticSessionId,
@@ -112,14 +112,14 @@ describe(createEnsureSubscribeSuiteSyncData.name, () => {
             unsubscribe: jest.fn(),
         });
 
-        const deps = createMockDeps<CreateSubscribeSuiteSyncDataDeps>({
+        const deps = createMockDeps<CreateEnsureSubscribedStorageDeps>({
             ensureStorage: () => Promise.resolve(ok(storage)),
             subscriptionStorage,
             suiteSyncListener,
         });
 
-        const subscribeLabeling = createEnsureSubscribeSuiteSyncData(deps);
-        const result = await subscribeLabeling({ deviceStaticSessionId, isWriteMode: false });
+        const ensureSubscribedStorage = createEnsureSubscribedStorage(deps);
+        const result = await ensureSubscribedStorage({ deviceStaticSessionId, isWriteMode: false });
 
         expect(deps.ensureStorage).toHaveBeenCalledWith({
             deviceStaticSessionId,
@@ -137,14 +137,14 @@ describe(createEnsureSubscribeSuiteSyncData.name, () => {
             outputs: { subscribe: () => () => {} },
         });
 
-        const deps = createMockDeps<CreateSubscribeSuiteSyncDataDeps>({
+        const deps = createMockDeps<CreateEnsureSubscribedStorageDeps>({
             ensureStorage: () => Promise.resolve(ok(storage)),
             subscriptionStorage: createSubscriptionStorage(),
             suiteSyncListener,
         });
 
-        const subscribeLabeling = createEnsureSubscribeSuiteSyncData(deps);
-        const result = await subscribeLabeling({ deviceStaticSessionId, isWriteMode: false });
+        const ensureSubscribedStorage = createEnsureSubscribedStorage(deps);
+        const result = await ensureSubscribedStorage({ deviceStaticSessionId, isWriteMode: false });
 
         expect(deps.ensureStorage).toHaveBeenCalledWith({
             deviceStaticSessionId,
@@ -170,15 +170,15 @@ describe(createEnsureSubscribeSuiteSyncData.name, () => {
 
         const storage = createStorageWithEmitters(storageEmitters);
 
-        const deps = createMockDeps<CreateSubscribeSuiteSyncDataDeps>({
+        const deps = createMockDeps<CreateEnsureSubscribedStorageDeps>({
             ensureStorage: () => Promise.resolve(ok(storage)),
             subscriptionStorage: createSubscriptionStorage(),
             suiteSyncListener,
         });
 
-        const subscribeLabeling = createEnsureSubscribeSuiteSyncData(deps);
+        const ensureSubscribedStorage = createEnsureSubscribedStorage(deps);
 
-        const result = await subscribeLabeling({ deviceStaticSessionId, isWriteMode: false });
+        const result = await ensureSubscribedStorage({ deviceStaticSessionId, isWriteMode: false });
 
         expect(result.success).toBe(true);
 

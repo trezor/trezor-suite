@@ -37,6 +37,10 @@ export type EnsureQuotaDep = {
     ensureQuota: EnsureQuota;
 };
 
+/**
+ * Responsibility:
+ * - Ensure relay quota is allocated before write-capable Suite Sync operations proceed.
+ */
 export const createEnsureQuota =
     (deps: EnsureQuotaDeps): EnsureQuota =>
     async ({ deviceStaticSessionId, delegatedKey, owner, isWriteMode }) => {

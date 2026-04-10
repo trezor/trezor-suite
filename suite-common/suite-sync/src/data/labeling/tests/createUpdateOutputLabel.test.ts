@@ -6,7 +6,7 @@ import type { StaticSessionId } from '@trezor/connect';
 import { err, ok } from '@trezor/type-utils';
 
 import { createSuiteSyncStorageMock } from '../../../../tests/createSuiteSyncStorageMock.mock';
-import { SuiteSyncUnavailableOnDeviceError } from '../../../createRefreshSuiteSyncKeys';
+import { SuiteSyncUnavailableOnDeviceError } from '../../../createEnsureSuiteSyncKeys';
 import type { UpdateOutputLabelDeps } from '../createUpdateOutputLabel';
 import { createUpdateOutputLabel } from '../createUpdateOutputLabel';
 

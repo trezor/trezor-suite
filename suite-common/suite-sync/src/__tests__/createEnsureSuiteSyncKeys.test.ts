@@ -8,9 +8,9 @@ import { type TrezorDevice, asDelegatedIdentityKey } from '@suite-common/suite-t
 import { ok } from '@trezor/type-utils';
 
 import {
-    type RefreshSuiteSyncKeysDeps,
-    createRefreshSuiteSync,
-} from '../createRefreshSuiteSyncKeys';
+    type EnsureSuiteSyncKeysDeps,
+    createEnsureSuiteSyncKeys,
+} from '../createEnsureSuiteSyncKeys';
 import { type GetDeviceForStaticSessionId } from '../getDeviceForStaticSessionId';
 
 const createMockDeps = () =>
@@ -23,7 +23,7 @@ const createMockDeps = () =>
         getDeviceForStaticSessionId: mockNotExpected<GetDeviceForStaticSessionId>(
             'getDeviceForStaticSessionId',
         ),
-    }) satisfies RefreshSuiteSyncKeysDeps;
+    }) satisfies EnsureSuiteSyncKeysDeps;
 
 const OWNER_1 = {
     ownerId: asSuiteSyncOwnerId('new-owner-id'),
@@ -53,11 +53,11 @@ const createDevice = (
         ...overrides,
     }) as unknown as TrezorDevice;
 
-describe(createRefreshSuiteSync.name, () => {
+describe(createEnsureSuiteSyncKeys.name, () => {
     it('fails with "unable to get keys" when device is not initialized', async () => {
         const deps = createMockDeps();
-        const refreshSuiteSyncKeys = createRefreshSuiteSync(deps);
-        const result = await refreshSuiteSyncKeys({
+        const ensureSuiteSyncKeys = createEnsureSuiteSyncKeys(deps);
+        const result = await ensureSuiteSyncKeys({
             device: createDevice({}, null),
         });
 
@@ -76,8 +76,8 @@ describe(createRefreshSuiteSync.name, () => {
         const mockDevice = createDevice();
         deps.getDeviceForStaticSessionId.mockImplementation(() => mockDevice);
 
-        const refreshSuiteSyncKeys = createRefreshSuiteSync(deps);
-        const result = await refreshSuiteSyncKeys({
+        const ensureSuiteSyncKeys = createEnsureSuiteSyncKeys(deps);
+        const result = await ensureSuiteSyncKeys({
             device: mockDevice,
         });
 
@@ -102,8 +102,8 @@ describe(createRefreshSuiteSync.name, () => {
         const mockDevice = createDevice();
         deps.getDeviceForStaticSessionId.mockImplementation(() => mockDevice);
 
-        const refreshSuiteSyncKeys = createRefreshSuiteSync(deps);
-        await refreshSuiteSyncKeys({
+        const ensureSuiteSyncKeys = createEnsureSuiteSyncKeys(deps);
+        await ensureSuiteSyncKeys({
             device: mockDevice,
         });
 
@@ -129,8 +129,8 @@ describe(createRefreshSuiteSync.name, () => {
         const mockDevice = createDevice();
         deps.getDeviceForStaticSessionId.mockImplementation(() => mockDevice);
 
-        const refreshSuiteSyncKeys = createRefreshSuiteSync(deps);
-        const result = await refreshSuiteSyncKeys({
+        const ensureSuiteSyncKeys = createEnsureSuiteSyncKeys(deps);
+        const result = await ensureSuiteSyncKeys({
             device: mockDevice,
         });
 
