@@ -44,7 +44,7 @@ export const ConfirmationQuoteDebugView = ({ forceStatus }: ConfirmationQuoteDeb
                 </Button>
                 <Button
                     size="tiny"
-                    colorScheme="tertiaryElevation0"
+                    colorScheme="blueElevation0"
                     onPress={() => forceStatus('isConfirmed')}
                 >
                     Confirmed

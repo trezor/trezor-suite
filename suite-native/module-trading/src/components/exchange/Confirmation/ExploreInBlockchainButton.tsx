@@ -1,6 +1,7 @@
 import { Linking } from 'react-native';
+import { LinearTransition } from 'react-native-reanimated';
 
-import { Button } from '@suite-native/atoms';
+import { AnimatedBox, Button } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 export const ExploreInBlockchainButton = () => {
@@ -10,12 +11,14 @@ export const ExploreInBlockchainButton = () => {
     };
 
     return (
-        <Button
-            onPress={openTransactionInBlockchain}
-            viewRight="arrowUpRight"
-            colorScheme="tertiaryElevation0"
-        >
-            <Translation id="moduleTrading.tradingConfirmationScreen.exploreInBlockchain" />
-        </Button>
+        <AnimatedBox layout={LinearTransition}>
+            <Button
+                onPress={openTransactionInBlockchain}
+                viewRight="arrowUpRight"
+                colorScheme="tertiaryElevation0"
+            >
+                <Translation id="moduleTrading.tradingConfirmationScreen.exploreInBlockchain" />
+            </Button>
+        </AnimatedBox>
     );
 };

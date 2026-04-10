@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { LinearTransition } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import { useFormatters } from '@suite-common/formatters';
@@ -6,7 +7,7 @@ import {
     cryptoIdToNetworkAndContractAddress,
     selectTradingExchangeActiveQuote,
 } from '@suite-common/trading';
-import { Card, Text, VStack } from '@suite-native/atoms';
+import { AnimatedVStack, Card, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import type { TradingConfirmationVariant } from '@suite-native/navigation';
 import { TradeInfoRow } from '@suite-native/trading-atoms';
@@ -40,7 +41,7 @@ export const ExchangeConfirmationInfo = ({ variant }: ExchangeConfirmationInfoCa
     const feeValueAsString = typeof fee === 'number' ? String(fee) : '0';
 
     return (
-        <VStack spacing="sp16" paddingVertical="sp16">
+        <AnimatedVStack spacing="sp16" paddingVertical="sp16" layout={LinearTransition}>
             <Card noPadding>
                 <TradeInfoRow>
                     <Text variant="body-sm">
@@ -71,6 +72,6 @@ export const ExchangeConfirmationInfo = ({ variant }: ExchangeConfirmationInfoCa
                 networkType={network.networkType}
                 areFeesLoading={false}
             />
-        </VStack>
+        </AnimatedVStack>
     );
 };
