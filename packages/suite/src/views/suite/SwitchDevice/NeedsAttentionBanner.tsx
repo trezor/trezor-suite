@@ -8,10 +8,11 @@ import { acquireDevice, selectDeviceThunk } from '@suite-common/wallet-core';
 import { Banner, type BannerIntent } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 
+import { redirectAfterWalletSelectedThunk } from 'src/actions/wallet/addWalletThunk';
+import { useDevice, useDispatch } from 'src/hooks/suite';
+import type { ForegroundAppProps, TrezorDevice } from 'src/types/suite';
+
 import { getDeviceResolveStatusCTAMessage } from './getDeviceResolveStatusCTAMessage';
-import { redirectAfterWalletSelectedThunk } from '../../../actions/wallet/addWalletThunk';
-import { useDevice, useDispatch } from '../../../hooks/suite';
-import type { ForegroundAppProps, TrezorDevice } from '../../../types/suite';
 
 const getDeviceNeedsAttentionMessage = (
     deviceStatus: ReturnType<typeof getStatus>,

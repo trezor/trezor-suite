@@ -6,13 +6,14 @@ import { selectSelectedDevice } from '@suite-common/device';
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
 import { Box, Column, Divider, Icon, Row, SkeletonRectangle, Tooltip } from '@trezor/components';
 
+import { CollapsedSidebarOnly } from 'src/components/suite/layouts/SuiteLayout/Sidebar/CollapsedSidebarOnly';
+import { ExpandedSidebarOnly } from 'src/components/suite/layouts/SuiteLayout/Sidebar/ExpandedSidebarOnly';
+import { useAccountSearch, useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
+
 import { AccountSearchBox } from './AccountSearchBox';
 import { AddAccountButton } from './AddAccountButton';
 import { CoinsFilter } from './CoinsFilter';
 import { useAvailableNetworkSymbols } from './useAvailableNetworkSymbols';
-import { useAccountSearch, useDiscovery, useDispatch, useSelector } from '../../../../hooks/suite';
-import { CollapsedSidebarOnly } from '../../../suite/layouts/SuiteLayout/Sidebar/CollapsedSidebarOnly';
-import { ExpandedSidebarOnly } from '../../../suite/layouts/SuiteLayout/Sidebar/ExpandedSidebarOnly';
 
 const Indicator = styled.div`
     width: 11px;

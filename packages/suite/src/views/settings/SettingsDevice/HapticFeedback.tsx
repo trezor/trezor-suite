@@ -6,9 +6,8 @@ import { ActionColumn, TextColumn } from '@trezor/product-components';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
+import { useDevice, useDispatch } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
-
-import { useDevice, useDispatch } from '../../../hooks/suite';
 
 interface DeviceLabelProps {
     isDeviceLocked: boolean;

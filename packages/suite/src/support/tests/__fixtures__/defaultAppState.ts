@@ -10,6 +10,7 @@ import { type MetadataState } from '@suite-common/metadata-types';
 import { quotaManagerInitialState } from '@suite-common/suite-sync-quota-manager/src/quotaManagerReducer';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 
+import { initialDesktopBluetoothState } from 'src/actions/bluetooth/desktopBluetoothReducer';
 import { initialState } from 'src/actions/device/deviceSlice';
 import { initialSuiteSyncDesktopState } from 'src/actions/suiteSync/suiteSyncSlice';
 import { type OnboardingState } from 'src/reducers/onboarding/onboardingReducer';
@@ -18,8 +19,6 @@ import { desktopUpdateInitialState } from 'src/reducers/suite/desktopUpdateReduc
 import { type ProtocolState } from 'src/reducers/suite/protocolReducer';
 import { suiteInitialState } from 'src/reducers/suite/suiteReducer';
 import type WalletReducers from 'src/reducers/wallet';
-
-import { initialDesktopBluetoothState } from '../../../actions/bluetooth/desktopBluetoothReducer';
 
 export const initialAppState: AppState = {
     suite: suiteInitialState,

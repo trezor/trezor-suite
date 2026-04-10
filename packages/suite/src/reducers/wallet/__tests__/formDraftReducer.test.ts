@@ -1,6 +1,7 @@
 import { formDraftActions } from '@suite-common/wallet-core';
 
-import { STORAGE } from '../../../actions/suite/constants';
+import { STORAGE } from 'src/actions/suite/constants';
+
 import formDraftReducer from '../formDraftReducer';
 
 describe('formDraftReducer', () => {

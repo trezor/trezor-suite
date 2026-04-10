@@ -6,8 +6,9 @@ import { resolveStaticPath } from '@trezor/env-utils';
 import { borders, colorVariants, spacings, spacingsPx } from '@trezor/theme';
 import { DASHBOARD_BANNER_TEX_URL } from '@trezor/urls';
 
+import { useExternalLink, useLayoutSize } from 'src/hooks/suite';
+
 import { AnimatedWrapper, CloseButton } from './CommonPromoBannerComponents';
-import { useExternalLink, useLayoutSize } from '../../../hooks/suite';
 
 const underlineImage = resolveStaticPath(
     `${IMAGES_PATH}/${IMAGES.DASHBOARD_PROMO_BANNER_UNDERLINE}`,

@@ -1,8 +1,9 @@
 import { Card, Column, Row, SkeletonRectangle } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
+import { type DesktopBluetoothDevice } from 'src/actions/bluetooth/DesktopBluetoothDevice';
+
 import { BluetoothDeviceListItem } from './BluetoothDeviceListItem';
-import { type DesktopBluetoothDevice } from '../../../actions/bluetooth/DesktopBluetoothDevice';
 
 const SkeletonDevice = () => (
     <Row width="100%" gap={spacings.md} justifyContent="stretch" height="44px" alignItems="center">

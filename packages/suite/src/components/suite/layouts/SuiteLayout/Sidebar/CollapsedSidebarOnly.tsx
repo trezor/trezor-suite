@@ -1,6 +1,6 @@
 import type React from 'react';
 
-import { useResponsiveContext } from '../../../../../support/suite/ResponsiveContext';
+import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
 
 type Props = {
     children: React.ReactNode;

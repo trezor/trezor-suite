@@ -5,9 +5,10 @@ import { Box, Button, Column, Image, Paragraph, Text } from '@trezor/components'
 import { spacings } from '@trezor/theme';
 import { DASHBOARD_BANNER_TS7_URL } from '@trezor/urls';
 
+import { useExternalLink, useLayoutSize } from 'src/hooks/suite';
+import { ContentFlex, useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
+
 import { AnimatedWrapper, CloseButton } from './CommonPromoBannerComponents';
-import { useExternalLink, useLayoutSize } from '../../../hooks/suite';
-import { ContentFlex, useIsContentBelowBreakpoint } from '../../../support/suite/ContentFlex';
 
 type TS7BannerProps = {
     onClose: () => void;

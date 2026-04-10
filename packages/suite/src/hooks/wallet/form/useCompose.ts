@@ -21,8 +21,7 @@ import { useDebounce } from '@trezor/react-utils';
 import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-
-import { type SendContextValues } from '../../../types/wallet/sendForm';
+import { type SendContextValues } from 'src/types/wallet/sendForm';
 
 const DEFAULT_FIELD = 'outputs.0.amount';
 

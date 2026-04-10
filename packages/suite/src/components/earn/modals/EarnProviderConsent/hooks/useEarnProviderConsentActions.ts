@@ -14,11 +14,10 @@ import {
 import { type Account } from '@suite-common/wallet-types';
 import { exhaustive } from '@trezor/type-utils';
 
+import { getEarnRouteParams } from 'src/components/earn/utils/getEarnRouteParams';
 import { earnFlowToEventTypeMap } from 'src/constants/suite/staking';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
-
-import { getEarnRouteParams } from '../../../utils/getEarnRouteParams';
 
 interface UseEarnProviderConsentActionsProps {
     flow: EarnFlow;

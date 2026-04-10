@@ -9,11 +9,11 @@ import { breakpoints, spacings } from '@trezor/theme';
 import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useSelector } from 'src/hooks/suite';
 import { useTradingDeviceDisconnected } from 'src/hooks/wallet/trading/form/common/useTradingDeviceDisconnected';
+import { ContentFlex } from 'src/support/suite/ContentFlex';
 import { ConnectDeviceGenericPromo } from 'src/views/wallet/receive/components/ConnectDevicePromo';
 import { TradingFeaturedOffers } from 'src/views/wallet/trading/common/TradingFeaturedOffers/TradingFeaturedOffers';
 import { TradingFormOffer } from 'src/views/wallet/trading/common/TradingForm/TradingFormOffer';
 
-import { ContentFlex } from '../../../../../support/suite/ContentFlex';
 import { ReceiveAddressModalControlsProvider } from '../TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls';
 
 interface TradingFormLayoutProps {

@@ -1,7 +1,7 @@
 import { useFormatters } from '@suite-common/formatters';
 import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
 
-import { HiddenPlaceholder } from '../../../../components/suite';
+import { HiddenPlaceholder } from 'src/components/suite';
 
 interface TradingFiatAmountProps {
     amount?: BaseCurrencyAmount;

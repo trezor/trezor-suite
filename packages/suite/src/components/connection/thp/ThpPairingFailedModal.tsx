@@ -5,8 +5,9 @@ import { thpActions } from '@suite-common/thp';
 import { acquireDevice, selectSelectedFirstThpDevice } from '@suite-common/wallet-core';
 import { Column, Modal, Paragraph } from '@trezor/components';
 
+import { useDispatch, useSelector } from 'src/hooks/suite';
+
 import { ThpPairingCodeEntry } from './ThpPairingCodeEntry';
-import { useDispatch, useSelector } from '../../../hooks/suite';
 
 export const ThpPairingFailedModal = () => {
     const [isLoading, setIsLoading] = useState(false);

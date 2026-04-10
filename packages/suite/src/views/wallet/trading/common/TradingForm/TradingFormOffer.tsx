@@ -24,6 +24,7 @@ import { useTradingDeviceDisconnected } from 'src/hooks/wallet/trading/form/comm
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useTradingStellarActivateToken } from 'src/hooks/wallet/trading/useTradingStellarActivateToken';
 import { selectTorState } from 'src/selectors/suite/suiteSelectors';
+import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 import { type TradingFormContextValues } from 'src/types/trading/tradingForm';
 import {
     getCryptoQuoteAmountProps,
@@ -45,7 +46,6 @@ import { TradingFormOfferOTC } from 'src/views/wallet/trading/common/TradingForm
 
 import { TradingApproveModal } from './TradingApproveModal';
 import { TradingRevokeModal } from './TradingRevokeModal';
-import { useIsContentBelowBreakpoint } from '../../../../../support/suite/ContentFlex';
 import { useReceiveAddressModalControls } from '../TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls';
 import { TradingUtilsTorWarning } from '../TradingUtils/TradingUtilsTorWarning';
 

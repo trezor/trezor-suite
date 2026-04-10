@@ -5,7 +5,8 @@ import { type FlagsState, setFlag } from '@suite/flags';
 import { IconButton } from '@trezor/components';
 import { borders, spacingsPx } from '@trezor/theme';
 
-import { useDispatch } from '../../../hooks/suite';
+import { useDispatch } from 'src/hooks/suite';
+
 import { bannerAnimationConfig } from '../banner-animations';
 
 const CloseButtonContainer = styled.div`

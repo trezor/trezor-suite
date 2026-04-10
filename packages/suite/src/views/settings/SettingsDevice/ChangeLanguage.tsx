@@ -3,10 +3,9 @@ import { SettingsAnchor } from '@suite/router';
 import { LANGUAGES, type Locale } from '@suite-common/suite-types';
 import { ActionColumn, ActionSelect, TextColumn } from '@trezor/product-components';
 
+import { changeLanguage } from 'src/actions/settings/deviceSettingsActions';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
-
-import { changeLanguage } from '../../../actions/settings/deviceSettingsActions';
-import { useDevice, useDispatch } from '../../../hooks/suite';
+import { useDevice, useDispatch } from 'src/hooks/suite';
 
 const BASE_TRANSLATIONS = [{ value: 'en-US', label: LANGUAGES['en-US'].name as string }];
 

@@ -9,9 +9,8 @@ import {
     TROUBLESHOOTING_TIP_SUITE_DESKTOP,
     TROUBLESHOOTING_TIP_WEBUSB_ENVIRONMENT,
 } from 'src/components/suite/troubleshooting/tips';
-
-import { useSelector } from '../../../hooks/suite';
-import { useBridgeDesktopApi } from '../../../hooks/suite/useBridgeDesktopApi';
+import { useSelector } from 'src/hooks/suite';
+import { useBridgeDesktopApi } from 'src/hooks/suite/useBridgeDesktopApi';
 
 const tipItems: TroubleshootingTipsItem[] = [
     TROUBLESHOOTING_TIP_WEBUSB_ENVIRONMENT,

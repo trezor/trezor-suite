@@ -2,8 +2,7 @@ import { Column, Row, SkeletonCircle, SkeletonRectangle } from '@trezor/componen
 import { spacings } from '@trezor/theme';
 
 import { useLoadingSkeleton } from 'src/hooks/suite';
-
-import { useResponsiveContext } from '../../../../support/suite/ResponsiveContext';
+import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
 
 export const AccountItemSkeleton = () => {
     const { shouldAnimate } = useLoadingSkeleton();

@@ -7,11 +7,11 @@ import {
     selectShowEnableSuiteSyncModal,
     updateShowEnableSuiteSyncModal,
 } from 'src/actions/suiteSync/suiteSyncSlice';
+import { ThpGlobalModalManager } from 'src/components/connection/thp/ThpGlobalModalManager';
+import { useDispatch, usePreferredModal, useSelector } from 'src/hooks/suite';
+import type { AppState, ForegroundAppRoute } from 'src/types/suite';
+import { SwitchDevice } from 'src/views/suite/SwitchDevice/SwitchDevice';
 
-import { useDispatch, usePreferredModal, useSelector } from '../../../../hooks/suite';
-import type { AppState, ForegroundAppRoute } from '../../../../types/suite';
-import { SwitchDevice } from '../../../../views/suite/SwitchDevice/SwitchDevice';
-import { ThpGlobalModalManager } from '../../../connection/thp/ThpGlobalModalManager';
 import { TurnOnSuiteSyncModals } from '../../labeling/TurnOnSuiteSync/TurnOnSuiteSyncModals';
 import { ConfirmPassphraseBeforeAction } from '../../modals/ReduxModal/DeviceContextModal/ConfirmPassphraseBeforeAction';
 import { PassphraseModal } from '../../modals/ReduxModal/DeviceContextModal/PassphraseModal';

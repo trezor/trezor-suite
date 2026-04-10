@@ -13,6 +13,7 @@ import {
 import { isDesktop, isLinux, isWeb } from '@trezor/env-utils';
 import { SettingsSection } from '@trezor/product-components';
 
+import { selectIsLegacyLabelingVisible } from 'src/actions/labels/selectIsLegacyLabelingVisible';
 import { SettingsLayout } from 'src/components/settings/SettingsLayout';
 import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useLayoutSize, useSelector } from 'src/hooks/suite';
@@ -45,7 +46,6 @@ import { Tor } from './Tor';
 import { TorExternal } from './TorExternal';
 import { TorOnionLinks } from './TorOnionLinks';
 import { VersionWithUpdate } from './VersionWithUpdate';
-import { selectIsLegacyLabelingVisible } from '../../../actions/labels/selectIsLegacyLabelingVisible';
 import { Labeling } from '../labeling/Labeling';
 
 export const SettingsGeneral = () => {

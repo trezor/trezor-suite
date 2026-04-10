@@ -14,9 +14,9 @@ import { type AppState } from 'src/reducers/store';
 import { type SuiteState } from 'src/reducers/suite/suiteReducer';
 import { initialAppState } from 'src/support/tests/__fixtures__/defaultAppState';
 import { configureStore } from 'src/support/tests/configureStore';
+import { extraDependenciesDesktopMock } from 'src/support/tests/extraDependenciesDesktop.mock';
 import { findByTestId, renderWithProviders } from 'src/support/tests/hooksHelper';
 
-import { extraDependenciesDesktopMock } from '../../../../support/tests/extraDependenciesDesktop.mock';
 import { Preloader } from '../Preloader';
 import * as selectShouldDisplayDeviceCompromisedModule from '../selectShouldDisplayDeviceCompromisedOnRoute';
 

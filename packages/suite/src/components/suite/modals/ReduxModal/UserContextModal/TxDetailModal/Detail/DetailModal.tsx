@@ -10,9 +10,10 @@ import {
 } from '@suite-common/wallet-types';
 import { Modal } from '@trezor/components';
 
-import { AdvancedTxDetails, type TabID } from './AdvancedTxDetails/AdvancedTxDetails';
-import { useSelector } from '../../../../../../../hooks/suite';
+import { useSelector } from 'src/hooks/suite';
+
 import { TxDetailModalBase } from '../TxDetailModalBase';
+import { AdvancedTxDetails, type TabID } from './AdvancedTxDetails/AdvancedTxDetails';
 
 type DetailModalProps = {
     tx: WalletAccountTransaction;

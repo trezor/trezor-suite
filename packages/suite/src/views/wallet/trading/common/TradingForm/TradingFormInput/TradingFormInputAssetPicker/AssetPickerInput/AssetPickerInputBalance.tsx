@@ -11,8 +11,7 @@ import { Row } from '@trezor/components';
 import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
 import { useTradingFiatValues } from 'src/hooks/wallet/trading/form/common/useTradingFiatValues';
 import { useTradingFindAccountOrToken } from 'src/hooks/wallet/trading/form/common/useTradingFindAccountOrToken';
-
-import { TradingBalance } from '../../../../TradingBalance';
+import { TradingBalance } from 'src/views/wallet/trading/common/TradingBalance';
 
 export interface AssetPickerInputBalanceProps {
     name: typeof TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT;

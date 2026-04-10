@@ -10,7 +10,8 @@ import { type Account, type TokenInfoBranded, toTokenSymbol } from '@suite-commo
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { getApyPercent } from '../../../utils/earnApyUtils';
+import { getApyPercent } from 'src/components/earn/utils/earnApyUtils';
+
 import {
     compareYieldRowsByAvailableBalanceDesc,
     compareYieldRowsBySuppliedAmountDesc,

@@ -9,7 +9,7 @@ import {
 import { type AccountUtxo } from '@trezor/connect';
 import { type DeepPartial } from '@trezor/type-utils';
 
-import { type CoinjoinState } from '../../../reducers/wallet/coinjoinReducer';
+import { type CoinjoinState } from 'src/reducers/wallet/coinjoinReducer';
 
 export { getRootReducer } from './useSendForm';
 

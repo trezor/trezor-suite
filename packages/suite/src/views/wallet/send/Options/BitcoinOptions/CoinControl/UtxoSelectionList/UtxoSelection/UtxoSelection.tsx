@@ -24,14 +24,13 @@ import {
 } from '@trezor/components';
 import { type AccountUtxo } from '@trezor/connect';
 
+import { selectIsLegacyLabelingVisible } from 'src/actions/labels/selectIsLegacyLabelingVisible';
 import { Address, BaseCurrencyValue, FormattedCryptoAmount, Labeling } from 'src/components/suite';
 import { TransactionTimestamp, UtxoAnonymity } from 'src/components/wallet';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { useCoinjoinUnavailableUtxos } from 'src/hooks/wallet/form/useCoinjoinUnavailableUtxos';
 import { type WalletAccountTransaction } from 'src/types/wallet';
-
-import { selectIsLegacyLabelingVisible } from '../../../../../../../../actions/labels/selectIsLegacyLabelingVisible';
 
 type ResolveUtxoSpendableProps = {
     utxo: AccountUtxo;

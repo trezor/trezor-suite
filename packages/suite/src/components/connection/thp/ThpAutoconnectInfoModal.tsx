@@ -5,7 +5,7 @@ import { type TrezorDevice } from '@suite-common/suite-types';
 import { startThpAutoconnectThunk, thpActions } from '@suite-common/thp';
 import { Card, Modal, Paragraph } from '@trezor/components';
 
-import { useDevice, useDispatch } from '../../../hooks/suite';
+import { useDevice, useDispatch } from 'src/hooks/suite';
 
 type ThpAutoconnectInfoModalParams = {
     device: TrezorDevice;

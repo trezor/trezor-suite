@@ -5,11 +5,10 @@ import { bluetoothActions } from '@suite-common/bluetooth';
 import { Banner, Column, H3, Modal, Paragraph, Spinner } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
+import { selectIsUnpairingDevice } from 'src/actions/bluetooth/desktopBluetoothSelectors';
 import { openSystemSettingsThunk } from 'src/actions/bluetooth/openSystemSettingsThunk';
 import { toggleConnectionModal } from 'src/actions/device/deviceSlice';
-
-import { selectIsUnpairingDevice } from '../../../actions/bluetooth/desktopBluetoothSelectors';
-import { useDispatch, useSelector } from '../../../hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 
 type UnpairBluetoothDeviceFromOsModalProps = {
     onFinish?: () => void;

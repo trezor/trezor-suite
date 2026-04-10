@@ -8,10 +8,10 @@ import { CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 import { HELP_CENTER_PASSPHRASE_URL } from '@trezor/urls';
 
-import { useNetworkSupport } from '../../../../../hooks/settings/useNetworkSupport';
-import { useDispatch, useSelector } from '../../../../../hooks/suite';
-import { CardWithDevice } from '../../../../../views/suite/SwitchDevice/CardWithDevice';
-import { SwitchDeviceModal } from '../../../../../views/suite/SwitchDevice/SwitchDeviceModal';
+import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { CardWithDevice } from 'src/views/suite/SwitchDevice/CardWithDevice';
+import { SwitchDeviceModal } from 'src/views/suite/SwitchDevice/SwitchDeviceModal';
 
 type PassphraseWalletIsEmptyProps = {
     onRetry: () => void;

@@ -13,9 +13,9 @@ import { Button, IconButton, Row, Tooltip, motionEasing } from '@trezor/componen
 import { spacings, spacingsPx, typography } from '@trezor/theme';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
 
 import { AccountsMenuNotice } from './AccountsMenuNotice';
-import { useResponsiveContext } from '../../../../support/suite/ResponsiveContext';
 
 const DiscoveryButtonContainer = styled(motion.div)`
     display: flex;

@@ -3,9 +3,8 @@ import { Translation } from '@suite/intl';
 import TrezorConnect from '@trezor/connect';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
+import { useDevice } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
-
-import { useDevice } from '../../../hooks/suite';
 
 interface DeviceLabelProps {
     isDeviceLocked: boolean;

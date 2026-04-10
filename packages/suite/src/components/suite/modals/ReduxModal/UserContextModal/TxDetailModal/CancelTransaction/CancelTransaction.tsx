@@ -10,9 +10,9 @@ import { spacings } from '@trezor/theme';
 import { HELP_CENTER_CANCEL_TRANSACTION } from '@trezor/urls';
 import { BigNumber } from '@trezor/utils';
 
-import { useCancelTxContext } from '../../../../../../../hooks/wallet/useCancelTxContext';
-import { BaseCurrencyValue } from '../../../../../BaseCurrencyValue';
-import { FormattedCryptoAmount } from '../../../../../FormattedCryptoAmount';
+import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
+import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
+import { useCancelTxContext } from 'src/hooks/wallet/useCancelTxContext';
 
 type CancelTransactionProps = {
     tx: WalletAccountTransaction;

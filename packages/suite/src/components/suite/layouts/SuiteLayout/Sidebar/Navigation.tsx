@@ -8,11 +8,11 @@ import { selectIsAnyNonBitcoinLikeNetworkEnabled } from '@suite-common/wallet-co
 import { Column } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
+import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
 
 import { NavigationItem, type NavigationItemProps } from './NavigationItem';
 import { NotificationDropdown } from './NotificationDropdown';
 import { SettingsWithTooltip } from './SettingsWithTooltip';
-import { useResponsiveContext } from '../../../../../support/suite/ResponsiveContext';
 
 export const SETTINGS_ROUTES: Route['name'][] = [
     'settings-index',

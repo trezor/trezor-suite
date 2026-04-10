@@ -7,13 +7,13 @@ import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { Dropdown, type DropdownMenuItemProps, type IconName } from '@trezor/components';
 import { breakpoints } from '@trezor/theme';
 
+import { AppNavigationTooltip } from 'src/components/suite/AppNavigation/AppNavigationTooltip';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { useConditionalRender } from 'src/support/suite/ConditionalRender';
 import { useAnalytics } from 'src/support/useAnalytics';
 
 import { useGoToWithAnalytics } from './useGoToWithAnalytics';
-import { useDispatch, useSelector } from '../../../../../hooks/suite';
-import { selectSelectedAccount } from '../../../../../reducers/wallet/selectedAccountReducer';
-import { useConditionalRender } from '../../../../../support/suite/ConditionalRender';
-import { AppNavigationTooltip } from '../../../AppNavigation/AppNavigationTooltip';
 
 type ActionItem = {
     id: string;

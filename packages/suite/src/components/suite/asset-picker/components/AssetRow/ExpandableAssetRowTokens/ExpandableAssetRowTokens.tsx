@@ -6,9 +6,9 @@ import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { Card, Collapsible, Row, Text } from '@trezor/components';
 import { TokenIconSet } from '@trezor/product-components';
 
+import { EXPANDABLE_ASSET_ROW_TOKENS_HEADER_HEIGHT } from 'src/components/suite/asset-picker/constants';
 import { type TokensWithRates } from 'src/utils/wallet/tokenUtils';
 
-import { EXPANDABLE_ASSET_ROW_TOKENS_HEADER_HEIGHT } from '../../../constants';
 import { AssetRowToken } from '../AssetRowToken/AssetRowToken';
 
 // Don't use `Collapsible.Content`, it's not optimized for larger content.

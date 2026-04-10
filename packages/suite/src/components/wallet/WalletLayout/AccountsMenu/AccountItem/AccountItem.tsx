@@ -4,14 +4,14 @@ import { Box, Column, GhostContainer, TOOLTIP_DELAY_NORMAL, Tooltip } from '@tre
 import { exhaustive } from '@trezor/type-utils';
 
 import { useGoToWithAnalytics } from 'src/components/suite/layouts/SuiteLayout/PageHeader/useGoToWithAnalytics';
+import { CollapsedSidebarOnly } from 'src/components/suite/layouts/SuiteLayout/Sidebar/CollapsedSidebarOnly';
+import { ExpandedSidebarOnly } from 'src/components/suite/layouts/SuiteLayout/Sidebar/ExpandedSidebarOnly';
 import { useAnalytics } from 'src/support/useAnalytics';
 import { type Account, type AccountItemType } from 'src/types/wallet';
 
 import { AccountItemLogo } from './AccountItemLogo/AccountItemLogo';
 import { AccountItemContent } from './AccountRow/AccountItemContent/AccountItemContent';
 import { AccountRow } from './AccountRow/AccountRow';
-import { CollapsedSidebarOnly } from '../../../../suite/layouts/SuiteLayout/Sidebar/CollapsedSidebarOnly';
-import { ExpandedSidebarOnly } from '../../../../suite/layouts/SuiteLayout/Sidebar/ExpandedSidebarOnly';
 
 function getRoute(type: AccountItemType) {
     switch (type) {
