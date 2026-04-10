@@ -3,11 +3,11 @@ import { changeCoinVisibility } from '../../src/settings/walletSettingsThunks';
 
 export const walletSettingsFixtures = [
     {
-        description: 'Btc should be visible as a default if no initial state provided',
+        description: 'Btc and eth should be visible as a default if no initial state provided',
         initialState: undefined,
         action: () => changeCoinVisibility({ symbol: 'ltc', shouldBeVisible: true }),
         result: {
-            enabledNetworks: ['btc', 'ltc'],
+            enabledNetworks: ['btc', 'eth', 'ltc'],
         },
     },
     {
