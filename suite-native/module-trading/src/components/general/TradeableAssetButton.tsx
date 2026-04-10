@@ -6,7 +6,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { invariant } from '@suite-common/suite-utils';
 import { cryptoIdToSymbol } from '@suite-common/trading';
 import { type NetworkDisplaySymbol, getDisplaySymbol } from '@suite-common/wallet-config';
-import { Box } from '@suite-native/atoms';
+import { Box, buttonSizeToDimensionsMap } from '@suite-native/atoms';
 import { CryptoIcon, Icon } from '@suite-native/icons';
 import { type TradeableAsset } from '@suite-native/trading-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -27,8 +27,7 @@ const GRADIENT_START = { x: 0, y: 0.5 } as const;
 const GRADIENT_END = { x: 1, y: 0.5 } as const;
 
 const buttonStyle = prepareNativeStyle(({ spacings }) => ({
-    height: spacings.sp40,
-    paddingHorizontal: spacings.sp8,
+    ...buttonSizeToDimensionsMap.medium,
     gap: spacings.sp8,
     flexDirection: 'row',
     justifyContent: 'center',
@@ -37,7 +36,7 @@ const buttonStyle = prepareNativeStyle(({ spacings }) => ({
 
 const gradientBackgroundStyle = prepareNativeStyle<{ borderColor: ReturnType<typeof hexToRgba> }>(
     ({ borders }, { borderColor }) => ({
-        borderRadius: borders.radii.round,
+        borderRadius: buttonSizeToDimensionsMap.medium.borderRadius,
         borderWidth: borders.widths.small,
         borderColor,
     }),
@@ -85,11 +84,7 @@ export const TradeableAssetButton = ({
                 accessibilityLabel={accessibilityLabel}
                 testID={testID}
             >
-                <CryptoIcon
-                    symbol={adjustedSymbol}
-                    contractAddress={contractAddress}
-                    size="extraSmall"
-                />
+                <CryptoIcon symbol={adjustedSymbol} contractAddress={contractAddress} size="tiny" />
                 <NetworkSymbolExtendedFormatter
                     symbol={symbol}
                     variant="body-sm-strong"
