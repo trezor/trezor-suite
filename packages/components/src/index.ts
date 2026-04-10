@@ -20,6 +20,13 @@ export { Button, type ButtonProps, type ButtonIntent } from './components/button
 export { IconButton, type IconButtonProps } from './components/buttons/IconButton/IconButton';
 export * from './components/Icon/Icon';
 export {
+    Illustration,
+    allowedIllustrationFrameProps,
+    type IllustrationProps,
+    type IllustrationName,
+} from './components/Illustration/Illustration';
+export { illustrationIntents, type IllustrationIntent } from './components/Illustration/types';
+export {
     ComponentWithSubIcon,
     type ComponentWithSubIconProps,
 } from './components/ComponentWithSubIcon/ComponentWithSubIcon';
