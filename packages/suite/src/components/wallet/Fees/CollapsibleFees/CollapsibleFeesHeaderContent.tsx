@@ -31,7 +31,11 @@ export const CollapsibleFeesHeaderContent = ({
             gap={12}
             data-testid="@wallet/fees/collapsible-fees-toggle"
         >
-            <CollapsibleFeesHeader label={label} typographyStyle={headerTypographyStyle} />
+            <CollapsibleFeesHeader
+                label={label}
+                typographyStyle={headerTypographyStyle}
+                supportsAdjustableFees={supportsAdjustableFees}
+            />
             <Row gap={16}>
                 {networkType === 'tron' ? (
                     <TronFee typographyStyle={headerTypographyStyle} />
