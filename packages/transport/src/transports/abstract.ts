@@ -41,7 +41,7 @@ export interface AbstractTransportParams {
     id: string;
 }
 
-export const isTransportInstance = (transport?: unknown): transport is AbstractTransport => {
+export const isTransportInstance = (transport?: AbstractTransport) => {
     const requiredMethods = [
         'init',
         'enumerate',

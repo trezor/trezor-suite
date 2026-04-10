@@ -10,8 +10,6 @@ import * as payments from './payments';
 import * as script from './script';
 
 export { Transaction } from './transaction';
-export { TxWeightCalculator } from './txWeightCalculator';
-export type { TxInput, TxOutput } from './transaction';
 
 export {
     address,

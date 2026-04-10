@@ -1,22 +1,6 @@
 {
     "extends": "./tsconfig.json",
     "compilerOptions": {
-        "disableSourceOfProjectReferenceRedirect": true,
-        "baseUrl": ".",
-        "paths": {
-            "@suite-native/state": [
-                "../state/libDev/src/index.d.ts"
-            ],
-            "@suite-native/state/*": [
-                "../state/libDev/*",
-                "../state/libDev/src/*"
-            ],
-            "@trezor/connect": [
-                "../../packages/connect/libDev/src/index.d.ts"
-            ],
-            "@trezor/connect/*": [
-                "../../packages/connect/libDev/src/*"
-            ]
-        }
+        "disableSourceOfProjectReferenceRedirect": true
     }
 }

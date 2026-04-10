@@ -1,16 +1,6 @@
 {
     "extends": "../../tsconfig.base.json",
-    "compilerOptions": {
-        "outDir": "libDev",
-        "rootDir": ".",
-        "baseUrl": ".",
-        "paths": {
-            "@suite-native/atoms": [
-                "./src/index.ts"
-            ],
-            "@suite-native/atoms/*": ["./src/*"]
-        }
-    },
+    "compilerOptions": { "outDir": "libDev" },
     "include": ["src", "redux.d.ts"],
     "references": [
         {

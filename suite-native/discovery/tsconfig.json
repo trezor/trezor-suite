@@ -1,18 +1,6 @@
 {
     "extends": "../../tsconfig.base.json",
-    "compilerOptions": {
-        "outDir": "libDev",
-        "rootDir": ".",
-        "baseUrl": ".",
-        "paths": {
-            "@suite-native/discovery": [
-                "./src/index.ts"
-            ],
-            "@suite-native/discovery/*": [
-                "./src/*"
-            ]
-        }
-    },
+    "compilerOptions": { "outDir": "libDev" },
     "include": ["src"],
     "references": [
         { "path": "../../suite-common/device" },

@@ -29,20 +29,6 @@ type KnownTransport = Exclude<
     'NativeUsbTransport' | 'BluetoothTransport' | 'NativeBluetoothTransport'
 >;
 
-type ConnectTransportInstance = {
-    name: Transport['name'];
-    getMessage: (message?: string) => boolean;
-    updateMessages: (messages: Record<string, any>) => void;
-    init: (...args: any[]) => unknown;
-    enumerate: (...args: any[]) => unknown;
-    listen: (...args: any[]) => unknown;
-    acquire: (...args: any[]) => unknown;
-    release: (...args: any[]) => unknown;
-    send: (...args: any[]) => unknown;
-    receive: (...args: any[]) => unknown;
-    call: (...args: any[]) => unknown;
-};
-
 export type ThpSettings = {
     hostName?: string; // displayed on Trezor during pairing process.
     appName?: string; // displayed on Trezor during pairing process. fallbacks to Manifest['appName']
@@ -52,8 +38,8 @@ export type ThpSettings = {
 
 export type ConnectSettingsTransport =
     | KnownTransport
-    | ConnectTransportInstance
-    | (new (...args: any[]) => ConnectTransportInstance);
+    | Transport
+    | (new (...args: any[]) => Transport);
 
 export interface ConnectSettingsPublic {
     manifest?: Manifest;

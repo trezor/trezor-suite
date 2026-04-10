@@ -1,12 +1,6 @@
 {
     "extends": "./tsconfig.json",
     "compilerOptions": {
-        "disableSourceOfProjectReferenceRedirect": true,
-        "baseUrl": ".",
-        "paths": {
-            "src/*": [
-                "../../packages/suite/libDev/src/*"
-            ]
-        }
+        "disableSourceOfProjectReferenceRedirect": true
     }
 }

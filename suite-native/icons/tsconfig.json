@@ -1,16 +1,6 @@
 {
     "extends": "../../tsconfig.base.json",
-    "compilerOptions": {
-        "outDir": "libDev",
-        "rootDir": ".",
-        "baseUrl": ".",
-        "paths": {
-            "@suite-native/icons": [
-                "./src/index.ts"
-            ],
-            "@suite-native/icons/*": ["./src/*"]
-        }
-    },
+    "compilerOptions": { "outDir": "libDev" },
     "include": ["src"],
     "references": [
         { "path": "../../suite-common/icons" },

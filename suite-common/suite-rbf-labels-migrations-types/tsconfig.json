@@ -1,18 +1,6 @@
 {
     "extends": "../../tsconfig.base.json",
-    "compilerOptions": {
-        "outDir": "libDev",
-        "rootDir": ".",
-        "baseUrl": ".",
-        "paths": {
-            "@suite-common/suite-rbf-labels-migrations-types": [
-                "./src/index.ts"
-            ],
-            "@suite-common/suite-rbf-labels-migrations-types/*": [
-                "./src/*"
-            ]
-        }
-    },
+    "compilerOptions": { "outDir": "libDev" },
     "include": ["src"],
     "references": [
         { "path": "../suite-sync-storage" },

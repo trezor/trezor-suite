@@ -1,18 +1,6 @@
 {
     "extends": "../../tsconfig.base.json",
-    "compilerOptions": {
-        "outDir": "libDev",
-        "rootDir": ".",
-        "baseUrl": ".",
-        "paths": {
-            "@suite-native/device-authorization": [
-                "./src/index.ts"
-            ],
-            "@suite-native/device-authorization/*": [
-                "./src/*"
-            ]
-        }
-    },
+    "compilerOptions": { "outDir": "libDev" },
     "include": ["src", "redux.d.ts"],
     "references": [
         { "path": "../../suite-common/device" },

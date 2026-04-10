@@ -24,14 +24,14 @@ chrome.runtime.onInstalled.addListener((details: chrome.runtime.InstalledDetails
                 showOnTrezor: true,
                 path: "m/49'/0'/0'/0/0",
                 coin: 'btc',
-            }).then((res: unknown) => {
+            }).then(res => {
                 sendResponse(res); // Send the response back to the sender
             });
 
             // Return true to indicate you want to send a response asynchronously
             return true;
         } else if (message.action === 'getFeatures') {
-            TrezorConnect.getFeatures().then((res: unknown) => {
+            TrezorConnect.getFeatures().then(res => {
                 sendResponse(res); // Send the response back to the sender
             });
 

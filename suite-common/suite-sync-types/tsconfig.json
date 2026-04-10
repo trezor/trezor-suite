@@ -1,18 +1,6 @@
 {
     "extends": "../../tsconfig.base.json",
-    "compilerOptions": {
-        "outDir": "libDev",
-        "rootDir": ".",
-        "baseUrl": ".",
-        "paths": {
-            "@suite-common/suite-sync-types": [
-                "./src/index.ts"
-            ],
-            "@suite-common/suite-sync-types/*": [
-                "./src/*"
-            ]
-        }
-    },
+    "compilerOptions": { "outDir": "libDev" },
     "include": ["src", "redux.d.ts"],
     "references": [
         {
