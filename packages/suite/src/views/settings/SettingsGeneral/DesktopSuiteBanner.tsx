@@ -11,10 +11,10 @@ import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { spacings, spacingsPx } from '@trezor/theme';
 import { SUITE_URL } from '@trezor/urls';
 
+import { useExternalLink } from 'src/hooks/suite';
 import { useDispatch } from 'src/hooks/suite/useDispatch';
 import { useAnalytics } from 'src/support/useAnalytics';
 
-import { useExternalLink } from '../../../hooks/suite';
 import { bannerAnimationConfig } from '../../dashboard/banner-animations';
 
 const Container = styled(motion.div)`

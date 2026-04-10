@@ -5,8 +5,9 @@ import { Card, Column, Icon, List, Modal, Paragraph } from '@trezor/components';
 import { type StaticSessionId } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
 
-import { useDispatch, useSelector } from '../../../../hooks/suite';
-import { useSuiteServices } from '../../../../support/SuiteServicesProvider';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSuiteServices } from 'src/support/SuiteServicesProvider';
+
 import { suiteSyncErrorTranslationKeyMap } from '../suiteSyncErrorTranslationKeyMap';
 
 type SuiteSyncTurnOnAndFwUpgradeModalProps = {

@@ -3,9 +3,8 @@ import { openModal } from '@suite/modal';
 import { Button, ButtonGroup, Tooltip } from '@trezor/components';
 import { type DeviceModelInternal, hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 
+import { getHomescreens } from 'src/constants/suite/homescreens';
 import { useDevice, useDispatch } from 'src/hooks/suite';
-
-import { getHomescreens } from '../../../../constants/suite/homescreens';
 
 type ChangeHomescreenButtonsParams = {
     deviceModelInternal: DeviceModelInternal;

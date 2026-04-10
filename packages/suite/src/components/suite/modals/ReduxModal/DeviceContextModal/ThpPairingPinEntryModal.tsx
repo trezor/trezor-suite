@@ -4,7 +4,7 @@ import { Translation, messages } from '@suite/intl';
 import { Box, Modal } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 
-import { ThpPairingCodeEntry } from '../../../../connection/thp/ThpPairingCodeEntry';
+import { ThpPairingCodeEntry } from 'src/components/connection/thp/ThpPairingCodeEntry';
 
 export const ThpPairingPinEntryModal = () => {
     const intl = useIntl();

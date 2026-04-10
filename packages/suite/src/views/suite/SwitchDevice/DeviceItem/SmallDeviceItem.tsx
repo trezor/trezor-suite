@@ -4,9 +4,10 @@ import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { Image, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
+import { useSelector } from 'src/hooks/suite';
+
 import { DeviceConnectionText } from './DeviceConnectionText';
 import { DeviceDetail } from './DeviceDetail';
-import { useSelector } from '../../../../hooks/suite';
 
 type SmallDeviceItemProps = {
     forceAlternativeDeviceLabel?: string;

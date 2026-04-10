@@ -5,9 +5,10 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import { type StaticSessionId } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
 
+import { updateShowEnableSuiteSyncModal } from 'src/actions/suiteSync/suiteSyncSlice';
+import { type Dispatch } from 'src/types/suite';
+
 import { suiteSyncErrorTranslationKeyMap } from './suiteSyncErrorTranslationKeyMap';
-import { updateShowEnableSuiteSyncModal } from '../../../actions/suiteSync/suiteSyncSlice';
-import { type Dispatch } from '../../../types/suite';
 
 type SuiteSyncErrorHandler = {
     error: EnsureWalletSuiteSyncOnErrors | SuiteSyncUpdateError;

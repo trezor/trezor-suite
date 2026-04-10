@@ -17,6 +17,7 @@ import { buildCurrencyOptions, buildCurrencyShortOption } from '@suite-common/wa
 import { isBaseCurrencyCode } from '@trezor/blockchain-link-types';
 
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import {
     type TradingAllFormProps,
     type TradingFormInputCurrencyProps,
@@ -28,8 +29,6 @@ import {
     isTradingExchangeContext,
     isTradingSellContext,
 } from 'src/utils/wallet/trading/tradingTypingUtils';
-
-import { useBitcoinAmountUnit } from '../../../../../../hooks/wallet/useBitcoinAmountUnit';
 
 export const TradingFormInputCurrency = ({
     width,

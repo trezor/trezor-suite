@@ -28,9 +28,8 @@ import {
 import { PROTO } from '@trezor/connect';
 import { type DeepPartial } from '@trezor/type-utils';
 
+import { type AppState } from 'src/reducers/store';
 import { extraDependencies } from 'src/support/extraDependencies';
-
-import { type AppState } from '../../../reducers/store';
 
 const sendFormReducer = prepareSendFormReducer(extraDependencies);
 

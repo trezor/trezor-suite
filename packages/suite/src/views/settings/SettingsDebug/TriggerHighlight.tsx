@@ -1,7 +1,7 @@
 import { SettingsAnchor, goto } from '@suite/router';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
-import { useDispatch } from '../../../hooks/suite';
+import { useDispatch } from 'src/hooks/suite';
 
 export const TriggerHighlight = () => {
     const dispatch = useDispatch();

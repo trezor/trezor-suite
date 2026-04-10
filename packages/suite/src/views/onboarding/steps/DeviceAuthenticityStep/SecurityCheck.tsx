@@ -42,12 +42,12 @@ import { SecurityCheckLayout } from 'src/components/suite/SecurityCheck/Security
 import { ContactSupport } from 'src/components/suite/SecurityCheck/deviceCompromisedCtas';
 import { useDispatch, useLayoutSize, useOnboarding, useSelector } from 'src/hooks/suite';
 import { selectIsOnboardingActive } from 'src/reducers/onboarding/onboardingReducer';
+import { ContentFlex, useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
+import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
 import { useAnalytics } from 'src/support/useAnalytics';
 
 import { SecurityChecklist } from './SecurityChecklist';
 import { type SecurityChecklistItem } from './types';
-import { ContentFlex, useIsContentBelowBreakpoint } from '../../../../support/suite/ContentFlex';
-import { useResponsiveContext } from '../../../../support/suite/ResponsiveContext';
 
 import { DeviceAuthenticityStep } from './index';
 

@@ -7,9 +7,8 @@ import { type ArrayElement } from '@trezor/type-utils';
 
 import { selectIsLegacyLabelingVisible } from 'src/actions/labels/selectIsLegacyLabelingVisible';
 import { Address, AddressLabeling } from 'src/components/suite';
+import { useSelector } from 'src/hooks/suite';
 import { type WalletAccountTransaction } from 'src/types/wallet';
-
-import { useSelector } from '../../../../hooks/suite';
 
 type TargetAddressLabelProps = {
     symbol: NetworkSymbol;

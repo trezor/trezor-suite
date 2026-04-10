@@ -1,8 +1,7 @@
 import type { RouterAppWithParams } from '@suite/router';
 
+import { selectShouldDisplayDeviceCompromised } from 'src/selectors/suite/suiteAuthenticityChecksSelectors';
 import type { AppState } from 'src/types/suite';
-
-import { selectShouldDisplayDeviceCompromised } from '../../../selectors/suite/suiteAuthenticityChecksSelectors';
 
 const ROUTES_TO_SKIP_FIRMWARE_CHECK: RouterAppWithParams['app'][] = [
     'settings',

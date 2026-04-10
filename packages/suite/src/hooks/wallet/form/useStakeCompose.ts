@@ -14,9 +14,8 @@ import { type FeeLevel } from '@trezor/connect';
 import { useDebounce } from '@trezor/react-utils';
 
 import { composeTransaction } from 'src/actions/wallet/stakeActions';
+import { type StakeContextValues } from 'src/components/earn/forms/SupplyFormContext';
 import { useDispatch } from 'src/hooks/suite';
-
-import { type StakeContextValues } from '../../../components/earn/forms/SupplyFormContext';
 
 const DEFAULT_FIELD = 'outputs.0.amount';
 

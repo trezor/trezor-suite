@@ -9,9 +9,9 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 import { type AppState } from 'src/reducers/store';
 import { initialAppState } from 'src/support/tests/__fixtures__/defaultAppState';
 import { configureStore } from 'src/support/tests/configureStore';
+import { extraDependenciesDesktopMock } from 'src/support/tests/extraDependenciesDesktop.mock';
 import { renderWithProviders } from 'src/support/tests/hooksHelper';
 
-import { extraDependenciesDesktopMock } from '../../../../support/tests/extraDependenciesDesktop.mock';
 import { DeviceCompromised } from '../DeviceCompromised';
 
 jest.mock('@suite-common/tx-simulation', () => ({}));

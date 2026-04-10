@@ -16,11 +16,11 @@ import { AccountTypeDescription } from 'src/components/suite/modals/ReduxModal/U
 import { WalletLayout } from 'src/components/wallet';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { useReceiveDisabled } from 'src/hooks/suite/useReceiveDisabled';
+import { ContentFlex, useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 
 import { CoinjoinLogs } from './CoinjoinLogs';
 import { CoinjoinSetup } from './CoinjoinSetup/CoinjoinSetup';
 import { RescanAccount } from './RescanAccount';
-import { ContentFlex, useIsContentBelowBreakpoint } from '../../../support/suite/ContentFlex';
 import { Bip329Labels } from '../labels/Bip329Labels';
 
 const Heading = styled.h3`

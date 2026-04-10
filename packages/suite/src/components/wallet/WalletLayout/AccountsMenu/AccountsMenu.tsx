@@ -8,12 +8,12 @@ import { useScrollShadow } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
 import { ReduxAccountSearchProvider } from 'src/hooks/suite/useAccountSearch';
+import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
 
 import { AccountsList } from './AccountsList';
 import { AccountsMenuHeader } from './AccountsMenuHeader';
 import { AccountsMenuNotice } from './AccountsMenuNotice';
 import { RefreshAfterDiscoveryNeeded } from './RefreshAfterDiscoveryNeeded';
-import { useResponsiveContext } from '../../../../support/suite/ResponsiveContext';
 
 const ScrollContainer = styled.div`
     height: auto;

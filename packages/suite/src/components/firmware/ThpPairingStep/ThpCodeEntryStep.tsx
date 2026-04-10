@@ -4,7 +4,7 @@ import { Translation } from '@suite/intl';
 import { Card, Column, Modal, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { ThpPairingCodeEntry } from '../../../components/connection/thp/ThpPairingCodeEntry';
+import { ThpPairingCodeEntry } from 'src/components/connection/thp/ThpPairingCodeEntry';
 
 type ThpCodeEntryStepProps = {
     modalHeading: ReactNode;

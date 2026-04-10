@@ -14,8 +14,8 @@ import { type StaticSessionId } from '@trezor/connect';
 import {
     type DesktopSuiteSyncRootState,
     selectDesktopSuiteSyncInteraction,
-} from '../../../../actions/suiteSync/suiteSyncSlice';
-import { type SuiteRootState } from '../../../../reducers/suite/suiteReducer';
+} from 'src/actions/suiteSync/suiteSyncSlice';
+import { type SuiteRootState } from 'src/reducers/suite/suiteReducer';
 
 export const selectIsLabelActionEnabled = (
     state: WithSuiteSyncAndDeviceState &

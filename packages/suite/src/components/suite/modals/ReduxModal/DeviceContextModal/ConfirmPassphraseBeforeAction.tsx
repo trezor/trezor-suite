@@ -11,10 +11,10 @@ import { Column, H3, Paragraph } from '@trezor/components';
 import TrezorConnect, { UI_RESPONSE } from '@trezor/connect';
 
 import { useSelector } from 'src/hooks/suite';
+import { CardWithDevice } from 'src/views/suite/SwitchDevice/CardWithDevice';
+import { SwitchDeviceModal } from 'src/views/suite/SwitchDevice/SwitchDeviceModal';
 
 import { PassphraseInputCard } from './PassphraseInputCard';
-import { CardWithDevice } from '../../../../../views/suite/SwitchDevice/CardWithDevice';
-import { SwitchDeviceModal } from '../../../../../views/suite/SwitchDevice/SwitchDeviceModal';
 
 export const ConfirmPassphraseBeforeAction = () => {
     const device = useSelector(selectSelectedDevice);

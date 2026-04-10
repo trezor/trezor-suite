@@ -16,10 +16,11 @@ import {
 import { Banner, Column, Modal } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { CancelTxContext } from 'src/hooks/wallet/useCancelTxContext';
+
 import { CancelTransaction } from './CancelTransaction';
 import { CancelTransactionButton } from './CancelTransactionButton';
-import { useDispatch, useSelector } from '../../../../../../../hooks/suite';
-import { CancelTxContext } from '../../../../../../../hooks/wallet/useCancelTxContext';
 import { AffectedTransactions } from '../AffectedTransactions/AffectedTransactions';
 import { ReplaceByFeeFailedOriginalTxConfirmed } from '../ReplaceByFeeFailedOriginalTxConfirmed';
 import { TxDetailModalBase } from '../TxDetailModalBase';

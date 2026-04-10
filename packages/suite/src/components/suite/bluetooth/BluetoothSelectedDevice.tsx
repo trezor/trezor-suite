@@ -4,10 +4,11 @@ import { Translation } from '@suite/intl';
 import { type DeviceBluetoothConnectionStatusType } from '@suite-common/bluetooth';
 import { Banner, Card, Modal, Row } from '@trezor/components';
 
+import { type DesktopBluetoothDevice } from 'src/actions/bluetooth/DesktopBluetoothDevice';
+
 import { BluetoothDeviceComponent } from './BluetoothDeviceComponent';
 import { BluetoothTips } from './BluetoothTips';
 import { PairingState } from './PairingState';
-import { type DesktopBluetoothDevice } from '../../../actions/bluetooth/DesktopBluetoothDevice';
 
 export type OkComponentProps = {
     device: DesktopBluetoothDevice;

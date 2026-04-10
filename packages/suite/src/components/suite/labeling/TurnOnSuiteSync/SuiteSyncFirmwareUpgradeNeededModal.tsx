@@ -4,7 +4,7 @@ import { selectDeviceByStaticSessionId, selectDeviceLabelOrNameById } from '@sui
 import { Card, Modal, Paragraph } from '@trezor/components';
 import { type StaticSessionId } from '@trezor/connect';
 
-import { useDispatch, useSelector } from '../../../../hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 
 type SuiteSyncFirmwareUpgradeNeededModalProps = {
     onClose: () => void;

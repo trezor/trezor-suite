@@ -5,9 +5,9 @@ import { selectDevices, selectSelectedDevice } from '@suite-common/device';
 import { type FirmwareStatus } from '@suite-common/suite-types';
 import { Modal, Tooltip } from '@trezor/components';
 
-import { updateAnalytics } from '../../../actions/onboarding/onboardingActions';
-import { PrerequisitesGuide } from '../../../components/suite';
-import { useSelector } from '../../../hooks/suite';
+import { updateAnalytics } from 'src/actions/onboarding/onboardingActions';
+import { PrerequisitesGuide } from 'src/components/suite';
+import { useSelector } from 'src/hooks/suite';
 
 type StepInitialProps = {
     onClose: () => void;

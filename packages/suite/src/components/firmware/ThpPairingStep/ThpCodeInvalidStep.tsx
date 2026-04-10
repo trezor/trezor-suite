@@ -4,9 +4,9 @@ import { Translation } from '@suite/intl';
 import { Card, Column, Modal, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { startThpSessionThunk } from '../../../actions/thp/startThpSessionThunk';
-import { ThpPairingFailedForFirmwareInstallation } from '../../../components/connection/thp/ThpPairingFailedForFirmwareInstallation';
-import { useDispatch } from '../../../hooks/suite';
+import { startThpSessionThunk } from 'src/actions/thp/startThpSessionThunk';
+import { ThpPairingFailedForFirmwareInstallation } from 'src/components/connection/thp/ThpPairingFailedForFirmwareInstallation';
+import { useDispatch } from 'src/hooks/suite';
 
 type ThpCodeInvalidStepProps = {
     modalHeading: ReactNode;

@@ -16,6 +16,7 @@ import {
     zIndices,
 } from '@trezor/theme';
 
+import { TrafficLightOffset } from 'src/components/suite/TrafficLightOffset';
 import { AccountsMenu } from 'src/components/wallet/WalletLayout/AccountsMenu/AccountsMenu';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectShouldDisplayDeviceCompromised } from 'src/selectors/suite/suiteAuthenticityChecksSelectors';
@@ -31,7 +32,6 @@ import {
     SIDEBAR_MAX_WIDTH,
     SIDEBAR_MIN_WIDTH,
 } from './consts';
-import { TrafficLightOffset } from '../../../TrafficLightOffset';
 import { DeviceSelector } from '../DeviceSelector/DeviceSelector';
 
 const Container = styled.nav<{ $elevation: Elevation }>`

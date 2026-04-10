@@ -17,12 +17,13 @@ import { type SuiteSyncState, type WithSuiteSyncAndDeviceState } from '@suite-co
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { type StaticSessionId, type UnavailableCapabilities } from '@trezor/connect';
 
-import { selectIsLabelActionEnabled } from './selectIsLabelActionEnabled';
 import {
     type DesktopSuiteSyncRootState,
     initialSuiteSyncDesktopState,
-} from '../../../../actions/suiteSync/suiteSyncSlice';
-import { type SuiteRootState, suiteInitialState } from '../../../../reducers/suite/suiteReducer';
+} from 'src/actions/suiteSync/suiteSyncSlice';
+import { type SuiteRootState, suiteInitialState } from 'src/reducers/suite/suiteReducer';
+
+import { selectIsLabelActionEnabled } from './selectIsLabelActionEnabled';
 
 /**
  * It was really hard to mock the state for metadata. So I statically mocked

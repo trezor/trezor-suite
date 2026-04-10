@@ -7,9 +7,8 @@ import { ActionColumn, TextColumn } from '@trezor/product-components';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
+import { useSelector } from 'src/hooks/suite';
 import { selectDesktopUpdateEnabled } from 'src/reducers/suite/desktopUpdateReducer';
-
-import { useSelector } from '../../../hooks/suite';
 
 const PositionedSwitch = styled.div`
     align-self: center;

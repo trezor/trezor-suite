@@ -5,8 +5,8 @@ import {
     installUpdate,
     justUpdated,
     setIsUpdateModalVisible,
-} from '../../../../../../../actions/suite/desktopUpdateActions';
-import { type Dispatch } from '../../../../../../../types/suite';
+} from 'src/actions/suite/desktopUpdateActions';
+import { type Dispatch } from 'src/types/suite';
 
 export type UpdateStatusDevice = 'up-to-date' | 'update-available' | 'disconnected';
 

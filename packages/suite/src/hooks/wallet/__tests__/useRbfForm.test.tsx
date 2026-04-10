@@ -9,6 +9,7 @@ import TrezorConnect from '@trezor/connect';
 
 import { ChangeFee } from 'src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/ChangeFee/ChangeFee';
 import { ReplaceTxButton } from 'src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/ChangeFee/ReplaceTxButton';
+import { extraDependenciesDesktopMock } from 'src/support/tests/extraDependenciesDesktop.mock';
 import {
     actionSequence,
     findByTestId,
@@ -16,7 +17,6 @@ import {
     waitForLoader,
 } from 'src/support/tests/hooksHelper';
 
-import { extraDependenciesDesktopMock } from '../../../support/tests/extraDependenciesDesktop.mock';
 import * as fixtures from '../__fixtures__/useRbfForm';
 import { RbfContext, useRbf, useRbfContext } from '../useRbfForm';
 

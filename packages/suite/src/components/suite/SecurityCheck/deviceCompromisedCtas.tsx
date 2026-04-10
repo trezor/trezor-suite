@@ -8,7 +8,7 @@ import {
     type Url,
 } from '@trezor/urls';
 
-import { useDevice, useDispatch } from '../../../hooks/suite';
+import { useDevice, useDispatch } from 'src/hooks/suite';
 
 type ContactSupportProps = {
     supportUrl: Url;

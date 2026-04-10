@@ -21,13 +21,12 @@ import {
 import { HELP_CENTER_BIP329_URL } from '@trezor/urls';
 
 import { exportMetadataToBip329File } from 'src/actions/labels/exportMetadataToBip329File';
+import { selectIsLegacyLabelingVisible } from 'src/actions/labels/selectIsLegacyLabelingVisible';
 import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 import { suiteSyncErrorHandler } from 'src/components/suite/labeling/suiteSyncErrorHandler';
 import { useDefaultAccountLabel, useDispatch, useSelector } from 'src/hooks/suite';
 import { useSuiteServices } from 'src/support/SuiteServicesProvider';
 import { ContentFlex, useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
-
-import { selectIsLegacyLabelingVisible } from '../../../actions/labels/selectIsLegacyLabelingVisible';
 
 type Bip329LabelsProps = {
     account: Account;

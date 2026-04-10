@@ -10,6 +10,7 @@ import { Banner, Column } from '@trezor/components';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { spacings, spacingsPx } from '@trezor/theme';
 
+import { ConfirmEvmExplanationModal } from 'src/components/suite/modals/ConfirmEvmExplanationModal';
 import { WalletLayout } from 'src/components/wallet';
 import { useSelector } from 'src/hooks/suite';
 import { SendContext, type UseSendFormProps, useSendForm } from 'src/hooks/wallet/useSendForm';
@@ -24,7 +25,6 @@ import { SendFees } from './SendFees';
 import { SendHeader } from './SendHeader';
 import { SendRaw } from './SendRaw';
 import { TotalSent } from './TotalSent/TotalSent';
-import { ConfirmEvmExplanationModal } from '../../../components/suite/modals/ConfirmEvmExplanationModal';
 
 const FormGrid = styled.div`
     gap: ${spacingsPx.md};

@@ -5,9 +5,10 @@ import { prepareSuiteSettingsReducer } from '@suite/settings';
 import { suiteSyncReducer } from '@suite-common/suite-sync';
 import { configureMockStore, initPreloadedState } from '@suite-common/test-utils';
 
-import suiteReducer from '../../../reducers/suite/suiteReducer';
-import { accountsReducer, transactionsReducer } from '../../../reducers/wallet';
-import { extraDependencies } from '../../../support/extraDependencies';
+import suiteReducer from 'src/reducers/suite/suiteReducer';
+import { accountsReducer, transactionsReducer } from 'src/reducers/wallet';
+import { extraDependencies } from 'src/support/extraDependencies';
+
 import {
     accountReceivingCoins,
     accountSpendingCoins,

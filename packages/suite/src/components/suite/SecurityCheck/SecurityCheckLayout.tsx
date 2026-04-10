@@ -10,8 +10,7 @@ import {
 import { borders, breakpoints, spacings } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
-
-import { useResponsiveContext } from '../../../support/suite/ResponsiveContext';
+import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
 
 type SecurityCheckLayoutProps = {
     isFailed?: boolean;

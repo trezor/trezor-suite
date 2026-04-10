@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 
 import { useDebounce } from '@trezor/react-utils';
 
-import { useResponsiveContext } from '../../../../support/suite/ResponsiveContext';
+import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
 
 const THRESHOLD_SIZE = 8;
 

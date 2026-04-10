@@ -11,13 +11,13 @@ import {
 import { Button, Row } from '@trezor/components';
 import { type BluetoothDeviceId } from '@trezor/connect';
 
+import { type DesktopBluetoothDevice } from 'src/actions/bluetooth/DesktopBluetoothDevice';
+import { selectConnectingDevices } from 'src/actions/bluetooth/desktopBluetoothSelectors';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
 
 import { BluetoothDeviceComponent } from './BluetoothDeviceComponent';
 import { PairingState } from './PairingState';
-import { type DesktopBluetoothDevice } from '../../../actions/bluetooth/DesktopBluetoothDevice';
-import { selectConnectingDevices } from '../../../actions/bluetooth/desktopBluetoothSelectors';
-import { useDispatch, useSelector } from '../../../hooks/suite';
 import { useConnectionGlobalModalContext } from '../../connection/context/ConnectionGlobalModalContext';
 
 const connectionStatusMap: Record<

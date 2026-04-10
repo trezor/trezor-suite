@@ -4,11 +4,11 @@ import { type TrezorDevice } from '@suite-common/suite-types';
 import { Banner, Column, H3 } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
+import { useSelector } from 'src/hooks/suite';
 import { CardWithDevice } from 'src/views/suite/SwitchDevice/CardWithDevice';
 import { SwitchDeviceModal } from 'src/views/suite/SwitchDevice/SwitchDeviceModal';
 
 import { PassphraseInputCard } from './PassphraseInputCard';
-import { useSelector } from '../../../../../hooks/suite';
 
 type PassphraseWalletConfirmationProps = {
     onSubmit: (value: string, passphraseOnDevice?: boolean) => void;

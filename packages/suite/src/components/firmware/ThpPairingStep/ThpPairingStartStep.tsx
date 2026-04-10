@@ -4,8 +4,8 @@ import { Translation } from '@suite/intl';
 import { Card, Column, Modal, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { startThpSessionThunk } from '../../../actions/thp/startThpSessionThunk';
-import { useDispatch } from '../../../hooks/suite';
+import { startThpSessionThunk } from 'src/actions/thp/startThpSessionThunk';
+import { useDispatch } from 'src/hooks/suite';
 
 type ThpPairingStartStepProps = {
     modalHeading: ReactNode;
