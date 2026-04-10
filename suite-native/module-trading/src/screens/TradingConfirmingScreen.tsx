@@ -11,6 +11,7 @@ import {
     type TradingStackParamList,
     type TradingStackRoutes,
 } from '@suite-native/navigation';
+import { useTransactionStatusOverride } from '@suite-native/trading-debug';
 import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
 
 import { ConfirmationQuoteDebugView } from '../components/exchange/Confirmation/ConfirmationQuoteDebugView';
@@ -54,9 +55,11 @@ export const TradingConfirmingScreen = ({
     const sendAccount = useSelector(selectExchangeSelectedSendAccount);
     const accountKey = sendAccount?.key ?? ('' as AccountKey);
 
-    const { status, approvalTxid } = useAllowanceTxTracking({
+    const { status: originalStatus, approvalTxid } = useAllowanceTxTracking({
         accountKey,
     });
+
+    const { status, forceStatus } = useTransactionStatusOverride(originalStatus);
 
     // TODO 25742 use this
     const _transaction = useSelector((state: TransactionsRootState & AccountsRootState) =>
@@ -77,7 +80,7 @@ export const TradingConfirmingScreen = ({
     return (
         <TradingDeviceConnectionGuard>
             <Screen header={<ExchangeConfirmationHeader variant={variant} />}>
-                <ConfirmationQuoteDebugView />
+                <ConfirmationQuoteDebugView forceStatus={forceStatus} />
                 <ExchangeConfirmationTitle
                     variant={variant}
                     isFailed={isFailed}

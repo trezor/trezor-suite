@@ -9,6 +9,7 @@
         {
             "path": "../../packages/styles-native"
         },
+        { "path": "../../suite-common/trading" },
         {
             "path": "../../suite-common/wallet-core"
         },
