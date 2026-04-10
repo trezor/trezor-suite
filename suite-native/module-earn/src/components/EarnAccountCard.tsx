@@ -2,11 +2,18 @@ import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { Box, Card, PressableOpacity, Text, VStack } from '@suite-native/atoms';
 import { CryptoIconWithNetwork, Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { selectApy, useSelector as useStakingSelector } from '@suite-native/staking';
+import {
+    selectApy,
+    selectCanClaimByAccountKey,
+    selectClaimableAmountByAccountKey,
+    useSelector as useStakingSelector,
+} from '@suite-native/staking';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { CRYPTO_BALANCE_DECIMALS } from '../constants';
+import { CRYPTO_BALANCE_DECIMALS, isMobileSupportedStakingNetwork } from '../constants';
+import { useMessageSystemStaking } from '../hooks/useMessageSystemStaking';
 import { type EarnDepositsCardActiveItem } from '../types';
+import { EarnClaimAlert } from './EarnClaimAlert';
 
 const itemCardStyle = prepareNativeStyle(utils => ({
     marginBottom: utils.spacings.sp16,
@@ -45,12 +52,14 @@ export const formatActiveItemBalance = (item: EarnDepositsCardActiveItem) => {
 type EarnAccountCardProps = {
     item: EarnDepositsCardActiveItem;
     onPress: () => void;
+    onClaimPress: () => void;
 };
 
-export const EarnAccountCard = ({ item, onPress }: EarnAccountCardProps) => {
+export const EarnAccountCard = ({ item, onPress, onClaimPress }: EarnAccountCardProps) => {
     const { applyStyle } = useNativeStyles();
     const isStakingItem = item.type === 'staking';
     const isStablecoinYieldItem = item.type === 'stablecoin-yield';
+    const isSupportedStaking = isStakingItem && isMobileSupportedStakingNetwork(item.symbol);
 
     const apy = useStakingSelector(state =>
         isStakingItem
@@ -59,6 +68,18 @@ export const EarnAccountCard = ({ item, onPress }: EarnAccountCardProps) => {
     );
 
     const apyValue = isStakingItem ? apy : item.apy;
+    const canClaim = useStakingSelector(state =>
+        isSupportedStaking ? selectCanClaimByAccountKey(state, item.accountKey) : false,
+    );
+
+    const claimableAmount = useStakingSelector(state =>
+        isSupportedStaking ? selectClaimableAmountByAccountKey(state, item.accountKey) : '0',
+    );
+
+    const { isClaimingDisabled } = useMessageSystemStaking(isStakingItem ? item.symbol : null);
+
+    const showClaimAlert = canClaim && !isClaimingDisabled;
+
     const symbol = isStakingItem ? item.symbol : item.networkSymbol;
     const contractAddress = isStakingItem ? undefined : item.contractAddress;
     const secondaryDescription = isStablecoinYieldItem
@@ -98,6 +119,13 @@ export const EarnAccountCard = ({ item, onPress }: EarnAccountCardProps) => {
                     <Icon name="caretRight" size="mediumLarge" color="iconSubdued" />
                 </Box>
             </PressableOpacity>
+            {showClaimAlert && (
+                <EarnClaimAlert
+                    claimableAmount={claimableAmount}
+                    symbol={symbol}
+                    onClaimPress={onClaimPress}
+                />
+            )}
         </Card>
     );
 };
