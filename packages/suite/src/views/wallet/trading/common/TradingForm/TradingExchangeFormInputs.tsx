@@ -24,6 +24,7 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useAnalytics } from 'src/support/useAnalytics';
+import { getSelectedQuote } from 'src/utils/wallet/trading/tradingTypingUtils';
 import { TradingBalance } from 'src/views/wallet/trading/common/TradingBalance';
 import { TradingFormInputFiatCrypto } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputFiatCrypto';
 
@@ -206,7 +207,7 @@ export const TradingExchangeFormInputs = () => {
                 composedLevels={composedLevels}
                 changeFeeLevel={changeFeeLevel}
             />
-            <TradingSelectedOfferProvider />
+            <TradingSelectedOfferProvider exchange={getSelectedQuote(context)?.exchange} />
         </TradingFormCard>
     );
 };

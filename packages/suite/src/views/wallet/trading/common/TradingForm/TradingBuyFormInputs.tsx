@@ -18,6 +18,7 @@ import { useCurrentRef } from '@trezor/react-utils';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { getSelectedQuote } from 'src/utils/wallet/trading/tradingTypingUtils';
 import { TradingBalance } from 'src/views/wallet/trading/common/TradingBalance';
 import { TradingFormInputCountry } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCountry/TradingFormInputCountry';
 import { TradingFormInputFiatCrypto } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputFiatCrypto';
@@ -122,7 +123,7 @@ export const TradingBuyFormInputs = () => {
                         country={selectedCountry}
                     />
                 )}
-                <TradingSelectedOfferProvider />
+                <TradingSelectedOfferProvider exchange={getSelectedQuote(context)?.exchange} />
             </TradingFormCard>
         </Column>
     );

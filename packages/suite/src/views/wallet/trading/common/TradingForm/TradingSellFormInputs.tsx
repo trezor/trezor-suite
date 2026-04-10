@@ -20,6 +20,7 @@ import { useSelector } from 'src/hooks/suite';
 import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useAnalytics } from 'src/support/useAnalytics';
+import { getSelectedQuote } from 'src/utils/wallet/trading/tradingTypingUtils';
 import { TradingBalance } from 'src/views/wallet/trading/common/TradingBalance';
 import { TradingFormInputCountry } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCountry/TradingFormInputCountry';
 import { TradingFormInputFiatCrypto } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputFiatCrypto';
@@ -173,7 +174,7 @@ export const TradingSellFormInputs = () => {
                         country={selectedCountry}
                     />
                 )}
-                <TradingSelectedOfferProvider />
+                <TradingSelectedOfferProvider exchange={getSelectedQuote(context)?.exchange} />
             </TradingFormCard>
         </Column>
     );

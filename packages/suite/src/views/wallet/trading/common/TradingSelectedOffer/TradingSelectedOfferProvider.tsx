@@ -11,7 +11,6 @@ import {
     isTradingExchangeContext,
 } from 'src/utils/wallet/trading/tradingTypingUtils';
 
-import { getSelectedQuote } from '../TradingForm/TradingFormOffer';
 import { TradingUtilsProvider } from '../TradingUtils/TradingUtilsProvider';
 
 interface TradingReceiveAddressEmptyProps {
@@ -28,17 +27,17 @@ export const TradingReceiveAddressEmpty = ({ title, text }: TradingReceiveAddres
     </Column>
 );
 
-export const TradingSelectedOfferProvider = () => {
+interface TradingSelectedOfferProviderProps {
+    exchange: string | undefined;
+}
+
+export const TradingSelectedOfferProvider = ({ exchange }: TradingSelectedOfferProviderProps) => {
     const context = useTradingFormContext();
-    const { preselectedQuote, isAmountEmpty, form, type, goToOffers } = context;
+    const { isAmountEmpty, form, type, goToOffers } = context;
 
     const providers = getProvidersInfoProps(context);
-    const quote = preselectedQuote ?? getSelectedQuote(context);
 
-    useProviderMetadataChangeEffect(
-        type,
-        quote == null || isAmountEmpty ? undefined : quote?.exchange,
-    );
+    useProviderMetadataChangeEffect(type, isAmountEmpty ? undefined : exchange);
 
     const onGoToOffers = async () => {
         await goToOffers();
@@ -49,7 +48,7 @@ export const TradingSelectedOfferProvider = () => {
         !!context.tradingReceiveAddress.receiveAddress;
 
     const shouldHideProvider = isTradingBuyContext(context) && !isReceiveAddressSelected;
-    const hasNoQuoteOrAmount = quote == null || isAmountEmpty;
+    const hasNoQuoteOrAmount = exchange == null || isAmountEmpty;
 
     if (hasNoQuoteOrAmount || shouldHideProvider) {
         return;
@@ -72,10 +71,7 @@ export const TradingSelectedOfferProvider = () => {
                     ) : (
                         <>
                             <Text typographyStyle="body-md" as="div">
-                                <TradingUtilsProvider
-                                    providers={providers}
-                                    exchange={quote.exchange}
-                                />
+                                <TradingUtilsProvider providers={providers} exchange={exchange} />
                             </Text>
                             <Icon
                                 name="caretRight"

@@ -1,6 +1,7 @@
 import { type BuyTrade, type CryptoId, type ExchangeTrade, type SellFiatTrade } from 'invity-api';
 
 import {
+    TRADING_EXCHANGE_FORM_DEX,
     TRADING_FORM_FIAT_CURRENCY_SELECT,
     TRADING_FORM_OUTPUT_CURRENCY,
     type TradingBuyType,
@@ -157,6 +158,52 @@ export const getSelectedTradingCurrency = (
 
     return context.getValues(TRADING_FORM_FIAT_CURRENCY_SELECT);
 };
+
+const getQuotesFilteredByPaymentMethod = (
+    quotes: BuyTrade[] | SellFiatTrade[] | undefined,
+    paymentMethod: string | undefined,
+) =>
+    quotes?.filter(quote => (paymentMethod ? quote.paymentMethod === paymentMethod : true)) ??
+    ([] as BuyTrade[] | SellFiatTrade[]);
+
+const getQuotesFilteredByProviderAndPaymentMethod = (
+    quotes: BuyTrade[] | SellFiatTrade[] | undefined,
+    provider: string | undefined,
+    paymentMethod: string | undefined,
+) =>
+    getQuotesFilteredByPaymentMethod(quotes, paymentMethod).filter(quote =>
+        provider ? quote.exchange === provider : true,
+    );
+
+export function getSelectedQuote<T extends TradingType>(
+    context: TradingFormContextValues<T>,
+): TradingTradeMapProps[T] | undefined {
+    if (context.preselectedQuote) {
+        return context.preselectedQuote as TradingTradeMapProps[T];
+    }
+
+    if (!isTradingExchangeContext(context)) {
+        const { provider, paymentMethod } = context.getValues();
+
+        return getQuotesFilteredByProviderAndPaymentMethod(
+            context.quotes,
+            provider,
+            paymentMethod?.value,
+        )?.[0] as TradingTradeMapProps[T] | undefined;
+    }
+
+    const { provider, exchangeType } = context.getValues();
+    const isDex = exchangeType === TRADING_EXCHANGE_FORM_DEX;
+    const quotes = isDex ? context.dexQuotes : context.cexQuotes;
+
+    if (!provider) {
+        return quotes?.[0] as TradingTradeMapProps[T] | undefined;
+    }
+
+    return (quotes?.find(quote => quote.exchange === provider) ?? quotes?.[0]) as
+        | TradingTradeMapProps[T]
+        | undefined;
+}
 
 export const getPaymentMethod = (
     selectedQuote: SellFiatTrade | ExchangeTrade | BuyTrade,

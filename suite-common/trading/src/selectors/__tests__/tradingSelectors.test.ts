@@ -46,6 +46,7 @@ import {
     selectTradingBuyQuotes,
     selectTradingBuyQuotesByPaymentMethod,
     selectTradingBuyQuotesRequest,
+    selectTradingBuySelectedOrBestQuote,
     selectTradingBuySelectedQuote,
     selectTradingBuySupportedCryptoIds,
     selectTradingCoinInfoByCryptoId,
@@ -68,6 +69,7 @@ import {
     selectTradingExchangeProviders,
     selectTradingExchangeQuotes,
     selectTradingExchangeQuotesRequest,
+    selectTradingExchangeSelectedOrBestQuote,
     selectTradingExchangeSelectedQuote,
     selectTradingExchangeSellCryptoIds,
     selectTradingIsSlip24Allowed,
@@ -92,6 +94,7 @@ import {
     selectTradingSellQuotes,
     selectTradingSellQuotesByPaymentMethod,
     selectTradingSellQuotesRequest,
+    selectTradingSellSelectedOrBestQuote,
     selectTradingSellSelectedQuote,
     selectTradingSellSellCryptoIds,
     selectTradingSellSupportedCryptoIds,
@@ -1071,6 +1074,33 @@ describe('tradingSelectors', () => {
         });
     });
 
+    describe(selectTradingBuySelectedOrBestQuote.name, () => {
+        it('returns preselected quote when available', () => {
+            state.wallet.trading.buy.preselectedQuote = state.wallet.trading.buy.quotes[0];
+            state.wallet.trading.buy.selectedQuote = state.wallet.trading.buy.quotes[1];
+
+            expect(selectTradingBuySelectedOrBestQuote(state)).toBe(
+                state.wallet.trading.buy.preselectedQuote,
+            );
+        });
+
+        it('falls back to selected quote when preselected quote is missing', () => {
+            state.wallet.trading.buy.preselectedQuote = undefined;
+            state.wallet.trading.buy.selectedQuote = state.wallet.trading.buy.quotes[1];
+
+            expect(selectTradingBuySelectedOrBestQuote(state)).toBe(
+                state.wallet.trading.buy.selectedQuote,
+            );
+        });
+
+        it('falls back to best quote when selected and preselected quotes are missing', () => {
+            state.wallet.trading.buy.preselectedQuote = undefined;
+            state.wallet.trading.buy.selectedQuote = undefined;
+
+            expect(selectTradingBuySelectedOrBestQuote(state)?.orderId).toBe('orderId3');
+        });
+    });
+
     describe('bestBuyQuotePerPaymentMethodProjection', () => {
         it('should return the first valid quote for each payment method sorted by rate', () => {
             const quotes = state.wallet.trading.buy.quotes.map(quote => ({
@@ -1464,6 +1494,65 @@ describe('tradingSelectors', () => {
             state.wallet.trading.sell.quotes = [];
 
             expect(selectTradingSellBestQuote(state)).toBeUndefined();
+        });
+    });
+
+    describe(selectTradingSellSelectedOrBestQuote.name, () => {
+        it('returns preselected quote when available', () => {
+            state.wallet.trading.sell.preselectedQuote = state.wallet.trading.sell.quotes[0];
+            state.wallet.trading.sell.selectedQuote = state.wallet.trading.sell.quotes[1];
+
+            expect(selectTradingSellSelectedOrBestQuote(state)).toBe(
+                state.wallet.trading.sell.preselectedQuote,
+            );
+        });
+
+        it('falls back to selected quote when preselected quote is missing', () => {
+            state.wallet.trading.sell.preselectedQuote = undefined;
+            state.wallet.trading.sell.selectedQuote = state.wallet.trading.sell.quotes[1];
+
+            expect(selectTradingSellSelectedOrBestQuote(state)).toBe(
+                state.wallet.trading.sell.selectedQuote,
+            );
+        });
+
+        it('falls back to best quote when selected and preselected quotes are missing', () => {
+            state.wallet.trading.sell.preselectedQuote = undefined;
+            state.wallet.trading.sell.selectedQuote = undefined;
+
+            expect(selectTradingSellSelectedOrBestQuote(state)?.orderId).toBe(
+                '05a031d0-2c7a-4e7f-9001-67cec1253fae',
+            );
+        });
+    });
+
+    describe(selectTradingExchangeSelectedOrBestQuote.name, () => {
+        it('returns preselected quote when available', () => {
+            state.wallet.trading.exchange.preselectedQuote = {
+                ...invityAPIFixtures.exchangeTrade,
+                exchange: 'preselected-exchange',
+            };
+            state.wallet.trading.exchange.selectedQuote = invityAPIFixtures.exchangeTrade;
+
+            expect(selectTradingExchangeSelectedOrBestQuote(state)).toBe(
+                state.wallet.trading.exchange.preselectedQuote,
+            );
+        });
+
+        it('falls back to selected quote when preselected quote is missing', () => {
+            state.wallet.trading.exchange.preselectedQuote = undefined;
+            state.wallet.trading.exchange.selectedQuote = invityAPIFixtures.exchangeTrade;
+
+            expect(selectTradingExchangeSelectedOrBestQuote(state)).toBe(
+                state.wallet.trading.exchange.selectedQuote,
+            );
+        });
+
+        it('returns undefined when preselected and selected quotes are missing', () => {
+            state.wallet.trading.exchange.preselectedQuote = undefined;
+            state.wallet.trading.exchange.selectedQuote = undefined;
+
+            expect(selectTradingExchangeSelectedOrBestQuote(state)).toBeUndefined();
         });
     });
 

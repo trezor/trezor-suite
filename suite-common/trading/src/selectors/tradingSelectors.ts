@@ -687,6 +687,19 @@ export const selectTradingSellBestQuote = createMemoizedSelector(
     quotes => getBestRatedQuote(quotes, 'sell'),
 );
 
+export const selectTradingBuySelectedOrBestQuote = (state: TradingRootState) =>
+    selectTradingBuyPreselectedQuote(state) ??
+    selectTradingBuySelectedQuote(state) ??
+    selectTradingBuyBestQuote(state);
+
+export const selectTradingSellSelectedOrBestQuote = (state: TradingRootState) =>
+    selectTradingSellPreselectedQuote(state) ??
+    selectTradingSellSelectedQuote(state) ??
+    selectTradingSellBestQuote(state);
+
+export const selectTradingExchangeSelectedOrBestQuote = (state: TradingRootState) =>
+    selectTradingExchangePreselectedQuote(state) ?? selectTradingExchangeSelectedQuote(state);
+
 export const selectTradingBuyAccountKey = (state: TradingRootState) =>
     state.wallet.trading.buy.tradingAccountKey;
 export const selectTradingBuyReceiveAccountKey = (state: TradingRootState) =>
