@@ -82,7 +82,6 @@ export const SearchableAccountsListHeader = ({
                             onPress={() => setIsSearchActive(true)}
                             intent="neutral"
                             priority="secondary"
-                            size="medium"
                         />
                         <Text variant="body-md-strong" numberOfLines={1} adjustsFontSizeToFit>
                             {title}
