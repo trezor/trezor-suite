@@ -24,6 +24,7 @@
         "react-redux": "9.2.0"
     },
     "devDependencies": {
+        "@suite-common/trading": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-native/intl": "workspace:*",
         "@suite-native/test-utils": "workspace:*",
