@@ -1,10 +1,11 @@
+import { useTranslation } from '@suite/intl';
 import { type StaticSessionId } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
 
 import { selectDesktopSuiteSyncInteraction } from 'src/actions/suiteSync/suiteSyncSlice';
+import { FirmwareUpgradeNeededModal } from 'src/components/suite/modals/FirmwareUpgradeNeededModal';
 import { useSelector } from 'src/hooks/suite';
 
-import { SuiteSyncFirmwareUpgradeNeededModal } from './SuiteSyncFirmwareUpgradeNeededModal';
 import { SuiteSyncTurnOnModal } from './SuiteSyncTurnOnModal';
 import { SuiteSyncTurnOnUnsupportedModal } from './SuiteSyncTurnOnUnsupportedModal';
 
@@ -19,6 +20,7 @@ export const TurnOnSuiteSyncModals = ({
     onSuccess,
     deviceStaticSessionId,
 }: TurnOnSuiteSyncModalsProps) => {
+    const { translationString } = useTranslation();
     const suiteSyncInteraction = useSelector(state =>
         selectDesktopSuiteSyncInteraction(state, deviceStaticSessionId),
     );
@@ -44,9 +46,9 @@ export const TurnOnSuiteSyncModals = ({
 
         case 'firmware-upgrade-needed':
             return (
-                <SuiteSyncFirmwareUpgradeNeededModal
+                <FirmwareUpgradeNeededModal
                     onClose={onClose}
-                    deviceStaticSessionId={deviceStaticSessionId}
+                    featureName={translationString('TR_LABELING_SECURE_SYNC')}
                 />
             );
         default:
