@@ -66,20 +66,44 @@ jobs:
               node(id: $content_id) {
                 ... on Issue {
                   projectItems(first: 10) {
-                    nodes { id project { id } }
+                    nodes {
+                      id
+                      project { id }
+                      fieldValues(first: 20) {
+                        nodes {
+                          ... on ProjectV2ItemFieldSingleSelectValue {
+                            field { ... on ProjectV2SingleSelectField { id } }
+                            optionId
+                          }
+                        }
+                      }
+                    }
                   }
                 }
                 ... on PullRequest {
                   projectItems(first: 10) {
-                    nodes { id project { id } }
+                    nodes {
+                      id
+                      project { id }
+                      fieldValues(first: 20) {
+                        nodes {
+                          ... on ProjectV2ItemFieldSingleSelectValue {
+                            field { ... on ProjectV2SingleSelectField { id } }
+                            optionId
+                          }
+                        }
+                      }
+                    }
                   }
                 }
               }
             }' \
             -f content_id="$CONTENT_ID")
 
-          ITEM_ID=$(echo "$RESPONSE" | jq -r \
-            ".data.node.projectItems.nodes[] | select(.project.id == \"${{ env.PROJECT_ID }}\") | .id")
+          PROJECT_ITEM=$(echo "$RESPONSE" | jq -r \
+            ".data.node.projectItems.nodes[] | select(.project.id == \"${{ env.PROJECT_ID }}\")")
+
+          ITEM_ID=$(echo "$PROJECT_ITEM" | jq -r '.id')
 
           if [ -z "$ITEM_ID" ] || [ "$ITEM_ID" = "null" ]; then
             echo "Item not found in project — it may not be tracked. Skipping."
@@ -87,13 +111,27 @@ jobs:
             exit 0
           fi
 
+          CURRENT_STATUS=$(echo "$PROJECT_ITEM" | jq -r \
+            ".fieldValues.nodes[] | select(.field?.id == \"${{ env.STATUS_FIELD_ID }}\") | .optionId // empty")
+
           echo "ITEM_ID=$ITEM_ID" >> $GITHUB_ENV
           echo "item_found=true" >> $GITHUB_OUTPUT
+          echo "current_status=$CURRENT_STATUS" >> $GITHUB_OUTPUT
+          echo "Current status option ID: $CURRENT_STATUS"
+
+      - name: Skip if already approved
+        if: |
+          (steps.context.outputs.event_type == 'issue' || steps.context.outputs.is_merged == 'true') &&
+          steps.get-item.outputs.item_found == 'true' &&
+          steps.get-item.outputs.current_status == env.APPROVED_OPTION_ID
+        run: |
+          echo "⏭️ Status is already 'Approved' — skipping update."
 
       - name: Determine target status
         if: |
           (steps.context.outputs.event_type == 'issue' || steps.context.outputs.is_merged == 'true') &&
-          steps.get-item.outputs.item_found == 'true'
+          steps.get-item.outputs.item_found == 'true' &&
+          steps.get-item.outputs.current_status != env.APPROVED_OPTION_ID
         id: target-status
         run: |
           if [ "${{ steps.context.outputs.has_noqa_label }}" == "true" ]; then
@@ -107,7 +145,8 @@ jobs:
       - name: Set project status
         if: |
           (steps.context.outputs.event_type == 'issue' || steps.context.outputs.is_merged == 'true') &&
-          steps.get-item.outputs.item_found == 'true'
+          steps.get-item.outputs.item_found == 'true' &&
+          steps.get-item.outputs.current_status != env.APPROVED_OPTION_ID
         env:
           GH_TOKEN: ${{ steps.trezor-bot-token.outputs.token }}
         run: |
