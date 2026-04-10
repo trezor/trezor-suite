@@ -51,6 +51,9 @@ export const BackupSeedCards = () => {
                                     onChange={event => {
                                         event.preventDefault();
                                     }}
+                                    onClick={event => {
+                                        event.preventDefault();
+                                    }}
                                 />
                                 <Icon name={item.icon} size={24} />
                             </Row>
