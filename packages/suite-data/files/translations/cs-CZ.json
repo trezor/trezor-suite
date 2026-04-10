@@ -2346,7 +2346,7 @@
   "TR_TURN_ON_SECURE_SYNC": "Zapnout",
   "TR_TURN_ON_SECURE_SYNC_DATA_LABELS": "Pojmenujte své peněženky, přizpůsobte si účty a označte si transakce.",
   "TR_TURN_ON_SECURE_SYNC_DATA_STORED_LOCALLY": "Bezpečně synchronizujte vaše označení a názvy mezi mobilním zařízením a počítačem.",
-  "TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_DESCRIPTION": "Pro používání Suite Sync je potřeba aktualizovat firmware zařízení {name}.",
+  "TR_FW_UPDATE_REQUIRED_MODAL_DESCRIPTION": "Pro používání {featureName} je potřeba aktualizovat firmware zařízení {name}.",
   "TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_HEADING": "Je vyžadována aktualizace firmwaru",
   "TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_NOT_NOW": "Teď ne",
   "TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_UPGRADE": "Aktualizovat",

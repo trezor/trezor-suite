@@ -1,35 +1,21 @@
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
-import { selectDeviceByStaticSessionId, selectDeviceLabelOrNameById } from '@suite-common/device';
+import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
 import { Card, Modal, Paragraph } from '@trezor/components';
-import { type StaticSessionId } from '@trezor/connect';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
-type SuiteSyncFirmwareUpgradeNeededModalProps = {
+type FirmwareUpgradeNeededModalProps = {
     onClose: () => void;
-    deviceStaticSessionId: StaticSessionId | null;
+    featureName: string;
 };
 
-export const SuiteSyncFirmwareUpgradeNeededModal = ({
+export const FirmwareUpgradeNeededModal = ({
     onClose,
-    deviceStaticSessionId,
-}: SuiteSyncFirmwareUpgradeNeededModalProps) => {
+    featureName,
+}: FirmwareUpgradeNeededModalProps) => {
     const dispatch = useDispatch();
-
-    const device = useSelector(state =>
-        deviceStaticSessionId !== null
-            ? selectDeviceByStaticSessionId(state, deviceStaticSessionId)
-            : undefined,
-    );
-
-    const deviceLabel = useSelector(state =>
-        device !== undefined ? selectDeviceLabelOrNameById(state, device.id) : null,
-    );
-
-    if (device === undefined) {
-        return null;
-    }
+    const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
 
     const onClick = () => {
         // Update will disconnect device in the process and our Firmware Update
@@ -58,8 +44,8 @@ export const SuiteSyncFirmwareUpgradeNeededModal = ({
             <Card paddingType="large">
                 <Paragraph intent="neutral" priority="secondary">
                     <Translation
-                        id="TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_DESCRIPTION"
-                        values={{ name: deviceLabel }}
+                        id="TR_FW_UPDATE_REQUIRED_MODAL_DESCRIPTION"
+                        values={{ name: deviceLabel, featureName }}
                     />
                 </Paragraph>
             </Card>

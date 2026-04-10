@@ -2345,7 +2345,7 @@
   "TR_TURN_ON_SECURE_SYNC": "Activer",
   "TR_TURN_ON_SECURE_SYNC_DATA_LABELS": "Nommez vos portefeuilles, personnalisez vos comptes et étiquetez vos transactions.",
   "TR_TURN_ON_SECURE_SYNC_DATA_STORED_LOCALLY": "Synchronisez vos étiquettes et vos noms en toute sécurité entre votre appareil mobile et votre ordinateur.",
-  "TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_DESCRIPTION": "Mettez à jour le firmware de l'appareil {name} pour utiliser Suite Sync.",
+  "TR_FW_UPDATE_REQUIRED_MODAL_DESCRIPTION": "Mettez à jour le firmware de l'appareil {name} pour utiliser {featureName}.",
   "TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_HEADING": "Mise à jour du firmware requise",
   "TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_NOT_NOW": "Pas maintenant",
   "TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_UPGRADE": "Mettre à jour",

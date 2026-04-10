@@ -2439,7 +2439,7 @@
   "TR_TURN_ON_SECURE_SYNC": "켜기",
   "TR_TURN_ON_SECURE_SYNC_DATA_LABELS": "지갑에 이름을 붙이고, 계정을 개인화하며, 거래에 라벨을 지정해 정리된 상태를 유지하세요.",
   "TR_TURN_ON_SECURE_SYNC_DATA_STORED_LOCALLY": "데이터는 로컬에만 저장되며, 승인된 기기와만 동기화됩니다.",
-  "TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_DESCRIPTION": "Suite Sync를 사용하려면 {name} 기기의 펌웨어를 업데이트하세요.",
+  "TR_FW_UPDATE_REQUIRED_MODAL_DESCRIPTION": "{featureName}를 사용하려면 {name} 기기의 펌웨어를 업데이트하세요.",
   "TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_HEADING": "펌웨어 업데이트 필요",
   "TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_NOT_NOW": "나중에",
   "TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_UPGRADE": "업데이트",

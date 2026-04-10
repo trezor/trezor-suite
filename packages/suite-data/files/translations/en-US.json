@@ -2447,7 +2447,7 @@
   "TR_TURN_ON_SECURE_SYNC": "Turn on",
   "TR_TURN_ON_SECURE_SYNC_DATA_LABELS": "Name your wallets, personalize accounts, and label transactions.",
   "TR_TURN_ON_SECURE_SYNC_DATA_STORED_LOCALLY": "Securely sync your labels and names between mobile & desktop.",
-  "TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_DESCRIPTION": "Update firmware on the device {name} to use Suite Sync.",
+  "TR_FW_UPDATE_REQUIRED_MODAL_DESCRIPTION": "Update firmware on the device {name} to use {featureName}.",
   "TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_HEADING": "Firmware update required",
   "TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_NOT_NOW": "Not now",
   "TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_UPGRADE": "Update",
