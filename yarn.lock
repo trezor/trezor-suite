@@ -10893,6 +10893,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-common/illustrations@workspace:*, @suite-common/illustrations@workspace:suite-common/illustrations":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/illustrations@workspace:suite-common/illustrations"
+  dependencies:
+    chalk: "npm:^5.6.2"
+    prettier: "npm:^3.8.1"
+    svgo: "npm:^4.0.1"
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/logger@workspace:*, @suite-common/logger@workspace:suite-common/logger":
   version: 0.0.0-use.local
   resolution: "@suite-common/logger@workspace:suite-common/logger"
@@ -15087,6 +15097,7 @@ __metadata:
     "@storybook/react": "npm:^10.2.8"
     "@storybook/react-webpack5": "npm:^10.2.8"
     "@suite-common/icons": "workspace:*"
+    "@suite-common/illustrations": "workspace:*"
     "@testing-library/dom": "npm:^10.4.1"
     "@testing-library/jest-dom": "npm:6.9.1"
     "@testing-library/react": "npm:^16.3.2"

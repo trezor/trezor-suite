@@ -1,10 +1,8 @@
 import { useEffect } from 'react';
 
 import { Translation } from '@suite/intl';
-import { Column, Modal, Paragraph } from '@trezor/components';
+import { Column, Illustration, Modal, Paragraph } from '@trezor/components';
 import TrezorConnect, { DEVICE, DEVICE_EVENT, type DeviceEventMessage } from '@trezor/connect';
-
-import { DisconnectTrezorSvg } from '../DisconnectTrezorSvg';
 
 /**
  * Prompts the user to unplug the device. Calls `onDisconnect` with the
@@ -37,7 +35,7 @@ export const UnplugDeviceModal = ({
     return (
         <Modal width={400} height={420}>
             <Column gap={24} alignItems="center">
-                <DisconnectTrezorSvg />
+                <Illustration name="disconnectTrezor" width={224} />
                 <Column gap={8} alignItems="center">
                     <Paragraph typographyStyle="headline-md" align="center">
                         <Translation id="TR_FORGET_DEVICE_MODAL_FINISH_FORGETTING_HEADING" />

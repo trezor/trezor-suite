@@ -2,16 +2,12 @@ import { motion } from 'framer-motion';
 
 import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
-import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
-import { type TrezorDevice } from '@suite-common/suite-types';
 import {
     deviceNeedsAttention,
-    getDeviceInternalModel,
     getStatus,
     shouldDisplayInitialWarningIcon,
 } from '@suite-common/suite-utils';
-import { Box, Column, Paragraph, Text, motionEasing } from '@trezor/components';
-import { DeviceWithScene } from '@trezor/product-components';
+import { Column, Illustration, Paragraph, Text, motionEasing } from '@trezor/components';
 
 import { getMessageId } from 'src/components/suite/getMessageId';
 import { useSelector } from 'src/hooks/suite';
@@ -44,28 +40,10 @@ const BottomAnimation = ({ children }: { children: React.ReactNode }) => (
     </motion.div>
 );
 
-const DeviceImage = ({ selectedDevice }: { selectedDevice: TrezorDevice | undefined }) => {
-    const selectedDeviceModelInternal = selectedDevice
-        ? getDeviceInternalModel(selectedDevice)
-        : DEFAULT_FLAGSHIP_MODEL;
-
-    return (
-        <Box margin={{ top: 40, bottom: 60 }}>
-            <DeviceWithScene
-                objectFit="contain"
-                deviceModel={selectedDeviceModelInternal}
-                unitColor={selectedDevice?.features?.unit_color}
-                height={225}
-            />
-        </Box>
-    );
-};
-
 export const PrerequisitesGuide = ({ showDeviceImage = true }: PrerequisitesGuideProps) => {
     const device = useSelector(selectSelectedDevice);
     const deviceStatus = device ? getStatus(device) : null;
     const prerequisite = useSelector(selectPrerequisite);
-    const selectedDevice = useSelector(selectSelectedDevice);
 
     const showWarning =
         !!(device && deviceStatus && deviceNeedsAttention(deviceStatus)) ||
@@ -83,7 +61,7 @@ export const PrerequisitesGuide = ({ showDeviceImage = true }: PrerequisitesGuid
         <>
             <TopAnimation>
                 <Column alignItems="center">
-                    {showDeviceImage && <DeviceImage selectedDevice={selectedDevice} />}
+                    {showDeviceImage && <Illustration name="connectTrezor" width={350} />}
                     <Text typographyStyle="headline-md" textWrap="balance" align="center">
                         <Translation id={texts.heading} />
                     </Text>
