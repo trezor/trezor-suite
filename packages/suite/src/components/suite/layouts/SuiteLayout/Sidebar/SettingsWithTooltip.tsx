@@ -5,6 +5,7 @@ import { SettingsAnchor, goto, selectRouteName } from '@suite/router';
 import { selectIsDeviceInitialized } from '@suite-common/device';
 import { Button, Column, Link, Paragraph, Text, Tooltip } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
+import { zIndices } from '@trezor/theme';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
@@ -76,6 +77,7 @@ export const SettingsWithTooltip: FC<NavigationItemProps> = props => {
             hasArrow
             placement="bottom-start"
             tooltipMaxWidth={210}
+            zIndex={zIndices.popover}
         >
             <NavigationItem {...props} />
         </Tooltip>
