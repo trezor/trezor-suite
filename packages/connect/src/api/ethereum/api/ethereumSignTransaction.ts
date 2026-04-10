@@ -34,10 +34,12 @@ type Params = {
     | {
           type: 'legacy';
           tx: EthereumTransaction;
+          originalTx: EthereumTransaction;
       }
     | {
           type: 'eip1559';
           tx: EthereumTransactionEIP1559;
+          originalTx: EthereumTransactionEIP1559;
       }
 );
 
@@ -78,6 +80,7 @@ export default class EthereumSignTransaction extends AbstractMethod<
                 ...strip(tx),
                 payment_req: tx.payment_req,
             },
+            originalTx: tx,
             chunkify,
         } as Params;
 
@@ -134,7 +137,7 @@ export default class EthereumSignTransaction extends AbstractMethod<
 
     payloadToPrecomposed() {
         try {
-            const transaction = this.params.tx;
+            const transaction = this.params.originalTx;
             const feePerByte = new BigNumber(transaction.gasPrice || transaction.maxFeePerGas!);
             const fee = feePerByte.multipliedBy(transaction.gasLimit);
             const { data } = transaction;
