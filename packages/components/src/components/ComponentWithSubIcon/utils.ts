@@ -4,13 +4,12 @@ import { type ComponentWithSubIconIntent } from './types';
 
 export const mapIntentToBackgroundColor = (intent: ComponentWithSubIconIntent): Color => {
     const colorMap: Record<ComponentWithSubIconIntent, Color> = {
-        brand: 'baseFillElementBrandBold',
-        neutral: 'baseFillElementContrast',
-        info: 'baseFillElementInfoBold',
-        warning: 'baseFillElementWarningBold',
-        critical: 'baseFillElementNegativeBold',
-        accentViolet: 'baseFillElementAccentVioletBold',
-        accentOrange: 'baseFillElementAccentOrangeBold',
+        brand: 'elementFillBrandBold',
+        neutral: 'elementFillContrast',
+        info: 'elementFillInfoBold',
+        warning: 'elementFillWarningBold',
+        critical: 'elementFillCriticalBold',
+        accentViolet: 'elementFillAccentVioletBold',
     };
 
     return colorMap[intent];
@@ -18,13 +17,12 @@ export const mapIntentToBackgroundColor = (intent: ComponentWithSubIconIntent): 
 
 export const mapIntentToIconColor = (intent: ComponentWithSubIconIntent): Color => {
     const colorMap: Record<ComponentWithSubIconIntent, Color> = {
-        brand: 'baseContentOnActionBrandPrimary',
-        neutral: 'baseContentReversePrimary',
-        info: 'baseContentOnActionInfoPrimary',
-        warning: 'baseContentOnActionWarningPrimary',
-        critical: 'baseContentOnActionNegativePrimary',
-        accentViolet: 'baseContentOnActionAccentVioletPrimary',
-        accentOrange: 'baseContentOnActionAccentOrangePrimary',
+        brand: 'contentButtonBrandPrimary',
+        neutral: 'contentPrimaryInverse',
+        info: 'contentButtonInfoPrimary',
+        warning: 'contentButtonWarningPrimary',
+        critical: 'contentButtonCriticalPrimary',
+        accentViolet: 'contentButtonAccentVioletPrimary',
     };
 
     return colorMap[intent];

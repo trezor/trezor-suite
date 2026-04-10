@@ -15,7 +15,8 @@ export const DangerZoneCard = () => {
                 <Text variant="headline-sm">Danger Zone</Text>
                 <VStack>
                     <Button
-                        colorScheme="redBold"
+                        intent="critical"
+                        priority="primary"
                         onPress={() => {
                             getMMKVStorage().then(mmkv => {
                                 clearStorage({ mmkvInstance: mmkv });
@@ -27,7 +28,8 @@ export const DangerZoneCard = () => {
                 </VStack>
                 <VStack>
                     <Button
-                        colorScheme="redBold"
+                        intent="critical"
+                        priority="primary"
                         onPress={() => dispatch(deviceActions.clearDevicePersistentData())}
                     >
                         Clear app&apos;s device persistent data

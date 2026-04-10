@@ -171,7 +171,7 @@
         "vite-plugin-wasm": "^3.6.0",
         "vitest": "^4.1.0",
         "vm-browserify": "^1.1.2",
-        "web3-utils": "^4.3.2",
+        "web3-utils": "^4.3.3",
         "ws": "^8.18.0"
     },
     "peerDependencies": {

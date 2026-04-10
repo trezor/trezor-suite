@@ -176,8 +176,9 @@ export const TokenSelectionScreen = () => {
                 </Box>
 
                 <Button
-                    colorScheme="tertiaryElevation0"
-                    viewLeft="plus"
+                    intent="neutral"
+                    priority="secondary"
+                    iconLeft="plus"
                     onPress={handleManualActivate}
                     testID="@stellar-token/activate-manually-button"
                 >

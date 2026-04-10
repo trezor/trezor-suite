@@ -187,16 +187,14 @@ export const getStakingDataForNetwork = (
 };
 
 interface GetUnstakingPeriodInDays {
-    networkType?: NetworkType;
-    validatorWithdrawTime?: number | null; // in seconds
-    validatorExitTime?: number | null; // in seconds
+    withdrawTime?: number | null; // in seconds
+    exitTime?: number | null; // in seconds
 }
 
-export const getUnstakingPeriodInDays = ({
-    networkType,
-    validatorWithdrawTime,
-    validatorExitTime,
-}: GetUnstakingPeriodInDays) => {
+export const getUnstakingPeriodInDays = (
+    networkType: NetworkType | undefined,
+    { withdrawTime, exitTime }: GetUnstakingPeriodInDays = {},
+) => {
     if (networkType === 'solana') {
         return SOLANA_EPOCH_DAYS;
     }
@@ -205,13 +203,11 @@ export const getUnstakingPeriodInDays = ({
         return CARDANO_EPOCH_DAYS;
     }
 
-    if (typeof validatorWithdrawTime !== 'number' || typeof validatorExitTime !== 'number') {
+    if (typeof withdrawTime !== 'number' || typeof exitTime !== 'number') {
         return UNSTAKING_ETH_PERIOD;
     }
 
-    const unstakingPeriodInSeconds = new BigNumber(validatorWithdrawTime)
-        .plus(validatorExitTime)
-        .toNumber();
+    const unstakingPeriodInSeconds = new BigNumber(withdrawTime).plus(exitTime).toNumber();
 
     return secondsToDays(unstakingPeriodInSeconds);
 };

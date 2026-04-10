@@ -7,7 +7,6 @@ export const iconCircleIntents = [
     'warning',
     'critical',
     'accentViolet',
-    'accentOrange',
 ] as const satisfies UIIntent[];
 export type IconCircleIntent = Extract<UIIntent, (typeof iconCircleIntents)[number]>;
 

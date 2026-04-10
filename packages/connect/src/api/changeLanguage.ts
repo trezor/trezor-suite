@@ -9,7 +9,11 @@ import { changeLanguage } from '../device/workflow/changeLanguage';
 
 export default class ChangeLanguage extends AbstractMethod<'changeLanguage', ChangeLanguageSchema> {
     constructor(message: MethodMessage<'changeLanguage'>) {
-        super(message);
+        const { payload } = message;
+
+        Assert(ChangeLanguageSchema, payload);
+
+        super(message, payload);
         this.allowDeviceMode = [UI_REQUEST.INITIALIZE, UI_REQUEST.SEEDLESS];
         this.useEmptyPassphrase = true;
         this.skipFinalReload = false;
@@ -17,14 +21,6 @@ export default class ChangeLanguage extends AbstractMethod<'changeLanguage', Cha
     }
     get requiredPermissions(): MethodPermission[] {
         return ['management'];
-    }
-
-    init() {
-        const { payload } = this;
-
-        Assert(ChangeLanguageSchema, payload);
-
-        this.params = payload;
     }
 
     get confirmation() {

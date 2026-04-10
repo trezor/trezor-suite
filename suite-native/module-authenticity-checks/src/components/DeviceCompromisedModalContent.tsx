@@ -50,7 +50,7 @@ export const DeviceCompromisedModalContent = ({
                 <InformativeList />
             </VStack>
             <VStack spacing="sp12">
-                <Button colorScheme="redBold" onPress={handleContactSupportClick}>
+                <Button intent="critical" priority="primary" onPress={handleContactSupportClick}>
                     <Translation id="moduleAuthenticityChecks.deviceCompromised.buttonContactSupport" />
                 </Button>
                 {closeButtonContent}

@@ -133,9 +133,8 @@ const calculateTrxTransfer = (
     bytes: number,
 ): PrecomposedTransaction => {
     const baseFeeInSun = feeLevel.feePerTx || '0';
-    const totalFeeInSun = isNewAccount
-        ? new BigNumber(baseFeeInSun).plus(TRON_ACCOUNT_ACTIVATION_FEE_SUN).toString()
-        : baseFeeInSun;
+    const activationFeeInSun = isNewAccount ? TRON_ACCOUNT_ACTIVATION_FEE_SUN : 0;
+    const totalFeeInSun = new BigNumber(baseFeeInSun).plus(activationFeeInSun).toString();
     const isSendMax = output.type === 'send-max' || output.type === 'send-max-noaddress';
 
     let amount: string;
@@ -160,7 +159,8 @@ const calculateTrxTransfer = (
         type: 'nonfinal' as const,
         totalSpent: calculateTotal(amount, totalFeeInSun),
         max,
-        fee: totalFeeInSun,
+        fee: baseFeeInSun,
+        accountActivationFee: isNewAccount ? String(TRON_ACCOUNT_ACTIVATION_FEE_SUN) : undefined,
         feePerByte: feeLevel.feePerUnit,
         bytes,
         inputs: [],

@@ -77,7 +77,8 @@ export const FirmwareChangelog = ({ ref, onClose }: FirmwareChangelogProps) => {
             <Button
                 onPress={onClose}
                 style={applyStyle(buttonContainerStyle)}
-                colorScheme="tertiaryElevation0"
+                intent="neutral"
+                priority="secondary"
             >
                 <Translation id="generic.buttons.close" />
             </Button>

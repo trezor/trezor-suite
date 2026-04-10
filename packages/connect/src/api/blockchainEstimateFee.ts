@@ -4,6 +4,7 @@ import type { CoinInfo } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 
 import type {
+    MethodContext,
     MethodMessage,
     MethodPermission,
     MethodReturnType,
@@ -23,17 +24,7 @@ type Params = {
 
 export default class BlockchainEstimateFee extends AbstractMethod<'blockchainEstimateFee', Params> {
     constructor(message: MethodMessage<'blockchainEstimateFee'>) {
-        super(message);
-        this.useDevice = false;
-        this.useUi = false;
-    }
-
-    get requiredPermissions(): MethodPermission[] {
-        return [];
-    }
-
-    init() {
-        const { payload } = this;
+        const { payload } = message;
 
         // validate incoming parameters
         validateParams(payload, [
@@ -69,14 +60,22 @@ export default class BlockchainEstimateFee extends AbstractMethod<'blockchainEst
         // validate backend
         isBackendSupported(coinInfo);
 
-        this.params = {
+        const params = {
             coinInfo,
             identity,
             request,
         };
+
+        super(message, params);
+        this.useDevice = false;
+        this.useUi = false;
     }
 
-    async run() {
+    get requiredPermissions(): MethodPermission[] {
+        return [];
+    }
+
+    async run({ sendCoreMessage }: MethodContext) {
         const { coinInfo, identity, request } = this.params;
         const feeInfo: MethodReturnType<typeof this.name> = {
             blockTime: coinInfo.blockTime,
@@ -93,14 +92,14 @@ export default class BlockchainEstimateFee extends AbstractMethod<'blockchainEst
             // In Suite, request.feeLevels: 'smart' is always used to update the fee levels.
             // Only on initial load, request.feeLevels: 'preloaded' is used (see feesThunks in suite-common/wallet-core)
             if (request.feeLevels === 'smart') {
-                const backend = await initBlockchain(coinInfo, this.postMessage, identity);
+                const backend = await initBlockchain(coinInfo, sendCoreMessage, identity);
                 await feeLevelsInstance.load(backend, request);
             }
 
             // the default fee constants from json files
             feeInfo.levels = feeLevelsInstance.levels;
         } else {
-            const backend = await initBlockchain(coinInfo, this.postMessage, identity);
+            const backend = await initBlockchain(coinInfo, sendCoreMessage, identity);
             feeInfo.levels = await backend.estimateFee(request || {});
         }
 

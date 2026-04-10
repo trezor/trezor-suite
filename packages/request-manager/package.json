@@ -19,11 +19,11 @@
         "@trezor/utils": "workspace:*",
         "node-fetch": "2.6.7",
         "socks-proxy-agent": "8.0.5",
-        "ws": "8.18.0"
+        "ws": "^8.18.0"
     },
     "devDependencies": {
         "@trezor/eslint": "workspace:*",
-        "@types/node-fetch": "2.6.12",
-        "ts-node": "10.9.2"
+        "@types/node-fetch": "^2.6.12",
+        "ts-node": "^10.9.2"
     }
 }

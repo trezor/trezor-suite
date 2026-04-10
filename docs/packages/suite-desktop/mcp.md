@@ -5,49 +5,68 @@ Trezor Suite includes a built-in [MCP (Model Context Protocol)](https://modelcon
 ## Enabling the MCP Server
 
 1. Open Trezor Suite Desktop
-2. Go to **Settings → Debug** (debug settings must be enabled)
+2. Go to **Settings → Experimental Features** and enable experimental features
 3. Toggle **MCP Server** on
 
 Once enabled, the server runs at `http://127.0.0.1:21340/mcp`.
 
 ## Client Configuration
 
-Add the following to your MCP client configuration:
+Replace `<token>` with the token shown in Trezor Suite (Settings → Experimental Features → MCP Server). The token is passed as a URL query parameter — no custom headers needed.
+
+### Claude Code
+
+Run in your terminal:
+
+```bash
+claude mcp add trezor-suite http://127.0.0.1:21340/mcp?token=<token> -t http
+```
+
+This adds the server to the current project (local scope). To make it available in all projects, add `-s user`.
+
+> **Troubleshooting:** If you see "SDK auth failed", Claude Code's HTTP transport may be triggering OAuth. Use the `mcp-remote` bridge as a workaround: `claude mcp add-json trezor-suite '{"command":"npx","args":["mcp-remote","http://127.0.0.1:21340/mcp?token=<token>","--transport","http-only","--allow-http"]}'`
+
+### Claude Desktop
+
+Claude Desktop only supports stdio transport, so it needs the `mcp-remote` bridge (requires Node.js). Add this to your config file:
+
+- **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
+- **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
 
 ```json
 {
     "mcpServers": {
         "trezor-suite": {
-            "url": "http://127.0.0.1:21340/mcp",
-            "headers": {
-                "Authorization": "Bearer <token>"
-            }
+            "command": "npx",
+            "args": [
+                "mcp-remote",
+                "http://127.0.0.1:21340/mcp?token=<token>",
+                "--transport",
+                "http-only",
+                "--allow-http"
+            ]
         }
     }
 }
 ```
 
-Replace `<token>` with the token shown in Trezor Suite (Settings → Debug → MCP Server). Copy the full config snippet for convenience.
+### Other MCP Clients (Cursor, VS Code, Windsurf)
 
-### Claude Desktop
-
-Add the config to your Claude Desktop configuration file:
-
-- **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
-- **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
-
-### Claude Code
-
-Add the config to one of:
-
-- **Global**: `~/.claude.json`
-- **Project-level**: `.mcp.json` in your project root
+```json
+{
+    "mcpServers": {
+        "trezor-suite": {
+            "url": "http://127.0.0.1:21340/mcp?token=<token>"
+        }
+    }
+}
+```
 
 ### Cursor
 
 1. Open **Cursor Settings**
 2. Navigate to the **MCP** section
-3. Add a new server with the URL `http://127.0.0.1:21340/mcp` and configure the Bearer token header
+3. Add a new server with the URL `http://127.0.0.1:21340/mcp?token=<token>`
 
 ### VS Code (GitHub Copilot)
 
@@ -57,10 +76,7 @@ Create or edit `.vscode/mcp.json` in your workspace:
 {
     "mcpServers": {
         "trezor-suite": {
-            "url": "http://127.0.0.1:21340/mcp",
-            "headers": {
-                "Authorization": "Bearer <token>"
-            }
+            "url": "http://127.0.0.1:21340/mcp?token=<token>"
         }
     }
 }
@@ -68,7 +84,7 @@ Create or edit `.vscode/mcp.json` in your workspace:
 
 ### Windsurf
 
-Add the MCP server via **Windsurf Settings → MCP** using the URL `http://127.0.0.1:21340/mcp`. Configure the Bearer token header with the token from Trezor Suite.
+Add the MCP server via **Windsurf Settings → MCP** using the URL `http://127.0.0.1:21340/mcp?token=<token>`.
 
 ## Available Tools
 

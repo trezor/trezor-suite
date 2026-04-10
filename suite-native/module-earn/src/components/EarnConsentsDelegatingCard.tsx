@@ -115,7 +115,7 @@ export const EarnConsentsDelegatingCard = ({
                 </VStack>
                 <HStack style={applyStyle(buttonsRowStyle)}>
                     <Button
-                        colorScheme="blueBold"
+                        intent="info"
                         onPress={onConfirm}
                         style={applyStyle(confirmButtonStyle)}
                     >

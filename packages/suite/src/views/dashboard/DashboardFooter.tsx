@@ -88,7 +88,7 @@ const StoreBadgeWithQr = ({
                         height={140}
                         width={140}
                         padding={4}
-                        backgroundColor="baseFillElementContrast"
+                        backgroundColor="elementFillContrast"
                         borderRadius={6}
                     >
                         <QrCode value={url} />

@@ -6,16 +6,12 @@ import { DataManager } from '../data/DataManager';
 
 export default class GetSettings extends AbstractMethod<'getSettings'> {
     constructor(message: MethodMessage<'getSettings'>) {
-        super(message);
+        super(message, undefined);
         this.useDevice = false;
         this.useUi = false;
     }
     get requiredPermissions(): MethodPermission[] {
         return ['management'];
-    }
-
-    init() {
-        // Configuration already set in constructor
     }
 
     run() {

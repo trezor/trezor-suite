@@ -51,7 +51,7 @@ export const EarnConsentsScreen = () => {
     };
 
     const entryPeriodInDays = useSelector((state: NativeStakingRootState) =>
-        selectEntryPeriodInDaysBySymbol(state, account.symbol),
+        selectEntryPeriodInDaysBySymbol(state),
     );
 
     const learnMoreUrl = STAKING_LEARN_MORE_URLS[getNetwork(account.symbol).networkType];

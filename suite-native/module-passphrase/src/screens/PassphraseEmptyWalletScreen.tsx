@@ -84,7 +84,7 @@ export const PassphraseEmptyWalletScreen = () => {
                     </Text>
                 </VStack>
                 <Box>
-                    <Button colorScheme="tertiaryElevation0" onPress={handleTryAgain}>
+                    <Button intent="neutral" priority="secondary" onPress={handleTryAgain}>
                         <Translation id="modulePassphrase.emptyPassphraseWallet.expectingPassphraseWallet.button" />
                     </Button>
                 </Box>

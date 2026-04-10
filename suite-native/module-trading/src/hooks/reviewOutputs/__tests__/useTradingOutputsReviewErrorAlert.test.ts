@@ -48,10 +48,10 @@ describe('useTradingOutputsReviewErrorAlert', () => {
             description:
                 'There has been an unexpected error, please try sending your transaction again.',
             primaryButtonTitle: 'Try again',
-            primaryButtonVariant: 'redBold',
+            primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
             onPressPrimaryButton: mockOnRetry,
             secondaryButtonTitle: 'Cancel',
-            secondaryButtonVariant: 'redElevation0',
+            secondaryButtonColorProps: { intent: 'critical', priority: 'secondary' },
             onPressSecondaryButton: mockOnCancel,
         });
     });

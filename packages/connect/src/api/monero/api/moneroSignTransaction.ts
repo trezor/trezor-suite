@@ -62,17 +62,7 @@ export default class MoneroSignTransactionMethod extends AbstractMethod<
     };
 
     constructor(message: MethodMessage<'moneroSignTransaction'>) {
-        super(message);
-        this.requiredDeviceCapabilities = ['Capability_Monero'];
-        this.firmwareRange = getFirmwareRange(
-            this.name,
-            getMiscNetwork('Monero'),
-            this.firmwareRange,
-        );
-    }
-
-    init() {
-        const { payload } = this;
+        const { payload } = message;
 
         // Validate path - must be minimum 3 hardened components
         const path = validatePath(payload.path, 3);
@@ -183,12 +173,21 @@ export default class MoneroSignTransactionMethod extends AbstractMethod<
             return transformedInput;
         });
 
-        this.params = {
+        const params = {
             address_n: path,
             network_type: payload.networkType,
             tsx_data: transformedTsxData,
             inputs: transformedInputs,
         };
+
+        super(message, params);
+
+        this.requiredDeviceCapabilities = ['Capability_Monero'];
+        this.firmwareRange = getFirmwareRange(
+            this.name,
+            getMiscNetwork('Monero'),
+            this.firmwareRange,
+        );
     }
 
     get info() {

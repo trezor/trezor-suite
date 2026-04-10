@@ -14,32 +14,32 @@ export const earnHttpClient = createHttpClient({
     baseUrl: EARN_API_BASE_URL,
 });
 
-export const getStakingBatch = earnHttpClient('/staking', {
-    method: 'POST',
+export const getStakingBatch = earnHttpClient('/', {
+    method: 'GET',
     schema: stakingBatchResponse,
 });
 
-export const getStakingStats = earnHttpClient('/staking/:networkSymbol/stats', {
+export const getStakingStats = earnHttpClient('/:networkSymbol/stats', {
     method: 'GET',
     schema: stakingStatsResponse,
 });
 
-export const getEthereumValidatorsQueue = earnHttpClient('/staking/eth/validators-queue', {
+export const getEthereumValidatorsQueue = earnHttpClient('/eth/validators-queue', {
     method: 'GET',
     schema: stakingEthereumValidatorsQueueResponse,
 });
 
-export const getCardanoPools = earnHttpClient('/staking/ada/pools', {
+export const getCardanoPools = earnHttpClient('/ada/pools', {
     method: 'GET',
     schema: stakingCardanoPoolsResponse,
 });
 
-export const getSolanaRewardsHistory = earnHttpClient('/staking/sol/rewards/:address', {
+export const getSolanaRewardsHistory = earnHttpClient('/sol/rewards/:address', {
     method: 'GET',
     schema: stakingSolanaRewardsHistoryResponse,
 });
 
-export const getSolanaRewardsTotal = earnHttpClient('/staking/sol/rewards/:address/total', {
+export const getSolanaRewardsTotal = earnHttpClient('/sol/rewards/:address/total', {
     method: 'GET',
     schema: stakingSolanaRewardsTotalResponse,
 });

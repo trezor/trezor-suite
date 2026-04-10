@@ -57,7 +57,7 @@ export const DemoAccountQuestionnaireIntroScreen = () => {
                     <Button onPress={handleContinue}>
                         <Translation id="moduleDemoAccountQuestionnaire.intro.primaryCta" />
                     </Button>
-                    <Button colorScheme="tertiaryElevation0" onPress={handleExit}>
+                    <Button intent="neutral" priority="secondary" onPress={handleExit}>
                         <Translation id="moduleDemoAccountQuestionnaire.intro.secondaryCta" />
                     </Button>
                 </VStack>

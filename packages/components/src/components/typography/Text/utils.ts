@@ -9,8 +9,7 @@ const colorMap: Record<Exclude<TextIntent, 'neutral'>, Color> = {
     info: 'textAlertBlue',
     warning: 'textAlertYellow',
     critical: 'textAlertRed',
-    accentViolet: 'baseContentAccentViolet',
-    accentOrange: 'baseContentAccentOrange',
+    accentViolet: 'contentAccentViolet',
 };
 
 const neutralColorMap: Record<TextPriority, Color> = {

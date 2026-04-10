@@ -100,8 +100,8 @@ export const Menu = ({ children, ...props }: MenuProps<OptionType, boolean>) => 
                 flex="1"
                 minWidth={140}
                 borderRadius={16}
-                backgroundColor="baseFillSurfaceModeless"
-                borderColor="baseBorderSurfaceModeless"
+                backgroundColor="surfaceFillModeless"
+                borderColor="surfaceBorderModeless"
                 borderWidth={1}
                 shadow={theme.boxShadowElevated}
                 overflow="auto"
@@ -193,9 +193,7 @@ export const Option = ({
             <Box
                 borderRadius={8}
                 backgroundColor={
-                    props.isFocused && !props.isDisabled
-                        ? 'stateFillElementGhostHovered'
-                        : undefined
+                    props.isFocused && !props.isDisabled ? 'elementFillGhostHovered' : undefined
                 }
                 cursor={props.isDisabled ? 'default' : 'pointer'}
                 padding={{ vertical: 6, horizontal: 8 }}

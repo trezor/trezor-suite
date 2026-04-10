@@ -1,13 +1,17 @@
 import { DEVICE, createDeviceMessage } from '@trezor/connect-common';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 
-import type { MethodMessage, MethodPermission } from '../core/AbstractMethod';
+import type { MethodContext, MethodMessage, MethodPermission } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { getFirmwareRange } from './common/paramsValidator';
 
 export default class SetBusy extends AbstractMethod<'setBusy', PROTO.SetBusy> {
     constructor(message: MethodMessage<'setBusy'>) {
-        super(message);
+        const { payload } = message;
+
+        const params = { expiry_ms: payload.expiry_ms };
+
+        super(message, params);
         this.useDeviceState = false;
         this.skipFinalReload = false;
         this.overridePreviousCall = true;
@@ -17,15 +21,7 @@ export default class SetBusy extends AbstractMethod<'setBusy', PROTO.SetBusy> {
         return ['management'];
     }
 
-    init() {
-        const { payload } = this;
-
-        this.params = {
-            expiry_ms: payload.expiry_ms,
-        };
-    }
-
-    async run() {
+    async run({ sendCoreMessage }: MethodContext) {
         const cmd = this.getDevice().getCommands();
         const { message } = await cmd.typedCall('SetBusy', 'Success', this.params);
         if (this.keepSession && !!this.params.expiry_ms) {
@@ -33,7 +29,7 @@ export default class SetBusy extends AbstractMethod<'setBusy', PROTO.SetBusy> {
             // change device features and trigger event manually
             // followup: https://github.com/trezor/trezor-suite/issues/6446
             this.getDevice().features.busy = true;
-            this.postMessage(
+            sendCoreMessage(
                 createDeviceMessage(DEVICE.CHANGED, this.getDevice().toMessageObject()),
             );
         }

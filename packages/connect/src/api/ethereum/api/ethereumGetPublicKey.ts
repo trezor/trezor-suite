@@ -10,6 +10,7 @@ import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
 import type {
+    MethodContext,
     MethodMessage,
     MethodPermission,
     MethodReturnType,
@@ -18,9 +19,10 @@ import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getEthereumNetwork, getUniqueNetworks } from '../../../data/coinInfo';
 import { getNetworkLabel } from '../../../utils/ethereumUtils';
 import { getSerializedPath, validatePath } from '../../../utils/pathUtils';
-import { getFirmwareRange } from '../../common/paramsValidator';
+import { bundlify, getFirmwareRange } from '../../common/paramsValidator';
 
-type Params = PROTO.EthereumGetPublicKey & {
+type Params = {
+    proto: PROTO.EthereumGetPublicKey;
     network?: EthereumNetworkInfo;
 };
 
@@ -28,35 +30,35 @@ export default class EthereumGetPublicKey extends AbstractMethod<'ethereumGetPub
     hasBundle?: boolean;
 
     constructor(message: MethodMessage<'ethereumGetPublicKey'>) {
-        super(message);
+        const { hasBundle, payload } = bundlify(message.payload);
+
+        // validate bundle type
+        Assert(Bundle(GetPublicKeySchema), payload);
+
+        const params = payload.bundle.map(batch => {
+            const path = validatePath(batch.path, 3);
+            const network = getEthereumNetwork(path);
+
+            const proto = {
+                address_n: path,
+                show_display: typeof batch.showOnTrezor === 'boolean' ? batch.showOnTrezor : false,
+            };
+
+            return { proto, network };
+        });
+
+        super(message, params);
+
+        this.firmwareRange = params.reduce(
+            (prev, { network }) => getFirmwareRange(this.name, network, prev),
+            this.firmwareRange,
+        );
+        this.hasBundle = hasBundle;
         this.requiredDeviceCapabilities = ['Capability_Ethereum'];
     }
 
     get requiredPermissions(): MethodPermission[] {
         return ['read'];
-    }
-
-    init() {
-        // create a bundle with only one batch if bundle doesn't exists
-        this.hasBundle = !!this.payload.bundle;
-        const payload = !this.payload.bundle
-            ? { ...this.payload, bundle: [this.payload] }
-            : this.payload;
-
-        // validate bundle type
-        Assert(Bundle(GetPublicKeySchema), payload);
-
-        this.params = payload.bundle.map(batch => {
-            const path = validatePath(batch.path, 3);
-            const network = getEthereumNetwork(path);
-            this.firmwareRange = getFirmwareRange(this.name, network, this.firmwareRange);
-
-            return {
-                address_n: path,
-                show_display: typeof batch.showOnTrezor === 'boolean' ? batch.showOnTrezor : false,
-                network,
-            };
-        });
     }
 
     get info() {
@@ -80,12 +82,12 @@ export default class EthereumGetPublicKey extends AbstractMethod<'ethereumGetPub
         };
     }
 
-    async run() {
+    async run({ sendCoreMessage }: MethodContext) {
         const responses: MethodReturnType<typeof this.name> = [];
         const cmd = this.getDevice().getCommands();
 
         for (let i = 0; i < this.params.length; i++) {
-            const { address_n, show_display } = this.params[i];
+            const { address_n, show_display } = this.params[i].proto;
 
             const publicKey = await cmd.ethereumGetPublicKey({ address_n, show_display });
 
@@ -104,7 +106,7 @@ export default class EthereumGetPublicKey extends AbstractMethod<'ethereumGetPub
 
             if (this.hasBundle) {
                 // send progress
-                this.postMessage(
+                sendCoreMessage(
                     createUiMessage(UI_REQUEST.BUNDLE_PROGRESS, {
                         total: this.params.length,
                         progress: i,

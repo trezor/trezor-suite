@@ -60,7 +60,7 @@ export const DeviceFirmwareScreen = ({
                 primaryButtonTitle: (
                     <Translation id="moduleDeviceSettings.firmware.noBackupAlert.primaryButton" />
                 ),
-                primaryButtonVariant: 'redBold',
+                primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
                 onPressPrimaryButton: () => {
                     navigation.navigate(RootStackRoutes.DeviceOnboardingStack, {
                         screen: DeviceOnboardingStackRoutes.WalletBackupTutorial,
@@ -69,7 +69,7 @@ export const DeviceFirmwareScreen = ({
                 secondaryButtonTitle: (
                     <Translation id="moduleDeviceSettings.firmware.noBackupAlert.secondaryButton" />
                 ),
-                secondaryButtonVariant: 'redElevation1',
+                secondaryButtonColorProps: { intent: 'critical', priority: 'secondary' },
                 onPressSecondaryButton: handleUpdateConfirmation,
             });
         } else {
@@ -92,7 +92,8 @@ export const DeviceFirmwareScreen = ({
                     {isFirmwareUpgradable && (
                         <Button
                             onPress={handleConfirmButtonPress}
-                            colorScheme="blueBold"
+                            intent="info"
+                            priority="primary"
                             isDisabled={isDiscoveryRunning || !isFirmwareUpdateEnabled}
                             isLoading={isDiscoveryRunning}
                             testID="@device-firmware/update-button"

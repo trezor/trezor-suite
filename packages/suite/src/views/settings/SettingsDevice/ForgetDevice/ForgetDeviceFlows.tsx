@@ -24,9 +24,7 @@ export const ImmediateForgetFlow = ({ onCancel }: ForgetFlowProps) => {
     return (
         <ConfirmationModal
             onConfirm={() => {
-                forgetDevice({
-                    toastType: null,
-                });
+                forgetDevice();
                 dispatch(goto({ routeName: 'suite-index' }));
                 onCancel();
             }}

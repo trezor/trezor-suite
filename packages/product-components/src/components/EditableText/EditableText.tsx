@@ -65,7 +65,7 @@ const EditableContainer = styled.span<{
     ${({ $isActive }) =>
         $isActive &&
         css`
-            color: ${({ theme }) => theme.baseContentPrimary};
+            color: ${({ theme }) => theme.contentPrimary};
         `}
 
     ${({ $isEditable }) =>
@@ -95,7 +95,7 @@ const EditableContainer = styled.span<{
 
             &::after {
                 content: '${escapedPlaceholder}';
-                color: ${({ theme }) => theme.stateContentDisabled};
+                color: ${({ theme }) => theme.contentDisabled};
             }
         `;
     }}
@@ -133,7 +133,7 @@ const Container = styled.span<ContainerProps>`
         content: '';
         position: absolute;
         inset: 0;
-        background: ${({ theme }) => theme.baseFillElementNeutralSofter};
+        background: ${({ theme }) => theme.elementFillNeutralSofter};
         border-radius: ${borders.radii.xs};
         pointer-events: none;
         opacity: 0;
@@ -157,7 +157,7 @@ const Container = styled.span<ContainerProps>`
               `
             : css`
                   &:hover::before {
-                      background: ${({ theme }) => theme.stateFillElementNeutralSoftestHovered};
+                      background: ${({ theme }) => theme.elementFillFieldHovered};
                   }
               `}
 
@@ -452,7 +452,7 @@ export const EditableText = ({
                             ellipsisLineCount={1}
                             as="div"
                             pointerEvents="none"
-                            color={isActive ? 'baseContentPrimary' : undefined}
+                            color={isActive ? 'contentPrimary' : undefined}
                         >
                             {displayValue}
                         </Text>

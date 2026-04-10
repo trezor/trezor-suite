@@ -72,7 +72,7 @@ export const StakingInsufficientBalanceScreen = () => {
                             values={{ displaySymbol }}
                         />
                     </Button>
-                    <Button colorScheme="tertiaryElevation0" onPress={handleCancel}>
+                    <Button intent="neutral" priority="secondary" onPress={handleCancel}>
                         <Translation id="generic.buttons.cancel" />
                     </Button>
                 </VStack>

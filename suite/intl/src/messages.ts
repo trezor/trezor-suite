@@ -4625,7 +4625,7 @@ export const messages = defineMessages({
     },
     TR_FORGET_DEVICE_MODAL_DISCONNECT_SUBTITLE: {
         id: 'TR_FORGET_DEVICE_MODAL_DISCONNECT_SUBTITLE',
-        defaultMessage: 'Disconnect your Trezor from your phone.',
+        defaultMessage: 'Disconnect your Trezor from the computer.',
     },
     RECEIVE_TITLE: {
         id: 'RECEIVE_TITLE',
@@ -5398,6 +5398,14 @@ export const messages = defineMessages({
         id: 'TR_FEE_LIMIT',
         defaultMessage: 'Fee limit',
     },
+    TR_TRON_ACCOUNT_ACTIVATION_FEE: {
+        id: 'TR_TRON_ACCOUNT_ACTIVATION_FEE',
+        defaultMessage: 'Activation fee',
+    },
+    TR_TRON_ACCOUNT_ACTIVATION_FEE_TOOLTIP: {
+        id: 'TR_TRON_ACCOUNT_ACTIVATION_FEE_TOOLTIP',
+        defaultMessage: 'New TRON accounts require a one-time 1 TRX network fee to activate.',
+    },
     TR_EXPERIMENTAL_TRON_VIEW_ONLY: {
         id: 'TR_EXPERIMENTAL_TRON_VIEW_ONLY',
         defaultMessage: 'Tron (Beta)',
@@ -5406,6 +5414,40 @@ export const messages = defineMessages({
         id: 'TR_EXPERIMENTAL_TRON_VIEW_ONLY_DESCRIPTION',
         defaultMessage:
             'Enable the Tron Network with the latest firmware to check your balance, send and receive TRX and tokens, view charts and transaction history, and use WalletConnect. Full support, including freezing and voting, is coming soon.',
+    },
+    TR_EXPERIMENTAL_MCP_SERVER: {
+        id: 'TR_EXPERIMENTAL_MCP_SERVER',
+        defaultMessage: 'MCP Server',
+    },
+    TR_EXPERIMENTAL_MCP_SERVER_DESCRIPTION: {
+        id: 'TR_EXPERIMENTAL_MCP_SERVER_DESCRIPTION',
+        defaultMessage:
+            'Enable an MCP (Model Context Protocol) server that allows AI agents to interact with your Trezor device. The server runs on localhost only.',
+    },
+    TR_MCP_CLIENT_CONFIGURATION: {
+        id: 'TR_MCP_CLIENT_CONFIGURATION',
+        defaultMessage: 'Client Configuration',
+    },
+    TR_MCP_PASTE_COMMAND: {
+        id: 'TR_MCP_PASTE_COMMAND',
+        defaultMessage: 'Paste this command into your terminal.',
+    },
+    TR_MCP_ADD_JSON_CONFIG: {
+        id: 'TR_MCP_ADD_JSON_CONFIG',
+        defaultMessage: 'Add this JSON to your client config file.',
+    },
+    TR_MCP_REGENERATE_TOKEN: {
+        id: 'TR_MCP_REGENERATE_TOKEN',
+        defaultMessage: 'Regenerate token',
+    },
+    TR_MCP_REGENERATE_TOKEN_HEADING: {
+        id: 'TR_MCP_REGENERATE_TOKEN_HEADING',
+        defaultMessage: 'Regenerate MCP Token',
+    },
+    TR_MCP_REGENERATE_TOKEN_DESCRIPTION: {
+        id: 'TR_MCP_REGENERATE_TOKEN_DESCRIPTION',
+        defaultMessage:
+            'This will invalidate the current token. All connected MCP clients will be disconnected and you will need to update their configuration with the new token.',
     },
     TR_EXPERIMENTAL_SLIP24: {
         id: 'TR_EXPERIMENTAL_SLIP24',

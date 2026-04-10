@@ -4,7 +4,7 @@ import { Translation } from '@suite/intl';
 import { EarnFlow } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { SOLANA_EPOCH_DAYS } from '@suite-common/wallet-constants';
-import { selectValidatorsQueue } from '@suite-common/wallet-core';
+import { selectEthValidatorsQueue } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { getUnstakingPeriodInDays } from '@suite-common/wallet-utils';
 import { BulletList } from '@trezor/components';
@@ -158,13 +158,8 @@ const CardanoWithdrawingRows = ({ flow, displaySymbol, isExpanded }: EarnWithdra
 );
 
 export const EarnWithdrawingInfo = ({ account, isExpanded, flow }: EarnWithdrawingInfoProps) => {
-    const { data } = useSelector(state => selectValidatorsQueue(state, account?.symbol)) || {};
-
-    const daysToUnstake = getUnstakingPeriodInDays({
-        networkType: account.networkType,
-        validatorWithdrawTime: data?.validatorWithdrawTime,
-        validatorExitTime: data?.validatorExitTime,
-    });
+    const validatorsQueue = useSelector(selectEthValidatorsQueue);
+    const daysToUnstake = getUnstakingPeriodInDays(account.networkType, validatorsQueue);
 
     const displaySymbol = getNetworkDisplaySymbol(account.symbol);
 

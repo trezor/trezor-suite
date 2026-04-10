@@ -10,7 +10,6 @@ import {
     VStack,
     useBottomSheetModal,
 } from '@suite-native/atoms';
-import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { Link, useOpenLink } from '@suite-native/link';
 import { useAnalytics } from '@suite-native/services';
@@ -90,8 +89,9 @@ export const SecuritySealDescription = () => {
                                         <Translation id="generic.buttons.gotIt" />
                                     </Button>
                                     <Button
-                                        viewLeft={<Icon name="arrowUpRight" />}
-                                        colorScheme="tertiaryElevation0"
+                                        iconLeft="arrowUpRight"
+                                        intent="neutral"
+                                        priority="secondary"
                                         onPress={handleLearnMoreButtonPress}
                                     >
                                         <Translation id="generic.buttons.learnMore" />

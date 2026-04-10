@@ -9,7 +9,16 @@ import { AbstractMethod } from '../core/AbstractMethod';
 
 export default class ApplySettings extends AbstractMethod<'applySettings', PROTO.ApplySettings> {
     constructor(message: MethodMessage<'applySettings'>) {
-        super(message);
+        const { payload } = message;
+
+        Assert(ApplySettingsSchema, payload);
+
+        const params = {
+            ...payload,
+            _passphrase_source: payload.passphrase_source,
+        };
+
+        super(message, params);
         this.useDeviceState = false;
         this.skipFinalReload = false;
     }
@@ -18,16 +27,7 @@ export default class ApplySettings extends AbstractMethod<'applySettings', PROTO
         return ['management'];
     }
 
-    init() {
-        const { payload } = this;
-
-        Assert(ApplySettingsSchema, payload);
-
-        this.params = {
-            ...payload,
-            _passphrase_source: payload.passphrase_source,
-        };
-    }
+    init() {}
 
     get confirmation() {
         return {

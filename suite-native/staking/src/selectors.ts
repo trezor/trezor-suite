@@ -1,10 +1,10 @@
-import type { NetworkSymbol, StakingNetworkSymbol } from '@suite-common/wallet-config';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     selectAccountByKey,
     selectAdaAccountHasStaked,
-    selectPoolStatsApyData,
+    selectEthValidatorsQueue,
+    selectPoolStatsApy,
     selectSolAccountHasStaked,
-    selectValidatorsQueueData,
 } from '@suite-common/wallet-core';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import {
@@ -183,53 +183,13 @@ export const selectIsStakeConfirmingByAccountKey = (
     }
 };
 
-export const selectAPYByAccountKey = (
+export const selectApy = (
     state: NativeStakingRootState,
-    accountKey: AccountKey | null,
+    { accountKey, networkSymbol }: { accountKey?: AccountKey; networkSymbol?: NetworkSymbol },
 ) => {
-    const account = selectAccountByKey(state, accountKey);
-    const symbol = account?.symbol;
-    if (!symbol || !doesCoinSupportStaking(symbol)) {
-        return null;
-    }
+    const account = selectAccountByKey(state, accountKey) ?? undefined;
 
-    return selectPoolStatsApyData(state, account);
-};
-
-export const selectAPYBySymbol = (
-    state: NativeStakingRootState,
-    symbol: StakingNetworkSymbol | null,
-) => {
-    if (!symbol || !doesCoinSupportStaking(symbol)) {
-        return null;
-    }
-
-    const { data } = state.wallet.stake;
-
-    switch (symbol) {
-        case 'eth':
-            return data.eth?.poolStats?.data?.ethApy ?? null;
-        case 'sol': {
-            const stakingInfoData = data.sol?.stakingInfo?.data;
-
-            return stakingInfoData && 'apy' in stakingInfoData ? stakingInfoData.apy : null;
-        }
-        case 'ada': {
-            const stakingInfoData = data.ada?.stakingInfo?.data;
-
-            const pools =
-                stakingInfoData && 'pools' in stakingInfoData ? stakingInfoData.pools : null;
-
-            if (!pools || pools.length === 0) {
-                return null;
-            }
-
-            // returning the Highest value
-            return Math.max(...pools.map(pool => pool.apy ?? 0));
-        }
-        default:
-            return null;
-    }
+    return selectPoolStatsApy(state, { account, networkSymbol });
 };
 
 export const selectStakedBalanceByAccountKey = (
@@ -390,13 +350,9 @@ export const selectUnstakingPeriodInDaysByAccountKey = (
     const account = selectAccountByKey(state, accountKey);
     if (!account || !doesCoinSupportStaking(account.symbol)) return null;
 
-    const validatorsQueueData = selectValidatorsQueueData(state, account.symbol);
+    const validatorsQueueData = selectEthValidatorsQueue(state);
 
-    return getUnstakingPeriodInDays({
-        networkType: account.networkType,
-        validatorWithdrawTime: validatorsQueueData?.validatorWithdrawTime ?? null,
-        validatorExitTime: validatorsQueueData?.validatorExitTime ?? null,
-    });
+    return getUnstakingPeriodInDays(account.networkType, validatorsQueueData);
 };
 
 export const selectPendingDepositedBalanceByAccountKey = (

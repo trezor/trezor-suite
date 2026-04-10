@@ -2,11 +2,7 @@ import { type ReactNode } from 'react';
 
 import { atom } from 'jotai';
 
-import {
-    type ButtonAccessory,
-    type ButtonColorScheme,
-    type PictogramVariant,
-} from '@suite-native/atoms';
+import { type ButtonColorProps, type PictogramVariant } from '@suite-native/atoms';
 import { type IconName } from '@suite-native/icons';
 import { type NativeSpacing } from '@trezor/theme';
 
@@ -25,12 +21,12 @@ export type Alert = {
     icon?: IconName;
     pictogramVariant?: PictogramVariant;
     primaryButtonTitle: ReactNode;
-    primaryButtonViewLeft?: ButtonAccessory;
-    primaryButtonViewRight?: ButtonAccessory;
-    primaryButtonVariant?: ButtonColorScheme;
+    primaryButtonIconLeft?: IconName;
+    primaryButtonIconRight?: IconName;
+    primaryButtonColorProps?: ButtonColorProps;
     onPressPrimaryButton?: () => void;
     secondaryButtonTitle?: ReactNode;
-    secondaryButtonVariant?: ButtonColorScheme;
+    secondaryButtonColorProps?: ButtonColorProps;
     onPressSecondaryButton?: () => void;
     appendix?: ReactNode;
     testID?: string;

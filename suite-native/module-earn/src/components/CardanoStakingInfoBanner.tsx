@@ -5,7 +5,7 @@ import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import {
-    selectAPYByAccountKey,
+    selectApy,
     selectIsCardanoStakedOutsideEverstake,
     selectIsCardanoStakedWithFiveBinaries,
     useSelector as useNativeStakingSelector,
@@ -33,7 +33,7 @@ type CardanoStakingInfoBannerProps = {
 export const CardanoStakingInfoBanner = ({ accountKey }: CardanoStakingInfoBannerProps) => {
     const { applyStyle } = useNativeStyles();
     const openLink = useOpenLink();
-    const apy = useNativeStakingSelector(state => selectAPYByAccountKey(state, accountKey));
+    const apy = useNativeStakingSelector(state => selectApy(state, { accountKey }));
 
     const isStakedWithFiveBinaries = useAccountsSelector(state =>
         selectIsCardanoStakedWithFiveBinaries(state, accountKey),
@@ -73,7 +73,8 @@ export const CardanoStakingInfoBanner = ({ accountKey }: CardanoStakingInfoBanne
 
             <Box style={applyStyle(buttonWrapperStyle)}>
                 <Button
-                    colorScheme="yellowBold"
+                    intent="warning"
+                    priority="primary"
                     onPress={handleUpdateProviderPress}
                     isFullWidth
                     size="small"

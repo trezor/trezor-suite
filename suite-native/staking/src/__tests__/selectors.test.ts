@@ -1,12 +1,8 @@
-import {
-    type CardanoPoolStats,
-    type EthereumPoolStats,
-    type SolanaStakingInfo,
-} from '@suite-common/wallet-api';
+import { type StakeDataState } from '@suite-common/wallet-core';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 
 import {
-    selectAPYBySymbol,
+    selectApy,
     selectCanClaimByAccountKey,
     selectClaimableAmountByAccountKey,
 } from '../selectors';
@@ -78,45 +74,43 @@ const getTestState = (accounts: Account[]) => ({
         },
         stake: {
             data: {
-                eth: {
-                    poolStats: {
-                        data: {
-                            ethApy: 3.08,
+                error: null,
+                isLoading: false,
+                lastSuccessAt: null,
+                data: {
+                    eth: {
+                        stats: {
+                            apy: 3.08,
                             nextRewardPayout: 5,
-                        } satisfies EthereumPoolStats,
+                        },
+                        validators: {},
                     },
-                },
-                sol: {
-                    stakingInfo: {
-                        data: {
+                    sol: {
+                        stats: {
                             apy: 6.24,
-                        } satisfies SolanaStakingInfo,
-                    },
-                },
-                ada: {
-                    stakingInfo: {
-                        data: {
-                            pools: [
-                                {
-                                    apy: 2.43,
-                                    saturation: 0.05,
-                                    id: '',
-                                },
-                                {
-                                    apy: 2.43,
-                                    saturation: 81.08999999999999,
-                                    id: '',
-                                },
-                                {
-                                    apy: 5.8,
-                                    saturation: 1.92,
-                                    id: '',
-                                } satisfies CardanoPoolStats,
-                            ],
                         },
                     },
+                    ada: {
+                        pools: [
+                            {
+                                apy: 2.43,
+                                saturation: 81.09,
+                                id: 'pool1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzqs6cy',
+                            },
+                            {
+                                apy: 5.8,
+                                saturation: 1.92,
+                                id: 'pool13rt3ngkek4l876980ect869cu978d36dcyh22ts4nwuf7ncq02u',
+                            },
+                            {
+                                apy: 2.43,
+                                saturation: 0.05,
+                                id: 'pool1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq2crtxv',
+                            },
+                        ],
+                    },
                 },
-            },
+            } satisfies StakeDataState,
         },
         transactions: { transactions: {}, fetchStatusDetail: {} },
     },
@@ -215,29 +209,113 @@ describe('main staking selectors', () => {
         });
     });
 
-    describe('selectApyBySymbol', () => {
-        it('should return correct apy for eht', () => {
-            const testState = getTestState([]);
+    describe('selectApy', () => {
+        it('should return ETH APY by accountKey', () => {
+            const testState = getTestState([ethAccountWithClaimableStake]);
 
-            const result = selectAPYBySymbol(testState as any, 'eth');
+            const result = selectApy(testState as any, { accountKey: 'eth1' as AccountKey });
 
             expect(result).toBe(3.08);
         });
 
-        it('should return correct apy for sol', () => {
+        it('should return ETH APY by networkSymbol', () => {
             const testState = getTestState([]);
 
-            const result = selectAPYBySymbol(testState as any, 'sol');
+            const result = selectApy(testState as any, { networkSymbol: 'eth' });
+
+            expect(result).toBe(3.08);
+        });
+
+        it('should return SOL APY by accountKey', () => {
+            const testState = getTestState([solAccountWithStaking]);
+
+            const result = selectApy(testState as any, { accountKey: 'sol1' as AccountKey });
 
             expect(result).toBe(6.24);
         });
 
-        it('should return the highest apy for cardano', () => {
+        it('should return SOL APY by networkSymbol', () => {
             const testState = getTestState([]);
 
-            const result = selectAPYBySymbol(testState as any, 'ada');
+            const result = selectApy(testState as any, { networkSymbol: 'sol' });
+
+            expect(result).toBe(6.24);
+        });
+
+        it('should return best pool APY for ADA by networkSymbol', () => {
+            const testState = getTestState([]);
+
+            const result = selectApy(testState as any, { networkSymbol: 'ada' });
 
             expect(result).toBe(5.8);
+        });
+
+        it('should return matched pool APY for ADA account with known poolId', () => {
+            const adaAccount = {
+                symbol: 'ada',
+                accountLabel: 'ADA Account #1',
+                deviceState: 'device@state:1',
+                key: 'ada1',
+                visible: true,
+                networkType: 'cardano',
+                misc: {
+                    staking: {
+                        poolId: 'pool1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzqs6cy',
+                    },
+                },
+            } as unknown as Account;
+            const testState = getTestState([adaAccount]);
+
+            const result = selectApy(testState as any, { accountKey: 'ada1' as AccountKey });
+
+            expect(result).toBe(2.43);
+        });
+
+        it('should return best pool APY for ADA account with unrecognized poolId', () => {
+            const adaAccount = {
+                symbol: 'ada',
+                accountLabel: 'ADA Account #1',
+                deviceState: 'device@state:1',
+                key: 'ada1',
+                visible: true,
+                networkType: 'cardano',
+                misc: {
+                    staking: {
+                        poolId: 'unknown-pool-id',
+                    },
+                },
+            } as unknown as Account;
+            const testState = getTestState([adaAccount]);
+
+            const result = selectApy(testState as any, { accountKey: 'ada1' as AccountKey });
+
+            expect(result).toBe(5.8);
+        });
+
+        it('should return null when neither accountKey nor networkSymbol is provided', () => {
+            const testState = getTestState([]);
+
+            const result = selectApy(testState as any, {});
+
+            expect(result).toBeNull();
+        });
+
+        it('should return null for non-existent accountKey', () => {
+            const testState = getTestState([ethAccountWithClaimableStake]);
+
+            const result = selectApy(testState as any, {
+                accountKey: 'non-existent' as AccountKey,
+            });
+
+            expect(result).toBeNull();
+        });
+
+        it('should return null for unsupported network', () => {
+            const testState = getTestState([etcAccount]);
+
+            const result = selectApy(testState as any, { accountKey: 'etc1' as AccountKey });
+
+            expect(result).toBeNull();
         });
     });
 

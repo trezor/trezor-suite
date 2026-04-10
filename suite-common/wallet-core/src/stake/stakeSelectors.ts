@@ -1,145 +1,76 @@
-import type { NetworkSymbol } from '@suite-common/wallet-config';
-import type { Account } from '@suite-common/wallet-types';
-import {
-    isSupportedAdaStakingNetworkSymbol,
-    isSupportedSolStakingNetworkSymbol,
-    selectBestCardanoPool,
-} from '@suite-common/wallet-utils';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type Account } from '@suite-common/wallet-types';
+import { selectBestCardanoPool } from '@suite-common/wallet-utils';
 
 import type { VotingDelegationOption } from './stakeActions';
 import type { StakeRootState } from './stakeReducerTypes';
 
-export const selectEverstakeData = (
-    state: StakeRootState,
-    symbol: NetworkSymbol,
-    endpointType: 'poolStats' | 'validatorsQueue' | 'stakingInfo',
-) => state.wallet.stake?.data?.[symbol]?.[endpointType];
+export const selectStake = (state: StakeRootState) => state.wallet.stake;
 
-export const selectPoolStatsApyData = (
+export const selectStakeData = (state: StakeRootState) => selectStake(state).data.data;
+
+export const selectCardanoPoolsInfo = (state: StakeRootState) =>
+    selectStakeData(state).ada?.pools ?? [];
+
+export const selectEthNextRewardPayout = (state: StakeRootState) =>
+    selectStakeData(state).eth?.stats?.nextRewardPayout;
+
+export const selectEthValidatorsQueue = (state: StakeRootState) =>
+    selectStakeData(state).eth?.validators;
+
+interface SelectPoolStatsApyProps {
+    account?: Account;
+    networkSymbol?: NetworkSymbol;
+}
+
+export const selectPoolStatsApy = (
     state: StakeRootState,
-    account?: Account,
-    networkSymbol?: NetworkSymbol,
+    { account, networkSymbol }: SelectPoolStatsApyProps,
 ) => {
-    const { data } = state.wallet.stake ?? {};
-    const { symbol: symbolFromAccount, misc } = account ?? {};
-
-    const symbol = symbolFromAccount ?? networkSymbol;
+    const data = selectStakeData(state);
+    const symbol = account?.symbol ?? networkSymbol;
 
     if (!symbol || !data) {
         return null;
     }
 
-    const stakingInfoData = data?.[symbol]?.stakingInfo?.data;
+    switch (symbol) {
+        case 'eth':
+            return data.eth?.stats?.apy ?? null;
 
-    if (stakingInfoData && isSupportedSolStakingNetworkSymbol(symbol)) {
-        return 'apy' in stakingInfoData ? stakingInfoData.apy : null;
-    }
+        case 'sol':
+            return data.sol?.stats?.apy ?? null;
 
-    if (isSupportedAdaStakingNetworkSymbol(symbol)) {
-        const stakingInfo = data?.[symbol]?.stakingInfo?.data ?? null;
+        case 'ada': {
+            const poolStats = data.ada?.pools ?? [];
 
-        if (
-            !stakingInfo ||
-            !('pools' in stakingInfo) ||
-            !stakingInfo.pools ||
-            stakingInfo.pools.length === 0
-        ) {
-            return null;
-        }
+            if (account?.networkType === 'cardano') {
+                const poolFromAccount = poolStats.find(
+                    pool => pool.id === account.misc.staking.poolId,
+                );
 
-        const stakingPoolId = misc && 'staking' in misc ? misc.staking.poolId : undefined;
+                if (poolFromAccount) {
+                    return poolFromAccount.apy;
+                }
+            }
 
-        const poolFromAccount = stakingPoolId
-            ? stakingInfo.pools.find(pool => pool.id === stakingPoolId)
-            : undefined;
-
-        const bestPoolId = selectBestCardanoPool(stakingInfo.pools)?.bech32;
-        const poolFromBest =
-            bestPoolId && !poolFromAccount
-                ? stakingInfo.pools.find(pool => pool.id === bestPoolId)
+            const bestPoolId = selectBestCardanoPool(poolStats).bech32;
+            const bestPool = bestPoolId
+                ? poolStats.find(pool => pool.id === bestPoolId)
                 : undefined;
 
-        const selectedPool = poolFromAccount ?? poolFromBest;
-
-        if (!selectedPool) {
-            return null;
+            return bestPool?.apy ?? null;
         }
 
-        const { apy } = selectedPool;
-
-        if (!apy) {
+        default:
             return null;
-        }
-
-        return apy;
     }
-
-    return data[symbol]?.poolStats?.data?.ethApy || null;
-};
-
-export const selectCardanoPoolsInfo = (state: StakeRootState) => {
-    const data = state.wallet.stake?.data?.ada?.stakingInfo?.data;
-
-    return data && 'pools' in data ? data.pools : [];
-};
-
-export const selectPoolStatsNextRewardPayout = (state: StakeRootState, symbol?: NetworkSymbol) => {
-    if (!symbol) {
-        return undefined;
-    }
-
-    return state.wallet.stake?.data?.[symbol]?.poolStats?.data?.nextRewardPayout;
-};
-
-export const selectValidatorsQueueData = (state: StakeRootState, symbol?: NetworkSymbol) => {
-    if (!symbol) {
-        return null;
-    }
-
-    return state.wallet.stake?.data?.[symbol]?.validatorsQueue?.data || null;
-};
-
-export const selectValidatorsQueue = (state: StakeRootState, symbol?: NetworkSymbol) => {
-    if (!symbol) {
-        return null;
-    }
-
-    return state.wallet.stake?.data?.[symbol]?.validatorsQueue ?? null;
-};
-
-export const selectStakingRewardsHistory = (
-    state: StakeRootState,
-    symbol?: NetworkSymbol,
-    descriptor?: string,
-) => {
-    const { data } = state.wallet.stake ?? {};
-
-    if (!data || !symbol || !descriptor) {
-        return undefined;
-    }
-
-    const stakingRewards = data?.[symbol]?.stakingRewards;
-    const rewardsHistory = stakingRewards?.data?.rewardsHistory?.[descriptor];
-
-    return { ...stakingRewards, ...{ data: rewardsHistory } };
-};
-
-export const selectStakingTotalRewards = (
-    state: StakeRootState,
-    symbol?: NetworkSymbol,
-    descriptor?: string,
-) => {
-    const { data } = state.wallet.stake ?? {};
-
-    if (!data || !symbol || !descriptor) {
-        return undefined;
-    }
-
-    const stakingRewards = data?.[symbol]?.stakingRewards;
-    const totalRewards = stakingRewards?.data?.totalRewards?.[descriptor];
-
-    return { ...stakingRewards, ...{ data: totalRewards } };
 };
 
 export const selectVotingDelegationOption = (state: StakeRootState): VotingDelegationOption =>
-    state.wallet.stake.votingDelegation;
+    selectStake(state).votingDelegation;
+
+export const selectStakePrecomposedForm = (state: StakeRootState) =>
+    selectStake(state).precomposedForm;
+
+export const selectStakePrecomposedTx = (state: StakeRootState) => selectStake(state).precomposedTx;

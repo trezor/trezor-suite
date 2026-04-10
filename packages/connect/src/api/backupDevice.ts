@@ -8,24 +8,22 @@ import { AbstractMethod } from '../core/AbstractMethod';
 
 export default class BackupDevice extends AbstractMethod<'backupDevice', PROTO.BackupDevice> {
     constructor(message: MethodMessage<'backupDevice'>) {
-        super(message);
+        const { payload } = message;
+
+        Assert(PROTO.BackupDevice, payload);
+
+        const params = {
+            group_threshold: payload.group_threshold,
+            groups: payload.groups,
+        };
+
+        super(message, params);
         this.skipFinalReload = false;
         this.useDeviceState = false;
     }
 
     get requiredPermissions(): MethodPermission[] {
         return ['management'];
-    }
-
-    init() {
-        const { payload } = this;
-
-        Assert(PROTO.BackupDevice, payload);
-
-        this.params = {
-            group_threshold: payload.group_threshold,
-            groups: payload.groups,
-        };
     }
 
     get confirmation() {

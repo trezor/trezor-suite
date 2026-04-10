@@ -9,9 +9,8 @@ export const mapIntentToBorderColor = (intent: IconCircleIntent): Color => {
         warning: 'backgroundAlertYellowSubtleOnElevation0',
         critical: 'backgroundAlertRedSubtleOnElevation0',
         info: 'backgroundAlertBlueSubtleOnElevation0',
-        neutral: 'baseBorderElementNeutralSofter',
-        accentViolet: 'baseBorderElementAccentVioletSofter',
-        accentOrange: 'baseBorderElementAccentOrangeSofter',
+        neutral: 'elementBorderNeutralSofter',
+        accentViolet: 'elementBorderAccentVioletSofter',
     };
 
     return colorMap[intent];
@@ -36,9 +35,8 @@ export const mapIntentToBackground = (intent: IconCircleIntent, size: IconCircle
         warning: 'backgroundAlertYellowSubtleOnElevation0',
         critical: 'backgroundAlertRedSubtleOnElevation0',
         info: 'backgroundAlertBlueSubtleOnElevation0',
-        neutral: 'baseFillElementNeutralSofter',
-        accentViolet: 'baseFillElementAccentVioletSofter',
-        accentOrange: 'baseFillElementAccentOrangeSofter',
+        neutral: 'elementFillNeutralSofter',
+        accentViolet: 'elementFillAccentVioletSofter',
     };
 
     const borderColorMap: Record<IconCircleIntent, Color> = {
@@ -46,9 +44,8 @@ export const mapIntentToBackground = (intent: IconCircleIntent, size: IconCircle
         warning: 'backgroundAlertYellowSubtleOnElevation1',
         critical: 'backgroundAlertRedSubtleOnElevation1',
         info: 'backgroundAlertBlueSubtleOnElevation1',
-        neutral: 'baseFillElementNeutralSoftest',
-        accentViolet: 'baseFillElementAccentVioletSoft',
-        accentOrange: 'baseFillElementAccentOrangeSoft',
+        neutral: 'elementFillField',
+        accentViolet: 'elementFillAccentVioletSoft',
     };
 
     return (mapSizeToBorderWidth(size) === 0 ? noBorderColorMap : borderColorMap)[intent];

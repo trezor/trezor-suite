@@ -5,7 +5,7 @@ import { Icon, type IconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type Color } from '@trezor/theme';
 
-import { Button, type ButtonColorScheme } from '../Button/Button';
+import { Button, type ButtonColorProps } from '../Button/Button';
 import { AnimatedCard } from '../Card/Card';
 import { Divider } from '../Divider';
 import { AnimatedVStack, HStack, VStack } from '../Stack';
@@ -28,14 +28,14 @@ type CardStepperItemProps = {
 
 const buttonsColorSchemeMap = {
     primary: {
-        primary: 'primary',
-        secondary: 'tertiaryElevation0',
+        primary: { intent: 'brand', priority: 'primary' },
+        secondary: { intent: 'neutral', priority: 'secondary' },
     },
     destructive: {
-        primary: 'redBold',
-        secondary: 'redElevation0',
+        primary: { intent: 'critical', priority: 'primary' },
+        secondary: { intent: 'critical', priority: 'secondary' },
     },
-} as const satisfies Record<CardStepperButtonsActionType, Record<string, ButtonColorScheme>>;
+} as const satisfies Record<CardStepperButtonsActionType, Record<string, ButtonColorProps>>;
 
 const cardStyle = prepareNativeStyle<{ isDisabled: boolean }>((utils, { isDisabled }) => ({
     backgroundColor: utils.colors.backgroundSurfaceElevation1,
@@ -113,7 +113,7 @@ export const CardStepperItem = ({
                                 <Button
                                     size="small"
                                     style={applyStyle(buttonStyle)}
-                                    colorScheme={buttonsColorSchemeMap[buttonsActionType].secondary}
+                                    {...buttonsColorSchemeMap[buttonsActionType].secondary}
                                     onPress={onPressSecondaryButton}
                                 >
                                     {secondaryButtonText}
@@ -122,7 +122,7 @@ export const CardStepperItem = ({
                             <Button
                                 size="small"
                                 style={applyStyle(buttonStyle)}
-                                colorScheme={buttonsColorSchemeMap[buttonsActionType].primary}
+                                {...buttonsColorSchemeMap[buttonsActionType].primary}
                                 onPress={onPressConfirmButton}
                                 testID="@cardStepper/confirm-button"
                             >

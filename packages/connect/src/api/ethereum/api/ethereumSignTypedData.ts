@@ -45,53 +45,53 @@ const Params = Type.Intersect([
 
 export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignTypedData', Params> {
     constructor(message: MethodMessage<'ethereumSignTypedData'>) {
-        super(message);
-        this.requiredDeviceCapabilities = ['Capability_Ethereum'];
-    }
-
-    get requiredPermissions(): MethodPermission[] {
-        return ['read', 'write'];
-    }
-
-    init() {
-        const { payload } = this;
+        const { payload } = message;
 
         // validate incoming parameters
         Assert(Type.Union([EthereumSignTypedDataParams, EthereumSignTypedHashParams]), payload);
 
         const path = validatePath(payload.path, 3);
         const network = getEthereumNetwork(path);
-        this.firmwareRange = getFirmwareRange(this.name, network, this.firmwareRange);
 
-        this.params = {
+        const paramsBase = {
             address_n: path,
             metamask_v4_compat: payload.metamask_v4_compat,
             data: payload.data,
             network,
+            // Show hashes for Safe transactions by default unless specified otherwise
+            show_message_hash: payload.show_message_hash ?? payload.data.primaryType === 'SafeTx',
         };
 
-        if (payload.domain_separator_hash) {
-            this.params = {
-                ...this.params,
-                // leading `0x` in hash-strings causes issues
-                domain_separator_hash: messageToHex(payload.domain_separator_hash),
-            };
+        const params = !payload.domain_separator_hash
+            ? paramsBase
+            : {
+                  ...paramsBase,
+                  domain_separator_hash: messageToHex(payload.domain_separator_hash),
+                  ...(payload.message_hash
+                      ? { message_hash: messageToHex(payload.message_hash) }
+                      : {}),
+              };
 
-            if (payload.message_hash) {
-                this.params = {
-                    ...this.params,
-                    // leading `0x` in hash-strings causes issues
-                    message_hash: messageToHex(payload.message_hash),
-                };
-            } else if (this.params.data.primaryType !== 'EIP712Domain') {
-                throw ERRORS.TypedError(
-                    'Method_InvalidParameter',
-                    'message_hash should only be empty when data.primaryType=EIP712Domain',
-                );
-            }
+        if (payload.data.primaryType === 'EIP712Domain' && 'message_hash' in params) {
+            throw ERRORS.TypedError(
+                'Method_InvalidParameter',
+                'message_hash should be empty when data.primaryType=EIP712Domain',
+            );
         }
 
-        if (this.params.data.primaryType === 'EIP712Domain') {
+        if (payload.data.primaryType !== 'EIP712Domain' && !('message_hash' in params)) {
+            throw ERRORS.TypedError(
+                'Method_InvalidParameter',
+                'message_hash should only be empty when data.primaryType=EIP712Domain',
+            );
+        }
+
+        super(message, params);
+        this.requiredDeviceCapabilities = ['Capability_Ethereum'];
+
+        this.firmwareRange = getFirmwareRange(this.name, network, this.firmwareRange);
+
+        if (params.data.primaryType === 'EIP712Domain') {
             // Only newer firmwares support this feature
             // Older firmwares will give wrong results / throw errors
             this.firmwareRange = getFirmwareRange(
@@ -99,21 +99,11 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
                 network,
                 this.firmwareRange,
             );
-
-            if ('message_hash' in this.params) {
-                throw ERRORS.TypedError(
-                    'Method_InvalidParameter',
-                    'message_hash should be empty when data.primaryType=EIP712Domain',
-                );
-            }
         }
+    }
 
-        if (payload.show_message_hash !== undefined) {
-            this.params.show_message_hash = payload.show_message_hash;
-        } else if (this.params.data.primaryType === 'SafeTx') {
-            // Show hashes for Safe transactions by default unless specified otherwise
-            this.params.show_message_hash = true;
-        }
+    get requiredPermissions(): MethodPermission[] {
+        return ['read', 'write'];
     }
 
     async initAsync() {

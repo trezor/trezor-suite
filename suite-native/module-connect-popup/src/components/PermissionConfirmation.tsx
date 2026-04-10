@@ -119,7 +119,7 @@ export const PermissionConfirmation = () => {
                         <Translation id="moduleConnectPopup.confirm" />
                     )}
                 </Button>
-                <Button colorScheme="tertiaryElevation0" onPress={onClose}>
+                <Button intent="neutral" priority="secondary" onPress={onClose}>
                     <Translation id="generic.buttons.close" />
                 </Button>
             </VStack>

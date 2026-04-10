@@ -7,11 +7,11 @@
 
 export type EthValidatorsQueue = {
     /** Seconds — estimated delay before a validator becomes active (Everstake `validator_activation_time`). */
-    activatedAt?: number;
+    activationTime?: number;
     /** Seconds — estimated delay before a validator is exited (`validator_exit_time`). */
-    exitedAt?: number;
+    exitTime?: number;
     /** Seconds — withdraw period from beacon chain (`validator_withdraw_time`). */
-    withdrewAt?: number;
+    withdrawTime?: number;
     /** Seconds — delay before validator is known at beacon chain (`validator_adding_delay`). */
     addingDelay?: number;
     /** Unix timestamp (seconds) of last upstream refresh (`updated_at`). */

@@ -17,5 +17,5 @@ export * from './wallet';
 export type * from './globalSendReceive';
 export * from './baseCurrency';
 export type * from './transactionSimulation';
-export * from './stakeTypes';
+export type * from './stakeTypes';
 export type * from './stellarTokens';

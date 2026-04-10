@@ -12,7 +12,7 @@
     },
     "dependencies": {
         "@suite-common/wallet-config": "workspace:*",
-        "@trezor/connect": "workspace:*",
-        "@trezor/device-utils": "workspace:*"
+        "@trezor/device-utils": "workspace:*",
+        "@trezor/protobuf": "workspace:*"
     }
 }

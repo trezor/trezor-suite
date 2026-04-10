@@ -7,7 +7,6 @@ export const modalIntents = [
     'warning',
     'critical',
     'accentViolet',
-    'accentOrange',
 ] as const satisfies UIIntent[];
 export type ModalIntent = Extract<UIIntent, (typeof modalIntents)[number]>;
 

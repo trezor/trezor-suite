@@ -5,7 +5,7 @@ import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 
 import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
-import type { MethodMessage, MethodPermission } from '../core/AbstractMethod';
+import type { MethodContext, MethodMessage, MethodPermission } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { getCoinInfo } from '../data/coinInfo';
 
@@ -17,16 +17,7 @@ type Params = {
 
 export default class PushTransaction extends AbstractMethod<'pushTransaction', Params> {
     constructor(message: MethodMessage<'pushTransaction'>) {
-        super(message);
-        this.useUi = false;
-        this.useDevice = false;
-    }
-    get requiredPermissions(): MethodPermission[] {
-        return ['push_tx'];
-    }
-
-    init() {
-        const { payload } = this;
+        const { payload } = message;
 
         // validate incoming parameters
         Assert(PushTransactionSchema, payload);
@@ -45,17 +36,24 @@ export default class PushTransaction extends AbstractMethod<'pushTransaction', P
             throw ERRORS.TypedError('Method_InvalidParameter', 'Transaction must be hexadecimal');
         }
 
-        this.params = {
+        const params = {
             tx: payload.tx,
             coinInfo,
             identity: payload.identity,
         };
+
+        super(message, params);
+        this.useUi = false;
+        this.useDevice = false;
+    }
+    get requiredPermissions(): MethodPermission[] {
+        return ['push_tx'];
     }
 
-    async run() {
+    async run({ sendCoreMessage }: MethodContext) {
         const backend = await initBlockchain(
             this.params.coinInfo,
-            this.postMessage,
+            sendCoreMessage,
             this.params.identity,
         );
         const txid = await backend.pushTransaction(this.params.tx);

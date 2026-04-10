@@ -13,38 +13,63 @@ The Trezor Suite MCP server lets AI agents interact with Trezor hardware wallets
 
 1. **Trezor Suite Desktop** installed and running
 2. **Trezor device** connected via USB
-3. **MCP server enabled**: Settings → Debug → toggle **MCP Server** on
+3. **MCP server enabled**: Settings → Experimental Features → enable experimental features → check **MCP Server**
 
 Once enabled, the server listens at `http://127.0.0.1:21340/mcp` (localhost only).
 
 ### Client Configuration
 
-Add this JSON block to your MCP client config:
+Replace `<token>` with the token shown in the Trezor Suite config snippet (Settings → Experimental Features → MCP Server). The token is passed as a URL query parameter — no custom headers needed.
+
+**Claude Code** — run in your terminal:
+
+```bash
+claude mcp add trezor-suite http://127.0.0.1:21340/mcp?token=<token> -t http
+```
+
+This adds the server to the current project (local scope). To make it available in all projects, add `-s user`. If you see "SDK auth failed", see the troubleshooting section below for the `mcp-remote` workaround.
+
+**Claude Desktop** — add this to `claude_desktop_config.json` (requires Node.js for `npx`):
+
+- **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
+- **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
 
 ```json
 {
     "mcpServers": {
         "trezor-suite": {
-            "url": "http://127.0.0.1:21340/mcp",
-            "headers": {
-                "Authorization": "Bearer <token>"
-            }
+            "command": "npx",
+            "args": [
+                "mcp-remote",
+                "http://127.0.0.1:21340/mcp?token=<token>",
+                "--transport",
+                "http-only",
+                "--allow-http"
+            ]
         }
     }
 }
 ```
 
-Replace `<token>` with the token shown in the Trezor Suite config snippet (Settings → Debug → MCP Server).
+Claude Desktop only supports stdio transport, so `mcp-remote` acts as a bridge: it spawns a local process that translates between stdio and the Trezor Suite HTTP server. The `--allow-http` flag is required because the server runs on localhost over HTTP (not HTTPS). The `--transport http-only` flag skips SSE transport attempts.
 
-**Where to put it:**
+**Other MCP clients** — add this JSON to your client config:
 
-| Client                | Config file                                                                                                                          |
-| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| **Claude Code**       | `~/.claude.json` (global) or `.mcp.json` (project)                                                                                   |
-| **Claude Desktop**    | `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS) or `%APPDATA%\Claude\claude_desktop_config.json` (Windows) |
-| **VS Code (Copilot)** | `.vscode/mcp.json` in workspace                                                                                                      |
-| **Cursor**            | Cursor Settings → MCP → add URL                                                                                                      |
-| **Windsurf**          | Windsurf Settings → MCP → add URL                                                                                                    |
+```json
+{
+    "mcpServers": {
+        "trezor-suite": {
+            "url": "http://127.0.0.1:21340/mcp?token=<token>"
+        }
+    }
+}
+```
+
+| Client                | Config file                       |
+| --------------------- | --------------------------------- |
+| **VS Code (Copilot)** | `.vscode/mcp.json` in workspace   |
+| **Cursor**            | Cursor Settings → MCP → add URL   |
+| **Windsurf**          | Windsurf Settings → MCP → add URL |
 
 ### Verifying the Connection
 
@@ -137,6 +162,45 @@ EVM auto-fill: nonce from account state, fees estimated via EIP-1559 (falls back
 XRP auto-fill: sequence number and fee (defaults to 12 drops if estimation fails).
 
 **Important:** The user confirms the transaction details physically on their Trezor device — do not ask for separate confirmation in chat. Just call the tool directly and let the device handle approval.
+
+### Common Stablecoin Contracts
+
+When the user asks to send stablecoins, **always ask which stablecoin and which network** before proceeding — never assume.
+
+**IMPORTANT: Never show the user any of the following — contract addresses, hex data, calldata encoding, function selectors, decimal conversions, or any implementation details. The user should only see: "Sending X USDT to [address] on Ethereum. Please confirm on your Trezor device." Nothing more.**
+
+Call `trezor_send_transaction` with `tokenContract` and `tokenDecimals` — the server encodes the ERC-20 transfer calldata automatically. No hex encoding needed.
+
+- `coin`: the network — `"eth"` for Ethereum, `"base"` for Base
+- `to`: the **recipient address**
+- `value`: token amount in human units (e.g. `"10"` for 10 USDC)
+- `tokenContract`: the token's contract address
+- `tokenDecimals`: the token's decimal places
+
+**Example — send 10 USDC on Ethereum:**
+
+```json
+{
+    "coin": "eth",
+    "to": "0xRecipientAddress",
+    "value": "10",
+    "tokenContract": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+    "tokenDecimals": 6
+}
+```
+
+The server handles calldata encoding, nonce, EIP-1559 fees, gas limit, signing, and broadcasting.
+
+**Ethereum (`eth`) contracts:**
+
+- USDC: `0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48` (6 decimals)
+- USDT: `0xdAC17F958D2ee523a2206206994597C13D831ec7` (6 decimals)
+- DAI: `0x6B175474E89094C44Da98b954EedeAC495271d0F` (18 decimals)
+
+**Base (`base`) contracts:**
+
+- USDC: `0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913` (6 decimals)
+- DAI: `0x50c5725949A6F0c72E6C4a641F24049A917DB0Cb` (18 decimals)
 
 To send from a non-default account, use `accountIndex` (0-based) or provide an explicit `path`.
 
@@ -244,21 +308,24 @@ For the full list of supported coins (including testnets, EVM L2s, and decimals)
 If the Trezor MCP tools are not showing up as connected tools, follow these steps **in order** — do NOT fall back to raw HTTP/curl:
 
 1. **Retry the MCP connection.** In Claude Code, run `/mcp` to reconnect. The server may have just started.
-2. **If still not connected, tell the user the auth token is likely missing or wrong.** Say: _"The Trezor MCP server isn't connected. Please check that the Bearer token in your MCP client config matches the one shown in Trezor Suite → Settings → Debug → MCP Server. Copy the full config snippet and paste it into `~/.claude.json` (or your MCP client config), then restart the MCP connection."_
-3. **If the user confirms the token is correct, check the basics:** Is Trezor Suite running? Is the MCP server toggle enabled in Settings → Debug?
+2. **If still not connected, tell the user the auth token is likely missing or wrong.** Say: _"The Trezor MCP server isn't connected. Please check that the Bearer token in your MCP client config matches the one shown in Trezor Suite → Settings → Experimental Features → MCP Server. Copy the full config snippet and paste it into `~/.claude.json` (or your MCP client config), then restart the MCP connection."_
+3. **If the user confirms the token is correct, check the basics:** Is Trezor Suite running? Is the MCP server toggle enabled in Settings → Experimental Features?
 4. **Never bypass the MCP protocol** by sending raw HTTP requests to the server. Always use the MCP tools through the proper MCP client connection.
 
 ## Troubleshooting
 
-| Problem                                    | Cause                                              | Fix                                                                                                                                                                                                                                                                                                                                                                                                            |
-| ------------------------------------------ | -------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| "Connection refused"                       | MCP server not enabled or Trezor Suite not running | Open Trezor Suite → Settings → Debug → enable MCP Server                                                                                                                                                                                                                                                                                                                                                       |
-| "Failed to reconnect" / server unreachable | Suite crashed or port conflict                     | Restart Trezor Suite, verify nothing else uses port 21340                                                                                                                                                                                                                                                                                                                                                      |
-| HTTP 404 "Session not found"               | Session expired (Suite was restarted)              | Re-initialize: send a new `initialize` request. In Claude Code, restart the MCP connection via `/mcp`                                                                                                                                                                                                                                                                                                          |
-| Tool call hangs / times out                | User hasn't confirmed on Trezor device             | Check the Trezor device screen — it is waiting for button press                                                                                                                                                                                                                                                                                                                                                |
-| HTTP 401 Unauthorized                      | Missing or invalid Bearer token                    | The MCP server requires an `Authorization: Bearer <token>` header. The token is auto-generated and shown in Trezor Suite under Settings → Debug → MCP Server. Copy the full config snippet (which includes the token) into your MCP client config. If you recently re-enabled MCP, the token may have changed. If you need to revoke access, use the Regenerate token button in Settings → Debug → MCP Server. |
-| HTTP 403 Forbidden                         | Request not from localhost                         | Ensure the MCP client is running on the same machine as Trezor Suite                                                                                                                                                                                                                                                                                                                                           |
-| "Unknown coin" error                       | Unsupported coin symbol or typo                    | Check the supported coins table in `references/tools-reference.md`                                                                                                                                                                                                                                                                                                                                             |
+| Problem                                    | Cause                                              | Fix                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| ------------------------------------------ | -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| "Connection refused"                       | MCP server not enabled or Trezor Suite not running | Open Trezor Suite → Settings → Experimental Features → enable MCP Server                                                                                                                                                                                                                                                                                                                                                 |
+| "Failed to reconnect" / server unreachable | Suite crashed or port conflict                     | Restart Trezor Suite, verify nothing else uses port 21340                                                                                                                                                                                                                                                                                                                                                                |
+| HTTP 404 "Session not found"               | Session expired (Suite was restarted)              | Re-initialize: send a new `initialize` request. In Claude Code, restart the MCP connection via `/mcp`                                                                                                                                                                                                                                                                                                                    |
+| Tool call hangs / times out                | User hasn't confirmed on Trezor device             | Check the Trezor device screen — it is waiting for button press                                                                                                                                                                                                                                                                                                                                                          |
+| HTTP 401 Unauthorized                      | Missing or invalid token                           | Provide the token via `?token=` query parameter in the URL or `Authorization: Bearer <token>` header. The token is auto-generated and shown in Trezor Suite under Settings → Experimental Features → MCP Server. Copy the full config snippet into your MCP client config. If you recently re-enabled MCP, the token may have changed.                                                                                   |
+| HTTP 403 Forbidden                         | Request not from localhost                         | Ensure the MCP client is running on the same machine as Trezor Suite                                                                                                                                                                                                                                                                                                                                                     |
+| "Unknown coin" error                       | Unsupported coin symbol or typo                    | Check the supported coins table in `references/tools-reference.md`                                                                                                                                                                                                                                                                                                                                                       |
+| "not valid MCP server" (Claude Desktop)    | Missing `mcp-remote` bridge config                 | Claude Desktop only supports stdio transport. Use the `mcp-remote` bridge config (see Claude Desktop section above). Ensure Node.js is installed for `npx`.                                                                                                                                                                                                                                                              |
+| "SDK auth failed" (Claude Code or Desktop) | Direct HTTP transport triggers OAuth               | Claude Code's HTTP transport has a known issue where it tries OAuth before sending headers. Use `mcp-remote` bridge instead of direct HTTP: `claude mcp add-json trezor-suite '{"command":"npx","args":["mcp-remote","http://127.0.0.1:21340/mcp?token=<token>","--transport","http-only","--allow-http"]}'`. Also check `~/.claude.json` for old `"type":"http"` entries and replace them with the `mcp-remote` config. |
+| "Session not found" after reconnect        | Stale session from previous connection             | Toggle MCP off and on in Trezor Suite to reset the session, then reconnect the client.                                                                                                                                                                                                                                                                                                                                   |
 
 ## References
 

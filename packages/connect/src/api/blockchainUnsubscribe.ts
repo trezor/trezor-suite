@@ -3,7 +3,12 @@
 import type { CoinInfo } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 
-import type { MethodMessage, MethodPermission, Payload } from '../core/AbstractMethod';
+import type {
+    MethodContext,
+    MethodMessage,
+    MethodPermission,
+    Payload,
+} from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { validateParams } from './common/paramsValidator';
 import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
@@ -18,17 +23,7 @@ type Params = {
 
 export default class BlockchainUnsubscribe extends AbstractMethod<'blockchainUnsubscribe', Params> {
     constructor(message: MethodMessage<'blockchainUnsubscribe'>) {
-        super(message);
-        this.useDevice = false;
-        this.useUi = false;
-    }
-
-    get requiredPermissions(): MethodPermission[] {
-        return [];
-    }
-
-    init() {
-        const { payload } = this;
+        const { payload } = message;
 
         // validate incoming parameters
         validateParams(payload, [
@@ -51,18 +46,26 @@ export default class BlockchainUnsubscribe extends AbstractMethod<'blockchainUns
         // validate backend
         isBackendSupported(coinInfo);
 
-        this.params = {
+        const params = {
             accounts: payload.accounts,
             coinInfo,
             identity: payload.identity,
             blocks: payload.blocks ?? false,
         };
+
+        super(message, params);
+        this.useDevice = false;
+        this.useUi = false;
     }
 
-    async run() {
+    get requiredPermissions(): MethodPermission[] {
+        return [];
+    }
+
+    async run({ sendCoreMessage }: MethodContext) {
         const backend = await initBlockchain(
             this.params.coinInfo,
-            this.postMessage,
+            sendCoreMessage,
             this.params.identity,
         );
 

@@ -278,7 +278,7 @@ export const TransactionsGraph = memo(
                                                 ? Number(balanceValueFn(data)) || yDomain[0]
                                                 : Number(balanceValueFn(data))
                                         }
-                                        stroke={theme.baseBorderWarning}
+                                        stroke={theme.borderWarning}
                                         dot={false}
                                         activeDot={false}
                                     />
@@ -306,9 +306,7 @@ export const TransactionsGraph = memo(
                                             key={`cell-${entry}`}
                                             filter={isBarColored(index) ? 'url(#shadow)' : ''}
                                             fill={
-                                                isBarColored(index)
-                                                    ? theme.baseBorderBrand
-                                                    : '#aeaeae'
+                                                isBarColored(index) ? theme.borderBrand : '#aeaeae'
                                             }
                                         />
                                     ))}
@@ -324,7 +322,7 @@ export const TransactionsGraph = memo(
                                             filter={isBarColored(index) ? 'url(#shadow)' : ''}
                                             fill={
                                                 isBarColored(index)
-                                                    ? theme.baseBorderNegative
+                                                    ? theme.borderCritical
                                                     : '#dfdfdf'
                                             }
                                         />

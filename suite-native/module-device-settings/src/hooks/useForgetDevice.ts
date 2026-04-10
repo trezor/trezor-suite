@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { selectIsDeviceConnected, selectIsDeviceConnectedViaBluetooth } from '@suite-common/device';
-import { type ForgetDeviceThunkParams, forgetDeviceThunk } from '@suite-common/wallet-core';
+import { forgetDeviceThunk } from '@suite-common/wallet-core';
 import { selectIsKnownBluetoothDevice, useBluetoothDevice } from '@suite-native/bluetooth';
 import { useTranslate } from '@suite-native/intl';
 import {
@@ -37,28 +37,25 @@ export const useForgetDevice = () => {
     const isKnownBluetoothDevice = useSelector(selectIsKnownBluetoothDevice);
     const isDeviceConnected = useSelector(selectIsDeviceConnected);
 
-    const forgetDeviceAndShowSuccessToast = async (params?: ForgetDeviceThunkParams) => {
-        await dispatch(forgetDeviceThunk(params));
-        showToast({
-            icon: 'check',
-            variant: 'default',
-            message: translate('moduleDeviceSettings.forgetDevice.successToast'),
-        });
-    };
-
-    const forgetDeviceAndHandleNavigation = () => {
+    const forgetDeviceAndHandleNavigation = async () => {
         if (isDeviceConnected) {
             dispatch(forgetDeviceThunk({ isOsUnpairingFinished: true }));
             navigation.navigate(DeviceSettingsStackRoutes.ForgetDeviceStack, {
                 screen: ForgetDeviceStackRoutes.ForgetDeviceFinish,
             });
         } else {
-            forgetDeviceAndShowSuccessToast({ isOsUnpairingFinished: true });
+            // Awaited to ensure the home screen is already updated.
+            await dispatch(forgetDeviceThunk({ isOsUnpairingFinished: true }));
             navigation.popTo(RootStackRoutes.AppTabs, {
                 screen: AppTabsRoutes.HomeStack,
                 params: {
                     screen: HomeStackRoutes.Home,
                 },
+            });
+            showToast({
+                icon: 'check',
+                variant: 'default',
+                message: translate('moduleDeviceSettings.forgetDevice.successToast'),
             });
         }
     };
@@ -69,7 +66,7 @@ export const useForgetDevice = () => {
                 screen: ForgetDeviceStackRoutes.ForgetDeviceConfirmation,
             });
             unpairBluetoothDevice({
-                onSuccess: forgetDeviceAndShowSuccessToast,
+                onSuccess: () => dispatch(forgetDeviceThunk()),
                 onCancel: navigation.goBack,
             });
         } else if (isKnownBluetoothDevice) {

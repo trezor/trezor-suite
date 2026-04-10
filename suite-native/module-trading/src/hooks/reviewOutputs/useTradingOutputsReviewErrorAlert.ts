@@ -28,10 +28,10 @@ export const useTradingOutputsReviewErrorAlert = (accountKey: AccountKey) => {
                     ? translate('moduleSend.review.outputs.errorAlert.solana.description')
                     : translate('moduleSend.review.outputs.errorAlert.generic.description'),
                 primaryButtonTitle: translate('generic.buttons.tryAgain'),
-                primaryButtonVariant: 'redBold',
+                primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
                 onPressPrimaryButton: onRetry,
                 secondaryButtonTitle: translate('generic.buttons.cancel'),
-                secondaryButtonVariant: 'redElevation0',
+                secondaryButtonColorProps: { intent: 'critical', priority: 'secondary' },
                 onPressSecondaryButton: onCancel,
             });
         },

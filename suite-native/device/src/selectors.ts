@@ -3,6 +3,7 @@ import { A, pipe } from '@mobily/ts-belt';
 import {
     type DeviceRootState,
     PORTFOLIO_TRACKER_DEVICE_ID,
+    getIsDeviceIdValid,
     selectDeviceAuthenticityByDeviceId,
     selectDeviceFirmwareVersionArray,
     selectDeviceInstances,
@@ -13,6 +14,7 @@ import {
     selectIsDeviceConnected,
     selectIsDeviceConnectedAndAuthorized,
     selectIsDeviceInBootloader,
+    selectIsDeviceInvariabilityCheckSuccess,
     selectIsDeviceThpLocked,
     selectIsEntropyCheckFailed,
     selectIsFirmwareAuthenticityCheckDismissed,
@@ -56,7 +58,9 @@ import { type FeatureFlagsRootState } from '@suite-native/feature-flags';
 import { type NativeFirmwareRootState } from '@suite-native/firmware';
 import {
     type SettingsSliceRootState,
+    selectAreDeviceMetaChecksEnabled,
     selectIsDeviceAuthenticityCheckEnabled,
+    selectIsFirmwareRevisionCheckEnabled,
 } from '@suite-native/settings';
 import { doesCoinSupportStaking } from '@suite-native/staking';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
@@ -197,7 +201,7 @@ export const selectFirmwareRevisionCheckErrorIfEnabled = (
     device: Device,
 ) => {
     const { revisionCheckError } = getFirmwareAuthenticityCheckErrors(device);
-    const { isFirmwareRevisionCheckEnabled } = state.appSettings;
+    const isFirmwareRevisionCheckEnabled = selectIsFirmwareRevisionCheckEnabled(state);
     const isMessageSystemFeatureEnabled = selectIsFeatureEnabled(
         state,
         Feature.firmwareRevisionCheckMobile,
@@ -250,6 +254,27 @@ export const selectIsEntropyCheckEnabledAndFailedForSelectedDevice = (
     return selectIsEntropyCheckEnabledAndFailed(state, device.id);
 };
 
+export const selectIsDeviceIdCheckEnabledAndFailed = createMemoizedSelector(
+    [
+        selectAreDeviceMetaChecksEnabled,
+        (state: FwAuthenticityCheckState) => selectIsFeatureEnabled(state, Feature.idCheck, true),
+        (_state: NativeDeviceRootState, device: Device) => device,
+    ],
+    (areDeviceMetaChecksEnabled, isFeatureEnabled, device) =>
+        areDeviceMetaChecksEnabled && isFeatureEnabled && !getIsDeviceIdValid(device),
+);
+
+export const selectIsDeviceInvariabilityEnabledAndFailed = createMemoizedSelector(
+    [
+        selectAreDeviceMetaChecksEnabled,
+        (state: FwAuthenticityCheckState) =>
+            selectIsFeatureEnabled(state, Feature.invariabilityCheck, true),
+        selectIsDeviceInvariabilityCheckSuccess,
+    ],
+    (areDeviceMetaChecksEnabled, isFeatureEnabled, isDeviceInvariabilityCheckSuccessful) =>
+        areDeviceMetaChecksEnabled && isFeatureEnabled && !isDeviceInvariabilityCheckSuccessful,
+);
+
 export const selectIsDeviceAuthenticityCheckFailed = createMemoizedSelector(
     [selectDeviceAuthenticityByDeviceId],
     authenticityCheckResult => authenticityCheckResult?.valid === false,
@@ -282,15 +307,23 @@ export const selectCompromisedDeviceFailedCheck = (
         state,
         device,
     );
+    const isDeviceIdCheckEnabledAndFailed = selectIsDeviceIdCheckEnabledAndFailed(state, device);
+    const isDeviceInvariabilityEnabledAndFailed = selectIsDeviceInvariabilityEnabledAndFailed(
+        state,
+        device,
+    );
     const isDeviceAuthenticityEnabledAndFailed =
         isDeviceAuthenticityCheckEnabled && isDeviceAuthenticityCheckFailed;
 
-    const isFirmwareAuthenticityCheckHardFailedAndNotDismissed =
-        hasFirmwareAuthenticityCheckHardFailed && !isFirmwareAuthenticityCheckDismissed;
-
     if (isDeviceAuthenticityEnabledAndFailed) return 'device-authenticity';
     if (isEntropyCheckEnabledAndFailed) return 'entropy';
-    if (isFirmwareAuthenticityCheckHardFailedAndNotDismissed) return 'firmware-authenticity';
+
+    // All the following checks are dismissable together by a shared mechanism
+    if (!isFirmwareAuthenticityCheckDismissed) {
+        if (isDeviceIdCheckEnabledAndFailed) return 'device-id';
+        if (isDeviceInvariabilityEnabledAndFailed) return 'device-invariability';
+        if (hasFirmwareAuthenticityCheckHardFailed) return 'firmware-authenticity';
+    }
 
     return null;
 };

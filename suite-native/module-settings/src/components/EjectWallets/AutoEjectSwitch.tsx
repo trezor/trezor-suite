@@ -56,9 +56,9 @@ export const AutoEjectSwitch = () => {
                 primaryButtonTitle: (
                     <Translation id="moduleSettings.viewOnly.autoEject.switch.alert.primaryButtonTitle" />
                 ),
-                primaryButtonVariant: 'redBold',
+                primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
                 secondaryButtonTitle: <Translation id="generic.buttons.cancel" />,
-                secondaryButtonVariant: 'redElevation0',
+                secondaryButtonColorProps: { intent: 'critical', priority: 'secondary' },
                 onPressSecondaryButton: hideAlert,
                 onPressPrimaryButton: onToggleAutoEject,
             });

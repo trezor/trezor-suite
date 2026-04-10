@@ -102,7 +102,7 @@
         "typescript": "5.8.3",
         "prettier": "3.8.1",
         "react-native": "0.83.2",
-        "type-fest": "4.24.0",
+        "type-fest": "5.5.0",
         "bcrypto": "5.4.0",
         "react": "19.2.4",
         "electron": "40.8.5",

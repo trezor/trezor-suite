@@ -12,7 +12,7 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@evolu/common": "8.0.0-next.1",
+        "@evolu/common": "8.0.0-next.3",
         "@evolu/react-native": "15.0.0-next.0",
         "@reduxjs/toolkit": "2.11.2",
         "@suite-common/delegated-identity-key-types": "workspace:*",

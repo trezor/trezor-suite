@@ -26,8 +26,8 @@ export const SendUtxoScreenHeader = ({ onDelete, accountKey }: SendUtxoScreenHea
                 setSelectedUtxos([]);
                 onDelete?.();
             },
-            primaryButtonVariant: 'redBold',
-            secondaryButtonVariant: 'redElevation0',
+            primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
+            secondaryButtonColorProps: { intent: 'critical', priority: 'secondary' },
         });
     };
 
@@ -39,7 +39,8 @@ export const SendUtxoScreenHeader = ({ onDelete, accountKey }: SendUtxoScreenHea
                 selectedUtxos.length > 0 && (
                     <IconButton
                         iconName="trash"
-                        colorScheme="redElevation0"
+                        intent="critical"
+                        priority="secondary"
                         size="medium"
                         onPress={handleDelete}
                         testID="coin-control-delete-button"

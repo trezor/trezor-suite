@@ -14,17 +14,7 @@ type Params = {
 
 export default class GetCoinInfo extends AbstractMethod<'getCoinInfo', Params> {
     constructor(message: MethodMessage<'getCoinInfo'>) {
-        super(message);
-        this.useDevice = false;
-        this.useUi = false;
-    }
-
-    get requiredPermissions(): MethodPermission[] {
-        return [];
-    }
-
-    init() {
-        const { payload } = this;
+        const { payload } = message;
 
         Assert(CoinObj, payload);
 
@@ -33,9 +23,15 @@ export default class GetCoinInfo extends AbstractMethod<'getCoinInfo', Params> {
             throw ERRORS.TypedError('Method_UnknownCoin');
         }
 
-        this.params = {
-            coinInfo,
-        };
+        const params = { coinInfo };
+
+        super(message, params);
+        this.useDevice = false;
+        this.useUi = false;
+    }
+
+    get requiredPermissions(): MethodPermission[] {
+        return [];
     }
 
     run() {

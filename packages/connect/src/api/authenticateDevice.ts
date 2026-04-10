@@ -18,7 +18,17 @@ export default class AuthenticateDevice extends AbstractMethod<
     AuthenticateDeviceParams
 > {
     constructor(message: MethodMessage<'authenticateDevice'>) {
-        super(message);
+        const { payload } = message;
+
+        Assert(AuthenticateDeviceParams, payload);
+
+        const params = {
+            config: payload.config,
+            blacklistConfig: payload.blacklistConfig,
+            allowDebugKeys: payload.allowDebugKeys,
+        };
+
+        super(message, params);
         this.useEmptyPassphrase = true;
         this.allowDeviceMode = [UI_REQUEST.INITIALIZE, UI_REQUEST.SEEDLESS];
         this.skipFinalReload = false;
@@ -27,18 +37,6 @@ export default class AuthenticateDevice extends AbstractMethod<
     }
     get requiredPermissions(): MethodPermission[] {
         return ['management'];
-    }
-
-    init() {
-        const { payload } = this;
-
-        Assert(AuthenticateDeviceParams, payload);
-
-        this.params = {
-            config: payload.config,
-            blacklistConfig: payload.blacklistConfig,
-            allowDebugKeys: payload.allowDebugKeys,
-        };
     }
 
     async run() {

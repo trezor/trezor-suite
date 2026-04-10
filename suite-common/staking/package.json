@@ -13,8 +13,8 @@
     },
     "dependencies": {
         "@everstake/wallet-sdk-ethereum": "1.0.5",
+        "@suite-common/earn-staking-api": "workspace:*",
         "@suite-common/staking-solana-types": "workspace:*",
-        "@suite-common/wallet-api": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-constants": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
@@ -23,6 +23,6 @@
         "@trezor/connect-common": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "web3-utils": "^4.3.2"
+        "web3-utils": "^4.3.3"
     }
 }

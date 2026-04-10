@@ -278,7 +278,8 @@ export function TxSimulationInner({ action, account, source }: TxSimulationInner
             <Button
                 testID="@popup/cancel-simulation"
                 onPress={onCancel}
-                colorScheme="tertiaryElevation0"
+                intent="neutral"
+                priority="secondary"
             >
                 <Translation id="generic.buttons.cancel" />
             </Button>

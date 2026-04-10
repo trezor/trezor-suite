@@ -55,8 +55,8 @@ export const useTurnOnSuiteSyncGuard = () => {
                     params: { closeActionType: 'close' },
                 });
             },
-            primaryButtonVariant: 'blueBold',
-            secondaryButtonVariant: 'blueElevation0',
+            primaryButtonColorProps: { intent: 'info', priority: 'primary' },
+            secondaryButtonColorProps: { intent: 'info', priority: 'secondary' },
             secondaryButtonTitle: (
                 <Translation id="suiteSync.firmwareUpdateAlert.secondaryButtonTitle" />
             ),

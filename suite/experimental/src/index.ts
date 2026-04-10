@@ -11,7 +11,8 @@ export type ExperimentalFeature =
     | 'nft-section'
     | 'slip24'
     | 'experimental-networks'
-    | 'tron-view-only';
+    | 'tron-view-only'
+    | 'mcp-server';
 
 /**
  * Set of features that are truly experimental (as opposed to regular features
@@ -39,6 +40,7 @@ export const translatedExperimentalFeatures: ExperimentalFeatureTranslation = {
     'testnet-networks': 'TR_EXPERIMENTAL_TESTNET_NETWORKS',
     slip24: 'TR_EXPERIMENTAL_SLIP24',
     'tron-view-only': 'TR_EXPERIMENTAL_TRON_VIEW_ONLY',
+    'mcp-server': 'TR_EXPERIMENTAL_MCP_SERVER',
 };
 
 export type FeedbackFeatureName = ExperimentalFeature | 'suite-sync' | 'stablecoin-yield';

@@ -41,19 +41,19 @@ const Container = styled.div<{
         $isDisabled
             ? css`
                   background: ${$isChecked
-                      ? theme.stateFillElementBrandBoldActiveDisabled
-                      : theme.stateFillElementBoldDisabled};
+                      ? theme.elementFillFieldSelectedDisabled
+                      : theme.elementFillBoldDisabled};
               `
             : css`
                   background: ${$isChecked
-                      ? theme.stateFillElementBrandBoldActive
-                      : theme.baseFillElementNeutralBold};
+                      ? theme.elementFillFieldSelected
+                      : theme.elementFillNeutralBold};
 
                   :focus-within:has(:focus-visible),
                   &:hover {
                       background: ${$isChecked
-                          ? theme.stateFillElementBrandBoldActiveHovered
-                          : theme.stateFillElementNeutralBoldHovered};
+                          ? theme.elementFillFieldSelectedHovered
+                          : theme.elementFillNeutralBoldHovered};
                   }
 
                   ${getFocusShadowStyle(':focus-within:has(:focus-visible)')}
@@ -66,7 +66,7 @@ const Handle = styled.button<{ $isChecked: boolean }>`
     aspect-ratio: 1;
     border: none;
     border-radius: ${borders.radii.full};
-    background: ${({ theme }) => theme.baseContentReversePrimary};
+    background: ${({ theme }) => theme.contentPrimaryInverse};
     transform: ${({ $isChecked }) => $isChecked && `translateX(100%)`};
     transition: transform 0.25s ease 0s;
     pointer-events: none;

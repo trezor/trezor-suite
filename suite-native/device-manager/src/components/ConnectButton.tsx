@@ -57,8 +57,9 @@ export const ConnectButton = ({ onSelectDevice }: ConnectButtonProps) => {
             exiting={FadeOutUp}
         >
             <Button
-                viewLeft="trezorDevices"
-                colorScheme="tertiaryElevation0"
+                iconLeft="trezorDevices"
+                intent="neutral"
+                priority="secondary"
                 onPress={handleConnectDevice}
             >
                 <Translation id="deviceManager.connectButton" />

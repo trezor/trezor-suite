@@ -35,7 +35,8 @@ export const MessageSystemCard = () => {
                     <Text variant="body-xs">Sequence: {config?.sequence}</Text>
                     <Text variant="body-xs">Timestamp: {config?.timestamp}</Text>
                     <Button
-                        colorScheme="tertiaryElevation0"
+                        intent="neutral"
+                        priority="secondary"
                         size="small"
                         onPress={handleCopyConfig}
                     >

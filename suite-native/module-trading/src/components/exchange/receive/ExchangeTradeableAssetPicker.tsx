@@ -19,7 +19,7 @@ export const ExchangeTradeableAssetPicker = () => {
                 <SelectTradeableAssetButton
                     onPress={showSheet}
                     selectedAsset={selectedValue}
-                    colorScheme="tertiaryElevation0"
+                    buttonColorProps={{ intent: 'neutral', priority: 'secondary' }}
                     caret
                     testID={ASSET_PICKER_TEST_ID}
                 />

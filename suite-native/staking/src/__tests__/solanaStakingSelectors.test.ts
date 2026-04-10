@@ -16,8 +16,6 @@ import {
 } from '../solanaStakingSelectors';
 import { type NativeStakingRootState } from '../types';
 
-type SolStakeData = NonNullable<StakeState['data']['sol']>;
-
 const staticStateString = 'device@state:1';
 
 const solAccountWithStaking: Account = {
@@ -101,14 +99,18 @@ const etcAccount: Account = {
     networkType: 'ethereum',
 } as unknown as Account;
 
-const solStakeData: SolStakeData = {
-    stakingInfo: {
-        error: false,
-        isLoading: true,
-        lastSuccessfulFetchTimestamp: 0 as Timestamp,
-        data: {
-            apy: 6.21,
+const solStakeData: StakeState['data'] = {
+    error: null,
+    isLoading: true,
+    lastSuccessAt: 0 as Timestamp,
+    data: {
+        sol: {
+            stats: {
+                apy: 6.21,
+            },
         },
+        eth: undefined,
+        ada: undefined,
     },
 };
 
@@ -138,7 +140,21 @@ const getTestState = ({
 }): NativeStakingRootState => ({
     wallet: {
         accounts,
-        stake: { ...stakeInitialState, data: { sol: withSolStakeData ? solStakeData : {} } },
+        stake: {
+            ...stakeInitialState,
+            data: withSolStakeData
+                ? solStakeData
+                : {
+                      error: null,
+                      isLoading: false,
+                      lastSuccessAt: null,
+                      data: {
+                          sol: undefined,
+                          eth: undefined,
+                          ada: undefined,
+                      },
+                  },
+        },
         transactions: { transactions: {}, phishing: {}, fetchStatusDetail: {} },
     },
     suiteSync: initialSuiteSyncState,
@@ -166,6 +182,7 @@ const getTestState = ({
         isDeviceAuthenticityCheckEnabled: false,
         isFirmwareRevisionCheckEnabled: false,
         isFirmwareHashCheckEnabled: false,
+        areDeviceMetaChecksEnabled: false,
         areTestnetsEnabled: false,
         shouldShowAutoEjectAlert: false,
         hasAutoEjectAlertBeenDisplayed: false,

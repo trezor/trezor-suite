@@ -79,14 +79,16 @@ export const SuiteSyncRelaySettings = () => {
                         />
                         <Button
                             testID="@suiteSync/custom-relay-url-save-button"
-                            colorScheme="tertiaryElevation0"
+                            intent="neutral"
+                            priority="secondary"
                             size="small"
                             onPress={onSubmit}
                         >
                             Save
                         </Button>
                         <Button
-                            colorScheme="tertiaryElevation0"
+                            intent="neutral"
+                            priority="secondary"
                             size="small"
                             onPress={handleResetToDefault}
                         >

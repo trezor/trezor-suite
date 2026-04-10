@@ -1,5 +1,9 @@
 {
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
-    "references": [{ "path": "../http-client" }]
+    "references": [
+        { "path": "../http-client" },
+        { "path": "../react-query" },
+        { "path": "../wallet-types" }
+    ]
 }

@@ -72,7 +72,7 @@ const validateDeviceState = async (context: WorkflowContext) => {
             return await validate(context);
         } catch (error) {
             if (error.message.includes('PIN invalid')) {
-                context.method.postMessage(
+                context.sendCoreMessage(
                     createUiMessage(UI_REQUEST.INVALID_PIN, {
                         device: context.device.toMessageObject(),
                     }),
@@ -85,7 +85,7 @@ const validateDeviceState = async (context: WorkflowContext) => {
 
     return validate(context).catch(error => {
         if (error.message.includes('PIN invalid')) {
-            context.method.postMessage(
+            context.sendCoreMessage(
                 createUiMessage(UI_REQUEST.INVALID_PIN_ATTEMPTS_DEPLETED, {
                     device: context.device.toMessageObject(),
                 }),
@@ -157,7 +157,7 @@ const validateThpDeviceState = async (context: WorkflowContext) => {
 };
 
 export const validateState = async (context: WorkflowContext) => {
-    const { device, method } = context;
+    const { device, sendCoreMessage } = context;
 
     // Make sure that device will display pin/passphrase
     const isDeviceUnlocked = device.features.unlocked;
@@ -182,6 +182,6 @@ export const validateState = async (context: WorkflowContext) => {
     // emit additional CHANGE event if device becomes unlocked after authorization
     // features were automatically updated after PinMatrixAck in DeviceCommands
     if (!isDeviceUnlocked && device.features.unlocked) {
-        method.postMessage(createDeviceMessage(DEVICE.CHANGED, device.toMessageObject()));
+        sendCoreMessage(createDeviceMessage(DEVICE.CHANGED, device.toMessageObject()));
     }
 };

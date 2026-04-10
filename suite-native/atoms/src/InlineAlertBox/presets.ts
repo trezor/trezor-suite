@@ -1,7 +1,7 @@
 import { type IconName } from '@suite-native/icons';
 import { type Color } from '@trezor/theme';
 
-import { type ButtonColorScheme } from '../Button/Button';
+import { type ButtonColorProps } from '../Button/Button';
 
 export const INLINE_ALERT_BOX_VARIANTS = [
     'info',
@@ -15,34 +15,34 @@ export type InlineAlertBoxVariant = (typeof INLINE_ALERT_BOX_VARIANTS)[number];
 export type InlineAlertBoxStyles = {
     backgroundColor: Color;
     borderColor: Color;
-    buttonColorScheme: ButtonColorScheme;
+    buttonColorProps: ButtonColorProps;
 };
 
 export const variantToColorMap = {
     info: {
         backgroundColor: 'backgroundAlertBlueSubtleOnElevation1',
         borderColor: 'backgroundAlertBlueSubtleOnElevationNegative',
-        buttonColorScheme: 'blueBold',
+        buttonColorProps: { intent: 'info', priority: 'primary' },
     },
     success: {
         backgroundColor: 'backgroundPrimarySubtleOnElevation1',
         borderColor: 'backgroundPrimarySubtleOnElevationNegative',
-        buttonColorScheme: 'primary',
+        buttonColorProps: { intent: 'brand', priority: 'primary' },
     },
     warning: {
         backgroundColor: 'backgroundAlertYellowSubtleOnElevation1',
         borderColor: 'backgroundAlertYellowSubtleOnElevationNegative',
-        buttonColorScheme: 'yellowBold',
+        buttonColorProps: { intent: 'warning', priority: 'primary' },
     },
     neutral: {
         backgroundColor: 'backgroundTertiaryDefaultOnElevation1',
         borderColor: 'backgroundTertiaryDefaultOnElevation0',
-        buttonColorScheme: 'primary',
+        buttonColorProps: { intent: 'brand', priority: 'primary' },
     },
     critical: {
         backgroundColor: 'backgroundAlertRedSubtleOnElevation1',
         borderColor: 'backgroundAlertRedSubtleOnElevationNegative',
-        buttonColorScheme: 'redBold',
+        buttonColorProps: { intent: 'critical', priority: 'primary' },
     },
 } as const satisfies Record<InlineAlertBoxVariant, InlineAlertBoxStyles>;
 

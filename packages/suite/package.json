@@ -34,6 +34,7 @@
         "@suite-common/device": "workspace:*",
         "@suite-common/device-authenticity": "workspace:*",
         "@suite-common/earn-api": "workspace:*",
+        "@suite-common/earn-staking-api": "workspace:*",
         "@suite-common/feedback": "workspace:*",
         "@suite-common/fiat-services": "workspace:*",
         "@suite-common/firmware": "workspace:*",
@@ -69,7 +70,6 @@
         "@suite-common/transaction-search": "workspace:*",
         "@suite-common/tx-simulation": "workspace:^",
         "@suite-common/validators": "workspace:*",
-        "@suite-common/wallet-api": "workspace:^",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-constants": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
@@ -131,7 +131,7 @@
         "idb": "^8.0.3",
         "immer": "11.0.0",
         "pako": "^2.1.0",
-        "pdfmake": "^0.3.3",
+        "pdfmake": "^0.3.7",
         "polished": "^4.3.1",
         "qrcode.react": "^4.2.0",
         "react": "19.2.4",
@@ -152,7 +152,7 @@
         "redux-thunk": "^3.1.0",
         "semver": "^7.7.1",
         "styled-components": "^6.3.9",
-        "web3-utils": "^4.3.2"
+        "web3-utils": "^4.3.3"
     },
     "devDependencies": {
         "@testing-library/react": "^16.3.2",

@@ -238,103 +238,109 @@ export const solStakingAccountDeactivating = new SolanaStakingAccountFixture(
 );
 
 export const totalReward = {
-    url: 'https://stake-sync-api.everstake.one/v1/solana/rewards/8NapsSamBA2jd8VR8SZw4aXSvSAHiskUZXaiYW1HxTGe/total?validator=9QU2QSxhb24FUX3Tu2FpczXjpK3VYrvRudywSZaM29mF',
-    response: { rewards: '1139693' },
+    url: '**/sol/rewards/8NapsSamBA2jd8VR8SZw4aXSvSAHiskUZXaiYW1HxTGe/total',
+    response: { total: '1139693' },
 };
 
-export const rewards: { url: string; response: SolanaReward[] } = {
-    url: 'https://stake-sync-api.everstake.one/v1/solana/rewards/8NapsSamBA2jd8VR8SZw4aXSvSAHiskUZXaiYW1HxTGe',
-    response: [
-        {
-            epoch: 877,
-            delegator: '6YaYu1rHw95rtyrADg1pgrKuDPB3fte8GdRAcAUyx3zK',
-            amount: '144018',
-            currency: 'SOL',
-            time: '2025-11-11T03:30:17Z',
-        },
-        {
-            epoch: 876,
-            delegator: '6YaYu1rHw95rtyrADg1pgrKuDPB3fte8GdRAcAUyx3zK',
-            amount: '144188',
-            currency: 'SOL',
-            time: '2025-11-09T03:28:04Z',
-        },
-        {
-            epoch: 875,
-            delegator: '6YaYu1rHw95rtyrADg1pgrKuDPB3fte8GdRAcAUyx3zK',
-            amount: '118296',
-            currency: 'SOL',
-            time: '2025-11-07T03:26:05Z',
-        },
-        {
-            epoch: 874,
-            delegator: '6YaYu1rHw95rtyrADg1pgrKuDPB3fte8GdRAcAUyx3zK',
-            amount: '68554',
-            currency: 'SOL',
-            time: '2025-11-05T03:22:58Z',
-        },
-        {
-            epoch: 873,
-            delegator: '6YaYu1rHw95rtyrADg1pgrKuDPB3fte8GdRAcAUyx3zK',
-            amount: '69061',
-            currency: 'SOL',
-            time: '2025-11-03T03:15:20Z',
-        },
-        {
-            epoch: 872,
-            delegator: '6YaYu1rHw95rtyrADg1pgrKuDPB3fte8GdRAcAUyx3zK',
-            amount: '69075',
-            currency: 'SOL',
-            time: '2025-11-01T03:11:13Z',
-        },
-        {
-            epoch: 871,
-            delegator: '6YaYu1rHw95rtyrADg1pgrKuDPB3fte8GdRAcAUyx3zK',
-            amount: '69049',
-            currency: 'SOL',
-            time: '2025-10-30T02:56:16Z',
-        },
-        {
-            epoch: 870,
-            delegator: '6YaYu1rHw95rtyrADg1pgrKuDPB3fte8GdRAcAUyx3zK',
-            amount: '69160',
-            currency: 'SOL',
-            time: '2025-10-28T03:10:37Z',
-        },
-        {
-            epoch: 869,
-            delegator: '6YaYu1rHw95rtyrADg1pgrKuDPB3fte8GdRAcAUyx3zK',
-            amount: '69050',
-            currency: 'SOL',
-            time: '2025-10-26T03:33:27Z',
-        },
-        {
-            epoch: 868,
-            delegator: '6YaYu1rHw95rtyrADg1pgrKuDPB3fte8GdRAcAUyx3zK',
-            amount: '70142',
-            currency: 'SOL',
-            time: '2025-10-24T03:54:06Z',
-        },
-        {
-            epoch: 867,
-            delegator: '6YaYu1rHw95rtyrADg1pgrKuDPB3fte8GdRAcAUyx3zK',
-            amount: '69864',
-            currency: 'SOL',
-            time: '2025-10-22T04:09:37Z',
-        },
-        {
-            epoch: 866,
-            delegator: '6YaYu1rHw95rtyrADg1pgrKuDPB3fte8GdRAcAUyx3zK',
-            amount: '69681',
-            currency: 'SOL',
-            time: '2025-10-20T04:20:38Z',
-        },
-        {
-            epoch: 865,
-            delegator: '6YaYu1rHw95rtyrADg1pgrKuDPB3fte8GdRAcAUyx3zK',
-            amount: '109555',
-            currency: 'SOL',
-            time: '1970-01-01T00:00:00Z',
-        },
-    ],
+export const rewards: {
+    url: string;
+    response: { rewards: SolanaReward[]; totalCount: number };
+} = {
+    url: '**/sol/rewards/8NapsSamBA2jd8VR8SZw4aXSvSAHiskUZXaiYW1HxTGe**',
+    response: {
+        rewards: [
+            {
+                epoch: 877,
+                delegator: '6YaYu1rHw95rtyrADg1pgrKuDPB3fte8GdRAcAUyx3zK',
+                amount: '144018',
+                currency: 'SOL',
+                time: '2025-11-11T03:30:17Z',
+            },
+            {
+                epoch: 876,
+                delegator: '6YaYu1rHw95rtyrADg1pgrKuDPB3fte8GdRAcAUyx3zK',
+                amount: '144188',
+                currency: 'SOL',
+                time: '2025-11-09T03:28:04Z',
+            },
+            {
+                epoch: 875,
+                delegator: '6YaYu1rHw95rtyrADg1pgrKuDPB3fte8GdRAcAUyx3zK',
+                amount: '118296',
+                currency: 'SOL',
+                time: '2025-11-07T03:26:05Z',
+            },
+            {
+                epoch: 874,
+                delegator: '6YaYu1rHw95rtyrADg1pgrKuDPB3fte8GdRAcAUyx3zK',
+                amount: '68554',
+                currency: 'SOL',
+                time: '2025-11-05T03:22:58Z',
+            },
+            {
+                epoch: 873,
+                delegator: '6YaYu1rHw95rtyrADg1pgrKuDPB3fte8GdRAcAUyx3zK',
+                amount: '69061',
+                currency: 'SOL',
+                time: '2025-11-03T03:15:20Z',
+            },
+            {
+                epoch: 872,
+                delegator: '6YaYu1rHw95rtyrADg1pgrKuDPB3fte8GdRAcAUyx3zK',
+                amount: '69075',
+                currency: 'SOL',
+                time: '2025-11-01T03:11:13Z',
+            },
+            {
+                epoch: 871,
+                delegator: '6YaYu1rHw95rtyrADg1pgrKuDPB3fte8GdRAcAUyx3zK',
+                amount: '69049',
+                currency: 'SOL',
+                time: '2025-10-30T02:56:16Z',
+            },
+            {
+                epoch: 870,
+                delegator: '6YaYu1rHw95rtyrADg1pgrKuDPB3fte8GdRAcAUyx3zK',
+                amount: '69160',
+                currency: 'SOL',
+                time: '2025-10-28T03:10:37Z',
+            },
+            {
+                epoch: 869,
+                delegator: '6YaYu1rHw95rtyrADg1pgrKuDPB3fte8GdRAcAUyx3zK',
+                amount: '69050',
+                currency: 'SOL',
+                time: '2025-10-26T03:33:27Z',
+            },
+            {
+                epoch: 868,
+                delegator: '6YaYu1rHw95rtyrADg1pgrKuDPB3fte8GdRAcAUyx3zK',
+                amount: '70142',
+                currency: 'SOL',
+                time: '2025-10-24T03:54:06Z',
+            },
+            {
+                epoch: 867,
+                delegator: '6YaYu1rHw95rtyrADg1pgrKuDPB3fte8GdRAcAUyx3zK',
+                amount: '69864',
+                currency: 'SOL',
+                time: '2025-10-22T04:09:37Z',
+            },
+            {
+                epoch: 866,
+                delegator: '6YaYu1rHw95rtyrADg1pgrKuDPB3fte8GdRAcAUyx3zK',
+                amount: '69681',
+                currency: 'SOL',
+                time: '2025-10-20T04:20:38Z',
+            },
+            {
+                epoch: 865,
+                delegator: '6YaYu1rHw95rtyrADg1pgrKuDPB3fte8GdRAcAUyx3zK',
+                amount: '109555',
+                currency: 'SOL',
+                time: '1970-01-01T00:00:00Z',
+            },
+        ],
+        totalCount: 13,
+    },
 };

@@ -18,7 +18,8 @@ export const CheckBackupCard = () => {
                     size="small"
                     flex={1}
                     onPress={navigateToCheckBackup}
-                    colorScheme="tertiaryElevation0"
+                    intent="neutral"
+                    priority="secondary"
                     testID="@device-check-backup/redirectToDeviceCheckBackupScreen"
                 >
                     <Translation id="moduleDeviceSettings.checkBackup.title" />

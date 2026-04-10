@@ -59,7 +59,7 @@ export const RecoveryInstructionsScreen = ({
                     >
                         <Translation id="generic.buttons.continue" />
                     </Button>
-                    <Button colorScheme="tertiaryElevation0" onPress={openModal}>
+                    <Button intent="neutral" priority="secondary" onPress={openModal}>
                         <Translation id="moduleDeviceOnboarding.recoveryInstructionsScreen.secondaryButton" />
                     </Button>
                 </VStack>

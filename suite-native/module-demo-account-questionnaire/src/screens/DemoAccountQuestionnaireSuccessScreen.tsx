@@ -123,7 +123,7 @@ export const DemoAccountQuestionnaireSuccessScreen = () => {
                         ))}
                     </VStack>
                 </VStack>
-                <Button onPress={handleBackToDashboard} colorScheme="tertiaryElevation0">
+                <Button onPress={handleBackToDashboard} intent="neutral" priority="secondary">
                     <Translation id="moduleDemoAccountQuestionnaire.success.backCta" />
                 </Button>
             </VStack>

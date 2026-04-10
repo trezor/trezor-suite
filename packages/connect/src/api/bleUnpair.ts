@@ -9,21 +9,18 @@ import { AbstractMethod } from '../core/AbstractMethod';
 
 export default class BleUnpair extends AbstractMethod<'bleUnpair', PROTO.BleUnpair> {
     constructor(message: MethodMessage<'bleUnpair'>) {
-        super(message);
+        const { payload } = message;
+
+        Assert(PROTO.BleUnpair, payload);
+
+        const params = { all: payload.all };
+
+        super(message, params);
         this.allowDeviceMode = [UI_REQUEST.INITIALIZE, UI_REQUEST.SEEDLESS];
         this.useDeviceState = false;
     }
     get requiredPermissions(): MethodPermission[] {
         return ['management'];
-    }
-
-    init() {
-        const { payload } = this;
-        this.params = {
-            all: payload.all,
-        };
-
-        Assert(PROTO.BleUnpair, payload);
     }
 
     async run() {

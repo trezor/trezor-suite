@@ -80,10 +80,14 @@ export const DeviceCheckBackupUnsupportedModelScreen = () => {
                     </IconListTextItem>
                 </VStack>
                 <VStack spacing="sp12">
-                    <Button viewLeft="arrowSquareOut" onPress={redirectToWeb}>
+                    <Button iconLeft="arrowSquareOut" onPress={redirectToWeb}>
                         <Translation id="moduleCheckBackup.checkBackupUnsupportedModelScreen.redirectButton" />
                     </Button>
-                    <Button colorScheme="tertiaryElevation0" onPress={redirectToDeviceSettings}>
+                    <Button
+                        intent="neutral"
+                        priority="secondary"
+                        onPress={redirectToDeviceSettings}
+                    >
                         <Translation id="moduleCheckBackup.checkBackupUnsupportedModelScreen.laterButton" />
                     </Button>
                 </VStack>

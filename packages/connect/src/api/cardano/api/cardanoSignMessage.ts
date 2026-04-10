@@ -37,20 +37,7 @@ export default class CardanoSignMessage extends AbstractMethod<
     static readonly VERSION = 1;
 
     constructor(message: MethodMessage<'cardanoSignMessage'>) {
-        super(message);
-        this.firmwareRange = getFirmwareRange(
-            this.name,
-            getMiscNetwork('Cardano'),
-            this.firmwareRange,
-        );
-    }
-
-    get requiredPermissions(): MethodPermission[] {
-        return ['read', 'write'];
-    }
-
-    init(): void {
-        const { payload } = this;
+        const { payload } = message;
 
         Assert(CardanoSignMessageSchema, payload);
 
@@ -61,7 +48,7 @@ export default class CardanoSignMessage extends AbstractMethod<
             );
         }
 
-        this.params = {
+        const params = {
             path: validatePath(payload.path, 5),
             payload: payload.payload,
             preferHexDisplay: payload.preferHexDisplay ?? false,
@@ -71,6 +58,18 @@ export default class CardanoSignMessage extends AbstractMethod<
                 payload.addressParameters && addressParametersToProto(payload.addressParameters),
             derivationType: payload.derivationType ?? PROTO.CardanoDerivationType.ICARUS_TREZOR,
         };
+
+        super(message, params);
+
+        this.firmwareRange = getFirmwareRange(
+            this.name,
+            getMiscNetwork('Cardano'),
+            this.firmwareRange,
+        );
+    }
+
+    get requiredPermissions(): MethodPermission[] {
+        return ['read', 'write'];
     }
 
     async run(): Promise<CardanoSignedMessage> {

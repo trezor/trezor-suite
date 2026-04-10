@@ -29,12 +29,12 @@ export function TopAssets({
         <Box
             borderRadius={12}
             borderWidth={1}
-            borderColor="baseBorderElementNeutralSoftest"
+            borderColor="elementBorderField"
             width="100%"
             overflow="hidden"
             data-testid={dataTestId}
         >
-            <Row hasDivider dividerColor="baseBorderElementNeutralSoftest" alignItems="stretch">
+            <Row hasDivider dividerColor="elementBorderField" alignItems="stretch">
                 {assets.map(asset => (
                     <GhostContainer
                         key={asset.id}

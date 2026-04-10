@@ -11,6 +11,7 @@ import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 
 import type {
+    MethodContext,
     MethodMessage,
     MethodPermission,
     MethodReturnType,
@@ -18,9 +19,10 @@ import type {
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { fromHardened, getSerializedPath, validatePath } from '../../../utils/pathUtils';
-import { getFirmwareRange } from '../../common/paramsValidator';
+import { bundlify, getFirmwareRange } from '../../common/paramsValidator';
 
-type Params = PROTO.TezosGetAddress & {
+type Params = {
+    proto: PROTO.TezosGetAddress;
     address?: string;
 };
 
@@ -29,7 +31,27 @@ export default class TezosGetAddress extends AbstractMethod<'tezosGetAddress', P
     progress = 0;
 
     constructor(message: MethodMessage<'tezosGetAddress'>) {
-        super(message);
+        const { hasBundle, payload } = bundlify(message.payload);
+
+        // validate bundle type
+        Assert(Bundle(GetAddressSchema), payload);
+
+        const params = payload.bundle.map(batch => {
+            const path = validatePath(batch.path, 3);
+
+            const proto = {
+                address_n: path,
+                show_display: typeof batch.showOnTrezor === 'boolean' ? batch.showOnTrezor : true,
+                chunkify: typeof batch.chunkify === 'boolean' ? batch.chunkify : false,
+            };
+
+            return { proto, address: batch.address };
+        });
+
+        super(message, params);
+
+        this.hasBundle = hasBundle;
+        this.useUi = this.getUseUi(this.params, payload.useEventListener);
         this.confirmMissingBackup = true;
         this.requiredDeviceCapabilities = ['Capability_Tezos'];
         this.firmwareRange = getFirmwareRange(
@@ -43,34 +65,10 @@ export default class TezosGetAddress extends AbstractMethod<'tezosGetAddress', P
         return ['read'];
     }
 
-    init() {
-        // create a bundle with only one batch if bundle doesn't exists
-        this.hasBundle = !!this.payload.bundle;
-        const payload = !this.payload.bundle
-            ? { ...this.payload, bundle: [this.payload] }
-            : this.payload;
-
-        // validate bundle type
-        Assert(Bundle(GetAddressSchema), payload);
-
-        this.params = payload.bundle.map(batch => {
-            const path = validatePath(batch.path, 3);
-
-            return {
-                address_n: path,
-                address: batch.address,
-                show_display: typeof batch.showOnTrezor === 'boolean' ? batch.showOnTrezor : true,
-                chunkify: typeof batch.chunkify === 'boolean' ? batch.chunkify : false,
-            };
-        });
-
-        this.useUi = this.getUseUi(this.params);
-    }
-
     get info() {
         if (this.params.length === 1) {
             return `Export Tezos address for account #${
-                fromHardened(this.params[0].address_n[2]) + 1
+                fromHardened(this.params[0].proto.address_n[2]) + 1
             }`;
         }
 
@@ -81,7 +79,7 @@ export default class TezosGetAddress extends AbstractMethod<'tezosGetAddress', P
         if (code === 'ButtonRequest_Address') {
             return {
                 type: 'address' as const,
-                serializedPath: getSerializedPath(this.params[this.progress].address_n),
+                serializedPath: getSerializedPath(this.params[this.progress].proto.address_n),
                 address: this.params[this.progress].address || 'not-set',
             };
         }
@@ -94,28 +92,24 @@ export default class TezosGetAddress extends AbstractMethod<'tezosGetAddress', P
         };
     }
 
-    async _call({ address_n, show_display, chunkify }: Params) {
+    async _call({ proto }: Params) {
         const cmd = this.getDevice().getCommands();
-        const response = await cmd.typedCall('TezosGetAddress', 'TezosAddress', {
-            address_n,
-            show_display,
-            chunkify,
-        });
+        const response = await cmd.typedCall('TezosGetAddress', 'TezosAddress', proto);
 
         return response.message;
     }
 
-    async run() {
+    async run({ sendCoreMessage }: MethodContext) {
         const responses: MethodReturnType<typeof this.name> = [];
 
         for (let i = 0; i < this.params.length; i++) {
             const batch = this.params[i];
             // silently get address and compare with requested address
             // or display as default inside popup
-            if (batch.show_display) {
+            if (batch.proto.show_display) {
                 const silent = await this._call({
                     ...batch,
-                    show_display: false,
+                    proto: { ...batch.proto, show_display: false },
                 });
                 if (typeof batch.address === 'string') {
                     if (batch.address !== silent.address) {
@@ -128,15 +122,15 @@ export default class TezosGetAddress extends AbstractMethod<'tezosGetAddress', P
 
             const response = await this._call(batch);
             responses.push({
-                path: batch.address_n,
-                serializedPath: getSerializedPath(batch.address_n),
+                path: batch.proto.address_n,
+                serializedPath: getSerializedPath(batch.proto.address_n),
                 address: response.address,
                 mac: response.mac,
             });
 
             if (this.hasBundle) {
                 // send progress
-                this.postMessage(
+                sendCoreMessage(
                     createUiMessage(UI_REQUEST.BUNDLE_PROGRESS, {
                         total: this.params.length,
                         progress: i,

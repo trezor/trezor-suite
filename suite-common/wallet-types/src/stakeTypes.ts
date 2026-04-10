@@ -1,4 +1,4 @@
-import type { Network, NetworkSymbol } from '@suite-common/wallet-config';
+import type { Network } from '@suite-common/wallet-config';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import type { FeeLevel } from '@trezor/connect';
 import { type BigNumber } from '@trezor/utils';
@@ -15,35 +15,6 @@ export type StakingLimits = {
     MIN_BALANCE_FOR_STAKING: BigNumber;
     MIN_AMOUNT_FOR_STAKING_DASHBOARD: BigNumber;
 };
-
-export enum EverstakeEndpointType {
-    PoolStats = 'poolStats',
-    ValidatorsQueue = 'validatorsQueue',
-}
-
-export const EVERSTAKE_ENDPOINT_TYPES = {
-    [EverstakeEndpointType.PoolStats]: 'stats',
-    [EverstakeEndpointType.ValidatorsQueue]: 'validators/queue',
-} as const satisfies Record<EverstakeEndpointType, string>;
-
-export enum EverstakeAssetEndpointType {
-    StakingInfo = 'stakingInfo',
-}
-
-export enum EverstakeRewardsEndpointType {
-    GetRewards = 'stakingRewards',
-}
-
-export const EVERSTAKE_ASSET_ENDPOINT_TYPES = {
-    [EverstakeAssetEndpointType.StakingInfo]: {
-        sol: 'chain',
-        dsol: 'chain',
-        ada: 'blockchain/summary',
-    },
-} as const satisfies Record<
-    EverstakeAssetEndpointType,
-    Record<Extract<NetworkSymbol, 'sol' | 'dsol' | 'ada'>, string>
->;
 
 export interface AmountLimitsString {
     currency: string;

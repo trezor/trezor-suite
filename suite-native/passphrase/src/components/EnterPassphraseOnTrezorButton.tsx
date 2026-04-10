@@ -4,7 +4,7 @@ import { selectDeviceInternalModel, selectSelectedDevice } from '@suite-common/d
 import { submitPassphrase } from '@suite-common/wallet-core';
 import { events } from '@suite-native/analytics';
 import { Button } from '@suite-native/atoms';
-import { DeviceModelIcon } from '@suite-native/icons';
+import { deviceModelToIconName } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { useAnalytics } from '@suite-native/services';
 
@@ -25,8 +25,9 @@ export const EnterPassphraseOnTrezorButton = () => {
     return (
         <Button
             onPress={handleSubmitOnDevice}
-            colorScheme="tertiaryElevation0"
-            viewLeft={<DeviceModelIcon deviceModel={deviceModel} />}
+            intent="neutral"
+            priority="secondary"
+            iconLeft={deviceModelToIconName(deviceModel)}
         >
             <Translation id="modulePassphrase.enterPassphraseOnTrezor.button" />
         </Button>

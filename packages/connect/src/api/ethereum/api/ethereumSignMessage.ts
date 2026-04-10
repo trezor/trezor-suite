@@ -17,14 +17,33 @@ import { getSerializedPath, getSlip44ByPath, validatePath } from '../../../utils
 import { getFirmwareRange } from '../../common/paramsValidator';
 import { getEthereumDefinitions } from '../ethereumDefinitions';
 
-type Params = PROTO.EthereumSignMessage & {
+type Params = {
+    proto: PROTO.EthereumSignMessage;
+    readableMessage: string;
     network?: EthereumNetworkInfo;
     definitions?: MessagesSchema.EthereumDefinitions;
 };
 
 export default class EthereumSignMessage extends AbstractMethod<'ethereumSignMessage', Params> {
     constructor(message: MethodMessage<'ethereumSignMessage'>) {
-        super(message);
+        const { payload } = message;
+
+        // validate incoming parameters
+        Assert(EthereumSignMessageSchema, payload);
+
+        const address_n = validatePath(payload.path, 3);
+        const network = getEthereumNetwork(address_n);
+
+        const messageHex = payload.hex
+            ? messageToHex(payload.message)
+            : Buffer.from(payload.message, 'utf8').toString('hex');
+
+        const readableMessage = payload.hex ? hexToText(payload.message) : payload.message;
+
+        const params = { proto: { address_n, message: messageHex }, readableMessage };
+
+        super(message, params);
+        this.firmwareRange = getFirmwareRange(this.name, network, this.firmwareRange);
         this.requiredDeviceCapabilities = ['Capability_Ethereum'];
     }
 
@@ -32,37 +51,20 @@ export default class EthereumSignMessage extends AbstractMethod<'ethereumSignMes
         return ['read', 'write'];
     }
 
-    init() {
-        const { payload } = this;
-
-        // validate incoming parameters
-        Assert(EthereumSignMessageSchema, payload);
-
-        const path = validatePath(payload.path, 3);
-        const network = getEthereumNetwork(path);
-        this.firmwareRange = getFirmwareRange(this.name, network, this.firmwareRange);
-
-        const messageHex = payload.hex
-            ? messageToHex(payload.message)
-            : Buffer.from(payload.message, 'utf8').toString('hex');
-        this.params = {
-            address_n: path,
-            message: messageHex,
-        };
-    }
-
     async initAsync() {
         if (this.params.network) return;
 
-        const { address_n } = this.params;
+        const { address_n } = this.params.proto;
         const slip44 = getSlip44ByPath(address_n);
-        this.params.definitions = await getEthereumDefinitions({
-            slip44,
-        });
+        const definitions = await getEthereumDefinitions({ slip44 });
+        this.params.proto.encoded_network = definitions.encoded_network;
     }
 
     get info() {
-        return getNetworkLabel('Sign #NETWORK message', getEthereumNetwork(this.params.address_n));
+        return getNetworkLabel(
+            'Sign #NETWORK message',
+            getEthereumNetwork(this.params.proto.address_n),
+        );
     }
 
     getButtonRequestData(code: string, name?: string) {
@@ -70,23 +72,22 @@ export default class EthereumSignMessage extends AbstractMethod<'ethereumSignMes
             return {
                 type: 'message' as const,
                 coin: this.params.network?.shortcut ?? 'ETH',
-                serializedPath: getSerializedPath(this.params.address_n),
-                message: this.payload.hex ? hexToText(this.payload.message) : this.payload.message,
+                serializedPath: getSerializedPath(this.params.proto.address_n),
+                message: this.params.readableMessage,
             };
         }
     }
 
     async run() {
-        validateModelOneMessageSize(this.getDevice(), this.params.message);
+        validateModelOneMessageSize(this.getDevice(), this.params.proto.message);
 
         const cmd = this.getDevice().getCommands();
-        const { address_n, message } = this.params;
 
-        const response = await cmd.typedCall('EthereumSignMessage', 'EthereumMessageSignature', {
-            encoded_network: this.params.definitions?.encoded_network,
-            address_n,
-            message,
-        });
+        const response = await cmd.typedCall(
+            'EthereumSignMessage',
+            'EthereumMessageSignature',
+            this.params.proto,
+        );
 
         return response.message;
     }

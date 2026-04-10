@@ -88,7 +88,7 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
                     pictogramVariant: 'critical',
                     primaryButtonTitle: <Translation id="generic.buttons.close" />,
                     onPressPrimaryButton: handleCancel,
-                    primaryButtonVariant: 'redBold',
+                    primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
                 });
 
                 return false;

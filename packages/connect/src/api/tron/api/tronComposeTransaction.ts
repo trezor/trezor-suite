@@ -12,7 +12,11 @@ export default class TronComposeTransaction extends AbstractMethod<
     TronComposeTransactionSchema
 > {
     constructor(message: MethodMessage<'tronComposeTransaction'>) {
-        super(message);
+        const { payload } = message;
+
+        Assert(TronComposeTransactionSchema, payload);
+
+        super(message, payload);
         this.useDevice = false;
         this.useUi = false;
     }
@@ -20,15 +24,6 @@ export default class TronComposeTransaction extends AbstractMethod<
     get requiredPermissions(): MethodPermission[] {
         return [];
     }
-
-    init() {
-        const { payload } = this;
-
-        Assert(TronComposeTransactionSchema, payload);
-
-        this.params = payload;
-    }
-
     get info() {
         return 'Compose Tron transaction';
     }

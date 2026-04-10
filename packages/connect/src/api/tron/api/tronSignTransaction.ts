@@ -15,6 +15,61 @@ import { AbstractMethod } from '../../../core/AbstractMethod';
 import { validatePath } from '../../../utils/pathUtils';
 import { encodeBroadcastTransaction, encodeTronContractRawData } from '../tronEncode';
 
+// Transform official Tron field names to protobuf field names.
+const transformContract = (input: TronContractInput): TronContracts => {
+    switch (input.type) {
+        case 'FreezeBalanceV2Contract': {
+            const { value } = input.parameter;
+
+            return {
+                type: 'FreezeBalanceV2Contract',
+                parameter: {
+                    value: {
+                        owner_address: value.owner_address,
+                        balance: 'frozen_balance' in value ? value.frozen_balance : value.balance,
+                        resource: value.resource,
+                    },
+                },
+            };
+        }
+        case 'UnfreezeBalanceV2Contract': {
+            const { value } = input.parameter;
+
+            return {
+                type: 'UnfreezeBalanceV2Contract',
+                parameter: {
+                    value: {
+                        owner_address: value.owner_address,
+                        balance:
+                            'unfreeze_balance' in value ? value.unfreeze_balance : value.balance,
+                        resource: value.resource,
+                    },
+                },
+            };
+        }
+        case 'VoteWitnessContract': {
+            const { value } = input.parameter;
+
+            return {
+                type: 'VoteWitnessContract',
+                parameter: {
+                    value: {
+                        owner_address: value.owner_address,
+                        votes: value.votes.map(vote => ({
+                            address: 'vote_address' in vote ? vote.vote_address : vote.address,
+                            count: 'vote_count' in vote ? vote.vote_count : vote.count,
+                        })),
+                    },
+                },
+            };
+        }
+        case 'TransferContract':
+        case 'TriggerSmartContract':
+        case 'WithdrawExpireUnfreezeContract':
+            return input;
+    }
+};
+
 const contractMapping = {
     TransferContract: 'TronTransferContract',
     TriggerSmartContract: 'TronTriggerSmartContract',
@@ -34,16 +89,7 @@ export default class TronSignTransaction extends AbstractMethod<'tronSignTransac
     progress = 0;
 
     constructor(message: MethodMessage<'tronSignTransaction'>) {
-        super(message);
-        this.requiredDeviceCapabilities = ['Capability_Tron'];
-    }
-
-    get requiredPermissions(): MethodPermission[] {
-        return ['read', 'write'];
-    }
-
-    init() {
-        const { payload } = this;
+        const { payload } = message;
 
         const contractType = payload.contract?.[0]?.type;
         if (!contractType || !(contractType in contractMapping)) {
@@ -57,9 +103,9 @@ export default class TronSignTransaction extends AbstractMethod<'tronSignTransac
 
         const path = validatePath(payload.path, 3);
 
-        const contract = this.transformContract(payload.contract[0]);
+        const contract = transformContract(payload.contract[0]);
 
-        this.params = {
+        const params = {
             tx: {
                 address_n: path,
                 ref_block_bytes: payload.ref_block_bytes,
@@ -71,64 +117,13 @@ export default class TronSignTransaction extends AbstractMethod<'tronSignTransac
             },
             contract,
         };
+
+        super(message, params);
+        this.requiredDeviceCapabilities = ['Capability_Tron'];
     }
 
-    // Transform official Tron field names to protobuf field names.
-    private transformContract(input: TronContractInput): TronContracts {
-        switch (input.type) {
-            case 'FreezeBalanceV2Contract': {
-                const { value } = input.parameter;
-
-                return {
-                    type: 'FreezeBalanceV2Contract',
-                    parameter: {
-                        value: {
-                            owner_address: value.owner_address,
-                            balance:
-                                'frozen_balance' in value ? value.frozen_balance : value.balance,
-                            resource: value.resource,
-                        },
-                    },
-                };
-            }
-            case 'UnfreezeBalanceV2Contract': {
-                const { value } = input.parameter;
-
-                return {
-                    type: 'UnfreezeBalanceV2Contract',
-                    parameter: {
-                        value: {
-                            owner_address: value.owner_address,
-                            balance:
-                                'unfreeze_balance' in value
-                                    ? value.unfreeze_balance
-                                    : value.balance,
-                            resource: value.resource,
-                        },
-                    },
-                };
-            }
-            case 'VoteWitnessContract': {
-                const { value } = input.parameter;
-
-                return {
-                    type: 'VoteWitnessContract',
-                    parameter: {
-                        value: {
-                            owner_address: value.owner_address,
-                            votes: value.votes.map(vote => ({
-                                address: 'vote_address' in vote ? vote.vote_address : vote.address,
-                                count: 'vote_count' in vote ? vote.vote_count : vote.count,
-                            })),
-                        },
-                    },
-                };
-            }
-            case 'TransferContract':
-            case 'TriggerSmartContract':
-            case 'WithdrawExpireUnfreezeContract':
-                return input;
-        }
+    get requiredPermissions(): MethodPermission[] {
+        return ['read', 'write'];
     }
 
     get info() {

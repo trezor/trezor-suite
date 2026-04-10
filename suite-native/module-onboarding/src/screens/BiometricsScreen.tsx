@@ -96,7 +96,8 @@ export const BiometricsScreen = ({ navigation }: BiometricsScreenProps) => {
                             <Translation id="generic.buttons.enable" />
                         </Button>
                         <Button
-                            colorScheme="tertiaryElevation0"
+                            intent="neutral"
+                            priority="secondary"
                             testID="@onboarding/Biometrics/skipBtn"
                             onPress={handleNotNowButtonPress}
                         >

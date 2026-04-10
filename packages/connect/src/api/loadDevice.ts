@@ -8,22 +8,11 @@ import { getFirmwareRange } from './common/paramsValidator';
 
 export default class LoadDevice extends AbstractMethod<'loadDevice', PROTO.LoadDevice> {
     constructor(message: MethodMessage<'loadDevice'>) {
-        super(message);
-        this.allowDeviceMode = [UI_REQUEST.INITIALIZE];
-        this.useDeviceState = false;
-        this.skipFinalReload = false;
-        this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
-    }
-    get requiredPermissions(): MethodPermission[] {
-        return ['management'];
-    }
-
-    init() {
-        const { payload } = this;
+        const { payload } = message;
         // validate bundle type
         Assert(PROTO.LoadDevice, payload);
 
-        this.params = {
+        const params = {
             mnemonics: payload.mnemonics,
             pin: payload.pin,
             passphrase_protection: payload.passphrase_protection,
@@ -34,6 +23,15 @@ export default class LoadDevice extends AbstractMethod<'loadDevice', PROTO.LoadD
             needs_backup: payload.needs_backup,
             no_backup: payload.no_backup,
         };
+
+        super(message, params);
+        this.allowDeviceMode = [UI_REQUEST.INITIALIZE];
+        this.useDeviceState = false;
+        this.skipFinalReload = false;
+        this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
+    }
+    get requiredPermissions(): MethodPermission[] {
+        return ['management'];
     }
 
     get info() {

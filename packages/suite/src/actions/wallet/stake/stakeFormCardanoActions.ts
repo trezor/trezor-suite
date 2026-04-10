@@ -1,5 +1,6 @@
 import { asTypedDesktopAnalytics, events } from '@suite/analytics';
 import { selectSelectedDevice } from '@suite-common/device';
+import { type AdaPools } from '@suite-common/earn-staking-api';
 import { type ExtraDependencies } from '@suite-common/redux-utils';
 import {
     calculate,
@@ -7,7 +8,6 @@ import {
 } from '@suite-common/staking/src/actions/stakeFormActions';
 import { type EstimatedFee } from '@suite-common/staking-solana-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { type CardanoPoolStats } from '@suite-common/wallet-api';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     CARDANO_EVERSTAKE_DREP,
@@ -91,7 +91,7 @@ const calculateTransaction = (
 export const prepareTxPlan = async (
     account: Account,
     action: CardanoAction,
-    cardanoPools: CardanoPoolStats[],
+    cardanoPools: AdaPools['pools'],
     votingDelegation?: VotingDelegationOption,
 ) => {
     if (!account || account.networkType !== 'cardano') return;
@@ -182,7 +182,7 @@ export const prepareTxPlan = async (
 const getTransactionData = (
     formValues: StakeFormState,
     selectedAccount: SelectedAccountStatus,
-    cardanoPools: CardanoPoolStats[],
+    cardanoPools: AdaPools['pools'],
     votingDelegation?: VotingDelegationOption,
 ) => {
     const { stakeType } = formValues;

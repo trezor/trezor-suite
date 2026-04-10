@@ -3,15 +3,12 @@ import { TypedError } from '@trezor/connect-common/src/constants/errors';
 import { MODULES } from '@trezor/connect-common/src/constants/network';
 
 import * as Methods from '../api';
-import type { AbstractMethod, MethodContext } from './AbstractMethod';
+import type { AbstractMethod } from './AbstractMethod';
 
 const getMethodModule = (method: CoreCallMessage['payload']['method']) =>
     MODULES.find(module => method.startsWith(module));
 
-export const getMethod = async (
-    message: CoreCallMessage,
-    context: MethodContext,
-): Promise<AbstractMethod<any>> => {
+export const getMethod = async (message: CoreCallMessage): Promise<AbstractMethod<any>> => {
     const { method } = message.payload;
     if (typeof method !== 'string') {
         throw TypedError('Method_InvalidParameter', 'Message method is not set');
@@ -26,7 +23,7 @@ export const getMethod = async (
     const MethodConstructor = methods[method];
 
     if (MethodConstructor) {
-        return new MethodConstructor({ ...message, ...context });
+        return new MethodConstructor(message);
     }
 
     throw TypedError('Method_InvalidParameter', `Method ${method} not found`);

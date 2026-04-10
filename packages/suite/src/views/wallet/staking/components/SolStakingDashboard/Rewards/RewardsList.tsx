@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
 
 import { Translation } from '@suite/intl';
+import { type SolanaRewardsHistory } from '@suite-common/earn-staking-api/src/staking';
 import { SOLANA_EPOCH_DAYS } from '@suite-common/wallet-constants';
 import { formatNetworkAmount, isTestnet } from '@suite-common/wallet-utils';
 import {
@@ -18,33 +19,41 @@ import { DashboardSection } from 'src/components/dashboard';
 import { BaseCurrencyValue, FormattedCryptoAmount, FormattedDate } from 'src/components/suite';
 import { Pagination } from 'src/components/wallet';
 import { TransactionTargetLayout } from 'src/components/wallet/TransactionItem/TransactionTargetLayout';
-import { type SolanaRewards } from 'src/hooks/wallet/useSolanaRewards';
+import { type UsePagination } from 'src/hooks/general/usePagination';
 import { type Account } from 'src/types/wallet';
 import SkeletonTransactionItem from 'src/views/wallet/transactions/TransactionList/SkeletonTransactionItem';
 
 import { RewardsEmpty } from './RewardsEmpty';
 
-interface RewardsListProps {
-    account: Account;
-    rewards: SolanaRewards;
-}
-
 const TEST_ID = '@staking/rewards-item';
 
-export const RewardsList = ({ account, rewards }: RewardsListProps) => {
+interface RewardsListProps {
+    account: Account;
+    rewardsQueryResult: SolanaRewardsHistory;
+    pagination: UsePagination;
+}
+
+export const RewardsList = ({ account, rewardsQueryResult, pagination }: RewardsListProps) => {
     const sectionRef = useRef<HTMLDivElement>(null);
     const isSolanaMainnet = !isTestnet(account.symbol);
 
     const onPageSelected = (page: number) => {
-        rewards.setSelectedPage(page);
+        pagination.changePage(page);
         if (sectionRef.current) {
             sectionRef.current.scrollIntoView();
         }
     };
 
-    const noRewards = !isSolanaMainnet || rewards.selectedAccountRewards?.length === 0;
-    if (noRewards && !rewards.isLoading) {
+    const noRewards =
+        !isSolanaMainnet ||
+        (rewardsQueryResult.data?.rewards?.length === 0 && rewardsQueryResult.isSuccess);
+
+    if (noRewards) {
         return <RewardsEmpty />;
+    }
+
+    if (rewardsQueryResult.isError) {
+        // TODO: handle failed request
     }
 
     return (
@@ -54,7 +63,7 @@ export const RewardsList = ({ account, rewards }: RewardsListProps) => {
             data-testid="@wallet/accounts/rewards-list"
         >
             <Column gap={32}>
-                {rewards.isLoading || rewards.selectedAccountRewards === undefined ? (
+                {rewardsQueryResult.isLoading || rewardsQueryResult.data === undefined ? (
                     <SkeletonStack $col $childMargin="0px 0px 16px 0px">
                         <SkeletonTransactionItem />
                         <SkeletonTransactionItem />
@@ -62,7 +71,7 @@ export const RewardsList = ({ account, rewards }: RewardsListProps) => {
                     </SkeletonStack>
                 ) : (
                     <Column gap={40}>
-                        {rewards.slicedRewards?.map(reward => (
+                        {rewardsQueryResult.data.rewards.map(reward => (
                             <Column gap={10} key={reward.epoch} data-testid={TEST_ID}>
                                 <Text
                                     typographyStyle="body-sm-strong"
@@ -146,13 +155,13 @@ export const RewardsList = ({ account, rewards }: RewardsListProps) => {
                     </Column>
                 )}
 
-                {rewards.showPagination && !rewards.isLoading && rewards.slicedRewards?.length && (
+                {pagination.showPagination && !rewardsQueryResult.isLoading && (
                     <Pagination
                         hasPages={true}
-                        currentPage={rewards.currentPage}
-                        isLastPage={rewards.isLastPage}
-                        perPage={rewards.itemsPerPage}
-                        totalItems={rewards.totalItems}
+                        currentPage={pagination.page}
+                        isLastPage={pagination.isLastPage}
+                        perPage={pagination.pageSize}
+                        totalItems={pagination.totalCount}
                         onPageSelected={onPageSelected}
                         explicitNavigation
                     />

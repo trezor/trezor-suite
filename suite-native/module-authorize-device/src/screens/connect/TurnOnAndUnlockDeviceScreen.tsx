@@ -55,10 +55,10 @@ export const TurnOnAndUnlockDeviceScreen = () => {
                     primaryButtonTitle: (
                         <Translation id="moduleConnectDevice.helpModal.pairing.settings.pairAgainButton" />
                     ),
-                    primaryButtonVariant: 'blueBold',
+                    primaryButtonColorProps: { intent: 'info', priority: 'primary' },
                     onPressPrimaryButton: navigateToRemoveBluetoothDeviceScreen,
                     secondaryButtonTitle: <Translation id="generic.buttons.cancel" />,
-                    secondaryButtonVariant: 'blueElevation0',
+                    secondaryButtonColorProps: { intent: 'info', priority: 'secondary' },
                     onPressSecondaryButton: navigation.goBack,
                     appendix: <BluetoothPairingSettings />,
                 }),
@@ -77,10 +77,10 @@ export const TurnOnAndUnlockDeviceScreen = () => {
                 primaryButtonTitle: (
                     <Translation id="moduleConnectDevice.helpModal.pairing.hints.stillNotWorkingButton" />
                 ),
-                primaryButtonVariant: 'blueBold',
+                primaryButtonColorProps: { intent: 'info', priority: 'primary' },
                 onPressPrimaryButton: showBluetoothPairingSettingsAlert,
                 secondaryButtonTitle: <Translation id="generic.buttons.cancel" />,
-                secondaryButtonVariant: 'blueElevation0',
+                secondaryButtonColorProps: { intent: 'info', priority: 'secondary' },
                 onPressSecondaryButton: navigation.goBack,
                 appendix: <BluetoothPairingAnimation />,
             });
@@ -92,7 +92,7 @@ export const TurnOnAndUnlockDeviceScreen = () => {
                     <Translation id="moduleConnectDevice.helpModal.pairing.hints.description" />
                 ),
                 primaryButtonTitle: <Translation id="generic.buttons.cancel" />,
-                primaryButtonVariant: 'blueElevation0',
+                primaryButtonColorProps: { intent: 'info', priority: 'secondary' },
                 onPressPrimaryButton: navigation.goBack,
                 appendix: <BluetoothPairingAnimation />,
             });

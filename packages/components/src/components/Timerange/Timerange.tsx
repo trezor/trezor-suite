@@ -423,7 +423,7 @@ const StyledTimerange = styled.div`
     border-radius: ${borders.radii.md};
     background: ${({ theme }) => theme.backgroundSurfaceElevation1};
     box-shadow: ${({ theme }) => theme.boxShadowElevated};
-    outline: 1px solid ${({ theme }) => theme.baseBorderSurfaceAction};
+    outline: 1px solid ${({ theme }) => theme.surfaceBorderAction};
     z-index: ${zIndices.modal};
     animation: ${DROPDOWN_MENU} 0.15s ease-in-out;
 `;

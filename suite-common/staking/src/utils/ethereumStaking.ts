@@ -5,7 +5,7 @@ import {
 } from '@everstake/wallet-sdk-ethereum';
 import { fromWei, numberToHex, toWei } from 'web3-utils';
 
-import { type EthereumValidatorsQueue } from '@suite-common/wallet-api';
+import { type EthValidatorsQueue } from '@suite-common/earn-staking-api';
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     DAYS_TO_ADD_TO_POOL_DEFAULT,
@@ -548,12 +548,12 @@ export const getStakeTxGasLimit = async ({
 
 export const getDaysToAddToPool = (
     stakeTxs: WalletAccountTransaction[],
-    validatorsQueue?: EthereumValidatorsQueue | null,
+    validatorsQueue?: EthValidatorsQueue | null,
 ) => {
     if (
         !validatorsQueue ||
-        validatorsQueue?.validatorAddingDelay === undefined ||
-        validatorsQueue?.validatorActivationTime === undefined
+        validatorsQueue?.addingDelay === undefined ||
+        validatorsQueue?.activationTime === undefined
     ) {
         return undefined;
     }
@@ -562,10 +562,7 @@ export const getDaysToAddToPool = (
     const lastTxBlockTime = stakeTxs[0]?.blockTime || now;
 
     const secondsToWait =
-        lastTxBlockTime +
-        validatorsQueue.validatorAddingDelay +
-        validatorsQueue.validatorActivationTime -
-        now;
+        lastTxBlockTime + validatorsQueue.addingDelay + validatorsQueue.activationTime - now;
     const daysToWait = secondsToDays(secondsToWait);
 
     return daysToWait <= 0 ? 1 : daysToWait;
@@ -573,9 +570,9 @@ export const getDaysToAddToPool = (
 
 export const getDaysToUnstake = (
     unstakeTxs: WalletAccountTransaction[],
-    validatorsQueue?: EthereumValidatorsQueue | null,
+    validatorsQueue?: EthValidatorsQueue | null,
 ) => {
-    if (typeof validatorsQueue?.validatorWithdrawTime !== 'number') {
+    if (typeof validatorsQueue?.withdrawTime !== 'number') {
         return undefined;
     }
 
@@ -583,26 +580,22 @@ export const getDaysToUnstake = (
     const lastTxBlockTime = unstakeTxs[0]?.blockTime || now;
 
     const secondsToWait =
-        lastTxBlockTime +
-        validatorsQueue.validatorWithdrawTime +
-        (validatorsQueue?.validatorExitTime || 0) -
-        now;
+        lastTxBlockTime + validatorsQueue.withdrawTime + (validatorsQueue?.exitTime || 0) - now;
     const daysToWait = secondsToDays(secondsToWait);
 
     return daysToWait <= 0 ? 1 : daysToWait;
 };
 
-export const getDaysToAddToPoolInitial = (validatorsQueue?: EthereumValidatorsQueue | null) => {
+export const getDaysToAddToPoolInitial = (validatorsQueue?: EthValidatorsQueue | null) => {
     if (
         !validatorsQueue ||
-        validatorsQueue?.validatorAddingDelay === undefined ||
-        validatorsQueue?.validatorActivationTime === undefined
+        validatorsQueue?.addingDelay === undefined ||
+        validatorsQueue?.activationTime === undefined
     ) {
         return DAYS_TO_ADD_TO_POOL_DEFAULT;
     }
 
-    const secondsToWait =
-        validatorsQueue.validatorAddingDelay + validatorsQueue.validatorActivationTime;
+    const secondsToWait = validatorsQueue.addingDelay + validatorsQueue.activationTime;
     const daysToWait = secondsToDays(secondsToWait);
 
     return daysToWait <= 0 ? 1 : daysToWait;

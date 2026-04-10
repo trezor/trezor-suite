@@ -42,11 +42,11 @@ export const useExitAlert = (handleContinueButtonPress?: () => void) => {
             primaryButtonTitle: translate(
                 'moduleDeviceOnboarding.cancelOnboardingAlert.cancelButton',
             ),
-            primaryButtonVariant: 'redBold',
+            primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
             secondaryButtonTitle: translate(
                 'moduleDeviceOnboarding.cancelOnboardingAlert.continueButton',
             ),
-            secondaryButtonVariant: 'redElevation0',
+            secondaryButtonColorProps: { intent: 'critical', priority: 'secondary' },
             onPressPrimaryButton: () => {
                 if (selectedDevice) {
                     setIsFirmwareInstallationRunning(false);

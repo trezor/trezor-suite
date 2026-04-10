@@ -29,7 +29,7 @@ const StoryWrapper = ({ children }: { children: React.ReactNode }) => (
     <Box
         width="100%"
         maxWidth={400}
-        backgroundColor="baseFillElementNeutralSoftest"
+        backgroundColor="elementFillField"
         padding={12}
         borderRadius={8}
     >

@@ -20,7 +20,7 @@ const stakingAccountTotal = new BigNumber(
     Number(firstStakedAmount) + Number(secondStakedAmount) + Number(unstakingTotal),
 ).decimalPlaces(8, BigNumber.ROUND_DOWN);
 const stakingAccountTotalFormatted = `${stakingAccountTotal}… SOL`;
-const totalRewardsInSol = (Number(totalReward.response.rewards) / 1_000_000_000).toFixed(9);
+const totalRewardsInSol = (Number(totalReward.response.total) / 1_000_000_000).toFixed(9);
 
 test.describe('sol staking', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
     test.use({
@@ -77,7 +77,17 @@ test.describe('sol staking', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
 
             await test.step('Mock rewards and advance epoch', async () => {
                 await page.route(rewards.url, async route => {
-                    await route.fulfill({ json: rewards.response });
+                    const url = new URL(route.request().url());
+                    const limit = Number(url.searchParams.get('limit') ?? 10);
+                    const offset = Number(url.searchParams.get('offset') ?? 0);
+                    const allRewards = rewards.response.rewards;
+
+                    await route.fulfill({
+                        json: {
+                            rewards: allRewards.slice(offset, offset + limit),
+                            totalCount: allRewards.length,
+                        },
+                    });
                 });
                 await page.route(totalReward.url, async route => {
                     await route.fulfill({ json: totalReward.response });
@@ -107,7 +117,7 @@ test.describe('sol staking', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
                     }),
                 ).toHaveText(stakingAccountTotalFormatted);
 
-                await stakingSection.rewardList.checkRewards(rewards.response);
+                await stakingSection.rewardList.checkRewards(rewards.response.rewards);
             });
         },
     );

@@ -3879,9 +3879,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@evolu/common@npm:8.0.0-next.1":
-  version: 8.0.0-next.1
-  resolution: "@evolu/common@npm:8.0.0-next.1"
+"@evolu/common@npm:8.0.0-next.3":
+  version: 8.0.0-next.3
+  resolution: "@evolu/common@npm:8.0.0-next.3"
   dependencies:
     "@noble/ciphers": "npm:^2.1.1"
     "@noble/hashes": "npm:^2.0.1"
@@ -3889,19 +3889,19 @@ __metadata:
     kysely: "npm:^0.28.15"
     msgpackr: "npm:^1.11.8"
     random: "npm:^5.4.1"
-  checksum: 10/6bd9c5e9a4fd2d2f09bbcd57a66c55626086a932d918254ce94394c65e39ee3492716fffc3c603155c4061c10a831950e5a2709035c9562092e32677b1ab17cf
+  checksum: 10/b76e0553bc1fc6a41bbf00eb554d842f103f624d96c892fffc44919a53c74de71a3033c7fba0d7fcf60b607ae69a4359945a35b8fdb482b740c6b3f28cff5594
   languageName: node
   linkType: hard
 
-"@evolu/nodejs@npm:3.0.0-next.1":
-  version: 3.0.0-next.1
-  resolution: "@evolu/nodejs@npm:3.0.0-next.1"
+"@evolu/nodejs@npm:3.0.0-next.2":
+  version: 3.0.0-next.2
+  resolution: "@evolu/nodejs@npm:3.0.0-next.2"
   dependencies:
     better-sqlite3: "npm:^12.6.2"
     ws: "npm:^8.19.0"
   peerDependencies:
     "@evolu/common": ^8.0.0-next.0
-  checksum: 10/74033b87898199e1099f41f9beba5a1114770e0c8763405a73053575860871336571b35db9eaa9d68dbb4ad0aecfc462c5afd7b26400718fd13c53a0687f8cb3
+  checksum: 10/316a9451ee84224b711bbb8c4528a6993c3a5d78420f30b00f05c69f8c182d672386bace6e6715423f83e33d14a664631f4963970cd65e1a334ebc5e17507af7
   languageName: node
   linkType: hard
 
@@ -6270,7 +6270,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/ciphers@npm:1.3.0, @noble/ciphers@npm:^1.3.0":
+"@noble/ciphers@npm:1.3.0, @noble/ciphers@npm:^1.0.0, @noble/ciphers@npm:^1.3.0":
   version: 1.3.0
   resolution: "@noble/ciphers@npm:1.3.0"
   checksum: 10/051660051e3e9e2ca5fb9dece2885532b56b7e62946f89afa7284a0fb8bc02e2bd1c06554dba68162ff42d295b54026456084198610f63c296873b2f1cd7a586
@@ -6352,7 +6352,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/hashes@npm:1.8.0, @noble/hashes@npm:^1.0.0, @noble/hashes@npm:^1.2.0, @noble/hashes@npm:^1.3.1, @noble/hashes@npm:^1.5.0, @noble/hashes@npm:^1.8.0, @noble/hashes@npm:~1.8.0":
+"@noble/hashes@npm:1.8.0, @noble/hashes@npm:^1.0.0, @noble/hashes@npm:^1.2.0, @noble/hashes@npm:^1.3.1, @noble/hashes@npm:^1.5.0, @noble/hashes@npm:^1.6.0, @noble/hashes@npm:^1.8.0, @noble/hashes@npm:~1.8.0":
   version: 1.8.0
   resolution: "@noble/hashes@npm:1.8.0"
   checksum: 10/474b7f56bc6fb2d5b3a42132561e221b0ea4f91e590f4655312ca13667840896b34195e2b53b7f097ec080a1fdd3b58d902c2a8d0fbdf51d2e238b53808a177e
@@ -10719,7 +10719,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/e2e-evolu-client@workspace:suite-common/e2e-evolu-client"
   dependencies:
-    "@evolu/common": "npm:8.0.0-next.1"
+    "@evolu/common": "npm:8.0.0-next.3"
     "@suite-common/suite-sync-evolu": "workspace:*"
     "@suite-common/suite-sync-storage": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
@@ -10743,11 +10743,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-common/earn-staking-api@workspace:suite-common/earn-staking-api":
+"@suite-common/earn-staking-api@workspace:*, @suite-common/earn-staking-api@workspace:suite-common/earn-staking-api":
   version: 0.0.0-use.local
   resolution: "@suite-common/earn-staking-api@workspace:suite-common/earn-staking-api"
   dependencies:
     "@suite-common/http-client": "workspace:*"
+    "@suite-common/react-query": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
     orval: "npm:8.5.0"
     prettier: "npm:^3.8.1"
     zod: "npm:4.3.6"
@@ -10887,7 +10889,7 @@ __metadata:
     fantasticon: "npm:4.1.0"
     prettier: "npm:^3.8.1"
     sharp: "npm:^0.34.2"
-    svgo: "npm:4.0.0"
+    svgo: "npm:^4.0.1"
   languageName: unknown
   linkType: soft
 
@@ -11064,8 +11066,8 @@ __metadata:
   resolution: "@suite-common/staking@workspace:suite-common/staking"
   dependencies:
     "@everstake/wallet-sdk-ethereum": "npm:1.0.5"
+    "@suite-common/earn-staking-api": "workspace:*"
     "@suite-common/staking-solana-types": "workspace:*"
-    "@suite-common/wallet-api": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-constants": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
@@ -11074,7 +11076,7 @@ __metadata:
     "@trezor/connect-common": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
-    web3-utils: "npm:^4.3.2"
+    web3-utils: "npm:^4.3.3"
   languageName: unknown
   linkType: soft
 
@@ -11089,8 +11091,8 @@ __metadata:
   resolution: "@suite-common/suite-constants@workspace:suite-common/suite-constants"
   dependencies:
     "@suite-common/wallet-config": "workspace:*"
-    "@trezor/connect": "workspace:*"
     "@trezor/device-utils": "workspace:*"
+    "@trezor/protobuf": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -11127,8 +11129,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/suite-sync-evolu@workspace:suite-common/suite-sync-evolu"
   dependencies:
-    "@evolu/common": "npm:8.0.0-next.1"
-    "@evolu/nodejs": "npm:3.0.0-next.1"
+    "@evolu/common": "npm:8.0.0-next.3"
+    "@evolu/nodejs": "npm:3.0.0-next.2"
     "@suite-common/suite-sync-storage": "workspace:*"
     "@suite-common/suite-sync-types": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
@@ -11429,16 +11431,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-common/wallet-api@workspace:*, @suite-common/wallet-api@workspace:^, @suite-common/wallet-api@workspace:suite-common/wallet-api":
-  version: 0.0.0-use.local
-  resolution: "@suite-common/wallet-api@workspace:suite-common/wallet-api"
-  dependencies:
-    orval: "npm:8.5.0"
-    prettier: "npm:^3.8.1"
-    zod: "npm:4.3.6"
-  languageName: unknown
-  linkType: soft
-
 "@suite-common/wallet-config@workspace:*, @suite-common/wallet-config@workspace:^, @suite-common/wallet-config@workspace:suite-common/wallet-config":
   version: 0.0.0-use.local
   resolution: "@suite-common/wallet-config@workspace:suite-common/wallet-config"
@@ -11469,11 +11461,11 @@ __metadata:
     "@suite-common/bluetooth": "workspace:*"
     "@suite-common/calldata": "workspace:*"
     "@suite-common/device": "workspace:*"
+    "@suite-common/earn-staking-api": "workspace:*"
     "@suite-common/fiat-services": "workspace:*"
     "@suite-common/firmware": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/staking": "workspace:*"
-    "@suite-common/staking-solana-types": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
@@ -11481,7 +11473,6 @@ __metadata:
     "@suite-common/thp": "workspace:*"
     "@suite-common/toast-notifications": "workspace:*"
     "@suite-common/token-definitions": "workspace:*"
-    "@suite-common/wallet-api": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-constants": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
@@ -11499,8 +11490,7 @@ __metadata:
     react: "npm:19.2.4"
     react-hook-form: "npm:^7.71.2"
     react-redux: "npm:9.2.0"
-    web3-utils: "npm:^4.3.2"
-    zod: "npm:4.3.6"
+    web3-utils: "npm:^4.3.3"
   languageName: unknown
   linkType: soft
 
@@ -11524,13 +11514,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/wallet-utils@workspace:suite-common/wallet-utils"
   dependencies:
+    "@suite-common/earn-staking-api": "workspace:*"
     "@suite-common/fiat-services": "workspace:*"
     "@suite-common/staking-solana-types": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
-    "@suite-common/wallet-api": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-constants": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
@@ -11547,7 +11537,7 @@ __metadata:
     react: "npm:19.2.4"
     react-hook-form: "npm:^7.71.2"
     web3-eth-abi: "npm:^4.4.1"
-    web3-utils: "npm:^4.3.2"
+    web3-utils: "npm:^4.3.3"
   languageName: unknown
   linkType: soft
 
@@ -11706,7 +11696,7 @@ __metadata:
     "@bitcoinerlab/secp256k1": "npm:1.2.0"
     "@config-plugins/detox": "npm:^11.0.0"
     "@currents/cmd": "npm:^1.9.4"
-    "@evolu/common": "npm:8.0.0-next.1"
+    "@evolu/common": "npm:8.0.0-next.3"
     "@evolu/react-native": "npm:15.0.0-next.0"
     "@exodus/patch-broken-hermes-typed-arrays": "npm:^1.0.0-alpha.1"
     "@gorhom/bottom-sheet": "npm:5.2.8"
@@ -11745,6 +11735,7 @@ __metadata:
     "@suite-native/app-init": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/biometrics": "workspace:*"
+    "@suite-native/blockchain": "workspace:*"
     "@suite-native/bluetooth": "workspace:*"
     "@suite-native/config": "workspace:*"
     "@suite-native/connection-status": "workspace:*"
@@ -11956,7 +11947,7 @@ __metadata:
     react-native-svg: "npm:15.15.3"
     react-redux: "npm:9.2.0"
     storybook: "npm:^10.2.8"
-    type-fest: "npm:4.24.0"
+    type-fest: "npm:5.5.0"
   languageName: unknown
   linkType: soft
 
@@ -11992,12 +11983,16 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/blockchain@workspace:suite-native/blockchain"
   dependencies:
+    "@reduxjs/toolkit": "npm:2.11.2"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/utils": "workspace:*"
+    react: "npm:19.2.4"
+    react-native: "npm:0.83.2"
+    react-redux: "npm:9.2.0"
   languageName: unknown
   linkType: soft
 
@@ -12287,7 +12282,7 @@ __metadata:
     react-native-svg: "npm:15.15.3"
     react-redux: "npm:9.2.0"
     semver: "npm:^7.7.1"
-    type-fest: "npm:4.24.0"
+    type-fest: "npm:5.5.0"
   languageName: unknown
   linkType: soft
 
@@ -12442,7 +12437,7 @@ __metadata:
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
     react-redux: "npm:9.2.0"
-    web3-utils: "npm:^4.3.2"
+    web3-utils: "npm:^4.3.3"
   languageName: unknown
   linkType: soft
 
@@ -12458,7 +12453,7 @@ __metadata:
     react-hook-form: "npm:^7.71.2"
     react-native: "npm:0.83.2"
     react-native-reanimated: "npm:~4.2.1"
-    type-fest: "npm:4.24.0"
+    type-fest: "npm:5.5.0"
     yup: "npm:1.7.1"
   languageName: unknown
   linkType: soft
@@ -12627,7 +12622,7 @@ __metadata:
     "@trezor/theme": "workspace:*"
     "@trezor/urls": "workspace:*"
     react: "npm:19.2.4"
-    type-fest: "npm:4.24.0"
+    type-fest: "npm:5.5.0"
   peerDependencies:
     react-native: "*"
     react-native-reanimated: "*"
@@ -12930,7 +12925,7 @@ __metadata:
     react-native: "npm:0.83.2"
     react-native-reanimated: "npm:~4.2.1"
     react-redux: "npm:9.2.0"
-    web3-utils: "npm:^4.3.2"
+    web3-utils: "npm:^4.3.3"
   languageName: unknown
   linkType: soft
 
@@ -13317,7 +13312,7 @@ __metadata:
     react-native-reanimated: "npm:~4.2.1"
     react-native-svg: "npm:15.15.3"
     react-redux: "npm:9.2.0"
-    web3-utils: "npm:^4.3.2"
+    web3-utils: "npm:^4.3.3"
   languageName: unknown
   linkType: soft
 
@@ -13577,7 +13572,7 @@ __metadata:
     react-native-reanimated: "npm:~4.2.1"
     react-native-safe-area-context: "npm:5.6.2"
     react-redux: "npm:9.2.0"
-    type-fest: "npm:4.24.0"
+    type-fest: "npm:5.5.0"
   languageName: unknown
   linkType: soft
 
@@ -13696,7 +13691,7 @@ __metadata:
     react-native-gesture-handler: "npm:2.30.0"
     react-native-reanimated: "npm:~4.2.1"
     react-redux: "npm:9.2.0"
-    type-fest: "npm:4.24.0"
+    type-fest: "npm:5.5.0"
   languageName: unknown
   linkType: soft
 
@@ -13775,7 +13770,6 @@ __metadata:
     "@suite-common/staking": "workspace:*"
     "@suite-common/suite-sync": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
-    "@suite-common/wallet-api": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-constants": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
@@ -13922,7 +13916,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/suite-sync@workspace:suite-native/suite-sync"
   dependencies:
-    "@evolu/common": "npm:8.0.0-next.1"
+    "@evolu/common": "npm:8.0.0-next.3"
     "@evolu/react-native": "npm:15.0.0-next.0"
     "@reduxjs/toolkit": "npm:2.11.2"
     "@suite-common/delegated-identity-key-types": "workspace:*"
@@ -14091,7 +14085,7 @@ __metadata:
     react-native: "npm:0.83.2"
     react-native-gesture-handler: "npm:2.30.0"
     react-native-reanimated: "npm:~4.2.1"
-    type-fest: "npm:4.24.0"
+    type-fest: "npm:5.5.0"
   languageName: unknown
   linkType: soft
 
@@ -14624,7 +14618,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite/suite-sync@workspace:suite/suite-sync"
   dependencies:
-    "@evolu/common": "npm:8.0.0-next.1"
+    "@evolu/common": "npm:8.0.0-next.3"
     "@evolu/web": "npm:3.0.0-next.0"
     "@hookform/resolvers": "npm:^3.3.4"
     "@reduxjs/toolkit": "npm:2.11.2"
@@ -15405,7 +15399,7 @@ __metadata:
     vite-plugin-wasm: "npm:^3.6.0"
     vitest: "npm:^4.1.0"
     vm-browserify: "npm:^1.1.2"
-    web3-utils: "npm:^4.3.2"
+    web3-utils: "npm:^4.3.3"
     ws: "npm:^8.18.0"
   peerDependencies:
     tslib: ^2.6.2
@@ -15557,7 +15551,7 @@ __metadata:
     styled-components: "npm:^6.3.9"
     stylelint: "npm:^17.1.1"
     stylelint-config-standard: "npm:^40.0.0"
-    svgo: "npm:4.0.0"
+    svgo: "npm:^4.0.1"
     typescript-styled-plugin: "npm:^0.18.3"
     yup: "npm:1.7.1"
     zxcvbn: "npm:^4.4.2"
@@ -15619,11 +15613,11 @@ __metadata:
     "@trezor/eslint": "workspace:*"
     "@trezor/node-utils": "workspace:^"
     "@trezor/utils": "workspace:*"
-    "@types/node-fetch": "npm:2.6.12"
+    "@types/node-fetch": "npm:^2.6.12"
     node-fetch: "npm:2.6.7"
     socks-proxy-agent: "npm:8.0.5"
-    ts-node: "npm:10.9.2"
-    ws: "npm:8.18.0"
+    ts-node: "npm:^10.9.2"
+    ws: "npm:^8.18.0"
   languageName: unknown
   linkType: soft
 
@@ -15885,7 +15879,7 @@ __metadata:
   resolution: "@trezor/suite-e2e@workspace:suite/e2e"
   dependencies:
     "@currents/playwright": "npm:^1.21.2"
-    "@evolu/common": "npm:8.0.0-next.1"
+    "@evolu/common": "npm:8.0.0-next.3"
     "@playwright/browser-chromium": "npm:1.57.0"
     "@playwright/browser-firefox": "npm:1.57.0"
     "@playwright/browser-webkit": "npm:1.57.0"
@@ -15897,6 +15891,7 @@ __metadata:
     "@suite-common/analytics": "workspace:*"
     "@suite-common/device": "workspace:*"
     "@suite-common/e2e-evolu-client": "workspace:*"
+    "@suite-common/earn-staking-api": "workspace:*"
     "@suite-common/feedback": "workspace:*"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/suite-sync-evolu": "workspace:*"
@@ -15935,7 +15930,7 @@ __metadata:
     lodash: "npm:^4.18.1"
     react-intl: "npm:^8.1.3"
     tsx: "npm:^4.21.0"
-    type-fest: "npm:^5.4.1"
+    type-fest: "npm:5.5.0"
     xvfb-maybe: "npm:^0.2.1"
   languageName: unknown
   linkType: soft
@@ -16000,6 +15995,7 @@ __metadata:
     "@suite-common/device": "workspace:*"
     "@suite-common/device-authenticity": "workspace:*"
     "@suite-common/earn-api": "workspace:*"
+    "@suite-common/earn-staking-api": "workspace:*"
     "@suite-common/feedback": "workspace:*"
     "@suite-common/fiat-services": "workspace:*"
     "@suite-common/firmware": "workspace:*"
@@ -16035,7 +16031,6 @@ __metadata:
     "@suite-common/transaction-search": "workspace:*"
     "@suite-common/tx-simulation": "workspace:^"
     "@suite-common/validators": "workspace:*"
-    "@suite-common/wallet-api": "workspace:^"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-constants": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
@@ -16112,7 +16107,7 @@ __metadata:
     jest-mock: "npm:^29.7.0"
     jest-watch-typeahead: "npm:3.0.1"
     pako: "npm:^2.1.0"
-    pdfmake: "npm:^0.3.3"
+    pdfmake: "npm:^0.3.7"
     polished: "npm:^4.3.1"
     postcss-styled-syntax: "npm:^0.7.1"
     qrcode.react: "npm:^4.2.0"
@@ -16137,7 +16132,7 @@ __metadata:
     styled-components: "npm:^6.3.9"
     stylelint: "npm:^17.1.1"
     stylelint-config-standard: "npm:^40.0.0"
-    web3-utils: "npm:^4.3.2"
+    web3-utils: "npm:^4.3.3"
   languageName: unknown
   linkType: soft
 
@@ -17218,16 +17213,6 @@ __metadata:
   dependencies:
     "@types/node": "npm:*"
   checksum: 10/a8c743501036f494bb8b26ee04ce914c9cce88955d9ba48ff77d2b5b1bc403d4d99804dbf02238c1491fa93e2242983b1492ad8c2b39755dabd68683dada9e8f
-  languageName: node
-  linkType: hard
-
-"@types/node-fetch@npm:2.6.12":
-  version: 2.6.12
-  resolution: "@types/node-fetch@npm:2.6.12"
-  dependencies:
-    "@types/node": "npm:*"
-    form-data: "npm:^4.0.0"
-  checksum: 10/8107c479da83a3114fcbfa882eba95ee5175cccb5e4dd53f737a96f2559ae6262f662176b8457c1656de09ec393cc7b20a266c077e4bfb21e929976e1cf4d0f9
   languageName: node
   linkType: hard
 
@@ -22434,13 +22419,6 @@ __metadata:
     randombytes: "npm:^2.1.0"
     randomfill: "npm:^1.0.4"
   checksum: 10/13da0b5f61b3e8e68fcbebf0394f2b2b4d35a0d0ba6ab762720c13391d3697ea42735260a26328a6a3d872be7d4cb5abe98a7a8f88bc93da7ba59b993331b409
-  languageName: node
-  linkType: hard
-
-"crypto-js@npm:^4.2.0":
-  version: 4.2.0
-  resolution: "crypto-js@npm:4.2.0"
-  checksum: 10/c7bcc56a6e01c3c397e95aa4a74e4241321f04677f9a618a8f48a63b5781617248afb9adb0629824792e7ec20ca0d4241a49b6b2938ae6f973ec4efc5c53c924
   languageName: node
   linkType: hard
 
@@ -31322,17 +31300,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jpeg-exif@npm:^1.1.4":
-  version: 1.1.4
-  resolution: "jpeg-exif@npm:1.1.4"
-  checksum: 10/75699bd7161de1be99e847166917957bfb405ed736655361c58f0390e7182cc28999b2cbc31e650b71b6d2ad38843789439a121ac64988b2ccaa00f6832bb3d9
-  languageName: node
-  linkType: hard
-
 "js-cookie@npm:^2.2.1":
   version: 2.2.1
   resolution: "js-cookie@npm:2.2.1"
   checksum: 10/4387f5f5691cb96ca9ff8852c589d3012b53f484fda68630a39e20cabc6c5b740f09225e23233ba56cd9de6ebe300a23d20b2c7315f10c309ad5a89fd8c4990b
+  languageName: node
+  linkType: hard
+
+"js-md5@npm:^0.8.3":
+  version: 0.8.3
+  resolution: "js-md5@npm:0.8.3"
+  checksum: 10/2f74961bb21293cc4e023685985b531748da88c5e57fd4ef96d1d292e0918c09a4b192c425520c0aea6988190e9694c2e38ed34f7907a908614e6b133095f882
   languageName: node
   linkType: hard
 
@@ -37150,27 +37128,28 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pdfkit@npm:^0.17.2":
-  version: 0.17.2
-  resolution: "pdfkit@npm:0.17.2"
+"pdfkit@npm:^0.18.0":
+  version: 0.18.0
+  resolution: "pdfkit@npm:0.18.0"
   dependencies:
-    crypto-js: "npm:^4.2.0"
+    "@noble/ciphers": "npm:^1.0.0"
+    "@noble/hashes": "npm:^1.6.0"
     fontkit: "npm:^2.0.4"
-    jpeg-exif: "npm:^1.1.4"
+    js-md5: "npm:^0.8.3"
     linebreak: "npm:^1.1.0"
     png-js: "npm:^1.0.0"
-  checksum: 10/c112199ae001b70bd24edbb9a474d5fa2da6fa05e8c36eed1942241c12f7b907a70d58f255f2f27a17ce252e3484b09e23b52f16645fc3bc359ba51124dda1b7
+  checksum: 10/98314d98685b9640dd0848cc0709ca80ac66a9fc2e6d38919b1e990e750bea9e9c0f556137f0ca112beb863274da945f309724d99513ccc881ea4c7a869dad20
   languageName: node
   linkType: hard
 
-"pdfmake@npm:^0.3.3":
-  version: 0.3.3
-  resolution: "pdfmake@npm:0.3.3"
+"pdfmake@npm:^0.3.7":
+  version: 0.3.7
+  resolution: "pdfmake@npm:0.3.7"
   dependencies:
     linebreak: "npm:^1.1.0"
-    pdfkit: "npm:^0.17.2"
+    pdfkit: "npm:^0.18.0"
     xmldoc: "npm:^2.0.3"
-  checksum: 10/27ad7d7ff7aa280b9370d3dc274f3a5fafd880857b24ef68bb4e8084847e86bf58a7595d2f2157d275fd4628c79d6dfc43b54089fc9fa5e268e7c653233fd63f
+  checksum: 10/93ed4bbb8a1866e3a60f37c17f11388ae6b3a6a0902f9ef1f033f18c36e7c4e0bfed6b143695e3743cf4eafb98aaee4e2a84324628da3518a89f4f5199886a47
   languageName: node
   linkType: hard
 
@@ -40835,10 +40814,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sax@npm:>=0.6.0, sax@npm:^1.2.4, sax@npm:^1.4.1, sax@npm:^1.4.3":
-  version: 1.4.4
-  resolution: "sax@npm:1.4.4"
-  checksum: 10/00ff7b258baa37d98f8abfa0b5c8b3ee739ca37e9b6ecb83405be9e6e5b0b2856394a5eff142db1d987d589b54b139d4236f25830c1e17a2b640efa53c8fda72
+"sax@npm:>=0.6.0, sax@npm:^1.2.4, sax@npm:^1.4.1, sax@npm:^1.4.3, sax@npm:^1.5.0":
+  version: 1.6.0
+  resolution: "sax@npm:1.6.0"
+  checksum: 10/0909cedcd9f011ceeac80c0240a92d64ef712cf6c04e0f6ee236a8d812f86a59f61bee6bb5da28d75306db050b99e0593051ea77351795822253b984af6cf044
   languageName: node
   linkType: hard
 
@@ -42772,23 +42751,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"svgo@npm:4.0.0":
-  version: 4.0.0
-  resolution: "svgo@npm:4.0.0"
-  dependencies:
-    commander: "npm:^11.1.0"
-    css-select: "npm:^5.1.0"
-    css-tree: "npm:^3.0.1"
-    css-what: "npm:^6.1.0"
-    csso: "npm:^5.0.5"
-    picocolors: "npm:^1.1.1"
-    sax: "npm:^1.4.1"
-  bin:
-    svgo: ./bin/svgo.js
-  checksum: 10/1b49fc523284a0c6d8e277a7299dd657a7ec18e4e2bd0b9003f33d47fc962348604b37d4951d91f1bce1e15579eacd89e117b787caec226d76cf8ca97f7972d1
-  languageName: node
-  linkType: hard
-
 "svgo@npm:^3.3.2":
   version: 3.3.2
   resolution: "svgo@npm:3.3.2"
@@ -42803,6 +42765,23 @@ __metadata:
   bin:
     svgo: ./bin/svgo
   checksum: 10/82fdea9b938884d808506104228e4d3af0050d643d5b46ff7abc903ff47a91bbf6561373394868aaf07a28f006c4057b8fbf14bbd666298abdd7cc590d4f7700
+  languageName: node
+  linkType: hard
+
+"svgo@npm:^4.0.1":
+  version: 4.0.1
+  resolution: "svgo@npm:4.0.1"
+  dependencies:
+    commander: "npm:^11.1.0"
+    css-select: "npm:^5.1.0"
+    css-tree: "npm:^3.0.1"
+    css-what: "npm:^6.1.0"
+    csso: "npm:^5.0.5"
+    picocolors: "npm:^1.1.1"
+    sax: "npm:^1.5.0"
+  bin:
+    svgo: ./bin/svgo.js
+  checksum: 10/8791aa12f3d1a5b3da12a67c2f880917512eaf32dad40563ae474deefff0630a4ce2259e06730f02150756ac77cc8b06598d30fb3ed3f02f085e6cbfbd344fb6
   languageName: node
   linkType: hard
 
@@ -42865,6 +42844,13 @@ __metadata:
     string-width: "npm:^4.2.3"
     strip-ansi: "npm:^6.0.1"
   checksum: 10/976da6d89841566e39628d1ba107ffab126964c9390a0a877a7c54ebb08820bf388d28fe9f8dcf354b538f19634a572a506c38a3762081640013a149cc862af9
+  languageName: node
+  linkType: hard
+
+"tagged-tag@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "tagged-tag@npm:1.0.0"
+  checksum: 10/e37653df3e495daa7ea7790cb161b810b00075bba2e4d6c93fb06a709e747e3ae9da11a120d0489833203926511b39e038a2affbd9d279cfb7a2f3fcccd30b5d
   languageName: node
   linkType: hard
 
@@ -43585,7 +43571,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-node@npm:10.9.2, ts-node@npm:^10.9.2":
+"ts-node@npm:^10.9.2":
   version: 10.9.2
   resolution: "ts-node@npm:10.9.2"
   dependencies:
@@ -43798,10 +43784,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"type-fest@npm:4.24.0":
-  version: 4.24.0
-  resolution: "type-fest@npm:4.24.0"
-  checksum: 10/60efd6ec71f5113ef0a0fcabe61fc722bb2520ea082bc23e4b4dfb44204234dc691560a5e837f939160d7c18b410ed8fae32ddb752d57bed009248e0f61dce6b
+"type-fest@npm:5.5.0":
+  version: 5.5.0
+  resolution: "type-fest@npm:5.5.0"
+  dependencies:
+    tagged-tag: "npm:^1.0.0"
+  checksum: 10/b5423e991f29dd8cb6ba1bf613f6ab95065673706bf6ffbc8319a457256af8e9844de013801b4ab94572cee32eb35e3ebc9ff67db2bd4b2937cc153a2b91a093
   languageName: node
   linkType: hard
 
@@ -45696,7 +45684,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"web3-utils@npm:^4.0.7, web3-utils@npm:^4.3.0, web3-utils@npm:^4.3.1, web3-utils@npm:^4.3.2, web3-utils@npm:^4.3.3":
+"web3-utils@npm:^4.0.7, web3-utils@npm:^4.3.0, web3-utils@npm:^4.3.1, web3-utils@npm:^4.3.3":
   version: 4.3.3
   resolution: "web3-utils@npm:4.3.3"
   dependencies:

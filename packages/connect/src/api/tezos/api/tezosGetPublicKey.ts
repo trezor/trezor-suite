@@ -10,6 +10,7 @@ import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
 import type {
+    MethodContext,
     MethodMessage,
     MethodPermission,
     MethodReturnType,
@@ -17,7 +18,7 @@ import type {
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { fromHardened, getSerializedPath, validatePath } from '../../../utils/pathUtils';
-import { getFirmwareRange } from '../../common/paramsValidator';
+import { bundlify, getFirmwareRange } from '../../common/paramsValidator';
 
 export default class TezosGetPublicKey extends AbstractMethod<
     'tezosGetPublicKey',
@@ -26,7 +27,24 @@ export default class TezosGetPublicKey extends AbstractMethod<
     hasBundle?: boolean;
 
     constructor(message: MethodMessage<'tezosGetPublicKey'>) {
-        super(message);
+        const { hasBundle, payload } = bundlify(message.payload);
+
+        // validate bundle type
+        Assert(Bundle(GetPublicKeySchema), payload);
+
+        const params = payload.bundle.map(batch => {
+            const path = validatePath(batch.path, 3);
+
+            return {
+                address_n: path,
+                show_display: typeof batch.showOnTrezor === 'boolean' ? batch.showOnTrezor : true,
+                chunkify: typeof batch.chunkify === 'boolean' ? batch.chunkify : false,
+            };
+        });
+
+        super(message, params);
+
+        this.hasBundle = hasBundle;
         this.requiredDeviceCapabilities = ['Capability_Tezos'];
         this.firmwareRange = getFirmwareRange(
             this.name,
@@ -39,26 +57,7 @@ export default class TezosGetPublicKey extends AbstractMethod<
         return ['read'];
     }
 
-    init() {
-        // create a bundle with only one batch if bundle doesn't exists
-        this.hasBundle = !!this.payload.bundle;
-        const payload = !this.payload.bundle
-            ? { ...this.payload, bundle: [this.payload] }
-            : this.payload;
-
-        // validate bundle type
-        Assert(Bundle(GetPublicKeySchema), payload);
-
-        this.params = payload.bundle.map(batch => {
-            const path = validatePath(batch.path, 3);
-
-            return {
-                address_n: path,
-                show_display: typeof batch.showOnTrezor === 'boolean' ? batch.showOnTrezor : true,
-                chunkify: typeof batch.chunkify === 'boolean' ? batch.chunkify : false,
-            };
-        });
-    }
+    init() {}
 
     get info() {
         return 'Export Tezos public key';
@@ -76,7 +75,7 @@ export default class TezosGetPublicKey extends AbstractMethod<
         };
     }
 
-    async run() {
+    async run({ sendCoreMessage }: MethodContext) {
         const responses: MethodReturnType<typeof this.name> = [];
         const cmd = this.getDevice().getCommands();
         for (let i = 0; i < this.params.length; i++) {
@@ -90,7 +89,7 @@ export default class TezosGetPublicKey extends AbstractMethod<
 
             if (this.hasBundle) {
                 // send progress
-                this.postMessage(
+                sendCoreMessage(
                     createUiMessage(UI_REQUEST.BUNDLE_PROGRESS, {
                         total: this.params.length,
                         progress: i,

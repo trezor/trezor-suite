@@ -158,7 +158,7 @@ export const TradeDetailAlert = ({
             description={translate(descriptionKey)}
             iconName={iconName}
             primaryButtonLabel={buttonLabel}
-            primaryButtonProps={{ viewLeft: 'arrowSquareOut' }}
+            primaryButtonProps={{ iconLeft: 'arrowSquareOut' }}
             onPressPrimaryButton={handleButtonPress}
             variant={variant}
         />

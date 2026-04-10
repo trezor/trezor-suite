@@ -32,7 +32,8 @@ export const ConfirmBottomSheet = ({ ref, onConfirm, onCheckBackup }: ConfirmBot
                     testID="@device-firmware/sheet/check-backup"
                     onPress={onCheckBackup}
                     size="medium"
-                    colorScheme="tertiaryElevation1"
+                    intent="neutral"
+                    priority="secondary"
                 >
                     <Translation id="firmware.seedBottomSheet.checkBackupButton" />
                 </Button>

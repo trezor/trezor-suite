@@ -40,12 +40,12 @@ export const BitcoinBackendsScreen = () => {
                 primaryButtonTitle: (
                     <Translation id="moduleSettings.advanced.bitcoinBackends.closeAction.discardButton" />
                 ),
-                primaryButtonVariant: 'redBold',
+                primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
                 onPressPrimaryButton: discardChanges,
                 secondaryButtonTitle: (
                     <Translation id="moduleSettings.advanced.bitcoinBackends.closeAction.continueEditingButton" />
                 ),
-                secondaryButtonVariant: 'redElevation0',
+                secondaryButtonColorProps: { intent: 'critical', priority: 'secondary' },
             });
         } else {
             navigation.goBack();

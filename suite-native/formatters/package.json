@@ -31,7 +31,7 @@
         "react": "19.2.4",
         "react-native": "0.83.2",
         "react-redux": "9.2.0",
-        "web3-utils": "^4.3.2"
+        "web3-utils": "^4.3.3"
     },
     "devDependencies": {
         "@suite-common/wallet-types": "workspace:*",

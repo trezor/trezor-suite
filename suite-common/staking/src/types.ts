@@ -1,12 +1,5 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type StakeFormState, type StakeType, type Timestamp } from '@suite-common/wallet-types';
-
-export interface StakingTotalRewards {
-    data?: string;
-    error?: string | boolean;
-    isLoading?: boolean;
-    lastSuccessfulFetchTimestamp?: Timestamp;
-}
+import { type StakeFormState, type StakeType } from '@suite-common/wallet-types';
 
 export type EthNetwork = 'hoodi' | 'mainnet';
 

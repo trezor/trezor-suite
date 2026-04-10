@@ -221,6 +221,11 @@ export const selectBlockchainBlockInfoBySymbol = createMemoizedSelector(
     }),
 );
 
+export const selectBlockchainBackendType = createMemoizedSelector(
+    [selectNetworkBlockchainInfo],
+    blockchain => blockchain.backends.selected,
+);
+
 export const selectEnabledCustomBackends = createMemoizedSelector(
     [selectBlockchainState, selectEnabledNetworks],
     (blockchainState, enabledNetworks) =>

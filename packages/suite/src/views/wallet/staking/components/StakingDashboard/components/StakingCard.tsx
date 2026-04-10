@@ -1,14 +1,13 @@
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { getStakingTotalRewards } from '@suite-common/staking';
+import { useSolanaRewardsTotal } from '@suite-common/earn-staking-api/src/staking';
 import { EarnFlow } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     selectAccountIsStakingActive,
     selectAccountStakeTypeTransactions,
     selectCardanoPoolsInfo,
-    selectStakingTotalRewards,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import {
@@ -39,6 +38,7 @@ import { useAnalytics } from 'src/support/useAnalytics';
 import { useIsTxStatusShown } from '../hooks/useIsTxStatusShown';
 import { useProgressLabelsData } from '../hooks/useProgressLabelsData';
 import { ProgressLabels } from './ProgressLabels/ProgressLabels';
+import { getStakingTotalRewards } from './utils/stakingTotalRewards';
 
 type ItemProps = {
     label: React.ReactNode;
@@ -97,15 +97,13 @@ export const StakingCard = ({
     const analytics = useAnalytics();
     const { isBelowLaptop } = useLayoutSize();
 
-    const selectedStakingTotalRewards = useSelector(state =>
-        selectStakingTotalRewards(state, account?.symbol, account.descriptor),
-    );
     const cardanoStakingPools = useSelector(selectCardanoPoolsInfo);
     const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
 
-    const { totalRewards = '0', isTotalRewardsLoading } = getStakingTotalRewards(
+    const solanaRewardsTotalQuery = useSolanaRewardsTotal(account);
+    const { totalRewards, isTotalRewardsLoading } = getStakingTotalRewards(
         account,
-        selectedStakingTotalRewards,
+        solanaRewardsTotalQuery,
     );
 
     const {

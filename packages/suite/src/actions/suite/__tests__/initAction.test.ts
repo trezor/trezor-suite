@@ -38,8 +38,6 @@ import {
 } from '@suite-common/token-definitions';
 import {
     feesActions,
-    fetchEverstakeData,
-    fetchEverstakeStakingInfo,
     fetchFiatRatesThunk,
     initBlockchainThunk,
     initDevices,
@@ -163,11 +161,6 @@ const fixtures: Fixture[] = [
             routerInit.pending.type,
             periodicCheckStakeDataThunk.pending.type,
             initStakeDataThunk.pending.type,
-            // ETH calls both PoolStats and ValidatorsQueue, SOL/ADA each call StakingInfo
-            fetchEverstakeData.pending.type,
-            fetchEverstakeData.pending.type,
-            fetchEverstakeStakingInfo.pending.type,
-            fetchEverstakeStakingInfo.pending.type,
             walletConnectInitThunk.pending.type,
             SUITE.READY,
         ],
@@ -218,11 +211,6 @@ const fixtures: Fixture[] = [
             routerLocationChange.type,
             periodicCheckStakeDataThunk.pending.type,
             initStakeDataThunk.pending.type,
-            // ETH calls both PoolStats and ValidatorsQueue, SOL/ADA each call StakingInfo
-            fetchEverstakeData.pending.type,
-            fetchEverstakeData.pending.type,
-            fetchEverstakeStakingInfo.pending.type,
-            fetchEverstakeStakingInfo.pending.type,
             walletConnectInitThunk.pending.type,
             SUITE.READY,
         ],
@@ -271,11 +259,6 @@ const fixtures: Fixture[] = [
             routerLocationChange.type,
             periodicCheckStakeDataThunk.pending.type,
             initStakeDataThunk.pending.type,
-            // ETH calls both PoolStats and ValidatorsQueue, SOL/ADA each call StakingInfo
-            fetchEverstakeData.pending.type,
-            fetchEverstakeData.pending.type,
-            fetchEverstakeStakingInfo.pending.type,
-            fetchEverstakeStakingInfo.pending.type,
             walletConnectInitThunk.pending.type,
             SUITE.READY,
         ],

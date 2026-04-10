@@ -7,7 +7,7 @@ import { AbstractMethod } from '../core/AbstractMethod';
 
 export default class GetFeatures extends AbstractMethod<'getFeatures'> {
     constructor(message: MethodMessage<'getFeatures'>) {
-        super(message);
+        super(message, undefined);
 
         this.useUi = false;
         this.allowDeviceMode = [
@@ -21,10 +21,6 @@ export default class GetFeatures extends AbstractMethod<'getFeatures'> {
 
     get requiredPermissions(): MethodPermission[] {
         return [];
-    }
-
-    init() {
-        // Configuration already set in constructor
     }
 
     checkFirmwareRange() {
