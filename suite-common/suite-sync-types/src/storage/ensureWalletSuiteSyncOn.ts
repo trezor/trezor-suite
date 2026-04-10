@@ -3,8 +3,8 @@ import { type DeviceCancelledErrType, type DeviceErrorType } from '@suite-common
 import { type StaticSessionId } from '@trezor/connect';
 import { type Result } from '@trezor/type-utils';
 
+import { type SuiteSyncUnavailableOnDeviceErrorType } from '../ensureSuiteSyncKeys';
 import { type WriteModeRequiredForAllocationErrType } from '../quotaManager/quotaManagerTypes';
-import { type SuiteSyncUnavailableOnDeviceErrorType } from '../refreshSuiteSyncKeys';
 
 export type SuiteSyncFirmwareUpgradeNeededDeviceErrorType = {
     type: 'SuiteSyncFirmwareUpgradeNeededDeviceErrorType';

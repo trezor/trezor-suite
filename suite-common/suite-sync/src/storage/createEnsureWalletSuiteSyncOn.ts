@@ -1,8 +1,8 @@
 import { isTrezorDeviceWithState, selectDeviceByStaticSessionId } from '@suite-common/device';
 import {
+    type EnsureSubscribedStorageDep,
+    type EnsureSuiteSyncKeysDep,
     type EnsureWalletSuiteSyncOn,
-    type RefreshSuiteSyncKeysDep,
-    type SubscribeSuiteSyncDataDep,
     type SubscriptionStorageDep,
 } from '@suite-common/suite-sync-types';
 import { err } from '@trezor/type-utils';
@@ -11,10 +11,14 @@ import { isFwUpgradeNeededForSuiteSync, isSuiteSyncSupportedByDevice } from '../
 
 export type EnsureWalletSuiteSyncOnDeps = {
     getState: () => any;
-} & SubscribeSuiteSyncDataDep &
-    RefreshSuiteSyncKeysDep &
+} & EnsureSubscribedStorageDep &
+    EnsureSuiteSyncKeysDep &
     SubscriptionStorageDep;
 
+/**
+ * Responsibility:
+ * - Run top-level eligibility checks before starting Suite Sync for a wallet.
+ */
 export const createEnsureWalletSuiteSyncOn =
     (deps: EnsureWalletSuiteSyncOnDeps): EnsureWalletSuiteSyncOn =>
     async ({ deviceStaticSessionId, isWriteMode }) => {
@@ -31,7 +35,7 @@ export const createEnsureWalletSuiteSyncOn =
             return err({ type: 'SuiteSyncUnavailableOnDeviceError' });
         }
 
-        return await deps.ensureSubscribeSuiteSyncData({
+        return await deps.ensureSubscribedStorage({
             deviceStaticSessionId,
             isWriteMode,
         });

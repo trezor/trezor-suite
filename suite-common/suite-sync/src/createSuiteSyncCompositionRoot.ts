@@ -13,12 +13,12 @@ import {
 import { type SuiteSync } from '@suite-common/suite-sync-types';
 import { type Analytics } from '@trezor/analytics-uploader';
 
-import { createRefreshSuiteSync } from './createRefreshSuiteSyncKeys';
+import { createEnsureSuiteSyncKeys } from './createEnsureSuiteSyncKeys';
 import { createTurnOffSuiteSync } from './createTurnOffSuiteSync';
 import { createTurnOnSuiteSync } from './createTurnOnSuiteSync';
 import { selectSuiteSyncAccountLabel } from './data/account/selectSuiteSyncAccountLabel';
 import { selectSuiteSyncAddressLabel } from './data/address/suiteSyncAddressSelectors';
-import { createEnsureSubscribeSuiteSyncData } from './data/createEnsureSubscribeSuiteSyncData';
+import { createEnsureSubscribedStorage } from './data/createEnsureSubscribedStorage';
 import { createSuiteSyncListener } from './data/createSuiteSyncListener';
 import { createUpdateAccountLabel } from './data/labeling/createUpdateAccountLabel';
 import { createUpdateAddressLabel } from './data/labeling/createUpdateAddressLabel';
@@ -92,7 +92,7 @@ export const createSuiteSyncCompositionRoot = (
     const getDeviceForStaticSessionId: GetDeviceForStaticSessionId = deviceStaticId =>
         selectDeviceByStaticSessionId(deps.getState(), deviceStaticId) ?? null;
 
-    const refreshSuiteSyncKeys = createRefreshSuiteSync({
+    const ensureSuiteSyncKeys = createEnsureSuiteSyncKeys({
         dispatch: deps.dispatch,
         ensureDelegatedIdentityKey: deps.ensureDelegatedIdentityKey,
         ensureSuiteSyncOwner,
@@ -107,7 +107,7 @@ export const createSuiteSyncCompositionRoot = (
     });
 
     const ensureStorage = createEnsureStorage({
-        refreshSuiteSyncKeys,
+        ensureSuiteSyncKeys,
         ensureQuota,
         suiteSyncStorageRepository,
         createSuiteStorage: deps.createSuiteStorage,
@@ -120,7 +120,7 @@ export const createSuiteSyncCompositionRoot = (
         dispatch: deps.dispatch,
     });
 
-    const ensureSubscribeSuiteSyncData = createEnsureSubscribeSuiteSyncData({
+    const ensureSubscribedStorage = createEnsureSubscribedStorage({
         subscriptionStorage,
         ensureStorage,
         suiteSyncListener,
@@ -130,8 +130,8 @@ export const createSuiteSyncCompositionRoot = (
         dispatch: deps.dispatch,
         ensureWalletSuiteSyncOn: createEnsureWalletSuiteSyncOn({
             getState: deps.getState,
-            refreshSuiteSyncKeys,
-            ensureSubscribeSuiteSyncData,
+            ensureSuiteSyncKeys,
+            ensureSubscribedStorage,
             subscriptionStorage,
         }),
     });

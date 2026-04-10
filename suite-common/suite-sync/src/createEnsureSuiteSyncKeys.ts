@@ -3,8 +3,8 @@ import { type Dispatch } from '@reduxjs/toolkit';
 import { type EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-key-types';
 import { isTrezorDeviceWithState } from '@suite-common/device';
 import {
+    type EnsureSuiteSyncKeys,
     type EnsureSuiteSyncOwnerDep,
-    type RefreshSuiteSyncKeys,
     type SuiteSyncUnavailableOnDeviceErrorType,
 } from '@suite-common/suite-sync-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -20,22 +20,27 @@ export const SuiteSyncUnavailableOnDeviceError = (): SuiteSyncUnavailableOnDevic
     type: 'SuiteSyncUnavailableOnDeviceError',
 });
 
-export type RefreshSuiteSyncKeysDeps = {
+export type EnsureSuiteSyncKeysDeps = {
     dispatch: Dispatch;
 } & EnsureSuiteSyncOwnerDep &
     EnsureDelegatedIdentityKeyDep &
     GetDeviceForStaticSessionIdDep;
 
-export const createRefreshSuiteSync =
-    (deps: RefreshSuiteSyncKeysDeps): RefreshSuiteSyncKeys =>
-    async ({ device }): ReturnType<RefreshSuiteSyncKeys> => {
+/**
+ * Responsibility:
+ * - Ensure the delegated key and Suite Sync owner are available for a device.
+ * - Refresh the device reference after Connect may rotate the session id.
+ */
+export const createEnsureSuiteSyncKeys =
+    (deps: EnsureSuiteSyncKeysDeps): EnsureSuiteSyncKeys =>
+    async ({ device }): ReturnType<EnsureSuiteSyncKeys> => {
         if (!device || !isTrezorDeviceWithState(device)) {
             return err(SuiteSyncUnavailableOnDeviceError());
         }
 
         const deviceStaticId = device.state.staticSessionId;
 
-        const getDelegatedIdentityKeys = async () => {
+        const ensureKeys = async () => {
             const delegatedKeyResult = await deps.ensureDelegatedIdentityKey({ device });
 
             if (!delegatedKeyResult.success) {
@@ -61,7 +66,7 @@ export const createRefreshSuiteSync =
             return ok({ owner: ownerResult.payload, delegatedKey: delegatedKeyResult.payload });
         };
 
-        const result = await getDelegatedIdentityKeys();
+        const result = await ensureKeys();
 
         if (!result.success) {
             const errType = result.error.type;
