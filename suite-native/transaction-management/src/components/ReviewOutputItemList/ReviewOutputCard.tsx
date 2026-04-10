@@ -8,7 +8,7 @@ import { ReviewOutputStatusBadge } from './ReviewOutputStatusBadge';
 
 type ReviewOutputCardProps = {
     children: ReactNode;
-    title: string;
+    title: ReactNode;
     outputState: ReviewOutputState;
 };
 

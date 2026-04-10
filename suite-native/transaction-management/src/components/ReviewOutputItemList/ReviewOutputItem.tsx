@@ -5,7 +5,7 @@ import {
     type ReviewOutputType,
     type TokenAddress,
 } from '@suite-common/wallet-types';
-import { type TxKeyPath, useTranslate } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 
 import { ReviewOutputCard } from './ReviewOutputCard';
 import { ReviewOutputItemContent } from './ReviewOutputItemContent';
@@ -18,21 +18,29 @@ export type ReviewOutputItemProps = {
     tokenContract?: TokenAddress;
 };
 
-const outputLabelTranslationMap = {
-    address: 'transactionManagement.review.outputs.addressLabel',
-    regular_legacy: 'transactionManagement.review.outputs.addressLabel',
-    amount: 'transactionManagement.review.outputs.amountLabel',
-    'destination-tag': 'transactionManagement.review.outputs.destinationTagLabel',
-    contract: 'transactionManagement.review.outputs.contractLabel',
-    timebounds: 'transactionManagement.review.outputs.timeboundsLabel',
-    'signing-with': 'transactionManagement.review.outputs.signingWithLabel',
-    network: 'transactionManagement.review.outputs.networkLabel',
-    'fee-limit': 'transactionManagement.review.outputs.feeLimitSummaryLabel',
-} as const satisfies Partial<Record<ReviewOutputType, TxKeyPath>>;
-
-const isTranslationDefined = (
-    type: ReviewOutputType,
-): type is keyof typeof outputLabelTranslationMap => type in outputLabelTranslationMap;
+const OutputLabel = ({ type }: { type: ReviewOutputType }) => {
+    switch (type) {
+        case 'address':
+        case 'regular_legacy':
+            return <Translation id="transactionManagement.review.outputs.addressLabel" />;
+        case 'amount':
+            return <Translation id="transactionManagement.review.outputs.amountLabel" />;
+        case 'destination-tag':
+            return <Translation id="transactionManagement.review.outputs.destinationTagLabel" />;
+        case 'contract':
+            return <Translation id="transactionManagement.review.outputs.contractLabel" />;
+        case 'timebounds':
+            return <Translation id="transactionManagement.review.outputs.timeboundsLabel" />;
+        case 'signing-with':
+            return <Translation id="transactionManagement.review.outputs.signingWithLabel" />;
+        case 'network':
+            return <Translation id="transactionManagement.review.outputs.networkLabel" />;
+        case 'fee-limit':
+            return <Translation id="transactionManagement.review.outputs.feeLimitSummaryLabel" />;
+        default:
+            return type;
+    }
+};
 
 export const ReviewOutputItem = ({
     accountKey,
@@ -40,14 +48,11 @@ export const ReviewOutputItem = ({
     onLayout,
     tokenContract,
 }: ReviewOutputItemProps) => {
-    const { translate } = useTranslate();
-
     const { state, type, value } = reviewOutput;
-    const title = isTranslationDefined(type) ? translate(outputLabelTranslationMap[type]) : type;
 
     return (
         <View onLayout={onLayout}>
-            <ReviewOutputCard title={title} outputState={state}>
+            <ReviewOutputCard title={<OutputLabel type={type} />} outputState={state}>
                 <ReviewOutputItemContent
                     accountKey={accountKey}
                     outputType={type}
