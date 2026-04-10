@@ -78,7 +78,7 @@ export const StakingManagementReadyToClaimCard = ({
                             }}
                         />
                     </Text>
-                    <Button size="small" isFullWidth onPress={handleClaimPress}>
+                    <Button size="medium" isFullWidth onPress={handleClaimPress}>
                         <Text variant="body-sm-strong" color="textOnPrimary">
                             <Translation id="earn.stakingManagementScreen.claim.claimButton" />
                         </Text>

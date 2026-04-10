@@ -58,7 +58,6 @@ export const AddAccountButton = ({ flowType, testID }: AddAccountButtonProps) =>
             }
             intent="neutral"
             priority="secondary"
-            size="medium"
             isLoading={hasDeviceDiscovery}
             isDisabled={hasDeviceDiscovery}
             testID={`${testID}/${isSelectedDevicePortfolioTracker ? 'import' : 'add'}`}

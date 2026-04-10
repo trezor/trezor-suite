@@ -138,7 +138,6 @@ export const TransactionDetailParametersSheet = ({
                                     onPress={handleClickCopy}
                                     intent="neutral"
                                     priority="secondary"
-                                    size="medium"
                                 />
                             </Box>
                         </Box>

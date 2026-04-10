@@ -73,7 +73,12 @@ export const InlineAlertBox = ({
                 {title}
             </Text>
             {buttonLabel && (
-                <Button size="small" {...buttonColorProps} onPress={onButtonPress} {...buttonProps}>
+                <Button
+                    size="medium"
+                    {...buttonColorProps}
+                    onPress={onButtonPress}
+                    {...buttonProps}
+                >
                     {buttonLabel}
                 </Button>
             )}

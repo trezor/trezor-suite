@@ -39,7 +39,7 @@ export const XpubImportSection = ({ onRequestCamera, symbol }: XpubImportSection
             <Box justifyContent="center" alignItems="center" style={applyStyle(iconWrapperStyle)}>
                 <QrWithLaser />
             </Box>
-            <Button size="large" onPress={onRequestCamera}>
+            <Button onPress={onRequestCamera}>
                 <Translation id={buttonTitleTxKey} />
             </Button>
         </Box>

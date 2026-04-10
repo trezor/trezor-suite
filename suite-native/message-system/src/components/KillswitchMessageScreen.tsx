@@ -100,17 +100,12 @@ export const KillswitchMessageScreen = () => {
             </Box>
             <VStack spacing="sp16" style={applyStyle(buttonsWrapperStyle)}>
                 {isCtaVisible && (
-                    <Button size="large" intent="brand" priority="primary" onPress={handleCtaPress}>
+                    <Button intent="brand" priority="primary" onPress={handleCtaPress}>
                         {ctaLabel}
                     </Button>
                 )}
                 {isDismissible && (
-                    <Button
-                        size="large"
-                        intent="neutral"
-                        priority="secondary"
-                        onPress={handleDismiss}
-                    >
+                    <Button intent="neutral" priority="secondary" onPress={handleDismiss}>
                         <Translation id="generic.buttons.dismiss" />
                     </Button>
                 )}

@@ -30,7 +30,7 @@ export const CustomFeeButton = ({ onPress }: CustomFeeButtonProps) => (
             <Button
                 intent="neutral"
                 priority="secondary"
-                size="small"
+                size="medium"
                 iconLeft="plus"
                 testID="@transactionManagement/fees-level-custom"
                 onPress={onPress}

@@ -42,7 +42,6 @@ export const ConnectionInfoButton = () => {
             <IconButton
                 intent="neutral"
                 priority="secondary"
-                size="medium"
                 iconName="info"
                 onPress={openBottomSheet}
             />

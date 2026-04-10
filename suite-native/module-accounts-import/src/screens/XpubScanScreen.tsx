@@ -202,7 +202,6 @@ export const XpubScanScreen = ({
                                 <Button
                                     testID="@accounts-import/sync-coins/xpub-submit"
                                     onPress={onXpubFormSubmit}
-                                    size="large"
                                 >
                                     <Translation id="generic.buttons.confirm" />
                                 </Button>

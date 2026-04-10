@@ -116,7 +116,7 @@ export const DemoAccountQuestionnaireScreenContent = ({
                         <Button
                             intent="neutral"
                             priority="secondary"
-                            size="small"
+                            size="medium"
                             onPress={() => submitOption('none')}
                         >
                             <Translation id="moduleDemoAccountQuestionnaire.noneOption" />

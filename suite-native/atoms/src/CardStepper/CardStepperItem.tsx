@@ -111,7 +111,7 @@ export const CardStepperItem = ({
                         <HStack flex={1} spacing="sp12" paddingBottom="sp4">
                             {secondaryButtonText && (
                                 <Button
-                                    size="small"
+                                    size="medium"
                                     style={applyStyle(buttonStyle)}
                                     {...buttonsColorSchemeMap[buttonsActionType].secondary}
                                     onPress={onPressSecondaryButton}
@@ -120,7 +120,7 @@ export const CardStepperItem = ({
                                 </Button>
                             )}
                             <Button
-                                size="small"
+                                size="medium"
                                 style={applyStyle(buttonStyle)}
                                 {...buttonsColorSchemeMap[buttonsActionType].primary}
                                 onPress={onPressConfirmButton}

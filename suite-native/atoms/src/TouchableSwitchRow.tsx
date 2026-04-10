@@ -19,7 +19,7 @@ export const TouchableSwitchRowDescription = ({ children }: { children: ReactNod
 
 const LearnMoreButton = ({ onPress }: { onPress: () => void }) => (
     <Button
-        size="small"
+        size="medium"
         iconLeft="arrowSquareOut"
         onPress={onPress}
         intent="neutral"

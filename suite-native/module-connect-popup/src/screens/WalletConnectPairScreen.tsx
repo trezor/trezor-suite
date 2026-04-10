@@ -110,7 +110,6 @@ export const WalletConnectPairScreen = () => {
                         <IconButton
                             intent="neutral"
                             priority="secondary"
-                            size="medium"
                             iconName="qrCode"
                             onPress={openModal}
                         />

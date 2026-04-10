@@ -124,7 +124,6 @@ export const TransactionDetailScreen = ({
                     />
                 </VStack>
                 <Button
-                    size="large"
                     iconRight="arrowUpRight"
                     onPress={handleOpenBlockchain}
                     intent="neutral"

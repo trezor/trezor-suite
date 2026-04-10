@@ -109,7 +109,7 @@ const buttonTextStyle = prepareNativeStyle<ButtonTextStyleProps>((utils, { butto
 export const ButtonIcon = ({
     iconName,
     color = 'iconDefault',
-    size = 'medium',
+    size = 'large',
 }: ButtonIconProps) => (
     <Icon.Animated name={iconName} color={color} size={buttonToIconSizeMap[size]} />
 );

@@ -97,7 +97,7 @@ export const TransactionDetailSheet = ({
                 <Box paddingTop="sp24">
                     {children}
                     <Box paddingHorizontal="sp8" marginTop="sp24">
-                        <Button size="large" onPress={closeModal}>
+                        <Button onPress={closeModal}>
                             <Translation id="generic.buttons.close" />
                         </Button>
                     </Box>

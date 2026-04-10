@@ -28,7 +28,7 @@ export const TradingDeeplinks = () => {
                 <Button
                     intent="neutral"
                     priority="secondary"
-                    size="small"
+                    size="medium"
                     onPress={() => {
                         navigate(AppTabsRoutes.TradeStack, {
                             screen: TradingStackRoutes.Trading,
@@ -41,7 +41,7 @@ export const TradingDeeplinks = () => {
                 <Button
                     intent="neutral"
                     priority="secondary"
-                    size="small"
+                    size="medium"
                     onPress={() => {
                         navigate(AppTabsRoutes.TradeStack, {
                             screen: TradingStackRoutes.Trading,

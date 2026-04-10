@@ -75,7 +75,7 @@ export const FeatureRatingForm = ({ titleKey, onSubmit, onDismiss }: FeatureRati
                     />
                 </VStack>
                 {isFormValid && (
-                    <Button onPress={handleSubmit} size="large">
+                    <Button onPress={handleSubmit}>
                         <Translation id="moduleSettings.advanced.featureFeedback.submitButton" />
                     </Button>
                 )}

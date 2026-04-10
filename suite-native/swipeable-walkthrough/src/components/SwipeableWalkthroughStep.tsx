@@ -104,7 +104,6 @@ export const SwipeableWalkthroughStep = ({
                             iconName="caretDown"
                             intent="neutral"
                             priority="secondary"
-                            size="large"
                             onPress={handleNextButtonPress}
                             testID={`@swipeableWalkthroughStep/${stepId}/nextButton`}
                         />

@@ -71,7 +71,7 @@ export const AddressQRCode = ({
             )}
             <HStack spacing="sp8" justifyContent="center">
                 <Button
-                    size="small"
+                    size="medium"
                     iconLeft="copy"
                     onPress={handleCopyAddress}
                     intent="neutral"
@@ -80,7 +80,7 @@ export const AddressQRCode = ({
                     <Translation id="qrCode.copyButton" />
                 </Button>
                 <Button
-                    size="small"
+                    size="medium"
                     iconLeft="shareNetwork"
                     intent="neutral"
                     priority="secondary"

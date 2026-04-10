@@ -37,7 +37,7 @@ export const MessageSystemCard = () => {
                     <Button
                         intent="neutral"
                         priority="secondary"
-                        size="small"
+                        size="medium"
                         onPress={handleCopyConfig}
                     >
                         Copy full config

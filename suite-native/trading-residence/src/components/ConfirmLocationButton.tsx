@@ -26,7 +26,7 @@ export const ConfirmLocationButton = ({ afterConfirm }: ConfirmLocationButtonPro
     };
 
     return (
-        <Button intent="brand" priority="primary" size="medium" onPress={confirmLocation}>
+        <Button intent="brand" priority="primary" onPress={confirmLocation}>
             <Translation id="tradingResidence.locationSettings.confirmButton" />
         </Button>
     );

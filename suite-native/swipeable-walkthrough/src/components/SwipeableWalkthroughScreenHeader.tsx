@@ -51,7 +51,6 @@ const SwipeableWalkthroughBackButton = ({
         <Animated.View style={animatedButtonStyle}>
             <IconButton
                 iconName="caretLeft"
-                size="medium"
                 intent="neutral"
                 priority="secondary"
                 onPress={onPressBack}

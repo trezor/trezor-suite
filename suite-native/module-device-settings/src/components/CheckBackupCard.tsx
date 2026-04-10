@@ -15,7 +15,7 @@ export const CheckBackupCard = () => {
                     <Translation id="moduleDeviceSettings.checkBackup.subtitle" />
                 </Text>
                 <Button
-                    size="small"
+                    size="medium"
                     flex={1}
                     onPress={navigateToCheckBackup}
                     intent="neutral"

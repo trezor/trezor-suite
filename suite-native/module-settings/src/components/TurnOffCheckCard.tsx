@@ -28,14 +28,20 @@ const TurnOnButton = ({ onTurnOn }: { onTurnOn: () => void }) => {
     };
 
     return (
-        <Button size="small" flex={1} onPress={handleButtonPress} intent="brand" priority="primary">
+        <Button
+            size="medium"
+            flex={1}
+            onPress={handleButtonPress}
+            intent="brand"
+            priority="primary"
+        >
             <Translation id="moduleSettings.advanced.authenticityChecks.buttonTurnOn" />
         </Button>
     );
 };
 
 const TurnOffButton = ({ onTurnOff }: { onTurnOff: () => void }) => (
-    <Button size="small" flex={1} onPress={onTurnOff} intent="warning" priority="secondary">
+    <Button size="medium" flex={1} onPress={onTurnOff} intent="warning" priority="secondary">
         <Translation id="moduleSettings.advanced.authenticityChecks.buttonTurnOff" />
     </Button>
 );
@@ -49,7 +55,7 @@ const LearnMoreButton = ({ learnMoreUrl }: { learnMoreUrl: string }) => {
 
     return (
         <Button
-            size="small"
+            size="medium"
             flex={1}
             iconLeft="arrowSquareOut"
             onPress={handleButtonPress}

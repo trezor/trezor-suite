@@ -176,7 +176,7 @@ export const PassphraseFormScreen = () => {
                                     </HStack>
                                 </VStack>
                                 <Button
-                                    size="small"
+                                    size="medium"
                                     intent="info"
                                     priority="primary"
                                     iconLeft="arrowLineUpRight"

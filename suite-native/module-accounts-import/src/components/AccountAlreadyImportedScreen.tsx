@@ -51,15 +51,10 @@ export const AccountAlreadyImportedScreen = ({ account }: AccountAlreadyImported
             subtitle={<Translation id="moduleAccountImport.summaryScreen.subtitle" />}
             footer={
                 <VStack spacing="sp16">
-                    <Button size="large" onPress={handleSyncAnotherAsset}>
+                    <Button onPress={handleSyncAnotherAsset}>
                         <Translation id="moduleAccountImport.summaryScreen.syncAnotherCoinButton" />
                     </Button>
-                    <Button
-                        size="large"
-                        intent="neutral"
-                        priority="secondary"
-                        onPress={navigateToInitialScreen}
-                    >
+                    <Button intent="neutral" priority="secondary" onPress={navigateToInitialScreen}>
                         <Translation id="generic.buttons.cancel" />
                     </Button>
                 </VStack>

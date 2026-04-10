@@ -25,13 +25,12 @@ export const ConfirmBottomSheet = ({ ref, onConfirm, onCheckBackup }: ConfirmBot
                 </Text>
             </VStack>
             <VStack spacing="sp12">
-                <Button size="medium" onPress={onConfirm} testID="@device-firmware/sheet/continue">
+                <Button onPress={onConfirm} testID="@device-firmware/sheet/continue">
                     <Translation id="firmware.seedBottomSheet.continueButton" />
                 </Button>
                 <Button
                     testID="@device-firmware/sheet/check-backup"
                     onPress={onCheckBackup}
-                    size="medium"
                     intent="neutral"
                     priority="secondary"
                 >

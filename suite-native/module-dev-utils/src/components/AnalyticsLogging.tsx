@@ -89,7 +89,7 @@ export const AnalyticsLogging = () => {
                         {isDirty && (
                             <Button
                                 testID="@analytics-url-control/save-button"
-                                size="small"
+                                size="medium"
                                 onPress={onSubmit}
                             >
                                 Save
@@ -99,7 +99,7 @@ export const AnalyticsLogging = () => {
                             <Button
                                 intent="neutral"
                                 priority="secondary"
-                                size="small"
+                                size="medium"
                                 onPress={handleResetToDefault}
                             >
                                 Reset to default

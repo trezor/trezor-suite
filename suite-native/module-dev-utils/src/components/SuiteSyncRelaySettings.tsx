@@ -81,7 +81,7 @@ export const SuiteSyncRelaySettings = () => {
                             testID="@suiteSync/custom-relay-url-save-button"
                             intent="neutral"
                             priority="secondary"
-                            size="small"
+                            size="medium"
                             onPress={onSubmit}
                         >
                             Save
@@ -89,7 +89,7 @@ export const SuiteSyncRelaySettings = () => {
                         <Button
                             intent="neutral"
                             priority="secondary"
-                            size="small"
+                            size="medium"
                             onPress={handleResetToDefault}
                         >
                             Reset to default

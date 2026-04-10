@@ -64,7 +64,7 @@ export const SuiteSyncQuotaManager = () => {
                             testID="@suiteSyncQuotaManager/save-button"
                             intent="neutral"
                             priority="secondary"
-                            size="small"
+                            size="medium"
                             onPress={onSubmit}
                         >
                             Save

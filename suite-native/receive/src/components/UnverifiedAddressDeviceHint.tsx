@@ -16,7 +16,7 @@ export const UnverifiedAddressDeviceHint = () => {
                     <Translation id="moduleReceive.receiveAddressCard.deviceHint.description" />
                 </Text>
                 <Box flexDirection="row" flexShrink={1} justifyContent="center">
-                    <Button size="small" intent="neutral" priority="secondary" onPress={openModal}>
+                    <Button size="medium" intent="neutral" priority="secondary" onPress={openModal}>
                         <Translation id="moduleReceive.bottomSheets.addressMismatch.title" />
                     </Button>
                 </Box>
