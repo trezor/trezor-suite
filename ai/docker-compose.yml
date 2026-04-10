@@ -1,0 +1,116 @@
+version: "3.9"
+
+# ──────────────────────────────────────────────────────────────
+# AI Memory Infrastructure – Docker Compose
+# Deploy on internal VM behind VPN. No public internet assumed.
+#
+# Reverse proxy recommendation:
+#   Place Traefik or Nginx in front of the gateway for TLS
+#   termination, rate-limiting and request logging. Bind the
+#   proxy to the VPN interface only.
+# ──────────────────────────────────────────────────────────────
+
+networks:
+  ai-internal:
+    driver: bridge
+    internal: true # no outbound internet access
+  ai-gateway:
+    driver: bridge # reachable from host / VPN
+
+volumes:
+  neo4j-data:
+  neo4j-logs:
+  postgres-data:
+  # qdrant-data:          # phase 2
+
+services:
+  # ── Neo4j ────────────────────────────────────────────────────
+  neo4j:
+    image: neo4j:5-community
+    restart: unless-stopped
+    networks:
+      - ai-internal
+      - ai-gateway
+    ports:
+      - "7474:7474" # browser – internal network only
+      - "7687:7687" # bolt    – internal network only
+    environment:
+      NEO4J_AUTH: ${NEO4J_USER}/${NEO4J_PASSWORD}
+      NEO4J_PLUGINS: "[]"
+    volumes:
+      - neo4j-data:/data
+      - neo4j-logs:/logs
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:7474 || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  # ── Postgres ─────────────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    networks:
+      - ai-internal
+      - ai-gateway
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  # ── Trezor Hive Memory (MCP + REST) ────────────────────────
+  gateway:
+    build:
+      context: .
+      dockerfile: apps/trezor-hive-memory/Dockerfile
+    restart: unless-stopped
+    networks:
+      - ai-internal
+      - ai-gateway
+    ports:
+      - "${GATEWAY_PORT:-8080}:8080"
+    environment:
+      NEO4J_URI: ${NEO4J_URI}
+      NEO4J_USER: ${NEO4J_USER}
+      NEO4J_PASSWORD: ${NEO4J_PASSWORD}
+      POSTGRES_HOST: ${POSTGRES_HOST}
+      POSTGRES_PORT: ${POSTGRES_PORT}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      JWT_SECRET: ${JWT_SECRET}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+    depends_on:
+      neo4j:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+
+  # ── Qdrant (phase 2 – uncomment when ready) ─────────────────
+  # qdrant:
+  #   image: qdrant/qdrant:v1.9.0
+  #   restart: unless-stopped
+  #   networks:
+  #     - ai-internal
+  #   ports:
+  #     - '6333:6333'
+  #     - '6334:6334'
+  #   volumes:
+  #     - qdrant-data:/qdrant/storage
+  #   healthcheck:
+  #     test: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://localhost:6333/healthz || exit 1']
+  #     interval: 15s
+  #     timeout: 10s
+  #     retries: 5
+  #     start_period: 15s

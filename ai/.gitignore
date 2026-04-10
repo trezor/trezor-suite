@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.env
+*.log
+.yarn
+
+# Override root-level "public" ignore — Admin UI static files must be tracked
+!public/

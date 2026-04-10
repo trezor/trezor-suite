@@ -1,0 +1,18 @@
+{
+    "name": "@ai/hive-memory-client",
+    "version": "0.1.0",
+    "private": true,
+    "type": "module",
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "scripts": {
+        "build": "tsc",
+        "typecheck": "tsc --noEmit"
+    },
+    "dependencies": {
+        "@ai/shared-types": "workspace:*"
+    },
+    "devDependencies": {
+        "typescript": "^5.5.0"
+    }
+}

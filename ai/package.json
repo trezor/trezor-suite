@@ -1,0 +1,20 @@
+{
+    "name": "@ai/root",
+    "private": true,
+    "type": "module",
+    "workspaces": [
+        "apps/*",
+        "packages/*"
+    ],
+    "scripts": {
+        "build": "yarn workspaces foreach -At run build",
+        "dev": "yarn workspace @ai/trezor-hive-memory run dev",
+        "lint": "yarn workspaces foreach -A run lint",
+        "type-check": "yarn workspaces foreach -A run typecheck",
+        "ingest-graph": "tsx scripts/ingest-graph.ts",
+        "ingest-graph:dry": "tsx scripts/ingest-graph.ts --dry-run"
+    },
+    "engines": {
+        "node": ">=20"
+    }
+}

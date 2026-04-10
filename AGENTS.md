@@ -22,6 +22,7 @@
 - [Tests Common](skills/tests-common/SKILL.md) – TDD practices for suite-common packages
 - [Tests Native](skills/tests-native/SKILL.md) – TDD practices for suite-native packages
 - [TypeScript](skills/typescript/SKILL.md) – TypeScript-specific conventions
+- [Trezor Hive Memory](skills/trezor-hive-memory/SKILL.md) – Shared knowledge graph usage via MCP
 
 # Other Notes
 
