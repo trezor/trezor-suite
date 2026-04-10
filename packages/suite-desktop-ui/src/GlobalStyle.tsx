@@ -3,7 +3,7 @@ import { createGlobalStyle } from 'styled-components';
 import {
     FIND_HIGHLIGHT_SELECTOR,
     MARK_HIGHLIGHT_PULSE_SELECTOR,
-} from '../../suite/src/components/suite/FindBar/consts';
+} from 'src/components/suite/FindBar/consts';
 
 export const GlobalStyle = createGlobalStyle`
 
