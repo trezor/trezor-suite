@@ -66,11 +66,28 @@ export const EarnActiveItemsBottomSheet = ({
         [navigateToStakingDetail, navigation, onClose],
     );
 
+    const handleClaimPress = useCallback(
+        (item: EarnDepositsCardActiveItem) => {
+            if (item.type !== 'staking') return;
+
+            onClose();
+            navigation.navigate(RootStackRoutes.ClaimReview, {
+                accountKey: item.accountKey,
+                symbol: item.symbol,
+            });
+        },
+        [navigation, onClose],
+    );
+
     const renderItem = useCallback(
         ({ item }: { item: EarnDepositsCardActiveItem }) => (
-            <EarnAccountCard item={item} onPress={() => handlePress(item)} />
+            <EarnAccountCard
+                item={item}
+                onPress={() => handlePress(item)}
+                onClaimPress={() => handleClaimPress(item)}
+            />
         ),
-        [handlePress],
+        [handlePress, handleClaimPress],
     );
 
     return (

@@ -2722,6 +2722,7 @@ export const messages = {
         claimableCard: {
             claimable: 'Claimable',
             claimButton: 'Claim',
+            readyToClaim: '{amount} ready to be claimed',
         },
         stakingBottomSheet: {
             title: 'To manage your staked funds, please use Trezor Suite for desktop.',
