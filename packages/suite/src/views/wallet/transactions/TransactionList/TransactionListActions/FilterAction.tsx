@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { selectFlags, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
+import { selectHasActiveModal } from '@suite/modal';
 import {
     selectIsHideSuspiciousTransactions,
     toggleHideSuspiciousTransactions,
@@ -36,9 +37,10 @@ const options = [
 export const FilterAction = () => {
     const { suspiciousTransactionsTooltipClosed } = useSelector(selectFlags);
     const suspiciousTransactionsHidden = useSelector(selectIsHideSuspiciousTransactions);
+    const hasActiveModal = useSelector(selectHasActiveModal);
     const dispatch = useDispatch();
 
-    const isOpen = !suspiciousTransactionsTooltipClosed;
+    const isOpen = !suspiciousTransactionsTooltipClosed && !hasActiveModal;
 
     const handleClose = () => {
         dispatch(setFlag({ key: 'suspiciousTransactionsTooltipClosed', value: true }));
