@@ -29,8 +29,8 @@ export const createPendingTransaction = (
         const path = address_n ? getSerializedPath(address_n) : undefined;
 
         return allAddresses
-            .filter(address => address.path === path)
-            .map(address => address.address);
+            .filter((address: AccountAddresses['change'][number]) => address.path === path)
+            .map((address: AccountAddresses['change'][number]) => address.address);
     };
 
     return {

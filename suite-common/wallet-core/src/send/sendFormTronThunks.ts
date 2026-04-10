@@ -244,7 +244,7 @@ export const composeTronTransactionFeeLevelsThunk = createThunk<
 
         let feeLevel: EstimateFeeLevel;
 
-        const ownerHex = tronUtils.tronAddressToHex(account.descriptor) ?? '';
+        const ownerHex = tronAddressToHex(account.descriptor) ?? '';
 
         // Dummy block values — block fields are fixed-size in protobuf so bandwidth is identical
         // to what we'd get with real block data.
@@ -257,7 +257,7 @@ export const composeTronTransactionFeeLevelsThunk = createThunk<
                   parameter: {
                       value: {
                           owner_address: ownerHex,
-                          contract_address: tronUtils.tronAddressToHex(tokenInfo.contract) ?? '',
+                          contract_address: tronAddressToHex(tokenInfo.contract) ?? '',
                           data:
                               getTronEstimateFeeParams(
                                   to,
@@ -272,7 +272,7 @@ export const composeTronTransactionFeeLevelsThunk = createThunk<
                   parameter: {
                       value: {
                           owner_address: ownerHex,
-                          to_address: tronUtils.tronAddressToHex(to) ?? '',
+                          to_address: tronAddressToHex(to) ?? '',
                           amount: amountForEstimation,
                       },
                   },

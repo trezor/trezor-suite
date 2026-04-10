@@ -295,7 +295,6 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
                 const account: AccountInfo = {
                     path: request.path,
                     ...info,
-                    descriptor, // override descriptor (otherwise eth checksum is lost)
                     legacyXpub,
                     utxo,
                     descriptorChecksum,

@@ -60,7 +60,7 @@ export class TransactionComposer {
             : addresses.used
                   .concat(addresses.unused)
                   .concat(addresses.change)
-                  .map(a => a.address);
+                  .map((a: { address: string }) => a.address);
         this.utxos = options.utxos.flatMap(u => {
             // exclude amounts lower than dust limit if they are NOT required
             if (!u.required && new BigNumber(u.amount).lte(this.coinInfo.dustLimit)) return [];
@@ -162,7 +162,7 @@ export class TransactionComposer {
         if (!addresses) return { type: 'error', error: 'ADDRESSES-NOT-SET' };
         // find not used change address or fallback to the last in the list
         const changeAddress =
-            addresses.change.find(a => !a.transfers) ||
+            addresses.change.find((a: { transfers?: number }) => !a.transfers) ||
             addresses.change[addresses.change.length - 1];
         // const inputAmounts = coinInfo.segwit || coinInfo.forkid !== null || coinInfo.network.consensusBranchId !== null;
 

@@ -170,7 +170,9 @@ const transformOrigTransaction = (
             }
             case 'address': {
                 const { address } = parsed;
-                const changeAddress = addresses.change.find(addr => addr.address === address);
+                const changeAddress = addresses.change.find(
+                    (addr: AccountAddresses['change'][number]) => addr.address === address,
+                );
                 const address_n = changeAddress && getHDPath(changeAddress.path);
                 const amount = output.value.toString();
 
@@ -202,7 +204,7 @@ const transformOrigTransaction = (
         outputs: tx.outs.map(outputsMap),
         lock_time: tx.locktime,
         timestamp: tx.timestamp,
-        expiry: tx.expiry,
+        expiry: 'expiry' in tx ? tx.expiry : undefined,
     };
 
     return enhanceTransaction(refTx, tx);
@@ -239,7 +241,7 @@ export const transformReferencedTransaction = (tx: BitcoinJsTransaction): RefTra
         bin_outputs: tx.outs.map(binOutputsMap),
         lock_time: tx.locktime,
         timestamp: tx.timestamp,
-        expiry: tx.expiry,
+        expiry: 'expiry' in tx ? tx.expiry : undefined,
     };
 
     return enhanceTransaction(refTx, tx);

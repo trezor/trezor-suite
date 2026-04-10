@@ -367,7 +367,6 @@ export default class DiscoverAccounts extends AbstractMethod<
                 this.updateProgress(accountKey, index + 1, info.empty);
                 sendProgress({
                     ...info,
-                    descriptor,
                     ...descRest,
                     utxo,
                     ...accountKey,

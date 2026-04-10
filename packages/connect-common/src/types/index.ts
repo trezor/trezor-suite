@@ -77,7 +77,7 @@ export type {
     FiatRatesBySymbol,
     Target as TransactionTarget,
     AccountBalanceHistory as BlockchainAccountBalanceHistory,
-} from '@trezor/blockchain-link';
+} from '@trezor/blockchain-link-types';
 
 export { ThpPairingMethod } from '@trezor/protocol';
 export type { MessagesSchema as PROTO } from '@trezor/protobuf';
