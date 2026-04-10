@@ -14,5 +14,8 @@
     "dependencies": {
         "@trezor/react-native-usb": "workspace:*",
         "@trezor/transport": "workspace:*"
+    },
+    "devDependencies": {
+        "@types/w3c-web-usb": "^1.0.10"
     }
 }

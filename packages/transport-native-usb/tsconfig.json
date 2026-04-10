@@ -1,6 +1,9 @@
 {
     "extends": "../../tsconfig.base.json",
-    "compilerOptions": { "outDir": "libDev" },
+    "compilerOptions": {
+        "outDir": "libDev",
+        "types": ["jest", "node", "w3c-web-usb"]
+    },
     "references": [
         { "path": "../react-native-usb" },
         { "path": "../transport" }
