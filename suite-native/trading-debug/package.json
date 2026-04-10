@@ -24,6 +24,7 @@
         "react-redux": "9.2.0"
     },
     "devDependencies": {
+        "@suite-common/trading": "workspace:*",
         "@suite-native/test-utils": "workspace:*",
         "@suite-native/trading-consts": "workspace:*",
         "@suite-native/trading-types": "workspace:*"

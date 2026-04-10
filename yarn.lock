@@ -14131,6 +14131,7 @@ __metadata:
   resolution: "@suite-native/trading-debug@workspace:suite-native/trading-debug"
   dependencies:
     "@reduxjs/toolkit": "npm:2.11.2"
+    "@suite-common/trading": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/clipboard": "workspace:*"
     "@suite-native/feature-flags": "workspace:*"

@@ -9,6 +9,7 @@
         {
             "path": "../../packages/styles-native"
         },
+        { "path": "../../suite-common/trading" },
         { "path": "../test-utils" },
         { "path": "../trading-consts" },
         { "path": "../trading-types" }
