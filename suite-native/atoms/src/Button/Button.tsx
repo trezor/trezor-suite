@@ -132,7 +132,7 @@ export const Button = ({
     isInverse = false,
     isLoading = false,
     priority = 'primary',
-    size = 'medium',
+    size = 'large',
     style,
     testID,
     ...pressableProps
