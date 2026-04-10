@@ -5,17 +5,9 @@
         "types": ["node"]
     },
     "references": [
-        {
-            "path": "../connect"
-        },
-        {
-            "path": "../protobuf"
-        },
-        {
-            "path": "../transport"
-        },
-        {
-            "path": "../transport-bluetooth"
-        }
+        { "path": "../connect" },
+        { "path": "../protobuf" },
+        { "path": "../transport" },
+        { "path": "../transport-bluetooth" }
     ]
 }

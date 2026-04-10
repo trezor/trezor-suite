@@ -5,17 +5,9 @@
         "types": ["jest", "node"]
     },
     "references": [
-        {
-            "path": "../ipc-proxy"
-        },
-        {
-            "path": "../transport"
-        },
-        {
-            "path": "../utils"
-        },
-        {
-            "path": "../websocket-client"
-        }
+        { "path": "../ipc-proxy" },
+        { "path": "../transport" },
+        { "path": "../utils" },
+        { "path": "../websocket-client" }
     ]
 }

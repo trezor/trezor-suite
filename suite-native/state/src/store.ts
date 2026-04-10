@@ -1,5 +1,9 @@
-import { configureStore } from '@reduxjs/toolkit';
-import { type Middleware, type MiddlewareAPI, type StoreEnhancer } from 'redux';
+import {
+    type Middleware,
+    type MiddlewareAPI,
+    type StoreEnhancer,
+    configureStore,
+} from '@reduxjs/toolkit';
 
 import { logsMiddleware } from '@suite-common/logger';
 import {
@@ -29,10 +33,6 @@ import { createNativeCompositionRoot, extraDependencies } from './extraDependenc
 import { prepareRootReducers } from './reducers';
 
 type RootReducerShape = ReturnType<typeof prepareRootReducers>;
-
-type ReducerState<TReducer> = TReducer extends (state: any, action: any) => infer TState
-    ? TState
-    : never;
 
 export type FullPersistedAppState = ReducerState<RootReducerShape>;
 

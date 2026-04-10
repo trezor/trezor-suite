@@ -5,11 +5,7 @@
         "types": ["jest", "node"]
     },
     "references": [
-        {
-            "path": "../transport"
-        },
-        {
-            "path": "../type-utils"
-        }
+        { "path": "../transport" },
+        { "path": "../type-utils" }
     ]
 }

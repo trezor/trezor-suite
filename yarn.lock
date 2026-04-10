@@ -16218,6 +16218,7 @@ __metadata:
   dependencies:
     "@trezor/react-native-usb": "workspace:*"
     "@trezor/transport": "workspace:*"
+    "@types/w3c-web-usb": "npm:^1.0.10"
   languageName: unknown
   linkType: soft
 

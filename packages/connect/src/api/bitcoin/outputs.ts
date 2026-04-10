@@ -22,9 +22,9 @@ export const validateTrezorOutputs = (
     outputs: ProtoWithDerivationPath<PROTO.TxOutputType>[],
     coinInfo: BitcoinNetworkInfo,
 ): PROTO.TxOutputType[] => {
-    const trezorOutputs = outputs
-        .map(o => fixPath(o))
-        .map(o => convertMultisigPubKey(coinInfo.network, o));
+    const trezorOutputs = outputs.map(output =>
+        convertMultisigPubKey(coinInfo.network, fixPath(output)),
+    ) as PROTO.TxOutputType[];
 
     trezorOutputs.forEach(output => {
         validateParams(output, [

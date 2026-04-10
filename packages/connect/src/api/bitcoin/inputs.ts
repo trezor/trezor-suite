@@ -24,39 +24,41 @@ import { validateParams } from '../common/paramsValidator';
 export const validateTrezorInputs = (
     inputs: ProtoWithDerivationPath<PROTO.TxInputType>[],
     coinInfo: BitcoinNetworkInfo,
-): PROTO.TxInputType[] =>
-    inputs
-        .map(i => fixPath(i))
-        .map(i => convertMultisigPubKey(coinInfo.network, i))
-        .map(input => {
-            const useAmount = input.script_type === 'EXTERNAL' || isSegwitPath(input.address_n);
-            // since 2.3.5 amount is required for all inputs.
-            // this change however is breaking 3rd party implementations
-            // missing amount will be delivered by refTx object
+): PROTO.TxInputType[] => {
+    const trezorInputs = inputs.map(input =>
+        convertMultisigPubKey(coinInfo.network, fixPath(input)),
+    ) as PROTO.TxInputType[];
+
+    return trezorInputs.map(input => {
+        const useAmount = input.script_type === 'EXTERNAL' || isSegwitPath(input.address_n);
+        // since 2.3.5 amount is required for all inputs.
+        // this change however is breaking 3rd party implementations
+        // missing amount will be delivered by refTx object
+        validateParams(input, [
+            { name: 'prev_hash', type: 'string', required: true },
+            { name: 'prev_index', type: 'number', required: true },
+            { name: 'amount', type: 'uint', required: useAmount },
+            { name: 'script_type', type: 'string' },
+            { name: 'sequence', type: 'number' },
+            { name: 'multisig', type: 'object' },
+            { name: 'coinjoin_flags', type: 'number' },
+        ]);
+
+        if (input.script_type === 'EXTERNAL') {
             validateParams(input, [
-                { name: 'prev_hash', type: 'string', required: true },
-                { name: 'prev_index', type: 'number', required: true },
-                { name: 'amount', type: 'uint', required: useAmount },
-                { name: 'script_type', type: 'string' },
-                { name: 'sequence', type: 'number' },
-                { name: 'multisig', type: 'object' },
-                { name: 'coinjoin_flags', type: 'number' },
+                { name: 'script_pubkey', type: 'string', required: true },
+                { name: 'commitment_data', type: 'string' },
+                { name: 'ownership_proof', type: 'string' },
+                { name: 'script_sig', type: 'string' },
+                { name: 'witness', type: 'string' },
             ]);
+        } else {
+            validatePath(input.address_n as number[]);
+        }
 
-            if (input.script_type === 'EXTERNAL') {
-                validateParams(input, [
-                    { name: 'script_pubkey', type: 'string', required: true },
-                    { name: 'commitment_data', type: 'string' },
-                    { name: 'ownership_proof', type: 'string' },
-                    { name: 'script_sig', type: 'string' },
-                    { name: 'witness', type: 'string' },
-                ]);
-            } else {
-                validatePath(input.address_n);
-            }
-
-            return input;
-        });
+        return input;
+    });
+};
 
 // this method exist as a workaround for breaking change described in validateTrezorInputs
 // TODO: it could be removed after another major version release.

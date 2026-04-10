@@ -12,9 +12,7 @@
         {
             "path": "../../suite-common/platform-encryption"
         },
-        {
-            "path": "../../suite-common/sentry"
-        },
+        { "path": "../../suite-common/sentry" },
         {
             "path": "../../suite-common/suite-constants"
         },
@@ -27,56 +25,22 @@
         {
             "path": "../../suite-common/wallet-utils"
         },
-        {
-            "path": "../../suite/sentry"
-        },
-        {
-            "path": "../coinjoin"
-        },
-        {
-            "path": "../connect"
-        },
-        {
-            "path": "../connect-common"
-        },
-        {
-            "path": "../env-utils"
-        },
-        {
-            "path": "../eslint"
-        },
-        {
-            "path": "../ipc-proxy"
-        },
-        {
-            "path": "../node-utils"
-        },
-        {
-            "path": "../request-manager"
-        },
-        {
-            "path": "../suite-desktop-api"
-        },
-        {
-            "path": "../suite-desktop-native"
-        },
-        {
-            "path": "../theme"
-        },
-        {
-            "path": "../transport-bluetooth"
-        },
-        {
-            "path": "../transport-bridge"
-        },
-        {
-            "path": "../urls"
-        },
-        {
-            "path": "../utils"
-        },
-        {
-            "path": "../type-utils"
-        }
+        { "path": "../../suite/sentry" },
+        { "path": "../coinjoin" },
+        { "path": "../connect" },
+        { "path": "../connect-common" },
+        { "path": "../env-utils" },
+        { "path": "../eslint" },
+        { "path": "../ipc-proxy" },
+        { "path": "../node-utils" },
+        { "path": "../request-manager" },
+        { "path": "../suite-desktop-api" },
+        { "path": "../suite-desktop-native" },
+        { "path": "../theme" },
+        { "path": "../transport-bluetooth" },
+        { "path": "../transport-bridge" },
+        { "path": "../urls" },
+        { "path": "../utils" },
+        { "path": "../type-utils" }
     ]
 }

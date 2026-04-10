@@ -1,5 +1,6 @@
 import { BlockchainLink } from '@trezor/blockchain-link';
-import { MESSAGES, type ValidateEvmRpc } from '@trezor/blockchain-link-types';
+import * as MESSAGES from '@trezor/blockchain-link-types/src/constants/messages';
+import type { ValidateEvmRpc } from '@trezor/blockchain-link-types/src/messages';
 
 import type { MethodMessage, MethodPermission } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
