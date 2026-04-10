@@ -1,9 +1,6 @@
 import { WebUSB } from '@trezor/react-native-usb';
-import {
-    AbstractApiTransport,
-    type Transport as AbstractTransport,
-    UsbApi,
-} from '@trezor/transport';
+import { AbstractApiTransport, type Transport as AbstractTransport } from '@trezor/transport';
+import { UsbApi } from '@trezor/transport/src/api/usb';
 
 export class NativeUsbTransport extends AbstractApiTransport {
     public name = 'NativeUsbTransport' as const;

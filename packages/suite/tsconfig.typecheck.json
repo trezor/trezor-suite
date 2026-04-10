@@ -3,6 +3,6 @@
     "compilerOptions": {
         "disableSourceOfProjectReferenceRedirect": true,
         "lib": ["DOM", "DOM.Iterable", "WebWorker", "ES2023"],
-        "types": ["jest", "node", "w3c-web-usb"]
+        "types": ["jest", "node"]
     }
 }

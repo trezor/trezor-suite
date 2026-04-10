@@ -16,7 +16,6 @@
         "react-native-ble-plx": "3.5.1"
     },
     "devDependencies": {
-        "@trezor/type-utils": "workspace:*",
-        "@types/w3c-web-usb": "^1.0.10"
+        "@trezor/type-utils": "workspace:*"
     }
 }

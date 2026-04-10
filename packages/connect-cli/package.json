@@ -19,7 +19,6 @@
         "@trezor/transport-bluetooth": "workspace:*"
     },
     "devDependencies": {
-        "@types/w3c-web-usb": "^1.0.10",
         "tsx": "^4.21.0"
     }
 }

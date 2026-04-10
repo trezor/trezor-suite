@@ -1,23 +1,44 @@
 {
     "extends": "../../tsconfig.base.json",
     "compilerOptions": {
-        "outDir": "libDev",
-        "types": ["w3c-web-usb"]
+        "outDir": "libDev"
     },
     "references": [
-        { "path": "../analytics" },
-        { "path": "../device" },
-        { "path": "../redux-utils" },
-        { "path": "../toast-notifications" },
-        { "path": "../wallet-config" },
-        { "path": "../wallet-constants" },
-        { "path": "../wallet-core" },
-        { "path": "../wallet-types" },
-        { "path": "../../packages/connect" },
+        {
+            "path": "../analytics"
+        },
+        {
+            "path": "../device"
+        },
+        {
+            "path": "../redux-utils"
+        },
+        {
+            "path": "../toast-notifications"
+        },
+        {
+            "path": "../wallet-config"
+        },
+        {
+            "path": "../wallet-constants"
+        },
+        {
+            "path": "../wallet-core"
+        },
+        {
+            "path": "../wallet-types"
+        },
+        {
+            "path": "../../packages/connect"
+        },
         {
             "path": "../../packages/connect-common"
         },
-        { "path": "../../packages/type-utils" },
-        { "path": "../../packages/utils" }
+        {
+            "path": "../../packages/type-utils"
+        },
+        {
+            "path": "../../packages/utils"
+        }
     ]
 }

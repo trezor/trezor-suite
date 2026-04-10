@@ -10639,7 +10639,6 @@ __metadata:
     "@trezor/type-utils": "workspace:^"
     "@trezor/utils": "workspace:*"
     "@types/react": "npm:19.2.14"
-    "@types/w3c-web-usb": "npm:^1.0.10"
     react: "npm:19.2.4"
     react-redux: "npm:9.2.0"
   peerDependencies:
@@ -13884,7 +13883,6 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/transport-native-bluetooth": "workspace:*"
     "@trezor/type-utils": "workspace:*"
-    "@types/w3c-web-usb": "npm:^1.0.10"
     bs58: "npm:^6.0.0"
     expo-crypto: "npm:~55.0.8"
     expo-secure-store: "npm:~55.0.8"
@@ -13979,7 +13977,6 @@ __metadata:
     "@testing-library/react-native": "npm:13.3.3"
     "@trezor/styles-native": "workspace:*"
     "@trezor/theme": "workspace:*"
-    "@types/w3c-web-usb": "npm:^1.0.10"
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
     react-native-keyboard-controller: "npm:1.20.7"
@@ -15147,7 +15144,6 @@ __metadata:
     "@trezor/protobuf": "workspace:*"
     "@trezor/transport": "workspace:*"
     "@trezor/transport-bluetooth": "workspace:*"
-    "@types/w3c-web-usb": "npm:^1.0.10"
     tsx: "npm:^4.21.0"
   languageName: unknown
   linkType: soft
@@ -15823,7 +15819,6 @@ __metadata:
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/electron-localshortcut": "npm:^3.1.3"
-    "@types/w3c-web-usb": "npm:^1.0.10"
     chalk: "npm:^5.6.2"
     electron: "npm:41.0.4"
     electron-devtools-installer: "npm:^4.0.0"
@@ -16175,7 +16170,6 @@ __metadata:
     "@trezor/websocket-client": "workspace:*"
     "@types/jest": "npm:29.5.12"
     "@types/node": "npm:22.13.10"
-    "@types/w3c-web-usb": "npm:^1.0.10"
     html-webpack-plugin: "npm:5.6.6"
     react: "npm:19.2.4"
     react-dom: "npm:19.2.4"
@@ -16214,7 +16208,6 @@ __metadata:
   dependencies:
     "@trezor/transport": "workspace:*"
     "@trezor/type-utils": "workspace:*"
-    "@types/w3c-web-usb": "npm:^1.0.10"
     react-native-ble-plx: "npm:3.5.1"
   languageName: unknown
   linkType: soft

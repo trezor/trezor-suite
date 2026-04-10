@@ -2,12 +2,20 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": {
         "outDir": "libDev",
-        "types": ["node", "w3c-web-usb"]
+        "types": ["node"]
     },
     "references": [
-        { "path": "../connect" },
-        { "path": "../protobuf" },
-        { "path": "../transport" },
-        { "path": "../transport-bluetooth" }
+        {
+            "path": "../connect"
+        },
+        {
+            "path": "../protobuf"
+        },
+        {
+            "path": "../transport"
+        },
+        {
+            "path": "../transport-bluetooth"
+        }
     ]
 }

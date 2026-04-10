@@ -5,7 +5,6 @@ export { TREZOR_USB_DESCRIPTORS, TRANSPORT } from './constants';
 
 export { AbstractTransport as Transport, isTransportInstance } from './transports/abstract';
 export { AbstractApiTransport } from './transports/abstractApi';
-export { UsbApi } from './api/usb';
 
 // browser + node
 export { BridgeTransport } from './transports/bridge';

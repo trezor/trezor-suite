@@ -5,7 +5,7 @@ import { firmwareAssets } from '@trezor/connect-data';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import type { FirmwareRelease } from '@trezor/device-utils';
 import { AbstractApiTransport } from '@trezor/transport';
-import type { UsbApi } from '@trezor/transport';
+import type { UsbApi } from '@trezor/transport/src/api/usb';
 import { versionUtils } from '@trezor/utils';
 
 // mock of navigator.usb

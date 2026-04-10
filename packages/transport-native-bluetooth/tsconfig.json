@@ -2,10 +2,14 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": {
         "outDir": "libDev",
-        "types": ["jest", "node", "w3c-web-usb"]
+        "types": ["jest", "node"]
     },
     "references": [
-        { "path": "../transport" },
-        { "path": "../type-utils" }
+        {
+            "path": "../transport"
+        },
+        {
+            "path": "../type-utils"
+        }
     ]
 }

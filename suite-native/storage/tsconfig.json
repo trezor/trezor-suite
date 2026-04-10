@@ -1,11 +1,12 @@
 {
     "extends": "../../tsconfig.base.json",
     "compilerOptions": {
-        "outDir": "libDev",
-        "types": ["jest", "w3c-web-usb"]
+        "outDir": "libDev"
     },
     "references": [
-        { "path": "../../suite-common/device" },
+        {
+            "path": "../../suite-common/device"
+        },
         {
             "path": "../../suite-common/firmware-authenticity"
         },
@@ -30,10 +31,14 @@
         {
             "path": "../../packages/blockchain-link-types"
         },
-        { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/connect"
+        },
         {
             "path": "../../packages/transport-native-bluetooth"
         },
-        { "path": "../../packages/type-utils" }
+        {
+            "path": "../../packages/type-utils"
+        }
     ]
 }
