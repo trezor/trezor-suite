@@ -7,10 +7,8 @@
 
 import { SocksProxyAgent } from 'socks-proxy-agent';
 
-import type { BlockchainSettings, Response } from '@trezor/blockchain-link-types';
-import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/src/constants';
-import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
-import type { Message } from '@trezor/blockchain-link-types/src/messages';
+import { CustomError, MESSAGES, RESPONSES } from '@trezor/blockchain-link-types';
+import type { BlockchainSettings, Message, Response } from '@trezor/blockchain-link-types';
 
 import { WorkerState } from './state';
 import { prioritizeEndpoints } from './utils';

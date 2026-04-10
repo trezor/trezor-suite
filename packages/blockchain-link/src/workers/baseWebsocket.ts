@@ -1,4 +1,4 @@
-import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
+import { CustomError } from '@trezor/blockchain-link-types';
 import {
     WebsocketClient,
     type WebsocketRequest,

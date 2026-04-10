@@ -2,19 +2,17 @@ import type {
     AccountAddresses,
     AccountInfo,
     Address,
+    BlockbookAccountInfo,
+    BlockbookAccountUtxo,
+    BlockbookTransaction,
     InternalTransfer,
+    BlockbookServerInfo as ServerInfo,
     TokenInfo,
     TokenTransfer,
     Transaction,
     Utxo,
     VinVout,
 } from '@trezor/blockchain-link-types';
-import type {
-    AccountInfo as BlockbookAccountInfo,
-    AccountUtxo as BlockbookAccountUtxo,
-    Transaction as BlockbookTransaction,
-    ServerInfo,
-} from '@trezor/blockchain-link-types/src/blockbook';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import {

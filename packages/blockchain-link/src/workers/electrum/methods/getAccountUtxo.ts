@@ -1,10 +1,15 @@
-import type { Utxo } from '@trezor/blockchain-link-types/src/electrum';
-import type { GetAccountUtxo as Req } from '@trezor/blockchain-link-types/src/messages';
-import type { GetAccountUtxo as Res } from '@trezor/blockchain-link-types/src/responses';
+import type {
+    MessageTypes,
+    ResponseTypes,
+    ElectrumUtxo as Utxo,
+} from '@trezor/blockchain-link-types';
 import { throwError } from '@trezor/utils';
 import { discovery } from '@trezor/utxo-lib';
 
 import { type Api, discoverAddress, tryGetScripthash } from '../utils';
+
+type Req = MessageTypes.GetAccountUtxo;
+type Res = ResponseTypes.GetAccountUtxo;
 
 const transformUtxo =
     (currentHeight: number, addressInfo: { address?: string; path?: string } = {}) =>

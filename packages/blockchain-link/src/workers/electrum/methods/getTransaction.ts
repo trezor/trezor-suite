@@ -1,8 +1,10 @@
-import type { GetTransaction as Req } from '@trezor/blockchain-link-types/src/messages';
-import type { GetTransaction as Res } from '@trezor/blockchain-link-types/src/responses';
+import type { MessageTypes, ResponseTypes } from '@trezor/blockchain-link-types';
 import { transformTransaction } from '@trezor/blockchain-link-utils/src/blockbook';
 
 import { type Api, getTransactions } from '../utils';
+
+type Req = MessageTypes.GetTransaction;
+type Res = ResponseTypes.GetTransaction;
 
 const getTransaction: Api<Req, Res> = async ({ client }, payload) => {
     const [tx] = await getTransactions(client, [{ tx_hash: payload, height: -1 }]);

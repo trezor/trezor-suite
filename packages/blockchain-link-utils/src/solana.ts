@@ -1,3 +1,4 @@
+import { type SolanaTokenAccountInfo } from '@trezor/blockchain-link-types';
 import {
     type StakeType,
     type Target,
@@ -7,7 +8,6 @@ import {
     type TokenTransfer,
     type Transaction,
 } from '@trezor/blockchain-link-types/src';
-import { type SolanaTokenAccountInfo } from '@trezor/blockchain-link-types/src/solana';
 import { isCodesignBuild } from '@trezor/env-utils';
 import { arrayPartition } from '@trezor/utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';

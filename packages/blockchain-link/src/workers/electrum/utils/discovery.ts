@@ -1,4 +1,4 @@
-import type { ElectrumAPI, HistoryTx } from '@trezor/blockchain-link-types/src/electrum';
+import type { ElectrumAPI, ElectrumHistoryTx as HistoryTx } from '@trezor/blockchain-link-types';
 
 import { addressToScripthash } from './transform';
 
