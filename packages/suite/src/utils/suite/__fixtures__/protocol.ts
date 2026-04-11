@@ -83,6 +83,24 @@ export const getProtocolInfo: getProtocolInfoFixture[] = [
         },
     },
     {
+        description: 'should normalize uppercase Bitcoin bech32 address to lowercase',
+        uri: 'bitcoin:BC1QW508D6QEJXTDG4Y5R3ZARVARY0C5XW7KV8F3T4?amount=0.1',
+        result: {
+            scheme: 'bitcoin',
+            address: 'bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4',
+            amount: 0.1,
+        },
+    },
+    {
+        description: 'should normalize uppercase Bitcoin address when scheme is uppercase too',
+        uri: 'BITCOIN:BC1QW508D6QEJXTDG4Y5R3ZARVARY0C5XW7KV8F3T4?amount=0.1&message=hello',
+        result: {
+            scheme: 'bitcoin',
+            address: 'bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4',
+            amount: 0.1,
+        },
+    },
+    {
         description:
             'should parse Bitcoin URI and ignore amount when it consists of address, and amount is not a number',
         uri: 'bitcoin:3QmuBaZrJNCxc5Xs7aGzZUK8RirUT8jRKf?amount=thousand',

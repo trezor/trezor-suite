@@ -1,3 +1,4 @@
+import { isBech32AddressUppercase } from '@suite-common/wallet-utils';
 import { type Protocol } from '@suite-common/suite-constants';
 import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
 
@@ -10,6 +11,14 @@ export type CoinProtocolInfo = {
 };
 
 const removeLeadingTrailingSlashes = (text: string) => text.replace(/^\/{0,2}|\/$/g, '');
+
+const normalizeAddress = (scheme: Protocol, address: string): string => {
+    if (scheme === 'bitcoin' && isBech32AddressUppercase(address)) {
+        return address.toLowerCase();
+    }
+
+    return address;
+};
 
 export const getProtocolInfo = (
     uri: string,
@@ -30,8 +39,10 @@ export const getProtocolInfo = (
         const floatAmount = Number.parseFloat(params.amount ?? '');
         const amount = !Number.isNaN(floatAmount) && floatAmount > 0 ? floatAmount : undefined;
 
-        const address =
-            removeLeadingTrailingSlashes(pathname) || removeLeadingTrailingSlashes(host);
+        const address = normalizeAddress(
+            scheme,
+            removeLeadingTrailingSlashes(pathname) || removeLeadingTrailingSlashes(host),
+        );
 
         return {
             scheme,
