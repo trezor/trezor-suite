@@ -5,7 +5,7 @@ import { BackendType, NetworkSymbol } from '@suite-common/wallet-config';
 import { step } from '../../common';
 import { expect } from '../../testExtends/customMatchers';
 
-const CARDANO_BLOCKFROST_URL = 'https://ada4.trezor.io/';
+const CARDANO_BLOCKFROST_URL = 'https://ada3.trezor.io/';
 
 export class CoinsTab {
     readonly networkButton = (symbol: NetworkSymbol) =>
