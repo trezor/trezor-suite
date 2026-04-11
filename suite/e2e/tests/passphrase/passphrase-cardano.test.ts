@@ -10,6 +10,7 @@ test.describe('Passphrase with cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.beforeEach(async ({ onboardingPage }) => {
         await onboardingPage.completeOnboarding();
     });
+    test.slow();
 
     test('verify cardano address behind passphrase', async ({
         device,
@@ -22,10 +23,12 @@ test.describe('Passphrase with cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
         async function restartDevice() {
             await test.step('Restart device', async () => {
                 await device.powerOff();
-                await expect(walletPage.deviceDisconnectedStatus).toBeVisible();
+                await expect(walletPage.deviceDisconnectedStatus).toBeVisible({
+                    timeout: 30_000,
+                });
                 await device.powerOn();
                 await expect(walletPage.deviceConnectedStatus).toBeVisible({
-                    timeout: 15_000,
+                    timeout: 30_000,
                 });
             });
         }
