@@ -95,16 +95,7 @@ export const EarnStakingTable = () => {
             adaNotActivated,
         });
 
-    if (!accounts.some(account => account.networkType !== 'bitcoin')) {
-        return null;
-    }
-
-    if (
-        !isStakingDashboardDisabled &&
-        isEthStakingDisabled &&
-        isSolStakingDisabled &&
-        isAdaStakingDisabled
-    ) {
+    if (isStakingDashboardDisabled) {
         return null;
     }
 

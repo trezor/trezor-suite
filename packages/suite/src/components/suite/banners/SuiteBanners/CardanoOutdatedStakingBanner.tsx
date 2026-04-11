@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { DashboardAnchor, goto } from '@suite/router';
+import { goto } from '@suite/router';
 import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
 import { selectPoolStatsApy } from '@suite-common/wallet-core';
 import { Banner } from '@trezor/components';
@@ -25,11 +25,7 @@ export const CardanoOutdatedStakingBanner = () => {
             intent="warning"
             rightContent={
                 <Banner.Button
-                    onClick={() =>
-                        dispatch(
-                            goto({ routeName: 'suite-index', anchor: DashboardAnchor.Staking }),
-                        )
-                    }
+                    onClick={() => dispatch(goto({ routeName: 'suite-earn' }))}
                     data-testid="@notification/bridge-deprecated/button"
                 >
                     <Translation id="TR_STAKING_MODAL_OUTDATED_BUTTON" />
