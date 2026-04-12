@@ -1,6 +1,6 @@
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
-import { it } from '../../support/wrappedIt';
+import { it } from '../../../support/wrappedIt';
 
 describe.skip('Manual', () => {
     it(
@@ -16,7 +16,7 @@ describe.skip('Manual', () => {
                 'Press Confirm',
             ],
             category: TestCategory.Application,
-            priority: TestPriority.Critical,
+            priority: TestPriority.Medium,
             stream: TestStream.Wallet,
         },
         async () => {},
