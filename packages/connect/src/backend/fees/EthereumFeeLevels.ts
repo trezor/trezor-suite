@@ -24,8 +24,10 @@ export class EthereumFeeLevels extends MiscFeeLevels {
             const minFeeInWei = new BigNumber(this.coinInfo.minFee).multipliedBy('1e+9').toNumber();
             const feeInWei = new BigNumber(response.feePerUnit).toNumber();
 
-            // validate gas price from backend
-            const feePerUnit = Math.min(maxFeeInWei, Math.max(minFeeInWei, feeInWei)).toString();
+            // validate gas price from backend; clamp and round to integer wei (backend may return decimal)
+            const feePerUnit = new BigNumber(
+                Math.min(maxFeeInWei, Math.max(minFeeInWei, feeInWei)),
+            ).toFixed(0);
 
             if (eip1559?.baseFeePerGas) {
                 const minMaxPriorityFeePerGas = new BigNumber(this.coinInfo.minPriorityFee)
@@ -42,15 +44,15 @@ export class EthereumFeeLevels extends MiscFeeLevels {
                     }
 
                     const maxFeePerGas = BigNumber.max(
-                        this.coinInfo.minFee,
+                        minFeeInWei,
                         level.maxFeePerGas,
                         minMaxPriorityFeePerGas,
-                    ).toString();
+                    ).toFixed(0);
 
                     const maxPriorityFeePerGas = BigNumber.max(
                         minMaxPriorityFeePerGas,
                         BigNumber.min(maxFeePerGas, level.maxPriorityFeePerGas),
-                    ).toString();
+                    ).toFixed(0);
 
                     return {
                         label,
