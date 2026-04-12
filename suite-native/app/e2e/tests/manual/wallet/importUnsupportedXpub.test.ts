@@ -1,13 +1,13 @@
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
-import { it } from '../../support/wrappedIt';
+import { it } from '../../../support/wrappedIt';
 
 describe.skip('Manual', () => {
     it(
         'Import an unsupported XPUB',
         {
             testCase: 'Import an unsupported XPUB',
-            prerequisites: ['An XPUB key of a currently unsupported coin (e.g., DASH)'],
+            prerequisites: ['An XPUB key of an unsupported coin (e.g., DASH)'],
             steps: [
                 'Navigate to My Assets and press + to import account',
                 'Select Bitcoin and choose Scan public key',

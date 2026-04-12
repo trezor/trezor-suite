@@ -1,6 +1,6 @@
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
-import { it } from '../../support/wrappedIt';
+import { it } from '../../../support/wrappedIt';
 
 describe.skip('Manual', () => {
     it(

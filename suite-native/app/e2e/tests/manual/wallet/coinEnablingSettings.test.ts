@@ -1,18 +1,13 @@
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
-import { it } from '../../support/wrappedIt';
+import { it } from '../../../support/wrappedIt';
 
 describe.skip('Manual', () => {
     it(
         'Coin enabling - settings',
         {
             testCase: 'Coin enabling - settings',
-            prerequisites: [
-                'connected device',
-                'one view only device',
-                'two accounts (two different coins) in Portfolio tracker',
-                'one coin enabled that is present in the connected device, view only device and portfolio',
-            ],
+            prerequisites: ['connected device', 'one remembered device that is disconnected'],
             steps: [
                 'Connect a device (different than the remembered) and wait for initial discovery',
                 'Navigate to Settings → Enabled coins and enable a new coin that wasn’t enabled before',
