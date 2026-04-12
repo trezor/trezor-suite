@@ -24,7 +24,6 @@ test.describe('Coin Settings', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
         async ({ dashboardPage, settingsPage }) => {
             const defaultUnchecked: NetworkSymbol[] = [
                 'ltc',
-                'eth',
                 'etc',
                 'xrp',
                 // 'xlm', add when removed from experimental features
@@ -46,10 +45,12 @@ test.describe('Coin Settings', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
                 await settingsPage.navigateTo('coins');
 
                 await expect(settingsPage.coinsTab.networkButton('btc')).toBeEnabledCoin();
+                await expect(settingsPage.coinsTab.networkButton('eth')).toBeEnabledCoin();
                 for (const network of defaultUnchecked) {
                     await expect(settingsPage.coinsTab.networkButton(network)).toBeDisabledCoin();
                 }
                 await settingsPage.coinsTab.disableNetwork('btc');
+                await settingsPage.coinsTab.disableNetwork('eth');
                 // check dashboard with all coins disabled
                 await dashboardPage.navigateTo();
                 await expect(dashboardPage.discoveryEmptyHeader).toHaveTranslation(
@@ -66,7 +67,7 @@ test.describe('Coin Settings', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
             await test.step('Activate assets', async () => {
                 await dashboardPage.discoveryEmptyPrimaryButton.click();
                 await settingsPage.navigateTo('coins');
-                for (const network of ['btc', ...defaultUnchecked] as NetworkSymbol[]) {
+                for (const network of ['btc', 'eth', ...defaultUnchecked] as NetworkSymbol[]) {
                     await settingsPage.coinsTab.enableNetwork(network);
                     if (network === 'ada') {
                         await settingsPage.coinsTab.temporarilySetOfficialCardanoBackend();

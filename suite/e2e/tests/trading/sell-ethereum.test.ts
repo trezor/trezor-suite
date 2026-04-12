@@ -37,15 +37,7 @@ test.describe('Trading - Sell Ethereum', { tag: ['@webOnly', '@T3W1', '@T3T1'] }
         deviceSetup: { mnemonic: 'mnemonic_academic', passphrase_protection: true },
     });
     test.beforeEach(
-        async ({
-            page,
-            tradingMock,
-            tradingPage,
-            onboardingPage,
-            dashboardPage,
-            settingsPage,
-            walletPage,
-        }) => {
+        async ({ page, tradingMock, tradingPage, onboardingPage, dashboardPage, walletPage }) => {
             await test.step('Mocking responses', async () => {
                 await page.route(invityEndpoint.sellQuotes, async route => {
                     await route.fulfill({ json: sellQuotesEthereum });
@@ -57,8 +49,7 @@ test.describe('Trading - Sell Ethereum', { tag: ['@webOnly', '@T3W1', '@T3T1'] }
             });
             await onboardingPage.completeOnboarding();
 
-            await test.step('Enable Ethereum and open its token sell trading', async () => {
-                await settingsPage.changeNetworks({ enableNetworks: ['eth'] });
+            await test.step('Open Ethereum sell trading', async () => {
                 await dashboardPage.deviceSwitchingOpenButton.click();
                 await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
                 await walletPage.openTrading({ symbol: 'eth' });
