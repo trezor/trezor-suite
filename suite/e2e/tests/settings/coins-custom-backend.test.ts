@@ -51,9 +51,7 @@ test.describe('Coin Settings', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
                 }),
             },
             async ({ page, settingsPage, walletPage }) => {
-                if (coin === 'btc') {
-                    await settingsPage.coinsTab.disableNetwork(coin);
-                }
+                await settingsPage.coinsTab.disableNetwork(coin);
                 await test.step(`Enable ${coin.toUpperCase()} asset`, async () => {
                     await expect(settingsPage.coinsTab.networkButton(coin)).toBeDisabledCoin();
                     await settingsPage.coinsTab.enableNetwork(coin);
@@ -93,9 +91,7 @@ test.describe('Coin Settings', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
                 }),
             },
             async ({ page, settingsPage, walletPage }) => {
-                if (coin === 'btc') {
-                    await settingsPage.coinsTab.disableNetwork(coin);
-                }
+                await settingsPage.coinsTab.disableNetwork(coin);
                 await test.step(`Enable ${coin.toUpperCase()} asset`, async () => {
                     await expect(settingsPage.coinsTab.networkButton(coin)).toBeDisabledCoin();
                     await settingsPage.coinsTab.enableNetwork(coin);

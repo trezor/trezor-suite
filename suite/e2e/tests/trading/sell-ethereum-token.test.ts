@@ -24,27 +24,24 @@ test.describe('Trading - Sell Ethereum', { tag: ['@webOnly', '@T3W1', '@T3T1'] }
     test.use({
         deviceSetup: { mnemonic: 'mnemonic_academic', passphrase_protection: true },
     });
-    test.beforeEach(
-        async ({ page, tradingMock, onboardingPage, dashboardPage, settingsPage, walletPage }) => {
-            await test.step('Mocking responses', async () => {
-                await page.route(invityEndpoint.sellQuotes, async route => {
-                    await route.fulfill({ json: sellQuotesEthereumToken });
-                });
-                await tradingMock.routeTrade(invityEndpoint.sellTrade, sellTradeEthereumToken);
-                await page.route(invityEndpoint.sellWatch, async route => {
-                    await route.fulfill({ json: sellWatchEthereum });
-                });
+    test.beforeEach(async ({ page, tradingMock, onboardingPage, dashboardPage, walletPage }) => {
+        await test.step('Mocking responses', async () => {
+            await page.route(invityEndpoint.sellQuotes, async route => {
+                await route.fulfill({ json: sellQuotesEthereumToken });
             });
-            await onboardingPage.completeOnboarding();
+            await tradingMock.routeTrade(invityEndpoint.sellTrade, sellTradeEthereumToken);
+            await page.route(invityEndpoint.sellWatch, async route => {
+                await route.fulfill({ json: sellWatchEthereum });
+            });
+        });
+        await onboardingPage.completeOnboarding();
 
-            await test.step('Enable Ethereum and open its token sell trading', async () => {
-                await settingsPage.changeNetworks({ enableNetworks: ['eth'] });
-                await dashboardPage.deviceSwitchingOpenButton.click();
-                await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
-                await walletPage.openSellTradingOfToken('eth', 'USD Coin');
-            });
-        },
-    );
+        await test.step('Open Ethereum token sell trading', async () => {
+            await dashboardPage.deviceSwitchingOpenButton.click();
+            await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
+            await walletPage.openSellTradingOfToken('eth', 'USD Coin');
+        });
+    });
 
     test('Sell Ethereum token USDC', async ({ tradingPage, devicePrompt }) => {
         await test.step('Fill in a sell request', async () => {
