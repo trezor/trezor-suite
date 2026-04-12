@@ -48,10 +48,13 @@ test.describe('Receive transaction', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () =
                 }),
             },
             async ({ page, devicePrompt, settingsPage, walletPage }) => {
-                if (coin !== 'btc') {
+                if (coin === 'eth') {
+                    await settingsPage.navigateTo('coins');
+                    await settingsPage.coinsTab.disableNetwork('btc');
+                } else if (coin !== 'btc') {
                     await settingsPage.changeNetworks({
                         enableNetworks: [coin],
-                        disableNetworks: ['btc'],
+                        disableNetworks: ['btc', 'eth'],
                     });
                 }
                 await walletPage.accountButton({ symbol: coin }).click();

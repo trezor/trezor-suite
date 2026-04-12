@@ -17,7 +17,7 @@ test.describe('Analytics Events - WalletConnect', { tag: ['@T3W1', '@nightlyOnly
         await test.step('Onboarding', async () => {
             await onboardingPage.completeOnboarding();
             await settingsPage.changeNetworks({
-                enableNetworks: ['eth', 'ada'],
+                enableNetworks: ['ada'],
             });
         });
     });

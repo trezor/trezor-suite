@@ -30,7 +30,7 @@ test.describe('Assets', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
         settingsPage,
     }) => {
         await assetsSection.enableMoreCoins.click();
-        await settingsPage.coinsTab.enableNetwork('eth');
+        await settingsPage.coinsTab.enableNetwork('ltc');
         await dashboardPage.navigateTo();
         await page.discoveryShouldFinish();
         await assetsSection.verifyAssetContents();
