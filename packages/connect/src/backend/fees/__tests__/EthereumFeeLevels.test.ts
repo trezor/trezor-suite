@@ -91,6 +91,55 @@ describe('api/ethereum/Fees', () => {
             spy.mockRestore();
         });
 
+        it('rounds feePerUnit to integer when backend returns decimal wei value', async () => {
+            const coinInfo = getEthereumNetwork('eth')!;
+            const spy = jest
+                .spyOn(BlockchainLink.prototype, 'estimateFee')
+                .mockResolvedValue([{ feePerUnit: '1500000000.7' }]); // fractional wei
+
+            const backend = await initBlockchain(coinInfo, () => {});
+            const feeLevels = new EthereumFeeLevels(coinInfo);
+
+            const [level] = await feeLevels.load(backend, ETH_REQUEST);
+
+            // must be an integer wei string — fromWei("1500000000.7", 'gwei') would crash
+            expect(level.feePerUnit).toMatch(/^\d+$/);
+
+            backend.disconnect();
+            spy.mockRestore();
+        });
+
+        it('EIP-1559: clamps maxFeePerGas to minFee (in wei) when backend returns zero', async () => {
+            const coinInfo = getEthereumNetwork('eth')!;
+            const spy = jest.spyOn(BlockchainLink.prototype, 'estimateFee').mockResolvedValue([
+                {
+                    feePerUnit: '2000000000',
+                    feeLimit: '21000',
+                    eip1559: {
+                        baseFeePerGas: '1000000000',
+                        low: { maxFeePerGas: '0', maxPriorityFeePerGas: '0' },
+                        medium: { maxFeePerGas: '0', maxPriorityFeePerGas: '0' },
+                        high: { maxFeePerGas: '0', maxPriorityFeePerGas: '0' },
+                    },
+                },
+            ]);
+
+            const backend = await initBlockchain(coinInfo, () => {});
+            const feeLevels = new EthereumFeeLevels(coinInfo);
+
+            const levels = await feeLevels.load(backend, ETH_REQUEST);
+
+            // minFee for eth = 0.1 Gwei → 0.1 × 1e9 = 100 000 000 wei
+            // maxFeePerGas must be an integer wei string, never a decimal gwei string like "0.1"
+            levels.forEach(level => {
+                expect(Number(level.maxFeePerGas)).toBeGreaterThanOrEqual(100000000);
+                expect(level.maxFeePerGas).toMatch(/^\d+$/);
+            });
+
+            backend.disconnect();
+            spy.mockRestore();
+        });
+
         it('clamps to maxFee when backend returns over-limit value', async () => {
             const coinInfo = getEthereumNetwork('eth')!;
             const overLimit = (coinInfo.maxFee * 1e9 * 10).toFixed(0); // 10× max
