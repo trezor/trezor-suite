@@ -106,6 +106,11 @@ export class DeviceFixture {
     }
 
     @step()
+    async readAndConfirmSingleShamirMnemonic() {
+        await TrezorUserEnvLink.readAndConfirmSingleShamirMnemonicEmu();
+    }
+
+    @step()
     async getTHPPairingCode(): Promise<string[]> {
         const screenContent = await TrezorUserEnvLink.getScreenContent();
         const screenContentBody = screenContent.body as string;

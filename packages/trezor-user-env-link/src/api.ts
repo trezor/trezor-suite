@@ -4,6 +4,7 @@ import { TypedEmitter, resolveAfter } from '@trezor/utils';
 
 import { type Firmwares, Model } from './types';
 import { WebsocketClient, type WebsocketClientEvents } from './websocket-client';
+
 export interface SetupEmu {
     mnemonic?: string;
     pin?: string;
@@ -313,6 +314,12 @@ export class TrezorUserEnvLinkClass extends TypedEmitter<WebsocketClientEvents> 
             type: 'emulator-read-and-confirm-atomic-shamir-mnemonic',
             ...options,
         });
+
+        return null;
+    }
+    async readAndConfirmSingleShamirMnemonicEmu() {
+        await new Promise(resolve => setTimeout(resolve, EMU_RACE_CONDITION_WORKAROUND_DELAY));
+        await this.client.send({ type: 'emulator-read-and-confirm-single-shamir-mnemonic' });
 
         return null;
     }

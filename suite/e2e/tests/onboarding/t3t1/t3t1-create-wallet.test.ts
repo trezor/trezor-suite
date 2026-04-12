@@ -37,7 +37,9 @@ test.describe('Onboarding - create wallet', { tag: ['@T3T1'] }, () => {
             // In the new atomic flow, wallet creation and backup happen together
             const shares = 3;
             const threshold = 2;
-            await onboardingPage.backup.passThroughShamirBackup(shares, threshold, {
+            await onboardingPage.backup.passThroughShamirBackup({
+                shares,
+                threshold,
                 deviceConfirmations: 3,
             });
 

@@ -87,6 +87,7 @@ export const BackupTypeStep = () => {
     return (
         <OnboardingCard
             icon={WalletIcon}
+            data-testid="@onboarding/wallet-backup-type"
             heading={
                 <Column gap={8} alignItems="center" justifyContent="center">
                     <Badge intent="neutral" size="medium">

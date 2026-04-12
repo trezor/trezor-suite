@@ -25,7 +25,9 @@ test.describe('Onboarding - create wallet', { tag: ['@T2T1'] }, () => {
         // Start backup
         const shares = 3;
         const threshold = 2;
-        await onboardingPage.backup.passThroughShamirBackup(shares, threshold, {
+        await onboardingPage.backup.passThroughShamirBackup({
+            shares,
+            threshold,
             deviceConfirmations: 4,
         });
 
