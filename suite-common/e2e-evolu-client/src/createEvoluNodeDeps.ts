@@ -25,9 +25,8 @@ import {
 import BetterSqlite3, { type Statement } from 'better-sqlite3';
 import { WebSocket } from 'ws';
 
-const createSqliteDriver: CreateSqliteDriver = (_name, options) => () => {
-    const filename = options?.mode === 'memory' ? ':memory:' : `${_name}.db`;
-    const db = new BetterSqlite3(filename);
+const createSqliteDriver: CreateSqliteDriver = () => () => {
+    const db = new BetterSqlite3(':memory:');
     let isDisposed = false;
 
     const cache = createPreparedStatementsCache<Statement>(sql => db.prepare(sql), lazyVoid);

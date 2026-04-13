@@ -5,6 +5,7 @@ export {
     wipeAndRestartEvoluRelayServer,
     checkEvoluRelayServerRunning,
     seedQuotaManagerData,
+    logToRelayDocker,
 } from './baseEvoluClient';
 export type { EvoluClientInitParams } from './baseEvoluClient';
 export {
