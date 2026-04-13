@@ -7,7 +7,7 @@ import {
     act,
     renderHookWithStoreProvider,
     waitFor,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils-store';
 import TrezorConnect from '@trezor/connect';
 
 import { useAddressValidationAlerts } from '../useAddressValidationAlerts';

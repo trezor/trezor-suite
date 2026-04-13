@@ -2,7 +2,7 @@ import type { CryptoId } from 'invity-api';
 
 import { selectFormattedAccountType } from '@suite-common/wallet-core';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
-import { fireEvent, renderWithStoreProvider, screen } from '@suite-native/test-utils';
+import { fireEvent, renderWithStoreProvider, screen } from '@suite-native/test-utils-store';
 import {
     btc1NormalAccount,
     eth1NormalAccount,

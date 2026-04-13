@@ -1,6 +1,6 @@
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
-import { renderWithStoreProvider } from '@suite-native/test-utils';
+import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 import type { StaticSessionId } from '@trezor/connect';
 
 import { AccountLabel, type AccountLabelPropsWithAccount } from '../AccountLabel';

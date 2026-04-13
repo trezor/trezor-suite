@@ -3,7 +3,7 @@ import { type RouteProp } from '@react-navigation/native';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { type TradingStackParamList, type TradingStackRoutes } from '@suite-native/navigation';
-import { type PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils';
+import { type PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { accounts, getInitializedTradingState } from '@suite-native/trading-fixtures';
 
 import { TradingReceiveAccountsPickerScreen } from '../TradingReceiveAccountsPickerScreen';

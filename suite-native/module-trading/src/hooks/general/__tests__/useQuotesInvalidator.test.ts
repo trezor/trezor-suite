@@ -1,6 +1,10 @@
 import { type ActionCreatorWithoutPayload } from '@reduxjs/toolkit';
 
-import { type TestStore, initStore, renderHookWithStoreProvider } from '@suite-native/test-utils';
+import {
+    type TestStore,
+    initStore,
+    renderHookWithStoreProvider,
+} from '@suite-native/test-utils-store';
 import { type AbortablePromise } from '@suite-native/trading-types';
 
 import { type UseQuotesInvalidatorProps, useQuotesInvalidator } from '../useQuotesInvalidator';

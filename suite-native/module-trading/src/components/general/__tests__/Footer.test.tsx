@@ -1,6 +1,10 @@
 import { Linking } from 'react-native';
 
-import { type PreloadedState, renderWithStoreProvider, userEvent } from '@suite-native/test-utils';
+import {
+    type PreloadedState,
+    renderWithStoreProvider,
+    userEvent,
+} from '@suite-native/test-utils-store';
 import { exchangeCexdirect } from '@suite-native/trading-fixtures';
 import { TREZOR_SUITE_TOS_URL, TREZOR_TRADING_LEARN_MORE_URL } from '@trezor/urls';
 

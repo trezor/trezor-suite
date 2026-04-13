@@ -23,7 +23,7 @@
         "react-redux": "9.2.0"
     },
     "devDependencies": {
-        "@suite-native/test-utils": "workspace:*",
+        "@suite-native/test-utils-store": "workspace:*",
         "@suite-native/trading-fixtures": "workspace:*",
         "@types/invity-api": "^1.1.15"
     }

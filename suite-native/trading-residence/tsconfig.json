@@ -19,6 +19,7 @@
         {
             "path": "../../packages/styles-native"
         },
-        { "path": "../test-utils" }
+        { "path": "../test-utils" },
+        { "path": "../test-utils-store" }
     ]
 }

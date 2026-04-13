@@ -6,7 +6,7 @@ import {
     events,
 } from '@suite-native/analytics';
 import { useAnalytics } from '@suite-native/services';
-import { type PreloadedState, renderHookWithStoreProvider } from '@suite-native/test-utils';
+import { type PreloadedState, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import {
     banxaCreditCardSellQuote,
     getWalletState,

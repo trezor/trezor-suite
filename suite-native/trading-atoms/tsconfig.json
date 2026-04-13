@@ -25,6 +25,7 @@
             "path": "../../suite-common/wallet-types"
         },
         { "path": "../test-utils" },
+        { "path": "../test-utils-store" },
         { "path": "../trading-fixtures" },
         { "path": "../trading-types" }
     ]

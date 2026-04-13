@@ -1,7 +1,7 @@
 import type { ExchangeTrade } from 'invity-api';
 
 import { getTranslation } from '@suite-native/intl';
-import { renderWithStoreProvider } from '@suite-native/test-utils';
+import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { getWalletState } from '@suite-native/trading-fixtures';
 
 import { OriginalLimit } from '../OriginalLimit';

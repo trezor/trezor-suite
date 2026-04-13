@@ -1,9 +1,6 @@
 import { Form } from '@suite-native/forms';
-import {
-    act,
-    renderHookWithStoreProvider,
-    renderWithBasicProvider,
-} from '@suite-native/test-utils';
+import { renderWithBasicProvider } from '@suite-native/test-utils';
+import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import { type SellFormType } from '@suite-native/trading-types';
 
 import { useSellForm } from '../../../hooks/sell/useSellForm';

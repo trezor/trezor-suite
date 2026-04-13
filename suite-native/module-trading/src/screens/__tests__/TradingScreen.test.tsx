@@ -1,5 +1,9 @@
 import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
-import { type PreloadedState, renderWithStoreProvider, screen } from '@suite-native/test-utils';
+import {
+    type PreloadedState,
+    renderWithStoreProvider,
+    screen,
+} from '@suite-native/test-utils-store';
 
 import { TradingScreen } from '../TradingScreen';
 

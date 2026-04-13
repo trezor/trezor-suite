@@ -3,8 +3,8 @@ import { Provider } from 'react-redux';
 
 import { useFormattersConfig } from '@suite-native/formatters-config';
 import type { PreloadedState, Store } from '@suite-native/state';
+import { BasicProviderForTests } from '@suite-native/test-utils';
 
-import { BasicProviderForTests } from './BasicProviderForTests';
 import { initStore } from './initStore';
 
 export type TestStore = Store;

@@ -10,7 +10,7 @@ import {
     initStore,
     renderHookWithStoreProvider,
     waitFor,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils-store';
 import { BASE_INFO } from '@trezor/blockchain-link-utils/src/stellar';
 import { BigNumber } from '@trezor/utils';
 

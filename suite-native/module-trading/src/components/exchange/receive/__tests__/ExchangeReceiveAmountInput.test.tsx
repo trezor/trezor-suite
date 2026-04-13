@@ -5,7 +5,7 @@ import {
     fireEvent,
     renderHookWithStoreProvider,
     renderWithStoreProvider,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils-store';
 import {
     getInitializedTradingState,
     mercuryoFixedWorstQuote,

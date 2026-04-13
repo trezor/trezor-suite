@@ -1,4 +1,4 @@
-import { renderWithStoreProvider, screen } from '@suite-native/test-utils';
+import { renderWithStoreProvider, screen } from '@suite-native/test-utils-store';
 import { tradingInitialState } from '@suite-native/trading-state';
 
 import { TradingTabContent } from '../TradingTabContent';

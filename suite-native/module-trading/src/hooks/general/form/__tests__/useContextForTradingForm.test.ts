@@ -1,5 +1,9 @@
 import { type TradingAmountLimitProps } from '@suite-common/trading';
-import { type PreloadedState, act, renderHookWithStoreProvider } from '@suite-native/test-utils';
+import {
+    type PreloadedState,
+    act,
+    renderHookWithStoreProvider,
+} from '@suite-native/test-utils-store';
 
 import { useContextForTradingForm } from '../useContextForTradingForm';
 

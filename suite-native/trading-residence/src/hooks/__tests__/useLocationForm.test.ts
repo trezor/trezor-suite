@@ -5,7 +5,7 @@ import {
     act,
     initStore,
     renderHookWithStoreProvider,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils-store';
 import { residenceActions } from '@suite-native/trading-state';
 
 import { useLocationForm } from '../useLocationForm';

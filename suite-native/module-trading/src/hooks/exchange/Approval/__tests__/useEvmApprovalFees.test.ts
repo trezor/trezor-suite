@@ -7,7 +7,7 @@ import {
     initStore,
     renderHookWithStoreProvider,
     waitFor,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils-store';
 import { getWalletState, invityDexQuote } from '@suite-native/trading-fixtures';
 
 import { useEvmApprovalFees } from '../useEvmApprovalFees';

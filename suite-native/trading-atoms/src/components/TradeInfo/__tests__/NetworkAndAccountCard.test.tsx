@@ -1,6 +1,6 @@
 import { Text } from 'react-native';
 
-import { renderWithStoreProvider } from '@suite-native/test-utils';
+import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { btc1NormalAccount } from '@suite-native/trading-fixtures';
 
 import { NetworkAndAccountCard, type NetworkAndAccountCardProps } from '../NetworkAndAccountCard';

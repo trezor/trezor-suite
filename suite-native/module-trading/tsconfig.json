@@ -93,6 +93,7 @@
         { "path": "../../packages/urls" },
         { "path": "../../packages/utils" },
         { "path": "../test-utils" },
+        { "path": "../test-utils-store" },
         { "path": "../trading-fixtures" },
         { "path": "../trading-types" }
     ]

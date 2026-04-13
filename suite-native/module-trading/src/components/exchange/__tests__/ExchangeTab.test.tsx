@@ -1,4 +1,4 @@
-import { type PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils';
+import { type PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { ExchangeTab } from '../ExchangeTab';
 

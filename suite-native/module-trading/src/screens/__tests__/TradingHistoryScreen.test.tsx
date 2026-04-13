@@ -1,7 +1,11 @@
 import { type RouteProp } from '@react-navigation/native';
 
 import { type TradingStackParamList, type TradingStackRoutes } from '@suite-native/navigation';
-import { type PreloadedState, fireEvent, renderWithStoreProvider } from '@suite-native/test-utils';
+import {
+    type PreloadedState,
+    fireEvent,
+    renderWithStoreProvider,
+} from '@suite-native/test-utils-store';
 import { accounts, getBuyTrade, getInitializedTradingState } from '@suite-native/trading-fixtures';
 
 import { TradingHistoryScreen } from '../TradingHistoryScreen';

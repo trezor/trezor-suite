@@ -1,5 +1,5 @@
 import { type Account, type AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
-import { fireEvent, renderWithStoreProvider } from '@suite-native/test-utils';
+import { fireEvent, renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { type ReceiveAccount } from '@suite-native/trading-types';
 
 import { AccountListAddressItem } from '../AccountListAddressItem';

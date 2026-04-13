@@ -4,7 +4,7 @@ import {
     act,
     initStore,
     renderHookWithStoreProvider,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils-store';
 import { getWalletState } from '@suite-native/trading-fixtures';
 
 import { useTradingOutputsReviewErrorAlert } from '../useTradingOutputsReviewErrorAlert';

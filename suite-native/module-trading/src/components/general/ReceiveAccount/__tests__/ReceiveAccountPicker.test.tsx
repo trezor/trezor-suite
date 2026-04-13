@@ -3,7 +3,7 @@ import {
     fireEvent,
     initStore,
     renderWithStoreProvider,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils-store';
 import { btc1NormalAccount } from '@suite-native/trading-fixtures';
 
 import { ReceiveAccountPicker, type ReceiveAccountPickerProps } from '../ReceiveAccountPicker';

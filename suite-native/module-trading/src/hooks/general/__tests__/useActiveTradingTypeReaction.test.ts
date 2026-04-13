@@ -1,5 +1,9 @@
 import { type TradingType } from '@suite-common/trading';
-import { type TestStore, initStore, renderHookWithStoreProvider } from '@suite-native/test-utils';
+import {
+    type TestStore,
+    initStore,
+    renderHookWithStoreProvider,
+} from '@suite-native/test-utils-store';
 import { selectActiveTradingType, selectEnabledTradingTypes } from '@suite-native/trading-state';
 
 import { useActiveTradingTypeReaction } from '../useActiveTradingTypeReaction';

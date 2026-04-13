@@ -1,4 +1,4 @@
-import { fireEvent, renderWithStoreProvider } from '@suite-native/test-utils';
+import { fireEvent, renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { btcAsset, usdcAsset } from '@suite-native/trading-fixtures';
 
 import {

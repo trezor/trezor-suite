@@ -53,7 +53,7 @@
             "path": "../../packages/styles-native"
         },
         { "path": "../../packages/urls" },
-        { "path": "../test-utils" }
+        { "path": "../test-utils-store" }
     ],
     "include": [".", "**/*.json"]
 }

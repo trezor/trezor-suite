@@ -5,7 +5,7 @@ import {
     act,
     initStore,
     renderHookWithStoreProvider,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils-store';
 import { banxaCreditCardSellQuote, getWalletState } from '@suite-native/trading-fixtures';
 import { type SellFormType } from '@suite-native/trading-types';
 

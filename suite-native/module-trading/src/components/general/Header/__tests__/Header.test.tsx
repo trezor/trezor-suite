@@ -7,7 +7,7 @@ import {
     fireEvent,
     initStore,
     renderWithStoreProvider,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils-store';
 import { type TradingRootState } from '@suite-native/trading-state';
 
 import { Header } from '../Header';

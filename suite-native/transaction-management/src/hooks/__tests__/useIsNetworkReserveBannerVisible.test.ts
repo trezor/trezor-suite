@@ -1,4 +1,8 @@
-import { type TestStore, initStore, renderHookWithStoreProvider } from '@suite-native/test-utils';
+import {
+    type TestStore,
+    initStore,
+    renderHookWithStoreProvider,
+} from '@suite-native/test-utils-store';
 
 import { useIsNetworkReserveBannerVisible } from '../useIsNetworkReserveBannerVisible';
 
