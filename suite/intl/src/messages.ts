@@ -9333,6 +9333,18 @@ export const messages = defineMessages({
         id: 'TR_EARN_YIELD_SUPPLY',
         defaultMessage: 'Supply',
     },
+    TR_EARN_YIELD_APY_SOURCE_LENDING_INTEREST: {
+        id: 'TR_EARN_YIELD_APY_SOURCE_LENDING_INTEREST',
+        defaultMessage: 'Automatically added and compounded.',
+    },
+    TR_EARN_YIELD_APY_SOURCE_PROTOCOL_INCENTIVE: {
+        id: 'TR_EARN_YIELD_APY_SOURCE_PROTOCOL_INCENTIVE',
+        defaultMessage: 'Manually claim and deposit to compound.',
+    },
+    TR_EARN_YIELD_APY_TOOLTIP_FOOTER: {
+        id: 'TR_EARN_YIELD_APY_TOOLTIP_FOOTER',
+        defaultMessage: 'APY may change over time.',
+    },
     TR_EARN_YIELD_AMOUNT_TO_SUPPLY: {
         id: 'TR_EARN_YIELD_AMOUNT_TO_SUPPLY',
         defaultMessage: 'Amount to supply',
