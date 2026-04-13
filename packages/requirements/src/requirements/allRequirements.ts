@@ -4,10 +4,12 @@ import { requireUnifiedDependencyVersions } from './dependency-versions/requireU
 import { requireDocsSummary } from './docs-summary/requireDocsSummary';
 import { requirePackageJsonScripts } from './package-json/requirePackageJsonScripts';
 import { requirePublishConfig } from './package-json/requirePublishConfig';
+import { requireConnectPublicDependencies } from './public-package-dependencies/requireConnectPublicDependencies';
 
 export const requirements: ReadonlyArray<Requirement<RequirementScope>> = [
     requireAgentsSkills,
     requireUnifiedDependencyVersions,
+    requireConnectPublicDependencies,
     requireDocsSummary,
     requirePackageJsonScripts,
     requirePublishConfig,
