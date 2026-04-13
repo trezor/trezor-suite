@@ -13,7 +13,6 @@ import type { Requirement } from '../Requirement';
  * Entries SHOULD be removed once the migration or constraint is resolved.
  */
 export const ALLOWED_DRIFTS = new Set([
-    'dotenv', // migration from v16 to v17 in progress
     '@solana-program/stake', // 0.2.x vs 0.5.x used in different contexts (semver 0.x = breaking)
     '@hookform/resolvers', // migration from v3 to v5 in progress
     'jest-diff', // v29 and v30 coexist during migration

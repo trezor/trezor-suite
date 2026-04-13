@@ -66,7 +66,7 @@
         "@types/lodash": "^4.17.16",
         "@walletconnect/sign-client": "2.21.4",
         "@walletconnect/types": "2.21.4",
-        "dotenv": "^16.4.7",
+        "dotenv": "17.2.3",
         "fs-extra": "^11.3.1",
         "jest-diff": "^29.7.0",
         "lodash": "^4.18.1",
