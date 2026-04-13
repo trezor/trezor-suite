@@ -10,7 +10,7 @@ type ModelWithFirmwareVersion = {
     minFwVersion: FirmwareVersionString;
 };
 
-export type StepCategoryKey = 'device' | 'wallet' | 'pin' | 'final';
+export type StepCategoryKey = 'device' | 'wallet' | 'pin' | 'coins' | 'final';
 
 export type StepCategory = {
     id: StepCategoryKey;
@@ -35,6 +35,7 @@ export type AnyStepId =
     | typeof STEP.ID_SET_PIN_STEP
     | typeof STEP.ID_SECURITY_STEP
     | typeof STEP.ID_RESET_DEVICE_STEP
-    | typeof STEP.ID_RECOVERY_STEP;
+    | typeof STEP.ID_RECOVERY_STEP
+    | typeof STEP.ID_COINS_STEP;
 
 export type AnyPath = typeof STEP.PATH_CREATE | typeof STEP.PATH_RECOVERY;

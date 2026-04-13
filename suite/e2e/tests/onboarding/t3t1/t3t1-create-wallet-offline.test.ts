@@ -66,7 +66,8 @@ test.describe('Onboarding - create wallet', { tag: ['@desktopOnly', '@T3T1', '@s
                 await device.pressYes();
             });
 
-            await test.step('Verify offline state after onboarding completes', async () => {
+            await test.step('Complete onboarding and verify offline state', async () => {
+                await onboardingPage.completeOnboardingButton.click();
                 await expect(page.getByTestId('@suite/no-connection-banner')).toHaveTranslation(
                     'TR_YOU_WERE_DISCONNECTED_DOT',
                 );

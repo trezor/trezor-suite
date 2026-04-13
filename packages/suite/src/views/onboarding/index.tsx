@@ -9,6 +9,7 @@ import { OnboardingLayout } from 'src/components/onboarding/OnboardingLayout';
 import * as STEP from 'src/constants/onboarding/steps';
 import { useDispatch, useOnboarding, useSelector } from 'src/hooks/suite';
 import { UnexpectedState } from 'src/views/onboarding/UnexpectedState';
+import { CoinsStep } from 'src/views/onboarding/steps/CoinsStep';
 import { CreateOrRecoverStep } from 'src/views/onboarding/steps/CreateOrRecoverStep';
 import { DeviceAuthenticityStep } from 'src/views/onboarding/steps/DeviceAuthenticityStep';
 import { DeviceTutorialStep } from 'src/views/onboarding/steps/DeviceTutorialStep';
@@ -60,6 +61,9 @@ export const Onboarding = () => {
             case STEP.ID_SET_PIN_STEP:
                 // Pin setup
                 return PinStep;
+            case STEP.ID_COINS_STEP:
+                // Suite settings
+                return CoinsStep;
             default:
                 return exhaustive(activeStepId);
         }

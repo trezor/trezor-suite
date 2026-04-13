@@ -26,6 +26,23 @@ export default [
         },
     },
     {
+        description: 'goToNextStep: from backup step skip set-pin when pin is already set',
+        initialState: {
+            onboarding: {
+                activeStepId: STEP.ID_BACKUP_STEP,
+            },
+            device: {
+                selectedDevice: mockSuiteDevice(undefined, {
+                    pin_protection: true,
+                }),
+            },
+        },
+        action: () => onboardingActions.goToNextStep(),
+        expect: {
+            toMatchObject: { activeStepId: STEP.ID_COINS_STEP },
+        },
+    },
+    {
         description: 'goToPreviousStep',
         initialState: {
             onboarding: {

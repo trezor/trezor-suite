@@ -4,14 +4,7 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 import { stepCategories } from 'src/config/onboarding/steps';
 import * as STEP from 'src/constants/onboarding/steps';
 
-import {
-    type IsStepUsedProps,
-    findNextStep,
-    findPrevStep,
-    isStepCategoryUsed,
-    isStepUsed,
-    resolveNextAvailableStep,
-} from '../steps';
+import { type IsStepUsedProps, findNextStep, findPrevStep, isStepUsed } from '../steps';
 
 const allSteps = stepCategories.flatMap(category => category.steps);
 
@@ -202,51 +195,6 @@ describe('steps', () => {
                 backup_availability: 'Required',
             } as Partial<AcquiredDevice['features']>);
             expect(isStepUsed(tutorialStep, createProps({ device: deviceT3B1 }))).toBe(true);
-        });
-
-        it('should exclude tutorial step for T3T1 with old firmware', () => {
-            const tutorialStep = allSteps.find(s => s.id === STEP.ID_TUTORIAL_STEP)!;
-            const deviceOldFw = createDevice({
-                internal_model: DeviceModelInternal.T3T1,
-                major_version: 2,
-                minor_version: 7,
-                patch_version: 2,
-            } as Partial<AcquiredDevice['features']>);
-            expect(isStepUsed(tutorialStep, createProps({ device: deviceOldFw }))).toBe(false);
-        });
-    });
-
-    describe(isStepCategoryUsed.name, () => {
-        it('should return true for categories with at least one valid step', () => {
-            const deviceCategory = stepCategories.find(c => c.id === 'device')!;
-            expect(isStepCategoryUsed(deviceCategory, createProps())).toBe(true);
-        });
-    });
-
-    describe(resolveNextAvailableStep.name, () => {
-        const createSteps = getStepsForPath(STEP.PATH_CREATE);
-
-        it('should return requested step if it is accessible', () => {
-            expect(
-                resolveNextAvailableStep(STEP.ID_SET_PIN_STEP, createSteps, defaultDevice)?.id,
-            ).toBe(STEP.ID_SET_PIN_STEP);
-        });
-
-        it('should skip PIN step when pin protection is already set', () => {
-            const deviceWithPin = createDevice({
-                internal_model: DeviceModelInternal.T2T1,
-                pin_protection: true,
-            });
-
-            expect(resolveNextAvailableStep(STEP.ID_SET_PIN_STEP, createSteps, deviceWithPin)).toBe(
-                null,
-            );
-        });
-
-        it('should return null when requested step is not in steps list', () => {
-            expect(
-                resolveNextAvailableStep(STEP.ID_RECOVERY_STEP, createSteps, defaultDevice),
-            ).toBe(null);
         });
     });
 });
