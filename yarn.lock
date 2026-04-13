@@ -13366,6 +13366,7 @@ __metadata:
     "@shopify/flash-list": "npm:2.3.0"
     "@suite-common/device": "workspace:*"
     "@suite-common/earn-api": "workspace:*"
+    "@suite-common/earn-staking-api": "workspace:*"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
