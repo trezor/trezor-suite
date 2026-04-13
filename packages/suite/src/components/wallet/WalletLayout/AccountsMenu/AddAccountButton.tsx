@@ -74,7 +74,7 @@ export const AddAccountButton = ({ device, isIconOnly }: AddAccountButtonProps) 
             placement="bottom"
             cursor="not-allowed"
             delayShow={TOOLTIP_DELAY_NORMAL}
-            width="100%"
+            width={isIconOnly ? undefined : '100%'}
         >
             {ButtonComponent}
         </Tooltip>
