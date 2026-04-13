@@ -2589,7 +2589,6 @@ export const messages = {
         },
         earnScreen: {
             title: 'Earn',
-            subtitle: 'Staking can be currently managed only in Trezor Suite for desktop.',
             otherOpportunities: 'Other opportunities',
             depositsCard: {
                 title: 'Your deposits',
