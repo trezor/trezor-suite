@@ -53,27 +53,13 @@ test.describe('Multiple sessions', { tag: ['@T3W1', '@T3T1'] }, () => {
                 await expect(dashboardPage.deviceStatus).toHaveTranslation('TR_CONNECTED');
             });
 
-            // Possible change of behaviour to this instead of rest of the test.
-            // ATM discussed with Varmuza
-            // await test.step('Reload inactive suite session to take Bridge session back', async () => {
-            //     await stealBridgeSession();
-            //     await expect(dashboardPage.deviceStatus).toHaveTranslation('TR_USE_HERE');
-            //     await page.reload();
-            //     await expect(page.getByTestId('@deviceStatus-connected').first()).toBeVisible({
-            //         timeout: 30_000,
-            //     });
-            // });
-
-            await test.step('After reloading inactive suite session does not take Bridge session back', async () => {
-                await expect(dashboardPage.deviceStatus).toHaveTranslation('TR_USE_HERE', {
+            await test.step('Reload inactive suite session to take Bridge session back', async () => {
+                await stealBridgeSession();
+                await expect(dashboardPage.deviceStatus).toHaveTranslation('TR_USE_HERE');
+                await page.reload();
+                await expect(page.getByTestId('@deviceStatus-connected').first()).toBeVisible({
                     timeout: 30_000,
                 });
-            });
-
-            await test.step('Take Bridge session back', async () => {
-                await dashboardPage.deviceSwitchingOpenButton.click();
-                await dashboardPage.solveIssuesButton.click();
-                await expect(page.getByTestId('@deviceStatus-connected').first()).toBeVisible();
             });
         },
     );
