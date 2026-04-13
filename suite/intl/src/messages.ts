@@ -2554,7 +2554,7 @@ export const messages = defineMessages({
     },
     TR_DUST_PHISHING_PROTECTION_DESCRIPTION: {
         defaultMessage:
-            'Hide suspicious micro transactions used in scams from your transaction history.',
+            'Hide suspicious microtransactions used in scams from your transaction history.',
         id: 'TR_DUST_PHISHING_PROTECTION_DESCRIPTION',
     },
     TR_DUST_PHISHING_THRESHOLD: {
@@ -2575,7 +2575,7 @@ export const messages = defineMessages({
     },
     TR_DUST_PHISHING_ERROR_EMPTY: {
         id: 'TR_DUST_PHISHING_ERROR_EMPTY',
-        defaultMessage: 'Dust threshold cannot be empty',
+        defaultMessage: "Dust threshold can't be empty",
     },
     TR_CONFIRM_AUTO_EJECT: {
         defaultMessage: 'Enable auto-eject',
@@ -3123,7 +3123,7 @@ export const messages = defineMessages({
         id: 'TR_SETTINGS_DEVICE_BANNER_TITLE_DISCONNECTED',
     },
     TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_DISCONNECTED: {
-        defaultMessage: 'Connect your Trezor to access Device Settings',
+        defaultMessage: 'Connect your Trezor to access Device settings',
         id: 'TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_DISCONNECTED',
     },
     TR_SETTINGS_DEVICE_BANNER_TITLE_UNAVAILABLE: {
@@ -4621,11 +4621,11 @@ export const messages = defineMessages({
     },
     TR_FORGET_DEVICE_MODAL_FINISH_FORGETTING_HEADING: {
         id: 'TR_FORGET_DEVICE_MODAL_FINISH_FORGETTING_HEADING',
-        defaultMessage: 'Finish forgetting this Trezor',
+        defaultMessage: 'Finish removing this Trezor',
     },
     TR_FORGET_DEVICE_MODAL_DISCONNECT_SUBTITLE: {
         id: 'TR_FORGET_DEVICE_MODAL_DISCONNECT_SUBTITLE',
-        defaultMessage: 'Disconnect your Trezor from the computer.',
+        defaultMessage: 'Disconnect your Trezor from your computer.',
     },
     RECEIVE_TITLE: {
         id: 'RECEIVE_TITLE',
@@ -4851,7 +4851,7 @@ export const messages = defineMessages({
     TR_WALLET_CREATED_NOT_SECURED_DESCRIPTION: {
         id: 'TR_WALLET_CREATED_NOT_SECURED_DESCRIPTION',
         defaultMessage:
-            'If your Trezor is lost, damaged, or stolen, you will lose access to your funds without a wallet backup. Finish your Trezor setup first, then create a wallet backup in Device Settings.',
+            'If your Trezor is lost, damaged, or stolen, you won’t be able to regain access to your assets without a wallet backup. Finish setting up your Trezor, then create a wallet backup in Device settings.',
     },
     TR_CONTINUE_TO_PIN: {
         id: 'TR_CONTINUE_TO_PIN',
@@ -6353,16 +6353,16 @@ export const messages = defineMessages({
         id: 'TR_LABELING_NOT_SYNCED',
     },
     TR_LABELING_SYNCED_THROUGH_TREZOR_SERVERS: {
-        defaultMessage: 'Label server',
+        defaultMessage: 'Label server (Trezor)',
         id: 'TR_LABELING_SYNCED_THROUGH_TREZOR_SERVERS',
     },
     TR_LABELING_SERVERS_DESCRIPTION: {
         defaultMessage:
-            'Sync your labels via Trezor servers by default. Connect to your own server for more privacy and control.',
+            'Sync your labels via Trezor servers by default. Connect to a custom server for more privacy and control.',
         id: 'TR_LABELING_SERVERS_DESCRIPTION',
     },
     TR_LABELING_SYNCED_THROUGH_CUSTOM_SERVER: {
-        defaultMessage: 'Label synced through your custom server',
+        defaultMessage: 'Label server (Custom)',
         id: 'TR_LABELING_SYNCED_THROUGH_CUSTOM_SERVER',
     },
     TR_LABELING_SERVERS_CHANGE: {
@@ -6583,7 +6583,7 @@ export const messages = defineMessages({
     },
     TR_SUITE_SYNC_SERVER_CUSTOM: {
         id: 'TR_SUITE_SYNC_SERVER_CUSTOM',
-        defaultMessage: 'Own server',
+        defaultMessage: 'Custom server',
     },
     TR_SUITE_SYNC_SERVER_CUSTOM_PLACEHOLDER: {
         id: 'TR_SUITE_SYNC_SERVER_CUSTOM_PLACEHOLDER',
@@ -6599,7 +6599,7 @@ export const messages = defineMessages({
     },
     TR_SUITE_SYNC_SERVER_MODAL_DESCRIPTION: {
         id: 'TR_SUITE_SYNC_SERVER_MODAL_DESCRIPTION',
-        defaultMessage: 'Connect to your own server for more privacy and control.',
+        defaultMessage: 'Connect to a custom server for more privacy and control.',
     },
     TR_GRAPH_MISSING_DATA_WITH_TOKENS: {
         id: 'TR_GRAPH_MISSING_DATA_WITH_TOKENS',
