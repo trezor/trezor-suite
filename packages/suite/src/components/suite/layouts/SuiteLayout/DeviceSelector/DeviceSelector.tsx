@@ -22,6 +22,7 @@ const CaretContainer = styled.div`
     padding: 10px;
     border-radius: 50%;
     transition: background 0.15s;
+    flex-shrink: 0;
 `;
 
 const Wrapper = styled.div<{ $isSidebarCollapsed?: boolean }>`
