@@ -5,8 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { selectSelectedDevice } from '@suite-common/device';
 import { runDiscoveryThunk, startDiscoveryThunk } from '@suite-common/wallet-core';
 import { events } from '@suite-native/analytics';
-import { HStack, Text } from '@suite-native/atoms';
-import { Icon } from '@suite-native/icons';
+import { Button } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     type PassphraseStackParamList,
@@ -16,14 +15,8 @@ import {
     type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { DeviceAction } from './DeviceAction';
 import { useDeviceManager } from '../hooks/useDeviceManager';
-
-const textStyle = prepareNativeStyle(_ => ({
-    flex: 1,
-}));
 
 type NavigationProp = StackToStackCompositeNavigationProps<
     PassphraseStackParamList,
@@ -36,8 +29,6 @@ export const AddHiddenWalletButton = () => {
     const dispatch = useDispatch();
 
     const navigation = useNavigation<NavigationProp>();
-
-    const { applyStyle } = useNativeStyles();
 
     const device = useSelector(selectSelectedDevice);
 
@@ -63,17 +54,14 @@ export const AddHiddenWalletButton = () => {
     };
 
     return (
-        <DeviceAction
-            testID="@device-manager/passphrase/add"
+        <Button
+            intent="neutral"
+            priority="secondary"
+            iconLeft="password"
             onPress={handleAddHiddenWallet}
-            flex={1}
+            testID="@device-manager/passphrase/add"
         >
-            <HStack marginLeft="sp4">
-                <Text variant="body-sm" style={applyStyle(textStyle)}>
-                    <Translation id="deviceManager.deviceButtons.addHiddenWallet" />
-                </Text>
-                <Icon name="caretRight" size="mediumLarge" />
-            </HStack>
-        </DeviceAction>
+            <Translation id="deviceManager.deviceButtons.addHiddenWallet" />
+        </Button>
     );
 };
