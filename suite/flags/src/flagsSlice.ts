@@ -4,6 +4,7 @@ import { createSliceWithExtraDeps } from '@suite-common/redux-utils';
 
 export interface FlagsState {
     initialRun: boolean;
+    settingsSidebarTooltipClosed: boolean;
     taprootBannerClosed: boolean;
     firmwareTypeBannerClosed: boolean;
     discreetModeCompleted: boolean;
@@ -31,6 +32,7 @@ export type FlagsRootState = { flags: FlagsState };
 
 export const flagsInitialState: FlagsState = {
     initialRun: true,
+    settingsSidebarTooltipClosed: false,
     discreetModeCompleted: false,
     taprootBannerClosed: false,
     firmwareTypeBannerClosed: false,
