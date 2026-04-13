@@ -28,13 +28,13 @@ export const uploadToCurrents = (projectName: string): void => {
     try {
         console.log(`Converting JUnit report for ${projectName} to Currents format...`);
         execSync(
-            `npx currents convert --input-format=junit --input-file="${reportPath}" --output-dir="${currentsDir}" --framework=postman --framework-version=v11.2.0`,
+            `yarn exec currents convert --input-format=junit --input-file="${reportPath}" --output-dir="${currentsDir}" --framework=postman --framework-version=v11.2.0`,
             { stdio: 'inherit', env: process.env },
         );
 
         console.log(`Uploading report for ${projectName} to Currents...`);
         execSync(
-            `npx currents upload --project-id=${process.env.CURRENTS_PROJECT_ID} --key=${process.env.CURRENTS_RECORD_KEY} --ci-build-id=${process.env.CURRENTS_CI_BUILD_ID} --report-dir "${currentsDir}"`,
+            `yarn exec currents upload --project-id=${process.env.CURRENTS_PROJECT_ID} --key=${process.env.CURRENTS_RECORD_KEY} --ci-build-id=${process.env.CURRENTS_CI_BUILD_ID} --report-dir "${currentsDir}"`,
             { stdio: 'inherit', env: process.env },
         );
     } catch (error) {

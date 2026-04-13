@@ -6,7 +6,7 @@ import type { ProjectConfig } from './types';
 
 export const getJestTestFiles = (): string[] => {
     try {
-        const output = execSync('npx jest --listTests --config ./e2e/jest.config.js', {
+        const output = execSync('yarn exec jest --listTests --config ./e2e/jest.config.js', {
             cwd: process.cwd(),
             encoding: 'utf8',
             env: { ...process.env, CI: 'true', TDR_PROJECT_NAME: 'detox' },
