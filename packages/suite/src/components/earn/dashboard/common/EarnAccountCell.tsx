@@ -1,8 +1,10 @@
 import { type TokenDto } from '@suite-common/earn-api';
-import { type NetworkSymbol, getCoingeckoId } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { Column, Row } from '@trezor/components';
-import { AssetLogo, CoinLogo } from '@trezor/product-components';
+import { CoinLogo } from '@trezor/product-components';
+
+import { VaultTokenLogo } from 'src/components/earn/common/VaultTokenLogo';
 
 import { EarnAccountCellDetails } from './EarnAccountCellDetails';
 import { type EarnTokenBalance } from './types';
@@ -25,29 +27,18 @@ export const EarnAccountCell = ({
     subtitle,
 }: EarnAccountCellProps) => {
     const networkSymbol = account?.symbol ?? symbol;
-    const assetLogo =
-        iconToken && networkSymbol
-            ? {
-                  coingeckoId: getCoingeckoId(networkSymbol) ?? iconToken.coinGeckoId,
-                  placeholder: iconToken.symbol || iconToken.name || 'token',
-                  contractAddress: iconToken.address ?? null,
-                  showNetworkIcon: showAssetNetworkIcon,
-              }
-            : undefined;
 
     if (!networkSymbol) return null;
 
     return (
         <Row gap={16} cursor="inherit">
             <Column alignItems="center">
-                {assetLogo?.coingeckoId ? (
-                    <AssetLogo
+                {iconToken ? (
+                    <VaultTokenLogo
+                        token={iconToken}
+                        networkSymbol={networkSymbol}
                         size={32}
-                        coingeckoId={assetLogo.coingeckoId}
-                        placeholder={assetLogo.placeholder}
-                        symbol={networkSymbol}
-                        contractAddress={assetLogo.contractAddress}
-                        showNetworkIcon={assetLogo.showNetworkIcon}
+                        showNetworkIcon={showAssetNetworkIcon}
                     />
                 ) : (
                     <CoinLogo size={32} symbol={networkSymbol} type="tokenWithNetwork" />

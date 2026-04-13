@@ -5,8 +5,8 @@ import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Button, Table } from '@trezor/components';
 
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
-import { ApyValue } from 'src/views/wallet/staking/components/ApyValue';
 
+import { EarnYieldApyTooltip } from './EarnYieldApyTooltip';
 import { type YieldInactiveVaultOpportunity } from './types';
 import { EarnAccountCell } from '../common/EarnAccountCell';
 
@@ -51,7 +51,11 @@ export const EarnYieldInactiveVaultOpportunity = ({
             </Table.Cell>
 
             <Table.Cell>
-                <ApyValue apy={opportunity.apyPercentage} />
+                <EarnYieldApyTooltip
+                    vault={opportunity.vault}
+                    apyPercentage={opportunity.apyPercentage}
+                    networkSymbol={opportunity.networkSymbol}
+                />
             </Table.Cell>
 
             <Table.Cell colSpan={2} />

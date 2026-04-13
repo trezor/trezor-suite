@@ -6,10 +6,10 @@ import {
     EarnFlow,
     EarnProvider,
 } from '@suite-common/suite-types/src/staking';
-import { getCoingeckoId } from '@suite-common/wallet-config';
 import { Box, Button, Column, IconButton, Row, Text } from '@trezor/components';
-import { AssetLogo, CoinLogo } from '@trezor/product-components';
+import { CoinLogo } from '@trezor/product-components';
 
+import { VaultTokenLogo } from 'src/components/earn/common/VaultTokenLogo';
 import { AccountLabel } from 'src/components/suite';
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 import { useDispatch } from 'src/hooks/suite';
@@ -30,14 +30,6 @@ export const YieldPageHeader = ({ analyticsStep }: YieldPageHeaderProps) => {
         : undefined;
     const vaultName = vault?.metadata.name;
     const networkSymbol = account?.symbol;
-    const assetLogo =
-        vault?.token && networkSymbol
-            ? {
-                  coingeckoId: getCoingeckoId(networkSymbol) ?? vault.token.coinGeckoId,
-                  placeholder: vault.token.symbol || vault.token.name || 'token',
-                  contractAddress: vault.token.address ?? null,
-              }
-            : undefined;
 
     const onBackClick = () => {
         dispatch(goto({ routeName: 'suite-earn' }));
@@ -79,13 +71,11 @@ export const YieldPageHeader = ({ analyticsStep }: YieldPageHeaderProps) => {
                 {vaultName ? (
                     <Row alignItems="center" gap={12} overflow="hidden">
                         {networkSymbol &&
-                            (assetLogo?.coingeckoId ? (
-                                <AssetLogo
+                            (vault?.token ? (
+                                <VaultTokenLogo
+                                    token={vault.token}
+                                    networkSymbol={networkSymbol}
                                     size={32}
-                                    coingeckoId={assetLogo.coingeckoId}
-                                    placeholder={assetLogo.placeholder}
-                                    symbol={networkSymbol}
-                                    contractAddress={assetLogo.contractAddress}
                                     showNetworkIcon
                                 />
                             ) : (

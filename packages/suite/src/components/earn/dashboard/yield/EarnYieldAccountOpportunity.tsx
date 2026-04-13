@@ -14,8 +14,8 @@ import { BigNumber } from '@trezor/utils';
 
 import { HiddenPlaceholder } from 'src/components/suite/HiddenPlaceholder';
 import { useDispatch } from 'src/hooks/suite';
-import { ApyValue } from 'src/views/wallet/staking/components/ApyValue';
 
+import { EarnYieldApyTooltip } from './EarnYieldApyTooltip';
 import { type YieldAccountOpportunity } from './types';
 import { getEarnRouteParams } from '../../utils/getEarnRouteParams';
 import { EarnAccountCell } from '../common/EarnAccountCell';
@@ -165,7 +165,11 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
             </Table.Cell>
 
             <Table.Cell>
-                <ApyValue apy={opportunity.apyPercentage} />
+                <EarnYieldApyTooltip
+                    vault={opportunity.vault}
+                    apyPercentage={opportunity.apyPercentage}
+                    networkSymbol={opportunity.networkSymbol}
+                />
             </Table.Cell>
 
             {hasRewardsData ? (
