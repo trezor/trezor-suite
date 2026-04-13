@@ -1320,7 +1320,6 @@
   "TR_ONBOARDING_SEED_TYPE_SINGLE_SEED_DESCRIPTION": "Egyetlen, 20 szóból álló listát generál, amely a tárca visszaállítására szolgál. Ez a biztonsági mentés típus frissíthető több-részes biztonsági mentésre, amint készen állsz rá.",
   "TR_ONBOARDING_SELECTED_DEFAULT_BACKUP_TYPE": "Az eszközöd alapján kiválasztottuk a pénztárcád <primary>alapértelmezett biztonsági mentésének típusát</primary>.",
   "TR_ONBOARDING_SELECTED_OPTIMAL_BACKUP_TYPE": "Kiválasztottuk a tárcád számára <primary>optimális biztonsági mentés típust</primary>.",
-  "TR_ONBOARDING_SELECT_SEED_TYPE_CONFIRM": "Tárca létrehozása",
   "TR_ONBOARDING_STEP_WALLET": "Tárca",
   "TR_ONBOARDING_TREZOR_WILL_DISPLAY_BACKUP": "A Trezor megjeleníti a tárcád biztonsági mentését. Írd le pontosan és tárold biztonságosan. Ez az egyetlen módja a pénzed visszaszerzésének.",
   "TR_ONBOARDING_TROUBLESHOOTING_FAILED": "Továbbra sem működik?",
