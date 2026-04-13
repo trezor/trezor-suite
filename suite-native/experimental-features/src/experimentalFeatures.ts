@@ -19,4 +19,7 @@ export const FEEDBACK_FEATURE_CONFIGS: Record<ExperimentalFeature, { titleKey: T
     'tron-view-only': {
         titleKey: 'moduleSettings.experimental.tronViewOnly.title',
     },
+    'testnet-networks': {
+        titleKey: 'moduleSettings.experimental.testnets.title',
+    },
 };

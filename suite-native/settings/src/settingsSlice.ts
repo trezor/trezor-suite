@@ -3,7 +3,7 @@ import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { isDetoxTestBuild } from '@suite-native/config';
 import { DEVICE } from '@trezor/connect';
 
-export type ExperimentalFeature = 'suite-sync' | 'tron-view-only';
+export type ExperimentalFeature = 'suite-sync' | 'tron-view-only' | 'testnet-networks';
 
 export interface AppSettingsState {
     isOnboardingFinished: boolean;

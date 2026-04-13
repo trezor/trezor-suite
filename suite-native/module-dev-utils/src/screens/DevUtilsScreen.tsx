@@ -11,7 +11,6 @@ import { InfoCard } from '../components/InfoCard';
 import { MessageSystemCard } from '../components/MessageSystemCard';
 import { SuiteSyncQuotaManager } from '../components/SuiteSyncQuotaManager';
 import { SuiteSyncRelaySettings } from '../components/SuiteSyncRelaySettings';
-import { TestnetsToggle } from '../components/TestnetsToggle';
 import { TradingCard } from '../components/TradingCard';
 
 export const DevUtilsScreen = () => (
@@ -26,7 +25,6 @@ export const DevUtilsScreen = () => (
         <VStack spacing="sp16">
             <InfoCard />
             <FeatureFlagsCard />
-            <TestnetsToggle />
             <AnalyticsLogging />
             <TradingCard />
             <MessageSystemCard />

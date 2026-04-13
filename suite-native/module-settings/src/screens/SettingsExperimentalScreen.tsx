@@ -4,6 +4,7 @@ import { useOpenLink } from '@suite-native/link';
 import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
 import { EXPERIMENTAL_FEATURES_KB_URL } from '@trezor/urls';
 
+import { ToggleTestnetsCard } from '../components/ToggleTestnetsCard';
 import { ToggleTronCard } from '../components/ToggleTronCard';
 
 export const SettingsExperimentalScreen = () => {
@@ -34,6 +35,7 @@ export const SettingsExperimentalScreen = () => {
         >
             <VStack spacing="sp16">
                 <ToggleTronCard />
+                <ToggleTestnetsCard />
             </VStack>
         </Screen>
     );

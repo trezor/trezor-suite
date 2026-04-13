@@ -34,7 +34,6 @@
         { "path": "../navigation" },
         { "path": "../sentry" },
         { "path": "../services" },
-        { "path": "../settings" },
         { "path": "../storage" },
         { "path": "../toasts" },
         { "path": "../trading-state" },
