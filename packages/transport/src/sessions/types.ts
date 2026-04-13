@@ -39,6 +39,7 @@ export type AcquireIntentResponse = BackgroundResponseWithError<
 export type AcquireDoneRequest = {
     path: PathPublic;
     sessionOwner?: string;
+    abort?: boolean;
 };
 
 export type AcquireDoneResponse = BackgroundResponseWithError<

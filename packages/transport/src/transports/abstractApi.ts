@@ -132,6 +132,9 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                 );
 
                 if (!openDeviceResult.success) {
+                    // Release the lock without committing session (abort acquire).
+                    this.sessionsClient.acquireDone({ path, abort: true });
+
                     return openDeviceResult;
                 }
 
