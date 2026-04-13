@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import { Translation } from '@suite/intl';
 import { BACKUP_REWARD_PAYOUT_DAYS } from '@suite-common/wallet-constants';
-import { getStakingDataForNetwork } from '@suite-common/wallet-utils';
+import { getStakingDataForNetwork, secondsToDays } from '@suite-common/wallet-utils';
 import { Paragraph } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
@@ -35,7 +35,7 @@ export const PayoutCardNextRewards = ({
 
         if (!validatorWithdrawTime) return undefined;
 
-        return Math.round(validatorWithdrawTime / 60 / 60 / 24) + nextRewardPayout;
+        return secondsToDays(validatorWithdrawTime) + nextRewardPayout;
     }, [autocompoundBalance, daysToAddToPool, nextRewardPayout, validatorWithdrawTime]);
 
     return (
