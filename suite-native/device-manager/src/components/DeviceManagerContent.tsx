@@ -16,12 +16,7 @@ import {
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { selectDeviceThunk, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { events } from '@suite-native/analytics';
-import {
-    ACCESSIBILITY_FONTSIZE_MULTIPLIER,
-    AnimatedVStack,
-    Stack,
-    VStack,
-} from '@suite-native/atoms';
+import { AnimatedVStack, VStack } from '@suite-native/atoms';
 import { selectShouldFactoryResetBeVisible } from '@suite-native/device';
 import {
     type AppTabsParamList,
@@ -53,12 +48,6 @@ const scrollViewStyle = prepareNativeStyle<{ maxHeight: number }>((utils, { maxH
     maxHeight,
     borderBottomLeftRadius: MANAGER_MODAL_BOTTOM_RADIUS,
     borderBottomRightRadius: MANAGER_MODAL_BOTTOM_RADIUS,
-}));
-
-const deviceButtonsStyle = prepareNativeStyle(utils => ({
-    width: '100%',
-    paddingHorizontal: utils.spacings.sp16,
-    paddingBottom: utils.spacings.sp16,
 }));
 
 type NavigationProp = TabNavigationProp<AppTabsParamList, AppTabsRoutes.HomeStack>;
@@ -154,19 +143,10 @@ export const DeviceManagerContent = () => {
                             marginTop={!isDeviceListVisible ? 'sp12' : undefined}
                         >
                             <WalletList onSelectDevice={handleSelectDevice} />
-                            <Stack
-                                orientation={
-                                    ACCESSIBILITY_FONTSIZE_MULTIPLIER > 1
-                                        ? 'vertical'
-                                        : 'horizontal'
-                                }
-                                style={applyStyle(deviceButtonsStyle)}
-                            >
-                                <DeviceSettingsButton
-                                    showAsFullWidth={!isAddHiddenWalletButtonVisible}
-                                />
+                            <VStack paddingHorizontal="sp16" paddingBottom="sp16" spacing="sp12">
+                                <DeviceSettingsButton />
                                 {isAddHiddenWalletButtonVisible && <AddHiddenWalletButton />}
-                            </Stack>
+                            </VStack>
                         </AnimatedVStack>
                     )}
                 </VStack>
