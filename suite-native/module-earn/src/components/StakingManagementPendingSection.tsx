@@ -6,7 +6,7 @@ import {
     type NativeStakingRootState,
     selectCanClaimByAccountKey,
     selectClaimableAmountByAccountKey,
-    selectPendingDepositedBalanceByAccountKey,
+    selectTotalStakePendingByAccountKey,
     selectUnstakingBalanceByAccountKey,
     selectUnstakingPeriodInDaysByAccountKey,
     useSelector,
@@ -31,9 +31,10 @@ export const StakingManagementPendingSection = ({
     const unstakingBalance = useSelector((state: NativeStakingRootState) =>
         selectUnstakingBalanceByAccountKey(state, accountKey),
     );
-    const pendingDepositedBalance = useSelector((state: NativeStakingRootState) =>
-        selectPendingDepositedBalanceByAccountKey(state, accountKey),
-    );
+    const totalStakePending =
+        useSelector((state: NativeStakingRootState) =>
+            selectTotalStakePendingByAccountKey(state, accountKey),
+        ) ?? '0';
     const unstakingPeriodInDays = useSelector((state: NativeStakingRootState) =>
         selectUnstakingPeriodInDaysByAccountKey(state, accountKey),
     );
@@ -55,7 +56,7 @@ export const StakingManagementPendingSection = ({
     const isClaim = isPositiveBalance(claimableAmount) && canClaim;
     const hasPendingUnstaking =
         isPositiveBalance(unstakingBalance) && !new BigNumber(unstakingBalance).eq(claimableAmount);
-    const hasPendingDeposit = isPositiveBalance(pendingDepositedBalance);
+    const hasPendingDeposit = isPositiveBalance(totalStakePending);
 
     const hasPendingActions = isClaim || hasPendingUnstaking || hasPendingDeposit;
 
@@ -87,7 +88,7 @@ export const StakingManagementPendingSection = ({
                         label={
                             <Translation id="earn.stakingManagementScreen.pendingStakesItem.label" />
                         }
-                        amount={pendingDepositedBalance}
+                        amount={totalStakePending}
                         onPress={openPendingStakeModal}
                     />
                 )}
