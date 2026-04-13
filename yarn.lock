@@ -10631,12 +10631,11 @@ __metadata:
   resolution: "@suite-common/e2e-evolu-client@workspace:suite-common/e2e-evolu-client"
   dependencies:
     "@evolu/common": "npm:8.0.0-next.3"
+    "@evolu/nodejs": "npm:3.0.0-next.2"
     "@suite-common/suite-sync-evolu": "workspace:*"
     "@suite-common/suite-sync-storage": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
-    "@types/better-sqlite3": "npm:^7.6.13"
-    better-sqlite3: "npm:^12.8.0"
     ws: "npm:^8.18.0"
   languageName: unknown
   linkType: soft
@@ -16399,15 +16398,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/better-sqlite3@npm:^7.6.13":
-  version: 7.6.13
-  resolution: "@types/better-sqlite3@npm:7.6.13"
-  dependencies:
-    "@types/node": "npm:*"
-  checksum: 10/c74dafa3c550ac866737870016d7b1a735c7d450c16d40962eeb54510fa150e91752bfdf678f55e91894d8853771b95f909b0062122116cddac4d80491b74411
-  languageName: node
-  linkType: hard
-
 "@types/bn.js@npm:^5.2.0":
   version: 5.2.0
   resolution: "@types/bn.js@npm:5.2.0"
@@ -20065,7 +20055,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"better-sqlite3@npm:^12.6.2, better-sqlite3@npm:^12.8.0":
+"better-sqlite3@npm:^12.6.2":
   version: 12.8.0
   resolution: "better-sqlite3@npm:12.8.0"
   dependencies:
