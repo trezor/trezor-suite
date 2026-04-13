@@ -1,4 +1,3 @@
-tiny-secp256k1
 @arethetypeswrong/cli
 @blockaid/client
 @bufbuild/buf
