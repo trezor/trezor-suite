@@ -81,8 +81,7 @@
     "devDependencies": {
         "@trezor/eslint": "workspace:*",
         "@types/bn.js": "^5.2.0",
-        "minimaldata": "^1.0.2",
-        "tiny-secp256k1": "^1.1.7"
+        "minimaldata": "^1.0.2"
     },
     "peerDependencies": {
         "tslib": "^2.6.2"
