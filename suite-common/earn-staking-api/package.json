@@ -18,6 +18,7 @@
         "@suite-common/http-client": "workspace:*",
         "@suite-common/react-query": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
+        "@trezor/env-utils": "workspace:*",
         "zod": "4.3.6"
     },
     "devDependencies": {
