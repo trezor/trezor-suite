@@ -38,7 +38,7 @@ interface EthStakingDashboardProps {
 export const EthStakingDashboard = ({ selectedAccount }: EthStakingDashboardProps) => {
     const { account } = selectedAccount;
 
-    const accountKey = account?.key ?? '';
+    const accountKey = account.key;
     const { isBelowLaptop } = useLayoutSize();
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 

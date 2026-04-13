@@ -1,6 +1,6 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
-import { selectBestCardanoPool } from '@suite-common/wallet-utils';
+import { secondsToDays, selectBestCardanoPool } from '@suite-common/wallet-utils';
 
 import type { VotingDelegationOption } from './stakeActions';
 import type { StakeRootState } from './stakeReducerTypes';
@@ -12,8 +12,11 @@ export const selectStakeData = (state: StakeRootState) => selectStake(state).dat
 export const selectCardanoPoolsInfo = (state: StakeRootState) =>
     selectStakeData(state).ada?.pools ?? [];
 
-export const selectEthNextRewardPayout = (state: StakeRootState) =>
-    selectStakeData(state).eth?.stats?.nextRewardPayout;
+export const selectEthNextRewardPayout = (state: StakeRootState) => {
+    const nextRewardPayout = selectStakeData(state).eth?.stats?.nextRewardPayout;
+
+    return nextRewardPayout ? secondsToDays(nextRewardPayout) : null;
+};
 
 export const selectEthValidatorsQueue = (state: StakeRootState) =>
     selectStakeData(state).eth?.validators;
