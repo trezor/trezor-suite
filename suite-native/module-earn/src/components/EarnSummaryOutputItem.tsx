@@ -33,11 +33,13 @@ export const EarnSummaryOutputItem = ({
                         accountKey={accountKey}
                         value={amount}
                         translationKey="transactionManagement.review.outputs.summary.amount"
+                        isCryptoPrimary
                     />
                     <ReviewOutputItemValues
                         accountKey={accountKey}
                         value={fee}
                         translationKey="transactionManagement.review.outputs.summary.maxFee"
+                        isCryptoPrimary
                     />
                 </VStack>
             </ReviewOutputCard>
