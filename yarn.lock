@@ -11204,7 +11204,6 @@ __metadata:
     react-redux: "npm:9.2.0"
     semver: "npm:^7.7.1"
     tsx: "npm:^4.21.0"
-    uuid: "npm:^13.0.0"
   languageName: unknown
   linkType: soft
 
@@ -11648,7 +11647,6 @@ __metadata:
     "@types/invity-api": "npm:^1.1.15"
     react: "npm:19.2.4"
     react-redux: "npm:9.2.0"
-    uuid: "npm:^13.0.0"
   languageName: unknown
   linkType: soft
 
@@ -15728,7 +15726,6 @@ __metadata:
     dotenv: "npm:17.2.3"
     express: "npm:^5.2.1"
     tsx: "npm:^4.21.0"
-    uuid: "npm:^13.0.0"
     ws: "npm:^8.18.0"
   languageName: unknown
   linkType: soft

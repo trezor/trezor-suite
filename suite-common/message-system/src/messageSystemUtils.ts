@@ -1,5 +1,4 @@
 import * as semver from 'semver';
-import { v4 as uuidv4 } from 'uuid';
 
 import type { CountryCode } from '@suite-common/geolocation';
 import {
@@ -443,7 +442,7 @@ const EXTRA_BY_CATEGORY = {
 
 export const getDefaultActionByCategory = (category: Category): Action => {
     const baseMessage = {
-        id: uuidv4(),
+        id: crypto.randomUUID(),
         priority: 100,
         dismissible: true,
         variant: 'info' as const,
@@ -462,7 +461,7 @@ export const getDefaultActionByCategory = (category: Category): Action => {
 
 export const getDefaultExperiment = (): Experiments => ({
     experiment: {
-        id: uuidv4(),
+        id: crypto.randomUUID(),
         groups: [
             {
                 variant: 'A',

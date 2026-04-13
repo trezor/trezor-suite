@@ -1,8 +1,6 @@
 /* eslint-disable no-console */
 
 import express, { type Express } from 'express';
-import { v4 as uuidv4 } from 'uuid';
-
 const BOUNDARY = '---------314159265358979323846';
 const port = 30001;
 
@@ -112,7 +110,7 @@ export class GoogleMock {
                 if (!file) throw new Error('no such file exists');
                 file.data = data;
             } else {
-                const file = new GoogleFile(uuidv4(), json.name, data);
+                const file = new GoogleFile(crypto.randomUUID(), json.name, data);
                 this.files[file.name] = file;
             }
         };
@@ -251,7 +249,7 @@ export class GoogleMock {
                 content.toString('hex'),
             );
         } else {
-            const file = new GoogleFile(uuidv4(), name, content.toString('hex'));
+            const file = new GoogleFile(crypto.randomUUID(), name, content.toString('hex'));
             this.files[file.name] = file;
         }
     }
