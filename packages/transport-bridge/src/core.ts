@@ -166,10 +166,18 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
 
             return openDeviceResult;
         }
-        await sessionsClient.acquireDone({
+        const acquireDoneResult = await sessionsClient.acquireDone({
             path: acquireInput.path,
             sessionOwner: acquireInput.sessionOwner,
         });
+
+        if (!acquireDoneResult.success) {
+            // Device disappeared between openDevice and session commit.
+            // Close the device we just opened to avoid a leaked handle.
+            await api.closeDevice(acquireIntentResult.payload.path);
+
+            return error({ code: acquireDoneResult.error.code });
+        }
 
         return acquireIntentResult;
     };

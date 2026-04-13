@@ -51,6 +51,7 @@ describe('sessions', () => {
             success: true,
             id: 3,
             payload: {
+                session: '1',
                 descriptors: [
                     {
                         path: '1',

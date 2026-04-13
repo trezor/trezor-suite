@@ -142,6 +142,8 @@ export class SessionsBackground
         );
 
         disconnectedDevices.forEach(d => {
+            // Release any active lock held for this device to avoid starvation.
+            this.releaseActiveLock(d);
             delete this.descriptors[d];
             delete this.pathInternalPathPublicMap[d];
         });
@@ -227,14 +229,16 @@ export class SessionsBackground
         }
 
         // When abort is set, just release the lock without modifying session.
+        let { session } = this.descriptors[pathInternal];
         if (!payload.abort) {
-            this.descriptors[pathInternal].session = Session(`${this.lastSessionId}`);
+            session = Session(`${this.lastSessionId}`);
+            this.descriptors[pathInternal].session = session;
             this.descriptors[pathInternal].sessionOwner = payload.sessionOwner;
         }
 
         this.releaseActiveLock(pathInternal);
 
-        return Promise.resolve(success({ descriptors: Object.values(this.descriptors) }));
+        return Promise.resolve(success({ session, descriptors: Object.values(this.descriptors) }));
     }
 
     private async releaseIntent(payload: ReleaseIntentRequest) {
