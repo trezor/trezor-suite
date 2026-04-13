@@ -47,6 +47,7 @@
         { "path": "../message-system" },
         { "path": "../navigation" },
         { "path": "../services" },
+        { "path": "../settings" },
         { "path": "../staking" },
         { "path": "../test-utils" },
         { "path": "../transaction-management" },

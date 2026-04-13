@@ -37,7 +37,6 @@
         "@suite-native/navigation": "workspace:*",
         "@suite-native/sentry": "workspace:*",
         "@suite-native/services": "workspace:*",
-        "@suite-native/settings": "workspace:*",
         "@suite-native/storage": "workspace:*",
         "@suite-native/toasts": "workspace:*",
         "@suite-native/trading-state": "workspace:*",

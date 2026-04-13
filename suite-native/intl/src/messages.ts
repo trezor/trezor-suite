@@ -1533,6 +1533,10 @@ export const messages = {
                 description:
                     'Enable the Tron network. The latest firmware is required. You can receive funds, check your balance, view tokens, charts, and transaction history (may contain bugs). Full support coming soon (or available via third-party wallets).',
             },
+            testnets: {
+                title: 'Testnet coins & features',
+                description: 'Test networks carry no real value and are used only for testing.',
+            },
         },
         appLog: {
             sensitiveDataToggle: {

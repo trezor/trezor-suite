@@ -44,6 +44,7 @@
         "@suite-native/message-system": "workspace:*",
         "@suite-native/navigation": "workspace:*",
         "@suite-native/services": "workspace:*",
+        "@suite-native/settings": "workspace:*",
         "@suite-native/staking": "workspace:*",
         "@suite-native/test-utils": "workspace:*",
         "@suite-native/transaction-management": "workspace:*",
