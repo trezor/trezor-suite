@@ -3,6 +3,7 @@ import { type BuyTrade, type BuyTradeQuoteRequest } from 'invity-api';
 import { createThunk } from '@suite-common/redux-utils';
 import { type Network } from '@suite-common/wallet-config';
 import { convertAmountSubunitsToUnits } from '@suite-common/wallet-utils';
+import { isNative } from '@trezor/env-utils';
 
 import { TRADING_BUY_THUNK_PREFIX } from '../../constants';
 import { invityAPI } from '../../invityAPI';
@@ -70,7 +71,10 @@ const getQuoteRequestData = ({
     }
 
     // do not fetch quotes until subdivision is set when country has subdivisions
-    if (isCountrySubdivisionEmpty(request.country, formValues.countrySubdivisionSelect?.value)) {
+    if (
+        !isNative() && // todo: subdivisions are not yet implemented for mobile, should be removed in #24188
+        isCountrySubdivisionEmpty(request.country, formValues.countrySubdivisionSelect?.value)
+    ) {
         return undefined;
     }
 
