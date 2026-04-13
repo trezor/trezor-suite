@@ -1337,7 +1337,6 @@
   "TR_ONBOARDING_SEED_TYPE_SINGLE_SEED_DESCRIPTION": "Genera un unico set di 20 parole per il recupero del wallet. Questo tipo di back-up può essere aggiornato al back-up multi-condivisione ogni volta che lo si desidera.",
   "TR_ONBOARDING_SELECTED_DEFAULT_BACKUP_TYPE": "Abbiamo selezionato il <primary>tipo di back-up predefinito</primary> per il wallet in base al tuo dispositivo.",
   "TR_ONBOARDING_SELECTED_OPTIMAL_BACKUP_TYPE": "Abbiamo selezionato il <primary>tipo di back-up ottimale</primary> per il wallet.",
-  "TR_ONBOARDING_SELECT_SEED_TYPE_CONFIRM": "Crea wallet",
   "TR_ONBOARDING_STEP_WALLET": "Wallet",
   "TR_ONBOARDING_TREZOR_WILL_DISPLAY_BACKUP": "Trezor visualizzerà il back-up del wallet. Annotalo accuratamente e conservalo in modo sicuro. È l'unico modo per recuperare i fondi.",
   "TR_ONBOARDING_TROUBLESHOOTING_FAILED": "Ancora non funziona?",
