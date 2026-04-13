@@ -18,7 +18,7 @@ export const SuiteStart = () => (
      *
      * Go to `OnboardingCard` search for `ConfirmOnDevice`.
      */
-    <WelcomeLayoutWithoutModalSwitcher>
+    <WelcomeLayoutWithoutModalSwitcher showAccounts={false}>
         <Content data-testid="@onboarding/welcome">
             <StartContent />
         </Content>
