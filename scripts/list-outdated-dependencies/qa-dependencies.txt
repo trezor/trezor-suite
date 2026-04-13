@@ -30,4 +30,5 @@ jest-watch-typeahead
 minimist
 react-intl
 ts-jest
+uri-scheme
 xml2js

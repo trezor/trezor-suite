@@ -43,6 +43,7 @@
         "@currents/cmd",
         "expo-atlas",
         "jest-junit",
-        "ts-jest"
+        "ts-jest",
+        "uri-scheme"
     ]
 }

@@ -11859,6 +11859,7 @@ __metadata:
     ts-node: "npm:^10.9.2"
     tsx: "npm:^4.21.0"
     typescript: "npm:5.8.3"
+    uri-scheme: "npm:^2.0.18"
     vm-browserify: "npm:^1.1.2"
     xml2js: "npm:^0.6.2"
   languageName: unknown
@@ -44740,6 +44741,15 @@ __metadata:
   dependencies:
     punycode: "npm:^2.1.0"
   checksum: 10/b271ca7e3d46b7160222e3afa3e531505161c9a4e097febae9664e4b59912f4cbe94861361a4175edac3a03fee99d91e44b6a58c17a634bc5a664b19fc76fbcb
+  languageName: node
+  linkType: hard
+
+"uri-scheme@npm:^2.0.18":
+  version: 2.0.18
+  resolution: "uri-scheme@npm:2.0.18"
+  bin:
+    uri-scheme: cli.js
+  checksum: 10/a865b48f02d37964373c944019a0c76650b59d5be84c4629d8a82c4b3eb456ae2b4c24ab6b411f0ccb25d9dcffbadde0a803497b85ceb2257af4248adc4dd0de
   languageName: node
   linkType: hard
 

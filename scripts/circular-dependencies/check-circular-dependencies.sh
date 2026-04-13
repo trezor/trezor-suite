@@ -7,7 +7,7 @@ export LC_ALL=C  # force `sort` to work the same way (ASCII order)
 SNAPSHOT_FILE="scripts/circular-dependencies/madge-snapshot.txt"
 TMP_FILE="$(mktemp)"
 
-# Run madge, allow it to fail
+# Run madge, allow it to fail. `npx` is used because `yarn` may not be installed when running this script.
 if ! npx madge@8.0.0 --circular --extensions ts,tsx --exclude "node_modules|lib|libDev" packages suite suite-native suite-common | tail -n +2 | sed 's/^[0-9][0-9]*) *//' | sort > "$TMP_FILE"; then
   echo "⚠️ madge exited with non-zero status, continuing to compare results..."
   echo

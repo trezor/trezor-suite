@@ -87,8 +87,8 @@ echo "=== Testing CJS (node index.cjs) ==="
 node index.cjs
 
 echo ""
-echo "=== Testing ESM with tsx (npx tsx@4.21.0 index.mjs) ==="
-npx tsx@4.21.0 index.mjs
+echo "=== Testing ESM with tsx (yarn tsx index.mjs) ==="
+yarn tsx index.mjs
 
 echo ""
 echo "=== Testing ESM with node (node index.mjs) ==="

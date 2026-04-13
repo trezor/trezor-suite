@@ -14,7 +14,7 @@ import { waitForVisible } from '../support/utils';
 const deepLinkServer = new DeepLinkServer();
 
 const openUriScheme = (url: string, platformToOpen: 'android') => {
-    const command = `npx uri-scheme open '${url.replace(/'/g, '%27')}' --${platformToOpen} --raw`;
+    const command = `yarn exec uri-scheme open '${url.replace(/'/g, '%27')}' --${platformToOpen} --raw`;
 
     exec(command, (err, stdout, stderr) => {
         if (err) {
