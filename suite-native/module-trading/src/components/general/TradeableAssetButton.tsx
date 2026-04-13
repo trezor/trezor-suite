@@ -26,21 +26,21 @@ export type TradeableAssetButtonProps = {
 const GRADIENT_START = { x: 0, y: 0.5 } as const;
 const GRADIENT_END = { x: 1, y: 0.5 } as const;
 
-const buttonStyle = prepareNativeStyle(({ spacings }) => ({
-    ...buttonSizeToDimensionsMap.medium,
-    gap: spacings.sp8,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-}));
-
-const gradientBackgroundStyle = prepareNativeStyle<{ borderColor: ReturnType<typeof hexToRgba> }>(
-    ({ borders }, { borderColor }) => ({
-        borderRadius: buttonSizeToDimensionsMap.medium.borderRadius,
+const buttonStyle = prepareNativeStyle<{ borderColor: ReturnType<typeof hexToRgba> }>(
+    ({ spacings, borders }, { borderColor }) => ({
+        ...buttonSizeToDimensionsMap.medium,
         borderWidth: borders.widths.small,
         borderColor,
+        gap: spacings.sp8,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
     }),
 );
+
+const gradientBackgroundStyle = prepareNativeStyle(() => ({
+    borderRadius: buttonSizeToDimensionsMap.medium.borderRadius,
+}));
 
 export const TradeableAssetButton = ({
     asset: { symbol, contractAddress, cryptoId },
@@ -72,13 +72,13 @@ export const TradeableAssetButton = ({
     return (
         <LinearGradient
             colors={gradientColors}
-            style={applyStyle(gradientBackgroundStyle, { borderColor })}
+            style={applyStyle(gradientBackgroundStyle)}
             start={GRADIENT_START}
             end={GRADIENT_END}
         >
             <Pressable
                 onPress={onPress}
-                style={applyStyle(buttonStyle)}
+                style={applyStyle(buttonStyle, { borderColor })}
                 accessible
                 accessibilityRole="button"
                 accessibilityLabel={accessibilityLabel}
