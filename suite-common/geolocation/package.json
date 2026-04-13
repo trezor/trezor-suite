@@ -8,8 +8,6 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
-        "test:unit": "yarn g:jest --passWithNoTests",
-        "test-unit:watch": "yarn g:jest -o --watch --passWithNoTests",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
