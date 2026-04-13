@@ -8,21 +8,21 @@
 export type StakingBatchDataItem =
     | {
           stats: {
-              /** Pool APY as a percentage number (e.g. 3.08). Derived from Everstake pool APR decimal × 100, rounded down to 3 decimal places. */
+              /** Pool APY as a percentage number (e.g. 3.08). */
               apy: number;
-              /** Whole days until next reward payout; ceil from upstream seconds (86400). */
+              /** Seconds until next reward payout. */
               nextRewardPayout: number;
           };
           validators: {
-              /** Seconds — estimated delay before a validator becomes active (Everstake `validator_activation_time`). */
+              /** Seconds — estimated delay before a validator becomes active. */
               activationTime?: number;
-              /** Seconds — estimated delay before a validator is exited (`validator_exit_time`). */
+              /** Seconds — estimated delay before a validator is exited. */
               exitTime?: number;
-              /** Seconds — withdraw period from beacon chain (`validator_withdraw_time`). */
+              /** Seconds — withdraw period from beacon chain. */
               withdrawTime?: number;
-              /** Seconds — delay before validator is known at beacon chain (`validator_adding_delay`). */
+              /** Seconds — delay before validator is known at beacon chain. */
               addingDelay?: number;
-              /** Unix timestamp (seconds) of last upstream refresh (`updated_at`). */
+              /** Unix timestamp (seconds) of last upstream refresh. */
               updatedAt?: number;
           };
           symbol: 'eth';
@@ -39,7 +39,7 @@ export type StakingBatchDataItem =
           pools: {
               /** Validator APY percentage value from Everstake stats. */
               apy: number;
-              /** Saturation as percentage 0–100 (upstream decimal × 100). */
+              /** Saturation as percentage 0–100 */
               saturation: number;
               /** Cardano validator address (pool id). */
               id: string;

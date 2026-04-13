@@ -7,14 +7,14 @@
 
 export type EthOrSolStats =
     | {
-          /** Pool APY as a percentage number (e.g. 3.08). Derived from Everstake pool APR decimal × 100, rounded down to 3 decimal places. */
+          /** Pool APY as a percentage number (e.g. 3.08). */
           apy: number;
-          /** Whole days until next reward payout; ceil from upstream seconds (86400). */
+          /** Seconds until next reward payout. */
           nextRewardPayout: number;
           symbol: 'eth';
       }
     | {
-          /** Chain staking APR from Everstake dashboard as decimal fraction (same as Suite `blockchain.apr`). */
+          /** Chain staking APY from Everstake dashboard (e.g. 2.45). */
           apy: number;
           symbol: 'sol';
       };
