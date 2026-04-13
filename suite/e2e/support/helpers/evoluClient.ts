@@ -47,6 +47,11 @@ export class EvoluClient extends BaseEvoluClient {
     }
 
     @step()
+    override async dispose() {
+        await super.dispose();
+    }
+
+    @step()
     async debugReadAllTablesAndThrow() {
         const allDataPromise = allTables.map(async table => await this.readFrom(table));
         await expect(async () => {

@@ -1,3 +1,4 @@
+import { expect as jestExpect } from '@jest/globals';
 import { expect as detoxExpect } from 'detox';
 import { diff } from 'jest-diff';
 import { isEqual, omit } from 'lodash';
@@ -6,6 +7,7 @@ import {
     BaseEvoluClient,
     checkEvoluRelayServerRunning,
     immuneFixtures,
+    logToRelayDocker,
     seedQuotaManagerData,
     wipeAndRestartEvoluRelayServer,
 } from '@suite-common/e2e-evolu-client';
@@ -73,19 +75,24 @@ const preloadedState = preparePreloadedReduxState(
     deviceChecksDisabledState,
 );
 
-// FIXME
-describe.skip('Suite Sync - Labelling [@androidOnly @T3T1 @smoke]', () => {
+describe('Suite Sync - Labelling [@androidOnly @T3T1 @smoke]', () => {
     let evoluClient: NativeEvoluClient;
 
     beforeEach(async () => {
         await checkEvoluRelayServerRunning();
-        await wipeAndRestartEvoluRelayServer();
-
-        evoluClient = new NativeEvoluClient();
-
+        logToRelayDocker(`STARTING: ${jestExpect.getState().currentTestName!}`);
         await openApp({ args: { preloadedState } });
+        logToRelayDocker(`APP RESTARTED: ${jestExpect.getState().currentTestName!}`);
+        await wipeAndRestartEvoluRelayServer();
+        logToRelayDocker(`RELAY WIPED: ${jestExpect.getState().currentTestName!}`);
+        evoluClient = new NativeEvoluClient();
         await prepareTrezorEmulator({ seed: 'mnemonic_immune' });
         await onDeviceManager.assertDeviceSwitcherState({ title: 'Connected' });
+    }, 240_000);
+
+    afterEach(async () => {
+        await evoluClient?.dispose();
+        logToRelayDocker(`FINISHED: ${jestExpect.getState().currentTestName!}`);
     });
 
     test('Create new labels', async () => {
@@ -147,7 +154,7 @@ describe.skip('Suite Sync - Labelling [@androidOnly @T3T1 @smoke]', () => {
 
         // Verify labels were synced to the relay
         await evoluClient.init({ ownerSecret: immuneFixtures.ownerSecret });
-        await evoluClient.expectInTable('account', [expectedAccountData]);
+        await evoluClient.expectInTable('account', [expectedAccountData], { timeout: 30_000 });
         await evoluClient.expectInTable('address', [expectedAddressData]);
         await evoluClient.expectInTable('output', [expectedOutputData]);
     });

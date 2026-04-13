@@ -129,7 +129,9 @@ const test = suiteBaseTest.extend<Fixtures>({
     },
     evoluClient: async ({}, use) => {
         await checkEvoluRelayServerRunning();
-        await use(new EvoluClient());
+        const evoluClient = new EvoluClient();
+        await use(evoluClient);
+        await evoluClient.dispose();
     },
 });
 

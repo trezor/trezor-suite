@@ -21,7 +21,8 @@ type SettingsOptions =
     | 'trading'
     | 'wallet-connect'
     | 'connect-permissions'
-    | 'advanced';
+    | 'advanced'
+    | 'experimental';
 
 class SettingsActions {
     async openSection(option: SettingsOptions) {
@@ -107,28 +108,25 @@ class SettingsActions {
         const saveSuiteSyncUrl = element(by.id('@suiteSync/custom-relay-url-save-button'));
         await scrollUntilVisible(saveSuiteSyncUrl);
         await element(by.id('@suiteSync/custom-relay-url-input')).replaceText(url);
-        // Workaround: close keyboard by clicking on section header before tapping Save
-        await element(by.id('@suiteSync/header')).tap();
-        await element(by.id('@suiteSync/custom-relay-url-save-button')).tap();
+        await saveSuiteSyncUrl.tap();
 
-        const enforceQuotaManagerSwitcher = element(by.id('@suiteSyncQuotaManager/save-button'));
-        await scrollUntilVisible(enforceQuotaManagerSwitcher);
-        await element(by.id('@suiteSyncQuotaManager/url-input')).replaceText(quotaUrl);
-        await enforceQuotaManagerSwitcher.tap();
-
+        const saveQuotaManagerUrl = element(by.id('@suiteSyncQuotaManager/save-button'));
         const enforceQuotaManager = element(by.id('@suiteSyncQuotaManager/enforce-switch'));
         await scrollUntilVisible(enforceQuotaManager);
+        await element(by.id('@suiteSyncQuotaManager/url-input')).replaceText(quotaUrl);
+        await saveQuotaManagerUrl.tap();
         await enforceQuotaManager.tap();
 
         await onTabBar.tapBackButton();
 
         await this.openSection('suite-sync');
         await wait(1000);
-        await element(by.id('settings/suite-sync-touchable-row')).tap();
+        const suiteSyncToggle = element(by.id('settings/suite-sync-touchable-row'));
+        await suiteSyncToggle.tap();
         await wait(1000);
         await waitForVisible(by.id('@continue-on-trezor'));
         await TrezorUserEnvLink.pressYes();
-        await waitForVisible(by.id('settings/suite-sync-touchable-row'));
+        await waitForVisible(suiteSyncToggle);
     }
 }
 

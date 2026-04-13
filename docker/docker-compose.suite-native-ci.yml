@@ -16,6 +16,7 @@ services:
       - "18021:18021" # bitcoin-d rpc port
 
   quota-db:
+    container_name: quota-db
     image: postgres
     environment:
       POSTGRES_USER: suite-sync
@@ -30,6 +31,7 @@ services:
       retries: 5
 
   suite-sync:
+    container_name: suite-sync
     image: ghcr.io/trezor/suite-sync:main
     environment:
       POSTGRES_GATE_USER: suite-sync

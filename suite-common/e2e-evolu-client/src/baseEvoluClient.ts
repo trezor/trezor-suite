@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 import {
     AppName,
     type Evolu,
@@ -31,8 +33,36 @@ const EVOLU_LOCAL_SERVER_NOT_RUNNING_ERROR =
 
 export const createQuery = createQueryBuilder(Schema);
 
+const REPO_ROOT = path.resolve(__dirname, '../../../');
+
+export const logToRelayDocker = (message: string) => {
+    try {
+        execFileSync(
+            'docker',
+            [
+                'compose',
+                '-f',
+                'docker/docker-compose.suite-ci-e2e.yml',
+                'exec',
+                '-T',
+                '-e',
+                `MARKER=${message}`,
+                'suite-sync',
+                'sh',
+                '-c',
+                'echo "[TEST] $MARKER" > /proc/1/fd/1',
+            ],
+            { cwd: REPO_ROOT },
+        );
+    } catch (e) {
+        // Non-fatal: marker logging should not break tests
+        console.warn('[logToRelayDocker] failed:', e);
+    }
+};
+
 export class BaseEvoluClient {
     private _evolu?: Evolu<typeof Schema>;
+    private _ownerId?: string;
 
     async init({ ownerSecret, relayUrl = RELAY_URL }: EvoluClientInitParams) {
         const run = createNodeEvoluDeps();
@@ -40,6 +70,10 @@ export class BaseEvoluClient {
         if (!owner.ok) {
             throw new Error(`Failed to parse owner: ${JSON.stringify(owner.error)}`);
         }
+
+        this._ownerId = owner.value.id;
+        console.log('[EvoluClient] init ownerId:', this._ownerId);
+        logToRelayDocker(`EVOLU INIT: ownerId=${this._ownerId}`);
 
         const sanitizedOwnerId = owner.value.id.replaceAll('_', '-');
         const appName = AppName.orThrow(`trezor-suite-e2e-${sanitizedOwnerId}`);
@@ -71,6 +105,7 @@ export class BaseEvoluClient {
     }
 
     writeTo<T extends TableName>(table: T, object: MutationValues<(typeof Schema)[T], 'upsert'>) {
+        console.log(`[EvoluClient] writeTo table=${table}:`, JSON.stringify(object));
         this.evolu.upsert(table, object as any);
     }
 
@@ -82,8 +117,9 @@ export class BaseEvoluClient {
 
         return this.evolu.subscribeQuery(query)(() => {
             const rows = this.evolu.getQueryRows(query);
-            console.error(
-                `Evolu subscription update for table "${table}": ${JSON.stringify(rows, null, 2)}`,
+            console.log(
+                `[EvoluClient] sync update table=${table}: ${rows.length} rows`,
+                rows.length > 0 ? JSON.stringify(rows) : '(empty)',
             );
         });
     }
@@ -94,7 +130,24 @@ export class BaseEvoluClient {
             db.selectFrom(table).where('ownerId', '=', ownerId).selectAll(),
         );
 
-        return await this.evolu.loadQuery(query);
+        const rows = await this.evolu.loadQuery(query);
+        console.log(
+            `[EvoluClient] readFrom table=${table}: ${rows.length} rows`,
+            rows.length > 0 ? JSON.stringify(rows) : '(empty)',
+        );
+
+        return rows;
+    }
+
+    async dispose() {
+        console.log('[EvoluClient] dispose START ownerId:', this._ownerId);
+        logToRelayDocker(`EVOLU DISPOSE START: ownerId=${this._ownerId}`);
+        if (this._evolu) {
+            await this._evolu[Symbol.asyncDispose]();
+            this._evolu = undefined;
+        }
+        console.log('[EvoluClient] dispose DONE ownerId:', this._ownerId);
+        this._ownerId = undefined;
     }
 }
 
@@ -107,8 +160,6 @@ const QUOTA_PUBLIC_KEY =
 const QUOTA_TOTAL_STORAGE_SIZE = 1048576;
 const QUOTA_UNSPENT_STORAGE_SIZE = 1038090;
 const QUOTA_DB_CREDENTIALS = '-U suite-sync -d suite-sync-gate';
-
-const REPO_ROOT = path.resolve(__dirname, '../../../');
 
 const waitForRelayReady = async (maxWaitMs = 30_000) => {
     const pollIntervalMs = 500;

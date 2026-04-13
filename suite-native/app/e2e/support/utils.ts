@@ -25,7 +25,7 @@ const SCROLL_VISIBILITY_THRESHOLD = platform === 'android' ? 100 : undefined;
 
 export const RETRY_CONF = {
     attempts: 5,
-    gap: 500,
+    gap: 2_000,
 };
 
 export const wait = async (ms: number) => {
