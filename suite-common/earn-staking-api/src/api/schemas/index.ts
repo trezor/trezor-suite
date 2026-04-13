@@ -18,48 +18,30 @@ export const stakingBatchResponse = zod.object({
         zod.union([
             zod.object({
                 stats: zod.object({
-                    apy: zod
-                        .number()
-                        .describe(
-                            'Pool APY as a percentage number (e.g. 3.08). Derived from Everstake pool APR decimal × 100, rounded down to 3 decimal places.',
-                        ),
-                    nextRewardPayout: zod
-                        .number()
-                        .describe(
-                            'Whole days until next reward payout; ceil from upstream seconds (86400).',
-                        ),
+                    apy: zod.number().describe('Pool APY as a percentage number (e.g. 3.08).'),
+                    nextRewardPayout: zod.number().describe('Seconds until next reward payout.'),
                 }),
                 validators: zod.object({
                     activationTime: zod
                         .number()
                         .optional()
-                        .describe(
-                            'Seconds — estimated delay before a validator becomes active (Everstake `validator_activation_time`).',
-                        ),
+                        .describe('Seconds — estimated delay before a validator becomes active.'),
                     exitTime: zod
                         .number()
                         .optional()
-                        .describe(
-                            'Seconds — estimated delay before a validator is exited (`validator_exit_time`).',
-                        ),
+                        .describe('Seconds — estimated delay before a validator is exited.'),
                     withdrawTime: zod
                         .number()
                         .optional()
-                        .describe(
-                            'Seconds — withdraw period from beacon chain (`validator_withdraw_time`).',
-                        ),
+                        .describe('Seconds — withdraw period from beacon chain.'),
                     addingDelay: zod
                         .number()
                         .optional()
-                        .describe(
-                            'Seconds — delay before validator is known at beacon chain (`validator_adding_delay`).',
-                        ),
+                        .describe('Seconds — delay before validator is known at beacon chain.'),
                     updatedAt: zod
                         .number()
                         .optional()
-                        .describe(
-                            'Unix timestamp (seconds) of last upstream refresh (`updated_at`).',
-                        ),
+                        .describe('Unix timestamp (seconds) of last upstream refresh.'),
                 }),
                 symbol: zod.enum(['eth']),
             }),
@@ -77,9 +59,7 @@ export const stakingBatchResponse = zod.object({
                         apy: zod
                             .number()
                             .describe('Validator APY percentage value from Everstake stats.'),
-                        saturation: zod
-                            .number()
-                            .describe('Saturation as percentage 0–100 (upstream decimal × 100).'),
+                        saturation: zod.number().describe('Saturation as percentage 0–100'),
                         id: zod.string().describe('Cardano validator address (pool id).'),
                     }),
                 ),
@@ -109,22 +89,12 @@ export const stakingStatsParams = zod.object({
 
 export const stakingStatsResponse = zod.union([
     zod.object({
-        apy: zod
-            .number()
-            .describe(
-                'Pool APY as a percentage number (e.g. 3.08). Derived from Everstake pool APR decimal × 100, rounded down to 3 decimal places.',
-            ),
-        nextRewardPayout: zod
-            .number()
-            .describe('Whole days until next reward payout; ceil from upstream seconds (86400).'),
+        apy: zod.number().describe('Pool APY as a percentage number (e.g. 3.08).'),
+        nextRewardPayout: zod.number().describe('Seconds until next reward payout.'),
         symbol: zod.enum(['eth']),
     }),
     zod.object({
-        apy: zod
-            .number()
-            .describe(
-                'Chain staking APR from Everstake dashboard as decimal fraction (same as Suite `blockchain.apr`).',
-            ),
+        apy: zod.number().describe('Chain staking APY from Everstake dashboard (e.g. 2.45).'),
         symbol: zod.enum(['sol']),
     }),
 ]);
@@ -140,29 +110,20 @@ export const stakingEthereumValidatorsQueueResponse = zod.object({
     activationTime: zod
         .number()
         .optional()
-        .describe(
-            'Seconds — estimated delay before a validator becomes active (Everstake `validator_activation_time`).',
-        ),
+        .describe('Seconds — estimated delay before a validator becomes active.'),
     exitTime: zod
         .number()
         .optional()
-        .describe(
-            'Seconds — estimated delay before a validator is exited (`validator_exit_time`).',
-        ),
-    withdrawTime: zod
-        .number()
-        .optional()
-        .describe('Seconds — withdraw period from beacon chain (`validator_withdraw_time`).'),
+        .describe('Seconds — estimated delay before a validator is exited.'),
+    withdrawTime: zod.number().optional().describe('Seconds — withdraw period from beacon chain.'),
     addingDelay: zod
         .number()
         .optional()
-        .describe(
-            'Seconds — delay before validator is known at beacon chain (`validator_adding_delay`).',
-        ),
+        .describe('Seconds — delay before validator is known at beacon chain.'),
     updatedAt: zod
         .number()
         .optional()
-        .describe('Unix timestamp (seconds) of last upstream refresh (`updated_at`).'),
+        .describe('Unix timestamp (seconds) of last upstream refresh.'),
 });
 
 /**
@@ -196,9 +157,7 @@ export const stakingCardanoPoolsResponse = zod.object({
     pools: zod.array(
         zod.object({
             apy: zod.number().describe('Validator APY percentage value from Everstake stats.'),
-            saturation: zod
-                .number()
-                .describe('Saturation as percentage 0–100 (upstream decimal × 100).'),
+            saturation: zod.number().describe('Saturation as percentage 0–100'),
             id: zod.string().describe('Cardano validator address (pool id).'),
         }),
     ),

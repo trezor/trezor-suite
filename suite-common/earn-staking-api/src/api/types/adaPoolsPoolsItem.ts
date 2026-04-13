@@ -8,7 +8,7 @@
 export type AdaPoolsPoolsItem = {
     /** Validator APY percentage value from Everstake stats. */
     apy: number;
-    /** Saturation as percentage 0–100 (upstream decimal × 100). */
+    /** Saturation as percentage 0–100 */
     saturation: number;
     /** Cardano validator address (pool id). */
     id: string;
