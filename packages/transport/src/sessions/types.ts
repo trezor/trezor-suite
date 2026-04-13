@@ -31,7 +31,9 @@ export type AcquireIntentRequest = AcquireInput;
 
 export type AcquireIntentResponse = BackgroundResponseWithError<
     { session: Session; path: PathInternal; releaseRequest?: Descriptor },
-    typeof ERRORS.SESSION_WRONG_PREVIOUS | typeof ERRORS.DEVICE_NOT_FOUND
+    | typeof ERRORS.SESSION_WRONG_PREVIOUS
+    | typeof ERRORS.DEVICE_NOT_FOUND
+    | typeof ERRORS.ABORTED_BY_TIMEOUT
 >;
 
 export type AcquireDoneRequest = {
@@ -52,16 +54,19 @@ export interface ReleaseIntentRequest {
 
 export type ReleaseIntentResponse = BackgroundResponseWithError<
     { path: PathInternal },
-    typeof ERRORS.SESSION_NOT_FOUND
+    typeof ERRORS.SESSION_NOT_FOUND | typeof ERRORS.ABORTED_BY_TIMEOUT
 >;
 
 export interface ReleaseDoneRequest {
     path: PathInternal;
 }
 
-export type ReleaseDoneResponse = BackgroundResponse<{
-    descriptors: Descriptor[];
-}>;
+export type ReleaseDoneResponse = BackgroundResponseWithError<
+    {
+        descriptors: Descriptor[];
+    },
+    typeof ERRORS.DEVICE_NOT_FOUND
+>;
 
 export type GetSessionsRequest = Record<string, never>;
 export type GetSessionsResponse = BackgroundResponse<{
