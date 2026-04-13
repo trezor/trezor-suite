@@ -3,6 +3,7 @@ import { CryptoId } from 'invity-api';
 
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { getNetwork } from '@suite-common/wallet-config';
+import * as envUtils from '@trezor/env-utils';
 
 import { ALTERNATIVE_QUOTES } from '../../../__fixtures__/buyUtils';
 import { invityAPI } from '../../../invityAPI';
@@ -19,10 +20,19 @@ import { buyThunks } from '../index';
 const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
 const createMockQuotes = () =>
     [...MIN_MAX_QUOTES_OK, ...ALTERNATIVE_QUOTES].map(quote => ({ ...quote }));
+const mockedIsNative = jest.spyOn(envUtils, 'isNative');
 
 describe('handleBuyRequestThunk', () => {
+    beforeEach(() => {
+        mockedIsNative.mockReturnValue(false);
+    });
+
     afterEach(() => {
         jest.clearAllMocks();
+    });
+
+    afterAll(() => {
+        mockedIsNative.mockRestore();
     });
 
     jest.mock('../../../invityAPI');
@@ -238,6 +248,54 @@ describe('handleBuyRequestThunk', () => {
         expect(state.buy.quotesRequest).toEqual({
             country: 'US',
             subdivision: 'CA',
+            cryptoStringAmount: '0',
+            fiatCurrency: 'USD',
+            fiatStringAmount: '1000',
+            receiveCurrency: 'bitcoin',
+            wantCrypto: false,
+        });
+        expect(mockTimerReset).toHaveBeenCalledTimes(1);
+        expect(quotesResponse).toEqual([
+            expect.objectContaining(mockQuotes[1]),
+            expect.objectContaining(mockQuotes[6]),
+        ]);
+    });
+
+    it('should request quotes for US without subdivision on native', async () => {
+        const { input, store, mockTimerLoading, mockTimerReset } = getMocks();
+        const mockQuotes = createMockQuotes();
+
+        mockedIsNative.mockReturnValue(true);
+
+        invityAPI.getBuyQuotes = () => Promise.resolve(mockQuotes);
+
+        const quotesResponse = await store
+            .dispatch(
+                buyThunks.handleRequestThunk({
+                    ...input,
+                    formValues: {
+                        ...input.formValues,
+                        countrySelect: {
+                            value: 'US' as const,
+                            codeAlpha3: 'USA',
+                            flag: '🇺🇸',
+                            name: 'United States of America',
+                            label: '🇺🇸 United States',
+                            shortLabel: '🇺🇸 USA',
+                        },
+                        countrySubdivisionSelect: undefined,
+                    },
+                }),
+            )
+            .unwrap();
+
+        const state = store.getState().wallet.trading;
+
+        expect(mockTimerLoading).toHaveBeenCalledTimes(1);
+        expect(state.buy.amountLimits).toBeUndefined();
+        expect(state.buy.quotes?.length).toEqual(2);
+        expect(state.buy.quotesRequest).toEqual({
+            country: 'US',
             cryptoStringAmount: '0',
             fiatCurrency: 'USD',
             fiatStringAmount: '1000',
