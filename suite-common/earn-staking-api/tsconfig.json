@@ -4,6 +4,7 @@
     "references": [
         { "path": "../http-client" },
         { "path": "../react-query" },
-        { "path": "../wallet-types" }
+        { "path": "../wallet-types" },
+        { "path": "../../packages/env-utils" }
     ]
 }
