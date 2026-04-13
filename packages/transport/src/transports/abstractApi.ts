@@ -133,12 +133,25 @@ export abstract class AbstractApiTransport extends AbstractTransport {
 
                 if (!openDeviceResult.success) {
                     // Release the lock without committing session (abort acquire).
-                    this.sessionsClient.acquireDone({ path, abort: true });
+                    await this.sessionsClient.acquireDone({ path, abort: true });
 
                     return openDeviceResult;
                 }
 
-                this.sessionsClient.acquireDone({ path, sessionOwner: this.id });
+                const acquireDoneResponse = await this.sessionsClient.acquireDone({
+                    path,
+                    sessionOwner: this.id,
+                });
+
+                if (!acquireDoneResponse.success) {
+                    // Device disappeared between openDevice and session commit.
+                    // Close the device we just opened to avoid a leaked handle.
+                    await this.api.closeDevice(acquireIntentResponse.payload.path, {
+                        channel: 'read',
+                    });
+
+                    return error({ code: acquireDoneResponse.error.code });
+                }
 
                 return success(acquireIntentResponse.payload.session);
             },
