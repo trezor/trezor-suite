@@ -14,10 +14,10 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "node-addon-api": "^5.0.0"
+        "node-addon-api": "8.5.0"
     },
     "devDependencies": {
-        "@types/node": "^18.19.26",
+        "@types/node": "22.13.10",
         "node-gyp": "12.2.0"
     }
 }
