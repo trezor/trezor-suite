@@ -10,7 +10,6 @@ import {
     type SellProviderInfo,
     type SellTradeFinalStatus,
 } from 'invity-api';
-import { v4 as uuidv4 } from 'uuid';
 
 import {
     type Network,
@@ -272,14 +271,14 @@ export const addIdsToQuotes = <T extends TradingType>(
             : null;
 
         if (sellBuyQuote && !sellBuyQuote.paymentId) {
-            sellBuyQuote.paymentId = uuidv4();
+            sellBuyQuote.paymentId = crypto.randomUUID();
         }
 
         if (type === 'exchange' && !quote.quoteId) {
-            (quote as ExchangeTrade).quoteId = uuidv4();
+            (quote as ExchangeTrade).quoteId = crypto.randomUUID();
         }
 
-        quote.orderId = uuidv4();
+        quote.orderId = crypto.randomUUID();
     });
 
     return quotes;
