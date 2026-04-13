@@ -2,7 +2,7 @@
     "name": "@trezor/type-utils",
     "version": "10.0.0-alpha.1",
     "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/type-utils",
-    "license": "See LICENSE.md in repo root",
+    "license": "MIT",
     "repository": {
         "type": "git",
         "url": "git://github.com/trezor/trezor-suite.git"

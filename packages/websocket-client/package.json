@@ -4,7 +4,7 @@
     "author": "Trezor <info@trezor.io>",
     "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/websocket",
     "description": "Shared websocket client implementation",
-    "license": "SEE LICENSE IN LICENSE.md",
+    "license": "MIT",
     "repository": {
         "type": "git",
         "url": "git://github.com/trezor/trezor-suite.git"

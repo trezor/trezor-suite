@@ -1,7 +1,7 @@
 {
     "name": "@trezor/device-utils",
     "version": "10.0.0-alpha.1",
-    "license": "See LICENSE.md in repo root",
+    "license": "MIT",
     "sideEffects": false,
     "main": "src/index",
     "publishConfig": {

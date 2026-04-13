@@ -2,7 +2,7 @@
     "name": "@trezor/transport",
     "version": "10.0.0-alpha.1",
     "description": "Low level library facilitating protocol buffers based communication with Trezor devices",
-    "license": "SEE LICENSE IN LICENSE.md",
+    "license": "MIT",
     "repository": {
         "type": "git",
         "url": "git://github.com/trezor/trezor-suite.git"
