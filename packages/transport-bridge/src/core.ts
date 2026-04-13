@@ -161,6 +161,9 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
         logger?.debug(`core: openDevice: result: ${JSON.stringify(openDeviceResult)}`);
 
         if (!openDeviceResult.success) {
+            // Release the lock without committing session (abort acquire).
+            await sessionsClient.acquireDone({ path: acquireInput.path, abort: true });
+
             return openDeviceResult;
         }
         await sessionsClient.acquireDone({
@@ -172,13 +175,21 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
     };
 
     const release = async ({ session }: Omit<ReleaseInput, 'path'>) => {
-        await sessionsClient.releaseIntent({ session });
+        const releaseIntentResult = await sessionsClient.releaseIntent({ session });
+
+        if (!releaseIntentResult.success) {
+            return releaseIntentResult;
+        }
 
         const sessionsResult = await sessionsClient.getPathBySession({
             session,
         });
 
         if (!sessionsResult.success) {
+            // releaseIntent succeeded (lock held) but path lookup failed.
+            // Release the lock to avoid starvation.
+            await sessionsClient.releaseDone({ path: releaseIntentResult.payload.path });
+
             return sessionsResult;
         }
 
@@ -188,6 +199,7 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
             logger?.error(`core: release: api.closeDevice error: ${closeRes.error}`);
         }
 
+        // Always call releaseDone to release the lock, even if closeDevice failed.
         return sessionsClient.releaseDone({ path: sessionsResult.payload.path });
     };
 
