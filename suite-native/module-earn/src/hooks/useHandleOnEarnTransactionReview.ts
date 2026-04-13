@@ -14,6 +14,7 @@ import { signEthStakeTransactionNativeThunk } from '@suite-native/staking';
 
 import { handleEarnReviewError } from '../utils';
 import { useEarnReviewBackNavigation } from './useEarnReviewBackNavigation';
+import { useEarnSelectedPrecomposedTransaction } from './useEarnSelectedPrecomposedTransaction';
 import { useShowDeviceDisconnectedDuringEarnReviewAlert } from './useShowDeviceDisconnectedDuringEarnReviewAlert';
 import { useShowPushTransactionFailedDuringReviewAlert } from './useShowPushTransactionFailedDuringReviewAlert';
 
@@ -40,9 +41,14 @@ export const useHandleOnEarnTransactionReview = ({
     const showDeviceDisconnectedAlert = useShowDeviceDisconnectedDuringEarnReviewAlert();
     const { showPushTransactionFailedAlert, showPendingTransactionConflictAlert } =
         useShowPushTransactionFailedDuringReviewAlert('stake');
+    const precomposedTransaction = useEarnSelectedPrecomposedTransaction('stake', accountKey);
 
     const handleOnEarnTransactionReview = useCallback(async () => {
-        const response = await dispatch(signEthStakeTransactionNativeThunk({ accountKey, amount }));
+        if (!precomposedTransaction) return;
+
+        const response = await dispatch(
+            signEthStakeTransactionNativeThunk({ accountKey, amount, precomposedTransaction }),
+        );
 
         if (isFulfilled(response)) {
             onTransactionSubmitted(response.payload.txid);
@@ -67,6 +73,7 @@ export const useHandleOnEarnTransactionReview = ({
         dispatch,
         navigation,
         onTransactionSubmitted,
+        precomposedTransaction,
         showDeviceDisconnectedAlert,
         showPendingTransactionConflictAlert,
         showPushTransactionFailedAlert,

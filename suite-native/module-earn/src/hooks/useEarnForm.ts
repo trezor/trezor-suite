@@ -1,13 +1,18 @@
+import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
+import { getEthereumStakingAddressByType } from '@suite-common/staking';
 import { getNetwork } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { useForm, useWatch } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
+import { STAKE_CALLDATA } from '@suite-native/staking';
 
 import { type EarnFormValues, earnFormValidationSchema } from '../earnFormSchema';
+import { buildEarnComposeFormState } from '../utils';
+import { useComposeEarnFees } from './useComposeEarnFees';
 
 export const useEarnForm = (accountKey: AccountKey) => {
     const { translate } = useTranslate();
@@ -32,8 +37,27 @@ export const useEarnForm = (accountKey: AccountKey) => {
     });
 
     const amountValue = useWatch({ control: form.control, name: 'amount' });
+    const {
+        formState: { isValid },
+    } = form;
+
+    const stakeFormState = useMemo(() => {
+        if (!account || !isValid || !amountValue) return undefined;
+
+        return buildEarnComposeFormState(
+            getEthereumStakingAddressByType(account.symbol, 'stake'),
+            amountValue,
+            STAKE_CALLDATA,
+        );
+    }, [account, isValid, amountValue]);
+
+    const { formDraft, formDraftKey, updateFeeLevelThunk } = useComposeEarnFees({
+        accountKey,
+        formState: stakeFormState,
+        formDraftPrefix: 'stake',
+    });
 
     if (!account) return null;
 
-    return { form, amountValue, account };
+    return { form, amountValue, account, formDraft, formDraftKey, updateFeeLevelThunk };
 };

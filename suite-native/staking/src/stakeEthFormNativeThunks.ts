@@ -3,40 +3,38 @@ import { createThunk } from '@suite-common/redux-utils';
 import { getEthNetworkAddresses } from '@suite-common/staking';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
-    type FeesRootState,
     type SignTransactionError,
     type SignTransactionTimeoutError,
     addFakePendingEvmTxThunk,
     ethereumGetCurrentNonceThunk,
     formDraftActions,
     selectAccountByKey,
-    selectConvertedNetworkFeeInfo,
     sendFormActions,
-    updateFeeInfoThunk,
 } from '@suite-common/wallet-core';
-import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import {
-    getAccountIdentity,
-    getEthereumEstimateFeeParams,
-    getFormDraftKey,
-} from '@suite-common/wallet-utils';
+    type Account,
+    type AccountKey,
+    type PrecomposedTransactionFinal,
+} from '@suite-common/wallet-types';
+import { getAccountIdentity, getFormDraftKey } from '@suite-common/wallet-utils';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
-import TrezorConnect from '@trezor/connect';
+import TrezorConnect, { type FeeLevel } from '@trezor/connect';
 
 import {
-    STAKE_CALLDATA,
     type StakePushTransactionError,
     buildEthStakeTx,
     buildStakeFormState,
-    buildStakePrecomposedTx,
-    selectPreferredFeeLevel,
 } from './stakeFormNativeUtils';
 
 const STAKE_NATIVE_MODULE_PREFIX = '@suite-native/staking';
 
 export const signEthStakeTransactionNativeThunk = createThunk<
     { txid: string },
-    { accountKey: AccountKey; amount: string },
+    {
+        accountKey: AccountKey;
+        amount: string;
+        precomposedTransaction: PrecomposedTransactionFinal;
+    },
     {
         rejectValue:
             | SignTransactionError
@@ -46,7 +44,10 @@ export const signEthStakeTransactionNativeThunk = createThunk<
     }
 >(
     `${STAKE_NATIVE_MODULE_PREFIX}/signEthStakeTransactionNativeThunk`,
-    async ({ accountKey, amount }, { dispatch, rejectWithValue, getState }) => {
+    async (
+        { accountKey, amount, precomposedTransaction },
+        { dispatch, rejectWithValue, getState },
+    ) => {
         try {
             const account = selectAccountByKey(getState(), accountKey);
 
@@ -74,81 +75,37 @@ export const signEthStakeTransactionNativeThunk = createThunk<
                 });
             }
 
-            await dispatch(updateFeeInfoThunk({ networkSymbol: account.symbol }));
+            const gasLimit = precomposedTransaction.feeLimit;
 
-            const feeInfo = selectConvertedNetworkFeeInfo(
-                getState() as FeesRootState,
-                account.symbol,
-            );
-            const feeLevel = selectPreferredFeeLevel(feeInfo?.levels);
-
-            if (!feeLevel) {
+            if (!gasLimit) {
                 console.error(
-                    `signEthStakeTransactionNativeThunk: Fee info not available for ${account.symbol}`,
+                    'signEthStakeTransactionNativeThunk: Selected fee level is missing gas limit.',
                 );
 
                 return rejectWithValue({
                     error: 'sign-transaction-failed',
-                    message: 'Fee info not available.',
+                    message: 'Selected fee level is missing gas limit.',
                 });
             }
+
+            const feeLevel: FeeLevel = {
+                label: 'normal',
+                blocks: -1,
+                feePerUnit: precomposedTransaction.feePerByte,
+                feeLimit: gasLimit,
+                maxFeePerGas: precomposedTransaction.maxFeePerGas,
+                maxPriorityFeePerGas: precomposedTransaction.maxPriorityFeePerGas,
+            };
 
             const identity = getAccountIdentity(account);
             const { addressContractPool } = getEthNetworkAddresses(account.symbol);
 
-            const estimatedFee = await TrezorConnect.blockchainEstimateFee({
-                coin: account.symbol,
-                identity,
-                request: {
-                    blocks: [2],
-                    specific: {
-                        from: account.descriptor,
-                        ...getEthereumEstimateFeeParams(
-                            addressContractPool,
-                            amount,
-                            undefined,
-                            STAKE_CALLDATA,
-                        ),
-                    },
-                },
-            });
-
-            if (!estimatedFee.success) {
-                console.error(
-                    `signEthStakeTransactionNativeThunk: Gas limit estimation failed: ${estimatedFee.error.message}`,
-                );
-
-                return rejectWithValue({
-                    error: 'sign-transaction-failed',
-                    message: `Gas limit estimation failed: ${estimatedFee.error.message}`,
-                });
-            }
-
-            const rawGasLimit = estimatedFee.payload.levels[0]?.feeLimit;
-
-            if (!rawGasLimit) {
-                console.error(
-                    'signEthStakeTransactionNativeThunk: Gas limit estimation returned empty value.',
-                );
-
-                return rejectWithValue({
-                    error: 'sign-transaction-failed',
-                    message: 'Gas limit estimation returned empty value.',
-                });
-            }
-
-            const stakeFormState = buildStakeFormState(feeLevel, rawGasLimit);
-            const precomposedTx = buildStakePrecomposedTx(
-                feeLevel,
-                rawGasLimit,
-                addressContractPool,
-                amount,
-            );
+            const stakeFormState = buildStakeFormState(feeLevel, gasLimit);
 
             dispatch(
                 sendFormActions.storePrecomposedTransaction({
                     formState: stakeFormState,
-                    precomposedTransaction: precomposedTx,
+                    precomposedTransaction,
                     accountKey,
                 }),
             );
@@ -173,7 +130,7 @@ export const signEthStakeTransactionNativeThunk = createThunk<
                     amount,
                     chainId: network.chainId!,
                     nonce,
-                    rawGasLimit,
+                    gasLimit,
                     feeLevel,
                 });
 
@@ -205,9 +162,11 @@ export const signEthStakeTransactionNativeThunk = createThunk<
             const signResponse = deviceAccessResponse.payload;
 
             if (!signResponse.success) {
-                console.error(
-                    `signEthStakeTransactionNativeThunk: Sign transaction failed: ${signResponse.error.message}`,
-                );
+                if (signResponse.error.message !== 'tx-cancelled') {
+                    console.error(
+                        `signEthStakeTransactionNativeThunk: Sign transaction failed: ${signResponse.error.message}`,
+                    );
+                }
 
                 return rejectWithValue({
                     error: 'sign-transaction-failed',
@@ -254,7 +213,7 @@ export const signEthStakeTransactionNativeThunk = createThunk<
 
             dispatch(
                 addFakePendingEvmTxThunk({
-                    precomposedTransaction: precomposedTx,
+                    precomposedTransaction,
                     precomposedForm: stakeFormState,
                     txid,
                     account,

@@ -13368,6 +13368,8 @@ __metadata:
     "@suite-common/earn-api": "workspace:*"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/message-system": "workspace:*"
+    "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/staking": "workspace:*"
     "@suite-common/validators": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-constants": "workspace:*"

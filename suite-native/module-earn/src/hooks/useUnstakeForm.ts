@@ -1,5 +1,7 @@
+import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
+import { getEthereumStakingAddressByType } from '@suite-common/staking';
 import { getNetwork } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
@@ -8,6 +10,8 @@ import { useForm, useWatch } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
 import {
     type NativeStakingRootState,
+    buildUnstakeCalldata,
+    ethToWei,
     selectStakedBalanceByAccountKey,
 } from '@suite-native/staking';
 import { BigNumber } from '@trezor/utils';
@@ -15,6 +19,8 @@ import { BigNumber } from '@trezor/utils';
 import { NETWORK_FEE_WARNING_MULTIPLIER } from '../constants';
 import { type EarnFormValues } from '../earnFormSchema';
 import { unstakeFormValidationSchema } from '../unstakeFormSchema';
+import { buildEarnComposeFormState } from '../utils';
+import { useComposeEarnFees } from './useComposeEarnFees';
 
 export const useUnstakeForm = (accountKey: AccountKey) => {
     const { translate } = useTranslate();
@@ -39,6 +45,25 @@ export const useUnstakeForm = (accountKey: AccountKey) => {
     });
 
     const amountValue = useWatch({ control: form.control, name: 'amount' });
+    const {
+        formState: { isValid },
+    } = form;
+
+    const unstakeFormState = useMemo(() => {
+        if (!account || !isValid || !amountValue) return undefined;
+
+        return buildEarnComposeFormState(
+            getEthereumStakingAddressByType(account.symbol, 'unstake'),
+            '0',
+            buildUnstakeCalldata(ethToWei(amountValue)),
+        );
+    }, [account, isValid, amountValue]);
+
+    const { formDraft, formDraftKey, updateFeeLevelThunk } = useComposeEarnFees({
+        accountKey,
+        formState: unstakeFormState,
+        formDraftPrefix: 'unstake',
+    });
 
     if (!account) return null;
 
@@ -52,5 +77,12 @@ export const useUnstakeForm = (accountKey: AccountKey) => {
         new BigNumber(amountValue).gt(0) &&
         new BigNumber(amountValue).lt(networkFeeWarningThreshold);
 
-    return { form, amountValue, showNetworkFeeWarning };
+    return {
+        form,
+        amountValue,
+        showNetworkFeeWarning,
+        formDraft,
+        formDraftKey,
+        updateFeeLevelThunk,
+    };
 };
