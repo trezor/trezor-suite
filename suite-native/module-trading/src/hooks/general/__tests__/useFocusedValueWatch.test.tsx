@@ -4,7 +4,7 @@ import {
     act,
     initStore,
     renderHookWithStoreProvider,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils-store';
 import { selectIsAmountInputActive } from '@suite-native/trading-state';
 import { type BuyFormType } from '@suite-native/trading-types';
 

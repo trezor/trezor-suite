@@ -4,7 +4,7 @@ import {
     act,
     renderHookWithStoreProvider,
     renderWithStoreProvider,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils-store';
 import { banxaCreditCardSellQuote, btcAsset, getWalletState } from '@suite-native/trading-fixtures';
 import { type SellFormType } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';

@@ -6,7 +6,7 @@ import {
     initStore,
     renderWithStoreProvider,
     userEvent,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils-store';
 
 import { getWalletState } from '../../../../__fixtures__/walletState';
 import { type NativeSupportedPredefinedFeeLevel } from '../../../../types';

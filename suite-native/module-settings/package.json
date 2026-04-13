@@ -68,6 +68,6 @@
         "react-redux": "9.2.0"
     },
     "devDependencies": {
-        "@suite-native/test-utils": "workspace:*"
+        "@suite-native/test-utils-store": "workspace:*"
     }
 }

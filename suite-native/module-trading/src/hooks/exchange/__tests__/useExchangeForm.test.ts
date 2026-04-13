@@ -14,7 +14,7 @@ import {
     act,
     initStore,
     renderHookWithStoreProvider,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils-store';
 import {
     btcAsset,
     cexdirectFloatingQuote,

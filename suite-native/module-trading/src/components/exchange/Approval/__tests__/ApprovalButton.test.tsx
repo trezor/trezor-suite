@@ -5,7 +5,7 @@ import {
     initStore,
     renderWithStoreProvider,
     userEvent,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils-store';
 import { getWalletState, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 
 import { ApprovalButton, type ApprovalButtonProps } from '../ApprovalButton';

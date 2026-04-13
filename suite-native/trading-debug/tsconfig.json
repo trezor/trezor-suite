@@ -10,6 +10,7 @@
             "path": "../../packages/styles-native"
         },
         { "path": "../test-utils" },
+        { "path": "../test-utils-store" },
         { "path": "../trading-consts" },
         { "path": "../trading-types" }
     ]

@@ -1,5 +1,5 @@
 import { type Network } from '@suite-common/wallet-config';
-import { fireEvent, renderWithStoreProvider } from '@suite-native/test-utils';
+import { fireEvent, renderWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { TradeableAssetSheetHeader } from '../TradeableAssetSheetHeader';
 

@@ -41,6 +41,6 @@
         { "path": "../toasts" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/type-utils" },
-        { "path": "../test-utils" }
+        { "path": "../test-utils-store" }
     ]
 }

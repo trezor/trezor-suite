@@ -1,5 +1,5 @@
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
-import { type PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils';
+import { type PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { getWalletState } from '../../../__fixtures__/walletState';
 import {

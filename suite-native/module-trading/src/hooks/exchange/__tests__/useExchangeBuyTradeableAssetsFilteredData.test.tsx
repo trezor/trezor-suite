@@ -1,4 +1,8 @@
-import { type PreloadedState, act, renderHookWithStoreProvider } from '@suite-native/test-utils';
+import {
+    type PreloadedState,
+    act,
+    renderHookWithStoreProvider,
+} from '@suite-native/test-utils-store';
 import { btcAsset, ethAsset, getWalletState, usdcAsset } from '@suite-native/trading-fixtures';
 
 import { useExchangeBuyTradeableAssetsFilteredData } from '../useExchangeBuyTradeableAssetsFilteredData';

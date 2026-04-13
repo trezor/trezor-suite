@@ -1,7 +1,7 @@
 import type { BuyTrade, CryptoId } from 'invity-api';
 
 import { type TradingAssetOption } from '@suite-common/trading';
-import { act, renderHookWithStoreProvider } from '@suite-native/test-utils';
+import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import {
     btcAsset,
     coins,

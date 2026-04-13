@@ -7,7 +7,7 @@ import {
 } from '@suite-common/trading';
 import { type Account, type TokenAddress, type TokenInfoBranded } from '@suite-common/wallet-types';
 import { getFormDraftKey } from '@suite-common/wallet-utils';
-import { type PreloadedState, type TestStore, initStore } from '@suite-native/test-utils';
+import { type PreloadedState, type TestStore, initStore } from '@suite-native/test-utils-store';
 import { selectAccountTokenInfo } from '@suite-native/tokens';
 import { eth1NormalAccount, getWalletState, invityDexQuote } from '@suite-native/trading-fixtures';
 

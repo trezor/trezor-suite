@@ -6,7 +6,7 @@ import {
     type PreloadedState,
     initStore,
     renderHookWithStoreProvider,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils-store';
 import { getBuyTrade, getInitializedTradingState } from '@suite-native/trading-fixtures';
 
 import { useWatchTrade } from '../useWatchTrade';

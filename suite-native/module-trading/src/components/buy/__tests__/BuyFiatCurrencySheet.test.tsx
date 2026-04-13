@@ -1,4 +1,4 @@
-import { renderWithStoreProvider, screen } from '@suite-native/test-utils';
+import { renderWithStoreProvider, screen } from '@suite-native/test-utils-store';
 import { getWalletState } from '@suite-native/trading-fixtures';
 
 import { BuyFiatCurrencySheet } from '../BuyFiatCurrencySheet';

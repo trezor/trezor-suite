@@ -3,7 +3,7 @@ import React from 'react';
 import { type TradingExchangeType, type TradingSellType } from '@suite-common/trading';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { getTranslation } from '@suite-native/intl';
-import { renderWithStoreProvider } from '@suite-native/test-utils';
+import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { FeePickerCard } from '../FeePickerCard';
 

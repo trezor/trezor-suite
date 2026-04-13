@@ -1,5 +1,5 @@
 import { type TradingCountryCode } from '@suite-common/trading';
-import { type PreloadedState, renderHookWithStoreProvider } from '@suite-native/test-utils';
+import { type PreloadedState, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { LocationForm } from '../../components/LocationForm';
 import { useIsTradingAvailableForForm } from '../useIsTradingAvailableForForm';

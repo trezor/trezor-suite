@@ -6,7 +6,7 @@ import {
     act,
     initStore,
     renderHookWithStoreProvider,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils-store';
 import { getBtcAccount, getInitializedTradingState } from '@suite-native/trading-fixtures';
 
 import { useExchangeData } from '../useExchangeData';

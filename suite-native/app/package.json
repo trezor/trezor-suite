@@ -188,7 +188,7 @@
         "@rozenite/redux-devtools-plugin": "^1.4.0",
         "@suite-common/e2e-evolu-client": "workspace:*",
         "@suite-native/storybook": "workspace:*",
-        "@suite-native/test-utils": "workspace:*",
+        "@suite-native/test-utils-store": "workspace:*",
         "@trezor/connect-mobile": "workspace:^",
         "@trezor/eslint": "workspace:*",
         "@types/lodash": "^4.17.16",

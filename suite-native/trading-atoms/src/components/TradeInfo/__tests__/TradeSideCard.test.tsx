@@ -2,7 +2,7 @@ import { Text } from 'react-native';
 
 import type { CryptoId } from 'invity-api';
 
-import { renderWithStoreProvider } from '@suite-native/test-utils';
+import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { btc1NormalAccount } from '@suite-native/trading-fixtures';
 
 import { TradeSideCard, type TradeSideCardProps } from '../TradeSideCard';

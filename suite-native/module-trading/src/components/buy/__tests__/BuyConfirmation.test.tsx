@@ -1,5 +1,5 @@
 import { Button } from '@suite-native/atoms';
-import { renderWithStoreProvider } from '@suite-native/test-utils';
+import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { getInitializedTradingStateWithQuotes } from '@suite-native/trading-fixtures';
 
 import { BuyConfirmation } from '../BuyConfirmation';

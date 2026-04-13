@@ -6,7 +6,7 @@ import {
     renderHookWithStoreProvider,
     renderWithStoreProvider,
     userEvent,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils-store';
 import { btcAsset, getWalletState, usdcAsset } from '@suite-native/trading-fixtures';
 import { type SellFormType } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';

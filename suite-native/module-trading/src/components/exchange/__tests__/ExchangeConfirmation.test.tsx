@@ -2,7 +2,7 @@ import type { CryptoId, ExchangeTrade } from 'invity-api';
 
 import { Button } from '@suite-native/atoms';
 import { getTranslation } from '@suite-native/intl';
-import { renderWithStoreProvider, screen } from '@suite-native/test-utils';
+import { renderWithStoreProvider, screen } from '@suite-native/test-utils-store';
 import { getInitializedTradingStateWithQuotes } from '@suite-native/trading-fixtures';
 
 import { ExchangeConfirmation } from '../ExchangeConfirmation';

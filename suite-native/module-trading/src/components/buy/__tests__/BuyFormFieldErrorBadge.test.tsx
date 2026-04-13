@@ -7,7 +7,7 @@ import {
     act,
     renderHookWithStoreProvider,
     renderWithStoreProvider,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils-store';
 import { btcAsset, getInitializedTradingStateWithQuotes } from '@suite-native/trading-fixtures';
 import { type BuyFormType } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';

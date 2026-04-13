@@ -1,5 +1,5 @@
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
-import { act, renderHookWithStoreProvider } from '@suite-native/test-utils';
+import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { useRequestDelayedNavigationToOutputsReview } from '../useRequestDelayedNavigationToOutputsReview';
 

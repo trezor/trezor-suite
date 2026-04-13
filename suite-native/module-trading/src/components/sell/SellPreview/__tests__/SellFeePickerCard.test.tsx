@@ -1,5 +1,5 @@
 import { getTranslation } from '@suite-native/intl';
-import { type PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils';
+import { type PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { banxaCreditCardSellQuote, getWalletState } from '@suite-native/trading-fixtures';
 import type { ProviderConfirmationStatus } from '@suite-native/trading-types';
 

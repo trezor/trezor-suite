@@ -4,7 +4,7 @@ import {
     initStore,
     renderWithStoreProvider,
     userEvent,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils-store';
 import { selectTradingProviderConfirmationStatus } from '@suite-native/trading-state';
 
 import { ProviderStatusDevButtons } from '../ProviderStatusDevButtons';

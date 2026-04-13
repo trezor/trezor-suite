@@ -1,7 +1,7 @@
 import { yup } from '@suite-common/validators';
 import { type AccountKey, type FormState } from '@suite-common/wallet-types';
 import { Form, useForm } from '@suite-native/forms';
-import { renderWithStoreProvider } from '@suite-native/test-utils';
+import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { getWalletState } from '../../../__fixtures__/walletState';
 import { FeesContent, type FeesContentProps } from '../FeesContent';

@@ -1,0 +1,22 @@
+{
+    "name": "@suite-native/test-utils-store",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "type-check": "yarn g:tsc --build",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
+    },
+    "dependencies": {
+        "@reduxjs/toolkit": "2.11.2",
+        "@suite-native/formatters-config": "workspace:*",
+        "@suite-native/test-utils": "workspace:*",
+        "@testing-library/react-native": "13.3.3",
+        "react": "19.2.4",
+        "react-native": "0.83.2",
+        "react-redux": "9.2.0"
+    }
+}

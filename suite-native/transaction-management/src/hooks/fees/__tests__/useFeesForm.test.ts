@@ -1,5 +1,5 @@
 import { type AccountKey } from '@suite-common/wallet-types';
-import { act, renderHookWithStoreProvider } from '@suite-native/test-utils';
+import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { type UseFeesFormProps, useFeesForm } from '../useFeesForm';
 

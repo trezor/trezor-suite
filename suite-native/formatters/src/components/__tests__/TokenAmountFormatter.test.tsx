@@ -1,5 +1,5 @@
 import { type TokenSymbol } from '@suite-common/wallet-types';
-import { renderWithStoreProvider } from '@suite-native/test-utils';
+import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { TokenAmountFormatter, type TokenAmountFormatterProps } from '../TokenAmountFormatter';
 

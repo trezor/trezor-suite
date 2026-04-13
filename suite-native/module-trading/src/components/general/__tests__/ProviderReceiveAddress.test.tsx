@@ -3,7 +3,7 @@ import React from 'react';
 import type { ExchangeTrade, SellFiatTrade } from 'invity-api';
 
 import { type AccountKey } from '@suite-common/wallet-types';
-import { renderWithStoreProvider } from '@suite-native/test-utils';
+import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 import {
     banxaCreditCardSellQuote,
     exchangeMercuryo,

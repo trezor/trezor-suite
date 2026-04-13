@@ -1,4 +1,4 @@
-import { type TestStore, initStore, renderWithStoreProvider } from '@suite-native/test-utils';
+import { type TestStore, initStore, renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { getWalletState, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 
 import { RevokeLimitInfoRow } from '../RevokeLimitInfoRow';

@@ -55,6 +55,6 @@
     },
     "devDependencies": {
         "@suite-native/state": "workspace:*",
-        "@suite-native/test-utils": "workspace:*"
+        "@suite-native/test-utils-store": "workspace:*"
     }
 }

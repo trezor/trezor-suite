@@ -3,7 +3,7 @@ import {
     act,
     initStore,
     renderHookWithStoreProvider,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils-store';
 import { selectTradingProviderConfirmationStatus } from '@suite-native/trading-state';
 
 import { useDispatchProviderConfirmationStatus } from '../useDispatchProviderConfirmationStatus';

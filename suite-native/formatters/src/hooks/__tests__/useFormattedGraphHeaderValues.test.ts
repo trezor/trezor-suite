@@ -4,7 +4,7 @@ import {
     type TestStore,
     initStore,
     renderHookWithStoreProvider,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils-store';
 import { AmountUnit } from '@trezor/protobuf/src/definitions';
 
 import { useFormattedGraphHeaderValues } from '../useFormattedGraphHeaderValues';

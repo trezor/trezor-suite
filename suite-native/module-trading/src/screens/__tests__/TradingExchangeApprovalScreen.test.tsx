@@ -8,7 +8,7 @@ import {
     fireEvent,
     initStore,
     renderWithStoreProvider,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils-store';
 import {
     eth1NormalAccount,
     getWalletState,

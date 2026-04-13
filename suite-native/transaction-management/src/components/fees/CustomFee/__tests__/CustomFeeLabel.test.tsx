@@ -6,7 +6,7 @@ import {
     act,
     renderHookWithStoreProvider,
     renderWithStoreProvider,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils-store';
 
 import { getWalletState } from '../../../../__fixtures__/walletState';
 import { type FeesFormType } from '../../../../feesFormSchema';

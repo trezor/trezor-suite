@@ -7,7 +7,7 @@ import {
     initStore,
     renderHookWithStoreProvider,
     renderWithStoreProvider,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils-store';
 
 import { type FeesFormType } from '../../../..';
 import { getWalletState } from '../../../../__fixtures__/walletState';

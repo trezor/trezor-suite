@@ -8,7 +8,7 @@ import {
     renderWithStoreProvider,
     screen,
     userEvent,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils-store';
 import {
     exchangeQuotes,
     getWalletState,

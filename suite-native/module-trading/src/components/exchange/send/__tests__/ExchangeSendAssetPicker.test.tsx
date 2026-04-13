@@ -8,7 +8,7 @@ import {
     renderHookWithStoreProvider,
     renderWithStoreProvider,
     userEvent,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils-store';
 import {
     getBtcAccount,
     getEthAccount,

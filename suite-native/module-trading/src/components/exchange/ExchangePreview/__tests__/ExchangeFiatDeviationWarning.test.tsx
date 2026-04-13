@@ -1,7 +1,7 @@
 import type { ExchangeTrade } from 'invity-api';
 
 import { getTranslation } from '@suite-native/intl';
-import { renderWithStoreProvider } from '@suite-native/test-utils';
+import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 
 import { ExchangeFiatDeviationWarning } from '../ExchangeFiatDeviationWarning';

@@ -1,5 +1,9 @@
 import { geolocationActions, selectCountryCode } from '@suite-common/geolocation';
-import { type TestStore, initStore, renderHookWithStoreProvider } from '@suite-native/test-utils';
+import {
+    type TestStore,
+    initStore,
+    renderHookWithStoreProvider,
+} from '@suite-native/test-utils-store';
 
 import { useGeolocationCountryCode } from '../useGeolocationCountryCode';
 

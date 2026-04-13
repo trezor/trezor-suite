@@ -6,7 +6,7 @@ import {
     fireEvent,
     initStore,
     renderWithStoreProvider,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils-store';
 import { selectTradingResidenceCountry } from '@suite-native/trading-state';
 
 import { type TradingLocationFormValues } from '../../types/tradingLocationForm';

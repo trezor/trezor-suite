@@ -1,5 +1,9 @@
-import { type PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils';
-import { getWalletState, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
+import { type PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils-store';
+import {
+    cexdirectFloatingQuote,
+    getWalletState,
+    mercuryoFixedWorstQuote,
+} from '@suite-native/trading-fixtures';
 
 import {
     ExchangeProviderPicker,

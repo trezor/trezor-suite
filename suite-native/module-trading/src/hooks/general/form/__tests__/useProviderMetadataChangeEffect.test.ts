@@ -1,5 +1,9 @@
 import { selectTradingProviderMetadata } from '@suite-common/trading';
-import { type TestStore, initStore, renderHookWithStoreProvider } from '@suite-native/test-utils';
+import {
+    type TestStore,
+    initStore,
+    renderHookWithStoreProvider,
+} from '@suite-native/test-utils-store';
 import { buyMercuryo, getWalletState } from '@suite-native/trading-fixtures';
 
 import {

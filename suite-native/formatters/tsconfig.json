@@ -30,6 +30,6 @@
         {
             "path": "../../suite-common/wallet-types"
         },
-        { "path": "../test-utils" }
+        { "path": "../test-utils-store" }
     ]
 }
