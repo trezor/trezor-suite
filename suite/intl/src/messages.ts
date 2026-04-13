@@ -3051,6 +3051,11 @@ export const messages = defineMessages({
         description: 'Tab label for image QR scanning',
         id: 'TR_QR_TAB_IMAGE',
     },
+    TR_QR_DROPZONE_LABEL: {
+        defaultMessage: 'Drag & drop an image with QR code here or click to browse',
+        description: 'Label for QR code image drop zone',
+        id: 'TR_QR_DROPZONE_LABEL',
+    },
     TR_QR_PASTE_HINT: {
         defaultMessage: 'You can also paste an image from the clipboard.',
         description: 'Hint about pasting QR code image from clipboard',
@@ -6869,6 +6874,10 @@ export const messages = defineMessages({
         id: 'TR_PIN_HEADING_INITIAL',
         defaultMessage: 'Set your PIN',
     },
+    TR_COMPLETE_SETUP: {
+        id: 'TR_COMPLETE_SETUP',
+        defaultMessage: 'Complete setup',
+    },
     TR_RECOVER_YOUR_WALLET_FROM: {
         id: 'TR_RECOVER_YOUR_WALLET_FROM',
         defaultMessage: 'Recover your wallet using a wallet backup',
@@ -7866,6 +7875,14 @@ export const messages = defineMessages({
         id: 'TR_FIRMWARE_INSTALLATION_PROGRESS_CHECK_YES_BUTTON',
         defaultMessage: 'Yes, I see it',
     },
+    TR_ONBOARDING_COINS_STEP: {
+        id: 'TR_ONBOARDING_COINS_STEP',
+        defaultMessage: 'Activate coins',
+    },
+    TR_ONBOARDING_COINS_STEP_DESCRIPTION: {
+        id: 'TR_ONBOARDING_COINS_STEP_DESCRIPTION',
+        defaultMessage: 'Select which coins to show in Trezor Suite. You can change this anytime.',
+    },
     TR_WHAT_DATA_WE_COLLECT: {
         id: 'TR_WHAT_DATA_WE_COLLECT',
         defaultMessage: 'What data do we collect?',
@@ -7899,6 +7916,10 @@ export const messages = defineMessages({
     TR_TROUBLE_SHOOTING_BLUETOOTH: {
         id: 'TR_TROUBLE_SHOOTING_BLUETOOTH',
         defaultMessage: 'Troubleshooting Bluetooth',
+    },
+    TR_ONBOARDING_ADVANCED: {
+        id: 'TR_ONBOARDING_ADVANCED',
+        defaultMessage: 'Advanced',
     },
     TR_TROUBLESHOOTING_TIP_BROWSER_WEBUSB_TITLE: {
         defaultMessage: 'Use a Chromium-based browser',
