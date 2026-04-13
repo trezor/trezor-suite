@@ -20,6 +20,7 @@ import {
 
 import { EarnSummaryOutputItem } from './EarnSummaryOutputItem';
 import { UnstakeOutputItem } from './UnstakeOutputItem';
+import { useEarnSelectedPrecomposedTransaction } from '../hooks/useEarnSelectedPrecomposedTransaction';
 import { useHandleOnUnstakeTransactionReview } from '../hooks/useHandleOnUnstakeTransactionReview';
 
 const NUMBER_OF_STEPS = 2;
@@ -43,6 +44,8 @@ export const UnstakeTransactionDataReviewStepList = ({
     const summaryOutput = useSelector((state: TransactionReviewOutputsState) =>
         selectReviewSummaryOutput(state, 'unstake', accountKey),
     );
+
+    const selectedPrecomposed = useEarnSelectedPrecomposedTransaction('unstake', accountKey);
 
     const accountSymbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
@@ -82,7 +85,7 @@ export const UnstakeTransactionDataReviewStepList = ({
                         <EarnSummaryOutputItem
                             accountKey={accountKey}
                             amount={amountInWei}
-                            fee={summaryOutput?.fee ?? '0'}
+                            fee={summaryOutput?.fee ?? selectedPrecomposed?.fee ?? '0'}
                             outputState={summaryOutput?.state}
                             onLayout={event => handleReadListItemHeight(event, 1)}
                         />

@@ -1,5 +1,7 @@
 import { type NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
 
+export const EARN_MODULE_PREFIX = '@suite-native/module-earn';
+
 export const MOBILE_SUPPORTED_STAKING_NETWORKS: readonly NetworkSymbol[] = ['eth', 'thod'] as const;
 
 export const isMobileSupportedStakingNetwork = (symbol: NetworkSymbol): boolean =>

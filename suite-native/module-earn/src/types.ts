@@ -7,6 +7,8 @@ import {
     type TokenSymbol,
 } from '@suite-common/wallet-types';
 
+export type EarnFormDraftPrefix = 'stake' | 'unstake' | 'claim';
+
 export type StakingEarnItem = {
     id: string;
     type: 'staking';

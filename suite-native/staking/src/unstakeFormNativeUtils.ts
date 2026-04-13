@@ -1,10 +1,6 @@
 import { transformTx } from '@suite-common/staking';
-import {
-    STAKE_GAS_LIMIT_RESERVE,
-    UNSTAKE_INTERCHANGES,
-    WALLET_SDK_SOURCE,
-} from '@suite-common/wallet-constants';
-import { type PrecomposedTransactionFinal, type StakeFormState } from '@suite-common/wallet-types';
+import { UNSTAKE_INTERCHANGES, WALLET_SDK_SOURCE } from '@suite-common/wallet-constants';
+import { type StakeFormState } from '@suite-common/wallet-types';
 import {
     type EthereumTransaction,
     type EthereumTransactionEIP1559,
@@ -32,12 +28,12 @@ export const buildUnstakeCalldata = (amountWei: string): string => {
 
 export const buildUnstakeFormState = (
     feeLevel: FeeLevel,
-    rawGasLimit: string,
+    gasLimit: string,
     calldata: string,
 ): StakeFormState => ({
     outputs: [],
     feePerUnit: feeLevel.feePerUnit,
-    feeLimit: rawGasLimit,
+    feeLimit: gasLimit,
     transactionData: calldata,
     stakeType: 'unstake',
     options: [],
@@ -53,70 +49,27 @@ export const buildUnstakeFormState = (
         : {}),
 });
 
-export const buildUnstakePrecomposedTx = (
-    feeLevel: FeeLevel,
-    rawGasLimit: string,
-    contractAddress: string,
-    amount: string,
-): PrecomposedTransactionFinal => {
-    const amountInWei = ethToWei(amount);
-    const gasLimitWithReserve = new BigNumber(rawGasLimit).plus(STAKE_GAS_LIMIT_RESERVE);
-    const gasPriceGwei = feeLevel.maxFeePerGas ?? feeLevel.feePerUnit;
-    const fee = new BigNumber(gasPriceGwei)
-        .times(gasLimitWithReserve)
-        .times(new BigNumber(10).pow(9))
-        .toFixed(0);
-
-    return {
-        type: 'final',
-        inputs: [],
-        outputs: [
-            {
-                address: contractAddress,
-                script_type: 'PAYTOADDRESS',
-                amount: amountInWei,
-            },
-        ],
-        outputsPermutation: [0],
-        fee,
-        feePerByte: feeLevel.feePerUnit,
-        feeLimit: rawGasLimit,
-        bytes: 0,
-        totalSpent: fee, // No ETH value is sent for unstake; total spent = fee only
-        ...(feeLevel.maxFeePerGas
-            ? {
-                  maxFeePerGas: feeLevel.maxFeePerGas,
-                  maxPriorityFeePerGas: feeLevel.maxPriorityFeePerGas ?? '0',
-              }
-            : {}),
-    };
-};
-
 export const buildEthUnstakeTx = ({
     contractAddress,
     amount,
     chainId,
     nonce,
-    rawGasLimit,
+    gasLimit,
     feeLevel,
 }: {
     contractAddress: string;
     amount: string;
     chainId: number;
     nonce: number | string;
-    rawGasLimit: string;
+    gasLimit: string;
     feeLevel: FeeLevel;
 }): EthereumTransaction | EthereumTransactionEIP1559 => {
-    const adjustedGasLimit = new BigNumber(rawGasLimit)
-        .plus(STAKE_GAS_LIMIT_RESERVE)
-        .integerValue(BigNumber.ROUND_DOWN)
-        .toNumber();
     const amountInWei = ethToWei(amount);
     const data = buildUnstakeCalldata(amountInWei);
     const tx = {
         to: contractAddress,
         value: '0', // No ETH value for unstake
-        gasLimit: adjustedGasLimit,
+        gasLimit: new BigNumber(gasLimit).integerValue(BigNumber.ROUND_DOWN).toNumber(),
         data,
     };
 

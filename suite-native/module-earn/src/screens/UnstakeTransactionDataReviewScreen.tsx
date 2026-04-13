@@ -22,6 +22,7 @@ import {
     ScreenHeader,
     type StackProps,
     TransactionDetailStackRoutes,
+    useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 import {
     type TransactionReviewOutputsState,
@@ -70,6 +71,7 @@ export const UnstakeTransactionDataReviewScreen = ({
         useConfirmOnTrezorController();
     const { accountKey } = route.params;
     const { navigateToStakingDetail } = useStakingDetailNavigation();
+    const navigateToInitialScreen = useNavigateToInitialScreen();
     const [txid, setTxid] = useState<string>('');
 
     const isAddressConfirmed = useSelector((state: TransactionReviewOutputsState) =>
@@ -112,17 +114,6 @@ export const UnstakeTransactionDataReviewScreen = ({
         }
     }, [closeSheet, showSignSuccessMessage]);
 
-    const handleClose = useCallback(() => {
-        navigation.dispatch(
-            CommonActions.reset({
-                index: 0,
-                routes: [
-                    { name: RootStackRoutes.AppTabs, params: { screen: AppTabsRoutes.EarnStack } },
-                ],
-            }),
-        );
-    }, [navigation]);
-
     const handleViewTransaction = useCallback(() => {
         navigation.dispatch(navigateToUnstakedTransactionAction({ accountKey, txid }));
     }, [accountKey, navigation, txid]);
@@ -140,7 +131,7 @@ export const UnstakeTransactionDataReviewScreen = ({
                         </Text>
                     }
                     closeActionType="close"
-                    closeAction={handleClose}
+                    closeAction={navigateToInitialScreen}
                 />
             }
         >

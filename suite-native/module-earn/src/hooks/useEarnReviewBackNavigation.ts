@@ -1,22 +1,21 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { formDraftActions, sendFormActions } from '@suite-common/wallet-core';
+import { cancelSignSendFormTransactionThunk, formDraftActions } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { getFormDraftKey } from '@suite-common/wallet-utils';
-import { useOverrideBackNavigation } from '@suite-native/navigation';
 import {
     type TransactionReviewOutputsState,
     selectIsTransactionReviewInProgress,
     useShowReviewCancellationAlert,
 } from '@suite-native/transaction-management';
 
-type EarnReviewFormType = 'stake' | 'claim';
+import { type EarnFormDraftPrefix } from '../types';
 
 export const useEarnReviewBackNavigation = (
-    formType: EarnReviewFormType,
+    formType: EarnFormDraftPrefix,
     accountKey: AccountKey,
 ) => {
     const isTransactionReviewInProgress = useSelector((state: TransactionReviewOutputsState) =>
@@ -27,21 +26,42 @@ export const useEarnReviewBackNavigation = (
     const navigation = useNavigation();
     const showReviewCancellationAlert = useShowReviewCancellationAlert();
 
-    const onNavigateBack = useCallback(async () => {
-        if (isTransactionReviewInProgress) {
-            const { wasReviewCanceled } = await showReviewCancellationAlert();
-            if (!wasReviewCanceled) return;
-        }
-        dispatch(sendFormActions.discardTransaction());
-        dispatch(formDraftActions.removeDraft({ key: getFormDraftKey(formType, '') }));
-        navigation.goBack();
+    useEffect(() => {
+        const cleanup = () => {
+            dispatch(cancelSignSendFormTransactionThunk());
+            dispatch(formDraftActions.removeDraft({ key: getFormDraftKey(formType, accountKey) }));
+        };
+
+        const unsubscribe = navigation.addListener('beforeRemove', e => {
+            if (e.data.action.type === 'GO_BACK' && isTransactionReviewInProgress) {
+                e.preventDefault();
+                showReviewCancellationAlert().then(({ wasReviewCanceled }) => {
+                    if (wasReviewCanceled) {
+                        cleanup();
+                        unsubscribe();
+                        navigation.dispatch(e.data.action);
+                    }
+                });
+
+                return;
+            }
+
+            cleanup();
+        });
+
+        return unsubscribe;
     }, [
+        accountKey,
+        navigation,
         isTransactionReviewInProgress,
         showReviewCancellationAlert,
         dispatch,
-        navigation,
         formType,
     ]);
 
-    useOverrideBackNavigation({ onNavigateBack });
+    const navigateBack = useCallback(() => {
+        navigation.goBack();
+    }, [navigation]);
+
+    return { navigateBack };
 };
