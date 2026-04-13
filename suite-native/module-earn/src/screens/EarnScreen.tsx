@@ -120,7 +120,6 @@ export const EarnScreen = () => {
                     titleSpacing="sp4"
                     titleVariant="headline-md"
                     title={<Translation id="earn.earnScreen.title" />}
-                    subtitle={<Translation id="earn.earnScreen.subtitle" />}
                     subtitleVariant="body-sm"
                 />
 
