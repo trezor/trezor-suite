@@ -2455,6 +2455,7 @@ export const messages = {
             yourStake: 'Your stake',
             stakedLabel: 'Staked',
             totalRewardsLabel: 'Total rewards',
+            autoRestakedBadge: 'Auto-restaked',
             nextRewardLabel: 'Next reward in {value, plural, one {# day} other {# days}}',
             unstakeButton: 'Unstake',
             stakeButton: 'Stake',
