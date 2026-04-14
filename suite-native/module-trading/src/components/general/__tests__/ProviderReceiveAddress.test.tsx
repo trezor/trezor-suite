@@ -7,8 +7,8 @@ import { renderWithStoreProvider } from '@suite-native/test-utils';
 import {
     banxaCreditCardSellQuote,
     exchangeMercuryo,
-    exchangeQuotes,
     getWalletState,
+    mercuryoFixedWorstQuote,
     sellBanxa,
 } from '@suite-native/trading-fixtures';
 
@@ -17,7 +17,7 @@ import { ProviderReceiveAddress } from '../ProviderReceiveAddress';
 describe('ProviderReceiveAddress', () => {
     // Use real fixtures for more realistic test data
     const mockExchangeTrade: ExchangeTrade = {
-        ...exchangeQuotes[0], // Use first exchange quote from fixtures
+        ...mercuryoFixedWorstQuote,
         sendAddress: '1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa', // Override with a real Bitcoin address
     };
 
