@@ -33,6 +33,7 @@ import { arrayDistinct, arrayToDictionary } from '@trezor/utils';
 
 import { BLOCKCHAIN_MODULE_PREFIX, blockchainActions } from './blockchainActions';
 import { selectBlockchainState, selectNetworkBlockchainInfo } from './blockchainReducer';
+import { reportWalletBalanceDebounced } from '../accounts/accountBalanceAnalytics';
 import { selectAccounts } from '../accounts/accountsSelectors';
 import { fetchAndUpdateAccountThunk } from '../accounts/accountsThunks';
 import { preloadFeeInfoThunk } from '../fees/feesThunks';
@@ -91,7 +92,7 @@ export const setCustomBackendThunk = createThunk(
 
 export const initBlockchainThunk = createThunk(
     `${BLOCKCHAIN_MODULE_PREFIX}/initBlockchainThunk`,
-    async (_, { dispatch, getState }) => {
+    async (_, { dispatch, getState, extra }) => {
         await dispatch(preloadFeeInfoThunk());
 
         // Load custom blockbook backend
@@ -114,6 +115,11 @@ export const initBlockchainThunk = createThunk(
 
         const promises = symbols.map(symbol => dispatch(reconnectBlockchainThunk({ symbol })));
         await Promise.all(promises);
+
+        reportWalletBalanceDebounced({
+            getState,
+            analytics: extra.services.analytics,
+        });
 
         // continue suite initialization
     },

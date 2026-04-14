@@ -8,7 +8,7 @@ type Attributes = {
 export const walletBalanceEvent: EventDef<Attributes, EventType.AccountsBalance> = {
     name: EventType.AccountsBalance,
     descriptionTrigger:
-        'Fired after app start and whenever the total balance state (some balance | no balance) changes.',
+        'Fired on app start and after discovery. Fires first time when balances are known and then debounced to fire at most once per 10 minutes.',
     changelog: [{ version: '26.5.1', notes: 'added' }],
 
     attributes: {
