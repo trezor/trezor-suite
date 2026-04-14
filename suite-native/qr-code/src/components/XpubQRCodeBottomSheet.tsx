@@ -49,13 +49,14 @@ export const XpubQRCodeBottomSheet = ({
     const isAddressBased = isAddressBasedNetwork(networkType);
     const { applyStyle } = useNativeStyles();
     const copyToClipboard = useCopyToClipboard();
-    const [isXpubShown, setIsXpubShown] = useState(isAddressBased);
 
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
-
     const device = useSelector(selectSelectedDevice);
+
+    const isImported = account?.imported ?? false;
+    const [isXpubShown, setIsXpubShown] = useState(isAddressBased || isImported);
 
     if (!qrCodeData) return null;
 
