@@ -9,7 +9,11 @@ import {
     initStore,
     renderWithStoreProvider,
 } from '@suite-native/test-utils';
-import { eth1NormalAccount, exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
+import {
+    eth1NormalAccount,
+    getWalletState,
+    mercuryoFixedWorstQuote,
+} from '@suite-native/trading-fixtures';
 
 import { TradingExchangeApprovalScreen } from '../TradingExchangeApprovalScreen';
 
@@ -64,7 +68,7 @@ jest.mock('@suite-common/device', () => ({
     selectIsDeviceConnected: () => mockIsDeviceConnected,
 }));
 
-const testQuote = exchangeQuotes[0];
+const testQuote = mercuryoFixedWorstQuote;
 
 describe('TradingExchangeApprovalScreen', () => {
     let store: TestStore;

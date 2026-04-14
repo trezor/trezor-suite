@@ -2,7 +2,7 @@ import type { CryptoId } from 'invity-api';
 
 import { type AccountKey } from '@suite-common/wallet-types';
 import { tradingInitialState } from '@suite-native/trading-consts';
-import { exchangeQuotes } from '@suite-native/trading-fixtures';
+import { exchangeQuotes, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 import { type TradingExchangeState } from '@suite-native/trading-types';
 
 import { exchangeActions, exchangeReducer } from '../exchangeSlice';
@@ -31,7 +31,7 @@ describe('exchangeSlice', () => {
                     receive: 'ethereum' as CryptoId,
                 },
                 quotes: exchangeQuotes,
-                selectedQuote: exchangeQuotes[0],
+                selectedQuote: mercuryoFixedWorstQuote,
                 amountLimits: {
                     currency: 'BTC',
                     minCrypto: '0.001',

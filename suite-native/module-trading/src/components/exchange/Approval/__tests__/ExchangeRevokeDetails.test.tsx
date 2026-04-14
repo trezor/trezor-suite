@@ -1,7 +1,11 @@
 import type { AccountKey } from '@suite-common/wallet-types';
 import { getTranslation } from '@suite-native/intl';
 import { type PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils';
-import { eth1NormalAccount, exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
+import {
+    eth1NormalAccount,
+    getWalletState,
+    mercuryoFixedWorstQuote,
+} from '@suite-native/trading-fixtures';
 
 import { ExchangeRevokeDetails } from '../ExchangeRevokeDetails';
 
@@ -20,7 +24,7 @@ describe('ExchangeRevokeDetails', () => {
         };
 
         preloadedState!.wallet!.trading!.exchange!.tradingAccountKey = eth1NormalAccount.key;
-        preloadedState!.wallet!.trading!.exchange!.preselectedQuote = exchangeQuotes[0];
+        preloadedState!.wallet!.trading!.exchange!.preselectedQuote = mercuryoFixedWorstQuote;
 
         errorSpy.mockClear();
     });

@@ -1,5 +1,5 @@
 import { type TestStore, initStore, renderWithStoreProvider } from '@suite-native/test-utils';
-import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
+import { getWalletState, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 
 import { RevokeLimitInfoRow } from '../RevokeLimitInfoRow';
 
@@ -16,7 +16,7 @@ describe('RevokeLimitInfoRow', () => {
             }),
         };
         preloadedState!.wallet!.trading.exchange.preselectedQuote = {
-            ...exchangeQuotes[0],
+            ...mercuryoFixedWorstQuote,
             preapprovedStringAmount: '100',
         };
         ({ store } = initStore(preloadedState));

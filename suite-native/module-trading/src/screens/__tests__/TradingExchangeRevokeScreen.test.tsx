@@ -4,7 +4,11 @@ import { selectTradingExchangeSelectedQuote, tradingExchangeActions } from '@sui
 import { getTranslation } from '@suite-native/intl';
 import { type TradingStackParamList, type TradingStackRoutes } from '@suite-native/navigation';
 import { type TestStore, initStore, renderWithStoreProvider } from '@suite-native/test-utils';
-import { eth1NormalAccount, exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
+import {
+    eth1NormalAccount,
+    getWalletState,
+    mercuryoFixedWorstQuote,
+} from '@suite-native/trading-fixtures';
 
 import { TradingExchangeRevokeScreen } from '../TradingExchangeRevokeScreen';
 
@@ -57,7 +61,7 @@ jest.mock('@suite-common/device', () => ({
     selectIsDeviceConnected: () => mockIsDeviceConnected,
 }));
 
-const testQuote = exchangeQuotes[0];
+const testQuote = mercuryoFixedWorstQuote;
 
 describe('TradingExchangeRevokeScreen', () => {
     let store: TestStore;

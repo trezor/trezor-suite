@@ -17,10 +17,14 @@ import {
 } from '@suite-native/test-utils';
 import {
     btcAsset,
+    cexdirectFloatingQuote,
     exchangeCexdirect,
     exchangeQuotes,
     getBtcAccount,
     getWalletState,
+    invityDexQuote,
+    mercuryoFixedBestQuote,
+    mercuryoFixedWorstQuote,
     usdcAsset,
 } from '@suite-native/trading-fixtures';
 import { exchangeActions } from '@suite-native/trading-state';
@@ -95,9 +99,9 @@ describe('useExchangeForm', () => {
             act(() => {
                 store.dispatch(
                     tradingExchangeActions.saveQuotes([
-                        exchangeQuotes[0],
-                        exchangeQuotes[1],
-                        { ...exchangeQuotes[2], rate: 0.000008 },
+                        mercuryoFixedWorstQuote,
+                        mercuryoFixedBestQuote,
+                        { ...cexdirectFloatingQuote, rate: 0.000008 },
                     ]),
                 );
             });
@@ -126,7 +130,10 @@ describe('useExchangeForm', () => {
             const { result } = renderUseExchangeForm();
             act(() => {
                 store.dispatch(
-                    tradingExchangeActions.saveQuotes([exchangeQuotes[0], exchangeQuotes[1]]),
+                    tradingExchangeActions.saveQuotes([
+                        mercuryoFixedWorstQuote,
+                        mercuryoFixedBestQuote,
+                    ]),
                 );
             });
 
@@ -141,7 +148,7 @@ describe('useExchangeForm', () => {
             const { result } = renderUseExchangeForm();
             act(() => {
                 store.dispatch(
-                    tradingExchangeActions.saveQuotes([exchangeQuotes[2], exchangeQuotes[3]]),
+                    tradingExchangeActions.saveQuotes([cexdirectFloatingQuote, invityDexQuote]),
                 );
             });
 
@@ -155,7 +162,7 @@ describe('useExchangeForm', () => {
         it('should select dex quote when no other quotes are available', () => {
             const { result } = renderUseExchangeForm();
             act(() => {
-                store.dispatch(tradingExchangeActions.saveQuotes([exchangeQuotes[3]]));
+                store.dispatch(tradingExchangeActions.saveQuotes([invityDexQuote]));
             });
 
             expect(result.current.getValues('quote')).toEqual(
@@ -221,7 +228,7 @@ describe('useExchangeForm', () => {
             it('should select quote with same Rate and Provider', () => {
                 act(() => {
                     form.setValue('quote', {
-                        ...exchangeQuotes[3],
+                        ...invityDexQuote,
                         quoteId: 'invity-dex-outdated',
                     });
                 });
@@ -240,7 +247,7 @@ describe('useExchangeForm', () => {
             it('should select quote with same Rate when same provider is not available', () => {
                 act(() => {
                     form.setValue('quote', {
-                        ...exchangeQuotes[3],
+                        ...invityDexQuote,
                         quoteId: 'invity-dex-outdated',
                     });
                 });
@@ -261,7 +268,7 @@ describe('useExchangeForm', () => {
             it('should select floating quote when floating quote was previously selected', () => {
                 act(() => {
                     form.setValue('quote', {
-                        ...exchangeQuotes[2],
+                        ...cexdirectFloatingQuote,
                         quoteId: 'cexdirect-floating-outdated',
                     });
                 });
@@ -281,7 +288,7 @@ describe('useExchangeForm', () => {
 
     describe('dex quote approval prefetch', () => {
         const dexQuoteWithDexTx = {
-            ...exchangeQuotes[3],
+            ...invityDexQuote,
             dexTx: {
                 from: '0x0000000000000000000000000000000000000000',
                 to: '0xdef1c0ded9bec7f1a1670819833240f027b25eff',
@@ -694,7 +701,7 @@ describe('useExchangeForm', () => {
             const { result } = renderUseExchangeForm();
 
             act(() => {
-                result.current.setValue('quote', exchangeQuotes[0] as ExchangeTrade);
+                result.current.setValue('quote', mercuryoFixedWorstQuote as ExchangeTrade);
                 result.current.setValue('sendCryptoAmount', '10');
                 result.current.setValue('receiveCryptoAmount', '10');
                 result.current.setValue('generalAlert', 'test');

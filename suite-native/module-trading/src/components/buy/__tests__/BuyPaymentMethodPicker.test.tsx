@@ -13,7 +13,11 @@ import {
     renderWithStoreProvider,
     screen,
 } from '@suite-native/test-utils';
-import { buyQuotes, getInitializedTradingStateWithQuotes } from '@suite-native/trading-fixtures';
+import {
+    buyQuotes,
+    cexdirectCreditCardBuyQuote,
+    getInitializedTradingStateWithQuotes,
+} from '@suite-native/trading-fixtures';
 import { type BuyFormType } from '@suite-native/trading-types';
 
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';
@@ -141,7 +145,7 @@ describe('BuyPaymentMethodPicker', () => {
                 const { getByText } = renderPaymentMethodPicker(preloadedState);
 
                 act(() => {
-                    form.setValue('quote', buyQuotes[1]);
+                    form.setValue('quote', cexdirectCreditCardBuyQuote);
                 });
 
                 fireEvent.press(getByText('Payment method'));
@@ -154,7 +158,7 @@ describe('BuyPaymentMethodPicker', () => {
                 const { getByText, getAllByText } = renderPaymentMethodPicker(preloadedState);
 
                 act(() => {
-                    form.setValue('quote', buyQuotes[1]);
+                    form.setValue('quote', cexdirectCreditCardBuyQuote);
                 });
 
                 fireEvent.press(getByText('Payment method'));

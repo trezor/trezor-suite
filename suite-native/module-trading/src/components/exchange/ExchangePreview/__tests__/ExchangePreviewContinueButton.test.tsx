@@ -3,7 +3,7 @@ import {
     type GeneralPrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
 import { type PreloadedState, renderWithStoreProvider, userEvent } from '@suite-native/test-utils';
-import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
+import { getWalletState, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 
 import {
     ExchangePreviewContinueButton,
@@ -27,7 +27,7 @@ describe('ExchangePreviewContinueButton', () => {
         renderWithStoreProvider(
             <ExchangePreviewContinueButton
                 isDisabled={false}
-                quote={exchangeQuotes[0]}
+                quote={mercuryoFixedWorstQuote}
                 onSignTransactionNavigation={jest.fn()}
                 {...props}
             />,
@@ -81,7 +81,7 @@ describe('ExchangePreviewContinueButton', () => {
     it('should keep continue button enabled when dex quote approval prefetch is loading', async () => {
         const preloadedState = getPreloadedState();
         preloadedState!.wallet!.trading!.exchange!.dexQuoteApprovalPrefetchLoadingQuoteId =
-            exchangeQuotes[0].quoteId;
+            mercuryoFixedWorstQuote.quoteId;
 
         const { getByTestId, queryByTestId } = await renderExchangePreviewContinueButton(
             {},
@@ -145,7 +145,7 @@ describe('ExchangePreviewContinueButton', () => {
             name: 'TradingExchangeOutputsReview',
             params: {
                 accountKey: 'btc-account-1',
-                orderId: exchangeQuotes[0].orderId,
+                orderId: mercuryoFixedWorstQuote.orderId,
                 tokenContract: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
             },
         });

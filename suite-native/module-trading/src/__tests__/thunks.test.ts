@@ -9,7 +9,7 @@ import { type Account, type TokenAddress, type TokenInfoBranded } from '@suite-c
 import { getFormDraftKey } from '@suite-common/wallet-utils';
 import { type PreloadedState, type TestStore, initStore } from '@suite-native/test-utils';
 import { selectAccountTokenInfo } from '@suite-native/tokens';
-import { eth1NormalAccount, exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
+import { eth1NormalAccount, getWalletState, invityDexQuote } from '@suite-native/trading-fixtures';
 
 import { clearTradingStateThunk, composeEvmApprovalFeeLevelsThunk } from '../thunks';
 
@@ -129,7 +129,7 @@ describe('thunks', () => {
         let store: TestStore;
 
         const dexQuoteWithApprovalData: ExchangeTrade = {
-            ...exchangeQuotes[3],
+            ...invityDexQuote,
             isDex: true,
             sendStringAmount: '100',
             send: 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as CryptoId,

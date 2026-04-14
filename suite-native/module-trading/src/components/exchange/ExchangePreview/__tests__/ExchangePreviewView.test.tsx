@@ -1,5 +1,9 @@
 import { type PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils';
-import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
+import {
+    exchangeQuotes,
+    getWalletState,
+    mercuryoFixedWorstQuote,
+} from '@suite-native/trading-fixtures';
 
 import { ExchangePreviewView, type ExchangePreviewViewProps } from '../ExchangePreviewView';
 
@@ -14,7 +18,11 @@ describe('ExchangePreviewView', () => {
         preloadedState.wallet!.trading!.exchange!.lastErrorMessage = 'ERROR_MESSAGE';
 
         return renderWithStoreProvider(
-            <ExchangePreviewView quote={exchangeQuotes[0]} txnErrorString={null} {...props} />,
+            <ExchangePreviewView
+                quote={mercuryoFixedWorstQuote}
+                txnErrorString={null}
+                {...props}
+            />,
             { preloadedState },
         );
     };

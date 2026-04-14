@@ -7,8 +7,8 @@ import {
     renderWithStoreProvider,
 } from '@suite-native/test-utils';
 import {
-    exchangeQuotes,
     getInitializedTradingState,
+    mercuryoFixedWorstQuote,
     usdcAsset,
 } from '@suite-native/trading-fixtures';
 import { type ExchangeFormType } from '@suite-native/trading-types';
@@ -41,7 +41,7 @@ describe('ExchangeReceiveAmountInput', () => {
     it('should render receiveCryptoAmount form value', () => {
         act(() => {
             form.setValue('receiveAsset', usdcAsset);
-            form.setValue('quote', exchangeQuotes[0]);
+            form.setValue('quote', mercuryoFixedWorstQuote);
         });
 
         const { getByLabelText } = renderExchangeReceiveAmountInput();

@@ -7,7 +7,7 @@ import {
     userEvent,
     within,
 } from '@suite-native/test-utils';
-import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
+import { getWalletState, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 
 import { LimitPicker } from '../LimitPicker';
 
@@ -41,10 +41,10 @@ describe('LimitPicker', () => {
             }),
         };
 
-        preloadedState!.wallet!.trading.exchange.preselectedQuote = exchangeQuotes[0];
+        preloadedState!.wallet!.trading.exchange.preselectedQuote = mercuryoFixedWorstQuote;
 
         store = initStore(preloadedState).store;
-        store.dispatch(tradingExchangeActions.saveSelectedQuote(exchangeQuotes[0]));
+        store.dispatch(tradingExchangeActions.saveSelectedQuote(mercuryoFixedWorstQuote));
     });
 
     it('should render limit by default', () => {

@@ -1,5 +1,9 @@
 import { type PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils';
-import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
+import {
+    cexdirectFloatingQuote,
+    getWalletState,
+    mercuryoFixedWorstQuote,
+} from '@suite-native/trading-fixtures';
 
 import {
     ExchangeProviderPicker,
@@ -43,7 +47,7 @@ describe('ExchangeProviderPicker', () => {
 
     it('should render provider when quote is selected', () => {
         const { getByText } = renderExchangeProviderPicker({
-            selectedValue: exchangeQuotes[0],
+            selectedValue: mercuryoFixedWorstQuote,
         });
 
         expect(getByText('Provider')).toBeOnTheScreen();
@@ -52,7 +56,7 @@ describe('ExchangeProviderPicker', () => {
 
     it('should render KYC warning for provider with "KYC-required"', () => {
         const { getByText } = renderExchangeProviderPicker({
-            selectedValue: exchangeQuotes[2],
+            selectedValue: cexdirectFloatingQuote,
         });
 
         expect(getByText('This provider requires to verify identity.')).toBeOnTheScreen();
@@ -60,7 +64,7 @@ describe('ExchangeProviderPicker', () => {
 
     it('should not render KYC provider warning for providers with "noKYC"', () => {
         const { queryByText } = renderExchangeProviderPicker({
-            selectedValue: exchangeQuotes[0],
+            selectedValue: mercuryoFixedWorstQuote,
         });
 
         expect(queryByText('This provider requires to verify identity.')).toBeNull();

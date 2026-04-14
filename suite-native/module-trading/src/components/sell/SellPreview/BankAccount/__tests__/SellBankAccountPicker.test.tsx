@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { type PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils';
-import { bankAccounts, getWalletState } from '@suite-native/trading-fixtures';
+import { bankAccounts, getWalletState, verifiedBankAccount } from '@suite-native/trading-fixtures';
 
 import { SellBankAccountPicker } from '../SellBankAccountPicker';
 
@@ -93,7 +93,7 @@ describe('SellBankAccountPicker', () => {
             const { queryByTestId } = renderWithStoreProvider(
                 <SellBankAccountPicker
                     orderId={undefined}
-                    selectedBankAccountIban={bankAccounts[0].bankAccount}
+                    selectedBankAccountIban={verifiedBankAccount.bankAccount}
                     onBankAccountSelect={mockOnBankAccountSelect}
                 />,
                 { preloadedState },

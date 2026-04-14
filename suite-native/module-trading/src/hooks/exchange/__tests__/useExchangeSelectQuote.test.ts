@@ -13,10 +13,11 @@ import {
 } from '@suite-native/test-utils';
 import {
     btcAsset,
-    exchangeQuotes,
     getBtcAccount,
     getEthAccount,
     getInitializedTradingStateWithQuotes,
+    invityDexQuote,
+    mercuryoFixedBestQuote,
 } from '@suite-native/trading-fixtures';
 import { type ExchangeFormType } from '@suite-native/trading-types';
 
@@ -139,14 +140,14 @@ describe('useExchangeSelectQuote', () => {
         beforeEach(async () => {
             store = await getInitializedStore({
                 isLoading: false,
-                dexQuoteApprovalPrefetchLoadingQuoteId: exchangeQuotes[3].quoteId!,
+                dexQuoteApprovalPrefetchLoadingQuoteId: invityDexQuote.quoteId!,
             });
 
             const { result } = await renderExchangeForm();
             exchangeForm = result.current;
 
             act(() => {
-                exchangeForm.setValue('quote', exchangeQuotes[3]);
+                exchangeForm.setValue('quote', invityDexQuote);
             });
         });
 
@@ -172,7 +173,7 @@ describe('useExchangeSelectQuote', () => {
 
         it('should canProceed be true while prefetch is loading for quote without approval', async () => {
             act(() => {
-                exchangeForm.setValue('quote', exchangeQuotes[1]);
+                exchangeForm.setValue('quote', mercuryoFixedBestQuote);
             });
 
             const { result } = await renderUseExchangeSelectQuote();
@@ -185,7 +186,7 @@ describe('useExchangeSelectQuote', () => {
         it('should canProceed be true when another approval-required quote is currently prefetched', async () => {
             act(() => {
                 exchangeForm.setValue('quote', {
-                    ...exchangeQuotes[3],
+                    ...invityDexQuote,
                     quoteId: 'another-dex-quote-id',
                 });
             });
@@ -206,7 +207,7 @@ describe('useExchangeSelectQuote', () => {
             exchangeForm = result.current;
 
             act(() => {
-                exchangeForm.setValue('quote', exchangeQuotes[1]);
+                exchangeForm.setValue('quote', mercuryoFixedBestQuote);
             });
         });
 
@@ -231,7 +232,9 @@ describe('useExchangeSelectQuote', () => {
                 expect.objectContaining({
                     type: 'selectQuoteThunkMock',
                     payload: expect.objectContaining({
-                        quote: expect.objectContaining({ quoteId: exchangeQuotes[1]?.quoteId }),
+                        quote: expect.objectContaining({
+                            quoteId: mercuryoFixedBestQuote?.quoteId,
+                        }),
                         timer: expect.objectContaining({ timeSpent: { seconds: 0 } }),
                     }),
                 }),
@@ -332,7 +335,7 @@ describe('useExchangeSelectQuote', () => {
             mockGetApprovalStatus.mockReturnValue('approved');
 
             act(() => {
-                exchangeForm.setValue('quote', exchangeQuotes[1]);
+                exchangeForm.setValue('quote', mercuryoFixedBestQuote);
             });
 
             const dispatchSpy = jest.spyOn(store, 'dispatch');
@@ -361,7 +364,7 @@ describe('useExchangeSelectQuote', () => {
             mockGetApprovalStatus.mockReturnValue('not_needed');
 
             act(() => {
-                exchangeForm.setValue('quote', exchangeQuotes[1]);
+                exchangeForm.setValue('quote', mercuryoFixedBestQuote);
             });
 
             const dispatchSpy = jest.spyOn(store, 'dispatch');
@@ -386,7 +389,7 @@ describe('useExchangeSelectQuote', () => {
             mockGetApprovalStatus.mockReturnValue('needs_approval');
 
             act(() => {
-                exchangeForm.setValue('quote', exchangeQuotes[1]);
+                exchangeForm.setValue('quote', mercuryoFixedBestQuote);
             });
 
             const dispatchSpy = jest.spyOn(store, 'dispatch');
@@ -408,7 +411,7 @@ describe('useExchangeSelectQuote', () => {
 
             expect(dispatchSpy).toHaveBeenCalledWith({
                 type: '@trading-exchange/savePreselectedQuote',
-                payload: exchangeQuotes[1],
+                payload: mercuryoFixedBestQuote,
             });
         });
 
@@ -416,7 +419,7 @@ describe('useExchangeSelectQuote', () => {
             mockGetApprovalStatus.mockReturnValue('needs_increase');
 
             act(() => {
-                exchangeForm.setValue('quote', exchangeQuotes[1]);
+                exchangeForm.setValue('quote', mercuryoFixedBestQuote);
             });
 
             const dispatchSpy = jest.spyOn(store, 'dispatch');
@@ -439,7 +442,7 @@ describe('useExchangeSelectQuote', () => {
             });
             expect(dispatchSpy).toHaveBeenCalledWith({
                 type: '@trading-exchange/savePreselectedQuote',
-                payload: exchangeQuotes[1],
+                payload: mercuryoFixedBestQuote,
             });
         });
 
@@ -447,7 +450,7 @@ describe('useExchangeSelectQuote', () => {
             mockGetApprovalStatus.mockReturnValue('needs_revoke');
 
             act(() => {
-                exchangeForm.setValue('quote', exchangeQuotes[1]);
+                exchangeForm.setValue('quote', mercuryoFixedBestQuote);
             });
 
             const dispatchSpy = jest.spyOn(store, 'dispatch');

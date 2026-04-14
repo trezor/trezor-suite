@@ -6,7 +6,7 @@ import {
     renderWithStoreProvider,
     userEvent,
 } from '@suite-native/test-utils';
-import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
+import { getWalletState, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 
 import { ApprovalButton, type ApprovalButtonProps } from '../ApprovalButton';
 
@@ -33,7 +33,7 @@ describe('ApprovalButton', () => {
                 tradeType: 'exchange',
             }),
         };
-        preloadedState!.wallet!.trading!.exchange!.selectedQuote = exchangeQuotes[0];
+        preloadedState!.wallet!.trading!.exchange!.selectedQuote = mercuryoFixedWorstQuote;
         preloadedState!.wallet!.trading!.exchange!.tradingAccountKey =
             'eth-account-1' as AccountKey;
         store = initStore(preloadedState).store;

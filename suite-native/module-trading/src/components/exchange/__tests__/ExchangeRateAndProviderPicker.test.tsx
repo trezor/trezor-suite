@@ -9,7 +9,11 @@ import {
     screen,
     userEvent,
 } from '@suite-native/test-utils';
-import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
+import {
+    exchangeQuotes,
+    getWalletState,
+    mercuryoFixedWorstQuote,
+} from '@suite-native/trading-fixtures';
 import { type ExchangeFormType } from '@suite-native/trading-types';
 
 import { useExchangeForm } from '../../../hooks/exchange/useExchangeForm';
@@ -71,7 +75,7 @@ describe('ExchangeRateAndProviderPicker', () => {
 
     it('should render provider when quote is selected', () => {
         act(() => {
-            exchangeForm.setValue('quote', exchangeQuotes[0]);
+            exchangeForm.setValue('quote', mercuryoFixedWorstQuote);
         });
 
         const { getByText } = renderExchangeRateAndProviderPicker();
@@ -84,7 +88,7 @@ describe('ExchangeRateAndProviderPicker', () => {
         beforeEach(() => {
             preloadedState!.wallet!.trading!.exchange!.quotes = exchangeQuotes;
             act(() => {
-                exchangeForm.setValue('quote', exchangeQuotes[0]);
+                exchangeForm.setValue('quote', mercuryoFixedWorstQuote);
             });
             reportMock.mockClear();
         });

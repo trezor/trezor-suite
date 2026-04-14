@@ -18,8 +18,11 @@ import {
     btcAsset,
     buyMercuryo,
     buyQuotes,
+    cexdirectCreditCardBuyQuote,
     getBtcAccount,
     getInitializedTradingState,
+    mercuryoApplePayBuyQuote,
+    mercuryoCreditCardBuyQuote,
     usdcAsset,
 } from '@suite-native/trading-fixtures';
 import { buyActions, selectTradingResidenceCountry } from '@suite-native/trading-state';
@@ -303,7 +306,7 @@ describe('useBuyForm', () => {
                 result.current.setValue('fiatValue', '10');
                 result.current.setValue('asset', btcAsset);
                 // Only provide credit card quote
-                store.dispatch(tradingBuyActions.saveQuotes([buyQuotes[0]]));
+                store.dispatch(tradingBuyActions.saveQuotes([mercuryoApplePayBuyQuote]));
             });
 
             expect(result.current.getValues('quote')).toEqual(
@@ -371,7 +374,7 @@ describe('useBuyForm', () => {
             initFormAndQuotes(result.current, store);
 
             act(() => {
-                result.current.setValue('quote', buyQuotes[0]);
+                result.current.setValue('quote', mercuryoApplePayBuyQuote);
             });
 
             expect(result.current.getValues('cryptoValue')).toEqual('0.001000168');
@@ -390,7 +393,10 @@ describe('useBuyForm', () => {
             });
 
             act(() => {
-                const newQuote = { ...buyQuotes[0], fiatStringAmount: '10.123456789' } as BuyTrade;
+                const newQuote = {
+                    ...mercuryoApplePayBuyQuote,
+                    fiatStringAmount: '10.123456789',
+                } as BuyTrade;
                 result.current.setValue('quote', newQuote);
             });
 
@@ -405,7 +411,7 @@ describe('useBuyForm', () => {
             initFormAndQuotes(result.current, store);
 
             act(() => {
-                result.current.setValue('quote', buyQuotes[0]);
+                result.current.setValue('quote', mercuryoApplePayBuyQuote);
             });
 
             expect(selectTradingProviderMetadata(store.getState())).toBe(buyMercuryo);
@@ -429,20 +435,23 @@ describe('useBuyForm', () => {
 
             it('should select quote with same payment method and provider', () => {
                 act(() => {
-                    form.setValue('quote', { ...buyQuotes[3], orderId: 'test1' } as BuyTrade);
+                    form.setValue('quote', {
+                        ...mercuryoCreditCardBuyQuote,
+                        orderId: 'test1',
+                    } as BuyTrade);
                 });
 
                 act(() => {
                     store.dispatch(tradingBuyActions.saveQuotes(buyQuotes));
                 });
 
-                expect(form.getValues('quote')).toEqual(buyQuotes[3]);
+                expect(form.getValues('quote')).toEqual(mercuryoCreditCardBuyQuote);
             });
 
             it('should select 1st quote with same payment method if same provider is not available', () => {
                 act(() => {
                     form.setValue('quote', {
-                        ...buyQuotes[3],
+                        ...mercuryoCreditCardBuyQuote,
                         orderId: 'test1',
                         exchange: 'unavailable',
                     } as BuyTrade);
@@ -452,7 +461,7 @@ describe('useBuyForm', () => {
                     store.dispatch(tradingBuyActions.saveQuotes(buyQuotes));
                 });
 
-                expect(form.getValues('quote')).toEqual(buyQuotes[1]);
+                expect(form.getValues('quote')).toEqual(cexdirectCreditCardBuyQuote);
             });
 
             it('should select 1st quote on new quotes when payment method is not available even with different provider', () => {
@@ -461,7 +470,7 @@ describe('useBuyForm', () => {
                 });
 
                 act(() => {
-                    store.dispatch(tradingBuyActions.saveQuotes([buyQuotes[0]]));
+                    store.dispatch(tradingBuyActions.saveQuotes([mercuryoApplePayBuyQuote]));
                 });
 
                 expect(form.getValues('quote')).toEqual(
@@ -738,7 +747,7 @@ describe('useBuyForm', () => {
             act(() => {
                 result.current.setValue('fiatValue', '10');
                 result.current.setValue('cryptoValue', '10');
-                result.current.setValue('quote', buyQuotes[0]);
+                result.current.setValue('quote', mercuryoApplePayBuyQuote);
             });
 
             act(() => {

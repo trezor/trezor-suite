@@ -5,7 +5,12 @@ import type { BuyTrade } from 'invity-api';
 import { type AccountsRootState } from '@suite-common/wallet-core';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { FeatureFlag, type FeatureFlagsRootState } from '@suite-native/feature-flags';
-import { buyQuotes, getBtcAccount, getWalletState } from '@suite-native/trading-fixtures';
+import {
+    buyQuotes,
+    getBtcAccount,
+    getWalletState,
+    mercuryoApplePayBuyQuote,
+} from '@suite-native/trading-fixtures';
 
 import { type TradingRootState } from '../../reducers';
 import {
@@ -247,7 +252,7 @@ describe('buySelectors', () => {
         beforeEach(() => {
             state.wallet.trading.buy.quotes = [
                 ...buyQuotes,
-                { ...buyQuotes[0], exchange: 'simplex', orderId: 'order_id_4' },
+                { ...mercuryoApplePayBuyQuote, exchange: 'simplex', orderId: 'order_id_4' },
             ] as BuyTrade[];
         });
 
@@ -312,7 +317,7 @@ describe('buySelectors', () => {
 
         it('should ignore quotes without payment method', () => {
             const quote = {
-                ...buyQuotes[0],
+                ...mercuryoApplePayBuyQuote,
                 paymentMethod: undefined,
             } as unknown as BuyTrade;
 
@@ -323,7 +328,7 @@ describe('buySelectors', () => {
 
         it('should ignore quotes without payment method name', () => {
             const quote = {
-                ...buyQuotes[0],
+                ...mercuryoApplePayBuyQuote,
                 paymentMethodName: undefined,
             } as unknown as BuyTrade;
 
@@ -334,12 +339,12 @@ describe('buySelectors', () => {
 
         it('should sort quotes by rate', () => {
             const quote1 = {
-                ...buyQuotes[0],
+                ...mercuryoApplePayBuyQuote,
                 paymentMethod: 'creditCard',
                 rate: 20000,
             } as BuyTrade;
             const quote2 = {
-                ...buyQuotes[0],
+                ...mercuryoApplePayBuyQuote,
                 paymentMethod: 'applePay',
                 rate: 10000,
             } as BuyTrade;
@@ -354,7 +359,7 @@ describe('buySelectors', () => {
         beforeEach(() => {
             state.wallet.trading.buy.quotes = [
                 ...buyQuotes,
-                { ...buyQuotes[0], exchange: 'simplex', orderId: 'order_id_4' },
+                { ...mercuryoApplePayBuyQuote, exchange: 'simplex', orderId: 'order_id_4' },
             ] as BuyTrade[];
         });
 
