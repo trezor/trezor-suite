@@ -9,5 +9,5 @@ export const ApyValue = ({ apy }: ApyValueProps) => {
         return <Translation id="earn.apyNotAvailable" />;
     }
 
-    return <>{`${apy}%`}</>;
+    return <>{`~${apy}%`}</>;
 };
