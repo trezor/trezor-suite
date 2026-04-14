@@ -103,8 +103,8 @@ const formatStandard = ({ intl, locale, currency, value, dataContext }: FormatPa
     const numberParts = parts.filter((p, i) => {
         if (p.type === 'currency') return false;
         if (p.type === 'minusSign' || p.type === 'plusSign') return false;
-        // Remove the literal separator (e.g. space) immediately before the currency suffix
-        if (p.type === 'literal' && i === currencyIndex - 1) return false;
+        // Remove any literal whitespace separator adjacent to the currency suffix
+        if (p.type === 'literal' && i === currencyIndex - 1 && p.value.trim() === '') return false;
 
         return true;
     });

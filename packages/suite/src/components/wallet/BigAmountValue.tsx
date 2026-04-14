@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import styled from 'styled-components';
 
 import { selectLanguage } from '@suite/settings';
@@ -28,15 +29,18 @@ export const BigAmountValue = ({
 }: BigAmountValueProps) => {
     const language = useSelector(selectLanguage);
 
-    // Use Intl API to reliably detect the decimal separator for the current locale
-    const decimalSeparator = new Intl.NumberFormat(language, { minimumFractionDigits: 1 })
-        .formatToParts(1.1)
-        .find(p => p.type === 'decimal')?.value;
+    // Use Intl API to reliably detect the decimal separator for the current locale,
+    // memoized to avoid recreating the Intl instance on every render.
+    const decimalSeparator = useMemo(
+        () =>
+            new Intl.NumberFormat(language, { minimumFractionDigits: 1 })
+                .formatToParts(1.1)
+                .find(p => p.type === 'decimal')?.value ?? '.',
+        [language],
+    );
 
-    const escapedSeparator =
-        decimalSeparator !== undefined && decimalSeparator !== '.'
-            ? decimalSeparator
-            : '\\.';
+    // Escape the separator for use in a regex (e.g. '.' must become '\.')
+    const escapedSeparator = decimalSeparator.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     const [whole, separator, fractional] = formattedStringAmount.split(
         new RegExp(`(${escapedSeparator})`),
     );
