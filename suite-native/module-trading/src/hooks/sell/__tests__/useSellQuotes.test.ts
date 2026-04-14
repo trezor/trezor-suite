@@ -1,4 +1,8 @@
-import { INVITY_API_RELOAD_QUOTES_AFTER_SECONDS, tradingSellActions } from '@suite-common/trading';
+import {
+    INVITY_API_RELOAD_QUOTES_AFTER_SECONDS,
+    tradingActions,
+    tradingSellActions,
+} from '@suite-common/trading';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { type TestStore, act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import {
@@ -14,20 +18,12 @@ import { createTradingLightStore } from '../../../__tests__/tradingTestUtils';
 import { useSellForm } from '../useSellForm';
 import { useSellQuotes } from '../useSellQuotes';
 
-let mockTimeSpent: number;
-
 jest.mock('@trezor/react-utils', () => {
     const originalModule = jest.requireActual('@trezor/react-utils');
 
     return {
         ...originalModule,
         useDebounce: () => (fn: () => unknown) => fn(),
-        useTimer: () => {
-            const timer = originalModule.useNullTimer();
-            timer.timeSpent.seconds = mockTimeSpent;
-
-            return timer;
-        },
     };
 });
 
@@ -63,8 +59,8 @@ describe('useSellQuotes', () => {
             { store },
         );
 
-    beforeEach(() => {
-        mockTimeSpent = 0;
+    afterEach(() => {
+        jest.useRealTimers();
     });
 
     it('should query quotes once all required data is selected', async () => {
@@ -191,9 +187,10 @@ describe('useSellQuotes', () => {
     );
 
     it('should re-fetch quotes when re-fetch time elapsed', async () => {
+        jest.useFakeTimers();
         const store = getInitializedStore();
         const dispatchSpy = jest.spyOn(store, 'dispatch');
-        const { result, rerender } = renderUseSellQuotes(store);
+        const { result } = renderUseSellQuotes(store);
         act(() => {
             result.current.setValue('sendAsset', usdcAsset);
             result.current.setValue('fiatCurrency', 'usd');
@@ -205,9 +202,14 @@ describe('useSellQuotes', () => {
             await Promise.resolve();
         });
 
+        act(() => {
+            store.dispatch(tradingActions.setRefetchQuotesTimestamp(Date.now()));
+        });
         dispatchSpy.mockClear();
-        mockTimeSpent = INVITY_API_RELOAD_QUOTES_AFTER_SECONDS;
-        rerender({});
+
+        act(() => {
+            jest.advanceTimersByTime(INVITY_API_RELOAD_QUOTES_AFTER_SECONDS * 1000);
+        });
 
         expect(dispatchSpy).toHaveBeenCalledTimes(1);
         expect(dispatchSpy).toHaveBeenLastCalledWith(
@@ -218,19 +220,27 @@ describe('useSellQuotes', () => {
     });
 
     it('should not re-fetch quotes when re-fetch time elapsed but not all required data are available', () => {
+        jest.useFakeTimers();
         const store = getInitializedStore();
         const dispatchSpy = jest.spyOn(store, 'dispatch');
-        const { result, rerender, unmount } = renderUseSellQuotes(store);
+        const { result, unmount } = renderUseSellQuotes(store);
 
-        dispatchSpy.mockClear();
         act(() => {
             result.current.setValue('fiatCurrency', 'usd');
         });
 
-        mockTimeSpent = INVITY_API_RELOAD_QUOTES_AFTER_SECONDS;
-        rerender({});
+        act(() => {
+            store.dispatch(tradingActions.setRefetchQuotesTimestamp(Date.now()));
+        });
+        dispatchSpy.mockClear();
 
-        expect(dispatchSpy).not.toHaveBeenCalled();
+        act(() => {
+            jest.advanceTimersByTime(INVITY_API_RELOAD_QUOTES_AFTER_SECONDS * 1000);
+        });
+
+        expect(dispatchSpy).not.toHaveBeenCalledWith(
+            expect.objectContaining({ type: 'handleRequestThunkMock' }),
+        );
 
         unmount();
     });

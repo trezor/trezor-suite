@@ -867,3 +867,6 @@ export const selectTradingLastErrorMessageByTradeType = (
 
 export const selectTradingProviderMetadata = (state: TradingRootState) =>
     state.wallet.trading.currentProviderMetadata;
+
+export const selectTradingQuoteRefetchingState = (state: TradingRootState) =>
+    state.wallet.trading.quoteRefetchingState;

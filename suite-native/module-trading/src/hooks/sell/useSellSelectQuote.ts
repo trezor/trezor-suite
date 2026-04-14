@@ -19,7 +19,6 @@ import {
 import { useSellAnalyticReportCallback } from '@suite-native/trading-analytics';
 import { selectSellSelectedSendAccount } from '@suite-native/trading-state';
 import { type SellFormType } from '@suite-native/trading-types';
-import { useNullTimer } from '@trezor/react-utils';
 
 import { clearSellFormQuoteData } from './useSellForm';
 
@@ -37,7 +36,6 @@ type SellSelectQuoteReturn = {
 export const useSellSelectQuote = (form: SellFormType): SellSelectQuoteReturn => {
     const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProps>();
-    const timer = useNullTimer();
     const { watch, control } = form;
     const { isValid } = useFormState({ control });
     const candidateQuote = watch('quote');
@@ -75,7 +73,6 @@ export const useSellSelectQuote = (form: SellFormType): SellSelectQuoteReturn =>
         await dispatch(
             sellThunks.selectQuoteThunk({
                 quote: candidateQuote,
-                timer,
                 nextStep,
             }),
         );
@@ -85,7 +82,6 @@ export const useSellSelectQuote = (form: SellFormType): SellSelectQuoteReturn =>
         analyticsReportCallback,
         sellInfo?.providerInfos,
         dispatch,
-        timer,
         navigation,
         form,
     ]);

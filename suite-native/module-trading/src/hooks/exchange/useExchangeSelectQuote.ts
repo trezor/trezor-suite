@@ -26,7 +26,6 @@ import {
     selectExchangeSelectedSendAccount,
 } from '@suite-native/trading-state';
 import { type ExchangeFormType } from '@suite-native/trading-types';
-import { useNullTimer } from '@trezor/react-utils';
 import { exhaustive } from '@trezor/type-utils';
 
 import { clearExchangeFormQuoteData } from './useExchangeForm';
@@ -40,7 +39,6 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 
 export const useExchangeSelectQuote = (form: ExchangeFormType) => {
     const dispatch = useDispatch();
-    const timer = useNullTimer();
     const [candidateQuote, receiveAsset] = form.watch(['quote', 'receiveAsset']);
 
     const isLoading = useSelector(selectTradingExchangeIsLoading);
@@ -94,7 +92,6 @@ export const useExchangeSelectQuote = (form: ExchangeFormType) => {
         await dispatch(
             exchangeThunks.selectQuoteThunk({
                 quote: { ...candidateQuote, swapSlippage },
-                timer,
                 nextStep: () => {
                     clearExchangeFormQuoteData(form);
                     nextStep(getApprovalStatus(candidateQuote));
