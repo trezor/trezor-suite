@@ -4,6 +4,7 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { VStack } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
+import type { ExchangeFlowType } from '@suite-native/navigation';
 import { isNetworkWithTokens } from '@suite-native/tokens';
 import { BigNumber } from '@trezor/utils';
 
@@ -17,6 +18,7 @@ export type ReviewOutputSummaryItemProps = {
     onLayout: (event: LayoutChangeEvent) => void;
     tokenContract?: TokenAddress;
     summaryOutput?: ReviewSummaryOutput;
+    flowType?: ExchangeFlowType;
 };
 
 type BitcoinValuesProps = {
@@ -27,6 +29,7 @@ type BitcoinValuesProps = {
 
 type TokenEnabledValuesProps = {
     tokenContract?: TokenAddress;
+    flowType?: ExchangeFlowType;
 } & BitcoinValuesProps;
 
 const BitcoinValues = ({ accountKey, totalSpent, fee }: BitcoinValuesProps) => (
@@ -49,17 +52,24 @@ const TokenEnabledValues = ({
     totalSpent,
     fee,
     tokenContract,
+    flowType,
 }: TokenEnabledValuesProps) => {
-    const amount = tokenContract ? totalSpent : BigNumber(totalSpent).minus(fee).toString();
+    let amount: string | undefined;
+
+    if (flowType !== 'approve' && flowType !== 'revoke') {
+        amount = tokenContract ? totalSpent : BigNumber(totalSpent).minus(fee).toString();
+    }
 
     return (
         <>
-            <ReviewOutputItemValues
-                accountKey={accountKey}
-                value={amount}
-                tokenContract={tokenContract}
-                translationKey="transactionManagement.review.outputs.summary.amount"
-            />
+            {!!amount && (
+                <ReviewOutputItemValues
+                    accountKey={accountKey}
+                    value={amount}
+                    tokenContract={tokenContract}
+                    translationKey="transactionManagement.review.outputs.summary.amount"
+                />
+            )}
             <ReviewOutputItemValues
                 accountKey={accountKey}
                 value={fee}
@@ -75,6 +85,7 @@ export const ReviewOutputSummaryItem = ({
     onLayout,
     tokenContract,
     summaryOutput,
+    flowType,
 }: ReviewOutputSummaryItemProps) => {
     const { translate } = useTranslate();
 
@@ -97,6 +108,7 @@ export const ReviewOutputSummaryItem = ({
                             totalSpent={totalSpent}
                             fee={fee}
                             tokenContract={tokenContract}
+                            flowType={flowType}
                         />
                     ) : (
                         <BitcoinValues accountKey={accountKey} totalSpent={totalSpent} fee={fee} />

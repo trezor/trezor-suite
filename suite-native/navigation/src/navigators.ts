@@ -456,6 +456,8 @@ export type TransactionDetailStackParamList = {
     };
 };
 
+export type ExchangeFlowType = 'swap' | 'approve' | 'revoke';
+
 export type TradingStackParamList = {
     [TradingStackRoutes.Trading]: { tradingType?: TradingType };
     [TradingStackRoutes.ReceiveAccounts]: {
@@ -483,6 +485,7 @@ export type TradingStackParamList = {
         accountKey: AccountKey;
         tokenContract?: TokenAddress;
         orderId: string;
+        flowType: ExchangeFlowType;
     };
 };
 

@@ -22,8 +22,10 @@ jest.mock('@react-navigation/native', () => ({
 describe('ApprovalButton', () => {
     let store: TestStore;
 
-    const renderApprovalButton = (props: ApprovalButtonProps) =>
-        renderWithStoreProvider(<ApprovalButton {...props} />, { store });
+    const renderApprovalButton = (props: Partial<ApprovalButtonProps>) =>
+        renderWithStoreProvider(<ApprovalButton flowType="approve" isReady {...props} />, {
+            store,
+        });
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -60,6 +62,20 @@ describe('ApprovalButton', () => {
             accountKey: 'eth-account-1',
             tokenContract: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
             orderId: 'c2de24a5-b923-42af-b70e-44bda8fa41dd',
+            flowType: 'approve',
+        });
+    });
+
+    it('should navigate to TradingExchangeOutputsReview on press for flowType revoke', async () => {
+        const { getByText } = renderApprovalButton({ isReady: true, flowType: 'revoke' });
+
+        await userEvent.press(getByText('Continue'));
+
+        expect(mockNavigate).toHaveBeenCalledWith('TradingExchangeOutputsReview', {
+            accountKey: 'eth-account-1',
+            tokenContract: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            orderId: 'c2de24a5-b923-42af-b70e-44bda8fa41dd',
+            flowType: 'revoke',
         });
     });
 
