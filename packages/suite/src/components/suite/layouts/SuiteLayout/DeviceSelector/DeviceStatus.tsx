@@ -49,17 +49,19 @@ export const DeviceStatus = ({
     );
 
     return (
-        <Row flex="1" gap={spacings.sm} justifyContent="center">
+        <>
             {isDeviceDetailVisible ? (
-                <>
+                <Row justifyContent="space-between" gap={spacings.sm} overflow="hidden">
                     {image}
                     {content}
-                </>
+                </Row>
             ) : (
-                <Tooltip hasArrow cursor="inherit" placement="right" content={content}>
-                    {image}
-                </Tooltip>
+                <Row justifyContent="center">
+                    <Tooltip hasArrow cursor="inherit" placement="right" content={content}>
+                        {image}
+                    </Tooltip>
+                </Row>
             )}
-        </Row>
+        </>
     );
 };

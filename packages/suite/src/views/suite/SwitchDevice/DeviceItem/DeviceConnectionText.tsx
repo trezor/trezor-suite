@@ -14,6 +14,7 @@ import {
 import { spacings } from '@trezor/theme';
 
 const Container = styled.span<{ $isAction?: boolean }>`
+    width: stretch;
     ${({ $isAction }) =>
         $isAction &&
         css`
@@ -67,7 +68,7 @@ export const DeviceConnectionText = ({
                 ) : (
                     <Icon name={icon} size={12} {...colorProps} />
                 )}
-                <Text typographyStyle="body-xs" {...colorProps}>
+                <Text ellipsisLineCount={1} typographyStyle="body-xs" {...colorProps}>
                     {children}
                 </Text>
             </Row>
