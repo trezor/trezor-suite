@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <title>TrezorConnect | Trezor</title>
+        <meta name="description" content="" />
+        <meta name="keywords" content="" />
+        <meta name="author" content="Trezor info@trezor.io" />
+        <meta name="robots" content="index, follow" />
+        <meta name="title" content="TrezorConnect | Trezor" />
+        <meta http-equiv="Cache-control" content="no-cache" />
+        <meta http-equiv="pragma" content="no-cache" />
+    </head>
+    <body>
+        <script type="text/javascript">
+            var broadcast = new BroadcastChannel('@trezor/connect-popup');
+
+            broadcast.addEventListener('message', event => {
+                console.log('iframe received broadcast message', event.data);
+                window.parent.postMessage(event.data, '*');
+            });
+
+            window.onmessage = msg => {
+                console.log('iframe received message', msg.data);
+                if (msg.data?.type === 'channel-handshake-request') {
+                    console.log(
+                        'iframe received channel-handshake-request, sending handshake response',
+                    );
+                    window.parent.postMessage(
+                        {
+                            type: 'channel-handshake-confirm',
+                            channel: {
+                                here: '@trezor/connect-popup',
+                                peer: '@trezor/connect-web',
+                            },
+                        },
+                        '*',
+                    );
+                }
+
+                console.log('iframe pass to broadcast');
+                broadcast.postMessage(msg.data);
+            };
+        </script>
+    </body>
+</html>

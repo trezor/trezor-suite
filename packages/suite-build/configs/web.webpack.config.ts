@@ -49,9 +49,15 @@ const config: webpack.Configuration = {
                 }))
                 .concat([
                     {
+                        from: path.join(__dirname, '../../', 'suite-web/src/iframe.html'),
+                        to: path.join(baseDir, 'build', 'connect-popup'),
+                    },
+                ])
+                .concat([
+                    {
                         from: path.join(
                             __dirname,
-                            '../../../',
+                            '../../../', // <- how is this working?
                             'suite-common',
                             'message-system',
                             'files',
