@@ -1,6 +1,6 @@
-import type { ExchangeTrade } from 'invity-api';
+import type { CryptoId, ExchangeTrade } from 'invity-api';
 
-export const mercuryoFixedWorstQuote: ExchangeTrade = {
+export const mercuryoFixedWorstQuote = {
     exchange: 'mercuryo',
     exp: '5grkpEGOghDUMvui0X3pZaO1+Ji3XTVGm1A5J64ENV4=',
     fee: 'UNKNOWN',
@@ -10,15 +10,15 @@ export const mercuryoFixedWorstQuote: ExchangeTrade = {
     quoteId: 'mercuryo-fixed-worst',
     rate: 0.0000083554,
     rateIdentificator: 'bf33ed7b-1613-43c6-8603-c3586f0c6f76:0',
-    receive: 'bitcoin',
+    receive: 'bitcoin' as CryptoId,
     receiveStringAmount: '0.00083554',
-    send: 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+    send: 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as CryptoId,
     sendStringAmount: '100',
     swapGasEstimate: 692081943.384627,
     swapSlippage: '1',
-} as unknown as ExchangeTrade;
+} as ExchangeTrade;
 
-export const mercuryoFixedBestQuote: ExchangeTrade = {
+export const mercuryoFixedBestQuote = {
     exchange: 'mercuryo',
     exp: '5grkpEGOghDUMvui0X3pZaO1+Ji3XTVGm1A5J64ENV4=',
     fee: 'UNKNOWN',
@@ -27,13 +27,13 @@ export const mercuryoFixedBestQuote: ExchangeTrade = {
     orderId: 'cbf6ed34-372c-4513-bfb9-1edfeebc4579',
     quoteId: 'mercuryo-fixed-best',
     rate: 0.000009133,
-    receive: 'bitcoin',
+    receive: 'bitcoin' as CryptoId,
     receiveStringAmount: '0.00089537',
-    send: 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+    send: 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as CryptoId,
     sendStringAmount: '100',
-} as unknown as ExchangeTrade;
+} as ExchangeTrade;
 
-export const cexdirectFloatingQuote: ExchangeTrade = {
+export const cexdirectFloatingQuote = {
     exchange: 'cexdirect',
     exp: '5grkpEGOghDUMvui0X3pZaO1+Ji3XTVGm1A5J64ENV4=',
     fee: 'INCLUDED',
@@ -43,13 +43,13 @@ export const cexdirectFloatingQuote: ExchangeTrade = {
     quoteId: 'cexdirect-floating',
     rate: 0.0000090911,
     rateIdentificator: 'ocrWdSoKs8VAQwctkiI~)7qRERjvlm',
-    receive: 'bitcoin',
+    receive: 'bitcoin' as CryptoId,
     receiveStringAmount: '0.00089118',
-    send: 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+    send: 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as CryptoId,
     sendStringAmount: '100',
-} as unknown as ExchangeTrade;
+} as ExchangeTrade;
 
-export const invityDexQuote: ExchangeTrade = {
+export const invityDexQuote = {
     exchange: 'invity',
     exp: '5grkpEGOghDUMvui0X3pZaO1+Ji3XTVGm1A5J64ENV4=',
     fee: 'UNKNOWN',
@@ -59,13 +59,13 @@ export const invityDexQuote: ExchangeTrade = {
     orderId: '902bec47-3d5e-45db-8cf9-71e40515785f',
     quoteId: 'invity-dex',
     rate: 0.000008989855,
-    receive: 'bitcoin',
+    receive: 'bitcoin' as CryptoId,
     receiveStringAmount: '0.00088076',
-    send: 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+    send: 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as CryptoId,
     sendStringAmount: '100',
-} as unknown as ExchangeTrade;
+} as ExchangeTrade;
 
-export const mercuryoDexQuote: ExchangeTrade = {
+export const mercuryoDexQuote = {
     exchange: 'mercuryo',
     exp: '6grkpEGOghDUMvui0X3pZaO1+Ji3XTVGm1A5J64ENV4=',
     fee: 'UNKNOWN',
@@ -76,15 +76,15 @@ export const mercuryoDexQuote: ExchangeTrade = {
     quoteId: 'mercuryo-dex',
     rate: 0.0000083554,
     rateIdentificator: 'bf33ed7b-1613-43c6-8603-c3586f0c6f76:0',
-    receive: 'bitcoin',
+    receive: 'bitcoin' as CryptoId,
     receiveStringAmount: '0.00083554',
-    send: 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+    send: 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as CryptoId,
     sendStringAmount: '100',
     swapGasEstimate: 692081943.384627,
     swapSlippage: '1',
-} as unknown as ExchangeTrade;
+} as ExchangeTrade;
 
-export const oneInchFusionPlusQuote: ExchangeTrade = {
+export const oneInchFusionPlusQuote = {
     exchange: '1inchfusionplus',
     exp: '7grkpEGOghDUMvui0X3pZaO1+Ji3XTVGm1A5J64ENV4=',
     fee: 'UNKNOWN',
@@ -95,13 +95,13 @@ export const oneInchFusionPlusQuote: ExchangeTrade = {
     quoteId: '1inch-fusion-plus',
     rate: 0.0000081234,
     rateIdentificator: 'cf44fe8c-2724-54d7-9704-d4697g1d7g87:0',
-    receive: 'bitcoin',
+    receive: 'bitcoin' as CryptoId,
     receiveStringAmount: '0.00081234',
-    send: 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+    send: 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as CryptoId,
     sendStringAmount: '100',
     swapGasEstimate: 0,
     swapSlippage: '1',
-} as unknown as ExchangeTrade;
+} as ExchangeTrade;
 
 export const exchangeQuotes = [
     mercuryoFixedWorstQuote,
