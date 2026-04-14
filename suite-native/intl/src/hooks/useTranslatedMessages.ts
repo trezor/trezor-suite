@@ -10,6 +10,7 @@ const LANGUAGE_TRANSLATIONS_MAP = {
     'en-US': require('../../translations/en-US.json'),
     'cs-CZ': require('../../translations/cs-CZ.json'),
     'de-DE': require('../../translations/de-DE.json'),
+    'es-ES': require('../../translations/es-ES.json'),
     'fr-FR': require('../../translations/fr-FR.json'),
     'pt-BR': require('../../translations/pt-BR.json'),
     'ja-JP': require('../../translations/ja-JP.json'),

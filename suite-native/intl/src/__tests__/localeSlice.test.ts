@@ -22,7 +22,7 @@ describe('selectSupportedLanguageLocale', () => {
                 'should return default locale when app locale is "system" and system locale is not supported',
             localeState: {
                 appLocaleCode: 'system',
-                systemLocaleCode: 'es-ES',
+                systemLocaleCode: 'it-IT',
             },
             expectedResultLocale: DEFAULT_LOCALE,
         },
