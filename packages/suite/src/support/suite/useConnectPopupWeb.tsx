@@ -14,6 +14,8 @@ const webChannel = {
     peer: '@trezor/connect-web',
 };
 
+const broadcast = new BroadcastChannel('@trezor/connect-popup');
+
 export const useConnectPopupWeb = () => {
     const [incomingMessages, setIncomingMessages] = useState<ConnectPopupMessage[]>([]);
     // Start with '*' because we don't know the opener's origin yet.
@@ -25,6 +27,8 @@ export const useConnectPopupWeb = () => {
     // scoped to that origin.
     const originRef = useRef<string>('*');
 
+    console.log('useConnectPopupWeb');
+
     /**
      * Send a message back to the caller (opener window or same window).
      *
@@ -35,11 +39,13 @@ export const useConnectPopupWeb = () => {
      */
     const postMessageToParent = useCallback((message: ConnectPopupOutgoingMessage) => {
         message.channel = webChannel;
-        if (window.opener) {
-            window.opener.postMessage(message, originRef.current);
-        } else {
-            window.postMessage(message, window.location.origin);
-        }
+
+        broadcast.postMessage(message);
+        // if (window.opener) {
+        //     window.opener.postMessage(message, originRef.current);
+        // } else {
+        //     window.postMessage(message, window.location.origin);
+        // }
     }, []);
 
     const popupLink = useMemo<ConnectPopupLink>(
@@ -61,6 +67,8 @@ export const useConnectPopupWeb = () => {
     // Listen for incoming window messages and normalize them.
     useEffect(() => {
         const onMessage = (event: MessageEvent) => {
+            console.log('useConnectPopupWeb on message', event.data);
+
             const { data } = event;
             if (!data?.type) return;
 
@@ -86,10 +94,14 @@ export const useConnectPopupWeb = () => {
             }
         };
 
-        window.addEventListener('message', onMessage);
+        broadcast.addEventListener('message', onMessage);
+
+        console.log('useConnectPopupWeb: listening for messages');
 
         return () => {
-            window.removeEventListener('message', onMessage);
+            console.log('useConnectPopupWeb: stopping listening for messages');
+
+            broadcast.removeEventListener('message', onMessage);
         };
     }, []);
 };
