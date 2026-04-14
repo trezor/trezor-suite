@@ -17,7 +17,12 @@ import {
     userEvent,
     waitFor,
 } from '@suite-native/test-utils';
-import { exchangeQuotes, getBtcAccount, getWalletState } from '@suite-native/trading-fixtures';
+import {
+    exchangeQuotes,
+    getBtcAccount,
+    getWalletState,
+    mercuryoFixedWorstQuote,
+} from '@suite-native/trading-fixtures';
 
 import {
     TradingExchangePreviewScreen,
@@ -96,7 +101,7 @@ const createPreloadedState = (quote?: ExchangeTrade): PreloadedState => {
         tradingAccountKey: 'eth-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
         receiveAccountKey: 'btc-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
         receiveAddress: getBtcAccount().addresses?.used[0].address,
-        selectedQuote: quote ?? exchangeQuotes[0],
+        selectedQuote: quote ?? mercuryoFixedWorstQuote,
     };
     preloadedState.wallet.send = {
         ...preloadedState.wallet.send,
@@ -335,7 +340,7 @@ describe('TradingExchangePreviewScreen', () => {
             mockTxnErrorString = null;
 
             const quoteWithError = {
-                ...exchangeQuotes[0],
+                ...mercuryoFixedWorstQuote,
                 error: 'Quote error message',
             };
 
@@ -350,7 +355,7 @@ describe('TradingExchangePreviewScreen', () => {
             mockTxnErrorString = null;
 
             const quoteWithoutError = {
-                ...exchangeQuotes[0],
+                ...mercuryoFixedWorstQuote,
                 error: undefined,
             };
 
@@ -366,7 +371,7 @@ describe('TradingExchangePreviewScreen', () => {
             mockTxnErrorString = 'Transaction error takes priority';
 
             const quoteWithError = {
-                ...exchangeQuotes[0],
+                ...mercuryoFixedWorstQuote,
                 error: 'Quote error message',
             };
 

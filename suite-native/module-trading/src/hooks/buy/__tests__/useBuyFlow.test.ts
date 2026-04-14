@@ -6,9 +6,9 @@ import {
     renderHookWithStoreProvider,
 } from '@suite-native/test-utils';
 import {
-    buyQuotes,
     getBtcAccount,
     getInitializedTradingStateWithQuotes,
+    invityErrorBuyQuote,
 } from '@suite-native/trading-fixtures';
 import { type BuyFormType } from '@suite-native/trading-types';
 
@@ -71,7 +71,7 @@ describe('useBuyFlow', () => {
             buyForm = result.current;
 
             act(() => {
-                buyForm.setValue('quote', buyQuotes[2]);
+                buyForm.setValue('quote', invityErrorBuyQuote);
             });
         });
 

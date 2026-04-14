@@ -13,7 +13,7 @@ import {
     buyCexdirect,
     buyInvity,
     buyMercuryo,
-    buyQuotes,
+    cexdirectCreditCardBuyQuote,
     getInitializedTradingStateWithQuotes,
 } from '@suite-native/trading-fixtures';
 import { type BuyFormType } from '@suite-native/trading-types';
@@ -86,7 +86,7 @@ describe('BuyProviderPicker', () => {
 
         beforeEach(() => {
             act(() => {
-                form.setValue('quote', buyQuotes[1]);
+                form.setValue('quote', cexdirectCreditCardBuyQuote);
             });
 
             preloadedState = { wallet: { trading: getInitializedTradingStateWithQuotes() } };

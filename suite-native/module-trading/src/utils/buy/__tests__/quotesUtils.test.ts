@@ -4,9 +4,9 @@ import { type TradingAssetOption } from '@suite-common/trading';
 import { act, renderHookWithStoreProvider } from '@suite-native/test-utils';
 import {
     btcAsset,
-    buyQuotes,
     coins,
     getInitializedTradingState,
+    mercuryoApplePayBuyQuote,
 } from '@suite-native/trading-fixtures';
 import { type BuyFormType } from '@suite-native/trading-types';
 
@@ -33,7 +33,7 @@ describe('quotesUtils', () => {
 
         it('should return TradingPaymentMethodListProps object when quote is set', () => {
             act(() => {
-                form.setValue('quote', buyQuotes[0]);
+                form.setValue('quote', mercuryoApplePayBuyQuote);
             });
 
             expect(getPaymentMethodFromBuyForm(form)).toEqual({
@@ -63,7 +63,7 @@ describe('quotesUtils', () => {
                         label: '🇺🇸 United States',
                         shortLabel: '🇺🇸 USA',
                     });
-                    form.setValue('quote', buyQuotes[0]);
+                    form.setValue('quote', mercuryoApplePayBuyQuote);
                 });
             });
 
@@ -112,7 +112,7 @@ describe('quotesUtils', () => {
             it('should set paymentMethod to undefined when provided quote is not complete', () => {
                 act(() => {
                     form.setValue('quote', {
-                        ...buyQuotes[0],
+                        ...mercuryoApplePayBuyQuote,
                         paymentMethodName: undefined,
                     } as unknown as BuyTrade);
                 });

@@ -1,7 +1,7 @@
 import { type TradingTradeType, type TradingType } from '@suite-common/trading';
 import { FeatureFlag } from '@suite-native/feature-flags';
 import { type PreloadedState, renderWithStoreProvider, screen } from '@suite-native/test-utils';
-import { buyQuotes, getWalletState } from '@suite-native/trading-fixtures';
+import { getWalletState, mercuryoApplePayBuyQuote } from '@suite-native/trading-fixtures';
 
 import { ProviderSheet, type ProviderSheetProps } from '../ProviderSheet';
 
@@ -64,7 +64,7 @@ describe('ProviderSheet', () => {
 
     it('should render provided quotes', () => {
         const { queryByText, getByText } = renderProviderSheet(
-            { quotes: { fixed: [buyQuotes[0]] } },
+            { quotes: { fixed: [mercuryoApplePayBuyQuote] } },
             { wallet: getWalletState() },
         );
 

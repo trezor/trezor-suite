@@ -1,13 +1,16 @@
 import { getTranslation } from '@suite-native/intl';
 import { type PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils';
-import { exchangeQuotes, getInitializedTradingState } from '@suite-native/trading-fixtures';
+import {
+    getInitializedTradingState,
+    mercuryoFixedWorstQuote,
+} from '@suite-native/trading-fixtures';
 
 import { ExchangeApprovalLimitSheet } from '../ExchangeApprovalLimitSheet';
 
 const mockOnDismiss = jest.fn();
 const mockOnApprovalTypeSelect = jest.fn();
 
-const testQuote = exchangeQuotes[0];
+const testQuote = mercuryoFixedWorstQuote;
 
 const getPreloadedState = (): PreloadedState => ({
     wallet: {

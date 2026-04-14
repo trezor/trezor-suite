@@ -1,6 +1,10 @@
 import { type AccountKey } from '@suite-common/wallet-types';
 import { type PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils';
-import { btc1NormalAccount, exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
+import {
+    btc1NormalAccount,
+    getWalletState,
+    mercuryoFixedWorstQuote,
+} from '@suite-native/trading-fixtures';
 
 import {
     ExchangeToAccountTradePreviewCard,
@@ -31,7 +35,7 @@ describe('ExchangeToAccountTradePreviewCard', () => {
 
     it('should render nothing when account is not found', () => {
         const { toJSON } = renderExchangeToAccountTradePreviewCard(
-            { quote: exchangeQuotes[0] },
+            { quote: mercuryoFixedWorstQuote },
             'unknown-account-key' as AccountKey,
         );
 
@@ -40,18 +44,18 @@ describe('ExchangeToAccountTradePreviewCard', () => {
 
     it('should render TradeSideCard otherwise', () => {
         const { getByText } = renderExchangeToAccountTradePreviewCard({
-            quote: exchangeQuotes[0],
+            quote: mercuryoFixedWorstQuote,
         });
 
         expect(getByText('To')).toBeOnTheScreen();
         expect(getByText('+0.00083554 BTC')).toBeOnTheScreen();
-        expect(getByText(`0.00083554-${exchangeQuotes[0].receive}`)).toBeOnTheScreen();
+        expect(getByText(`0.00083554-${mercuryoFixedWorstQuote.receive}`)).toBeOnTheScreen();
     });
 
     // Todo: https://github.com/trezor/trezor-suite/issues/24906
     it.skip('should render correct account name', () => {
         const { getByText } = renderExchangeToAccountTradePreviewCard({
-            quote: exchangeQuotes[0],
+            quote: mercuryoFixedWorstQuote,
         });
 
         expect(getByText('BTC Account #1')).toBeOnTheScreen();

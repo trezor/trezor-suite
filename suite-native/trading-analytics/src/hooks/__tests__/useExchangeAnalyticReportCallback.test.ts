@@ -3,7 +3,11 @@ import type { CryptoId } from 'invity-api';
 import { events } from '@suite-native/analytics';
 import { useAnalytics } from '@suite-native/services';
 import { type PreloadedState, renderHookWithStoreProvider } from '@suite-native/test-utils';
-import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
+import {
+    getWalletState,
+    invityDexQuote,
+    mercuryoFixedWorstQuote,
+} from '@suite-native/trading-fixtures';
 
 import { useExchangeAnalyticReportCallback } from '../useExchangeAnalyticReportCallback';
 
@@ -34,7 +38,7 @@ describe('useExchangeAnalyticReportCallback', () => {
     });
 
     it('should call analytics on mount', () => {
-        preloadedState!.wallet!.trading!.exchange!.selectedQuote = exchangeQuotes[0];
+        preloadedState!.wallet!.trading!.exchange!.selectedQuote = mercuryoFixedWorstQuote;
 
         const { result } = renderHookWithStoreProvider(() => useExchangeAnalyticReportCallback(), {
             preloadedState,
@@ -69,10 +73,10 @@ describe('useExchangeAnalyticReportCallback', () => {
     });
 
     it('should allow to specify quote as parameter', () => {
-        preloadedState!.wallet!.trading!.exchange!.selectedQuote = exchangeQuotes[0];
+        preloadedState!.wallet!.trading!.exchange!.selectedQuote = mercuryoFixedWorstQuote;
 
         const { result } = renderHookWithStoreProvider(
-            () => useExchangeAnalyticReportCallback(exchangeQuotes[3]),
+            () => useExchangeAnalyticReportCallback(invityDexQuote),
             { preloadedState },
         );
 
@@ -89,8 +93,8 @@ describe('useExchangeAnalyticReportCallback', () => {
     });
 
     it.each([
-        [{ ...exchangeQuotes[0], send: 'unknown_cryptoID' as CryptoId }],
-        [{ ...exchangeQuotes[0], receive: 'unknown_cryptoID' as CryptoId }],
+        [{ ...mercuryoFixedWorstQuote, send: 'unknown_cryptoID' as CryptoId }],
+        [{ ...mercuryoFixedWorstQuote, receive: 'unknown_cryptoID' as CryptoId }],
     ])('should work with unknown quote values', quote => {
         const { result } = renderHookWithStoreProvider(
             () => useExchangeAnalyticReportCallback(quote),

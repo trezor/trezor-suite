@@ -7,8 +7,8 @@ import {
 } from '@suite-native/test-utils';
 import {
     btcAsset,
-    exchangeQuotes,
     getInitializedTradingState,
+    mercuryoFixedWorstQuote,
 } from '@suite-native/trading-fixtures';
 import { type ExchangeFormType } from '@suite-native/trading-types';
 
@@ -78,7 +78,7 @@ describe('ExchangeForm', () => {
         describe('with quote selected', () => {
             beforeEach(() => {
                 act(() => {
-                    form.setValue('quote', exchangeQuotes[0]);
+                    form.setValue('quote', mercuryoFixedWorstQuote);
                 });
             });
 

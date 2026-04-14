@@ -1,6 +1,6 @@
 import { getTranslation } from '@suite-native/intl';
 import { type PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils';
-import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
+import { getWalletState, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 
 import { ExchangeFeePickerCard, type ExchangeFeePickerCardProps } from '../ExchangeFeePickerCard';
 
@@ -27,7 +27,7 @@ describe('ExchangeFeePickerCard', () => {
 
     it('should render nothing when isTxnError', () => {
         const { toJSON } = renderExchangeFeePickerCard({
-            quote: exchangeQuotes[0],
+            quote: mercuryoFixedWorstQuote,
             isTxnError: true,
         });
 
@@ -42,7 +42,7 @@ describe('ExchangeFeePickerCard', () => {
 
     it('should render nothing when account is not found', () => {
         const { toJSON } = renderExchangeFeePickerCard(
-            { quote: exchangeQuotes[0] },
+            { quote: mercuryoFixedWorstQuote },
             'unknown-account-key',
         );
 
@@ -50,7 +50,7 @@ describe('ExchangeFeePickerCard', () => {
     });
 
     it('should render FeePickerCard otherwise', () => {
-        const { getByText } = renderExchangeFeePickerCard({ quote: exchangeQuotes[0] });
+        const { getByText } = renderExchangeFeePickerCard({ quote: mercuryoFixedWorstQuote });
 
         expect(
             getByText(getTranslation('moduleTrading.tradingExchangePreviewScreen.details')),

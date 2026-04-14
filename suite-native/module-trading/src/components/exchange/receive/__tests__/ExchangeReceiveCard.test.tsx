@@ -4,7 +4,7 @@ import {
     renderHookWithStoreProvider,
     renderWithStoreProvider,
 } from '@suite-native/test-utils';
-import { exchangeQuotes, usdcAsset } from '@suite-native/trading-fixtures';
+import { mercuryoFixedWorstQuote, usdcAsset } from '@suite-native/trading-fixtures';
 import { type ExchangeFormType } from '@suite-native/trading-types';
 
 import { useExchangeForm } from '../../../../hooks/exchange/useExchangeForm';
@@ -28,7 +28,7 @@ describe('ExchangeReceiveCard', () => {
     it('should render all components', () => {
         act(() => {
             form.setValue('receiveAsset', usdcAsset);
-            form.setValue('quote', exchangeQuotes[0]);
+            form.setValue('quote', mercuryoFixedWorstQuote);
         });
         const { getByText, getByLabelText } = renderExchangeBuyCard();
 
