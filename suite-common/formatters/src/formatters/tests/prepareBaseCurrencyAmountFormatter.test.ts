@@ -113,16 +113,16 @@ describe(prepareBaseCurrencyAmountFormatter.name, () => {
             ).toMatch(/^\$/);
         });
 
-        it('USD in cs-CZ locale displays currency symbol as prefix', () => {
+        it('USD in cs-CZ locale displays currency symbol as prefix with separator', () => {
             const result = usdFormatterCsCZ.format(asBaseCurrencyAmount(new BigNumber('0')), {});
-            // USD is canonically prefix: should start with the currency symbol
-            expect(result).toMatch(/^US\$/);
+            // USD is canonically prefix: "US$\u00a00,00" (symbol + non-breaking space + number)
+            expect(result).toMatch(/^US\$\s/);
         });
 
         it('USD negative value in cs-CZ locale formats with correct sign and currency prefix', () => {
             const result = usdFormatterCsCZ.format(asBaseCurrencyAmount(new BigNumber('-5')), {});
-            // USD is canonically prefix: minus sign, then currency, then number
-            expect(result).toMatch(/^-US\$/);
+            // USD is canonically prefix: minus sign, then currency, then separator, then number
+            expect(result).toMatch(/^-US\$\s/);
         });
 
         it('CZK in cs-CZ locale uses canonical suffix position', () => {

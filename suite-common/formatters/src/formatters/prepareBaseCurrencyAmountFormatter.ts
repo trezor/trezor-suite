@@ -174,17 +174,23 @@ const formatStandard = ({ intl, locale, currency, value, dataContext }: FormatPa
         .join('');
 
     if (canonicalIsPrefix) {
-        // Currency is a suffix but should be a prefix (e.g. USD in cs-CZ: "521,00 US$" → "US$521,00")
+        // Currency is a suffix but should be a prefix (e.g. USD in cs-CZ: "1 895,41 US$" → "US$ 1 895,41")
+        // Preserve the whitespace literal that separated number from suffix — it becomes the prefix separator.
+        const adjLiteral = parts[currencyIndex - 1];
+        const prefixSeparator =
+            adjLiteral?.type === 'literal' && adjLiteral.value.trim() === ''
+                ? adjLiteral.value
+                : '';
         const numberParts = parts.filter((p, i) => {
             if (p.type === 'currency') return false;
             if (p.type === 'minusSign' || p.type === 'plusSign') return false;
-            // Remove the whitespace literal immediately before the currency suffix
+            // Remove the whitespace literal immediately before the currency suffix (moved to prefix side)
             if (p.type === 'literal' && i === currencyIndex - 1 && p.value.trim() === '') return false;
 
             return true;
         });
 
-        return `${signString}${currencyValue}${numberParts.map(p => p.value).join('')}`;
+        return `${signString}${currencyValue}${prefixSeparator}${numberParts.map(p => p.value).join('')}`;
     } else {
         // Currency is a prefix but should be a suffix (e.g. CZK in en-US: "CZK 521.00" → "521.00\u00a0CZK")
         const numberParts = parts.filter((p, i) => {
