@@ -15,6 +15,7 @@ import { EarnItemInfoModal } from '../components/EarnItemInfoModal';
 import { EarnPromoListHeader } from '../components/EarnPromoListHeader';
 import { EarnPromoListRow } from '../components/EarnPromoListRow';
 import { EarnScreenListHeader } from '../components/EarnScreenListHeader';
+import { EnableNetworkForStakingBottomSheet } from '../components/EnableNetworkForStakingBottomSheet';
 import { useStablecoinYieldListData } from '../hooks/useStablecoinYieldListData';
 import { useStakingListData } from '../hooks/useStakingListData';
 import { useStakingPromoNavigation } from '../hooks/useStakingPromoNavigation';
@@ -45,16 +46,21 @@ export const EarnScreen = () => {
     const {
         handleStakingPromoPress,
         handleAccountSelected,
+        handleEnableNetworkPress,
         chosenAccounts,
+        pendingEnableSymbol,
         infoSheetRef,
         chooseAccountSheetRef,
+        enableNetworkSheetRef,
         closeChooseAccountModal,
+        closeEnableNetworkModal,
     } = useStakingPromoNavigation();
 
     const dismissAllModals = useCallback(() => {
         closeStablecoinYieldModal();
         closeChooseAccountModal();
-    }, [closeStablecoinYieldModal, closeChooseAccountModal]);
+        closeEnableNetworkModal();
+    }, [closeStablecoinYieldModal, closeChooseAccountModal, closeEnableNetworkModal]);
 
     const earnListData = useMemo(
         (): EarnPromoListDataItem[] => [...stakingPromoItems, ...stablecoinYieldPromoItems],
@@ -144,6 +150,11 @@ export const EarnScreen = () => {
                     accounts={chosenAccounts}
                     onAccountSelected={handleAccountSelected}
                     onClose={closeChooseAccountModal}
+                />
+                <EnableNetworkForStakingBottomSheet
+                    ref={enableNetworkSheetRef}
+                    symbol={pendingEnableSymbol}
+                    onEnablePress={handleEnableNetworkPress}
                 />
             </VStack>
         </Screen>

@@ -7,7 +7,7 @@ import {
 import { RootStackRoutes } from '@suite-native/navigation';
 import { BigNumber } from '@trezor/utils';
 
-import { navigateByAccountState } from '../useStakingPromoNavigation';
+import { navigateByAccountState } from '../navigateByAccountState';
 
 jest.mock('@suite-common/wallet-utils', () => ({
     ...jest.requireActual('@suite-common/wallet-utils'),
