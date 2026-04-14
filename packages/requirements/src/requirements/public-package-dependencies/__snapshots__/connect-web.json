@@ -38,6 +38,7 @@
         "ws"
     ],
     "dev": [
+        "@anthropic-ai/sdk",
         "@babel/preset-env",
         "@babel/preset-typescript",
         "@braintree/sanitize-url",
