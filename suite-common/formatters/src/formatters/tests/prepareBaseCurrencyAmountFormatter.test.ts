@@ -106,7 +106,7 @@ describe(prepareBaseCurrencyAmountFormatter.name, () => {
         );
     });
 
-    describe('currency symbol is always shown as prefix', () => {
+    describe('currency symbol respects canonical position for each currency', () => {
         it('USD in en-US locale stays as prefix', () => {
             expect(
                 usdFormatterEnUs.format(asBaseCurrencyAmount(new BigNumber('0')), {}),
@@ -115,20 +115,29 @@ describe(prepareBaseCurrencyAmountFormatter.name, () => {
 
         it('USD in cs-CZ locale displays currency symbol as prefix', () => {
             const result = usdFormatterCsCZ.format(asBaseCurrencyAmount(new BigNumber('0')), {});
-            // Should start with the currency symbol, not end with it
+            // USD is canonically prefix: should start with the currency symbol
             expect(result).toMatch(/^US\$/);
         });
 
         it('USD negative value in cs-CZ locale formats with correct sign and currency prefix', () => {
             const result = usdFormatterCsCZ.format(asBaseCurrencyAmount(new BigNumber('-5')), {});
-            // Should be "-US$5,00" format: minus sign, then currency, then number
+            // USD is canonically prefix: minus sign, then currency, then number
             expect(result).toMatch(/^-US\$/);
         });
 
-        it('CZK in cs-CZ locale is moved to prefix', () => {
+        it('CZK in cs-CZ locale uses canonical suffix position', () => {
             const result = czkFormatterCsCZ.format(asBaseCurrencyAmount(new BigNumber('0')), {});
-            // Should start with the currency symbol
-            expect(result).toMatch(/^Kč/);
+            // CZK is canonically suffix: should end with the currency symbol
+            expect(result).toMatch(/Kč$/);
+        });
+
+        it('CZK in en-US locale is moved to suffix to match canonical position', () => {
+            const result = usdFormatterEnUs.format(asBaseCurrencyAmount(new BigNumber('521')), {
+                currency: 'CZK',
+            });
+            // CZK is canonically suffix: "521.00\u00a0CZK"
+            expect(result).toMatch(/CZK$/);
+            expect(result).not.toMatch(/^CZK/);
         });
     });
 });
