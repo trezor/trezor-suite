@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { selectDeviceStaticSessionId } from '@suite-common/device';
+import { selectDeviceStaticSessionId, selectIsDeviceConnected } from '@suite-common/device';
 import { type MessageSystemRootState } from '@suite-common/message-system';
 import {
     type WithSuiteSyncAndDeviceState,
@@ -11,6 +11,7 @@ import {
 import { useAlert } from '@suite-native/alerts';
 import { Translation, useTranslate } from '@suite-native/intl';
 import {
+    AuthorizeDeviceStackRoutes,
     DeviceSettingsStackRoutes,
     type RootStackParamList,
     RootStackRoutes,
@@ -36,6 +37,7 @@ export const useTurnOnSuiteSyncGuard = () => {
             >
         >();
     const deviceStaticSessionId = useSelector(selectDeviceStaticSessionId);
+    const isDeviceConnected = useSelector(selectIsDeviceConnected);
 
     const suiteSyncInteraction = useSelector(
         (state: WithSuiteSyncAndDeviceState & MessageSystemRootState) =>
@@ -100,13 +102,19 @@ export const useTurnOnSuiteSyncGuard = () => {
     };
 
     const showSuiteSyncEnableConfirmationAlert = (onSuccess: () => void) => {
-        showAlert({
-            title: <Translation id="suiteSync.enableAlert.title" />,
-            description: <Translation id="suiteSync.enableAlert.description" />,
-            primaryButtonTitle: <Translation id="suiteSync.enableAlert.cta" />,
-            onPressPrimaryButton: () => turnOnSuiteSync(onSuccess),
-            secondaryButtonTitle: <Translation id="generic.buttons.cancel" />,
-        });
+        if (!isDeviceConnected) {
+            navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
+                screen: AuthorizeDeviceStackRoutes.DeviceConnectionGuard,
+            });
+        } else {
+            showAlert({
+                title: <Translation id="suiteSync.enableAlert.title" />,
+                description: <Translation id="suiteSync.enableAlert.description" />,
+                primaryButtonTitle: <Translation id="suiteSync.enableAlert.cta" />,
+                onPressPrimaryButton: () => turnOnSuiteSync(onSuccess),
+                secondaryButtonTitle: <Translation id="generic.buttons.cancel" />,
+            });
+        }
     };
 
     const handleAddLabel = async (onSuccess: () => void) => {
