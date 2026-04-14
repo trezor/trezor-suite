@@ -6382,6 +6382,11 @@ export const messages = defineMessages({
         defaultMessage: 'Change server',
         id: 'TR_LABELING_SERVERS_CHANGE',
     },
+    TR_LEGACY_LABELING_TURN_ON_SUITE_SYNC_BANNER_DESCRIPTION: {
+        defaultMessage:
+            'Keep your wallet, account, and transaction labels consistent on all your devices.',
+        id: 'TR_LEGACY_LABELING_TURN_ON_SUITE_SYNC_BANNER_DESCRIPTION',
+    },
     TR_TO_MAKE_YOUR_LABELS_PERSISTENT: {
         defaultMessage:
             'To make your labels consistent and available on different devices, connect to a cloud storage provider.',

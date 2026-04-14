@@ -9,10 +9,11 @@ import {
     selectPendingFeedbackFeature,
     sendFeedbackAction,
 } from '@suite-common/feedback';
+import { SidebarBanner } from '@trezor/product-components';
 
 import { feedbackDismissed } from '../featureFeedbackSlice';
 import { FeedbackFormModal } from './FeedbackFormModal';
-import { RateYourExperienceCard } from './RateYourExperienceCard';
+import { RateYourExperience } from './RateYourExperience';
 
 export const FeedbackFormManager = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -59,10 +60,13 @@ export const FeedbackFormManager = () => {
     }
 
     return (
-        <RateYourExperienceCard
-            feature={pendingFeature}
-            onRate={() => setIsModalOpen(true)}
-            onSkip={handleDismiss}
-        />
+        <SidebarBanner onClose={handleDismiss} data-testid="@notification/feedback-banner">
+            <RateYourExperience
+                feature={pendingFeature}
+                onRate={() => setIsModalOpen(true)}
+                onSkip={handleDismiss}
+                showSkipButton={false}
+            />
+        </SidebarBanner>
     );
 };

@@ -1,12 +1,12 @@
-import { type MouseEvent } from 'react';
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-
-import { type Variants, motion } from 'framer-motion';
 
 import { Translation, type TranslationKey } from '@suite/intl';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
-import { Card, Column, ElevationContext, IconButton, Row, Text } from '@trezor/components';
+import { Text } from '@trezor/components';
+import { SidebarBanner } from '@trezor/product-components';
 
+import { selectUpdateStatus } from './selectUpdateStatus';
 import {
     type UpdateStatus,
     type UpdateStatusDevice,
@@ -14,12 +14,6 @@ import {
     mapDeviceUpdateToClick,
     mapSuiteUpdateToClick,
 } from './updateQuickActionTypes';
-
-type UpdateNotificationBannerProps = {
-    updateStatusDevice: UpdateStatusDevice;
-    updateStatusSuite: UpdateStatusSuite;
-    onClose: () => void;
-};
 
 const mapDeviceUpdateStatusToTranslation: Record<UpdateStatusDevice, TranslationKey | null> = {
     disconnected: null,
@@ -46,13 +40,19 @@ const mapSuiteUpdateStatusToCallToActionTranslation: Record<UpdateStatus, Transl
     'update-downloaded-manual': 'TR_QUICK_ACTION_UPDATE_POPOVER_CLICK_TO_START_UPDATE',
 };
 
-export const UpdateNotificationBanner = ({
-    updateStatusDevice,
-    updateStatusSuite,
-    onClose,
-}: UpdateNotificationBannerProps) => {
+export const UpdateNotificationBanner = () => {
+    const [closedNotificationDevice, setClosedNotificationDevice] = useState(false);
+    const [closedNotificationSuite, setClosedNotificationSuite] = useState(false);
+    const [isBannerVisible, setIsBannerVisible] = useState(true);
+
     const dispatch = useDispatch();
     const discoveryInProgress = useSelector(selectHasRunningDiscovery);
+    const { updateStatusDevice, updateStatusSuite } = useSelector(selectUpdateStatus);
+
+    const isUpdateAvailable =
+        (updateStatusSuite !== 'up-to-date' && !closedNotificationSuite) ||
+        (!['up-to-date', 'disconnected'].includes(updateStatusDevice) && !closedNotificationDevice);
+    const showUpdateBannerNotification = isBannerVisible && isUpdateAvailable;
 
     const translationHeader =
         updateStatusSuite !== 'up-to-date'
@@ -64,7 +64,23 @@ export const UpdateNotificationBanner = ({
             updateStatusSuite !== 'up-to-date' ? updateStatusSuite : updateStatusDevice
         ];
 
-    if (translationHeader === null || translationCallToAction === null || discoveryInProgress) {
+    const handleClose = () => {
+        if (updateStatusSuite !== 'up-to-date') {
+            setClosedNotificationSuite(true);
+        }
+        if (updateStatusDevice !== 'up-to-date') {
+            setClosedNotificationDevice(true);
+        }
+
+        setIsBannerVisible(false);
+    };
+
+    if (
+        !showUpdateBannerNotification ||
+        translationHeader === null ||
+        translationCallToAction === null ||
+        discoveryInProgress
+    ) {
         return null;
     }
 
@@ -76,73 +92,23 @@ export const UpdateNotificationBanner = ({
 
         if (onClick !== null) {
             onClick({ dispatch });
-            onClose();
+            handleClose();
         }
     };
 
-    const handleOnClose = (e: MouseEvent<HTMLButtonElement>) => {
-        e.stopPropagation();
-        onClose();
-    };
-
-    const variants: Variants = {
-        initial: { y: 32, opacity: 0 },
-        exit: { y: 32, opacity: 0 },
-        drop: {
-            y: 0,
-            opacity: 1,
-            transition: {
-                type: 'spring',
-                mass: 1,
-                stiffness: 266.7,
-                damping: 10,
-            },
-        },
-        shake: {
-            rotate: [0, -1, 1, 0],
-            x: [0, -4, 4, 0],
-            transition: {
-                duration: 1.2,
-                ease: 'easeInOut',
-                delay: 10,
-            },
-        },
-    };
-
     return (
-        <ElevationContext baseElevation={0}>
-            <motion.div
-                variants={variants}
-                initial="initial"
-                exit="exit"
-                animate={['drop', 'shake']}
-            >
-                <Card
-                    onClick={handleOnClick}
-                    data-testid="@notification/update-notification-banner"
-                    margin={12}
-                    paddingType="small"
-                    width="auto"
-                >
-                    <Row gap={12}>
-                        <Column flex="1" alignItems="start">
-                            <Text>
-                                <Translation id={translationHeader} />
-                            </Text>
-                            <Text intent="brand">
-                                <Translation id={translationCallToAction} />
-                            </Text>
-                        </Column>
-                        <IconButton
-                            intent="neutral"
-                            priority="secondary"
-                            icon="x"
-                            size="small"
-                            onClick={handleOnClose}
-                        />
-                    </Row>
-                </Card>
-            </motion.div>
-        </ElevationContext>
+        <SidebarBanner
+            animate={['drop', 'shake']}
+            onClick={handleOnClick}
+            onClose={handleClose}
+            data-testid="@notification/update-notification-banner"
+        >
+            <Text>
+                <Translation id={translationHeader} />
+            </Text>
+            <Text intent="brand">
+                <Translation id={translationCallToAction} />
+            </Text>
+        </SidebarBanner>
     );
 };

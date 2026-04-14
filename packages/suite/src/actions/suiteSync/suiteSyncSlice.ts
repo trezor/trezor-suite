@@ -94,7 +94,9 @@ export const selectDesktopSuiteSyncInteraction = (
 
     // When legacy labeling is enabled (user explicitly chose it in settings)
     // and suite sync is off, don't expose suite sync interactions — respect the user's choice.
-    if (interaction === 'suite-sync-off' && selectIsMetadataEnabled(state)) return null;
+    if (interaction === 'suite-sync-off' && selectIsMetadataEnabled(state)) {
+        return null;
+    }
 
     return interaction;
 };

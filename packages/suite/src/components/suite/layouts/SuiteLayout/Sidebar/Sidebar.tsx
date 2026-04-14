@@ -1,9 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 
-import { AnimatePresence } from 'framer-motion';
 import styled from 'styled-components';
 
-import { UpdateNotificationBanner, selectUpdateStatus } from '@suite/desktop-update';
 import { suiteSettingsActions } from '@suite/settings';
 import { selectDevicesCount, selectSelectedDevice } from '@suite-common/device';
 import { Box, ElevationUp, Icon, ResizableBox, useElevation } from '@trezor/components';
@@ -25,6 +23,7 @@ import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
 
 import { Navigation } from './Navigation';
 import { QuickActions } from './QuickActions/QuickActions';
+import { SidebarBanners } from './SidebarBanners';
 import {
     SIDEBAR_AUTO_COLLAPSE_BREAKPOINT,
     SIDEBAR_COLLAPSED_WIDTH,
@@ -89,10 +88,6 @@ type SidebarProps = {
 };
 
 export const Sidebar = ({ showAccounts = true }: SidebarProps) => {
-    const [closedNotificationDevice, setClosedNotificationDevice] = useState(false);
-    const [closedNotificationSuite, setClosedNotificationSuite] = useState(false);
-    const [isBannerVisible, setIsBannerVisible] = useState(true);
-
     const {
         isSidebarCollapsed,
         setSidebarWidth,
@@ -111,7 +106,6 @@ export const Sidebar = ({ showAccounts = true }: SidebarProps) => {
     const dispatch = useDispatch();
 
     const { elevation } = useElevation();
-    const { updateStatusDevice, updateStatusSuite } = useSelector(selectUpdateStatus);
 
     const shouldDisplayDeviceCompromised = useSelector(selectShouldDisplayDeviceCompromised);
     const selectedDevice = useSelector(selectSelectedDevice);
@@ -138,21 +132,6 @@ export const Sidebar = ({ showAccounts = true }: SidebarProps) => {
         return () => window.removeEventListener('resize', onResize);
     }, [setAutoCollapseSuppressed]);
 
-    const onNotificationBannerClosed = () => {
-        if (updateStatusSuite !== 'up-to-date') {
-            setClosedNotificationSuite(true);
-        }
-        if (updateStatusDevice !== 'up-to-date') {
-            setClosedNotificationDevice(true);
-        }
-    };
-
-    const isUpdateAvailable =
-        (updateStatusSuite !== 'up-to-date' && !closedNotificationSuite) ||
-        (!['up-to-date', 'disconnected'].includes(updateStatusDevice) && !closedNotificationDevice);
-    const showUpdateBannerNotification =
-        !isSidebarCollapsed && isBannerVisible && isUpdateAvailable;
-
     const showAccountsAndIsDeviceReady =
         !shouldDisplayDeviceCompromised &&
         selectedDevice !== undefined &&
@@ -174,9 +153,9 @@ export const Sidebar = ({ showAccounts = true }: SidebarProps) => {
 
         if (autoCollapsed) {
             const delta = Math.max(0, lastManualSidebarWidth - SIDEBAR_MIN_WIDTH);
-            const uncollapseThreshold = SIDEBAR_AUTO_COLLAPSE_BREAKPOINT + delta;
+            const expandThreshold = SIDEBAR_AUTO_COLLAPSE_BREAKPOINT + delta;
 
-            if (contentWidth > uncollapseThreshold) {
+            if (contentWidth > expandThreshold) {
                 setAutoCollapsed(false);
                 if (typeof forcedSidebarWidth === 'number') {
                     setForcedSidebarWidth(undefined);
@@ -227,19 +206,8 @@ export const Sidebar = ({ showAccounts = true }: SidebarProps) => {
                             <HorizontalSpacer>
                                 {showAccountsAndIsDeviceReady && <AccountsMenu />}
                             </HorizontalSpacer>
-                            <AnimatePresence onExitComplete={onNotificationBannerClosed}>
-                                {isUpdateAvailable && showUpdateBannerNotification && (
-                                    <UpdateNotificationBanner
-                                        updateStatusDevice={updateStatusDevice}
-                                        updateStatusSuite={updateStatusSuite}
-                                        onClose={() => setIsBannerVisible(false)}
-                                    />
-                                )}
-                            </AnimatePresence>
-                            <QuickActions
-                                isSidebarCollapsed={isSidebarCollapsed}
-                                hideUpdateQuickAction={showUpdateBannerNotification}
-                            />
+                            {!isSidebarCollapsed && <SidebarBanners />}
+                            <QuickActions isSidebarCollapsed={isSidebarCollapsed} />
                         </Content>
                     </TrafficLightOffset>
                 </Container>

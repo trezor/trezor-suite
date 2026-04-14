@@ -52,6 +52,7 @@ export { SettingsSection } from './components/Settings/SettingsSection';
 export { TextColumn } from './components/Settings/TextColumn';
 export { StepCard } from './components/StepCard/StepCard';
 export { FeedbackCard, type FeedbackCardProps } from './components/FeedbackCard/FeedbackCard';
+export { SidebarBanner } from './components/SidebarBanner/SidebarBanner';
 export {
     EmojiRatingSelector,
     type EmojiRatingSelectorProps,

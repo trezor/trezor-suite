@@ -1,9 +1,9 @@
 import { FirmwareUpgradeNeededModal } from '@suite/firmware-upgrade';
 import { useTranslation } from '@suite/intl';
+import { selectSuiteSyncInteraction } from '@suite-common/suite-sync';
 import { type StaticSessionId } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
 
-import { selectDesktopSuiteSyncInteraction } from 'src/actions/suiteSync/suiteSyncSlice';
 import { useSelector } from 'src/hooks/suite';
 
 import { SuiteSyncTurnOnModal } from './SuiteSyncTurnOnModal';
@@ -22,7 +22,7 @@ export const TurnOnSuiteSyncModals = ({
 }: TurnOnSuiteSyncModalsProps) => {
     const { translationString } = useTranslation();
     const suiteSyncInteraction = useSelector(state =>
-        selectDesktopSuiteSyncInteraction(state, deviceStaticSessionId),
+        selectSuiteSyncInteraction(state, deviceStaticSessionId),
     );
 
     if (deviceStaticSessionId === null || suiteSyncInteraction === null) {
