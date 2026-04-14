@@ -1,3 +1,5 @@
+import { type Dispatch } from '@reduxjs/toolkit';
+
 import {
     type SubscriptionStorageDep,
     type SuiteSyncStorageRepositoryDep,
@@ -5,15 +7,23 @@ import {
 } from '@suite-common/suite-sync-types';
 
 import { createStorageIdFromDeviceStaticSessionId } from './createStorageIdFromDeviceStaticSessionId';
+import { setSuiteSyncOwner } from '../suiteSyncSlice';
 
-export type CreateTurnOnSuiteSyncForWalletDeps = SuiteSyncStorageRepositoryDep &
-    SubscriptionStorageDep;
+export type CreateTurnOffSuiteSyncForWalletDeps = SuiteSyncStorageRepositoryDep &
+    SubscriptionStorageDep & { dispatch: Dispatch };
 
 export const createTurnOffSuiteSyncForWallet =
-    (deps: CreateTurnOnSuiteSyncForWalletDeps): TurnOffSuiteSyncForWallet =>
+    (deps: CreateTurnOffSuiteSyncForWalletDeps): TurnOffSuiteSyncForWallet =>
     async ({ deviceStaticSessionId }) => {
         const storageId = createStorageIdFromDeviceStaticSessionId(deviceStaticSessionId);
 
-        deps.subscriptionStorage.dispose(storageId);
-        await deps.suiteSyncStorageRepository.delete(storageId);
+        try {
+            deps.subscriptionStorage.dispose(storageId);
+            await deps.suiteSyncStorageRepository.delete(storageId);
+        } finally {
+            // Defensively always delete keys
+            deps.dispatch(
+                setSuiteSyncOwner({ deviceStaticId: deviceStaticSessionId, owner: null }),
+            );
+        }
     };

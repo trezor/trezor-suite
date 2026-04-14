@@ -139,6 +139,7 @@ export const createSuiteSyncCompositionRoot = (
     const turnOffSuiteSyncForWallet = createTurnOffSuiteSyncForWallet({
         suiteSyncStorageRepository,
         subscriptionStorage,
+        dispatch: deps.dispatch,
     });
 
     const getIsSuiteSyncEnabled = toGetter(deps.getState, selectIsSuiteSyncEnabled);
