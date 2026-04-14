@@ -8,8 +8,8 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR" || exit 1
 
-CRX_VER=1_0_41
-CRX_LINUX_ARM_VER=1_0_10
+CRX_VER=1_0_42
+CRX_LINUX_ARM_VER=1_0_11
 
 # check whether we have all required commands
 for cmd in 7z curl lipo shasum ; do
