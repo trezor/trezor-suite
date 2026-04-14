@@ -43,6 +43,7 @@ describe('steps', () => {
                 STEP.ID_RESET_DEVICE_STEP,
                 STEP.ID_SECURITY_STEP,
                 STEP.ID_SET_PIN_STEP,
+                STEP.ID_COINS_STEP,
             ]);
         });
 
@@ -59,7 +60,10 @@ describe('steps', () => {
             expect(findNextStep(STEP.ID_SECURITY_STEP, createSteps, defaultDevice)?.id).toBe(
                 STEP.ID_SET_PIN_STEP,
             );
-            expect(findNextStep(STEP.ID_SET_PIN_STEP, createSteps, defaultDevice)).toBe(null);
+            expect(findNextStep(STEP.ID_SET_PIN_STEP, createSteps, defaultDevice)?.id).toBe(
+                STEP.ID_COINS_STEP,
+            );
+            expect(findNextStep(STEP.ID_COINS_STEP, createSteps, defaultDevice)).toBe(null);
         });
 
         it('should skip PIN step when device already has pin protection', () => {
@@ -68,7 +72,9 @@ describe('steps', () => {
                 pin_protection: true,
             });
 
-            expect(findNextStep(STEP.ID_SECURITY_STEP, createSteps, deviceWithPin)).toBe(null);
+            expect(findNextStep(STEP.ID_SECURITY_STEP, createSteps, deviceWithPin)?.id).toBe(
+                STEP.ID_COINS_STEP,
+            );
         });
     });
 
@@ -118,6 +124,7 @@ describe('steps', () => {
                 STEP.ID_RECOVERY_STEP,
                 STEP.ID_SECURITY_STEP,
                 STEP.ID_SET_PIN_STEP,
+                STEP.ID_COINS_STEP,
             ]);
         });
 

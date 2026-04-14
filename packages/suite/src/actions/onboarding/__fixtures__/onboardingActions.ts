@@ -29,7 +29,7 @@ export default [
         description: 'goToNextStep: from backup step skip set-pin when pin is already set',
         initialState: {
             onboarding: {
-                activeStepId: STEP.ID_BACKUP_STEP,
+                activeStepId: STEP.ID_SECURITY_STEP,
             },
             device: {
                 selectedDevice: mockSuiteDevice(undefined, {
