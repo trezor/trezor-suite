@@ -21,10 +21,10 @@ const switchStyle = prepareNativeStyle<SwitchStyleProps>((utils, { isDeviceManag
     height: SCREEN_HEADER_HEIGHT,
     paddingVertical: utils.spacings.sp8,
     paddingHorizontal: utils.spacings.sp16,
-    borderColor: utils.colors.borderElevation2,
+    borderColor: utils.colors.legacyBorderElevation2,
     borderWidth: utils.borders.widths.small,
     borderRadius: utils.borders.radii.r16,
-    backgroundColor: utils.colors.backgroundSurfaceElevation1,
+    backgroundColor: utils.colors.surfaceFillRaised,
     extends: {
         condition: isDeviceManagerVisible,
         style: {
@@ -62,7 +62,7 @@ export const DeviceSwitch = () => {
             <HStack justifyContent="space-between" alignItems="center" spacing="sp16">
                 <Box style={applyStyle(switchStyle, { isDeviceManagerVisible })}>
                     <DeviceSwitchContent />
-                    <Icon name="caretUpDown" color="iconDefault" />
+                    <Icon name="caretUpDown" color="contentPrimary" />
                 </Box>
             </HStack>
         </Pressable>

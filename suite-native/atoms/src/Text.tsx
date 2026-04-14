@@ -76,7 +76,7 @@ export const Text = React.forwardRef<RNText, TextProps>(
     (
         {
             variant = 'body-md',
-            color = 'textDefault',
+            color = 'contentPrimary',
             textAlign = 'left',
             style = {},
             children,

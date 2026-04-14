@@ -70,7 +70,7 @@ export const FirmwareChangelog = ({ ref, onClose }: FirmwareChangelogProps) => {
 
     return (
         <BottomSheetModal ref={ref}>
-            <Text variant="headline-sm" color="textDefault">
+            <Text variant="headline-sm" color="contentPrimary">
                 <Translation id="firmware.changelog.title" />
             </Text>
             {formattedChangelog}

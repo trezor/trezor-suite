@@ -8,8 +8,8 @@ const iconWrapperStyle = prepareNativeStyle(
     (utils, { iconSize, showShadow }: { iconSize: number; showShadow: boolean }) => ({
         padding: utils.spacings.sp12,
         borderRadius: utils.borders.radii.round,
-        backgroundColor: utils.colors.backgroundSurfaceElevation2,
-        color: utils.colors.iconPrimaryDefault,
+        backgroundColor: utils.colors.legacyBackgroundSurfaceElevation2,
+        color: utils.colors.contentBrand,
         width: iconSize + 2 * utils.spacings.sp12,
         height: iconSize + 2 * utils.spacings.sp12,
 
@@ -36,7 +36,7 @@ export const BiometricsIcon = ({ iconSize = 64, showShadow = false }: Biometrics
                 showShadow,
             })}
         >
-            <Icon name={icon} color="iconPrimaryDefault" size={iconSize} />
+            <Icon name={icon} color="contentBrand" size={iconSize} />
         </Box>
     );
 };

@@ -34,7 +34,7 @@ const Container = styled.div<
     height: ${({ $size }) => `${$size}px`};
     border-radius: 50%;
     background: ${({ theme, $valueInPercents, $color, $backgroundColor, $elevation }) =>
-        `conic-gradient(${$color || theme.backgroundPrimaryDefault} ${3.6 * $valueInPercents}deg, ${
+        `conic-gradient(${$color || theme.legacyBackgroundPrimaryDefault} ${3.6 * $valueInPercents}deg, ${
             $backgroundColor || mapElevationToBorder({ $elevation, theme })
         } 0)`};
 

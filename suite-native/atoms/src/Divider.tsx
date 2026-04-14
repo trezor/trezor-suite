@@ -14,7 +14,7 @@ export type DividerProps = Omit<BoxProps, 'style'> & {
 
 const dividerStyle = prepareNativeStyle(utils => ({
     borderBottomWidth: utils.borders.widths.small,
-    borderBottomColor: utils.colors.borderElevation1,
+    borderBottomColor: utils.colors.borderNeutral,
     flex: 1,
 }));
 

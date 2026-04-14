@@ -124,7 +124,7 @@ const TopHandler = styled.div<ResizerHandlersProps>(
             width: 100%;
             ${
                 $highlightDirection === 'top' &&
-                `border-${$highlightDirection}: ${BORDER_WIDTH}px solid ${theme.borderFocus};`
+                `border-${$highlightDirection}: ${BORDER_WIDTH}px solid ${theme.elementBorderFieldFocused};`
             };
         }
     `,
@@ -144,7 +144,7 @@ const BottomHandler = styled.div<ResizerHandlersProps>(
             width: 100%;
             ${
                 $highlightDirection === 'bottom' &&
-                `border-${$highlightDirection}: ${BORDER_WIDTH}px solid ${theme.borderFocus};`
+                `border-${$highlightDirection}: ${BORDER_WIDTH}px solid ${theme.elementBorderFieldFocused};`
             };
         }
     `,
@@ -165,7 +165,7 @@ const LeftHandler = styled.div<ResizerHandlersProps>(
             height: 100%;
             ${
                 $highlightDirection === 'left' &&
-                `border-${$highlightDirection}: ${BORDER_WIDTH}px solid ${theme.borderFocus};`
+                `border-${$highlightDirection}: ${BORDER_WIDTH}px solid ${theme.elementBorderFieldFocused};`
             };
         }
     `,
@@ -186,7 +186,7 @@ const RightHandler = styled.div<ResizerHandlersProps>(
             height: 100%;
             ${
                 $highlightDirection === 'right' &&
-                `border-${$highlightDirection}: ${BORDER_WIDTH}px solid ${theme.borderFocus};`
+                `border-${$highlightDirection}: ${BORDER_WIDTH}px solid ${theme.elementBorderFieldFocused};`
             };
         }
     `,

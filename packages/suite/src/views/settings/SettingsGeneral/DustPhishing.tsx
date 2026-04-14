@@ -97,7 +97,7 @@ export const DustPhishing = () => {
                                 bottomText={
                                     errorMessage ? <Translation id={errorMessage} /> : undefined
                                 }
-                                rightContent={<Text color="textSubdued">USD</Text>}
+                                rightContent={<Text color="contentSecondary">USD</Text>}
                                 width={125}
                             />
 

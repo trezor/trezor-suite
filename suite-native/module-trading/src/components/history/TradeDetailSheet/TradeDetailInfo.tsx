@@ -44,7 +44,7 @@ export const TradeDetailInfo = ({ orderId }: TradeDetailInfoProps) => {
                         <Text variant="body-sm">
                             <DateFormatter value={date} />
                         </Text>
-                        <Text variant="body-sm" color="textSubdued">
+                        <Text variant="body-sm" color="contentSecondary">
                             <TimeFormatter value={date} />
                         </Text>
                     </VStack>

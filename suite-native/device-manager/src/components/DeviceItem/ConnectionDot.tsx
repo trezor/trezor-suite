@@ -12,18 +12,18 @@ const dotStyle = prepareNativeStyle<{ isConnected: boolean; isDeviceInBootloader
         width: utils.spacings.sp8,
         height: utils.spacings.sp8,
         borderRadius: utils.borders.radii.round,
-        backgroundColor: utils.colors.iconDisabled,
+        backgroundColor: utils.colors.contentDisabled,
         extend: [
             {
                 condition: isConnected,
                 style: {
-                    backgroundColor: utils.colors.textSecondaryHighlight,
+                    backgroundColor: utils.colors.contentBrand,
                 },
             },
             {
                 condition: isDeviceInBootloaderMode,
                 style: {
-                    backgroundColor: utils.colors.textAlertBlue,
+                    backgroundColor: utils.colors.contentInfo,
                 },
             },
         ],

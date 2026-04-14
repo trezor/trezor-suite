@@ -16,7 +16,7 @@ import { DeviceOnboardingScreenWithExitButton } from '../components/DeviceOnboar
 const cardStyle = prepareNativeStyle(utils => ({
     flex: 1,
     borderWidth: utils.borders.widths.small,
-    borderColor: utils.colors.borderOnElevation1,
+    borderColor: utils.colors.borderNeutral,
 }));
 
 export const CreateOrRecoverCrossroadsScreen = ({

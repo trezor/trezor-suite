@@ -12,7 +12,7 @@ import { Switch } from './Switch';
 import { Text } from './Text';
 
 export const TouchableSwitchRowDescription = ({ children }: { children: ReactNode }) => (
-    <Text variant="body-sm" color="textSubdued">
+    <Text variant="body-sm" color="contentSecondary">
         {children}
     </Text>
 );
@@ -55,7 +55,7 @@ export const TouchableSwitchRow = ({
     };
 
     return (
-        <Card borderColor="borderElevation1" noPadding>
+        <Card borderColor="borderNeutral" noPadding>
             <PressableOpacity
                 onPress={handleChange}
                 accessibilityLabel={accessibilityLabel}
@@ -70,7 +70,7 @@ export const TouchableSwitchRow = ({
                         <HStack justifyContent="space-between" flex={1}>
                             <VStack flex={1} spacing="sp2">
                                 <Text variant="body-md-strong">{text}</Text>
-                                <Text variant="body-sm" color="textSubdued">
+                                <Text variant="body-sm" color="contentSecondary">
                                     {description}
                                 </Text>
                             </VStack>

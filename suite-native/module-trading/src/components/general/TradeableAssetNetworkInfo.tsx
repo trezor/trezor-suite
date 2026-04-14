@@ -35,7 +35,7 @@ export const TradeableAssetNetworkInfo = ({ asset }: TradeableAssetNetworkInfoPr
             <NetworkIcon symbol={symbol} size="large" />
             <Text
                 variant="body-sm"
-                color="textDefault"
+                color="contentPrimary"
                 accessibilityLabel={translate('moduleTrading.networkName')}
             >
                 {name}

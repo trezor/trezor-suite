@@ -72,10 +72,10 @@ export const QRCodeScanner = ({ onCodeScanned }: QRCodeScannerProps) => {
                     <HStack alignItems="center" justifyContent="center">
                         <Icon
                             name="lightbulb"
-                            color="backgroundSecondaryDefault"
+                            color="legacyBackgroundSecondaryDefault"
                             size="mediumLarge"
                         />
-                        <Text color="backgroundSecondaryDefault">
+                        <Text color="legacyBackgroundSecondaryDefault">
                             <Translation id="qrCode.qrCodeHint" />
                         </Text>
                     </HStack>

@@ -35,7 +35,7 @@ import { UtxoSelectionList } from './UtxoSelectionList/UtxoSelectionList';
 import { UtxoSortingSelect } from './UtxoSortingSelect';
 
 const Empty = styled.div`
-    border-bottom: 1px solid ${({ theme }) => theme.borderElevation1};
+    border-bottom: 1px solid ${({ theme }) => theme.borderNeutral};
     margin-bottom: ${spacingsPx.sm};
     padding: ${spacingsPx.sm} 0;
 `;
@@ -219,7 +219,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
                             <Translation id="TR_PRIVATE_DESCRIPTION" values={{ targetAnonymity }} />
                         }
                         icon="shieldCheck"
-                        iconColor="iconPrimaryDefault"
+                        iconColor="contentBrand"
                         utxos={spendableUtxosOnPage}
                     />
                 )}
@@ -234,7 +234,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
                             />
                         }
                         icon="shieldWarning"
-                        iconColor="iconAlertYellow"
+                        iconColor="contentWarning"
                         utxos={lowAnonymityUtxosOnPage}
                     />
                 )}
@@ -249,7 +249,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
                         heading={<Translation id="TR_DUST" />}
                         description={<Translation id="TR_DUST_DESCRIPTION" />}
                         icon="info"
-                        iconColor="iconSubdued"
+                        iconColor="contentSecondary"
                         utxos={dustUtxosOnPage}
                     />
                 )}

@@ -55,7 +55,7 @@ const Description = styled.div`
     justify-content: center;
     align-items: center;
     text-align: center;
-    color: ${({ theme }) => theme.textSubdued};
+    color: ${({ theme }) => theme.contentSecondary};
     flex: 1;
 `;
 
@@ -206,7 +206,7 @@ export const TransactionsGraph = memo(
                                 }}
                                 onMouseLeave={() => setHovered(-1)}
                             >
-                                <CartesianGrid vertical={false} stroke={theme.borderDashed} />
+                                <CartesianGrid vertical={false} stroke={theme.borderNeutral} />
 
                                 <XAxis
                                     // xAxisId="primary"
@@ -214,7 +214,7 @@ export const TransactionsGraph = memo(
                                     type="number"
                                     domain={calcXDomain(xTicks, data, selectedRange)}
                                     // width={10}
-                                    stroke={theme.borderFocus}
+                                    stroke={theme.elementBorderFieldFocused}
                                     interval="preserveEnd"
                                     tick={<GraphXAxisTick selectedRange={selectedRange} />}
                                     ticks={xTicks}
@@ -248,7 +248,7 @@ export const TransactionsGraph = memo(
                                     position={{ y: 0, x: 0 }}
                                     wrapperStyle={{ zIndex: zIndices.tooltip }}
                                     cursor={{
-                                        stroke: theme.backgroundNeutralSubdued,
+                                        stroke: theme.elementFillNeutralBold,
                                         strokeWidth: 1,
                                     }}
                                     content={

@@ -30,7 +30,7 @@ const buttonWrapperStyle = prepareNativeStyle(_ => ({
 
 const textColorStyle = prepareNativeStyle(() => ({
     // the text needs to be white to be visible on image background, ignoring the theme
-    color: colorVariants.dark.textDefault,
+    color: colorVariants.dark.contentPrimary,
 }));
 
 const screenContainerStyle = prepareNativeStyle(() => ({
@@ -70,7 +70,11 @@ export const WelcomeScreen = ({
             <Screen isScrollable={false} backgroundColor="transparent">
                 <VStack flex={1} justifyContent="flex-end" alignItems="center" spacing={48}>
                     <VStack alignItems="center" spacing="sp16">
-                        <Icon name="trezorLogo" color={colorVariants.dark.textDefault} size={50} />
+                        <Icon
+                            name="trezorLogo"
+                            color={colorVariants.dark.contentPrimary}
+                            size={50}
+                        />
                         <Box alignItems="center">
                             <Text variant="headline-lg" style={applyStyle(textColorStyle)}>
                                 <Translation id="generic.trezorSuite" />

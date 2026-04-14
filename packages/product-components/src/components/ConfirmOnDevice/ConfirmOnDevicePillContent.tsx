@@ -12,12 +12,12 @@ const Step = styled.div<{ $isActive: boolean }>`
     flex: 1;
     height: ${spacingsPx.xxs};
     border-radius: ${borders.radii.xxs};
-    background: ${({ theme }) => theme.backgroundNeutralSubdued};
+    background: ${({ theme }) => theme.elementFillNeutralBold};
 
     ${({ $isActive }) =>
         $isActive &&
         css`
-            background: ${({ theme }) => theme.iconPrimaryDefault};
+            background: ${({ theme }) => theme.contentBrand};
         `}
 `;
 

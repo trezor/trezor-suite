@@ -36,7 +36,7 @@ const cardInnerContainerStyle = prepareNativeStyle<{
     borderColor?: Color;
     noShadow?: boolean;
 }>((utils, { alertPosition, noPadding, borderColor, noShadow }) => ({
-    backgroundColor: utils.colors.backgroundSurfaceElevation1,
+    backgroundColor: utils.colors.surfaceFillRaised,
     borderRadius: utils.borders.radii.r16,
     padding: utils.spacings.sp16,
 
@@ -78,7 +78,7 @@ const cardInnerContainerStyle = prepareNativeStyle<{
 const alertBoxWrapperStyle = prepareNativeStyle<{
     alertPosition?: AlertPosition;
 }>((utils, { alertPosition = 'top' }) => ({
-    backgroundColor: utils.colors.backgroundSurfaceElevation1,
+    backgroundColor: utils.colors.surfaceFillRaised,
     paddingHorizontal: utils.spacings.sp4,
     extend: [
         {

@@ -63,7 +63,10 @@ export const TradingConciergeDetail = () => {
                                         <Paragraph typographyStyle="body-md-strong">
                                             <Translation id={item.titleId} />
                                         </Paragraph>
-                                        <Paragraph typographyStyle="body-sm" color="textSubdued">
+                                        <Paragraph
+                                            typographyStyle="body-sm"
+                                            color="contentSecondary"
+                                        >
                                             <Translation id={item.descriptionId} />
                                         </Paragraph>
                                     </List.Item>

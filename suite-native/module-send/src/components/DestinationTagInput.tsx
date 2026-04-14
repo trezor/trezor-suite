@@ -88,8 +88,8 @@ export const DestinationTagInput = ({ networkSymbol }: DestinationTagInputProps)
                                             HELP_CENTER_OTHER_CRYPTOCURRENCIES_DESTINATION_TAGS_URL
                                         }
                                         isUnderlined
-                                        textColor="textDefault"
-                                        textPressedColor="textSubdued"
+                                        textColor="contentPrimary"
+                                        textPressedColor="contentSecondary"
                                     />
                                 ),
                             }}
@@ -113,8 +113,8 @@ export const DestinationTagInput = ({ networkSymbol }: DestinationTagInputProps)
                         accessibilityLabel="address input"
                     />
                     <HStack paddingHorizontal="sp12" spacing="sp4">
-                        <Icon name="info" color="iconSubdued" size="medium" />
-                        <Text variant="body-xs" color="textSubdued">
+                        <Icon name="info" color="contentSecondary" size="medium" />
+                        <Text variant="body-xs" color="contentSecondary">
                             <Translation id="moduleSend.outputs.recipients.destinationTag.info" />
                         </Text>
                     </HStack>

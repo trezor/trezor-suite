@@ -20,7 +20,7 @@ const gradientStyle = prepareNativeStyle(utils => ({
 }));
 
 const footerStyle = prepareNativeStyle(utils => ({
-    backgroundColor: utils.colors.backgroundSurfaceElevation0,
+    backgroundColor: utils.colors.surfaceFillPage,
 }));
 
 export const SendUtxoScreenFooter = ({
@@ -56,7 +56,7 @@ export const SendUtxoScreenFooter = ({
                         <CryptoAmountFormatter
                             isBalance={false}
                             variant={missingToAmount ? 'body-sm' : 'body-md'}
-                            color={missingToAmount ? 'textSubdued' : 'textDefault'}
+                            color={missingToAmount ? 'contentSecondary' : 'contentPrimary'}
                             value={selectedTotal}
                             symbol={symbol}
                             isDiscreetText={false}

@@ -53,7 +53,7 @@ const MenuCategory = styled.div`
     font-weight: 600;
     text-transform: uppercase;
     ${typography['body-xs']}
-    color: ${({ theme }) => theme.textDefault};
+    color: ${({ theme }) => theme.contentPrimary};
 `;
 
 const SelectWrapper = styled.div`

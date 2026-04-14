@@ -30,7 +30,7 @@ export const TitleHeader = ({
             </Text>
         )}
         {subtitle && (
-            <Text color="textSubdued" variant={subtitleVariant} textAlign={textAlign}>
+            <Text color="contentSecondary" variant={subtitleVariant} textAlign={textAlign}>
                 {subtitle}
             </Text>
         )}

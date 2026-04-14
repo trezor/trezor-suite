@@ -38,14 +38,14 @@ export const CreateWalletLoader = () => {
                     width={LOADER_WIDTH}
                     height={LOADER_HEIGHT}
                     r={5}
-                    color={utils.colors.borderElevation0}
+                    color={utils.colors.borderNeutral}
                 />
                 <RoundedRect
                     x={0}
                     y={0}
                     width={animationProgress}
                     height={LOADER_HEIGHT}
-                    color={utils.colors.backgroundSecondaryDefault}
+                    color={utils.colors.legacyBackgroundSecondaryDefault}
                     r={5}
                 />
             </Group>

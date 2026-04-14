@@ -24,8 +24,8 @@ export const decorators = [
                 <div
                     style={{
                         padding: 32,
-                        background: theme.backgroundSurfaceElevation0,
-                        color: theme.textDefault,
+                        background: theme.surfaceFillPage,
+                        color: theme.contentPrimary,
                         boxSizing: 'border-box',
                         height: '100vh',
                         overflow: 'auto',

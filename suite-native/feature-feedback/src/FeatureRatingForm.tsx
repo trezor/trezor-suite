@@ -16,12 +16,12 @@ type FeatureRatingFormProps = {
 
 const descriptionInputStyle = prepareNativeStyle(utils => ({
     borderWidth: utils.borders.widths.small,
-    borderColor: utils.colors.borderElevation1,
+    borderColor: utils.colors.borderNeutral,
     borderRadius: utils.borders.radii.r12,
-    backgroundColor: utils.colors.backgroundNeutralSubtleOnElevation0,
+    backgroundColor: utils.colors.legacyBackgroundNeutralSubtleOnElevation0,
     padding: utils.spacings.sp16,
     minHeight: 100,
-    color: utils.colors.textDefault,
+    color: utils.colors.contentPrimary,
     ...utils.typography['body-md'],
     textAlignVertical: 'top',
 }));

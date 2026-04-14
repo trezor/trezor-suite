@@ -23,7 +23,7 @@ import { useAnalytics } from '@suite-native/services';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 const cardStyle = prepareNativeStyle(utils => ({
-    borderColor: utils.colors.borderElevation0,
+    borderColor: utils.colors.borderNeutral,
     borderWidth: utils.borders.widths.small,
     gap: utils.spacings.sp16,
 }));
@@ -71,15 +71,15 @@ export const PassphraseEmptyWalletScreen = () => {
             </Card>
             <TextDivider
                 title="generic.orSeparator"
-                lineColor="borderElevation0"
-                textColor="textSubdued"
+                lineColor="borderNeutral"
+                textColor="contentSecondary"
             />
             <VStack marginHorizontal="sp16" spacing="sp16">
                 <VStack alignItems="center" spacing="sp4">
                     <Text textAlign="center" variant="body-md-strong">
                         <Translation id="modulePassphrase.emptyPassphraseWallet.expectingPassphraseWallet.title" />
                     </Text>
-                    <Text textAlign="center" color="textSubdued">
+                    <Text textAlign="center" color="contentSecondary">
                         <Translation id="modulePassphrase.emptyPassphraseWallet.expectingPassphraseWallet.description" />
                     </Text>
                 </VStack>

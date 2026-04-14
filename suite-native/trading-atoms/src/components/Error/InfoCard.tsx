@@ -16,7 +16,7 @@ export const InfoCard = ({ title, description, testID }: InfoCardProps) => (
                 title={title}
                 titleVariant="body-md-strong"
                 subtitle={
-                    <Text variant="body-sm" color="textSubdued" textAlign="center">
+                    <Text variant="body-sm" color="contentSecondary" textAlign="center">
                         {description}
                     </Text>
                 }

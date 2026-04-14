@@ -11,7 +11,7 @@ export const SignValueFormatter = ({ value, ...textProps }: SignValueFormatterPr
 
     if (!value) return null;
 
-    const signColor = isSignValuePositive(value) ? 'textSecondaryHighlight' : 'textAlertRed';
+    const signColor = isSignValuePositive(value) ? 'contentBrand' : 'contentCritical';
 
     return (
         <Text color={signColor} {...textProps}>

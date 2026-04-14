@@ -10,7 +10,7 @@ const Heading = styled.div`
     display: flex;
     align-items: center;
     margin-bottom: ${spacingsPx.md};
-    color: ${({ theme }) => theme.textSubdued};
+    color: ${({ theme }) => theme.contentSecondary};
     ${typography['body-sm']};
 `;
 

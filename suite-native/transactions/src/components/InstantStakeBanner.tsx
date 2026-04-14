@@ -16,7 +16,7 @@ type InstantStakeBannerProps = {
 };
 
 const bannerStyle = prepareNativeStyle(utils => ({
-    backgroundColor: utils.colors.backgroundAlertBlueSubtleOnElevation1,
+    backgroundColor: utils.colors.legacyBackgroundAlertBlueSubtleOnElevation1,
     borderRadius: utils.borders.radii.r12,
     paddingHorizontal: utils.spacings.sp16,
     paddingVertical: utils.spacings.sp10,
@@ -58,7 +58,7 @@ export const InstantStakeBanner = ({ accountKey, transaction }: InstantStakeBann
 
     return (
         <Box style={applyStyle(bannerStyle)}>
-            <Text variant="body-sm" color="textDefault">
+            <Text variant="body-sm" color="contentPrimary">
                 {label}
             </Text>
         </Box>

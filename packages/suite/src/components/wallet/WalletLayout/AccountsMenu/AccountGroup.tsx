@@ -24,7 +24,7 @@ const Header = styled.header<{ $elevation: Elevation }>`
 
     &:hover {
         ${IconWrapper} {
-            background: ${({ theme }) => theme.backgroundSurfaceElevation1};
+            background: ${({ theme }) => theme.surfaceFillRaised};
         }
     }
 `;

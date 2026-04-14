@@ -133,7 +133,7 @@ export const EmptyPortfolioCrossroads = () => {
                         <Text variant="headline-sm" textAlign="center">
                             <Translation id={secondaryCardConfig.titleTranslationId} />
                         </Text>
-                        <Text color="textSubdued" textAlign="center">
+                        <Text color="contentSecondary" textAlign="center">
                             <Translation id={secondaryCardConfig.descriptionTranslationId} />
                         </Text>
                     </VStack>

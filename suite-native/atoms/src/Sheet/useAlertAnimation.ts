@@ -17,7 +17,7 @@ const SCREEN_HEIGHT = getScreenHeight();
 export const useAlertAnimation = ({ onClose }: { onClose?: () => void }) => {
     const { utils } = useNativeStyles();
     const transparency = 1;
-    const colorOverlay = utils.transparentize(0.3, utils.colors.backgroundNeutralBold);
+    const colorOverlay = utils.transparentize(0.3, utils.colors.legacyBackgroundNeutralBold);
     const translatePanY = useSharedValue(SCREEN_HEIGHT);
     const animatedTransparency = useSharedValue(transparency);
 

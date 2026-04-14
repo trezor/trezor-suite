@@ -40,7 +40,7 @@ export const StablecoinYieldTokenOverview = ({
     const vaultName = vault.outputToken?.name ?? '';
     const apy =
         vault.rewardRate.total != null ? `${(vault.rewardRate.total * 100).toFixed(2)}%` : null;
-    const apyColor = apy === null ? 'textSubdued' : 'textDefault';
+    const apyColor = apy === null ? 'contentSecondary' : 'contentPrimary';
     const apyValue = apy ?? <Translation id="earn.notAvailable" />;
 
     return (
@@ -57,14 +57,14 @@ export const StablecoinYieldTokenOverview = ({
                     </HStack>
                     <CardDivider />
                     <HStack justifyContent="space-between" alignItems="center">
-                        <Text variant="body-sm" color="textSubdued">
+                        <Text variant="body-sm" color="contentSecondary">
                             <Translation id="moduleAccounts.accountDetail.stablecoinYield.vault" />
                         </Text>
                         <Text variant="body-sm">{vaultName}</Text>
                     </HStack>
                     <CardDivider />
                     <HStack justifyContent="space-between" alignItems="center">
-                        <Text variant="body-sm" color="textSubdued">
+                        <Text variant="body-sm" color="contentSecondary">
                             <Translation id="moduleAccounts.accountDetail.stablecoinYield.apy" />
                         </Text>
                         <Text variant="body-sm" color={apyColor}>
@@ -73,7 +73,7 @@ export const StablecoinYieldTokenOverview = ({
                     </HStack>
                     <CardDivider />
                     <HStack justifyContent="space-between" alignItems="center">
-                        <Text variant="body-sm" color="textSubdued">
+                        <Text variant="body-sm" color="contentSecondary">
                             <Translation id="moduleAccounts.accountDetail.stablecoinYield.supplied" />
                         </Text>
                         {account && token && (
@@ -86,7 +86,7 @@ export const StablecoinYieldTokenOverview = ({
                                 <TokenAmountFormatter
                                     value={token.balance ?? '0'}
                                     tokenSymbol={token.symbol as TokenSymbol}
-                                    color="textDefault"
+                                    color="contentPrimary"
                                     variant="body-sm"
                                 />
                             </HStack>

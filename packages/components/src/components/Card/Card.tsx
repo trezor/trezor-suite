@@ -54,7 +54,7 @@ const Container = styled.section<ContainerProps & TransientAllowedFrameProps>`
         $hasLabel &&
         css`
             background: ${({ theme }) =>
-                $fillType !== 'flat' && theme.backgroundTertiaryDefaultOnElevation0};
+                $fillType !== 'flat' && theme.legacyBackgroundTertiaryDefaultOnElevation0};
             padding: ${spacingsPx.xxxs};
         `}
 

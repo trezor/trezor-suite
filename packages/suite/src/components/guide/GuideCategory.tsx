@@ -25,7 +25,7 @@ const Section = styled.div`
 
 const SectionHeading = styled.h3`
     ${typography['body-sm-strong']}
-    color: ${({ theme }) => theme.textSubdued};
+    color: ${({ theme }) => theme.contentSecondary};
     padding: 8px 0 18px;
 `;
 

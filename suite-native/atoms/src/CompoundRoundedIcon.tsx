@@ -30,7 +30,7 @@ const iconContainerStyle = prepareNativeStyle<{
     alignItems: 'center',
     width: containerSizeWidth ?? DEFAULT_CONTAINER_SIZE,
     height: containerSizeHeight ?? DEFAULT_CONTAINER_SIZE,
-    backgroundColor: utils.colors.backgroundSurfaceElevation2,
+    backgroundColor: utils.colors.legacyBackgroundSurfaceElevation2,
     borderRadius: utils.borders.radii.round,
     flexDirection: 'row',
     gap: utils.spacings.sp4,

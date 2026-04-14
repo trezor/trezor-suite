@@ -133,7 +133,7 @@ export const AddCoinDiscoveryRunningScreen = ({
                             values={{ coin: getNetwork(networkSymbol).name }}
                         />
                     </Text>
-                    <Text variant="body-md" textAlign="center" color="textSubdued">
+                    <Text variant="body-md" textAlign="center" color="contentSecondary">
                         <Translation id="moduleAddAccounts.coinDiscoveryRunningScreen.subtitle" />
                     </Text>
                 </VStack>

@@ -36,13 +36,13 @@ export const WaitingCard = ({
         <VStack alignItems="center" spacing="sp4">
             <AnimatedText
                 variant="headline-sm"
-                color="textDefault"
+                color="contentPrimary"
                 textAlign="center"
                 layout={FadingTransition}
             >
                 {title}
             </AnimatedText>
-            <AnimatedText variant="body-sm" color="textDefault" textAlign="center">
+            <AnimatedText variant="body-sm" color="contentPrimary" textAlign="center">
                 {subtitle}
             </AnimatedText>
         </VStack>

@@ -72,7 +72,7 @@ export const TS7Banner = ({ onClose, onCTAClick, isVisible }: TS7BannerProps) =>
             <Box
                 height={isVerticalLayout ? undefined : 213}
                 padding={{ horizontal: 24, top: isVerticalLayout ? 16 : 0 }}
-                backgroundColor="backgroundTertiaryDefaultOnElevation0"
+                backgroundColor="legacyBackgroundTertiaryDefaultOnElevation0"
             >
                 <ContentFlex
                     height="100%"

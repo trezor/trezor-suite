@@ -8,7 +8,7 @@ import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 const checkboxRowStyle = prepareNativeStyle(utils => ({
-    backgroundColor: utils.colors.backgroundSurfaceElevation0,
+    backgroundColor: utils.colors.surfaceFillPage,
     borderRadius: utils.borders.radii.r12,
     padding: utils.spacings.sp12,
 }));
@@ -41,7 +41,7 @@ export const ContactSupportAlertAppendix = forwardRef<ContactSupportAlertAppendi
                     <Translation id="moduleSettings.faq.needHelp.contactSupportAlert.toggleLabel" />
                 </Text>
             </HStack>
-            <Text color="textSubdued">
+            <Text color="contentSecondary">
                 <Translation id="moduleSettings.faq.needHelp.contactSupportAlert.description" />
             </Text>
         </VStack>

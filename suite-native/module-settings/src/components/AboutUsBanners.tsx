@@ -31,12 +31,16 @@ export const AboutUsBanners = () => {
     return (
         <TitledSection title={<Translation id="moduleSettings.aboutUs.title" />}>
             <VStack>
-                <Card style={applyStyle(cardStyle, { backgroundColor: 'backgroundNeutralBold' })}>
+                <Card
+                    style={applyStyle(cardStyle, {
+                        backgroundColor: 'legacyBackgroundNeutralBold',
+                    })}
+                >
                     <VStack spacing="sp24" style={applyStyle(stackStyle)}>
-                        <Icon color="iconOnPrimary" name="trezorLogo" />
+                        <Icon color="contentButtonBrandPrimary" name="trezorLogo" />
                         <Text
                             textAlign="center"
-                            color="textOnPrimary"
+                            color="contentButtonBrandPrimary"
                             variant="headline-sm"
                             style={applyStyle(trezorDescriptionTextStyle)}
                         >
@@ -50,10 +54,12 @@ export const AboutUsBanners = () => {
                     </VStack>
                 </Card>
                 <Card
-                    style={applyStyle(cardStyle, { backgroundColor: 'backgroundSecondaryDefault' })}
+                    style={applyStyle(cardStyle, {
+                        backgroundColor: 'legacyBackgroundSecondaryDefault',
+                    })}
                 >
                     <VStack spacing="sp24" style={applyStyle(stackStyle)}>
-                        <Text color="textDefaultInverted" variant="headline-md">
+                        <Text color="contentPrimaryInverse" variant="headline-md">
                             <Translation id="moduleSettings.aboutUs.followUs" />
                         </Text>
                         <HStack spacing="sp24">

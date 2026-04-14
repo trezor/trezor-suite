@@ -42,7 +42,7 @@ export const TransactionsEmptyState = ({ accountKey }: { accountKey: AccountKey 
                     <Text textAlign="center" variant="headline-sm">
                         <Translation id="transactions.emptyState.title" />
                     </Text>
-                    <Text textAlign="center" color="textSubdued">
+                    <Text textAlign="center" color="contentSecondary">
                         <Translation id="transactions.emptyState.subtitle" />
                     </Text>
                 </VStack>

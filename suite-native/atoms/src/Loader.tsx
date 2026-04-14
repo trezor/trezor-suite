@@ -15,7 +15,7 @@ export type LoaderProps = {
 
 // TODO: modify component to fit Figma design.
 // issue: https://github.com/trezor/trezor-suite/issues/7538
-export const Loader = ({ size, title, color = 'backgroundPrimaryDefault' }: LoaderProps) => {
+export const Loader = ({ size, title, color = 'legacyBackgroundPrimaryDefault' }: LoaderProps) => {
     const {
         utils: { colors },
     } = useNativeStyles();
@@ -24,7 +24,7 @@ export const Loader = ({ size, title, color = 'backgroundPrimaryDefault' }: Load
         <Box>
             <ActivityIndicator size={size} color={colors[color]} />
             {title && (
-                <Text variant="body-xs" color="textSubdued" textAlign="center">
+                <Text variant="body-xs" color="contentSecondary" textAlign="center">
                     {title}
                 </Text>
             )}

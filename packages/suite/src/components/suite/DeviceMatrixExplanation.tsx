@@ -12,7 +12,7 @@ const Wrapper = styled.div<{ $isGuideOpen?: boolean }>`
     display: flex;
     flex-direction: column;
     align-items: center;
-    background: ${({ theme }) => theme.backgroundNeutralBoldInverted};
+    background: ${({ theme }) => theme.legacyBackgroundNeutralBoldInverted};
     padding: 20px 24px;
     margin-right: 34px;
     width: 100%;
@@ -41,7 +41,7 @@ const ItemIconWrapper = styled.div`
 
 const ItemText = styled.div`
     width: 100%;
-    color: ${({ theme }) => theme.textDefault};
+    color: ${({ theme }) => theme.contentPrimary};
     ${typography['body-sm']}
     padding: 26px 0;
     text-align: left;

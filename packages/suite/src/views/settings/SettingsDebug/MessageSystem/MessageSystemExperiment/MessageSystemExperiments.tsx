@@ -31,8 +31,8 @@ const MessageContainer = styled.div<{ $active: boolean }>`
     border-radius: ${borders.radii.sm};
     background-color: ${({ theme, $active }) =>
         $active
-            ? theme.backgroundPrimarySubtleOnElevation0
-            : theme.backgroundNeutralSubtleOnElevation0};
+            ? theme.legacyBackgroundPrimarySubtleOnElevation0
+            : theme.legacyBackgroundNeutralSubtleOnElevation0};
     padding: ${spacingsPx.sm};
 `;
 
@@ -106,7 +106,7 @@ export const MessageSystemExperiments = ({
                                     activeGroup={assignedGroup}
                                 />
 
-                                <Divider color="backgroundNeutralBold" />
+                                <Divider color="legacyBackgroundNeutralBold" />
                                 <MessageSystemConditionGroup conditions={conditions} />
                             </Column>
                             <Column gap={spacings.xs}>

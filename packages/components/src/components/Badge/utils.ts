@@ -5,11 +5,11 @@ import { type Padding } from '../../utils/frameProps';
 
 export const mapIntentToBackgroundColor = (intent: BadgeIntent): Color => {
     const colorMap: Record<BadgeIntent, Color> = {
-        brand: 'backgroundPrimarySubtleOnElevation0',
-        neutral: 'backgroundNeutralSubtleOnElevation0',
-        info: 'backgroundAlertBlueSubtleOnElevation0',
-        warning: 'backgroundAlertYellowSubtleOnElevation0',
-        critical: 'backgroundAlertRedSubtleOnElevation0',
+        brand: 'legacyBackgroundPrimarySubtleOnElevation0',
+        neutral: 'legacyBackgroundNeutralSubtleOnElevation0',
+        info: 'legacyBackgroundAlertBlueSubtleOnElevation0',
+        warning: 'legacyBackgroundAlertYellowSubtleOnElevation0',
+        critical: 'legacyBackgroundAlertRedSubtleOnElevation0',
     };
 
     return colorMap[intent];
@@ -17,11 +17,11 @@ export const mapIntentToBackgroundColor = (intent: BadgeIntent): Color => {
 
 export const mapIntentToIconColor = (intent: BadgeIntent): Color => {
     const colorMap: Record<BadgeIntent, Color> = {
-        brand: 'iconPrimaryDefault',
-        neutral: 'iconSubdued',
-        info: 'iconAlertBlue',
-        warning: 'iconAlertYellow',
-        critical: 'iconAlertRed',
+        brand: 'contentBrand',
+        neutral: 'contentSecondary',
+        info: 'contentInfo',
+        warning: 'contentWarning',
+        critical: 'contentCritical',
     };
 
     return colorMap[intent];

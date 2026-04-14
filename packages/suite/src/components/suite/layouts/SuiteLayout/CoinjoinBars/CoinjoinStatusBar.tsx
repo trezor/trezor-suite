@@ -23,7 +23,7 @@ const SPACING = 6;
 
 const ViewText = styled.div`
     margin-left: auto;
-    color: ${({ theme }) => theme.textSubdued};
+    color: ${({ theme }) => theme.contentSecondary};
     transition: transform 0.15s ease-in-out;
 `;
 
@@ -33,8 +33,8 @@ const Container = styled.div<{ $isClickable: boolean }>`
     align-items: center;
     height: 28px;
     padding: 0 ${SPACING}px;
-    background: ${({ theme }) => theme.backgroundSurfaceElevationNegative};
-    border-bottom: 1px solid ${({ theme }) => theme.borderElevation1};
+    background: ${({ theme }) => theme.surfaceFillSunken};
+    border-bottom: 1px solid ${({ theme }) => theme.borderNeutral};
     ${typography['body-xs']}
     transition: background 0.15s;
     ${({ $isClickable, theme }) =>
@@ -43,7 +43,7 @@ const Container = styled.div<{ $isClickable: boolean }>`
             cursor: pointer;
 
             &:hover {
-                background: ${theme.backgroundSurfaceElevation0};
+                background: ${theme.surfaceFillPage};
                 ${ViewText} {
                     text-decoration: underline;
                     transform: translateX(-4px);
@@ -53,11 +53,11 @@ const Container = styled.div<{ $isClickable: boolean }>`
 `;
 
 const StatusText = styled.span`
-    color: ${({ theme }) => theme.textPrimaryDefault};
+    color: ${({ theme }) => theme.contentBrand};
 `;
 
 const Note = styled.span`
-    color: ${({ theme }) => theme.textSubdued};
+    color: ${({ theme }) => theme.contentSecondary};
 `;
 
 const Separator = styled.span`

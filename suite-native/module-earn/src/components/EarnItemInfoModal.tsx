@@ -23,14 +23,14 @@ type EarnItemInfoModalProps = {
 };
 
 const clipboardContainerStyle = prepareNativeStyle(utils => ({
-    backgroundColor: utils.colors.backgroundPrimarySubtleOnElevation1,
+    backgroundColor: utils.colors.legacyBackgroundPrimarySubtleOnElevation1,
     width: '100%',
     alignItems: 'center',
     paddingHorizontal: utils.spacings.sp16,
     paddingVertical: utils.spacings.sp12,
     marginTop: utils.spacings.sp24,
     borderWidth: utils.borders.widths.small,
-    borderColor: utils.colors.backgroundPrimarySubtleOnElevationNegative,
+    borderColor: utils.colors.legacyBackgroundPrimarySubtleOnElevationNegative,
     borderRadius: utils.borders.radii.r12,
 }));
 
@@ -68,10 +68,10 @@ export const EarnItemInfoModal = ({ ref, type = 'staking' }: EarnItemInfoModalPr
                     style={applyStyle(clipboardContainerStyle)}
                     onPress={() => copyToClipboard(formattedUrl)}
                 >
-                    <Text textAlign="center" variant="body-sm" color="textSubdued">
+                    <Text textAlign="center" variant="body-sm" color="contentSecondary">
                         <Translation id="earn.earnScreen.infoModal.copyLabel" />
                     </Text>
-                    <Text variant="body-md-strong" color="textPrimaryDefault">
+                    <Text variant="body-md-strong" color="contentBrand">
                         {formattedUrl}
                     </Text>
                 </PressableOpacity>

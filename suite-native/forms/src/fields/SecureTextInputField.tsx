@@ -16,7 +16,7 @@ const ToggleSecureTextIcon = ({ onPress, isTextHidden }: ToggleSecureTextIconPro
 
     return (
         <Pressable onPress={onPress}>
-            <Icon name={iconName} color="iconSubdued" size="large" />
+            <Icon name={iconName} color="contentSecondary" size="large" />
         </Pressable>
     );
 };

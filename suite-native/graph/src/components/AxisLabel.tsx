@@ -76,7 +76,7 @@ export const AxisLabel = ({ x, value }: AxisLabelProps) => {
             <BaseCurrencyAmountFormatter
                 value={asBaseCurrencyAmount(new BigNumber(value))}
                 variant="body-xs"
-                color="textDisabled"
+                color="contentDisabled"
             />
         </View>
     );

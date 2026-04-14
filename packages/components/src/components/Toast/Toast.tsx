@@ -22,7 +22,7 @@ const Container = styled.div<{ $variant: ToastIntent }>`
     padding-block: ${spacingsPx.xs};
 
     font-size: 1rem;
-    color: ${({ theme }) => theme.textDefault};
+    color: ${({ theme }) => theme.contentPrimary};
 
     overflow-wrap: anywhere;
     word-break: normal;
@@ -30,7 +30,7 @@ const Container = styled.div<{ $variant: ToastIntent }>`
     border-radius: ${borders.radii.xs};
     position: relative;
 
-    background: ${({ theme }) => hexToRgba(theme.backgroundNeutralBoldInverted, 0.5)};
+    background: ${({ theme }) => hexToRgba(theme.legacyBackgroundNeutralBoldInverted, 0.5)};
     backdrop-filter: blur(12px);
 
     &::after {
@@ -39,7 +39,7 @@ const Container = styled.div<{ $variant: ToastIntent }>`
         inset: 0;
         pointer-events: none;
         border-radius: inherit;
-        border: 1px solid ${({ theme }) => hexToRgba(theme.backgroundNeutralBold, 0.1)};
+        border: 1px solid ${({ theme }) => hexToRgba(theme.legacyBackgroundNeutralBold, 0.1)};
     }
 
     &::before {

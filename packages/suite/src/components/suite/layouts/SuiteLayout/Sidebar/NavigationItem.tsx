@@ -33,7 +33,7 @@ export const NavigationItemBase = styled.div.attrs(() => ({
     align-items: center;
     padding: ${spacingsPx.xs};
     border-radius: ${borders.radii.sm};
-    color: ${({ theme }) => theme.textSubdued};
+    color: ${({ theme }) => theme.contentSecondary};
     transition:
         color 0.15s,
         background 0.15s;
@@ -56,18 +56,18 @@ const Container = styled(NavigationItemBase)<{
             ? css<{ $elevation: Elevation }>`
                   background-color: ${mapElevationToBackground};
                   box-shadow: ${theme.boxShadowBase};
-                  color: ${theme.textDefault};
+                  color: ${theme.contentPrimary};
 
                   path {
-                      fill: ${theme.iconDefault};
+                      fill: ${theme.contentPrimary};
                   }
               `
             : css`
                   &:hover {
-                      color: ${theme.textDefault};
+                      color: ${theme.contentPrimary};
 
                       path {
-                          fill: ${theme.iconDefault};
+                          fill: ${theme.contentPrimary};
                       }
                   }
               `}

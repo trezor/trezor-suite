@@ -46,7 +46,7 @@ export const TradeHistoryListItem = memo(({ transaction, onPress }: TradeHistory
             <Card>
                 <VStack>
                     <HStack justifyContent="space-between">
-                        <Text color="textSubdued">
+                        <Text color="contentSecondary">
                             <Translation
                                 id="moduleTrading.tradeHistory.timeAt"
                                 values={{
@@ -66,7 +66,7 @@ export const TradeHistoryListItem = memo(({ transaction, onPress }: TradeHistory
                         <Icon name="caretRight" size="medium" />
                         <Text>{toStringValue}</Text>
                     </HStack>
-                    <Text variant="body-sm" color="textSubdued">
+                    <Text variant="body-sm" color="contentSecondary">
                         <Translation
                             id="moduleTrading.tradeHistory.transactionId"
                             values={{ orderId: transaction.data.orderId }}

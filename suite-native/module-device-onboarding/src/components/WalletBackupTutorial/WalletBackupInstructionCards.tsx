@@ -91,7 +91,7 @@ const WalletBackupInstructionCard = ({
     return (
         <AnimatedContainerCard
             animatedStyle={animatedCardStyle}
-            borderColor="borderOnElevation1"
+            borderColor="borderNeutral"
             noShadow
         >
             <VStack spacing="sp8" alignItems="center">

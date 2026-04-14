@@ -10,11 +10,11 @@ export const NoProvidersPlaceholder = () => {
             <HStack spacing="sp8" alignItems="center">
                 <Icon
                     name="prohibit"
-                    color="textSubdued"
+                    color="contentSecondary"
                     accessibilityLabel={translate('moduleTrading.providerSheet.noProviders')}
                     size="large"
                 />
-                <Text variant="body-sm" color="textSubdued">
+                <Text variant="body-sm" color="contentSecondary">
                     <Translation id="moduleTrading.providerSheet.noProviders" />
                 </Text>
             </HStack>

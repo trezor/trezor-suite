@@ -11,10 +11,10 @@ interface CardHeaderProps {
 }
 
 const descriptionColor: Record<BackupType, Color> = {
-    'shamir-single': 'textSecondaryHighlight',
-    'shamir-advanced': 'textAlertYellow',
-    '12-words': 'textAlertBlue',
-    '24-words': 'textAlertBlue',
+    'shamir-single': 'contentBrand',
+    'shamir-advanced': 'contentWarning',
+    '12-words': 'contentInfo',
+    '24-words': 'contentInfo',
 };
 
 export const CardHeader = ({ type, isSelected }: CardHeaderProps) => (

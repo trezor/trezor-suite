@@ -75,7 +75,7 @@ type RenderInternalItemProps<T, U> = {
 
 const defaultItemStyle = prepareNativeStyle<ItemRenderConfig<unknown>>(
     ({ colors, spacings, borders }, { isFirst, isLast, isEnabled }) => ({
-        backgroundColor: colors.backgroundSurfaceElevation1,
+        backgroundColor: colors.surfaceFillRaised,
         paddingHorizontal: spacings.sp12,
         extend: [
             {
@@ -195,7 +195,7 @@ const renderInternalItem = <T, U>({
                     {renderSectionHeader ? (
                         renderSectionHeader(title, { sectionData, key })
                     ) : (
-                        <Text variant="body-sm" color="textSubdued">
+                        <Text variant="body-sm" color="contentSecondary">
                             {item.title}
                         </Text>
                     )}

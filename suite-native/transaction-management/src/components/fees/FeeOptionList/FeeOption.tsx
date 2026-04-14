@@ -56,8 +56,8 @@ const wrapperStyle = prepareNativeStyle(utils => ({
     overflow: 'hidden',
     borderRadius: utils.borders.radii.r16,
     borderWidth: utils.borders.widths.large,
-    backgroundColor: utils.colors.backgroundSurfaceElevation1,
-    borderColor: utils.colors.backgroundSurfaceElevation0,
+    backgroundColor: utils.colors.surfaceFillRaised,
+    borderColor: utils.colors.surfaceFillPage,
 }));
 
 const valuesWrapperStyle = prepareNativeStyle(utils => ({
@@ -120,8 +120,8 @@ export const FeeOption = ({
     const isChecked = selectedLevel === feeKey;
 
     const highlightColor: Color = areFeeValuesComplete
-        ? 'backgroundSecondaryDefault'
-        : 'backgroundAlertRedBold';
+        ? 'legacyBackgroundSecondaryDefault'
+        : 'legacyBackgroundAlertRedBold';
 
     const borderAnimationValue = useDerivedValue(
         () => (isChecked ? withTiming(1) : withTiming(0)),
@@ -133,7 +133,7 @@ export const FeeOption = ({
             borderColor: interpolateColor(
                 isInteractive ? borderAnimationValue.value : 0,
                 [0, 1],
-                [utils.colors.backgroundSurfaceElevation0, utils.colors[highlightColor]],
+                [utils.colors.surfaceFillPage, utils.colors[highlightColor]],
             ),
         }),
         [borderAnimationValue, highlightColor, isInteractive],
@@ -193,7 +193,7 @@ export const FeeOption = ({
                                     <Translation id={label} />
                                     {' • '}
                                 </Text>
-                                <Text variant="body-sm" color="textSubdued">
+                                <Text variant="body-sm" color="contentSecondary">
                                     {isLoading ? (
                                         <EmptyAmountSkeleton variant="body-sm" />
                                     ) : (
@@ -201,7 +201,7 @@ export const FeeOption = ({
                                     )}
                                 </Text>
                             </Box>
-                            <Text variant="body-sm" color="textSubdued">
+                            <Text variant="body-sm" color="contentSecondary">
                                 {isLoading ? (
                                     <EmptyAmountSkeleton variant="body-sm" />
                                 ) : (
@@ -212,7 +212,7 @@ export const FeeOption = ({
                         <VStack flex={1} alignItems="flex-end" spacing="sp4">
                             <CryptoToFiatAmountFormatter
                                 variant="body-md"
-                                color="textDefault"
+                                color="contentPrimary"
                                 value={fee}
                                 symbol={symbol}
                                 isLoading={isLoading}
@@ -220,7 +220,7 @@ export const FeeOption = ({
                             />
                             <CryptoAmountFormatter
                                 variant="body-sm"
-                                color="textSubdued"
+                                color="contentSecondary"
                                 value={fee}
                                 symbol={symbol}
                                 isBalance={false}
@@ -236,8 +236,8 @@ export const FeeOption = ({
                                 value={feeKey}
                                 activeColor={
                                     areFeeValuesComplete
-                                        ? 'backgroundPrimaryDefault'
-                                        : 'iconAlertRed'
+                                        ? 'legacyBackgroundPrimaryDefault'
+                                        : 'contentCritical'
                                 }
                                 onPress={handleSelectFeeLevel}
                                 testID={`@transactionManagement/fees-level-radio-${feeKey}`}

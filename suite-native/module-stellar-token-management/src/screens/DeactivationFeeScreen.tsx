@@ -111,7 +111,7 @@ export const DeactivationFeeScreen = () => {
                         {/* Warning Info */}
                         <Card>
                             <HStack alignItems="center" spacing="sp12">
-                                <Icon name="info" color="iconSubdued" />
+                                <Icon name="info" color="contentSecondary" />
                                 <Box flex={1}>
                                     <Text variant="body-md">
                                         <Translation

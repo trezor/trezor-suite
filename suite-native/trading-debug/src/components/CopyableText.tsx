@@ -20,7 +20,7 @@ export const CopyableText = ({ text, title }: CopyableTextProps) => {
             <Text variant="body-sm">{title}</Text>
             <Text
                 variant="body-sm"
-                color="textSubdued"
+                color="contentSecondary"
                 numberOfLines={1}
                 ellipsizeMode="middle"
                 style={applyStyle(textToCopyStyle)}

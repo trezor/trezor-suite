@@ -17,14 +17,16 @@ const Item = styled.button<{ $selected?: boolean; $elevation: Elevation }>`
     border: ${borders.widths.small} solid
         ${({ $selected, theme, $elevation }) =>
             $selected
-                ? theme.backgroundPrimaryDefault
+                ? theme.legacyBackgroundPrimaryDefault
                 : mapElevationToBorder({
                       theme,
                       $elevation,
                   })};
 
     background: ${({ $selected, theme }) =>
-        $selected ? theme.backgroundPrimaryDefault : theme.backgroundNeutralSubtleOnElevation0};
+        $selected
+            ? theme.legacyBackgroundPrimaryDefault
+            : theme.legacyBackgroundNeutralSubtleOnElevation0};
 `;
 
 export type EmojiRatingSelectorProps = {

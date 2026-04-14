@@ -24,8 +24,8 @@ const iconByType: Record<EarnDetailType, IconName> = {
     pending: 'spinner',
 };
 const colorByType: Record<EarnDetailType, Color> = {
-    rewards: 'textPrimaryDefault',
-    pending: 'textAlertYellow',
+    rewards: 'contentBrand',
+    pending: 'contentWarning',
 };
 
 export const EarnItemRewardInfo = ({ value, symbol, type }: EarnItemRewardInfoProps) => {
@@ -50,11 +50,11 @@ export const EarnItemRewardInfo = ({ value, symbol, type }: EarnItemRewardInfoPr
                     color={color}
                 />
                 <HStack spacing="sp2" alignItems="center" justifyContent="flex-end">
-                    <Text color="textSubdued">≈</Text>
+                    <Text color="contentSecondary">≈</Text>
                     <CryptoToFiatAmountFormatter
                         value={value}
                         symbol={symbol}
-                        color="textSubdued"
+                        color="contentSecondary"
                         isBalance
                         variant="body-sm"
                     />

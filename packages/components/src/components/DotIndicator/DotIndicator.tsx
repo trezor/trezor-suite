@@ -9,12 +9,12 @@ const Circle = styled.div<{ $isActive?: boolean }>`
     height: ${spacingsPx.xs};
     border-radius: 50%;
     background: ${({ theme, $isActive }) =>
-        $isActive ? theme.backgroundPrimaryDefault : theme.backgroundNeutralSubdued};
+        $isActive ? theme.legacyBackgroundPrimaryDefault : theme.elementFillNeutralBold};
     transition:
         background 0.5s,
         outline 0.5s;
     outline: ${({ theme, $isActive }) =>
-        `${spacingsPx.xxs} solid ${$isActive ? theme.backgroundPrimarySubtleOnElevation0 : 'transparent'}`};
+        `${spacingsPx.xxs} solid ${$isActive ? theme.legacyBackgroundPrimarySubtleOnElevation0 : 'transparent'}`};
 `;
 
 export type DotIndicatorProps = {

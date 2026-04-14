@@ -98,7 +98,7 @@ export const SuiteSyncRelaySettings = () => {
                             Default:{' '}
                             <Text
                                 variant="body-xs"
-                                color="textSubdued"
+                                color="contentSecondary"
                                 style={{ fontFamily: 'monospace' }}
                             >
                                 {DEFAULT_SUITE_SYNC_RELAY_URL}

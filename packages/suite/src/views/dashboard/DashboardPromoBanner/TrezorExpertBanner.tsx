@@ -26,7 +26,7 @@ const StyledImage = styled.img`
 `;
 
 const NextGenerationTextBlock = styled.span`
-    color: ${colorVariants.standard.textOnPrimary};
+    color: ${colorVariants.standard.contentButtonBrandPrimary};
 `;
 
 const UnderlinedBlock = styled(NextGenerationTextBlock)`

@@ -31,7 +31,7 @@ const SELL_CARD_TEST_ID = '@trading/sellCard';
 const sellSectionStyle = prepareNativeStyle<{ bottomBorder: boolean }>(
     ({ borders, colors, spacings }, { bottomBorder }) => ({
         borderBottomWidth: bottomBorder ? borders.widths.small : 0,
-        borderBottomColor: colors.backgroundSurfaceElevation0,
+        borderBottomColor: colors.surfaceFillPage,
         paddingHorizontal: spacings.sp12,
         paddingTop: spacings.sp16,
         paddingBottom: spacings.sp12,

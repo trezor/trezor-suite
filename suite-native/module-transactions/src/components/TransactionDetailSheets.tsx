@@ -31,7 +31,7 @@ export const TransactionDetailSheets = ({
     const isValuesSheetVisible = !isTestnet(transaction.symbol) && !isTokenTransaction;
 
     return (
-        <Card style={applyStyle(cardStyle)} borderColor="borderElevation1">
+        <Card style={applyStyle(cardStyle)} borderColor="borderNeutral">
             <VStack spacing="sp24">
                 <TransactionDetailParametersSheet
                     transaction={transaction}

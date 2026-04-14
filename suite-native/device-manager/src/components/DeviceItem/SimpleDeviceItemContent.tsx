@@ -57,7 +57,7 @@ export const SimpleDeviceItemContent = React.memo(
                 </Text>
                 <Box>
                     {isPortfolioTrackerSubHeaderVisible && (
-                        <Text variant="body-sm" color="textSubdued">
+                        <Text variant="body-sm" color="contentSecondary">
                             <Translation id="deviceManager.status.portfolioTracker" />
                         </Text>
                     )}

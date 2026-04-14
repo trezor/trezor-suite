@@ -18,7 +18,7 @@ type InfoLineProps = {
 
 const InfoLine = ({ title, value }: InfoLineProps) => (
     <VStack spacing="sp2">
-        <Text color="textSubdued">
+        <Text color="contentSecondary">
             <Translation id={title} />
         </Text>
         <Text>{value}</Text>

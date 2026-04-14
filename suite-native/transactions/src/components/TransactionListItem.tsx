@@ -100,7 +100,7 @@ export const TransactionListItemValues = ({
                 adjustsFontSizeToFit
                 isForcedDiscreetMode={isPhishingTransaction}
                 variant="body-sm"
-                color="textSubdued"
+                color="contentSecondary"
             />
         </VStack>
     );

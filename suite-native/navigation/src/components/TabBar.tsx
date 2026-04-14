@@ -21,8 +21,8 @@ const tabBarStyle = prepareNativeStyle<{
     insetsBottom: number;
 }>((utils, { insetLeft, insetRight, insetsBottom }) => ({
     width: '100%',
-    backgroundColor: utils.colors.backgroundSurfaceElevation0,
-    borderTopColor: utils.colors.borderElevation0,
+    backgroundColor: utils.colors.surfaceFillPage,
+    borderTopColor: utils.colors.borderNeutral,
     borderTopWidth: utils.borders.widths.small,
     flexDirection: 'row',
     justifyContent: 'space-between',

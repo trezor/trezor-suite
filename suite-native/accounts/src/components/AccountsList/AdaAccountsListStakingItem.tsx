@@ -43,9 +43,9 @@ export const AdaAccountsListStakingItem = ({
     const icon = useMemo(
         () =>
             isStakedOutsideEverstake ? (
-                <Icon name="warning" color="iconAlertYellow" />
+                <Icon name="warning" color="contentWarning" />
             ) : (
-                <Icon name="check" color="iconPrimaryDefault" />
+                <Icon name="check" color="contentBrand" />
             ),
         [isStakedOutsideEverstake],
     );
@@ -58,14 +58,14 @@ export const AdaAccountsListStakingItem = ({
             icon={
                 <RoundedIcon
                     name="piggyBankFilled"
-                    color="iconSubdued"
+                    color="contentSecondary"
                     containerSize={utils.spacings.sp32}
                 />
             }
             title={<Translation id="accountList.staking" />}
             secondaryTitle={
                 isStakedWithFiveBinaries && (
-                    <Text variant="body-sm" color="textAlertYellow">
+                    <Text variant="body-sm" color="contentWarning">
                         <Translation id="accountList.rewardsReduced" />
                     </Text>
                 )

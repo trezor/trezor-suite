@@ -41,13 +41,13 @@ export const OptionStyled = styled.div<{ $hasHoverInteraction?: boolean; $disabl
     align-items: center;
     cursor: pointer;
 
-    color: ${({ $disabled, theme }) => ($disabled ? theme.textSubdued : undefined)};
+    color: ${({ $disabled, theme }) => ($disabled ? theme.contentSecondary : undefined)};
 
     ${({ $hasHoverInteraction }) =>
         $hasHoverInteraction === true
             ? css`
                   &:hover {
-                      background-color: ${({ theme }) => theme.backgroundSurfaceElevation2};
+                      background-color: ${({ theme }) => theme.legacyBackgroundSurfaceElevation2};
                       transition: background 0.2s ease;
 
                       margin-left: -10px;

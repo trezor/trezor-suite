@@ -88,7 +88,7 @@ export const EarnDepositsCardRow = React.memo(({ row, onPress }: EarnDepositsCar
                             </Box>
                         ))}
                     </Box>
-                    <Icon name="caretRight" size="mediumLarge" color="iconSubdued" />
+                    <Icon name="caretRight" size="mediumLarge" color="contentSecondary" />
                 </HStack>
             </PressableOpacity>
         </Box>

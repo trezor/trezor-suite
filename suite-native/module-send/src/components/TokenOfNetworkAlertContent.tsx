@@ -17,7 +17,7 @@ type ParagraphProps = {
 const Paragraph = ({ header, body }: ParagraphProps) => (
     <VStack spacing="sp4">
         <Text variant="body-md-strong">{header}</Text>
-        <Text color="textSubdued">{body}</Text>
+        <Text color="contentSecondary">{body}</Text>
     </VStack>
 );
 

@@ -150,7 +150,7 @@ export const WalletConnectSessionPopupScreen = () => {
                                         />
                                     )}
                                 </HStack>
-                                <Text color="textSubdued">
+                                <Text color="contentSecondary">
                                     {pendingProposal?.params.proposer.metadata.url}
                                 </Text>
                             </VStack>
@@ -184,7 +184,7 @@ export const WalletConnectSessionPopupScreen = () => {
                                         <Text>
                                             {network.name}
                                             {network.required && (
-                                                <Text color="textAlertRed">*</Text>
+                                                <Text color="contentCritical">*</Text>
                                             )}
                                         </Text>
                                     </HStack>

@@ -71,7 +71,7 @@ export const SessionDetailCard = ({ session }: { session: WalletConnectSession }
                         />
                         <VStack flex={1} spacing="sp1">
                             <Text>{session.peer.metadata.name}</Text>
-                            <Text color="textSubdued" numberOfLines={1}>
+                            <Text color="contentSecondary" numberOfLines={1}>
                                 {session.peer.metadata.url}
                             </Text>
                         </VStack>
@@ -131,7 +131,7 @@ export const WalletConnectPairScreen = () => {
                         <Text textAlign="center" variant="headline-sm">
                             <Translation id="moduleConnectPopup.noConnectedApps" />
                         </Text>
-                        <Text textAlign="center" color="textSubdued">
+                        <Text textAlign="center" color="contentSecondary">
                             <Translation id="moduleConnectPopup.noConnectedAppsDescription" />
                         </Text>
                     </>

@@ -22,8 +22,8 @@ const createStepToContentMap = (openBluetoothSettings: () => void) =>
                                     label={linkChunk}
                                     isUnderlined
                                     textVariant="body-md-strong"
-                                    textColor="textDefault"
-                                    textPressedColor="textSubdued"
+                                    textColor="contentPrimary"
+                                    textPressedColor="contentSecondary"
                                 />
                             ) : (
                                 <Text variant="body-md-strong">{linkChunk}</Text>

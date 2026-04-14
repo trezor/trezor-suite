@@ -80,7 +80,7 @@ const TokenAmountTooltipFormatter = ({
     if (getNetworkType(symbol) === 'ethereum') {
         return (
             <TokenAmountFormatter
-                color="textDefault"
+                color="contentPrimary"
                 variant="body-xs"
                 value={value}
                 tokenSymbol={token.symbol}
@@ -102,14 +102,14 @@ const EventTooltipRow = ({
     accountKey,
 }: EventTooltipRowProps) => (
     <>
-        <Text variant="body-xs" color="textSubdued">
+        <Text variant="body-xs" color="contentSecondary">
             {title}
         </Text>
         <Box flexDirection="row">
             <SignValueFormatter value={signValue} variant="body-xs" />
             {!tokenAddress ? (
                 <CryptoAmountFormatter
-                    color="textDefault"
+                    color="contentPrimary"
                     variant="body-xs"
                     value={value}
                     symbol={symbol}

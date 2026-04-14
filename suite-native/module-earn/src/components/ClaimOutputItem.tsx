@@ -22,7 +22,7 @@ export const ClaimOutputItem = ({ symbol, outputState, onLayout }: ClaimOutputIt
                 title={translate('earn.claimOutputItem.title')}
                 outputState={outputState}
             >
-                <Text variant="body-sm" color="textSubdued">
+                <Text variant="body-sm" color="contentSecondary">
                     <Translation
                         id="earn.claimOutputItem.description"
                         values={{

@@ -60,10 +60,10 @@ const SelectWrapper = styled.div`
     .react-select__control:read-only:not(:disabled) {
         background: transparent;
         border-style: solid;
-        border-color: ${({ theme }) => theme.borderElevation1};
+        border-color: ${({ theme }) => theme.borderNeutral};
 
         &:hover {
-            border-color: ${({ theme }) => theme.borderElevation2};
+            border-color: ${({ theme }) => theme.legacyBorderElevation2};
         }
     }
 `;

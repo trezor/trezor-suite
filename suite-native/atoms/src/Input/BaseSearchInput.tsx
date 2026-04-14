@@ -44,7 +44,7 @@ export const BaseSearchInput = forwardRef<TextInput, BaseSearchInputProps>(
                         ref={ref}
                         onChangeText={handleOnChangeText}
                         placeholder={placeholder}
-                        placeholderTextColor={utils.colors.textSubdued}
+                        placeholderTextColor={utils.colors.contentSecondary}
                         editable={!isDisabled}
                         onFocus={() => {
                             setIsFocused(true);

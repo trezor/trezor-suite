@@ -56,7 +56,7 @@ export const ExchangeApprovalLimitSheet = memo(
                                 cryptoId={quote.send}
                                 amount={quote.sendStringAmount}
                                 variant="body-sm-strong"
-                                color="textDefault"
+                                color="contentPrimary"
                             />
                         }
                         description={
@@ -69,7 +69,7 @@ export const ExchangeApprovalLimitSheet = memo(
                     />
                     <ExchangeApprovalLimitCard
                         title={
-                            <Text variant="body-sm-strong" color="textDefault">
+                            <Text variant="body-sm-strong" color="contentPrimary">
                                 <Translation id="moduleTrading.tradingExchangeApprovalScreen.unlimitedLabel" />
                             </Text>
                         }

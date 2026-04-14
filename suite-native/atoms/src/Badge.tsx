@@ -63,7 +63,7 @@ const badgeStyle = prepareNativeStyle<BadgeStyleProps>(
             {
                 condition: isDisabled,
                 style: {
-                    backgroundColor: utils.colors.backgroundNeutralSubtleOnElevation0,
+                    backgroundColor: utils.colors.legacyBackgroundNeutralSubtleOnElevation0,
                 },
             },
             {
@@ -79,52 +79,52 @@ const badgeStyle = prepareNativeStyle<BadgeStyleProps>(
 
 const badgeVariantToStylePropsMap = {
     neutral: {
-        backgroundColorElevation0: 'backgroundNeutralSubtleOnElevation0',
-        backgroundColorElevation1: 'backgroundNeutralSubtleOnElevation1',
-        activeTextColor: 'textSubdued',
-        activeIconColor: 'iconSubdued',
+        backgroundColorElevation0: 'legacyBackgroundNeutralSubtleOnElevation0',
+        backgroundColorElevation1: 'legacyBackgroundNeutralSubtleOnElevation1',
+        activeTextColor: 'contentSecondary',
+        activeIconColor: 'contentSecondary',
         borderColor: undefined,
     },
     green: {
-        backgroundColorElevation0: 'backgroundPrimaryDefault',
-        backgroundColorElevation1: 'backgroundPrimaryDefault',
-        activeTextColor: 'textOnPrimary',
-        activeIconColor: 'iconOnPrimary',
+        backgroundColorElevation0: 'legacyBackgroundPrimaryDefault',
+        backgroundColorElevation1: 'legacyBackgroundPrimaryDefault',
+        activeTextColor: 'contentButtonBrandPrimary',
+        activeIconColor: 'contentButtonBrandPrimary',
         borderColor: undefined,
     },
     greenSubtle: {
-        backgroundColorElevation0: 'backgroundPrimarySubtleOnElevation0',
-        backgroundColorElevation1: 'backgroundPrimarySubtleOnElevation1',
-        activeTextColor: 'textPrimaryDefault',
-        activeIconColor: 'iconPrimaryDefault',
+        backgroundColorElevation0: 'legacyBackgroundPrimarySubtleOnElevation0',
+        backgroundColorElevation1: 'legacyBackgroundPrimarySubtleOnElevation1',
+        activeTextColor: 'contentBrand',
+        activeIconColor: 'contentBrand',
         borderColor: undefined,
     },
     yellow: {
-        backgroundColorElevation0: 'backgroundAlertYellowSubtleOnElevation0',
-        backgroundColorElevation1: 'backgroundAlertYellowSubtleOnElevation1',
-        activeTextColor: 'textAlertYellow',
-        activeIconColor: 'iconAlertYellow',
-        borderColor: 'backgroundAlertYellowSubtleOnElevationNegative',
+        backgroundColorElevation0: 'legacyBackgroundAlertYellowSubtleOnElevation0',
+        backgroundColorElevation1: 'legacyBackgroundAlertYellowSubtleOnElevation1',
+        activeTextColor: 'contentWarning',
+        activeIconColor: 'contentWarning',
+        borderColor: 'legacyBackgroundAlertYellowSubtleOnElevationNegative',
     },
     red: {
-        backgroundColorElevation0: 'backgroundAlertRedSubtleOnElevation0',
-        backgroundColorElevation1: 'backgroundAlertRedSubtleOnElevation1',
-        activeTextColor: 'textAlertRed',
-        activeIconColor: 'iconAlertRed',
+        backgroundColorElevation0: 'legacyBackgroundAlertRedSubtleOnElevation0',
+        backgroundColorElevation1: 'legacyBackgroundAlertRedSubtleOnElevation1',
+        activeTextColor: 'contentCritical',
+        activeIconColor: 'contentCritical',
         borderColor: undefined,
     },
     blue: {
-        backgroundColorElevation0: 'backgroundAlertBlueSubtleOnElevation0',
-        backgroundColorElevation1: 'backgroundAlertBlueSubtleOnElevation1',
-        activeTextColor: 'textAlertBlue',
-        activeIconColor: 'iconAlertBlue',
+        backgroundColorElevation0: 'legacyBackgroundAlertBlueSubtleOnElevation0',
+        backgroundColorElevation1: 'legacyBackgroundAlertBlueSubtleOnElevation1',
+        activeTextColor: 'contentInfo',
+        activeIconColor: 'contentInfo',
         borderColor: undefined,
     },
     bold: {
-        backgroundColorElevation0: 'backgroundNeutralBold',
-        backgroundColorElevation1: 'backgroundNeutralBold',
-        activeTextColor: 'textOnPrimary',
-        activeIconColor: 'iconOnPrimary',
+        backgroundColorElevation0: 'legacyBackgroundNeutralBold',
+        backgroundColorElevation1: 'legacyBackgroundNeutralBold',
+        activeTextColor: 'contentButtonBrandPrimary',
+        activeIconColor: 'contentButtonBrandPrimary',
         borderColor: undefined,
     },
 } as const satisfies Record<BadgeVariant, BadgeStyle>;
@@ -150,8 +150,8 @@ export const Badge = ({
     } = badgeVariantToStylePropsMap[variant];
 
     const textVariant = size === 'medium' ? 'body-sm' : 'body-xs';
-    const textColor = isDisabled ? 'textDisabled' : activeTextColor;
-    const iconColor = isDisabled ? 'iconDisabled' : activeIconColor;
+    const textColor = isDisabled ? 'contentDisabled' : activeTextColor;
+    const iconColor = isDisabled ? 'contentDisabled' : activeIconColor;
     const backgroundColor =
         elevation === '0' ? backgroundColorElevation0 : backgroundColorElevation1;
 

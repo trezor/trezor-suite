@@ -41,8 +41,8 @@ export const OrderedListIcon = ({
     iconNumber,
     iconColor,
     iconSize = 'mediumLarge',
-    iconBackgroundColor = 'backgroundTertiaryDefaultOnElevation1',
-    iconBorderColor = 'borderElevation0',
+    iconBackgroundColor = 'legacyBackgroundTertiaryDefaultOnElevation1',
+    iconBorderColor = 'borderNeutral',
     iconBorderRadius = 'r12',
 }: OrderedListIconProps) => {
     const { applyStyle } = useNativeStyles();

@@ -14,7 +14,7 @@ const pickerStyle = prepareNativeStyle<{ hasBorder: boolean }>(
                 condition: hasBorder,
                 style: {
                     borderTopWidth: borders.widths.small,
-                    borderTopColor: colors.backgroundSurfaceElevation0,
+                    borderTopColor: colors.surfaceFillPage,
                 },
             },
         ],

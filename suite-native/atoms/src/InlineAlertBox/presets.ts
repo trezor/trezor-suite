@@ -20,28 +20,28 @@ export type InlineAlertBoxStyles = {
 
 export const variantToColorMap = {
     info: {
-        backgroundColor: 'backgroundAlertBlueSubtleOnElevation1',
-        borderColor: 'backgroundAlertBlueSubtleOnElevationNegative',
+        backgroundColor: 'legacyBackgroundAlertBlueSubtleOnElevation1',
+        borderColor: 'legacyBackgroundAlertBlueSubtleOnElevationNegative',
         buttonColorProps: { intent: 'info', priority: 'primary' },
     },
     success: {
-        backgroundColor: 'backgroundPrimarySubtleOnElevation1',
-        borderColor: 'backgroundPrimarySubtleOnElevationNegative',
+        backgroundColor: 'legacyBackgroundPrimarySubtleOnElevation1',
+        borderColor: 'legacyBackgroundPrimarySubtleOnElevationNegative',
         buttonColorProps: { intent: 'brand', priority: 'primary' },
     },
     warning: {
-        backgroundColor: 'backgroundAlertYellowSubtleOnElevation1',
-        borderColor: 'backgroundAlertYellowSubtleOnElevationNegative',
+        backgroundColor: 'legacyBackgroundAlertYellowSubtleOnElevation1',
+        borderColor: 'legacyBackgroundAlertYellowSubtleOnElevationNegative',
         buttonColorProps: { intent: 'warning', priority: 'primary' },
     },
     neutral: {
-        backgroundColor: 'backgroundTertiaryDefaultOnElevation1',
-        borderColor: 'backgroundTertiaryDefaultOnElevation0',
+        backgroundColor: 'legacyBackgroundTertiaryDefaultOnElevation1',
+        borderColor: 'legacyBackgroundTertiaryDefaultOnElevation0',
         buttonColorProps: { intent: 'brand', priority: 'primary' },
     },
     critical: {
-        backgroundColor: 'backgroundAlertRedSubtleOnElevation1',
-        borderColor: 'backgroundAlertRedSubtleOnElevationNegative',
+        backgroundColor: 'legacyBackgroundAlertRedSubtleOnElevation1',
+        borderColor: 'legacyBackgroundAlertRedSubtleOnElevationNegative',
         buttonColorProps: { intent: 'critical', priority: 'primary' },
     },
 } as const satisfies Record<InlineAlertBoxVariant, InlineAlertBoxStyles>;

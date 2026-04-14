@@ -25,7 +25,7 @@ export type BottomSheetFlashListProps<TItem> = {
 const DEFAULT_INSET_BOTTOM = 25;
 
 const bottomSheetStyle = prepareNativeStyle(utils => ({
-    backgroundColor: utils.colors.backgroundSurfaceElevation0,
+    backgroundColor: utils.colors.surfaceFillPage,
 
     borderTopLeftRadius: utils.borders.radii.r20,
     borderTopRightRadius: utils.borders.radii.r20,
@@ -39,7 +39,7 @@ const sheetContentContainerStyle = prepareNativeStyle<{
 }));
 
 const handleStyle = prepareNativeStyle(utils => ({
-    backgroundColor: utils.colors.borderDashed,
+    backgroundColor: utils.colors.borderNeutral,
 }));
 
 const WindowOverlay = ({ children }: { children: ReactNode }) => (

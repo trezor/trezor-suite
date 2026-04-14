@@ -36,16 +36,16 @@ export const TurnOnAndUnlockDeviceScreenContent = ({
                 <HStack style={applyStyle(statusStyle, { isStatusVisible })}>
                     {bluetoothAdapterStatus === 'disabled' && (
                         <>
-                            <Icon name="bluetoothSlash" color="iconAlertBlue" />
-                            <Text variant="body-md" color="textAlertBlue">
+                            <Icon name="bluetoothSlash" color="contentInfo" />
+                            <Text variant="body-md" color="contentInfo">
                                 <Translation id="moduleConnectDevice.turnOnAndUnlockScreen.status.adapterDisabled" />
                             </Text>
                         </>
                     )}
                     {bluetoothAdapterStatus === 'enabled' && (
                         <>
-                            <Loader color="iconPrimaryDefault" />
-                            <Text variant="body-md" color="textPrimaryDefault">
+                            <Loader color="contentBrand" />
+                            <Text variant="body-md" color="contentBrand">
                                 <Translation id="moduleConnectDevice.turnOnAndUnlockScreen.status.scanning" />
                             </Text>
                         </>

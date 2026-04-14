@@ -25,8 +25,8 @@ const TopFeeRow = styled.div`
 `;
 
 const FeeWrapper = styled.div`
-    border-bottom: 1px solid ${({ theme }) => theme.borderElevation1};
-    border-top: 1px solid ${({ theme }) => theme.borderElevation1};
+    border-bottom: 1px solid ${({ theme }) => theme.borderNeutral};
+    border-top: 1px solid ${({ theme }) => theme.borderNeutral};
     margin: ${spacingsPx.xl} 0;
     padding: ${spacingsPx.md} 0;
 `;

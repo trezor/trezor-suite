@@ -63,7 +63,7 @@ export const TransactionDetailHeader = ({
                         isAnimated={isPendingTx}
                         containerSize={56}
                         iconSize="extraLarge"
-                        backgroundColor="backgroundSurfaceElevation1"
+                        backgroundColor="surfaceFillRaised"
                     />
 
                     {isPendingTx ? (
@@ -84,7 +84,7 @@ export const TransactionDetailHeader = ({
                     <Box flexDirection="row">
                         {!isFailedTx && (
                             <SignValueFormatter
-                                color="textDefault"
+                                color="contentPrimary"
                                 value={signValue}
                                 variant="headline-md"
                             />
@@ -97,7 +97,7 @@ export const TransactionDetailHeader = ({
                                 tokenSymbol={tokenTransfer.symbol}
                                 decimals={tokenTransfer.decimals}
                                 variant="headline-md"
-                                color="textDefault"
+                                color="contentPrimary"
                                 numberOfLines={1}
                                 adjustsFontSizeToFit
                                 style={applyStyle(failedTxStyle, { isFailedTx })}
@@ -108,7 +108,7 @@ export const TransactionDetailHeader = ({
                                 symbol={transaction.symbol}
                                 isBalance={false}
                                 variant="headline-md"
-                                color="textDefault"
+                                color="contentPrimary"
                                 numberOfLines={1}
                                 adjustsFontSizeToFit
                                 style={applyStyle(failedTxStyle, { isFailedTx })}
@@ -119,7 +119,7 @@ export const TransactionDetailHeader = ({
 
                 {historicRate !== undefined && historicRate !== 0 && (
                     <Box flexDirection="row" style={applyStyle(fiatValueStyle)}>
-                        <Text color="textSubdued">≈ </Text>
+                        <Text color="contentSecondary">≈ </Text>
                         {tokenTransfer ? (
                             <TokenToFiatAmountFormatter
                                 symbol={transaction.symbol}
@@ -127,7 +127,7 @@ export const TransactionDetailHeader = ({
                                 value={tokenTransfer.amount}
                                 decimals={tokenTransfer.decimals}
                                 historicRate={historicRate}
-                                color="textSubdued"
+                                color="contentSecondary"
                                 useHistoricRate
                                 style={applyStyle(failedTxStyle, { isFailedTx })}
                             />
@@ -136,7 +136,7 @@ export const TransactionDetailHeader = ({
                                 value={transaction.amount}
                                 symbol={transaction.symbol}
                                 historicRate={historicRate}
-                                color="textSubdued"
+                                color="contentSecondary"
                                 useHistoricRate
                                 style={applyStyle(failedTxStyle, { isFailedTx })}
                             />

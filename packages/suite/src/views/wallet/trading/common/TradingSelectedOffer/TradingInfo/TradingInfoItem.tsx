@@ -101,7 +101,7 @@ export const TradingInfoItem = ({
                     borderWidth={borders.widths.medium}
                     borderRadius={borders.radii.sm}
                     padding={16}
-                    backgroundColor="backgroundSurfaceElevation2"
+                    backgroundColor="legacyBackgroundSurfaceElevation2"
                 >
                     <Row gap={8} justifyContent="space-between">
                         <Row gap={8} alignItems="center">

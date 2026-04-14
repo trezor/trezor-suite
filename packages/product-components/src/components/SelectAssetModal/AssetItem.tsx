@@ -17,7 +17,7 @@ const ClickableContainer = styled.div`
     border-radius: 4px;
 
     &:hover {
-        background: ${({ theme }) => theme.backgroundTertiaryPressedOnElevation0};
+        background: ${({ theme }) => theme.legacyBackgroundTertiaryPressedOnElevation0};
     }
 `;
 

@@ -16,11 +16,11 @@ export const mapToastIntentToIcon = (intent: ToastIntent) => {
 
 export const mapToastVariantToColor = (variant: ToastIntent): Color => {
     const colorMap: Record<ToastIntent, Color> = {
-        brand: 'textPrimaryDefault',
-        info: 'textAlertBlue',
-        warning: 'textAlertYellow',
-        critical: 'textAlertRed',
-        neutral: 'textSubdued',
+        brand: 'contentBrand',
+        info: 'contentInfo',
+        warning: 'contentWarning',
+        critical: 'contentCritical',
+        neutral: 'contentSecondary',
     };
 
     return colorMap[variant];

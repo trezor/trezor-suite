@@ -39,25 +39,25 @@ type CardColorScheme = {
 
 export const cardVariantToColorsMap = {
     normal: {
-        iconWrapperBackgroundColor: 'backgroundTertiaryDefaultOnElevation1',
-        iconColor: 'iconDefault',
-        titleColor: 'textDefault',
-        subtitleColor: 'textSubdued',
-        caretColor: 'iconSubdued',
+        iconWrapperBackgroundColor: 'legacyBackgroundTertiaryDefaultOnElevation1',
+        iconColor: 'contentPrimary',
+        titleColor: 'contentPrimary',
+        subtitleColor: 'contentSecondary',
+        caretColor: 'contentSecondary',
     },
     danger: {
-        iconWrapperBackgroundColor: 'backgroundAlertRedSubtleOnElevation1',
-        iconColor: 'iconAlertRed',
-        titleColor: 'textAlertRed',
-        subtitleColor: 'textAlertRed',
-        caretColor: 'iconSubdued',
+        iconWrapperBackgroundColor: 'legacyBackgroundAlertRedSubtleOnElevation1',
+        iconColor: 'contentCritical',
+        titleColor: 'contentCritical',
+        subtitleColor: 'contentCritical',
+        caretColor: 'contentSecondary',
     },
     primary: {
-        iconWrapperBackgroundColor: 'backgroundPrimarySubtleOnElevation0',
-        iconColor: 'iconPrimaryDefault',
-        titleColor: 'textSecondaryHighlight',
-        subtitleColor: 'textSecondaryHighlight',
-        caretColor: 'iconPrimaryDefault',
+        iconWrapperBackgroundColor: 'legacyBackgroundPrimarySubtleOnElevation0',
+        iconColor: 'contentBrand',
+        titleColor: 'contentBrand',
+        subtitleColor: 'contentBrand',
+        caretColor: 'contentBrand',
     },
 } as const satisfies Record<CompactCardVariant, CardColorScheme>;
 
@@ -76,7 +76,7 @@ export const CompactCardWithIconLayout = ({
     testID,
     isDisabled = false,
     variant = 'normal',
-    borderColor = 'borderElevation1',
+    borderColor = 'borderNeutral',
     ...cardProps
 }: CompactCardWithIconLayoutProps) => {
     const { applyStyle } = useNativeStyles();

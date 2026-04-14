@@ -25,7 +25,7 @@ export const ReviewOutputItemValues = ({
         <VStack flex={0.6} alignItems="flex-end" spacing="sp4">
             <CoinToFiatAmountFormatter
                 variant="body-sm"
-                color="textDefault"
+                color="contentPrimary"
                 value={value}
                 accountKey={accountKey}
                 tokenContract={tokenContract}
@@ -35,7 +35,7 @@ export const ReviewOutputItemValues = ({
             />
             <CoinAmountFormatter
                 variant="body-sm"
-                color="textSubdued"
+                color="contentSecondary"
                 value={value}
                 accountKey={accountKey}
                 tokenContract={tokenContract}

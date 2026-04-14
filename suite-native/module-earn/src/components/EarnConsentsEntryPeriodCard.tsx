@@ -21,7 +21,7 @@ const headerSectionStyle = prepareNativeStyle(utils => ({
     paddingVertical: utils.spacings.sp12,
     paddingHorizontal: utils.spacings.sp16,
     borderBottomWidth: utils.borders.widths.small,
-    borderBottomColor: utils.colors.borderElevation1,
+    borderBottomColor: utils.colors.borderNeutral,
 }));
 
 const itemsSectionStyle = prepareNativeStyle(utils => ({
@@ -85,15 +85,15 @@ export const EarnConsentsEntryPeriodCard = ({
                 <Icon
                     name={isConfirmed ? 'check' : 'calendarBlank'}
                     size="mediumLarge"
-                    color={isConfirmed ? 'iconPrimaryDefault' : 'iconSubdued'}
+                    color={isConfirmed ? 'contentBrand' : 'contentSecondary'}
                 />
-                <Text variant="body-sm" color={isConfirmed ? 'textPrimaryDefault' : 'textSubdued'}>
+                <Text variant="body-sm" color={isConfirmed ? 'contentBrand' : 'contentSecondary'}>
                     <Translation id="earn.earnConsentsScreen.entryPeriodCard.title" />
                 </Text>
             </HStack>
             <Animated.View onLayout={handleLayout} style={collapsibleStyle}>
                 <VStack spacing="sp16" style={applyStyle(itemsSectionStyle)}>
-                    <EarnConsentsItem iconName="calendarBlank" color="textDefault">
+                    <EarnConsentsItem iconName="calendarBlank" color="contentPrimary">
                         <Translation
                             id="earn.earnConsentsScreen.entryPeriodCard.firstItem"
                             values={{
@@ -105,7 +105,7 @@ export const EarnConsentsEntryPeriodCard = ({
                             }}
                         />
                     </EarnConsentsItem>
-                    <EarnConsentsItem iconName="info" color="textDefault">
+                    <EarnConsentsItem iconName="info" color="contentPrimary">
                         <Translation id="earn.earnConsentsScreen.entryPeriodCard.secondItem" />
                     </EarnConsentsItem>
                 </VStack>

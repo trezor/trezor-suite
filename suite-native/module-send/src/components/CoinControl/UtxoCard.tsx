@@ -104,7 +104,7 @@ export const UtxoCard = ({
     return (
         <Card
             noPadding
-            borderColor={isSelected ? 'backgroundSecondaryDefault' : 'transparent'}
+            borderColor={isSelected ? 'legacyBackgroundSecondaryDefault' : 'transparent'}
             style={applyStyle(cardStyle)}
         >
             <VStack spacing="sp12">
@@ -118,7 +118,7 @@ export const UtxoCard = ({
                         <VStack flex={1}>
                             <HStack alignItems="center">
                                 <CryptoAmountFormatter
-                                    color="textDefault"
+                                    color="contentPrimary"
                                     variant="body-md-strong"
                                     value={utxo.amount}
                                     isBalance={false}
@@ -127,9 +127,9 @@ export const UtxoCard = ({
                                 />
                                 {fiatAmount && (
                                     <>
-                                        <Text color="textSubdued">≈</Text>
+                                        <Text color="contentSecondary">≈</Text>
                                         <BaseCurrencyAmountFormatter
-                                            color="textSubdued"
+                                            color="contentSecondary"
                                             symbol={symbol}
                                             value={fiatAmount}
                                             isDiscreetText={false}
@@ -155,7 +155,7 @@ export const UtxoCard = ({
                     paddingHorizontal="sp12"
                 >
                     {transactionBlockTime && (
-                        <Text color="textSubdued" variant="body-sm">
+                        <Text color="contentSecondary" variant="body-sm">
                             <DateFormatter value={transactionBlockTime} />
                         </Text>
                     )}

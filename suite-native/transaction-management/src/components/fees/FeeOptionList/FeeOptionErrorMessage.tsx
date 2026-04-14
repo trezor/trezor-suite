@@ -14,7 +14,7 @@ const ERROR_HEIGHT = 40;
 const errorStyle = prepareNativeStyle(utils => ({
     paddingHorizontal: utils.spacings.sp12,
     justifyContent: 'center',
-    backgroundColor: utils.colors.backgroundAlertRedSubtleOnElevation1,
+    backgroundColor: utils.colors.legacyBackgroundAlertRedSubtleOnElevation1,
     overflow: 'hidden',
 }));
 
@@ -38,7 +38,7 @@ export const FeeOptionErrorMessage = ({ isVisible }: FeeOptionErrorMessageProps)
             testID="@transactionManagement/fee-option-error-message"
         >
             <HStack alignItems="center" spacing="sp8">
-                <Icon name="warningCircle" size="mediumLarge" color="iconAlertRed" />
+                <Icon name="warningCircle" size="mediumLarge" color="contentCritical" />
                 <Text variant="body-sm">
                     <Translation id="transactionManagement.fees.error" />
                 </Text>

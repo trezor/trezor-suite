@@ -21,29 +21,29 @@ type IconColors = {
 
 const iconColorsMap = {
     default: {
-        iconColor: 'iconDefault',
-        iconBorderColor: 'borderElevation0',
-        iconBackgroundColor: 'backgroundTertiaryDefaultOnElevation1',
+        iconColor: 'contentPrimary',
+        iconBorderColor: 'borderNeutral',
+        iconBackgroundColor: 'legacyBackgroundTertiaryDefaultOnElevation1',
     },
     blue: {
-        iconColor: 'iconAlertBlue',
-        iconBorderColor: 'backgroundAlertBlueSubtleOnElevation0',
-        iconBackgroundColor: 'backgroundAlertBlueSubtleOnElevation1',
+        iconColor: 'contentInfo',
+        iconBorderColor: 'legacyBackgroundAlertBlueSubtleOnElevation0',
+        iconBackgroundColor: 'legacyBackgroundAlertBlueSubtleOnElevation1',
     },
     red: {
-        iconColor: 'iconAlertRed',
-        iconBorderColor: 'backgroundAlertRedSubtleOnElevation0',
-        iconBackgroundColor: 'backgroundAlertRedSubtleOnElevation1',
+        iconColor: 'contentCritical',
+        iconBorderColor: 'legacyBackgroundAlertRedSubtleOnElevation0',
+        iconBackgroundColor: 'legacyBackgroundAlertRedSubtleOnElevation1',
     },
     yellow: {
-        iconColor: 'iconAlertYellow',
-        iconBorderColor: 'backgroundAlertYellowSubtleOnElevation0',
-        iconBackgroundColor: 'backgroundAlertYellowSubtleOnElevation1',
+        iconColor: 'contentWarning',
+        iconBorderColor: 'legacyBackgroundAlertYellowSubtleOnElevation0',
+        iconBackgroundColor: 'legacyBackgroundAlertYellowSubtleOnElevation1',
     },
     primary: {
-        iconColor: 'iconDefaultInverted',
-        iconBorderColor: 'backgroundPrimaryDefault',
-        iconBackgroundColor: 'backgroundPrimaryDefault',
+        iconColor: 'contentPrimaryInverse',
+        iconBorderColor: 'legacyBackgroundPrimaryDefault',
+        iconBackgroundColor: 'legacyBackgroundPrimaryDefault',
     },
 } as const satisfies Record<IconListItemVariant, IconColors>;
 

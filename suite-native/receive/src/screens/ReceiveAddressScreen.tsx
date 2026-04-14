@@ -151,8 +151,8 @@ export const ReceiveAddressScreen = ({
                                                 HELP_CENTER_OTHER_CRYPTOCURRENCIES_DESTINATION_TAGS_URL
                                             }
                                             isUnderlined
-                                            textColor="textDefault"
-                                            textPressedColor="textSubdued"
+                                            textColor="contentPrimary"
+                                            textPressedColor="contentSecondary"
                                         />
                                     ),
                                     coinSymbol: tokenSymbol ?? getDisplaySymbol(account.symbol),

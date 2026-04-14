@@ -19,8 +19,8 @@ const Indicator = styled.div`
     width: 11px;
     height: 11px;
     border-radius: 50%;
-    border: 3px solid ${({ theme }) => theme.borderElevation2};
-    background-color: ${({ theme }) => theme.iconPrimaryDefault};
+    border: 3px solid ${({ theme }) => theme.legacyBorderElevation2};
+    background-color: ${({ theme }) => theme.contentBrand};
     position: absolute;
     top: 0;
     right: 0;

@@ -8,7 +8,7 @@ const Floating = styled.div`
 `;
 
 const StyledLink = styled(Link)`
-    color: ${({ theme }) => theme.textPrimaryDefault};
+    color: ${({ theme }) => theme.contentBrand};
     text-decoration: underline;
 `;
 

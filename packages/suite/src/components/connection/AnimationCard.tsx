@@ -11,8 +11,8 @@ export const AnimationCard = ({ aspectRatio, maxHeight, children }: AnimationCar
     <Box
         borderRadius={16}
         borderWidth={1}
-        borderColor="borderOnElevationNegative"
-        backgroundColor="backgroundTertiaryDefaultOnElevation0"
+        borderColor="borderNeutral"
+        backgroundColor="legacyBackgroundTertiaryDefaultOnElevation0"
         overflow="hidden"
         aspectRatio={aspectRatio}
         maxHeight={maxHeight}

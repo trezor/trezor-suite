@@ -10,8 +10,8 @@ import { CryptoToFiatValueBadge } from '../../general/CryptoToFiatValueBadge';
 import { TradeableAssetNetworkInfo } from '../../general/TradeableAssetNetworkInfo';
 
 const nonEditableCardStyle = prepareNativeStyle(({ colors, borders }) => ({
-    backgroundColor: colors.backgroundSurfaceElevation0,
-    borderColor: colors.borderElevation0,
+    backgroundColor: colors.surfaceFillPage,
+    borderColor: colors.borderNeutral,
     borderWidth: borders.widths.small,
 }));
 

@@ -60,7 +60,11 @@ export const CountrySelectModal = ({
                         <Paragraph align="center">
                             <Translation id="TR_TRADING_COUNTRY_NOT_FOUND" />
                         </Paragraph>
-                        <Paragraph align="center" typographyStyle="body-sm" color="textSubdued">
+                        <Paragraph
+                            align="center"
+                            typographyStyle="body-sm"
+                            color="contentSecondary"
+                        >
                             <Translation id="TR_TRADING_COUNTRY_NOT_FOUND_DESCRIPTION" />
                         </Paragraph>
                     </Column>

@@ -5,16 +5,16 @@ import { type CSSColor, type Color } from '@trezor/theme';
 import { type IconIntent, type IconPriority } from './types';
 
 const colorMap: Record<Exclude<IconIntent, 'neutral'>, Color> = {
-    brand: 'iconPrimaryDefault',
-    info: 'iconAlertBlue',
-    warning: 'iconAlertYellow',
-    critical: 'iconAlertRed',
+    brand: 'contentBrand',
+    info: 'contentInfo',
+    warning: 'contentWarning',
+    critical: 'contentCritical',
     accentViolet: 'contentAccentViolet',
 };
 
 const neutralColorMap: Record<IconPriority, Color> = {
-    primary: 'iconDefault',
-    secondary: 'iconSubdued',
+    primary: 'contentPrimary',
+    secondary: 'contentSecondary',
 };
 
 export const mapIntentToCSS = (
@@ -24,7 +24,7 @@ export const mapIntentToCSS = (
     theme: DefaultTheme,
 ): CSSColor => {
     if (isDisabled) {
-        return theme.iconDisabled;
+        return theme.contentDisabled;
     }
 
     const token = intent === 'neutral' ? neutralColorMap[priority] : colorMap[intent];

@@ -15,7 +15,7 @@ import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 const ConfigBox = styled.div`
     display: flex;
     flex-direction: column;
-    background: ${({ theme }) => theme.backgroundNeutralSubtleOnElevation0};
+    background: ${({ theme }) => theme.legacyBackgroundNeutralSubtleOnElevation0};
     border-radius: 8px;
     padding: ${spacings.sm}px ${spacings.md}px;
     height: 180px;

@@ -50,7 +50,7 @@ const MainLabel = styled.div`
 const Label = styled.div`
     ${typography['body-sm-strong']}
     text-align: center;
-    color: ${({ theme }) => theme.textDefault};
+    color: ${({ theme }) => theme.contentPrimary};
     padding: 0 15px;
     width: 100%;
 `;

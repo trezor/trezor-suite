@@ -69,14 +69,14 @@ export const LimitPicker = ({ onApprovalTypeChange }: LimitPickerProps) => {
                                     amount={sendStringAmount}
                                     cryptoId={send}
                                     variant="body-sm-strong"
-                                    color="textDefault"
+                                    color="contentPrimary"
                                 />
                             )}
 
                             <Icon name="caretDown" size="medium" />
                         </HStack>
                     </HStack>
-                    <Text variant="body-sm" color="textSubdued">
+                    <Text variant="body-sm" color="contentSecondary">
                         {isInfinite ? (
                             <Translation id="moduleTrading.exchangeApprovalLimitSheet.unlimitedCard.info" />
                         ) : (

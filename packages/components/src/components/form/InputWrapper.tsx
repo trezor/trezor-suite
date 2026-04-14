@@ -18,23 +18,23 @@ const Wrapper = styled.div<{
     position: relative;
     background: ${({ $elevation, theme, $hasError }) =>
         $hasError
-            ? theme.backgroundAlertRedSubtleOnElevation1
+            ? theme.legacyBackgroundAlertRedSubtleOnElevation1
             : mapElevationToBackground({ theme, $elevation })};
     border-radius: ${borders.radii.sm};
     outline: ${borders.widths.large} solid
-        ${({ $hasError, theme }) => ($hasError ? theme.borderAlertRed : 'transparent')};
+        ${({ $hasError, theme }) => ($hasError ? theme.elementBorderFieldError : 'transparent')};
     transition:
         outline-color,
         background-color 0.1s;
 
     &:focus-within {
-        outline-color: ${({ theme }) => theme.borderFocus};
+        outline-color: ${({ theme }) => theme.elementBorderFieldFocused};
     }
 
     ${({ $isDisabled, theme }) =>
         $isDisabled &&
         `
-            background: ${theme.backgroundNeutralDisabled};
+            background: ${theme.elementFillBoldDisabled};
             pointer-events: none;
             cursor: default;
         `}

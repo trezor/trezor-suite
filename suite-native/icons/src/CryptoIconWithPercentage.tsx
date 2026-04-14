@@ -40,7 +40,7 @@ export const CryptoIconWithPercentage = ({
     const colorScheme = useActiveColorScheme();
     // @ts-expect-error: coinsColors uses "NetworkSymbol" type. However, here we use deprecated "CryptoIconName".
     // Not worth fixing it as this package will be removed soon.
-    const percentageColor = utils.coinsColors[iconName] ?? utils.colors.textSubdued;
+    const percentageColor = utils.coinsColors[iconName] ?? utils.colors.contentSecondary;
 
     const path = Skia.Path.Make();
     path.addCircle(CANVAS_SIZE / 2, CANVAS_SIZE / 2, RADIUS);
@@ -99,7 +99,7 @@ export const CryptoIconWithPercentage = ({
                                 r={RADIUS}
                                 style="stroke"
                                 strokeWidth={6}
-                                color={utils.colors.backgroundSurfaceElevation2}
+                                color={utils.colors.legacyBackgroundSurfaceElevation2}
                             />
                             {/* Helps to brighten up the stroke color in dark mode */}
                             <Path

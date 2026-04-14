@@ -27,8 +27,8 @@ type FeesRecipientsProps = {
 };
 
 const cardStyle = prepareNativeStyle(utils => ({
-    borderColor: utils.colors.borderElevation0,
-    backgroundColor: utils.colors.backgroundTertiaryDefaultOnElevation1,
+    borderColor: utils.colors.borderNeutral,
+    backgroundColor: utils.colors.legacyBackgroundTertiaryDefaultOnElevation1,
     borderWidth: utils.borders.widths.small,
     paddingVertical: utils.spacings.sp12,
     ...utils.boxShadows.none,
@@ -88,7 +88,7 @@ export const RecipientsSummary = ({
                         <VStack flex={0.6} alignItems="flex-end" spacing="sp4">
                             <CoinToFiatAmountFormatter
                                 variant="body-sm"
-                                color="textDefault"
+                                color="contentPrimary"
                                 value={output.amount}
                                 isBalance={isBalance}
                                 accountKey={accountKey}
@@ -97,7 +97,7 @@ export const RecipientsSummary = ({
                             />
                             <CoinAmountFormatter
                                 variant="body-sm"
-                                color="textSubdued"
+                                color="contentSecondary"
                                 value={output.amount}
                                 isBalance={isBalance}
                                 accountKey={accountKey}

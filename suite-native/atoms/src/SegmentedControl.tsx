@@ -18,7 +18,7 @@ const ANIMATION_DURATION = 200;
 
 const containerStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
-    backgroundColor: utils.colors.backgroundSurfaceElevationNegative,
+    backgroundColor: utils.colors.surfaceFillSunken,
     borderRadius: utils.borders.radii.round,
     padding: CONTAINER_PADDING,
     position: 'relative',
@@ -28,7 +28,7 @@ const indicatorStyle = prepareNativeStyle(utils => ({
     position: 'absolute',
     top: CONTAINER_PADDING,
     bottom: CONTAINER_PADDING,
-    backgroundColor: utils.colors.backgroundSurfaceElevation3,
+    backgroundColor: utils.colors.legacyBackgroundSurfaceElevation3,
     borderRadius: utils.borders.radii.round,
     ...utils.boxShadows.small,
 }));
@@ -108,7 +108,7 @@ export const SegmentedControl = <TValue extends string>({
                     >
                         <Text
                             variant="body-md"
-                            color={isSelected ? 'textPrimaryDefault' : 'textSubdued'}
+                            color={isSelected ? 'contentBrand' : 'contentSecondary'}
                         >
                             {option.label}
                         </Text>

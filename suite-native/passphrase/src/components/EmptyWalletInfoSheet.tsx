@@ -70,22 +70,22 @@ export const EmptyWalletInfoSheet = forwardRef<BottomSheetModalMethods, EmptyWal
                         iconName="pencilSimpleLine"
                         translationKey="modulePassphrase.emptyPassphraseWallet.confirmEmptyWalletSheet.list.backup"
                         iconSize="medium"
-                        iconBackgroundColor="backgroundTertiaryDefaultOnElevation0"
-                        iconBorderColor="borderElevation0"
+                        iconBackgroundColor="legacyBackgroundTertiaryDefaultOnElevation0"
+                        iconBorderColor="borderNeutral"
                     />
                     <BottomSheetListItem
                         iconName="copy"
                         translationKey="modulePassphrase.emptyPassphraseWallet.confirmEmptyWalletSheet.list.store"
                         iconSize="medium"
-                        iconBackgroundColor="backgroundTertiaryDefaultOnElevation0"
-                        iconBorderColor="borderElevation0"
+                        iconBackgroundColor="legacyBackgroundTertiaryDefaultOnElevation0"
+                        iconBorderColor="borderNeutral"
                     />
                     <BottomSheetListItem
                         iconName="eyeSlash"
                         translationKey="modulePassphrase.emptyPassphraseWallet.confirmEmptyWalletSheet.list.neverShare"
                         iconSize="medium"
-                        iconBackgroundColor="backgroundTertiaryDefaultOnElevation0"
-                        iconBorderColor="borderElevation0"
+                        iconBackgroundColor="legacyBackgroundTertiaryDefaultOnElevation0"
+                        iconBorderColor="borderNeutral"
                     />
                 </VStack>
                 <VStack style={applyStyle(bottomSheetBottomStyle)}>

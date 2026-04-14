@@ -46,7 +46,7 @@ export type IconProps = {
     color?: IconColor;
 } & Omit<TextProps, 'children'>;
 
-export const Icon = ({ name, size = 'large', color = 'iconDefault', ...props }: IconProps) => {
+export const Icon = ({ name, size = 'large', color = 'contentPrimary', ...props }: IconProps) => {
     const char = String.fromCodePoint(codepoints[name]);
     const sizeNumber = getIconSize(size);
     const {
@@ -104,7 +104,7 @@ type AnimatedIconProps = Omit<IconProps, 'color'> & {
 const AnimatedIcon = ({
     name,
     size = 'large',
-    color = 'iconDefault',
+    color = 'contentPrimary',
     ...props
 }: AnimatedIconProps) => {
     const char = String.fromCodePoint(codepoints[name]);

@@ -51,10 +51,10 @@ export const TxSimulationAsset = ({
                     flex={1}
                     flexWrap="wrap"
                 >
-                    <Text color="textPrimaryDefault">{inAmount.summary}</Text>
+                    <Text color="contentBrand">{inAmount.summary}</Text>
                     <Box flex={1} />
                     {inAmount.usd_price && (
-                        <Text color="textSubdued">
+                        <Text color="contentSecondary">
                             {`+ `}
                             <BaseCurrencyAmountFormatter
                                 value={asBaseCurrencyAmount(new BigNumber(inAmount.usd_price))}
@@ -72,10 +72,10 @@ export const TxSimulationAsset = ({
                     flex={1}
                     flexWrap="wrap"
                 >
-                    <Text color="textAlertRed">{outAmount.summary}</Text>
+                    <Text color="contentCritical">{outAmount.summary}</Text>
                     <Box flex={1} />
                     {outAmount.usd_price && (
-                        <Text color="textSubdued">
+                        <Text color="contentSecondary">
                             {`- `}
                             <BaseCurrencyAmountFormatter
                                 value={asBaseCurrencyAmount(new BigNumber(outAmount.usd_price))}
@@ -88,10 +88,10 @@ export const TxSimulationAsset = ({
             {assetExposure?.spenders &&
                 Object.values(assetExposure.spenders).map((spender, index) => (
                     <HStack key={`spender-${index}`} spacing="sp12" alignItems="center" flex={1}>
-                        <Text color="textSubdued">{spender.summary}</Text>
+                        <Text color="contentSecondary">{spender.summary}</Text>
                         <Box flex={1} />
                         {spender.exposure.usd_price && (
-                            <Text color="textSubdued">
+                            <Text color="contentSecondary">
                                 <BaseCurrencyAmountFormatter
                                     value={spender.exposure.usd_price}
                                     currency="USD"

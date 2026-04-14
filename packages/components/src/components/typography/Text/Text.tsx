@@ -127,7 +127,7 @@ const StyledText = styled.span<StyledTextProps>`
             display: inline;
             padding: 0 ${spacingsPx.xxs};
             border-radius: ${borders.radii.xxs};
-            background-color: ${({ theme }) => theme.backgroundNeutralSubtleOnElevation0};
+            background-color: ${({ theme }) => theme.legacyBackgroundNeutralSubtleOnElevation0};
             box-decoration-break: clone;
         `}
         ${withTextProps} ${withFrameProps};

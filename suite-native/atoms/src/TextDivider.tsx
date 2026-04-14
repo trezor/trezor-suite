@@ -31,8 +31,8 @@ const separatorTitleStyle = prepareNativeStyle(utils => ({
 export const TextDivider = ({
     title = 'generic.orSeparator',
     horizontalMargin = 0,
-    lineColor = 'borderElevation1',
-    textColor = 'textDefault',
+    lineColor = 'borderNeutral',
+    textColor = 'contentPrimary',
 }: TextDividerProps) => {
     const { applyStyle } = useNativeStyles();
 

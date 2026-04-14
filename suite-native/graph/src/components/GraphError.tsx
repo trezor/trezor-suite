@@ -15,8 +15,8 @@ const errorIconStyle = prepareNativeStyle(({ borders, colors }) => ({
     width: 48,
     height: 48,
     borderRadius: borders.radii.round,
-    backgroundColor: colors.backgroundAlertYellowSubtleOnElevation1,
-    borderColor: colors.backgroundAlertYellowSubtleOnElevation0,
+    backgroundColor: colors.legacyBackgroundAlertYellowSubtleOnElevation1,
+    borderColor: colors.legacyBackgroundAlertYellowSubtleOnElevation0,
     borderWidth: 3,
     alignItems: 'center',
     justifyContent: 'center',
@@ -31,7 +31,7 @@ const ErrorIcon = () => {
 
     return (
         <Animated.View style={applyStyle(errorIconStyle)} entering={FadeInUp} exiting={FadeInDown}>
-            <Icon name="warning" color="iconAlertYellow" />
+            <Icon name="warning" color="contentWarning" />
         </Animated.View>
     );
 };
@@ -43,14 +43,14 @@ export const GraphError = ({ error, onTryAgain }: GraphErrorProps) => {
         <VStack spacing="sp8" alignItems="center" paddingHorizontal="sp16">
             <ErrorIcon />
             <Animated.View entering={FadeInDown} exiting={FadeOutUp}>
-                <Text variant="body-sm" color="textSubdued" textAlign="center">
+                <Text variant="body-sm" color="contentSecondary" textAlign="center">
                     <Translation id="graph.errorMessage" />
                     {error}
                 </Text>
                 <Pressable onPress={onTryAgain}>
                     <Text
                         variant="body-md"
-                        color="textSecondaryHighlight"
+                        color="contentBrand"
                         style={applyStyle(tryAgainButtonStyle)}
                         textAlign="center"
                     >

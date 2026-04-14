@@ -18,7 +18,7 @@ export const ProviderListItemValueRow = <T extends TradingTradeType>({
 
     return (
         <HStack justifyContent="space-between" alignItems="center" paddingTop="sp8">
-            <Text variant="body-md" color="textDefault">
+            <Text variant="body-md" color="contentPrimary">
                 {formattedRate}
             </Text>
         </HStack>

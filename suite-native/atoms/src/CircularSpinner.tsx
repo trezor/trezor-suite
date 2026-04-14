@@ -73,7 +73,7 @@ export const CircularSpinner = ({ size, color, width }: CircularSpinnerProps) =>
                 >
                     <SweepGradient
                         c={vec(radius, radius)}
-                        colors={[utils.colors.backgroundSurfaceElevation1, utils.colors[color]]}
+                        colors={[utils.colors.surfaceFillRaised, utils.colors[color]]}
                         origin={{ x: radius, y: radius }}
                     />
                 </Circle>

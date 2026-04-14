@@ -15,7 +15,7 @@ type EarnOutputFieldsProps = {
 };
 
 const cardStyle = prepareNativeStyle(utils => ({
-    borderColor: utils.colors.borderElevation0,
+    borderColor: utils.colors.borderNeutral,
     borderWidth: utils.borders.widths.small,
 }));
 

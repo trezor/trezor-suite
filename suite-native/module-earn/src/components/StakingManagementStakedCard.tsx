@@ -32,7 +32,7 @@ type StakingManagementStakedCardProps = {
 const stakedSectionStyle = prepareNativeStyle(utils => ({
     padding: utils.spacings.sp16,
     borderBottomWidth: utils.borders.widths.small,
-    borderBottomColor: utils.colors.borderElevation1,
+    borderBottomColor: utils.colors.borderNeutral,
 }));
 
 const buttonsRowStyle = prepareNativeStyle(utils => ({
@@ -78,7 +78,7 @@ export const StakingManagementStakedCard = ({
     return (
         <Card noPadding>
             <VStack spacing="sp4" style={applyStyle(stakedSectionStyle)}>
-                <Text variant="body-md" color="textSubdued">
+                <Text variant="body-md" color="contentSecondary">
                     <Translation id="earn.stakingManagementScreen.stakedLabel" />
                 </Text>
                 <CryptoAmountFormatter
@@ -86,18 +86,18 @@ export const StakingManagementStakedCard = ({
                     symbol={networkSymbol}
                     decimals={CRYPTO_BALANCE_DECIMALS}
                     variant="headline-sm"
-                    color="textDefault"
+                    color="contentPrimary"
                 />
                 <CryptoToFiatAmountFormatter
                     value={stakedBalance}
                     symbol={networkSymbol}
-                    color="textSubdued"
+                    color="contentSecondary"
                     isBalance
                 />
             </VStack>
             <VStack spacing="sp4" style={applyStyle(stakedSectionStyle)}>
                 <HStack alignItems="center" spacing="sp4">
-                    <Text variant="body-md" color="textSubdued">
+                    <Text variant="body-md" color="contentSecondary">
                         <Translation id="earn.stakingManagementScreen.totalRewardsLabel" />
                     </Text>
                     <Badge
@@ -111,12 +111,12 @@ export const StakingManagementStakedCard = ({
                     symbol={networkSymbol}
                     decimals={CRYPTO_BALANCE_DECIMALS}
                     variant="headline-sm"
-                    color="textDefault"
+                    color="contentPrimary"
                 />
                 <CryptoToFiatAmountFormatter
                     value={rewardsBalance}
                     symbol={networkSymbol}
-                    color="textSubdued"
+                    color="contentSecondary"
                     isBalance
                 />
             </VStack>

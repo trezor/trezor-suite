@@ -51,11 +51,9 @@ const getProgress = (
 
 const getLinearGradient = (progress: number, theme: DefaultTheme, disabled?: boolean): string => {
     const primaryColor = disabled
-        ? theme.backgroundNeutralDisabled
-        : theme.backgroundPrimaryDefault;
-    const secondaryColor = disabled
-        ? theme.backgroundNeutralDisabled
-        : theme.backgroundNeutralSubdued;
+        ? theme.elementFillBoldDisabled
+        : theme.legacyBackgroundPrimaryDefault;
+    const secondaryColor = disabled ? theme.elementFillBoldDisabled : theme.elementFillNeutralBold;
 
     return `linear-gradient(90deg, ${primaryColor} ${progress}%, ${secondaryColor} ${progress}%)`;
 };
@@ -110,7 +108,7 @@ const thumb = css<{ disabled?: boolean }>`
 `;
 
 const focusStyle = css`
-    border: ${({ theme }) => `1px solid ${theme.backgroundAlertBlueBold}`};
+    border: ${({ theme }) => `1px solid ${theme.legacyBackgroundAlertBlueBold}`};
     box-shadow: ${({ theme }) => theme.boxShadowFocused};
 `;
 
@@ -174,7 +172,7 @@ const Label = styled.div<{ disabled?: boolean; $width?: number }>`
     padding-top: ${spacingsPx.xxxs};
     min-width: ${({ $width }) => `${$width}px`};
     text-align: center;
-    color: ${({ theme }) => theme.textSubdued};
+    color: ${({ theme }) => theme.contentSecondary};
     ${typography['body-xs']}
     cursor: ${({ disabled }) => (disabled ? 'default' : 'pointer')};
 
@@ -266,7 +264,7 @@ const SegmentLabel = styled.div`
     margin-top: ${spacingsPx.md};
     padding-top: ${spacingsPx.xxxs};
     text-align: left;
-    color: ${({ theme }) => theme.textSubdued};
+    color: ${({ theme }) => theme.contentSecondary};
     ${typography['body-xs']}
 
     span {

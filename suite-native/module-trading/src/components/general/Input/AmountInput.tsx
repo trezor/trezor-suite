@@ -37,7 +37,7 @@ const boxStyle = prepareNativeStyle(() => ({
 const inputStyle = prepareNativeStyle<{ hasError: boolean; fontSize: number }>(
     ({ colors, typography }, { hasError, fontSize }) => ({
         ...typography['body-md'],
-        color: hasError ? colors.textAlertRed : colors.textDefault,
+        color: hasError ? colors.contentCritical : colors.contentPrimary,
         textAlign: 'right',
         fontSize,
         lineHeight: Math.floor(fontSize * FONT_TO_LINE_HEIGHT_RATIO),
@@ -159,7 +159,7 @@ export const AmountInput = forwardRef<TextInput, AmountInputProps>(
                     keyboardType="decimal-pad"
                     inputMode="decimal"
                     placeholder="0.0"
-                    placeholderTextColor={utils.colors.textDisabled}
+                    placeholderTextColor={utils.colors.contentDisabled}
                     value={value}
                     maxLength={maxLength}
                     onChangeText={handleTextChange}

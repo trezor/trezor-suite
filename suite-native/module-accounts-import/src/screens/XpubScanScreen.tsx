@@ -185,8 +185,8 @@ export const XpubScanScreen = ({
 
                 <TextDivider
                     title="generic.orSeparator"
-                    lineColor="borderElevation0"
-                    textColor="textSubdued"
+                    lineColor="borderNeutral"
+                    textColor="contentSecondary"
                 />
                 <Form form={form}>
                     <VStack spacing="sp16">

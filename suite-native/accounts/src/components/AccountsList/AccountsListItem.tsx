@@ -40,8 +40,8 @@ export type AccountListItemProps = {
 };
 
 const CRYPTO_PRIMARY_BALANCE_TEXT_PROPS = [
-    { variant: 'body-md-strong' as const, color: 'textDefault' as const },
-    { variant: 'body-sm' as const, color: 'textSubdued' as const },
+    { variant: 'body-md-strong' as const, color: 'contentPrimary' as const },
+    { variant: 'body-sm' as const, color: 'contentSecondary' as const },
 ];
 
 const TokenBadge = React.memo(({ accountKey }: { accountKey: AccountKey }) => {

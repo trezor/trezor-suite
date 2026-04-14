@@ -10,7 +10,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 const scrollDividerStyle = prepareNativeStyle(({ borders, colors }) => ({
     marginTop: -borders.widths.small,
     borderTopWidth: borders.widths.small,
-    borderTopColor: colors.borderElevation0,
+    borderTopColor: colors.borderNeutral,
 }));
 
 const ScrollDivider = () => {

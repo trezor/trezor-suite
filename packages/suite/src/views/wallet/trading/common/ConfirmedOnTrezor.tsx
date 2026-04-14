@@ -11,7 +11,7 @@ const Confirmed = styled.div`
     display: flex;
     height: 60px;
     ${typography['body-md-strong']}
-    background: ${({ theme }) => theme.backgroundNeutralBoldInverted};
+    background: ${({ theme }) => theme.legacyBackgroundNeutralBoldInverted};
     align-items: center;
     justify-content: center;
     margin-top: 27px;

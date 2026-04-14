@@ -21,7 +21,7 @@ export const TradingDeeplinks = () => {
 
     return (
         <VStack>
-            <Text variant="body-md" color="textDefault">
+            <Text variant="body-md" color="contentPrimary">
                 Deeplinks
             </Text>
             <HStack>

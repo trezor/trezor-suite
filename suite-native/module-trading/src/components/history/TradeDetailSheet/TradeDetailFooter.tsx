@@ -30,7 +30,7 @@ export const TradeDetailFooter = ({ orderId }: TradeDetailFooterProps) => {
         <Card>
             <VStack spacing="sp12">
                 <Box>
-                    <Text color="textSubdued">
+                    <Text color="contentSecondary">
                         <Translation id="moduleTrading.tradeHistory.detail.orderId" />
                     </Text>
                     <Text>{orderId}</Text>

@@ -36,7 +36,7 @@ export const PressableCardWithIconLayout = ({
         <GestureDetector gesture={tapGesture}>
             <View collapsable={false}>
                 <AnimatedContainerCard
-                    borderColor="borderElevation1"
+                    borderColor="borderNeutral"
                     noPadding
                     animatedStyle={animatedStyle}
                     // Android shadow does not work well with the Reanimated opacity animation.
@@ -48,12 +48,12 @@ export const PressableCardWithIconLayout = ({
                         </Box>
                         <VStack spacing="sp2" style={applyStyle(contentStyle)}>
                             <Text variant="body-md-strong">{title}</Text>
-                            <Text variant="body-sm" color="textSubdued">
+                            <Text variant="body-sm" color="contentSecondary">
                                 {description}
                             </Text>
                         </VStack>
                         <Box alignSelf="center">
-                            <Icon name="caretRight" size="mediumLarge" color="iconSubdued" />
+                            <Icon name="caretRight" size="mediumLarge" color="contentSecondary" />
                         </Box>
                     </HStack>
                 </AnimatedContainerCard>

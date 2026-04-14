@@ -26,7 +26,7 @@ const contentWrapperStyle = prepareNativeStyle(utils => ({
     flex: 1,
     width: '100%',
     height: OVERLAY_HEIGHT,
-    backgroundColor: utils.colors.backgroundSurfaceElevation0,
+    backgroundColor: utils.colors.surfaceFillPage,
 }));
 
 const gradientBackgroundStyle = prepareNativeStyle(() => ({
@@ -50,8 +50,8 @@ export const SlidingFooterOverlay = ({ children, activeStepOffset }: SlidingFoot
             <LinearGradient
                 colors={[
                     // 'transparent' color is not working in context of LinearGradient on iOS. RGBA has to be used instead.
-                    hexToRgba(utils.colors.backgroundSurfaceElevation0, 0.01),
-                    utils.colors.backgroundSurfaceElevation0,
+                    hexToRgba(utils.colors.surfaceFillPage, 0.01),
+                    utils.colors.surfaceFillPage,
                 ]}
                 style={applyStyle(gradientBackgroundStyle)}
             />

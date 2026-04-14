@@ -5,7 +5,7 @@ export const useIllustrationColors = () => {
         utils: { colors },
     } = useNativeStyles();
 
-    const lineColor = colors.backgroundPrimaryDefault;
+    const lineColor = colors.legacyBackgroundPrimaryDefault;
     const fillColor = colors.illustrationFillBrand;
 
     return { lineColor, fillColor };

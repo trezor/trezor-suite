@@ -60,7 +60,7 @@ export const ProviderReceiveAddress = ({ trade }: { trade: ExchangeTrade | SellF
                             values={{ providerName }}
                         />
                     </Text>
-                    <Text variant="body-sm" color="textSubdued">
+                    <Text variant="body-sm" color="contentSecondary">
                         {addressText}
                     </Text>
                 </VStack>

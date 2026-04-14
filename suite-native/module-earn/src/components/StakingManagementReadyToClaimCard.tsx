@@ -30,7 +30,7 @@ type StakingManagementReadyToClaimCardProps = {
 };
 
 const containerStyle = prepareNativeStyle(utils => ({
-    backgroundColor: utils.colors.backgroundPrimarySubtleOnElevation1,
+    backgroundColor: utils.colors.legacyBackgroundPrimarySubtleOnElevation1,
     borderRadius: utils.borders.radii.r12,
     padding: utils.spacings.sp16,
 }));
@@ -72,7 +72,7 @@ export const StakingManagementReadyToClaimCard = ({
     return (
         <Box style={applyStyle(containerStyle)}>
             <HStack spacing="sp12">
-                <Icon name="checkCircle" size="large" color="iconDefault" />
+                <Icon name="checkCircle" size="large" color="contentPrimary" />
                 <VStack flex={1} spacing="sp12">
                     <Text variant="body-md">
                         <Translation
@@ -91,7 +91,7 @@ export const StakingManagementReadyToClaimCard = ({
                         onPress={handleClaimPress}
                         isDisabled={isClaimingDisabled}
                     >
-                        <Text variant="body-sm-strong" color="textOnPrimary">
+                        <Text variant="body-sm-strong" color="contentButtonBrandPrimary">
                             <Translation id="earn.stakingManagementScreen.claim.claimButton" />
                         </Text>
                     </Button>

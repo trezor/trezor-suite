@@ -57,7 +57,7 @@ type TransactionListItemStyleProps = {
 export const transactionListItemContainerStyle = prepareNativeStyle<TransactionListItemStyleProps>(
     (utils, { isFirst, isLast }) => ({
         flexDirection: 'column',
-        backgroundColor: utils.colors.backgroundSurfaceElevation1,
+        backgroundColor: utils.colors.surfaceFillRaised,
         marginHorizontal: utils.spacings.sp16,
         paddingHorizontal: utils.spacings.sp16,
         paddingTop: utils.spacings.sp12,
@@ -196,7 +196,7 @@ export const TransactionListItemContainer = ({
                         <DateTextComponent
                             isForcedDiscreetMode={isPhishingTransaction}
                             variant="body-sm"
-                            color="textSubdued"
+                            color="contentSecondary"
                         >
                             {DateTimeFormatter.format(transactionBlockTime)}
                         </DateTextComponent>

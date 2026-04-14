@@ -421,7 +421,7 @@ const StyledTimerange = styled.div`
     display: flex;
     flex-direction: column;
     border-radius: ${borders.radii.md};
-    background: ${({ theme }) => theme.backgroundSurfaceElevation1};
+    background: ${({ theme }) => theme.surfaceFillRaised};
     box-shadow: ${({ theme }) => theme.boxShadowElevated};
     outline: 1px solid ${({ theme }) => theme.surfaceBorderAction};
     z-index: ${zIndices.modal};
@@ -431,23 +431,23 @@ const StyledTimerange = styled.div`
 const Calendar = styled.div`
     width: 345px;
     padding: ${spacingsPx.sm} ${spacingsPx.sm} 0;
-    border-bottom: 1px solid ${({ theme }) => theme.borderElevation2};
+    border-bottom: 1px solid ${({ theme }) => theme.legacyBorderElevation2};
 
     ${datepickerStyle}
 
     .rdrDayNumber span {
-        color: ${({ theme }) => theme.textSubdued};
+        color: ${({ theme }) => theme.contentSecondary};
     }
 
     .rdrDayDisabled .rdrDayNumber span,
     .rdrDayPassive .rdrDayNumber span {
         opacity: 0.5;
-        color: ${({ theme }) => theme.textDisabled};
+        color: ${({ theme }) => theme.contentDisabled};
     }
 
     .rdrCalendarWrapper {
-        background: ${({ theme }) => theme.backgroundSurfaceElevation1};
-        color: ${({ theme }) => theme.textSubdued};
+        background: ${({ theme }) => theme.surfaceFillRaised};
+        color: ${({ theme }) => theme.contentSecondary};
     }
 
     .rdrDateDisplay {
@@ -460,108 +460,108 @@ const Calendar = styled.div`
     }
 
     .rdrDateDisplayItem input {
-        color: ${({ theme }) => theme.textSubdued};
+        color: ${({ theme }) => theme.contentSecondary};
     }
 
     .rdrDateDisplayItem + .rdrDateDisplayItem {
         &:after {
-            color: ${({ theme }) => theme.textSubdued};
+            color: ${({ theme }) => theme.contentSecondary};
         }
     }
 
     .rdrDateInput .rdrWarning {
-        color: ${({ theme }) => theme.textAlertYellow};
+        color: ${({ theme }) => theme.contentWarning};
     }
 
     .rdrMonthAndYearPickers select {
-        color: ${({ theme }) => theme.textSubdued};
+        color: ${({ theme }) => theme.contentSecondary};
     }
 
     .rdrMonthAndYearPickers select:hover {
-        background-color: ${({ theme }) => theme.backgroundSurfaceElevation2};
+        background-color: ${({ theme }) => theme.legacyBackgroundSurfaceElevation2};
     }
 
     .rdrNextPrevButton {
         width: 26px;
         height: 26px;
-        background: ${({ theme }) => theme.backgroundPrimarySubtleOnElevation1};
+        background: ${({ theme }) => theme.legacyBackgroundPrimarySubtleOnElevation1};
         border-radius: 50%;
     }
 
     .rdrNextPrevButton:hover {
-        background: ${({ theme }) => theme.backgroundSecondaryDefault};
+        background: ${({ theme }) => theme.legacyBackgroundSecondaryDefault};
         &.rdrPprevButton i {
-            border-color: transparent ${({ theme }) => theme.textOnSecondary} transparent
+            border-color: transparent ${({ theme }) => theme.contentPrimaryInverse} transparent
                 transparent;
         }
         &.rdrNextButton i {
             border-color: transparent transparent transparent
-                ${({ theme }) => theme.textOnSecondary};
+                ${({ theme }) => theme.contentPrimaryInverse};
         }
     }
 
     .rdrPprevButton i {
         margin: 0 0 0 ${spacingsPx.xs};
-        border-color: transparent ${({ theme }) => theme.backgroundSecondaryDefault} transparent
-            transparent;
+        border-color: transparent ${({ theme }) => theme.legacyBackgroundSecondaryDefault}
+            transparent transparent;
     }
 
     .rdrNextButton i {
         margin: auto;
         border-color: transparent transparent transparent
-            ${({ theme }) => theme.backgroundSecondaryDefault};
+            ${({ theme }) => theme.legacyBackgroundSecondaryDefault};
     }
 
     .rdrWeekDay {
-        color: ${({ theme }) => theme.textSubdued};
+        color: ${({ theme }) => theme.contentSecondary};
         opacity: 0.7;
     }
 
     .rdrDay {
-        color: ${({ theme }) => theme.textSubdued};
+        color: ${({ theme }) => theme.contentSecondary};
     }
 
     .rdrDayToday .rdrDayNumber span:after {
-        background: ${({ theme }) => theme.textDefault};
+        background: ${({ theme }) => theme.contentPrimary};
     }
 
     .rdrDayToday .rdrStartEdge .rdrDayNumber span:after,
     .rdrDayToday .rdrEndEdge .rdrDayNumber span:after {
-        background: ${({ theme }) => theme.backgroundSurfaceElevation3};
+        background: ${({ theme }) => theme.legacyBackgroundSurfaceElevation3};
     }
 
     .rdrDayToday:not(.rdrDayPassive) .rdrInRange ~ .rdrDayNumber span:after,
     .rdrDayToday:not(.rdrDayPassive) .rdrStartEdge ~ .rdrDayNumber span:after,
     .rdrDayToday:not(.rdrDayPassive) .rdrEndEdge ~ .rdrDayNumber span:after,
     .rdrDayToday:not(.rdrDayPassive) .rdrSelected ~ .rdrDayNumber span:after {
-        background: ${({ theme }) => theme.textOnPrimary};
+        background: ${({ theme }) => theme.contentButtonBrandPrimary};
     }
 
     .rdrDay:not(.rdrDayPassive) .rdrInRange ~ .rdrDayNumber span,
     .rdrDay:not(.rdrDayPassive) .rdrSelected ~ .rdrDayNumber span {
-        color: ${({ theme }) => theme.textPrimaryDefault};
+        color: ${({ theme }) => theme.contentBrand};
     }
 
     .rdrDay:not(.rdrDayPassive) .rdrStartEdge ~ .rdrDayNumber span,
     .rdrDay:not(.rdrDayPassive) .rdrEndEdge ~ .rdrDayNumber span {
-        color: ${({ theme }) => theme.textOnPrimary};
+        color: ${({ theme }) => theme.contentButtonBrandPrimary};
     }
 
     .rdrSelected,
     .rdrInRange,
     .rdrStartEdge,
     .rdrEndEdge {
-        background: ${({ theme }) => theme.backgroundPrimarySubtleOnElevation1};
+        background: ${({ theme }) => theme.legacyBackgroundPrimarySubtleOnElevation1};
     }
 
     .rdrMonthName {
-        color: ${({ theme }) => theme.textSubdued};
+        color: ${({ theme }) => theme.contentSecondary};
     }
 
     .rdrDateDisplayWrapper {
         padding-bottom: ${spacingsPx.sm};
-        background: ${({ theme }) => theme.backgroundSurfaceElevation3};
-        border-bottom: 1px solid ${({ theme }) => theme.borderElevation2};
+        background: ${({ theme }) => theme.legacyBackgroundSurfaceElevation3};
+        border-bottom: 1px solid ${({ theme }) => theme.legacyBorderElevation2};
         border-radius: ${borders.radii.xs};
     }
 
@@ -572,8 +572,8 @@ const Calendar = styled.div`
 
     .rdrStartEdge,
     .rdrEndEdge {
-        background: ${({ theme }) => theme.backgroundPrimaryDefault};
-        color: ${({ theme }) => theme.textOnPrimary};
+        background: ${({ theme }) => theme.legacyBackgroundPrimaryDefault};
+        color: ${({ theme }) => theme.contentButtonBrandPrimary};
         box-shadow: ${({ theme }) => theme.boxShadowFocused};
         border-radius: ${borders.radii.xxs};
         z-index: ${zIndices.base};
@@ -581,7 +581,7 @@ const Calendar = styled.div`
 
     .rdrDayDisabled {
         opacity: 0.5;
-        color: ${({ theme }) => theme.textSubdued};
+        color: ${({ theme }) => theme.contentSecondary};
         background: transparent;
     }
 
@@ -589,7 +589,7 @@ const Calendar = styled.div`
     .rdrDayInPreview,
     .rdrDayEndPreview {
         border: none;
-        background: ${({ theme }) => theme.backgroundPrimarySubtleOnElevation1};
+        background: ${({ theme }) => theme.legacyBackgroundPrimarySubtleOnElevation1};
     }
 `;
 /* stylelint-enable */

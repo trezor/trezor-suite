@@ -17,7 +17,7 @@ export const ScreenFooterGradient = ({ style }: ScreenFooterGradientProps) => {
     const { applyStyle, utils } = useNativeStyles();
 
     // 'transparent' color does not work in context of LinearGradient on iOS, RGBA has to be used instead.
-    const backgroundColor = utils.colors.backgroundSurfaceElevation0;
+    const backgroundColor = utils.colors.surfaceFillPage;
     const transparentColor = hexToRgba(backgroundColor, 0.1);
 
     return (

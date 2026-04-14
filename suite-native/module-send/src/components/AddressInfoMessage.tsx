@@ -18,14 +18,14 @@ const stylesByType: Record<
     { color: Color; icon: IconName; iconColor: IconColor }
 > = {
     info: {
-        color: 'textSubdued',
+        color: 'contentSecondary',
         icon: 'info',
-        iconColor: 'textSubdued',
+        iconColor: 'contentSecondary',
     },
     warning: {
-        color: 'textAlertYellow',
+        color: 'contentWarning',
         icon: 'warning',
-        iconColor: 'iconAlertYellow',
+        iconColor: 'contentWarning',
     },
 };
 

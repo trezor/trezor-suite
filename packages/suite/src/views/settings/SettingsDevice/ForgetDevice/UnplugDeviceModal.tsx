@@ -40,7 +40,7 @@ export const UnplugDeviceModal = ({
                     <Paragraph typographyStyle="headline-md" align="center">
                         <Translation id="TR_FORGET_DEVICE_MODAL_FINISH_FORGETTING_HEADING" />
                     </Paragraph>
-                    <Paragraph align="center" typographyStyle="body-md" color="textSubdued">
+                    <Paragraph align="center" typographyStyle="body-md" color="contentSecondary">
                         <Translation id="TR_FORGET_DEVICE_MODAL_DISCONNECT_SUBTITLE" />
                     </Paragraph>
                 </Column>

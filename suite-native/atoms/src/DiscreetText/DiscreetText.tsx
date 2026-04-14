@@ -24,7 +24,7 @@ const textStyle = prepareNativeStyle((_, { isDiscreetMode }) => ({
 
 export const DiscreetText = ({
     children = '',
-    color = 'textDefault',
+    color = 'contentPrimary',
     variant = 'body-md',
     ellipsizeMode,
     adjustsFontSizeToFit,

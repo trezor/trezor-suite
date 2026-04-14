@@ -16,10 +16,10 @@ export const FiatCurrencyIcon = ({ size }: FiatCurrencyIconProps) => {
     return (
         <RoundedIcon
             name="coin"
-            color="iconSubdued"
+            color="contentSecondary"
             iconSize={size}
             containerSize={containerSize}
-            backgroundColor="backgroundSurfaceElevation0"
+            backgroundColor="surfaceFillPage"
         />
     );
 };

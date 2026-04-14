@@ -16,7 +16,7 @@ const StyledNavigationItem = styled(NavigationItem)`
     ${({ theme, isActive }) =>
         isActive &&
         css`
-            background: ${theme.backgroundTertiaryPressedOnElevation0};
+            background: ${theme.legacyBackgroundTertiaryPressedOnElevation0};
             box-shadow: ${theme.boxShadowBase};
         `}
 `;

@@ -25,7 +25,7 @@ type SellReceiveMethodPickerRightProps = {
 
 const pickerStyle = prepareNativeStyle(({ borders, colors }) => ({
     borderTopWidth: borders.widths.small,
-    borderTopColor: colors.backgroundSurfaceElevation0,
+    borderTopColor: colors.surfaceFillPage,
 }));
 
 const SellReceiveMethodPickerRight = ({
@@ -41,7 +41,7 @@ const SellReceiveMethodPickerRight = ({
     if (selectedValue) {
         return (
             <Text
-                color="textSubdued"
+                color="contentSecondary"
                 variant="body-sm"
                 accessibilityLabel={translate('moduleTrading.tradingScreen.selectedReceiveMethod')}
                 testID={RECEIVE_METHOD_PICKER_TEST_ID + '/value'}
@@ -53,7 +53,7 @@ const SellReceiveMethodPickerRight = ({
 
     return (
         <Text
-            color="textSubdued"
+            color="contentSecondary"
             variant="body-sm"
             accessibilityLabel={translate('moduleTrading.tradingScreen.noReceiveMethod')}
             testID={RECEIVE_METHOD_PICKER_TEST_ID + '/value'}

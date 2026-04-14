@@ -29,7 +29,7 @@ const headerStyle = prepareNativeStyle(utils => ({
     paddingTop: utils.spacings.sp8,
     paddingHorizontal: utils.spacings.sp16,
     paddingBottom: utils.spacings.sp16,
-    backgroundColor: utils.colors.backgroundSurfaceElevation0,
+    backgroundColor: utils.colors.surfaceFillPage,
     minHeight: ICON_SIZE,
 }));
 

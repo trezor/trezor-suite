@@ -44,10 +44,10 @@ export const mapPropsToTypographyStyle = (
 
 export const mapStateToTextColor = ($state: BulletListItemState): Color => {
     const colorMap: Record<BulletListItemState, Color> = {
-        active: 'textDefault',
-        default: 'textDefault',
-        done: 'textPrimaryDefault',
-        pending: 'textSubdued',
+        active: 'contentPrimary',
+        default: 'contentPrimary',
+        done: 'contentBrand',
+        pending: 'contentSecondary',
     };
 
     return colorMap[$state];

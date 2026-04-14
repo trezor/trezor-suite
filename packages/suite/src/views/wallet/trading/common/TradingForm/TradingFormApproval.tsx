@@ -24,12 +24,12 @@ import { useAnalytics } from 'src/support/useAnalytics';
 
 const TextButton = styled.div<{ $disabled: boolean }>`
     color: ${({ theme, $disabled }) =>
-        $disabled ? theme.textDisabled : theme['textPrimaryDefault' as keyof DefaultTheme]};
+        $disabled ? theme.contentDisabled : theme['contentBrand' as keyof DefaultTheme]};
     cursor: pointer;
 
     &:hover {
         color: ${({ theme, $disabled }) =>
-            $disabled ? theme.textDisabled : theme['textPrimaryPressed' as keyof DefaultTheme]};
+            $disabled ? theme.contentDisabled : theme['contentBrandPressed' as keyof DefaultTheme]};
     }
 `;
 

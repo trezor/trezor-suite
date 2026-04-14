@@ -4,8 +4,8 @@ import { useNativeStyles } from '@trezor/styles-native';
 
 export const SuccessShapeSvg = () => {
     const { utils } = useNativeStyles();
-    const borderColor = utils.colors.backgroundPrimarySubtleOnElevationNegative;
-    const backgroundColor = utils.colors.backgroundPrimarySubtleOnElevation1;
+    const borderColor = utils.colors.legacyBackgroundPrimarySubtleOnElevationNegative;
+    const backgroundColor = utils.colors.legacyBackgroundPrimarySubtleOnElevation1;
 
     return (
         <Svg width={112} height={112} fill="none">

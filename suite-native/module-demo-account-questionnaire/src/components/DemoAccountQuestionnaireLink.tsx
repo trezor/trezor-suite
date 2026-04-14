@@ -33,11 +33,15 @@ export const DemoAccountQuestionnaireLink = ({
                 >
                     <HStack spacing="sp12" alignItems="center" flex={1}>
                         {!!iconName && <OrderedListIcon iconName={iconName} iconSize="large" />}
-                        <Text variant="body-md" color="textDefault" style={applyStyle(labelStyle)}>
+                        <Text
+                            variant="body-md"
+                            color="contentPrimary"
+                            style={applyStyle(labelStyle)}
+                        >
                             {label}
                         </Text>
                     </HStack>
-                    <Icon name="arrowSquareOut" color="textSecondaryHighlight" />
+                    <Icon name="arrowSquareOut" color="contentBrand" />
                 </HStack>
             </Card>
         </Pressable>

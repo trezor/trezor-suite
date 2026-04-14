@@ -10,7 +10,7 @@ export const useTradeableAssetDominantColor = (
         utils: { colors, coinsColors },
     } = useNativeStyles();
 
-    const defaultColor = colors.backgroundNeutralBold;
+    const defaultColor = colors.legacyBackgroundNeutralBold;
     const networkColor = coinsColors[symbol];
 
     return networkColor ?? defaultColor;

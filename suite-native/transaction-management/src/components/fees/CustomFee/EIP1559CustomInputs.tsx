@@ -41,12 +41,12 @@ export const EIP1559CustomInputs = ({
                 testID={`@transactionManagement/${MAX_FEE_PER_GAS_FIELD_NAME}-input`}
                 accessibilityLabel="address input"
                 keyboardType="decimal-pad"
-                rightIcon={<Text color="textSubdued">{feeUnits}</Text>}
+                rightIcon={<Text color="contentSecondary">{feeUnits}</Text>}
                 onChangeText={handleFieldChangeValue(MAX_FEE_PER_GAS_FIELD_NAME, 'crypto')}
             />
             <HStack paddingLeft="sp12" alignItems="center" spacing="sp4" paddingBottom="sp8">
-                <Icon name="gasPump" size="medium" color="textSubdued" />
-                <Text variant="body-xs" color="textSubdued">
+                <Icon name="gasPump" size="medium" color="contentSecondary" />
+                <Text variant="body-xs" color="contentSecondary">
                     <Translation
                         id="transactionManagement.fees.custom.bottomSheet.currentBaseFeeEthereum"
                         values={{
@@ -62,7 +62,7 @@ export const EIP1559CustomInputs = ({
                 name={MAX_PRIORITY_FEE_PER_GAS_FIELD_NAME}
                 testID={`@transactionManagement/${MAX_PRIORITY_FEE_PER_GAS_FIELD_NAME}-input`}
                 accessibilityLabel="address input"
-                rightIcon={<Text color="textSubdued">{feeUnits}</Text>}
+                rightIcon={<Text color="contentSecondary">{feeUnits}</Text>}
                 keyboardType="decimal-pad"
                 onChangeText={handleFieldChangeValue(MAX_PRIORITY_FEE_PER_GAS_FIELD_NAME, 'crypto')}
             />

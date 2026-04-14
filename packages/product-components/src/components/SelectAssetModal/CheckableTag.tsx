@@ -26,20 +26,20 @@ const getCheckableTagStyles = (
     switch (type) {
         case 'primary':
             return `
-                background: ${theme.backgroundPrimarySubtleOnElevation1};
-                color: ${theme.textPrimaryDefault};
-                border: 1px solid ${theme.borderSecondary};
+                background: ${theme.legacyBackgroundPrimarySubtleOnElevation1};
+                color: ${theme.contentBrand};
+                border: 1px solid ${theme.borderBrand};
         `;
         case 'hover':
             return `
                 background: ${mapElevationToBackground({ $elevation, theme })};
-                color: ${theme.textDefault};
+                color: ${theme.contentPrimary};
                 border: 1px solid ${mapElevationToBorder({ $elevation, theme })};
             `;
         default:
             return `
                 background: ${mapElevationToBackground({ $elevation, theme })};
-                color: ${theme.textSubdued};
+                color: ${theme.contentSecondary};
                 border: 1px solid ${mapElevationToBackground({ $elevation, theme })};
             `;
     }

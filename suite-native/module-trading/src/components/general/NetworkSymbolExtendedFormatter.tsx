@@ -5,7 +5,7 @@ export type CoinSymbolProps = {
 } & Omit<TextProps, 'children'>;
 
 export const NetworkSymbolExtendedFormatter = ({ symbol, ...textProps }: CoinSymbolProps) => (
-    <Text color="textSubdued" variant="body-sm" {...textProps}>
+    <Text color="contentSecondary" variant="body-sm" {...textProps}>
         {symbol.toUpperCase()}
     </Text>
 );

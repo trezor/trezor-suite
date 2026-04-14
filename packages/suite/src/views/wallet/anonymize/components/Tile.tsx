@@ -13,7 +13,7 @@ const containerGridStyle = css`
 
 // eslint-disable-next-line local-rules/no-override-ds-component
 const Container = styled(Card)`
-    background: ${({ theme }) => theme.backgroundNeutralBoldInverted};
+    background: ${({ theme }) => theme.legacyBackgroundNeutralBoldInverted};
     box-shadow: none;
     display: block;
 
@@ -83,7 +83,7 @@ const descriptionGridStyle = css`
 `;
 
 const Description = styled.p`
-    color: ${({ theme }) => theme.textSubdued};
+    color: ${({ theme }) => theme.contentSecondary};
     ${typography['body-sm']}
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {

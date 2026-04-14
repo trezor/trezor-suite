@@ -36,7 +36,7 @@ const IncludedCoinsSheetTrigger = ({ title, onPress }: { title: string; onPress:
     const { applyStyle } = useNativeStyles();
 
     return (
-        <Card borderColor="borderElevation1" style={applyStyle(cardStyle)}>
+        <Card borderColor="borderNeutral" style={applyStyle(cardStyle)}>
             <PressableOpacity onPress={onPress}>
                 <Box flexDirection="row" alignItems="center" justifyContent="space-between">
                     <Box flexDirection="row" alignItems="center">
@@ -45,7 +45,7 @@ const IncludedCoinsSheetTrigger = ({ title, onPress }: { title: string; onPress:
                         </Box>
                         <Text>{title}</Text>
                     </Box>
-                    <Icon name="caretCircleRight" color="iconPrimaryDefault" />
+                    <Icon name="caretCircleRight" color="contentBrand" />
                 </Box>
             </PressableOpacity>
         </Card>

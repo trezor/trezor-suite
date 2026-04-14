@@ -38,7 +38,7 @@ export const PassphraseLoadingScreen = () => {
                     <Text variant="headline-sm" textAlign="center">
                         <Translation id="modulePassphrase.loading.title" />
                     </Text>
-                    <Text variant="body-md" textAlign="center" color="textSubdued">
+                    <Text variant="body-md" textAlign="center" color="contentSecondary">
                         <Translation id="modulePassphrase.loading.subtitle" />
                     </Text>
                 </VStack>
