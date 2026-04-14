@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 
 import { selectLanguage } from '@suite/settings';
-import { type Locale } from '@suite-common/suite-types';
 import { redactNumericalSubstring, useShouldRedactNumbers } from '@suite-common/wallet-utils';
 import { Row, Text } from '@trezor/components';
 
@@ -29,11 +28,18 @@ export const BigAmountValue = ({
 }: BigAmountValueProps) => {
     const language = useSelector(selectLanguage);
 
-    // Todo: this is ugly hack, shall be refactored to some more safe alternative
-    const shouldFormatLocale: Locale[] = ['en-US', 'ja-JP', 'ko-KR', 'zh-CN', 'zh-TW'];
-    const [whole, separator, fractional] = shouldFormatLocale.includes(language)
-        ? formattedStringAmount.split(/(\.)/)
-        : formattedStringAmount.split(/(,)/);
+    // Use Intl API to reliably detect the decimal separator for the current locale
+    const decimalSeparator = new Intl.NumberFormat(language, { minimumFractionDigits: 1 })
+        .formatToParts(1.1)
+        .find(p => p.type === 'decimal')?.value;
+
+    const escapedSeparator =
+        decimalSeparator !== undefined && decimalSeparator !== '.'
+            ? decimalSeparator
+            : '\\.';
+    const [whole, separator, fractional] = formattedStringAmount.split(
+        new RegExp(`(${escapedSeparator})`),
+    );
 
     const shouldRedactNumbers = useShouldRedactNumbers();
 

@@ -26,6 +26,7 @@ const BITCOIN_SATS_PLACEHOLDER = 'sat';
 type FormatParams = {
     value: BaseCurrencyAmount;
     currency: string;
+    locale: string;
     intl: IntlShape;
     dataContext: Omit<BaseCurrencyAmountFormatterDataContext<FormatNumberOptions>, 'currency'>;
 };
@@ -51,7 +52,7 @@ const formatSats = ({ intl, dataContext, value }: FormatParams) => {
     return `${formatted.replace(BITCOIN_SATS_PLACEHOLDER.toUpperCase(), '')} sat`.trim();
 };
 
-const formatStandard = ({ intl, currency, value, dataContext }: FormatParams) => {
+const formatStandard = ({ intl, locale, currency, value, dataContext }: FormatParams) => {
     if (value.gt(Number.MAX_VALUE)) {
         // backup when number is too big, the formatting is different from what should be for currencies
         return `${value} ${currency}`;
@@ -59,17 +60,56 @@ const formatStandard = ({ intl, currency, value, dataContext }: FormatParams) =>
 
     const { minimumFractionDigits, maximumFractionDigits, style } = dataContext;
 
-    const result = intl.formatNumber(value.toNumber(), {
+    const numberFormatOptions: Intl.NumberFormatOptions = {
         ...dataContext,
         style: style || 'currency',
         currency,
         minimumFractionDigits: minimumFractionDigits ?? 2,
         maximumFractionDigits: maximumFractionDigits ?? 2,
+    };
+
+    if (currency.toLowerCase() === 'btc') {
+        // In the case of Crypto Base-Currency, we always want to have currency ticker as suffix.
+        const result = intl.formatNumber(value.toNumber(), numberFormatOptions);
+
+        return `${result.replace(/BTC|btc/, '').trim()} ${currency.toUpperCase()}`;
+    }
+
+    // Use formatToParts to ensure currency symbol is always shown as a prefix,
+    // regardless of locale-specific suffix conventions (e.g. Czech locale formats USD as "0,00 US$").
+    // This matches the behavior of the mobile app.
+    const parts = new Intl.NumberFormat(locale, numberFormatOptions).formatToParts(value.toNumber());
+
+    const currencyIndex = parts.findIndex(p => p.type === 'currency');
+
+    if (currencyIndex === -1) {
+        return parts.map(p => p.value).join('');
+    }
+
+    const firstIntegerIndex = parts.findIndex(p => p.type === 'integer');
+
+    if (currencyIndex < firstIntegerIndex) {
+        // Currency is already a prefix (before the first digit), return as-is
+        return parts.map(p => p.value).join('');
+    }
+
+    // Currency is a suffix — move it to be a prefix, preserving any leading sign (e.g. minus)
+    const currencyValue = parts[currencyIndex].value;
+    const signString = parts
+        .slice(0, firstIntegerIndex)
+        .filter(p => p.type === 'minusSign' || p.type === 'plusSign')
+        .map(p => p.value)
+        .join('');
+    const numberParts = parts.filter((p, i) => {
+        if (p.type === 'currency') return false;
+        if (p.type === 'minusSign' || p.type === 'plusSign') return false;
+        // Remove the literal separator (e.g. space) immediately before the currency suffix
+        if (p.type === 'literal' && i === currencyIndex - 1) return false;
+
+        return true;
     });
 
-    return currency.toLowerCase() === 'btc' // In the case of Crypto Base-Currency, we always want to have currency ticker as suffix.
-        ? `${result.replace(/BTC|btc/, '').trim()} ${currency.toUpperCase()}`
-        : result;
+    return `${signString}${currencyValue}${numberParts.map(p => p.value).join('')}`;
 };
 
 const handleBigNumberFormatting = (
@@ -89,6 +129,7 @@ const handleBigNumberFormatting = (
 
     const formatParams: FormatParams = {
         intl,
+        locale: config.locale,
         value,
         dataContext,
         currency,
