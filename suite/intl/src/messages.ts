@@ -6582,6 +6582,10 @@ export const messages = defineMessages({
         id: 'TR_LABELING_LEGACY',
         defaultMessage: 'Legacy',
     },
+    TR_LABELING_LEGACY_DISABLED_TOOLTIP: {
+        id: 'TR_LABELING_LEGACY_DISABLED_TOOLTIP',
+        defaultMessage: 'Connect your Trezor to switch to Legacy labeling',
+    },
     TR_LABELING_SECURE_SYNC: {
         id: 'TR_LABELING_SECURE_SYNC',
         defaultMessage: 'Suite Sync',
