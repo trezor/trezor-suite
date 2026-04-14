@@ -1,6 +1,6 @@
 import { type TypographyStyle } from '@trezor/theme';
 
-import { type AssetLogoSize } from '../AssetLogo/AssetLogo';
+import { type AssetLogoSize } from '../AssetLogo/AssetLogoWithId';
 
 export const mapSizeToTypographyStyle = (size: AssetLogoSize): TypographyStyle => {
     const typographyStyleMap: Record<AssetLogoSize, TypographyStyle> = {
