@@ -46,9 +46,9 @@ export const init: ModuleInit = ({ mainWindowProxy }) => {
             });
         });
 
-        // On Windows, pressing Ctrl++ sends Ctrl+Shift+= (since + is Shift+=).
-        // Electron's built-in zoomIn menu role does not handle this correctly on Windows,
-        // so we register the shortcut explicitly here.
+        // On Windows, Electron's built-in zoom menu roles (zoomIn, zoomOut, resetZoom) do not
+        // work reliably, so we register the shortcuts explicitly here for non-macOS platforms.
+        // Ctrl++ sends Ctrl+Shift+= (since + is Shift+=), which the zoomIn role misses on Windows.
         if (process.platform !== 'darwin') {
             const zoomInShortcuts = ['Control+Shift+=', 'Control+='];
             zoomInShortcuts.forEach(shortcut => {
@@ -56,6 +56,16 @@ export const init: ModuleInit = ({ mainWindowProxy }) => {
                     logger.info(SERVICE_NAME, `${shortcut} pressed to zoom in`);
                     mainWindow.webContents.setZoomLevel(mainWindow.webContents.getZoomLevel() + 1);
                 });
+            });
+
+            electronLocalshortcut.register(mainWindow, 'Control+-', () => {
+                logger.info(SERVICE_NAME, 'Control+- pressed to zoom out');
+                mainWindow.webContents.setZoomLevel(mainWindow.webContents.getZoomLevel() - 1);
+            });
+
+            electronLocalshortcut.register(mainWindow, 'Control+0', () => {
+                logger.info(SERVICE_NAME, 'Control+0 pressed to reset zoom');
+                mainWindow.webContents.setZoomLevel(0);
             });
         }
     });
