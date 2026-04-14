@@ -28,9 +28,10 @@ describe('helpers/paramsValidator', () => {
             it(f.description, () => {
                 if (f.config) jest.replaceProperty(data, 'config', f.config as any);
 
+                const [method, coinInfo, defaultRange] = f.params;
                 expect(
                     // @ts-expect-error
-                    getFirmwareRange([f.params[0]], f.params[1] ? [f.params[1]] : [], f.params[2]),
+                    getFirmwareRange([method], coinInfo ? [coinInfo] : [], defaultRange),
                 ).toEqual(f.result);
             });
         });
