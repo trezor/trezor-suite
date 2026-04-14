@@ -7,17 +7,22 @@ import {
 } from '@suite-common/suite-sync-types';
 import { ok } from '@trezor/type-utils';
 
+import { type GetDeviceForStaticSessionIdDep } from './getDeviceForStaticSessionId';
 import { updateSuiteSyncEnabled } from './suiteSyncSlice';
 
 export type CreateTurnOnSuiteSyncDeps = {
     getIsSuiteSyncEnabled: () => boolean;
     dispatch: Dispatch;
-} & EnsureWalletSuiteSyncOnDep;
+} & EnsureWalletSuiteSyncOnDep &
+    GetDeviceForStaticSessionIdDep;
 
 export const createTurnOnSuiteSync =
     (deps: CreateTurnOnSuiteSyncDeps): TurnOnSuiteSync =>
     async ({ deviceStaticSessionId }) => {
         const isSuiteSyncEnabled = deps.getIsSuiteSyncEnabled();
+        const isDeviceConnected = deviceStaticSessionId
+            ? deps.getDeviceForStaticSessionId(deviceStaticSessionId)?.connected === true
+            : false;
 
         if (isSuiteSyncEnabled) {
             return ok();
@@ -27,7 +32,8 @@ export const createTurnOnSuiteSync =
 
         if (
             deviceStaticSessionId !== undefined &&
-            deviceStaticSessionId !== PORTFOLIO_TRACKER_DEVICE_STATE
+            deviceStaticSessionId !== PORTFOLIO_TRACKER_DEVICE_STATE &&
+            isDeviceConnected
         ) {
             const result = await deps.ensureWalletSuiteSyncOn({
                 deviceStaticSessionId,

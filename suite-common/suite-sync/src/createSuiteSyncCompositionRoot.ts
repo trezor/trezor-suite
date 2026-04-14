@@ -171,6 +171,7 @@ export const createSuiteSyncCompositionRoot = (
             getIsSuiteSyncEnabled,
             dispatch: deps.dispatch,
             ensureWalletSuiteSyncOn,
+            getDeviceForStaticSessionId,
         }),
         labeling: {
             updateWalletLabel: createUpdateWalletLabel(labelingDeps),
