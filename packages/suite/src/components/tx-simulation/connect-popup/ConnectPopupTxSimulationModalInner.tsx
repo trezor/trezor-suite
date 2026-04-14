@@ -8,7 +8,7 @@ import {
     TxSimulationProvider,
     TxSimulationTitle,
 } from '@suite/tx-simulation/src/common';
-import { EvmTxSimulationDisclaimer } from '@suite/tx-simulation/src/evm';
+import { EvmInsufficientGasWarning, EvmTxSimulationDisclaimer } from '@suite/tx-simulation/src/evm';
 import { connectPopupActions } from '@suite-common/connect-popup';
 import {
     TX_METHODS_WITH_FEES,
@@ -55,6 +55,9 @@ export function ConnectPopupTxSimulationModalInner({
             ? action.payload.transaction.gasLimit
             : undefined,
     });
+
+    const selectedFeeLevel = form.watch('selectedFee') || 'normal';
+    const currentComposedLevel = composedLevels?.[selectedFeeLevel];
 
     const simulation = useTxSimulation(action, {
         onSuccess(result) {
@@ -168,6 +171,12 @@ export function ConnectPopupTxSimulationModalInner({
                                 />
                             </FormProvider>
                         )}
+
+                        <EvmInsufficientGasWarning
+                            composedLevel={currentComposedLevel}
+                            accountBalance={account.balance}
+                            networkSymbol={account.symbol}
+                        />
                     </Column>
                 </Column>
             </Modal.ModalBase>

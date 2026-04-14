@@ -5,7 +5,8 @@
         { "path": "../react-query" },
         { "path": "../wallet-config" },
         { "path": "../wallet-constants" },
-        { "path": "../wallet-types" }
+        { "path": "../wallet-types" },
+        { "path": "../../packages/utils" }
     ],
     "include": [".", "**/*.json"]
 }
