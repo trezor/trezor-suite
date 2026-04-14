@@ -51,7 +51,7 @@ jobs:
       - name: Install libs
         run: |
           yarn workspaces focus @suite-native/app
-          yarn exec patch-package # Apply global patches.
+          yarn patch-package # Apply global patches.
 
       - name: Check runtimeVersion builds
         run: |
