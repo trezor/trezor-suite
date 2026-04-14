@@ -132,7 +132,7 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
                 contract,
                 balance: balance.toString(),
                 name: tokenMetadata[contract]?.name || balanceInfo.asset_code,
-                symbol: tokenMetadata[contract]?.symbol || balanceInfo.asset_code,
+                symbol: (tokenMetadata[contract]?.symbol || balanceInfo.asset_code).toUpperCase(),
                 decimals: utils.STELLAR_DECIMALS,
             };
         });
