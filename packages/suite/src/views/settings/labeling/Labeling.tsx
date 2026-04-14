@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { type ReactNode, useState } from 'react';
+import { type OptionProps } from 'react-select';
 
 import { Translation, useTranslation } from '@suite/intl';
 import { metadataLabelingActions, metadataThunks } from '@suite/metadata';
@@ -9,7 +10,8 @@ import {
     selectIsSuiteSyncEnabled,
     selectIsSuiteSyncFeatureAvailable,
 } from '@suite-common/suite-sync';
-import { LoadingContent } from '@trezor/components';
+import { Box, LoadingContent, Tooltip } from '@trezor/components';
+import { Option as SelectOption } from '@trezor/components/src/components/form/Select/customComponents';
 import { ActionColumn, ActionSelect, TextColumn } from '@trezor/product-components';
 import { exhaustive } from '@trezor/type-utils';
 import { HELP_CENTER_LABELING } from '@trezor/urls';
@@ -30,6 +32,35 @@ import { useLabelingDeviceState } from 'src/hooks/suite/useLabelingDeviceState';
 import { useSuiteServices } from 'src/support/SuiteServicesProvider';
 import { useAnalytics } from 'src/support/useAnalytics';
 
+type LabelingTranslatedOption = LabelingOption<string> & {
+    tooltipContent?: ReactNode;
+};
+
+const LABELING_SELECT_TEST_ID = '@settings/labeling-select';
+
+const LabelingOption = ({
+    children,
+    data,
+    isDisabled,
+    ...rest
+}: OptionProps<LabelingTranslatedOption, false>) => (
+    <SelectOption
+        {...rest}
+        data={data}
+        isDisabled={isDisabled}
+        size="small"
+        data-testid={LABELING_SELECT_TEST_ID}
+    >
+        <Tooltip
+            content={data.tooltipContent}
+            isActive={isDisabled && !!data.tooltipContent}
+            cursor={isDisabled ? 'default' : 'pointer'}
+        >
+            <Box width="100%">{children}</Box>
+        </Tooltip>
+    </SelectOption>
+);
+
 export const Labeling = () => {
     const { translationString } = useTranslation();
     const { suiteSync } = useSuiteServices();
@@ -45,12 +76,16 @@ export const Labeling = () => {
 
     const legacyMetadataState = useSelector(state => state.metadata);
 
-    const translatedOptions: LabelingOption<string>[] = LABELING_SELECT_OPTIONS.map(option => ({
+    const translatedOptions: LabelingTranslatedOption[] = LABELING_SELECT_OPTIONS.map(option => ({
         ...option,
         label:
             !showSuiteSync && option.value === 'legacy'
                 ? translationString(LABELING_LEGACY_OPTION_LABEL)
                 : translationString(option.label),
+        tooltipContent:
+            option.value === 'legacy' && isDeviceLabelingDisabled
+                ? translationString('TR_LABELING_LEGACY_DISABLED_TOOLTIP')
+                : undefined,
     })).filter(option => option.value !== 'suite-sync' || showSuiteSync);
 
     const handleLegacyOptionSelect = async () => {
@@ -168,7 +203,8 @@ export const Labeling = () => {
                         options={translatedOptions}
                         value={getSelectedOption()}
                         onChange={handleOnChange}
-                        data-testid="@settings/labeling-select"
+                        components={{ Option: LabelingOption }}
+                        data-testid={LABELING_SELECT_TEST_ID}
                         isDisabled={isDeviceLabelingDisabled && !showSuiteSync}
                         isOptionDisabled={option => isOptionDisabled(option.value)}
                     />
