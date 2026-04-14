@@ -13,10 +13,6 @@ export const messages = defineMessages({
         defaultMessage: 'Error 404: Link not found',
         id: 'TR_404_TITLE',
     },
-    TR_NEW: {
-        defaultMessage: 'New',
-        id: 'TR_NEW',
-    },
     TR_NEW_PASSPHRASE_WALLET: {
         defaultMessage: 'New passphrase',
         id: 'TR_NEW_PASSPHRASE_WALLET',
@@ -2426,10 +2422,6 @@ export const messages = defineMessages({
         description: 'Category in Settings',
         id: 'TR_GENERAL',
     },
-    TR_CONTINUE_TO_BACKUP: {
-        defaultMessage: 'Continue to wallet backup',
-        id: 'TR_CONTINUE_TO_BACKUP',
-    },
     TR_SKIP_PIN: {
         defaultMessage: 'Skip PIN',
         id: 'TR_SKIP_PIN',
@@ -3065,15 +3057,6 @@ export const messages = defineMessages({
         defaultMessage: 'No QR code found in the image',
         description: 'Error when QR code cannot be decoded from image',
         id: 'TR_QR_NOT_FOUND',
-    },
-    TR_YOUR_WALLET_SUCCESSFULLY_CREATED: {
-        defaultMessage: 'Wallet created successfully',
-        id: 'TR_YOUR_WALLET_SUCCESSFULLY_CREATED',
-    },
-    TR_YOUR_WALLET_IS_ALMOST_READY_DESCRIPTION: {
-        defaultMessage:
-            "Now let's create a wallet backup. Your wallet backup is the only way to recover access to your wallet.",
-        id: 'TR_YOUR_WALLET_IS_ALMOST_READY_DESCRIPTION',
     },
     TR_SELECT_DEVICE: {
         defaultMessage: 'Select device',
@@ -4286,10 +4269,6 @@ export const messages = defineMessages({
         id: 'TR_SAVE',
         defaultMessage: 'Save',
     },
-    TR_TURN_OFF: {
-        id: 'TR_TURN_OFF',
-        defaultMessage: 'Turn off',
-    },
     TR_CANCEL: {
         id: 'TR_CANCEL',
         defaultMessage: 'Cancel',
@@ -5119,10 +5098,6 @@ export const messages = defineMessages({
     ONBOARDING_UNEXPECTED_DEVICE_DIFFERENT_P2: {
         id: 'ONBOARDING_UNEXPECTED_DEVICE_DIFFERENT_P2',
         defaultMessage: 'If you want to use this device instead, start again.',
-    },
-    TR_ONBOARDING_CREATE_NEW_WALLET: {
-        id: 'TR_ONBOARDING_CREATE_NEW_WALLET',
-        defaultMessage: 'Create a new wallet',
     },
     TR_ONBOARDING_SELECTED_OPTIMAL_BACKUP_TYPE: {
         id: 'TR_ONBOARDING_SELECTED_OPTIMAL_BACKUP_TYPE',
