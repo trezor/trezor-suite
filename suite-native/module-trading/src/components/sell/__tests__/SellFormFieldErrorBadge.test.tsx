@@ -5,7 +5,7 @@ import {
     renderHookWithStoreProvider,
     renderWithStoreProvider,
 } from '@suite-native/test-utils';
-import { btcAsset, getWalletState, sellQuotes } from '@suite-native/trading-fixtures';
+import { banxaCreditCardSellQuote, btcAsset, getWalletState } from '@suite-native/trading-fixtures';
 import { type SellFormType } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
@@ -185,7 +185,7 @@ describe('SellFormFieldErrorBadge', () => {
         beforeEach(() => {
             act(() => {
                 tradingForm.setValue('sendAsset', btcAsset);
-                tradingForm.setValue('quote', sellQuotes[0]);
+                tradingForm.setValue('quote', banxaCreditCardSellQuote);
             });
         });
 
@@ -364,7 +364,7 @@ describe('SellFormFieldErrorBadge', () => {
             act(() => {
                 tradingForm.setValue('sendAsset', btcAsset);
                 tradingForm.setValue('quote', {
-                    ...sellQuotes[0],
+                    ...banxaCreditCardSellQuote,
                     cryptoStringAmount: '00.00050',
                     fiatStringAmount: '10.0000',
                 });

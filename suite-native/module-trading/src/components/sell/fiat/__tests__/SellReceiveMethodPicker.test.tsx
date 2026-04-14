@@ -9,7 +9,11 @@ import {
     renderWithStoreProvider,
     screen,
 } from '@suite-native/test-utils';
-import { getWalletState, sellQuotes } from '@suite-native/trading-fixtures';
+import {
+    banxaBankTransferSellQuote,
+    getWalletState,
+    sellQuotes,
+} from '@suite-native/trading-fixtures';
 import { type SellFormType } from '@suite-native/trading-types';
 
 import { useSellForm } from '../../../../hooks/sell/useSellForm';
@@ -81,7 +85,7 @@ describe('SellReceiveMethodPicker', () => {
         beforeEach(() => {
             preloadedState!.wallet!.trading!.sell!.quotes = sellQuotes;
             act(() => {
-                form.setValue('quote', sellQuotes[1]);
+                form.setValue('quote', banxaBankTransferSellQuote);
             });
         });
 

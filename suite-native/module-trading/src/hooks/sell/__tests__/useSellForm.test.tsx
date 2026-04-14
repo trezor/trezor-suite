@@ -15,9 +15,12 @@ import {
     waitFor,
 } from '@suite-native/test-utils';
 import {
+    banxaBankTransferSellQuote,
+    banxaCreditCardSellQuote,
     btcAsset,
     getBtcAccount,
     getWalletState,
+    moonpayCreditCardSellQuote,
     sellQuotes,
     usdcAsset,
 } from '@suite-native/trading-fixtures';
@@ -352,7 +355,7 @@ describe('useSellForm', () => {
 
                 await act(async () => {
                     result.current.setValue('quote', {
-                        ...sellQuotes[0],
+                        ...banxaCreditCardSellQuote,
                         cryptoStringAmount: '2',
                     });
                     // settle validations
@@ -546,7 +549,7 @@ describe('useSellForm', () => {
                 store.dispatch(tradingSellActions.saveQuotes(sellQuotes));
             });
 
-            expect(result.current.getValues('quote')).toEqual(sellQuotes[1]);
+            expect(result.current.getValues('quote')).toEqual(banxaBankTransferSellQuote);
         });
 
         it('if no quote is selected and no bankTransferQuote is available should select first quote', () => {
@@ -554,10 +557,15 @@ describe('useSellForm', () => {
             initFormAndQuoteRequest(result.current);
 
             act(() => {
-                store.dispatch(tradingSellActions.saveQuotes([sellQuotes[0], sellQuotes[2]]));
+                store.dispatch(
+                    tradingSellActions.saveQuotes([
+                        banxaCreditCardSellQuote,
+                        moonpayCreditCardSellQuote,
+                    ]),
+                );
             });
 
-            expect(result.current.getValues('quote')).toEqual(sellQuotes[0]);
+            expect(result.current.getValues('quote')).toEqual(banxaCreditCardSellQuote);
         });
 
         describe('when quote is selected and new quotes are fetched', () => {
@@ -566,7 +574,7 @@ describe('useSellForm', () => {
                 initFormAndQuoteRequest(result.current);
 
                 act(() => {
-                    result.current.setValue('quote', sellQuotes[0]);
+                    result.current.setValue('quote', banxaCreditCardSellQuote);
                 });
 
                 act(() => {
@@ -581,14 +589,17 @@ describe('useSellForm', () => {
                 initFormAndQuoteRequest(result.current);
 
                 act(() => {
-                    result.current.setValue('quote', { ...sellQuotes[2], orderId: 'test1' });
+                    result.current.setValue('quote', {
+                        ...moonpayCreditCardSellQuote,
+                        orderId: 'test1',
+                    });
                 });
 
                 act(() => {
                     store.dispatch(tradingSellActions.saveQuotes(sellQuotes));
                 });
 
-                expect(result.current.getValues('quote')).toEqual(sellQuotes[2]);
+                expect(result.current.getValues('quote')).toEqual(moonpayCreditCardSellQuote);
             });
 
             it('should select quote with same payment method if provider is not available', () => {
@@ -596,14 +607,17 @@ describe('useSellForm', () => {
                 initFormAndQuoteRequest(result.current);
 
                 act(() => {
-                    result.current.setValue('quote', { ...sellQuotes[2], orderId: 'test1' });
+                    result.current.setValue('quote', {
+                        ...moonpayCreditCardSellQuote,
+                        orderId: 'test1',
+                    });
                 });
 
                 act(() => {
                     store.dispatch(tradingSellActions.saveQuotes(sellQuotes.slice(0, 2)));
                 });
 
-                expect(result.current.getValues('quote')).toEqual(sellQuotes[0]);
+                expect(result.current.getValues('quote')).toEqual(banxaCreditCardSellQuote);
             });
 
             it('should select best rated quote if neither same payment method nor provider are available', () => {
@@ -611,14 +625,17 @@ describe('useSellForm', () => {
                 initFormAndQuoteRequest(result.current);
 
                 act(() => {
-                    result.current.setValue('quote', { ...sellQuotes[2], orderId: 'test1' });
+                    result.current.setValue('quote', {
+                        ...moonpayCreditCardSellQuote,
+                        orderId: 'test1',
+                    });
                 });
 
                 act(() => {
-                    store.dispatch(tradingSellActions.saveQuotes([sellQuotes[1]]));
+                    store.dispatch(tradingSellActions.saveQuotes([banxaBankTransferSellQuote]));
                 });
 
-                expect(result.current.getValues('quote')).toEqual(sellQuotes[1]);
+                expect(result.current.getValues('quote')).toEqual(banxaBankTransferSellQuote);
             });
 
             it('should update cryptoValue when selected quote is changed and truncate it to 9 decimals', () => {
@@ -629,7 +646,7 @@ describe('useSellForm', () => {
                 });
 
                 act(() => {
-                    result.current.setValue('quote', sellQuotes[1]);
+                    result.current.setValue('quote', banxaBankTransferSellQuote);
                 });
 
                 expect(result.current.getValues('cryptoStringAmount')).toBe('0.025396001');
@@ -644,7 +661,7 @@ describe('useSellForm', () => {
                 });
 
                 act(() => {
-                    result.current.setValue('quote', sellQuotes[2]);
+                    result.current.setValue('quote', moonpayCreditCardSellQuote);
                 });
 
                 expect(result.current.getValues('fiatStringAmount')).toBe('100.062');

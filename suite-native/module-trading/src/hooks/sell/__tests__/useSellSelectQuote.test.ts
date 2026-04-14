@@ -6,7 +6,7 @@ import {
     initStore,
     renderHookWithStoreProvider,
 } from '@suite-native/test-utils';
-import { getWalletState, sellQuotes } from '@suite-native/trading-fixtures';
+import { banxaCreditCardSellQuote, getWalletState } from '@suite-native/trading-fixtures';
 import { type SellFormType } from '@suite-native/trading-types';
 
 import { useSellForm } from '../useSellForm';
@@ -44,7 +44,7 @@ describe('useSellSelectQuote', () => {
 
         it('should be false when quotes are being fetched', () => {
             act(() => {
-                sellForm.setValue('quote', sellQuotes[0]);
+                sellForm.setValue('quote', banxaCreditCardSellQuote);
                 store.dispatch(tradingSellActions.setIsLoading(true));
             });
 
@@ -60,7 +60,7 @@ describe('useSellSelectQuote', () => {
                         'btc-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
                     ),
                 );
-                sellForm.setValue('quote', sellQuotes[0]);
+                sellForm.setValue('quote', banxaCreditCardSellQuote);
                 sellForm.setError('cryptoStringAmount', {
                     type: 'manual',
                     message: 'VALIDATION_ERROR',
@@ -74,7 +74,7 @@ describe('useSellSelectQuote', () => {
 
         it('should be true when quote is selected', () => {
             act(() => {
-                sellForm.setValue('quote', sellQuotes[0]);
+                sellForm.setValue('quote', banxaCreditCardSellQuote);
                 store.dispatch(
                     tradingSellActions.setTradingAccountKey(
                         'btc-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`

@@ -5,7 +5,12 @@ import {
     renderWithStoreProvider,
     screen,
 } from '@suite-native/test-utils';
-import { getWalletState, sellQuotes, usdcAsset } from '@suite-native/trading-fixtures';
+import {
+    banxaCreditCardSellQuote,
+    getWalletState,
+    sellQuotes,
+    usdcAsset,
+} from '@suite-native/trading-fixtures';
 import { type SellFormType } from '@suite-native/trading-types';
 
 import { useSellForm } from '../../../hooks/sell/useSellForm';
@@ -59,7 +64,7 @@ describe('SellCard', () => {
                 form.setValue('amountInCrypto', true);
                 form.setValue('cryptoStringAmount', '100');
 
-                form.setValue('quote', sellQuotes[0]);
+                form.setValue('quote', banxaCreditCardSellQuote);
             });
         });
 

@@ -6,7 +6,13 @@ import {
     renderWithStoreProvider,
     waitFor,
 } from '@suite-native/test-utils';
-import { getSellTrade, getWalletState, sellQuotes } from '@suite-native/trading-fixtures';
+import {
+    banxaBankTransferSellQuote,
+    banxaCreditCardSellQuote,
+    getSellTrade,
+    getWalletState,
+    moonpayCreditCardSellQuote,
+} from '@suite-native/trading-fixtures';
 
 import { TradingSellPreviewScreen } from '../TradingSellPreviewScreen';
 
@@ -91,7 +97,7 @@ describe('TradingSellPreviewScreen', () => {
         const preloadedState: PreloadedState = {
             wallet: getWalletState({ tradeType: 'sell' }),
         };
-        preloadedState.wallet!.trading!.sell!.selectedQuote = sellQuotes[0];
+        preloadedState.wallet!.trading!.sell!.selectedQuote = banxaCreditCardSellQuote;
 
         const { getByText } = await renderTradingSellPreviewScreen(preloadedState);
 
@@ -104,7 +110,7 @@ describe('TradingSellPreviewScreen', () => {
         const preloadedState: PreloadedState = {
             wallet: getWalletState({ tradeType: 'sell' }),
         };
-        preloadedState.wallet!.trading!.sell!.selectedQuote = sellQuotes[0];
+        preloadedState.wallet!.trading!.sell!.selectedQuote = banxaCreditCardSellQuote;
 
         await renderTradingSellPreviewScreen(preloadedState);
 
@@ -116,7 +122,7 @@ describe('TradingSellPreviewScreen', () => {
         const preloadedState: PreloadedState = {
             wallet: getWalletState({ tradeType: 'sell' }),
         };
-        preloadedState.wallet!.trading!.sell!.selectedQuote = sellQuotes[0];
+        preloadedState.wallet!.trading!.sell!.selectedQuote = banxaCreditCardSellQuote;
 
         const { getByText } = await renderTradingSellPreviewScreen(preloadedState);
 
@@ -128,10 +134,10 @@ describe('TradingSellPreviewScreen', () => {
         const preloadedState: PreloadedState = {
             wallet: getWalletState({ tradeType: 'sell' }),
         };
-        preloadedState.wallet!.trading!.sell!.selectedQuote = sellQuotes[0];
+        preloadedState.wallet!.trading!.sell!.selectedQuote = banxaCreditCardSellQuote;
 
         // Add trade to trades array so SellBankAccountPicker can find it
-        const tradeData = sellQuotes[1];
+        const tradeData = banxaBankTransferSellQuote;
         preloadedState.wallet!.trading!.trades = [
             {
                 tradeType: 'sell',
@@ -156,7 +162,7 @@ describe('TradingSellPreviewScreen', () => {
         const preloadedState: PreloadedState = {
             wallet: getWalletState({ tradeType: 'sell' }),
         };
-        preloadedState.wallet!.trading!.sell!.selectedQuote = sellQuotes[0];
+        preloadedState.wallet!.trading!.sell!.selectedQuote = banxaCreditCardSellQuote;
 
         const { getByText } = await renderTradingSellPreviewScreen(preloadedState);
 
@@ -170,7 +176,7 @@ describe('TradingSellPreviewScreen', () => {
             wallet: getWalletState({ tradeType: 'sell' }),
         };
         const quoteWithSendCryptoStatus = {
-            ...sellQuotes[0],
+            ...banxaCreditCardSellQuote,
             status: 'SEND_CRYPTO' as const,
         };
         preloadedState.wallet!.trading!.sell!.selectedQuote = quoteWithSendCryptoStatus;
@@ -187,7 +193,7 @@ describe('TradingSellPreviewScreen', () => {
         };
         const trade = getSellTrade({ status: 'SEND_CRYPTO' });
         preloadedState.wallet!.trading!.trades = [trade];
-        preloadedState.wallet!.trading!.sell!.selectedQuote = sellQuotes[0];
+        preloadedState.wallet!.trading!.sell!.selectedQuote = banxaCreditCardSellQuote;
 
         mockUseTradingDetailData.trade = trade;
 
@@ -202,7 +208,7 @@ describe('TradingSellPreviewScreen', () => {
             wallet: getWalletState({ tradeType: 'sell' }),
         };
         const quoteWithOtherStatus = {
-            ...sellQuotes[0],
+            ...banxaCreditCardSellQuote,
             status: 'SUBMITTED' as const,
         };
         preloadedState.wallet!.trading!.sell!.selectedQuote = quoteWithOtherStatus;
@@ -217,7 +223,7 @@ describe('TradingSellPreviewScreen', () => {
             wallet: getWalletState({ tradeType: 'sell' }),
         };
         const quoteWithSendCryptoStatus = {
-            ...sellQuotes[0],
+            ...moonpayCreditCardSellQuote,
             status: 'SEND_CRYPTO' as const,
             orderId: 'test_order_id_1',
         };

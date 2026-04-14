@@ -9,6 +9,7 @@ import {
     screen,
 } from '@suite-native/test-utils';
 import {
+    banxaBankTransferSellQuote,
     btcAsset,
     getBtcAccount,
     getInitializedTradingState,
@@ -83,7 +84,7 @@ describe('SellForm', () => {
                 form.setValue('sendAccount', getBtcAccount());
                 form.setValue('amountInCrypto', true);
                 form.setValue('cryptoStringAmount', '0.001');
-                form.setValue('quote', sellQuotes[1]);
+                form.setValue('quote', banxaBankTransferSellQuote);
             });
         });
 

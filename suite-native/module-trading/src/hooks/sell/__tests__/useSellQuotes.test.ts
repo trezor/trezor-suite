@@ -8,6 +8,7 @@ import {
     renderHookWithStoreProvider,
 } from '@suite-native/test-utils';
 import {
+    banxaCreditCardSellQuote,
     bnbAsset,
     getBtcAccount,
     getWalletState,
@@ -279,7 +280,7 @@ describe('useSellQuotes', () => {
 
     it('should not clear quotes when error is from quote', async () => {
         const sellQuoteWithTooHighCryptoAmount = {
-            ...sellQuotes[0],
+            ...banxaCreditCardSellQuote,
             cryptoStringAmount: '2',
         };
         const store = getInitializedStore();
