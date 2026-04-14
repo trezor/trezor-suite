@@ -5,11 +5,11 @@ import type { ExchangeTrade, SellFiatTrade } from 'invity-api';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { renderWithStoreProvider } from '@suite-native/test-utils';
 import {
+    banxaCreditCardSellQuote,
     exchangeMercuryo,
     exchangeQuotes,
     getWalletState,
     sellBanxa,
-    sellQuotes,
 } from '@suite-native/trading-fixtures';
 
 import { ProviderReceiveAddress } from '../ProviderReceiveAddress';
@@ -22,7 +22,7 @@ describe('ProviderReceiveAddress', () => {
     };
 
     const mockSellFiatTrade: SellFiatTrade = {
-        ...sellQuotes[0], // Use first sell quote from fixtures
+        ...banxaCreditCardSellQuote,
         destinationAddress: '1BvBMSEYstWetqTFn5Au4m4GFg7xJaNVN2', // Add destination address
     };
 

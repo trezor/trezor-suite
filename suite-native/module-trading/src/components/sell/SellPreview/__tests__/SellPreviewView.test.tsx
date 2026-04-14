@@ -1,10 +1,11 @@
 import { getTranslation } from '@suite-native/intl';
 import { type PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils';
 import {
+    banxaBankTransferSellQuote,
+    banxaCreditCardSellQuote,
     eth1NormalAccount,
     getSellTrade,
     getWalletState,
-    sellQuotes,
 } from '@suite-native/trading-fixtures';
 
 import { BANK_ACCOUNT_ITEM_TEST_ID } from '../BankAccount/SellBankAccountItem';
@@ -15,8 +16,8 @@ describe('SellPreviewView', () => {
         ...getSellTrade({ status: undefined }),
         data: {
             ...getSellTrade({ status: undefined }).data,
-            orderId: sellQuotes[1].orderId,
-            bankAccounts: sellQuotes[1].bankAccounts,
+            orderId: banxaBankTransferSellQuote.orderId,
+            bankAccounts: banxaBankTransferSellQuote.bankAccounts,
         },
     });
 
@@ -26,7 +27,7 @@ describe('SellPreviewView', () => {
         };
         preloadedState.wallet!.trading!.composedTransactionInfo = { composed: { fee: '1000' } };
         preloadedState.wallet!.trading!.sell!.tradingAccountKey = eth1NormalAccount.key;
-        preloadedState.wallet!.trading!.sell!.selectedQuote = sellQuotes[1]; // Use quote with bank accounts
+        preloadedState.wallet!.trading!.sell!.selectedQuote = banxaBankTransferSellQuote;
         preloadedState.wallet!.trading!.trades = [getSellTradeWithBankAccounts()];
         preloadedState.wallet!.trading!.providerConfirmationStatus = 'confirmation_success';
 
@@ -42,7 +43,7 @@ describe('SellPreviewView', () => {
         const preloadedState = getPreloadedSellState(preloadedStateOverrides ?? {});
 
         return renderWithStoreProvider(
-            <SellPreviewView quote={sellQuotes[1]} txnErrorString={null} {...props} />,
+            <SellPreviewView quote={banxaBankTransferSellQuote} txnErrorString={null} {...props} />,
             {
                 preloadedState,
             },
@@ -113,7 +114,7 @@ describe('SellPreviewView', () => {
     });
 
     it('should use quote prop instead of selector', () => {
-        const differentQuote = sellQuotes[0];
+        const differentQuote = banxaCreditCardSellQuote;
         const { getByText } = renderSellPreviewView({
             quote: differentQuote,
         });
@@ -129,12 +130,10 @@ describe('SellPreviewView', () => {
 
     it('should not render fee picker when quote has no cryptoCurrency', () => {
         const quoteWithoutCrypto = {
-            ...sellQuotes[0],
+            ...banxaCreditCardSellQuote,
             cryptoCurrency: undefined,
         };
-        const { queryByText } = renderSellPreviewView({
-            quote: quoteWithoutCrypto as (typeof sellQuotes)[0],
-        });
+        const { queryByText } = renderSellPreviewView({ quote: quoteWithoutCrypto });
 
         expect(
             queryByText(getTranslation('moduleTrading.tradingExchangePreviewScreen.details')),

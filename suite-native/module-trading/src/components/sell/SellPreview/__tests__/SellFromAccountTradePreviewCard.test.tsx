@@ -1,6 +1,10 @@
 import { type AccountKey } from '@suite-common/wallet-types';
 import { type PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils';
-import { eth1NormalAccount, getWalletState, sellQuotes } from '@suite-native/trading-fixtures';
+import {
+    banxaCreditCardSellQuote,
+    eth1NormalAccount,
+    getWalletState,
+} from '@suite-native/trading-fixtures';
 
 import {
     SellFromAccountTradePreviewCard,
@@ -30,7 +34,7 @@ describe('SellFromAccountTradePreviewCard', () => {
 
     it('should render nothing when account is not found', () => {
         const { toJSON } = renderSellFromAccountTradePreviewCard(
-            { quote: sellQuotes[0] },
+            { quote: banxaCreditCardSellQuote },
             'unknown-account-key' as AccountKey,
         );
 
@@ -38,7 +42,9 @@ describe('SellFromAccountTradePreviewCard', () => {
     });
 
     it('should render TradeSideCard otherwise', () => {
-        const { getByText } = renderSellFromAccountTradePreviewCard({ quote: sellQuotes[0] });
+        const { getByText } = renderSellFromAccountTradePreviewCard({
+            quote: banxaCreditCardSellQuote,
+        });
 
         expect(getByText('From')).toBeOnTheScreen();
         expect(getByText('ETH Account #1')).toBeOnTheScreen();

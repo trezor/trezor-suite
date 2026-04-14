@@ -3,7 +3,7 @@ import {
     type GeneralPrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
 import { type PreloadedState, renderWithStoreProvider, userEvent } from '@suite-native/test-utils';
-import { getWalletState, sellQuotes } from '@suite-native/trading-fixtures';
+import { banxaCreditCardSellQuote, getWalletState } from '@suite-native/trading-fixtures';
 
 import {
     SellPreviewContinueButton,
@@ -27,7 +27,7 @@ describe('SellPreviewContinueButton', () => {
         renderWithStoreProvider(
             <SellPreviewContinueButton
                 isDisabled={false}
-                quote={sellQuotes[0]}
+                quote={banxaCreditCardSellQuote}
                 onSignTransactionNavigation={jest.fn()}
                 {...props}
             />,
@@ -130,7 +130,7 @@ describe('SellPreviewContinueButton', () => {
             name: 'TradingSellOutputsReview',
             params: {
                 accountKey: 'eth-account-1',
-                orderId: sellQuotes[0].orderId,
+                orderId: banxaCreditCardSellQuote.orderId,
                 tokenContract: undefined,
             },
         });
