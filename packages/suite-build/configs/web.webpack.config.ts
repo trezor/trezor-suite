@@ -25,6 +25,10 @@ const config: webpack.Configuration = {
             // Use importScripts-based chunk loading so vendor/runtime chunks load in a worker context
             chunkLoading: 'import-scripts',
         },
+        'connect-popup-bootstrap': {
+            filename: 'connect-popup/bootstrap.[hash].js',
+            import: path.resolve(__dirname, '../../connect-web/src/bootstrap/bootstrap.ts'),
+        },
     },
     output: {
         path: path.join(baseDir, 'build'),
@@ -47,6 +51,12 @@ const config: webpack.Configuration = {
                     from: path.join(__dirname, '..', '..', 'suite-data', 'files', dir),
                     to: path.join(baseDir, 'build', 'static', dir),
                 }))
+                // .concat([
+                //     {
+                //         from: path.join(__dirname, '../../connect-web/src/iframe'),
+                //         to: path.join(baseDir, 'build/connect-popup'),
+                //     },
+                // ])
                 .concat([
                     {
                         from: path.join(
@@ -91,6 +101,18 @@ const config: webpack.Configuration = {
                     filename: path.join(baseDir, 'build', route.pattern, 'index.html'),
                 }),
         ),
+        new HtmlWebpackPlugin({
+            chunks: ['connect-popup-bootstrap'],
+            minify: false,
+            templateParameters: {
+                assetPrefix,
+                isOnionLocation: FLAGS.ONION_LOCATION_META,
+            },
+            inject: 'body' as const,
+            scriptLoading: 'blocking' as const,
+            template: path.resolve(__dirname, '../../connect-web/src/bootstrap/bootstrap.html'),
+            filename: path.join(baseDir, 'build/connect-popup/iframe.html'),
+        }),
         ...(!isDev ? [new CssMinimizerPlugin()] : []),
     ],
 };
