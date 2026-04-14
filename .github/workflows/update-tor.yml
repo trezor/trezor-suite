@@ -89,6 +89,17 @@ jobs:
           if [ "${{ steps.check_arm.outputs.new_arm }}" = "true" ]; then
             body+="\n- Linux ARM: ${{ steps.versions.outputs.arm_next }} (${{ steps.check_arm.outputs.arm_url }})"
           fi
+          body+="\n\n### :eyes: Review instructions\n\n"
+          body+="Works fully only on macOS\n\`\`\`\n"
+          body+="git fetch origin chore/update-tor-binaries\n"
+          body+="git checkout chore/update-tor-binaries\n"
+          body+="git checkout HEAD~1\n"
+          body+="git restore --source origin/chore/update-tor-binaries packages/suite-data/files/bin/tor/update.sh\n"
+          body+="./packages/suite-data/files/bin/tor/update.sh\n"
+          body+="git reset --soft chore/update-tor-binaries\n"
+          body+="git add .\n"
+          body+="git status -s\n"
+          body+="# should be no diff if binaries match\n\`\`\`"
           echo "body<<EOF" >> $GITHUB_OUTPUT
           echo -e "$body" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
