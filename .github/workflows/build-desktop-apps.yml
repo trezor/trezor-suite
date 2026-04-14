@@ -28,6 +28,7 @@ jobs:
   # An optimization needed to save RAM on the macOS runner, which is most constrained: build the Webpack Renderer bundle only once in Linux.
   # The Renderer bundle is the heaviest part of the build, and also the only part which can be safely shared (not platform dependent).
   build-and-cache-renderer:
+    if: (github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'build-desktop') || (github.event_name == 'push' && github.ref == 'refs/heads/develop')) && (github.repository == 'trezor/trezor-suite' || github.repository == 'trezor/trezor-suite-private')
     name: Build and cache Elecron Renderer process bundle
     runs-on: ubuntu-latest
     steps:
