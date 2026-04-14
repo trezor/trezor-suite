@@ -14664,7 +14664,6 @@ __metadata:
     "@trezor/product-components": "workspace:*"
     "@trezor/suite-desktop-api": "workspace:*"
     "@trezor/utils": "workspace:*"
-    framer-motion: "npm:^12.33.0"
     react: "npm:19.2.4"
     react-redux: "npm:9.2.0"
     redux: "npm:^5.0.1"

@@ -15,15 +15,20 @@ import {
 } from './updateQuickActionTypes';
 
 type UpdateStatusActionBarIconProps = {
-    hideUpdateQuickAction: boolean;
+    isSidebarCollapsed: boolean;
 };
 
 export const UpdateStatusActionBarIcon = ({
-    hideUpdateQuickAction,
+    isSidebarCollapsed,
 }: UpdateStatusActionBarIconProps) => {
-    const { updateStatus, updateStatusDevice, updateStatusSuite } = useSelector(selectUpdateStatus);
     const discoveryInProgress = useSelector(selectHasRunningDiscovery);
+
+    const { updateStatus, updateStatusDevice, updateStatusSuite } = useSelector(selectUpdateStatus);
     const displayDeviceUpdateStatusBar = !discoveryInProgress;
+    const hideUpdateQuickAction =
+        !isSidebarCollapsed &&
+        (updateStatusSuite !== 'up-to-date' ||
+            !['up-to-date', 'disconnected'].includes(updateStatusDevice));
 
     const device = useSelector(selectSelectedDevice);
     const dispatch = useDispatch();

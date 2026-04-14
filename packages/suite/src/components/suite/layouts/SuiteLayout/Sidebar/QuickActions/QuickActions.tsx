@@ -1,6 +1,5 @@
 import { UpdateStatusActionBarIcon } from '@suite/desktop-update';
-import { FeedbackFormManager } from '@suite/feature-feedback';
-import { Box, Column, Divider, ElevationContext, Flex } from '@trezor/components';
+import { Flex } from '@trezor/components';
 
 import { CustomBackend } from './CustomBackend';
 import { DebugAndExperimental } from './DebugAndExperimental';
@@ -9,31 +8,20 @@ import { Tor } from './Tor';
 
 type QuickActionsProps = {
     isSidebarCollapsed: boolean;
-    hideUpdateQuickAction: boolean;
 };
 
-export const QuickActions = ({ isSidebarCollapsed, hideUpdateQuickAction }: QuickActionsProps) => (
-    <Column>
-        <ElevationContext baseElevation={0}>
-            <Box padding={16}>
-                <FeedbackFormManager />
-            </Box>
-        </ElevationContext>
-
-        <Divider margin={{ bottom: 4 }} />
-
-        <Flex
-            gap={16}
-            padding={16}
-            alignItems="center"
-            justifyContent="space-evenly"
-            direction={isSidebarCollapsed ? 'column' : 'row'}
-        >
-            <UpdateStatusActionBarIcon hideUpdateQuickAction={hideUpdateQuickAction} />
-            <DebugAndExperimental />
-            <CustomBackend />
-            <Tor />
-            <HideBalances />
-        </Flex>
-    </Column>
+export const QuickActions = ({ isSidebarCollapsed }: QuickActionsProps) => (
+    <Flex
+        gap={16}
+        padding={16}
+        alignItems="center"
+        justifyContent="space-evenly"
+        direction={isSidebarCollapsed ? 'column' : 'row'}
+    >
+        <UpdateStatusActionBarIcon isSidebarCollapsed={isSidebarCollapsed} />
+        <DebugAndExperimental />
+        <CustomBackend />
+        <Tor />
+        <HideBalances />
+    </Flex>
 );
