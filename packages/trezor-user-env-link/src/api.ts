@@ -49,6 +49,11 @@ interface StartEmuFromBranchType extends StartEmuFromBranch {
 
 export type EmuStartOptsType = StartEmuType | StartEmuFromUrlType | StartEmuFromBranchType;
 
+export interface PressYesMultiple {
+    count: number;
+    delay?: number;
+}
+
 interface ClickEmu {
     x: number;
     y: number;
@@ -259,6 +264,15 @@ export class TrezorUserEnvLinkClass extends TypedEmitter<WebsocketClientEvents> 
     async pressYes() {
         await resolveAfter(EMU_RACE_CONDITION_WORKAROUND_DELAY);
         await this.client.send({ type: 'emulator-press-yes' });
+
+        return null;
+    }
+    async pressYesMultiple(options: PressYesMultiple) {
+        await new Promise(resolve => setTimeout(resolve, EMU_RACE_CONDITION_WORKAROUND_DELAY));
+        await this.client.send({
+            type: 'emulator-press-yes-multiple',
+            ...options,
+        });
 
         return null;
     }

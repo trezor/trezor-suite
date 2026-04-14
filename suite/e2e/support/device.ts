@@ -3,6 +3,7 @@ import { expect } from '@playwright/test';
 import type { ApplySettings } from '@trezor/protobuf/src/definitions';
 import {
     Model,
+    PressYesMultiple,
     ReadAndConfirmAtomicShamirMnemonicEmu,
     ReadAndConfirmShamirMnemonicEmu,
     SetupEmu,
@@ -64,6 +65,11 @@ export class DeviceFixture {
     @step()
     async pressYes() {
         await TrezorUserEnvLink.pressYes();
+    }
+
+    @step()
+    async pressYesMultiple(options: PressYesMultiple) {
+        await TrezorUserEnvLink.pressYesMultiple(options);
     }
 
     @step()

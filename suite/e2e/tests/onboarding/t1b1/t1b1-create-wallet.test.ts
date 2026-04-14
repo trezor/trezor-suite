@@ -53,9 +53,8 @@ test.describe('Onboarding - create wallet', { tag: ['@firmware-ready', '@T1B1'] 
 
                 // Confirm 2 x 24 words
                 await page.waitForTimeout(1_000);
-                for (let i = 0; i < 48; i++) {
-                    await device.pressYes();
-                }
+
+                await device.pressYesMultiple({ count: 48 });
                 await page.getByTestId('@onboarding/continue-button').click();
             });
 
