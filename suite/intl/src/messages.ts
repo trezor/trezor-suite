@@ -5593,6 +5593,69 @@ export const messages = defineMessages({
         defaultMessage:
             'The last wallet backup attempt on this device failed. You can only back up your wallet once.',
     },
+    TR_NFC_BACKUP_HEADING: {
+        id: 'TR_NFC_BACKUP_HEADING',
+        defaultMessage: 'NFC backup',
+    },
+    TR_NFC_BACKUP_RESILIENCE: {
+        id: 'TR_NFC_BACKUP_RESILIENCE',
+        defaultMessage: 'You can recover your wallet even if one backup tag is lost or damaged.',
+    },
+    TR_NFC_BACKUP_THRESHOLD_DESCRIPTION: {
+        id: 'TR_NFC_BACKUP_THRESHOLD_DESCRIPTION',
+        defaultMessage:
+            "Any 2 of the 3 backup tags can recover your wallet. It doesn't matter which tags you use.",
+    },
+    TR_NFC_BACKUP_CONTINUE_WITH_NFC: {
+        id: 'TR_NFC_BACKUP_CONTINUE_WITH_NFC',
+        defaultMessage: 'Continue with NFC backup',
+    },
+    TR_NFC_BACKUP_CHOOSE_DIFFERENT_TYPE: {
+        id: 'TR_NFC_BACKUP_CHOOSE_DIFFERENT_TYPE',
+        defaultMessage: 'Choose different backup type',
+    },
+    TR_NFC_BACKUP_THREE_TAGS: {
+        id: 'TR_NFC_BACKUP_THREE_TAGS',
+        defaultMessage: 'Your wallet backup consists of 3 Trezor wallet backup tags.',
+    },
+    TR_NFC_BACKUP_THREE_TAGS_DESCRIPTION: {
+        id: 'TR_NFC_BACKUP_THREE_TAGS_DESCRIPTION',
+        defaultMessage: 'Each tag stores 1 of the 3 unique shares of your wallet backup.',
+    },
+    TR_NFC_BACKUP_NO_TAGS_HEADING: {
+        id: 'TR_NFC_BACKUP_NO_TAGS_HEADING',
+        defaultMessage: "Don't have NFC tags?",
+    },
+    TR_NFC_BACKUP_NO_TAGS_DESCRIPTION: {
+        id: 'TR_NFC_BACKUP_NO_TAGS_DESCRIPTION',
+        defaultMessage: 'You can finish setup now and create your wallet backup later.',
+    },
+    TR_NFC_BACKUP_FINISH_AND_ORDER_HEADING: {
+        id: 'TR_NFC_BACKUP_FINISH_AND_ORDER_HEADING',
+        defaultMessage: 'Finish setup and order NFC tags',
+    },
+    TR_NFC_BACKUP_FINISH_AND_ORDER_DESCRIPTION: {
+        id: 'TR_NFC_BACKUP_FINISH_AND_ORDER_DESCRIPTION',
+        defaultMessage:
+            'Finish setting up your device. Then you will be redirected to the Trezor Store to order NFC tags. Create your wallet backup once they arrive.',
+    },
+    TR_NFC_BACKUP_ALTERNATIVE_BADGE: {
+        id: 'TR_NFC_BACKUP_ALTERNATIVE_BADGE',
+        defaultMessage: 'Alternative',
+    },
+    TR_NFC_BACKUP_WORDLIST_HEADING: {
+        id: 'TR_NFC_BACKUP_WORDLIST_HEADING',
+        defaultMessage: 'Create wordlist backup',
+    },
+    TR_NFC_BACKUP_WORDLIST_DESCRIPTION: {
+        id: 'TR_NFC_BACKUP_WORDLIST_DESCRIPTION',
+        defaultMessage:
+            'Write down one or more 20-word wordlists (shares) on paper or metal. You can upgrade to NFC backup later.',
+    },
+    TR_NFC_BACKUP_WORDLIST_CTA: {
+        id: 'TR_NFC_BACKUP_WORDLIST_CTA',
+        defaultMessage: 'Create wordlist backup',
+    },
     DISCONNECT_DEVICE_DESCRIPTION: {
         id: 'DISCONNECT_DEVICE_DESCRIPTION',
         defaultMessage: 'Your Trezor was wiped and no longer holds any private keys.',

@@ -14844,6 +14844,18 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite/nfc@workspace:suite/nfc":
+  version: 0.0.0-use.local
+  resolution: "@suite/nfc@workspace:suite/nfc"
+  dependencies:
+    "@suite/intl": "workspace:*"
+    "@suite/onboarding-components": "workspace:*"
+    "@trezor/components": "workspace:*"
+    react: "npm:19.2.4"
+    styled-components: "npm:^6.3.9"
+  languageName: unknown
+  linkType: soft
+
 "@suite/onboarding-components@workspace:*, @suite/onboarding-components@workspace:suite/onboarding-components":
   version: 0.0.0-use.local
   resolution: "@suite/onboarding-components@workspace:suite/onboarding-components"
