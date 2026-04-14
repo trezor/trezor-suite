@@ -5,7 +5,7 @@ import { join } from 'node:path';
 import {
     ALLOWED_DRIFTS,
     requireUnifiedDependencyVersions,
-} from '../requirements/dependency-versions/requireUnifiedDependencyVersions';
+} from '../requireUnifiedDependencyVersions';
 
 // Pick any real entry from ALLOWED_DRIFTS so tests never depend on specific hardcoded names.
 const [SOME_ALLOWED_DEP] = ALLOWED_DRIFTS;
