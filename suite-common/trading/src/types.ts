@@ -33,7 +33,6 @@ import {
 } from '@suite-common/wallet-types';
 import { type PROTO } from '@trezor/connect';
 import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
-import { type Timer } from '@trezor/react-utils';
 import { type Err, type Ok, type PrimitiveType } from '@trezor/type-utils';
 
 import type * as constants from './constants';
@@ -317,14 +316,12 @@ export type TradingSellUserConsentProps = {
 export type HandleBuyRequestThunkProps = {
     formValues: TradingBuyFormProps;
     network: Network;
-    timer: Timer;
     shouldSendInSats: boolean | undefined;
 };
 
 export type HandleExchangeRequestThunkProps = {
     formValues: MinimalExchangeFormProps;
     network: Network;
-    timer: Timer;
     shouldSendInSats: boolean | undefined;
     composeRequestCallback: () => void;
 };
@@ -332,7 +329,6 @@ export type HandleExchangeRequestThunkProps = {
 export type HandleSellRequestThunkProps = {
     formValues: MinimalSellFormProps;
     network: Network;
-    timer: Timer;
     shouldSendInSats: boolean | undefined;
     composeRequestCallback: () => void;
 };

@@ -110,13 +110,12 @@ export const useTradingExchangeForm = ({
     const [isScheduledQuotesRefresh, setIsScheduledQuotesRefresh] = useState(false);
     const [showReserveBanner, setShowReserveBanner] = useState<boolean>(false);
 
-    const { timer, device, checkQuotesTimer } = useTradingInitializer({
+    const { device } = useTradingInitializer({
         pageType,
         isLoading,
     });
 
     const [isApproval, setIsApproval] = useState<boolean>(false);
-    const [approvalInitiated, setApprovalInitiated] = useState<boolean>(false);
     const [isLoadingQuote, setIsLoadingQuote] = useState<boolean>(false);
 
     const [receiveAccount, setReceiveAccount] = useState<Account | undefined>();
@@ -258,12 +257,10 @@ export const useTradingExchangeForm = ({
     const { handleChange } = useTradingExchangeHandleChange({
         formValues: values,
         network,
-        timer,
         shouldSendInSats,
         composeRequestCallback: () => {
             composeRequest(TRADING_FORM_OUTPUT_AMOUNT);
         },
-        setApprovalInitiated,
         setIsScheduledQuotesRefresh,
     });
 
@@ -332,7 +329,6 @@ export const useTradingExchangeForm = ({
         await dispatch(
             exchangeThunks.selectQuoteThunk({
                 quote,
-                timer,
                 nextStep: () => {
                     dispatch(goto({ routeName: 'wallet-trading-exchange-confirm' }));
                 },
@@ -577,8 +573,6 @@ export const useTradingExchangeForm = ({
     const approveTransaction = async (trade: ExchangeTrade) => {
         if (!receiveAddress) return false;
 
-        setApprovalInitiated(true);
-
         const newTrade = await confirmApproval({
             trade: { ...trade, status: 'CONFIRM' },
             receiveAddress,
@@ -589,8 +583,6 @@ export const useTradingExchangeForm = ({
 
     const revokeApproval = async (trade: ExchangeTrade) => {
         if (!receiveAddress) return false;
-
-        setApprovalInitiated(true);
 
         const approvalType: DexApprovalType = 'ZERO';
         const updatedTrade: ExchangeTrade = {
@@ -775,12 +767,6 @@ export const useTradingExchangeForm = ({
     }, [isFormPage, quotesRequest, dispatch]);
 
     useEffect(() => {
-        if (preselectedQuote || approvalInitiated) return;
-
-        checkQuotesTimer(handleChange);
-    }, [checkQuotesTimer, handleChange, preselectedQuote, approvalInitiated]);
-
-    useEffect(() => {
         if (isFromRedirect) {
             if (transactionId && trade) {
                 dispatch(tradingExchangeActions.saveSelectedQuote(trade.data));
@@ -808,7 +794,6 @@ export const useTradingExchangeForm = ({
         },
         methods,
         device,
-        timer,
         exchangeInfo,
         quotes,
         dexQuotes,

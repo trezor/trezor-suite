@@ -11,6 +11,7 @@ export * from './hooks/useProviderMetadataChangeEffect';
 export * from './hooks/useTradingFiatValues';
 export * from './hooks/useExchangeFiatDeviation';
 export * from './hooks/useApprovalStep';
+export * from './hooks/useTradingRefetchScheduler';
 export * from './invityAPI';
 export * from './reducers/buyReducer';
 export * from './reducers/exchangeReducer';

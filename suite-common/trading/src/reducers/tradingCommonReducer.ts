@@ -52,6 +52,15 @@ export interface TradingPrefilledFromAccount {
     key: AccountKey | undefined;
 }
 
+// Maximum number of refetch attempts before the interval automatically stops
+export const REFETCH_QUOTES_MAX_COUNT = 40;
+
+export interface QuoteRefetchingState {
+    remainingRefetches: number;
+    lastFetchTimestamp: number | undefined;
+    status: 'running' | 'stopped';
+}
+
 export interface TradingState {
     info: TradingInfo;
     buy: TradingBuyState;
@@ -69,6 +78,7 @@ export interface TradingState {
     settings: TradingSettingsState;
     currentProviderMetadata?: ProviderMetadata;
     favouriteAssets: Record<CryptoId, true>;
+    quoteRefetchingState: QuoteRefetchingState;
 }
 
 export type TradingRootState = {
@@ -100,6 +110,11 @@ export const initialState: TradingState = {
     verifiedAddress: undefined,
     settings: settingsInitialState,
     favouriteAssets: {},
+    quoteRefetchingState: {
+        remainingRefetches: REFETCH_QUOTES_MAX_COUNT,
+        lastFetchTimestamp: undefined,
+        status: 'stopped',
+    },
 };
 
 const tradingCommonSlice = createSlice({
@@ -170,6 +185,20 @@ const tradingCommonSlice = createSlice({
             { payload }: PayloadAction<ProviderMetadata | undefined>,
         ) => {
             state.currentProviderMetadata = payload;
+        },
+        stopRefetchQuotes: state => {
+            state.quoteRefetchingState.status = 'stopped';
+            state.quoteRefetchingState.remainingRefetches = REFETCH_QUOTES_MAX_COUNT;
+            state.quoteRefetchingState.lastFetchTimestamp = undefined;
+        },
+        setRefetchQuotesTimestamp: (
+            state,
+            { payload }: PayloadAction<QuoteRefetchingState['lastFetchTimestamp']>,
+        ) => {
+            state.quoteRefetchingState.remainingRefetches -= 1;
+            state.quoteRefetchingState.status =
+                state.quoteRefetchingState.remainingRefetches <= 0 ? 'stopped' : 'running';
+            state.quoteRefetchingState.lastFetchTimestamp = payload;
         },
     },
 });

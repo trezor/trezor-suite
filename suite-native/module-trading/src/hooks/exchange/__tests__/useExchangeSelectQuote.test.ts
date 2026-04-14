@@ -293,7 +293,6 @@ describe('useExchangeSelectQuote', () => {
                     type: 'selectQuoteThunkMock',
                     payload: expect.objectContaining({
                         quote: expect.objectContaining({ swapSlippage: '1.5' }),
-                        timer: expect.objectContaining({ timeSpent: { seconds: 0 } }),
                     }),
                 }),
             );

@@ -93,7 +93,7 @@ export const useTradingSellForm = ({
 
     const { account, tradingAccountKey: accountKey, cryptoId } = useTradingFormAccount(type);
 
-    const { timer, device, checkQuotesTimer } = useTradingInitializer({
+    const { device } = useTradingInitializer({
         pageType,
         isLoading,
     });
@@ -230,7 +230,6 @@ export const useTradingSellForm = ({
     const { handleChange } = useTradingSellHandleChange({
         formValues: values as TradingSellFormProps,
         network,
-        timer,
         shouldSendInSats,
         composeRequestCallback: () => {
             composeRequest(TRADING_FORM_OUTPUT_AMOUNT);
@@ -379,7 +378,6 @@ export const useTradingSellForm = ({
         await dispatch(
             sellThunks.selectQuoteThunk({
                 quote,
-                timer,
                 nextStep,
             }),
         );
@@ -580,10 +578,6 @@ export const useTradingSellForm = ({
         }
     }, [isFromRedirect, trade, transactionId, pageType, dispatch]);
 
-    useEffect(() => {
-        checkQuotesTimer(handleChange);
-    }, [checkQuotesTimer, handleChange]);
-
     // Subscribe to blocks for Solana, since they are not fetched globally
     useSolanaSubscribeBlocks(account);
 
@@ -618,7 +612,6 @@ export const useTradingSellForm = ({
         amountLimits,
         network,
         device,
-        timer,
         preselectedQuote,
         selectedQuote,
         shouldSendInSats,

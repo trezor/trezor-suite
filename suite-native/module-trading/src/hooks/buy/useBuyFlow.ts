@@ -22,7 +22,6 @@ import { useAnalytics } from '@suite-native/services';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import { buildTradingUrl, useBrowserAuth } from '@suite-native/trading-browser-auth';
 import { type BuyFormType } from '@suite-native/trading-types';
-import { useNullTimer } from '@trezor/react-utils';
 
 import { clearBuyFormQuoteData } from './useBuyForm';
 import { getAnalyticsTradingBuyPayload } from '../../utils/buy/quotesUtils';
@@ -47,7 +46,6 @@ export const useBuyFlow = (form: BuyFormType) => {
         'receiveAccount',
     ]);
 
-    const timer = useNullTimer();
     const navigation = useNavigation<NavigationProps>();
 
     const coinInfo = useSelector((state: TradingRootState) =>
@@ -157,7 +155,6 @@ export const useBuyFlow = (form: BuyFormType) => {
         await dispatch(
             buyThunks.selectQuoteThunk({
                 quote: candidateQuote,
-                timer,
                 returnUrl,
                 loginRequest: formResponse =>
                     openBrowserForFormData(formResponse, returnUrl, candidateQuote.orderId),

@@ -93,11 +93,9 @@ export const handleBuyRequestThunk = createThunk<
 >(
     `${TRADING_BUY_THUNK_PREFIX}/handleRequest`,
     async (
-        { formValues, network, timer, shouldSendInSats }: HandleBuyRequestThunkProps,
+        { formValues, network, shouldSendInSats }: HandleBuyRequestThunkProps,
         { dispatch, getState, fulfillWithValue, rejectWithValue, signal },
     ) => {
-        timer.loading();
-
         const quotesRequest = selectTradingBuyQuotesRequest(getState());
 
         const requestData = getQuoteRequestData({
@@ -108,24 +106,21 @@ export const handleBuyRequestThunk = createThunk<
         });
 
         if (!requestData) {
-            timer.stop();
+            dispatch(tradingActions.stopRefetchQuotes());
 
             return rejectWithValue('Invalid request data');
         }
 
-        const allQuotes = await getQuotesRequest({
-            requestData,
-            signal,
-        });
+        const allQuotes = (await getQuotesRequest({ requestData, signal })) ?? [];
 
         if (signal.aborted) {
-            timer.reset();
+            dispatch(tradingActions.stopRefetchQuotes());
 
             return rejectWithValue('Request was aborted');
         }
 
         if (!Array.isArray(allQuotes) || allQuotes.length === 0) {
-            timer.stop();
+            dispatch(tradingActions.stopRefetchQuotes());
 
             const quotesSuccess: BuyTrade[] = [];
             dispatch(tradingBuyActions.setAmountLimits(undefined));
@@ -157,8 +152,7 @@ export const handleBuyRequestThunk = createThunk<
         dispatch(tradingBuyActions.saveQuotes(quotesSuccess));
         dispatch(tradingBuyActions.saveQuoteRequest(requestData));
         dispatch(tradingActions.savePaymentMethods(paymentMethodsFromQuotes));
-
-        timer.reset();
+        dispatch(tradingActions.setRefetchQuotesTimestamp(Date.now()));
 
         return fulfillWithValue(quotesSuccess);
     },

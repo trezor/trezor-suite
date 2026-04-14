@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 
 import { type ExtendedMessageDescriptor, Translation } from '@suite/intl';
-import { INVITY_API_RELOAD_QUOTES_AFTER_SECONDS } from '@suite-common/trading';
 import { H2 } from '@trezor/components';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { spacingsPx } from '@trezor/theme';
@@ -60,8 +59,9 @@ interface TradingHeaderProps {
 
 export const TradingHeader = ({ title, titleTimer }: TradingHeaderProps) => {
     const context = useTradingFormContext();
-    const { timer, quotes } = context;
+    const { quotes } = context;
     const headerProps = getCryptoQuoteAmountProps(quotes?.[0], context);
+    const isLoading = context.form.state.isFormLoading;
 
     return (
         <Header>
@@ -77,9 +77,7 @@ export const TradingHeader = ({ title, titleTimer }: TradingHeaderProps) => {
                 <TradingHeaderFilter />
                 <HeaderTradingRefreshTime>
                     <TradingRefreshTime
-                        isLoading={timer.isLoading}
-                        refetchInterval={INVITY_API_RELOAD_QUOTES_AFTER_SECONDS}
-                        seconds={timer.timeSpent.seconds}
+                        isLoading={isLoading}
                         label={<Translation id={titleTimer} />}
                     />
                 </HeaderTradingRefreshTime>
