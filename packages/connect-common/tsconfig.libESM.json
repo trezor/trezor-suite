@@ -26,9 +26,6 @@
             "path": "../utils"
         },
         {
-            "path": "../utxo-lib"
-        },
-        {
             "path": "../blockchain-link"
         },
         {
@@ -36,6 +33,9 @@
         },
         {
             "path": "../device-authenticity"
+        },
+        {
+            "path": "../utxo-lib"
         }
     ]
 }
