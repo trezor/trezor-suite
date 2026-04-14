@@ -9,7 +9,7 @@ import { useSelectorDeepComparison } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { type OnSelectAccount } from '@suite-native/accounts';
-import { AnimatedCard } from '@suite-native/atoms';
+import { AnimatedContainerCard } from '@suite-native/atoms';
 import { AccountsRediscoveryNeededWarning } from '@suite-native/discovery';
 import { FiveBinariesHomeBanner, useStakingDetailNavigation } from '@suite-native/module-earn';
 import {
@@ -68,7 +68,7 @@ export const Assets = () => {
     return (
         <>
             <FiveBinariesHomeBanner />
-            <AnimatedCard noPadding layout={LinearTransition}>
+            <AnimatedContainerCard noPadding layout={LinearTransition}>
                 <AccountsRediscoveryNeededWarning hasPadding />
                 {deviceNetworks.map(symbol => (
                     <Animated.View
@@ -80,7 +80,7 @@ export const Assets = () => {
                     </Animated.View>
                 ))}
                 {isLoading && <DiscoveryAssetsLoader isListEmpty={deviceNetworks.length < 1} />}
-            </AnimatedCard>
+            </AnimatedContainerCard>
             <NetworkAssetsBottomSheet
                 symbol={selectedAssetSymbol}
                 onSelectAccount={handleSelectAssetsAccount}

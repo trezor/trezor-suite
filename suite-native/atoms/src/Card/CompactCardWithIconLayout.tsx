@@ -13,7 +13,7 @@ import { RoundedIcon } from '../RoundedIcon';
 import { HStack, VStack } from '../Stack';
 import { Text } from '../Text';
 import { useTapGesture } from '../useTapGesture';
-import { AnimatedCard, type CardProps } from './Card';
+import { AnimatedContainerCard, type CardProps } from './Card';
 
 export const COMPACT_CARD_VARIANTS = ['normal', 'danger', 'primary'] as const;
 type CompactCardVariant = (typeof COMPACT_CARD_VARIANTS)[number];
@@ -88,10 +88,10 @@ export const CompactCardWithIconLayout = ({
     return (
         <GestureDetector gesture={tapGesture}>
             <View collapsable={false} testID={testID}>
-                <AnimatedCard
+                <AnimatedContainerCard
                     noPadding
                     borderColor={borderColor ?? undefined}
-                    style={animatedStyle}
+                    animatedStyle={animatedStyle}
                     // Android shadow does not work well with the Reanimated opacity animation.
                     noShadow={Platform.OS === 'android' ? true : noShadow}
                     {...cardProps}
@@ -126,7 +126,7 @@ export const CompactCardWithIconLayout = ({
                             <InlineAlertBox {...alertBoxProps} />
                         </Box>
                     )}
-                </AnimatedCard>
+                </AnimatedContainerCard>
             </View>
         </GestureDetector>
     );
