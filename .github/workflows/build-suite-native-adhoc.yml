@@ -43,9 +43,10 @@ jobs:
           yarn workspaces focus @suite-native/app
           yarn workspace @suite-native/app exec patch-package # Apply global patches.
       - name: Trigger adhoc build Android
+        working-directory: suite-native/app
         if: ${{ github.event.inputs.PLATFORM == 'android' || github.event.inputs.PLATFORM == 'all' }}
         run: |
-          yarn native:adhoc \
+          eas build --profile adhoc \
             -p android \
             --non-interactive \
             --no-wait \
@@ -53,9 +54,10 @@ jobs:
             --message ${{ github.sha }} \
             2>&1 | sed -E 's/UDID: [A-Za-z0-9-]+/UDID: [REDACTED]/g' # remove UDIDs from output
       - name: Trigger adhoc build iOS
+        working-directory: suite-native/app
         if: ${{ github.event.inputs.PLATFORM == 'ios' || github.event.inputs.PLATFORM == 'all' }}
         run: |
-          yarn native:adhoc \
+          eas build --profile adhoc \
             -p ios \
             --auto-submit \
             --non-interactive \
