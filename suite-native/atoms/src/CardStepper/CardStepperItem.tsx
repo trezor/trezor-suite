@@ -6,7 +6,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type Color } from '@trezor/theme';
 
 import { Button, type ButtonColorProps } from '../Button/Button';
-import { AnimatedCard } from '../Card/Card';
+import { AnimatedContainerCard } from '../Card/Card';
 import { Divider } from '../Divider';
 import { AnimatedVStack, HStack, VStack } from '../Stack';
 import { Text } from '../Text';
@@ -86,9 +86,9 @@ export const CardStepperItem = ({
     const headerColor: Color = isChecked ? 'textPrimaryDefault' : 'textSubdued';
 
     return (
-        <AnimatedCard
+        <AnimatedContainerCard
             layout={LAYOUT_ANIMATION}
-            style={[applyStyle(cardStyle, { isDisabled: !isOpened && !isChecked })]}
+            style={applyStyle(cardStyle, { isDisabled: !isOpened && !isChecked })}
         >
             <VStack spacing="sp16">
                 <VStack spacing="sp12">
@@ -132,6 +132,6 @@ export const CardStepperItem = ({
                     </AnimatedVStack>
                 )}
             </VStack>
-        </AnimatedCard>
+        </AnimatedContainerCard>
     );
 };

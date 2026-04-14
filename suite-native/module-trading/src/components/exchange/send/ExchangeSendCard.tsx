@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { cryptoIdToSymbol } from '@suite-common/trading';
 import { type AccountsRootState, selectAccountFormattedBalance } from '@suite-common/wallet-core';
-import { AnimatedCard, HStack, VStack } from '@suite-native/atoms';
+import { AnimatedBorderCard, HStack, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { CardTitle, useAnimatedBorderStyle } from '@suite-native/trading-atoms';
 import {
@@ -41,7 +41,7 @@ export const ExchangeSendCard = ({ isAmountInputActive }: ExchangeSendCardProps)
     });
 
     return (
-        <AnimatedCard style={animatedStyle} noPadding>
+        <AnimatedBorderCard style={animatedStyle} noPadding>
             <VStack paddingHorizontal="sp12" paddingVertical="sp16">
                 <HStack justifyContent="space-between" alignItems="center">
                     <CardTitle>
@@ -66,6 +66,6 @@ export const ExchangeSendCard = ({ isAmountInputActive }: ExchangeSendCardProps)
                     />
                 )}
             </VStack>
-        </AnimatedCard>
+        </AnimatedBorderCard>
     );
 };

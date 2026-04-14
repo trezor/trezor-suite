@@ -1,10 +1,9 @@
 import { type ReactNode } from 'react';
 import { type SharedValue, useAnimatedStyle, withDelay, withTiming } from 'react-native-reanimated';
 
-import { AnimatedCard, Text, VStack } from '@suite-native/atoms';
+import { AnimatedContainerCard, Text, VStack } from '@suite-native/atoms';
 import { Icon, type IconName } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type InstructionCardProps = {
     index: number;
@@ -49,19 +48,12 @@ const getCardProps = (isMultishareSelected: boolean) =>
         },
     ] as const satisfies Omit<InstructionCardProps, 'index'>[];
 
-const cardStyle = prepareNativeStyle(utils => ({
-    borderWidth: utils.borders.widths.small,
-    borderColor: utils.colors.borderOnElevation1,
-    ...utils.boxShadows.none,
-}));
-
 const WalletBackupInstructionCard = ({
     iconName,
     title,
     index,
     isStepFocused,
 }: InstructionCardProps & { isStepFocused: SharedValue<boolean> }) => {
-    const { applyStyle } = useNativeStyles();
     const animatedCardStyle = useAnimatedStyle(() => {
         const indexDelay = ANIMATION_DURATION + ANIMATION_DELAY * index;
 
@@ -97,12 +89,16 @@ const WalletBackupInstructionCard = ({
     });
 
     return (
-        <AnimatedCard style={[animatedCardStyle, applyStyle(cardStyle)]}>
+        <AnimatedContainerCard
+            animatedStyle={animatedCardStyle}
+            borderColor="borderOnElevation1"
+            noShadow
+        >
             <VStack spacing="sp8" alignItems="center">
                 <Icon name={iconName} size={28} />
                 <Text variant="body-md-strong">{title}</Text>
             </VStack>
-        </AnimatedCard>
+        </AnimatedContainerCard>
     );
 };
 

@@ -9,7 +9,7 @@ import { Box } from '../Box';
 import { HStack, VStack } from '../Stack';
 import { Text } from '../Text';
 import { useTapGesture } from '../useTapGesture';
-import { AnimatedCard } from './Card';
+import { AnimatedContainerCard } from './Card';
 
 const contentStyle = prepareNativeStyle(() => ({
     flexGrow: 1,
@@ -35,10 +35,10 @@ export const PressableCardWithIconLayout = ({
     return (
         <GestureDetector gesture={tapGesture}>
             <View collapsable={false}>
-                <AnimatedCard
+                <AnimatedContainerCard
                     borderColor="borderElevation1"
                     noPadding
-                    style={animatedStyle}
+                    animatedStyle={animatedStyle}
                     // Android shadow does not work well with the Reanimated opacity animation.
                     noShadow={Platform.OS === 'android'}
                 >
@@ -56,7 +56,7 @@ export const PressableCardWithIconLayout = ({
                             <Icon name="caretRight" size="mediumLarge" color="iconSubdued" />
                         </Box>
                     </HStack>
-                </AnimatedCard>
+                </AnimatedContainerCard>
             </View>
         </GestureDetector>
     );
