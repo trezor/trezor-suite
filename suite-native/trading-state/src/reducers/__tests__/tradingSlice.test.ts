@@ -13,6 +13,7 @@ import {
     banxaCreditCardSellQuote,
     buyQuotes,
     exchangeQuotes,
+    mercuryoApplePayBuyQuote,
     sellQuotes,
 } from '@suite-native/trading-fixtures';
 import { type ProviderConfirmationStatus, type TradingState } from '@suite-native/trading-types';
@@ -84,7 +85,7 @@ describe('tradingSlice', () => {
                         country: 'CZ',
                     },
                     quotes: buyQuotes,
-                    selectedQuote: buyQuotes[0],
+                    selectedQuote: mercuryoApplePayBuyQuote,
                     amountLimits: {
                         currency: 'CZK',
                         minFiat: '100',
