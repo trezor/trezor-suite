@@ -34,7 +34,7 @@ export const CustomFeeLabel = ({ networkType }: CustomFeeLabelProps) => {
                     <Translation id="transactionManagement.fees.custom.card.label" />
                 </Text>
                 <Text>•</Text>
-                <Text variant="body-sm" color="textSubdued">
+                <Text variant="body-sm" color="contentSecondary">
                     {formattedFeePerUnit}
                 </Text>
             </HStack>
@@ -45,7 +45,7 @@ export const CustomFeeLabel = ({ networkType }: CustomFeeLabelProps) => {
         <Text variant="body-md-strong">
             <Translation id="transactionManagement.fees.custom.card.label" />
             {' • '}
-            <Text color="textSubdued">{formattedFeePerUnit}</Text>
+            <Text color="contentSecondary">{formattedFeePerUnit}</Text>
         </Text>
     );
 };

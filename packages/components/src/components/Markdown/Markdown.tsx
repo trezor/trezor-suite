@@ -7,7 +7,7 @@ import { typography } from '@trezor/theme';
 const StyledMarkdown = styled.div`
     ${typography['body-sm']}
 
-    color: ${({ theme }) => theme.textSubdued};
+    color: ${({ theme }) => theme.contentSecondary};
 
     h1,
     h2,
@@ -15,7 +15,7 @@ const StyledMarkdown = styled.div`
     h4,
     h5,
     h6 {
-        color: ${({ theme }) => theme.textDefault};
+        color: ${({ theme }) => theme.contentPrimary};
     }
 
     h1 {
@@ -52,7 +52,7 @@ const StyledMarkdown = styled.div`
     }
 
     a {
-        color: ${({ theme }) => theme.textPrimaryDefault};
+        color: ${({ theme }) => theme.contentBrand};
 
         &:hover {
             text-decoration: underline;

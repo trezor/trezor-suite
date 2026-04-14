@@ -103,7 +103,7 @@ export const EventForm = ({ formState, setFormState, eventChangelogError }: Even
                 />
             </Row>
             {eventNameValidationError && eventNameTrimmed && (
-                <Text typographyStyle="body-sm" color="textAlertRed">
+                <Text typographyStyle="body-sm" color="contentCritical">
                     {eventNameValidationError.messageId === 'invalidFormat' &&
                         "Event has to be in form 'domain/event' (Example: settings/app-log-exported)."}
                     {eventNameValidationError.messageId === 'invalidDomain' &&

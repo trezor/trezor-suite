@@ -18,9 +18,9 @@ export const RoundedIcon: RoundedIconStory = {
     name: 'RoundedIcon',
     args: {
         name: 'flag',
-        color: 'textPrimaryDefault',
+        color: 'contentBrand',
         iconSize: 'mediumLarge',
-        backgroundColor: 'backgroundTertiaryDefaultOnElevation1',
+        backgroundColor: 'legacyBackgroundTertiaryDefaultOnElevation1',
         containerSize: 48,
     },
     argTypes: {

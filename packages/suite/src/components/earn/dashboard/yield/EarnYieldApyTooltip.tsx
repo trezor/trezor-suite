@@ -9,7 +9,7 @@ import { ApyValue } from 'src/views/wallet/staking/components/ApyValue';
 import { EarnYieldApyBreakdown } from './EarnYieldApyBreakdown';
 
 const Abbr = styled.abbr`
-    border-bottom: 1px dotted ${({ theme }) => theme.textSubdued};
+    border-bottom: 1px dotted ${({ theme }) => theme.contentSecondary};
     cursor: help;
     text-decoration: none;
 `;

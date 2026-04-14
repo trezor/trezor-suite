@@ -194,7 +194,7 @@ test.describe(
                 await test.step('Verify theme is still dark', async () => {
                     await expect(page.locator('body')).toHaveCSS(
                         'background-color',
-                        hexToRgba(colorVariants.dark.backgroundSurfaceElevation0),
+                        hexToRgba(colorVariants.dark.surfaceFillPage),
                     );
                 });
             },

@@ -68,9 +68,9 @@ export const HowStakeWorksBenefitsSection = ({
                     <OrderedListIcon
                         iconName={item.icon}
                         iconSize="large"
-                        iconColor="iconPrimaryDefault"
-                        iconBackgroundColor="backgroundPrimarySubtleOnElevation1"
-                        iconBorderColor="backgroundPrimarySubtleOnElevationNegative"
+                        iconColor="contentBrand"
+                        iconBackgroundColor="legacyBackgroundPrimarySubtleOnElevation1"
+                        iconBorderColor="legacyBackgroundPrimarySubtleOnElevationNegative"
                     />
                     <VStack spacing={0}>
                         <Text variant="body-md-strong">
@@ -82,7 +82,7 @@ export const HowStakeWorksBenefitsSection = ({
                                 }}
                             />
                         </Text>
-                        <Text variant="body-sm" color="textSubdued">
+                        <Text variant="body-sm" color="contentSecondary">
                             <Translation id={item.descriptionKey} values={{ displaySymbol }} />
                         </Text>
                     </VStack>

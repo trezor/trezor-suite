@@ -20,7 +20,7 @@ export const menuStyle = css`
     padding: ${spacingsPx.sm};
     min-width: 180px;
     border-radius: ${borders.radii.md};
-    background: ${({ theme }) => theme.backgroundSurfaceElevation1};
+    background: ${({ theme }) => theme.surfaceFillRaised};
     box-shadow: ${({ theme }) => theme.boxShadowElevated};
     outline: 1px solid ${({ theme }) => theme.surfaceBorderAction};
     z-index: ${zIndices.modal};

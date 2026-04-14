@@ -46,7 +46,7 @@ const ExchangeProviderPickerRight = ({
         <HStack>
             <ProviderLogo logo={logo} />
             <Text
-                color="textSubdued"
+                color="contentSecondary"
                 variant="body-sm"
                 accessibilityLabel={translate('moduleTrading.tradingScreen.selectedProvider')}
             >

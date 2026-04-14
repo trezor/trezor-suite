@@ -70,7 +70,7 @@ export const BootloaderModeScreen = () => {
                         <Text variant="body-md-strong" textAlign="center">
                             <Translation id="moduleDeviceBootloaderMode.bootloaderScreen.factoryResetCard.title" />
                         </Text>
-                        <Text color="textSubdued" textAlign="center">
+                        <Text color="contentSecondary" textAlign="center">
                             <Translation id="moduleDeviceBootloaderMode.bootloaderScreen.factoryResetCard.description" />
                         </Text>
                         <VStack style={applyStyle(buttonWrapperStyle)}>
@@ -89,7 +89,7 @@ export const BootloaderModeScreen = () => {
                     <Text variant="body-md-strong" textAlign="center">
                         <Translation id="moduleDeviceBootloaderMode.bootloaderScreen.reconnectCard.title" />
                     </Text>
-                    <Text color="textSubdued" textAlign="center">
+                    <Text color="contentSecondary" textAlign="center">
                         <Translation id="moduleDeviceBootloaderMode.bootloaderScreen.reconnectCard.description" />
                     </Text>
                 </VStack>

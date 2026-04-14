@@ -58,7 +58,7 @@ const TodayHeaderCell = ({ cryptoValue, symbol, historicRate }: TodayHeaderCellP
     );
 
     return (
-        <Text variant="body-sm" color="textSubdued">
+        <Text variant="body-sm" color="contentSecondary">
             <Translation
                 id="transactions.TransactionDetailScreen.valuesSheet.today"
                 values={{

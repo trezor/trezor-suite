@@ -18,7 +18,7 @@ const flexStyle = prepareNativeStyle(() => ({
 }));
 
 const LabelText = (props: TextProps) => (
-    <Text variant="body-sm" color="textSubdued" numberOfLines={1} {...props} />
+    <Text variant="body-sm" color="contentSecondary" numberOfLines={1} {...props} />
 );
 
 type UtxoCoinControlLabelProps = {
@@ -50,14 +50,14 @@ export const UtxoCoinControlLabel = ({
                 address={address}
                 deviceStaticSessionId={deviceStaticSessionId}
                 variant="body-sm"
-                color="textSubdued"
+                color="contentSecondary"
                 style={hasOutputLabel ? undefined : applyStyle(flexStyle)}
                 maxLength={hasOutputLabel ? ADDRESS_LABEL_MAX_LENGTH : undefined}
                 fallback={
                     <AddressFormatter
                         value={address}
                         variant="body-sm"
-                        color="textSubdued"
+                        color="contentSecondary"
                         style={applyStyle(flexStyle)}
                     />
                 }
@@ -70,7 +70,7 @@ export const UtxoCoinControlLabel = ({
                         outputIndex={outputIndex}
                         deviceStaticSessionId={deviceStaticSessionId}
                         variant="body-sm"
-                        color="textSubdued"
+                        color="contentSecondary"
                         style={applyStyle(flexStyle)}
                     />
                 </>

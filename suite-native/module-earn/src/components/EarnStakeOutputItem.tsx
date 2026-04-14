@@ -26,7 +26,7 @@ export const EarnStakeOutputItem = ({
                 title={translate('earn.earnStakeOutputItem.title')}
                 outputState={outputState}
             >
-                <Text variant="body-sm" color="textSubdued">
+                <Text variant="body-sm" color="contentSecondary">
                     <Translation
                         id="earn.earnStakeOutputItem.description"
                         values={{ displaySymbol }}

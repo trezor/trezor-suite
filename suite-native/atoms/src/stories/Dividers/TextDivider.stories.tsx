@@ -29,8 +29,8 @@ export default meta;
 export const TextDivider: TextDividerStory = {
     name: 'Text Divider',
     args: {
-        lineColor: 'textDefault',
-        textColor: 'textDefault',
+        lineColor: 'contentPrimary',
+        textColor: 'contentPrimary',
     },
     argTypes: {
         title: {

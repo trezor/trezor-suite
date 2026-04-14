@@ -68,7 +68,7 @@ export const DebugView = forwardRef<View, ViewProps>(({ style, children, ...prop
         const backgroundColor = interpolateColor(
             progress.value,
             [0, 1],
-            [originalBackgroundColor, utils.colors.backgroundAlertRedBold],
+            [originalBackgroundColor, utils.colors.legacyBackgroundAlertRedBold],
         );
 
         return {

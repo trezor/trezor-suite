@@ -42,7 +42,7 @@ const EarnItemSecondaryDescription = ({
     if (accountKey) {
         return (
             <HStack>
-                <Text color="textSubdued" variant="body-sm">
+                <Text color="contentSecondary" variant="body-sm">
                     {accountLabel}
                 </Text>
                 {formattedAccountType && (
@@ -54,7 +54,7 @@ const EarnItemSecondaryDescription = ({
 
     if (item.type === 'stablecoin-yield') {
         return (
-            <Text color="textSubdued" variant="body-sm">
+            <Text color="contentSecondary" variant="body-sm">
                 <NetworkDisplaySymbolNameFormatter value={item.networkSymbol} />
             </Text>
         );
@@ -123,7 +123,7 @@ export const EarnItemOverviewSection = (item: EarnPromoItem) => {
                     {apyValue != null && (
                         <Text
                             variant={accountKey ? 'body-sm' : 'body-md'}
-                            color={accountKey ? 'textSubdued' : 'textDefault'}
+                            color={accountKey ? 'contentSecondary' : 'contentPrimary'}
                         >
                             <Translation id="earn.apyPercentage" values={{ apy: apyValue }} />
                         </Text>

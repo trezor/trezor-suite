@@ -32,7 +32,7 @@ export const DefaultAccountsListStakingItem = ({
             icon={
                 <RoundedIcon
                     name="piggyBankFilled"
-                    color="iconSubdued"
+                    color="contentSecondary"
                     containerSize={utils.spacings.sp32}
                 />
             }

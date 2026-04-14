@@ -53,7 +53,8 @@ export const SwitchCoinControlButton = ({ accountKey, amount }: SwitchCoinContro
         } as const;
     }, [isCoinControlEnabled, isMissingUtxos]);
 
-    const textColor = isCoinControlEnabled && !isMissingUtxos ? 'textOnPrimary' : 'textOnTertiary';
+    const textColor =
+        isCoinControlEnabled && !isMissingUtxos ? 'contentButtonBrandPrimary' : 'contentNeutral';
 
     return (
         <Button

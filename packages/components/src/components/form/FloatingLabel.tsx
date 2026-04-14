@@ -18,7 +18,7 @@ export const FloatingLabel = styled.label<FloatingLabelProps>`
     transform-origin: left;
     transform: translateY(-50%);
     pointer-events: none;
-    color: ${({ theme }) => theme.textSubdued};
+    color: ${({ theme }) => theme.contentSecondary};
 
     ${({ $isActive }) =>
         $isActive &&
@@ -34,6 +34,6 @@ export const FloatingLabel = styled.label<FloatingLabelProps>`
     ${({ $isDisabled }) =>
         $isDisabled &&
         css`
-            color: ${({ theme }) => theme.textDisabled};
+            color: ${({ theme }) => theme.contentDisabled};
         `}
 `;

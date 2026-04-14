@@ -10,7 +10,7 @@ import { Text } from '../typography/Text/Text';
 const Item = styled.div<{ $isActive: boolean; $isDisabled: boolean; $size: TabsSize }>`
     position: relative;
     padding: ${mapSizeToItemPadding};
-    color: ${({ $isActive, theme }) => !$isActive && theme.textOnTertiary};
+    color: ${({ $isActive, theme }) => !$isActive && theme.contentNeutral};
     white-space: nowrap;
     transition: opacity ${TRANSFORM_OPTIONS};
     cursor: pointer;
@@ -30,7 +30,7 @@ const Item = styled.div<{ $isActive: boolean; $isDisabled: boolean; $size: TabsS
             opacity ${TRANSFORM_OPTIONS};
         pointer-events: none;
         z-index: 0;
-        background: ${({ theme }) => theme.backgroundTertiaryDefaultOnElevation0};
+        background: ${({ theme }) => theme.legacyBackgroundTertiaryDefaultOnElevation0};
     }
 
     &:hover::before,

@@ -23,7 +23,7 @@ const TypeInfo = styled.div`
     display: flex;
     flex: 1;
     margin-left: 1ch;
-    color: ${({ theme }) => theme.textSubdued};
+    color: ${({ theme }) => theme.contentSecondary};
     ${typography['body-xs']}
 `;
 

@@ -15,7 +15,7 @@ const Wrapper = styled.div`
 `;
 
 const Description = styled.div`
-    color: ${({ theme }) => theme.textSubdued};
+    color: ${({ theme }) => theme.contentSecondary};
     margin-bottom: 12px;
     margin-top: 12px;
     ${typography['body-sm']}

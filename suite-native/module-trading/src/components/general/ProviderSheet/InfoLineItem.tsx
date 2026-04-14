@@ -21,15 +21,15 @@ export const InfoLineItem = ({
 }: InfoLineItemProps) => (
     <HStack justifyContent="space-between" alignItems="center" paddingVertical="sp2">
         <Box flex={0}>
-            <Icon name={iconName} size="medium" color={iconColor || 'iconSubdued'} />
+            <Icon name={iconName} size="medium" color={iconColor || 'contentSecondary'} />
         </Box>
         <Box flex={1}>
-            <Text variant="body-sm" color={textColor || 'textSubdued'}>
+            <Text variant="body-sm" color={textColor || 'contentSecondary'}>
                 {text}
             </Text>
         </Box>
         <Box flex={0}>
-            <Text variant="body-sm" color={textColor || 'textDefault'} textAlign="right">
+            <Text variant="body-sm" color={textColor || 'contentPrimary'} textAlign="right">
                 {textRight}
             </Text>
         </Box>

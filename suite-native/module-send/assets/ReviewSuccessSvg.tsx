@@ -5,7 +5,7 @@ import { useNativeStyles } from '@trezor/styles-native';
 
 export const ReviewSuccessSvg = () => {
     const { utils } = useNativeStyles();
-    const lineColor = utils.colors.backgroundPrimaryDefault;
+    const lineColor = utils.colors.legacyBackgroundPrimaryDefault;
 
     return (
         <Svg width="106" height="80" viewBox="0 0 106 80" fill="none">

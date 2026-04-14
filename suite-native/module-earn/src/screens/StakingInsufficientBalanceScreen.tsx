@@ -56,7 +56,7 @@ export const StakingInsufficientBalanceScreen = () => {
                                     values={{ displaySymbol }}
                                 />
                             </Text>
-                            <Text variant="body-md" color="textSubdued" textAlign="center">
+                            <Text variant="body-md" color="contentSecondary" textAlign="center">
                                 <Translation
                                     id="earn.stakingInsufficientBalance.subtitle"
                                     values={{ minAmount, displaySymbol }}

@@ -10,14 +10,14 @@ export type ProgressBarProps = {
 const trackStyle = prepareNativeStyle(utils => ({
     height: 6,
     borderRadius: utils.borders.radii.r4,
-    backgroundColor: utils.colors.backgroundPrimarySubtleOnElevation1,
+    backgroundColor: utils.colors.legacyBackgroundPrimarySubtleOnElevation1,
     overflow: 'hidden',
 }));
 
 const fillStyle = prepareNativeStyle((utils, { ratio }: { ratio: number }) => ({
     height: '100%',
     width: `${Math.max(0, Math.min(100, ratio * 100)).toFixed(0)}%` as `${number}%`,
-    backgroundColor: utils.colors.iconPrimaryDefault,
+    backgroundColor: utils.colors.contentBrand,
     borderRadius: utils.borders.radii.r4,
 }));
 

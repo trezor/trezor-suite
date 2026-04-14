@@ -73,7 +73,7 @@ export const TransactionDetailInputsSheetSection = ({
         <Box>
             {G.isString(header) ? (
                 <Box paddingLeft="sp8" marginVertical="sp8">
-                    <Text color="textSubdued" variant="body-sm">
+                    <Text color="contentSecondary" variant="body-sm">
                         {header}
                     </Text>
                 </Box>
@@ -95,7 +95,7 @@ export const TransactionDetailInputsSheetSection = ({
                                     />
                                 ))}
                             </Box>
-                            <Icon name="caretCircleRight" color="iconDisabled" size="medium" />
+                            <Icon name="caretCircleRight" color="contentDisabled" size="medium" />
                             <Box style={applyStyle(addressAmountColumnStyle)}>
                                 {outputs.map(({ address, amount }, index) => (
                                     <TransactionAddressAmount

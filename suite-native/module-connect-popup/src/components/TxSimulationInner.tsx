@@ -120,7 +120,7 @@ export function TxSimulationInner({ action, account, source }: TxSimulationInner
                     <VStack flex={1} spacing="sp4">
                         <Text>{source.manifest?.appName ?? source.origin}</Text>
                         {source.manifest?.appName && (
-                            <Text color="textSubdued">{source.origin}</Text>
+                            <Text color="contentSecondary">{source.origin}</Text>
                         )}
                     </VStack>
                 </HStack>
@@ -143,7 +143,7 @@ export function TxSimulationInner({ action, account, source }: TxSimulationInner
                         <Loader
                             size="large"
                             title={<Translation id="moduleConnectPopup.connectionStatus.loading" />}
-                            color="textSubdued"
+                            color="contentSecondary"
                         />
                     </HStack>
                 </Card>
@@ -187,7 +187,7 @@ export function TxSimulationInner({ action, account, source }: TxSimulationInner
                                 <Text>
                                     <Translation id="moduleConnectPopup.simulation.contractInfo" />
                                 </Text>
-                                <Icon name="caretDown" size="small" color="textSubdued" />
+                                <Icon name="caretDown" size="small" color="contentSecondary" />
                             </HStack>
                         </PressableOpacity>
 
@@ -204,7 +204,11 @@ export function TxSimulationInner({ action, account, source }: TxSimulationInner
                                         <Text>
                                             <Translation id="moduleConnectPopup.simulation.feeInfo" />
                                         </Text>
-                                        <Icon name="caretDown" size="small" color="textSubdued" />
+                                        <Icon
+                                            name="caretDown"
+                                            size="small"
+                                            color="contentSecondary"
+                                        />
                                     </HStack>
                                 </PressableOpacity>
                             </>

@@ -37,7 +37,7 @@ export const EarnClaimAlert = ({ claimableAmount, symbol, onClaimPress }: EarnCl
                     />
                 }
                 buttonLabel={
-                    <Text variant="body-sm-strong" color="textDefaultInverted">
+                    <Text variant="body-sm-strong" color="contentPrimaryInverse">
                         <Translation id="earn.claimableCard.claimButton" />
                     </Text>
                 }

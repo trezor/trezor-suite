@@ -33,7 +33,7 @@ const Header = styled.div`
 const TransactionCount = styled.div`
     margin-top: ${spacingsPx.xxxs};
     ${typography['body-sm']}
-    color: ${({ theme }) => theme.textSubdued};
+    color: ${({ theme }) => theme.contentSecondary};
 `;
 
 export const TradingTransactionsList = () => {

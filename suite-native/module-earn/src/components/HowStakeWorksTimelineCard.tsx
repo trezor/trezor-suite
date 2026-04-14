@@ -38,12 +38,12 @@ export const HowStakeWorksTimelineCard = ({
     return (
         <>
             <PressableOpacity style={applyStyle(timelineCardPressableStyle)} onPress={openModal}>
-                <Card borderColor="borderElevation1" noShadow>
+                <Card borderColor="borderNeutral" noShadow>
                     <HStack alignItems="center" justifyContent="space-between">
                         <Text variant="body-md-strong">
                             <Translation id="earn.howStakeWorksScreen.timelineCardTitle" />
                         </Text>
-                        <Icon name="caretDown" color="textDefault" />
+                        <Icon name="caretDown" color="contentPrimary" />
                     </HStack>
                 </Card>
             </PressableOpacity>

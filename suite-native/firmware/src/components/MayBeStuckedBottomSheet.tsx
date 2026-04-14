@@ -45,7 +45,7 @@ export const MayBeStuckedBottomSheet = ({
                             <Text textAlign="center" variant="headline-sm">
                                 <Translation id="firmware.stuckedBottomSheet.part1.title" />
                             </Text>
-                            <Text textAlign="center" color="textSubdued">
+                            <Text textAlign="center" color="contentSecondary">
                                 <Translation id="firmware.stuckedBottomSheet.part1.description" />
                             </Text>
                         </VStack>
@@ -68,7 +68,7 @@ export const MayBeStuckedBottomSheet = ({
                             <Text variant="headline-sm">
                                 <Translation id="firmware.stuckedBottomSheet.part2.title" />
                             </Text>
-                            <Text color="textSubdued">
+                            <Text color="contentSecondary">
                                 <Translation id="firmware.stuckedBottomSheet.part2.subtitle" />
                             </Text>
                         </VStack>

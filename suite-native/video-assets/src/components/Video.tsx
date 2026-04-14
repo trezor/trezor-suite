@@ -52,7 +52,7 @@ export const Video = ({ name, aspectRatio = 1 }: VideoProps) => {
             {isLoading && (
                 <ActivityIndicator
                     size="large"
-                    color={utils.colors.borderSecondary}
+                    color={utils.colors.borderBrand}
                     style={applyStyle(activityIndicatorStyle)}
                 />
             )}

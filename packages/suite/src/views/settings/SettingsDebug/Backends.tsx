@@ -61,7 +61,7 @@ const Title = styled.div`
 
 const Subtitle = styled.div<{ $error?: boolean }>`
     ${typography['body-sm']}
-    color: ${({ $error, theme }) => ($error ? theme.textAlertRed : theme.textSubdued)};
+    color: ${({ $error, theme }) => ($error ? theme.contentCritical : theme.contentSecondary)};
 `;
 
 type BackendItemProps = ConnectionStatus & {

@@ -22,7 +22,7 @@ export const SellToFiatTradePreviewCard = ({ quote }: SellToFiatTradePreviewCard
             paymentMethod={quote.paymentMethod}
             amount={
                 !!toStringValue && (
-                    <Text variant="body-sm" color="textSecondaryHighlight">
+                    <Text variant="body-sm" color="contentBrand">
                         +{toStringValue}
                     </Text>
                 )

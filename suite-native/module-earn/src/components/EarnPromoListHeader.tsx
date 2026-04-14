@@ -26,11 +26,11 @@ export const EarnPromoListHeader = React.memo(({ item }: EarnPromoListHeaderProp
     const sectionTitleTranslationId = item === 'staking' ? 'earn.staking' : 'earn.stablecoinYield';
 
     return (
-        <Card borderColor="borderElevation1" noPadding noShadow style={applyStyle(cardStyle)}>
+        <Card borderColor="borderNeutral" noPadding noShadow style={applyStyle(cardStyle)}>
             <Box paddingHorizontal="sp20" paddingVertical="sp8">
                 <HStack alignItems="center" spacing="sp8">
-                    <Icon name={sectionIcon} color="iconSubdued" size="mediumLarge" />
-                    <Text variant="body-md" color="textSubdued">
+                    <Icon name={sectionIcon} color="contentSecondary" size="mediumLarge" />
+                    <Text variant="body-md" color="contentSecondary">
                         <Translation id={sectionTitleTranslationId} />
                     </Text>
                 </HStack>

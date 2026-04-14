@@ -24,7 +24,7 @@ export const SendAmountCurrencyLabelWrapper = ({
     children: ReactNode;
     isDisabled: boolean;
 }) => {
-    const textColor: Color = isDisabled ? 'textSubdued' : 'textDefault';
+    const textColor: Color = isDisabled ? 'contentSecondary' : 'contentPrimary';
 
     return <Text color={textColor}>{children}</Text>;
 };

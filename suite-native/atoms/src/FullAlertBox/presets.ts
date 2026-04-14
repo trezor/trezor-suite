@@ -21,32 +21,32 @@ export type FullAlertStyles = {
 
 export const variantToColorMap = {
     info: {
-        backgroundColor: 'backgroundAlertBlueSubtleOnElevation1',
-        borderColor: 'backgroundAlertBlueSubtleOnElevationNegative',
+        backgroundColor: 'legacyBackgroundAlertBlueSubtleOnElevation1',
+        borderColor: 'legacyBackgroundAlertBlueSubtleOnElevationNegative',
         primaryButtonColorProps: { intent: 'info', priority: 'primary' },
         secondaryButtonColorProps: { intent: 'info', priority: 'secondary' },
     },
     success: {
-        backgroundColor: 'backgroundPrimarySubtleOnElevation1',
-        borderColor: 'backgroundPrimarySubtleOnElevationNegative',
+        backgroundColor: 'legacyBackgroundPrimarySubtleOnElevation1',
+        borderColor: 'legacyBackgroundPrimarySubtleOnElevationNegative',
         primaryButtonColorProps: { intent: 'brand', priority: 'primary' },
         secondaryButtonColorProps: { intent: 'brand', priority: 'secondary' },
     },
     warning: {
-        backgroundColor: 'backgroundAlertYellowSubtleOnElevation1',
-        borderColor: 'backgroundAlertYellowSubtleOnElevationNegative',
+        backgroundColor: 'legacyBackgroundAlertYellowSubtleOnElevation1',
+        borderColor: 'legacyBackgroundAlertYellowSubtleOnElevationNegative',
         primaryButtonColorProps: { intent: 'warning', priority: 'primary' },
         secondaryButtonColorProps: { intent: 'warning', priority: 'secondary' },
     },
     neutral: {
-        backgroundColor: 'backgroundTertiaryDefaultOnElevation1',
-        borderColor: 'backgroundTertiaryDefaultOnElevation0',
+        backgroundColor: 'legacyBackgroundTertiaryDefaultOnElevation1',
+        borderColor: 'legacyBackgroundTertiaryDefaultOnElevation0',
         primaryButtonColorProps: { intent: 'brand', priority: 'primary' },
         secondaryButtonColorProps: { intent: 'neutral', priority: 'secondary' },
     },
     critical: {
-        backgroundColor: 'backgroundAlertRedSubtleOnElevation1',
-        borderColor: 'backgroundAlertRedSubtleOnElevationNegative',
+        backgroundColor: 'legacyBackgroundAlertRedSubtleOnElevation1',
+        borderColor: 'legacyBackgroundAlertRedSubtleOnElevationNegative',
         primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
         secondaryButtonColorProps: { intent: 'critical', priority: 'secondary' },
     },

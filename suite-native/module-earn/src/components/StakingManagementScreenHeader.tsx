@@ -43,7 +43,7 @@ export const StakingManagementScreenHeader = () => {
                                 accountDescriptor={accountDescriptor}
                                 networkSymbol={networkSymbol}
                                 deviceStaticSessionId={deviceStaticSessionId}
-                                color="textSubdued"
+                                color="contentSecondary"
                                 variant="body-sm"
                             />
                         </Text>

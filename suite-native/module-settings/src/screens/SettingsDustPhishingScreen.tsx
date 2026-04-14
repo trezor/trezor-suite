@@ -57,7 +57,7 @@ export const SettingsDustPhishingScreen = () => {
             }
         >
             <VStack spacing="sp16">
-                <Card borderColor="borderElevation1" noPadding>
+                <Card borderColor="borderNeutral" noPadding>
                     <PressableOpacity
                         onPress={() => onSwitchChange(!dustPhishingIsEnabled)}
                         accessibilityLabel=""
@@ -81,7 +81,7 @@ export const SettingsDustPhishingScreen = () => {
                 </Card>
 
                 {dustPhishingIsEnabled && (
-                    <Card borderColor="borderElevation1" noPadding>
+                    <Card borderColor="borderNeutral" noPadding>
                         <VStack margin="sp16" spacing="sp12">
                             <HStack justifyContent="space-between" flex={1}>
                                 <VStack flex={1} spacing="sp2">
@@ -89,7 +89,7 @@ export const SettingsDustPhishingScreen = () => {
                                         <Translation id="moduleSettings.advanced.dustPhishing.dustThresholdTitle" />
                                     </Text>
 
-                                    <Text variant="body-sm" color="textSubdued">
+                                    <Text variant="body-sm" color="contentSecondary">
                                         <Translation id="moduleSettings.advanced.dustPhishing.dustThresholdDescription" />
                                     </Text>
                                 </VStack>

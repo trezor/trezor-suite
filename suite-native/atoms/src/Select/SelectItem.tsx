@@ -37,17 +37,17 @@ const selectItemContentStyle = prepareNativeStyle<SelectItemStyleProps>(
         padding: utils.spacings.sp16,
         borderWidth: utils.borders.widths.small,
         borderRadius: utils.borders.radii.r12,
-        borderColor: utils.colors.borderOnElevation1,
-        backgroundColor: utils.colors.backgroundSurfaceElevation1,
-        color: utils.colors.textDefault,
+        borderColor: utils.colors.borderNeutral,
+        backgroundColor: utils.colors.surfaceFillRaised,
+        color: utils.colors.contentPrimary,
         extend: [
             {
                 condition: isSelected,
                 style: {
                     margin: 0,
                     borderWidth: utils.borders.widths.large,
-                    borderColor: utils.colors.backgroundPrimaryDefault,
-                    color: utils.colors.textDefault,
+                    borderColor: utils.colors.legacyBackgroundPrimaryDefault,
+                    color: utils.colors.contentPrimary,
                 },
             },
         ],

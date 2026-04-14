@@ -19,13 +19,13 @@ type CompoundIcon = {
 
 const BASE_ICON: CompoundIcon = {
     name: 'piggyBank',
-    color: 'textSubdued',
+    color: 'contentSecondary',
     size: 'small',
 };
 
 const WARNING_ICON: CompoundIcon = {
     name: 'warning',
-    color: 'iconAlertYellow',
+    color: 'contentWarning',
     size: 'small',
 };
 

@@ -56,7 +56,7 @@ export const SecuritySealDescription = () => {
                                 label={linkChunk}
                                 isUnderlined
                                 textVariant="body-md-strong"
-                                textColor="backgroundSecondaryDefault"
+                                textColor="legacyBackgroundSecondaryDefault"
                             />
                         ),
                     }}

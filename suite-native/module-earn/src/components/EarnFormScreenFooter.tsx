@@ -13,11 +13,11 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 const screenFooterStyle = prepareNativeStyle(utils => ({
     paddingHorizontal: utils.spacings.sp16,
     paddingBottom: 0,
-    backgroundColor: utils.colors.backgroundSurfaceElevation0,
+    backgroundColor: utils.colors.surfaceFillPage,
 }));
 
 const rewardsBoxStyle = prepareNativeStyle(utils => ({
-    backgroundColor: utils.colors.backgroundPrimarySubtleOnElevationNegative,
+    backgroundColor: utils.colors.legacyBackgroundPrimarySubtleOnElevationNegative,
     borderTopLeftRadius: utils.borders.radii.r16,
     borderTopRightRadius: utils.borders.radii.r16,
     borderBottomLeftRadius: utils.borders.radii.r24,
@@ -68,10 +68,10 @@ export const EarnFormScreenFooter = ({
             <Box style={applyStyle(screenFooterStyle)}>
                 <Box style={applyStyle(rewardsBoxStyle)}>
                     <VStack spacing="sp4" paddingVertical="sp12" alignItems="center">
-                        <Text variant="body-sm" color="textDefault">
+                        <Text variant="body-sm" color="contentPrimary">
                             <Translation id="earn.earnFormScreen.estimatedRewardsLabel" />
                         </Text>
-                        <Text variant="headline-sm" color="textPrimaryDefault">
+                        <Text variant="headline-sm" color="contentBrand">
                             {estimatedRewards ?? (
                                 <Translation id="earn.earnFormScreen.estimatedRewardsPlaceholder" />
                             )}

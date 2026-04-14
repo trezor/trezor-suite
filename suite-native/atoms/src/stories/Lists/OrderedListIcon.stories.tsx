@@ -31,10 +31,10 @@ export const OrderedListIcon: OrderedListIconStory = {
     name: 'OrderedListIcon',
     args: {
         iconNumber: 1,
-        iconBackgroundColor: 'backgroundTertiaryDefaultOnElevation1',
-        iconBorderColor: 'borderElevation0',
+        iconBackgroundColor: 'legacyBackgroundTertiaryDefaultOnElevation1',
+        iconBorderColor: 'borderNeutral',
         iconBorderRadius: 'r12',
-        iconColor: 'textDefault',
+        iconColor: 'contentPrimary',
         iconSize: 'mediumLarge',
     },
     argTypes: {

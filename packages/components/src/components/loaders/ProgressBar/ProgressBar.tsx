@@ -46,11 +46,11 @@ export const ProgressBar = ({
 
     return (
         <Wrapper
-            $color={backgroundColor || theme.backgroundNeutralSubdued}
+            $color={backgroundColor || theme.elementFillNeutralBold}
             data-testid={dataTestId}
             className={className}
         >
-            <Value $max={max} $value={value} $color={foregroundColor || theme.iconPrimaryDefault} />
+            <Value $max={max} $value={value} $color={foregroundColor || theme.contentBrand} />
         </Wrapper>
     );
 };

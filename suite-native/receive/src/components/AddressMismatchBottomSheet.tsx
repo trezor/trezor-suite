@@ -37,10 +37,10 @@ export const AddressMismatchBottomSheet = ({ onClose, ref }: AddressMismatchBott
                     <Text variant="body-sm-strong">
                         <Translation id="moduleReceive.bottomSheets.addressMismatch.remember" />
                     </Text>
-                    <BulletListItem color="textSubdued">
+                    <BulletListItem color="contentSecondary">
                         <Translation id="moduleReceive.bottomSheets.addressMismatch.trustDevice" />
                     </BulletListItem>
-                    <BulletListItem color="textSubdued">
+                    <BulletListItem color="contentSecondary">
                         <Translation id="moduleReceive.bottomSheets.addressMismatch.contactSupport" />
                     </BulletListItem>
                 </VStack>

@@ -40,7 +40,7 @@ const switchContainerStyle = prepareNativeStyle(utils => ({
     borderRadius: utils.borders.radii.round,
     flexDirection: 'row',
     borderWidth: SWITCH_CONTAINER_BORDER_WIDTH,
-    borderColor: utils.colors.borderElevation0,
+    borderColor: utils.colors.borderNeutral,
 }));
 
 const switchCircleStyle = prepareNativeStyle(utils => ({
@@ -72,7 +72,7 @@ const useAnimationStyles = ({ isChecked }: Pick<SwitchProps, 'isChecked'>) => {
         backgroundColor: interpolateColor(
             translateX.value,
             [0, SWITCH_CIRCLE_TRACK_WIDTH],
-            [utils.colors.backgroundNeutralSubdued, utils.colors.backgroundPrimaryDefault],
+            [utils.colors.elementFillNeutralBold, utils.colors.legacyBackgroundPrimaryDefault],
         ),
     }));
 

@@ -31,7 +31,7 @@ export const MyAssetListSectionHeader = ({ account, isFirst }: MyAssetListSectio
             padding="sp12"
         >
             <HStack alignItems="center" spacing="sp8">
-                <Text variant="body-md" color="textDefault">
+                <Text variant="body-md" color="contentPrimary">
                     <AccountLabel account={account} />
                 </Text>
                 {formattedAccountType && (

@@ -30,7 +30,7 @@ import { AnalyticsInfoRow } from '../components/AnalyticsInfoRow';
 const consentWrapperStyle = prepareNativeStyle(utils => ({
     padding: utils.spacings.sp16,
     borderRadius: utils.borders.radii.r16,
-    backgroundColor: utils.colors.backgroundTertiaryDefaultOnElevation1,
+    backgroundColor: utils.colors.legacyBackgroundTertiaryDefaultOnElevation1,
 }));
 
 const reportAnalyticsOnboardingCompleted = (

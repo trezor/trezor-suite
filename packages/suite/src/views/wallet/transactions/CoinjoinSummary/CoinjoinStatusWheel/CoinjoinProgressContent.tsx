@@ -19,7 +19,7 @@ import {
 export const Container = styled.div<{ $isWide: boolean }>`
     width: ${({ $isWide }) => `calc(100% - ${$isWide ? 12 : 8}px)`};
     height: ${({ $isWide }) => `calc(100% - ${$isWide ? 12 : 8}px)`};
-    background: ${({ theme }) => theme.backgroundNeutralBoldInverted};
+    background: ${({ theme }) => theme.legacyBackgroundNeutralBoldInverted};
     border-radius: 50%;
     transition:
         background 0.15s ease-out,
@@ -41,7 +41,7 @@ const CenteringContainer = styled.div`
 
 const AllPrivateContent = styled.div`
     padding-top: ${spacingsPx.xxxs};
-    color: ${({ theme }) => theme.textPrimaryDefault};
+    color: ${({ theme }) => theme.contentBrand};
 `;
 
 const ProgressPercentage = styled.p`
@@ -56,7 +56,7 @@ const TooltipChildren = styled.div`
 
 const TimeLeft = styled.p`
     max-width: 80%;
-    color: ${({ theme }) => theme.textDefault};
+    color: ${({ theme }) => theme.contentPrimary};
     ${typography['body-md-strong']}
 `;
 
@@ -87,7 +87,7 @@ export const CoinjoinProgressContent = ({
     const getProgressContent = () => {
         const iconConfig = {
             size: 25,
-            color: 'iconDefault' as const,
+            color: 'contentPrimary' as const,
         };
 
         const isLoadingIndicatorShown =
@@ -197,7 +197,7 @@ export const CoinjoinProgressContent = ({
                     name="play"
                     margin={{ bottom: spacings.xxs }}
                     {...iconConfig}
-                    color="iconPrimaryDefault"
+                    color="contentBrand"
                 />
                 <Translation id="TR_START" />
             </>

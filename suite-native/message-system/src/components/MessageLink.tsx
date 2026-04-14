@@ -25,8 +25,8 @@ export const MessageLink = ({
             href={messageLink}
             label={messageLinkLabel}
             isUnderlined
-            textColor="textDefault"
-            textPressedColor="textSubdued"
+            textColor="contentPrimary"
+            textPressedColor="contentSecondary"
             textVariant={textVariant}
         />
     );

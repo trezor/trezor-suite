@@ -46,7 +46,7 @@ const cryptoIconStyle = prepareNativeStyle(utils => ({
     right: -utils.spacings.sp2,
     bottom: -utils.spacings.sp2,
     padding: utils.spacings.sp2,
-    backgroundColor: utils.colors.backgroundSurfaceElevation1,
+    backgroundColor: utils.colors.surfaceFillRaised,
     borderRadius: utils.borders.radii.round,
 }));
 
@@ -83,7 +83,11 @@ export const TransactionIcon = ({
                 containerSize={containerSize}
             />
             {isAnimated && (
-                <CircularSpinner size={containerSize} color="backgroundAlertYellowBold" width={3} />
+                <CircularSpinner
+                    size={containerSize}
+                    color="legacyBackgroundAlertYellowBold"
+                    width={3}
+                />
             )}
             {iconSymbol && (
                 <Box style={applyStyle(cryptoIconStyle)}>

@@ -64,7 +64,7 @@ export const SettingsAppLogScreen = () => {
                                         onChange={setIncludeSensitiveInfo}
                                     />
                                 </HStack>
-                                <Text variant="body-sm" color="textSubdued">
+                                <Text variant="body-sm" color="contentSecondary">
                                     <Translation id="moduleSettings.appLog.sensitiveDataToggle.subtitle" />
                                 </Text>
                             </VStack>

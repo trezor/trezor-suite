@@ -21,11 +21,11 @@ export const DeviceItemIcon = ({ deviceId, iconSize = ICON_SIZE }: DeviceItemIco
     );
 
     if (deviceId === PORTFOLIO_TRACKER_DEVICE_ID) {
-        return <Icon name="database" color="iconDefault" size={iconSize} />;
+        return <Icon name="database" color="contentPrimary" size={iconSize} />;
     }
     if (deviceModel !== null) {
         return <DeviceModelIcon deviceModel={deviceModel} size={iconSize} />;
     }
 
-    return <Icon name="trezorLogo" color="iconDefault" size={iconSize} />;
+    return <Icon name="trezorLogo" color="contentPrimary" size={iconSize} />;
 };

@@ -311,7 +311,7 @@ export const TransactionList = ({
                     <RefreshControl
                         refreshing={isRefreshing}
                         onRefresh={handleOnRefresh}
-                        colors={[colors.backgroundPrimaryDefault]}
+                        colors={[colors.legacyBackgroundPrimaryDefault]}
                     />
                 }
                 refreshing={isRefreshing}

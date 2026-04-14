@@ -16,7 +16,7 @@ interface TaprootBannerProps {
 }
 
 const Dark = styled.span`
-    color: ${({ theme }) => theme.textDefault};
+    color: ${({ theme }) => theme.contentPrimary};
 `;
 
 export const TaprootBanner = ({ account }: TaprootBannerProps) => {

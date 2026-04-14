@@ -87,11 +87,11 @@ type InputStyleProps = {
 const inputWrapperStyle = prepareNativeStyle<InputWrapperStyleProps>(
     (utils, { hasError, hasWarning, isDisabled, isFocused, elevation }) => ({
         backgroundColor: isDisabled
-            ? utils.colors.backgroundNeutralSubtleOnElevation1
-            : utils.colors.backgroundNeutralSubtleOnElevation0,
+            ? utils.colors.legacyBackgroundNeutralSubtleOnElevation1
+            : utils.colors.legacyBackgroundNeutralSubtleOnElevation0,
         borderColor: isDisabled
-            ? utils.colors.backgroundNeutralSubtleOnElevation1
-            : utils.colors.borderInputDefault,
+            ? utils.colors.legacyBackgroundNeutralSubtleOnElevation1
+            : utils.colors.elementBorderField,
         borderWidth: utils.borders.widths.small,
         borderRadius: utils.borders.radii.r12,
         margin: utils.borders.widths.small,
@@ -101,7 +101,7 @@ const inputWrapperStyle = prepareNativeStyle<InputWrapperStyleProps>(
             {
                 condition: isFocused,
                 style: {
-                    borderColor: utils.colors.borderInputFocus,
+                    borderColor: utils.colors.elementBorderFieldFocused,
                     borderWidth: utils.borders.widths.large,
                     margin: 0,
                 },
@@ -109,22 +109,22 @@ const inputWrapperStyle = prepareNativeStyle<InputWrapperStyleProps>(
             {
                 condition: hasWarning,
                 style: {
-                    borderColor: utils.colors.backgroundAlertYellowBold,
+                    borderColor: utils.colors.legacyBackgroundAlertYellowBold,
                     borderWidth: utils.borders.widths.large,
                 },
             },
             {
                 condition: hasError,
                 style: {
-                    borderColor: utils.colors.borderAlertRed,
-                    backgroundColor: utils.colors.backgroundAlertRedSubtleOnElevation1,
+                    borderColor: utils.colors.elementBorderFieldError,
+                    backgroundColor: utils.colors.legacyBackgroundAlertRedSubtleOnElevation1,
                 },
             },
             {
                 condition: elevation === '1',
                 style: {
-                    borderColor: utils.colors.backgroundNeutralSubtleOnElevation1,
-                    backgroundColor: utils.colors.backgroundNeutralSubtleOnElevation1,
+                    borderColor: utils.colors.legacyBackgroundNeutralSubtleOnElevation1,
+                    backgroundColor: utils.colors.legacyBackgroundNeutralSubtleOnElevation1,
                 },
             },
         ],
@@ -147,7 +147,7 @@ const inputStyle = prepareNativeStyle<InputStyleProps>(
             alignItems: 'center',
             justifyContent: 'center',
             minHeight,
-            color: isDisabled ? utils.colors.textSubdued : utils.colors.textDefault,
+            color: isDisabled ? utils.colors.contentSecondary : utils.colors.contentPrimary,
             left: isLeftIconDisplayed ? utils.spacings.sp24 : 0,
             paddingRight: isRightIconDisplayed ? 40 : 0,
             borderWidth: 0,
@@ -169,7 +169,7 @@ const inputHitSlop = {
 const labelStyle = prepareNativeStyle(
     (utils, { isLabelMinimized, isLeftIconDisplayed }: InputLabelStyleProps) => ({
         ...D.deleteKey(utils.typography['body-md'], 'fontSize'),
-        color: utils.colors.textSubdued,
+        color: utils.colors.contentSecondary,
         position: 'absolute',
         top: INPUT_LABEL_TOP_PADDING,
         left: INPUT_WRAPPER_PADDING_HORIZONTAL + (isLeftIconDisplayed ? utils.spacings.sp24 : 0),
@@ -188,7 +188,7 @@ const placeholderStyle = prepareNativeStyle(
         position: 'absolute',
         top: INPUT_VERTICAL_PADDING + utils.borders.widths.large,
         left: INPUT_WRAPPER_PADDING_HORIZONTAL + (isLeftIconDisplayed ? utils.spacings.sp24 : 0),
-        color: utils.colors.textSubdued,
+        color: utils.colors.contentSecondary,
     }),
 );
 
@@ -341,7 +341,7 @@ export const Input = forwardRef<TextInput, InputProps>(
                                 isLeftIconDisplayed,
                             })}
                         >
-                            <Text color="textSubdued">{placeholder}</Text>
+                            <Text color="contentSecondary">{placeholder}</Text>
                         </Animated.View>
                     )}
                     <Box flexDirection="row" alignItems="center">

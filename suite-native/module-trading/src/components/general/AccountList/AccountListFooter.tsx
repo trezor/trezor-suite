@@ -6,7 +6,7 @@ const footerStyle = prepareNativeStyle(utils => ({
     paddingTop: utils.spacings.sp8,
     paddingBottom: utils.spacings.sp16,
     flex: 1,
-    backgroundColor: utils.colors.backgroundSurfaceElevation1,
+    backgroundColor: utils.colors.surfaceFillRaised,
     borderBottomLeftRadius: utils.borders.radii.r16,
     borderBottomRightRadius: utils.borders.radii.r16,
 }));

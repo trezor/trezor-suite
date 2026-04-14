@@ -35,16 +35,8 @@ type BoxSkeletonProps = {
 const ANIMATION_DURATION = 1200;
 
 const elevationToGradientColors = {
-    0: [
-        'backgroundSurfaceElevation0',
-        'backgroundSurfaceElevationNegative',
-        'backgroundSurfaceElevation0',
-    ],
-    1: [
-        'backgroundSurfaceElevation1',
-        'backgroundSurfaceElevationNegative',
-        'backgroundSurfaceElevation1',
-    ],
+    0: ['surfaceFillPage', 'surfaceFillSunken', 'surfaceFillPage'],
+    1: ['surfaceFillRaised', 'surfaceFillSunken', 'surfaceFillRaised'],
 } as const satisfies Record<SurfaceElevation, Color[]>;
 
 export const BoxSkeleton = ({

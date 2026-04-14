@@ -28,8 +28,8 @@ const Container = styled.div`
     height: ${HEADER_HEIGHT};
     min-height: ${HEADER_HEIGHT};
     padding: ${spacingsPx.xs} ${spacingsPx.md};
-    background: ${({ theme }) => theme.backgroundSurfaceElevation0};
-    border-bottom: 1px solid ${({ theme }) => theme.borderElevation1};
+    background: ${({ theme }) => theme.surfaceFillPage};
+    border-bottom: 1px solid ${({ theme }) => theme.borderNeutral};
     overflow: hidden;
     z-index: ${zIndices.pageHeader};
 `;

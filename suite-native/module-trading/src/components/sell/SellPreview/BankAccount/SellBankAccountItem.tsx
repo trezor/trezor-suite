@@ -56,7 +56,7 @@ export const SellBankAccountItem = ({
     <TradeInfoRow onPress={onPress} noBorder={noBorder} testID={BANK_ACCOUNT_ITEM_TEST_ID}>
         <VStack spacing={0}>
             <Text variant="body-sm">{bankAccount.holder}</Text>
-            <Text variant="body-sm" color="textSubdued">
+            <Text variant="body-sm" color="contentSecondary">
                 {sellUtils.formatIban(bankAccount.bankAccount)}
             </Text>
             {bankAccount.verified ? (
@@ -65,14 +65,14 @@ export const SellBankAccountItem = ({
                         name="check"
                         size="mediumLarge"
                         testID="check-icon"
-                        color="iconPrimaryDefault"
+                        color="contentBrand"
                     />
-                    <Text variant="body-sm" color="textPrimaryDefault">
+                    <Text variant="body-sm" color="contentBrand">
                         <Translation id="moduleTrading.tradingSellPreviewScreen.verified" />
                     </Text>
                 </HStack>
             ) : (
-                <Text variant="body-sm" color="textSubdued">
+                <Text variant="body-sm" color="contentSecondary">
                     <Translation id="moduleTrading.tradingSellPreviewScreen.notVerified" />
                 </Text>
             )}

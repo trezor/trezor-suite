@@ -44,7 +44,7 @@ export const CoinjoinBalanceSection = ({ accountKey }: CoinjoinBalanceSectionPro
             return {
                 headingId: 'TR_ERROR',
                 messageId: 'TR_ANONYMITY_SET_ERROR',
-                headingColor: theme.textAlertRed,
+                headingColor: theme.contentCritical,
             };
         }
 

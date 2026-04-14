@@ -21,7 +21,7 @@ const headerSectionStyle = prepareNativeStyle(utils => ({
     paddingVertical: utils.spacings.sp12,
     paddingHorizontal: utils.spacings.sp16,
     borderBottomWidth: utils.borders.widths.small,
-    borderBottomColor: utils.colors.borderElevation1,
+    borderBottomColor: utils.colors.borderNeutral,
 }));
 
 const itemsSectionStyle = prepareNativeStyle(utils => ({
@@ -92,14 +92,14 @@ export const EarnConsentsDelegatingCard = ({
     return (
         <Card noPadding>
             <HStack spacing="sp8" alignItems="center" style={applyStyle(headerSectionStyle)}>
-                <Icon name="arrowBendRightUp" size="mediumLarge" color="iconSubdued" />
-                <Text variant="body-sm" color="textSubdued">
+                <Icon name="arrowBendRightUp" size="mediumLarge" color="contentSecondary" />
+                <Text variant="body-sm" color="contentSecondary">
                     <Translation id="earn.earnConsentsScreen.delegatingCard.title" />
                 </Text>
             </HStack>
             <Animated.View onLayout={handleLayout} style={expandableStyle}>
                 <VStack spacing="sp16" style={applyStyle(itemsSectionStyle)}>
-                    <EarnConsentsItem iconName="everstakeLogo" color="textDefault">
+                    <EarnConsentsItem iconName="everstakeLogo" color="contentPrimary">
                         <Translation
                             id="earn.earnConsentsScreen.delegatingCard.firstItem"
                             values={{
@@ -109,7 +109,7 @@ export const EarnConsentsDelegatingCard = ({
                             }}
                         />
                     </EarnConsentsItem>
-                    <EarnConsentsItem iconName="lock" color="textDefault">
+                    <EarnConsentsItem iconName="lock" color="contentPrimary">
                         <Translation id="earn.earnConsentsScreen.delegatingCard.secondItem" />
                     </EarnConsentsItem>
                 </VStack>

@@ -76,7 +76,7 @@ const Option = styled.div<{ $isSelected: boolean; $isDisabled: boolean }>`
 
     &:hover {
         color: ${({ theme, $isSelected, $isDisabled }) =>
-            !$isSelected && !$isDisabled && theme.textDefault};
+            !$isSelected && !$isDisabled && theme.contentPrimary};
     }
 `;
 

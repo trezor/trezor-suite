@@ -43,7 +43,7 @@ const Wrapper = styled.div<{ $isSidebarCollapsed?: boolean }>`
 
     &:hover {
         ${CaretContainer} {
-            background: ${({ theme }) => theme.backgroundTertiaryPressedOnElevation0};
+            background: ${({ theme }) => theme.legacyBackgroundTertiaryPressedOnElevation0};
         }
     }
 `;

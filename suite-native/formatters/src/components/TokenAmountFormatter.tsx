@@ -20,7 +20,7 @@ export const TokenAmountFormatter = ({
     isDiscreetText = true,
     decimals = 0,
     variant = 'body-sm',
-    color = 'textSubdued',
+    color = 'contentSecondary',
     isPhishingTransaction = false,
     ...rest
 }: TokenAmountFormatterProps) => {

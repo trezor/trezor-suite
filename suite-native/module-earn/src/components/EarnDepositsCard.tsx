@@ -41,10 +41,10 @@ export const EarnDepositsCard = ({
     return (
         <>
             <Box marginBottom="sp32">
-                <Card borderColor="borderElevation1" noPadding testID="@earn/deposits-card">
+                <Card borderColor="borderNeutral" noPadding testID="@earn/deposits-card">
                     <Box style={applyStyle(cardHeaderStyle)}>
                         <VStack spacing={2}>
-                            <Text variant="body-md" color="textSubdued">
+                            <Text variant="body-md" color="contentSecondary">
                                 <Translation id="earn.earnScreen.depositsCard.title" />
                             </Text>
                             <BaseCurrencyAmountFormatter

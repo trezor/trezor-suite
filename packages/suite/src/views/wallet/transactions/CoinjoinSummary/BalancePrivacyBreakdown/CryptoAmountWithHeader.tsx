@@ -12,7 +12,7 @@ import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmoun
 const Container = styled.div`
     display: flex;
     flex-direction: column;
-    color: ${({ theme }) => theme.textSubdued};
+    color: ${({ theme }) => theme.contentSecondary};
     ${typography['body-sm']}
 `;
 
@@ -30,7 +30,7 @@ const Header = styled.div`
 
 const CryptoAmount = styled(FormattedCryptoAmount)<{ $color?: string }>`
     margin: 6px 0 4px;
-    color: ${({ theme, $color }) => $color || theme.textDefault};
+    color: ${({ theme, $color }) => $color || theme.contentPrimary};
     ${typography['headline-sm']}
 `;
 

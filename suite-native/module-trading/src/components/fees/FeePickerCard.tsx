@@ -16,7 +16,7 @@ import { updateTradingSelectedFeeLevelThunk } from '../../thunks';
 import { ProviderReceiveAddress } from '../general/ProviderReceiveAddress';
 
 const dividerStyle = prepareNativeStyle(utils => ({
-    borderBottomColor: utils.colors.borderOnElevation1,
+    borderBottomColor: utils.colors.borderNeutral,
 }));
 
 type FeePickerCardProps = {

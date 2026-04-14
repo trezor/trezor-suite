@@ -45,11 +45,13 @@ const circleStyle = prepareNativeStyle<{ status: StepStatus }>((utils, { status 
     extend: [
         {
             condition: status === 'done',
-            style: { backgroundColor: utils.colors.backgroundSecondaryDefault },
+            style: { backgroundColor: utils.colors.legacyBackgroundSecondaryDefault },
         },
         {
             condition: status === 'active',
-            style: { backgroundColor: utils.colors.backgroundPrimarySubtleOnElevationNegative },
+            style: {
+                backgroundColor: utils.colors.legacyBackgroundPrimarySubtleOnElevationNegative,
+            },
         },
     ],
 }));
@@ -58,10 +60,10 @@ const innerDotStyle = prepareNativeStyle<{ status: StepStatus }>((utils, { statu
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: utils.colors.backgroundNeutralSubtleOnElevation0,
+    backgroundColor: utils.colors.legacyBackgroundNeutralSubtleOnElevation0,
     extend: {
         condition: status === 'active',
-        style: { backgroundColor: utils.colors.backgroundSecondaryDefault },
+        style: { backgroundColor: utils.colors.legacyBackgroundSecondaryDefault },
     },
 }));
 
@@ -73,7 +75,7 @@ const connectorStyle = prepareNativeStyle<{ isDone: boolean }>((utils, { isDone 
     backgroundColor: 'transparent',
     extend: {
         condition: isDone,
-        style: { backgroundColor: utils.colors.backgroundSecondaryDefault },
+        style: { backgroundColor: utils.colors.legacyBackgroundSecondaryDefault },
     },
 }));
 
@@ -89,14 +91,14 @@ const StepRow = ({ status, children }: { status: StepStatus; children: ReactNode
         <HStack spacing="sp12" alignItems="center">
             <View style={applyStyle(circleStyle, { status })}>
                 {status === 'done' ? (
-                    <Icon name="check" size="small" color="iconOnSecondary" />
+                    <Icon name="check" size="small" color="contentPrimaryInverse" />
                 ) : (
                     <View style={applyStyle(innerDotStyle, { status })} />
                 )}
             </View>
             <Text
                 variant={isActive ? 'body-sm-strong' : 'body-sm'}
-                color={isActive ? undefined : 'textSubdued'}
+                color={isActive ? undefined : 'contentSecondary'}
             >
                 {children}
             </Text>

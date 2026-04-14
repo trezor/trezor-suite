@@ -30,26 +30,26 @@ type InputsOutputsHeaderProps = {
 const InputsOutputsHeader = ({ inputsCount, outputsCount }: InputsOutputsHeaderProps) => (
     <Box flexDirection="row" justifyContent="space-between" marginBottom="sp16">
         <Box flex={1} flexDirection="row" alignItems="center" paddingLeft="sp8">
-            <Text variant="body-sm" color="textSubdued">
+            <Text variant="body-sm" color="contentSecondary">
                 <Translation
                     id="transactions.TransactionDetailScreen.inputsSheet.inputs"
                     values={{ inputsCount: `· ${inputsCount}` }}
                 />
             </Text>
             <Box marginLeft="sp8">
-                <Icon name="arrowLineDown" color="iconSubdued" size="medium" />
+                <Icon name="arrowLineDown" color="contentSecondary" size="medium" />
             </Box>
         </Box>
 
         <Box flex={1} flexDirection="row" alignItems="center" paddingLeft="sp24">
-            <Text variant="body-sm" color="textSubdued">
+            <Text variant="body-sm" color="contentSecondary">
                 <Translation
                     id="transactions.TransactionDetailScreen.inputsSheet.outputs"
                     values={{ outputsCount: `· ${outputsCount}` }}
                 />
             </Text>
             <Box marginLeft="sp8">
-                <Icon name="arrowLineUp" color="iconSubdued" size="medium" />
+                <Icon name="arrowLineUp" color="contentSecondary" size="medium" />
             </Box>
         </Box>
     </Box>
@@ -102,7 +102,7 @@ export const TransactionDetailInputsSheet = ({
 
                 <TransactionDetailInputsSheetSection
                     header={
-                        <Text variant="body-sm" color="textSubdued">
+                        <Text variant="body-sm" color="contentSecondary">
                             <Translation id="transactions.TransactionDetailScreen.inputsSheet.internalTransfers" />
                         </Text>
                     }
@@ -111,7 +111,7 @@ export const TransactionDetailInputsSheet = ({
 
                 <TransactionDetailInputsSheetSection
                     header={
-                        <Text variant="body-sm" color="textSubdued">
+                        <Text variant="body-sm" color="contentSecondary">
                             <Translation id="transactions.TransactionDetailScreen.inputsSheet.tokenTransfers" />
                         </Text>
                     }

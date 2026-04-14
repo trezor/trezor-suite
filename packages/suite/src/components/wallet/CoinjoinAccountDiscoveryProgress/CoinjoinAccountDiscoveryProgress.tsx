@@ -16,7 +16,7 @@ import { RotatingFacts } from './RotatingFacts';
 const Subheader = styled.div`
     display: flex;
     align-items: center;
-    color: ${({ theme }) => theme.textSubdued};
+    color: ${({ theme }) => theme.contentSecondary};
     ${typography['body-sm']}
     text-align: center;
     margin-top: 8px;
@@ -39,7 +39,7 @@ const DiscoveryProgress = styled(ProgressBar)`
 const FactHeading = styled.div`
     display: flex;
     align-items: center;
-    color: ${({ theme }) => theme.textAlertYellow};
+    color: ${({ theme }) => theme.contentWarning};
     ${typography['body-xs']}
     text-transform: uppercase;
 `;
@@ -49,8 +49,8 @@ const StyledLottieAnimation = styled(LottieAnimation)`
     margin: -32px -8px -32px -20px;
 
     path {
-        stroke: ${({ theme }) => theme.iconSubdued};
-        fill: ${({ theme }) => theme.iconDefaultInverted};
+        stroke: ${({ theme }) => theme.contentSecondary};
+        fill: ${({ theme }) => theme.contentPrimaryInverse};
     }
 `;
 

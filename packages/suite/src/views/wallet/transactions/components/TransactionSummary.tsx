@@ -31,7 +31,7 @@ const ErrorMessage = styled.div`
     padding: 20px;
     align-items: center;
     justify-content: center;
-    color: ${({ theme }) => theme.textSubdued};
+    color: ${({ theme }) => theme.contentSecondary};
     ${typography['body-sm']}
     text-align: center;
 `;

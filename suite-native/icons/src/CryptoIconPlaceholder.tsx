@@ -10,14 +10,14 @@ type CryptoIconPlaceholderProps = {
 };
 
 const iconStyle = prepareNativeStyle(utils => ({
-    backgroundColor: utils.colors.backgroundSurfaceElevation0,
+    backgroundColor: utils.colors.surfaceFillPage,
     alignItems: 'center',
     justifyContent: 'center',
 }));
 
 const textStyle = prepareNativeStyle(utils => ({
     ...utils.typography['body-md'],
-    color: utils.colors.textDefault,
+    color: utils.colors.contentPrimary,
     textAlign: 'center',
 }));
 

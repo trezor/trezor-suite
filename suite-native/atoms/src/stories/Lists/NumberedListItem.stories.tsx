@@ -21,7 +21,7 @@ export const NumberedListItem: NumberedListItemStory = {
     args: {
         children: 'value',
         variant: 'body-md',
-        color: 'textDefault',
+        color: 'contentPrimary',
         number: 1,
     },
     argTypes: {

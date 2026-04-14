@@ -15,7 +15,7 @@ type ItemStyleProps = {
     isSelected: boolean;
 };
 const textStyle = prepareNativeStyle<ItemStyleProps>((utils, { isSelected }) => ({
-    color: isSelected ? utils.colors.textPrimaryDefault : utils.colors.textSubdued,
+    color: isSelected ? utils.colors.contentBrand : utils.colors.contentSecondary,
     textTransform: 'uppercase',
 }));
 
@@ -26,7 +26,7 @@ const switchItemStyle = prepareNativeStyle<ItemStyleProps>((utils, { isSelected 
     extend: {
         condition: isSelected,
         style: {
-            backgroundColor: utils.colors.backgroundSurfaceElevation1,
+            backgroundColor: utils.colors.surfaceFillRaised,
             borderRadius: utils.borders.radii.round,
             ...utils.boxShadows.small,
         },

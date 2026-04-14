@@ -33,8 +33,8 @@ const TRADE_HISTORY_BUTTON_TEST_ID = '@trading/history/button';
 
 const buttonStyle = prepareNativeStyle(utils => ({
     ...buttonSizeToDimensionsMap.large,
-    backgroundColor: utils.colors.backgroundSurfaceElevationNegative,
-    borderColor: utils.colors.borderOnElevationNegative,
+    backgroundColor: utils.colors.surfaceFillSunken,
+    borderColor: utils.colors.borderNeutral,
     borderWidth: utils.borders.widths.small,
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -54,10 +54,10 @@ const HistoryButtonMemoized = memo(({ isFormMountedRecently }: HistoryButtonProp
         >
             <Pressable onPress={handleOnPress} testID={TRADE_HISTORY_BUTTON_TEST_ID}>
                 <HStack style={applyStyle(buttonStyle)}>
-                    <Text variant="body-md" color="textSubdued">
+                    <Text variant="body-md" color="contentSecondary">
                         <Translation id="moduleTrading.tradeHistory.button.title" />
                     </Text>
-                    <Icon name="caretCircleRight" color="iconSubdued" />
+                    <Icon name="caretCircleRight" color="contentSecondary" />
                 </HStack>
             </Pressable>
         </AnimatedBox>

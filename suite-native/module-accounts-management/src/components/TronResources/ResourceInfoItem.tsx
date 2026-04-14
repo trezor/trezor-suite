@@ -10,7 +10,7 @@ export type ResourceInfoItemProps = {
 export const ResourceInfoItem = ({ label, description }: ResourceInfoItemProps) => (
     <VStack spacing="sp8">
         <Text variant="headline-sm">{label}</Text>
-        <Text variant="body-sm" color="textSubdued">
+        <Text variant="body-sm" color="contentSecondary">
             {description}
         </Text>
     </VStack>

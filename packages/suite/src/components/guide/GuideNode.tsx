@@ -20,7 +20,7 @@ const NodeButton = styled.button`
     border-radius: ${borders.radii.xs};
     border: 0;
     width: 100%;
-    background: ${({ theme }) => theme.backgroundSurfaceElevation1};
+    background: ${({ theme }) => theme.surfaceFillRaised};
     padding: 10px;
     cursor: pointer;
     line-height: 1.57;
@@ -28,7 +28,7 @@ const NodeButton = styled.button`
 
     &:hover,
     &:focus {
-        background: ${({ theme }) => theme.backgroundTertiaryPressedOnElevation1};
+        background: ${({ theme }) => theme.legacyBackgroundTertiaryPressedOnElevation1};
     }
 `;
 
@@ -39,7 +39,7 @@ const PageNodeButton = styled(NodeButton)`
 const Label = styled.div<{ $isBold: boolean }>`
     width: 100%;
     ${({ $isBold }) => ($isBold ? typography['body-sm'] : typography['body-sm-strong'])};
-    color: ${({ theme }) => theme.textDefault};
+    color: ${({ theme }) => theme.contentPrimary};
     overflow: hidden;
     display: flex;
     flex-direction: column;

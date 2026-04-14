@@ -78,7 +78,7 @@ export const TurnOffCheckCard = ({
 }: TurnOffCheckCardProps) => (
     <CardWithIconLayout icon={icon} title={title}>
         <VStack spacing="sp16">
-            <Text variant="body-sm" color="textSubdued">
+            <Text variant="body-sm" color="contentSecondary">
                 {subtitle}
             </Text>
             <HStack spacing="sp8">

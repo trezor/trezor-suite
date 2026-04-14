@@ -22,7 +22,7 @@ const maskStyle = prepareNativeStyle(utils => ({
     width: '100%',
     height: '100%',
     position: 'absolute',
-    backgroundColor: utils.colors.backgroundSurfaceElevation0,
+    backgroundColor: utils.colors.surfaceFillPage,
 }));
 
 type UnderlineProps = {

@@ -29,14 +29,14 @@ const radioStyle = prepareNativeStyle<RadioStyleProps>(
         height: RADIO_SIZE,
         width: RADIO_SIZE,
         backgroundColor: isDisabled
-            ? utils.colors.backgroundNeutralDisabled
-            : utils.colors.backgroundSurfaceElevation1,
+            ? utils.colors.elementFillBoldDisabled
+            : utils.colors.surfaceFillRaised,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: utils.borders.radii.round,
         borderWidth: isChecked ? utils.borders.widths.large : utils.borders.widths.medium,
-        borderColor: utils.colors.iconSubdued,
+        borderColor: utils.colors.contentSecondary,
         extend: {
             condition: isChecked && !isDisabled,
             style: { borderColor: utils.colors[activeColor] },
@@ -50,7 +50,7 @@ const radioCheckStyle = prepareNativeStyle<Omit<RadioStyleProps, 'isChecked'>>(
         width: RADIO_CHECK_SIZE,
         borderRadius: utils.borders.radii.round,
         backgroundColor: isDisabled
-            ? utils.colors.backgroundNeutralDisabled
+            ? utils.colors.elementFillBoldDisabled
             : utils.colors[activeColor],
     }),
 );
@@ -61,7 +61,7 @@ export const Radio = <TValue extends string | number>({
     style,
     isChecked = false,
     isDisabled = false,
-    activeColor = 'backgroundPrimaryDefault',
+    activeColor = 'legacyBackgroundPrimaryDefault',
     ...props
 }: RadioProps<TValue>) => {
     const { applyStyle } = useNativeStyles();

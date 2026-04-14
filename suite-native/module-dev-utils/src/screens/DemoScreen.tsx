@@ -426,7 +426,7 @@ export const DemoScreen = () => {
                                             href={TREZOR_URL}
                                             label="for example link"
                                             isUnderlined
-                                            textColor="textDefault"
+                                            textColor="contentPrimary"
                                         />
                                     </>
                                 }

@@ -50,14 +50,14 @@ export const TronAccountActivationInfo = ({ accountKey }: TronAccountActivationI
                 <HStack spacing="sp4" alignItems="center">
                     <CryptoAmountFormatter
                         variant="body-sm"
-                        color="textDefault"
+                        color="contentPrimary"
                         value={accountActivationFee}
                         symbol={account.symbol}
                         isBalance={false}
                         isDiscreetText={false}
                     />
                     <Pressable onPress={openModal}>
-                        <Icon name="info" size="medium" color="iconSubdued" />
+                        <Icon name="info" size="medium" color="contentSecondary" />
                     </Pressable>
                 </HStack>
             </HStack>
@@ -67,7 +67,7 @@ export const TronAccountActivationInfo = ({ accountKey }: TronAccountActivationI
                         <Text variant="headline-sm">
                             <Translation id="moduleSend.tron.accountActivationFeeTitle" />
                         </Text>
-                        <Text variant="body-sm" color="textSubdued">
+                        <Text variant="body-sm" color="contentSecondary">
                             <Translation id="moduleSend.tron.accountActivationFeeDescription" />
                         </Text>
                     </VStack>

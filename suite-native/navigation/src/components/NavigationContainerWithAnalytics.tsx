@@ -34,13 +34,13 @@ export const NavigationContainerWithAnalytics = ({ children }: { children: React
 
     const themeColors = useMemo(() => {
         // setting theme colors to match the background color of the screen to prevent white flash on screen change in dark mode
-        const isDarkTheme = isDarkColor(colors.backgroundSurfaceElevation0);
+        const isDarkTheme = isDarkColor(colors.surfaceFillPage);
         if (isDarkTheme) {
             return {
                 ...DarkTheme,
                 colors: {
                     ...DarkTheme.colors,
-                    background: colors.backgroundSurfaceElevation0,
+                    background: colors.surfaceFillPage,
                 },
             };
         }
@@ -49,7 +49,7 @@ export const NavigationContainerWithAnalytics = ({ children }: { children: React
             ...DefaultTheme,
             colors: {
                 ...DefaultTheme.colors,
-                background: colors.backgroundSurfaceElevation0,
+                background: colors.surfaceFillPage,
             },
         };
     }, [colors, isDarkColor]);

@@ -14,9 +14,9 @@ const sheetTriggerStyle = prepareNativeStyle(utils => ({
     justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: utils.spacings.sp24,
-    backgroundColor: utils.colors.backgroundSurfaceElevation0,
+    backgroundColor: utils.colors.surfaceFillPage,
     borderTopWidth: utils.borders.widths.small,
-    borderTopColor: utils.colors.borderElevation1,
+    borderTopColor: utils.colors.borderNeutral,
 }));
 
 export const XpubHint = ({ networkType, handleOpen }: XpubScanHintSheet) => {

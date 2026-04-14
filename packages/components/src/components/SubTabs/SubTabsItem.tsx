@@ -17,11 +17,11 @@ const Item = styled.div<{ $isActive: boolean; $elevation: Elevation }>`
     cursor: pointer;
     background: ${mapElevationToBackground};
     box-shadow: ${({ theme }) => theme.boxShadowBase};
-    color: ${({ theme }) => theme.textDefault};
+    color: ${({ theme }) => theme.contentPrimary};
 
     &:hover,
     &:focus {
-        color: ${({ theme }) => theme.textDefault};
+        color: ${({ theme }) => theme.contentPrimary};
     }
 
     ${({ $isActive, theme }) =>
@@ -29,7 +29,7 @@ const Item = styled.div<{ $isActive: boolean; $elevation: Elevation }>`
         css`
             background: none;
             box-shadow: none;
-            color: ${theme.textSubdued};
+            color: ${theme.contentSecondary};
         `}
 `;
 

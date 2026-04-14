@@ -19,12 +19,12 @@ const PercentageWrapper = styled.div<{ $isRateGoingUp: boolean }>`
     display: flex;
     align-items: center;
     color: ${({ theme, $isRateGoingUp }) =>
-        $isRateGoingUp ? theme.textPrimaryDefault : theme.textAlertRed};
+        $isRateGoingUp ? theme.contentBrand : theme.contentCritical};
 `;
 
 const Empty = styled.div`
     ${typography['body-sm-strong']}
-    color: ${({ theme }) => theme.textSubdued};
+    color: ${({ theme }) => theme.contentSecondary};
 `;
 
 const calculatePercentageDifference = (a: number, b: number) => (a - b) / b;
@@ -68,7 +68,7 @@ export const TrendTicker = ({
                     <PercentageWrapper $isRateGoingUp={isRateGoingUp}>
                         <Icon
                             name={isRateGoingUp ? 'trendUp' : 'trendDown'}
-                            color={isRateGoingUp ? 'iconPrimaryDefault' : 'iconAlertRed'}
+                            color={isRateGoingUp ? 'contentBrand' : 'contentCritical'}
                             size={16}
                         />
                         {localizePercentage({ valueInFraction: percentageChange, locale })}

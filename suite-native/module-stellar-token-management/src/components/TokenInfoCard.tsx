@@ -15,7 +15,7 @@ type TokenInfoCardProps = {
 
 const tokenCardStyle = prepareNativeStyle(utils => ({
     borderWidth: 1,
-    borderColor: utils.colors.borderElevation1,
+    borderColor: utils.colors.borderNeutral,
     borderRadius: utils.borders.radii.r12,
 }));
 
@@ -51,7 +51,7 @@ export const TokenInfoCard = ({
                             </HStack>
                             <Text variant="body-md">{issuerDomain}</Text>
                         </VStack>
-                        <Icon name="caretDown" color="iconSubdued" />
+                        <Icon name="caretDown" color="contentSecondary" />
                     </HStack>
                 </HStack>
             </Card>

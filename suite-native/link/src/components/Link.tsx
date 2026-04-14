@@ -52,8 +52,8 @@ export const Link = ({
     href,
     label,
     isUnderlined = false,
-    textColor = 'textPrimaryDefault',
-    textPressedColor = 'textPrimaryPressed',
+    textColor = 'contentBrand',
+    textPressedColor = 'contentBrandPressed',
     textVariant = 'body-md',
     onPress,
     ...textProps

@@ -88,7 +88,7 @@ export const Screen = ({
     containerStyle,
     systemThemeStyle,
     isScrollable = true,
-    backgroundColor = 'backgroundSurfaceElevation0',
+    backgroundColor = 'surfaceFillPage',
     noHorizontalPadding = false,
     noBottomPadding = false,
     focusedInputBottomOffset,

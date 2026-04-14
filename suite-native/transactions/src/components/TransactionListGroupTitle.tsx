@@ -26,7 +26,7 @@ export const TransactionListGroupTitle = ({ monthKey }: TransactionListGroupProp
 
     return (
         <Box paddingLeft="sp16">
-            <Text color="textSubdued" variant="body-sm" style={applyStyle(dateTextStyle)}>
+            <Text color="contentSecondary" variant="body-sm" style={applyStyle(dateTextStyle)}>
                 {sectionTitle}
             </Text>
         </Box>

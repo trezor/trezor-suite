@@ -31,7 +31,7 @@ export const SellFromAccountTradePreviewCard = ({
             cryptoId={cryptoId}
             amount={
                 fromStringValue ? (
-                    <Text variant="body-sm" color="textAlertRed">
+                    <Text variant="body-sm" color="contentCritical">
                         -{fromStringValue}
                     </Text>
                 ) : null
@@ -42,7 +42,7 @@ export const SellFromAccountTradePreviewCard = ({
                 <CryptoToFiatValueBadge
                     amount={fromValue}
                     cryptoId={cryptoId}
-                    color="textSubdued"
+                    color="contentSecondary"
                     textAlign="right"
                 />
             )}

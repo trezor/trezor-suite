@@ -44,7 +44,7 @@ export const GraphDateFormatter = ({
     const Formatter = isWeekFormatted ? WeekFormatter : OtherDateFormatter;
 
     return (
-        <Text variant="body-sm" color="textSubdued">
+        <Text variant="body-sm" color="contentSecondary">
             <Formatter selectedPointAtom={selectedPointAtom} />
         </Text>
     );

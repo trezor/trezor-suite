@@ -25,22 +25,22 @@ type MessageBannerStyle = {
 
 const MessageBannerVariantToStyleMap = {
     info: {
-        backgroundColor: 'backgroundAlertBlueSubtleOnElevation0',
+        backgroundColor: 'legacyBackgroundAlertBlueSubtleOnElevation0',
         icon: 'info',
-        iconColor: 'iconAlertBlue',
-        iconBackgroundColor: 'backgroundAlertBlueSubtleOnElevation1',
+        iconColor: 'contentInfo',
+        iconBackgroundColor: 'legacyBackgroundAlertBlueSubtleOnElevation1',
     },
     warning: {
-        backgroundColor: 'backgroundAlertYellowSubtleOnElevation0',
+        backgroundColor: 'legacyBackgroundAlertYellowSubtleOnElevation0',
         icon: 'warning',
-        iconColor: 'iconAlertYellow',
-        iconBackgroundColor: 'backgroundAlertYellowSubtleOnElevation1',
+        iconColor: 'contentWarning',
+        iconBackgroundColor: 'legacyBackgroundAlertYellowSubtleOnElevation1',
     },
     critical: {
-        backgroundColor: 'backgroundAlertRedSubtleOnElevation0',
+        backgroundColor: 'legacyBackgroundAlertRedSubtleOnElevation0',
         icon: 'warning',
-        iconColor: 'iconAlertRed',
-        iconBackgroundColor: 'backgroundAlertRedSubtleOnElevation1',
+        iconColor: 'contentCritical',
+        iconBackgroundColor: 'legacyBackgroundAlertRedSubtleOnElevation1',
     },
 } as const satisfies Record<Variant, MessageBannerStyle>;
 
@@ -120,7 +120,7 @@ export const MessageBanner = ({ message }: MessageBannerProps) => {
                     <Icon name={icon} color={iconColor} size="mediumLarge" />
                 </Box>
                 <VStack spacing="sp4" style={applyStyle(messageTextContainerStyle)}>
-                    <Text color="textSubdued" variant="body-sm">
+                    <Text color="contentSecondary" variant="body-sm">
                         {messageContent}
                     </Text>
 

@@ -26,7 +26,7 @@ const separatorStyle = prepareNativeStyle<VerticalSeparatorProps>((utils, { inpu
     top: SEPARATOR_TOP_OFFSET,
     width: utils.borders.widths.small,
     height: SINGLE_INPUT_SEPARATOR_HEIGHT,
-    backgroundColor: utils.colors.backgroundNeutralSubdued,
+    backgroundColor: utils.colors.elementFillNeutralBold,
 
     extend: [
         {

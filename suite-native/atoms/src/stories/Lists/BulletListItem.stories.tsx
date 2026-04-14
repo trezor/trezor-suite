@@ -21,7 +21,7 @@ export const BulletListItem: BulletListItemStory = {
     args: {
         children: 'textual bullet point',
         variant: 'body-md',
-        color: 'textDefault',
+        color: 'contentPrimary',
     },
     argTypes: {
         children: {

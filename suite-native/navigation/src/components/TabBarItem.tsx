@@ -59,14 +59,14 @@ export const TabBarItem = ({
                 <Icon
                     name={isFocused ? focusedIconName : iconName}
                     size="large"
-                    color={isFocused ? 'iconPrimaryDefault' : 'iconDisabled'}
+                    color={isFocused ? 'contentBrand' : 'contentDisabled'}
                 />
                 {title && (
                     <Text
                         maxFontSizeMultiplier={TITLE_MAX_FONT_MULTIPLIER}
                         variant="body-xs"
                         textAlign="center"
-                        color={isFocused ? 'textPrimaryDefault' : 'textDisabled'}
+                        color={isFocused ? 'contentBrand' : 'contentDisabled'}
                         testID={`@tabBar/${testID}/title`}
                     >
                         {title}

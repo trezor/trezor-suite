@@ -34,7 +34,7 @@ const InformativeList = () => (
                 <Text variant="body-md-strong">
                     <Translation id="moduleSettings.advanced.authenticityChecks.turnOff.item1" />
                 </Text>
-                <Text variant="body-sm" color="textSubdued">
+                <Text variant="body-sm" color="contentSecondary">
                     <Translation id="moduleSettings.advanced.authenticityChecks.turnOff.item1Explanation" />
                 </Text>
             </VStack>
@@ -44,7 +44,7 @@ const InformativeList = () => (
                 <Text variant="body-md-strong">
                     <Translation id="moduleSettings.advanced.authenticityChecks.turnOff.item2" />
                 </Text>
-                <Text variant="body-sm" color="textSubdued">
+                <Text variant="body-sm" color="contentSecondary">
                     <Translation id="moduleSettings.advanced.authenticityChecks.turnOff.item2Explanation" />
                 </Text>
             </VStack>

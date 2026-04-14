@@ -19,8 +19,8 @@ const cardStyle = prepareNativeStyle<{ isEnabled: boolean }>((utils, { isEnabled
         {
             condition: !isEnabled,
             style: {
-                borderColor: utils.colors.borderElevation0,
-                backgroundColor: utils.colors.backgroundTertiaryDefaultOnElevation0,
+                borderColor: utils.colors.borderNeutral,
+                backgroundColor: utils.colors.legacyBackgroundTertiaryDefaultOnElevation0,
                 shadowColor: 'transparent',
             },
         },
@@ -67,7 +67,7 @@ export const NetworkSymbolSwitchItem = ({
                         <VStack spacing={0}>
                             <Text variant="body-sm-strong">{name}</Text>
                             {isNetworkWithTokens(symbol) && (
-                                <Text variant="body-sm" color="textSubdued">
+                                <Text variant="body-sm" color="contentSecondary">
                                     <Translation id="generic.tokens" />
                                 </Text>
                             )}

@@ -36,11 +36,11 @@ export type BottomSheetModalProps = {
 } & BoxProps;
 
 const backgroundStyle = prepareNativeStyle(({ colors }) => ({
-    backgroundColor: colors.backgroundSurfaceElevation0,
+    backgroundColor: colors.surfaceFillPage,
 }));
 
 const footerStyle = prepareNativeStyle<{ bottomInset: number }>(({ colors }, { bottomInset }) => ({
-    backgroundColor: colors.backgroundSurfaceElevation0,
+    backgroundColor: colors.surfaceFillPage,
     paddingBottom: bottomInset,
 }));
 

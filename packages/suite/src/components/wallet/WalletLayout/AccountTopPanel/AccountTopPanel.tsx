@@ -29,7 +29,7 @@ const AccountCryptoBalance = styled.div`
     display: flex;
     align-items: center;
     gap: ${spacingsPx.xxs};
-    color: ${({ theme }) => theme.textSubdued};
+    color: ${({ theme }) => theme.contentSecondary};
 `;
 
 interface AccountTopPanelSkeletonProps {

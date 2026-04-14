@@ -35,7 +35,8 @@ const ProgressCircle = ({ symbol, size, percentageShare, index = 0 }: ProgressCi
     const theme = useTheme();
 
     const dimensions = size * 2;
-    const strokeColor = symbol && coinsColors[symbol] ? coinsColors[symbol] : theme.iconSubdued;
+    const strokeColor =
+        symbol && coinsColors[symbol] ? coinsColors[symbol] : theme.contentSecondary;
     const viewBox = `0 0 ${dimensions} ${dimensions}`;
 
     const strokeWidth = dimensions / 6;
@@ -76,7 +77,7 @@ const ProgressCircle = ({ symbol, size, percentageShare, index = 0 }: ProgressCi
                     position: 'absolute',
                 }}
             >
-                <motion.circle {...circleConfig} stroke={theme.backgroundSurfaceElevation0} />
+                <motion.circle {...circleConfig} stroke={theme.surfaceFillPage} />
             </svg>
 
             {/* moving circle */}

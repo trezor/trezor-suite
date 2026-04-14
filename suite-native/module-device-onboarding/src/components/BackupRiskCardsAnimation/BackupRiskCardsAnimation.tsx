@@ -34,7 +34,7 @@ export const BackupRiskCardsAnimation = () => {
     } = useNativeStyles();
 
     // 'transparent' color does not work in context of LinearGradient on iOS, RGBA has to be used instead.
-    const backgroundColor = colors.backgroundSurfaceElevation0;
+    const backgroundColor = colors.surfaceFillPage;
     const transparentColor = hexToRgba(backgroundColor, 0.01);
 
     return (

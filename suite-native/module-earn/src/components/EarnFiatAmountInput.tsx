@@ -64,7 +64,7 @@ export const EarnFiatAmountInput = ({
             onPress={onPress}
             hasError={!isDisabled && hasError}
             rightIcon={
-                <Text color={isDisabled ? 'textSubdued' : 'textDefault'}>
+                <Text color={isDisabled ? 'contentSecondary' : 'contentPrimary'}>
                     {isBaseCurrencyInSats ? 'sat' : baseCurrencyCode.toUpperCase()}
                 </Text>
             }

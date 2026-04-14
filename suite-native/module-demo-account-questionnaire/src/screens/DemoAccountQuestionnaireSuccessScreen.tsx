@@ -108,8 +108,8 @@ export const DemoAccountQuestionnaireSuccessScreen = () => {
 
                     <TextDivider
                         title="moduleDemoAccountQuestionnaire.success.recommendationsHeading"
-                        lineColor="borderOnElevation0"
-                        textColor="textSubdued"
+                        lineColor="borderNeutral"
+                        textColor="contentSecondary"
                     />
 
                     <VStack spacing="sp12">

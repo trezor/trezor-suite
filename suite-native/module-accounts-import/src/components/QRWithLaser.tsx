@@ -112,7 +112,7 @@ export const QrWithLaser = () => {
 
     const paint = useMemo(() => Skia.Paint(), []);
     paint.setColorFilter(
-        Skia.ColorFilter.MakeBlend(Skia.Color(colors.backgroundNeutralBold), BlendMode.SrcIn),
+        Skia.ColorFilter.MakeBlend(Skia.Color(colors.legacyBackgroundNeutralBold), BlendMode.SrcIn),
     );
 
     return (
@@ -121,11 +121,7 @@ export const QrWithLaser = () => {
                 <LinearGradient
                     start={vec(0, 0)}
                     end={vec(width, 0)}
-                    colors={[
-                        colors.backgroundSurfaceElevation0,
-                        'red',
-                        colors.backgroundSurfaceElevation0,
-                    ]}
+                    colors={[colors.surfaceFillPage, 'red', colors.surfaceFillPage]}
                 />
             </Rect>
 

@@ -14,9 +14,9 @@ export const Resource = ({ label, available, total }: ResourceProps) => (
         <HStack justifyContent="space-between" alignItems="center">
             <HStack spacing="sp4" alignItems="center">
                 <Text variant="body-sm">{label}</Text>
-                <Icon name="info" size="medium" color="iconSubdued" />
+                <Icon name="info" size="medium" color="contentSecondary" />
             </HStack>
-            <Text variant="body-sm" color="textSubdued">
+            <Text variant="body-sm" color="contentSecondary">
                 {available} / {total}
             </Text>
         </HStack>

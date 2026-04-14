@@ -49,12 +49,16 @@ export const AccountTypeDecisionBottomSheet = ({
             isCloseDisplayed={false}
         >
             <VStack spacing="sp16">
-                <Text color="textSubdued" style={applyStyle(descStyle)}>
+                <Text color="contentSecondary" style={applyStyle(descStyle)}>
                     <Translation
                         id="moduleAddAccounts.accountTypeDecisionBottomSheet.description"
                         values={{
                             type: _ => (
-                                <Text key="type-name" color="textDefault" variant="body-md-strong">
+                                <Text
+                                    key="type-name"
+                                    color="contentPrimary"
+                                    variant="body-md-strong"
+                                >
                                     {typeName}
                                 </Text>
                             ),
@@ -64,8 +68,8 @@ export const AccountTypeDecisionBottomSheet = ({
                                     href={TREZOR_SUPPORT_MULTIPLE_ACCOUNTS}
                                     label={chunks}
                                     isUnderlined
-                                    textColor="textDefault"
-                                    textPressedColor="textDefault"
+                                    textColor="contentPrimary"
+                                    textPressedColor="contentPrimary"
                                 />
                             ),
                         }}

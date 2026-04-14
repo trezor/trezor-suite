@@ -21,7 +21,7 @@ const iconContainerStyle = prepareNativeStyle(utils => ({
     width: utils.spacings.sp40,
     height: utils.spacings.sp40,
     borderRadius: utils.borders.radii.r20,
-    backgroundColor: utils.colors.backgroundSurfaceElevation2,
+    backgroundColor: utils.colors.legacyBackgroundSurfaceElevation2,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: utils.spacings.sp12,
@@ -38,7 +38,7 @@ export const TokenListItem = ({ token, onPress }: TokenListItemProps) => {
                 </Box>
                 <Box flex={1}>
                     <Text variant="body-md">{token.name || token.symbol}</Text>
-                    <Text variant="body-sm" color="textSubdued">
+                    <Text variant="body-sm" color="contentSecondary">
                         {token.symbol}
                     </Text>
                 </Box>

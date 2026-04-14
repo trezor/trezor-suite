@@ -34,7 +34,7 @@ export const ShowAddressViewOnlyBottomSheet = ({
                     <Text variant="headline-sm">
                         <Translation id="moduleReceive.receiveAddressCard.viewOnlyWarning.title" />
                     </Text>
-                    <Text color="textSubdued">
+                    <Text color="contentSecondary">
                         <Translation id="moduleReceive.receiveAddressCard.viewOnlyWarning.description" />
                     </Text>
                 </VStack>

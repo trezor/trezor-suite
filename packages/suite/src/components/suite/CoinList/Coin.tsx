@@ -27,7 +27,7 @@ const SettingsWrapper = styled.div<{
         onClick &&
         css`
             &:hover {
-                background-color: ${theme.backgroundTertiaryPressedOnElevation1};
+                background-color: ${theme.legacyBackgroundTertiaryPressedOnElevation1};
             }
         `}
 
@@ -77,7 +77,7 @@ export const CoinWrapper = styled.button<{
     border-radius: 9999px;
     height: 47px;
     font-weight: bold;
-    color: ${({ theme }) => theme.textDefault};
+    color: ${({ theme }) => theme.contentPrimary};
     cursor: pointer;
     transition:
         0.2s ease-in-out,
@@ -87,22 +87,22 @@ export const CoinWrapper = styled.button<{
     &:disabled {
         cursor: not-allowed;
         opacity: 0.5;
-        background: ${({ theme }) => theme.backgroundNeutralBoldInverted};
+        background: ${({ theme }) => theme.legacyBackgroundNeutralBoldInverted};
     }
 
     ${getFocusShadowStyle()}
 
     &:hover {
-        background: ${({ theme }) => theme.backgroundTertiaryPressedOnElevation0};
+        background: ${({ theme }) => theme.legacyBackgroundTertiaryPressedOnElevation0};
         border-color: ${({ theme, $toggled }) =>
-            $toggled ? theme.backgroundPrimaryPressed : theme.borderInputFocus};
+            $toggled ? theme.legacyBackgroundPrimaryPressed : theme.elementBorderFieldFocused};
     }
 
     ${({ disabled, $forceHover, $hasSettings, theme, $toggled }) =>
         !disabled &&
         $toggled &&
         css`
-            border-color: ${theme.backgroundPrimaryDefault};
+            border-color: ${theme.legacyBackgroundPrimaryDefault};
             ${$forceHover && ShiftToSettings}
             ${$hasSettings &&
             css`
@@ -127,7 +127,7 @@ const Check = styled.div<{ $visible: boolean }>`
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    background: ${({ theme }) => theme.backgroundPrimaryDefault};
+    background: ${({ theme }) => theme.legacyBackgroundPrimaryDefault};
     width: 12px;
     height: 12px;
     position: absolute;

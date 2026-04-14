@@ -56,7 +56,7 @@ export const CurrencyPickerModal = ({
                                     </Column>
                                     <Column>
                                         <Text typographyStyle="body-md">{option.label}</Text>
-                                        <Text typographyStyle="body-sm" color="textSubdued">
+                                        <Text typographyStyle="body-sm" color="contentSecondary">
                                             {option.shortLabel}
                                         </Text>
                                     </Column>
@@ -70,7 +70,11 @@ export const CurrencyPickerModal = ({
                         <Paragraph align="center">
                             <Translation id="TR_CURRENCY_NOT_FOUND" />
                         </Paragraph>
-                        <Paragraph align="center" typographyStyle="body-sm" color="textSubdued">
+                        <Paragraph
+                            align="center"
+                            typographyStyle="body-sm"
+                            color="contentSecondary"
+                        >
                             <Translation id="TR_CURRENCY_NOT_FOUND_DESCRIPTION" />
                         </Paragraph>
                     </Column>

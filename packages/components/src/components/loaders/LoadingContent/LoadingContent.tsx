@@ -25,7 +25,7 @@ const LoaderCell = styled.div<{ $size: number; $isLoading: boolean }>`
               `}
 
     svg {
-        fill: ${({ theme }) => theme.iconPrimaryDefault};
+        fill: ${({ theme }) => theme.contentBrand};
     }
 `;
 

@@ -20,7 +20,7 @@ export const CircularSpinner: CircularSpinnerStory = {
     name: 'CircularSpinner',
     args: {
         size: 50,
-        color: 'textDefault',
+        color: 'contentPrimary',
         width: 5,
     },
     argTypes: {

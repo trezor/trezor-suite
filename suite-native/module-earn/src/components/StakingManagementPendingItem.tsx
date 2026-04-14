@@ -54,18 +54,18 @@ export const StakingManagementPendingItem = ({
                                 value={amount}
                                 symbol={symbol}
                                 decimals={BASE_CRYPTO_MAX_DISPLAYED_DECIMALS}
-                                color="textDefault"
+                                color="contentPrimary"
                                 variant="body-sm"
                             />
                             <CryptoToFiatAmountFormatter
                                 value={amount}
                                 symbol={symbol}
-                                color="textSubdued"
+                                color="contentSecondary"
                                 variant="body-sm"
                                 isBalance
                             />
                         </VStack>
-                        <Icon name="caretDown" size="mediumLarge" color="iconDefault" />
+                        <Icon name="caretDown" size="mediumLarge" color="contentPrimary" />
                     </HStack>
                 </HStack>
             </Card>

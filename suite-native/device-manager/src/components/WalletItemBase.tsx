@@ -36,21 +36,21 @@ const walletItemBaseStyle = prepareNativeStyle<WalletItemBaseStyleProps>(
         height: 60,
         gap: utils.spacings.sp12,
         borderRadius: utils.borders.radii.r12,
-        borderColor: utils.colors.borderOnElevation1,
+        borderColor: utils.colors.borderNeutral,
         flex: 1,
         extend: [
             {
                 condition: isSelected,
                 style: {
                     borderWidth: utils.borders.widths.large,
-                    borderColor: utils.colors.borderSecondary,
+                    borderColor: utils.colors.borderBrand,
                 },
             },
             {
                 condition: isSelectable,
                 style: {
                     paddingHorizontal: utils.spacings.sp16,
-                    backgroundColor: utils.colors.backgroundSurfaceElevation1,
+                    backgroundColor: utils.colors.surfaceFillRaised,
                     borderWidth: utils.borders.widths.small,
                 },
             },
@@ -136,7 +136,7 @@ export const WalletItemBase = ({
                         <BaseCurrencyAmountFormatter
                             value={baseCurrencyAmount}
                             variant="body-sm"
-                            color="textSubdued"
+                            color="contentSecondary"
                         />
                     )}
                     {isSelectable && <Radio value="" onPress={onPress} isChecked={isSelected} />}

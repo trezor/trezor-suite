@@ -15,12 +15,12 @@ export const CardContentRow = ({ labelId, descriptionId, iconName }: CardContent
             <Text variant="body-sm-strong">
                 <Translation id={labelId} />
             </Text>
-            <Text variant="body-sm" color="textSubdued">
+            <Text variant="body-sm" color="contentSecondary">
                 <Translation
                     id={descriptionId}
                     values={{
                         bold: chunks => (
-                            <Text color="textSubdued" variant="body-sm-strong">
+                            <Text color="contentSecondary" variant="body-sm-strong">
                                 {chunks}
                             </Text>
                         ),

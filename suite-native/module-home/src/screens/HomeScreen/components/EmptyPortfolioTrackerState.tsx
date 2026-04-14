@@ -68,7 +68,7 @@ export const EmptyPortfolioTrackerState = () => {
                         <Text variant="headline-md">
                             <Translation id="moduleHome.emptyState.portfolioTracker.title" />
                         </Text>
-                        <Text color="textSubdued" textAlign="center">
+                        <Text color="contentSecondary" textAlign="center">
                             <Translation id="moduleHome.emptyState.portfolioTracker.subtitle" />
                         </Text>
                     </VStack>

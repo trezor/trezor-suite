@@ -8,8 +8,8 @@ import { EarnListItem } from './EarnListItem';
 
 const rowContainerStyle = prepareNativeStyle(
     (utils, { isLastInSection }: { isLastInSection: boolean }) => ({
-        backgroundColor: utils.colors.backgroundSurfaceElevation1,
-        borderColor: utils.colors.borderElevation1,
+        backgroundColor: utils.colors.surfaceFillRaised,
+        borderColor: utils.colors.borderNeutral,
         borderLeftWidth: 1,
         borderRightWidth: 1,
         borderBottomWidth: isLastInSection ? 1 : 0,

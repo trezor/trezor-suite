@@ -32,7 +32,7 @@ export const CardWithIconLayout = ({
     const { applyStyle } = useNativeStyles();
 
     return (
-        <Card borderColor="borderElevation1" noPadding testID={testID}>
+        <Card borderColor="borderNeutral" noPadding testID={testID}>
             <HStack margin="sp16" spacing="sp12">
                 <Box marginVertical="sp2">
                     <Icon name={icon} size="mediumLarge" />

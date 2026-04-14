@@ -36,7 +36,7 @@ export const FeeSummaryCard = ({
                     <VStack alignItems="flex-end" spacing="sp2">
                         <CryptoAmountFormatter
                             variant="body-sm"
-                            color="textDefault"
+                            color="contentPrimary"
                             value={fee}
                             symbol={symbol}
                             isBalance={false}
@@ -46,14 +46,14 @@ export const FeeSummaryCard = ({
                         />
                         <CryptoToFiatAmountFormatter
                             variant="body-sm"
-                            color="textSubdued"
+                            color="contentSecondary"
                             value={fee}
                             symbol={symbol}
                             isLoading={areFeesLoading}
                             isDiscreetText={false}
                         />
                     </VStack>
-                    <Icon name="caretDown" size="medium" color="iconSubdued" />
+                    <Icon name="caretDown" size="medium" color="contentSecondary" />
                 </HStack>
             </HStack>
         </Card>

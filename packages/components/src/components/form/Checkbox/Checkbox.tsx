@@ -40,7 +40,7 @@ const FakeInput = styled.div`
 
     ${({ theme }) => css`
         input:checked + & {
-            background-color: ${theme.backgroundPrimaryDefault};
+            background-color: ${theme.legacyBackgroundPrimaryDefault};
         }
 
         input:not(:checked) + & > * {
@@ -48,8 +48,8 @@ const FakeInput = styled.div`
         }
 
         input:checked:disabled + & {
-            border-color: ${theme.backgroundPrimarySubtleOnElevation0};
-            background-color: ${theme.backgroundPrimarySubtleOnElevation0};
+            border-color: ${theme.legacyBackgroundPrimarySubtleOnElevation0};
+            background-color: ${theme.legacyBackgroundPrimarySubtleOnElevation0};
         }
     `}
 `;
@@ -98,7 +98,7 @@ export const Checkbox = ({
             />
 
             <FakeInput>
-                <Icon size={16} color="iconOnPrimary" name="check" />
+                <Icon size={16} color="contentPrimaryInverse" name="check" />
             </FakeInput>
 
             {children && (

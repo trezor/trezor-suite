@@ -80,7 +80,7 @@ export const TronFeeSummaryCard = ({
                 <HStack alignItems="center" spacing="sp4">
                     <CryptoAmountFormatter
                         variant="body-sm"
-                        color="textDefault"
+                        color="contentPrimary"
                         value={trxBurned}
                         symbol={account.symbol}
                         isBalance
@@ -89,13 +89,13 @@ export const TronFeeSummaryCard = ({
                         testID="@transactionManagement/tron-fee-crypto-amount"
                     />
                     {!areFeesLoading && (
-                        <Text variant="body-sm" color="textDefault">
+                        <Text variant="body-sm" color="contentPrimary">
                             ≈
                         </Text>
                     )}
                     <CryptoToFiatAmountFormatter
                         variant="body-sm"
-                        color="textDefault"
+                        color="contentPrimary"
                         value={trxBurned}
                         symbol={account.symbol}
                         isBalance
@@ -111,7 +111,7 @@ export const TronFeeSummaryCard = ({
                 return (
                     <CryptoAmountFormatter
                         variant="body-sm"
-                        color="textDefault"
+                        color="contentPrimary"
                         value={null}
                         symbol={account.symbol}
                         isBalance
@@ -122,7 +122,7 @@ export const TronFeeSummaryCard = ({
             }
 
             return (
-                <Text variant="body-sm" color="textDefault">
+                <Text variant="body-sm" color="contentPrimary">
                     {resourceLabel}
                 </Text>
             );
@@ -131,7 +131,7 @@ export const TronFeeSummaryCard = ({
         return (
             <CryptoAmountFormatter
                 variant="body-sm"
-                color="textDefault"
+                color="contentPrimary"
                 value={null}
                 symbol={account.symbol}
                 isBalance
@@ -157,12 +157,12 @@ export const TronFeeSummaryCard = ({
                     <VStack alignItems="flex-end" spacing="sp2">
                         {renderFeeValue()}
                         {trxBurned !== null && hasResourceCoverage && !areFeesLoading && (
-                            <Text variant="body-sm" color="textSubdued">
+                            <Text variant="body-sm" color="contentSecondary">
                                 {`+ ${resourceLabel}`}
                             </Text>
                         )}
                     </VStack>
-                    {onPress && <Icon name="caretDown" size="medium" color="iconSubdued" />}
+                    {onPress && <Icon name="caretDown" size="medium" color="contentSecondary" />}
                 </HStack>
             </HStack>
         </Card>

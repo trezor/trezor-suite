@@ -53,7 +53,7 @@ export const SwitchDeviceContent = ({ cancelable, onCancel }: ForegroundAppProps
                     onCancel={cancelable ? onCancel : undefined}
                 />
             ))}
-            <Box backgroundColor="backgroundSurfaceElevation1" borderRadius={12}>
+            <Box backgroundColor="surfaceFillRaised" borderRadius={12}>
                 <Button
                     intent="neutral"
                     priority="secondary"

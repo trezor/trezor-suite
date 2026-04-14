@@ -18,7 +18,7 @@ export const Loader: LoaderStory = {
     args: {
         size: 'large',
         title: 'Loading...',
-        color: 'backgroundPrimaryDefault',
+        color: 'legacyBackgroundPrimaryDefault',
     },
     argTypes: {
         size: {

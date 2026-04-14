@@ -24,19 +24,19 @@ const Level = styled(Input)<{ $elevation: Elevation }>`
         height: 42px;
         padding: ${({ rightContent }) => !rightContent && '1px 12px 0 12px'};
         border: 1.5px solid ${mapElevationToBorder};
-        color: ${({ theme }) => theme.textPrimaryDefault};
+        color: ${({ theme }) => theme.contentBrand};
         ${typography['headline-sm']}
         text-align: center;
 
         &:disabled {
-            color: ${({ theme }) => theme.textSubdued};
+            color: ${({ theme }) => theme.contentSecondary};
         }
     }
 `;
 
 const InnerAddon = styled.div`
     ${typography['body-sm']}
-    color: ${({ theme }) => theme.textSubdued};
+    color: ${({ theme }) => theme.contentSecondary};
 `;
 
 const MAX_ALLOWED_INTEGER = 1000000;

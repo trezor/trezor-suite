@@ -21,7 +21,7 @@ const instructionsContainerStyle = prepareNativeStyle<{
     paddingTop: number;
 }>((utils, { paddingTop }) => ({
     paddingTop,
-    backgroundColor: utils.colors.backgroundSurfaceElevation0,
+    backgroundColor: utils.colors.surfaceFillPage,
 }));
 
 const REVEAL_TIMEOUT = isDetoxTestBuild() ? 0 : 1500;

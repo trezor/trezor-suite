@@ -5,10 +5,10 @@ import { type IconSize } from '../Icon/types';
 
 export const mapIntentToBorderColor = (intent: IconCircleIntent): Color => {
     const colorMap: Record<IconCircleIntent, Color> = {
-        brand: 'backgroundPrimarySubtleOnElevation0',
-        warning: 'backgroundAlertYellowSubtleOnElevation0',
-        critical: 'backgroundAlertRedSubtleOnElevation0',
-        info: 'backgroundAlertBlueSubtleOnElevation0',
+        brand: 'legacyBackgroundPrimarySubtleOnElevation0',
+        warning: 'legacyBackgroundAlertYellowSubtleOnElevation0',
+        critical: 'legacyBackgroundAlertRedSubtleOnElevation0',
+        info: 'legacyBackgroundAlertBlueSubtleOnElevation0',
         neutral: 'elementBorderNeutralSofter',
         accentViolet: 'elementBorderAccentVioletSofter',
     };
@@ -31,19 +31,19 @@ export const mapSizeToBorderWidth = (size: IconCircleSize): BorderWidths => {
 
 export const mapIntentToBackground = (intent: IconCircleIntent, size: IconCircleSize): Color => {
     const noBorderColorMap: Record<IconCircleIntent, Color> = {
-        brand: 'backgroundPrimarySubtleOnElevation0',
-        warning: 'backgroundAlertYellowSubtleOnElevation0',
-        critical: 'backgroundAlertRedSubtleOnElevation0',
-        info: 'backgroundAlertBlueSubtleOnElevation0',
+        brand: 'legacyBackgroundPrimarySubtleOnElevation0',
+        warning: 'legacyBackgroundAlertYellowSubtleOnElevation0',
+        critical: 'legacyBackgroundAlertRedSubtleOnElevation0',
+        info: 'legacyBackgroundAlertBlueSubtleOnElevation0',
         neutral: 'elementFillNeutralSofter',
         accentViolet: 'elementFillAccentVioletSofter',
     };
 
     const borderColorMap: Record<IconCircleIntent, Color> = {
-        brand: 'backgroundPrimarySubtleOnElevation1',
-        warning: 'backgroundAlertYellowSubtleOnElevation1',
-        critical: 'backgroundAlertRedSubtleOnElevation1',
-        info: 'backgroundAlertBlueSubtleOnElevation1',
+        brand: 'legacyBackgroundPrimarySubtleOnElevation1',
+        warning: 'legacyBackgroundAlertYellowSubtleOnElevation1',
+        critical: 'legacyBackgroundAlertRedSubtleOnElevation1',
+        info: 'legacyBackgroundAlertBlueSubtleOnElevation1',
         neutral: 'elementFillField',
         accentViolet: 'elementFillAccentVioletSoft',
     };

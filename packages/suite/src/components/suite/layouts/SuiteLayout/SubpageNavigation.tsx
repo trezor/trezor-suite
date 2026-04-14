@@ -12,8 +12,8 @@ import { AppNavigationTooltip } from '../../AppNavigation/AppNavigationTooltip';
 const Container = styled.div`
     position: sticky;
     top: ${HEADER_HEIGHT};
-    background: ${({ theme }) => theme.backgroundSurfaceElevation0};
-    border-bottom: 1px solid ${({ theme }) => theme.borderElevation1};
+    background: ${({ theme }) => theme.surfaceFillPage};
+    border-bottom: 1px solid ${({ theme }) => theme.borderNeutral};
     z-index: ${zIndices.stickyBar};
     width: 100%;
 `;

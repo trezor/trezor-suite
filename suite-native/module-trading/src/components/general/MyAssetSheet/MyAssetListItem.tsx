@@ -52,7 +52,7 @@ export const MyAssetListItem = ({ account, asset, onPress }: MyAssetListItemProp
                     tokenSymbol={tokenSymbol}
                     numberOfLines={1}
                     ellipsizeMode="tail"
-                    color="textDefault"
+                    color="contentPrimary"
                     variant="body-md"
                 />
             ) : (
@@ -61,7 +61,7 @@ export const MyAssetListItem = ({ account, asset, onPress }: MyAssetListItemProp
                     symbol={symbol}
                     numberOfLines={1}
                     adjustsFontSizeToFit
-                    color="textDefault"
+                    color="contentPrimary"
                     variant="body-md"
                 />
             )}
@@ -72,10 +72,10 @@ export const MyAssetListItem = ({ account, asset, onPress }: MyAssetListItemProp
                         symbol={symbol}
                         value={fiatBalance}
                         variant="body-sm"
-                        color="textSubdued"
+                        color="contentSecondary"
                     />
                 ) : (
-                    <Text variant="body-xs" color="textSubdued">
+                    <Text variant="body-xs" color="contentSecondary">
                         <Translation id="moduleTrading.myAssetSheet.noPair.note" />
                     </Text>
                 ))}

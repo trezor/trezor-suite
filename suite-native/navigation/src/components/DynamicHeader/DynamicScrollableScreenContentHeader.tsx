@@ -26,7 +26,7 @@ export const DynamicScrollableScreenContentHeader = ({
             <Text variant="headline-md" onLayout={handleLayout}>
                 {title}
             </Text>
-            {subtitle && <Text color="textSubdued">{subtitle}</Text>}
+            {subtitle && <Text color="contentSecondary">{subtitle}</Text>}
         </VStack>
     );
 };

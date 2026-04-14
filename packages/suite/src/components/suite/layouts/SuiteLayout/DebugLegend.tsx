@@ -18,7 +18,7 @@ const DebugLegendContainer = styled.div`
     position: absolute;
     right: 0;
     bottom: 0;
-    background: ${({ theme }) => theme.backgroundSurfaceElevationNegative};
+    background: ${({ theme }) => theme.surfaceFillSunken};
     border-radius: ${borders.radii.xs};
     margin: ${spacingsPx.xxxs};
     padding: ${spacingsPx.xs};
@@ -42,24 +42,24 @@ type MapDebugElevationType = Record<
 
 const mapDebugElevations: MapDebugElevationType = {
     'Elevation -1': {
-        background: colorVariants.debug.backgroundSurfaceElevationNegative,
-        border: colorVariants.debug.borderElevationNegative,
+        background: colorVariants.debug.surfaceFillSunken,
+        border: colorVariants.debug.borderNeutral,
     },
     'Elevation 0': {
-        background: colorVariants.debug.backgroundSurfaceElevation0,
-        border: colorVariants.debug.borderElevation0,
+        background: colorVariants.debug.surfaceFillPage,
+        border: colorVariants.debug.borderNeutral,
     },
     'Elevation 1': {
-        background: colorVariants.debug.backgroundSurfaceElevation1,
-        border: colorVariants.debug.borderElevation1,
+        background: colorVariants.debug.surfaceFillRaised,
+        border: colorVariants.debug.borderNeutral,
     },
     'Elevation 2': {
-        background: colorVariants.debug.backgroundSurfaceElevation2,
-        border: colorVariants.debug.borderElevation2,
+        background: colorVariants.debug.legacyBackgroundSurfaceElevation2,
+        border: colorVariants.debug.legacyBorderElevation2,
     },
     'Elevation 3': {
-        background: colorVariants.debug.backgroundSurfaceElevation3,
-        border: colorVariants.debug.borderElevation3,
+        background: colorVariants.debug.legacyBackgroundSurfaceElevation3,
+        border: colorVariants.debug.legacyBorderElevation3,
     },
 } as const;
 

@@ -46,7 +46,7 @@ const InfoMessage = styled.div`
     padding: ${spacingsPx.md} ${spacingsPx.xl};
     align-items: center;
     display: flex;
-    color: ${({ theme }) => theme.textAlertRed};
+    color: ${({ theme }) => theme.contentCritical};
     ${typography['body-xs']}
 `;
 

@@ -20,7 +20,7 @@ export type AccountListBaseItemProps = {
     onPress: () => void;
 };
 
-type TextColor = 'textDefault' | 'textSubdued';
+type TextColor = 'contentPrimary' | 'contentSecondary';
 
 export const ACCOUNT_LIST_ITEM_HEIGHT = 68 as const;
 
@@ -56,7 +56,7 @@ const AccountListLabel = ({ label, flex }: { label: ReactNode; flex: number }) =
     return (
         <Text
             variant="body-md"
-            style={applyStyle(labelTextStyle, { textColor: 'textDefault', flex })}
+            style={applyStyle(labelTextStyle, { textColor: 'contentPrimary', flex })}
         >
             {label}
         </Text>
@@ -110,7 +110,7 @@ export const AccountListBaseItem = ({
                                 symbol={account.symbol}
                                 variant="body-md"
                                 style={applyStyle(amountTextStyle, {
-                                    textColor: 'textDefault',
+                                    textColor: 'contentPrimary',
                                 })}
                                 accessibilityLabel={translate(
                                     'moduleTrading.accountScreen.balanceCrypto',
@@ -129,7 +129,7 @@ export const AccountListBaseItem = ({
                                 symbol={account.symbol}
                                 variant="body-sm"
                                 style={applyStyle(labelTextStyle, {
-                                    textColor: 'textDefault',
+                                    textColor: 'contentPrimary',
                                     flex: 1,
                                 })}
                                 accessibilityLabel={translate(
@@ -143,7 +143,7 @@ export const AccountListBaseItem = ({
                     <Box justifyContent="center">
                         <Icon
                             name="caretRight"
-                            color="iconDefault"
+                            color="contentPrimary"
                             accessibilityHint={translate('moduleTrading.accountScreen.step2Hint')}
                         />
                     </Box>

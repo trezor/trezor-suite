@@ -9,7 +9,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { AccountListBaseItem } from './AccountListBaseItem';
 
 const labelTextStyle = prepareNativeStyle(utils => ({
-    color: utils.colors.textSubdued,
+    color: utils.colors.contentSecondary,
     flex: 1,
 }));
 

@@ -67,7 +67,10 @@ const ReceiveAccountPickerRight = ({
 }: ReceiveAccountPickerRightProps) => {
     if (accountLabel == null) {
         return (
-            <RightText color="textSubdued" testID={testID ? `${testID}/not-selected` : undefined}>
+            <RightText
+                color="contentSecondary"
+                testID={testID ? `${testID}/not-selected` : undefined}
+            >
                 <Translation id="moduleTrading.notSelected" />
             </RightText>
         );
@@ -76,7 +79,7 @@ const ReceiveAccountPickerRight = ({
     if (!addressText) {
         return (
             <RightText
-                color="textSubdued"
+                color="contentSecondary"
                 testID={testID ? `${testID}/selected-account` : undefined}
             >
                 {accountLabel}
@@ -87,7 +90,7 @@ const ReceiveAccountPickerRight = ({
     return (
         <>
             <RightText
-                color="textSubdued"
+                color="contentSecondary"
                 testID={testID ? `${testID}/selected-account` : undefined}
             >
                 {accountLabel}
@@ -95,7 +98,7 @@ const ReceiveAccountPickerRight = ({
             <AccountAddress
                 address={addressText}
                 form="short"
-                color="textSubdued"
+                color="contentSecondary"
                 variant="body-sm"
                 textAlign="right"
             />

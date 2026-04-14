@@ -22,7 +22,7 @@ export const TitledSection = ({ title, children }: TitledSectionProps) => {
 
     return (
         <VStack spacing="sp16">
-            <Text variant="headline-sm" color="textOnTertiary">
+            <Text variant="headline-sm" color="contentNeutral">
                 {title}
             </Text>
             <VStack spacing="sp12">{children}</VStack>

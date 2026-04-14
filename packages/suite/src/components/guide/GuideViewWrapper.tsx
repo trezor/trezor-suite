@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { variables } from '@trezor/components';
 
 const Wrapper = styled.div`
-    background: ${({ theme }) => theme.backgroundSurfaceElevation0};
+    background: ${({ theme }) => theme.surfaceFillPage};
     display: flex;
     height: 100%;
     flex-direction: column;

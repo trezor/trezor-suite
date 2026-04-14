@@ -20,7 +20,7 @@ const CopiedText = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    color: ${({ theme }) => theme.textAlertBlue};
+    color: ${({ theme }) => theme.contentInfo};
     ${typography['body-sm']}
 `;
 
@@ -33,8 +33,8 @@ const FloatingWrapper = styled.div`
     width: 100%;
     top: 0;
     padding: 10px 0;
-    background: ${({ theme }) => theme.backgroundSurfaceElevation0};
-    box-shadow: 0 5px 10px ${({ theme }) => theme.backgroundSurfaceElevation0};
+    background: ${({ theme }) => theme.surfaceFillPage};
+    box-shadow: 0 5px 10px ${({ theme }) => theme.surfaceFillPage};
 `;
 
 const Wrapper = styled.div`
@@ -66,7 +66,7 @@ const IconText = styled.div`
     flex-direction: column;
     align-items: center;
     ${typography['body-xs']}
-    color: ${({ theme }) => theme.textSubdued};
+    color: ${({ theme }) => theme.contentSecondary};
     overflow-wrap: anywhere;
     word-break: normal;
     text-align: center;

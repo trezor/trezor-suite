@@ -43,8 +43,8 @@ const CARD_BOTTOM_PADDING = 40;
 const cardStyle = prepareNativeStyle(utils => ({
     width: '100%',
     paddingHorizontal: utils.spacings.sp8,
-    backgroundColor: utils.colors.backgroundSurfaceElevationNegative,
-    borderColor: utils.colors.borderElevation0,
+    backgroundColor: utils.colors.surfaceFillSunken,
+    borderColor: utils.colors.borderNeutral,
     borderWidth: utils.borders.widths.small,
     ...utils.boxShadows.none,
 }));
@@ -69,7 +69,7 @@ const MainnetSummary = ({ amount, symbol, isLoading }: MainnetSummaryProps) => (
         <VStack spacing="sp4" alignItems="flex-end">
             <CryptoToFiatAmountFormatter
                 variant="body-sm-strong"
-                color="textDefault"
+                color="contentPrimary"
                 value={amount}
                 symbol={symbol}
                 isLoading={isLoading}
@@ -77,7 +77,7 @@ const MainnetSummary = ({ amount, symbol, isLoading }: MainnetSummaryProps) => (
             />
             <CryptoAmountFormatter
                 variant="body-sm"
-                color="textSubdued"
+                color="contentSecondary"
                 value={amount}
                 symbol={symbol}
                 isBalance={false}
@@ -117,14 +117,14 @@ const TokenSummary = ({
                 <Text variant="body-sm-strong">
                     <Translation id="transactionManagement.fees.amount" />
                 </Text>
-                <Text variant="body-sm" color="textSubdued">
+                <Text variant="body-sm" color="contentSecondary">
                     <Translation id="transactions.detail.feeLabel" />
                 </Text>
             </VStack>
             <VStack spacing="sp4" alignItems="flex-end">
                 <TokenAmountFormatter
                     variant="body-sm-strong"
-                    color="textDefault"
+                    color="contentPrimary"
                     decimals={tokenDecimals ?? undefined}
                     value={tokenAmount}
                     tokenSymbol={tokenSymbol}
@@ -132,7 +132,7 @@ const TokenSummary = ({
                 />
                 <CryptoAmountFormatter
                     variant="body-sm"
-                    color="textSubdued"
+                    color="contentSecondary"
                     value={mainnetFee}
                     symbol={symbol}
                     isBalance={false}

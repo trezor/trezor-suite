@@ -21,7 +21,7 @@ interface FooterProviderContentProps {
 const FooterProviderContent = ({ provider }: FooterProviderContentProps) => {
     if (!provider || !provider.termsUrl) {
         return (
-            <Text variant="body-sm" color="textSubdued" textAlign="center">
+            <Text variant="body-sm" color="contentSecondary" textAlign="center">
                 <Translation id="moduleTrading.tradingScreen.footer.termsAndConditionsGeneral" />
             </Text>
         );
@@ -30,7 +30,7 @@ const FooterProviderContent = ({ provider }: FooterProviderContentProps) => {
     const { companyName, termsUrl } = provider;
 
     return (
-        <Text variant="body-sm" color="textSubdued" textAlign="center">
+        <Text variant="body-sm" color="contentSecondary" textAlign="center">
             <Translation
                 id="moduleTrading.tradingScreen.footer.termsAndConditionsProvider"
                 values={{
@@ -38,8 +38,8 @@ const FooterProviderContent = ({ provider }: FooterProviderContentProps) => {
                     link: parts => (
                         <Link
                             textVariant="body-sm"
-                            textColor="textSubdued"
-                            textPressedColor="textDisabled"
+                            textColor="contentSecondary"
+                            textPressedColor="contentDisabled"
                             href={termsUrl}
                             label={parts}
                             isUnderlined
@@ -74,20 +74,20 @@ export const Footer = ({ isFormMountedRecently }: FooterProps) => {
                 <HStack alignItems="center" spacing="sp4">
                     <Link
                         textVariant="body-sm"
-                        textColor="textSubdued"
-                        textPressedColor="textDisabled"
+                        textColor="contentSecondary"
+                        textPressedColor="contentDisabled"
                         href={TREZOR_SUITE_TOS_URL}
                         label={<Translation id="moduleTrading.tradingScreen.footer.termsOfUse" />}
                     />
 
-                    <Text variant="body-sm" color="textSubdued">
+                    <Text variant="body-sm" color="contentSecondary">
                         |
                     </Text>
 
                     <Link
                         textVariant="body-sm"
-                        textColor="textSubdued"
-                        textPressedColor="textDisabled"
+                        textColor="contentSecondary"
+                        textPressedColor="contentDisabled"
                         href={TREZOR_TRADING_LEARN_MORE_URL}
                         label={<Translation id="moduleTrading.tradingScreen.footer.learnMore" />}
                         numberOfLines={1}

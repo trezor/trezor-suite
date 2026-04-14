@@ -144,23 +144,23 @@ export const HoldToConfirmButton = ({
                         cx={CIRCLE_CENTER}
                         cy={CIRCLE_CENTER}
                         r={CANVAS_SIZE / 2}
-                        color={utils.colors.borderOnElevation0}
+                        color={utils.colors.borderNeutral}
                     />
                     <Circle
                         cx={CIRCLE_CENTER}
                         cy={CIRCLE_CENTER}
                         r={CANVAS_SIZE / 2 - BORDER_WIDTH}
-                        color={utils.colors.backgroundSurfaceElevationNegative}
+                        color={utils.colors.surfaceFillSunken}
                     />
                     <Circle
                         cx={CIRCLE_CENTER}
                         cy={CIRCLE_CENTER}
                         r={animatedButtonRadius}
-                        color={utils.colors.backgroundPrimaryDefault}
+                        color={utils.colors.legacyBackgroundPrimaryDefault}
                     />
                     <Path
                         path={leftLoaderArcPath}
-                        color={utils.colors.backgroundPrimaryDefault}
+                        color={utils.colors.legacyBackgroundPrimaryDefault}
                         start={0}
                         end={animationProgress}
                         strokeCap="round"
@@ -170,7 +170,7 @@ export const HoldToConfirmButton = ({
                     />
                     <Path
                         path={rightLoaderArcPath}
-                        color={utils.colors.backgroundPrimaryDefault}
+                        color={utils.colors.legacyBackgroundPrimaryDefault}
                         start={0}
                         end={animationProgress}
                         strokeCap="round"

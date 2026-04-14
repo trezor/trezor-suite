@@ -18,8 +18,8 @@ const buttonWrapperStyle = prepareNativeStyle(() => ({
 
 const buttonStyle = prepareNativeStyle(utils => ({
     padding: BUTTON_PADDING,
-    backgroundColor: utils.colors.backgroundSurfaceElevation1,
-    borderColor: utils.colors.borderDashed,
+    backgroundColor: utils.colors.surfaceFillRaised,
+    borderColor: utils.colors.borderNeutral,
     borderWidth: utils.borders.widths.small,
     borderRadius: utils.borders.radii.round,
 }));

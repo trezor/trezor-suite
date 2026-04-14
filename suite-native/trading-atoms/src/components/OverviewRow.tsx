@@ -23,7 +23,7 @@ const pressableStyle = prepareNativeStyle<{ noBottomBorder: boolean }>(
                 condition: !noBottomBorder,
                 style: {
                     borderBottomWidth: borders.widths.small,
-                    borderBottomColor: colors.backgroundSurfaceElevation0,
+                    borderBottomColor: colors.surfaceFillPage,
                 },
             },
         ],
@@ -54,7 +54,7 @@ export const OverviewRow = ({
             <VStack spacing={0}>
                 <HStack paddingHorizontal="sp12" justifyContent="space-between">
                     <Box paddingVertical="sp20" paddingHorizontal="sp8" flex={0}>
-                        <Text color="textDefault" variant="body-sm">
+                        <Text color="contentPrimary" variant="body-sm">
                             {title}
                         </Text>
                     </Box>
@@ -64,7 +64,7 @@ export const OverviewRow = ({
                         </Box>
                         {!noCaret && (
                             <Box flex={0}>
-                                <Icon name="caretDown" size="medium" color="textSubdued" />
+                                <Icon name="caretDown" size="medium" color="contentSecondary" />
                             </Box>
                         )}
                     </HStack>

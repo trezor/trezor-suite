@@ -6,14 +6,14 @@ import { type IconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 const cardStyle = prepareNativeStyle<{ isSelected: boolean }>((utils, { isSelected }) => ({
-    borderColor: utils.colors.borderOnElevation1,
+    borderColor: utils.colors.borderNeutral,
     borderWidth: utils.borders.widths.small,
     padding: 1, // Prevents content jumping when borderWidth changes after isSelected becomes true.
     extend: [
         {
             condition: isSelected,
             style: {
-                borderColor: utils.colors.backgroundPrimaryDefault,
+                borderColor: utils.colors.legacyBackgroundPrimaryDefault,
                 borderWidth: utils.borders.widths.large,
                 padding: 0,
             },
@@ -53,7 +53,11 @@ export const DemoAccountQuestionnaireAnswer = ({
                 >
                     <HStack spacing="sp12" alignItems="center" flex={1}>
                         {!!iconName && <OrderedListIcon iconName={iconName} iconSize="large" />}
-                        <Text variant="body-md" color="textDefault" style={applyStyle(labelStyle)}>
+                        <Text
+                            variant="body-md"
+                            color="contentPrimary"
+                            style={applyStyle(labelStyle)}
+                        >
                             {label}
                         </Text>
                     </HStack>

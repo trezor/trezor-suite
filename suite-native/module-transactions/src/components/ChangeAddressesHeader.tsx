@@ -7,8 +7,8 @@ type ChangeAddressesHeaderProps = { addressesCount: number };
 export const ChangeAddressesHeader = ({ addressesCount }: ChangeAddressesHeaderProps) => (
     <Box>
         <HStack alignItems="center">
-            <Icon name="change" color="iconSubdued" size="medium" />
-            <Text color="textSubdued" variant="body-sm">
+            <Icon name="change" color="contentSecondary" size="medium" />
+            <Text color="contentSecondary" variant="body-sm">
                 <Translation
                     id="transactions.TransactionDetailScreen.addressesSheet.changeAddresses"
                     values={{ count: addressesCount }}

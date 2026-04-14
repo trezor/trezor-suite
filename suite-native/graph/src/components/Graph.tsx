@@ -137,7 +137,7 @@ export const Graph = <TGraphPoint extends FiatGraphPoint>({
             <LineGraph<GroupedBalanceMovementEventPayload>
                 style={applyStyle(graphStyle, { loading, error })}
                 points={points}
-                color={colors.borderSecondary}
+                color={colors.borderBrand}
                 animated={animated}
                 verticalPadding={20}
                 enablePanGesture
@@ -154,7 +154,7 @@ export const Graph = <TGraphPoint extends FiatGraphPoint>({
                 onEventHover={triggerHaptics}
                 lineThickness={getAccessibilityLineThickness()}
                 loading={delayedLoading}
-                loadingLineColor={colors.borderDashed}
+                loadingLineColor={colors.borderNeutral}
                 blurOverlay={showBlurredGraph}
                 showPlaceholder={arePointsEmpty}
             />

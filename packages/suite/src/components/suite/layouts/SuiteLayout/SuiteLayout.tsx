@@ -63,7 +63,7 @@ export const AppWrapper = styled.div`
     flex-direction: column;
     overflow: auto scroll;
     width: 100%;
-    background: ${({ theme }) => theme.backgroundSurfaceElevation0};
+    background: ${({ theme }) => theme.surfaceFillPage};
     align-items: center;
     position: relative;
 

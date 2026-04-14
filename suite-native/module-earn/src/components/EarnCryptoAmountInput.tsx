@@ -74,7 +74,7 @@ export const EarnCryptoAmountInput = ({
             onPress={onPress}
             hasError={!isDisabled && hasError}
             rightIcon={
-                <Text color={isDisabled ? 'textSubdued' : 'textDefault'}>
+                <Text color={isDisabled ? 'contentSecondary' : 'contentPrimary'}>
                     {formatter.format(symbol)}
                 </Text>
             }

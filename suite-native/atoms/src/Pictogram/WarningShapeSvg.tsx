@@ -4,8 +4,8 @@ import { useNativeStyles } from '@trezor/styles-native';
 
 export const WarningShapeSvg = () => {
     const { utils } = useNativeStyles();
-    const borderColor = utils.colors.backgroundAlertYellowSubtleOnElevationNegative;
-    const backgroundColor = utils.colors.backgroundAlertYellowSubtleOnElevation1;
+    const borderColor = utils.colors.legacyBackgroundAlertYellowSubtleOnElevationNegative;
+    const backgroundColor = utils.colors.legacyBackgroundAlertYellowSubtleOnElevation1;
 
     return (
         <Svg width={112} height={112} fill="none">

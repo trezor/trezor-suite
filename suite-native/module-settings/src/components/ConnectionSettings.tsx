@@ -61,15 +61,15 @@ export const ConnectionSettings = () => {
                             <HStack spacing="sp16" alignItems="center">
                                 <RoundedIcon
                                     name="qrCode"
-                                    color="iconPrimaryDefault"
-                                    backgroundColor="backgroundPrimarySubtleOnElevation0"
+                                    color="contentBrand"
+                                    backgroundColor="legacyBackgroundPrimarySubtleOnElevation0"
                                     iconSize="mediumLarge"
                                 />
-                                <Text color="textPrimaryDefault">
+                                <Text color="contentBrand">
                                     <Translation id="moduleSettings.items.connections.walletConnect.add" />
                                 </Text>
                             </HStack>
-                            <Icon name="plus" color="textSecondaryHighlight" />
+                            <Icon name="plus" color="contentBrand" />
                         </HStack>
                     </PressableOpacity>
                 </Box>

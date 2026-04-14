@@ -17,7 +17,7 @@ type StakingPromoRingIconProps = { symbol?: NetworkSymbol } & (
 
 const iconInnerContainerStyle = prepareNativeStyle(
     (utils, { hasGradient }: { hasGradient: boolean }) => ({
-        backgroundColor: utils.colors.backgroundPrimarySubtleOnElevation1,
+        backgroundColor: utils.colors.legacyBackgroundPrimarySubtleOnElevation1,
         width: 80,
         height: 80,
         alignItems: 'center',
@@ -35,7 +35,7 @@ const iconInnerContainerStyle = prepareNativeStyle(
 
 const iconOuterContainerStyle = prepareNativeStyle(
     (utils, { hasGradient }: { hasGradient: boolean }) => ({
-        backgroundColor: utils.colors.backgroundPrimarySubtleOnElevationNegative,
+        backgroundColor: utils.colors.legacyBackgroundPrimarySubtleOnElevationNegative,
         width: 104,
         height: 104,
         alignItems: 'center',
@@ -71,7 +71,7 @@ export const StakingPromoRingIcon = ({ iconName, children, symbol }: StakingProm
                     <LinearGradient colors={gradientColors} style={StyleSheet.absoluteFill} />
                 )}
                 {iconName ? (
-                    <Icon size={40} name={iconName} color="backgroundPrimaryDefault" />
+                    <Icon size={40} name={iconName} color="legacyBackgroundPrimaryDefault" />
                 ) : (
                     children
                 )}

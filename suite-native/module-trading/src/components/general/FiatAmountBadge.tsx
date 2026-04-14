@@ -14,7 +14,7 @@ export const FiatAmountBadge = ({ amount }: FiatAmountBadgeProps) => {
     }
 
     return (
-        <Text variant="body-sm" color="textDefault">
+        <Text variant="body-sm" color="contentPrimary">
             <BaseCurrencyAmountFormatter value={amount} minimumFractionDigits={2} />
         </Text>
     );

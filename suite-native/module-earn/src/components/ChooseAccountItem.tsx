@@ -54,7 +54,7 @@ export const ChooseAccountItem = ({
                     symbol={account.symbol}
                     decimals={CRYPTO_BALANCE_DECIMALS}
                     variant="body-md-strong"
-                    color="textDefault"
+                    color="contentPrimary"
                     numberOfLines={1}
                     adjustsFontSizeToFit
                 />
@@ -65,7 +65,7 @@ export const ChooseAccountItem = ({
                     symbol={account.symbol}
                     isBalance
                     variant="body-sm"
-                    color="textSubdued"
+                    color="contentSecondary"
                 />
             }
         />

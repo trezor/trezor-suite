@@ -25,7 +25,7 @@ const BUY_CARD_TEST_ID = '@trading/buyCard';
 const buySectionStyle = prepareNativeStyle<{ bottomBorder: boolean }>(
     ({ borders, colors, spacings }, { bottomBorder }) => ({
         borderBottomWidth: 0,
-        borderBottomColor: colors.backgroundSurfaceElevation0,
+        borderBottomColor: colors.surfaceFillPage,
         paddingHorizontal: spacings.sp12,
         paddingTop: spacings.sp16,
         paddingBottom: spacings.sp12,

@@ -4,8 +4,8 @@ import { useNativeStyles } from '@trezor/styles-native';
 
 export const CriticalShapeSvg = () => {
     const { utils } = useNativeStyles();
-    const borderColor = utils.colors.backgroundAlertRedSubtleOnElevationNegative;
-    const backgroundColor = utils.colors.backgroundAlertRedSubtleOnElevation1;
+    const borderColor = utils.colors.legacyBackgroundAlertRedSubtleOnElevationNegative;
+    const backgroundColor = utils.colors.legacyBackgroundAlertRedSubtleOnElevation1;
 
     return (
         <Svg width={112} height={112} fill="none">

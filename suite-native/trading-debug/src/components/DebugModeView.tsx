@@ -11,8 +11,8 @@ const DebugModeViewStyle = prepareNativeStyle(({ colors, spacings }) => ({
     paddingHorizontal: spacings.sp4,
     paddingVertical: spacings.sp2,
     borderWidth: 1,
-    borderColor: colors.borderInputDefault,
-    backgroundColor: colors.backgroundNeutralDisabled,
+    borderColor: colors.elementBorderField,
+    backgroundColor: colors.elementFillBoldDisabled,
 }));
 
 export const DebugModeView = ({ style, ...otherProps }: DebugModeViewProps) => {

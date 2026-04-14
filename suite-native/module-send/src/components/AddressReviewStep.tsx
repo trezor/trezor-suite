@@ -23,25 +23,25 @@ const getIconProps = (stepNumber: AddressReviewStepProps['stepNumber']): Ordered
     stepNumber
         ? {
               iconNumber: stepNumber,
-              iconBackgroundColor: 'backgroundTertiaryDefaultOnElevation1',
-              iconBorderColor: 'borderElevation0',
+              iconBackgroundColor: 'legacyBackgroundTertiaryDefaultOnElevation1',
+              iconBorderColor: 'borderNeutral',
           }
         : {
               iconName: 'flagCheckered',
-              iconBackgroundColor: 'backgroundPrimaryDefault',
-              iconColor: 'iconDefaultInverted',
+              iconBackgroundColor: 'legacyBackgroundPrimaryDefault',
+              iconColor: 'contentPrimaryInverse',
           };
 
 const cardStyle = prepareNativeStyle<{ isFinalStep: boolean }>((utils, { isFinalStep }) => ({
     borderWidth: utils.borders.widths.small,
-    borderColor: utils.colors.borderElevation1,
+    borderColor: utils.colors.borderNeutral,
     maxWidth: '100%',
 
     extend: {
         condition: isFinalStep,
         style: {
-            backgroundColor: utils.colors.backgroundPrimarySubtleOnElevation1,
-            borderColor: utils.colors.backgroundPrimarySubtleOnElevation0,
+            backgroundColor: utils.colors.legacyBackgroundPrimarySubtleOnElevation1,
+            borderColor: utils.colors.legacyBackgroundPrimarySubtleOnElevation0,
             ...utils.boxShadows.none,
         },
     },
