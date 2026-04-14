@@ -1,8 +1,7 @@
 import type { CryptoId, ExchangeTrade } from 'invity-api';
 
-export const mercuryoFixedWorstQuote = {
+export const mercuryoFixedWorstQuote: ExchangeTrade = {
     exchange: 'mercuryo',
-    exp: '5grkpEGOghDUMvui0X3pZaO1+Ji3XTVGm1A5J64ENV4=',
     fee: 'UNKNOWN',
     max: 'NONE',
     min: 0,
@@ -16,11 +15,10 @@ export const mercuryoFixedWorstQuote = {
     sendStringAmount: '100',
     swapGasEstimate: 692081943.384627,
     swapSlippage: '1',
-} as ExchangeTrade;
+};
 
-export const mercuryoFixedBestQuote = {
+export const mercuryoFixedBestQuote: ExchangeTrade = {
     exchange: 'mercuryo',
-    exp: '5grkpEGOghDUMvui0X3pZaO1+Ji3XTVGm1A5J64ENV4=',
     fee: 'UNKNOWN',
     max: 11198149.828535,
     min: 36.007531199999995,
@@ -31,11 +29,10 @@ export const mercuryoFixedBestQuote = {
     receiveStringAmount: '0.00089537',
     send: 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as CryptoId,
     sendStringAmount: '100',
-} as ExchangeTrade;
+};
 
-export const cexdirectFloatingQuote = {
+export const cexdirectFloatingQuote: ExchangeTrade = {
     exchange: 'cexdirect',
-    exp: '5grkpEGOghDUMvui0X3pZaO1+Ji3XTVGm1A5J64ENV4=',
     fee: 'INCLUDED',
     max: 400083.679219,
     min: 60.012552,
@@ -47,11 +44,10 @@ export const cexdirectFloatingQuote = {
     receiveStringAmount: '0.00089118',
     send: 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as CryptoId,
     sendStringAmount: '100',
-} as ExchangeTrade;
+};
 
-export const invityDexQuote = {
+export const invityDexQuote: ExchangeTrade = {
     exchange: 'invity',
-    exp: '5grkpEGOghDUMvui0X3pZaO1+Ji3XTVGm1A5J64ENV4=',
     fee: 'UNKNOWN',
     isDex: true,
     max: 100020.004001,
@@ -63,11 +59,10 @@ export const invityDexQuote = {
     receiveStringAmount: '0.00088076',
     send: 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as CryptoId,
     sendStringAmount: '100',
-} as ExchangeTrade;
+};
 
-export const mercuryoDexQuote = {
+export const mercuryoDexQuote: ExchangeTrade = {
     exchange: 'mercuryo',
-    exp: '6grkpEGOghDUMvui0X3pZaO1+Ji3XTVGm1A5J64ENV4=',
     fee: 'UNKNOWN',
     max: 'NONE',
     isDex: true,
@@ -82,11 +77,10 @@ export const mercuryoDexQuote = {
     sendStringAmount: '100',
     swapGasEstimate: 692081943.384627,
     swapSlippage: '1',
-} as ExchangeTrade;
+};
 
-export const oneInchFusionPlusQuote = {
+export const oneInchFusionPlusQuote: ExchangeTrade = {
     exchange: '1inchfusionplus',
-    exp: '7grkpEGOghDUMvui0X3pZaO1+Ji3XTVGm1A5J64ENV4=',
     fee: 'UNKNOWN',
     max: 'NONE',
     isDex: true,
@@ -101,7 +95,7 @@ export const oneInchFusionPlusQuote = {
     sendStringAmount: '100',
     swapGasEstimate: 0,
     swapSlippage: '1',
-} as ExchangeTrade;
+};
 
 export const exchangeQuotes = [
     mercuryoFixedWorstQuote,
