@@ -24,6 +24,7 @@ export const extractBranch = (href: string): string | undefined =>
 export const getSuiteWebUrl = (href: string, origin: string): string => {
     if (origin === 'http://localhost:8088') {
         return 'http://localhost:8000/connect-popup';
+        // return 'https://dev.suite.sldev.cz/suite-web/develop/web/connect-popup';
     }
 
     if (href.startsWith(DEV_CONNECT_PREFIX)) {
