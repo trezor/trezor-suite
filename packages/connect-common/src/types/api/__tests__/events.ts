@@ -1,5 +1,22 @@
 import { ThpPairingMethod } from '@trezor/protocol';
-import { TRANSPORT } from '@trezor/transport';
+// Inlined from @trezor/transport to avoid pulling it in as a runtime dep.
+// If transport adds new events, update this list too.
+const TRANSPORT = {
+    START: 'transport-start',
+    ERROR: 'transport-error',
+    STOPPED: 'transport-stopped',
+    DEVICE_CONNECTED: 'transport-device_connected',
+    DEVICE_DISCONNECTED: 'transport-device_disconnected',
+    DEVICE_SESSION_CHANGED: 'transport-device_session_changed',
+    DEVICE_REQUEST_RELEASE: 'transport-device_request_release',
+    SEND_MESSAGE_PROGRESS: 'transport-send_message_progress',
+    TREZOR_PUSH_NOTIFICATION: 'trezor-push-notification',
+    BATTERY_LEVEL: 'battery-level',
+    DISABLE_WEBUSB: 'transport-disable_webusb',
+    REQUEST_DEVICE: 'transport-request_device',
+    GET_INFO: 'transport-get_info',
+    SET_TRANSPORTS: 'transport-set_transports',
+} as const;
 
 import type { TrezorConnect } from '../../..';
 import {

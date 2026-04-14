@@ -17,16 +17,10 @@
             "path": "../protocol"
         },
         {
-            "path": "../transport"
-        },
-        {
             "path": "../type-utils"
         },
         {
             "path": "../utils"
-        },
-        {
-            "path": "../utxo-lib"
         },
         {
             "path": "../blockchain-link"

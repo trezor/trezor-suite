@@ -84,19 +84,27 @@
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
-    "__dependencies_note__": "We are in the middle of migration, in a followup, @trezor/transport, @trezor/utxo-lib, @trezor/protobuf should not be dependencies of this package",
+    "__dependencies_note__": "We are in the middle of migration, in a followup, @trezor/protobuf should not be a dependency of this package",
     "dependencies": {
         "@trezor/device-utils": "workspace:*",
         "@trezor/protobuf": "workspace:*",
         "@trezor/protocol": "workspace:^",
         "@trezor/schema-utils": "workspace:*",
-        "@trezor/transport": "workspace:*",
         "@trezor/type-utils": "workspace:*",
-        "@trezor/utils": "workspace:*",
-        "@trezor/utxo-lib": "workspace:*"
+        "@trezor/utils": "workspace:*"
     },
     "peerDependencies": {
+        "@trezor/transport": "workspace:*",
+        "@trezor/utxo-lib": "workspace:*",
         "tslib": "^2.6.2"
+    },
+    "peerDependenciesMeta": {
+        "@trezor/transport": {
+            "optional": true
+        },
+        "@trezor/utxo-lib": {
+            "optional": true
+        }
     },
     "__devDependencies_note__": "even here, coin specific libs should not be listed, we need to find another way, probably copying of types",
     "devDependencies": {
