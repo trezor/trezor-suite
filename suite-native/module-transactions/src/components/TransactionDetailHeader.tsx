@@ -6,6 +6,7 @@ import { Badge, Box, DiscreetTextTrigger, Text, VStack } from '@suite-native/ato
 import {
     CryptoAmountFormatter,
     CryptoToFiatAmountFormatter,
+    EmptyAmountText,
     SignValueFormatter,
     TokenAmountFormatter,
     TokenToFiatAmountFormatter,
@@ -15,6 +16,8 @@ import { type TypedTokenTransfer, type WalletAccountTransaction } from '@suite-n
 import {
     TransactionIcon,
     getTransactionValueSign,
+    getUnstakeTxDisplayAmount,
+    isUnstakeDisplayTx,
     selectTransactionFiatRate,
 } from '@suite-native/transactions';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -37,6 +40,54 @@ const fiatValueStyle = prepareNativeStyle(utils => ({
     marginTop: -utils.spacings.sp4,
 }));
 
+type AmountDisplayProps = {
+    transaction: WalletAccountTransaction;
+    tokenTransfer?: TypedTokenTransfer;
+    cryptoAmount: string | null;
+    isFailedTx: boolean;
+};
+
+const AmountDisplay = ({
+    transaction,
+    tokenTransfer,
+    cryptoAmount,
+    isFailedTx,
+}: AmountDisplayProps) => {
+    const { applyStyle } = useNativeStyles();
+
+    if (tokenTransfer) {
+        return (
+            <TokenAmountFormatter
+                value={tokenTransfer.amount}
+                tokenSymbol={tokenTransfer.symbol}
+                decimals={tokenTransfer.decimals}
+                variant="headline-md"
+                color="textDefault"
+                numberOfLines={1}
+                adjustsFontSizeToFit
+                style={applyStyle(failedTxStyle, { isFailedTx })}
+            />
+        );
+    }
+
+    if (cryptoAmount === null) {
+        return <EmptyAmountText variant="headline-md" />;
+    }
+
+    return (
+        <CryptoAmountFormatter
+            value={cryptoAmount}
+            symbol={transaction.symbol}
+            isBalance={false}
+            variant="headline-md"
+            color="textDefault"
+            numberOfLines={1}
+            adjustsFontSizeToFit
+            style={applyStyle(failedTxStyle, { isFailedTx })}
+        />
+    );
+};
+
 export const TransactionDetailHeader = ({
     transaction,
     tokenTransfer,
@@ -53,6 +104,11 @@ export const TransactionDetailHeader = ({
     const signValue = getTransactionValueSign(tokenTransfer?.type ?? transaction.type);
     const isTokenOnlyTransaction = transaction.amount === '0' && transaction.tokens.length !== 0;
     const txType = isTokenOnlyTransaction ? transaction.tokens[0].type : type;
+
+    const isUnstake = !tokenTransfer && isUnstakeDisplayTx(transaction);
+    const displayAmount = isUnstake ? getUnstakeTxDisplayAmount(transaction) : transaction.amount;
+    const shouldShowSign = !isFailedTx && !isUnstake;
+    const shouldShowEmptyAmount = isUnstake && displayAmount === null;
 
     return (
         <DiscreetTextTrigger>
@@ -82,42 +138,27 @@ export const TransactionDetailHeader = ({
                     )}
 
                     <Box flexDirection="row">
-                        {!isFailedTx && (
-                            <SignValueFormatter
-                                color="textDefault"
-                                value={signValue}
-                                variant="headline-md"
-                            />
+                        {shouldShowSign && (
+                            <>
+                                <SignValueFormatter
+                                    color="textDefault"
+                                    value={signValue}
+                                    variant="headline-md"
+                                />
+                                <Text> </Text>
+                            </>
                         )}
-                        <Text> </Text>
 
-                        {tokenTransfer ? (
-                            <TokenAmountFormatter
-                                value={tokenTransfer.amount}
-                                tokenSymbol={tokenTransfer.symbol}
-                                decimals={tokenTransfer.decimals}
-                                variant="headline-md"
-                                color="textDefault"
-                                numberOfLines={1}
-                                adjustsFontSizeToFit
-                                style={applyStyle(failedTxStyle, { isFailedTx })}
-                            />
-                        ) : (
-                            <CryptoAmountFormatter
-                                value={transaction.amount}
-                                symbol={transaction.symbol}
-                                isBalance={false}
-                                variant="headline-md"
-                                color="textDefault"
-                                numberOfLines={1}
-                                adjustsFontSizeToFit
-                                style={applyStyle(failedTxStyle, { isFailedTx })}
-                            />
-                        )}
+                        <AmountDisplay
+                            transaction={transaction}
+                            tokenTransfer={tokenTransfer}
+                            cryptoAmount={displayAmount}
+                            isFailedTx={isFailedTx}
+                        />
                     </Box>
                 </VStack>
 
-                {historicRate !== undefined && historicRate !== 0 && (
+                {historicRate !== undefined && historicRate !== 0 && !shouldShowEmptyAmount && (
                     <Box flexDirection="row" style={applyStyle(fiatValueStyle)}>
                         <Text color="textSubdued">≈ </Text>
                         {tokenTransfer ? (
@@ -133,7 +174,7 @@ export const TransactionDetailHeader = ({
                             />
                         ) : (
                             <CryptoToFiatAmountFormatter
-                                value={transaction.amount}
+                                value={displayAmount!}
                                 symbol={transaction.symbol}
                                 historicRate={historicRate}
                                 color="textSubdued"

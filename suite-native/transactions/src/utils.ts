@@ -2,7 +2,13 @@ import { A, F, pipe } from '@mobily/ts-belt';
 
 import { type SignValue } from '@suite-common/suite-types';
 import { createSimpleTargetId } from '@suite-common/wallet-core';
-import { type TransactionType } from '@suite-common/wallet-types';
+import { type TransactionType, type WalletAccountTransaction } from '@suite-common/wallet-types';
+import {
+    getUnstakeAmountByEthereumDataHex,
+    isSupportedEthStakingNetworkSymbol,
+    isSupportedSolStakingNetworkSymbol,
+    isUnstakeTx,
+} from '@suite-common/wallet-utils';
 import { type EnhancedVinVout, type Target } from '@trezor/blockchain-link-types';
 import { isNotNullOrUndefined } from '@trezor/utils';
 
@@ -64,3 +70,29 @@ const transactionTypeToSignValueMap = {
 
 export const getTransactionValueSign = (transactionType: TransactionType) =>
     transactionTypeToSignValueMap[transactionType];
+
+export const isUnstakeDisplayTx = (tx: WalletAccountTransaction): boolean =>
+    tx.solanaSpecific?.stakeOperation?.type === 'unstake' ||
+    isUnstakeTx(tx.ethereumSpecific?.parsedData?.methodId);
+
+export const getUnstakeTxDisplayAmount = (tx: WalletAccountTransaction): string | null => {
+    const { symbol } = tx;
+
+    if (isSupportedSolStakingNetworkSymbol(symbol)) {
+        const solStakeOperation = tx.solanaSpecific?.stakeOperation;
+        if (solStakeOperation?.type === 'unstake') {
+            if (!solStakeOperation.amount) return null;
+
+            return solStakeOperation.amount;
+        }
+    }
+
+    if (isSupportedEthStakingNetworkSymbol(symbol)) {
+        const methodId = tx.ethereumSpecific?.parsedData?.methodId;
+        if (!isUnstakeTx(methodId)) return null;
+
+        return getUnstakeAmountByEthereumDataHex(tx.ethereumSpecific?.data) ?? null;
+    }
+
+    return null;
+};

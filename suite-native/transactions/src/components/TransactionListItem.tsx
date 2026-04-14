@@ -23,7 +23,7 @@ import { type WalletAccountTransaction } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { selectTransactionFiatRate } from '../selectors';
-import { getTransactionValueSign } from '../utils';
+import { getTransactionValueSign, getUnstakeTxDisplayAmount, isUnstakeDisplayTx } from '../utils';
 import { InstantStakeBanner } from './InstantStakeBanner';
 import { TokenTransferListItem } from './TokenTransferListItem';
 import { TransactionListItemContainer } from './TransactionListItemContainer';
@@ -74,34 +74,47 @@ export const TransactionListItemValues = ({
     const isFailedTx = transaction.type === 'failed';
     const sign = getTransactionValueSign(transaction.type);
 
+    const isUnstake = isUnstakeDisplayTx(transaction);
+    const shouldShowSign = !isFailedTx && !isUnstake;
+    const displayAmount = isUnstake ? getUnstakeTxDisplayAmount(transaction) : transaction.amount;
+    const shouldShowEmptyAmount = isUnstake && displayAmount === null;
+
     return (
         <VStack spacing="sp4" alignItems="flex-end">
             {isTestnetAccount ? (
                 <EmptyAmountText />
             ) : (
                 <Box flexDirection="row">
-                    {!isFailedTx && <SignValueFormatter value={sign} />}
-                    <CryptoToFiatAmountFormatter
-                        value={transaction.amount}
-                        symbol={transaction.symbol}
-                        historicRate={historicRate}
-                        useHistoricRate
-                        isForcedDiscreetMode={isPhishingTransaction}
-                        style={applyStyle(failedTxStyle, { isFailedTx })}
-                    />
+                    {shouldShowSign && <SignValueFormatter value={sign} />}
+                    {shouldShowEmptyAmount ? (
+                        <EmptyAmountText />
+                    ) : (
+                        <CryptoToFiatAmountFormatter
+                            value={displayAmount!}
+                            symbol={transaction.symbol}
+                            historicRate={historicRate}
+                            useHistoricRate
+                            isForcedDiscreetMode={isPhishingTransaction}
+                            style={applyStyle(failedTxStyle, { isFailedTx })}
+                        />
+                    )}
                 </Box>
             )}
 
-            <CryptoAmountFormatter
-                value={transaction.amount}
-                symbol={transaction.symbol}
-                isBalance={false}
-                numberOfLines={1}
-                adjustsFontSizeToFit
-                isForcedDiscreetMode={isPhishingTransaction}
-                variant="body-sm"
-                color="textSubdued"
-            />
+            {shouldShowEmptyAmount ? (
+                <EmptyAmountText variant="body-sm" />
+            ) : (
+                <CryptoAmountFormatter
+                    value={displayAmount!}
+                    symbol={transaction.symbol}
+                    isBalance={false}
+                    numberOfLines={1}
+                    adjustsFontSizeToFit
+                    isForcedDiscreetMode={isPhishingTransaction}
+                    variant="body-sm"
+                    color="textSubdued"
+                />
+            )}
         </VStack>
     );
 };

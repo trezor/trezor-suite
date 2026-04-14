@@ -15,9 +15,11 @@ import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { Card, Table, Td, Text, Th, Tr, VStack } from '@suite-native/atoms';
 import {
     CryptoToFiatAmountFormatter,
+    EmptyAmountText,
     PercentageDifferenceFormatter,
 } from '@suite-native/formatters';
 import { Translation, useTranslate } from '@suite-native/intl';
+import { getUnstakeTxDisplayAmount, isUnstakeDisplayTx } from '@suite-native/transactions';
 
 import { TransactionDetailSheet } from './TransactionDetailSheet';
 
@@ -92,6 +94,10 @@ export const TransactionDetailValuesSheet = ({
         selectHistoricFiatRatesByTimestamp(state, fiatRateKey, transaction.blockTime as Timestamp),
     );
 
+    const isUnstake = isUnstakeDisplayTx(transaction);
+    const displayAmount = isUnstake ? getUnstakeTxDisplayAmount(transaction) : transaction.amount;
+    const shouldShowEmptyTotal = isUnstake && displayAmount === null;
+
     return (
         <TransactionDetailSheet
             sheetName="values"
@@ -108,11 +114,13 @@ export const TransactionDetailValuesSheet = ({
                                 <Translation id="transactions.TransactionDetailScreen.valuesSheet.transaction" />
                             </Th>
                             <Th>
-                                <TodayHeaderCell
-                                    cryptoValue={transaction.amount}
-                                    historicRate={historicRate}
-                                    symbol={transaction.symbol}
-                                />
+                                {!shouldShowEmptyTotal && (
+                                    <TodayHeaderCell
+                                        cryptoValue={displayAmount!}
+                                        historicRate={historicRate}
+                                        symbol={transaction.symbol}
+                                    />
+                                )}
                             </Th>
                         </Tr>
 
@@ -171,24 +179,32 @@ export const TransactionDetailValuesSheet = ({
                                 <Translation id="transactions.TransactionDetailScreen.valuesSheet.total" />
                             </Th>
                             <Td>
-                                <CryptoToFiatAmountFormatter
-                                    variant="body-sm"
-                                    value={transaction.amount}
-                                    symbol={transaction.symbol}
-                                    historicRate={historicRate}
-                                    useHistoricRate
-                                    numberOfLines={1}
-                                    adjustsFontSizeToFit
-                                />
+                                {shouldShowEmptyTotal ? (
+                                    <EmptyAmountText variant="body-sm" />
+                                ) : (
+                                    <CryptoToFiatAmountFormatter
+                                        variant="body-sm"
+                                        value={displayAmount!}
+                                        symbol={transaction.symbol}
+                                        historicRate={historicRate}
+                                        useHistoricRate
+                                        numberOfLines={1}
+                                        adjustsFontSizeToFit
+                                    />
+                                )}
                             </Td>
                             <Td>
-                                <CryptoToFiatAmountFormatter
-                                    variant="body-sm"
-                                    value={transaction.amount}
-                                    symbol={transaction.symbol}
-                                    numberOfLines={1}
-                                    adjustsFontSizeToFit
-                                />
+                                {shouldShowEmptyTotal ? (
+                                    <EmptyAmountText variant="body-sm" />
+                                ) : (
+                                    <CryptoToFiatAmountFormatter
+                                        variant="body-sm"
+                                        value={displayAmount!}
+                                        symbol={transaction.symbol}
+                                        numberOfLines={1}
+                                        adjustsFontSizeToFit
+                                    />
+                                )}
                             </Td>
                         </Tr>
                     </Table>
