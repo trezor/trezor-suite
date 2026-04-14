@@ -23,6 +23,10 @@ export type BaseCurrencyAmountFormatterDataContext<T> = {
 // `currency` param in intl.formatNumber works only wit 3 letter currencies
 const BITCOIN_SATS_PLACEHOLDER = 'sat';
 
+// Non-breaking space used between number and suffix currency symbol (matches CLDR standard for suffix currencies)
+// eslint-disable-next-line no-irregular-whitespace
+const SUFFIX_CURRENCY_SEPARATOR = ' ';
+
 type FormatParams = {
     value: BaseCurrencyAmount;
     currency: string;
@@ -192,8 +196,7 @@ const formatStandard = ({ intl, locale, currency, value, dataContext }: FormatPa
             return true;
         });
 
-        // eslint-disable-next-line no-irregular-whitespace
-        return `${signString}${numberParts.map(p => p.value).join('')}\u00a0${currencyValue}`;
+        return `${signString}${numberParts.map(p => p.value).join('')}${SUFFIX_CURRENCY_SEPARATOR}${currencyValue}`;
     }
 };
 
