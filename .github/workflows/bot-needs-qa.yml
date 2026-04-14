@@ -49,7 +49,7 @@ jobs:
         id: trezor-bot-token
         uses: actions/create-github-app-token@v3
         with:
-          app-id: ${{ secrets.TREZOR_BOT_APP_ID }}
+          client-id: ${{ secrets.TREZOR_BOT_APP_ID }}
           private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
       - name: Get project item ID
         if: |
