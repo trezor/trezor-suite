@@ -3,59 +3,22 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { selectIsDeviceInViewOnlyMode } from '@suite-common/device';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import {
-    formatNetworkAmount,
-    getAccountTotalStakingBalance,
-    getStakingLimitsByNetworkSymbol,
-} from '@suite-common/wallet-utils';
+import { useAccountAlerts } from '@suite-native/accounts';
 import { useBottomSheetModal } from '@suite-native/atoms';
 import {
+    AddCoinAccountStackRoutes,
     type RootStackParamList,
     RootStackRoutes,
     type StackNavigationProps,
 } from '@suite-native/navigation';
-import { BigNumber } from '@trezor/utils';
 
 import { isMobileSupportedStakingNetwork } from '../constants';
 import { type StakingEarnItem } from '../types';
-
-type NavigateFunction = StackNavigationProps<
-    RootStackParamList,
-    RootStackRoutes.StakingManagement
->['navigate'];
-
-export const navigateByAccountState = (account: Account, navigate: NavigateFunction) => {
-    const stakedBalance = getAccountTotalStakingBalance(account);
-
-    if (stakedBalance && stakedBalance !== '0') {
-        navigate(RootStackRoutes.StakingManagement, {
-            accountKey: account.key,
-        });
-
-        return;
-    }
-
-    const limits = getStakingLimitsByNetworkSymbol(account.symbol);
-
-    if (!limits) {
-        return;
-    }
-
-    const formattedBalance = formatNetworkAmount(account.availableBalance, account.symbol);
-
-    if (new BigNumber(formattedBalance).gte(limits.MIN_AMOUNT_FOR_STAKING)) {
-        navigate(RootStackRoutes.HowStakeWorksScreen, {
-            symbol: account.symbol,
-            accountKey: account.key,
-        });
-    } else {
-        navigate(RootStackRoutes.StakingInsufficientBalance, {
-            accountKey: account.key,
-        });
-    }
-};
+import { navigateByAccountState } from '../utils/navigateByAccountState';
 
 export const useStakingPromoNavigation = () => {
     const navigation =
@@ -63,6 +26,8 @@ export const useStakingPromoNavigation = () => {
             StackNavigationProps<RootStackParamList, RootStackRoutes.StakingManagement>
         >();
     const accounts = useSelector(selectVisibleDeviceAccounts);
+    const isDeviceInViewOnlyMode = useSelector(selectIsDeviceInViewOnlyMode);
+    const { showViewOnlyAddAccountAlert } = useAccountAlerts();
 
     const { bottomSheetRef: infoSheetRef, openModal: openInfoModal } = useBottomSheetModal();
 
@@ -72,7 +37,14 @@ export const useStakingPromoNavigation = () => {
         closeModal: closeChooseAccountModal,
     } = useBottomSheetModal();
 
+    const {
+        bottomSheetRef: enableNetworkSheetRef,
+        openModal: openEnableNetworkModal,
+        closeModal: closeEnableNetworkModal,
+    } = useBottomSheetModal();
+
     const [chosenAccounts, setChosenAccounts] = useState<Account[]>([]);
+    const [pendingEnableSymbol, setPendingEnableSymbol] = useState<NetworkSymbol | null>(null);
 
     const handleAccountSelected = useCallback(
         (account: Account) => {
@@ -81,6 +53,34 @@ export const useStakingPromoNavigation = () => {
         },
         [closeChooseAccountModal, navigation.navigate],
     );
+
+    const handleEnableNetworkPress = useCallback(() => {
+        if (!pendingEnableSymbol) {
+            return;
+        }
+
+        closeEnableNetworkModal();
+
+        if (isDeviceInViewOnlyMode) {
+            showViewOnlyAddAccountAlert();
+
+            return;
+        }
+
+        navigation.navigate(RootStackRoutes.AddCoinAccountStack, {
+            screen: AddCoinAccountStackRoutes.AddCoinDiscoveryRunning,
+            params: {
+                networkSymbol: pendingEnableSymbol,
+                flowType: 'earn',
+            },
+        });
+    }, [
+        pendingEnableSymbol,
+        closeEnableNetworkModal,
+        isDeviceInViewOnlyMode,
+        showViewOnlyAddAccountAlert,
+        navigation,
+    ]);
 
     const handleStakingPromoPress = useCallback(
         (item: StakingEarnItem) => {
@@ -93,7 +93,8 @@ export const useStakingPromoNavigation = () => {
             const accountsForSymbol = accounts.filter(acc => acc.symbol === item.symbol);
 
             if (accountsForSymbol.length === 0) {
-                openInfoModal();
+                setPendingEnableSymbol(item.symbol);
+                openEnableNetworkModal();
 
                 return;
             }
@@ -107,15 +108,25 @@ export const useStakingPromoNavigation = () => {
             setChosenAccounts(accountsForSymbol);
             openChooseAccountModal();
         },
-        [accounts, navigation.navigate, openInfoModal, openChooseAccountModal],
+        [
+            accounts,
+            navigation.navigate,
+            openInfoModal,
+            openChooseAccountModal,
+            openEnableNetworkModal,
+        ],
     );
 
     return {
         handleStakingPromoPress,
         handleAccountSelected,
+        handleEnableNetworkPress,
         chosenAccounts,
+        pendingEnableSymbol,
         infoSheetRef,
         chooseAccountSheetRef,
+        enableNetworkSheetRef,
         closeChooseAccountModal,
+        closeEnableNetworkModal,
     };
 };

@@ -221,7 +221,7 @@ export type AccountsImportStackParamList = {
     };
 };
 
-export type AddCoinFlowType = 'home' | 'receive' | 'accounts' | 'trade';
+export type AddCoinFlowType = 'home' | 'receive' | 'accounts' | 'trade' | 'earn';
 
 export type PinActionType = 'enable' | 'change' | 'disable';
 

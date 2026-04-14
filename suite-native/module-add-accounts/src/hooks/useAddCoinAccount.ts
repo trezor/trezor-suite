@@ -34,6 +34,7 @@ import {
     selectDiscoveryNetworkSymbols,
 } from '@suite-native/discovery';
 import { type TxKeyPath, useTranslate } from '@suite-native/intl';
+import { navigateByAccountState } from '@suite-native/module-earn';
 import {
     type AddCoinAccountStackParamList,
     AddCoinAccountStackRoutes,
@@ -157,6 +158,34 @@ export const useAddCoinAccount = () => {
         }
     };
 
+    const navigateToEarnAfterDiscovery = (symbol: NetworkSymbol, accountIndex: number) => {
+        const account = deviceAccounts.find(
+            acc =>
+                acc.symbol === symbol &&
+                acc.accountType === NORMAL_ACCOUNT_TYPE &&
+                acc.index === accountIndex,
+        );
+
+        if (!account) {
+            showGeneralErrorAlert();
+            navigation.dispatch(
+                CommonActions.reset({
+                    index: 0,
+                    routes: [
+                        {
+                            name: RootStackRoutes.AppTabs,
+                            params: { screen: AppTabsRoutes.EarnStack },
+                        },
+                    ],
+                }),
+            );
+
+            return;
+        }
+
+        navigateByAccountState(account, navigation.navigate);
+    };
+
     const navigateToSuccessorScreen = ({
         flowType,
         symbol,
@@ -169,6 +198,9 @@ export const useAddCoinAccount = () => {
         accountIndex: number;
     }) => {
         switch (flowType) {
+            case 'earn':
+                navigateToEarnAfterDiscovery(symbol, accountIndex);
+                break;
             case 'home':
                 navigation.replace(RootStackRoutes.ReceiveStack, {
                     screen: ReceiveStackRoutes.ReceiveAccount,
@@ -231,6 +263,9 @@ export const useAddCoinAccount = () => {
                 break;
             case 'trade':
                 screen = AppTabsRoutes.TradeStack;
+                break;
+            case 'earn':
+                screen = AppTabsRoutes.EarnStack;
                 break;
 
             default:

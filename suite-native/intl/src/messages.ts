@@ -2611,6 +2611,12 @@ export const messages = {
                 subtitle: 'Go to the link below on your computer and download the desktop app.',
                 copyLabel: 'Tap to copy',
             },
+            enableNetworkModal: {
+                title: 'Enable {networkName} to start staking',
+                subtitle:
+                    'Support the {networkName} network. Lock in your funds and earn staking rewards.',
+                cta: 'Enable {networkName}',
+            },
             adaInfo: 'Your ADA stays fully accessible while earning rewards.',
             unstakeButton: 'Unstake',
         },

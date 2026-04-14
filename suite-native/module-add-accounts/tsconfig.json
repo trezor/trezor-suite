@@ -24,6 +24,7 @@
         { "path": "../discovery" },
         { "path": "../intl" },
         { "path": "../link" },
+        { "path": "../module-earn" },
         { "path": "../navigation" },
         { "path": "../passphrase" },
         {
