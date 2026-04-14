@@ -46,7 +46,7 @@ const navigateToUnstakedTransactionAction = ({
         routes: [
             {
                 name: RootStackRoutes.AppTabs,
-                params: { screen: AppTabsRoutes.HomeStack },
+                params: { screen: AppTabsRoutes.EarnStack },
             },
             {
                 name: RootStackRoutes.TransactionDetailStack,
