@@ -30,7 +30,13 @@ export { type ModelFor, type ColorsFor } from './components/DeviceAnimation/devi
 export { DeviceWithScene } from './components/DeviceWithScene/DeviceWithScene';
 export { getModelFrontColor, getLargeModelImagePath } from './utils/getModelFrontColor';
 export { DataAnalytics } from './components/DataAnalytics';
-export * from './components/AssetLogo/AssetLogo';
+export { AssetLogo } from './components/AssetLogo/AssetLogo';
+export {
+    type AssetLogoProps,
+    type AssetLogoSize,
+    allowedAssetLogoSizes,
+} from './components/AssetLogo/AssetLogoWithId';
+export { shouldShowNetworkIcon } from './components/AssetLogo/assetLogoUtils';
 export { isNetworkSymbolWithIcon } from './constants/networks';
 export * from './components/TopAssets/TopAssets';
 export { ExchangeInfoNotification } from './components/Notifications/ExchangeInfoNotification';

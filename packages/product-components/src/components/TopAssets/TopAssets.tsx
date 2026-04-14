@@ -1,6 +1,7 @@
 import { Box, Column, GhostContainer, Row, Text } from '@trezor/components';
 
-import { AssetLogo, type AssetLogoProps } from '../AssetLogo/AssetLogo';
+import { AssetLogo } from '../AssetLogo/AssetLogo';
+import { type AssetLogoProps } from '../AssetLogo/AssetLogoWithId';
 import { CoinLogo } from '../CoinLogo/CoinLogo';
 
 export type Asset = {

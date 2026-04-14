@@ -7,9 +7,8 @@ import {
     EarnProvider,
 } from '@suite-common/suite-types/src/staking';
 import { Box, Button, Column, IconButton, Row, Text } from '@trezor/components';
-import { CoinLogo } from '@trezor/product-components';
+import { AssetLogo } from '@trezor/product-components';
 
-import { VaultTokenLogo } from 'src/components/earn/common/VaultTokenLogo';
 import { AccountLabel } from 'src/components/suite';
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 import { useDispatch } from 'src/hooks/suite';
@@ -70,21 +69,16 @@ export const YieldPageHeader = ({ analyticsStep }: YieldPageHeaderProps) => {
 
                 {vaultName ? (
                     <Row alignItems="center" gap={12} overflow="hidden">
-                        {networkSymbol &&
-                            (vault?.token ? (
-                                <VaultTokenLogo
-                                    token={vault.token}
-                                    networkSymbol={networkSymbol}
-                                    size={32}
-                                    showNetworkIcon
-                                />
-                            ) : (
-                                <CoinLogo
-                                    size={32}
-                                    symbol={networkSymbol}
-                                    type="tokenWithNetwork"
-                                />
-                            ))}
+                        {networkSymbol && (
+                            <AssetLogo
+                                coingeckoId={vault?.token?.coinGeckoId}
+                                placeholder={vault?.token?.symbol || vault?.token?.name || ''}
+                                symbol={networkSymbol}
+                                contractAddress={vault?.token?.address}
+                                showNetworkIcon
+                                size={32}
+                            />
+                        )}
                         <Column gap={2} overflow="hidden">
                             <Text typographyStyle="body-md-strong" ellipsisLineCount={1}>
                                 {vaultName}
