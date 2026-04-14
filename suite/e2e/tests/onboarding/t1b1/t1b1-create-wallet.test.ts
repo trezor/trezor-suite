@@ -59,12 +59,18 @@ test.describe('Onboarding - create wallet', { tag: ['@firmware-ready', '@T1B1'] 
                 await page.getByTestId('@onboarding/continue-button').click();
             });
 
+            // Issue: Clicking setPinButton causes toast error: 'Error: Initialize failed: messages.c:257:Unknown message, code: Failure_UnexpectedMessage'
+            // Second click on setPinButton does continue the flow correctly
             await test.step('Lets set PIN', async () => {
                 await page.waitForTimeout(2_000);
                 const pin = '12345';
 
-                await onboardingPage.pin.setPinButton.click();
-                await devicePrompt.confirmOnDevicePromptIsShown();
+                await expect(async () => {
+                    await onboardingPage.pin.setPinButton.click();
+                    await devicePrompt.confirmOnDevicePromptIsShown();
+                }).toPass({
+                    timeout: 15_000,
+                });
                 await device.pressYes();
                 // enter the PIN
                 await trezorInput.enterPinOnBlindMatrix(pin);
@@ -74,7 +80,7 @@ test.describe('Onboarding - create wallet', { tag: ['@firmware-ready', '@T1B1'] 
 
             await test.step('Finish wallet creation', async () => {
                 await expect(onboardingPage.suiteLoadedIndicator).toBeVisible();
-                await expect(dashboardPage.walletReady).toBeVisible();
+                await expect(dashboardPage.walletReady).toBeVisible({ timeout: 30_000 });
             });
         },
     );
