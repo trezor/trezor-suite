@@ -33,6 +33,7 @@ import { CoinLogo, ConfirmOnDevicePill } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
 import { selectIsLegacyLabelingVisible } from 'src/actions/labels/selectIsLegacyLabelingVisible';
+import { selectDesktopSuiteSyncInteraction } from 'src/actions/suiteSync/suiteSyncSlice';
 import { AccountLabel } from 'src/components/suite/AccountLabel';
 import { Address } from 'src/components/suite/Address';
 import { QrCode } from 'src/components/suite/QrCode';
@@ -67,8 +68,7 @@ export const ConfirmValueModal = ({
     value,
 }: ConfirmValueModalProps) => {
     const [isCopied, setIsCopied] = useState(false);
-    const { device, isLocked } = useDevice();
-    const isDeviceLocked = isLocked();
+    const { device } = useDevice();
     const modalContext = useSelector(state => state.modal.context);
     const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
     const { addressLabels } = useSelector(selectLabelingDataForSelectedAccount);
@@ -80,21 +80,18 @@ export const ConfirmValueModal = ({
     const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
     const isLegacyLabelingVisible = useSelector(selectIsLegacyLabelingVisible);
 
-    const legacyMetadataState = useSelector(state => state.metadata);
-
-    // block labeling if metadata needs to be enabled on device until receive address is confirmed (device locked)
-    const isMetadataBlockedByDeviceCall =
-        isDeviceLocked &&
-        !isSuiteSyncEnabled &&
-        (!legacyMetadataState.enabled || legacyMetadataState.providers.length === 0);
-
     const suiteSyncAddressLabels = useSelector(state =>
         account && isSuiteSyncEnabled
             ? selectSuiteSyncAddressLabels(state, account.deviceState)
             : undefined,
     );
+    const suiteSyncInteraction = useSelector(state =>
+        account ? selectDesktopSuiteSyncInteraction(state, account.deviceState) : null,
+    );
 
     const canConfirmOnDevice = !!(device?.connected && device?.available);
+    // Do not show Add address label button if there is device interaction needed and device is not connected.
+    const shouldShowAddressLabelAction = suiteSyncInteraction === null || !!device?.connected;
 
     const copy = () => {
         const result = copyToClipboard(value);
@@ -198,42 +195,37 @@ export const ConfirmValueModal = ({
                                 <QrCode value={value} />
                             </Box>
                             <Column gap={12} alignItems="flex-start">
-                                {isAddress &&
-                                    (account ? (
-                                        <Labeling
-                                            deviceStaticSessionId={account.deviceState}
-                                            isDisabled={isMetadataBlockedByDeviceCall}
-                                            displayValue={
-                                                <Text typographyStyle="body-md-strong">
-                                                    <Translation id="TR_LABELING_ADD_ADDRESS_LABEL" />
-                                                </Text>
-                                            }
-                                            placeholder={translationString(
-                                                'TR_LABELING_ADDRESS_LABEL',
-                                            )}
-                                            leftAddon={
-                                                <Icon
-                                                    name={addressLabel ? 'tagFilled' : 'tag'}
-                                                    size={16}
-                                                    intent="neutral"
-                                                    priority="secondary"
-                                                />
-                                            }
-                                            payload={{
-                                                type: 'addressLabel',
-                                                entityKey: account.key,
-                                                defaultValue: value,
-                                                networkSymbol: account.symbol,
-                                                accountDescriptor: account.descriptor,
-                                                value: addressLabel,
-                                            }}
-                                            maxWidth={290}
-                                        >
-                                            {addressLabel}
-                                        </Labeling>
-                                    ) : (
-                                        label
-                                    ))}
+                                {isAddress && !account && label}
+                                {isAddress && !!account && shouldShowAddressLabelAction && (
+                                    <Labeling
+                                        deviceStaticSessionId={account.deviceState}
+                                        displayValue={
+                                            <Text typographyStyle="body-md-strong">
+                                                <Translation id="TR_LABELING_ADD_ADDRESS_LABEL" />
+                                            </Text>
+                                        }
+                                        placeholder={translationString('TR_LABELING_ADDRESS_LABEL')}
+                                        leftAddon={
+                                            <Icon
+                                                name={addressLabel ? 'tagFilled' : 'tag'}
+                                                size={16}
+                                                intent="neutral"
+                                                priority="secondary"
+                                            />
+                                        }
+                                        payload={{
+                                            type: 'addressLabel',
+                                            entityKey: account.key,
+                                            defaultValue: value,
+                                            networkSymbol: account.symbol,
+                                            accountDescriptor: account.descriptor,
+                                            value: addressLabel,
+                                        }}
+                                        maxWidth={290}
+                                    >
+                                        {addressLabel}
+                                    </Labeling>
+                                )}
                                 <Address
                                     value={value}
                                     data-testid="@modal/output-value"
