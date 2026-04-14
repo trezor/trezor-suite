@@ -113,13 +113,13 @@ describe(prepareBaseCurrencyAmountFormatter.name, () => {
             ).toMatch(/^\$/);
         });
 
-        it('USD in cs-CZ locale is moved to prefix (was suffix by default)', () => {
+        it('USD in cs-CZ locale displays currency symbol as prefix', () => {
             const result = usdFormatterCsCZ.format(asBaseCurrencyAmount(new BigNumber('0')), {});
             // Should start with the currency symbol, not end with it
             expect(result).toMatch(/^US\$/);
         });
 
-        it('USD negative value in cs-CZ locale preserves minus sign before currency', () => {
+        it('USD negative value in cs-CZ locale formats with correct sign and currency prefix', () => {
             const result = usdFormatterCsCZ.format(asBaseCurrencyAmount(new BigNumber('-5')), {});
             // Should be "-US$5,00" format: minus sign, then currency, then number
             expect(result).toMatch(/^-US\$/);

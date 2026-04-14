@@ -88,8 +88,8 @@ const formatStandard = ({ intl, locale, currency, value, dataContext }: FormatPa
 
     const firstIntegerIndex = parts.findIndex(p => p.type === 'integer');
 
-    if (currencyIndex < firstIntegerIndex) {
-        // Currency is already a prefix (before the first digit), return as-is
+    // If no integer part is found (unexpected), or currency is already a prefix, return as-is
+    if (firstIntegerIndex === -1 || currencyIndex < firstIntegerIndex) {
         return parts.map(p => p.value).join('');
     }
 
