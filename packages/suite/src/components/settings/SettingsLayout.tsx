@@ -1,10 +1,11 @@
 import { type ReactNode, useMemo } from 'react';
 
+import { AnimatePresence, motion } from 'framer-motion';
+
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { selectIsDebugModeActive } from '@suite/settings';
-import { Column } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { Box, Column, motionEasing } from '@trezor/components';
 
 import {
     type NavigationItem,
@@ -92,8 +93,21 @@ export const SettingsLayout = ({
 
     return (
         <div data-testid={dataTest}>
-            <SettingsLoading isPresent={isDiscoveryRunning} />
-            <Column gap={spacings.xxxxl}>{children}</Column>
+            <AnimatePresence>
+                {isDiscoveryRunning && (
+                    <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.3, ease: motionEasing.transition }}
+                    >
+                        <Box padding={{ bottom: 32 }}>
+                            <SettingsLoading />
+                        </Box>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+            <Column gap={48}>{children}</Column>
         </div>
     );
 };
