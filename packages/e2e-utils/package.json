@@ -9,10 +9,13 @@
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
         "test-health": "tsx ./src/quarantineBot/index.ts",
+        "select-tests": "tsx ./src/testCoverage/selectTestsByChangedFiles.ts",
         "seed-tests": "CURRENTS_PROJECT_ID=iBEsWE yarn pwc --config ./src/quarantineBot/seed/playwright.config.ts",
-        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "analyze-tests": "tsx ./src/llmTestAnalyzer/index.ts"
     },
     "dependencies": {
+        "@anthropic-ai/sdk": "^0.39.0",
         "@octokit/rest": "^21.1.1",
         "@trezor/trezor-user-env-link": "workspace:*",
         "@trezor/utils": "workspace:*",

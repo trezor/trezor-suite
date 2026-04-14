@@ -155,3 +155,6 @@ packages/suite-data/files/translations/master.json
 
 # AI agent plans
 /plans
+
+# coverage map and test analysis files
+coverage-map/

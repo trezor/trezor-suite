@@ -111,7 +111,7 @@ jobs:
           cache: yarn
 
       - name: Install dependencies
-        run: yarn workspaces focus @trezor/suite-e2e
+        run: yarn workspaces focus @trezor/e2e-utils
 
       - name: Download per-test coverage map artifacts
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
@@ -128,4 +128,4 @@ jobs:
 
       - name: Upload coverage map to S3
         run: |
-          aws s3 cp coverage-map/index.json s3://dev.suite.sldev.cz/coverage/e2e/index.json
+          aws s3 cp coverage-map/index.json s3://dev.suite.sldev.cz/coverage/e2e/index.json --no-multipart

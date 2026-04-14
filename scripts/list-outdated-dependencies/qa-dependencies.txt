@@ -1,3 +1,4 @@
+@anthropic-ai/sdk
 @currents/cmd
 @currents/playwright
 @jest/globals
