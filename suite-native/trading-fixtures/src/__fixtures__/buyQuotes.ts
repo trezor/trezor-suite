@@ -1,9 +1,9 @@
-import type { BuyTrade } from 'invity-api';
+import type { BuyTrade, CryptoId } from 'invity-api';
 
 export const mercuryoApplePayBuyQuote: BuyTrade = {
     fiatStringAmount: '10',
     fiatCurrency: 'EUR',
-    receiveCurrency: 'bitcoin',
+    receiveCurrency: 'bitcoin' as CryptoId,
     receiveStringAmount: '0.0010001683607972866',
     rate: 9998.316675433,
     quoteId: 'ff259797-6cbe-4fea-8330-5181353f64a0',
@@ -16,12 +16,12 @@ export const mercuryoApplePayBuyQuote: BuyTrade = {
     paymentMethodName: 'Apple Pay',
     orderId: 'order_id_0',
     paymentId: 'e709df77-ee9e-4d12-98c2-84004a19c521',
-} as BuyTrade;
+};
 
 export const cexdirectCreditCardBuyQuote: BuyTrade = {
     fiatStringAmount: '10',
     fiatCurrency: 'EUR',
-    receiveCurrency: 'bitcoin',
+    receiveCurrency: 'bitcoin' as CryptoId,
     receiveStringAmount: '0.0005',
     rate: 20000,
     quoteId: 'fc12d4c4-9078-4175-becd-90fc58a3145c',
@@ -34,12 +34,12 @@ export const cexdirectCreditCardBuyQuote: BuyTrade = {
     paymentMethodName: 'Credit Card',
     orderId: 'order_id_1',
     paymentId: 'e709df77-ee9e-4d12-98c2-84004a19c546',
-} as BuyTrade;
+};
 
 export const invityErrorBuyQuote: BuyTrade = {
     fiatStringAmount: '10',
     fiatCurrency: 'EUR',
-    receiveCurrency: 'bitcoin',
+    receiveCurrency: 'bitcoin' as CryptoId,
     receiveStringAmount: '0',
     rate: 0,
     error: 'Transaction amount too low. Please enter a value of 43 EUR or more.',
@@ -52,12 +52,12 @@ export const invityErrorBuyQuote: BuyTrade = {
     paymentMethodName: 'Credit Card',
     orderId: 'order_id_2',
     paymentId: 'e709df77-ee9e-4d12-98c2-84004a19c524',
-} as BuyTrade;
+};
 
 export const mercuryoCreditCardBuyQuote: BuyTrade = {
     fiatStringAmount: '10',
     fiatCurrency: 'EUR',
-    receiveCurrency: 'bitcoin',
+    receiveCurrency: 'bitcoin' as CryptoId,
     receiveStringAmount: '0.000499',
     rate: 20001,
     quoteId: 'ab12d4c3-1001-4175-becd-90fc58a3145c',
@@ -70,12 +70,12 @@ export const mercuryoCreditCardBuyQuote: BuyTrade = {
     paymentMethodName: 'Credit Card',
     orderId: 'order_id_3',
     paymentId: 'e709df77-ee9e-4d12-98c2-84004a19c546',
-} as BuyTrade;
+};
 
 export const mercuryoGooglePayBuyQuote: BuyTrade = {
     fiatStringAmount: '10',
     fiatCurrency: 'EUR',
-    receiveCurrency: 'bitcoin',
+    receiveCurrency: 'bitcoin' as CryptoId,
     receiveStringAmount: '0.0010001683607972866',
     rate: 9991.316675433,
     quoteId: 'ff259797-6cbe-4fea-8330-5181353f64a0',
@@ -88,7 +88,7 @@ export const mercuryoGooglePayBuyQuote: BuyTrade = {
     paymentMethodName: 'Google Pay',
     orderId: 'order_id_4',
     paymentId: '1209df77-ee9e-4d12-98c2-84004a19c521',
-} as BuyTrade;
+};
 
 export const buyQuotes = [
     mercuryoApplePayBuyQuote,
@@ -96,4 +96,4 @@ export const buyQuotes = [
     invityErrorBuyQuote,
     mercuryoCreditCardBuyQuote,
     mercuryoGooglePayBuyQuote,
-] as BuyTrade[];
+];
