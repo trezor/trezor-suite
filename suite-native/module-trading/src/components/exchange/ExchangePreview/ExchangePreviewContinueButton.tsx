@@ -62,6 +62,7 @@ export const ExchangePreviewContinueButton = memo(
                     accountKey: fromAccount.key,
                     tokenContract,
                     orderId: quote.orderId ?? '',
+                    flowType: 'swap',
                 },
             });
             onSignTransactionNavigation();

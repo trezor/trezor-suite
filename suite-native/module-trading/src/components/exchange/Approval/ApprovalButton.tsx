@@ -8,6 +8,7 @@ import { type TokenAddress } from '@suite-common/wallet-types';
 import { Box, Button, ScreenFooterGradient } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
+    type ExchangeFlowType,
     type StackNavigationProps,
     type TradingStackParamList,
     TradingStackRoutes,
@@ -23,9 +24,10 @@ const footerStyle = prepareNativeStyle(utils => ({
 export type ApprovalButtonProps = {
     isReady: boolean;
     isDisabled?: boolean;
+    flowType: Exclude<ExchangeFlowType, 'swap'>;
 };
 
-export const ApprovalButton = ({ isReady, isDisabled }: ApprovalButtonProps) => {
+export const ApprovalButton = ({ isReady, isDisabled, flowType }: ApprovalButtonProps) => {
     const navigation =
         useNavigation<
             StackNavigationProps<TradingStackParamList, TradingStackRoutes.TradingExchangeApproval>
@@ -52,6 +54,7 @@ export const ApprovalButton = ({ isReady, isDisabled }: ApprovalButtonProps) => 
             accountKey: fromAccount.key,
             tokenContract,
             orderId: quote.orderId ?? '',
+            flowType,
         });
     };
 

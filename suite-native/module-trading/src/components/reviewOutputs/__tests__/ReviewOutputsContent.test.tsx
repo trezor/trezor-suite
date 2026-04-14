@@ -26,7 +26,9 @@ jest.mock('../../../hooks/reviewOutputs/useDelayedReviewOutputListDisplayFlag', 
 }));
 
 describe('ReviewOutputsContent', () => {
-    const renderReviewOutputsContent = (props: Partial<ReviewOutputsContentProps>) =>
+    const renderReviewOutputsContent = (
+        props: Partial<Omit<ReviewOutputsContentProps, 'exchangeFlowType' | 'tradingType'>>,
+    ) =>
         renderWithStoreProvider(
             <ReviewOutputsContent
                 orderId="ORDER_ID"
@@ -39,6 +41,7 @@ describe('ReviewOutputsContent', () => {
                 tokenContract={'TOKEN_CONTRACT' as TokenAddress}
                 resolveTransactionSendConsent={jest.fn()}
                 signAndSendTransaction={jest.fn()}
+                exchangeFlowType="swap"
                 {...props}
             />,
         );

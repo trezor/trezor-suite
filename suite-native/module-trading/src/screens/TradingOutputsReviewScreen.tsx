@@ -15,7 +15,7 @@ import { useSellFlow } from '../hooks/sell/useSellFlow';
 export const TradingExchangeOutputsReviewScreen = ({
     route,
 }: StackProps<TradingStackParamList, TradingStackRoutes.TradingExchangeOutputsReview>) => {
-    const { accountKey, tokenContract, orderId } = route.params;
+    const { accountKey, tokenContract, orderId, flowType } = route.params;
     const {
         signAndSendTransaction,
         isTransactionSendConsentRequested,
@@ -33,6 +33,7 @@ export const TradingExchangeOutputsReviewScreen = ({
             isTransactionSendConsentRequested={isTransactionSendConsentRequested}
             resolveTransactionSendConsent={resolveTransactionSendConsent}
             reportToAnalytics={analyticsReportCallback}
+            exchangeFlowType={flowType}
         />
     );
 };
