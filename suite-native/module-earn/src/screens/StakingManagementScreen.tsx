@@ -1,8 +1,10 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
 import { Context } from '@suite-common/message-system';
+import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
 import { isStakingSymbol, parseAccountKey } from '@suite-common/wallet-utils';
 import { Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
@@ -18,6 +20,11 @@ export const StakingManagementScreen = () => {
     const route = useRoute<RouteProp<RootStackParamList, RootStackRoutes.StakingManagement>>();
     const { accountKey } = route.params;
     const { networkSymbol } = parseAccountKey(accountKey);
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(fetchAllTransactionsForAccountThunk({ accountKey, noLoading: true }));
+    }, [accountKey, dispatch]);
 
     const listHeaderComponent = useMemo(
         () => (
