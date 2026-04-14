@@ -24,6 +24,7 @@ import { ERRORS } from '@trezor/connect-common/src/constants';
 
 import { ConnectAppIcon } from './ConnectAppIcon';
 import { ContractInfoBottomSheet } from './TxSimulation/ContractInfoBottomSheet';
+import { EvmInsufficientGasWarning } from './TxSimulation/EvmInsufficientGasWarning';
 import { FeeInfoBottomSheet } from './TxSimulation/FeeInfoBottomSheet';
 import { TxSimulationAsset } from './TxSimulation/TxSimulationAsset';
 import { TxSimulationBanner } from './TxSimulation/TxSimulationBanner';
@@ -293,6 +294,13 @@ export function TxSimulationInner({ action, account, source }: TxSimulationInner
                             values={{ provider: 'Blockaid' }}
                         />
                     </Text>
+
+                    <EvmInsufficientGasWarning
+                        transaction={isSigningTransaction ? action.payload.transaction : undefined}
+                        gasLimit={gasLimit}
+                        accountBalance={account.balance}
+                        networkSymbol={account.symbol}
+                    />
 
                     <Button
                         testID="@popup/confirm-simulation"

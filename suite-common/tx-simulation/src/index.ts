@@ -12,3 +12,7 @@ export { useTxSimulation } from './hooks/useTxSimulation';
 
 export type { AccountSummary, TransactionSimulation } from '@blockaid/client/resources/evm';
 export { TX_METHODS_WITH_FEES } from './config';
+export {
+    computeGasFeeInWei,
+    useHasSufficientFundsForGas,
+} from './hooks/useHasSufficientFundsForGas';
