@@ -1,41 +1,37 @@
+import debounce from 'lodash/debounce';
+
 import { type AnalyticsSharedEvents, events } from '@suite-common/analytics';
 import { type Account } from '@suite-common/wallet-types';
 import { type Analytics } from '@trezor/analytics-uploader';
 
 import { selectAccounts } from './accountsSelectors';
 
+const DEBOUNCE_MS = 10 * 60 * 1000; // 10 minutes
+
 const countNonZeroBalanceAccounts = (accounts: Account[]) =>
     accounts.filter(a => Number(a.balance) > 0).length;
 
-export const reportWalletBalanceState = ({
-    accounts,
-    analytics,
-}: {
-    accounts: Account[];
-    analytics: Analytics<AnalyticsSharedEvents>;
-}) => {
-    analytics.report({
-        type: events.walletBalanceEvent.name,
-        payload: { nonZeroBalance: countNonZeroBalanceAccounts(accounts) },
-    });
-};
-
-export const reportWalletBalanceChangeIfNeeded = ({
-    prevAccounts,
-    getState,
-    analytics,
-}: {
-    prevAccounts: Account[];
+type ReportParams = {
     getState: () => { wallet: { accounts: Account[] } };
     analytics: Analytics<AnalyticsSharedEvents>;
-}) => {
-    const prevCount = countNonZeroBalanceAccounts(prevAccounts);
-    const nextCount = countNonZeroBalanceAccounts(selectAccounts(getState()));
+};
 
-    if (prevCount !== nextCount) {
+/**
+ * Report wallet balance state with leading + trailing debounce.
+ *
+ * First call fires immediately (leading edge). Subsequent calls within
+ * 10 minutes are debounced — a trailing event fires 10 minutes after
+ * the last call to capture the settled state.
+ */
+export const reportWalletBalanceDebounced = debounce(
+    ({ getState, analytics }: ReportParams) => {
         analytics.report({
             type: events.walletBalanceEvent.name,
-            payload: { nonZeroBalance: nextCount },
+            payload: {
+                nonZeroBalance: countNonZeroBalanceAccounts(selectAccounts(getState())),
+            },
         });
-    }
-};
+    },
+    DEBOUNCE_MS,
+    { leading: true, trailing: true },
+);
