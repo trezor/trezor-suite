@@ -184,8 +184,7 @@ export const TransactionReviewModalBodyInner = ({
 
     const isCancelRbfAction = isRbfCancelTransaction(precomposedTx);
     const showSummary =
-        !(isBumpFeeRbfAction && networkType === 'bitcoin') &&
-        !(networkType === 'tron' && !precomposedTx.feeLimit);
+        !(isBumpFeeRbfAction && networkType === 'bitcoin') && networkType !== 'tron';
 
     const isTxExpired = hasTxValidityExpired(deadline);
 

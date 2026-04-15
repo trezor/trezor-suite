@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
+import { type NetworkType, getNetworkType } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type FeesRootState,
@@ -21,7 +22,17 @@ import { type FeesFormValues, feesFormValidationSchema } from '../../feesFormSch
 import { selectFeeLevels } from '../../selectors';
 import { getFeeValue } from '../../utils';
 
+const getDefaultFeeLimit = (
+    networkType: NetworkType | undefined,
+    normalFee: PrecomposedTransactionFinal | undefined,
+): string | undefined => {
+    if (networkType === 'tron') return normalFee?.estimatedFeeLimit;
+
+    return normalFee?.feeLimit;
+};
+
 const syncCustomFeeDefaults = (
+    networkType: NetworkType | undefined,
     form: UseFormReturn<FeesFormValues>,
     feePerUnit: string | undefined,
     normalFee: PrecomposedTransactionFinal | undefined,
@@ -31,8 +42,11 @@ const syncCustomFeeDefaults = (
     if (!values.customFeePerUnit && feePerUnit) {
         form.setValue('customFeePerUnit', feePerUnit);
     }
-    if (!values.customFeeLimit && normalFee?.feeLimit) {
-        form.setValue('customFeeLimit', normalFee.feeLimit);
+    const defaultFeeLimit = getDefaultFeeLimit(networkType, normalFee);
+    const shouldUpdateFeeLimit =
+        networkType === 'tron' ? !!defaultFeeLimit : !values.customFeeLimit && !!defaultFeeLimit;
+    if (shouldUpdateFeeLimit) {
+        form.setValue('customFeeLimit', defaultFeeLimit, { shouldValidate: true });
     }
     if (!values.customMaxFeePerGas && normalFee?.maxFeePerGas) {
         form.setValue('customMaxFeePerGas', normalFee.maxFeePerGas);
@@ -83,12 +97,14 @@ export const useFeesForm = ({
         ? (feeLevels.normal as PrecomposedTransactionFinal)
         : undefined;
 
+    const networkType = account?.symbol ? getNetworkType(account.symbol) : undefined;
+
     const form = useForm<FeesFormValues>({
         validation: feesFormValidationSchema,
         defaultValues: {
             feeLevel: defaultFeeLevel,
             customFeePerUnit: trimmedFeePerUnit,
-            customFeeLimit: normalFee?.feeLimit,
+            customFeeLimit: getDefaultFeeLimit(networkType, normalFee),
             customMaxFeePerGas: normalFee?.maxFeePerGas,
             customMaxPriorityFeePerGas: normalFee?.maxPriorityFeePerGas,
         },
@@ -102,8 +118,8 @@ export const useFeesForm = ({
     });
 
     useEffect(() => {
-        syncCustomFeeDefaults(form, trimmedFeePerUnit, normalFee);
-    }, [trimmedFeePerUnit, normalFee, form]);
+        syncCustomFeeDefaults(networkType, form, trimmedFeePerUnit, normalFee);
+    }, [networkType, trimmedFeePerUnit, normalFee, form]);
 
     return form;
 };

@@ -3,7 +3,7 @@ import {
     type ReviewOutputType,
     type TokenAddress,
 } from '@suite-common/wallet-types';
-import { Text } from '@suite-native/atoms';
+import { Box, HStack, Text } from '@suite-native/atoms';
 import { splitAddressToChunks } from '@suite-native/helpers';
 import { Translation } from '@suite-native/intl';
 
@@ -60,6 +60,20 @@ export const ReviewOutputItemContent = ({
                 <Text variant="body-sm">
                     <Translation id="transactionManagement.review.outputs.networkTestnet" />
                 </Text>
+            );
+
+        case 'fee-limit':
+            return (
+                <HStack>
+                    <Box flex={0.4} justifyContent="center">
+                        <Text variant="body-sm">
+                            <Translation id="transactionManagement.review.outputs.feeLimitLabel" />
+                        </Text>
+                    </Box>
+                    <Box flex={0.6} alignItems="flex-end">
+                        <Text variant="body-sm">{Number(value).toLocaleString()} SUN</Text>
+                    </Box>
+                </HStack>
             );
 
         default:

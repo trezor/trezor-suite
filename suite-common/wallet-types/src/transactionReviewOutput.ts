@@ -20,7 +20,8 @@ export type ReviewOutput =
               | 'contract'
               | 'regular_legacy'
               | 'approve_data'
-              | 'recipient_name';
+              | 'recipient_name'
+              | 'fee-limit';
           label?: string;
           value: string;
           value2?: string;

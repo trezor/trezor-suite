@@ -1,6 +1,10 @@
 import { useSelector } from 'react-redux';
 
-import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
+import {
+    type AccountsRootState,
+    selectAccountByKey,
+    selectAccountNetworkSymbol,
+} from '@suite-common/wallet-core';
 import {
     type AccountKey,
     type FormDraftWithSendKeyPrefix,
@@ -47,6 +51,9 @@ export const ReviewOutputItemList = ({
     const accountSymbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
+    const isTron = useSelector(
+        (state: AccountsRootState) => selectAccountByKey(state, accountKey)?.networkType === 'tron',
+    );
 
     const { activeStepBottomOffset, handleReadListItemHeight } = useActiveStepOffset(activeStep);
 
@@ -71,13 +78,17 @@ export const ReviewOutputItemList = ({
                             tokenContract={tokenContract}
                         />
                     ))}
-                    <ReviewOutputSummaryItem
-                        accountKey={accountKey}
-                        summaryOutput={summaryOutput}
-                        symbol={accountSymbol}
-                        tokenContract={tokenContract}
-                        onLayout={event => handleReadListItemHeight(event, reviewOutputs.length)}
-                    />
+                    {!isTron && (
+                        <ReviewOutputSummaryItem
+                            accountKey={accountKey}
+                            summaryOutput={summaryOutput}
+                            symbol={accountSymbol}
+                            tokenContract={tokenContract}
+                            onLayout={event =>
+                                handleReadListItemHeight(event, reviewOutputs.length)
+                            }
+                        />
+                    )}
                 </VStack>
             )}
             {!isTransactionAlreadySigned && (

@@ -15,7 +15,6 @@ import {
     selectDeviceSupportedNetworks,
     selectEnabledNetworks,
 } from '@suite-common/wallet-core';
-import { isViewOnlySymbol } from '@suite-common/wallet-utils';
 import { filterTestnetNetworks, sortNetworks } from '@suite-native/config';
 import {
     FeatureFlag,
@@ -88,8 +87,7 @@ export const selectDiscoverySupportedNetworks = createMemoizedSelector(
 
         return pipe(
             deviceNetworks,
-            networkSymbols =>
-                networkSymbols.filter(symbol => isTronEnabled || !isViewOnlySymbol(symbol)),
+            networkSymbols => networkSymbols.filter(symbol => symbol !== 'trx' || isTronEnabled),
             networkSymbols => filterTestnetNetworks(networkSymbols, areTestnetsEnabled),
             networkSymbols =>
                 networkSymbols.filter(symbol => {

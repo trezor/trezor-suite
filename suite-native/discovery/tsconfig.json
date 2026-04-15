@@ -21,9 +21,6 @@
         {
             "path": "../../suite-common/wallet-core"
         },
-        {
-            "path": "../../suite-common/wallet-utils"
-        },
         { "path": "../atoms" },
         { "path": "../config" },
         { "path": "../device" },
