@@ -72,7 +72,7 @@ export const Labeling = ({
             // Is there something that needs to be initiated?
             !isLegacyLabelingEnabled
         ) {
-            if (suiteSyncInteraction !== null) {
+            if (suiteSyncInteraction !== null && suiteSyncInteraction !== 'unsupported') {
                 // Keys needed is not handled by the same modal, because it in DeviceInteraction context
                 if (suiteSyncInteraction === 'keys-needed') {
                     const result = await suiteSync.ensureWalletSuiteSyncOn({
