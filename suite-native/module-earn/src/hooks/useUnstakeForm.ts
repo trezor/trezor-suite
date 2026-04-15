@@ -20,6 +20,7 @@ import { NETWORK_FEE_WARNING_MULTIPLIER } from '../constants';
 import { type EarnFormValues } from '../earnFormSchema';
 import { unstakeFormValidationSchema } from '../unstakeFormSchema';
 import { buildEarnComposeFormState } from '../utils';
+import { useApproximateInstantUnstakeAmount } from './useApproximateInstantUnstakeAmount';
 import { useComposeEarnFees } from './useComposeEarnFees';
 
 export const useUnstakeForm = (accountKey: AccountKey) => {
@@ -66,6 +67,11 @@ export const useUnstakeForm = (accountKey: AccountKey) => {
         formDraftPrefix: 'unstake',
     });
 
+    const approximatedInstantEthAmount = useApproximateInstantUnstakeAmount(
+        accountKey,
+        amountValue,
+    );
+
     if (!account) return null;
 
     const limits = getStakingLimitsByNetworkSymbol(account.symbol);
@@ -86,5 +92,6 @@ export const useUnstakeForm = (accountKey: AccountKey) => {
         formDraft,
         formDraftKey,
         updateFeeLevelThunk,
+        approximatedInstantEthAmount,
     };
 };

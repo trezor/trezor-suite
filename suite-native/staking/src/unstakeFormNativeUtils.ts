@@ -1,7 +1,11 @@
-import { transformTx } from '@suite-common/staking';
+import { fromWei } from 'web3-utils';
+
+import { getEthNetworkAddresses, transformTx } from '@suite-common/staking';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { UNSTAKE_INTERCHANGES, WALLET_SDK_SOURCE } from '@suite-common/wallet-constants';
 import { type StakeFormState } from '@suite-common/wallet-types';
-import {
+import { isSupportedEthStakingNetworkSymbol } from '@suite-common/wallet-utils';
+import TrezorConnect, {
     type EthereumTransaction,
     type EthereumTransactionEIP1559,
     type FeeLevel,
@@ -24,6 +28,40 @@ export const buildUnstakeCalldata = (amountWei: string): string => {
         pad32(BigInt(UNSTAKE_INTERCHANGES).toString(16)),
         pad32(BigInt(WALLET_SDK_SOURCE).toString(16)),
     ].join('');
+};
+
+/**
+ * Native equivalent of `simulateUnstake` from `@suite-common/staking`. The web version pulls in
+ * `@everstake/wallet-sdk-ethereum` which is not React Native compatible.
+ */
+export const simulateUnstakeNative = async ({
+    amount,
+    from,
+    symbol,
+}: {
+    amount: string;
+    from: string;
+    symbol: NetworkSymbol;
+}): Promise<string | null> => {
+    if (!isSupportedEthStakingNetworkSymbol(symbol)) return null;
+    if (!amount || !from) return null;
+
+    const { addressContractPool } = getEthNetworkAddresses(symbol);
+    const amountWei = ethToWei(amount);
+    const data = buildUnstakeCalldata(amountWei);
+
+    const transactionData = await TrezorConnect.blockchainEvmRpcCall({
+        coin: symbol,
+        from,
+        to: addressContractPool,
+        data,
+    });
+
+    if (!transactionData.success) {
+        throw new Error(transactionData.error.message);
+    }
+
+    return fromWei(transactionData.payload.data, 'ether');
 };
 
 export const buildUnstakeFormState = (

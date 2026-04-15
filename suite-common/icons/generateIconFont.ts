@@ -105,6 +105,7 @@ const usedIcons = [
     'instagramLogo',
     'lifebuoy',
     'lightbulb',
+    'lightning',
     'link',
     'linkBreak',
     'lock',

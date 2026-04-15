@@ -35,7 +35,9 @@ export const UnstakeFlowScreen = () => {
         formDraft,
         formDraftKey,
         updateFeeLevelThunk,
+        approximatedInstantEthAmount,
     } = unstakeForm;
+
     const {
         formState: { isValid },
     } = form;
@@ -78,6 +80,7 @@ export const UnstakeFlowScreen = () => {
                         accountKey={accountKey}
                         maxButtonVariant="unstake"
                         isWithdrawalFeesBannerVisible={false}
+                        unstakeInstantAmount={approximatedInstantEthAmount}
                     />
                 </Form>
             </Box>

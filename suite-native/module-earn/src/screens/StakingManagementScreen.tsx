@@ -5,7 +5,11 @@ import { type RouteProp, useRoute } from '@react-navigation/native';
 
 import { Context } from '@suite-common/message-system';
 import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
-import { isStakingSymbol, parseAccountKey } from '@suite-common/wallet-utils';
+import {
+    isStakingSymbol,
+    isSupportedEthStakingNetworkSymbol,
+    parseAccountKey,
+} from '@suite-common/wallet-utils';
 import { Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { ContextMessage } from '@suite-native/message-system';
@@ -13,6 +17,7 @@ import { type RootStackParamList, type RootStackRoutes, Screen } from '@suite-na
 import { TransactionList } from '@suite-native/transactions';
 
 import { EarnPortfolioTrackerGuard } from '../components/EarnPortfolioTrackerGuard';
+import { InstantUnstakeConfirmationBanner } from '../components/InstantUnstakeConfirmationBanner';
 import { StakingManagementPendingSection } from '../components/StakingManagementPendingSection';
 import { StakingManagementScreenHeader } from '../components/StakingManagementScreenHeader';
 import { StakingManagementStakedCard } from '../components/StakingManagementStakedCard';
@@ -30,6 +35,9 @@ export const StakingManagementScreen = () => {
     const listHeaderComponent = useMemo(
         () => (
             <VStack spacing="sp48" marginTop="sp32" paddingHorizontal="sp16">
+                {isSupportedEthStakingNetworkSymbol(networkSymbol) && (
+                    <InstantUnstakeConfirmationBanner accountKey={accountKey} />
+                )}
                 {isStakingSymbol(networkSymbol) && (
                     <ContextMessage context={Context.getStaking(networkSymbol)} />
                 )}

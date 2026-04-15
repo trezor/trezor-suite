@@ -13353,6 +13353,7 @@ __metadata:
     "@suite-common/earn-staking-api": "workspace:*"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/message-system": "workspace:*"
+    "@suite-common/react-query": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/staking": "workspace:*"
     "@suite-common/validators": "workspace:*"
