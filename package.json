@@ -98,7 +98,7 @@
     },
     "resolutions": {
         "typescript": "5.8.3",
-        "prettier": "3.8.1",
+        "prettier": "^3.8.1",
         "react-native": "0.83.2",
         "type-fest": "5.5.0",
         "bcrypto": "5.4.0",
@@ -112,7 +112,7 @@
         "### We need promise to be same version in mobile unless it produces undefined behavior, check PR #15815": "1.0.0",
         "promise": "8.3.0",
         "elliptic": "6.6.1",
-        "@headlessui/react": "^2.2.0",
+        "@headlessui/react": "^2.2.2",
         "### Align versions of sentry internal packages, because electron & native use different versions of @core": "1.0.0",
         "@sentry/core": "10.42.0",
         "@sentry/browser": "10.42.0",
