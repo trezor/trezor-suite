@@ -8,7 +8,8 @@ const ANIMATION_DURATION = 0.4;
 
 const IconWrapper = styled.div<{ $isCollapsed?: boolean }>`
     transform: ${({ $isCollapsed }) => ($isCollapsed ? 'rotate(0deg)' : 'rotate(180deg)')};
-    transition: transform ${ANIMATION_DURATION}s cubic-bezier(${motionEasing.transition.join(', ')});
+    transition: transform ${ANIMATION_DURATION}s
+        cubic-bezier(${motionEasing.transition?.join(', ') ?? ''});
     transform-origin: center;
 `;
 

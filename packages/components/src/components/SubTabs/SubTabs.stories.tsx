@@ -88,7 +88,7 @@ const SubTabsApp = (props: Partial<SubTabsProps>) => {
 
     return (
         <Column gap={spacings.md}>
-            <SubTabsComponent activeItemId={items[selectedTab].id} {...props}>
+            <SubTabsComponent activeItemId={items[selectedTab]?.id ?? ''} {...props}>
                 {items.map(item => (
                     <SubTabsComponent.Item key={item.id} {...item}>
                         {item.title}

@@ -6,7 +6,7 @@ type JsonValue = string | number | boolean | null | Record<string, JsonValue> | 
 type LottieAnimation = JsonValue;
 
 const areColorsClose = (a: number[], b: number[], tolerance = 0.01) =>
-    a.length === 4 && b.length === 4 && a.every((v, i) => Math.abs(v - b[i]) < tolerance);
+    a.length === 4 && b.length === 4 && a.every((v, i) => Math.abs(v - (b[i] ?? 0)) < tolerance);
 
 export const recolorLottieAnimation = (
     data: LottieAnimation,
