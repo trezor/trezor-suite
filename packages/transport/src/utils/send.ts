@@ -38,8 +38,10 @@ interface BuildMessageProps {
 export const buildMessage = ({ messages, name, data, protocol, thpState }: BuildMessageProps) => {
     const protobufEncoder = (messageName: string, data: Record<string, unknown>) => {
         const { messageType, message } = encodeMessage(messages, messageName, data);
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const typedMessageType: number = messageType;
 
-        return protocol.encode(message, { messageType });
+        return protocol.encode(message, { messageType: typedMessageType });
     };
 
     if (protocol.name === 'v2') {
@@ -48,7 +50,13 @@ export const buildMessage = ({ messages, name, data, protocol, thpState }: Build
             messageName: name,
             data,
             thpState,
-            protobufEncoder: (messageName, data) => encodeMessage(messages, messageName, data),
+            protobufEncoder: (messageName, data) => {
+                const { messageType, message } = encodeMessage(messages, messageName, data);
+                // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                const typedMessageType: number = messageType;
+
+                return { messageType: typedMessageType, message };
+            },
         });
     }
 
@@ -60,7 +68,9 @@ export const sendChunks = async <T, E extends string>(
     apiWrite: (chunk: Buffer) => AsyncResultWithTypedError<T, E>,
 ) => {
     for (let i = 0; i < chunks.length; i++) {
-        const result = await apiWrite(chunks[i]);
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const chunk: Buffer = chunks[i];
+        const result = await apiWrite(chunk);
         if (!result.success) {
             return result;
         }

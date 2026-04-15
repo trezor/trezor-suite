@@ -63,7 +63,11 @@ export class UdpApi extends AbstractApi {
     }
 
     public write(path: string, buffer: Buffer, signal?: AbortSignal) {
-        const [hostname, port] = path.split(':');
+        const parts = path.split(':');
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const hostname: string = parts[0];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const port: string = parts[1];
 
         return new Promise<AbstractApiAwaitedResult<'write'>>(resolve => {
             const listener = () => {

@@ -554,7 +554,7 @@ export class UsbApi extends AbstractApi {
         }
     }
 
-    private filterDevices(devices: USBDevice[]) {
+    private filterDevices(devices: USBDevice[]): [USBDevice[], USBDevice[]] {
         const trezorDevices = devices.filter(dev =>
             TREZOR_USB_DESCRIPTORS.some(
                 desc => dev.vendorId === desc.vendorId && dev.productId === desc.productId,
