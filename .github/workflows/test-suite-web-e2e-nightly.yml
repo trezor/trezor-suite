@@ -128,4 +128,4 @@ jobs:
 
       - name: Upload coverage map to S3
         run: |
-          aws s3 cp coverage-map/index.json s3://dev.suite.sldev.cz/coverage/e2e/index.json --no-multipart
+          aws s3api put-object --bucket dev.suite.sldev.cz --key coverage/e2e/index.json --body coverage-map/index.json --content-type application/json --cache-control "no-cache, max-age=0"
