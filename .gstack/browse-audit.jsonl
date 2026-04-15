@@ -1,9 +1,0 @@
-{"ts":"2026-04-14T14:13:51.337Z","cmd":"status","args":"","origin":"about:blank","durationMs":2,"status":"ok","hasCookies":false,"mode":"launched"}
-{"ts":"2026-04-14T14:14:01.359Z","cmd":"goto","args":"https://suite.trezor.io/web/","origin":"https://suite.trezor.io/web/","durationMs":427,"status":"ok","hasCookies":false,"mode":"launched"}
-{"ts":"2026-04-14T14:14:07.595Z","cmd":"screenshot","args":"/tmp/suite-trezor-web.png","origin":"about:blank","durationMs":38,"status":"ok","hasCookies":false,"mode":"launched"}
-{"ts":"2026-04-14T14:14:15.326Z","cmd":"wait","args":"--networkidle","origin":"about:blank","durationMs":3,"status":"ok","hasCookies":false,"mode":"launched"}
-{"ts":"2026-04-14T14:14:15.378Z","cmd":"screenshot","args":"/tmp/suite-trezor-web2.png","origin":"about:blank","durationMs":15,"status":"ok","hasCookies":false,"mode":"launched"}
-{"ts":"2026-04-14T14:14:25.219Z","cmd":"console","args":"","origin":"about:blank","durationMs":1,"status":"ok","hasCookies":false,"mode":"launched"}
-{"ts":"2026-04-14T14:14:25.262Z","cmd":"url","args":"","origin":"about:blank","durationMs":2,"status":"ok","hasCookies":false,"mode":"launched"}
-{"ts":"2026-04-14T14:14:25.300Z","cmd":"text","args":"","origin":"about:blank","durationMs":1,"status":"ok","hasCookies":false,"mode":"launched"}
-{"ts":"2026-04-14T14:16:58.282Z","cmd":"status","args":"","origin":"about:blank","durationMs":2,"status":"ok","hasCookies":false,"mode":"launched"}

@@ -152,6 +152,8 @@ packages/suite-data/files/translations/master.json
 
 # local config for Claude
 .claude/
+# gstack local analytics
+.gstack/
 
 # AI agent plans
 /plans
