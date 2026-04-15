@@ -10,12 +10,12 @@
         { "path": "../protobuf" },
         { "path": "../protocol" },
         { "path": "../schema-utils" },
-        { "path": "../transport" },
         { "path": "../type-utils" },
         { "path": "../utils" },
         { "path": "../blockchain-link" },
         { "path": "../blockchain-link-types" },
         { "path": "../device-authenticity" },
+        { "path": "../transport" },
         { "path": "../utxo-lib" }
     ]
 }
