@@ -31,6 +31,9 @@ const [semver] = args;
 
  */
 const allowedSemvers = ['patch', 'prepatch', 'minor', 'preminor', 'prerelease'];
+if (!semver) {
+    throw new Error('Check npm dependencies requires 1 parameter: semver');
+}
 if (!allowedSemvers.includes(semver)) {
     throw new Error(`provided semver: ${semver} must be one of ${allowedSemvers.join(', ')}`);
 }

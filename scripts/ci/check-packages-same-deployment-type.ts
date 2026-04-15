@@ -20,7 +20,12 @@ const checkVersions = (packages: string[], deploymentType: string): void => {
     }
 };
 
-const packages = JSON.parse(process.argv[2]);
+const packagesArg = process.argv[2];
 const deploymentType = process.argv[3];
 
-checkVersions(packages, deploymentType);
+if (!packagesArg || !deploymentType) {
+    console.error('Usage: check-packages-same-deployment-type <packages-json> <deployment-type>');
+    process.exit(1);
+}
+
+checkVersions(JSON.parse(packagesArg), deploymentType);
