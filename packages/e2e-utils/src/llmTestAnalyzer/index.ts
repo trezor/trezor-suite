@@ -261,8 +261,9 @@ const main = async () => {
 
     let cacheFile = DEFAULT_CACHE_FILE;
     const cacheFileIdx = args.indexOf('--cache-file');
-    if (cacheFileIdx !== -1 && args[cacheFileIdx + 1]) {
-        cacheFile = args[cacheFileIdx + 1];
+    const cacheFileArg = args[cacheFileIdx + 1];
+    if (cacheFileIdx !== -1 && cacheFileArg) {
+        cacheFile = cacheFileArg;
     }
 
     let apiKey: string | undefined;
@@ -326,6 +327,10 @@ const main = async () => {
     }
 
     const inputPath = positionalArgs[0];
+    if (!inputPath) {
+        error('No input path provided.');
+        process.exit(1);
+    }
     let testFiles: string[];
     try {
         testFiles = findTestFiles(inputPath, excludePatterns);
@@ -362,8 +367,9 @@ const main = async () => {
         log(`Cache written: ${cacheFile}`);
         if (failed > 0) process.exit(1);
     } else {
-        if (testFiles.length === 1) {
-            const analysis = await analyzeTestFile(testFiles[0], apiKey);
+        const firstTestFile = testFiles[0];
+        if (testFiles.length === 1 && firstTestFile) {
+            const analysis = await analyzeTestFile(firstTestFile, apiKey);
             output(JSON.stringify(analysis, null, 2));
         } else {
             const results: Record<string, TestAnalysis> = {};

@@ -134,10 +134,13 @@ const main = async () => {
     let explicitFiles: string[] = [];
 
     for (let i = 0; i < args.length; i++) {
-        if (args[i] === '--coverage-map' && args[i + 1]) {
-            coverageMapFileArg = args[++i];
-        } else if (args[i] === '--files' && args[i + 1]) {
-            explicitFiles = args[++i].split(',').filter(Boolean);
+        const nextArg = args[i + 1];
+        if (args[i] === '--coverage-map' && nextArg) {
+            coverageMapFileArg = nextArg;
+            i++;
+        } else if (args[i] === '--files' && nextArg) {
+            explicitFiles = nextArg.split(',').filter(Boolean);
+            i++;
         }
     }
 
