@@ -3,8 +3,8 @@ export const reverseBuffer = (src: Buffer) => {
     const buffer = Buffer.alloc(src.length);
     let j = buffer.length - 1;
     for (let i = 0; i < buffer.length / 2; i++) {
-        buffer[i] = src[j];
-        buffer[j] = src[i];
+        buffer[i] = src[j] ?? 0;
+        buffer[j] = src[i] ?? 0;
         j--;
     }
 

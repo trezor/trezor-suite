@@ -183,17 +183,20 @@ export const scheduleAction = async <T>(
             resolveAfterMs(delay, clear).then(() =>
                 attemptLoop(
                     attemptCount,
-                    (attempt, abort) =>
-                        Promise.race([
-                            ...maybeRejectAfterMs(getParams(attempt).timeout, errorTimeout, clear),
+                    (attempt, abort) => {
+                        const attemptParams = getParams(attempt);
+
+                        return Promise.race([
+                            ...maybeRejectAfterMs(attemptParams?.timeout, errorTimeout, clear),
                             resolveAction(action, abort),
-                        ]),
+                        ]);
+                    },
                     (attempt, error) => {
                         const errorHandlerResult = attemptFailureHandler?.(error);
 
                         return errorHandlerResult
                             ? Promise.reject(errorHandlerResult)
-                            : resolveAfterMs(getParams(attempt).gap ?? 0, clear);
+                            : resolveAfterMs(getParams(attempt)?.gap ?? 0, clear);
                     },
                     graceful ? actionAborter.signal : clear,
                 ),

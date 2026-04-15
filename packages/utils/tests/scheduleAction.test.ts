@@ -17,7 +17,7 @@ describe('scheduleAction', () => {
 
         let [a, r] = [0, 0];
         while (a < addings.length && r < removals.length) {
-            if (addings[a] < removals[r]) a++;
+            if ((addings[a] ?? 0) < (removals[r] ?? 0)) a++;
             else r++;
             if (a - r > MAX_LISTENERS) return `More than ${MAX_LISTENERS} simultaneous listeners`;
             if (r > a) return `More listeners removed than added (shouldn't happen)`;
@@ -290,9 +290,12 @@ describe('scheduleAction', () => {
 
         expect(times.length).toEqual(TIMEOUTS.length + 1);
         for (let i = 0; i < TIMEOUTS.length; i++) {
-            const diff = times[i + 1] - times[i];
-            expect(diff).toBeGreaterThanOrEqual(TIMEOUTS[i] - MARGIN);
-            expect(diff).toBeLessThanOrEqual(TIMEOUTS[i] + MARGIN);
+            const timeNext = times[i + 1] ?? 0;
+            const timeCurr = times[i] ?? 0;
+            const timeout = TIMEOUTS[i] ?? 0;
+            const diff = timeNext - timeCurr;
+            expect(diff).toBeGreaterThanOrEqual(timeout - MARGIN);
+            expect(diff).toBeLessThanOrEqual(timeout + MARGIN);
         }
         expect(checkListeners()).toBeUndefined();
     });

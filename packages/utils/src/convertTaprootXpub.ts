@@ -11,11 +11,13 @@ export const convertTaprootXpub = ({ xpub, direction }: ConvertTaprootXpubParams
 
     const openingSquareBracketSplit = xpub.split('[');
     if (openingSquareBracketSplit.length === 2) {
-        const [beforeOpeningBracket, afterOpeningBracket] = openingSquareBracketSplit;
+        const beforeOpeningBracket = openingSquareBracketSplit[0] ?? '';
+        const afterOpeningBracket = openingSquareBracketSplit[1] ?? '';
 
         const closingSquareBracketSplit = afterOpeningBracket.split(']');
         if (closingSquareBracketSplit.length === 2) {
-            const [path, afterClosingBracket] = closingSquareBracketSplit;
+            const path = closingSquareBracketSplit[0] ?? '';
+            const afterClosingBracket = closingSquareBracketSplit[1] ?? '';
 
             const correctedPath = path.replace(new RegExp(find, 'g'), replace); // .replaceAll()
 

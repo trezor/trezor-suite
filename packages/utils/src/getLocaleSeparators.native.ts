@@ -14,13 +14,14 @@ export function getLocaleSeparators(locale: string): {
     // the last non-numeric character before the last 2 digits is the decimal separator
     // and the first non-numeric character is the thousand separator
     for (let i = 0; i < formattedNumber.length; i++) {
-        if (!/\d/.test(formattedNumber[i])) {
-            thousandsSeparator = formattedNumber[i];
+        const char = formattedNumber[i];
+        if (char !== undefined && !/\d/.test(char)) {
+            thousandsSeparator = char;
             break;
         }
     }
 
-    const decimalSeparator = formattedNumber[formattedNumber.length - 3];
+    const decimalSeparator = formattedNumber[formattedNumber.length - 3] ?? '.';
 
     return { decimalSeparator, thousandsSeparator };
 }

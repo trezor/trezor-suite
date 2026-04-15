@@ -16,12 +16,16 @@ describe(arrayShuffle.name, () => {
         for (let sample = 0; sample < SAMPLES; ++sample) {
             const shuffled = arrayShuffle(KEYS, { randomInt: getWeakRandomInt });
             for (let i = 0; i < shuffled.length; ++i) {
-                samples[shuffled[i]][i]++;
+                const key = shuffled[i];
+                const counts = key !== undefined ? samples[key] : undefined;
+                if (counts !== undefined) {
+                    counts[i] = (counts[i] ?? 0) + 1;
+                }
             }
         }
 
         KEYS.forEach(key =>
-            samples[key].forEach(count => {
+            samples[key]?.forEach(count => {
                 expect(count).toBeGreaterThanOrEqual(LOWER_BOUND);
                 expect(count).toBeLessThanOrEqual(UPPER_BOUND);
             }),

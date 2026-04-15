@@ -51,7 +51,7 @@ export const getRandomInt = (min: number, max: number) => {
     let randomValue: number;
     do {
         getRandomValues(array);
-        randomValue = array[0];
+        randomValue = array[0] ?? 0;
     } while (randomValue >= maxRange);
 
     return min + (randomValue % range);
