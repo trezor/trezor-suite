@@ -22,9 +22,9 @@ export const sum = (valuesAndUnits: string[]) => {
         return '';
     }
 
-    return `${valueUnitPairs.reduce((accumulator, [value]) => accumulator + value, 0)}${
-        valueUnitPairs[0][1]
-    }`;
+    const firstUnit = valueUnitPairs[0]?.[1] ?? '';
+
+    return `${valueUnitPairs.reduce((accumulator, [value]) => accumulator + value, 0)}${firstUnit}`;
 };
 
 export const negative = (value: number): number => {
