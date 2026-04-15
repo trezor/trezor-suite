@@ -54,7 +54,11 @@ export const crc32 = (buf: Buffer): Buffer => {
     const table = getCrcTable();
     let crc = -1;
     for (let i = 0; i < buf.length; i++) {
-        crc = table[(crc ^ buf[i]) & 0xff] ^ (crc >>> 8);
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const byte: number = buf[i];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const tableValue: number = table[(crc ^ byte) & 0xff];
+        crc = tableValue ^ (crc >>> 8);
     }
     const buffer = Buffer.alloc(4);
     buffer.writeInt32BE(crc ^ -1, 0);

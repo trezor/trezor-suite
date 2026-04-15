@@ -88,7 +88,11 @@ export const handleHandshakeInit = ({
     h = hashOfTwo(h, trezorEphemeralPubkey);
     // 5. Set ck, k = HKDF(protocol_name, X25519(host_ephemeral_privkey, trezor_ephemeral_pubkey)).
     point = curve25519(hostEphemeralKeys.privateKey, trezorEphemeralPubkey);
-    let [ck, k] = hkdf(getProtocolName(), point);
+    const hkdf1 = hkdf(getProtocolName(), point);
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    let ck: Buffer = hkdf1[0];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    let k: Buffer = hkdf1[1];
 
     // 6. Set trezor_masked_static_pubkey, success = AES-GCM-DECRYPT(key=k, IV=0^96 (bits, 12 bytes), ad=h, plaintext=encrypted_trezor_static_pubkey). Assert that success is True.
     aes = aesgcm(k, iv0);
@@ -100,7 +104,11 @@ export const handleHandshakeInit = ({
     h = hashOfTwo(h, trezorEncryptedStaticPubkey);
     // 8. Set ck, k = HKDF(ck, X25519(host_ephemeral_privkey, trezor_masked_static_pubkey))
     point = curve25519(hostEphemeralKeys.privateKey, trezorMaskedStaticPubkey);
-    [ck, k] = hkdf(ck, point);
+    const hkdf2 = hkdf(ck, point);
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    ck = hkdf2[0];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    k = hkdf2[1];
 
     // 9. Set tag_of_empty_string, success = AES-GCM-DECRYPT(key=k, IV=0^96 (bits, 12 bytes), ad=h, plaintext=empty_string). Assert that success is True.
     aes = aesgcm(k, iv0);
@@ -138,7 +146,11 @@ export const handleHandshakeInit = ({
     h = hashOfTwo(h, hostEncryptedStaticPubkey);
     // 14. Set ck, k = HKDF(ck, X25519(temp_host_static_privkey, trezor_ephemeral_pubkey)).
     point = curve25519(hostStaticKeys.privateKey, trezorEphemeralPubkey);
-    [ck, k] = hkdf(ck, point);
+    const hkdf3 = hkdf(ck, point);
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    ck = hkdf3[0];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    k = hkdf3[1];
     // 15. Set payload_binary = PROTOBUF-ENCODE(type=HandshakeCompletionReqNoisePayload, host_pairing_credential).
     const { message } = protobufEncoder('ThpHandshakeCompletionReqNoisePayload', {
         host_pairing_credential: credentials?.credential,
@@ -151,7 +163,11 @@ export const handleHandshakeInit = ({
 
     // HH2 and HH3
     // 1. Set key_request, key_response = HKDF(ck, empty_string).
-    const [hostKey, trezorKey] = hkdf(ck, Buffer.alloc(0));
+    const hkdf4 = hkdf(ck, Buffer.alloc(0));
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const hostKey: Buffer = hkdf4[0];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const trezorKey: Buffer = hkdf4[1];
 
     return {
         trezorMaskedStaticPubkey,
