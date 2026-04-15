@@ -29,11 +29,14 @@ const JSON_SCHEMA = JSON.stringify({
 });
 
 const buildPrompt = (testSource: string) =>
-    `Given this Playwright test file, produce a JSON summary with:
-- behaviors: list of user-facing behaviors this test validates (plain English)
-- entry_points: URLs or UI flows where the test begins
-- key_assertions: what conditions it checks
-- source_hints: which parts of the application it likely touches
+    `Given this Playwright test file, produce a JSON summary with ALL four of the following fields. All four fields are REQUIRED and must appear in the output — do not skip any of them.
+
+1. behaviors: list of user-facing behaviors this test validates (plain English)
+2. entry_points: URLs or UI flows where the test begins
+3. key_assertions: what conditions it checks
+4. source_hints: which parts of the application source code this test likely touches (e.g. component names, Redux slices, API endpoints, utility modules). Use ["unknown"] if genuinely indeterminate, but this field MUST always be present.
+
+IMPORTANT: Omitting any field — especially source_hints — is not acceptable. If uncertain about source_hints, use ["unknown"].
 
 Test file contents:
 \`\`\`
@@ -42,7 +45,31 @@ ${testSource}
 
 const hashContent = (content: string): string => createHash('sha256').update(content).digest('hex');
 
-const findTestFiles = (inputPath: string): string[] => {
+const requiredKeys: (keyof ClaudeAnalysis)[] = [
+    'behaviors',
+    'entry_points',
+    'key_assertions',
+    'source_hints',
+];
+
+const validateAnalysis = (input: unknown, context: string): ClaudeAnalysis => {
+    if (typeof input !== 'object' || input === null) {
+        throw new Error(`Expected an object, got ${typeof input}: ${context}`);
+    }
+    const record = input as Record<string, unknown>;
+    for (const key of requiredKeys) {
+        if (
+            !Array.isArray(record[key]) ||
+            !record[key].every((v: unknown) => typeof v === 'string')
+        ) {
+            throw new Error(`Missing or invalid field "${key}" in analysis: ${context}`);
+        }
+    }
+
+    return input as ClaudeAnalysis;
+};
+
+const findTestFiles = (inputPath: string, excludePatterns: string[] = []): string[] => {
     const absolutePath = path.resolve(inputPath);
 
     if (!fs.existsSync(absolutePath)) {
@@ -51,8 +78,15 @@ const findTestFiles = (inputPath: string): string[] => {
 
     const stat = fs.statSync(absolutePath);
 
+    const rootForRelative = stat.isDirectory() ? absolutePath : path.dirname(absolutePath);
+    const isExcluded = (filePath: string): boolean => {
+        const relPath = path.relative(rootForRelative, filePath);
+
+        return excludePatterns.some(pattern => path.matchesGlob(relPath, pattern));
+    };
+
     if (stat.isFile()) {
-        return [absolutePath];
+        return isExcluded(absolutePath) ? [] : [absolutePath];
     }
 
     if (stat.isDirectory()) {
@@ -63,7 +97,9 @@ const findTestFiles = (inputPath: string): string[] => {
                 if (entry.isDirectory()) {
                     recurse(fullPath);
                 } else if (entry.isFile() && entry.name.endsWith('.test.ts')) {
-                    results.push(fullPath);
+                    if (!isExcluded(fullPath)) {
+                        results.push(fullPath);
+                    }
                 }
             }
         };
@@ -114,7 +150,7 @@ const analyzeTestFileViaCli = (testSource: string): ClaudeAnalysis => {
         throw new Error(`claude envelope missing structured_output:\n${result.stdout}`);
     }
 
-    return envelope.structured_output;
+    return validateAnalysis(envelope.structured_output, result.stdout);
 };
 
 const analyzeTestFileViaApi = async (
@@ -171,27 +207,8 @@ const analyzeTestFileViaApi = async (
     }
 
     const { input } = toolUse;
-    const requiredKeys: (keyof ClaudeAnalysis)[] = [
-        'behaviors',
-        'entry_points',
-        'key_assertions',
-        'source_hints',
-    ];
-    if (
-        typeof input !== 'object' ||
-        input === null ||
-        requiredKeys.some(key => {
-            const val = (input as Record<string, unknown>)[key];
 
-            return !Array.isArray(val) || !val.every((v: unknown) => typeof v === 'string');
-        })
-    ) {
-        throw new Error(
-            `Anthropic API returned malformed tool input for: ${filePath}\n${JSON.stringify(input, null, 2)}`,
-        );
-    }
-
-    return input as ClaudeAnalysis;
+    return validateAnalysis(input, `Anthropic API response for: ${filePath}`);
 };
 
 const analyzeTestFile = async (filePath: string, apiKey?: string): Promise<TestAnalysis> => {
@@ -235,6 +252,13 @@ const main = async () => {
     const buildCache = args.includes('--buildCache');
     const positionalArgs = args.filter(a => !a.startsWith('--'));
 
+    const excludePatterns: string[] = [];
+    for (let i = 0; i < args.length; i++) {
+        if (args[i] === '--exclude' && args[i + 1]) {
+            excludePatterns.push(args[++i]);
+        }
+    }
+
     let cacheFile = DEFAULT_CACHE_FILE;
     const cacheFileIdx = args.indexOf('--cache-file');
     if (cacheFileIdx !== -1 && args[cacheFileIdx + 1]) {
@@ -265,6 +289,8 @@ const main = async () => {
                 '  --buildCache        Build/update the analysis cache file instead of printing.',
                 '                      Skips files whose sha256 hash has not changed since last run.',
                 `  --cache-file <path> Path to the cache file. Default: ${DEFAULT_CACHE_FILE}`,
+                '  --exclude <pattern> Glob pattern for files to exclude. Can be repeated.',
+                '                      Example: --exclude "**/manual/**"',
                 '  --api-key <key>     Anthropic API key. Overrides the CLAUDE_API_KEY env variable.',
                 '                      When provided, uses the Anthropic API instead of the CLI.',
                 '  --help, -h          Show this help message and exit.',
@@ -302,7 +328,7 @@ const main = async () => {
     const inputPath = positionalArgs[0];
     let testFiles: string[];
     try {
-        testFiles = findTestFiles(inputPath);
+        testFiles = findTestFiles(inputPath, excludePatterns);
     } catch (err) {
         error(err instanceof Error ? err.message : String(err));
         process.exit(1);

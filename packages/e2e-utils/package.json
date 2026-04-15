@@ -12,7 +12,8 @@
         "select-tests": "tsx ./src/testCoverage/selectTestsByChangedFiles.ts",
         "seed-tests": "CURRENTS_PROJECT_ID=iBEsWE yarn pwc --config ./src/quarantineBot/seed/playwright.config.ts",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "analyze-tests": "tsx ./src/llmTestAnalyzer/index.ts"
+        "analyze-tests": "tsx ./src/llmTestAnalyzer/index.ts",
+        "select-tests-llm": "tsx ./src/llmTestSelector/index.ts"
     },
     "dependencies": {
         "@anthropic-ai/sdk": "^0.39.0",
