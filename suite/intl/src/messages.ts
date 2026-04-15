@@ -1255,11 +1255,11 @@ export const messages = defineMessages({
         id: 'TR_TRADING_OTC_INFO_SELL',
     },
     TR_TRADING_OTC_LINK_BUY: {
-        defaultMessage: 'Buy with {providerName}',
+        defaultMessage: 'Buy with Concierge',
         id: 'TR_TRADING_OTC_LINK_BUY',
     },
     TR_TRADING_OTC_LINK_SELL: {
-        defaultMessage: 'Sell with {providerName}',
+        defaultMessage: 'Sell with Concierge',
         id: 'TR_TRADING_OTC_LINK_SELL',
     },
     TR_TRADING_PROVIDER: {
