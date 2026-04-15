@@ -161,7 +161,9 @@ class BluetoothManager {
                         d => d.id === nearbyDevice.id,
                     );
                     if (nearbyDeviceIndex >= 0) {
-                        const oldNearbyDevice = this.nearbyDevices[nearbyDeviceIndex];
+                        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                        const oldNearbyDevice: BluetoothDevice =
+                            this.nearbyDevices[nearbyDeviceIndex];
                         nearbyDevice.connectionStatus = oldNearbyDevice.connectionStatus;
                         this.nearbyDevices[nearbyDeviceIndex] = nearbyDevice;
                         if (
@@ -240,6 +242,7 @@ class BluetoothManager {
         // Get a list of known devices by their identifiers.
         const devices = await this.getBleManager().devices([deviceId]);
         debugLog(`Found ${devices.length} already known device(s)`);
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
         [device] = devices;
 
         if (!device) {
@@ -250,6 +253,7 @@ class BluetoothManager {
             ]);
             const matchingConnectedDevices = connectedDevices.filter(d => d.id === deviceId);
             debugLog(`Found ${matchingConnectedDevices.length} already connected device(s)`);
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
             [device] = matchingConnectedDevices;
         }
 
