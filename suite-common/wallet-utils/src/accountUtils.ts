@@ -79,6 +79,7 @@ export const getFirstFreshAddress = (
     receiveAddresses: ReceiveInfo[],
     pendingAddresses: string[],
     utxoBasedAccount: boolean,
+    excludedAddresses: string[] = [],
 ) => {
     const unused = account.addresses
         ? account.addresses.unused
@@ -93,7 +94,8 @@ export const getFirstFreshAddress = (
     const unrevealed = unused.filter(
         a =>
             !receiveAddresses.find(r => r.path === a.path) &&
-            !pendingAddresses.find(p => p === a.address),
+            !pendingAddresses.find(p => p === a.address) &&
+            !excludedAddresses.includes(a.address),
     );
 
     // const addressLabel = utxoBasedAccount ? 'RECEIVE_ADDRESS_FRESH' : 'RECEIVE_ADDRESS';

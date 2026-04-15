@@ -32,12 +32,14 @@ import {
 describe('account utils', () => {
     fixtures.getFirstFreshAddress.forEach(f => {
         it(`getFirstFreshAddress: ${f.description}`, () => {
-            const { account, receive, pendingAddresses, utxoBasedAccount } = f.params;
+            const { account, receive, pendingAddresses, utxoBasedAccount, excludedAddresses } =
+                f.params;
             const freshAddress = getFirstFreshAddress(
                 account as Account,
                 receive,
                 pendingAddresses,
                 utxoBasedAccount,
+                excludedAddresses,
             );
             expect(freshAddress).toMatchObject(f.result);
         });

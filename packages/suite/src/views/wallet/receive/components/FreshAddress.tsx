@@ -1,5 +1,3 @@
-import { useMemo } from 'react';
-
 import { Translation, useTranslation } from '@suite/intl';
 import { selectLabelingDataForSelectedAccount } from '@suite/metadata';
 import { selectIsSuiteSyncEnabled, selectSuiteSyncAddressLabels } from '@suite-common/suite-sync';
@@ -18,6 +16,7 @@ import {
     Tooltip,
 } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+import { typedObjectValues } from '@trezor/utils';
 
 import { selectIsLegacyLabelingVisible } from 'src/actions/labels/selectIsLegacyLabelingVisible';
 import { showAddress } from 'src/actions/wallet/receiveActions';
@@ -26,15 +25,13 @@ import { useDispatch, useSelector } from 'src/hooks/suite/';
 import { useReceiveDisabled } from 'src/hooks/suite/useReceiveDisabled';
 import { type AppState } from 'src/types/suite';
 
-const TooltipLabel = ({
-    symbol,
-    multipleAddresses,
-    accountType,
-}: {
+type TooltipLabel = {
     symbol: string;
     multipleAddresses: boolean;
     accountType: string;
-}) => {
+};
+
+const TooltipLabel = ({ symbol, multipleAddresses, accountType }: TooltipLabel) => {
     const addressLabel = (
         <H4 intent="neutral" priority="secondary" typographyStyle="body-sm">
             <Translation id={multipleAddresses ? 'RECEIVE_ADDRESS_FRESH' : 'RECEIVE_ADDRESS'} />
@@ -100,17 +97,25 @@ export const FreshAddress = ({
             : [],
     );
 
+    const excludedAddresses = isLegacyLabelingVisible
+        ? typedObjectValues(addressLabels)
+              .filter(label => !!label)
+              .map(([address]) => address)
+        : suiteSyncAddressLabels.filter(({ label }) => !!label).map(({ address }) => address);
+
     const { isReceiveDisabled, receiveDisabledTooltipContent } = useReceiveDisabled();
     const { translationString } = useTranslation();
     const dispatch = useDispatch();
 
-    const firstFreshAddress = useMemo(() => {
-        if (account) {
-            return getFirstFreshAddress(account, addresses, pendingAddresses, isAccountUtxoBased);
-        }
-    }, [account, addresses, pendingAddresses, isAccountUtxoBased]);
-
     if (!account) return null;
+
+    const firstFreshAddress = getFirstFreshAddress(
+        account,
+        addresses,
+        pendingAddresses,
+        isAccountUtxoBased,
+        excludedAddresses,
+    );
 
     // On coinjoin account, disallow to reveal more than the first receive address until it is used,
     // because discovery of coinjoin account relies on assumption that user uses his first address first.
@@ -147,6 +152,7 @@ export const FreshAddress = ({
         minWidth: 220,
         size: 'large',
     };
+
     const firstFreshAddressLabel = firstFreshAddress?.address
         ? (suiteSyncAddressLabels.find(it => it.address === firstFreshAddress.address)?.label ??
           (isLegacyLabelingVisible ? addressLabels[firstFreshAddress.address] : undefined))

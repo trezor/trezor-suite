@@ -433,4 +433,19 @@ export const getFirstFreshAddress = [
             transfers: ACCOUNTS.txrp.history.total,
         },
     },
+    {
+        description: 'Account with labeled unused address skips labeled address',
+        params: {
+            account: ACCOUNTS.test,
+            receive: [],
+            pendingAddresses: [],
+            utxoBasedAccount: true,
+            excludedAddresses: ['tb1qk0qgmxtaw3kc9366eccjjgklef0g8lxv3l8nvk'],
+        },
+        result: {
+            address: 'tb1q99ml7urce6m77c2hmxeppm3ylvx7lqk6avhgh7',
+            path: "m/84'/1'/0'/0/2",
+            transfers: 0,
+        },
+    },
 ];
