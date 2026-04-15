@@ -16,7 +16,9 @@ export const countUnusedFromEnd = <T>(
 ): number => {
     const boundary = array.length > lookout ? array.length - lookout : 0;
     for (let i = array.length; i > boundary; --i) {
-        if (!isUnused(array[i - 1])) {
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const item: T = array[i - 1];
+        if (!isUnused(item)) {
             return array.length - i;
         }
     }
@@ -42,7 +44,10 @@ export const createAddressCache = (network: Network | undefined) => {
                 cache[key] = derived.concat(newDerived);
             }
 
-            return cache[key].slice(from, from + count);
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const cached: AddressInfo[] = cache[key];
+
+            return cached.slice(from, from + count);
         };
 
         return { getAllDerived, getAddresses };

@@ -20,14 +20,25 @@ import {
     isNumber,
 } from '../types/validation';
 
-const OP_INT_BASE = OPS.OP_RESERVED; // OP_1 - 1
+/* eslint-disable prefer-destructuring */
+// @ts-expect-error: indexing with noUncheckedIndexedAccess
+const OP_INT_BASE: number = OPS.OP_RESERVED; // OP_1 - 1
+// @ts-expect-error: indexing with noUncheckedIndexedAccess
+const OP_0: number = OPS.OP_0;
+// @ts-expect-error: indexing with noUncheckedIndexedAccess
+const OP_1: number = OPS.OP_1;
+// @ts-expect-error: indexing with noUncheckedIndexedAccess
+const OP_16: number = OPS.OP_16;
+// @ts-expect-error: indexing with noUncheckedIndexedAccess
+const OP_1NEGATE: number = OPS.OP_1NEGATE;
+// @ts-expect-error: indexing with noUncheckedIndexedAccess
+const OP_PUSHDATA4: number = OPS.OP_PUSHDATA4;
+/* eslint-enable prefer-destructuring */
 
 function isOPInt(value: number) {
     return (
         isNumber(value) &&
-        (value === OPS.OP_0 ||
-            (value >= OPS.OP_1 && value <= OPS.OP_16) ||
-            value === OPS.OP_1NEGATE)
+        (value === OP_0 || (value >= OP_1 && value <= OP_16) || value === OP_1NEGATE)
     );
 }
 
@@ -40,10 +51,12 @@ export function isPushOnly(value: Stack) {
 }
 
 function asMinimalOP(buffer: Buffer) {
-    if (buffer.length === 0) return OPS.OP_0;
+    if (buffer.length === 0) return OP_0;
     if (buffer.length !== 1) return;
-    if (buffer[0] >= 1 && buffer[0] <= 16) return OP_INT_BASE + buffer[0];
-    if (buffer[0] === 0x81) return OPS.OP_1NEGATE;
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const byte0: number = buffer[0];
+    if (byte0 >= 1 && byte0 <= 16) return OP_INT_BASE + byte0;
+    if (byte0 === 0x81) return OP_1NEGATE;
 }
 
 export function compile(chunks: Buffer | Stack) {
@@ -108,10 +121,11 @@ export function decompile(buffer: Buffer | Stack) {
     let i = 0;
 
     while (i < buffer.length) {
-        const opcode = buffer[i];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const opcode: number = buffer[i];
 
         // data chunk
-        if (opcode > OPS.OP_0 && opcode <= OPS.OP_PUSHDATA4) {
+        if (opcode > OP_0 && opcode <= OP_PUSHDATA4) {
             const d = pushdata.decode(buffer, i);
 
             // did reading a pushDataInt fail? empty script
@@ -169,7 +183,8 @@ export function fromASM(asm: string) {
     return compile(
         asm.split(' ').map(chunkStr => {
             // opcode?
-            if (OPS[chunkStr] !== undefined) return OPS[chunkStr];
+            const opValue = OPS[chunkStr];
+            if (opValue !== undefined) return opValue;
             assertType(HexSchema, chunkStr);
 
             // data!
@@ -184,7 +199,7 @@ export function toStack(chunks0: Buffer | Stack) {
 
     return chunks?.map(op => {
         if (isBuffer(op)) return op;
-        if (op === OPS.OP_0) return Buffer.allocUnsafe(0);
+        if (op === OP_0) return Buffer.allocUnsafe(0);
 
         return scriptNumber.encode(op - OP_INT_BASE);
     });
@@ -203,7 +218,9 @@ export function isDefinedHashType(hashType: number) {
 
 export function isCanonicalScriptSignature(buffer: Buffer) {
     if (!isBuffer(buffer)) return false;
-    if (!isDefinedHashType(buffer[buffer.length - 1])) return false;
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const lastByte: number = buffer[buffer.length - 1];
+    if (!isDefinedHashType(lastByte)) return false;
 
     return bip66.check(buffer.subarray(0, -1));
 }

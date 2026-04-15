@@ -74,7 +74,10 @@ export function p2wpkh(a: Payment, opts?: PaymentOpts): Payment {
     lazy.prop(o, 'output', () => {
         if (!o.hash) return;
 
-        return bscript.compile([OPS.OP_0, o.hash]);
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const op0: number = OPS.OP_0;
+
+        return bscript.compile([op0, o.hash]);
     });
     lazy.prop(o, 'pubkey', () => {
         if (a.pubkey) return a.pubkey;
@@ -134,16 +137,20 @@ export function p2wpkh(a: Payment, opts?: PaymentOpts): Payment {
 
         if (a.witness) {
             if (a.witness.length !== 2) throw new TypeError('Witness is invalid');
-            if (!bscript.isCanonicalScriptSignature(a.witness[0]))
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const witnessSig: Buffer = a.witness[0];
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const witnessPubkey: Buffer = a.witness[1];
+            if (!bscript.isCanonicalScriptSignature(witnessSig))
                 throw new TypeError('Witness has invalid signature');
-            if (!ecc.isPoint(a.witness[1]) || a.witness[1].length !== 33)
+            if (!ecc.isPoint(witnessPubkey) || witnessPubkey.length !== 33)
                 throw new TypeError('Witness has invalid pubkey');
 
-            if (a.signature && !a.signature.equals(a.witness[0]))
+            if (a.signature && !a.signature.equals(witnessSig))
                 throw new TypeError('Signature mismatch');
-            if (a.pubkey && !a.pubkey.equals(a.witness[1])) throw new TypeError('Pubkey mismatch');
+            if (a.pubkey && !a.pubkey.equals(witnessPubkey)) throw new TypeError('Pubkey mismatch');
 
-            const pkh = bcrypto.hash160(a.witness[1]);
+            const pkh = bcrypto.hash160(witnessPubkey);
             if (hash.length > 0 && !hash.equals(pkh)) throw new TypeError('Hash mismatch');
         }
     }

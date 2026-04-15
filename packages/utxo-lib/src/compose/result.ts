@@ -66,15 +66,21 @@ export function getResult<
         return total;
     }, new BN(result.fee));
 
-    const max =
-        sendMaxOutputIndex >= 0 ? result.outputs[sendMaxOutputIndex].value.toString() : undefined;
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const sendMaxOutput: (typeof result.outputs)[number] = result.outputs[sendMaxOutputIndex];
+    const max = sendMaxOutputIndex >= 0 ? sendMaxOutput.value.toString() : undefined;
     const bytes = transactionBytes(result.inputs, result.outputs);
     const feePerByte = result.fee / bytes;
 
     const { complete, incomplete } = splitByCompleteness(request.outputs);
 
     if (incomplete.length > 0) {
-        const inputs = result.inputs.map(input => request.utxos[input.i]);
+        const inputs = result.inputs.map(input => {
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const utxo: Input = request.utxos[input.i];
+
+            return utxo;
+        });
 
         return {
             type: 'nonfinal',

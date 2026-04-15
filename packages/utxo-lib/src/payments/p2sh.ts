@@ -22,7 +22,12 @@ const { OPS } = bscript;
 function stacksEqual(a: Buffer[], b: Buffer[]): boolean {
     if (a.length !== b.length) return false;
 
-    return a.every((x, i) => x.equals(b[i]));
+    return a.every((x, i) => {
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const bItem: Buffer = b[i];
+
+        return x.equals(bItem);
+    });
 }
 
 // input: [redeemScriptSig ...] {redeemScript}
@@ -97,7 +102,12 @@ export function p2sh(a: Payment, opts?: PaymentOpts): Payment {
     lazy.prop(o, 'output', () => {
         if (!o.hash) return;
 
-        return bscript.compile([OPS.OP_HASH160, o.hash, OPS.OP_EQUAL]);
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const opHash160: number = OPS.OP_HASH160;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const opEqual: number = OPS.OP_EQUAL;
+
+        return bscript.compile([opHash160, o.hash, opEqual]);
     });
 
     // input dependents

@@ -11,7 +11,9 @@ const OPS: Record<string, number> = {
 
 const REVERSE_OPS: string[] = [];
 Object.keys(OPS).forEach(code => {
-    REVERSE_OPS[OPS[code]] = code;
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const opCode: number = OPS[code];
+    REVERSE_OPS[opCode] = code;
 });
 
 export { OPS, REVERSE_OPS };

@@ -115,7 +115,9 @@ export function fromBuffer(buffer: Buffer, options: TransactionOptions) {
 
     if (hasWitnesses) {
         for (let i = 0; i < vinLen; ++i) {
-            tx.ins[i].witness = bufferReader.readVector();
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const txIn: (typeof tx.ins)[number] = tx.ins[i];
+            txIn.witness = bufferReader.readVector();
         }
 
         // was this pointless?

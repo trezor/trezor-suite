@@ -90,7 +90,12 @@ describe('noble compatibility deterministic fuzz parity with tiny-secp256k1', ()
 
     const randomBoolean = () => (nextUint32() & 1) === 0;
 
-    const randomItem = <T>(items: T[]): T => items[nextUint32() % items.length];
+    const randomItem = <T>(items: T[]): T => {
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const item: T = items[nextUint32() % items.length];
+
+        return item;
+    };
 
     const randomScalarCandidate = () => {
         if (nextUint32() % 4 === 0) {

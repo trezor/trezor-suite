@@ -74,7 +74,10 @@ export class TransactionBase<S = undefined> {
     }
 
     isCoinbase(): boolean {
-        return this.ins.length === 1 && isCoinbaseHash(this.ins[0].hash);
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const firstIn: (typeof this.ins)[number] = this.ins[0];
+
+        return this.ins.length === 1 && isCoinbaseHash(firstIn.hash);
     }
 
     hasWitnesses(): boolean {

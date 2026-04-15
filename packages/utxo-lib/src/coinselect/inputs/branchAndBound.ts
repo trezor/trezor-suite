@@ -82,10 +82,12 @@ function search(
         } else {
             // Continue down this branch
             // Remove this utxo from the remaining utxo amount
-            remaining = remaining.sub(effectiveUtxos[depth].effectiveValue);
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const currentUtxo: (typeof effectiveUtxos)[number] = effectiveUtxos[depth];
+            remaining = remaining.sub(currentUtxo.effectiveValue);
             // Inclusion branch first (Largest First Exploration)
             selected[depth] = true;
-            selectedAccum = selectedAccum.add(effectiveUtxos[depth].effectiveValue);
+            selectedAccum = selectedAccum.add(currentUtxo.effectiveValue);
             depth++;
         }
 
@@ -96,7 +98,9 @@ function search(
 
             // Walk backwards to find the first utxo which has not has its second branch traversed
             while (!selected[depth]) {
-                remaining = remaining.add(effectiveUtxos[depth].effectiveValue);
+                // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                const btUtxo: (typeof effectiveUtxos)[number] = effectiveUtxos[depth];
+                remaining = remaining.add(btUtxo.effectiveValue);
 
                 // Step back one
                 depth--;
@@ -110,7 +114,9 @@ function search(
 
             // Now traverse the second branch of the utxo we have arrived at.
             selected[depth] = false;
-            selectedAccum = selectedAccum.sub(effectiveUtxos[depth].effectiveValue);
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const btUtxo2: (typeof effectiveUtxos)[number] = effectiveUtxos[depth];
+            selectedAccum = selectedAccum.sub(btUtxo2.effectiveValue);
             depth++;
         }
         tries--;
@@ -188,7 +194,9 @@ export const branchAndBound: CoinSelectAlgorithm = (
 
         for (let i = 0; i < effectiveUtxos.length; i++) {
             if (selected[i]) {
-                inputs.push(effectiveUtxos[i].utxo);
+                // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                const eu: (typeof effectiveUtxos)[number] = effectiveUtxos[i];
+                inputs.push(eu.utxo);
             }
         }
 

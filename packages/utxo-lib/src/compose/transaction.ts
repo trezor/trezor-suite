@@ -22,7 +22,14 @@ export function createTransaction<Input extends ComposeInput, Change extends Com
     request: ComposeRequest<Input, ComposeFinalOutput, Change>,
     result: CoinSelectSuccess,
 ): ComposedTransaction<Input, ComposeFinalOutput, Change> {
-    const convertedInputs = result.inputs.map(input => request.utxos[input.i]);
+    const convertedInputs = result.inputs.map(input => {
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const utxo: Input = request.utxos[input.i];
 
-    return strategyMap[request.sortingStrategy]({ result, request, convertedInputs });
+        return utxo;
+    });
+
+    const strategy = strategyMap[request.sortingStrategy];
+
+    return strategy({ result, request, convertedInputs });
 }

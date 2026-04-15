@@ -297,7 +297,8 @@ export function anyOf(algorithms: CoinSelectAlgorithm[]): CoinSelectAlgorithm {
         let result: ReturnType<CoinSelectAlgorithm> = { fee: 0 };
 
         for (let i = 0; i < algorithms.length; i++) {
-            const algorithm = algorithms[i];
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const algorithm: (typeof algorithms)[number] = algorithms[i];
             result = algorithm(utxos, outputs, feeRate, options);
             if (result.inputs) {
                 return result;

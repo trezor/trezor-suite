@@ -34,11 +34,15 @@ export function fromBech32(address: string): Bech32Result {
     }
 
     if (result) {
-        [version] = result.words;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const v: number = result.words[0];
+        version = v;
         if (version !== 0) throw new TypeError(`${address} uses wrong encoding`);
     } else {
         result = bech32m.decode(address as `${string}1${string}`);
-        [version] = result.words;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const v: number = result.words[0];
+        version = v;
         if (version === 0) throw new TypeError(`${address} uses wrong encoding`);
     }
 
@@ -70,7 +74,9 @@ function toFutureSegwitAddress(output: Buffer, network = BITCOIN_NETWORK) {
     if (data.length < FUTURE_SEGWIT_MIN_SIZE || data.length > FUTURE_SEGWIT_MAX_SIZE)
         throw new TypeError('Invalid program length for segwit address');
 
-    const version = output[0] - FUTURE_SEGWIT_VERSION_DIFF;
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const outputByte0: number = output[0];
+    const version = outputByte0 - FUTURE_SEGWIT_VERSION_DIFF;
 
     if (version < FUTURE_SEGWIT_MIN_VERSION || version > FUTURE_SEGWIT_MAX_VERSION)
         throw new TypeError('Invalid version for segwit address');

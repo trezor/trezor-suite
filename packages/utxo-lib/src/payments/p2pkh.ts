@@ -61,13 +61,16 @@ export function p2pkh(a: Payment, opts?: PaymentOpts): Payment {
     lazy.prop(o, 'output', () => {
         if (!o.hash) return;
 
-        return bscript.compile([
-            OPS.OP_DUP,
-            OPS.OP_HASH160,
-            o.hash,
-            OPS.OP_EQUALVERIFY,
-            OPS.OP_CHECKSIG,
-        ]);
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const opDup: number = OPS.OP_DUP;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const opHash160: number = OPS.OP_HASH160;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const opEqualverify: number = OPS.OP_EQUALVERIFY;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const opChecksig: number = OPS.OP_CHECKSIG;
+
+        return bscript.compile([opDup, opHash160, o.hash, opEqualverify, opChecksig]);
     });
     lazy.prop(o, 'pubkey', () => {
         if (!a.input) return;

@@ -19,17 +19,29 @@ export const bip69SortingStrategy: SortingStrategy = ({ result, request, convert
     const defaultPermutation: number[] = [];
     const convertedOutputs = result.outputs.map((output, index) => {
         defaultPermutation.push(index);
-        if (request.outputs[index]) {
-            return convertOutput(output, request.outputs[index]);
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const reqOutput: (typeof request.outputs)[number] = request.outputs[index];
+        if (reqOutput) {
+            return convertOutput(output, reqOutput);
         }
 
         return convertOutput(output, { type: 'change', ...request.changeAddress });
     });
 
-    const permutation = defaultPermutation.sort((a, b) =>
-        outputComparator(result.outputs[a], result.outputs[b]),
-    );
-    const sortedOutputs = permutation.map(index => convertedOutputs[index]);
+    const permutation = defaultPermutation.sort((a, b) => {
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const outA: CoinSelectOutputFinal = result.outputs[a];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const outB: CoinSelectOutputFinal = result.outputs[b];
+
+        return outputComparator(outA, outB);
+    });
+    const sortedOutputs = permutation.map(index => {
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const out: (typeof convertedOutputs)[number] = convertedOutputs[index];
+
+        return out;
+    });
 
     return {
         inputs: convertedInputs.sort(inputComparator),

@@ -8,10 +8,12 @@ export const randomSortingStrategy: SortingStrategy = ({ result, request, conver
     const changeOutputPermutation: number[] = [];
 
     const convertedOutputs = result.outputs.map((output, index) => {
-        if (request.outputs[index]) {
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const reqOutput: (typeof request.outputs)[number] = request.outputs[index];
+        if (reqOutput) {
             nonChangeOutputPermutation.push(index);
 
-            return convertOutput(output, request.outputs[index]);
+            return convertOutput(output, reqOutput);
         }
 
         changeOutputPermutation.push(index);
@@ -27,7 +29,12 @@ export const randomSortingStrategy: SortingStrategy = ({ result, request, conver
     const newPositionOfChange = getRandomInt(0, permutation.length + 1);
 
     permutation.splice(newPositionOfChange, 0, ...changeOutputPermutation);
-    const sortedOutputs = permutation.map(index => convertedOutputs[index]);
+    const sortedOutputs = permutation.map(index => {
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const out: (typeof convertedOutputs)[number] = convertedOutputs[index];
+
+        return out;
+    });
 
     return {
         /** Randomly shuffle inputs to make it harder to fingerprint the Trezor Suite. */

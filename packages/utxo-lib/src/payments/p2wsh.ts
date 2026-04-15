@@ -17,7 +17,12 @@ const EMPTY_BUFFER = Buffer.alloc(0);
 function stacksEqual(a: Buffer[], b: Buffer[]): boolean {
     if (a.length !== b.length) return false;
 
-    return a.every((x, i) => x.equals(b[i]));
+    return a.every((x, i) => {
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const bItem: Buffer = b[i];
+
+        return x.equals(bItem);
+    });
 }
 
 function chunkHasUncompressedPubkey(chunk: StackElement): boolean {
@@ -99,7 +104,10 @@ export function p2wsh(a: Payment, opts?: PaymentOpts): Payment {
     lazy.prop(o, 'output', () => {
         if (!o.hash) return;
 
-        return bscript.compile([OPS.OP_0, o.hash]);
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const op0: number = OPS.OP_0;
+
+        return bscript.compile([op0, o.hash]);
     });
     lazy.prop(o, 'redeem', () => {
         if (!a.witness) return;
@@ -209,7 +217,8 @@ export function p2wsh(a: Payment, opts?: PaymentOpts): Payment {
         }
 
         if (a.witness && a.witness.length > 0) {
-            const wScript = a.witness[a.witness.length - 1];
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const wScript: Buffer = a.witness[a.witness.length - 1];
             if (a.redeem && a.redeem.output && !a.redeem.output.equals(wScript))
                 throw new TypeError('Witness and redeem.output mismatch');
             if (
