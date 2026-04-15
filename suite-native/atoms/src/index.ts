@@ -82,6 +82,7 @@ export * from './AnimatedDoubleView/AnimatedDoubleView';
 export * from './AnimatedDoubleView/AnimatedDoubleInput';
 export * from './Pressable';
 export * from './SegmentedControl';
+export * from './ProgressBar';
 
 export { useDebugView } from './DebugView';
 export { TouchableSwitchRow, TouchableSwitchRowDescription } from './TouchableSwitchRow';
