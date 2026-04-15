@@ -24,6 +24,8 @@ export const useConnectPopupWeb = () => {
     // messages (including those carrying addresses / signatures) will be
     // scoped to that origin.
     const originRef = useRef<string>('*');
+    const initialUrl = useRef<string>(window.location.href.split('?')[1] ?? '');
+    const channelRef = useRef<BroadcastChannel | null>(null);
 
     /**
      * Send a message back to the caller (opener window or same window).
@@ -35,10 +37,11 @@ export const useConnectPopupWeb = () => {
      */
     const postMessageToParent = useCallback((message: ConnectPopupOutgoingMessage) => {
         message.channel = webChannel;
-        if (window.opener) {
-            window.opener.postMessage(message, originRef.current);
+        if (channelRef.current) {
+            channelRef.current.postMessage(message);
         } else {
-            window.postMessage(message, window.location.origin);
+            // TODO: show warning to user
+            console.error('BroadcastChannel not available', initialUrl.current);
         }
     }, []);
 
@@ -60,12 +63,60 @@ export const useConnectPopupWeb = () => {
 
     // Listen for incoming window messages and normalize them.
     useEffect(() => {
+        const urlParams = new URLSearchParams(initialUrl.current);
+        const requestId = urlParams.get('connect-popup-req');
+        const requestErr = urlParams.get('connect-popup-err');
+
+        if (!requestId && !requestErr) {
+            // no id in URL, unable to establish communication channel
+            return;
+        }
+
+        if (requestErr) {
+            // TODO: show warning to user
+            console.warn('Popup opened with error', { requestErr });
+
+            return;
+        }
+
+        let broadcastChannel: BroadcastChannel | undefined;
+        try {
+            broadcastChannel = new BroadcastChannel(`@trezor/connect-popup/${requestId}`);
+            channelRef.current = broadcastChannel;
+        } catch (error) {
+            // TODO: show warning to user
+            console.warn('BroadcastChannel is not supported in this browser', error);
+
+            return;
+        }
+
+        const handshakeTimeout = setTimeout(() => {
+            // eslint-disable-next-line @typescript-eslint/no-use-before-define
+            channelRef.current?.removeEventListener('message', onMessage);
+            channelRef.current = null;
+            // TODO: show warning to user
+            console.warn('Popup handshake timeout');
+        }, 3000);
+
         const onMessage = (event: MessageEvent) => {
             const { data } = event;
             if (!data?.type) return;
 
-            // Remember the actual caller origin.
-            originRef.current = event.origin;
+            if (data.type === 'channel-handshake-request') {
+                // another popup with the same channel peer is trying to handshake.
+                // close current instance and proceed in new window.
+                if (data.channel.peer === '@trezor/connect-bootstrap-popup') {
+                    window.close();
+
+                    return;
+                }
+
+                if (data.channel.peer === webChannel.here) {
+                    clearTimeout(handshakeTimeout);
+                    // Remember the actual caller origin (sent by the bootstrap).
+                    originRef.current = data.origin;
+                }
+            }
 
             if (
                 data.type === 'channel-handshake-request' ||
@@ -86,10 +137,22 @@ export const useConnectPopupWeb = () => {
             }
         };
 
-        window.addEventListener('message', onMessage);
+        broadcastChannel.addEventListener('message', onMessage);
+
+        // TODO: replace this with broadcastChannel ping-pong
+        const onBeforeUnload = () => {
+            broadcastChannel.postMessage({
+                type: POPUP.CLOSED,
+                channel: webChannel,
+            });
+        };
+        window.addEventListener('beforeunload', onBeforeUnload);
 
         return () => {
-            window.removeEventListener('message', onMessage);
+            clearTimeout(handshakeTimeout);
+            broadcastChannel.removeEventListener('message', onMessage);
+            broadcastChannel.close();
+            window.removeEventListener('beforeunload', onBeforeUnload);
         };
     }, []);
 };
