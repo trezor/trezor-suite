@@ -153,6 +153,9 @@ async function ensureDirectoryExists(path: string) {
 
     for (let i = 0; i < coins.length; i++) {
         const coin = coins[i];
+        if (!coin) {
+            continue;
+        }
 
         console.log(`${i + 1}/${coins.length}: Start icon updating for ${coin.id}`);
         await updateIcon(coin);
