@@ -24,6 +24,9 @@ const loadSolanaComputeBudgetProgramLib = async () =>
 const loadSolanaSystemProgramLib = async () =>
     await import(/* webpackChunkName: "vendor-solana-program-system" */ '@solana-program/system');
 
+const loadSolanaMemoProgramLib = async () =>
+    await import(/* webpackChunkName: "vendor-solana-program-memo" */ '@solana-program/memo');
+
 const loadSolanaTokenProgramLib = async (tokenProgramName: TokenProgramName) => {
     switch (tokenProgramName) {
         case 'spl-token':
@@ -125,6 +128,7 @@ export const buildTransferTransaction = async (
     blockhash: string,
     lastValidBlockHeight: number,
     priorityFees: PriorityFees,
+    memo?: string,
 ) => {
     const [
         // @solana/kit
@@ -162,7 +166,17 @@ export const buildTransferTransaction = async (
         }),
         messageWithLifetime,
     );
-    const messageWithFees = await addPriorityFees(messageWithTransfer, priorityFees);
+    let messageWithFees: CompilableTransactionMessage = await addPriorityFees(
+        messageWithTransfer,
+        priorityFees,
+    );
+    if (memo) {
+        const { getAddMemoInstruction } = await loadSolanaMemoProgramLib();
+        messageWithFees = appendTransactionMessageInstruction(
+            getAddMemoInstruction({ memo }),
+            messageWithFees,
+        );
+    }
 
     return await createTransactionShim(messageWithFees);
 };
@@ -296,6 +310,7 @@ export const buildTokenTransferTransaction = async (
     lastValidBlockHeight: number,
     priorityFees: PriorityFees,
     tokenProgramName: TokenProgramName,
+    memo?: string,
 ): Promise<TokenTransferTxWithDestinationAddress> => {
     const {
         address,
@@ -383,7 +398,13 @@ export const buildTokenTransferTransaction = async (
     // Step 6: Add the token transfer instruction(s) to the transaction
     message = appendTransactionMessageInstructions(await Promise.all(instructionPromises), message);
 
-    // Step 7: Return the transaction
+    // Step 7: Append memo instruction if provided
+    if (memo) {
+        const { getAddMemoInstruction } = await loadSolanaMemoProgramLib();
+        message = appendTransactionMessageInstruction(getAddMemoInstruction({ memo }), message);
+    }
+
+    // Step 8: Return the transaction
     return {
         transaction: await createTransactionShim(message),
         destinationAddress: finalReceiverAddress,

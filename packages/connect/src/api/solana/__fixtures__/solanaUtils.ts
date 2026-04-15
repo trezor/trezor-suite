@@ -429,5 +429,52 @@ export const fixtures = {
             expectedOutput:
                 '01000306c80f8b50107e9f3e3c16a661b8c806df454a6deb293d5e8730a9d28f2f4998c6ca7f0545e6ff0eb69540020573c128136015f2a26163f90081ea42fb43be1665ebaa24826cef9644c1ecf0dfcf955775b8438528e97820efc2b20ed46be1dc586c6ede7c260ca13beca7a3017513ac103b5dad8335213f57d38b78967c6608b90306466fe5211732ffecadba72c39be7bc8ce5bbc5f7126b2c439b3a4000000006ddf6e1ee758fde18425dbce46ccddab61afc4d83b90d27febdf928d8a18bfc6772b7d36a2e66e52c817f385d7e94d3d4b6d47d7171c9f2dd86c6f1be1a93eb030400050250c3000004000903a0860100000000000504010302000a0c00e1f5050000000009',
         },
+        {
+            description: 'builds token transfer (SPL Token program) transaction with memo',
+            input: {
+                fromAddress: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
+                toAddress: 'FAeNERRWGL8xtnwtM5dWBUs9Z1y5fenSJcawu55NQSWk',
+                toAddressOwner: SYSTEM_PROGRAM_PUBLIC_KEY,
+                tokenMint: '6YuhWADZyAAxAaVKPm1G5N51RvDBXsnWo4SfsJ47wSoK',
+                tokenUiAmount: '0.1',
+                tokenDecimals: 9,
+                fromTokenAccounts: [
+                    {
+                        publicKey: 'CR6QfobBidQTSYdR6jihKTfMnHkRUtw8cLDCxENDVYmd',
+                        balance: '12200000000',
+                    },
+                ],
+                toTokenAccount: undefined,
+                blockhash: '7xpT7BDE7q1ZWhe6Pg8PHRYbqgDwNK3L2v97rEfsjMkn',
+                lastValidBlockHeight: 50,
+                priorityFees: {
+                    computeUnitPrice: '100000',
+                    computeUnitLimit: '50000',
+                },
+                tokenProgramName: 'spl-token' as const,
+                memo: 'Hello World',
+            },
+            expectedOutput:
+                '0100070ac80f8b50107e9f3e3c16a661b8c806df454a6deb293d5e8730a9d28f2f4998c6a99c9c4d0c7def9dd60a3a40dc5266faf41996310aa62ad6cbd9b64e1e2cca78ebaa24826cef9644c1ecf0dfcf955775b8438528e97820efc2b20ed46be1dc580000000000000000000000000000000000000000000000000000000000000000527706a12f3f7c3c852582f0f79b515c03c6ffbe6e3100044ba7c982eb5cf9f28c97258f4e2489f1bb3d1029148e0d830b5a1399daff1084048e7bd8dbe9f8590306466fe5211732ffecadba72c39be7bc8ce5bbc5f7126b2c439b3a40000000d27c181cb023db6239e22e49e4b67f7dd9ed13f3d7ed319f9e91b3bc64cec0a9054a535a992921064d24e87160da387c7c35b5ddbc92bb81e41fa8404105448d06ddf6e1d765a193d9cbe146ceeb79ac1cb485ed5f5b37913a8cf5857eff00a96772b7d36a2e66e52c817f385d7e94d3d4b6d47d7171c9f2dd86c6f1be1a93eb050600050250c3000006000903a0860100000000000506000207040309000904010402000a0c00e1f505000000000908000b48656c6c6f20576f726c64',
+        },
+    ],
+    buildTransferTransaction: [
+        {
+            description: 'builds SOL transfer transaction with memo',
+            input: {
+                fromAddress: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
+                toAddress: 'FAeNERRWGL8xtnwtM5dWBUs9Z1y5fenSJcawu55NQSWk',
+                amountInSol: '0.1',
+                blockhash: '7xpT7BDE7q1ZWhe6Pg8PHRYbqgDwNK3L2v97rEfsjMkn',
+                lastValidBlockHeight: 50,
+                priorityFees: {
+                    computeUnitPrice: '100000',
+                    computeUnitLimit: '50000',
+                },
+                memo: 'Hello World',
+            },
+            expectedOutput:
+                '01000305c80f8b50107e9f3e3c16a661b8c806df454a6deb293d5e8730a9d28f2f4998c6d27c181cb023db6239e22e49e4b67f7dd9ed13f3d7ed319f9e91b3bc64cec0a900000000000000000000000000000000000000000000000000000000000000000306466fe5211732ffecadba72c39be7bc8ce5bbc5f7126b2c439b3a40000000054a535a992921064d24e87160da387c7c35b5ddbc92bb81e41fa8404105448d6772b7d36a2e66e52c817f385d7e94d3d4b6d47d7171c9f2dd86c6f1be1a93eb040300050250c3000003000903a086010000000000020200010c0200000000e1f5050000000004000b48656c6c6f20576f726c64',
+        },
     ],
 };

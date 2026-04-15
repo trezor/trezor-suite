@@ -18,4 +18,5 @@ export const formInputsMaxLength = {
     xrpDestinationTag: 10, // max: 4294967295
 
     stellarTextMemo: 28, // https://developers.stellar.org/docs/learn/encyclopedia/transactions-specialized/memos
+    solanaMemo: 566, // https://www.solana-program.com/docs/memo
 } as const;

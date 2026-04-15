@@ -14,7 +14,9 @@ export const Options = () => {
         <>
             {networkType === 'bitcoin' && <BitcoinOptions />}
             {networkType === 'ethereum' && <EthereumOptions />}
-            {(networkType === 'ripple' || networkType === 'stellar') && <MiscNetworkOptions />}
+            {(networkType === 'ripple' ||
+                networkType === 'stellar' ||
+                networkType === 'solana') && <MiscNetworkOptions />}
             {networkType === 'cardano' && <CardanoOptions />}
         </>
     );
