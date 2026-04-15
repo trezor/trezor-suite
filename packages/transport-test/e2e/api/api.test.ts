@@ -54,11 +54,12 @@ const runTests = async () => {
             debug('getConnectedDevicePath: discovered devices', res);
 
             assertSuccess(res);
-            if (res.payload.length !== 1) {
+            const firstDevice = res.payload[0];
+            if (!firstDevice || res.payload.length !== 1) {
                 throw new Error(error('Expected exactly one device to be connected'));
             }
-            debug('getConnectedDevicePath: path set to: ', res.payload[0].path);
-            path = res.payload[0].path;
+            debug('getConnectedDevicePath: path set to: ', firstDevice.path);
+            path = firstDevice.path;
         };
 
         const pingPong = async () => {

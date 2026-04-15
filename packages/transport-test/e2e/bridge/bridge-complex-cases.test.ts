@@ -30,8 +30,13 @@ describe('restarting bridge', () => {
         assertSuccess(enumerateResult);
         descriptors = enumerateResult.payload;
 
+        const firstDescriptor = descriptors[0];
+        if (!firstDescriptor) {
+            throw new Error('Expected at least one descriptor');
+        }
+
         const acquireResult = await bridge.acquire({
-            input: { path: descriptors[0].path, previous: session },
+            input: { path: firstDescriptor.path, previous: session },
         });
         assertSuccess(acquireResult);
         session = acquireResult.payload;
@@ -67,10 +72,15 @@ describe('restarting bridge', () => {
         });
         descriptors = enumerateResult.payload;
 
+        const currentDescriptor = descriptors[0];
+        if (!currentDescriptor) {
+            throw new Error('Expected at least one descriptor');
+        }
+
         // acquire hangs and once it is aborted by client, the bridge crashes
         await bridge.acquire({
             input: {
-                path: descriptors[0].path,
+                path: currentDescriptor.path,
                 // OK so not sending previous (or sending null (force)) is the key ingredient
                 // so maybe it is not about send at all? it looks like that only one send is enough to cause it
                 previous: null,
