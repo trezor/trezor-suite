@@ -17,9 +17,6 @@
             "path": "../protocol"
         },
         {
-            "path": "../transport"
-        },
-        {
             "path": "../type-utils"
         },
         {
@@ -33,6 +30,9 @@
         },
         {
             "path": "../device-authenticity"
+        },
+        {
+            "path": "../transport"
         },
         {
             "path": "../utxo-lib"

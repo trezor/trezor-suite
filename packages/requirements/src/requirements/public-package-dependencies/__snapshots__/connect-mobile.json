@@ -8,16 +8,13 @@
         "@trezor/protobuf",
         "@trezor/protocol",
         "@trezor/schema-utils",
-        "@trezor/transport",
         "@trezor/type-utils",
         "@trezor/utils",
         "bignumber.js",
-        "cross-fetch",
         "long",
         "protobufjs",
         "ts-mixer",
-        "tslib",
-        "usb"
+        "tslib"
     ],
     "dev": [
         "@anthropic-ai/sdk",

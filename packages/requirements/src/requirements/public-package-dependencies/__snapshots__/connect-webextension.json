@@ -9,17 +9,14 @@
         "@trezor/protobuf",
         "@trezor/protocol",
         "@trezor/schema-utils",
-        "@trezor/transport",
         "@trezor/type-utils",
         "@trezor/utils",
         "@trezor/websocket-client",
         "bignumber.js",
-        "cross-fetch",
         "long",
         "protobufjs",
         "ts-mixer",
         "tslib",
-        "usb",
         "ws"
     ],
     "dev": [
