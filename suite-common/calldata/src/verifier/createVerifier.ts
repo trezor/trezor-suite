@@ -10,6 +10,7 @@ export const createVerifier = <const T extends Abi>(config: { abi: T }) => {
     if (functions.length > 1) throw new Error('ABI must contain exactly one function');
 
     const fn = functions[0];
+    if (!fn) throw new Error('No function in ABI');
     const selector = toFunctionSelector(fn);
     const paramNames = fn.inputs
         .filter((input): input is typeof input & { name: string } => !!input.name)
