@@ -29,9 +29,10 @@ export const getRoundParameters = (round: Round) => {
     const events = getRoundEvents('RoundCreated', round.CoinjoinState.Events);
     if (events.length < 1) return;
 
-    const [{ RoundParameters }] = events;
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const firstEvent: (typeof events)[number] = events[0];
 
-    return RoundParameters;
+    return firstEvent.RoundParameters;
 };
 
 // round commitmentData used in request for input ownershipProof
@@ -45,11 +46,13 @@ export const getCommitmentData = (identifier: string, roundId: string) => {
 
 // transform '0d 0h 1m 0s' (WabiSabi TimeSpan) to milliseconds
 export const readTimeSpan = (ts: string) => {
-    const span = ts.split(' ').map(v => parseInt(v, 10));
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const [days, hours, minutes, seconds]: [number, number, number, number] = ts
+        .split(' ')
+        .map(v => parseInt(v, 10));
 
     const date = new Date();
     const now = date.getTime();
-    const [days, hours, minutes, seconds] = span;
 
     if (days > 0) {
         date.setDate(date.getDate() + days);
@@ -208,7 +211,9 @@ export const transformStatus = ({
     const { allowedInputAmounts, coordinationFeeRate } = getDataFromRounds(rounds);
     // coinJoinFeeRateMedians include an array of medians per day, week and month - we take the first (day) median as the recommended fee rate base.
     // The value is converted from kvBytes (kilo virtual bytes) to vBytes (how the value is displayed in UI).
-    const feeRateMedian = Math.round(CoinJoinFeeRateMedians[0].MedianFeeRate / 1000);
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const firstMedian: (typeof CoinJoinFeeRateMedians)[number] = CoinJoinFeeRateMedians[0];
+    const feeRateMedian = Math.round(firstMedian.MedianFeeRate / 1000);
 
     return {
         rounds,
@@ -273,12 +278,14 @@ export const getBroadcastedTxDetails = ({
     const sequence = 4294967295;
 
     transactionData.inputs.forEach((input, index) => {
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const witnessHex: string = Witnesses[index];
         tx.ins.push({
             hash: reverseBuffer(Buffer.from(input.hash, 'hex')),
             index: input.index,
             script: Buffer.allocUnsafe(0), // script is not used in calculation
             sequence,
-            witness: new BufferReader(Buffer.from(Witnesses[index], 'hex')).readVector(),
+            witness: new BufferReader(Buffer.from(witnessHex, 'hex')).readVector(),
         });
     });
 

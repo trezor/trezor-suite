@@ -8,9 +8,11 @@ const ADDRESSES = deriveAddressesOriginal(...PARAMS);
 
 const TAPROOT_ADDRESS = 'bcrt1pswrqtykue8r89t9u4rprjs0gt4qzkdfuursfnvqaa3f2yql07zmq2fdmpx';
 
+// @ts-expect-error: indexing with noUncheckedIndexedAccess
+const firstReceiveAddress: string = SEGWIT_RECEIVE_ADDRESSES[0];
 const NON_TAPROOT_TX = {
-    vin: [{ addresses: SEGWIT_RECEIVE_ADDRESSES.slice(1, 3) }, {}, { addresses: [] }],
-    vout: [{ addresses: [SEGWIT_RECEIVE_ADDRESSES[0]] }],
+    vin: [{ addresses: SEGWIT_RECEIVE_ADDRESSES.slice(1, 3) }, {}, { addresses: [] as string[] }],
+    vout: [{ addresses: [firstReceiveAddress] }],
 };
 
 const TAPROOT_TX = {

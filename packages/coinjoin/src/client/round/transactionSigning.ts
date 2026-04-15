@@ -121,7 +121,8 @@ const updateRawLiquidityClue = async (
     );
 
     return accounts.map((account, index) => {
-        const rawLiquidityClue = result[index];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const rawLiquidityClue: (typeof result)[number] = result[index];
         // NOTE: immediately update new value in Account
         // it's intentionally not updated by `updateAccount` to prevent race conditions
         account.updateRawLiquidityClue(rawLiquidityClue);

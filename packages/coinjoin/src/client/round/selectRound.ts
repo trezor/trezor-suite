@@ -401,13 +401,22 @@ export const selectInputsForRound = async ({
 
     // get index of Round with maximum possible utxos
     const roundIndex = sumUtxosInRounds.findIndex(count => count === maxUtxosInRound);
-    const selectedRound = normalRounds[roundIndex];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const selectedRound: (typeof normalRounds)[number] = normalRounds[roundIndex];
 
     // setup new Round
     accountCandidates.forEach((account, accountIndex) => {
         // find utxos assigned to this Round and Account
-        const utxoIndexes = utxoSelection[roundIndex][accountIndex];
-        const selectedUtxos = utxoIndexes.map(utxoIndex => account.utxos[utxoIndex]);
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const roundSelection: (typeof utxoSelection)[number] = utxoSelection[roundIndex];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const utxoIndexes: (typeof roundSelection)[number] = roundSelection[accountIndex];
+        const selectedUtxos = utxoIndexes.map(utxoIndex => {
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const utxo: (typeof account.utxos)[number] = account.utxos[utxoIndex];
+
+            return utxo;
+        });
 
         // Temporary workaround for middleware issue: https://github.com/zkSNACKs/WalletWasabi/issues/10759
         const feeRate = selectedRound.roundParameters.MiningFeeRate;

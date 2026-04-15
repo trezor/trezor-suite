@@ -205,8 +205,10 @@ export const connectionConfirmation = async (
         }),
     ).then(result =>
         result.forEach((r, i) => {
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const input: (typeof inputs)[number] = inputs[i];
             if (r.status !== 'fulfilled') {
-                inputs[i].setError(r.reason);
+                input.setError(r.reason);
             }
         }),
     );

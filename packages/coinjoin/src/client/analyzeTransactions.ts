@@ -21,7 +21,8 @@ export interface AnalyzeTransactionsResult {
 const transformVinVout = (vinvout: EnhancedVinVout, network: Network) => {
     if (!vinvout.isAddress || !vinvout.addresses || vinvout.addresses.length > 1) return [];
 
-    const Address = vinvout.addresses[0];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const Address: string = vinvout.addresses[0];
     const Value = Number(vinvout.value);
 
     if (vinvout.isAccountOwned) return { Address, Value } as AnalyzeInternalVinVout;

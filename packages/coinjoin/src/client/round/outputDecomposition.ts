@@ -38,7 +38,9 @@ const getOutputAmounts = async (params: GetOutputAmountsParams) => {
                 input.accountKey === accountKey && compareOutpoint(input.outpoint, i.Coin.Outpoint),
         );
         if (internal) {
-            InternalAmounts.push(internal.confirmedAmountCredentials![0].Value);
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const firstCredential: middleware.Credentials = internal.confirmedAmountCredentials![0];
+            InternalAmounts.push(firstCredential.Value);
         } else {
             const size = getExternalOutputSize(i.Coin.TxOut.ScriptPubKey);
             const miningFee = Math.floor((size * roundParameters.MiningFeeRate) / 1000);
@@ -178,16 +180,33 @@ const credentialIssuance = async (params: CredentialIssuanceParams) => {
 
     // return pairs of new credentials
     // requested Credentials
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const amountOut0: middleware.Credentials = amountCredentialsOut[0];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const zeroAmountOut0: middleware.Credentials = zeroAmountCredentialsOut[0];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const vsizeOut0: middleware.Credentials = vsizeCredentialsOut[0];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const zeroVsizeOut0: middleware.Credentials = zeroVsizeCredentialsOut[0];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const amountOut1: middleware.Credentials = amountCredentialsOut[1];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const zeroAmountOut1: middleware.Credentials = zeroAmountCredentialsOut[1];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const vsizeOut1: middleware.Credentials = vsizeCredentialsOut[1];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const zeroVsizeOut1: middleware.Credentials = zeroVsizeCredentialsOut[1];
+
     const output = {
-        amountCredentials: [amountCredentialsOut[0], zeroAmountCredentialsOut[0]],
-        vsizeCredentials: [vsizeCredentialsOut[0], zeroVsizeCredentialsOut[0]],
+        amountCredentials: [amountOut0, zeroAmountOut0],
+        vsizeCredentials: [vsizeOut0, zeroVsizeOut0],
     };
 
     // or change output should be returned to pool
     // change Credentials
     const change = {
-        amountCredentials: [amountCredentialsOut[1], zeroAmountCredentialsOut[1]],
-        vsizeCredentials: [vsizeCredentialsOut[1], zeroVsizeCredentialsOut[1]],
+        amountCredentials: [amountOut1, zeroAmountOut1],
+        vsizeCredentials: [vsizeOut1, zeroVsizeOut1],
     };
 
     logger.info(
@@ -245,7 +264,13 @@ const findCredentialsForTarget = (
         })
         .find(pair => pair.length === 2);
 
-    return candidate ? [candidate[0], candidate[1]] : undefined;
+    if (!candidate) return undefined;
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const first: middleware.Credentials = candidate[0];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const second: middleware.Credentials = candidate[1];
+
+    return [first, second];
 };
 
 export interface Bob {
@@ -303,12 +328,14 @@ const createOutputsCredentials = async (params: CreateOutputsCredentials): Promi
         });
 
         // create Bob
-        const result = params.result.concat({
-            accountKey: params.accountKey,
-            amount: amountPair.amount,
-            amountCredentials: joined.output.amountCredentials,
-            vsizeCredentials: joined.output.vsizeCredentials,
-        });
+        const result = params.result.concat([
+            {
+                accountKey: params.accountKey,
+                amount: amountPair.amount,
+                amountCredentials: joined.output.amountCredentials,
+                vsizeCredentials: joined.output.vsizeCredentials,
+            },
+        ]);
 
         // remove amount from list
         const amountIndex = amounts.findIndex(a => a === amountPair.amount);
@@ -421,7 +448,9 @@ export const outputDecomposition = async (
     // calculate amounts
     const outputAmounts = await Promise.all(
         Object.values(groupInputsByAccount).map(inputs => {
-            const { accountKey, inputSize, outputSize } = inputs[0]; // all inputs belongs to the same account (key, size)
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const firstInput: (typeof inputs)[number] = inputs[0];
+            const { accountKey, inputSize, outputSize } = firstInput; // all inputs belongs to the same account (key, size)
             const allVsizeCredentials = inputs.flatMap(i => i.confirmedVsizeCredentials!);
             // limit available vsize if it's bigger than available change addresses
             // prevent from creating amounts which cannot be assigned to address
@@ -448,17 +477,22 @@ export const outputDecomposition = async (
     // join inputs Credentials for each account separately
     const joinedCredentials = await Promise.all(
         Object.keys(groupInputsByAccount).map((accountKey, index) => {
-            if (!outputAmounts[index]) throw new Error(`Missing amounts at index ${index}`);
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const amounts: number[] = outputAmounts[index];
+            if (!amounts) throw new Error(`Missing amounts at index ${index}`);
 
-            logger.info(`Create outputs: ${outputAmounts[index].join(',')}`);
-            const inputs = groupInputsByAccount[accountKey];
+            logger.info(`Create outputs: ${amounts.join(',')}`);
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const inputs: (typeof groupInputsByAccount)[string] = groupInputsByAccount[accountKey];
             const amountCredentials = inputs.flatMap(i => i.confirmedAmountCredentials!);
             const vsizeCredentials = inputs.flatMap(i => i.confirmedVsizeCredentials!);
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const firstInputForSize: (typeof inputs)[number] = inputs[0];
             const result = createOutputsCredentials({
                 round,
                 accountKey,
-                outputSize: inputs[0].outputSize, // all inputs are using same script type (size),
-                amounts: outputAmounts[index],
+                outputSize: firstInputForSize.outputSize, // all inputs are using same script type (size),
+                amounts,
                 amountCredentials,
                 vsizeCredentials,
                 options,
@@ -471,12 +505,13 @@ export const outputDecomposition = async (
 
     // combine everything into DecomposedOutputs objects and return the result to outputRegistration
     return Object.keys(groupInputsByAccount).map((accountKey, index) => {
-        if (!joinedCredentials[index])
-            throw new Error(`Missing joined credentials at index ${index}`);
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const outputs: Bob[] = joinedCredentials[index];
+        if (!outputs) throw new Error(`Missing joined credentials at index ${index}`);
 
         return {
             accountKey,
-            outputs: joinedCredentials[index],
+            outputs,
         };
     });
 };

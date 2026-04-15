@@ -160,7 +160,9 @@ describe(`CoinjoinBackend methods`, () => {
     });
 
     it('scanAccount 1-block reorg', async () => {
-        const [PRELAST_BLOCK, LAST_BLOCK] = FIXTURES.BLOCKS.slice(-2);
+        type BlockFixture = (typeof FIXTURES.BLOCKS)[number];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const [PRELAST_BLOCK, LAST_BLOCK]: [BlockFixture, BlockFixture] = FIXTURES.BLOCKS.slice(-2);
         const PRELAST_CP = { blockHeight: PRELAST_BLOCK.height, blockHash: PRELAST_BLOCK.hash };
         const REORG_BLOCK = {
             ...LAST_BLOCK,
@@ -209,7 +211,9 @@ describe(`CoinjoinBackend methods`, () => {
     });
 
     it('scanAccount derive pending', async () => {
-        client.setFixture([{ ...FIXTURES.BLOCKS[0], txs: [] }]);
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const firstBlock: (typeof FIXTURES.BLOCKS)[number] = FIXTURES.BLOCKS[0];
+        client.setFixture([{ ...firstBlock, txs: [] }]);
 
         const scan1 = await scanAccount(
             { descriptor: FIXTURES.SEGWIT_XPUB, checkpoints: [EMPTY_CHECKPOINT] },
@@ -226,7 +230,7 @@ describe(`CoinjoinBackend methods`, () => {
         expect(scan1.checkpoint.receiveCount).toBe(20);
         expect(info1.addresses.unused.length).toBe(20);
 
-        client.setFixture([{ ...FIXTURES.BLOCKS[0], txs: [] }], [FIXTURES.TX_4_PENDING]);
+        client.setFixture([{ ...firstBlock, txs: [] }], [FIXTURES.TX_4_PENDING]);
 
         const scan2 = await scanAccount(
             { descriptor: FIXTURES.SEGWIT_XPUB, checkpoints: [scan1.checkpoint] },

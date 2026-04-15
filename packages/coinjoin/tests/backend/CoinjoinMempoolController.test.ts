@@ -9,9 +9,13 @@ import {
 } from '../fixtures/methods.fixture';
 import { MockMempoolClient } from '../mocks/MockMempoolClient';
 
+type MockTx = (typeof BLOCKS)[number]['txs'][number];
 const TXS = BLOCKS.flatMap(block => block.txs); // There is 6 of them
-const ADDRESS = SEGWIT_RECEIVE_ADDRESSES[1];
-const TXS_MATCH = [TXS[1], TXS[3]];
+// @ts-expect-error: indexing with noUncheckedIndexedAccess
+const ADDRESS: string = SEGWIT_RECEIVE_ADDRESSES[1];
+// @ts-expect-error: indexing with noUncheckedIndexedAccess
+const [TX0, TX1, TX2, TX3, TX4, TX5]: [MockTx, MockTx, MockTx, MockTx, MockTx, MockTx] = TXS;
+const TXS_MATCH = [TX1, TX3];
 
 describe('CoinjoinMempoolController', () => {
     const client = new MockMempoolClient();
@@ -44,27 +48,27 @@ describe('CoinjoinMempoolController', () => {
     });
 
     it('Progressing', async () => {
-        [TXS[0], TXS[1]].forEach(client.fireTx.bind(client));
+        [TX0, TX1].forEach(client.fireTx.bind(client));
         expect(mempool.getTransactions()).toEqual([]);
 
         await mempool.start();
-        [TXS[2], TXS[3]].forEach(client.fireTx.bind(client));
-        expect(mempool.getTransactions()).toEqual([TXS[2], TXS[3]]);
+        [TX2, TX3].forEach(client.fireTx.bind(client));
+        expect(mempool.getTransactions()).toEqual([TX2, TX3]);
 
-        client.setMempoolTxs([TXS[1], TXS[2], TXS[3]]);
+        client.setMempoolTxs([TX1, TX2, TX3]);
         await mempool.update(true);
-        expect(mempool.getTransactions()).toEqual([TXS[2], TXS[3]]);
+        expect(mempool.getTransactions()).toEqual([TX2, TX3]);
 
-        [TXS[4]].forEach(client.fireTx.bind(client));
-        client.setMempoolTxs([TXS[3], TXS[4], TXS[5]]);
+        [TX4].forEach(client.fireTx.bind(client));
+        client.setMempoolTxs([TX3, TX4, TX5]);
         await mempool.update(true);
-        expect(mempool.getTransactions()).toEqual([TXS[3], TXS[4]]);
+        expect(mempool.getTransactions()).toEqual([TX3, TX4]);
 
-        [TXS[5]].forEach(client.fireTx.bind(client));
+        [TX5].forEach(client.fireTx.bind(client));
         await mempool.update(true);
-        expect(mempool.getTransactions()).toEqual([TXS[3], TXS[4], TXS[5]]);
+        expect(mempool.getTransactions()).toEqual([TX3, TX4, TX5]);
 
-        client.setMempoolTxs([TXS[0], TXS[1]]);
+        client.setMempoolTxs([TX0, TX1]);
         await mempool.update(true);
         expect(mempool.getTransactions()).toEqual([]);
     });
@@ -78,7 +82,7 @@ describe('CoinjoinMempoolController', () => {
         });
         client.setMempoolTxs(TXS);
         await mempool.init();
-        expect(mempool.getTransactions()).toEqual([TXS[1], TXS[3], TXS[4]]);
+        expect(mempool.getTransactions()).toEqual([TX1, TX3, TX4]);
     });
 
     it('Removing', async () => {
@@ -86,17 +90,21 @@ describe('CoinjoinMempoolController', () => {
         await mempool.init();
         expect(mempool.getTransactions()).toEqual(TXS);
 
-        mempool.removeTransactions([TXS[0].txid, TXS[2].txid, 'unknown', TXS[4].txid]);
-        expect(mempool.getTransactions()).toEqual([TXS[1], TXS[3], TXS[5]]);
+        mempool.removeTransactions([TX0.txid, TX2.txid, 'unknown', TX4.txid]);
+        expect(mempool.getTransactions()).toEqual([TX1, TX3, TX5]);
     });
 
     it('Replace-by-fee', async () => {
         const outpointCollision = { txid: 'foo', vout: 3 };
-        const a1 = TXS[1];
-        a1.vin[0] = { ...a1.vin[0], ...outpointCollision };
-        const b = TXS[2];
-        const a2 = TXS[4];
-        a2.vin[1] = { ...a2.vin[1], ...outpointCollision };
+        const a1 = TX1;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const a1Vin0: (typeof a1.vin)[number] = a1.vin[0];
+        a1.vin[0] = { ...a1Vin0, ...outpointCollision };
+        const b = TX2;
+        const a2 = TX4;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const a2Vin1: (typeof a2.vin)[number] = a2.vin[1];
+        a2.vin[1] = { ...a2Vin1, ...outpointCollision };
 
         client.setMempoolTxs([a1]);
         await mempool.start();

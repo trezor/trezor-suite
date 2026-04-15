@@ -12,7 +12,9 @@ const WASABI_URL = 'https://wasabiwallet.io';
 const BLOCKBOOK_URL = 'wss://staging-btc.trezor.io/websocket';
 const TIMEOUT = 20000;
 
-const [bestKnownHash, batchSizeString = '500', torSocket = ''] = process.argv.slice(2);
+// @ts-expect-error: indexing with noUncheckedIndexedAccess
+const [bestKnownHash, batchSizeString = '500', torSocket = '']: [string, string, string] =
+    process.argv.slice(2);
 const batchSize = Number(batchSizeString);
 const [host, port] = torSocket.split(':');
 const agent = host && port ? new SocksProxyAgent(`socks://${host}:${port}`) : undefined;
@@ -29,7 +31,9 @@ const stripHeaders = () => {
                 ?.split(': ');
 
             if (allowedHeaders) {
-                const allowedKeys = allowedHeaders[1].split(';');
+                // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                const allowedValue: string = allowedHeaders[1];
+                const allowedKeys = allowedValue.split(';');
 
                 headers.forEach(line => {
                     const [key, value] = line.split(': ');
@@ -176,7 +180,9 @@ const getWebsocket = async () => {
 
     let batch = await filtersFromWasabi(bestKnownHash);
     while (batch.length === batchSize) {
-        batch = await filtersFromWasabi(batch[batchSize - 1]);
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const lastItem: string = batch[batchSize - 1];
+        batch = await filtersFromWasabi(lastItem);
     }
 
     console.timeEnd('Wasabi filters');
@@ -189,7 +195,9 @@ const getWebsocket = async () => {
 
     batch = await filtersFromBlockbook(bestKnownHash);
     while (batch.length === batchSize) {
-        batch = await filtersFromBlockbook(batch[batchSize - 1]);
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const lastItem: string = batch[batchSize - 1];
+        batch = await filtersFromBlockbook(lastItem);
     }
 
     console.timeEnd('Blockbook filters');

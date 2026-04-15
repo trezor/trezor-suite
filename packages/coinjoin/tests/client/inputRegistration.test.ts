@@ -252,8 +252,10 @@ describe('inputRegistration', () => {
             server?.requestOptions,
         );
         // input have registrationData but also have an error and should be excluded
-        expect(response.inputs[0].registrationData).toMatchObject({ AliceId: expect.any(String) });
-        expect(response.inputs[0].error?.message).toMatch(/ExpectedRuntimeError/);
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const firstInput: (typeof response.inputs)[number] = response.inputs[0];
+        expect(firstInput.registrationData).toMatchObject({ AliceId: expect.any(String) });
+        expect(firstInput.error?.message).toMatch(/ExpectedRuntimeError/);
     });
 
     it('success. using connection-confirmation interval', async () => {
@@ -307,7 +309,9 @@ describe('inputRegistration', () => {
         await Promise.all(response.inputs.map(input => input.getConfirmationInterval()?.promise));
 
         expect(spy).toHaveBeenCalledTimes(1); // connection-confirmation was called 1 time and responded with real realCredentials (default response of MockedServer)
-        expect(response.inputs[0].confirmationData).toMatchObject({
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const firstInput2: (typeof response.inputs)[number] = response.inputs[0];
+        expect(firstInput2.confirmationData).toMatchObject({
             RealAmountCredentials: expect.any(Object),
         });
     });
@@ -333,9 +337,11 @@ describe('inputRegistration', () => {
             server?.requestOptions,
         );
 
-        expect(response.inputs[0].registrationData).toMatchObject({ AliceId: expect.any(String) });
-        expect(response.inputs[0].getConfirmationInterval()).not.toBeUndefined();
-        expect(response.inputs[0].error).toBeUndefined(); // input without error even if request failed
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const firstInput3: (typeof response.inputs)[number] = response.inputs[0];
+        expect(firstInput3.registrationData).toMatchObject({ AliceId: expect.any(String) });
+        expect(firstInput3.getConfirmationInterval()).not.toBeUndefined();
+        expect(firstInput3.error).toBeUndefined(); // input without error even if request failed
 
         // wait few confirmation iterations
         await new Promise(resolve => setTimeout(resolve, 2000));

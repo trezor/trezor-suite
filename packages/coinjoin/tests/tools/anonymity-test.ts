@@ -7,7 +7,8 @@ import { getAccountInfo, getAccountInfoParams } from './discovery';
 import { getAnonymityScores } from '../../src/client/analyzeTransactions';
 import { getCoinjoinNetwork } from '../../src/utils/settingsUtils';
 
-const [network, descriptor] = process.argv.slice(2);
+// @ts-expect-error: indexing with noUncheckedIndexedAccess
+const [network, descriptor]: [string, string] = process.argv.slice(2);
 
 const CACHE_DIR = `${__dirname}/.cache`;
 const CACHE_ACCOUNT_INFO = `${CACHE_DIR}/accountInfo.json`;

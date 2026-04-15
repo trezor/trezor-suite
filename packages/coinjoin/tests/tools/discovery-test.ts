@@ -2,7 +2,8 @@
 
 import { getAccountInfo, getAccountInfoParams } from './discovery';
 
-const [network, descriptor] = process.argv.slice(2);
+// @ts-expect-error: indexing with noUncheckedIndexedAccess
+const [network, descriptor]: [string, string] = process.argv.slice(2);
 const params = getAccountInfoParams(network, descriptor);
 
 (async () => {

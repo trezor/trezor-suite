@@ -186,7 +186,10 @@ describe('connectionConfirmation', () => {
         timestamps
             .map((a, i) => {
                 if (i > 0) {
-                    return a - timestamps[i - 1];
+                    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                    const prev: number = timestamps[i - 1];
+
+                    return a - prev;
                 }
 
                 return 0;

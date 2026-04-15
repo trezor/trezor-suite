@@ -275,8 +275,12 @@ export const BLOCKS = [
     },
 ];
 
+// @ts-expect-error: indexing with noUncheckedIndexedAccess
+const block5: (typeof BLOCKS)[number] = BLOCKS[5];
+// @ts-expect-error: indexing with noUncheckedIndexedAccess
+const block5Tx0: (typeof block5.txs)[number] = block5.txs[0];
 export const TX_4_PENDING = {
-    ...BLOCKS[5].txs[0],
+    ...block5Tx0,
     blockHeight: -1,
     blockTime: undefined,
 };
@@ -987,7 +991,7 @@ const {
     addresses: {
         unused,
         used: [used1, used2],
-        change: [{ balance, sent, received, transfers, ...change1 }, ...change],
+        change: [firstChange, ...change],
     },
     history: {
         transactions: [, , pending, ...transactions],
@@ -995,6 +999,9 @@ const {
     utxo: [utxo],
     ...rest
 } = SEGWIT_XPUB_RESULT;
+// @ts-expect-error: indexing with noUncheckedIndexedAccess
+const { balance, sent, received, transfers, ...change1 }: NonNullable<typeof firstChange> =
+    firstChange;
 
 export const SEGWIT_XPUB_RESULT_HALF = {
     ...rest,

@@ -88,7 +88,9 @@ describe('Golomb filtering', () => {
                 expect(filter(missScripts)).toBe(false);
                 if (hitScripts.length) {
                     expect(filter(hitScripts)).toBe(true);
-                    expect(filter([...missScripts, hitScripts[0]])).toBe(true);
+                    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                    const firstHitScript: (typeof hitScripts)[number] = hitScripts[0];
+                    expect(filter([...missScripts, firstHitScript])).toBe(true);
                     expect(filter([...hitScripts, ...missScripts])).toBe(true);
                 }
             });

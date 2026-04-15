@@ -9,7 +9,8 @@ export class MockFilterClient implements FilterClient {
     }
 
     fetchNetworkInfo(): ReturnType<FilterClient['fetchNetworkInfo']> {
-        const tip = this.filters[this.filters.length - 1];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const tip: MockBlockFilter = this.filters[this.filters.length - 1];
 
         return Promise.resolve({ bestHeight: tip.blockHeight } as any);
     }
@@ -18,7 +19,8 @@ export class MockFilterClient implements FilterClient {
         knownHash: string,
         count: number,
     ): ReturnType<FilterClient['fetchBlockFilters']> {
-        const tip = this.filters[this.filters.length - 1];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const tip: MockBlockFilter = this.filters[this.filters.length - 1];
         if (knownHash === tip.blockHash) {
             return Promise.resolve({ status: 'up-to-date' });
         }
