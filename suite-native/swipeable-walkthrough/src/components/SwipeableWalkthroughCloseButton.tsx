@@ -18,10 +18,6 @@ export const SwipeableWalkthroughCloseButton = ({
     onPressBack,
     currentStepIndex,
 }: SwipeableWalkthroughCloseButtonProps) => {
-    const xPaddingBottom = useDerivedValue(() =>
-        withTiming(currentStepIndex.value === 0 ? 0 : 3, { duration: ANIMATION_DURATION / 2 }),
-    );
-
     const xOpacity = useDerivedValue(() =>
         withTiming(currentStepIndex.value === 0 ? 1 : 0, {
             duration: ANIMATION_DURATION / (currentStepIndex.value === 0 ? 4 : 1),
@@ -35,7 +31,6 @@ export const SwipeableWalkthroughCloseButton = ({
     const animatedXStyle = useAnimatedStyle(() => ({
         position: 'absolute',
         opacity: xOpacity.value,
-        paddingBottom: xPaddingBottom.value,
     }));
 
     const animatedCaretStyle = useAnimatedStyle(() => ({
