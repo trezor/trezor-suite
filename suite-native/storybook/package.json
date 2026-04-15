@@ -23,6 +23,7 @@
         "@storybook/react": "^10.3.3",
         "@storybook/react-native": "^10.2.1",
         "@storybook/react-native-web-vite": "^10.3.3",
+        "@suite-native/alerts": "workspace:*",
         "@suite-native/intl": "workspace:*",
         "@trezor/eslint": "workspace:*",
         "@trezor/styles-native": "workspace:*",

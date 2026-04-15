@@ -14163,6 +14163,7 @@ __metadata:
     "@storybook/react": "npm:^10.3.3"
     "@storybook/react-native": "npm:^10.2.1"
     "@storybook/react-native-web-vite": "npm:^10.3.3"
+    "@suite-native/alerts": "workspace:*"
     "@suite-native/intl": "workspace:*"
     "@trezor/eslint": "workspace:*"
     "@trezor/styles-native": "workspace:*"
