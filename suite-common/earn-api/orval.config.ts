@@ -59,7 +59,7 @@ export default defineConfig({
                 enumGenerationType: 'const',
 
                 transformer: verb => {
-                    const [prefix] = verb.operationId.split('_');
+                    const prefix = verb.operationId.split('_')[0] ?? '';
 
                     return {
                         ...verb,
