@@ -50,6 +50,7 @@ const createTempRepo = () => {
             workspaces: string[],
             deps: Record<string, string> = {},
             devDeps: Record<string, string> = {},
+            resolutions: Record<string, string> = {},
         ) => {
             const pkg: Record<string, unknown> = {
                 name: 'test-monorepo',
@@ -62,6 +63,9 @@ const createTempRepo = () => {
 
             if (Object.keys(devDeps).length > 0) {
                 pkg.devDependencies = devDeps;
+            }
+            if (Object.keys(resolutions).length > 0) {
+                pkg.resolutions = resolutions;
             }
 
             writeFileSync(join(root, 'package.json'), JSON.stringify(pkg, null, 4) + '\n');
@@ -221,6 +225,20 @@ describe('requireUnifiedDependencyVersions', () => {
         const errors = await requireUnifiedDependencyVersions.verify({ repoRoot: repo.root });
 
         expect(errors).toHaveLength(1);
+    });
+
+    it('detects drift between root package.json resolutions and workspace dependency', async () => {
+        const repo = createTempRepo();
+        repo.setRootPackageJson(['packages/*'], {}, {}, { lodash: '4.17.15' });
+        repo.addWorkspace('@test/alpha', 'packages/alpha', { lodash: '^4.17.21' });
+
+        const errors = await requireUnifiedDependencyVersions.verify({ repoRoot: repo.root });
+
+        expect(errors).toHaveLength(1);
+        expect(errors[0]).toContain('"lodash"');
+        expect(errors[0]).toContain('4.17.15');
+        expect(errors[0]).toContain('^4.17.21');
+        expect(errors[0]).toContain('resolutions');
     });
 
     it('reports error when ALLOWED_DRIFTS entry has unified versions', async () => {
