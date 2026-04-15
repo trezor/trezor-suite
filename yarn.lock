@@ -14158,6 +14158,7 @@ __metadata:
     "@lottiefiles/dotlottie-react": "npm:^0.17.14"
     "@react-native-community/datetimepicker": "npm:^8.6.0"
     "@react-native-community/slider": "npm:^5.1.2"
+    "@shopify/react-native-skia": "npm:2.5.1"
     "@storybook/addon-ondevice-controls": "npm:^10.2.1"
     "@storybook/react": "npm:^10.3.3"
     "@storybook/react-native": "npm:^10.2.1"

@@ -8,7 +8,11 @@ const require = createRequire(import.meta.url);
 
 const main: StorybookConfig = {
     stories: ['../../**/stories/**/*.stories.?(ts|tsx|js|jsx)'],
-    staticDirs: ['../../../suite-common/icons/iconFontsMobile', '../../../packages/theme/fonts'],
+    staticDirs: [
+        '../../../suite-common/icons/iconFontsMobile',
+        '../../../packages/theme/fonts',
+        '../web/static/js',
+    ],
     framework: {
         name: '@storybook/react-native-web-vite',
         options: {

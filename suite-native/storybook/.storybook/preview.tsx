@@ -1,5 +1,8 @@
+import { LoadSkiaWeb } from '@shopify/react-native-skia/lib/module/web';
 import { Preview } from '@storybook/react';
 import { INITIAL_VIEWPORTS } from 'storybook/viewport';
+
+LoadSkiaWeb();
 
 import { SHARED_DECORATORS } from '../decorators/decorators';
 
