@@ -60,6 +60,9 @@ import { getWorkspacesList } from './utils/getWorkspacesList';
         .sort()
         .forEach(async workspaceName => {
             const workspace = workspaces[workspaceName];
+            if (!workspace) {
+                return;
+            }
 
             if (workspace.location === '.') {
                 // Skip root workspace

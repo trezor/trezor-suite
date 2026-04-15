@@ -33,10 +33,10 @@ const scopes = {
     },
 } as const;
 
-const exitWithErrorMessage = (errorMessage: string) => {
+function exitWithErrorMessage(errorMessage: string): never {
     console.error(errorMessage);
     process.exit(1);
-};
+}
 
 const isValidScope = (scope: string): scope is keyof typeof scopes =>
     Object.keys(scopes).includes(scope);
@@ -55,7 +55,14 @@ const rootDir = path.resolve(currentDir, '..');
         );
     }
 
-    const [packageScope, packageName] = newPackage.split('/');
+    const packageScope = newPackage.split('/')[0];
+    const packageName = newPackage.split('/')[1];
+
+    if (!packageScope || !packageName) {
+        exitWithErrorMessage(
+            chalk.bold.red('Package name must be in the format @scope/package-name'),
+        );
+    }
 
     if (!isValidScope(packageScope)) {
         exitWithErrorMessage(
@@ -67,11 +74,7 @@ const rootDir = path.resolve(currentDir, '..');
         );
     }
 
-    const {
-        path: scopePath,
-        templatePath,
-        templatePackageJson,
-    } = scopes[packageScope as keyof typeof scopes];
+    const { path: scopePath, templatePath, templatePackageJson } = scopes[packageScope];
     const packagePath = path.join(rootDir, scopePath, packageName);
 
     const workspacesNames = Object.keys(getWorkspacesList());
