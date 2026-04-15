@@ -12,7 +12,6 @@ import {
     useDisplayBaseCurrency,
 } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
-import { isViewOnlySymbol } from '@suite-common/wallet-utils';
 import { events } from '@suite-native/analytics';
 import { Box, Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice } from '@suite-native/device';
@@ -37,6 +36,7 @@ import { AccountDetailGraph } from './AccountDetailGraph';
 import { CoinPriceCard } from './CoinPriceCard';
 import { StablecoinYieldTokenOverview } from './StablecoinYieldTokenOverview';
 import { StellarTokenActions } from './StellarTokenActions';
+import { TronResources } from './TronResources';
 
 type TransactionListHeaderProps = {
     accountKey: AccountKey;
@@ -193,7 +193,6 @@ export const TransactionListHeader = memo(
                                     <Button
                                         iconLeft="arrowLineUp"
                                         onPress={handleSend}
-                                        isDisabled={isViewOnlySymbol(account.symbol)}
                                         testID="@account-detail/send-button"
                                     >
                                         <Translation id="transactions.send" />
@@ -211,6 +210,9 @@ export const TransactionListHeader = memo(
                     )}
                     {isStellarAccount && <StellarLimitedHistoryBanner />}
                     {account.networkType === 'solana' && <SolanaLimitedHistoryBanner />}
+                    {account.networkType === 'tron' && !tokenContract && hasAccountTransactions && (
+                        <TronResources accountKey={accountKey} />
+                    )}
                 </VStack>
                 {hasAccountTransactions && (
                     <Box marginTop="sp52" marginHorizontal="sp16">
