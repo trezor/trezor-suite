@@ -49,15 +49,21 @@ const derToAsn1 = (byteArray: Uint8Array): Asn1 => {
     let position = 0;
 
     function getTag() {
-        let tag = byteArray[0] & 0x1f;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const firstByte: number = byteArray[0];
+        let tag = firstByte & 0x1f;
         position += 1;
         if (tag === 0x1f) {
             tag = 0;
-            while (byteArray[position] >= 0x80) {
-                tag = tag * 128 + byteArray[position] - 0x80;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            let posVal: number = byteArray[position];
+            while (posVal >= 0x80) {
+                tag = tag * 128 + posVal - 0x80;
                 position += 1;
+                // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                posVal = byteArray[position];
             }
-            tag = tag * 128 + byteArray[position] - 0x80;
+            tag = tag * 128 + posVal - 0x80;
             position += 1;
         }
 
@@ -66,16 +72,20 @@ const derToAsn1 = (byteArray: Uint8Array): Asn1 => {
 
     function getLength() {
         let length = 0;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const positionByte: number = byteArray[position];
 
-        if (byteArray[position] < 0x80) {
-            length = byteArray[position];
+        if (positionByte < 0x80) {
+            length = positionByte;
             position += 1;
         } else {
-            const numberOfDigits = byteArray[position] & 0x7f;
+            const numberOfDigits = positionByte & 0x7f;
             position += 1;
             length = 0;
             for (let i = 0; i < numberOfDigits; i++) {
-                length = length * 256 + byteArray[position];
+                // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                const digitByte: number = byteArray[position];
+                length = length * 256 + digitByte;
                 position += 1;
             }
         }
@@ -83,11 +93,15 @@ const derToAsn1 = (byteArray: Uint8Array): Asn1 => {
         return length;
     }
 
-    const cls = (byteArray[0] & 0xc0) / 64;
-    const structured = (byteArray[0] & 0x20) === 0x20;
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const byte0: number = byteArray[0];
+    const cls = (byte0 & 0xc0) / 64;
+    const structured = (byte0 & 0x20) === 0x20;
     const tag = getTag();
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const positionByteCheck: number = byteArray[position];
 
-    if (byteArray[position] === 0x80) {
+    if (positionByteCheck === 0x80) {
         // DER forbids indefinite length encoding. You must use the definite length encoding (that is, with the length specified at the beginning).
         // https://letsencrypt.org/docs/a-warm-welcome-to-asn1-and-der/
         throw new Error('Unsupported length encoding');
@@ -121,10 +135,15 @@ const derToAsn1List = (byteArray: Uint8Array) => {
     return result;
 };
 
-const derBitStringValue = (byteArray: Uint8Array) => ({
-    unusedBits: byteArray[0],
-    bytes: byteArray.subarray(1),
-});
+const derBitStringValue = (byteArray: Uint8Array) => {
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const unusedBits: number = byteArray[0];
+
+    return {
+        unusedBits,
+        bytes: byteArray.subarray(1),
+    };
+};
 
 const parseSignatureValue = (asn1: Asn1) => {
     if (asn1.cls !== 0 || asn1.tag !== 3 || asn1.structured) {
@@ -153,12 +172,16 @@ export const fixSignature = (byteArray: Uint8Array) => {
         const data = chunk.contents.subarray(index);
         // According to the DER-encoding rules, the integers are supposed to be prefixed with a 0x00 byte
         // if **and only if** the most significant byte is >= 0x80
-        const offset = data[0] >= 0x80 ? 1 : 0;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const data0: number = data[0];
+        const offset = data0 >= 0x80 ? 1 : 0;
         // create replacement for chunk
         const chunkLength = data.length + offset;
         const newChunk = new Uint8Array(chunkLength + 2);
         // set first two bytes: original value and new length of the chunk
-        newChunk.set([chunk.raw[0], chunkLength]);
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const chunkRaw0: number = chunk.raw[0];
+        newChunk.set([chunkRaw0, chunkLength]);
         // optionally add 0
         if (offset > 0) {
             newChunk.set([0], 2);
@@ -173,7 +196,9 @@ export const fixSignature = (byteArray: Uint8Array) => {
     // create replacement for sequence object
     const signature = new Uint8Array(newLength + 2);
     // set two first bytes: original value and new length of all chunks
-    signature.set([byteArray[0], newLength]);
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const sigByte0: number = byteArray[0];
+    signature.set([sigByte0, newLength]);
     // fill new sequence with fixed items
     let signatureOffset = 2;
     fixedItems.forEach(item => {
@@ -186,15 +211,21 @@ export const fixSignature = (byteArray: Uint8Array) => {
 };
 
 const derObjectIdentifierValue = (byteArray: Uint8Array) => {
-    let oid = `${Math.floor(byteArray[0] / 40)}.${byteArray[0] % 40}`;
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const firstByte: number = byteArray[0];
+    let oid = `${Math.floor(firstByte / 40)}.${firstByte % 40}`;
     let position = 1;
     while (position < byteArray.length) {
         let nextInteger = 0;
-        while (byteArray[position] >= 0x80) {
-            nextInteger = nextInteger * 0x80 + (byteArray[position] & 0x7f);
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        let posVal: number = byteArray[position];
+        while (posVal >= 0x80) {
+            nextInteger = nextInteger * 0x80 + (posVal & 0x7f);
             position += 1;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            posVal = byteArray[position];
         }
-        nextInteger = nextInteger * 0x80 + byteArray[position];
+        nextInteger = nextInteger * 0x80 + posVal;
         position += 1;
         oid += `.${nextInteger}`;
     }
@@ -216,18 +247,21 @@ const parseAlgorithmIdentifier = (asn1: Asn1) => {
     if (pieces.length > 2) {
         throw new Error('Bad algorithm identifier. Contains too many child objects.');
     }
-    const encodedAlgorithm = pieces[0];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const encodedAlgorithm: Asn1 = pieces[0];
     if (encodedAlgorithm.cls !== 0 || encodedAlgorithm.tag !== 6 || encodedAlgorithm.structured) {
         throw new Error('Bad algorithm identifier. Does not begin with an OBJECT IDENTIFIER.');
     }
     const algorithmOid = derObjectIdentifierValue(encodedAlgorithm.contents);
     const algorithmName = parseOidToAlgorithmName(algorithmOid);
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const secondPiece: Asn1 = pieces[1];
 
     return {
         asn1,
         algorithmOid,
         algorithmName,
-        parameters: pieces.length === 2 ? { asn1: pieces[1] } : null,
+        parameters: pieces.length === 2 ? { asn1: secondPiece } : null,
     };
 };
 
@@ -260,10 +294,15 @@ const parseSubjectPublicKeyInfo = (asn1: Asn1) => {
         throw new Error('Bad SubjectPublicKeyInfo. Wrong number of child objects.');
     }
 
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const algPiece: Asn1 = pieces[0];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const bitsPiece: Asn1 = pieces[1];
+
     return {
         asn1,
-        algorithm: parseAlgorithmIdentifier(pieces[0]),
-        bits: derBitStringValue(pieces[1].contents),
+        algorithm: parseAlgorithmIdentifier(algPiece),
+        bits: derBitStringValue(bitsPiece.contents),
     };
 };
 
@@ -304,7 +343,8 @@ const parseUtcTime = (time: Asn1) => {
  * }
  */
 const parseValidity = (asn1: Asn1) => {
-    const [from, to] = derToAsn1List(asn1.contents);
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const [from, to]: [Asn1, Asn1] = derToAsn1List(asn1.contents);
 
     return {
         from: parseUtcTime(from),
@@ -331,11 +371,13 @@ const parseExtensions = (data: Asn1) => {
         if (value.cls !== 0 || value.tag !== 1 || value.contents.length !== 1 || value.structured) {
             throw new Error("This can't be a boolean. Wrong data type.");
         }
-        if (![0x00, 0xff].includes(value.contents[0])) {
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const boolByte: number = value.contents[0];
+        if (![0x00, 0xff].includes(boolByte)) {
             throw new Error('Invalid boolean value.');
         }
 
-        return value.contents[0] === 0xff;
+        return boolByte === 0xff;
     };
 
     const readBitString = (uint8Array: Uint8Array) => {
@@ -366,30 +408,41 @@ const parseExtensions = (data: Asn1) => {
 
     const extensions: Extension[] = [];
     derToAsn1List(asn1.contents).forEach(item => {
-        const [id, ...pieces] = derToAsn1List(item.contents);
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const [id, ...pieces]: [Asn1, ...Asn1[]] = derToAsn1List(item.contents);
         if (id.cls !== 0 || id.tag !== 6 || id.structured) {
             throw new Error('Bad extension. Does not begin with an OBJECT IDENTIFIER.');
         }
 
         const algorithm = derObjectIdentifierValue(id.contents);
-        const critical = pieces.length > 1 ? readBoolean(pieces[0]) : false;
-        const extnValue = pieces.length > 1 ? pieces[1] : pieces[0];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const piece0: Asn1 = pieces[0];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const piece1: Asn1 = pieces[1];
+        const critical = pieces.length > 1 ? readBoolean(piece0) : false;
+        const extnValue = pieces.length > 1 ? piece1 : piece0;
         if (extnValue.cls !== 0 || extnValue.tag !== 4 || extnValue.structured) {
             throw new Error("This can't be a octet string. Wrong data type.");
         }
 
         if (algorithm === '2.5.29.15') {
             // https://www.alvestrand.no/objectid/2.5.29.15.html
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const keyCertSignBit: string = readBitString(extnValue.contents)[5];
             extensions.push({
                 key: 'keyUsage',
                 critical,
-                keyCertSign: readBitString(extnValue.contents)[5] as '0' | '1',
+                keyCertSign: keyCertSignBit as '0' | '1',
             });
         } else if (algorithm === '2.5.29.19') {
             // https://www.alvestrand.no/objectid/2.5.29.19.html
             const fields = derToAsn1List(derToAsn1(extnValue.contents).contents);
-            const ca = fields.length > 0 && fields[0].tag === 1 ? fields[0] : undefined;
-            const len = fields.length > 0 && fields[0].tag === 2 ? fields[0] : fields[1];
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const field0: Asn1 = fields[0];
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const field1: Asn1 = fields[1];
+            const ca = fields.length > 0 && field0.tag === 1 ? field0 : undefined;
+            const len = fields.length > 0 && field0.tag === 2 ? field0 : field1;
 
             extensions.push({
                 key: 'basicConstraints',
@@ -432,16 +485,33 @@ const parseTBSCertificate = (asn1: Asn1) => {
         throw new Error('Bad TBS Certificate. There are fewer than the seven required children.');
     }
 
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const version: Asn1 = pieces[0];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const serialNumber: Asn1 = pieces[1];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const signaturePiece: Asn1 = pieces[2];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const issuer: Asn1 = pieces[3];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const validityPiece: Asn1 = pieces[4];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const subjectPiece: Asn1 = pieces[5];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const spkiPiece: Asn1 = pieces[6];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const extensionsPiece: Asn1 = pieces[7];
+
     return {
         asn1,
-        version: pieces[0],
-        serialNumber: pieces[1],
-        signature: parseAlgorithmIdentifier(pieces[2]),
-        issuer: pieces[3],
-        validity: parseValidity(pieces[4]),
-        subject: parseName(pieces[5]),
-        subjectPublicKeyInfo: parseSubjectPublicKeyInfo(pieces[6]),
-        extensions: parseExtensions(pieces[7]),
+        version,
+        serialNumber,
+        signature: parseAlgorithmIdentifier(signaturePiece),
+        issuer,
+        validity: parseValidity(validityPiece),
+        subject: parseName(subjectPiece),
+        subjectPublicKeyInfo: parseSubjectPublicKeyInfo(spkiPiece),
+        extensions: parseExtensions(extensionsPiece),
     };
 };
 
@@ -462,10 +532,17 @@ export const parseCertificate = (byteArray: Uint8Array) => {
         throw new Error('Certificate contains more than the three specified children.');
     }
 
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const tbsPiece: Asn1 = pieces[0];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const sigAlgPiece: Asn1 = pieces[1];
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const sigValPiece: Asn1 = pieces[2];
+
     return {
         asn1,
-        tbsCertificate: parseTBSCertificate(pieces[0]),
-        signatureAlgorithm: parseAlgorithmIdentifier(pieces[1]),
-        signatureValue: parseSignatureValue(pieces[2]),
+        tbsCertificate: parseTBSCertificate(tbsPiece),
+        signatureAlgorithm: parseAlgorithmIdentifier(sigAlgPiece),
+        signatureValue: parseSignatureValue(sigValPiece),
     };
 };

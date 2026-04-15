@@ -7,7 +7,9 @@ describe('firmware/x509certificate extensions', () => {
             'hex',
         );
         const cert = parseCertificate(ca);
-        const stateOrProvice = cert.tbsCertificate.subject[3];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const stateOrProvice: (typeof cert.tbsCertificate.subject)[number] =
+            cert.tbsCertificate.subject[3];
         expect(stateOrProvice.algorithmOid).toBe('2.5.4.8');
         expect(stateOrProvice.parameters?.asn1.contents.toString()).toEqual('z'.repeat(128));
     });
