@@ -9,7 +9,9 @@ export const withUtmParams = (url: Url, params: UtmParams): Url => {
 
     const cleanUrl = url.endsWith('/') ? url.slice(0, -1) : url;
 
-    const [baseUrl, fragment] = cleanUrl.split('#');
+    const parts = cleanUrl.split('#');
+    const baseUrl = parts[0] ?? cleanUrl;
+    const fragment = parts[1];
     const anchorFragment = fragment ? `#${fragment}` : '';
 
     const urlObj = new URL(baseUrl.startsWith('http') ? baseUrl : `https://${baseUrl}`);
