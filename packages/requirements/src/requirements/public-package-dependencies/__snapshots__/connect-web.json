@@ -133,7 +133,6 @@
         "typescript",
         "typescript-eslint",
         "usb",
-        "uuid",
         "varuint-bitcoin",
         "viem",
         "webpack",
