@@ -4,11 +4,10 @@ import type { thp } from '@trezor/protocol';
 export const ERROR_CODES = {
     Init_NotInitialized: 'TrezorConnect not initialized', // race condition: call on not initialized Core (usually hot-reloading)
     Init_AlreadyInitialized: 'TrezorConnect has been already initialized', // thrown by .init called multiple times
-    Init_IframeBlocked: 'Iframe blocked', // iframe injection blocked (ad-blocker)
-    Init_IframeTimeout: 'Iframe timeout', // iframe didn't load in specified time
     Init_ManifestMissing:
         'Manifest not set. Read more at https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/index.md', // manifest is not set
 
+    Handshake_Error: '', // one of: 'iframe-blocked', 'iframe-timeout', 'popup-blocked', 'handshake-timeout', 'channel-id-missing', 'origin-missing', 'env-not-supported', 'unknown' (see BootstrapError)
     Popup_ConnectionMissing: 'Unable to establish connection with iframe', // thrown by popup
     Desktop_ConnectionMissing: 'Unable to establish connection with Suite', // thrown by suite-desktop
 

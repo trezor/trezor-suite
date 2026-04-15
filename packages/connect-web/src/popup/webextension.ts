@@ -53,7 +53,7 @@ export class WebExtensionPopup extends Popup {
         });
     }
 
-    protected open(): void {
+    protected open(): Promise<void> {
         this.popupWindowPromise = createDeferred<chrome.tabs.Tab>();
         // Prevent unhandled rejection when open fails (e.g. popup blocked).
         // The rejection is surfaced to callers via handleOpenFailure → handshakePromise.
@@ -75,6 +75,8 @@ export class WebExtensionPopup extends Popup {
                 this.logger.error('Channel handshake failed:', error);
             });
         }
+
+        return Promise.resolve();
     }
 
     private openPopupInNewWindow(url: string): void {
