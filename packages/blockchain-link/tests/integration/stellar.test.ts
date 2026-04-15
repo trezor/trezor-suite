@@ -64,9 +64,10 @@ describe('Stellar', () => {
         const result = await blockchain.getAccountInfo({
             descriptor,
         });
-        const expectedBalance = toStroops(
-            accountRawResp.balances[accountRawResp.balances.length - 1].balance,
-        );
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const lastBalance: (typeof accountRawResp.balances)[number] =
+            accountRawResp.balances[accountRawResp.balances.length - 1];
+        const expectedBalance = toStroops(lastBalance.balance);
         const expectedReverse = '20000000';
         const expectedAvailableBalance = expectedBalance.minus(expectedReverse).toString();
         expect(result).toEqual({
@@ -134,7 +135,10 @@ describe('Stellar', () => {
             .includeFailed(true)
             .call();
 
-        const expectedCursor = txRawResp.records[txRawResp.records.length - 1].paging_token;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const lastRecord: (typeof txRawResp.records)[number] =
+            txRawResp.records[txRawResp.records.length - 1];
+        const expectedCursor = lastRecord.paging_token;
         const expectedTxs = txRawResp.records.map(record =>
             utils.transformTransaction(record, descriptor, {}),
         );
@@ -144,9 +148,10 @@ describe('Stellar', () => {
             details: 'txs',
             pageSize,
         });
-        const expectedBalance = toStroops(
-            accountRawResp.balances[accountRawResp.balances.length - 1].balance,
-        );
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const lastBalance2: (typeof accountRawResp.balances)[number] =
+            accountRawResp.balances[accountRawResp.balances.length - 1];
+        const expectedBalance = toStroops(lastBalance2.balance);
         const expectedReverse = '20000000';
         const expectedAvailableBalance = expectedBalance.minus(expectedReverse).toString();
         expect(result).toEqual({

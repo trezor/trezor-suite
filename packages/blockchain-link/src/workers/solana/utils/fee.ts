@@ -134,9 +134,10 @@ export const getPriorityFee = async (
     // Local fees from API
     const recentFees = await api.getRecentPrioritizationFees(Array.from(affectedAccounts)).send();
 
-    const networkPriorityFee = recentFees
-        .map(a => a.prioritizationFee)
-        .sort((a, b) => Number(b - a))[Math.floor(recentFees.length / 4)]; // 25th percentile because many 0 priority fees are expected
+    const sortedFees = recentFees.map(a => a.prioritizationFee).sort((a, b) => Number(b - a));
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const networkPriorityFee: (typeof sortedFees)[number] =
+        sortedFees[Math.floor(recentFees.length / 4)]; // 25th percentile because many 0 priority fees are expected
 
     const computeUnitPrice =
         networkPriorityFee > DEFAULT_COMPUTE_UNIT_PRICE_MICROLAMPORTS

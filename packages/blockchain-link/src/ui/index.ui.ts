@@ -275,9 +275,13 @@ const prepareResponse = (parent: HTMLElement, response: any, isError = false) =>
     const otherResponses = parent.getElementsByClassName('response');
     if (otherResponses.length > 0) {
         if (otherResponses.length >= 3) {
-            parent.removeChild(otherResponses[2]);
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const third: Element = otherResponses[2];
+            parent.removeChild(third);
         }
-        parent.insertBefore(div, otherResponses[0]);
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const first: Element = otherResponses[0];
+        parent.insertBefore(div, first);
     } else {
         parent.appendChild(div);
     }
