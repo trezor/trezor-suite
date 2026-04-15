@@ -2651,6 +2651,7 @@ export const messages = {
             validation: {
                 amountIsZero: 'Amount must be greater than 0.',
                 amountBelowMinimum: 'Amount must be at least {amount} {symbol}.',
+                amountExceedsMax: 'The amount exceeds the maximum allowed value of {maxAmount}.',
                 insufficientBalance: "You don't have enough balance to stake this amount.",
                 feeBufferReserve: 'Not enough funds left after we reserve for withdrawal fees.',
                 tooManyDecimals: 'Too many decimals.',
@@ -2659,6 +2660,7 @@ export const messages = {
         unstakeFormScreen: {
             validation: {
                 amountIsZero: 'Amount must be greater than 0.',
+                amountExceedsMax: 'The amount exceeds the maximum allowed value of {maxAmount}.',
                 insufficientBalance: "You don't have enough staked balance to unstake this amount.",
                 tooManyDecimals: 'Too many decimals.',
             },

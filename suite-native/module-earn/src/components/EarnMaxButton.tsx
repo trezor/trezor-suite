@@ -68,7 +68,16 @@ export const EarnMaxButton = ({
         const availableAmount = formatNetworkAmount(account!.availableBalance, symbol);
         const buffer = limits?.MIN_BALANCE_FOR_FEE_BUFFER ?? 0;
 
-        return BigNumber.max(new BigNumber(availableAmount).minus(buffer), 0).toFixed();
+        const balanceMinusBuffer = BigNumber.max(new BigNumber(availableAmount).minus(buffer), 0);
+
+        if (
+            limits?.MAX_AMOUNT_FOR_STAKING &&
+            balanceMinusBuffer.gt(limits.MAX_AMOUNT_FOR_STAKING)
+        ) {
+            return limits.MAX_AMOUNT_FOR_STAKING.toFixed();
+        }
+
+        return balanceMinusBuffer.toFixed();
     };
 
     const setMaxAmount = () => {
