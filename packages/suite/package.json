@@ -97,6 +97,7 @@
         "@suite/trading": "workspace:*",
         "@suite/tx-simulation": "workspace:^",
         "@tanstack/react-query": "5.90.21",
+        "@tanstack/react-query-devtools": "5.91.3",
         "@testing-library/jest-dom": "6.9.1",
         "@trezor/address-validator": "workspace:*",
         "@trezor/analytics-uploader": "workspace:*",

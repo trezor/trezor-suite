@@ -11247,8 +11247,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/react-query@workspace:suite-common/react-query"
   dependencies:
+    "@suite-common/suite-utils": "workspace:*"
     "@tanstack/react-query": "npm:5.90.21"
-    "@tanstack/react-query-devtools": "npm:5.91.3"
     react: "npm:19.2.4"
   languageName: unknown
   linkType: soft
@@ -16333,6 +16333,7 @@ __metadata:
     "@suite/trading": "workspace:*"
     "@suite/tx-simulation": "workspace:^"
     "@tanstack/react-query": "npm:5.90.21"
+    "@tanstack/react-query-devtools": "npm:5.91.3"
     "@testing-library/jest-dom": "npm:6.9.1"
     "@testing-library/react": "npm:^16.3.2"
     "@testing-library/user-event": "npm:^14.6.1"

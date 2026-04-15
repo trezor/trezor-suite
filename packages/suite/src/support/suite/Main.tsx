@@ -1,7 +1,6 @@
 import { HelmetProvider } from 'react-helmet-async';
 
 import { FormatterProvider } from '@suite-common/formatters';
-import { ReactQueryProvider } from '@suite-common/react-query';
 import { SelectCacheProvider } from '@trezor/components';
 
 import { useFormattersConfig } from 'src/hooks/suite';
@@ -14,6 +13,7 @@ import Protocol from 'src/support/suite/Protocol';
 import Resize from 'src/support/suite/Resize';
 import { ResponsiveContextProvider } from 'src/support/suite/ResponsiveContext';
 
+import { DesktopReactQueryProvider } from './DesktopReactQueryProvider';
 import { RouterHandler } from './RouterHandler';
 import { useConnectPopupModals } from './useConnectPopupModals';
 
@@ -35,7 +35,7 @@ export const Main = ({
             <ConnectedThemeProvider>
                 <ResponsiveContextProvider>
                     <ErrorBoundary>
-                        <ReactQueryProvider>
+                        <DesktopReactQueryProvider>
                             <Autodetect />
                             <Resize />
                             <Protocol />
@@ -48,7 +48,7 @@ export const Main = ({
                                     </FormatterProvider>
                                 </SelectCacheProvider>
                             </ConnectedIntlProvider>
-                        </ReactQueryProvider>
+                        </DesktopReactQueryProvider>
                     </ErrorBoundary>
                 </ResponsiveContextProvider>
             </ConnectedThemeProvider>

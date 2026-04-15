@@ -127,12 +127,15 @@ const config: webpack.Configuration = {
                 use: ['babel-loader'],
             },
             {
-                test: /\.ts$/,
+                test: /\.tsx?$/,
                 exclude: /node_modules/,
                 use: {
                     loader: 'babel-loader',
                     options: {
-                        presets: ['@babel/preset-typescript'],
+                        presets: [
+                            '@babel/preset-typescript',
+                            ['@babel/preset-react', { runtime: 'automatic' }],
+                        ],
                     },
                 },
             },
@@ -145,7 +148,7 @@ const config: webpack.Configuration = {
     resolve: {
         modules: ['node_modules'],
         mainFields: ['module', 'main'],
-        extensions: ['.ts', '.js'],
+        extensions: ['.ts', '.tsx', '.js'],
         alias: {
             '@emurgo/cardano-serialization-lib-nodejs': '@emurgo/cardano-serialization-lib-browser',
             '@trezor/connect$': '@trezor/connect/src/index', // alternative for "module": "src/index" in connect's package.json

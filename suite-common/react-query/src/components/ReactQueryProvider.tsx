@@ -1,26 +1,28 @@
-import { type PropsWithChildren, Suspense, lazy, useMemo } from 'react';
+import { type PropsWithChildren, type ReactNode, useMemo } from 'react';
 
 import { MutationCache, QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-import { isDevEnv } from '../config';
-
-const Devtools = lazy(async () => {
-    const { ReactQueryDevtools } = await import('@tanstack/react-query-devtools');
-
-    return { default: ReactQueryDevtools };
-});
+import { isDevEnv } from '@suite-common/suite-utils';
 
 /**
  * Fail fast during development, retry in production
  */
 const MAX_RETRY_COUNT = isDevEnv ? 0 : 3;
 
-const DEV_TOOLS = isDevEnv && process.env.TANSTACK_REACT_QUERY_DEV_TOOLS === 'true';
+type ReactQueryProviderProps = PropsWithChildren<{
+    refetchOnWindowFocus?: boolean;
+    refetchOnMount?: boolean;
+    refetchOnReconnect?: boolean;
+    devtools?: ReactNode;
+}>;
 
-/**
- * React Query provider for web (desktop) (@trezor/suite)
- */
-export const ReactQueryProvider = ({ children }: PropsWithChildren) => {
+export const ReactQueryProvider = ({
+    children,
+    refetchOnWindowFocus = false,
+    refetchOnMount = false,
+    refetchOnReconnect = false,
+    devtools,
+}: ReactQueryProviderProps) => {
     const queryClient = useMemo(
         () =>
             new QueryClient({
@@ -40,23 +42,19 @@ export const ReactQueryProvider = ({ children }: PropsWithChildren) => {
                     },
                     queries: {
                         retry: failureCount => failureCount < MAX_RETRY_COUNT,
-                        refetchOnWindowFocus: true,
-                        refetchOnMount: true,
-                        refetchOnReconnect: true,
+                        refetchOnWindowFocus,
+                        refetchOnMount,
+                        refetchOnReconnect,
                     },
                 },
             }),
-        [],
+        [refetchOnWindowFocus, refetchOnMount, refetchOnReconnect],
     );
 
     return (
         <QueryClientProvider client={queryClient}>
             {children}
-            {DEV_TOOLS && (
-                <Suspense fallback={null}>
-                    <Devtools />
-                </Suspense>
-            )}
+            {devtools}
         </QueryClientProvider>
     );
 };

@@ -10,7 +10,7 @@ import * as Sentry from '@sentry/react-native';
 import * as SplashScreen from 'expo-splash-screen';
 
 import { FormatterProvider } from '@suite-common/formatters';
-import { ReactNativeQueryProvider } from '@suite-common/react-query';
+import { ReactQueryProvider } from '@suite-common/react-query';
 import { applicationInit } from '@suite-native/app-init';
 import { useIsBiometricsOverlayVisible } from '@suite-native/biometrics';
 import { configureNetInfo } from '@suite-native/connection-status';
@@ -94,7 +94,7 @@ const AppComponent = () => {
 const PureApp = () => (
     <GestureHandlerRootView style={{ flex: 1 }}>
         <StoreProvider>
-            <ReactNativeQueryProvider>
+            <ReactQueryProvider>
                 <IntlProvider>
                     <KeyboardProvider>
                         <SafeAreaProvider>
@@ -106,7 +106,7 @@ const PureApp = () => (
                         </SafeAreaProvider>
                     </KeyboardProvider>
                 </IntlProvider>
-            </ReactNativeQueryProvider>
+            </ReactQueryProvider>
         </StoreProvider>
     </GestureHandlerRootView>
 );
