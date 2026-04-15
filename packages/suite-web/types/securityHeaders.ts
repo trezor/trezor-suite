@@ -19,6 +19,7 @@ export type SecurityHeaders = {
     'upgrade-insecure-requests': '1';
     'x-content-type-options': 'nosniff';
     'x-frame-options': 'SAMEORIGIN' | 'DENY';
+    'permissions-policy': string;
     'referrer-policy':
         | 'strict-origin-when-cross-origin'
         | 'no-referrer'
