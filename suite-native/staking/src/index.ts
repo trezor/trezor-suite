@@ -10,6 +10,7 @@ export { STAKE_CALLDATA } from './stakeFormNativeUtils';
 export { buildUnstakeCalldata } from './unstakeFormNativeUtils';
 export { CLAIM_CALLDATA } from './claimFormNativeUtils';
 export { signEthUnstakeTransactionNativeThunk } from './unstakeEthFormNativeThunk';
+export { simulateUnstakeNative } from './unstakeFormNativeUtils';
 export { signEthClaimTransactionNativeThunk } from './claimEthFormNativeThunks';
 export type * from './types';
 export * from './hooks/useSelector';

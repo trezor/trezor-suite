@@ -17,6 +17,9 @@
             "path": "../../suite-common/message-system"
         },
         {
+            "path": "../../suite-common/react-query"
+        },
+        {
             "path": "../../suite-common/redux-utils"
         },
         { "path": "../../suite-common/staking" },
