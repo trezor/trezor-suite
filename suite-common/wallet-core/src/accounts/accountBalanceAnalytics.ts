@@ -6,7 +6,7 @@ import { type Analytics } from '@trezor/analytics-uploader';
 
 import { selectAccounts } from './accountsSelectors';
 
-const DEBOUNCE_MS = 10 * 60 * 1000; // 10 minutes
+const DEBOUNCE_MS = 5 * 60 * 1000; // 5 minutes
 
 const countNonZeroBalanceAccounts = (accounts: Account[]) =>
     accounts.filter(a => Number(a.balance) > 0).length;

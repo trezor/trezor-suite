@@ -17,6 +17,7 @@ import {
 } from '@suite-common/wallet-utils';
 import TrezorConnect, { type AccountInfo, type TokenInfo } from '@trezor/connect';
 
+import { reportWalletBalanceDebounced } from './accountBalanceAnalytics';
 import { accountsActions } from './accountsActions';
 import { ACCOUNTS_MODULE_PREFIX } from './accountsConstants';
 import { selectAccountByKey } from './accountsSelectors';
@@ -72,7 +73,7 @@ const fetchAccountTokens = async (account: Account, payloadTokens: AccountInfo['
 // as we usually want to update all accounts for a single coin at once
 export const fetchAndUpdateAccountThunk = createThunk(
     `${ACCOUNTS_MODULE_PREFIX}/fetchAndUpdateAccountThunk`,
-    async ({ accountKey }: { accountKey: AccountKey }, { dispatch, getState }) => {
+    async ({ accountKey }: { accountKey: AccountKey }, { dispatch, getState, extra }) => {
         const account = selectAccountByKey(getState(), accountKey);
 
         if (!account || account.failed || account.accountType === 'placeholder') return;
@@ -185,6 +186,11 @@ export const fetchAndUpdateAccountThunk = createThunk(
             } else {
                 dispatch(accountsActions.updateAccountRefreshTimestamp(account));
             }
+
+            reportWalletBalanceDebounced({
+                getState,
+                analytics: extra.services.analytics,
+            });
         }
     },
 );
