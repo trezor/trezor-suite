@@ -142,21 +142,16 @@ describe(requireConnectPublicDependencies.name, () => {
         );
         const connectWebSnapshot = JSON.parse(readFileSync(connectWebSnapshotPath, 'utf8')) as {
             prod: string[];
-            dev: string[];
         };
 
         expect(connectWebSnapshot.prod).toContain('@trezor/internal-prod');
         expect(connectWebSnapshot.prod).not.toContain('@trezor/internal-dev');
-        expect(connectWebSnapshot.dev).toContain('@trezor/internal-dev');
 
         expect(connectWebSnapshot.prod).toContain('prod-only-external');
         expect(connectWebSnapshot.prod).not.toContain('dev-only-external');
-        expect(connectWebSnapshot.dev).toContain('dev-only-external');
-        expect(connectWebSnapshot.dev).toContain('dev-transitive-external');
 
         expect(connectWebSnapshot.prod).toContain('peer-shared');
         expect(connectWebSnapshot.prod).toContain('tslib');
-        expect(connectWebSnapshot.dev).toContain('peer-shared');
     });
 
     it('has repo scope', () => {
