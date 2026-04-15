@@ -879,7 +879,7 @@ export const messages = {
                 continueButton: 'I’ve removed it',
             },
             finish: {
-                title: 'Finish forgetting this Trezor',
+                title: 'Finish removing this Trezor',
                 subtitle: 'Disconnect your Trezor device from the phone.',
             },
             successToast: 'Device forgotten',
@@ -1139,13 +1139,13 @@ export const messages = {
                         'Keeps your data up to date on all your devices. Your data stays local and syncs only with devices you approve.',
                     relayUrl: {
                         card: {
-                            title: 'Relay server',
-                            subtitle: 'Default or custom relay server',
+                            title: 'Server',
+                            subtitle: 'Default or custom server',
                         },
                         screen: {
-                            title: 'Relay server',
+                            title: 'Server',
                             subtitle:
-                                'Choose between the default Trezor relay server or set up a custom one.',
+                                'Choose between the default Trezor server or set up a custom one.',
                         },
                         serverType: {
                             label: 'Server type',
@@ -1153,11 +1153,11 @@ export const messages = {
                             custom: 'Custom',
                         },
                         customUrlInput: {
-                            label: 'Custom relay URL',
+                            label: 'Custom server URL',
                             required: 'This field is required.',
                             invalidUrl: 'Please enter a valid URL.',
                         },
-                        saved: 'Relay server settings saved.',
+                        saved: 'Server settings saved.',
                     },
                 },
                 advanced: {
@@ -1531,7 +1531,7 @@ export const messages = {
                     unableToConnect: {
                         clearnet:
                             'Unable to connect to server. Check for typos and server disruptions.',
-                        tor: 'Unable to connect to server. Check for typos and ensure Orbot is running on your device.',
+                        tor: "Tor isn't supported. Use a clearnet address instead",
                     },
                 },
                 closeAction: {
@@ -1585,9 +1585,9 @@ export const messages = {
             title: 'Experimental features',
             subtitle: 'For experienced users only. Use at your own risk.',
             tronViewOnly: {
-                title: 'Tron (Beta)',
+                title: 'Tron View-Only (Beta)',
                 description:
-                    'Enable the Tron Network with the latest firmware to check your balance, send and receive TRX and tokens, view charts and transaction history, and use WalletConnect. Full support, including freezing and voting, is coming soon.',
+                    'Enable the Tron network. The latest firmware is required. You can receive funds, check your balance, view tokens, charts, and transaction history (may contain bugs). Full support coming soon (or available via third-party wallets).',
             },
             testnets: {
                 title: 'Testnet coins & features',
@@ -2719,6 +2719,7 @@ export const messages = {
             },
             adaInfo: 'Your ADA stays fully accessible while earning rewards.',
             unstakeButton: 'Unstake',
+            subtitle: 'Staking can be currently managed only in Trezor Suite for desktop.',
         },
         howStakeWorksScreen: {
             title: 'How {displaySymbol} staking works?',
@@ -2753,7 +2754,7 @@ export const messages = {
                 },
                 third: {
                     title: 'Receive weekly rewards',
-                    description: '~{apy}% yearly',
+                    description: '{apy}% yearly',
                 },
             },
             unstakeTimelineTitle: 'Unstake',
@@ -2796,7 +2797,7 @@ export const messages = {
         },
         notAvailable: 'Not available',
         apyNotAvailable: 'APY not available',
-        apyPercentage: '~{apy}% APY',
+        apyPercentage: '{apy}% APY',
         notAvailableShort: 'N/A',
         stakePendingCard: {
             totalStakePending: 'Total stake pending',
