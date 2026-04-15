@@ -16,7 +16,7 @@ import {
 import { type ExchangeFormType } from '@suite-native/trading-types';
 
 import { useExchangeForm } from '../../../hooks/exchange/useExchangeForm';
-import { tradingExchangeFormToTradingExchangeFormProps } from '../quotesUtils';
+import { hasPreapprovedLimit, tradingExchangeFormToTradingExchangeFormProps } from '../quotesUtils';
 
 describe('quotesUtils', () => {
     let form: ExchangeFormType;
@@ -113,6 +113,21 @@ describe('quotesUtils', () => {
                 },
                 outputs: [{ amount: '1' }],
             } satisfies MinimalExchangeFormProps);
+        });
+    });
+
+    describe('hasPreapprovedLimit', () => {
+        it.each([
+            ['quote is undefined', undefined],
+            ['quote.preapprovedStringAmount is undefined', {}],
+            ['quote.preapprovedStringAmount is empty string', { preapprovedStringAmount: '' }],
+            ['quote.preapprovedStringAmount is "0"', { preapprovedStringAmount: '0' }],
+        ])('should be false when %s', (_, quote) => {
+            expect(hasPreapprovedLimit(quote)).toBe(false);
+        });
+
+        it('should be true when preapprovedStringAmount is 11', () => {
+            expect(hasPreapprovedLimit({ preapprovedStringAmount: '11' })).toBe(true);
         });
     });
 });

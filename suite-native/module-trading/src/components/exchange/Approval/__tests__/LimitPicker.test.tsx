@@ -41,10 +41,12 @@ describe('LimitPicker', () => {
             }),
         };
 
-        preloadedState!.wallet!.trading.exchange.preselectedQuote = mercuryoFixedWorstQuote;
+        const quote = { ...mercuryoFixedWorstQuote, approvalStringAmount: '100' };
+
+        preloadedState!.wallet!.trading.exchange.preselectedQuote = quote;
 
         store = initStore(preloadedState).store;
-        store.dispatch(tradingExchangeActions.saveSelectedQuote(mercuryoFixedWorstQuote));
+        store.dispatch(tradingExchangeActions.saveSelectedQuote(quote));
     });
 
     it('should render limit by default', () => {
@@ -107,6 +109,25 @@ describe('LimitPicker', () => {
         expect(selectTradingExchangeActiveQuote(store.getState())).toEqual(
             expect.objectContaining({ approvalType: 'MINIMAL' }),
         );
+    });
+
+    it('should render New limit label when quote has preapproved limit', () => {
+        const quoteWithPreapproved = {
+            ...mercuryoFixedWorstQuote,
+            approvalStringAmount: '50',
+            preapprovedStringAmount: '25',
+        };
+        store.dispatch(tradingExchangeActions.saveSelectedQuote(quoteWithPreapproved));
+
+        const { getByTestId } = renderLimitPicker();
+
+        const picker = getByTestId('ExchangeApproval/LimitPicker');
+
+        expect(
+            within(picker).getByText(
+                getTranslation('moduleTrading.tradingExchangeApprovalScreen.newLimitLabel'),
+            ),
+        ).toBeOnTheScreen();
     });
 
     it('should render nothing without quote', () => {
