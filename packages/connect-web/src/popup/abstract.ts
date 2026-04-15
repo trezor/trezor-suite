@@ -51,7 +51,7 @@ export abstract class Popup extends EventEmitter {
     }
 
     protected abstract createChannel(origin: string): AbstractMessageChannel<CoreEventMessage>;
-    protected abstract open(): void;
+    protected abstract open(): Promise<void>;
     protected abstract closePopup(): void;
     protected abstract isOpen(): Promise<boolean>;
     protected abstract onReset(focus: boolean): void;
@@ -89,7 +89,7 @@ export abstract class Popup extends EventEmitter {
         this.locked = true;
         this.closedEmitted = false;
 
-        this.open();
+        return this.open();
     }
 
     protected buildPopupUrl(src: string): string {

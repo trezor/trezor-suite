@@ -20,7 +20,7 @@ export class WebPopup extends Popup {
         });
     }
 
-    protected open(): void {
+    protected open(): Promise<void> {
         const url = this.buildPopupUrl(this.popupSrc);
 
         const windowResult = window.open(url, 'modal');
@@ -28,7 +28,7 @@ export class WebPopup extends Popup {
         if (!windowResult) {
             this.handleOpenFailure('Popup window blocked by browser');
 
-            return;
+            return Promise.resolve();
         }
 
         this.popupWindow = windowResult;
@@ -38,6 +38,8 @@ export class WebPopup extends Popup {
         }
 
         this.startCloseMonitoring();
+
+        return Promise.resolve();
     }
 
     protected focusPopup(): void {
