@@ -153,6 +153,7 @@
         },
         { "path": "../../suite/analytics" },
         { "path": "../../suite/backup" },
+        { "path": "../../suite/desktop-update" },
         { "path": "../../suite/device" },
         { "path": "../../suite/experimental" },
         {

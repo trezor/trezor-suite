@@ -2,13 +2,11 @@ import { Translation, type TranslationKey } from '@suite/intl';
 import { SettingsAnchor, goto } from '@suite/router';
 import { Column, Icon, type IconName, type UIIntent } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
+import { QuickActionButton, TooltipRow } from '@trezor/product-components';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectTorState } from 'src/selectors/suite/suiteSelectors';
 import { TorStatus } from 'src/types/suite';
-
-import { QuickActionButton } from './QuickActionButton';
-import { TooltipRow } from './TooltipRow';
 
 const torStatusTranslationMap: Record<TorStatus, TranslationKey> = {
     [TorStatus.Enabled]: 'TR_TOR_ENABLED',

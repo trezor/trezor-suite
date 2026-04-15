@@ -1,0 +1,36 @@
+{
+    "name": "@suite/desktop-update",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "yarn g:jest",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@reduxjs/toolkit": "2.11.2",
+        "@suite-common/device": "workspace:*",
+        "@suite-common/redux-utils": "workspace:*",
+        "@suite-common/suite-constants": "workspace:*",
+        "@suite-common/toast-notifications": "workspace:*",
+        "@suite-common/wallet-core": "workspace:*",
+        "@suite/analytics": "workspace:*",
+        "@suite/intl": "workspace:*",
+        "@suite/router": "workspace:*",
+        "@trezor/components": "workspace:*",
+        "@trezor/device-utils": "workspace:*",
+        "@trezor/env-utils": "workspace:*",
+        "@trezor/product-components": "workspace:*",
+        "@trezor/suite-desktop-api": "workspace:*",
+        "@trezor/utils": "workspace:*",
+        "framer-motion": "^12.33.0",
+        "react": "19.2.4",
+        "react-redux": "9.2.0",
+        "redux": "^5.0.1",
+        "redux-thunk": "^3.1.0"
+    }
+}

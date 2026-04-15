@@ -1,4 +1,5 @@
 import type { BackupState } from '@suite/backup';
+import { desktopUpdateInitialState } from '@suite/desktop-update';
 import { initialState as featureFeedbackInitialState } from '@suite/feature-feedback';
 import { flagsInitialState } from '@suite/flags';
 import { locksInitialState } from '@suite/locks';
@@ -15,7 +16,6 @@ import { initialState } from 'src/actions/device/deviceSlice';
 import { initialSuiteSyncDesktopState } from 'src/actions/suiteSync/suiteSyncSlice';
 import { type OnboardingState } from 'src/reducers/onboarding/onboardingReducer';
 import { type AppState } from 'src/reducers/store';
-import { desktopUpdateInitialState } from 'src/reducers/suite/desktopUpdateReducer';
 import { type ProtocolState } from 'src/reducers/suite/protocolReducer';
 import { suiteInitialState } from 'src/reducers/suite/suiteReducer';
 import type WalletReducers from 'src/reducers/wallet';

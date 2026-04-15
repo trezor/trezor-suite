@@ -1,12 +1,11 @@
 import { type MouseEvent } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { type Variants, motion } from 'framer-motion';
 
 import { Translation, type TranslationKey } from '@suite/intl';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Card, Column, ElevationContext, IconButton, Row, Text } from '@trezor/components';
-
-import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import {
     type UpdateStatus,

@@ -1,25 +1,21 @@
 import { type JSX, useCallback, useEffect } from 'react';
 
 import { AppUpdateEventStatus, asTypedDesktopAnalytics, events } from '@suite/analytics';
+import {
+    UpdateState,
+    availableThunk,
+    desktopUpdateActions,
+    errorThunk,
+    getAppUpdatePayload,
+    notAvailableThunk,
+    readyThunk,
+    selectDesktopUpdate,
+} from '@suite/desktop-update';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { isArrayMember } from '@trezor/utils';
 
-import {
-    allowPrerelease,
-    available,
-    checking,
-    downloading,
-    error,
-    notAvailable,
-    ready,
-    setAutomaticUpdates,
-    setIsUpdateModalVisible,
-    setIsVersionInfoModalVisible,
-} from 'src/actions/suite/desktopUpdateActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { UpdateState, selectDesktopUpdate } from 'src/reducers/suite/desktopUpdateReducer';
 import { useAnalytics } from 'src/support/useAnalytics';
-import { getAppUpdatePayload } from 'src/utils/suite/analytics';
 
 import { Available } from './DesktopUpdater/Available';
 import { Downloading } from './DesktopUpdater/Downloading';
@@ -46,21 +42,25 @@ export const DesktopUpdater = () => {
     const desktopUpdateState = desktopUpdate.state;
 
     useEffect(() => {
-        desktopApi.on('update/allow-prerelease', params => dispatch(allowPrerelease(params)));
+        desktopApi.on('update/allow-prerelease', params =>
+            dispatch(desktopUpdateActions.allowPrerelease(params)),
+        );
         desktopApi.on('update/set-automatic-update-enabled', isEnabled =>
-            dispatch(setAutomaticUpdates({ isEnabled })),
+            dispatch(desktopUpdateActions.setAutomaticUpdates({ isEnabled })),
         );
 
         if (!desktopUpdate.enabled) {
             return;
         }
 
-        desktopApi.on('update/checking', () => dispatch(checking()));
-        desktopApi.on('update/available', params => dispatch(available(params)));
-        desktopApi.on('update/not-available', params => dispatch(notAvailable(params)));
-        desktopApi.on('update/downloaded', params => dispatch(ready(params)));
-        desktopApi.on('update/downloading', params => dispatch(downloading(params)));
-        desktopApi.on('update/error', () => dispatch(error()));
+        desktopApi.on('update/checking', () => dispatch(desktopUpdateActions.checking()));
+        desktopApi.on('update/available', params => dispatch(availableThunk(params)));
+        desktopApi.on('update/not-available', params => dispatch(notAvailableThunk(params)));
+        desktopApi.on('update/downloaded', params => dispatch(readyThunk(params)));
+        desktopApi.on('update/downloading', params =>
+            dispatch(desktopUpdateActions.downloading(params)),
+        );
+        desktopApi.on('update/error', () => dispatch(errorThunk()));
 
         // Initial check for updates
         desktopApi.checkForUpdates({ isManual: false });
@@ -76,7 +76,7 @@ export const DesktopUpdater = () => {
     }, [desktopUpdate.enabled, dispatch]);
 
     const hideWindow = useCallback(() => {
-        dispatch(setIsUpdateModalVisible(false));
+        dispatch(desktopUpdateActions.setIsUpdateModalVisible(false));
 
         const payload = getAppUpdatePayload({
             status: AppUpdateEventStatus.Closed,
@@ -91,7 +91,7 @@ export const DesktopUpdater = () => {
     }, [dispatch, desktopUpdate.allowPrerelease, desktopUpdate.latest, analytics]);
 
     const hideVersionInfoModal = () => {
-        dispatch(setIsVersionInfoModalVisible(false));
+        dispatch(desktopUpdateActions.setIsVersionInfoModalVisible(false));
     };
 
     if (desktopUpdate.isVersionInfoModalVisible) {

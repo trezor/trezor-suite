@@ -1,10 +1,10 @@
+import { openEarlyAccessSetup } from '@suite/desktop-update';
 import { Translation } from '@suite/intl';
 import { SettingsAnchor } from '@suite/router';
 import { Row } from '@trezor/components';
 import { ActionButton, ActionColumn, TextColumn } from '@trezor/product-components';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
-import { openEarlyAccessSetup } from 'src/actions/suite/desktopUpdateActions';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 

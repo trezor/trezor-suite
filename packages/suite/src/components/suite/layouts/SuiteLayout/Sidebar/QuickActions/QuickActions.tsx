@@ -1,3 +1,4 @@
+import { UpdateStatusActionBarIcon } from '@suite/desktop-update';
 import { FeedbackFormManager } from '@suite/feature-feedback';
 import { Box, Column, Divider, ElevationContext, Flex } from '@trezor/components';
 
@@ -5,7 +6,6 @@ import { CustomBackend } from './CustomBackend';
 import { DebugAndExperimental } from './DebugAndExperimental';
 import { HideBalances } from './HideBalances';
 import { Tor } from './Tor';
-import { UpdateStatusActionBarIcon } from './Update/UpdateStatusActionBarIcon';
 
 type QuickActionsProps = {
     isSidebarCollapsed: boolean;

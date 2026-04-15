@@ -78,6 +78,7 @@
         "@suite-common/walletconnect": "workspace:*",
         "@suite/analytics": "workspace:*",
         "@suite/backup": "workspace:*",
+        "@suite/desktop-update": "workspace:*",
         "@suite/device": "workspace:*",
         "@suite/experimental": "workspace:*",
         "@suite/feature-feedback": "workspace:*",

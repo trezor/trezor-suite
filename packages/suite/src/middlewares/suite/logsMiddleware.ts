@@ -1,5 +1,6 @@
 import { type MiddlewareAPI } from 'redux';
 
+import { desktopUpdateActions } from '@suite/desktop-update';
 import { METADATA } from '@suite/metadata';
 import { MODAL_CLOSE, MODAL_OPEN_USER_CONTEXT } from '@suite/modal';
 import { routerLocationChange } from '@suite/router';
@@ -7,7 +8,7 @@ import { suiteSettingsActions } from '@suite/settings';
 import { addLog } from '@suite-common/logger';
 import { redactUserPathFromString } from '@trezor/utils';
 
-import { DESKTOP_UPDATE, PROTOCOL, SUITE } from 'src/actions/suite/constants';
+import { PROTOCOL, SUITE } from 'src/actions/suite/constants';
 import { type Action, type AppState, type Dispatch } from 'src/types/suite';
 import { redactTransactionIdFromAnchor } from 'src/utils/suite/analytics';
 
@@ -24,9 +25,9 @@ const log =
             case METADATA.ENABLE:
             case METADATA.DISABLE:
             case suiteSettingsActions.setOnionLinks.type:
-            case DESKTOP_UPDATE.CHECKING:
-            case DESKTOP_UPDATE.AVAILABLE:
-            case DESKTOP_UPDATE.NOT_AVAILABLE:
+            case desktopUpdateActions.checking.type:
+            case desktopUpdateActions.available.type:
+            case desktopUpdateActions.notAvailable.type:
             case MODAL_CLOSE:
                 api.dispatch(
                     addLog({
@@ -38,7 +39,7 @@ const log =
                     }),
                 );
                 break;
-            case DESKTOP_UPDATE.READY:
+            case desktopUpdateActions.ready.type:
                 api.dispatch(
                     addLog({
                         type: action.type,
@@ -76,8 +77,8 @@ const log =
                     }),
                 );
                 break;
-            case DESKTOP_UPDATE.ALLOW_PRERELEASE:
-            case DESKTOP_UPDATE.SET_AUTOMATIC_UPDATES:
+            case desktopUpdateActions.allowPrerelease.type:
+            case desktopUpdateActions.setAutomaticUpdates.type:
             case SUITE.TOR_STATUS:
             case SUITE.ONLINE_STATUS:
                 api.dispatch(

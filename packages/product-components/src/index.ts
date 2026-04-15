@@ -56,3 +56,5 @@ export {
     EmojiRatingSelector,
     type EmojiRatingSelectorProps,
 } from './components/EmojiRatingSelector/EmojiRatingSelector';
+export { QuickActionButton } from './components/QuickActionButton/QuickActionButton';
+export { TooltipRow } from './components/TooltipRow/TooltipRow';

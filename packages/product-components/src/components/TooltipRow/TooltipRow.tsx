@@ -1,8 +1,8 @@
-import { type ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 import { Column, Icon, type IconName, Row, Text, type UIIntent } from '@trezor/components';
 
-type UpdateRowProps = {
+type TooltipRowProps = {
     children: ReactNode;
     leftItem: ReactNode;
     header: ReactNode;
@@ -18,7 +18,7 @@ export const TooltipRow = ({
     intent,
     iconName,
     onClick,
-}: UpdateRowProps) => (
+}: TooltipRowProps) => (
     <Row gap={12} onClick={onClick} cursor={onClick ? 'pointer' : undefined}>
         {leftItem}
         <Column alignItems="start">

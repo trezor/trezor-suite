@@ -1,3 +1,4 @@
+import { desktopUpdateReducer } from '@suite/desktop-update';
 import { featureFeedbackReducer } from '@suite/feature-feedback';
 import { prepareFlagsReducer } from '@suite/flags';
 import { type TranslationKey } from '@suite/intl';
@@ -16,7 +17,6 @@ import { prepareWalletConnectReducer } from '@suite-common/walletconnect';
 import { deviceSlice } from 'src/actions/device/deviceSlice';
 import { extraDependencies } from 'src/support/extraDependencies';
 
-import desktopUpdate from './desktopUpdateReducer';
 import guide from './guideReducer';
 import protocol from './protocolReducer';
 import suite from './suiteReducer';
@@ -44,7 +44,7 @@ export default {
     window,
     analytics,
     metadata: metadataReducer,
-    desktopUpdate,
+    desktopUpdate: desktopUpdateReducer,
     messageSystem,
     guide,
     protocol,
