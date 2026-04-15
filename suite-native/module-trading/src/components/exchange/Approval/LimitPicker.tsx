@@ -14,6 +14,7 @@ import { TradeInfoRow, useBottomSheetControls } from '@suite-native/trading-atom
 
 import { ExchangeApprovalLimitSheet } from './ExchangeApprovalLimitSheet/ExchangeApprovalLimitSheet';
 import { LimitPickerUnlimitedAlert } from './LimitPickerUnlimitedAlert';
+import { hasPreapprovedLimit } from '../../../utils/exchange/quotesUtils';
 import { TradingCoinAmountFormatter } from '../../general/TradingCoinAmountFormatter';
 
 type LimitPickerProps = {
@@ -40,7 +41,7 @@ export const LimitPicker = ({ onApprovalTypeChange }: LimitPickerProps) => {
         return null;
     }
 
-    const { send, sendStringAmount } = quote;
+    const { send, approvalStringAmount } = quote;
     const { network, contractAddress } = cryptoIdToNetworkAndContractAddress(send);
     const isInfinite = approvalType === 'INFINITE';
 
@@ -50,7 +51,11 @@ export const LimitPicker = ({ onApprovalTypeChange }: LimitPickerProps) => {
                 <VStack>
                     <HStack justifyContent="space-between" alignItems="center">
                         <Text variant="body-sm">
-                            <Translation id="moduleTrading.tradingExchangeApprovalScreen.limitLabel" />
+                            {hasPreapprovedLimit(quote) ? (
+                                <Translation id="moduleTrading.tradingExchangeApprovalScreen.newLimitLabel" />
+                            ) : (
+                                <Translation id="moduleTrading.tradingExchangeApprovalScreen.limitLabel" />
+                            )}
                         </Text>
                         <HStack alignItems="center">
                             {!!network?.symbol && (
@@ -66,13 +71,12 @@ export const LimitPicker = ({ onApprovalTypeChange }: LimitPickerProps) => {
                                 </Text>
                             ) : (
                                 <TradingCoinAmountFormatter
-                                    amount={sendStringAmount}
+                                    amount={approvalStringAmount ?? '0'}
                                     cryptoId={send}
                                     variant="body-sm-strong"
                                     color="contentPrimary"
                                 />
                             )}
-
                             <Icon name="caretDown" size="medium" />
                         </HStack>
                     </HStack>

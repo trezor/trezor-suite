@@ -3063,6 +3063,8 @@ export const messages = {
             for: 'For',
             approvalDetailsTitle: 'Approval details',
             limitLabel: 'Limit',
+            currentLimitLabel: 'Current limit',
+            newLimitLabel: 'New limit',
             unlimitedLabel: 'Unlimited',
             limitInfo:
                 'Skip future approvals and pay less fees. {companyName} will gain full access to your {symbol}.',
