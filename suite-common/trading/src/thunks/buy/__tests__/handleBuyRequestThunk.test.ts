@@ -5,11 +5,7 @@ import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/t
 import { getNetwork } from '@suite-common/wallet-config';
 import * as envUtils from '@trezor/env-utils';
 
-import {
-    ALTERNATIVE_QUOTES,
-    mercuryoApplePayQuote,
-    simplexAlternativeCzkQuote,
-} from '../../../__fixtures__/buyUtils';
+import { ALTERNATIVE_QUOTES } from '../../../__fixtures__/buyUtils';
 import { invityAPI } from '../../../invityAPI';
 import { initialState } from '../../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../../reducers/tradingReducer';
@@ -158,8 +154,8 @@ describe('handleBuyRequestThunk', () => {
         expect(state.isLoading).toBe(false);
         expect(mockTimerReset).toHaveBeenCalledTimes(1);
         expect(quotesResponse).toEqual([
-            expect.objectContaining(mercuryoApplePayQuote),
-            expect.objectContaining(simplexAlternativeCzkQuote),
+            expect.objectContaining(mockQuotes[1]),
+            expect.objectContaining(mockQuotes[6]),
         ]);
     });
 
@@ -260,8 +256,8 @@ describe('handleBuyRequestThunk', () => {
         });
         expect(mockTimerReset).toHaveBeenCalledTimes(1);
         expect(quotesResponse).toEqual([
-            expect.objectContaining(mercuryoApplePayQuote),
-            expect.objectContaining(simplexAlternativeCzkQuote),
+            expect.objectContaining(mockQuotes[1]),
+            expect.objectContaining(mockQuotes[6]),
         ]);
     });
 
@@ -308,8 +304,8 @@ describe('handleBuyRequestThunk', () => {
         });
         expect(mockTimerReset).toHaveBeenCalledTimes(1);
         expect(quotesResponse).toEqual([
-            expect.objectContaining(mercuryoApplePayQuote),
-            expect.objectContaining(simplexAlternativeCzkQuote),
+            expect.objectContaining(mockQuotes[1]),
+            expect.objectContaining(mockQuotes[6]),
         ]);
     });
 
