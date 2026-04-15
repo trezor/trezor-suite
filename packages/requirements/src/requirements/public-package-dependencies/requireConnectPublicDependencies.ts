@@ -23,7 +23,6 @@ type YarnWorkspaceInfo = {
 
 type Snapshot = {
     readonly prod: ReadonlyArray<string>;
-    readonly dev: ReadonlyArray<string>;
 };
 
 const TARGET_PACKAGES = [
@@ -116,9 +115,7 @@ const createSnapshot = (
     workspacePackages: Map<string, WorkspacePackage>,
 ): Snapshot => {
     const prodClosure = new Set<string>([target]);
-    const devClosure = new Set<string>([target]);
     const prodQueue = [target];
-    const devQueue = [target];
 
     while (prodQueue.length > 0) {
         const packageName = prodQueue.shift();
@@ -140,29 +137,7 @@ const createSnapshot = (
         }
     }
 
-    while (devQueue.length > 0) {
-        const packageName = devQueue.shift();
-        if (!packageName) continue;
-
-        const pkg = workspacePackages.get(packageName);
-        if (!pkg) continue;
-
-        const nextWorkspaceDeps = [
-            ...getWorkspaceDeps(pkg.packageJson.dependencies, workspacePackages),
-            ...getWorkspaceDeps(pkg.packageJson.optionalDependencies, workspacePackages),
-            ...getWorkspaceDeps(pkg.packageJson.devDependencies, workspacePackages),
-        ];
-
-        for (const depName of nextWorkspaceDeps) {
-            if (devClosure.has(depName)) continue;
-
-            devClosure.add(depName);
-            devQueue.push(depName);
-        }
-    }
-
     const prodDependencies = new Set<string>(prodClosure);
-    const devDependencies = new Set<string>(devClosure);
 
     for (const packageName of prodClosure) {
         const pkg = workspacePackages.get(packageName);
@@ -173,19 +148,8 @@ const createSnapshot = (
         collectDependencyNames(prodDependencies, pkg.packageJson.peerDependencies);
     }
 
-    for (const packageName of devClosure) {
-        const pkg = workspacePackages.get(packageName);
-        if (!pkg) continue;
-
-        collectDependencyNames(devDependencies, pkg.packageJson.dependencies);
-        collectDependencyNames(devDependencies, pkg.packageJson.optionalDependencies);
-        collectDependencyNames(devDependencies, pkg.packageJson.devDependencies);
-        collectDependencyNames(devDependencies, pkg.packageJson.peerDependencies);
-    }
-
     return {
         prod: [...prodDependencies].sort(),
-        dev: [...devDependencies].sort(),
     };
 };
 
