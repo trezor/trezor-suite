@@ -10,14 +10,15 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "type-check": "yarn g:tsc --build",
         "storybook:generate": "sb-rn-get-stories",
-        "storybook:web": "storybook dev -p 6006",
-        "storybook:web:build": "yarn storybook build -c .storybook -o .build-storybook"
+        "storybook:web": "yarn setup-skia-web && storybook dev -p 6006",
+        "storybook:web:build": "yarn setup-skia-web && yarn storybook build -c .storybook -o .build-storybook"
     },
     "dependencies": {
         "@gorhom/bottom-sheet": "5.2.8",
         "@lottiefiles/dotlottie-react": "^0.17.14",
         "@react-native-community/datetimepicker": "^8.6.0",
         "@react-native-community/slider": "^5.1.2",
+        "@shopify/react-native-skia": "2.5.1",
         "@storybook/addon-ondevice-controls": "^10.2.1",
         "@storybook/react": "^10.3.3",
         "@storybook/react-native": "^10.2.1",
