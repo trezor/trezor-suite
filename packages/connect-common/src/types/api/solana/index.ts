@@ -73,6 +73,7 @@ const SolanaComposeTransactionCommon = {
             accounts: Type.Array(Type.Object({ publicKey: Type.String(), balance: Type.String() })),
         }),
     ),
+    memo: Type.Optional(Type.String()),
     coin: Type.Optional(Type.String()),
     identity: Type.Optional(Type.String()),
 };

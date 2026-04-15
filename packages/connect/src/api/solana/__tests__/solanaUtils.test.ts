@@ -3,6 +3,7 @@ import {
     buildCreateAssociatedTokenAccountInstruction,
     buildTokenTransferInstruction,
     buildTokenTransferTransaction,
+    buildTransferTransaction,
     getLamportsFromSol,
     getMinimumRequiredTokenAccountsForTransfer,
 } from '../solanaUtils';
@@ -78,8 +79,28 @@ describe('solana utils', () => {
                     input.lastValidBlockHeight,
                     input.priorityFees,
                     input.tokenProgramName,
+                    input.memo,
                 );
                 const message = tx.transaction.serializeMessage();
+
+                expect(message).toEqual(expectedOutput);
+            });
+        });
+    });
+
+    describe('buildTransferTransaction', () => {
+        fixtures.buildTransferTransaction.forEach(({ description, input, expectedOutput }) => {
+            it(description, async () => {
+                const tx = await buildTransferTransaction(
+                    input.fromAddress,
+                    input.toAddress,
+                    input.amountInSol,
+                    input.blockhash,
+                    input.lastValidBlockHeight,
+                    input.priorityFees,
+                    input.memo,
+                );
+                const message = tx.serializeMessage();
 
                 expect(message).toEqual(expectedOutput);
             });

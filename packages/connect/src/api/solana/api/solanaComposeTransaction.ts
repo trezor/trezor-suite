@@ -94,6 +94,7 @@ export default class SolanaComposeTransaction extends AbstractMethod<
                       this.params.lastValidBlockHeight,
                       this.params.priorityFees || dummyPriorityFeesForFeeEstimation,
                       this.params.token.program,
+                      this.params.memo,
                   )
                 : undefined;
 
@@ -109,6 +110,7 @@ export default class SolanaComposeTransaction extends AbstractMethod<
                   this.params.blockHash,
                   this.params.lastValidBlockHeight,
                   this.params.priorityFees || dummyPriorityFeesForFeeEstimation,
+                  this.params.memo,
               );
 
         const isCreatingAccount =

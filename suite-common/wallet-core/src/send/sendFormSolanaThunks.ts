@@ -221,6 +221,7 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
                 : undefined,
             blockHash,
             lastValidBlockHeight,
+            memo: formState.destinationTag || undefined,
             coin: account.symbol,
             identity: getAccountIdentity(account),
             priorityFees: {
@@ -369,6 +370,7 @@ export const signSolanaSendFormTransactionThunk = createThunk<
                 : undefined,
             blockHash,
             lastValidBlockHeight,
+            memo: formState.destinationTag || undefined,
             priorityFees: {
                 computeUnitPrice: precomposedTransaction.feePerByte,
                 computeUnitLimit: precomposedTransaction.feeLimit,

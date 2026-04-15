@@ -117,6 +117,7 @@
         "@scure/base": "^1.2.6",
         "@scure/bip39": "^1.5.1",
         "@solana-program/compute-budget": "^0.8.0",
+        "@solana-program/memo": "^0.7.0",
         "@solana-program/system": "^0.7.0",
         "@solana-program/token": "^0.5.1",
         "@solana-program/token-2022": "^0.4.2",
