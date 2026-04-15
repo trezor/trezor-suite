@@ -1585,9 +1585,9 @@ export const messages = {
             title: 'Experimental features',
             subtitle: 'For experienced users only. Use at your own risk.',
             tronViewOnly: {
-                title: 'Tron View-Only (Beta)',
+                title: 'Tron (Beta)',
                 description:
-                    'Enable the Tron network. The latest firmware is required. You can receive funds, check your balance, view tokens, charts, and transaction history (may contain bugs). Full support coming soon (or available via third-party wallets).',
+                    'Enable the Tron Network with the latest firmware to check your balance, send and receive TRX and tokens, view charts and transaction history, and use WalletConnect. Full support, including freezing and voting, is coming soon.',
             },
             testnets: {
                 title: 'Testnet coins & features',
@@ -2038,6 +2038,18 @@ export const messages = {
             description:
                 'We’re unable to add any new coins or accounts to your device when it’s disconnected.',
         },
+        tronResources: {
+            bandwidth: {
+                label: 'Bandwidth',
+                description:
+                    'Used for all transactions like sending TRX. If you lack enough bandwidth, TRX is burned as a fee. Refills automatically over time (up to 24 hours).',
+            },
+            energy: {
+                label: 'Energy',
+                description:
+                    'Used for smart contract actions like sending tokens. If depleted, TRX is burned as a fee. Refills automatically over time (up to 24 hours).',
+            },
+        },
     },
     transactions: {
         title: 'Transactions',
@@ -2383,9 +2395,19 @@ export const messages = {
                 },
             },
         },
+        tron: {
+            accountActivationFee: 'Activation Fee',
+            accountActivationFeeTitle: 'Activation fee',
+            accountActivationFeeDescription:
+                'New TRON accounts require a one-time 1 TRX network fee to activate.',
+        },
         fees: {
             recipient: {
                 singular: 'Recipient',
+            },
+            tron: {
+                energyCount: '{count} energy',
+                bandwidthCount: '{count} bandwidth',
             },
             custom: {
                 addButton: 'Add custom fee',
@@ -3390,6 +3412,7 @@ export const messages = {
                 title: {
                     general: 'Transaction fee',
                     ethereum: 'Maximum fee',
+                    tron: 'Network fee',
                 },
                 body: 'Fees are paid directly to validators for processing your transactions.',
             },
@@ -3439,6 +3462,10 @@ export const messages = {
                 standard: 'Standard fee',
                 custom: 'Custom fee',
             },
+            tron: {
+                feeLimit: 'Fee Limit (SUN)',
+                feeLimitBelowRecommended: 'Fee limit must be at least {minFeeLimit}',
+            },
             confirmButton: 'Confirm fee',
             submitButton: 'Review and sign',
             total: 'Total fee',
@@ -3455,6 +3482,8 @@ export const messages = {
                 networkTestnet: 'Transaction is on testnet network',
                 signingWithLabel: 'Signing with',
                 contractLabel: 'Token address',
+                feeLimitLabel: 'Fee Limit',
+                feeLimitSummaryLabel: 'Summary',
                 summary: {
                     label: 'Total including fee',
                     totalAmount: 'Total amount',

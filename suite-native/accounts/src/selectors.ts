@@ -37,7 +37,6 @@ import {
     getFiatRateKey,
     getFirstFreshAddress,
     isCardanoStakingActive,
-    isViewOnlySymbol,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
 import { doesCoinSupportStaking } from '@suite-native/staking';
@@ -81,8 +80,7 @@ export const selectFilteredDeviceAccountsGroupedByNetworkAccountType = createMem
         ) => isSendFilterEnabled,
     ],
     (accounts, filterValue, isSendFilterEnabled) => {
-        const filteredAccounts = accounts.filter(account => !isViewOnlySymbol(account.symbol));
-        const sortedAccounts = sortAccountsByNetworksAndAccountTypes(filteredAccounts);
+        const sortedAccounts = sortAccountsByNetworksAndAccountTypes(accounts);
         const sendFilteredAccounts = isSendFilterEnabled
             ? filterSendAvailableAccounts(sortedAccounts)
             : sortedAccounts;

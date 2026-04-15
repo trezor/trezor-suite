@@ -27,6 +27,7 @@ const outputLabelTranslationMap = {
     timebounds: 'transactionManagement.review.outputs.timeboundsLabel',
     'signing-with': 'transactionManagement.review.outputs.signingWithLabel',
     network: 'transactionManagement.review.outputs.networkLabel',
+    'fee-limit': 'transactionManagement.review.outputs.feeLimitSummaryLabel',
 } as const satisfies Partial<Record<ReviewOutputType, TxKeyPath>>;
 
 const isTranslationDefined = (

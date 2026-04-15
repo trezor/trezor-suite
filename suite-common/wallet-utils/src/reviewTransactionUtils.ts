@@ -465,6 +465,14 @@ const constructNewFlow = ({
             });
     }
 
+    if (isTron && precomposedTx.token) {
+        const feeLimitValue =
+            'feeLimit' in precomposedForm && precomposedForm.feeLimit
+                ? precomposedForm.feeLimit
+                : (precomposedTx.estimatedFeeLimit ?? precomposedTx.fee);
+        outputs.push({ type: 'fee-limit', value: feeLimitValue });
+    }
+
     if (networkType === 'ripple' && hasDestinationTag && precomposedForm.destinationTag) {
         outputs.unshift({
             type: 'destination-tag',

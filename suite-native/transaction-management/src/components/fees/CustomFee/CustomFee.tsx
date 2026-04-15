@@ -112,9 +112,10 @@ const CustomFeeContentWrapper = ({ accountKey, formDraft, onCustomFeeSet }: Cust
 };
 
 export const CustomFee = ({ accountKey, symbol, formDraft, onCustomFeeSet }: CustomFeeProps) => {
-    // custom fees are not allowed for solana
+    // custom fees are not allowed for solana or tron
     // we return null here so we don't need to mount the hooks there
-    if (getNetworkType(symbol) === 'solana') {
+    const networkType = getNetworkType(symbol);
+    if (networkType === 'solana' || networkType === 'tron') {
         return null;
     }
 

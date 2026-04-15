@@ -141,6 +141,19 @@ const outputSchema = yup.object({
 
                 return value !== accountDescriptor;
             },
+        )
+        .test(
+            'tron-is-sending-to-self',
+            'Can`t send to myself.',
+            (value, { options: { context } }: yup.TestContext<SendFormFormContext>) => {
+                const { symbol, accountDescriptor, isTokenFlow } = context!;
+                if (!symbol || !accountDescriptor) return true;
+
+                if (getNetworkType(symbol) !== 'tron') return true;
+                if (isTokenFlow) return true;
+
+                return value !== accountDescriptor;
+            },
         ),
     amount: yup
         .string()

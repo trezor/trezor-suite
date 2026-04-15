@@ -17,6 +17,7 @@ import {
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { RecipientInputs } from './RecipientInputs';
+import { TronAccountActivationInfo } from './TronAccountActivationInfo';
 import { type SendOutputsFormValues } from '../sendOutputsFormSchema';
 import { CorrectNetworkMessageCard } from './CorrectNetworkMessageCard';
 
@@ -74,6 +75,7 @@ export const SendOutputFields = ({
                     {symbol && shouldShowBanner && (
                         <NetworkReserveBanner symbol={symbol} contractAddress={tokenContract} />
                     )}
+                    <TronAccountActivationInfo accountKey={accountKey} />
                 </VStack>
             </Card>
         </VStack>

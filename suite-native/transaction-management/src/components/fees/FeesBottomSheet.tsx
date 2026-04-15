@@ -6,6 +6,8 @@ import {
     type FeeLevelLabel,
     type FormState,
     type GeneralPrecomposedLevels,
+    type TokenAddress,
+    isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
 import {
     BottomSheetModal,
@@ -21,6 +23,7 @@ import { Translation } from '@suite-native/intl';
 import { CustomFeeTabContent } from './CustomFee/CustomFeeTabContent';
 import { FeeLabelTranslation } from './FeeLabelTranslation';
 import { FeeOptionsList } from './FeeOptionList/FeeOptionsList';
+import { TronFeeLimitContent } from './TronFeeLimitContent';
 import { type FeesFormType, type FeesFormValues } from '../../feesFormSchema';
 import { type CustomFeeParams } from '../../hooks';
 
@@ -33,6 +36,7 @@ type FeesBottomSheetProps = {
     feeLevels: GeneralPrecomposedLevels;
     symbol: NetworkSymbol;
     networkType: NetworkType;
+    tokenContract?: TokenAddress;
     areFeesLoading: boolean;
     isSubmittable: boolean;
     formDraft: FormState | null | undefined;
@@ -63,6 +67,7 @@ export const FeesBottomSheet = ({
     feeLevels,
     symbol,
     networkType,
+    tokenContract,
     areFeesLoading,
     isSubmittable: standardIsSubmittable,
     formDraft,
@@ -71,7 +76,12 @@ export const FeesBottomSheet = ({
     onConfirm,
     closeModal,
 }: FeesBottomSheetProps) => {
-    const showCustomTab = networkType !== 'solana';
+    const isTrc20 = networkType === 'tron' && tokenContract !== undefined;
+    const showCustomTab = networkType !== 'solana' && !isTrc20;
+
+    const estimatedFeeLimit = isFinalPrecomposedTransaction(feeLevels.normal)
+        ? feeLevels.normal.estimatedFeeLimit
+        : undefined;
 
     const [activeTab, setActiveTab] = useState<TabValue>(() =>
         showCustomTab ? feeLevelToTab(form.getValues('feeLevel')) : 'standard',
@@ -81,8 +91,8 @@ export const FeesBottomSheet = ({
     const { getValues } = form;
     const { isDirty } = useFormState({ control: form.control });
 
-    const currentIsSubmittable =
-        activeTab === 'custom' ? customIsSubmittable : standardIsSubmittable;
+    const tabIsSubmittable = activeTab === 'custom' ? customIsSubmittable : standardIsSubmittable;
+    const currentIsSubmittable = isTrc20 ? customIsSubmittable : tabIsSubmittable;
 
     const isConfirmVisible = isDirty && currentIsSubmittable;
 
@@ -90,7 +100,11 @@ export const FeesBottomSheet = ({
         confirmedRef.current = true;
         const values = getValues();
 
-        if (activeTab === 'custom') {
+        if (isTrc20) {
+            onConfirm('custom', {
+                customFeeLimit: values.customFeeLimit,
+            });
+        } else if (activeTab === 'custom') {
             form.setValue('feeLevel', 'custom');
             onConfirm('custom', {
                 customFeePerUnit: values.customFeePerUnit,
@@ -103,7 +117,7 @@ export const FeesBottomSheet = ({
         }
 
         closeModal();
-    }, [activeTab, confirmedRef, form, getValues, onConfirm, closeModal]);
+    }, [isTrc20, activeTab, confirmedRef, form, getValues, onConfirm, closeModal]);
 
     const handleDismiss = useCallback(() => {
         if (confirmedRef.current) {
@@ -120,7 +134,7 @@ export const FeesBottomSheet = ({
     }, [confirmedRef, form, snapshotRef, showCustomTab]);
 
     const confirmButtonTranslationId =
-        activeTab === 'custom'
+        isTrc20 || activeTab === 'custom'
             ? 'transactionManagement.fees.custom.bottomSheet.confirmButton'
             : 'transactionManagement.fees.confirmButton';
 
@@ -129,7 +143,9 @@ export const FeesBottomSheet = ({
             ref={ref}
             onClose={handleDismiss}
             onDismiss={handleDismiss}
-            title={<FeeLabelTranslation networkType={networkType} />}
+            title={
+                <FeeLabelTranslation networkType={networkType} supportsAdjustableFees={isTrc20} />
+            }
             subtitle={<Translation id="transactionManagement.fees.description.body" />}
             isCloseDisplayed
             bottomSheetCustomProps={{
@@ -161,13 +177,20 @@ export const FeesBottomSheet = ({
                         />
                     </Box>
                 )}
-                {activeTab === 'standard' ? (
+                {isTrc20 && (
+                    <TronFeeLimitContent
+                        estimatedFeeLimit={estimatedFeeLimit}
+                        onSubmittableChange={setCustomIsSubmittable}
+                    />
+                )}
+                {!isTrc20 && activeTab === 'standard' && (
                     <FeeOptionsList
                         feeLevels={feeLevels}
                         symbol={symbol}
                         isLoading={areFeesLoading}
                     />
-                ) : (
+                )}
+                {!isTrc20 && activeTab === 'custom' && (
                     <CustomFeeTabContent
                         accountKey={accountKey}
                         symbol={symbol}

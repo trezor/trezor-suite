@@ -8,6 +8,12 @@ import {
 export type NativeSupportedPredefinedFeeLevel = Exclude<FeeLevelLabel, 'custom'>;
 export type FeeLevelsMaxAmount = Record<FeeLevelLabel, string | undefined>;
 
+export type UpdateFeeLimitThunkParams = {
+    accountKey: AccountKey;
+    tokenContract?: TokenAddress;
+    feeLimit: string;
+};
+
 export type UpdateSelectedFeeLevelThunkParams = {
     accountKey: AccountKey;
     tokenContract?: TokenAddress;

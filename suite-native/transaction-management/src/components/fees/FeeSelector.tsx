@@ -1,5 +1,6 @@
 import { useCallback, useRef } from 'react';
 import { Keyboard } from 'react-native';
+import { useDispatch } from 'react-redux';
 
 import {
     type AccountKey,
@@ -11,9 +12,11 @@ import { useBottomSheetModal } from '@suite-native/atoms';
 
 import { FeeSummaryCard } from './FeeSummaryCard';
 import { FeesBottomSheet } from './FeesBottomSheet';
+import { TronFeeSummaryCard } from './TronFeeSummaryCard';
 import { type FeesFormValues } from '../../feesFormSchema';
 import { type CustomFeeParams } from '../../hooks';
 import { useFeesManagement } from '../../hooks/fees/useFeesManagement';
+import { updateFeeLimitThunk } from '../../thunks';
 import { type UpdateSelectedFeeLevelThunkParams } from '../../types';
 
 type FeeSelectorProps = {
@@ -57,11 +60,13 @@ export const FeeSelector = ({
         formDraftKey,
     });
 
+    const dispatch = useDispatch();
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
     const snapshotRef = useRef<FeesFormValues>(undefined);
     const confirmedRef = useRef(false);
 
     const networkType = account?.networkType;
+    const isTrc20 = networkType === 'tron' && !!tokenContract;
 
     const handleOpen = useCallback(() => {
         Keyboard.dismiss();
@@ -76,26 +81,48 @@ export const FeeSelector = ({
         (feeLevel: FeeLevelLabel, customParams?: CustomFeeParams) => {
             if (feeLevel === 'custom') {
                 if (!customParams) return;
-                handleCustomFeeSet(customParams);
+                if (isTrc20 && customParams.customFeeLimit) {
+                    dispatch(
+                        updateFeeLimitThunk({
+                            accountKey,
+                            tokenContract,
+                            feeLimit: customParams.customFeeLimit,
+                        }),
+                    );
+                } else {
+                    handleCustomFeeSet(customParams);
+                }
             } else {
                 handleFeeLevelChange(feeLevel);
             }
         },
-        [handleFeeLevelChange, handleCustomFeeSet],
+        [isTrc20, accountKey, tokenContract, dispatch, handleFeeLevelChange, handleCustomFeeSet],
     );
+
+    const feeLimitSunOverride = isTrc20 ? form.watch('customFeeLimit') : undefined;
 
     if (!symbol || !networkType || !fee) return null;
 
     return (
         <>
-            <FeeSummaryCard
-                fee={fee}
-                symbol={symbol}
-                networkType={networkType}
-                areFeesLoading={areFeesLoading}
-                onPress={handleOpen}
-                testID="@transactionManagement/fee-selector-card"
-            />
+            {networkType === 'tron' ? (
+                <TronFeeSummaryCard
+                    accountKey={accountKey}
+                    onPress={isTrc20 ? handleOpen : undefined}
+                    testID="@transactionManagement/fee-selector-card"
+                    feeLimitSunOverride={feeLimitSunOverride}
+                    supportsAdjustableFees={isTrc20}
+                />
+            ) : (
+                <FeeSummaryCard
+                    fee={fee}
+                    symbol={symbol}
+                    networkType={networkType}
+                    areFeesLoading={areFeesLoading}
+                    onPress={handleOpen}
+                    testID="@transactionManagement/fee-selector-card"
+                />
+            )}
             <FeesBottomSheet
                 ref={bottomSheetRef}
                 form={form}
@@ -103,6 +130,7 @@ export const FeeSelector = ({
                 feeLevels={feeLevels}
                 symbol={symbol}
                 networkType={networkType}
+                tokenContract={tokenContract}
                 areFeesLoading={areFeesLoading}
                 isSubmittable={isSubmittable}
                 formDraft={formDraft}
