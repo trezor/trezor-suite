@@ -71,6 +71,7 @@ const createTrezordNode = (
 describe('http', () => {
     let port: number;
     beforeAll(async () => {
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
         [port] = await getFreePort();
     });
 
@@ -558,7 +559,10 @@ describe('http', () => {
             // ... but api.enumerate is still processing
             expect(enumerateSpy).toHaveBeenCalledTimes(1);
             // wait for api.enumerate result and check if it was resolved with failure
-            const enumerateResult = await enumerateSpy.mock.results[0].value;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const enumerateSpyResult: (typeof enumerateSpy.mock.results)[number] =
+                enumerateSpy.mock.results[0];
+            const enumerateResult = await enumerateSpyResult.value;
             expect(enumerateResult.success).toBe(false);
             expect(enumerateResult.error).toContain('Aborted');
 
@@ -621,7 +625,9 @@ describe('http', () => {
             // ... but api.write is still processing
             expect(writeSpy).toHaveBeenCalledTimes(1);
             // wait for api.write result and check if it was resolved with failure
-            const enumerateResult = await writeSpy.mock.results[0].value;
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const writeSpyResult: (typeof writeSpy.mock.results)[number] = writeSpy.mock.results[0];
+            const enumerateResult = await writeSpyResult.value;
             expect(enumerateResult.success).toBe(false);
             expect(enumerateResult.error).toContain('Aborted');
             // api.read was never called since read was aborted
