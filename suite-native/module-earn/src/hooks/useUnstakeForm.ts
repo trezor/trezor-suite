@@ -31,6 +31,7 @@ export const useUnstakeForm = (accountKey: AccountKey) => {
         validation: unstakeFormValidationSchema,
         mode: 'onTouched',
         context: {
+            symbol: account?.symbol,
             stakedBalance,
             decimals: network?.decimals,
             translate,

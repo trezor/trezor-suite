@@ -35,6 +35,24 @@ export const earnFormValidationSchema = yup.object({
 
             return true;
         })
+        .test('max-amount', 'Amount exceeds maximum.', function (value) {
+            const { symbol, translate } = this.options.context as EarnFormContext;
+
+            if (!value || !symbol) return true;
+
+            const limits = getStakingLimitsByNetworkSymbol(symbol);
+            if (!limits) return true;
+
+            if (new BigNumber(value).gt(limits.MAX_AMOUNT_FOR_STAKING)) {
+                return this.createError({
+                    message: translate('earn.earnFormScreen.validation.amountExceedsMax', {
+                        maxAmount: limits.MAX_AMOUNT_FOR_STAKING.toString(),
+                    }),
+                });
+            }
+
+            return true;
+        })
         .test('is-zero', 'Amount must be greater than 0.', function (value) {
             if (!value) return true;
 
