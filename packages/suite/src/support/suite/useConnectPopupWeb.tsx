@@ -24,6 +24,8 @@ export const useConnectPopupWeb = () => {
     // messages (including those carrying addresses / signatures) will be
     // scoped to that origin.
     const originRef = useRef<string>('*');
+    const initialUrl = useRef<string>(window.location.href.split('?')[1]); // TODO: window.location.search is not working in chrome but its used in the codebase
+    const channelRef = useRef<BroadcastChannel | null>(null);
 
     /**
      * Send a message back to the caller (opener window or same window).
@@ -35,10 +37,11 @@ export const useConnectPopupWeb = () => {
      */
     const postMessageToParent = useCallback((message: ConnectPopupOutgoingMessage) => {
         message.channel = webChannel;
-        if (window.opener) {
-            window.opener.postMessage(message, originRef.current);
+        if (channelRef.current) {
+            channelRef.current.postMessage(message);
         } else {
-            window.postMessage(message, window.location.origin);
+            // TODO: show warning to user
+            console.error('BroadcastChannel not available', initialUrl.current);
         }
     }, []);
 
@@ -60,12 +63,41 @@ export const useConnectPopupWeb = () => {
 
     // Listen for incoming window messages and normalize them.
     useEffect(() => {
+        const urlParams = new URLSearchParams(initialUrl.current);
+        const id = urlParams.get('connect-popup-req');
+        if (!id) {
+            // no id in URL, unable to establish communication channel
+            return;
+        }
+
+        let broadcastChannel: BroadcastChannel | undefined;
+        try {
+            broadcastChannel = new BroadcastChannel(`@trezor/connect-popup/${id}`);
+            channelRef.current = broadcastChannel;
+        } catch (e) {
+            // TODO: show warning to user
+            console.error('BroadcastChannel is not supported in this browser', e);
+
+            return;
+        }
+
+        const handshakeTimeout = setTimeout(() => {
+            // eslint-disable-next-line @typescript-eslint/no-use-before-define
+            channelRef.current?.removeEventListener('message', onMessage);
+            channelRef.current = null;
+            // TODO: show warning to user
+        }, 3000);
+
         const onMessage = (event: MessageEvent) => {
             const { data } = event;
             if (!data?.type) return;
 
             // Remember the actual caller origin.
             originRef.current = event.origin;
+
+            if (data.type === 'channel-handshake-request') {
+                clearTimeout(handshakeTimeout);
+            }
 
             if (
                 data.type === 'channel-handshake-request' ||
@@ -86,10 +118,20 @@ export const useConnectPopupWeb = () => {
             }
         };
 
-        window.addEventListener('message', onMessage);
+        broadcastChannel.addEventListener('message', onMessage);
+
+        // TODO: replace this with broadcastChannel ping-pong
+        const onBeforeUnload = () => {
+            broadcastChannel.postMessage({
+                type: POPUP.CLOSED,
+                channel: webChannel,
+            });
+        };
+        window.addEventListener('beforeunload', onBeforeUnload);
 
         return () => {
-            window.removeEventListener('message', onMessage);
+            broadcastChannel.removeEventListener('message', onMessage);
+            window.removeEventListener('beforeunload', onBeforeUnload);
         };
     }, []);
 };
