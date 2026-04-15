@@ -8,7 +8,13 @@ import {
 } from '../requireUnifiedDependencyVersions';
 
 // Pick any real entry from ALLOWED_DRIFTS so tests never depend on specific hardcoded names.
-const [SOME_ALLOWED_DEP] = ALLOWED_DRIFTS;
+const [SOME_ALLOWED_DEP_RAW] = ALLOWED_DRIFTS;
+
+if (SOME_ALLOWED_DEP_RAW === undefined) {
+    throw new Error('ALLOWED_DRIFTS is empty — tests require at least one entry');
+}
+
+const SOME_ALLOWED_DEP: string = SOME_ALLOWED_DEP_RAW;
 
 const tempDirs: string[] = [];
 

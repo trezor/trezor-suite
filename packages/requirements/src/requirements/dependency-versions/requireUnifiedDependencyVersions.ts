@@ -182,7 +182,13 @@ const pickCanonicalVersion = (occurrences: VersionOccurrence[]): string => {
         return semver.rcompare(stripRangePrefix(a[0]), stripRangePrefix(b[0]), { loose: true });
     });
 
-    return sorted[0][0];
+    const winner = sorted[0];
+
+    if (winner === undefined) {
+        throw new Error('pickCanonicalVersion called with empty occurrences');
+    }
+
+    return winner[0];
 };
 
 /**

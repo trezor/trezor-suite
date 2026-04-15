@@ -32,8 +32,9 @@ describe('runRequirements', () => {
             });
 
             expect(results).toHaveLength(1);
-            expect(results[0].errors).toEqual([]);
-            expect(results[0].target).toBe('repo');
+            const first = results[0];
+            expect(first?.errors).toEqual([]);
+            expect(first?.target).toBe('repo');
         });
 
         it('returns errors from verify', async () => {
@@ -49,8 +50,9 @@ describe('runRequirements', () => {
             });
 
             expect(results).toHaveLength(1);
-            expect(results[0].errors).toEqual(['something is wrong']);
-            expect(results[0].requirement).toBe('failing');
+            const first = results[0];
+            expect(first?.errors).toEqual(['something is wrong']);
+            expect(first?.requirement).toBe('failing');
         });
 
         it('calls fix when mode is fix and fix is defined', async () => {
@@ -67,7 +69,7 @@ describe('runRequirements', () => {
             });
 
             expect(results).toHaveLength(1);
-            expect(results[0].errors).toEqual([]);
+            expect(results[0]?.errors).toEqual([]);
         });
 
         it('falls back to verify when mode is fix but fix is undefined', async () => {
@@ -83,7 +85,7 @@ describe('runRequirements', () => {
             });
 
             expect(results).toHaveLength(1);
-            expect(results[0].errors).toEqual(['still broken']);
+            expect(results[0]?.errors).toEqual(['still broken']);
         });
     });
 
@@ -126,7 +128,7 @@ describe('runRequirements', () => {
 
             // Only alpha should have the error; beta was skipped
             expect(results).toHaveLength(1);
-            expect(results[0].target).toBe('alpha');
+            expect(results[0]?.target).toBe('alpha');
         });
 
         it('collects errors across multiple workspaces', async () => {
@@ -143,8 +145,8 @@ describe('runRequirements', () => {
             });
 
             expect(results).toHaveLength(2);
-            expect(results[0].errors).toEqual(['@trezor/alpha is broken']);
-            expect(results[1].errors).toEqual(['@trezor/beta is broken']);
+            expect(results[0]?.errors).toEqual(['@trezor/alpha is broken']);
+            expect(results[1]?.errors).toEqual(['@trezor/beta is broken']);
         });
 
         it('includes workspace results even with no errors', async () => {
@@ -164,10 +166,12 @@ describe('runRequirements', () => {
             });
 
             expect(results).toHaveLength(2);
-            expect(results[0].target).toBe('alpha');
-            expect(results[0].errors).toEqual(['broken']);
-            expect(results[1].target).toBe('beta');
-            expect(results[1].errors).toEqual([]);
+            const alpha = results[0];
+            const beta = results[1];
+            expect(alpha?.target).toBe('alpha');
+            expect(alpha?.errors).toEqual(['broken']);
+            expect(beta?.target).toBe('beta');
+            expect(beta?.errors).toEqual([]);
         });
     });
 
@@ -190,7 +194,7 @@ describe('runRequirements', () => {
             });
 
             expect(results).toHaveLength(1);
-            expect(results[0].requirement).toBe('req-a');
+            expect(results[0]?.requirement).toBe('req-a');
         });
 
         it('returns empty results when filter matches nothing', async () => {
