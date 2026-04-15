@@ -1,15 +1,18 @@
 import { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 import { isFulfilled, isRejected } from '@reduxjs/toolkit';
 
+import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
+import { events } from '@suite-native/analytics';
 import {
     type RootStackParamList,
     type RootStackRoutes,
     type StackNavigationProps,
 } from '@suite-native/navigation';
+import { useAnalytics } from '@suite-native/services';
 import { signEthClaimTransactionNativeThunk } from '@suite-native/staking';
 
 import { handleEarnReviewError } from '../utils';
@@ -40,6 +43,11 @@ export const useHandleOnClaimTransactionReview = ({
     const { showPushTransactionFailedAlert, showPendingTransactionConflictAlert } =
         useShowPushTransactionFailedDuringReviewAlert('claim');
     const precomposedTransaction = useEarnSelectedPrecomposedTransaction('claim', accountKey);
+    const networkSymbol = useSelector((state: AccountsRootState) =>
+        selectAccountNetworkSymbol(state, accountKey),
+    );
+
+    const analytics = useAnalytics();
 
     const handleOnClaimTransactionReview = useCallback(async () => {
         if (!precomposedTransaction) return;
@@ -49,6 +57,13 @@ export const useHandleOnClaimTransactionReview = ({
         );
 
         if (isFulfilled(response)) {
+            analytics.report({
+                type: events.stakingConfirmEvent.name,
+                payload: {
+                    action: 'claim',
+                    networkSymbol: networkSymbol ?? undefined,
+                },
+            });
             onTransactionSubmitted(response.payload.txid);
 
             return;
@@ -67,8 +82,10 @@ export const useHandleOnClaimTransactionReview = ({
         });
     }, [
         accountKey,
+        analytics,
         dispatch,
         navigation,
+        networkSymbol,
         onTransactionSubmitted,
         precomposedTransaction,
         showDeviceDisconnectedAlert,

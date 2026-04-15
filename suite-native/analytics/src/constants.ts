@@ -121,6 +121,11 @@ export enum EventType {
     SettingsToggleExperimentalFeature = 'settings/experimental-feature',
     // eslint-disable-next-line local-rules/analytics-event-name
     SettingsDiscreetToggle = 'settings/discreet_toggle',
+    StakingClaim = 'staking/claim',
+    StakingConfirm = 'staking/confirm',
+    StakingNavigate = 'staking/navigate',
+    StakingStake = 'staking/stake',
+    StakingUnstake = 'staking/unstake',
     // eslint-disable-next-line local-rules/analytics-event-name
     Switcher = 'switcher',
     TradingBuy = 'trading/buy',
