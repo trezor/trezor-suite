@@ -32,7 +32,7 @@ const trezorLogosRequirePlugin = (): Plugin => ({
     name: 'trezor-logos-require',
     enforce: 'pre',
     transform(code, id) {
-        const cleanId = id.split('?')[0];
+        const cleanId = id.split('?')[0] ?? id;
         if (
             !cleanId.includes(
                 'packages/product-components/src/components/TrezorLogo/trezorLogos.ts',
