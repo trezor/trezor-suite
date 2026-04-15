@@ -58,7 +58,8 @@ function messageToJSON(MessageParam: MessageType<Record<string, unknown>>, field
     const res: { [key: string]: any } = {};
 
     Object.keys(fields).forEach(key => {
-        const field = fields[key];
+        // @ts-expect-error noUncheckedIndexedAccess: field is guaranteed to exist (iterating own keys)
+        const field: Field = fields[key];
         // @ts-expect-error
         const value = message[key];
 

@@ -160,7 +160,8 @@ export const ProtobufManager = () => {
             modules.forEach(m => load(m));
         } else {
             Object.keys(modules).forEach(key => {
-                const def = modules[key];
+                // @ts-expect-error noUncheckedIndexedAccess: def is guaranteed to exist (iterating own keys)
+                const def: AnyDesc = modules[key];
                 if (def.kind && def.kind !== 'file') {
                     if (def.kind === 'message') {
                         messages[key] = def;
