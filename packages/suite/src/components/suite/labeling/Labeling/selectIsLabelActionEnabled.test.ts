@@ -246,4 +246,19 @@ describe(selectIsLabelActionEnabled.name, () => {
 
         expect(result).toBe(true);
     });
+
+    it('allows labeling when Suite Sync feature is available, disabled, and can be initialized', () => {
+        mocked(selectIsLabelingAvailableForEntity).mockReturnValue(false);
+        mocked(selectIsLabelingInitPossible).mockReturnValue(false);
+
+        const result = testLabelActionEnabled({
+            unavailableCapabilities: {},
+            isSuiteSyncFeatureEnabled: false,
+            deviceOverrides: {
+                connected: true,
+            },
+        });
+
+        expect(result).toBe(true);
+    });
 });

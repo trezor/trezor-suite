@@ -8,7 +8,7 @@ import type { SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-storage'
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import type { StaticSessionId, UnavailableCapabilities } from '@trezor/connect';
 
-import { selectSuiteSyncInteraction } from '../suiteSyncSelectors';
+import { selectIsSuiteSyncInitPossible, selectSuiteSyncInteraction } from '../suiteSyncSelectors';
 import type { WithSuiteSyncAndDeviceState } from '../suiteSyncSelectors';
 import { type SuiteSyncState, initialSuiteSyncState } from '../suiteSyncSlice';
 
@@ -128,5 +128,56 @@ describe(selectSuiteSyncInteraction.name, () => {
         const result = selectSuiteSyncInteraction(state, DEVICE_STATIC_SESSION_ID_123);
 
         expect(result).toBeNull();
+    });
+});
+
+describe(selectIsSuiteSyncInitPossible.name, () => {
+    it('returns false when device static session id is null', () => {
+        const state = createMockState();
+
+        const result = selectIsSuiteSyncInitPossible(state, null);
+
+        expect(result).toBe(false);
+    });
+
+    it('returns true for a connected supported device', () => {
+        const state = createMockState({
+            connected: true,
+        });
+
+        const result = selectIsSuiteSyncInitPossible(state, DEVICE_STATIC_SESSION_ID_123);
+
+        expect(result).toBe(true);
+    });
+
+    it('returns false for a disconnected device', () => {
+        const state = createMockState({
+            connected: false,
+        });
+
+        const result = selectIsSuiteSyncInitPossible(state, DEVICE_STATIC_SESSION_ID_123);
+
+        expect(result).toBe(false);
+    });
+
+    it('returns false for an unsupported device', () => {
+        const state = createMockState({
+            unavailableCapabilities: { evolu: 'no-support' },
+        });
+
+        const result = selectIsSuiteSyncInitPossible(state, DEVICE_STATIC_SESSION_ID_123);
+
+        expect(result).toBe(false);
+    });
+
+    it('returns true for a connected device with older firmware', () => {
+        const state = createMockState({
+            unavailableCapabilities: { evolu: 'update-required' },
+            connected: true,
+        });
+
+        const result = selectIsSuiteSyncInitPossible(state, DEVICE_STATIC_SESSION_ID_123);
+
+        expect(result).toBe(true);
     });
 });
