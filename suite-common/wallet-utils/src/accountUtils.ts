@@ -22,7 +22,6 @@ import {
     type GeneralPrecomposedTransactionFinal,
     type PrecomposedTransactionFinal,
     type RatesByKey,
-    type ReceiveInfo,
     type SuccessfulAccount,
     type TokenAddress,
     asBaseCurrencyAmount,
@@ -73,35 +72,6 @@ export const isEvmNetwork = (networkSymbol: NetworkSymbol): boolean =>
 
 const getAccountIndexOffset = (networkType: NetworkType, accountType: AccountType): number =>
     shouldSkipFirstAccountIndex(networkType, accountType) ? 1 : 0;
-
-export const getFirstFreshAddress = (
-    account: Account,
-    receiveAddresses: ReceiveInfo[],
-    pendingAddresses: string[],
-    utxoBasedAccount: boolean,
-) => {
-    const unused = account.addresses
-        ? account.addresses.unused
-        : [
-              {
-                  path: account.path,
-                  address: account.descriptor,
-                  transfers: account.history.total,
-              },
-          ];
-
-    const unrevealed = unused.filter(
-        a =>
-            !receiveAddresses.find(r => r.path === a.path) &&
-            !pendingAddresses.find(p => p === a.address),
-    );
-
-    // const addressLabel = utxoBasedAccount ? 'RECEIVE_ADDRESS_FRESH' : 'RECEIVE_ADDRESS';
-    // NOTE: unrevealed[0] can be undefined (limit exceeded)
-    const firstFreshAddress = utxoBasedAccount ? unrevealed[0] : unused[0];
-
-    return firstFreshAddress;
-};
 
 /** NOTE: input addresses' paths sequence must be uninterrupted and start with 0 */
 export const sortByBIP44AddressIndex = <T extends { path: string }>(

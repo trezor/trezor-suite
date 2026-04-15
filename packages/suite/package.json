@@ -21,6 +21,7 @@
         "@reduxjs/toolkit": "2.11.2",
         "@sentry/core": "10.46.0",
         "@solana/kit": "^2.3.0",
+        "@suite-common/address": "workspace:*",
         "@suite-common/analytics": "workspace:*",
         "@suite-common/analytics-redux": "workspace:*",
         "@suite-common/assets": "workspace:*",

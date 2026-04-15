@@ -10,7 +10,6 @@ import {
     findAccountDevice,
     getAccountIdentifier,
     getBip43Type,
-    getFirstFreshAddress,
     getNetworkAccountFeatures,
     getUtxoFromSignedTransaction,
     getUtxoOutpoint,
@@ -30,19 +29,6 @@ import {
 } from '../amountUtils';
 
 describe('account utils', () => {
-    fixtures.getFirstFreshAddress.forEach(f => {
-        it(`getFirstFreshAddress: ${f.description}`, () => {
-            const { account, receive, pendingAddresses, utxoBasedAccount } = f.params;
-            const freshAddress = getFirstFreshAddress(
-                account as Account,
-                receive,
-                pendingAddresses,
-                utxoBasedAccount,
-            );
-            expect(freshAddress).toMatchObject(f.result);
-        });
-    });
-
     fixtures.getUtxoFromSignedTransaction.forEach(f => {
         it(`getUtxoFromSignedTransaction: ${f.description}`, () => {
             // @ts-expect-error params are partial

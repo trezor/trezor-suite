@@ -1,5 +1,6 @@
+import { getFirstFreshAddress } from '@suite-common/address';
 import { type Account } from '@suite-common/wallet-types';
-import { getFirstFreshAddress, isUtxoBased } from '@suite-common/wallet-utils';
+import { isUtxoBased } from '@suite-common/wallet-utils';
 import { Button } from '@trezor/components';
 
 import { DebugOnlyBadge } from 'src/components/suite/DebugOnlyBadge';

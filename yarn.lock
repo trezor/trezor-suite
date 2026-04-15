@@ -10764,6 +10764,14 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@suite-common/address@workspace:*, @suite-common/address@workspace:suite-common/address":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/address@workspace:suite-common/address"
+  dependencies:
+    "@suite-common/wallet-types": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/analytics-redux@workspace:*, @suite-common/analytics-redux@workspace:suite-common/analytics-redux":
   version: 0.0.0-use.local
   resolution: "@suite-common/analytics-redux@workspace:suite-common/analytics-redux"
@@ -11838,6 +11846,7 @@ __metadata:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@react-navigation/native": "npm:7.1.28"
     "@reduxjs/toolkit": "npm:2.11.2"
+    "@suite-common/address": "workspace:*"
     "@suite-common/device": "workspace:*"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
@@ -16256,6 +16265,7 @@ __metadata:
     "@reduxjs/toolkit": "npm:2.11.2"
     "@sentry/core": "npm:10.46.0"
     "@solana/kit": "npm:^2.3.0"
+    "@suite-common/address": "workspace:*"
     "@suite-common/analytics": "workspace:*"
     "@suite-common/analytics-redux": "workspace:*"
     "@suite-common/assets": "workspace:*"

@@ -2,10 +2,10 @@ import { useMemo } from 'react';
 
 import { Translation, useTranslation } from '@suite/intl';
 import { selectLabelingDataForSelectedAccount } from '@suite/metadata';
+import { getFirstFreshAddress } from '@suite-common/address';
 import { selectIsSuiteSyncEnabled, selectSuiteSyncAddressLabels } from '@suite-common/suite-sync';
 import { getNetwork } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectIsAccountUtxoBased } from '@suite-common/wallet-core';
-import { getFirstFreshAddress } from '@suite-common/wallet-utils';
 import {
     Banner,
     Button,

@@ -1,8 +1,15 @@
 {
     "extends": "../../tsconfig.base.json",
-    "compilerOptions": { "outDir": "libDev" },
+    "compilerOptions": {
+        "outDir": "libDev"
+    },
     "references": [
-        { "path": "../../suite-common/device" },
+        {
+            "path": "../../suite-common/address"
+        },
+        {
+            "path": "../../suite-common/device"
+        },
         {
             "path": "../../suite-common/formatters"
         },
@@ -36,23 +43,53 @@
         {
             "path": "../../suite-common/wallet-utils"
         },
-        { "path": "../alerts" },
-        { "path": "../atoms" },
-        { "path": "../config" },
-        { "path": "../formatters" },
-        { "path": "../forms" },
-        { "path": "../icons" },
-        { "path": "../intl" },
-        { "path": "../labeling" },
-        { "path": "../navigation" },
-        { "path": "../staking" },
-        { "path": "../toasts" },
-        { "path": "../tokens" },
+        {
+            "path": "../alerts"
+        },
+        {
+            "path": "../atoms"
+        },
+        {
+            "path": "../config"
+        },
+        {
+            "path": "../formatters"
+        },
+        {
+            "path": "../forms"
+        },
+        {
+            "path": "../icons"
+        },
+        {
+            "path": "../intl"
+        },
+        {
+            "path": "../labeling"
+        },
+        {
+            "path": "../navigation"
+        },
+        {
+            "path": "../staking"
+        },
+        {
+            "path": "../toasts"
+        },
+        {
+            "path": "../tokens"
+        },
         {
             "path": "../../packages/styles-native"
         },
-        { "path": "../../packages/theme" },
-        { "path": "../../packages/utils" },
-        { "path": "../test-utils" }
+        {
+            "path": "../../packages/theme"
+        },
+        {
+            "path": "../../packages/utils"
+        },
+        {
+            "path": "../test-utils"
+        }
     ]
 }
