@@ -1,5 +1,8 @@
-import type { AccountAddresses, Transaction } from '@trezor/blockchain-link-types';
-import type { Transaction as BlockbookTransaction } from '@trezor/blockchain-link-types/src/blockbook';
+import type {
+    AccountAddresses,
+    BlockbookTransaction,
+    Transaction,
+} from '@trezor/blockchain-link-types';
 import type { DeepPartial } from '@trezor/type-utils';
 
 const token = {

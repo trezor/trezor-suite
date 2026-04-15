@@ -8,15 +8,14 @@ import {
     xrpToDrops,
 } from 'xrpl';
 
+import { CustomError, MESSAGES, RESPONSES } from '@trezor/blockchain-link-types';
 import type {
     AccountInfo,
     AccountInfoParams,
+    MessageTypes,
     Response,
     SubscriptionAccountInfo,
 } from '@trezor/blockchain-link-types';
-import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/src/constants';
-import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
-import type * as MessageTypes from '@trezor/blockchain-link-types/src/messages';
 import * as utils from '@trezor/blockchain-link-utils/src/ripple';
 import { getSuiteVersion } from '@trezor/env-utils';
 import { type TimerId } from '@trezor/type-utils';

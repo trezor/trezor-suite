@@ -90,6 +90,8 @@ export const TradingFormOfferOTC = () => {
         return null;
     }
 
+    const providerName = otcProviders[0]?.name;
+
     return (
         <Banner
             intent="info"
@@ -118,6 +120,7 @@ export const TradingFormOfferOTC = () => {
                                     ? 'TR_TRADING_OTC_LINK_BUY'
                                     : 'TR_TRADING_OTC_LINK_SELL'
                             }
+                            values={{ providerName }}
                         />
                     </Banner.Button>
                 </Column>

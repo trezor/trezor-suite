@@ -1,26 +1,24 @@
-import type {
-    AddressNotification,
-    BlockNotification,
-    FiatRatesNotification,
-    FilterRequestParams,
-    MempoolTransactionNotification,
-    Send,
-} from '@trezor/blockchain-link-types/src/blockbook';
-import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
-import type {
-    GetCurrentFiatRates,
-    GetFiatRatesForTimestamps,
-    GetFiatRatesTickersList,
-} from '@trezor/blockchain-link-types/src/messages';
+import { CustomError } from '@trezor/blockchain-link-types';
 import type {
     AccountBalanceHistoryParams,
     AccountInfoParams,
+    BlockbookAddressNotification as AddressNotification,
+    BlockbookBlockNotification as BlockNotification,
     EstimateFeeParams,
+    BlockbookFiatRatesNotification as FiatRatesNotification,
+    BlockbookFilterRequestParams as FilterRequestParams,
+    BlockbookMempoolTransactionNotification as MempoolTransactionNotification,
+    MessageTypes,
     RpcCallParams,
-} from '@trezor/blockchain-link-types/src/params';
+    BlockbookSend as Send,
+} from '@trezor/blockchain-link-types';
 import { getSuiteVersion } from '@trezor/env-utils';
 
 import { BaseWebsocket } from '../baseWebsocket';
+
+type GetCurrentFiatRates = MessageTypes.GetCurrentFiatRates;
+type GetFiatRatesForTimestamps = MessageTypes.GetFiatRatesForTimestamps;
+type GetFiatRatesTickersList = MessageTypes.GetFiatRatesTickersList;
 
 interface BlockbookEvents {
     block: BlockNotification;

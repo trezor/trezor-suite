@@ -1,6 +1,5 @@
-import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
-import type * as MessageTypes from '@trezor/blockchain-link-types/src/messages';
-import type * as Responses from '@trezor/blockchain-link-types/src/responses';
+import { CustomError } from '@trezor/blockchain-link-types';
+import type { MessageTypes, ResponseTypes as Responses } from '@trezor/blockchain-link-types';
 
 import { mapGetTransactionResponse } from '../mappers/transaction';
 import type { Request } from '../types';

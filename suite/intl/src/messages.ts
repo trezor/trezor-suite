@@ -9333,6 +9333,18 @@ export const messages = defineMessages({
         id: 'TR_EARN_YIELD_SUPPLY',
         defaultMessage: 'Supply',
     },
+    TR_EARN_YIELD_APY_SOURCE_LENDING_INTEREST: {
+        id: 'TR_EARN_YIELD_APY_SOURCE_LENDING_INTEREST',
+        defaultMessage: 'Automatically added and compounded.',
+    },
+    TR_EARN_YIELD_APY_SOURCE_PROTOCOL_INCENTIVE: {
+        id: 'TR_EARN_YIELD_APY_SOURCE_PROTOCOL_INCENTIVE',
+        defaultMessage: 'Manually claim and deposit to compound.',
+    },
+    TR_EARN_YIELD_APY_TOOLTIP_FOOTER: {
+        id: 'TR_EARN_YIELD_APY_TOOLTIP_FOOTER',
+        defaultMessage: 'APY may change over time.',
+    },
     TR_EARN_YIELD_AMOUNT_TO_SUPPLY: {
         id: 'TR_EARN_YIELD_AMOUNT_TO_SUPPLY',
         defaultMessage: 'Amount to supply',
@@ -9376,6 +9388,14 @@ export const messages = defineMessages({
     TR_EARN_YIELD_BACK_TO_OVERVIEW: {
         id: 'TR_EARN_YIELD_BACK_TO_OVERVIEW',
         defaultMessage: 'Back to overview',
+    },
+    TR_EARN_YIELD_SUPPLY_DISABLED: {
+        id: 'TR_EARN_YIELD_SUPPLY_DISABLED',
+        defaultMessage: 'Supply is currently disabled.',
+    },
+    TR_EARN_YIELD_WITHDRAW_DISABLED: {
+        id: 'TR_EARN_YIELD_WITHDRAW_DISABLED',
+        defaultMessage: 'Withdrawal is currently disabled.',
     },
     TR_EARN_STABLECOIN_YIELD_TITLE: {
         id: 'TR_EARN_STABLECOIN_YIELD_TITLE',
@@ -9704,6 +9724,41 @@ export const messages = defineMessages({
         id: 'TR_EARN_SUPPLYING_IN_A_NUTSHELL',
         defaultMessage: 'Supplying in a nutshell',
     },
+    TR_EARN_YIELD_NUTSHELL_AMOUNT_LOCKED: {
+        id: 'TR_EARN_YIELD_NUTSHELL_AMOUNT_LOCKED',
+        defaultMessage:
+            'The supplied amount of {supplySymbol} is locked until you withdraw it. Withdrawal is instant.',
+    },
+    TR_EARN_YIELD_NUTSHELL_COMPOUND_INTEREST: {
+        id: 'TR_EARN_YIELD_NUTSHELL_COMPOUND_INTEREST',
+        defaultMessage: 'We then invest your yield so you benefit from compound interest.',
+    },
+    TR_EARN_YIELD_NUTSHELL_VAULT_TOKENS: {
+        id: 'TR_EARN_YIELD_NUTSHELL_VAULT_TOKENS',
+        defaultMessage:
+            'Deposit {supplySymbol} to receive {vaultSymbol} tokens. These tokens represent your vault position.',
+    },
+    TR_EARN_YIELD_NUTSHELL_PROTOCOL_REWARDS: {
+        id: 'TR_EARN_YIELD_NUTSHELL_PROTOCOL_REWARDS',
+        defaultMessage:
+            'You will earn {rewardsSymbol} tokens as rewards. These must be claimed separately.',
+    },
+    TR_EARN_YIELD_APPROVE_SPENDING_TRANSACTION: {
+        id: 'TR_EARN_YIELD_APPROVE_SPENDING_TRANSACTION',
+        defaultMessage: 'Approve spending transaction',
+    },
+    TR_EARN_SIGN_SUPPLYING_TRANSACTION: {
+        id: 'TR_EARN_SIGN_SUPPLYING_TRANSACTION',
+        defaultMessage: 'Sign supplying transaction',
+    },
+    TR_EARN_YIELD_EARN_REWARDS_EACH_BLOCK: {
+        id: 'TR_EARN_YIELD_EARN_REWARDS_EACH_BLOCK',
+        defaultMessage: 'Earn rewards with each mined block',
+    },
+    TR_EARN_YIELD_RECEIVE_IN_ACCOUNT: {
+        id: 'TR_EARN_YIELD_RECEIVE_IN_ACCOUNT',
+        defaultMessage: 'Receive {supplySymbol} in account',
+    },
     TR_EARN_STAKING_PROCESS: {
         id: 'TR_EARN_STAKING_PROCESS',
         defaultMessage: 'Staking process',
@@ -9725,6 +9780,11 @@ export const messages = defineMessages({
         id: 'TR_EARN_SUPPLY_PROVIDER_NO_LIABILITY',
         defaultMessage:
             "When supplying, the responsibility for your funds' security transitions from your Trezor to {providerName}.",
+    },
+    TR_EARN_SUPPLY_PROVIDER_SMART_CONTRACT_RISK: {
+        id: 'TR_EARN_SUPPLY_PROVIDER_SMART_CONTRACT_RISK',
+        defaultMessage:
+            'Supplying assets involves smart contract risks. {providerName} applies rigorous security measures, but cannot guarantee against all losses.',
     },
     TR_EARN_CONSENT_TO_SUPPLY_WITH_PROVIDER: {
         id: 'TR_EARN_CONSENT_TO_SUPPLY_WITH_PROVIDER',

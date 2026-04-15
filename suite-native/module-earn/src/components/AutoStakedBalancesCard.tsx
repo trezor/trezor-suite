@@ -7,6 +7,8 @@ import { Translation } from '@suite-native/intl';
 import { selectIsCardanoStakedOutsideEverstake, useSelector } from '@suite-native/staking';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
+import { ApyValue } from './ApyValue';
+
 const stakingItemStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
     alignItems: 'center',
@@ -112,7 +114,7 @@ export const AutoStakedBalancesCard = ({
                     </Text>
                     <Text>
                         {!isAdaStakedOutsideEverstake && apy ? (
-                            `${apy}%`
+                            <ApyValue apy={apy} />
                         ) : (
                             <Translation id="earn.notAvailable" />
                         )}

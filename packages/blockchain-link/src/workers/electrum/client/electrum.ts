@@ -1,8 +1,8 @@
 import {
-    type BlockHeader,
+    type ElectrumBlockHeader as BlockHeader,
     type ElectrumAPI,
-    type Version,
-} from '@trezor/blockchain-link-types/src/electrum';
+    type ElectrumTypes,
+} from '@trezor/blockchain-link-types';
 import { type IntervalId } from '@trezor/type-utils';
 import { type Network, networks } from '@trezor/utxo-lib';
 
@@ -11,6 +11,8 @@ import { type JsonRpcClientOptions } from './json-rpc';
 import type { ISocket } from '../sockets/interface';
 
 const KEEP_ALIVE_INTERVAL = 120 * 1000; // 2 minutes
+
+type Version = ElectrumTypes.Version;
 
 type ElectrumClientOptions = JsonRpcClientOptions & {
     client: {

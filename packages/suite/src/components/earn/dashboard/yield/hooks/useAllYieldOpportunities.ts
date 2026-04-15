@@ -36,7 +36,7 @@ const getAllYieldOpportunities = async ({ limit }: { limit: number }) => {
     return allItems;
 };
 
-export const useAllYieldOpportunities = () => {
+export const useAllYieldOpportunities = ({ enabled = true }: { enabled?: boolean } = {}) => {
     const yieldOpportunitiesQuery = useQuery({
         queryKey: desktopQueryKeys.yieldOpportunities({
             limit: YIELD_OPPORTUNITIES_PAGE_SIZE,
@@ -45,6 +45,7 @@ export const useAllYieldOpportunities = () => {
             getAllYieldOpportunities({
                 limit: YIELD_OPPORTUNITIES_PAGE_SIZE,
             }),
+        enabled,
         staleTime: STALE_TIME,
     });
 

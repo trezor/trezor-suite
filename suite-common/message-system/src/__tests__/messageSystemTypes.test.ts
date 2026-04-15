@@ -58,6 +58,24 @@ describe('Message system types', () => {
             );
         });
 
+        describe('getEarnDashboard', () => {
+            it.each([
+                ['staking', 'earn.dashboard.staking'],
+                ['yield', 'earn.dashboard.yield'],
+            ] as const)('getEarnDashboard(%s) → %s', (type, expected) => {
+                expect(Context.getEarnDashboard(type)).toBe(expected);
+            });
+        });
+
+        describe('getEarnYield', () => {
+            it.each([
+                ['supply', 'earn.yield.supply'],
+                ['withdraw', 'earn.yield.withdraw'],
+            ] as const)('getEarnYield(%s) → %s', (type, expected) => {
+                expect(Context.getEarnYield(type)).toBe(expected);
+            });
+        });
+
         describe('getSettings', () => {
             it.each([
                 ['general', 'settings.general'],

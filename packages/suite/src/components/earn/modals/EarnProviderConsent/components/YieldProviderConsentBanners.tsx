@@ -47,6 +47,16 @@ export const YieldProviderConsentBanners = ({
                             />
                         }
                     />
+                    <Banner
+                        icon="warningCircleFilled"
+                        intent="info"
+                        description={
+                            <Translation
+                                id="TR_EARN_SUPPLY_PROVIDER_SMART_CONTRACT_RISK"
+                                values={{ providerName }}
+                            />
+                        }
+                    />
                 </>
             );
         default:

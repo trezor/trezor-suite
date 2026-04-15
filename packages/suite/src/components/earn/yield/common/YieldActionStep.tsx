@@ -1,8 +1,9 @@
 import { Translation } from '@suite/intl';
+import type { YieldFlowType } from '@suite-common/suite-types';
 import { Button, Column } from '@trezor/components';
 
 import { YieldAmountCard } from './YieldAmountCard';
-import type { YieldFlowDisplayToken, YieldFlowType } from './types';
+import type { YieldFlowDisplayToken } from './types';
 
 const actionStepTranslationMap = {
     supply: {

@@ -3,7 +3,7 @@ import { useNavigation } from '@react-navigation/native';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectEthNextRewardPayout } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { Button, Card, HStack, InlineAlertBox, Text, VStack } from '@suite-native/atoms';
+import { Badge, Button, Card, HStack, InlineAlertBox, Text, VStack } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 import {
@@ -96,9 +96,16 @@ export const StakingManagementStakedCard = ({
                 />
             </VStack>
             <VStack spacing="sp4" style={applyStyle(stakedSectionStyle)}>
-                <Text variant="body-md" color="textSubdued">
-                    <Translation id="earn.stakingManagementScreen.totalRewardsLabel" />
-                </Text>
+                <HStack alignItems="center" spacing="sp4">
+                    <Text variant="body-md" color="textSubdued">
+                        <Translation id="earn.stakingManagementScreen.totalRewardsLabel" />
+                    </Text>
+                    <Badge
+                        label={<Translation id="earn.stakingManagementScreen.autoRestakedBadge" />}
+                        variant="greenSubtle"
+                        size="small"
+                    />
+                </HStack>
                 <CryptoAmountFormatter
                     value={rewardsBalance}
                     symbol={networkSymbol}

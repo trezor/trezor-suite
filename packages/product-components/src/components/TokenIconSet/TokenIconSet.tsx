@@ -7,7 +7,8 @@ import { Text } from '@trezor/components';
 import { type SpacingValuesNew, borders } from '@trezor/theme';
 
 import { mapSizeToTypographyStyle } from './utils';
-import { AssetLogo, type AssetLogoSize } from '../AssetLogo/AssetLogo';
+import { AssetLogo } from '../AssetLogo/AssetLogo';
+import { type AssetLogoSize } from '../AssetLogo/AssetLogoWithId';
 
 const MAX_VISIBLE_TOKENS = 3;
 

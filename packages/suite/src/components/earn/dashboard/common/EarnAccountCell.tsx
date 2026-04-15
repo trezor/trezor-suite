@@ -1,8 +1,8 @@
 import { type TokenDto } from '@suite-common/earn-api';
-import { type NetworkSymbol, getCoingeckoId } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { Column, Row } from '@trezor/components';
-import { AssetLogo, CoinLogo } from '@trezor/product-components';
+import { AssetLogo } from '@trezor/product-components';
 
 import { EarnAccountCellDetails } from './EarnAccountCellDetails';
 import { type EarnTokenBalance } from './types';
@@ -25,33 +25,20 @@ export const EarnAccountCell = ({
     subtitle,
 }: EarnAccountCellProps) => {
     const networkSymbol = account?.symbol ?? symbol;
-    const assetLogo =
-        iconToken && networkSymbol
-            ? {
-                  coingeckoId: getCoingeckoId(networkSymbol) ?? iconToken.coinGeckoId,
-                  placeholder: iconToken.symbol || iconToken.name || 'token',
-                  contractAddress: iconToken.address ?? null,
-                  showNetworkIcon: showAssetNetworkIcon,
-              }
-            : undefined;
 
     if (!networkSymbol) return null;
 
     return (
         <Row gap={16} cursor="inherit">
             <Column alignItems="center">
-                {assetLogo?.coingeckoId ? (
-                    <AssetLogo
-                        size={32}
-                        coingeckoId={assetLogo.coingeckoId}
-                        placeholder={assetLogo.placeholder}
-                        symbol={networkSymbol}
-                        contractAddress={assetLogo.contractAddress}
-                        showNetworkIcon={assetLogo.showNetworkIcon}
-                    />
-                ) : (
-                    <CoinLogo size={32} symbol={networkSymbol} type="tokenWithNetwork" />
-                )}
+                <AssetLogo
+                    coingeckoId={iconToken?.coinGeckoId ?? undefined}
+                    placeholder={iconToken?.symbol || iconToken?.name || ''}
+                    symbol={networkSymbol}
+                    contractAddress={iconToken?.address ?? null}
+                    showNetworkIcon={showAssetNetworkIcon}
+                    size={32}
+                />
             </Column>
 
             <Column flex="1" overflow="hidden" gap={2}>

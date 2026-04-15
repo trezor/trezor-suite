@@ -22,6 +22,7 @@ const CaretContainer = styled.div`
     padding: 10px;
     border-radius: 50%;
     transition: background 0.15s;
+    flex-shrink: 0;
 `;
 
 const Wrapper = styled.div<{ $isSidebarCollapsed?: boolean }>`
@@ -105,7 +106,9 @@ export const DeviceSelector = () => {
                     tabIndex={0}
                     data-testid="@menu/switch-device"
                 >
-                    <SidebarDeviceStatus />
+                    <Box flex="1" minWidth="0" overflow="hidden">
+                        <SidebarDeviceStatus />
+                    </Box>
 
                     <ExpandedSidebarOnly>
                         {selectedDevice && selectedDevice.state && (

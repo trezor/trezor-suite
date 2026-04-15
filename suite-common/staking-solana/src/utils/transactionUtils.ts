@@ -56,7 +56,7 @@ import {
     isStake,
     stakeAccountState,
 } from '@trezor/blockchain-link/src/workers/solana/utils/stakingAccounts';
-import { StakeState } from '@trezor/blockchain-link-types/src/solana';
+import { StakeState } from '@trezor/blockchain-link-types';
 import { COMPUTE_BUDGET_PROGRAM_ID } from '@trezor/blockchain-link-utils/src/solana';
 import { serializeError } from '@trezor/utils';
 

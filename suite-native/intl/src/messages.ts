@@ -2455,6 +2455,7 @@ export const messages = {
             yourStake: 'Your stake',
             stakedLabel: 'Staked',
             totalRewardsLabel: 'Total rewards',
+            autoRestakedBadge: 'Auto-restaked',
             nextRewardLabel: 'Next reward in {value, plural, one {# day} other {# days}}',
             unstakeButton: 'Unstake',
             stakeButton: 'Stake',
@@ -2653,7 +2654,7 @@ export const messages = {
                 },
                 third: {
                     title: 'Receive weekly rewards',
-                    description: '{apy}% yearly',
+                    description: '~{apy}% yearly',
                 },
             },
             unstakeTimelineTitle: 'Unstake',
@@ -2696,7 +2697,7 @@ export const messages = {
         },
         notAvailable: 'Not available',
         apyNotAvailable: 'APY not available',
-        apyPercentage: '{apy}% APY',
+        apyPercentage: '~{apy}% APY',
         notAvailableShort: 'N/A',
         stakePendingCard: {
             totalStakePending: 'Total stake pending',

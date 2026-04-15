@@ -8,7 +8,7 @@ export type StakeModalFlow = EarnFlow.Stake | EarnFlow.UpdateProvider;
 
 export enum EarnProvider {
     Everstake = 'everstake',
-    YieldXyz = 'yield-xyz',
+    Morpho = 'morpho',
 }
 
 export type EarnYieldContext = {

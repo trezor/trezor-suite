@@ -1,7 +1,11 @@
-import type { Address, Transaction, VinVout } from '@trezor/blockchain-link-types';
-import type { ElectrumAPI } from '@trezor/blockchain-link-types/src/electrum';
-import type { GetAccountInfo as Req } from '@trezor/blockchain-link-types/src/messages';
-import type { GetAccountInfo as Res } from '@trezor/blockchain-link-types/src/responses';
+import type {
+    Address,
+    ElectrumAPI,
+    MessageTypes,
+    ResponseTypes,
+    Transaction,
+    VinVout,
+} from '@trezor/blockchain-link-types';
 import { sortTxsFromLatest } from '@trezor/blockchain-link-utils';
 import { transformTransaction } from '@trezor/blockchain-link-utils/src/blockbook';
 import { discovery } from '@trezor/utxo-lib';
@@ -15,6 +19,9 @@ import {
 } from '../utils';
 
 const PAGE_SIZE_DEFAULT = 25;
+
+type Req = MessageTypes.GetAccountInfo;
+type Res = ResponseTypes.GetAccountInfo;
 
 type AddressInfo = Omit<AddressHistory, 'scripthash'> & {
     confirmed: number;

@@ -1,9 +1,12 @@
 import { Horizon, Networks, Transaction as StellarTransaction } from '@stellar/stellar-sdk';
 
-import type { AccountInfo, Response, TokenDetailByMint } from '@trezor/blockchain-link-types';
-import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/src/constants';
-import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
-import type * as MessageTypes from '@trezor/blockchain-link-types/src/messages';
+import { CustomError, MESSAGES, RESPONSES } from '@trezor/blockchain-link-types';
+import type {
+    AccountInfo,
+    MessageTypes,
+    Response,
+    TokenDetailByMint,
+} from '@trezor/blockchain-link-types';
 import * as utils from '@trezor/blockchain-link-utils/src/stellar';
 import { getSuiteVersion, isDesktop, isNative } from '@trezor/env-utils';
 import { type IntervalId } from '@trezor/type-utils';

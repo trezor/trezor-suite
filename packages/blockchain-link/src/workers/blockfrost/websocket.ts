@@ -1,13 +1,11 @@
 import type {
-    BlockContent,
-    BlockfrostTransaction,
-    Send,
-} from '@trezor/blockchain-link-types/src/blockfrost';
-import type {
     AccountBalanceHistoryParams,
     AccountInfoParams,
+    BlockfrostBlockContent as BlockContent,
+    BlockfrostTransaction,
     EstimateFeeParams,
-} from '@trezor/blockchain-link-types/src/params';
+    BlockfrostSend as Send,
+} from '@trezor/blockchain-link-types';
 import { getSuiteVersion } from '@trezor/env-utils';
 
 import { BaseWebsocket } from '../baseWebsocket';
