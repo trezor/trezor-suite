@@ -1,12 +1,10 @@
+import { type Dispatch } from '@reduxjs/toolkit';
+
 import { goto } from '@suite/router';
 import { type IconName, type UIIntent } from '@trezor/components';
 
-import {
-    installUpdate,
-    justUpdated,
-    setIsUpdateModalVisible,
-} from 'src/actions/suite/desktopUpdateActions';
-import { type Dispatch } from 'src/types/suite';
+import { installUpdateThunk } from '../desktopUpdateActionsThunks';
+import { desktopUpdateActions } from '../desktopUpdateReducer';
 
 export type UpdateStatusDevice = 'up-to-date' | 'update-available' | 'disconnected';
 
@@ -37,19 +35,21 @@ export const mapUpdateStatusToIntent: Record<UpdateStatus, UIIntent> = {
     'just-updated': 'accentViolet',
 };
 
-type OnClickCallbackCallback = ((params: { dispatch: Dispatch }) => void) | null;
+type OnClickCallback = ((params: { dispatch: Dispatch }) => void) | null;
 
-export const mapDeviceUpdateToClick: Record<UpdateStatusDevice, OnClickCallbackCallback> = {
+export const mapDeviceUpdateToClick: Record<UpdateStatusDevice, OnClickCallback> = {
     disconnected: null,
     'up-to-date': null,
     'update-available': ({ dispatch }) => dispatch(goto({ routeName: 'firmware-index' })),
 };
 
-export const mapSuiteUpdateToClick: Record<UpdateStatusSuite, OnClickCallbackCallback> = {
+export const mapSuiteUpdateToClick: Record<UpdateStatusSuite, OnClickCallback> = {
     'up-to-date': null,
     'update-downloaded-auto-restart-to-update': ({ dispatch }) =>
-        dispatch(installUpdate({ installNow: true })),
-    'update-downloaded-manual': ({ dispatch }) => dispatch(setIsUpdateModalVisible(true)),
-    'just-updated': ({ dispatch }) => dispatch(justUpdated()),
-    'update-available': ({ dispatch }) => dispatch(setIsUpdateModalVisible(true)),
+        dispatch(installUpdateThunk({ installNow: true })),
+    'update-downloaded-manual': ({ dispatch }) =>
+        dispatch(desktopUpdateActions.setIsUpdateModalVisible(true)),
+    'just-updated': ({ dispatch }) => dispatch(desktopUpdateActions.justUpdated()),
+    'update-available': ({ dispatch }) =>
+        dispatch(desktopUpdateActions.setIsUpdateModalVisible(true)),
 };

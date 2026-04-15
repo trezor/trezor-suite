@@ -15,6 +15,7 @@
     "dependencies": {
         "@sentry/electron": "^7.10.0",
         "@suite/analytics": "workspace:*",
+        "@suite/desktop-update": "workspace:*",
         "@suite/flags": "workspace:*",
         "@suite/intl": "workspace:*",
         "@suite/router": "workspace:*",

@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 import { events } from '@suite/analytics';
+import { UpdateState } from '@suite/desktop-update';
 import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
 import { isDevEnv } from '@suite-common/suite-utils';
@@ -14,7 +15,6 @@ import { setView } from 'src/actions/suite/guideActions';
 import { GuideContent, GuideHeader, GuideViewWrapper } from 'src/components/guide';
 import { SupportConsentPopover } from 'src/components/guide/SupportConsentPopover';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { UpdateState } from 'src/reducers/suite/desktopUpdateReducer';
 import { useAnalytics } from 'src/support/useAnalytics';
 
 const Section = styled.div`

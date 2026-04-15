@@ -1,11 +1,13 @@
+import { useSelector } from 'react-redux';
+
 import { Translation, type TranslationKey } from '@suite/intl';
+import { selectSelectedDevice } from '@suite-common/device';
 import { Column, Icon } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { isDesktop } from '@trezor/env-utils';
-import { mapTrezorModelToIcon } from '@trezor/product-components';
+import { TooltipRow, mapTrezorModelToIcon } from '@trezor/product-components';
 
-import { useDevice, useSelector } from 'src/hooks/suite';
-
+import { type DesktopUpdateRootState } from '../desktopUpdateReducer';
 import {
     type UpdateStatus,
     type UpdateStatusDevice,
@@ -13,7 +15,6 @@ import {
     mapUpdateStatusToIcon,
     mapUpdateStatusToIntent,
 } from './updateQuickActionTypes';
-import { TooltipRow } from '../TooltipRow';
 
 const mapUpdateStatusToTranslation: Record<UpdateStatus, TranslationKey> = {
     disconnected: 'TR_QUICK_ACTION_TOOLTIP_DEVICE_DISCONNECTED',
@@ -30,7 +31,7 @@ type DeviceRowProps = {
 };
 
 const DeviceRow = ({ updateStatus, onClick }: DeviceRowProps) => {
-    const { device } = useDevice();
+    const device = useSelector(selectSelectedDevice);
 
     if (device?.features === undefined) {
         return null;
@@ -66,8 +67,10 @@ type SuiteRowProps = {
 };
 
 const SuiteRow = ({ updateStatus, onClick }: SuiteRowProps) => {
-    const suiteNewVersion = useSelector(state => state.desktopUpdate.latest?.version);
-
+    const suiteNewVersion = useSelector(
+        // eslint-disable-next-line no-restricted-syntax
+        (state: DesktopUpdateRootState) => state.desktopUpdate.latest?.version,
+    );
     const suiteCurrentVersion = process.env.VERSION || '';
 
     return (

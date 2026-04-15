@@ -1,4 +1,8 @@
 import {
+    type DesktopUpdateRootState,
+    selectDesktopUpdateAllowPrerelease,
+} from '@suite/desktop-update';
+import {
     type MetadataRootState,
     selectLabelingDataForWallet,
     selectSelectedLabelsProviderType,
@@ -19,10 +23,6 @@ import {
 import { type DeviceState } from '@trezor/connect';
 
 import { selectIsSuiteOnline, selectSuiteTransports, selectTorState } from './suiteSelectors';
-import {
-    type DesktopUpdateRootState,
-    selectDesktopUpdateAllowPrerelease,
-} from '../../reducers/suite/desktopUpdateReducer';
 import { type SuiteRootState } from '../../reducers/suite/suiteReducer';
 
 export type SuiteLogsApplicationInfoRootState = SuiteRootState &

@@ -7,6 +7,7 @@
     "include": ["."],
     "references": [
         { "path": "../../suite/analytics" },
+        { "path": "../../suite/desktop-update" },
         { "path": "../../suite/flags" },
         { "path": "../../suite/intl" },
         { "path": "../../suite/router" },

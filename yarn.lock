@@ -14643,6 +14643,33 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite/desktop-update@workspace:*, @suite/desktop-update@workspace:suite/desktop-update":
+  version: 0.0.0-use.local
+  resolution: "@suite/desktop-update@workspace:suite/desktop-update"
+  dependencies:
+    "@reduxjs/toolkit": "npm:2.11.2"
+    "@suite-common/device": "workspace:*"
+    "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/suite-constants": "workspace:*"
+    "@suite-common/toast-notifications": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite/analytics": "workspace:*"
+    "@suite/intl": "workspace:*"
+    "@suite/router": "workspace:*"
+    "@trezor/components": "workspace:*"
+    "@trezor/device-utils": "workspace:*"
+    "@trezor/env-utils": "workspace:*"
+    "@trezor/product-components": "workspace:*"
+    "@trezor/suite-desktop-api": "workspace:*"
+    "@trezor/utils": "workspace:*"
+    framer-motion: "npm:^12.33.0"
+    react: "npm:19.2.4"
+    react-redux: "npm:9.2.0"
+    redux: "npm:^5.0.1"
+    redux-thunk: "npm:^3.1.0"
+  languageName: unknown
+  linkType: soft
+
 "@suite/device@workspace:*, @suite/device@workspace:suite/device":
   version: 0.0.0-use.local
   resolution: "@suite/device@workspace:suite/device"
@@ -16110,6 +16137,7 @@ __metadata:
   dependencies:
     "@sentry/electron": "npm:^7.10.0"
     "@suite/analytics": "workspace:*"
+    "@suite/desktop-update": "workspace:*"
     "@suite/flags": "workspace:*"
     "@suite/intl": "workspace:*"
     "@suite/router": "workspace:*"
@@ -16312,6 +16340,7 @@ __metadata:
     "@suite-common/walletconnect": "workspace:*"
     "@suite/analytics": "workspace:*"
     "@suite/backup": "workspace:*"
+    "@suite/desktop-update": "workspace:*"
     "@suite/device": "workspace:*"
     "@suite/experimental": "workspace:*"
     "@suite/feature-feedback": "workspace:*"

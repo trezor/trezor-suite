@@ -1,3 +1,9 @@
+import {
+    type DesktopUpdateState,
+    UpdateState,
+    desktopUpdateActions,
+    installUpdateThunk,
+} from '@suite/desktop-update';
 import { Translation } from '@suite/intl';
 import { SettingsAnchor } from '@suite/router';
 import { isDevEnv } from '@suite-common/suite-utils';
@@ -6,14 +12,8 @@ import { isDesktop } from '@trezor/env-utils';
 import { ActionButton, ActionColumn, TextColumn } from '@trezor/product-components';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
-import {
-    installUpdate,
-    setIsUpdateModalVisible,
-    setIsVersionInfoModalVisible,
-} from 'src/actions/suite/desktopUpdateActions';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { useDispatch, useExternalLink, useSelector } from 'src/hooks/suite';
-import { type DesktopUpdateState, UpdateState } from 'src/reducers/suite/desktopUpdateReducer';
 import { getReleaseUrl } from 'src/services/github';
 
 const getUpdateStateMessage = (state: UpdateState) => {
@@ -31,7 +31,7 @@ const getUpdateStateMessage = (state: UpdateState) => {
 const Description = ({ desktopUpdateState }: { desktopUpdateState: DesktopUpdateState }) => {
     const appVersion = process.env.VERSION || '';
     const dispatch = useDispatch();
-    const openChangelog = () => dispatch(setIsVersionInfoModalVisible(true));
+    const openChangelog = () => dispatch(desktopUpdateActions.setIsVersionInfoModalVisible(true));
     const url = useExternalLink(getReleaseUrl(appVersion));
     const commonButtonProps: Partial<ButtonProps> = {
         'data-testid': '@settings/suite-version',
@@ -99,8 +99,8 @@ export const VersionWithUpdate = () => {
     const dispatch = useDispatch();
 
     const checkForUpdates = () => desktopApi.checkForUpdates({ isManual: true });
-    const maximizeUpdateModal = () => dispatch(setIsUpdateModalVisible(true));
-    const installAndRestart = () => dispatch(installUpdate({ installNow: true }));
+    const maximizeUpdateModal = () => dispatch(desktopUpdateActions.setIsUpdateModalVisible(true));
+    const installAndRestart = () => dispatch(installUpdateThunk({ installNow: true }));
 
     return (
         <SettingsSectionItem anchorId={SettingsAnchor.VersionWithUpdate}>

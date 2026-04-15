@@ -1,10 +1,10 @@
+import { selectDesktopUpdateAllowPrerelease } from '@suite/desktop-update';
 import { firmwareActions, selectEffectiveFirmwareChannel } from '@suite-common/firmware';
 import { Column, Text } from '@trezor/components';
 import { type FirmwareChannel } from '@trezor/connect-common/src/types/firmware';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectDesktopUpdateAllowPrerelease } from 'src/reducers/suite/desktopUpdateReducer';
 
 const effectiveFirmwareChannel = selectEffectiveFirmwareChannel(selectDesktopUpdateAllowPrerelease);
 

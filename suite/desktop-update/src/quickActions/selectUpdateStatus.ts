@@ -1,13 +1,13 @@
+import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { getSuiteVersion } from '@trezor/env-utils';
 import { versionUtils } from '@trezor/utils';
 
-import { useDevice, useSelector } from 'src/hooks/suite';
 import {
+    type DesktopUpdateRootState,
     type DesktopUpdateState,
     UpdateState,
     selectDesktopUpdate,
-} from 'src/reducers/suite/desktopUpdateReducer';
-
+} from '../desktopUpdateReducer';
 import {
     type UpdateStatus,
     type UpdateStatusDevice,
@@ -74,9 +74,11 @@ const getDeviceStatus = ({
     return 'up-to-date';
 };
 
-export const useUpdateStatus = (): UpdateStatusData => {
-    const { device } = useDevice();
-    const desktopUpdate = useSelector(selectDesktopUpdate);
+export const selectUpdateStatus = (
+    state: DesktopUpdateRootState & DeviceRootState,
+): UpdateStatusData => {
+    const device = selectSelectedDevice(state);
+    const desktopUpdate = selectDesktopUpdate(state);
 
     const isDeviceDisconnected = device?.connected !== true;
 

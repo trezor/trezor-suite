@@ -1,4 +1,4 @@
-import React from 'react';
+import type { ReactNode } from 'react';
 
 import {
     ComponentWithSubIcon,
@@ -10,7 +10,7 @@ import {
     Tooltip,
 } from '@trezor/components';
 
-type ActionButtonProps = {
+type QuickActionButtonProps = {
     onClick?: () => void;
     subIconIntent?: ComponentWithSubIconIntent;
     subIconName?: IconName;
@@ -18,7 +18,7 @@ type ActionButtonProps = {
     'data-testid'?: string;
     isOpen?: boolean;
 } & (
-    | { iconComponent: React.ReactNode; iconName?: undefined }
+    | { iconComponent: ReactNode; iconName?: undefined }
     | {
           iconComponent?: undefined;
           iconName: IconName;
@@ -34,7 +34,7 @@ export const QuickActionButton = ({
     iconName,
     subIconIntent,
     subIconName,
-}: ActionButtonProps) => {
+}: QuickActionButtonProps) => {
     const icon = iconName ? (
         <Icon name={iconName} size={16} intent="neutral" priority="secondary" />
     ) : (

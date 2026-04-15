@@ -2,11 +2,9 @@ import { Translation } from '@suite/intl';
 import { SettingsAnchor, goto } from '@suite/router';
 import { selectIsDebugModeActive, selectIsExperimentalEnabled } from '@suite/settings';
 import { Box, Column, Icon } from '@trezor/components';
+import { QuickActionButton, TooltipRow } from '@trezor/product-components';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
-
-import { QuickActionButton } from './QuickActionButton';
-import { TooltipRow } from './TooltipRow';
 
 type DebugAndExperimentalTooltipProps = {
     isDebugMode: boolean;

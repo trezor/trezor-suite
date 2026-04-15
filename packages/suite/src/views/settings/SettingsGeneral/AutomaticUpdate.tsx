@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 
+import { selectDesktopUpdateEnabled } from '@suite/desktop-update';
 import { Translation } from '@suite/intl';
 import { SettingsAnchor } from '@suite/router';
 import { Switch } from '@trezor/components';
@@ -8,7 +9,6 @@ import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { useSelector } from 'src/hooks/suite';
-import { selectDesktopUpdateEnabled } from 'src/reducers/suite/desktopUpdateReducer';
 
 const PositionedSwitch = styled.div`
     align-self: center;
