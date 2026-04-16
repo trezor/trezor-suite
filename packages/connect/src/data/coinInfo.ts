@@ -27,7 +27,9 @@ export const getBitcoinNetwork = (
                 n.label.toLowerCase() === name,
         );
     }
-    const slip44 = fromHardened(pathOrName[1]);
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const pathElement: number = pathOrName[1];
+    const slip44 = fromHardened(pathElement);
 
     return bitcoinNetworks.find(n => n.slip44 === slip44);
 };
@@ -41,7 +43,9 @@ export const getEthereumNetwork = (
         return ethereumNetworks.find(network => network.shortcut.toLowerCase() === networkSymbol);
     }
 
-    const slip44 = fromHardened(pathOrNetworkSymbol[1]);
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const ethPathElement: number = pathOrNetworkSymbol[1];
+    const slip44 = fromHardened(ethPathElement);
 
     return ethereumNetworks.find(n => n.slip44 === slip44);
 };
@@ -56,7 +60,9 @@ export const getMiscNetwork = (
             n => n.name.toLowerCase() === name || n.shortcut.toLowerCase() === name,
         );
     }
-    const slip44 = fromHardened(pathOrName[1]);
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const miscPathElement: number = pathOrName[1];
+    const slip44 = fromHardened(miscPathElement);
 
     return miscNetworks.find(n => n.slip44 === slip44);
 };
@@ -117,7 +123,9 @@ export const getCoinInfo = (currency: string) =>
     getBitcoinNetwork(currency) || getEthereumNetwork(currency) || getMiscNetwork(currency);
 
 export const getCoinName = (path: number[]) => {
-    const slip44 = fromHardened(path[1]);
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const coinNamePathElement: number = path[1];
+    const slip44 = fromHardened(coinNamePathElement);
     const network = ethereumNetworks.find(n => n.slip44 === slip44);
 
     return network ? network.name : 'Unknown coin';

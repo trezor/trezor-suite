@@ -15,7 +15,9 @@ export class EthereumFeeLevels extends MiscFeeLevels {
 
     async load(blockchain: Blockchain, request: Parameters<typeof blockchain.estimateFee>[0]) {
         try {
-            const [response] = await blockchain.estimateFee(request);
+            const estimateResult = await blockchain.estimateFee(request);
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const response: (typeof estimateResult)[number] = estimateResult[0];
 
             const { eip1559 } = response;
 
@@ -72,8 +74,10 @@ export class EthereumFeeLevels extends MiscFeeLevels {
 
                 this.levels = levels.filter(level => level) as FeeLevel[];
             } else {
+                // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                const currentLevel: (typeof this.levels)[number] = this.levels[0];
                 this.levels[0] = {
-                    ...this.levels[0],
+                    ...currentLevel,
                     ...response,
                     feePerUnit,
                 };

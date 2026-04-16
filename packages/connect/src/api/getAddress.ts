@@ -92,7 +92,10 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
     get info() {
         // set info
         if (this.params.length === 1) {
-            return getLabel('Export #NETWORK address', this.params[0].coinInfo);
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const first: (typeof this.params)[number] = this.params[0];
+
+            return getLabel('Export #NETWORK address', first.coinInfo);
         }
         const requestedNetworks = this.params.map(b => b.coinInfo);
         const uniqNetworks = getUniqueNetworks(requestedNetworks);
@@ -105,10 +108,13 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
 
     getButtonRequestData(code: string) {
         if (code === 'ButtonRequest_Address') {
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const current: (typeof this.params)[number] = this.params[this.progress];
+
             return {
                 type: 'address' as const,
-                serializedPath: getSerializedPath(this.params[this.progress].proto.address_n),
-                address: this.params[this.progress].address || 'not-set',
+                serializedPath: getSerializedPath(current.proto.address_n),
+                address: current.address || 'not-set',
             };
         }
     }
@@ -142,7 +148,8 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
         const responses: MethodReturnType<typeof this.name> = [];
 
         for (let i = 0; i < this.params.length; i++) {
-            const batch = this.params[i];
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const batch: (typeof this.params)[number] = this.params[i];
             // silently get address and compare with requested address
             // or display as default inside popup
             if (batch.proto.show_display) {
@@ -176,6 +183,9 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
             this.progress++;
         }
 
-        return this.hasBundle ? responses : responses[0];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const first: (typeof responses)[number] = responses[0];
+
+        return this.hasBundle ? responses : first;
     }
 }

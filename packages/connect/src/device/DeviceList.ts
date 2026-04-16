@@ -34,15 +34,19 @@ const createAuthPenaltyManager = (priority: number) => {
 
     const get = () =>
         100 * priority +
-        Object.keys(penalizedDevices).reduce(
-            (penalty, key) => Math.max(penalty, penalizedDevices[key]),
-            0,
-        );
+        Object.keys(penalizedDevices).reduce((penalty, key) => {
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const devicePenalty: number = penalizedDevices[key];
+
+            return Math.max(penalty, devicePenalty);
+        }, 0);
 
     const add = (device: Device) => {
         if (!device.isInitialized() || device.isBootloader() || !device.features.device_id) return;
         const deviceID = device.features.device_id;
-        const penalty = penalizedDevices[deviceID] ? penalizedDevices[deviceID] + 500 : 2000;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const currentPenalty: number = penalizedDevices[deviceID];
+        const penalty = currentPenalty ? currentPenalty + 500 : 2000;
         penalizedDevices[deviceID] = Math.min(penalty, 5000);
     };
 
@@ -363,7 +367,12 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
     }
 
     getDeviceByStaticState(state: StaticSessionId): Device | undefined {
-        const deviceId = state.split('@')[1].split(':')[0];
+        const stateParts = state.split('@');
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const afterAt: string = stateParts[1];
+        const deviceIdParts = afterAt.split(':');
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const deviceId: string = deviceIdParts[0];
 
         return this.getPrioritizedDevices().find(d => d.features?.device_id === deviceId);
     }

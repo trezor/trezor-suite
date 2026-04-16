@@ -24,7 +24,8 @@ export function parseArrayType(arrayTypeName: string) {
             `typename ${arrayTypeName} could not be parsed as an EIP-712 array`,
         );
     }
-    const [_, entryTypeName, arraySize] = arrayMatch;
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const [_, entryTypeName, arraySize]: [string, string, string] = arrayMatch;
 
     return {
         entryTypeName,
@@ -105,7 +106,8 @@ export function encodeData(typeName: string, data: any) {
     }
     const numberMatch = paramTypeNumber.exec(typeName);
     if (numberMatch) {
-        const [_, intType, bits] = numberMatch;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const [_, intType, bits]: [string, string, string] = numberMatch;
         const bytes = Math.ceil(parseInt(bits, 10) / 8);
 
         return intToHex(data, bytes, intType === 'int');
@@ -140,7 +142,8 @@ export function getFieldType(
 ): PROTO.EthereumFieldType {
     const arrayMatch = paramTypeArray.exec(typeName);
     if (arrayMatch) {
-        const [_, arrayItemTypeName, arraySize] = arrayMatch;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const [_, arrayItemTypeName, arraySize]: [string, string, string] = arrayMatch;
         const entryType = getFieldType(arrayItemTypeName, types);
 
         return {
@@ -152,7 +155,8 @@ export function getFieldType(
 
     const numberMatch = paramTypeNumber.exec(typeName);
     if (numberMatch) {
-        const [_, type, bits] = numberMatch;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const [_, type, bits]: [string, string, string] = numberMatch;
 
         return {
             data_type: type === 'uint' ? PROTO.EthereumDataType.UINT : PROTO.EthereumDataType.INT,
@@ -162,7 +166,8 @@ export function getFieldType(
 
     const bytesMatch = paramTypeBytes.exec(typeName);
     if (bytesMatch) {
-        const [_, size] = bytesMatch;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const [_, size]: [string, string] = bytesMatch;
 
         return {
             data_type: PROTO.EthereumDataType.BYTES,
@@ -178,9 +183,12 @@ export function getFieldType(
     }
 
     if (typeName in types) {
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const typeDef: (typeof types)[string] = types[typeName];
+
         return {
             data_type: PROTO.EthereumDataType.STRUCT,
-            size: types[typeName].length,
+            size: typeDef.length,
             struct_name: typeName,
         };
     }

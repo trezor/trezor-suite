@@ -1,7 +1,17 @@
 import { firmwareAssets } from '@trezor/connect-data';
+import type { FirmwareRelease } from '@trezor/device-utils';
 import { versionUtils } from '@trezor/utils';
 
 import { findBestCompatibleRelease, isStrictFeatures } from '../firmwareUtils';
+
+type FirmwareAssetGroup = { [file: string]: FirmwareRelease };
+
+// @ts-expect-error: indexing with noUncheckedIndexedAccess
+const t2t1Universal: FirmwareAssetGroup = firmwareAssets.t2t1.universal;
+// @ts-expect-error: indexing with noUncheckedIndexedAccess
+const t1b1Universal: FirmwareAssetGroup = firmwareAssets.t1b1.universal;
+// @ts-expect-error: indexing with noUncheckedIndexedAccess
+const t3t1Universal: FirmwareAssetGroup = firmwareAssets.t3t1.universal;
 
 describe('firmwareUtils', () => {
     describe('isStrictFeatures()', () => {
@@ -28,7 +38,7 @@ describe('firmwareUtils', () => {
         describe('with checkProperty = "min_firmware_version"', () => {
             it('should return the newest compatible release', () => {
                 const compatibleRelease = findBestCompatibleRelease(
-                    Object.values(firmwareAssets.t2t1.universal),
+                    Object.values(t2t1Universal),
                     { bootloaderVersion: null, firmwareVersion: [2, 0, 7] },
                     'min_firmware_version',
                 );
@@ -38,7 +48,7 @@ describe('firmwareUtils', () => {
             it('should return undefined if no release meets the min firmware version', () => {
                 expect(
                     findBestCompatibleRelease(
-                        Object.values(firmwareAssets.t1b1.universal),
+                        Object.values(t1b1Universal),
                         { bootloaderVersion: null, firmwareVersion: [0, 8, 5] },
                         'min_firmware_version',
                     ),
@@ -58,7 +68,7 @@ describe('firmwareUtils', () => {
             });
             it('should return the correct release based on bootloader version', () => {
                 const compatibleRelease = findBestCompatibleRelease(
-                    Object.values(firmwareAssets.t1b1.universal),
+                    Object.values(t1b1Universal),
                     { bootloaderVersion: null, firmwareVersion: [1, 6, 3] },
                     'min_bootloader_version',
                 );
@@ -68,7 +78,7 @@ describe('firmwareUtils', () => {
             it('should return undefined if no release meets the min bootloader version', () => {
                 expect(
                     findBestCompatibleRelease(
-                        Object.values(firmwareAssets.t1b1.universal),
+                        Object.values(t1b1Universal),
                         { bootloaderVersion: null, firmwareVersion: [0, 8, 5] },
                         'min_bootloader_version',
                     ),
@@ -76,12 +86,13 @@ describe('firmwareUtils', () => {
             });
 
             it('first release with bootloader equal to min_bootloader in lastest release should return latest release as compatible', () => {
-                const [latestRelase] = Object.values(firmwareAssets.t3t1.universal).sort((a, b) =>
-                    versionUtils.isNewer(b.version, a.version) ? 1 : -1,
+                // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                const [latestRelase]: [FirmwareRelease] = Object.values(t3t1Universal).sort(
+                    (a, b) => (versionUtils.isNewer(b.version, a.version) ? 1 : -1),
                 );
 
-                const releasesAscendentOrder = Object.values(firmwareAssets.t3t1.universal).sort(
-                    (a, b) => (versionUtils.isNewer(a.version, b.version) ? 1 : -1),
+                const releasesAscendentOrder = Object.values(t3t1Universal).sort((a, b) =>
+                    versionUtils.isNewer(a.version, b.version) ? 1 : -1,
                 );
 
                 const latestReleaseMinBootloaderVersion = latestRelase.min_bootloader_version;
@@ -94,7 +105,7 @@ describe('firmwareUtils', () => {
                         ),
                 );
                 const comptabibleRelease = findBestCompatibleRelease(
-                    Object.values(firmwareAssets.t3t1.universal),
+                    Object.values(t3t1Universal),
                     {
                         bootloaderVersion:
                             firstReleaseWithBootloaderCompatibleWithLatest!.bootloader_version ??

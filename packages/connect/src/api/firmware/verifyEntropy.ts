@@ -57,7 +57,11 @@ const xor = (a: Buffer, b: Buffer) => {
     }
     const result = Buffer.alloc(a.length);
     for (let i = 0; i < a.length; i++) {
-        result[i] = a[i] ^ b[i];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const ai: number = a[i];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const bi: number = b[i];
+        result[i] = ai ^ bi;
     }
 
     return result;
@@ -154,7 +158,9 @@ export const verifyEntropy = async ({
         Object.keys(xpubs).forEach(path => {
             const pubKey = node.derivePath(path);
             const xpub = pubKey.neutered().toBase58();
-            if (xpub !== xpubs[path]) {
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const expectedXpub: string = xpubs[path];
+            if (xpub !== expectedXpub) {
                 throw new Error('verifyEntropy xpub mismatch');
             }
         });

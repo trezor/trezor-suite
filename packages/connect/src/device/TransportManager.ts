@@ -100,10 +100,13 @@ export class TransportManager extends TypedEmitter<TransportManagerEvents> {
     }
 
     private async selectTransport(
-        [transport, ...rest]: Transport[],
+        transports: Transport[],
         signal: AbortSignal,
     ): Promise<Transport> {
         if (signal.aborted) throw new Error(signal.reason);
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const transport: Transport = transports[0];
+        const rest = transports.slice(1);
         if (transport === this.activeTransport) return transport;
         const result = await transport.init({ signal });
         if (result.success) return transport;

@@ -71,7 +71,8 @@ export default class GetOwnershipId extends AbstractMethod<
         const responses: MethodReturnType<typeof this.name> = [];
         const cmd = this.getDevice().getCommands();
         for (let i = 0; i < this.params.length; i++) {
-            const batch = this.params[i];
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const batch: (typeof this.params)[number] = this.params[i];
             const { message } = await cmd.typedCall('GetOwnershipId', 'OwnershipId', batch);
             responses.push({
                 ...message,
@@ -91,6 +92,9 @@ export default class GetOwnershipId extends AbstractMethod<
             }
         }
 
-        return this.hasBundle ? responses : responses[0];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const first: (typeof responses)[number] = responses[0];
+
+        return this.hasBundle ? responses : first;
     }
 }

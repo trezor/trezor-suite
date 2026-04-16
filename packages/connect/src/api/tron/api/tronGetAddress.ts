@@ -67,23 +67,32 @@ export default class TronGetAddress extends AbstractMethod<'tronGetAddress', Par
 
     getButtonRequestData(code: string) {
         if (code === 'ButtonRequest_Address') {
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const current: (typeof this.params)[number] = this.params[this.progress];
+
             return {
                 type: 'address' as const,
-                serializedPath: getSerializedPath(this.params[this.progress].proto.address_n),
-                address: this.params[this.progress].address || 'not-set',
+                serializedPath: getSerializedPath(current.proto.address_n),
+                address: current.address || 'not-set',
             };
         }
     }
 
     get confirmation() {
+        if (this.params.length > 1) {
+            return {
+                view: 'export-address' as const,
+                label: 'Export multiple Tron addresses',
+            };
+        }
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const first: (typeof this.params)[number] = this.params[0];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const accountIndex: number = first.proto.address_n[2];
+
         return {
             view: 'export-address' as const,
-            label:
-                this.params.length > 1
-                    ? 'Export multiple Tron addresses'
-                    : `Export Tron address for account #${
-                          fromHardened(this.params[0].proto.address_n[2]) + 1
-                      }`,
+            label: `Export Tron address for account #${fromHardened(accountIndex) + 1}`,
         };
     }
 
@@ -97,7 +106,8 @@ export default class TronGetAddress extends AbstractMethod<'tronGetAddress', Par
     async run({ sendCoreMessage }: MethodContext) {
         const responses: MethodReturnType<typeof this.name> = [];
         for (let i = 0; i < this.params.length; i++) {
-            const batch = this.params[i];
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const batch: (typeof this.params)[number] = this.params[i];
 
             // silently get address and compare with requested address
             // or display as default inside popup
@@ -138,6 +148,9 @@ export default class TronGetAddress extends AbstractMethod<'tronGetAddress', Par
             this.progress++;
         }
 
-        return this.hasBundle ? responses : responses[0];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const first: (typeof responses)[number] = responses[0];
+
+        return this.hasBundle ? responses : first;
     }
 }

@@ -47,8 +47,12 @@ export const getAccountAddressN = (
 
 export const getAccountLabel = (path: number[], coinInfo: CoinInfo) => {
     if (coinInfo.type === 'bitcoin') {
-        const accountType = fromHardened(path[0]);
-        const account = fromHardened(path[2]);
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const path0: number = path[0];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const path2: number = path[2];
+        const accountType = fromHardened(path0);
+        const account = fromHardened(path2);
         let prefix = '';
 
         if (accountType === 48) {
@@ -61,7 +65,9 @@ export const getAccountLabel = (path: number[], coinInfo: CoinInfo) => {
 
         return `${prefix} account #${account + 1}`;
     }
-    const account = fromHardened(path[4]);
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const path4: number = path[4];
+    const account = fromHardened(path4);
 
     return `account #${account + 1}`;
 };
@@ -76,16 +82,24 @@ export const getPublicKeyLabel = (path: number[], coinInfo?: BitcoinNetworkInfo)
         coinLabel = getCoinName(path);
     }
 
-    const p1 = fromHardened(path[0]);
-    let account = path.length >= 3 ? fromHardened(path[2]) : -1;
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const pubKeyPath0: number = path[0];
+    const p1 = fromHardened(pubKeyPath0);
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const pubKeyPath2: number = path[2];
+    let account = path.length >= 3 ? fromHardened(pubKeyPath2) : -1;
     let realAccountId = account + 1;
     let prefix = 'Export public key';
     let accountType = '';
 
     // Copay id
     if (p1 === 45342) {
-        const p2 = fromHardened(path[1]);
-        account = fromHardened(path[3]);
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const pubKeyPath1: number = path[1];
+        const p2 = fromHardened(pubKeyPath1);
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const pubKeyPath3: number = path[3];
+        account = fromHardened(pubKeyPath3);
         realAccountId = account + 1;
         prefix = 'Export Copay ID of';
         if (p2 === 48) {

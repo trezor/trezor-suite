@@ -102,12 +102,16 @@ declare global {
 }
 
 // T1B1
-const releasesT1B1 = Object.values(firmwareAssets.t1b1.universal).sort((a, b) =>
+// @ts-expect-error: indexing with noUncheckedIndexedAccess
+const t1b1Assets: { [file: string]: FirmwareRelease } = firmwareAssets.t1b1.universal;
+const releasesT1B1 = Object.values(t1b1Assets).sort((a, b) =>
     versionUtils.isNewer(b.version, a.version) ? 1 : -1,
 );
 
 // T2T1
-const releasesT2T1 = Object.values(firmwareAssets.t2t1.universal).sort((a, b) =>
+// @ts-expect-error: indexing with noUncheckedIndexedAccess
+const t2t1Assets: { [file: string]: FirmwareRelease } = firmwareAssets.t2t1.universal;
+const releasesT2T1 = Object.values(t2t1Assets).sort((a, b) =>
     versionUtils.isNewer(b.version, a.version) ? 1 : -1,
 );
 

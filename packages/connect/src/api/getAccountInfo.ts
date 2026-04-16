@@ -113,10 +113,12 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
     }
 
     get confirmation() {
-        if (this.params.length === 1 && !this.params[0].path && !this.params[0].descriptor) {
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const firstParam: (typeof this.params)[number] = this.params[0];
+        if (this.params.length === 1 && !firstParam.path && !firstParam.descriptor) {
             return {
                 view: 'export-account-info' as const,
-                label: `Export info for ${this.params[0].coinInfo.label} account of your selection`,
+                label: `Export info for ${firstParam.coinInfo.label} account of your selection`,
                 customConfirmButton: {
                     label: 'Proceed to account selection',
                     className: 'not-empty-css',
@@ -133,13 +135,16 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
                         values: [],
                     };
                 }
-                keys[b.coinInfo.label].values.push(b.descriptor || b.address_n);
+                // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                const entry: (typeof keys)[string] = keys[b.coinInfo.label];
+                entry.values.push(b.descriptor || b.address_n);
             });
 
             // prepare html for popup
             const str: string[] = [];
             Object.keys(keys).forEach((k, _i, _a) => {
-                const details = keys[k];
+                // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                const details: (typeof keys)[string] = keys[k];
                 details.values.forEach(acc => {
                     // if (i === 0) str += this.params.length > 1 ? ': ' : ' ';
                     // if (i > 0) str += ', ';
@@ -162,8 +167,10 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
 
     async run(context: MethodContext) {
         // address_n and descriptor are not set. use discovery
-        if (this.params.length === 1 && !this.params[0].path && !this.params[0].descriptor) {
-            return this.discover(this.params[0], context);
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const firstRequest: (typeof this.params)[number] = this.params[0];
+        if (this.params.length === 1 && !firstRequest.path && !firstRequest.descriptor) {
+            return this.discover(firstRequest, context);
         }
 
         const responses: MethodReturnType<typeof this.name> = [];
@@ -182,7 +189,8 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
         };
 
         for (let i = 0; i < this.params.length; i++) {
-            const request = this.params[i];
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const request: (typeof this.params)[number] = this.params[i];
             const { address_n } = request;
             let { descriptor } = request;
             let legacyXpub: string | undefined;
@@ -325,7 +333,8 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
         );
 
         const uiResp = await dfd.promise;
-        const account = accounts[uiResp.payload];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const account: (typeof accounts)[number] = accounts[uiResp.payload];
 
         return this.fetchAccountInfo(account, request, blockchain);
     }
@@ -389,7 +398,8 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
         const uiResp = await dfd.promise;
         discovery.stop();
 
-        const account = discovery.accounts[uiResp.payload];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const account: (typeof discovery.accounts)[number] = discovery.accounts[uiResp.payload];
 
         if (!discovery.completed) {
             await resolveAfter(501); // temporary solution, TODO: immediately resolve will cause "device call in progress"

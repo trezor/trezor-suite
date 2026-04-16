@@ -12,7 +12,10 @@ export const resolveDescriptorForTaproot = ({
     publicKey,
 }: ResolveDescriptorForTaprootParams) => {
     if (publicKey.descriptor !== null && publicKey.descriptor !== undefined) {
-        const [xpub, checksum] = publicKey.descriptor.split('#');
+        const descriptorParts = publicKey.descriptor.split('#');
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const xpub: string = descriptorParts[0];
+        const checksum = descriptorParts[1];
 
         // This is here to keep backwards compatibility, suite and block-books
         // are still using `'` over `h`.

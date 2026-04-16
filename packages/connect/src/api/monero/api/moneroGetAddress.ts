@@ -68,7 +68,9 @@ export default class MoneroGetAddress extends AbstractMethod<'moneroGetAddress',
 
     getButtonRequestData(code: string) {
         if (code === 'ButtonRequest_Address') {
-            const { proto, address } = this.params[this.progress];
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const current: (typeof this.params)[number] = this.params[this.progress];
+            const { proto, address } = current;
 
             return {
                 type: 'address' as const,
@@ -101,7 +103,8 @@ export default class MoneroGetAddress extends AbstractMethod<'moneroGetAddress',
         const responses: Address[] = [];
 
         for (let i = 0; i < this.params.length; i++) {
-            const batch = this.params[i];
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const batch: (typeof this.params)[number] = this.params[i];
             // silently get address and compare with requested address
             // or display as default inside popup
             if (batch.proto.show_display) {
@@ -128,6 +131,9 @@ export default class MoneroGetAddress extends AbstractMethod<'moneroGetAddress',
             this.progress++;
         }
 
-        return this.hasBundle ? responses : responses[0];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const first: (typeof responses)[number] = responses[0];
+
+        return this.hasBundle ? responses : first;
     }
 }

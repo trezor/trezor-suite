@@ -60,14 +60,20 @@ export default class TezosGetPublicKey extends AbstractMethod<
     }
 
     get confirmation() {
+        if (this.params.length > 1) {
+            return {
+                view: 'export-address' as const,
+                label: 'Export multiple Tezos public keys',
+            };
+        }
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const first: (typeof this.params)[number] = this.params[0];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const accountIndex: number = first.address_n[2];
+
         return {
             view: 'export-address' as const,
-            label:
-                this.params.length > 1
-                    ? 'Export multiple Tezos public keys'
-                    : `Export Tezos public key for account #${
-                          fromHardened(this.params[0].address_n[2]) + 1
-                      }`,
+            label: `Export Tezos public key for account #${fromHardened(accountIndex) + 1}`,
         };
     }
 
@@ -75,7 +81,8 @@ export default class TezosGetPublicKey extends AbstractMethod<
         const responses: MethodReturnType<typeof this.name> = [];
         const cmd = this.getDevice().getCommands();
         for (let i = 0; i < this.params.length; i++) {
-            const batch = this.params[i];
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const batch: (typeof this.params)[number] = this.params[i];
             const { message } = await cmd.typedCall('TezosGetPublicKey', 'TezosPublicKey', batch);
             responses.push({
                 path: batch.address_n,
@@ -95,6 +102,9 @@ export default class TezosGetPublicKey extends AbstractMethod<
             }
         }
 
-        return this.hasBundle ? responses : responses[0];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const first: (typeof responses)[number] = responses[0];
+
+        return this.hasBundle ? responses : first;
     }
 }

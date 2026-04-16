@@ -83,13 +83,16 @@ export default class GetAccountDescriptor extends AbstractMethod<
                     values: [],
                 };
             }
-            keys[b.coinInfo.label].values.push(b.address_n);
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const entry: (typeof keys)[string] = keys[b.coinInfo.label];
+            entry.values.push(b.address_n);
         });
 
         // prepare html for popup
         const str: string[] = [];
         Object.keys(keys).forEach((k, _i, _a) => {
-            const details = keys[k];
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const details: (typeof keys)[string] = keys[k];
             details.values.forEach(acc => {
                 str.push(k);
                 str.push(' ');
@@ -128,7 +131,8 @@ export default class GetAccountDescriptor extends AbstractMethod<
         };
 
         for (let i = 0; i < this.params.length; i++) {
-            const request = this.params[i];
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const request: (typeof this.params)[number] = this.params[i];
 
             if (this.disposed) break;
 

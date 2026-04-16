@@ -12,7 +12,12 @@ import type {
 export const HD_HARDENED = 0x80000000;
 export const toHardened = (n: number) => (n | HD_HARDENED) >>> 0;
 export const fromHardened = (n: number) => (n & ~HD_HARDENED) >>> 0;
-export const getSlip44ByPath = (path: number[]) => fromHardened(path[1]);
+export const getSlip44ByPath = (path: number[]) => {
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const slip44: number = path[1];
+
+    return fromHardened(slip44);
+};
 
 const PATH_NOT_VALID = ERRORS.TypedError('Method_InvalidParameter', 'Not a valid path');
 const PATH_NEGATIVE_VALUES = ERRORS.TypedError(
@@ -72,7 +77,9 @@ export const getScriptType = (
 ): PROTO.InternalInputScriptType | undefined => {
     if (!Array.isArray(path) || path.length < 1) return undefined;
 
-    const p1 = fromHardened(path[0]);
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const p0: number = path[0];
+    const p1 = fromHardened(p0);
     switch (p1) {
         case 44:
             return 'SPENDADDRESS';
@@ -81,7 +88,9 @@ export const getScriptType = (
         case 48: {
             if (path.length < 4) return undefined;
 
-            const p3 = fromHardened(path[3]);
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const p3raw: number = path[3];
+            const p3 = fromHardened(p3raw);
 
             switch (p3) {
                 case 0:
@@ -113,7 +122,9 @@ export const getScriptType = (
 export const getOutputScriptType = (path?: number[]): PROTO.ChangeOutputScriptType | undefined => {
     if (!Array.isArray(path) || path.length < 1) return undefined;
 
-    const p = fromHardened(path[0]);
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const pRaw: number = path[0];
+    const p = fromHardened(pRaw);
 
     switch (p) {
         case 44:
@@ -123,7 +134,9 @@ export const getOutputScriptType = (path?: number[]): PROTO.ChangeOutputScriptTy
         case 48: {
             if (path.length < 4) return undefined;
 
-            const p3 = fromHardened(path[3]);
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const p3raw2: number = path[3];
+            const p3 = fromHardened(p3raw2);
             switch (p3) {
                 case 0:
                     return 'PAYTOMULTISIG';

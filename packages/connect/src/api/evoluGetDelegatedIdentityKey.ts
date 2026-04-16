@@ -25,8 +25,11 @@ export default class EvoluGetDelegatedIdentityKey extends AbstractMethod<
     async run() {
         const thpState = this.getDevice().getThpState();
         if (thpState) {
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const firstCredential: (typeof thpState.pairingCredentials)[number] =
+                thpState.pairingCredentials[0];
             this.params = {
-                thp_credential: thpState.pairingCredentials[0].credential,
+                thp_credential: firstCredential.credential,
             };
         }
 
