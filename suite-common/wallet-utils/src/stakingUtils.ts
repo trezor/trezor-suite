@@ -145,15 +145,15 @@ export const getStakingDataForNetwork = (
             } = getSolStakingAccountsInfo(account) ?? {};
 
             return {
-                autocompoundBalance: solStakedBalance,
-                claimableAmount: solClaimableBalance,
-                depositedBalance: solStakedBalance,
+                autocompoundBalance: solStakedBalance ?? '',
+                claimableAmount: solClaimableBalance ?? '',
+                depositedBalance: solStakedBalance ?? '',
                 pendingBalance: '',
                 pendingDepositedBalance: '',
-                totalPendingStakeBalance: solPendingStakeBalance,
+                totalPendingStakeBalance: solPendingStakeBalance ?? '',
                 restakedReward: '',
-                withdrawTotalAmount: solPendingUnstakeBalance,
-                canClaim: canClaimSol,
+                withdrawTotalAmount: solPendingUnstakeBalance ?? '',
+                canClaim: canClaimSol ?? false,
             };
         }
 
@@ -218,7 +218,7 @@ export const getOutputTxAmount = (composedLevels?: PrecomposedLevels) => {
     const precomposedTx = composedLevels['normal'];
     if (precomposedTx?.type !== 'final') return null;
 
-    return precomposedTx.outputs[0].amount;
+    return precomposedTx.outputs[0]?.amount ?? null;
 };
 
 export const calculateRewards = (amount: string, apyPercent: number | null, days = 365) => {

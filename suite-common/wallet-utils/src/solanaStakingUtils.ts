@@ -113,15 +113,13 @@ export const getSolStakingAccountTotalBalanceByStatus = (account: Account, statu
 type StakeStateType = (typeof StakeState)[keyof typeof StakeState];
 
 export const getSolStakingAccountsInfo = (account: Account) => {
-    const balanceResults = Object.values(StakeState).map(status => {
-        const balance = getSolStakingAccountTotalBalanceByStatus(account, status);
+    const balances = Object.values(StakeState).reduce(
+        (acc, status) => {
+            acc[status] = getSolStakingAccountTotalBalanceByStatus(account, status);
 
-        return [status, balance];
-    });
-
-    const balances: Record<StakeStateType, string> = balanceResults.reduce(
-        (acc, [status, balance]) => ({ ...acc, [status]: balance }),
-        {},
+            return acc;
+        },
+        {} as Record<StakeStateType, string>,
     );
 
     return {
@@ -129,7 +127,7 @@ export const getSolStakingAccountsInfo = (account: Account) => {
         solClaimableBalance: balances[StakeState.Deactivated],
         solPendingStakeBalance: balances[StakeState.Activating],
         solPendingUnstakeBalance: balances[StakeState.Deactivating],
-        canClaimSol: new BigNumber(balances[StakeState.Deactivated]).gt(0),
-        canUnstakeSol: new BigNumber(balances[StakeState.Active]).gt(0),
+        canClaimSol: new BigNumber(balances[StakeState.Deactivated] ?? '0').gt(0),
+        canUnstakeSol: new BigNumber(balances[StakeState.Active] ?? '0').gt(0),
     };
 };

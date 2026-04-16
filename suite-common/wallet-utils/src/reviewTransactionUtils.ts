@@ -137,12 +137,15 @@ const constructOldFlow = ({
 
         // add decrease output confirmation step between txid and fee
         if (typeof decreaseOutputId === 'number') {
-            outputs.splice(1, 0, {
-                type: 'reduce-output',
-                label: precomposedTx.outputs[decreaseOutputId].address!,
-                value: precomposedTx.feeDifference,
-                value2: precomposedTx.outputs[decreaseOutputId].amount.toString(),
-            });
+            const decreaseOutput = precomposedTx.outputs[decreaseOutputId];
+            if (decreaseOutput) {
+                outputs.splice(1, 0, {
+                    type: 'reduce-output',
+                    label: decreaseOutput.address ?? '',
+                    value: precomposedTx.feeDifference,
+                    value2: decreaseOutput.amount.toString(),
+                });
+            }
         }
     } else if (isCardano) {
         precomposedTx.outputs.forEach(o => {
@@ -332,12 +335,15 @@ const constructNewFlow = ({
 
         // add decrease output confirmation step between txid and fee
         if (typeof decreaseOutputId === 'number') {
-            outputs.splice(1, 0, {
-                type: 'reduce-output',
-                label: precomposedTx.outputs[decreaseOutputId].address!,
-                value: precomposedTx.feeDifference,
-                value2: precomposedTx.outputs[decreaseOutputId].amount.toString(),
-            });
+            const decreaseOutput = precomposedTx.outputs[decreaseOutputId];
+            if (decreaseOutput) {
+                outputs.splice(1, 0, {
+                    type: 'reduce-output',
+                    label: decreaseOutput.address ?? '',
+                    value: precomposedTx.feeDifference,
+                    value2: decreaseOutput.amount.toString(),
+                });
+            }
         }
     } else if (isCardano) {
         precomposedTx.outputs.forEach(o => {
