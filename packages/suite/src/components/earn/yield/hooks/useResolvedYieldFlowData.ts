@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react';
 
 import { goto } from '@suite/router';
-import { useAllYieldOpportunities } from '@suite-common/earn-api';
+import { useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import type { TokenInfo } from '@trezor/connect';

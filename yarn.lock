@@ -10914,9 +10914,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-common/earn-api@workspace:*, @suite-common/earn-api@workspace:suite-common/earn-api":
+"@suite-common/earn-stablecoin-api@workspace:*, @suite-common/earn-stablecoin-api@workspace:suite-common/earn-stablecoin-api":
   version: 0.0.0-use.local
-  resolution: "@suite-common/earn-api@workspace:suite-common/earn-api"
+  resolution: "@suite-common/earn-stablecoin-api@workspace:suite-common/earn-stablecoin-api"
   dependencies:
     "@suite-common/calldata": "workspace:^"
     "@suite-common/react-query": "workspace:^"
@@ -11629,7 +11629,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/wallet-config@workspace:suite-common/wallet-config"
   dependencies:
-    "@suite-common/earn-api": "workspace:*"
+    "@suite-common/earn-stablecoin-api": "workspace:*"
     "@suite-common/wallet-constants": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
@@ -12912,7 +12912,7 @@ __metadata:
     "@react-navigation/native-stack": "npm:7.12.0"
     "@reduxjs/toolkit": "npm:2.11.2"
     "@suite-common/device": "workspace:*"
-    "@suite-common/earn-api": "workspace:*"
+    "@suite-common/earn-stablecoin-api": "workspace:*"
     "@suite-common/fiat-services": "workspace:*"
     "@suite-common/graph": "workspace:*"
     "@suite-common/suite-sync": "workspace:*"
@@ -13303,7 +13303,7 @@ __metadata:
     "@reduxjs/toolkit": "npm:2.11.2"
     "@shopify/flash-list": "npm:2.3.0"
     "@suite-common/device": "workspace:*"
-    "@suite-common/earn-api": "workspace:*"
+    "@suite-common/earn-stablecoin-api": "workspace:*"
     "@suite-common/earn-staking-api": "workspace:*"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/message-system": "workspace:*"
@@ -16319,7 +16319,7 @@ __metadata:
     "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/device": "workspace:*"
     "@suite-common/device-authenticity": "workspace:*"
-    "@suite-common/earn-api": "workspace:*"
+    "@suite-common/earn-stablecoin-api": "workspace:*"
     "@suite-common/earn-staking-api": "workspace:*"
     "@suite-common/feedback": "workspace:*"
     "@suite-common/fiat-services": "workspace:*"

@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { type TokenDto, type YieldDto } from '@suite-common/earn-api';
+import { type TokenDto, type YieldDto } from '@suite-common/earn-stablecoin-api';
 import {
     NORMAL_ACCOUNT_TYPE,
     type NetworkSymbol,

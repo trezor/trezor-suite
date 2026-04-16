@@ -42,7 +42,9 @@
         {
             "path": "../../suite-common/device-authenticity"
         },
-        { "path": "../../suite-common/earn-api" },
+        {
+            "path": "../../suite-common/earn-stablecoin-api"
+        },
         {
             "path": "../../suite-common/earn-staking-api"
         },

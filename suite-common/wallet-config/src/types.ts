@@ -1,4 +1,4 @@
-import { type NetworkDtoId } from '@suite-common/earn-api';
+import { type NetworkDtoId } from '@suite-common/earn-stablecoin-api';
 import { type DeviceModelInternal } from '@trezor/device-utils';
 import { type RequiredKey } from '@trezor/type-utils';
 

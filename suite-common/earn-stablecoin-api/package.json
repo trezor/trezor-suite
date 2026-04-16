@@ -1,5 +1,5 @@
 {
-    "name": "@suite-common/earn-api",
+    "name": "@suite-common/earn-stablecoin-api",
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",

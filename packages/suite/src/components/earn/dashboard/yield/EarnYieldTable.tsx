@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
 import { Translation } from '@suite/intl';
-import { type YieldDto } from '@suite-common/earn-api';
+import { type YieldDto } from '@suite-common/earn-stablecoin-api';
 import { Context } from '@suite-common/message-system';
 import { NORMAL_ACCOUNT_TYPE } from '@suite-common/wallet-config';
 import {
