@@ -10,8 +10,12 @@ const ENDPOINTS = {
 
 type Ticker = keyof typeof ENDPOINTS;
 
-const randomEndpoint = (ticker: Ticker) =>
-    ENDPOINTS[ticker][Math.floor(Math.random() * ENDPOINTS[ticker].length)];
+const randomEndpoint = (ticker: Ticker) => {
+    const endpoints = ENDPOINTS[ticker];
+    const index = Math.floor(Math.random() * endpoints.length);
+
+    return endpoints[index] ?? endpoints[0] ?? 'btc1';
+};
 
 const getQuery = (query?: { currency?: string; timestamp?: number | string }) =>
     Object.entries(query || {})
@@ -62,7 +66,7 @@ const getMultiTickers = async (
         rates && {
             ts: new Date().getTime(),
             symbol: ticker,
-            tickers: rates.map((rate, i) => ({ ...rate, ts: timestamps[i] })),
+            tickers: rates.map((rate, i) => ({ ...rate, ts: timestamps[i] ?? 0 })),
         }
     );
 };
