@@ -67,10 +67,14 @@ export const parseManufacturerData = (bytes: number[]): BluetoothManufacturerDat
         };
     }
 
+    const filterPolicyByte = bytes[0] ?? 0;
+    const deviceColorByte = bytes[1] ?? 0;
+    const deviceModelByte = bytes[2] ?? 0;
+
     return {
-        deviceModel: parseDeviceModel(bytes[2]),
-        deviceColor: bytes[1],
-        filterPolicy: parseFilterPolicy(bytes[0]),
+        deviceModel: parseDeviceModel(deviceModelByte),
+        deviceColor: deviceColorByte,
+        filterPolicy: parseFilterPolicy(filterPolicyByte),
     };
 };
 

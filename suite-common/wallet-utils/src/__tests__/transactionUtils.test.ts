@@ -40,6 +40,7 @@ describe('transaction utils', () => {
         Object.keys(fixtures.isPending).forEach(f => {
             it(f, () => {
                 const transaction = fixtures.isPending[f];
+                if (!transaction) return;
                 const { blockHeight } = transaction;
                 expect(isPending(transaction)).toEqual(!blockHeight || blockHeight < 0);
             });
@@ -198,7 +199,7 @@ describe('transaction utils', () => {
 
     describe('groupJointTransactions', () => {
         it('groups joint transactions', () => {
-            const [j1, r2, j3, j4, s5, s6, j7, f8, j9, j10, j11] = (
+            const txs = (
                 [
                     'joint',
                     'recv',
@@ -213,6 +214,17 @@ describe('transaction utils', () => {
                     'joint',
                 ] as const
             ).map((type, blockHeight) => getWalletTransaction({ type, blockHeight }));
+            const j1 = txs[0] ?? getWalletTransaction({});
+            const r2 = txs[1] ?? getWalletTransaction({});
+            const j3 = txs[2] ?? getWalletTransaction({});
+            const j4 = txs[3] ?? getWalletTransaction({});
+            const s5 = txs[4] ?? getWalletTransaction({});
+            const s6 = txs[5] ?? getWalletTransaction({});
+            const j7 = txs[6] ?? getWalletTransaction({});
+            const f8 = txs[7] ?? getWalletTransaction({});
+            const j9 = txs[8] ?? getWalletTransaction({});
+            const j10 = txs[9] ?? getWalletTransaction({});
+            const j11 = txs[10] ?? getWalletTransaction({});
             const groupedTxs = groupJointTransactions([
                 j1,
                 r2,
