@@ -51,7 +51,6 @@ const TokenBadge = React.memo(({ accountKey }: { accountKey: AccountKey }) => {
 
     return (
         <Badge
-            elevation="1"
             size="small"
             label={<Translation id="accountList.numberOfTokens" values={{ numberOfTokens }} />}
         />
@@ -165,9 +164,7 @@ export const AccountsListItem = ({
             title={title}
             badges={
                 <>
-                    {formattedAccountType && (
-                        <Badge label={formattedAccountType} size="small" elevation="1" />
-                    )}
+                    {formattedAccountType && <Badge label={formattedAccountType} size="small" />}
                     {shouldShowStakingBadge && (
                         <StakingBadge networkSymbol={account.symbol} account={account} />
                     )}

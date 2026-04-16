@@ -65,7 +65,7 @@ export const AnalyticsLogging = () => {
     const renderAnalyticsDisabledBadge = () => (
         <Badge
             label="Enable analytics to see the events."
-            variant="yellow"
+            intent="warning"
             icon="info"
             size="small"
         />

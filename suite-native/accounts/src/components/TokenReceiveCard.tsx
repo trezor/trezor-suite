@@ -68,7 +68,6 @@ export const TokenReceiveCard = ({ contract, accountKey }: TokenReceiveCardProps
                                 />
                             }
                             size="small"
-                            iconSize="extraSmall"
                         />
                     </Box>
                 </Box>

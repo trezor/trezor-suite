@@ -18,9 +18,7 @@ export const AccountListItem = ({ receiveAccount, onPress }: AccountListItemProp
         selectFormattedAccountType(state, account.key),
     );
 
-    const typeBadge = formattedAccountType && (
-        <Badge label={formattedAccountType} size="small" elevation="1" />
-    );
+    const typeBadge = formattedAccountType && <Badge label={formattedAccountType} size="small" />;
 
     return (
         <AccountListBaseItem

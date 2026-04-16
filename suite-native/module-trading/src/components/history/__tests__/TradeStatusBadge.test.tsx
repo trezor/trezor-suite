@@ -1,5 +1,5 @@
 import { type TradingTransactionStatus } from '@suite-common/trading';
-import { type BadgeVariant } from '@suite-native/atoms';
+import { type BadgeIntent } from '@suite-native/atoms';
 import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider } from '@suite-native/test-utils';
 import { getBuyTrade, getExchangeTrade, getSellTrade } from '@suite-native/trading-fixtures';
@@ -89,15 +89,15 @@ describe('TradeStatusBadge', () => {
     describe('getBadgeVariant', () => {
         it.each([
             [undefined, 'neutral'],
-            ['CANCELLED', 'yellow'],
-            ['SUCCESS', 'greenSubtle'],
-            ['REFUNDED', 'red'],
-            ['BLOCKED', 'red'],
-            ['ERROR', 'red'],
-            ['SUBMITTED', 'yellow'],
-            ['CONVERTING', 'yellow'],
-            ['KYC', 'yellow'],
-        ] as [TradingTransactionStatus, BadgeVariant][])(
+            ['CANCELLED', 'warning'],
+            ['SUCCESS', 'brand'],
+            ['REFUNDED', 'critical'],
+            ['BLOCKED', 'critical'],
+            ['ERROR', 'critical'],
+            ['SUBMITTED', 'warning'],
+            ['CONVERTING', 'warning'],
+            ['KYC', 'warning'],
+        ] as [TradingTransactionStatus, BadgeIntent][])(
             'should render badge with correct text for status %s',
             (status, expectedVariant) => {
                 expect(getBadgeVariant(status)).toBe(expectedVariant);

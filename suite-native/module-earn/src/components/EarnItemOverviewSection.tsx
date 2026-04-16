@@ -45,9 +45,7 @@ const EarnItemSecondaryDescription = ({
                 <Text color="contentSecondary" variant="body-sm">
                     {accountLabel}
                 </Text>
-                {formattedAccountType && (
-                    <Badge label={formattedAccountType} size="small" elevation="1" />
-                )}
+                {formattedAccountType && <Badge label={formattedAccountType} size="small" />}
             </HStack>
         );
     }

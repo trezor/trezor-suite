@@ -44,9 +44,7 @@ export const ChooseAccountItem = ({
             icon={<CryptoIcon symbol={account.symbol} />}
             title={<AccountLabel account={account} />}
             badges={
-                formattedAccountType ? (
-                    <Badge label={formattedAccountType} size="small" elevation="1" />
-                ) : null
+                formattedAccountType ? <Badge label={formattedAccountType} size="small" /> : null
             }
             mainValue={
                 <CryptoAmountFormatter
