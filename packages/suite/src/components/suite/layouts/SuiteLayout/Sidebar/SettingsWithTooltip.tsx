@@ -1,9 +1,8 @@
-import { type FC } from 'react';
+import { type FC, useState } from 'react';
 
-import { selectFlags, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { SettingsAnchor, goto, selectRouteName } from '@suite/router';
-import { selectHasBitcoinOnlyFirmware, selectIsDeviceInitialized } from '@suite-common/device';
+import { selectIsDeviceInitialized } from '@suite-common/device';
 import { Button, Column, Link, Paragraph, Text, Tooltip } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 
@@ -11,36 +10,15 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { NavigationItem, type NavigationItemProps } from './NavigationItem';
 
-const getDescriptionTranslationId = (hasBitcoinOnlyFirmware: boolean) => {
-    if (hasBitcoinOnlyFirmware) {
-        return 'TR_SETTINGS_TOOLTIP_DESCRIPTION_BTC_ONLY';
-    }
-
-    if (isDesktop()) {
-        return 'TR_SETTINGS_TOOLTIP_DESCRIPTION_DESKTOP';
-    }
-
-    return 'TR_SETTINGS_TOOLTIP_DESCRIPTION_WEB';
-};
-
 export const SettingsWithTooltip: FC<NavigationItemProps> = props => {
     const dispatch = useDispatch();
+    const [isDismissed, setIsDismissed] = useState(false);
 
-    const { settingsSidebarTooltipClosed } = useSelector(selectFlags);
     const routeName = useSelector(selectRouteName);
-    const hasBitcoinOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);
     const isDeviceInitialized = useSelector(selectIsDeviceInitialized);
 
-    const shouldShowTooltip = !hasBitcoinOnlyFirmware || isDesktop();
-    const isTooltipOpen =
-        shouldShowTooltip &&
-        !settingsSidebarTooltipClosed &&
-        routeName === 'suite-start' &&
-        !isDeviceInitialized;
-    const handleTooltipClose = () =>
-        dispatch(setFlag({ key: 'settingsSidebarTooltipClosed', value: true }));
-
-    const descriptionTranslationId = getDescriptionTranslationId(hasBitcoinOnlyFirmware);
+    const isTooltipOpen = !isDismissed && routeName === 'suite-start' && !isDeviceInitialized;
+    const handleTooltipClose = () => setIsDismissed(true);
 
     return (
         <Tooltip
@@ -49,7 +27,11 @@ export const SettingsWithTooltip: FC<NavigationItemProps> = props => {
                 <Column padding={2} gap={6}>
                     <Paragraph textWrap="pretty">
                         <Translation
-                            id={descriptionTranslationId}
+                            id={
+                                isDesktop()
+                                    ? 'TR_SETTINGS_TOOLTIP_DESCRIPTION_DESKTOP'
+                                    : 'TR_SETTINGS_TOOLTIP_DESCRIPTION_WEB'
+                            }
                             values={{
                                 strong: chunks => (
                                     <Text typographyStyle="body-sm-strong">{chunks}</Text>
