@@ -19,6 +19,7 @@ interface CTA {
     action: () => void;
     icon?: IconName;
     isDisabled?: boolean;
+    size?: ComponentProps<typeof Button>['size'];
 }
 
 interface ContainerProps {

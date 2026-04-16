@@ -23,7 +23,15 @@ test.describe('Onboarding - create wallet', { tag: ['@desktopOnly', '@T3T1', '@s
                 priority: TestPriority.Critical,
             }),
         },
-        async ({ page, onboardingPage, devicePrompt, analyticsSection, device }) => {
+        async ({
+            page,
+            onboardingPage,
+            devicePrompt,
+            analyticsSection,
+            device,
+            settingsPage,
+            dashboardPage,
+        }) => {
             await expect(page.getByTestId('@suite/no-connection-banner')).toHaveTranslation(
                 'TR_YOU_WERE_DISCONNECTED_DOT',
             );
@@ -64,6 +72,13 @@ test.describe('Onboarding - create wallet', { tag: ['@desktopOnly', '@T3T1', '@s
 
                 await devicePrompt.confirmOnDevicePromptIsShown();
                 await device.pressYes();
+            });
+
+            await test.step('Enable Bitcoin so discovery can be attempted', async () => {
+                await settingsPage.navigateTo('coins');
+                await settingsPage.coinsTab.enableNetwork('btc');
+                await settingsPage.coinsTab.activateCoinsButton.click();
+                await dashboardPage.navigateTo();
             });
 
             await test.step('Verify offline state after onboarding completes', async () => {

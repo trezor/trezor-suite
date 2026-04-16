@@ -65,7 +65,7 @@ test.describe('Coin Settings', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
             await test.step('Activate assets', async () => {
                 await dashboardPage.discoveryEmptyPrimaryButton.click();
                 await settingsPage.navigateTo('coins');
-                for (const network of ['btc', ...defaultUnchecked] as NetworkSymbol[]) {
+                for (const network of defaultUnchecked) {
                     await settingsPage.coinsTab.enableNetwork(network);
                     if (network === 'ada') {
                         await settingsPage.coinsTab.temporarilySetOfficialCardanoBackend();

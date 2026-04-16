@@ -161,8 +161,10 @@ const fixtures: Fixture[] = [
             routerInit.pending.type,
             periodicCheckStakeDataThunk.pending.type,
             initStakeDataThunk.pending.type,
+            'stakeData/fetchStakeDataRequest',
             walletConnectInitThunk.pending.type,
             SUITE.READY,
+            'stakeData/fetchStakeDataFailure',
         ],
     },
     {
@@ -211,8 +213,10 @@ const fixtures: Fixture[] = [
             routerLocationChange.type,
             periodicCheckStakeDataThunk.pending.type,
             initStakeDataThunk.pending.type,
+            'stakeData/fetchStakeDataRequest',
             walletConnectInitThunk.pending.type,
             SUITE.READY,
+            'stakeData/fetchStakeDataFailure',
         ],
     },
     {
@@ -259,8 +263,10 @@ const fixtures: Fixture[] = [
             routerLocationChange.type,
             periodicCheckStakeDataThunk.pending.type,
             initStakeDataThunk.pending.type,
+            'stakeData/fetchStakeDataRequest',
             walletConnectInitThunk.pending.type,
             SUITE.READY,
+            'stakeData/fetchStakeDataFailure',
         ],
     },
     {

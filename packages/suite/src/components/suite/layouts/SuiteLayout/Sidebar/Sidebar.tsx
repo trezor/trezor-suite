@@ -31,9 +31,6 @@ import {
     SIDEBAR_MIN_WIDTH,
 } from './consts';
 import { DeviceSelector } from '../DeviceSelector/DeviceSelector';
-import { UpdateNotificationBanner } from './QuickActions/Update/UpdateNotificationBanner';
-import { TrafficLightOffset } from '../../../TrafficLightOffset';
-import { useUpdateStatus } from './QuickActions/Update/useUpdateStatus';
 
 const Container = styled.nav<{ $elevation: Elevation }>`
     overflow-x: hidden;

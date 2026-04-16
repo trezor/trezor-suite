@@ -139,6 +139,8 @@ test.describe('Analytics Events', { tag: ['@webOnly', '@T3W1', '@T3T1', '@smoke'
         });
 
         await test.step('Change settings before enabling analytics', async () => {
+            await settingsPage.navigateTo('coins');
+            await settingsPage.coinsTab.enableNetwork('btc');
             await settingsPage.navigateTo('application');
             await settingsPage.changeLanguage(Language.Czech);
             await settingsPage.changeLanguage(Language.English);
