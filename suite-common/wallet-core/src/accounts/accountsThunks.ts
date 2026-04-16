@@ -69,11 +69,21 @@ const fetchAccountTokens = async (account: Account, payloadTokens: AccountInfo['
     return tokens;
 };
 
+export const reportWalletBalanceThunk = createThunk(
+    `${ACCOUNTS_MODULE_PREFIX}/reportWalletBalance`,
+    (_, { getState, extra }) => {
+        reportWalletBalanceDebounced({
+            getState,
+            analytics: extra.services.analytics,
+        });
+    },
+);
+
 // Left here for clarity, but shouldn't be called anywhere but in blockchainActions.syncAccounts
 // as we usually want to update all accounts for a single coin at once
 export const fetchAndUpdateAccountThunk = createThunk(
     `${ACCOUNTS_MODULE_PREFIX}/fetchAndUpdateAccountThunk`,
-    async ({ accountKey }: { accountKey: AccountKey }, { dispatch, getState, extra }) => {
+    async ({ accountKey }: { accountKey: AccountKey }, { dispatch, getState }) => {
         const account = selectAccountByKey(getState(), accountKey);
 
         if (!account || account.failed || account.accountType === 'placeholder') return;
@@ -187,20 +197,7 @@ export const fetchAndUpdateAccountThunk = createThunk(
                 dispatch(accountsActions.updateAccountRefreshTimestamp(account));
             }
 
-            reportWalletBalanceDebounced({
-                getState,
-                analytics: extra.services.analytics,
-            });
+            dispatch(reportWalletBalanceThunk());
         }
-    },
-);
-
-export const reportWalletBalanceThunk = createThunk(
-    `${ACCOUNTS_MODULE_PREFIX}/reportWalletBalance`,
-    (_, { getState, extra }) => {
-        reportWalletBalanceDebounced({
-            getState,
-            analytics: extra.services.analytics,
-        });
     },
 );
