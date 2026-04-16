@@ -38,7 +38,7 @@ test.describe(
                     >(events.suiteReadyEvent.name);
                     expect(suiteReadyEvent).toMatchObject({
                         language: 'en-US',
-                        enabledNetworks: 'btc',
+                        enabledNetworks: 'btc,eth',
                         customBackends: '',
                         localCurrency: 'usd',
                         bitcoinUnit: 'BTC',
