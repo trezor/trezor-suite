@@ -30,6 +30,7 @@ export default class ResetDevice extends AbstractMethod<'resetDevice', PROTO.Res
             skip_backup: payload.skip_backup,
             no_backup: payload.no_backup,
             backup_type: payload.backup_type,
+            backup_method: payload.backup_method,
             entropy_check:
                 typeof payload.entropy_check === 'boolean' ? payload.entropy_check : true,
         };
