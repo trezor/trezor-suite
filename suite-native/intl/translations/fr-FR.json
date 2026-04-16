@@ -1382,7 +1382,7 @@
     "earn.earnUnstakeOutputItem.title": "Unstaker",
     "earn.earnUnstakeOutputItem.description": "Unstaker {displaySymbol} depuis le compte de staking ?",
     "earn.earnStakeOutputItem.title": "Staker",
-    "earn.earnStakeOutputItem.description": "Staker {symbol} sur Everstake ?",
+    "earn.earnStakeOutputItem.description": "Staker {displaySymbol} sur Everstake ?",
     "earn.earnSummaryOutputItem.title": "Total frais inclus",
     "earn.claimOutputItem.title": "Réclamer",
     "earn.claimOutputItem.description": "Réclamer les {displaySymbol} de ce compte ?",

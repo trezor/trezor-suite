@@ -2641,7 +2641,7 @@ export const messages = {
         },
         earnStakeOutputItem: {
             title: 'Stake',
-            description: 'Stake {symbol} on Everstake?',
+            description: 'Stake {displaySymbol} on Everstake?',
         },
         earnSummaryOutputItem: {
             title: 'Total including fee',

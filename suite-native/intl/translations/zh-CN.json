@@ -1382,7 +1382,7 @@
     "earn.earnUnstakeOutputItem.title": "解除质押",
     "earn.earnUnstakeOutputItem.description": "从质押账户中解除质押 {displaySymbol}？",
     "earn.earnStakeOutputItem.title": "质押",
-    "earn.earnStakeOutputItem.description": "通过 Everstake 来质押您的 {symbol}？",
+    "earn.earnStakeOutputItem.description": "通过 Everstake 来质押您的 {displaySymbol}？",
     "earn.earnSummaryOutputItem.title": "累计（包含交易费用）",
     "earn.claimOutputItem.title": "领取",
     "earn.claimOutputItem.description": "要从账户中领取 {displaySymbol} 吗？",
