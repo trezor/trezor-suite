@@ -813,6 +813,11 @@ export const runAdditionalDiscoveryThunk = createThunk(
                 getState,
                 analytics: extra.services.analytics,
             });
+
+            reportWalletBalanceDebounced({
+                getState,
+                analytics: extra.services.analytics,
+            });
         }
     },
 );
