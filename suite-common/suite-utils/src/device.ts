@@ -412,7 +412,7 @@ export const getDeviceInstancesGroupedByDeviceId = (devices: TrezorDevice[]): Ac
         if (!isDeviceAcquired(device) || !device.id) {
             return deviceGroups;
         }
-        const existingGroupIndex = deviceGroups.findIndex(group => group[0].id === device.id);
+        const existingGroupIndex = deviceGroups.findIndex(group => group[0]?.id === device.id);
         if (existingGroupIndex === -1) {
             // If the device ID is not yet in the accumulator, add a new group
             const newGroup = getDeviceInstances(device, devices);
@@ -447,8 +447,13 @@ export const getFirstDeviceInstance = (
             const alreadyExists = result.find(r => r.features && dev.features && r.id === dev.id);
             if (alreadyExists) return result;
 
-            // base (np passphrase) or first passphrase instance
-            return result.concat(instances[0]);
+            // base (no passphrase) or first passphrase instance
+            const firstInstance = instances[0];
+            if (firstInstance) {
+                return result.concat(firstInstance);
+            }
+
+            return result;
         }, [] as TrezorDevice[])
         .sort(options.sortingFn);
 
@@ -463,8 +468,12 @@ export const getSortedDevicesWithoutInstances = (
     excludedDeviceId?: string | null,
 ) =>
     getDeviceInstancesGroupedByDeviceId(devices)
-        .flatMap(group => group[0])
-        .filter(d => d?.id !== excludedDeviceId && d?.id)
+        .flatMap(group => {
+            const first = group[0];
+
+            return first ? [first] : [];
+        })
+        .filter(d => d.id !== excludedDeviceId && d.id)
         .sort((a, b) => {
             if (!a.connected) return -1;
             if (!b.connected) return 1;

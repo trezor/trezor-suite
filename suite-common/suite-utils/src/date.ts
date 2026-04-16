@@ -34,13 +34,14 @@ export const calcTicks = (startDate: Date, endDate: Date) => {
 
 export const calcTicksFromData = (data: { time: number }[]) => {
     if (!data || data.length < 1) return [];
+    const firstTime = data[0]?.time ?? 0;
     const startDate = data.reduce(
         (min, current) => (current.time < min ? current.time : min),
-        data[0].time,
+        firstTime,
     );
     const endDate = data.reduce(
         (max, current) => (current.time > max ? current.time : max),
-        data[0].time,
+        firstTime,
     );
 
     const startUnix = fromUnixTime(startDate);
