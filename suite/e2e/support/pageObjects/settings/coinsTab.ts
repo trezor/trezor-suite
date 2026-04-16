@@ -41,19 +41,13 @@ export class CoinsTab {
 
     @step()
     async enableNetwork(symbol: NetworkSymbol) {
-        const isActive = await this.networkButton(symbol).getAttribute('data-active');
-        if (isActive !== 'true') {
-            await this.networkButton(symbol).click();
-        }
+        await this.networkButton(symbol).click();
         await expect(this.networkButton(symbol)).toBeEnabledCoin();
     }
 
     @step()
     async disableNetwork(symbol: NetworkSymbol) {
-        const isActive = await this.networkButton(symbol).getAttribute('data-active');
-        if (isActive !== 'false') {
-            await this.networkButton(symbol).click();
-        }
+        await this.networkButton(symbol).click();
         await expect(this.networkButton(symbol)).toBeDisabledCoin();
     }
 
