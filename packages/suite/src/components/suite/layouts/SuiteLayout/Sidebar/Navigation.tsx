@@ -1,16 +1,27 @@
 import { type FC, useMemo } from 'react';
 
+import styled from 'styled-components';
+
 import { selectIsInitialRun } from '@suite/flags';
 import { type Route } from '@suite/router';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
-import { Column } from '@trezor/components';
+import { type SpacingPxValues, spacingsPx } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
 import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
 
 import { NavigationItem, type NavigationItemProps } from './NavigationItem';
 import { NotificationDropdown } from './NotificationDropdown';
-import { SettingsWithTooltip } from './SettingsWithTooltip';
+
+export const Nav = styled.nav<{ $isSidebarCollapsed: boolean; $margin: SpacingPxValues }>`
+    display: flex;
+    flex-direction: column;
+    gap: ${spacingsPx.xxs};
+    align-items: stretch;
+
+    ${({ $margin }) => $margin && `margin: ${$margin};`}
+    ${({ $isSidebarCollapsed }) => $isSidebarCollapsed && `align-items: center;`}
+`;
 
 export const SETTINGS_ROUTES: Route['name'][] = [
     'settings-index',
@@ -22,9 +33,10 @@ export const SETTINGS_ROUTES: Route['name'][] = [
 
 type NavigationProps = {
     children?: React.ReactNode;
+    margin?: SpacingPxValues;
 };
 
-export const Navigation = ({ children }: NavigationProps) => {
+export const Navigation = ({ children, margin = spacingsPx.xs }: NavigationProps) => {
     const { isSidebarCollapsed } = useResponsiveContext();
 
     const isInitialRun = useSelector(selectIsInitialRun);
@@ -62,20 +74,19 @@ export const Navigation = ({ children }: NavigationProps) => {
                     goToRoute: 'settings-index',
                     routes: SETTINGS_ROUTES,
                     'data-testid': '@suite/menu/settings',
-                    CustomComponent: SettingsWithTooltip,
                 },
             ],
             [startRoute, isBtcOnly],
         );
 
     return (
-        <Column alignItems={isSidebarCollapsed ? 'center' : 'stretch'} gap={4} margin={8} as="nav">
+        <Nav $isSidebarCollapsed={isSidebarCollapsed} $margin={margin}>
             {children ?? null}
             {navItems.map(item => {
                 const Component = item.CustomComponent ? item.CustomComponent : NavigationItem;
 
                 return <Component key={item.nameId} {...item} />;
             })}
-        </Column>
+        </Nav>
     );
 };
