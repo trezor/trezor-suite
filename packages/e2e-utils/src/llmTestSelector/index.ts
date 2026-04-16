@@ -99,8 +99,8 @@ const isAllowedFile = (filePath: string): boolean => {
 // Git diff
 // ---------------------------------------------------------------------------
 
-const getChangedFiles = (): string[] => {
-    const result = spawnSync('git', ['diff', 'origin/develop...HEAD', '--name-only'], {
+const getChangedFiles = (headRef = 'HEAD'): string[] => {
+    const result = spawnSync('git', ['diff', `origin/develop...${headRef}`, '--name-only'], {
         encoding: 'utf8',
         stdio: ['pipe', 'pipe', 'pipe'],
     });
@@ -441,6 +441,7 @@ const main = async () => {
     let apiKey: string | undefined;
     let indexFile = DEFAULT_INDEX_FILE;
     let llmAnalysisFile = DEFAULT_LLM_ANALYSIS_FILE;
+    let headRef = 'HEAD';
 
     for (let i = 0; i < args.length; i++) {
         if ((args[i] === '--api-key' || args[i] === '-k') && args[i + 1]) {
@@ -449,6 +450,8 @@ const main = async () => {
             indexFile = args[++i];
         } else if (args[i] === '--llm-analysis' && args[i + 1]) {
             llmAnalysisFile = args[++i];
+        } else if (args[i] === '--head-ref' && args[i + 1]) {
+            headRef = args[++i];
         }
     }
 
@@ -472,6 +475,8 @@ const main = async () => {
                 '                             instead of the local Claude Code CLI.',
                 `  --coverage-map <file>      Path to the coverage index JSON. Default: ${DEFAULT_INDEX_FILE}`,
                 `  --llm-analysis <file>      Path to the LLM analysis JSON. Default: ${DEFAULT_LLM_ANALYSIS_FILE}`,
+                '  --head-ref <ref>           Git ref for the PR head. Default: HEAD. Use pr-head',
+                '                             when running from a trusted base branch checkout.',
                 '  --help, -h                 Show this help message and exit.',
                 '',
                 'Output:',
@@ -504,10 +509,10 @@ const main = async () => {
     }
 
     // 1. Get changed files from git
-    log('Collecting changed files from git diff origin/develop...HEAD...');
+    log(`Collecting changed files from git diff origin/develop...${headRef} --name-only`);
     let changedFiles: string[];
     try {
-        changedFiles = getChangedFiles();
+        changedFiles = getChangedFiles(headRef);
     } catch (err) {
         error(err instanceof Error ? err.message : String(err));
         process.exit(1);
