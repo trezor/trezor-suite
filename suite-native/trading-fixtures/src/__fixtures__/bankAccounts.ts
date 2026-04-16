@@ -21,5 +21,11 @@ export const bankAccounts: BankAccount[] = [
     },
 ];
 
-export const verifiedBankAccount: BankAccount = bankAccounts[0];
-export const unverifiedBankAccount: BankAccount = bankAccounts[1];
+const verifiedBankAccount = bankAccounts[0];
+const unverifiedBankAccount = bankAccounts[1];
+
+if (!verifiedBankAccount || !unverifiedBankAccount) {
+    throw new Error('bankAccounts fixture is missing required entries');
+}
+
+export { verifiedBankAccount, unverifiedBankAccount };

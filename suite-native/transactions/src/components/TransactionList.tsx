@@ -228,7 +228,7 @@ export const TransactionList = ({
         if (tokenContract) {
             return transactionMonthKeys.flatMap(monthKey => [
                 monthKey,
-                ...accountTransactionsByMonth[monthKey].flatMap(transaction =>
+                ...(accountTransactionsByMonth[monthKey] ?? []).flatMap(transaction =>
                     transaction.tokens
                         .filter(token => token.contract === tokenContract)
                         .map(
@@ -244,7 +244,7 @@ export const TransactionList = ({
 
         return transactionMonthKeys.flatMap(monthKey => [
             monthKey,
-            ...accountTransactionsByMonth[monthKey],
+            ...(accountTransactionsByMonth[monthKey] ?? []),
         ]) as TransactionListItem[];
     }, [transactions, tokenContract]);
 

@@ -82,10 +82,11 @@ const SuiteSyncWalletDebug = ({ device }: { device?: TrezorDevice }) => {
 
     const { walletDescriptor, deviceId } = parseDeviceStaticSessionId(deviceStaticSessionId);
 
+    const descriptorPrefix = walletDescriptor.split('@')[0] ?? '';
     const evoluDebug =
-        walletDescriptor.split('@')[0].slice(-8) +
+        descriptorPrefix.slice(-8) +
         ' @ ' +
-        deviceId.slice(-8) +
+        (deviceId ?? '').slice(-8) +
         ' E: ' +
         suiteSyncOwner?.slice(-8);
 
