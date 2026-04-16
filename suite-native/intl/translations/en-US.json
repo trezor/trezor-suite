@@ -1382,7 +1382,7 @@
     "earn.earnUnstakeOutputItem.title": "Unstake",
     "earn.earnUnstakeOutputItem.description": "Unstake {displaySymbol} from stake account?",
     "earn.earnStakeOutputItem.title": "Stake",
-    "earn.earnStakeOutputItem.description": "Stake {symbol} on Everstake?",
+    "earn.earnStakeOutputItem.description": "Stake {displaySymbol} on Everstake?",
     "earn.earnSummaryOutputItem.title": "Total including fee",
     "earn.claimOutputItem.title": "Claim",
     "earn.claimOutputItem.description": "Claim {displaySymbol} from account?",
