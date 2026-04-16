@@ -53,9 +53,9 @@ import { BigNumber, typedObjectEntries } from '@trezor/utils';
 import { DISCOVERY_MODULE_PREFIX, discoveryActions } from './discoveryActions';
 import { isDiscoveryInProgress, selectDiscoveryByDevicePath } from './discoverySelectors';
 import { selectDeviceThunk } from './selectDeviceThunk';
-import { reportWalletBalanceDebounced } from '../accounts/accountBalanceAnalytics';
 import { type CreateAccountActionProps, accountsActions } from '../accounts/accountsActions';
 import { selectAccountsByDeviceState } from '../accounts/accountsSelectors';
+import { reportWalletBalanceThunk } from '../accounts/accountsThunks';
 import { selectAccountsToBeForgotten, selectDiscoveryAccountsParam } from '../selectors';
 import { selectIsDeviceAutoEjectEnabled } from '../settings/walletSettingsReducer';
 
@@ -343,10 +343,7 @@ const completeDiscovery = (
         analytics,
     });
 
-    reportWalletBalanceDebounced({
-        getState,
-        analytics,
-    });
+    dispatch(reportWalletBalanceThunk());
 };
 
 export const cancelDiscoveryThunk = createThunk(
@@ -814,10 +811,7 @@ export const runAdditionalDiscoveryThunk = createThunk(
                 analytics: extra.services.analytics,
             });
 
-            reportWalletBalanceDebounced({
-                getState,
-                analytics: extra.services.analytics,
-            });
+            dispatch(reportWalletBalanceThunk());
         }
     },
 );
