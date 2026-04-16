@@ -44,7 +44,7 @@ export const SuiteSyncWalletDebug = ({
         return;
     }
 
-    const { walletDescriptor, deviceId } = parseDeviceStaticSessionId(deviceStaticSessionId);
+    const { walletDescriptor, deviceId = '' } = parseDeviceStaticSessionId(deviceStaticSessionId);
 
     const handleResetKeysRequest = () => {
         if (!device?.id || device.state?.staticSessionId === undefined) {

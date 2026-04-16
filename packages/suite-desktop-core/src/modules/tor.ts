@@ -25,7 +25,9 @@ const load = async ({ mainWindowProxy, store, mainThreadEmitter }: Dependencies)
     const { logger } = global;
     const initialSettings = store.getTorSettings();
 
-    const [torPort, controlPort] = await getFreePort(2);
+    const freePorts = await getFreePort(2);
+    const torPort = freePorts[0] ?? 0;
+    const controlPort = freePorts[1] ?? 0;
     store.setTorSettings({
         ...initialSettings,
         port: torPort,

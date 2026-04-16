@@ -142,6 +142,9 @@ export class GoogleProvider extends AbstractMetadataProvider {
     async renameFile(from: string, to: string) {
         try {
             const id = await GoogleClient.getIdByName(from, true);
+            if (!id) {
+                return this.handleProviderError(new Error(`File ${from} not found`));
+            }
 
             await GoogleClient.updateMetadata(
                 {

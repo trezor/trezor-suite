@@ -119,8 +119,9 @@ export function Menu({
         tezos: 'xtz',
         tron: 'trx',
     };
-    const defaultActiveCoin = Object.keys(coinSymbols).includes(route.split('/')[2])
-        ? route.split('/')[2]
+    const routeCoinSegment = route.split('/')[2] ?? '';
+    const defaultActiveCoin = Object.keys(coinSymbols).includes(routeCoinSegment)
+        ? routeCoinSegment
         : 'bitcoin';
     const [activeCoin, setActiveCoin] = useState(defaultActiveCoin);
     useEffect(() => {
@@ -216,7 +217,7 @@ export const Folder = memo(function FolderInner(props: FolderProps) {
 
 export function FolderImpl({ item, anchors }: FolderProps): ReactElement {
     const routeOriginal = useFSRoute();
-    const [route] = routeOriginal.split('#');
+    const [route = ''] = routeOriginal.split('#');
     const active = [route, route + '/'].includes(item.route + '/');
     const activeRouteInside = active || route.startsWith(item.route + '/');
 
@@ -264,8 +265,8 @@ export function FolderImpl({ item, anchors }: FolderProps): ReactElement {
                 routeFromChildren,
             ]),
         );
-        // eslint-disable-next-line react-hooks/immutability
-        item.children = Object.entries(menu.items || {}).map(([key, menuItem]) => {
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const children: PageItem[] = Object.entries(menu.items || {}).map(([key, menuItem]) => {
             const routeMenuItem = routes[key] || {
                 name: key,
                 ...('locale' in menu && { locale: menu.locale }),
@@ -277,6 +278,8 @@ export function FolderImpl({ item, anchors }: FolderProps): ReactElement {
                 ...menuItem,
             };
         });
+        // eslint-disable-next-line react-hooks/immutability
+        item.children = children;
     }
 
     const isLink = 'withIndexPage' in item && item.withIndexPage;

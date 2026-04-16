@@ -52,7 +52,9 @@ export const handshakeAndHangDetect = ({
                 logger.info('hang-detect', 'Delaying check');
                 timeout = setTimeout(timeoutCallback, HANG_WAIT);
             } else {
-                resolve(result);
+                if (result) {
+                    resolve(result);
+                }
             }
         };
         timeout = setTimeout(timeoutCallback, HANG_WAIT);

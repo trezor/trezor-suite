@@ -44,7 +44,7 @@ export const TagsList = ({ tags, selectedTags, setSelectedTags }: TagsListProps)
                             });
                         }
                     }}
-                    isSelected={selectedTags[key]}
+                    isSelected={selectedTags[key] ?? false}
                 />
             ))}
     </TagsListWrapper>

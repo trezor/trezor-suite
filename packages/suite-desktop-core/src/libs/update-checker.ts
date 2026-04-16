@@ -50,7 +50,11 @@ export const verifySignature = async ({ downloadedFile, signatureFile }: VerifyS
     });
 
     // Get result (validity of the signature)
-    const valid = await verified.signatures[0].verified;
+    const firstSignature = verified.signatures[0];
+    if (!firstSignature) {
+        throw new Error('No signatures found.');
+    }
+    const valid = await firstSignature.verified;
     if (!valid) {
         throw new Error('Invalid signature.');
     }

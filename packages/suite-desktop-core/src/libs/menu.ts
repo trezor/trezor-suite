@@ -79,14 +79,22 @@ export const buildMainMenu = (mainWindowProxy: MainWindowProxy) => {
         },
     ];
 
+    const [, editMenu, viewMenu, windowMenu] = mainMenuTemplate as [
+        MenuItem,
+        MenuItem,
+        MenuItem,
+        MenuItem,
+        ...MenuItem[],
+    ];
+
     if (!isDevEnv) {
         // remove toggleDevTools from "View"
-        mainMenuTemplate[2].submenu.splice(2, 1);
+        viewMenu.submenu.splice(2, 1);
     }
 
     if (isMac) {
         // Extend "Edit"
-        mainMenuTemplate[1].submenu.push(
+        editMenu.submenu.push(
             { role: 'pasteAndMatchStyle' },
             { role: 'delete' },
             { role: 'selectAll' },
@@ -97,7 +105,7 @@ export const buildMainMenu = (mainWindowProxy: MainWindowProxy) => {
             },
         );
         // Extend "Window"
-        mainMenuTemplate[3].submenu.push(
+        windowMenu.submenu.push(
             { type: 'separator' },
             { role: 'front' },
             { type: 'separator' },
@@ -120,13 +128,9 @@ export const buildMainMenu = (mainWindowProxy: MainWindowProxy) => {
         });
     } else {
         // Extend "Edit"
-        mainMenuTemplate[1].submenu.push(
-            { role: 'delete' },
-            { type: 'separator' },
-            { role: 'selectAll' },
-        );
+        editMenu.submenu.push({ role: 'delete' }, { type: 'separator' }, { role: 'selectAll' });
         // Extend "Window"
-        mainMenuTemplate[3].submenu.push({ role: 'close' });
+        windowMenu.submenu.push({ role: 'close' });
     }
 
     return Menu.buildFromTemplate(mainMenuTemplate);

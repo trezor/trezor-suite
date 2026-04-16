@@ -34,13 +34,14 @@ export const init: ModuleInit = ({ mainWindowProxy }) => {
 
                 // if there is custom protocol, then there is just one
                 const protocol = urls[0];
+                if (protocol) {
+                    global.logger.debug(
+                        SERVICE_NAME,
+                        `App is running and handling '${protocol}' custom protocol (Linux, Windows)`,
+                    );
 
-                global.logger.debug(
-                    SERVICE_NAME,
-                    `App is running and handling '${protocol}' custom protocol (Linux, Windows)`,
-                );
-
-                sendProtocolInfo(protocol);
+                    sendProtocolInfo(protocol);
+                }
             }
         }
     });

@@ -82,7 +82,7 @@ export const arrayBufferToBuffer = (ab: ArrayBuffer) => {
     const buffer = Buffer.alloc(ab.byteLength);
     const view = new Uint8Array(ab);
     for (let i = 0; i < buffer.length; ++i) {
-        buffer[i] = view[i];
+        buffer[i] = view[i] ?? 0;
     }
 
     return buffer;

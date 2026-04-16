@@ -111,6 +111,7 @@ const initStore = (state: State) => {
     store.subscribe(async () => {
         const actions = store.getActions();
         const action = actions[actions.length - 1];
+        if (!action) return;
 
         // hack: to prevent dependency
         if (action.type === '@modal/open-user-context') {

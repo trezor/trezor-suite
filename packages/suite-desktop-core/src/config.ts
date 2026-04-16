@@ -1,7 +1,7 @@
 import { isDevEnv } from '@suite-common/suite-utils';
 import { TOR_URLS } from '@trezor/urls';
 
-export const onionDomain = TOR_URLS['trezor.io'];
+export const onionDomain = TOR_URLS['trezor.io'] ?? '';
 
 export const oauthUrls = [
     'https://accounts.google.com',

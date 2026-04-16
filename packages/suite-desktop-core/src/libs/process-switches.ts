@@ -39,5 +39,5 @@ export const getSwitchValue = (switchName: SuiteSwitch): string => {
     const valueMatch = process.argv.map(arg => arg.match(switchValueMatch)).find(Boolean);
     if (!valueMatch) return '';
 
-    return valueMatch[1];
+    return valueMatch[1] ?? '';
 };

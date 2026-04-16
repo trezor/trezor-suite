@@ -215,7 +215,7 @@ export const selectAccountLabelsLegacy = (state: {
                 return dict;
             }
             const data = provider.data[metadataKeys.fileName];
-            if ('accountLabel' in data) {
+            if (data && 'accountLabel' in data) {
                 dict[account.key] = data.accountLabel;
             }
 
