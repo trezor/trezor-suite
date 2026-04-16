@@ -50,8 +50,9 @@
         "test:unit": "yarn g:jest",
         "type-check": "yarn g:tsc --build",
         "build:lib": "yarn build:lib:cjs && yarn build:lib:esm",
-        "build:lib:cjs": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
-        "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
+        "build:lib:cjs": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && yarn build:dts:bundle && ../../scripts/publish/replace-imports.sh ./lib cjs",
+        "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && cp lib/index.d.ts libESM/index.d.ts && ../../scripts/publish/replace-imports.sh ./libESM esm",
+        "build:dts:bundle": "rollup -c rollup.dts.config.mjs && mv lib/index.bundled.d.ts lib/index.d.ts",
         "test:e2e": "yarn playwright install && yarn xvfb-maybe -- playwright test --config=./e2e/playwright.config.ts",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
@@ -74,6 +75,8 @@
         "@types/web": "^0.0.197",
         "babel-loader": "^10.1.1",
         "rimraf": "^6.1.2",
+        "rollup": "^4.60.1",
+        "rollup-plugin-dts": "^6.4.1",
         "worker-loader": "^3.0.8",
         "xvfb-maybe": "^0.2.1"
     },

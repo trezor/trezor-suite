@@ -8,6 +8,7 @@
         "worker-loader",
         "process",
         "rimraf",
+        "rollup-plugin-dts",
         "tslib",
         "buffer",
         "node-gyp",

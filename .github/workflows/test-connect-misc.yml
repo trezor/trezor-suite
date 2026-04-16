@@ -78,8 +78,11 @@ jobs:
         run: yarn tsx ./scripts/ci/pack-packages.ts
 
       - name: Check exports
-        # For now only testing @trezor/connect-web. `attw` is the binary for @arethetypeswrong/cli
-        run: yarn exec attw --pack ./tmp/packed-packages/trezor-connect-web.tgz
+        # `attw` is the binary for @arethetypeswrong/cli
+        run: |
+          yarn exec attw --pack ./tmp/packed-packages/trezor-connect-web.tgz
+          yarn exec attw --pack ./tmp/packed-packages/trezor-connect-mobile.tgz
+          yarn exec attw --pack ./tmp/packed-packages/trezor-connect-webextension.tgz
 
       - name: Test local install
         run: ./packages/connect/e2e/test-connect-local.sh

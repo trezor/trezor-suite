@@ -17,7 +17,12 @@
                     "types": "./lib/index.d.ts",
                     "default": "./lib/index.js"
                 }
-            }
+            },
+            "./lib/*": {
+                "types": "./lib/*.d.ts",
+                "default": "./lib/*.js"
+            },
+            "./libESM/*": "./libESM/*"
         }
     },
     "files": [

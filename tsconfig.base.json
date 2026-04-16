@@ -42,7 +42,8 @@
         "**/public",
         "**/protobuf-patches",
         "**/trezor-common",
-        "**/jest.config.*js"
+        "**/jest.config.*js",
+        "**/rollup.*.config.mjs"
     ],
     "ts-node": {
         "compilerOptions": {
