@@ -8,18 +8,21 @@ const customFee = '10';
 
 test.describe('Trading - Swap fees Bitcoin', { tag: ['@webOnly', '@T3T1', '@T3W1'] }, () => {
     test.use({ deviceSetup: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
-    test.beforeEach(async ({ onboardingPage, dashboardPage, walletPage, page, tradingMock }) => {
-        await test.step('Mocking responses', async () => {
-            await page.route(invityEndpoint.swapQuotes, route => {
-                route.fulfill({ json: swapQuotesBTCEthereum });
+    test.beforeEach(
+        async ({ onboardingPage, dashboardPage, walletPage, settingsPage, page, tradingMock }) => {
+            await test.step('Mocking responses', async () => {
+                await page.route(invityEndpoint.swapQuotes, route => {
+                    route.fulfill({ json: swapQuotesBTCEthereum });
+                });
+                await tradingMock.routeSwapTrade(swapTradeBTCEthereum);
             });
-            await tradingMock.routeSwapTrade(swapTradeBTCEthereum);
-        });
-        await onboardingPage.completeOnboarding();
-        await dashboardPage.deviceSwitchingOpenButton.click();
-        await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
-        await walletPage.openSwapTrading({ symbol: 'btc' });
-    });
+            await onboardingPage.completeOnboarding();
+            await settingsPage.changeNetworks({ enableNetworks: ['eth'] });
+            await dashboardPage.deviceSwitchingOpenButton.click();
+            await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
+            await walletPage.openSwapTrading({ symbol: 'btc' });
+        },
+    );
 
     test('Swap custom fees for Bitcoin', async ({ page, device, tradingPage, devicePrompt }) => {
         let feeRate: string;
