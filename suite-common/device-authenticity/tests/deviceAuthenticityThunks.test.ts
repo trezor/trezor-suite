@@ -149,7 +149,8 @@ describe('Check device authenticity', () => {
             // expected to have emitted toast
             if (f.expectedToastType) {
                 expectedActions.splice(1, 0, notificationsActions.addToast.type);
-                expect(actions[actions.length - 3].payload.type).toBe(f.expectedToastType);
+                const toastAction = actions[actions.length - 3];
+                expect(toastAction?.payload.type).toBe(f.expectedToastType);
             }
             // thunk is expected to fail fast if there is no device, and not emit a result, which is always bound to device
             if (f.device) {
@@ -157,7 +158,8 @@ describe('Check device authenticity', () => {
             }
             if (f.expectedFulfilled) {
                 expectedActions.push(checkDeviceAuthenticityThunk.fulfilled.type);
-                expect(actions[actions.length - 2].payload.result).toEqual(f.expectedResult);
+                const fulfilledAction = actions[actions.length - 2];
+                expect(fulfilledAction?.payload.result).toEqual(f.expectedResult);
             } else {
                 expectedActions.push(checkDeviceAuthenticityThunk.rejected.type);
             }
