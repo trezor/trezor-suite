@@ -251,8 +251,10 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
                     memberData = memberData[index];
                 } else if (typeof memberData === 'object' && memberData !== null) {
                     // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                    const memberTypeArr: (typeof types)[string] = types[memberTypeName];
+                    // @ts-expect-error: indexing with noUncheckedIndexedAccess
                     const memberTypeDefinition: (typeof types)[string][number] =
-                        types[memberTypeName][index];
+                        memberTypeArr[index];
                     memberTypeName = memberTypeDefinition.type;
                     memberData = memberData[memberTypeDefinition.name as keyof typeof memberData];
                 }

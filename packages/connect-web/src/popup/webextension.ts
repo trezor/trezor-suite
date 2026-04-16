@@ -85,9 +85,11 @@ export class WebExtensionPopup extends Popup {
 
                 return;
             }
-            chrome.tabs.query({ windowId: newWindow.id, active: true }, tabs =>
-                this.onPopupTabResolved(tabs[0]),
-            );
+            chrome.tabs.query({ windowId: newWindow.id, active: true }, tabs => {
+                // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                const tab: chrome.tabs.Tab = tabs[0];
+                this.onPopupTabResolved(tab);
+            });
         });
     }
 
