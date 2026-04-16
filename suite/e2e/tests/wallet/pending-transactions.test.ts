@@ -40,10 +40,7 @@ test.describe(
 
             await onboardingPage.completeOnboarding({ keepDebugModeEnabled: true });
             await settingsPage.toggleTestnetNetworks();
-            await settingsPage.changeNetworks({
-                enableNetworks: ['regtest'],
-                disableNetworks: ['btc'],
-            });
+            await settingsPage.changeNetworks({ enableNetworks: ['regtest'] });
         });
 
         test('Send couple of pending txs and check that they are pending until mined', async ({

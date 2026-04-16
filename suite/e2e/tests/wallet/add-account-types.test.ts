@@ -43,12 +43,8 @@ test.describe('Account types suite', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () =
                 },
             ];
 
-            const coinsWithoutBTC = accountTypes
-                .map(account => account.coin)
-                .filter(coin => coin !== 'btc');
-
             await settingsPage.changeNetworks({
-                enableNetworks: coinsWithoutBTC as NetworkSymbol[],
+                enableNetworks: accountTypes.map(account => account.coin) as NetworkSymbol[],
             });
             await dashboardPage.navigateTo();
 

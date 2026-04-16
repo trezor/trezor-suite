@@ -74,8 +74,9 @@ test.describe('Suite Sync - Passphrase wallets', { tag: ['@T3W1', '@T3T1'] }, ()
     test.slow();
     test.use({ wipeEvoluRelay: true, deviceSetup: { passphrase_protection: true } });
 
-    test.beforeEach(async ({ onboardingPage, metadataPage }) => {
+    test.beforeEach(async ({ onboardingPage, metadataPage, settingsPage }) => {
         await onboardingPage.completeOnboarding({ keepDebugModeEnabled: true });
+        await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
         await metadataPage.enableSuiteSync();
     });
 

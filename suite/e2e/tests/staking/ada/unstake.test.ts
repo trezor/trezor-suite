@@ -49,7 +49,6 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
                     },
                 });
 
-                await settingsPage.coinsTab.disableNetwork('btc');
                 await settingsPage.coinsTab.enableNetwork('ada');
                 await settingsPage.coinsTab.openNetworkAdvanceSettings('ada');
                 await settingsPage.coinsTab.changeBackend('blockfrost', blockbookMock.url);

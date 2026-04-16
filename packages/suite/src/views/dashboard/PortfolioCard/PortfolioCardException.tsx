@@ -26,16 +26,17 @@ interface ContainerProps {
     description?: TranslationKey | JSX.Element;
     cta: CTA | CTA[];
     dataTestBase: string;
+    icon?: React.ReactNode;
 }
 
 // Common wrapper for all views
-const Container = ({ title, description, cta, dataTestBase }: ContainerProps) => {
+const Container = ({ title, description, cta, dataTestBase, icon }: ContainerProps) => {
     const { isLocked } = useDevice();
     const actions = Array.isArray(cta) ? cta : [cta];
 
     return (
         <Column gap={spacings.xxs} data-testid={`@exception/${dataTestBase}`} alignItems="center">
-            <IconCircle name="warning" size={96} intent="warning" />
+            {icon ? icon : <IconCircle name="warning" size={96} intent="warning" />}
             <H3 data-testid={`@exception/${dataTestBase}/header`} margin={{ top: spacings.md }}>
                 <Translation id={title} />
             </H3>
@@ -62,6 +63,7 @@ const Container = ({ title, description, cta, dataTestBase }: ContainerProps) =>
                         isLoading={a.isDisabled ?? isLocked()}
                         onClick={a.action}
                         data-testid={`@exception/${dataTestBase}/${a.intent || 'warning'}-button`}
+                        size={a.size}
                     >
                         <Translation id={a.label || 'TR_RETRY'} />
                     </Button>
@@ -129,14 +131,16 @@ export const PortfolioCardException = ({
         case 'discovery-empty':
             return (
                 <Container
+                    icon={<IconCircle name="coins" size={96} intent="brand" />}
                     title="TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY"
                     description="TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY_DESC"
                     cta={[
                         {
                             action: () => dispatch(goto({ routeName: 'settings-coins' })),
                             isDisabled: false,
-                            icon: 'gear',
+                            intent: 'brand',
                             label: 'TR_COIN_SETTINGS',
+                            size: 'large',
                         },
                     ]}
                     dataTestBase={exception.type}

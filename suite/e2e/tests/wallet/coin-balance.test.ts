@@ -24,10 +24,7 @@ test.describe('Coin balance', { tag: ['@T3W1', '@T3T1'] }, () => {
             await trezorUserEnv.sendToAddressAndMineBlock({ address, btc_amount: 1 });
             await test.step('Regtest discovered with non zero value', async () => {
                 await settingsPage.toggleTestnetNetworks();
-                await settingsPage.changeNetworks({
-                    enableNetworks: ['regtest'],
-                    disableNetworks: ['btc'],
-                });
+                await settingsPage.changeNetworks({ enableNetworks: ['regtest'] });
                 await dashboardPage.navigateTo();
                 await expect(walletPage.accountLabel({ symbol: 'regtest' })).toHaveText(
                     'Bitcoin Regtest #1',

@@ -23,6 +23,7 @@ test.describe('Coin Settings', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
         },
         async ({ dashboardPage, settingsPage }) => {
             const defaultUnchecked: NetworkSymbol[] = [
+                'btc',
                 'ltc',
                 'eth',
                 'etc',
@@ -45,11 +46,9 @@ test.describe('Coin Settings', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
                 await settingsPage.toggleTestnetNetworks();
                 await settingsPage.navigateTo('coins');
 
-                await expect(settingsPage.coinsTab.networkButton('btc')).toBeEnabledCoin();
                 for (const network of defaultUnchecked) {
                     await expect(settingsPage.coinsTab.networkButton(network)).toBeDisabledCoin();
                 }
-                await settingsPage.coinsTab.disableNetwork('btc');
                 // check dashboard with all coins disabled
                 await dashboardPage.navigateTo();
                 await expect(dashboardPage.discoveryEmptyHeader).toHaveTranslation(

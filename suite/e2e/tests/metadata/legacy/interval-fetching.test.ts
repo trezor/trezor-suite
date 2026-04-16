@@ -24,6 +24,7 @@ test.describe('Account metadata', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =>
             onboardingPage,
             metadataPage,
             metadataMock,
+            settingsPage,
         }) => {
             await page.clock.install();
             await metadataMock.start(p.provider);
@@ -34,6 +35,7 @@ test.describe('Account metadata', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =>
             );
 
             await onboardingPage.completeOnboarding();
+            await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
             await metadataPage.enableLegacyLabeling(p.provider);
             await page.getByTestId('@account-menu/btc/normal/0/label').click();
             await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toHaveText(

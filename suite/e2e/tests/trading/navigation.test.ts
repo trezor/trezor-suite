@@ -6,7 +6,7 @@ test.describe('Trading - Navigation', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.beforeEach(async ({ onboardingPage, dashboardPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
         await settingsPage.changeNetworks({
-            enableNetworks: ['eth', 'ltc'],
+            enableNetworks: ['btc', 'eth', 'ltc'],
         });
         await dashboardPage.deviceSwitchingOpenButton.click();
         await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);

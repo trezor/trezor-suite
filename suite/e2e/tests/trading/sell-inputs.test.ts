@@ -26,8 +26,8 @@ test.describe('Trading - Sell inputs', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, 
                 },
             });
         });
-        await test.step('Enable Solana', async () => {
-            await settingsPage.changeNetworks({ enableNetworks: ['sol'] });
+        await test.step('Enable Bitcoin and Solana', async () => {
+            await settingsPage.changeNetworks({ enableNetworks: ['btc', 'sol'] });
             await dashboardPage.deviceSwitchingOpenButton.click();
             await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
         });

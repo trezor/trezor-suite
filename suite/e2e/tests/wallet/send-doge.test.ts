@@ -21,7 +21,6 @@ test.describe('Doge Send', { tag: ['@T3W1', '@T3T1'] }, () => {
             await blockbookMock.start('doge');
             await onboardingPage.completeOnboarding();
             await settingsPage.navigateTo('coins');
-            await settingsPage.coinsTab.disableNetwork('btc');
             await settingsPage.coinsTab.enableNetwork('doge');
             await settingsPage.coinsTab.openNetworkAdvanceSettings('doge');
             await settingsPage.coinsTab.changeBackend('blockbook', blockbookMock.url);

@@ -24,7 +24,7 @@ const formattedAddress = formatAddressWithNewlines(sellWatchBTC.destinationAddre
 
 test.describe('Trading - Sell BTC', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
     test.use({ deviceSetup: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
-    test.beforeEach(async ({ page, tradingMock, onboardingPage, dashboardPage }) => {
+    test.beforeEach(async ({ page, tradingMock, onboardingPage, dashboardPage, settingsPage }) => {
         await test.step('Mocking responses', async () => {
             await page.route(invityEndpoint.sellQuotes, async route => {
                 await route.fulfill({ json: sellQuotesBTC });
@@ -34,6 +34,7 @@ test.describe('Trading - Sell BTC', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () 
                 await route.fulfill({ json: sellWatchBTC });
             });
             await onboardingPage.completeOnboarding();
+            await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
             await dashboardPage.deviceSwitchingOpenButton.click();
             await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
         });
