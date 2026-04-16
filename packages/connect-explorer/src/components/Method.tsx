@@ -62,7 +62,11 @@ const getArray = (field: FieldWithBundle<any>, props: Props) => (
     <ArrayWrapper
         key={field.name}
         field={field}
-        onAdd={() => props.actions.onBatchAdd(field, field.batch[0].fields)}
+        onAdd={() => {
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const firstBatch: (typeof field.batch)[number] = field.batch[0];
+            props.actions.onBatchAdd(field, firstBatch.fields);
+        }}
     >
         {field.items?.map((batch, index) => {
             const key = `${field.name}-${index}`;
@@ -224,9 +228,11 @@ export const VerifyButton = ({ name, onClick }: VerifyButtonProps) => {
     const verifyUrls = ['/method/verifyMessage', '/method/ethereumVerifyMessage'];
     const index = signMethods.indexOf(name);
     if (index < 0) return null;
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const verifyUrl: string = verifyUrls[index];
 
     return (
-        <Button margin={{ top: 12 }} onClick={() => onClick(verifyUrls[index])}>
+        <Button margin={{ top: 12 }} onClick={() => onClick(verifyUrl)}>
             Verify response
         </Button>
     );

@@ -16,7 +16,8 @@ const File = ({ disabled, field, onChange }: FileProps) => {
         if (disabled) return;
         const files = evt?.target.files;
         if (!files || files.length === 0) return;
-        const file = files[0];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const file: File = files[0];
         const reader = new FileReader();
         reader.onload = event => {
             onChange(field, event?.target?.result);

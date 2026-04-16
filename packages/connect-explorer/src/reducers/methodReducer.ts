@@ -37,9 +37,16 @@ const findFieldsNested = (
         return schema.find(f => f.name === field.name);
     }
 
-    const nextField = schema.find(f => f.name === remainingPath[0]);
-    if (nextField?.type === 'array' && typeof remainingPath[1] === 'number') {
-        return findFieldsNested(nextField.items[remainingPath[1]], field, currentDepth + 2);
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const nextFieldName: string = remainingPath[0];
+    const nextField = schema.find(f => f.name === nextFieldName);
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const nextPathSegment: string | number = remainingPath[1];
+    if (nextField?.type === 'array' && typeof nextPathSegment === 'number') {
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const nestedItems: (typeof nextField.items)[number] = nextField.items[nextPathSegment];
+
+        return findFieldsNested(nestedItems, field, currentDepth + 2);
     } else if (nextField?.type === 'union') {
         return findFieldsNested(nextField.current, field, currentDepth + 1);
     }

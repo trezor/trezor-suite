@@ -95,7 +95,8 @@ export const ApiPlayground = ({ options }: ApiPlaygroundProps) => {
     const { manualMode } = method;
 
     useEffect(() => {
-        const option = options[selectedOption];
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const option: (typeof options)[number] = options[selectedOption];
         if ('legacyConfig' in option) {
             actions.onSetMethod(option.legacyConfig);
         } else {
@@ -134,7 +135,7 @@ export const ApiPlayground = ({ options }: ApiPlaygroundProps) => {
                                         label="Select method"
                                         value={{
                                             value: selectedOption,
-                                            label: options[selectedOption].title,
+                                            label: options[selectedOption]?.title ?? '',
                                         }}
                                         onChange={option => setSelectedOption(option.value)}
                                         options={options.map((option, index) => ({

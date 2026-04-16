@@ -85,7 +85,9 @@ export const getParam = (field: FieldBasic<any>, $params: Record<string, any> = 
         }
     } else if (field.type === 'select') {
         if ((field.value === null || field.value === undefined) && !field.optional) {
-            value = field.data ? field.data[0].value : '';
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const firstData: (typeof field.data)[number] | undefined = field.data?.[0];
+            value = firstData ? firstData.value : '';
         } else {
             value = field.value;
         }
