@@ -22,7 +22,8 @@ import type {
 import { AbstractMethod } from '../core/AbstractMethod';
 import { getCoinInfo } from '../data/coinInfo';
 import { getAccountLabel } from '../utils/accountUtils';
-import { getSerializedPath, validatePath } from '../utils/pathUtils';
+import { buildOutputDescriptor } from '../utils/buildOutputDescriptor';
+import { fromHardened, getScriptType, getSerializedPath, validatePath } from '../utils/pathUtils';
 
 type Request = GetAccountDescriptorParams & { address_n: number[]; coinInfo: CoinInfo };
 
@@ -133,7 +134,13 @@ export default class GetAccountDescriptor extends AbstractMethod<
             if (this.disposed) break;
 
             try {
-                const { descriptor, address_n, legacyXpub } = await this.getDevice()
+                const {
+                    descriptor,
+                    address_n,
+                    legacyXpub,
+                    outputDescriptorBip380,
+                    rootFingerprint,
+                } = await this.getDevice()
                     .getCommands()
                     .getAccountDescriptor(
                         request.coinInfo,
@@ -145,6 +152,20 @@ export default class GetAccountDescriptor extends AbstractMethod<
                     descriptor,
                     path: getSerializedPath(address_n),
                     legacyXpub,
+                    // outputDescriptorBip380 is provided by firmware >= 2.6.5.
+                    // For older firmware, build it from the available data (bitcoin only).
+                    outputDescriptorBip380:
+                        outputDescriptorBip380 ??
+                        (request.coinInfo.type === 'bitcoin' && legacyXpub
+                            ? buildOutputDescriptor({
+                                  coin: request.coinInfo.name,
+                                  account: fromHardened(address_n[2]),
+                                  purpose: fromHardened(address_n[0]),
+                                  scriptType: getScriptType(address_n),
+                                  xpub: legacyXpub,
+                                  rootFingerprint,
+                              })
+                            : undefined),
                 };
                 sendProgress(i, response);
                 responses.push(response);
