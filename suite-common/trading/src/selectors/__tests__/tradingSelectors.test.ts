@@ -722,11 +722,11 @@ describe('tradingSelectors', () => {
             const result = selectDeviceTradingTradesOrderedByDate(state);
 
             expect(result).toHaveLength(5);
-            expect(result[0].data.orderId).toBe('orderId4');
-            expect(result[1].data.orderId).toBe('orderId3');
-            expect(result[2].data.orderId).toBe('orderId2');
-            expect(result[3].data.orderId).toBe('orderId1');
-            expect(result[4].data.orderId).toBe('orderId5');
+            expect(result[0]?.data.orderId).toBe('orderId4');
+            expect(result[1]?.data.orderId).toBe('orderId3');
+            expect(result[2]?.data.orderId).toBe('orderId2');
+            expect(result[3]?.data.orderId).toBe('orderId1');
+            expect(result[4]?.data.orderId).toBe('orderId5');
         });
 
         it('should be stable', () => {

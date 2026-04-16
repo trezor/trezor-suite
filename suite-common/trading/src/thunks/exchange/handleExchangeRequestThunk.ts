@@ -39,7 +39,7 @@ export const getQuoteRequestData = ({
         formValues;
     const decimals = getNetworkDecimalsWithFallback(network.symbol);
 
-    const unformattedOutputAmount = outputs[0].amount ?? '';
+    const unformattedOutputAmount = outputs[0]?.amount ?? '';
     const sendStringAmount =
         unformattedOutputAmount && shouldSendInSats
             ? convertAmountSubunitsToUnits(unformattedOutputAmount, decimals)

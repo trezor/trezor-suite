@@ -23,6 +23,7 @@ describe('sendDexTransactionThunk', () => {
 
     const getQuote = () => {
         const quoteNotTyped = MIN_MAX_QUOTES_OK[0];
+        if (!quoteNotTyped) throw new Error('Missing test fixture');
         const quote = {
             ...quoteNotTyped,
             send: quoteNotTyped.send as CryptoId,
@@ -177,14 +178,14 @@ describe('sendDexTransactionThunk', () => {
             }),
         );
 
-        const confirmTradeThunkArgs = confirmExchangeTradeThunkSpy.mock.calls[0][0];
+        const confirmTradeThunkArgs = confirmExchangeTradeThunkSpy.mock.calls[0]?.[0];
 
         expect(result.meta.requestStatus).toEqual('fulfilled');
         expect(tradingThunks.recomposeAndSignTxThunk).toHaveBeenCalledTimes(1);
         expect(store.getState().wallet.trading.trades).toEqual([]);
         expect(confirmExchangeTradeThunkSpy).toHaveBeenCalledTimes(1);
-        expect(confirmTradeThunkArgs.trade?.approvalSendTxHash).toEqual('txid');
-        expect(confirmTradeThunkArgs.trade?.status).toEqual('APPROVAL_PENDING');
+        expect(confirmTradeThunkArgs?.trade?.approvalSendTxHash).toEqual('txid');
+        expect(confirmTradeThunkArgs?.trade?.status).toEqual('APPROVAL_PENDING');
     });
 
     it('should successfully call confirmTradeThunk for making trade', async () => {
@@ -224,8 +225,8 @@ describe('sendDexTransactionThunk', () => {
             }),
         );
 
-        const confirmTradeThunkArgs = confirmExchangeTradeThunkSpy.mock.calls[0][0];
-        const { trade } = confirmTradeThunkArgs;
+        const confirmTradeThunkArgs = confirmExchangeTradeThunkSpy.mock.calls[0]?.[0];
+        const trade = confirmTradeThunkArgs?.trade;
 
         expect(result.meta.requestStatus).toEqual('fulfilled');
         expect(tradingThunks.recomposeAndSignTxThunk).toHaveBeenCalledTimes(1);

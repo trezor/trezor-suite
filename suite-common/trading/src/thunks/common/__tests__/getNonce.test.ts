@@ -278,7 +278,7 @@ describe('getNonce thunk', () => {
 
             // Check if the action is in pending state
             const actions = store.getActions();
-            expect(actions[0].type).toBe(getNonce.pending.type);
+            expect(actions[0]?.type).toBe(getNonce.pending.type);
 
             const result = await promise;
             expect(result.type).toBe(getNonce.fulfilled.type);

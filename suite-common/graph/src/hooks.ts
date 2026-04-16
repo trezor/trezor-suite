@@ -60,11 +60,11 @@ const normalizeExtremeGraphEvents = (
     const minimalEventDate = startOfTimeFrameDate.getTime() + minimalEdgeOffset;
     const maximalEventDate = endOfTimeFrameDate.getTime() - minimalEdgeOffset;
 
-    if (firstEvent.date.getTime() < minimalEventDate) {
+    if (firstEvent && firstEvent.date.getTime() < minimalEventDate) {
         firstEvent.date = new Date(minimalEventDate);
     }
 
-    if (lastEvent.date.getTime() > maximalEventDate) {
+    if (lastEvent && lastEvent.date.getTime() > maximalEventDate) {
         lastEvent.date = new Date(maximalEventDate);
     }
 };
@@ -125,21 +125,24 @@ export function useGraphForAccounts(params: useGraphForAccountsParams): {
 
                     // Process transaction events only for the single account detail graph.
                     if (!isPortfolioGraph) {
-                        await getAccountMovementEvents({
-                            account: accounts[0],
-                            startOfTimeFrameDate,
-                            endOfTimeFrameDate,
-                            dispatch,
-                        }).then(events => {
-                            normalizeExtremeGraphEvents(
-                                events,
-                                startOfTimeFrameDate ?? points[0].date,
+                        const firstAccount = accounts[0];
+                        if (firstAccount) {
+                            await getAccountMovementEvents({
+                                account: firstAccount,
+                                startOfTimeFrameDate,
                                 endOfTimeFrameDate,
-                            );
-                            // We need to set events after graph points, othewise it will mess up events randomly
-                            // because of strange useEffect in AnimatedLineGraph component
-                            setGraphEvents(events);
-                        });
+                                dispatch,
+                            }).then(events => {
+                                normalizeExtremeGraphEvents(
+                                    events,
+                                    startOfTimeFrameDate ?? points[0]?.date ?? new Date(),
+                                    endOfTimeFrameDate,
+                                );
+                                // We need to set events after graph points, othewise it will mess up events randomly
+                                // because of strange useEffect in AnimatedLineGraph component
+                                setGraphEvents(events);
+                            });
+                        }
                     }
 
                     // If the fetch was interrupted by a new fetch, do not set the values.

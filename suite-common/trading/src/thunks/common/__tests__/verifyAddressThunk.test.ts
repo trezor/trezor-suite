@@ -61,6 +61,7 @@ describe('verifyAddressThunk', () => {
         });
 
         const account = accounts[0];
+        if (!account) throw new Error('Missing test fixture');
         const addressData = account.addresses?.unused[0];
         const verifiedAddress = {
             address: addressData?.address,
@@ -110,6 +111,7 @@ describe('verifyAddressThunk', () => {
         });
 
         const account = accounts[0];
+        if (!account) throw new Error('Missing test fixture');
         const addressData = account.addresses?.unused[0];
 
         (selectSelectedDevice as jest.Mock).mockImplementation(() => undefined);
@@ -185,6 +187,7 @@ describe('verifyAddressThunk', () => {
         });
 
         const account = accounts[0];
+        if (!account) throw new Error('Missing test fixture');
         const addressData = account.addresses?.unused[0];
 
         (selectSelectedDevice as jest.Mock).mockImplementation(() => ({
@@ -232,6 +235,7 @@ describe('verifyAddressThunk', () => {
         });
 
         const account = accounts[0];
+        if (!account) throw new Error('Missing test fixture');
         const addressData = account.addresses?.unused[0];
 
         (selectSelectedDevice as jest.Mock).mockImplementation(() => ({
@@ -279,6 +283,7 @@ describe('verifyAddressThunk', () => {
         });
 
         const account = accounts[0];
+        if (!account) throw new Error('Missing test fixture');
         const addressData = account.addresses?.unused[0];
 
         (selectSelectedDevice as jest.Mock).mockImplementation(() => ({
@@ -324,6 +329,7 @@ describe('verifyAddressThunk', () => {
         });
 
         const account = accounts[0];
+        if (!account) throw new Error('Missing test fixture');
         const addressData = account.addresses?.unused[0];
 
         (selectSelectedDevice as jest.Mock).mockImplementation(() => ({

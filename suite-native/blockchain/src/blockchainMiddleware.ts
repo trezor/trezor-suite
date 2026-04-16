@@ -20,8 +20,9 @@ export const selectNetworksWithPendingTransactions = (state: TransactionsRootSta
     const pendingTransactions = selectAllPendingTransactions(state);
 
     return typedObjectKeys(pendingTransactions)
-        .filter(accountKey => pendingTransactions[accountKey].length > 0)
-        .map(accountKey => pendingTransactions[accountKey][0].symbol);
+        .filter(accountKey => (pendingTransactions[accountKey]?.length ?? 0) > 0)
+        .map(accountKey => pendingTransactions[accountKey]?.[0]?.symbol)
+        .filter(Boolean);
 };
 
 // Be very careful when adding new stuff here, it could affect performance a lot on mobile

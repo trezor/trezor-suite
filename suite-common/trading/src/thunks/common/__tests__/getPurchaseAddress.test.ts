@@ -17,8 +17,10 @@ jest.mock('@suite-common/wallet-core', () => ({
     confirmAddressOnDeviceThunk: jest.fn(),
 }));
 
+const baseAccount = accounts[0];
+if (!baseAccount) throw new Error('Missing test fixture');
 const mockAccount: Account = {
-    ...accounts[0],
+    ...baseAccount,
     addresses: {
         change: [],
         used: [],

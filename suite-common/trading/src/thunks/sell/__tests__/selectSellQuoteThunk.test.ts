@@ -25,6 +25,7 @@ describe('selectSellQuoteThunk', () => {
 
     const getDataMocks = () => {
         const quote = sellUtilsFixtures.MIN_MAX_QUOTES_LOW[0];
+        if (!quote) throw new Error('Missing test fixture');
         const quoteExchange = quote.exchange as string;
         const cryptoCurrency = quote.cryptoCurrency as CryptoId;
         const fiatCurrency = quote.fiatCurrency as string;

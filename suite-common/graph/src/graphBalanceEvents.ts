@@ -55,7 +55,8 @@ export const groupBalanceMovementEvents = (
     balanceMovements.forEach(balanceMovement => {
         if (
             A.isEmpty(currentGroup) ||
-            balanceMovement.date - currentGroup[currentGroup.length - 1].date < groupingThreshold
+            balanceMovement.date - (currentGroup[currentGroup.length - 1]?.date ?? 0) <
+                groupingThreshold
         ) {
             currentGroup.push(balanceMovement);
 
@@ -186,7 +187,7 @@ export const getAccountMovementEvents = async ({
     /** Determines relative maximum distance of adjacent balance movements to be grouped together. */
     const GROUPING_THRESHOLD =
         (endOfTimeFrameDate.getTime() -
-            (startOfTimeFrameDate?.getTime() ?? accountHistoryMovements[0].time * 1000)) /
+            (startOfTimeFrameDate?.getTime() ?? (accountHistoryMovements[0]?.time ?? 0) * 1000)) /
         GROUPING_DIVISOR;
 
     return pipe(

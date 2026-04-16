@@ -156,19 +156,19 @@ export const tradingFixtures = [
         actions: [
             {
                 type: tradingActions.setModalAccountKey.type,
-                payload: accounts[0].key,
+                payload: accounts[0]?.key,
             },
         ],
         result: {
             ...initialState,
-            modalAccountKey: accounts[0].key,
+            modalAccountKey: accounts[0]?.key,
         },
     },
     {
         description: 'should clear modal account',
         initialState: {
             ...initialState,
-            modalAccountKey: accounts[0].key,
+            modalAccountKey: accounts[0]?.key,
         },
         actions: [
             {

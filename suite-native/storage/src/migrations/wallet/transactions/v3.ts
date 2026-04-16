@@ -16,6 +16,7 @@ export const migrateTransactionsDeprecateNetworks = (
     for (const oldKey in oldTransactions) {
         const oldTxns = oldTransactions[oldKey];
 
+        if (!oldTxns) continue;
         const newTxns = oldTxns.filter(txn => !deprecatedNetworks.includes(txn.symbol));
         if (newTxns.length > 0) {
             newTransactions[oldKey] = newTxns;

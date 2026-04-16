@@ -464,6 +464,7 @@ describe('handleSellRequestThunk', () => {
                 outputs: [
                     {
                         ...input.formValues.outputs[0],
+                        currency: input.formValues.outputs[0]?.currency ?? { value: '' },
                         amount: undefined as unknown as string, // Invalid amount
                         fiat: undefined as unknown as string, // Invalid fiat
                     },

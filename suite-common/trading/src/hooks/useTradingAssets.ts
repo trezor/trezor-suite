@@ -234,13 +234,17 @@ export function useTradingAssets() {
                         coins[cryptoId],
                 )
                 .map(cryptoId => [cryptoId, coins[cryptoId]] as const)
-                .map(([cryptoId, coinInfo]) =>
-                    createAssetOption({
-                        cryptoId,
-                        coinInfo,
-                        platformInfo: getTradingPlatformsInfoByCryptoId(platforms, cryptoId),
-                    }),
-                )
+                .flatMap(([cryptoId, coinInfo]) => {
+                    if (!coinInfo) return [];
+
+                    return [
+                        createAssetOption({
+                            cryptoId,
+                            coinInfo,
+                            platformInfo: getTradingPlatformsInfoByCryptoId(platforms, cryptoId),
+                        }),
+                    ];
+                })
                 .filter(asset => asset !== null);
 
             const networks = assets.filter(asset => asset.isNativeToken).map(asset => asset.symbol);

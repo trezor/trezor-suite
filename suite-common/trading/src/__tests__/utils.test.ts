@@ -212,7 +212,7 @@ describe('getTradingPaymentMethods', () => {
         const applePayMethod = paymentMethods.find(method => method.value === 'applePay');
 
         expect(applePayMethod?.receiveAmount).toBe(
-            BUY_FIXTURE.MIN_MAX_QUOTES_OK[1].receiveStringAmount,
+            BUY_FIXTURE.MIN_MAX_QUOTES_OK[1]?.receiveStringAmount,
         );
     });
 });

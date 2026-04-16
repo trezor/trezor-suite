@@ -41,6 +41,7 @@ describe('selectBuyQuoteThunk', () => {
 
     const getDataMocks = () => {
         const quote = MIN_MAX_QUOTES_OK[0];
+        if (!quote) throw new Error('Missing test fixture');
         const quoteExchange = quote.exchange as string;
         const tradedCoin = quote.receiveCurrency as CryptoId;
         const fiat = quote.fiatCurrency as FiatCurrencyCode;

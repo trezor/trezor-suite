@@ -80,7 +80,7 @@ describe('useCountryFilteredData', () => {
     describe('sorting', () => {
         it('should sort by name when no filter is applied', () => {
             const { result } = renderUseCountryFilteredData();
-            expect(result.current.filteredData[0].name).toBe('Åland Islands');
+            expect(result.current.filteredData[0]?.name).toBe('Åland Islands');
         });
 
         it('should place exact match on name before other results', () => {

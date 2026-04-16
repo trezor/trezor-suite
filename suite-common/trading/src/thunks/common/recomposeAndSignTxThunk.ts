@@ -230,7 +230,7 @@ export const recomposeAndSignTxThunk = createThunk<
         */
         const isTradedWholeBalance = precomposedToSign.outputs.length === 1; // sending whole balance
         const sendAmount = isTradedWholeBalance
-            ? precomposedToSign.outputs[0].amount.toString()
+            ? precomposedToSign.outputs[0]?.amount.toString()
             : undefined;
         const formattedMaxAmount = sendAmount
             ? subunitsToUnits({
