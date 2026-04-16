@@ -21,7 +21,7 @@ export const SellPreviewView = memo(({ quote, txnErrorString }: SellPreviewViewP
     const formStep = useSelector(selectTradingSellFormStep);
 
     const [selectedBankAccountIban, setSelectedBankAccountIban] = useState(
-        quote?.bankAccounts?.[0].bankAccount,
+        quote?.bankAccounts?.[0]?.bankAccount,
     );
 
     const isTxnError = !!txnErrorString;

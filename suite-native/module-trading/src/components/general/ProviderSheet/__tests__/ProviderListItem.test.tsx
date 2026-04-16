@@ -34,7 +34,8 @@ describe('ProviderListItem', () => {
 
     it('should render provider information correctly', () => {
         const preloadedState = { wallet: { trading: getInitializedTradingStateWithQuotes() } };
-        const quote = preloadedState.wallet.trading.buy.quotes[0];
+        const quote = preloadedState.wallet.trading.buy.quotes?.[0];
+        if (!quote) throw new Error('Expected buy quote at index 0');
 
         const { getByText } = renderProviderListItem(quote, preloadedState, {});
 
@@ -43,7 +44,8 @@ describe('ProviderListItem', () => {
 
     it('should render trading information with formatted strings', () => {
         const preloadedState = { wallet: { trading: getInitializedTradingStateWithQuotes() } };
-        const quote = preloadedState.wallet.trading.buy.quotes[0];
+        const quote = preloadedState.wallet.trading.buy.quotes?.[0];
+        if (!quote) throw new Error('Expected buy quote at index 0');
 
         const { getByText } = renderProviderListItem(quote, preloadedState, {});
 
@@ -53,7 +55,8 @@ describe('ProviderListItem', () => {
 
     it('should render KYC information when provider has KYC policy', () => {
         const preloadedState = { wallet: { trading: getInitializedTradingStateWithQuotes() } };
-        const quote = preloadedState.wallet.trading.exchange.quotes[2];
+        const quote = preloadedState.wallet.trading.exchange.quotes?.[2];
+        if (!quote) throw new Error('Expected exchange quote at index 2');
 
         const { getByText } = renderProviderListItem(quote, preloadedState, {
             tradingType: 'exchange',
@@ -64,7 +67,8 @@ describe('ProviderListItem', () => {
 
     it('should render anonymous information for DEX providers', () => {
         const preloadedState = { wallet: { trading: getInitializedTradingStateWithQuotes() } };
-        const quote = preloadedState.wallet.trading.exchange.quotes[3];
+        const quote = preloadedState.wallet.trading.exchange.quotes?.[3];
+        if (!quote) throw new Error('Expected exchange quote at index 3');
 
         const { getByText } = renderProviderListItem(quote, preloadedState, {
             tradingType: 'exchange',
@@ -76,7 +80,8 @@ describe('ProviderListItem', () => {
 
     it('should not render when quote has no orderId', () => {
         const preloadedState = { wallet: { trading: getInitializedTradingStateWithQuotes() } };
-        const baseQuote = preloadedState.wallet.trading.buy.quotes[0];
+        const baseQuote = preloadedState.wallet.trading.buy.quotes?.[0];
+        if (!baseQuote) throw new Error('Expected buy quote at index 0');
         const { orderId, ...quoteWithoutOrderId } = baseQuote;
         const quote = quoteWithoutOrderId as TradingTradeType;
 
@@ -87,7 +92,8 @@ describe('ProviderListItem', () => {
 
     it('should render KYC warning for buy quote', () => {
         const preloadedState = { wallet: { trading: getInitializedTradingStateWithQuotes() } };
-        const quote = preloadedState.wallet.trading.buy.quotes[0];
+        const quote = preloadedState.wallet.trading.buy.quotes?.[0];
+        if (!quote) throw new Error('Expected buy quote at index 0');
 
         const { getByText } = renderProviderListItem(quote, preloadedState, {});
 
@@ -96,7 +102,8 @@ describe('ProviderListItem', () => {
 
     it('should render KYC warning for sell quote', () => {
         const preloadedState = { wallet: { trading: getInitializedTradingStateWithQuotes() } };
-        const quote = preloadedState.wallet.trading.sell.quotes[0];
+        const quote = preloadedState.wallet.trading.sell.quotes?.[0];
+        if (!quote) throw new Error('Expected sell quote at index 0');
 
         const { getByText } = renderProviderListItem(quote, preloadedState, {
             tradingType: 'sell',

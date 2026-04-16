@@ -443,12 +443,16 @@ const main = async () => {
     let llmAnalysisFile = DEFAULT_LLM_ANALYSIS_FILE;
 
     for (let i = 0; i < args.length; i++) {
-        if ((args[i] === '--api-key' || args[i] === '-k') && args[i + 1]) {
-            apiKey = args[++i];
-        } else if (args[i] === '--coverage-map' && args[i + 1]) {
-            indexFile = args[++i];
-        } else if (args[i] === '--llm-analysis' && args[i + 1]) {
-            llmAnalysisFile = args[++i];
+        const nextArg = args[i + 1];
+        if ((args[i] === '--api-key' || args[i] === '-k') && nextArg) {
+            apiKey = nextArg;
+            i++;
+        } else if (args[i] === '--coverage-map' && nextArg) {
+            indexFile = nextArg;
+            i++;
+        } else if (args[i] === '--llm-analysis' && nextArg) {
+            llmAnalysisFile = nextArg;
+            i++;
         }
     }
 

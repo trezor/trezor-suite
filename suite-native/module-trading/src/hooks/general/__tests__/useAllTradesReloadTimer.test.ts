@@ -131,8 +131,8 @@ describe('useAllTradesReloadTimer', () => {
         const { result } = renderUseAllTradesReloadTimer(store);
 
         expect(result.current.tradesToWatch).toHaveLength(2);
-        expect(result.current.tradesToWatch[0].data.status).toBe('SUBMITTED');
-        expect(result.current.tradesToWatch[1].data.status).toBe('CONVERTING');
+        expect(result.current.tradesToWatch[0]?.data.status).toBe('SUBMITTED');
+        expect(result.current.tradesToWatch[1]?.data.status).toBe('CONVERTING');
         expect(result.current.tradesByAccount).toHaveLength(1);
     });
 

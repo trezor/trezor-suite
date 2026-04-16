@@ -19,7 +19,7 @@ export const useActiveTradingTypeReaction = () => {
         if (tradingType && enabledTradingTypes.includes(tradingType)) {
             activeTradingType = tradingType;
         } else if (enabledTradingTypes.length > 0) {
-            activeTradingType = enabledTradingTypes[0];
+            activeTradingType = enabledTradingTypes[0] ?? 'buy';
         }
 
         dispatch(tradingActions.setActiveTradingType(activeTradingType));

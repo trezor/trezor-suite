@@ -100,7 +100,7 @@ const createPreloadedState = (quote?: ExchangeTrade): PreloadedState => {
         quotes: exchangeQuotes,
         tradingAccountKey: 'eth-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
         receiveAccountKey: 'btc-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
-        receiveAddress: getBtcAccount().addresses?.used[0].address,
+        receiveAddress: getBtcAccount().addresses?.used[0]?.address,
         selectedQuote: quote ?? mercuryoFixedWorstQuote,
     };
     preloadedState.wallet.send = {

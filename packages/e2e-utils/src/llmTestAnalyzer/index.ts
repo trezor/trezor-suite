@@ -254,8 +254,10 @@ const main = async () => {
 
     const excludePatterns: string[] = [];
     for (let i = 0; i < args.length; i++) {
-        if (args[i] === '--exclude' && args[i + 1]) {
-            excludePatterns.push(args[++i]);
+        const nextArg = args[i + 1];
+        if (args[i] === '--exclude' && nextArg) {
+            excludePatterns.push(nextArg);
+            i++;
         }
     }
 

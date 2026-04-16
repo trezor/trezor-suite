@@ -64,6 +64,6 @@ describe('useExchangeBuyTradeableAssetsFilteredData', () => {
         });
 
         expect(result.current.filteredData).toHaveLength(1);
-        expect(result.current.filteredData[0].cryptoId).toBe(usdcAsset.cryptoId);
+        expect(result.current.filteredData[0]?.cryptoId).toBe(usdcAsset.cryptoId);
     });
 });

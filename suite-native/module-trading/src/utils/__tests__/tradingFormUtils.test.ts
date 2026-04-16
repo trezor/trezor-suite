@@ -112,9 +112,11 @@ describe('createFormStateForSendForm', () => {
                 sendAccountKey,
             });
 
-            expect(formState.outputs[0].token).toBe('0x0987654321123456789012345678901234567890');
-            expect(formState.outputs[0].address).toBe('0x1234567890123456789012345678901234567890');
-            expect(formState.outputs[0].amount).toBe('100.0');
+            expect(formState.outputs[0]?.token).toBe('0x0987654321123456789012345678901234567890');
+            expect(formState.outputs[0]?.address).toBe(
+                '0x1234567890123456789012345678901234567890',
+            );
+            expect(formState.outputs[0]?.amount).toBe('100.0');
         });
 
         it('should handle extra fields (destinationTag)', () => {
@@ -222,7 +224,7 @@ describe('createFormStateForSendForm', () => {
             });
 
             // DEX output address should come from dexTx.to, not sendAddress
-            expect(formState.outputs[0].address).toBe('0xDexRouterAddress');
+            expect(formState.outputs[0]?.address).toBe('0xDexRouterAddress');
             expect(formState.transactionData).toBe('0xabcdef1234567890');
             expect(formState.ethereumAdjustGasLimit).toBe('1.25');
         });
@@ -254,7 +256,7 @@ describe('createFormStateForSendForm', () => {
                 sendAccountKey,
             });
 
-            expect(formState.outputs[0].address).toBe('0xDexRouterAddress');
+            expect(formState.outputs[0]?.address).toBe('0xDexRouterAddress');
             expect(formState.transactionData).toBe('0xapprovaldata');
             // No gas adjustment for approval transactions
             expect(formState.ethereumAdjustGasLimit).toBe('');
@@ -281,7 +283,7 @@ describe('createFormStateForSendForm', () => {
                 sendAccountKey,
             });
 
-            expect(formState.outputs[0].address).toBe('0xChangellyDepositAddress');
+            expect(formState.outputs[0]?.address).toBe('0xChangellyDepositAddress');
             expect(formState.transactionData).toBe('');
             expect(formState.ethereumAdjustGasLimit).toBe('');
         });

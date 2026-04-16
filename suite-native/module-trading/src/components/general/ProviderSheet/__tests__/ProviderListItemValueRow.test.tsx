@@ -21,7 +21,8 @@ describe('ProviderListItemValueRow', () => {
 
     it('should render formatted rate for a buy quote', () => {
         const preloadedState = getPreloadedState();
-        const quote = preloadedState.wallet.trading.buy.quotes[0];
+        const quote = preloadedState.wallet.trading.buy.quotes?.[0];
+        if (!quote) throw new Error('Expected buy quote at index 0');
 
         const { getByText } = renderProviderListItemValueRow(quote, preloadedState);
 
@@ -30,7 +31,8 @@ describe('ProviderListItemValueRow', () => {
 
     it('should render formatted rate for a sell quote', () => {
         const preloadedState = getPreloadedState();
-        const quote = preloadedState.wallet.trading.sell.quotes[0];
+        const quote = preloadedState.wallet.trading.sell.quotes?.[0];
+        if (!quote) throw new Error('Expected sell quote at index 0');
 
         const { getByText } = renderProviderListItemValueRow(quote, preloadedState);
 
@@ -40,7 +42,8 @@ describe('ProviderListItemValueRow', () => {
     it('should render nothing when buy quote has zero receiveStringAmount', () => {
         const preloadedState = getPreloadedState();
         // The third buy quote has receiveStringAmount: '0' which results in no formattedRate
-        const quote = preloadedState.wallet.trading.buy.quotes[2];
+        const quote = preloadedState.wallet.trading.buy.quotes?.[2];
+        if (!quote) throw new Error('Expected buy quote at index 2');
 
         const { toJSON } = renderProviderListItemValueRow(quote, preloadedState);
 

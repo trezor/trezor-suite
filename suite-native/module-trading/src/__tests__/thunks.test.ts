@@ -253,11 +253,11 @@ describe('thunks', () => {
             expect(result.type).toContain('fulfilled');
 
             const draft = localStore.getState().wallet.formDrafts[formDraftKey];
-            expect(draft.swapOnlyField).toBe('keep-around');
-            expect(draft.selectedFee).toBe('normal');
-            expect(draft.feePerUnit).toBe('20');
-            expect(draft.feeLimit).toBe('52000');
-            expect(draft.outputs[0].address).toBe('0xabc');
+            expect(draft?.swapOnlyField).toBe('keep-around');
+            expect(draft?.selectedFee).toBe('normal');
+            expect(draft?.feePerUnit).toBe('20');
+            expect(draft?.feeLimit).toBe('52000');
+            expect(draft?.outputs[0]?.address).toBe('0xabc');
         });
 
         it('should add default payment output with token when exchange form draft has no outputs', async () => {
@@ -293,7 +293,7 @@ describe('thunks', () => {
             expect(result.type).toContain('fulfilled');
 
             const draft = localStore.getState().wallet.formDrafts[formDraftKey];
-            expect(draft.outputs[0].token).toBe('0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48');
+            expect(draft?.outputs[0]?.token).toBe('0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48');
         });
     });
 });

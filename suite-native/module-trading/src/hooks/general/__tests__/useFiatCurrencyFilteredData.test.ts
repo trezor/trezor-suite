@@ -61,7 +61,7 @@ describe('useFiatCurrencyFilteredData', () => {
             result.current.setFilterValue('unITed');
         });
 
-        expect(result.current.filteredData[0].data).toEqual([
+        expect(result.current.filteredData[0]?.data).toEqual([
             expect.objectContaining({ value: 'usd' }),
         ]);
     });
@@ -73,7 +73,7 @@ describe('useFiatCurrencyFilteredData', () => {
             result.current.setFilterValue('uSd');
         });
 
-        expect(result.current.filteredData[0].data).toEqual([
+        expect(result.current.filteredData[0]?.data).toEqual([
             expect.objectContaining({ value: 'usd' }),
         ]);
     });
