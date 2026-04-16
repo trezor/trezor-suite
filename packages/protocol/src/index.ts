@@ -4,5 +4,10 @@ export * as bridge from './protocol-bridge';
 export * as thp from './protocol-thp';
 export * as trzd from './protocol-trzd';
 export * as tpn from './protocol-tpn';
+export {
+    type DecodedTrezorPushNotification,
+    TrezorPushNotificationMode,
+    TrezorPushNotificationType,
+} from './protocol-tpn';
 export * from './errors';
 export * from './types';

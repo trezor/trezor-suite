@@ -5,7 +5,7 @@ import type {
     FirmwareType,
     IntermediaryReleaseConfig,
 } from '@trezor/device-utils';
-import type { VersionArray } from '@trezor/utils/src/versionUtils';
+import type { VersionArray } from '@trezor/utils';
 
 export type FirmwareBoundary = `${number}.${number}.${number}` | '0';
 
