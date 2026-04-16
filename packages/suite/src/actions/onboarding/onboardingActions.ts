@@ -10,13 +10,8 @@ import {
 import { selectSelectedDevice } from '@suite-common/device';
 import { type ExtraDependencies } from '@suite-common/redux-utils';
 import { type BackupType } from '@suite-common/suite-types';
-import {
-    changeNetworks,
-    selectEnabledNetworks,
-    startDiscoveryThunk,
-} from '@suite-common/wallet-core';
+import { startDiscoveryThunk } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
-import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 
 import { ONBOARDING } from 'src/actions/onboarding/constants';
 import { stepCategories } from 'src/config/onboarding/steps';
@@ -134,14 +129,6 @@ const goToSuite = () => (dispatch: Dispatch, getState: GetState, extra: ExtraDep
     dispatch(initialRunCompleted());
     dispatch(resetOnboarding());
     dispatch(closeModalApp(true));
-
-    // Enable eth by default for new users unless the device has bitcoin-only firmware.
-    if (!hasBitcoinOnlyFirmware(device)) {
-        const enabledNetworks = selectEnabledNetworks(getState());
-        if (!enabledNetworks.includes('eth')) {
-            dispatch(changeNetworks([...enabledNetworks, 'eth']));
-        }
-    }
 
     dispatch(startDiscoveryThunk({ device }));
 

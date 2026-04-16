@@ -78,6 +78,7 @@ const EMPTY_ACTION = { type: 'foo' } as any;
 
 const getInitialState = (initialRun?: boolean) => {
     const initialFlagsState = flagsReducer(undefined, EMPTY_ACTION);
+    const walletState = walletReducers(undefined, EMPTY_ACTION);
 
     return {
         suite: suiteReducer(undefined, EMPTY_ACTION),
@@ -91,7 +92,10 @@ const getInitialState = (initialRun?: boolean) => {
         router: routerReducer(undefined, EMPTY_ACTION),
         analytics: analyticsReducer(undefined, EMPTY_ACTION),
         modal: modalReducer(undefined, EMPTY_ACTION),
-        wallet: walletReducers(undefined, EMPTY_ACTION),
+        wallet: {
+            ...walletState,
+            settings: { ...walletState.settings, enabledNetworks: ['btc'] },
+        },
         messageSystem: messageSystemReducer(undefined, EMPTY_ACTION),
         device: deviceReducer(undefined, EMPTY_ACTION),
         metadata: metadataReducer(undefined, EMPTY_ACTION),
