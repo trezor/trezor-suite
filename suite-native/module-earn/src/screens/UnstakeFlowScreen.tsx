@@ -64,6 +64,7 @@ export const UnstakeFlowScreen = () => {
                 accountKey={accountKey}
                 isStakeVariant
                 titleLabel={<Translation id="earn.earnFormScreen.availableBalance" />}
+                cryptoAmount={stakedBalance ?? undefined}
             />
 
             <Box marginTop="sp16">
