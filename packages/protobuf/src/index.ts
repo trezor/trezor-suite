@@ -19,3 +19,4 @@ export const { parseConfigure, decodeMessage, encodeMessage } = (() => {
 
 export { loadDefinitions } from './load-definitions';
 export * as MessagesSchema from './definitions';
+export type { FailureType, Nonce } from './definitions';
