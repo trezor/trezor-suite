@@ -43,6 +43,7 @@ export const useDayCoinPriceChange = (symbol?: NetworkSymbol | null) => {
             if (!timestampedFiatRates) return;
 
             const [yesterday, today] = timestampedFiatRates.tickers;
+            if (!yesterday || !today) return;
             setYesterdayValue(yesterday.rates[fiatCurrencyCode] ?? null);
 
             const currentRate = today.rates[fiatCurrencyCode];

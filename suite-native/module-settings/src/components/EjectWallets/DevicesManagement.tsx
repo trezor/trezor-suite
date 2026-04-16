@@ -17,6 +17,7 @@ export const DevicesManagement = () => {
             <AutoEjectSwitch />
             {deviceGroups.map(devices => {
                 const [firstDevice] = devices;
+                if (!firstDevice) return null;
 
                 if (!shouldDeviceBeRemembered({ device: firstDevice })) return null;
 
