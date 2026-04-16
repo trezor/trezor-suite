@@ -14,7 +14,7 @@ const OUTPUT_DIR = resolve(import.meta.dirname, './src/api');
 export default defineConfig({
     worker: {
         input: {
-            target: resolve(import.meta.dirname, './openapi.yaml'),
+            target: 'https://api.yield.xyz/docs.yaml',
         },
         output: {
             mode: 'tags',
