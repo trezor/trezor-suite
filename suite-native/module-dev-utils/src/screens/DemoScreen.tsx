@@ -3,7 +3,7 @@ import { View } from 'react-native';
 
 import {
     Badge,
-    type BadgeVariant,
+    type BadgeIntent,
     Box,
     Button,
     type ButtonColorProps,
@@ -107,12 +107,12 @@ export const DemoScreen = () => {
     ] satisfies { label: string; buttonColorProps: ButtonColorProps }[];
     const badgeVariants = [
         'neutral',
-        'green',
-        'greenSubtle',
-        'yellow',
-        'red',
+        'brandBold',
+        'brand',
+        'warning',
+        'critical',
         'bold',
-    ] satisfies BadgeVariant[];
+    ] satisfies BadgeIntent[];
 
     const handleRadioPress = (value: string | number) => {
         setRadioChecked(value.toString());
@@ -129,13 +129,12 @@ export const DemoScreen = () => {
                         {badgeVariants.map(badgeVariant => (
                             <Badge
                                 key={badgeVariant}
-                                variant={badgeVariant}
+                                intent={badgeVariant}
                                 label={badgeVariant}
                                 icon="question"
-                                elevation="0"
                             />
                         ))}
-                        <Badge key="disabled" label="disabled" icon="question" isDisabled />
+                        <Badge key="disabled" label="disabled" icon="question" />
                     </HStack>
                 </VStack>
                 <VStack>

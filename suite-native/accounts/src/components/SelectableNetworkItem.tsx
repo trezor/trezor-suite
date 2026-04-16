@@ -59,7 +59,7 @@ export const SelectableNetworkItem = ({ symbol, onPress, rightIcon }: Selectable
                                 <Box style={applyStyle(tokensBadgeStyle)}>
                                     <Badge
                                         label={<Translation id="generic.tokens" />}
-                                        variant="neutral"
+                                        intent="neutral"
                                         size="small"
                                     />
                                 </Box>

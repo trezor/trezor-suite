@@ -123,7 +123,7 @@ export const WalletConnectSessionPopupScreen = () => {
                                         pendingProposal?.validation === 'VALID' && (
                                             <Badge
                                                 icon="check"
-                                                variant="greenSubtle"
+                                                intent="brand"
                                                 label={
                                                     <Translation id="moduleConnectPopup.walletConnect.serviceStatus.verified" />
                                                 }
@@ -133,7 +133,7 @@ export const WalletConnectSessionPopupScreen = () => {
                                         pendingProposal?.validation === 'UNKNOWN' && (
                                             <Badge
                                                 icon="question"
-                                                variant="neutral"
+                                                intent="neutral"
                                                 label={
                                                     <Translation id="moduleConnectPopup.walletConnect.serviceStatus.unknown" />
                                                 }
@@ -143,7 +143,7 @@ export const WalletConnectSessionPopupScreen = () => {
                                         pendingProposal?.validation === 'INVALID') && (
                                         <Badge
                                             icon="warning"
-                                            variant="red"
+                                            intent="critical"
                                             label={
                                                 <Translation id="moduleConnectPopup.walletConnect.serviceStatus.dangerous" />
                                             }

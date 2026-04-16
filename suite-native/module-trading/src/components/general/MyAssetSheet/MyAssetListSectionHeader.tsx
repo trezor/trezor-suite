@@ -38,8 +38,7 @@ export const MyAssetListSectionHeader = ({ account, isFirst }: MyAssetListSectio
                     <Badge
                         label={formattedAccountType}
                         size="small"
-                        elevation="1"
-                        variant="blue"
+                        intent="info"
                         testID={TEST_ID_ACCOUNT_TYPE_BADGE}
                     />
                 )}

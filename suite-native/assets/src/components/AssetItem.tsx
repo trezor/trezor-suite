@@ -135,11 +135,7 @@ export const AssetItem = React.memo(({ cryptoCurrencySymbol, onPress }: AssetIte
                         <StakingBadge networkSymbol={cryptoCurrencySymbol} />
                     )}
                     {hasAnyTokensWithBalance && (
-                        <Badge
-                            elevation="1"
-                            size="small"
-                            label={<Translation id="generic.tokens" />}
-                        />
+                        <Badge size="small" label={<Translation id="generic.tokens" />} />
                     )}
                 </>
             }

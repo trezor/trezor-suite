@@ -68,14 +68,13 @@ export const TransactionDetailHeader = ({
 
                     {isPendingTx ? (
                         <Badge
-                            variant="yellow"
+                            intent="warning"
                             label={<Translation id="transactions.status.pending" />}
-                            elevation="1"
                         />
                     ) : (
                         !isFailedTx && (
                             <Badge
-                                variant="green"
+                                intent="brandBold"
                                 label={<Translation id="transactions.status.confirmed" />}
                             />
                         )

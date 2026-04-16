@@ -114,7 +114,7 @@ export const StakingManagementStakedCard = ({
                     </Text>
                     <Badge
                         label={<Translation id="earn.stakingManagementScreen.autoRestakedBadge" />}
-                        variant="greenSubtle"
+                        intent="brand"
                         size="small"
                     />
                 </HStack>
