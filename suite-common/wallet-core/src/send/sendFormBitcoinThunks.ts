@@ -153,7 +153,9 @@ export const composeBitcoinTransactionFeeLevelsThunk = createThunk<
         // wrap response into PrecomposedLevels object where key is a FeeLevel label
         const resultLevels: PrecomposedLevels = {};
         response.payload.forEach((tx, index) => {
-            const feeLabel = predefinedLevels[index].label as FeeLevel['label'];
+            const level = predefinedLevels[index];
+            if (!level) return;
+            const feeLabel = level.label as FeeLevel['label'];
             resultLevels[feeLabel] = tx as PrecomposedTransaction;
         });
 
@@ -161,7 +163,8 @@ export const composeBitcoinTransactionFeeLevelsThunk = createThunk<
         // there is no valid tx in predefinedLevels and there is no custom level
         if (!hasAtLeastOneValid && !resultLevels.custom) {
             const { minFee } = feeInfo;
-            const lastKnownFee = predefinedLevels[predefinedLevels.length - 1].feePerUnit;
+            const lastLevel = predefinedLevels[predefinedLevels.length - 1];
+            const lastKnownFee = lastLevel?.feePerUnit ?? '0';
             // define coefficient for maxFee
             // NOTE: DOGE has very large values of FeeLevels, up to several thousands sat/B, rangeGap should be greater in this case otherwise calculation takes too long
             // TODO: calculate rangeGap more precisely (percentage of range?)
@@ -203,6 +206,7 @@ export const composeBitcoinTransactionFeeLevelsThunk = createThunk<
         // format errorMessage and catch unexpected error (other than AMOUNT_IS_NOT_ENOUGH)
         Object.keys(resultLevels).forEach(key => {
             const tx = resultLevels[key];
+            if (!tx) return;
 
             if (tx.type !== 'error') {
                 // round to

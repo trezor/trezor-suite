@@ -65,8 +65,8 @@ const manageTrustline = async (
     const [code, issuer] = contractAddress.split('-');
 
     const asset = {
-        type: code.length <= 4 ? StellarAssetType.ALPHANUM4 : StellarAssetType.ALPHANUM12,
-        code,
+        type: (code?.length ?? 0) <= 4 ? StellarAssetType.ALPHANUM4 : StellarAssetType.ALPHANUM12,
+        code: code ?? '',
         issuer,
     };
 

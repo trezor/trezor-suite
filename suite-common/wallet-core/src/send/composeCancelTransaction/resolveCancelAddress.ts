@@ -10,17 +10,15 @@ type ResolveCancelAddress = {
 export const resolveCancelAddress = ({ account, tx }: ResolveCancelAddress): string => {
     const firstChangeAddress = tx.details.vout.find(vout => vout.isAccountOwned);
 
-    if (
-        firstChangeAddress !== undefined &&
-        firstChangeAddress.addresses !== undefined &&
-        firstChangeAddress.addresses.length > 0
-    ) {
-        return firstChangeAddress.addresses[0];
+    const firstAddress = firstChangeAddress?.addresses?.[0];
+    if (firstAddress !== undefined) {
+        return firstAddress;
     }
 
-    if (account.addresses.unused.length < 1) {
+    const firstUnused = account.addresses.unused[0];
+    if (!firstUnused) {
         throw new Error('No unused addresses, should not happen!');
     }
 
-    return account.addresses.unused[0].address;
+    return firstUnused.address;
 };

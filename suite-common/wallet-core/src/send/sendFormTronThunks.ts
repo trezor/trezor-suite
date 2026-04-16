@@ -313,7 +313,14 @@ export const composeTronTransactionFeeLevelsThunk = createThunk<
                 });
             }
 
-            feeLevel = estimatedFee.payload.levels[0];
+            const estimatedLevel = estimatedFee.payload.levels[0];
+            if (!estimatedLevel) {
+                return rejectWithValue({
+                    error: 'fee-levels-compose-failed',
+                    message: 'No fee levels returned.',
+                });
+            }
+            feeLevel = estimatedLevel;
         } else {
             const availableBandwidth = Math.max(
                 account.misc?.tronResources?.availableStakedBandwidth ?? 0,
@@ -328,8 +335,9 @@ export const composeTronTransactionFeeLevelsThunk = createThunk<
             };
         }
 
+        const tronFirstOutput = formState.outputs[0];
         const isNewAccount =
-            !tokenInfo && (await isNewTronAccount(formState.outputs[0].address, account));
+            !tokenInfo && (await isNewTronAccount(tronFirstOutput?.address ?? '', account));
 
         const tx = calculate(
             account.availableBalance,
@@ -391,6 +399,12 @@ export const signTronSendFormTransactionThunk = createThunk<
         const { blockHash, blockHeight } = blockchainInfo.payload;
         const { token } = precomposedTransaction;
         const output = formState.outputs[0];
+        if (!output) {
+            return rejectWithValue({
+                error: 'sign-transaction-failed',
+                message: 'No outputs found.',
+            });
+        }
 
         const network = getNetwork(selectedAccount.symbol);
         const amountInSubunits = unitsToSubunits({

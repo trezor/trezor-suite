@@ -91,12 +91,14 @@ export const getNewFeeInfo = async ({
 
     if (network.symbol === 'btc') {
         const feeOverride = NETWORK_FEE_OVERRIDES.bitcoin;
-        result.payload.levels.forEach(level => {
-            const minFee = feeOverride.minFeePerUnit[level.label];
-            if (minFee !== undefined && new BigNumber(level.feePerUnit).lte(minFee)) {
-                level.feePerUnit = minFee;
-            }
-        });
+        if (feeOverride) {
+            result.payload.levels.forEach(level => {
+                const minFee = feeOverride.minFeePerUnit[level.label];
+                if (minFee !== undefined && new BigNumber(level.feePerUnit).lte(minFee)) {
+                    level.feePerUnit = minFee;
+                }
+            });
+        }
     }
 
     return {

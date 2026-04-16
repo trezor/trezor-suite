@@ -36,6 +36,7 @@ export const preloadFeeInfoThunk = createThunk(
         const partial: Partial<FeesState> = {};
         networks.forEach((network, index) => {
             const result = levels[index];
+            if (!result) return;
 
             if (result.success) {
                 const { payload } = result;

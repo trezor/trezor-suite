@@ -148,18 +148,18 @@ describe(composeCancelTransactionThunk.name, () => {
             .unwrap();
 
         // First call
-        const first = composeTransactionMock.mock.calls[0][0]; // First call, first argument
-        expect(first.feeLevels[0].feePerUnit).toBe('1');
-        expect(first.baseFee).toBe(undefined);
+        const first = composeTransactionMock.mock.calls[0]?.[0]; // First call, first argument
+        expect(first?.feeLevels[0]?.feePerUnit).toBe('1');
+        expect(first?.baseFee).toBe(undefined);
 
         // Second call
-        const second = composeTransactionMock.mock.calls[1][0]; // Second call, first argument
+        const second = composeTransactionMock.mock.calls[1]?.[0]; // Second call, first argument
 
         // This is the most important assertion. This is the fee, that satisfies the condition set by BIP-125
         // with the new size of the transaction of 110 bytes.
-        expect(second.feeLevels[0].feePerUnit).toBe('13.81818181818181818182'); // = (1410 + 110 * 1) / 110
-        expect(second.baseFee).toBe(1410); // This is the sum of fees for chained transactions
-        expect(second.outputs).toStrictEqual([
+        expect(second?.feeLevels[0]?.feePerUnit).toBe('13.81818181818181818182'); // = (1410 + 110 * 1) / 110
+        expect(second?.baseFee).toBe(1410); // This is the sum of fees for chained transactions
+        expect(second?.outputs).toStrictEqual([
             {
                 address: ORIGINAL_CHANGE_ADDRESS,
                 type: 'send-max',
@@ -177,9 +177,9 @@ describe(composeCancelTransactionThunk.name, () => {
             .unwrap();
 
         // Second call
-        const second = composeTransactionMock.mock.calls[1][0]; // Second call, first argument
+        const second = composeTransactionMock.mock.calls[1]?.[0]; // Second call, first argument
 
-        expect(second.outputs).toStrictEqual([
+        expect(second?.outputs).toStrictEqual([
             {
                 address: FIRST_ACCOUNT_CHANGE_ADDRESS,
                 type: 'send-max',

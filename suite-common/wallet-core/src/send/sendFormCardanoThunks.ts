@@ -124,7 +124,9 @@ export const composeCardanoTransactionFeeLevelsThunk = createThunk<
                 // no default
             }
 
-            const feeLabel = predefinedLevels[index].label;
+            const level = predefinedLevels[index];
+            if (!level) return;
+            const feeLabel = level.label;
             resultLevels[feeLabel] = tx;
         });
 

@@ -55,6 +55,9 @@ export const prepareFiatRatesReducer = createReducerWithExtraDeps(
                     index++;
 
                     const ticker = tickers[index];
+                    if (!ticker) {
+                        continue;
+                    }
 
                     if (isTestnet(ticker.symbol)) {
                         continue;
@@ -108,8 +111,11 @@ export const prepareFiatRatesReducer = createReducerWithExtraDeps(
 
                 tickers.forEach(ticker => {
                     const fiatRateKey = getFiatRateKeyFromTicker(ticker, baseCurrencyCode);
-                    state[rateType][fiatRateKey].error = errorMessage;
-                    state[rateType][fiatRateKey].isLoading = false;
+                    const currentRate = state[rateType]?.[fiatRateKey];
+                    if (currentRate) {
+                        currentRate.error = errorMessage;
+                        currentRate.isLoading = false;
+                    }
                 });
             })
             .addCase(updateTxsFiatRatesThunk.fulfilled, (state, action) => {

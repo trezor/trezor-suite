@@ -61,7 +61,7 @@ export const composeAllowanceTransactionThunk = createThunk<
 
         const estimatedGasLimit = estimatedFee.success
             ? new BigNumber(
-                  estimatedFee.payload.levels[0].feeLimit || ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT,
+                  estimatedFee.payload.levels[0]?.feeLimit || ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT,
               )
             : new BigNumber(ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT);
 

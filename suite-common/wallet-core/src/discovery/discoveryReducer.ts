@@ -18,6 +18,10 @@ const update = (draft: Discovery, payload: { status: DiscoveryStatus; path: Devi
     }
 
     const currentStatus = draft[payload.path];
+    if (!currentStatus) {
+        return;
+    }
+
     const hasLoadedAnyNonEmptyAccount =
         currentStatus.hasLoadedAnyNonEmptyAccount || payload.status.hasLoadedAnyNonEmptyAccount;
 

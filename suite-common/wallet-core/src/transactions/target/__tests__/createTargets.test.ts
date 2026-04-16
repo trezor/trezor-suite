@@ -172,9 +172,9 @@ describe(createTargets.name, () => {
         });
 
         expect(result).toHaveLength(3);
-        expect(result[0].type).toBe('target');
-        expect(result[1].type).toBe('token');
-        expect(result[2].type).toBe('internal');
+        expect(result[0]?.type).toBe('target');
+        expect(result[1]?.type).toBe('token');
+        expect(result[2]?.type).toBe('internal');
     });
 
     it('generates correct targetId format for each type', () => {
@@ -187,9 +187,9 @@ describe(createTargets.name, () => {
             account,
         });
 
-        expect(result[0].targetId).toBe('42');
-        expect(result[1].targetId).toBe('token-0xDeadBeef');
-        expect(result[2].targetId).toBe('internal-0xCafe');
+        expect(result[0]?.targetId).toBe('42');
+        expect(result[1]?.targetId).toBe('token-0xDeadBeef');
+        expect(result[2]?.targetId).toBe('internal-0xCafe');
     });
 
     it('preserves the original payload references', () => {
@@ -206,8 +206,8 @@ describe(createTargets.name, () => {
             account,
         });
 
-        expect(result[0].payload).toBe(target);
-        expect(result[1].payload).toBe(token);
-        expect(result[2].payload).toBe(internal);
+        expect(result[0]?.payload).toBe(target);
+        expect(result[1]?.payload).toBe(token);
+        expect(result[2]?.payload).toBe(internal);
     });
 });

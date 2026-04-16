@@ -191,12 +191,20 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
                 message: 'Token accounts not found.',
             });
 
-        if (formState.setMaxOutputId !== undefined && !formState.outputs[0].amount) {
+        const solFirstOutput = formState.outputs[0];
+        if (!solFirstOutput) {
+            return rejectWithValue({
+                error: 'fee-levels-compose-failed',
+                message: 'No outputs found.',
+            });
+        }
+
+        if (formState.setMaxOutputId !== undefined && !solFirstOutput.amount) {
             if (tokenInfo?.balance) {
-                formState.outputs[0].amount = tokenInfo.balance;
+                solFirstOutput.amount = tokenInfo.balance;
             } else {
                 // minimal amount for purpose of fee estimation, at least to cover rent + 1 lamport
-                formState.outputs[0].amount = convertAmountSubunitsToUnits(
+                solFirstOutput.amount = convertAmountSubunitsToUnits(
                     (account.misc?.rent ?? 0) + 1,
                     decimals,
                 );
@@ -209,8 +217,8 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
         // The real transaction is constructed in `signTransaction`, this one is used solely for fee estimation and is never submitted.
         const transaction = await TrezorConnect.solanaComposeTransaction({
             fromAddress: account.descriptor,
-            toAddress: formState.outputs[0].address,
-            amount: formState.outputs[0].amount,
+            toAddress: solFirstOutput.address,
+            amount: solFirstOutput.amount,
             token: tokenInfo
                 ? {
                       mint: tokenInfo.contract,
@@ -254,9 +262,9 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
         if (estimatedFee.success) {
             // We access the array directly like this because the fee response from the solana worker always returns an array of size 1
             const feeLevel = estimatedFee.payload.levels[0];
-            fetchedFee = feeLevel.feePerTx;
-            fetchedFeePerUnit = feeLevel.feePerUnit;
-            fetchedFeeLimit = feeLevel.feeLimit;
+            fetchedFee = feeLevel?.feePerTx;
+            fetchedFeePerUnit = feeLevel?.feePerUnit;
+            fetchedFeeLimit = feeLevel?.feeLimit;
         } else {
             // Error fetching fee, fall back on default values defined in `/packages/connect/src/data/defaultFeeLevels.ts`
             console.warn('Error fetching fee, using default values.', estimatedFee.error.message);
@@ -289,7 +297,9 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
             ),
         );
         response.forEach((tx, index) => {
-            const feeLabel = predefinedLevels[index].label as FeeLevel['label'];
+            const level = predefinedLevels[index];
+            if (!level) return;
+            const feeLabel = level.label as FeeLevel['label'];
             resultLevels[feeLabel] = tx;
         });
 
@@ -297,6 +307,7 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
         // update errorMessage values (symbol)
         Object.keys(resultLevels).forEach(key => {
             const tx = resultLevels[key];
+            if (!tx) return;
             if (tx.type !== 'error') {
                 tx.max = tx.max ? convertAmountSubunitsToUnits(tx.max, decimals) : undefined;
             }
@@ -355,10 +366,18 @@ export const signSolanaSendFormTransactionThunk = createThunk<
                 message: 'Missing token accounts.',
             });
 
+        const solSignOutput = formState.outputs[0];
+        if (!solSignOutput) {
+            return rejectWithValue({
+                error: 'sign-transaction-failed',
+                message: 'No outputs found.',
+            });
+        }
+
         const transaction = await TrezorConnect.solanaComposeTransaction({
             fromAddress: selectedAccount.descriptor,
-            toAddress: formState.outputs[0].address,
-            amount: formState.outputs[0].amount,
+            toAddress: solSignOutput.address,
+            amount: solSignOutput.amount,
             token: token
                 ? {
                       mint: token.contract,
