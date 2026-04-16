@@ -33,6 +33,7 @@ const OP_16: number = OPS.OP_16;
 const OP_1NEGATE: number = OPS.OP_1NEGATE;
 // @ts-expect-error: indexing with noUncheckedIndexedAccess
 const OP_PUSHDATA4: number = OPS.OP_PUSHDATA4;
+/* eslint-enable prefer-destructuring */
 
 function isOPInt(value: number) {
     return (
