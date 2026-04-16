@@ -3,6 +3,7 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../calldata" },
+        { "path": "../http-client" },
         { "path": "../react-query" },
         { "path": "../../packages/utils" }
     ]

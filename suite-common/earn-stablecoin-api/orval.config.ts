@@ -12,13 +12,13 @@ const OUTPUT_DIR = resolve(import.meta.dirname, './src/api');
 
 // eslint-disable-next-line import/no-default-export
 export default defineConfig({
-    worker: {
+    yieldxyz: {
         input: {
             target: 'https://api.yield.xyz/docs.yaml',
         },
         output: {
-            mode: 'tags',
-            target: resolve(OUTPUT_DIR, 'index.ts'),
+            mode: 'single',
+            target: resolve(OUTPUT_DIR, 'yieldxyz.ts'),
             mock: false,
             // Use our custom Prettier config
             prettier: false,
@@ -52,7 +52,6 @@ export default defineConfig({
             indexFiles: true,
             // Include response headers in the generated types and method results
             headers: true,
-            workspace: OUTPUT_DIR,
             override: {
                 useNamedParameters: true,
                 useTypeOverInterfaces: true,
