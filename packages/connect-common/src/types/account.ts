@@ -18,6 +18,7 @@ export interface AccountInfo extends AccountInfoBase {
     legacyXpub?: string; // bitcoin-like descriptor in legacy format (xpub) used by labeling (metadata)
     utxo?: AccountUtxo[]; // bitcoin utxo
     descriptorChecksum?: string;
+    outputDescriptorBip380?: string; // Optional bitcoin only
 }
 
 export interface DiscoveryAccount {
