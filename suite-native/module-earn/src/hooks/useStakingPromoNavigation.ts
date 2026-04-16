@@ -99,8 +99,9 @@ export const useStakingPromoNavigation = () => {
                 return;
             }
 
-            if (accountsForSymbol.length === 1) {
-                navigateByAccountState(accountsForSymbol[0], navigation.navigate);
+            const singleAccount = accountsForSymbol[0];
+            if (accountsForSymbol.length === 1 && singleAccount) {
+                navigateByAccountState(singleAccount, navigation.navigate);
 
                 return;
             }

@@ -11,14 +11,14 @@ import {
 import { expect, test } from '../../support/fixtures';
 
 // Expected values based on our mocked responses
-const fiatAmount = buyQuotesBTC[0].fiatStringAmount;
-const bestBuyProvider = capitalizeFirstLetter(buyQuotesBTC[0].exchange);
-const bestBuyCryptoAmount = `${buyQuotesBTC[0].receiveStringAmount} BTC`;
+const fiatAmount = buyQuotesBTC[0]?.fiatStringAmount ?? '';
+const bestBuyProvider = capitalizeFirstLetter(buyQuotesBTC[0]?.exchange ?? '');
+const bestBuyCryptoAmount = `${buyQuotesBTC[0]?.receiveStringAmount} BTC`;
 const formattedFiatWithoutSymbol = localizeNumber(fiatAmount);
 const formattedFiatAmount = `CZK ${localizeNumber(fiatAmount, 'en-US', 2)}`;
 const { receiveAddress, paymentMethodName } = buyTradeBTC.trade;
 // secondOffer via Bank Transfer that matches input criteria has index 5
-const updateFiatAmount = buyQuotesBTCUpdate[5].fiatStringAmount;
+const updateFiatAmount = buyQuotesBTCUpdate[5]?.fiatStringAmount ?? '';
 
 test.describe('Trading - Buy BTC', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
     test.beforeEach(async ({ page, tradingMock, onboardingPage, walletPage }) => {

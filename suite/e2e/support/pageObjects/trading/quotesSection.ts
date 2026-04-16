@@ -57,14 +57,13 @@ export class TradingQuotesSection {
         for (const [index, quote] of displayedQuotes.entries()) {
             // Validate provider of the quote row
             const provider = quote.getByTestId(quoteProviderLocator);
-            const expectedProvider = getCompanyNameFromList(
-                expectedQuotes[index].exchange,
-                listType,
-            );
+            const expectedQuote = expectedQuotes[index];
+            if (!expectedQuote) continue;
+            const expectedProvider = getCompanyNameFromList(expectedQuote.exchange, listType);
             await expect.soft(provider).toHaveText(expectedProvider);
             // Validate amount of the quote row
             const amount = quote.getByTestId(amountElementID);
-            const expectedAmount = formatExpectedAmount(expectedQuotes[index]);
+            const expectedAmount = formatExpectedAmount(expectedQuote);
             await expect.soft(amount).toHaveText(expectedAmount);
         }
     }

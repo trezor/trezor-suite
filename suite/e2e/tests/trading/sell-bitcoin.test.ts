@@ -12,9 +12,9 @@ import { formatAddressWithNewlines } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 
 // Expected values based on our mocked responses
-const fiatAmount = sellQuotesBTC[0].fiatStringAmount;
-const cryptoAmount = sellQuotesBTC[0].cryptoStringAmount;
-const provider = getCompanyNameFromList(sellQuotesBTC[0].exchange, 'sellList');
+const fiatAmount = sellQuotesBTC[0]?.fiatStringAmount ?? '';
+const cryptoAmount = sellQuotesBTC[0]?.cryptoStringAmount ?? '';
+const provider = getCompanyNameFromList(sellQuotesBTC[0]?.exchange ?? '', 'sellList');
 const providerAddress = sellWatchBTC.destinationAddress;
 const providerPaymentId = sellWatchBTC.destinationPaymentExtraId;
 const formattedCryptoAmount = `${cryptoAmount} BTC`;

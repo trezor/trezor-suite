@@ -102,7 +102,7 @@ export class OnboardingPage {
         const code = await this.device.getTHPPairingCode();
 
         for (let i = 0; i < code.length; i++) {
-            await this.pairingInputAtIndex(i).fill(code[i]);
+            await this.pairingInputAtIndex(i).fill(code[i] ?? '');
         }
     }
 

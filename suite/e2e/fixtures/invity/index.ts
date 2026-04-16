@@ -88,13 +88,14 @@ export const getCompanyNameFromList = (name: string, type: 'buyList' | 'sellList
     const providersArray = listMap[type];
     const filteredProviders = providersArray.filter(item => item.name === name);
 
-    if (filteredProviders.length !== 1) {
+    const provider = filteredProviders[0];
+    if (filteredProviders.length !== 1 || !provider) {
         throw new Error(
             `Expected exactly one item, but found ${filteredProviders.length}\n${JSON.stringify(filteredProviders, null, 2)}`,
         );
     }
 
-    return filteredProviders[0].companyName;
+    return provider.companyName;
 };
 
 export {

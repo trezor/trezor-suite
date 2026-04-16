@@ -90,6 +90,7 @@ export const WalletConnectSessionPopupScreen = () => {
     const noNetworksActivated = !pendingProposal?.networks.some(
         network => network.status === 'active',
     );
+    const accountToShow = selectedDefaultAccount ?? accounts[0];
     const [ignoreWarning, setIgnoreWarning] = useState(false);
     const isDisabled =
         !pendingProposal ||
@@ -193,16 +194,13 @@ export const WalletConnectSessionPopupScreen = () => {
                     </Card>
                 </VStack>
 
-                {!noNetworksActivated && (
+                {!noNetworksActivated && accountToShow && (
                     <VStack>
                         <Text variant="body-md-strong">
                             <Translation id="moduleConnectPopup.walletConnect.selectedAccount" />
                         </Text>
                         <Card noPadding>
-                            <AccountsListItem
-                                account={selectedDefaultAccount || accounts[0]}
-                                onPress={openModal}
-                            />
+                            <AccountsListItem account={accountToShow} onPress={openModal} />
 
                             <BottomSheetModal
                                 ref={bottomSheetRef}

@@ -72,9 +72,10 @@ export const EarnAccountCard = ({ item, onPress, onClaimPress }: EarnAccountCard
         isSupportedStaking ? selectCanClaimByAccountKey(state, item.accountKey) : false,
     );
 
-    const claimableAmount = useStakingSelector(state =>
-        isSupportedStaking ? selectClaimableAmountByAccountKey(state, item.accountKey) : '0',
-    );
+    const claimableAmount =
+        useStakingSelector(state =>
+            isSupportedStaking ? selectClaimableAmountByAccountKey(state, item.accountKey) : '0',
+        ) ?? '0';
 
     const { isClaimingDisabled } = useMessageSystemStaking(isStakingItem ? item.symbol : null);
 

@@ -52,7 +52,7 @@ export const TransactionDetailHeader = ({
     const isFailedTx = transaction.type === 'failed';
     const signValue = getTransactionValueSign(tokenTransfer?.type ?? transaction.type);
     const isTokenOnlyTransaction = transaction.amount === '0' && transaction.tokens.length !== 0;
-    const txType = isTokenOnlyTransaction ? transaction.tokens[0].type : type;
+    const txType = isTokenOnlyTransaction ? (transaction.tokens[0]?.type ?? type) : type;
 
     return (
         <DiscreetTextTrigger>

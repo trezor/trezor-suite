@@ -79,9 +79,9 @@ export const StakePendingCard = ({
 
     const symbol = useAccountsSelector(state => selectAccountNetworkSymbol(state, accountKey));
 
-    const totalStakePending = useNativeStakingSelector(state =>
-        selectTotalStakePendingByAccountKey(state, accountKey),
-    );
+    const totalStakePending =
+        useNativeStakingSelector(state => selectTotalStakePendingByAccountKey(state, accountKey)) ??
+        null;
 
     const isStakePending = useNativeStakingSelector((state: NativeStakingRootState) =>
         selectIsStakePendingByAccountKey(state, accountKey),

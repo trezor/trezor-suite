@@ -30,9 +30,9 @@ const transactionStates = [
 ];
 
 // Expected values based on our mocked responses
-const sendAmount = swapQuotesSolanaBTC[0].sendStringAmount;
-const receiveAmount = localizeNumber(swapQuotesSolanaBTC[0].receiveStringAmount);
-const provider = getCompanyNameFromList(swapQuotesSolanaBTC[0].exchange, 'swapList');
+const sendAmount = swapQuotesSolanaBTC[0]?.sendStringAmount ?? '';
+const receiveAmount = localizeNumber(swapQuotesSolanaBTC[0]?.receiveStringAmount ?? '');
+const provider = getCompanyNameFromList(swapQuotesSolanaBTC[0]?.exchange ?? '', 'swapList');
 const formattedSendAmount = `${localizeNumber(sendAmount)} SOL`;
 const formattedReceiveAmount = `${receiveAmount} BTC`;
 const { sendAddress } = swapTradeSolanaBTC;

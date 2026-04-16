@@ -12,9 +12,9 @@ import { formatAddressWithNewlines } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 
 // Expected values based on our mocked responses
-const fiatAmount = localizeNumber(sellQuotesSolana[0].fiatStringAmount, 'en-US', 2, 2);
-const cryptoAmount = sellQuotesSolana[0].cryptoStringAmount;
-const provider = getCompanyNameFromList(sellQuotesSolana[0].exchange, 'sellList');
+const fiatAmount = localizeNumber(sellQuotesSolana[0]?.fiatStringAmount ?? '', 'en-US', 2, 2);
+const cryptoAmount = sellQuotesSolana[0]?.cryptoStringAmount ?? '';
+const provider = getCompanyNameFromList(sellQuotesSolana[0]?.exchange ?? '', 'sellList');
 // This address belongs to second account in this wallet.
 // So if me make mistake in updating the test case, and actually send crypto.
 // It will be sent to this address and we will not lose it.

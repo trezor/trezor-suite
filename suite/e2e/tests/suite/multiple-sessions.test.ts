@@ -14,8 +14,10 @@ const stealBridgeSession = async () => {
         await bridge.init();
         const enumerateRes = await bridge.enumerate();
         if (!enumerateRes.success) return null;
+        const firstDevice = enumerateRes.payload[0];
+        if (!firstDevice) return null;
         await bridge.acquire({
-            input: { path: enumerateRes.payload[0].path, previous: null },
+            input: { path: firstDevice.path, previous: null },
         });
     });
 };

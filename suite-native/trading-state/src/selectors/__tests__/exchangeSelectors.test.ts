@@ -71,7 +71,7 @@ describe('exchangeSelectors', () => {
         beforeEach(() => {
             account = getBtcAccount();
             state.wallet.trading.exchange.receiveAccountKey = account.key;
-            state.wallet.trading.exchange.receiveAddress = account.addresses?.used[0].address;
+            state.wallet.trading.exchange.receiveAddress = account.addresses?.used[0]?.address;
         });
 
         it('should be undefined when no receiveAccountKey is defined', () => {

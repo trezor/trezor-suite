@@ -55,12 +55,14 @@ export const StakingManagementUnstakingModal = ({
 }: StakingManagementUnstakingModalProps) => {
     const { applyStyle } = useNativeStyles();
     const symbol = useAccountsSelector(state => selectAccountNetworkSymbol(state, accountKey));
-    const claimableAmount = useSelector((state: NativeStakingRootState) =>
-        selectClaimableAmountByAccountKey(state, accountKey),
-    );
-    const unstakingBalance = useSelector((state: NativeStakingRootState) =>
-        selectUnstakingBalanceByAccountKey(state, accountKey),
-    );
+    const claimableAmount =
+        useSelector((state: NativeStakingRootState) =>
+            selectClaimableAmountByAccountKey(state, accountKey),
+        ) ?? '0';
+    const unstakingBalance =
+        useSelector((state: NativeStakingRootState) =>
+            selectUnstakingBalanceByAccountKey(state, accountKey),
+        ) ?? '0';
     const unstakingPeriodInDays = useSelector((state: NativeStakingRootState) =>
         selectUnstakingPeriodInDaysByAccountKey(state, accountKey),
     );

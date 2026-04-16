@@ -52,9 +52,8 @@ test.describe(
             let receiveAmount: string;
             await test.step('Confirm the Swap trade', async () => {
                 await expect(tradingPage.quotes.bestOfferAmount).toHaveText(/^\d+(\.\d+)?\s+USDC$/);
-                const receiveAmountUnformated = (
-                    await tradingPage.quotes.bestOfferAmount.innerText()
-                ).split(' ')[0];
+                const receiveAmountUnformated =
+                    (await tradingPage.quotes.bestOfferAmount.innerText()).split(' ')[0] ?? '';
                 receiveAmount = localizeNumber(receiveAmountUnformated);
                 await tradingPage.waitForSolanaFeesAndClickSwapBestOffer();
             });

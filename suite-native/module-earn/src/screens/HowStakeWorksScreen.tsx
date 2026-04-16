@@ -74,7 +74,12 @@ export const HowStakeWorksScreen = () => {
                         symbol={symbol}
                         totalStakedAmount={EVERSTAKE_TOTAL_STAKED_AMOUNT}
                     />
-                    <HowStakeWorksBenefitsSection symbol={symbol} accountKey={resolvedAccountKey} />
+                    {resolvedAccountKey && (
+                        <HowStakeWorksBenefitsSection
+                            symbol={symbol}
+                            accountKey={resolvedAccountKey}
+                        />
+                    )}
                     <HowStakeWorksTimelineCard
                         symbol={symbol}
                         entryPeriodInDays={entryPeriodInDays}

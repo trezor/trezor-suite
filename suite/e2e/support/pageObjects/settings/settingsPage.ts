@@ -166,7 +166,7 @@ export class SettingsPage {
             debug: () => this.debugTabButton.click(),
             connect: () => this.connectTabButton.click(),
         };
-        await tabNavigation[tab]();
+        await tabNavigation[tab]?.();
     }
 
     @step()

@@ -6,9 +6,9 @@ import { buyQuotesEthereum, buyTradeEthereum, invityEndpoint } from '../../fixtu
 import { expect, test } from '../../support/fixtures';
 
 // Expected values based on our mocked responses
-const fiatAmount = buyQuotesEthereum[3].fiatStringAmount;
-const provider = capitalizeFirstLetter(buyQuotesEthereum[3].exchange);
-const formattedCryptoAmount = `${localizeNumber(buyQuotesEthereum[3].receiveStringAmount)} ETH`;
+const fiatAmount = buyQuotesEthereum[3]?.fiatStringAmount ?? '';
+const provider = capitalizeFirstLetter(buyQuotesEthereum[3]?.exchange ?? '');
+const formattedCryptoAmount = `${localizeNumber(buyQuotesEthereum[3]?.receiveStringAmount ?? '')} ETH`;
 const formattedFiatAmount = `CZK ${localizeNumber(fiatAmount, 'en-US', 2)}`;
 
 test.describe('Trading - Buy Ethereum', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {

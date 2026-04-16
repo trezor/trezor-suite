@@ -52,7 +52,7 @@ test.describe(
             await test.step('Confirm the Swap trade', async () => {
                 await expect(tradingPage.quotes.bestOfferAmount).toContainText(receiveCoinSymbol);
                 const [amount] = (await tradingPage.quotes.bestOfferAmount.innerText()).split(' ');
-                receiveAmount = localizeNumber(amount);
+                receiveAmount = localizeNumber(amount ?? '');
                 await tradingPage.waitForSolanaFeesAndClickSwapBestOffer();
             });
 

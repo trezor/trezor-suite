@@ -38,22 +38,26 @@ test.describe('Import a BTC csv file', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, 
             const convertedData = csvToJson(csvData);
             await expect(page.getByTestId('outputs.0.address')).toBeVisible();
             await expect(page.getByTestId('outputs.0.address')).toHaveValue(
-                convertedData[0].address,
+                convertedData[0]?.address ?? '',
             );
             await expect(page.getByTestId('outputs.0.amount')).toBeVisible();
-            await expect(page.getByTestId('outputs.0.amount')).toHaveValue(convertedData[0].amount);
+            await expect(page.getByTestId('outputs.0.amount')).toHaveValue(
+                convertedData[0]?.amount ?? '',
+            );
             await expect(page.getByTestId('outputs.0.fiat')).toBeVisible();
             // TODO: Uncomment this when https://github.com/trezor/trezor-suite/issues/19146 is fixed
             //await expect(page.getByTestId('outputs.0.fiat')).toHaveValue(/^\d+(\.\d+)?$/);
 
             await expect(page.getByTestId('outputs.1.address')).toBeVisible();
             await expect(page.getByTestId('outputs.1.address')).toHaveValue(
-                convertedData[1].address,
+                convertedData[1]?.address ?? '',
             );
             await expect(page.getByTestId('outputs.1.amount')).toBeVisible();
             await expect(page.getByTestId('outputs.1.amount')).toHaveValue(/^\d+(\.\d+)?$/);
             await expect(page.getByTestId('outputs.1.fiat')).toBeVisible();
-            await expect(page.getByTestId('outputs.1.fiat')).toHaveValue(convertedData[1].amount);
+            await expect(page.getByTestId('outputs.1.fiat')).toHaveValue(
+                convertedData[1]?.amount ?? '',
+            );
         },
     );
 });

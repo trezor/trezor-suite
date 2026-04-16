@@ -11,9 +11,9 @@ import { formatAddressWithNewlines } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 
 // Expected values based on our mocked responses
-const sendAmount = swapQuotesTetherBTC[0].sendStringAmount!;
-const receiveAmount = localizeNumber(swapQuotesTetherBTC[0].receiveStringAmount!);
-const provider = getCompanyNameFromList(swapQuotesTetherBTC[0].exchange, 'swapList');
+const sendAmount = swapQuotesTetherBTC[0]?.sendStringAmount ?? '';
+const receiveAmount = localizeNumber(swapQuotesTetherBTC[0]?.receiveStringAmount ?? '');
+const provider = getCompanyNameFromList(swapQuotesTetherBTC[0]?.exchange ?? '', 'swapList');
 const formattedSendAmount = `${localizeNumber(sendAmount)} USDT`;
 const formattedReceiveAmount = `${receiveAmount} BTC`;
 const { sendAddress } = swapTradeTetherBTC;

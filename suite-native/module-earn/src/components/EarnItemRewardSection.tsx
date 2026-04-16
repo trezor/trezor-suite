@@ -20,9 +20,8 @@ export const EarnItemRewardSection = ({ accountKey, symbol }: EarnItemRewardSect
         selectIsStakePendingByAccountKey(state, accountKey),
     );
 
-    const totalStakePending = useSelector(state =>
-        selectTotalStakePendingByAccountKey(state, accountKey),
-    );
+    const totalStakePending =
+        useSelector(state => selectTotalStakePendingByAccountKey(state, accountKey)) ?? null;
 
     return (
         <>

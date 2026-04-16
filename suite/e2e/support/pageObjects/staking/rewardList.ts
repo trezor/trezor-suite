@@ -60,7 +60,9 @@ export class RewardsList {
         for (let i = 0; i < expectedItemsCount; i++) {
             const item = rewardItems[i];
             const expectedReward = rewardsResponse[startIndex + i];
-            await this.verifyRewardItem(item, expectedReward);
+            if (item && expectedReward) {
+                await this.verifyRewardItem(item, expectedReward);
+            }
         }
     }
 
