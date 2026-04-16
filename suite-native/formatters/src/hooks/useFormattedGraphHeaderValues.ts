@@ -78,10 +78,9 @@ export const useFormattedGraphHeaderValues = (value: string = '0') => {
     const isSatsValue = isBaseCurrencyInSats && baseCurrency === 'btc';
 
     const numericValue = isSatsValue ? Number(value) * 100_000_000 : Number(value);
-    const [integerPart, decimalPart] = numericValue
-        .toFixed(MAX_DECIMALS_LENGTH)
-        .toString()
-        .split('.');
+    const parts = numericValue.toFixed(MAX_DECIMALS_LENGTH).toString().split('.');
+    const integerPart = parts[0] ?? '0';
+    const decimalPart = parts[1] ?? '0';
 
     return {
         currencySymbol: getFormattedCurrencySymbol({ locale, currency: baseCurrency, isSatsValue }),

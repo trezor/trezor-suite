@@ -18,6 +18,7 @@ export const getActiveRouteName = (state: AppNavigationState): string | undefine
     if (!state || !state.routes || state.index == null) return undefined;
 
     const route = state.routes[state.index];
+    if (!route) return undefined;
 
     if (route.state) return getActiveRouteName(route.state as AppNavigationState);
 

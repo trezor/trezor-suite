@@ -53,7 +53,12 @@ export const TrezorFacts = () => {
                     exiting={FadeOut.duration(ANIMATION_DURATION)}
                 >
                     <Text variant="headline-sm" textAlign="center">
-                        <Translation id={SHUFFLED_FACTS_TRANSLATION_KEYS[factIndex]} />
+                        <Translation
+                            id={
+                                SHUFFLED_FACTS_TRANSLATION_KEYS[factIndex] ??
+                                'firmware.firmwareUpdateProgress.trezorFacts.1'
+                            }
+                        />
                     </Text>
                 </Animated.View>
             </VStack>

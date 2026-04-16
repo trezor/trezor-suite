@@ -68,7 +68,12 @@ export const selectBuyTradeableAssets = createTradingWithFeatureFlagsMemoizedSel
         }
 
         return cryptoIds
-            .map(cryptoId => coinInfoToTradeableAsset(cryptoId, coins[cryptoId]))
+            .flatMap(cryptoId => {
+                const coinInfo = coins[cryptoId];
+                if (!coinInfo) return [];
+
+                return [coinInfoToTradeableAsset(cryptoId, coinInfo)];
+            })
             .filter(
                 getAssetByEnabledNetworksFilter(
                     areDebugOnlyNetworksEnabled,

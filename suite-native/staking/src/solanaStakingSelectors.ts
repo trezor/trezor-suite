@@ -73,8 +73,8 @@ export const selectSolanaStakedBalanceByAccountKey = (
         return '0';
     }
 
-    return new BigNumber(stakingInfo.solStakedBalance)
-        .plus(stakingInfo.solPendingUnstakeBalance)
+    return new BigNumber(stakingInfo.solStakedBalance ?? '0')
+        .plus(stakingInfo.solPendingUnstakeBalance ?? '0')
         .toString();
 };
 
@@ -89,8 +89,8 @@ export const selectExpectedRewardsForEpoch = (
         return '0';
     }
 
-    const yieldBearingBalance = new BigNumber(stakingInfo.solStakedBalance)
-        .plus(stakingInfo.solPendingUnstakeBalance)
+    const yieldBearingBalance = new BigNumber(stakingInfo.solStakedBalance ?? '0')
+        .plus(stakingInfo.solPendingUnstakeBalance ?? '0')
         .toString();
 
     return calculateSolanaStakingReward(yieldBearingBalance, apy);

@@ -90,7 +90,7 @@ const ConfirmOnTrezor = ({
                     <ConfirmOnTrezorContent
                         panGesture={panGesture}
                         translateY={translateY}
-                        snapPoints={snapPoints}
+                        snapPoints={snapPoints as [number, number, number]}
                         isFullscreen={isFullscreen}
                         defaultHeader={defaultHeader}
                     >

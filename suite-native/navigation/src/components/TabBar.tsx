@@ -63,7 +63,9 @@ export const TabBar = ({ state, navigation, tabItemOptions }: TabBarProps) => {
                 }
 
                 const isFocused = state.index === index;
-                const { routeName, iconName, focusedIconName, params } = tabItemOptions[route.name];
+                const tabOption = tabItemOptions[route.name];
+                if (!tabOption) return null;
+                const { routeName, iconName, focusedIconName, params } = tabOption;
                 const tabBarLabelTxKey = TabBarLabelTxKeys[routeName];
 
                 const handleTabBarItemPress = () => {

@@ -76,7 +76,12 @@ export const selectExchangeBuyTradeableAssets = createTradingWithFeatureFlagsMem
 
         return cryptoIds
             .filter(cryptoId => cryptoId !== forbiddenCryptoId)
-            .map(cryptoId => coinInfoToTradeableAsset(cryptoId, coins[cryptoId]))
+            .flatMap(cryptoId => {
+                const coinInfo = coins[cryptoId];
+                if (!coinInfo) return [];
+
+                return [coinInfoToTradeableAsset(cryptoId, coinInfo)];
+            })
             .filter(
                 getAssetByEnabledNetworksFilter(
                     areDebugOnlyNetworksEnabled,

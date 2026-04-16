@@ -72,7 +72,7 @@ export type ConfirmOnTrezorWrapperProps = PropsWithChildren<{
 
 type ConfirmOnTrezorContentProps = ConfirmOnTrezorWrapperProps & {
     translateY: SharedValue<number>;
-    snapPoints: number[];
+    snapPoints: [number, number, number];
     isFullscreen: boolean;
     panGesture: GestureType;
 };
@@ -92,16 +92,14 @@ export const ConfirmOnTrezorContent = ({
 
     const gradientColor = utils.colors.backgroundSurfaceElevation0;
 
+    const [snap0, snap1, snap2] = snapPoints as [number, number, number];
+
     const animatedSheetStyle = useAnimatedStyle(() => {
-        const paddingTop = interpolate(
-            translateY.value,
-            [snapPoints[2], snapPoints[1], snapPoints[0]],
-            [insets.top, 0, 0],
-        );
+        const paddingTop = interpolate(translateY.value, [snap2, snap1, snap0], [insets.top, 0, 0]);
 
         const borderRadius = interpolate(
             translateY.value,
-            [snapPoints[2], snapPoints[1], snapPoints[0]],
+            [snap2, snap1, snap0],
             [0, utils.borders.radii.r16, utils.borders.radii.r16],
         );
 
@@ -114,28 +112,20 @@ export const ConfirmOnTrezorContent = ({
     });
 
     const animatedHandleStyle = useAnimatedStyle(() => ({
-        opacity: interpolate(
-            translateY.value,
-            [snapPoints[2], snapPoints[1], snapPoints[0]],
-            [0, 1, 1],
-        ),
+        opacity: interpolate(translateY.value, [snap2, snap1, snap0], [0, 1, 1]),
         padding: interpolate(
             translateY.value,
-            [snapPoints[2], snapPoints[1], snapPoints[0]],
+            [snap2, snap1, snap0],
             [0, utils.spacings.sp16, utils.spacings.sp16],
         ),
     }));
 
     const animatedIndicatorStyle = useAnimatedStyle(() => ({
-        height: interpolate(
-            translateY.value,
-            [snapPoints[2], snapPoints[1], snapPoints[0]],
-            [0, 4, 4],
-        ),
+        height: interpolate(translateY.value, [snap2, snap1, snap0], [0, 4, 4]),
     }));
 
     const animatedGradientStyle = useAnimatedStyle(() => ({
-        opacity: interpolate(translateY.value, [snapPoints[1], snapPoints[0]], [0, 1]),
+        opacity: interpolate(translateY.value, [snap1, snap0], [0, 1]),
     }));
 
     return (
