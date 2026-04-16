@@ -19,6 +19,7 @@ import {
 import {
     type AccountsRootState,
     accountsActions,
+    reportWalletBalanceThunk,
     selectDeviceAccounts,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -376,6 +377,7 @@ export const useAddCoinAccount = () => {
         }
 
         dispatch(accountsActions.createAccount(newAccountPayload));
+        dispatch(reportWalletBalanceThunk());
         navigateToSuccessorScreen({
             flowType,
             symbol,
@@ -436,6 +438,7 @@ export const useAddCoinAccount = () => {
             // the account should already exist, but be invisible, so make it visible
             if (firstHiddenEmptyAccount && !firstHiddenEmptyAccount.failed) {
                 dispatch(accountsActions.changeAccountVisibility(firstHiddenEmptyAccount));
+                dispatch(reportWalletBalanceThunk());
                 navigateToSuccessorScreen({
                     flowType,
                     symbol,

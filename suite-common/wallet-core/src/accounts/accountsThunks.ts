@@ -194,3 +194,13 @@ export const fetchAndUpdateAccountThunk = createThunk(
         }
     },
 );
+
+export const reportWalletBalanceThunk = createThunk(
+    `${ACCOUNTS_MODULE_PREFIX}/reportWalletBalance`,
+    (_, { getState, extra }) => {
+        reportWalletBalanceDebounced({
+            getState,
+            analytics: extra.services.analytics,
+        });
+    },
+);

@@ -16,6 +16,7 @@ import {
 import {
     accountsActions,
     changeCoinVisibility,
+    reportWalletBalanceThunk,
     selectEnabledNetworks,
 } from '@suite-common/wallet-core';
 import { getAvailableAccountTypes, prepareNewAccountPayload } from '@suite-common/wallet-utils';
@@ -218,6 +219,7 @@ export const AddAccountModal = ({
             dispatch(accountsActions.changeAccountVisibility(account));
         }
 
+        dispatch(reportWalletBalanceThunk());
         onConfirm?.();
 
         onAddAccount?.(account);
@@ -264,6 +266,7 @@ export const AddAccountModal = ({
                 }
 
                 dispatch(accountsActions.createAccount(newAccount));
+                dispatch(reportWalletBalanceThunk());
                 onConfirm?.();
             }
         }
