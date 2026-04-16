@@ -1,4 +1,4 @@
-import { type NetworkDtoId } from '@suite-common/earn-api';
+import { type NetworkDtoId } from '@suite-common/earn-stablecoin-api';
 
 import { PROD_STAKING_SYMBOLS, type ProdStakingNetworkSymbol, networks } from './networksConfig';
 import {

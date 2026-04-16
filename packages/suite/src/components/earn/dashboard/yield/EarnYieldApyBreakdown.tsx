@@ -1,5 +1,5 @@
 import { Translation, type TranslationKey } from '@suite/intl';
-import { type RewardDto, type RewardDtoYieldSource } from '@suite-common/earn-api';
+import { type RewardDto, type RewardDtoYieldSource } from '@suite-common/earn-stablecoin-api';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Column, Icon, Row, Text } from '@trezor/components';
 import { AssetLogo } from '@trezor/product-components';

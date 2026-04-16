@@ -24,7 +24,7 @@ const REQUIRED_SCRIPTS: Record<string, RequiredScriptConfig> = {
     },
     'lint:js': {
         command: "yarn g:eslint '**/*.{ts,tsx,js}'",
-        ignoredPackages: ['@trezor/eslint', '@suite-common/earn-api'],
+        ignoredPackages: ['@trezor/eslint', '@suite-common/earn-stablecoin-api'],
     },
     'type-check': {
         command: /^yarn g:tsc --build.*$/,

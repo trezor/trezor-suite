@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useAllYieldOpportunities } from '@suite-common/earn-api';
+import { useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
 import { getNetworkByYieldXyzId } from '@suite-common/wallet-config';
 import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
 import { type TokenAddress, type TokenSymbol } from '@suite-common/wallet-types';

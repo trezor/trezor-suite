@@ -1,4 +1,4 @@
-import { type YieldDto, getYields } from '@suite-common/earn-api';
+import { type YieldDto, getYields } from '@suite-common/earn-stablecoin-api';
 import { desktopQueryKeys, useQuery } from '@suite-common/react-query';
 
 const STALE_TIME = 1000 * 60 * 5;

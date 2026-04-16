@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
 import { openModal } from '@suite/modal';
-import { type YieldDto, useAllYieldOpportunities } from '@suite-common/earn-api';
+import { type YieldDto, useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
 import {
     type EarnFlow,
     type EarnModalAction,

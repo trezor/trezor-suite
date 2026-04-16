@@ -33,7 +33,7 @@
         "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/device": "workspace:*",
         "@suite-common/device-authenticity": "workspace:*",
-        "@suite-common/earn-api": "workspace:*",
+        "@suite-common/earn-stablecoin-api": "workspace:*",
         "@suite-common/earn-staking-api": "workspace:*",
         "@suite-common/feedback": "workspace:*",
         "@suite-common/fiat-services": "workspace:*",

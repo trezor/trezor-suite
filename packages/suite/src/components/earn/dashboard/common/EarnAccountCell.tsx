@@ -1,4 +1,4 @@
-import { type TokenDto } from '@suite-common/earn-api';
+import { type TokenDto } from '@suite-common/earn-stablecoin-api';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { Column, Row } from '@trezor/components';

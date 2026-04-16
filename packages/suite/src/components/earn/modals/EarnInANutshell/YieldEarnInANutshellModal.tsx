@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { RewardDtoYieldSource } from '@suite-common/earn-api';
+import { RewardDtoYieldSource } from '@suite-common/earn-stablecoin-api';
 import {
     EarnFlow,
     type EarnModalAction,

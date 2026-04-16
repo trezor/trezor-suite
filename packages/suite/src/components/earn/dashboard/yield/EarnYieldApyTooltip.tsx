@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { type YieldDto } from '@suite-common/earn-api';
+import { type YieldDto } from '@suite-common/earn-stablecoin-api';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Tooltip } from '@trezor/components';
 

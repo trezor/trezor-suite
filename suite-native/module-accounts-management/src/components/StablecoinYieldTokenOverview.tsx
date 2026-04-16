@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useAllYieldOpportunities } from '@suite-common/earn-api';
+import { useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress, type TokenSymbol } from '@suite-common/wallet-types';
 import { Box, Card, CardDivider, HStack, Text, VStack } from '@suite-native/atoms';
