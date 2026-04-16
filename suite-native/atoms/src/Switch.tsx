@@ -9,50 +9,44 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
-import { paletteV1 } from '@trezor/theme';
 
 import { ACCESSIBILITY_FONTSIZE_MULTIPLIER } from './Text';
 
 export type SwitchProps = {
     isChecked: boolean;
     onChange: (value: boolean) => void;
-    isDisabled?: boolean; // Functionality of disabled works but styles are not implemented yet (waiting for design)
+    isDisabled?: boolean;
     testID?: string;
 };
 
-const SWITCH_CONTAINER_BORDER_WIDTH = 1;
-const SWITCH_CONTAINER_WIDTH =
-    44 * ACCESSIBILITY_FONTSIZE_MULTIPLIER + 2 * SWITCH_CONTAINER_BORDER_WIDTH;
-const SWITCH_CONTAINER_HEIGHT =
-    24 * ACCESSIBILITY_FONTSIZE_MULTIPLIER + 2 * SWITCH_CONTAINER_BORDER_WIDTH;
+const SWITCH_CONTAINER_WIDTH = 44 * ACCESSIBILITY_FONTSIZE_MULTIPLIER;
+const SWITCH_CONTAINER_HEIGHT = 24 * ACCESSIBILITY_FONTSIZE_MULTIPLIER;
 
 const SWITCH_CIRCLE_SIZE = 20 * ACCESSIBILITY_FONTSIZE_MULTIPLIER;
 const SWITCH_CIRCLE_MARGIN = 2 * ACCESSIBILITY_FONTSIZE_MULTIPLIER;
 const SWITCH_CIRCLE_TRACK_WIDTH =
-    SWITCH_CONTAINER_WIDTH -
-    SWITCH_CIRCLE_SIZE -
-    SWITCH_CIRCLE_MARGIN * 2 -
-    SWITCH_CONTAINER_BORDER_WIDTH * 2;
+    SWITCH_CONTAINER_WIDTH - SWITCH_CIRCLE_SIZE - SWITCH_CIRCLE_MARGIN * 2;
 
 const switchContainerStyle = prepareNativeStyle(utils => ({
     height: SWITCH_CONTAINER_HEIGHT,
     width: SWITCH_CONTAINER_WIDTH,
     borderRadius: utils.borders.radii.round,
     flexDirection: 'row',
-    borderWidth: SWITCH_CONTAINER_BORDER_WIDTH,
-    borderColor: utils.colors.borderNeutral,
 }));
 
 const switchCircleStyle = prepareNativeStyle(utils => ({
     width: SWITCH_CIRCLE_SIZE,
     height: SWITCH_CIRCLE_SIZE,
-    backgroundColor: paletteV1.darkGray1000,
+    backgroundColor: utils.colors.legacyBackgroundNeutralBoldInverted,
     borderRadius: utils.borders.radii.round,
     margin: SWITCH_CIRCLE_MARGIN,
     alignSelf: 'center',
 }));
 
-const useAnimationStyles = ({ isChecked }: Pick<SwitchProps, 'isChecked'>) => {
+const useAnimationStyles = ({
+    isChecked,
+    isDisabled,
+}: Pick<SwitchProps, 'isChecked' | 'isDisabled'>) => {
     const trackWidth = !isChecked ? 0 : SWITCH_CIRCLE_TRACK_WIDTH;
     const { utils } = useNativeStyles();
     const translateX = useSharedValue(trackWidth);
@@ -64,6 +58,13 @@ const useAnimationStyles = ({ isChecked }: Pick<SwitchProps, 'isChecked'>) => {
         });
     }, [trackWidth, translateX]);
 
+    const uncheckedColor = isDisabled
+        ? utils.colors.elementFillNeutralBold
+        : utils.colors.contentSecondary;
+    const checkedColor = isDisabled
+        ? utils.colors.legacyBackgroundPrimarySubtleOnElevation1
+        : utils.colors.legacyBackgroundPrimaryDefault;
+
     const animatedSwitchCircleStyle = useAnimatedStyle(() => ({
         transform: [{ translateX: translateX.value }],
     }));
@@ -72,7 +73,7 @@ const useAnimationStyles = ({ isChecked }: Pick<SwitchProps, 'isChecked'>) => {
         backgroundColor: interpolateColor(
             translateX.value,
             [0, SWITCH_CIRCLE_TRACK_WIDTH],
-            [utils.colors.elementFillNeutralBold, utils.colors.legacyBackgroundPrimaryDefault],
+            [uncheckedColor, checkedColor],
         ),
     }));
 
@@ -87,6 +88,7 @@ export const Switch = ({ isChecked, onChange, isDisabled = false, testID }: Swit
 
     const { animatedSwitchCircleStyle, animatedSwitchContainerStyle } = useAnimationStyles({
         isChecked,
+        isDisabled,
     });
 
     const handlePress = () => {
