@@ -140,7 +140,8 @@ export default class GetAccountDescriptor extends AbstractMethod<
                         request.address_n,
                         request.derivationType,
                     );
-                const response = {
+
+                const response: GetAccountDescriptorResponse = {
                     descriptor,
                     path: getSerializedPath(address_n),
                     legacyXpub,
