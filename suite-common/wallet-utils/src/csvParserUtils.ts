@@ -54,7 +54,7 @@ const parseLine = (line: string, delimiter: string, columns: string[]) => {
 
 export const parseCSV = (text: string, columns: string[] = [], delimiter?: string) => {
     // detect delimiter
-    const d = delimiter || detectDelimiter(text, CELL_DELIMITERS);
+    const d = delimiter ?? detectDelimiter(text, CELL_DELIMITERS) ?? ',';
     // normalize new line delimiter and split into lines
     const lines = text.replace(/(?:\r|\r\n|\n\n)/g, '\n').split('\n');
 

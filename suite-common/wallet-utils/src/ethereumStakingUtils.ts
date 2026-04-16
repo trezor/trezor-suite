@@ -107,7 +107,7 @@ export const getTxStakeNameByDataHex = (dataHex: string | undefined): StakeType 
     if (!dataHex) return null;
     const signature = getSignatureByEthereumDataHex(dataHex);
 
-    return isStakeTypeTx(signature) ? signatureToStakeTypeMap[signature] : null;
+    return isStakeTypeTx(signature) ? (signatureToStakeTypeMap[signature] ?? null) : null;
 };
 
 export const getUnstakeAmountByEthereumDataHex = (dataHex?: string) => {

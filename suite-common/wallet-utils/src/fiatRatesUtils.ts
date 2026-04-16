@@ -46,18 +46,22 @@ export const roundTimestampsToNearestPastHour = (timestamps: Timestamp[]): Times
 const combineFiatRates = (fiatRates: RatesByTimestamps, accountRates: RatesByTimestamps) => {
     for (const fiatRateKey of typedObjectKeys(accountRates)) {
         if (Object.prototype.hasOwnProperty.call(accountRates, fiatRateKey)) {
-            if (!fiatRates[fiatRateKey]) {
-                fiatRates[fiatRateKey] = accountRates[fiatRateKey];
+            const accountRate = accountRates[fiatRateKey];
+            if (!accountRate) continue;
+
+            const existingRate = fiatRates[fiatRateKey];
+            if (!existingRate) {
+                fiatRates[fiatRateKey] = accountRate;
             } else {
-                for (const timestamp of typedObjectKeys(accountRates[fiatRateKey])) {
+                for (const timestamp of typedObjectKeys(accountRate)) {
                     if (
-                        Object.prototype.hasOwnProperty.call(
-                            accountRates[fiatRateKey],
-                            timestamp,
-                        ) &&
-                        !fiatRates[fiatRateKey][timestamp]
+                        Object.prototype.hasOwnProperty.call(accountRate, timestamp) &&
+                        !existingRate[timestamp]
                     ) {
-                        fiatRates[fiatRateKey][timestamp] = accountRates[fiatRateKey][timestamp];
+                        const value = accountRate[timestamp];
+                        if (value !== undefined) {
+                            existingRate[timestamp] = value;
+                        }
                     }
                 }
             }
@@ -71,10 +75,14 @@ export const buildHistoricRatesFromStorage = (storageHistoricRates: RatesByTimes
     storageHistoricRates.forEach(fiatRates => {
         for (const fiatRateKey of typedObjectKeys(fiatRates)) {
             if (Object.prototype.hasOwnProperty.call(fiatRates, fiatRateKey)) {
-                if (!historicFiatRates[fiatRateKey]) {
-                    historicFiatRates[fiatRateKey] = fiatRates[fiatRateKey];
+                const rate = fiatRates[fiatRateKey];
+                if (!rate) continue;
+
+                const existingRate = historicFiatRates[fiatRateKey];
+                if (!existingRate) {
+                    historicFiatRates[fiatRateKey] = rate;
                 } else {
-                    combineFiatRates(historicFiatRates[fiatRateKey], fiatRates[fiatRateKey]);
+                    combineFiatRates(existingRate, rate);
                 }
             }
         }
@@ -98,11 +106,13 @@ export const selectHistoricRatesByTransactions = (
                 fiatRateKey.startsWith(symbol) ||
                 tokens.some(token => fiatRateKey.startsWith(`[${symbol}-${token.contract}]`))
             ) {
-                if (historicRates[fiatRateKey][timestamp]) {
+                const ratesByTimestamp = historicRates[fiatRateKey];
+                const rateValue = ratesByTimestamp?.[timestamp];
+                if (rateValue) {
                     if (!selectedRates[fiatRateKey]) {
                         selectedRates[fiatRateKey] = {};
                     }
-                    selectedRates[fiatRateKey][timestamp] = historicRates[fiatRateKey][timestamp];
+                    selectedRates[fiatRateKey][timestamp] = rateValue;
                 }
             }
         });
@@ -133,10 +143,15 @@ export const fetchTransactionsRates = async (
             rates.push({
                 tickerId,
                 localCurrency,
-                rates: results.tickers.map((ticker, index) => ({
-                    rate: ticker?.rates[localCurrency],
-                    lastTickerTimestamp: uniqueTimestamps[index],
-                })),
+                rates: results.tickers.flatMap((ticker, index) => {
+                    const lastTickerTimestamp = uniqueTimestamps[index];
+                    if (lastTickerTimestamp === undefined) return [];
+
+                    return {
+                        rate: ticker?.rates[localCurrency],
+                        lastTickerTimestamp,
+                    };
+                }),
             });
         }
     } catch (error) {

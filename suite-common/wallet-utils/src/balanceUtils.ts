@@ -22,8 +22,8 @@ export const formatCoinBalance = (value: string, locale: Locale = 'en-US') => {
     const hasDecimals = parts.length > 1;
 
     if (hasDecimals) {
-        const integerPartLength = parts[0].length || 1;
-        const fractionalPartLength = parts[1].length;
+        const integerPartLength = parts[0]?.length ?? 1;
+        const fractionalPartLength = parts[1]?.length ?? 0;
         const fixCount = Math.max(MAX_NUMBERS - integerPartLength, 0); // don't go lower than 0
         const isTruncated = fractionalPartLength > fixCount;
         // fix to max visible numbers with decimals

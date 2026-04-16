@@ -114,7 +114,7 @@ export const sortByBIP44AddressIndex = <T extends { path: string }>(
         return prev;
     }, {});
 
-    return addresses.slice().sort((a, b) => lookup[a.path] - lookup[b.path]);
+    return addresses.slice().sort((a, b) => (lookup[a.path] ?? 0) - (lookup[b.path] ?? 0));
 };
 
 export const parseBIP44Path = (path: string) => {

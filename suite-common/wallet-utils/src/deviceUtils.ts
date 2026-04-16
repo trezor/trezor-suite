@@ -6,7 +6,7 @@ export const parseDeviceStaticSessionId = (deviceStaticSessionId: StaticSessionI
     const [walletDescriptor, deviceId] = deviceStaticSessionId.split('@');
 
     return {
-        walletDescriptor: asWalletDescriptor(walletDescriptor),
+        walletDescriptor: asWalletDescriptor(walletDescriptor ?? ''),
         deviceId,
     };
 };
