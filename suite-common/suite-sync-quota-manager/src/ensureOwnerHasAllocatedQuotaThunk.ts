@@ -85,7 +85,7 @@ export const ensureOwnerHasAllocatedQuotaThunk =
             return err(WriteModeRequiredForAllocation());
         }
 
-        const leftDeviceQuota = selectLeftDeviceQuota(getState(), deviceId);
+        const leftDeviceQuota = selectLeftDeviceQuota(getState(), deviceId ?? '');
         const sizeToAllocate = getAccountIncrementSizeQuota({
             unspentStorage: leftDeviceQuota ?? DEFAULT_DEVICE_SIZE_QUOTA,
         });

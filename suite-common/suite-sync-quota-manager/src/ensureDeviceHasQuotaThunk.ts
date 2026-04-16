@@ -85,8 +85,8 @@ export const ensureDeviceHasQuotaThunk =
                 registerStorageThunk({
                     size: DEFAULT_DEVICE_SIZE_QUOTA,
                     certificateChain: {
-                        deviceCert: registrationRequestResult.payload.certificate_chain[0],
-                        caCert: registrationRequestResult.payload.certificate_chain[1],
+                        deviceCert: registrationRequestResult.payload.certificate_chain[0] ?? '',
+                        caCert: registrationRequestResult.payload.certificate_chain[1] ?? '',
                     },
                     challenge: sessionChallenge.payload.challenge,
                     proof: registrationRequestResult.payload.signature,

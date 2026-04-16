@@ -152,7 +152,7 @@ export const simpleSearchTransactions = (
     const txsForOutputLabels = groupTransactionsByLabel(accountLabels);
     const foundTxsForOutputLabel = typedObjectKeys(txsForOutputLabels).flatMap(label => {
         if (label.toLowerCase().includes(search.toLowerCase())) {
-            return txsForOutputLabels[label];
+            return txsForOutputLabels[label] ?? [];
         }
 
         return [];
@@ -176,7 +176,7 @@ export const simpleSearchTransactions = (
             address.toLowerCase().includes(search.toLowerCase()) ||
             foundAddressesForLabel.includes(address)
         ) {
-            return txsForAddresses[address];
+            return txsForAddresses[address] ?? [];
         }
 
         return [];

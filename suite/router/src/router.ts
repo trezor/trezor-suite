@@ -143,7 +143,7 @@ const validateModalAppParams = (hash: HashString, params?: Route['params']): Mod
             params?.map((param, index) => [
                 param,
                 parseParamValue(
-                    splitted[index],
+                    splitted[index] ?? '',
                     modalAppParamsDefaultValues[param as keyof ModalAppParams],
                 ),
             ]) ?? [],

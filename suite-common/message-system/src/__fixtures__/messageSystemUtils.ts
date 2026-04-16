@@ -15,6 +15,13 @@ import { type Options } from '../messageSystemUtils';
 
 const { getDeviceFeatures, getMessageSystemConfig } = testMocks;
 
+const getSecondActionMessage = () => {
+    const action = getMessageSystemConfig().actions[1];
+    if (!action) throw new Error('Expected action at index 1');
+
+    return action.message;
+};
+
 const defaultOptions: Options = {
     settings: { tor: false, enabledNetworks: ['btc'] },
     countryCode: 'US',
@@ -1389,7 +1396,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
         suiteVersion: '',
         config: getMessageSystemConfig(),
         options: defaultOptions,
-        result: [getMessageSystemConfig().actions[1].message],
+        result: [getSecondActionMessage()],
     },
     {
         description: 'getValidMessages case 3',
@@ -1423,7 +1430,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
             ],
         }),
         options: defaultOptions,
-        result: [getMessageSystemConfig().actions[1].message],
+        result: [getSecondActionMessage()],
     },
     {
         description: 'getValidMessages case 5',
@@ -1440,7 +1447,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
             ],
         }),
         options: defaultOptions,
-        result: [getMessageSystemConfig().actions[1].message],
+        result: [getSecondActionMessage()],
     },
     {
         description: 'getValidMessages case 6',
@@ -1464,7 +1471,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
             ],
         }),
         options: { settings: { tor: false, enabledNetworks: [] }, countryCode: 'US' },
-        result: [getMessageSystemConfig().actions[1].message],
+        result: [getSecondActionMessage()],
     },
     {
         description: 'getValidMessages case 7',
@@ -1514,7 +1521,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
             ],
         }),
         options: defaultOptions,
-        result: [getMessageSystemConfig().actions[1].message],
+        result: [getSecondActionMessage()],
     },
     {
         description: 'getValidMessages case 9',
@@ -1563,7 +1570,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
             ],
         }),
         options: defaultOptions,
-        result: [getMessageSystemConfig().actions[1].message],
+        result: [getSecondActionMessage()],
     },
     {
         description: 'getValidMessages case 11',
@@ -1586,7 +1593,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
             ],
         }),
         options: defaultOptions,
-        result: [getMessageSystemConfig().actions[1].message],
+        result: [getSecondActionMessage()],
     },
     {
         description: 'getValidMessages case 12',
@@ -1647,7 +1654,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
             ],
         }),
         options: { settings: { tor: false, enabledNetworks: ['btc'] }, countryCode: 'US' },
-        result: [getMessageSystemConfig().actions[1].message],
+        result: [getSecondActionMessage()],
     },
     {
         description: 'getValidMessages case 15',
@@ -1673,7 +1680,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
             transports: [{ ...defaultTransportsOption, version: '2.3.4' }],
             countryCode: 'US',
         },
-        result: [getMessageSystemConfig().actions[1].message],
+        result: [getSecondActionMessage()],
     },
     {
         description: 'getValidMessages case 16',
@@ -1739,7 +1746,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
             device: getConnectAcquiredDevice(),
             countryCode: 'US',
         },
-        result: [getMessageSystemConfig().actions[1].message],
+        result: [getSecondActionMessage()],
     },
     {
         description: 'getValidMessages case 18',
@@ -1807,7 +1814,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
             },
             countryCode: 'US',
         },
-        result: [getMessageSystemConfig().actions[1].message],
+        result: [getSecondActionMessage()],
     },
     {
         description: 'getValidMessages case 20',
@@ -1843,7 +1850,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
             },
             countryCode: 'US',
         },
-        result: [getMessageSystemConfig().actions[1].message],
+        result: [getSecondActionMessage()],
     },
     {
         description: 'getValidMessages case 21',
@@ -1903,7 +1910,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
             },
             countryCode: 'US',
         },
-        result: [getMessageSystemConfig().actions[1].message],
+        result: [getSecondActionMessage()],
     },
     {
         description: 'getValidMessages case 23',
@@ -1939,7 +1946,7 @@ export const getValidMessages: GetValidMessagesFixture[] = [
             device: getConnectAcquiredDevice(),
             countryCode: 'US',
         },
-        result: [getMessageSystemConfig().actions[1].message],
+        result: [getSecondActionMessage()],
     },
 ];
 

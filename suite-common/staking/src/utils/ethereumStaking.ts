@@ -68,7 +68,7 @@ export const getEthNetworkAddresses = (symbol: NetworkSymbol): EthNetworkAddress
 };
 
 export const getAdjustedGasLimitConsumption = (estimatedFee: Ok<BlockchainEstimatedFee>) =>
-    new BigNumber(estimatedFee.payload.levels[0].feeLimit || '')
+    new BigNumber(estimatedFee.payload.levels[0]?.feeLimit ?? '')
         .plus(STAKE_GAS_LIMIT_RESERVE)
         .integerValue(BigNumber.ROUND_DOWN)
         .toNumber();

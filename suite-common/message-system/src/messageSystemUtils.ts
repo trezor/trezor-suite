@@ -373,7 +373,7 @@ export const resolveMessageContent = (localizedMessages: Localization, language:
         return localizedMessages[language];
     }
 
-    const fallbackLanguage = language.split('-')[0];
+    const fallbackLanguage = language.split('-')[0] ?? language;
 
     return localizedMessages[fallbackLanguage] ?? localizedMessages.en;
 };
