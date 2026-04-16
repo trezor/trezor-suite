@@ -54,7 +54,8 @@ test.describe('Trading - Swap coins', { tag: ['@webOnly', '@T3T1', '@T3W1'] }, (
                 });
             });
             await onboardingPage.completeOnboarding();
-            await settingsPage.changeNetworks({ enableNetworks: ['sol'] });
+            await settingsPage.changeNetworks({ enableNetworks: ['sol', 'btc'] });
+            await dashboardPage.navigateTo();
             await dashboardPage.deviceSwitchingOpenButton.click();
             await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
             await walletPage.openSwapTrading({ symbol: 'sol' });

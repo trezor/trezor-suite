@@ -5,8 +5,10 @@ test.describe('Backup misc', { tag: ['@T2T1'] }, () => {
         deviceSetup: { needs_backup: true },
     });
 
-    test.beforeEach(async ({ onboardingPage }) => {
+    test.beforeEach(async ({ onboardingPage, settingsPage, dashboardPage }) => {
         await onboardingPage.completeOnboarding();
+        await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
+        await dashboardPage.navigateTo();
     });
 
     test('Backup should reset if modal is closed', async ({ onboardingPage, dashboardPage }) => {

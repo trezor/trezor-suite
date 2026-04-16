@@ -33,7 +33,8 @@ test.describe('Trading - Swap token to coin', { tag: ['@webOnly', '@T3W1', '@T3T
                 await tradingMock.routeSolanaSendRequests();
             });
             await onboardingPage.completeOnboarding();
-            await settingsPage.changeNetworks({ enableNetworks: ['sol'] });
+            await settingsPage.changeNetworks({ enableNetworks: ['sol', 'btc'] });
+            await dashboardPage.navigateTo();
             await dashboardPage.openDeviceSwitcher();
             await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
             await walletPage.openSwapTrading({ symbol: 'sol' });

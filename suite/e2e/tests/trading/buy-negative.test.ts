@@ -2,8 +2,10 @@ import { buyQuotesNegativeMax, buyQuotesNegativeMin, invityEndpoint } from '../.
 import { expect, test } from '../../support/fixtures';
 
 test.describe('Trading - Buy Negative scenarios', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
-    test.beforeEach(async ({ onboardingPage }) => {
+    test.beforeEach(async ({ onboardingPage, settingsPage, dashboardPage }) => {
         await onboardingPage.completeOnboarding();
+        await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
+        await dashboardPage.navigateTo();
     });
 
     test('Buy form handles input limits and empty quotes', async ({
