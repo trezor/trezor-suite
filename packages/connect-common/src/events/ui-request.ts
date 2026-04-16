@@ -3,7 +3,7 @@
  */
 import type { DeviceModelInternal, FirmwareRelease, FirmwareType } from '@trezor/device-utils';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
-import type { VersionArray } from '@trezor/utils/src/versionUtils';
+import type { VersionArray } from '@trezor/utils';
 
 import type { DeviceButtonRequest, DeviceThpPairingPayload } from './device';
 import type { DiscoveryAccount, DiscoveryAccountType } from '../types/account';

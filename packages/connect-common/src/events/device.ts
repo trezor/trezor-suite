@@ -4,7 +4,7 @@ import type {
     ThpCredentials,
     ThpPairingMethod,
 } from '@trezor/protocol';
-import type { VersionArray } from '@trezor/utils/src/versionUtils';
+import type { VersionArray } from '@trezor/utils';
 
 import type { Device } from '../types/device';
 import type { MessageFactoryFn } from '../types/utils';
@@ -13,7 +13,7 @@ export {
     type DecodedTrezorPushNotification,
     TrezorPushNotificationMode,
     TrezorPushNotificationType,
-} from '@trezor/protocol/src/protocol-tpn';
+} from '@trezor/protocol';
 
 export const DEVICE_EVENT = 'DEVICE_EVENT';
 export const DEVICE = {
