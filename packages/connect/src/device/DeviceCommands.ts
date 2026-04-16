@@ -25,6 +25,9 @@ export type AccountDescriptor = {
     legacyXpub?: string;
     address_n: number[];
     descriptorChecksum?: string;
+    fingerprint?: number;
+    rootFingerprint?: number;
+    outputDescriptorBip380?: string;
 };
 
 export const DeviceCommands = (deviceTypedCall: TypedCallProvider) => {
@@ -103,6 +106,7 @@ export const DeviceCommands = (deviceTypedCall: TypedCallProvider) => {
             chainCode: publicKey.node.chain_code,
             publicKey: publicKey.node.public_key,
             fingerprint: publicKey.node.fingerprint,
+            rootFingerprint: publicKey.root_fingerprint,
             depth: publicKey.node.depth,
             descriptor: publicKey.descriptor,
         };
@@ -203,6 +207,9 @@ export const DeviceCommands = (deviceTypedCall: TypedCallProvider) => {
                 legacyXpub: resp.xpub,
                 address_n,
                 descriptorChecksum: resp.descriptorChecksum,
+                fingerprint: resp.fingerprint,
+                rootFingerprint: resp.rootFingerprint,
+                outputDescriptorBip380: resp.descriptor,
             };
         }
         if (coinInfo.type === 'ethereum') {
