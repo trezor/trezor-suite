@@ -10919,6 +10919,7 @@ __metadata:
   resolution: "@suite-common/earn-stablecoin-api@workspace:suite-common/earn-stablecoin-api"
   dependencies:
     "@suite-common/calldata": "workspace:^"
+    "@suite-common/http-client": "workspace:^"
     "@suite-common/react-query": "workspace:^"
     "@trezor/utils": "workspace:^"
     orval: "npm:8.5.0"
@@ -11058,7 +11059,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-common/http-client@workspace:*, @suite-common/http-client@workspace:suite-common/http-client":
+"@suite-common/http-client@workspace:*, @suite-common/http-client@workspace:^, @suite-common/http-client@workspace:suite-common/http-client":
   version: 0.0.0-use.local
   resolution: "@suite-common/http-client@workspace:suite-common/http-client"
   dependencies:
