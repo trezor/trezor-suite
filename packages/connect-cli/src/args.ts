@@ -25,10 +25,12 @@ export const HELP = `@trezor/connect CLI arguments:
     --passphrase=<value>                      Use passphrase (default: empty)
 
   Method (default: GetAddress)
-    --method <name>                           Run TrezorConnect method
+    --method=<name>                           Run TrezorConnect method
                                                 --method=none (retrieve device Features and exit)
                                                 --method=fw-update
                                                 --method=get-credentials
+                                                --method=get-account-info
+                                                --method=get-account-descriptor
 `;
 
 // read and parse application arguments

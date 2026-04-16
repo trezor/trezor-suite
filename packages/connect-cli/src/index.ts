@@ -107,6 +107,18 @@ const runTestCase = async (device: Device) => {
         result = await fwUpdate(device);
     } else if (method === 'get-credentials') {
         result = await TrezorConnect.thpGetCredentials({ device });
+    } else if (method === 'get-account-info') {
+        result = await TrezorConnect.getAccountInfo({
+            device,
+            coin: 'btc',
+            path: "m/84'/0'/0'",
+        });
+    } else if (method === 'get-account-descriptor') {
+        result = await TrezorConnect.getAccountDescriptor({
+            device,
+            coin: 'btc',
+            path: "m/84'/0'/0'",
+        });
     } else {
         result = await TrezorConnect.getAddress({
             device,
