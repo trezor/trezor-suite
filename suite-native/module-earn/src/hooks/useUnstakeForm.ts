@@ -81,6 +81,7 @@ export const useUnstakeForm = (accountKey: AccountKey) => {
     return {
         form,
         amountValue,
+        stakedBalance,
         showNetworkFeeWarning,
         formDraft,
         formDraftKey,
