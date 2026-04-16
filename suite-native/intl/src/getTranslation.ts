@@ -60,17 +60,21 @@ export const getTranslation = (
     // Throw an error if translation expects a value that was not provided.
     const placeholderRegex = /\{(\w+)(?:,\s*\w+[^}]*)?}/g;
     const matches = template.matchAll(placeholderRegex);
-    const placeholders = Array.from(new Set(Array.from(matches, m => m[1])));
+    const placeholders: string[] = Array.from(matches, m => m[1]).filter(
+        (p): p is string => p !== undefined,
+    );
+    const uniquePlaceholders = Array.from(new Set(placeholders));
 
-    if (placeholders.length > 0) {
+    if (uniquePlaceholders.length > 0) {
         const providedKeys = values ? Object.keys(values) : [];
-        const missingValues = placeholders.filter(
+        const missingValues = uniquePlaceholders.filter(
             placeholder => !providedKeys.includes(placeholder),
         );
 
         if (missingValues.length > 0) {
+            const firstMissing = missingValues[0] ?? 'unknown';
             throw new Error(
-                `Translation "${translationId}" expects value "${missingValues[0]}" but it was not provided. ` +
+                `Translation "${translationId}" expects value "${firstMissing}" but it was not provided. ` +
                     `Translation text: "${template}"`,
             );
         }

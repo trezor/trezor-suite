@@ -25,8 +25,11 @@ const numberOfMessages = Object.keys(flatMessages).length;
 
 console.log('Looking up for unused translation keys... 🔎');
 
+const messageKeys = Object.keys(flatMessages);
+
 for (let i = 0; i < numberOfMessages; i++) {
-    const message = Object.keys(flatMessages)[i];
+    const message = messageKeys[i];
+    if (message === undefined) continue;
     process.stdout.write(`\r\x1b[KProcessing translation ${i}/${numberOfMessages}: ${message}`);
 
     if (Object.prototype.hasOwnProperty.call(flatMessages, message)) {
