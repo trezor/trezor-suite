@@ -43,7 +43,7 @@ export function validateAnalyticsEventName(value: string): ValidateEventNameErro
     }
 
     const parts = value.split('/');
-    const domain = parts[0];
+    const domain = parts[0] ?? '';
     const eventSegments = parts.slice(1);
 
     if (!ALLOWED_DOMAINS_SET.has(domain)) {
