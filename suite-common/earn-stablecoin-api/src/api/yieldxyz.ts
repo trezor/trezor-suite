@@ -5,6 +5,7 @@
  * API Documentation
  * OpenAPI spec version: 1.0
  */
+import { httpClient } from '../httpClient';
 /**
  * Token network
  */
@@ -4173,3 +4174,1383 @@ export type ProvidersControllerGetProvider500 = {
     error?: string;
     statusCode?: number;
 };
+
+/**
+ * Retrieve a paginated list of available yield opportunities across all supported networks and protocols.
+ * @summary List all yield opportunities
+ */
+export type GetYieldsResponse200 = {
+    data: YieldsControllerGetYields200;
+    status: 200;
+};
+
+export type GetYieldsResponse400 = {
+    data: YieldsControllerGetYields400;
+    status: 400;
+};
+
+export type GetYieldsResponse401 = {
+    data: YieldsControllerGetYields401;
+    status: 401;
+};
+
+export type GetYieldsResponse429 = {
+    data: YieldsControllerGetYields429;
+    status: 429;
+};
+
+export type GetYieldsResponse500 = {
+    data: YieldsControllerGetYields500;
+    status: 500;
+};
+
+export type GetYieldsResponseSuccess = GetYieldsResponse200 & {
+    headers: Headers;
+};
+export type GetYieldsResponseError = (
+    | GetYieldsResponse400
+    | GetYieldsResponse401
+    | GetYieldsResponse429
+    | GetYieldsResponse500
+) & {
+    headers: Headers;
+};
+
+export const getGetYieldsUrl = (params?: YieldsControllerGetYieldsParams) => {
+    const normalizedParams = new URLSearchParams();
+
+    Object.entries(params || {}).forEach(([key, value]) => {
+        if (value !== undefined) {
+            normalizedParams.append(key, value === null ? 'null' : value.toString());
+        }
+    });
+
+    const stringifiedParams = normalizedParams.toString();
+
+    return stringifiedParams.length > 0 ? `/v1/yields?${stringifiedParams}` : `/v1/yields`;
+};
+
+export const getYields = (
+    params?: YieldsControllerGetYieldsParams,
+    options?: RequestInit,
+): Promise<GetYieldsResponseSuccess> =>
+    httpClient<GetYieldsResponseSuccess>(getGetYieldsUrl(params), {
+        ...options,
+        method: 'GET',
+    });
+
+/**
+ * Retrieve balances for multiple wallet addresses across different networks and yield opportunities. Send an array of balance requests - each request can specify a yieldId (optional for chain scanning), address, network, and custom arguments. This is the same format as the single yield balance endpoint but in array form. Duplicate requests (same yieldId + address + network) are automatically deduplicated, with specific yield requests taking precedence over chain scans.
+ * @summary Get balances across multiple yields and networks
+ */
+export type GetAggregateBalancesResponse200 = {
+    data: BalancesResponseDto;
+    status: 200;
+};
+
+export type GetAggregateBalancesResponse400 = {
+    data: YieldsControllerGetAggregateBalances400;
+    status: 400;
+};
+
+export type GetAggregateBalancesResponse401 = {
+    data: YieldsControllerGetAggregateBalances401;
+    status: 401;
+};
+
+export type GetAggregateBalancesResponse429 = {
+    data: YieldsControllerGetAggregateBalances429;
+    status: 429;
+};
+
+export type GetAggregateBalancesResponse500 = {
+    data: YieldsControllerGetAggregateBalances500;
+    status: 500;
+};
+
+export type GetAggregateBalancesResponseSuccess = GetAggregateBalancesResponse200 & {
+    headers: Headers;
+};
+export type GetAggregateBalancesResponseError = (
+    | GetAggregateBalancesResponse400
+    | GetAggregateBalancesResponse401
+    | GetAggregateBalancesResponse429
+    | GetAggregateBalancesResponse500
+) & {
+    headers: Headers;
+};
+
+export const getGetAggregateBalancesUrl = () => `/v1/yields/balances`;
+
+export const getAggregateBalances = (
+    balancesRequestDto: BalancesRequestDto,
+    options?: RequestInit,
+): Promise<GetAggregateBalancesResponseSuccess> =>
+    httpClient<GetAggregateBalancesResponseSuccess>(getGetAggregateBalancesUrl(), {
+        ...options,
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...options?.headers },
+        body: JSON.stringify(balancesRequestDto),
+    });
+
+/**
+ * Retrieve detailed information about a specific yield opportunity including APY, tokens, protocol details, and more.
+ * @summary Get yield metadata
+ */
+export type GetYieldResponse200 = {
+    data: YieldDto;
+    status: 200;
+};
+
+export type GetYieldResponse400 = {
+    data: YieldsControllerGetYield400;
+    status: 400;
+};
+
+export type GetYieldResponse401 = {
+    data: YieldsControllerGetYield401;
+    status: 401;
+};
+
+export type GetYieldResponse404 = {
+    data: void;
+    status: 404;
+};
+
+export type GetYieldResponse429 = {
+    data: YieldsControllerGetYield429;
+    status: 429;
+};
+
+export type GetYieldResponse500 = {
+    data: YieldsControllerGetYield500;
+    status: 500;
+};
+
+export type GetYieldResponseSuccess = GetYieldResponse200 & {
+    headers: Headers;
+};
+export type GetYieldResponseError = (
+    | GetYieldResponse400
+    | GetYieldResponse401
+    | GetYieldResponse404
+    | GetYieldResponse429
+    | GetYieldResponse500
+) & {
+    headers: Headers;
+};
+
+export const getGetYieldUrl = ({ yieldId }: YieldsControllerGetYieldPathParameters) =>
+    `/v1/yields/${yieldId}`;
+
+export const getYield = (
+    { yieldId }: YieldsControllerGetYieldPathParameters,
+    options?: RequestInit,
+): Promise<GetYieldResponseSuccess> =>
+    httpClient<GetYieldResponseSuccess>(getGetYieldUrl({ yieldId }), {
+        ...options,
+        method: 'GET',
+    });
+
+/**
+ * Retrieve risk metadata associated with a specific yield.
+ * @summary Get risk metadata for a yield
+ */
+export type GetYieldRiskResponse200 = {
+    data: RiskParameterDto[];
+    status: 200;
+};
+
+export type GetYieldRiskResponse400 = {
+    data: YieldsControllerGetYieldRisk400;
+    status: 400;
+};
+
+export type GetYieldRiskResponse401 = {
+    data: YieldsControllerGetYieldRisk401;
+    status: 401;
+};
+
+export type GetYieldRiskResponse404 = {
+    data: void;
+    status: 404;
+};
+
+export type GetYieldRiskResponse429 = {
+    data: YieldsControllerGetYieldRisk429;
+    status: 429;
+};
+
+export type GetYieldRiskResponse500 = {
+    data: YieldsControllerGetYieldRisk500;
+    status: 500;
+};
+
+export type GetYieldRiskResponseSuccess = GetYieldRiskResponse200 & {
+    headers: Headers;
+};
+export type GetYieldRiskResponseError = (
+    | GetYieldRiskResponse400
+    | GetYieldRiskResponse401
+    | GetYieldRiskResponse404
+    | GetYieldRiskResponse429
+    | GetYieldRiskResponse500
+) & {
+    headers: Headers;
+};
+
+export const getGetYieldRiskUrl = ({ yieldId }: YieldsControllerGetYieldRiskPathParameters) =>
+    `/v1/yields/${yieldId}/risk`;
+
+export const getYieldRisk = (
+    { yieldId }: YieldsControllerGetYieldRiskPathParameters,
+    options?: RequestInit,
+): Promise<GetYieldRiskResponseSuccess> =>
+    httpClient<GetYieldRiskResponseSuccess>(getGetYieldRiskUrl({ yieldId }), {
+        ...options,
+        method: 'GET',
+    });
+
+/**
+ * Returns a chronological time series of balance snapshots for a wallet address within a yield. Each entry reflects the position at a specific timestamp or block. Supports configurable sampling intervals and point-in-time queries. Only available for ERC4626 vaults with indexed transfer history.
+ * @summary Get historical balance snapshots for a yield
+ */
+export type GetBalanceHistoryResponse200 = {
+    data: YieldsControllerGetBalanceHistory200;
+    status: 200;
+};
+
+export type GetBalanceHistoryResponse400 = {
+    data: YieldsControllerGetBalanceHistory400;
+    status: 400;
+};
+
+export type GetBalanceHistoryResponse401 = {
+    data: YieldsControllerGetBalanceHistory401;
+    status: 401;
+};
+
+export type GetBalanceHistoryResponse404 = {
+    data: void;
+    status: 404;
+};
+
+export type GetBalanceHistoryResponse429 = {
+    data: YieldsControllerGetBalanceHistory429;
+    status: 429;
+};
+
+export type GetBalanceHistoryResponse500 = {
+    data: YieldsControllerGetBalanceHistory500;
+    status: 500;
+};
+
+export type GetBalanceHistoryResponseSuccess = GetBalanceHistoryResponse200 & {
+    headers: Headers;
+};
+export type GetBalanceHistoryResponseError = (
+    | GetBalanceHistoryResponse400
+    | GetBalanceHistoryResponse401
+    | GetBalanceHistoryResponse404
+    | GetBalanceHistoryResponse429
+    | GetBalanceHistoryResponse500
+) & {
+    headers: Headers;
+};
+
+export const getGetBalanceHistoryUrl = (
+    { yieldId }: YieldsControllerGetBalanceHistoryPathParameters,
+    params: YieldsControllerGetBalanceHistoryParams,
+) => {
+    const normalizedParams = new URLSearchParams();
+
+    Object.entries(params || {}).forEach(([key, value]) => {
+        if (value !== undefined) {
+            normalizedParams.append(key, value === null ? 'null' : value.toString());
+        }
+    });
+
+    const stringifiedParams = normalizedParams.toString();
+
+    return stringifiedParams.length > 0
+        ? `/v1/yields/${yieldId}/balances/history?${stringifiedParams}`
+        : `/v1/yields/${yieldId}/balances/history`;
+};
+
+export const getBalanceHistory = (
+    { yieldId }: YieldsControllerGetBalanceHistoryPathParameters,
+    params: YieldsControllerGetBalanceHistoryParams,
+    options?: RequestInit,
+): Promise<GetBalanceHistoryResponseSuccess> =>
+    httpClient<GetBalanceHistoryResponseSuccess>(getGetBalanceHistoryUrl({ yieldId }, params), {
+        ...options,
+        method: 'GET',
+    });
+
+/**
+ * Retrieve all balances associated with a yield opportunity for a specific wallet address, including active, pending, claimable, and withdrawable balances. The network is automatically determined from the yield configuration.
+ * @summary Get balances for a specific yield
+ */
+export type GetYieldBalancesResponse200 = {
+    data: YieldBalancesDto;
+    status: 200;
+};
+
+export type GetYieldBalancesResponse400 = {
+    data: YieldsControllerGetYieldBalances400;
+    status: 400;
+};
+
+export type GetYieldBalancesResponse401 = {
+    data: YieldsControllerGetYieldBalances401;
+    status: 401;
+};
+
+export type GetYieldBalancesResponse404 = {
+    data: void;
+    status: 404;
+};
+
+export type GetYieldBalancesResponse429 = {
+    data: YieldsControllerGetYieldBalances429;
+    status: 429;
+};
+
+export type GetYieldBalancesResponse500 = {
+    data: YieldsControllerGetYieldBalances500;
+    status: 500;
+};
+
+export type GetYieldBalancesResponseSuccess = GetYieldBalancesResponse200 & {
+    headers: Headers;
+};
+export type GetYieldBalancesResponseError = (
+    | GetYieldBalancesResponse400
+    | GetYieldBalancesResponse401
+    | GetYieldBalancesResponse404
+    | GetYieldBalancesResponse429
+    | GetYieldBalancesResponse500
+) & {
+    headers: Headers;
+};
+
+export const getGetYieldBalancesUrl = ({
+    yieldId,
+}: YieldsControllerGetYieldBalancesPathParameters) => `/v1/yields/${yieldId}/balances`;
+
+export const getYieldBalances = (
+    { yieldId }: YieldsControllerGetYieldBalancesPathParameters,
+    yieldBalancesRequestDto: YieldBalancesRequestDto,
+    options?: RequestInit,
+): Promise<GetYieldBalancesResponseSuccess> =>
+    httpClient<GetYieldBalancesResponseSuccess>(getGetYieldBalancesUrl({ yieldId }), {
+        ...options,
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...options?.headers },
+        body: JSON.stringify(yieldBalancesRequestDto),
+    });
+
+/**
+ * Retrieve a chronological list of on-chain reward events for an indexed yield. Each record includes timestamp, token metadata, amount, reward source, and transaction reference.
+ * @summary Get reward history
+ */
+export type GetYieldRewardsResponse200 = {
+    data: PaginatedResponseDto;
+    status: 200;
+};
+
+export type GetYieldRewardsResponse400 = {
+    data: YieldsControllerGetYieldRewards400;
+    status: 400;
+};
+
+export type GetYieldRewardsResponse401 = {
+    data: YieldsControllerGetYieldRewards401;
+    status: 401;
+};
+
+export type GetYieldRewardsResponse404 = {
+    data: void;
+    status: 404;
+};
+
+export type GetYieldRewardsResponse429 = {
+    data: YieldsControllerGetYieldRewards429;
+    status: 429;
+};
+
+export type GetYieldRewardsResponse500 = {
+    data: YieldsControllerGetYieldRewards500;
+    status: 500;
+};
+
+export type GetYieldRewardsResponseSuccess = GetYieldRewardsResponse200 & {
+    headers: Headers;
+};
+export type GetYieldRewardsResponseError = (
+    | GetYieldRewardsResponse400
+    | GetYieldRewardsResponse401
+    | GetYieldRewardsResponse404
+    | GetYieldRewardsResponse429
+    | GetYieldRewardsResponse500
+) & {
+    headers: Headers;
+};
+
+export const getGetYieldRewardsUrl = (
+    { yieldId }: YieldsControllerGetYieldRewardsPathParameters,
+    params: YieldsControllerGetYieldRewardsParams,
+) => {
+    const normalizedParams = new URLSearchParams();
+
+    Object.entries(params || {}).forEach(([key, value]) => {
+        if (value !== undefined) {
+            normalizedParams.append(key, value === null ? 'null' : value.toString());
+        }
+    });
+
+    const stringifiedParams = normalizedParams.toString();
+
+    return stringifiedParams.length > 0
+        ? `/v1/yields/${yieldId}/rewards/history?${stringifiedParams}`
+        : `/v1/yields/${yieldId}/rewards/history`;
+};
+
+export const getYieldRewards = (
+    { yieldId }: YieldsControllerGetYieldRewardsPathParameters,
+    params: YieldsControllerGetYieldRewardsParams,
+    options?: RequestInit,
+): Promise<GetYieldRewardsResponseSuccess> =>
+    httpClient<GetYieldRewardsResponseSuccess>(getGetYieldRewardsUrl({ yieldId }, params), {
+        ...options,
+        method: 'GET',
+    });
+
+/**
+ * Returns a chronological time series of reward rate snapshots for the specified yield, suitable for charting and analytics. Supports configurable time ranges, sampling intervals (day/week/month), and pagination.
+ * @summary Get historical reward rate snapshots for a yield
+ */
+export type GetYieldRewardRateHistoryResponse200 = {
+    data: RewardRateHistoryResponseDto;
+    status: 200;
+};
+
+export type GetYieldRewardRateHistoryResponse400 = {
+    data: YieldsControllerGetYieldRewardRateHistory400;
+    status: 400;
+};
+
+export type GetYieldRewardRateHistoryResponse401 = {
+    data: YieldsControllerGetYieldRewardRateHistory401;
+    status: 401;
+};
+
+export type GetYieldRewardRateHistoryResponse404 = {
+    data: void;
+    status: 404;
+};
+
+export type GetYieldRewardRateHistoryResponse429 = {
+    data: YieldsControllerGetYieldRewardRateHistory429;
+    status: 429;
+};
+
+export type GetYieldRewardRateHistoryResponse500 = {
+    data: YieldsControllerGetYieldRewardRateHistory500;
+    status: 500;
+};
+
+export type GetYieldRewardRateHistoryResponseSuccess = GetYieldRewardRateHistoryResponse200 & {
+    headers: Headers;
+};
+export type GetYieldRewardRateHistoryResponseError = (
+    | GetYieldRewardRateHistoryResponse400
+    | GetYieldRewardRateHistoryResponse401
+    | GetYieldRewardRateHistoryResponse404
+    | GetYieldRewardRateHistoryResponse429
+    | GetYieldRewardRateHistoryResponse500
+) & {
+    headers: Headers;
+};
+
+export const getGetYieldRewardRateHistoryUrl = (
+    { yieldId }: YieldsControllerGetYieldRewardRateHistoryPathParameters,
+    params?: YieldsControllerGetYieldRewardRateHistoryParams,
+) => {
+    const normalizedParams = new URLSearchParams();
+
+    Object.entries(params || {}).forEach(([key, value]) => {
+        if (value !== undefined) {
+            normalizedParams.append(key, value === null ? 'null' : value.toString());
+        }
+    });
+
+    const stringifiedParams = normalizedParams.toString();
+
+    return stringifiedParams.length > 0
+        ? `/v1/yields/${yieldId}/reward-rate/history?${stringifiedParams}`
+        : `/v1/yields/${yieldId}/reward-rate/history`;
+};
+
+export const getYieldRewardRateHistory = (
+    { yieldId }: YieldsControllerGetYieldRewardRateHistoryPathParameters,
+    params?: YieldsControllerGetYieldRewardRateHistoryParams,
+    options?: RequestInit,
+): Promise<GetYieldRewardRateHistoryResponseSuccess> =>
+    httpClient<GetYieldRewardRateHistoryResponseSuccess>(
+        getGetYieldRewardRateHistoryUrl({ yieldId }, params),
+        {
+            ...options,
+            method: 'GET',
+        },
+    );
+
+/**
+ * Returns a chronological time series of Total Value Locked for the specified yield, expressed in underlying token units. Supports configurable time ranges, sampling intervals (day/week/month), and pagination.
+ * @summary Get historical TVL snapshots for a yield
+ */
+export type GetYieldTvlHistoryResponse200 = {
+    data: TvlHistoryResponseDto;
+    status: 200;
+};
+
+export type GetYieldTvlHistoryResponse400 = {
+    data: YieldsControllerGetYieldTvlHistory400;
+    status: 400;
+};
+
+export type GetYieldTvlHistoryResponse401 = {
+    data: YieldsControllerGetYieldTvlHistory401;
+    status: 401;
+};
+
+export type GetYieldTvlHistoryResponse404 = {
+    data: void;
+    status: 404;
+};
+
+export type GetYieldTvlHistoryResponse429 = {
+    data: YieldsControllerGetYieldTvlHistory429;
+    status: 429;
+};
+
+export type GetYieldTvlHistoryResponse500 = {
+    data: YieldsControllerGetYieldTvlHistory500;
+    status: 500;
+};
+
+export type GetYieldTvlHistoryResponseSuccess = GetYieldTvlHistoryResponse200 & {
+    headers: Headers;
+};
+export type GetYieldTvlHistoryResponseError = (
+    | GetYieldTvlHistoryResponse400
+    | GetYieldTvlHistoryResponse401
+    | GetYieldTvlHistoryResponse404
+    | GetYieldTvlHistoryResponse429
+    | GetYieldTvlHistoryResponse500
+) & {
+    headers: Headers;
+};
+
+export const getGetYieldTvlHistoryUrl = (
+    { yieldId }: YieldsControllerGetYieldTvlHistoryPathParameters,
+    params?: YieldsControllerGetYieldTvlHistoryParams,
+) => {
+    const normalizedParams = new URLSearchParams();
+
+    Object.entries(params || {}).forEach(([key, value]) => {
+        if (value !== undefined) {
+            normalizedParams.append(key, value === null ? 'null' : value.toString());
+        }
+    });
+
+    const stringifiedParams = normalizedParams.toString();
+
+    return stringifiedParams.length > 0
+        ? `/v1/yields/${yieldId}/tvl/history?${stringifiedParams}`
+        : `/v1/yields/${yieldId}/tvl/history`;
+};
+
+export const getYieldTvlHistory = (
+    { yieldId }: YieldsControllerGetYieldTvlHistoryPathParameters,
+    params?: YieldsControllerGetYieldTvlHistoryParams,
+    options?: RequestInit,
+): Promise<GetYieldTvlHistoryResponseSuccess> =>
+    httpClient<GetYieldTvlHistoryResponseSuccess>(getGetYieldTvlHistoryUrl({ yieldId }, params), {
+        ...options,
+        method: 'GET',
+    });
+
+/**
+ * Retrieve a paginated list of validators available for staking or delegation for this yield opportunity.
+ * @summary Get yield validators
+ */
+export type GetYieldValidatorsResponse200 = {
+    data: YieldsControllerGetYieldValidators200;
+    status: 200;
+};
+
+export type GetYieldValidatorsResponse400 = {
+    data: YieldsControllerGetYieldValidators400;
+    status: 400;
+};
+
+export type GetYieldValidatorsResponse401 = {
+    data: YieldsControllerGetYieldValidators401;
+    status: 401;
+};
+
+export type GetYieldValidatorsResponse404 = {
+    data: void;
+    status: 404;
+};
+
+export type GetYieldValidatorsResponse429 = {
+    data: YieldsControllerGetYieldValidators429;
+    status: 429;
+};
+
+export type GetYieldValidatorsResponse500 = {
+    data: YieldsControllerGetYieldValidators500;
+    status: 500;
+};
+
+export type GetYieldValidatorsResponseSuccess = GetYieldValidatorsResponse200 & {
+    headers: Headers;
+};
+export type GetYieldValidatorsResponseError = (
+    | GetYieldValidatorsResponse400
+    | GetYieldValidatorsResponse401
+    | GetYieldValidatorsResponse404
+    | GetYieldValidatorsResponse429
+    | GetYieldValidatorsResponse500
+) & {
+    headers: Headers;
+};
+
+export const getGetYieldValidatorsUrl = (
+    { yieldId }: YieldsControllerGetYieldValidatorsPathParameters,
+    params?: YieldsControllerGetYieldValidatorsParams,
+) => {
+    const normalizedParams = new URLSearchParams();
+
+    Object.entries(params || {}).forEach(([key, value]) => {
+        if (value !== undefined) {
+            normalizedParams.append(key, value === null ? 'null' : value.toString());
+        }
+    });
+
+    const stringifiedParams = normalizedParams.toString();
+
+    return stringifiedParams.length > 0
+        ? `/v1/yields/${yieldId}/validators?${stringifiedParams}`
+        : `/v1/yields/${yieldId}/validators`;
+};
+
+export const getYieldValidators = (
+    { yieldId }: YieldsControllerGetYieldValidatorsPathParameters,
+    params?: YieldsControllerGetYieldValidatorsParams,
+    options?: RequestInit,
+): Promise<GetYieldValidatorsResponseSuccess> =>
+    httpClient<GetYieldValidatorsResponseSuccess>(getGetYieldValidatorsUrl({ yieldId }, params), {
+        ...options,
+        method: 'GET',
+    });
+
+/**
+ * Retrieve all actions performed by a user, with optional filtering by yield, status, category, etc. In the future, this may include personalized action recommendations.
+ * @summary Get user actions
+ */
+export type GetActionsResponse200 = {
+    data: ActionsControllerGetActions200;
+    status: 200;
+};
+
+export type GetActionsResponse400 = {
+    data: ActionsControllerGetActions400;
+    status: 400;
+};
+
+export type GetActionsResponse401 = {
+    data: ActionsControllerGetActions401;
+    status: 401;
+};
+
+export type GetActionsResponse429 = {
+    data: ActionsControllerGetActions429;
+    status: 429;
+};
+
+export type GetActionsResponse500 = {
+    data: ActionsControllerGetActions500;
+    status: 500;
+};
+
+export type GetActionsResponseSuccess = GetActionsResponse200 & {
+    headers: Headers;
+};
+export type GetActionsResponseError = (
+    | GetActionsResponse400
+    | GetActionsResponse401
+    | GetActionsResponse429
+    | GetActionsResponse500
+) & {
+    headers: Headers;
+};
+
+export const getGetActionsUrl = (params: ActionsControllerGetActionsParams) => {
+    const normalizedParams = new URLSearchParams();
+
+    Object.entries(params || {}).forEach(([key, value]) => {
+        if (value !== undefined) {
+            normalizedParams.append(key, value === null ? 'null' : value.toString());
+        }
+    });
+
+    const stringifiedParams = normalizedParams.toString();
+
+    return stringifiedParams.length > 0 ? `/v1/actions?${stringifiedParams}` : `/v1/actions`;
+};
+
+export const getActions = (
+    params: ActionsControllerGetActionsParams,
+    options?: RequestInit,
+): Promise<GetActionsResponseSuccess> =>
+    httpClient<GetActionsResponseSuccess>(getGetActionsUrl(params), {
+        ...options,
+        method: 'GET',
+    });
+
+/**
+ * Retrieve detailed information about a specific action including current status, transactions, and execution details.
+ * @summary Get action details
+ */
+export type GetActionResponse200 = {
+    data: ActionDto;
+    status: 200;
+};
+
+export type GetActionResponse400 = {
+    data: ActionsControllerGetAction400;
+    status: 400;
+};
+
+export type GetActionResponse401 = {
+    data: ActionsControllerGetAction401;
+    status: 401;
+};
+
+export type GetActionResponse404 = {
+    data: void;
+    status: 404;
+};
+
+export type GetActionResponse429 = {
+    data: ActionsControllerGetAction429;
+    status: 429;
+};
+
+export type GetActionResponse500 = {
+    data: ActionsControllerGetAction500;
+    status: 500;
+};
+
+export type GetActionResponseSuccess = GetActionResponse200 & {
+    headers: Headers;
+};
+export type GetActionResponseError = (
+    | GetActionResponse400
+    | GetActionResponse401
+    | GetActionResponse404
+    | GetActionResponse429
+    | GetActionResponse500
+) & {
+    headers: Headers;
+};
+
+export const getGetActionUrl = ({ actionId }: ActionsControllerGetActionPathParameters) =>
+    `/v1/actions/${actionId}`;
+
+export const getAction = (
+    { actionId }: ActionsControllerGetActionPathParameters,
+    options?: RequestInit,
+): Promise<GetActionResponseSuccess> =>
+    httpClient<GetActionResponseSuccess>(getGetActionUrl({ actionId }), {
+        ...options,
+        method: 'GET',
+    });
+
+/**
+ * Generate the transactions needed to enter a yield position with the provided parameters.
+ * @summary Enter a yield
+ */
+export type EnterYieldResponse201 = {
+    data: ActionDto;
+    status: 201;
+};
+
+export type EnterYieldResponse400 = {
+    data: ActionsControllerEnterYield400;
+    status: 400;
+};
+
+export type EnterYieldResponse401 = {
+    data: ActionsControllerEnterYield401;
+    status: 401;
+};
+
+export type EnterYieldResponse403 = {
+    data: ActionsControllerEnterYield403;
+    status: 403;
+};
+
+export type EnterYieldResponse404 = {
+    data: void;
+    status: 404;
+};
+
+export type EnterYieldResponse429 = {
+    data: ActionsControllerEnterYield429;
+    status: 429;
+};
+
+export type EnterYieldResponse500 = {
+    data: ActionsControllerEnterYield500;
+    status: 500;
+};
+
+export type EnterYieldResponseSuccess = EnterYieldResponse201 & {
+    headers: Headers;
+};
+export type EnterYieldResponseError = (
+    | EnterYieldResponse400
+    | EnterYieldResponse401
+    | EnterYieldResponse403
+    | EnterYieldResponse404
+    | EnterYieldResponse429
+    | EnterYieldResponse500
+) & {
+    headers: Headers;
+};
+
+export const getEnterYieldUrl = () => `/v1/actions/enter`;
+
+export const enterYield = (
+    createActionDto: CreateActionDto,
+    options?: RequestInit,
+): Promise<EnterYieldResponseSuccess> =>
+    httpClient<EnterYieldResponseSuccess>(getEnterYieldUrl(), {
+        ...options,
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...options?.headers },
+        body: JSON.stringify(createActionDto),
+    });
+
+/**
+ * Generate the transactions needed to exit a yield position with the provided parameters.
+ * @summary Exit a yield
+ */
+export type ExitYieldResponse201 = {
+    data: ActionDto;
+    status: 201;
+};
+
+export type ExitYieldResponse400 = {
+    data: ActionsControllerExitYield400;
+    status: 400;
+};
+
+export type ExitYieldResponse401 = {
+    data: ActionsControllerExitYield401;
+    status: 401;
+};
+
+export type ExitYieldResponse403 = {
+    data: ActionsControllerExitYield403;
+    status: 403;
+};
+
+export type ExitYieldResponse404 = {
+    data: void;
+    status: 404;
+};
+
+export type ExitYieldResponse429 = {
+    data: ActionsControllerExitYield429;
+    status: 429;
+};
+
+export type ExitYieldResponse500 = {
+    data: ActionsControllerExitYield500;
+    status: 500;
+};
+
+export type ExitYieldResponseSuccess = ExitYieldResponse201 & {
+    headers: Headers;
+};
+export type ExitYieldResponseError = (
+    | ExitYieldResponse400
+    | ExitYieldResponse401
+    | ExitYieldResponse403
+    | ExitYieldResponse404
+    | ExitYieldResponse429
+    | ExitYieldResponse500
+) & {
+    headers: Headers;
+};
+
+export const getExitYieldUrl = () => `/v1/actions/exit`;
+
+export const exitYield = (
+    createActionDto: CreateActionDto,
+    options?: RequestInit,
+): Promise<ExitYieldResponseSuccess> =>
+    httpClient<ExitYieldResponseSuccess>(getExitYieldUrl(), {
+        ...options,
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...options?.headers },
+        body: JSON.stringify(createActionDto),
+    });
+
+/**
+ * Generate the transactions needed to perform management actions on a yield position.
+ * @summary Manage a yield
+ */
+export type ManageYieldResponse201 = {
+    data: ActionDto;
+    status: 201;
+};
+
+export type ManageYieldResponse400 = {
+    data: ActionsControllerManageYield400;
+    status: 400;
+};
+
+export type ManageYieldResponse401 = {
+    data: ActionsControllerManageYield401;
+    status: 401;
+};
+
+export type ManageYieldResponse403 = {
+    data: ActionsControllerManageYield403;
+    status: 403;
+};
+
+export type ManageYieldResponse404 = {
+    data: void;
+    status: 404;
+};
+
+export type ManageYieldResponse429 = {
+    data: ActionsControllerManageYield429;
+    status: 429;
+};
+
+export type ManageYieldResponse500 = {
+    data: ActionsControllerManageYield500;
+    status: 500;
+};
+
+export type ManageYieldResponseSuccess = ManageYieldResponse201 & {
+    headers: Headers;
+};
+export type ManageYieldResponseError = (
+    | ManageYieldResponse400
+    | ManageYieldResponse401
+    | ManageYieldResponse403
+    | ManageYieldResponse404
+    | ManageYieldResponse429
+    | ManageYieldResponse500
+) & {
+    headers: Headers;
+};
+
+export const getManageYieldUrl = () => `/v1/actions/manage`;
+
+export const manageYield = (
+    createManageActionDto: CreateManageActionDto,
+    options?: RequestInit,
+): Promise<ManageYieldResponseSuccess> =>
+    httpClient<ManageYieldResponseSuccess>(getManageYieldUrl(), {
+        ...options,
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...options?.headers },
+        body: JSON.stringify(createManageActionDto),
+    });
+
+/**
+ * Submit the transaction hash after broadcasting a transaction to the blockchain. This updates the transaction status and enables tracking.
+ * @summary Submit transaction hash
+ */
+export type SubmitTransactionHashResponse200 = {
+    data: TransactionDto;
+    status: 200;
+};
+
+export type SubmitTransactionHashResponse400 = {
+    data: void;
+    status: 400;
+};
+
+export type SubmitTransactionHashResponse401 = {
+    data: TransactionsControllerSubmitTransactionHash401;
+    status: 401;
+};
+
+export type SubmitTransactionHashResponse404 = {
+    data: void;
+    status: 404;
+};
+
+export type SubmitTransactionHashResponse429 = {
+    data: TransactionsControllerSubmitTransactionHash429;
+    status: 429;
+};
+
+export type SubmitTransactionHashResponse500 = {
+    data: TransactionsControllerSubmitTransactionHash500;
+    status: 500;
+};
+
+export type SubmitTransactionHashResponseSuccess = SubmitTransactionHashResponse200 & {
+    headers: Headers;
+};
+export type SubmitTransactionHashResponseError = (
+    | SubmitTransactionHashResponse400
+    | SubmitTransactionHashResponse401
+    | SubmitTransactionHashResponse404
+    | SubmitTransactionHashResponse429
+    | SubmitTransactionHashResponse500
+) & {
+    headers: Headers;
+};
+
+export const getSubmitTransactionHashUrl = ({
+    transactionId,
+}: TransactionsControllerSubmitTransactionHashPathParameters) =>
+    `/v1/transactions/${transactionId}/submit-hash`;
+
+export const submitTransactionHash = (
+    { transactionId }: TransactionsControllerSubmitTransactionHashPathParameters,
+    submitHashDto: SubmitHashDto,
+    options?: RequestInit,
+): Promise<SubmitTransactionHashResponseSuccess> =>
+    httpClient<SubmitTransactionHashResponseSuccess>(
+        getSubmitTransactionHashUrl({ transactionId }),
+        {
+            ...options,
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json', ...options?.headers },
+            body: JSON.stringify(submitHashDto),
+        },
+    );
+
+/**
+ * Submit the transaction to the blockchain.
+ * @summary Submit transaction
+ */
+export type SubmitTransactionResponse200 = {
+    data: TransactionDto;
+    status: 200;
+};
+
+export type SubmitTransactionResponse400 = {
+    data: void;
+    status: 400;
+};
+
+export type SubmitTransactionResponse401 = {
+    data: TransactionsControllerSubmitTransaction401;
+    status: 401;
+};
+
+export type SubmitTransactionResponse404 = {
+    data: void;
+    status: 404;
+};
+
+export type SubmitTransactionResponse429 = {
+    data: TransactionsControllerSubmitTransaction429;
+    status: 429;
+};
+
+export type SubmitTransactionResponse500 = {
+    data: TransactionsControllerSubmitTransaction500;
+    status: 500;
+};
+
+export type SubmitTransactionResponseSuccess = SubmitTransactionResponse200 & {
+    headers: Headers;
+};
+export type SubmitTransactionResponseError = (
+    | SubmitTransactionResponse400
+    | SubmitTransactionResponse401
+    | SubmitTransactionResponse404
+    | SubmitTransactionResponse429
+    | SubmitTransactionResponse500
+) & {
+    headers: Headers;
+};
+
+export const getSubmitTransactionUrl = ({
+    transactionId,
+}: TransactionsControllerSubmitTransactionPathParameters) =>
+    `/v1/transactions/${transactionId}/submit`;
+
+export const submitTransaction = (
+    { transactionId }: TransactionsControllerSubmitTransactionPathParameters,
+    submitTransactionDto: SubmitTransactionDto,
+    options?: RequestInit,
+): Promise<SubmitTransactionResponseSuccess> =>
+    httpClient<SubmitTransactionResponseSuccess>(getSubmitTransactionUrl({ transactionId }), {
+        ...options,
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...options?.headers },
+        body: JSON.stringify(submitTransactionDto),
+    });
+
+/**
+ * Retrieve detailed information about a specific transaction including current status, hash, and execution details.
+ * @summary Get transaction details
+ */
+export type GetTransactionResponse200 = {
+    data: TransactionDto;
+    status: 200;
+};
+
+export type GetTransactionResponse400 = {
+    data: TransactionsControllerGetTransaction400;
+    status: 400;
+};
+
+export type GetTransactionResponse401 = {
+    data: TransactionsControllerGetTransaction401;
+    status: 401;
+};
+
+export type GetTransactionResponse404 = {
+    data: void;
+    status: 404;
+};
+
+export type GetTransactionResponse429 = {
+    data: TransactionsControllerGetTransaction429;
+    status: 429;
+};
+
+export type GetTransactionResponse500 = {
+    data: TransactionsControllerGetTransaction500;
+    status: 500;
+};
+
+export type GetTransactionResponseSuccess = GetTransactionResponse200 & {
+    headers: Headers;
+};
+export type GetTransactionResponseError = (
+    | GetTransactionResponse400
+    | GetTransactionResponse401
+    | GetTransactionResponse404
+    | GetTransactionResponse429
+    | GetTransactionResponse500
+) & {
+    headers: Headers;
+};
+
+export const getGetTransactionUrl = ({
+    transactionId,
+}: TransactionsControllerGetTransactionPathParameters) => `/v1/transactions/${transactionId}`;
+
+export const getTransaction = (
+    { transactionId }: TransactionsControllerGetTransactionPathParameters,
+    options?: RequestInit,
+): Promise<GetTransactionResponseSuccess> =>
+    httpClient<GetTransactionResponseSuccess>(getGetTransactionUrl({ transactionId }), {
+        ...options,
+        method: 'GET',
+    });
+
+/**
+ * Retrieve a list of all supported networks that can be used for filtering yields and other operations.
+ * @summary List all available networks
+ */
+export type GetNetworksResponse200 = {
+    data: NetworkDto[];
+    status: 200;
+};
+
+export type GetNetworksResponse400 = {
+    data: NetworksControllerGetNetworks400;
+    status: 400;
+};
+
+export type GetNetworksResponse401 = {
+    data: NetworksControllerGetNetworks401;
+    status: 401;
+};
+
+export type GetNetworksResponse429 = {
+    data: NetworksControllerGetNetworks429;
+    status: 429;
+};
+
+export type GetNetworksResponse500 = {
+    data: NetworksControllerGetNetworks500;
+    status: 500;
+};
+
+export type GetNetworksResponseSuccess = GetNetworksResponse200 & {
+    headers: Headers;
+};
+export type GetNetworksResponseError = (
+    | GetNetworksResponse400
+    | GetNetworksResponse401
+    | GetNetworksResponse429
+    | GetNetworksResponse500
+) & {
+    headers: Headers;
+};
+
+export const getGetNetworksUrl = () => `/v1/networks`;
+
+export const getNetworks = (options?: RequestInit): Promise<GetNetworksResponseSuccess> =>
+    httpClient<GetNetworksResponseSuccess>(getGetNetworksUrl(), {
+        ...options,
+        method: 'GET',
+    });
+
+/**
+ * Returns a paginated list of all providers, including both protocol and validator providers.
+ * @summary Get all providers
+ */
+export type GetProvidersResponse200 = {
+    data: ProvidersControllerGetProviders200;
+    status: 200;
+};
+
+export type GetProvidersResponse400 = {
+    data: ProvidersControllerGetProviders400;
+    status: 400;
+};
+
+export type GetProvidersResponse401 = {
+    data: ProvidersControllerGetProviders401;
+    status: 401;
+};
+
+export type GetProvidersResponse429 = {
+    data: ProvidersControllerGetProviders429;
+    status: 429;
+};
+
+export type GetProvidersResponse500 = {
+    data: ProvidersControllerGetProviders500;
+    status: 500;
+};
+
+export type GetProvidersResponseSuccess = GetProvidersResponse200 & {
+    headers: Headers;
+};
+export type GetProvidersResponseError = (
+    | GetProvidersResponse400
+    | GetProvidersResponse401
+    | GetProvidersResponse429
+    | GetProvidersResponse500
+) & {
+    headers: Headers;
+};
+
+export const getGetProvidersUrl = (params?: ProvidersControllerGetProvidersParams) => {
+    const normalizedParams = new URLSearchParams();
+
+    Object.entries(params || {}).forEach(([key, value]) => {
+        if (value !== undefined) {
+            normalizedParams.append(key, value === null ? 'null' : value.toString());
+        }
+    });
+
+    const stringifiedParams = normalizedParams.toString();
+
+    return stringifiedParams.length > 0 ? `/v1/providers?${stringifiedParams}` : `/v1/providers`;
+};
+
+export const getProviders = (
+    params?: ProvidersControllerGetProvidersParams,
+    options?: RequestInit,
+): Promise<GetProvidersResponseSuccess> =>
+    httpClient<GetProvidersResponseSuccess>(getGetProvidersUrl(params), {
+        ...options,
+        method: 'GET',
+    });
+
+/**
+ * Returns detailed information about a specific provider.
+ * @summary Get provider by ID
+ */
+export type GetProviderResponse200 = {
+    data: ProviderDto;
+    status: 200;
+};
+
+export type GetProviderResponse400 = {
+    data: ProvidersControllerGetProvider400;
+    status: 400;
+};
+
+export type GetProviderResponse401 = {
+    data: ProvidersControllerGetProvider401;
+    status: 401;
+};
+
+export type GetProviderResponse429 = {
+    data: ProvidersControllerGetProvider429;
+    status: 429;
+};
+
+export type GetProviderResponse500 = {
+    data: ProvidersControllerGetProvider500;
+    status: 500;
+};
+
+export type GetProviderResponseSuccess = GetProviderResponse200 & {
+    headers: Headers;
+};
+export type GetProviderResponseError = (
+    | GetProviderResponse400
+    | GetProviderResponse401
+    | GetProviderResponse429
+    | GetProviderResponse500
+) & {
+    headers: Headers;
+};
+
+export const getGetProviderUrl = ({ providerId }: ProvidersControllerGetProviderPathParameters) =>
+    `/v1/providers/${providerId}`;
+
+export const getProvider = (
+    { providerId }: ProvidersControllerGetProviderPathParameters,
+    options?: RequestInit,
+): Promise<GetProviderResponseSuccess> =>
+    httpClient<GetProviderResponseSuccess>(getGetProviderUrl({ providerId }), {
+        ...options,
+        method: 'GET',
+    });
+
+/**
+ * Get the health status of the yield API with current timestamp
+ * @summary Health check
+ */
+export type HealthResponse200 = {
+    data: HealthStatusDto;
+    status: 200;
+};
+
+export type HealthResponseSuccess = HealthResponse200 & {
+    headers: Headers;
+};
+export const getHealthUrl = () => `/health`;
+
+export const health = (options?: RequestInit): Promise<HealthResponseSuccess> =>
+    httpClient<HealthResponseSuccess>(getHealthUrl(), {
+        ...options,
+        method: 'GET',
+    });
