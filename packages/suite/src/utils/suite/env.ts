@@ -24,7 +24,7 @@ export const submitRequestForm = async (
     if (isDesktop()) {
         let params = `a=${encodeURIComponent(formAction)}`;
         Object.keys(fields).forEach(k => {
-            params += `&${k}=${encodeURIComponent(fields[k])}`;
+            params += `&${k}=${encodeURIComponent(fields[k] ?? '')}`;
         });
         const serverUrl = await desktopApi.getHttpReceiverAddress('/buy-post');
         window.open(`${serverUrl}?${params}`, '_blank');
@@ -36,7 +36,7 @@ export const submitRequestForm = async (
             const hiddenField = document.createElement('input');
             hiddenField.type = 'hidden';
             hiddenField.name = key;
-            hiddenField.value = fields[key];
+            hiddenField.value = fields[key] ?? '';
             form.appendChild(hiddenField);
         });
 

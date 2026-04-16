@@ -141,7 +141,7 @@ describe('Blockchain Actions', () => {
             expect(actions).toMatchObject(f.actions);
             if (actions.length) {
                 // wait for reconnection timeout
-                const timeout = actions[0].payload.time - new Date().getTime() + 500;
+                const timeout = (actions[0]?.payload.time ?? 0) - new Date().getTime() + 500;
                 jest.setTimeout(10000);
                 await new Promise(resolve => setTimeout(resolve, timeout));
                 expect(TrezorConnect.blockchainUnsubscribeFiatRates).toHaveBeenCalledTimes(1);
@@ -174,7 +174,7 @@ describe('Blockchain Actions', () => {
 
             const store = initStore(getInitialState(f.state as any));
             await store.dispatch(onBlockMinedThunk(f.block as any));
-            const { result } = f;
+            const result = 'result' in f ? f.result : undefined;
 
             if (!result) {
                 expect(filterThunkActionTypes(store.getActions()).length).toEqual(0);
@@ -184,14 +184,21 @@ describe('Blockchain Actions', () => {
                 );
                 expect(actions.length).toEqual(result.length);
                 actions.forEach((action, index) => {
-                    expect(action.type).toEqual(result[index]);
+                    expect(action.type).toEqual(result?.[index]);
                 });
-                if (f.resultTxs) {
+                const resultTxs = 'resultTxs' in f ? f.resultTxs : undefined;
+                if (resultTxs) {
                     const txs = store.getState().wallet.transactions.transactions;
                     typedObjectKeys(txs).forEach(key => {
-                        const resTxs = f.resultTxs[key as unknown as keyof typeof f.resultTxs]; // Todo: type fixtures
-                        expect(txs[key].length).toEqual(resTxs.length);
-                        txs[key].forEach((t, i) => expect(t).toMatchObject(resTxs[i]));
+                        const resTxs = resultTxs[key as unknown as keyof typeof resultTxs]; // Todo: type fixtures
+                        const keyTxs = txs[key] ?? [];
+                        expect(keyTxs.length).toEqual(resTxs.length);
+                        keyTxs.forEach((t, i) => {
+                            const resTx = resTxs[i];
+                            if (resTx) {
+                                expect(t).toMatchObject(resTx);
+                            }
+                        });
                     });
                 }
             }

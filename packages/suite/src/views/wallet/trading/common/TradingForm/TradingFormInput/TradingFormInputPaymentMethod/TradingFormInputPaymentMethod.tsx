@@ -107,12 +107,14 @@ export const TradingFormInputPaymentMethod = ({
                         >
                             {label && <Translation id={label} />}
                         </Text>
-                        <TradingFormInputPaymentMethodValueContent
-                            isFormLoading={isFormLoading}
-                            hasPaymentMethods={hasPaymentMethods}
-                            displayLabel={displayLabel}
-                            paymentMethod={paymentMethodValue}
-                        />
+                        {paymentMethodValue && (
+                            <TradingFormInputPaymentMethodValueContent
+                                isFormLoading={isFormLoading}
+                                hasPaymentMethods={hasPaymentMethods}
+                                displayLabel={displayLabel}
+                                paymentMethod={paymentMethodValue}
+                            />
+                        )}
                     </Row>
                 </GhostContainer>
             )}

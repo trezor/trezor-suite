@@ -79,7 +79,7 @@ describe('tor', () => {
 
         fixtures.forEach(f => {
             it(f.desc, () => {
-                expect(getIsTorDomain(f.in)).toEqual(f.out);
+                expect(getIsTorDomain(f.in ?? '')).toEqual(f.out);
             });
         });
     });

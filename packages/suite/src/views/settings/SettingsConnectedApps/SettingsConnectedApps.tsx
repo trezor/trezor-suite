@@ -31,7 +31,7 @@ export const SettingsConnectedApps = () => {
             isEnabled: isDesktop(),
         },
     ].filter(tab => tab.isEnabled);
-    const [activeItemdId, setActiveItemId] = useState(tabs[0]?.id ?? 0);
+    const [activeItemdId, setActiveItemId] = useState(tabs[0]?.id);
 
     useEffect(() => {
         if (tabs.length === 0) {

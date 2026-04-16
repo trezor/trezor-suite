@@ -141,7 +141,11 @@ export const UnstakeInputs = () => {
                     ),
                 }}
                 fiatValue={
-                    <BaseCurrencyValue amount={amount} symbol={symbol} showApproximationIndicator>
+                    <BaseCurrencyValue
+                        amount={amount ?? ''}
+                        symbol={symbol}
+                        showApproximationIndicator
+                    >
                         {({ value }) =>
                             value ? (
                                 <Text

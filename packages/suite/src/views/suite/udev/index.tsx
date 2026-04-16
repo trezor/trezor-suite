@@ -87,7 +87,7 @@ export const UdevRules = ({ onCancel }: ForegroundAppProps) => {
             heading={<Translation id="TR_UDEV_DOWNLOAD_TITLE" />}
             bottomContent={
                 <>
-                    <Modal.Button href={target.value}>
+                    <Modal.Button href={target?.value}>
                         <Translation id="TR_DOWNLOAD" />
                     </Modal.Button>
                     <Modal.Button intent="neutral" priority="secondary" href={udevManualUrl}>

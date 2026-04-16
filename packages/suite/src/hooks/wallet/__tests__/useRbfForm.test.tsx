@@ -242,7 +242,7 @@ describe('useRbfForm hook', () => {
                 // send and check signTransaction params
                 await sendAction();
                 expect(signTransactionMock).toHaveBeenCalledTimes(1);
-                const params = signTransactionMock.mock.calls[0][0];
+                const params = signTransactionMock.mock.calls[0]?.[0];
                 expect(params).toMatchObject(f.signedTx);
             } else {
                 await expect(sendAction()).rejects.toThrow('Unable to perform pointer interaction'); // button `pointer-events: none`

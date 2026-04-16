@@ -32,9 +32,9 @@ describe('transaction reducer', () => {
     });
 
     it('reset transactions', () => {
-        const { key } = testAccounts[0];
-
         const account = testAccounts[0];
+        if (!account) return;
+        const { key } = account;
         delete testTransactions[key];
 
         expect(
@@ -52,9 +52,10 @@ describe('transaction reducer', () => {
 
     it('remove transactions', () => {
         const account = testAccounts[0];
+        if (!account) return;
         const { key } = account;
 
-        const otherAccountKey = testAccounts[1].key;
+        const otherAccountKey = testAccounts[1]?.key ?? '';
         const otherAccountTransactions = testTransactions[otherAccountKey];
 
         expect(
@@ -76,7 +77,10 @@ describe('transaction reducer', () => {
 
     it('remove transactions (incl. nonexistent)', () => {
         const account = testAccounts[0];
-        const [tx1, tx2] = testTransactions[account.key];
+        if (!account) return;
+        const txs = testTransactions[account.key] ?? [];
+        const tx1 = txs[0];
+        const tx2 = txs[1];
         const txsToRemove = [
             tx2,
             { ...tx1, txid: 'deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef' },
@@ -89,12 +93,13 @@ describe('transaction reducer', () => {
                     type: transactionsActions.removeTransaction.type,
                     payload: { account, txs: txsToRemove },
                 },
-            ).transactions[account.key],
+            ).transactions[account.key] ?? [],
         ).toEqual([tx1]);
     });
 
     it('add transactions', () => {
         const account = testAccounts[0];
+        if (!account) return;
         const { key } = account;
         expect(
             reducer(

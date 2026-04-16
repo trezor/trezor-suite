@@ -31,9 +31,12 @@ export const BigAmountValue = ({
 
     // Todo: this is ugly hack, shall be refactored to some more safe alternative
     const shouldFormatLocale: Locale[] = ['en-US', 'ja-JP', 'ko-KR', 'zh-CN', 'zh-TW'];
-    const [whole, separator, fractional] = shouldFormatLocale.includes(language)
+    const parts = shouldFormatLocale.includes(language)
         ? formattedStringAmount.split(/(\.)/)
         : formattedStringAmount.split(/(,)/);
+    const whole = parts[0] ?? '';
+    const separator = parts[1];
+    const fractional = parts[2];
 
     const shouldRedactNumbers = useShouldRedactNumbers();
 

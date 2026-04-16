@@ -74,14 +74,20 @@ export const GraphTooltipAccount = ({
         return null;
     }
 
-    const balance = balanceValueFn(payload[0].payload);
-    const receivedAmountString = receivedValueFn(payload[0].payload);
-    const sentAmountString = sentValueFn(payload[0].payload);
+    const firstPayload = payload[0]?.payload;
+
+    if (!firstPayload) {
+        return null;
+    }
+
+    const balance = balanceValueFn(firstPayload);
+    const receivedAmountString = receivedValueFn(firstPayload);
+    const sentAmountString = sentValueFn(firstPayload);
 
     const receivedFiat: BaseCurrencyAmount | undefined =
-        payload[0].payload.receivedFiat[localCurrency] ?? undefined;
+        firstPayload.receivedFiat[localCurrency] ?? undefined;
     const sentFiat: BaseCurrencyAmount | undefined =
-        payload[0].payload.sentFiat[localCurrency] ?? undefined;
+        firstPayload.sentFiat[localCurrency] ?? undefined;
 
     return (
         <GraphTooltipBase

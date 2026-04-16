@@ -68,7 +68,7 @@ export const useSendFormFields = ({
         }: CalculateFiatFromAmountOrViceVersaParams) => {
             const { outputs } = getValues();
             const output = outputs[outputId];
-            if (output.type !== 'payment') {
+            if (!output || output.type !== 'payment') {
                 return;
             }
             const targetValue = output[target];
@@ -109,9 +109,9 @@ export const useSendFormFields = ({
             const convert = (amount: string, fiatRate: number) => {
                 const { outputs } = getValues();
                 const output = outputs[outputId];
-                const baseCurrencyCode = output.currency.value;
+                const baseCurrencyCode = output?.currency.value;
 
-                if (baseCurrencyCode === '') {
+                if (!baseCurrencyCode) {
                     return null;
                 }
 
@@ -149,9 +149,9 @@ export const useSendFormFields = ({
                 const { outputs } = getValues();
                 const output = outputs[outputId];
 
-                const baseCurrencyCode = output.currency.value;
+                const baseCurrencyCode = output?.currency.value;
 
-                if (baseCurrencyCode === '') {
+                if (!baseCurrencyCode) {
                     return null;
                 }
 

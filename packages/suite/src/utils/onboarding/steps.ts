@@ -109,7 +109,7 @@ export const resolveNextAvailableStep = (
     if (nextStep.id === ID_SET_PIN_STEP && device) {
         // Skip PIN setup step only if device has PIN protection explicitly enabled
         if (device?.features?.pin_protection === true) {
-            return resolveNextAvailableStep(steps[currentIndex + 1]?.id, steps, device);
+            return resolveNextAvailableStep(steps[currentIndex + 1]?.id ?? null, steps, device);
         }
     }
 

@@ -284,7 +284,7 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
     // reset preselectedQuote when opening swap form
     useEffect(() => {
         const cryptoValue = values?.outputs?.[0]?.amount;
-        const previousCryptoValue = previousValues.current?.outputs?.[0].amount;
+        const previousCryptoValue = previousValues.current?.outputs?.[0]?.amount;
 
         if (cryptoValue === '' && previousCryptoValue === undefined) {
             dispatch(tradingExchangeActions.savePreselectedQuote(undefined));
@@ -299,8 +299,8 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
             const fiatValue = values?.outputs?.[0]?.fiat;
             const cryptoValue = values?.outputs?.[0]?.amount;
 
-            const previousFiatValue = previousValues.current?.outputs?.[0].fiat;
-            const previousCryptoValue = previousValues.current?.outputs?.[0].amount;
+            const previousFiatValue = previousValues.current?.outputs?.[0]?.fiat;
+            const previousCryptoValue = previousValues.current?.outputs?.[0]?.amount;
 
             const fiatChanged = isChanged(previousFiatValue, fiatValue);
             const cryptoChanged = isChanged(previousCryptoValue, cryptoValue);

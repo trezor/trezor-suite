@@ -63,7 +63,7 @@ export const composeTransaction =
         const { account, feeInfo } = formState;
         if (!account || !feeInfo) return;
 
-        const { amount } = formValues.outputs[0];
+        const amount = formValues.outputs[0]?.amount;
 
         if (!amount || amount === '0') return;
 
@@ -145,7 +145,7 @@ export const signTransaction =
                 symbol: account.symbol,
                 from: account.descriptor,
                 identity,
-                amount: formValues.outputs[0].amount,
+                amount: formValues.outputs[0]?.amount ?? '',
                 gasPrice: transactionInfo.feePerByte,
                 feeLimit: transactionInfo.feeLimit,
                 maxFeePerGas: transactionInfo.maxFeePerGas,
@@ -159,7 +159,7 @@ export const signTransaction =
                 symbol: account.symbol,
                 from: account.descriptor,
                 identity,
-                amount: formValues.outputs[0].amount,
+                amount: formValues.outputs[0]?.amount ?? '',
                 gasPrice: transactionInfo.feePerByte,
                 feeLimit: transactionInfo.feeLimit,
                 maxFeePerGas: transactionInfo.maxFeePerGas,

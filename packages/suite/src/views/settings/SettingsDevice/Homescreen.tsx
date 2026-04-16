@@ -62,19 +62,22 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
 
     const onUploadHomescreen = async (files: FileList | null) => {
         if (!files || !files.length) return;
-        let file = files[0];
+        const file = files[0];
+        if (!file) return;
 
-        let validationResult = await validateImage({ file, deviceModelInternal });
+        let currentFile = file;
+        let validationResult = await validateImage({ file: currentFile, deviceModelInternal });
 
         // Do NOT touch the image if it's already valid
         if (validationResult) {
-            file = (await convertImage({ file, deviceModelInternal })) ?? file;
-            validationResult = await validateImage({ file, deviceModelInternal });
+            currentFile =
+                (await convertImage({ file: currentFile, deviceModelInternal })) ?? currentFile;
+            validationResult = await validateImage({ file: currentFile, deviceModelInternal });
         }
 
         setValidationError(validationResult);
 
-        const dataUrl = await fileToDataUrl(file);
+        const dataUrl = await fileToDataUrl(currentFile);
         setCustomHomescreen(dataUrl);
     };
 

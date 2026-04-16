@@ -66,7 +66,7 @@ const getBitcoinFeeInfo = (info: FeeInfo, rbfParams: RbfTransactionParamsBitcoin
     };
 };
 
-const getEthereumFeeInfo = (info: FeeInfo, rbfParams: RbfTransactionParamsEthereum) => {
+const getEthereumFeeInfo = (info: FeeInfo, rbfParams: RbfTransactionParamsEthereum): FeeInfo => {
     // use maxFeePerGas as fallback in case backend does not return eip1559 fees
     const currentGasPrice = new BigNumber(rbfParams.gasPrice || rbfParams.maxFeePerGas);
     const feeInfo = getConvertedOrDefaultFeeInfo({
@@ -75,12 +75,12 @@ const getEthereumFeeInfo = (info: FeeInfo, rbfParams: RbfTransactionParamsEthere
     });
 
     const feeLevel = feeInfo.levels[0];
-    if (isEip1559(rbfParams) && isEip1559(feeLevel)) {
+    if (feeLevel && isEip1559(rbfParams) && isEip1559(feeLevel)) {
         // to bump fee, both maxFeePerGas and maxPriorityFeePerGas have to be higher
         const currentMaxFee = new BigNumber(rbfParams.maxFeePerGas);
         const currentMaxPriorityFee = new BigNumber(rbfParams.maxPriorityFeePerGas);
 
-        const highLevel = feeInfo.levels.find(level => level.label === 'high') || feeInfo.levels[0];
+        const highLevel = feeInfo.levels.find(level => level.label === 'high') ?? feeLevel;
 
         return {
             ...feeInfo,
@@ -102,7 +102,13 @@ const getEthereumFeeInfo = (info: FeeInfo, rbfParams: RbfTransactionParamsEthere
         };
     }
 
-    const minFeeFromNetwork = new BigNumber(feeInfo.levels[0].feePerUnit);
+    const firstLevel = feeInfo.levels[0];
+
+    if (!firstLevel) {
+        return { ...feeInfo, levels: feeInfo.levels, minFee: feeInfo.minFee };
+    }
+
+    const minFeeFromNetwork = new BigNumber(firstLevel.feePerUnit);
     const fee = BigNumber.maximum(minFeeFromNetwork, currentGasPrice.plus(feeInfo.minFee));
 
     // increase FeeLevel only if it's lower than predefined

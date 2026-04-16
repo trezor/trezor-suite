@@ -55,7 +55,7 @@ export const useSendFormImport = ({
             return;
         }
 
-        const currencies = result.map(it => it.currency.toLowerCase());
+        const currencies = result.map(it => it.currency?.toLowerCase() ?? '');
         const uniqueCurrencies = [...new Set(currencies)];
 
         for (const currency of uniqueCurrencies) {
@@ -100,7 +100,7 @@ export const useSendFormImport = ({
             }
 
             // sanitize csv data
-            const itemCurrency = item.currency.toLowerCase() as BaseCurrencyCode;
+            const itemCurrency = (item.currency?.toLowerCase() ?? '') as BaseCurrencyCode;
 
             // currency is specified in csv
             if (itemCurrency) {
@@ -174,7 +174,12 @@ export const useSendFormImport = ({
 
         // only one output allowed for ETH and XRP
         // TODO: create queue of transactions to sign to allow multiple outputs for ETH/XRP (overkill?)
-        return network.networkType === 'bitcoin' ? outputs : [outputs[0]];
+        if (network.networkType === 'bitcoin') {
+            return outputs;
+        }
+        const firstOutput = outputs[0];
+
+        return firstOutput ? [firstOutput] : [];
     };
 
     // successful importTransaction resets the form

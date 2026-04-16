@@ -121,7 +121,7 @@ export const useCardanoStaking = (): CardanoStaking => {
             setLoading(true);
             try {
                 const composeRes = await prepareTxPlan(action);
-                if (composeRes) {
+                if (composeRes?.txPlan) {
                     if (composeRes.txPlan.type === 'error') {
                         throw new Error(composeRes.txPlan.error);
                     }

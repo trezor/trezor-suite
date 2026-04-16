@@ -117,8 +117,9 @@ export const useSignAddressOptions = (
                 ? translationString(label as ExtendedMessageDescriptor['id'])
                 : label;
 
-            const pathParts = options[0].value.split('/');
-            const pathLabel = `m/${pathParts[pathParts.length - 2]}/i`;
+            const firstOption = options[0];
+            const pathParts = firstOption?.value.split('/') ?? [];
+            const pathLabel = `m/${pathParts[pathParts.length - 2] ?? '?'}/i`;
 
             return {
                 label: `${translatedLabel} ${pathLabel}`,

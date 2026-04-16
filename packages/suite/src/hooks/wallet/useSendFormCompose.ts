@@ -272,11 +272,12 @@ export const useSendFormCompose = ({
         if (shouldSwitch && composed.type === 'error') {
             // find nearest possible tx
             const nearest = (Object.keys(composedLevels) as FeeLevel['label'][]).find(
-                key => composedLevels[key].type !== 'error',
+                key => composedLevels[key]?.type !== 'error',
             );
             // switch to it
-            if (nearest) {
-                composed = composedLevels[nearest];
+            const nearestComposed = nearest ? composedLevels[nearest] : undefined;
+            if (nearest && nearestComposed) {
+                composed = nearestComposed;
                 setValue('selectedFee', nearest);
                 if (nearest === 'custom') {
                     // @ts-expect-error: type = error already filtered above
@@ -300,7 +301,7 @@ export const useSendFormCompose = ({
             if (!composedLevels) return;
             if (current === 'custom') {
                 // set custom level from previously selected level
-                const prevLevel = composedLevels[prev || 'normal'];
+                const prevLevel = composedLevels[prev || 'normal'] ?? composedLevels.normal;
                 const level = {
                     ...composedLevels,
                     custom: prevLevel,
@@ -314,7 +315,9 @@ export const useSendFormCompose = ({
                 setComposedLevels(level);
             } else {
                 const currentLevel = composedLevels[current || 'normal'];
-                updateComposedValues(currentLevel);
+                if (currentLevel) {
+                    updateComposedValues(currentLevel);
+                }
             }
             setDraftSaveRequest(true);
         },

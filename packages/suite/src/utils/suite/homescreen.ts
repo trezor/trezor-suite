@@ -183,7 +183,7 @@ const toig = (imageData: ImageData, deviceModelInternal: DeviceModelInternal) =>
                 const g = imageData.data[4 * i + 1];
                 const b = imageData.data[4 * i + 2];
 
-                return toGrayscale(r, g, b);
+                return toGrayscale(r ?? 0, g ?? 0, b ?? 0);
             }),
         )
         .flat();
@@ -195,7 +195,7 @@ const toig = (imageData: ImageData, deviceModelInternal: DeviceModelInternal) =>
         const odd = pixels[i + 1];
 
         // Use the even pixel for the higher 4 bits and odd pixel for the lower 4 bits.
-        const packedByte = ((even & 0xf0) >> 4) | (odd & 0xf0);
+        const packedByte = (((even ?? 0) & 0xf0) >> 4) | ((odd ?? 0) & 0xf0);
         bytes.push(packedByte);
     }
 
@@ -325,7 +325,7 @@ const exportCanvas = (
     try {
         const mimeType = `image/${filetype}`;
         const outDataUrl = canvas.toDataURL(mimeType, quality);
-        const bin = atob(outDataUrl.split(',')[1]);
+        const bin = atob(outDataUrl.split(',')[1] ?? '');
         const arr = new Uint8Array(bin.length);
         for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
 

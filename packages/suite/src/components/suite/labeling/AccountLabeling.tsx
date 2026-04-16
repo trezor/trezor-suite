@@ -29,9 +29,13 @@ export const AccountLabeling = ({
 
     if (accounts.length < 1) return null;
 
+    const firstAccount = accounts[0];
+
+    if (!firstAccount) return null;
+
     const accountLabel = (
         <AccountLabel
-            account={accounts[0]}
+            account={firstAccount}
             showAccountTypeBadge={showAccountTypeBadge}
             accountTypeBadgeSize={accountTypeBadgeSize}
             rowProps={accountLabelRowProps}
@@ -40,7 +44,7 @@ export const AccountLabeling = ({
 
     if (device && !accounts.find(a => a.deviceState === device.state?.staticSessionId)) {
         // account is not associated with selected device, add wallet label
-        const accountDevice = findAccountDevice(accounts[0], devices);
+        const accountDevice = findAccountDevice(firstAccount, devices);
         if (accountDevice) {
             return (
                 <span>

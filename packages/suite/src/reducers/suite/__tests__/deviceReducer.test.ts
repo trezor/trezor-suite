@@ -19,7 +19,7 @@ describe('DEVICE.CONNECT', () => {
             // console.log('afterSTATE', state);
             expect(state.devices.length).toEqual(f.result.length);
             state.devices.forEach((device, i) => {
-                expect(device).toMatchObject(f.result[i]);
+                expect(device).toMatchObject(f.result[i] ?? {});
             });
         });
     });
@@ -34,7 +34,7 @@ describe('DEVICE.CHANGED', () => {
             });
             expect(state.devices.length).toEqual(f.result.length);
             state.devices.forEach((device, i) => {
-                expect(device).toMatchObject(f.result[i]);
+                expect(device).toMatchObject(f.result[i] ?? {});
             });
         });
     });
@@ -50,7 +50,7 @@ describe('DEVICE.DISCONNECT', () => {
             });
             expect(state.devices.length).toEqual(f.result.length);
             state.devices.forEach((device, i) => {
-                expect(device).toMatchObject(f.result[i]);
+                expect(device).toMatchObject(f.result[i] ?? {});
             });
         });
     });
@@ -66,8 +66,8 @@ describe('SUITE.SELECT_DEVICE', () => {
             expect(state.devices.length).toEqual(f.result.length);
             // console.log('afterSTATE', state);
             state.devices.forEach((device, i) => {
-                expect(device).toMatchObject(f.result[i]);
-                if (f.ts[i] > 0) {
+                expect(device).toMatchObject(f.result[i] ?? {});
+                if ((f.ts[i] ?? 0) > 0) {
                     expect(device.ts).toBeGreaterThan(0);
                 } else {
                     expect(device.ts).toEqual(0);
@@ -86,7 +86,7 @@ describe('SUITE.FORGET_DEVICE', () => {
             });
             expect(state.devices.length).toEqual(f.result.length);
             state.devices.forEach((device, i) => {
-                expect(device).toMatchObject(f.result[i]);
+                expect(device).toMatchObject(f.result[i] ?? {});
             });
         });
     });
@@ -101,7 +101,7 @@ describe('SUITE.REMEMBER_DEVICE', () => {
             });
             expect(state.devices.length).toEqual(f.result.length);
             state.devices.forEach((device, i) => {
-                expect(device).toMatchObject(f.result[i]);
+                expect(device).toMatchObject(f.result[i] ?? {});
             });
         });
     });

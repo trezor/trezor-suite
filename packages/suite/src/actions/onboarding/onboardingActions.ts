@@ -95,6 +95,11 @@ const goToPreviousStep = (stepId?: AnyStepId) => (dispatch: Dispatch, getState: 
     }
     const stepsInPath = getAllStepsInPath(getState);
     const prevStep = findPrevStep(getState().onboarding.activeStepId, stepsInPath);
+
+    if (!prevStep) {
+        return;
+    }
+
     // steps listed in case statements contain path decisions, so we need
     // to remove saved paths from reducers to let user change it again.
     switch (prevStep.id) {

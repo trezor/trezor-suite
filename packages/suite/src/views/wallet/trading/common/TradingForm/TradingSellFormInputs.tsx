@@ -56,8 +56,8 @@ export const TradingSellFormInputs = () => {
     const { getValues } = useFormContext<TradingSellFormProps>();
     const { outputs, sendCryptoSelect, amountInCrypto, countrySelect } = getValues();
     const output = outputs[0];
-    const currencySelect = output.currency;
-    const tokenAddress = (output.token ?? undefined) as TokenAddress | undefined;
+    const currencySelect = output?.currency;
+    const tokenAddress = (output?.token ?? undefined) as TokenAddress | undefined;
 
     const { getAssetDecimals } = useTradingAssetDecimals();
     const sendAssetDecimals = useMemo(
@@ -70,9 +70,9 @@ export const TradingSellFormInputs = () => {
     );
 
     const outputAmount =
-        shouldSendInSats && output.amount
+        shouldSendInSats && output?.amount
             ? convertAmountSubunitsToUnits(output.amount, sendAssetDecimals)
-            : output.amount;
+            : output?.amount;
 
     const onCryptoCurrencyChangeRef = useCurrentRef(helpers.onCryptoCurrencyChange);
     const handleSellAssetSelect = useCallback<TradingFormInputSellAssetProps['onAssetSelect']>(
@@ -107,7 +107,7 @@ export const TradingSellFormInputs = () => {
                             cryptoInputName={TRADING_FORM_OUTPUT_AMOUNT}
                             fiatInputName={TRADING_FORM_OUTPUT_FIAT}
                             cryptoSelectName={TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT}
-                            currencySelectLabel={currencySelect.value.toUpperCase()}
+                            currencySelectLabel={currencySelect?.value.toUpperCase() ?? ''}
                             cryptoCurrencyLabel={sendCryptoSelect?.id}
                         />
                         {amountInCrypto && (

@@ -70,8 +70,8 @@ export const TradingExchangeFormInputs = () => {
     } = getValues();
 
     const output = outputs[0];
-    const currencySelect = output.currency;
-    const tokenAddress = (output.token ?? undefined) as TokenAddress | undefined;
+    const currencySelect = output?.currency;
+    const tokenAddress = (output?.token ?? undefined) as TokenAddress | undefined;
 
     const { getAssetDecimals } = useTradingAssetDecimals();
     const sendAssetDecimals = useMemo(
@@ -83,9 +83,9 @@ export const TradingExchangeFormInputs = () => {
         [getAssetDecimals, sendCryptoSelect?.accountKey, sendCryptoSelect?.id],
     );
     const outputAmount =
-        shouldSendInSats && output.amount
+        shouldSendInSats && output?.amount
             ? convertAmountSubunitsToUnits(output.amount, sendAssetDecimals)
-            : output.amount;
+            : output?.amount;
 
     const dispatch = useDispatch();
     // `useTradingExchangeForm` has some re-rendering issues, use refs to avoid them
@@ -141,7 +141,7 @@ export const TradingExchangeFormInputs = () => {
                         cryptoInputName={TRADING_FORM_OUTPUT_AMOUNT}
                         fiatInputName={TRADING_FORM_OUTPUT_FIAT}
                         cryptoSelectName={TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT}
-                        currencySelectLabel={currencySelect.value.toUpperCase()}
+                        currencySelectLabel={currencySelect?.value.toUpperCase() ?? ''}
                         cryptoCurrencyLabel={sendCryptoSelect?.id}
                     />
                     {amountInCrypto && (

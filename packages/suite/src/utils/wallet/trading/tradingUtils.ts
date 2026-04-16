@@ -83,7 +83,7 @@ export const getComposeAddressPlaceholder = async (
             }
 
             // as a fallback, use the change address of current account
-            return account.addresses?.change[0].address;
+            return account.addresses?.change[0]?.address;
         }
         case 'ethereum':
             // ethereum address is not used as it breaks calculating fee logic;

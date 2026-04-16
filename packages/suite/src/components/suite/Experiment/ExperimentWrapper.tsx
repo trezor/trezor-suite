@@ -23,6 +23,9 @@ export const ExperimentWrapper = ({
     if (areComponentsEmpty) return null;
 
     const defaultComponent = components[0];
+
+    if (!defaultComponent) return null;
+
     const experimentOrVariantNotFound = !experiment || !activeExperimentVariant;
     const experimentAndComponentsMismatch = experiment?.groups.length !== components.length;
 

@@ -33,8 +33,14 @@ export const GraphTooltipDashboard = ({
         return null;
     }
 
-    const receivedAmountString = receivedValueFn(payload[0].payload);
-    const sentAmountString = sentValueFn(payload[0].payload);
+    const firstPayload = payload[0]?.payload;
+
+    if (!firstPayload) {
+        return null;
+    }
+
+    const receivedAmountString = receivedValueFn(firstPayload);
+    const sentAmountString = sentValueFn(firstPayload);
 
     const receivedAmount = (
         <BaseCurrencyAmountFormatter

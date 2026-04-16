@@ -25,11 +25,13 @@ export const AddressLabeling = ({ symbol, address, knownOnly }: AddressLabelingP
         return !knownOnly ? <Address value={address} isTruncated /> : null;
     }
 
+    const firstAccount = relevantAccounts[0];
+
+    if (!firstAccount) {
+        return !knownOnly ? <Address value={address} isTruncated /> : null;
+    }
+
     return (
-        <AccountLabeling
-            account={relevantAccounts[0]}
-            accountTypeBadgeSize="small"
-            showAccountTypeBadge
-        />
+        <AccountLabeling account={firstAccount} accountTypeBadgeSize="small" showAccountTypeBadge />
     );
 };

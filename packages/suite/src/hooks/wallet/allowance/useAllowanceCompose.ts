@@ -142,10 +142,12 @@ export const useAllowanceCompose = ({
 
             if (current === 'custom') {
                 const prevLevel = composedLevels[prev || 'normal'];
-                setComposedLevels({
-                    ...composedLevels,
-                    custom: prevLevel,
-                });
+                if (prevLevel) {
+                    setComposedLevels({
+                        ...composedLevels,
+                        custom: prevLevel,
+                    });
+                }
             }
         },
         [composedLevels],

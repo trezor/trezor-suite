@@ -231,8 +231,8 @@ export const TradingFormOffer = () => {
         const { outputs } = getValues();
 
         const output = outputs[0];
-        amount = output.amount;
-        tokenAddress = output.token as TokenAddress | null;
+        amount = output?.amount ?? '0';
+        tokenAddress = (output?.token ?? null) as TokenAddress | null;
         areSatsUsed = !!shouldSendInSats;
     }
 

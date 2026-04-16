@@ -23,6 +23,9 @@ export const MiscFeeCards = ({ feeOptions }: MiscFeeCardsProps) => {
 
     const isSolanaNetwork = networkType === 'solana';
     const fee = feeOptions[0];
+
+    if (!fee) return null;
+
     const shouldShowCurrentFee = !isSolanaNetwork || fee.networkAmount;
     const feeAmount = isSolanaNetwork ? fee.feePerTx : fee.feePerUnit;
 

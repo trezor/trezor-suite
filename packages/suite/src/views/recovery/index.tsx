@@ -69,7 +69,8 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
     const handleBackClick = () => {
         dispatch(
             recoveryActions.setStatus(
-                statesInProgressBar[statesInProgressBar.indexOf(recovery.status) - 1],
+                statesInProgressBar[statesInProgressBar.indexOf(recovery.status) - 1] ??
+                    recovery.status,
             ),
         );
     };

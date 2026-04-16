@@ -38,7 +38,7 @@ export const aggregateBalanceHistory = <TType extends TypeName>(
 
     for (let i = 0; i < graphData.length; i++) {
         // graph data for one account
-        const accountHistory = graphData[i].data;
+        const accountHistory = graphData[i]?.data;
 
         if (accountHistory && accountHistory.length > 0) {
             accountHistory.forEach(h => {
@@ -116,7 +116,11 @@ export const aggregateBalanceHistory = <TType extends TypeName>(
 
     // convert bins from an object indexed by timestamp to an array of bins
     const aggregatedData = Object.keys(groupedByTimestamp)
-        .map(timestamp => groupedByTimestamp[timestamp])
+        .flatMap(timestamp => {
+            const point = groupedByTimestamp[timestamp];
+
+            return point ? [point] : [];
+        })
         .sort((a, b) => Number(a.time) - Number(b.time)); // sort from older to newer;;
 
     return aggregatedData;

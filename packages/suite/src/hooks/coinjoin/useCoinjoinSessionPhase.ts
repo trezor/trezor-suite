@@ -46,7 +46,7 @@ export const useCoinjoinSessionPhase = (accountKey: AccountKey) => {
 
         if (isExpired && sessionPhaseQueue) {
             setPhaseIndex(0);
-            setSessionPhase(sessionPhaseQueue[0]);
+            setSessionPhase(sessionPhaseQueue[0] ?? sessionPhase);
             setLastChangeTimestamp(currentTimestamp);
         } else {
             /**
@@ -56,7 +56,7 @@ export const useCoinjoinSessionPhase = (accountKey: AccountKey) => {
              */
             setPhaseIndex(-1);
         }
-    }, [lastChangeTimestamp, sessionPhaseQueue]);
+    }, [lastChangeTimestamp, sessionPhase, sessionPhaseQueue]);
 
     // Handle sessionPhaseQueue change.
     useEffect(() => {

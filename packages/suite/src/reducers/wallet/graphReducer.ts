@@ -48,9 +48,12 @@ const update = (draft: State, payload: GraphData) => {
             d.account.symbol === account.symbol,
     );
     if (dataIndex !== -1) {
-        draft.data[dataIndex].data = data;
-        draft.data[dataIndex].error = error;
-        draft.data[dataIndex].isLoading = isLoading;
+        const entry = draft.data[dataIndex];
+        if (entry) {
+            entry.data = data;
+            entry.error = error;
+            entry.isLoading = isLoading;
+        }
     } else {
         draft.data.push({
             account,

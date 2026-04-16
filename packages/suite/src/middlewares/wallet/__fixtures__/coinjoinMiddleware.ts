@@ -84,15 +84,15 @@ const STATE_WITH_INTERRUPTED_SESSION = {
             ...DEFAULT_STATE.wallet.coinjoin,
             accounts: [
                 {
-                    ...DEFAULT_STATE.wallet.coinjoin.accounts[0],
+                    ...COINJOIN_ACCOUNT_A,
                     session: {
-                        ...DEFAULT_STATE.wallet.coinjoin.accounts[0].session,
+                        ...COINJOIN_ACCOUNT_A.session,
                     } as CoinjoinSession,
                 },
                 {
-                    ...DEFAULT_STATE.wallet.coinjoin.accounts[1],
+                    ...COINJOIN_ACCOUNT_B,
                     session: {
-                        ...DEFAULT_STATE.wallet.coinjoin.accounts[1].session,
+                        ...COINJOIN_ACCOUNT_B.session,
                         paused: true,
                     } as CoinjoinSession,
                 },

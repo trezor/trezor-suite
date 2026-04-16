@@ -134,16 +134,18 @@ export const GraphTooltipBase = (props: GraphTooltipBaseProps) => {
 
         props.onShow(
             props.extendedDataForInterval.findIndex(
-                item => item.time === props.payload?.[0].payload.time,
+                item => item.time === props.payload?.[0]?.payload.time,
             ),
         );
     }, [props]);
 
-    if (!props.active || !props.payload) {
+    const firstEntry = props.payload?.[0];
+
+    if (!props.active || !props.payload || !firstEntry) {
         return null;
     }
 
-    const date = new Date(props.payload[0].payload.time * 1000);
+    const date = new Date(firstEntry.payload.time * 1000);
     const dateFormat =
         props.selectedRange?.label === 'year' || props.selectedRange?.label === 'all'
             ? 'month'

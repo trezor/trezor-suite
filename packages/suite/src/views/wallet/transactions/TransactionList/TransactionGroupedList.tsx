@@ -45,7 +45,7 @@ export const TransactionGroupedList = ({
             {groupJointTransactions(value).map((item, index) =>
                 item.type === 'joint-batch' ? (
                     <CoinjoinBatchItem
-                        key={item.rounds[0].txid}
+                        key={item.rounds[0]?.txid}
                         transactions={item.rounds}
                         isPending={isPending}
                     />

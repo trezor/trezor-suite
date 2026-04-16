@@ -95,6 +95,8 @@ export const useTradingFormAccount = (tradingType: TradingType) => {
         [isAccountEligibleForTrade],
     );
 
+    // account is guaranteed to be defined when trading screens are accessible
+    // (requires at least one visible device account), but TS can't verify array[0] is defined
     const account = useMemo(() => {
         if (preferredAccount && isAccountEligibleForTrade(preferredAccount, prefilled.cryptoId)) {
             return preferredAccount;
@@ -110,7 +112,12 @@ export const useTradingFormAccount = (tradingType: TradingType) => {
             return sameSymbolAccount;
         }
 
-        return pickFallbackAccount(visibileDeviceAccounts);
+        const fallback = pickFallbackAccount(visibileDeviceAccounts);
+        if (!fallback) {
+            throw new Error('No account available for trading');
+        }
+
+        return fallback;
     }, [
         visibileDeviceAccounts,
         isAccountEligibleForTrade,
@@ -125,7 +132,7 @@ export const useTradingFormAccount = (tradingType: TradingType) => {
         }
 
         return (getNetwork(account.symbol).tradeCryptoId ?? 'bitcoin') as CryptoId;
-    }, [prefilled.cryptoId, account.key, account.symbol, preferredAccount?.key]);
+    }, [prefilled.cryptoId, account, preferredAccount?.key]);
 
     useEffect(() => {
         if (!accountKey && account.key) {

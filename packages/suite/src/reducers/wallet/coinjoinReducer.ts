@@ -683,6 +683,7 @@ export const selectRegisteredUtxosByAccountKey = createMemoizedSelector(
 
         return Object.keys(prison).reduce<typeof prison>((result, key) => {
             const inmate = prison[key];
+            if (!inmate) return result;
             // select **only** inmates with assigned roundId (signed in current round or promised to future blaming round)
             if (
                 inmate.roundId &&

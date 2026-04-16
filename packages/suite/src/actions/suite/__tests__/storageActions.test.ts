@@ -303,18 +303,18 @@ describe('Storage actions', () => {
         });
 
         expect(acc1Txs.length).toEqual(1);
-        expect(acc1Txs[0].deviceState).toEqual(tx1.deviceState);
+        expect(acc1Txs[0]?.deviceState).toEqual(tx1.deviceState);
         // stored accounts
         expect(load1.wallet.accounts.length).toEqual(2);
         expect(load1.wallet.accounts[0]).toEqual(acc1);
 
         // stored device2
-        expect(load1.device.devices[1].state).toEqual(dev2.state);
+        expect(load1.device.devices[1]?.state).toEqual(dev2.state);
         // stored txs
         const acc2Txs = getAccountTransactions(acc2.key, load1.wallet.transactions.transactions);
 
         expect(acc2Txs.length).toEqual(1);
-        expect(acc2Txs[0].deviceState).toEqual(tx2.deviceState);
+        expect(acc2Txs[0]?.deviceState).toEqual(tx2.deviceState);
         // stored 1 account
         expect(load1.wallet.accounts[1]).toEqual(acc2);
 
@@ -340,7 +340,7 @@ describe('Storage actions', () => {
         expect(load2.wallet.send.drafts).toEqual({});
         // acc1 deleted
         expect(load2.wallet.accounts.length).toEqual(1);
-        expect(load2.wallet.accounts[0].deviceState).toEqual(dev2.state?.staticSessionId);
+        expect(load2.wallet.accounts[0]?.deviceState).toEqual(dev2.state?.staticSessionId);
         // forget device dev1 along with its instances
         await store.dispatch(storageActions.forgetDevice(dev2));
         await store.dispatch(storageActions.forgetDevice(dev2Instance1));
@@ -423,7 +423,7 @@ describe('Storage actions', () => {
         // Hack - because the db operation is done in a middleware, it is not awaitable via dispatch
         await new Promise(resolve => setTimeout(resolve, 100));
         store.dispatch(await preloadStore());
-        expect(selectDevices(store.getState())[0].label).toBe('New Label');
+        expect(selectDevices(store.getState())[0]?.label).toBe('New Label');
     });
 
     it('should store graph data with the device and remove it on ACCOUNT.REMOVE (triggered by disabling the coin)', async () => {
@@ -481,7 +481,7 @@ describe('Storage actions', () => {
         // verify that graph data for acc1 were removed
         store.dispatch(await preloadStore());
         expect(store.getState().wallet.graph.data.length).toBe(1);
-        expect(store.getState().wallet.graph.data[0].account.symbol).toBe('ltc');
+        expect(store.getState().wallet.graph.data[0]?.account.symbol).toBe('ltc');
     });
 
     it('should store SuiteSyncOwner on setSuiteSyncOwner and remove it on forgetDevice', async () => {

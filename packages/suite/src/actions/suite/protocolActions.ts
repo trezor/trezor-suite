@@ -99,7 +99,7 @@ export const handleProtocolRequest =
                 const [domain] = anchor.split('/');
 
                 const targetRoute =
-                    mapAnchorToRoute[domain.replace(/^@/, '') as AnchorSettingSection];
+                    mapAnchorToRoute[domain?.replace(/^@/, '') as AnchorSettingSection];
                 dispatch(goto({ routeName: targetRoute, anchor }));
             }
         } else if (SUITE_TRADING_REDIRECT_DEEPLINKS.some(deeplink => uri?.startsWith(deeplink))) {

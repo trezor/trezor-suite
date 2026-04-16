@@ -26,9 +26,9 @@ export const TorExternal = () => {
 
     const [torSettings, setTorSettings] = useState<TorSettings | null>(null);
 
-    const [selectedOption, setSelectedOption] = useState<{ value: number; label: string }>(
-        options[0],
-    );
+    const [selectedOption, setSelectedOption] = useState<
+        { value: number; label: string } | undefined
+    >(options[0]);
 
     useEffect(() => {
         const fetchTorSettings = async () => {

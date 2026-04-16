@@ -75,8 +75,9 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
     const dataInterval: [number, number] =
         selectedRange.label === 'all'
             ? [
-                  intervalGraphData[0]?.data[0]?.time,
-                  intervalGraphData[0]?.data[intervalGraphData[0].data.length - 1]?.time,
+                  intervalGraphData[0]?.data[0]?.time ?? 0,
+                  intervalGraphData[0]?.data[(intervalGraphData[0]?.data.length ?? 1) - 1]?.time ??
+                      0,
               ]
             : [getUnixTime(selectedRange.startDate), getUnixTime(selectedRange.endDate)];
 

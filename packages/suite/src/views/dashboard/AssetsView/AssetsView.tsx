@@ -67,10 +67,9 @@ const useAssetsFiatBalances = (
 
         const fiatRateKey = getFiatRateKey(asset.network.symbol, localCurrency);
         const fiatRate = currentFiatRates?.[fiatRateKey];
-        const amount =
-            accounts[asset.network.symbol]
-                .reduce((balance, account) => balance + Number(account.formattedBalance), 0)
-                .toString() ?? '0';
+        const amount = (accounts[asset.network.symbol] ?? [])
+            .reduce((balance, account) => balance + Number(account.formattedBalance), 0)
+            .toString();
 
         const fiatBalance = toFiatCurrency({ amount, rate: fiatRate?.rate }) ?? BASE_CURRENCY_ZERO;
 

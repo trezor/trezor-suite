@@ -168,7 +168,7 @@ describe('coinjoinClientActions', () => {
             );
 
             f.result.trezorConnectCalledWith.forEach((params, index) => {
-                expect(TrezorConnect.signTransaction.mock.calls[index][0]).toMatchObject(params);
+                expect(TrezorConnect.signTransaction.mock.calls[index]?.[0]).toMatchObject(params);
             });
 
             expect(response).toMatchObject(f.result.response);
@@ -225,7 +225,7 @@ describe('coinjoinClientActions', () => {
         const cli1 = await store.dispatch(initCoinjoinService('btc'));
         const cli2 = await store.dispatch(initCoinjoinService('btc'));
         expect(cli1).toEqual(cli2);
-        expect(spy.mock.calls[0][0]).toMatchObject({
+        expect(spy.mock.calls[0]?.[0]).toMatchObject({
             symbol: 'btc',
             prison: [
                 {

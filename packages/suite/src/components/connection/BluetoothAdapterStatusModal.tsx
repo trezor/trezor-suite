@@ -62,6 +62,8 @@ export const BluetoothAdapterStatusModal = ({ onCancel }: BluetoothAdapterStatus
 
     const status = statuses[bluetoothAdapterStatus];
 
+    if (!status) return null;
+
     return (
         <Modal
             heading={<Translation id={status.title} />}
