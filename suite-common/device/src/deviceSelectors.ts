@@ -471,7 +471,7 @@ export const selectIsAnyPhysicalDeviceConnectedViaUsb = createMemoizedSelector(
 
 export const selectHasOnlyPortfolioDevice = createMemoizedSelector(
     [selectDevices],
-    devices => devices.length === 1 && devices[0].id === PORTFOLIO_TRACKER_DEVICE_ID,
+    devices => devices.length === 1 && devices[0]?.id === PORTFOLIO_TRACKER_DEVICE_ID,
 );
 
 export const selectHasDeviceFirmwareInstalled = createMemoizedSelector(
