@@ -102,6 +102,7 @@ export const PortfolioCard = memo(() => {
         body = <DashboardGraph accounts={accounts} />;
     }
 
+    const isDiscoveryEmpty = discoveryStatus?.type === 'discovery-empty';
     const isWalletEmpty = !discoveryStatus && isDeviceEmpty;
     const isWalletLoading = discoveryStatus?.status === 'loading';
     const isWalletError = discoveryStatus?.status === 'exception';
@@ -132,7 +133,7 @@ export const PortfolioCard = memo(() => {
 
     return (
         <DashboardSection
-            heading={heading}
+            heading={isDiscoveryEmpty ? undefined : heading}
             subheading={
                 showMissingDataTooltip ? (
                     <UnsupportedAssetsMessage
@@ -175,7 +176,7 @@ export const PortfolioCard = memo(() => {
                 ) : undefined
             }
         >
-            <Card header={body ? header : null} paddingType="none">
+            <Card header={body && !isDiscoveryEmpty ? header : null} paddingType="none">
                 {body ? (
                     <Column justifyContent="center" minHeight={329}>
                         {body}

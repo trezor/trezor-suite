@@ -17,7 +17,7 @@ test.describe('Trading - Swap fees Bitcoin', { tag: ['@webOnly', '@T3T1', '@T3W1
                 await tradingMock.routeSwapTrade(swapTradeBTCEthereum);
             });
             await onboardingPage.completeOnboarding();
-            await settingsPage.changeNetworks({ enableNetworks: ['eth'] });
+            await settingsPage.changeNetworks({ enableNetworks: ['btc', 'eth'] });
             await dashboardPage.deviceSwitchingOpenButton.click();
             await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
             await walletPage.openSwapTrading({ symbol: 'btc' });

@@ -15,7 +15,6 @@ import {
 import type { WalletSettings } from '@suite-common/wallet-types';
 import { isBaseCurrencyWithSats } from '@suite-common/wallet-utils';
 import { PROTO } from '@trezor/connect';
-import { isNative } from '@trezor/env-utils';
 
 import * as walletSettingsActions from './walletSettingsActions';
 import { WALLET_SETTINGS } from './walletSettingsConstants';
@@ -33,8 +32,7 @@ export const createMemoizedSelector = createWeakMapSelector.withTypes<WalletSett
 const initialState: WalletSettingsState = {
     localCurrency: 'usd',
     discreetMode: false,
-    // Suite Mobile did not have BTC enabled by default
-    enabledNetworks: isNative() ? [] : ['btc'],
+    enabledNetworks: [],
     hideSuspiciousTransactions: false,
     bitcoinAmountUnit: PROTO.AmountUnit.BITCOIN,
     mevProtection: true,

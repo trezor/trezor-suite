@@ -28,6 +28,7 @@ test.describe(
             }) => {
                 await test.step('Navigate to account and verify initial state', async () => {
                     await onboardingPage.completeOnboarding();
+                    await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
                     await metadataMock.start(MetadataProvider.DROPBOX);
                     await metadataPage.enableLegacyLabeling(MetadataProvider.DROPBOX);
                     await walletPage.openAccount();

@@ -24,10 +24,7 @@ test.describe('Send - Solana', { tag: ['@webOnly', '@T3T1', '@T3W1', '@smoke'] }
 
     test.beforeEach(async ({ settingsPage, onboardingPage, dashboardPage, walletPage }) => {
         await onboardingPage.completeOnboarding();
-        await settingsPage.changeNetworks({
-            enableNetworks: ['sol'],
-            disableNetworks: ['btc'],
-        });
+        await settingsPage.changeNetworks({ enableNetworks: ['sol'] });
         await dashboardPage.deviceSwitchingOpenButton.click();
         await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
         await walletPage.openAccount({ symbol: 'sol', type: 'normal', atIndex: 0 });

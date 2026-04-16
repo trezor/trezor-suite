@@ -21,12 +21,13 @@ const { receiveAddress, paymentMethodName } = buyTradeBTC.trade;
 const updateFiatAmount = buyQuotesBTCUpdate[5].fiatStringAmount;
 
 test.describe('Trading - Buy BTC', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
-    test.beforeEach(async ({ page, tradingMock, onboardingPage, walletPage }) => {
+    test.beforeEach(async ({ page, tradingMock, onboardingPage, walletPage, settingsPage }) => {
         await page.route(invityEndpoint.buyQuotes, async route => {
             await route.fulfill({ json: buyQuotesBTC });
         });
         await tradingMock.routeTrade(invityEndpoint.buyTrade, buyTradeBTC);
         await onboardingPage.completeOnboarding();
+        await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
         await walletPage.openTrading();
     });
 

@@ -32,7 +32,7 @@ const expectedOutput = buildExpectedOutput({
 test.describe('Suite Sync - Remove Labels', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({ wipeEvoluRelay: true });
 
-    test.beforeEach(async ({ evoluClient, onboardingPage }) => {
+    test.beforeEach(async ({ evoluClient, onboardingPage, settingsPage }) => {
         await test.step('Seed Evolu relay server with existing labels', async () => {
             await evoluClient.init({ ownerSecret });
             evoluClient.writeTo('wallet', walletSeed);
@@ -43,6 +43,7 @@ test.describe('Suite Sync - Remove Labels', { tag: ['@T3W1', '@T3T1'] }, () => {
         });
 
         await onboardingPage.completeOnboarding({ keepDebugModeEnabled: true });
+        await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
     });
 
     test('Remove labels syncs null to relay', async ({

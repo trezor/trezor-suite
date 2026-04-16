@@ -30,13 +30,9 @@ test.describe('Public Keys', { tag: ['@T3W1', '@T3T1'] }, () => {
 
     testCases.forEach(({ symbol, xpub }) => {
         test(`Check ${symbol} XPUB`, async ({ settingsPage, walletPage, devicePrompt }) => {
-            if (symbol !== 'btc') {
-                await test.step(`Activate coin ${symbol}`, async () => {
-                    await settingsPage.changeNetworks({
-                        enableNetworks: [symbol],
-                    });
-                });
-            }
+            await test.step(`Activate coin ${symbol}`, async () => {
+                await settingsPage.changeNetworks({ enableNetworks: [symbol] });
+            });
 
             await test.step('Verify Public key preview', async () => {
                 await walletPage.openAccount({ symbol });

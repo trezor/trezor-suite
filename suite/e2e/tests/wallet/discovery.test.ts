@@ -7,6 +7,7 @@ import { expect, test } from '../../support/fixtures';
 const DISCOVERY_LIMIT = 1000 * 60 * 2;
 
 const coinsToActivate = [
+    'btc',
     'ltc',
     'eth',
     'etc',
@@ -61,7 +62,7 @@ test.describe('Discovery', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
             await page.expectReduxSubtreeToContain('wallet.discovery', 'status', 'complete', {
                 timeout: DISCOVERY_LIMIT,
             });
-            const expectedAccounts = ['btc', ...coinsToActivate] as NetworkSymbol[];
+            const expectedAccounts = coinsToActivate;
             for (const symbol of expectedAccounts) {
                 await expect
                     .soft(

@@ -164,8 +164,12 @@ export const AssetsView = () => {
     const goToCoinsSettings = () => dispatch(goto({ routeName: 'settings-coins' }));
     const setTable = () => dispatch(setFlag({ key: 'dashboardAssetsGridMode', value: false }));
     const setGrid = () => dispatch(setFlag({ key: 'dashboardAssetsGridMode', value: true }));
-
+    const isDiscoveryEmpty = discoveryStatus && discoveryStatus.type === 'discovery-empty';
     const showCards = isBelowTablet || dashboardAssetsGridMode;
+
+    if (isDiscoveryEmpty) {
+        return null;
+    }
 
     return (
         <DashboardSection

@@ -11,8 +11,9 @@ const defAddr = 'bc1qek0hazgrelpuce8anp72ur4kpgel74ype3pw52';
 
 test.describe('Passphrase', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({ deviceSetup: { mnemonic: 'mnemonic_all', passphrase_protection: true } });
-    test.beforeEach(async ({ onboardingPage }) => {
+    test.beforeEach(async ({ onboardingPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
+        await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
     });
 
     test(

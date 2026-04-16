@@ -1,8 +1,9 @@
 import { expect, test } from '../../support/fixtures';
 
 test.describe('Assets', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
-    test.beforeEach(async ({ onboardingPage }) => {
+    test.beforeEach(async ({ onboardingPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
+        await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
     });
 
     test('User can initiate buy from Assets in table view', async ({

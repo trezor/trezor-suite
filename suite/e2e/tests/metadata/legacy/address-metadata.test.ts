@@ -5,9 +5,10 @@ const metadataAddress = 'bc1q7e6qu5smalrpgqrx9k2gnf0hgjyref5p36ru2m';
 
 test.describe('Metadata - address labeling', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
     test.use({ deviceSetup: { mnemonic: 'mnemonic_all' } });
-    test.beforeEach(async ({ metadataMock, onboardingPage, metadataPage }) => {
+    test.beforeEach(async ({ metadataMock, onboardingPage, metadataPage, settingsPage }) => {
         await metadataMock.start(MetadataProvider.GOOGLE);
         await onboardingPage.completeOnboarding();
+        await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
         await metadataPage.enableLegacyLabeling(MetadataProvider.GOOGLE);
     });
 
