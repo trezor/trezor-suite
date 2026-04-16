@@ -3110,10 +3110,6 @@ export const messages = defineMessages({
         defaultMessage: 'System',
         id: 'TR_SETTINGS_SAME_AS_SYSTEM',
     },
-    TR_SETTINGS_TOOLTIP_DESCRIPTION_BTC_ONLY: {
-        defaultMessage: '<strong>Power user?</strong> Set up <tor>Tor</tor> in Settings first.',
-        id: 'TR_SETTINGS_TOOLTIP_DESCRIPTION_BTC_ONLY',
-    },
     TR_SETTINGS_TOOLTIP_DESCRIPTION_DESKTOP: {
         defaultMessage:
             '<strong>Power user?</strong> Set up <tor>Tor</tor> & <networks>networks</networks> in Settings first.',

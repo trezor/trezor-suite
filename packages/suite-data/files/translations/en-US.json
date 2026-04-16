@@ -1965,7 +1965,6 @@
   "TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED": "Connect & unlock your Trezor to change settings",
   "TR_SETTINGS_DEVICE_BANNER_TITLE_UNAVAILABLE": "Your Trezor is in an incorrect state",
   "TR_SETTINGS_SAME_AS_SYSTEM": "System",
-  "TR_SETTINGS_TOOLTIP_DESCRIPTION_BTC_ONLY": "<strong>Power user?</strong> Set up <tor>Tor</tor> in Settings first.",
   "TR_SETTINGS_TOOLTIP_DESCRIPTION_DESKTOP": "<strong>Power user?</strong> Set up <tor>Tor</tor> & <networks>networks</networks> in Settings first.",
   "TR_SETTINGS_TOOLTIP_DESCRIPTION_WEB": "<strong>Power user?</strong> Set up <networks>networks</networks> in Settings first.",
   "TR_SETUP_MY_TREZOR": "Set up my Trezor",
