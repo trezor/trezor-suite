@@ -25,7 +25,7 @@ export class WindowWindowChannel<
         windowPeer,
         channel,
         logger,
-        origin,
+        // origin,
     }: Pick<AbstractMessageChannelConstructorParams, 'channel' | 'logger'> & {
         windowHere: Window;
         // specific peer can change over time, for example when different popup is opened
@@ -36,7 +36,7 @@ export class WindowWindowChannel<
         super({
             channel,
             sendFn: (message: any) => {
-                windowPeer()?.postMessage(message, origin);
+                windowPeer()?.postMessage(message, '*'); // <- TODO: origin points to here (owner) not the target (peer), but we want to restrict it to the target origin
             },
             logger,
         });
