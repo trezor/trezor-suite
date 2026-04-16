@@ -7,17 +7,24 @@ import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { Card, ErrorMessage, VStack } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
+import {
+    type NativeStakingRootState,
+    selectClaimableAmountByAccountKey,
+    selectStakedBalanceByAccountKey,
+} from '@suite-native/staking';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { AccountsListItem } from './AccountsList/AccountsListItem';
 import { TokenReceiveCard } from './TokenReceiveCard';
+
+type BalanceType = 'available' | 'staked' | 'claimable';
 
 type AccountDetailsCardProps = {
     accountKey: AccountKey;
     tokenContract?: TokenAddress;
     isStakeVariant?: boolean;
     titleLabel?: ReactNode;
-    cryptoAmount?: string;
+    balanceType?: BalanceType;
 };
 
 const stakeCardStyle = prepareNativeStyle<{ isStakeVariant: boolean }>(
@@ -34,18 +41,37 @@ const stakeCardStyle = prepareNativeStyle<{ isStakeVariant: boolean }>(
     }),
 );
 
+const useBalanceByType = (accountKey: AccountKey, balanceType: BalanceType) => {
+    const stakedBalance = useSelector((state: NativeStakingRootState) =>
+        selectStakedBalanceByAccountKey(state, accountKey),
+    );
+    const claimableAmount = useSelector((state: NativeStakingRootState) =>
+        selectClaimableAmountByAccountKey(state, accountKey),
+    );
+
+    switch (balanceType) {
+        case 'staked':
+            return stakedBalance ?? undefined;
+        case 'claimable':
+            return claimableAmount;
+        case 'available':
+            return undefined;
+    }
+};
+
 export const AccountDetailsCard = ({
     accountKey,
     tokenContract,
     isStakeVariant = false,
     titleLabel,
-    cryptoAmount,
+    balanceType = 'available',
 }: AccountDetailsCardProps) => {
     const { translate } = useTranslate();
     const { applyStyle } = useNativeStyles();
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
+    const cryptoAmount = useBalanceByType(accountKey, balanceType);
 
     if (G.isNullable(account))
         return (

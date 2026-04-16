@@ -64,6 +64,7 @@ export const UnstakeFlowScreen = () => {
                 accountKey={accountKey}
                 isStakeVariant
                 titleLabel={<Translation id="earn.earnFormScreen.availableBalance" />}
+                balanceType="staked"
             />
 
             <Box marginTop="sp16">

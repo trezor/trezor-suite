@@ -25,7 +25,6 @@ import {
     CLAIM_CALLDATA,
     type NativeStakingRootState,
     selectCanClaimByAccountKey,
-    selectClaimableAmountByAccountKey,
 } from '@suite-native/staking';
 import { FeeSelector } from '@suite-native/transaction-management';
 import { BigNumber } from '@trezor/utils';
@@ -42,9 +41,6 @@ export const ClaimReviewScreen = () => {
 
     const canClaimInstantly = useSelector((state: NativeStakingRootState) =>
         selectCanClaimByAccountKey(state, accountKey),
-    );
-    const claimableAmount = useSelector((state: NativeStakingRootState) =>
-        selectClaimableAmountByAccountKey(state, accountKey),
     );
     const availableBalance = useSelector(
         (state: AccountsRootState) =>
@@ -107,7 +103,7 @@ export const ClaimReviewScreen = () => {
                     accountKey={accountKey}
                     isStakeVariant={true}
                     titleLabel={<Translation id="earn.claimReviewScreen.amountLabel" />}
-                    cryptoAmount={claimableAmount}
+                    balanceType="claimable"
                 />
                 {isInsufficientFeeBalance && (
                     <InlineAlertBox
