@@ -98,6 +98,9 @@ export type UserContextPayload =
           symbol: NetworkSymbol;
       }
     | {
+          type: 'activate-assets';
+      }
+    | {
           type: 'add-token';
       }
     | {

@@ -2,11 +2,20 @@ import { type ComponentProps, type JSX } from 'react';
 
 import { useDevice } from '@suite/device';
 import { Translation, type TranslationKey } from '@suite/intl';
-import { goto } from '@suite/router';
+import { openModal } from '@suite/modal';
 import { type NetworkType, getNetwork } from '@suite-common/wallet-config';
 import { startOrRestartDiscoveryThunk } from '@suite-common/wallet-core';
 import { type DiscoveryStatus, type FailedAccount } from '@suite-common/wallet-types';
-import { Button, Column, H3, IconCircle, type IconName, Row, Text } from '@trezor/components';
+import {
+    Button,
+    Column,
+    H3,
+    IconCircle,
+    type IconName,
+    Illustration,
+    Row,
+    Text,
+} from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
@@ -132,12 +141,12 @@ export const PortfolioCardException = ({
         case 'discovery-empty':
             return (
                 <Container
-                    icon={<IconCircle name="coins" size={96} intent="brand" />}
+                    icon={<Illustration name="disconnectTrezor" width={224} />}
                     title="TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY"
                     description="TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY_DESC"
                     cta={[
                         {
-                            action: () => dispatch(goto({ routeName: 'settings-coins' })),
+                            action: () => dispatch(openModal({ type: 'activate-assets' })),
                             isDisabled: false,
                             intent: 'brand',
                             label: 'TR_COIN_SETTINGS',

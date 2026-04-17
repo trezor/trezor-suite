@@ -17,6 +17,7 @@ import type { AcquiredDevice } from 'src/types/suite';
 import { ConfirmAddressModal } from '../ConfirmAddressModal';
 import { ConfirmXpubModal } from '../ConfirmXpubModal';
 import { CopyAddressModal } from '../CopyAddressModal';
+import { ActivateAssetsModal } from './ActivateAssetsModal';
 import { AddAccountModal } from './AddAccountModal/AddAccountModal';
 import { AddTokenModal } from './AddTokenModal';
 import type { ReduxModalProps } from '../ReduxModalProps';
@@ -116,6 +117,8 @@ export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL_CONTE
             return <MetadataProviderModal onCancel={onCancel} decision={payload.decision} />;
         case 'advanced-coin-settings':
             return <AdvancedCoinSettingsModal {...payload} onCancel={onCancel} />;
+        case 'activate-assets':
+            return <ActivateAssetsModal onCancel={onCancel} />;
         case 'add-token':
             return <AddTokenModal {...payload} onCancel={onCancel} />;
         case 'safety-checks':
