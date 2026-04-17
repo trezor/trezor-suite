@@ -29,7 +29,6 @@ export const Radio: RadioStory = {
         value: 1,
         isChecked: true,
         isDisabled: false,
-        activeColor: 'legacyBackgroundPrimaryDefault',
     },
     argTypes: {
         value: {
@@ -40,9 +39,6 @@ export const Radio: RadioStory = {
         },
         isDisabled: {
             control: { type: 'boolean' },
-        },
-        activeColor: {
-            control: { type: 'color' },
         },
     },
 };
