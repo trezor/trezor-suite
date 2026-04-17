@@ -4,15 +4,36 @@ const DEV_CONNECT_PREFIX = `${DEV_CONNECT_ORIGIN}/connect/`;
 /**
  * Extract branch name from a connect-explorer dev URL.
  *
- * Expected URL patterns (init can happen on methods or settings pages):
+ * Expected URL patterns:
  *   https://dev.suite.sldev.cz/connect/{branch}/methods/...
  *   https://dev.suite.sldev.cz/connect/{branch}/settings/
+ *   https://dev.suite.sldev.cz/connect/{branch}
  *
  * Branch names may contain slashes (e.g. "feat/xyz/phase-1").
  * Returns undefined if the URL doesn't match the expected pattern.
  */
-export const extractBranch = (href: string): string | undefined =>
-    href.match(/\/connect\/(.+)(?:\/methods\/.*|\/settings\/?$)/)?.[1];
+export const extractBranch = (href: string): string | undefined => {
+    let pathname: string;
+
+    try {
+        pathname = new URL(href).pathname;
+    } catch {
+        pathname = new URL(href, DEV_CONNECT_ORIGIN).pathname;
+    }
+
+    const match = pathname.match(/\/connect\/(.+)/);
+    if (!match) return undefined;
+
+    return (
+        match[1]
+            // Greedy (.+) ensures we strip the *last* /methods or /settings delimiter,
+            // so branch names containing these words (e.g. "feat/methods-fix") are safe.
+            // Only strip when the delimiter is followed by `/` to avoid truncating
+            // branch names that legitimately end with "methods" or "settings".
+            .replace(/^(.+)\/(?:methods|settings)\/.*$/, '$1')
+            .replace(/\/$/, '') || undefined
+    );
+};
 
 /**
  * Resolve the Suite Web popup URL based on the current window location.
