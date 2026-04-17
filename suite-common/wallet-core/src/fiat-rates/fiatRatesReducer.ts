@@ -85,12 +85,9 @@ export const prepareFiatRatesReducer = createReducerWithExtraDeps(
 
                     const currentRate = state[rateType]?.[fiatRateKey];
 
-                    // To prevent race condition someone will remove rate from state while fetching for example (during currency change etc.)
-                    if (!currentRate) {
-                        continue;
-                    }
                     state[rateType][fiatRateKey] = {
                         ...currentRate,
+                        ...rate,
                         rate: rate.rate,
                         lastTickerTimestamp: (rate.lastTickerTimestamp * 1000) as Timestamp,
                         lastSuccessfulFetchTimestamp: fetchAttemptTimestamp,

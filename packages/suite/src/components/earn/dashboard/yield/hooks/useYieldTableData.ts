@@ -6,11 +6,13 @@ import {
     type NetworkSymbol,
     getNetworkByYieldXyzId,
 } from '@suite-common/wallet-config';
+import { selectDeviceSupportedNetworks } from '@suite-common/wallet-core';
 import { type Account, type TokenInfoBranded, toTokenSymbol } from '@suite-common/wallet-types';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { getApyPercent } from 'src/components/earn/utils/earnApyUtils';
+import { useSelector } from 'src/hooks/suite';
 
 import {
     compareYieldRowsByAvailableBalanceDesc,
@@ -184,14 +186,12 @@ const getYieldOpportunityData = ({
 
 type UseYieldTableDataProps = {
     availableVaults: YieldDto[];
-    deviceSupportedNetworkSymbols: NetworkSymbol[];
     visibleAccounts: Account[];
     visibleAccountSymbols: Set<NetworkSymbol>;
 };
 
 export const useYieldTableData = ({
     availableVaults,
-    deviceSupportedNetworkSymbols,
     visibleAccounts,
     visibleAccountSymbols,
 }: UseYieldTableDataProps) => {
@@ -253,6 +253,7 @@ export const useYieldTableData = ({
         ];
     }, [availableVaults, visibleAccounts, visibleAccountSymbols]);
 
+    const deviceSupportedNetworkSymbols = useSelector(selectDeviceSupportedNetworks);
     const yieldInactiveVaultOpportunities = useMemo<YieldInactiveVaultOpportunity[]>(() => {
         const opportunities = availableVaults.flatMap(vault => {
             const network = getNetworkByYieldXyzId(vault.network);
