@@ -64,3 +64,5 @@ export const stakeDataSlice = createSlice({
         },
     },
 });
+
+export const stakeDataActions = stakeDataSlice.actions;

@@ -3,7 +3,7 @@ import { createThunk } from '@suite-common/redux-utils';
 import { PROD_STAKING_SYMBOLS } from '@suite-common/wallet-config';
 import { type TimerId } from '@trezor/type-utils';
 
-import { stakeDataSlice } from './stakeDataSlice';
+import { stakeDataActions } from './stakeDataSlice';
 import { type StakeRootState } from './stakeReducerTypes';
 import { selectEnabledNetworks } from '../settings/walletSettingsReducer';
 
@@ -36,7 +36,7 @@ export const initStakeDataThunk = createThunk(
 
         try {
             // If we use thunk actions, there'll cir. deps
-            dispatch(stakeDataSlice.actions.fetchStakeDataRequest(undefined));
+            dispatch(stakeDataActions.fetchStakeDataRequest(undefined));
 
             const stakingData = await getStakingBatch({
                 params: { networks: PROD_STAKING_SYMBOLS },
@@ -47,11 +47,11 @@ export const initStakeDataThunk = createThunk(
                 console.error('Upstream error', stakingData.errors);
             }
 
-            dispatch(stakeDataSlice.actions.fetchStakeDataSuccess(stakingData.data));
+            dispatch(stakeDataActions.fetchStakeDataSuccess(stakingData.data));
         } catch (error) {
             console.error(error);
             dispatch(
-                stakeDataSlice.actions.fetchStakeDataFailure(
+                stakeDataActions.fetchStakeDataFailure(
                     error instanceof Error ? error.message : 'Unknown error',
                 ),
             );

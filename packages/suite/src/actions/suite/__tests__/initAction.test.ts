@@ -45,6 +45,7 @@ import {
     periodicCheckStakeDataThunk,
     periodicFetchFiatRatesThunk,
     preloadFeeInfoThunk,
+    stakeDataActions,
     updateMissingTxFiatRatesThunk,
 } from '@suite-common/wallet-core';
 import { walletConnectInitThunk } from '@suite-common/walletconnect';
@@ -161,10 +162,10 @@ const fixtures: Fixture[] = [
             routerInit.pending.type,
             periodicCheckStakeDataThunk.pending.type,
             initStakeDataThunk.pending.type,
-            'stakeData/fetchStakeDataRequest',
+            stakeDataActions.fetchStakeDataRequest.type,
             walletConnectInitThunk.pending.type,
             SUITE.READY,
-            'stakeData/fetchStakeDataFailure',
+            stakeDataActions.fetchStakeDataFailure.type,
         ],
     },
     {
@@ -213,10 +214,10 @@ const fixtures: Fixture[] = [
             routerLocationChange.type,
             periodicCheckStakeDataThunk.pending.type,
             initStakeDataThunk.pending.type,
-            'stakeData/fetchStakeDataRequest',
+            stakeDataActions.fetchStakeDataRequest.type,
             walletConnectInitThunk.pending.type,
             SUITE.READY,
-            'stakeData/fetchStakeDataFailure',
+            stakeDataActions.fetchStakeDataFailure.type,
         ],
     },
     {
@@ -263,10 +264,10 @@ const fixtures: Fixture[] = [
             routerLocationChange.type,
             periodicCheckStakeDataThunk.pending.type,
             initStakeDataThunk.pending.type,
-            'stakeData/fetchStakeDataRequest',
+            stakeDataActions.fetchStakeDataRequest.type,
             walletConnectInitThunk.pending.type,
             SUITE.READY,
-            'stakeData/fetchStakeDataFailure',
+            stakeDataActions.fetchStakeDataFailure.type,
         ],
     },
     {
