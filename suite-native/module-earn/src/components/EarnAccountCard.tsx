@@ -1,3 +1,6 @@
+import { useSelector } from 'react-redux';
+
+import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
 import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { Box, Card, PressableOpacity, Text, VStack } from '@suite-native/atoms';
 import { CryptoIconWithNetwork, Icon } from '@suite-native/icons';
@@ -60,6 +63,7 @@ export const EarnAccountCard = ({ item, onPress, onClaimPress }: EarnAccountCard
     const isStakingItem = item.type === 'staking';
     const isStablecoinYieldItem = item.type === 'stablecoin-yield';
     const isSupportedStaking = isStakingItem && isMobileSupportedStakingNetwork(item.symbol);
+    const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
 
     const apy = useStakingSelector(state =>
         isStakingItem
@@ -78,7 +82,7 @@ export const EarnAccountCard = ({ item, onPress, onClaimPress }: EarnAccountCard
 
     const { isClaimingDisabled } = useMessageSystemStaking(isStakingItem ? item.symbol : null);
 
-    const showClaimAlert = canClaim && !isClaimingDisabled;
+    const showClaimAlert = canClaim && !isClaimingDisabled && !isPortfolioTrackerDevice;
 
     const symbol = isStakingItem ? item.symbol : item.networkSymbol;
     const contractAddress = isStakingItem ? undefined : item.contractAddress;

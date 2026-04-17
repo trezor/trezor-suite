@@ -16,6 +16,7 @@ import {
     type StackNavigationProps,
 } from '@suite-native/navigation';
 
+import { useEarnPortfolioTrackerGuard } from '../components/EarnPortfolioTrackerGuard';
 import { isMobileSupportedStakingNetwork } from '../constants';
 import { type StakingEarnItem } from '../types';
 import { navigateByAccountState } from '../utils/navigateByAccountState';
@@ -28,6 +29,7 @@ export const useStakingPromoNavigation = () => {
     const accounts = useSelector(selectVisibleDeviceAccounts);
     const isDeviceInViewOnlyMode = useSelector(selectIsDeviceInViewOnlyMode);
     const { showViewOnlyAddAccountAlert } = useAccountAlerts();
+    const { isPortfolioTrackerDevice, openPortfolioTrackerSheet } = useEarnPortfolioTrackerGuard();
 
     const { bottomSheetRef: infoSheetRef, openModal: openInfoModal } = useBottomSheetModal();
 
@@ -90,6 +92,12 @@ export const useStakingPromoNavigation = () => {
                 return;
             }
 
+            if (isPortfolioTrackerDevice) {
+                openPortfolioTrackerSheet();
+
+                return;
+            }
+
             const accountsForSymbol = accounts.filter(acc => acc.symbol === item.symbol);
 
             if (accountsForSymbol.length === 0) {
@@ -111,6 +119,8 @@ export const useStakingPromoNavigation = () => {
         [
             accounts,
             navigation.navigate,
+            isPortfolioTrackerDevice,
+            openPortfolioTrackerSheet,
             openInfoModal,
             openChooseAccountModal,
             openEnableNetworkModal,
@@ -127,6 +137,5 @@ export const useStakingPromoNavigation = () => {
         chooseAccountSheetRef,
         enableNetworkSheetRef,
         closeChooseAccountModal,
-        closeEnableNetworkModal,
     };
 };
