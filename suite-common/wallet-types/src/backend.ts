@@ -21,6 +21,7 @@ export type BackendSettings = Partial<{
     urls: Partial<{
         [type in BackendType]: string[];
     }>;
+    gapLimit: number;
 }>;
 
 export interface ConnectionStatus {
