@@ -234,11 +234,6 @@ export const FeeOption = ({
                             <Radio
                                 isChecked={isChecked}
                                 value={feeKey}
-                                activeColor={
-                                    areFeeValuesComplete
-                                        ? 'legacyBackgroundPrimaryDefault'
-                                        : 'contentCritical'
-                                }
                                 onPress={handleSelectFeeLevel}
                                 testID={`@transactionManagement/fees-level-radio-${feeKey}`}
                             />
