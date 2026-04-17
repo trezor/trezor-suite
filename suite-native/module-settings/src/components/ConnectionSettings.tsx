@@ -59,12 +59,7 @@ export const ConnectionSettings = () => {
                     <PressableOpacity onPress={openModal} testID="@settings/wallet-connect-add">
                         <HStack justifyContent="space-between" alignItems="center">
                             <HStack spacing="sp16" alignItems="center">
-                                <RoundedIcon
-                                    name="qrCode"
-                                    color="contentBrand"
-                                    backgroundColor="legacyBackgroundPrimarySubtleOnElevation0"
-                                    iconSize="mediumLarge"
-                                />
+                                <RoundedIcon name="qrCode" intent="brand" />
                                 <Text color="contentBrand">
                                     <Translation id="moduleSettings.items.connections.walletConnect.add" />
                                 </Text>

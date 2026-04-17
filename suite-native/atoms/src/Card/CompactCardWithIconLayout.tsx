@@ -9,7 +9,7 @@ import { type Color } from '@trezor/theme';
 import { Box } from '../Box';
 import { InlineAlertBox, type InlineAlertBoxProps } from '../InlineAlertBox/InlineAlertBox';
 import { Loader } from '../Loader';
-import { RoundedIcon } from '../RoundedIcon';
+import { RoundedIcon, type RoundedIconIntent } from '../RoundedIcon';
 import { HStack, VStack } from '../Stack';
 import { Text } from '../Text';
 import { useTapGesture } from '../useTapGesture';
@@ -30,8 +30,7 @@ export type CompactCardWithIconLayoutProps = {
 } & Omit<CardProps, 'children' | 'borderColor'>;
 
 type CardColorScheme = {
-    iconWrapperBackgroundColor: Color;
-    iconColor: Color;
+    iconIntent: RoundedIconIntent;
     titleColor: Color;
     subtitleColor: Color;
     caretColor: Color;
@@ -39,22 +38,19 @@ type CardColorScheme = {
 
 export const cardVariantToColorsMap = {
     normal: {
-        iconWrapperBackgroundColor: 'legacyBackgroundTertiaryDefaultOnElevation1',
-        iconColor: 'contentPrimary',
+        iconIntent: 'neutral',
         titleColor: 'contentPrimary',
         subtitleColor: 'contentSecondary',
         caretColor: 'contentSecondary',
     },
     danger: {
-        iconWrapperBackgroundColor: 'legacyBackgroundAlertRedSubtleOnElevation1',
-        iconColor: 'contentCritical',
+        iconIntent: 'critical',
         titleColor: 'contentCritical',
         subtitleColor: 'contentCritical',
         caretColor: 'contentSecondary',
     },
     primary: {
-        iconWrapperBackgroundColor: 'legacyBackgroundPrimarySubtleOnElevation0',
-        iconColor: 'contentBrand',
+        iconIntent: 'brand',
         titleColor: 'contentBrand',
         subtitleColor: 'contentBrand',
         caretColor: 'contentBrand',
@@ -80,8 +76,7 @@ export const CompactCardWithIconLayout = ({
     ...cardProps
 }: CompactCardWithIconLayoutProps) => {
     const { applyStyle } = useNativeStyles();
-    const { caretColor, iconColor, titleColor, subtitleColor, iconWrapperBackgroundColor } =
-        cardVariantToColorsMap[variant];
+    const { caretColor, iconIntent, titleColor, subtitleColor } = cardVariantToColorsMap[variant];
 
     const { tapGesture, animatedStyle } = useTapGesture({ onPress, isDisabled });
 
@@ -102,11 +97,7 @@ export const CompactCardWithIconLayout = ({
                         spacing="sp12"
                         alignItems="center"
                     >
-                        <RoundedIcon
-                            backgroundColor={iconWrapperBackgroundColor}
-                            color={iconColor}
-                            name={icon}
-                        />
+                        <RoundedIcon intent={iconIntent} name={icon} />
                         <VStack spacing="sp2" style={applyStyle(contentStyle)}>
                             <Text color={titleColor}>{title}</Text>
                             {subtitle && (

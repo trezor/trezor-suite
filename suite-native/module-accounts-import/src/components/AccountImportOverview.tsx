@@ -38,7 +38,7 @@ export const AccountImportOverview = ({ balance, symbol, formControl }: AssetsOv
 
     return (
         <AccountImportOverviewCard
-            icon={<RoundedIcon symbol={symbol} iconSize="large" />}
+            icon={<RoundedIcon symbol={symbol} />}
             coinName={getNetwork(symbol).name}
             cryptoAmount={
                 <CryptoAmountFormatter
