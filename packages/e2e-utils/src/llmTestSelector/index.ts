@@ -179,51 +179,90 @@ const downloadIfStale = async (url: string, localFile: string): Promise<void> =>
 // Coverage-map lookup
 // ---------------------------------------------------------------------------
 
+interface TestMatchByFile {
+    changedFile: string;
+    tests: string[];
+}
+
+/**
+ * Returns per-file coverage data rather than a flat merged list.
+ * Keeping the changedFile→tests relationship intact lets the prompt reason about
+ * how "broad" each match is: a file that maps to many tests is likely a global
+ * utility, whereas one that maps to 1–2 tests is a targeted feature file.
+ */
 const selectTestsByChangedFiles = (
     index: CoverageIndex,
     changedFiles: string[],
-): { matched: string[]; uncovered: string[] } => {
-    const matchedTestFiles = new Set<string>();
+): { matchedByFile: TestMatchByFile[]; uncovered: string[] } => {
+    const matchedByFile: TestMatchByFile[] = [];
     const uncovered: string[] = [];
 
     for (const changedFile of changedFiles) {
         const tests = index[changedFile];
         if (tests && tests.length > 0) {
-            tests.forEach(t => matchedTestFiles.add(t));
+            matchedByFile.push({ changedFile, tests: [...tests].sort() });
         } else {
             uncovered.push(changedFile);
         }
     }
 
-    return { matched: [...matchedTestFiles], uncovered };
+    matchedByFile.sort((a, b) => a.changedFile.localeCompare(b.changedFile));
+
+    return { matchedByFile, uncovered };
 };
 
 // ---------------------------------------------------------------------------
 // Prompt
 // ---------------------------------------------------------------------------
 
+/** Maximum number of test names shown per changed file before truncating. */
+const MAX_TESTS_SHOWN_PER_FILE = 20;
+
 const buildPrompt = (
     changedFiles: string[],
-    matchedTests: string[],
+    matchedByFile: TestMatchByFile[],
     uncoveredFiles: string[],
     llmAnalysis: Record<string, unknown>,
-): string => `You are helping a CI/CD system identify which Playwright E2E tests to run based on code changes in a pull request.
+): string => {
+    const coverageMappingSection =
+        matchedByFile.length === 0
+            ? '(none — no static mapping available for these changes)'
+            : matchedByFile
+                  .map(({ changedFile, tests }) => {
+                      const shown = tests.slice(0, MAX_TESTS_SHOWN_PER_FILE);
+                      const extra = tests.length - shown.length;
+                      const lines = [
+                          `**${changedFile}** → ${tests.length} test${tests.length === 1 ? '' : 's'}`,
+                          ...shown.map(t => `  - ${t}`),
+                          ...(extra > 0 ? [`  … and ${extra} more`] : []),
+                      ];
+
+                      return lines.join('\n');
+                  })
+                  .join('\n\n');
+
+    return `You are helping a CI/CD system identify which Playwright E2E tests to run based on code changes in a pull request.
 
 ## Your goal
-Recommend the **minimal set of tests** that provides maximum confidence that the changed code works correctly, ranked by how critical each test is to run given these specific changes.
+Recommend the **minimal set of tests** that provides maximum confidence that the changed code works correctly, ranked by how critical each test is to run given these specific changes. Prefer a short, targeted list over broad coverage — running fewer, well-chosen tests is better than running everything.
 
 ## Priority definitions
 - **high**: The test directly exercises functionality that was changed, or a regression here would be immediately user-visible and hard to catch otherwise. Run these unconditionally.
-- **medium**: The test covers functionality that shares infrastructure, state, or user flows with the changed code. A regression is plausible but not certain.
-- **low**: The test is only loosely related (e.g. shares a common component or utility) and a regression is unlikely. Include only if time permits.
+- **medium**: The test covers functionality that meaningfully shares infrastructure, state, or user flows with the changed code. A regression is plausible but not certain.
+- **low**: Use this priority sparingly. Only assign **low** when there is a concrete, articulable reason the change could affect this specific test's behaviour — not merely because they share a common utility or component. When in doubt between **low** and omitting, **omit**.
 
 ## Inputs
 
 ### Changed source files (${changedFiles.length})
 ${changedFiles.map(f => `- ${f}`).join('\n')}
 
-### Tests identified by static coverage mapping (${matchedTests.length})
-${matchedTests.length > 0 ? matchedTests.map(t => `- ${t}`).join('\n') : '(none — no static mapping available for these changes)'}
+### Tests identified by static coverage mapping — per changed file
+
+Each changed file is listed with the tests that statically reference it, along with the total count.
+**A file that maps to many tests is very likely a broad global utility or shared component.**
+For such files, apply extra scrutiny: only recommend a test if you have specific evidence (from the LLM analysis below) that the change plausibly affects that test's own code path. Do not include a test just because it transitively imports the changed file.
+
+${coverageMappingSection}
 
 ### Source files with no static coverage data (${uncoveredFiles.length})
 ${uncoveredFiles.length > 0 ? uncoveredFiles.map(f => `- ${f}`).join('\n') : '(none)'}
@@ -236,11 +275,12 @@ ${JSON.stringify(llmAnalysis, null, 2)}
 \`\`\`
 
 ## Instructions
-1. For every test returned by static coverage mapping, assign a **priority** and write a concise **reasoning** (1–3 sentences) that explains *why* this test matters given the specific changed files.
-2. If static coverage mapping found no tests but you can infer from the LLM analysis that certain tests likely cover the changed functionality, include those with appropriate priority and note that they were inferred rather than statically mapped.
-3. Populate **related_changes** with the subset of changed files that are most relevant to each test.
-4. In **uncovered_changes** list the changed files that have no known test coverage at all (neither static nor inferred).
-5. Write a short **summary** (2–4 sentences) describing the overall risk profile of this change set and the recommended test strategy.
+1. For every test you consider including, assign a **priority** and write a concise **reasoning** (1–3 sentences) that explains *why* this test matters given the specific changed files. Reasoning must be concrete — avoid generic justifications like "shares a utility with the changed file".
+2. Apply the broad-utility heuristic: if a changed file maps to ≥ 10 tests, treat it as a global dependency. Only include those tests at **high** or **medium** if you have specific evidence from the LLM analysis that the change affects that test's behaviour directly. Demote or omit the rest.
+3. If static coverage mapping found no tests but you can infer from the LLM analysis that certain tests likely cover the changed functionality, include those with appropriate priority and note that they were inferred rather than statically mapped.
+4. Populate **related_changes** with the subset of changed files that are most relevant to each test.
+5. In **uncovered_changes** list the changed files that have no known test coverage at all (neither static nor inferred).
+6. Write a short **summary** (2–4 sentences) describing the overall risk profile of this change set and the recommended test strategy.
 
 ## Output format
 Return a single JSON object — no prose outside the JSON. The schema is:
@@ -260,6 +300,7 @@ Return a single JSON object — no prose outside the JSON. The schema is:
 \`\`\`
 
 Sort recommendations by priority (high → medium → low), then alphabetically within each tier.`;
+};
 
 // ---------------------------------------------------------------------------
 // Claude invocation — CLI
@@ -568,16 +609,17 @@ const main = async () => {
         fs.readFileSync(llmAnalysisFile, 'utf8'),
     );
 
-    const { matched: matchedTests, uncovered: uncoveredFiles } = selectTestsByChangedFiles(
+    const { matchedByFile, uncovered: uncoveredFiles } = selectTestsByChangedFiles(
         index,
         changedFiles,
     );
+    const uniqueMatchedTests = new Set(matchedByFile.flatMap(({ tests }) => tests));
     log(
-        `Coverage mapping: ${matchedTests.length} test(s) matched, ${uncoveredFiles.length} file(s) with no coverage data.`,
+        `Coverage mapping: ${uniqueMatchedTests.size} unique test(s) matched across ${matchedByFile.length} of ${changedFiles.length} changed file(s) with coverage data, ${uncoveredFiles.length} file(s) with no coverage data.`,
     );
 
     // 5. Build prompt and call Claude
-    const prompt = buildPrompt(changedFiles, matchedTests, uncoveredFiles, llmAnalysis);
+    const prompt = buildPrompt(changedFiles, matchedByFile, uncoveredFiles, llmAnalysis);
 
     log(apiKey ? 'Calling Anthropic API...' : 'Calling local Claude Code CLI...');
 
