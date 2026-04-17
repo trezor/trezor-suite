@@ -26,20 +26,14 @@ type ExportBip329BottomSheetProps = {
     deviceStaticSessionId: StaticSessionId;
 };
 
-type HandleExportBip329Result =
-    | {
-          success: true;
-      }
-    | {
-          success: false;
-          reason: 'fileSavingNotSupported' | 'exportFailed';
-      };
+type ExportBip329Result =
+    | { success: true }
+    | { success: false; reason: 'fileSavingNotSupported' | 'exportFailed' };
 
 const exportBip329 = async (
-    onClose: () => void,
     accountLabel: string | null,
     labels: AllLabelsForAccount,
-): Promise<HandleExportBip329Result> => {
+): Promise<ExportBip329Result> => {
     const labelsToExport = suiteSyncToBip329({
         outputLabels: labels.outputLabels,
         addressLabels: labels.addressLabels,
@@ -69,43 +63,13 @@ const exportBip329 = async (
                 UTI: 'public.jsonl',
             });
         } else {
-            // Just sanity final else, but this should never happen.
             return { success: false, reason: 'fileSavingNotSupported' };
         }
     } catch {
         return { success: false, reason: 'exportFailed' };
     }
 
-    onClose();
-
     return { success: true };
-};
-
-const handleExport = (
-    result: HandleExportBip329Result,
-    showToast: ReturnType<typeof useToast>['showToast'],
-): void => {
-    if (result.success) {
-        showToast({
-            variant: 'default',
-            message: <Translation id="moduleLabeling.exportSuccessfulToast" />,
-            icon: 'copy',
-        });
-    } else {
-        if (result.reason === 'exportFailed') {
-            showToast({
-                variant: 'error',
-                message: <Translation id="moduleLabeling.exportFailedToast" />,
-            });
-        } else if (result.reason === 'fileSavingNotSupported') {
-            showToast({
-                variant: 'error',
-                message: <Translation id="moduleLabeling.fileSavingNotSupported" />,
-            });
-        } else {
-            exhaustive(result.reason);
-        }
-    }
 };
 
 export const ExportBip329BottomSheet = ({
@@ -128,6 +92,40 @@ export const ExportBip329BottomSheet = ({
         }),
     );
 
+    const handleExport = async () => {
+        const result = await exportBip329(accountLabel, labels);
+
+        if (result.success) {
+            onClose();
+            showToast({
+                variant: 'default',
+                message: <Translation id="moduleLabeling.exportSuccessfulToast" />,
+                icon: 'copy',
+            });
+
+            return;
+        }
+
+        switch (result.reason) {
+            case 'exportFailed':
+                showToast({
+                    variant: 'error',
+                    message: <Translation id="moduleLabeling.exportFailedToast" />,
+                });
+
+                return;
+            case 'fileSavingNotSupported':
+                showToast({
+                    variant: 'error',
+                    message: <Translation id="moduleLabeling.fileSavingNotSupported" />,
+                });
+
+                return;
+            default:
+                exhaustive(result.reason);
+        }
+    };
+
     return (
         <BottomSheetModal
             ref={ref}
@@ -136,13 +134,7 @@ export const ExportBip329BottomSheet = ({
         >
             <VStack spacing="sp24">
                 <ExportBip329InfoHeader />
-                <Button
-                    size="large"
-                    iconLeft="arrowDown"
-                    onPress={async () =>
-                        handleExport(await exportBip329(onClose, accountLabel, labels), showToast)
-                    }
-                >
+                <Button size="large" iconLeft="arrowDown" onPress={handleExport}>
                     <Translation id="moduleLabeling.exportBip329BottomSheet.button" />
                 </Button>
             </VStack>
