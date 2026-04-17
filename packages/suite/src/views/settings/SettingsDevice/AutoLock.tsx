@@ -2,12 +2,11 @@ import type { Locale } from 'date-fns';
 
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import { SettingsAnchor } from '@suite/router';
+import { Anchor, SettingsAnchor } from '@suite/router';
 import { formatDurationStrict } from '@suite-common/suite-utils';
-import { ActionColumn, ActionSelect, TextColumn } from '@trezor/product-components';
+import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
-import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { useDevice, useDispatch, useLocales } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
 
@@ -58,25 +57,35 @@ export const AutoLock = ({ isDeviceLocked }: AutoLockProps) => {
     };
 
     return (
-        <SettingsSectionItem anchorId={SettingsAnchor.Autolock}>
-            <TextColumn
-                title={<Translation id="TR_DEVICE_SETTINGS_AUTO_LOCK" />}
-                description={<Translation id="TR_DEVICE_SETTINGS_AUTO_LOCK_SUBHEADING" />}
-            />
-            <ActionColumn>
-                <ActionSelect
-                    placeholder=""
-                    onChange={handleChange}
-                    options={[AUTO_LOCK_OPTIONS]}
-                    value={AUTO_LOCK_OPTIONS.options.find(
-                        option => autoLockDelay && autoLockDelay / 1000 === option.value,
-                    )}
-                    isDisabled={isDeviceLocked}
-                    isTooltipActive={isDeviceLocked}
-                    tooltipContent={<Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />}
-                    data-testid="@settings/auto-lock-select"
-                />
-            </ActionColumn>
-        </SettingsSectionItem>
+        <Anchor anchorId={SettingsAnchor.Autolock}>
+            {({ anchorId, anchorRef, shouldHighlight }) => (
+                <SectionItem
+                    data-testid={anchorId}
+                    ref={anchorRef}
+                    shouldHighlight={shouldHighlight}
+                >
+                    <TextColumn
+                        title={<Translation id="TR_DEVICE_SETTINGS_AUTO_LOCK" />}
+                        description={<Translation id="TR_DEVICE_SETTINGS_AUTO_LOCK_SUBHEADING" />}
+                    />
+                    <ActionColumn>
+                        <ActionSelect
+                            placeholder=""
+                            onChange={handleChange}
+                            options={[AUTO_LOCK_OPTIONS]}
+                            value={AUTO_LOCK_OPTIONS.options.find(
+                                option => autoLockDelay && autoLockDelay / 1000 === option.value,
+                            )}
+                            isDisabled={isDeviceLocked}
+                            isTooltipActive={isDeviceLocked}
+                            tooltipContent={
+                                <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
+                            }
+                            data-testid="@settings/auto-lock-select"
+                        />
+                    </ActionColumn>
+                </SectionItem>
+            )}
+        </Anchor>
     );
 };

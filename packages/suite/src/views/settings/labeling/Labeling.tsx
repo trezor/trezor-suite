@@ -3,7 +3,7 @@ import { type OptionProps } from 'react-select';
 
 import { Translation, useTranslation } from '@suite/intl';
 import { metadataLabelingActions, metadataThunks } from '@suite/metadata';
-import { SettingsAnchor } from '@suite/router';
+import { Anchor, SettingsAnchor } from '@suite/router';
 import { SuiteSyncServers } from '@suite/suite-sync';
 import { events } from '@suite-common/analytics';
 import {
@@ -12,11 +12,10 @@ import {
 } from '@suite-common/suite-sync';
 import { Box, LoadingContent, Tooltip } from '@trezor/components';
 import { Option as SelectOption } from '@trezor/components/src/components/form/Select/customComponents';
-import { ActionColumn, ActionSelect, TextColumn } from '@trezor/product-components';
+import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
 import { exhaustive } from '@trezor/type-utils';
 import { HELP_CENTER_LABELING } from '@trezor/urls';
 
-import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 import { LabelingSwitchToLegacyModal } from 'src/components/suite/labeling/LabelingSwitchToLegacyModal';
 import { suiteSyncErrorHandler } from 'src/components/suite/labeling/suiteSyncErrorHandler';
@@ -185,31 +184,39 @@ export const Labeling = () => {
                 />
             )}
 
-            <SettingsSectionItem anchorId={SettingsAnchor.Labeling}>
-                <TextColumn
-                    title={
-                        <LoadingContent
-                            isLoading={legacyMetadataState.initiating}
-                            isSuccessful={legacyMetadataState.enabled}
-                        >
-                            <Translation id="TR_LABELING_ENABLED" />
-                        </LoadingContent>
-                    }
-                    description={<Translation id="TR_LABELING_FEATURE_ALLOWS" />}
-                    bottomContent={<LearnMoreButton url={HELP_CENTER_LABELING} />}
-                />
-                <ActionColumn>
-                    <ActionSelect
-                        options={translatedOptions}
-                        value={getSelectedOption()}
-                        onChange={handleOnChange}
-                        components={{ Option: LabelingOption }}
-                        data-testid={LABELING_SELECT_TEST_ID}
-                        isDisabled={isDeviceLabelingDisabled && !showSuiteSync}
-                        isOptionDisabled={option => isOptionDisabled(option.value)}
-                    />
-                </ActionColumn>
-            </SettingsSectionItem>
+            <Anchor anchorId={SettingsAnchor.Labeling}>
+                {({ anchorId, anchorRef, shouldHighlight }) => (
+                    <SectionItem
+                        data-testid={anchorId}
+                        ref={anchorRef}
+                        shouldHighlight={shouldHighlight}
+                    >
+                        <TextColumn
+                            title={
+                                <LoadingContent
+                                    isLoading={legacyMetadataState.initiating}
+                                    isSuccessful={legacyMetadataState.enabled}
+                                >
+                                    <Translation id="TR_LABELING_ENABLED" />
+                                </LoadingContent>
+                            }
+                            description={<Translation id="TR_LABELING_FEATURE_ALLOWS" />}
+                            bottomContent={<LearnMoreButton url={HELP_CENTER_LABELING} />}
+                        />
+                        <ActionColumn>
+                            <ActionSelect
+                                options={translatedOptions}
+                                value={getSelectedOption()}
+                                onChange={handleOnChange}
+                                components={{ Option: LabelingOption }}
+                                data-testid={LABELING_SELECT_TEST_ID}
+                                isDisabled={isDeviceLabelingDisabled && !showSuiteSync}
+                                isOptionDisabled={option => isOptionDisabled(option.value)}
+                            />
+                        </ActionColumn>
+                    </SectionItem>
+                )}
+            </Anchor>
             {isSuiteSyncEnabled && <SuiteSyncServers suiteSync={suiteSync} />}
         </>
     );

@@ -1,3 +1,4 @@
+export * from './Anchor';
 export * from './anchors';
 export * from './anchorUtils';
 export * from './router';

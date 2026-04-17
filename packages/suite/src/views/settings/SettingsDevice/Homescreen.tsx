@@ -3,12 +3,11 @@ import { useRef, useState } from 'react';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { SettingsAnchor } from '@suite/router';
+import { Anchor, SettingsAnchor } from '@suite/router';
 import { Paragraph, Tooltip } from '@trezor/components';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
-import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import {
     ImageValidationError,
@@ -102,35 +101,43 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
 
     return (
         <>
-            <SettingsSectionItem anchorId={SettingsAnchor.Homescreen}>
-                <HomescreenSettingsTitle deviceModelInternal={deviceModelInternal} />
-
-                <ActionColumn>
-                    <HiddenInput
-                        ref={fileInputElement}
-                        type="file"
-                        accept={['png', 'jpeg', 'gif', 'webp', 'svg+xml']
-                            .map(format => `image/${format}`)
-                            .join(', ')}
-                        onChange={e => onUploadHomescreen(e.target.files)}
-                    />
-                    <Tooltip
-                        maxWidth={285}
-                        content={
-                            !isSupportedHomescreen && (
-                                <Translation id="TR_UPDATE_FIRMWARE_HOMESCREEN_TOOLTIP" />
-                            )
-                        }
+            <Anchor anchorId={SettingsAnchor.Homescreen}>
+                {({ anchorId, anchorRef, shouldHighlight }) => (
+                    <SectionItem
+                        data-testid={anchorId}
+                        ref={anchorRef}
+                        shouldHighlight={shouldHighlight}
                     >
-                        <ChangeHomescreenButtons
-                            deviceModelInternal={deviceModelInternal}
-                            isDeviceLocked={isDeviceLocked}
-                            isSupportedHomescreen={isSupportedHomescreen}
-                            onImageUploadClick={() => fileInputElement?.current?.click()}
-                        />
-                    </Tooltip>
-                </ActionColumn>
-            </SettingsSectionItem>
+                        <HomescreenSettingsTitle deviceModelInternal={deviceModelInternal} />
+
+                        <ActionColumn>
+                            <HiddenInput
+                                ref={fileInputElement}
+                                type="file"
+                                accept={['png', 'jpeg', 'gif', 'webp', 'svg+xml']
+                                    .map(format => `image/${format}`)
+                                    .join(', ')}
+                                onChange={e => onUploadHomescreen(e.target.files)}
+                            />
+                            <Tooltip
+                                maxWidth={285}
+                                content={
+                                    !isSupportedHomescreen && (
+                                        <Translation id="TR_UPDATE_FIRMWARE_HOMESCREEN_TOOLTIP" />
+                                    )
+                                }
+                            >
+                                <ChangeHomescreenButtons
+                                    deviceModelInternal={deviceModelInternal}
+                                    isDeviceLocked={isDeviceLocked}
+                                    isSupportedHomescreen={isSupportedHomescreen}
+                                    onImageUploadClick={() => fileInputElement?.current?.click()}
+                                />
+                            </Tooltip>
+                        </ActionColumn>
+                    </SectionItem>
+                )}
+            </Anchor>
             {customHomescreen && !validationError && (
                 <SectionItem>
                     <Col>

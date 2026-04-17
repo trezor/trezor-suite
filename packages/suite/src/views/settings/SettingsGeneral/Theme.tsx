@@ -1,17 +1,16 @@
 import { events } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
-import { SettingsAnchor } from '@suite/router';
+import { Anchor, SettingsAnchor } from '@suite/router';
 import {
     selectAutodetectTheme,
     selectIsDebugModeActive,
     selectThemeSettings,
     suiteSettingsActions,
 } from '@suite/settings';
-import { ActionColumn, ActionSelect, TextColumn } from '@trezor/product-components';
+import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { type ThemeColorVariant } from '@trezor/theme';
 
-import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
 import { getOsTheme } from 'src/utils/suite/env';
@@ -99,21 +98,29 @@ export const Theme = () => {
 
     return (
         <>
-            <SettingsSectionItem anchorId={SettingsAnchor.Theme}>
-                <TextColumn
-                    title={<Translation id="TR_COLOR_SCHEME" />}
-                    description={<Translation id="TR_COLOR_SCHEME_DESCRIPTION" />}
-                />
+            <Anchor anchorId={SettingsAnchor.Theme}>
+                {({ anchorId, anchorRef, shouldHighlight }) => (
+                    <SectionItem
+                        data-testid={anchorId}
+                        ref={anchorRef}
+                        shouldHighlight={shouldHighlight}
+                    >
+                        <TextColumn
+                            title={<Translation id="TR_COLOR_SCHEME" />}
+                            description={<Translation id="TR_COLOR_SCHEME_DESCRIPTION" />}
+                        />
 
-                <ActionColumn>
-                    <ActionSelect
-                        value={selectedValue}
-                        options={optionGroups}
-                        onChange={onChange}
-                        data-testid="@theme/color-scheme-select"
-                    />
-                </ActionColumn>
-            </SettingsSectionItem>
+                        <ActionColumn>
+                            <ActionSelect
+                                value={selectedValue}
+                                options={optionGroups}
+                                onChange={onChange}
+                                data-testid="@theme/color-scheme-select"
+                            />
+                        </ActionColumn>
+                    </SectionItem>
+                )}
+            </Anchor>
         </>
     );
 };

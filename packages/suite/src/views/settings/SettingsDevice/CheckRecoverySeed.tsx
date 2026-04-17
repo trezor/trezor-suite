@@ -1,9 +1,8 @@
 import { Translation } from '@suite/intl';
-import { SettingsAnchor, goto } from '@suite/router';
+import { Anchor, SettingsAnchor, goto } from '@suite/router';
 import { getCheckBackupUrl } from '@suite-common/suite-utils';
-import { ActionButton, ActionColumn, TextColumn } from '@trezor/product-components';
+import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
-import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 
@@ -24,24 +23,36 @@ export const CheckRecoverySeed = ({ isDeviceLocked }: CheckRecoverySeedProps) =>
     if (needsBackup) return null;
 
     return (
-        <SettingsSectionItem anchorId={SettingsAnchor.CheckRecoverySeed}>
-            <TextColumn
-                title={<Translation id="TR_CHECK_RECOVERY_SEED" />}
-                description={<Translation id="TR_CHECK_RECOVERY_SEED_DESCRIPTION" />}
-                bottomContent={learnMoreUrl ? <LearnMoreButton url={learnMoreUrl} /> : undefined}
-            />
-            <ActionColumn>
-                <ActionButton
-                    data-testid="@settings/device/check-seed-button"
-                    onClick={handleClick}
-                    isDisabled={isDeviceLocked}
-                    intent="brand"
-                    isTooltipActive={isDeviceLocked}
-                    tooltipContent={<Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />}
+        <Anchor anchorId={SettingsAnchor.CheckRecoverySeed}>
+            {({ anchorId, anchorRef, shouldHighlight }) => (
+                <SectionItem
+                    data-testid={anchorId}
+                    ref={anchorRef}
+                    shouldHighlight={shouldHighlight}
                 >
-                    <Translation id="TR_CHECK_SEED" />
-                </ActionButton>
-            </ActionColumn>
-        </SettingsSectionItem>
+                    <TextColumn
+                        title={<Translation id="TR_CHECK_RECOVERY_SEED" />}
+                        description={<Translation id="TR_CHECK_RECOVERY_SEED_DESCRIPTION" />}
+                        bottomContent={
+                            learnMoreUrl ? <LearnMoreButton url={learnMoreUrl} /> : undefined
+                        }
+                    />
+                    <ActionColumn>
+                        <ActionButton
+                            data-testid="@settings/device/check-seed-button"
+                            onClick={handleClick}
+                            isDisabled={isDeviceLocked}
+                            intent="brand"
+                            isTooltipActive={isDeviceLocked}
+                            tooltipContent={
+                                <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
+                            }
+                        >
+                            <Translation id="TR_CHECK_SEED" />
+                        </ActionButton>
+                    </ActionColumn>
+                </SectionItem>
+            )}
+        </Anchor>
     );
 };
