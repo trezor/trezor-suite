@@ -11,7 +11,6 @@ import {
     selectIsCardanoStakedOutsideEverstake,
     selectIsCardanoStakedWithFiveBinaries,
 } from '@suite-native/staking';
-import { useNativeStyles } from '@trezor/styles-native';
 
 import { AccountsListItemBase } from './AccountsListItemBase';
 
@@ -31,8 +30,6 @@ export const AdaAccountsListStakingItem = ({
     isLast,
     ...props
 }: AdaAccountsListStakingItemProps) => {
-    const { utils } = useNativeStyles();
-
     const isStakedOutsideEverstake = useSelector((state: NativeStakingRootState) =>
         selectIsCardanoStakedOutsideEverstake(state, account.key),
     );
@@ -55,13 +52,7 @@ export const AdaAccountsListStakingItem = ({
             {...props}
             isLast={isLast}
             showDivider={!isLast}
-            icon={
-                <RoundedIcon
-                    name="piggyBankFilled"
-                    color="contentSecondary"
-                    containerSize={utils.spacings.sp32}
-                />
-            }
+            icon={<RoundedIcon name="piggyBankFilled" intent="neutral" size={32} />}
             title={<Translation id="accountList.staking" />}
             secondaryTitle={
                 isStakedWithFiveBinaries && (

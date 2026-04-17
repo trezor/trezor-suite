@@ -8,10 +8,15 @@ import {
     type TokenAddress,
     type TransactionType,
 } from '@suite-common/wallet-types';
-import { Box, CircularSpinner, RoundedIcon } from '@suite-native/atoms';
-import { CryptoIcon, type IconName, type IconSize } from '@suite-native/icons';
+import {
+    Box,
+    CircularSpinner,
+    RoundedIcon,
+    type RoundedIconIntent,
+    type RoundedIconSize,
+} from '@suite-native/atoms';
+import { CryptoIcon, type IconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
-import { type Color } from '@trezor/theme';
 
 type TransactionIconProps = {
     transactionType: TransactionType;
@@ -19,9 +24,8 @@ type TransactionIconProps = {
     symbol?: NetworkSymbol;
     contractAddress?: TokenAddress;
     isAnimated?: boolean;
-    backgroundColor?: Color;
-    containerSize?: number;
-    iconSize?: IconSize;
+    intent?: RoundedIconIntent;
+    size?: RoundedIconSize;
 };
 
 const transactionIconMap: Record<TransactionType, IconName> = {
@@ -55,9 +59,8 @@ export const TransactionIcon = ({
     contractAddress,
     transactionType,
     stakeOperationType,
-    backgroundColor,
-    containerSize = 48,
-    iconSize = 'mediumLarge',
+    intent,
+    size = 48,
     isAnimated = false,
 }: TransactionIconProps) => {
     const { applyStyle } = useNativeStyles();
@@ -76,18 +79,9 @@ export const TransactionIcon = ({
 
     return (
         <Box>
-            <RoundedIcon
-                name={iconName}
-                iconSize={iconSize}
-                backgroundColor={backgroundColor}
-                containerSize={containerSize}
-            />
+            <RoundedIcon name={iconName} intent={intent} size={size} />
             {isAnimated && (
-                <CircularSpinner
-                    size={containerSize}
-                    color="legacyBackgroundAlertYellowBold"
-                    width={3}
-                />
+                <CircularSpinner size={size} color="legacyBackgroundAlertYellowBold" width={3} />
             )}
             {iconSymbol && (
                 <Box style={applyStyle(cryptoIconStyle)}>

@@ -58,13 +58,7 @@ export const TransactionDetailHeader = ({
         <DiscreetTextTrigger>
             <Box alignItems="center">
                 <VStack spacing="sp16" alignItems="center" justifyContent="center">
-                    <TransactionIcon
-                        transactionType={txType}
-                        isAnimated={isPendingTx}
-                        containerSize={56}
-                        iconSize="extraLarge"
-                        backgroundColor="surfaceFillRaised"
-                    />
+                    <TransactionIcon transactionType={txType} isAnimated={isPendingTx} size={48} />
 
                     {isPendingTx ? (
                         <Badge
