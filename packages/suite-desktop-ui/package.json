@@ -14,6 +14,7 @@
     },
     "dependencies": {
         "@sentry/electron": "^7.10.0",
+        "@suite-common/github": "workspace:*",
         "@suite/analytics": "workspace:*",
         "@suite/desktop-update": "workspace:*",
         "@suite/flags": "workspace:*",

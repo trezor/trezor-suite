@@ -1,3 +1,4 @@
+import type { TrezorDevice } from '@suite-common/suite-types';
 import type { TransportInfo } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import {
@@ -9,8 +10,6 @@ import {
     isDesktop,
 } from '@trezor/env-utils';
 import { GITHUB_REPO_URL } from '@trezor/urls';
-
-import type { TrezorDevice } from 'src/types/suite';
 
 type DebugInfo = {
     device?: TrezorDevice;
