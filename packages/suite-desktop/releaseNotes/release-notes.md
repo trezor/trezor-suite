@@ -14,6 +14,7 @@
 
 ### 🔧 Bug fixes
 
+- Fixed Suite Sync tooltip, and possibility to enable legacy labelling.
 - Fixed device connectivity and reconnection issues.
 - Resolved multiple trading flow bugs and inconsistencies.
 - Addressed issues in onboarding.
