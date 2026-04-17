@@ -314,8 +314,6 @@ const bootstrap = async (): Promise<void> => {
             } else if (bootstrapOk && !ownerOk) {
                 broadcast.postMessage({ type: 'bootstrap-failed' });
             }
-            // both failed: no reliable channel to report on
-            logger.error('Both handshakes failed. Unable to establish communication channels.');
         },
     );
 };

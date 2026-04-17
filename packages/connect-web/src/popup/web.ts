@@ -82,16 +82,17 @@ export class WebPopup extends Popup {
                 const popupHandshake = results[0];
                 const iframeHandshake = results[1];
 
-                if (popupHandshake.status === 'rejected') {
+                if (popupHandshake.status === 'rejected' && iframeHandshake.status === 'rejected') {
+                    this.handleOpenFailure(
+                        'Both popup and iframe handshakes failed: ' +
+                            popupHandshake.reason +
+                            ', ' +
+                            iframeHandshake.reason,
+                    );
+                } else if (popupHandshake.status === 'rejected') {
                     this.handleOpenFailure('Popup handshake failed: ' + popupHandshake.reason);
-
-                    return;
-                }
-
-                if (iframeHandshake.status === 'rejected') {
+                } else if (iframeHandshake.status === 'rejected') {
                     this.handleOpenFailure('Iframe handshake failed: ' + iframeHandshake.reason);
-
-                    return;
                 }
             },
         );
