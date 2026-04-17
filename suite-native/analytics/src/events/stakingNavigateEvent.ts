@@ -1,13 +1,7 @@
 import type { AttributeDef, EventDef } from '@suite-common/analytics';
 
 import { EventType } from '../constants';
-
-export type StakingNavigateFrom =
-    | 'dashboard/staking-dashboard/staking-inactive'
-    | 'dashboard/staking-dashboard/staking-active'
-    | 'dashboard/staking-dashboard/staking-max'
-    | 'dashboard/staking-dashboard/insufficient-funds'
-    | 'dashboard/staking-dashboard/staked-but-insufficient-funds';
+import { type StakingNavigateFrom } from '../definitions';
 
 type Attributes = {
     action: AttributeDef<'navigate' | 'cancel'>;

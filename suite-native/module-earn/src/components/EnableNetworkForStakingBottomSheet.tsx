@@ -16,6 +16,7 @@ type EnableNetworkForStakingBottomSheetProps = {
     ref: BottomSheetModalRef;
     symbol: NetworkSymbol | null;
     onEnablePress: () => void;
+    onDismiss?: () => void;
 };
 
 const buttonContainerStyle = prepareNativeStyle(utils => ({
@@ -27,13 +28,14 @@ export const EnableNetworkForStakingBottomSheet = ({
     ref,
     symbol,
     onEnablePress,
+    onDismiss,
 }: EnableNetworkForStakingBottomSheetProps) => {
     const { applyStyle } = useNativeStyles();
 
     const networkName = symbol ? getNetwork(symbol).name : '';
 
     return (
-        <BottomSheetModal ref={ref}>
+        <BottomSheetModal ref={ref} onDismiss={onDismiss}>
             {symbol ? (
                 <Box alignItems="center" paddingHorizontal="sp16">
                     <StakingPromoRingIcon symbol={symbol}>

@@ -1,3 +1,4 @@
+import { type EarnAnalyticsStep } from '@suite-common/suite-types';
 import { type TradingType } from '@suite-common/trading';
 import { type FirmwareType } from '@trezor/connect';
 import { type DeviceModelInternal } from '@trezor/device-utils';
@@ -28,6 +29,27 @@ export type FirmwareUpdatePayload = {
 export type FirmwareUpdateStuckedState = 'modalPart1' | 'modalPart2' | 'buttonVisible';
 export type FirmwareUpdateStartType = 'normal' | 'retry';
 export type FirmwareUpdateLocation = 'settings' | 'onboarding' | null;
+
+export type StakingClaimStep = Extract<EarnAnalyticsStep, 'staking-dashboard' | 'claim-form-modal'>;
+export type StakingConfirmAction = 'stake' | 'unstake' | 'claim';
+export type StakingNavigateFrom =
+    | 'earn/staking-inactive'
+    | 'earn/staking-active'
+    | 'earn/staking-max'
+    | 'earn/insufficient-funds'
+    | 'earn/staked-but-insufficient-funds';
+export type StakingStakeStep = Extract<
+    EarnAnalyticsStep,
+    | 'staking-dashboard'
+    | 'stake-in-a-nutshell-modal'
+    | 'funds-maintained-modal'
+    | 'stake-form-modal'
+    | 'entry-period-stake-modal'
+>;
+export type StakingUnstakeStep = Extract<
+    EarnAnalyticsStep,
+    'staking-dashboard' | 'unstake-form-modal'
+>;
 
 export type TradingNavigateFrom =
     | 'trade'

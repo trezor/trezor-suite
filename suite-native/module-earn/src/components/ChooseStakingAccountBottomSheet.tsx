@@ -13,6 +13,7 @@ type ChooseStakingAccountBottomSheetProps = {
     accounts: Account[];
     onAccountSelected: (account: Account) => void;
     onClose: () => void;
+    onDismiss?: () => void;
 };
 
 export const ChooseStakingAccountBottomSheet = ({
@@ -20,6 +21,7 @@ export const ChooseStakingAccountBottomSheet = ({
     accounts,
     onAccountSelected,
     onClose,
+    onDismiss,
 }: ChooseStakingAccountBottomSheetProps) => {
     const renderItem = useCallback(
         ({ item, index }: { item: Account; index: number }) => (
@@ -40,6 +42,7 @@ export const ChooseStakingAccountBottomSheet = ({
             title={<Translation id="earn.earnScreen.chooseAccountSheet.title" />}
             isCloseDisplayed
             onClose={onClose}
+            onDismiss={onDismiss}
         >
             <Box paddingTop="sp16">
                 <FlashList

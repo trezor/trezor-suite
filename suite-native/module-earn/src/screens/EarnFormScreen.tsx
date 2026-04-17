@@ -1,7 +1,12 @@
+import { useCallback, useRef } from 'react';
+import { useSelector } from 'react-redux';
+
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
+import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { AccountDetailsCard } from '@suite-native/accounts';
-import { Box } from '@suite-native/atoms';
+import { events } from '@suite-native/analytics';
+import { type ActiveView, Box } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
 import {
     type RootStackParamList,
@@ -9,12 +14,14 @@ import {
     Screen,
     type StackNavigationProps,
 } from '@suite-native/navigation';
+import { useAnalytics } from '@suite-native/services';
 import { FeeSelector } from '@suite-native/transaction-management';
 
 import { EarnFormScreenFooter } from '../components/EarnFormScreenFooter';
 import { EarnFormScreenHeader } from '../components/EarnFormScreenHeader';
 import { EarnOutputFields } from '../components/EarnOutputFields';
 import { useEarnForm } from '../hooks/useEarnForm';
+import { useNavigateBackAnalytics } from '../hooks/useNavigateBackAnalytics';
 
 export const EarnFormScreen = () => {
     const route = useRoute<RouteProp<RootStackParamList, RootStackRoutes.EarnForm>>();
@@ -23,6 +30,23 @@ export const EarnFormScreen = () => {
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.EarnForm>>();
 
     const earnForm = useEarnForm(accountKey);
+    const networkSymbol = useSelector((state: AccountsRootState) =>
+        selectAccountNetworkSymbol(state, accountKey),
+    );
+    const analytics = useAnalytics();
+    const currencyRef = useRef<'crypto' | 'fiat' | undefined>(undefined);
+    const handleCurrencyChange = useCallback((activeView: ActiveView) => {
+        currencyRef.current = activeView === 'primary' ? 'crypto' : 'fiat';
+    }, []);
+    const registerNavigateBackAnalytics = useNavigateBackAnalytics({
+        type: events.stakingStakeEvent.name,
+        payload: {
+            action: 'cancel',
+            step: 'stake-form-modal',
+            networkSymbol: networkSymbol ?? undefined,
+            currency: currencyRef.current,
+        },
+    });
 
     if (!earnForm) {
         return null;
@@ -34,6 +58,16 @@ export const EarnFormScreen = () => {
     } = form;
 
     const handleSubmit = form.handleSubmit(() => {
+        registerNavigateBackAnalytics();
+        analytics.report({
+            type: events.stakingStakeEvent.name,
+            payload: {
+                action: 'continue',
+                step: 'stake-form-modal',
+                networkSymbol: account.symbol,
+                currency: currencyRef.current,
+            },
+        });
         navigation.navigate(RootStackRoutes.EarnConsents, {
             accountKey,
             amount: amountValue,
@@ -58,7 +92,10 @@ export const EarnFormScreen = () => {
             <AccountDetailsCard accountKey={accountKey} isStakeVariant />
             <Box marginTop="sp16">
                 <Form form={form}>
-                    <EarnOutputFields accountKey={accountKey} />
+                    <EarnOutputFields
+                        accountKey={accountKey}
+                        onCurrencyChange={handleCurrencyChange}
+                    />
                 </Form>
             </Box>
             {isValid && (

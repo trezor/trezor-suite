@@ -11,5 +11,6 @@ export { ClaimReviewScreen } from './screens/ClaimReviewScreen';
 export { ClaimTransactionDataReviewScreen } from './screens/ClaimTransactionDataReviewScreen';
 export { FiveBinariesHomeBanner } from './components/FiveBinariesHomeBanner';
 export { useStakingDetailNavigation } from './hooks/useStakingDetailNavigation';
+export { useStakingNavigateAnalytics } from './hooks/useStakingNavigateAnalytics';
 export { EarnStackNavigator } from './navigation/EarnStackNavigator';
 export { navigateByAccountState } from './utils/navigateByAccountState';

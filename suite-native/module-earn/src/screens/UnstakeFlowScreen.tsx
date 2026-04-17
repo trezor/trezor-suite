@@ -1,7 +1,18 @@
+import { useCallback, useRef } from 'react';
+import { useSelector } from 'react-redux';
+
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
+import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { AccountDetailsCard } from '@suite-native/accounts';
-import { Box, Button, InlineAlertBox, ScreenFooterGradient } from '@suite-native/atoms';
+import { events } from '@suite-native/analytics';
+import {
+    type ActiveView,
+    Box,
+    Button,
+    InlineAlertBox,
+    ScreenFooterGradient,
+} from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -10,11 +21,13 @@ import {
     Screen,
     type StackNavigationProps,
 } from '@suite-native/navigation';
+import { useAnalytics } from '@suite-native/services';
 import { FeeSelector } from '@suite-native/transaction-management';
 
 import { EarnOutputFields } from '../components/EarnOutputFields';
 import { UnstakeFlowScreenHeader } from '../components/UnstakeFlowScreenHeader';
 import { UnstakingTimelineCard } from '../components/UnstakingTimelineCard';
+import { useNavigateBackAnalytics } from '../hooks/useNavigateBackAnalytics';
 import { useUnstakeForm } from '../hooks/useUnstakeForm';
 
 export const UnstakeFlowScreen = () => {
@@ -24,6 +37,23 @@ export const UnstakeFlowScreen = () => {
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.UnstakeFlow>>();
 
     const unstakeForm = useUnstakeForm(accountKey);
+    const networkSymbol = useSelector((state: AccountsRootState) =>
+        selectAccountNetworkSymbol(state, accountKey),
+    );
+    const analytics = useAnalytics();
+    const currencyRef = useRef<'crypto' | 'fiat' | undefined>(undefined);
+    const handleCurrencyChange = useCallback((activeView: ActiveView) => {
+        currencyRef.current = activeView === 'primary' ? 'crypto' : 'fiat';
+    }, []);
+    const registerNavigateBackAnalytics = useNavigateBackAnalytics({
+        type: events.stakingUnstakeEvent.name,
+        payload: {
+            action: 'cancel',
+            step: 'unstake-form-modal',
+            networkSymbol: networkSymbol ?? undefined,
+            currency: currencyRef.current,
+        },
+    });
 
     if (!unstakeForm) return null;
 
@@ -43,6 +73,16 @@ export const UnstakeFlowScreen = () => {
     } = form;
 
     const handleReviewAndSign = form.handleSubmit(() => {
+        registerNavigateBackAnalytics();
+        analytics.report({
+            type: events.stakingUnstakeEvent.name,
+            payload: {
+                action: 'continue',
+                step: 'unstake-form-modal',
+                networkSymbol: networkSymbol ?? undefined,
+                currency: currencyRef.current,
+            },
+        });
         navigation.navigate(RootStackRoutes.UnstakeTransactionDataReview, {
             accountKey,
             amount: amountValue,
@@ -81,6 +121,7 @@ export const UnstakeFlowScreen = () => {
                         maxButtonVariant="unstake"
                         isWithdrawalFeesBannerVisible={false}
                         unstakeInstantAmount={approximatedInstantEthAmount}
+                        onCurrencyChange={handleCurrencyChange}
                     />
                 </Form>
             </Box>

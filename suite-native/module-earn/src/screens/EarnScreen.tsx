@@ -47,6 +47,8 @@ const EarnScreenContent = () => {
         handleStakingPromoPress,
         handleAccountSelected,
         handleEnableNetworkPress,
+        handleChooseAccountDismiss,
+        handleEnableNetworkDismiss,
         chosenAccounts,
         pendingEnableSymbol,
         infoSheetRef,
@@ -143,11 +145,13 @@ const EarnScreenContent = () => {
                     accounts={chosenAccounts}
                     onAccountSelected={handleAccountSelected}
                     onClose={closeChooseAccountModal}
+                    onDismiss={handleChooseAccountDismiss}
                 />
                 <EnableNetworkForStakingBottomSheet
                     ref={enableNetworkSheetRef}
                     symbol={pendingEnableSymbol}
                     onEnablePress={handleEnableNetworkPress}
+                    onDismiss={handleEnableNetworkDismiss}
                 />
             </VStack>
         </Screen>

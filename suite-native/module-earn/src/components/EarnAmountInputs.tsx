@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { BaseAmountInputs, Text, VStack } from '@suite-native/atoms';
+import { type ActiveView, BaseAmountInputs, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 import { EarnAmountErrorMessage } from './EarnAmountErrorMessage';
@@ -16,6 +16,7 @@ type EarnAmountInputsProps = {
     symbol: NetworkSymbol;
     maxButtonVariant?: EarnMaxButtonVariant;
     isWithdrawalFeesBannerVisible?: boolean;
+    onCurrencyChange?: (activeView: ActiveView) => void;
 };
 
 export const EarnAmountInputs = ({
@@ -23,6 +24,7 @@ export const EarnAmountInputs = ({
     symbol,
     maxButtonVariant,
     isWithdrawalFeesBannerVisible = true,
+    onCurrencyChange,
 }: EarnAmountInputsProps) => {
     const [isMaxSelected, setIsMaxSelected] = useState(false);
 
@@ -30,6 +32,7 @@ export const EarnAmountInputs = ({
         <VStack spacing="sp12">
             <BaseAmountInputs
                 symbol={symbol}
+                onInputSwitch={onCurrencyChange}
                 renderTopRow={() => (
                     <>
                         <Text variant="body-sm">

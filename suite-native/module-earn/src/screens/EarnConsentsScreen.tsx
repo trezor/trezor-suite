@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import { getNetwork } from '@suite-common/wallet-config';
+import { events } from '@suite-native/analytics';
 import { Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -13,6 +14,7 @@ import {
     ScreenHeader,
     type StackNavigationProps,
 } from '@suite-native/navigation';
+import { useAnalytics } from '@suite-native/services';
 import {
     type NativeStakingRootState,
     selectEntryPeriodInDaysBySymbol,
@@ -27,6 +29,7 @@ import {
 
 import { EarnConsentsDelegatingCard } from '../components/EarnConsentsDelegatingCard';
 import { EarnConsentsEntryPeriodCard } from '../components/EarnConsentsEntryPeriodCard';
+import { useNavigateBackAnalytics } from '../hooks/useNavigateBackAnalytics';
 
 const STAKING_LEARN_MORE_URLS: Partial<Record<string, Url>> = {
     ethereum: HELP_CENTER_ETH_STAKING,
@@ -45,8 +48,40 @@ export const EarnConsentsScreen = () => {
     const navigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.EarnConsents>>();
     const { accountKey, amount, account } = route.params;
+    const networkSymbol = account.symbol;
+
+    const analytics = useAnalytics();
+    const registerNavigateBackAnalytics = useNavigateBackAnalytics({
+        type: events.stakingStakeEvent.name,
+        payload: {
+            action: 'cancel',
+            step: isSecondCardExpanded ? 'funds-maintained-modal' : 'entry-period-stake-modal',
+            networkSymbol,
+        },
+    });
+
+    const handleEntryPeriodConfirm = () => {
+        analytics.report({
+            type: events.stakingStakeEvent.name,
+            payload: {
+                action: 'continue',
+                step: 'entry-period-stake-modal',
+                networkSymbol,
+            },
+        });
+        setIsSecondCardExpanded(true);
+    };
 
     const handleConfirm = () => {
+        registerNavigateBackAnalytics();
+        analytics.report({
+            type: events.stakingStakeEvent.name,
+            payload: {
+                action: 'continue',
+                step: 'funds-maintained-modal',
+                networkSymbol,
+            },
+        });
         navigation.navigate(RootStackRoutes.EarnTransactionDataReview, { accountKey, amount });
     };
 
@@ -63,7 +98,7 @@ export const EarnConsentsScreen = () => {
                     <Translation id="earn.earnConsentsScreen.title" />
                 </Text>
                 <EarnConsentsEntryPeriodCard
-                    onConfirm={() => setIsSecondCardExpanded(true)}
+                    onConfirm={handleEntryPeriodConfirm}
                     entryPeriodInDays={entryPeriodInDays}
                     learnMoreUrl={learnMoreUrl}
                 />

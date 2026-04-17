@@ -1,8 +1,10 @@
 import { useCallback, useMemo } from 'react';
+import { useStore } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 
+import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { BottomSheetModal, type BottomSheetModalRef, Box } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -11,9 +13,10 @@ import {
     type StackNavigationProps,
 } from '@suite-native/navigation';
 
-import { useStakingDetailNavigation } from '../hooks/useStakingDetailNavigation';
-import { type EarnDepositsCardActiveItem } from '../types';
 import { EarnAccountCard } from './EarnAccountCard';
+import { useStakingDetailNavigation } from '../hooks/useStakingDetailNavigation';
+import { useStakingNavigateAnalytics } from '../hooks/useStakingNavigateAnalytics';
+import { type EarnDepositsCardActiveItem } from '../types';
 
 type NavigationProp = StackNavigationProps<RootStackParamList, RootStackRoutes.StakingManagement>;
 
@@ -32,6 +35,8 @@ export const EarnActiveItemsBottomSheet = ({
 }: EarnActiveItemsBottomSheetProps) => {
     const navigation = useNavigation<NavigationProp>();
     const { navigateToStakingDetail } = useStakingDetailNavigation();
+    const reportStakingNavigate = useStakingNavigateAnalytics();
+    const store = useStore<AccountsRootState>();
 
     const title = useMemo(
         () =>
@@ -48,12 +53,17 @@ export const EarnActiveItemsBottomSheet = ({
             onClose();
 
             switch (item.type) {
-                case 'staking':
+                case 'staking': {
+                    const account = selectAccountByKey(store.getState(), item.accountKey);
+                    if (account) {
+                        reportStakingNavigate(account);
+                    }
                     navigateToStakingDetail({
                         accountKey: item.accountKey,
                         symbol: item.symbol,
                     });
                     break;
+                }
                 case 'stablecoin-yield':
                     navigation.navigate(RootStackRoutes.AccountDetail, {
                         accountKey: item.accountKey,
@@ -63,7 +73,7 @@ export const EarnActiveItemsBottomSheet = ({
                     break;
             }
         },
-        [navigateToStakingDetail, navigation, onClose],
+        [navigateToStakingDetail, navigation, onClose, reportStakingNavigate, store],
     );
 
     const handleClaimPress = useCallback(

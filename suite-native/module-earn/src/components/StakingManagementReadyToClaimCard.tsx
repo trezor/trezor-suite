@@ -6,6 +6,7 @@ import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS, useFormatters } from '@suite-common
 import { selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { isPositiveBalance } from '@suite-common/wallet-utils';
+import { events } from '@suite-native/analytics';
 import { Box, Button, HStack, InlineAlertBox, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
@@ -14,6 +15,7 @@ import {
     RootStackRoutes,
     type StackNavigationProps,
 } from '@suite-native/navigation';
+import { useAnalytics } from '@suite-native/services';
 import {
     type NativeStakingRootState,
     selectClaimableAmountByAccountKey,
@@ -43,6 +45,7 @@ export const StakingManagementReadyToClaimCard = ({
     const { isPortfolioTrackerDevice, openPortfolioTrackerSheet } = useEarnPortfolioTrackerGuard();
     const navigation = useNavigation<NavigationProp>();
     const { CryptoAmountFormatter: amountFormatter } = useFormatters();
+    const analytics = useAnalytics();
 
     const symbol = useSelector((state: NativeStakingRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
@@ -64,8 +67,23 @@ export const StakingManagementReadyToClaimCard = ({
             return;
         }
 
+        analytics.report({
+            type: events.stakingClaimEvent.name,
+            payload: {
+                action: 'continue',
+                step: 'staking-dashboard',
+                networkSymbol: symbol,
+            },
+        });
         navigation.navigate(RootStackRoutes.ClaimReview, { accountKey, symbol });
-    }, [accountKey, isPortfolioTrackerDevice, navigation, openPortfolioTrackerSheet, symbol]);
+    }, [
+        accountKey,
+        analytics,
+        navigation,
+        symbol,
+        isPortfolioTrackerDevice,
+        openPortfolioTrackerSheet,
+    ]);
 
     if (!symbol || !isPositiveBalance(claimableAmount)) {
         return null;
