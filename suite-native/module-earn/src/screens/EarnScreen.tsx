@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from 'react';
 
+import { useBottomSheetModal as useBottomSheetModalContext } from '@gorhom/bottom-sheet';
 import { useFocusEffect } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 
@@ -12,6 +13,7 @@ import { useAnalytics } from '@suite-native/services';
 
 import { ChooseStakingAccountBottomSheet } from '../components/ChooseStakingAccountBottomSheet';
 import { EarnItemInfoModal } from '../components/EarnItemInfoModal';
+import { EarnPortfolioTrackerGuard } from '../components/EarnPortfolioTrackerGuard';
 import { EarnPromoListHeader } from '../components/EarnPromoListHeader';
 import { EarnPromoListRow } from '../components/EarnPromoListRow';
 import { EarnScreenListHeader } from '../components/EarnScreenListHeader';
@@ -27,13 +29,11 @@ const getEarnListItemType = (item: EarnPromoListDataItem) =>
 const getEarnListItemKey = (item: EarnPromoListDataItem) =>
     typeof item === 'string' ? item : item.id;
 
-export const EarnScreen = () => {
+const EarnScreenContent = () => {
     const analytics = useAnalytics();
-    const {
-        bottomSheetRef: stablecoinYieldBottomSheetRef,
-        openModal: openStablecoinYieldModal,
-        closeModal: closeStablecoinYieldModal,
-    } = useBottomSheetModal();
+    const { dismissAll } = useBottomSheetModalContext();
+    const { bottomSheetRef: stablecoinYieldBottomSheetRef, openModal: openStablecoinYieldModal } =
+        useBottomSheetModal();
 
     const {
         promoListData: stakingPromoItems,
@@ -53,14 +53,7 @@ export const EarnScreen = () => {
         chooseAccountSheetRef,
         enableNetworkSheetRef,
         closeChooseAccountModal,
-        closeEnableNetworkModal,
     } = useStakingPromoNavigation();
-
-    const dismissAllModals = useCallback(() => {
-        closeStablecoinYieldModal();
-        closeChooseAccountModal();
-        closeEnableNetworkModal();
-    }, [closeStablecoinYieldModal, closeChooseAccountModal, closeEnableNetworkModal]);
 
     const earnListData = useMemo(
         (): EarnPromoListDataItem[] => [...stakingPromoItems, ...stablecoinYieldPromoItems],
@@ -75,7 +68,7 @@ export const EarnScreen = () => {
 
     const handlePromoItemPress = useCallback(
         (item: EarnPromoItem) => {
-            dismissAllModals();
+            dismissAll();
 
             if (item.type === 'stablecoin-yield') {
                 analytics.report({
@@ -92,7 +85,7 @@ export const EarnScreen = () => {
 
             handleStakingPromoPress(item);
         },
-        [analytics, dismissAllModals, handleStakingPromoPress, openStablecoinYieldModal],
+        [analytics, dismissAll, handleStakingPromoPress, openStablecoinYieldModal],
     );
 
     const renderItem = useCallback(
@@ -160,3 +153,9 @@ export const EarnScreen = () => {
         </Screen>
     );
 };
+
+export const EarnScreen = () => (
+    <EarnPortfolioTrackerGuard>
+        <EarnScreenContent />
+    </EarnPortfolioTrackerGuard>
+);

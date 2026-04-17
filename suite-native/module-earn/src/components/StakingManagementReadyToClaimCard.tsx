@@ -21,6 +21,7 @@ import {
 } from '@suite-native/staking';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
+import { useEarnPortfolioTrackerGuard } from './EarnPortfolioTrackerGuard';
 import { useMessageSystemStaking } from '../hooks/useMessageSystemStaking';
 
 type NavigationProp = StackNavigationProps<RootStackParamList, RootStackRoutes.StakingManagement>;
@@ -39,6 +40,7 @@ export const StakingManagementReadyToClaimCard = ({
     accountKey,
 }: StakingManagementReadyToClaimCardProps) => {
     const { applyStyle } = useNativeStyles();
+    const { isPortfolioTrackerDevice, openPortfolioTrackerSheet } = useEarnPortfolioTrackerGuard();
     const navigation = useNavigation<NavigationProp>();
     const { CryptoAmountFormatter: amountFormatter } = useFormatters();
 
@@ -55,8 +57,15 @@ export const StakingManagementReadyToClaimCard = ({
         if (!symbol) {
             return;
         }
+
+        if (isPortfolioTrackerDevice) {
+            openPortfolioTrackerSheet();
+
+            return;
+        }
+
         navigation.navigate(RootStackRoutes.ClaimReview, { accountKey, symbol });
-    }, [accountKey, navigation, symbol]);
+    }, [accountKey, isPortfolioTrackerDevice, navigation, openPortfolioTrackerSheet, symbol]);
 
     if (!symbol || !isPositiveBalance(claimableAmount)) {
         return null;

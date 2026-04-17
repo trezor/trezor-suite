@@ -2528,6 +2528,14 @@ export const messages = {
     earn: {
         staking: 'Staking',
         stablecoinYield: 'Stablecoin yield',
+        portfolioTracker: {
+            alert: {
+                title: 'Staking is disabled in the portfolio tracker',
+                description:
+                    'Connect your device to enable full functionality or use our desktop app.',
+                copyLabel: 'Tap to copy',
+            },
+        },
         instantStakeBanner: {
             stakedTitle: '{amount} {displaySymbol} staked instantly',
             unstakedTitle: '{amount} {displaySymbol} unstaked instantly',
