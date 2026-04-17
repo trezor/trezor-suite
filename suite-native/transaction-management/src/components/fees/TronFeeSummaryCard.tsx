@@ -13,6 +13,7 @@ import { AnimatedPressable, Card, HStack, Text, VStack } from '@suite-native/ato
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Icon } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';
+import { useNativeStyles } from '@trezor/styles-native';
 
 import { FeeLabelTranslation } from './FeeLabelTranslation';
 import { selectFeeLevels } from '../../selectors';
@@ -41,6 +42,9 @@ export const TronFeeSummaryCard = ({
         selectAreFeesLoading(state, account?.symbol),
     );
     const { translate } = useTranslate();
+    const {
+        utils: { spacings },
+    } = useNativeStyles();
 
     if (!account || account.networkType !== 'tron') return null;
 
@@ -143,7 +147,7 @@ export const TronFeeSummaryCard = ({
     };
 
     const cardContent = (
-        <Card>
+        <Card style={{ paddingVertical: spacings.sp12 }}>
             <HStack justifyContent="space-between" alignItems="center">
                 <VStack spacing="sp4">
                     <Text variant="body-sm">
