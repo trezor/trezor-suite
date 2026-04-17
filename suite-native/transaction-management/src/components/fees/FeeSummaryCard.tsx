@@ -4,11 +4,12 @@ import { type NetworkSymbol, type NetworkType } from '@suite-common/wallet-confi
 import { AnimatedPressable, Card, HStack, Text, VStack } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Icon } from '@suite-native/icons';
+import { useNativeStyles } from '@trezor/styles-native';
 
 import { FeeLabelTranslation } from './FeeLabelTranslation';
 
 export type FeeSummaryCardProps = {
-    fee: string;
+    fee: string | null;
     symbol: NetworkSymbol;
     networkType: NetworkType;
     areFeesLoading: boolean;
@@ -23,39 +24,45 @@ export const FeeSummaryCard = ({
     areFeesLoading,
     onPress,
     testID,
-}: FeeSummaryCardProps) => (
-    <AnimatedPressable exiting={FadeOut} entering={FadeIn} onPress={onPress} testID={testID}>
-        <Card>
-            <HStack justifyContent="space-between" alignItems="center">
-                <VStack spacing="sp4">
-                    <Text variant="body-sm">
-                        <FeeLabelTranslation networkType={networkType} />
-                    </Text>
-                </VStack>
-                <HStack alignItems="center" spacing="sp8">
-                    <VStack alignItems="flex-end" spacing="sp2">
-                        <CryptoAmountFormatter
-                            variant="body-sm"
-                            color="contentPrimary"
-                            value={fee}
-                            symbol={symbol}
-                            isBalance={false}
-                            isLoading={areFeesLoading}
-                            isDiscreetText={false}
-                            testID="@transactionManagement/fee-crypto-amount"
-                        />
-                        <CryptoToFiatAmountFormatter
-                            variant="body-sm"
-                            color="contentSecondary"
-                            value={fee}
-                            symbol={symbol}
-                            isLoading={areFeesLoading}
-                            isDiscreetText={false}
-                        />
+}: FeeSummaryCardProps) => {
+    const {
+        utils: { spacings },
+    } = useNativeStyles();
+
+    return (
+        <AnimatedPressable exiting={FadeOut} entering={FadeIn} onPress={onPress} testID={testID}>
+            <Card style={{ paddingVertical: spacings.sp12 }}>
+                <HStack justifyContent="space-between" alignItems="center">
+                    <VStack spacing="sp4">
+                        <Text variant="body-sm">
+                            <FeeLabelTranslation networkType={networkType} />
+                        </Text>
                     </VStack>
-                    <Icon name="caretDown" size="medium" color="contentSecondary" />
+                    <HStack alignItems="center" spacing="sp8">
+                        <VStack alignItems="flex-end" spacing="sp2">
+                            <CryptoAmountFormatter
+                                variant="body-sm"
+                                color="contentPrimary"
+                                value={fee}
+                                symbol={symbol}
+                                isBalance={false}
+                                isLoading={areFeesLoading}
+                                isDiscreetText={false}
+                                testID="@transactionManagement/fee-crypto-amount"
+                            />
+                            <CryptoToFiatAmountFormatter
+                                variant="body-sm"
+                                color="contentSecondary"
+                                value={fee}
+                                symbol={symbol}
+                                isLoading={areFeesLoading}
+                                isDiscreetText={false}
+                            />
+                        </VStack>
+                        <Icon name="caretDown" size="medium" color="contentSecondary" />
+                    </HStack>
                 </HStack>
-            </HStack>
-        </Card>
-    </AnimatedPressable>
-);
+            </Card>
+        </AnimatedPressable>
+    );
+};

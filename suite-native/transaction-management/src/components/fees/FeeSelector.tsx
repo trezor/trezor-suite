@@ -101,7 +101,7 @@ export const FeeSelector = ({
 
     const feeLimitSunOverride = isTrc20 ? form.watch('customFeeLimit') : undefined;
 
-    if (!symbol || !networkType || !fee) return null;
+    if (!symbol || !networkType || (!fee && !areFeesLoading)) return null;
 
     return (
         <>
