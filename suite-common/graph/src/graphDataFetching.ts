@@ -124,6 +124,7 @@ const getBalanceFromAccountInfo = ({
             return accountInfo.balance;
         case 'stellar':
             return contractId ? findTokenBalance() : accountInfo.balance;
+        case 'tron':
         case 'ethereum':
         case 'solana':
         case 'cardano':
