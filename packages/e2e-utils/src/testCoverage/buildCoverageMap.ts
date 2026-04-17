@@ -43,7 +43,7 @@ const main = async () => {
         }
         throw err;
     }
-    const jsonFiles = entries.filter(f => f.endsWith('.json') && f !== 'index.json');
+    const jsonFiles = entries.filter(f => f.endsWith('.json') && f !== 'index.json').sort();
 
     if (jsonFiles.length === 0) {
         console.error(`No per-test JSON files found in ${inputDir}`);
@@ -70,7 +70,12 @@ const main = async () => {
     const testFileCount = new Set(Object.values(index).flat()).size;
 
     await fs.mkdir(path.dirname(outputFile), { recursive: true });
-    await fs.writeFile(outputFile, JSON.stringify(index, null, 2));
+    const sortedIndex = Object.fromEntries(
+        Object.entries(index)
+            .sort(([a], [b]) => a.localeCompare(b))
+            .map(([k, v]) => [k, [...v].sort()]),
+    );
+    await fs.writeFile(outputFile, JSON.stringify(sortedIndex, null, 2));
 
     console.log(
         `Coverage map built: ${sourceFileCount} source files mapped to ${testFileCount} test files`,

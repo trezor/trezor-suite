@@ -142,11 +142,13 @@ jobs:
                 const recs = result.recommendations.filter(r => r.priority === priority);
                 if (recs.length === 0) continue;
                 const label = priority.charAt(0).toUpperCase() + priority.slice(1);
-                lines.push(`${priorityEmoji[priority]} **${label} priority**`);
+                lines.push(`<details><summary>${priorityEmoji[priority]} <b>${label} priority (${recs.length})</b></summary>`);
                 lines.push('');
                 for (const rec of recs) {
                   lines.push(`- \`${rec.test}\` — ${rec.reasoning}`);
                 }
+                lines.push('');
+                lines.push('</details>');
                 lines.push('');
               }
             } else {
