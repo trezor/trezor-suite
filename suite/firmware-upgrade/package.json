@@ -13,12 +13,19 @@
     "dependencies": {
         "@reduxjs/toolkit": "2.11.2",
         "@suite-common/device": "workspace:*",
+        "@suite-common/firmware": "workspace:*",
+        "@suite-common/suite-types": "workspace:*",
         "@suite/intl": "workspace:*",
         "@suite/router": "workspace:*",
         "@trezor/components": "workspace:*",
+        "@trezor/connect": "workspace:*",
+        "@trezor/device-utils": "workspace:*",
+        "@trezor/theme": "workspace:*",
         "react": "19.2.4",
         "react-redux": "9.2.0",
-        "redux": "^5.0.1"
+        "redux": "^5.0.1",
+        "semver": "^7.7.1",
+        "styled-components": "^6.3.9"
     },
     "devDependencies": {
         "@types/react": "19.2.14"

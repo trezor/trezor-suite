@@ -1,5 +1,10 @@
 import { useState } from 'react';
 
+import {
+    FirmwareWarningsList,
+    FirmwareWipeWarning,
+    useFirmwareDesktopUpdate,
+} from '@suite/firmware-upgrade';
 import { Translation, useTranslation } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { selectIsDebugModeActive } from '@suite/settings';
@@ -9,12 +14,11 @@ import { type ButtonProps, Card, Column, Link, Note, Row, Tooltip } from '@trezo
 import { FirmwareType } from '@trezor/connect';
 import { DeviceModelInternal, isBitcoinOnlyDevice } from '@trezor/device-utils';
 
-import { FirmwareOffer, FirmwareWarningsList, FirmwareWipeWarning } from 'src/components/firmware';
+import { FirmwareOffer } from 'src/components/firmware';
 import { FirmwareLowBatteryModal } from 'src/components/firmware/FirmwareLowBatteryModal';
 import { SkipStepConfirmation } from 'src/components/onboarding/SkipStepConfirmation';
 import { PrerequisitesGuide } from 'src/components/suite';
 import { useDevice, useOnboarding, useSelector } from 'src/hooks/suite';
-import { useFirmwareDesktopUpdate } from 'src/hooks/suite/useFirmwareDesktopUpdate';
 
 const InstallButton = ({ children, ...rest }: ButtonProps) => (
     <Tooltip

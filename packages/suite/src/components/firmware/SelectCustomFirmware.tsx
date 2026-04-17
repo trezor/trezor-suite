@@ -1,12 +1,12 @@
 import { type Dispatch, type SetStateAction } from 'react';
 
+import { validateFirmware } from '@suite/firmware-upgrade';
 import { type ExtendedMessageDescriptor, Translation } from '@suite/intl';
 import { BulletList, Button, Row } from '@trezor/components';
 import { GITHUB_FW_BINARIES_URL } from '@trezor/urls';
 
 import { DropZone } from 'src/components/suite/DropZone';
 import { useDevice } from 'src/hooks/suite';
-import { validateFirmware } from 'src/utils/firmware';
 
 type SelectCustomFirmwareProps = {
     setFirmwareBinary: Dispatch<SetStateAction<ArrayBuffer | undefined>>;

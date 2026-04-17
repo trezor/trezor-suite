@@ -14732,13 +14732,20 @@ __metadata:
   dependencies:
     "@reduxjs/toolkit": "npm:2.11.2"
     "@suite-common/device": "workspace:*"
+    "@suite-common/firmware": "workspace:*"
+    "@suite-common/suite-types": "workspace:*"
     "@suite/intl": "workspace:*"
     "@suite/router": "workspace:*"
     "@trezor/components": "workspace:*"
+    "@trezor/connect": "workspace:*"
+    "@trezor/device-utils": "workspace:*"
+    "@trezor/theme": "workspace:*"
     "@types/react": "npm:19.2.14"
     react: "npm:19.2.4"
     react-redux: "npm:9.2.0"
     redux: "npm:^5.0.1"
+    semver: "npm:^7.7.1"
+    styled-components: "npm:^6.3.9"
   languageName: unknown
   linkType: soft
 

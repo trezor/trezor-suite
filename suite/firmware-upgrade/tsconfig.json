@@ -3,8 +3,15 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../../suite-common/device" },
+        { "path": "../../suite-common/firmware" },
+        {
+            "path": "../../suite-common/suite-types"
+        },
         { "path": "../intl" },
         { "path": "../router" },
-        { "path": "../../packages/components" }
+        { "path": "../../packages/components" },
+        { "path": "../../packages/connect" },
+        { "path": "../../packages/device-utils" },
+        { "path": "../../packages/theme" }
     ]
 }

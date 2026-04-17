@@ -1,7 +1,7 @@
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { Text } from '@trezor/components';
 
-import { type TrezorDevice } from 'src/types/suite';
-import { getFormattedFingerprint } from 'src/utils/firmware';
+import { getFormattedFingerprint } from './firmwareUtils';
 
 type FingerprintProps = {
     device: TrezorDevice;

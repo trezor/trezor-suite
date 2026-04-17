@@ -1,5 +1,11 @@
 import { useCallback } from 'react';
 
+import {
+    Fingerprint,
+    getSuiteFirmwareTypeString,
+    useFirmwareDesktopUpdate,
+    useFirmwareInstallationProgressCheck,
+} from '@suite/firmware-upgrade';
 import { Translation } from '@suite/intl';
 import { MODAL_CONTEXT_DEVICE } from '@suite/modal';
 import { OnboardingCard } from '@suite/onboarding-components';
@@ -8,11 +14,9 @@ import { Card } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { exhaustive } from '@trezor/type-utils';
 
-import { Fingerprint, FirmwareInstallationProgressCheck } from 'src/components/firmware';
+import { FirmwareInstallationProgressCheck } from 'src/components/firmware';
 import { ThpPairingStep } from 'src/components/onboarding/ThpPairingStep/ThpPairingStep';
-import { useFirmwareInstallationProgressCheck, useOnboarding, useSelector } from 'src/hooks/suite';
-import { useFirmwareDesktopUpdate } from 'src/hooks/suite/useFirmwareDesktopUpdate';
-import { getSuiteFirmwareTypeString } from 'src/utils/firmware';
+import { useOnboarding, useSelector } from 'src/hooks/suite';
 
 import { FirmwareInitialStep } from './FirmwareInitialStep';
 import { FirmwareInstallationStep } from './FirmwareInstallationStep';

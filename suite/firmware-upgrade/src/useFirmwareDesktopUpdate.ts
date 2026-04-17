@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import { selectIsDeviceConnectedViaBluetoothLowOnBattery } from '@suite-common/device';
 import {
@@ -7,8 +8,6 @@ import {
     useFirmwareInstallation,
 } from '@suite-common/firmware';
 import { UI_REQUEST } from '@trezor/connect';
-
-import { useSelector } from './useSelector';
 
 const INTERVAL_CHECK_SLOW_INSTALLATION_MS = 1_000;
 const TIME_THRESHOLD_SLOW_INSTALLATION_MS = 30_000;
@@ -65,6 +64,7 @@ export const useFirmwareDesktopUpdate = () => {
 
             return;
         }
+
         firmwareUpdate(arg);
     };
 

@@ -1,15 +1,10 @@
+import { FirmwareProgressBar, useFirmwareDesktopUpdate } from '@suite/firmware-upgrade';
 import { Translation } from '@suite/intl';
 import { Banner, Card, Column } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import type TrezorConnectBrowser from '@trezor/connect/src/index-browser';
 
-import {
-    FirmwareOffer,
-    FirmwareProgressBar,
-    ReconnectDevicePrompt,
-    RotatingPhrases,
-} from 'src/components/firmware';
-import { useFirmwareDesktopUpdate } from 'src/hooks/suite/useFirmwareDesktopUpdate';
+import { FirmwareOffer, ReconnectDevicePrompt, RotatingPhrases } from 'src/components/firmware';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectHasTransportOfType } from 'src/selectors/suite/suiteSelectors';
 

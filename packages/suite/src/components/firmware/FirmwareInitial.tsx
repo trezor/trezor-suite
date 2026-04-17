@@ -1,12 +1,16 @@
+import {
+    FirmwareWarningsList,
+    FirmwareWipeWarning,
+    useFirmwareDesktopUpdate,
+} from '@suite/firmware-upgrade';
 import { Translation } from '@suite/intl';
 import { getFwUpdateVersion } from '@suite-common/suite-utils';
 import { Banner, Card, Column } from '@trezor/components';
 import { FirmwareType } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';
 
-import { FirmwareOffer, FirmwareWarningsList, FirmwareWipeWarning } from 'src/components/firmware';
+import { FirmwareOffer } from 'src/components/firmware';
 import { useDevice } from 'src/hooks/suite';
-import { useFirmwareDesktopUpdate } from 'src/hooks/suite/useFirmwareDesktopUpdate';
 
 type GetDescriptionProps = {
     required: boolean;
