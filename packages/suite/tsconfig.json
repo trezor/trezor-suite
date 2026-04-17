@@ -160,6 +160,9 @@
         {
             "path": "../../suite/feature-feedback"
         },
+        {
+            "path": "../../suite/firmware-upgrade"
+        },
         { "path": "../../suite/flags" },
         {
             "path": "../../suite/idb-migration-utils"
