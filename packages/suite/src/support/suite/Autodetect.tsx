@@ -8,6 +8,7 @@ import {
     suiteSettingsActions,
 } from '@suite/settings';
 import { type Locale } from '@suite-common/suite-types';
+import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { getOsTheme, watchOsTheme } from 'src/utils/suite/env';
@@ -28,16 +29,30 @@ const Autodetect = () => {
         [dispatch],
     );
 
+    const setTheme = useCallback(
+        (theme: 'dark' | 'light') => {
+            dispatch(suiteSettingsActions.setTheme(theme));
+        },
+        [dispatch],
+    );
+
     useEffect(() => {
         if (!autodetectTheme) return;
         const osTheme = getOsTheme();
         if (osTheme !== currentTheme) {
             dispatch(suiteSettingsActions.setTheme(osTheme));
         }
-        const unwatch = watchOsTheme(suiteSettingsActions.setTheme);
+        const unwatch = watchOsTheme(setTheme);
 
         return () => unwatch();
-    }, [autodetectTheme, currentTheme, dispatch]);
+    }, [autodetectTheme, currentTheme, dispatch, setTheme]);
+
+    useEffect(() => {
+        if (!autodetectTheme || !desktopApi.available) return;
+        desktopApi.on('theme/system-change', setTheme);
+
+        return () => desktopApi.removeAllListeners('theme/system-change');
+    }, [autodetectTheme, setTheme]);
 
     useEffect(() => {
         if (!autodetectLanguage) return;
