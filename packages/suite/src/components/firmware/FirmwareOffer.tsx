@@ -1,3 +1,4 @@
+import { getSuiteFirmwareTypeString, useFirmwareDesktopUpdate } from '@suite/firmware-upgrade';
 import { Translation, useTranslation } from '@suite/intl';
 import { selectIsDebugModeActive } from '@suite/settings';
 import {
@@ -12,8 +13,6 @@ import { spacings } from '@trezor/theme';
 
 import { MarkdownWithComponents } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
-import { useFirmwareDesktopUpdate } from 'src/hooks/suite/useFirmwareDesktopUpdate';
-import { getSuiteFirmwareTypeString } from 'src/utils/firmware';
 
 import { DebugOnlyBadge } from '../suite/DebugOnlyBadge';
 

@@ -1,3 +1,4 @@
+import { getSuiteFirmwareTypeString } from '@suite/firmware-upgrade';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor, goto } from '@suite/router';
 import { firmwareActions } from '@suite-common/firmware';
@@ -11,7 +12,6 @@ import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/pro
 import { HELP_FIRMWARE_TYPE } from '@trezor/urls';
 
 import { useDevice, useDispatch } from 'src/hooks/suite';
-import { getSuiteFirmwareTypeString } from 'src/utils/firmware';
 
 interface FirmwareTypeProps {
     isDeviceLocked: boolean;

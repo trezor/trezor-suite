@@ -5,7 +5,7 @@ import { type FirmwareOperationStatus } from '@suite-common/firmware';
 import { Box, Column, ProgressBar, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { useFirmwareDesktopUpdate } from 'src/hooks/suite/useFirmwareDesktopUpdate';
+import { useFirmwareDesktopUpdate } from './useFirmwareDesktopUpdate';
 
 const Percentage = styled.div`
     font-variant-numeric: tabular-nums;
