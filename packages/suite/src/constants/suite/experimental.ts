@@ -2,6 +2,7 @@ import type { ExperimentalFeature } from '@suite/experimental';
 import { type ExtendedMessageDescriptor } from '@suite/intl';
 import { type Route } from '@suite/router';
 import { networksCollection } from '@suite-common/wallet-config';
+import { blockchainActions } from '@suite-common/wallet-core';
 import { isDesktop } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import {
@@ -12,6 +13,7 @@ import {
 } from '@trezor/urls';
 
 import { type SuiteServices } from '../../support/extraDependencies';
+import { type Dispatch } from '../../types/suite';
 
 const experimentalNetworks = networksCollection.filter(
     network => network.isExperimentalOnlyNetwork,
@@ -24,7 +26,15 @@ export type ExperimentalFeatureConfig = {
     knowledgeBaseUrl?: Url;
     routeName?: Route['name'];
     isDisabled?: (context: { isDebug: boolean }) => boolean;
-    onToggle?: ({ newValue, services }: { newValue: boolean; services: SuiteServices }) => void;
+    onToggle?: ({
+        newValue,
+        services,
+        dispatch,
+    }: {
+        newValue: boolean;
+        services: SuiteServices;
+        dispatch: Dispatch;
+    }) => void;
 };
 
 export const EXPERIMENTAL_FEATURES: Record<ExperimentalFeature, ExperimentalFeatureConfig> = {
@@ -90,6 +100,22 @@ export const EXPERIMENTAL_FEATURES: Record<ExperimentalFeature, ExperimentalFeat
         isDisabled: () => !isDesktop(),
         onToggle: async ({ newValue }) => {
             await desktopApi.mcpSetEnabled(newValue);
+        },
+    },
+    'gap-limit': {
+        title: { id: 'TR_EXPERIMENTAL_GAP_LIMIT' },
+        description: { id: 'TR_EXPERIMENTAL_GAP_LIMIT_DESCRIPTION' },
+        // TODO: let's add some knowledgeBaseUrl post if we move this forward.
+        onToggle: ({ newValue, dispatch }) => {
+            if (!newValue) {
+                networksCollection
+                    .filter(network => network.networkType === 'bitcoin')
+                    .forEach(({ symbol }) =>
+                        dispatch(
+                            blockchainActions.setBackendGapLimit({ symbol, gapLimit: undefined }),
+                        ),
+                    );
+            }
         },
     },
 };

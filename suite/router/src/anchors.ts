@@ -38,6 +38,7 @@ export const SettingsAnchor = {
     NetworkReserve: '@general-settings/network-reserve',
     DustPhishing: '@general-settings/dust-phishing',
     DustPhishingThreshold: '@general-settings/dust-phishing-threshold',
+    GapLimit: '@general-settings/gap-limit',
 
     BackupFailed: '@device-settings/backup-failed',
     BackupRecoverySeed: '@device-settings/backup-recovery-seed',

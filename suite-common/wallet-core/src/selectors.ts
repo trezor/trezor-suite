@@ -114,12 +114,18 @@ export const selectDiscoveryAccountsParam = (
     getDeviceAccountsPerEnabledNetwork(state, deviceState).map(({ symbol, accounts }) => {
         const { networkType } = networks[symbol];
         const identity = tryGetAccountIdentity({ networkType, deviceState });
+        const bitcoinGap = networkType === 'bitcoin' ? selectGapLimit(state, symbol) : undefined;
 
         const includeErc4626 = networkType === 'ethereum' ? true : undefined;
 
         // undiscovered network; discover as a whole
         if (!accounts)
-            return { symbol, identity, includeErc4626 } as DiscoveryAccountsParam[number];
+            return {
+                symbol,
+                identity,
+                includeErc4626,
+                gap: bitcoinGap,
+            } as DiscoveryAccountsParam[number];
 
         const known = getLastAccountsPerAccountType(accounts).map(({ type, lastAccount }) => {
             // last account is a failed one; try to discover it again
