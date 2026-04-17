@@ -4,9 +4,9 @@ import {
     desktopUpdateActions,
     installUpdateThunk,
 } from '@suite/desktop-update';
+import { getReleaseUrl } from '@suite/github';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
-import { getReleaseUrl } from '@suite-common/github';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { Button, type ButtonProps } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';

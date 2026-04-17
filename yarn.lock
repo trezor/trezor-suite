@@ -11098,18 +11098,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-common/github@workspace:*, @suite-common/github@workspace:suite-common/github":
-  version: 0.0.0-use.local
-  resolution: "@suite-common/github@workspace:suite-common/github"
-  dependencies:
-    "@suite-common/suite-types": "workspace:*"
-    "@trezor/connect": "workspace:*"
-    "@trezor/device-utils": "workspace:*"
-    "@trezor/env-utils": "workspace:*"
-    "@trezor/urls": "workspace:*"
-  languageName: unknown
-  linkType: soft
-
 "@suite-common/graph@workspace:*, @suite-common/graph@workspace:suite-common/graph":
   version: 0.0.0-use.local
   resolution: "@suite-common/graph@workspace:suite-common/graph"
@@ -14759,6 +14747,18 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite/github@workspace:*, @suite/github@workspace:suite/github":
+  version: 0.0.0-use.local
+  resolution: "@suite/github@workspace:suite/github"
+  dependencies:
+    "@suite-common/suite-types": "workspace:*"
+    "@trezor/connect": "workspace:*"
+    "@trezor/device-utils": "workspace:*"
+    "@trezor/env-utils": "workspace:*"
+    "@trezor/urls": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@suite/idb-migration-utils@workspace:*, @suite/idb-migration-utils@workspace:suite/idb-migration-utils":
   version: 0.0.0-use.local
   resolution: "@suite/idb-migration-utils@workspace:suite/idb-migration-utils"
@@ -16173,10 +16173,10 @@ __metadata:
   resolution: "@trezor/suite-desktop-ui@workspace:packages/suite-desktop-ui"
   dependencies:
     "@sentry/electron": "npm:^7.10.0"
-    "@suite-common/github": "workspace:*"
     "@suite/analytics": "workspace:*"
     "@suite/desktop-update": "workspace:*"
     "@suite/flags": "workspace:*"
+    "@suite/github": "workspace:*"
     "@suite/intl": "workspace:*"
     "@suite/router": "workspace:*"
     "@suite/sentry": "workspace:*"
@@ -16341,7 +16341,6 @@ __metadata:
     "@suite-common/firmware-authenticity": "workspace:*"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/geolocation": "workspace:*"
-    "@suite-common/github": "workspace:*"
     "@suite-common/logger": "workspace:*"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/metadata-types": "workspace:*"
@@ -16385,6 +16384,7 @@ __metadata:
     "@suite/feature-feedback": "workspace:*"
     "@suite/firmware-upgrade": "workspace:*"
     "@suite/flags": "workspace:*"
+    "@suite/github": "workspace:*"
     "@suite/idb-migration-utils": "workspace:*"
     "@suite/intl": "workspace:*"
     "@suite/locks": "workspace:*"
