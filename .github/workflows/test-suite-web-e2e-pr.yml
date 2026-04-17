@@ -131,6 +131,11 @@ jobs:
           github_token: ${{ steps.trezor-bot-token.outputs.token }}
           project: "web"
           currents-project-id: "Og0NOQ"
+      - name: Post Suite Web preview link
+        uses: ./.github/actions/post-suite-web-preview-link
+        with:
+          github_token: ${{ steps.trezor-bot-token.outputs.token }}
+          dev-server-url: ${{ env.DEV_SERVER_URL }}
       - name: Post quarantine list
         uses: ./.github/actions/post-quarantine-list
         with:
