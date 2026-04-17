@@ -99,7 +99,7 @@ export abstract class AbstractMessageChannel<
      * both parties initiate handshake procedure and keep asking over time in a loop until they time out or receive confirmation from peer
      */
     protected handshakeWithPeer(): Promise<void> {
-        this.logger?.log(this.channel.here, 'handshake');
+        this.logger?.log(this.channel.here, '->', this.channel.peer, 'handshake');
 
         return scheduleAction(
             async () => {
@@ -118,7 +118,7 @@ export abstract class AbstractMessageChannel<
             },
         )
             .then(() => {
-                this.logger?.log(this.channel.here, 'handshake confirmed');
+                this.logger?.log(this.channel.here, '<-', this.channel.peer, 'handshake confirmed');
                 this.messagesQueue.forEach(message => {
                     message.channel = this.channel;
                     this.sendFn(message);
@@ -126,7 +126,9 @@ export abstract class AbstractMessageChannel<
                 this.messagesQueue = [];
             })
             .catch(() => {
-                this.handshakeFinished?.reject(new Error('handshake failed'));
+                this.handshakeFinished?.reject(
+                    new Error(`${this.channel.here} -> ${this.channel.peer} handshake failed`),
+                );
                 this.handshakeFinished = undefined;
             });
     }
