@@ -60,7 +60,6 @@
         {
             "path": "../../suite-common/geolocation"
         },
-        { "path": "../../suite-common/github" },
         { "path": "../../suite-common/logger" },
         {
             "path": "../../suite-common/message-system"
@@ -164,6 +163,7 @@
             "path": "../../suite/firmware-upgrade"
         },
         { "path": "../../suite/flags" },
+        { "path": "../../suite/github" },
         {
             "path": "../../suite/idb-migration-utils"
         },

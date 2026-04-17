@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
+import { getReleaseUrl } from '@suite/github';
 import { Translation } from '@suite/intl';
-import { getReleaseUrl } from '@suite-common/github';
 import { Card, Modal, Row, TextButton } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
