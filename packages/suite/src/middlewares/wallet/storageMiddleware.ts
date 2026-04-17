@@ -183,6 +183,10 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 api.dispatch(storageActions.saveBackend(action.payload.symbol));
             }
 
+            if (blockchainActions.setBackendGapLimit.match(action)) {
+                api.dispatch(storageActions.saveBackend(action.payload.symbol));
+            }
+
             if (explorerActions.setExplorer.match(action)) {
                 storageActions.saveExplorer(action.payload);
             }

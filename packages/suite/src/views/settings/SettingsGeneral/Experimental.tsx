@@ -40,7 +40,7 @@ const FeatureLine = ({ feature, enabledFeatures }: FeatureLineProps) => {
         const newValue = !checked;
 
         try {
-            await config?.onToggle?.({ services, newValue });
+            await config?.onToggle?.({ services, newValue, dispatch });
             dispatch(
                 suiteSettingsActions.setExperimentalFeatures(
                     newValue
@@ -129,6 +129,7 @@ export const Experimental = () => {
             EXPERIMENTAL_FEATURES[feature]?.onToggle?.({
                 services,
                 newValue: !isExperimentalEnabled,
+                dispatch,
             }),
         );
 

@@ -2,13 +2,25 @@ import { useState } from 'react';
 
 import { Translation } from '@suite/intl';
 import { selectModalType } from '@suite/modal';
+import { selectHasExperimentalFeature } from '@suite/settings';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { Badge, Banner, Card, CollapsibleBox, Column, Modal, Row, Text } from '@trezor/components';
+import {
+    Badge,
+    Banner,
+    Card,
+    CollapsibleBox,
+    Column,
+    Input,
+    Modal,
+    Row,
+    Text,
+} from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { toggleTor } from 'src/actions/suite/suiteActions';
 import { useBackendsForm } from 'src/hooks/settings/backends';
 import { useExplorerForm } from 'src/hooks/settings/useExplorerForm';
+import { useGapLimitForm } from 'src/hooks/settings/useGapLimitForm';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectTorState } from 'src/selectors/suite/suiteSelectors';
 
@@ -33,11 +45,19 @@ export const AdvancedCoinSettingsModal = ({ symbol, onCancel }: AdvancedCoinSett
     const explorer = useSelector(state => state.wallet.explorer[symbol]);
     const usesCustomExplorer = explorer.custom !== undefined;
 
+    const isBitcoinNetwork = network.networkType === 'bitcoin';
+    const isGapLimitEnabled = useSelector(selectHasExperimentalFeature('gap-limit'));
+
+    const gapLimitForm = useGapLimitForm(symbol);
     const explorerForm = useExplorerForm(symbol);
     const backendsForm = useBackendsForm(symbol);
 
     const onSaveClick = async () => {
         explorerForm.save();
+
+        if (isBitcoinNetwork && isGapLimitEnabled) {
+            gapLimitForm.save();
+        }
 
         if (!isTorEnabled && backendsForm.hasOnlyOnions()) {
             setTorModalOpen(true);
@@ -155,6 +175,31 @@ export const AdvancedCoinSettingsModal = ({ symbol, onCancel }: AdvancedCoinSett
                 >
                     <ExplorerConfigForm form={explorerForm} />
                 </CollapsibleBox>
+
+                {isBitcoinNetwork && isGapLimitEnabled && (
+                    <CollapsibleBox
+                        heading={<Translation id="SETTINGS_BACKEND_SETTINGS_CUSTOM_GAP_LIMIT" />}
+                    >
+                        <Column gap={spacings.sm} alignItems="flex-start">
+                            <Input
+                                type="number"
+                                value={gapLimitForm.value}
+                                size="small"
+                                onChange={e => gapLimitForm.setValue(e.target.value)}
+                                hasError={!!gapLimitForm.error}
+                                bottomText={
+                                    gapLimitForm.error ? (
+                                        <Translation
+                                            id={gapLimitForm.error.id}
+                                            values={gapLimitForm.error.values}
+                                        />
+                                    ) : undefined
+                                }
+                                width={125}
+                            />
+                        </Column>
+                    </CollapsibleBox>
+                )}
 
                 <CollapsibleBox heading={<Translation id="SETTINGS_ADV_COIN_CONN_INFO_TITLE" />}>
                     <ConnectionInfo symbol={symbol} />

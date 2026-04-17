@@ -2605,6 +2605,22 @@ export const messages = defineMessages({
         id: 'TR_DUST_PHISHING_ERROR_EMPTY',
         defaultMessage: 'Dust threshold cannot be empty',
     },
+    TR_GAP_LIMIT_ERROR_EMPTY: {
+        id: 'TR_GAP_LIMIT_ERROR_EMPTY',
+        defaultMessage: 'Gap limit cannot be empty',
+    },
+    TR_GAP_LIMIT_ERROR_NUMBER: {
+        id: 'TR_GAP_LIMIT_ERROR_NUMBER',
+        defaultMessage: 'Enter a valid whole number',
+    },
+    TR_GAP_LIMIT_ERROR_POSITIVE: {
+        id: 'TR_GAP_LIMIT_ERROR_POSITIVE',
+        defaultMessage: 'Gap limit must be a positive number',
+    },
+    TR_GAP_LIMIT_ERROR_TOO_LOW: {
+        id: 'TR_GAP_LIMIT_ERROR_TOO_LOW',
+        defaultMessage: 'Gap limit must be at least {min}',
+    },
     TR_CONFIRM_AUTO_EJECT: {
         defaultMessage: 'Enable auto-eject',
         id: 'TR_CONFIRM_AUTO_EJECT',
@@ -5424,6 +5440,15 @@ export const messages = defineMessages({
         defaultMessage:
             'Enable the Tron Network with the latest firmware to check your balance, send and receive TRX and tokens, view charts and transaction history, and use WalletConnect. Full support, including freezing and voting, is coming soon.',
     },
+    TR_EXPERIMENTAL_GAP_LIMIT: {
+        id: 'TR_EXPERIMENTAL_GAP_LIMIT',
+        defaultMessage: 'Gap Limit',
+    },
+    TR_EXPERIMENTAL_GAP_LIMIT_DESCRIPTION: {
+        id: 'TR_EXPERIMENTAL_GAP_LIMIT_DESCRIPTION',
+        defaultMessage:
+            'When recovering or scanning a wallet, Trezor checks addresses one by one and stops after finding 20 consecutive unused ones. If some of your transactions are missing, raise this limit to scan further.',
+    },
     TR_EXPERIMENTAL_MCP_SERVER: {
         id: 'TR_EXPERIMENTAL_MCP_SERVER',
         defaultMessage: 'MCP Server',
@@ -6567,6 +6592,10 @@ export const messages = defineMessages({
     TR_LABELING_ENABLED: {
         id: 'TR_LABELING_ENABLED',
         defaultMessage: 'Labeling',
+    },
+    SETTINGS_BACKEND_SETTINGS_CUSTOM_GAP_LIMIT: {
+        id: 'SETTINGS_BACKEND_SETTINGS_CUSTOM_GAP_LIMIT',
+        defaultMessage: 'Custom Gap Limit',
     },
     SETTINGS_BACKEND_SETTINGS_DESCRIPTION: {
         id: 'SETTINGS_BACKEND_SETTINGS_DESCRIPTION',
