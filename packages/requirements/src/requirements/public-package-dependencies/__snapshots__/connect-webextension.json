@@ -3,7 +3,6 @@
         "@bufbuild/protobuf",
         "@sinclair/typebox",
         "@trezor/connect-common",
-        "@trezor/connect-web",
         "@trezor/connect-webextension",
         "@trezor/device-utils",
         "@trezor/protobuf",
@@ -37,9 +36,6 @@
         "@noble/curves",
         "@noble/hashes",
         "@octokit/rest",
-        "@playwright/browser-chromium",
-        "@playwright/browser-firefox",
-        "@playwright/browser-webkit",
         "@playwright/test",
         "@scure/base",
         "@sinclair/typebox",
@@ -58,7 +54,6 @@
         "@trezor/blockchain-link-types",
         "@trezor/blockchain-link-utils",
         "@trezor/connect-common",
-        "@trezor/connect-web",
         "@trezor/connect-webextension",
         "@trezor/crypto-utils",
         "@trezor/device-authenticity",
@@ -135,7 +130,6 @@
         "wif",
         "worker-loader",
         "ws",
-        "xrpl",
-        "xvfb-maybe"
+        "xrpl"
     ]
 }

@@ -1,16 +1,14 @@
-import EventEmitter from 'events';
+import { EventEmitter } from 'events';
 
-import * as ERRORS from '@trezor/connect-common/src/constants/errors';
-import { type CoreEventMessage, DEVICE_EVENT, POPUP } from '@trezor/connect-common/src/events';
-import {
-    type AbstractMessageChannel,
-    type Message,
-} from '@trezor/connect-common/src/messageChannel/abstract';
-import type { ConnectSettings } from '@trezor/connect-common/src/types';
-import { type Log } from '@trezor/connect-common/src/utils/debug';
-import { getOrigin } from '@trezor/connect-common/src/utils/urlUtils';
 import type { IntervalId } from '@trezor/type-utils';
 import { type Deferred, createDeferred } from '@trezor/utils';
+
+import * as ERRORS from '../constants/errors';
+import { type CoreEventMessage, DEVICE_EVENT, POPUP } from '../events';
+import { type AbstractMessageChannel, type Message } from '../messageChannel/abstract';
+import type { ConnectSettings } from '../types';
+import { type Log } from '../utils/debug';
+import { getOrigin } from '../utils/urlUtils';
 
 export type Params = Pick<ConnectSettings, 'manifest' | 'popupSrc' | 'version'> & {
     logger: Log;

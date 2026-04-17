@@ -1,8 +1,7 @@
 import { factory } from '@trezor/connect-common/src/factory';
+import { CoreInSuiteDesktop } from '@trezor/connect-common/src/impl/core-in-suite-desktop';
+import { CoreInSuiteWeb } from '@trezor/connect-common/src/impl/core-in-suite-web';
 import { TrezorConnectDynamic } from '@trezor/connect-common/src/impl/dynamic';
-
-import { CoreInSuiteDesktop } from './impl/core-in-suite-desktop';
-import { CoreInSuiteWeb } from './impl/core-in-suite-web';
 
 const impl = new TrezorConnectDynamic({
     implementations: {

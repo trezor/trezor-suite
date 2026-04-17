@@ -26,6 +26,9 @@
             "path": "../utils"
         },
         {
+            "path": "../websocket-client"
+        },
+        {
             "path": "../blockchain-link"
         },
         {

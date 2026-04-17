@@ -2,12 +2,12 @@
 // these targeted imports
 import { POPUP } from '@trezor/connect-common/src/events';
 import { factory } from '@trezor/connect-common/src/factory';
+import { CoreInSuiteDesktop } from '@trezor/connect-common/src/impl/core-in-suite-desktop';
+import { CoreInSuiteWeb } from '@trezor/connect-common/src/impl/core-in-suite-web';
 import { type ConnectDynamicSettings } from '@trezor/connect-common/src/impl/dynamic';
 import { TrezorConnectDynamic } from '@trezor/connect-common/src/impl/dynamic';
 // Import as src not lib due to webpack issues with inlining content script later
 import { ServiceWorkerWindowChannel } from '@trezor/connect-common/src/messageChannel/serviceworker-window';
-import { CoreInSuiteDesktop } from '@trezor/connect-web/src/impl/core-in-suite-desktop';
-import { CoreInSuiteWeb } from '@trezor/connect-web/src/impl/core-in-suite-web';
 
 const impl = new TrezorConnectDynamic({
     implementations: {

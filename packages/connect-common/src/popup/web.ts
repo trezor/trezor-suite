@@ -1,8 +1,7 @@
-import { type CoreEventMessage } from '@trezor/connect-common/src/events';
-import { type AbstractMessageChannel } from '@trezor/connect-common/src/messageChannel/abstract';
-import { WindowWindowChannel } from '@trezor/connect-common/src/messageChannel/window-window';
-
+import { type CoreEventMessage } from '../events';
 import { Popup } from './abstract';
+import { type AbstractMessageChannel } from '../messageChannel/abstract';
+import { WindowWindowChannel } from '../messageChannel/window-window';
 
 export class WebPopup extends Popup {
     private popupWindow: Window | undefined;

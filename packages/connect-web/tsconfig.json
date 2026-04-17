@@ -15,8 +15,6 @@
     "include": ["."],
     "references": [
         { "path": "../connect-common" },
-        { "path": "../utils" },
-        { "path": "../websocket-client" },
         { "path": "../eslint" },
         { "path": "../type-utils" }
     ]

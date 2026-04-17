@@ -1,19 +1,18 @@
-import * as ERRORS from '@trezor/connect-common/src/constants/errors';
+import * as ERRORS from '../constants/errors';
 import {
     CORE_CALL,
     type CallMethodAnyResponse,
     type CallMethodPayload,
     POPUP,
     createErrorMessage,
-} from '@trezor/connect-common/src/events';
-import type { ConnectImpl, ConnectImplSettings } from '@trezor/connect-common/src/impl/dynamic';
-import { type Log, initLog } from '@trezor/connect-common/src/utils/debug';
-
+} from '../events';
+import type { ConnectImpl, ConnectImplSettings } from './dynamic';
 import { getEnv } from '../connectSettings';
 import { getSuiteWebUrl } from './getSuiteWebUrl';
 import { type Popup } from '../popup/abstract';
 import { WebPopup } from '../popup/web';
 import { WebExtensionPopup } from '../popup/webextension';
+import { type Log, initLog } from '../utils/debug';
 
 /**
  * Base class for CoreInPopup methods for TrezorConnect factory.

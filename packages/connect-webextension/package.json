@@ -52,8 +52,7 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@trezor/connect-common": "workspace:*",
-        "@trezor/connect-web": "workspace:*"
+        "@trezor/connect-common": "workspace:*"
     },
     "devDependencies": {
         "@babel/preset-typescript": "^7.28.5",

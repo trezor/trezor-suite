@@ -13,6 +13,7 @@
         { "path": "../transport" },
         { "path": "../type-utils" },
         { "path": "../utils" },
+        { "path": "../websocket-client" },
         { "path": "../blockchain-link" },
         { "path": "../blockchain-link-types" },
         { "path": "../device-authenticity" },
