@@ -6,7 +6,7 @@ import {
     selectFeatureConfig,
     validateTradingSurvey,
 } from '@suite-common/message-system';
-import { Card, Column, Paragraph, Text } from '@trezor/components';
+import { Card, Column, H2, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { MessageSystemButton } from 'src/components/suite/banners/MessageSystemButton';
@@ -40,12 +40,19 @@ export const TradingDetailSurvey = () => {
 
     return (
         <Card>
-            <Column gap={spacings.lg}>
+            <Column gap={spacings.lg} padding={8}>
                 <Column gap={spacings.xs}>
-                    <Text typographyStyle="headline-sm">{title}</Text>
-                    <Paragraph maxWidth={400}>{description}</Paragraph>
+                    <H2>{title}</H2>
+                    <Paragraph typographyStyle="body-sm" color="contentSecondary">
+                        {description}
+                    </Paragraph>
                 </Column>
-                <MessageSystemButton cta={survey.cta} iconRight="arrowSquareOut" />
+                <MessageSystemButton
+                    cta={survey.cta}
+                    iconRight="arrowSquareOut"
+                    intent="brand"
+                    size="large"
+                />
             </Column>
         </Card>
     );
