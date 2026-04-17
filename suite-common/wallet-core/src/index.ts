@@ -70,4 +70,4 @@ export * from './phishing/phishingActions';
 export * from './phishing/phishingReducer';
 export * from './phishing/phishingSelectors';
 export type * from './phishing/phishingReducerTypes';
-export type * from './stake/stakeDataSlice';
+export * from './stake/stakeDataSlice';
