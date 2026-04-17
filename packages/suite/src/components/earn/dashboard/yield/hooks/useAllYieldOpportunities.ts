@@ -36,15 +36,21 @@ const getAllYieldOpportunities = async ({ limit }: { limit: number }) => {
     return allItems;
 };
 
+const isYieldOpportunityAvailable = (vault: YieldDto) =>
+    !vault.metadata.underMaintenance && !vault.metadata.deprecated;
+
 export const useAllYieldOpportunities = ({ enabled = true }: { enabled?: boolean } = {}) => {
     const yieldOpportunitiesQuery = useQuery({
         queryKey: desktopQueryKeys.yieldOpportunities({
             limit: YIELD_OPPORTUNITIES_PAGE_SIZE,
         }),
-        queryFn: () =>
-            getAllYieldOpportunities({
+        async queryFn() {
+            const yieldOpportunities = await getAllYieldOpportunities({
                 limit: YIELD_OPPORTUNITIES_PAGE_SIZE,
-            }),
+            });
+
+            return yieldOpportunities.filter(isYieldOpportunityAvailable);
+        },
         enabled,
         staleTime: STALE_TIME,
     });
