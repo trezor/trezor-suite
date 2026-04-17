@@ -1,9 +1,9 @@
+import { useDispatch, useSelector } from 'react-redux';
+
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
 import { Card, Modal, Paragraph } from '@trezor/components';
-
-import { useDispatch, useSelector } from 'src/hooks/suite';
 
 type FirmwareUpgradeNeededModalProps = {
     onClose: () => void;

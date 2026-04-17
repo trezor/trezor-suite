@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { FirmwareUpgradeNeededModal } from '@suite/firmware-upgrade';
 import { Translation, useTranslation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { goto } from '@suite/router';
@@ -16,7 +17,6 @@ import { Button, Column, Icon, Paragraph, Row, Table } from '@trezor/components'
 import { BigNumber } from '@trezor/utils';
 
 import { HiddenPlaceholder } from 'src/components/suite/HiddenPlaceholder';
-import { FirmwareUpgradeNeededModal } from 'src/components/suite/modals/FirmwareUpgradeNeededModal';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { EarnYieldApyTooltip } from './EarnYieldApyTooltip';

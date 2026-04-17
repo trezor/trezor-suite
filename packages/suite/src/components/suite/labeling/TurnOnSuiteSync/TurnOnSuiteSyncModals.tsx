@@ -1,9 +1,9 @@
+import { FirmwareUpgradeNeededModal } from '@suite/firmware-upgrade';
 import { useTranslation } from '@suite/intl';
 import { type StaticSessionId } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
 
 import { selectDesktopSuiteSyncInteraction } from 'src/actions/suiteSync/suiteSyncSlice';
-import { FirmwareUpgradeNeededModal } from 'src/components/suite/modals/FirmwareUpgradeNeededModal';
 import { useSelector } from 'src/hooks/suite';
 
 import { SuiteSyncTurnOnModal } from './SuiteSyncTurnOnModal';
