@@ -5,15 +5,14 @@ import {
     installUpdateThunk,
 } from '@suite/desktop-update';
 import { Translation } from '@suite/intl';
-import { SettingsAnchor } from '@suite/router';
+import { Anchor, SettingsAnchor } from '@suite/router';
 import { getReleaseUrl } from '@suite-common/github';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { Button, type ButtonProps } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
-import { ActionButton, ActionColumn, TextColumn } from '@trezor/product-components';
+import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
-import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { useDispatch, useExternalLink, useSelector } from 'src/hooks/suite';
 
 const getUpdateStateMessage = (state: UpdateState) => {
@@ -103,41 +102,49 @@ export const VersionWithUpdate = () => {
     const installAndRestart = () => dispatch(installUpdateThunk({ installNow: true }));
 
     return (
-        <SettingsSectionItem anchorId={SettingsAnchor.VersionWithUpdate}>
-            <TextColumn
-                title={<Translation id="TR_SUITE_VERSION" />}
-                description={<Description desktopUpdateState={desktopUpdateState} />}
-            />
-            {desktopUpdateState.enabled && (
-                <ActionColumn>
-                    {desktopUpdateState.state === UpdateState.Checking && (
-                        <ActionButton isDisabled intent="brand">
-                            <Translation id="SETTINGS_UPDATE_CHECKING" />
-                        </ActionButton>
+        <Anchor anchorId={SettingsAnchor.VersionWithUpdate}>
+            {({ anchorId, anchorRef, shouldHighlight }) => (
+                <SectionItem
+                    data-testid={anchorId}
+                    ref={anchorRef}
+                    shouldHighlight={shouldHighlight}
+                >
+                    <TextColumn
+                        title={<Translation id="TR_SUITE_VERSION" />}
+                        description={<Description desktopUpdateState={desktopUpdateState} />}
+                    />
+                    {desktopUpdateState.enabled && (
+                        <ActionColumn>
+                            {desktopUpdateState.state === UpdateState.Checking && (
+                                <ActionButton isDisabled intent="brand">
+                                    <Translation id="SETTINGS_UPDATE_CHECKING" />
+                                </ActionButton>
+                            )}
+                            {(desktopUpdateState.state === UpdateState.NotAvailable ||
+                                desktopUpdateState.state === UpdateState.EarlyAccessDisable) && (
+                                <ActionButton onClick={checkForUpdates} intent="brand">
+                                    <Translation id="SETTINGS_UPDATE_CHECK" />
+                                </ActionButton>
+                            )}
+                            {desktopUpdateState.state === UpdateState.Available && (
+                                <ActionButton onClick={maximizeUpdateModal} intent="brand">
+                                    <Translation id="SETTINGS_UPDATE_AVAILABLE" />
+                                </ActionButton>
+                            )}
+                            {desktopUpdateState.state === UpdateState.Downloading && (
+                                <ActionButton onClick={maximizeUpdateModal} intent="brand">
+                                    <Translation id="SETTINGS_UPDATE_DOWNLOADING" />
+                                </ActionButton>
+                            )}
+                            {desktopUpdateState.state === UpdateState.Ready && (
+                                <ActionButton onClick={installAndRestart} intent="brand">
+                                    <Translation id="SETTINGS_UPDATE_READY" />
+                                </ActionButton>
+                            )}
+                        </ActionColumn>
                     )}
-                    {(desktopUpdateState.state === UpdateState.NotAvailable ||
-                        desktopUpdateState.state === UpdateState.EarlyAccessDisable) && (
-                        <ActionButton onClick={checkForUpdates} intent="brand">
-                            <Translation id="SETTINGS_UPDATE_CHECK" />
-                        </ActionButton>
-                    )}
-                    {desktopUpdateState.state === UpdateState.Available && (
-                        <ActionButton onClick={maximizeUpdateModal} intent="brand">
-                            <Translation id="SETTINGS_UPDATE_AVAILABLE" />
-                        </ActionButton>
-                    )}
-                    {desktopUpdateState.state === UpdateState.Downloading && (
-                        <ActionButton onClick={maximizeUpdateModal} intent="brand">
-                            <Translation id="SETTINGS_UPDATE_DOWNLOADING" />
-                        </ActionButton>
-                    )}
-                    {desktopUpdateState.state === UpdateState.Ready && (
-                        <ActionButton onClick={installAndRestart} intent="brand">
-                            <Translation id="SETTINGS_UPDATE_READY" />
-                        </ActionButton>
-                    )}
-                </ActionColumn>
+                </SectionItem>
             )}
-        </SettingsSectionItem>
+        </Anchor>
     );
 };

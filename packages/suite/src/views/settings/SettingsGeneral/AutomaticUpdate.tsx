@@ -2,12 +2,11 @@ import styled from 'styled-components';
 
 import { selectDesktopUpdateEnabled } from '@suite/desktop-update';
 import { Translation } from '@suite/intl';
-import { SettingsAnchor } from '@suite/router';
+import { Anchor, SettingsAnchor } from '@suite/router';
 import { Switch } from '@trezor/components';
-import { ActionColumn, TextColumn } from '@trezor/product-components';
+import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
-import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { useSelector } from 'src/hooks/suite';
 
 const PositionedSwitch = styled.div`
@@ -31,20 +30,30 @@ export const AutomaticUpdate = () => {
     };
 
     return (
-        <SettingsSectionItem anchorId={SettingsAnchor.AutomaticUpdate}>
-            <TextColumn
-                title={<Translation id="TR_ALLOW_AUTOMATIC_SUITE_UPDATES" />}
-                description={<Translation id="TR_ALLOW_AUTOMATIC_SUITE_UPDATES_DESCRIPTION" />}
-            />
-            <ActionColumn>
-                <PositionedSwitch>
-                    <Switch
-                        data-testid="@isAutomaticUpdateEnabled-update/toggle-switch"
-                        isChecked={isAutomaticUpdateEnabled}
-                        onChange={handleChange}
+        <Anchor anchorId={SettingsAnchor.AutomaticUpdate}>
+            {({ anchorId, anchorRef, shouldHighlight }) => (
+                <SectionItem
+                    data-testid={anchorId}
+                    ref={anchorRef}
+                    shouldHighlight={shouldHighlight}
+                >
+                    <TextColumn
+                        title={<Translation id="TR_ALLOW_AUTOMATIC_SUITE_UPDATES" />}
+                        description={
+                            <Translation id="TR_ALLOW_AUTOMATIC_SUITE_UPDATES_DESCRIPTION" />
+                        }
                     />
-                </PositionedSwitch>
-            </ActionColumn>
-        </SettingsSectionItem>
+                    <ActionColumn>
+                        <PositionedSwitch>
+                            <Switch
+                                data-testid="@isAutomaticUpdateEnabled-update/toggle-switch"
+                                isChecked={isAutomaticUpdateEnabled}
+                                onChange={handleChange}
+                            />
+                        </PositionedSwitch>
+                    </ActionColumn>
+                </SectionItem>
+            )}
+        </Anchor>
     );
 };

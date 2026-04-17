@@ -2,13 +2,12 @@ import { FormattedList } from 'react-intl';
 
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import { SettingsAnchor } from '@suite/router';
+import { Anchor, SettingsAnchor } from '@suite/router';
 import { networksCollection } from '@suite-common/wallet-config';
 import { selectIsMevProtectionEnabled, setMevProtection } from '@suite-common/wallet-core';
 import { Switch } from '@trezor/components';
-import { ActionColumn, TextColumn } from '@trezor/product-components';
+import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
-import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
 
@@ -33,31 +32,42 @@ export const MevProtection = () => {
     };
 
     return (
-        <SettingsSectionItem anchorId={SettingsAnchor.MevProtection}>
-            <TextColumn
-                title={<Translation id="TR_MEV" />}
-                description={
-                    <>
-                        <Translation id="TR_MEV_DESCRIPTION" />
-                        <br />
-                        <Translation
-                            id="TR_MEV_AVAILABLE_ON"
-                            values={{
-                                supportedNetworks: (
-                                    <FormattedList type="conjunction" value={supportedNetworks} />
-                                ),
-                            }}
+        <Anchor anchorId={SettingsAnchor.MevProtection}>
+            {({ anchorId, anchorRef, shouldHighlight }) => (
+                <SectionItem
+                    data-testid={anchorId}
+                    ref={anchorRef}
+                    shouldHighlight={shouldHighlight}
+                >
+                    <TextColumn
+                        title={<Translation id="TR_MEV" />}
+                        description={
+                            <>
+                                <Translation id="TR_MEV_DESCRIPTION" />
+                                <br />
+                                <Translation
+                                    id="TR_MEV_AVAILABLE_ON"
+                                    values={{
+                                        supportedNetworks: (
+                                            <FormattedList
+                                                type="conjunction"
+                                                value={supportedNetworks}
+                                            />
+                                        ),
+                                    }}
+                                />
+                            </>
+                        }
+                    />
+                    <ActionColumn>
+                        <Switch
+                            isChecked={isMevProtectionEnabled}
+                            onChange={handleSwitchChange}
+                            data-testid="@settings/auto-eject-switch"
                         />
-                    </>
-                }
-            />
-            <ActionColumn>
-                <Switch
-                    isChecked={isMevProtectionEnabled}
-                    onChange={handleSwitchChange}
-                    data-testid="@settings/auto-eject-switch"
-                />
-            </ActionColumn>
-        </SettingsSectionItem>
+                    </ActionColumn>
+                </SectionItem>
+            )}
+        </Anchor>
     );
 };

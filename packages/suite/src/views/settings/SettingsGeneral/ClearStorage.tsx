@@ -1,9 +1,8 @@
 import { Translation } from '@suite/intl';
-import { SettingsAnchor } from '@suite/router';
-import { ActionButton, ActionColumn, TextColumn } from '@trezor/product-components';
+import { Anchor, SettingsAnchor } from '@suite/router';
+import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 import { resetSuiteAppThunk } from 'src/actions/suite/suiteThunks';
-import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { useDispatch } from 'src/hooks/suite';
 
 export const ClearStorage = () => {
@@ -14,20 +13,28 @@ export const ClearStorage = () => {
     };
 
     return (
-        <SettingsSectionItem anchorId={SettingsAnchor.ClearStorage}>
-            <TextColumn
-                title={<Translation id="TR_SUITE_STORAGE" />}
-                description={<Translation id="TR_CLEAR_STORAGE_DESCRIPTION" />}
-            />
-            <ActionColumn>
-                <ActionButton
-                    onClick={handleClick}
-                    intent="brand"
-                    data-testid="@settings/reset-app-button"
+        <Anchor anchorId={SettingsAnchor.ClearStorage}>
+            {({ anchorId, anchorRef, shouldHighlight }) => (
+                <SectionItem
+                    data-testid={anchorId}
+                    ref={anchorRef}
+                    shouldHighlight={shouldHighlight}
                 >
-                    <Translation id="TR_CLEAR_STORAGE" />
-                </ActionButton>
-            </ActionColumn>
-        </SettingsSectionItem>
+                    <TextColumn
+                        title={<Translation id="TR_SUITE_STORAGE" />}
+                        description={<Translation id="TR_CLEAR_STORAGE_DESCRIPTION" />}
+                    />
+                    <ActionColumn>
+                        <ActionButton
+                            onClick={handleClick}
+                            intent="brand"
+                            data-testid="@settings/reset-app-button"
+                        >
+                            <Translation id="TR_CLEAR_STORAGE" />
+                        </ActionButton>
+                    </ActionColumn>
+                </SectionItem>
+            )}
+        </Anchor>
     );
 };

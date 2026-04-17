@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react';
 
 import { Translation } from '@suite/intl';
-import { SettingsAnchor } from '@suite/router';
-import { ActionColumn, ActionSelect, TextColumn } from '@trezor/product-components';
+import { Anchor, SettingsAnchor } from '@suite/router';
+import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { type TorSettings } from '@trezor/suite-desktop-api/src/messages';
 
-import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { useSelector } from 'src/hooks/suite';
 import { selectTorState } from 'src/selectors/suite/suiteSelectors';
 
@@ -66,19 +65,29 @@ export const TorExternal = () => {
     if (!torSettings) return null;
 
     return (
-        <SettingsSectionItem anchorId={SettingsAnchor.TorExternal}>
-            <TextColumn
-                title={<Translation id="TR_EXPERIMENTAL_TOR_EXTERNAL_PORT" />}
-                description={<Translation id="TR_EXPERIMENTAL_TOR_EXTERNAL_PORT_DESCRIPTION" />}
-            />
-            <ActionColumn>
-                <ActionSelect
-                    value={selectedOption}
-                    options={options}
-                    onChange={onChange}
-                    isDisabled={isTorEnabled}
-                />
-            </ActionColumn>
-        </SettingsSectionItem>
+        <Anchor anchorId={SettingsAnchor.TorExternal}>
+            {({ anchorId, anchorRef, shouldHighlight }) => (
+                <SectionItem
+                    data-testid={anchorId}
+                    ref={anchorRef}
+                    shouldHighlight={shouldHighlight}
+                >
+                    <TextColumn
+                        title={<Translation id="TR_EXPERIMENTAL_TOR_EXTERNAL_PORT" />}
+                        description={
+                            <Translation id="TR_EXPERIMENTAL_TOR_EXTERNAL_PORT_DESCRIPTION" />
+                        }
+                    />
+                    <ActionColumn>
+                        <ActionSelect
+                            value={selectedOption}
+                            options={options}
+                            onChange={onChange}
+                            isDisabled={isTorEnabled}
+                        />
+                    </ActionColumn>
+                </SectionItem>
+            )}
+        </Anchor>
     );
 };

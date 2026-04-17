@@ -2,15 +2,14 @@ import { useMemo } from 'react';
 
 import { events } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
-import { SettingsAnchor } from '@suite/router';
+import { Anchor, SettingsAnchor } from '@suite/router';
 import { selectAutodetectLanguage, selectLanguage, suiteSettingsActions } from '@suite/settings';
 import { LANGUAGES, type Locale, type LocaleInfo } from '@suite-common/suite-types';
 import { getPlatformLanguages } from '@trezor/env-utils';
-import { ActionColumn, ActionSelect, TextColumn } from '@trezor/product-components';
+import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
 import { CROWDIN_URL } from '@trezor/urls';
 import { typedObjectEntries } from '@trezor/utils';
 
-import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
@@ -96,26 +95,36 @@ export const Language = () => {
     };
 
     return (
-        <SettingsSectionItem anchorId={SettingsAnchor.Language}>
-            <TextColumn
-                title={<Translation id="TR_LANGUAGE" />}
-                description={isCommunityLanguage && <Translation id="TR_LANGUAGE_DESCRIPTION" />}
-                bottomContent={
-                    isCommunityLanguage ? (
-                        <LearnMoreButton url={CROWDIN_URL}>
-                            <Translation id="TR_LANGUAGE_CREDITS" />
-                        </LearnMoreButton>
-                    ) : undefined
-                }
-            />
-            <ActionColumn>
-                <ActionSelect
-                    value={selectedValue}
-                    options={options}
-                    onChange={onChange}
-                    data-testid="@settings/language-select"
-                />
-            </ActionColumn>
-        </SettingsSectionItem>
+        <Anchor anchorId={SettingsAnchor.Language}>
+            {({ anchorId, anchorRef, shouldHighlight }) => (
+                <SectionItem
+                    data-testid={anchorId}
+                    ref={anchorRef}
+                    shouldHighlight={shouldHighlight}
+                >
+                    <TextColumn
+                        title={<Translation id="TR_LANGUAGE" />}
+                        description={
+                            isCommunityLanguage && <Translation id="TR_LANGUAGE_DESCRIPTION" />
+                        }
+                        bottomContent={
+                            isCommunityLanguage ? (
+                                <LearnMoreButton url={CROWDIN_URL}>
+                                    <Translation id="TR_LANGUAGE_CREDITS" />
+                                </LearnMoreButton>
+                            ) : undefined
+                        }
+                    />
+                    <ActionColumn>
+                        <ActionSelect
+                            value={selectedValue}
+                            options={options}
+                            onChange={onChange}
+                            data-testid="@settings/language-select"
+                        />
+                    </ActionColumn>
+                </SectionItem>
+            )}
+        </Anchor>
     );
 };

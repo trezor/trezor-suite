@@ -1,11 +1,10 @@
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import { SettingsAnchor } from '@suite/router';
+import { Anchor, SettingsAnchor } from '@suite/router';
 import { removeThpCredentialsThunk, startThpAutoconnectThunk } from '@suite-common/thp';
 import { Switch } from '@trezor/components';
-import { ActionColumn, TextColumn } from '@trezor/product-components';
+import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
-import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
 
@@ -47,19 +46,27 @@ export const ThpAutoconnect = ({ isDeviceLocked }: PinProtectionProps) => {
     };
 
     return (
-        <SettingsSectionItem anchorId={SettingsAnchor.ThpAutoconnect}>
-            <TextColumn
-                title={<Translation id="TR_THP_SETTINGS_AUTO_CONNECT" />}
-                description={<Translation id="TR_THP_SETTINGS_AUTO_CONNECT_DESCRIPTION" />}
-            />
-            <ActionColumn>
-                <Switch
-                    isChecked={isAutoconnectOn}
-                    onChange={handleChange}
-                    isDisabled={isDeviceLocked}
-                    data-testid="@settings/device/thp-autoconnect"
-                />
-            </ActionColumn>
-        </SettingsSectionItem>
+        <Anchor anchorId={SettingsAnchor.ThpAutoconnect}>
+            {({ anchorId, anchorRef, shouldHighlight }) => (
+                <SectionItem
+                    data-testid={anchorId}
+                    ref={anchorRef}
+                    shouldHighlight={shouldHighlight}
+                >
+                    <TextColumn
+                        title={<Translation id="TR_THP_SETTINGS_AUTO_CONNECT" />}
+                        description={<Translation id="TR_THP_SETTINGS_AUTO_CONNECT_DESCRIPTION" />}
+                    />
+                    <ActionColumn>
+                        <Switch
+                            isChecked={isAutoconnectOn}
+                            onChange={handleChange}
+                            isDisabled={isDeviceLocked}
+                            data-testid="@settings/device/thp-autoconnect"
+                        />
+                    </ActionColumn>
+                </SectionItem>
+            )}
+        </Anchor>
     );
 };
