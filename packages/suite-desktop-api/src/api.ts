@@ -88,6 +88,9 @@ export interface RendererChannels {
 
     'handshake/event': HandshakeEvent;
 
+    // theme
+    'theme/system-change': 'dark' | 'light';
+
     // connect
     'connect-popup/call': ConnectPopupCall;
     'connect-popup/cancel': ConnectPopupCancel;
