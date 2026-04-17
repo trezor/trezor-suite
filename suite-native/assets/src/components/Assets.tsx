@@ -11,7 +11,11 @@ import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { type OnSelectAccount } from '@suite-native/accounts';
 import { AnimatedContainerCard } from '@suite-native/atoms';
 import { AccountsRediscoveryNeededWarning } from '@suite-native/discovery';
-import { FiveBinariesHomeBanner, useStakingDetailNavigation } from '@suite-native/module-earn';
+import {
+    FiveBinariesHomeBanner,
+    useStakingDetailNavigation,
+    useStakingNavigateAnalytics,
+} from '@suite-native/module-earn';
 import {
     type AppTabsParamList,
     type AppTabsRoutes,
@@ -34,6 +38,7 @@ type NavigationProp = TabToStackCompositeNavigationProp<
 export const Assets = () => {
     const navigation = useNavigation<NavigationProp>();
     const { navigateToStakingDetail } = useStakingDetailNavigation();
+    const reportStakingNavigate = useStakingNavigateAnalytics();
     const deviceNetworks = useSelectorDeepComparison(selectDeviceNetworksWithAssets);
 
     const hasDiscovery = useSelector(selectHasRunningDiscovery);
@@ -45,6 +50,7 @@ export const Assets = () => {
     const handleSelectAssetsAccount: OnSelectAccount = useCallback(
         ({ account, tokenAddress, isStaking }) => {
             if (isStaking) {
+                reportStakingNavigate(account);
                 navigateToStakingDetail({
                     accountKey: account.key,
                     symbol: account.symbol,
@@ -58,7 +64,7 @@ export const Assets = () => {
             }
             setSelectedAssetSymbol(null);
         },
-        [navigateToStakingDetail, navigation],
+        [navigateToStakingDetail, navigation, reportStakingNavigate],
     );
 
     const handleCloseBottomSheet = useCallback(() => {

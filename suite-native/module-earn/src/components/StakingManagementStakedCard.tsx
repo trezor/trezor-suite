@@ -3,6 +3,7 @@ import { useNavigation } from '@react-navigation/native';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectEthNextRewardPayout } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
+import { events } from '@suite-native/analytics';
 import { Badge, Button, Card, HStack, InlineAlertBox, Text, VStack } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
@@ -11,6 +12,7 @@ import {
     RootStackRoutes,
     type StackNavigationProps,
 } from '@suite-native/navigation';
+import { useAnalytics } from '@suite-native/services';
 import {
     selectApy,
     selectRewardsBalanceByAccountKey,
@@ -49,6 +51,7 @@ export const StakingManagementStakedCard = ({
     const { applyStyle } = useNativeStyles();
     const { isPortfolioTrackerDevice, openPortfolioTrackerSheet } = useEarnPortfolioTrackerGuard();
     const navigation = useNavigation<NavigationProp>();
+    const analytics = useAnalytics();
 
     const handleStake = () => {
         if (isPortfolioTrackerDevice) {
@@ -57,6 +60,14 @@ export const StakingManagementStakedCard = ({
             return;
         }
 
+        analytics.report({
+            type: events.stakingStakeEvent.name,
+            payload: {
+                action: 'continue',
+                step: 'staking-dashboard',
+                networkSymbol,
+            },
+        });
         navigation.navigate(RootStackRoutes.HowStakeWorksScreen, {
             accountKey,
             symbol: networkSymbol,
@@ -70,6 +81,14 @@ export const StakingManagementStakedCard = ({
             return;
         }
 
+        analytics.report({
+            type: events.stakingUnstakeEvent.name,
+            payload: {
+                action: 'continue',
+                step: 'staking-dashboard',
+                networkSymbol,
+            },
+        });
         navigation.navigate(RootStackRoutes.UnstakeFlow, { accountKey });
     };
 

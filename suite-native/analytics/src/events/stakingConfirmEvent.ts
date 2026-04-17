@@ -1,9 +1,10 @@
 import type { AttributeDef, EventDef } from '@suite-common/analytics';
 
 import { EventType } from '../constants';
+import { type StakingConfirmAction } from '../definitions';
 
 type Attributes = {
-    action: AttributeDef<'stake' | 'unstake' | 'claim'>;
+    action: AttributeDef<StakingConfirmAction>;
     networkSymbol?: AttributeDef<string>;
 };
 

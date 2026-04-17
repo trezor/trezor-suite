@@ -12,6 +12,7 @@ import {
     subunitsToUnits,
 } from '@suite-common/wallet-utils';
 import { AccountDetailsCard } from '@suite-native/accounts';
+import { events } from '@suite-native/analytics';
 import { Box, Button, FullAlertBox, InlineAlertBox, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -21,6 +22,7 @@ import {
     ScreenHeader,
     type StackNavigationProps,
 } from '@suite-native/navigation';
+import { useAnalytics } from '@suite-native/services';
 import {
     CLAIM_CALLDATA,
     type NativeStakingRootState,
@@ -31,6 +33,7 @@ import { FeeSelector } from '@suite-native/transaction-management';
 import { BigNumber } from '@trezor/utils';
 
 import { useComposeEarnFees } from '../hooks/useComposeEarnFees';
+import { useNavigateBackAnalytics } from '../hooks/useNavigateBackAnalytics';
 import { buildEarnComposeFormState } from '../utils';
 
 export const ClaimReviewScreen = () => {
@@ -75,7 +78,26 @@ export const ClaimReviewScreen = () => {
         formDraftPrefix: 'claim',
     });
 
+    const analytics = useAnalytics();
+    const registerNavigateBackAnalytics = useNavigateBackAnalytics({
+        type: events.stakingClaimEvent.name,
+        payload: {
+            action: 'cancel',
+            step: 'claim-form-modal',
+            networkSymbol: symbol,
+        },
+    });
+
     const handleReviewAndSign = () => {
+        registerNavigateBackAnalytics();
+        analytics.report({
+            type: events.stakingClaimEvent.name,
+            payload: {
+                action: 'continue',
+                step: 'claim-form-modal',
+                networkSymbol: symbol,
+            },
+        });
         navigation.navigate(RootStackRoutes.ClaimTransactionDataReview, { accountKey });
     };
 

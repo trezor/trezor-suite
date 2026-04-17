@@ -1,9 +1,8 @@
 import type { AttributeDef, EventDef } from '@suite-common/analytics';
-import type { EarnAnalyticsStep, EarnModalAction } from '@suite-common/suite-types';
+import type { EarnModalAction } from '@suite-common/suite-types';
 
 import { EventType } from '../constants';
-
-export type StakingClaimStep = Extract<EarnAnalyticsStep, 'staking-dashboard' | 'claim-form-modal'>;
+import { type StakingClaimStep } from '../definitions';
 
 type Attributes = {
     action: AttributeDef<EarnModalAction>;

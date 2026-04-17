@@ -8,6 +8,7 @@ import {
     type AccountsRootState,
     selectDeviceAccountsByNetworkSymbol,
 } from '@suite-common/wallet-core';
+import { events } from '@suite-native/analytics';
 import { Button, InlineAlertBox, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -17,6 +18,7 @@ import {
     ScreenHeader,
     type StackNavigationProps,
 } from '@suite-native/navigation';
+import { useAnalytics } from '@suite-native/services';
 import {
     type NativeStakingRootState,
     selectApy,
@@ -28,6 +30,7 @@ import { HowStakeWorksBenefitsSection } from '../components/HowStakeWorksBenefit
 import { HowStakeWorksHeaderSection } from '../components/HowStakeWorksHeaderSection';
 import { HowStakeWorksTimelineCard } from '../components/HowStakeWorksTimelineCard';
 import { useMessageSystemStaking } from '../hooks/useMessageSystemStaking';
+import { useNavigateBackAnalytics } from '../hooks/useNavigateBackAnalytics';
 
 export const HowStakeWorksScreen = () => {
     const route = useRoute<RouteProp<RootStackParamList, RootStackRoutes.HowStakeWorksScreen>>();
@@ -43,11 +46,30 @@ export const HowStakeWorksScreen = () => {
 
     const resolvedAccountKey = accountKey || accounts[0]?.key;
 
+    const analytics = useAnalytics();
+    const registerNavigateBackAnalytics = useNavigateBackAnalytics({
+        type: events.stakingStakeEvent.name,
+        payload: {
+            action: 'cancel',
+            step: 'stake-in-a-nutshell-modal',
+            networkSymbol: symbol,
+        },
+    });
+
     const handleContinue = () => {
         if (!resolvedAccountKey) {
             return;
         }
 
+        registerNavigateBackAnalytics();
+        analytics.report({
+            type: events.stakingStakeEvent.name,
+            payload: {
+                action: 'continue',
+                step: 'stake-in-a-nutshell-modal',
+                networkSymbol: symbol,
+            },
+        });
         navigation.navigate(RootStackRoutes.EarnForm, { accountKey: resolvedAccountKey });
     };
 

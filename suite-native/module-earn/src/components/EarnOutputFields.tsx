@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Card, Divider } from '@suite-native/atoms';
+import { type ActiveView } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { EarnAmountInputs } from './EarnAmountInputs';
@@ -14,6 +15,7 @@ type EarnOutputFieldsProps = {
     maxButtonVariant?: EarnMaxButtonVariant;
     isWithdrawalFeesBannerVisible?: boolean;
     unstakeInstantAmount?: string | null;
+    onCurrencyChange?: (activeView: ActiveView) => void;
 };
 
 const cardStyle = prepareNativeStyle(utils => ({
@@ -30,6 +32,7 @@ export const EarnOutputFields = ({
     maxButtonVariant,
     isWithdrawalFeesBannerVisible,
     unstakeInstantAmount,
+    onCurrencyChange,
 }: EarnOutputFieldsProps) => {
     const { applyStyle } = useNativeStyles();
     const symbol = useSelector((state: AccountsRootState) =>
@@ -45,6 +48,7 @@ export const EarnOutputFields = ({
                 symbol={symbol}
                 maxButtonVariant={maxButtonVariant}
                 isWithdrawalFeesBannerVisible={isWithdrawalFeesBannerVisible}
+                onCurrencyChange={onCurrencyChange}
             />
             {unstakeInstantAmount && (
                 <>
