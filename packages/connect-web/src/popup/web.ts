@@ -79,6 +79,8 @@ export class WebPopup extends Popup {
 
         await Promise.allSettled([popupWindowChannelPromise, iframeWindowChannelPromise]).then(
             results => {
+                popupWindowChannel.disconnect();
+                iframeWindowChannel.disconnect();
                 const popupHandshake = results[0];
                 const iframeHandshake = results[1];
 

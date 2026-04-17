@@ -113,11 +113,11 @@ const sendHandshakeConfirm = (eventData: any, target: MessageTarget): boolean =>
         eventData.type === 'channel-handshake-request' &&
         eventData.channel.peer === PEERS.BOOTSTRAP
     ) {
-        logger.log('sendHandshakeConfirm:', typeof target, eventData.channel.here);
         const origin =
             target instanceof BroadcastChannel
                 ? undefined
                 : getWindowOrigin(target as unknown as Window);
+        logger.log('sendHandshakeConfirm:', target, eventData.channel.here, origin);
 
         target.postMessage(
             {
@@ -219,6 +219,15 @@ const startForwarding = (broadcast: BroadcastChannel, owner: Window): void => {
 
     // messages from connect-web (3rd party host) addressed to connect-popup (suite-web)
     window.addEventListener('message', (event: MessageEvent) => {
+        if (
+            event.data.type === 'channel-handshake-request' &&
+            event.data.channel.here === PEERS.WEB &&
+            event.data.channel.peer === PEERS.BOOTSTRAP
+        ) {
+            sendHandshakeConfirm(event.data, window.parent);
+
+            return;
+        }
         if (event.data.channel?.here !== PEERS.WEB || event.data.channel?.peer !== PEERS.POPUP) {
             return;
         }
