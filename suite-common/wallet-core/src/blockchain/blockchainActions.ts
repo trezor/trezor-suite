@@ -30,8 +30,14 @@ const setBackend = createAction(
     }),
 );
 
+const setBackendGapLimit = createAction(
+    `${BLOCKCHAIN_MODULE_PREFIX}/setBackendGapLimit`,
+    (payload: { symbol: NetworkSymbol; gapLimit: number | undefined }) => ({ payload }),
+);
+
 export const blockchainActions = {
     setBackend,
+    setBackendGapLimit,
     connected,
     synced,
 };

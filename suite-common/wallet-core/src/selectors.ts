@@ -24,6 +24,7 @@ import {
     selectIsDeviceAccountless,
     selectVisibleDeviceAccounts,
 } from './accounts/accountsSelectors';
+import { type BlockchainRootState, selectGapLimit } from './blockchain/blockchainReducer';
 import { selectSupportedNetworkByDevice } from './device/deviceSelectors';
 import { type DiscoveryRootState } from './discovery/discoveryReducer';
 import { selectHasRunningDiscovery } from './discovery/discoverySelectors';
@@ -40,7 +41,8 @@ to prevent circular dependencies between reducers
 export type WalletCoreCompoundRootState = AccountsRootState &
     DeviceRootState &
     DiscoveryRootState &
-    WalletSettingsRootState;
+    WalletSettingsRootState &
+    BlockchainRootState;
 const createMemoizedSelector = createWeakMapSelector.withTypes<WalletCoreCompoundRootState>();
 
 const selectEnabledSupportedNetworks = createMemoizedSelector(

@@ -21,7 +21,7 @@ import { reportWalletBalanceDebounced } from './accountBalanceAnalytics';
 import { accountsActions } from './accountsActions';
 import { ACCOUNTS_MODULE_PREFIX } from './accountsConstants';
 import { selectAccountByKey } from './accountsSelectors';
-import { selectBlockchainHeightBySymbol } from '../blockchain/blockchainReducer';
+import { selectBlockchainHeightBySymbol, selectGapLimit } from '../blockchain/blockchainReducer';
 import { selectBitcoinAmountUnit } from '../settings/walletSettingsReducer';
 import { transactionsActions } from '../transactions/transactionsActions';
 import { selectTransactions } from '../transactions/transactionsSelectors';
@@ -96,6 +96,10 @@ export const fetchAndUpdateAccountThunk = createThunk(
             account.networkType === 'solana'
                 ? account.tokens?.flatMap(t => t.accounts ?? []).map(a => a.publicKey)
                 : undefined;
+        const gap =
+            account.networkType === 'bitcoin'
+                ? selectGapLimit(getState(), account.symbol)
+                : undefined;
 
         const basic = await TrezorConnect.getAccountInfo({
             coin: account.symbol,
@@ -104,6 +108,7 @@ export const fetchAndUpdateAccountThunk = createThunk(
             details: account.networkType === 'solana' ? 'txids' : 'basic',
             suppressBackupWarning: true,
             tokenAccountsPubKeys,
+            gap,
         });
 
         if (!basic.success) return;
@@ -135,6 +140,10 @@ export const fetchAndUpdateAccountThunk = createThunk(
             pageSize,
             suppressBackupWarning: true,
             includeErc4626: account.networkType === 'ethereum' ? true : undefined,
+            gap:
+                account.networkType === 'bitcoin'
+                    ? selectGapLimit(getState(), account.symbol)
+                    : undefined,
         });
 
         if (response.success) {

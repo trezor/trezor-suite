@@ -171,6 +171,14 @@ export const prepareBlockchainReducer = createReducerWithExtraDeps(
                     };
                 }
             })
+            .addCase(blockchainActions.setBackendGapLimit, (state, action) => {
+                const { symbol, gapLimit } = action.payload;
+                if (gapLimit === undefined) {
+                    delete state[symbol].backends.gapLimit;
+                } else {
+                    state[symbol].backends.gapLimit = gapLimit;
+                }
+            })
             .addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadBlockchain)
             .addMatcher(
                 action => action.type === TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.CONNECT,
@@ -225,6 +233,9 @@ export const selectBlockchainBackendType = createMemoizedSelector(
     [selectNetworkBlockchainInfo],
     blockchain => blockchain.backends.selected,
 );
+
+export const selectGapLimit = (state: BlockchainRootState, symbol: NetworkSymbol) =>
+    state.wallet.blockchain[symbol]?.backends.gapLimit;
 
 export const selectEnabledCustomBackends = createMemoizedSelector(
     [selectBlockchainState, selectEnabledNetworks],
