@@ -1,0 +1,60 @@
+name: "Post Suite Web preview link"
+description: "Appends Suite Web dev deploy preview link to PR description"
+inputs:
+  github_token:
+    description: "GitHub token for accessing the API"
+    required: true
+  dev-server-url:
+    description: "Base URL of the dev deploy server"
+    required: false
+    default: "https://dev.suite.sldev.cz"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Post Suite Web preview link
+      uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
+      with:
+        github-token: ${{ inputs.github_token }}
+        script: |
+          const devServerUrl = '${{ inputs.dev-server-url }}';
+          const branch = context.payload.pull_request.head.ref;
+          const previewUrl = `${devServerUrl}/suite-web/${branch}/web/`;
+          const linkLine = `🌐 **Suite Web preview:** [${previewUrl}](${previewUrl})`;
+
+          const SECTION_START = '<!-- PREVIEW-LINKS:SECTION:START -->';
+          const SECTION_END   = '<!-- PREVIEW-LINKS:SECTION:END -->';
+          const sectionHeading = `## 🌐 Preview deployments`;
+
+          const LINK_START = `<!-- PREVIEW-LINK:SUITE-WEB:START -->`;
+          const LINK_END   = `<!-- PREVIEW-LINK:SUITE-WEB:END -->`;
+          const newLinkSection = `${LINK_START}\n${linkLine}\n${LINK_END}`;
+
+          const pr = await github.rest.pulls.get({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            pull_number: context.payload.pull_request.number,
+          });
+
+          let body = pr.data.body || '';
+
+          if (body.includes(LINK_START)) {
+            console.log('Suite Web preview link already present. Skipping.');
+            return;
+          } else if (body.includes(SECTION_START) && body.includes(SECTION_END)) {
+            const insertAt = body.indexOf(SECTION_END);
+            body = body.slice(0, insertAt) + newLinkSection + '\n' + body.slice(insertAt);
+          } else {
+            const sep = body.endsWith('\n\n') ? '' : body.endsWith('\n') ? '\n' : '\n\n';
+            const newSection =
+              `${SECTION_START}\n${sectionHeading}\n\n${newLinkSection}\n${SECTION_END}`;
+            body = body + sep + newSection;
+          }
+
+          await github.rest.pulls.update({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            pull_number: context.payload.pull_request.number,
+            body,
+          });
+          console.log(`Suite Web preview link added to PR description: ${previewUrl}`);
