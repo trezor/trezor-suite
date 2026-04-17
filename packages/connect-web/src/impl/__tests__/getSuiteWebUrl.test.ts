@@ -31,6 +31,30 @@ describe('extractBranch', () => {
         expect(extractBranch(`${DEV_ORIGIN}/connect/feat/xyz`)).toBe('feat/xyz');
     });
 
+    it('extracts branch from root URL with trailing slash', () => {
+        expect(extractBranch(`${DEV_ORIGIN}/connect/develop/`)).toBe('develop');
+    });
+
+    it('extracts multi-segment branch from root URL with trailing slash', () => {
+        expect(extractBranch(`${DEV_ORIGIN}/connect/feat/xyz/`)).toBe('feat/xyz');
+    });
+
+    it('extracts single-segment branch from settings page without trailing slash', () => {
+        expect(extractBranch(`${DEV_ORIGIN}/connect/develop/settings`)).toBe('develop');
+    });
+
+    it('handles branch name containing "methods" word', () => {
+        expect(
+            extractBranch(`${DEV_ORIGIN}/connect/fix/methods-refactor/methods/bitcoin/getAddress`),
+        ).toBe('fix/methods-refactor');
+    });
+
+    it('handles branch name containing "settings" word', () => {
+        expect(extractBranch(`${DEV_ORIGIN}/connect/fix/settings-page/settings/`)).toBe(
+            'fix/settings-page',
+        );
+    });
+
     it('returns undefined for non-matching URL', () => {
         expect(extractBranch('https://example.com/other/path')).toBeUndefined();
     });
