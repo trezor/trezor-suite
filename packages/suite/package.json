@@ -41,6 +41,7 @@
         "@suite-common/firmware-authenticity": "workspace:*",
         "@suite-common/formatters": "workspace:*",
         "@suite-common/geolocation": "workspace:*",
+        "@suite-common/github": "workspace:*",
         "@suite-common/logger": "workspace:*",
         "@suite-common/message-system": "workspace:*",
         "@suite-common/metadata-types": "workspace:*",

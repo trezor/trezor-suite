@@ -6,6 +6,7 @@
     },
     "include": ["."],
     "references": [
+        { "path": "../../suite-common/github" },
         { "path": "../../suite/analytics" },
         { "path": "../../suite/desktop-update" },
         { "path": "../../suite/flags" },

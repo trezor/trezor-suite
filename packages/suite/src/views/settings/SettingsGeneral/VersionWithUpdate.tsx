@@ -6,6 +6,7 @@ import {
 } from '@suite/desktop-update';
 import { Translation } from '@suite/intl';
 import { SettingsAnchor } from '@suite/router';
+import { getReleaseUrl } from '@suite-common/github';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { Button, type ButtonProps } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
@@ -14,7 +15,6 @@ import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { useDispatch, useExternalLink, useSelector } from 'src/hooks/suite';
-import { getReleaseUrl } from 'src/services/github';
 
 const getUpdateStateMessage = (state: UpdateState) => {
     switch (state) {
