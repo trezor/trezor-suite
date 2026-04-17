@@ -13358,6 +13358,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/module-earn@workspace:suite-native/module-earn"
   dependencies:
+    "@gorhom/bottom-sheet": "npm:5.2.8"
     "@react-navigation/native": "npm:7.1.28"
     "@react-navigation/native-stack": "npm:7.12.0"
     "@reduxjs/toolkit": "npm:2.11.2"

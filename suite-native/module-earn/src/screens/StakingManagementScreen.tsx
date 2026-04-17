@@ -12,6 +12,7 @@ import { ContextMessage } from '@suite-native/message-system';
 import { type RootStackParamList, type RootStackRoutes, Screen } from '@suite-native/navigation';
 import { TransactionList } from '@suite-native/transactions';
 
+import { EarnPortfolioTrackerGuard } from '../components/EarnPortfolioTrackerGuard';
 import { StakingManagementPendingSection } from '../components/StakingManagementPendingSection';
 import { StakingManagementScreenHeader } from '../components/StakingManagementScreenHeader';
 import { StakingManagementStakedCard } from '../components/StakingManagementStakedCard';
@@ -51,12 +52,14 @@ export const StakingManagementScreen = () => {
     );
 
     return (
-        <Screen header={<StakingManagementScreenHeader />} noHorizontalPadding>
-            <TransactionList
-                accountKey={accountKey}
-                listHeaderComponent={listHeaderComponent}
-                stakingOnly
-            />
-        </Screen>
+        <EarnPortfolioTrackerGuard>
+            <Screen header={<StakingManagementScreenHeader />} noHorizontalPadding>
+                <TransactionList
+                    accountKey={accountKey}
+                    listHeaderComponent={listHeaderComponent}
+                    stakingOnly
+                />
+            </Screen>
+        </EarnPortfolioTrackerGuard>
     );
 };
