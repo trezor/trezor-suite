@@ -34,6 +34,7 @@ import { DisconnectLabelingProvider } from './DisconnectLabelingProvider';
 import { DustPhishing } from './DustPhishing';
 import { EarlyAccess } from './EarlyAccess';
 import { Experimental } from './Experimental';
+import { FocusOnDeviceUnlock } from './FocusOnDeviceUnlock';
 import { Language } from './Language';
 import { LegacyLabelingMigration } from './LegacyLabelingMigration';
 import { McpServer } from './McpServer';
@@ -175,6 +176,7 @@ export const SettingsGeneral = () => {
                 >
                     <AutoStart />
                     <ShowOnTray />
+                    <FocusOnDeviceUnlock />
                 </SettingsSection>
             )}
 

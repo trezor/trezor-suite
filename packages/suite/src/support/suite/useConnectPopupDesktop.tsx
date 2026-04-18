@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 
 import { openModal } from '@suite/modal';
+import { selectFocusOnDeviceUnlock } from '@suite/settings';
 import { events } from '@suite-common/analytics';
 import {
     CALL_SOURCE_DESKTOP_WS,
@@ -22,6 +23,7 @@ export const useConnectPopupDesktop = () => {
     const dispatch = useDispatch();
     const analytics = useAnalytics();
     const popupCall = useSelector(selectConnectPopupCall);
+    const focusOnDeviceUnlock = useSelector(selectFocusOnDeviceUnlock);
     const selectedDevice = useSelector(selectSelectedDevice);
     const selectedDeviceRef = useRef(selectedDevice);
     selectedDeviceRef.current = selectedDevice;
@@ -161,7 +163,7 @@ export const useConnectPopupDesktop = () => {
             // Remember visibility state
             desktopApi.appIsVisible().then(isVisible => {
                 setWasVisible(isVisible && document.visibilityState === 'visible');
-                desktopApi.appFocus();
+                if (focusOnDeviceUnlock) desktopApi.appFocus();
             });
         }
 
@@ -172,5 +174,5 @@ export const useConnectPopupDesktop = () => {
                 desktopApi.appHide();
             }
         }
-    }, [popupCall, currentlyOngoing, wasVisible]);
+    }, [popupCall, currentlyOngoing, wasVisible, focusOnDeviceUnlock]);
 };

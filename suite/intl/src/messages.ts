@@ -10718,6 +10718,15 @@ export const messages = defineMessages({
         id: 'TR_SHOW_ON_TRAY',
         defaultMessage: 'Show icon in tray',
     },
+    TR_FOCUS_ON_DEVICE_UNLOCK_TITLE: {
+        id: 'TR_FOCUS_ON_DEVICE_UNLOCK_TITLE',
+        defaultMessage: 'Bring window to front on device connect',
+    },
+    TR_FOCUS_ON_DEVICE_UNLOCK_DESCRIPTION: {
+        id: 'TR_FOCUS_ON_DEVICE_UNLOCK_DESCRIPTION',
+        defaultMessage:
+            'Automatically restore and focus the Trezor Suite window when a device is connected or unlocked, including Bluetooth devices.',
+    },
     TR_SHOW_ON_TRAY_DESCRIPTION: {
         id: 'TR_SHOW_ON_TRAY_DESCRIPTION',
         defaultMessage: 'Monitor when Trezor Suite is running in the background.',
