@@ -502,10 +502,7 @@ export const signAndPushSendFormTransactionThunk = createThunk(
             }),
         );
 
-        return fulfillWithValue({
-            success: true,
-            payload: pushResult.payload,
-        });
+        return fulfillWithValue(pushResult.payload);
     },
 );
 
