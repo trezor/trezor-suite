@@ -359,6 +359,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 case SUITE.EVM_CONFIRM_EXPLANATION_MODAL:
                 case SUITE.EVM_CLOSE_EXPLANATION_BANNER:
                 case suiteSettingsActions.setIsCoinsFilterVisible.type:
+                case suiteSettingsActions.setFocusOnDeviceUnlock.type:
                     api.dispatch(storageActions.saveSuiteSettings());
                     break;
                 case suiteSettingsActions.setCoinjoinReceiveWarningHidden.type: {
