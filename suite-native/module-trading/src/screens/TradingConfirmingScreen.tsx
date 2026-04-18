@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useFocusEffect } from '@react-navigation/native';
@@ -53,11 +53,22 @@ export const TradingConfirmingScreen = ({
     }, [approvalSendTxHash, setApprovalTxid]);
 
     const sendAccount = useSelector(selectExchangeSelectedSendAccount);
+    const activeQuote = useSelector(selectTradingExchangeActiveQuote);
     const accountKey = sendAccount?.key ?? ('' as AccountKey);
 
-    const { status: originalStatus, approvalTxid } = useAllowanceTxTracking({
+    const {
+        status: originalStatus,
+        approvalTxid,
+        setApprovalTxid,
+    } = useAllowanceTxTracking({
         accountKey,
     });
+
+    useEffect(() => {
+        if (activeQuote?.approvalSendTxHash) {
+            setApprovalTxid(activeQuote.approvalSendTxHash);
+        }
+    }, [activeQuote, setApprovalTxid]);
 
     const { status, forceStatus } = useTransactionStatusOverride(originalStatus);
 
