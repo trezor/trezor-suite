@@ -6,17 +6,18 @@ import { expect, test } from '../../support/fixtures';
 // discovery should end within this time frame
 const DISCOVERY_LIMIT = 1000 * 60 * 2;
 
-const coinsToActivate = [
+const coinsToActivate: NetworkSymbol[] = [
     'btc',
-    'ltc',
     'eth',
+    'ltc',
     'etc',
     'bch',
     'doge',
-    'ada',
+    //'ada', skipped because Cardano backends are sometimes unreachable.
+    // We want this important test to be trustworthy and stable.
     'xrp',
     'zec',
-] as NetworkSymbol[];
+];
 
 test.describe('Discovery', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
     test.beforeEach(async ({ onboardingPage }) => {
@@ -61,8 +62,7 @@ test.describe('Discovery', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
             await page.expectReduxSubtreeToContain('wallet.discovery', 'status', 'complete', {
                 timeout: DISCOVERY_LIMIT,
             });
-            const expectedAccounts = coinsToActivate;
-            for (const symbol of expectedAccounts) {
+            for (const symbol of coinsToActivate) {
                 await expect
                     .soft(
                         walletPage.balanceOfAccount({ symbol, atIndex: 0 }),
