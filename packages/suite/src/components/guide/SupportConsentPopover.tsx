@@ -1,6 +1,7 @@
 import { type ReactNode, useState } from 'react';
 
 import { Translation } from '@suite/intl';
+import { selectIsAnalyticsEnabled } from '@suite-common/analytics-redux';
 import { selectSupportChatUrl } from '@suite-common/support';
 import { Button, Card, Checkbox, Column, Paragraph, Popover, variables } from '@trezor/components';
 import { spacingsPx, zIndices } from '@trezor/theme';
@@ -15,7 +16,8 @@ type SupportConsentPopoverProps = {
 };
 
 export const SupportConsentPopover = ({ children }: SupportConsentPopoverProps) => {
-    const [isSystemInfoShared, setIsSystemInfoShared] = useState(false);
+    const isAnalyticsEnabled = useSelector(selectIsAnalyticsEnabled);
+    const [isSystemInfoShared, setIsSystemInfoShared] = useState(isAnalyticsEnabled);
     const supportChatUrl = useSelector(state => selectSupportChatUrl(state, isSystemInfoShared));
 
     return (

@@ -1,6 +1,7 @@
 import { forwardRef, useImperativeHandle, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
+import { selectIsAnalyticsEnabled } from '@suite-common/analytics-redux';
 import { type DeviceRootState } from '@suite-common/device';
 import { selectSupportChatUrl } from '@suite-common/support';
 import { CheckBox, HStack, Text, VStack } from '@suite-native/atoms';
@@ -18,7 +19,8 @@ export type ContactSupportAlertAppendixRef = {
 };
 
 export const ContactSupportAlertAppendix = forwardRef<ContactSupportAlertAppendixRef>((_, ref) => {
-    const [isChecked, setIsChecked] = useState(false);
+    const isAnalyticsEnabled = useSelector(selectIsAnalyticsEnabled);
+    const [isChecked, setIsChecked] = useState(isAnalyticsEnabled);
     const supportChatUrl = useSelector((state: DeviceRootState) =>
         selectSupportChatUrl(state, isChecked),
     );
