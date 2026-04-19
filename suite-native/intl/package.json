@@ -17,7 +17,7 @@
         "translations:list-unused": "yarn g:tsx ./scripts/listUnused.ts",
         "translations:remove-unused": "yarn g:tsx ./scripts/listUnused.ts --cleanup",
         "translations:upload": "crowdin upload",
-        "translations:download": "crowdin download --all -l en -l cs -l de -l es-ES -l fr -l pt-BR -l ja -l zh-CN",
+        "translations:download": "crowdin download --all -l en -l cs -l de -l es-ES -l fr -l id -l pt-BR -l ja -l zh-CN",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {

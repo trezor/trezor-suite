@@ -12,6 +12,7 @@ const LANGUAGE_TRANSLATIONS_MAP = {
     'de-DE': require('../../translations/de-DE.json'),
     'es-ES': require('../../translations/es-ES.json'),
     'fr-FR': require('../../translations/fr-FR.json'),
+    'id-ID': require('../../translations/id-ID.json'),
     'pt-BR': require('../../translations/pt-BR.json'),
     'ja-JP': require('../../translations/ja-JP.json'),
     'zh-CN': require('../../translations/zh-CN.json'),
