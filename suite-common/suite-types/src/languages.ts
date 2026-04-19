@@ -14,6 +14,7 @@ export const LANGUAGES = {
     'de-DE': { icon: '🇩🇪', name: 'Deutsch', en: 'German', type: 'official' },
     'fr-FR': { icon: '🇫🇷', name: 'Français', en: 'French', type: 'official' },
     'hu-HU': { icon: '🇭🇺', name: 'Magyar', en: 'Hungarian', type: 'community' },
+    'id-ID': { icon: '🇮🇩', name: 'Bahasa Indonesia', en: 'Indonesian', type: 'community' },
     'it-IT': { icon: '🇮🇹', name: 'Italiano', en: 'Italian', type: 'community' },
     'ja-JP': { icon: '🇯🇵', name: '日本語', en: 'Japanese', type: 'official' },
     'ko-KR': { icon: '🇰🇷', name: '한국어', en: 'Korean', type: 'official' },
