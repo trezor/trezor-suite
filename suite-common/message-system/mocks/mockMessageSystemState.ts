@@ -1,7 +1,7 @@
 import { type Action, type Localization } from '@suite-common/suite-types';
 
-import { messageSystemInitialState } from './messageSystemReducer';
-import { type MessageSystemState } from './messageSystemTypes';
+import { messageSystemInitialState } from '../src/messageSystemReducer';
+import { type MessageSystemState } from '../src/messageSystemTypes';
 
 const EMPTY_LOCALIZATION: Localization = {
     en: '',
@@ -39,13 +39,13 @@ const FEATURE_FLAG_ACTION_ID = 'test-feature-flags-action';
  *
  * @example
  *   overrides: {
- *       messageSystem: messageSystemStateWithFeatureFlags({
+ *       messageSystem: mockMessageSystemStateWithFeatureFlags({
  *           'trading.buy': false,
  *           'trading.sell': false,
  *       }),
  *   }
  */
-export const messageSystemStateWithFeatureFlags = (
+export const mockMessageSystemStateWithFeatureFlags = (
     flags: Record<string, boolean>,
 ): MessageSystemState => ({
     ...messageSystemInitialState,

@@ -32,7 +32,7 @@ describe('useExchangeData', () => {
                             ...getBtcAccount(btc3AccountKey),
                             descriptor: asAccountDescriptor(''),
                         },
-                    ] as any,
+                    ],
                 },
             },
         });

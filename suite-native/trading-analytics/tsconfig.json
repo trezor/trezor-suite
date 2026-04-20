@@ -7,7 +7,6 @@
         { "path": "../services" },
         { "path": "../trading-atoms" },
         { "path": "../test-utils-store" },
-        { "path": "../trading-fixtures" },
-        { "path": "../../packages/utils" }
+        { "path": "../trading-fixtures" }
     ]
 }

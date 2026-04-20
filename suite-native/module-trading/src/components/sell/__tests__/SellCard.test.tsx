@@ -22,8 +22,12 @@ describe('SellCard', () => {
         });
 
     const renderSellCard = (isAmountInputActive: boolean) => {
-        const cardPreloadedState = createTradingPreloadedState({ tradeType: 'sell' });
-        cardPreloadedState.wallet!.trading!.sell!.quotes = sellQuotes;
+        const cardPreloadedState = createTradingPreloadedState({
+            tradeType: 'sell',
+            overrides: {
+                wallet: { trading: { sell: { quotes: sellQuotes } } },
+            },
+        });
 
         return renderWithStoreProvider(<SellCard isAmountInputActive={isAmountInputActive} />, {
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,

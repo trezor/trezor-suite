@@ -72,18 +72,19 @@ describe('useWatchTrade', () => {
             overrides: {
                 wallet: {
                     trading: { trades },
-                    accounts: (accounts.length > 0
-                        ? accounts
-                        : [
-                              {
-                                  key: 'btc1',
-                                  symbol: 'btc',
-                                  deviceState: 'device1@test:123',
-                                  descriptor: 'btc-descriptor',
-                                  addresses: { unused: [{ address: 'btc-address' }] },
-                                  visible: true,
-                              },
-                          ]) as any,
+                    accounts:
+                        accounts.length > 0
+                            ? accounts
+                            : [
+                                  {
+                                      key: 'btc1',
+                                      symbol: 'btc',
+                                      deviceState: 'device1@test:123',
+                                      descriptor: 'btc-descriptor',
+                                      addresses: { unused: [{ address: 'btc-address' }] },
+                                      visible: true,
+                                  },
+                              ],
                 },
                 device: {
                     selectedDevice: {

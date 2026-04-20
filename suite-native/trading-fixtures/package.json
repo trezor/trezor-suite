@@ -19,7 +19,8 @@
         "@suite-common/wallet-utils": "workspace:*",
         "@suite-native/feature-flags": "workspace:*",
         "@suite-native/trading-consts": "workspace:*",
-        "@trezor/connect": "workspace:*"
+        "@trezor/connect": "workspace:*",
+        "@trezor/utils": "workspace:*"
     },
     "devDependencies": {
         "@suite-native/trading-types": "workspace:*",

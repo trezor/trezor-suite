@@ -19,12 +19,12 @@ import {
     type RenderOptionsExtended,
     createStaticReducer,
     createStoreFromPreloadedState,
+    mergePreloadedState,
     renderHookWithStoreProvider,
     renderWithStoreProvider,
 } from '@suite-native/test-utils-store';
 import { getWalletState } from '@suite-native/trading-fixtures';
 import { tradingSlice } from '@suite-native/trading-state';
-import { mergeDeepObject } from '@trezor/utils';
 
 export type { PreloadedStatePartial } from '@suite-native/test-utils-store';
 
@@ -65,11 +65,7 @@ export const createTradingPreloadedState = ({
     overrides?: PreloadedStatePartial<TradingTestPreloadedState>;
     tradeType?: TradingTestTradeType;
 } = {}): TradingTestPreloadedState =>
-    mergeDeepObject.withOptions(
-        { mergeArrays: false },
-        createBaseTradingPreloadedState(tradeType),
-        overrides,
-    ) as TradingTestPreloadedState;
+    mergePreloadedState(createBaseTradingPreloadedState(tradeType), overrides);
 
 export const createTradingTestStore = (args?: {
     overrides?: PreloadedStatePartial<TradingTestPreloadedState>;

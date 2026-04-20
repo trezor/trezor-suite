@@ -1,4 +1,4 @@
-import { messageSystemStateWithFeatureFlags } from '@suite-common/message-system';
+import { mockMessageSystemStateWithFeatureFlags } from '@suite-common/message-system/mocks';
 import { events } from '@suite-native/analytics';
 import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
 import { useAnalytics } from '@suite-native/services';
@@ -82,7 +82,7 @@ describe('Header', () => {
                 [FeatureFlag.IsTradingExchangeEnabled]: config.exchange,
                 [FeatureFlag.IsTradingSellEnabled]: config.sell,
             },
-            messageSystem: messageSystemStateWithFeatureFlags({
+            messageSystem: mockMessageSystemStateWithFeatureFlags({
                 'trading.buy': config.buy,
                 'trading.exchange': config.exchange,
                 'trading.sell': config.sell,

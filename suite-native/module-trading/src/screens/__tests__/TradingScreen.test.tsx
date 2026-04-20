@@ -1,4 +1,4 @@
-import { messageSystemStateWithFeatureFlags } from '@suite-common/message-system';
+import { mockMessageSystemStateWithFeatureFlags } from '@suite-common/message-system/mocks';
 import { FeatureFlag } from '@suite-native/feature-flags';
 import { screen } from '@suite-native/test-utils-store';
 
@@ -58,7 +58,7 @@ const overridesWithDisabledTrading: PreloadedStatePartial<TradingTestPreloadedSt
         [FeatureFlag.IsTradingExchangeEnabled]: false,
         [FeatureFlag.IsTradingSellEnabled]: false,
     }),
-    messageSystem: messageSystemStateWithFeatureFlags({
+    messageSystem: mockMessageSystemStateWithFeatureFlags({
         'trading.buy': false,
         'trading.exchange': false,
         'trading.sell': false,

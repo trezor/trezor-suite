@@ -54,32 +54,7 @@ describe('useWatchAllTrades', () => {
             overrides: {
                 wallet: {
                     trading: { trades },
-                    accounts: [
-                        {
-                            key: btc1NormalAccount.key,
-                            symbol: 'btc',
-                            deviceState: MOCK_ACCOUNT_DEVICE_SESSION_ID,
-                            descriptor: 'btc-descriptor',
-                            addresses: { unused: [{ address: 'btc-address' }] },
-                            visible: true,
-                        },
-                        {
-                            key: eth1NormalAccount.key,
-                            symbol: 'eth',
-                            deviceState: MOCK_ACCOUNT_DEVICE_SESSION_ID,
-                            descriptor: 'eth-descriptor',
-                            addresses: { unused: [{ address: 'eth-address' }] },
-                            visible: true,
-                        },
-                        {
-                            key: sol1normalAccount.key,
-                            symbol: 'sol',
-                            deviceState: MOCK_ACCOUNT_DEVICE_SESSION_ID,
-                            descriptor: 'sol-descriptor',
-                            addresses: { unused: [{ address: 'sol-address' }] },
-                            visible: true,
-                        },
-                    ] as any,
+                    accounts: [btc1NormalAccount, eth1NormalAccount, sol1normalAccount],
                 },
                 device: {
                     selectedDevice: {

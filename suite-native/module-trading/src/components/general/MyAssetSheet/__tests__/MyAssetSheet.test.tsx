@@ -75,7 +75,7 @@ describe('MyAssetSheet', () => {
                 tradingType="exchange"
                 {...props}
             />,
-            { overrides: getOverrides() as any },
+            { overrides: getOverrides() },
         );
 
     beforeEach(() => {

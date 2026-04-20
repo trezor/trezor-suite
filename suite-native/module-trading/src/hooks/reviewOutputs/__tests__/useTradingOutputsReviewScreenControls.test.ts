@@ -70,18 +70,16 @@ describe('useTradingOutputsReviewScreenControls', () => {
         }),
     } as const;
 
-    const createTestStore = (tradeType: 'exchange' | 'sell' = 'exchange') =>
-        createLightStore({
+    const createTestStore = (tradeType: 'exchange' | 'sell' = 'exchange') => {
+        const { settings, accounts, send, trading } = getWalletState({ tradeType });
+
+        return createLightStore({
             reducer,
             preloadedState: {
-                wallet: {
-                    settings: getWalletState({ tradeType }).settings,
-                    accounts: getWalletState({ tradeType }).accounts,
-                    send: getWalletState({ tradeType }).send,
-                    trading: getWalletState({ tradeType }).trading,
-                },
+                wallet: { settings, accounts, send, trading },
             },
         });
+    };
 
     const renderUseTradingOutputsReviewScreenControls = () =>
         renderHookWithStoreProvider(

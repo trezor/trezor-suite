@@ -1,6 +1,6 @@
 import { Text } from 'react-native';
 
-import { type StateFromReducersMapObject, combineReducers } from '@reduxjs/toolkit';
+import { combineReducers } from '@reduxjs/toolkit';
 
 import { deviceInitialState } from '@suite-common/device';
 import { messageSystemInitialState } from '@suite-common/message-system';
@@ -8,7 +8,6 @@ import { initialSuiteSyncDataState, initialSuiteSyncState } from '@suite-common/
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { localeReducer } from '@suite-native/intl';
 import {
-    type PreloadedStatePartial,
     createLightStore,
     createStaticReducer,
     renderWithStoreProvider,
@@ -40,7 +39,7 @@ describe('NetworkAndAccountCard', () => {
                         wallet: {
                             accounts: [btc1NormalAccount],
                         },
-                    } satisfies PreloadedStatePartial<StateFromReducersMapObject<typeof reducer>>,
+                    },
                 }),
             },
         );

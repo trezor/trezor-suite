@@ -14282,7 +14282,6 @@ __metadata:
     "@suite-native/test-utils-store": "workspace:*"
     "@suite-native/trading-atoms": "workspace:*"
     "@suite-native/trading-fixtures": "workspace:*"
-    "@trezor/utils": "workspace:*"
     "@types/invity-api": "npm:^1.1.15"
     react: "npm:19.2.4"
     react-redux: "npm:9.2.0"
@@ -14403,6 +14402,7 @@ __metadata:
     "@suite-native/trading-consts": "workspace:*"
     "@suite-native/trading-types": "workspace:*"
     "@trezor/connect": "workspace:*"
+    "@trezor/utils": "workspace:*"
     "@types/invity-api": "npm:^1.1.15"
   languageName: unknown
   linkType: soft

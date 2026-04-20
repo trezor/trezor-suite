@@ -6,7 +6,6 @@ import {
     banxaBankTransferSellQuote,
     btcAsset,
     getBtcAccount,
-    getInitializedTradingState,
     residenceCheckDisabledState,
     sellQuotes,
 } from '@suite-native/trading-fixtures';
@@ -78,10 +77,8 @@ describe('SellForm', () => {
         let overrides: PreloadedStatePartial<TradingTestPreloadedState>;
 
         beforeEach(() => {
-            const tradingState = getInitializedTradingState();
-            tradingState.sell!.quotes = sellQuotes;
             overrides = {
-                wallet: { trading: tradingState },
+                wallet: { trading: { sell: { quotes: sellQuotes } } },
                 ...residenceCheckDisabledState,
             };
 
