@@ -1,6 +1,6 @@
 import { desktopQueryKeys, useQuery } from '@suite-common/react-query';
 
-import { EARN_QUERY_STALE_TIME, YIELD_OPPORTUNITIES_DEFAULT_LIMIT } from '../config';
+import { YIELD_OPPORTUNITIES_DEFAULT_LIMIT, queriesStaleTime } from '../config';
 import { useGetYieldOpportunities } from './useGetYieldOpportunities';
 
 type UseAllYieldOpportunitiesProps = {
@@ -22,7 +22,7 @@ export const useAllYieldOpportunities = ({
             return data.items;
         },
         enabled,
-        staleTime: EARN_QUERY_STALE_TIME,
+        staleTime: queriesStaleTime.getYieldOpportunities,
     });
 
     return {

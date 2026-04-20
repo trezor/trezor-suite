@@ -3,9 +3,10 @@ import z from 'zod';
 import { createHttpClient } from '@suite-common/http-client';
 import { commonQueryKeys, useQuery } from '@suite-common/react-query';
 
+import { MERKL_BASE_URL, queriesStaleTime } from '../config';
+
 const merkleHttpClient = createHttpClient({
-    // TODO: use proxy instead
-    baseUrl: 'https://api.merkl.xyz/v4',
+    baseUrl: MERKL_BASE_URL,
 });
 
 const numericStringOrNumberSchema = z.union([z.string(), z.number()]);
@@ -107,9 +108,9 @@ export function useGetMerkleRewards<Address extends string>(
 ) {
     return useQuery({
         queryKey: commonQueryKeys.merkleRewards(queryEntries),
-        staleTime: 1000 * 60 * 5,
+        staleTime: queriesStaleTime.getMerkleRewards,
         async queryFn() {
-            const fetcher = merkleHttpClient('/users/:address/rewards', {
+            const fetcher = merkleHttpClient('/v1/users/:address/rewards', {
                 method: 'GET',
                 schema: merkleRewardsResponseSchema,
             });

@@ -21,7 +21,7 @@ export const mapIntentToIconColor = (intent: BannerIntent): Color => {
         info: 'contentInfo',
         warning: 'contentWarning',
         critical: 'contentCritical',
-        neutral: 'contentSecondary',
+        neutral: 'contentPrimary',
     };
 
     return colorMap[intent];
