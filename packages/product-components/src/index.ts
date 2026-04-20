@@ -53,6 +53,7 @@ export { TextColumn } from './components/Settings/TextColumn';
 export { StepCard } from './components/StepCard/StepCard';
 export { FeedbackCard, type FeedbackCardProps } from './components/FeedbackCard/FeedbackCard';
 export { SidebarBanner } from './components/SidebarBanner/SidebarBanner';
+export { DropZone, type DropZoneProps } from './components/DropZone/DropZone';
 export {
     EmojiRatingSelector,
     type EmojiRatingSelectorProps,
