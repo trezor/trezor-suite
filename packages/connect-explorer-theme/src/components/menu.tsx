@@ -145,7 +145,7 @@ export function Menu({
         item => item.kind !== 'Folder' || !Object.keys(coinSymbols).includes(item.name),
     );
     const otherFolders = directories.filter(
-        item => item.kind === 'Folder' && item.name !== 'methods',
+        item => item.kind === 'Folder' && item.name !== 'methods' && item.name !== 'deeplink',
     );
 
     const [clickCounter, setClickCounter] = useState(0);
