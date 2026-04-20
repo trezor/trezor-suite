@@ -1,5 +1,10 @@
 import { useMemo } from 'react';
-import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
+import Animated, {
+    SlideInDown,
+    SlideOutDown,
+    useAnimatedStyle,
+    withTiming,
+} from 'react-native-reanimated';
 
 import { useFormatters } from '@suite-common/formatters';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
@@ -29,6 +34,7 @@ type EarnFormScreenFooterProps = {
     symbol: NetworkSymbol;
     amountValue: string;
     isDisabled: boolean;
+    isDirty: boolean;
     onPress: () => void;
 };
 
@@ -37,6 +43,7 @@ export const EarnFormScreenFooter = ({
     symbol,
     amountValue,
     isDisabled,
+    isDirty,
     onPress,
 }: EarnFormScreenFooterProps) => {
     const { applyStyle } = useNativeStyles();
@@ -61,12 +68,17 @@ export const EarnFormScreenFooter = ({
 
     const buttonIntent = isDisabled ? 'neutral' : 'brand';
     const buttonPriority = isDisabled ? 'secondary' : 'primary';
+    const hasValidationError = isDirty && isDisabled;
+
+    const rewardsAnimatedStyle = useAnimatedStyle(() => ({
+        opacity: withTiming(hasValidationError ? 0 : 1, { duration: 100 }),
+    }));
 
     return (
         <Animated.View entering={SlideInDown} exiting={SlideOutDown}>
             <ScreenFooterGradient />
             <Box style={applyStyle(screenFooterStyle)}>
-                <Box style={applyStyle(rewardsBoxStyle)}>
+                <Animated.View style={[applyStyle(rewardsBoxStyle), rewardsAnimatedStyle]}>
                     <VStack spacing="sp4" paddingVertical="sp12" alignItems="center">
                         <Text variant="body-sm" color="contentPrimary">
                             <Translation id="earn.earnFormScreen.estimatedRewardsLabel" />
@@ -77,18 +89,18 @@ export const EarnFormScreenFooter = ({
                             )}
                         </Text>
                     </VStack>
-                    <Button
-                        key={`${buttonIntent}-${buttonPriority}`}
-                        accessibilityRole="button"
-                        accessibilityLabel={translate('generic.validateForm')}
-                        intent={buttonIntent}
-                        priority={buttonPriority}
-                        onPress={onPress}
-                        isDisabled={isDisabled}
-                    >
-                        <Translation id="generic.buttons.continue" />
-                    </Button>
-                </Box>
+                </Animated.View>
+                <Button
+                    key={`${buttonIntent}-${buttonPriority}`}
+                    accessibilityRole="button"
+                    accessibilityLabel={translate('generic.validateForm')}
+                    intent={buttonIntent}
+                    priority={buttonPriority}
+                    onPress={onPress}
+                    isDisabled={isDisabled}
+                >
+                    <Translation id="generic.buttons.continue" />
+                </Button>
             </Box>
         </Animated.View>
     );
