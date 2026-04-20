@@ -80,6 +80,8 @@ interface MenuProps {
 
 function MenuInner({ directories, anchors, className, onlyCurrentDocs }: MenuProps): ReactElement {
     const renderStructure = (item: PageItem | Item) => {
+        if (item.display === 'hidden') return null;
+
         if (!onlyCurrentDocs || item.isUnderCurrentDocsTree) {
             if (
                 item.type === 'menu' ||
