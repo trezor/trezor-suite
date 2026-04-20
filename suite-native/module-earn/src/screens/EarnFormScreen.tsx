@@ -30,7 +30,7 @@ export const EarnFormScreen = () => {
 
     const { form, amountValue, account, formDraft, formDraftKey, updateFeeLevelThunk } = earnForm;
     const {
-        formState: { isValid },
+        formState: { isValid, isDirty },
     } = form;
 
     const handleSubmit = form.handleSubmit(() => {
@@ -50,6 +50,7 @@ export const EarnFormScreen = () => {
                     symbol={account.symbol}
                     amountValue={amountValue}
                     isDisabled={!isValid}
+                    isDirty={isDirty}
                     onPress={() => handleSubmit()}
                 />
             }
