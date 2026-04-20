@@ -170,7 +170,7 @@ describe('api/usb', () => {
         api.usbInterface.onconnect({
             device: {
                 ...createMockedDevice(),
-                serialNumber: undefined,
+                serialNumber: null,
                 // @ts-expect-error
                 device: {
                     deviceDescriptor: {
