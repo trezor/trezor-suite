@@ -28,7 +28,11 @@ import {
 } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
 import { type TypedTokenTransfer, type WalletAccountTransaction } from '@suite-native/tokens';
-import { TransactionName, getUnstakeTxAmount } from '@suite-native/transactions';
+import {
+    InstantStakeBanner,
+    TransactionName,
+    getUnstakeTxAmount,
+} from '@suite-native/transactions';
 
 import { TransactionDetailData } from '../components/TransactionDetailData';
 import { TransactionDetailHeader } from '../components/TransactionDetailHeader';
@@ -138,11 +142,14 @@ export const TransactionDetailScreen = ({
             }
         >
             <VStack spacing="sp24">
-                <VStack spacing="sp32">
+                <VStack spacing="sp24">
                     <TransactionDetailHeader
                         transaction={transaction}
                         tokenTransfer={tokenTransfer as TypedTokenTransfer}
                     />
+                    {isUnstakeTransaction && (
+                        <InstantStakeBanner accountKey={accountKey} transaction={transaction} />
+                    )}
                     <TransactionDetailData
                         transaction={transaction}
                         accountKey={accountKey}
