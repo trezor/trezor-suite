@@ -4,13 +4,7 @@ import { tradingExchangeActions, tradingSettingsActions } from '@suite-common/tr
 import { type AccountKey } from '@suite-common/wallet-types';
 import { events } from '@suite-native/analytics';
 import { useAnalytics } from '@suite-native/services';
-import {
-    type PreloadedState,
-    type TestStore,
-    act,
-    initStore,
-    renderHookWithStoreProvider,
-} from '@suite-native/test-utils-store';
+import { type TestStore, act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import {
     btcAsset,
     getBtcAccount,
@@ -21,6 +15,7 @@ import {
 } from '@suite-native/trading-fixtures';
 import { type ExchangeFormType } from '@suite-native/trading-types';
 
+import { createTradingLightStore } from '../../../__tests__/tradingTestUtils';
 import { useExchangeForm } from '../useExchangeForm';
 import { useExchangeSelectQuote } from '../useExchangeSelectQuote';
 
@@ -82,25 +77,28 @@ describe('useExchangeSelectQuote', () => {
             'eth-account-key' as AccountKey, // Todo: create properly via `createAccountKey()`
         );
 
-        const preloadedState: PreloadedState = {
-            wallet: {
-                trading: getInitializedTradingStateWithQuotes(),
-                accounts: [btcAccount, ethAccount],
-            },
-        };
+        const tradingState = getInitializedTradingStateWithQuotes();
 
         if (isLoading !== undefined) {
-            preloadedState.wallet!.trading!.exchange!.isLoading = isLoading;
+            tradingState.exchange.isLoading = isLoading;
         }
         if (dexQuoteApprovalPrefetchLoadingQuoteId !== undefined) {
-            preloadedState.wallet!.trading!.exchange!.dexQuoteApprovalPrefetchLoadingQuoteId =
+            tradingState.exchange.dexQuoteApprovalPrefetchLoadingQuoteId =
                 dexQuoteApprovalPrefetchLoadingQuoteId;
         }
 
-        preloadedState.wallet!.trading!.exchange!.tradingAccountKey = 'btc-account-key';
-        preloadedState.wallet!.trading!.exchange!.receiveAccountKey = 'eth-account-key';
+        tradingState.exchange.tradingAccountKey = 'btc-account-key' as AccountKey;
+        tradingState.exchange.receiveAccountKey = 'eth-account-key' as AccountKey;
 
-        return initStore(preloadedState).store;
+        return createTradingLightStore({
+            tradeType: 'exchange',
+            overrides: {
+                wallet: {
+                    trading: tradingState,
+                    accounts: [btcAccount, ethAccount],
+                },
+            },
+        });
     };
 
     const renderExchangeForm = () =>

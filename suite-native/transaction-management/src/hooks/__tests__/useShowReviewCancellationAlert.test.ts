@@ -1,6 +1,6 @@
 import {
     type TestStore,
-    initStore,
+    createStoreFromPreloadedState,
     renderHookWithStoreProvider,
 } from '@suite-native/test-utils-store';
 
@@ -29,7 +29,7 @@ describe('useShowReviewCancellationAlert', () => {
 
     beforeEach(() => {
         mockShowAlert.mockClear();
-        store = initStore().store;
+        store = createStoreFromPreloadedState();
     });
 
     it('should return stable callback', () => {
@@ -53,7 +53,7 @@ describe('useShowReviewCancellationAlert', () => {
     });
 
     it('should resolve with wasReviewCanceled true when primary button is pressed', async () => {
-        const dispatchSpy = jest.spyOn(store, 'dispatch').mockReturnValue({} as any);
+        const dispatchSpy = jest.spyOn(store, 'dispatch');
         const { result } = renderUseShowReviewCancellationAlert();
         const promise = result.current();
         const alertConfig = mockShowAlert.mock.calls[0][0];

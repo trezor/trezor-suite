@@ -1,11 +1,6 @@
 import type { CryptoId } from 'invity-api';
 
-import {
-    type PreloadedState,
-    StoreProviderForTests,
-    renderHook,
-    waitFor,
-} from '@suite-native/test-utils-store';
+import { StoreProviderForTests, renderHook, waitFor } from '@suite-native/test-utils-store';
 import { adaAsset, btcAsset, usdcAsset } from '@suite-native/trading-fixtures';
 import { type TradeableAsset } from '@suite-native/trading-types';
 
@@ -21,7 +16,7 @@ describe('useFavouriteAssetsSectionList', () => {
         initialAssets: TradeableAsset[],
         favouriteAssets: Record<CryptoId, true>,
     ) => {
-        const preloadedState: Partial<PreloadedState> = {
+        const preloadedState: Record<string, unknown> = {
             wallet: {
                 trading: {
                     favouriteAssets,

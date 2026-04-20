@@ -2,12 +2,7 @@ import type { CryptoId } from 'invity-api';
 
 import type { WalletSettings } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
-import {
-    type FullAppState,
-    type PreloadedState,
-    act,
-    renderHookWithStoreProvider,
-} from '@suite-native/test-utils-store';
+import { act } from '@suite-native/test-utils-store';
 import {
     btcAsset,
     createMockRate,
@@ -17,6 +12,11 @@ import {
 import { PROTO } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
+import {
+    type PreloadedStatePartial,
+    type TradingTestPreloadedState,
+    renderHookWithTradingProvider,
+} from '../../../__tests__/tradingTestUtils';
 import { useTradingFiatValues } from '../useTradingFiatValues';
 
 jest.mock('@suite-common/fiat-services', () => ({
@@ -24,9 +24,9 @@ jest.mock('@suite-common/fiat-services', () => ({
     fetchCurrentFiatRates: () => Promise.resolve(null),
 }));
 
-const getPreloadedState = (
-    walletOverrides: Partial<FullAppState['wallet']> = {},
-): PreloadedState => ({
+const getOverrides = (
+    walletOverrides: Record<string, unknown> = {},
+): PreloadedStatePartial<TradingTestPreloadedState> => ({
     wallet: {
         ...mockWalletFiatRatesAndSettings({
             [getFiatRateKey('eth', 'usd', usdcAsset.contractAddress!)]: createMockRate(1, 'eth'),
@@ -38,10 +38,10 @@ const getPreloadedState = (
 const renderUseTradingFiatValues = async (
     amount: string | undefined,
     cryptoId: CryptoId | undefined,
-    preloadedState: PreloadedState = getPreloadedState(),
+    overrides: PreloadedStatePartial<TradingTestPreloadedState> = getOverrides(),
 ) => {
-    const res = renderHookWithStoreProvider(() => useTradingFiatValues(amount, cryptoId), {
-        preloadedState,
+    const res = renderHookWithTradingProvider(() => useTradingFiatValues(amount, cryptoId), {
+        overrides,
     });
 
     // await mocked loading of rates
@@ -97,18 +97,14 @@ describe('useTradingFiatValues', () => {
 
     describe('handles shouldSendInSats option', () => {
         it('should convert amount to satoshis when bitcoinAmountUnit is SATOSHI', async () => {
-            const preloadedState = getPreloadedState({
+            const overrides = getOverrides({
                 settings: {
                     localCurrency: 'usd',
                     bitcoinAmountUnit: PROTO.AmountUnit.SATOSHI,
                 } as WalletSettings,
             });
 
-            const { result } = await renderUseTradingFiatValues(
-                '1',
-                btcAsset.cryptoId,
-                preloadedState,
-            );
+            const { result } = await renderUseTradingFiatValues('1', btcAsset.cryptoId, overrides);
 
             expect(result.current?.formattedBalance).toBe('100000000');
             expect(result.current?.accountBalance).toBe('1');

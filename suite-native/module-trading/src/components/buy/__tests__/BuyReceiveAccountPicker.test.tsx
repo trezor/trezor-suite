@@ -1,19 +1,18 @@
 import { Form } from '@suite-native/forms';
-import {
-    type PreloadedState,
-    act,
-    fireEvent,
-    renderHookWithStoreProvider,
-    renderWithStoreProvider,
-} from '@suite-native/test-utils-store';
+import { act, fireEvent } from '@suite-native/test-utils-store';
 import { btc1NormalAccount, btcAsset } from '@suite-native/trading-fixtures';
-import { tradingInitialState } from '@suite-native/trading-state';
 import {
     type BuyFormType,
     type ReceiveAccount,
     type TradeableAsset,
 } from '@suite-native/trading-types';
 
+import {
+    type PreloadedStatePartial,
+    type TradingTestPreloadedState,
+    renderHookWithTradingProvider,
+    renderWithTradingProvider,
+} from '../../../__tests__/tradingTestUtils';
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';
 import { BuyReceiveAccountPicker } from '../BuyReceiveAccountPicker';
 
@@ -28,12 +27,12 @@ jest.mock('@react-navigation/native', () => ({
     }),
 }));
 
-const getTradingState = (selectedReceiveAccount: ReceiveAccount | undefined) => ({
+const tradingStateWithReceiveAccount = (
+    selectedReceiveAccount: ReceiveAccount | undefined,
+): PreloadedStatePartial<TradingTestPreloadedState> => ({
     wallet: {
         trading: {
-            ...tradingInitialState,
             buy: {
-                ...tradingInitialState.buy,
                 receiveAddress: selectedReceiveAccount?.address?.address,
                 tradingAccountKey: selectedReceiveAccount?.account.key,
             },
@@ -46,14 +45,17 @@ describe('BuyReceiveAccountPicker', () => {
     let buyForm: BuyFormType;
 
     const renderBuyForm = () => {
-        const { result } = renderHookWithStoreProvider(() => useBuyForm());
+        const { result } = renderHookWithTradingProvider(() => useBuyForm(), {
+            tradeType: 'buy',
+        });
 
         return result.current;
     };
 
-    const renderPicker = ({ preloadedState }: { preloadedState?: PreloadedState } = {}) =>
-        renderWithStoreProvider(<BuyReceiveAccountPicker />, {
-            preloadedState,
+    const renderPicker = (overrides: PreloadedStatePartial<TradingTestPreloadedState> = {}) =>
+        renderWithTradingProvider(<BuyReceiveAccountPicker />, {
+            tradeType: 'buy',
+            overrides,
             wrapper: ({ children }) => <Form form={buyForm}>{children}</Form>,
         });
 
@@ -83,12 +85,12 @@ describe('BuyReceiveAccountPicker', () => {
 
     it('should display selected account name and address', () => {
         setSelectedAsset(btcAsset);
-        const { getByText } = renderPicker({
-            preloadedState: getTradingState({
+        const { getByText } = renderPicker(
+            tradingStateWithReceiveAccount({
                 account: btc1NormalAccount,
                 address: btc1NormalAccount.addresses?.used[0],
             }),
-        });
+        );
 
         expect(getByText(btcAccountName1)).toBeTruthy();
         expect(getByText(btcAddressAddress)).toBeTruthy();
@@ -96,12 +98,12 @@ describe('BuyReceiveAccountPicker', () => {
 
     it('should call navigate with correct params on press', () => {
         setSelectedAsset(btcAsset);
-        const { getByText } = renderPicker({
-            preloadedState: getTradingState({
+        const { getByText } = renderPicker(
+            tradingStateWithReceiveAccount({
                 account: btc1NormalAccount,
                 address: btc1NormalAccount.addresses?.used[0],
             }),
-        });
+        );
 
         fireEvent.press(getByText('Receive account'));
 

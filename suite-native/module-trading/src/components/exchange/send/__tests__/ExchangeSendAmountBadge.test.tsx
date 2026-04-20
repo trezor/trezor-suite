@@ -1,34 +1,43 @@
+import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
 import { Form } from '@suite-native/forms';
-import {
-    type PreloadedState,
-    act,
-    renderHookWithStoreProvider,
-    renderWithStoreProvider,
-} from '@suite-native/test-utils-store';
-import { btcAsset, getWalletState } from '@suite-native/trading-fixtures';
+import { act } from '@suite-native/test-utils-store';
+import { btcAsset } from '@suite-native/trading-fixtures';
 import { type ExchangeFormType } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
+import {
+    type PreloadedStatePartial,
+    type TradingTestPreloadedState,
+    renderHookWithTradingProvider,
+    renderWithTradingProvider,
+} from '../../../../__tests__/tradingTestUtils';
 import { useExchangeForm } from '../../../../hooks/exchange/useExchangeForm';
 import { ExchangeSendAmountBadge } from '../ExchangeSendAmountBadge';
 
 describe('ExchangeSendAmountBadge', () => {
     let form: ExchangeFormType;
 
-    const getPreloadedState = (bitcoinAmountUnit = PROTO.AmountUnit.BITCOIN): PreloadedState => ({
-        wallet: getWalletState({ tradeType: 'exchange', bitcoinAmountUnit }),
-    });
+    const baseOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {
+        featureFlags: {
+            ...featureFlagsInitialState,
+            [FeatureFlag.AreTradingExchangeDexesEnabled]: true,
+        },
+    };
 
-    const renderForm = () => renderHookWithStoreProvider(() => useExchangeForm());
-
-    const renderExchangeSendAmountBadge = (preloadedState: PreloadedState = getPreloadedState()) =>
-        renderWithStoreProvider(<ExchangeSendAmountBadge />, {
-            preloadedState,
+    const renderExchangeSendAmountBadge = (
+        extraOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
+    ) =>
+        renderWithTradingProvider(<ExchangeSendAmountBadge />, {
+            tradeType: 'exchange',
+            overrides: { ...baseOverrides, ...extraOverrides },
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 
     beforeEach(() => {
-        const { result } = renderForm();
+        const { result } = renderHookWithTradingProvider(() => useExchangeForm(), {
+            tradeType: 'exchange',
+            overrides: baseOverrides,
+        });
         form = result.current;
     });
 
@@ -94,10 +103,10 @@ describe('ExchangeSendAmountBadge', () => {
                 });
                 form.setValue('sendCryptoAmount', '1000');
             });
-            const preloadedState = getPreloadedState();
-            preloadedState!.wallet!.trading!.exchange!.isLoading = true;
 
-            const { getByText, queryByText } = renderExchangeSendAmountBadge(preloadedState);
+            const { getByText, queryByText } = renderExchangeSendAmountBadge({
+                wallet: { trading: { exchange: { isLoading: true } } },
+            });
 
             expect(queryByText('VALIDATION_ERROR')).toBeNull();
             expect(getByText('$1.00')).toBeOnTheScreen();
@@ -108,9 +117,9 @@ describe('ExchangeSendAmountBadge', () => {
                 form.setValue('sendCryptoAmount', '1234567123456');
             });
 
-            const { getByText } = renderExchangeSendAmountBadge(
-                getPreloadedState(PROTO.AmountUnit.SATOSHI),
-            );
+            const { getByText } = renderExchangeSendAmountBadge({
+                wallet: { settings: { bitcoinAmountUnit: PROTO.AmountUnit.SATOSHI } },
+            });
 
             expect(getByText('$12.35')).toBeOnTheScreen();
         });

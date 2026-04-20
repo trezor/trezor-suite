@@ -1,6 +1,18 @@
+import { type StateFromReducersMapObject, combineReducers } from '@reduxjs/toolkit';
+
+import { deviceInitialState } from '@suite-common/device';
+import { messageSystemInitialState } from '@suite-common/message-system';
+import { initialSuiteSyncDataState, initialSuiteSyncState } from '@suite-common/suite-sync';
+import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
-import { renderWithStoreProvider } from '@suite-native/test-utils-store';
+import { localeReducer } from '@suite-native/intl';
+import {
+    type PreloadedStatePartial,
+    createLightStore,
+    createStaticReducer,
+    renderWithStoreProvider,
+} from '@suite-native/test-utils-store';
 import type { StaticSessionId } from '@trezor/connect';
 
 import { AccountLabel, type AccountLabelPropsWithAccount } from '../AccountLabel';
@@ -18,9 +30,29 @@ describe('AccountLabel', () => {
         visible: true,
     });
 
+    const reducer = {
+        locale: localeReducer,
+        device: createStaticReducer(deviceInitialState),
+        messageSystem: createStaticReducer(messageSystemInitialState),
+        suiteSync: createStaticReducer(initialSuiteSyncState),
+        suiteSyncData: createStaticReducer(initialSuiteSyncDataState),
+        wallet: combineReducers({
+            settings: createStaticReducer(initialWalletSettingsState),
+            accounts: createStaticReducer([ethAccount]),
+        }),
+    } as const;
+
     const renderAccountLabel = (props: AccountLabelPropsWithAccount) =>
         renderWithStoreProvider(<AccountLabel {...props} />, {
-            preloadedState: { wallet: { accounts: [ethAccount] } },
+            store: createLightStore({
+                reducer,
+                preloadedState: {
+                    wallet: {
+                        settings: initialWalletSettingsState,
+                        accounts: [ethAccount],
+                    },
+                } satisfies PreloadedStatePartial<StateFromReducersMapObject<typeof reducer>>,
+            }),
         });
 
     it('should render account label when account is provided', () => {

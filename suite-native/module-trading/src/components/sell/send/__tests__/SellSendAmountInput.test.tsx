@@ -1,16 +1,16 @@
 import { type Account, type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { Form } from '@suite-native/forms';
-import {
-    type PreloadedState,
-    act,
-    renderHookWithStoreProvider,
-    renderWithStoreProvider,
-    userEvent,
-} from '@suite-native/test-utils-store';
-import { btcAsset, getWalletState, usdcAsset } from '@suite-native/trading-fixtures';
+import { act, userEvent } from '@suite-native/test-utils-store';
+import { btcAsset, usdcAsset } from '@suite-native/trading-fixtures';
 import { type SellFormType } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
+import {
+    type PreloadedStatePartial,
+    type TradingTestPreloadedState,
+    renderHookWithTradingProvider,
+    renderWithTradingProvider,
+} from '../../../../__tests__/tradingTestUtils';
 import { useSellForm } from '../../../../hooks/sell/useSellForm';
 import { SellSendAmountInput, type SellSendAmountInputProps } from '../SellSendAmountInput';
 
@@ -28,18 +28,21 @@ describe('SellSendAmountInput', () => {
     const renderCryptoAmountInput = (
         props: Partial<SellSendAmountInputProps>,
         form: SellFormType,
-        preloadedState: PreloadedState = {},
+        overrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
     ) =>
-        renderWithStoreProvider(
+        renderWithTradingProvider(
             <Form form={form}>
                 <SellSendAmountInput showAssetsSheet={jest.fn()} {...props} />
             </Form>,
-            { preloadedState },
+            { tradeType: 'sell', overrides },
         );
 
-    const renderUseTradingSellForm = (preloadedState: PreloadedState = {}) => {
-        const { result } = renderHookWithStoreProvider(() => useSellForm(), {
-            preloadedState,
+    const renderUseTradingSellForm = (
+        overrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
+    ) => {
+        const { result } = renderHookWithTradingProvider(() => useSellForm(), {
+            tradeType: 'sell',
+            overrides,
         });
 
         return result.current;
@@ -105,14 +108,14 @@ describe('SellSendAmountInput', () => {
     });
 
     it('should format input value to be integer when BTC asset is selected and value should be displayed in sats', async () => {
-        const preloadedState = {
+        const overrides = {
             wallet: { settings: { bitcoinAmountUnit: PROTO.AmountUnit.SATOSHI } },
         };
-        const form = renderUseTradingSellForm(preloadedState);
+        const form = renderUseTradingSellForm(overrides);
         act(() => {
             form.setValue('sendAsset', btcAsset);
         });
-        const { getByLabelText } = renderCryptoAmountInput({}, form, preloadedState);
+        const { getByLabelText } = renderCryptoAmountInput({}, form, overrides);
 
         await userEvent.type(getByLabelText('You pay'), 'asd1.123');
 
@@ -121,14 +124,14 @@ describe('SellSendAmountInput', () => {
     });
 
     it('should always escape non-numeric characters', async () => {
-        const preloadedState = {
+        const overrides = {
             wallet: { settings: { bitcoinAmountUnit: PROTO.AmountUnit.SATOSHI } },
         };
-        const form = renderUseTradingSellForm(preloadedState);
+        const form = renderUseTradingSellForm(overrides);
         act(() => {
             form.setValue('sendAsset', btcAsset);
         });
-        const { getByLabelText } = renderCryptoAmountInput({}, form, preloadedState);
+        const { getByLabelText } = renderCryptoAmountInput({}, form, overrides);
 
         await userEvent.type(getByLabelText('You pay'), 'asd');
 
@@ -157,29 +160,27 @@ describe('SellSendAmountInput', () => {
     });
 
     it('should display loading skeleton while amountInCrypto is false and quotes are loading', () => {
-        const preloadedState = { wallet: getWalletState({ tradeType: 'sell' }) };
-        preloadedState.wallet!.trading!.sell!.isLoading = true;
-        const form = renderUseTradingSellForm(preloadedState);
+        const overrides = { wallet: { trading: { sell: { isLoading: true } } } };
+        const form = renderUseTradingSellForm(overrides);
 
         act(() => {
             form.setValue('amountInCrypto', false);
         });
 
-        const { getByLabelText } = renderCryptoAmountInput({}, form, preloadedState);
+        const { getByLabelText } = renderCryptoAmountInput({}, form, overrides);
 
         expect(getByLabelText('Fetching offers...')).toBeTruthy();
     });
 
     it('should not display loading skeleton when amountInCrypto is true', () => {
-        const preloadedState = { wallet: getWalletState({ tradeType: 'sell' }) };
-        preloadedState.wallet!.trading!.sell!.isLoading = true;
-        const form = renderUseTradingSellForm(preloadedState);
+        const overrides = { wallet: { trading: { sell: { isLoading: true } } } };
+        const form = renderUseTradingSellForm(overrides);
 
         act(() => {
             form.setValue('amountInCrypto', true);
         });
 
-        const { queryByLabelText } = renderCryptoAmountInput({}, form, preloadedState);
+        const { queryByLabelText } = renderCryptoAmountInput({}, form, overrides);
 
         expect(queryByLabelText('Fetching offers...')).toBeNull();
     });

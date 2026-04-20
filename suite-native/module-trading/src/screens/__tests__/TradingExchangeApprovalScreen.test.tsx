@@ -3,18 +3,13 @@ import { type RouteProp } from '@react-navigation/native';
 import { selectTradingExchangeSelectedQuote, tradingExchangeActions } from '@suite-common/trading';
 import { getTranslation } from '@suite-native/intl';
 import { type TradingStackParamList, type TradingStackRoutes } from '@suite-native/navigation';
-import {
-    type TestStore,
-    fireEvent,
-    initStore,
-    renderWithStoreProvider,
-} from '@suite-native/test-utils-store';
-import {
-    eth1NormalAccount,
-    getWalletState,
-    mercuryoFixedWorstQuote,
-} from '@suite-native/trading-fixtures';
+import { type TestStore, fireEvent } from '@suite-native/test-utils-store';
+import { eth1NormalAccount, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 
+import {
+    createTradingLightStore,
+    renderWithTradingProvider,
+} from '../../__tests__/tradingTestUtils';
 import { TradingExchangeApprovalScreen } from '../TradingExchangeApprovalScreen';
 
 const mockShowSheet = jest.fn();
@@ -77,9 +72,9 @@ describe('TradingExchangeApprovalScreen', () => {
     const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
     const renderScreen = () => {
-        const result = renderWithStoreProvider(
+        const result = renderWithTradingProvider(
             <TradingExchangeApprovalScreen route={{ params: {} } as any} navigation={{} as any} />,
-            { store },
+            { store, tradeType: 'exchange' },
         );
 
         ({ unmount } = result);
@@ -92,13 +87,7 @@ describe('TradingExchangeApprovalScreen', () => {
 
         mockIsDeviceConnected = true;
 
-        const preloadedState = {
-            wallet: getWalletState({
-                tradeType: 'exchange',
-            }),
-        };
-
-        store = initStore(preloadedState).store;
+        store = createTradingLightStore({ tradeType: 'exchange' });
         store.dispatch(tradingExchangeActions.savePreselectedQuote(testQuote));
         store.dispatch(tradingExchangeActions.setTradingAccountKey(eth1NormalAccount.key));
     });

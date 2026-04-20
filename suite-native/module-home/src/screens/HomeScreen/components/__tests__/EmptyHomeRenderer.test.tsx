@@ -1,17 +1,21 @@
 import { PORTFOLIO_TRACKER_DEVICE_ID } from '@suite-common/device';
 import { getTranslation } from '@suite-native/intl';
-import {
-    type PreloadedState,
-    renderWithStoreProvider,
-    screen,
-} from '@suite-native/test-utils-store';
+import { renderWithStoreProvider, screen } from '@suite-native/test-utils-store';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { EmptyHomeRenderer } from '../EmptyHomeRenderer';
 
+const defaultMessageSystem = {
+    config: { actions: [] },
+    validMessages: { banner: [], context: [], modal: [], feature: [] },
+    dismissedMessages: [],
+};
+
 describe('EmptyHomeRenderer', () => {
-    const renderEmptyHomeRenderer = (preloadedState: PreloadedState) =>
-        renderWithStoreProvider(<EmptyHomeRenderer />, { preloadedState });
+    const renderEmptyHomeRenderer = (preloadedState: Record<string, unknown>) =>
+        renderWithStoreProvider(<EmptyHomeRenderer />, {
+            preloadedState: { messageSystem: defaultMessageSystem, ...preloadedState },
+        });
 
     const expectUninitializedConnectedDeviceState = () => {
         expect(

@@ -1,11 +1,11 @@
 import { selectTradingProviderMetadata } from '@suite-common/trading';
-import {
-    type TestStore,
-    initStore,
-    renderHookWithStoreProvider,
-} from '@suite-native/test-utils-store';
-import { buyMercuryo, getWalletState } from '@suite-native/trading-fixtures';
+import { type TestStore } from '@suite-native/test-utils-store';
+import { buyMercuryo } from '@suite-native/trading-fixtures';
 
+import {
+    createTradingLightStore,
+    renderHookWithTradingProvider,
+} from '../../../../__tests__/tradingTestUtils';
 import {
     type QuoteProviderFormWatch,
     useProviderMetadataChangeEffect,
@@ -26,12 +26,13 @@ describe('useProviderMetadataChangeEffect', () => {
     let store: TestStore;
 
     const renderUseProviderMetadataChangeEffect = (watch: QuoteProviderFormWatch) =>
-        renderHookWithStoreProvider(() => useProviderMetadataChangeEffect(watch, 'buy'), {
+        renderHookWithTradingProvider(() => useProviderMetadataChangeEffect(watch, 'buy'), {
             store,
+            tradeType: 'buy',
         });
 
     beforeEach(() => {
-        ({ store } = initStore({ wallet: getWalletState({ tradeType: 'buy' }) }));
+        store = createTradingLightStore({ tradeType: 'buy' });
         mockIsFocused = true;
     });
 

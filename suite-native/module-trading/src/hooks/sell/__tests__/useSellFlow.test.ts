@@ -3,18 +3,10 @@ import type { SellFiatTrade, SellFiatTradeResponse } from 'invity-api';
 import { tradingSellActions } from '@suite-common/trading';
 import type { sellThunks } from '@suite-common/trading';
 import { type AccountKey } from '@suite-common/wallet-types';
-import {
-    type TestStore,
-    act,
-    initStore,
-    renderHookWithStoreProvider,
-} from '@suite-native/test-utils-store';
-import {
-    banxaCreditCardSellQuote,
-    getWalletState,
-    verifiedBankAccount,
-} from '@suite-native/trading-fixtures';
+import { type TestStore, act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
+import { banxaCreditCardSellQuote, verifiedBankAccount } from '@suite-native/trading-fixtures';
 
+import { createTradingLightStore } from '../../../__tests__/tradingTestUtils';
 import { useSellFlow } from '../useSellFlow';
 
 // Store captured arguments for testing side effects (processResponseData callback)
@@ -76,7 +68,7 @@ describe('useSellFlow', () => {
     const renderUseSellFlow = () => renderHookWithStoreProvider(() => useSellFlow(), { store });
 
     beforeEach(() => {
-        store = initStore({ wallet: getWalletState({ tradeType: 'sell' }) }).store;
+        store = createTradingLightStore({ tradeType: 'sell' });
 
         capturedHandleTradeArgs = null;
         jest.clearAllMocks();

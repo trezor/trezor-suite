@@ -1,17 +1,18 @@
 import { type ReactNode, useMemo } from 'react';
 import { Provider } from 'react-redux';
 
+import type { EnhancedStore } from '@reduxjs/toolkit';
+
 import { useFormattersConfig } from '@suite-native/formatters-config';
-import type { PreloadedState, Store } from '@suite-native/state';
 import { BasicProviderForTests } from '@suite-native/test-utils';
 
-import { initStore } from './initStore';
+import { createStoreFromPreloadedState } from './createStoreFromPreloadedState';
 
-export type TestStore = Store;
+export type TestStore = EnhancedStore;
 
 type ReduxProviderProps = {
     children: ReactNode;
-    preloadedState: PreloadedState;
+    preloadedState?: Record<string, unknown>;
     injectedStore?: TestStore;
 };
 
@@ -40,9 +41,7 @@ export const StoreProviderForTests = ({
             return injectedStore;
         }
 
-        const { store: freshStore } = initStore(preloadedState);
-
-        return freshStore;
+        return createStoreFromPreloadedState(preloadedState);
     }, [injectedStore, preloadedState]);
 
     return (

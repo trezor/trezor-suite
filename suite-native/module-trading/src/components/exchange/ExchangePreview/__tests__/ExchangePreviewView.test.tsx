@@ -1,34 +1,46 @@
-import { type PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils-store';
+import { type AccountKey } from '@suite-common/wallet-types';
 import {
     btc1NormalAccount,
     cexdirectFloatingQuote,
     eth1NormalAccount,
-    exchangeQuotes,
-    getWalletState,
     mercuryoFixedWorstQuote,
+    oneInchFusionPlusQuote,
 } from '@suite-native/trading-fixtures';
 
+import { renderWithTradingProvider } from '../../../../__tests__/tradingTestUtils';
 import { ExchangePreviewView, type ExchangePreviewViewProps } from '../ExchangePreviewView';
 
 describe('ExchangePreviewView', () => {
-    const renderExchangePreviewView = (props: Partial<ExchangePreviewViewProps> = {}) => {
-        const preloadedState: PreloadedState = {
-            wallet: getWalletState({ tradeType: 'exchange' }),
-        };
-        preloadedState.wallet!.trading!.composedTransactionInfo = { composed: { fee: '1000' } };
-        preloadedState.wallet!.trading!.exchange!.tradingAccountKey = btc1NormalAccount.key;
-        preloadedState.wallet!.trading!.exchange!.receiveAccountKey = eth1NormalAccount.key;
-        preloadedState.wallet!.trading!.exchange!.lastErrorMessage = 'ERROR_MESSAGE';
-
-        return renderWithStoreProvider(
+    const renderExchangePreviewView = (props: Partial<ExchangePreviewViewProps> = {}) =>
+        renderWithTradingProvider(
             <ExchangePreviewView
                 quote={mercuryoFixedWorstQuote}
                 txnErrorString={null}
                 {...props}
             />,
-            { preloadedState },
+            {
+                tradeType: 'exchange',
+                overrides: {
+                    wallet: {
+                        trading: {
+                            composedTransactionInfo: {
+                                composed: {
+                                    fee: '1000',
+                                    feePerByte: '1',
+                                    feeLimit: '21000',
+                                    estimatedFeeLimit: '21000',
+                                },
+                            },
+                            exchange: {
+                                tradingAccountKey: btc1NormalAccount.key as AccountKey,
+                                receiveAccountKey: eth1NormalAccount.key as AccountKey,
+                                lastErrorMessage: 'ERROR_MESSAGE',
+                            },
+                        },
+                    },
+                },
+            },
         );
-    };
 
     it('should render all sections except alert', () => {
         const { getByText } = renderExchangePreviewView({});
@@ -51,18 +63,16 @@ describe('ExchangePreviewView', () => {
     });
 
     it('should render 1Inch Fusion+ info when exchange is 1inchfusionplus', () => {
-        const fusionQuote = exchangeQuotes.find(q => q.exchange === '1inchfusionplus');
         const { getByText } = renderExchangePreviewView({
-            quote: fusionQuote,
+            quote: oneInchFusionPlusQuote,
         });
 
         expect(getByText('You are swapping with 1Inch Fusion+')).toBeOnTheScreen();
     });
 
     it('should not render 1Inch Fusion+ info when exchange is not 1inchfusionplus', () => {
-        const nonFusionQuote = exchangeQuotes.find(q => q.exchange === 'mercuryo');
         const { queryByText } = renderExchangePreviewView({
-            quote: nonFusionQuote,
+            quote: mercuryoFixedWorstQuote,
         });
 
         expect(queryByText('You are swapping with 1Inch Fusion+')).toBeNull();

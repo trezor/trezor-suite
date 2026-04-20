@@ -1,5 +1,4 @@
 import { type TradingTransaction } from '@suite-common/trading';
-import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 import {
     getBuyTrade,
     getExchangeTrade,
@@ -7,9 +6,10 @@ import {
     getSellTrade,
 } from '@suite-native/trading-fixtures';
 
+import { renderWithTradingProvider } from '../../../../__tests__/tradingTestUtils';
 import { TradeDetailHeader } from '../TradeDetailHeader';
 
-const createPreloadedState = (trades: TradingTransaction[]) => ({
+const createOverrides = (trades: TradingTransaction[]) => ({
     wallet: {
         trading: {
             ...getInitializedTradingStateWithQuotes(),
@@ -24,9 +24,9 @@ describe('TradeDetailHeader', () => {
     });
 
     const renderHeader = (orderId: string, trades: TradingTransaction[] = []) =>
-        renderWithStoreProvider(
+        renderWithTradingProvider(
             <TradeDetailHeader orderId={orderId} onOpenedBrowser={jest.fn()} />,
-            { preloadedState: createPreloadedState(trades) },
+            { overrides: createOverrides(trades) },
         );
 
     describe('Trade Not Found', () => {

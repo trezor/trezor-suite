@@ -1,18 +1,15 @@
+import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
 import { Form } from '@suite-native/forms';
-import {
-    type PreloadedState,
-    act,
-    fireEvent,
-    renderHookWithStoreProvider,
-    renderWithStoreProvider,
-} from '@suite-native/test-utils-store';
-import {
-    getInitializedTradingState,
-    mercuryoFixedWorstQuote,
-    usdcAsset,
-} from '@suite-native/trading-fixtures';
+import { act, fireEvent } from '@suite-native/test-utils-store';
+import { mercuryoFixedWorstQuote, usdcAsset } from '@suite-native/trading-fixtures';
 import { type ExchangeFormType } from '@suite-native/trading-types';
 
+import {
+    type PreloadedStatePartial,
+    type TradingTestPreloadedState,
+    renderHookWithTradingProvider,
+    renderWithTradingProvider,
+} from '../../../../__tests__/tradingTestUtils';
 import { useExchangeForm } from '../../../../hooks/exchange/useExchangeForm';
 import {
     ExchangeReceiveAmountInput,
@@ -22,19 +19,32 @@ import {
 describe('ExchangeReceiveAmountInput', () => {
     let form: ExchangeFormType;
 
-    const renderForm = () => renderHookWithStoreProvider(() => useExchangeForm());
+    const baseOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {
+        featureFlags: {
+            ...featureFlagsInitialState,
+            [FeatureFlag.AreTradingExchangeDexesEnabled]: true,
+            [FeatureFlag.IsTradingResidenceCheckEnabled]: false,
+        },
+    };
 
     const renderExchangeReceiveAmountInput = (
         props: Partial<ExchangeReceiveAmountInputProps> = {},
-        preloadedState: PreloadedState = {},
+        extraOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
     ) =>
-        renderWithStoreProvider(
+        renderWithTradingProvider(
             <ExchangeReceiveAmountInput showAssetsSheet={jest.fn()} {...props} />,
-            { preloadedState, wrapper: ({ children }) => <Form form={form}>{children}</Form> },
+            {
+                tradeType: 'exchange',
+                overrides: { ...baseOverrides, ...extraOverrides },
+                wrapper: ({ children }) => <Form form={form}>{children}</Form>,
+            },
         );
 
     beforeEach(() => {
-        const { result } = renderForm();
+        const { result } = renderHookWithTradingProvider(() => useExchangeForm(), {
+            tradeType: 'exchange',
+            overrides: baseOverrides,
+        });
         form = result.current;
     });
 
@@ -61,10 +71,10 @@ describe('ExchangeReceiveAmountInput', () => {
     });
 
     it('should display loading skeleton when quotes are being fetched', () => {
-        const preloadedState = { wallet: { trading: getInitializedTradingState() } };
-        preloadedState.wallet.trading.exchange.isLoading = true;
-
-        const { getByLabelText } = renderExchangeReceiveAmountInput({}, preloadedState);
+        const { getByLabelText } = renderExchangeReceiveAmountInput(
+            {},
+            { wallet: { trading: { exchange: { isLoading: true } } } },
+        );
 
         expect(getByLabelText('Fetching offers...')).toBeTruthy();
     });

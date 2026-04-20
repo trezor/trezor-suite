@@ -1,27 +1,26 @@
 import { Form } from '@suite-native/forms';
-import {
-    type PreloadedState,
-    renderHookWithStoreProvider,
-    renderWithStoreProvider,
-    userEvent,
-} from '@suite-native/test-utils-store';
+import { userEvent } from '@suite-native/test-utils-store';
 import { type SellFormType } from '@suite-native/trading-types';
 
+import {
+    renderHookWithTradingProvider,
+    renderWithTradingProvider,
+} from '../../../../__tests__/tradingTestUtils';
 import { useSellForm } from '../../../../hooks/sell/useSellForm';
 import { SellFiatAmountInput } from '../SellFiatAmountInput';
 
 describe('SellFiatAmountInput', () => {
-    const renderFiatAmountInput = (form: SellFormType, preloadedState: PreloadedState = {}) =>
-        renderWithStoreProvider(
+    const renderFiatAmountInput = (form: SellFormType) =>
+        renderWithTradingProvider(
             <Form form={form}>
                 <SellFiatAmountInput />
             </Form>,
-            { preloadedState },
+            { tradeType: 'sell' },
         );
 
-    const renderUseTradingSellForm = (preloadedState: PreloadedState = {}) => {
-        const { result } = renderHookWithStoreProvider(() => useSellForm(), {
-            preloadedState,
+    const renderUseTradingSellForm = () => {
+        const { result } = renderHookWithTradingProvider(() => useSellForm(), {
+            tradeType: 'sell',
         });
 
         return result.current;

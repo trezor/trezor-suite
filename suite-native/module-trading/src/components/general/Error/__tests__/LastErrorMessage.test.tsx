@@ -1,16 +1,35 @@
+import { combineReducers } from '@reduxjs/toolkit';
+
+import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { tradingBuyActions } from '@suite-common/trading';
-import { type TestStore, initStore, renderWithStoreProvider } from '@suite-native/test-utils-store';
+import { initialWalletSettingsState } from '@suite-common/wallet-core';
+import { localeReducer } from '@suite-native/intl';
+import {
+    type TestStore,
+    createLightStore,
+    createStaticReducer,
+    renderWithStoreProvider,
+} from '@suite-native/test-utils-store';
+import { tradingSlice } from '@suite-native/trading-state';
 
 import { LastErrorMessage, type LastErrorMessageProps } from '../LastErrorMessage';
 
 describe('LastErrorMessage', () => {
     let store: TestStore;
 
+    const reducer = {
+        locale: localeReducer,
+        wallet: combineReducers({
+            settings: createStaticReducer(initialWalletSettingsState),
+            trading: tradingSlice.prepareReducer(extraDependenciesCommonMock),
+        }),
+    } as const;
+
     const renderLastErrorMessage = (props: LastErrorMessageProps) =>
         renderWithStoreProvider(<LastErrorMessage {...props} />, { store });
 
     beforeEach(() => {
-        ({ store } = initStore());
+        store = createLightStore({ reducer });
     });
 
     it('should render nothing when no error is specified', () => {

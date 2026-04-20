@@ -1,7 +1,0 @@
-{
-    "ignore-patterns": ["libDev", "lib"],
-    "ignores": [
-        "// Circular dependency: test-utils-store -> state -> ... -> test-utils-store",
-        "@suite-native/state"
-    ]
-}

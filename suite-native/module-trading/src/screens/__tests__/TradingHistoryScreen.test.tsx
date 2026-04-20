@@ -1,13 +1,14 @@
 import { type RouteProp } from '@react-navigation/native';
 
 import { type TradingStackParamList, type TradingStackRoutes } from '@suite-native/navigation';
-import {
-    type PreloadedState,
-    fireEvent,
-    renderWithStoreProvider,
-} from '@suite-native/test-utils-store';
-import { accounts, getBuyTrade, getInitializedTradingState } from '@suite-native/trading-fixtures';
+import { fireEvent } from '@suite-native/test-utils-store';
+import { accounts, getBuyTrade } from '@suite-native/trading-fixtures';
 
+import {
+    type PreloadedStatePartial,
+    type TradingTestPreloadedState,
+    renderWithTradingProvider,
+} from '../../__tests__/tradingTestUtils';
 import { TradingHistoryScreen } from '../TradingHistoryScreen';
 
 const mockShowSheet = jest.fn();
@@ -39,14 +40,7 @@ jest.mock('@suite-common/trading', () => {
     };
 });
 
-const getPreloadedState = (): PreloadedState => ({
-    wallet: {
-        trading: {
-            ...getInitializedTradingState(),
-            trades: [getBuyTrade({ status: 'SUBMITTED' })],
-        },
-        accounts,
-    },
+const overrides: PreloadedStatePartial<TradingTestPreloadedState> = {
     device: {
         devices: [],
         selectedDevice: {
@@ -55,15 +49,19 @@ const getPreloadedState = (): PreloadedState => ({
             },
         },
     },
-});
+    wallet: {
+        trading: {
+            trades: [getBuyTrade({ status: 'SUBMITTED' })],
+        },
+        accounts,
+    },
+};
 
 describe('TradingHistoryScreen', () => {
     let unmount: (() => void) | undefined;
 
-    const renderScreen = (preloadedState: PreloadedState) => {
-        const result = renderWithStoreProvider(<TradingHistoryScreen />, {
-            preloadedState,
-        });
+    const renderScreen = () => {
+        const result = renderWithTradingProvider(<TradingHistoryScreen />, { overrides });
 
         ({ unmount } = result);
 
@@ -81,7 +79,7 @@ describe('TradingHistoryScreen', () => {
     });
 
     it('should render list of trades', () => {
-        const { getByText } = renderScreen(getPreloadedState());
+        const { getByText } = renderScreen();
 
         expect(getByText('Mercuryo')).toBeTruthy();
         expect(getByText('$1,234.00')).toBeTruthy();
@@ -89,7 +87,7 @@ describe('TradingHistoryScreen', () => {
     });
 
     it('should show bottom sheet when trade item is clicked', () => {
-        const { getByText, queryAllByText } = renderScreen(getPreloadedState());
+        const { getByText, queryAllByText } = renderScreen();
 
         fireEvent.press(getByText('Trans. ID: d3ef3451-8f68-4250-9e08-580ece5e7d12'));
 

@@ -187,6 +187,7 @@
         "@rozenite/performance-monitor-plugin": "^1.4.0",
         "@rozenite/redux-devtools-plugin": "^1.4.0",
         "@suite-common/e2e-evolu-client": "workspace:*",
+        "@suite-common/message-system": "workspace:*",
         "@suite-native/storybook": "workspace:*",
         "@suite-native/test-utils-store": "workspace:*",
         "@trezor/connect-mobile": "workspace:^",

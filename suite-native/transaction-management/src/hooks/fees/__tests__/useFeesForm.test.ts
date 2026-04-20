@@ -14,6 +14,7 @@ describe('useFeesForm', () => {
         renderHookWithStoreProvider(() => useFeesForm(props), {
             preloadedState: {
                 wallet: {
+                    fees: {},
                     send: {
                         feeLevels: {
                             normal: {
@@ -110,6 +111,7 @@ describe('useFeesForm', () => {
         const { result } = renderHookWithStoreProvider(() => useFeesForm(mockProps), {
             preloadedState: {
                 wallet: {
+                    fees: {},
                     send: {
                         feeLevels: {},
                     },

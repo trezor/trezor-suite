@@ -1,12 +1,12 @@
 import { Form } from '@suite-native/forms';
-import {
-    act,
-    renderHookWithStoreProvider,
-    renderWithStoreProvider,
-} from '@suite-native/test-utils-store';
+import { act } from '@suite-native/test-utils-store';
 import { btcAsset, getBtcAccount } from '@suite-native/trading-fixtures';
 import { type ExchangeFormType } from '@suite-native/trading-types';
 
+import {
+    renderHookWithTradingProvider,
+    renderWithTradingProvider,
+} from '../../../../__tests__/tradingTestUtils';
 import { useExchangeForm } from '../../../../hooks/exchange/useExchangeForm';
 import {
     ExchangeSendAccountCryptoBalance,
@@ -17,13 +17,16 @@ describe('ExchangeSendAccountCryptoBalance', () => {
     let exchangeForm: ExchangeFormType;
 
     const renderExchangeForm = () => {
-        const { result } = renderHookWithStoreProvider(() => useExchangeForm());
+        const { result } = renderHookWithTradingProvider(() => useExchangeForm(), {
+            tradeType: 'exchange',
+        });
 
         return result.current;
     };
 
     const renderComponent = () =>
-        renderWithStoreProvider(<ExchangeSendAccountCryptoBalance />, {
+        renderWithTradingProvider(<ExchangeSendAccountCryptoBalance />, {
+            tradeType: 'exchange',
             wrapper: ({ children }) => <Form form={exchangeForm}>{children}</Form>,
         });
 

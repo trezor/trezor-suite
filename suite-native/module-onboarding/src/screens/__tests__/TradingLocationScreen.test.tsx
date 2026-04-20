@@ -32,8 +32,24 @@ jest.mock('../../hooks/useExitOnboardingFlow', () => ({
     useExitOnboardingFlow: () => mockExitOnboardingFlow,
 }));
 
+const defaultMessageSystem = {
+    config: { actions: [] },
+    validMessages: { banner: [], context: [], modal: [], feature: [] },
+    dismissedMessages: [],
+};
+
 describe('TradingLocationOnboardingScreen', () => {
-    const renderTradingLocationScreen = () => renderWithStoreProvider(<TradingLocationScreen />);
+    const renderTradingLocationScreen = () =>
+        renderWithStoreProvider(<TradingLocationScreen />, {
+            preloadedState: {
+                messageSystem: defaultMessageSystem,
+                wallet: {
+                    trading: { residence: { country: null, wasOnboardingVisited: false } },
+                },
+                device: { selectedDevice: undefined, devices: [] },
+                featureFlags: {},
+            },
+        });
 
     beforeEach(() => {
         jest.clearAllMocks();

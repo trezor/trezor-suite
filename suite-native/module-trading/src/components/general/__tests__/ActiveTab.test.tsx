@@ -1,6 +1,10 @@
 import { type TradingType } from '@suite-common/trading';
-import { type PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils-store';
 
+import {
+    type PreloadedStatePartial,
+    type TradingTestPreloadedState,
+    renderWithTradingProvider,
+} from '../../../__tests__/tradingTestUtils';
 import { ActiveTab } from '../ActiveTab';
 
 // for the sake of easier testing, we mock the flags to return false
@@ -12,8 +16,8 @@ jest.mock('@suite-native/trading-state', () => ({
 }));
 
 describe('ActiveTab', () => {
-    const renderActiveTab = (preloadedState: PreloadedState) =>
-        renderWithStoreProvider(<ActiveTab />, { preloadedState });
+    const renderActiveTab = (overrides: PreloadedStatePartial<TradingTestPreloadedState>) =>
+        renderWithTradingProvider(<ActiveTab />, { overrides });
 
     it.each<[TradingType, string]>([
         ['buy', 'Buy disabled'],

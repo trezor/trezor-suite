@@ -9,6 +9,10 @@
         {
             "path": "../../packages/styles-native"
         },
+        {
+            "path": "../../suite-common/wallet-core"
+        },
+        { "path": "../intl" },
         { "path": "../test-utils" },
         { "path": "../test-utils-store" },
         { "path": "../trading-consts" },

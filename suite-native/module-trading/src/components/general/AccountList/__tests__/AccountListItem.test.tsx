@@ -1,14 +1,10 @@
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
-import {
-    type TestStore,
-    fireEvent,
-    initStore,
-    renderWithStoreProvider,
-} from '@suite-native/test-utils-store';
+import { type TestStore, fireEvent, renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { type ReceiveAccount } from '@suite-native/trading-types';
 import { type StaticSessionId } from '@trezor/connect';
 
+import { createTradingTestStore } from '../../../../__tests__/tradingTestUtils';
 import { AccountListItem } from '../AccountListItem';
 
 const DEVICE_SESSION_ID: StaticSessionId = '1@2:3';
@@ -21,7 +17,7 @@ const btc10000000Account = mockWalletAccount({
     availableBalance: '10000000',
 });
 
-const defaultPreloadedState = {
+const defaultOverrides = {
     device: {
         devices: [],
         selectedDevice: {
@@ -64,9 +60,9 @@ describe('AccountListItem', () => {
 
     const renderAccountListItem = (
         receiveAccount: ReceiveAccount,
-        preloadedState = defaultPreloadedState,
+        overrides: Record<string, unknown> = defaultOverrides,
     ) => {
-        store = initStore(preloadedState).store;
+        store = createTradingTestStore({ overrides });
 
         return renderWithStoreProvider(
             <AccountListItem onPress={onPressMock} receiveAccount={receiveAccount} />,

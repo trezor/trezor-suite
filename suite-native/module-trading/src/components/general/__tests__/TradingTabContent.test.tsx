@@ -1,6 +1,8 @@
-import { renderWithStoreProvider, screen } from '@suite-native/test-utils-store';
+import { messageSystemStateWithFeatureFlags } from '@suite-common/message-system';
+import { screen } from '@suite-native/test-utils-store';
 import { tradingInitialState } from '@suite-native/trading-state';
 
+import { renderWithTradingProvider } from '../../../__tests__/tradingTestUtils';
 import { TradingTabContent } from '../TradingTabContent';
 
 let mockIsInternetReachable: boolean | null = true;
@@ -21,39 +23,17 @@ jest.mock('../../../hooks/buy/useBuyData', () => ({
 
 describe('TradingTabContent', () => {
     const renderTradingTabContent = (isBlacklisted: boolean = false) =>
-        renderWithStoreProvider(<TradingTabContent />, {
-            preloadedState: {
+        renderWithTradingProvider(<TradingTabContent />, {
+            overrides: {
                 wallet: {
                     trading: {
                         ...tradingInitialState,
                         activeTradingType: 'buy',
                     },
                 },
-                messageSystem: {
-                    validMessages: {
-                        feature: ['actionId'],
-                        banner: [],
-                        context: [],
-                        modal: [],
-                    },
-                    dismissedMessages: {},
-                    config: {
-                        actions: [
-                            {
-                                message: {
-                                    id: 'actionId',
-                                    category: ['feature'],
-                                    feature: [
-                                        {
-                                            domain: 'trading.restrictions.blacklist',
-                                            flag: isBlacklisted,
-                                        },
-                                    ],
-                                },
-                            },
-                        ],
-                    },
-                },
+                messageSystem: messageSystemStateWithFeatureFlags({
+                    'trading.restrictions.blacklist': isBlacklisted,
+                }),
             },
         });
 

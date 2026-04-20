@@ -1,32 +1,41 @@
 import { Form } from '@suite-native/forms';
-import {
-    type PreloadedState,
-    act,
-    renderHookWithStoreProvider,
-    renderWithStoreProvider,
-    userEvent,
-} from '@suite-native/test-utils-store';
-import { getInitializedTradingState } from '@suite-native/trading-fixtures';
+import { act, userEvent } from '@suite-native/test-utils-store';
 import { type BuyFormType } from '@suite-native/trading-types';
 
+import {
+    type PreloadedStatePartial,
+    type TradingTestPreloadedState,
+    renderHookWithTradingProvider,
+    renderWithTradingProvider,
+} from '../../../__tests__/tradingTestUtils';
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';
 import { BuyFiatAmountInput } from '../BuyFiatAmountInput';
 
 describe('BuyFiatAmountInput', () => {
-    const renderFiatAmountInput = (form: BuyFormType, preloadedState: PreloadedState = {}) =>
-        renderWithStoreProvider(
+    const renderFiatAmountInput = (
+        form: BuyFormType,
+        overrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
+    ) =>
+        renderWithTradingProvider(
             <Form form={form}>
                 <BuyFiatAmountInput />
             </Form>,
-            { preloadedState },
+            { tradeType: 'buy', overrides },
         );
 
-    const renderUseTradingBuyForm = (preloadedState: PreloadedState = {}) => {
-        const { result } = renderHookWithStoreProvider(() => useBuyForm(), {
-            preloadedState,
+    const renderUseTradingBuyForm = (
+        overrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
+    ) => {
+        const { result } = renderHookWithTradingProvider(() => useBuyForm(), {
+            tradeType: 'buy',
+            overrides,
         });
 
         return result.current;
+    };
+
+    const withBuyLoading: PreloadedStatePartial<TradingTestPreloadedState> = {
+        wallet: { trading: { buy: { isLoading: true } } },
     };
 
     it('should set fiat value in form', async () => {
@@ -59,24 +68,20 @@ describe('BuyFiatAmountInput', () => {
     });
 
     it('should display loading skeleton while amountInCrypto is true and buyInfo is loading', () => {
-        const preloadedState = { wallet: { trading: getInitializedTradingState() } };
-        preloadedState.wallet.trading.buy.isLoading = true;
         const form = renderUseTradingBuyForm();
         act(() => {
             form.setValue('amountInCrypto', true);
         });
 
-        const { getByLabelText } = renderFiatAmountInput(form, preloadedState);
+        const { getByLabelText } = renderFiatAmountInput(form, withBuyLoading);
 
         expect(getByLabelText('Fetching offers...')).toBeTruthy();
     });
 
     it('should not display loading skeleton while amountInCrypto is false and buyInfo is loading', () => {
-        const preloadedState = { wallet: { trading: getInitializedTradingState() } };
-        preloadedState.wallet.trading.buy.isLoading = true;
         const form = renderUseTradingBuyForm();
 
-        const { queryByLabelText } = renderFiatAmountInput(form, preloadedState);
+        const { queryByLabelText } = renderFiatAmountInput(form, withBuyLoading);
 
         expect(queryByLabelText('Fetching offers...')).toBeNull();
     });

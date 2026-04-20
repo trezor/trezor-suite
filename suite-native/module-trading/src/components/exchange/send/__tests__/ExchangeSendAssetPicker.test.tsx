@@ -1,10 +1,19 @@
+import { combineReducers } from '@reduxjs/toolkit';
 import type { CryptoId } from 'invity-api';
 
+import { deviceInitialState } from '@suite-common/device';
+import { messageSystemInitialState } from '@suite-common/message-system';
+import { initialSuiteSyncDataState, initialSuiteSyncState } from '@suite-common/suite-sync';
+import { extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
+import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
 import { Form } from '@suite-native/forms';
+import { localeReducer } from '@suite-native/intl';
 import {
     type TestStore,
-    initStore,
+    createLightStore,
+    createStaticReducer,
     renderHookWithStoreProvider,
     renderWithStoreProvider,
     userEvent,
@@ -13,8 +22,12 @@ import {
     getBtcAccount,
     getEthAccount,
     getInitializedTradingState,
+    getWalletState,
 } from '@suite-native/trading-fixtures';
-import { selectAccountsWithTokensToSellSectionCondensedListByTradingType } from '@suite-native/trading-state';
+import {
+    selectAccountsWithTokensToSellSectionCondensedListByTradingType,
+    tradingSlice,
+} from '@suite-native/trading-state';
 import { type ExchangeFormType, type MyAssetTradeable } from '@suite-native/trading-types';
 import { BigNumber } from '@trezor/utils';
 
@@ -61,6 +74,14 @@ describe('ExchangeSendAssetPicker', () => {
     ];
 
     const getPreloadedState = () => ({
+        device: deviceInitialState,
+        featureFlags: {
+            ...featureFlagsInitialState,
+            [FeatureFlag.AreTradingExchangeDexesEnabled]: true,
+        },
+        messageSystem: messageSystemInitialState,
+        suiteSync: initialSuiteSyncState,
+        suiteSyncData: initialSuiteSyncDataState,
         wallet: {
             trading: getInitializedTradingState(),
             accounts: [btcAccount, ethAccount],
@@ -77,7 +98,25 @@ describe('ExchangeSendAssetPicker', () => {
         });
 
     beforeEach(() => {
-        store = initStore(getPreloadedState()).store;
+        const walletState = getWalletState({ tradeType: 'exchange' });
+        store = createLightStore({
+            reducer: {
+                locale: localeReducer,
+                device: createStaticReducer(deviceInitialState),
+                featureFlags: createStaticReducer(featureFlagsInitialState),
+                messageSystem: createStaticReducer(messageSystemInitialState),
+                suiteSync: createStaticReducer(initialSuiteSyncState),
+                suiteSyncData: createStaticReducer(initialSuiteSyncDataState),
+                wallet: combineReducers({
+                    settings: createStaticReducer(initialWalletSettingsState),
+                    accounts: createStaticReducer(walletState.accounts),
+                    fiat: createStaticReducer(walletState.fiat),
+                    send: createStaticReducer(walletState.send),
+                    trading: tradingSlice.prepareReducer(extraDependenciesCommonMock),
+                }),
+            },
+            preloadedState: getPreloadedState(),
+        });
         const { result } = renderExchangeForm();
         form = result.current;
 

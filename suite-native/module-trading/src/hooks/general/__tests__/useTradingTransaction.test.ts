@@ -1,16 +1,14 @@
 import { type AccountKey } from '@suite-common/wallet-types';
-import {
-    type PreloadedState,
-    type TestStore,
-    act,
-    initStore,
-    renderHookWithStoreProvider,
-} from '@suite-native/test-utils-store';
+import { type TestStore, act } from '@suite-native/test-utils-store';
 import {
     getBtcAccount,
     getInitializedTradingStateWithQuotes,
 } from '@suite-native/trading-fixtures';
 
+import {
+    createTradingLightStore,
+    renderHookWithTradingProvider,
+} from '../../../__tests__/tradingTestUtils';
 import { useTradingTransaction } from '../useTradingTransaction';
 
 // Mock TrezorConnect to prevent errors during cleanup
@@ -81,18 +79,19 @@ describe('useTradingTransaction', () => {
         // Set a selected quote so the hook can access selectedQuote.send
         tradingState.exchange.selectedQuote = tradingState.exchange.quotes[0];
 
-        const preloadedState: PreloadedState = {
-            wallet: {
-                trading: tradingState,
-                accounts: getMockAccounts(),
+        return createTradingLightStore({
+            tradeType: 'exchange',
+            overrides: {
+                wallet: {
+                    trading: tradingState,
+                    accounts: getMockAccounts(),
+                },
             },
-        };
-
-        return initStore(preloadedState).store;
+        });
     };
 
     const renderUseTradingTransaction = ({ store }: { store: TestStore }) =>
-        renderHookWithStoreProvider(() => useTradingTransaction({ tradeType: 'exchange' }), {
+        renderHookWithTradingProvider(() => useTradingTransaction({ tradeType: 'exchange' }), {
             store,
         });
 

@@ -1,12 +1,11 @@
-import {
-    type PreloadedState,
-    act,
-    renderWithStoreProvider,
-    screen,
-    userEvent,
-} from '@suite-native/test-utils-store';
+import { act, screen, userEvent } from '@suite-native/test-utils-store';
 import { selectIsTradingBuyEnabled } from '@suite-native/trading-state';
 
+import {
+    type PreloadedStatePartial,
+    type TradingTestPreloadedState,
+    renderWithTradingProvider,
+} from '../../../__tests__/tradingTestUtils';
 import { BuyTab } from '../BuyTab';
 
 let mockUseTradingBuyData: jest.Mock;
@@ -30,8 +29,8 @@ describe('BuyTab', () => {
         (selectIsTradingBuyEnabled as jest.Mock).mockReturnValue(true);
     });
 
-    const renderBuyTab = (preloadedState?: PreloadedState) =>
-        renderWithStoreProvider(<BuyTab />, { preloadedState });
+    const renderBuyTab = (overrides?: PreloadedStatePartial<TradingTestPreloadedState>) =>
+        renderWithTradingProvider(<BuyTab />, { overrides });
 
     const expectSkeleton = () => {
         expect(screen.getAllByTestId('BoxSkeleton').length).toBeGreaterThan(0);

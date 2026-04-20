@@ -1,16 +1,21 @@
 import { type TradingTradeType, type TradingType } from '@suite-common/trading';
 import { FeatureFlag } from '@suite-native/feature-flags';
-import { type PreloadedState, renderWithStoreProvider, screen } from '@suite-native/test-utils-store';
-import { getWalletState, mercuryoApplePayBuyQuote } from '@suite-native/trading-fixtures';
+import { screen } from '@suite-native/test-utils-store';
+import { mercuryoApplePayBuyQuote } from '@suite-native/trading-fixtures';
 
+import {
+    type PreloadedStatePartial,
+    type TradingTestPreloadedState,
+    renderWithTradingProvider,
+} from '../../../../__tests__/tradingTestUtils';
 import { ProviderSheet, type ProviderSheetProps } from '../ProviderSheet';
 
 describe('ProviderSheet', () => {
     const renderProviderSheet = (
         props: Partial<ProviderSheetProps<TradingType, TradingTradeType>> = {},
-        preloadedState: PreloadedState = {},
+        overrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
     ) =>
-        renderWithStoreProvider(
+        renderWithTradingProvider(
             <ProviderSheet
                 onClose={jest.fn()}
                 isVisible={true}
@@ -19,7 +24,7 @@ describe('ProviderSheet', () => {
                 tradingType="buy"
                 {...props}
             />,
-            { preloadedState },
+            { overrides },
         );
 
     afterEach(() => {
@@ -63,10 +68,9 @@ describe('ProviderSheet', () => {
     });
 
     it('should render provided quotes', () => {
-        const { queryByText, getByText } = renderProviderSheet(
-            { quotes: { fixed: [mercuryoApplePayBuyQuote] } },
-            { wallet: getWalletState() },
-        );
+        const { queryByText, getByText } = renderProviderSheet({
+            quotes: { fixed: [mercuryoApplePayBuyQuote] },
+        });
 
         expect(queryByText('No offers available.')).toBeNull();
         expect(getByText('Mercuryo')).toBeOnTheScreen();

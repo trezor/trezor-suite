@@ -1,7 +1,6 @@
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Form } from '@suite-native/forms';
 import {
-    type PreloadedState,
     renderHookWithStoreProvider,
     renderWithStoreProvider,
     userEvent,
@@ -25,17 +24,15 @@ describe('CustomFeeCard', () => {
 
     const renderUseFeesForm = (
         accountKey: AccountKey = 'eth-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`,
-        preloadedState?: PreloadedState,
-        defaultFeePerUnit?: string,
     ) => {
         const { result } = renderHookWithStoreProvider(
             () =>
                 useFeesForm({
                     accountKey,
-                    defaultFeePerUnit: defaultFeePerUnit || '1',
+                    defaultFeePerUnit: '1',
                 }),
             {
-                preloadedState: preloadedState || defaultState,
+                preloadedState: defaultState,
             },
         );
 
@@ -44,17 +41,15 @@ describe('CustomFeeCard', () => {
 
     const renderCustomFeeCard = ({
         form,
-        preloadedState,
         props,
     }: {
         form: FeesFormType;
-        preloadedState?: PreloadedState;
         props?: Partial<CustomFeeCardProps>;
     }) => {
         const finalProps = { ...defaultProps, ...props };
 
         return renderWithStoreProvider(<CustomFeeCard {...finalProps} />, {
-            preloadedState: preloadedState || defaultState,
+            preloadedState: defaultState,
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
     };

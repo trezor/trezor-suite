@@ -5,10 +5,8 @@ import { type AccountKey } from '@suite-common/wallet-types';
 import { events } from '@suite-native/analytics';
 import { Form, useField } from '@suite-native/forms';
 import {
-    type PreloadedState,
     type TestStore,
     act,
-    initStore,
     renderHook,
     renderHookWithStoreProvider,
     screen,
@@ -19,7 +17,6 @@ import {
     banxaCreditCardSellQuote,
     btcAsset,
     getBtcAccount,
-    getWalletState,
     moonpayCreditCardSellQuote,
     sellQuotes,
     usdcAsset,
@@ -28,6 +25,7 @@ import { selectTradingResidenceCountry, sellActions } from '@suite-native/tradin
 import { type SellFormType } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
+import { createTradingLightStore } from '../../../__tests__/tradingTestUtils';
 import { useSellForm } from '../useSellForm';
 
 const mockReport = jest.fn();
@@ -50,13 +48,13 @@ describe('useSellForm', () => {
 
     const renderUseSellForm = () => renderHookWithStoreProvider(() => useSellForm(), { store });
 
-    const getInitializedStore = (bitcoinAmountUnit = PROTO.AmountUnit.BITCOIN) => {
-        const preloadedState: PreloadedState = {
-            wallet: getWalletState({ tradeType: 'sell', bitcoinAmountUnit }),
-        };
-
-        return initStore(preloadedState).store;
-    };
+    const getInitializedStore = (bitcoinAmountUnit = PROTO.AmountUnit.BITCOIN) =>
+        createTradingLightStore({
+            tradeType: 'sell',
+            overrides: {
+                wallet: { settings: { bitcoinAmountUnit } },
+            },
+        });
 
     beforeEach(() => {
         store = getInitializedStore();

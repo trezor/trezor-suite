@@ -7,10 +7,10 @@ export type { TradingState, TradingRootState } from '@suite-native/trading-types
 export { tradingInitialState } from '@suite-native/trading-consts';
 
 export { tradingSlice, tradingActions } from './tradingSlice';
-export { buyActions } from './buySlice';
-export { exchangeActions } from './exchangeSlice';
-export { sellActions } from './sellSlice';
-export { residenceActions } from './residenceSlice';
+export { buyActions, buyReducer } from './buySlice';
+export { exchangeActions, exchangeReducer } from './exchangeSlice';
+export { sellActions, sellReducer } from './sellSlice';
+export { residenceActions, residenceReducer } from './residenceSlice';
 
 export const createMemoizedSelector = createWeakMapSelector.withTypes<TradingRootState>();
 export const createMemoizedSelectorWithAccounts = createWeakMapSelector.withTypes<

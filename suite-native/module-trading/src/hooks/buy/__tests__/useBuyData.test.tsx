@@ -1,13 +1,18 @@
+import { combineReducers } from '@reduxjs/toolkit';
+
+import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { tradingBuyActions, tradingThunks } from '@suite-common/trading';
-import { type AccountKey } from '@suite-common/wallet-types';
+import { initialWalletSettingsState } from '@suite-common/wallet-core';
+import { type AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
+import { localeReducer } from '@suite-native/intl';
 import {
-    type PreloadedState,
     type TestStore,
     act,
-    initStore,
+    createStaticReducer,
     renderHookWithStoreProvider,
 } from '@suite-native/test-utils-store';
 import { getBtcAccount, getInitializedTradingState } from '@suite-native/trading-fixtures';
+import { tradingSlice } from '@suite-native/trading-state';
 
 import { useBuyData } from '../useBuyData';
 
@@ -21,20 +26,30 @@ const btc2AccountKey = 'btc-account-2' as AccountKey; // Todo: create properly v
 const btc3AccountKey = 'btc-account-3' as AccountKey; // Todo: create properly via `createAccountKey()`
 
 describe('useBuyData', () => {
+    const getAccounts = () => [
+        getBtcAccount(btc1AccountKey),
+        getBtcAccount(btc2AccountKey),
+        { ...getBtcAccount(btc3AccountKey), descriptor: asAccountDescriptor('') },
+    ];
+
+    const reducer = {
+        locale: localeReducer,
+        wallet: combineReducers({
+            settings: createStaticReducer(initialWalletSettingsState),
+            accounts: createStaticReducer(getAccounts()),
+            trading: tradingSlice.prepareReducer(extraDependenciesCommonMock),
+        }),
+    } as const;
+
     const getInitializedStore = (tradingAccountKey: AccountKey | undefined) => {
-        const preloadedState: PreloadedState = {
+        const preloadedState = {
             wallet: {
                 trading: getInitializedTradingState(),
-                accounts: [
-                    getBtcAccount(btc1AccountKey),
-                    getBtcAccount(btc2AccountKey),
-                    { ...getBtcAccount(btc3AccountKey), descriptor: '' },
-                ],
             },
         };
-        preloadedState.wallet!.trading!.buy!.tradingAccountKey = tradingAccountKey;
+        preloadedState.wallet.trading.buy.tradingAccountKey = tradingAccountKey;
 
-        return initStore(preloadedState).store;
+        return configureMockStore({ reducer, preloadedState });
     };
 
     const renderUseBuyData = async (reloadRequestOrdinalInitialValue: number, store: TestStore) => {
@@ -73,7 +88,7 @@ describe('useBuyData', () => {
                     }, 100);
                 }),
         );
-        const { store } = initStore(undefined);
+        const store = configureMockStore({ reducer });
         const { result } = await renderUseBuyData(0, store);
 
         expect(result.current.isLoading).toBe(true);
@@ -81,7 +96,7 @@ describe('useBuyData', () => {
     });
 
     it('should settle after API queries are resolved', async () => {
-        const { store } = initStore(undefined);
+        const store = configureMockStore({ reducer });
         const { result } = await renderUseBuyData(0, store);
 
         expect(result.current.isLoading).toBe(false);
@@ -93,7 +108,7 @@ describe('useBuyData', () => {
             .spyOn(tradingThunks, 'loadInitialDataThunk')
             .mockImplementation((() => ({ type: 'TEST_ACTION' })) as () => any);
 
-        const { store } = initStore(undefined);
+        const store = configureMockStore({ reducer });
         const { rerender } = await renderUseBuyData(0, store);
         rerender({ reloadRequestOrdinal: 0 });
 
@@ -105,7 +120,7 @@ describe('useBuyData', () => {
             .spyOn(tradingThunks, 'loadInitialDataThunk')
             .mockImplementation((() => ({ type: 'TEST_ACTION' })) as () => any);
 
-        const { store } = initStore(undefined);
+        const store = configureMockStore({ reducer });
         const { rerender } = await renderUseBuyData(0, store);
         rerender({ reloadRequestOrdinal: 1 });
 

@@ -3,6 +3,7 @@ import { type AccountKey, type FormState } from '@suite-common/wallet-types';
 import { Form, useForm } from '@suite-native/forms';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
+import { createFeeLevels } from '../../../__fixtures__/feeLevels';
 import { getWalletState } from '../../../__fixtures__/walletState';
 import { FeesContent, type FeesContentProps } from '../FeesContent';
 
@@ -32,20 +33,12 @@ describe('FeesContent', () => {
     const mockOnSelectedFeeLevel = jest.fn();
     const mockOnCustomFeeSet = jest.fn();
 
-    const createMockFeeLevel = () =>
-        ({
-            type: 'final',
-            totalSpent: '100000',
-            fee: '1000',
-            feePerByte: '10',
-            bytes: 250,
-        }) as any;
-
-    const createMockFeeLevels = () => ({
-        economy: { ...createMockFeeLevel(), feePerByte: '4', fee: '1000', bytes: 250 },
-        normal: { ...createMockFeeLevel(), feePerByte: '10', fee: '2000', bytes: 250 },
-        high: { ...createMockFeeLevel(), feePerByte: '30', fee: '3000', bytes: 250 },
-    });
+    const createMockFeeLevels = () =>
+        createFeeLevels({
+            economy: { totalSpent: '100000', feePerByte: '4', fee: '1000' },
+            normal: { totalSpent: '100000', feePerByte: '10', fee: '2000' },
+            high: { totalSpent: '100000', feePerByte: '30', fee: '3000' },
+        });
 
     const defaultProps: FeesContentProps = {
         selectedFeeLevel: 'normal',

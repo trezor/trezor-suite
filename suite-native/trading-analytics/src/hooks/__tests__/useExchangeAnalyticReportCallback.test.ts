@@ -2,12 +2,16 @@ import type { CryptoId } from 'invity-api';
 
 import { events } from '@suite-native/analytics';
 import { useAnalytics } from '@suite-native/services';
-import { type PreloadedState, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
+import {
+    type PreloadedStatePartial,
+    renderHookWithStoreProvider,
+} from '@suite-native/test-utils-store';
 import {
     getWalletState,
     invityDexQuote,
     mercuryoFixedWorstQuote,
 } from '@suite-native/trading-fixtures';
+import { mergeDeepObject } from '@trezor/utils';
 
 import { useExchangeAnalyticReportCallback } from '../useExchangeAnalyticReportCallback';
 
@@ -23,7 +27,31 @@ jest.mock('@suite-native/services', () => {
 });
 
 describe('useExchangeAnalyticReportCallback', () => {
-    let preloadedState: PreloadedState;
+    type ExchangeAnalyticsPreloadedState = {
+        wallet: ReturnType<typeof getWalletState>;
+    };
+
+    const createPreloadedState = (
+        overrides: PreloadedStatePartial<ExchangeAnalyticsPreloadedState> = {},
+    ): ExchangeAnalyticsPreloadedState =>
+        mergeDeepObject.withOptions(
+            { mergeArrays: false },
+            {
+                wallet: getWalletState({ tradeType: 'exchange' }),
+            },
+            overrides,
+        ) as ExchangeAnalyticsPreloadedState;
+
+    const renderUseExchangeAnalyticReportCallback = ({
+        candidateQuote,
+        preloadedState = createPreloadedState(),
+    }: {
+        candidateQuote?: Parameters<typeof useExchangeAnalyticReportCallback>[0];
+        preloadedState?: ExchangeAnalyticsPreloadedState;
+    } = {}) =>
+        renderHookWithStoreProvider(() => useExchangeAnalyticReportCallback(candidateQuote), {
+            preloadedState,
+        });
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -31,17 +59,19 @@ describe('useExchangeAnalyticReportCallback', () => {
         (useAnalytics as jest.Mock).mockReturnValue({
             report: reportMock,
         });
-
-        preloadedState = {
-            wallet: getWalletState({ tradeType: 'exchange' }),
-        };
     });
 
     it('should call analytics on mount', () => {
-        preloadedState!.wallet!.trading!.exchange!.selectedQuote = mercuryoFixedWorstQuote;
-
-        const { result } = renderHookWithStoreProvider(() => useExchangeAnalyticReportCallback(), {
-            preloadedState,
+        const { result } = renderUseExchangeAnalyticReportCallback({
+            preloadedState: createPreloadedState({
+                wallet: {
+                    trading: {
+                        exchange: {
+                            selectedQuote: mercuryoFixedWorstQuote,
+                        },
+                    },
+                },
+            }),
         });
 
         result.current('exchange-form', 'continue');
@@ -57,9 +87,7 @@ describe('useExchangeAnalyticReportCallback', () => {
     });
 
     it('should work without quote', () => {
-        const { result } = renderHookWithStoreProvider(() => useExchangeAnalyticReportCallback(), {
-            preloadedState,
-        });
+        const { result } = renderUseExchangeAnalyticReportCallback();
 
         result.current('exchange-form', 'continue');
 
@@ -73,12 +101,18 @@ describe('useExchangeAnalyticReportCallback', () => {
     });
 
     it('should allow to specify quote as parameter', () => {
-        preloadedState!.wallet!.trading!.exchange!.selectedQuote = mercuryoFixedWorstQuote;
-
-        const { result } = renderHookWithStoreProvider(
-            () => useExchangeAnalyticReportCallback(invityDexQuote),
-            { preloadedState },
-        );
+        const { result } = renderUseExchangeAnalyticReportCallback({
+            candidateQuote: invityDexQuote,
+            preloadedState: createPreloadedState({
+                wallet: {
+                    trading: {
+                        exchange: {
+                            selectedQuote: mercuryoFixedWorstQuote,
+                        },
+                    },
+                },
+            }),
+        });
 
         result.current('exchange-form', 'continue');
 
@@ -96,10 +130,9 @@ describe('useExchangeAnalyticReportCallback', () => {
         [{ ...mercuryoFixedWorstQuote, send: 'unknown_cryptoID' as CryptoId }],
         [{ ...mercuryoFixedWorstQuote, receive: 'unknown_cryptoID' as CryptoId }],
     ])('should work with unknown quote values', quote => {
-        const { result } = renderHookWithStoreProvider(
-            () => useExchangeAnalyticReportCallback(quote),
-            { preloadedState },
-        );
+        const { result } = renderUseExchangeAnalyticReportCallback({
+            candidateQuote: quote,
+        });
 
         result.current('exchange-form', 'continue');
 

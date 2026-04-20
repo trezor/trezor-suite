@@ -15,6 +15,7 @@
         "@suite-native/formatters-config": "workspace:*",
         "@suite-native/test-utils": "workspace:*",
         "@testing-library/react-native": "13.3.3",
+        "@trezor/utils": "workspace:*",
         "react": "19.2.4",
         "react-native": "0.83.2",
         "react-redux": "9.2.0"

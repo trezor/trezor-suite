@@ -22,9 +22,13 @@
         { "path": "../trading-state" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" },
+        {
+            "path": "../../suite-common/test-utils"
+        },
         { "path": "../test-utils" },
         { "path": "../test-utils-store" },
         { "path": "../trading-fixtures" },
-        { "path": "../trading-types" }
+        { "path": "../trading-types" },
+        { "path": "../transaction-management" }
     ]
 }

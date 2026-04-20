@@ -1,14 +1,14 @@
 import { type TradingTransaction } from '@suite-common/trading';
-import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { getBuyTrade, getInitializedTradingState } from '@suite-native/trading-fixtures';
 
+import { renderWithTradingProvider } from '../../../../__tests__/tradingTestUtils';
 import { TradeHistoryListItem } from '../TradeHistoryListItem';
 
 describe('TradeHistoryListItem', () => {
     const renderTradeHistoryListItem = (transaction: TradingTransaction) =>
-        renderWithStoreProvider(
+        renderWithTradingProvider(
             <TradeHistoryListItem transaction={transaction} onPress={jest.fn()} />,
-            { preloadedState: { wallet: { trading: getInitializedTradingState() } } },
+            { overrides: { wallet: { trading: getInitializedTradingState() } } as any },
         );
 
     it('should render trade correctly', () => {

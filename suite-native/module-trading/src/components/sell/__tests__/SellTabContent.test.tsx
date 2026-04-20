@@ -1,11 +1,6 @@
-import {
-    type PreloadedState,
-    act,
-    renderWithStoreProvider,
-    screen,
-    userEvent,
-} from '@suite-native/test-utils-store';
+import { act, screen, userEvent } from '@suite-native/test-utils-store';
 
+import { renderWithTradingProvider } from '../../../__tests__/tradingTestUtils';
 import { SellTabContent } from '../SellTabContent';
 
 let mockUseSellData: jest.Mock;
@@ -27,8 +22,8 @@ describe('SellTabContent', () => {
         }));
     });
 
-    const renderSellTabContent = (preloadedState?: PreloadedState) =>
-        renderWithStoreProvider(<SellTabContent />, { preloadedState });
+    const renderSellTabContent = () =>
+        renderWithTradingProvider(<SellTabContent />, { tradeType: 'sell' });
 
     const expectSkeleton = () => {
         expect(screen.getAllByTestId('BoxSkeleton').length).toBeGreaterThan(0);

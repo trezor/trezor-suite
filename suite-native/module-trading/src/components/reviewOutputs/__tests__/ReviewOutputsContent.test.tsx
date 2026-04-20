@@ -1,6 +1,6 @@
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
-import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
+import { renderWithTradingProvider } from '../../../__tests__/tradingTestUtils';
 import { ReviewOutputsContent, type ReviewOutputsContentProps } from '../ReviewOutputsContent';
 
 jest.mock('@suite-native/confirm-on-trezor', () => ({
@@ -29,7 +29,7 @@ describe('ReviewOutputsContent', () => {
     const renderReviewOutputsContent = (
         props: Partial<Omit<ReviewOutputsContentProps, 'exchangeFlowType' | 'tradingType'>>,
     ) =>
-        renderWithStoreProvider(
+        renderWithTradingProvider(
             <ReviewOutputsContent
                 orderId="ORDER_ID"
                 accountKey={

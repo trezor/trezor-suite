@@ -2,16 +2,17 @@ import type { CryptoId } from 'invity-api';
 
 import { Text } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
-import {
-    type PreloadedState,
-    act,
-    renderHookWithStoreProvider,
-    renderWithStoreProvider,
-} from '@suite-native/test-utils-store';
+import { act } from '@suite-native/test-utils-store';
 import { btcAsset, getInitializedTradingStateWithQuotes } from '@suite-native/trading-fixtures';
 import { type BuyFormType } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
+import {
+    type PreloadedStatePartial,
+    type TradingTestPreloadedState,
+    renderHookWithTradingProvider,
+    renderWithTradingProvider,
+} from '../../../__tests__/tradingTestUtils';
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';
 import {
     BuyFormFieldErrorBadge,
@@ -21,9 +22,11 @@ import {
 describe('BuyFormFieldErrorBadge', () => {
     let tradingForm: BuyFormType;
 
-    const renderUseTradingBuyForm = (preloadedState: PreloadedState = {}) => {
-        const { result } = renderHookWithStoreProvider(() => useBuyForm(), {
-            preloadedState,
+    const renderUseTradingBuyForm = (
+        overrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
+    ) => {
+        const { result } = renderHookWithTradingProvider(() => useBuyForm(), {
+            overrides,
         });
 
         return result.current;
@@ -32,10 +35,10 @@ describe('BuyFormFieldErrorBadge', () => {
     const renderBuyFormFieldErrorBadge = (
         props: BuyFormFieldErrorBadgeProps,
         form: BuyFormType,
-        preloadedState: PreloadedState = {},
+        overrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
     ) =>
-        renderWithStoreProvider(<BuyFormFieldErrorBadge {...props} />, {
-            preloadedState,
+        renderWithTradingProvider(<BuyFormFieldErrorBadge {...props} />, {
+            overrides,
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 

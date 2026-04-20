@@ -1,6 +1,6 @@
-import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { type QuotesCategory } from '@suite-native/trading-types';
 
+import { renderWithTradingProvider } from '../../../../__tests__/tradingTestUtils';
 import {
     ProviderSheetSectionHeader,
     type ProviderSheetSectionHeaderProps,
@@ -8,7 +8,7 @@ import {
 
 describe('ProviderSheetSectionHeader', () => {
     const renderProviderSheetSectionHeader = (props: ProviderSheetSectionHeaderProps) =>
-        renderWithStoreProvider(<ProviderSheetSectionHeader {...props} />);
+        renderWithTradingProvider(<ProviderSheetSectionHeader {...props} />);
 
     it.each<[QuotesCategory, string]>([
         ['fixed', 'Fixed-rate CEX'],

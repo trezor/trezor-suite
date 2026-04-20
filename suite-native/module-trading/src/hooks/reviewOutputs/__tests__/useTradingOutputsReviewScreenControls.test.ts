@@ -1,13 +1,19 @@
-import { sendFormActions } from '@suite-common/wallet-core';
+import { combineReducers } from '@reduxjs/toolkit';
+
+import { extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { initialWalletSettingsState, sendFormActions } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
+import { localeReducer } from '@suite-native/intl';
 import {
     type TestStore,
     act,
-    initStore,
+    createLightStore,
+    createStaticReducer,
     renderHookWithStoreProvider,
 } from '@suite-native/test-utils-store';
 import { getWalletState } from '@suite-native/trading-fixtures';
-import { transactionManagementActions } from '@suite-native/transaction-management';
+import { tradingSlice } from '@suite-native/trading-state';
+import { sendFormSlice, transactionManagementActions } from '@suite-native/transaction-management';
 
 import { type TradingExchangeSignAndSendTransactionProps } from '../../exchange/useExchangeFlow';
 import { useTradingOutputsReviewScreenControls } from '../useTradingOutputsReviewScreenControls';
@@ -54,6 +60,29 @@ jest.mock('@suite-native/alerts', () => ({
 describe('useTradingOutputsReviewScreenControls', () => {
     let store: TestStore;
 
+    const reducer = {
+        locale: localeReducer,
+        wallet: combineReducers({
+            settings: createStaticReducer(initialWalletSettingsState),
+            accounts: createStaticReducer(getWalletState({ tradeType: 'exchange' }).accounts),
+            send: sendFormSlice.prepareReducer(extraDependenciesCommonMock),
+            trading: tradingSlice.prepareReducer(extraDependenciesCommonMock),
+        }),
+    } as const;
+
+    const createTestStore = (tradeType: 'exchange' | 'sell' = 'exchange') =>
+        createLightStore({
+            reducer,
+            preloadedState: {
+                wallet: {
+                    settings: getWalletState({ tradeType }).settings,
+                    accounts: getWalletState({ tradeType }).accounts,
+                    send: getWalletState({ tradeType }).send,
+                    trading: getWalletState({ tradeType }).trading,
+                },
+            },
+        });
+
     const renderUseTradingOutputsReviewScreenControls = () =>
         renderHookWithStoreProvider(
             () =>
@@ -70,7 +99,7 @@ describe('useTradingOutputsReviewScreenControls', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
-        store = initStore({ wallet: getWalletState({ tradeType: 'exchange' }) }).store;
+        store = createTestStore();
     });
 
     it('should return confirmOnTrezorRef', () => {
@@ -118,7 +147,7 @@ describe('useTradingOutputsReviewScreenControls', () => {
         });
 
         it('should navigate to trade detail and report sell analytics', () => {
-            store = initStore({ wallet: getWalletState({ tradeType: 'sell' }) }).store;
+            store = createTestStore('sell');
             renderUseTradingOutputsReviewScreenControls();
 
             expect(mockSignAndSendTransaction).toHaveBeenCalledWith(
@@ -254,7 +283,7 @@ describe('useTradingOutputsReviewScreenControls', () => {
         });
 
         it('should report cancel for sell', () => {
-            store = initStore({ wallet: getWalletState({ tradeType: 'sell' }) }).store;
+            store = createTestStore('sell');
             renderUseTradingOutputsReviewScreenControls();
 
             act(() => {

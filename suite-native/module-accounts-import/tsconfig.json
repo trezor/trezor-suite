@@ -49,7 +49,6 @@
         },
         { "path": "../../packages/utils" },
         { "path": "../../packages/utxo-lib" },
-        { "path": "../state" },
         { "path": "../test-utils-store" }
     ],
     "include": [".", "**/*.json"]

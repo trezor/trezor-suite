@@ -1,3 +1,4 @@
+import { FeatureFlag } from '@suite-native/feature-flags';
 import { Form } from '@suite-native/forms';
 import {
     act,
@@ -7,16 +8,41 @@ import {
 import { mercuryoFixedWorstQuote, usdcAsset } from '@suite-native/trading-fixtures';
 import { type ExchangeFormType } from '@suite-native/trading-types';
 
+import {
+    createTradingFeatureFlags,
+    createTradingPreloadedState,
+} from '../../../../__tests__/tradingTestUtils';
 import { useExchangeForm } from '../../../../hooks/exchange/useExchangeForm';
 import { ExchangeReceiveCard } from '../ExchangeReceiveCard';
 
 describe('ExchangeReceiveCard', () => {
     let form: ExchangeFormType;
+    const preloadedState = createTradingPreloadedState({
+        tradeType: 'exchange',
+        overrides: {
+            featureFlags: createTradingFeatureFlags({
+                [FeatureFlag.AreTradingExchangeDexesEnabled]: true,
+            }),
+            wallet: {
+                trading: {
+                    exchange: {
+                        exchangeInfo: {
+                            buyCryptoIds: [],
+                        },
+                    },
+                },
+            },
+        },
+    });
 
-    const renderForm = () => renderHookWithStoreProvider(() => useExchangeForm());
+    const renderForm = () =>
+        renderHookWithStoreProvider(() => useExchangeForm(), {
+            preloadedState,
+        });
 
     const renderExchangeBuyCard = () =>
         renderWithStoreProvider(<ExchangeReceiveCard />, {
+            preloadedState,
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 

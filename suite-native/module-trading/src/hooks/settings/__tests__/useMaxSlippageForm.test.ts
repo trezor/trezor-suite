@@ -1,18 +1,17 @@
-import {
-    type TestStore,
-    act,
-    initStore,
-    renderHookWithStoreProvider,
-} from '@suite-native/test-utils-store';
+import { type TestStore, act } from '@suite-native/test-utils-store';
 
+import {
+    createTradingTestStore,
+    renderHookWithTradingProvider,
+} from '../../../__tests__/tradingTestUtils';
 import { useMaxSlippageForm } from '../useMaxSlippageForm';
 
 describe('useMaxSlippageForm', () => {
     const renderUseMaxSlippageForm = (store: TestStore) =>
-        renderHookWithStoreProvider(() => useMaxSlippageForm(), { store });
+        renderHookWithTradingProvider(() => useMaxSlippageForm(), { store });
 
     it('should have default value from store', () => {
-        const { store } = initStore();
+        const store = createTradingTestStore();
         const { result } = renderUseMaxSlippageForm(store);
 
         expect(result.current.getValues()).toEqual({
@@ -23,7 +22,7 @@ describe('useMaxSlippageForm', () => {
     it.each<string>(['-1', '0', '0.009', '50.1', '55', '', 'invalid_number'])(
         'should error validation for value %s',
         async slippage => {
-            const { store } = initStore();
+            const store = createTradingTestStore();
             const { result } = renderUseMaxSlippageForm(store);
 
             await act(async () => {
@@ -39,7 +38,7 @@ describe('useMaxSlippageForm', () => {
     );
 
     it.each(['0.01', '1', '12.34', '50'])('should pass validation for value %s', slippage => {
-        const { store } = initStore();
+        const store = createTradingTestStore();
         const { result } = renderUseMaxSlippageForm(store);
 
         act(() => {

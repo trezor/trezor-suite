@@ -1,13 +1,9 @@
 import { tradingExchangeActions } from '@suite-common/trading';
 import { type AccountKey } from '@suite-common/wallet-types';
-import {
-    type TestStore,
-    initStore,
-    renderWithStoreProvider,
-    userEvent,
-} from '@suite-native/test-utils-store';
-import { getWalletState, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
+import { type TestStore, renderWithStoreProvider, userEvent } from '@suite-native/test-utils-store';
+import { mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 
+import { createTradingLightStore } from '../../../../__tests__/tradingTestUtils';
 import { ApprovalButton, type ApprovalButtonProps } from '../ApprovalButton';
 
 const mockNavigate = jest.fn();
@@ -30,15 +26,19 @@ describe('ApprovalButton', () => {
     beforeEach(() => {
         jest.clearAllMocks();
 
-        const preloadedState = {
-            wallet: getWalletState({
-                tradeType: 'exchange',
-            }),
-        };
-        preloadedState!.wallet!.trading!.exchange!.selectedQuote = mercuryoFixedWorstQuote;
-        preloadedState!.wallet!.trading!.exchange!.tradingAccountKey =
-            'eth-account-1' as AccountKey;
-        store = initStore(preloadedState).store;
+        store = createTradingLightStore({
+            tradeType: 'exchange',
+            overrides: {
+                wallet: {
+                    trading: {
+                        exchange: {
+                            selectedQuote: mercuryoFixedWorstQuote,
+                            tradingAccountKey: 'eth-account-1' as AccountKey,
+                        },
+                    },
+                },
+            },
+        });
     });
 
     it('should render continue button when isReady is true', () => {

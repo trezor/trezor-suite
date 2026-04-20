@@ -1,15 +1,16 @@
 import { Form } from '@suite-native/forms';
 import { renderHookWithBasicProvider } from '@suite-native/test-utils';
-import { renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import { type SellFormType } from '@suite-native/trading-types';
 
+import { renderHookWithTradingProvider } from '../../../__tests__/tradingTestUtils';
 import { useSellForm } from '../useSellForm';
 import { useSellInputFormControls } from '../useSellInputFormControls';
 
 describe('useSellInputFormControls', () => {
     let form: SellFormType;
 
-    const renderSellFormHook = () => renderHookWithStoreProvider(() => useSellForm());
+    const renderSellFormHook = () =>
+        renderHookWithTradingProvider(() => useSellForm(), { tradeType: 'sell' });
 
     const renderUseSellInputFormControls = () =>
         renderHookWithBasicProvider(() => useSellInputFormControls('fiatStringAmount'), {

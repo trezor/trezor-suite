@@ -1,6 +1,11 @@
+import { combineReducers } from '@reduxjs/toolkit';
+
+import { initialWalletSettingsState } from '@suite-common/wallet-core';
+import { localeReducer } from '@suite-native/intl';
 import {
     type TestStore,
-    initStore,
+    createLightStore,
+    createStaticReducer,
     renderHookWithStoreProvider,
 } from '@suite-native/test-utils-store';
 
@@ -11,7 +16,17 @@ describe('useIsNetworkReserveBannerVisible', () => {
     let store: TestStore;
 
     beforeEach(() => {
-        store = initStore().store;
+        store = createLightStore({
+            reducer: {
+                locale: localeReducer,
+                wallet: combineReducers({
+                    settings: createStaticReducer({
+                        ...initialWalletSettingsState,
+                        networkReserve: true,
+                    }),
+                }),
+            },
+        });
     });
 
     const renderHook = (params: Parameters<typeof useIsNetworkReserveBannerVisible>[0]) =>

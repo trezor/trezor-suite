@@ -4,19 +4,18 @@ import { events } from '@suite-native/analytics';
 import { Form, useForm } from '@suite-native/forms';
 import type { UseFormReturn } from '@suite-native/forms';
 import { useAnalytics } from '@suite-native/services';
-import {
-    type PreloadedState,
-    act,
-    renderHookWithStoreProvider,
-    renderWithStoreProvider,
-    screen,
-    userEvent,
-} from '@suite-native/test-utils-store';
+import { act, screen, userEvent } from '@suite-native/test-utils-store';
 import {
     residenceCheckDisabledState,
     residenceCheckEnabledState,
 } from '@suite-native/trading-fixtures';
 
+import {
+    type PreloadedStatePartial,
+    type TradingTestPreloadedState,
+    renderHookWithTradingProvider,
+    renderWithTradingProvider,
+} from '../../../__tests__/tradingTestUtils';
 import { TradingCountryOfResidencePicker } from '../TradingCountryOfResidencePicker';
 
 const reportMock = jest.fn();
@@ -34,16 +33,21 @@ describe('TradingCountryOfResidencePicker', () => {
     let form: UseFormReturn<{ country: TradingCountryOption }>;
 
     const renderForm = () =>
-        renderHookWithStoreProvider(
+        renderHookWithTradingProvider(
             () => useForm<{ country: TradingCountryOption }>({ validation: yup.object() }),
-            { preloadedState: residenceCheckDisabledState },
+            { overrides: residenceCheckDisabledState },
         );
 
-    const renderCountryOfResidencePicker = (preloadedState: PreloadedState) =>
-        renderWithStoreProvider(<TradingCountryOfResidencePicker testID="testID" context="buy" />, {
-            wrapper: ({ children }) => <Form form={form}>{children}</Form>,
-            preloadedState,
-        });
+    const renderCountryOfResidencePicker = (
+        overrides: PreloadedStatePartial<TradingTestPreloadedState>,
+    ) =>
+        renderWithTradingProvider(
+            <TradingCountryOfResidencePicker testID="testID" context="buy" />,
+            {
+                wrapper: ({ children }) => <Form form={form}>{children}</Form>,
+                overrides,
+            },
+        );
 
     beforeEach(() => {
         jest.clearAllMocks();

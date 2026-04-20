@@ -1,14 +1,10 @@
 import { tradingSellActions } from '@suite-common/trading';
 import { type AccountKey } from '@suite-common/wallet-types';
-import {
-    type TestStore,
-    act,
-    initStore,
-    renderHookWithStoreProvider,
-} from '@suite-native/test-utils-store';
-import { banxaCreditCardSellQuote, getWalletState } from '@suite-native/trading-fixtures';
+import { type TestStore, act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
+import { banxaCreditCardSellQuote } from '@suite-native/trading-fixtures';
 import { type SellFormType } from '@suite-native/trading-types';
 
+import { createTradingLightStore } from '../../../__tests__/tradingTestUtils';
 import { useSellForm } from '../useSellForm';
 import { useSellSelectQuote } from '../useSellSelectQuote';
 
@@ -29,7 +25,7 @@ describe('useSellSelectQuote', () => {
         renderHookWithStoreProvider(() => useSellSelectQuote(sellForm), { store });
 
     beforeEach(() => {
-        store = initStore({ wallet: getWalletState({ tradeType: 'sell' }) }).store;
+        store = createTradingLightStore({ tradeType: 'sell' });
 
         const { result } = renderSellForm();
         sellForm = result.current;
