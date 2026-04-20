@@ -1,7 +1,10 @@
 import { useMemo } from 'react';
 
 import { Translation, useTranslation } from '@suite/intl';
-import { selectLabelingDataForSelectedAccount } from '@suite/metadata';
+import {
+    selectIsLegacyLabelingVisible,
+    selectLabelingDataForSelectedAccount,
+} from '@suite/metadata';
 import { selectIsSuiteSyncEnabled, selectSuiteSyncAddressLabels } from '@suite-common/suite-sync';
 import { getNetwork } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectIsAccountUtxoBased } from '@suite-common/wallet-core';
@@ -19,7 +22,6 @@ import {
 } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { selectIsLegacyLabelingVisible } from 'src/actions/labels/selectIsLegacyLabelingVisible';
 import { showAddress } from 'src/actions/wallet/receiveActions';
 import { Address, Labeling, ReadMoreLink } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite/';

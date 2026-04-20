@@ -1,13 +1,12 @@
 import React from 'react';
 
 import { Translation } from '@suite/intl';
-import { selectLabelingDataForWallet } from '@suite/metadata';
+import { selectIsLegacyLabelingVisible, selectLabelingDataForWallet } from '@suite/metadata';
 import { selectIsSuiteSyncEnabled, selectSuiteSyncWalletLabel } from '@suite-common/suite-sync';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { TOOLTIP_DELAY_LONG, TruncateWithTooltip } from '@trezor/components';
 
-import { selectIsLegacyLabelingVisible } from 'src/actions/labels/selectIsLegacyLabelingVisible';
 import { useWalletLabeling } from 'src/components/suite/labeling/WalletLabeling';
 import { useSelector } from 'src/hooks/suite';
 

@@ -4,7 +4,7 @@ import { motion, useAnimation } from 'framer-motion';
 import styled from 'styled-components';
 
 import { useTranslation } from '@suite/intl';
-import { selectLabelingDataForAccount } from '@suite/metadata';
+import { selectIsLegacyLabelingVisible, selectLabelingDataForAccount } from '@suite/metadata';
 import { selectIsSuiteSyncEnabled, selectSuiteSyncAccountLabel } from '@suite-common/suite-sync';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -12,7 +12,6 @@ import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { Column, H2, Row, Text, motionEasing } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 
-import { selectIsLegacyLabelingVisible } from 'src/actions/labels/selectIsLegacyLabelingVisible';
 import { AccountTypeBadge } from 'src/components/suite/AccountTypeBadge';
 import { AmountUnitSwitchWrapper } from 'src/components/suite/AmountUnitSwitchWrapper';
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';

@@ -1,7 +1,11 @@
 import { useMemo } from 'react';
 
 import { useTranslation } from '@suite/intl';
-import { selectLabelingDataForAccount, selectLabelingValueBeingEdited } from '@suite/metadata';
+import {
+    selectIsLegacyLabelingVisible,
+    selectLabelingDataForAccount,
+    selectLabelingValueBeingEdited,
+} from '@suite/metadata';
 import { selectIsSuiteSyncEnabled, selectSuiteSyncOutputLabels } from '@suite-common/suite-sync';
 import {
     type Target,
@@ -21,7 +25,6 @@ import {
 import { Icon } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 
-import { selectIsLegacyLabelingVisible } from 'src/actions/labels/selectIsLegacyLabelingVisible';
 import {
     AddressLabeling,
     BaseCurrencyValue,

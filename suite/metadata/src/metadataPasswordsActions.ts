@@ -11,11 +11,11 @@ import TrezorConnect from '@trezor/connect';
 import { cloneObject } from '@trezor/utils';
 
 import * as METADATA from './metadataConstants';
+import * as metadataDataThunks from './metadataDataThunks';
 import * as METADATA_PASSWORDS from './metadataPasswordsConstants';
 import * as METADATA_PROVIDER from './metadataProviderConstants';
 import * as metadataProviderActions from './metadataProviderThunks';
 import { type MetadataRootState, selectSelectedProviderForPasswords } from './metadataReducer';
-import * as metadataThunks from './metadataThunks';
 import * as metadataUtils from './metadataUtils';
 import { type FetchIntervalTrackingId } from './metadataUtils';
 
@@ -222,14 +222,14 @@ export const addPasswordMetadata =
             metadata.entries[nextId] = payload;
 
             dispatch(
-                metadataThunks.setMetadata({
+                metadataDataThunks.setMetadata({
                     provider,
                     fileName,
                     data: metadata,
                 }),
             );
 
-            metadataThunks.encryptAndSaveMetadata({
+            metadataDataThunks.encryptAndSaveMetadata({
                 providerInstance,
                 fileName,
                 data: metadata,
@@ -263,14 +263,14 @@ export const removePasswordMetadata =
             delete metadata.entries[index];
 
             dispatch(
-                metadataThunks.setMetadata({
+                metadataDataThunks.setMetadata({
                     provider,
                     fileName,
                     data: metadata,
                 }),
             );
 
-            metadataThunks.encryptAndSaveMetadata({
+            metadataDataThunks.encryptAndSaveMetadata({
                 providerInstance,
                 fileName,
                 data: metadata,

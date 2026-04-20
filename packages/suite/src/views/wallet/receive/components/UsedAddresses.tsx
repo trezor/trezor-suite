@@ -1,7 +1,10 @@
 import { useState } from 'react';
 
 import { Translation, useTranslation } from '@suite/intl';
-import { selectLabelingDataForSelectedAccount } from '@suite/metadata';
+import {
+    selectIsLegacyLabelingVisible,
+    selectLabelingDataForSelectedAccount,
+} from '@suite/metadata';
 import { type MetadataAddPayload } from '@suite-common/metadata-types';
 import { selectIsSuiteSyncEnabled, selectSuiteSyncAddressLabels } from '@suite-common/suite-sync';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
@@ -11,7 +14,6 @@ import { Button, Card, Column, Row, Table, Text } from '@trezor/components';
 import { type AccountAddress } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
 
-import { selectIsLegacyLabelingVisible } from 'src/actions/labels/selectIsLegacyLabelingVisible';
 import { showAddress } from 'src/actions/wallet/receiveActions';
 import { Address, FormattedCryptoAmount, Labeling } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';

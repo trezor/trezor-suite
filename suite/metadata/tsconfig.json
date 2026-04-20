@@ -13,6 +13,9 @@
     "references": [
         { "path": "../../suite-common/device" },
         {
+            "path": "../../suite-common/message-system"
+        },
+        {
             "path": "../../suite-common/metadata-types"
         },
         {
@@ -20,6 +23,9 @@
         },
         {
             "path": "../../suite-common/suite-rbf-labels-migrations-types"
+        },
+        {
+            "path": "../../suite-common/suite-sync"
         },
         {
             "path": "../../suite-common/suite-types"

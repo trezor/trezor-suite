@@ -106,7 +106,6 @@ export const extraDependenciesCommonMock: ExtraDependencies = {
             transports: [],
         }),
         selectDesktopBinDir: notImplementedSelector('selectDesktopBinDir', '/bin'),
-        selectMetadata: notImplementedSelector('selectMetadata', {}),
         selectLanguage: notImplementedSelector('selectLanguage', 'en'),
         selectAddressDisplayType: notImplementedSelector(
             'selectAddressDisplayType',
@@ -124,7 +123,6 @@ export const extraDependenciesCommonMock: ExtraDependencies = {
             'selectSelectedAccountStatus',
             'loaded',
         ),
-        selectIsSuiteSyncEnabled: notImplementedSelector('selectIsLocalFirstStorageEnabled', false),
         selectIsWindowVisible: notImplementedSelector('selectIsWindowVisible', true),
         selectTradingEnvironment: notImplementedSelector('selectTradingEnvironment', 'localhost'),
         selectIsViewOnlyByDefaultEnabled: notImplementedSelector(

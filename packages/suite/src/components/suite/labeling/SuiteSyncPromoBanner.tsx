@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import { Translation } from '@suite/intl';
+import { selectIsLegacyLabelingVisible } from '@suite/metadata';
 import { selectDeviceStaticSessionId, selectSelectedDevice } from '@suite-common/device';
 import {
     selectIsSuiteSyncDebugEnabled,
@@ -8,7 +9,6 @@ import {
 } from '@suite-common/suite-sync';
 import { SidebarBanner } from '@trezor/product-components';
 
-import { selectIsLegacyLabelingVisible } from 'src/actions/labels/selectIsLegacyLabelingVisible';
 import { useSelector } from 'src/hooks/suite';
 
 import { TurnOnSuiteSyncModals } from './TurnOnSuiteSync/TurnOnSuiteSyncModals';

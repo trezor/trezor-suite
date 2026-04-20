@@ -10,6 +10,7 @@ export { moveLabelsForRbfOldMetadataThunk } from './moveLabelsForRbfOldMetadataT
 export { MetadataProviderModal } from './MetadataProviderModal';
 export { metadataMiddleware } from './metadataMiddleware';
 export * from './fromLegacyMetadataToSearchLabels';
+export * from './selectIsLegacyLabelingVisible';
 
 // used in e2e tests
 export * from './metadataUtils';

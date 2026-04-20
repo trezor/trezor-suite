@@ -91,23 +91,6 @@ const deviceStateEqualTo = (first: DeviceState) => {
         firstParsed ? firstParsed === second?.staticSessionId?.split(':')[0] : false;
 };
 
-/**
- * If metadata are enabled in settings but metadata master key does not exist for this device state,
- * try to generate device metadata master key
- */
-const initNewDeviceStateMetadataThunk = createThunk(
-    `${DISCOVERY_MODULE_PREFIX}/initNewDeviceStateMetadataThunk`,
-    async (staticSessionId: StaticSessionId, { getState, dispatch, extra }) => {
-        const isMetadataEnabled = extra.selectors.selectMetadata(getState()).enabled;
-        const device = selectDeviceByStaticSessionId(getState(), staticSessionId);
-        const metadataPresentOnDevice = device?.metadata[1];
-
-        if (isMetadataEnabled && !metadataPresentOnDevice) {
-            await dispatch(extra.thunks.initMetadata(false));
-        }
-    },
-);
-
 export const applyDeviceStatesThunk = createThunk<
     { device: TrezorDevice },
     {
@@ -118,7 +101,7 @@ export const applyDeviceStatesThunk = createThunk<
     { rejectValue: string }
 >(
     `${DISCOVERY_MODULE_PREFIX}/applyDeviceStates`,
-    async (
+    (
         { isAddingHiddenWallet, newDeviceState, devicePath },
         { dispatch, getState, fulfillWithValue, rejectWithValue },
     ) => {
@@ -181,8 +164,6 @@ export const applyDeviceStatesThunk = createThunk<
                 }
                 dispatch(selectDeviceThunk({ device: newlyAddedDevice }));
             }
-
-            await dispatch(initNewDeviceStateMetadataThunk(staticSessionId));
 
             return fulfillWithValue({ device });
         } catch (error) {

@@ -155,14 +155,12 @@ export const extraDependencies: ExtraDependenciesStatic = {
         // FW binaries on desktop are stored in "*/static/connect/data/firmware/*/*.bin" (see "connect-common" package)
         selectDesktopBinDir: (state: AppState) => state.desktop?.paths?.binDir,
         selectLanguage,
-        selectMetadata: (state: AppState) => state.metadata,
         selectAddressDisplayType,
         selectSelectedAccount: (state: AppState) => state.wallet.selectedAccount,
         selectSelectedAccountStatus: (state: AppState) => state.wallet.selectedAccount.status,
         selectIsWindowVisible,
         selectTradingEnvironment: selectInvityServerEnvironment,
         selectIsViewOnlyByDefaultEnabled: (_: AppState) => true,
-        selectIsSuiteSyncEnabled: (state: AppState) => state.suiteSync.settings.isSuiteSyncEnabled,
         selectThpSettings: (state: AppState) => ({
             appName: 'Trezor Suite', // NOTE: this is displayed on Trezor. not the same as manifest.appName
             pairingMethods: ['CodeEntry'],

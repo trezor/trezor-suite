@@ -1,6 +1,7 @@
 import { type ReactElement } from 'react';
 
 import { Translation } from '@suite/intl';
+import { selectIsLegacyLabelingVisible } from '@suite/metadata';
 import { type Bip329Label, bip329LabelSchema } from '@suite-common/bip329-types';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -21,7 +22,6 @@ import {
 import { HELP_CENTER_BIP329_URL } from '@trezor/urls';
 
 import { exportMetadataToBip329File } from 'src/actions/labels/exportMetadataToBip329File';
-import { selectIsLegacyLabelingVisible } from 'src/actions/labels/selectIsLegacyLabelingVisible';
 import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 import { suiteSyncErrorHandler } from 'src/components/suite/labeling/suiteSyncErrorHandler';
 import { useDefaultAccountLabel, useDispatch, useSelector } from 'src/hooks/suite';
