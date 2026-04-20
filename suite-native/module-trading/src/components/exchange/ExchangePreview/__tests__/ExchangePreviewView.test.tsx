@@ -1,5 +1,6 @@
 import { type PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils';
 import {
+    cexdirectFloatingQuote,
     exchangeQuotes,
     getWalletState,
     mercuryoFixedWorstQuote,
@@ -65,5 +66,21 @@ describe('ExchangePreviewView', () => {
         });
 
         expect(queryByText('You are swapping with 1Inch Fusion+')).toBeNull();
+    });
+
+    it('should render KYC warning for provider with "KYC-required"', () => {
+        const { getByText } = renderExchangePreviewView({
+            quote: cexdirectFloatingQuote,
+        });
+
+        expect(getByText('This provider requires to verify identity.')).toBeOnTheScreen();
+    });
+
+    it('should not render KYC provider warning for providers with "noKYC"', () => {
+        const { queryByText } = renderExchangePreviewView({
+            quote: mercuryoFixedWorstQuote,
+        });
+
+        expect(queryByText('This provider requires to verify identity.')).toBeNull();
     });
 });
