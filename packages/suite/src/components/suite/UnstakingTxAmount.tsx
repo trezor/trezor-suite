@@ -23,10 +23,13 @@ export const UnstakingTxAmount = ({ transaction }: UnstakingTxAmountProps) => {
         const unstakeAmount = solanaSpecific?.stakeOperation?.amount ?? '0';
 
         return (
-            <FormattedCryptoAmount
-                value={formatNetworkAmount(unstakeAmount, symbol)}
-                symbol={symbol}
-            />
+            <>
+                {' '}
+                <FormattedCryptoAmount
+                    value={formatNetworkAmount(unstakeAmount, symbol)}
+                    symbol={symbol}
+                />
+            </>
         );
     }
 
@@ -38,9 +41,12 @@ export const UnstakingTxAmount = ({ transaction }: UnstakingTxAmountProps) => {
     if (!unstakeEthAmount) return null;
 
     return (
-        <FormattedCryptoAmount
-            value={formatNetworkAmount(unstakeEthAmount, symbol)}
-            symbol={symbol}
-        />
+        <>
+            {' '}
+            <FormattedCryptoAmount
+                value={formatNetworkAmount(unstakeEthAmount, symbol)}
+                symbol={symbol}
+            />
+        </>
     );
 };
