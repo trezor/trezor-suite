@@ -53,11 +53,10 @@ describe('ExchangeFromAccountTradePreviewCard', () => {
         expect(getByText(`100-${mercuryoFixedWorstQuote.send}`)).toBeOnTheScreen();
     });
 
-    // Todo: https://github.com/trezor/trezor-suite/issues/24906
-    it.skip('should display correct account name', () => {
+    it('should display correct account name', () => {
         const { getByText } = renderExchangeFromAccountTradePreviewCard({
             quote: mercuryoFixedWorstQuote,
         });
-        expect(getByText('BTC Account #1')).toBeOnTheScreen();
+        expect(getByText('ETH Account #1')).toBeOnTheScreen();
     });
 });

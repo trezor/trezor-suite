@@ -6,7 +6,7 @@ import {
     renderHookWithStoreProvider,
     renderWithStoreProvider,
 } from '@suite-native/test-utils';
-import { btcAsset, getBtcAccount } from '@suite-native/trading-fixtures';
+import { btc1NormalAccount, btcAsset } from '@suite-native/trading-fixtures';
 import { tradingInitialState } from '@suite-native/trading-state';
 import {
     type BuyFormType,
@@ -19,7 +19,7 @@ import { BuyReceiveAccountPicker } from '../BuyReceiveAccountPicker';
 
 const mockNavigate = jest.fn();
 const btcAccountName1 = 'BTC Account #1';
-const btcAddressAddress = '1BTC';
+const btcAddressAddress = 'USED1';
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
@@ -38,7 +38,7 @@ const getTradingState = (selectedReceiveAccount: ReceiveAccount | undefined) => 
                 tradingAccountKey: selectedReceiveAccount?.account.key,
             },
         },
-        accounts: [getBtcAccount()],
+        accounts: [btc1NormalAccount],
     },
 });
 
@@ -81,14 +81,12 @@ describe('BuyReceiveAccountPicker', () => {
         expect(getByText('Not selected')).toBeTruthy();
     });
 
-    // Todo: https://github.com/trezor/trezor-suite/issues/24906
-    it.skip('should display selected account name and address', () => {
+    it('should display selected account name and address', () => {
         setSelectedAsset(btcAsset);
-        const btcAccount = getBtcAccount();
         const { getByText } = renderPicker({
             preloadedState: getTradingState({
-                account: btcAccount,
-                address: btcAccount.addresses?.used[0],
+                account: btc1NormalAccount,
+                address: btc1NormalAccount.addresses?.used[0],
             }),
         });
 
@@ -98,11 +96,10 @@ describe('BuyReceiveAccountPicker', () => {
 
     it('should call navigate with correct params on press', () => {
         setSelectedAsset(btcAsset);
-        const btcAccount = getBtcAccount();
         const { getByText } = renderPicker({
             preloadedState: getTradingState({
-                account: btcAccount,
-                address: btcAccount.addresses?.used[0],
+                account: btc1NormalAccount,
+                address: btc1NormalAccount.addresses?.used[0],
             }),
         });
 
