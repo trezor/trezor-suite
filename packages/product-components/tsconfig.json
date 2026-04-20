@@ -7,13 +7,20 @@
             ]
         },
         "plugins": [
-            { "name": "typescript-styled-plugin" }
+            {
+                "name": "typescript-styled-plugin"
+            }
         ],
         "outDir": "./libDev"
     },
     "include": [".", "**/*.json"],
     "references": [
-        { "path": "../../suite-common/feedback" },
+        {
+            "path": "../../suite/intl"
+        },
+        {
+            "path": "../../suite-common/feedback"
+        },
         {
             "path": "../../suite-common/suite-constants"
         },
@@ -35,13 +42,29 @@
         {
             "path": "../../suite-common/wallet-utils"
         },
-        { "path": "../asset-utils" },
-        { "path": "../components" },
-        { "path": "../device-utils" },
-        { "path": "../env-utils" },
-        { "path": "../theme" },
-        { "path": "../type-utils" },
-        { "path": "../utils" },
-        { "path": "../eslint" }
+        {
+            "path": "../asset-utils"
+        },
+        {
+            "path": "../components"
+        },
+        {
+            "path": "../device-utils"
+        },
+        {
+            "path": "../env-utils"
+        },
+        {
+            "path": "../theme"
+        },
+        {
+            "path": "../type-utils"
+        },
+        {
+            "path": "../utils"
+        },
+        {
+            "path": "../eslint"
+        }
     ]
 }

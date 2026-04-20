@@ -2,7 +2,6 @@ import {
     type ChangeEvent,
     type DragEvent,
     type MouseEvent,
-    type ReactNode,
     useCallback,
     useRef,
     useState,
@@ -10,6 +9,7 @@ import {
 
 import styled from 'styled-components';
 
+import { type ExtendedMessageDescriptor, Translation } from '@suite/intl';
 import {
     Column,
     Icon,
@@ -50,21 +50,18 @@ const StyledInput = styled.input`
 export type DropZoneProps = {
     accept?: string;
     iconName?: IconName;
-    emptyLabel: ReactNode;
-    emptyError: ReactNode;
-    fileTypeError: ReactNode;
-    onSelect: (data: File, setError: (msg: ReactNode) => void) => void;
+    onSelect: (data: File, setError: (msg: ExtendedMessageDescriptor) => void) => void;
     'data-testid'?: string;
 };
 
-const useDropZone = ({ accept, emptyError, fileTypeError, onSelect }: DropZoneProps) => {
+const useDropZone = ({ accept, onSelect }: DropZoneProps) => {
     const available = useRef(
         typeof window !== 'undefined' &&
             Boolean(window.File && window.FileReader && window.FileList && window.Blob),
     );
     const wrapperRef = useRef<HTMLDivElement | null>(null);
     const inputRef = useRef<HTMLInputElement | null>(null);
-    const [error, setError] = useState<ReactNode>();
+    const [error, setError] = useState<ExtendedMessageDescriptor>();
     const [filename, setFilename] = useState<string>();
 
     const allowedExtensions = (accept || '')
@@ -77,14 +74,14 @@ const useDropZone = ({ accept, emptyError, fileTypeError, onSelect }: DropZonePr
         (file?: File) => {
             setFilename(file?.name);
             if (!file) {
-                setError(emptyError);
+                setError({ id: 'TR_DROPZONE_ERROR_EMPTY' });
 
                 return;
             }
             if (allowedExtensions.length) {
                 const extRegex = new RegExp(`\\.(${allowedExtensions.join('|')})$`, 'i');
                 if (!extRegex.test(file.name)) {
-                    setError(fileTypeError);
+                    setError({ id: 'TR_DROPZONE_ERROR_FILETYPE' });
 
                     return;
                 }
@@ -92,7 +89,7 @@ const useDropZone = ({ accept, emptyError, fileTypeError, onSelect }: DropZonePr
             setError(undefined);
             onSelect(file, setError);
         },
-        [allowedExtensions, emptyError, fileTypeError, onSelect],
+        [allowedExtensions, onSelect],
     );
 
     const onClick = useCallback(() => {
@@ -123,10 +120,10 @@ const useDropZone = ({ accept, emptyError, fileTypeError, onSelect }: DropZonePr
             if (event.dataTransfer) {
                 readFileContent(event.dataTransfer.files[0]);
             } else {
-                setError(emptyError);
+                setError({ id: 'TR_DROPZONE_ERROR_EMPTY' });
             }
         },
-        [emptyError, readFileContent],
+        [readFileContent],
     );
 
     const onInputChange = useCallback(
@@ -135,10 +132,10 @@ const useDropZone = ({ accept, emptyError, fileTypeError, onSelect }: DropZonePr
             if (event.target.value && event.target.files) {
                 readFileContent(event.target.files[0]);
             } else {
-                setError(emptyError);
+                setError({ id: 'TR_DROPZONE_ERROR_EMPTY' });
             }
         },
-        [emptyError, readFileContent],
+        [readFileContent],
     );
 
     const onInputClick = useCallback((event: MouseEvent<HTMLInputElement>) => {
@@ -183,20 +180,10 @@ const useDropZone = ({ accept, emptyError, fileTypeError, onSelect }: DropZonePr
 export const DropZone = ({
     accept,
     iconName = 'fileX',
-    emptyLabel,
-    emptyError,
-    fileTypeError,
     onSelect,
     'data-testid': dataTestId,
 }: DropZoneProps) => {
-    const { getWrapperProps, getInputProps, error, filename } = useDropZone({
-        accept,
-        emptyError,
-        fileTypeError,
-        emptyLabel,
-        onSelect,
-        'data-testid': dataTestId,
-    });
+    const { getWrapperProps, getInputProps, error, filename } = useDropZone({ accept, onSelect });
     const { elevation } = useElevation();
 
     return (
@@ -222,12 +209,12 @@ export const DropZone = ({
                         intent="neutral"
                         priority={filename ? 'primary' : 'secondary'}
                     >
-                        {filename ?? emptyLabel}
+                        {filename ?? <Translation id="TR_DROPZONE" />}
                     </Text>
                 </Row>
                 {error !== undefined && (
                     <Paragraph typographyStyle="body-sm" intent="critical">
-                        {error}
+                        <Translation {...error} />
                     </Paragraph>
                 )}
             </Column>

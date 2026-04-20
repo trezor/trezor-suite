@@ -1,7 +1,7 @@
-import { type Dispatch, type ReactNode, type SetStateAction } from 'react';
+import { type Dispatch, type SetStateAction } from 'react';
 
 import { validateFirmware } from '@suite/firmware-upgrade';
-import { Translation } from '@suite/intl';
+import { type ExtendedMessageDescriptor, Translation } from '@suite/intl';
 import { BulletList, Button, Row } from '@trezor/components';
 import { DropZone } from '@trezor/product-components';
 import { GITHUB_FW_BINARIES_URL } from '@trezor/urls';
@@ -20,12 +20,15 @@ export const SelectCustomFirmware = ({ setFirmwareBinary }: SelectCustomFirmware
         ? `${GITHUB_FW_BINARIES_URL}/${deviceModel.toLowerCase()}`
         : GITHUB_FW_BINARIES_URL;
 
-    const onFirmwareUpload = async (firmware: File, setError: (msg: ReactNode) => void) => {
+    const onFirmwareUpload = async (
+        firmware: File,
+        setError: (msg: ExtendedMessageDescriptor) => void,
+    ) => {
         const fw = await firmware.arrayBuffer();
         const validationError = validateFirmware(fw, device);
 
         if (validationError) {
-            setError(<Translation id={validationError} />);
+            setError({ id: validationError });
         } else {
             setFirmwareBinary(fw);
         }
@@ -45,9 +48,6 @@ export const SelectCustomFirmware = ({ setFirmwareBinary }: SelectCustomFirmware
                 <DropZone
                     data-testid="@firmware/input-area"
                     accept=".bin"
-                    emptyLabel={<Translation id="TR_DROPZONE" />}
-                    emptyError={<Translation id="TR_DROPZONE_ERROR_EMPTY" />}
-                    fileTypeError={<Translation id="TR_DROPZONE_ERROR_FILETYPE" />}
                     onSelect={onFirmwareUpload}
                 />
             </BulletList.Item>

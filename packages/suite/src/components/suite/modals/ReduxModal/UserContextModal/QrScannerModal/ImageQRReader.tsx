@@ -85,14 +85,7 @@ export const ImageQRReader = ({ onResult }: ImageQRReaderProps) => {
                 </Card>
             ) : (
                 <>
-                    <DropZone
-                        accept={IMAGE_ACCEPT}
-                        iconName="qrCode"
-                        emptyLabel={<Translation id="TR_DROPZONE" />}
-                        emptyError={<Translation id="TR_DROPZONE_ERROR_EMPTY" />}
-                        fileTypeError={<Translation id="TR_DROPZONE_ERROR_FILETYPE" />}
-                        onSelect={handleSelect}
-                    />
+                    <DropZone accept={IMAGE_ACCEPT} iconName="qrCode" onSelect={handleSelect} />
                     {error && (
                         <Card>
                             <Column alignItems="center" gap={spacings.xs}>

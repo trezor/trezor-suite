@@ -18,6 +18,7 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
+        "@suite/intl": "workspace:*",
         "@suite-common/feedback": "workspace:*",
         "@suite-common/suite-constants": "workspace:*",
         "@suite-common/suite-types": "workspace:*",

@@ -1,6 +1,6 @@
-import { type ReactNode, useState } from 'react';
+import { useState } from 'react';
 
-import { Translation } from '@suite/intl';
+import { type ExtendedMessageDescriptor, Translation } from '@suite/intl';
 import { type UserContextPayload } from '@suite-common/suite-types';
 import { networksCollection } from '@suite-common/wallet-config';
 import { parseCSV } from '@suite-common/wallet-utils';
@@ -39,20 +39,18 @@ export const ImportTransactionModal = ({ onCancel, decision }: ImportTransaction
         onCancel();
     };
 
-    const onCsvSelect = (file: File, setError: (msg: ReactNode) => void) => {
+    const onCsvSelect = (file: File, setError: (msg: ExtendedMessageDescriptor) => void) => {
         const reader = new FileReader();
 
         reader.onload = () => {
             if (typeof reader.result !== 'string' || !reader.result.length) {
-                setError(<Translation id="TR_DROPZONE_ERROR_EMPTY" />);
+                setError({ id: 'TR_DROPZONE_ERROR_EMPTY' });
             } else {
                 setContent(reader.result);
             }
         };
         reader.onerror = () => {
-            setError(
-                <Translation id="TR_DROPZONE_ERROR" values={{ error: reader.error!.message }} />,
-            );
+            setError({ id: 'TR_DROPZONE_ERROR', values: { error: reader.error!.message } });
             reader.abort();
         };
         reader.readAsText(file);
@@ -98,9 +96,6 @@ export const ImportTransactionModal = ({ onCancel, decision }: ImportTransaction
                             <DropZone
                                 accept=".csv,.txt,text/csv"
                                 iconName="fileCsv"
-                                emptyLabel={<Translation id="TR_DROPZONE" />}
-                                emptyError={<Translation id="TR_DROPZONE_ERROR_EMPTY" />}
-                                fileTypeError={<Translation id="TR_DROPZONE_ERROR_FILETYPE" />}
                                 onSelect={onCsvSelect}
                             />
                         ) : (
