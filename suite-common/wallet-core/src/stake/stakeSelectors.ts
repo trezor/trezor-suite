@@ -15,7 +15,7 @@ export const selectCardanoPoolsInfo = (state: StakeRootState) =>
 export const selectEthNextRewardPayout = (state: StakeRootState) => {
     const nextRewardPayout = selectStakeData(state).eth?.stats?.nextRewardPayout;
 
-    return nextRewardPayout ? secondsToDays(nextRewardPayout) : null;
+    return nextRewardPayout ? Math.max(1, secondsToDays(nextRewardPayout)) : null;
 };
 
 export const selectEthValidatorsQueue = (state: StakeRootState) =>
