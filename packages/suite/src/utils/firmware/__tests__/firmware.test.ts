@@ -1,4 +1,4 @@
-import { getFormattedFingerprint, validateFirmware } from '@suite/firmware-upgrade';
+import { getFormattedFingerprint, validateFirmware } from '@suite/firmware';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { DeviceModelInternal } from '@trezor/device-utils';
 

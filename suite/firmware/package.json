@@ -1,0 +1,44 @@
+{
+    "name": "@suite/firmware",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@reduxjs/toolkit": "2.11.2",
+        "@suite-common/device": "workspace:*",
+        "@suite-common/firmware": "workspace:*",
+        "@suite-common/suite-types": "workspace:*",
+        "@suite-common/suite-utils": "workspace:*",
+        "@suite-common/thp": "workspace:*",
+        "@suite-common/wallet-core": "workspace:*",
+        "@suite/intl": "workspace:*",
+        "@suite/locks": "workspace:*",
+        "@suite/router": "workspace:*",
+        "@suite/settings": "workspace:*",
+        "@trezor/components": "workspace:*",
+        "@trezor/connect": "workspace:*",
+        "@trezor/device-utils": "workspace:*",
+        "@trezor/product-components": "workspace:*",
+        "@trezor/react-utils": "workspace:*",
+        "@trezor/theme": "workspace:*",
+        "@trezor/urls": "workspace:*",
+        "@trezor/utils": "workspace:*",
+        "framer-motion": "^12.33.0",
+        "react": "19.2.4",
+        "react-intl": "^8.1.3",
+        "react-redux": "9.2.0",
+        "redux": "^5.0.1",
+        "semver": "^7.7.1",
+        "styled-components": "^6.3.9"
+    },
+    "devDependencies": {
+        "@types/react": "19.2.14"
+    }
+}

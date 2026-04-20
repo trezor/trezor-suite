@@ -1,9 +1,10 @@
+import { ThpGlobalModalManager } from '@suite/firmware';
+
 import {
     selectShowEnableSuiteSyncModal,
     updateShowEnableSuiteSyncModal,
 } from 'src/actions/suiteSync/suiteSyncSlice';
 import { ConnectionGlobalModalManager } from 'src/components/connection/ConnectionGlobalModalManager';
-import { ThpGlobalModalManager } from 'src/components/connection/thp/ThpGlobalModalManager';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { usePreferredModal } from 'src/hooks/suite/usePreferredModal';
 

@@ -82,7 +82,7 @@
         "@suite/device": "workspace:*",
         "@suite/experimental": "workspace:*",
         "@suite/feature-feedback": "workspace:*",
-        "@suite/firmware-upgrade": "workspace:*",
+        "@suite/firmware": "workspace:*",
         "@suite/flags": "workspace:*",
         "@suite/github": "workspace:*",
         "@suite/idb-migration-utils": "workspace:*",

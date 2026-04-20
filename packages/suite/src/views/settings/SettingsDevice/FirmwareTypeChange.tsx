@@ -1,4 +1,4 @@
-import { getSuiteFirmwareTypeString } from '@suite/firmware-upgrade';
+import { getSuiteFirmwareTypeString } from '@suite/firmware';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor, goto } from '@suite/router';
 import { firmwareActions } from '@suite-common/firmware';

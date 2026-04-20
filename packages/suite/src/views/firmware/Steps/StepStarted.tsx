@@ -1,8 +1,7 @@
 import { type ReactNode } from 'react';
 
+import { FirmwareInstallation } from '@suite/firmware';
 import { Modal } from '@trezor/components';
-
-import { FirmwareInstallation } from 'src/components/firmware';
 
 type StepStartedProps = {
     onPromptClose: () => void;

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { FirmwareUpgradeNeededModal } from '@suite/firmware-upgrade';
+import { FirmwareUpgradeNeededModal } from '@suite/firmware';
 import { Translation, useTranslation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { goto } from '@suite/router';

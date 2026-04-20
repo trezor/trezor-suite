@@ -1,10 +1,12 @@
 import { useState } from 'react';
 
 import {
+    FirmwareLowBatteryModal,
+    FirmwareOffer,
     FirmwareWarningsList,
     FirmwareWipeWarning,
     useFirmwareDesktopUpdate,
-} from '@suite/firmware-upgrade';
+} from '@suite/firmware';
 import { Translation, useTranslation } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { selectIsDebugModeActive } from '@suite/settings';
@@ -14,8 +16,6 @@ import { type ButtonProps, Card, Column, Link, Note, Row, Tooltip } from '@trezo
 import { FirmwareType } from '@trezor/connect';
 import { DeviceModelInternal, isBitcoinOnlyDevice } from '@trezor/device-utils';
 
-import { FirmwareOffer } from 'src/components/firmware';
-import { FirmwareLowBatteryModal } from 'src/components/firmware/FirmwareLowBatteryModal';
 import { SkipStepConfirmation } from 'src/components/onboarding/SkipStepConfirmation';
 import { PrerequisitesGuide } from 'src/components/suite';
 import { useDevice, useOnboarding, useSelector } from 'src/hooks/suite';

@@ -1,0 +1,32 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        { "path": "../../suite-common/device" },
+        { "path": "../../suite-common/firmware" },
+        {
+            "path": "../../suite-common/suite-types"
+        },
+        {
+            "path": "../../suite-common/suite-utils"
+        },
+        { "path": "../../suite-common/thp" },
+        {
+            "path": "../../suite-common/wallet-core"
+        },
+        { "path": "../intl" },
+        { "path": "../locks" },
+        { "path": "../router" },
+        { "path": "../settings" },
+        { "path": "../../packages/components" },
+        { "path": "../../packages/connect" },
+        { "path": "../../packages/device-utils" },
+        {
+            "path": "../../packages/product-components"
+        },
+        { "path": "../../packages/react-utils" },
+        { "path": "../../packages/theme" },
+        { "path": "../../packages/urls" },
+        { "path": "../../packages/utils" }
+    ]
+}

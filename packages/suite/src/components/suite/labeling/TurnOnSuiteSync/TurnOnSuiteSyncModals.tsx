@@ -1,4 +1,4 @@
-import { FirmwareUpgradeNeededModal } from '@suite/firmware-upgrade';
+import { FirmwareUpgradeNeededModal } from '@suite/firmware';
 import { useTranslation } from '@suite/intl';
 import { selectSuiteSyncInteraction } from '@suite-common/suite-sync';
 import { type StaticSessionId } from '@trezor/connect';

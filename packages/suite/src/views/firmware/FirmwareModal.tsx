@@ -1,9 +1,11 @@
 import { type ReactNode, useState } from 'react';
 
 import {
+    FirmwareInstallationProgressCheck,
+    ThpPairingStep,
     useFirmwareDesktopUpdate,
     useFirmwareInstallationProgressCheck,
-} from '@suite/firmware-upgrade';
+} from '@suite/firmware';
 import { closeModal } from '@suite/modal';
 import { closeModalApp } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
@@ -11,8 +13,6 @@ import { acquireDevice } from '@suite-common/wallet-core';
 import { Modal } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 
-import { FirmwareInstallationProgressCheck } from 'src/components/firmware';
-import { ThpPairingStep } from 'src/components/firmware/ThpPairingStep/ThpPairingStep';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { StepCheckSeed } from './Steps/StepCheckSeed';

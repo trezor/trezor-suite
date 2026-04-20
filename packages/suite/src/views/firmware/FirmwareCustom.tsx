@@ -1,10 +1,11 @@
 import { useState } from 'react';
 
-import { useFirmwareDesktopUpdate } from '@suite/firmware-upgrade';
+import {
+    FirmwareLowBatteryModal,
+    SelectCustomFirmware,
+    useFirmwareDesktopUpdate,
+} from '@suite/firmware';
 import { Translation } from '@suite/intl';
-
-import { SelectCustomFirmware } from 'src/components/firmware';
-import { FirmwareLowBatteryModal } from 'src/components/firmware/FirmwareLowBatteryModal';
 
 import { FirmwareModal } from './FirmwareModal';
 

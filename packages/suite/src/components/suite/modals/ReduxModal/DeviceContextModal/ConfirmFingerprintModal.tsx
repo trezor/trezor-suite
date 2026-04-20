@@ -1,4 +1,4 @@
-import { Fingerprint } from '@suite/firmware-upgrade';
+import { Fingerprint } from '@suite/firmware';
 import { Translation } from '@suite/intl';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { Card, Modal } from '@trezor/components';
