@@ -174,6 +174,13 @@ describe('Status', () => {
             });
         });
 
+        // deterministic rotation through identities — avoids flakiness from Math.random
+        const randomSequence = [0, 0.25, 0.5, 0.75];
+        let randomIdx = 0;
+        jest.spyOn(Math, 'random').mockImplementation(
+            () => randomSequence[randomIdx++ % randomSequence.length],
+        );
+
         jest.useFakeTimers();
 
         status = new Status(server?.requestOptions);
@@ -190,8 +197,8 @@ describe('Status', () => {
         await fastForward(STATUS_TIMEOUT.registered);
         await fastForward(STATUS_TIMEOUT.registered);
 
-        // at least two identities used. probably all defined above were used but it's not deterministic
-        expect(identities.length).toBeGreaterThanOrEqual(2);
+        // all four identities (default + A, B, C) should be used
+        expect(identities.length).toEqual(4);
 
         // clear identities
         status.removeIdentity('A');
