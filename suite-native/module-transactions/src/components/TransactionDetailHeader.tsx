@@ -15,6 +15,7 @@ import { type TypedTokenTransfer, type WalletAccountTransaction } from '@suite-n
 import {
     TransactionIcon,
     getTransactionValueSign,
+    getUnstakeTxAmount,
     selectTransactionFiatRate,
 } from '@suite-native/transactions';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -53,6 +54,7 @@ export const TransactionDetailHeader = ({
     const signValue = getTransactionValueSign(tokenTransfer?.type ?? transaction.type);
     const isTokenOnlyTransaction = transaction.amount === '0' && transaction.tokens.length !== 0;
     const txType = isTokenOnlyTransaction ? transaction.tokens[0].type : type;
+    const isUnstakeTx = getUnstakeTxAmount(transaction) !== undefined;
 
     return (
         <DiscreetTextTrigger>
@@ -74,43 +76,44 @@ export const TransactionDetailHeader = ({
                         )
                     )}
 
-                    <Box flexDirection="row">
-                        {!isFailedTx && (
-                            <SignValueFormatter
-                                color="contentPrimary"
-                                value={signValue}
-                                variant="headline-md"
-                            />
-                        )}
-                        <Text> </Text>
+                    {!isUnstakeTx && (
+                        <Box flexDirection="row">
+                            {!isFailedTx && (
+                                <SignValueFormatter
+                                    color="contentPrimary"
+                                    value={signValue}
+                                    variant="headline-md"
+                                />
+                            )}
 
-                        {tokenTransfer ? (
-                            <TokenAmountFormatter
-                                value={tokenTransfer.amount}
-                                tokenSymbol={tokenTransfer.symbol}
-                                decimals={tokenTransfer.decimals}
-                                variant="headline-md"
-                                color="contentPrimary"
-                                numberOfLines={1}
-                                adjustsFontSizeToFit
-                                style={applyStyle(failedTxStyle, { isFailedTx })}
-                            />
-                        ) : (
-                            <CryptoAmountFormatter
-                                value={transaction.amount}
-                                symbol={transaction.symbol}
-                                isBalance={false}
-                                variant="headline-md"
-                                color="contentPrimary"
-                                numberOfLines={1}
-                                adjustsFontSizeToFit
-                                style={applyStyle(failedTxStyle, { isFailedTx })}
-                            />
-                        )}
-                    </Box>
+                            {tokenTransfer ? (
+                                <TokenAmountFormatter
+                                    value={tokenTransfer.amount}
+                                    tokenSymbol={tokenTransfer.symbol}
+                                    decimals={tokenTransfer.decimals}
+                                    variant="headline-md"
+                                    color="contentPrimary"
+                                    numberOfLines={1}
+                                    adjustsFontSizeToFit
+                                    style={applyStyle(failedTxStyle, { isFailedTx })}
+                                />
+                            ) : (
+                                <CryptoAmountFormatter
+                                    value={transaction.amount}
+                                    symbol={transaction.symbol}
+                                    isBalance={false}
+                                    variant="headline-md"
+                                    color="contentPrimary"
+                                    numberOfLines={1}
+                                    adjustsFontSizeToFit
+                                    style={applyStyle(failedTxStyle, { isFailedTx })}
+                                />
+                            )}
+                        </Box>
+                    )}
                 </VStack>
 
-                {historicRate !== undefined && historicRate !== 0 && (
+                {!isUnstakeTx && historicRate !== undefined && historicRate !== 0 && (
                     <Box flexDirection="row" style={applyStyle(fiatValueStyle)}>
                         <Text color="contentSecondary">≈ </Text>
                         {tokenTransfer ? (

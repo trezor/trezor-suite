@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation, usePreventRemove } from '@react-navigation/native';
 
+import { useFormatters } from '@suite-common/formatters';
 import { getExplorerUrl } from '@suite-common/wallet-config';
 import {
     type ExplorerState,
@@ -11,8 +12,9 @@ import {
     selectIsTransactionPending,
     selectTransactionByAccountKeyAndTxid,
 } from '@suite-common/wallet-core';
+import { redactNumericalSubstring } from '@suite-common/wallet-utils';
 import { events } from '@suite-native/analytics';
-import { Button, HStack, Text, VStack } from '@suite-native/atoms';
+import { Button, HStack, Text, VStack, useDiscreetMode } from '@suite-native/atoms';
 import { CryptoIconWithNetwork } from '@suite-native/icons';
 import { useInAppRating } from '@suite-native/in-app-rating';
 import { Translation } from '@suite-native/intl';
@@ -26,7 +28,7 @@ import {
 } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
 import { type TypedTokenTransfer, type WalletAccountTransaction } from '@suite-native/tokens';
-import { TransactionName } from '@suite-native/transactions';
+import { TransactionName, getUnstakeTxAmount } from '@suite-native/transactions';
 
 import { TransactionDetailData } from '../components/TransactionDetailData';
 import { TransactionDetailHeader } from '../components/TransactionDetailHeader';
@@ -37,6 +39,8 @@ export const TransactionDetailScreen = ({
     const { askForRating } = useInAppRating();
     const navigation = useNavigation();
     const analytics = useAnalytics();
+    const { CryptoAmountFormatter: cryptoAmountFormatter } = useFormatters();
+    const { isDiscreetMode } = useDiscreetMode();
     const { txid, accountKey, tokenContract, closeActionType = 'back', source } = route.params;
     const openLink = useOpenLink();
     const transaction = useSelector((state: TransactionsRootState) =>
@@ -71,6 +75,19 @@ export const TransactionDetailScreen = ({
 
     if (!transaction) return null;
 
+    const unstakeAmount = getUnstakeTxAmount(transaction);
+    const isUnstakeTransaction = unstakeAmount !== undefined;
+    const formattedUnstakeAmount = isUnstakeTransaction
+        ? cryptoAmountFormatter.format(unstakeAmount, {
+              symbol: transaction.symbol,
+              isBalance: false,
+              isEllipsisAppended: false,
+          })
+        : '';
+    const displayedUnstakeAmount = isDiscreetMode
+        ? redactNumericalSubstring(formattedUnstakeAmount)
+        : formattedUnstakeAmount;
+
     const handleOpenBlockchain = () => {
         if (!blockchainExplorer) return;
         analytics.report({
@@ -87,24 +104,33 @@ export const TransactionDetailScreen = ({
                     closeActionType={closeActionType}
                     customContent={
                         <HStack spacing="sp8" alignItems="center" justifyContent="center">
-                            <CryptoIconWithNetwork
-                                symbol={transaction.symbol}
-                                contractAddress={tokenTransfer?.contract}
-                            />
-                            <Text variant="body-md-strong">
-                                <Translation
-                                    id="transactions.detail.header"
-                                    values={{
-                                        transactionType: _ => (
-                                            <TransactionName
-                                                key={transaction.txid}
-                                                transaction={transaction}
-                                                isPending={isPending}
-                                                variant="body-md-strong"
-                                            />
-                                        ),
-                                    }}
+                            {!isUnstakeTransaction && (
+                                <CryptoIconWithNetwork
+                                    symbol={transaction.symbol}
+                                    contractAddress={tokenTransfer?.contract}
                                 />
+                            )}
+                            <Text variant="body-md-strong">
+                                {isUnstakeTransaction ? (
+                                    <Translation
+                                        id="transactions.detail.unstakeHeader"
+                                        values={{ amount: displayedUnstakeAmount }}
+                                    />
+                                ) : (
+                                    <Translation
+                                        id="transactions.detail.header"
+                                        values={{
+                                            transactionType: () => (
+                                                <TransactionName
+                                                    key={transaction.txid}
+                                                    transaction={transaction}
+                                                    isPending={isPending}
+                                                    variant="body-md-strong"
+                                                />
+                                            ),
+                                        }}
+                                    />
+                                )}
                             </Text>
                         </HStack>
                     }
