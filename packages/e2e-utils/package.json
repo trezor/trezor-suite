@@ -22,7 +22,7 @@
         "@trezor/utils": "workspace:*",
         "dotenv": "17.2.3",
         "express": "^5.2.1",
-        "ws": "^8.18.0"
+        "ws": "^8.20.0"
     },
     "devDependencies": {
         "@currents/playwright": "^1.22.2",

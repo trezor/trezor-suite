@@ -42,7 +42,7 @@
     "dependencies": {
         "@sinclair/typebox": "^0.33.12",
         "@trezor/type-utils": "workspace:*",
-        "ts-mixer": "^6.0.3"
+        "ts-mixer": "^6.0.4"
     },
     "peerDependencies": {
         "tslib": "^2.6.2"

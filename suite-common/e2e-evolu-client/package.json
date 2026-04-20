@@ -11,7 +11,7 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "ws": "^8.18.0"
+        "ws": "^8.20.0"
     },
     "devDependencies": {
         "@evolu/common": "8.0.0-next.3",
