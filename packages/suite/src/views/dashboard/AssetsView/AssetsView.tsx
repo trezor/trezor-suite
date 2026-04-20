@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 import { selectFlags, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { openModal } from '@suite/modal';
 import { type AssetFiatBalance } from '@suite-common/assets';
 import {
     type NetworkSymbol,
@@ -161,7 +161,7 @@ export const AssetsView = () => {
     const isError =
         discoveryStatus && discoveryStatus.status === 'exception' && !assetSymbols.length;
 
-    const goToCoinsSettings = () => dispatch(goto({ routeName: 'settings-coins' }));
+    const openActivateAssetsModal = () => dispatch(openModal({ type: 'activate-assets' }));
     const setTable = () => dispatch(setFlag({ key: 'dashboardAssetsGridMode', value: false }));
     const setGrid = () => dispatch(setFlag({ key: 'dashboardAssetsGridMode', value: true }));
     const isDiscoveryEmpty = discoveryStatus && discoveryStatus.type === 'discovery-empty';
@@ -189,7 +189,7 @@ export const AssetsView = () => {
                                 intent="neutral"
                                 priority="secondary"
                                 iconLeft="plus"
-                                onClick={goToCoinsSettings}
+                                onClick={openActivateAssetsModal}
                                 data-testid="@dashboard/assets/enable-more-coins"
                             >
                                 <Translation id="TR_ENABLE_MORE_COINS" />

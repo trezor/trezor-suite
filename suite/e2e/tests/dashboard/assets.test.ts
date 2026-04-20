@@ -25,15 +25,8 @@ test.describe('Assets', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
         await expect(tradingPage.section).toBeVisible();
     });
 
-    test('New asset is shown in both grid and row', async ({
-        page,
-        assetsSection,
-        dashboardPage,
-        settingsPage,
-    }) => {
-        await assetsSection.enableMoreCoins.click();
-        await settingsPage.coinsTab.enableNetwork('eth');
-        await dashboardPage.navigateTo();
+    test('New asset is shown in both grid and row', async ({ page, assetsSection }) => {
+        await assetsSection.enableNetworkViaActivateAssetsModal('eth');
         await page.discoveryShouldFinish();
         await assetsSection.verifyAssetContents();
         await assetsSection.tableIcon.click();

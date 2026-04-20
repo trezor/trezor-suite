@@ -50,18 +50,12 @@ export const ActivateAssetsModal = ({ onCancel }: ActivateAssetsModalProps) => {
         null,
     );
 
-    // Merge with the current store state so any concurrent changes stay reflected.
-    const effectiveEnabledNetworks = useMemo(
-        () => Array.from(new Set([...pendingNetworks, ...enabledNetworks])),
-        [pendingNetworks, enabledNetworks],
-    );
+    const hasChanges = useMemo(() => {
+        const toEnable = pendingNetworks.filter(symbol => !enabledNetworks.includes(symbol));
+        const toDisable = enabledNetworks.filter(symbol => !pendingNetworks.includes(symbol));
 
-    const selectedInModal = useMemo(
-        () => supportedMainnets.filter(({ symbol }) => pendingNetworks.includes(symbol)),
-        [supportedMainnets, pendingNetworks],
-    );
-
-    const hasAnySelected = selectedInModal.length > 0;
+        return toEnable.length > 0 || toDisable.length > 0;
+    }, [pendingNetworks, enabledNetworks]);
 
     const handleToggle = (symbol: NetworkSymbol, shouldBeVisible: boolean) => {
         setPendingNetworks(prev => {
@@ -77,7 +71,7 @@ export const ActivateAssetsModal = ({ onCancel }: ActivateAssetsModalProps) => {
         });
     };
 
-    const onAdd = () => {
+    const onSave = () => {
         const toEnable = pendingNetworks.filter(symbol => !enabledNetworks.includes(symbol));
         const toDisable = enabledNetworks.filter(symbol => !pendingNetworks.includes(symbol));
 
@@ -88,7 +82,10 @@ export const ActivateAssetsModal = ({ onCancel }: ActivateAssetsModalProps) => {
             dispatch(changeCoinVisibility({ symbol, shouldBeVisible: false })),
         );
 
-        dispatch(startOrRestartDiscoveryThunk());
+        if (toEnable.length > 0) {
+            dispatch(startOrRestartDiscoveryThunk());
+        }
+
         onCancel();
     };
 
@@ -104,13 +101,9 @@ export const ActivateAssetsModal = ({ onCancel }: ActivateAssetsModalProps) => {
                 description={<Translation id="TR_DASHBOARD_MODAL_ACTIVATE_ASSETS_DESC" />}
                 width={600}
                 bottomContent={
-                    hasAnySelected ? (
-                        <Modal.Button
-                            onClick={onAdd}
-                            isDisabled={!hasAnySelected}
-                            data-testid="@modal/activate-assets/add"
-                        >
-                            <Translation id="TR_ADD" />
+                    hasChanges ? (
+                        <Modal.Button onClick={onSave} data-testid="@modal/activate-assets/save">
+                            <Translation id="TR_SAVE" />
                         </Modal.Button>
                     ) : null
                 }
@@ -136,7 +129,7 @@ export const ActivateAssetsModal = ({ onCancel }: ActivateAssetsModalProps) => {
                     </AnimatePresence>
                     <CoinGroup
                         networks={supportedMainnets}
-                        enabledNetworks={effectiveEnabledNetworks}
+                        enabledNetworks={pendingNetworks}
                         onToggle={handleToggle}
                         onSettings={setAdvancedSettingsSymbol}
                     />
