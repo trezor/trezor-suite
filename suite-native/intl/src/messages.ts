@@ -251,15 +251,9 @@ export const messages = {
                 secondaryButton: 'Device removed',
             },
             systemUnpairing: {
-                title: {
-                    android: 'Remove Trezor from system settings',
-                    ios: 'Remove Trezor from Bluetooth settings',
-                },
-                description: {
-                    android:
-                        'To unpair fully, make sure you remove your Trezor from your phone’s Bluetooth settings. If not, you might have trouble pairing it again in the future.',
-                    ios: 'If not, you might have trouble pairing it again in the future.',
-                },
+                title: 'Remove from Bluetooth settings',
+                description:
+                    'Remove your Trezor from your Bluetooth settings. If you don’t, you might have trouble pairing it again in the future.',
                 primaryButton: 'Open system settings',
                 secondaryButton: 'Device removed',
             },
@@ -1531,7 +1525,7 @@ export const messages = {
                     unableToConnect: {
                         clearnet:
                             'Unable to connect to server. Check for typos and server disruptions.',
-                        tor: "Tor isn't supported. Use a clearnet address instead",
+                        tor: 'Unable to connect to server. Check for typos and ensure Orbot is running on your device.',
                     },
                 },
                 closeAction: {
@@ -2641,7 +2635,7 @@ export const messages = {
         },
         earnStakeOutputItem: {
             title: 'Stake',
-            description: 'Stake {displaySymbol} on Everstake?',
+            description: 'Stake {symbol} on Everstake?',
         },
         earnSummaryOutputItem: {
             title: 'Total including fee',
@@ -2754,7 +2748,7 @@ export const messages = {
                 },
                 third: {
                     title: 'Receive weekly rewards',
-                    description: '{apy}% yearly',
+                    description: '~{apy}% yearly',
                 },
             },
             unstakeTimelineTitle: 'Unstake',
@@ -2797,7 +2791,7 @@ export const messages = {
         },
         notAvailable: 'Not available',
         apyNotAvailable: 'APY not available',
-        apyPercentage: '{apy}% APY',
+        apyPercentage: '~{apy}% APY',
         notAvailableShort: 'N/A',
         stakePendingCard: {
             totalStakePending: 'Total stake pending',
