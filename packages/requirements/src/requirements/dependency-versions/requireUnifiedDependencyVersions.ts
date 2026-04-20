@@ -17,9 +17,6 @@ export const ALLOWED_DRIFTS = new Set([
     '@hookform/resolvers', // migration from v3 to v5 in progress
     'jest-diff', // v29 and v30 coexist during migration
     'babel-jest', // waiting for suite-native who are waiting for expo to update babel-jest
-    'vite-plugin-node-polyfills',
-    '@storybook/react',
-    'storybook',
     '@scure/base', // i think i had a cjs problem, todo: investigate later
 ]);
 
