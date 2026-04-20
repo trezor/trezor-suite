@@ -6,13 +6,10 @@ import { invariant } from '@suite-common/suite-utils';
 import {
     type TradingRootState as TradingRootStateCommon,
     selectTradingProviderByNameAndTradeType,
-    selectTradingProviderKycPolicy,
 } from '@suite-common/trading';
 import { HStack, Text } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 import { OverviewRow, OverviewValueSkeleton, ProviderLogo } from '@suite-native/trading-atoms';
-
-import { getKycPolicyWarningTranslation } from '../../utils/general/kycUtils';
 
 type ExchangeProviderPickerRightProps = {
     isLoading: boolean;
@@ -63,15 +60,9 @@ export const ExchangeProviderPicker = ({
 }: ExchangeProviderPickerProps) => {
     const { translate } = useTranslate();
 
-    const kycPolicy = useSelector((state: TradingRootStateCommon) =>
-        selectTradingProviderKycPolicy(state, selectedValue?.exchange, 'exchange'),
-    );
-
     if (!selectedValue && !isLoading) {
         return null;
     }
-
-    const warning = isLoading ? undefined : getKycPolicyWarningTranslation(kycPolicy);
 
     return (
         <>
@@ -80,7 +71,6 @@ export const ExchangeProviderPicker = ({
                 noBottomBorder
                 onPress={handleProviderPress}
                 noCaret={isLoading}
-                warning={warning}
                 testID={PROVIDER_PICKER_TEST_ID}
             >
                 <ExchangeProviderPickerRight isLoading={isLoading} selectedValue={selectedValue} />
