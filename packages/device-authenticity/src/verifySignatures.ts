@@ -2,6 +2,7 @@ import { ed25519 } from '@noble/curves/ed25519.js';
 import crypto from 'crypto';
 
 import { getSubtleCrypto } from '@trezor/crypto-utils';
+import { bufferUtils } from '@trezor/utils';
 
 import { type VerifySignature } from './types';
 import { type AlgorithmName, fixSignature } from './x509certificate';
@@ -19,7 +20,7 @@ export const verifySignatureP256: VerifySignature = async (rawKey, data, signatu
         // get ECDSA P-256 (secp256r1) key from RAW key
         const ecPubKey = await SubtleCrypto.importKey(
             'raw',
-            rawKey,
+            bufferUtils.toNonSharedBuffer(rawKey),
             { name: 'ECDSA', namedCurve: 'P-256' },
             true,
             ['verify'],

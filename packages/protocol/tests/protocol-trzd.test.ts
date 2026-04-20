@@ -1,5 +1,9 @@
 import { trzd } from '../src/index';
 
+// duplicates the same fn from bufferUtils, to avoid a new dependency
+const bufferToBytes = (buffer: Buffer<ArrayBuffer>): ArrayBuffer =>
+    buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength);
+
 describe('protocol-v1', () => {
     it('decode', () => {
         // Testnet chain
@@ -9,7 +13,7 @@ describe('protocol-v1', () => {
         );
         let read;
 
-        read = trzd.decode(data);
+        read = trzd.decode(bufferToBytes(data));
         expect(read.magic).toEqual('trzd1');
         expect(read.definitionType).toEqual(0);
         expect(read.protobufLength).toEqual(19);
@@ -22,7 +26,7 @@ describe('protocol-v1', () => {
             '74727a643101585a686532000a147af963cf6d228e564e2a0aa0ddbf06210b38615d10051a0354535420122a11676f65726c69205465737420746f6b656eDEAD',
             'hex',
         );
-        read = trzd.decode(data);
+        read = trzd.decode(bufferToBytes(data));
         expect(read.magic).toEqual('trzd1');
         expect(read.definitionType).toEqual(1);
         expect(read.protobufLength).toEqual(50);
@@ -38,7 +42,7 @@ describe('protocol-v1', () => {
             `74727a643100585a6865${len.toString('hex')}${longName.toString('hex')}DEAD`,
             'hex',
         );
-        read = trzd.decode(data);
+        read = trzd.decode(bufferToBytes(data));
         expect(read.protobufLength).toEqual(400);
         expect(read.protobufPayload).toEqual(longName);
     });
