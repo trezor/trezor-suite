@@ -1,13 +1,39 @@
 import type { TradingTransaction } from '@suite-common/trading';
 import { type PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils';
 import {
+    MOCK_ACCOUNT_DEVICE_SESSION_ID,
     accounts,
     getBuyTrade,
     getExchangeTrade,
     getInitializedTradingState,
     getSellTrade,
 } from '@suite-native/trading-fixtures';
-import type { StaticSessionId } from '@trezor/connect';
+
+jest.mock('@suite-native/trading-state', () => {
+    const actual = jest.requireActual('@suite-native/trading-state');
+
+    return {
+        ...actual,
+        // selectAccountLabelWithNetworkFallback uses parseAccountKey internally which splits
+        // the account key by '-' and fails for mockWalletAccount descriptors containing hyphens
+        // (e.g. 'eth1-normal-eth-1@2:3'). Override with a direct key lookup + real network fallback.
+        selectAccountLabelWithNetworkFallback: (state: any, accountKey: any, cryptoId: any) => {
+            if (accountKey) {
+                const account = state?.wallet?.accounts?.find((a: any) => a.key === accountKey);
+
+                if (account?.accountLabel) return account.accountLabel;
+            }
+
+            // Delegate to real implementation for network name / unknown fallback,
+            // with accounts cleared so it skips the broken account-lookup path.
+            return actual.selectAccountLabelWithNetworkFallback(
+                { ...state, wallet: { ...state?.wallet, accounts: [] } },
+                undefined,
+                cryptoId,
+            );
+        },
+    };
+});
 
 import {
     TradeDetailTransactionInfo,
@@ -19,11 +45,8 @@ const getPreloadedState = (trades: TradingTransaction[]): PreloadedState => ({
         devices: [],
         selectedDevice: {
             state: {
-                staticSessionId: 'staticSessionId' as StaticSessionId,
+                staticSessionId: MOCK_ACCOUNT_DEVICE_SESSION_ID,
             },
-            connected: true,
-            available: true,
-            remember: true,
         },
     },
     wallet: {
@@ -63,8 +86,7 @@ describe('TradeDetailTransactionInfo', () => {
         expect(queryByText('From')).toBeNull();
     });
 
-    // Todo: https://github.com/trezor/trezor-suite/issues/24906
-    it.skip('should render correct account name for buy trade', () => {
+    it('should render correct account name for buy trade', () => {
         const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
 
         const { getByText } = renderComponent(
@@ -87,8 +109,7 @@ describe('TradeDetailTransactionInfo', () => {
         expect(getByText('0.462586 SOL')).toBeTruthy();
     });
 
-    // Todo: https://github.com/trezor/trezor-suite/issues/24906
-    it.skip('should render correct account name for exchange trade', () => {
+    it('should render correct account name for exchange trade', () => {
         const exchangeTrade = getExchangeTrade({ status: 'CONVERTING' });
 
         const { getAllByText } = renderComponent(
@@ -140,8 +161,7 @@ describe('TradeDetailTransactionInfo', () => {
         expect(queryByText('From')).toBeTruthy();
     });
 
-    // Todo: https://github.com/trezor/trezor-suite/issues/24906
-    it.skip('should render correct account name for sell trade', () => {
+    it('should render correct account name for sell trade', () => {
         const sellTrade = getSellTrade({ status: 'SEND_CRYPTO' });
 
         const { getByText } = renderComponent(

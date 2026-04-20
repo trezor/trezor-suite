@@ -1,6 +1,8 @@
 import { type PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils';
 import {
+    btc1NormalAccount,
     cexdirectFloatingQuote,
+    eth1NormalAccount,
     exchangeQuotes,
     getWalletState,
     mercuryoFixedWorstQuote,
@@ -14,8 +16,8 @@ describe('ExchangePreviewView', () => {
             wallet: getWalletState({ tradeType: 'exchange' }),
         };
         preloadedState.wallet!.trading!.composedTransactionInfo = { composed: { fee: '1000' } };
-        preloadedState.wallet!.trading!.exchange!.tradingAccountKey = 'btc-account-1';
-        preloadedState.wallet!.trading!.exchange!.receiveAccountKey = 'eth-account-1';
+        preloadedState.wallet!.trading!.exchange!.tradingAccountKey = btc1NormalAccount.key;
+        preloadedState.wallet!.trading!.exchange!.receiveAccountKey = eth1NormalAccount.key;
         preloadedState.wallet!.trading!.exchange!.lastErrorMessage = 'ERROR_MESSAGE';
 
         return renderWithStoreProvider(
@@ -28,26 +30,24 @@ describe('ExchangePreviewView', () => {
         );
     };
 
-    // Todo: https://github.com/trezor/trezor-suite/issues/24906
-    it.skip('should render all sections except alert', () => {
+    it('should render all sections except alert', () => {
         const { getByText } = renderExchangePreviewView({});
 
         expect(getByText('BTC Account #1')).toBeOnTheScreen();
-        expect(getByText('Ethereum #1')).toBeOnTheScreen();
-        expect(getByText('Fee')).toBeOnTheScreen();
+        expect(getByText('ETH Account #1')).toBeOnTheScreen();
+        expect(getByText('Transaction fee')).toBeOnTheScreen();
         expect(getByText('ERROR_MESSAGE')).toBeOnTheScreen();
     });
 
-    // Todo: https://github.com/trezor/trezor-suite/issues/24906
-    it.skip('should render txnErrorString but no fee picker when isTxnError is true', () => {
+    it('should render txnErrorString but no fee picker when isTxnError is true', () => {
         const { getByText, queryByText } = renderExchangePreviewView({
             txnErrorString: 'txnErrorString',
         });
 
         expect(getByText('BTC Account #1')).toBeOnTheScreen();
-        expect(getByText('Ethereum #1')).toBeOnTheScreen();
+        expect(getByText('ETH Account #1')).toBeOnTheScreen();
         expect(getByText('txnErrorString')).toBeOnTheScreen();
-        expect(queryByText('Fee')).toBeNull();
+        expect(queryByText('Transaction fee')).toBeNull();
     });
 
     it('should render 1Inch Fusion+ info when exchange is 1inchfusionplus', () => {
