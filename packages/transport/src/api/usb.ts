@@ -138,7 +138,7 @@ export class UsbApi extends AbstractApi {
             type: this.matchDeviceType(d.device),
             product: d.device.productId,
             vendor: d.device.vendorId,
-            id: d.device.serialNumber ?? undefined,
+            id: d.device.serialNumber,
             apiType: this.type,
             model: getUSBDescriptorModel(d.device),
         }));
