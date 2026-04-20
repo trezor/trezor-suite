@@ -3,6 +3,7 @@
     "ignores": [
         "babel*",
         "@babel/*",
+        "@swc/jest",
         "@playwright/*",
         "webpack*",
         "worker-loader",
