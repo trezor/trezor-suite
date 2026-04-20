@@ -1,4 +1,5 @@
 import type { SuiteReadyPayload } from '@suite/analytics';
+import { selectIsLegacyLabelingVisible } from '@suite/metadata';
 import { AccountTransactionBaseAnchor } from '@suite/router';
 import {
     selectAutodetectLanguage,
@@ -36,7 +37,6 @@ import {
 import { type AppState } from 'src/types/suite';
 
 import { getIsTorEnabled } from './tor';
-import { selectIsLegacyLabelingVisible } from '../../actions/labels/selectIsLegacyLabelingVisible';
 
 const resolveLabelingType = (
     state: AppState,

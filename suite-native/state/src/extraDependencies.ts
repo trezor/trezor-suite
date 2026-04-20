@@ -14,7 +14,6 @@ import {
     notImplementedThunk,
 } from '@suite-common/redux-utils';
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
-import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
 import { analytics } from '@suite-native/analytics';
 import { forgetBluetoothDeviceThunk } from '@suite-native/bluetooth';
@@ -132,13 +131,11 @@ export const extraDependencies: ExtraDependenciesStatic = {
             knownCredentials: state.thp?.credentials,
         }),
         selectAllowPrerelease: () => false,
-        selectIsSuiteSyncEnabled,
 
         // Not implemented. We assume those are NEVER called on Native
         // need for this is architectural mistake. Please DO NOT add more and try
         // to remove them.
         selectDesktopBinDir: notImplementedSelector('selectDesktopBinDir', '/bin'),
-        selectMetadata: notImplementedSelector('selectMetadata', {}),
         selectAddressDisplayType: notImplementedSelector(
             'selectAddressDisplayType',
             AddressDisplayOptions.CHUNKED,

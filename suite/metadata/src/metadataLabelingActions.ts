@@ -24,6 +24,7 @@ import { cloneObject } from '@trezor/utils';
 import type { MetadataAction } from './metadataActions';
 import * as metadataActions from './metadataActions';
 import * as METADATA from './metadataConstants';
+import * as metadataDataThunks from './metadataDataThunks';
 import * as METADATA_LABELING from './metadataLabelingConstants';
 import * as metadataProviderActions from './metadataProviderThunks';
 import {
@@ -32,7 +33,6 @@ import {
     selectMetadata,
     selectSelectedProviderForLabels,
 } from './metadataReducer';
-import * as metadataThunks from './metadataThunks';
 import * as metadataUtils from './metadataUtils';
 
 export const getLabelableEntities =
@@ -239,7 +239,7 @@ export const fetchAndSaveMetadata =
             const promises = labelableEntities.map(entity =>
                 dispatch(fetchMetadata({ provider, entity })).then(result => {
                     if (result) {
-                        dispatch(metadataThunks.setMetadata({ ...result, provider }));
+                        dispatch(metadataDataThunks.setMetadata({ ...result, provider }));
                     }
                 }),
             );
@@ -324,7 +324,7 @@ export const addDeviceMetadata =
         nextMetadata.walletLabel = walletLabel;
 
         dispatch(
-            metadataThunks.setMetadata({
+            metadataDataThunks.setMetadata({
                 provider,
                 fileName,
                 data: nextMetadata,
@@ -342,7 +342,7 @@ export const addDeviceMetadata =
             return Promise.resolve({ success: false as const, error: 'no provider instance' });
         }
 
-        return metadataThunks.encryptAndSaveMetadata({
+        return metadataDataThunks.encryptAndSaveMetadata({
             data: { walletLabel },
             aesKey,
             fileName,
@@ -428,7 +428,7 @@ export const addAccountMetadata =
         }
 
         dispatch(
-            metadataThunks.setMetadata({
+            metadataDataThunks.setMetadata({
                 fileName,
                 provider,
                 data: nextMetadata,
@@ -451,7 +451,7 @@ export const addAccountMetadata =
             return Promise.resolve({ success: false as const, error: 'no provider instance' });
         }
 
-        return metadataThunks.encryptAndSaveMetadata({
+        return metadataDataThunks.encryptAndSaveMetadata({
             data: {
                 accountLabel: nextMetadata.accountLabel,
                 outputLabels: nextMetadata.outputLabels,
@@ -621,7 +621,7 @@ export const init =
                 // NOTE: when the request for the device fails / is cancelled on the device
                 // disable metadata labeling for all but only when it was off before this invocation
                 if (!globalLabelingEnabledBeforeToggle) {
-                    dispatch(metadataThunks.disableMetadata());
+                    dispatch(metadataDataThunks.disableMetadata());
                 }
 
                 return false;
@@ -653,7 +653,7 @@ export const init =
                 // NOTE: when the provider is not initialized
                 // disable metadata labeling for all but only when it was off before this invocation
                 if (!globalLabelingEnabledBeforeToggle) {
-                    dispatch(metadataThunks.disableMetadata());
+                    dispatch(metadataDataThunks.disableMetadata());
                 }
 
                 return false;

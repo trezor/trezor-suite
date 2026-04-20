@@ -1,7 +1,10 @@
 import { type MouseEventHandler, type ReactNode } from 'react';
 
 import { Translation, useTranslation } from '@suite/intl';
-import { selectLabelingDataForSelectedAccount } from '@suite/metadata';
+import {
+    selectIsLegacyLabelingVisible,
+    selectLabelingDataForSelectedAccount,
+} from '@suite/metadata';
 import { openModal } from '@suite/modal';
 import {
     selectIsSuiteSyncEnabled,
@@ -24,7 +27,6 @@ import {
 } from '@trezor/components';
 import { type AccountUtxo } from '@trezor/connect';
 
-import { selectIsLegacyLabelingVisible } from 'src/actions/labels/selectIsLegacyLabelingVisible';
 import { Address, BaseCurrencyValue, FormattedCryptoAmount, Labeling } from 'src/components/suite';
 import { TransactionTimestamp, UtxoAnonymity } from 'src/components/wallet';
 import { useDispatch, useSelector } from 'src/hooks/suite';

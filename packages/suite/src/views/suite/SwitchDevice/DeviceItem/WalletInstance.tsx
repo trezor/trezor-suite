@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { Translation, useTranslation } from '@suite/intl';
-import { selectLabelingDataForWallet } from '@suite/metadata';
+import { selectIsLegacyLabelingVisible, selectLabelingDataForWallet } from '@suite/metadata';
 import { SuiteSyncWalletDebug } from '@suite/suite-sync';
 import { selectIsSuiteSyncEnabled, selectSuiteSyncWalletLabel } from '@suite-common/suite-sync';
 import {
@@ -27,7 +27,6 @@ import {
 import { type StaticSessionId } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
 
-import { selectIsLegacyLabelingVisible } from 'src/actions/labels/selectIsLegacyLabelingVisible';
 import { redirectAfterWalletSelectedThunk } from 'src/actions/wallet/addWalletThunk';
 import { WalletLabeling } from 'src/components/suite';
 import { Labeling } from 'src/components/suite/labeling/Labeling/Labeling';

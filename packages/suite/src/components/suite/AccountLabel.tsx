@@ -1,11 +1,10 @@
-import { selectLabelingDataForAccount } from '@suite/metadata';
+import { selectIsLegacyLabelingVisible, selectLabelingDataForAccount } from '@suite/metadata';
 import { selectIsSuiteSyncEnabled, selectSuiteSyncAccountLabel } from '@suite-common/suite-sync';
 import { type Account } from '@suite-common/wallet-types';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { type BadgeSize, type FlexProps, Row, Text, type TextProps } from '@trezor/components';
 import { type TypographyStyle } from '@trezor/theme';
 
-import { selectIsLegacyLabelingVisible } from 'src/actions/labels/selectIsLegacyLabelingVisible';
 import { useDefaultAccountLabel, useSelector } from 'src/hooks/suite';
 
 import { AccountTypeBadge } from './AccountTypeBadge';

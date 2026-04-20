@@ -18,9 +18,9 @@ import { exhaustive } from '@trezor/type-utils';
 import { createDeferred, createZip, typedObjectKeys } from '@trezor/utils';
 
 import * as METADATA from './metadataConstants';
+import { disposeMetadata } from './metadataDataThunks';
 import * as METADATA_PROVIDER from './metadataProviderConstants';
 import { type MetadataRootState, selectSelectedProviderForLabels } from './metadataReducer';
-import { disposeMetadata } from './metadataThunks';
 import { type FetchIntervalTrackingId } from './metadataUtils';
 import { DropboxProvider } from './providers/DropboxProvider';
 import { FileSystemProvider } from './providers/FileSystemProvider';
