@@ -212,7 +212,7 @@
         "ts-jest": "29.4.1",
         "ts-node": "^10.9.2",
         "tsx": "^4.21.0",
-        "typescript": "5.8.3",
+        "typescript": "5.9.3",
         "uri-scheme": "^2.0.18"
     },
     "private": true
