@@ -141,7 +141,7 @@ export const PortfolioCardException = ({
         case 'discovery-empty':
             return (
                 <Container
-                    icon={<Illustration name="disconnectTrezor" width={224} />}
+                    icon={<Illustration name="networks" width={224} />}
                     title="TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY"
                     description="TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY_DESC"
                     cta={[

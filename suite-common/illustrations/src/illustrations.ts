@@ -4,5 +4,6 @@
 export const illustrations = {
     connectTrezor: require('../assets/connectTrezor.svg'),
     disconnectTrezor: require('../assets/disconnectTrezor.svg'),
+    networks: require('../assets/networks.svg'),
 } as const;
 export type IllustrationName = keyof typeof illustrations;
