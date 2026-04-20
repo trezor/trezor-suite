@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2026-04-14T00:00:00+00:00",
-    "sequence": 134,
+    "timestamp": "2026-04-19T00:00:00+00:00",
+    "sequence": 135,
     "actions": [
         {
             "conditions": [
@@ -1488,31 +1488,31 @@
                         "flag": true,
                         "payload": {
                             "title": {
-                                "en": "Help us improve how users trade in Trezor Suite. Join a user feedback session and share your experience.",
-                                "es": "Ayúdanos a mejorar las operaciones en Trezor Suite. Únete a una sesión de feedback y comparte tu experiencia.",
-                                "cs": "Pomozte nám vylepšit obchodování v Trezor Suite. Zúčastněte se sezení pro zpětnou vazbu a podělte se o své zkušenosti.",
-                                "de": "Helfen Sie uns, das Trading in der Trezor Suite zu verbessern. Nehmen Sie an einer Feedback-Session teil und teilen Sie Ihre Erfahrungen.",
-                                "fr": "Aidez-nous à améliorer le trading dans Trezor Suite. Participez à une session de feedback et partagez votre expérience.",
-                                "pt": "Ajude-nos a melhorar as negociações no Trezor Suite. Participe de uma sessão de feedback e compartilhe sua experiência."
+                                "en": "Earn $50 for your feedback on trading",
+                                "es": "Gana $50 por tu opinión sobre el trading",
+                                "cs": "Získejte 50 $ za sdílení zpětné vazby k obchodování",
+                                "de": "Verdienen Sie 50 $ für Ihr Feedback zum Trading",
+                                "fr": "Gagnez 50 $ pour vos retours sur le trading",
+                                "pt": "Ganhe $50 pelo seu feedback sobre negociações"
                             },
                             "description": {
-                                "en": "Answer a short survey to see if you qualify for 60 min interview and get 50 USD discount on Trezor's e-shop or Amazon voucher for 30 USD.",
-                                "es": "Responde una breve encuesta para ver si calificas para una entrevista de 60 minutos y recibe un descuento de 50 USD en la tienda virtual de Trezor o un vale de Amazon de 30 USD.",
-                                "cs": "Vyplňte krátký dotazník a zjistěte, zda splňujete podmínky pro 60minutový rozhovor a získejte slevu 50 USD v Trezor e-shopu, nebo dárkový poukaz na Amazon v hodnotě 30 USD.",
-                                "de": "Beantworten Sie eine kurze Umfrage, um zu sehen, ob Sie für ein 60-minütiges Interview in Frage kommen, und erhalten Sie einen Rabatt von 50 USD im Trezor-E-Shop oder einen Amazon-Gutschein über 30 USD.",
-                                "fr": "Répondez à un court sondage pour voir si vous êtes éligible à un entretien de 60 minutes et recevez une remise de 50 USD sur l'e-shop de Trezor ou un bon d'achat Amazon de 30 USD.",
-                                "pt": "Responda a uma breve pesquisa para ver se você se qualifica para uma entrevista de 60 minutos e ganhe um desconto de 50 USD na loja virtual da Trezor ou um vale da Amazon de 30 USD."
+                                "en": "Take a short survey to qualify for a 60-minute chat about trading in Trezor Suite. Choose a $50 Trezor Shop voucher or a $30 Amazon voucher as a reward.",
+                                "es": "Completa una breve encuesta para calificar a una conversación de 60 minutos sobre trading en Trezor Suite. Elige un vale de $50 para Trezor Shop o un vale de $30 para Amazon como recompensa.",
+                                "cs": "Vyplňte krátký dotazník a získejte možnost zúčastnit se 60minutového rozhovoru o obchodování v Trezor Suite. Jako odměnu si vyberte voucher v hodnotě 50 $ do Trezor Shopu nebo voucher v hodnotě 30 $ na Amazon.",
+                                "de": "Nehmen Sie an einer kurzen Umfrage teil, um sich für ein 60-minütiges Gespräch über Trading in Trezor Suite zu qualifizieren. Wählen Sie als Belohnung einen $50-Gutschein für den Trezor Shop oder einen $30-Amazon-Gutschein.",
+                                "fr": "Répondez à un court sondage pour être éligible à un entretien de 60 minutes sur le trading dans Trezor Suite. Choisissez un bon d'achat de $50 pour le Trezor Shop ou un bon d'achat de $30 pour Amazon en guise de récompense.",
+                                "pt": "Responda a uma breve pesquisa para se qualificar para uma conversa de 60 minutos sobre trading na Trezor Suite. Escolha um voucher de $50 na Trezor Shop ou um voucher de $30 na Amazon como recompensa."
                             },
                             "cta": {
                                 "action": "external-link",
                                 "link": "https://satoshilabs.typeform.com/to/T16Qnfou",
                                 "label": {
-                                    "en": "Find out more",
-                                    "es": "Saber más",
-                                    "cs": "Zjistit více",
-                                    "de": "Mehr erfahren",
-                                    "fr": "En savoir plus",
-                                    "pt": "Saiba mais"
+                                    "en": "Take survey",
+                                    "es": "Tomar encuesta",
+                                    "cs": "Vyplnit dotazník",
+                                    "de": "Umfrage teilnehmen",
+                                    "fr": "Participer au sondage",
+                                    "pt": "Participar da pesquisa"
                                 }
                             }
                         }
