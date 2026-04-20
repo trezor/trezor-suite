@@ -13,7 +13,8 @@
         "seed-tests": "CURRENTS_PROJECT_ID=iBEsWE yarn pwc --config ./src/quarantineBot/seed/playwright.config.ts",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "analyze-tests": "tsx ./src/llmTestAnalyzer/index.ts",
-        "select-tests-llm": "tsx ./src/llmTestSelector/index.ts"
+        "select-tests-llm": "tsx ./src/llmTestSelector/index.ts",
+        "fix-bot": "bash src/fixBot/run.sh"
     },
     "dependencies": {
         "@anthropic-ai/sdk": "^0.39.0",
@@ -25,6 +26,8 @@
         "ws": "^8.20.0"
     },
     "devDependencies": {
+        "@anthropic-ai/claude-code": "^2.1.89",
+        "@currents/mcp": "^2.2.16",
         "@currents/playwright": "^1.22.2",
         "@playwright/test": "1.58.2",
         "@trezor/node-utils": "workspace:*",

@@ -1,5 +1,7 @@
 @anthropic-ai/sdk
+@anthropic-ai/claude-code
 @currents/cmd
+@currents/mcp
 @currents/playwright
 @jest/globals
 @jest/reporters
