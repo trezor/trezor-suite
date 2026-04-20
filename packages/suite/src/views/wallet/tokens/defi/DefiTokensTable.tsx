@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
 import { Translation } from '@suite/intl';
-import { useAllYieldOpportunities } from '@suite-common/earn-api';
+import { useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
 import { TokenManagementAction, selectCoinDefinitions } from '@suite-common/token-definitions';
 import { selectBaseCurrency, selectCurrentFiatRates } from '@suite-common/wallet-core';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
@@ -62,7 +62,7 @@ export const DefiTokensTable = ({ selectedAccount, searchQuery }: DefiTokensTabl
             <TokensTable
                 type="defi"
                 account={account}
-                tokenStatusType={TokenManagementAction.SHOW}
+                tokenStatusType={TokenManagementAction.HIDE}
                 tokensWithBalance={tokens.shownWithBalance}
                 tokensWithoutBalance={tokens.shownWithoutBalance}
                 network={network}

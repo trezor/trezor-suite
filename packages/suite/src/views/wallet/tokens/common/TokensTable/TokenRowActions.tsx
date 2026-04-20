@@ -6,7 +6,7 @@ import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { goto } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
-import { type YieldDto } from '@suite-common/earn-api';
+import { type YieldDto } from '@suite-common/earn-stablecoin-api';
 import {
     DefinitionType,
     type EnhancedTokenInfo,
@@ -61,23 +61,54 @@ import { getTokenAddressTranslationId } from 'src/utils/wallet/tokenUtils';
 
 import type { TokensTableType } from './types';
 
-interface TokenRowYieldActionsProps {
+interface TokenRowBasicActionsProps {
+    type?: TokensTableType;
     token: EnhancedTokenInfo;
+    tokenStatusType: TokenManagementAction;
     account: Account;
     network: Network;
+    isUnverifiedTable?: boolean;
     yieldOpportunities?: YieldDto[];
+    setShowDeactivateModal: (value: boolean) => void;
 }
 
-const TokenRowYieldActions = ({
+const TokenRowBasicActions = ({
+    type = 'default',
     token,
+    tokenStatusType,
     account,
     network,
+    isUnverifiedTable,
     yieldOpportunities,
-}: TokenRowYieldActionsProps) => {
+    setShowDeactivateModal,
+}: TokenRowBasicActionsProps) => {
     const dispatch = useDispatch();
     const analytics = useAnalytics();
+    const device = useSelector(selectSelectedDevice);
+    const { isLocked } = useDevice();
+    const { isBelowTablet } = useLayoutSize();
+
+    const shouldShowCopyAddressModal = useSelector(selectIsCopyAddressModalShown);
+    const shouldShowUnhideTokenModal = useSelector(selectIsUnhideTokenModalShown);
 
     const { address: unusedAddress, path } = getUnusedAddressFromAccount(account);
+
+    const { coins } = useSelector(selectTradingInfo);
+    const isDeviceLocked = isLocked(true);
+    const isDeviceCompromised = useSelector(selectIsDeviceCompromised);
+
+    const explorer = useSelector(state => selectExplorer(state, network.symbol)) as Explorer;
+    const explorerUrl = useExternalLink(getTokenExplorerUrl(explorer, network.networkType, token));
+
+    const contractAddress = getContractAddressForNetworkSymbol(account.symbol, token.contract);
+    const tokenCryptoId = toTokenCryptoId(account.symbol, contractAddress);
+    const tokenTradingOptions = coins?.[tokenCryptoId]?.services;
+
+    const canBuyToken = !!tokenTradingOptions && tokenTradingOptions.buy;
+    const canSwapToken =
+        (!!tokenTradingOptions && tokenTradingOptions.exchange) || token.balance === '0';
+    const canSellToken = !!tokenTradingOptions && tokenTradingOptions.sell;
+    const canReceiveToken = !isDeviceLocked && !isDeviceCompromised;
 
     const availableVault = yieldOpportunities?.find(
         vault =>
@@ -90,6 +121,8 @@ const TokenRowYieldActions = ({
 
     const isSupplyButtonDisabled = !availableVault || !availableVault.status.enter;
     const isWithdrawButtonDisabled = !availableVault || !availableVault.status.exit;
+
+    if (!unusedAddress || !device) return null;
 
     const goToWithAnalytics = (...[payload]: Parameters<typeof goto>) => {
         if (network.networkType) {
@@ -135,137 +168,6 @@ const TokenRowYieldActions = ({
                 }),
             }),
         );
-    };
-
-    const onSendButtonClick = () => {
-        dispatch(
-            setSendFormPrefill({
-                contractAddress: token.contract,
-            }),
-        );
-        dispatch(
-            sendFormActions.removeDraft({
-                accountKey: account.key,
-            }),
-        );
-
-        goToWithAnalytics({
-            routeName: 'wallet-send',
-            params: {
-                symbol: account.symbol,
-                accountIndex: account.index,
-                accountType: account.accountType,
-            },
-        });
-    };
-
-    const onReceiveButtonClick = () => {
-        if (!path) return;
-        dispatch(showAddress(path, unusedAddress));
-    };
-
-    return (
-        <Row gap={8}>
-            <Dropdown
-                placement={{ position: 'bottom', alignment: 'start' }}
-                items={[
-                    {
-                        label: <Translation id="TR_SEND" />,
-                        icon: 'arrowUp',
-                        onClick: onSendButtonClick,
-                    },
-                    {
-                        label: <Translation id="TR_RECEIVE" />,
-                        icon: 'arrowDown',
-                        onClick: onReceiveButtonClick,
-                    },
-                ]}
-            />
-
-            <ButtonGroup intent="neutral" priority="secondary">
-                <Tooltip
-                    content={<Translation id="TR_DEFI_NO_VAULT_TOOLTIP" />}
-                    isActive={isSupplyButtonDisabled}
-                >
-                    <IconButton
-                        icon="plus"
-                        isDisabled={isSupplyButtonDisabled}
-                        onClick={navigateToYieldSupply}
-                    />
-                </Tooltip>
-
-                <Tooltip
-                    content={<Translation id="TR_DEFI_NO_VAULT_TOOLTIP" />}
-                    isActive={isWithdrawButtonDisabled}
-                >
-                    <IconButton
-                        icon="minus"
-                        isDisabled={isWithdrawButtonDisabled}
-                        onClick={navigateToYieldWithdraw}
-                    />
-                </Tooltip>
-            </ButtonGroup>
-        </Row>
-    );
-};
-
-interface TokenRowBasicActionsProps {
-    type?: TokensTableType;
-    token: EnhancedTokenInfo;
-    tokenStatusType: TokenManagementAction;
-    account: Account;
-    network: Network;
-    isUnverifiedTable?: boolean;
-    setShowDeactivateModal: (value: boolean) => void;
-}
-
-const TokenRowBasicActions = ({
-    token,
-    tokenStatusType,
-    account,
-    network,
-    isUnverifiedTable,
-    setShowDeactivateModal,
-}: TokenRowBasicActionsProps) => {
-    const dispatch = useDispatch();
-    const analytics = useAnalytics();
-    const device = useSelector(selectSelectedDevice);
-    const { isLocked } = useDevice();
-    const { isBelowTablet } = useLayoutSize();
-
-    const shouldShowCopyAddressModal = useSelector(selectIsCopyAddressModalShown);
-    const shouldShowUnhideTokenModal = useSelector(selectIsUnhideTokenModalShown);
-
-    const { address: unusedAddress, path } = getUnusedAddressFromAccount(account);
-
-    const { coins } = useSelector(selectTradingInfo);
-    const isDeviceLocked = isLocked(true);
-    const isDeviceCompromised = useSelector(selectIsDeviceCompromised);
-
-    const explorer = useSelector(state => selectExplorer(state, network.symbol)) as Explorer;
-
-    const explorerUrl = useExternalLink(getTokenExplorerUrl(explorer, network.networkType, token));
-
-    const contractAddress = getContractAddressForNetworkSymbol(account.symbol, token.contract);
-    const tokenCryptoId = toTokenCryptoId(account.symbol, contractAddress);
-    const tokenTradingOptions = coins?.[tokenCryptoId]?.services;
-
-    const canBuyToken = !!tokenTradingOptions && tokenTradingOptions.buy;
-    const canSwapToken =
-        (!!tokenTradingOptions && tokenTradingOptions.exchange) || token.balance === '0';
-    const canSellToken = !!tokenTradingOptions && tokenTradingOptions.sell;
-    const canReceiveToken = !isDeviceLocked && !isDeviceCompromised;
-
-    if (!unusedAddress || !device) return null;
-
-    const goToWithAnalytics = (...[payload]: Parameters<typeof goto>) => {
-        if (network.networkType) {
-            analytics.report({
-                type: events.accountsActionsEvent.name,
-                payload: { symbol: network.symbol, action: payload.routeName },
-            });
-        }
-        dispatch(goto(payload));
     };
 
     const onTradeButtonClick = (type: TradingType, ...[payload]: Parameters<typeof goto>) => {
@@ -455,7 +357,7 @@ const TokenRowBasicActions = ({
                         'data-testid': '@trading/tokens/swap-button',
                         icon: 'arrowsLeftRight',
                         onClick: onSwapButtonClick,
-                        isHidden: !isBelowTablet,
+                        isHidden: type === 'defi' ? false : !isBelowTablet,
                         isDisabled: !canSwapToken,
                     },
                     {
@@ -465,7 +367,10 @@ const TokenRowBasicActions = ({
                         onClick: onSendButtonClick,
                         isDisabled: token.balance === '0',
                         isHidden:
-                            tokenStatusType === TokenManagementAction.HIDE ? !isBelowTablet : true,
+                            type !== 'defi' &&
+                            (tokenStatusType === TokenManagementAction.HIDE
+                                ? !isBelowTablet
+                                : true),
                     },
                     {
                         label: <Translation id="TR_NAV_RECEIVE" />,
@@ -474,21 +379,24 @@ const TokenRowBasicActions = ({
                         onClick: onReceiveButtonClick,
                         isDisabled: !canReceiveToken,
                         isHidden:
-                            tokenStatusType === TokenManagementAction.HIDE ? !isBelowTablet : true,
+                            type !== 'defi' &&
+                            (tokenStatusType === TokenManagementAction.HIDE
+                                ? !isBelowTablet
+                                : true),
                     },
                     {
                         label: <Translation id="TR_EARN_YIELD_SUPPLY" />,
                         icon: 'plus',
                         onClick: () => {},
-                        isDisabled: true,
-                        isHidden: !isErc4626(token),
+                        isDisabled: type === 'defi' ? isSupplyButtonDisabled : true,
+                        isHidden: type === 'defi' ? !isBelowTablet : !isErc4626(token),
                     },
                     {
                         label: <Translation id="TR_EARN_YIELD_WITHDRAW" />,
                         icon: 'minus',
                         onClick: () => {},
-                        isDisabled: true,
-                        isHidden: !isErc4626(token),
+                        isDisabled: type === 'defi' ? isWithdrawButtonDisabled : true,
+                        isHidden: type === 'defi' ? !isBelowTablet : !isErc4626(token),
                     },
                     {
                         label: (
@@ -525,7 +433,7 @@ const TokenRowBasicActions = ({
                 ]}
             />
 
-            {!isBelowTablet && (
+            {type !== 'defi' && !isBelowTablet && (
                 <Tooltip
                     content={
                         canSwapToken ? (
@@ -573,35 +481,63 @@ const TokenRowBasicActions = ({
                         <Translation id="TR_UNHIDE" />
                     </Button>
                 ) : (
-                    <ButtonGroup intent="neutral" priority="secondary">
-                        <Tooltip content={<Translation id="TR_NAV_SEND" />}>
-                            <IconButton
-                                isDisabled={token.balance === '0'}
-                                key="token-send"
-                                icon="arrowUp"
-                                onClick={onSendButtonClick}
-                            />
-                        </Tooltip>
+                    <>
+                        {type === 'defi' ? (
+                            <ButtonGroup intent="neutral" priority="secondary">
+                                <Tooltip
+                                    content={<Translation id="TR_DEFI_NO_VAULT_TOOLTIP" />}
+                                    isActive={isSupplyButtonDisabled}
+                                >
+                                    <IconButton
+                                        icon="plus"
+                                        isDisabled={isSupplyButtonDisabled}
+                                        onClick={navigateToYieldSupply}
+                                    />
+                                </Tooltip>
 
-                        <Tooltip
-                            content={
-                                <Translation
-                                    id={
-                                        isDeviceCompromised
-                                            ? 'TR_RECEIVE_ADDRESS_SECURITY_CHECK_FAILED'
-                                            : 'TR_NAV_RECEIVE'
+                                <Tooltip
+                                    content={<Translation id="TR_DEFI_NO_VAULT_TOOLTIP" />}
+                                    isActive={isWithdrawButtonDisabled}
+                                >
+                                    <IconButton
+                                        icon="minus"
+                                        isDisabled={isWithdrawButtonDisabled}
+                                        onClick={navigateToYieldWithdraw}
+                                    />
+                                </Tooltip>
+                            </ButtonGroup>
+                        ) : (
+                            <ButtonGroup intent="neutral" priority="secondary">
+                                <Tooltip content={<Translation id="TR_NAV_SEND" />}>
+                                    <IconButton
+                                        isDisabled={token.balance === '0'}
+                                        key="token-send"
+                                        icon="arrowUp"
+                                        onClick={onSendButtonClick}
+                                    />
+                                </Tooltip>
+
+                                <Tooltip
+                                    content={
+                                        <Translation
+                                            id={
+                                                isDeviceCompromised
+                                                    ? 'TR_RECEIVE_ADDRESS_SECURITY_CHECK_FAILED'
+                                                    : 'TR_NAV_RECEIVE'
+                                            }
+                                        />
                                     }
-                                />
-                            }
-                        >
-                            <IconButton
-                                key="token-receive"
-                                icon="arrowDown"
-                                isDisabled={!canReceiveToken}
-                                onClick={onReceiveButtonClick}
-                            />
-                        </Tooltip>
-                    </ButtonGroup>
+                                >
+                                    <IconButton
+                                        key="token-receive"
+                                        icon="arrowDown"
+                                        isDisabled={!canReceiveToken}
+                                        onClick={onReceiveButtonClick}
+                                    />
+                                </Tooltip>
+                            </ButtonGroup>
+                        )}
+                    </>
                 ))}
         </Row>
     );
@@ -627,27 +563,15 @@ export const TokenRowActions = ({
     yieldOpportunities,
     isUnverifiedTable,
     setShowDeactivateModal,
-}: TokenRowActionsProps) => {
-    if (type === 'defi') {
-        return (
-            <TokenRowYieldActions
-                token={token}
-                account={account}
-                network={network}
-                yieldOpportunities={yieldOpportunities}
-            />
-        );
-    }
-
-    return (
-        <TokenRowBasicActions
-            type={type}
-            token={token}
-            tokenStatusType={tokenStatusType}
-            account={account}
-            network={network}
-            isUnverifiedTable={isUnverifiedTable}
-            setShowDeactivateModal={setShowDeactivateModal}
-        />
-    );
-};
+}: TokenRowActionsProps) => (
+    <TokenRowBasicActions
+        type={type}
+        token={token}
+        tokenStatusType={tokenStatusType}
+        account={account}
+        network={network}
+        isUnverifiedTable={isUnverifiedTable}
+        yieldOpportunities={yieldOpportunities}
+        setShowDeactivateModal={setShowDeactivateModal}
+    />
+);

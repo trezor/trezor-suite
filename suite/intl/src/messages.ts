@@ -1767,6 +1767,15 @@ export const messages = defineMessages({
         defaultMessage:
             'These tokens represent your DeFi positions. Sending or swapping them will transfer ownership of those positions.',
     },
+    TR_DEFI_YIELD_TOKEN_BANNER_TITLE: {
+        id: 'TR_DEFI_YIELD_TOKEN_BANNER_TITLE',
+        defaultMessage: '{token} represents your position in a vault.',
+    },
+    TR_DEFI_YIELD_TOKEN_BANNER_DESCRIPTION: {
+        id: 'TR_DEFI_YIELD_TOKEN_BANNER_DESCRIPTION',
+        defaultMessage:
+            'If you transfer this token elsewhere, you will move your entire position and stop future rewards.',
+    },
     TR_DEFI_NO_VAULT_TOOLTIP: {
         id: 'TR_DEFI_NO_VAULT_TOOLTIP',
         defaultMessage: 'No vault found',

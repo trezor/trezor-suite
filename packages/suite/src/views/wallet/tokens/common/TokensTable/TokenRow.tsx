@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { selectSelectedDevice } from '@suite-common/device';
-import { type YieldDto } from '@suite-common/earn-api';
+import { type YieldDto } from '@suite-common/earn-stablecoin-api';
 import {
     type EnhancedTokenInfo,
     type TokenManagementAction,
