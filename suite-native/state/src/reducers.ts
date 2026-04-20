@@ -181,7 +181,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
         reducer: walletReducers,
         persistedKeys: ['accounts', 'transactions'],
         key: 'wallet',
-        version: 3,
+        version: 4,
         migrations: {
             2: (oldState: any /* FIXME */) => {
                 if (!oldState?.accounts) return oldState;
@@ -202,6 +202,17 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
                 const migratedState = { ...oldState, accounts: migratedAccounts };
 
                 return migratedState;
+            },
+            4: (oldState: any /* FIXME */) => {
+                if (!oldState?.transactions) return oldState;
+
+                return {
+                    ...oldState,
+                    transactions: {
+                        ...oldState.transactions,
+                        phishing: oldState.transactions.phishing ?? {},
+                    },
+                };
             },
         },
         transforms: [walletStopPersistTransform],

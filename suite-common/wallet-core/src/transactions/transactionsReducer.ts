@@ -52,7 +52,7 @@ export const prepareTransactionsReducer = createReducerWithExtraDeps(
                     );
                 }
 
-                const phishing = state.phishing[account.key];
+                const phishing = state.phishing?.[account.key];
                 if (phishing) {
                     state.phishing[account.key] = phishing.filter(
                         tx => !txs.some(t => t.txid === tx),
