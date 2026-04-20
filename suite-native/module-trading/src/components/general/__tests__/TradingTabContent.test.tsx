@@ -1,4 +1,4 @@
-import { messageSystemStateWithFeatureFlags } from '@suite-common/message-system';
+import { mockMessageSystemStateWithFeatureFlags } from '@suite-common/message-system/mocks';
 import { screen } from '@suite-native/test-utils-store';
 import { tradingInitialState } from '@suite-native/trading-state';
 
@@ -31,7 +31,7 @@ describe('TradingTabContent', () => {
                         activeTradingType: 'buy',
                     },
                 },
-                messageSystem: messageSystemStateWithFeatureFlags({
+                messageSystem: mockMessageSystemStateWithFeatureFlags({
                     'trading.restrictions.blacklist': isBlacklisted,
                 }),
             },

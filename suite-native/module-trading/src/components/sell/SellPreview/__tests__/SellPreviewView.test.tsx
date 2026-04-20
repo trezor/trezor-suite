@@ -103,7 +103,7 @@ describe('SellPreviewView', () => {
     });
 
     it('should not render bank account picker when form step is not BANK_ACCOUNT', () => {
-        const { queryByTestId } = renderSellPreviewView({}, 'SEND_TRANSACTION');
+        const { queryByTestId } = renderSellPreviewView({}, 'SEND_TRANSACTION'); // Not BANK_ACCOUNT
 
         expect(queryByTestId(BANK_ACCOUNT_ITEM_TEST_ID)).not.toBeOnTheScreen();
     });
@@ -120,7 +120,6 @@ describe('SellPreviewView', () => {
             quote: differentQuote,
         });
 
-        // Verify component renders with the passed quote
         expect(
             getByText(getTranslation('moduleTrading.tradingSellPreviewScreen.fromAccount')),
         ).toBeOnTheScreen();

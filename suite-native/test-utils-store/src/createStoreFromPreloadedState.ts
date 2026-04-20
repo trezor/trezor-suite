@@ -1,6 +1,6 @@
 import { type Reducer, configureStore } from '@reduxjs/toolkit';
 
-import { mergeDeepObject } from '@trezor/utils';
+import { mergeDeepObject, typedObjectEntries } from '@trezor/utils';
 
 import { createStaticReducer } from './createStaticReducer';
 
@@ -23,7 +23,7 @@ export const createStoreFromPreloadedState = (preloadedState: Record<string, unk
 
     const reducer: Record<string, Reducer> = {};
 
-    for (const [key, value] of Object.entries(merged)) {
+    for (const [key, value] of typedObjectEntries(merged)) {
         reducer[key] = createStaticReducer(value);
     }
 

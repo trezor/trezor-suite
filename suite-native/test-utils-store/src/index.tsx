@@ -5,3 +5,4 @@ export * from './renderWithStore';
 export { createLightStore, type PreloadedStatePartial } from './createLightStore';
 export { createStoreFromPreloadedState } from './createStoreFromPreloadedState';
 export { createStaticReducer } from './createStaticReducer';
+export { mergePreloadedState } from './mergePreloadedState';

@@ -1,4 +1,4 @@
-import { messageSystemStateWithFeatureFlags } from '@suite-common/message-system';
+import { mockMessageSystemStateWithFeatureFlags } from '@suite-common/message-system/mocks';
 import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
 import { act, fireEvent, renderWithStoreProvider } from '@suite-native/test-utils-store';
 
@@ -52,7 +52,7 @@ describe('AppTabNavigator', () => {
                 [FeatureFlag.IsTradingSellEnabled]: false,
                 [FeatureFlag.IsTradingResidenceCheckEnabled]: false,
             },
-            messageSystem: messageSystemStateWithFeatureFlags({
+            messageSystem: mockMessageSystemStateWithFeatureFlags({
                 'trading.buy': false,
                 'trading.exchange': false,
                 'trading.sell': false,

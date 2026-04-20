@@ -18,6 +18,7 @@
         { "path": "../feature-flags" },
         { "path": "../trading-consts" },
         { "path": "../../packages/connect" },
+        { "path": "../../packages/utils" },
         { "path": "../trading-types" }
     ]
 }

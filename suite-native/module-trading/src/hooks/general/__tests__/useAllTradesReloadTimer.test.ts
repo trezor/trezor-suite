@@ -1,5 +1,13 @@
 import { type TestStore, act } from '@suite-native/test-utils-store';
-import { getBuyTrade, getExchangeTrade, getSellTrade } from '@suite-native/trading-fixtures';
+import {
+    MOCK_ACCOUNT_DEVICE_SESSION_ID,
+    btc1NormalAccount,
+    eth1NormalAccount,
+    getBuyTrade,
+    getExchangeTrade,
+    getSellTrade,
+    sol1normalAccount,
+} from '@suite-native/trading-fixtures';
 
 import {
     createTradingLightStore,
@@ -38,36 +46,11 @@ describe('useAllTradesReloadTimer', () => {
             overrides: {
                 wallet: {
                     trading: { trades },
-                    accounts: [
-                        {
-                            key: 'btc1',
-                            symbol: 'btc',
-                            deviceState: 'device1@test:123',
-                            descriptor: 'btc-descriptor',
-                            addresses: { unused: [{ address: 'btc-address' }] },
-                            visible: true,
-                        },
-                        {
-                            key: 'eth1',
-                            symbol: 'eth',
-                            deviceState: 'device1@test:123',
-                            descriptor: 'eth-descriptor',
-                            addresses: { unused: [{ address: 'eth-address' }] },
-                            visible: true,
-                        },
-                        {
-                            key: 'sol1',
-                            symbol: 'sol',
-                            deviceState: 'device1@test:123',
-                            descriptor: 'sol-descriptor',
-                            addresses: { unused: [{ address: 'sol-address' }] },
-                            visible: true,
-                        },
-                    ] as any,
+                    accounts: [btc1NormalAccount, eth1NormalAccount, sol1normalAccount],
                 },
                 device: {
                     selectedDevice: {
-                        state: { staticSessionId: 'device1@test:123' },
+                        state: { staticSessionId: MOCK_ACCOUNT_DEVICE_SESSION_ID },
                     },
                 },
             },
@@ -85,7 +68,7 @@ describe('useAllTradesReloadTimer', () => {
         // Mock the trades with account keys
         const tradesWithAccounts = mockTrades.map(trade => ({
             ...trade,
-            selectedAccountKey: 'btc1',
+            selectedAccountKey: btc1NormalAccount.key,
         }));
 
         mockUseReloadTimer.mockReturnValue({
@@ -113,7 +96,7 @@ describe('useAllTradesReloadTimer', () => {
 
         const tradesWithAccounts = mockTrades.map(trade => ({
             ...trade,
-            selectedAccountKey: 'btc1',
+            selectedAccountKey: btc1NormalAccount.key,
         }));
 
         const store = getInitializedStore({ trades: tradesWithAccounts });
@@ -140,7 +123,7 @@ describe('useAllTradesReloadTimer', () => {
 
         const tradesWithAccounts = mockTrades.map(trade => ({
             ...trade,
-            selectedAccountKey: 'btc1',
+            selectedAccountKey: btc1NormalAccount.key,
         }));
 
         const store = getInitializedStore({ trades: tradesWithAccounts });
@@ -191,7 +174,7 @@ describe('useAllTradesReloadTimer', () => {
         const mockTrades = [getBuyTrade({ status: 'SUBMITTED' })];
         const tradesWithAccounts = mockTrades.map(trade => ({
             ...trade,
-            selectedAccountKey: 'btc1',
+            selectedAccountKey: btc1NormalAccount.key,
         }));
 
         const store = getInitializedStore({ trades: tradesWithAccounts });
@@ -237,7 +220,7 @@ describe('useAllTradesReloadTimer', () => {
 
         const tradesWithAccounts = mockTrades.map(trade => ({
             ...trade,
-            selectedAccountKey: 'btc1',
+            selectedAccountKey: btc1NormalAccount.key,
         }));
 
         const store = getInitializedStore({ trades: tradesWithAccounts });

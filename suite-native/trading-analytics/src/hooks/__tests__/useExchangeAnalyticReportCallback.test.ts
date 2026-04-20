@@ -4,6 +4,7 @@ import { events } from '@suite-native/analytics';
 import { useAnalytics } from '@suite-native/services';
 import {
     type PreloadedStatePartial,
+    mergePreloadedState,
     renderHookWithStoreProvider,
 } from '@suite-native/test-utils-store';
 import {
@@ -11,7 +12,6 @@ import {
     invityDexQuote,
     mercuryoFixedWorstQuote,
 } from '@suite-native/trading-fixtures';
-import { mergeDeepObject } from '@trezor/utils';
 
 import { useExchangeAnalyticReportCallback } from '../useExchangeAnalyticReportCallback';
 
@@ -34,13 +34,7 @@ describe('useExchangeAnalyticReportCallback', () => {
     const createPreloadedState = (
         overrides: PreloadedStatePartial<ExchangeAnalyticsPreloadedState> = {},
     ): ExchangeAnalyticsPreloadedState =>
-        mergeDeepObject.withOptions(
-            { mergeArrays: false },
-            {
-                wallet: getWalletState({ tradeType: 'exchange' }),
-            },
-            overrides,
-        ) as ExchangeAnalyticsPreloadedState;
+        mergePreloadedState({ wallet: getWalletState({ tradeType: 'exchange' }) }, overrides);
 
     const renderUseExchangeAnalyticReportCallback = ({
         candidateQuote,

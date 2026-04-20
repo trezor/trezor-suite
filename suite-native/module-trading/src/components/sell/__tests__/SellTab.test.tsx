@@ -1,4 +1,4 @@
-import { messageSystemStateWithFeatureFlags } from '@suite-common/message-system';
+import { mockMessageSystemStateWithFeatureFlags } from '@suite-common/message-system/mocks';
 import { FeatureFlag } from '@suite-native/feature-flags';
 import { act } from '@suite-native/test-utils-store';
 
@@ -45,7 +45,7 @@ describe('SellTab', () => {
             featureFlags: {
                 [FeatureFlag.IsTradingSellEnabled]: false,
             },
-            messageSystem: messageSystemStateWithFeatureFlags({ 'trading.sell': false }),
+            messageSystem: mockMessageSystemStateWithFeatureFlags({ 'trading.sell': false }),
         });
 
         expect(getByText('Sell disabled')).toBeOnTheScreen();

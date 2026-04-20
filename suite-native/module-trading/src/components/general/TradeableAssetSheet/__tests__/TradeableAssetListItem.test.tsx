@@ -10,6 +10,7 @@ import {
 } from '@suite-native/test-utils-store';
 import { btcAsset, getWalletState, usdcAsset } from '@suite-native/trading-fixtures';
 import { tradingSlice } from '@suite-native/trading-state';
+import { typedObjectTransformValues } from '@trezor/utils';
 
 import { createTradingPreloadedState } from '../../../../__tests__/tradingTestUtils';
 import {
@@ -18,12 +19,7 @@ import {
 } from '../TradeableAssetListItem';
 
 const reducer = {
-    ...Object.fromEntries(
-        Object.entries(createTradingPreloadedState()).map(([key, value]) => [
-            key,
-            createStaticReducer(value),
-        ]),
-    ),
+    ...typedObjectTransformValues(createTradingPreloadedState(), createStaticReducer),
     wallet: combineReducers({
         settings: createStaticReducer(initialWalletSettingsState),
         accounts: createStaticReducer(getWalletState({ tradeType: 'buy' }).accounts),

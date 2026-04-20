@@ -2,6 +2,7 @@ import {
     type PrecomposedLevels,
     type PrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
+import { typedObjectTransformValues } from '@trezor/utils';
 
 export const createPrecomposedTxFinal = (
     overrides: Partial<PrecomposedTransactionFinal> = {},
@@ -22,6 +23,4 @@ export const createPrecomposedTxFinal = (
 export const createPrecomposedLevels = (
     levels: Record<string, Partial<PrecomposedTransactionFinal>>,
 ): PrecomposedLevels =>
-    Object.fromEntries(
-        Object.entries(levels).map(([key, value]) => [key, createPrecomposedTxFinal(value)]),
-    );
+    typedObjectTransformValues(levels, value => createPrecomposedTxFinal(value));
