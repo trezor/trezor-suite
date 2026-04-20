@@ -47,7 +47,7 @@ describe('steps', () => {
             expect(stepIds).toEqual([
                 STEP.ID_FIRMWARE_STEP,
                 STEP.ID_CREATE_OR_RECOVER,
-                STEP.ID_RESET_DEVICE_STEP,
+                STEP.ID_BACKUP_TYPE_STEP,
                 STEP.ID_SECURITY_STEP,
                 STEP.ID_SET_PIN_STEP,
             ]);
@@ -58,9 +58,9 @@ describe('steps', () => {
                 STEP.ID_CREATE_OR_RECOVER,
             );
             expect(findNextStep(STEP.ID_CREATE_OR_RECOVER, createSteps, defaultDevice)?.id).toBe(
-                STEP.ID_RESET_DEVICE_STEP,
+                STEP.ID_BACKUP_TYPE_STEP,
             );
-            expect(findNextStep(STEP.ID_RESET_DEVICE_STEP, createSteps, defaultDevice)?.id).toBe(
+            expect(findNextStep(STEP.ID_BACKUP_TYPE_STEP, createSteps, defaultDevice)?.id).toBe(
                 STEP.ID_SECURITY_STEP,
             );
             expect(findNextStep(STEP.ID_SECURITY_STEP, createSteps, defaultDevice)?.id).toBe(

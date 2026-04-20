@@ -34,7 +34,7 @@ export default [
         },
         action: () => onboardingActions.goToPreviousStep(),
         expect: {
-            toMatchObject: { activeStepId: STEP.ID_RESET_DEVICE_STEP },
+            toMatchObject: { activeStepId: STEP.ID_BACKUP_TYPE_STEP },
         },
     },
     {

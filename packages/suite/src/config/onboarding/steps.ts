@@ -71,7 +71,7 @@ export const stepCategories: StepCategory[] = [
                 prerequisites: [...commonPrerequisites, 'device-recovery-mode', 'device-different'],
             },
             {
-                id: STEP.ID_RESET_DEVICE_STEP,
+                id: STEP.ID_BACKUP_TYPE_STEP,
                 path: [STEP.PATH_CREATE],
                 prerequisites: [...commonPrerequisites, 'device-recovery-mode', 'device-different'],
             },

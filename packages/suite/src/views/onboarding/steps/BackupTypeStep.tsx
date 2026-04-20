@@ -14,7 +14,7 @@ import { isShamirBackupType } from './utils';
 
 const canChooseBackupType = (device: DeviceModelInternal) => device !== DeviceModelInternal.T1B1;
 
-export const ResetDeviceStep = () => {
+export const BackupTypeStep = () => {
     const { isLocked } = useDevice();
     const device = useSelector(selectSelectedDevice);
     const deviceDefaultBackupType = useSelector(selectDeviceDefaultBackupType);
