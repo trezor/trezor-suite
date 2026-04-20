@@ -1,5 +1,8 @@
 import { useMemo, useState } from 'react';
 
+import { AnimatePresence, motion } from 'framer-motion';
+
+import { selectIsActivateAssetsBannerClosed, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -7,13 +10,30 @@ import {
     selectEnabledNetworks,
     startOrRestartDiscoveryThunk,
 } from '@suite-common/wallet-core';
-import { Modal } from '@trezor/components';
+import { Banner, Column, Modal, motionEasing } from '@trezor/components';
 
 import { CoinGroup } from 'src/components/suite';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { AdvancedCoinSettingsModal } from './AdvancedCoinSettingsModal/AdvancedCoinSettingsModal';
+
+export const bannerAnimationConfig = {
+    initial: { opacity: 1, transform: 'scale(1)' },
+    exit: { opacity: 0, transform: 'scale(0.9)', height: 0, margin: 0 },
+    transition: {
+        duration: 0.33,
+        ease: motionEasing.transition,
+        height: {
+            duration: 0.23,
+            ease: motionEasing.transition,
+        },
+        opacity: {
+            duration: 0.2,
+            ease: motionEasing.transition,
+        },
+    },
+};
 
 type ActivateAssetsModalProps = {
     onCancel: () => void;
@@ -22,6 +42,7 @@ type ActivateAssetsModalProps = {
 export const ActivateAssetsModal = ({ onCancel }: ActivateAssetsModalProps) => {
     const dispatch = useDispatch();
     const enabledNetworks = useSelector(selectEnabledNetworks);
+    const isActivateAssetsBannerClosed = useSelector(selectIsActivateAssetsBannerClosed);
     const { supportedMainnets } = useNetworkSupport();
 
     const [pendingNetworks, setPendingNetworks] = useState<NetworkSymbol[]>(enabledNetworks);
@@ -71,12 +92,16 @@ export const ActivateAssetsModal = ({ onCancel }: ActivateAssetsModalProps) => {
         onCancel();
     };
 
+    const handleBannerClose = () => {
+        dispatch(setFlag({ key: 'activateAssetsBannerClosed', value: true }));
+    };
+
     return (
         <>
             <Modal
                 onCancel={onCancel}
-                heading={<Translation id="TR_COINS" />}
-                description={<Translation id="TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY_DESC" />}
+                heading={<Translation id="TR_DASHBOARD_MODAL_ACTIVATE_ASSETS_TITLE" />}
+                description={<Translation id="TR_DASHBOARD_MODAL_ACTIVATE_ASSETS_DESC" />}
                 width={600}
                 bottomContent={
                     hasAnySelected ? (
@@ -90,12 +115,32 @@ export const ActivateAssetsModal = ({ onCancel }: ActivateAssetsModalProps) => {
                     ) : null
                 }
             >
-                <CoinGroup
-                    networks={supportedMainnets}
-                    enabledNetworks={effectiveEnabledNetworks}
-                    onToggle={handleToggle}
-                    onSettings={setAdvancedSettingsSymbol}
-                />
+                <Column gap={16}>
+                    <AnimatePresence>
+                        {!isActivateAssetsBannerClosed && (
+                            <motion.div {...bannerAnimationConfig}>
+                                <Banner
+                                    intent="neutral"
+                                    icon="info"
+                                    title={
+                                        <Translation id="TR_DASHBOARD_MODAL_ACTIVATE_ASSETS_NOTE" />
+                                    }
+                                    rightContent={
+                                        <Banner.Button size="small" onClick={handleBannerClose}>
+                                            <Translation id="TR_GOT_IT" />
+                                        </Banner.Button>
+                                    }
+                                />
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+                    <CoinGroup
+                        networks={supportedMainnets}
+                        enabledNetworks={effectiveEnabledNetworks}
+                        onToggle={handleToggle}
+                        onSettings={setAdvancedSettingsSymbol}
+                    />
+                </Column>
             </Modal>
             {advancedSettingsSymbol !== null && (
                 <AdvancedCoinSettingsModal

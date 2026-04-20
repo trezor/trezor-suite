@@ -33,6 +33,22 @@ export const messages = defineMessages({
         defaultMessage: 'No assets are active',
         id: 'TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY',
     },
+    TR_DASHBOARD_ACTIVATE_ASSETS_DESC: {
+        defaultMessage: 'Add an asset to enable their network in Trezor Suite.',
+        id: 'TR_DASHBOARD_ACTIVATE_ASSETS_DESC',
+    },
+    TR_DASHBOARD_MODAL_ACTIVATE_ASSETS_TITLE: {
+        defaultMessage: 'Activate assets',
+        id: 'TR_DASHBOARD_MODAL_ACTIVATE_ASSETS_TITLE',
+    },
+    TR_DASHBOARD_MODAL_ACTIVATE_ASSETS_DESC: {
+        defaultMessage: 'Enable networks below to display your assets.',
+        id: 'TR_DASHBOARD_MODAL_ACTIVATE_ASSETS_DESC',
+    },
+    TR_DASHBOARD_MODAL_ACTIVATE_ASSETS_NOTE: {
+        defaultMessage: 'You can customize these anytime in Settings.',
+        id: 'TR_DASHBOARD_MODAL_ACTIVATE_ASSETS_NOTE',
+    },
     TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY_DESC: {
         defaultMessage: 'Go to settings to activate assets.',
         id: 'TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY_DESC',

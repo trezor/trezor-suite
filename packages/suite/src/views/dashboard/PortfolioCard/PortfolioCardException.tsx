@@ -142,8 +142,8 @@ export const PortfolioCardException = ({
             return (
                 <Container
                     icon={<Illustration name="networks" width={224} />}
-                    title="TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY"
-                    description="TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY_DESC"
+                    title="TR_YOUR_WALLET_IS_READY_WHAT"
+                    description="TR_DASHBOARD_ACTIVATE_ASSETS_DESC"
                     cta={[
                         {
                             action: () => dispatch(openModal({ type: 'activate-assets' })),
