@@ -2370,7 +2370,7 @@
   "TR_TRADING_OTC_INFO_BUY": "{minimumFiat} {fiatSymbol} 이상 구매 시 OTC 파트너 사용을 권장합니다:",
   "TR_TRADING_OTC_INFO_SELL": "{minimumFiat} {fiatSymbol} 이상 판매 시 OTC 파트너 사용을 권장합니다:",
   "TR_TRADING_OTC_LINK_BUY": "{providerName}로 구매",
-  "TR_TRADING_OTC_LINK_SELL": "{providerName}로 판매",
+  "TR_TRADING_OTC_LINK_SELL": "Concierge로 판매",
   "TR_TRADING_OTHER_CURRENCIES": "기타 통화",
   "TR_TRADING_PAYMENT_METHOD": "결제 방법",
   "TR_TRADING_POPULAR_CURRENCIES": "인기 통화",

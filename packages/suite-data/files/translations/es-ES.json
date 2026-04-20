@@ -2364,7 +2364,7 @@
   "TR_TRADING_OTC_INFO_BUY": "Para compras superiores a {minimumFiat} {fiatSymbol}, considera la posibilidad de recurrir a nuestros socios OTC:",
   "TR_TRADING_OTC_INFO_SELL": "Para ventas superiores a {minimumFiat} {fiatSymbol}, considera la posibilidad de recurrir a nuestros socios OTC:",
   "TR_TRADING_OTC_LINK_BUY": "Comprar con {providerName}",
-  "TR_TRADING_OTC_LINK_SELL": "Vender con {providerName}",
+  "TR_TRADING_OTC_LINK_SELL": "Vender con Concierge",
   "TR_TRADING_OTHER_CURRENCIES": "Otras monedas",
   "TR_TRADING_PAYMENT_METHOD": "Método de pago",
   "TR_TRADING_POPULAR_CURRENCIES": "Monedas populares",

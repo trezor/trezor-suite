@@ -1945,7 +1945,7 @@
   "TR_TRADING_OTC_INFO_BUY": "如果需要購買超過 {minimumFiat} {fiatSymbol}，請考慮使用我們合作的櫃檯交易(OTC)服務商：",
   "TR_TRADING_OTC_INFO_SELL": "如果需要販售超過 {minimumFiat} {fiatSymbol}，請考慮使用我們合作的櫃檯交易(OTC)服務商：",
   "TR_TRADING_OTC_LINK_BUY": "透過 Concierge 購買",
-  "TR_TRADING_OTC_LINK_SELL": "透過 {providerName} 出售",
+  "TR_TRADING_OTC_LINK_SELL": "透過 Concierge 出售",
   "TR_TRADING_OTHER_CURRENCIES": "其他貨幣",
   "TR_TRADING_PAYMENT_METHOD": "付款方式",
   "TR_TRADING_POPULAR_CURRENCIES": "常用貨幣",

@@ -2245,7 +2245,7 @@
   "TR_TRADING_OTC_INFO_BUY": "Для купівлі на суму понад {minimumFiat} {fiatSymbol} розгляньте наших OTC-партнерів:",
   "TR_TRADING_OTC_INFO_SELL": "Для продажу на суму понад {minimumFiat} {fiatSymbol} розгляньте наших OTC-партнерів:",
   "TR_TRADING_OTC_LINK_BUY": "Купити через Concierge",
-  "TR_TRADING_OTC_LINK_SELL": "Продати через {providerName}",
+  "TR_TRADING_OTC_LINK_SELL": "Продати через Concierge",
   "TR_TRADING_OTHER_CURRENCIES": "Інші валюти",
   "TR_TRADING_PAYMENT_METHOD": "Спосіб оплати",
   "TR_TRADING_POPULAR_CURRENCIES": "Популярні валюти",

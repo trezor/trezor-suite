@@ -2364,7 +2364,7 @@
   "TR_TRADING_OTC_INFO_BUY": "{minimumFiat} {fiatSymbol}以上の購入については、OTCパートナーの使用を検討してください：",
   "TR_TRADING_OTC_INFO_SELL": "{minimumFiat} {fiatSymbol}以上の売却については、OTCパートナーの使用を検討してください：",
   "TR_TRADING_OTC_LINK_BUY": "{providerName}で購入",
-  "TR_TRADING_OTC_LINK_SELL": "{providerName}で売却",
+  "TR_TRADING_OTC_LINK_SELL": "Conciergeで売却",
   "TR_TRADING_OTHER_CURRENCIES": "その他の通貨",
   "TR_TRADING_PAYMENT_METHOD": "支払い方法",
   "TR_TRADING_POPULAR_CURRENCIES": "人気の通貨",
