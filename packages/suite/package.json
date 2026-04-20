@@ -91,6 +91,7 @@
         "@suite/metadata": "workspace:*",
         "@suite/metadata-migration": "workspace:*",
         "@suite/modal": "workspace:*",
+        "@suite/nfc": "workspace:*",
         "@suite/onboarding-components": "workspace:*",
         "@suite/platform-encryption-electron": "workspace:*",
         "@suite/platform-encryption-webauthn": "workspace:*",

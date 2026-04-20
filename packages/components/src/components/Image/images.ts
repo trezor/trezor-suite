@@ -17,6 +17,7 @@ export const IMAGES = {
     GHOST: 'ghost.svg',
     INVITY_LOGO: 'invity-logo.svg',
     MORPHO_LOGO: 'morpho-logo.svg',
+    NFC_TAG: 'nfc-tag.png',
     PLAY_STORE: 'play-store.svg',
     RECOVERY_2x: 'recovery@2x.png',
     STROKE_BORDER: 'stroke-border.svg',
