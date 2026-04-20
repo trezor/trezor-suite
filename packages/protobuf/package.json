@@ -60,7 +60,7 @@
     "dependencies": {
         "@bufbuild/protobuf": "^2.11.0",
         "@trezor/schema-utils": "workspace:*",
-        "long": "5.2.5",
+        "long": "5.3.2",
         "protobufjs": "7.4.0"
     },
     "devDependencies": {

@@ -70,7 +70,7 @@
         "@trezor/type-utils": "workspace:*",
         "@types/chrome": "^0.0.299",
         "@types/jest": "29.5.12",
-        "@types/w3c-web-usb": "^1.0.10",
+        "@types/w3c-web-usb": "^1.0.14",
         "@types/web": "^0.0.197",
         "babel-loader": "^10.1.1",
         "rimraf": "^6.1.2",
