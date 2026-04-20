@@ -1,4 +1,5 @@
 import { DeviceModelInternal } from '@trezor/device-utils';
+import { bufferUtils } from '@trezor/utils';
 
 import {
     dataUrlToImage,
@@ -113,7 +114,8 @@ describe('homescreen', () => {
     describe(isProgressiveJPG.name, () => {
         fixtures.isProgressiveJPG.forEach(fixture => {
             it(fixture.description, () => {
-                const result = isProgressiveJPG(fixture.buffer, fixture.deviceModelInternal);
+                const rawBytes = bufferUtils.bufferToBytes(Buffer.from(fixture.buffer));
+                const result = isProgressiveJPG(rawBytes, fixture.deviceModelInternal);
                 expect(result).toBe(fixture.result);
             });
         });
