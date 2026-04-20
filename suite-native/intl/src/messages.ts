@@ -251,15 +251,9 @@ export const messages = {
                 secondaryButton: 'Device removed',
             },
             systemUnpairing: {
-                title: {
-                    android: 'Remove Trezor from system settings',
-                    ios: 'Remove Trezor from Bluetooth settings',
-                },
-                description: {
-                    android:
-                        'To unpair fully, make sure you remove your Trezor from your phone’s Bluetooth settings. If not, you might have trouble pairing it again in the future.',
-                    ios: 'If not, you might have trouble pairing it again in the future.',
-                },
+                title: 'Remove from Bluetooth settings',
+                description:
+                    'Remove your Trezor from your Bluetooth settings. If you don’t, you might have trouble pairing it again in the future.',
                 primaryButton: 'Open system settings',
                 secondaryButton: 'Device removed',
             },
@@ -1530,8 +1524,8 @@ export const messages = {
                         'Invalid format. Enter the server address in this format: host:port:[t|s].',
                     unableToConnect: {
                         clearnet:
-                            'Unable to connect to server. Check for typos and server disruptions.',
-                        tor: "Tor isn't supported. Use a clearnet address instead",
+                            'Unable to connect to the server. Check the address and connection.',
+                        tor: 'Can’t connect to the server. Check the address and make sure Orbot is running.',
                     },
                 },
                 closeAction: {
@@ -1585,9 +1579,9 @@ export const messages = {
             title: 'Experimental features',
             subtitle: 'For experienced users only. Use at your own risk.',
             tronViewOnly: {
-                title: 'Tron View-Only (Beta)',
+                title: 'Tron (Beta)',
                 description:
-                    'Enable the Tron network. The latest firmware is required. You can receive funds, check your balance, view tokens, charts, and transaction history (may contain bugs). Full support coming soon (or available via third-party wallets).',
+                    'Enable the Tron Network with the latest firmware to check your balance, send and receive TRX and tokens, view charts and transaction history, and use WalletConnect. Full support, including freezing and voting, is coming soon.',
             },
             testnets: {
                 title: 'Testnet coins & features',
@@ -2641,7 +2635,7 @@ export const messages = {
         },
         earnStakeOutputItem: {
             title: 'Stake',
-            description: 'Stake {displaySymbol} on Everstake?',
+            description: 'Stake {symbol} on Everstake?',
         },
         earnSummaryOutputItem: {
             title: 'Total including fee',
@@ -2754,7 +2748,7 @@ export const messages = {
                 },
                 third: {
                     title: 'Receive weekly rewards',
-                    description: '{apy}% yearly',
+                    description: '~{apy}% yearly',
                 },
             },
             unstakeTimelineTitle: 'Unstake',
@@ -2797,7 +2791,7 @@ export const messages = {
         },
         notAvailable: 'Not available',
         apyNotAvailable: 'APY not available',
-        apyPercentage: '{apy}% APY',
+        apyPercentage: '~{apy}% APY',
         notAvailableShort: 'N/A',
         stakePendingCard: {
             totalStakePending: 'Total stake pending',
