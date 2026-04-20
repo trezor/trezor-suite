@@ -4065,7 +4065,7 @@ export const messages = defineMessages({
     },
     TR_QUICK_ACTION_UPDATE_POPOVER_APP_UPDATE_AVAILABLE: {
         id: 'TR_QUICK_ACTION_UPDATE_POPOVER_APP_UPDATE_AVAILABLE',
-        defaultMessage: 'Trezor Suite update now available',
+        defaultMessage: 'Trezor Suite update available',
     },
     TR_QUICK_ACTION_UPDATE_POPOVER_APP_HAS_BEEN_UPDATED: {
         id: 'TR_QUICK_ACTION_UPDATE_POPOVER_APP_HAS_BEEN_UPDATED',
@@ -5049,7 +5049,7 @@ export const messages = defineMessages({
     TR_LABEL_REQUIREMENTS: {
         id: 'TR_LABEL_REQUIREMENTS',
         defaultMessage:
-            'Select a name up to {length} characters, containing letters only from the English alphabet.',
+            'Enter a name up to {length} characters, containing letters only from the English alphabet.',
         description: 'How many characters may be in device label and of what type.',
     },
     TR_LABEL_ERROR_LENGTH: {
@@ -6403,8 +6403,7 @@ export const messages = defineMessages({
     },
     FIRMWARE_UNSUPPORTED_DEVICE_SUITE_SYNC: {
         id: 'FIRMWARE_UNSUPPORTED_DEVICE_SUITE_SYNC',
-        defaultMessage:
-            'The device {name} isn’t compatible with Suite Sync. Suite Sync supports Trezor Safe 3, 5, and 7 devices.',
+        defaultMessage: 'Suite Sync supports Trezor Safe 3, 5, and 7 devices.',
     },
     TR_DISABLED_SWITCH_TOOLTIP: {
         id: 'TR_DISABLED_SWITCH_TOOLTIP',
@@ -6433,7 +6432,7 @@ export const messages = defineMessages({
     SETTINGS_BACKEND_SETTINGS_DESCRIPTION: {
         id: 'SETTINGS_BACKEND_SETTINGS_DESCRIPTION',
         defaultMessage:
-            'Connect to trusted backend servers to securely load your account data. Customize the experience by using your own backend and choosing a different blockchain explorer.',
+            'Connect to trusted servers to securely load your account data. Personalize your experience by using a custom backend or selecting a different blockchain explorer.',
     },
     SETTINGS_ADV_COIN_URL_INPUT_PLACEHOLDER: {
         id: 'SETTINGS_ADV_COIN_URL_INPUT_PLACEHOLDER',
