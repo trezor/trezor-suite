@@ -133,6 +133,8 @@
         "@babel/preset-react": "^7.28.5",
         "@babel/preset-typescript": "^7.28.5",
         "@babel/runtime": "7.29.2",
+        "@swc/core": "^1.15.24",
+        "@swc/jest": "^0.2.39",
         "@trezor/eslint": "workspace:*",
         "@types/jest": "29.5.12",
         "@types/node": "22.13.10",
