@@ -27,7 +27,7 @@ const firmwareSizeMap: Partial<Record<DeviceModelInternal, number>> = {
 
 type CalculateFirmwareHashParams = {
     internal_model: DeviceModelInternal;
-    fw: ArrayBuffer;
+    fw: Buffer;
     firmwareVersion: VersionArray;
     key?: Buffer;
 };

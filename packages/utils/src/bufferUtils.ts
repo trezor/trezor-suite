@@ -1,4 +1,4 @@
-export const reverseBuffer = (src: Buffer) => {
+export const reverseBuffer = (src: Buffer): Buffer => {
     if (src.length < 1) return src;
     const buffer = Buffer.alloc(src.length);
     let j = buffer.length - 1;
@@ -11,7 +11,7 @@ export const reverseBuffer = (src: Buffer) => {
     return buffer;
 };
 
-export const getChunkSize = (n: number) => {
+export const getChunkSize = (n: number): Buffer => {
     const buf = Buffer.allocUnsafe(1);
     buf.writeUInt8(n);
 

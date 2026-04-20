@@ -17,7 +17,7 @@ export async function receive<T extends Receiver>(receiver: T, protocol: Transpo
         const { length, messageType, payload, header } = protocol.decode(readResult.payload);
         const [, chunkHeader] = protocol.getHeaders(data);
 
-        const result = Buffer.alloc(length);
+        const result: Buffer = Buffer.alloc(length);
         payload.copy(result);
 
         let offset = payload.length;

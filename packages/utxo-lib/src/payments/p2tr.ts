@@ -123,7 +123,7 @@ export function p2tr(a: Payment, opts?: PaymentOpts): Payment {
 
     // extended validation
     if (opts.validate) {
-        let hash = Buffer.from([]);
+        let hash: Buffer = Buffer.from([]);
         if (a.address) {
             const { prefix, version, data } = _address();
             if (prefix !== network.bech32)

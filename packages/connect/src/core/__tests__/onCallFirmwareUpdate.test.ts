@@ -3,7 +3,7 @@ import { DeviceModelInternal, FirmwareType } from '@trezor/device-utils';
 import { parseConfigure } from '@trezor/protobuf';
 import { v1 as protocolV1 } from '@trezor/protocol';
 import { buildMessage } from '@trezor/transport/src/utils/send';
-import { Log } from '@trezor/utils';
+import { Log, bufferUtils } from '@trezor/utils';
 
 import * as mockFwHash from '../../api/firmware/calculateFirmwareHash';
 import { DataManager } from '../../data/DataManager';
@@ -160,6 +160,9 @@ const httpRequestMock = (version?: number[]) => {
     return Promise.resolve(binary);
 };
 
+const getFirmwareBinaryBytes = async (version?: number[]): Promise<ArrayBuffer> =>
+    bufferUtils.bufferToBytes(await httpRequestMock(version));
+
 const calculateFirmwareHashMock = (hash?: string) => ({
     hash:
         hash ||
@@ -304,7 +307,7 @@ describe('onCallFirmwareUpdate', () => {
             buildFixture('0037', {}),
         ]);
 
-        const binary = await httpRequestMock([2, 8, 3]);
+        const binary = await getFirmwareBinaryBytes([2, 8, 3]);
         const result = await runFirmwareUpdate({
             params: { binary },
             context,
@@ -426,7 +429,7 @@ describe('onCallFirmwareUpdate', () => {
             buildFixture('0037', {}),
         ]);
 
-        const binary = await httpRequestMock();
+        const binary = await getFirmwareBinaryBytes();
         const result = await runFirmwareUpdate({
             params: { binary },
             context,
@@ -451,7 +454,7 @@ describe('onCallFirmwareUpdate', () => {
             buildFixture('0037', {}),
         ]);
 
-        const binary = await httpRequestMock();
+        const binary = await getFirmwareBinaryBytes();
         const result = await runFirmwareUpdate({
             params: { binary },
             context,
