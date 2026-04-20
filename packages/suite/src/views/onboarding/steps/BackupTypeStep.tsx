@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import { Translation } from '@suite/intl';
+import { SelectBackupType as SelectBackupMedium } from '@suite/nfc';
 import { OnboardingCard } from '@suite/onboarding-components';
+import { selectIsN4w1BackupEnabled } from '@suite/settings';
 import { selectDeviceDefaultBackupType, selectSelectedDevice } from '@suite-common/device';
 import { type BackupType } from '@suite-common/suite-types';
 import { Badge, Column, Text } from '@trezor/components';
@@ -18,11 +20,13 @@ export const BackupTypeStep = () => {
     const { isLocked } = useDevice();
     const device = useSelector(selectSelectedDevice);
     const deviceDefaultBackupType = useSelector(selectDeviceDefaultBackupType);
+    const isN4w1BackupEnabled = useSelector(selectIsN4w1BackupEnabled);
 
     const deviceModel = device?.features?.internal_model;
     const unitPackaging = device?.features?.unit_packaging ?? 0;
 
     const [backupType, setBackupType] = useState<BackupType>(deviceDefaultBackupType);
+    const [showMediumChoice, setShowMediumChoice] = useState(isN4w1BackupEnabled);
     const { goToPreviousStep, goToNextStep, updateAnalytics, updateBackupType } = useOnboarding();
 
     const isDeviceLocked = isLocked();
@@ -45,9 +49,18 @@ export const BackupTypeStep = () => {
         }
     }, [deviceModel, handleSubmit, unitPackaging, deviceDefaultBackupType]);
 
-    // this step expects device
     if (!device || !device.features) {
         return null;
+    }
+
+    if (showMediumChoice) {
+        return (
+            <SelectBackupMedium
+                onBack={() => goToPreviousStep()}
+                onContinueWithNfc={() => goToNextStep()}
+                onContinueWithoutNfc={() => setShowMediumChoice(false)}
+            />
+        );
     }
 
     const canChoseBackupType = deviceModel !== undefined && canChooseBackupType(deviceModel);
@@ -92,7 +105,11 @@ export const BackupTypeStep = () => {
                 </OnboardingCard.Button>
             }
             outerActions={
-                <OnboardingCard.SecondaryButton onClick={() => goToPreviousStep()}>
+                <OnboardingCard.SecondaryButton
+                    onClick={() =>
+                        isN4w1BackupEnabled ? setShowMediumChoice(true) : goToPreviousStep()
+                    }
+                >
                     <Translation id="TR_BACK" />
                 </OnboardingCard.SecondaryButton>
             }

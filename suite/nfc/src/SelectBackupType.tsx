@@ -14,9 +14,19 @@ type SelectBackupTypeProps = {
 
 const TagRow = styled.div`
     display: flex;
+    isolation: isolate;
+
+    & > * {
+        position: relative;
+    }
 
     & > *:not(:first-child) {
         margin-left: -24px;
+        z-index: -1;
+    }
+
+    & > *:last-child {
+        z-index: -2;
     }
 `;
 
@@ -51,9 +61,9 @@ export const SelectBackupType = ({
         <Column>
             <Column gap={32} alignItems="center">
                 <TagRow>
-                    <NfcTag />
-                    <NfcTag />
-                    <NfcTag />
+                    <NfcTag active />
+                    <NfcTag active />
+                    <NfcTag active />
                 </TagRow>
 
                 <Column alignItems="center">

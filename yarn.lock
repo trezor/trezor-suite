@@ -14810,7 +14810,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite/nfc@workspace:suite/nfc":
+"@suite/nfc@workspace:*, @suite/nfc@workspace:suite/nfc":
   version: 0.0.0-use.local
   resolution: "@suite/nfc@workspace:suite/nfc"
   dependencies:
@@ -16370,6 +16370,7 @@ __metadata:
     "@suite/locks": "workspace:*"
     "@suite/metadata": "workspace:*"
     "@suite/modal": "workspace:*"
+    "@suite/nfc": "workspace:*"
     "@suite/onboarding-components": "workspace:*"
     "@suite/platform-encryption-electron": "workspace:*"
     "@suite/platform-encryption-webauthn": "workspace:*"
