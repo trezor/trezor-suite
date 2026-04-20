@@ -1,14 +1,13 @@
 import { useState } from 'react';
 
 import { Translation } from '@suite/intl';
-import { selectDeviceStaticSessionId } from '@suite-common/device';
+import { selectDeviceStaticSessionId, selectSelectedDevice } from '@suite-common/device';
 import {
     selectIsSuiteSyncDebugEnabled,
     selectSuiteSyncInteraction,
 } from '@suite-common/suite-sync';
-import { Button, Column, Icon, Row, Text, TextButton } from '@trezor/components';
+import { Button, Column, IconButton, IconCircle, Row, Text } from '@trezor/components';
 import { SidebarBanner } from '@trezor/product-components';
-import { HELP_CENTER_LABELING } from '@trezor/urls';
 
 import { selectIsLegacyLabelingVisible } from 'src/actions/labels/selectIsLegacyLabelingVisible';
 import { useSelector } from 'src/hooks/suite';
@@ -17,7 +16,9 @@ import { TurnOnSuiteSyncModals } from './TurnOnSuiteSync/TurnOnSuiteSyncModals';
 
 export const SuiteSyncPromoBanner = () => {
     const [isTurnOnSuiteSyncModalVisible, setIsTurnOnSuiteSyncModalVisible] = useState(false);
+    const [isDismissed, setIsDismissed] = useState(false);
 
+    const selectedDevice = useSelector(selectSelectedDevice);
     const deviceStaticSessionId = useSelector(selectDeviceStaticSessionId);
 
     // Todo: remove for the 26.6 release when we want to start advertising for Suite Sync
@@ -28,8 +29,11 @@ export const SuiteSyncPromoBanner = () => {
         selectSuiteSyncInteraction(state, deviceStaticSessionId),
     );
     const shouldDisplayBanner =
+        !isDismissed &&
         isSuiteSyncDebugEnabled &&
         isLegacyLabelingVisible &&
+        selectedDevice !== undefined &&
+        selectedDevice.connected &&
         suiteSyncInteraction !== 'unsupported';
 
     if (!shouldDisplayBanner) {
@@ -37,6 +41,7 @@ export const SuiteSyncPromoBanner = () => {
     }
 
     const handleTurnOn = () => setIsTurnOnSuiteSyncModalVisible(true);
+    const handleDismiss = () => setIsDismissed(true);
 
     return (
         <>
@@ -49,13 +54,11 @@ export const SuiteSyncPromoBanner = () => {
             )}
 
             <SidebarBanner data-testid="@notification/legacy-labeling-upgrade">
-                <Column gap={12} alignItems="start">
-                    <Row>
-                        <Icon name="arrowsCounterClockwise" size={16} />
-                    </Row>
+                <Column gap={8} alignItems="start">
+                    <Column gap={12} alignItems="start">
+                        <IconCircle name="arrowsClockwise" size={32} intent="neutral" />
 
-                    <Column gap={4} alignItems="start">
-                        <Text typographyStyle="headline-sm">
+                        <Text typographyStyle="body-md-strong">
                             <Translation id="TR_TURN_ON_SECURE_SYNC_LABELS_MODAL_HEADING" />
                         </Text>
 
@@ -64,16 +67,24 @@ export const SuiteSyncPromoBanner = () => {
                         </Text>
                     </Column>
 
-                    <TextButton href={HELP_CENTER_LABELING} size="small" isUnderlined>
-                        <Translation id="TR_LEARN_MORE" />
-                    </TextButton>
+                    <Row gap={8} width="100%" alignItems="stretch">
+                        <Button
+                            flex="1"
+                            onClick={handleTurnOn}
+                            data-testid="@notification/legacy-labeling-upgrade/button"
+                        >
+                            <Translation id="TR_LEARN_MORE" />
+                        </Button>
 
-                    <Button
-                        onClick={handleTurnOn}
-                        data-testid="@notification/legacy-labeling-upgrade/button"
-                    >
-                        <Translation id="TR_TURN_ON_SECURE_SYNC" />
-                    </Button>
+                        <IconButton
+                            icon="x"
+                            size="medium"
+                            intent="neutral"
+                            priority="secondary"
+                            onClick={handleDismiss}
+                            aria-label="Close"
+                        />
+                    </Row>
                 </Column>
             </SidebarBanner>
         </>
