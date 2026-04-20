@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { Translation } from '@suite/intl';
-import { thpActions } from '@suite-common/thp';
+import { selectThpLastCode, thpActions } from '@suite-common/thp';
 import { acquireDevice, selectSelectedFirstThpDevice } from '@suite-common/wallet-core';
 import { Column, Modal, Paragraph } from '@trezor/components';
 
@@ -12,9 +12,7 @@ export const ThpPairingFailedModal = () => {
     const [isLoading, setIsLoading] = useState(false);
     const device = useSelector(selectSelectedFirstThpDevice);
     const dispatch = useDispatch();
-    const lastThpCode = useSelector(
-        (state: { thp: { lastThpCode?: string } }) => state.thp.lastThpCode,
-    );
+    const lastThpCode = useSelector(selectThpLastCode);
 
     const handleRetry = () => {
         setIsLoading(true);

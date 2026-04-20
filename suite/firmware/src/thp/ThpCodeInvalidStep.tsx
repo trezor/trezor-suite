@@ -1,13 +1,12 @@
 import { type ReactNode, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import { Translation } from '@suite/intl';
-import { selectThpConfirmationRequestId } from '@suite-common/thp';
 import { Card, Column, Modal, Text } from '@trezor/components';
-import TrezorConnect from '@trezor/connect';
 import { spacings } from '@trezor/theme';
 
 import { ThpPairingFailedForFirmwareInstallation } from './ThpPairingFailedForFirmwareInstallation';
+import { startThpSessionThunk } from './actions/startThpSessionThunk';
 
 type ThpCodeInvalidStepProps = {
     modalHeading: ReactNode;
@@ -16,17 +15,13 @@ type ThpCodeInvalidStepProps = {
 // reflection of components/onboarding/ThpPairing/ThpCodeInvalidStep
 export const ThpCodeInvalidStep = ({ modalHeading }: ThpCodeInvalidStepProps) => {
     const [isLoading, setIsLoading] = useState(false);
-    const requestId = useSelector(selectThpConfirmationRequestId);
+    const dispatch = useDispatch();
 
     const handleRetry = () => {
         setIsLoading(true);
         // Re-try in firmware-update flow, sends only new UI response, as FW installation flow
         // keeps the TrezorConnect call pending until it's re-paired.
-        TrezorConnect.uiResponse({
-            type: 'ui-receive_confirmation',
-            payload: true,
-            requestId,
-        });
+        dispatch(startThpSessionThunk());
     };
 
     return (

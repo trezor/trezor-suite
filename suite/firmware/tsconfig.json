@@ -5,6 +5,9 @@
         { "path": "../../suite-common/device" },
         { "path": "../../suite-common/firmware" },
         {
+            "path": "../../suite-common/redux-utils"
+        },
+        {
             "path": "../../suite-common/suite-types"
         },
         {

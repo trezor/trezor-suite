@@ -1,11 +1,11 @@
 import { type ReactNode, useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import { Translation } from '@suite/intl';
-import { selectThpConfirmationRequestId } from '@suite-common/thp';
 import { Card, Column, Modal, Text } from '@trezor/components';
-import TrezorConnect from '@trezor/connect';
 import { spacings } from '@trezor/theme';
+
+import { startThpSessionThunk } from './actions/startThpSessionThunk';
 
 type ThpPairingStartStepProps = {
     modalHeading: ReactNode;
@@ -15,18 +15,14 @@ type ThpPairingStartStepProps = {
 // reflection of components/onboarding/ThpPairing/ThpPairingStartStep
 export const ThpPairingStartStep = (props: ThpPairingStartStepProps) => {
     const [isLoading, setIsLoading] = useState(props.isLoading);
-    const requestId = useSelector(selectThpConfirmationRequestId);
+    const dispatch = useDispatch();
     useEffect(() => {
         setIsLoading(props.isLoading);
     }, [props.isLoading]);
 
     const onClick = () => {
         setIsLoading(true);
-        TrezorConnect.uiResponse({
-            type: 'ui-receive_confirmation',
-            payload: true,
-            requestId,
-        });
+        dispatch(startThpSessionThunk());
     };
 
     return (

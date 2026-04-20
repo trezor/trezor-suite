@@ -24,3 +24,4 @@ export { ThpPairingCodeEntry } from './thp/ThpPairingCodeEntry';
 export { ThpPairingFailedForFirmwareInstallation } from './thp/ThpPairingFailedForFirmwareInstallation';
 export { ThpPairingPinEntryModal } from './thp/ThpPairingPinEntryModal';
 export { ThpPairingStep } from './thp/ThpPairingStep';
+export { startThpSessionThunk } from './thp/actions/startThpSessionThunk';

@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 
+import { startThpSessionThunk } from '@suite/firmware';
 import { Translation } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
 
-import { startThpSessionThunk } from 'src/actions/thp/startThpSessionThunk';
 import { useDispatch } from 'src/hooks/suite';
 
 // reflection of components/firmware/ThpPairing/ThpPairingStartStep

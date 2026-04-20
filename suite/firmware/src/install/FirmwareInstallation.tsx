@@ -5,12 +5,11 @@ import { Banner, Card, Column } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import type TrezorConnectBrowser from '@trezor/connect/src/index-browser';
 
-
 import { FirmwareOffer } from './FirmwareOffer';
 import { FirmwareProgressBar } from './FirmwareProgressBar';
 import { FirmwareReconnectDevicePrompt } from './ReconnectDevicePrompt';
 import { RotatingPhrases } from './RotatingPhrases';
-import { type FirmwareUpgradeRootState, selectHasTransportOfType } from '../update/state';
+import { selectHasTransportOfType } from '../update/state';
 import { useFirmwareDesktopUpdate } from '../update/useFirmwareDesktopUpdate';
 
 type FirmwareInstallationProps = {
@@ -27,12 +26,8 @@ export const FirmwareInstallation = ({
 }: FirmwareInstallationProps) => {
     const { status, showReconnectPrompt, targetType, reconnectEvent, isSlow } =
         useFirmwareDesktopUpdate();
-    const isWebUsbTransport = useSelector((state: FirmwareUpgradeRootState) =>
-        selectHasTransportOfType('WebUsbTransport')(state),
-    );
-    const isBluetoothTransport = useSelector((state: FirmwareUpgradeRootState) =>
-        selectHasTransportOfType('BluetoothTransport')(state),
-    );
+    const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
+    const isBluetoothTransport = useSelector(selectHasTransportOfType('BluetoothTransport'));
 
     const displayIsSlow = isSlow && isBluetoothTransport;
 

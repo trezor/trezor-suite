@@ -1,4 +1,4 @@
-import { createThunk } from '@suite-common/redux-utils/';
+import { createThunk } from '@suite-common/redux-utils';
 import { selectThpConfirmationRequestId } from '@suite-common/thp';
 import TrezorConnect from '@trezor/connect';
 
