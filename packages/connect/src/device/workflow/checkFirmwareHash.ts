@@ -78,7 +78,7 @@ export const checkFirmwareHash = async ({
     const { hash: expectedHash, challenge } = calculateFirmwareHash({
         internal_model: device.features.internal_model,
         firmwareVersion,
-        fw: strippedBinary,
+        fw: Buffer.from(strippedBinary),
         key: randomBytes(32),
     });
 

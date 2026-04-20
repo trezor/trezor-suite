@@ -93,7 +93,7 @@ export function p2pkh(a: Payment, opts?: PaymentOpts): Payment {
 
     // extended validation
     if (opts.validate) {
-        let hash = Buffer.from([]);
+        let hash: Buffer = Buffer.from([]);
         if (a.address) {
             const { version, hash: aHash } = _address();
             if (version !== network.pubKeyHash)

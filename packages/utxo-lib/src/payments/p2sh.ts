@@ -125,7 +125,7 @@ export function p2sh(a: Payment, opts?: PaymentOpts): Payment {
     });
 
     if (opts.validate) {
-        let hash = Buffer.from([]);
+        let hash: Buffer = Buffer.from([]);
         if (a.address) {
             const { version, hash: aHash } = _address();
             if (version !== network.scriptHash)

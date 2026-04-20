@@ -37,8 +37,8 @@ export const getRandomInt = (min: number, max: number) => {
 
     const getRandomValues =
         typeof window !== 'undefined'
-            ? (array: Uint32Array) => window.crypto.getRandomValues(array)
-            : (array: Uint32Array) => cryptoGetRandomValues(array);
+            ? (array: ArrayBufferView<ArrayBuffer>) => window.crypto.getRandomValues(array)
+            : (array: ArrayBufferView<ArrayBuffer>) => cryptoGetRandomValues(array);
 
     const array = new Uint32Array(1); // This provides 32 bits of entropy.
 
