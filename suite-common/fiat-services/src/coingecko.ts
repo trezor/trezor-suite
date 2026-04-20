@@ -1,3 +1,5 @@
+import { Asset, Networks } from '@stellar/stellar-sdk';
+
 import { getNetwork, networks } from '@suite-common/wallet-config';
 import { type HistoricRates, type TickerId } from '@suite-common/wallet-types';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
@@ -88,9 +90,12 @@ const buildCoinUrls = (ticker: TickerId) => {
 
     if (networkType === 'stellar') {
         const [code, issuer] = ticker.tokenAddress.split('-');
+        // Use the public Stellar network here because CoinGecko does not provide testnet market data.
+        const sorobanContractAddress = new Asset(code, issuer).contractId(Networks.PUBLIC);
 
-        // There are currently three formats on CoinGecko, we try them in order of frequency.
+        // CoinGecko is gradually migrating Stellar assets to Soroban contract ids, so try that URL first.
         return [
+            `${baseUrl}/contract/${sorobanContractAddress}`,
             `${baseUrl}/contract/${code}-${issuer}`,
             `${baseUrl}/contract/${code}-${issuer}-1`,
             `${baseUrl}/contract/${code}:${issuer}`,
