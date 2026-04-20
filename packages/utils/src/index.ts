@@ -61,7 +61,7 @@ export * from './zip';
 export * from './removeTrailingSlashes';
 export * from './getIntegerInRangeFromString';
 export * from './safeBigIntStringify';
-export * from './union';
+export * from './unique';
 export * from './isInt';
 export * from './number';
 export * from './sanitizeFilename';

@@ -23,6 +23,7 @@
         "@suite-common/calldata": "workspace:^",
         "@suite-common/http-client": "workspace:^",
         "@suite-common/react-query": "workspace:^",
+        "@trezor/env-utils": "workspace:*",
         "@trezor/utils": "workspace:^",
         "zod": "4.3.6"
     }

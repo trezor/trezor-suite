@@ -8227,6 +8227,14 @@ export const messages = defineMessages({
         id: 'TR_EARN_YOUR_UNSTAKED_FUNDS',
         defaultMessage: 'Your unstaked {networkDisplaySymbol} is ready',
     },
+    TR_EARN_CLAIM_REWARDS_LABEL: {
+        id: 'TR_EARN_CLAIM_REWARDS_LABEL',
+        defaultMessage: 'Available rewards',
+    },
+    TR_EARN_CLAIM_REWARDS_BUTTON: {
+        id: 'TR_EARN_CLAIM_REWARDS_BUTTON',
+        defaultMessage: 'Claim',
+    },
     TR_RECEIVING_SYMBOL: {
         id: 'TR_RECEIVING_SYMBOL',
         defaultMessage:
