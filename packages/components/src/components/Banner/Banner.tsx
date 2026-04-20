@@ -45,8 +45,6 @@ export const Banner = ({
     width = '100%',
     ...rest
 }: BannerProps) => {
-    const textPriority = intent === 'neutral' ? 'secondary' : 'primary';
-
     const withIcon = icon !== undefined;
     const frameProps = pickAndPrepareFrameProps(rest, allowedBannerFrameProps, false);
 
@@ -72,16 +70,12 @@ export const Banner = ({
                 <Row flex="1" flexWrap="wrap" gap={12}>
                     <Column flex="1 1 360px" maxWidth="100%">
                         {title && (
-                            <H4 typographyStyle="body-md" intent={intent} priority={textPriority}>
+                            <H4 typographyStyle="body-md" intent={intent} priority="primary">
                                 {title}
                             </H4>
                         )}
                         {description && (
-                            <Paragraph
-                                typographyStyle="body-sm"
-                                intent={intent}
-                                priority={textPriority}
-                            >
+                            <Paragraph typographyStyle="body-sm" intent={intent} priority="primary">
                                 {description}
                             </Paragraph>
                         )}
