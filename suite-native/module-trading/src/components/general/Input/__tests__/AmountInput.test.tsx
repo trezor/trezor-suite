@@ -1,5 +1,5 @@
 import { fireEvent, renderWithBasicProvider, userEvent } from '@suite-native/test-utils';
-import { paletteV1 } from '@trezor/theme';
+import { paletteV2 } from '@trezor/theme';
 
 import { AMOUNT_INPUT_TEST_ID, AmountInput, type AmountInputProps } from '../AmountInput';
 
@@ -55,13 +55,13 @@ describe('AmountInput', () => {
     it('should have default color for valid input value', () => {
         const { getByLabelText } = renderAmountInput({ value: '1' });
 
-        expect(getByLabelText('INPUT')).toHaveStyle({ color: paletteV1.lightGray1000 });
+        expect(getByLabelText('INPUT')).toHaveStyle({ color: paletteV2.lightCoolGreyAlpha900 });
     });
 
     it('should have alert color for invalid input value', () => {
         const { getByLabelText } = renderAmountInput({ value: '1', hasError: true });
 
-        expect(getByLabelText('INPUT')).toHaveStyle({ color: paletteV1.lightAccentRed700 });
+        expect(getByLabelText('INPUT')).toHaveStyle({ color: paletteV2.lightRed700 });
     });
 
     it('should have font size of 34 before layout events', () => {
