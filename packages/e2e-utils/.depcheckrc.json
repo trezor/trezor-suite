@@ -1,0 +1,3 @@
+{
+    "ignores": ["@anthropic-ai/claude-code", "@currents/mcp"]
+}

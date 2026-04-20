@@ -1,0 +1,11 @@
+{
+    "mcpServers": {
+        "currents": {
+            "command": "bash",
+            "args": [
+                "-c",
+                "[ -f packages/e2e-utils/.env ] && set -a && source packages/e2e-utils/.env && set +a; exec node node_modules/@currents/mcp/build/index.js"
+            ]
+        }
+    }
+}

@@ -46,6 +46,7 @@ __pycache__/
 screenshots
 test-results
 playwright-report
+packages/e2e-utils/src/fixBot/reports/
 suite-native/app/.metadata/
 suite-native/app/artifacts/
 
