@@ -2025,6 +2025,14 @@ export const messages = {
                 vault: 'Vault',
                 apy: 'Annual percentage yield',
                 supplied: 'Supplied',
+                supplyMore: 'Supply more',
+                withdraw: 'Withdraw',
+                apyBreakdown: {
+                    apyLabel: '{apy} APY',
+                    autoCompounded: 'Automatically added and compounded.',
+                    manualCompound: 'Manually claim and deposit to compound.',
+                    footer: 'APY may change over time.',
+                },
             },
         },
         emptyState: {
