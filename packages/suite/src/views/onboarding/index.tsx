@@ -9,13 +9,13 @@ import { OnboardingLayout } from 'src/components/onboarding/OnboardingLayout';
 import * as STEP from 'src/constants/onboarding/steps';
 import { useDispatch, useOnboarding, useSelector } from 'src/hooks/suite';
 import { UnexpectedState } from 'src/views/onboarding/UnexpectedState';
+import { BackupTypeStep } from 'src/views/onboarding/steps/BackupTypeStep';
 import { CreateOrRecoverStep } from 'src/views/onboarding/steps/CreateOrRecoverStep';
 import { DeviceAuthenticityStep } from 'src/views/onboarding/steps/DeviceAuthenticityStep';
 import { DeviceTutorialStep } from 'src/views/onboarding/steps/DeviceTutorialStep';
 import { FirmwareStep } from 'src/views/onboarding/steps/FirmwareStep';
 import { PinStep } from 'src/views/onboarding/steps/PinStep';
 import { RecoveryStep } from 'src/views/onboarding/steps/RecoveryStep';
-import { ResetDeviceStep } from 'src/views/onboarding/steps/ResetDeviceStep';
 import { SecurityStep } from 'src/views/onboarding/steps/SecurityStep';
 
 export const Onboarding = () => {
@@ -48,9 +48,9 @@ export const Onboarding = () => {
             case STEP.ID_CREATE_OR_RECOVER:
                 // Selection between a new seed or seed recovery
                 return CreateOrRecoverStep;
-            case STEP.ID_RESET_DEVICE_STEP:
-                // a) Generating a new seed, selection between seed types
-                return ResetDeviceStep;
+            case STEP.ID_BACKUP_TYPE_STEP:
+                // Selecting a backup type
+                return BackupTypeStep;
             case STEP.ID_RECOVERY_STEP:
                 // b) Seed recovery
                 return RecoveryStep;

@@ -1,7 +1,7 @@
 export const ID_CREATE_OR_RECOVER = 'create-or-recover';
 export const ID_FINAL_STEP = 'final';
 export const ID_FIRMWARE_STEP = 'firmware';
-export const ID_RESET_DEVICE_STEP = 'reset-device';
+export const ID_BACKUP_TYPE_STEP = 'backup-type';
 export const ID_AUTHENTICATE_DEVICE_STEP = 'authenticate-device';
 export const ID_TUTORIAL_STEP = 'tutorial';
 export const ID_SET_PIN_STEP = 'set-pin';
