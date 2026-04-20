@@ -1,10 +1,13 @@
+import { useFormatters } from '@suite-common/formatters';
 import { type TronTxContractType } from '@suite-common/wallet-constants';
 import { type StakeType, type WalletAccountTransaction } from '@suite-common/wallet-types';
-import { getTxStakeType } from '@suite-common/wallet-utils';
-import { Text } from '@suite-native/atoms';
+import { getTxStakeType, redactNumericalSubstring } from '@suite-common/wallet-utils';
+import { Text, useDiscreetMode } from '@suite-native/atoms';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { type NativeTypographyStyle } from '@trezor/theme';
 import { exhaustive } from '@trezor/type-utils';
+
+import { getUnstakeTxAmount } from '../utils';
 
 type TransactionNameProps = {
     transaction: WalletAccountTransaction;
@@ -107,6 +110,8 @@ const getTronTransactionMessage = (transaction: WalletAccountTransaction) => {
 };
 
 export const TransactionName = ({ transaction, isPending, variant }: TransactionNameProps) => {
+    const { CryptoAmountFormatter: cryptoAmountFormatter } = useFormatters();
+    const { isDiscreetMode } = useDiscreetMode();
     const ethName = transaction.ethereumSpecific?.parsedData?.name;
 
     // Stellar trustline addition/removal (short version without asset code)
@@ -136,6 +141,27 @@ export const TransactionName = ({ transaction, isPending, variant }: Transaction
     }
 
     const stakeType = getTxStakeType(transaction);
+    const unstakeAmount = getUnstakeTxAmount(transaction);
+
+    if (unstakeAmount !== undefined && !isPending) {
+        const formattedUnstakeAmount = cryptoAmountFormatter.format(unstakeAmount, {
+            symbol: transaction.symbol,
+            isBalance: false,
+            isEllipsisAppended: false,
+        });
+        const displayedUnstakeAmount = isDiscreetMode
+            ? redactNumericalSubstring(formattedUnstakeAmount)
+            : formattedUnstakeAmount;
+
+        return (
+            <Text variant={variant}>
+                <Translation
+                    id="transactions.detail.unstakeHeader"
+                    values={{ amount: displayedUnstakeAmount }}
+                />
+            </Text>
+        );
+    }
 
     const stakeTranslationId = stakeType ? getStakeTransactionMessage(stakeType, isPending) : null;
 

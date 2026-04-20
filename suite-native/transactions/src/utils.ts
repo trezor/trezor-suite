@@ -2,7 +2,12 @@ import { A, F, pipe } from '@mobily/ts-belt';
 
 import { type SignValue } from '@suite-common/suite-types';
 import { createSimpleTargetId } from '@suite-common/wallet-core';
-import { type TransactionType } from '@suite-common/wallet-types';
+import { type TransactionType, type WalletAccountTransaction } from '@suite-common/wallet-types';
+import {
+    getTxStakeNameByDataHex,
+    getTxStakeType,
+    getUnstakeAmountByEthereumDataHex,
+} from '@suite-common/wallet-utils';
 import { type EnhancedVinVout, type Target } from '@trezor/blockchain-link-types';
 import { isNotNullOrUndefined } from '@trezor/utils';
 
@@ -64,3 +69,16 @@ const transactionTypeToSignValueMap = {
 
 export const getTransactionValueSign = (transactionType: TransactionType) =>
     transactionTypeToSignValueMap[transactionType];
+
+const resolveStakeType = (tx: WalletAccountTransaction) =>
+    getTxStakeType(tx) ?? getTxStakeNameByDataHex(tx.ethereumSpecific?.data);
+
+export const getUnstakeTxAmount = (tx: WalletAccountTransaction) => {
+    if (resolveStakeType(tx) !== 'unstake') return undefined;
+
+    if (tx.solanaSpecific?.stakeOperation?.type === 'unstake') {
+        return tx.solanaSpecific.stakeOperation.amount;
+    }
+
+    return getUnstakeAmountByEthereumDataHex(tx.ethereumSpecific?.data) ?? undefined;
+};

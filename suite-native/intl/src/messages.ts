@@ -1871,6 +1871,7 @@ export const messages = {
         },
         detail: {
             header: '<transactionType></transactionType> transaction',
+            unstakeHeader: 'Unstake {amount}',
             exploreButton: 'Explore in blockchain',
             feeLabel: 'Fee',
             dateLabel: 'Date',
