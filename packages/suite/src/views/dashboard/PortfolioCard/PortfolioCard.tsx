@@ -28,7 +28,7 @@ import { PortfolioCardHeader } from './PortfolioCardHeader';
 import { UnsupportedAssetsMessage, useUnsupportedNetworkMessage } from './UnsupportedAssetsMessage';
 
 const MarginContainer = ({ children }: { children: React.ReactNode }) => (
-    <Box margin={{ horizontal: 24, vertical: 16 }}>{children}</Box>
+    <Box margin={{ horizontal: 24, vertical: 32 }}>{children}</Box>
 );
 
 export const PortfolioCard = memo(() => {
