@@ -4,14 +4,14 @@ import { type NativeFont } from './fontFamilies';
 import { type FontWeightValue, fontWeights } from './fontWeights';
 
 export const nativeTypographyStyles = [
-    'headline-lg',
-    'headline-md',
-    'headline-sm',
-    'body-md-strong',
-    'body-md',
-    'body-sm-strong',
-    'body-sm',
-    'body-xs',
+    'headline-lg', // 'titleLarge',
+    'headline-md', // 'titleMedium',
+    'headline-sm', // 'titleSmall',
+    'body-md-strong', // 'highlight',
+    'body-md', // 'body',
+    'body-sm-strong', // 'callout',
+    'body-sm', // 'hint',
+    'body-xs', // 'label'
 ] as const;
 
 export const typographyStyles = [...nativeTypographyStyles, 'inherit'] as const;
