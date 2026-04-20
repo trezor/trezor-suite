@@ -1,14 +1,18 @@
-import { type EnhancedStore } from '@reduxjs/toolkit';
+import { type EnhancedStore, combineReducers } from '@reduxjs/toolkit';
 
+import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { tradingBuyActions } from '@suite-common/trading';
+import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { events } from '@suite-native/analytics';
 import { Form } from '@suite-native/forms';
+import { localeInitialState } from '@suite-native/intl';
 import { useAnalytics } from '@suite-native/services';
 import {
-    type PreloadedState,
+    type PreloadedStatePartial,
     act,
+    createLightStore,
+    createStaticReducer,
     fireEvent,
-    initStore,
     renderHookWithStoreProvider,
     renderWithStoreProvider,
     screen,
@@ -17,8 +21,11 @@ import {
     buyQuotes,
     cexdirectCreditCardBuyQuote,
     getInitializedTradingStateWithQuotes,
+    getWalletState,
 } from '@suite-native/trading-fixtures';
+import { tradingSlice } from '@suite-native/trading-state';
 import { type BuyFormType } from '@suite-native/trading-types';
+import { mergeDeepObject } from '@trezor/utils';
 
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';
 import { BuyPaymentMethodPicker } from '../BuyPaymentMethodPicker';
@@ -36,19 +43,44 @@ jest.mock('@suite-native/services', () => {
 
 describe('BuyPaymentMethodPicker', () => {
     let form: BuyFormType;
+    const defaultPreloadedState = {
+        locale: localeInitialState,
+        wallet: getWalletState({ tradeType: 'buy' }),
+    };
+
+    const reducer = {
+        locale: createStaticReducer(localeInitialState),
+        wallet: combineReducers({
+            settings: createStaticReducer(initialWalletSettingsState),
+            accounts: createStaticReducer(getWalletState({ tradeType: 'buy' }).accounts),
+            trading: tradingSlice.prepareReducer(extraDependenciesCommonMock),
+        }),
+    } as const;
 
     const renderPaymentMethodPicker = (
-        preloadedState: PreloadedState | undefined = {},
+        componentPreloadedState: PreloadedStatePartial<typeof defaultPreloadedState> = {},
         store?: EnhancedStore,
+        formPreloadedState: PreloadedStatePartial<
+            typeof defaultPreloadedState
+        > = defaultPreloadedState,
     ) => {
-        const { result } = renderHookWithStoreProvider(() => useBuyForm());
+        const mergedFormPreloadedState = mergeDeepObject(defaultPreloadedState, formPreloadedState);
+        const mergedComponentPreloadedState = mergeDeepObject(
+            defaultPreloadedState,
+            componentPreloadedState,
+        );
+
+        const { result } = renderHookWithStoreProvider(() => useBuyForm(), {
+            preloadedState: mergedFormPreloadedState,
+            store,
+        });
         form = result.current;
 
         return renderWithStoreProvider(
             <Form form={form}>
                 <BuyPaymentMethodPicker />
             </Form>,
-            { preloadedState, store },
+            { preloadedState: mergedComponentPreloadedState, store },
         );
     };
 
@@ -71,9 +103,9 @@ describe('BuyPaymentMethodPicker', () => {
     });
 
     it('should display loader when loading initial quotes', () => {
-        const preloadedState: PreloadedState = {
+        const preloadedState = {
             wallet: { trading: { buy: { isLoading: true, quotes: [] } } },
-        };
+        } satisfies PreloadedStatePartial<typeof defaultPreloadedState>;
 
         const { getByLabelText } = renderPaymentMethodPicker(preloadedState);
 
@@ -81,19 +113,17 @@ describe('BuyPaymentMethodPicker', () => {
     });
 
     describe('with quotes loaded', () => {
-        let preloadedState: PreloadedState;
-
-        beforeEach(() => {
-            preloadedState = { wallet: { trading: getInitializedTradingStateWithQuotes() } };
-        });
+        const withQuotes: PreloadedStatePartial<typeof defaultPreloadedState> = {
+            wallet: { trading: getInitializedTradingStateWithQuotes() },
+        };
 
         it('should display "Not selected" when no method is selected in form', () => {
-            const { getByLabelText } = renderPaymentMethodPicker(preloadedState);
+            const { getByLabelText } = renderPaymentMethodPicker(withQuotes);
             expect(getByLabelText('No payment method selected')).toHaveTextContent('Not selected');
         });
 
         it('should allow to select payment method', () => {
-            const { getByText, getByLabelText } = renderPaymentMethodPicker(preloadedState);
+            const { getByText, getByLabelText } = renderPaymentMethodPicker(withQuotes);
 
             fireEvent.press(getByText('Payment method'));
             fireEvent.press(getByText('Credit Card'));
@@ -102,14 +132,24 @@ describe('BuyPaymentMethodPicker', () => {
         });
 
         it('should display loader while quotes are fetched', () => {
-            preloadedState!.wallet!.trading!.buy!.isLoading = true;
-            const { getByLabelText } = renderPaymentMethodPicker(preloadedState);
+            const { getByLabelText } = renderPaymentMethodPicker(
+                mergeDeepObject(withQuotes, {
+                    wallet: { trading: { buy: { isLoading: true } } },
+                }),
+            );
 
             expect(getByLabelText('Fetching offers...')).toBeOnTheScreen();
         });
 
         it('should display sheet even while quotes are fetched', () => {
-            const { store } = initStore();
+            const store = createLightStore({
+                reducer,
+                preloadedState: {
+                    wallet: {
+                        trading: getWalletState({ tradeType: 'buy' }).trading,
+                    },
+                },
+            });
             store.dispatch(tradingBuyActions.saveQuotes(buyQuotes));
             const { getByText } = renderPaymentMethodPicker(undefined, store);
 
@@ -127,7 +167,7 @@ describe('BuyPaymentMethodPicker', () => {
             });
 
             it('should fire analytics event on payment method select', () => {
-                const { getByText } = renderPaymentMethodPicker(preloadedState);
+                const { getByText } = renderPaymentMethodPicker(withQuotes);
 
                 fireEvent.press(getByText('Payment method'));
                 fireEvent.press(getByText('Credit Card'));
@@ -142,7 +182,7 @@ describe('BuyPaymentMethodPicker', () => {
             });
 
             it('should fire analytics event on payment method change', () => {
-                const { getByText } = renderPaymentMethodPicker(preloadedState);
+                const { getByText } = renderPaymentMethodPicker(withQuotes);
 
                 act(() => {
                     form.setValue('quote', cexdirectCreditCardBuyQuote);
@@ -155,7 +195,7 @@ describe('BuyPaymentMethodPicker', () => {
             });
 
             it('should not fire analytics event when same payment method is selected', () => {
-                const { getByText, getAllByText } = renderPaymentMethodPicker(preloadedState);
+                const { getByText, getAllByText } = renderPaymentMethodPicker(withQuotes);
 
                 act(() => {
                     form.setValue('quote', cexdirectCreditCardBuyQuote);

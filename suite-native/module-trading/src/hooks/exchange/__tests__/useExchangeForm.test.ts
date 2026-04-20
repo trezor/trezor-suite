@@ -7,21 +7,14 @@ import {
 } from '@suite-common/trading';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { events } from '@suite-native/analytics';
-import { FeatureFlag, type FeatureFlagsRootState } from '@suite-native/feature-flags';
-import {
-    type PreloadedState,
-    type TestStore,
-    act,
-    initStore,
-    renderHookWithStoreProvider,
-} from '@suite-native/test-utils-store';
+import { FeatureFlag } from '@suite-native/feature-flags';
+import { type TestStore, act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import {
     btcAsset,
     cexdirectFloatingQuote,
     exchangeCexdirect,
     exchangeQuotes,
     getBtcAccount,
-    getWalletState,
     invityDexQuote,
     mercuryoFixedBestQuote,
     mercuryoFixedWorstQuote,
@@ -31,6 +24,7 @@ import { exchangeActions } from '@suite-native/trading-state';
 import { type ExchangeFormType } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
+import { createTradingLightStore } from '../../../__tests__/tradingTestUtils';
 import { clearExchangeFormQuoteData, useExchangeForm } from '../useExchangeForm';
 
 const mockReport = jest.fn();
@@ -69,19 +63,20 @@ describe('useExchangeForm', () => {
     const renderUseExchangeForm = () =>
         renderHookWithStoreProvider(() => useExchangeForm(), { store });
 
-    const getInitializedStore = (bitcoinAmountUnit = PROTO.AmountUnit.BITCOIN) => {
-        const preloadedState: PreloadedState = {
-            wallet: getWalletState({
-                tradeType: 'exchange',
-                bitcoinAmountUnit,
-            }),
-            featureFlags: {
-                [FeatureFlag.AreTradingExchangeDexesEnabled]: true,
-            } as FeatureFlagsRootState['featureFlags'],
-        };
-
-        return initStore(preloadedState).store;
-    };
+    const getInitializedStore = (bitcoinAmountUnit = PROTO.AmountUnit.BITCOIN) =>
+        createTradingLightStore({
+            tradeType: 'exchange',
+            overrides: {
+                wallet: {
+                    settings: {
+                        bitcoinAmountUnit,
+                    },
+                },
+                featureFlags: {
+                    [FeatureFlag.AreTradingExchangeDexesEnabled]: true,
+                },
+            },
+        });
 
     beforeEach(() => {
         jest.restoreAllMocks();

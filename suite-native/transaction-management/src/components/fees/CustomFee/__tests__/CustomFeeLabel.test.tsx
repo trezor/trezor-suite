@@ -2,7 +2,6 @@ import { type NetworkType as NetworkTypeConfig } from '@suite-common/wallet-conf
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Form } from '@suite-native/forms';
 import {
-    type PreloadedState,
     act,
     renderHookWithStoreProvider,
     renderWithStoreProvider,
@@ -18,15 +17,15 @@ describe('CustomFeeLabel', () => {
         wallet: getWalletState(),
     };
 
-    const renderUseFeesForm = (preloadedState?: PreloadedState, defaultFeePerUnit?: string) => {
+    const renderUseFeesForm = () => {
         const { result } = renderHookWithStoreProvider(
             () =>
                 useFeesForm({
                     accountKey: 'test-account-key' as AccountKey, // Todo: create properly via `createAccountKey()`,
-                    defaultFeePerUnit: defaultFeePerUnit || '1',
+                    defaultFeePerUnit: '1',
                 }),
             {
-                preloadedState: preloadedState || defaultState,
+                preloadedState: defaultState,
             },
         );
 
@@ -36,14 +35,12 @@ describe('CustomFeeLabel', () => {
     const renderCustomFeeLabel = ({
         networkType,
         form,
-        preloadedState,
     }: {
         networkType: NetworkTypeConfig;
         form: FeesFormType;
-        preloadedState?: PreloadedState;
     }) =>
         renderWithStoreProvider(<CustomFeeLabel networkType={networkType} />, {
-            preloadedState: preloadedState || defaultState,
+            preloadedState: defaultState,
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 

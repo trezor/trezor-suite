@@ -1,12 +1,12 @@
 import type { AccountKey } from '@suite-common/wallet-types';
 import { getTranslation } from '@suite-native/intl';
-import { type PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils-store';
-import {
-    eth1NormalAccount,
-    getWalletState,
-    mercuryoFixedWorstQuote,
-} from '@suite-native/trading-fixtures';
+import { eth1NormalAccount, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 
+import {
+    type PreloadedStatePartial,
+    type TradingTestPreloadedState,
+    renderWithTradingProvider,
+} from '../../../../__tests__/tradingTestUtils';
 import { ExchangeApprovalDetails } from '../ExchangeApprovalDetails';
 
 // Mock FeeSelector to avoid deep dependency chain (useFeesManagement, etc.)
@@ -16,31 +16,35 @@ jest.mock('@suite-native/transaction-management', () => ({
 }));
 
 describe('ExchangeApprovalDetails', () => {
-    let preloadedState: PreloadedState;
-    const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
     const mockOnApprovalTypeChange = jest.fn();
+    const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
-    const renderExchangeApprovalDetails = () =>
-        renderWithStoreProvider(
+    const defaultOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {
+        wallet: {
+            trading: {
+                exchange: {
+                    tradingAccountKey: eth1NormalAccount.key,
+                    preselectedQuote: mercuryoFixedWorstQuote,
+                },
+            },
+        },
+    };
+
+    const renderExchangeApprovalDetails = (
+        overrides: PreloadedStatePartial<TradingTestPreloadedState> = defaultOverrides,
+    ) =>
+        renderWithTradingProvider(
             <ExchangeApprovalDetails
                 exchange="mercuryo"
                 onApprovalTypeChange={mockOnApprovalTypeChange}
             />,
             {
-                preloadedState,
+                tradeType: 'exchange',
+                overrides,
             },
         );
 
     beforeEach(() => {
-        preloadedState = {
-            wallet: getWalletState({
-                tradeType: 'exchange',
-            }),
-        };
-
-        preloadedState!.wallet!.trading!.exchange!.tradingAccountKey = eth1NormalAccount.key;
-        preloadedState!.wallet!.trading!.exchange!.preselectedQuote = mercuryoFixedWorstQuote;
-
         errorSpy.mockClear();
     });
 
@@ -58,10 +62,16 @@ describe('ExchangeApprovalDetails', () => {
     });
 
     it('should render error when account is not found', () => {
-        preloadedState!.wallet!.trading!.exchange!.tradingAccountKey =
-            'unknown-account-key' as AccountKey;
-
-        const { getByText, queryByText } = renderExchangeApprovalDetails();
+        const { getByText, queryByText } = renderExchangeApprovalDetails({
+            wallet: {
+                trading: {
+                    exchange: {
+                        tradingAccountKey: 'unknown-account-key' as AccountKey,
+                        preselectedQuote: mercuryoFixedWorstQuote,
+                    },
+                },
+            },
+        });
 
         expect(
             getByText(

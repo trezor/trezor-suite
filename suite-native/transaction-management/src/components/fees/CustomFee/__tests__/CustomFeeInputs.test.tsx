@@ -2,9 +2,8 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Form } from '@suite-native/forms';
 import {
-    type PreloadedState,
     type TestStore,
-    initStore,
+    createStoreFromPreloadedState,
     renderHookWithStoreProvider,
     renderWithStoreProvider,
 } from '@suite-native/test-utils-store';
@@ -36,18 +35,16 @@ describe('CustomFeeInputs', () => {
 
     const renderUseFeesForm = (
         accountKey: AccountKey = 'eth-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`,
-        preloadedState?: PreloadedState,
-        defaultFeePerUnit?: string,
     ) => {
         const { result } = renderHookWithStoreProvider(
             () =>
                 useFeesForm({
                     accountKey,
-                    defaultFeePerUnit: defaultFeePerUnit || '1',
+                    defaultFeePerUnit: '1',
                 }),
             {
                 store,
-                preloadedState: preloadedState || defaultState,
+                preloadedState: defaultState,
             },
         );
 
@@ -56,24 +53,22 @@ describe('CustomFeeInputs', () => {
 
     const renderCustomFeeInputs = ({
         form,
-        preloadedState,
         props,
     }: {
         form: FeesFormType;
-        preloadedState?: PreloadedState;
         props?: Partial<CustomFeeInputsProps>;
     }) => {
         const finalProps = { ...defaultProps, ...props };
 
         return renderWithStoreProvider(<CustomFeeInputs {...finalProps} />, {
-            preloadedState: preloadedState || defaultState,
+            preloadedState: defaultState,
             store,
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
     };
 
     beforeEach(() => {
-        store = initStore(defaultState).store;
+        store = createStoreFromPreloadedState(defaultState);
         // Default mock implementations
         mockSelectConvertedNetworkFeeInfo.mockReturnValue({
             minFee: '1',

@@ -2,7 +2,7 @@ import type { CryptoId } from 'invity-api';
 
 import { selectFormattedAccountType } from '@suite-common/wallet-core';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
-import { fireEvent, renderWithStoreProvider, screen } from '@suite-native/test-utils-store';
+import { fireEvent, screen } from '@suite-native/test-utils-store';
 import {
     btc1NormalAccount,
     eth1NormalAccount,
@@ -12,6 +12,7 @@ import { selectAccountsWithTokensToSellSectionCondensedListByTradingType } from 
 import { type MyAssetTradeable } from '@suite-native/trading-types';
 import { BigNumber } from '@trezor/utils';
 
+import { renderWithTradingProvider } from '../../../../__tests__/tradingTestUtils';
 import { TEST_ID_ACCOUNT_TYPE_BADGE } from '../MyAssetListSectionHeader';
 import { MyAssetSheet, type MyAssetSheetProps } from '../MyAssetSheet';
 
@@ -58,7 +59,7 @@ describe('MyAssetSheet', () => {
         },
     ];
 
-    const getPreloadedState = () => ({
+    const getOverrides = () => ({
         wallet: {
             trading: getInitializedTradingState(),
             accounts: [btcAccount, ethAccount],
@@ -66,7 +67,7 @@ describe('MyAssetSheet', () => {
     });
 
     const renderMyAssetsSheet = (props?: Partial<MyAssetSheetProps>) =>
-        renderWithStoreProvider(
+        renderWithTradingProvider(
             <MyAssetSheet
                 onAssetSelect={jest.fn}
                 onClose={jest.fn}
@@ -74,7 +75,7 @@ describe('MyAssetSheet', () => {
                 tradingType="exchange"
                 {...props}
             />,
-            { preloadedState: getPreloadedState() },
+            { overrides: getOverrides() as any },
         );
 
     beforeEach(() => {

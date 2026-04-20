@@ -1,9 +1,8 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type FeesStatus } from '@suite-common/wallet-types';
 import {
-    type PreloadedState,
     type TestStore,
-    initStore,
+    createStoreFromPreloadedState,
     renderHookWithStoreProvider,
 } from '@suite-native/test-utils-store';
 
@@ -37,7 +36,7 @@ const getWalletStateWithFees = () => ({
 });
 
 describe('useFeesFetching', () => {
-    const createMockState = (overrides: Partial<PreloadedState> = {}): PreloadedState => ({
+    const createMockState = (overrides: Record<string, unknown> = {}) => ({
         wallet: getWalletStateWithFees(),
         ...overrides,
     });
@@ -64,7 +63,7 @@ describe('useFeesFetching', () => {
     });
 
     it('should select account by key from state', () => {
-        const { store } = initStore(createMockState());
+        const store = createStoreFromPreloadedState(createMockState());
         const { result } = renderUseFeesFetching({ store, networkSymbol: 'btc' });
 
         expect(result.current.areFeesLoading).toBe(false);
@@ -77,7 +76,7 @@ describe('useFeesFetching', () => {
 
     it('should handle loading state correctly', () => {
         mockSelectAreFeesLoading.mockReturnValue(true);
-        const { store } = initStore(createMockState());
+        const store = createStoreFromPreloadedState(createMockState());
         const { result } = renderUseFeesFetching({ store, networkSymbol: 'btc' });
 
         expect(result.current.areFeesLoading).toBe(true);
@@ -89,7 +88,7 @@ describe('useFeesFetching', () => {
     });
 
     it('should handle refetch disabled correctly', () => {
-        const { store } = initStore(createMockState());
+        const store = createStoreFromPreloadedState(createMockState());
         const { result } = renderUseFeesFetching({
             store,
             networkSymbol: 'btc',
@@ -105,7 +104,7 @@ describe('useFeesFetching', () => {
     });
 
     it('should handle undefined networkSymbol gracefully', () => {
-        const { store } = initStore(createMockState());
+        const store = createStoreFromPreloadedState(createMockState());
         const { result } = renderUseFeesFetching({
             store,
             networkSymbol: undefined,

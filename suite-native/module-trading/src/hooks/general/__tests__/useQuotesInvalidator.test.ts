@@ -1,12 +1,12 @@
 import { type ActionCreatorWithoutPayload } from '@reduxjs/toolkit';
 
-import {
-    type TestStore,
-    initStore,
-    renderHookWithStoreProvider,
-} from '@suite-native/test-utils-store';
+import { type TestStore } from '@suite-native/test-utils-store';
 import { type AbortablePromise } from '@suite-native/trading-types';
 
+import {
+    createTradingLightStore,
+    renderHookWithTradingProvider,
+} from '../../../__tests__/tradingTestUtils';
 import { type UseQuotesInvalidatorProps, useQuotesInvalidator } from '../useQuotesInvalidator';
 
 describe('useQuotesInvalidator', () => {
@@ -23,7 +23,7 @@ describe('useQuotesInvalidator', () => {
         })) as ActionCreatorWithoutPayload,
         getClearStateAction = (() => ({ type: 'clearStateAction' })) as ActionCreatorWithoutPayload,
     }: Partial<UseQuotesInvalidatorProps>) =>
-        renderHookWithStoreProvider(props => useQuotesInvalidator(props), {
+        renderHookWithTradingProvider(props => useQuotesInvalidator(props), {
             store,
             initialProps: {
                 isFormValid,
@@ -37,7 +37,7 @@ describe('useQuotesInvalidator', () => {
         });
 
     beforeEach(() => {
-        store = initStore().store;
+        store = createTradingLightStore();
     });
 
     it('should call debounce with empty method when form is not valid', () => {

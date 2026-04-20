@@ -1,18 +1,32 @@
+import { messageSystemStateWithFeatureFlags } from '@suite-common/message-system';
 import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
-import {
-    type PreloadedState,
-    act,
-    fireEvent,
-    renderWithStoreProvider,
-} from '@suite-native/test-utils-store';
+import { act, fireEvent, renderWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { AppTabNavigator } from '../AppTabNavigator';
 
 jest.mock('@suite-common/tx-simulation', () => ({}));
 
+const defaultPreloadedState = {
+    featureFlags: featureFlagsInitialState,
+    bluetooth: { permissionStatus: 'unavailable' },
+    device: { selectedDevice: undefined, devices: [], persistentDeviceData: {} },
+    wallet: {
+        accounts: [],
+        trading: { residence: { country: null, wasOnboardingVisited: false } },
+    },
+    appSettings: { shouldShowAutoEjectAlert: false, hasAutoEjectAlertBeenDisplayed: false },
+    messageSystem: {
+        config: { actions: [] },
+        validMessages: { banner: [], context: [], modal: [], feature: [] },
+        dismissedMessages: [],
+    },
+};
+
 describe('AppTabNavigator', () => {
-    const renderTabs = (preloadedState?: PreloadedState) =>
-        renderWithStoreProvider(<AppTabNavigator />, { preloadedState });
+    const renderTabs = (preloadedState?: Record<string, unknown>) =>
+        renderWithStoreProvider(<AppTabNavigator />, {
+            preloadedState: { ...defaultPreloadedState, ...preloadedState },
+        });
 
     beforeEach(() => {
         global.fetch = jest.fn().mockResolvedValue({
@@ -38,40 +52,12 @@ describe('AppTabNavigator', () => {
                 [FeatureFlag.IsTradingSellEnabled]: false,
                 [FeatureFlag.IsTradingResidenceCheckEnabled]: false,
             },
-            messageSystem: {
-                validMessages: {
-                    banner: [],
-                    context: [],
-                    modal: [],
-                    feature: ['actionId'],
-                },
-                dismissedMessages: [],
-                config: {
-                    actions: [
-                        {
-                            message: {
-                                id: 'actionId',
-                                category: ['feature'],
-                                feature: [
-                                    {
-                                        domain: 'trading.buy',
-                                        flag: false,
-                                    },
-                                    {
-                                        domain: 'trading.exchange',
-                                        flag: false,
-                                    },
-                                    {
-                                        domain: 'trading.sell',
-                                        flag: false,
-                                    },
-                                ],
-                            },
-                        },
-                    ],
-                },
-            },
-        } as unknown as PreloadedState);
+            messageSystem: messageSystemStateWithFeatureFlags({
+                'trading.buy': false,
+                'trading.exchange': false,
+                'trading.sell': false,
+            }),
+        });
 
         expect(queryByText('Trade')).toBe(null);
     });

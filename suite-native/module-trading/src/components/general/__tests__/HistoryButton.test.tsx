@@ -1,11 +1,12 @@
 import { type TradingTransaction } from '@suite-common/trading';
-import {
-    type PreloadedState,
-    fireEvent,
-    renderWithStoreProvider,
-} from '@suite-native/test-utils-store';
+import { fireEvent } from '@suite-native/test-utils-store';
 import { getBuyTrade } from '@suite-native/trading-fixtures';
 
+import {
+    type PreloadedStatePartial,
+    type TradingTestPreloadedState,
+    renderWithTradingProvider,
+} from '../../../__tests__/tradingTestUtils';
 import { HistoryButton } from '../HistoryButton';
 
 let mockSelectDeviceTradingTrades: TradingTransaction[];
@@ -24,9 +25,11 @@ jest.mock('@react-navigation/native', () => ({
 }));
 
 describe('HistoryButton', () => {
-    const renderHistoryButton = (preloadedState: PreloadedState) =>
-        renderWithStoreProvider(<HistoryButton />, {
-            preloadedState,
+    const renderHistoryButton = (
+        overrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
+    ) =>
+        renderWithTradingProvider(<HistoryButton />, {
+            overrides,
         });
 
     it('should render nothing where no trades are available', () => {

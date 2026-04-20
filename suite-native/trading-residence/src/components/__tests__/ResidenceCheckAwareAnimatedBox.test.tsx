@@ -1,9 +1,9 @@
-import { type PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils-store';
+import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { ResidenceCheckAwareAnimatedBox } from '../ResidenceCheckAwareAnimatedBox';
 
 describe('ResidenceCheckAwareAnimatedBox', () => {
-    const renderResidenceCheckAwareAnimatedBox = (preloadedState: PreloadedState = {}) =>
+    const renderResidenceCheckAwareAnimatedBox = (preloadedState = {}) =>
         renderWithStoreProvider(<ResidenceCheckAwareAnimatedBox testID="TEST_ID" />, {
             preloadedState,
         });

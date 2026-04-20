@@ -1,3 +1,4 @@
+import { FeatureFlag } from '@suite-native/feature-flags';
 import { Form } from '@suite-native/forms';
 import {
     act,
@@ -12,6 +13,10 @@ import {
 } from '@suite-native/trading-fixtures';
 import { type ExchangeFormType } from '@suite-native/trading-types';
 
+import {
+    createTradingFeatureFlags,
+    createTradingPreloadedState,
+} from '../../../__tests__/tradingTestUtils';
 import { useExchangeForm } from '../../../hooks/exchange/useExchangeForm';
 import { ExchangeForm } from '../ExchangeForm';
 
@@ -21,14 +26,29 @@ jest.mock('../../../hooks/general/useFocusedValueWatch', () =>
 
 describe('ExchangeForm', () => {
     let form: ExchangeFormType;
+    const defaultPreloadedState = createTradingPreloadedState({
+        tradeType: 'exchange',
+        overrides: {
+            featureFlags: createTradingFeatureFlags({
+                [FeatureFlag.AreTradingExchangeDexesEnabled]: true,
+            }),
+        },
+    });
 
-    const renderForm = () => renderHookWithStoreProvider(() => useExchangeForm(), {});
+    const renderForm = () =>
+        renderHookWithStoreProvider(() => useExchangeForm(), {
+            preloadedState: defaultPreloadedState,
+        });
 
     const renderExchangeForm = () =>
         renderWithStoreProvider(<ExchangeForm />, {
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
             preloadedState: {
-                wallet: { trading: getInitializedTradingState() },
+                ...defaultPreloadedState,
+                wallet: {
+                    ...defaultPreloadedState.wallet,
+                    trading: getInitializedTradingState(),
+                },
             },
         });
 

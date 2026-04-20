@@ -1,11 +1,17 @@
-import { FeatureFlag, toggleFeatureFlag } from '@suite-native/feature-flags';
+import { combineReducers } from '@reduxjs/toolkit';
+
+import { extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { initialWalletSettingsState } from '@suite-common/wallet-core';
+import { FeatureFlag, featureFlagsReducer, toggleFeatureFlag } from '@suite-native/feature-flags';
+import { localeReducer } from '@suite-native/intl';
 import {
     type TestStore,
-    initStore,
+    createLightStore,
+    createStaticReducer,
     renderWithStoreProvider,
     userEvent,
 } from '@suite-native/test-utils-store';
-import { selectTradingProviderConfirmationStatus } from '@suite-native/trading-state';
+import { selectTradingProviderConfirmationStatus, tradingSlice } from '@suite-native/trading-state';
 
 import { ProviderStatusDevButtons } from '../ProviderStatusDevButtons';
 
@@ -16,7 +22,16 @@ describe('ProviderStatusDevButtons', () => {
         renderWithStoreProvider(<ProviderStatusDevButtons />, { store });
 
     beforeEach(() => {
-        ({ store } = initStore());
+        store = createLightStore({
+            reducer: {
+                featureFlags: featureFlagsReducer,
+                locale: localeReducer,
+                wallet: combineReducers({
+                    settings: createStaticReducer(initialWalletSettingsState),
+                    trading: tradingSlice.prepareReducer(extraDependenciesCommonMock),
+                }),
+            },
+        });
     });
 
     it('should display nothing without debug mode', () => {

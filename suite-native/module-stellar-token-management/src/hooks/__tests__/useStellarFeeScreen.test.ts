@@ -7,7 +7,7 @@ import {
 import {
     type TestStore,
     act,
-    initStore,
+    createStoreFromPreloadedState,
     renderHookWithStoreProvider,
     waitFor,
 } from '@suite-native/test-utils-store';
@@ -204,7 +204,7 @@ describe('useStellarFeeScreen', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         focusEffectCallback = undefined;
-        ({ store } = initStore());
+        store = createStoreFromPreloadedState();
 
         mockSelectAccountByKey.mockReturnValue(mockAccount);
         mockSelectDeviceButtonRequestsCodes.mockReturnValue([]);

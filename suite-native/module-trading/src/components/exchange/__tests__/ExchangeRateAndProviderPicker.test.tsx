@@ -1,21 +1,17 @@
 import { events } from '@suite-native/analytics';
+import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
 import { Form } from '@suite-native/forms';
 import { useAnalytics } from '@suite-native/services';
-import {
-    type PreloadedState,
-    act,
-    renderHookWithStoreProvider,
-    renderWithStoreProvider,
-    screen,
-    userEvent,
-} from '@suite-native/test-utils-store';
-import {
-    exchangeQuotes,
-    getWalletState,
-    mercuryoFixedWorstQuote,
-} from '@suite-native/trading-fixtures';
+import { act, userEvent } from '@suite-native/test-utils-store';
+import { exchangeQuotes, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 import { type ExchangeFormType } from '@suite-native/trading-types';
 
+import {
+    type PreloadedStatePartial,
+    type TradingTestPreloadedState,
+    renderHookWithTradingProvider,
+    renderWithTradingProvider,
+} from '../../../__tests__/tradingTestUtils';
 import { useExchangeForm } from '../../../hooks/exchange/useExchangeForm';
 import { ExchangeRateAndProviderPicker } from '../ExchangeRateAndProviderPicker';
 
@@ -32,15 +28,28 @@ jest.mock('@suite-native/services', () => {
 
 describe('ExchangeRateAndProviderPicker', () => {
     let exchangeForm: ExchangeFormType;
-    let preloadedState: PreloadedState;
+    let unmount: (() => void) | undefined;
 
-    const renderExchangeForm = () => renderHookWithStoreProvider(() => useExchangeForm());
+    const baseOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {
+        featureFlags: {
+            ...featureFlagsInitialState,
+            [FeatureFlag.IsTradingResidenceCheckEnabled]: false,
+        },
+    };
 
-    const renderExchangeRateAndProviderPicker = () =>
-        renderWithStoreProvider(<ExchangeRateAndProviderPicker />, {
-            preloadedState,
+    const renderExchangeRateAndProviderPicker = (
+        extraOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
+    ) => {
+        const result = renderWithTradingProvider(<ExchangeRateAndProviderPicker />, {
+            tradeType: 'exchange',
+            overrides: { ...baseOverrides, ...extraOverrides },
             wrapper: ({ children }) => <Form form={exchangeForm}>{children}</Form>,
         });
+
+        ({ unmount } = result);
+
+        return result;
+    };
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -49,14 +58,18 @@ describe('ExchangeRateAndProviderPicker', () => {
             report: reportMock,
         });
 
-        const { result } = renderExchangeForm();
+        const { result } = renderHookWithTradingProvider(() => useExchangeForm(), {
+            tradeType: 'exchange',
+            overrides: baseOverrides,
+        });
         exchangeForm = result.current;
-
-        preloadedState = { wallet: getWalletState({ tradeType: 'exchange' }) };
     });
 
     afterEach(() => {
-        screen.unmount();
+        if (unmount) {
+            unmount();
+            unmount = undefined;
+        }
     });
 
     it('should render nothing when no quote is selected and quotes are not loading', () => {
@@ -66,9 +79,9 @@ describe('ExchangeRateAndProviderPicker', () => {
     });
 
     it('should render provider picker when no quote is selected and quotes are loading', () => {
-        preloadedState!.wallet!.trading!.exchange!.isLoading = true;
-
-        const { getByText } = renderExchangeRateAndProviderPicker();
+        const { getByText } = renderExchangeRateAndProviderPicker({
+            wallet: { trading: { exchange: { isLoading: true } } },
+        });
 
         expect(getByText('Provider')).toBeOnTheScreen();
     });
@@ -85,8 +98,11 @@ describe('ExchangeRateAndProviderPicker', () => {
     });
 
     describe('analytics', () => {
+        const withQuotes: PreloadedStatePartial<TradingTestPreloadedState> = {
+            wallet: { trading: { exchange: { quotes: exchangeQuotes } } },
+        };
+
         beforeEach(() => {
-            preloadedState!.wallet!.trading!.exchange!.quotes = exchangeQuotes;
             act(() => {
                 exchangeForm.setValue('quote', mercuryoFixedWorstQuote);
             });
@@ -94,7 +110,7 @@ describe('ExchangeRateAndProviderPicker', () => {
         });
 
         it('should fire analytics event on provider select', async () => {
-            const { getByText } = renderExchangeRateAndProviderPicker();
+            const { getByText } = renderExchangeRateAndProviderPicker(withQuotes);
 
             await userEvent.press(getByText('Provider'));
             await userEvent.press(getByText('Cexdirect'));
@@ -116,7 +132,7 @@ describe('ExchangeRateAndProviderPicker', () => {
         });
 
         it('should not fire analytics event when same provider is selected', async () => {
-            const { getByText, getAllByText } = renderExchangeRateAndProviderPicker();
+            const { getByText, getAllByText } = renderExchangeRateAndProviderPicker(withQuotes);
 
             await userEvent.press(getByText('Provider'));
             await userEvent.press(getAllByText('Mercuryo')[1]);

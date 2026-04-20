@@ -1,20 +1,21 @@
 import { Linking } from 'react-native';
 
-import {
-    type PreloadedState,
-    renderWithStoreProvider,
-    userEvent,
-} from '@suite-native/test-utils-store';
+import { userEvent } from '@suite-native/test-utils-store';
 import { exchangeCexdirect } from '@suite-native/trading-fixtures';
 import { TREZOR_SUITE_TOS_URL, TREZOR_TRADING_LEARN_MORE_URL } from '@trezor/urls';
 
+import {
+    type PreloadedStatePartial,
+    type TradingTestPreloadedState,
+    renderWithTradingProvider,
+} from '../../../__tests__/tradingTestUtils';
 import { Footer } from '../Footer';
 
 describe('Footer', () => {
     const mockOpenLink = jest.spyOn(Linking, 'openURL');
 
-    const renderFooter = (preloadedState: PreloadedState) =>
-        renderWithStoreProvider(<Footer />, { preloadedState });
+    const renderFooter = (overrides: PreloadedStatePartial<TradingTestPreloadedState> = {}) =>
+        renderWithTradingProvider(<Footer />, { overrides });
 
     beforeEach(() => {
         mockOpenLink.mockClear();

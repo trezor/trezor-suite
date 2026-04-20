@@ -1,8 +1,19 @@
+import { combineReducers } from '@reduxjs/toolkit';
+
 import { useCountryFilteredData } from '@suite-common/trading';
+import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { Form, useForm } from '@suite-native/forms';
+import { localeReducer } from '@suite-native/intl';
 import { useAnalytics } from '@suite-native/services';
 import { renderHookWithBasicProvider, renderWithBasicProvider } from '@suite-native/test-utils';
-import { renderHookWithStoreProvider, screen, userEvent } from '@suite-native/test-utils-store';
+import {
+    createLightStore,
+    createStaticReducer,
+    renderHookWithStoreProvider,
+    screen,
+    userEvent,
+} from '@suite-native/test-utils-store';
+import { residenceReducer } from '@suite-native/trading-state';
 
 import { useLocationForm } from '../../../hooks/useLocationForm';
 import { type TradingLocationFormValues } from '../../../types/tradingLocationForm';
@@ -31,6 +42,19 @@ jest.mock('@suite-common/trading', () => ({
 }));
 
 describe('CountryOfResidencePicker', () => {
+    const createTradingResidenceStore = () =>
+        createLightStore({
+            reducer: {
+                locale: localeReducer,
+                wallet: combineReducers({
+                    settings: createStaticReducer(initialWalletSettingsState),
+                    trading: combineReducers({
+                        residence: residenceReducer,
+                    }),
+                }),
+            },
+        });
+
     beforeEach(() => {
         jest.clearAllMocks();
 
@@ -55,7 +79,9 @@ describe('CountryOfResidencePicker', () => {
     });
 
     const renderCountryOfResidencePicker = (props: Partial<CountryOfResidencePickerProps> = {}) => {
-        const { result } = renderHookWithStoreProvider(() => useLocationForm());
+        const { result } = renderHookWithStoreProvider(() => useLocationForm(), {
+            store: createTradingResidenceStore(),
+        });
 
         return renderWithBasicProvider(
             <CountryOfResidencePicker testID="TEST_ID" context="settings" {...props} />,

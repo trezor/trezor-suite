@@ -2,20 +2,20 @@ import { events } from '@suite-native/analytics';
 import { Form } from '@suite-native/forms';
 import { useAnalytics } from '@suite-native/services';
 import {
-    type PreloadedState,
     act,
     fireEvent,
     renderHookWithStoreProvider,
     renderWithStoreProvider,
     screen,
 } from '@suite-native/test-utils-store';
-import {
-    banxaCreditCardSellQuote,
-    getWalletState,
-    sellQuotes,
-} from '@suite-native/trading-fixtures';
+import { banxaCreditCardSellQuote, sellQuotes } from '@suite-native/trading-fixtures';
 import { type SellFormType } from '@suite-native/trading-types';
 
+import {
+    type PreloadedStatePartial,
+    type TradingTestPreloadedState,
+    createTradingPreloadedState,
+} from '../../../../__tests__/tradingTestUtils';
 import { useSellForm } from '../../../../hooks/sell/useSellForm';
 import { SellProviderPicker } from '../SellProviderPicker';
 
@@ -32,13 +32,12 @@ jest.mock('@suite-native/services', () => {
 
 describe('SellProviderPicker', () => {
     let form: SellFormType;
-    let preloadedState: PreloadedState;
 
-    const renderSellForm = () => renderHookWithStoreProvider(() => useSellForm());
-
-    const renderSellProviderPicker = () =>
+    const renderSellProviderPicker = (
+        overrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
+    ) =>
         renderWithStoreProvider(<SellProviderPicker />, {
-            preloadedState,
+            preloadedState: createTradingPreloadedState({ tradeType: 'sell', overrides }),
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 
@@ -49,9 +48,9 @@ describe('SellProviderPicker', () => {
             report: reportMock,
         });
 
-        preloadedState = { wallet: getWalletState({ tradeType: 'sell' }) };
-
-        const { result } = renderSellForm();
+        const { result } = renderHookWithStoreProvider(() => useSellForm(), {
+            preloadedState: createTradingPreloadedState({ tradeType: 'sell' }),
+        });
         form = result.current;
     });
 
@@ -66,44 +65,48 @@ describe('SellProviderPicker', () => {
     });
 
     it('should render loading skeleton when no quotes are loaded and new quotes are loading', () => {
-        preloadedState!.wallet!.trading!.sell!.isLoading = true;
-
-        const { getByLabelText } = renderSellProviderPicker();
+        const { getByLabelText } = renderSellProviderPicker({
+            wallet: { trading: { sell: { isLoading: true } } },
+        });
 
         expect(getByLabelText('Fetching offers...')).toBeOnTheScreen();
     });
 
     describe('with quotes loaded', () => {
+        const withQuotes: PreloadedStatePartial<TradingTestPreloadedState> = {
+            wallet: { trading: { sell: { quotes: sellQuotes } } },
+        };
+
         beforeEach(() => {
-            preloadedState!.wallet!.trading!.sell!.quotes = sellQuotes;
             act(() => {
                 form.setValue('quote', banxaCreditCardSellQuote);
             });
         });
 
         it('should render loading skeleton when quotes are loaded and new quotes are loading', () => {
-            preloadedState!.wallet!.trading!.sell!.isLoading = true;
-
-            const { getByLabelText } = renderSellProviderPicker();
+            const { getByLabelText } = renderSellProviderPicker({
+                wallet: { trading: { sell: { quotes: sellQuotes, isLoading: true } } },
+            });
 
             expect(getByLabelText('Fetching offers...')).toBeOnTheScreen();
         });
 
         it('should render selected payment provider', () => {
-            const { getByLabelText } = renderSellProviderPicker();
+            const { getByLabelText } = renderSellProviderPicker(withQuotes);
 
             expect(getByLabelText('Selected provider')).toHaveTextContent('Banxa');
         });
 
         it('should display kyc warning when not loading', () => {
-            const { getByText } = renderSellProviderPicker();
+            const { getByText } = renderSellProviderPicker(withQuotes);
 
             expect(getByText('This provider requires to know your identity.')).toBeOnTheScreen();
         });
 
         it('should not display kyc warning when loading', () => {
-            preloadedState!.wallet!.trading!.sell!.isLoading = true;
-            const { queryByText } = renderSellProviderPicker();
+            const { queryByText } = renderSellProviderPicker({
+                wallet: { trading: { sell: { quotes: sellQuotes, isLoading: true } } },
+            });
 
             expect(
                 queryByText('This provider requires to know your identity.'),
@@ -111,7 +114,7 @@ describe('SellProviderPicker', () => {
         });
 
         it('should allow to select provider', () => {
-            const { getByText, getByLabelText } = renderSellProviderPicker();
+            const { getByText, getByLabelText } = renderSellProviderPicker(withQuotes);
 
             fireEvent.press(getByText('Provider'));
             fireEvent.press(getByText('MoonPay'));
@@ -125,7 +128,7 @@ describe('SellProviderPicker', () => {
             });
 
             it('should fire analytics event on provider select', () => {
-                const { getByText } = renderSellProviderPicker();
+                const { getByText } = renderSellProviderPicker(withQuotes);
 
                 fireEvent.press(getByText('Provider'));
                 fireEvent.press(getByText('MoonPay'));
@@ -147,7 +150,7 @@ describe('SellProviderPicker', () => {
             });
 
             it('should not fire analytics event when same provider is selected', () => {
-                const { getAllByText } = renderSellProviderPicker();
+                const { getAllByText } = renderSellProviderPicker(withQuotes);
 
                 fireEvent.press(getAllByText('Banxa')[0]);
                 fireEvent.press(getAllByText('Banxa')[1]);
@@ -162,8 +165,9 @@ describe('SellProviderPicker', () => {
             });
 
             it('should not call analytics when user tries to open sheet while quotes are loading', () => {
-                preloadedState!.wallet!.trading!.sell!.isLoading = true;
-                const { getByText } = renderSellProviderPicker();
+                const { getByText } = renderSellProviderPicker({
+                    wallet: { trading: { sell: { quotes: sellQuotes, isLoading: true } } },
+                });
 
                 fireEvent.press(getByText('Provider'));
 

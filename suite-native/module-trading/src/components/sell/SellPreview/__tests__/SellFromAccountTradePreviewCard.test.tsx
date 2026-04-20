@@ -1,11 +1,7 @@
 import { type AccountKey } from '@suite-common/wallet-types';
-import { type PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils-store';
-import {
-    banxaCreditCardSellQuote,
-    eth1NormalAccount,
-    getWalletState,
-} from '@suite-native/trading-fixtures';
+import { banxaCreditCardSellQuote, eth1NormalAccount } from '@suite-native/trading-fixtures';
 
+import { renderWithTradingProvider } from '../../../../__tests__/tradingTestUtils';
 import {
     SellFromAccountTradePreviewCard,
     type SellFromAccountTradePreviewCardProps,
@@ -15,16 +11,15 @@ describe('SellFromAccountTradePreviewCard', () => {
     const renderSellFromAccountTradePreviewCard = (
         props: Partial<SellFromAccountTradePreviewCardProps> = {},
         tradingAccountKey = eth1NormalAccount.key,
-    ) => {
-        const preloadedState: PreloadedState = {
-            wallet: getWalletState({ tradeType: 'sell' }),
-        };
-        preloadedState.wallet!.trading!.sell!.tradingAccountKey = tradingAccountKey;
-
-        return renderWithStoreProvider(<SellFromAccountTradePreviewCard {...props} />, {
-            preloadedState,
+    ) =>
+        renderWithTradingProvider(<SellFromAccountTradePreviewCard {...props} />, {
+            tradeType: 'sell',
+            overrides: {
+                wallet: {
+                    trading: { sell: { tradingAccountKey } },
+                },
+            },
         });
-    };
 
     it('should render nothing when there is no quote', () => {
         const { toJSON } = renderSellFromAccountTradePreviewCard({});

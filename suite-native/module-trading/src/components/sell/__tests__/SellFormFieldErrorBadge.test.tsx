@@ -1,14 +1,15 @@
 import { Form } from '@suite-native/forms';
-import {
-    type PreloadedState,
-    act,
-    renderHookWithStoreProvider,
-    renderWithStoreProvider,
-} from '@suite-native/test-utils-store';
-import { banxaCreditCardSellQuote, btcAsset, getWalletState } from '@suite-native/trading-fixtures';
+import { act } from '@suite-native/test-utils-store';
+import { banxaCreditCardSellQuote, btcAsset } from '@suite-native/trading-fixtures';
 import { type SellFormType } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
+import {
+    type PreloadedStatePartial,
+    type TradingTestPreloadedState,
+    renderHookWithTradingProvider,
+    renderWithTradingProvider,
+} from '../../../__tests__/tradingTestUtils';
 import { useSellForm } from '../../../hooks/sell/useSellForm';
 import {
     SellFormFieldErrorBadge,
@@ -18,28 +19,30 @@ import {
 describe('SellFormFieldErrorBadge', () => {
     let tradingForm: SellFormType;
 
-    const renderUseTradingSellForm = (preloadedState: PreloadedState = {}) => {
-        const { result } = renderHookWithStoreProvider(() => useSellForm(), {
-            preloadedState,
+    const renderUseTradingSellForm = () => {
+        const { result } = renderHookWithTradingProvider(() => useSellForm(), {
+            tradeType: 'sell',
         });
 
         return result.current;
     };
 
-    const getPreloadedState = (bitcoinAmountUnit = PROTO.AmountUnit.BITCOIN): PreloadedState => ({
-        wallet: getWalletState({ tradeType: 'sell', bitcoinAmountUnit }),
+    const getOverrides = (
+        bitcoinAmountUnit = PROTO.AmountUnit.BITCOIN,
+    ): PreloadedStatePartial<TradingTestPreloadedState> => ({
+        wallet: { settings: { bitcoinAmountUnit } },
     });
 
     const renderSellFormFieldErrorBadge = (
         props: SellFormFieldErrorBadgeProps,
         form: SellFormType,
-        preloadedState: PreloadedState = getPreloadedState(),
+        overrides: PreloadedStatePartial<TradingTestPreloadedState> = getOverrides(),
     ) =>
-        renderWithStoreProvider(
+        renderWithTradingProvider(
             <Form form={form}>
                 <SellFormFieldErrorBadge {...props} />
             </Form>,
-            { preloadedState },
+            { tradeType: 'sell', overrides },
         );
 
     beforeEach(() => {
@@ -150,15 +153,14 @@ describe('SellFormFieldErrorBadge', () => {
                     });
                     tradingForm.setValue('cryptoStringAmount', '1000');
                 });
-                const preloadedState = {
-                    wallet: getWalletState({ tradeType: 'sell' }),
+                const overrides = {
+                    wallet: { trading: { sell: { isLoading: true } } },
                 };
-                preloadedState!.wallet!.trading!.sell!.isLoading = true;
 
                 const { getByText, queryByText } = renderSellFormFieldErrorBadge(
                     { fieldName: 'cryptoStringAmount' },
                     tradingForm,
-                    preloadedState,
+                    overrides,
                 );
 
                 expect(queryByText('VALIDATION_ERROR')).toBeNull();
@@ -173,7 +175,7 @@ describe('SellFormFieldErrorBadge', () => {
                 const { getByText } = renderSellFormFieldErrorBadge(
                     { fieldName: 'cryptoStringAmount' },
                     tradingForm,
-                    getPreloadedState(PROTO.AmountUnit.SATOSHI),
+                    getOverrides(PROTO.AmountUnit.SATOSHI),
                 );
 
                 expect(getByText('$12.35')).toBeOnTheScreen();
@@ -244,13 +246,14 @@ describe('SellFormFieldErrorBadge', () => {
             act(() => {
                 tradingForm.setValue('cryptoStringAmount', '0.0006');
             });
-            const preloadedState = getPreloadedState();
-            preloadedState!.wallet!.trading!.sell!.isLoading = true;
+            const overrides = {
+                wallet: { trading: { sell: { isLoading: true } } },
+            };
 
             const { getByText } = renderSellFormFieldErrorBadge(
                 { fieldName: 'cryptoStringAmount' },
                 tradingForm,
-                preloadedState,
+                overrides,
             );
 
             expect(getByText('$0.00')).toBeOnTheScreen();
@@ -335,7 +338,7 @@ describe('SellFormFieldErrorBadge', () => {
             const { getByText } = renderSellFormFieldErrorBadge(
                 { fieldName: 'cryptoStringAmount' },
                 tradingForm,
-                getPreloadedState(PROTO.AmountUnit.SATOSHI),
+                getOverrides(PROTO.AmountUnit.SATOSHI),
             );
 
             expect(getByText('$0.00')).toBeOnTheScreen();
@@ -352,7 +355,7 @@ describe('SellFormFieldErrorBadge', () => {
             const { getByText } = renderSellFormFieldErrorBadge(
                 { fieldName: 'cryptoStringAmount' },
                 tradingForm,
-                getPreloadedState(PROTO.AmountUnit.SATOSHI),
+                getOverrides(PROTO.AmountUnit.SATOSHI),
             );
 
             expect(getByText('Provider offer: 2,330,000 sat')).toBeOnTheScreen();

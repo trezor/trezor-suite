@@ -19,6 +19,12 @@
         {
             "path": "../../packages/styles-native"
         },
+        {
+            "path": "../../suite-common/message-system"
+        },
+        {
+            "path": "../../suite-common/wallet-core"
+        },
         { "path": "../test-utils" },
         { "path": "../test-utils-store" }
     ]

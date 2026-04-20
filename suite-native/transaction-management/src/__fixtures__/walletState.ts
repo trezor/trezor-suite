@@ -1,11 +1,8 @@
 import { type FiatRatesState } from '@suite-common/wallet-core';
-import {
-    type Account,
-    type GeneralPrecomposedLevels,
-    type RatesByKey,
-    type WalletSettings,
-} from '@suite-common/wallet-types';
+import { type Account, type RatesByKey, type WalletSettings } from '@suite-common/wallet-types';
 import { PROTO } from '@trezor/connect';
+
+import { createFeeLevels } from './feeLevels';
 
 export const getEthAccount = () =>
     ({
@@ -234,37 +231,27 @@ export const getWalletState = () => ({
     } as FiatRatesState,
     accounts: [getEthAccount(), getBtcAccount(), getSolAccount()] as Account[],
     send: {
-        feeLevels: {
+        feeLevels: createFeeLevels({
             normal: {
-                type: 'final',
-                totalSpent: '1000433210428000',
                 fee: '433210428000',
                 feePerByte: '1',
                 feeLimit: '11000',
-                bytes: 250,
-                inputs: [],
                 estimatedFeeLimit: '11000',
-            } as unknown as GeneralPrecomposedLevels,
+            },
             high: {
-                type: 'final',
-                totalSpent: '1000433210428000',
                 fee: '733210428000',
                 feePerByte: '4',
                 feeLimit: '21000',
-                bytes: 250,
-                inputs: [],
                 estimatedFeeLimit: '21000',
-            } as unknown as GeneralPrecomposedLevels,
+            },
             custom: {
-                type: 'final',
                 totalSpent: '1000426691398000',
                 fee: '426691398000',
                 feePerByte: '2',
                 feeLimit: '31000',
-                bytes: 250,
-                inputs: [],
                 estimatedFeeLimit: '31000',
-            } as unknown as GeneralPrecomposedLevels,
-        },
+            },
+        }),
     },
+    fees: {},
 });

@@ -1,14 +1,7 @@
 import { events } from '@suite-native/analytics';
 import { Form } from '@suite-native/forms';
 import { useAnalytics } from '@suite-native/services';
-import {
-    type PreloadedState,
-    act,
-    fireEvent,
-    renderHookWithStoreProvider,
-    renderWithStoreProvider,
-    screen,
-} from '@suite-native/test-utils-store';
+import { act, fireEvent, screen } from '@suite-native/test-utils-store';
 import {
     buyCexdirect,
     buyInvity,
@@ -17,7 +10,14 @@ import {
     getInitializedTradingStateWithQuotes,
 } from '@suite-native/trading-fixtures';
 import { type BuyFormType } from '@suite-native/trading-types';
+import { mergeDeepObject } from '@trezor/utils';
 
+import {
+    type PreloadedStatePartial,
+    type TradingTestPreloadedState,
+    renderHookWithTradingProvider,
+    renderWithTradingProvider,
+} from '../../../__tests__/tradingTestUtils';
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';
 import { BuyProviderPicker } from '../BuyProviderPicker';
 
@@ -35,21 +35,14 @@ jest.mock('@suite-native/services', () => {
 describe('BuyProviderPicker', () => {
     let form: BuyFormType;
 
-    const renderUseTradingBuyForm = (preloadedState: PreloadedState = {}) => {
-        const { result } = renderHookWithStoreProvider(() => useBuyForm(), {
-            preloadedState,
-        });
-        form = result.current;
-
-        return form;
-    };
-
-    const renderTradingProviderPicker = (preloadedState: PreloadedState = {}) =>
-        renderWithStoreProvider(
+    const renderTradingProviderPicker = (
+        overrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
+    ) =>
+        renderWithTradingProvider(
             <Form form={form}>
                 <BuyProviderPicker />
             </Form>,
-            { preloadedState },
+            { overrides },
         );
 
     afterEach(() => {
@@ -62,43 +55,54 @@ describe('BuyProviderPicker', () => {
         (useAnalytics as jest.Mock).mockReturnValue({
             report: reportMock,
         });
+
+        const { result } = renderHookWithTradingProvider(() => useBuyForm(), {});
+        form = result.current;
     });
 
     it('should display nothing when in default state', () => {
-        renderUseTradingBuyForm();
         const { toJSON } = renderTradingProviderPicker();
 
         expect(toJSON()).toBeNull();
     });
 
     it('should display loader while quotes are fetched', () => {
-        const preloadedState: PreloadedState = {
+        const { getByLabelText } = renderTradingProviderPicker({
             wallet: { trading: { buy: { isLoading: true, quotes: [] } } },
-        };
-        renderUseTradingBuyForm();
-        const { getByLabelText } = renderTradingProviderPicker(preloadedState);
+        });
 
         expect(getByLabelText('Fetching offers...')).toBeOnTheScreen();
     });
 
     describe('with quotes loaded', () => {
-        let preloadedState: PreloadedState;
+        const initializedTrading = getInitializedTradingStateWithQuotes();
+        const withQuotes: PreloadedStatePartial<TradingTestPreloadedState> = {
+            wallet: {
+                trading: {
+                    ...initializedTrading,
+                    buy: {
+                        ...initializedTrading.buy,
+                        buyInfo: {
+                            ...initializedTrading.buy.buyInfo,
+                            providerInfos: {
+                                invity: buyInvity,
+                                mercuryo: buyMercuryo,
+                                cexdirect: buyCexdirect,
+                            },
+                        },
+                    },
+                },
+            },
+        };
 
         beforeEach(() => {
             act(() => {
                 form.setValue('quote', cexdirectCreditCardBuyQuote);
             });
-
-            preloadedState = { wallet: { trading: getInitializedTradingStateWithQuotes() } };
-            preloadedState.wallet!.trading!.buy!.buyInfo!.providerInfos = {
-                invity: buyInvity,
-                mercuryo: buyMercuryo,
-                cexdirect: buyCexdirect,
-            };
         });
 
         it('should allow to select provider', () => {
-            const { getByText, getByLabelText } = renderTradingProviderPicker(preloadedState);
+            const { getByText, getByLabelText } = renderTradingProviderPicker(withQuotes);
 
             fireEvent.press(getByText('Provider'));
             fireEvent.press(getByText('Mercuryo'));
@@ -107,15 +111,21 @@ describe('BuyProviderPicker', () => {
         });
 
         it('should display loader while quotes are re-fetched', () => {
-            preloadedState!.wallet!.trading!.buy!.isLoading = true;
-            const { getByLabelText } = renderTradingProviderPicker(preloadedState);
+            const { getByLabelText } = renderTradingProviderPicker(
+                mergeDeepObject(withQuotes, {
+                    wallet: { trading: { buy: { isLoading: true } } },
+                }),
+            );
 
             expect(getByLabelText('Fetching offers...')).toBeOnTheScreen();
         });
 
         it('should display sheet even while quotes are fetched', () => {
-            preloadedState!.wallet!.trading!.buy!.isLoading = true;
-            const { getByText } = renderTradingProviderPicker(preloadedState);
+            const { getByText } = renderTradingProviderPicker(
+                mergeDeepObject(withQuotes, {
+                    wallet: { trading: { buy: { isLoading: true } } },
+                }),
+            );
 
             fireEvent.press(getByText('Provider'));
 
@@ -123,14 +133,17 @@ describe('BuyProviderPicker', () => {
         });
 
         it('should display kyc warning when not loading', () => {
-            const { getByText } = renderTradingProviderPicker(preloadedState);
+            const { getByText } = renderTradingProviderPicker(withQuotes);
 
             expect(getByText('This provider requires to know your identity.')).toBeOnTheScreen();
         });
 
         it('should not display kyc warning when loading', () => {
-            preloadedState!.wallet!.trading!.buy!.isLoading = true;
-            const { queryByText } = renderTradingProviderPicker(preloadedState);
+            const { queryByText } = renderTradingProviderPicker(
+                mergeDeepObject(withQuotes, {
+                    wallet: { trading: { buy: { isLoading: true } } },
+                }),
+            );
             expect(
                 queryByText('This provider requires to know your identity.'),
             ).not.toBeOnTheScreen();
@@ -142,7 +155,7 @@ describe('BuyProviderPicker', () => {
             });
 
             it('should fire analytics event on provider select', () => {
-                const { getByText } = renderTradingProviderPicker(preloadedState);
+                const { getByText } = renderTradingProviderPicker(withQuotes);
 
                 fireEvent.press(getByText('Provider'));
                 fireEvent.press(getByText('Mercuryo'));
@@ -164,7 +177,7 @@ describe('BuyProviderPicker', () => {
             });
 
             it('should fire analytics event on provider change', () => {
-                const { getByText } = renderTradingProviderPicker(preloadedState);
+                const { getByText } = renderTradingProviderPicker(withQuotes);
 
                 fireEvent.press(getByText('Provider'));
                 fireEvent.press(getByText('Mercuryo'));
@@ -173,7 +186,7 @@ describe('BuyProviderPicker', () => {
             });
 
             it('should not fire analytics event when same provider is selected', () => {
-                const { getByText, getAllByText } = renderTradingProviderPicker(preloadedState);
+                const { getByText, getAllByText } = renderTradingProviderPicker(withQuotes);
 
                 fireEvent.press(getByText('Provider'));
                 fireEvent.press(getAllByText('Cexdirect')[1]);
@@ -188,8 +201,11 @@ describe('BuyProviderPicker', () => {
             });
 
             it('should not call analytics when user tries to open sheet while quotes are loading', () => {
-                preloadedState!.wallet!.trading!.buy!.isLoading = true;
-                const { getByText } = renderTradingProviderPicker(preloadedState);
+                const { getByText } = renderTradingProviderPicker(
+                    mergeDeepObject(withQuotes, {
+                        wallet: { trading: { buy: { isLoading: true } } },
+                    }),
+                );
 
                 fireEvent.press(getByText('Provider'));
 

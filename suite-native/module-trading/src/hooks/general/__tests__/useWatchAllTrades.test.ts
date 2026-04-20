@@ -1,20 +1,18 @@
-import {
-    type PreloadedState,
-    type TestStore,
-    initStore,
-    renderHookWithStoreProvider,
-} from '@suite-native/test-utils-store';
+import { type TestStore } from '@suite-native/test-utils-store';
 import {
     MOCK_ACCOUNT_DEVICE_SESSION_ID,
     btc1NormalAccount,
     eth1NormalAccount,
     getBuyTrade,
     getExchangeTrade,
-    getInitializedTradingState,
     getSellTrade,
     sol1normalAccount,
 } from '@suite-native/trading-fixtures';
 
+import {
+    createTradingLightStore,
+    renderHookWithTradingProvider,
+} from '../../../__tests__/tradingTestUtils';
 import { useWatchAllTrades } from '../useWatchAllTrades';
 
 // Mock the useAllTradesReloadTimer hook
@@ -51,52 +49,48 @@ describe('useWatchAllTrades', () => {
         });
     });
 
-    const getInitializedStore = ({ trades = [] }: { trades?: any[] } = {}) => {
-        const preloadedState: PreloadedState = {
-            wallet: {
-                trading: {
-                    ...getInitializedTradingState(),
-                    trades,
+    const getInitializedStore = ({ trades = [] }: { trades?: any[] } = {}) =>
+        createTradingLightStore({
+            overrides: {
+                wallet: {
+                    trading: { trades },
+                    accounts: [
+                        {
+                            key: btc1NormalAccount.key,
+                            symbol: 'btc',
+                            deviceState: MOCK_ACCOUNT_DEVICE_SESSION_ID,
+                            descriptor: 'btc-descriptor',
+                            addresses: { unused: [{ address: 'btc-address' }] },
+                            visible: true,
+                        },
+                        {
+                            key: eth1NormalAccount.key,
+                            symbol: 'eth',
+                            deviceState: MOCK_ACCOUNT_DEVICE_SESSION_ID,
+                            descriptor: 'eth-descriptor',
+                            addresses: { unused: [{ address: 'eth-address' }] },
+                            visible: true,
+                        },
+                        {
+                            key: sol1normalAccount.key,
+                            symbol: 'sol',
+                            deviceState: MOCK_ACCOUNT_DEVICE_SESSION_ID,
+                            descriptor: 'sol-descriptor',
+                            addresses: { unused: [{ address: 'sol-address' }] },
+                            visible: true,
+                        },
+                    ] as any,
                 },
-                accounts: [
-                    {
-                        key: btc1NormalAccount.key,
-                        symbol: 'btc',
-                        deviceState: MOCK_ACCOUNT_DEVICE_SESSION_ID,
-                        descriptor: 'btc-descriptor',
-                        addresses: { unused: [{ address: 'btc-address' }] },
-                        visible: true,
+                device: {
+                    selectedDevice: {
+                        state: { staticSessionId: MOCK_ACCOUNT_DEVICE_SESSION_ID },
                     },
-                    {
-                        key: eth1NormalAccount.key,
-                        symbol: 'eth',
-                        deviceState: MOCK_ACCOUNT_DEVICE_SESSION_ID,
-                        descriptor: 'eth-descriptor',
-                        addresses: { unused: [{ address: 'eth-address' }] },
-                        visible: true,
-                    },
-                    {
-                        key: sol1normalAccount.key,
-                        symbol: 'sol',
-                        deviceState: MOCK_ACCOUNT_DEVICE_SESSION_ID,
-                        descriptor: 'sol-descriptor',
-                        addresses: { unused: [{ address: 'sol-address' }] },
-                        visible: true,
-                    },
-                ],
-            },
-            device: {
-                selectedDevice: {
-                    state: { staticSessionId: MOCK_ACCOUNT_DEVICE_SESSION_ID },
                 },
             },
-        };
-
-        return initStore(preloadedState).store;
-    };
+        });
 
     const renderUseWatchAllTrades = (store: TestStore) =>
-        renderHookWithStoreProvider(() => useWatchAllTrades(), { store });
+        renderHookWithTradingProvider(() => useWatchAllTrades(), { store });
 
     it('should return empty arrays when no trades', () => {
         const store = getInitializedStore();

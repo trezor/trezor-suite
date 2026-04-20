@@ -7,13 +7,7 @@ import {
 } from '@suite-common/trading';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { events } from '@suite-native/analytics';
-import {
-    type PreloadedState,
-    type TestStore,
-    act,
-    initStore,
-    renderHookWithStoreProvider,
-} from '@suite-native/test-utils-store';
+import { type TestStore, act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import {
     btcAsset,
     ethAsset,
@@ -26,6 +20,7 @@ import {
 import { type ExchangeFormValues } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
+import { createTradingLightStore } from '../../../__tests__/tradingTestUtils';
 import { useExchangeForm } from '../useExchangeForm';
 import { useExchangeQuotes } from '../useExchangeQuotes';
 
@@ -70,19 +65,19 @@ jest.mock('@suite-common/trading', () => ({
 }));
 
 describe('useExchangeQuotes', () => {
-    const getInitializedStore = (bitcoinAmountUnit = PROTO.AmountUnit.BITCOIN): TestStore => {
-        const preloadedState: PreloadedState = {
-            wallet: {
-                trading: getInitializedTradingState(),
-                accounts: [getBtcAccount(), getEthAccount()],
-                settings: {
-                    bitcoinAmountUnit,
+    const getInitializedStore = (bitcoinAmountUnit = PROTO.AmountUnit.BITCOIN): TestStore =>
+        createTradingLightStore({
+            tradeType: 'exchange',
+            overrides: {
+                wallet: {
+                    trading: getInitializedTradingState(),
+                    accounts: [getBtcAccount(), getEthAccount()],
+                    settings: {
+                        bitcoinAmountUnit,
+                    },
                 },
             },
-        };
-
-        return initStore(preloadedState).store;
-    };
+        });
 
     const renderUseExchangeQuotes = (store: TestStore) =>
         renderHookWithStoreProvider(

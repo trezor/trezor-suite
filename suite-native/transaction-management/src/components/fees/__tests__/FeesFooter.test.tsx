@@ -4,7 +4,7 @@ import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { Form, useForm } from '@suite-native/forms';
 import {
     type TestStore,
-    initStore,
+    createStoreFromPreloadedState,
     renderWithStoreProvider,
     userEvent,
 } from '@suite-native/test-utils-store';
@@ -91,7 +91,7 @@ describe('FeesFooter', () => {
     };
 
     beforeEach(() => {
-        store = initStore(getPreloadedState()).store;
+        store = createStoreFromPreloadedState(getPreloadedState());
 
         // Default mock implementations
         mockSelectAreFeesLoading.mockReturnValue(false);

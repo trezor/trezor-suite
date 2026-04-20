@@ -1,19 +1,20 @@
 import { type TradingAmountLimitProps } from '@suite-common/trading';
-import {
-    type PreloadedState,
-    act,
-    renderHookWithStoreProvider,
-} from '@suite-native/test-utils-store';
+import { act } from '@suite-native/test-utils-store';
 
+import {
+    type PreloadedStatePartial,
+    type TradingTestPreloadedState,
+    renderHookWithTradingProvider,
+} from '../../../../__tests__/tradingTestUtils';
 import { useContextForTradingForm } from '../useContextForTradingForm';
 
 describe('useContextForTradingForm', () => {
     const renderUseContextForTradingForm = (
         limits: TradingAmountLimitProps | undefined,
-        preloadedState: PreloadedState = {},
+        overrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
     ) =>
-        renderHookWithStoreProvider(() => useContextForTradingForm(limits), {
-            preloadedState,
+        renderHookWithTradingProvider(() => useContextForTradingForm(limits), {
+            overrides,
         });
 
     it('should return base context without limits and balance on initial render', () => {

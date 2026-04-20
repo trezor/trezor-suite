@@ -1,29 +1,25 @@
 import { type RouteProp } from '@react-navigation/native';
 import type { ExchangeTrade } from 'invity-api';
 
-import {
-    type AccountKey,
-    type GeneralPrecomposedTransactionFinal,
-} from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { events } from '@suite-native/analytics';
 import { getTranslation } from '@suite-native/intl';
 import { type TradingStackParamList, type TradingStackRoutes } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
 import {
-    type PreloadedState,
     type TestStore,
-    initStore,
     renderWithStoreProvider,
     userEvent,
     waitFor,
 } from '@suite-native/test-utils-store';
 import {
+    createPrecomposedTxFinal,
     exchangeQuotes,
     getBtcAccount,
-    getWalletState,
     mercuryoFixedWorstQuote,
 } from '@suite-native/trading-fixtures';
 
+import { createTradingLightStore } from '../../__tests__/tradingTestUtils';
 import {
     TradingExchangePreviewScreen,
     type TradingExchangePreviewScreenProps,
@@ -93,29 +89,31 @@ jest.mock('@suite-native/alerts', () => ({
 const mockPopToTop = jest.fn();
 const mockNavigate = jest.fn();
 
-const createPreloadedState = (quote?: ExchangeTrade): PreloadedState => {
-    const preloadedState = { wallet: getWalletState({ tradeType: 'exchange' }) };
-    preloadedState.wallet.trading.exchange = {
-        ...preloadedState.wallet.trading.exchange,
-        quotes: exchangeQuotes,
-        tradingAccountKey: 'eth-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
-        receiveAccountKey: 'btc-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
-        receiveAddress: getBtcAccount().addresses?.used[0].address,
-        selectedQuote: quote ?? mercuryoFixedWorstQuote,
-    };
-    preloadedState.wallet.send = {
-        ...preloadedState.wallet.send,
-        precomposedTx: {
-            type: 'final',
-            fee: '1000',
-            feePerByte: '10',
-            totalSpent: '100000',
-            bytes: 100,
-        } as GeneralPrecomposedTransactionFinal,
-    };
-
-    return preloadedState;
-};
+const createStore = (quote?: ExchangeTrade) =>
+    createTradingLightStore({
+        tradeType: 'exchange',
+        overrides: {
+            wallet: {
+                trading: {
+                    exchange: {
+                        quotes: exchangeQuotes,
+                        tradingAccountKey: 'eth-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
+                        receiveAccountKey: 'btc-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
+                        receiveAddress: getBtcAccount().addresses?.used[0].address,
+                        selectedQuote: quote ?? mercuryoFixedWorstQuote,
+                    },
+                },
+                send: {
+                    precomposedTx: createPrecomposedTxFinal({
+                        fee: '1000',
+                        feePerByte: '10',
+                        totalSpent: '100000',
+                        bytes: 100,
+                    }),
+                },
+            },
+        },
+    });
 
 const createNavigationProps = () =>
     ({
@@ -162,8 +160,7 @@ describe('TradingExchangePreviewScreen', () => {
 
         consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
-        const preloadedState = createPreloadedState();
-        store = initStore(preloadedState).store;
+        store = createStore();
     });
 
     afterEach(() => {
@@ -344,8 +341,7 @@ describe('TradingExchangePreviewScreen', () => {
                 error: 'Quote error message',
             };
 
-            const preloadedState = createPreloadedState(quoteWithError);
-            const testStore = initStore(preloadedState).store;
+            const testStore = createStore(quoteWithError);
             const { result } = renderTradingExchangePreviewScreen(false, testStore);
 
             expect(result.getByText('Quote error message')).toBeOnTheScreen();
@@ -359,8 +355,7 @@ describe('TradingExchangePreviewScreen', () => {
                 error: undefined,
             };
 
-            const preloadedState = createPreloadedState(quoteWithoutError);
-            const testStore = initStore(preloadedState).store;
+            const testStore = createStore(quoteWithoutError);
             const { result } = renderTradingExchangePreviewScreen(false, testStore);
 
             expect(result.queryByText('Transaction error occurred')).toBeNull();
@@ -375,8 +370,7 @@ describe('TradingExchangePreviewScreen', () => {
                 error: 'Quote error message',
             };
 
-            const preloadedState = createPreloadedState(quoteWithError);
-            const testStore = initStore(preloadedState).store;
+            const testStore = createStore(quoteWithError);
             const { result } = renderTradingExchangePreviewScreen(false, testStore);
 
             expect(result.getByText('Transaction error takes priority')).toBeOnTheScreen();

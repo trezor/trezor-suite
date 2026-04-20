@@ -3,13 +3,13 @@ import { type RouteProp } from '@react-navigation/native';
 import { selectTradingExchangeSelectedQuote, tradingExchangeActions } from '@suite-common/trading';
 import { getTranslation } from '@suite-native/intl';
 import { type TradingStackParamList, type TradingStackRoutes } from '@suite-native/navigation';
-import { type TestStore, initStore, renderWithStoreProvider } from '@suite-native/test-utils-store';
-import {
-    eth1NormalAccount,
-    getWalletState,
-    mercuryoFixedWorstQuote,
-} from '@suite-native/trading-fixtures';
+import { type TestStore } from '@suite-native/test-utils-store';
+import { eth1NormalAccount, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 
+import {
+    createTradingLightStore,
+    renderWithTradingProvider,
+} from '../../__tests__/tradingTestUtils';
 import { TradingExchangeRevokeScreen } from '../TradingExchangeRevokeScreen';
 
 const mockShowSheet = jest.fn();
@@ -70,9 +70,9 @@ describe('TradingExchangeRevokeScreen', () => {
     const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
     const renderScreen = () => {
-        const result = renderWithStoreProvider(
+        const result = renderWithTradingProvider(
             <TradingExchangeRevokeScreen route={{ params: {} } as any} navigation={{} as any} />,
-            { store },
+            { store, tradeType: 'exchange' },
         );
 
         ({ unmount } = result);
@@ -85,13 +85,7 @@ describe('TradingExchangeRevokeScreen', () => {
 
         mockIsDeviceConnected = true;
 
-        const preloadedState = {
-            wallet: getWalletState({
-                tradeType: 'exchange',
-            }),
-        };
-
-        store = initStore(preloadedState).store;
+        store = createTradingLightStore({ tradeType: 'exchange' });
         store.dispatch(tradingExchangeActions.savePreselectedQuote(testQuote));
         store.dispatch(tradingExchangeActions.setTradingAccountKey(eth1NormalAccount.key));
     });

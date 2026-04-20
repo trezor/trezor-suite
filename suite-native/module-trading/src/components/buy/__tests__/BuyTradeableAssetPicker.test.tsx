@@ -1,32 +1,30 @@
-import { type EnhancedStore } from '@reduxjs/toolkit';
-
 import { Form } from '@suite-native/forms';
-import {
-    fireEvent,
-    initStore,
-    renderHookWithStoreProvider,
-    renderWithStoreProvider,
-    screen,
-} from '@suite-native/test-utils-store';
-import { getInitializedTradingState } from '@suite-native/trading-fixtures';
+import { type TestStore, fireEvent, screen } from '@suite-native/test-utils-store';
 import { type BuyFormType } from '@suite-native/trading-types';
 import { FirmwareType } from '@trezor/connect';
 
+import {
+    createTradingLightStore,
+    renderHookWithTradingProvider,
+    renderWithTradingProvider,
+} from '../../../__tests__/tradingTestUtils';
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';
 import { BuyTradeableAssetPicker } from '../BuyTradeableAssetPicker';
 
 describe('BuyTradeableAssetPicker', () => {
-    let store: EnhancedStore;
+    let store: TestStore;
     let form: BuyFormType;
 
     const initPreloadedStore = (firmwareType: FirmwareType) =>
-        initStore({
-            device: { selectedDevice: { firmwareType } },
-            wallet: { trading: getInitializedTradingState() },
+        createTradingLightStore({
+            tradeType: 'buy',
+            overrides: {
+                device: { selectedDevice: { firmwareType } },
+            },
         });
 
     const renderFormHook = () => {
-        const { result } = renderHookWithStoreProvider(() => useBuyForm(), {
+        const { result } = renderHookWithTradingProvider(() => useBuyForm(), {
             store,
         });
 
@@ -34,7 +32,7 @@ describe('BuyTradeableAssetPicker', () => {
     };
 
     const renderTradeableAssetPicker = () =>
-        renderWithStoreProvider(
+        renderWithTradingProvider(
             <Form form={form}>
                 <BuyTradeableAssetPicker />
             </Form>,
@@ -47,7 +45,7 @@ describe('BuyTradeableAssetPicker', () => {
 
     describe('with regular firmware', () => {
         beforeEach(() => {
-            store = initPreloadedStore(FirmwareType.Universal).store;
+            store = initPreloadedStore(FirmwareType.Universal);
             form = renderFormHook();
         });
 
@@ -67,7 +65,7 @@ describe('BuyTradeableAssetPicker', () => {
 
     describe('with BTC-only firmware', () => {
         beforeEach(() => {
-            store = initPreloadedStore(FirmwareType.BitcoinOnly).store;
+            store = initPreloadedStore(FirmwareType.BitcoinOnly);
             form = renderFormHook();
         });
 

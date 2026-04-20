@@ -1,13 +1,7 @@
 import { events } from '@suite-native/analytics';
 import { Form } from '@suite-native/forms';
 import { useAnalytics } from '@suite-native/services';
-import {
-    type PreloadedState,
-    act,
-    renderHookWithStoreProvider,
-    renderWithStoreProvider,
-    screen,
-} from '@suite-native/test-utils-store';
+import { act, screen } from '@suite-native/test-utils-store';
 import {
     banxaBankTransferSellQuote,
     btcAsset,
@@ -18,6 +12,12 @@ import {
 } from '@suite-native/trading-fixtures';
 import { type SellFormType } from '@suite-native/trading-types';
 
+import {
+    type PreloadedStatePartial,
+    type TradingTestPreloadedState,
+    renderHookWithTradingProvider,
+    renderWithTradingProvider,
+} from '../../../__tests__/tradingTestUtils';
 import { useSellForm } from '../../../hooks/sell/useSellForm';
 import { SellForm } from '../SellForm';
 
@@ -37,12 +37,19 @@ jest.mock('@suite-native/services', () => {
 });
 
 describe('SellForm', () => {
-    const renderFormHook = (preloadedState: PreloadedState) =>
-        renderHookWithStoreProvider(() => useSellForm(), { preloadedState });
+    const renderFormHook = (overrides: PreloadedStatePartial<TradingTestPreloadedState> = {}) =>
+        renderHookWithTradingProvider(() => useSellForm(), {
+            tradeType: 'sell',
+            overrides,
+        });
 
-    const renderSellForm = (preloadedState: PreloadedState, form: SellFormType) =>
-        renderWithStoreProvider(<SellForm />, {
-            preloadedState,
+    const renderSellForm = (
+        overrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
+        form: SellFormType,
+    ) =>
+        renderWithTradingProvider(<SellForm />, {
+            tradeType: 'sell',
+            overrides,
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 
@@ -58,7 +65,7 @@ describe('SellForm', () => {
     });
 
     it('should render when sell data are not preloaded', () => {
-        const { result } = renderFormHook({});
+        const { result } = renderFormHook();
         const { getByText, getByLabelText } = renderSellForm({}, result.current);
 
         expect(getByText('You pay')).toBeOnTheScreen();
@@ -68,16 +75,17 @@ describe('SellForm', () => {
 
     describe('with preloaded sell data', () => {
         let form: SellFormType;
-        let preloadedState: PreloadedState;
+        let overrides: PreloadedStatePartial<TradingTestPreloadedState>;
 
         beforeEach(() => {
-            preloadedState = {
-                wallet: { trading: getInitializedTradingState() },
+            const tradingState = getInitializedTradingState();
+            tradingState.sell!.quotes = sellQuotes;
+            overrides = {
+                wallet: { trading: tradingState },
                 ...residenceCheckDisabledState,
             };
-            preloadedState.wallet!.trading!.sell!.quotes = sellQuotes;
 
-            const { result } = renderFormHook(preloadedState);
+            const { result } = renderFormHook(overrides);
             form = result.current;
             act(() => {
                 form.setValue('sendAsset', btcAsset);
@@ -89,7 +97,7 @@ describe('SellForm', () => {
         });
 
         it('should render with default values', () => {
-            const { getByLabelText, getByText } = renderSellForm(preloadedState, form);
+            const { getByLabelText, getByText } = renderSellForm(overrides, form);
 
             expect(getByText('You pay')).toBeOnTheScreen();
             expect(getByLabelText('Select fiat currency')).toBeOnTheScreen();
@@ -102,7 +110,7 @@ describe('SellForm', () => {
             act(() => {
                 form.setValue('focusedValue', 'fiatStringAmount');
             });
-            const { queryByText, getByText } = renderSellForm(preloadedState, form);
+            const { queryByText, getByText } = renderSellForm(overrides, form);
 
             expect(getByText('You pay')).toBeOnTheScreen();
             expect(getByText('You get')).toBeOnTheScreen();
@@ -114,7 +122,7 @@ describe('SellForm', () => {
     });
 
     it('should report to analytics on mount', () => {
-        const { result } = renderFormHook({});
+        const { result } = renderFormHook();
         renderSellForm({}, result.current);
 
         expect(reportMock).toHaveBeenCalledWith({

@@ -1,7 +1,8 @@
+import { type AccountKey } from '@suite-common/wallet-types';
 import { getTranslation } from '@suite-native/intl';
-import { type PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils-store';
-import { getWalletState, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
+import { btc1NormalAccount, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 
+import { renderWithTradingProvider } from '../../../../__tests__/tradingTestUtils';
 import { ExchangeFeePickerCard, type ExchangeFeePickerCardProps } from '../ExchangeFeePickerCard';
 
 // Mock FeeSelector to avoid deep dependency chain
@@ -13,17 +14,14 @@ jest.mock('@suite-native/transaction-management', () => ({
 describe('ExchangeFeePickerCard', () => {
     const renderExchangeFeePickerCard = (
         props: Partial<ExchangeFeePickerCardProps> = {},
-        tradingAccountKey = 'btc-account-1',
-    ) => {
-        const preloadedState: PreloadedState = {
-            wallet: getWalletState({ tradeType: 'exchange' }),
-        };
-        preloadedState.wallet!.trading!.exchange!.tradingAccountKey = tradingAccountKey;
-
-        return renderWithStoreProvider(<ExchangeFeePickerCard isTxnError={false} {...props} />, {
-            preloadedState,
+        tradingAccountKey: AccountKey = btc1NormalAccount.key,
+    ) =>
+        renderWithTradingProvider(<ExchangeFeePickerCard isTxnError={false} {...props} />, {
+            tradeType: 'exchange',
+            overrides: {
+                wallet: { trading: { exchange: { tradingAccountKey } } },
+            },
         });
-    };
 
     it('should render nothing when isTxnError', () => {
         const { toJSON } = renderExchangeFeePickerCard({
@@ -43,7 +41,7 @@ describe('ExchangeFeePickerCard', () => {
     it('should render nothing when account is not found', () => {
         const { toJSON } = renderExchangeFeePickerCard(
             { quote: mercuryoFixedWorstQuote },
-            'unknown-account-key',
+            'unknown-account-key' as AccountKey,
         );
 
         expect(toJSON()).toBeNull();

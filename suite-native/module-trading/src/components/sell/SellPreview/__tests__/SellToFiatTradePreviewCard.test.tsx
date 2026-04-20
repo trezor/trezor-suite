@@ -1,4 +1,4 @@
-import { type PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils-store';
+import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 import {
     banxaBankTransferSellQuote,
     banxaCreditCardSellQuote,
@@ -14,7 +14,7 @@ describe('SellToFiatTradePreviewCard', () => {
     const renderSellToFiatTradePreviewCard = (
         props: Partial<SellToFiatTradePreviewCardProps> = {},
     ) => {
-        const preloadedState: PreloadedState = {
+        const preloadedState = {
             wallet: getWalletState({ tradeType: 'sell' }),
         };
 

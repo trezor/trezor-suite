@@ -1,6 +1,9 @@
-import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
-import { renderWithStoreProvider } from '@suite-native/test-utils-store';
+import { FeatureFlag } from '@suite-native/feature-flags';
 
+import {
+    createTradingFeatureFlags,
+    renderWithTradingProvider,
+} from '../../__tests__/tradingTestUtils';
 import { TradingStackNavigator } from '../TradingStackNavigator';
 
 jest.mock('../../hooks/buy/useBuyData', () => ({
@@ -13,13 +16,11 @@ jest.mock('../../hooks/buy/useBuyData', () => ({
 
 describe('TradingStackNavigator', () => {
     it('should render', () => {
-        const { getByTestId } = renderWithStoreProvider(<TradingStackNavigator />, {
-            preloadedState: {
-                featureFlags: {
-                    ...featureFlagsInitialState,
+        const { getByTestId } = renderWithTradingProvider(<TradingStackNavigator />, {
+            overrides: {
+                featureFlags: createTradingFeatureFlags({
                     [FeatureFlag.IsTradingBuyEnabled]: true,
-                    [FeatureFlag.IsTradingResidenceCheckEnabled]: false,
-                },
+                }),
             },
         });
 

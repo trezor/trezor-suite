@@ -1,31 +1,35 @@
-import { type EnhancedStore } from '@reduxjs/toolkit';
-
+import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
 import { Form } from '@suite-native/forms';
-import {
-    initStore,
-    renderHookWithStoreProvider,
-    renderWithStoreProvider,
-    screen,
-} from '@suite-native/test-utils-store';
-import { getInitializedTradingState } from '@suite-native/trading-fixtures';
+import { type TestStore, screen } from '@suite-native/test-utils-store';
 import { type ExchangeFormType } from '@suite-native/trading-types';
 import { FirmwareType } from '@trezor/connect';
 
+import {
+    createTradingLightStore,
+    renderHookWithTradingProvider,
+    renderWithTradingProvider,
+} from '../../../../__tests__/tradingTestUtils';
 import { useExchangeForm } from '../../../../hooks/exchange/useExchangeForm';
 import { ExchangeTradeableAssetPicker } from '../ExchangeTradeableAssetPicker';
 
 describe('ExchangeTradeableAssetPicker', () => {
-    let store: EnhancedStore;
+    let store: TestStore;
     let form: ExchangeFormType;
 
     const initPreloadedStore = (firmwareType: FirmwareType) =>
-        initStore({
-            device: { selectedDevice: { firmwareType } },
-            wallet: { trading: getInitializedTradingState() },
+        createTradingLightStore({
+            tradeType: 'exchange',
+            overrides: {
+                device: { selectedDevice: { firmwareType } },
+                featureFlags: {
+                    ...featureFlagsInitialState,
+                    [FeatureFlag.AreTradingExchangeDexesEnabled]: true,
+                },
+            },
         });
 
     const renderFormHook = () => {
-        const { result } = renderHookWithStoreProvider(() => useExchangeForm(), {
+        const { result } = renderHookWithTradingProvider(() => useExchangeForm(), {
             store,
         });
 
@@ -33,13 +37,13 @@ describe('ExchangeTradeableAssetPicker', () => {
     };
 
     const renderTradeableAssetPicker = () =>
-        renderWithStoreProvider(<ExchangeTradeableAssetPicker />, {
+        renderWithTradingProvider(<ExchangeTradeableAssetPicker />, {
             store,
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 
     beforeEach(() => {
-        store = initPreloadedStore(FirmwareType.Universal).store;
+        store = initPreloadedStore(FirmwareType.Universal);
         form = renderFormHook();
     });
 

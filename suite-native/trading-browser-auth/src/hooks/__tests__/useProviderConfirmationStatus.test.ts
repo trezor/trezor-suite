@@ -1,14 +1,21 @@
-import { sendFormActions } from '@suite-common/wallet-core';
+import { combineReducers } from '@reduxjs/toolkit';
+
+import { extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { initialWalletSettingsState, sendFormActions } from '@suite-common/wallet-core';
+import { localeReducer } from '@suite-native/intl';
 import {
     type TestStore,
     act,
-    initStore,
+    createLightStore,
+    createStaticReducer,
     renderHookWithStoreProvider,
 } from '@suite-native/test-utils-store';
 import {
     selectTradingProviderConfirmationStatus,
     tradingActions,
+    tradingSlice,
 } from '@suite-native/trading-state';
+import { sendFormSlice } from '@suite-native/transaction-management';
 
 import { useProviderConfirmationStatus } from '../useProviderConfirmationStatus';
 
@@ -21,7 +28,16 @@ describe('useProviderConfirmationStatus', () => {
         });
 
     beforeEach(() => {
-        ({ store } = initStore());
+        store = createLightStore({
+            reducer: {
+                locale: localeReducer,
+                wallet: combineReducers({
+                    settings: createStaticReducer(initialWalletSettingsState),
+                    send: sendFormSlice.prepareReducer(extraDependenciesCommonMock),
+                    trading: tradingSlice.prepareReducer(extraDependenciesCommonMock),
+                }),
+            },
+        });
     });
 
     afterEach(() => {

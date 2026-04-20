@@ -5,29 +5,29 @@ import {
     renderWithStoreProvider,
     screen,
 } from '@suite-native/test-utils-store';
-import {
-    banxaCreditCardSellQuote,
-    getWalletState,
-    sellQuotes,
-    usdcAsset,
-} from '@suite-native/trading-fixtures';
+import { banxaCreditCardSellQuote, sellQuotes, usdcAsset } from '@suite-native/trading-fixtures';
 import { type SellFormType } from '@suite-native/trading-types';
 
+import { createTradingPreloadedState } from '../../../__tests__/tradingTestUtils';
 import { useSellForm } from '../../../hooks/sell/useSellForm';
 import { SellCard } from '../SellCard';
 
 describe('SellCard', () => {
     let form: SellFormType;
+    const preloadedState = createTradingPreloadedState({ tradeType: 'sell' });
 
-    const renderForm = () => renderHookWithStoreProvider(() => useSellForm());
+    const renderForm = () =>
+        renderHookWithStoreProvider(() => useSellForm(), {
+            preloadedState,
+        });
 
     const renderSellCard = (isAmountInputActive: boolean) => {
-        const preloadedState = { wallet: getWalletState({ tradeType: 'sell' }) };
-        preloadedState.wallet!.trading!.sell!.quotes = sellQuotes;
+        const cardPreloadedState = createTradingPreloadedState({ tradeType: 'sell' });
+        cardPreloadedState.wallet!.trading!.sell!.quotes = sellQuotes;
 
         return renderWithStoreProvider(<SellCard isAmountInputActive={isAmountInputActive} />, {
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
-            preloadedState,
+            preloadedState: cardPreloadedState,
         });
     };
 

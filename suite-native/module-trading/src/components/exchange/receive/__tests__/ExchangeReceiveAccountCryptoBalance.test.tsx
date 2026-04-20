@@ -1,10 +1,11 @@
+import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
 import { Form } from '@suite-native/forms';
 import {
     act,
     renderHookWithStoreProvider,
     renderWithStoreProvider,
 } from '@suite-native/test-utils-store';
-import { btcAsset, getBtcAccount } from '@suite-native/trading-fixtures';
+import { btcAsset, getBtcAccount, getWalletState } from '@suite-native/trading-fixtures';
 import { type ExchangeFormType } from '@suite-native/trading-types';
 
 import { useExchangeForm } from '../../../../hooks/exchange/useExchangeForm';
@@ -15,15 +16,26 @@ import {
 
 describe('ExchangeReceiveAccountCryptoBalance', () => {
     let exchangeForm: ExchangeFormType;
+    const preloadedState = {
+        featureFlags: {
+            ...featureFlagsInitialState,
+            [FeatureFlag.AreTradingExchangeDexesEnabled]: true,
+            [FeatureFlag.IsTradingResidenceCheckEnabled]: false,
+        },
+        wallet: getWalletState({ tradeType: 'exchange' }),
+    };
 
     const renderExchangeForm = () => {
-        const { result } = renderHookWithStoreProvider(() => useExchangeForm());
+        const { result } = renderHookWithStoreProvider(() => useExchangeForm(), {
+            preloadedState,
+        });
 
         return result.current;
     };
 
     const renderComponent = () =>
         renderWithStoreProvider(<ExchangeReceiveAccountCryptoBalance />, {
+            preloadedState,
             wrapper: ({ children }) => <Form form={exchangeForm}>{children}</Form>,
         });
 

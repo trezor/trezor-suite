@@ -7,22 +7,20 @@ import {
     renderHook,
 } from '@testing-library/react-native';
 
-import type { PreloadedState } from '@suite-native/state';
-
 import { StoreProviderForTests, type TestStore } from './StoreProviderForTests';
 
-type RenderOptionsExtended = RenderOptions & {
-    preloadedState?: PreloadedState;
+export type RenderOptionsExtended = RenderOptions & {
+    preloadedState?: Record<string, unknown>;
     store?: TestStore;
 };
 
-type RenderHookOptionsExtended<Props> = RenderHookOptions<Props> & {
-    preloadedState?: PreloadedState;
+export type RenderHookOptionsExtended<Props> = RenderHookOptions<Props> & {
+    preloadedState?: Record<string, unknown>;
     store?: TestStore;
 };
 
-export const renderWithStoreProvider = <Props,>(
-    element: ReactElement<Props>,
+export const renderWithStoreProvider = (
+    element: ReactElement,
     { preloadedState, wrapper: Wrapper, store, ...options }: RenderOptionsExtended = {},
 ) =>
     render(element, {
@@ -34,7 +32,7 @@ export const renderWithStoreProvider = <Props,>(
         ...options,
     });
 
-export const renderHookWithStoreProvider = <Result, Props>(
+export const renderHookWithStoreProvider = <Result = unknown, Props = unknown>(
     callback: (props: Props) => Result,
     { preloadedState, wrapper: Wrapper, store, ...options }: RenderHookOptionsExtended<Props> = {},
 ) =>

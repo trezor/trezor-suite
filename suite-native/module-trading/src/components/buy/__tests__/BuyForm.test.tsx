@@ -1,18 +1,15 @@
 import { Form } from '@suite-native/forms';
-import {
-    type PreloadedState,
-    act,
-    renderHookWithStoreProvider,
-    renderWithStoreProvider,
-    screen,
-} from '@suite-native/test-utils-store';
-import {
-    btcAsset,
-    getInitializedTradingState,
-    residenceCheckDisabledState,
-} from '@suite-native/trading-fixtures';
+import { act, screen } from '@suite-native/test-utils-store';
+import { btcAsset, getInitializedTradingState } from '@suite-native/trading-fixtures';
 import { type BuyFormType } from '@suite-native/trading-types';
 
+import {
+    type PreloadedStatePartial,
+    type TradingTestPreloadedState,
+    createTradingFeatureFlags,
+    renderHookWithTradingProvider,
+    renderWithTradingProvider,
+} from '../../../__tests__/tradingTestUtils';
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';
 import { BuyForm } from '../BuyForm';
 
@@ -21,12 +18,29 @@ jest.mock('../../../hooks/general/useFocusedValueWatch', () =>
 );
 
 describe('BuyForm', () => {
-    const renderFormHook = (preloadedState: PreloadedState) =>
-        renderHookWithStoreProvider(() => useBuyForm(), { preloadedState });
+    const residenceCheckDisabledOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {
+        featureFlags: createTradingFeatureFlags(),
+        wallet: {
+            trading: {
+                buy: {
+                    buyInfo: undefined,
+                },
+                residence: {
+                    country: undefined,
+                },
+            },
+        },
+    };
 
-    const renderBuyForm = (preloadedState: PreloadedState, form: BuyFormType) =>
-        renderWithStoreProvider(<BuyForm />, {
-            preloadedState,
+    const renderFormHook = (overrides: PreloadedStatePartial<TradingTestPreloadedState> = {}) =>
+        renderHookWithTradingProvider(() => useBuyForm(), { overrides });
+
+    const renderBuyForm = (
+        overrides: PreloadedStatePartial<TradingTestPreloadedState>,
+        form: BuyFormType,
+    ) =>
+        renderWithTradingProvider(<BuyForm />, {
+            overrides,
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 
@@ -35,9 +49,9 @@ describe('BuyForm', () => {
     });
 
     it('should render when buy data are not preloaded', () => {
-        const { result } = renderFormHook(residenceCheckDisabledState);
+        const { result } = renderFormHook(residenceCheckDisabledOverrides);
         const { queryByText, getByText, getByLabelText } = renderBuyForm(
-            residenceCheckDisabledState,
+            residenceCheckDisabledOverrides,
             result.current,
         );
 
@@ -54,18 +68,18 @@ describe('BuyForm', () => {
 
     describe('with preloaded buy data', () => {
         let form: BuyFormType;
-        const preloadedState = {
+        const overrides: PreloadedStatePartial<TradingTestPreloadedState> = {
             wallet: { trading: getInitializedTradingState() },
-            ...residenceCheckDisabledState,
+            featureFlags: createTradingFeatureFlags(),
         };
 
         beforeEach(() => {
-            const { result } = renderFormHook(preloadedState);
+            const { result } = renderFormHook(overrides);
             form = result.current;
         });
 
         it('should render with default values', () => {
-            const { queryByText, getByLabelText, getByText } = renderBuyForm(preloadedState, form);
+            const { queryByText, getByLabelText, getByText } = renderBuyForm(overrides, form);
 
             expect(getByText('You pay')).toBeTruthy();
 
@@ -85,7 +99,7 @@ describe('BuyForm', () => {
             act(() => {
                 form.setValue('focusedValue', 'fiatValue');
             });
-            const { queryByText, getByText } = renderBuyForm(preloadedState, form);
+            const { queryByText, getByText } = renderBuyForm(overrides, form);
 
             expect(getByText('You pay')).toBeTruthy();
             expect(getByText('You get')).toBeTruthy();
@@ -97,7 +111,7 @@ describe('BuyForm', () => {
         });
 
         it('should not render receive account when assets is not selected', () => {
-            const { queryByText, getByTestId } = renderBuyForm(preloadedState, form);
+            const { queryByText, getByTestId } = renderBuyForm(overrides, form);
 
             expect(queryByText('Receive account')).toBeNull();
             expect(getByTestId('@trading/buyCard/fiatSection')).toHaveStyle({
@@ -112,7 +126,7 @@ describe('BuyForm', () => {
             act(() => {
                 form.setValue('asset', btcAsset);
             });
-            const { getByText, getByTestId } = renderBuyForm(preloadedState, form);
+            const { getByText, getByTestId } = renderBuyForm(overrides, form);
 
             expect(getByText('Receive account')).toBeTruthy();
             expect(getByTestId('@trading/buyCard/fiatSection')).toHaveStyle({

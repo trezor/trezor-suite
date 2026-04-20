@@ -1,11 +1,18 @@
+import { combineReducers } from '@reduxjs/toolkit';
+
+import { extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { Form } from '@suite-native/forms';
+import { localeReducer } from '@suite-native/intl';
 import {
     type TestStore,
     act,
-    initStore,
+    createLightStore,
+    createStaticReducer,
     renderHookWithStoreProvider,
 } from '@suite-native/test-utils-store';
-import { selectIsAmountInputActive } from '@suite-native/trading-state';
+import { getWalletState } from '@suite-native/trading-fixtures';
+import { selectIsAmountInputActive, tradingSlice } from '@suite-native/trading-state';
 import { type BuyFormType } from '@suite-native/trading-types';
 
 import { useBuyForm } from '../../buy/useBuyForm';
@@ -17,7 +24,25 @@ describe('useFocusedValueWatch', () => {
     let form: BuyFormType;
     let store: TestStore;
 
-    const renderForm = () => renderHookWithStoreProvider(() => useBuyForm());
+    const reducer = {
+        locale: localeReducer,
+        wallet: combineReducers({
+            settings: createStaticReducer(initialWalletSettingsState),
+            accounts: createStaticReducer(getWalletState({ tradeType: 'buy' }).accounts),
+            trading: tradingSlice.prepareReducer(extraDependenciesCommonMock),
+        }),
+    } as const;
+
+    const preloadedState = {
+        wallet: {
+            trading: getWalletState({ tradeType: 'buy' }).trading,
+        },
+    };
+
+    const renderForm = () =>
+        renderHookWithStoreProvider(() => useBuyForm(), {
+            preloadedState,
+        });
 
     const renderUseFocusedValueWatch = () =>
         renderHookWithStoreProvider(({ watch }) => useFocusedValueWatch(watch), {
@@ -30,7 +55,7 @@ describe('useFocusedValueWatch', () => {
         const { result } = renderForm();
         form = result.current;
 
-        store = initStore().store;
+        store = createLightStore({ reducer, preloadedState });
     });
 
     it('should return false by default', () => {

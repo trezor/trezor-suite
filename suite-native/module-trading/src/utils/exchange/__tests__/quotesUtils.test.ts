@@ -4,7 +4,6 @@ import type { CryptoId } from 'invity-api';
 
 import { type MinimalExchangeFormProps } from '@suite-common/trading';
 import type { TokenAddress } from '@suite-common/wallet-types';
-import { renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import {
     btcAsset,
     ethAsset,
@@ -15,6 +14,7 @@ import {
 } from '@suite-native/trading-fixtures';
 import { type ExchangeFormType } from '@suite-native/trading-types';
 
+import { renderHookWithTradingProvider } from '../../../__tests__/tradingTestUtils';
 import { useExchangeForm } from '../../../hooks/exchange/useExchangeForm';
 import { hasPreapprovedLimit, tradingExchangeFormToTradingExchangeFormProps } from '../quotesUtils';
 
@@ -22,8 +22,8 @@ describe('quotesUtils', () => {
     let form: ExchangeFormType;
 
     const renderUseTradingBuyForm = () =>
-        renderHookWithStoreProvider(() => useExchangeForm(), {
-            preloadedState: { wallet: { trading: getInitializedTradingState() } },
+        renderHookWithTradingProvider(() => useExchangeForm(), {
+            overrides: { wallet: { trading: getInitializedTradingState() } },
         });
 
     beforeEach(() => {

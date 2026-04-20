@@ -4,13 +4,11 @@ import { type EnhancedStore } from '@reduxjs/toolkit';
 import type { BuyTrade, CryptoId } from 'invity-api';
 
 import { selectTradingProviderMetadata, tradingBuyActions } from '@suite-common/trading';
-import { type AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
 import { Form, useField } from '@suite-native/forms';
 import {
-    type PreloadedState,
     type TestStore,
     act,
-    initStore,
     renderHook,
     renderHookWithStoreProvider,
 } from '@suite-native/test-utils-store';
@@ -29,6 +27,7 @@ import { buyActions, selectTradingResidenceCountry } from '@suite-native/trading
 import { type BuyFormType, type TradeableAsset } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
+import { createTradingLightStore } from '../../../__tests__/tradingTestUtils';
 import { clearBuyFormQuoteData, useBuyForm } from '../useBuyForm';
 
 jest.mock('@trezor/react-utils', () => {
@@ -49,24 +48,29 @@ describe('useBuyForm', () => {
         renderHookWithStoreProvider(() => useBuyForm(), { store });
 
     const getInitializedStore = (amountInSats = false) => {
-        const preloadedState: PreloadedState = {
-            wallet: {
-                trading: getInitializedTradingState(),
-                settings: {
-                    bitcoinAmountUnit: amountInSats
-                        ? PROTO.AmountUnit.SATOSHI
-                        : PROTO.AmountUnit.BITCOIN,
-                },
-                accounts: [
-                    getBtcAccount(btc1AccountKey),
-                    getBtcAccount(btc2AccountKey),
-                    { ...getBtcAccount(btc3AccountKey), descriptor: '' },
-                ],
-            },
-        };
-        preloadedState.wallet!.trading!.buy!.tradingAccountKey = btc1AccountKey;
+        const tradingState = getInitializedTradingState();
+        tradingState.buy.tradingAccountKey = btc1AccountKey;
 
-        return initStore(preloadedState).store;
+        return createTradingLightStore({
+            overrides: {
+                wallet: {
+                    trading: tradingState,
+                    settings: {
+                        bitcoinAmountUnit: amountInSats
+                            ? PROTO.AmountUnit.SATOSHI
+                            : PROTO.AmountUnit.BITCOIN,
+                    },
+                    accounts: [
+                        getBtcAccount(btc1AccountKey),
+                        getBtcAccount(btc2AccountKey),
+                        {
+                            ...getBtcAccount(btc3AccountKey),
+                            descriptor: asAccountDescriptor(''),
+                        },
+                    ],
+                },
+            },
+        });
     };
 
     const initFormAndQuotes = (form: BuyFormType, store: EnhancedStore) => {
@@ -414,7 +418,7 @@ describe('useBuyForm', () => {
                 result.current.setValue('quote', mercuryoApplePayBuyQuote);
             });
 
-            expect(selectTradingProviderMetadata(store.getState())).toBe(buyMercuryo);
+            expect(selectTradingProviderMetadata(store.getState())).toEqual(buyMercuryo);
         });
 
         describe('when quote is selected and new quotes are fetched', () => {
