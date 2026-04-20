@@ -2363,7 +2363,7 @@
   "TR_TRADING_OTC_INFO_BUY": "Für Einkäufe über {minimumFiat} {fiatSymbol} können Sie unseren OTC-Partner nutzen:",
   "TR_TRADING_OTC_INFO_SELL": "Für Verkäufe über {minimumFiat} {fiatSymbol} können Sie unseren OTC-Partner nutzen:",
   "TR_TRADING_OTC_LINK_BUY": "Mit Concierge kaufen",
-  "TR_TRADING_OTC_LINK_SELL": "Mit {providerName} verkaufen",
+  "TR_TRADING_OTC_LINK_SELL": "Mit Concierge verkaufen",
   "TR_TRADING_OTHER_CURRENCIES": "Weitere Währungen",
   "TR_TRADING_PAYMENT_METHOD": "Zahlungsmethode",
   "TR_TRADING_POPULAR_CURRENCIES": "Beliebte Währungen",

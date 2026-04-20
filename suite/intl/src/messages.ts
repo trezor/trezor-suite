@@ -3052,7 +3052,7 @@ export const messages = defineMessages({
         id: 'TR_QR_TAB_IMAGE',
     },
     TR_QR_DROPZONE_LABEL: {
-        defaultMessage: 'Drag & drop an image with QR code here or click to browse',
+        defaultMessage: 'Drag & drop a QR code image here, or click to upload',
         description: 'Label for QR code image drop zone',
         id: 'TR_QR_DROPZONE_LABEL',
     },
