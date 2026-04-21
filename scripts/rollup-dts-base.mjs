@@ -90,11 +90,12 @@ export function createDtsConfig({ packageName } = {}) {
     }
 
     const externalPackages = readExternalPackages(packageName);
+    const outDir = process.env.DTS_OUT_DIR || 'lib';
 
     return {
-        input: './lib/index.d.ts',
+        input: `./${outDir}/index.d.ts`,
         output: {
-            file: './lib/index.bundled.d.ts',
+            file: `./${outDir}/index.bundled.d.ts`,
             format: 'es',
         },
         plugins: [
