@@ -1,4 +1,4 @@
-import { Root } from 'protobufjs/light';
+import { Enum, type Root } from 'protobufjs/light';
 
 type Definitions = Record<string, unknown>;
 
@@ -28,13 +28,16 @@ export const loadDefinitions = async (
     // load definitions
     const packageMessages = await packageLoader();
     const pkg = messages.define(packageName, packageMessages);
-    // get package MessageType enum
-    let packageEnumType;
-    try {
-        packageEnumType = pkg.lookupEnum('MessageType');
-    } catch {
-        // empty
-    }
+    // get package MessageType enum — look only in the immediate children of the
+    // package namespace, not up the hierarchy. protobufjs 7.5.x changed
+    // lookupEnum() to traverse upward, which returns the root-level MessageType
+    // instead of the package-local one and breaks the merge below.
+    const packageEnumType = (() => {
+        const { nested } = pkg;
+        const candidate = nested?.['MessageType'];
+
+        return candidate instanceof Enum ? candidate : undefined;
+    })();
 
     // merge MessageType enums
     if (enumType && packageEnumType) {
