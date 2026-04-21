@@ -255,79 +255,87 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                 }
                 const { path } = getPathBySessionResponse.payload;
 
-                const protocol = customProtocol || v1Protocol;
-                const bytes = buildMessage({
-                    messages: this.messages,
-                    name,
-                    data,
-                    protocol,
-                    thpState,
-                });
-                const [, chunkHeader] = protocol.getHeaders(bytes);
-                const chunks = createChunks(
-                    bytes,
-                    chunkHeader,
-                    this.api.nativeWriteChunking ? 0 : this.api.chunkSize,
+                return this.api.runInIsolation(
+                    { lock: { read: true, write: true }, path },
+                    async () => {
+                        const protocol = customProtocol || v1Protocol;
+                        const bytes = buildMessage({
+                            messages: this.messages,
+                            name,
+                            data,
+                            protocol,
+                            thpState,
+                        });
+                        const [, chunkHeader] = protocol.getHeaders(bytes);
+                        const chunks = createChunks(
+                            bytes,
+                            chunkHeader,
+                            this.api.nativeWriteChunking ? 0 : this.api.chunkSize,
+                        );
+                        let progress = 0;
+                        const apiWrite = (chunk: Buffer, attemptSignal?: AbortSignal) => {
+                            if (chunks.length > 1) {
+                                progress++;
+                                this.emit(
+                                    TRANSPORT.SEND_MESSAGE_PROGRESS,
+                                    progress / chunks.length,
+                                );
+                            }
+
+                            return this.api.write(path, chunk, attemptSignal || signal);
+                        };
+
+                        const apiRead = (attemptSignal?: AbortSignal) =>
+                            this.api.read(path, attemptSignal || signal);
+
+                        if (protocol.name === 'v2') {
+                            const prevNonce = thpState?.sendNonce;
+                            const callResult = await callThpMessage({
+                                thpState,
+                                chunks,
+                                apiWrite,
+                                apiRead,
+                                signal,
+                                logger: this.logger,
+                            });
+                            if (!callResult.success) {
+                                handleError(callResult.error.code);
+
+                                return callResult;
+                            }
+
+                            // sync bit and nonce updated by Cancel
+                            if (prevNonce === thpState?.sendNonce) {
+                                thpState?.sync('send', name);
+                            }
+                            const message = parseThpMessage({
+                                messages: this.messages,
+                                decoded: callResult.payload,
+                                thpState,
+                            });
+                            thpState?.sync('recv', message.type);
+
+                            return success(message);
+                        }
+                        const sendResult = await sendChunks(chunks, apiWrite);
+
+                        if (!sendResult.success) {
+                            handleError(sendResult.error.code);
+
+                            return sendResult;
+                        }
+
+                        const readResult = await receiveAndParse(this.messages, apiRead, protocol);
+
+                        if (!readResult.success) {
+                            handleError(readResult.error.code);
+
+                            return readResult;
+                        }
+
+                        return readResult;
+                    },
                 );
-                let progress = 0;
-                const apiWrite = (chunk: Buffer, attemptSignal?: AbortSignal) => {
-                    if (chunks.length > 1) {
-                        progress++;
-                        this.emit(TRANSPORT.SEND_MESSAGE_PROGRESS, progress / chunks.length);
-                    }
-
-                    return this.api.write(path, chunk, attemptSignal || signal);
-                };
-
-                const apiRead = (attemptSignal?: AbortSignal) =>
-                    this.api.read(path, attemptSignal || signal);
-
-                if (protocol.name === 'v2') {
-                    const prevNonce = thpState?.sendNonce;
-                    const callResult = await callThpMessage({
-                        thpState,
-                        chunks,
-                        apiWrite,
-                        apiRead,
-                        signal,
-                        logger: this.logger,
-                    });
-                    if (!callResult.success) {
-                        handleError(callResult.error.code);
-
-                        return callResult;
-                    }
-
-                    // sync bit and nonce updated by Cancel
-                    if (prevNonce === thpState?.sendNonce) {
-                        thpState?.sync('send', name);
-                    }
-                    const message = parseThpMessage({
-                        messages: this.messages,
-                        decoded: callResult.payload,
-                        thpState,
-                    });
-                    thpState?.sync('recv', message.type);
-
-                    return success(message);
-                }
-                const sendResult = await sendChunks(chunks, apiWrite);
-
-                if (!sendResult.success) {
-                    handleError(sendResult.error.code);
-
-                    return sendResult;
-                }
-
-                const readResult = await receiveAndParse(this.messages, apiRead, protocol);
-
-                if (!readResult.success) {
-                    handleError(readResult.error.code);
-
-                    return readResult;
-                }
-
-                return readResult;
             },
             { signal, graceful: true, timeout },
         );
@@ -426,43 +434,48 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                 }
                 const { path } = getPathBySessionResponse.payload;
 
-                const apiRead = (attemptSignal?: AbortSignal) =>
-                    this.api.read(path, attemptSignal || signal);
+                return this.api.runInIsolation(
+                    { lock: { read: true, write: false }, path },
+                    async () => {
+                        const apiRead = (attemptSignal?: AbortSignal) =>
+                            this.api.read(path, attemptSignal || signal);
 
-                const protocol = customProtocol || v1Protocol;
-                if (protocol.name === 'v2') {
-                    const decoded = await receiveThpMessage({
-                        thpState,
-                        skipAck: true,
-                        apiWrite: (chunk, attemptSignal) =>
-                            this.api.write(path, chunk, attemptSignal || signal),
-                        apiRead,
-                        signal,
-                        logger: this.logger,
-                    });
+                        const protocol = customProtocol || v1Protocol;
+                        if (protocol.name === 'v2') {
+                            const decoded = await receiveThpMessage({
+                                thpState,
+                                skipAck: true,
+                                apiWrite: (chunk, attemptSignal) =>
+                                    this.api.write(path, chunk, attemptSignal || signal),
+                                apiRead,
+                                signal,
+                                logger: this.logger,
+                            });
 
-                    if (!decoded.success) {
-                        return decoded;
-                    }
+                            if (!decoded.success) {
+                                return decoded;
+                            }
 
-                    const message = parseThpMessage({
-                        messages: this.messages,
-                        decoded: decoded.payload,
-                        thpState,
-                    });
+                            const message = parseThpMessage({
+                                messages: this.messages,
+                                decoded: decoded.payload,
+                                thpState,
+                            });
 
-                    return success(message);
-                }
+                            return success(message);
+                        }
 
-                const message = await receiveAndParse(this.messages, apiRead, protocol);
+                        const message = await receiveAndParse(this.messages, apiRead, protocol);
 
-                if (!message.success) {
-                    if (message.error.code === ERRORS.DEVICE_DISCONNECTED_DURING_ACTION) {
-                        this.enumerate();
-                    }
-                }
+                        if (!message.success) {
+                            if (message.error.code === ERRORS.DEVICE_DISCONNECTED_DURING_ACTION) {
+                                this.enumerate();
+                            }
+                        }
 
-                return message;
+                        return message;
+                    },
+                );
             },
             { signal, graceful: true, timeout },
         );

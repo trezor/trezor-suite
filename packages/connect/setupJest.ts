@@ -28,6 +28,7 @@ const createTransportApi = (override = {}) =>
         listen: () => {},
         dispose: () => {},
         type: 'usb',
+        runInIsolation: (_: unknown, fn: () => unknown) => fn(),
         ...override,
     }) as unknown as UsbApi;
 
