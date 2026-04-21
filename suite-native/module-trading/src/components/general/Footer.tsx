@@ -33,7 +33,7 @@ const FooterProviderContent = ({ provider }: FooterProviderContentProps) => {
     return (
         <Text variant="body-sm" color="contentSecondary" textAlign="center">
             <Translation
-                id="moduleTrading.tradingScreen.footer.termsAndConditionsProvider"
+                id="moduleTrading.tradingScreen.footer.termsOfProvider"
                 values={{
                     companyName,
                     link: parts => (
