@@ -302,6 +302,12 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
             // for now we always fill only first output
             const outputIndex = 0;
 
+            if (protocol.sendForm.token) {
+                setValue(`outputs.${outputIndex}.token`, protocol.sendForm.token, {
+                    shouldDirty: true,
+                });
+            }
+
             if (protocol.sendForm.amount) {
                 const protocolAmount = protocol.sendForm.amount.toString();
 
@@ -310,6 +316,18 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
                     : protocolAmount;
 
                 sendFormUtils.setAmount(outputIndex, formattedAmount);
+            } else if (protocol.sendForm.tokenAmount && protocol.sendForm.token) {
+                // ERC-681 token transfer: convert raw uint256 amount using token decimals
+                const token = selectedAccount.account.tokens?.find(
+                    t => t.contract.toLowerCase() === protocol.sendForm.token?.toLowerCase(),
+                );
+                if (token) {
+                    const humanAmount = convertAmountSubunitsToUnits(
+                        protocol.sendForm.tokenAmount,
+                        token.decimals,
+                    );
+                    sendFormUtils.setAmount(outputIndex, humanAmount);
+                }
             }
 
             if (protocol.sendForm.address) {
@@ -331,6 +349,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         dispatch,
         setValue,
         selectedAccount.network,
+        selectedAccount.account.tokens,
         protocol,
         sendFormUtils,
         composeRequest,

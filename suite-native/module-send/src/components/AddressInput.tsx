@@ -1,14 +1,16 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
+import { parseErc681TransferUri } from '@suite-common/suite-utils';
 import { formInputsMaxLength } from '@suite-common/validators';
 import {
     type AccountsRootState,
     type TransactionsRootState,
+    selectAccountByKey,
     selectAccountNetworkSymbol,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { isAddressValid } from '@suite-common/wallet-utils';
+import { convertAmountSubunitsToUnits, isAddressValid } from '@suite-common/wallet-utils';
 import { type NativeAccountsRootState, selectFreshAccountAddress } from '@suite-native/accounts';
 import { events } from '@suite-native/analytics';
 import { Button, HStack, Text, VStack } from '@suite-native/atoms';
@@ -33,10 +35,15 @@ type AddressInputProps = {
 export const AddressInput = ({ index, accountKey }: AddressInputProps) => {
     const addressFieldName = getOutputFieldName(index, 'address');
     const utxoLabelFieldName = getOutputFieldName(index, 'label');
+    const amountFieldName = getOutputFieldName(index, 'amount');
+    const tokenFieldName = getOutputFieldName(index, 'token');
     const { setValue, watch } = useFormContext<SendOutputsFormValues>();
     const analytics = useAnalytics();
     const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
+    );
+    const account = useSelector((state: AccountsRootState) =>
+        selectAccountByKey(state, accountKey),
     );
 
     const { checkSolAssociatedTokenAddress, isSolATA } = useSolAssociatedTokenAddress();
@@ -49,6 +56,29 @@ export const AddressInput = ({ index, accountKey }: AddressInputProps) => {
     const { wasAddressChecksummed } = useAddressValidationAlerts({ inputIndex: index });
 
     const handleScanAddressQRCode = (qrCodeData: string) => {
+        const erc681 =
+            account?.networkType === 'ethereum' ? parseErc681TransferUri(qrCodeData) : null;
+        if (erc681) {
+            setValue(addressFieldName, erc681.recipientAddress, { shouldValidate: true });
+            setValue(tokenFieldName, erc681.contractAddress, { shouldDirty: true });
+            const token = account?.tokens?.find(
+                t => t.contract.toLowerCase() === erc681.contractAddress.toLowerCase(),
+            );
+            if (token && erc681.tokenAmount !== undefined) {
+                setValue(
+                    amountFieldName,
+                    convertAmountSubunitsToUnits(erc681.tokenAmount, token.decimals),
+                    { shouldValidate: true },
+                );
+            }
+            analytics.report({
+                type: events.sendAddressFilledEvent.name,
+                payload: { method: 'qr-erc681' },
+            });
+
+            return;
+        }
+
         setValue(addressFieldName, qrCodeData, { shouldValidate: true });
         if (symbol && isAddressValid(qrCodeData, symbol)) {
             analytics.report({
@@ -81,7 +111,6 @@ export const AddressInput = ({ index, accountKey }: AddressInputProps) => {
     };
 
     const utxoLabel = watch(utxoLabelFieldName);
-    const tokenFieldName = getOutputFieldName(index, 'token');
     const outputToken = watch(tokenFieldName);
 
     return (

@@ -9,6 +9,8 @@ export interface SendFormState {
     scheme: Protocol;
     address: string;
     amount?: number;
+    token?: string; // ERC-681: token contract address
+    tokenAmount?: string; // ERC-681: amount in token's smallest unit (uint256)
 }
 
 type Autofill<T> = Partial<T> & {
@@ -33,6 +35,8 @@ const protocolReducer = (state: ProtocolState = initialState, action: Action): P
                 draft.sendForm.address = action.payload.address;
                 draft.sendForm.scheme = action.payload.scheme;
                 draft.sendForm.amount = action.payload.amount;
+                draft.sendForm.token = action.payload.token;
+                draft.sendForm.tokenAmount = action.payload.tokenAmount;
                 draft.sendForm.shouldFill = false;
                 break;
             case PROTOCOL.RESET:

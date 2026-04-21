@@ -1,5 +1,5 @@
 import { type Protocol } from '@suite-common/suite-constants';
-import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
+import { getNetworkSymbolForProtocol, parseErc681TransferUri } from '@suite-common/suite-utils';
 
 import { parseQuery, parseUri } from './parseUri';
 
@@ -7,6 +7,8 @@ export type CoinProtocolInfo = {
     scheme: Protocol;
     address: string;
     amount?: number;
+    token?: string; // ERC-681: token contract address
+    tokenAmount?: string; // ERC-681: amount in token's smallest unit (uint256)
 };
 
 const removeLeadingTrailingSlashes = (text: string) => text.replace(/^\/{0,2}|\/$/g, '');
@@ -26,6 +28,18 @@ export const getProtocolInfo = (
         }
 
         if (!pathname && !host) return null; // address may be in pathname (regular bitcoin:addr) or host (bitcoin://addr)
+
+        // Check for ERC-681 ERC-20 token transfer format:
+        // ethereum:{contractAddress}/transfer?address={recipient}&uint256={amount}
+        const erc681 = parseErc681TransferUri(uri);
+        if (erc681) {
+            return {
+                scheme,
+                address: erc681.recipientAddress,
+                token: erc681.contractAddress,
+                tokenAmount: erc681.tokenAmount,
+            };
+        }
 
         const floatAmount = Number.parseFloat(params.amount ?? '');
         const amount = !Number.isNaN(floatAmount) && floatAmount > 0 ? floatAmount : undefined;
