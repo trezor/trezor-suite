@@ -1,3 +1,7 @@
+# 1.3.1
+
+- chore(protobuf): update protobufjs lib (a961fa3fb1)
+
 # 1.3.0
 
 - chore(protocol): use v2 messageType in `protocol-thp` decode (fae6a1a62f)
