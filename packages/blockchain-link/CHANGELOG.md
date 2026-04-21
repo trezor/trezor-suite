@@ -1,3 +1,7 @@
+# 2.6.2
+
+- feat(connect): add support for discovery of Tron in Suite (6672c8823d)
+
 # 2.6.1
 
 - npm-prerelease: @trezor/blockchain-link 2.6.1-beta.1 (7f2a0b24e3)
