@@ -2929,6 +2929,8 @@ export const messages = {
             rate: 'Rate',
             selectedRate: 'Selected rate',
             footer: {
+                termsOfProvider:
+                    'This service is offered by {companyName}, not Trezor. <link>Terms apply</link>',
                 termsAndConditionsProvider:
                     "Trezor doesn't provide this service. It's governed by <link>{companyName}'s Terms & Conditions</link>.",
                 termsAndConditionsGeneral:
