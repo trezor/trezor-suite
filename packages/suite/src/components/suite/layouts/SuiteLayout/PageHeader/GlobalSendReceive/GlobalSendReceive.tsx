@@ -1,11 +1,12 @@
 import { memo } from 'react';
 
-import { useDevice } from '@suite/device';
+import { selectAllAccountsToList } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import { useDevice } from '@suite/device';
 
 import { resetProtocol } from 'src/actions/suite/protocolActions';
 import { AppNavigationTooltip } from 'src/components/suite/AppNavigation/AppNavigationTooltip';
-import { useDispatch } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { globalSendReceiveFilters } from 'src/slices/wallet/globalSendReceiveFilters';
 import { type AccountItemType } from 'src/types/wallet';
 
@@ -20,9 +21,13 @@ export const GlobalSendReceive = memo(function GlobalSendReceiveInner() {
     const { activeModal, openModal, closeModal } = useGlobalSendReceiveModal();
     const { sendAnalytics, receiveAnalytics } = useGlobalSendReceiveAnalytics();
     const dispatch = useDispatch();
+    const accounts = useSelector(selectAllAccountsToList);
 
     const buttonIntent = device?.connected && device?.available ? 'brand' : 'neutral';
     const buttonPriority = device?.connected && device?.available ? 'primary' : 'secondary';
+    // When there is nothing to send (no accounts yet or all accounts empty) we demote the Send
+    // button so Receive stands out as the primary action.
+    const hasNothingToSend = accounts.length === 0 || accounts.every(a => a.empty);
 
     const handleSendSubmit = (account: Account, filledSearch: boolean) => {
         sendAnalytics.account(filledSearch);
@@ -59,6 +64,7 @@ export const GlobalSendReceive = memo(function GlobalSendReceiveInner() {
                 }}
                 intent={buttonIntent}
                 priority={buttonPriority}
+                hasNothingToSend={hasNothingToSend}
             />
             {activeModal === 'send' && (
                 <GlobalSendModal onCancel={handleSendCancel} onSubmit={handleSendSubmit} />

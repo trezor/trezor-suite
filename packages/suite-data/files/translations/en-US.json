@@ -536,7 +536,7 @@
   "TR_CHANGE_WIPE_CODE": "Change",
   "TR_CHARGE_BATTERY_TO_ATLEAST": "Charge your Trezor to at least {percentage}% to prevent interruptions.",
   "TR_CHARGE_TREZOR_BEFORE_CONTINUING": "Charge your Trezor before continuing",
-  "TR_CHECKED_BALANCES_ON": "Checked balances on",
+  "TR_CHECKED_BALANCES_ON": "Ready on",
   "TR_CHECKING_YOUR_DEVICE": "Checking your device",
   "TR_CHECKSUM_CONVERSION_INFO": "Converted to checksum. <a>Learn more</a>",
   "TR_CHECK_CONNECTED_TREZORS": "Checking for connected Trezors",

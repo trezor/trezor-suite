@@ -11,11 +11,13 @@ type GlobalSendReceiveButtonsProps = {
     setActiveModal: (activeModal: NonNullable<GlobalSendReceiveType>) => void;
     intent: NonNullable<ButtonProps['intent']>;
     priority: NonNullable<ButtonProps['priority']>;
+    hasNothingToSend?: boolean;
 };
 export const GlobalSendReceiveButtons = ({
     setActiveModal,
     intent,
     priority,
+    hasNothingToSend,
 }: GlobalSendReceiveButtonsProps) => {
     const analytics = useAnalytics();
 
@@ -43,6 +45,8 @@ export const GlobalSendReceiveButtons = ({
                     analytics.report({ type: events.dashboardSendModalEvent.name });
                 }}
                 data-testid="@wallet/menu/wallet-global-send"
+                intent={hasNothingToSend ? 'neutral' : 'brand'}
+                priority={hasNothingToSend ? 'secondary' : undefined}
             >
                 <Translation id="TR_NAV_SEND" />
             </HeaderActionButton>
