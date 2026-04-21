@@ -3,6 +3,8 @@ import { Translation } from '@suite/intl';
 import { Modal, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
+import { useOnboarding } from 'src/hooks/suite';
+
 import { BackupStepDescription } from './BackupStepDescription';
 import { AfterBackupCheckboxes } from '../../components/backup';
 
@@ -13,7 +15,10 @@ export const BackupStep3Finished = ({
     onCancel: () => void;
     backup: BackupState;
 }) => {
+    const { backupMedium } = useOnboarding();
     const continueEnabled = canContinue(backup.userConfirmed);
+
+    const isUsingNfc = backupMedium === 'nfc';
 
     return (
         <Modal
@@ -39,7 +44,9 @@ export const BackupStep3Finished = ({
                 data-testid="@backup/success-message"
                 margin={{ bottom: spacings.xl }}
             >
-                <Translation id="TR_BACKUP_FINISHED_TEXT" />
+                <Translation
+                    id={isUsingNfc ? 'TR_BACKUP_FINISHED_TEXT_NFC' : 'TR_BACKUP_FINISHED_TEXT'}
+                />
             </Paragraph>
             <AfterBackupCheckboxes />
         </Modal>

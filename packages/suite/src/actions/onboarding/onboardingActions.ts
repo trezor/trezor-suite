@@ -30,7 +30,10 @@ import {
     resolveNextAvailableStep,
 } from 'src/utils/onboarding/steps';
 
-import { selectOnboardingAnalytics } from '../../reducers/onboarding/onboardingReducer';
+import {
+    type BackupMedium,
+    selectOnboardingAnalytics,
+} from '../../reducers/onboarding/onboardingReducer';
 
 export type OnboardingAction =
     | {
@@ -59,6 +62,10 @@ export type OnboardingAction =
     | {
           type: typeof ONBOARDING.SELECT_BACKUP_TYPE;
           payload: BackupType;
+      }
+    | {
+          type: typeof ONBOARDING.SELECT_BACKUP_MEDIUM;
+          payload: BackupMedium;
       };
 
 const goToStep = (stepId: AnyStepId): OnboardingAction => ({
@@ -193,6 +200,11 @@ const updateBackupType = (payload: BackupType): OnboardingAction => ({
     payload,
 });
 
+const updateBackupMedium = (payload: BackupMedium): OnboardingAction => ({
+    type: ONBOARDING.SELECT_BACKUP_MEDIUM,
+    payload,
+});
+
 const beginOnboardingTutorial = () => async (dispatch: Dispatch, getState: GetState) => {
     const device = selectSelectedDevice(getState());
     if (!device) return;
@@ -247,6 +259,7 @@ export {
     updateAnalytics,
     beginOnboardingTutorial,
     updateBackupType,
+    updateBackupMedium,
     resolveNextAfterSkipped,
     recoveryRerun,
 };

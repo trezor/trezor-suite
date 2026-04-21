@@ -1498,6 +1498,11 @@ export const messages = defineMessages({
         description: 'Text that appears after backup is finished',
         id: 'TR_BACKUP_FINISHED_TEXT',
     },
+    TR_BACKUP_FINISHED_TEXT_NFC: {
+        defaultMessage:
+            'Make sure to store your backup tags in a secure, private place. No one can recover your funds if you lose your wallet backup - not even Trezor Support.',
+        id: 'TR_BACKUP_FINISHED_TEXT_NFC',
+    },
     TR_BACKUP_RECOVERY_SEED: {
         defaultMessage: 'Wallet backup',
         id: 'TR_BACKUP_RECOVERY_SEED',

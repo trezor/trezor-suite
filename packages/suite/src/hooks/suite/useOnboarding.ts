@@ -6,6 +6,7 @@ import { UI_REQUEST } from '@trezor/connect';
 
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { type BackupMedium } from 'src/reducers/onboarding/onboardingReducer';
 import { type AnyPath, type AnyStepId } from 'src/types/onboarding';
 
 import { parseStepId } from '../../utils/onboarding/steps';
@@ -33,6 +34,8 @@ export const useOnboarding = () => {
             addPath: (payload: AnyPath) => dispatch(onboardingActions.addPath(payload)),
             updateBackupType: (payload: BackupType) =>
                 dispatch(onboardingActions.updateBackupType(payload)),
+            updateBackupMedium: (payload: BackupMedium) =>
+                dispatch(onboardingActions.updateBackupMedium(payload)),
             goToSuite: () => dispatch(onboardingActions.goToSuite()),
             resolveNextAfterSkipped: (requestedStepId: AnyStepId) =>
                 dispatch(onboardingActions.resolveNextAfterSkipped(requestedStepId)),

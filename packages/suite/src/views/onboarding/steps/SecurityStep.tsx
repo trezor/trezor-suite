@@ -2,6 +2,7 @@ import { useCallback, useState } from 'react';
 
 import { canContinue } from '@suite/backup';
 import { Translation } from '@suite/intl';
+import { CreateNfcBackup, NoNfcTags } from '@suite/nfc';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { goto } from '@suite/router';
 import { selectIsDeviceBackupRequired, selectSelectedDevice } from '@suite-common/device';
@@ -11,41 +12,65 @@ import { exhaustive } from '@trezor/type-utils';
 import { resetDevice } from 'src/actions/settings/deviceSettingsActions';
 import { BackupSeedCards } from 'src/components/backup';
 import { SkipStepConfirmation } from 'src/components/onboarding/SkipStepConfirmation';
+import { ConfirmActionModal } from 'src/components/suite/modals/ReduxModal/DeviceContextModal/ConfirmActionModal';
 import { useDevice, useDispatch, useOnboarding, useSelector } from 'src/hooks/suite';
 
 type SecurityStepStatus = 'initial' | 'in-progress' | 'skipping-backup' | 'finished';
 
+type ResetDeviceParams = NonNullable<Parameters<typeof resetDevice>[0]>;
+
 export const SecurityStep = () => {
     const [status, setStatus] = useState<SecurityStepStatus>('initial');
     const [showSkipConfirmation, setShowSkipConfirmation] = useState(false);
-    const { goToNextStep, updateAnalytics, backupType } = useOnboarding();
+    const {
+        goToNextStep,
+        goToPreviousStep,
+        updateAnalytics,
+        updateBackupMedium,
+        backupType,
+        backupMedium,
+    } = useOnboarding();
     const { isLocked } = useDevice();
     const device = useSelector(selectSelectedDevice);
     const dispatch = useDispatch();
     const backup = useSelector(state => state.backup);
     const isDeviceLocked = isLocked();
     const isBackupRequired = useSelector(selectIsDeviceBackupRequired);
+    const isNfcBackup = backupMedium === 'nfc';
 
     const getResetDeviceParams = useCallback(
-        (skipBackup: boolean = false) => {
+        (skipBackup: boolean = false): ResetDeviceParams => {
             // All types use skip_backup: false — wallet creation + backup is atomic,
             // matching native device onboarding. If backup fails, device wipes itself.
-            switch (backupType) {
-                case 'shamir-single':
-                    // Slip39_Single_Extendable — firmware handles single-share Shamir natively,
-                    // shows "20 words" without asking for shares/threshold.
-                    return { backup_type: 3 as const, skip_backup: skipBackup };
-                case 'shamir-advanced':
-                    return { backup_type: 1 as const, skip_backup: skipBackup };
-                case '12-words':
-                    return { backup_type: 0 as const, strength: 128, skip_backup: skipBackup };
-                case '24-words':
-                    return { backup_type: 0 as const, strength: 256, skip_backup: skipBackup };
-                default:
-                    return exhaustive(backupType);
+            const params = (() => {
+                switch (backupType) {
+                    case 'shamir-single':
+                        // Slip39_Single_Extendable — firmware handles single-share Shamir natively,
+                        // shows "20 words" without asking for shares/threshold.
+                        return { backup_type: 3 as const, skip_backup: skipBackup };
+                    case 'shamir-advanced':
+                        return { backup_type: 1 as const, skip_backup: skipBackup };
+                    case '12-words':
+                        return { backup_type: 0 as const, strength: 128, skip_backup: skipBackup };
+                    case '24-words':
+                        return { backup_type: 0 as const, strength: 256, skip_backup: skipBackup };
+                    default:
+                        return exhaustive(backupType);
+                }
+            })();
+
+            if (isNfcBackup) {
+                // obviously NFC backup works only for SLIP39
+                return {
+                    ...params,
+                    backup_method: 1,
+                    backup_type: 1 as const,
+                };
             }
+
+            return params;
         },
-        [backupType],
+        [backupType, isNfcBackup],
     );
 
     const handleStart = useCallback(async () => {
@@ -59,23 +84,47 @@ export const SecurityStep = () => {
         if (result?.success) {
             setStatus('finished');
         } else {
+            // TODO: why should we go to the default dashboard when there is an error??
             dispatch(goto({ routeName: 'suite-index' }));
         }
     }, [dispatch, getResetDeviceParams, updateAnalytics]);
 
-    const handleSkipBackup = useCallback(async () => {
-        updateAnalytics({ backup: 'skip' });
-        setShowSkipConfirmation(false);
-        setStatus('skipping-backup');
-        const result = await dispatch(resetDevice(getResetDeviceParams(true)));
-        if (result?.success) {
-            goToNextStep('set-pin');
-        } else {
-            dispatch(goto({ routeName: 'suite-index' }));
-        }
-    }, [dispatch, getResetDeviceParams, goToNextStep, updateAnalytics]);
+    const handleSkipBackup = useCallback(
+        async ({ showFinishedScreen = false }: { showFinishedScreen?: boolean } = {}) => {
+            updateAnalytics({ backup: 'skip' });
+            setShowSkipConfirmation(false);
+            setStatus('skipping-backup');
+            const result = await dispatch(resetDevice(getResetDeviceParams(true)));
+            if (result?.success) {
+                if (showFinishedScreen) {
+                    setStatus('finished');
+                } else {
+                    goToNextStep('set-pin');
+                }
+            } else {
+                dispatch(goto({ routeName: 'suite-index' }));
+            }
+        },
+        [dispatch, getResetDeviceParams, goToNextStep, updateAnalytics],
+    );
 
     if (status === 'initial') {
+        if (isNfcBackup) {
+            return (
+                <CreateNfcBackup onBack={() => goToPreviousStep()} onCreateBackup={handleStart} />
+            );
+        }
+
+        if (backupMedium === null) {
+            return (
+                <NoNfcTags
+                    onBack={() => goToPreviousStep()}
+                    onFinishSetup={() => handleSkipBackup({ showFinishedScreen: true })}
+                    onCreateWordlistBackup={() => updateBackupMedium('wordlist')}
+                />
+            );
+        }
+
         return (
             <>
                 {showSkipConfirmation && (
@@ -158,6 +207,19 @@ export const SecurityStep = () => {
 
     // In-progress: wallet creation or backup running on device
     if (status === 'skipping-backup') {
+        if (backupMedium === null && device) {
+            return (
+                <>
+                    <NoNfcTags
+                        onBack={() => goToPreviousStep()}
+                        onFinishSetup={() => handleSkipBackup({ showFinishedScreen: true })}
+                        onCreateWordlistBackup={() => updateBackupMedium('wordlist')}
+                    />
+                    <ConfirmActionModal device={device} enableBackdropClick={false} />
+                </>
+            );
+        }
+
         return (
             <OnboardingCard
                 iconName="wallet"
@@ -172,6 +234,15 @@ export const SecurityStep = () => {
                 isConfirmedOnDevice
                 isActionAbortable
             />
+        );
+    }
+
+    if (isNfcBackup && device) {
+        return (
+            <>
+                <CreateNfcBackup onBack={() => goToPreviousStep()} onCreateBackup={handleStart} />
+                <ConfirmActionModal device={device} enableBackdropClick={false} />
+            </>
         );
     }
 

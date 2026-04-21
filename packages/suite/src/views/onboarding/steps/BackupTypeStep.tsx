@@ -27,7 +27,13 @@ export const BackupTypeStep = () => {
 
     const [backupType, setBackupType] = useState<BackupType>(deviceDefaultBackupType);
     const [showMediumChoice, setShowMediumChoice] = useState(isN4w1BackupEnabled);
-    const { goToPreviousStep, goToNextStep, updateAnalytics, updateBackupType } = useOnboarding();
+    const {
+        goToPreviousStep,
+        goToNextStep,
+        updateAnalytics,
+        updateBackupType,
+        updateBackupMedium,
+    } = useOnboarding();
 
     const isDeviceLocked = isLocked();
 
@@ -37,10 +43,11 @@ export const BackupTypeStep = () => {
     const handleSubmit = useCallback(
         (type: BackupType) => {
             updateBackupType(type);
+            updateBackupMedium('wordlist');
             updateAnalytics({ seedType: type });
             goToNextStep();
         },
-        [updateBackupType, updateAnalytics, goToNextStep],
+        [updateBackupType, updateBackupMedium, updateAnalytics, goToNextStep],
     );
 
     useEffect(() => {
@@ -57,8 +64,11 @@ export const BackupTypeStep = () => {
         return (
             <SelectBackupMedium
                 onBack={() => goToPreviousStep()}
-                onContinueWithNfc={() => goToNextStep()}
-                onContinueWithoutNfc={() => setShowMediumChoice(false)}
+                onContinueWithNfc={() => {
+                    updateBackupMedium('nfc');
+                    goToNextStep();
+                }}
+                onContinueWithoutNfc={() => goToNextStep()}
             />
         );
     }
