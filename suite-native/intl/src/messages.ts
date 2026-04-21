@@ -2935,6 +2935,17 @@ export const messages = {
                     "Trezor doesn't provide this service. It's governed by provider's Terms & Conditions.",
                 termsOfUse: "Trezor's Terms of Use",
                 learnMore: 'Learn more',
+                termsAndConditionsGeneric:
+                    'This service is offered by a third-party provider, not Trezor. Provider’s terms apply.',
+                howTradingWorksSheet: {
+                    title: 'How trading works',
+                    sheetTitle: 'How trading with Trezor works',
+                    item1: 'Trezor compares trusted exchange providers to find the best offer',
+                    item2: 'Providers use your location only to show relevant offers',
+                    item3: 'Trezor never sees your payment or KYC data\n<text>You share it only with the exchange if you complete the trade.</text>',
+                    item4: 'How fees are calculated',
+                    item5: 'Trezor’s Terms of Use',
+                },
             },
             balance: 'Balance:',
             providerOffer: 'Provider offer: {amount}',
