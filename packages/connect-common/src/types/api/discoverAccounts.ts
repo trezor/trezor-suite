@@ -72,7 +72,7 @@ export type AccountTypeKey = DistributivePick<AccountTypeItem, 'symbol' | 'type'
 
 export type AdditionalParams = Pick<
     BlockchainLinkParams<'getAccountInfo'>,
-    'details' | 'pageSize' | 'includeErc4626'
+    'details' | 'pageSize' | 'includeErc4626' | 'gap'
 > & {
     identity?: string;
 };

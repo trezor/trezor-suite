@@ -323,8 +323,17 @@ export default class DiscoverAccounts extends AbstractMethod<
         request: Request,
         sendCoreMessage: MethodContext['sendCoreMessage'],
     ): Promise<{ nonempty: number; error?: string }> {
-        const { details, identity, pageSize, includeErc4626, coinInfo, derivation, offset, skip } =
-            request;
+        const {
+            details,
+            identity,
+            pageSize,
+            gap,
+            includeErc4626,
+            coinInfo,
+            derivation,
+            offset,
+            skip,
+        } = request;
         const { path: bip43, ...accountKey } = request.account;
         const backendType = coinInfo.blockchainLink?.type;
         const utxoRequired = isUtxoBased(coinInfo) && details && details !== 'basic';
@@ -358,6 +367,7 @@ export default class DiscoverAccounts extends AbstractMethod<
                     details,
                     pageSize,
                     includeErc4626,
+                    gap,
                 });
 
                 // eslint-disable-next-line no-nested-ternary
