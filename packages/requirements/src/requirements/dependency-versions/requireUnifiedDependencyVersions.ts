@@ -13,8 +13,8 @@ import type { Requirement } from '../Requirement';
  * Entries SHOULD be removed once the migration or constraint is resolved.
  */
 export const ALLOWED_DRIFTS = new Set([
+    '@scure/base', // ESM-only v2 is used only where CJS compatibility is not required yet.
     'babel-jest', // waiting for suite-native who are waiting for expo to update babel-jest
-    '@scure/base', // i think i had a cjs problem, todo: investigate later
 ]);
 
 type PackageJson = {
