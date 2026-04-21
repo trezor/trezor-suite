@@ -2550,6 +2550,53 @@ export const messages = {
                 },
             },
         },
+        howYieldWorksScreen: {
+            title: 'How yield works',
+            subtitle: 'Your stablecoins are put to work in lending protocols to earn yield.',
+            benefits: {
+                first: {
+                    title: 'The supplied amount of USDC is locked until you withdraw it.',
+                    description: 'Withdrawal is instant.',
+                },
+                second: {
+                    title: 'Rewards are mostly compounded.',
+                    description:
+                        'Most rewards are compounded automatically. Some must be claimed separately.',
+                },
+                third: {
+                    title: 'Deposit {tokenSymbol} to receive {vaultTokenName} tokens.',
+                    description: 'These tokens represent your vault position.',
+                },
+            },
+            timelineCardTitle: 'Supply timeline',
+            timelineBottomSheetTitle: 'Supply timeline & fees',
+            supplyTimelineTitle: 'Supply',
+            supplyTimeline: {
+                first: {
+                    title: 'Approve spending transaction',
+                    description: 'Network fee',
+                },
+                second: {
+                    title: 'Sign supplying transaction',
+                    description: 'Network fee',
+                },
+                third: {
+                    title: 'Yield accrues as your assets grow in value',
+                    description: '~{apy}% yearly',
+                },
+            },
+            withdrawTimelineTitle: 'Withdraw',
+            withdrawTimeline: {
+                first: {
+                    title: 'Sign withdrawal transaction',
+                    description: 'Network fee',
+                },
+                second: {
+                    title: 'Receive {tokenSymbol} in account',
+                    description: 'Instantly',
+                },
+            },
+        },
         staked: 'Staked',
         stakedAutomatically: 'Staked automatically',
         fullBalance: 'Full balance',

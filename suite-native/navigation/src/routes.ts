@@ -9,6 +9,7 @@ export enum RootStackRoutes {
     StakingManagement = 'StakingManagement',
     StakingInsufficientBalance = 'StakingInsufficientBalance',
     HowStakeWorksScreen = 'HowStakeWorksScreen',
+    YieldNavigator = 'YieldNavigator',
     EarnForm = 'EarnForm',
     EarnConsents = 'EarnConsents',
     EarnTransactionDataReview = 'EarnTransactionDataReview',
@@ -224,6 +225,10 @@ export enum AccountsStackRoutes {
 
 export enum EarnStackRoutes {
     Earn = 'Earn',
+}
+
+export enum YieldStackRoutes {
+    HowYieldWorks = 'HowYieldWorks',
 }
 
 export enum ReceiveStackRoutes {

@@ -19,6 +19,7 @@ import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { TokenAmountFormatter } from '@suite-native/formatters';
 import { CryptoIconWithNetwork, Icon } from '@suite-native/icons';
 import { Translation, useTranslate } from '@suite-native/intl';
+import { useWorkInProgressAlert } from '@suite-native/module-earn';
 import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 
 import { StablecoinYieldApyBreakdown } from './StablecoinYieldApyBreakdown';
@@ -35,6 +36,7 @@ export const StablecoinYieldTokenOverview = ({
 }: StablecoinYieldTokenOverviewProps) => {
     const { showAlert } = useAlert();
     const { translate } = useTranslate();
+    const handleShowWorkInProgressAlert = useWorkInProgressAlert();
     const isEnabled = useFeatureFlag(FeatureFlag.IsStablecoinYieldEnabled);
     const { yieldOpportunities } = useAllYieldOpportunities({ enabled: isEnabled });
     const account = useSelector((state: AccountsRootState) =>
@@ -53,16 +55,6 @@ export const StablecoinYieldTokenOverview = ({
     const apyPercent =
         vault?.rewardRate.total != null ? getApyPercent(vault.rewardRate.total)?.toFixed(2) : null;
     const apy = apyPercent !== null ? `~${apyPercent}%` : null;
-
-    const handleShowWipAlert = useCallback(
-        () =>
-            showAlert({
-                title: 'Work in progress',
-                description: 'This action is not available yet.',
-                primaryButtonTitle: translate('generic.buttons.gotIt'),
-            }),
-        [showAlert, translate],
-    );
 
     const handleOpenApyAlert = useCallback(() => {
         if (!account || !vault) {
@@ -168,7 +160,8 @@ export const StablecoinYieldTokenOverview = ({
                         <HStack spacing="sp12">
                             <Box flex={1}>
                                 <Button
-                                    onPress={handleShowWipAlert}
+                                    // TODO: Remove once the stablecoin yield supply flow is implemented.
+                                    onPress={handleShowWorkInProgressAlert}
                                     intent="brand"
                                     priority="secondary"
                                     size="medium"
@@ -179,7 +172,8 @@ export const StablecoinYieldTokenOverview = ({
                             </Box>
                             <Box flex={1}>
                                 <Button
-                                    onPress={handleShowWipAlert}
+                                    // TODO: Remove once the stablecoin yield withdraw flow is implemented.
+                                    onPress={handleShowWorkInProgressAlert}
                                     intent="brand"
                                     priority="secondary"
                                     size="medium"
