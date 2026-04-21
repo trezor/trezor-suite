@@ -9,6 +9,10 @@ import type { MethodMessage, MethodPermission } from '../../../core/AbstractMeth
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { validatePath } from '../../../utils/pathUtils';
+import {
+    PAYMENT_REQUEST_AMOUNT_BYTES,
+    encodePaymentRequestAmount,
+} from '../../../utils/paymentRequest';
 import * as helper from '../stellarSignTx';
 
 type Params = {
@@ -39,7 +43,12 @@ export default class StellarSignTransaction extends AbstractMethod<
             path,
             networkPassphrase: payload.networkPassphrase,
             transaction,
-            payment_req: payload.payment_req,
+            payment_req: payload.payment_req
+                ? encodePaymentRequestAmount(
+                      payload.payment_req,
+                      PAYMENT_REQUEST_AMOUNT_BYTES.DEFAULT,
+                  )
+                : undefined,
         };
 
         super(message, params);

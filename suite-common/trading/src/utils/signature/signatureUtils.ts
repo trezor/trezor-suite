@@ -6,10 +6,10 @@ import {
 } from 'invity-api';
 
 import type { Network } from '@suite-common/wallet-config';
-import { asAmountUnit, formatBigUintToLE, unitsToSubunits } from '@suite-common/wallet-utils';
+import { asAmountUnit, unitsToSubunits } from '@suite-common/wallet-utils';
 import { type PROTO } from '@trezor/connect';
 import { validatePath } from '@trezor/connect/src/utils/pathUtils';
-import { BigNumber } from '@trezor/utils';
+import { BigNumber, formatBigUintToLE } from '@trezor/utils';
 
 import { cryptoIdToNetworkAndContractAddress } from '../../utils';
 
@@ -74,14 +74,12 @@ export const tradingExchangeCreatePaymentRequest = ({
         return undefined;
     }
 
-    const sendAmount = formatSlip24SendAmountByNetwork({
-        value: unitsToSubunits({
-            value: asAmountUnit(new BigNumber(sendStringAmount)),
-            symbol: sendNetworkSymbol,
-            ...(sendTokenDecimals !== undefined ? { decimals: sendTokenDecimals } : undefined),
-        }).toString(),
-        network: sendNetworkData.network,
-    });
+    // Decimal subunits (satoshis, wei, ...). `@trezor/connect` encodes to SLIP-24 bytes.
+    const sendAmount = unitsToSubunits({
+        value: asAmountUnit(new BigNumber(sendStringAmount)),
+        symbol: sendNetworkSymbol,
+        ...(sendTokenDecimals !== undefined ? { decimals: sendTokenDecimals } : undefined),
+    }).toString();
 
     const receiveAmount = `${trade.receiveStringAmount} ${receiveDisplaySymbol}`;
 
@@ -151,14 +149,12 @@ export const tradingSellCreatePaymentRequest = ({
         return undefined;
     }
 
-    const sendAmount = formatSlip24SendAmountByNetwork({
-        value: unitsToSubunits({
-            value: asAmountUnit(new BigNumber(sendStringAmount)),
-            symbol: sendNetworkSymbol,
-            ...(sendTokenDecimals !== undefined ? { decimals: sendTokenDecimals } : undefined),
-        }).toString(),
-        network: sendNetworkData.network,
-    });
+    // Decimal subunits (satoshis, wei, ...). `@trezor/connect` encodes to SLIP-24 bytes.
+    const sendAmount = unitsToSubunits({
+        value: asAmountUnit(new BigNumber(sendStringAmount)),
+        symbol: sendNetworkSymbol,
+        ...(sendTokenDecimals !== undefined ? { decimals: sendTokenDecimals } : undefined),
+    }).toString();
 
     const memos: PROTO.PaymentRequestMemo[] = [
         {

@@ -18,6 +18,10 @@ import { getNetworkLabel } from '../../../utils/ethereumUtils';
 import { deepTransform, stripHexPrefix } from '../../../utils/formatUtils';
 import { getSlip44ByPath, validatePath } from '../../../utils/pathUtils';
 import {
+    PAYMENT_REQUEST_AMOUNT_BYTES,
+    encodePaymentRequestAmount,
+} from '../../../utils/paymentRequest';
+import {
     decodeEthereumDefinition,
     ethereumNetworkInfoFromDefinition,
     getEthereumDefinitions,
@@ -77,7 +81,9 @@ export default class EthereumSignTransaction extends AbstractMethod<
             type: isEIP1559 ? 'eip1559' : 'legacy',
             tx: {
                 ...strip(tx),
-                payment_req: tx.payment_req,
+                payment_req: tx.payment_req
+                    ? encodePaymentRequestAmount(tx.payment_req, PAYMENT_REQUEST_AMOUNT_BYTES.EVM)
+                    : undefined,
             },
             originalTx: tx,
             chunkify,

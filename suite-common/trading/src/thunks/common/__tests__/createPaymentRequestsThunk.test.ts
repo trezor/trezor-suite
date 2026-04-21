@@ -254,7 +254,7 @@ describe('createPaymentRequestsThunk', () => {
 
         const mockPaymentRequest: PROTO.PaymentRequest = {
             recipient_name: 'Changelly',
-            amount: 'a086010000000000', // 8 bytes little-endian for 100000 satoshis
+            amount: '100000', // decimal subunits (satoshis), encoded to LE bytes by @trezor/connect
             nonce: mockNonce,
             signature: 'signature123',
             memos: [
@@ -421,7 +421,7 @@ describe('createPaymentRequestsThunk', () => {
     describe('sell flow', () => {
         const mockSellPaymentRequest: PROTO.PaymentRequest = {
             recipient_name: 'Coinbase',
-            amount: 'a086010000000000', // 8 bytes little-endian for 100000 satoshis
+            amount: '100000', // decimal subunits (satoshis), encoded to LE bytes by @trezor/connect
             nonce: mockNonce,
             signature: 'sell-signature123',
             memos: [
