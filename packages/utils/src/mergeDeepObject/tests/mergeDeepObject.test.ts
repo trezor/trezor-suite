@@ -1,11 +1,11 @@
-import { mergeDeepObject } from '../src/mergeDeepObject';
+import { mergeDeepObject } from '../mergeDeepObject';
 
 interface INamedObject {
     propertyA: string[];
     propertyB: string;
 }
 
-describe('mergeDeepObject', () => {
+describe(mergeDeepObject.name, () => {
     const object1 = {
         array: ['a'],
         date: new Date('2020-01-01'),
@@ -203,13 +203,20 @@ describe('mergeDeepObject', () => {
         const third = { 'i.j': 'bar' };
 
         it('dot notation off', () => {
-            const res = mergeDeepObject.withOptions({ mergeArrays: false }, first, second, third);
-            expect(res).toStrictEqual({ ...first, ...second, ...third });
+            const result = mergeDeepObject.withOptions(
+                { mergeArrays: false },
+                first,
+                second,
+                third,
+            );
+
+            expect(result).toStrictEqual({ ...first, ...second, ...third });
         });
 
         it('dot notation on', () => {
-            const res = mergeDeepObject.withOptions({ dotNotation: true }, first, second, third);
-            expect(res).toStrictEqual({
+            const result = mergeDeepObject.withOptions({ dotNotation: true }, first, second, third);
+
+            expect(result).toStrictEqual({
                 a: { b: 3, c: 'foo' },
                 d: { e: { f: fn, g: true } },
                 i: { j: 'bar' },

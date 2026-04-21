@@ -41,7 +41,7 @@ export * from './isUrl';
 export * from './isWhitelistedHost';
 export * from './logs';
 export * from './logsManager';
-export * from './mergeDeepObject';
+export { mergeDeepObject } from './mergeDeepObject/mergeDeepObject';
 export * from './objectPartition';
 export * from './parseElectrumUrl';
 export * from './parseHostname';
