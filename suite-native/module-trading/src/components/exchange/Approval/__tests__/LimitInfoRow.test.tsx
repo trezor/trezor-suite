@@ -1,9 +1,7 @@
-import type { CryptoId } from 'invity-api';
-
 import { Text } from '@suite-native/atoms';
 import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider, userEvent } from '@suite-native/test-utils';
-import { getWalletState } from '@suite-native/trading-fixtures';
+import { getWalletState, mercuryoFixedBestQuote } from '@suite-native/trading-fixtures';
 
 import { LimitInfoRow } from '../LimitInfoRow';
 
@@ -11,15 +9,25 @@ type LimitInfoRowProps = React.ComponentProps<typeof LimitInfoRow>;
 
 describe('LimitInfoRow', () => {
     const defaultProps: LimitInfoRowProps = {
-        cryptoId: 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as CryptoId,
-        amount: '100',
-        approvalType: 'MINIMAL',
         onPress: jest.fn(),
     };
 
-    const renderLimitInfoRow = (props: Partial<LimitInfoRowProps> = {}) => {
+    const renderLimitInfoRow = (props: Partial<LimitInfoRowProps> = {}, quoteOverrides = {}) => {
+        const walletState = getWalletState({ tradeType: 'exchange' });
         const preloadedState = {
-            wallet: getWalletState({ tradeType: 'exchange' }),
+            wallet: {
+                ...walletState,
+                trading: {
+                    ...walletState.trading,
+                    exchange: {
+                        ...walletState.trading.exchange,
+                        selectedQuote: {
+                            ...mercuryoFixedBestQuote,
+                            ...quoteOverrides,
+                        },
+                    },
+                },
+            },
         };
 
         return renderWithStoreProvider(<LimitInfoRow {...defaultProps} {...props} />, {
@@ -27,22 +35,17 @@ describe('LimitInfoRow', () => {
         });
     };
 
-    it('should render limit label', () => {
-        const { getByText } = renderLimitInfoRow();
-
-        expect(
-            getByText(getTranslation('moduleTrading.tradingExchangeApprovalScreen.limitLabel')),
-        ).toBeOnTheScreen();
-    });
-
     it('should render formatted amount when approval type is MINIMAL', () => {
-        const { getByText } = renderLimitInfoRow({ approvalType: 'MINIMAL' });
+        const { getByText } = renderLimitInfoRow(
+            {},
+            { approvalType: 'MINIMAL', sendStringAmount: '100' },
+        );
 
         expect(getByText('100 USDC')).toBeOnTheScreen();
     });
 
     it('should render unlimited label when approval type is INFINITE', () => {
-        const { getByText } = renderLimitInfoRow({ approvalType: 'INFINITE' });
+        const { getByText } = renderLimitInfoRow({}, { approvalType: 'INFINITE' });
 
         expect(
             getByText(getTranslation('moduleTrading.tradingExchangeApprovalScreen.unlimitedLabel')),
@@ -67,5 +70,21 @@ describe('LimitInfoRow', () => {
         await userEvent.press(getByTestId('test-limit-info-row'));
 
         expect(onPress).toHaveBeenCalledTimes(1);
+    });
+
+    it('should render "Limit" label when quote has not preapproved limit', () => {
+        const { getByText } = renderLimitInfoRow();
+
+        expect(
+            getByText(getTranslation('moduleTrading.tradingExchangeApprovalScreen.limitLabel')),
+        ).toBeOnTheScreen();
+    });
+
+    it('should render "New limit" label when quote has preapproved limit', () => {
+        const { getByText } = renderLimitInfoRow({}, { preapprovedStringAmount: '25' });
+
+        expect(
+            getByText(getTranslation('moduleTrading.tradingExchangeApprovalScreen.newLimitLabel')),
+        ).toBeOnTheScreen();
     });
 });

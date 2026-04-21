@@ -36,19 +36,11 @@ export const LimitPicker = ({ onApprovalTypeChange }: LimitPickerProps) => {
         return null;
     }
 
-    const { send, approvalStringAmount } = quote;
     const isInfinite = approvalType === 'INFINITE';
 
     return (
         <>
-            <LimitInfoRow
-                onPress={showSheet}
-                testID="ExchangeApproval/LimitPicker"
-                cryptoId={send}
-                amount={approvalStringAmount}
-                approvalType={approvalType}
-                withCaret
-            >
+            <LimitInfoRow onPress={showSheet} testID="ExchangeApproval/LimitPicker" withCaret>
                 <Text variant="body-sm" color="contentSecondary">
                     {isInfinite ? (
                         <Translation id="moduleTrading.exchangeApprovalLimitSheet.unlimitedCard.info" />

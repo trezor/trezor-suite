@@ -30,7 +30,7 @@ describe('ExchangeConfirmationInfo', () => {
     it('should render nothing when quote is not available', () => {
         store.dispatch(tradingExchangeActions.saveSelectedQuote(undefined));
 
-        const { toJSON } = renderInfo({ variant: 'approve' });
+        const { toJSON } = renderInfo({ flowType: 'approve' });
 
         expect(toJSON()).toBeNull();
     });
@@ -39,7 +39,7 @@ describe('ExchangeConfirmationInfo', () => {
         const quoteWithoutSend = { ...testQuote, send: undefined } as ExchangeTrade;
         store.dispatch(tradingExchangeActions.saveSelectedQuote(quoteWithoutSend));
 
-        const { toJSON } = renderInfo({ variant: 'approve' });
+        const { toJSON } = renderInfo({ flowType: 'approve' });
 
         expect(toJSON()).toBeNull();
     });
@@ -51,13 +51,13 @@ describe('ExchangeConfirmationInfo', () => {
         } as ExchangeTrade;
         store.dispatch(tradingExchangeActions.saveSelectedQuote(quoteWithUnknownSend));
 
-        const { toJSON } = renderInfo({ variant: 'approve' });
+        const { toJSON } = renderInfo({ flowType: 'approve' });
 
         expect(toJSON()).toBeNull();
     });
 
     it('should render date, provider, limit and fee rows', () => {
-        renderInfo({ variant: 'approve' });
+        renderInfo({ flowType: 'approve' });
 
         expect(screen.getByText('Date')).toBeOnTheScreen();
         expect(screen.getByText('Mercuryo')).toBeOnTheScreen();
@@ -72,7 +72,7 @@ describe('ExchangeConfirmationInfo', () => {
         } as ExchangeTrade;
         store.dispatch(tradingExchangeActions.saveSelectedQuote(quoteWithStringFee));
 
-        renderInfo({ variant: 'approve' });
+        renderInfo({ flowType: 'approve' });
 
         expect(screen.getByText('0 ETH')).toBeOnTheScreen();
     });
@@ -84,7 +84,7 @@ describe('ExchangeConfirmationInfo', () => {
         } as ExchangeTrade;
         store.dispatch(tradingExchangeActions.saveSelectedQuote(quoteWithNumericFee));
 
-        renderInfo({ variant: 'approve' });
+        renderInfo({ flowType: 'approve' });
 
         expect(screen.getByText('0.042 ETH')).toBeOnTheScreen();
     });

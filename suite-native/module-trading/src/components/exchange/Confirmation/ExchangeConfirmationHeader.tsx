@@ -10,16 +10,16 @@ import {
 } from '@suite-common/trading';
 import { Translation } from '@suite-native/intl';
 import {
+    type ConfirmingScreenFlowType,
     type RootStackParamList,
     ScreenHeader,
     type StackToStackCompositeNavigationProps,
-    type TradingConfirmationVariant,
     type TradingStackParamList,
     type TradingStackRoutes,
 } from '@suite-native/navigation';
 
 export type ExchangeConfirmationHeaderProps = {
-    variant: TradingConfirmationVariant;
+    flowType: ConfirmingScreenFlowType;
 };
 
 type NavigationProp = StackToStackCompositeNavigationProps<
@@ -28,7 +28,7 @@ type NavigationProp = StackToStackCompositeNavigationProps<
     RootStackParamList
 >;
 
-export const ExchangeConfirmationHeader = ({ variant }: ExchangeConfirmationHeaderProps) => {
+export const ExchangeConfirmationHeader = ({ flowType }: ExchangeConfirmationHeaderProps) => {
     const navigation = useNavigation<NavigationProp>();
 
     const quote = useSelector(selectTradingExchangeActiveQuote);
@@ -40,7 +40,7 @@ export const ExchangeConfirmationHeader = ({ variant }: ExchangeConfirmationHead
     let title: ComponentProps<typeof ScreenHeader>['title'];
     if (symbol) {
         title =
-            variant === 'approve' ? (
+            flowType === 'approve' ? (
                 <Translation
                     id="moduleTrading.tradingConfirmationScreen.approveHeaderTitle"
                     values={{ symbol }}

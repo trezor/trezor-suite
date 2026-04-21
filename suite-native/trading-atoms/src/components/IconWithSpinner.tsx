@@ -8,7 +8,7 @@ export type IconWithSpinnerProps = {
 };
 
 const iconWrapperStyle = prepareNativeStyle(utils => ({
-    backgroundColor: utils.colors.backgroundSurfaceElevation1,
+    backgroundColor: utils.colors.surfaceFillRaised,
     borderRadius: utils.borders.radii.round,
     padding: utils.spacings.sp12,
     alignItems: 'center',
@@ -24,7 +24,7 @@ export const IconWithSpinner = ({ iconName, isInProgress = true }: IconWithSpinn
             {isInProgress && (
                 <CircularSpinner
                     size={utils.spacings.sp56}
-                    color="backgroundAlertYellowBold"
+                    color="legacyBackgroundAlertYellowBold"
                     width={3}
                 />
             )}

@@ -61,7 +61,9 @@ export const FeeSummaryCard = ({
                                 isDiscreetText={false}
                             />
                         </VStack>
-                        {!!withCaret && <Icon name="caretDown" size="medium" color="contentSecondary" />}
+                        {!!withCaret && (
+                            <Icon name="caretDown" size="medium" color="contentSecondary" />
+                        )}
                     </HStack>
                 </HStack>
             </Card>

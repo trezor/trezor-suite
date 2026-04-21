@@ -21,51 +21,31 @@ export const ConfirmationQuoteDebugView = ({ forceStatus }: ConfirmationQuoteDeb
     return (
         <DebugModeView>
             <HStack>
-                <Button
-                    size="tiny"
-                    colorScheme="tertiaryElevation0"
-                    onPress={() => forceStatus('none')}
-                >
+                <Button size="small" onPress={() => forceStatus('none')} intent="accentViolet">
                     None
                 </Button>
-                <Button
-                    size="tiny"
-                    colorScheme="yellowElevation0"
-                    onPress={() => forceStatus('isPending')}
-                >
+                <Button size="small" onPress={() => forceStatus('isPending')} intent="warning">
                     Pending
                 </Button>
-                <Button
-                    size="tiny"
-                    colorScheme="redElevation0"
-                    onPress={() => forceStatus('isFailed')}
-                >
+                <Button size="small" onPress={() => forceStatus('isFailed')} intent="critical">
                     Failed
                 </Button>
-                <Button
-                    size="tiny"
-                    colorScheme="blueElevation0"
-                    onPress={() => forceStatus('isConfirmed')}
-                >
+                <Button size="small" onPress={() => forceStatus('isConfirmed')} intent="brand">
                     Confirmed
                 </Button>
-                <Button
-                    size="tiny"
-                    colorScheme="secondary"
-                    onPress={() => forceStatus('no-override')}
-                >
+                <Button size="small" onPress={() => forceStatus('no-override')} intent="neutral">
                     No override
                 </Button>
             </HStack>
             <HStack>
                 <Text variant="body-xs">Quote status</Text>
-                <Text variant="body-xs" color="textSubdued">
+                <Text variant="body-xs" color="contentSecondary">
                     {quote?.status ?? 'none'}
                 </Text>
             </HStack>
             <HStack>
                 <Text variant="body-xs">Approval status</Text>
-                <Text variant="body-xs" color="textSubdued">
+                <Text variant="body-xs" color="contentSecondary">
                     {[
                         status.isPending && 'pending',
                         status.isConfirmed && 'confirmed',
@@ -77,7 +57,7 @@ export const ConfirmationQuoteDebugView = ({ forceStatus }: ConfirmationQuoteDeb
             </HStack>
             <HStack>
                 <Text variant="body-xs">approvalTxid</Text>
-                <Text variant="body-xs" color="textSubdued">
+                <Text variant="body-xs" color="contentSecondary">
                     {approvalTxid ?? 'not defined'}
                 </Text>
             </HStack>
