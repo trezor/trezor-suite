@@ -4876,15 +4876,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hookform/resolvers@npm:^3.3.4":
-  version: 3.10.0
-  resolution: "@hookform/resolvers@npm:3.10.0"
-  peerDependencies:
-    react-hook-form: ^7.0.0
-  checksum: 10/92d3601b2cedb4f52e9e086cc4bd6a20b493f59ecfb1af8b8e465057f0445aa83cf5a6d482a831cdf5d1321a73269173633222eefde0adb515d3820c1525b0cb
-  languageName: node
-  linkType: hard
-
 "@hookform/resolvers@npm:^5.2.2":
   version: 5.2.2
   resolution: "@hookform/resolvers@npm:5.2.2"
@@ -14913,7 +14904,7 @@ __metadata:
   dependencies:
     "@evolu/common": "npm:8.0.0-next.3"
     "@evolu/web": "npm:3.0.0-next.0"
-    "@hookform/resolvers": "npm:^3.3.4"
+    "@hookform/resolvers": "npm:^5.2.2"
     "@reduxjs/toolkit": "npm:2.11.2"
     "@suite-common/delegated-identity-key-types": "workspace:*"
     "@suite-common/device": "workspace:*"
