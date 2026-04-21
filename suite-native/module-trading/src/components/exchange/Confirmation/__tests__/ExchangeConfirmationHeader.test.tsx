@@ -23,8 +23,8 @@ describe('ExchangeConfirmationHeader', () => {
         store.dispatch(tradingExchangeActions.saveSelectedQuote(testQuote));
     });
 
-    it('should render approve title with coin symbol when variant is approve', () => {
-        const { getByTestId } = renderHeader({ variant: 'approve' });
+    it('should render approve title with coin symbol when flowType is approve', () => {
+        const { getByTestId } = renderHeader({ flowType: 'approve' });
 
         expect(getByTestId('@screen/sub-header/title')).toHaveTextContent(
             getTranslation('moduleTrading.tradingConfirmationScreen.approveHeaderTitle', {
@@ -33,8 +33,8 @@ describe('ExchangeConfirmationHeader', () => {
         );
     });
 
-    it('should render revoke title with coin symbol when variant is revoke', () => {
-        const { getByTestId } = renderHeader({ variant: 'revoke' });
+    it('should render revoke title with coin symbol when flowType is revoke', () => {
+        const { getByTestId } = renderHeader({ flowType: 'revoke' });
 
         expect(getByTestId('@screen/sub-header/title')).toHaveTextContent(
             getTranslation('moduleTrading.tradingConfirmationScreen.revokeHeaderTitle', {
@@ -46,7 +46,7 @@ describe('ExchangeConfirmationHeader', () => {
     it('should render empty label when quote is not available', () => {
         store.dispatch(tradingExchangeActions.saveSelectedQuote(undefined));
 
-        const { queryByTestId } = renderHeader({ variant: 'approve' });
+        const { queryByTestId } = renderHeader({ flowType: 'approve' });
 
         expect(queryByTestId('@screen/sub-header/title')).not.toBeOnTheScreen();
     });
@@ -58,7 +58,7 @@ describe('ExchangeConfirmationHeader', () => {
         } as ExchangeTrade;
         store.dispatch(tradingExchangeActions.saveSelectedQuote(quoteWithUnknownSend));
 
-        const { queryByTestId } = renderHeader({ variant: 'revoke' });
+        const { queryByTestId } = renderHeader({ flowType: 'revoke' });
 
         expect(queryByTestId('@screen/sub-header/title')).not.toBeOnTheScreen();
     });

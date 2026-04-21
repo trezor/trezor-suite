@@ -1,41 +1,44 @@
 import type { PropsWithChildren } from 'react';
+import { useSelector } from 'react-redux';
 
-import type { CryptoId, DexApprovalType } from 'invity-api';
-
-import { cryptoIdToNetworkAndContractAddress } from '@suite-common/trading';
+import {
+    cryptoIdToNetworkAndContractAddress,
+    selectTradingExchangeActiveQuote,
+} from '@suite-common/trading';
 import { HStack, Text, VStack } from '@suite-native/atoms';
 import { CryptoIcon, Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { TradeInfoRow } from '@suite-native/trading-atoms';
 
+import { hasPreapprovedLimit } from '../../../utils/exchange/quotesUtils';
 import { TradingCoinAmountFormatter } from '../../general/TradingCoinAmountFormatter';
 
 type LimitInfoRowProps = PropsWithChildren<{
-    cryptoId: CryptoId;
-    amount: string | undefined;
-    approvalType: DexApprovalType | undefined;
     onPress?: () => void;
     testID?: string;
     withCaret?: boolean;
 }>;
 
-export const LimitInfoRow = ({
-    cryptoId,
-    amount,
-    approvalType,
-    onPress,
-    testID,
-    withCaret,
-    children,
-}: LimitInfoRowProps) => {
-    const { network, contractAddress } = cryptoIdToNetworkAndContractAddress(cryptoId);
+export const LimitInfoRow = ({ onPress, testID, withCaret, children }: LimitInfoRowProps) => {
+    const quote = useSelector(selectTradingExchangeActiveQuote);
+
+    if (!quote?.send) {
+        return null;
+    }
+
+    const { send, sendStringAmount, approvalType } = quote;
+    const { network, contractAddress } = cryptoIdToNetworkAndContractAddress(send);
 
     return (
         <TradeInfoRow onPress={onPress} testID={testID}>
             <VStack flex={1}>
                 <HStack justifyContent="space-between" alignItems="center">
                     <Text variant="body-sm">
-                        <Translation id="moduleTrading.tradingExchangeApprovalScreen.limitLabel" />
+                        {hasPreapprovedLimit(quote) ? (
+                            <Translation id="moduleTrading.tradingExchangeApprovalScreen.newLimitLabel" />
+                        ) : (
+                            <Translation id="moduleTrading.tradingExchangeApprovalScreen.limitLabel" />
+                        )}
                     </Text>
                     <HStack alignItems="center">
                         {!!network?.symbol && (
@@ -51,10 +54,10 @@ export const LimitInfoRow = ({
                             </Text>
                         ) : (
                             <TradingCoinAmountFormatter
-                                amount={amount}
-                                cryptoId={cryptoId}
+                                amount={sendStringAmount}
+                                cryptoId={send}
                                 variant="body-sm-strong"
-                                color="textDefault"
+                                color="contentPrimary"
                             />
                         )}
                         {withCaret && <Icon name="caretDown" size="medium" />}

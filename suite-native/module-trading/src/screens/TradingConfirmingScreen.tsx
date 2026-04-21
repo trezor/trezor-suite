@@ -90,14 +90,14 @@ export const TradingConfirmingScreen = ({
 
     return (
         <TradingDeviceConnectionGuard>
-            <Screen header={<ExchangeConfirmationHeader variant={variant} />}>
+            <Screen header={<ExchangeConfirmationHeader flowType={flowType} />}>
                 <ConfirmationQuoteDebugView forceStatus={forceStatus} />
                 <ExchangeConfirmationTitle
-                    variant={variant}
+                    flowType={flowType}
                     isFailed={isFailed}
                     isPending={isPending}
                 />
-                <ExchangeConfirmationInfo variant={variant} />
+                <ExchangeConfirmationInfo flowType={flowType} />
                 <ExploreInBlockchainButton />
             </Screen>
         </TradingDeviceConnectionGuard>

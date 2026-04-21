@@ -53,7 +53,7 @@ export const useExchangeFlow = () => {
         useCallback(() => {
             if (quoteStatus === 'APPROVAL_PENDING') {
                 navigation.navigate(TradingStackRoutes.TradingConfirming, {
-                    variant: 'approve',
+                    flowType: 'approve',
                 });
             }
         }, [quoteStatus, navigation]),

@@ -12,11 +12,7 @@ export const ExploreInBlockchainButton = () => {
 
     return (
         <AnimatedBox layout={LinearTransition}>
-            <Button
-                onPress={openTransactionInBlockchain}
-                viewRight="arrowUpRight"
-                colorScheme="tertiaryElevation0"
-            >
+            <Button onPress={openTransactionInBlockchain} iconRight="arrowUpRight" intent="neutral">
                 <Translation id="moduleTrading.tradingConfirmationScreen.exploreInBlockchain" />
             </Button>
         </AnimatedBox>

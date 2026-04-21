@@ -13,13 +13,13 @@ export const ExchangeFormQuoteDebugView = () => {
         <DebugModeView>
             <HStack>
                 <Text variant="body-xs">Approval status</Text>
-                <Text variant="body-xs" color="textSubdued">
+                <Text variant="body-xs" color="contentSecondary">
                     {approvalStatus ?? 'none'}
                 </Text>
             </HStack>
             <HStack>
                 <Text variant="body-xs">Pre-approved</Text>
-                <Text variant="body-xs" color="textSubdued">
+                <Text variant="body-xs" color="contentSecondary">
                     {quote?.preapprovedStringAmount ?? 'not defined'}
                 </Text>
             </HStack>

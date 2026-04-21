@@ -9,7 +9,7 @@ import {
 } from '@suite-common/trading';
 import { AnimatedVStack, Card, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import type { TradingConfirmationVariant } from '@suite-native/navigation';
+import type { ConfirmingScreenFlowType } from '@suite-native/navigation';
 import { TradeInfoRow } from '@suite-native/trading-atoms';
 import { FeeSummaryCard } from '@suite-native/transaction-management';
 
@@ -17,10 +17,10 @@ import { ProviderInfoRow } from '../../general/TradeInfo/ProviderInfoRow';
 import { LimitInfoRow } from '../Approval/LimitInfoRow';
 
 export type ExchangeConfirmationInfoCardProps = {
-    variant: TradingConfirmationVariant;
+    flowType: ConfirmingScreenFlowType;
 };
 
-export const ExchangeConfirmationInfo = ({ variant }: ExchangeConfirmationInfoCardProps) => {
+export const ExchangeConfirmationInfo = ({ flowType }: ExchangeConfirmationInfoCardProps) => {
     const { DateFormatter, TimeFormatter } = useFormatters();
 
     // TODO 27125: Get real date from transaction data.
@@ -31,7 +31,7 @@ export const ExchangeConfirmationInfo = ({ variant }: ExchangeConfirmationInfoCa
         return null;
     }
 
-    const { send, sendStringAmount, approvalType, fee, exchange } = quote;
+    const { send, fee, exchange } = quote;
     const { network } = cryptoIdToNetworkAndContractAddress(send);
 
     if (!network?.symbol) {
@@ -51,20 +51,13 @@ export const ExchangeConfirmationInfo = ({ variant }: ExchangeConfirmationInfoCa
                         <Text variant="body-sm" textAlign="right">
                             <DateFormatter value={date} />
                         </Text>
-                        <Text variant="body-sm" color="textSubdued" textAlign="right">
+                        <Text variant="body-sm" color="contentSecondary" textAlign="right">
                             <TimeFormatter value={date} />
                         </Text>
                     </VStack>
                 </TradeInfoRow>
                 <ProviderInfoRow exchange={exchange} />
-                {variant === 'approve' && (
-                    <LimitInfoRow
-                        testID="ExchangeApproval/LimitPicker"
-                        cryptoId={send}
-                        amount={sendStringAmount}
-                        approvalType={approvalType}
-                    />
-                )}
+                {flowType === 'approve' && <LimitInfoRow testID="ExchangeApproval/LimitPicker" />}
             </Card>
             <FeeSummaryCard
                 fee={feeValueAsString}

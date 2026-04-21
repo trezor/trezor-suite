@@ -10,16 +10,20 @@ describe('ExchangeConfirmationTitle', () => {
     const renderTitle = (props: ExchangeConfirmationTitleProps) =>
         renderWithBasicProvider(<ExchangeConfirmationTitle {...props} />);
 
-    it('should display approve title when variant is approve', () => {
-        const { getByText } = renderTitle({ variant: 'approve', isFailed: false, isPending: true });
+    it('should display approve title when flowType is approve', () => {
+        const { getByText } = renderTitle({
+            flowType: 'approve',
+            isFailed: false,
+            isPending: true,
+        });
 
         expect(
             getByText(getTranslation('moduleTrading.tradingConfirmationScreen.approveTitle')),
         ).toBeOnTheScreen();
     });
 
-    it('should display revoke title when variant is revoke', () => {
-        const { getByText } = renderTitle({ variant: 'revoke', isFailed: false, isPending: true });
+    it('should display revoke title when flowType is revoke', () => {
+        const { getByText } = renderTitle({ flowType: 'revoke', isFailed: false, isPending: true });
 
         expect(
             getByText(getTranslation('moduleTrading.tradingConfirmationScreen.revokeTitle')),
@@ -27,7 +31,11 @@ describe('ExchangeConfirmationTitle', () => {
     });
 
     it('should display subtitle', () => {
-        const { getByText } = renderTitle({ variant: 'approve', isFailed: false, isPending: true });
+        const { getByText } = renderTitle({
+            flowType: 'approve',
+            isFailed: false,
+            isPending: true,
+        });
 
         expect(
             getByText(getTranslation('moduleTrading.tradingConfirmationScreen.subtitle')),
@@ -35,7 +43,11 @@ describe('ExchangeConfirmationTitle', () => {
     });
 
     it('should display pending badge when isPending', () => {
-        const { getByText } = renderTitle({ variant: 'approve', isFailed: false, isPending: true });
+        const { getByText } = renderTitle({
+            flowType: 'approve',
+            isFailed: false,
+            isPending: true,
+        });
 
         expect(
             getByText(getTranslation('moduleTrading.tradingConfirmationScreen.pending')),
@@ -44,7 +56,7 @@ describe('ExchangeConfirmationTitle', () => {
 
     it('should not display pending badge when isPending is false', () => {
         const { queryByText } = renderTitle({
-            variant: 'approve',
+            flowType: 'approve',
             isFailed: false,
             isPending: false,
         });
@@ -55,7 +67,11 @@ describe('ExchangeConfirmationTitle', () => {
     });
 
     it('should display error alert when isFailed', () => {
-        const { getByText } = renderTitle({ variant: 'approve', isFailed: true, isPending: false });
+        const { getByText } = renderTitle({
+            flowType: 'approve',
+            isFailed: true,
+            isPending: false,
+        });
 
         expect(
             getByText(getTranslation('moduleTrading.tradingConfirmationScreen.error')),
@@ -64,7 +80,7 @@ describe('ExchangeConfirmationTitle', () => {
 
     it('should not display pending alert when isFailed is false', () => {
         const { queryByText } = renderTitle({
-            variant: 'approve',
+            flowType: 'approve',
             isFailed: false,
             isPending: false,
         });

@@ -114,25 +114,6 @@ describe('LimitPicker', () => {
         );
     });
 
-    it('should render New limit label when quote has preapproved limit', () => {
-        const quoteWithPreapproved = {
-            ...mercuryoFixedWorstQuote,
-            approvalStringAmount: '50',
-            preapprovedStringAmount: '25',
-        };
-        store.dispatch(tradingExchangeActions.saveSelectedQuote(quoteWithPreapproved));
-
-        const { getByTestId } = renderLimitPicker();
-
-        const picker = getByTestId('ExchangeApproval/LimitPicker');
-
-        expect(
-            within(picker).getByText(
-                getTranslation('moduleTrading.tradingExchangeApprovalScreen.newLimitLabel'),
-            ),
-        ).toBeOnTheScreen();
-    });
-
     it('should render nothing without quote', () => {
         store.dispatch(tradingExchangeActions.savePreselectedQuote(undefined));
         store.dispatch(tradingExchangeActions.saveSelectedQuote(undefined));

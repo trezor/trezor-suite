@@ -10,29 +10,29 @@ import {
     VStack,
 } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import type { TradingConfirmationVariant } from '@suite-native/navigation';
+import type { ConfirmingScreenFlowType } from '@suite-native/navigation';
 import { IconWithSpinner } from '@suite-native/trading-atoms';
 import { exhaustive } from '@trezor/type-utils';
 
 export type ExchangeConfirmationTitleProps = {
-    variant: TradingConfirmationVariant;
+    flowType: ConfirmingScreenFlowType;
     isPending: boolean;
     isFailed: boolean;
 };
 
-const TitleTranslation = ({ variant }: { variant: TradingConfirmationVariant }) => {
-    switch (variant) {
+const TitleTranslation = ({ flowType }: { flowType: ConfirmingScreenFlowType }) => {
+    switch (flowType) {
         case 'approve':
             return <Translation id="moduleTrading.tradingConfirmationScreen.approveTitle" />;
         case 'revoke':
             return <Translation id="moduleTrading.tradingConfirmationScreen.revokeTitle" />;
         default:
-            return exhaustive(variant);
+            return exhaustive(flowType);
     }
 };
 
 export const ExchangeConfirmationTitle = ({
-    variant,
+    flowType,
     isFailed,
     isPending,
 }: ExchangeConfirmationTitleProps) => (
@@ -43,13 +43,13 @@ export const ExchangeConfirmationTitle = ({
                 <Badge
                     label={<Translation id="moduleTrading.tradingConfirmationScreen.pending" />}
                     size="medium"
-                    variant="yellow"
+                    intent="warning"
                 />
             </AnimatedVStack>
         )}
         <AnimatedVStack spacing="sp6" alignItems="flex-start" layout={LinearTransition}>
             <Text variant="headline-md">
-                <TitleTranslation variant={variant} />
+                <TitleTranslation flowType={flowType} />
             </Text>
             {isFailed ? (
                 <AnimatedBox
@@ -64,7 +64,7 @@ export const ExchangeConfirmationTitle = ({
                     />
                 </AnimatedBox>
             ) : (
-                <AnimatedText color="textSubdued">
+                <AnimatedText color="contentSecondary">
                     <Translation id="moduleTrading.tradingConfirmationScreen.subtitle" />
                 </AnimatedText>
             )}
