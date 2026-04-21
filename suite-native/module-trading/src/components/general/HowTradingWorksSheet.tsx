@@ -2,14 +2,7 @@ import { type ReactNode, type Ref } from 'react';
 
 import { type BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 
-import {
-    BottomSheetModal,
-    Button,
-    HStack,
-    IconListTextItem,
-    Text,
-    VStack,
-} from '@suite-native/atoms';
+import { BottomSheetModal, Button, HStack, IconListItem, Text, VStack } from '@suite-native/atoms';
 import { Icon, type IconName } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
@@ -22,16 +15,22 @@ type ListItemProps = {
 };
 
 const ListItem = ({ icon, children, href }: ListItemProps) => (
-    <IconListTextItem icon={icon} textVariant="body-md-strong" variant="brand" iconSize="large">
+    <IconListItem icon={icon} variant="brand" iconSize="large">
         {href ? (
             <HStack spacing="sp2" alignItems="center">
-                <Link textColor="contentPrimary" href={href} isUnderlined label={children} />
+                <Link
+                    textColor="contentPrimary"
+                    textVariant="body-md-strong"
+                    href={href}
+                    isUnderlined
+                    label={children}
+                />
                 <Icon name="arrowSquareOut" size="mediumLarge" />
             </HStack>
         ) : (
-            children
+            <Text variant="body-md-strong">{children}</Text>
         )}
-    </IconListTextItem>
+    </IconListItem>
 );
 
 type HowTradingWorksSheetProps = {
