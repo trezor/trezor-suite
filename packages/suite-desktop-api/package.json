@@ -14,7 +14,7 @@
     "main": "./src/main.ts",
     "browser": "./src/renderer.ts",
     "scripts": {
-        "test:unit": "yarn g:jest --verbose",
+        "test:unit": "yarn g:jest",
         "type-check": "yarn g:tsc --build tsconfig.json",
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
