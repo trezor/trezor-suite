@@ -378,6 +378,148 @@ describe('Usb', () => {
             expect(closeDeviceSpy).toHaveBeenCalled();
         });
 
+        it('concurrent call on same session - second fails with OTHER_CALL_IN_PROGRESS', async () => {
+            let resolveTransferIn: (value: { data: Buffer }) => void = () => {};
+            const deferredTransferIn = new Promise<{ data: Buffer }>(resolve => {
+                resolveTransferIn = resolve;
+            });
+            const testUsbApi = new UsbApi({
+                usbInterface: {
+                    getDevices: () =>
+                        Promise.resolve([
+                            createMockedDevice({
+                                transferIn: () => deferredTransferIn,
+                            }),
+                        ]),
+                } as unknown as UsbApi['usbInterface'],
+            });
+            const transport = new TestUsbTransport({ api: testUsbApi, messages, id: 'test' });
+            await transport.init();
+            await transport.enumerate();
+            const acquireRes = await transport.acquire({
+                input: { path: PathPublic('1'), previous: null },
+            });
+            expect(acquireRes.success).toEqual(true);
+            if (!acquireRes.success) return;
+
+            const [r1, r2] = await Promise.all([
+                transport.call({
+                    name: 'GetAddress',
+                    data: {},
+                    session: acquireRes.payload,
+                    protocol: v1Protocol,
+                }),
+                transport.call({
+                    name: 'GetAddress',
+                    data: {},
+                    session: acquireRes.payload,
+                    protocol: v1Protocol,
+                }),
+                // release the blocking read once both calls raced for the lock
+                Promise.resolve().then(() => {
+                    const buffer = Buffer.alloc(64);
+                    buffer.write(
+                        '3f23230002000000060a046d656f7700000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
+                        'hex',
+                    );
+                    resolveTransferIn({ data: buffer });
+                }),
+            ]);
+
+            expect([r1, r2]).toEqual(
+                expect.arrayContaining([
+                    expect.objectContaining({ success: true }),
+                    expect.objectContaining({
+                        success: false,
+                        error: { code: ERRORS.OTHER_CALL_IN_PROGRESS },
+                    }),
+                ]),
+            );
+        });
+
+        it('concurrent call on different paths - both succeed (per-path synchronize)', async () => {
+            const { transport } = await initTest();
+            await transport.enumerate();
+            const acquire1 = await transport.acquire({
+                input: { path: PathPublic('1'), previous: null },
+            });
+            const acquire2 = await transport.acquire({
+                input: { path: PathPublic('2'), previous: null },
+            });
+            expect(acquire1.success).toEqual(true);
+            expect(acquire2.success).toEqual(true);
+            if (!acquire1.success || !acquire2.success) return;
+
+            const [r1, r2] = await Promise.all([
+                transport.call({
+                    name: 'GetAddress',
+                    data: {},
+                    session: acquire1.payload,
+                    protocol: v1Protocol,
+                }),
+                transport.call({
+                    name: 'GetAddress',
+                    data: {},
+                    session: acquire2.payload,
+                    protocol: v1Protocol,
+                }),
+            ]);
+
+            expect(r1).toMatchObject({ success: true });
+            expect(r2).toMatchObject({ success: true });
+        });
+
+        it('concurrent call and send on same session - both succeed (send skips lock)', async () => {
+            let resolveTransferIn: (value: { data: Buffer }) => void = () => {};
+            const deferredTransferIn = new Promise<{ data: Buffer }>(resolve => {
+                resolveTransferIn = resolve;
+            });
+            const testUsbApi = new UsbApi({
+                usbInterface: {
+                    getDevices: () =>
+                        Promise.resolve([
+                            createMockedDevice({
+                                transferIn: () => deferredTransferIn,
+                            }),
+                        ]),
+                } as unknown as UsbApi['usbInterface'],
+            });
+            const transport = new TestUsbTransport({ api: testUsbApi, messages, id: 'test' });
+            await transport.init();
+            await transport.enumerate();
+            const acquireRes = await transport.acquire({
+                input: { path: PathPublic('1'), previous: null },
+            });
+            expect(acquireRes.success).toEqual(true);
+            if (!acquireRes.success) return;
+
+            const [callRes, sendRes] = await Promise.all([
+                transport.call({
+                    name: 'GetAddress',
+                    data: {},
+                    session: acquireRes.payload,
+                    protocol: v1Protocol,
+                }),
+                transport.send({
+                    name: 'GetAddress',
+                    data: {},
+                    session: acquireRes.payload,
+                    protocol: v1Protocol,
+                }),
+                Promise.resolve().then(() => {
+                    const buffer = Buffer.alloc(64);
+                    buffer.write(
+                        '3f23230002000000060a046d656f7700000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
+                        'hex',
+                    );
+                    resolveTransferIn({ data: buffer });
+                }),
+            ]);
+
+            expect(callRes).toMatchObject({ success: true });
+            expect(sendRes).toMatchObject({ success: true });
+        });
+
         it('call - with use abort', async () => {
             const { transport } = await initTest();
             await transport.enumerate();
