@@ -38,6 +38,7 @@ import {
     StakingManagementScreen,
     UnstakeFlowScreen,
     UnstakeTransactionDataReviewScreen,
+    YieldStackNavigator,
 } from '@suite-native/module-earn';
 import { FeatureFeedbackModalScreen } from '@suite-native/module-home';
 import { OnboardingStackNavigator } from '@suite-native/module-onboarding';
@@ -129,6 +130,11 @@ export const RootStackNavigator = () => {
                 options={{ title: RootStackRoutes.HowStakeWorksScreen }}
                 name={RootStackRoutes.HowStakeWorksScreen}
                 component={HowStakeWorksScreen}
+            />
+            <RootStack.Screen
+                options={{ title: RootStackRoutes.YieldNavigator }}
+                name={RootStackRoutes.YieldNavigator}
+                component={YieldStackNavigator}
             />
             <RootStack.Screen
                 options={{ title: RootStackRoutes.EarnForm }}

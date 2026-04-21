@@ -9,6 +9,7 @@ import {
     InlineAlertBox,
     PressableOpacity,
     Text,
+    TimelineDetailsCard,
     useBottomSheetModal,
 } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
@@ -18,8 +19,6 @@ import {
     selectUnstakingPeriodInDaysBySymbol,
 } from '@suite-native/staking';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
-
-import { HowStakeWorksUnstakingTimeline } from './HowStakeWorksUnstakingTimeline';
 
 type UnstakingTimelineCardProps = {
     accountKey: AccountKey;
@@ -80,9 +79,59 @@ export const UnstakingTimelineCard = ({ accountKey }: UnstakingTimelineCardProps
                 isCloseDisplayed
                 onClose={closeModal}
             >
-                <HowStakeWorksUnstakingTimeline
-                    symbol={symbol}
-                    unstakingPeriodInDays={unstakingPeriodInDays}
+                <TimelineDetailsCard
+                    headerTitle={<Translation id="earn.howStakeWorksScreen.unstakeTimelineTitle" />}
+                    headerIconName="arrowDownLeft"
+                    items={[
+                        {
+                            id: 'unstake.first',
+                            title: (
+                                <Translation id="earn.howStakeWorksScreen.unstakeTimeline.first.title" />
+                            ),
+                            description: (
+                                <Translation id="earn.howStakeWorksScreen.unstakeTimeline.first.description" />
+                            ),
+                        },
+                        {
+                            id: 'unstake.second',
+                            title: (
+                                <Translation id="earn.howStakeWorksScreen.unstakeTimeline.second.title" />
+                            ),
+                            description:
+                                unstakingPeriodInDays !== undefined ? (
+                                    <Translation
+                                        id="earn.howStakeWorksScreen.unstakeTimeline.second.description"
+                                        values={{ unstakingPeriod: unstakingPeriodInDays }}
+                                    />
+                                ) : (
+                                    <Translation id="earn.notAvailable" />
+                                ),
+                        },
+                        {
+                            id: 'unstake.third',
+                            title: (
+                                <Translation
+                                    id="earn.howStakeWorksScreen.unstakeTimeline.third.title"
+                                    values={{ symbol: symbol.toUpperCase() }}
+                                />
+                            ),
+                            description: (
+                                <Translation id="earn.howStakeWorksScreen.unstakeTimeline.third.description" />
+                            ),
+                        },
+                        {
+                            id: 'unstake.fourth',
+                            title: (
+                                <Translation
+                                    id="earn.howStakeWorksScreen.unstakeTimeline.fourth.title"
+                                    values={{ symbol: symbol.toUpperCase() }}
+                                />
+                            ),
+                            description: (
+                                <Translation id="earn.howStakeWorksScreen.unstakeTimeline.fourth.description" />
+                            ),
+                        },
+                    ]}
                 />
             </BottomSheetModal>
         </>

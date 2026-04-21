@@ -4,13 +4,16 @@ export { EarnTransactionDataReviewScreen } from './screens/EarnTransactionDataRe
 export { EarnConsentsScreen } from './screens/EarnConsentsScreen';
 export { EarnFormScreen } from './screens/EarnFormScreen';
 export { HowStakeWorksScreen } from './screens/HowStakeWorksScreen';
+export { HowYieldWorksScreen } from './screens/HowYieldWorksScreen';
 export { StakingDetailScreen } from './screens/StakingDetailScreen';
 export { UnstakeFlowScreen } from './screens/UnstakeFlowScreen';
 export { UnstakeTransactionDataReviewScreen } from './screens/UnstakeTransactionDataReviewScreen';
 export { ClaimReviewScreen } from './screens/ClaimReviewScreen';
 export { ClaimTransactionDataReviewScreen } from './screens/ClaimTransactionDataReviewScreen';
 export { FiveBinariesHomeBanner } from './components/FiveBinariesHomeBanner';
+export { useWorkInProgressAlert } from './hooks/useWorkInProgressAlert';
 export { useStakingDetailNavigation } from './hooks/useStakingDetailNavigation';
 export { useStakingNavigateAnalytics } from './hooks/useStakingNavigateAnalytics';
 export { EarnStackNavigator } from './navigation/EarnStackNavigator';
+export { YieldStackNavigator } from './navigation/YieldStackNavigator';
 export { navigateByAccountState } from './utils/navigateByAccountState';

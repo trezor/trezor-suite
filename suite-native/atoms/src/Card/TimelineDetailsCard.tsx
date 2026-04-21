@@ -36,6 +36,21 @@ const separatorStyle = prepareNativeStyle(utils => ({
 const itemRowStyle = prepareNativeStyle(() => ({
     width: '100%',
     justifyContent: 'space-between',
+    alignItems: 'center',
+}));
+
+const itemTitleContainerStyle = prepareNativeStyle(() => ({
+    flex: 1,
+    minWidth: 0,
+    alignItems: 'center',
+}));
+
+const itemTitleStyle = prepareNativeStyle(() => ({
+    flexShrink: 1,
+}));
+
+const itemDescriptionStyle = prepareNativeStyle(() => ({
+    flexShrink: 0,
 }));
 
 const defaultItemIconProps = {
@@ -76,19 +91,28 @@ export const TimelineDetailsCard = ({
                         <HStack
                             key={item.id}
                             spacing="sp8"
-                            alignItems="center"
+                            alignItems="flex-start"
                             style={applyStyle(itemRowStyle)}
                         >
-                            <HStack spacing="sp12" alignItems="center">
+                            <HStack
+                                spacing="sp12"
+                                alignItems="flex-start"
+                                style={applyStyle(itemTitleContainerStyle)}
+                            >
                                 {item.icon ??
                                     renderItemIcon?.({ item, index }) ??
                                     renderDefaultItemIcon(index)}
-                                <Text variant="body-sm-strong" numberOfLines={1}>
+                                <Text variant="body-sm-strong" style={applyStyle(itemTitleStyle)}>
                                     {item.title}
                                 </Text>
                             </HStack>
                             {item.description && (
-                                <Text variant="body-sm" color="contentSecondary" numberOfLines={1}>
+                                <Text
+                                    variant="body-sm"
+                                    color="contentSecondary"
+                                    numberOfLines={1}
+                                    style={applyStyle(itemDescriptionStyle)}
+                                >
                                     {item.description}
                                 </Text>
                             )}
