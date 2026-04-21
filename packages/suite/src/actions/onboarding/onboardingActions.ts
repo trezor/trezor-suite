@@ -7,10 +7,14 @@ import {
     selectIsDeviceAuthenticityCheckEnabled,
     selectIsUnlockedBootloaderAllowed,
 } from '@suite/settings';
-import { selectSelectedDevice } from '@suite-common/device';
+import { selectHasBitcoinOnlyFirmware, selectSelectedDevice } from '@suite-common/device';
 import { type ExtraDependencies } from '@suite-common/redux-utils';
 import { type BackupType } from '@suite-common/suite-types';
-import { startDiscoveryThunk } from '@suite-common/wallet-core';
+import {
+    changeCoinVisibility,
+    selectEnabledNetworks,
+    startDiscoveryThunk,
+} from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 
 import { ONBOARDING } from 'src/actions/onboarding/constants';
@@ -129,6 +133,15 @@ const goToSuite = () => (dispatch: Dispatch, getState: GetState, extra: ExtraDep
     dispatch(initialRunCompleted());
     dispatch(resetOnboarding());
     dispatch(closeModalApp(true));
+
+    // For Bitcoin-only firmware, pre-activate BTC so the user lands on a populated dashboard
+    // instead of the empty "activate assets" state. Only do this on initial setup, when no
+    // networks have been explicitly enabled yet, to avoid overriding user's previous choices.
+    const isBitcoinOnlyFirmware = selectHasBitcoinOnlyFirmware(getState());
+    const enabledNetworks = selectEnabledNetworks(getState());
+    if (isBitcoinOnlyFirmware && enabledNetworks.length === 0) {
+        dispatch(changeCoinVisibility({ symbol: 'btc', shouldBeVisible: true }));
+    }
 
     dispatch(startDiscoveryThunk({ device }));
 
