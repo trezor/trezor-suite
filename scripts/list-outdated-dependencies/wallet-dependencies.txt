@@ -17,6 +17,7 @@
 @solana/keys
 @solana/kit
 @solana/rpc-api
+@solana-program/memo
 @solana/rpc-types
 @stellar/stellar-sdk
 @swc/core
