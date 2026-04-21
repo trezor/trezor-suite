@@ -33,7 +33,7 @@ export const FeaturesSettings = () => {
                     icon="circleDashed"
                     title={<Translation id="moduleSettings.items.features.devUtils.title" />}
                     subtitle={<Translation id="moduleSettings.items.features.devUtils.subtitle" />}
-                    onPress={() => navigation.navigate(RootStackRoutes.DevUtilsStack)}
+                    onPress={() => navigation.navigate(RootStackRoutes.DevUtils)}
                     testID="@settings/dev-utils"
                 />
             )}
