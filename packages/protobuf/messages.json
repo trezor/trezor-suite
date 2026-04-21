@@ -1,6 +1,7 @@
 {
     "nested": {
         "InputScriptType": {
+            "edition": "proto2",
             "values": {
                 "SPENDADDRESS": 0,
                 "SPENDMULTISIG": 1,
@@ -11,6 +12,7 @@
             }
         },
         "OutputScriptType": {
+            "edition": "proto2",
             "values": {
                 "PAYTOADDRESS": 0,
                 "PAYTOSCRIPTHASH": 1,
@@ -22,12 +24,14 @@
             }
         },
         "DecredStakingSpendType": {
+            "edition": "proto2",
             "values": {
                 "SSGen": 0,
                 "SSRTX": 1
             }
         },
         "AmountUnit": {
+            "edition": "proto2",
             "values": {
                 "BITCOIN": 0,
                 "MILLIBITCOIN": 1,
@@ -36,12 +40,14 @@
             }
         },
         "MultisigPubkeysOrder": {
+            "edition": "proto2",
             "values": {
                 "PRESERVED": 0,
                 "LEXICOGRAPHIC": 1
             }
         },
         "MultisigRedeemScriptType": {
+            "edition": "proto2",
             "fields": {
                 "pubkeys": {
                     "rule": "repeated",
@@ -66,10 +72,7 @@
                 "address_n": {
                     "rule": "repeated",
                     "type": "uint32",
-                    "id": 5,
-                    "options": {
-                        "packed": false
-                    }
+                    "id": 5
                 },
                 "pubkeys_order": {
                     "type": "MultisigPubkeysOrder",
@@ -90,24 +93,19 @@
                         "address_n": {
                             "rule": "repeated",
                             "type": "uint32",
-                            "id": 2,
-                            "options": {
-                                "packed": false
-                            }
+                            "id": 2
                         }
                     }
                 }
             }
         },
         "GetPublicKey": {
+            "edition": "proto2",
             "fields": {
                 "address_n": {
                     "rule": "repeated",
                     "type": "uint32",
-                    "id": 1,
-                    "options": {
-                        "packed": false
-                    }
+                    "id": 1
                 },
                 "ecdsa_curve_name": {
                     "type": "string",
@@ -138,6 +136,7 @@
             }
         },
         "PublicKey": {
+            "edition": "proto2",
             "fields": {
                 "node": {
                     "rule": "required",
@@ -160,14 +159,12 @@
             }
         },
         "GetAddress": {
+            "edition": "proto2",
             "fields": {
                 "address_n": {
                     "rule": "repeated",
                     "type": "uint32",
-                    "id": 1,
-                    "options": {
-                        "packed": false
-                    }
+                    "id": 1
                 },
                 "coin_name": {
                     "type": "string",
@@ -202,6 +199,7 @@
             }
         },
         "Address": {
+            "edition": "proto2",
             "fields": {
                 "address": {
                     "rule": "required",
@@ -215,14 +213,12 @@
             }
         },
         "GetOwnershipId": {
+            "edition": "proto2",
             "fields": {
                 "address_n": {
                     "rule": "repeated",
                     "type": "uint32",
-                    "id": 1,
-                    "options": {
-                        "packed": false
-                    }
+                    "id": 1
                 },
                 "coin_name": {
                     "type": "string",
@@ -245,6 +241,7 @@
             }
         },
         "OwnershipId": {
+            "edition": "proto2",
             "fields": {
                 "ownership_id": {
                     "rule": "required",
@@ -254,14 +251,12 @@
             }
         },
         "SignMessage": {
+            "edition": "proto2",
             "fields": {
                 "address_n": {
                     "rule": "repeated",
                     "type": "uint32",
-                    "id": 1,
-                    "options": {
-                        "packed": false
-                    }
+                    "id": 1
                 },
                 "message": {
                     "rule": "required",
@@ -293,6 +288,7 @@
             }
         },
         "MessageSignature": {
+            "edition": "proto2",
             "fields": {
                 "address": {
                     "rule": "required",
@@ -307,6 +303,7 @@
             }
         },
         "VerifyMessage": {
+            "edition": "proto2",
             "fields": {
                 "address": {
                     "rule": "required",
@@ -337,6 +334,7 @@
             }
         },
         "SignTx": {
+            "edition": "proto2",
             "fields": {
                 "outputs_count": {
                     "rule": "required",
@@ -450,6 +448,7 @@
             }
         },
         "TxRequest": {
+            "edition": "proto2",
             "fields": {
                 "request_type": {
                     "type": "RequestType",
@@ -516,6 +515,7 @@
             }
         },
         "TxAck": {
+            "edition": "proto2",
             "fields": {
                 "tx": {
                     "type": "TransactionType",
@@ -591,10 +591,7 @@
                                 "address_n": {
                                     "rule": "repeated",
                                     "type": "uint32",
-                                    "id": 1,
-                                    "options": {
-                                        "packed": false
-                                    }
+                                    "id": 1
                                 },
                                 "prev_hash": {
                                     "rule": "required",
@@ -700,10 +697,7 @@
                                 "address_n": {
                                     "rule": "repeated",
                                     "type": "uint32",
-                                    "id": 2,
-                                    "options": {
-                                        "packed": false
-                                    }
+                                    "id": 2
                                 },
                                 "amount": {
                                     "rule": "required",
@@ -744,14 +738,12 @@
             }
         },
         "TxInput": {
+            "edition": "proto2",
             "fields": {
                 "address_n": {
                     "rule": "repeated",
                     "type": "uint32",
-                    "id": 1,
-                    "options": {
-                        "packed": false
-                    }
+                    "id": 1
                 },
                 "prev_hash": {
                     "rule": "required",
@@ -832,6 +824,7 @@
             }
         },
         "TxOutput": {
+            "edition": "proto2",
             "fields": {
                 "address": {
                     "type": "string",
@@ -840,10 +833,7 @@
                 "address_n": {
                     "rule": "repeated",
                     "type": "uint32",
-                    "id": 2,
-                    "options": {
-                        "packed": false
-                    }
+                    "id": 2
                 },
                 "amount": {
                     "rule": "required",
@@ -880,6 +870,7 @@
             }
         },
         "PrevTx": {
+            "edition": "proto2",
             "fields": {
                 "version": {
                     "rule": "required",
@@ -927,6 +918,7 @@
             }
         },
         "PrevInput": {
+            "edition": "proto2",
             "fields": {
                 "prev_hash": {
                     "rule": "required",
@@ -955,6 +947,7 @@
             }
         },
         "PrevOutput": {
+            "edition": "proto2",
             "fields": {
                 "amount": {
                     "rule": "required",
@@ -973,6 +966,7 @@
             }
         },
         "TxAckInput": {
+            "edition": "proto2",
             "options": {
                 "(wire_type)": 22
             },
@@ -996,6 +990,7 @@
             }
         },
         "TxAckOutput": {
+            "edition": "proto2",
             "options": {
                 "(wire_type)": 22
             },
@@ -1019,6 +1014,7 @@
             }
         },
         "TxAckPrevMeta": {
+            "edition": "proto2",
             "options": {
                 "(wire_type)": 22
             },
@@ -1031,6 +1027,7 @@
             }
         },
         "TxAckPrevInput": {
+            "edition": "proto2",
             "options": {
                 "(wire_type)": 22
             },
@@ -1054,6 +1051,7 @@
             }
         },
         "TxAckPrevOutput": {
+            "edition": "proto2",
             "options": {
                 "(wire_type)": 22
             },
@@ -1077,6 +1075,7 @@
             }
         },
         "TxAckPrevExtraData": {
+            "edition": "proto2",
             "options": {
                 "(wire_type)": 22
             },
@@ -1100,14 +1099,12 @@
             }
         },
         "GetOwnershipProof": {
+            "edition": "proto2",
             "fields": {
                 "address_n": {
                     "rule": "repeated",
                     "type": "uint32",
-                    "id": 1,
-                    "options": {
-                        "packed": false
-                    }
+                    "id": 1
                 },
                 "coin_name": {
                     "type": "string",
@@ -1149,6 +1146,7 @@
             }
         },
         "OwnershipProof": {
+            "edition": "proto2",
             "fields": {
                 "ownership_proof": {
                     "rule": "required",
@@ -1163,6 +1161,7 @@
             }
         },
         "AuthorizeCoinJoin": {
+            "edition": "proto2",
             "fields": {
                 "coordinator": {
                     "rule": "required",
@@ -1187,10 +1186,7 @@
                 "address_n": {
                     "rule": "repeated",
                     "type": "uint32",
-                    "id": 5,
-                    "options": {
-                        "packed": false
-                    }
+                    "id": 5
                 },
                 "coin_name": {
                     "type": "string",
@@ -1216,6 +1212,7 @@
             }
         },
         "BleUnpair": {
+            "edition": "proto2",
             "fields": {
                 "all": {
                     "type": "bool",
@@ -1228,6 +1225,7 @@
             }
         },
         "FirmwareErase": {
+            "edition": "proto2",
             "fields": {
                 "length": {
                     "type": "uint32",
@@ -1236,6 +1234,7 @@
             }
         },
         "FirmwareRequest": {
+            "edition": "proto2",
             "fields": {
                 "offset": {
                     "rule": "required",
@@ -1250,6 +1249,7 @@
             }
         },
         "FirmwareUpload": {
+            "edition": "proto2",
             "fields": {
                 "payload": {
                     "rule": "required",
@@ -1263,6 +1263,7 @@
             }
         },
         "ProdTestT1": {
+            "edition": "proto2",
             "fields": {
                 "payload": {
                     "type": "bytes",
@@ -1271,6 +1272,7 @@
             }
         },
         "CardanoDerivationType": {
+            "edition": "proto2",
             "values": {
                 "LEDGER": 0,
                 "ICARUS": 1,
@@ -1278,6 +1280,7 @@
             }
         },
         "CardanoAddressType": {
+            "edition": "proto2",
             "values": {
                 "BASE": 0,
                 "BASE_SCRIPT_KEY": 1,
@@ -1293,6 +1296,7 @@
             }
         },
         "CardanoNativeScriptType": {
+            "edition": "proto2",
             "values": {
                 "PUB_KEY": 0,
                 "ALL": 1,
@@ -1303,6 +1307,7 @@
             }
         },
         "CardanoNativeScriptHashDisplayFormat": {
+            "edition": "proto2",
             "values": {
                 "HIDE": 0,
                 "BECH32": 1,
@@ -1310,12 +1315,14 @@
             }
         },
         "CardanoTxOutputSerializationFormat": {
+            "edition": "proto2",
             "values": {
                 "ARRAY_LEGACY": 0,
                 "MAP_BABBAGE": 1
             }
         },
         "CardanoCertificateType": {
+            "edition": "proto2",
             "values": {
                 "STAKE_REGISTRATION": 0,
                 "STAKE_DEREGISTRATION": 1,
@@ -1327,6 +1334,7 @@
             }
         },
         "CardanoDRepType": {
+            "edition": "proto2",
             "values": {
                 "KEY_HASH": 0,
                 "SCRIPT_HASH": 1,
@@ -1335,6 +1343,7 @@
             }
         },
         "CardanoPoolRelayType": {
+            "edition": "proto2",
             "values": {
                 "SINGLE_HOST_IP": 0,
                 "SINGLE_HOST_NAME": 1,
@@ -1342,18 +1351,21 @@
             }
         },
         "CardanoTxAuxiliaryDataSupplementType": {
+            "edition": "proto2",
             "values": {
                 "NONE": 0,
                 "CVOTE_REGISTRATION_SIGNATURE": 1
             }
         },
         "CardanoCVoteRegistrationFormat": {
+            "edition": "proto2",
             "values": {
                 "CIP15": 0,
                 "CIP36": 1
             }
         },
         "CardanoTxSigningMode": {
+            "edition": "proto2",
             "values": {
                 "ORDINARY_TRANSACTION": 0,
                 "POOL_REGISTRATION_AS_OWNER": 1,
@@ -1362,12 +1374,14 @@
             }
         },
         "CardanoTxWitnessType": {
+            "edition": "proto2",
             "values": {
                 "BYRON_WITNESS": 0,
                 "SHELLEY_WITNESS": 1
             }
         },
         "CardanoBlockchainPointerType": {
+            "edition": "proto2",
             "fields": {
                 "block_index": {
                     "rule": "required",
@@ -1387,6 +1401,7 @@
             }
         },
         "CardanoNativeScript": {
+            "edition": "proto2",
             "fields": {
                 "type": {
                     "rule": "required",
@@ -1405,10 +1420,7 @@
                 "key_path": {
                     "rule": "repeated",
                     "type": "uint32",
-                    "id": 4,
-                    "options": {
-                        "packed": false
-                    }
+                    "id": 4
                 },
                 "required_signatures_count": {
                     "type": "uint32",
@@ -1425,6 +1437,7 @@
             }
         },
         "CardanoGetNativeScriptHash": {
+            "edition": "proto2",
             "fields": {
                 "script": {
                     "rule": "required",
@@ -1444,6 +1457,7 @@
             }
         },
         "CardanoNativeScriptHash": {
+            "edition": "proto2",
             "fields": {
                 "script_hash": {
                     "rule": "required",
@@ -1453,6 +1467,7 @@
             }
         },
         "CardanoAddressParametersType": {
+            "edition": "proto2",
             "fields": {
                 "address_type": {
                     "rule": "required",
@@ -1462,18 +1477,12 @@
                 "address_n": {
                     "rule": "repeated",
                     "type": "uint32",
-                    "id": 2,
-                    "options": {
-                        "packed": false
-                    }
+                    "id": 2
                 },
                 "address_n_staking": {
                     "rule": "repeated",
                     "type": "uint32",
-                    "id": 3,
-                    "options": {
-                        "packed": false
-                    }
+                    "id": 3
                 },
                 "staking_key_hash": {
                     "type": "bytes",
@@ -1494,6 +1503,7 @@
             }
         },
         "CardanoGetAddress": {
+            "edition": "proto2",
             "fields": {
                 "show_display": {
                     "type": "bool",
@@ -1529,6 +1539,7 @@
             }
         },
         "CardanoAddress": {
+            "edition": "proto2",
             "fields": {
                 "address": {
                     "rule": "required",
@@ -1542,14 +1553,12 @@
             }
         },
         "CardanoGetPublicKey": {
+            "edition": "proto2",
             "fields": {
                 "address_n": {
                     "rule": "repeated",
                     "type": "uint32",
-                    "id": 1,
-                    "options": {
-                        "packed": false
-                    }
+                    "id": 1
                 },
                 "show_display": {
                     "type": "bool",
@@ -1563,6 +1572,7 @@
             }
         },
         "CardanoPublicKey": {
+            "edition": "proto2",
             "fields": {
                 "xpub": {
                     "rule": "required",
@@ -1577,6 +1587,7 @@
             }
         },
         "CardanoSignTxInit": {
+            "edition": "proto2",
             "fields": {
                 "signing_mode": {
                     "rule": "required",
@@ -1703,6 +1714,7 @@
             }
         },
         "CardanoTxInput": {
+            "edition": "proto2",
             "fields": {
                 "prev_hash": {
                     "rule": "required",
@@ -1717,6 +1729,7 @@
             }
         },
         "CardanoTxOutput": {
+            "edition": "proto2",
             "fields": {
                 "address": {
                     "type": "string",
@@ -1764,6 +1777,7 @@
             }
         },
         "CardanoAssetGroup": {
+            "edition": "proto2",
             "fields": {
                 "policy_id": {
                     "rule": "required",
@@ -1778,6 +1792,7 @@
             }
         },
         "CardanoToken": {
+            "edition": "proto2",
             "fields": {
                 "asset_name_bytes": {
                     "rule": "required",
@@ -1795,6 +1810,7 @@
             }
         },
         "CardanoTxInlineDatumChunk": {
+            "edition": "proto2",
             "fields": {
                 "data": {
                     "rule": "required",
@@ -1804,6 +1820,7 @@
             }
         },
         "CardanoTxReferenceScriptChunk": {
+            "edition": "proto2",
             "fields": {
                 "data": {
                     "rule": "required",
@@ -1813,14 +1830,12 @@
             }
         },
         "CardanoPoolOwner": {
+            "edition": "proto2",
             "fields": {
                 "staking_key_path": {
                     "rule": "repeated",
                     "type": "uint32",
-                    "id": 1,
-                    "options": {
-                        "packed": false
-                    }
+                    "id": 1
                 },
                 "staking_key_hash": {
                     "type": "bytes",
@@ -1829,6 +1844,7 @@
             }
         },
         "CardanoPoolRelayParameters": {
+            "edition": "proto2",
             "fields": {
                 "type": {
                     "rule": "required",
@@ -1854,6 +1870,7 @@
             }
         },
         "CardanoPoolMetadataType": {
+            "edition": "proto2",
             "fields": {
                 "url": {
                     "rule": "required",
@@ -1868,6 +1885,7 @@
             }
         },
         "CardanoPoolParametersType": {
+            "edition": "proto2",
             "fields": {
                 "pool_id": {
                     "rule": "required",
@@ -1921,6 +1939,7 @@
             }
         },
         "CardanoDRep": {
+            "edition": "proto2",
             "fields": {
                 "type": {
                     "rule": "required",
@@ -1938,6 +1957,7 @@
             }
         },
         "CardanoTxCertificate": {
+            "edition": "proto2",
             "fields": {
                 "type": {
                     "rule": "required",
@@ -1947,10 +1967,7 @@
                 "path": {
                     "rule": "repeated",
                     "type": "uint32",
-                    "id": 2,
-                    "options": {
-                        "packed": false
-                    }
+                    "id": 2
                 },
                 "pool": {
                     "type": "bytes",
@@ -1979,14 +1996,12 @@
             }
         },
         "CardanoTxWithdrawal": {
+            "edition": "proto2",
             "fields": {
                 "path": {
                     "rule": "repeated",
                     "type": "uint32",
-                    "id": 1,
-                    "options": {
-                        "packed": false
-                    }
+                    "id": 1
                 },
                 "amount": {
                     "rule": "required",
@@ -2004,6 +2019,7 @@
             }
         },
         "CardanoCVoteRegistrationDelegation": {
+            "edition": "proto2",
             "fields": {
                 "vote_public_key": {
                     "rule": "required",
@@ -2018,6 +2034,7 @@
             }
         },
         "CardanoCVoteRegistrationParametersType": {
+            "edition": "proto2",
             "fields": {
                 "vote_public_key": {
                     "type": "bytes",
@@ -2026,10 +2043,7 @@
                 "staking_path": {
                     "rule": "repeated",
                     "type": "uint32",
-                    "id": 2,
-                    "options": {
-                        "packed": false
-                    }
+                    "id": 2
                 },
                 "payment_address_parameters": {
                     "type": "CardanoAddressParametersType",
@@ -2063,6 +2077,7 @@
             }
         },
         "CardanoTxAuxiliaryData": {
+            "edition": "proto2",
             "fields": {
                 "cvote_registration_parameters": {
                     "type": "CardanoCVoteRegistrationParametersType",
@@ -2075,6 +2090,7 @@
             }
         },
         "CardanoTxMint": {
+            "edition": "proto2",
             "fields": {
                 "asset_groups_count": {
                     "rule": "required",
@@ -2084,6 +2100,7 @@
             }
         },
         "CardanoTxCollateralInput": {
+            "edition": "proto2",
             "fields": {
                 "prev_hash": {
                     "rule": "required",
@@ -2098,6 +2115,7 @@
             }
         },
         "CardanoTxRequiredSigner": {
+            "edition": "proto2",
             "fields": {
                 "key_hash": {
                     "type": "bytes",
@@ -2106,14 +2124,12 @@
                 "key_path": {
                     "rule": "repeated",
                     "type": "uint32",
-                    "id": 2,
-                    "options": {
-                        "packed": false
-                    }
+                    "id": 2
                 }
             }
         },
         "CardanoTxReferenceInput": {
+            "edition": "proto2",
             "fields": {
                 "prev_hash": {
                     "rule": "required",
@@ -2128,9 +2144,11 @@
             }
         },
         "CardanoTxItemAck": {
+            "edition": "proto2",
             "fields": {}
         },
         "CardanoTxAuxiliaryDataSupplement": {
+            "edition": "proto2",
             "fields": {
                 "type": {
                     "rule": "required",
@@ -2148,18 +2166,17 @@
             }
         },
         "CardanoTxWitnessRequest": {
+            "edition": "proto2",
             "fields": {
                 "path": {
                     "rule": "repeated",
                     "type": "uint32",
-                    "id": 1,
-                    "options": {
-                        "packed": false
-                    }
+                    "id": 1
                 }
             }
         },
         "CardanoTxWitnessResponse": {
+            "edition": "proto2",
             "fields": {
                 "type": {
                     "rule": "required",
@@ -2183,9 +2200,11 @@
             }
         },
         "CardanoTxHostAck": {
+            "edition": "proto2",
             "fields": {}
         },
         "CardanoTxBodyHash": {
+            "edition": "proto2",
             "fields": {
                 "tx_hash": {
                     "rule": "required",
@@ -2195,9 +2214,11 @@
             }
         },
         "CardanoSignTxFinished": {
+            "edition": "proto2",
             "fields": {}
         },
         "CardanoSignMessageInit": {
+            "edition": "proto2",
             "fields": {
                 "protocol_magic": {
                     "type": "uint32",
@@ -2210,10 +2231,7 @@
                 "signing_path": {
                     "rule": "repeated",
                     "type": "uint32",
-                    "id": 3,
-                    "options": {
-                        "packed": false
-                    }
+                    "id": 3
                 },
                 "payload_size": {
                     "rule": "required",
@@ -2237,6 +2255,7 @@
             }
         },
         "CardanoMessageDataRequest": {
+            "edition": "proto2",
             "fields": {
                 "length": {
                     "rule": "required",
@@ -2251,6 +2270,7 @@
             }
         },
         "CardanoMessageDataResponse": {
+            "edition": "proto2",
             "fields": {
                 "data": {
                     "rule": "required",
@@ -2260,6 +2280,7 @@
             }
         },
         "CardanoMessageSignature": {
+            "edition": "proto2",
             "fields": {
                 "signature": {
                     "rule": "required",
@@ -2279,6 +2300,7 @@
             }
         },
         "Success": {
+            "edition": "proto2",
             "fields": {
                 "message": {
                     "type": "string",
@@ -2290,6 +2312,7 @@
             }
         },
         "Failure": {
+            "edition": "proto2",
             "fields": {
                 "code": {
                     "type": "FailureType",
@@ -2327,6 +2350,7 @@
             }
         },
         "ButtonRequest": {
+            "edition": "proto2",
             "fields": {
                 "code": {
                     "type": "ButtonRequestType",
@@ -2369,9 +2393,11 @@
             }
         },
         "ButtonAck": {
+            "edition": "proto2",
             "fields": {}
         },
         "PinMatrixRequest": {
+            "edition": "proto2",
             "fields": {
                 "type": {
                     "type": "PinMatrixRequestType",
@@ -2391,6 +2417,7 @@
             }
         },
         "PinMatrixAck": {
+            "edition": "proto2",
             "fields": {
                 "pin": {
                     "rule": "required",
@@ -2400,6 +2427,7 @@
             }
         },
         "PassphraseRequest": {
+            "edition": "proto2",
             "fields": {
                 "_on_device": {
                     "type": "bool",
@@ -2408,6 +2436,7 @@
             }
         },
         "PassphraseAck": {
+            "edition": "proto2",
             "fields": {
                 "passphrase": {
                     "type": "string",
@@ -2424,6 +2453,7 @@
             }
         },
         "Deprecated_PassphraseStateRequest": {
+            "edition": "proto2",
             "fields": {
                 "state": {
                     "type": "bytes",
@@ -2432,9 +2462,11 @@
             }
         },
         "Deprecated_PassphraseStateAck": {
+            "edition": "proto2",
             "fields": {}
         },
         "HDNodeType": {
+            "edition": "proto2",
             "fields": {
                 "depth": {
                     "rule": "required",
@@ -2468,6 +2500,7 @@
             }
         },
         "PaymentRequest": {
+            "edition": "proto2",
             "fields": {
                 "nonce": {
                     "type": "bytes",
@@ -2547,10 +2580,7 @@
                         "address_n": {
                             "rule": "repeated",
                             "type": "uint32",
-                            "id": 2,
-                            "options": {
-                                "packed": false
-                            }
+                            "id": 2
                         },
                         "mac": {
                             "rule": "required",
@@ -2579,10 +2609,7 @@
                         "address_n": {
                             "rule": "repeated",
                             "type": "uint32",
-                            "id": 4,
-                            "options": {
-                                "packed": false
-                            }
+                            "id": 4
                         },
                         "mac": {
                             "rule": "required",
@@ -2594,14 +2621,12 @@
             }
         },
         "CipherKeyValue": {
+            "edition": "proto2",
             "fields": {
                 "address_n": {
                     "rule": "repeated",
                     "type": "uint32",
-                    "id": 1,
-                    "options": {
-                        "packed": false
-                    }
+                    "id": 1
                 },
                 "key": {
                     "rule": "required",
@@ -2632,6 +2657,7 @@
             }
         },
         "CipheredKeyValue": {
+            "edition": "proto2",
             "fields": {
                 "value": {
                     "rule": "required",
@@ -2641,6 +2667,7 @@
             }
         },
         "IdentityType": {
+            "edition": "proto2",
             "fields": {
                 "proto": {
                     "type": "string",
@@ -2672,6 +2699,7 @@
             }
         },
         "SignIdentity": {
+            "edition": "proto2",
             "fields": {
                 "identity": {
                     "rule": "required",
@@ -2699,6 +2727,7 @@
             }
         },
         "SignedIdentity": {
+            "edition": "proto2",
             "fields": {
                 "address": {
                     "type": "string",
@@ -2717,6 +2746,7 @@
             }
         },
         "GetECDHSessionKey": {
+            "edition": "proto2",
             "fields": {
                 "identity": {
                     "rule": "required",
@@ -2735,6 +2765,7 @@
             }
         },
         "ECDHSessionKey": {
+            "edition": "proto2",
             "fields": {
                 "session_key": {
                     "rule": "required",
@@ -2748,6 +2779,7 @@
             }
         },
         "PaymentNotification": {
+            "edition": "proto2",
             "fields": {
                 "payment_req": {
                     "type": "PaymentRequest",
@@ -2756,6 +2788,7 @@
             }
         },
         "DebugLinkDecision": {
+            "edition": "proto2",
             "fields": {
                 "button": {
                     "type": "DebugButton",
@@ -2827,6 +2860,7 @@
             }
         },
         "DebugLinkLayout": {
+            "edition": "proto2",
             "fields": {
                 "tokens": {
                     "rule": "repeated",
@@ -2836,6 +2870,7 @@
             }
         },
         "DebugLinkReseedRandom": {
+            "edition": "proto2",
             "fields": {
                 "value": {
                     "type": "uint32",
@@ -2844,6 +2879,7 @@
             }
         },
         "DebugLinkRecordScreen": {
+            "edition": "proto2",
             "fields": {
                 "target_directory": {
                     "type": "string",
@@ -2859,6 +2895,7 @@
             }
         },
         "DebugLinkGetState": {
+            "edition": "proto2",
             "fields": {
                 "wait_word_list": {
                     "type": "bool",
@@ -2894,6 +2931,7 @@
             }
         },
         "DebugLinkState": {
+            "edition": "proto2",
             "fields": {
                 "layout": {
                     "type": "bytes",
@@ -2951,6 +2989,7 @@
             }
         },
         "DebugLinkGetPairingInfo": {
+            "edition": "proto2",
             "fields": {
                 "channel_id": {
                     "type": "bytes",
@@ -2967,6 +3006,7 @@
             }
         },
         "DebugLinkPairingInfo": {
+            "edition": "proto2",
             "fields": {
                 "channel_id": {
                     "type": "bytes",
@@ -2991,9 +3031,11 @@
             }
         },
         "DebugLinkStop": {
+            "edition": "proto2",
             "fields": {}
         },
         "DebugLinkLog": {
+            "edition": "proto2",
             "fields": {
                 "level": {
                     "type": "uint32",
@@ -3010,6 +3052,7 @@
             }
         },
         "DebugLinkMemoryRead": {
+            "edition": "proto2",
             "fields": {
                 "address": {
                     "type": "uint32",
@@ -3022,6 +3065,7 @@
             }
         },
         "DebugLinkMemory": {
+            "edition": "proto2",
             "fields": {
                 "memory": {
                     "type": "bytes",
@@ -3030,6 +3074,7 @@
             }
         },
         "DebugLinkMemoryWrite": {
+            "edition": "proto2",
             "fields": {
                 "address": {
                     "type": "uint32",
@@ -3046,6 +3091,7 @@
             }
         },
         "DebugLinkFlashErase": {
+            "edition": "proto2",
             "fields": {
                 "sector": {
                     "type": "uint32",
@@ -3054,6 +3100,7 @@
             }
         },
         "DebugLinkEraseSdCard": {
+            "edition": "proto2",
             "fields": {
                 "format": {
                     "type": "bool",
@@ -3062,6 +3109,7 @@
             }
         },
         "DebugLinkWatchLayout": {
+            "edition": "proto2",
             "fields": {
                 "watch": {
                     "type": "bool",
@@ -3070,15 +3118,19 @@
             }
         },
         "DebugLinkResetDebugEvents": {
+            "edition": "proto2",
             "fields": {}
         },
         "DebugLinkOptigaSetSecMax": {
+            "edition": "proto2",
             "fields": {}
         },
         "DebugLinkGetGcInfo": {
+            "edition": "proto2",
             "fields": {}
         },
         "DebugLinkGcInfo": {
+            "edition": "proto2",
             "fields": {
                 "items": {
                     "rule": "repeated",
@@ -3104,6 +3156,7 @@
             }
         },
         "DebugLinkSetLogFilter": {
+            "edition": "proto2",
             "fields": {
                 "filter": {
                     "type": "string",
@@ -3112,9 +3165,11 @@
             }
         },
         "DebugLinkN4W1Connected": {
+            "edition": "proto2",
             "fields": {}
         },
         "DebugLinkN4W1Write": {
+            "edition": "proto2",
             "fields": {
                 "key": {
                     "type": "string",
@@ -3127,6 +3182,7 @@
             }
         },
         "DebugLinkN4W1Read": {
+            "edition": "proto2",
             "fields": {
                 "key": {
                     "type": "string",
@@ -3135,6 +3191,7 @@
             }
         },
         "DebugLinkN4W1Response": {
+            "edition": "proto2",
             "fields": {
                 "value": {
                     "type": "bytes",
@@ -3143,6 +3200,7 @@
             }
         },
         "DefinitionType": {
+            "edition": "proto2",
             "values": {
                 "ETHEREUM_NETWORK": 0,
                 "ETHEREUM_TOKEN": 1,
@@ -3150,6 +3208,7 @@
             }
         },
         "EthereumNetworkInfo": {
+            "edition": "proto2",
             "fields": {
                 "chain_id": {
                     "rule": "required",
@@ -3174,6 +3233,7 @@
             }
         },
         "EthereumTokenInfo": {
+            "edition": "proto2",
             "fields": {
                 "address": {
                     "rule": "required",
@@ -3203,6 +3263,7 @@
             }
         },
         "SolanaTokenInfo": {
+            "edition": "proto2",
             "fields": {
                 "mint": {
                     "rule": "required",
@@ -3222,14 +3283,12 @@
             }
         },
         "EosGetPublicKey": {
+            "edition": "proto2",
             "fields": {
                 "address_n": {
                     "rule": "repeated",
                     "type": "uint32",
-                    "id": 1,
-                    "options": {
-                        "packed": false
-                    }
+                    "id": 1
                 },
                 "show_display": {
                     "type": "bool",
@@ -3242,6 +3301,7 @@
             }
         },
         "EosPublicKey": {
+            "edition": "proto2",
             "fields": {
                 "wif_public_key": {
                     "rule": "required",
@@ -3256,14 +3316,12 @@
             }
         },
         "EosSignTx": {
+            "edition": "proto2",
             "fields": {
                 "address_n": {
                     "rule": "repeated",
                     "type": "uint32",
-                    "id": 1,
-                    "options": {
-                        "packed": false
-                    }
+                    "id": 1
                 },
                 "chain_id": {
                     "rule": "required",
@@ -3323,6 +3381,7 @@
             }
         },
         "EosTxActionRequest": {
+            "edition": "proto2",
             "fields": {
                 "data_size": {
                     "type": "uint32",
@@ -3331,6 +3390,7 @@
             }
         },
         "EosTxActionAck": {
+            "edition": "proto2",
             "fields": {
                 "common": {
                     "rule": "required",
@@ -3437,10 +3497,7 @@
                         "address_n": {
                             "rule": "repeated",
                             "type": "uint32",
-                            "id": 3,
-                            "options": {
-                                "packed": false
-                            }
+                            "id": 3
                         },
                         "weight": {
                             "rule": "required",
@@ -3673,10 +3730,7 @@
                         "producers": {
                             "rule": "repeated",
                             "type": "uint64",
-                            "id": 3,
-                            "options": {
-                                "packed": false
-                            }
+                            "id": 3
                         }
                     }
                 },
@@ -3802,6 +3856,7 @@
             }
         },
         "EosSignedTx": {
+            "edition": "proto2",
             "fields": {
                 "signature": {
                     "rule": "required",
@@ -3811,14 +3866,12 @@
             }
         },
         "EthereumSignTypedData": {
+            "edition": "proto2",
             "fields": {
                 "address_n": {
                     "rule": "repeated",
                     "type": "uint32",
-                    "id": 1,
-                    "options": {
-                        "packed": false
-                    }
+                    "id": 1
                 },
                 "primary_type": {
                     "rule": "required",
@@ -3843,6 +3896,7 @@
             }
         },
         "EthereumTypedDataStructRequest": {
+            "edition": "proto2",
             "fields": {
                 "name": {
                     "rule": "required",
@@ -3852,6 +3906,7 @@
             }
         },
         "EthereumTypedDataStructAck": {
+            "edition": "proto2",
             "fields": {
                 "members": {
                     "rule": "repeated",
@@ -3910,18 +3965,17 @@
             }
         },
         "EthereumTypedDataValueRequest": {
+            "edition": "proto2",
             "fields": {
                 "member_path": {
                     "rule": "repeated",
                     "type": "uint32",
-                    "id": 1,
-                    "options": {
-                        "packed": false
-                    }
+                    "id": 1
                 }
             }
         },
         "EthereumTypedDataValueAck": {
+            "edition": "proto2",
             "fields": {
                 "value": {
                     "rule": "required",
@@ -3931,14 +3985,12 @@
             }
         },
         "EthereumGetPublicKey": {
+            "edition": "proto2",
             "fields": {
                 "address_n": {
                     "rule": "repeated",
                     "type": "uint32",
-                    "id": 1,
-                    "options": {
-                        "packed": false
-                    }
+                    "id": 1
                 },
                 "show_display": {
                     "type": "bool",
@@ -3947,6 +3999,7 @@
             }
         },
         "EthereumPublicKey": {
+            "edition": "proto2",
             "fields": {
                 "node": {
                     "rule": "required",
@@ -3961,14 +4014,12 @@
             }
         },
         "EthereumGetAddress": {
+            "edition": "proto2",
             "fields": {
                 "address_n": {
                     "rule": "repeated",
                     "type": "uint32",
-                    "id": 1,
-                    "options": {
-                        "packed": false
-                    }
+                    "id": 1
                 },
                 "show_display": {
                     "type": "bool",
@@ -3985,6 +4036,7 @@
             }
         },
         "EthereumAddress": {
+            "edition": "proto2",
             "fields": {
                 "_old_address": {
                     "type": "bytes",
@@ -4001,14 +4053,12 @@
             }
         },
         "EthereumSignTx": {
+            "edition": "proto2",
             "fields": {
                 "address_n": {
                     "rule": "repeated",
                     "type": "uint32",
-                    "id": 1,
-                    "options": {
-                        "packed": false
-                    }
+                    "id": 1
                 },
                 "nonce": {
                     "type": "bytes",
@@ -4079,14 +4129,12 @@
             }
         },
         "EthereumSignTxEIP1559": {
+            "edition": "proto2",
             "fields": {
                 "address_n": {
                     "rule": "repeated",
                     "type": "uint32",
-                    "id": 1,
-                    "options": {
-                        "packed": false
-                    }
+                    "id": 1
                 },
                 "nonce": {
                     "rule": "required",
@@ -4173,6 +4221,7 @@
             }
         },
         "EthereumTxRequest": {
+            "edition": "proto2",
             "fields": {
                 "data_length": {
                     "type": "uint32",
@@ -4193,6 +4242,7 @@
             }
         },
         "EthereumTxAck": {
+            "edition": "proto2",
             "fields": {
                 "data_chunk": {
                     "rule": "required",
@@ -4202,14 +4252,12 @@
             }
         },
         "EthereumSignMessage": {
+            "edition": "proto2",
             "fields": {
                 "address_n": {
                     "rule": "repeated",
                     "type": "uint32",
-                    "id": 1,
-                    "options": {
-                        "packed": false
-                    }
+                    "id": 1
                 },
                 "message": {
                     "rule": "required",
@@ -4227,6 +4275,7 @@
             }
         },
         "EthereumMessageSignature": {
+            "edition": "proto2",
             "fields": {
                 "signature": {
                     "rule": "required",
@@ -4241,6 +4290,7 @@
             }
         },
         "EthereumVerifyMessage": {
+            "edition": "proto2",
             "fields": {
                 "signature": {
                     "rule": "required",
@@ -4264,14 +4314,12 @@
             }
         },
         "EthereumSignTypedHash": {
+            "edition": "proto2",
             "fields": {
                 "address_n": {
                     "rule": "repeated",
                     "type": "uint32",
-                    "id": 1,
-                    "options": {
-                        "packed": false
-                    }
+                    "id": 1
                 },
                 "domain_separator_hash": {
                     "rule": "required",
@@ -4289,6 +4337,7 @@
             }
         },
         "EthereumTypedDataSignature": {
+            "edition": "proto2",
             "fields": {
                 "signature": {
                     "rule": "required",
@@ -4303,6 +4352,7 @@
             }
         },
         "EthereumDefinitions": {
+            "edition": "proto2",
             "fields": {
                 "encoded_network": {
                     "type": "bytes",
@@ -4315,6 +4365,7 @@
             }
         },
         "EvoluGetNode": {
+            "edition": "proto2",
             "fields": {
                 "proof_of_delegated_identity": {
                     "rule": "required",
@@ -4331,6 +4382,7 @@
             }
         },
         "EvoluNode": {
+            "edition": "proto2",
             "fields": {
                 "data": {
                     "rule": "required",
@@ -4340,6 +4392,7 @@
             }
         },
         "EvoluSignRegistrationRequest": {
+            "edition": "proto2",
             "fields": {
                 "challenge_from_server": {
                     "rule": "required",
@@ -4359,6 +4412,7 @@
             }
         },
         "EvoluRegistrationRequest": {
+            "edition": "proto2",
             "fields": {
                 "certificate_chain": {
                     "rule": "repeated",
@@ -4373,6 +4427,7 @@
             }
         },
         "EvoluGetDelegatedIdentityKey": {
+            "edition": "proto2",
             "fields": {
                 "thp_credential": {
                     "type": "bytes",
@@ -4389,6 +4444,7 @@
             }
         },
         "EvoluDelegatedIdentityKey": {
+            "edition": "proto2",
             "fields": {
                 "private_key": {
                     "rule": "required",
@@ -4402,6 +4458,7 @@
             }
         },
         "EvoluIndexManagement": {
+            "edition": "proto2",
             "fields": {
                 "rotation_index": {
                     "type": "uint32",
@@ -4410,6 +4467,7 @@
             }
         },
         "EvoluIndexManagementResponse": {
+            "edition": "proto2",
             "fields": {
                 "rotation_index": {
                     "type": "uint32",
@@ -4418,6 +4476,7 @@
             }
         },
         "BackupType": {
+            "edition": "proto2",
             "values": {
                 "Bip39": 0,
                 "Slip39_Basic": 1,
@@ -4428,12 +4487,14 @@
             }
         },
         "BackupMethod": {
+            "edition": "proto2",
             "values": {
                 "Display": 0,
                 "N4W1": 1
             }
         },
         "SafetyCheckLevel": {
+            "edition": "proto2",
             "values": {
                 "Strict": 0,
                 "PromptAlways": 1,
@@ -4441,6 +4502,7 @@
             }
         },
         "DisplayRotation": {
+            "edition": "proto2",
             "values": {
                 "North": 0,
                 "East": 90,
@@ -4449,6 +4511,7 @@
             }
         },
         "HomescreenFormat": {
+            "edition": "proto2",
             "values": {
                 "Toif": 1,
                 "Jpeg": 2,
@@ -4456,6 +4519,7 @@
             }
         },
         "Initialize": {
+            "edition": "proto2",
             "fields": {
                 "session_id": {
                     "type": "bytes",
@@ -4472,9 +4536,11 @@
             }
         },
         "GetFeatures": {
+            "edition": "proto2",
             "fields": {}
         },
         "Features": {
+            "edition": "proto2",
             "fields": {
                 "vendor": {
                     "type": "string",
@@ -4598,10 +4664,7 @@
                 "capabilities": {
                     "rule": "repeated",
                     "type": "Capability",
-                    "id": 30,
-                    "options": {
-                        "packed": false
-                    }
+                    "id": 30
                 },
                 "backup_type": {
                     "type": "BackupType",
@@ -4773,9 +4836,11 @@
             }
         },
         "LockDevice": {
+            "edition": "proto2",
             "fields": {}
         },
         "SetBusy": {
+            "edition": "proto2",
             "fields": {
                 "expiry_ms": {
                     "type": "uint32",
@@ -4784,9 +4849,11 @@
             }
         },
         "EndSession": {
+            "edition": "proto2",
             "fields": {}
         },
         "ApplySettings": {
+            "edition": "proto2",
             "fields": {
                 "language": {
                     "type": "string",
@@ -4847,6 +4914,7 @@
             }
         },
         "ChangeLanguage": {
+            "edition": "proto2",
             "fields": {
                 "data_length": {
                     "rule": "required",
@@ -4860,6 +4928,7 @@
             }
         },
         "DataChunkRequest": {
+            "edition": "proto2",
             "fields": {
                 "data_length": {
                     "rule": "required",
@@ -4874,6 +4943,7 @@
             }
         },
         "DataChunkAck": {
+            "edition": "proto2",
             "fields": {
                 "data_chunk": {
                     "rule": "required",
@@ -4883,6 +4953,7 @@
             }
         },
         "ApplyFlags": {
+            "edition": "proto2",
             "fields": {
                 "flags": {
                     "rule": "required",
@@ -4892,6 +4963,7 @@
             }
         },
         "ChangePin": {
+            "edition": "proto2",
             "fields": {
                 "remove": {
                     "type": "bool",
@@ -4900,6 +4972,7 @@
             }
         },
         "ChangeWipeCode": {
+            "edition": "proto2",
             "fields": {
                 "remove": {
                     "type": "bool",
@@ -4908,6 +4981,7 @@
             }
         },
         "SdProtect": {
+            "edition": "proto2",
             "fields": {
                 "operation": {
                     "rule": "required",
@@ -4926,6 +5000,7 @@
             }
         },
         "Ping": {
+            "edition": "proto2",
             "fields": {
                 "message": {
                     "type": "string",
@@ -4941,9 +5016,11 @@
             }
         },
         "Cancel": {
+            "edition": "proto2",
             "fields": {}
         },
         "GetEntropy": {
+            "edition": "proto2",
             "fields": {
                 "size": {
                     "rule": "required",
@@ -4953,6 +5030,7 @@
             }
         },
         "Entropy": {
+            "edition": "proto2",
             "fields": {
                 "entropy": {
                     "rule": "required",
@@ -4962,6 +5040,7 @@
             }
         },
         "GetFirmwareHash": {
+            "edition": "proto2",
             "fields": {
                 "challenge": {
                     "type": "bytes",
@@ -4970,6 +5049,7 @@
             }
         },
         "FirmwareHash": {
+            "edition": "proto2",
             "fields": {
                 "hash": {
                     "rule": "required",
@@ -4979,6 +5059,7 @@
             }
         },
         "AuthenticateDevice": {
+            "edition": "proto2",
             "fields": {
                 "challenge": {
                     "rule": "required",
@@ -4988,6 +5069,7 @@
             }
         },
         "AuthenticityProof": {
+            "edition": "proto2",
             "fields": {
                 "optiga_certificates": {
                     "rule": "repeated",
@@ -5011,9 +5093,11 @@
             }
         },
         "WipeDevice": {
+            "edition": "proto2",
             "fields": {}
         },
         "LoadDevice": {
+            "edition": "proto2",
             "fields": {
                 "mnemonics": {
                     "rule": "repeated",
@@ -5059,6 +5143,7 @@
             }
         },
         "ResetDevice": {
+            "edition": "proto2",
             "fields": {
                 "strength": {
                     "type": "uint32",
@@ -5116,6 +5201,7 @@
             }
         },
         "BackupDevice": {
+            "edition": "proto2",
             "fields": {
                 "group_threshold": {
                     "type": "uint32",
@@ -5152,6 +5238,7 @@
             }
         },
         "EntropyRequest": {
+            "edition": "proto2",
             "fields": {
                 "entropy_commitment": {
                     "type": "bytes",
@@ -5164,6 +5251,7 @@
             }
         },
         "EntropyAck": {
+            "edition": "proto2",
             "fields": {
                 "entropy": {
                     "rule": "required",
@@ -5173,9 +5261,11 @@
             }
         },
         "EntropyCheckReady": {
+            "edition": "proto2",
             "fields": {}
         },
         "EntropyCheckContinue": {
+            "edition": "proto2",
             "fields": {
                 "finish": {
                     "type": "bool",
@@ -5187,6 +5277,7 @@
             }
         },
         "RecoveryDevice": {
+            "edition": "proto2",
             "fields": {
                 "word_count": {
                     "type": "uint32",
@@ -5229,10 +5320,7 @@
                 },
                 "backup_method": {
                     "type": "BackupMethod",
-                    "id": 11,
-                    "options": {
-                        "default": "Display"
-                    }
+                    "id": 11
                 }
             },
             "nested": {
@@ -5245,6 +5333,7 @@
             }
         },
         "RecoveryType": {
+            "edition": "proto2",
             "values": {
                 "NormalRecovery": 0,
                 "DryRun": 1,
@@ -5252,6 +5341,7 @@
             }
         },
         "WordRequest": {
+            "edition": "proto2",
             "fields": {
                 "type": {
                     "rule": "required",
@@ -5270,6 +5360,7 @@
             }
         },
         "WordAck": {
+            "edition": "proto2",
             "fields": {
                 "word": {
                     "rule": "required",
@@ -5279,6 +5370,7 @@
             }
         },
         "SetU2FCounter": {
+            "edition": "proto2",
             "fields": {
                 "u2f_counter": {
                     "rule": "required",
@@ -5288,9 +5380,11 @@
             }
         },
         "GetNextU2FCounter": {
+            "edition": "proto2",
             "fields": {}
         },
         "NextU2FCounter": {
+            "edition": "proto2",
             "fields": {
                 "u2f_counter": {
                     "rule": "required",
@@ -5300,15 +5394,19 @@
             }
         },
         "DoPreauthorized": {
+            "edition": "proto2",
             "fields": {}
         },
         "PreauthorizedRequest": {
+            "edition": "proto2",
             "fields": {}
         },
         "CancelAuthorization": {
+            "edition": "proto2",
             "fields": {}
         },
         "RebootToBootloader": {
+            "edition": "proto2",
             "fields": {
                 "boot_command": {
                     "type": "BootCommand",
@@ -5332,9 +5430,11 @@
             }
         },
         "GetNonce": {
+            "edition": "proto2",
             "fields": {}
         },
         "Nonce": {
+            "edition": "proto2",
             "fields": {
                 "nonce": {
                     "rule": "required",
@@ -5344,14 +5444,12 @@
             }
         },
         "UnlockPath": {
+            "edition": "proto2",
             "fields": {
                 "address_n": {
                     "rule": "repeated",
                     "type": "uint32",
-                    "id": 1,
-                    "options": {
-                        "packed": false
-                    }
+                    "id": 1
                 },
                 "mac": {
                     "type": "bytes",
@@ -5360,6 +5458,7 @@
             }
         },
         "UnlockedPathRequest": {
+            "edition": "proto2",
             "fields": {
                 "mac": {
                     "rule": "required",
@@ -5369,12 +5468,15 @@
             }
         },
         "ShowDeviceTutorial": {
+            "edition": "proto2",
             "fields": {}
         },
         "UnlockBootloader": {
+            "edition": "proto2",
             "fields": {}
         },
         "SetBrightness": {
+            "edition": "proto2",
             "fields": {
                 "value": {
                     "type": "uint32",
@@ -5383,9 +5485,11 @@
             }
         },
         "GetSerialNumber": {
+            "edition": "proto2",
             "fields": {}
         },
         "SerialNumber": {
+            "edition": "proto2",
             "fields": {
                 "serial_number": {
                     "rule": "required",
@@ -5395,6 +5499,7 @@
             }
         },
         "MoneroNetworkType": {
+            "edition": "proto2",
             "values": {
                 "MAINNET": 0,
                 "TESTNET": 1,
@@ -5403,6 +5508,7 @@
             }
         },
         "MoneroTransactionSourceEntry": {
+            "edition": "proto2",
             "fields": {
                 "outputs": {
                     "rule": "repeated",
@@ -5499,6 +5605,7 @@
             }
         },
         "MoneroTransactionDestinationEntry": {
+            "edition": "proto2",
             "fields": {
                 "amount": {
                     "type": "uint64",
@@ -5537,6 +5644,7 @@
             }
         },
         "MoneroTransactionRsigData": {
+            "edition": "proto2",
             "fields": {
                 "rsig_type": {
                     "type": "uint32",
@@ -5549,10 +5657,7 @@
                 "grouping": {
                     "rule": "repeated",
                     "type": "uint64",
-                    "id": 3,
-                    "options": {
-                        "packed": false
-                    }
+                    "id": 3
                 },
                 "mask": {
                     "type": "bytes",
@@ -5574,14 +5679,12 @@
             }
         },
         "MoneroGetAddress": {
+            "edition": "proto2",
             "fields": {
                 "address_n": {
                     "rule": "repeated",
                     "type": "uint32",
-                    "id": 1,
-                    "options": {
-                        "packed": false
-                    }
+                    "id": 1
                 },
                 "show_display": {
                     "type": "bool",
@@ -5613,6 +5716,7 @@
             }
         },
         "MoneroAddress": {
+            "edition": "proto2",
             "fields": {
                 "address": {
                     "rule": "required",
@@ -5622,14 +5726,12 @@
             }
         },
         "MoneroGetWatchKey": {
+            "edition": "proto2",
             "fields": {
                 "address_n": {
                     "rule": "repeated",
                     "type": "uint32",
-                    "id": 1,
-                    "options": {
-                        "packed": false
-                    }
+                    "id": 1
                 },
                 "network_type": {
                     "type": "MoneroNetworkType",
@@ -5641,6 +5743,7 @@
             }
         },
         "MoneroWatchKey": {
+            "edition": "proto2",
             "fields": {
                 "watch_key": {
                     "rule": "required",
@@ -5655,6 +5758,7 @@
             }
         },
         "MoneroTransactionInitRequest": {
+            "edition": "proto2",
             "fields": {
                 "version": {
                     "type": "uint32",
@@ -5663,10 +5767,7 @@
                 "address_n": {
                     "rule": "repeated",
                     "type": "uint32",
-                    "id": 2,
-                    "options": {
-                        "packed": false
-                    }
+                    "id": 2
                 },
                 "network_type": {
                     "type": "MoneroNetworkType",
@@ -5723,10 +5824,7 @@
                         "minor_indices": {
                             "rule": "repeated",
                             "type": "uint32",
-                            "id": 10,
-                            "options": {
-                                "packed": false
-                            }
+                            "id": 10
                         },
                         "rsig_data": {
                             "type": "MoneroTransactionRsigData",
@@ -5735,10 +5833,7 @@
                         "integrated_indices": {
                             "rule": "repeated",
                             "type": "uint32",
-                            "id": 12,
-                            "options": {
-                                "packed": false
-                            }
+                            "id": 12
                         },
                         "client_version": {
                             "type": "uint32",
@@ -5761,6 +5856,7 @@
             }
         },
         "MoneroTransactionInitAck": {
+            "edition": "proto2",
             "fields": {
                 "hmacs": {
                     "rule": "repeated",
@@ -5774,6 +5870,7 @@
             }
         },
         "MoneroTransactionSetInputRequest": {
+            "edition": "proto2",
             "fields": {
                 "src_entr": {
                     "type": "MoneroTransactionSourceEntry",
@@ -5782,6 +5879,7 @@
             }
         },
         "MoneroTransactionSetInputAck": {
+            "edition": "proto2",
             "fields": {
                 "vini": {
                     "type": "bytes",
@@ -5810,6 +5908,7 @@
             }
         },
         "MoneroTransactionInputViniRequest": {
+            "edition": "proto2",
             "fields": {
                 "src_entr": {
                     "type": "MoneroTransactionSourceEntry",
@@ -5838,12 +5937,15 @@
             }
         },
         "MoneroTransactionInputViniAck": {
+            "edition": "proto2",
             "fields": {}
         },
         "MoneroTransactionAllInputsSetRequest": {
+            "edition": "proto2",
             "fields": {}
         },
         "MoneroTransactionAllInputsSetAck": {
+            "edition": "proto2",
             "fields": {
                 "rsig_data": {
                     "type": "MoneroTransactionRsigData",
@@ -5852,6 +5954,7 @@
             }
         },
         "MoneroTransactionSetOutputRequest": {
+            "edition": "proto2",
             "fields": {
                 "dst_entr": {
                     "type": "MoneroTransactionDestinationEntry",
@@ -5872,6 +5975,7 @@
             }
         },
         "MoneroTransactionSetOutputAck": {
+            "edition": "proto2",
             "fields": {
                 "tx_out": {
                     "type": "bytes",
@@ -5896,6 +6000,7 @@
             }
         },
         "MoneroTransactionAllOutSetRequest": {
+            "edition": "proto2",
             "fields": {
                 "rsig_data": {
                     "type": "MoneroTransactionRsigData",
@@ -5904,6 +6009,7 @@
             }
         },
         "MoneroTransactionAllOutSetAck": {
+            "edition": "proto2",
             "fields": {
                 "extra": {
                     "type": "bytes",
@@ -5942,6 +6048,7 @@
             }
         },
         "MoneroTransactionSignInputRequest": {
+            "edition": "proto2",
             "fields": {
                 "src_entr": {
                     "type": "MoneroTransactionSourceEntry",
@@ -5978,6 +6085,7 @@
             }
         },
         "MoneroTransactionSignInputAck": {
+            "edition": "proto2",
             "fields": {
                 "signature": {
                     "type": "bytes",
@@ -5990,9 +6098,11 @@
             }
         },
         "MoneroTransactionFinalRequest": {
+            "edition": "proto2",
             "fields": {}
         },
         "MoneroTransactionFinalAck": {
+            "edition": "proto2",
             "fields": {
                 "cout_key": {
                     "type": "bytes",
@@ -6017,6 +6127,7 @@
             }
         },
         "MoneroKeyImageExportInitRequest": {
+            "edition": "proto2",
             "fields": {
                 "num": {
                     "rule": "required",
@@ -6031,10 +6142,7 @@
                 "address_n": {
                     "rule": "repeated",
                     "type": "uint32",
-                    "id": 3,
-                    "options": {
-                        "packed": false
-                    }
+                    "id": 3
                 },
                 "network_type": {
                     "type": "MoneroNetworkType",
@@ -6060,19 +6168,18 @@
                         "minor_indices": {
                             "rule": "repeated",
                             "type": "uint32",
-                            "id": 2,
-                            "options": {
-                                "packed": false
-                            }
+                            "id": 2
                         }
                     }
                 }
             }
         },
         "MoneroKeyImageExportInitAck": {
+            "edition": "proto2",
             "fields": {}
         },
         "MoneroKeyImageSyncStepRequest": {
+            "edition": "proto2",
             "fields": {
                 "tdis": {
                     "rule": "repeated",
@@ -6116,6 +6223,7 @@
             }
         },
         "MoneroKeyImageSyncStepAck": {
+            "edition": "proto2",
             "fields": {
                 "kis": {
                     "rule": "repeated",
@@ -6139,9 +6247,11 @@
             }
         },
         "MoneroKeyImageSyncFinalRequest": {
+            "edition": "proto2",
             "fields": {}
         },
         "MoneroKeyImageSyncFinalAck": {
+            "edition": "proto2",
             "fields": {
                 "enc_key": {
                     "type": "bytes",
@@ -6150,14 +6260,12 @@
             }
         },
         "MoneroGetTxKeyRequest": {
+            "edition": "proto2",
             "fields": {
                 "address_n": {
                     "rule": "repeated",
                     "type": "uint32",
-                    "id": 1,
-                    "options": {
-                        "packed": false
-                    }
+                    "id": 1
                 },
                 "network_type": {
                     "type": "MoneroNetworkType",
@@ -6197,6 +6305,7 @@
             }
         },
         "MoneroGetTxKeyAck": {
+            "edition": "proto2",
             "fields": {
                 "salt": {
                     "type": "bytes",
@@ -6213,14 +6322,12 @@
             }
         },
         "MoneroLiveRefreshStartRequest": {
+            "edition": "proto2",
             "fields": {
                 "address_n": {
                     "rule": "repeated",
                     "type": "uint32",
-                    "id": 1,
-                    "options": {
-                        "packed": false
-                    }
+                    "id": 1
                 },
                 "network_type": {
                     "type": "MoneroNetworkType",
@@ -6232,9 +6339,11 @@
             }
         },
         "MoneroLiveRefreshStartAck": {
+            "edition": "proto2",
             "fields": {}
         },
         "MoneroLiveRefreshStepRequest": {
+            "edition": "proto2",
             "fields": {
                 "out_key": {
                     "rule": "required",
@@ -6264,6 +6373,7 @@
             }
         },
         "MoneroLiveRefreshStepAck": {
+            "edition": "proto2",
             "fields": {
                 "salt": {
                     "type": "bytes",
@@ -6276,12 +6386,15 @@
             }
         },
         "MoneroLiveRefreshFinalRequest": {
+            "edition": "proto2",
             "fields": {}
         },
         "MoneroLiveRefreshFinalAck": {
+            "edition": "proto2",
             "fields": {}
         },
         "DebugMoneroDiagRequest": {
+            "edition": "proto2",
             "fields": {
                 "ins": {
                     "type": "uint64",
@@ -6298,10 +6411,7 @@
                 "pd": {
                     "rule": "repeated",
                     "type": "uint64",
-                    "id": 4,
-                    "options": {
-                        "packed": false
-                    }
+                    "id": 4
                 },
                 "data1": {
                     "type": "bytes",
@@ -6314,6 +6424,7 @@
             }
         },
         "DebugMoneroDiagAck": {
+            "edition": "proto2",
             "fields": {
                 "ins": {
                     "type": "uint64",
@@ -6330,10 +6441,7 @@
                 "pd": {
                     "rule": "repeated",
                     "type": "uint64",
-                    "id": 4,
-                    "options": {
-                        "packed": false
-                    }
+                    "id": 4
                 },
                 "data1": {
                     "type": "bytes",
@@ -6346,14 +6454,12 @@
             }
         },
         "RippleGetAddress": {
+            "edition": "proto2",
             "fields": {
                 "address_n": {
                     "rule": "repeated",
                     "type": "uint32",
-                    "id": 1,
-                    "options": {
-                        "packed": false
-                    }
+                    "id": 1
                 },
                 "show_display": {
                     "type": "bool",
@@ -6366,6 +6472,7 @@
             }
         },
         "RippleAddress": {
+            "edition": "proto2",
             "fields": {
                 "address": {
                     "rule": "required",
@@ -6379,14 +6486,12 @@
             }
         },
         "RippleSignTx": {
+            "edition": "proto2",
             "fields": {
                 "address_n": {
                     "rule": "repeated",
                     "type": "uint32",
-                    "id": 1,
-                    "options": {
-                        "packed": false
-                    }
+                    "id": 1
                 },
                 "fee": {
                     "rule": "required",
@@ -6445,6 +6550,7 @@
             }
         },
         "RippleSignedTx": {
+            "edition": "proto2",
             "fields": {
                 "signature": {
                     "rule": "required",
@@ -6459,14 +6565,12 @@
             }
         },
         "SolanaGetPublicKey": {
+            "edition": "proto2",
             "fields": {
                 "address_n": {
                     "rule": "repeated",
                     "type": "uint32",
-                    "id": 1,
-                    "options": {
-                        "packed": false
-                    }
+                    "id": 1
                 },
                 "show_display": {
                     "type": "bool",
@@ -6475,6 +6579,7 @@
             }
         },
         "SolanaPublicKey": {
+            "edition": "proto2",
             "fields": {
                 "public_key": {
                     "rule": "required",
@@ -6484,14 +6589,12 @@
             }
         },
         "SolanaGetAddress": {
+            "edition": "proto2",
             "fields": {
                 "address_n": {
                     "rule": "repeated",
                     "type": "uint32",
-                    "id": 1,
-                    "options": {
-                        "packed": false
-                    }
+                    "id": 1
                 },
                 "show_display": {
                     "type": "bool",
@@ -6504,6 +6607,7 @@
             }
         },
         "SolanaAddress": {
+            "edition": "proto2",
             "fields": {
                 "address": {
                     "rule": "required",
@@ -6517,6 +6621,7 @@
             }
         },
         "SolanaTxTokenAccountInfo": {
+            "edition": "proto2",
             "fields": {
                 "base_address": {
                     "rule": "required",
@@ -6541,6 +6646,7 @@
             }
         },
         "SolanaTxAdditionalInfo": {
+            "edition": "proto2",
             "fields": {
                 "token_accounts_infos": {
                     "rule": "repeated",
@@ -6554,14 +6660,12 @@
             }
         },
         "SolanaSignTx": {
+            "edition": "proto2",
             "fields": {
                 "address_n": {
                     "rule": "repeated",
                     "type": "uint32",
-                    "id": 1,
-                    "options": {
-                        "packed": false
-                    }
+                    "id": 1
                 },
                 "serialized_tx": {
                     "rule": "required",
@@ -6579,6 +6683,7 @@
             }
         },
         "SolanaTxSignature": {
+            "edition": "proto2",
             "fields": {
                 "signature": {
                     "rule": "required",
@@ -6588,6 +6693,7 @@
             }
         },
         "StellarAssetType": {
+            "edition": "proto2",
             "values": {
                 "NATIVE": 0,
                 "ALPHANUM4": 1,
@@ -6595,6 +6701,7 @@
             }
         },
         "StellarAsset": {
+            "edition": "proto2",
             "fields": {
                 "type": {
                     "rule": "required",
@@ -6612,14 +6719,12 @@
             }
         },
         "StellarGetAddress": {
+            "edition": "proto2",
             "fields": {
                 "address_n": {
                     "rule": "repeated",
                     "type": "uint32",
-                    "id": 1,
-                    "options": {
-                        "packed": false
-                    }
+                    "id": 1
                 },
                 "show_display": {
                     "type": "bool",
@@ -6632,6 +6737,7 @@
             }
         },
         "StellarAddress": {
+            "edition": "proto2",
             "fields": {
                 "address": {
                     "rule": "required",
@@ -6645,14 +6751,12 @@
             }
         },
         "StellarSignTx": {
+            "edition": "proto2",
             "fields": {
                 "address_n": {
                     "rule": "repeated",
                     "type": "uint32",
-                    "id": 2,
-                    "options": {
-                        "packed": false
-                    }
+                    "id": 2
                 },
                 "network_passphrase": {
                     "rule": "required",
@@ -6724,9 +6828,11 @@
             }
         },
         "StellarTxOpRequest": {
+            "edition": "proto2",
             "fields": {}
         },
         "StellarPaymentOp": {
+            "edition": "proto2",
             "fields": {
                 "source_account": {
                     "type": "string",
@@ -6750,6 +6856,7 @@
             }
         },
         "StellarCreateAccountOp": {
+            "edition": "proto2",
             "fields": {
                 "source_account": {
                     "type": "string",
@@ -6768,6 +6875,7 @@
             }
         },
         "StellarPathPaymentStrictReceiveOp": {
+            "edition": "proto2",
             "fields": {
                 "source_account": {
                     "type": "string",
@@ -6806,6 +6914,7 @@
             }
         },
         "StellarPathPaymentStrictSendOp": {
+            "edition": "proto2",
             "fields": {
                 "source_account": {
                     "type": "string",
@@ -6844,6 +6953,7 @@
             }
         },
         "StellarManageSellOfferOp": {
+            "edition": "proto2",
             "fields": {
                 "source_account": {
                     "type": "string",
@@ -6882,6 +6992,7 @@
             }
         },
         "StellarManageBuyOfferOp": {
+            "edition": "proto2",
             "fields": {
                 "source_account": {
                     "type": "string",
@@ -6920,6 +7031,7 @@
             }
         },
         "StellarCreatePassiveSellOfferOp": {
+            "edition": "proto2",
             "fields": {
                 "source_account": {
                     "type": "string",
@@ -6953,6 +7065,7 @@
             }
         },
         "StellarSetOptionsOp": {
+            "edition": "proto2",
             "fields": {
                 "source_account": {
                     "type": "string",
@@ -7014,6 +7127,7 @@
             }
         },
         "StellarChangeTrustOp": {
+            "edition": "proto2",
             "fields": {
                 "source_account": {
                     "type": "string",
@@ -7032,6 +7146,7 @@
             }
         },
         "StellarAllowTrustOp": {
+            "edition": "proto2",
             "fields": {
                 "source_account": {
                     "type": "string",
@@ -7059,6 +7174,7 @@
             }
         },
         "StellarAccountMergeOp": {
+            "edition": "proto2",
             "fields": {
                 "source_account": {
                     "type": "string",
@@ -7072,6 +7188,7 @@
             }
         },
         "StellarManageDataOp": {
+            "edition": "proto2",
             "fields": {
                 "source_account": {
                     "type": "string",
@@ -7089,6 +7206,7 @@
             }
         },
         "StellarBumpSequenceOp": {
+            "edition": "proto2",
             "fields": {
                 "source_account": {
                     "type": "string",
@@ -7102,6 +7220,7 @@
             }
         },
         "StellarClaimClaimableBalanceOp": {
+            "edition": "proto2",
             "fields": {
                 "source_account": {
                     "type": "string",
@@ -7115,6 +7234,7 @@
             }
         },
         "StellarSignedTx": {
+            "edition": "proto2",
             "fields": {
                 "public_key": {
                     "rule": "required",
@@ -7129,9 +7249,11 @@
             }
         },
         "TelemetryGet": {
+            "edition": "proto2",
             "fields": {}
         },
         "Telemetry": {
+            "edition": "proto2",
             "fields": {
                 "min_temp_c": {
                     "type": "sint32",
@@ -7152,14 +7274,12 @@
             }
         },
         "TezosGetAddress": {
+            "edition": "proto2",
             "fields": {
                 "address_n": {
                     "rule": "repeated",
                     "type": "uint32",
-                    "id": 1,
-                    "options": {
-                        "packed": false
-                    }
+                    "id": 1
                 },
                 "show_display": {
                     "type": "bool",
@@ -7172,6 +7292,7 @@
             }
         },
         "TezosAddress": {
+            "edition": "proto2",
             "fields": {
                 "address": {
                     "rule": "required",
@@ -7185,14 +7306,12 @@
             }
         },
         "TezosGetPublicKey": {
+            "edition": "proto2",
             "fields": {
                 "address_n": {
                     "rule": "repeated",
                     "type": "uint32",
-                    "id": 1,
-                    "options": {
-                        "packed": false
-                    }
+                    "id": 1
                 },
                 "show_display": {
                     "type": "bool",
@@ -7205,6 +7324,7 @@
             }
         },
         "TezosPublicKey": {
+            "edition": "proto2",
             "fields": {
                 "public_key": {
                     "rule": "required",
@@ -7214,14 +7334,12 @@
             }
         },
         "TezosSignTx": {
+            "edition": "proto2",
             "fields": {
                 "address_n": {
                     "rule": "repeated",
                     "type": "uint32",
-                    "id": 1,
-                    "options": {
-                        "packed": false
-                    }
+                    "id": 1
                 },
                 "branch": {
                     "rule": "required",
@@ -7539,6 +7657,7 @@
             }
         },
         "TezosSignedTx": {
+            "edition": "proto2",
             "fields": {
                 "signature": {
                     "rule": "required",
@@ -7558,14 +7677,12 @@
             }
         },
         "TronGetAddress": {
+            "edition": "proto2",
             "fields": {
                 "address_n": {
                     "rule": "repeated",
                     "type": "uint32",
-                    "id": 1,
-                    "options": {
-                        "packed": false
-                    }
+                    "id": 1
                 },
                 "show_display": {
                     "type": "bool",
@@ -7578,6 +7695,7 @@
             }
         },
         "TronAddress": {
+            "edition": "proto2",
             "fields": {
                 "address": {
                     "rule": "required",
@@ -7591,14 +7709,12 @@
             }
         },
         "TronSignTx": {
+            "edition": "proto2",
             "fields": {
                 "address_n": {
                     "rule": "repeated",
                     "type": "uint32",
-                    "id": 1,
-                    "options": {
-                        "packed": false
-                    }
+                    "id": 1
                 },
                 "ref_block_bytes": {
                     "rule": "required",
@@ -7631,9 +7747,11 @@
             }
         },
         "TronContractRequest": {
+            "edition": "proto2",
             "fields": {}
         },
         "TronTransferContract": {
+            "edition": "proto2",
             "fields": {
                 "owner_address": {
                     "rule": "required",
@@ -7653,6 +7771,7 @@
             }
         },
         "TronVoteWitnessContract": {
+            "edition": "proto2",
             "fields": {
                 "owner_address": {
                     "rule": "required",
@@ -7683,6 +7802,7 @@
             }
         },
         "TronTriggerSmartContract": {
+            "edition": "proto2",
             "fields": {
                 "owner_address": {
                     "rule": "required",
@@ -7702,6 +7822,7 @@
             }
         },
         "TronFreezeBalanceV2Contract": {
+            "edition": "proto2",
             "fields": {
                 "owner_address": {
                     "rule": "required",
@@ -7723,6 +7844,7 @@
             }
         },
         "TronUnfreezeBalanceV2Contract": {
+            "edition": "proto2",
             "fields": {
                 "owner_address": {
                     "rule": "required",
@@ -7744,6 +7866,7 @@
             }
         },
         "TronWithdrawUnfreeze": {
+            "edition": "proto2",
             "fields": {
                 "owner_address": {
                     "rule": "required",
@@ -7753,12 +7876,14 @@
             }
         },
         "TronResourceCode": {
+            "edition": "proto2",
             "values": {
                 "BANDWIDTH": 0,
                 "ENERGY": 1
             }
         },
         "TronSignature": {
+            "edition": "proto2",
             "fields": {
                 "signature": {
                     "rule": "required",
@@ -7768,6 +7893,7 @@
             }
         },
         "TronRawTransaction": {
+            "edition": "proto2",
             "fields": {
                 "ref_block_bytes": {
                     "rule": "required",
@@ -7847,6 +7973,7 @@
             }
         },
         "MessageType": {
+            "edition": "proto2",
             "options": {
                 "(has_bitcoin_only_values)": true,
                 "(wire_enum)": true
