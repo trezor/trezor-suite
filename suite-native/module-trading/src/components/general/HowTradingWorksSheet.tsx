@@ -59,7 +59,13 @@ export const HowTradingWorksSheet = ({ ref, closeModal }: HowTradingWorksSheetPr
                 <ListItem icon="identificationCard">
                     <Translation
                         id="moduleTrading.tradingScreen.footer.howTradingWorksSheet.item3"
-                        values={{ text: chunks => <Text variant="body-sm">{chunks}</Text> }}
+                        values={{
+                            text: chunks => (
+                                <Text variant="body-sm" color="contentSecondary">
+                                    {chunks}
+                                </Text>
+                            ),
+                        }}
                     />
                 </ListItem>
                 <ListItem icon="percent" href={TREZOR_SUPPORT_UNDERSTANDING_FEES}>
