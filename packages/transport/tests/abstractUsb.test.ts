@@ -2,6 +2,7 @@ import * as messages from '@trezor/protobuf/messages.json';
 import { v1 as v1Protocol } from '@trezor/protocol';
 
 import { UsbApi } from '../src/api/usb';
+import * as ERRORS from '../src/errors';
 import { AbstractApiTransport } from '../src/transports/abstractApi';
 import { PathPublic, Session } from '../src/types';
 
@@ -330,6 +331,51 @@ describe('Usb', () => {
                 success: true,
                 payload: null,
             });
+        });
+
+        it('acquire - openDevice failure releases session lock', async () => {
+            const { transport, testUsbApi } = await initTest();
+            await transport.enumerate();
+
+            jest.spyOn(testUsbApi, 'openDevice').mockResolvedValueOnce({
+                success: false,
+                error: { code: ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE },
+            });
+
+            const failedAcquire = await transport.acquire({
+                input: { path: PathPublic('1'), previous: null },
+            });
+            expect(failedAcquire).toMatchObject({
+                success: false,
+                error: { code: ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE },
+            });
+
+            // Lock was released via abort: a subsequent acquire on the same path succeeds.
+            const retryAcquire = await transport.acquire({
+                input: { path: PathPublic('1'), previous: null },
+            });
+            expect(retryAcquire).toMatchObject({ success: true });
+        });
+
+        it('acquire - acquireDone failure closes opened device', async () => {
+            const { transport, testUsbApi } = await initTest();
+            await transport.enumerate();
+
+            const closeDeviceSpy = jest.spyOn(testUsbApi, 'closeDevice');
+            jest.spyOn(transport['sessionsClient'], 'acquireDone').mockResolvedValueOnce({
+                success: false,
+                error: { code: ERRORS.DEVICE_NOT_FOUND },
+                id: 0,
+            });
+
+            const result = await transport.acquire({
+                input: { path: PathPublic('1'), previous: null },
+            });
+            expect(result).toMatchObject({
+                success: false,
+                error: { code: ERRORS.DEVICE_NOT_FOUND },
+            });
+            expect(closeDeviceSpy).toHaveBeenCalled();
         });
 
         it('call - with use abort', async () => {
