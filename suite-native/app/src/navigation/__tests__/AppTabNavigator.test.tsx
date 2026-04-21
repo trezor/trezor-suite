@@ -1,39 +1,43 @@
+import { deviceInitialState } from '@suite-common/device';
+import { messageSystemInitialState } from '@suite-common/message-system';
 import { mockMessageSystemStateWithFeatureFlags } from '@suite-common/message-system/mocks';
 import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
-import { act, fireEvent, renderWithStoreProvider } from '@suite-native/test-utils-store';
+import {
+    fireEvent,
+    mergePreloadedState,
+    renderWithStoreProvider,
+} from '@suite-native/test-utils-store';
 
 import { AppTabNavigator } from '../AppTabNavigator';
 
-jest.mock('@suite-common/tx-simulation', () => ({}));
+jest.mock('@suite-native/module-home', () => ({ HomeStackNavigator: () => null }));
+jest.mock('@suite-native/module-accounts-management', () => ({
+    AccountsStackNavigator: () => null,
+}));
+jest.mock('@suite-native/module-earn', () => ({ EarnStackNavigator: () => null }));
+jest.mock('@suite-native/module-settings', () => ({ SettingsScreen: () => null }));
+jest.mock('@suite-native/module-trading', () => {
+    const { View } = require('react-native');
 
-const defaultPreloadedState = {
+    return {
+        TradingStackNavigator: () => <View testID="@screen/Trading" />,
+    };
+});
+
+const baseState = {
+    device: deviceInitialState,
     featureFlags: featureFlagsInitialState,
-    bluetooth: { permissionStatus: 'unavailable' },
-    device: { selectedDevice: undefined, devices: [], persistentDeviceData: {} },
+    messageSystem: messageSystemInitialState,
     wallet: {
-        accounts: [],
         trading: { residence: { country: null, wasOnboardingVisited: false } },
-    },
-    appSettings: { shouldShowAutoEjectAlert: false, hasAutoEjectAlertBeenDisplayed: false },
-    messageSystem: {
-        config: { actions: [] },
-        validMessages: { banner: [], context: [], modal: [], feature: [] },
-        dismissedMessages: [],
     },
 };
 
 describe('AppTabNavigator', () => {
-    const renderTabs = (preloadedState?: Record<string, unknown>) =>
+    const renderTabs = (overrides: Record<string, unknown> = {}) =>
         renderWithStoreProvider(<AppTabNavigator />, {
-            preloadedState: { ...defaultPreloadedState, ...preloadedState },
+            preloadedState: mergePreloadedState(baseState, overrides),
         });
-
-    beforeEach(() => {
-        global.fetch = jest.fn().mockResolvedValue({
-            json: jest.fn().mockResolvedValue({}),
-            ok: true,
-        });
-    });
 
     it('should render 3 buttons', () => {
         const { getByText } = renderTabs();
@@ -46,7 +50,6 @@ describe('AppTabNavigator', () => {
     it('should not render Trade tab when all trading flags are disabled', () => {
         const { queryByText } = renderTabs({
             featureFlags: {
-                ...featureFlagsInitialState,
                 [FeatureFlag.IsTradingBuyEnabled]: false,
                 [FeatureFlag.IsTradingExchangeEnabled]: false,
                 [FeatureFlag.IsTradingSellEnabled]: false,
@@ -62,20 +65,15 @@ describe('AppTabNavigator', () => {
         expect(queryByText('Trade')).toBe(null);
     });
 
-    it('should render Trade tab when at least one trading flag is enabled', async () => {
+    it('should render Trade tab when at least one trading flag is enabled', () => {
         const { getByText, getByTestId } = renderTabs({
             featureFlags: {
-                ...featureFlagsInitialState,
                 [FeatureFlag.IsTradingBuyEnabled]: true,
                 [FeatureFlag.IsTradingResidenceCheckEnabled]: false,
             },
         });
 
-        const tradeTab = getByText('Trade');
-        await act(async () => {
-            fireEvent.press(tradeTab);
-            await Promise.resolve();
-        });
+        fireEvent.press(getByText('Trade'));
 
         expect(getByTestId('@screen/Trading')).toBeTruthy();
     });
