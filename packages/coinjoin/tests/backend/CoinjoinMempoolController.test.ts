@@ -3,15 +3,20 @@ import { networks } from '@trezor/utxo-lib';
 import { CoinjoinMempoolController } from '../../src/backend/CoinjoinMempoolController';
 import { AccountAddress } from '../../src/types/backend';
 import {
-    BLOCKS,
+    BLOCK_TXS,
     SEGWIT_CHANGE_ADDRESSES,
     SEGWIT_RECEIVE_ADDRESSES,
+    TX0,
+    TX1,
+    TX2,
+    TX3,
+    TX4,
+    TX5,
 } from '../fixtures/methods.fixture';
 import { MockMempoolClient } from '../mocks/MockMempoolClient';
 
-const TXS = BLOCKS.flatMap(block => block.txs); // There is 6 of them
 const ADDRESS = SEGWIT_RECEIVE_ADDRESSES[1];
-const TXS_MATCH = [TXS[1], TXS[3]];
+const TXS_MATCH = [TX1, TX3];
 
 describe('CoinjoinMempoolController', () => {
     const client = new MockMempoolClient();
@@ -23,9 +28,9 @@ describe('CoinjoinMempoolController', () => {
     });
 
     it('All at once', async () => {
-        client.setMempoolTxs(TXS);
+        client.setMempoolTxs(BLOCK_TXS);
         await mempool.init();
-        expect(mempool.getTransactions()).toEqual(TXS);
+        expect(mempool.getTransactions()).toEqual(BLOCK_TXS);
         expect(
             mempool.getTransactions({
                 receive: [{ address: ADDRESS } as AccountAddress],
@@ -44,27 +49,27 @@ describe('CoinjoinMempoolController', () => {
     });
 
     it('Progressing', async () => {
-        [TXS[0], TXS[1]].forEach(client.fireTx.bind(client));
+        [TX0, TX1].forEach(client.fireTx.bind(client));
         expect(mempool.getTransactions()).toEqual([]);
 
         await mempool.start();
-        [TXS[2], TXS[3]].forEach(client.fireTx.bind(client));
-        expect(mempool.getTransactions()).toEqual([TXS[2], TXS[3]]);
+        [TX2, TX3].forEach(client.fireTx.bind(client));
+        expect(mempool.getTransactions()).toEqual([TX2, TX3]);
 
-        client.setMempoolTxs([TXS[1], TXS[2], TXS[3]]);
+        client.setMempoolTxs([TX1, TX2, TX3]);
         await mempool.update(true);
-        expect(mempool.getTransactions()).toEqual([TXS[2], TXS[3]]);
+        expect(mempool.getTransactions()).toEqual([TX2, TX3]);
 
-        [TXS[4]].forEach(client.fireTx.bind(client));
-        client.setMempoolTxs([TXS[3], TXS[4], TXS[5]]);
+        [TX4].forEach(client.fireTx.bind(client));
+        client.setMempoolTxs([TX3, TX4, TX5]);
         await mempool.update(true);
-        expect(mempool.getTransactions()).toEqual([TXS[3], TXS[4]]);
+        expect(mempool.getTransactions()).toEqual([TX3, TX4]);
 
-        [TXS[5]].forEach(client.fireTx.bind(client));
+        [TX5].forEach(client.fireTx.bind(client));
         await mempool.update(true);
-        expect(mempool.getTransactions()).toEqual([TXS[3], TXS[4], TXS[5]]);
+        expect(mempool.getTransactions()).toEqual([TX3, TX4, TX5]);
 
-        client.setMempoolTxs([TXS[0], TXS[1]]);
+        client.setMempoolTxs([TX0, TX1]);
         await mempool.update(true);
         expect(mempool.getTransactions()).toEqual([]);
     });
@@ -76,26 +81,26 @@ describe('CoinjoinMempoolController', () => {
             filter: address =>
                 address === SEGWIT_RECEIVE_ADDRESSES[1] || address === SEGWIT_CHANGE_ADDRESSES[0],
         });
-        client.setMempoolTxs(TXS);
+        client.setMempoolTxs(BLOCK_TXS);
         await mempool.init();
-        expect(mempool.getTransactions()).toEqual([TXS[1], TXS[3], TXS[4]]);
+        expect(mempool.getTransactions()).toEqual([TX1, TX3, TX4]);
     });
 
     it('Removing', async () => {
-        client.setMempoolTxs(TXS);
+        client.setMempoolTxs(BLOCK_TXS);
         await mempool.init();
-        expect(mempool.getTransactions()).toEqual(TXS);
+        expect(mempool.getTransactions()).toEqual(BLOCK_TXS);
 
-        mempool.removeTransactions([TXS[0].txid, TXS[2].txid, 'unknown', TXS[4].txid]);
-        expect(mempool.getTransactions()).toEqual([TXS[1], TXS[3], TXS[5]]);
+        mempool.removeTransactions([TX0.txid, TX2.txid, 'unknown', TX4.txid]);
+        expect(mempool.getTransactions()).toEqual([TX1, TX3, TX5]);
     });
 
     it('Replace-by-fee', async () => {
         const outpointCollision = { txid: 'foo', vout: 3 };
-        const a1 = TXS[1];
+        const a1 = TX1;
         a1.vin[0] = { ...a1.vin[0], ...outpointCollision };
-        const b = TXS[2];
-        const a2 = TXS[4];
+        const b = TX2;
+        const a2 = TX4;
         a2.vin[1] = { ...a2.vin[1], ...outpointCollision };
 
         client.setMempoolTxs([a1]);
