@@ -1,6 +1,6 @@
 {
     "name": "@trezor/connect-mobile",
-    "version": "9.7.2",
+    "version": "9.7.3",
     "license": "See LICENSE.md in repo root",
     "sideEffects": false,
     "main": "src/index.ts",
