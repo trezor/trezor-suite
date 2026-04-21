@@ -77,7 +77,11 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
             );
         }
 
-        if (payload.data.primaryType !== 'EIP712Domain' && !('message_hash' in params)) {
+        if (
+            payload.data.primaryType !== 'EIP712Domain' &&
+            !('message_hash' in params) &&
+            'domain_separator_hash' in params
+        ) {
             throw ERRORS.TypedError(
                 'Method_InvalidParameter',
                 'message_hash should only be empty when data.primaryType=EIP712Domain',
