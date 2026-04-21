@@ -1,3 +1,4 @@
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Box, Column, GhostContainer, Row, Text } from '@trezor/components';
 
 import { AssetLogo } from '../AssetLogo/AssetLogo';
@@ -7,6 +8,7 @@ import { CoinLogo } from '../CoinLogo/CoinLogo';
 export type Asset = {
     id: string;
     symbol: string;
+    networkSymbol: NetworkSymbol;
     displaySymbol: string;
     contractAddress: string | null;
     coingeckoId: string;
@@ -56,8 +58,7 @@ export function TopAssets({
                             ) : (
                                 <AssetLogo
                                     size={logoSize}
-                                    coingeckoId={asset.coingeckoId}
-                                    symbol={asset.symbol}
+                                    symbol={asset.networkSymbol}
                                     contractAddress={asset.contractAddress}
                                     placeholder={asset.displaySymbol}
                                 />

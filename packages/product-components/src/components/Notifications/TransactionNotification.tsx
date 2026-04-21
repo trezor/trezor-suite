@@ -15,7 +15,6 @@ export type TransactionNotificationProps = {
     amount: ReactNode;
     notificationType: TransactionNotificationType;
     symbol: NetworkSymbol;
-    accountSymbol: NetworkSymbol;
     token?: TransactionNotificationToken;
     icon?: ReactNode;
     tokenSymbol?: string;
@@ -29,7 +28,6 @@ export const TransactionNotification = ({
     amount,
     notificationType,
     symbol,
-    accountSymbol,
     token,
     icon,
     tokenSymbol,
@@ -44,7 +42,6 @@ export const TransactionNotification = ({
                 icon={icon}
                 notificationType={notificationType}
                 symbol={symbol}
-                accountSymbol={accountSymbol}
                 token={token}
             />
             <TransactionAmount

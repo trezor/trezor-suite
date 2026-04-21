@@ -29,7 +29,6 @@ export function AssetRowAsset({ asset, dataTestId, onClick }: AssetRowAssetProps
                 ) : (
                     <AssetLogo
                         size={40}
-                        coingeckoId={asset.coingeckoId}
                         symbol={asset.networkSymbol}
                         contractAddress={asset.contractAddress}
                         placeholder={asset.displaySymbol}

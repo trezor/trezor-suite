@@ -53,7 +53,6 @@ export const TradingInfoItem = ({
         isNativeToken,
         networkSymbol,
         name,
-        coingeckoId,
         displaySymbol,
         networkName,
         contractAddress,
@@ -118,7 +117,6 @@ export const TradingInfoItem = ({
                             ) : (
                                 <AssetLogo
                                     size={40}
-                                    coingeckoId={coingeckoId}
                                     symbol={networkSymbol}
                                     contractAddress={contractAddress}
                                     placeholder={displaySymbol}

@@ -5,7 +5,6 @@ import styled from 'styled-components';
 import { Translation } from '@suite/intl';
 import { desktopQueryKeys, useQuery } from '@suite-common/react-query';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { getCoingeckoId } from '@suite-common/wallet-config';
 import { type SelectedAccountLoaded, type StellarTokenInfo } from '@suite-common/wallet-types';
 import { getStellarInactiveTokens } from '@suite-common/wallet-utils';
 import { Button, Card, Row, Table, Text, Tooltip } from '@trezor/components';
@@ -40,7 +39,6 @@ interface InactiveTokensTableProps {
 export const InactiveTokensTable = ({ selectedAccount, searchQuery }: InactiveTokensTableProps) => {
     const dispatch = useDispatch();
     const { account } = selectedAccount;
-    const coingeckoId = getCoingeckoId(account.symbol);
     const [tokenToActivate, setTokenToActivate] = useState<StellarTokenInfo | null>(null);
 
     const {
@@ -134,7 +132,6 @@ export const InactiveTokensTable = ({ selectedAccount, searchQuery }: InactiveTo
                             <Table.Cell>
                                 <Row gap={spacings.xs}>
                                     <AssetLogo
-                                        coingeckoId={coingeckoId || ''}
                                         placeholder={token.name || token.symbol || ''}
                                         symbol={account.symbol}
                                         contractAddress={token.contract}
