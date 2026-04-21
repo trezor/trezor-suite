@@ -3,6 +3,17 @@ import { type Abi, type AbiFunction, decodeFunctionData, toFunctionSelector } fr
 import { type AbiParamName } from '../types/abi';
 import { type AbiParams, type VerifyIssue, type VerifyResult } from '../types/verifier';
 
+const valuesEqual = (a: unknown, b: unknown): boolean => {
+    if (Array.isArray(a) && Array.isArray(b)) {
+        return a.length === b.length && a.every((item, i) => valuesEqual(item, b[i]));
+    }
+    if (typeof a === 'string' && typeof b === 'string') {
+        return a.toLowerCase() === b.toLowerCase();
+    }
+
+    return a === b;
+};
+
 export const createVerifier = <const T extends Abi>(config: { abi: T }) => {
     const functions = config.abi.filter((item): item is AbiFunction => item.type === 'function');
 
@@ -46,7 +57,7 @@ export const createVerifier = <const T extends Abi>(config: { abi: T }) => {
                 const decodedValue = decoded.args[index];
                 const expectedValue = params[field];
 
-                if (String(decodedValue).toLowerCase() !== String(expectedValue).toLowerCase()) {
+                if (!valuesEqual(decodedValue, expectedValue)) {
                     issues.push({ code: 'VALUE_MISMATCH', field });
                 }
             }
