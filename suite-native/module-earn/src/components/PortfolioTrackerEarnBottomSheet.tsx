@@ -24,12 +24,12 @@ const contentStyle = prepareNativeStyle(utils => ({
 }));
 
 const urlBoxStyle = prepareNativeStyle(utils => ({
-    backgroundColor: utils.colors.legacyBackgroundPrimarySubtleOnElevation1,
+    backgroundColor: utils.colors.backgroundPrimarySubtleOnElevation1,
     width: '100%',
     paddingVertical: utils.spacings.sp12,
     alignItems: 'center',
     borderWidth: utils.borders.widths.small,
-    borderColor: utils.colors.legacyBackgroundPrimarySubtleOnElevationNegative,
+    borderColor: utils.colors.backgroundPrimarySubtleOnElevationNegative,
     borderRadius: utils.borders.radii.r12,
     gap: utils.spacings.sp4,
 }));
