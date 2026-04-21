@@ -9,7 +9,14 @@ import { OrderedListIcon } from './OrderedListIcon';
 import { HStack } from './Stack';
 import { Text } from './Text';
 
-export const ICON_LIST_ITEM_VARIANTS = ['default', 'blue', 'red', 'yellow', 'primary'] as const;
+export const ICON_LIST_ITEM_VARIANTS = [
+    'default',
+    'blue',
+    'red',
+    'yellow',
+    'primary',
+    'brand',
+] as const;
 
 export type IconListItemVariant = (typeof ICON_LIST_ITEM_VARIANTS)[number];
 
@@ -45,8 +52,12 @@ const iconColorsMap = {
         iconBorderColor: 'legacyBackgroundPrimaryDefault',
         iconBackgroundColor: 'legacyBackgroundPrimaryDefault',
     },
+    brand: {
+        iconColor: 'legacyBackgroundPrimaryDefault',
+        iconBorderColor: 'legacyBackgroundPrimarySubtleOnElevationNegative',
+        iconBackgroundColor: 'legacyBackgroundPrimarySubtleOnElevation0',
+    },
 } as const satisfies Record<IconListItemVariant, IconColors>;
-
 export type IconListItemProps = {
     children: ReactNode;
     icon: IconName;
