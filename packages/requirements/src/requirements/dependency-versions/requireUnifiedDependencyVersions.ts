@@ -13,7 +13,6 @@ import type { Requirement } from '../Requirement';
  * Entries SHOULD be removed once the migration or constraint is resolved.
  */
 export const ALLOWED_DRIFTS = new Set([
-    'jest-diff', // v29 and v30 coexist during migration
     'babel-jest', // waiting for suite-native who are waiting for expo to update babel-jest
     '@scure/base', // i think i had a cjs problem, todo: investigate later
 ]);
