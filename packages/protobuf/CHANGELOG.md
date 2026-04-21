@@ -1,3 +1,8 @@
+# 1.5.3
+
+- feat(connect): add VoteWitnessContract support for Tron signing (d3c620f0d4)
+- chore(protobuf): update protobufjs lib (a961fa3fb1)
+
 # 1.5.2
 
 - npm-prerelease: @trezor/protobuf 1.5.2-beta.1 (af956746c8)
