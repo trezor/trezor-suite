@@ -32,16 +32,21 @@ function rewardsOutOfSync(account: Account, rewards: SolRewardsHistory['rewards'
         return false;
     }
 
-    const currentActiveEpoch = account.misc?.solEpoch;
-    const latestRewardEpoch = rewards[0]?.epoch;
+    const activeEpoch = account.misc?.solEpoch;
 
-    if (!isInt(currentActiveEpoch) || !isInt(latestRewardEpoch)) {
+    const latestRewardEpoch = rewards[0]?.epoch;
+    const latestRewardTime = rewards[0]?.time;
+
+    if (!isInt(activeEpoch) || !isInt(latestRewardEpoch) || !latestRewardTime) {
         return false;
     }
 
-    const missingRewardEpochs = currentActiveEpoch - 1 - latestRewardEpoch;
+    const sinceLatestRewardInHours = (Date.now() - Date.parse(latestRewardTime)) / 1000 / 60 / 60;
+    const epochDurationLimitInHours = 52; // 2 days + 4h
 
-    return missingRewardEpochs > 1;
+    const epochsSinceLatestReward = activeEpoch - latestRewardEpoch;
+
+    return sinceLatestRewardInHours > epochDurationLimitInHours || epochsSinceLatestReward > 2;
 }
 
 interface UseSolanaRewardsProps {
