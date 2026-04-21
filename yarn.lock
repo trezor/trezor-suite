@@ -9710,15 +9710,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@solana-program/stake@npm:^0.5.0":
-  version: 0.5.0
-  resolution: "@solana-program/stake@npm:0.5.0"
-  peerDependencies:
-    "@solana/kit": ^5.0
-  checksum: 10/7dae11adb9f83f7d702fccfa95f25ae8495964e7ea560a2821a804864abf3d717f1edcb5e39f219980dfac54010190f17573ae1e718747fc940bb1410ad675b7
-  languageName: node
-  linkType: hard
-
 "@solana-program/system@npm:^0.7.0":
   version: 0.7.0
   resolution: "@solana-program/system@npm:0.7.0"
@@ -16174,7 +16165,7 @@ __metadata:
     "@playwright/browser-firefox": "npm:1.58.2"
     "@playwright/browser-webkit": "npm:1.58.2"
     "@playwright/test": "npm:1.58.2"
-    "@solana-program/stake": "npm:^0.5.0"
+    "@solana-program/stake": "npm:^0.2.1"
     "@solana/addresses": "npm:^2.3.0"
     "@solana/kit": "npm:^2.3.0"
     "@solana/rpc-types": "npm:^2.3.0"
