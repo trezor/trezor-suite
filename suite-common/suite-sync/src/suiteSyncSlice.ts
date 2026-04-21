@@ -71,6 +71,11 @@ export const suiteSyncSlice = createSlice({
     reducers: {
         updateSuiteSyncEnabled: (state, { payload }: PayloadAction<{ isEnabled: boolean }>) => {
             state.settings.isSuiteSyncEnabled = payload.isEnabled;
+
+            if (!payload.isEnabled) {
+                state.suiteSyncErrors = {};
+                state.suiteSyncOwners = {};
+            }
         },
         updateSuiteSyncDebugEnabled: (
             state,
