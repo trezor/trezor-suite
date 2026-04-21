@@ -102,6 +102,29 @@ jobs:
           connectPopupUrl: "https://dev.suite.sldev.cz/suite-web/${{ needs.extract-branch.outputs.branch }}/web/connect-popup"
           suiteWebUrl: "https://dev.suite.sldev.cz/suite-web/${{ needs.extract-branch.outputs.branch }}/web"
 
+  post-suite-web-preview-link:
+    if: github.repository == 'trezor/trezor-suite' && github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    concurrency:
+      group: post-suite-web-preview-link-${{ github.event.pull_request.number }}
+      cancel-in-progress: false
+    needs:
+      - build-web
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      - name: Generate GitHub App token
+        id: trezor-bot-token
+        uses: actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3 # v3
+        with:
+          client-id: ${{ secrets.TREZOR_BOT_APP_ID }}
+          private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
+      - name: Post Suite Web preview link
+        uses: ./.github/actions/post-suite-web-preview-link
+        with:
+          github_token: ${{ steps.trezor-bot-token.outputs.token }}
+          dev-server-url: ${{ env.DEV_SERVER_URL }}
+
   post-currents-pr-info:
     if: github.repository == 'trezor/trezor-suite' && github.event_name == 'pull_request' && needs.check-previous-runs.outputs.skip_tests != 'true'
     runs-on: ubuntu-latest
@@ -131,11 +154,6 @@ jobs:
           github_token: ${{ steps.trezor-bot-token.outputs.token }}
           project: "web"
           currents-project-id: "Og0NOQ"
-      - name: Post Suite Web preview link
-        uses: ./.github/actions/post-suite-web-preview-link
-        with:
-          github_token: ${{ steps.trezor-bot-token.outputs.token }}
-          dev-server-url: ${{ env.DEV_SERVER_URL }}
       - name: Post quarantine list
         uses: ./.github/actions/post-quarantine-list
         with:
