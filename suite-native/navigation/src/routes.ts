@@ -14,7 +14,7 @@ export enum RootStackRoutes {
     EarnTransactionDataReview = 'EarnTransactionDataReview',
     ClaimReview = 'ClaimReview',
     ClaimTransactionDataReview = 'ClaimTransactionDataReview',
-    DevUtilsStack = 'DevUtilsStack',
+    DevUtils = 'DevUtils',
     AccountSettings = 'AccountSettings',
     TransactionDetailStack = 'TransactionDetailStack',
     ReceiveStack = 'ReceiveStack',
@@ -205,11 +205,6 @@ export enum PassphraseStackRoutes {
     PassphraseMismatchAlert = 'PassphraseMismatchAlert',
     PassphraseEmptyWallet = 'PassphraseEmptyWallet',
     PassphraseVerifyEmptyWallet = 'PassphraseVerifyEmptyWallet',
-}
-
-export enum DevUtilsStackRoutes {
-    DevUtils = 'DevUtils',
-    Demo = 'Demo',
 }
 
 export enum HomeStackRoutes {

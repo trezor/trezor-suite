@@ -22,7 +22,6 @@ import {
     type AppTabsRoutes,
     type AuthorizeDeviceStackRoutes,
     type DemoAccountQuestionnaireStackRoutes,
-    type DevUtilsStackRoutes,
     type DeviceAuthenticityStackRoutes,
     type DeviceAutoConnectStackRoutes,
     type DeviceCheckBackupStackRoutes,
@@ -92,11 +91,6 @@ export type DemoAccountQuestionnaireStackParamList = {
     [DemoAccountQuestionnaireStackRoutes.Reason]: undefined;
     [DemoAccountQuestionnaireStackRoutes.SuiteAction]: undefined;
     [DemoAccountQuestionnaireStackRoutes.Success]: undefined;
-};
-
-export type DevUtilsStackParamList = {
-    [DevUtilsStackRoutes.DevUtils]: undefined;
-    [DevUtilsStackRoutes.Demo]: undefined;
 };
 
 export type SettingsStackParamList = {
@@ -385,7 +379,7 @@ export type RootStackParamList = {
     [RootStackRoutes.DemoAccountQuestionnaireStack]: NavigatorScreenParams<DemoAccountQuestionnaireStackParamList>;
     [RootStackRoutes.AccountSettings]: { accountKey: AccountKey };
     [RootStackRoutes.TransactionDetailStack]: NavigatorScreenParams<TransactionDetailStackParamList>;
-    [RootStackRoutes.DevUtilsStack]: undefined;
+    [RootStackRoutes.DevUtils]: undefined;
     [RootStackRoutes.AccountDetail]: AccountDetailParams;
     [RootStackRoutes.StakingDetail]: { accountKey: AccountKey };
     [RootStackRoutes.StakingManagement]: { accountKey: AccountKey };
