@@ -21,6 +21,7 @@ export const MAX_FONT_SIZE_MULTIPLIER = 1.5;
  * @description If you need to add a new icon, please follow these steps:
  * 1. Add the icon name to the file `generateIconFont.ts`.
  * 2. Run `yarn generate-icons` to generate the new icon font.
+ * 3. Remove app from sim/device and create new build to see the new icons in the app.
  */
 export type IconName = keyof typeof codepoints;
 export const ICON_NAMES = Object.keys(codepoints) as IconName[];
