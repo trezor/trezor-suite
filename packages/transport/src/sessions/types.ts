@@ -39,11 +39,13 @@ export type AcquireIntentResponse = BackgroundResponseWithError<
 export type AcquireDoneRequest = {
     path: PathPublic;
     sessionOwner?: string;
+    abort?: boolean;
 };
 
 export type AcquireDoneResponse = BackgroundResponseWithError<
     {
-        session: Session;
+        // Null when acquireDone is invoked with abort: true and descriptor had no active session.
+        session: Session | null;
         descriptors: Descriptor[];
     },
     typeof ERRORS.DEVICE_NOT_FOUND

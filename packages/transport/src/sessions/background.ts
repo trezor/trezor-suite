@@ -236,10 +236,13 @@ export class SessionsBackground
             return error({ code: ERRORS.DEVICE_NOT_FOUND });
         }
 
-        // Commit session state before releasing lock so the next waiter sees the update.
-        const session = Session(`${this.lastSessionId}`);
-        this.descriptors[pathInternal].session = session;
-        this.descriptors[pathInternal].sessionOwner = payload.sessionOwner;
+        // When abort is set, just release the lock without modifying session.
+        let { session } = this.descriptors[pathInternal];
+        if (!payload.abort) {
+            session = Session(`${this.lastSessionId}`);
+            this.descriptors[pathInternal].session = session;
+            this.descriptors[pathInternal].sessionOwner = payload.sessionOwner;
+        }
 
         this.releaseActiveLock(pathInternal);
 
