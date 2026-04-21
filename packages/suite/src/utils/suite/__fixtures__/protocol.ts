@@ -5,6 +5,8 @@ type getProtocolInfoResult =
           scheme: Protocol;
           address: string;
           amount?: number;
+          token?: string;
+          tokenAmount?: string;
       }
     | {
           error: string;
@@ -111,5 +113,45 @@ export const getProtocolInfo: getProtocolInfoFixture[] = [
         description: 'should log an error when address is missing',
         uri: 'bitcoin:?amount=0.1',
         result: null,
+    },
+    {
+        description: 'should parse ERC-681 token transfer URI (no double slash)',
+        uri: 'ethereum:0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7/transfer?address=0x8e23ee67d1332ad560396262c48ffbb01f93d052&uint256=1',
+        result: {
+            scheme: 'ethereum',
+            address: '0x8e23ee67d1332ad560396262c48ffbb01f93d052',
+            token: '0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7',
+            tokenAmount: '1',
+        },
+    },
+    {
+        description: 'should parse ERC-681 token transfer URI (double slash)',
+        uri: 'ethereum://0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7/transfer?address=0x8e23ee67d1332ad560396262c48ffbb01f93d052&uint256=1000000',
+        result: {
+            scheme: 'ethereum',
+            address: '0x8e23ee67d1332ad560396262c48ffbb01f93d052',
+            token: '0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7',
+            tokenAmount: '1000000',
+        },
+    },
+    {
+        description: 'should parse ERC-681 token transfer URI on other EVM network',
+        uri: 'polygon:0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7/transfer?address=0x8e23ee67d1332ad560396262c48ffbb01f93d052&uint256=500000000000000000',
+        result: {
+            scheme: 'polygon',
+            address: '0x8e23ee67d1332ad560396262c48ffbb01f93d052',
+            token: '0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7',
+            tokenAmount: '500000000000000000',
+        },
+    },
+    {
+        description: 'should parse ERC-681 token transfer URI when uint256 parameter is omitted',
+        uri: 'ethereum:0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7/transfer?address=0x8e23ee67d1332ad560396262c48ffbb01f93d052',
+        result: {
+            scheme: 'ethereum',
+            address: '0x8e23ee67d1332ad560396262c48ffbb01f93d052',
+            token: '0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7',
+            tokenAmount: undefined,
+        },
     },
 ];

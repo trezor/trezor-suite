@@ -43,9 +43,15 @@ export const fillSendForm = (shouldFill: boolean): ProtocolAction => ({
     payload: shouldFill,
 });
 
-const saveCoinProtocol = (scheme: Protocol, address: string, amount?: number): ProtocolAction => ({
+const saveCoinProtocol = (
+    scheme: Protocol,
+    address: string,
+    amount?: number,
+    token?: string,
+    tokenAmount?: string,
+): ProtocolAction => ({
     type: PROTOCOL.SAVE_COIN_PROTOCOL,
-    payload: { scheme, address, amount },
+    payload: { scheme, address, amount, token, tokenAmount },
 });
 
 export const handleProtocolRequest =
@@ -57,15 +63,17 @@ export const handleProtocolRequest =
                 type: events.appUriHandlerEvent.name,
                 payload: {
                     scheme: protocol.scheme,
-                    isAmountPresent: 'amount' in protocol && protocol.amount !== undefined,
+                    isAmountPresent:
+                        ('amount' in protocol && protocol.amount !== undefined) ||
+                        ('tokenAmount' in protocol && protocol.tokenAmount !== undefined),
                 },
             });
         }
 
         if (protocol && !('error' in protocol) && getNetworkSymbolForProtocol(protocol.scheme)) {
-            const { scheme, amount, address } = protocol as CoinProtocolInfo;
+            const { scheme, amount, address, token, tokenAmount } = protocol as CoinProtocolInfo;
 
-            dispatch(saveCoinProtocol(scheme, address, amount));
+            dispatch(saveCoinProtocol(scheme, address, amount, token, tokenAmount));
             dispatch(
                 notificationsActions.addToast({
                     type: 'coin-scheme-protocol',

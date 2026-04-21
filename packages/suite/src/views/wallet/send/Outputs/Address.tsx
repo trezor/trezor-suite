@@ -13,6 +13,7 @@ import { formInputsMaxLength } from '@suite-common/validators';
 import type { Output } from '@suite-common/wallet-types';
 import {
     checkIsAddressNotUsedNotChecksummed,
+    convertAmountSubunitsToUnits,
     hasBitcoinCashAddressPrefix,
     isAddressDeprecated,
     isAddressValid,
@@ -129,7 +130,9 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                 type: events.sendQrScanEvent.name,
                 payload: {
                     scheme: protocol.scheme,
-                    isAmountPresent: 'amount' in protocol && protocol.amount !== undefined,
+                    isAmountPresent:
+                        ('amount' in protocol && protocol.amount !== undefined) ||
+                        ('tokenAmount' in protocol && protocol.tokenAmount !== undefined),
                     networkSymbol: symbol,
                 },
             });
@@ -164,10 +167,29 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
 
             setValue(inputName, protocol.address, { shouldValidate: true });
 
+            if (protocol.token) {
+                // ERC-681: set token contract address
+                setValue(`outputs.${outputId}.token`, protocol.token, {
+                    shouldDirty: true,
+                });
+            }
+
             if (protocol.amount) {
                 setValue(amountInputName, String(protocol.amount), {
                     shouldValidate: true,
                 });
+            } else if (protocol.tokenAmount && protocol.token) {
+                // ERC-681: convert raw uint256 amount using token decimals
+                const token = account.tokens?.find(
+                    t => t.contract.toLowerCase() === protocol.token?.toLowerCase(),
+                );
+                if (token) {
+                    setValue(
+                        amountInputName,
+                        convertAmountSubunitsToUnits(protocol.tokenAmount, token.decimals),
+                        { shouldValidate: true },
+                    );
+                }
             }
 
             composeTransaction(amountInputName);
@@ -182,7 +204,17 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
         } else {
             dispatch(notificationsActions.addToast({ type: 'qr-incorrect-address' }));
         }
-    }, [amountInputName, analytics, composeTransaction, dispatch, inputName, setValue, symbol]);
+    }, [
+        account.tokens,
+        amountInputName,
+        analytics,
+        composeTransaction,
+        dispatch,
+        inputName,
+        outputId,
+        setValue,
+        symbol,
+    ]);
 
     if (device?.state?.staticSessionId === undefined) {
         return;
