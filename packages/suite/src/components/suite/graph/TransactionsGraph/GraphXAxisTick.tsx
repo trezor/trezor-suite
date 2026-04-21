@@ -18,6 +18,12 @@ const getFormattedDate = (range: GraphRange, date: Date) => {
         case 'day':
         case 'hour':
             return <FormattedDate value={date} weekday="short" />;
+        case 'range':
+            if (range.groupBy === 'day') {
+                return <FormattedDate value={date} day="2-digit" month="short" />;
+            }
+
+            return <FormattedDate value={date} month="short" year="numeric" />;
         default:
             return exhaustive(range);
     }

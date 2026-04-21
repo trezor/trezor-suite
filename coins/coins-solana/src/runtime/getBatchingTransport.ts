@@ -27,6 +27,17 @@ export type BatchingTransportOptions = {
 
 const DEFAULT_MAX_BATCH_SIZE = 20;
 
+class BatchJsonRpcError extends Error {
+    readonly code: number;
+    readonly data: unknown;
+    constructor(rpcError: { code: number; message: string; data?: unknown }) {
+        super(rpcError.message);
+        this.name = 'BatchJsonRpcError';
+        this.code = rpcError.code;
+        this.data = rpcError.data;
+    }
+}
+
 /**
  * Batching RPC transport for Solana.
  *
@@ -55,10 +66,29 @@ export const getBatchingTransport = <TClusterUrl extends ClusterUrl>(
         nextId += batch.length;
 
         // Combine abort signals: if any individual call aborts, abort the whole batch.
+        // Keep references to the handler + signals so we can detach once the batch
+        // settles — otherwise a long-lived signal accumulates a listener per batch.
         const controller = new AbortController();
+        const onCallerAbort = () => controller.abort();
+        const signalsWithListener: AbortSignal[] = [];
+
         for (const call of batch) {
-            call.signal?.addEventListener('abort', () => controller.abort(), { once: true });
+            if (!call.signal) continue;
+            if (call.signal.aborted) {
+                // `addEventListener` doesn't fire for already-aborted signals,
+                // so trigger the batch abort synchronously in that case.
+                controller.abort();
+                continue;
+            }
+            call.signal.addEventListener('abort', onCallerAbort);
+            signalsWithListener.push(call.signal);
         }
+
+        const detachAbortListeners = () => {
+            for (const signal of signalsWithListener) {
+                signal.removeEventListener('abort', onCallerAbort);
+            }
+        };
 
         // Use fetch directly for batch requests because the @solana/kit default
         // transport unwraps the JSON-RPC envelope and cannot handle batch (array)
@@ -89,7 +119,7 @@ export const getBatchingTransport = <TClusterUrl extends ClusterUrl>(
                     if (!r) {
                         batch[i].reject(new Error(`Missing response for batch item ${i}`));
                     } else if ('error' in r) {
-                        batch[i].reject(r.error);
+                        batch[i].reject(new BatchJsonRpcError(r.error));
                     } else {
                         // Solana RPC clients expect the transport to return the full JSON-RPC
                         // envelope. Their response transformer unwraps `.result` later.
@@ -101,7 +131,8 @@ export const getBatchingTransport = <TClusterUrl extends ClusterUrl>(
                 for (const call of batch) {
                     call.reject(error);
                 }
-            });
+            })
+            .finally(detachAbortListeners);
     };
 
     const flush = () => {

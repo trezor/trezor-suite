@@ -293,9 +293,11 @@ const buildAlignedTimeline = ({
 export const buildAlignedPortfolioSeriesFromCoinSeries = ({
     coinSeriesEntries,
     rangeLabel,
+    startTime,
 }: {
     coinSeriesEntries: readonly GraphDataPoint[][];
     rangeLabel: GraphRange['label'];
+    startTime?: number;
 }): GraphDataPoint[] => {
     const nonEmptyCoinSeriesEntries = coinSeriesEntries.filter(points => points.length > 0);
 
@@ -303,12 +305,12 @@ export const buildAlignedPortfolioSeriesFromCoinSeries = ({
         return [];
     }
 
-    const startTime = Math.min(...nonEmptyCoinSeriesEntries.map(points => points[0].time));
+    const seriesStartTime = Math.min(...nonEmptyCoinSeriesEntries.map(points => points[0].time));
     const endTime = Math.max(
         ...nonEmptyCoinSeriesEntries.map(points => points[points.length - 1].time),
     );
     const timeline = buildAlignedTimeline({
-        startTime,
+        startTime: Math.max(startTime ?? seriesStartTime, seriesStartTime),
         endTime,
         stepSecs: getDashboardAlignmentStepSecs(rangeLabel),
     });

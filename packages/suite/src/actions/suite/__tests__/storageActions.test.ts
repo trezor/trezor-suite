@@ -16,6 +16,7 @@ import {
 } from '@suite-common/wallet-core';
 import * as discoveryActions from '@suite-common/wallet-core';
 import { type AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
+import { asTimestamp } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { getAccountIdentifier, getAccountTransactions } from '@suite-common/wallet-utils';
 
@@ -253,6 +254,100 @@ describe('Storage actions', () => {
         updateStore(store);
         store.dispatch(await preloadStore());
         expect(store.getState().wallet.send.drafts).toEqual({});
+    });
+
+    it('should preserve persisted graph fiat resolutions when saving a partial in-memory entry', async () => {
+        const key = 'solana:usd';
+
+        await db.addItem(
+            'graphFiatRates',
+            {
+                currency: 'usd',
+                resolutions: {
+                    day: {
+                        points: [{ time: 1, price: 1 }],
+                        fetchedAt: asTimestamp(1000),
+                        lastPointTimestamp: 1,
+                        isLoading: false,
+                        error: null,
+                    },
+                    month: {
+                        points: [{ time: 2, price: 2 }],
+                        fetchedAt: asTimestamp(2000),
+                        lastPointTimestamp: 2,
+                        isLoading: false,
+                        error: null,
+                    },
+                    max: {
+                        points: [{ time: 3, price: 3 }],
+                        fetchedAt: asTimestamp(3000),
+                        lastPointTimestamp: 3,
+                        isLoading: false,
+                        error: null,
+                    },
+                },
+            },
+            key,
+            true,
+        );
+
+        await storageActions.saveGraphFiatRates({
+            baseCurrencyCode: 'usd',
+            coinId: 'solana',
+            graphFiatEntry: {
+                currency: 'usd',
+                resolutions: {
+                    day: {
+                        points: [],
+                        fetchedAt: null,
+                        lastPointTimestamp: null,
+                        isLoading: false,
+                        error: null,
+                    },
+                    month: {
+                        points: [{ time: 20, price: 20 }],
+                        fetchedAt: asTimestamp(4000),
+                        lastPointTimestamp: 20,
+                        isLoading: false,
+                        error: null,
+                    },
+                    max: {
+                        points: [],
+                        fetchedAt: null,
+                        lastPointTimestamp: null,
+                        isLoading: false,
+                        error: null,
+                    },
+                },
+            },
+        });
+
+        expect(await db.getItemByPK('graphFiatRates', key)).toEqual({
+            currency: 'usd',
+            resolutions: {
+                day: {
+                    points: [{ time: 1, price: 1 }],
+                    fetchedAt: asTimestamp(1000),
+                    lastPointTimestamp: 1,
+                    isLoading: false,
+                    error: null,
+                },
+                month: {
+                    points: [{ time: 20, price: 20 }],
+                    fetchedAt: asTimestamp(4000),
+                    lastPointTimestamp: 20,
+                    isLoading: false,
+                    error: null,
+                },
+                max: {
+                    points: [{ time: 3, price: 3 }],
+                    fetchedAt: asTimestamp(3000),
+                    lastPointTimestamp: 3,
+                    isLoading: false,
+                    error: null,
+                },
+            },
+        });
     });
 
     it('should store remembered device', async () => {

@@ -46,6 +46,15 @@ import { type DesktopBluetoothDevice } from '../bluetooth/DesktopBluetoothDevice
 export type StorageAction = NonNullable<PreloadStoreAction>;
 export type StorageLoadAction = Extract<StorageAction, { type: typeof STORAGE.LOAD }>;
 
+const isEmptyGraphFiatResolutionEntry = (
+    resolutionEntry: GraphFiatCoinEntry['resolutions']['day'],
+) =>
+    resolutionEntry.points.length === 0 &&
+    resolutionEntry.fetchedAt === null &&
+    resolutionEntry.lastPointTimestamp === null &&
+    resolutionEntry.isLoading === false &&
+    resolutionEntry.error === null;
+
 export const saveExplorer = ({
     symbol,
     explorer,
@@ -316,11 +325,30 @@ export const saveGraphFiatRates = ({
 }) => {
     if (!db.isAccessible()) return;
 
-    return db.addItem(
-        'graphFiatRates',
-        graphFiatEntry,
-        getGraphFiatEntryKey({ baseCurrencyCode, coinId }),
-        true,
+    const key = getGraphFiatEntryKey({ baseCurrencyCode, coinId });
+
+    return db.getItemByPK('graphFiatRates', key).then(storedGraphFiatEntry =>
+        db.addItem(
+            'graphFiatRates',
+            storedGraphFiatEntry
+                ? {
+                      ...storedGraphFiatEntry,
+                      resolutions: {
+                          day: isEmptyGraphFiatResolutionEntry(graphFiatEntry.resolutions.day)
+                              ? storedGraphFiatEntry.resolutions.day
+                              : graphFiatEntry.resolutions.day,
+                          month: isEmptyGraphFiatResolutionEntry(graphFiatEntry.resolutions.month)
+                              ? storedGraphFiatEntry.resolutions.month
+                              : graphFiatEntry.resolutions.month,
+                          max: isEmptyGraphFiatResolutionEntry(graphFiatEntry.resolutions.max)
+                              ? storedGraphFiatEntry.resolutions.max
+                              : graphFiatEntry.resolutions.max,
+                      },
+                  }
+                : graphFiatEntry,
+            key,
+            true,
+        ),
     );
 };
 

@@ -30,6 +30,7 @@ export type SuiteAction =
     | { type: typeof SUITE.INIT }
     | { type: typeof SUITE.READY }
     | { type: typeof SUITE.ERROR; error: string }
+    | { type: typeof SUITE.MARK_INITIAL_DASHBOARD_GRAPH_DEFER_COMPLETED }
     | { type: typeof SUITE.DESKTOP_HANDSHAKE; payload: HandshakeElectron }
     | { type: typeof SUITE.ONLINE_STATUS; payload: boolean }
     | { type: typeof SUITE.TOR_STATUS; payload: TorStatus }
@@ -78,6 +79,10 @@ export const setRecentlyDisconnectedDevice = (payload: string | null): SuiteActi
 export const addDeviceIdToSeenDisconnectNotification = (deviceId: string): SuiteAction => ({
     type: SUITE.ADD_DEVICE_ID_TO_SEEN_DISCONNECT_NOTIFICATION,
     payload: { deviceId },
+});
+
+export const markInitialDashboardGraphDeferCompleted = (): SuiteAction => ({
+    type: SUITE.MARK_INITIAL_DASHBOARD_GRAPH_DEFER_COMPLETED,
 });
 
 /**

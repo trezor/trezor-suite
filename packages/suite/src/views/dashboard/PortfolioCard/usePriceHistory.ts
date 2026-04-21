@@ -15,7 +15,7 @@ import { type GraphRange } from 'src/types/wallet/graph';
 
 export type PricePoint = GraphFiatPoint;
 
-const getRequiredGraphFiatResolution = (selectedRange: GraphRange): GraphFiatResolution => {
+export const getRequiredGraphFiatResolution = (selectedRange: GraphRange): GraphFiatResolution => {
     switch (selectedRange.label) {
         case 'hour':
         case 'day':

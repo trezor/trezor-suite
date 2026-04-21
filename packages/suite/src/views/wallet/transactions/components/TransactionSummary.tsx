@@ -6,9 +6,9 @@ import styled from 'styled-components';
 import { Translation } from '@suite/intl';
 import { selectHasExperimentalFeature } from '@suite/settings';
 import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';
-import { getCoingeckoId, getNetworkFeatures } from '@suite-common/wallet-config';
+import { getCoingeckoId } from '@suite-common/wallet-config';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
-import { Button, Card, Column, Icon, Paragraph, Row, Switch, Text } from '@trezor/components';
+import { Button, Card, Column, Row, Switch, Text } from '@trezor/components';
 import { typography } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
@@ -29,7 +29,6 @@ import {
     LiveFiatGraph,
     hasCoinbaseLiveSupport,
 } from 'src/views/dashboard/PortfolioCard/LiveFiatGraph';
-import { UnsupportedAssetsMessage } from 'src/views/dashboard/PortfolioCard/UnsupportedAssetsMessage';
 
 import { SummaryCards } from './SummaryCards';
 
@@ -98,13 +97,18 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
                 abortSignal: abortController?.signal,
             }),
         ).unwrap();
+    const isNewGraphSupported = isNetworkWithGraphFeature(account.symbol, account.backendType);
+    const isLegacyGraphSupported = isNetworkWithLegacyGraphFeature(
+        account.symbol,
+        account.backendType,
+    );
     const isGraphSupported = isNewBalanceGraphEnabled
-        ? isNetworkWithGraphFeature(account.symbol, account.backendType)
-        : isNetworkWithLegacyGraphFeature(account.symbol, account.backendType);
+        ? isNewGraphSupported
+        : isLegacyGraphSupported;
     const hasCoingeckoPrice = !!getCoingeckoId(account.symbol);
     const showGraph = hasCoingeckoPrice && isGraphSupported;
+    const showLegacyChart = showGraph && !isNewBalanceGraphEnabled;
     const hasLiveSupport = hasCoinbaseLiveSupport(account.symbol);
-    const hasTokens = getNetworkFeatures(account.symbol).includes('tokens');
     const xTicks =
         selectedRange.label === 'all'
             ? calcTicksFromData(data).map(getUnixTime)
@@ -128,21 +132,15 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
 
     const graphCardControls = (
         <Column alignItems="stretch" gap={12}>
-            {hasTokens && (
-                <Row gap={8} alignItems="center">
-                    <Icon name="info" size={16} intent="neutral" priority="secondary" />
-                    <Paragraph typographyStyle="body-xs" intent="neutral" priority="secondary">
-                        <UnsupportedAssetsMessage affectedNetworks={[]} hasTokens />
-                    </Paragraph>
-                </Row>
-            )}
             <Row justifyContent="space-between" alignItems="center" gap={24}>
                 <GraphRangeSelector
                     onSelectedRange={onSelectedRange}
                     isLive={isLive}
-                    isLoading={isGraphLoading}
+                    isLoading={isNewBalanceGraphEnabled && isGraphLoading}
                     onLiveChange={setIsLive}
                     showLiveOption={isNewBalanceGraphEnabled && hasLiveSupport}
+                    showCustomRangeOption={showLegacyChart}
+                    accounts={[account]}
                 />
                 {isNewBalanceGraphEnabled ? (
                     <Switch
@@ -201,7 +199,6 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
                                                 />
                                             ) : (
                                                 <TransactionsGraph
-                                                    hideToolbar
                                                     variant="one-asset"
                                                     xTicks={xTicks}
                                                     account={account}
@@ -228,14 +225,13 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
                     </Column>
                 </>
             )}
-            {showGraph && (
+            {showLegacyChart && (
                 <SummaryCards
                     selectedRange={selectedRange}
                     dataInterval={dataInterval}
                     data={data}
                     localCurrency={baseCurrencyCode}
                     account={account}
-                    isGraphSupported={isGraphSupported}
                     isLoading={isLoading}
                 />
             )}

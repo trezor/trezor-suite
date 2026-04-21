@@ -691,6 +691,7 @@ const getAccountBalanceHistory = async (
 ) => {
     const { payload } = request;
     const api = await request.connect();
+    const { address } = await solana();
     const { descriptor } = payload;
     const groupBy = payload.groupBy ?? 3600 * 24;
     type BalanceHistoryBucket = {
@@ -703,15 +704,28 @@ const getAccountBalanceHistory = async (
 
     const buildHistoryChunk = async (buckets: BalanceHistoryBucket[]) => {
         const historyChunk: AccountBalanceHistory[] = [];
+        // Carries forward the most recent successfully-resolved postBalance
+        // so a transient `getTransaction` failure for one bucket emits a
+        // flat segment (matching the previous balance) rather than dropping
+        // the bucket from the response — which would force the transformer
+        // out of absolute mode and back into walk-back, producing a wrong
+        // flat-line-at-currentBalance for the entire response.
+        let lastKnownBalance: string | undefined;
 
         for (let i = 0; i < buckets.length; i += progressBatchSize) {
             const bucketBatch = buckets.slice(i, i + progressBatchSize);
+            // Solana txs carry the absolute account balance after each tx
+            // (`meta.postBalances[]`), so one fetch per bucket — the newest
+            // signature — is enough to anchor the bucket's end-of-period
+            // balance. The shared graph transformer
+            // (`enhanceBlockchainAccountHistoryFromCurrentBalance`) detects
+            // the populated `balance` field and skips the BTC/ETH-style
+            // `currentBalance + walk-back` reconstruction; received/sent are
+            // derived from successive bucket-balance deltas there. This
+            // halves `getTransaction` calls vs. fetching first+newest.
             const sigsToFetch = new Set<Signature>();
             for (const bucket of bucketBatch) {
-                sigsToFetch.add(bucket.oldest.signature);
-                if (bucket.oldest.signature !== bucket.newest.signature) {
-                    sigsToFetch.add(bucket.newest.signature);
-                }
+                sigsToFetch.add(bucket.newest.signature);
             }
 
             const sigArray = Array.from(sigsToFetch);
@@ -736,35 +750,27 @@ const getAccountBalanceHistory = async (
             }
 
             const batchHistoryChunk: AccountBalanceHistory[] = bucketBatch.map(bucket => {
-                const firstTx = txMap.get(String(bucket.oldest.signature));
                 const lastTx = txMap.get(String(bucket.newest.signature));
-
-                const firstDiff = firstTx
-                    ? solanaUtils.extractAccountBalanceDiff(firstTx, descriptor)
-                    : null;
                 const lastDiff = lastTx
                     ? solanaUtils.extractAccountBalanceDiff(lastTx, descriptor)
                     : null;
-
-                let received = new BigNumber(0);
-                let sent = new BigNumber(0);
-
-                if (firstDiff && lastDiff) {
-                    const netChange = lastDiff.postBalance.minus(firstDiff.preBalance);
-                    if (netChange.isGreaterThan(0)) {
-                        received = netChange;
-                    } else if (netChange.isLessThan(0)) {
-                        sent = netChange.abs();
-                    }
-                }
+                const balance = lastDiff
+                    ? lastDiff.postBalance.toFixed(0)
+                    : (lastKnownBalance ?? '0');
+                lastKnownBalance = balance;
 
                 return {
                     time: bucket.time,
                     txs: bucket.txs,
-                    received: received.toFixed(0),
-                    sent: sent.toFixed(0),
+                    // received/sent are derived client-side from successive
+                    // `balance` deltas in the graph transformer; emit '0'/'0'
+                    // here so the leftmost bucket (which has no predecessor
+                    // to diff against) doesn't surface stale aggregate data.
+                    received: '0',
+                    sent: '0',
                     sentToSelf: '0',
                     rates: {},
+                    balance,
                 };
             });
 

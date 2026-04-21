@@ -19,13 +19,11 @@ export const useUnsupportedNetworkMessage = ({
     showGraphControls,
     device,
     accounts,
-    isGraphHidden,
     isNewBalanceGraphEnabled,
 }: {
     showGraphControls: boolean;
     device?: TrezorDevice;
     accounts: Account[];
-    isGraphHidden: boolean;
     isNewBalanceGraphEnabled: boolean;
 }) => {
     const isGraphSupported = isNewBalanceGraphEnabled

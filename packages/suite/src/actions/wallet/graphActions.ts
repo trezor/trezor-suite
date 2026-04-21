@@ -26,18 +26,30 @@ import {
 } from 'src/utils/wallet/graph';
 
 import {
+    ACCOUNT_GRAPH_BATCH_SUCCESS,
     ACCOUNT_GRAPH_FAIL,
     ACCOUNT_GRAPH_START,
     ACCOUNT_GRAPH_SUCCESS,
+    AGGREGATED_GRAPH_FAIL,
     AGGREGATED_GRAPH_START,
     AGGREGATED_GRAPH_SUCCESS,
     SET_SELECTED_RANGE,
 } from './constants/graphConstants';
 
+const graphPrefetchCache = new Map<string, GraphData>();
+const graphPrefetchPromises = new Map<string, Promise<GraphData | undefined>>();
+const graphPrefetchActiveKeys = new Set<string>();
+const graphPrefetchEvictionTimers = new Map<string, ReturnType<typeof setTimeout>>();
+const GRAPH_PREFETCH_EVICTION_DELAY_MS = 250;
+
 export type GraphAction =
     | {
           type: typeof ACCOUNT_GRAPH_SUCCESS;
           payload: GraphData;
+      }
+    | {
+          type: typeof ACCOUNT_GRAPH_BATCH_SUCCESS;
+          payload: GraphData[];
       }
     | {
           type: typeof ACCOUNT_GRAPH_START;
@@ -54,6 +66,9 @@ export type GraphAction =
           type: typeof AGGREGATED_GRAPH_SUCCESS;
       }
     | {
+          type: typeof AGGREGATED_GRAPH_FAIL;
+      }
+    | {
           type: typeof SET_SELECTED_RANGE;
           payload: GraphRange;
       };
@@ -61,6 +76,22 @@ export type GraphAction =
 export const setSelectedRange = (range: GraphRange): GraphAction => ({
     type: SET_SELECTED_RANGE,
     payload: range,
+});
+
+const createGraphPayload = ({
+    account,
+    data,
+    rawData,
+    isLoading,
+    error,
+    fetchedRange,
+}: GraphData): GraphData => ({
+    account,
+    data,
+    rawData,
+    isLoading,
+    error,
+    fetchedRange,
 });
 
 const mergeBalanceHistory = <T extends { time: number }>(current: T[], incoming: T[]) => {
@@ -90,16 +121,29 @@ const getCoverageRange = (
 const mergeFetchedRanges = (
     currentRange: { from: null | number; to: null | number },
     incomingRange: { from: null | number; to: null | number },
-) => ({
-    from:
-        currentRange.from === null || incomingRange.from === null
-            ? null
-            : Math.min(currentRange.from, incomingRange.from),
-    to:
-        currentRange.to === null || incomingRange.to === null
-            ? null
-            : Math.max(currentRange.to, incomingRange.to),
-});
+) => {
+    let from: null | number;
+    if (currentRange.from === null && currentRange.to === null) {
+        from = incomingRange.from;
+    } else if (incomingRange.from === null && incomingRange.to === null) {
+        from = currentRange.from;
+    } else if (currentRange.from === null || incomingRange.from === null) {
+        from = null;
+    } else {
+        from = Math.min(currentRange.from, incomingRange.from);
+    }
+
+    let to: null | number;
+    if (currentRange.to === null) {
+        to = incomingRange.to;
+    } else if (incomingRange.to === null) {
+        to = currentRange.to;
+    } else {
+        to = Math.max(currentRange.to, incomingRange.to);
+    }
+
+    return { from, to };
+};
 
 const getMissingRangeSegments = (
     cachedRange: { from: null | number; to: null | number },
@@ -114,6 +158,15 @@ const getMissingRangeSegments = (
         segments.push({
             from: requestedRange.from,
             to: cachedRange.from,
+        });
+    }
+
+    const isRightMissing =
+        requestedRange.to !== null && cachedRange.to !== null && cachedRange.to < requestedRange.to;
+    if (isRightMissing) {
+        segments.push({
+            from: cachedRange.to,
+            to: requestedRange.to,
         });
     }
 
@@ -196,6 +249,46 @@ const isRangeStillActive = (
     return activeRange.from === rangeParams.from && activeRange.to === rangeParams.to;
 };
 
+const getGraphPrefetchKey = (account: Account, selectedRange: GraphRange) => {
+    const { from, to } = getRangeParams(selectedRange);
+
+    return [
+        account.key,
+        from ?? 'all',
+        to ?? 'all',
+        account.formattedBalance,
+        account.history.total,
+    ].join(':');
+};
+
+const clearGraphPrefetchEvictionTimer = (cacheKey: string) => {
+    const timer = graphPrefetchEvictionTimers.get(cacheKey);
+
+    if (timer) {
+        clearTimeout(timer);
+        graphPrefetchEvictionTimers.delete(cacheKey);
+    }
+};
+
+const removeGraphPrefetchEntry = (cacheKey: string) => {
+    clearGraphPrefetchEvictionTimer(cacheKey);
+    graphPrefetchActiveKeys.delete(cacheKey);
+    graphPrefetchCache.delete(cacheKey);
+};
+
+const scheduleGraphPrefetchEviction = (cacheKey: string) => {
+    clearGraphPrefetchEvictionTimer(cacheKey);
+    graphPrefetchActiveKeys.delete(cacheKey);
+
+    graphPrefetchEvictionTimers.set(
+        cacheKey,
+        setTimeout(() => {
+            graphPrefetchCache.delete(cacheKey);
+            graphPrefetchEvictionTimers.delete(cacheKey);
+        }, GRAPH_PREFETCH_EVICTION_DELAY_MS),
+    );
+};
+
 /**
  * Fetch the account history (received, sent amounts, num of txs) for the given `startDate`, `endDate`.
  * Returned data are grouped by `groupBy` seconds
@@ -205,11 +298,18 @@ const isRangeStillActive = (
  * @returns
  */
 export const fetchAccountGraphData =
-    (account: Account, options: { abortSignal?: AbortSignal; selectedRange?: GraphRange }) =>
+    (
+        account: Account,
+        options: {
+            abortSignal?: AbortSignal;
+            selectedRange?: GraphRange;
+            emitUpdates?: boolean;
+        },
+    ) =>
     async (dispatch: Dispatch, getState: GetState) => {
         const selectedRange = options.selectedRange ?? selectGraphSelectedRange(getState());
+        const emitUpdates = options.emitUpdates ?? true;
         const selectedRangeParams = getRangeParams(selectedRange);
-        const requestRangeParams = selectedRangeParams;
         const graphAccount = {
             deviceState: account.deviceState,
             descriptor: account.descriptor,
@@ -217,17 +317,52 @@ export const fetchAccountGraphData =
         };
         const requestId = `${account.key}:${selectedRangeParams.from ?? 'all'}:${selectedRangeParams.to ?? 'all'}:${Date.now()}`;
 
-        dispatch({
-            type: ACCOUNT_GRAPH_START,
-            payload: {
+        const enhance = (rawHistory: BlockchainAccountBalanceHistory[]) =>
+            enhanceBlockchainAccountHistoryFromCurrentBalance(
+                rawHistory,
+                account.symbol,
+                account.formattedBalance,
+                selectedRangeParams.from ?? undefined,
+            );
+
+        const buildSuccessPayload = (
+            rawHistory: BlockchainAccountBalanceHistory[],
+            fetchedRange: { from: null | number; to: null | number },
+            data: AccountHistoryWithBalance[] = enhance(rawHistory),
+        ): GraphData =>
+            createGraphPayload({
                 account: graphAccount,
-                data: [],
-                rawData: [],
-                isLoading: true,
+                data,
+                rawData: rawHistory,
+                isLoading: false,
                 error: false,
-                fetchedRange: requestRangeParams,
-            },
-        });
+                fetchedRange,
+            });
+
+        // When emitUpdates is false (prefetch), treat the request as always
+        // active — the caller doesn't care about the currently-selected range.
+        const isStillActive = () =>
+            !emitUpdates || isRangeStillActive(getState, selectedRangeParams);
+
+        const dispatchSuccess = (payload: GraphData) => {
+            if (emitUpdates) {
+                dispatch({ type: ACCOUNT_GRAPH_SUCCESS, payload });
+            }
+        };
+
+        if (emitUpdates) {
+            dispatch({
+                type: ACCOUNT_GRAPH_START,
+                payload: createGraphPayload({
+                    account: graphAccount,
+                    data: [],
+                    rawData: [],
+                    isLoading: true,
+                    error: false,
+                    fetchedRange: selectedRangeParams,
+                }),
+            });
+        }
 
         const baseCurrencyCode = selectBaseCurrency(getState());
         const cachedGraphEntry = findGraphEntryForAccount(
@@ -239,14 +374,14 @@ export const fetchAccountGraphData =
             !cachedGraphEntry.error &&
             cachedGraphEntry.rawData.length > 0 &&
             cachedGraphEntry.fetchedRange.to !== null;
-        const requestedSegments = canIncrementallyExtendCache
-            ? getMissingRangeSegments(cachedGraphEntry.fetchedRange, requestRangeParams)
-            : [requestRangeParams];
+        const initialSegments = canIncrementallyExtendCache
+            ? getMissingRangeSegments(cachedGraphEntry.fetchedRange, selectedRangeParams)
+            : [selectedRangeParams];
 
         let mergedHistory = canIncrementallyExtendCache ? cachedGraphEntry.rawData : [];
         let mergedFetchedRange = canIncrementallyExtendCache
             ? cachedGraphEntry.fetchedRange
-            : getCoverageRange(mergedHistory, requestRangeParams);
+            : getCoverageRange(mergedHistory, selectedRangeParams);
 
         const fetchSegment = async (
             rangeParams: { from: null | number; to: null | number },
@@ -262,24 +397,16 @@ export const fetchAccountGraphData =
                 ) {
                     return;
                 }
-                if (!isRangeStillActive(getState, selectedRangeParams)) {
-                    return;
-                }
+                if (!isStillActive()) return;
 
                 progressiveHistory = mergeBalanceHistory(progressiveHistory, event.progress.data);
                 const displayRawHistory = mergeBalanceHistory(mergedHistory, progressiveHistory);
-                const enhancedDisplayHistory = enhanceBlockchainAccountHistoryFromCurrentBalance(
-                    displayRawHistory,
-                    account.symbol,
-                    account.formattedBalance,
-                    selectedRangeParams.from ?? undefined,
-                );
 
                 dispatch({
                     type: ACCOUNT_GRAPH_START,
                     payload: {
                         account: graphAccount,
-                        data: enhancedDisplayHistory,
+                        data: enhance(displayRawHistory),
                         rawData: displayRawHistory,
                         isLoading: true,
                         error: false,
@@ -291,7 +418,9 @@ export const fetchAccountGraphData =
                 });
             };
 
-            TrezorConnect.on(BLOCKCHAIN.ACCOUNT_GRAPH_PROGRESS, onProgress);
+            if (emitUpdates) {
+                TrezorConnect.on(BLOCKCHAIN.ACCOUNT_GRAPH_PROGRESS, onProgress);
+            }
 
             const response = await TrezorConnect.blockchainGetAccountBalanceHistory({
                 coin: account.symbol,
@@ -302,7 +431,9 @@ export const fetchAccountGraphData =
                 groupBy: 3600 * 24, // day
                 requestId: segmentRequestId,
             }).finally(() => {
-                TrezorConnect.off(BLOCKCHAIN.ACCOUNT_GRAPH_PROGRESS, onProgress);
+                if (emitUpdates) {
+                    TrezorConnect.off(BLOCKCHAIN.ACCOUNT_GRAPH_PROGRESS, onProgress);
+                }
             });
 
             options.abortSignal?.throwIfAborted();
@@ -311,152 +442,216 @@ export const fetchAccountGraphData =
                 return response;
             }
 
-            mergedHistory = mergeBalanceHistory(
-                mergedHistory,
-                mergeBalanceHistory(progressiveHistory, response.payload),
+            const combinedSegmentHistory = mergeBalanceHistory(
+                progressiveHistory,
+                response.payload,
             );
+            mergedHistory = mergeBalanceHistory(mergedHistory, combinedSegmentHistory);
             mergedFetchedRange = mergeFetchedRanges(
                 mergedFetchedRange,
-                getCoverageRange(
-                    mergeBalanceHistory(progressiveHistory, response.payload),
-                    rangeParams,
-                ),
+                getCoverageRange(combinedSegmentHistory, rangeParams),
             );
 
-            if (!isRangeStillActive(getState, selectedRangeParams)) {
-                return response;
+            if (isStillActive()) {
+                dispatchSuccess(buildSuccessPayload(mergedHistory, mergedFetchedRange));
             }
-
-            const enhancedResponse = enhanceBlockchainAccountHistoryFromCurrentBalance(
-                mergedHistory,
-                account.symbol,
-                account.formattedBalance,
-                selectedRangeParams.from ?? undefined,
-            );
-
-            dispatch({
-                type: ACCOUNT_GRAPH_SUCCESS,
-                payload: {
-                    account: graphAccount,
-                    data: enhancedResponse,
-                    rawData: mergedHistory,
-                    isLoading: false,
-                    error: false,
-                    fetchedRange: mergedFetchedRange,
-                },
-            });
 
             return response;
         };
 
-        let failedResponse:
-            | Awaited<ReturnType<typeof TrezorConnect.blockchainGetAccountBalanceHistory>>
-            | undefined;
-        const pendingSegments = [...requestedSegments];
-        let segmentIndex = 0;
+        const runSegmentLoop = async () => {
+            const pendingSegments = [...initialSegments];
+            let segmentIndex = 0;
 
-        while (pendingSegments.length > 0) {
-            const segment = pendingSegments.shift()!;
-            const previousFetchedRangeFrom = mergedFetchedRange.from;
-            const response = await fetchSegment(segment, segmentIndex);
+            while (pendingSegments.length > 0) {
+                const segment = pendingSegments.shift()!;
+                const previousFetchedRangeFrom = mergedFetchedRange.from;
+                const response = await fetchSegment(segment, segmentIndex);
 
-            if (!isRangeStillActive(getState, selectedRangeParams)) {
-                return;
-            }
-
-            if (!response.success) {
-                failedResponse = response;
-                break;
-            }
-
-            if (selectedRangeParams.from === null && segment.from === null) {
-                const nextFetchedRangeFrom = mergedFetchedRange.from;
-                const hasBackfilledOlderRange =
-                    previousFetchedRangeFrom !== null &&
-                    nextFetchedRangeFrom !== null &&
-                    nextFetchedRangeFrom < previousFetchedRangeFrom;
-                const shouldProbeForOlderData =
-                    previousFetchedRangeFrom === null
-                        ? nextFetchedRangeFrom !== null
-                        : hasBackfilledOlderRange;
-
-                if (shouldProbeForOlderData) {
-                    pendingSegments.push({
-                        from: null,
-                        to: nextFetchedRangeFrom,
-                    });
-                } else {
-                    mergedFetchedRange = {
-                        ...mergedFetchedRange,
-                        from: FULL_LEFT_COVERAGE_SENTINEL,
-                    };
+                if (!isStillActive()) {
+                    return { status: 'cancelled' as const };
                 }
+
+                if (!response.success) {
+                    return { status: 'failed' as const, response };
+                }
+
+                // When requesting with no lower bound, keep probing backwards
+                // as long as the backend returns older data than we already had.
+                if (selectedRangeParams.from === null && segment.from === null) {
+                    const nextFetchedRangeFrom = mergedFetchedRange.from;
+                    const hasBackfilledOlderRange =
+                        previousFetchedRangeFrom !== null &&
+                        nextFetchedRangeFrom !== null &&
+                        nextFetchedRangeFrom < previousFetchedRangeFrom;
+                    const shouldProbeForOlderData =
+                        previousFetchedRangeFrom === null
+                            ? nextFetchedRangeFrom !== null
+                            : hasBackfilledOlderRange;
+
+                    if (shouldProbeForOlderData) {
+                        pendingSegments.push({ from: null, to: nextFetchedRangeFrom });
+                    } else {
+                        mergedFetchedRange = {
+                            ...mergedFetchedRange,
+                            from: FULL_LEFT_COVERAGE_SENTINEL,
+                        };
+                    }
+                }
+
+                segmentIndex++;
             }
 
-            segmentIndex++;
+            return { status: 'done' as const };
+        };
+
+        const loopResult = await runSegmentLoop();
+        if (loopResult.status === 'cancelled') return;
+        if (!isStillActive()) return;
+
+        // Failure finalization: fall back to partial history if we have any;
+        // otherwise report a hard failure. Prefetch (emitUpdates=false) never
+        // caches a partially-failed fetch — return undefined so the caller
+        // doesn't persist it.
+        if (loopResult.status === 'failed') {
+            if (emitUpdates) {
+                if (mergedHistory.length > 0) {
+                    const payload = buildSuccessPayload(mergedHistory, mergedFetchedRange);
+                    dispatch({ type: ACCOUNT_GRAPH_SUCCESS, payload });
+
+                    return payload;
+                }
+
+                dispatch({
+                    type: ACCOUNT_GRAPH_FAIL,
+                    payload: createGraphPayload({
+                        account: graphAccount,
+                        data: [],
+                        rawData: [],
+                        isLoading: false,
+                        error: true,
+                        fetchedRange: selectedRangeParams,
+                    }),
+                });
+            }
+
+            return;
+        }
+
+        // The new balance graph uses a separate graph-fiat pipeline; skip the
+        // legacy per-point CoinGecko rate enrichment.
+        const isNewBalanceGraphEnabled =
+            selectHasExperimentalFeature('new-balance-graph')(getState());
+
+        if (isNewBalanceGraphEnabled) {
+            const payload = buildSuccessPayload(mergedHistory, mergedFetchedRange);
+            dispatchSuccess(payload);
+
+            return payload;
         }
 
         const isElectrumBackend = selectIsElectrumBackendSelected(getState(), account.symbol);
 
-        if (!isRangeStillActive(getState, selectedRangeParams)) {
+        try {
+            const responseWithRates = await ensureHistoryRates(
+                account.symbol,
+                mergedHistory,
+                baseCurrencyCode,
+                isElectrumBackend,
+            );
+
+            if (!isStillActive()) return;
+
+            const payload = buildSuccessPayload(responseWithRates, mergedFetchedRange);
+            dispatchSuccess(payload);
+
+            return payload;
+        } catch (error) {
+            console.warn(
+                `[graphActions] rate enrichment for ${account.symbol} failed; keeping raw graph data`,
+                error,
+            );
+
+            const payload = buildSuccessPayload(mergedHistory, mergedFetchedRange);
+            dispatchSuccess(payload);
+
+            return payload;
+        }
+    };
+
+export const prefetchGraphData = createThunk<
+    void,
+    { accounts: Account[]; selectedRange: GraphRange },
+    void
+>(
+    'wallet/prefetchGraphData',
+    async (
+        { accounts, selectedRange },
+        {
+            dispatch,
+            getState,
+        }: {
+            dispatch: Dispatch;
+            getState: GetState;
+        },
+    ) => {
+        if (!selectHasExperimentalFeature('new-balance-graph')(getState())) {
             return;
         }
 
-        if (!failedResponse) {
-            try {
-                const responseWithRates = await ensureHistoryRates(
-                    account.symbol,
-                    mergedHistory,
-                    baseCurrencyCode,
-                    isElectrumBackend,
-                );
+        const supportedAccounts = accounts.filter(
+            a =>
+                isTrezorConnectBackendType(a.backendType) &&
+                isNetworkWithGraphFeature(a.symbol, a.backendType),
+        );
 
-                if (!isRangeStillActive(getState, selectedRangeParams)) {
+        await Promise.allSettled(
+            supportedAccounts.map(async account => {
+                const cacheKey = getGraphPrefetchKey(account, selectedRange);
+
+                graphPrefetchActiveKeys.add(cacheKey);
+                clearGraphPrefetchEvictionTimer(cacheKey);
+
+                if (graphPrefetchCache.has(cacheKey) || graphPrefetchPromises.has(cacheKey)) {
                     return;
                 }
 
-                const enhancedResponseWithRates = enhanceBlockchainAccountHistoryFromCurrentBalance(
-                    responseWithRates,
-                    account.symbol,
-                    account.formattedBalance,
-                    selectedRangeParams.from ?? undefined,
-                );
+                const promise = Promise.resolve(
+                    dispatch(
+                        fetchAccountGraphData(account, {
+                            selectedRange,
+                            emitUpdates: false,
+                        }),
+                    ),
+                )
+                    .then(payload => {
+                        if (payload && graphPrefetchActiveKeys.has(cacheKey)) {
+                            graphPrefetchCache.set(cacheKey, payload);
+                        }
 
-                dispatch({
-                    type: ACCOUNT_GRAPH_SUCCESS,
-                    payload: {
-                        account: graphAccount,
-                        data: enhancedResponseWithRates,
-                        rawData: responseWithRates,
-                        isLoading: false,
-                        error: false,
-                        fetchedRange: mergedFetchedRange,
-                    },
-                });
-            } catch (error) {
-                console.warn(
-                    `[graphActions] rate enrichment for ${account.symbol} failed; keeping raw graph data`,
-                    error,
-                );
-            }
-        } else {
-            if (!isRangeStillActive(getState, selectedRangeParams)) {
-                return;
-            }
+                        return payload;
+                    })
+                    .finally(() => {
+                        graphPrefetchPromises.delete(cacheKey);
+                    });
 
-            dispatch({
-                type: ACCOUNT_GRAPH_FAIL,
-                payload: {
-                    account: graphAccount,
-                    data: [],
-                    rawData: [],
-                    isLoading: false,
-                    error: true,
-                    fetchedRange: requestRangeParams,
-                },
-            });
-        }
-    };
+                graphPrefetchPromises.set(cacheKey, promise);
+
+                await promise;
+            }),
+        );
+    },
+);
+
+export const evictPrefetchedGraphData = createThunk<
+    void,
+    { accounts: Account[]; selectedRange: GraphRange },
+    void
+>('wallet/evictPrefetchedGraphData', ({ accounts, selectedRange }) => {
+    accounts.forEach(account => {
+        scheduleGraphPrefetchEviction(getGraphPrefetchKey(account, selectedRange));
+    });
+});
 
 export const updateGraphData = createThunk<
     void,
@@ -508,6 +703,32 @@ export const updateGraphData = createThunk<
             ]),
         );
 
+        const prefetchedPayloads = new Map<AccountKey, GraphData>();
+        supportedAccounts.forEach(account => {
+            const cacheKey = getGraphPrefetchKey(account, effectiveSelectedRange);
+
+            clearGraphPrefetchEvictionTimer(cacheKey);
+
+            const prefetchedPayload = graphPrefetchCache.get(cacheKey);
+            if (prefetchedPayload) {
+                prefetchedPayloads.set(account.key, prefetchedPayload);
+                removeGraphPrefetchEntry(cacheKey);
+
+                return;
+            }
+
+            if (graphPrefetchPromises.get(cacheKey)) {
+                removeGraphPrefetchEntry(cacheKey);
+            }
+        });
+
+        if (prefetchedPayloads.size > 0) {
+            dispatch({
+                type: ACCOUNT_GRAPH_BATCH_SUCCESS,
+                payload: Array.from(prefetchedPayloads.values()),
+            });
+        }
+
         const graphTxCountByAccount = new Map<AccountKey, number>(
             Array.from(graphEntriesByAccount.entries()).map(([key, entry]) => {
                 const txCount = entry.data.reduce((acc, point) => acc + point.txs, 0);
@@ -517,6 +738,10 @@ export const updateGraphData = createThunk<
         );
 
         const accountsToFetch = supportedAccounts.filter(account => {
+            if (prefetchedPayloads.has(account.key)) {
+                return false;
+            }
+
             const cachedGraph = graphEntriesByAccount.get(account.key);
             if (cachedGraph?.isLoading) {
                 return false;
@@ -559,7 +784,13 @@ export const updateGraphData = createThunk<
                     latestCachedBucket?.time === latestTransactionBucketInfo.latestBucketTime &&
                     latestCachedBucket.txs >= latestTransactionBucketInfo.latestBucketTxs;
 
-                if (!coversLatestKnownBucket || !hasCurrentLatestBucketTxCount) {
+                const requiresStableLatestBucketTxCount =
+                    account.symbol !== 'sol' && account.history.total !== -1;
+
+                if (
+                    !coversLatestKnownBucket ||
+                    (requiresStableLatestBucketTxCount && !hasCurrentLatestBucketTxCount)
+                ) {
                     return true;
                 }
             }
@@ -573,8 +804,7 @@ export const updateGraphData = createThunk<
                 return false;
             }
 
-            const hasFullHistoryCache =
-                cachedGraph.fetchedRange.from === null && cachedGraph.fetchedRange.to === null;
+            const hasFullHistoryCache = cachedGraph.fetchedRange.from === null;
 
             if (!hasFullHistoryCache) {
                 return false;
@@ -601,6 +831,7 @@ export const updateGraphData = createThunk<
                     }),
                 ),
             );
+
             await Promise.all(promises);
 
             abortSignal?.throwIfAborted();
@@ -609,16 +840,19 @@ export const updateGraphData = createThunk<
                 type: AGGREGATED_GRAPH_SUCCESS,
             });
         } catch (error) {
+            // Aborts are not failures — the caller intentionally cancelled.
             if (error instanceof Error && error.name === 'AbortError') {
                 dispatch({
                     type: AGGREGATED_GRAPH_SUCCESS,
                 });
-            } else {
-                console.error('[graphActions] updateGraphData failed', error);
-                dispatch({
-                    type: AGGREGATED_GRAPH_SUCCESS,
-                });
+
+                return;
             }
+
+            console.error('[graphActions] updateGraphData failed', error);
+            dispatch({
+                type: AGGREGATED_GRAPH_FAIL,
+            });
         }
     },
 );

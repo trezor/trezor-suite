@@ -55,7 +55,7 @@ export const graphFiatReducer = createReducer(initialState, builder => {
 
             resolutionEntry.points = points;
             resolutionEntry.fetchedAt = fetchedAt;
-            resolutionEntry.lastPointTimestamp = resolutionEntry.points.at(-1)?.time ?? null;
+            resolutionEntry.lastPointTimestamp = points.at(-1)?.time ?? null;
             resolutionEntry.isLoading = false;
             resolutionEntry.error = null;
         })

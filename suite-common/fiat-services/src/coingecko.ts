@@ -43,11 +43,24 @@ export const cancelPendingCoinGeckoRequests = () => {
     rateLimiter.cancelPending();
 };
 
-const fetchCoinGecko = async (url: string, skipCache?: boolean) => {
+const fetchCoinGecko = async (
+    url: string,
+    options?: { skipCache?: boolean; skipLimiter?: boolean },
+) => {
+    // `skipCache` bypasses the CDN cache via the X-Bypass-Cache header and
+    // implicitly skips the limiter (callers asking for fresh data don't want
+    // to wait in the queue). `skipLimiter` only skips the queue — useful for
+    // latency-sensitive callers (e.g. graph hover prefetch) that still want
+    // the CDN cache to absorb repeated lookups.
+    const skipCache = options?.skipCache ?? false;
+    const skipLimiter = skipCache || (options?.skipLimiter ?? false);
+
     try {
         let res: Response;
         if (skipCache) {
             res = await fetchUrl(url, { headers: { 'X-Bypass-Cache': '1' } });
+        } else if (skipLimiter) {
+            res = await fetchUrl(url);
         } else {
             res = await rateLimiter.limit(signal => fetchUrl(url, { signal }));
         }
@@ -142,27 +155,13 @@ export const fetchGraphHistoricFiatRates = async ({
     const daysParam =
         resolution === 'max' ? 'max' : GRAPH_FIAT_MARKET_CHART_DAYS[resolution].toString();
     const url = `${baseUrl}?vs_currency=${baseCurrencyCode}&days=${daysParam}`;
-    const skipCache = true;
 
-    console.warn(`[graphFiat] request ${coinId} ${resolution}`, {
-        baseCurrencyCode,
-        skipCache,
-        url,
-    });
-    const response = await fetchCoinGecko(url, skipCache);
+    // Skip the limiter queue so hover-prefetched graph requests don't sit
+    // behind the periodic token fiat-rate refreshes. The CDN cache is keyed
+    // per URL (including the `days` param), so we keep it — a user hovering
+    // a range they already viewed hits the cache instead of the origin.
+    const response = await fetchCoinGecko(url, { skipLimiter: true });
     const points = normalizeGraphFiatPoints(response?.prices);
-
-    if (resolution === 'max' && points.length === 0) {
-        const fallbackUrl = `${baseUrl}?vs_currency=${baseCurrencyCode}&days=365`;
-        const fallbackResponse = await fetchCoinGecko(fallbackUrl);
-
-        console.warn(`[graphFiat] request ${coinId} ${resolution} fallback`, {
-            baseCurrencyCode,
-            url: fallbackUrl,
-        });
-
-        return normalizeGraphFiatPoints(fallbackResponse?.prices);
-    }
 
     return points;
 };
@@ -247,7 +246,7 @@ export const fetchCurrentFiatRates = async (
 
     for (const coinUrl of coinUrls) {
         const url = `${coinUrl}?${urlParams}`;
-        const rates = await fetchCoinGecko(url, options?.skipCache);
+        const rates = await fetchCoinGecko(url, { skipCache: options?.skipCache });
 
         if (rates) {
             return {

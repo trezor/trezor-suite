@@ -1,5 +1,9 @@
 # Storage changelog
 
+## 26.6.0
+
+- create `graphFiatRates` object store for persisted graph fiat history caches
+
 ## 26.5.0
 
 - reset Ethereum account nonces to `-1` in order to force account refresh for DeFi tokens
@@ -13,10 +17,6 @@
 
 - ensure `descriptor.apiType` is set to `usb` for remembered devices from old Suite versions
 - rename `experimentalFeedback` object store to `featureFeedback`
-
-## 26.5.0
-
-- create `graphFiatRates` object store for persisted graph fiat history caches
 
 ## 26.4.0
 

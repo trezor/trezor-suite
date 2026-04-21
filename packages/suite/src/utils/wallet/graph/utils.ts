@@ -138,11 +138,86 @@ export const enhanceBlockchainAccountHistoryFromCurrentBalance = (
     currentBalance = '0',
     anchorTime?: number,
 ) => {
-    let balance = new BigNumber(currentBalance);
     const sortedData = [...data].sort((a, b) => a.time - b.time);
     const enhancedResponse = Array<BlockchainAccountBalanceHistory & { balance: string }>(
         sortedData.length,
     );
+
+    // Absolute mode: every bucket already carries its end-of-bucket balance
+    // (e.g. Solana's per-tx `postBalance`). Skip the right-edge anchor +
+    // walk-back reconstruction — those are only needed when the source emits
+    // aggregated deltas (Blockbook's BTC/ETH `getBalanceHistory`). Bucket
+    // received/sent are derived from successive balance deltas so the bar
+    // overlay (`LiveFiatGraph`) still has values to label; the leftmost
+    // bucket has no predecessor, so its received/sent fall back to whatever
+    // the source emitted (typically '0').
+    const isAbsoluteMode =
+        sortedData.length > 0 && sortedData.every(point => point.balance !== undefined);
+
+    if (isAbsoluteMode) {
+        let leftBalance: BigNumber | null = null;
+
+        for (let i = 0; i < sortedData.length; i++) {
+            const dataPoint = sortedData[i];
+            // sortedData[i].balance is defined (checked by isAbsoluteMode).
+            const rightBalance = new BigNumber(dataPoint.balance!);
+            const formattedBalance = formatNetworkAmount(rightBalance.toFixed(), symbol);
+
+            let formattedReceived: string;
+            let formattedSent: string;
+            if (leftBalance === null) {
+                // First bucket — no predecessor to diff against. Pass through
+                // whatever the source supplied (typically '0'/'0').
+                formattedReceived = formatNetworkAmount(dataPoint.received, symbol);
+                formattedSent = formatNetworkAmount(dataPoint.sent, symbol);
+            } else {
+                const delta = rightBalance.minus(leftBalance);
+                formattedReceived = formatNetworkAmount(
+                    delta.isGreaterThan(0) ? delta.toFixed() : '0',
+                    symbol,
+                );
+                formattedSent = formatNetworkAmount(
+                    delta.isLessThan(0) ? delta.abs().toFixed() : '0',
+                    symbol,
+                );
+            }
+
+            enhancedResponse[i] = {
+                ...dataPoint,
+                received: formattedReceived,
+                sent: formattedSent,
+                time: resetTime(dataPoint.time),
+                balance: formattedBalance,
+            };
+
+            leftBalance = rightBalance;
+        }
+
+        if (anchorTime !== undefined) {
+            const shouldPrependAnchor =
+                enhancedResponse.length === 0 || enhancedResponse[0].time > anchorTime;
+
+            if (shouldPrependAnchor) {
+                // Anchor inherits the first bucket's balance — no aggregate
+                // history exists before it in absolute mode.
+                const firstBalance =
+                    enhancedResponse.length > 0 ? enhancedResponse[0].balance : '0';
+                enhancedResponse.unshift({
+                    balance: firstBalance,
+                    rates: {},
+                    received: '0',
+                    sent: '0',
+                    sentToSelf: '0',
+                    time: anchorTime,
+                    txs: 0,
+                });
+            }
+        }
+
+        return enhancedResponse;
+    }
+
+    let balance = new BigNumber(currentBalance);
 
     for (let i = sortedData.length - 1; i >= 0; i--) {
         const dataPoint = sortedData[i];
@@ -317,6 +392,8 @@ export const calcXDomain = (
                 return 3600 * 12;
             case 'hour':
                 return 3600;
+            case 'range':
+                return range.groupBy === 'day' ? 3600 * 24 : 3600 * 24 * 14;
             default:
                 return exhaustive(range);
         }

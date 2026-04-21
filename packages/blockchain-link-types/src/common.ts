@@ -58,6 +58,16 @@ export interface AccountBalanceHistory {
     sent: string;
     sentToSelf?: string;
     rates: FiatRatesBySymbol;
+    /**
+     * Absolute account balance at the END of this bucket, in the network's
+     * smallest unit (e.g. lamports for SOL). When set on every bucket of a
+     * response, the client can skip the right-edge anchor + walk-back
+     * reconstruction and use these values directly. Backends that already
+     * have absolute balance per tx (e.g. Solana via `meta.postBalances`)
+     * should populate this; backends that only return aggregated deltas
+     * (e.g. Blockbook's BTC/ETH `getBalanceHistory`) should leave it unset.
+     */
+    balance?: string;
 }
 
 export interface MultiTokenValue {

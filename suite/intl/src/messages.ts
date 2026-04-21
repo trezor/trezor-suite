@@ -7549,6 +7549,14 @@ export const messages = defineMessages({
         id: 'TR_GRAPH_SHOW_TRANSACTIONS',
         defaultMessage: 'Show transactions',
     },
+    TR_GRAPH_LIVE: {
+        id: 'TR_GRAPH_LIVE',
+        defaultMessage: 'Live',
+    },
+    TR_GRAPH_LIVE_UNAVAILABLE_FOR_NETWORKS: {
+        id: 'TR_GRAPH_LIVE_UNAVAILABLE_FOR_NETWORKS',
+        defaultMessage: 'Live data is unavailable for: {networks}.',
+    },
     TR_GRAPH_VIEW: {
         id: 'TR_GRAPH_VIEW',
         defaultMessage: 'Graph view',
@@ -7564,6 +7572,10 @@ export const messages = defineMessages({
     TR_DATE_DAY_LONG: {
         id: 'TR_DATE_DAY_LONG',
         defaultMessage: '1 day',
+    },
+    TR_DATE_HOUR_LONG: {
+        id: 'TR_DATE_HOUR_LONG',
+        defaultMessage: 'Last hour',
     },
     TR_DATE_DAY_SHORT: {
         id: 'TR_DATE_DAY_SHORT',

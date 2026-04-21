@@ -1,4 +1,4 @@
-import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { Liveline } from '@seibei-iguchi/liveline';
 import { useTheme } from 'styled-components';
@@ -18,6 +18,7 @@ import { type GraphData } from 'src/types/wallet/graph';
 import { isNetworkWithGraphFeature } from 'src/utils/wallet/graph';
 
 import {
+    LIVELINE_WINDOW_TRANSITION_MS,
     aggregateBalanceStepSets,
     appendCurrentBalance,
     buildAlignedPortfolioSeriesFromCoinSeries,
@@ -95,7 +96,6 @@ export const DashboardLiveFiatGraph = ({ accounts, isLive }: DashboardLiveFiatGr
     const locale = useSelector(selectLanguage);
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const dispatch = useDispatch();
-    const deferredSelectedRange = useDeferredValue(selectedRange);
     const [frozenNow, setFrozenNow] = useState(() => Date.now() / 1000);
     const enabledNetworks = useSelector(selectEnabledNetworks);
     const graphData = useSelector(selectGraphData);
@@ -139,7 +139,7 @@ export const DashboardLiveFiatGraph = ({ accounts, isLive }: DashboardLiveFiatGr
         () => Array.from(new Set(liveEligibleAccounts.map(account => account.symbol))).sort(),
         [liveEligibleAccounts],
     );
-    const rangeKey = getRangeKey(deferredSelectedRange);
+    const rangeKey = getRangeKey(selectedRange);
     const accountKeysKey = useMemo(
         () => accounts.map(account => account.key).join('|'),
         [accounts],
@@ -148,7 +148,7 @@ export const DashboardLiveFiatGraph = ({ accounts, isLive }: DashboardLiveFiatGr
         isLoading: isPriceHistoriesLoading,
         priceHistories,
         requiredResolution,
-    } = usePriceHistories(coinIds, deferredSelectedRange);
+    } = usePriceHistories(coinIds, selectedRange);
     const { priceHistoriesBySymbol: livePriceHistoriesBySymbol } = useCoinbaseLivePrices(
         liveSymbols,
         isLive,
@@ -170,6 +170,10 @@ export const DashboardLiveFiatGraph = ({ accounts, isLive }: DashboardLiveFiatGr
             }
         >(),
     );
+    // Holds the last Map returned from `historicalCoinSeriesByCoinId`. When a
+    // recompute produces a Map with identical per-coin entries we return the
+    // previous Map instead, so downstream useMemos don't re-run.
+    const historicalCoinSeriesMapRef = useRef<Map<string, GraphDataPoint[]> | undefined>(undefined);
 
     const evictHistoricalResolutionFromMemory = useCallback(
         (resolution: 'day' | 'month' | 'max') => {
@@ -212,10 +216,7 @@ export const DashboardLiveFiatGraph = ({ accounts, isLive }: DashboardLiveFiatGr
 
         return lastPriceTime > 0 ? lastPriceTime : frozenNow;
     }, [coinIds, frozenNow, priceHistories]);
-    const historicalRangeStartTime = getRangeBounds(
-        deferredSelectedRange,
-        historicalRightEdge,
-    )?.startTime;
+    const historicalRangeStartTime = getRangeBounds(selectedRange, historicalRightEdge)?.startTime;
 
     const historicalCoinSeriesByCoinId = useMemo(() => {
         const nextCoinSeriesByCoinId = new Map<string, GraphDataPoint[]>();
@@ -281,6 +282,26 @@ export const DashboardLiveFiatGraph = ({ accounts, isLive }: DashboardLiveFiatGr
             nextCoinSeriesByCoinId.set(coinId, points);
         });
 
+        // If every entry in `nextCoinSeriesByCoinId` is the same (by reference)
+        // as what we returned last time, return the previous Map. That lets
+        // downstream useMemos short-circuit on referential equality instead of
+        // content hashing.
+        const previousMap = historicalCoinSeriesMapRef.current;
+        if (previousMap && previousMap.size === nextCoinSeriesByCoinId.size) {
+            let allSame = true;
+            for (const [coinId, points] of nextCoinSeriesByCoinId) {
+                if (previousMap.get(coinId) !== points) {
+                    allSame = false;
+                    break;
+                }
+            }
+            if (allSame) {
+                return previousMap;
+            }
+        }
+
+        historicalCoinSeriesMapRef.current = nextCoinSeriesByCoinId;
+
         return nextCoinSeriesByCoinId;
     }, [coinBalanceSources, coinIds, historicalRangeStartTime, priceHistories]);
 
@@ -288,9 +309,10 @@ export const DashboardLiveFiatGraph = ({ accounts, isLive }: DashboardLiveFiatGr
         () =>
             buildAlignedPortfolioSeriesFromCoinSeries({
                 coinSeriesEntries: Array.from(historicalCoinSeriesByCoinId.values()),
-                rangeLabel: deferredSelectedRange.label,
+                rangeLabel: selectedRange.label,
+                startTime: historicalRangeStartTime,
             }),
-        [deferredSelectedRange.label, historicalCoinSeriesByCoinId],
+        [historicalCoinSeriesByCoinId, historicalRangeStartTime, selectedRange.label],
     );
     const historicalCoinSeriesRecord = useMemo(
         () => Object.fromEntries(historicalCoinSeriesByCoinId),
@@ -302,7 +324,7 @@ export const DashboardLiveFiatGraph = ({ accounts, isLive }: DashboardLiveFiatGr
         [historicalPoints, historicalRightEdge],
     );
     const historicalWindow =
-        getRangeBounds(deferredSelectedRange, historicalRightEdge)?.window ?? allWindowSecs;
+        getRangeBounds(selectedRange, historicalRightEdge)?.window ?? allWindowSecs;
     const mergeCoinSeries = useCallback(
         (previous: Record<string, GraphDataPoint[]>, next: Record<string, GraphDataPoint[]>) => {
             const mergedCoinIds = Array.from(
@@ -334,19 +356,53 @@ export const DashboardLiveFiatGraph = ({ accounts, isLive }: DashboardLiveFiatGr
         hasData: historicalPoints.length > 0,
         currentData: historicalCoinSeriesRecord,
         currentWindow: historicalWindow,
-        currentRangeLabel: deferredSelectedRange.label,
+        currentRangeLabel: selectedRange.label,
         merge: mergeCoinSeries,
         evict: evictHistoricalResolutionFromMemory,
     });
+    const [renderHistoricalWindow, setRenderHistoricalWindow] = useState(displayedHistoricalWindow);
 
-    const displayedHistoricalPoints = useMemo(
-        () =>
-            buildAlignedPortfolioSeriesFromCoinSeries({
-                coinSeriesEntries: Object.values(displayedHistoricalCoinSeriesByCoinId),
-                rangeLabel: displayedHistoricalRangeLabel,
-            }),
-        [displayedHistoricalCoinSeriesByCoinId, displayedHistoricalRangeLabel],
-    );
+    useEffect(() => {
+        if (
+            displayedHistoricalRangeLabel === 'all' ||
+            displayedHistoricalWindow >= renderHistoricalWindow
+        ) {
+            setRenderHistoricalWindow(displayedHistoricalWindow);
+
+            return;
+        }
+
+        const transitionTimeoutId = window.setTimeout(() => {
+            setRenderHistoricalWindow(displayedHistoricalWindow);
+        }, LIVELINE_WINDOW_TRANSITION_MS);
+
+        return () => {
+            window.clearTimeout(transitionTimeoutId);
+        };
+    }, [displayedHistoricalRangeLabel, displayedHistoricalWindow, renderHistoricalWindow]);
+
+    const effectiveRenderHistoricalWindow =
+        displayedHistoricalRangeLabel === 'all'
+            ? displayedHistoricalWindow
+            : Math.max(displayedHistoricalWindow, renderHistoricalWindow);
+
+    const displayedHistoricalPoints = useMemo(() => {
+        const displayedRangeStartTime =
+            displayedHistoricalRangeLabel === 'all'
+                ? undefined
+                : historicalRightEdge - effectiveRenderHistoricalWindow;
+
+        return buildAlignedPortfolioSeriesFromCoinSeries({
+            coinSeriesEntries: Object.values(displayedHistoricalCoinSeriesByCoinId),
+            rangeLabel: displayedHistoricalRangeLabel,
+            startTime: displayedRangeStartTime,
+        });
+    }, [
+        displayedHistoricalCoinSeriesByCoinId,
+        displayedHistoricalRangeLabel,
+        effectiveRenderHistoricalWindow,
+        historicalRightEdge,
+    ]);
 
     const livePoints = useMemo(() => {
         if (!isLive) {

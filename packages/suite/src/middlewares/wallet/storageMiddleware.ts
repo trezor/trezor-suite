@@ -404,6 +404,21 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                     }
                     break;
                 }
+                case GRAPH.ACCOUNT_GRAPH_BATCH_SUCCESS: {
+                    const devices = selectDevices(api.getState());
+                    const persistedPayloads = action.payload.filter(payload => {
+                        const device = devices.find(
+                            d => d.state?.staticSessionId === payload.account.deviceState,
+                        );
+
+                        return getIsDeviceRemembered(device);
+                    });
+
+                    if (persistedPayloads.length > 0) {
+                        storageActions.saveGraph(persistedPayloads);
+                    }
+                    break;
+                }
                 case tradingActions.saveTrade.type: {
                     const { type, ...trade } = action;
                     storageActions.saveTradingTrade(trade.payload);

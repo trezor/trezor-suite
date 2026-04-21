@@ -13,8 +13,7 @@ import { typography } from '@trezor/theme';
 
 import { updateGraphData } from 'src/actions/wallet/graphActions';
 import { HiddenPlaceholder, TransactionsGraph } from 'src/components/suite';
-import { useDispatch, useGraph, useSelector } from 'src/hooks/suite';
-import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { type AppState } from 'src/types/suite';
 import { type Account } from 'src/types/wallet';
 import { type AggregatedDashboardHistory } from 'src/types/wallet/graph';
@@ -31,7 +30,6 @@ const Wrapper = styled.div`
 const GraphWrapper = styled(HiddenPlaceholder)`
     display: flex;
     flex: 1 1 auto;
-    padding: 16px 0;
     height: 320px;
 `;
 
@@ -81,8 +79,6 @@ export const DashboardGraph = memo(
         const selectedDevice = useSelector(selectSelectedDevice);
         const baseCurrencyCode = useSelector(selectBaseCurrency);
         const dispatch = useDispatch();
-        const { selectedRange } = useGraph();
-        const isContentBelowBreakpoint = useIsContentBelowBreakpoint();
         const [data, setData] = useState<AggregatedDashboardHistory[]>([]);
         const [isProcessing, setIsProcessing] = useState(false);
         const [xTicks, setXticks] = useState<number[]>([]);
@@ -102,10 +98,9 @@ export const DashboardGraph = memo(
             dispatch(
                 updateGraphData({
                     accounts,
-                    selectedRange,
                 }),
             );
-        }, [accounts, dispatch, selectedRange]);
+        }, [accounts, dispatch]);
 
         useEffect(() => {
             if (isNewBalanceGraphEnabled || graph.isLoading) {
@@ -166,20 +161,11 @@ export const DashboardGraph = memo(
                             </Button>
                         </ErrorMessage>
                     ) : (
-                        <Box
-                            margin={
-                                isContentBelowBreakpoint
-                                    ? undefined
-                                    : { vertical: 12, horizontal: 20 }
-                            }
-                            width="100%"
-                            height="100%"
-                        >
+                        <Box width="100%" height="100%">
                             {isNewBalanceGraphEnabled ? (
                                 <DashboardLiveFiatGraph accounts={accounts} isLive={isLive} />
                             ) : (
                                 <TransactionsGraph
-                                    hideToolbar
                                     variant="all-assets"
                                     onRefresh={onRefresh}
                                     isLoading={graph.isLoading || isProcessing}

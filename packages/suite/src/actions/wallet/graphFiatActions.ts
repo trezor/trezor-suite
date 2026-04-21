@@ -21,6 +21,22 @@ import {
 } from 'src/support/wallet/graphFiatUtils';
 import { type AppState, type Dispatch } from 'src/types/suite';
 
+// Tracks in-flight `refreshGraphFiatResolution` dispatches so that two callers
+// firing `ensureGraphFiatRates` synchronously for the same (coin, resolution,
+// currency) don't both reach `dispatch(refreshGraphFiatResolution(...))`
+// before the first one's `pending` action sets `isLoading: true` in the
+// reducer. Keyed `${coinId}:${baseCurrencyCode}:${resolution}`.
+const inFlightGraphFiatRefreshes = new Map<string, Promise<unknown>>();
+const getInFlightGraphFiatRefreshKey = ({
+    baseCurrencyCode,
+    coinId,
+    resolution,
+}: {
+    baseCurrencyCode: BaseCurrencyCode;
+    coinId: string;
+    resolution: GraphFiatResolution;
+}) => `${coinId}:${baseCurrencyCode}:${resolution}`;
+
 export const refreshGraphFiatResolution = createThunk(
     'wallet/graphFiat/refreshGraphFiatResolution',
     async ({
@@ -34,9 +50,9 @@ export const refreshGraphFiatResolution = createThunk(
     }) => ({
         baseCurrencyCode,
         coinId,
-        resolution,
-        points: await fetchGraphHistoricFiatRates({ baseCurrencyCode, coinId, resolution }),
         fetchedAt: getGraphFiatFetchTimestamp(),
+        points: await fetchGraphHistoricFiatRates({ baseCurrencyCode, coinId, resolution }),
+        resolution,
     }),
 );
 
@@ -242,13 +258,32 @@ export const ensureGraphFiatRates = createThunk(
                     },
                 );
 
-                await dispatch(
-                    refreshGraphFiatResolution({
-                        baseCurrencyCode,
-                        coinId,
-                        resolution,
-                    }),
-                );
+                const inFlightKey = getInFlightGraphFiatRefreshKey({
+                    baseCurrencyCode,
+                    coinId,
+                    resolution,
+                });
+                const existing = inFlightGraphFiatRefreshes.get(inFlightKey);
+                if (existing) {
+                    await existing;
+
+                    return;
+                }
+
+                const promise = Promise.resolve(
+                    dispatch(
+                        refreshGraphFiatResolution({
+                            baseCurrencyCode,
+                            coinId,
+                            resolution,
+                        }),
+                    ),
+                ).finally(() => {
+                    inFlightGraphFiatRefreshes.delete(inFlightKey);
+                });
+
+                inFlightGraphFiatRefreshes.set(inFlightKey, promise);
+                await promise;
             }),
         );
     },

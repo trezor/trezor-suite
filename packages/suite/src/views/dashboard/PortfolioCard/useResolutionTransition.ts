@@ -48,9 +48,29 @@ export const useResolutionTransition = <T>({
     const [isTransitioning, setIsTransitioning] = useState(false);
 
     const identityKeyRef = useRef(identityKey);
-    const previousResolutionRef = useRef(requiredResolution);
+    // Resolution that was on screen when the current transition started; the
+    // graph-fiat reducer entry for this resolution should be evicted once the
+    // transition settles. Held in a ref so rapid switches don't lose track of
+    // it - the timeout-driven advancement could be superseded before firing.
+    const pendingEvictionRef = useRef<GraphFiatResolution | null>(null);
     const transitionTimeoutRef = useRef<number | null>(null);
     const transitionFrameRef = useRef<number | null>(null);
+    // `evict` identity changes per render; keep the latest in a ref so the
+    // unmount cleanup can fire it without re-running the cleanup effect.
+    const evictRef = useRef(evict);
+    evictRef.current = evict;
+    // The rAF scheduled inside the transition path calls
+    // `setDisplayedWindow(currentWindow)`, which would otherwise trigger
+    // this effect to re-run because `displayedWindow` is read for the
+    // `isZoomingOut` check. That re-run lands back in the transition-start
+    // branch and prematurely flushes the pending eviction (the old
+    // resolution we deliberately retain across the animation), so reversing
+    // the range mid-transition forces a refetch instead of reusing the
+    // still-on-screen data. Reading `displayedWindow` via a ref decouples
+    // the rAF write from the effect's deps; `isZoomingOut` still sees the
+    // latest value because we sync the ref on every render.
+    const displayedWindowRef = useRef(displayedWindow);
+    displayedWindowRef.current = displayedWindow;
 
     const clearTransitionTimeout = useCallback(() => {
         if (transitionTimeoutRef.current !== null) {
@@ -66,12 +86,23 @@ export const useResolutionTransition = <T>({
         }
     }, []);
 
+    // Flush any pending eviction synchronously. Used when a transition is
+    // superseded, snapped, or the component unmounts mid-transition.
+    const flushPendingEviction = useCallback((except?: GraphFiatResolution) => {
+        const pending = pendingEvictionRef.current;
+        if (pending !== null && pending !== except) {
+            evictRef.current(pending);
+        }
+        pendingEvictionRef.current = null;
+    }, []);
+
     useEffect(
         () => () => {
             clearTransitionTimeout();
             clearTransitionFrame();
+            flushPendingEviction();
         },
-        [clearTransitionFrame, clearTransitionTimeout],
+        [clearTransitionFrame, clearTransitionTimeout, flushPendingEviction],
     );
 
     useEffect(() => {
@@ -79,8 +110,8 @@ export const useResolutionTransition = <T>({
         if (identityKeyRef.current !== identityKey) {
             clearTransitionTimeout();
             clearTransitionFrame();
+            flushPendingEviction(requiredResolution);
             identityKeyRef.current = identityKey;
-            previousResolutionRef.current = requiredResolution;
             setDisplayedData(currentData);
             setDisplayedWindow(currentWindow);
             setDisplayedRangeLabel(currentRangeLabel);
@@ -95,12 +126,12 @@ export const useResolutionTransition = <T>({
         if (isLive) {
             clearTransitionTimeout();
             clearTransitionFrame();
+            flushPendingEviction(requiredResolution);
             setDisplayedData(currentData);
             setDisplayedWindow(currentWindow);
             setDisplayedRangeLabel(currentRangeLabel);
             setDisplayedResolution(requiredResolution);
             setIsTransitioning(false);
-            previousResolutionRef.current = requiredResolution;
 
             return;
         }
@@ -109,11 +140,11 @@ export const useResolutionTransition = <T>({
         if (displayedResolution === requiredResolution) {
             clearTransitionTimeout();
             clearTransitionFrame();
+            flushPendingEviction(requiredResolution);
             setDisplayedData(currentData);
             setDisplayedWindow(currentWindow);
             setDisplayedRangeLabel(currentRangeLabel);
             setIsTransitioning(false);
-            previousResolutionRef.current = requiredResolution;
 
             return;
         }
@@ -124,8 +155,12 @@ export const useResolutionTransition = <T>({
         }
 
         // Resolution change → MERGE then timeout → SNAP + EVICT
-        const previousResolution = previousResolutionRef.current;
-        const isZoomingOut = currentWindow > displayedWindow;
+        // If a previous transition was already pending, evict its orphaned
+        // resolution now (unless it happens to be where we're heading).
+        flushPendingEviction(requiredResolution);
+        pendingEvictionRef.current = displayedResolution;
+
+        const isZoomingOut = currentWindow > displayedWindowRef.current;
 
         clearTransitionTimeout();
         clearTransitionFrame();
@@ -145,8 +180,7 @@ export const useResolutionTransition = <T>({
             setDisplayedRangeLabel(currentRangeLabel);
             setDisplayedResolution(requiredResolution);
             setIsTransitioning(false);
-            previousResolutionRef.current = requiredResolution;
-            evict(previousResolution);
+            flushPendingEviction(requiredResolution);
             transitionTimeoutRef.current = null;
         }, LIVELINE_WINDOW_TRANSITION_MS);
     }, [
@@ -156,8 +190,11 @@ export const useResolutionTransition = <T>({
         currentRangeLabel,
         currentWindow,
         displayedResolution,
-        displayedWindow,
-        evict,
+        // `displayedWindow` is intentionally NOT a dep — see
+        // `displayedWindowRef` above. Including it would cause the rAF's
+        // `setDisplayedWindow(currentWindow)` to re-trigger this effect
+        // and prematurely evict the resolution we're animating away from.
+        flushPendingEviction,
         hasData,
         identityKey,
         isDataLoading,

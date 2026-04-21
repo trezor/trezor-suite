@@ -138,26 +138,20 @@ describe('findClosestTimestampValue', () => {
             }),
         ).resolves.toEqual([{ time: 1_710_000_000, price: 123.45 }]);
 
+        // Graph requests skip the limiter queue but keep the CDN cache — no
+        // X-Bypass-Cache header is sent, so fetchUrl is called with just the URL.
         expect(mockedFetchUrl).toHaveBeenCalledWith(
             'https://cdn.trezor.io/dynamic/coingecko/api/v3/coins/bitcoin/market_chart?vs_currency=eur&days=1',
-            expect.any(Object),
         );
     });
 
-    test('falls back to 365-day market chart when max returns no points', async () => {
-        mockedFetchUrl
-            .mockResolvedValueOnce({
-                ok: true,
-                json: () => ({
-                    prices: [],
-                }),
-            })
-            .mockResolvedValueOnce({
-                ok: true,
-                json: () => ({
-                    prices: [[1_710_000_000_000, 321]],
-                }),
-            });
+    test('does not fall back to 365-day market chart when max returns no points', async () => {
+        mockedFetchUrl.mockResolvedValueOnce({
+            ok: true,
+            json: () => ({
+                prices: [],
+            }),
+        });
 
         await expect(
             fetchGraphHistoricFiatRates({
@@ -165,17 +159,11 @@ describe('findClosestTimestampValue', () => {
                 coinId: 'bitcoin',
                 resolution: 'max',
             }),
-        ).resolves.toEqual([{ time: 1_710_000_000, price: 321 }]);
+        ).resolves.toEqual([]);
 
-        expect(mockedFetchUrl).toHaveBeenNthCalledWith(
-            1,
+        expect(mockedFetchUrl).toHaveBeenCalledTimes(1);
+        expect(mockedFetchUrl).toHaveBeenCalledWith(
             'https://cdn.trezor.io/dynamic/coingecko/api/v3/coins/bitcoin/market_chart?vs_currency=czk&days=max',
-            expect.any(Object),
-        );
-        expect(mockedFetchUrl).toHaveBeenNthCalledWith(
-            2,
-            'https://cdn.trezor.io/dynamic/coingecko/api/v3/coins/bitcoin/market_chart?vs_currency=czk&days=365',
-            expect.any(Object),
         );
     });
 });

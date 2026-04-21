@@ -104,6 +104,9 @@ const graphReducer = (state: State = initialState, action: WalletAction | SuiteA
             case GRAPH.ACCOUNT_GRAPH_SUCCESS:
                 update(draft, action.payload);
                 break;
+            case GRAPH.ACCOUNT_GRAPH_BATCH_SUCCESS:
+                action.payload.forEach(payload => update(draft, payload));
+                break;
             case GRAPH.ACCOUNT_GRAPH_FAIL:
                 update(draft, action.payload);
                 break;
@@ -111,6 +114,9 @@ const graphReducer = (state: State = initialState, action: WalletAction | SuiteA
                 draft.isLoading = true;
                 break;
             case GRAPH.AGGREGATED_GRAPH_SUCCESS:
+                draft.isLoading = false;
+                break;
+            case GRAPH.AGGREGATED_GRAPH_FAIL:
                 draft.isLoading = false;
                 break;
             case GRAPH.SET_SELECTED_RANGE:
