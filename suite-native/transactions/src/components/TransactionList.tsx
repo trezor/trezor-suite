@@ -57,13 +57,12 @@ type RenderTransactionItemParams = {
     isLast: boolean;
 };
 
-type TypedTokenTransferWithTx = TypedTokenTransfer & {
-    originalTransaction: WalletAccountTransaction;
-};
-
 type RenderTokenTransferItemParams = Omit<RenderTransactionItemParams, 'item'> & {
     item: TypedTokenTransferWithTx;
-    txid: string;
+};
+
+type TypedTokenTransferWithTx = TypedTokenTransfer & {
+    originalTransaction: WalletAccountTransaction;
 };
 
 type TransactionListItem =
@@ -112,12 +111,10 @@ const renderTokenTransferItem = ({
     isLast,
     isFirst,
     accountKey,
-    txid,
 }: RenderTokenTransferItemParams) => (
     <TokenTransferListItem
         transaction={tokenTransfer.originalTransaction}
         tokenTransfer={tokenTransfer}
-        txid={txid}
         accountKey={accountKey}
         isFirst={isFirst}
         isLast={isLast}
@@ -277,7 +274,6 @@ export const TransactionList = ({
                 ? renderTokenTransferItem({
                       item,
                       accountKey,
-                      txid: item.originalTransaction.txid,
                       isFirst: isFirstInSection,
                       isLast: isLastInSection,
                   })

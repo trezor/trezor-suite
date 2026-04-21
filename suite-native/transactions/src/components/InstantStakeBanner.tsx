@@ -3,11 +3,10 @@ import { useSelector } from 'react-redux';
 import { getInstantStakeType } from '@suite-common/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import { type AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey, type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { Box, Text } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
-import { type WalletAccountTransaction } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type InstantStakeBannerProps = {
@@ -21,6 +20,7 @@ const bannerStyle = prepareNativeStyle(utils => ({
     paddingHorizontal: utils.spacings.sp16,
     paddingVertical: utils.spacings.sp10,
     alignSelf: 'stretch',
+    marginTop: utils.spacings.sp12,
 }));
 
 export const InstantStakeBanner = ({ accountKey, transaction }: InstantStakeBannerProps) => {

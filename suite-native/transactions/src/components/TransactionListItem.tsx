@@ -24,7 +24,6 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { selectTransactionFiatRate } from '../selectors';
 import { getTransactionValueSign } from '../utils';
-import { InstantStakeBanner } from './InstantStakeBanner';
 import { TokenTransferListItem } from './TokenTransferListItem';
 import { TransactionListItemContainer } from './TransactionListItemContainer';
 
@@ -121,7 +120,6 @@ export const TransactionListItem = ({
             <TokenTransferListItem
                 transaction={transaction}
                 accountKey={accountKey}
-                txid={transaction.txid}
                 tokenTransfer={transaction.tokens[0]}
                 includedCoinsCount={transaction.tokens.length - 1}
                 isFirst={isFirst}
@@ -133,15 +131,13 @@ export const TransactionListItem = ({
 
     return (
         <TransactionListItemContainer
-            symbol={transaction.symbol}
-            txid={transaction.txid}
+            transaction={transaction}
             transactionType={transaction.type}
             stakeOperationType={stakeOperationType}
             accountKey={accountKey}
             includedCoinsCount={includedCoinsCount}
             isFirst={isFirst}
             isLast={isLast}
-            banner={<InstantStakeBanner accountKey={accountKey} transaction={transaction} />}
         >
             <TransactionListItemValues accountKey={accountKey} transaction={transaction} />
         </TransactionListItemContainer>
