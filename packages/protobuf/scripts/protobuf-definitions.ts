@@ -2,6 +2,7 @@
 import fs from 'fs';
 import path from 'path';
 import * as protobuf from 'protobufjs';
+import descriptorJson from 'protobufjs/google/protobuf/descriptor.json';
 
 // protobuf.ReflectionObject to JSON
 type Definition = {
@@ -119,11 +120,12 @@ const modifyMessageType = (proto: protobuf.Root, name: string) => {
 };
 
 export const buildDefinitions = (protoDir: string, args: BuildOptions) => {
-    // https://github.com/protobufjs/protobuf.js/blob/master/README.md#compatibility
-    // Because the internals of this package do not rely on google/protobuf/descriptor.proto, options are parsed and presented literally.
-    const root = new protobuf.Root({
-        common: protobuf.common('descriptor', {}),
-    });
+    // Register the actual google/protobuf/descriptor.proto types so that extensions
+    // (e.g. extend google.protobuf.EnumValueOptions) are resolvable. protobufjs 7.5.0
+    // made resolveAll() strict — it now throws on unresolvable extensions instead of
+    // silently deferring them.
+    protobuf.common('descriptor', descriptorJson.nested.google.nested.protobuf.nested);
+    const root = new protobuf.Root();
 
     const files: string[] = [];
     const packages: string[] = [];
