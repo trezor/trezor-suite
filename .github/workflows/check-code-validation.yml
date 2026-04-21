@@ -128,7 +128,7 @@ jobs:
       - name: "Minimal yarn install"
         uses: ./.github/actions/minimal-yarn-install
       - name: Unit Tests
-        run: yarn test:unit:${{ matrix.test-task }} --output-style=stream
+        run: yarn test:unit:${{ matrix.test-task }} --output-style=stream -- --silent
 
   build-libs-for-publishing:
     name: "Build libs for publishing"
