@@ -5,14 +5,12 @@ import { useNavigation } from '@react-navigation/native';
 
 import { useFormatters } from '@suite-common/formatters';
 import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type FiatRatesRootState,
     type PhishingRootState,
     type TransactionsRootState,
     selectIsPhishingTransaction,
     selectTransactionBlockTimeById,
-    selectTransactionByAccountKeyAndTxid,
 } from '@suite-common/wallet-core';
 import {
     type AccountKey,
@@ -32,22 +30,9 @@ import {
 import { type TypedTokenTransfer } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
+import { InstantStakeBanner } from './InstantStakeBanner';
 import { TransactionIcon } from './TransactionIcon';
 import { TransactionName } from './TransactionName';
-
-type TransactionListItemContainerProps = {
-    children: ReactNode;
-    banner?: ReactNode;
-    txid: string;
-    accountKey: AccountKey;
-    includedCoinsCount: number;
-    isFirst?: boolean;
-    isLast?: boolean;
-    symbol?: NetworkSymbol;
-    tokenTransfer?: TypedTokenTransfer;
-    transactionType: TransactionType;
-    stakeOperationType?: StakeType;
-};
 
 type TransactionListItemStyleProps = {
     isFirst: boolean;
@@ -101,22 +86,34 @@ export const valuesContainerStyle = prepareNativeStyle(utils => ({
     maxWidth: '40%',
 }));
 
+type TransactionListItemContainerProps = {
+    children: ReactNode;
+    transaction: WalletAccountTransaction;
+    accountKey: AccountKey;
+    includedCoinsCount: number;
+    isFirst?: boolean;
+    isLast?: boolean;
+    tokenTransfer?: TypedTokenTransfer;
+    transactionType: TransactionType;
+    stakeOperationType?: StakeType;
+};
+
 export const TransactionListItemContainer = ({
     children,
-    banner,
-    txid,
+    transaction,
     accountKey,
     isFirst = false,
     isLast = false,
     includedCoinsCount,
     transactionType,
     stakeOperationType,
-    symbol,
     tokenTransfer,
 }: TransactionListItemContainerProps) => {
     const { applyStyle } = useNativeStyles();
     const navigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.AccountDetail>>();
+
+    const { txid, symbol } = transaction;
 
     const handleNavigateToTransactionDetail = useCallback(() => {
         navigation.navigate(RootStackRoutes.TransactionDetailStack, {
@@ -133,9 +130,6 @@ export const TransactionListItemContainer = ({
     const includedCoinsLabel = `+${includedCoinsCount} coin${includedCoinsCount > 1 ? 's' : ''}`;
 
     const { DateTimeFormatter } = useFormatters();
-    const transaction = useSelector((state: TransactionsRootState) =>
-        selectTransactionByAccountKeyAndTxid(state, accountKey, txid),
-    ) as WalletAccountTransaction;
     const transactionBlockTime = useSelector((state: TransactionsRootState) =>
         selectTransactionBlockTimeById(state, accountKey, txid),
     );
@@ -204,7 +198,10 @@ export const TransactionListItemContainer = ({
                 </Box>
                 <Box style={applyStyle(valuesContainerStyle)}>{children}</Box>
             </Box>
-            {banner && <Box marginTop="sp12">{banner}</Box>}
+
+            {!!stakeOperationType && (
+                <InstantStakeBanner accountKey={accountKey} transaction={transaction} />
+            )}
         </PressableOpacity>
     );
 };
