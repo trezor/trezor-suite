@@ -50,9 +50,11 @@ export class SessionsBackground
     private descriptors: DescriptorsDict = {};
     private pathInternalPathPublicMap: Record<PathInternal, PathPublic> = {};
 
-    // if lock is set, somebody is doing something with device. we have to wait
-    private locksQueue: { id: TimerId; dfd: Deferred<void> }[] = [];
-    private locksTimeoutQueue: TimerId[] = [];
+    // Lock queue for exclusive device access. Each entry has a unique token for ownership tracking.
+    private locksQueue: { token: number; dfd: Deferred<void> }[] = [];
+    private lockIdCounter = 0;
+    // Active lock token per device path, persisted between Intent and Done calls.
+    private activeLocks = new Map<PathInternal, number>();
     private lastSessionId = 0;
     private lastPathId = 0;
 
@@ -140,6 +142,8 @@ export class SessionsBackground
         );
 
         disconnectedDevices.forEach(d => {
+            // Release any active lock held for this device to avoid starvation.
+            this.releaseActiveLock(d);
             delete this.descriptors[d];
             delete this.pathInternalPathPublicMap[d];
         });
@@ -181,14 +185,32 @@ export class SessionsBackground
             return error({ code: ERRORS.SESSION_WRONG_PREVIOUS });
         }
 
-        await this.waitInQueue();
+        // Snapshot session before waiting so the post-wait check compares against
+        // the value at intent time, not the (possibly mutated) current value.
+        const previousSession = previous.session;
 
-        // in case there are 2 simultaneous acquireIntents, one goes through, the other one waits and gets error here
-        if (previous.session !== this.descriptors[pathInternal]?.session) {
-            this.clearLock();
+        const lock = await this.waitInQueue();
+        if (!lock) {
+            return error({ code: ERRORS.ABORTED_BY_TIMEOUT });
+        }
+
+        // Device may have disconnected while we were waiting. Report that accurately
+        // instead of masking it as a wrong-previous error.
+        if (!this.descriptors[pathInternal]) {
+            this.clearLock(lock.token);
+
+            return error({ code: ERRORS.DEVICE_NOT_FOUND });
+        }
+
+        // In case there are 2 simultaneous acquireIntents, one goes through, the other waits and gets error here.
+        if (previousSession !== this.descriptors[pathInternal].session) {
+            this.clearLock(lock.token);
 
             return error({ code: ERRORS.SESSION_WRONG_PREVIOUS });
         }
+
+        // Store lock token for this path until acquireDone.
+        this.activeLocks.set(pathInternal, lock.token);
 
         this.lastSessionId++;
         const session = Session(`${this.lastSessionId}`);
@@ -203,16 +225,25 @@ export class SessionsBackground
      * - assign client a new "session". this session will be used in all subsequent communication
      */
     private acquireDone(payload: AcquireDoneRequest) {
-        this.clearLock();
         const pathInternal = this.getInternal(payload.path);
 
         if (!pathInternal || !this.descriptors[pathInternal]) {
+            // Release lock on error to avoid starvation.
+            if (pathInternal) {
+                this.releaseActiveLock(pathInternal);
+            }
+
             return error({ code: ERRORS.DEVICE_NOT_FOUND });
         }
-        this.descriptors[pathInternal].session = Session(`${this.lastSessionId}`);
+
+        // Commit session state before releasing lock so the next waiter sees the update.
+        const session = Session(`${this.lastSessionId}`);
+        this.descriptors[pathInternal].session = session;
         this.descriptors[pathInternal].sessionOwner = payload.sessionOwner;
 
-        return Promise.resolve(success({ descriptors: Object.values(this.descriptors) }));
+        this.releaseActiveLock(pathInternal);
+
+        return Promise.resolve(success({ session, descriptors: Object.values(this.descriptors) }));
     }
 
     private async releaseIntent(payload: ReleaseIntentRequest) {
@@ -223,18 +254,31 @@ export class SessionsBackground
         }
         const { path } = pathResult.payload;
 
-        await this.waitInQueue();
+        const lock = await this.waitInQueue();
+        if (!lock) {
+            return error({ code: ERRORS.ABORTED_BY_TIMEOUT });
+        }
+
+        // Store lock token for this path until releaseDone.
+        this.activeLocks.set(path, lock.token);
 
         return success({ path });
     }
 
     private releaseDone(payload: ReleaseDoneRequest) {
-        this.descriptors[payload.path].session = null;
-        this.descriptors[payload.path].sessionOwner = undefined;
+        try {
+            if (!this.descriptors[payload.path]) {
+                return error({ code: ERRORS.DEVICE_NOT_FOUND });
+            }
 
-        this.clearLock();
+            this.descriptors[payload.path].session = null;
+            this.descriptors[payload.path].sessionOwner = undefined;
 
-        return Promise.resolve(success({ descriptors: Object.values(this.descriptors) }));
+            return Promise.resolve(success({ descriptors: Object.values(this.descriptors) }));
+        } finally {
+            // Release lock in finally to avoid starvation on error or disconnect.
+            this.releaseActiveLock(payload.path);
+        }
     }
 
     private getSessions() {
@@ -253,46 +297,71 @@ export class SessionsBackground
         return success({ path });
     }
 
-    private startLock() {
-        // todo: create a deferred with built-in timeout functionality (util)
-        const dfd = createDeferred();
+    private startLock(): number {
+        this.lockIdCounter++;
+        const dfd = createDeferred<void>();
+        this.locksQueue.push({ token: this.lockIdCounter, dfd });
 
-        // to ensure that communication with device will not get stuck forever,
-        // lock times out:
-        // - if cleared by client (enumerateDone)
-        // - after n second automatically
-        const timeout = setTimeout(() => {
-            dfd.resolve(undefined);
-        }, lockDuration);
-
-        this.locksQueue.push({ id: timeout, dfd });
-        this.locksTimeoutQueue.push(timeout);
-
-        return this.locksQueue.length - 1;
+        return this.lockIdCounter;
     }
 
-    private clearLock() {
-        const lock = this.locksQueue[0];
-        if (lock) {
-            this.locksQueue[0].dfd.resolve(undefined);
-            this.locksQueue.shift();
-            clearTimeout(this.locksTimeoutQueue[0]);
-            this.locksTimeoutQueue.shift();
+    private clearLock(token: number) {
+        const index = this.locksQueue.findIndex(l => l.token === token);
+        if (index !== -1) {
+            this.locksQueue[index].dfd.resolve(undefined);
+            this.locksQueue.splice(index, 1);
         }
     }
 
-    private async waitForUnlocked(myIndex: number) {
-        if (myIndex > 0) {
-            const beforeMe = this.locksQueue.slice(0, myIndex);
-            if (beforeMe.length) {
-                await Promise.all(beforeMe.map(lock => lock.dfd.promise));
+    private releaseActiveLock(pathInternal: PathInternal) {
+        const token = this.activeLocks.get(pathInternal);
+        if (token !== undefined) {
+            this.clearLock(token);
+            this.activeLocks.delete(pathInternal);
+        }
+    }
+
+    /**
+     * Wait in the lock queue. Returns a lock handle on success, or null if the wait timed out.
+     * Timeout is a safety net only; it never transfers ownership to another waiter.
+     */
+    private async waitInQueue(): Promise<{ token: number } | null> {
+        const token = this.startLock();
+        const deadline = Date.now() + lockDuration;
+
+        // Wait for predecessors before proceeding. Re-check position after each
+        // predecessor resolves in case an earlier waiter timed out and was removed.
+        while (true) {
+            const myIndex = this.locksQueue.findIndex(l => l.token === token);
+            if (myIndex <= 0) {
+                break;
+            }
+
+            const predecessor = this.locksQueue[myIndex - 1];
+            const remaining = deadline - Date.now();
+            if (remaining <= 0) {
+                this.clearLock(token);
+
+                return null;
+            }
+
+            let timeoutId: TimerId;
+            const timedOut = await Promise.race([
+                predecessor.dfd.promise.then(() => false),
+                new Promise<true>(resolve => {
+                    timeoutId = setTimeout(() => resolve(true), remaining);
+                }),
+            ]);
+            clearTimeout(timeoutId!);
+
+            if (timedOut) {
+                this.clearLock(token);
+
+                return null;
             }
         }
-    }
 
-    private async waitInQueue() {
-        const myIndex = this.startLock();
-        await this.waitForUnlocked(myIndex);
+        return { token };
     }
 
     private getInternal(pathPublic: PathPublic): PathInternal | undefined {
@@ -302,8 +371,10 @@ export class SessionsBackground
     }
 
     dispose() {
-        this.locksQueue.forEach(lock => clearTimeout(lock.id));
-        this.locksTimeoutQueue.forEach(timeout => clearTimeout(timeout));
+        // Resolve all pending lock deferreds to unblock waiters.
+        this.locksQueue.forEach(lock => lock.dfd.resolve(undefined));
+        this.locksQueue = [];
+        this.activeLocks.clear();
         this.descriptors = {};
         this.lastSessionId = 0;
         this.removeAllListeners();
