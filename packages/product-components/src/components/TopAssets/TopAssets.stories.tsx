@@ -12,6 +12,7 @@ const popularAssets: Asset[] = [
     {
         id: 'btc',
         symbol: 'btc',
+        networkSymbol: 'btc',
         displaySymbol: 'BTC',
         contractAddress: null,
         coingeckoId: 'bitcoin',
@@ -19,6 +20,7 @@ const popularAssets: Asset[] = [
     },
     {
         symbol: 'eth',
+        networkSymbol: 'eth',
         displaySymbol: 'ETH',
         contractAddress: null,
         coingeckoId: 'ethereum',
@@ -27,6 +29,7 @@ const popularAssets: Asset[] = [
     },
     {
         symbol: 'sol',
+        networkSymbol: 'sol',
         displaySymbol: 'SOL',
         id: 'sol',
         contractAddress: 'WCTk5xWdn5SYg56twGj32sUF3W4WFQ48ogezLBuYTBY',
@@ -35,6 +38,7 @@ const popularAssets: Asset[] = [
     },
     {
         symbol: 'usdc',
+        networkSymbol: 'eth',
         displaySymbol: 'USDC',
         contractAddress: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
         coingeckoId: 'ethereum',
@@ -43,6 +47,7 @@ const popularAssets: Asset[] = [
     },
     {
         symbol: 'base',
+        networkSymbol: 'base',
         displaySymbol: 'BASE',
         id: 'base',
         contractAddress: null,

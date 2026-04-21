@@ -4,11 +4,12 @@ import { type AssetLogoProps, AssetLogoWithId } from './AssetLogoWithId';
 import { type LegacyNetworkSymbol } from '../../constants/networks';
 import { CoinLogo } from '../CoinLogo/CoinLogo';
 
-export const AssetLogo = ({ coingeckoId, symbol, size, ...rest }: AssetLogoProps) => {
-    const resolvedCoingeckoId =
-        (symbol && isNetworkSymbol(symbol) ? getCoingeckoId(symbol) : undefined) ?? coingeckoId;
+export type { AssetLogoProps };
 
-    if (!resolvedCoingeckoId) {
+export const AssetLogo = ({ symbol, size, ...rest }: AssetLogoProps) => {
+    const coingeckoId = isNetworkSymbol(symbol) ? getCoingeckoId(symbol) : undefined;
+
+    if (!coingeckoId) {
         return (
             <CoinLogo
                 size={size}
@@ -18,7 +19,5 @@ export const AssetLogo = ({ coingeckoId, symbol, size, ...rest }: AssetLogoProps
         );
     }
 
-    return (
-        <AssetLogoWithId coingeckoId={resolvedCoingeckoId} symbol={symbol} size={size} {...rest} />
-    );
+    return <AssetLogoWithId coingeckoId={coingeckoId} symbol={symbol} size={size} {...rest} />;
 };

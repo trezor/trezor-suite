@@ -71,7 +71,6 @@ export const AssetItem = ({
                     {coingeckoId ? (
                         <AssetLogo
                             size={24}
-                            coingeckoId={coingeckoId}
                             symbol={symbol}
                             contractAddress={contractAddress}
                             placeholder={displaySymbol}

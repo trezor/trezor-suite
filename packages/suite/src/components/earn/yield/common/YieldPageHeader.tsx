@@ -72,7 +72,6 @@ export const YieldPageHeader = ({ analyticsStep, account, routeParams }: YieldPa
                     <Row alignItems="center" gap={12} overflow="hidden">
                         {networkSymbol && (
                             <AssetLogo
-                                coingeckoId={vault?.token?.coinGeckoId}
                                 placeholder={vault?.token?.symbol || vault?.token?.name || ''}
                                 symbol={networkSymbol}
                                 contractAddress={vault?.token?.address}

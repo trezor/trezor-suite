@@ -8,7 +8,7 @@ import {
     selectIsSpecificCoinDefinitionKnown,
 } from '@suite-common/token-definitions';
 import { getUnusedAddressFromAccount } from '@suite-common/trading';
-import { type Network, getCoingeckoId } from '@suite-common/wallet-config';
+import { type Network } from '@suite-common/wallet-config';
 import { type Account, type TokenAddress } from '@suite-common/wallet-types';
 import { Column, Row, Table, Text } from '@trezor/components';
 import { AssetLogo } from '@trezor/product-components';
@@ -58,7 +58,6 @@ export const TokenRow = ({
     const [showDeactivateModal, setShowDeactivateModal] = useState(false);
 
     const { address: unusedAddress } = getUnusedAddressFromAccount(account);
-    const coingeckoId = getCoingeckoId(account.symbol);
 
     if (!unusedAddress || !device) return null;
 
@@ -68,7 +67,6 @@ export const TokenRow = ({
                 <Table.Cell>
                     <Row gap={spacings.xs}>
                         <AssetLogo
-                            coingeckoId={coingeckoId || ''}
                             placeholder={token.name || token.symbol || 'token'}
                             symbol={account.symbol}
                             contractAddress={token.contract}

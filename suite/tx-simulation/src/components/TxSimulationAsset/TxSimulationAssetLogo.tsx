@@ -23,10 +23,9 @@ export function TxSimulationAssetLogo({
         return <CoinLogo symbol={coinSymbol} size={size} />;
     }
 
-    if (asset?.symbol && 'address' in asset && network.coingeckoId) {
+    if (asset?.symbol && 'address' in asset) {
         return (
             <AssetLogo
-                coingeckoId={network.coingeckoId}
                 symbol={network.symbol}
                 contractAddress={asset.address}
                 size={size}

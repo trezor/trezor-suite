@@ -5,7 +5,6 @@ import { Translation } from '@suite/intl';
 import { selectIsSpecificCoinDefinitionKnown } from '@suite-common/token-definitions';
 import {
     type Explorer,
-    getCoingeckoId,
     getNetwork,
     getNetworkDisplaySymbolName,
 } from '@suite-common/wallet-config';
@@ -122,7 +121,6 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                     <Row justifyContent="flex-start" gap={spacings.sm}>
                         {selectedToken ? (
                             <AssetLogo
-                                coingeckoId={getCoingeckoId(account.symbol)!}
                                 symbol={account.symbol}
                                 contractAddress={selectedToken?.contract}
                                 size={24}

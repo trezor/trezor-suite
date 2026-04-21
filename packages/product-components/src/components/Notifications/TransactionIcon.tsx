@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react';
 
-import { type NetworkSymbol, getCoingeckoId } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 
 import {
     type TransactionNotificationToken,
@@ -13,7 +13,6 @@ type TransactionIconProps = {
     icon?: ReactNode;
     notificationType: TransactionNotificationType;
     symbol: NetworkSymbol;
-    accountSymbol: NetworkSymbol;
     token?: TransactionNotificationToken;
 };
 
@@ -38,7 +37,6 @@ export const TransactionIcon = ({
     icon,
     notificationType,
     symbol,
-    accountSymbol,
     token,
 }: TransactionIconProps) => {
     if (icon) {
@@ -49,7 +47,6 @@ export const TransactionIcon = ({
         return (
             <AssetLogo
                 symbol={symbol}
-                coingeckoId={getCoingeckoId(accountSymbol) ?? ''}
                 contractAddress={token.contract ?? null}
                 placeholder={token.symbol ?? token.name ?? symbol}
                 size={20}

@@ -59,7 +59,6 @@ const TransactionReviewOutputAssetsCryptoCurrency = ({
                     {network.coingeckoId ? (
                         <AssetLogo
                             size={20}
-                            coingeckoId={network.coingeckoId}
                             symbol={symbol}
                             contractAddress={contractAddress}
                             placeholder={displaySymbol ?? ''}

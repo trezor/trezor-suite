@@ -27,10 +27,7 @@ const transactionNotificationConfig: Record<
         intent: ToastProps['intent'];
         message: string;
         amount: string;
-        transaction: Pick<
-            TransactionNotificationProps,
-            'notificationType' | 'symbol' | 'accountSymbol' | 'token'
-        >;
+        transaction: Pick<TransactionNotificationProps, 'notificationType' | 'symbol' | 'token'>;
     }
 > = {
     'tx-received': {
@@ -41,7 +38,6 @@ const transactionNotificationConfig: Record<
         transaction: {
             notificationType: 'tx-received',
             symbol: 'eth',
-            accountSymbol: 'eth',
         },
     },
     'tx-confirmed': {
@@ -51,7 +47,6 @@ const transactionNotificationConfig: Record<
         transaction: {
             notificationType: 'tx-confirmed',
             symbol: 'eth',
-            accountSymbol: 'eth',
         },
     },
     'tx-revoked': {
@@ -62,7 +57,6 @@ const transactionNotificationConfig: Record<
         transaction: {
             notificationType: 'tx-revoked',
             symbol: 'eth',
-            accountSymbol: 'eth',
             token: {
                 contract: '0x514910771AF9Ca656af840dff83E8264EcF986CA',
                 name: 'LINK',
@@ -78,7 +72,6 @@ const transactionNotificationConfig: Record<
         transaction: {
             notificationType: 'tx-claimed',
             symbol: 'sol',
-            accountSymbol: 'sol',
         },
     },
     'tx-unstaked': {
@@ -89,7 +82,6 @@ const transactionNotificationConfig: Record<
         transaction: {
             notificationType: 'tx-unstaked',
             symbol: 'eth',
-            accountSymbol: 'eth',
         },
     },
     'tx-staked': {
@@ -100,7 +92,6 @@ const transactionNotificationConfig: Record<
         transaction: {
             notificationType: 'tx-staked',
             symbol: 'eth',
-            accountSymbol: 'eth',
         },
     },
     'tx-approved': {
@@ -111,7 +102,6 @@ const transactionNotificationConfig: Record<
         transaction: {
             notificationType: 'tx-approved',
             symbol: 'eth',
-            accountSymbol: 'eth',
             token: {
                 contract: '0x514910771AF9Ca656af840dff83E8264EcF986CA',
                 name: 'LINK',
@@ -127,7 +117,6 @@ const transactionNotificationConfig: Record<
         transaction: {
             notificationType: 'tx-sent',
             symbol: 'eth',
-            accountSymbol: 'eth',
             token: {
                 contract: '0x514910771AF9Ca656af840dff83E8264EcF986CA',
                 name: 'LINK',
@@ -143,7 +132,6 @@ const transactionNotificationConfig: Record<
         transaction: {
             notificationType: 'tx-yield-supply',
             symbol: 'base',
-            accountSymbol: 'base',
             token: {
                 contract: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
                 name: 'USD Coin',
@@ -159,7 +147,6 @@ const transactionNotificationConfig: Record<
         transaction: {
             notificationType: 'tx-yield-withdraw',
             symbol: 'base',
-            accountSymbol: 'base',
             token: {
                 contract: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
                 name: 'USD Coin',
@@ -175,7 +162,6 @@ const transactionNotificationConfig: Record<
         transaction: {
             notificationType: 'tx-yield-claim',
             symbol: 'base',
-            accountSymbol: 'base',
             token: {
                 contract: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
                 name: 'USD Coin',
@@ -190,7 +176,6 @@ export const Default: Story = {
         message: 'Sent from Ethereum #1',
         notificationType: 'tx-sent',
         symbol: 'eth',
-        accountSymbol: 'eth',
         token: {
             contract: '0x514910771AF9Ca656af840dff83E8264EcF986CA',
             name: 'LINK',
