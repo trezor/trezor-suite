@@ -53,7 +53,11 @@ export const initialSuiteSyncState: SuiteSyncState = {
 
 type SetSuiteSyncErrorAction = PayloadAction<{
     deviceStaticSessionId: StaticSessionId;
-    error: SuiteSyncErrorType | null;
+    error: SuiteSyncErrorType;
+}>;
+
+type ResetSuiteSyncErrorAction = PayloadAction<{
+    deviceStaticSessionId: StaticSessionId;
 }>;
 
 type SetSuiteSyncOwnerAction = PayloadAction<{
@@ -78,11 +82,10 @@ export const suiteSyncSlice = createSlice({
             state.settings.suiteSyncRelayUrl = payload.url;
         },
         setSuiteSyncError: (state, { payload }: SetSuiteSyncErrorAction) => {
-            if (payload.error === null) {
-                delete state.suiteSyncErrors[payload.deviceStaticSessionId];
-            } else {
-                state.suiteSyncErrors[payload.deviceStaticSessionId] = payload.error;
-            }
+            state.suiteSyncErrors[payload.deviceStaticSessionId] = payload.error;
+        },
+        resetSuiteSyncError: (state, { payload }: ResetSuiteSyncErrorAction) => {
+            delete state.suiteSyncErrors[payload.deviceStaticSessionId];
         },
         setSuiteSyncOwner: (state, { payload }: SetSuiteSyncOwnerAction) => {
             if (payload.owner === null) {
@@ -109,6 +112,7 @@ export const {
     updateSuiteSyncDebugEnabled,
     setSuiteSyncRelayUrl,
     setSuiteSyncError,
+    resetSuiteSyncError,
     setSuiteSyncOwner,
 } = suiteSyncSlice.actions;
 
