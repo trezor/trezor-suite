@@ -74,7 +74,7 @@ export const TransactionDetailHeader = ({
                     ) : (
                         !isFailedTx && (
                             <Badge
-                                intent="brandBold"
+                                intent="brand"
                                 label={<Translation id="transactions.status.confirmed" />}
                             />
                         )
