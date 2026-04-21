@@ -57,17 +57,6 @@ export type OptionalKey<M, K extends keyof M> = Omit<M, K> & Partial<Pick<M, K>>
 export type ObjectValues<T extends { [key: string]: any }> = T[keyof T];
 
 /**
- * All keys of types in a union.
- *
- * Example:
- *  ```
- *  type T = { a: number; b: string };
- *  type K: Keys<T>; // 'a' | 'b'
- *  ```
- */
-export type Keys<T> = T extends any ? keyof T : never;
-
-/**
  * Distributes the Omit across a union. using distributive conditional types to achieve this:
  * @see: https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types
  * @source: https://stackoverflow.com/questions/57103834/typescript-omit-a-property-from-all-interfaces-in-a-union-but-keep-the-union-s#answer-57103940
