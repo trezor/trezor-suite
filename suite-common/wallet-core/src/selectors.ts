@@ -142,6 +142,7 @@ export const selectDiscoveryAccountsParam = (
             includeErc4626,
             known,
             knownOnly,
+            gap: bitcoinGap,
         } as DiscoveryAccountsParam[number];
     });
 
