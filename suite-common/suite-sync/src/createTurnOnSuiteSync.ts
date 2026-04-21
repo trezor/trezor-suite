@@ -8,7 +8,7 @@ import {
 import { ok } from '@trezor/type-utils';
 
 import { type GetDeviceForStaticSessionIdDep } from './getDeviceForStaticSessionId';
-import { updateSuiteSyncEnabled } from './suiteSyncSlice';
+import { setSuiteSyncError, updateSuiteSyncEnabled } from './suiteSyncSlice';
 
 export type CreateTurnOnSuiteSyncDeps = {
     getIsSuiteSyncEnabled: () => boolean;
@@ -31,10 +31,13 @@ export const createTurnOnSuiteSync =
         deps.dispatch(updateSuiteSyncEnabled({ isEnabled: true }));
 
         if (
-            deviceStaticSessionId !== undefined &&
-            deviceStaticSessionId !== PORTFOLIO_TRACKER_DEVICE_STATE &&
-            isDeviceConnected
+            deviceStaticSessionId === undefined ||
+            deviceStaticSessionId === PORTFOLIO_TRACKER_DEVICE_STATE
         ) {
+            return ok();
+        }
+
+        if (isDeviceConnected) {
             const result = await deps.ensureWalletSuiteSyncOn({
                 deviceStaticSessionId,
                 isWriteMode: false,
@@ -43,6 +46,13 @@ export const createTurnOnSuiteSync =
             if (!result.success) {
                 return result;
             }
+        } else {
+            deps.dispatch(
+                setSuiteSyncError({
+                    deviceStaticSessionId,
+                    error: { type: 'DeviceError', message: 'Device not connected.' },
+                }),
+            );
         }
 
         return ok();

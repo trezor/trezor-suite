@@ -9,7 +9,7 @@ import { createSuiteSyncStorageMock } from '../../tests/createSuiteSyncStorageMo
 import { SuiteSyncUnavailableOnDeviceError } from '../createEnsureSuiteSyncKeys';
 import { type CreateTurnOnSuiteSyncDeps, createTurnOnSuiteSync } from '../createTurnOnSuiteSync';
 import type { GetDeviceForStaticSessionIdDep } from '../getDeviceForStaticSessionId';
-import { updateSuiteSyncEnabled } from '../suiteSyncSlice';
+import { setSuiteSyncError, updateSuiteSyncEnabled } from '../suiteSyncSlice';
 
 const deviceStaticSessionId: StaticSessionId = '1@2:3';
 
@@ -74,7 +74,7 @@ describe(createTurnOnSuiteSync.name, () => {
         expect(result).toEqual(ok());
     });
 
-    it('enables suite sync without calling ensureWalletSuiteSyncOn when remembered device is disconnected', async () => {
+    it('enables suite sync and dispatches DeviceError when remembered device is disconnected', async () => {
         const deps = createMockDeps<CreateTurnOnSuiteSyncDeps & GetDeviceForStaticSessionIdDep>({
             getIsSuiteSyncEnabled: () => false,
             dispatch: mock<Dispatch>(() => {}),
@@ -90,6 +90,12 @@ describe(createTurnOnSuiteSync.name, () => {
         const result = await turnOnSuiteSync({ deviceStaticSessionId });
 
         expect(deps.dispatch).toHaveBeenCalledWith(updateSuiteSyncEnabled({ isEnabled: true }));
+        expect(deps.dispatch).toHaveBeenCalledWith(
+            setSuiteSyncError({
+                deviceStaticSessionId,
+                error: { type: 'DeviceError', message: 'Device not connected.' },
+            }),
+        );
         expect(deps.ensureWalletSuiteSyncOn).not.toHaveBeenCalled();
         expect(result).toEqual(ok());
     });
