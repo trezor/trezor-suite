@@ -45,6 +45,8 @@ const storeSignedTransaction = createAction(
 
 const discardTransaction = createAction(`${SEND_MODULE_PREFIX}/discard-transaction`);
 
+const clearSignedTransactionData = createAction(`${SEND_MODULE_PREFIX}/clear-signed-transaction`);
+
 const sendRaw = createAction(`${SEND_MODULE_PREFIX}/sendRaw`, (payload: boolean) => ({
     payload,
 }));
@@ -57,6 +59,7 @@ export const sendFormActions = {
     storePrecomposedTransaction,
     storeSignedTransaction,
     discardTransaction,
+    clearSignedTransactionData,
     sendRaw,
     dispose,
 };

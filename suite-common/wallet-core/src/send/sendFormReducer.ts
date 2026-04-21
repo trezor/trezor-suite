@@ -88,6 +88,10 @@ export const prepareSendFormReducer = createReducerWithExtraDeps(initialState, (
             delete state.signedTx;
             delete state.accountKey;
         })
+        .addCase(sendFormActions.clearSignedTransactionData, state => {
+            delete state.serializedTx;
+            delete state.signedTx;
+        })
         .addCase(sendFormActions.sendRaw, (state, { payload: sendRaw }) => {
             state.sendRaw = sendRaw;
         })

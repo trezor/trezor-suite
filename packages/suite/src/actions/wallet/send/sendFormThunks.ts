@@ -294,6 +294,8 @@ export const signAndPushSendFormTransactionThunk = createThunk(
         );
 
         if (isRejected(pushResponse)) {
+            dispatch(sendFormActions.clearSignedTransactionData());
+
             return pushResponse.payload?.metadata;
         }
 
