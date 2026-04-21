@@ -19,8 +19,6 @@ import {
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
-const FALLBACK_CLOSE_DELAY_MS = 2000;
-
 /**
  * Normalized incoming message from either the web or webextension popup link.
  */
@@ -158,14 +156,10 @@ export const useConnectPopup = (
     }, [lifecycle.status, pendingHandshake, popupLink]);
 
     // Fallback: if the caller's Popup class didn't close us after receiving
-    // POPUP.CLOSED, close the window ourselves after a short delay.
+    // POPUP.CLOSED, close the window ourselves.
     useEffect(() => {
-        if (!popupLink || popupCall?.state !== 'finished') return;
+        if (!popupLink || !responseSent || popupCall?.state !== 'finished') return;
 
-        const timer = setTimeout(() => {
-            window.close();
-        }, FALLBACK_CLOSE_DELAY_MS);
-
-        return () => clearTimeout(timer);
-    }, [popupLink, popupCall?.state]);
+        window.close();
+    }, [popupLink, responseSent, popupCall?.state]);
 };
