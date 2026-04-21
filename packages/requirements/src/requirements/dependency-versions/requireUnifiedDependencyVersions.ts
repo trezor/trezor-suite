@@ -14,7 +14,6 @@ import type { Requirement } from '../Requirement';
  */
 export const ALLOWED_DRIFTS = new Set([
     '@solana-program/stake', // 0.2.x vs 0.5.x used in different contexts (semver 0.x = breaking)
-    '@hookform/resolvers', // migration from v3 to v5 in progress
     'jest-diff', // v29 and v30 coexist during migration
     'babel-jest', // waiting for suite-native who are waiting for expo to update babel-jest
     '@scure/base', // i think i had a cjs problem, todo: investigate later
