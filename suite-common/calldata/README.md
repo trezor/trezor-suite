@@ -34,14 +34,15 @@ The second argument is context - additional data for validation (e.g., sender ad
 ### Architecture
 
 ```
-Input → Validate → Normalize → Inspect → Policy → Encode → Calldata
+Input → Validate → Normalize → Inspect → Policy → Cross-validate → Encode → Calldata
 ```
 
 1. **Validate** - check raw input format (e.g., valid address string)
 2. **Normalize** - transform to typed value (e.g., lowercase address)
 3. **Inspect** - check normalized value for issues (e.g., zero address, self-transfer)
 4. **Policy** - categorize issues as `error`, `warning`, or `ignore`
-5. **Encode** - if no errors, encode params to calldata
+5. **Cross-validate** - optional checks across multiple params after all individual params pass
+6. **Encode** - if no errors, encode params to calldata
 
 ### Validator
 
@@ -82,6 +83,18 @@ const spenderParam = createParam({
 });
 ```
 
+For array params, wrap any validator with `createArrayValidator`. It maps errors to indexed paths (e.g., `users[0]`, `proofs[1][3]`), and composes for nested arrays:
+
+```typescript
+const usersParam = createParam({
+    validate: createArrayValidator(validateAddress),
+});
+
+const proofsParam = createParam({
+    validate: createArrayValidator(createArrayValidator(validateBytes32)),
+});
+```
+
 ### Encoder
 
 Encoders are chain-specific - implement one per chain.
@@ -107,6 +120,21 @@ const buildApprove = createBuilder({
 ```
 
 Parameter names (`spender`, `amount`) are derived directly from the ABI - TypeScript will error on wrong param names or types.
+
+Use `crossValidate` to enforce invariants across multiple params. Cross-validators run after all individual params pass and receive their normalized output values. `createCrossValidator` accepts an optional `policy` to override the default severity:
+
+```typescript
+const buildClaim = createBuilder({
+    params: claimParams,
+    encode: createEvmEncoder(EVM_ABI.distributor.claim),
+    crossValidate: [
+        createCrossValidator({
+            validate: ({ users, tokens }) =>
+                users.length !== tokens.length ? 'ARRAYS_LENGTH_MISMATCH' : null,
+        }),
+    ],
+});
+```
 
 ### Adding New Builders
 
@@ -136,10 +164,7 @@ const amountParam = createParam({
 });
 
 export const buildMyMethod = createBuilder({
-    params: {
-        recipient: recipientParam,
-        amount: amountParam,
-    },
+    params: { recipient: recipientParam, amount: amountParam },
     encode: createEvmEncoder(EVM_ABI.myContract.myMethod),
 });
 ```

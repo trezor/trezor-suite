@@ -1,4 +1,5 @@
 import { buildApprove } from './builder/evm/approve';
+import { buildClaim } from './builder/evm/claim';
 import { buildDeposit } from './builder/evm/deposit';
 import { buildRedeem } from './builder/evm/redeem';
 import { buildTransfer } from './builder/evm/transfer';
@@ -15,6 +16,9 @@ export const Calldata = {
             deposit: buildDeposit,
             withdraw: buildWithdraw,
             redeem: buildRedeem,
+        },
+        distributor: {
+            claim: buildClaim,
         },
     },
     tron: {

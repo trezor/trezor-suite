@@ -1,5 +1,6 @@
 import { createBuilder } from '../../builder/createBuilder';
 import { type Encoder } from '../../types/builder';
+import { type IssueWithSeverity } from '../../types/policy';
 
 describe('createBuilder', () => {
     it('calls params and encode, returns encoded data when all valid', () => {
@@ -18,11 +19,13 @@ describe('createBuilder', () => {
             isValid: true,
         });
         const encode: Encoder<'to' | 'amount', string> = jest.fn().mockReturnValue('0xencoded');
+        const crossValidate = jest.fn().mockReturnValue([]);
         const context = { sender: '0xsender', balance: 5000n };
 
         const builder = createBuilder({
             encode,
             params: { to: toParam, amount: amountParam },
+            crossValidate: [crossValidate],
         });
 
         const result = builder(
@@ -84,6 +87,62 @@ describe('createBuilder', () => {
                 { code: 'INVALID_ADDRESS', path: 'to', severity: 'error' },
                 { code: 'NEGATIVE_AMOUNT', path: 'amount', severity: 'error' },
             ],
+            warnings: [],
+            isValid: false,
+        });
+    });
+
+    it('skips crossValidate when params are invalid', () => {
+        const toParam = jest.fn().mockReturnValue({
+            value: null,
+            issues: [{ code: 'INVALID_ADDRESS', path: 'to', severity: 'error' }],
+            errors: [{ code: 'INVALID_ADDRESS', path: 'to', severity: 'error' }],
+            warnings: [],
+            isValid: false,
+        });
+        const encode: Encoder<'to', string> = jest.fn();
+        const crossValidate = jest.fn();
+
+        const builder = createBuilder({
+            encode,
+            params: { to: toParam },
+            crossValidate: [crossValidate],
+        });
+
+        builder({ to: 'invalid' });
+
+        expect(crossValidate).not.toHaveBeenCalled();
+    });
+
+    it('runs crossValidate after params pass and blocks encoding on cross param error', () => {
+        const toParam = jest.fn().mockReturnValue({
+            value: '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+            issues: [],
+            errors: [],
+            warnings: [],
+            isValid: true,
+        });
+        const encode: Encoder<'to', string> = jest.fn();
+        const crossIssue: IssueWithSeverity = {
+            code: 'ARRAYS_LENGTH_MISMATCH',
+            path: null,
+            severity: 'error',
+        };
+        const crossValidate = jest.fn().mockReturnValue([crossIssue]);
+
+        const builder = createBuilder({
+            encode,
+            params: { to: toParam },
+            crossValidate: [crossValidate],
+        });
+
+        const result = builder({ to: '0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' });
+
+        expect(encode).not.toHaveBeenCalled();
+        expect(result).toEqual({
+            data: null,
+            issues: [crossIssue],
+            errors: [crossIssue],
             warnings: [],
             isValid: false,
         });

@@ -11,5 +11,8 @@ export const Verifier = {
             withdraw: createVerifier({ abi: EVM_ABI.erc4626.withdraw }),
             redeem: createVerifier({ abi: EVM_ABI.erc4626.redeem }),
         },
+        distributor: {
+            claim: createVerifier({ abi: EVM_ABI.distributor.claim }),
+        },
     },
 } as const;

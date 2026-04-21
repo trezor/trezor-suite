@@ -16,6 +16,12 @@ const DEFAULT_POLICY: PolicyConfig = {
     ZERO_AMOUNT: 'warning',
     INSUFFICIENT_BALANCE: 'warning',
 
+    // Bytes
+    INVALID_BYTES32: 'error',
+
+    // Cross-param
+    ARRAYS_LENGTH_MISMATCH: 'error',
+
     // Encoding
     ENCODING_FAILED: 'error',
 };

@@ -10,4 +10,9 @@ export const EVM_ABI = {
         withdraw: parseAbi(['function withdraw(uint256 assets, address receiver, address owner)']),
         redeem: parseAbi(['function redeem(uint256 shares, address receiver, address owner)']),
     },
+    distributor: {
+        claim: parseAbi([
+            'function claim(address[] users, address[] tokens, uint256[] amounts, bytes32[][] proofs)',
+        ]),
+    },
 } as const;
