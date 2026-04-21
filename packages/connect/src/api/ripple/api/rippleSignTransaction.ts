@@ -8,6 +8,10 @@ import type { MethodMessage, MethodPermission } from '../../../core/AbstractMeth
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { validatePath } from '../../../utils/pathUtils';
+import {
+    PAYMENT_REQUEST_AMOUNT_BYTES,
+    encodePaymentRequestAmount,
+} from '../../../utils/paymentRequest';
 
 export default class RippleSignTransaction extends AbstractMethod<
     'rippleSignTransaction',
@@ -32,7 +36,12 @@ export default class RippleSignTransaction extends AbstractMethod<
                 destination: transaction.payment.destination,
                 destination_tag: transaction.payment.destinationTag,
             },
-            payment_req: payload.payment_req,
+            payment_req: payload.payment_req
+                ? encodePaymentRequestAmount(
+                      payload.payment_req,
+                      PAYMENT_REQUEST_AMOUNT_BYTES.DEFAULT,
+                  )
+                : undefined,
             chunkify: typeof chunkify === 'boolean' ? chunkify : false,
         };
 

@@ -20,6 +20,10 @@ import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { validatePath } from '../../../utils/pathUtils';
 import {
+    PAYMENT_REQUEST_AMOUNT_BYTES,
+    encodePaymentRequestAmount,
+} from '../../../utils/paymentRequest';
+import {
     modifyAuxiliaryDataForBackwardsCompatibility,
     transformAuxiliaryData,
 } from '../cardanoAuxiliaryData';
@@ -218,7 +222,12 @@ export default class CardanoSignTransaction extends AbstractMethod<
             unsignedTx: 'unsignedTx' in payload ? payload.unsignedTx : undefined,
             testnet: 'testnet' in payload ? payload.testnet : undefined,
             chunkify: typeof payload.chunkify === 'boolean' ? payload.chunkify : false,
-            payment_req: payload.payment_req,
+            payment_req: payload.payment_req
+                ? encodePaymentRequestAmount(
+                      payload.payment_req,
+                      PAYMENT_REQUEST_AMOUNT_BYTES.DEFAULT,
+                  )
+                : undefined,
         };
 
         super(message, params);

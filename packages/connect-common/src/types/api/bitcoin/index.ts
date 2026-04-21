@@ -68,7 +68,11 @@ export interface TransactionOptions {
 }
 
 export interface PaymentRequest extends Omit<PROTO.PaymentRequest, 'amount'> {
-    amount?: string | number;
+    /**
+     * Decimal string of the SLIP-24 send amount in the smallest unit (e.g. satoshis).
+     * Encoded internally to a little-endian byte string of length determined by the coin.
+     */
+    amount?: string;
 }
 
 export interface SignTransaction {

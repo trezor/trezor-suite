@@ -244,7 +244,7 @@ export const signTransaction = async (api: TrezorConnect) => {
                 recipient_name: 'trezor.io',
                 signature: '000000',
                 nonce: '1',
-                amount: 1,
+                amount: '1',
                 memos: [
                     {
                         text_memo: { text: 'Invoice #87654321' },
@@ -417,6 +417,22 @@ export const signTransaction = async (api: TrezorConnect) => {
     api.signTransaction();
     // @ts-expect-error
     api.signTransaction({ coin: 'btc' });
+
+    // PaymentRequest.amount must be a decimal string; numeric amounts are rejected.
+    api.signTransaction({
+        inputs: [],
+        outputs: [],
+        coin: 'btc',
+        paymentRequests: [
+            {
+                recipient_name: 'trezor.io',
+                signature: '000000',
+                nonce: '1',
+                // @ts-expect-error PaymentRequest.amount must be a decimal string, not a number
+                amount: 1,
+            },
+        ],
+    });
 
     api.signTransaction({
         inputs: [

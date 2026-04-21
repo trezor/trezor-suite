@@ -22,6 +22,7 @@ export * from './createDeferred';
 export * from './createDeferredManager';
 export * from './createLazy';
 export * from './extractUrlsFromText';
+export * from './formatBigUintToLE';
 export * from './getLocaleSeparators';
 export * from './getRandomInt';
 export * from './getSynchronize';

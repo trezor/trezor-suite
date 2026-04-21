@@ -35,6 +35,7 @@ import type { MethodContext, MethodMessage, MethodPermission } from '../core/Abs
 import { AbstractMethod } from '../core/AbstractMethod';
 import { getBitcoinNetwork } from '../data/coinInfo';
 import { getLabel } from '../utils/pathUtils';
+import { PAYMENT_REQUEST_AMOUNT_BYTES, encodePaymentRequestAmount } from '../utils/paymentRequest';
 import { getTransactionVbytes } from './bitcoin/transactionBytes';
 import { validateParams } from './common/paramsValidator';
 
@@ -138,20 +139,9 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
             }
         }
         const paymentRequests =
-            payload.paymentRequests?.map(p => {
-                if (typeof p.amount === 'number') {
-                    // convert to 64bit little-endian
-                    const buffer = Buffer.allocUnsafe(8);
-                    buffer.writeBigInt64LE(BigInt(p.amount), 0);
-
-                    return {
-                        ...p,
-                        amount: buffer.toString('hex'),
-                    };
-                }
-
-                return { ...p, amount: p.amount };
-            }) ?? [];
+            payload.paymentRequests?.map(p =>
+                encodePaymentRequestAmount(p, PAYMENT_REQUEST_AMOUNT_BYTES.DEFAULT),
+            ) ?? [];
 
         const params = {
             inputs,

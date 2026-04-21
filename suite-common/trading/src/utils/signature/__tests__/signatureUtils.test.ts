@@ -72,7 +72,7 @@ describe('signatureUtils', () => {
             expect(result).toEqual({
                 recipient_name: 'TestExchange',
                 nonce: 'nonce789',
-                amount: '8096980000000000', // 8 bytes little-endian for 0.1 BTC
+                amount: '10000000', // subunits (satoshis) for 0.1 BTC
                 memos: [
                     {
                         coin_purchase_memo: {
@@ -273,7 +273,7 @@ describe('signatureUtils', () => {
             expect(result).toEqual({
                 recipient_name: 'TestSeller',
                 nonce: 'sellNonce123',
-                amount: '80f0fa0200000000', // 8 bytes little-endian for 0.5 BTC
+                amount: '50000000', // subunits (satoshis) for 0.5 BTC
                 memos: [
                     {
                         text_memo: {
@@ -357,14 +357,13 @@ describe('signatureUtils', () => {
             const propsWithEth = {
                 ...defaultSellProps,
                 trade: ethTrade,
+                sendStringAmount: ethTrade.cryptoStringAmount,
             };
 
             const result = tradingSellCreatePaymentRequest(propsWithEth);
 
             expect(result).toBeDefined();
-            expect(result?.amount).toBe(
-                '0000b2d3595bf006000000000000000000000000000000000000000000000000', // 32 bytes little-endian for 10.5 ETH
-            );
+            expect(result?.amount).toBe('10500000000000000000'); // subunits (wei) for 10.5 ETH
         });
 
         it('should handle empty memo text', () => {
@@ -440,7 +439,7 @@ describe('signatureUtils', () => {
 
             expect(result).toBeDefined();
             if (result && result.memos && result.memos[0]) {
-                expect(result.amount).toBe('ff3f7a10f35a0000'); // 8 bytes little-endian for 99999999999999 sats
+                expect(result.amount).toBe('99999999999999'); // subunits (satoshis)
                 expect(result.memos[0].coin_purchase_memo?.amount).toBe('1000000.12345678 ETH');
             }
         });
@@ -488,7 +487,7 @@ describe('signatureUtils', () => {
 
             expect(result).toBeDefined();
             if (result && result.memos && result.memos[0]) {
-                expect(result.amount).toBe('0100000000000000'); // 8 bytes little-endian for 1 satoshi
+                expect(result.amount).toBe('1'); // subunits (satoshis)
                 expect(result.memos[0].coin_purchase_memo?.amount).toBe('0.00000001 ETH');
             }
         });

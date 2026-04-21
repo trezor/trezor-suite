@@ -39,6 +39,10 @@ import type { MethodMessage, MethodPermission } from '../../../core/AbstractMeth
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { validatePath } from '../../../utils/pathUtils';
+import {
+    PAYMENT_REQUEST_AMOUNT_BYTES,
+    encodePaymentRequestAmount,
+} from '../../../utils/paymentRequest';
 import { getSolanaTokenDefinition } from '../solanaDefinitions';
 import { SOLANA_BASE_FEE, createTransactionShimFromHex } from '../solanaUtils';
 
@@ -79,7 +83,12 @@ export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTra
             address_n: path,
             serialized_tx: payload.serializedTx,
             additional_info,
-            payment_req: payload.payment_req,
+            payment_req: payload.payment_req
+                ? encodePaymentRequestAmount(
+                      payload.payment_req,
+                      PAYMENT_REQUEST_AMOUNT_BYTES.DEFAULT,
+                  )
+                : undefined,
         };
 
         const params = { proto, serialize: !!payload.serialize, symbols };
