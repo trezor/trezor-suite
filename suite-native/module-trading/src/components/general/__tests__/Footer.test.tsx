@@ -1,8 +1,8 @@
 import { Linking } from 'react-native';
 
+import { getTranslation } from '@suite-native/intl';
 import { userEvent } from '@suite-native/test-utils-store';
 import { exchangeCexdirect } from '@suite-native/trading-fixtures';
-import { TREZOR_SUITE_TOS_URL, TREZOR_TRADING_LEARN_MORE_URL } from '@trezor/urls';
 
 import {
     type PreloadedStatePartial,
@@ -11,6 +11,18 @@ import {
 } from '../../../__tests__/tradingTestUtils';
 import { Footer } from '../Footer';
 
+const mockOpenModal = jest.fn();
+const mockCloseModal = jest.fn();
+
+jest.mock('@suite-native/atoms', () => ({
+    ...jest.requireActual('@suite-native/atoms'),
+    useBottomSheetModal: () => ({
+        bottomSheetRef: { current: null },
+        openModal: mockOpenModal,
+        closeModal: mockCloseModal,
+    }),
+}));
+
 describe('Footer', () => {
     const mockOpenLink = jest.spyOn(Linking, 'openURL');
 
@@ -18,14 +30,22 @@ describe('Footer', () => {
         renderWithTradingProvider(<Footer />, { overrides });
 
     beforeEach(() => {
-        mockOpenLink.mockClear();
+        jest.clearAllMocks();
     });
 
-    it('should render footer links', () => {
+    it('should render footer info', () => {
         const { getByText } = renderFooter({});
 
-        expect(getByText("Trezor's Terms of Use")).toBeOnTheScreen();
-        expect(getByText('Learn more')).toBeOnTheScreen();
+        expect(
+            getByText(
+                getTranslation('moduleTrading.tradingScreen.footer.termsAndConditionsGeneric'),
+            ),
+        ).toBeOnTheScreen();
+        expect(
+            getByText(
+                getTranslation('moduleTrading.tradingScreen.footer.howTradingWorksSheet.title'),
+            ),
+        ).toBeOnTheScreen();
     });
 
     it('should render nothing when isAmountInputActive is true', () => {
@@ -45,21 +65,22 @@ describe('Footer', () => {
             },
         });
 
-        expect(getByText("Cexdirect's Terms & Conditions")).toBeOnTheScreen();
-        await userEvent.press(getByText("Cexdirect's Terms & Conditions"));
+        expect(getByText(/Cexdirect/)).toBeOnTheScreen();
+        await userEvent.press(getByText('Terms apply'));
 
         expect(mockOpenLink).toHaveBeenCalledTimes(1);
         expect(mockOpenLink).toHaveBeenCalled();
     });
 
-    it('pressing links should lead to correct URLs', async () => {
+    it('pressing link should open sheet', async () => {
         const { getByText } = renderFooter({});
 
-        await userEvent.press(getByText("Trezor's Terms of Use"));
-        await userEvent.press(getByText('Learn more'));
+        await userEvent.press(
+            getByText(
+                getTranslation('moduleTrading.tradingScreen.footer.howTradingWorksSheet.title'),
+            ),
+        );
 
-        expect(mockOpenLink).toHaveBeenCalledTimes(2);
-        expect(mockOpenLink).toHaveBeenNthCalledWith(1, TREZOR_SUITE_TOS_URL);
-        expect(mockOpenLink).toHaveBeenNthCalledWith(2, TREZOR_TRADING_LEARN_MORE_URL);
+        expect(mockOpenModal).toHaveBeenCalledTimes(1);
     });
 });
