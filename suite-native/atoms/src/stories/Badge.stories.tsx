@@ -18,7 +18,7 @@ export const Badge: BadgeStory = {
     name: 'Badge',
     args: {
         label: 'badge',
-        intent: 'brandBold',
+        intent: 'brand',
         size: 'medium',
         icon: undefined,
     },

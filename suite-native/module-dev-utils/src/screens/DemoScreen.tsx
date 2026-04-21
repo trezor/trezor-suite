@@ -105,14 +105,7 @@ export const DemoScreen = () => {
             buttonColorProps: { intent: 'neutral', priority: 'secondary' },
         },
     ] satisfies { label: string; buttonColorProps: ButtonColorProps }[];
-    const badgeVariants = [
-        'neutral',
-        'brandBold',
-        'brand',
-        'warning',
-        'critical',
-        'bold',
-    ] satisfies BadgeIntent[];
+    const badgeVariants = ['neutral', 'brand', 'warning', 'critical'] satisfies BadgeIntent[];
 
     const handleRadioPress = (value: string | number) => {
         setRadioChecked(value.toString());
