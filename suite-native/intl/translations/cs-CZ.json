@@ -1384,7 +1384,7 @@
     "earn.earnTransactionDataReviewScreen.pendingTransactionConflictAlert.primaryButton": "Přejít domů",
     "earn.unstakeTransactionDataReviewScreen.title": "Zkontrolujte s Trezorem",
     "earn.unstakeTransactionDataReviewScreen.successMessage": "Hotovo.",
-    "earn.unstakeTransactionDataReviewScreen.viewTransactionButton": "Zrušit stkaing nyní",
+    "earn.unstakeTransactionDataReviewScreen.viewTransactionButton": "Zrušit staking nyní",
     "earn.unstakeTransactionDataReviewScreen.pushTransactionFailedAlert.title": "Transakce se nezdařila",
     "earn.unstakeTransactionDataReviewScreen.pushTransactionFailedAlert.description": "Nepodařilo se odeslat transakci pro zrušení stakingu. Zkuste to prosím znovu.",
     "earn.unstakeTransactionDataReviewScreen.pushTransactionFailedAlert.primaryButton": "Přejít domů",
