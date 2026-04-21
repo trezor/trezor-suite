@@ -23,6 +23,23 @@ export type ObjectsOnly<T> = T extends Record<string, unknown> ? T : never;
  */
 export type KeysOfUnion<T> = T extends T ? keyof T : never;
 
+/**
+ * Requires at least one of the given keys of `T` to be present.
+ * If `K` is omitted, at least one of all keys of `T` is required.
+ *
+ * Example:
+ *  ```
+ *  type T = RequireAtLeastOne<{ a?: number; b?: string; c?: boolean }>;
+ *  const t1: T = { a: 1 };        // ok
+ *  const t2: T = { b: 'x', c: true }; // ok
+ *  const t3: T = {};              // error
+ *  ```
+ */
+export type RequireAtLeastOne<T, K extends keyof T = keyof T> = {
+    [P in K]-?: Pick<T, P> & Partial<Omit<T, P>>;
+}[K] &
+    Omit<T, K>;
+
 export type NarrowObjectWithKey<T, K extends PropertyKey> = T extends any
     ? K extends keyof T
         ? T

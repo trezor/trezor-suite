@@ -5,6 +5,7 @@ import type {
     FirmwareType,
     IntermediaryReleaseConfig,
 } from '@trezor/device-utils';
+import type { RequireAtLeastOne } from '@trezor/type-utils';
 import type { VersionArray } from '@trezor/utils';
 
 export type FirmwareBoundary = `${number}.${number}.${number}` | '0';
@@ -14,18 +15,14 @@ export type FirmwareRange = Record<
     { min: FirmwareBoundary; max: FirmwareBoundary }
 >;
 
-type AtLeastOne<T> = {
-    [K in keyof T]: Pick<T, K> & Partial<Omit<T, K>>;
-}[keyof T];
-
-type RuleSelector = AtLeastOne<{
+type RuleSelector = RequireAtLeastOne<{
     coin: string[];
     coinType: string;
     methods: string[];
     capabilities: string[];
 }>;
 
-type RuleDeclaration = AtLeastOne<{
+type RuleDeclaration = RequireAtLeastOne<{
     min: Partial<Record<DeviceModelInternal, FirmwareBoundary>>;
     max: Partial<Record<DeviceModelInternal, FirmwareBoundary>>;
 }>;
