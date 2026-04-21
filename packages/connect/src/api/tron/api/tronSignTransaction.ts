@@ -1,6 +1,6 @@
 import { Assert } from '@trezor/schema-utils';
 
-import { PROTO } from '../../../constants';
+import { ERRORS, PROTO } from '../../../constants';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import {
     TronContractsParameters,
@@ -8,6 +8,15 @@ import {
     TronSignTransaction as TronSignTransactionSchema,
 } from '../../../types/api/tron';
 import { validatePath } from '../../../utils/pathUtils';
+
+const contractMapping = {
+    TransferContract: 'TronTransferContract',
+    TriggerSmartContract: 'TronTriggerSmartContract',
+    FreezeBalanceV2Contract: 'TronFreezeBalanceV2Contract',
+    UnfreezeBalanceV2Contract: 'TronUnfreezeBalanceV2Contract',
+    WithdrawExpireUnfreezeContract: 'TronWithdrawUnfreeze',
+    VoteWitnessContract: 'TronVoteWitnessContract',
+} as const satisfies Record<TronContractsTypes, PROTO.MessageKey>;
 
 type Params = {
     tx: PROTO.TronSignTx;
@@ -24,6 +33,15 @@ export default class TronSignTransaction extends AbstractMethod<'tronSignTransac
         this.requiredDeviceCapabilities = ['Capability_Tron'];
 
         const { payload } = this;
+
+        const contractType = payload.contract?.[0]?.type;
+        if (!contractType || !(contractType in contractMapping)) {
+            throw ERRORS.TypedError(
+                'Method_InvalidParameter',
+                `Unsupported Tron contract type: ${contractType ?? 'undefined'}`,
+            );
+        }
+
         Assert(TronSignTransactionSchema, payload);
 
         const path = validatePath(payload.path, 3);
@@ -51,14 +69,6 @@ export default class TronSignTransaction extends AbstractMethod<'tronSignTransac
         const cmd = this.device.getCommands();
 
         await cmd.typedCall('TronSignTx', 'TronContractRequest', this.params.tx);
-
-        const contractMapping = {
-            TransferContract: 'TronTransferContract',
-            TriggerSmartContract: 'TronTriggerSmartContract',
-            FreezeBalanceV2Contract: 'TronFreezeBalanceV2Contract',
-            UnfreezeBalanceV2Contract: 'TronUnfreezeBalanceV2Contract',
-            WithdrawExpireUnfreezeContract: 'TronWithdrawUnfreeze',
-        } as const;
 
         const { message } = await cmd.typedCall(
             contractMapping[this.params.contractType],

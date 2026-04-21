@@ -4158,6 +4158,24 @@ export const TronTransferContract = Type.Object(
     { $id: 'TronTransferContract' },
 );
 
+export type TronVote = Static<typeof TronVote>;
+export const TronVote = Type.Object(
+    {
+        address: Type.String(),
+        count: Type.Number(),
+    },
+    { $id: 'TronVote' },
+);
+
+export type TronVoteWitnessContract = Static<typeof TronVoteWitnessContract>;
+export const TronVoteWitnessContract = Type.Object(
+    {
+        owner_address: Type.String(),
+        votes: Type.Array(TronVote),
+    },
+    { $id: 'TronVoteWitnessContract' },
+);
+
 export type TronTriggerSmartContract = Static<typeof TronTriggerSmartContract>;
 export const TronTriggerSmartContract = Type.Object(
     {
@@ -4599,6 +4617,8 @@ export const MessageType = Type.Object(
         TronSignTx,
         TronContractRequest,
         TronTransferContract,
+        TronVote,
+        TronVoteWitnessContract,
         TronTriggerSmartContract,
         TronFreezeBalanceV2Contract,
         TronUnfreezeBalanceV2Contract,

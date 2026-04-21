@@ -2677,6 +2677,16 @@ export type TronTransferContract = {
     amount: UintType;
 };
 
+export type TronVote = {
+    address: string;
+    count: number;
+};
+
+export type TronVoteWitnessContract = {
+    owner_address: string;
+    votes: TronVote[];
+};
+
 export type TronTriggerSmartContract = {
     owner_address: string;
     contract_address: string;
@@ -3079,6 +3089,8 @@ export type MessageType = {
     TronSignTx: TronSignTx;
     TronContractRequest: TronContractRequest;
     TronTransferContract: TronTransferContract;
+    TronVote: TronVote;
+    TronVoteWitnessContract: TronVoteWitnessContract;
     TronTriggerSmartContract: TronTriggerSmartContract;
     TronFreezeBalanceV2Contract: TronFreezeBalanceV2Contract;
     TronUnfreezeBalanceV2Contract: TronUnfreezeBalanceV2Contract;

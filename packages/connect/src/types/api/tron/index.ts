@@ -38,6 +38,13 @@ const TronWithdrawExpireUnfreezeContract = Type.Object({
     }),
 });
 
+const TronVoteWitnessContract = Type.Object({
+    type: Type.Literal('VoteWitnessContract'),
+    parameter: Type.Object({
+        value: PROTO.TronVoteWitnessContract,
+    }),
+});
+
 export type TronContracts = Static<typeof TronContracts>;
 export const TronContracts = Type.Union([
     TronTransferContract,
@@ -45,6 +52,7 @@ export const TronContracts = Type.Union([
     TronFreezeBalanceV2Contract,
     TronUnfreezeBalanceV2Contract,
     TronWithdrawExpireUnfreezeContract,
+    TronVoteWitnessContract,
 ]);
 
 export type TronContractsTypes = TronContracts['type'];

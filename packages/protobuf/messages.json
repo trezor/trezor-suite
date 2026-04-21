@@ -8068,6 +8068,37 @@
                 }
             }
         },
+        "TronVoteWitnessContract": {
+            "edition": "proto2",
+            "fields": {
+                "owner_address": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 1
+                },
+                "votes": {
+                    "rule": "repeated",
+                    "type": "TronVote",
+                    "id": 2
+                }
+            },
+            "nested": {
+                "TronVote": {
+                    "fields": {
+                        "address": {
+                            "rule": "required",
+                            "type": "bytes",
+                            "id": 1
+                        },
+                        "count": {
+                            "rule": "required",
+                            "type": "uint64",
+                            "id": 2
+                        }
+                    }
+                }
+            }
+        },
         "TronTriggerSmartContract": {
             "edition": "proto2",
             "fields": {
@@ -8501,7 +8532,8 @@
                 "TronTriggerSmartContract": 2206,
                 "TronFreezeBalanceV2Contract": 2207,
                 "TronUnfreezeBalanceV2Contract": 2208,
-                "TronWithdrawUnfreeze": 2209
+                "TronWithdrawUnfreeze": 2209,
+                "TronVoteWitnessContract": 2210
             }
         }
     }
