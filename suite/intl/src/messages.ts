@@ -335,7 +335,7 @@ export const messages = defineMessages({
         id: 'TR_TRADING_DISABLE_TOR',
     },
     TR_CHECKED_BALANCES_ON: {
-        defaultMessage: 'Checked balances on',
+        defaultMessage: 'Ready on',
         id: 'TR_CHECKED_BALANCES_ON',
     },
     TR_ALL_NETWORKS: {
@@ -3606,6 +3606,10 @@ export const messages = defineMessages({
     TR_YOUR_WALLET_IS_READY_WHAT: {
         defaultMessage: 'Your wallet is ready',
         id: 'TR_YOUR_WALLET_IS_READY_WHAT',
+    },
+    TR_DASHBOARD_EMPTY_WALLET_DESC: {
+        defaultMessage: 'Get started by receiving or buying crypto.',
+        id: 'TR_DASHBOARD_EMPTY_WALLET_DESC',
     },
     TR_GAS_PRICE: {
         id: 'TR_GAS_PRICE',

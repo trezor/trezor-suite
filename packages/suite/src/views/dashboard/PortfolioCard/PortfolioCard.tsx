@@ -118,7 +118,7 @@ export const PortfolioCard = memo(() => {
     const heading = <Translation id="TR_MY_PORTFOLIO" />;
 
     const header =
-        discovery && discoveryStatus?.status === 'exception' ? null : (
+        (discovery && discoveryStatus?.status === 'exception') || isWalletEmpty ? null : (
             <PortfolioCardHeader
                 discovery={discovery}
                 showGraphControls={showGraphControls}
@@ -133,7 +133,7 @@ export const PortfolioCard = memo(() => {
 
     return (
         <DashboardSection
-            heading={isDiscoveryEmpty ? undefined : heading}
+            heading={isDiscoveryEmpty || isWalletEmpty ? undefined : heading}
             subheading={
                 showMissingDataTooltip ? (
                     <UnsupportedAssetsMessage
@@ -176,7 +176,10 @@ export const PortfolioCard = memo(() => {
                 ) : undefined
             }
         >
-            <Card header={body && !isDiscoveryEmpty ? header : null} paddingType="none">
+            <Card
+                header={body && !isDiscoveryEmpty && !isWalletEmpty ? header : null}
+                paddingType="none"
+            >
                 {body ? (
                     <Column justifyContent="center" minHeight={329}>
                         {body}

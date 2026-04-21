@@ -1,49 +1,63 @@
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
-import { Button, Column, H3, IconCircle, Paragraph, Row } from '@trezor/components';
+import { Button, Column, H3, Illustration, Paragraph, Row, Text } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
+import { spacings } from '@trezor/theme';
 
-import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 export const EmptyWallet = () => {
-    const { supportedMainnets } = useNetworkSupport();
-    const enabledNetworks = useSelector(selectEnabledNetworks);
     const dispatch = useDispatch();
+    const enabledNetworks = useSelector(selectEnabledNetworks);
 
-    const areAllNetworksEnabled = supportedMainnets.every(network =>
-        enabledNetworks.includes(network.symbol),
-    );
+    const handleReceive = () =>
+        dispatch(goto({ routeName: 'suite-index', params: { modal: 'receive' } }));
+
+    const handleBuy = () => dispatch(goto({ routeName: 'wallet-trading-buy' }));
 
     return (
-        <Column gap={4} data-testid="@dashboard/wallet-ready" alignItems="center">
-            <IconCircle name="check" size={96} intent="brand" />
-            <H3 margin={16}>
+        <Column gap={spacings.xxs} data-testid="@dashboard/wallet-ready" alignItems="center">
+            <Illustration name="networks" width={224} />
+            <H3 margin={{ top: spacings.md }}>
                 <Translation id="TR_YOUR_WALLET_IS_READY_WHAT" />
             </H3>
-            {!areAllNetworksEnabled && (
-                <Row gap={8} flexWrap="wrap">
+            <Text intent="neutral" priority="secondary" typographyStyle="body-sm">
+                <Translation id="TR_DASHBOARD_EMPTY_WALLET_DESC" />
+            </Text>
+            {enabledNetworks.length > 0 && (
+                <Row gap={spacings.xs} flexWrap="wrap" margin={{ top: spacings.sm }}>
                     <Paragraph intent="neutral" priority="secondary" typographyStyle="body-sm">
                         <Translation id="TR_CHECKED_BALANCES_ON" />:
                     </Paragraph>
-                    <Row gap={4} flexWrap="wrap">
+                    <Row gap={spacings.xxs} flexWrap="wrap">
                         {enabledNetworks.map(network => (
                             <CoinLogo key={network} symbol={network} size={16} />
                         ))}
                     </Row>
-                    <Button
-                        intent="brand"
-                        iconLeft="plus"
-                        size="small"
-                        onClick={() => {
-                            dispatch(goto({ routeName: 'settings-coins' }));
-                        }}
-                    >
-                        <Translation id="TR_ADD" />
-                    </Button>
                 </Row>
             )}
+            <Row gap={spacings.sm} margin={{ top: spacings.md }}>
+                <Button
+                    intent="brand"
+                    iconLeft="arrowDown"
+                    size="large"
+                    onClick={handleReceive}
+                    data-testid="@dashboard/empty-wallet/receive"
+                >
+                    <Translation id="TR_NAV_RECEIVE" />
+                </Button>
+                <Button
+                    intent="neutral"
+                    priority="secondary"
+                    iconLeft="plus"
+                    size="large"
+                    onClick={handleBuy}
+                    data-testid="@dashboard/empty-wallet/buy"
+                >
+                    <Translation id="TR_BUY" />
+                </Button>
+            </Row>
         </Column>
     );
 };
