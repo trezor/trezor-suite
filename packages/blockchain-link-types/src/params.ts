@@ -51,7 +51,7 @@ export interface AccountInfoParams {
     from?: number; // from block
     to?: number; // to block
     contractFilter?: string; // blockbook only, ethereum token filter
-    gap?: number; // blockbook only, derived addresses gap
+    gap?: number; // derived addresses gap
     // since xrpl.js cannot use pages "marker" is used as first unknown point in history (block and sequence of transaction)
     marker?: {
         ledger: number;
