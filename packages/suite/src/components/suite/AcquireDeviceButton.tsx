@@ -1,10 +1,11 @@
 import { type MouseEventHandler } from 'react';
 
+import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { acquireDevice } from '@suite-common/wallet-core';
 import { Banner } from '@trezor/components';
 
-import { useDevice, useDispatch } from 'src/hooks/suite';
+import { useDispatch } from 'src/hooks/suite';
 
 type AcquireButtonProps = {
     onClick?: MouseEventHandler;

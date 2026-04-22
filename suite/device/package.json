@@ -12,19 +12,19 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@suite/locks": "workspace:*",
         "@suite-common/device": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
+        "@suite/locks": "workspace:*",
         "@suite/router": "workspace:*",
         "@trezor/connect": "workspace:*",
         "react": "19.2.4",
         "react-redux": "9.2.0"
     },
     "devDependencies": {
-        "@types/react": "19.2.14",
         "@suite-common/test-utils": "workspace:*",
+        "@types/react": "19.2.14",
         "redux-mock-store": "^1.5.5",
         "redux-thunk": "^3.1.0"
     }

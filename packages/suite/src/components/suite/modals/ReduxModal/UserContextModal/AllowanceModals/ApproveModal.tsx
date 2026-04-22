@@ -2,6 +2,7 @@ import { FormProvider } from 'react-hook-form';
 
 import { type CryptoId, type DexApprovalType, type ProviderMetadata } from 'invity-api';
 
+import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
@@ -11,7 +12,6 @@ import { borders } from '@trezor/theme';
 
 import { AccountLabeling } from 'src/components/suite/labeling';
 import { Fees } from 'src/components/wallet/Fees/Fees';
-import { useDevice } from 'src/hooks/suite';
 import { useAllowanceModal } from 'src/hooks/wallet/allowance';
 
 import { AllowanceModalProviderInfo } from './AllowanceModalProviderInfo';

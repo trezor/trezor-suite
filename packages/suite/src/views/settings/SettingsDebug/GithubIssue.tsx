@@ -1,7 +1,8 @@
+import { useDevice } from '@suite/device';
 import { openGithubIssue } from '@suite/github';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
-import { useDevice, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { selectActiveTransports } from 'src/selectors/suite/suiteSelectors';
 
 export const GithubIssue = () => {

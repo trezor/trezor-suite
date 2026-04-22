@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 
+import { useDevice } from '@suite/device';
 import { type TranslationKey } from '@suite/intl';
 import {
     type RevisionCheckErrorWithNotification,
@@ -8,7 +9,7 @@ import {
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 
-import { useDevice, useDispatch } from 'src/hooks/suite';
+import { useDispatch } from 'src/hooks/suite';
 
 const revisionCheckNotifications: Record<RevisionCheckErrorWithNotification, TranslationKey> = {
     'other-error': 'TR_FIRMWARE_REVISION_CHECK_OTHER_ERROR',

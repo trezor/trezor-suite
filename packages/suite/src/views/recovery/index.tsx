@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useIntl } from 'react-intl';
 
+import { useDevice } from '@suite/device';
 import { Translation, messages } from '@suite/intl';
 import { MODAL_CONTEXT_DEVICE, selectModalRequestId } from '@suite/modal';
 import {
@@ -21,7 +22,7 @@ import { ConfirmOnDevicePill } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
 import { Loading, PinMatrix, WordInputAdvanced } from 'src/components/suite';
-import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import type { ForegroundAppProps } from 'src/types/suite';
 
 import { EnterOnDeviceStep } from './steps/EnterOnDeviceStep';

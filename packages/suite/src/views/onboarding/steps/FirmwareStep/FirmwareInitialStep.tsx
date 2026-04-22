@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { useDevice } from '@suite/device';
 import {
     FirmwareWarningsList,
     FirmwareWipeWarning,
@@ -18,7 +19,7 @@ import { FirmwareOffer } from 'src/components/firmware';
 import { FirmwareLowBatteryModal } from 'src/components/firmware/FirmwareLowBatteryModal';
 import { SkipStepConfirmation } from 'src/components/onboarding/SkipStepConfirmation';
 import { PrerequisitesGuide } from 'src/components/suite';
-import { useDevice, useOnboarding, useSelector } from 'src/hooks/suite';
+import { useOnboarding, useSelector } from 'src/hooks/suite';
 
 const InstallButton = ({ children, ...rest }: ButtonProps) => (
     <Tooltip

@@ -12,12 +12,12 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "2.11.2",
-        "@suite/device": "workspace:*",
         "@suite-common/device": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/thp": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
+        "@suite/device": "workspace:*",
         "@suite/intl": "workspace:*",
         "@trezor/components": "workspace:*",
         "@trezor/connect": "workspace:*",

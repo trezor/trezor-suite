@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 
+import { useDevice } from '@suite/device';
 import { Translation, type TranslationKey } from '@suite/intl';
 import {
     selectIsDeviceAuthenticityCheckEnabled,
@@ -7,7 +8,7 @@ import {
 } from '@suite/settings';
 import { BulletList, type BulletListItemState, Text } from '@trezor/components';
 
-import { useDevice, useOnboarding, useSelector } from 'src/hooks/suite';
+import { useOnboarding, useSelector } from 'src/hooks/suite';
 
 import { stepCategories } from '../../config/onboarding/steps';
 import { isStepCategoryUsed } from '../../utils/onboarding/steps';

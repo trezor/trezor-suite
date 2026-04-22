@@ -1,3 +1,4 @@
+import { useDevice } from '@suite/device';
 import { selectIsCoinjoinReceiveWarningHidden } from '@suite/settings';
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectPendingAccountAddresses } from '@suite-common/wallet-core';
@@ -6,7 +7,7 @@ import { spacings } from '@trezor/theme';
 
 import { ConfirmEvmExplanationModal } from 'src/components/suite/modals/ConfirmEvmExplanationModal';
 import { WalletLayout, WalletSubpageHeading } from 'src/components/wallet';
-import { useDevice, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 import { CoinjoinReceiveWarning } from './components/CoinjoinReceiveWarning';
 import { FreshAddress } from './components/FreshAddress';

@@ -1,10 +1,10 @@
 import { useState } from 'react';
 
+import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { Banner } from '@trezor/components';
 import { isDeviceInBootloaderMode } from '@trezor/device-utils';
 
-import { useDevice } from 'src/hooks/suite';
 import { WipeDeviceModal } from 'src/views/settings/SettingsDevice/WipeDevice/WipeDeviceModal';
 
 export const FailedBackup = () => {

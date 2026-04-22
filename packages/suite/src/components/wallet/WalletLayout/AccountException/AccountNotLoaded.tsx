@@ -1,8 +1,9 @@
+import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { startOrRestartDiscoveryThunk } from '@suite-common/wallet-core';
 
 import { AccountExceptionLayout } from 'src/components/wallet';
-import { useDevice, useDispatch } from 'src/hooks/suite';
+import { useDispatch } from 'src/hooks/suite';
 
 /**
  * Handler for 'bundle-exception' in discovery

@@ -1,8 +1,6 @@
 import { type ReactNode, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
-import type { Dispatch } from 'redux';
-
 import { Translation } from '@suite/intl';
 import { Card, Column, Modal, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
@@ -17,7 +15,7 @@ type ThpPairingStartStepProps = {
 // reflection of components/onboarding/ThpPairing/ThpPairingStartStep
 export const ThpPairingStartStep = (props: ThpPairingStartStepProps) => {
     const [isLoading, setIsLoading] = useState(props.isLoading);
-    const dispatch = useDispatch<Dispatch>();
+    const dispatch = useDispatch();
     useEffect(() => {
         setIsLoading(props.isLoading);
     }, [props.isLoading]);

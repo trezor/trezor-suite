@@ -1,13 +1,14 @@
 import type { Locale } from 'date-fns';
 
 import { events } from '@suite/analytics';
+import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { formatDurationStrict } from '@suite-common/suite-utils';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
-import { useDevice, useDispatch, useLocales } from 'src/hooks/suite';
+import { useDispatch, useLocales } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
 
 // auto lock times in seconds; allowed lock times by device: <1 minute, 6 days>

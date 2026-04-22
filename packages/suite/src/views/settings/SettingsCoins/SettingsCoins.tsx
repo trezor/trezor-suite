@@ -1,6 +1,7 @@
 import { AnimatePresence, type MotionProps, motion } from 'framer-motion';
 import styled from 'styled-components';
 
+import { useDevice } from '@suite/device';
 import { selectFlags } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
@@ -22,7 +23,7 @@ import { SettingsLayout } from 'src/components/settings/SettingsLayout';
 import { CoinGroup } from 'src/components/suite';
 import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
-import { useDevice, useDiscovery, useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
+import { useDiscovery, useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 import { isCoinjoinSupportedSymbol } from 'src/utils/wallet/coinjoinUtils';
 
 import { FirmwareTypeSuggestion } from './FirmwareTypeSuggestion';

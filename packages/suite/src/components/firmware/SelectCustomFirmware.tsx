@@ -1,12 +1,11 @@
 import { type Dispatch, type ReactNode, type SetStateAction } from 'react';
 
+import { useDevice } from '@suite/device';
 import { validateFirmware } from '@suite/firmware-upgrade';
 import { Translation } from '@suite/intl';
 import { BulletList, Button, Row } from '@trezor/components';
 import { DropZone } from '@trezor/product-components';
 import { GITHUB_FW_BINARIES_URL } from '@trezor/urls';
-
-import { useDevice } from 'src/hooks/suite';
 
 type SelectCustomFirmwareProps = {
     setFirmwareBinary: Dispatch<SetStateAction<ArrayBuffer | undefined>>;

@@ -1,6 +1,7 @@
 import { type ReactNode, useState } from 'react';
 import { type OptionProps } from 'react-select';
 
+import { useDevice } from '@suite/device';
 import { Translation, useTranslation } from '@suite/intl';
 import { metadataLabelingActions, metadataThunks } from '@suite/metadata';
 import { Anchor, SettingsAnchor } from '@suite/router';
@@ -26,7 +27,7 @@ import {
     type LabelingOptionTranslated,
     type LabelingSelectValue,
 } from 'src/constants/suite/labeling';
-import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useLabelingDeviceState } from 'src/hooks/suite/useLabelingDeviceState';
 import { useSuiteServices } from 'src/support/SuiteServicesProvider';
 import { useAnalytics } from 'src/support/useAnalytics';
