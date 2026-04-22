@@ -1,20 +1,25 @@
-var WAValidator = require('../src');
+import * as WAValidator from '../src';
 
-const addressType = WAValidator.addressType;
+const { addressType } = WAValidator;
 
-function isValidAddressType(address, currency, networkType, addressType) {
+function isValidAddressType(
+    address: string,
+    currency: string,
+    networkType: string | undefined,
+    expectedType: string | undefined,
+) {
     const type = WAValidator.getAddressType(address, currency, networkType);
-    expect({ address, addressType: type }).toEqual({ address, addressType });
+    expect({ address, addressType: type }).toEqual({ address, addressType: expectedType });
 }
 
-function valid(address, currency, networkType) {
-    var valid = WAValidator.validate(address, currency, networkType);
-    expect({ address, currency, valid }).toEqual({ address, currency, valid: true });
+function valid(address: string, currency?: string, networkType?: string) {
+    const isValid = WAValidator.validate(address, currency, networkType);
+    expect({ address, currency, valid: isValid }).toEqual({ address, currency, valid: true });
 }
 
-function invalid(address, currency, networkType) {
-    var valid = WAValidator.validate(address, currency, networkType);
-    expect({ address, currency, valid }).toEqual({ address, currency, valid: false });
+function invalid(address: string, currency?: string, networkType?: string) {
+    const isValid = WAValidator.validate(address, currency, networkType);
+    expect({ address, currency, valid: isValid }).toEqual({ address, currency, valid: false });
 }
 
 describe('WAValidator.validate()', function () {
@@ -854,7 +859,7 @@ describe('WAValidator.validate()', function () {
             valid('binanceiost', 'iost');
         });
 
-        it('should return true for correct IOST addresses', () => {
+        it('should return false for incorrect IOST addresses', () => {
             invalid('rekt', 'iost');
         });
 
@@ -862,10 +867,6 @@ describe('WAValidator.validate()', function () {
             isValidAddressType('binanceiost', 'IOST', 'prod', addressType.ADDRESS);
             isValidAddressType('rekt', 'IOST', 'prod', undefined);
         });
-
-        // it('should return true for correct (M)IOTA addresses', () => {
-        //     valid('ABFJCYEFHIV9XJY9XKDNYZGHBPYRYNFMUUNXAMZMFIEYSDKNHNEUSEXQYEWQTDNFETUNRSMEKJUCIKEEWFSWZYVFXD', 'iota')
-        // });
 
         it('should return false for incorrect Ontology addresses', () => {
             invalid('AXu57dhdNDnA5drqJUM2KfoMqgaLwmZwow', 'ont');
@@ -1161,7 +1162,7 @@ describe('WAValidator.validate()', function () {
     });
 
     describe('invalid results', function () {
-        function commonTests(currency) {
+        function commonTests(currency: string) {
             invalid('', currency); //reject blank
             invalid('%%@', currency); //reject invalid base58 string
             invalid('1A1zP1ePQGefi2DMPTifTL5SLmv7DivfNa', currency); //reject invalid address
@@ -1619,8 +1620,8 @@ describe('WAValidator.validate()', function () {
             valid('grs1qnxt8adg4qk3ljl0qhvp4m0nt56w6ma77vwr2jq', 'grs');
             valid('tgrs1qw4z3xrtgx4f6w7akwpp2xa0gupmkv4yauemmm9', 'grs', 'testnet');
 
-            (invalid('grs1q49qls5kklryt95g5xq4p6msycpgjp8ramfc9jq', 'grs'),
-                invalid('tgrs1qqjd3qhncsxdyh5gt7hz4k6zzvfguslwxwgv23j', 'grs'));
+            invalid('grs1q49qls5kklryt95g5xq4p6msycpgjp8ramfc9jq', 'grs');
+            invalid('tgrs1qqjd3qhncsxdyh5gt7hz4k6zzvfguslwxwgv23j', 'grs');
         });
 
         it('should return true for correct solana addresses', function () {

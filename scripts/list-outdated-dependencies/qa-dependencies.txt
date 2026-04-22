@@ -16,7 +16,6 @@
 @types/xml2js
 @walletconnect/sign-client
 babel-jest
-chai
 detox
 dotenv
 eslint-plugin-playwright
