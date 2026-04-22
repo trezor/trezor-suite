@@ -229,6 +229,7 @@ export enum EarnStackRoutes {
 
 export enum YieldStackRoutes {
     HowYieldWorks = 'HowYieldWorks',
+    YieldConsents = 'YieldConsents',
 }
 
 export enum ReceiveStackRoutes {

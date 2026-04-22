@@ -7,6 +7,7 @@ import {
 } from '@suite-native/navigation';
 
 import { HowYieldWorksScreen } from '../screens/HowYieldWorksScreen';
+import { YieldConsentsScreen } from '../screens/YieldConsentsScreen';
 
 const YiledStack = createNativeStackNavigator<YieldStackParamList>();
 
@@ -19,6 +20,11 @@ export const YieldStackNavigator = () => (
             options={{ title: YieldStackRoutes.HowYieldWorks }}
             name={YieldStackRoutes.HowYieldWorks}
             component={HowYieldWorksScreen}
+        />
+        <YiledStack.Screen
+            options={{ title: YieldStackRoutes.YieldConsents }}
+            name={YieldStackRoutes.YieldConsents}
+            component={YieldConsentsScreen}
         />
     </YiledStack.Navigator>
 );

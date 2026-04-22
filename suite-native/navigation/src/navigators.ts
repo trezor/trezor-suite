@@ -83,12 +83,15 @@ export type EarnStackParamList = {
     [EarnStackRoutes.Earn]: undefined;
 };
 
+type YieldFlowParams = {
+    yieldId: string;
+    accountKey?: AccountKey;
+    tokenContract?: TokenAddress;
+};
+
 export type YieldStackParamList = {
-    [YieldStackRoutes.HowYieldWorks]: {
-        yieldId: string;
-        accountKey?: AccountKey;
-        tokenContract?: TokenAddress;
-    };
+    [YieldStackRoutes.HowYieldWorks]: YieldFlowParams;
+    [YieldStackRoutes.YieldConsents]: YieldFlowParams;
 };
 
 export type HomeStackParamList = {
