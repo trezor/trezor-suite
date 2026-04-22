@@ -115,9 +115,6 @@ export const SellProviderPicker = () => {
                     onPress={handleProviderPress}
                     noCaret={isLoading}
                     testID={PROVIDER_PICKER_TEST_ID}
-                    warning={
-                        isLoading ? undefined : translate('moduleTrading.tradingScreen.kycWarning')
-                    }
                     noBottomBorder
                 >
                     <SellProviderPickerRight isLoading={isLoading} selectedValue={selectedValue} />
