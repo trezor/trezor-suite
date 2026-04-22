@@ -29,7 +29,9 @@ test.describe('Export transactions', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, ()
         async ({ page, settingsPage, walletPage, onboardingPage }) => {
             const symbols: NetworkSymbol[] = ['btc', 'ltc', 'eth', 'ada'];
             await settingsPage.changeNetworks({
-                enableNetworks: symbols.filter(symbol => symbol !== 'btc'),
+                enableNetworks: symbols.filter(
+                    symbol => symbol !== 'btc' && symbol !== 'eth',
+                ) as NetworkSymbol[],
             });
 
             for (const symbol of symbols) {
