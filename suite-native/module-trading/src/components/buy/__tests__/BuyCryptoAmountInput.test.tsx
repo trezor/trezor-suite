@@ -1,15 +1,15 @@
 import { Form } from '@suite-native/forms';
-import {
-    type PreloadedState,
-    act,
-    renderHookWithStoreProvider,
-    renderWithStoreProvider,
-    userEvent,
-} from '@suite-native/test-utils';
-import { btcAsset, getInitializedTradingState } from '@suite-native/trading-fixtures';
+import { act, userEvent } from '@suite-native/test-utils-store';
+import { btcAsset } from '@suite-native/trading-fixtures';
 import { type BuyFormType } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
+import {
+    type PreloadedStatePartial,
+    type TradingTestPreloadedState,
+    renderHookWithTradingProvider,
+    renderWithTradingProvider,
+} from '../../../__tests__/tradingTestUtils';
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';
 import { BuyCryptoAmountInput, type CryptoAmountInputProps } from '../BuyCryptoAmountInput';
 
@@ -17,18 +17,20 @@ describe('BuyCryptoAmountInput', () => {
     const renderCryptoAmountInput = (
         props: Partial<CryptoAmountInputProps>,
         form: BuyFormType,
-        preloadedState: PreloadedState = {},
+        overrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
     ) =>
-        renderWithStoreProvider(
+        renderWithTradingProvider(
             <Form form={form}>
                 <BuyCryptoAmountInput showAssetsSheet={jest.fn()} {...props} />
             </Form>,
-            { preloadedState },
+            { overrides },
         );
 
-    const renderUseTradingBuyForm = (preloadedState: PreloadedState = {}) => {
-        const { result } = renderHookWithStoreProvider(() => useBuyForm(), {
-            preloadedState,
+    const renderUseTradingBuyForm = (
+        overrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
+    ) => {
+        const { result } = renderHookWithTradingProvider(() => useBuyForm(), {
+            overrides,
         });
 
         return result.current;
@@ -122,24 +124,24 @@ describe('BuyCryptoAmountInput', () => {
     });
 
     it('should display loading skeleton while amountInCrypto is false and buyInfo is loading', () => {
-        const preloadedState = { wallet: { trading: getInitializedTradingState() } };
-        preloadedState.wallet.trading.buy.isLoading = true;
         const form = renderUseTradingBuyForm();
 
-        const { getByLabelText } = renderCryptoAmountInput({}, form, preloadedState);
+        const { getByLabelText } = renderCryptoAmountInput({}, form, {
+            wallet: { trading: { buy: { isLoading: true } } },
+        });
 
         expect(getByLabelText('Fetching offers...')).toBeTruthy();
     });
 
     it('should not display loading skeleton while amountInCrypto is true and buyInfo is loading', () => {
-        const preloadedState = { wallet: { trading: getInitializedTradingState() } };
-        preloadedState.wallet.trading.buy.isLoading = true;
         const form = renderUseTradingBuyForm();
         act(() => {
             form.setValue('amountInCrypto', true);
         });
 
-        const { queryByLabelText } = renderCryptoAmountInput({}, form, preloadedState);
+        const { queryByLabelText } = renderCryptoAmountInput({}, form, {
+            wallet: { trading: { buy: { isLoading: true } } },
+        });
 
         expect(queryByLabelText('Fetching offers...')).toBeNull();
     });

@@ -22,15 +22,15 @@ type VariantConfig = {
 const variants = {
     info: {
         icon: 'info',
-        color: 'textAlertBlue',
+        color: 'contentInfo',
     },
     success: {
         icon: 'checkCircle',
-        color: 'textPrimaryDefault',
+        color: 'contentBrand',
     },
     critical: {
         icon: 'warningCircle',
-        color: 'textAlertRed',
+        color: 'contentCritical',
     },
 } as const satisfies Record<InlineAlertTextVariant, VariantConfig>;
 

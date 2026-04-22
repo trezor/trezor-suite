@@ -12,6 +12,7 @@ import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
 import { FeeSelector } from '@suite-native/transaction-management';
 
 import { LimitPicker } from './LimitPicker';
+import { OriginalLimit } from './OriginalLimit';
 import { updateTradingSelectedFeeLevelThunk } from '../../../thunks';
 import { ProviderInfoRow } from '../../general/TradeInfo/ProviderInfoRow';
 
@@ -51,6 +52,7 @@ export const ExchangeApprovalDetails = ({
                 title={<Translation id="moduleTrading.exchangeTradePreviewCard.account" />}
             >
                 <ProviderInfoRow exchange={exchange} />
+                <OriginalLimit />
                 <LimitPicker onApprovalTypeChange={onApprovalTypeChange} />
             </NetworkAndAccountCard>
 

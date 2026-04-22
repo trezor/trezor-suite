@@ -75,12 +75,8 @@ export const BiometricsScreen = ({ navigation }: BiometricsScreenProps) => {
                 <VStack spacing="sp40">
                     <VStack spacing="sp16">
                         <HStack spacing="sp8" alignItems="center">
-                            <Icon
-                                name="fingerprint"
-                                color="textSecondaryHighlight"
-                                size="mediumLarge"
-                            />
-                            <Text color="textSecondaryHighlight">
+                            <Icon name="fingerprint" color="contentBrand" size="mediumLarge" />
+                            <Text color="contentBrand">
                                 <Translation id="moduleOnboarding.biometricsScreen.title" />
                             </Text>
                         </HStack>

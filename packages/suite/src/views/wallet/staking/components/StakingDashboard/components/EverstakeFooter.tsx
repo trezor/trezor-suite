@@ -15,7 +15,7 @@ const Wrapper = styled.div`
     flex-wrap: wrap;
     gap: ${spacingsPx.md};
     justify-content: space-between;
-    border-top: 1px solid ${({ theme }) => theme.borderElevation2};
+    border-top: 1px solid ${({ theme }) => theme.legacyBorderElevation2};
     margin-top: ${spacingsPx.xxl};
 `;
 

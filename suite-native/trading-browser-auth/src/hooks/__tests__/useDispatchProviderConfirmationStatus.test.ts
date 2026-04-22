@@ -1,10 +1,16 @@
+import { combineReducers } from '@reduxjs/toolkit';
+
+import { extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { initialWalletSettingsState } from '@suite-common/wallet-core';
+import { localeReducer } from '@suite-native/intl';
 import {
     type TestStore,
     act,
-    initStore,
+    createLightStore,
+    createStaticReducer,
     renderHookWithStoreProvider,
-} from '@suite-native/test-utils';
-import { selectTradingProviderConfirmationStatus } from '@suite-native/trading-state';
+} from '@suite-native/test-utils-store';
+import { selectTradingProviderConfirmationStatus, tradingSlice } from '@suite-native/trading-state';
 
 import { useDispatchProviderConfirmationStatus } from '../useDispatchProviderConfirmationStatus';
 
@@ -15,7 +21,15 @@ describe('useDispatchProviderConfirmationStatus', () => {
         renderHookWithStoreProvider(() => useDispatchProviderConfirmationStatus(), { store });
 
     beforeEach(() => {
-        ({ store } = initStore());
+        store = createLightStore({
+            reducer: {
+                locale: localeReducer,
+                wallet: combineReducers({
+                    settings: createStaticReducer(initialWalletSettingsState),
+                    trading: tradingSlice.prepareReducer(extraDependenciesCommonMock),
+                }),
+            },
+        });
     });
 
     it('should provide callback for dispatching setProviderConfirmationStatus trading action', () => {

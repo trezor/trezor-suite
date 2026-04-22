@@ -1,14 +1,9 @@
 import { tradingSellActions, tradingThunks } from '@suite-common/trading';
-import { type AccountKey } from '@suite-common/wallet-types';
-import {
-    type PreloadedState,
-    type TestStore,
-    act,
-    initStore,
-    renderHookWithStoreProvider,
-} from '@suite-native/test-utils';
+import { type AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
+import { type TestStore, act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import { getBtcAccount, getInitializedTradingState } from '@suite-native/trading-fixtures';
 
+import { createTradingLightStore } from '../../../__tests__/tradingTestUtils';
 import { useSellData } from '../useSellData';
 
 jest.mock('../../../utils/general/utils', () => ({
@@ -22,20 +17,28 @@ const btc3AccountKey = 'btc-account-3' as AccountKey; // Todo: create properly v
 
 describe('useSellData', () => {
     const getInitializedStore = (tradingAccountKey: AccountKey | undefined) => {
-        const preloadedState: PreloadedState = {
-            wallet: {
-                trading: getInitializedTradingState('sell'),
-                accounts: [
-                    getBtcAccount(btc1AccountKey),
-                    getBtcAccount(btc2AccountKey),
-                    { ...getBtcAccount(btc3AccountKey), descriptor: '' },
-                ],
-            },
-        };
-        preloadedState.wallet!.trading!.sell!.tradingAccountKey = tradingAccountKey;
+        const tradingState = getInitializedTradingState('sell');
+        tradingState.sell!.tradingAccountKey = tradingAccountKey;
 
-        return initStore(preloadedState).store;
+        return createTradingLightStore({
+            tradeType: 'sell',
+            overrides: {
+                wallet: {
+                    trading: tradingState,
+                    accounts: [
+                        getBtcAccount(btc1AccountKey),
+                        getBtcAccount(btc2AccountKey),
+                        {
+                            ...getBtcAccount(btc3AccountKey),
+                            descriptor: asAccountDescriptor(''),
+                        },
+                    ],
+                },
+            },
+        });
     };
+
+    const getDefaultStore = () => createTradingLightStore({ tradeType: 'sell' });
 
     const renderUseSellData = async (
         reloadRequestOrdinalInitialValue: number = 0,
@@ -45,7 +48,7 @@ describe('useSellData', () => {
             ({ reloadRequestOrdinal }) => useSellData(reloadRequestOrdinal),
             {
                 initialProps: { reloadRequestOrdinal: reloadRequestOrdinalInitialValue },
-                store,
+                store: store ?? getDefaultStore(),
             },
         );
 

@@ -22,11 +22,11 @@ const GlobalStyle = createGlobalStyle<{ theme: DefaultTheme }>`
     }
 
     body, html {
-        background: ${({ theme }) => theme.backgroundSurfaceElevation0};
+        background: ${({ theme }) => theme.surfaceFillPage};
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
         ${typography['body-md']}
-        color: ${({ theme }) => theme.textDefault};
+        color: ${({ theme }) => theme.contentPrimary};
         height: 100%;
         overflow-y: hidden;
 

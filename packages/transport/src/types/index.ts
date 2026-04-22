@@ -24,7 +24,7 @@ export type DescriptorApiLevel = {
     vendor?: number;
     apiType: ApiType;
     /** api level device id.  */
-    id?: string;
+    id?: string | null;
     /** api level device model */
     model?: DescriptorModel;
 };

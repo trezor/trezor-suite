@@ -21,7 +21,7 @@ export const BtcOnlyCoinEnablingContent = () => {
                     <Text textAlign="center" variant="headline-sm">
                         <Translation id="moduleSettings.coinEnabling.btcOnly.title" />
                     </Text>
-                    <Text textAlign="center" color="textSubdued">
+                    <Text textAlign="center" color="contentSecondary">
                         <Translation id="moduleSettings.coinEnabling.btcOnly.subtitle" />
                     </Text>
                 </VStack>

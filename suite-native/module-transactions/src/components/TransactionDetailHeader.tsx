@@ -58,24 +58,17 @@ export const TransactionDetailHeader = ({
         <DiscreetTextTrigger>
             <Box alignItems="center">
                 <VStack spacing="sp16" alignItems="center" justifyContent="center">
-                    <TransactionIcon
-                        transactionType={txType}
-                        isAnimated={isPendingTx}
-                        containerSize={56}
-                        iconSize="extraLarge"
-                        backgroundColor="backgroundSurfaceElevation1"
-                    />
+                    <TransactionIcon transactionType={txType} isAnimated={isPendingTx} size={48} />
 
                     {isPendingTx ? (
                         <Badge
-                            variant="yellow"
+                            intent="warning"
                             label={<Translation id="transactions.status.pending" />}
-                            elevation="1"
                         />
                     ) : (
                         !isFailedTx && (
                             <Badge
-                                variant="green"
+                                intent="brand"
                                 label={<Translation id="transactions.status.confirmed" />}
                             />
                         )
@@ -84,7 +77,7 @@ export const TransactionDetailHeader = ({
                     <Box flexDirection="row">
                         {!isFailedTx && (
                             <SignValueFormatter
-                                color="textDefault"
+                                color="contentPrimary"
                                 value={signValue}
                                 variant="headline-md"
                             />
@@ -97,7 +90,7 @@ export const TransactionDetailHeader = ({
                                 tokenSymbol={tokenTransfer.symbol}
                                 decimals={tokenTransfer.decimals}
                                 variant="headline-md"
-                                color="textDefault"
+                                color="contentPrimary"
                                 numberOfLines={1}
                                 adjustsFontSizeToFit
                                 style={applyStyle(failedTxStyle, { isFailedTx })}
@@ -108,7 +101,7 @@ export const TransactionDetailHeader = ({
                                 symbol={transaction.symbol}
                                 isBalance={false}
                                 variant="headline-md"
-                                color="textDefault"
+                                color="contentPrimary"
                                 numberOfLines={1}
                                 adjustsFontSizeToFit
                                 style={applyStyle(failedTxStyle, { isFailedTx })}
@@ -119,7 +112,7 @@ export const TransactionDetailHeader = ({
 
                 {historicRate !== undefined && historicRate !== 0 && (
                     <Box flexDirection="row" style={applyStyle(fiatValueStyle)}>
-                        <Text color="textSubdued">≈ </Text>
+                        <Text color="contentSecondary">≈ </Text>
                         {tokenTransfer ? (
                             <TokenToFiatAmountFormatter
                                 symbol={transaction.symbol}
@@ -127,7 +120,7 @@ export const TransactionDetailHeader = ({
                                 value={tokenTransfer.amount}
                                 decimals={tokenTransfer.decimals}
                                 historicRate={historicRate}
-                                color="textSubdued"
+                                color="contentSecondary"
                                 useHistoricRate
                                 style={applyStyle(failedTxStyle, { isFailedTx })}
                             />
@@ -136,7 +129,7 @@ export const TransactionDetailHeader = ({
                                 value={transaction.amount}
                                 symbol={transaction.symbol}
                                 historicRate={historicRate}
-                                color="textSubdued"
+                                color="contentSecondary"
                                 useHistoricRate
                                 style={applyStyle(failedTxStyle, { isFailedTx })}
                             />

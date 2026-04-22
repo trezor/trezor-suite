@@ -1,6 +1,6 @@
 import { type WalletKitTypes } from '@reown/walletkit';
+import { base58 } from '@scure/base';
 import type { ProposalTypes } from '@walletconnect/types';
-import bs58 from 'bs58';
 
 import * as trezorConnectPopupActions from '@suite-common/connect-popup';
 import { selectSelectedDevice } from '@suite-common/device';
@@ -131,7 +131,7 @@ const solanaRequestThunk = createThunk<
                 solanaSignTransaction({ session, transaction, feePayer, origin, isDevnet }),
             ).unwrap();
 
-            const signature = bs58.encode(Buffer.from(response.signature, 'hex'));
+            const signature = base58.encode(Buffer.from(response.signature, 'hex'));
 
             return { signature };
         }

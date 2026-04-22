@@ -4,7 +4,6 @@ import { Assert } from '@trezor/schema-utils';
 
 import type { MethodMessage, MethodPermission } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
-import { getFirmwareRange } from './common/paramsValidator';
 import { getBitcoinNetwork } from '../data/coinInfo';
 import { getScriptType, validatePath } from '../utils/pathUtils';
 
@@ -33,7 +32,7 @@ export default class AuthorizeCoinjoin extends AbstractMethod<
 
         super(message, params);
 
-        this.firmwareRange = getFirmwareRange(this.name, coinInfo, this.firmwareRange);
+        this.requiredFirmwareCoins = [coinInfo];
         this.preauthorized = payload.preauthorized;
     }
 

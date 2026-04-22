@@ -23,7 +23,7 @@ import { useAnalytics } from 'src/support/useAnalytics';
 const Headline = styled.div`
     ${typography['body-xs']}
     text-align: left;
-    color: ${({ theme }) => theme.textDefault};
+    color: ${({ theme }) => theme.contentPrimary};
     padding: 0 0 11px;
     width: 100%;
 `;
@@ -39,7 +39,7 @@ const AnonymousDataList = styled.ul`
 const AnonymousDataItem = styled.li`
     margin-bottom: 4px;
     ${typography['body-sm']}
-    color: ${({ theme }) => theme.textDefault};
+    color: ${({ theme }) => theme.contentPrimary};
 `;
 
 const MESSAGE_CHARACTER_LIMIT = 1000;

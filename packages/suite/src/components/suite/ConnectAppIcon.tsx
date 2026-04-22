@@ -9,7 +9,7 @@ const AppIconImage = styled.img<{ size: SpacingValues }>`
     width: ${({ size }) => size}px;
     height: ${({ size }) => size}px;
     border-radius: ${({ size }) => size / 2}px;
-    background: ${({ theme }) => theme.backgroundNeutralSubtleOnElevation1};
+    background: ${({ theme }) => theme.legacyBackgroundNeutralSubtleOnElevation1};
 `;
 
 export const ConnectAppIcon = ({

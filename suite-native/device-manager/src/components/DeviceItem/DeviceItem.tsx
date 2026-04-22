@@ -26,7 +26,7 @@ export const DeviceItem = ({ deviceState, onPress }: DeviceItemProps) => {
         <Pressable onPress={onPress}>
             <HStack style={applyStyle(deviceItemWrapperStyle)}>
                 <DeviceItemContent deviceState={deviceState} />
-                <Icon name="caretRight" color="iconDefault" size="mediumLarge" />
+                <Icon name="caretRight" color="contentPrimary" size="mediumLarge" />
             </HStack>
         </Pressable>
     );

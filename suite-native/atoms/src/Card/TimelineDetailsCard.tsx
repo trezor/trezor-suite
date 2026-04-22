@@ -30,7 +30,7 @@ const headerRowStyle = prepareNativeStyle(utils => ({
 
 const separatorStyle = prepareNativeStyle(utils => ({
     borderBottomWidth: utils.borders.widths.small,
-    borderBottomColor: utils.colors.borderElevation1,
+    borderBottomColor: utils.colors.borderNeutral,
 }));
 
 const itemRowStyle = prepareNativeStyle(() => ({
@@ -40,9 +40,9 @@ const itemRowStyle = prepareNativeStyle(() => ({
 
 const defaultItemIconProps = {
     iconSize: 'large',
-    iconColor: 'iconPrimaryDefault',
-    iconBackgroundColor: 'backgroundPrimarySubtleOnElevation1',
-    iconBorderColor: 'backgroundPrimarySubtleOnElevationNegative',
+    iconColor: 'contentBrand',
+    iconBackgroundColor: 'legacyBackgroundPrimarySubtleOnElevation1',
+    iconBorderColor: 'legacyBackgroundPrimarySubtleOnElevationNegative',
 } as const;
 
 const renderDefaultItemIcon = (index: number) => (
@@ -58,14 +58,14 @@ export const TimelineDetailsCard = ({
     const { applyStyle } = useNativeStyles();
 
     return (
-        <Card borderColor="borderElevation1" noPadding>
+        <Card borderColor="borderNeutral" noPadding>
             <VStack spacing={0}>
                 <Box paddingHorizontal="sp16">
                     <HStack spacing="sp8" style={applyStyle(headerRowStyle)}>
                         {headerIconName && (
-                            <Icon name={headerIconName} color="textSubdued" size={20} />
+                            <Icon name={headerIconName} color="contentSecondary" size={20} />
                         )}
-                        <Text variant="body-md" color="textSubdued">
+                        <Text variant="body-md" color="contentSecondary">
                             {headerTitle}
                         </Text>
                     </HStack>
@@ -88,7 +88,7 @@ export const TimelineDetailsCard = ({
                                 </Text>
                             </HStack>
                             {item.description && (
-                                <Text variant="body-sm" color="textSubdued" numberOfLines={1}>
+                                <Text variant="body-sm" color="contentSecondary" numberOfLines={1}>
                                     {item.description}
                                 </Text>
                             )}

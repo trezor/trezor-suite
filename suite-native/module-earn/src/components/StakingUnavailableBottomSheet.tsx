@@ -30,7 +30,7 @@ export const StakingUnavailableBottomSheet = ({
             paddingHorizontal="sp24"
         >
             <Text
-                color="textSubdued"
+                color="contentSecondary"
                 textAlign="center"
                 style={applyStyle(bottomSheetElementStyle)}
             >

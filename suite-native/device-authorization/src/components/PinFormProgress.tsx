@@ -8,7 +8,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 const MAX_DIGITS_DISPLAYED_AS_DOTS = 6;
 
 const dotStyle = prepareNativeStyle<{ isSubmitted: boolean }>((utils, { isSubmitted }) => {
-    const color = isSubmitted ? utils.colors.textDisabled : utils.colors.textDefault;
+    const color = isSubmitted ? utils.colors.contentDisabled : utils.colors.contentPrimary;
 
     return {
         width: utils.spacings.sp8,
@@ -22,8 +22,8 @@ const dotStyle = prepareNativeStyle<{ isSubmitted: boolean }>((utils, { isSubmit
 
 const enteredDigitsStyle = prepareNativeStyle(utils => ({
     borderRadius: utils.borders.radii.round,
-    backgroundColor: utils.colors.backgroundSurfaceElevation0,
-    borderColor: utils.colors.borderElevation1,
+    backgroundColor: utils.colors.surfaceFillPage,
+    borderColor: utils.colors.borderNeutral,
     paddingHorizontal: utils.spacings.sp16,
 }));
 
@@ -45,7 +45,7 @@ export const PinFormProgress = ({ title }: PinFormProgressProps) => {
     }
 
     if (pinLength > MAX_DIGITS_DISPLAYED_AS_DOTS) {
-        const color = isSubmitted ? 'textDisabled' : 'textSubdued';
+        const color = isSubmitted ? 'contentDisabled' : 'contentSecondary';
 
         return (
             <Box flexDirection="row" style={applyStyle(enteredDigitsStyle)}>

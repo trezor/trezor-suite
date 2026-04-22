@@ -89,7 +89,7 @@ export const MessageSystemManager = ({ actions, onCloseModal }: MessageSystemMan
                                 <Row gap={24} alignItems="flex-start">
                                     <Column flex="1" gap={spacings.md}>
                                         <MessageSystemManagerDetail message={message} />
-                                        <Divider color="backgroundNeutralBold" />
+                                        <Divider color="legacyBackgroundNeutralBold" />
                                         <MessageSystemConditionGroup conditions={conditions} />
                                     </Column>
                                     <Column gap={spacings.xs}>

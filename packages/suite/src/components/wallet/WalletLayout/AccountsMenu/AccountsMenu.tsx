@@ -41,13 +41,13 @@ export const AccountsMenu = () => {
         <ReduxAccountSearchProvider>
             <AccountsMenuHeader />
             <ShadowContainer>
-                <ShadowTop backgroundColor="backgroundSurfaceElevationNegative" />
+                <ShadowTop backgroundColor="surfaceFillSunken" />
                 <ScrollContainer ref={scrollElementRef} onScroll={onScroll}>
                     <AccountsList />
 
                     <RefreshAfterDiscoveryNeeded />
                 </ScrollContainer>
-                <ShadowBottom backgroundColor="backgroundSurfaceElevationNegative" />
+                <ShadowBottom backgroundColor="surfaceFillSunken" />
             </ShadowContainer>
         </ReduxAccountSearchProvider>
     );

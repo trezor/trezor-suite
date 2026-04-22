@@ -25,7 +25,7 @@ const cardStyle = prepareNativeStyle(utils => ({
     alignItem: 'center',
     marginHorizontal: utils.spacings.sp16,
     padding: utils.spacings.sp16,
-    backgroundColor: utils.colors.backgroundSurfaceElevation1,
+    backgroundColor: utils.colors.surfaceFillRaised,
     borderRadius: utils.borders.radii.r16,
 }));
 
@@ -47,7 +47,7 @@ const PriceChangeIndicator = ({ valuePercentageChange }: PriceChangeIndicatorPro
 
     return (
         <Box style={applyStyle(indicatorContainer)}>
-            <Text variant="body-xs" color="textSubdued">
+            <Text variant="body-xs" color="contentSecondary">
                 <Translation id="moduleAccountManagement.accountDetailContentScreen.coinPriceCard.changeIn24h" />
             </Text>
             <PriceChangeBadge valuePercentageChange={valuePercentageChange} />
@@ -74,7 +74,7 @@ export const CoinPriceCard = ({ accountKey }: CoinPriceCardProps) => {
                     <CryptoIconWithNetwork symbol={symbol} />
                 </Box>
                 <Box style={applyStyle(cardContentStyle)}>
-                    <Text variant="body-xs" color="textSubdued">
+                    <Text variant="body-xs" color="contentSecondary">
                         <Translation
                             id="moduleAccountManagement.accountDetailContentScreen.coinPriceCard.coinPrice"
                             values={{ coinName }}

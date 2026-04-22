@@ -35,6 +35,8 @@ describe('loadDefinitions', () => {
 
     it('throw on merge MessageType enum', async () => {
         const root1 = createProtobufRoot();
+        // value 0 is already used by Initialize — must throw regardless of exact wording
+        // (protobufjs 7.4.x threw "duplicate id 0", 7.5.x throws "duplicate name …")
         await expect(
             loadDefinitions(root1, 'bitcoin', () =>
                 Promise.resolve({
@@ -45,7 +47,7 @@ describe('loadDefinitions', () => {
                     },
                 }),
             ),
-        ).rejects.toThrow('duplicate id 0');
+        ).rejects.toThrow('duplicate');
         expect(root1.lookup('bitcoin')).toBe(null);
 
         await expect(

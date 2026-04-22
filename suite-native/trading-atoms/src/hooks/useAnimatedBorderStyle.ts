@@ -1,4 +1,5 @@
 import {
+    interpolate,
     interpolateColor,
     useAnimatedStyle,
     useDerivedValue,
@@ -15,8 +16,9 @@ export const useAnimatedBorderStyle = (isAmountInputActive: boolean) => {
         borderColor: interpolateColor(
             progress.value,
             [0, 1],
-            [utils.colors.backgroundSurfaceElevation1, utils.colors.borderInputDefault],
+            [utils.colors.surfaceFillRaised, utils.colors.elementBorderField],
         ) as `rgba(${number}, ${number}, ${number}, ${number})`,
-        borderWidth: utils.borders.widths.large,
+        borderWidth: interpolate(progress.value, [0, 1], [0, utils.borders.widths.large]),
+        borderRadius: utils.borders.radii.r16,
     }));
 };

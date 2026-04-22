@@ -4,14 +4,15 @@ import type { Deferred } from '@trezor/utils';
 import type { IDevice } from '../types/idevice';
 
 export type UiPromiseResponse =
-    | UiResponseEvent
-    | { type: typeof DEVICE.DISCONNECT; payload?: undefined };
+    | (UiResponseEvent & { requestId?: string })
+    | { type: typeof DEVICE.DISCONNECT; payload?: undefined; requestId?: string };
 
 export type UiPromise<T extends UiPromiseResponse['type']> = Deferred<
     Extract<UiPromiseResponse, { type: T }>,
     T
 > & {
     device?: IDevice;
+    requestId: string;
 };
 
 // map all possible UiPromises

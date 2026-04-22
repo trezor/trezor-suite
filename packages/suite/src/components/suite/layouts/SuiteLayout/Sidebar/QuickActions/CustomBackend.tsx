@@ -1,9 +1,9 @@
 import { goto } from '@suite/router';
+import { QuickActionButton } from '@trezor/product-components';
 
 import { useDispatch } from 'src/hooks/suite';
 
 import { NavBackends } from './NavBackends';
-import { QuickActionButton } from './QuickActionButton';
 import { useEnabledBackends } from '../../utils';
 
 export const CustomBackend = () => {

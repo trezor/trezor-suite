@@ -44,7 +44,7 @@ export const commonInputStyles = css`
         'ss03' 1;
 
     &::placeholder {
-        color: ${({ theme }) => theme.textDisabled};
+        color: ${({ theme }) => theme.contentDisabled};
     }
 `;
 
@@ -61,21 +61,21 @@ export const commonCheckInputStyles = css`
     transition: 0.1s ease-in-out;
 
     ${({ theme }) => css`
-        border-color: ${theme.iconSubdued};
-        background-color: ${theme.backgroundSurfaceElevation1};
+        border-color: ${theme.contentSecondary};
+        background-color: ${theme.surfaceFillRaised};
 
         input:checked + & {
-            border-color: ${theme.backgroundPrimaryDefault};
+            border-color: ${theme.legacyBackgroundPrimaryDefault};
         }
 
         input:disabled:not(:checked) + & {
-            border-color: ${theme.borderElevation1};
-            background-color: ${theme.backgroundSurfaceElevationNegative};
+            border-color: ${theme.borderNeutral};
+            background-color: ${theme.surfaceFillSunken};
         }
 
         label:hover > input:not(:disabled, :checked) + & {
-            border-color: ${theme.borderFocus};
-            background-color: ${theme.backgroundSurfaceElevation0};
+            border-color: ${theme.elementBorderFieldFocused};
+            background-color: ${theme.surfaceFillPage};
         }
 
         input:focus-visible + & {

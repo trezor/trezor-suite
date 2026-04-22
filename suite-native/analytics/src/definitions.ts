@@ -36,7 +36,7 @@ export type TradingNavigateFrom =
     | 'trade/buy'
     | 'trade/sell'
     | 'trade/exchange';
-export type TradingExchangeAction = 'continue' | 'cancel' | 'retry' | 'visit';
+export type TradingExchangeAction = 'continue' | 'cancel' | 'retry' | 'visit' | 'revoke';
 export type TradingExchangeStep =
     | 'exchange-form'
     | 'account-selection'

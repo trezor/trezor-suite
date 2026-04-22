@@ -1,10 +1,9 @@
 import { Translation } from '@suite/intl';
 import { disconnectProvider, selectSelectedProviderForLabels } from '@suite/metadata';
-import { SettingsAnchor } from '@suite/router';
-import { ActionButton, ActionColumn, TextColumn } from '@trezor/product-components';
+import { Anchor, SettingsAnchor } from '@suite/router';
+import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { capitalizeFirstLetter } from '@trezor/utils';
 
-import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 export const DisconnectLabelingProvider = () => {
@@ -24,38 +23,46 @@ export const DisconnectLabelingProvider = () => {
         );
 
     return (
-        <SettingsSectionItem anchorId={SettingsAnchor.LabelingDisconnect}>
-            <TextColumn
-                title={
-                    selectedProvider.isCloud ? (
-                        <Translation
-                            id="TR_CONNECTED_TO_PROVIDER"
-                            values={{
-                                provider: capitalizeFirstLetter(selectedProvider.type),
-                                user: selectedProvider.user,
-                            }}
-                        />
-                    ) : (
-                        <Translation id="TR_CONNECTED_TO_PROVIDER_LOCALLY" />
-                    )
-                }
-                description={
-                    selectedProvider.isCloud ? (
-                        <Translation id="TR_YOUR_LABELING_IS_SYNCED" />
-                    ) : (
-                        <Translation id="TR_YOUR_LABELING_IS_SYNCED_LOCALLY" />
-                    )
-                }
-            />
-            <ActionColumn>
-                <ActionButton
-                    intent="brand"
-                    onClick={handleClick}
-                    data-testid="@settings/metadata/disconnect-provider-button"
+        <Anchor anchorId={SettingsAnchor.LabelingDisconnect}>
+            {({ anchorId, anchorRef, shouldHighlight }) => (
+                <SectionItem
+                    data-testid={anchorId}
+                    ref={anchorRef}
+                    shouldHighlight={shouldHighlight}
                 >
-                    <Translation id="TR_DISCONNECT" />
-                </ActionButton>
-            </ActionColumn>
-        </SettingsSectionItem>
+                    <TextColumn
+                        title={
+                            selectedProvider.isCloud ? (
+                                <Translation
+                                    id="TR_CONNECTED_TO_PROVIDER"
+                                    values={{
+                                        provider: capitalizeFirstLetter(selectedProvider.type),
+                                        user: selectedProvider.user,
+                                    }}
+                                />
+                            ) : (
+                                <Translation id="TR_CONNECTED_TO_PROVIDER_LOCALLY" />
+                            )
+                        }
+                        description={
+                            selectedProvider.isCloud ? (
+                                <Translation id="TR_YOUR_LABELING_IS_SYNCED" />
+                            ) : (
+                                <Translation id="TR_YOUR_LABELING_IS_SYNCED_LOCALLY" />
+                            )
+                        }
+                    />
+                    <ActionColumn>
+                        <ActionButton
+                            intent="brand"
+                            onClick={handleClick}
+                            data-testid="@settings/metadata/disconnect-provider-button"
+                        >
+                            <Translation id="TR_DISCONNECT" />
+                        </ActionButton>
+                    </ActionColumn>
+                </SectionItem>
+            )}
+        </Anchor>
     );
 };

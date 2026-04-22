@@ -1,4 +1,4 @@
-import { act, renderWithStoreProvider } from '@suite-native/test-utils';
+import { act, renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { btcAsset, ethAsset, mockWalletFiatRatesAndSettings } from '@suite-native/trading-fixtures';
 
 import {

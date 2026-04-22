@@ -31,36 +31,37 @@ const quotesRequest: BuyTradeQuoteRequest = {
     fiatStringAmount: '1',
 };
 
-const buyQuotes: BuyTrade[] = [
-    {
-        fiatStringAmount: '47.12',
-        fiatCurrency: 'EUR',
-        receiveCurrency: 'BTC' as CryptoId,
-        receiveStringAmount: '0.004705020432603938',
-        rate: 10014.834297738,
-        quoteId: 'd369ba9e-7370-4a6e-87dc-aefd3851c735',
-        exchange: 'mercuryo',
-        minFiat: 20.03,
-        maxFiat: 2000.05,
-        minCrypto: 0.002,
-        maxCrypto: 0.19952,
-        paymentMethod: 'creditCard',
-    },
-    {
-        fiatStringAmount: '47.12',
-        fiatCurrency: 'EUR',
-        receiveCurrency: 'BTC' as CryptoId,
-        receiveStringAmount: '0.0041',
-        rate: 11492.682926829268,
-        quoteId: '53233267-8181-4151-9a67-9d8efc9a15db',
-        exchange: 'cexdirect',
-        minFiat: 25,
-        maxFiat: 1000,
-        minCrypto: 0.002,
-        maxCrypto: 0.1055,
-        paymentMethod: 'creditCard',
-    },
-];
+const mercuryoBuyQuote: BuyTrade = {
+    fiatStringAmount: '47.12',
+    fiatCurrency: 'EUR',
+    receiveCurrency: 'BTC' as CryptoId,
+    receiveStringAmount: '0.004705020432603938',
+    rate: 10014.834297738,
+    quoteId: 'd369ba9e-7370-4a6e-87dc-aefd3851c735',
+    exchange: 'mercuryo',
+    minFiat: 20.03,
+    maxFiat: 2000.05,
+    minCrypto: 0.002,
+    maxCrypto: 0.19952,
+    paymentMethod: 'creditCard',
+};
+
+const cexdirectBuyQuote: BuyTrade = {
+    fiatStringAmount: '47.12',
+    fiatCurrency: 'EUR',
+    receiveCurrency: 'BTC' as CryptoId,
+    receiveStringAmount: '0.0041',
+    rate: 11492.682926829268,
+    quoteId: '53233267-8181-4151-9a67-9d8efc9a15db',
+    exchange: 'cexdirect',
+    minFiat: 25,
+    maxFiat: 1000,
+    minCrypto: 0.002,
+    maxCrypto: 0.1055,
+    paymentMethod: 'creditCard',
+};
+
+const buyQuotes: BuyTrade[] = [mercuryoBuyQuote, cexdirectBuyQuote];
 
 const amountLimits: TradingAmountLimitProps = {
     currency: 'bitcoin',
@@ -149,12 +150,12 @@ export const buyTradingFixtures = [
         actions: [
             {
                 type: tradingBuyActions.saveSelectedQuote.type,
-                payload: buyQuotes[0],
+                payload: mercuryoBuyQuote,
             },
         ],
         result: {
             ...buyInitialState,
-            selectedQuote: buyQuotes[0],
+            selectedQuote: mercuryoBuyQuote,
         },
     },
     {

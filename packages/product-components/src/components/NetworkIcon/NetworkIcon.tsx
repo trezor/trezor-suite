@@ -7,7 +7,11 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type LegacyNetworkSymbol, NETWORK_ICONS } from '../../constants/networks';
 
 const StyledReactSVG = styled(ReactSVG)`
-    line-height: 0;
+    display: flex;
+
+    div {
+        display: flex;
+    }
 ` as typeof ReactSVG;
 
 export interface NetworkIconProps {

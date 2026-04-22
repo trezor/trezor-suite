@@ -12,10 +12,10 @@ type MapArgs = {
 
 const mapVariantToBackgroundColor = ({ $variant, theme }: MapArgs): CSSColor => {
     const colorMap: Record<StatusLightVariant, Color> = {
-        primary: 'backgroundPrimarySubtleOnElevation0',
-        warning: 'backgroundAlertRedSubtleOnElevation0',
-        destructive: 'backgroundAlertRedSubtleOnElevation0',
-        info: 'backgroundAlertBlueSubtleOnElevation0',
+        primary: 'legacyBackgroundPrimarySubtleOnElevation0',
+        warning: 'legacyBackgroundAlertRedSubtleOnElevation0',
+        destructive: 'legacyBackgroundAlertRedSubtleOnElevation0',
+        info: 'legacyBackgroundAlertBlueSubtleOnElevation0',
     };
 
     return theme[colorMap[$variant]];
@@ -23,10 +23,10 @@ const mapVariantToBackgroundColor = ({ $variant, theme }: MapArgs): CSSColor => 
 
 const getInnerBackgroundColor = ({ $variant, theme }: MapArgs): CSSColor => {
     const colorMap: Record<StatusLightVariant, Color> = {
-        primary: 'backgroundPrimaryDefault',
-        warning: 'backgroundAlertYellowBold',
-        destructive: 'backgroundAlertRedBold',
-        info: 'textAlertBlue',
+        primary: 'legacyBackgroundPrimaryDefault',
+        warning: 'legacyBackgroundAlertYellowBold',
+        destructive: 'legacyBackgroundAlertRedBold',
+        info: 'contentInfo',
     };
 
     return theme[colorMap[$variant]];

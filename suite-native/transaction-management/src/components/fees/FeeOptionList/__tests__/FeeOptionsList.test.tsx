@@ -1,15 +1,19 @@
+import { type StateFromReducersMapObject, combineReducers } from '@reduxjs/toolkit';
+
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type AccountKey, type GeneralPrecomposedLevels } from '@suite-common/wallet-types';
+import { initialWalletSettingsState } from '@suite-common/wallet-core';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { Form } from '@suite-native/forms';
+import { localeReducer } from '@suite-native/intl';
 import {
-    type PreloadedState,
-    type TestStore,
-    initStore,
+    createLightStore,
+    createStaticReducer,
     renderHookWithStoreProvider,
     renderWithStoreProvider,
     userEvent,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils-store';
 
+import { createFeeLevel, createFeeLevels } from '../../../../__fixtures__/feeLevels';
 import { getWalletState } from '../../../../__fixtures__/walletState';
 import { useFeesForm } from '../../../../hooks/fees/useFeesForm';
 import { FeeOptionsList, type FeeOptionsListProps } from '../FeeOptionsList';
@@ -29,23 +33,12 @@ const mockSelectConvertedNetworkFeeLevelFeePerUnit = jest.requireMock(
 ).selectConvertedNetworkFeeLevelFeePerUnit;
 
 describe('FeeOptionsList', () => {
-    let store: TestStore;
-
-    const createMockFeeLevel = () =>
-        ({
-            type: 'final',
-            totalSpent: '100000',
-            fee: '1000',
-            feePerByte: '10',
-            bytes: 250,
-            feeLimit: '21000',
-        }) as any;
-
-    const createMockFeeLevels = (): GeneralPrecomposedLevels => ({
-        economy: { ...createMockFeeLevel(), feePerByte: '4', fee: '1000', bytes: 250 },
-        normal: { ...createMockFeeLevel(), feePerByte: '10', fee: '2000', bytes: 250 },
-        high: { ...createMockFeeLevel(), feePerByte: '30', fee: '3000', bytes: 250 },
-    });
+    const createMockFeeLevels = () =>
+        createFeeLevels({
+            economy: { totalSpent: '100000', feePerByte: '4', fee: '1000', feeLimit: '21000' },
+            normal: { totalSpent: '100000', feePerByte: '10', fee: '2000', feeLimit: '21000' },
+            high: { totalSpent: '100000', feePerByte: '30', fee: '3000', feeLimit: '21000' },
+        });
 
     const defaultProps = {
         feeLevels: createMockFeeLevels(),
@@ -54,13 +47,33 @@ describe('FeeOptionsList', () => {
         onSelectedFeeLevel: jest.fn(),
     };
 
-    const defaultState = {
-        wallet: getWalletState(),
+    const defaultWalletState = {
+        ...getWalletState(),
+        fees: {},
     };
 
+    const reducer = {
+        locale: localeReducer,
+        wallet: combineReducers({
+            settings: createStaticReducer(initialWalletSettingsState),
+            accounts: createStaticReducer(defaultWalletState.accounts),
+            fiat: createStaticReducer(defaultWalletState.fiat),
+            send: createStaticReducer(defaultWalletState.send),
+            fees: createStaticReducer(defaultWalletState.fees),
+        }),
+    } as const;
+
+    const createFeeOptionsStore = (
+        preloadedState?: Partial<StateFromReducersMapObject<typeof reducer>>,
+    ) =>
+        createLightStore({
+            reducer,
+            preloadedState,
+        });
+
     const renderUseFeesForm = (
+        store: ReturnType<typeof createFeeOptionsStore>,
         accountKey: AccountKey = 'eth-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`,
-        preloadedState?: PreloadedState,
         defaultFeePerUnit?: string,
     ) => {
         const { result } = renderHookWithStoreProvider(
@@ -70,7 +83,7 @@ describe('FeeOptionsList', () => {
                     defaultFeePerUnit: defaultFeePerUnit || '1',
                 }),
             {
-                preloadedState: preloadedState || defaultState,
+                store,
             },
         );
 
@@ -81,22 +94,20 @@ describe('FeeOptionsList', () => {
         preloadedState,
         props,
     }: {
-        preloadedState?: PreloadedState;
+        preloadedState?: Partial<StateFromReducersMapObject<typeof reducer>>;
         props?: Partial<FeeOptionsListProps>;
     }) => {
         const finalProps = { ...defaultProps, ...props };
-        const form = renderUseFeesForm();
+        const store = createFeeOptionsStore(preloadedState);
+        const form = renderUseFeesForm(store);
 
         return renderWithStoreProvider(<FeeOptionsList {...finalProps} />, {
             store,
-            preloadedState: preloadedState || defaultState,
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
     };
 
     beforeEach(() => {
-        store = initStore(defaultState).store;
-
         // Default mock implementations
         mockSelectConvertedNetworkFeeLevelTimeEstimate.mockReturnValue('~10 minutes');
         mockSelectConvertedNetworkFeeLevelFeePerUnit.mockReturnValue('10');
@@ -127,8 +138,8 @@ describe('FeeOptionsList', () => {
         it('should filter out custom and low fee levels for btc network', () => {
             const feeLevels = {
                 ...createMockFeeLevels(),
-                custom: createMockFeeLevel(),
-                low: createMockFeeLevel(),
+                custom: createFeeLevel(),
+                low: createFeeLevel(),
             };
 
             const { getByText, queryByText } = renderFeeOptionsList({
@@ -144,10 +155,11 @@ describe('FeeOptionsList', () => {
         });
 
         it('should work with economy if there is no normal', () => {
+            const all = createMockFeeLevels();
             const feeLevels = {
-                economy: createMockFeeLevels().economy,
-                high: createMockFeeLevels().high,
-            } as GeneralPrecomposedLevels;
+                economy: all.economy,
+                high: all.high,
+            };
 
             const { getByText, queryByText } = renderFeeOptionsList({
                 props: { feeLevels },
@@ -189,7 +201,7 @@ describe('FeeOptionsList', () => {
 
         it('should make options non-interactive when only one option is available', () => {
             const singleFeeLevel = {
-                normal: createMockFeeLevel(),
+                normal: createFeeLevel(),
             };
 
             const { queryByTestId } = renderFeeOptionsList({

@@ -35,6 +35,11 @@ export const shouldDeviceBeRemembered = ({
 export const isApprovalFlowSupported = (device: TrezorDevice | undefined) =>
     !device?.unavailableCapabilities?.['evmApproval'];
 
+export const isStablecoinYieldSupported = (_device: TrezorDevice | undefined) =>
+    // TODO: Replace with actual fw capability check once defined in trezor/trezor-firmware#6435.
+    // device?.unavailableCapabilities?.['erc4626'] !== 'update-required';
+    true;
+
 export const isTrezorDeviceWithState = (
     device: TrezorDevice | undefined,
 ): device is TrezorDeviceWithState =>

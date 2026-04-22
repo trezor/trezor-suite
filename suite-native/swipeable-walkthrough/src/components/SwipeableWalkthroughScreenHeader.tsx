@@ -25,7 +25,7 @@ const statusBarStyle = prepareNativeStyle<{ topSafeAreaInset: number }>(
         position: 'absolute',
         height: topSafeAreaInset,
         width: '100%',
-        backgroundColor: utils.colors.backgroundSurfaceElevation0,
+        backgroundColor: utils.colors.surfaceFillPage,
     }),
 );
 

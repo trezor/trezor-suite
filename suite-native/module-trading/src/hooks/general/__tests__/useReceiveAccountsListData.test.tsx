@@ -1,6 +1,5 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
-import { type PreloadedState, renderHookWithStoreProvider } from '@suite-native/test-utils';
 import {
     MOCK_ACCOUNT_DEVICE_SESSION_ID,
     accounts,
@@ -10,15 +9,20 @@ import {
     eth2legacyAccount,
 } from '@suite-native/trading-fixtures';
 
-const ADDRESS_COMMON = { received: '0', sent: '0', transfers: 0 };
-
+import {
+    type PreloadedStatePartial,
+    type TradingTestPreloadedState,
+    renderHookWithTradingProvider,
+} from '../../../__tests__/tradingTestUtils';
 import {
     type ReceiveAccountsListMode,
     useReceiveAccountsListData,
 } from '../useReceiveAccountsListData';
 
+const ADDRESS_COMMON = { received: '0', sent: '0', transfers: 0 };
+
 describe('useReceiveAccountsListData', () => {
-    const defaultPreloadedState = {
+    const defaultOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {
         device: {
             devices: [],
             selectedDevice: {
@@ -34,13 +38,13 @@ describe('useReceiveAccountsListData', () => {
         initialSymbol: NetworkSymbol,
         initialSelectedAccount: undefined | Account,
         initialMode: ReceiveAccountsListMode,
-        preloadedState: PreloadedState = defaultPreloadedState,
+        overrides: PreloadedStatePartial<TradingTestPreloadedState> = defaultOverrides,
     ) =>
-        renderHookWithStoreProvider(
+        renderHookWithTradingProvider(
             ({ symbol, selectedAccount, mode }) =>
                 useReceiveAccountsListData({ symbol, selectedAccount, mode }),
             {
-                preloadedState,
+                overrides,
                 initialProps: {
                     symbol: initialSymbol,
                     selectedAccount: initialSelectedAccount,
@@ -86,10 +90,12 @@ describe('useReceiveAccountsListData', () => {
             ]);
         });
 
-        it('should render empty array when wallet accounts are not initialized', () => {
+        it('should render empty array when wallet accounts are empty', () => {
             const { result } = renderUseReceiveAccountsListDataHook('btc', undefined, 'account', {
-                ...defaultPreloadedState,
-                wallet: undefined,
+                ...defaultOverrides,
+                wallet: {
+                    accounts: [],
+                },
             });
 
             expect(result.current).toEqual([]);
@@ -170,7 +176,7 @@ describe('useReceiveAccountsListData', () => {
         });
 
         it('should not display not visible accounts', () => {
-            const preloadedState = {
+            const overrides: PreloadedStatePartial<TradingTestPreloadedState> = {
                 device: {
                     devices: [],
                     selectedDevice: {
@@ -196,7 +202,7 @@ describe('useReceiveAccountsListData', () => {
                 'eth',
                 undefined,
                 'account',
-                preloadedState,
+                overrides,
             );
 
             expect(result.current).toEqual([]);

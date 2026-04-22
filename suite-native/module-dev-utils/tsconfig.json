@@ -26,11 +26,8 @@
         { "path": "../clipboard" },
         { "path": "../config" },
         { "path": "../feature-flags" },
-        { "path": "../firmware" },
         { "path": "../forms" },
-        { "path": "../icons" },
         { "path": "../intl" },
-        { "path": "../link" },
         { "path": "../navigation" },
         { "path": "../sentry" },
         { "path": "../services" },
@@ -40,11 +37,6 @@
         {
             "path": "../../packages/connect-common"
         },
-        { "path": "../../packages/env-utils" },
-        {
-            "path": "../../packages/styles-native"
-        },
-        { "path": "../../packages/theme" },
-        { "path": "../../packages/urls" }
+        { "path": "../../packages/env-utils" }
     ]
 }

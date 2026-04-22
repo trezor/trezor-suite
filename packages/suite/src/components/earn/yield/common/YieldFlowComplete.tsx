@@ -2,12 +2,11 @@ import { Translation, useTranslation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { type Rating, buildUserFeedbackData, sendFeedbackAction } from '@suite-common/feedback';
 import { Button, Card, Column, Icon, IconCircle, Row, Text } from '@trezor/components';
-import { FeedbackCard } from '@trezor/product-components';
+import { AssetLogo, FeedbackCard } from '@trezor/product-components';
 
 import { useDispatch } from 'src/hooks/suite';
 import { ApyValue } from 'src/views/wallet/staking/components/ApyValue';
 
-import { YieldTokenValue } from './YieldTokenValue';
 import type { YieldFlowCompleteValue } from './types';
 
 const flowTypeContentMap = {
@@ -113,26 +112,34 @@ export const YieldFlowComplete = ({ flowType, input, output, apy }: YieldFlowCom
                             <Text typographyStyle="body-md">
                                 <Translation id={flowContent.input} />
                             </Text>
-                            <YieldTokenValue
-                                token={{
-                                    ...input.token,
-                                    contractAddress: input.token.contractAddress ?? null,
-                                }}
-                                value={input.value}
-                            />
+                            <Row alignItems="center" gap={8}>
+                                <AssetLogo
+                                    coingeckoId={input.token.coingeckoId}
+                                    placeholder={input.token.symbol || 'token'}
+                                    symbol={input.token.networkSymbol}
+                                    contractAddress={input.token.contractAddress}
+                                    showNetworkIcon
+                                    size={24}
+                                />
+                                <Text typographyStyle="body-md-strong">{input.value}</Text>
+                            </Row>
                         </Column>
                         <Icon name="arrowRight" size={20} intent="neutral" priority="secondary" />
                         <Column gap={8} alignItems="flex-end">
                             <Text typographyStyle="body-md">
                                 <Translation id={flowContent.output} />
                             </Text>
-                            <YieldTokenValue
-                                token={{
-                                    ...output.token,
-                                    contractAddress: output.token.contractAddress ?? null,
-                                }}
-                                value={output.value}
-                            />
+                            <Row alignItems="center" gap={8}>
+                                <AssetLogo
+                                    coingeckoId={output.token.coingeckoId}
+                                    placeholder={output.token.symbol || 'token'}
+                                    symbol={output.token.networkSymbol}
+                                    contractAddress={output.token.contractAddress}
+                                    showNetworkIcon
+                                    size={24}
+                                />
+                                <Text typographyStyle="body-md-strong">{output.value}</Text>
+                            </Row>
                         </Column>
                     </Row>
                 </Column>

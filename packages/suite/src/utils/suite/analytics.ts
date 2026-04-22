@@ -1,4 +1,4 @@
-import type { AppUpdateEvent, SuiteReadyPayload } from '@suite/analytics';
+import type { SuiteReadyPayload } from '@suite/analytics';
 import { AccountTransactionBaseAnchor } from '@suite/router';
 import {
     selectAutodetectLanguage,
@@ -32,7 +32,6 @@ import {
     getWindowHeight,
     getWindowWidth,
 } from '@trezor/env-utils';
-import { type UpdateInfo } from '@trezor/suite-desktop-api';
 
 import { type AppState } from 'src/types/suite';
 
@@ -108,22 +107,3 @@ export const getSuiteReadyPayload = async (state: AppState): Promise<SuiteReadyP
         networkReserve: state.wallet.settings.networkReserve,
     };
 };
-
-export const getAppUpdatePayload = ({
-    status,
-    earlyAccessProgram,
-    updateInfo,
-    isAutoUpdated,
-}: {
-    status: AppUpdateEvent['status'];
-    earlyAccessProgram: boolean;
-    updateInfo?: UpdateInfo;
-    isAutoUpdated?: boolean;
-}): AppUpdateEvent => ({
-    fromVersion: process.env.VERSION || '',
-    toVersion: updateInfo?.version,
-    status,
-    earlyAccessProgram,
-    isPrerelease: updateInfo?.prerelease,
-    isAutoUpdated,
-});

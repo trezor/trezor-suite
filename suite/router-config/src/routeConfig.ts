@@ -311,6 +311,13 @@ export const routes = [
         isNestedRoute: true,
     },
     {
+        name: 'wallet-tokens-defi',
+        pattern: '/accounts/tokens/defi',
+        app: 'wallet',
+        params: walletParams,
+        isNestedRoute: true,
+    },
+    {
         name: 'wallet-nfts',
         pattern: '/accounts/nfts',
         app: 'wallet',

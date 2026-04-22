@@ -6,9 +6,8 @@ import {
     EarnFlow,
     EarnProvider,
 } from '@suite-common/suite-types/src/staking';
-import { getCoingeckoId } from '@suite-common/wallet-config';
 import { Box, Button, Column, IconButton, Row, Text } from '@trezor/components';
-import { AssetLogo, CoinLogo } from '@trezor/product-components';
+import { AssetLogo } from '@trezor/product-components';
 
 import { AccountLabel } from 'src/components/suite';
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
@@ -30,14 +29,6 @@ export const YieldPageHeader = ({ analyticsStep }: YieldPageHeaderProps) => {
         : undefined;
     const vaultName = vault?.metadata.name;
     const networkSymbol = account?.symbol;
-    const assetLogo =
-        vault?.token && networkSymbol
-            ? {
-                  coingeckoId: getCoingeckoId(networkSymbol) ?? vault.token.coinGeckoId,
-                  placeholder: vault.token.symbol || vault.token.name || 'token',
-                  contractAddress: vault.token.address ?? null,
-              }
-            : undefined;
 
     const onBackClick = () => {
         dispatch(goto({ routeName: 'suite-earn' }));
@@ -52,7 +43,7 @@ export const YieldPageHeader = ({ analyticsStep }: YieldPageHeaderProps) => {
             openModal({
                 type: 'earn-in-a-nutshell',
                 flow: EarnFlow.Yield,
-                provider: EarnProvider.YieldXyz,
+                provider: EarnProvider.Morpho,
                 account,
                 analyticsStep,
                 actionType: 'close',
@@ -78,23 +69,16 @@ export const YieldPageHeader = ({ analyticsStep }: YieldPageHeaderProps) => {
 
                 {vaultName ? (
                     <Row alignItems="center" gap={12} overflow="hidden">
-                        {networkSymbol &&
-                            (assetLogo?.coingeckoId ? (
-                                <AssetLogo
-                                    size={32}
-                                    coingeckoId={assetLogo.coingeckoId}
-                                    placeholder={assetLogo.placeholder}
-                                    symbol={networkSymbol}
-                                    contractAddress={assetLogo.contractAddress}
-                                    showNetworkIcon
-                                />
-                            ) : (
-                                <CoinLogo
-                                    size={32}
-                                    symbol={networkSymbol}
-                                    type="tokenWithNetwork"
-                                />
-                            ))}
+                        {networkSymbol && (
+                            <AssetLogo
+                                coingeckoId={vault?.token?.coinGeckoId}
+                                placeholder={vault?.token?.symbol || vault?.token?.name || ''}
+                                symbol={networkSymbol}
+                                contractAddress={vault?.token?.address}
+                                showNetworkIcon
+                                size={32}
+                            />
+                        )}
                         <Column gap={2} overflow="hidden">
                             <Text typographyStyle="body-md-strong" ellipsisLineCount={1}>
                                 {vaultName}

@@ -35,8 +35,8 @@ export type IconButtonProps = Omit<
 const iconButtonStyle = mergeNativeStyles([
     buttonStyle,
     prepareNativeStyle<ButtonStyleProps>((_, { size }) => ({
+        alignSelf: 'center',
         // Padding must be set explicitly to override the base button size styles.
-        alignSelf: 'flex-start',
         paddingVertical: iconButtonPaddingMap[size],
         paddingHorizontal: iconButtonPaddingMap[size],
         borderRadius: iconButtonBorderRadiusMap[size],

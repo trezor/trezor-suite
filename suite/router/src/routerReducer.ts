@@ -16,6 +16,7 @@ const ACCOUNT_TABS = [
     'wallet-nfts-hidden',
     'wallet-tokens-hidden',
     'wallet-tokens-inactive',
+    'wallet-tokens-defi',
     'wallet-staking',
 ];
 
@@ -91,11 +92,11 @@ export const selectURLSearchParams = createMemoizedSelector(
     (search): URLSearchParams | null => (search ? new URLSearchParams(search) : null),
 );
 
-export const selectIsAccountTabPage = (state: RouterRootState) => {
-    const routeName = selectRouteName(state);
+export const isAccountTabRoute = (routeName: string | undefined): boolean =>
+    routeName !== undefined && ACCOUNT_TABS.includes(routeName);
 
-    return routeName !== undefined && ACCOUNT_TABS.includes(routeName);
-};
+export const selectIsAccountTabPage = (state: RouterRootState) =>
+    isAccountTabRoute(selectRouteName(state));
 
 export const selectRouterApp = (state: RouterRootState) => state.router.app;
 

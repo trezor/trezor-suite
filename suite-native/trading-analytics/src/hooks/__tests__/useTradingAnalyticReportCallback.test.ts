@@ -6,8 +6,12 @@ import {
     events,
 } from '@suite-native/analytics';
 import { useAnalytics } from '@suite-native/services';
-import { type PreloadedState, renderHookWithStoreProvider } from '@suite-native/test-utils';
-import { exchangeQuotes, getWalletState, sellQuotes } from '@suite-native/trading-fixtures';
+import { renderHookWithStoreProvider } from '@suite-native/test-utils-store';
+import {
+    banxaCreditCardSellQuote,
+    getWalletState,
+    mercuryoFixedWorstQuote,
+} from '@suite-native/trading-fixtures';
 
 import { useTradingAnalyticReportCallback } from '../useTradingAnalyticReportCallback';
 
@@ -23,7 +27,7 @@ jest.mock('@suite-native/services', () => {
 });
 
 describe('useTradingAnalyticReportCallback', () => {
-    let preloadedState: PreloadedState;
+    let preloadedState: Record<string, unknown>;
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -36,9 +40,17 @@ describe('useTradingAnalyticReportCallback', () => {
     describe('when tradingType is "sell"', () => {
         beforeEach(() => {
             preloadedState = {
-                wallet: getWalletState({ tradeType: 'sell' }),
+                wallet: {
+                    ...getWalletState({ tradeType: 'sell' }),
+                    trading: {
+                        ...getWalletState({ tradeType: 'sell' }).trading,
+                        sell: {
+                            ...getWalletState({ tradeType: 'sell' }).trading.sell,
+                            selectedQuote: banxaCreditCardSellQuote,
+                        },
+                    },
+                },
             };
-            preloadedState.wallet!.trading!.sell!.selectedQuote = sellQuotes[0];
         });
 
         it('should return sell analytics callback', () => {
@@ -65,9 +77,17 @@ describe('useTradingAnalyticReportCallback', () => {
     describe('when tradingType is "exchange"', () => {
         beforeEach(() => {
             preloadedState = {
-                wallet: getWalletState({ tradeType: 'exchange' }),
+                wallet: {
+                    ...getWalletState({ tradeType: 'exchange' }),
+                    trading: {
+                        ...getWalletState({ tradeType: 'exchange' }).trading,
+                        exchange: {
+                            ...getWalletState({ tradeType: 'exchange' }).trading.exchange,
+                            selectedQuote: mercuryoFixedWorstQuote,
+                        },
+                    },
+                },
             };
-            preloadedState.wallet!.trading!.exchange!.selectedQuote = exchangeQuotes[0];
         });
 
         it('should return exchange analytics callback', () => {

@@ -11,15 +11,14 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "better-sqlite3": "^12.8.0",
-        "ws": "^8.18.0"
+        "ws": "^8.20.0"
     },
     "devDependencies": {
         "@evolu/common": "8.0.0-next.3",
+        "@evolu/nodejs": "3.0.0-next.2",
         "@suite-common/suite-sync-evolu": "workspace:*",
         "@suite-common/suite-sync-storage": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
-        "@suite-common/wallet-types": "workspace:*",
-        "@types/better-sqlite3": "^7.6.13"
+        "@suite-common/wallet-types": "workspace:*"
     }
 }

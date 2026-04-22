@@ -19,7 +19,7 @@ const Image = styled.div`
 // eslint-disable-next-line local-rules/no-override-ds-component
 const StepNumber = styled(Paragraph)`
     margin: 24px 0 6px;
-    color: ${({ theme }) => theme.textSubdued};
+    color: ${({ theme }) => theme.contentSecondary};
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
         grid-column: 2;

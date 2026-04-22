@@ -31,7 +31,7 @@ export const DeviceNameScreen = () => {
                             hint={hintMessage || ''}
                             maxLength={MAX_LENGTH}
                             rightIcon={
-                                <Text variant="body-md" color="textSubdued">
+                                <Text variant="body-md" color="contentSecondary">
                                     {`${deviceNameValue.length}/${MAX_LENGTH}`}
                                 </Text>
                             }

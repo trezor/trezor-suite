@@ -103,8 +103,11 @@
         {
             "path": "../../suite-common/e2e-evolu-client"
         },
+        {
+            "path": "../../suite-common/message-system"
+        },
         { "path": "../storybook" },
-        { "path": "../test-utils" },
+        { "path": "../test-utils-store" },
         {
             "path": "../../packages/connect-mobile"
         },

@@ -37,7 +37,7 @@ const AccountDetailSettingsRow = ({
         alignItems="center"
         justifyContent="space-between"
     >
-        <Text variant="body-sm" color="textSubdued">
+        <Text variant="body-sm" color="contentSecondary">
             {title}
         </Text>
         {children}

@@ -3,9 +3,13 @@ import { type RouteProp } from '@react-navigation/native';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { type TradingStackParamList, type TradingStackRoutes } from '@suite-native/navigation';
-import { type PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils';
-import { accounts, getInitializedTradingState } from '@suite-native/trading-fixtures';
+import { accounts } from '@suite-native/trading-fixtures';
 
+import {
+    type PreloadedStatePartial,
+    type TradingTestPreloadedState,
+    renderWithTradingProvider,
+} from '../../__tests__/tradingTestUtils';
 import { TradingReceiveAccountsPickerScreen } from '../TradingReceiveAccountsPickerScreen';
 
 let mockRouteParams: {
@@ -21,7 +25,9 @@ jest.mock('@react-navigation/native', () => ({
         }) as RouteProp<TradingStackParamList, TradingStackRoutes.ReceiveAccounts>,
 }));
 
-const getPreloadedState = (preloadedAccounts: Account[]): PreloadedState => ({
+const overridesWithAccounts = (
+    preloadedAccounts: Account[],
+): PreloadedStatePartial<TradingTestPreloadedState> => ({
     device: {
         devices: [],
         selectedDevice: {
@@ -35,18 +41,16 @@ const getPreloadedState = (preloadedAccounts: Account[]): PreloadedState => ({
     },
     wallet: {
         accounts: preloadedAccounts,
-        trading: {
-            ...getInitializedTradingState(),
-        },
     },
 });
 
 describe('TradingReceiveAccountsPickerScreen', () => {
     let unmount: (() => void) | undefined;
 
-    const renderScreen = (preloadedState: PreloadedState) => {
-        const result = renderWithStoreProvider(<TradingReceiveAccountsPickerScreen />, {
-            preloadedState,
+    const renderScreen = (overrides: PreloadedStatePartial<TradingTestPreloadedState>) => {
+        const result = renderWithTradingProvider(<TradingReceiveAccountsPickerScreen />, {
+            tradeType: mockRouteParams.tradingType,
+            overrides,
         });
 
         ({ unmount } = result);
@@ -64,7 +68,7 @@ describe('TradingReceiveAccountsPickerScreen', () => {
     it('should render account list with correct title', () => {
         mockRouteParams = { symbol: 'btc', tradingType: 'buy' };
 
-        const { getByText } = renderScreen(getPreloadedState([]));
+        const { getByText } = renderScreen(overridesWithAccounts([]));
 
         expect(getByText('Select account')).toBeTruthy();
     });
@@ -72,7 +76,7 @@ describe('TradingReceiveAccountsPickerScreen', () => {
     it('should render account list with accounts', () => {
         mockRouteParams = { symbol: 'btc', tradingType: 'buy' };
 
-        const { getByText } = renderScreen(getPreloadedState(accounts));
+        const { getByText } = renderScreen(overridesWithAccounts(accounts));
 
         expect(getByText(accounts[0].accountLabel!)).toBeTruthy();
     });
@@ -80,7 +84,7 @@ describe('TradingReceiveAccountsPickerScreen', () => {
     it('should render account list with accounts for exchange', () => {
         mockRouteParams = { symbol: 'btc', tradingType: 'exchange' };
 
-        const { getByText } = renderScreen(getPreloadedState(accounts));
+        const { getByText } = renderScreen(overridesWithAccounts(accounts));
 
         expect(getByText(accounts[0].accountLabel!)).toBeTruthy();
     });
@@ -88,7 +92,7 @@ describe('TradingReceiveAccountsPickerScreen', () => {
     it('should render empty state when no account exist', () => {
         mockRouteParams = { symbol: 'btc', tradingType: 'buy' };
 
-        const { getByText } = renderScreen(getPreloadedState([]));
+        const { getByText } = renderScreen(overridesWithAccounts([]));
 
         expect(getByText('Account not found')).toBeTruthy();
     });
@@ -96,7 +100,7 @@ describe('TradingReceiveAccountsPickerScreen', () => {
     it('should render add account button', () => {
         mockRouteParams = { symbol: 'btc', tradingType: 'buy' };
 
-        const { getByText } = renderScreen(getPreloadedState([]));
+        const { getByText } = renderScreen(overridesWithAccounts([]));
 
         expect(getByText('Add new')).toBeTruthy();
     });

@@ -1,5 +1,9 @@
 # Storage changelog
 
+## 26.5.0
+
+- reset Ethereum account nonces to `-1` in order to force account refresh for DeFi tokens
+
 ## 26.4.0.2
 
 - rename `experimentalFeedback` object store to `featureFeedback`

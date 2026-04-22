@@ -8,7 +8,7 @@ import { ReviewOutputStatusBadge } from './ReviewOutputStatusBadge';
 
 type ReviewOutputCardProps = {
     children: ReactNode;
-    title: string;
+    title: ReactNode;
     outputState: ReviewOutputState;
 };
 
@@ -16,15 +16,15 @@ const REVIEW_OUTPUT_CARD_TEST_ID = 'review-output-card';
 
 const cardStyle = prepareNativeStyle<{ isConfirmed: boolean }>((utils, { isConfirmed }) => ({
     borderWidth: utils.borders.widths.small,
-    borderColor: utils.colors.borderElevation1,
+    borderColor: utils.colors.borderNeutral,
     paddingHorizontal: utils.spacings.sp16,
     paddingVertical: utils.spacings.sp12,
     borderRadius: utils.borders.radii.r12,
     extend: {
         condition: isConfirmed,
         style: {
-            backgroundColor: utils.colors.backgroundTertiaryDefaultOnElevation1,
-            borderColor: utils.colors.borderElevation0,
+            backgroundColor: utils.colors.legacyBackgroundTertiaryDefaultOnElevation1,
+            borderColor: utils.colors.borderNeutral,
         },
     },
 }));
@@ -33,7 +33,7 @@ export const ReviewOutputCard = ({ children, title, outputState }: ReviewOutputC
     const { applyStyle } = useNativeStyles();
 
     const isConfirmed = outputState === 'success';
-    const dividerColor = isConfirmed ? 'borderElevation0' : 'borderElevation1';
+    const dividerColor = isConfirmed ? 'borderNeutral' : 'borderNeutral';
 
     return (
         <Card style={applyStyle(cardStyle, { isConfirmed })}>

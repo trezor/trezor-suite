@@ -1,4 +1,4 @@
-import bs58 from 'bs58';
+import { base58 } from '@scure/base';
 
 import {
     Bundle,
@@ -18,7 +18,7 @@ import type {
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { fromHardened, getSerializedPath, validatePath } from '../../../utils/pathUtils';
-import { bundlify, getFirmwareRange } from '../../common/paramsValidator';
+import { bundlify } from '../../common/paramsValidator';
 
 export default class SolanaGetPublicKey extends AbstractMethod<
     'solanaGetPublicKey',
@@ -46,11 +46,7 @@ export default class SolanaGetPublicKey extends AbstractMethod<
         this.hasBundle = hasBundle;
         this.confirmMissingBackup = true;
         this.requiredDeviceCapabilities = ['Capability_Solana'];
-        this.firmwareRange = getFirmwareRange(
-            this.name,
-            getMiscNetwork('Solana'),
-            this.firmwareRange,
-        );
+        this.requiredFirmwareCoins = [getMiscNetwork('Solana')];
     }
 
     get requiredPermissions(): MethodPermission[] {
@@ -83,7 +79,7 @@ export default class SolanaGetPublicKey extends AbstractMethod<
                 path: batch.address_n,
                 serializedPath: getSerializedPath(batch.address_n),
                 publicKey: message.public_key,
-                publicKeyBase58: bs58.encode(Buffer.from(message.public_key, 'hex')),
+                publicKeyBase58: base58.encode(Buffer.from(message.public_key, 'hex')),
             });
 
             if (this.hasBundle) {

@@ -9,7 +9,6 @@ import { getRandomInt } from '@trezor/utils';
 import { generateEntropy, verifyEntropy } from '../api/firmware/verifyEntropy';
 import type { MethodMessage, MethodPermission } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
-import { getFirmwareRange } from './common/paramsValidator';
 import { validatePath } from '../utils/pathUtils';
 import { calculateXPubHashes } from './firmware/calculateXPubHash';
 
@@ -31,6 +30,7 @@ export default class ResetDevice extends AbstractMethod<'resetDevice', PROTO.Res
             skip_backup: payload.skip_backup,
             no_backup: payload.no_backup,
             backup_type: payload.backup_type,
+            backup_method: payload.backup_method,
             entropy_check:
                 typeof payload.entropy_check === 'boolean' ? payload.entropy_check : true,
         };
@@ -39,7 +39,6 @@ export default class ResetDevice extends AbstractMethod<'resetDevice', PROTO.Res
         this.allowDeviceMode = [UI_REQUEST.INITIALIZE, UI_REQUEST.SEEDLESS];
         this.useDeviceState = false;
         this.skipFinalReload = false;
-        this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
     }
     get requiredPermissions(): MethodPermission[] {
         return ['management'];

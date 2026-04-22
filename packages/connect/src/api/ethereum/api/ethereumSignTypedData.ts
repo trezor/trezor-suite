@@ -17,7 +17,6 @@ import { getEthereumNetwork } from '../../../data/coinInfo';
 import { getNetworkLabel } from '../../../utils/ethereumUtils';
 import { messageToHex } from '../../../utils/formatUtils';
 import { getSerializedPath, getSlip44ByPath, validatePath } from '../../../utils/pathUtils';
-import { getFirmwareRange } from '../../common/paramsValidator';
 import { getEthereumDefinitions } from '../ethereumDefinitions';
 import { encodeData, getFieldType, parseArrayType } from '../ethereumSignTypedData';
 
@@ -87,17 +86,11 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
 
         super(message, params);
         this.requiredDeviceCapabilities = ['Capability_Ethereum'];
-
-        this.firmwareRange = getFirmwareRange(this.name, network, this.firmwareRange);
-
+        this.requiredFirmwareCoins = [network];
+        // Only newer firmwares support this feature
+        // Older firmwares will give wrong results / throw errors
         if (params.data.primaryType === 'EIP712Domain') {
-            // Only newer firmwares support this feature
-            // Older firmwares will give wrong results / throw errors
-            this.firmwareRange = getFirmwareRange(
-                'eip712-domain-only',
-                network,
-                this.firmwareRange,
-            );
+            this.requiredFirmwareCapabilities = ['eip712-domain-only'];
         }
     }
 

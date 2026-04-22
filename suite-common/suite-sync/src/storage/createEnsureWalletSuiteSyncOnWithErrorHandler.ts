@@ -6,7 +6,7 @@ import {
 } from '@suite-common/suite-sync-types';
 import { exhaustive } from '@trezor/type-utils';
 
-import { setSuiteSyncError } from '../suiteSyncSlice';
+import { resetSuiteSyncError, setSuiteSyncError } from '../suiteSyncSlice';
 
 export type CreateEnsureWalletSuiteSyncOnWithFwCheckDeps = {
     dispatch: Dispatch;
@@ -39,9 +39,8 @@ export const createEnsureWalletSuiteSyncOnWithErrorHandler =
                 case 'SuiteSyncUnavailableOnDeviceError':
                     // This error is now not handled in the UI, so we don't need to set the error. It will probably be added as a follow up.
                     deps.dispatch(
-                        setSuiteSyncError({
+                        resetSuiteSyncError({
                             deviceStaticSessionId: params.deviceStaticSessionId,
-                            error: null,
                         }),
                     );
                     break;
@@ -55,9 +54,8 @@ export const createEnsureWalletSuiteSyncOnWithErrorHandler =
             }
         } else {
             deps.dispatch(
-                setSuiteSyncError({
+                resetSuiteSyncError({
                     deviceStaticSessionId: params.deviceStaticSessionId,
-                    error: null,
                 }),
             );
         }

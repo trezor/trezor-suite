@@ -2345,7 +2345,7 @@
   "TR_TURN_ON_SECURE_SYNC": "Aktivieren",
   "TR_TURN_ON_SECURE_SYNC_DATA_LABELS": "Benenne deine Wallets, personalisiere Konten und versehe Transaktionen mit Labels.",
   "TR_TURN_ON_SECURE_SYNC_DATA_STORED_LOCALLY": "Synchronisiere deine Labels und Namen sicher zwischen Mobile und Desktop.",
-  "TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_DESCRIPTION": "Aktualisiere die Firmware auf dem Gerät {name} um Suite Sync zu nutzen.",
+  "TR_FW_UPDATE_REQUIRED_MODAL_DESCRIPTION": "Aktualisiere die Firmware auf dem Gerät {name} um {featureName} zu nutzen.",
   "TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_HEADING": "Firmware-Update erforderlich",
   "TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_NOT_NOW": "Nicht jetzt",
   "TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_UPGRADE": "Update",

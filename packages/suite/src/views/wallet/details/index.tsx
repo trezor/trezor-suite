@@ -24,7 +24,7 @@ import { RescanAccount } from './RescanAccount';
 import { Bip329Labels } from '../labels/Bip329Labels';
 
 const Heading = styled.h3`
-    color: ${({ theme }) => theme.textSubdued};
+    color: ${({ theme }) => theme.contentSecondary};
     ${typography['body-sm-strong']}
     margin: 14px 0 4px;
     text-transform: uppercase;

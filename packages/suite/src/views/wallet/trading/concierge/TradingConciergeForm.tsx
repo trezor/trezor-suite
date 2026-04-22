@@ -48,7 +48,7 @@ export const TradingConciergeForm = () => {
                     />
                 </Column>
             </Card>
-            <Button width="100%" isDisabled={!provider} href={provider?.url}>
+            <Button width="100%" isDisabled={!provider} href={provider?.url} size="large">
                 <Translation id="TR_CONTINUE" />
             </Button>
         </>

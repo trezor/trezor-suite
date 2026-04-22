@@ -50,15 +50,15 @@ export const StakingInfo = ({ accountKey }: StakingInfoProps) => {
 
             <Box marginTop="sp16" alignItems="center">
                 {/* TODO: replace with new icon once we have new package ready */}
-                {/* <Icon name="desktop" color="textSubdued" size="extraLarge" /> */}
+                {/* <Icon name="desktop" color="contentSecondary" size="extraLarge" /> */}
 
                 <Box justifyContent="center" alignItems="center" marginTop="sp8">
-                    <Text color="textSubdued" textAlign="center">
+                    <Text color="contentSecondary" textAlign="center">
                         <Translation id="earn.stakingCanBeManaged" />
                     </Text>
 
                     <PressableOpacity onPress={handleDesktopClick}>
-                        <Text color="textSubdued" style={applyStyle(linkStyle)}>
+                        <Text color="contentSecondary" style={applyStyle(linkStyle)}>
                             <Translation id="earn.trezorDesktop" />
                         </Text>
                     </PressableOpacity>

@@ -30,15 +30,15 @@ const hintTextStyle = prepareNativeStyle<{ color: Color }>((utils, { color }) =>
 
 const hintVariants: Record<HintVariant, { iconName: IconName; color: Color }> = {
     hint: {
-        color: 'textSubdued',
+        color: 'contentSecondary',
         iconName: 'question',
     },
     error: {
-        color: 'textAlertRed',
+        color: 'contentCritical',
         iconName: 'warningCircle',
     },
     info: {
-        color: 'textAlertBlue',
+        color: 'contentInfo',
         iconName: 'info',
     },
 };

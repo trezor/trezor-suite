@@ -36,7 +36,7 @@ import { AbstractMethod } from '../core/AbstractMethod';
 import { getBitcoinNetwork } from '../data/coinInfo';
 import { getLabel } from '../utils/pathUtils';
 import { getTransactionVbytes } from './bitcoin/transactionBytes';
-import { getFirmwareRange, validateParams } from './common/paramsValidator';
+import { validateParams } from './common/paramsValidator';
 
 type Params = {
     inputs: PROTO.TxInputType[];
@@ -183,8 +183,7 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
 
         super(message, params);
 
-        // set required firmware from coinInfo support
-        this.firmwareRange = getFirmwareRange(this.name, coinInfo, this.firmwareRange);
+        this.requiredFirmwareCoins = [coinInfo];
         this.preauthorized = payload.preauthorized;
     }
 

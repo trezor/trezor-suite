@@ -22,11 +22,11 @@ const PreviewContent = styled.div`
     overflow: hidden;
     text-overflow: ellipsis;
     ${typography['body-md']}
-    color: ${({ theme }) => theme.textSubdued};
+    color: ${({ theme }) => theme.contentSecondary};
 
     & > em {
         font-style: inherit;
-        color: ${({ theme }) => theme.textDefault};
+        color: ${({ theme }) => theme.contentPrimary};
     }
 `;
 

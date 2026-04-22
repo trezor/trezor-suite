@@ -29,7 +29,7 @@ const StyledCryptoAmountWithHeader = styled(CryptoAmountWithHeader)`
 `;
 
 const PrivateBalanceHeading = styled.span`
-    color: ${({ theme }) => theme.textPrimaryDefault};
+    color: ${({ theme }) => theme.contentBrand};
 `;
 
 export const BalancePrivacyBreakdown = () => {
@@ -76,7 +76,7 @@ export const BalancePrivacyBreakdown = () => {
                 headerIcon={getBalanceIcon()}
                 value={notAnonymized}
                 symbol={currentAccount?.symbol}
-                color={!isZero(notAnonymized || '0') ? undefined : theme.textSubdued}
+                color={!isZero(notAnonymized || '0') ? undefined : theme.contentSecondary}
             />
 
             <StyledCryptoAmountWithHeader
@@ -88,7 +88,7 @@ export const BalancePrivacyBreakdown = () => {
                 headerIcon={<Icon name="check" size={16} intent="brand" />}
                 value={anonymized}
                 symbol={currentAccount?.symbol}
-                color={!isZero(anonymized || '0') ? theme.textPrimaryDefault : theme.textSubdued}
+                color={!isZero(anonymized || '0') ? theme.contentBrand : theme.contentSecondary}
             />
         </BalanceContainer>
     );

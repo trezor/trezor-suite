@@ -736,26 +736,21 @@
                 "variant": "info",
                 "category": "context",
                 "content": {
-                    "en": "Scheduled maintenance: Trading will be unavailable on April 22 from 11:00 CEST for up to 1 hour.",
-                    "es": "Mantenimiento programado: El trading no estará disponible el 22 de abril a partir de las 11:00 CEST durante un máximo de 1 hora.",
-                    "cs": "Plánovaná údržba: Obchodování bude nedostupné 22. dubna od 11:00 CEST po dobu až 1 hodiny.",
-                    "ru": "Плановое техническое обслуживание: Торговля будет недоступна 22 апреля с 11:00 CEST на срок до 1 часа.",
-                    "ja": "定期メンテナンス：4月22日 11:00 CEST より最大1時間、トレードがご利用いただけなくなります。",
-                    "hu": "Tervezett karbantartás: A kereskedés április 22-én 11:00 CEST-től legfeljebb 1 órán át nem lesz elérhető.",
-                    "it": "Manutenzione programmata: Il trading non sarà disponibile il 22 aprile dalle 11:00 CEST per un massimo di 1 ora.",
-                    "fr": "Maintenance planifiée : Le trading sera indisponible le 22 avril à partir de 11h00 CEST pour une durée maximale d'1 heure.",
-                    "de": "Geplante Wartung: Das Trading wird am 22. April ab 11:00 CEST für bis zu 1 Stunde nicht verfügbar sein.",
-                    "tr": "Planlı bakım: 22 Nisan'da 11:00 CEST'ten itibaren en fazla 1 saat süreyle işlem yapılamayacaktır.",
-                    "pt": "Manutenção programada: O trading estará indisponível no dia 22 de abril a partir das 11:00 CEST por até 1 hora.",
-                    "uk": "Планове технічне обслуговування: Торгівля буде недоступна 22 квітня з 11:00 CEST протягом до 1 години."
+                    "en": "Trading will be temporarily unavailable on April 22nd from 11:00 to 12:00 CEST due to scheduled maintenance.",
+                    "es": "El trading no estará disponible temporalmente el 22 de abril de 11:00 a 12:00 CEST por mantenimiento programado.",
+                    "cs": "Obchodování bude 22. dubna od 11:00 do 12:00 CEST dočasně nedostupné z důvodu plánované údržby.",
+                    "ru": "22 апреля с 11:00 до 12:00 CEST торговля будет временно недоступна в связи с плановым техническим обслуживанием.",
+                    "ja": "定期メンテナンスのため、4月22日11:00〜12:00 CSTはトレードが一時的にご利用いただけません。",
+                    "hu": "A kereskedés április 22-én 11:00 és 12:00 CEST között tervezett karbantartás miatt átmenetileg nem lesz elérhető.",
+                    "it": "Il trading non sarà temporaneamente disponibile il 22 aprile dalle 11:00 alle 12:00 CEST per manutenzione programmata.",
+                    "fr": "Le trading sera temporairement indisponible le 22 avril de 11h00 à 12h00 CEST en raison d'une maintenance planifiée.",
+                    "de": "Das Trading wird am 22. April von 11:00 bis 12:00 CEST aufgrund geplanter Wartungsarbeiten vorübergehend nicht verfügbar sein.",
+                    "tr": "22 Nisan'da 11:00 ile 12:00 CEST arasında planlı bakım nedeniyle işlem yapma geçici olarak kullanılamayacak.",
+                    "pt": "O trading estará temporariamente indisponível no dia 22 de abril das 11:00 às 12:00 CEST devido a uma manutenção programada.",
+                    "uk": "22 квітня з 11:00 до 12:00 CEST торгівля буде тимчасово недоступна у зв'язку з плановим технічним обслуговуванням."
                 },
                 "context": {
-                    "domain": [
-                        "trading.exchange",
-                        "trading.buy",
-                        "trading.sell",
-                        "trading.concierge"
-                    ]
+                    "domain": ["trading.exchange", "trading.buy", "trading.sell"]
                 }
             }
         },
@@ -773,39 +768,24 @@
                 "priority": 94,
                 "dismissible": false,
                 "variant": "warning",
-                "category": ["feature"],
+                "category": "context",
                 "content": {
-                    "en": "Maintenance in progress. Trading is currently unavailable and will be restored shortly (expected by 12:00 CEST).",
-                    "es": "Mantenimiento en curso. El trading no está disponible actualmente y se restablecerá en breve (previsto a las 12:00 CEST).",
-                    "cs": "Probíhá údržba. Obchodování je momentálně nedostupné a bude obnoveno v nejbližší době (očekáváno do 12:00 CEST).",
-                    "ru": "Выполняется техническое обслуживание. Торговля в настоящее время недоступна и будет восстановлена в ближайшее время (ожидается к 12:00 CEST).",
-                    "ja": "メンテナンス中です。現在トレードはご利用いただけませんが、まもなく復旧予定です（12:00 CEST までに復旧見込み）。",
-                    "hu": "Karbantartás folyamatban. A kereskedés jelenleg nem elérhető, és hamarosan visszaáll (várhatóan 12:00 CEST-re).",
-                    "it": "Manutenzione in corso. Il trading è attualmente non disponibile e sarà ripristinato a breve (previsto entro le 12:00 CEST).",
-                    "fr": "Maintenance en cours. Le trading est actuellement indisponible et sera rétabli sous peu (prévu à 12h00 CEST).",
-                    "de": "Wartung läuft. Das Trading ist derzeit nicht verfügbar und wird in Kürze wiederhergestellt (voraussichtlich bis 12:00 CEST).",
-                    "tr": "Bakım devam ediyor. İşlem yapma şu anda kullanılamıyor ve kısa süre içinde yeniden hizmete girecek (12:00 CEST'e kadar bekleniyor).",
-                    "pt": "Manutenção em andamento. O trading está atualmente indisponível e será restaurado em breve (previsto até às 12:00 CEST).",
-                    "uk": "Тривають технічні роботи. Торгівля наразі недоступна і буде відновлена найближчим часом (очікується до 12:00 CEST)."
+                    "en": "Trading is currently unavailable due to scheduled maintenance and will be restored by 12:00 CEST.",
+                    "es": "El trading no está disponible actualmente debido a un mantenimiento programado y se restablecerá a las 12:00 CEST.",
+                    "cs": "Obchodování je momentálně nedostupné z důvodu plánované údržby a bude obnoveno v 12:00 CEST.",
+                    "ru": "Торговля в настоящее время недоступна в связи с плановым техническим обслуживанием и будет восстановлена в 12:00 CEST.",
+                    "ja": "定期メンテナンスのため、現在トレードはご利用いただけません。12:00 CSTまでに復旧予定です。",
+                    "hu": "A kereskedés jelenleg nem elérhető tervezett karbantartás miatt, és 12:00 CEST-kor kerül visszaállításra.",
+                    "it": "Il trading è attualmente non disponibile a causa di una manutenzione programmata e sarà ripristinato alle 12:00 CEST.",
+                    "fr": "Le trading est actuellement indisponible en raison d'une maintenance planifiée et sera rétabli à 12h00 CEST.",
+                    "de": "Das Trading ist derzeit aufgrund geplanter Wartungsarbeiten nicht verfügbar und wird um 12:00 CEST wiederhergestellt.",
+                    "tr": "İşlem yapma, planlı bakım nedeniyle şu anda kullanılamıyor ve 12:00 CEST'te yeniden hizmete girecek.",
+                    "pt": "O trading está atualmente indisponível devido a uma manutenção programada e será restaurado às 12:00 CEST.",
+                    "uk": "Торгівля наразі недоступна у зв'язку з плановим технічним обслуговуванням і буде відновлена о 12:00 CEST."
                 },
-                "feature": [
-                    {
-                        "domain": "trading.exchange",
-                        "flag": false
-                    },
-                    {
-                        "domain": "trading.buy",
-                        "flag": false
-                    },
-                    {
-                        "domain": "trading.sell",
-                        "flag": false
-                    },
-                    {
-                        "domain": "trading.concierge",
-                        "flag": false
-                    }
-                ]
+                "context": {
+                    "domain": ["trading.exchange", "trading.buy", "trading.sell"]
+                }
             }
         },
         {

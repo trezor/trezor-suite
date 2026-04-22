@@ -61,7 +61,7 @@ export const FullAlertBox = ({
                 <Box flex={1}>
                     <Text>{title}</Text>
                     {description && (
-                        <Text color="textSubdued" variant="body-sm">
+                        <Text color="contentSecondary" variant="body-sm">
                             {description}
                         </Text>
                     )}

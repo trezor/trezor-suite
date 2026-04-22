@@ -1,5 +1,5 @@
 import type { SubscriptionAccountInfo } from '@trezor/blockchain-link-types';
-import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
+import { CustomError } from '@trezor/blockchain-link-types';
 import { Cache } from '@trezor/utils';
 
 export class WorkerState {

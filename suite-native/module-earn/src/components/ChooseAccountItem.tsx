@@ -44,9 +44,7 @@ export const ChooseAccountItem = ({
             icon={<CryptoIcon symbol={account.symbol} />}
             title={<AccountLabel account={account} />}
             badges={
-                formattedAccountType ? (
-                    <Badge label={formattedAccountType} size="small" elevation="1" />
-                ) : null
+                formattedAccountType ? <Badge label={formattedAccountType} size="small" /> : null
             }
             mainValue={
                 <CryptoAmountFormatter
@@ -54,7 +52,7 @@ export const ChooseAccountItem = ({
                     symbol={account.symbol}
                     decimals={CRYPTO_BALANCE_DECIMALS}
                     variant="body-md-strong"
-                    color="textDefault"
+                    color="contentPrimary"
                     numberOfLines={1}
                     adjustsFontSizeToFit
                 />
@@ -65,7 +63,7 @@ export const ChooseAccountItem = ({
                     symbol={account.symbol}
                     isBalance
                     variant="body-sm"
-                    color="textSubdued"
+                    color="contentSecondary"
                 />
             }
         />

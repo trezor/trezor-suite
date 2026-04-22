@@ -1,4 +1,4 @@
-import React, { type ReactNode } from 'react';
+import React, { type ComponentProps, type ReactNode } from 'react';
 import { View } from 'react-native';
 import Animated from 'react-native-reanimated';
 
@@ -36,7 +36,7 @@ const cardInnerContainerStyle = prepareNativeStyle<{
     borderColor?: Color;
     noShadow?: boolean;
 }>((utils, { alertPosition, noPadding, borderColor, noShadow }) => ({
-    backgroundColor: utils.colors.backgroundSurfaceElevation1,
+    backgroundColor: utils.colors.surfaceFillRaised,
     borderRadius: utils.borders.radii.r16,
     padding: utils.spacings.sp16,
 
@@ -78,7 +78,7 @@ const cardInnerContainerStyle = prepareNativeStyle<{
 const alertBoxWrapperStyle = prepareNativeStyle<{
     alertPosition?: AlertPosition;
 }>((utils, { alertPosition = 'top' }) => ({
-    backgroundColor: utils.colors.backgroundSurfaceElevation1,
+    backgroundColor: utils.colors.surfaceFillRaised,
     paddingHorizontal: utils.spacings.sp4,
     extend: [
         {
@@ -167,4 +167,28 @@ export const Card = React.forwardRef<View, CardProps>(
 );
 
 Card.displayName = 'Card';
-export const AnimatedCard = Animated.createAnimatedComponent(Card);
+
+export type AnimatedContainerCardProps = CardProps &
+    Pick<ComponentProps<typeof Animated.View>, 'layout' | 'entering' | 'exiting'> & {
+        // Use for animated container styles (opacity, transform). style goes to the inner Card.
+        animatedStyle?: ComponentProps<typeof Animated.View>['style'];
+    };
+
+// Wrapping in Animated.View ensures animated styles (opacity, transform) target the outermost
+// container. createAnimatedComponent(Card) would drive the inner styled View instead, which
+// breaks transform animations. For animated inner styles (e.g. borderColor), use AnimatedBorderCard.
+export const AnimatedContainerCard = ({
+    animatedStyle,
+    layout,
+    entering,
+    exiting,
+    children,
+    ...cardProps
+}: AnimatedContainerCardProps) => (
+    <Animated.View style={animatedStyle} layout={layout} entering={entering} exiting={exiting}>
+        <Card {...cardProps}>{children}</Card>
+    </Animated.View>
+);
+
+// Use when animated styles target the inner card container (e.g. borderColor, borderWidth).
+export const AnimatedBorderCard = Animated.createAnimatedComponent(Card);

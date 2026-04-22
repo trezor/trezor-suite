@@ -1,24 +1,40 @@
+import { FeatureFlag } from '@suite-native/feature-flags';
 import { Form } from '@suite-native/forms';
 import {
     act,
     renderHookWithStoreProvider,
     renderWithStoreProvider,
-} from '@suite-native/test-utils';
-import { getWalletState, usdcAsset } from '@suite-native/trading-fixtures';
+} from '@suite-native/test-utils-store';
+import { usdcAsset } from '@suite-native/trading-fixtures';
 import { type ExchangeFormType } from '@suite-native/trading-types';
 
+import {
+    createTradingFeatureFlags,
+    createTradingPreloadedState,
+} from '../../../../__tests__/tradingTestUtils';
 import { useExchangeForm } from '../../../../hooks/exchange/useExchangeForm';
 import { ExchangeSendCard } from '../ExchangeSendCard';
 
 describe('ExchangeSendCard', () => {
     let form: ExchangeFormType;
+    const preloadedState = createTradingPreloadedState({
+        tradeType: 'exchange',
+        overrides: {
+            featureFlags: createTradingFeatureFlags({
+                [FeatureFlag.AreTradingExchangeDexesEnabled]: true,
+            }),
+        },
+    });
 
-    const renderForm = () => renderHookWithStoreProvider(() => useExchangeForm());
+    const renderForm = () =>
+        renderHookWithStoreProvider(() => useExchangeForm(), {
+            preloadedState,
+        });
 
     const renderExchangeSendCard = (isAmountInputActive: boolean) =>
         renderWithStoreProvider(<ExchangeSendCard isAmountInputActive={isAmountInputActive} />, {
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
-            preloadedState: { wallet: getWalletState() },
+            preloadedState,
         });
 
     beforeEach(() => {

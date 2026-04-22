@@ -1,8 +1,10 @@
+import { useMemo } from 'react';
+
 import { Translation } from '@suite/intl';
 import { TokenManagementAction, selectCoinDefinitions } from '@suite-common/token-definitions';
 import { selectBaseCurrency, selectCurrentFiatRates } from '@suite-common/wallet-core';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
-import { isTestnet } from '@suite-common/wallet-utils';
+import { isErc4626, isTestnet } from '@suite-common/wallet-utils';
 
 import { useSelector } from 'src/hooks/suite';
 import {
@@ -27,20 +29,30 @@ export const CoinsTable = ({ selectedAccount, searchQuery }: CoinsTableProps) =>
 
     const coinDefinitions = useSelector(state => selectCoinDefinitions(state, account.symbol));
 
-    const tokensWithRates = enhanceTokensWithRates(
-        account.tokens,
-        baseCurrencyCode,
-        account.symbol,
-        fiatRates,
-    );
-    const sortedTokens = tokensWithRates.sort(sortTokensWithRates);
+    const enhancedTokens = useMemo(() => {
+        const accountTokens = account.tokens?.filter(token => !isErc4626(token));
 
-    const tokens = getTokens({
-        tokens: sortedTokens,
-        symbol: account.symbol,
-        tokenDefinitions: coinDefinitions,
-        searchQuery,
-    });
+        const tokensWithRates = enhanceTokensWithRates(
+            accountTokens,
+            baseCurrencyCode,
+            account.symbol,
+            fiatRates,
+        );
+
+        return tokensWithRates.sort(sortTokensWithRates);
+    }, [account.tokens, account.symbol, baseCurrencyCode, fiatRates]);
+
+    const tokens = useMemo(
+        () =>
+            getTokens({
+                tokens: enhancedTokens,
+                symbol: account.symbol,
+                tokenDefinitions: coinDefinitions,
+                searchQuery,
+            }),
+        [enhancedTokens, account.symbol, coinDefinitions, searchQuery],
+    );
+
     const hiddenTokensCount =
         tokens.unverifiedWithBalance.length +
         tokens.hiddenWithBalance.length +

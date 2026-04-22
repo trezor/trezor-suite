@@ -38,9 +38,9 @@ describe('useTradeableAssetDominantColor', () => {
         expect(result.current).toBe(coinsColors.btc);
     });
 
-    it('should fallback to backgroundNeutralBold for undefined networks', () => {
+    it('should fallback to legacyBackgroundNeutralBold for undefined networks', () => {
         const { result } = renderTradeableAssetDominantColorHook('und' as NetworkSymbol);
 
-        expect(result.current).toBe(colors.backgroundNeutralBold);
+        expect(result.current).toBe(colors.legacyBackgroundNeutralBold);
     });
 });

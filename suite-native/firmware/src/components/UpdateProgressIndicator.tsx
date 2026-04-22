@@ -109,7 +109,7 @@ export const UpdateProgressIndicator = ({
     const { utils } = useNativeStyles();
     const progressEnd = useSharedValue(progress / 100);
     const animatedBackgroundRadius = useSharedValue(0);
-    const backgroundColorFinished = useSharedValue(utils.colors.textPrimaryDefault);
+    const backgroundColorFinished = useSharedValue(utils.colors.contentBrand);
     const crossSvg = useSVG(require('@suite-common/icons/assets/x.svg'));
     const trezorLogoSvg = useSVG(require('@suite-common/icons/assets/trezorLogo.svg'));
     const trezorLogoOpacity = useSharedValue(1);
@@ -146,7 +146,7 @@ export const UpdateProgressIndicator = ({
         }
         if (isSuccess) {
             animatedBackgroundRadius.value = withSpring(CIRCLE_DIAMETER / 2);
-            backgroundColorFinished.value = utils.colors.textPrimaryDefault;
+            backgroundColorFinished.value = utils.colors.contentBrand;
 
             checkmarkAnimationProgress.value = withDelay(300, withSpring(1));
             progressEnd.value = 0;
@@ -157,7 +157,7 @@ export const UpdateProgressIndicator = ({
         }
         if (isError) {
             animatedBackgroundRadius.value = withSpring(CIRCLE_DIAMETER / 2);
-            backgroundColorFinished.value = utils.colors.backgroundAlertRedBold;
+            backgroundColorFinished.value = utils.colors.legacyBackgroundAlertRedBold;
 
             checkmarkAnimationProgress.value = 0;
             progressEnd.value = 0;
@@ -175,8 +175,8 @@ export const UpdateProgressIndicator = ({
         isError,
         isStarting,
         backgroundColorFinished,
-        utils.colors.backgroundAlertRedBold,
-        utils.colors.textPrimaryDefault,
+        utils.colors.legacyBackgroundAlertRedBold,
+        utils.colors.contentBrand,
         isInProgress,
         trezorLogoOpacity,
         errorSvgOpacity,
@@ -191,7 +191,7 @@ export const UpdateProgressIndicator = ({
             <Group>
                 <Path
                     path={progressCirclePath}
-                    color={utils.colors.backgroundTertiaryDefaultOnElevationNegative}
+                    color={utils.colors.legacyBackgroundTertiaryDefaultOnElevationNegative}
                     strokeCap="round"
                     strokeJoin="round"
                     strokeWidth={PROGRESS_STROKE_WIDTH}
@@ -201,7 +201,7 @@ export const UpdateProgressIndicator = ({
                     path={progressCirclePath}
                     start={0}
                     end={progressEnd}
-                    color={utils.colors.textPrimaryDefault}
+                    color={utils.colors.contentBrand}
                     strokeCap="round"
                     strokeJoin="round"
                     strokeWidth={PROGRESS_STROKE_WIDTH}
@@ -218,7 +218,7 @@ export const UpdateProgressIndicator = ({
                 <Group
                     layer={
                         <Paint>
-                            <BlendColor color={utils.colors.iconDefault} mode="srcIn" />
+                            <BlendColor color={utils.colors.contentPrimary} mode="srcIn" />
                         </Paint>
                     }
                 >
@@ -234,7 +234,7 @@ export const UpdateProgressIndicator = ({
             {isSuccess && (
                 <Path
                     path={checkmarkPath}
-                    color={utils.colors.backgroundSurfaceElevation1}
+                    color={utils.colors.surfaceFillRaised}
                     start={0}
                     end={checkmarkAnimationProgress}
                     strokeCap="round"
@@ -249,7 +249,7 @@ export const UpdateProgressIndicator = ({
                         svg={crossSvg}
                         x={CIRCLE_CENTER - CIRCLE_DIAMETER / 4}
                         y={CIRCLE_CENTER - CIRCLE_DIAMETER / 4}
-                        color={utils.colors.backgroundAlertRedBold}
+                        color={utils.colors.legacyBackgroundAlertRedBold}
                         width={CIRCLE_DIAMETER / 2}
                         height={CIRCLE_DIAMETER / 2}
                     />

@@ -55,6 +55,7 @@ import { isDiscoveryInProgress, selectDiscoveryByDevicePath } from './discoveryS
 import { selectDeviceThunk } from './selectDeviceThunk';
 import { type CreateAccountActionProps, accountsActions } from '../accounts/accountsActions';
 import { selectAccountsByDeviceState } from '../accounts/accountsSelectors';
+import { reportWalletBalanceThunk } from '../accounts/accountsThunks';
 import { selectAccountsToBeForgotten, selectDiscoveryAccountsParam } from '../selectors';
 import { selectIsDeviceAutoEjectEnabled } from '../settings/walletSettingsReducer';
 
@@ -341,6 +342,8 @@ const completeDiscovery = (
         getState,
         analytics,
     });
+
+    dispatch(reportWalletBalanceThunk());
 };
 
 export const cancelDiscoveryThunk = createThunk(
@@ -807,6 +810,8 @@ export const runAdditionalDiscoveryThunk = createThunk(
                 getState,
                 analytics: extra.services.analytics,
             });
+
+            dispatch(reportWalletBalanceThunk());
         }
     },
 );
@@ -818,10 +823,12 @@ export const submitPassphrase = createThunk(
             device,
             passphrase,
             passphraseOnDevice,
+            requestId,
         }: {
             device: TrezorDevice;
             passphrase: string;
             passphraseOnDevice?: boolean;
+            requestId?: string;
         },
         { dispatch, getState },
     ) => {
@@ -847,6 +854,7 @@ export const submitPassphrase = createThunk(
                 save: true,
                 passphraseOnDevice,
             },
+            requestId,
         });
     },
 );

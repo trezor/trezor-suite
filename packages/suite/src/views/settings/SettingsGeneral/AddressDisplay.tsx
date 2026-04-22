@@ -1,12 +1,11 @@
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import { SettingsAnchor } from '@suite/router';
+import { Anchor, SettingsAnchor } from '@suite/router';
 import { selectAddressDisplayType, suiteSettingsActions } from '@suite/settings';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
 import { SelectBar } from '@trezor/components';
-import { ActionColumn, TextColumn } from '@trezor/product-components';
+import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
-import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
 
@@ -36,19 +35,27 @@ export const AddressDisplay = () => {
     };
 
     return (
-        <SettingsSectionItem anchorId={SettingsAnchor.AddressDisplay}>
-            <TextColumn
-                title={<Translation id="TR_ADDRESS_DISPLAY" />}
-                description={<Translation id="TR_ADDRESS_DISPLAY_DESCRIPTION" />}
-            />
-            <ActionColumn>
-                <SelectBar
-                    selectedOption={selectedAddressDisplay}
-                    options={options}
-                    onChange={onChange}
-                    size="small"
-                />
-            </ActionColumn>
-        </SettingsSectionItem>
+        <Anchor anchorId={SettingsAnchor.AddressDisplay}>
+            {({ anchorId, anchorRef, shouldHighlight }) => (
+                <SectionItem
+                    data-testid={anchorId}
+                    ref={anchorRef}
+                    shouldHighlight={shouldHighlight}
+                >
+                    <TextColumn
+                        title={<Translation id="TR_ADDRESS_DISPLAY" />}
+                        description={<Translation id="TR_ADDRESS_DISPLAY_DESCRIPTION" />}
+                    />
+                    <ActionColumn>
+                        <SelectBar
+                            selectedOption={selectedAddressDisplay}
+                            options={options}
+                            onChange={onChange}
+                            size="small"
+                        />
+                    </ActionColumn>
+                </SectionItem>
+            )}
+        </Anchor>
     );
 };

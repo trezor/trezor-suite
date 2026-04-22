@@ -138,8 +138,8 @@ const SidebarWrapper = styled.aside<{ theme: SuiteThemeColors }>`
     height: 100%;
     min-height: 0;
     flex-shrink: 0;
-    background: ${({ theme }) => theme.backgroundSurfaceElevation1};
-    border-left: 1px solid ${({ theme }) => theme.borderOnElevation1};
+    background: ${({ theme }) => theme.surfaceFillRaised};
+    border-left: 1px solid ${({ theme }) => theme.borderNeutral};
     overflow-y: auto;
     display: flex;
     flex-direction: column;
@@ -147,7 +147,7 @@ const SidebarWrapper = styled.aside<{ theme: SuiteThemeColors }>`
     @media (max-width: ${variables.SCREEN_SIZE.MD}) {
         order: 0;
         border-left: none;
-        border-bottom: 1px solid ${({ theme }) => theme.borderOnElevation1};
+        border-bottom: 1px solid ${({ theme }) => theme.borderNeutral};
     }
 `;
 
@@ -155,7 +155,7 @@ const StickyVersionHeader = styled.div<{ theme: SuiteThemeColors }>`
     position: sticky;
     top: 0;
     z-index: 2;
-    background: ${({ theme }) => theme.backgroundSurfaceElevation1};
+    background: ${({ theme }) => theme.surfaceFillRaised};
     padding: 12px 0 8px;
 `;
 

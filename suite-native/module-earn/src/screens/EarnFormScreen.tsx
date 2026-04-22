@@ -9,6 +9,7 @@ import {
     Screen,
     type StackNavigationProps,
 } from '@suite-native/navigation';
+import { FeeSelector } from '@suite-native/transaction-management';
 
 import { EarnFormScreenFooter } from '../components/EarnFormScreenFooter';
 import { EarnFormScreenHeader } from '../components/EarnFormScreenHeader';
@@ -27,7 +28,7 @@ export const EarnFormScreen = () => {
         return null;
     }
 
-    const { form, amountValue, account } = earnForm;
+    const { form, amountValue, account, formDraft, formDraftKey, updateFeeLevelThunk } = earnForm;
     const {
         formState: { isValid },
     } = form;
@@ -59,6 +60,18 @@ export const EarnFormScreen = () => {
                     <EarnOutputFields accountKey={accountKey} />
                 </Form>
             </Box>
+            {isValid && (
+                <Box marginTop="sp24">
+                    <FeeSelector
+                        accountKey={accountKey}
+                        updateThunk={updateFeeLevelThunk}
+                        selectedFee={formDraft?.selectedFee ?? 'normal'}
+                        selectedFeePerUnit={formDraft?.feePerUnit}
+                        formDraft={formDraft}
+                        formDraftKey={formDraftKey}
+                    />
+                </Box>
+            )}
         </Screen>
     );
 };

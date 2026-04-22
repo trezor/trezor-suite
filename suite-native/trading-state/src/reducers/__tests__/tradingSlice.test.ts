@@ -9,7 +9,13 @@ import {
 } from '@suite-common/trading';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { tradingInitialState } from '@suite-native/trading-consts';
-import { buyQuotes, exchangeQuotes, sellQuotes } from '@suite-native/trading-fixtures';
+import {
+    banxaCreditCardSellQuote,
+    buyQuotes,
+    exchangeQuotes,
+    mercuryoApplePayBuyQuote,
+    sellQuotes,
+} from '@suite-native/trading-fixtures';
 import { type ProviderConfirmationStatus, type TradingState } from '@suite-native/trading-types';
 
 import { buyActions } from '../buySlice';
@@ -79,7 +85,7 @@ describe('tradingSlice', () => {
                         country: 'CZ',
                     },
                     quotes: buyQuotes,
-                    selectedQuote: buyQuotes[0],
+                    selectedQuote: mercuryoApplePayBuyQuote,
                     amountLimits: {
                         currency: 'CZK',
                         minFiat: '100',
@@ -113,7 +119,7 @@ describe('tradingSlice', () => {
                         currency: 'CZK',
                         minFiat: '100',
                     },
-                    selectedQuote: sellQuotes[0],
+                    selectedQuote: banxaCreditCardSellQuote,
                 },
             };
 

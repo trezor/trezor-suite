@@ -13,7 +13,7 @@ export const AnalyticsInfoRow = ({ iconName, title, description }: AnalyticsInfo
     <IconListItem icon={iconName} iconSize="mediumLarge">
         <VStack spacing="sp4" flex={1}>
             <Text variant="body-md-strong">{title}</Text>
-            <Text variant="body-sm" color="textSubdued">
+            <Text variant="body-sm" color="contentSecondary">
                 {description}
             </Text>
         </VStack>

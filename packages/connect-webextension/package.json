@@ -4,7 +4,7 @@
     "author": "Trezor <info@trezor.io>",
     "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/connect-webextension",
     "description": "High-level javascript interface for Trezor hardware wallet in webextension serviceworker environment.",
-    "license": "SEE LICENSE IN LICENSE.md",
+    "license": "MIT",
     "repository": {
         "type": "git",
         "url": "git://github.com/trezor/trezor-suite.git"
@@ -59,7 +59,7 @@
         "@babel/preset-typescript": "^7.28.5",
         "@trezor/eslint": "workspace:*",
         "@types/chrome": "^0.0.299",
-        "@types/w3c-web-usb": "^1.0.10",
+        "@types/w3c-web-usb": "^1.0.14",
         "babel-loader": "^10.1.1",
         "rimraf": "^6.1.2",
         "worker-loader": "^3.0.8"

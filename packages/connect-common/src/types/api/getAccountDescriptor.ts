@@ -17,6 +17,7 @@ export interface GetAccountDescriptorResponse {
     descriptor: string;
     path: string;
     legacyXpub?: string; // bitcoin-like descriptor in legacy format (xpub) used by labeling (metadata)
+    outputDescriptorBip380?: string; // Optional bitcoin only
 }
 
 export declare function getAccountDescriptor(

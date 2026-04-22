@@ -35,25 +35,25 @@ const pictogramVariantsMap = {
         ShapeSvg: SuccessShapeSvg,
         IconSvg: SuccessIconSvg,
         iconOffset: 0,
-        iconColor: 'iconPrimaryDefault',
+        iconColor: 'contentBrand',
     },
     info: {
         ShapeSvg: InfoShapeSvg,
         IconSvg: InfoIconSvg,
         iconOffset: 0,
-        iconColor: 'iconAlertBlue',
+        iconColor: 'contentInfo',
     },
     warning: {
         ShapeSvg: WarningShapeSvg,
         IconSvg: WarningIconSvg,
         iconOffset: 20,
-        iconColor: 'iconAlertYellow',
+        iconColor: 'contentWarning',
     },
     critical: {
         ShapeSvg: CriticalShapeSvg,
         IconSvg: CriticalIconSvg,
         iconOffset: 0,
-        iconColor: 'iconAlertRed',
+        iconColor: 'contentCritical',
     },
 } as const satisfies Record<PictogramVariant, PictogramConfig>;
 

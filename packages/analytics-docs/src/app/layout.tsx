@@ -8,7 +8,7 @@ export const TopBar = styled.div`
     display: flex;
     align-items: center;
     padding: 12px 24px;
-    background: ${({ theme }) => hexToRgba(theme.backgroundSurfaceElevation0, 0.8)};
+    background: ${({ theme }) => hexToRgba(theme.surfaceFillPage, 0.8)};
     box-shadow: ${({ theme }) => theme.boxShadowBase};
 
     @media (min-width: ${variables.SCREEN_SIZE.MD}) {
@@ -59,6 +59,6 @@ export const EventCardWrapper = styled.div`
     transition: border-color 0.4s ease-out;
 
     &.highlighted {
-        border-color: ${({ theme }) => theme.backgroundAlertYellowBold};
+        border-color: ${({ theme }) => theme.legacyBackgroundAlertYellowBold};
     }
 `;

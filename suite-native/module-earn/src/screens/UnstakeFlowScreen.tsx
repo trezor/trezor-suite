@@ -10,6 +10,7 @@ import {
     Screen,
     type StackNavigationProps,
 } from '@suite-native/navigation';
+import { FeeSelector } from '@suite-native/transaction-management';
 
 import { EarnOutputFields } from '../components/EarnOutputFields';
 import { UnstakeFlowScreenHeader } from '../components/UnstakeFlowScreenHeader';
@@ -26,7 +27,15 @@ export const UnstakeFlowScreen = () => {
 
     if (!unstakeForm) return null;
 
-    const { form, amountValue, showNetworkFeeWarning } = unstakeForm;
+    const {
+        form,
+        amountValue,
+        stakedBalance,
+        showNetworkFeeWarning,
+        formDraft,
+        formDraftKey,
+        updateFeeLevelThunk,
+    } = unstakeForm;
     const {
         formState: { isValid },
     } = form;
@@ -56,6 +65,7 @@ export const UnstakeFlowScreen = () => {
                 accountKey={accountKey}
                 isStakeVariant
                 titleLabel={<Translation id="earn.earnFormScreen.availableBalance" />}
+                cryptoAmount={stakedBalance ?? undefined}
             />
 
             <Box marginTop="sp16">
@@ -76,6 +86,18 @@ export const UnstakeFlowScreen = () => {
                     <InlineAlertBox
                         variant="warning"
                         title={<Translation id="earn.earnFormScreen.networkFeeWarning" />}
+                    />
+                </Box>
+            )}
+            {isValid && (
+                <Box marginTop="sp24">
+                    <FeeSelector
+                        accountKey={accountKey}
+                        updateThunk={updateFeeLevelThunk}
+                        selectedFee={formDraft?.selectedFee ?? 'normal'}
+                        selectedFeePerUnit={formDraft?.feePerUnit}
+                        formDraft={formDraft}
+                        formDraftKey={formDraftKey}
                     />
                 </Box>
             )}

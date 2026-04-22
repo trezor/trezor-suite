@@ -4,7 +4,6 @@ import { Context } from '@suite-common/message-system';
 import { Column } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
 
-import { EarnDashboard } from 'src/components/earn';
 import { OutOfQuotaBanner } from 'src/components/suite/banners/SuiteBanners/OutOfQuotaBanner';
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
@@ -35,7 +34,6 @@ export const Dashboard = () => {
             </Container>
             <DashboardPromoBanner />
             <AssetsView />
-            <EarnDashboard />
             <DashboardFooter />
         </Column>
     );

@@ -89,6 +89,17 @@ jobs:
           if [ "${{ steps.check_arm.outputs.new_arm }}" = "true" ]; then
             body+="\n- Linux ARM: ${{ steps.versions.outputs.arm_next }} (${{ steps.check_arm.outputs.arm_url }})"
           fi
+          body+="\n\n### :eyes: Review instructions\n\n"
+          body+="Works fully only on macOS\n\`\`\`\n"
+          body+="git fetch origin chore/update-tor-binaries\n"
+          body+="git checkout chore/update-tor-binaries\n"
+          body+="git checkout HEAD~1\n"
+          body+="git restore --source origin/chore/update-tor-binaries packages/suite-data/files/bin/tor/update.sh\n"
+          body+="./packages/suite-data/files/bin/tor/update.sh\n"
+          body+="git reset --soft chore/update-tor-binaries\n"
+          body+="git add .\n"
+          body+="git status -s\n"
+          body+="# should be no diff if binaries match\n\`\`\`"
           echo "body<<EOF" >> $GITHUB_OUTPUT
           echo -e "$body" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
@@ -96,14 +107,14 @@ jobs:
       - name: Generate GitHub App token
         if: steps.check_crx.outputs.new_crx == 'true' || steps.check_arm.outputs.new_arm == 'true'
         id: trezor-bot-token
-        uses: actions/create-github-app-token@f8d387b68d61c58ab83c6c016672934102569859 # v3
+        uses: actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3 # v3
         with:
-          app-id: ${{ secrets.TREZOR_BOT_APP_ID }}
+          client-id: ${{ secrets.TREZOR_BOT_APP_ID }}
           private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
 
       - name: Create Pull Request
         if: steps.check_crx.outputs.new_crx == 'true' || steps.check_arm.outputs.new_arm == 'true'
-        uses: peter-evans/create-pull-request@c0f553fe549906ede9cf27b5156039d195d2ece0 # v8
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8
         with:
           token: ${{ steps.trezor-bot-token.outputs.token }}
           commit-message: "chore(suite-data): update TOR binaries"

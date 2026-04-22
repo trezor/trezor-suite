@@ -33,7 +33,7 @@ export const FirmwareInstallationProgressTitles = ({
                 </Text>
             </Box>
             <Box marginTop="sp8" alignItems="center">
-                <Text variant="body-md" color="textSubdued" textAlign="center">
+                <Text variant="body-md" color="contentSecondary" textAlign="center">
                     {subtitle}
                 </Text>
             </Box>

@@ -16,13 +16,13 @@ const Wrapper = styled.div`
 `;
 
 const Header = styled.div`
-    color: ${({ theme }) => theme.textDefault};
+    color: ${({ theme }) => theme.contentPrimary};
     ${typography['body-sm']}
     padding: 0 20px;
 `;
 
 const Label = styled(Header)`
-    color: ${({ theme }) => theme.textSubdued};
+    color: ${({ theme }) => theme.contentSecondary};
     padding: 12px 20px;
 `;
 
@@ -32,7 +32,7 @@ const ChainedTransactionItem = styled(TransactionItem)`
     border-left: 0;
 
     &:hover {
-        background: ${({ theme }) => theme.backgroundNeutralBoldInverted};
+        background: ${({ theme }) => theme.legacyBackgroundNeutralBoldInverted};
     }
 `;
 
@@ -43,7 +43,7 @@ const StyledAffectedTransactionItem = styled(AffectedTransactionItem)`
     border-radius: 12px;
 
     &:hover {
-        background: ${({ theme }) => theme.backgroundNeutralBoldInverted};
+        background: ${({ theme }) => theme.legacyBackgroundNeutralBoldInverted};
     }
 `;
 

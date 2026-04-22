@@ -27,7 +27,7 @@ const Backdrop = styled.div<{ $opaque?: boolean }>`
     ${({ $opaque, theme }) =>
         $opaque
             ? css`
-                  background: ${theme.backgroundSurfaceElevationNegative};
+                  background: ${theme.surfaceFillSunken};
               `
             : css`
                   backdrop-filter: blur(5px);

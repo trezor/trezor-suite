@@ -1,9 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-native';
 
-import { ICON_NAMES, ICON_SIZES } from '@suite-native/icons';
+import { ICON_NAMES } from '@suite-native/icons';
 
-import { BADGE_SIZES, BADGE_VARIANTS, Badge as BadgeComponent, type BadgeProps } from '../Badge';
-import { SURFACE_ELEVATIONS } from '../types';
+import { BADGE_INTENTS, BADGE_SIZES, Badge as BadgeComponent, type BadgeProps } from '../Badge';
 
 type BadgeStory = StoryObj<BadgeProps>;
 
@@ -19,20 +18,17 @@ export const Badge: BadgeStory = {
     name: 'Badge',
     args: {
         label: 'badge',
-        variant: 'green',
+        intent: 'brand',
         size: 'medium',
         icon: undefined,
-        iconSize: 'small',
-        elevation: '0',
-        isDisabled: false,
     },
     argTypes: {
         label: {
             control: { type: 'text' },
         },
-        variant: {
+        intent: {
             control: { type: 'select' },
-            options: BADGE_VARIANTS,
+            options: BADGE_INTENTS,
         },
         icon: {
             control: { type: 'select' },
@@ -41,17 +37,6 @@ export const Badge: BadgeStory = {
         size: {
             control: { type: 'select' },
             options: BADGE_SIZES,
-        },
-        iconSize: {
-            control: { type: 'select' },
-            options: ICON_SIZES,
-        },
-        elevation: {
-            control: { type: 'select' },
-            options: SURFACE_ELEVATIONS,
-        },
-        isDisabled: {
-            control: { type: 'boolean' },
         },
     },
 };

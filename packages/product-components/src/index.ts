@@ -30,7 +30,13 @@ export { type ModelFor, type ColorsFor } from './components/DeviceAnimation/devi
 export { DeviceWithScene } from './components/DeviceWithScene/DeviceWithScene';
 export { getModelFrontColor, getLargeModelImagePath } from './utils/getModelFrontColor';
 export { DataAnalytics } from './components/DataAnalytics';
-export * from './components/AssetLogo/AssetLogo';
+export { AssetLogo } from './components/AssetLogo/AssetLogo';
+export {
+    type AssetLogoProps,
+    type AssetLogoSize,
+    allowedAssetLogoSizes,
+} from './components/AssetLogo/AssetLogoWithId';
+export { shouldShowNetworkIcon } from './components/AssetLogo/assetLogoUtils';
 export { isNetworkSymbolWithIcon } from './constants/networks';
 export * from './components/TopAssets/TopAssets';
 export { ExchangeInfoNotification } from './components/Notifications/ExchangeInfoNotification';
@@ -46,7 +52,11 @@ export { SettingsSection } from './components/Settings/SettingsSection';
 export { TextColumn } from './components/Settings/TextColumn';
 export { StepCard } from './components/StepCard/StepCard';
 export { FeedbackCard, type FeedbackCardProps } from './components/FeedbackCard/FeedbackCard';
+export { SidebarBanner } from './components/SidebarBanner/SidebarBanner';
+export { DropZone, type DropZoneProps } from './components/DropZone/DropZone';
 export {
     EmojiRatingSelector,
     type EmojiRatingSelectorProps,
 } from './components/EmojiRatingSelector/EmojiRatingSelector';
+export { QuickActionButton } from './components/QuickActionButton/QuickActionButton';
+export { TooltipRow } from './components/TooltipRow/TooltipRow';

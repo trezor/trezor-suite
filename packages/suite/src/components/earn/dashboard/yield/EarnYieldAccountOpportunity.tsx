@@ -1,6 +1,10 @@
-import { Translation } from '@suite/intl';
+import { useState } from 'react';
+
+import { FirmwareUpgradeNeededModal } from '@suite/firmware-upgrade';
+import { Translation, useTranslation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { goto } from '@suite/router';
+import { isStablecoinYieldSupported, selectSelectedDevice } from '@suite-common/device';
 import { useFormatters } from '@suite-common/formatters';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import {
@@ -13,9 +17,9 @@ import { Button, Column, Icon, Paragraph, Row, Table } from '@trezor/components'
 import { BigNumber } from '@trezor/utils';
 
 import { HiddenPlaceholder } from 'src/components/suite/HiddenPlaceholder';
-import { useDispatch } from 'src/hooks/suite';
-import { ApyValue } from 'src/views/wallet/staking/components/ApyValue';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 
+import { EarnYieldApyTooltip } from './EarnYieldApyTooltip';
 import { type YieldAccountOpportunity } from './types';
 import { getEarnRouteParams } from '../../utils/getEarnRouteParams';
 import { EarnAccountCell } from '../common/EarnAccountCell';
@@ -28,6 +32,10 @@ type EarnYieldAccountOpportunityProps = {
 export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpportunityProps) => {
     const dispatch = useDispatch();
     const { CryptoAmountFormatter } = useFormatters();
+    const { translationString } = useTranslation();
+    const [isFirmwareModalOpen, setIsFirmwareModalOpen] = useState(false);
+    const selectedDevice = useSelector(selectSelectedDevice);
+    const isFirmwareOutdated = !isStablecoinYieldSupported(selectedDevice);
 
     const hasSuppliedBalance = opportunity.hasVaultPosition;
     const hasDisplayableSuppliedAmount = new BigNumber(opportunity.suppliedAmount).gt(0);
@@ -98,11 +106,17 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
             return;
         }
 
+        if (isFirmwareOutdated) {
+            setIsFirmwareModalOpen(true);
+
+            return;
+        }
+
         dispatch(
             openModal({
                 type: 'earn-in-a-nutshell',
                 flow: EarnFlow.Yield,
-                provider: EarnProvider.YieldXyz,
+                provider: EarnProvider.Morpho,
                 account: opportunity.account,
                 analyticsStep: 'earn-dashboard',
                 yieldContext: {
@@ -115,6 +129,12 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
 
     const navigateToYieldSupply = () => {
         if (!opportunity.account) {
+            return;
+        }
+
+        if (isFirmwareOutdated) {
+            setIsFirmwareModalOpen(true);
+
             return;
         }
 
@@ -135,6 +155,12 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
             return;
         }
 
+        if (isFirmwareOutdated) {
+            setIsFirmwareModalOpen(true);
+
+            return;
+        }
+
         dispatch(
             goto({
                 routeName: 'earn-withdraw',
@@ -148,38 +174,88 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
     };
 
     return (
-        <Table.Row>
-            <Table.Cell>
-                <EarnAccountCell
-                    account={opportunity.account}
-                    symbol={opportunity.networkSymbol}
-                    iconToken={opportunity.vault.token}
-                    showAssetNetworkIcon
-                    subtitle={opportunity.vault.metadata.name}
-                    tokenBalance={{
-                        value: opportunity.additionalSupplyAmount,
-                        symbol: opportunity.suppliedSymbol,
-                        contractAddress: opportunity.suppliedContractAddress,
-                    }}
+        <>
+            {isFirmwareModalOpen && (
+                <FirmwareUpgradeNeededModal
+                    onClose={() => setIsFirmwareModalOpen(false)}
+                    featureName={translationString('TR_EARN_STABLECOIN_YIELD_TITLE')}
                 />
-            </Table.Cell>
+            )}
+            <Table.Row>
+                <Table.Cell>
+                    <EarnAccountCell
+                        account={opportunity.account}
+                        symbol={opportunity.networkSymbol}
+                        iconToken={opportunity.vault.token}
+                        showAssetNetworkIcon
+                        subtitle={opportunity.vault.metadata.name}
+                        tokenBalance={{
+                            value: opportunity.additionalSupplyAmount,
+                            symbol: opportunity.suppliedSymbol,
+                            contractAddress: opportunity.suppliedContractAddress,
+                        }}
+                    />
+                </Table.Cell>
 
-            <Table.Cell>
-                <ApyValue apy={opportunity.apyPercentage} />
-            </Table.Cell>
+                <Table.Cell>
+                    <EarnYieldApyTooltip
+                        vault={opportunity.vault}
+                        apyPercentage={opportunity.apyPercentage}
+                        networkSymbol={opportunity.networkSymbol}
+                    />
+                </Table.Cell>
 
-            {hasRewardsData ? (
-                <>
-                    <Table.Cell>
-                        <Row width="100%" alignItems="center" justifyContent="space-between">
-                            <Column>
-                                <EarnRewardsAmount
-                                    symbol={opportunity.suppliedSymbol}
-                                    rewards={yearlyRewards}
-                                    apy={opportunity.apyPercentage}
-                                />
+                {hasRewardsData ? (
+                    <>
+                        <Table.Cell>
+                            <Row width="100%" alignItems="center" justifyContent="space-between">
+                                <Column>
+                                    <EarnRewardsAmount
+                                        symbol={opportunity.suppliedSymbol}
+                                        rewards={yearlyRewards}
+                                        apy={opportunity.apyPercentage}
+                                    />
 
-                                {hasDisplayableSuppliedAmount && (
+                                    {hasDisplayableSuppliedAmount && (
+                                        <Paragraph
+                                            typographyStyle="body-sm"
+                                            intent="neutral"
+                                            priority="secondary"
+                                        >
+                                            <HiddenPlaceholder>
+                                                <Translation
+                                                    id="TR_EARN_YIELD_DASHBOARD_SUPPLIED"
+                                                    values={{
+                                                        amount: formattedSuppliedAmount,
+                                                        displaySymbol: opportunity.suppliedSymbol,
+                                                    }}
+                                                />
+                                            </HiddenPlaceholder>
+                                        </Paragraph>
+                                    )}
+                                </Column>
+
+                                {hasApy && (
+                                    <Icon
+                                        name="arrowRight"
+                                        intent="neutral"
+                                        priority="secondary"
+                                        size={20}
+                                    />
+                                )}
+                            </Row>
+                        </Table.Cell>
+
+                        <Table.Cell>
+                            {hasPotentialRewards && (
+                                <Column>
+                                    <EarnRewardsAmount
+                                        symbol={opportunity.suppliedSymbol}
+                                        rewards={potentialRewards}
+                                        apy={opportunity.apyPercentage}
+                                        intent="brand"
+                                    />
+
                                     <Paragraph
                                         typographyStyle="body-sm"
                                         intent="neutral"
@@ -187,101 +263,63 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
                                     >
                                         <HiddenPlaceholder>
                                             <Translation
-                                                id="TR_EARN_YIELD_DASHBOARD_SUPPLIED"
+                                                id="TR_EARN_STAKING_DASHBOARD_IF_YOU_ADD"
                                                 values={{
-                                                    amount: formattedSuppliedAmount,
+                                                    amount: formattedAdditionalSupplyAmount,
                                                     displaySymbol: opportunity.suppliedSymbol,
                                                 }}
                                             />
                                         </HiddenPlaceholder>
                                     </Paragraph>
-                                )}
-                            </Column>
-
-                            {hasApy && (
-                                <Icon
-                                    name="arrowRight"
-                                    intent="neutral"
-                                    priority="secondary"
-                                    size={20}
-                                />
+                                </Column>
                             )}
-                        </Row>
-                    </Table.Cell>
+                        </Table.Cell>
+                    </>
+                ) : (
+                    <Table.Cell colSpan={2} />
+                )}
 
-                    <Table.Cell>
-                        {hasPotentialRewards && (
-                            <Column>
-                                <EarnRewardsAmount
-                                    symbol={opportunity.suppliedSymbol}
-                                    rewards={potentialRewards}
-                                    apy={opportunity.apyPercentage}
+                <Table.Cell align="end">
+                    <Row justifyContent="flex-end" gap={8}>
+                        {hasSuppliedBalance && (
+                            <>
+                                <Button size="small" onClick={navigateToYieldSupply}>
+                                    <Translation id="TR_EARN_YIELD_DASHBOARD_SUPPLY_MORE" />
+                                </Button>
+                                <Button
+                                    size="small"
                                     intent="brand"
-                                />
-
-                                <Paragraph
-                                    typographyStyle="body-sm"
-                                    intent="neutral"
                                     priority="secondary"
+                                    onClick={navigateToYieldWithdraw}
                                 >
-                                    <HiddenPlaceholder>
-                                        <Translation
-                                            id="TR_EARN_STAKING_DASHBOARD_IF_YOU_ADD"
-                                            values={{
-                                                amount: formattedAdditionalSupplyAmount,
-                                                displaySymbol: opportunity.suppliedSymbol,
-                                            }}
-                                        />
-                                    </HiddenPlaceholder>
-                                </Paragraph>
-                            </Column>
+                                    <Translation id="TR_EARN_YIELD_DASHBOARD_WITHDRAW" />
+                                </Button>
+                            </>
                         )}
-                    </Table.Cell>
-                </>
-            ) : (
-                <Table.Cell colSpan={2} />
-            )}
 
-            <Table.Cell align="end">
-                <Row justifyContent="flex-end" gap={8}>
-                    {hasSuppliedBalance && (
-                        <>
-                            <Button size="small" onClick={navigateToYieldSupply}>
-                                <Translation id="TR_EARN_YIELD_DASHBOARD_SUPPLY_MORE" />
-                            </Button>
+                        {!hasSuppliedBalance && hasMatchedTokenWithBalance && (
                             <Button
                                 size="small"
-                                intent="brand"
-                                priority="secondary"
-                                onClick={navigateToYieldWithdraw}
+                                isDisabled={!opportunity.vault.status.enter}
+                                onClick={openYieldSupplyFlow}
                             >
-                                <Translation id="TR_EARN_YIELD_DASHBOARD_WITHDRAW" />
+                                <Translation id="TR_EARN_YIELD_DASHBOARD_SUPPLY_NOW" />
                             </Button>
-                        </>
-                    )}
+                        )}
 
-                    {!hasSuppliedBalance && hasMatchedTokenWithBalance && (
-                        <Button
-                            size="small"
-                            isDisabled={!opportunity.vault.status.enter}
-                            onClick={openYieldSupplyFlow}
-                        >
-                            <Translation id="TR_EARN_YIELD_DASHBOARD_SUPPLY_NOW" />
-                        </Button>
-                    )}
-
-                    {!hasSuppliedBalance && !hasMatchedTokenWithBalance && (
-                        <Button
-                            size="small"
-                            intent="neutral"
-                            priority="secondary"
-                            onClick={navigateToTradingBuy}
-                        >
-                            <Translation id="TR_BUY" />
-                        </Button>
-                    )}
-                </Row>
-            </Table.Cell>
-        </Table.Row>
+                        {!hasSuppliedBalance && !hasMatchedTokenWithBalance && (
+                            <Button
+                                size="small"
+                                intent="neutral"
+                                priority="secondary"
+                                onClick={navigateToTradingBuy}
+                            >
+                                <Translation id="TR_BUY" />
+                            </Button>
+                        )}
+                    </Row>
+                </Table.Cell>
+            </Table.Row>
+        </>
     );
 };

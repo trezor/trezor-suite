@@ -2,13 +2,13 @@ import { selectTradingExchangeActiveQuote, tradingExchangeActions } from '@suite
 import { getTranslation } from '@suite-native/intl';
 import {
     type TestStore,
-    initStore,
     renderWithStoreProvider,
     userEvent,
     within,
-} from '@suite-native/test-utils';
-import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
+} from '@suite-native/test-utils-store';
+import { mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 
+import { createTradingLightStore } from '../../../../__tests__/tradingTestUtils';
 import { LimitPicker } from '../LimitPicker';
 
 describe('LimitPicker', () => {
@@ -35,16 +35,21 @@ describe('LimitPicker', () => {
     beforeEach(() => {
         mockOnApprovalTypeChange.mockReset();
 
-        const preloadedState = {
-            wallet: getWalletState({
-                tradeType: 'exchange',
-            }),
-        };
+        const quote = { ...mercuryoFixedWorstQuote, approvalStringAmount: '100' };
 
-        preloadedState!.wallet!.trading.exchange.preselectedQuote = exchangeQuotes[0];
-
-        store = initStore(preloadedState).store;
-        store.dispatch(tradingExchangeActions.saveSelectedQuote(exchangeQuotes[0]));
+        store = createTradingLightStore({
+            tradeType: 'exchange',
+            overrides: {
+                wallet: {
+                    trading: {
+                        exchange: {
+                            preselectedQuote: quote,
+                        },
+                    },
+                },
+            },
+        });
+        store.dispatch(tradingExchangeActions.saveSelectedQuote(quote));
     });
 
     it('should render limit by default', () => {
@@ -107,6 +112,25 @@ describe('LimitPicker', () => {
         expect(selectTradingExchangeActiveQuote(store.getState())).toEqual(
             expect.objectContaining({ approvalType: 'MINIMAL' }),
         );
+    });
+
+    it('should render New limit label when quote has preapproved limit', () => {
+        const quoteWithPreapproved = {
+            ...mercuryoFixedWorstQuote,
+            approvalStringAmount: '50',
+            preapprovedStringAmount: '25',
+        };
+        store.dispatch(tradingExchangeActions.saveSelectedQuote(quoteWithPreapproved));
+
+        const { getByTestId } = renderLimitPicker();
+
+        const picker = getByTestId('ExchangeApproval/LimitPicker');
+
+        expect(
+            within(picker).getByText(
+                getTranslation('moduleTrading.tradingExchangeApprovalScreen.newLimitLabel'),
+            ),
+        ).toBeOnTheScreen();
     });
 
     it('should render nothing without quote', () => {

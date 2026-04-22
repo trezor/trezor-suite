@@ -1,15 +1,10 @@
+import { FirmwareProgressBar, useFirmwareDesktopUpdate } from '@suite/firmware-upgrade';
 import { Translation } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { Card, Column, Paragraph } from '@trezor/components';
 
-import {
-    FirmwareOffer,
-    FirmwareProgressBar,
-    ReconnectDevicePrompt,
-    RotatingPhrases,
-} from 'src/components/firmware';
+import { FirmwareOffer, ReconnectDevicePrompt, RotatingPhrases } from 'src/components/firmware';
 import { WebUsbButton } from 'src/components/suite';
-import { useFirmwareDesktopUpdate } from 'src/hooks/suite/useFirmwareDesktopUpdate';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectHasTransportOfType } from 'src/selectors/suite/suiteSelectors';
 

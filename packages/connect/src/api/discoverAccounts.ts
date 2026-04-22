@@ -19,7 +19,7 @@ import { arrayPartition, getSynchronize, versionUtils } from '@trezor/utils';
 
 import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
 import type { MethodContext, MethodMessage, MethodPermission } from '../core/AbstractMethod';
-import { AbstractMethod, DEFAULT_FIRMWARE_RANGE } from '../core/AbstractMethod';
+import { AbstractMethod } from '../core/AbstractMethod';
 import { getCoinInfo } from '../data/coinInfo';
 import type { AccountDescriptor } from '../device/DeviceCommands';
 import { isUtxoBased } from '../utils/accountUtils';
@@ -99,6 +99,7 @@ export default class DiscoverAccounts extends AbstractMethod<
                 { name: 'identity', type: 'string' },
                 { name: 'details', type: 'string' },
                 { name: 'pageSize', type: 'number' },
+                { name: 'includeErc4626', type: 'boolean' },
             ]);
 
             const { symbol, known: knownAccs, knownOnly, ...rest } = coin;
@@ -112,11 +113,7 @@ export default class DiscoverAccounts extends AbstractMethod<
             // validate backend
             isBackendSupported(coinInfo);
 
-            const firmwareRange = getFirmwareRange(
-                payload.method,
-                coinInfo,
-                DEFAULT_FIRMWARE_RANGE,
-            );
+            const firmwareRange = getFirmwareRange([payload.method], [coinInfo]);
 
             // Take all the defined account types based on requested coin symbol
             const symbolAccounts = ACCOUNT_TYPES.filter(a => a.symbol === symbol);
@@ -326,7 +323,8 @@ export default class DiscoverAccounts extends AbstractMethod<
         request: Request,
         sendCoreMessage: MethodContext['sendCoreMessage'],
     ): Promise<{ nonempty: number; error?: string }> {
-        const { details, identity, pageSize, coinInfo, derivation, offset, skip } = request;
+        const { details, identity, pageSize, includeErc4626, coinInfo, derivation, offset, skip } =
+            request;
         const { path: bip43, ...accountKey } = request.account;
         const backendType = coinInfo.blockchainLink?.type;
         const utxoRequired = isUtxoBased(coinInfo) && details && details !== 'basic';
@@ -355,7 +353,12 @@ export default class DiscoverAccounts extends AbstractMethod<
                 descPromise = this.getDescriptor(coinInfo, bip43, derivation, offset + index + 1);
                 descPromise.catch(() => {});
 
-                const info = await blockchain.getAccountInfo({ descriptor, details, pageSize });
+                const info = await blockchain.getAccountInfo({
+                    descriptor,
+                    details,
+                    pageSize,
+                    includeErc4626,
+                });
 
                 // eslint-disable-next-line no-nested-ternary
                 const utxo = !utxoRequired

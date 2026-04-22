@@ -71,7 +71,7 @@ export const TokenAccountDetailScreenHeader = ({
                             </Text>
                             <Text
                                 variant="body-xs"
-                                color="textSubdued"
+                                color="contentSecondary"
                                 numberOfLines={1}
                                 ellipsizeMode="tail"
                             >

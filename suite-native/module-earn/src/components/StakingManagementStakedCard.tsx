@@ -3,7 +3,7 @@ import { useNavigation } from '@react-navigation/native';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectEthNextRewardPayout } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { Button, Card, HStack, InlineAlertBox, Text, VStack } from '@suite-native/atoms';
+import { Badge, Button, Card, HStack, InlineAlertBox, Text, VStack } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 import {
@@ -20,8 +20,8 @@ import {
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { BigNumber } from '@trezor/utils';
 
-import { CRYPTO_BALANCE_DECIMALS } from '../constants';
 import { ApyValue } from './ApyValue';
+import { useEarnPortfolioTrackerGuard } from './EarnPortfolioTrackerGuard';
 import { useMessageSystemStaking } from '../hooks/useMessageSystemStaking';
 
 type StakingManagementStakedCardProps = {
@@ -32,7 +32,7 @@ type StakingManagementStakedCardProps = {
 const stakedSectionStyle = prepareNativeStyle(utils => ({
     padding: utils.spacings.sp16,
     borderBottomWidth: utils.borders.widths.small,
-    borderBottomColor: utils.colors.borderElevation1,
+    borderBottomColor: utils.colors.borderNeutral,
 }));
 
 const buttonsRowStyle = prepareNativeStyle(utils => ({
@@ -47,9 +47,16 @@ export const StakingManagementStakedCard = ({
     networkSymbol,
 }: StakingManagementStakedCardProps) => {
     const { applyStyle } = useNativeStyles();
+    const { isPortfolioTrackerDevice, openPortfolioTrackerSheet } = useEarnPortfolioTrackerGuard();
     const navigation = useNavigation<NavigationProp>();
 
     const handleStake = () => {
+        if (isPortfolioTrackerDevice) {
+            openPortfolioTrackerSheet();
+
+            return;
+        }
+
         navigation.navigate(RootStackRoutes.HowStakeWorksScreen, {
             accountKey,
             symbol: networkSymbol,
@@ -57,6 +64,12 @@ export const StakingManagementStakedCard = ({
     };
 
     const handleUnstake = () => {
+        if (isPortfolioTrackerDevice) {
+            openPortfolioTrackerSheet();
+
+            return;
+        }
+
         navigation.navigate(RootStackRoutes.UnstakeFlow, { accountKey });
     };
 
@@ -78,38 +91,43 @@ export const StakingManagementStakedCard = ({
     return (
         <Card noPadding>
             <VStack spacing="sp4" style={applyStyle(stakedSectionStyle)}>
-                <Text variant="body-md" color="textSubdued">
+                <Text variant="body-md" color="contentSecondary">
                     <Translation id="earn.stakingManagementScreen.stakedLabel" />
                 </Text>
                 <CryptoAmountFormatter
                     value={stakedBalance}
                     symbol={networkSymbol}
-                    decimals={CRYPTO_BALANCE_DECIMALS}
                     variant="headline-sm"
-                    color="textDefault"
+                    color="contentPrimary"
                 />
                 <CryptoToFiatAmountFormatter
                     value={stakedBalance}
                     symbol={networkSymbol}
-                    color="textSubdued"
+                    color="contentSecondary"
                     isBalance
                 />
             </VStack>
             <VStack spacing="sp4" style={applyStyle(stakedSectionStyle)}>
-                <Text variant="body-md" color="textSubdued">
-                    <Translation id="earn.stakingManagementScreen.totalRewardsLabel" />
-                </Text>
+                <HStack alignItems="center" spacing="sp4">
+                    <Text variant="body-md" color="contentSecondary">
+                        <Translation id="earn.stakingManagementScreen.totalRewardsLabel" />
+                    </Text>
+                    <Badge
+                        label={<Translation id="earn.stakingManagementScreen.autoRestakedBadge" />}
+                        intent="brand"
+                        size="small"
+                    />
+                </HStack>
                 <CryptoAmountFormatter
                     value={rewardsBalance}
                     symbol={networkSymbol}
-                    decimals={CRYPTO_BALANCE_DECIMALS}
                     variant="headline-sm"
-                    color="textDefault"
+                    color="contentPrimary"
                 />
                 <CryptoToFiatAmountFormatter
                     value={rewardsBalance}
                     symbol={networkSymbol}
-                    color="textSubdued"
+                    color="contentSecondary"
                     isBalance
                 />
             </VStack>

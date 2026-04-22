@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { selectFlags } from '@suite/flags';
 import { Translation } from '@suite/intl';
-import { SettingsAnchor } from '@suite/router';
+import { Anchor, SettingsAnchor } from '@suite/router';
 import { selectHasExperimentalFeature } from '@suite/settings';
 import { Context } from '@suite-common/message-system';
 import {
@@ -14,12 +14,11 @@ import {
 } from '@suite-common/wallet-core';
 import { Button, Column, Tooltip, motionEasing } from '@trezor/components';
 import { hasBitcoinOnlyFirmware, isBitcoinOnlyDevice } from '@trezor/device-utils';
-import { SettingsSection } from '@trezor/product-components';
+import { SectionItem, SettingsSection } from '@trezor/product-components';
 import { spacingsPx } from '@trezor/theme';
 
 import { DeviceBanner } from 'src/components/settings/DeviceBanner';
 import { SettingsLayout } from 'src/components/settings/SettingsLayout';
-import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { CoinGroup } from 'src/components/suite';
 import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
@@ -134,9 +133,20 @@ export const SettingsCoins = () => {
                 title={<Translation id="TR_COINS" />}
                 icon="coin"
             >
-                <SettingsSectionItem anchorId={SettingsAnchor.Crypto}>
-                    <CoinGroup networks={supportedMainnets} enabledNetworks={enabledNetworks} />
-                </SettingsSectionItem>
+                <Anchor anchorId={SettingsAnchor.Crypto}>
+                    {({ anchorId, anchorRef, shouldHighlight }) => (
+                        <SectionItem
+                            data-testid={anchorId}
+                            ref={anchorRef}
+                            shouldHighlight={shouldHighlight}
+                        >
+                            <CoinGroup
+                                networks={supportedMainnets}
+                                enabledNetworks={enabledNetworks}
+                            />
+                        </SectionItem>
+                    )}
+                </Anchor>
             </SettingsSection>
 
             {useTestnetNetworks && (
@@ -146,9 +156,20 @@ export const SettingsCoins = () => {
                     title={<Translation id="TR_TESTNET_COINS" />}
                     icon="coin"
                 >
-                    <SettingsSectionItem anchorId={SettingsAnchor.TestnetCrypto}>
-                        <CoinGroup networks={supportedTestnets} enabledNetworks={enabledNetworks} />
-                    </SettingsSectionItem>
+                    <Anchor anchorId={SettingsAnchor.TestnetCrypto}>
+                        {({ anchorId, anchorRef, shouldHighlight }) => (
+                            <SectionItem
+                                data-testid={anchorId}
+                                ref={anchorRef}
+                                shouldHighlight={shouldHighlight}
+                            >
+                                <CoinGroup
+                                    networks={supportedTestnets}
+                                    enabledNetworks={enabledNetworks}
+                                />
+                            </SectionItem>
+                        )}
+                    </Anchor>
                 </SettingsSection>
             )}
 
@@ -159,12 +180,20 @@ export const SettingsCoins = () => {
                     title={<Translation id="TR_UNSUPPORTED_COINS" />}
                     icon="coin"
                 >
-                    <SettingsSectionItem anchorId={SettingsAnchor.UnsupportedCrypto}>
-                        <CoinGroup
-                            networks={unsupportedMainnets}
-                            enabledNetworks={enabledNetworks}
-                        />
-                    </SettingsSectionItem>
+                    <Anchor anchorId={SettingsAnchor.UnsupportedCrypto}>
+                        {({ anchorId, anchorRef, shouldHighlight }) => (
+                            <SectionItem
+                                data-testid={anchorId}
+                                ref={anchorRef}
+                                shouldHighlight={shouldHighlight}
+                            >
+                                <CoinGroup
+                                    networks={unsupportedMainnets}
+                                    enabledNetworks={enabledNetworks}
+                                />
+                            </SectionItem>
+                        )}
+                    </Anchor>
                 </SettingsSection>
             )}
 

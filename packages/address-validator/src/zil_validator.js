@@ -1,5 +1,5 @@
 const { addressType } = require('./crypto/utils');
-const { bech32 } = require('bech32');
+const { bech32 } = require('@scure/base');
 
 const ALLOWED_CHARS = 'qpzry9x8gf2tvdw0s3jn54khce6mua7l';
 

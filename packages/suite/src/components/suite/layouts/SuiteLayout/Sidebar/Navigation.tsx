@@ -2,9 +2,7 @@ import { type FC, useMemo } from 'react';
 
 import { selectIsInitialRun } from '@suite/flags';
 import { type Route } from '@suite/router';
-import { selectIsDebugModeActive } from '@suite/settings';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
-import { selectIsAnyNonBitcoinLikeNetworkEnabled } from '@suite-common/wallet-core';
 import { Column } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
@@ -32,9 +30,7 @@ export const Navigation = ({ children }: NavigationProps) => {
     const isInitialRun = useSelector(selectIsInitialRun);
     const startRoute: Route['name'] = isInitialRun ? 'suite-start' : 'suite-index';
 
-    const isDebug = useSelector(selectIsDebugModeActive);
     const isBtcOnly = useSelector(selectHasBitcoinOnlyFirmware);
-    const hasNonBitcoinEnabled = useSelector(selectIsAnyNonBitcoinLikeNetworkEnabled);
 
     const navItems: Array<NavigationItemProps & { CustomComponent?: FC<NavigationItemProps> }> =
         useMemo(
@@ -45,7 +41,7 @@ export const Navigation = ({ children }: NavigationProps) => {
                     goToRoute: startRoute,
                     routes: [startRoute],
                 },
-                ...(isDebug && !isBtcOnly && hasNonBitcoinEnabled
+                ...(!isBtcOnly
                     ? [
                           {
                               nameId: 'TR_EARN',
@@ -69,7 +65,7 @@ export const Navigation = ({ children }: NavigationProps) => {
                     CustomComponent: SettingsWithTooltip,
                 },
             ],
-            [startRoute, isDebug, isBtcOnly, hasNonBitcoinEnabled],
+            [startRoute, isBtcOnly],
         );
 
     return (

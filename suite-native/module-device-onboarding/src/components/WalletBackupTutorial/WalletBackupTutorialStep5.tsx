@@ -25,7 +25,7 @@ const cardStyle = prepareNativeStyle<{ isCalloutButtonShown: boolean }>(
         padding: utils.spacings.sp16,
         paddingBottom: isCalloutButtonShown ? utils.spacings.sp16 : 0,
         borderWidth: utils.borders.widths.small,
-        borderColor: utils.colors.borderOnElevation1,
+        borderColor: utils.colors.borderNeutral,
     }),
 );
 
@@ -88,7 +88,7 @@ export const WalletBackupTutorialStep5 = ({
                         }
                     />
                     <Text
-                        color="textSubdued"
+                        color="contentSecondary"
                         variant="body-sm"
                         style={applyStyle(descriptionStyle)}
                         testID={`onboarding/WalletBackupTutorialStep5/selectedType=${selectedType}`}

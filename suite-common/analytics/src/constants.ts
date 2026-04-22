@@ -27,4 +27,5 @@ export enum EventType {
     WalletConnectSessionRequest = 'wallet-connect/session-request',
     // eslint-disable-next-line local-rules/analytics-event-name
     CoinDiscovery = 'coin_discovery',
+    AccountsBalance = 'accounts/balance',
 }

@@ -23,7 +23,7 @@ export const FactoryResetScreen = () => {
                 <Text variant="headline-md">
                     <Translation id="moduleDeviceSettings.wipeDevice.factoryResetScreen.title" />
                 </Text>
-                <Text variant="body-md" color="textSubdued">
+                <Text variant="body-md" color="contentSecondary">
                     <Translation id="moduleDeviceSettings.wipeDevice.factoryResetScreen.description" />
                 </Text>
                 <CardStepper

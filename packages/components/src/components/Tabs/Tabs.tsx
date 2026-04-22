@@ -44,7 +44,7 @@ const Container = styled.div<ContainerProps>`
         left: 0;
         width: 1px;
         height: ${borders.widths.large};
-        background: ${({ theme }) => theme.iconDefault};
+        background: ${({ theme }) => theme.contentPrimary};
         transform: ${({ $indicatorWidth, $indicatorPosition }) =>
             `translateX(${$indicatorPosition}px) scaleX(${$indicatorWidth})`};
         transform-origin: left;

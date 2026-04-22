@@ -13,7 +13,7 @@ const contentStyle = prepareNativeStyle<{ isBottomRounded: boolean }>(
     (utils, { isBottomRounded }) => ({
         padding: utils.spacings.sp16,
         flex: 1,
-        backgroundColor: utils.colors.backgroundSurfaceElevation1,
+        backgroundColor: utils.colors.surfaceFillRaised,
         borderTopLeftRadius: utils.borders.radii.r16,
         borderTopRightRadius: utils.borders.radii.r16,
         alignContent: 'center',
@@ -62,10 +62,10 @@ export const NoAccountsComponent = ({ isBottomRounded }: NoAccountsComponentProp
 
     return (
         <VStack style={applyStyle(contentStyle, { isBottomRounded })}>
-            <Text variant="body-md" color="textDefault" textAlign="center">
+            <Text variant="body-md" color="contentPrimary" textAlign="center">
                 <Translation id={title} />
             </Text>
-            <Text variant="body-sm" color="textSubdued" textAlign="center">
+            <Text variant="body-sm" color="contentSecondary" textAlign="center">
                 <Translation id={description} />
             </Text>
         </VStack>

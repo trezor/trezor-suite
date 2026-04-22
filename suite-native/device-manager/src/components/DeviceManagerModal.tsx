@@ -26,7 +26,7 @@ const SCREEN_SIZE = Dimensions.get('screen');
 
 const modalBackgroundOverlayStyle = prepareNativeStyle(utils => ({
     flex: 1,
-    backgroundColor: utils.transparentize(0.25, utils.colors.backgroundNeutralBold),
+    backgroundColor: utils.transparentize(0.25, utils.colors.legacyBackgroundNeutralBold),
     // this need to be here so the background does not stretch out when appearing
     // new RN architecture might fix this, so evaluate later
     width: SCREEN_SIZE.width,
@@ -34,29 +34,29 @@ const modalBackgroundOverlayStyle = prepareNativeStyle(utils => ({
 }));
 
 const deviceManagerModalWrapperStyle = prepareNativeStyle(utils => ({
-    backgroundColor: utils.colors.backgroundSurfaceElevation1,
+    backgroundColor: utils.colors.surfaceFillRaised,
     borderBottomLeftRadius: MANAGER_MODAL_BOTTOM_RADIUS,
     borderBottomRightRadius: MANAGER_MODAL_BOTTOM_RADIUS,
 }));
 
 const deviceManagerHeaderStyle = prepareNativeStyle(utils => ({
-    backgroundColor: utils.colors.backgroundSurfaceElevation1,
+    backgroundColor: utils.colors.surfaceFillRaised,
     borderWidth: utils.borders.widths.small,
     borderBottomLeftRadius: utils.borders.radii.r12,
     borderBottomRightRadius: utils.borders.radii.r12,
-    borderColor: utils.colors.borderOnElevation0,
+    borderColor: utils.colors.borderNeutral,
     borderTopWidth: 0,
 }));
 
 const deviceSwitchWrapperStyle = prepareNativeStyle<{ insets: EdgeInsets }>(
     (utils, { insets }) => ({
         marginTop: insets.top + (StatusBar.currentHeight ?? 0),
-        backgroundColor: utils.colors.backgroundSurfaceElevation0,
+        backgroundColor: utils.colors.surfaceFillPage,
         borderBottomLeftRadius: MANAGER_MODAL_BOTTOM_RADIUS,
         borderBottomRightRadius: MANAGER_MODAL_BOTTOM_RADIUS,
         borderWidth: utils.borders.widths.small,
         borderTopWidth: 0,
-        borderColor: utils.colors.borderElevation0,
+        borderColor: utils.colors.borderNeutral,
         zIndex: 20,
     }),
 );

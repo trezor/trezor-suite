@@ -2346,7 +2346,7 @@
   "TR_TURN_ON_SECURE_SYNC": "有効にする",
   "TR_TURN_ON_SECURE_SYNC_DATA_LABELS": "ウォレットに名前を付けたり、アカウントをパーソナライズしたり、トランザクションにラベルを付けたりできます。",
   "TR_TURN_ON_SECURE_SYNC_DATA_STORED_LOCALLY": "モバイルとデスクトップ間でラベルと名前を安全に同期します。",
-  "TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_DESCRIPTION": "Suite Sync を使用するには、デバイス {name} のファームウェアを更新してください。",
+  "TR_FW_UPDATE_REQUIRED_MODAL_DESCRIPTION": "{featureName} を使用するには、デバイス {name} のファームウェアを更新してください。",
   "TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_HEADING": "ファームウェアアップデートが必要です",
   "TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_NOT_NOW": "今はしない",
   "TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_UPGRADE": "アップデート",

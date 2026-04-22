@@ -1,7 +1,6 @@
 import { numberToHex, toWei } from 'web3-utils';
 
-import { STAKE_GAS_LIMIT_RESERVE } from '@suite-common/wallet-constants';
-import { type PrecomposedTransactionFinal, type StakeFormState } from '@suite-common/wallet-types';
+import { type StakeFormState } from '@suite-common/wallet-types';
 import {
     type EthereumTransaction,
     type EthereumTransactionEIP1559,
@@ -14,10 +13,10 @@ export const CLAIM_CALLDATA = '0x33986ffa';
 
 const toHex = (value: string | number): string => `0x${BigInt(value).toString(16)}`;
 
-export const buildClaimFormState = (feeLevel: FeeLevel, rawGasLimit: string): StakeFormState => ({
+export const buildClaimFormState = (feeLevel: FeeLevel, gasLimit: string): StakeFormState => ({
     outputs: [],
     feePerUnit: feeLevel.feePerUnit,
-    feeLimit: rawGasLimit,
+    feeLimit: gasLimit,
     transactionData: CLAIM_CALLDATA,
     stakeType: 'claim',
     options: [],
@@ -33,61 +32,21 @@ export const buildClaimFormState = (feeLevel: FeeLevel, rawGasLimit: string): St
         : {}),
 });
 
-export const buildClaimPrecomposedTx = (
-    feeLevel: FeeLevel,
-    rawGasLimit: string,
-    contractAddress: string,
-): PrecomposedTransactionFinal => {
-    const gasLimitWithReserve = new BigNumber(rawGasLimit).plus(STAKE_GAS_LIMIT_RESERVE);
-    const gasPriceGwei = feeLevel.maxFeePerGas ?? feeLevel.feePerUnit;
-    const fee = new BigNumber(gasPriceGwei)
-        .times(gasLimitWithReserve)
-        .times(new BigNumber(10).pow(9))
-        .toFixed(0);
-
-    return {
-        type: 'final',
-        inputs: [],
-        outputs: [
-            {
-                address: contractAddress,
-                script_type: 'PAYTOADDRESS',
-                amount: '0',
-            },
-        ],
-        outputsPermutation: [0],
-        fee,
-        feePerByte: feeLevel.feePerUnit,
-        feeLimit: rawGasLimit,
-        bytes: 0,
-        totalSpent: fee,
-        ...(feeLevel.maxFeePerGas
-            ? {
-                  maxFeePerGas: feeLevel.maxFeePerGas,
-                  maxPriorityFeePerGas: feeLevel.maxPriorityFeePerGas ?? '0',
-              }
-            : {}),
-    };
-};
-
 export const buildEthClaimTx = ({
     contractAddress,
     chainId,
     nonce,
-    rawGasLimit,
+    gasLimit,
     feeLevel,
 }: {
     contractAddress: string;
     chainId: number;
     nonce: number | string;
-    rawGasLimit: string;
+    gasLimit: string;
     feeLevel: FeeLevel;
 }): EthereumTransaction | EthereumTransactionEIP1559 => {
-    const gasLimit = toHex(
-        new BigNumber(rawGasLimit)
-            .plus(STAKE_GAS_LIMIT_RESERVE)
-            .integerValue(BigNumber.ROUND_DOWN)
-            .toNumber(),
+    const gasLimitHex = toHex(
+        new BigNumber(gasLimit).integerValue(BigNumber.ROUND_DOWN).toFixed(0),
     );
 
     const commonTxData = {
@@ -95,7 +54,7 @@ export const buildEthClaimTx = ({
         value: '0x0',
         chainId,
         nonce: toHex(nonce),
-        gasLimit,
+        gasLimit: gasLimitHex,
         data: CLAIM_CALLDATA,
     };
 

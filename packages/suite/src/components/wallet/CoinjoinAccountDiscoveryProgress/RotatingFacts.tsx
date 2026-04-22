@@ -11,7 +11,7 @@ const Fact = styled(motion.p)`
     max-width: 460px;
     height: 42px;
     margin-top: 6px;
-    color: ${({ theme }) => theme.textSubdued};
+    color: ${({ theme }) => theme.contentSecondary};
     ${typography['body-sm']}
     text-align: center;
 `;

@@ -61,7 +61,7 @@ export const SecurityCheckLayout = ({
         <Grid columns={isContentBelowTablet ? '1fr' : '260px 1fr'} gap={spacings.xl} width="100%">
             {model && (
                 <Box
-                    backgroundColor="backgroundSurfaceElevation1"
+                    backgroundColor="surfaceFillRaised"
                     borderRadius={borders.radii.sm}
                     padding={spacings.xxl}
                 >

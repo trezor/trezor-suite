@@ -3,7 +3,6 @@ import { Assert } from '@trezor/schema-utils';
 
 import type { MethodMessage, MethodPermission } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
-import { getFirmwareRange } from './common/paramsValidator';
 
 export default class EvoluGetNode extends AbstractMethod<'evoluGetNode', PROTO.EvoluGetNode> {
     hasBundle?: boolean;
@@ -18,7 +17,6 @@ export default class EvoluGetNode extends AbstractMethod<'evoluGetNode', PROTO.E
         };
 
         super(message, params);
-        this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
     }
     get requiredPermissions(): MethodPermission[] {
         return ['read'];

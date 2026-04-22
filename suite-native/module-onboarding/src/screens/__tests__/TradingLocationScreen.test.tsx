@@ -3,7 +3,7 @@ import { type RouteProp } from '@react-navigation/native';
 import { events } from '@suite-native/analytics';
 import { type TradingStackParamList, type TradingStackRoutes } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
-import { renderWithStoreProvider, screen, userEvent } from '@suite-native/test-utils';
+import { renderWithStoreProvider, screen, userEvent } from '@suite-native/test-utils-store';
 
 import { TradingLocationScreen } from '../TradingLocationScreen';
 
@@ -32,8 +32,24 @@ jest.mock('../../hooks/useExitOnboardingFlow', () => ({
     useExitOnboardingFlow: () => mockExitOnboardingFlow,
 }));
 
+const defaultMessageSystem = {
+    config: { actions: [] },
+    validMessages: { banner: [], context: [], modal: [], feature: [] },
+    dismissedMessages: [],
+};
+
 describe('TradingLocationOnboardingScreen', () => {
-    const renderTradingLocationScreen = () => renderWithStoreProvider(<TradingLocationScreen />);
+    const renderTradingLocationScreen = () =>
+        renderWithStoreProvider(<TradingLocationScreen />, {
+            preloadedState: {
+                messageSystem: defaultMessageSystem,
+                wallet: {
+                    trading: { residence: { country: null, wasOnboardingVisited: false } },
+                },
+                device: { selectedDevice: undefined, devices: [] },
+                featureFlags: {},
+            },
+        });
 
     beforeEach(() => {
         jest.clearAllMocks();

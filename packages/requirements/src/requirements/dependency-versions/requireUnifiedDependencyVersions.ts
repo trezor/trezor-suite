@@ -13,19 +13,16 @@ import type { Requirement } from '../Requirement';
  * Entries SHOULD be removed once the migration or constraint is resolved.
  */
 export const ALLOWED_DRIFTS = new Set([
-    'dotenv', // migration from v16 to v17 in progress
     '@solana-program/stake', // 0.2.x vs 0.5.x used in different contexts (semver 0.x = breaking)
-    '@hookform/resolvers', // migration from v3 to v5 in progress
     'jest-diff', // v29 and v30 coexist during migration
     'babel-jest', // waiting for suite-native who are waiting for expo to update babel-jest
-    'vite-plugin-node-polyfills',
-    '@storybook/react',
-    'storybook',
+    '@scure/base', // i think i had a cjs problem, todo: investigate later
 ]);
 
 type PackageJson = {
     readonly name?: string;
     readonly workspaces?: { readonly packages?: ReadonlyArray<string> } | ReadonlyArray<string>;
+    readonly resolutions?: Record<string, string>;
     readonly dependencies?: Record<string, string>;
     readonly devDependencies?: Record<string, string>;
 };
@@ -33,7 +30,7 @@ type PackageJson = {
 type VersionOccurrence = {
     readonly version: string;
     readonly workspace: string;
-    readonly depType: 'dependencies' | 'devDependencies';
+    readonly depType: 'dependencies' | 'devDependencies' | 'resolutions';
 };
 
 type YarnWorkspaceInfo = {
@@ -74,7 +71,7 @@ const collectDependencyVersions = (workspaceDirs: ReadonlyArray<string>) => {
         const pkg = readPackageJson(dir);
         const workspaceName = pkg.name ?? dir;
 
-        for (const depType of ['dependencies', 'devDependencies'] as const) {
+        for (const depType of ['dependencies', 'devDependencies', 'resolutions'] as const) {
             const deps = pkg[depType];
 
             if (deps === undefined) continue;

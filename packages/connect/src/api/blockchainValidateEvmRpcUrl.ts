@@ -1,6 +1,5 @@
 import { BlockchainLink } from '@trezor/blockchain-link';
-import { MESSAGES } from '@trezor/blockchain-link-types/src/constants';
-import type { ValidateEvmRpc } from '@trezor/blockchain-link-types/src/responses';
+import { MESSAGES, type ResponseTypes } from '@trezor/blockchain-link-types';
 
 import type { MethodMessage, MethodPermission } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
@@ -11,6 +10,8 @@ type Params = {
     url: string;
     chainId: number;
 };
+
+type ValidateEvmRpc = ResponseTypes.ValidateEvmRpc;
 
 export default class BlockchainValidateEvmRpcUrl extends AbstractMethod<
     'blockchainValidateEvmRpcUrl',

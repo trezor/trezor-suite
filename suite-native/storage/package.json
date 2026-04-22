@@ -14,6 +14,7 @@
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
         "@reduxjs/toolkit": "2.11.2",
+        "@scure/base": "^2.0.0",
         "@sentry/react-native": "8.5.0",
         "@suite-common/device": "workspace:*",
         "@suite-common/firmware-authenticity": "workspace:*",
@@ -27,7 +28,6 @@
         "@trezor/connect": "workspace:*",
         "@trezor/transport-native-bluetooth": "workspace:*",
         "@trezor/type-utils": "workspace:*",
-        "bs58": "^6.0.0",
         "expo-crypto": "~55.0.8",
         "expo-secure-store": "~55.0.8",
         "expo-splash-screen": "~55.0.10",

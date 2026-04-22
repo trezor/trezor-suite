@@ -6,9 +6,10 @@ import {
     type TranslationKey,
     useTranslation,
 } from '@suite/intl';
+import { selectLanguage } from '@suite/settings';
 import { isApprovalFlowSupported, selectSelectedDevice } from '@suite-common/device';
 import { UINT256_MAX } from '@suite-common/suite-constants';
-import { type TrezorDevice } from '@suite-common/suite-types';
+import { type Locale, type TrezorDevice } from '@suite-common/suite-types';
 import { type NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { BTC_LOCKTIME_VALUE } from '@suite-common/wallet-constants';
 import { selectAccounts } from '@suite-common/wallet-core';
@@ -23,6 +24,7 @@ import {
     getCardanoFingerprint,
     isEvmApprovalTxByTextSignature,
     isTestnet,
+    localizeNumber,
 } from '@suite-common/wallet-utils';
 import type { TokenInfo } from '@trezor/blockchain-link-types';
 import { exhaustive } from '@trezor/type-utils';
@@ -187,6 +189,8 @@ const getOutputTitle = (
             return <Translation id="TR_TRADING_PROVIDER" />;
         case 'traded_assets':
             return <Translation id="TR_MY_ASSETS" />;
+        case 'fee-limit':
+            return <Translation id="TR_SUMMARY" />;
         default:
             return exhaustive(type);
     }
@@ -204,6 +208,7 @@ interface GetOutputLinesParams {
     token?: ReviewOutput['token'];
     nativeToken?: TokenInfo;
     translationString: TranslationFunction;
+    locale: Locale;
 }
 
 const getOutputLines = ({
@@ -218,6 +223,7 @@ const getOutputLines = ({
     token,
     nativeToken,
     translationString,
+    locale,
 }: GetOutputLinesParams): OutputElementLine[] => {
     const { networkType, symbol } = account;
 
@@ -398,6 +404,15 @@ const getOutputLines = ({
         // independent component
         case 'traded_assets':
             return [];
+        case 'fee-limit':
+            return [
+                {
+                    id: 'fee-limit',
+                    label: <Translation id="TR_FEE_LIMIT" />,
+                    type: 'default' as const,
+                    value: `${localizeNumber(value, locale)} SUN`,
+                },
+            ];
         default:
             return exhaustive(type);
     }
@@ -432,6 +447,7 @@ export const TransactionReviewOutput = ({
     const { networkType, symbol } = account;
     const accounts = useSelector(selectAccounts);
     const device = useSelector(selectSelectedDevice);
+    const locale = useSelector(selectLanguage);
 
     const { translationString } = useTranslation();
     const isFiatVisible =
@@ -461,6 +477,7 @@ export const TransactionReviewOutput = ({
         token,
         translationString,
         nativeToken,
+        locale,
     }).map(line => {
         if (line.type === 'address') {
             const relevantAccounts = findAccountsByAddress(symbol, line.value, accounts);

@@ -16,6 +16,7 @@ import {
     getFwUpdateVersion,
     getIsDeviceConnectedAndAuthorized,
     getIsDeviceConnectedViaBluetooth,
+    getIsDeviceDescriptorApiTypeBluetooth,
     getIsDeviceInitialized,
     getIsDeviceRemembered,
     getIsThpDevice,
@@ -115,6 +116,11 @@ export const selectIsDeviceLanguageConfigurable = createMemoizedSelector(
 export const selectIsBluetoothSupportedByDevice = createMemoizedSelector(
     [selectDeviceCapabilities],
     capabilities => !!capabilities?.includes('Capability_BLE'),
+);
+
+export const selectIsDeviceApiTypeBluetooth = createMemoizedSelector(
+    [selectSelectedDevice],
+    device => !!device && getIsDeviceDescriptorApiTypeBluetooth(device),
 );
 
 export const selectIsDeviceProtectedByPin = createMemoizedSelector(

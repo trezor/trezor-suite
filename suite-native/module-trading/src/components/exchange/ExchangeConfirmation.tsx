@@ -26,13 +26,14 @@ export const ExchangeConfirmation = ({ enteringAnimation }: ExchangeConfirmation
     const receiveAsset = form.watch('receiveAsset');
     const receiveCryptoId = receiveAsset?.cryptoId;
 
-    const { canProceed, selectQuote } = useExchangeSelectQuote(form);
+    const { canProceed, selectQuote, selectQuoteForRevoke } = useExchangeSelectQuote(form);
 
     const quote = form.watch('quote');
     const approvalStatus = getApprovalStatus(quote);
-    const canRevoke = (['approved', 'needs_increase', 'needs_revoke'] as ApprovalStatus[]).includes(
-        approvalStatus,
-    );
+    const canRevoke =
+        (['approved', 'needs_increase', 'needs_revoke'] as ApprovalStatus[]).includes(
+            approvalStatus,
+        ) && canProceed;
 
     const { isReceivingInactiveStellarToken, activateButtonElement } =
         useTradingStellarActivateToken({
@@ -57,7 +58,7 @@ export const ExchangeConfirmation = ({ enteringAnimation }: ExchangeConfirmation
                     {canRevoke && (
                         <AnimatedBox entering={FadeIn} exiting={FadeOut} layout={LinearTransition}>
                             <Button
-                                onPress={() => {}}
+                                onPress={selectQuoteForRevoke}
                                 testID={REVOKE_TEST_ID}
                                 intent="neutral"
                                 priority="secondary"

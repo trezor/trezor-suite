@@ -12,10 +12,10 @@ type DigitBoxProps = {
 const digitBoxStyle = prepareNativeStyle<{ isFocused: boolean }>(
     ({ colors, borders }, { isFocused }) => ({
         margin: isFocused ? 0 : borders.widths.small,
-        borderColor: isFocused ? colors.borderInputFocus : colors.borderInputDefault,
+        borderColor: isFocused ? colors.elementBorderFieldFocused : colors.elementBorderField,
         borderWidth: isFocused ? borders.widths.large : borders.widths.small,
         borderRadius: borders.radii.r12,
-        backgroundColor: colors.backgroundNeutralSubtleOnElevation0,
+        backgroundColor: colors.legacyBackgroundNeutralSubtleOnElevation0,
         justifyContent: 'center',
     }),
 );
@@ -28,7 +28,7 @@ const digitStyle = prepareNativeStyle(utils => ({
     lineHeight: Platform.OS === 'ios' ? 62 : 56, // centers the digit vertically
     letterSpacing: 0, // fixes slight horizontal offset from the center
     textAlign: 'center',
-    color: utils.colors.textDefault,
+    color: utils.colors.contentPrimary,
 }));
 
 export const DigitBox = ({ value, isFocused }: DigitBoxProps) => {

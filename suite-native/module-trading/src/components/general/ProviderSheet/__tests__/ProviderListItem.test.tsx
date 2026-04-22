@@ -1,19 +1,33 @@
 import type { TradingTradeType } from '@suite-common/trading';
-import { type PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils';
 import {
+    banxaCreditCardSellQuote,
+    cexdirectFloatingQuote,
     getInitializedTradingStateWithQuotes,
+    invityDexQuote,
+    mercuryoApplePayBuyQuote,
     mockWalletFiatRatesAndSettings,
 } from '@suite-native/trading-fixtures';
 
+import {
+    type PreloadedStatePartial,
+    type TradingTestPreloadedState,
+    renderWithTradingProvider,
+} from '../../../../__tests__/tradingTestUtils';
 import { ProviderListItem, type ProviderListItemProps } from '../ProviderListItem';
+
+const baseOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {
+    wallet: {
+        ...mockWalletFiatRatesAndSettings(),
+        trading: getInitializedTradingStateWithQuotes(),
+    },
+};
 
 describe('ProviderListItem', () => {
     const renderProviderListItem = (
         quote: TradingTradeType,
-        overrides: PreloadedState = {},
         props?: Partial<ProviderListItemProps<TradingTradeType>>,
     ) =>
-        renderWithStoreProvider(
+        renderWithTradingProvider(
             <ProviderListItem
                 isSelected={false}
                 onPress={jest.fn()}
@@ -21,41 +35,24 @@ describe('ProviderListItem', () => {
                 tradingType="buy"
                 {...props}
             />,
-            {
-                preloadedState: {
-                    ...overrides,
-                    wallet: {
-                        ...mockWalletFiatRatesAndSettings(),
-                        ...overrides?.wallet,
-                    },
-                },
-            },
+            { overrides: baseOverrides },
         );
 
     it('should render provider information correctly', () => {
-        const preloadedState = { wallet: { trading: getInitializedTradingStateWithQuotes() } };
-        const quote = preloadedState.wallet.trading.buy.quotes[0];
-
-        const { getByText } = renderProviderListItem(quote, preloadedState, {});
+        const { getByText } = renderProviderListItem(mercuryoApplePayBuyQuote);
 
         expect(getByText('Mercuryo')).toBeOnTheScreen();
     });
 
     it('should render trading information with formatted strings', () => {
-        const preloadedState = { wallet: { trading: getInitializedTradingStateWithQuotes() } };
-        const quote = preloadedState.wallet.trading.buy.quotes[0];
-
-        const { getByText } = renderProviderListItem(quote, preloadedState, {});
+        const { getByText } = renderProviderListItem(mercuryoApplePayBuyQuote);
 
         expect(getByText('Centralized exchange')).toBeOnTheScreen();
         expect(getByText('€9,998.32 / 1 BTC')).toBeOnTheScreen();
     });
 
     it('should render KYC information when provider has KYC policy', () => {
-        const preloadedState = { wallet: { trading: getInitializedTradingStateWithQuotes() } };
-        const quote = preloadedState.wallet.trading.exchange.quotes[2];
-
-        const { getByText } = renderProviderListItem(quote, preloadedState, {
+        const { getByText } = renderProviderListItem(cexdirectFloatingQuote, {
             tradingType: 'exchange',
         });
 
@@ -63,10 +60,7 @@ describe('ProviderListItem', () => {
     });
 
     it('should render anonymous information for DEX providers', () => {
-        const preloadedState = { wallet: { trading: getInitializedTradingStateWithQuotes() } };
-        const quote = preloadedState.wallet.trading.exchange.quotes[3];
-
-        const { getByText } = renderProviderListItem(quote, preloadedState, {
+        const { getByText } = renderProviderListItem(invityDexQuote, {
             tradingType: 'exchange',
         });
 
@@ -75,30 +69,22 @@ describe('ProviderListItem', () => {
     });
 
     it('should not render when quote has no orderId', () => {
-        const preloadedState = { wallet: { trading: getInitializedTradingStateWithQuotes() } };
-        const baseQuote = preloadedState.wallet.trading.buy.quotes[0];
-        const { orderId, ...quoteWithoutOrderId } = baseQuote;
+        const { orderId, ...quoteWithoutOrderId } = mercuryoApplePayBuyQuote;
         const quote = quoteWithoutOrderId as TradingTradeType;
 
-        const { queryByText } = renderProviderListItem(quote, preloadedState, {});
+        const { queryByText } = renderProviderListItem(quote);
 
         expect(queryByText('TestProvider')).toBeNull();
     });
 
     it('should render KYC warning for buy quote', () => {
-        const preloadedState = { wallet: { trading: getInitializedTradingStateWithQuotes() } };
-        const quote = preloadedState.wallet.trading.buy.quotes[0];
-
-        const { getByText } = renderProviderListItem(quote, preloadedState, {});
+        const { getByText } = renderProviderListItem(mercuryoApplePayBuyQuote);
 
         expect(getByText('This provider requires to verify identity.')).toBeOnTheScreen();
     });
 
     it('should render KYC warning for sell quote', () => {
-        const preloadedState = { wallet: { trading: getInitializedTradingStateWithQuotes() } };
-        const quote = preloadedState.wallet.trading.sell.quotes[0];
-
-        const { getByText } = renderProviderListItem(quote, preloadedState, {
+        const { getByText } = renderProviderListItem(banxaCreditCardSellQuote, {
             tradingType: 'sell',
         });
 

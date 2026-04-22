@@ -49,7 +49,7 @@ export const UnstakingTimelineCard = ({ accountKey }: UnstakingTimelineCardProps
         <>
             <PressableOpacity style={applyStyle(cardPressableStyle)} onPress={openModal}>
                 <Card
-                    borderColor="borderElevation1"
+                    borderColor="borderNeutral"
                     noShadow
                     style={applyStyle(unstakingTimelineCardPaddingStyle)}
                 >
@@ -57,7 +57,7 @@ export const UnstakingTimelineCard = ({ accountKey }: UnstakingTimelineCardProps
                         <Text variant="body-md-strong">
                             <Translation id="earn.earnFormScreen.unstakingTimeline" />
                         </Text>
-                        <Icon name="caretDown" color="textDefault" />
+                        <Icon name="caretDown" color="contentPrimary" />
                     </HStack>
 
                     {unstakingPeriodInDays !== undefined && (

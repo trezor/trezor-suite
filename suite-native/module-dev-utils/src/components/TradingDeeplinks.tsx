@@ -4,15 +4,15 @@ import { Button, HStack, Text, VStack } from '@suite-native/atoms';
 import {
     type AppTabsParamList,
     AppTabsRoutes,
-    type DevUtilsStackParamList,
-    type DevUtilsStackRoutes,
-    type StackToTabCompositeProps,
+    type RootStackParamList,
+    type RootStackRoutes,
+    type StackToTabCompositeNavigationProp,
     TradingStackRoutes,
 } from '@suite-native/navigation';
 
-type NavigationProp = StackToTabCompositeProps<
-    DevUtilsStackParamList,
-    DevUtilsStackRoutes.DevUtils,
+type NavigationProp = StackToTabCompositeNavigationProp<
+    RootStackParamList,
+    RootStackRoutes.DevUtils,
     AppTabsParamList
 >;
 
@@ -21,7 +21,7 @@ export const TradingDeeplinks = () => {
 
     return (
         <VStack>
-            <Text variant="body-md" color="textDefault">
+            <Text variant="body-md" color="contentPrimary">
                 Deeplinks
             </Text>
             <HStack>

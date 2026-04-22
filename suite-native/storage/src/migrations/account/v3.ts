@@ -1,4 +1,4 @@
-import bs58 from 'bs58';
+import { base58 } from '@scure/base';
 
 const BIP32_PAYMENT_TYPES = {
     0x0488b21e: 'p2pkh', // 76067358, xpub
@@ -41,7 +41,7 @@ type XpubVersion = keyof typeof BIP32_PAYMENT_TYPES;
 const getPaymentTypeFromXpub = (xpub: string) => {
     if (xpub.startsWith('tr(')) return 'p2tr';
 
-    const xpubVersion = Buffer.from(bs58.decode(xpub)).readUInt32BE();
+    const xpubVersion = Buffer.from(base58.decode(xpub)).readUInt32BE();
 
     return BIP32_PAYMENT_TYPES[xpubVersion as XpubVersion];
 };

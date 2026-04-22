@@ -2,7 +2,12 @@ import type { SellFiatTrade } from 'invity-api';
 
 import { type AccountsRootState } from '@suite-common/wallet-core';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
-import { getBtcAccount, getWalletState, sellQuotes } from '@suite-native/trading-fixtures';
+import {
+    banxaCreditCardSellQuote,
+    getBtcAccount,
+    getWalletState,
+    sellQuotes,
+} from '@suite-native/trading-fixtures';
 
 import { type TradingRootState } from '../../reducers';
 import {
@@ -292,7 +297,7 @@ describe('sellSelectors', () => {
 
         it('should ignore quotes without payment method', () => {
             const quote = {
-                ...sellQuotes[0],
+                ...banxaCreditCardSellQuote,
                 paymentMethod: undefined,
             } as unknown as SellFiatTrade;
 
@@ -303,7 +308,7 @@ describe('sellSelectors', () => {
 
         it('should ignore quotes without payment method name', () => {
             const quote = {
-                ...sellQuotes[0],
+                ...banxaCreditCardSellQuote,
                 paymentMethodName: undefined,
             } as unknown as SellFiatTrade;
 
@@ -314,12 +319,12 @@ describe('sellSelectors', () => {
 
         it('should sort quotes by rates', () => {
             const quote1 = {
-                ...sellQuotes[0],
+                ...banxaCreditCardSellQuote,
                 paymentMethod: 'creditCard',
                 rate: 10000,
             } as SellFiatTrade;
             const quote2 = {
-                ...sellQuotes[0],
+                ...banxaCreditCardSellQuote,
                 paymentMethod: 'bankTransfer',
                 rate: 20000,
             } as SellFiatTrade;

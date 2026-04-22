@@ -63,7 +63,7 @@ export const TransactionDetailAddressesSection = ({
         <VStack>
             <SummaryRow leftComponent={<TransactionDetailStepper />}>
                 <Box>
-                    <Text color="textSubdued" variant="body-sm">
+                    <Text color="contentSecondary" variant="body-sm">
                         <Translation
                             id={titleTxKey}
                             values={{ count: formatAddressesCount(targetAddresses.length) }}

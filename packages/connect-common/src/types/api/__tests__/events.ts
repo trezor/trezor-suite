@@ -1,5 +1,4 @@
 import { ThpPairingMethod } from '@trezor/protocol';
-import { TRANSPORT } from '@trezor/transport';
 
 import type { TrezorConnect } from '../../..';
 import {
@@ -85,7 +84,7 @@ export const events = (api: TrezorConnect) => {
     api.removeAllListeners('UNKNOWN-EVENT');
 
     api.on(TRANSPORT_EVENT, event => {
-        if (event.type === TRANSPORT.START) {
+        if (event.type === 'transport-start') {
             // event.payload.type as string;
             // event.payload.version;
             // event.payload.outdated;

@@ -1,11 +1,10 @@
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import { SettingsAnchor } from '@suite/router';
+import { Anchor, SettingsAnchor } from '@suite/router';
 import { selectTorOnionLinks, suiteSettingsActions } from '@suite/settings';
 import { Switch } from '@trezor/components';
-import { ActionColumn, TextColumn } from '@trezor/product-components';
+import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
-import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
 
@@ -26,18 +25,26 @@ export const TorOnionLinks = () => {
     };
 
     return (
-        <SettingsSectionItem anchorId={SettingsAnchor.TorOnionLinks}>
-            <TextColumn
-                title={<Translation id="TR_ONION_LINKS_TITLE" />}
-                description={<Translation id="TR_ONION_LINKS_DESCRIPTION" />}
-            />
-            <ActionColumn>
-                <Switch
-                    data-testid="@settings/general/onion-links-switch"
-                    isChecked={torOnionLinks}
-                    onChange={handleChange}
-                />
-            </ActionColumn>
-        </SettingsSectionItem>
+        <Anchor anchorId={SettingsAnchor.TorOnionLinks}>
+            {({ anchorId, anchorRef, shouldHighlight }) => (
+                <SectionItem
+                    data-testid={anchorId}
+                    ref={anchorRef}
+                    shouldHighlight={shouldHighlight}
+                >
+                    <TextColumn
+                        title={<Translation id="TR_ONION_LINKS_TITLE" />}
+                        description={<Translation id="TR_ONION_LINKS_DESCRIPTION" />}
+                    />
+                    <ActionColumn>
+                        <Switch
+                            data-testid="@settings/general/onion-links-switch"
+                            isChecked={torOnionLinks}
+                            onChange={handleChange}
+                        />
+                    </ActionColumn>
+                </SectionItem>
+            )}
+        </Anchor>
     );
 };

@@ -40,7 +40,7 @@ export const ExchangeSendAmountBadge = () => {
 
     const { errorMessage, hasError, value } = useField({ name: 'sendCryptoAmount' });
     if (!isLoading && hasError) {
-        return <Badge label={errorMessage} variant="red" size="small" />;
+        return <Badge label={errorMessage} intent="critical" size="small" />;
     }
 
     const asset = watch('sendAsset');

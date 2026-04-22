@@ -17,6 +17,7 @@ import {
 } from '@suite-common/wallet-utils';
 import TrezorConnect, { type AccountInfo, type TokenInfo } from '@trezor/connect';
 
+import { reportWalletBalanceDebounced } from './accountBalanceAnalytics';
 import { accountsActions } from './accountsActions';
 import { ACCOUNTS_MODULE_PREFIX } from './accountsConstants';
 import { selectAccountByKey } from './accountsSelectors';
@@ -54,6 +55,7 @@ const fetchAccountTokens = async (account: Account, payloadTokens: AccountInfo['
             details: 'tokenBalances',
             contractFilter: t.contract,
             suppressBackupWarning: true,
+            includeErc4626: isEvmNetwork ? true : undefined,
         }),
     );
 
@@ -67,6 +69,16 @@ const fetchAccountTokens = async (account: Account, payloadTokens: AccountInfo['
 
     return tokens;
 };
+
+export const reportWalletBalanceThunk = createThunk(
+    `${ACCOUNTS_MODULE_PREFIX}/reportWalletBalance`,
+    (_, { getState, extra }) => {
+        reportWalletBalanceDebounced({
+            getState,
+            analytics: extra.services.analytics,
+        });
+    },
+);
 
 // Left here for clarity, but shouldn't be called anywhere but in blockchainActions.syncAccounts
 // as we usually want to update all accounts for a single coin at once
@@ -122,6 +134,7 @@ export const fetchAndUpdateAccountThunk = createThunk(
             page: 1, // useful for every network except ripple and stellar
             pageSize,
             suppressBackupWarning: true,
+            includeErc4626: account.networkType === 'ethereum' ? true : undefined,
         });
 
         if (response.success) {
@@ -185,6 +198,8 @@ export const fetchAndUpdateAccountThunk = createThunk(
             } else {
                 dispatch(accountsActions.updateAccountRefreshTimestamp(account));
             }
+
+            dispatch(reportWalletBalanceThunk());
         }
     },
 );

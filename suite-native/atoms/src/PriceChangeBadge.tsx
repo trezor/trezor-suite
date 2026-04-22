@@ -1,6 +1,6 @@
 import { type IconName } from '@suite-native/icons';
 
-import { Badge, type BadgeVariant } from './Badge';
+import { Badge, type BadgeIntent } from './Badge';
 import { BoxSkeleton } from './Skeleton/BoxSkeleton';
 
 export type PriceChangeBadgeProps = {
@@ -18,20 +18,12 @@ export const PriceChangeBadge = ({ valuePercentageChange }: PriceChangeBadgeProp
     const priceHasIncreased = percentageChange >= 0;
 
     const icon: IconName = priceHasIncreased ? 'caretUpFilled' : 'caretDownFilled';
-    const badgeVariant: BadgeVariant = priceHasIncreased ? 'greenSubtle' : 'red';
+    const badgeVariant: BadgeIntent = priceHasIncreased ? 'brand' : 'critical';
     const formattedPercentage = percentFormatter.format(percentageChange);
 
     if (valuePercentageChange == null) {
         return <BoxSkeleton width={70} height={24} borderRadius={12} />;
     }
 
-    return (
-        <Badge
-            icon={icon}
-            iconSize="medium"
-            size="medium"
-            variant={badgeVariant}
-            label={formattedPercentage}
-        />
-    );
+    return <Badge icon={icon} size="medium" intent={badgeVariant} label={formattedPercentage} />;
 };

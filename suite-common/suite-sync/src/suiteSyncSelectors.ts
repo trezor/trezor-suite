@@ -32,6 +32,23 @@ export const selectIsSuiteSyncEnabled = (
 export const selectIsSuiteSyncDebugEnabled = (state: WithSuiteSyncAndDeviceState): boolean =>
     state.suiteSync.settings.isSuiteSyncDebugEnabled;
 
+export const selectIsSuiteSyncInitPossible = (
+    state: WithSuiteSyncAndDeviceState,
+    deviceStaticSessionId: StaticSessionId | null,
+): boolean => {
+    if (deviceStaticSessionId === null) {
+        return false;
+    }
+
+    const device = selectDeviceByStaticSessionId(state, deviceStaticSessionId);
+
+    if (device === undefined) {
+        return false;
+    }
+
+    return device.connected && isSuiteSyncSupportedByDevice(device);
+};
+
 export const selectSuiteSyncCustomRelayUrl = (
     state: WithSuiteSyncAndDeviceState,
 ): string | null => {

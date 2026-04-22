@@ -8,7 +8,7 @@ import { type Network, getNetwork, networksCollection } from '@suite-common/wall
 import { selectAccounts } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { type CallMethodResponse } from '@trezor/connect';
-import { parseTronTransaction } from '@trezor/connect/src/api/tron/tronParse';
+import type { TronContractInput } from '@trezor/connect-common';
 import { type Result } from '@trezor/type-utils';
 
 import { WALLETCONNECT_MODULE } from '../walletConnectConstants';
@@ -18,6 +18,20 @@ import type {
     WalletConnectAdapter,
     WalletConnectNamespace,
 } from '../walletConnectTypes';
+
+type TronRawData = {
+    ref_block_bytes: string;
+    ref_block_hash: string;
+    expiration: number;
+    timestamp: number;
+    fee_limit?: number;
+    contract: TronContractInput[];
+};
+
+// Some dApps wrap the transaction in a `transaction` field (legacy format).
+type TronTransaction =
+    | { raw_data: TronRawData; transaction?: undefined }
+    | { transaction: { raw_data: TronRawData }; raw_data?: undefined };
 
 const methods = ['tron_signTransaction', 'tron_signMessage'];
 
@@ -106,21 +120,16 @@ const tronRequestThunk = createThunk<
         case 'tron_signTransaction': {
             const { address, transaction } = event.params.request.params as {
                 address: string;
-                transaction: Record<string, unknown>;
+                transaction: TronTransaction;
             };
 
-            const rawTransaction = (
-                transaction.transaction && typeof transaction.transaction === 'object'
+            // Unwrap legacy format where the actual transaction is nested.
+            const rawTransaction =
+                'transaction' in transaction && transaction.transaction
                     ? transaction.transaction
-                    : transaction
-            ) as Record<string, unknown>;
+                    : transaction;
 
-            const rawDataHex = rawTransaction.raw_data_hex as string | undefined;
-            if (!rawDataHex) {
-                throw new Error('Missing raw_data_hex in tron_signTransaction params');
-            }
-
-            const parsed = parseTronTransaction(rawDataHex);
+            const { raw_data: rawData } = rawTransaction;
 
             const accounts = selectAccounts(getState());
             const account = accounts.find(
@@ -139,12 +148,12 @@ const tronRequestThunk = createThunk<
                     payload: {
                         path: account.path,
                         device,
-                        ref_block_bytes: parsed.ref_block_bytes,
-                        ref_block_hash: parsed.ref_block_hash,
-                        expiration: parsed.expiration,
-                        timestamp: parsed.timestamp,
-                        fee_limit: parsed.fee_limit,
-                        contract: parsed.contract,
+                        ref_block_bytes: rawData.ref_block_bytes,
+                        ref_block_hash: rawData.ref_block_hash,
+                        expiration: rawData.expiration,
+                        timestamp: rawData.timestamp,
+                        fee_limit: rawData.fee_limit,
+                        contract: rawData.contract,
                     },
                     source: {
                         type: 'walletconnect' as const,

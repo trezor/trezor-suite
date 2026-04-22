@@ -38,13 +38,11 @@ export const Sign = ({
     }
 
     if (isValuePositive) {
-        return (
-            <StyledSign $color={grayscale ? defaultColor : theme.textPrimaryDefault}>+</StyledSign>
-        );
+        return <StyledSign $color={grayscale ? defaultColor : theme.contentBrand}>+</StyledSign>;
     }
 
     if (!isValuePositive && showMinusSign) {
-        return <StyledSign $color={grayscale ? defaultColor : theme.textAlertRed}>–</StyledSign>;
+        return <StyledSign $color={grayscale ? defaultColor : theme.contentCritical}>–</StyledSign>;
     }
 
     return null;

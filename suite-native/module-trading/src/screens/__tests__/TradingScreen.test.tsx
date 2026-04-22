@@ -1,6 +1,13 @@
-import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
-import { type PreloadedState, renderWithStoreProvider, screen } from '@suite-native/test-utils';
+import { mockMessageSystemStateWithFeatureFlags } from '@suite-common/message-system/mocks';
+import { FeatureFlag } from '@suite-native/feature-flags';
+import { screen } from '@suite-native/test-utils-store';
 
+import {
+    type PreloadedStatePartial,
+    type TradingTestPreloadedState,
+    createTradingFeatureFlags,
+    renderWithTradingProvider,
+} from '../../__tests__/tradingTestUtils';
 import { TradingScreen } from '../TradingScreen';
 
 jest.mock('@trezor/react-utils', () => ({
@@ -39,60 +46,30 @@ jest.mock('../../hooks/exchange/useExchangeData', () => ({
     }),
 }));
 
-const stateWithEnabledBuy = {
-    featureFlags: {
-        ...featureFlagsInitialState,
+const overridesWithEnabledBuy: PreloadedStatePartial<TradingTestPreloadedState> = {
+    featureFlags: createTradingFeatureFlags({
         [FeatureFlag.IsTradingBuyEnabled]: true,
-        [FeatureFlag.IsTradingResidenceCheckEnabled]: false,
-    },
+    }),
 };
 
-const stateWithDisabledTrading = {
-    featureFlags: {
-        ...featureFlagsInitialState,
+const overridesWithDisabledTrading: PreloadedStatePartial<TradingTestPreloadedState> = {
+    featureFlags: createTradingFeatureFlags({
         [FeatureFlag.IsTradingBuyEnabled]: false,
-        [FeatureFlag.IsTradingResidenceCheckEnabled]: false,
-    },
-    messageSystem: {
-        validMessages: {
-            feature: ['actionId'],
-            banner: [],
-            context: [],
-            modal: [],
-        },
-        dismissedMessages: [],
-        config: {
-            actions: [
-                {
-                    message: {
-                        id: 'actionId',
-                        category: ['feature'],
-                        feature: [
-                            {
-                                domain: 'trading.buy',
-                                flag: false,
-                            },
-                            {
-                                domain: 'trading.exchange',
-                                flag: false,
-                            },
-                            {
-                                domain: 'trading.sell',
-                                flag: false,
-                            },
-                        ],
-                    },
-                },
-            ],
-        },
-    },
-} as unknown as PreloadedState;
+        [FeatureFlag.IsTradingExchangeEnabled]: false,
+        [FeatureFlag.IsTradingSellEnabled]: false,
+    }),
+    messageSystem: mockMessageSystemStateWithFeatureFlags({
+        'trading.buy': false,
+        'trading.exchange': false,
+        'trading.sell': false,
+    }),
+};
 
 describe('TradingScreen', () => {
     let unmount: (() => void) | undefined;
 
-    const renderTradingScreen = (preloadedState?: PreloadedState) => {
-        const result = renderWithStoreProvider(<TradingScreen />, { preloadedState });
+    const renderTradingScreen = (overrides?: PreloadedStatePartial<TradingTestPreloadedState>) => {
+        const result = renderWithTradingProvider(<TradingScreen />, { overrides });
 
         ({ unmount } = result);
 
@@ -106,19 +83,15 @@ describe('TradingScreen', () => {
         }
     });
 
-    const expectBuyForm = () => {
-        expect(screen.getByText('You pay')).toBeOnTheScreen();
-    };
-
     it('should render nothing when trading feature flag is not enabled', () => {
-        const { toJSON } = renderTradingScreen(stateWithDisabledTrading);
+        const { toJSON } = renderTradingScreen(overridesWithDisabledTrading);
 
         expect(toJSON()).toBeNull();
     });
 
     it('should render Buy form by default', () => {
-        renderTradingScreen(stateWithEnabledBuy);
+        renderTradingScreen(overridesWithEnabledBuy);
 
-        expectBuyForm();
+        expect(screen.getByText('You pay')).toBeOnTheScreen();
     });
 });

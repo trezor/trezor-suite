@@ -1,5 +1,5 @@
 import { type AccountKey } from '@suite-common/wallet-types';
-import { act, renderHookWithStoreProvider } from '@suite-native/test-utils';
+import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { type UseFeesFormProps, useFeesForm } from '../useFeesForm';
 
@@ -14,6 +14,7 @@ describe('useFeesForm', () => {
         renderHookWithStoreProvider(() => useFeesForm(props), {
             preloadedState: {
                 wallet: {
+                    fees: {},
                     send: {
                         feeLevels: {
                             normal: {
@@ -110,6 +111,7 @@ describe('useFeesForm', () => {
         const { result } = renderHookWithStoreProvider(() => useFeesForm(mockProps), {
             preloadedState: {
                 wallet: {
+                    fees: {},
                     send: {
                         feeLevels: {},
                     },

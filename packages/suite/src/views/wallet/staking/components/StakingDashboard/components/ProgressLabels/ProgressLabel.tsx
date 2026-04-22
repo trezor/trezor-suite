@@ -18,11 +18,11 @@ const mapProgressStateToBackground = ({
 }) => {
     switch ($progressState) {
         case 'active':
-            return theme.backgroundAlertYellowSubtleOnElevation2;
+            return theme.legacyBackgroundAlertYellowSubtleOnElevation2;
         case 'done':
-            return theme.backgroundPrimarySubtleOnElevation1;
+            return theme.legacyBackgroundPrimarySubtleOnElevation1;
         default:
-            return theme.backgroundSurfaceElevation2;
+            return theme.legacyBackgroundSurfaceElevation2;
     }
 };
 
@@ -95,7 +95,7 @@ const ProgressLabelItem = styled.div<{
             position: absolute;
             top: 0;
             left: 0;
-            border-left: 12px solid ${({ theme }) => theme.backgroundSurfaceElevation1};
+            border-left: 12px solid ${({ theme }) => theme.surfaceFillRaised};
             border-top: ${({ $currentHeight = DEFAULT_LABEL_HEIGHT }) => $currentHeight / 2}px solid
                 transparent;
             border-bottom: ${({ $currentHeight = DEFAULT_LABEL_HEIGHT }) => $currentHeight / 2}px

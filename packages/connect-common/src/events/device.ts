@@ -4,7 +4,7 @@ import type {
     ThpCredentials,
     ThpPairingMethod,
 } from '@trezor/protocol';
-import type { VersionArray } from '@trezor/utils/src/versionUtils';
+import type { VersionArray } from '@trezor/utils';
 
 import type { Device } from '../types/device';
 import type { MessageFactoryFn } from '../types/utils';

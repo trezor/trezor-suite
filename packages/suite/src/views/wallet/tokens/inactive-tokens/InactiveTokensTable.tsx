@@ -21,7 +21,7 @@ import { NoSearchResultsWrapped } from '../common/TokensTable/TokensTable';
 
 const DashedTextWrapper = styled.div`
     border-bottom: 1px dashed;
-    border-color: ${({ theme }) => `${theme.textSubdued}50`}; /* 50 is hex for ~30% opacity */
+    border-color: ${({ theme }) => `${theme.contentSecondary}50`}; /* 50 is hex for ~30% opacity */
     cursor: pointer;
     display: inline-block;
 `;

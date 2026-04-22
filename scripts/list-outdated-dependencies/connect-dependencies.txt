@@ -9,6 +9,7 @@
 @headlessui/react
 @reown/walletkit
 @react-native-async-storage/async-storage
+@scure/base
 @scure/bip39
 @sinclair/typebox
 @sinclair/typebox-codegen

@@ -80,7 +80,7 @@ export const PermissionConfirmation = () => {
                     <VStack flex={1} spacing="sp4">
                         <Text>{popupCall.source.manifest?.appName ?? popupCall.source.origin}</Text>
                         {popupCall.source.manifest?.appName && (
-                            <Text color="textSubdued">{popupCall.source.origin}</Text>
+                            <Text color="contentSecondary">{popupCall.source.origin}</Text>
                         )}
                     </VStack>
                 </HStack>
@@ -90,8 +90,8 @@ export const PermissionConfirmation = () => {
                 <VStack spacing="sp8" padding="sp8">
                     {popupCall.methodInfo.permissionTypes.map(permission => (
                         <HStack key={permission} alignItems="center" spacing="sp8">
-                            <Icon name="checkCircle" color="iconPrimaryDefault" />
-                            <Text color="textSubdued" variant="body-sm" style={{ flex: 1 }}>
+                            <Icon name="checkCircle" color="contentBrand" />
+                            <Text color="contentSecondary" variant="body-sm" style={{ flex: 1 }}>
                                 <Translation id={permissionTranslationKeysMap[permission]} />
                             </Text>
                         </HStack>
@@ -106,7 +106,7 @@ export const PermissionConfirmation = () => {
                             isChecked={isRemembered}
                             onChange={() => setIsRemembered(!isRemembered)}
                         />
-                        <Text color="textSubdued" variant="body-sm">
+                        <Text color="contentSecondary" variant="body-sm">
                             <Translation id="moduleConnectPopup.alwaysAllow" />
                         </Text>
                     </HStack>

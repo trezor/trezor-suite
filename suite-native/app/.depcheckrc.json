@@ -29,6 +29,7 @@
         "expo-web-browser",
         "expo-file-system",
         "lottie-react-native",
+        "patch-package",
         "react-intl",
         "react-native-ble-plx",
         "react-native-edge-to-edge",

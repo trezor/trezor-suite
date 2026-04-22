@@ -42,7 +42,9 @@
         {
             "path": "../../suite-common/device-authenticity"
         },
-        { "path": "../../suite-common/earn-api" },
+        {
+            "path": "../../suite-common/earn-stablecoin-api"
+        },
         {
             "path": "../../suite-common/earn-staking-api"
         },
@@ -153,12 +155,17 @@
         },
         { "path": "../../suite/analytics" },
         { "path": "../../suite/backup" },
+        { "path": "../../suite/desktop-update" },
         { "path": "../../suite/device" },
         { "path": "../../suite/experimental" },
         {
             "path": "../../suite/feature-feedback"
         },
+        {
+            "path": "../../suite/firmware-upgrade"
+        },
         { "path": "../../suite/flags" },
+        { "path": "../../suite/github" },
         {
             "path": "../../suite/idb-migration-utils"
         },

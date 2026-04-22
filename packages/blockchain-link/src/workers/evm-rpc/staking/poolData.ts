@@ -1,6 +1,6 @@
 import type { PublicClient } from 'viem';
 
-import type { StakingPool } from '@trezor/blockchain-link-types/src/blockbook-api';
+import type { StakingPool } from '@trezor/blockchain-link-types';
 
 import { EVERSTAKE_ACCOUNTING_ABI } from './abi';
 import { STAKING_POOL_CONTRACTS } from './constants';

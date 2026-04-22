@@ -40,8 +40,8 @@ export type AccountListItemProps = {
 };
 
 const CRYPTO_PRIMARY_BALANCE_TEXT_PROPS = [
-    { variant: 'body-md-strong' as const, color: 'textDefault' as const },
-    { variant: 'body-sm' as const, color: 'textSubdued' as const },
+    { variant: 'body-md-strong' as const, color: 'contentPrimary' as const },
+    { variant: 'body-sm' as const, color: 'contentSecondary' as const },
 ];
 
 const TokenBadge = React.memo(({ accountKey }: { accountKey: AccountKey }) => {
@@ -51,7 +51,6 @@ const TokenBadge = React.memo(({ accountKey }: { accountKey: AccountKey }) => {
 
     return (
         <Badge
-            elevation="1"
             size="small"
             label={<Translation id="accountList.numberOfTokens" values={{ numberOfTokens }} />}
         />
@@ -165,9 +164,7 @@ export const AccountsListItem = ({
             title={title}
             badges={
                 <>
-                    {formattedAccountType && (
-                        <Badge label={formattedAccountType} size="small" elevation="1" />
-                    )}
+                    {formattedAccountType && <Badge label={formattedAccountType} size="small" />}
                     {shouldShowStakingBadge && (
                         <StakingBadge networkSymbol={account.symbol} account={account} />
                     )}

@@ -1,6 +1,14 @@
+import { type StateFromReducersMapObject } from '@reduxjs/toolkit';
+
+import { deviceInitialState } from '@suite-common/device';
+import { accountsInitialState, initialWalletSettingsState } from '@suite-common/wallet-core';
 import { featureFlagsInitialState } from '@suite-native/feature-flags';
 import { appSettingsInitialState } from '@suite-native/settings';
-import { type PreloadedState, initStore } from '@suite-native/test-utils';
+import {
+    type PreloadedStatePartial,
+    createLightStore,
+    createStaticReducer,
+} from '@suite-native/test-utils-store';
 
 import { selectDiscoverySupportedNetworks } from '../discoverySelectors';
 
@@ -20,22 +28,47 @@ jest.mock('@suite-common/wallet-config', () => ({
 }));
 
 describe('selectDiscoverySupportedNetworks', () => {
-    const createMockState = (overrides: Partial<PreloadedState> = {}): PreloadedState => ({
+    const reducer = {
+        appSettings: createStaticReducer(appSettingsInitialState),
+        device: createStaticReducer(deviceInitialState),
+        featureFlags: createStaticReducer(featureFlagsInitialState),
+        wallet: createStaticReducer({
+            accounts: accountsInitialState,
+            settings: initialWalletSettingsState,
+        }),
+    } as const;
+
+    const createMockState = (
+        overrides: PreloadedStatePartial<StateFromReducersMapObject<typeof reducer>> = {},
+    ): StateFromReducersMapObject<typeof reducer> => ({
         appSettings: {
             ...appSettingsInitialState,
-            areTestnetsEnabled: false,
-            ...overrides?.appSettings,
+            ...overrides.appSettings,
         },
+        device: deviceInitialState,
         featureFlags: {
             ...featureFlagsInitialState,
-            areDebugOnlyNetworksEnabled: false,
             ...overrides.featureFlags,
+        },
+        wallet: {
+            accounts: overrides.wallet?.accounts ?? accountsInitialState,
+            settings: {
+                ...initialWalletSettingsState,
+                ...overrides.wallet?.settings,
+            },
         },
     });
 
+    const createTestStore = (
+        overrides?: PreloadedStatePartial<StateFromReducersMapObject<typeof reducer>>,
+    ) =>
+        createLightStore({
+            reducer,
+            preloadedState: createMockState(overrides),
+        });
+
     it('should be stable (return same reference for same inputs)', () => {
-        const state = createMockState();
-        const { store } = initStore(state);
+        const store = createTestStore();
 
         const firstCall = selectDiscoverySupportedNetworks(store.getState());
         const secondCall = selectDiscoverySupportedNetworks(store.getState());
@@ -44,10 +77,9 @@ describe('selectDiscoverySupportedNetworks', () => {
     });
 
     it('should filter out testnet networks when testnets are disabled', () => {
-        const state = createMockState({
+        const store = createTestStore({
             appSettings: { areTestnetsEnabled: false },
         });
-        const { store } = initStore(state);
 
         const result = selectDiscoverySupportedNetworks(store.getState());
         const networkSymbols = result.map(n => n.symbol);
@@ -65,10 +97,9 @@ describe('selectDiscoverySupportedNetworks', () => {
     });
 
     it('should include testnet networks when testnets are enabled', () => {
-        const state = createMockState({
+        const store = createTestStore({
             appSettings: { areTestnetsEnabled: true },
         });
-        const { store } = initStore(state);
 
         const result = selectDiscoverySupportedNetworks(store.getState());
         const networkSymbols = result.map(n => n.symbol);
@@ -86,10 +117,9 @@ describe('selectDiscoverySupportedNetworks', () => {
     });
 
     it('should filter out debug-only networks when debug networks feature flag is disabled', () => {
-        const state = createMockState({
+        const store = createTestStore({
             featureFlags: { areDebugOnlyNetworksEnabled: false },
         });
-        const { store } = initStore(state);
 
         const result = selectDiscoverySupportedNetworks(store.getState());
         const networkSymbols = result.map(n => n.symbol);
@@ -102,10 +132,9 @@ describe('selectDiscoverySupportedNetworks', () => {
     });
 
     it('should include debug-only networks when debug networks feature flag is enabled', () => {
-        const state = createMockState({
+        const store = createTestStore({
             featureFlags: { areDebugOnlyNetworksEnabled: true },
         });
-        const { store } = initStore(state);
 
         const result = selectDiscoverySupportedNetworks(store.getState());
         const networkSymbols = result.map(n => n.symbol);
@@ -117,10 +146,9 @@ describe('selectDiscoverySupportedNetworks', () => {
     });
 
     it('should respect forced testnet setting parameter', () => {
-        const state = createMockState({
+        const store = createTestStore({
             appSettings: { areTestnetsEnabled: false },
         });
-        const { store } = initStore(state);
 
         // Force testnets enabled even though app setting is false
         const result = selectDiscoverySupportedNetworks(store.getState(), true);

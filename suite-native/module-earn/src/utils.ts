@@ -1,7 +1,34 @@
+import { type FormState } from '@suite-common/wallet-types';
+
 import { USER_CANCELLED_ERROR_CODES } from './constants';
 
+export const buildEarnComposeFormState = (
+    contractAddress: string,
+    amount: string,
+    calldata: string,
+): FormState => ({
+    outputs: [
+        {
+            address: contractAddress,
+            amount,
+            type: 'payment',
+            token: null,
+            fiat: '',
+            currency: { label: '', value: '' },
+        },
+    ],
+    options: ['transactionData'],
+    transactionData: calldata,
+    isCoinControlEnabled: false,
+    hasCoinControlBeenOpened: false,
+    selectedUtxos: [],
+    selectedFee: 'normal',
+    feePerUnit: '',
+    feeLimit: '',
+});
+
 type HandleEarnReviewErrorProps = {
-    payload: { error?: string; errorCode?: string } | undefined;
+    payload: { error?: string; errorCode?: string; message?: string } | undefined;
     navigation: { pop: () => void };
     showPushTransactionFailedAlert: () => void;
     showPendingTransactionConflictAlert: () => void;
@@ -15,6 +42,10 @@ export const handleEarnReviewError = ({
     showPendingTransactionConflictAlert,
     showDeviceDisconnectedAlert,
 }: HandleEarnReviewErrorProps) => {
+    if (payload?.message === 'tx-cancelled') {
+        return;
+    }
+
     if (payload?.error === 'push-transaction-pending-conflict') {
         showPendingTransactionConflictAlert();
 

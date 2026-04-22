@@ -2,8 +2,9 @@
 // differences:
 // - added blake256 and hash160blake256 methods (decred)
 
-import blakeHash from 'blake-hash';
-import createHmac from 'create-hmac';
+import { blake256 as nobleBlake256 } from '@noble/hashes/blake1.js';
+import { hmac } from '@noble/hashes/hmac.js';
+import { sha512 } from '@noble/hashes/sha2.js';
 import { createHash } from 'crypto';
 
 export function ripemd160(buffer: Buffer): Buffer {
@@ -23,7 +24,7 @@ export function sha256(buffer: Buffer): Buffer {
 }
 
 export function blake256(buffer: Buffer): Buffer {
-    return blakeHash('blake256').update(buffer).digest();
+    return Buffer.from(nobleBlake256(buffer));
 }
 
 export function hash160(buffer: Buffer): Buffer {
@@ -39,5 +40,5 @@ export function hash256(buffer: Buffer): Buffer {
 }
 
 export function hmacSHA512(key: Buffer, data: Buffer): Buffer {
-    return createHmac('sha512', key).update(data).digest();
+    return Buffer.from(hmac(sha512, key, data));
 }

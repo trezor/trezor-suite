@@ -1,48 +1,47 @@
-import { type TestStore, initStore, renderWithStoreProvider } from '@suite-native/test-utils';
-import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
+import { mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 
+import {
+    type PreloadedStatePartial,
+    type TradingTestPreloadedState,
+    renderWithTradingProvider,
+} from '../../../../__tests__/tradingTestUtils';
 import { RevokeLimitInfoRow } from '../RevokeLimitInfoRow';
 
 describe('RevokeLimitInfoRow', () => {
-    let store: TestStore;
+    const renderRevokeLimitInfoRow = (
+        overrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
+    ) =>
+        renderWithTradingProvider(<RevokeLimitInfoRow />, {
+            tradeType: 'exchange',
+            overrides,
+        });
 
-    const renderRevokeLimitInfoRow = () =>
-        renderWithStoreProvider(<RevokeLimitInfoRow />, { store });
-
-    beforeEach(() => {
-        const preloadedState = {
-            wallet: getWalletState({
-                tradeType: 'exchange',
-            }),
-        };
-        preloadedState!.wallet!.trading.exchange.preselectedQuote = {
-            ...exchangeQuotes[0],
-            preapprovedStringAmount: '100',
-        };
-        ({ store } = initStore(preloadedState));
-    });
+    const withPreselectedQuote: PreloadedStatePartial<TradingTestPreloadedState> = {
+        wallet: {
+            trading: {
+                exchange: {
+                    preselectedQuote: {
+                        ...mercuryoFixedWorstQuote,
+                        preapprovedStringAmount: '100',
+                    },
+                },
+            },
+        },
+    };
 
     it('should render that new limit is 0', () => {
-        const { getByText } = renderRevokeLimitInfoRow();
+        const { getByText } = renderRevokeLimitInfoRow(withPreselectedQuote);
 
         expect(getByText('0 USDC')).toBeOnTheScreen();
     });
 
     it('should display preapprovedStringAmount', () => {
-        const { getByText } = renderRevokeLimitInfoRow();
+        const { getByText } = renderRevokeLimitInfoRow(withPreselectedQuote);
 
         expect(getByText('100 USDC')).toBeOnTheScreen();
     });
 
     it('should render nothing when no quote is set', () => {
-        const preloadedState = {
-            wallet: getWalletState({
-                tradeType: 'exchange',
-            }),
-        };
-        preloadedState!.wallet!.trading.exchange.preselectedQuote = undefined;
-        ({ store } = initStore(preloadedState));
-
         const { toJSON } = renderRevokeLimitInfoRow();
 
         expect(toJSON()).toBeNull();

@@ -1,9 +1,7 @@
 import { Form } from '@suite-native/forms';
-import {
-    act,
-    renderHookWithStoreProvider,
-    renderWithBasicProvider,
-} from '@suite-native/test-utils';
+import { renderWithBasicProvider } from '@suite-native/test-utils';
+import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
+import { getWalletState } from '@suite-native/trading-fixtures';
 import { type SellFormType } from '@suite-native/trading-types';
 
 import { useSellForm } from '../../../hooks/sell/useSellForm';
@@ -11,8 +9,12 @@ import { SellAlert } from '../SellAlert';
 
 describe('SellAlert', () => {
     let form: SellFormType;
+    const preloadedState = { wallet: getWalletState({ tradeType: 'sell' }) };
 
-    const renderFormHook = () => renderHookWithStoreProvider(() => useSellForm());
+    const renderFormHook = () =>
+        renderHookWithStoreProvider(() => useSellForm(), {
+            preloadedState,
+        });
 
     const renderTradingAlert = () =>
         renderWithBasicProvider(<SellAlert />, {

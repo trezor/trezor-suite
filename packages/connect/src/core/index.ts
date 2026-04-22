@@ -106,9 +106,13 @@ const inner = async (context: CoreContext, method: AbstractMethod<any>, device: 
 
             // request confirmation view
             sendCoreMessage(
-                createUiMessage(UI_REQUEST.REQUEST_CONFIRMATION, {
-                    view: 'no-backup',
-                }),
+                createUiMessage(
+                    UI_REQUEST.REQUEST_CONFIRMATION,
+                    {
+                        view: 'no-backup',
+                    },
+                    uiPromise.requestId,
+                ),
             );
 
             // wait for user action
@@ -452,7 +456,11 @@ const onDevicePinHandler =
         const uiPromise = uiPromises.create(UI_RESPONSE.RECEIVE_PIN, device);
         // request pin view
         sendCoreMessage(
-            createUiMessage(UI_REQUEST.REQUEST_PIN, { device: device.toMessageObject(), type }),
+            createUiMessage(
+                UI_REQUEST.REQUEST_PIN,
+                { device: device.toMessageObject(), type },
+                uiPromise.requestId,
+            ),
         );
         // wait for pin
         try {
@@ -477,7 +485,11 @@ const onDeviceWordHandler =
         // create ui promise
         const uiPromise = uiPromises.create(UI_RESPONSE.RECEIVE_WORD, device);
         sendCoreMessage(
-            createUiMessage(UI_REQUEST.REQUEST_WORD, { device: device.toMessageObject(), type }),
+            createUiMessage(
+                UI_REQUEST.REQUEST_WORD,
+                { device: device.toMessageObject(), type },
+                uiPromise.requestId,
+            ),
         );
         // wait for word
         try {
@@ -503,7 +515,11 @@ const onDevicePassphraseHandler =
         const uiPromise = uiPromises.create(UI_RESPONSE.RECEIVE_PASSPHRASE, device);
         // request passphrase view
         sendCoreMessage(
-            createUiMessage(UI_REQUEST.REQUEST_PASSPHRASE, { device: device.toMessageObject() }),
+            createUiMessage(
+                UI_REQUEST.REQUEST_PASSPHRASE,
+                { device: device.toMessageObject() },
+                uiPromise.requestId,
+            ),
         );
         // wait for passphrase
         try {
@@ -542,10 +558,14 @@ const onThpPairingHandler =
         const uiPromise = uiPromises.create(UI_RESPONSE.RECEIVE_THP_PAIRING_TAG, device);
 
         sendCoreMessage(
-            createUiMessage(UI_REQUEST.REQUEST_THP_PAIRING, {
-                device: device.toMessageObject(),
-                ...payload,
-            }),
+            createUiMessage(
+                UI_REQUEST.REQUEST_THP_PAIRING,
+                {
+                    device: device.toMessageObject(),
+                    ...payload,
+                },
+                uiPromise.requestId,
+            ),
         );
         // wait for response
         try {
@@ -792,6 +812,7 @@ export class Core extends EventEmitter {
             case UI_RESPONSE.RECEIVE_ACCOUNT:
             case UI_RESPONSE.RECEIVE_FEE:
             case UI_RESPONSE.RECEIVE_WORD:
+            case UI_RESPONSE.RECEIVE_DISCOVERY_ACCOUNTS:
                 this.uiPromises.resolve(message);
                 break;
             case UI_RESPONSE.RECEIVE_FIRMWARE: {

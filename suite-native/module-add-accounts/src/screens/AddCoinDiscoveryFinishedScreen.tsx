@@ -88,8 +88,8 @@ export const AddCoinDiscoveryFinishedScreen = ({
                 ))}
                 <TextDivider
                     title="moduleAddAccounts.coinDiscoveryFinishedScreen.orSeparator"
-                    lineColor="borderElevation0"
-                    textColor="textSubdued"
+                    lineColor="borderNeutral"
+                    textColor="contentSecondary"
                 />
                 <Box paddingTop="sp8" paddingHorizontal="sp16">
                     <Button

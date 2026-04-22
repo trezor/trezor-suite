@@ -1,8 +1,8 @@
+import { installUpdateThunk } from '@suite/desktop-update';
 import { Translation } from '@suite/intl';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { installUpdate } from 'src/actions/suite/desktopUpdateActions';
 import { useDispatch } from 'src/hooks/suite';
 
 interface ReadyProps {
@@ -12,9 +12,9 @@ interface ReadyProps {
 export const Ready = ({ hideWindow }: ReadyProps) => {
     const dispatch = useDispatch();
 
-    const install = () => dispatch(installUpdate({ installNow: true }));
+    const install = () => dispatch(installUpdateThunk({ installNow: true }));
     const installOnQuit = () => {
-        dispatch(installUpdate({ installNow: false }));
+        dispatch(installUpdateThunk({ installNow: false }));
         hideWindow();
     };
 

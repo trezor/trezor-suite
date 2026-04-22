@@ -24,7 +24,7 @@ type NavigationProps = StackNavigationProps<
 >;
 
 const BetaBadge = () => (
-    <Badge label={<Translation id="firmware.languageCard.betaBadge" />} variant="blue" />
+    <Badge label={<Translation id="firmware.languageCard.betaBadge" />} intent="info" />
 );
 
 export const FirmwareLanguageCard = () => {

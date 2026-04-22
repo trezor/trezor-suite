@@ -143,7 +143,13 @@ export const TradingExchangeApprovalScreen = ({
                         closeActionType="back"
                     />
                 }
-                footer={<ApprovalButton isReady={isApprovalReady} isDisabled={!!error} />}
+                footer={
+                    <ApprovalButton
+                        isReady={isApprovalReady}
+                        isDisabled={!!error}
+                        flowType="approve"
+                    />
+                }
             >
                 <VStack spacing="sp12">
                     {!!shouldIncreaseLimit && (

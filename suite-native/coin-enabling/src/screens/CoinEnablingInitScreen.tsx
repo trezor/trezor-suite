@@ -72,7 +72,7 @@ export const CoinEnablingInitScreen = () => {
                     <Text variant="headline-sm">
                         <Translation id="moduleSettings.coinEnabling.initialSetup.title" />
                     </Text>
-                    <Text color="textSubdued">
+                    <Text color="contentSecondary">
                         <Translation id="moduleSettings.coinEnabling.initialSetup.subtitle" />
                     </Text>
                 </VStack>

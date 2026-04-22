@@ -1,12 +1,12 @@
 import { Form } from '@suite-native/forms';
-import {
-    act,
-    renderHookWithStoreProvider,
-    renderWithStoreProvider,
-} from '@suite-native/test-utils';
+import { act } from '@suite-native/test-utils-store';
 import { btcAsset, getBtcAccount } from '@suite-native/trading-fixtures';
 import { type SellFormType } from '@suite-native/trading-types';
 
+import {
+    renderHookWithTradingProvider,
+    renderWithTradingProvider,
+} from '../../../../__tests__/tradingTestUtils';
 import { useSellForm } from '../../../../hooks/sell/useSellForm';
 import {
     SEND_ACCOUNT_BALANCE_TEST_ID,
@@ -17,13 +17,16 @@ describe('SellSendAccountCryptoBalance', () => {
     let sellForm: SellFormType;
 
     const renderSellForm = () => {
-        const { result } = renderHookWithStoreProvider(() => useSellForm());
+        const { result } = renderHookWithTradingProvider(() => useSellForm(), {
+            tradeType: 'sell',
+        });
 
         return result.current;
     };
 
     const renderComponent = () =>
-        renderWithStoreProvider(<SellSendAccountCryptoBalance />, {
+        renderWithTradingProvider(<SellSendAccountCryptoBalance />, {
+            tradeType: 'sell',
             wrapper: ({ children }) => <Form form={sellForm}>{children}</Form>,
         });
 

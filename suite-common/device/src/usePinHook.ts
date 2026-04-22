@@ -9,7 +9,7 @@ const NEW_WIPE_CODE_REQUEST_TYPES = [
     'PinMatrixRequestType_WipeCodeSecond',
 ];
 
-export const usePin = (buttonRequests: ButtonRequest[]) => {
+export const usePin = (buttonRequests: ButtonRequest[], requestId?: string) => {
     const [pin, setPin] = useState('');
     const [submitted, setSubmitted] = useState(false);
 
@@ -26,7 +26,7 @@ export const usePin = (buttonRequests: ButtonRequest[]) => {
 
     const handlePinSubmit = () => {
         setSubmitted(true);
-        TrezorConnect.uiResponse({ type: UI_RESPONSE.RECEIVE_PIN, payload: pin });
+        TrezorConnect.uiResponse({ type: UI_RESPONSE.RECEIVE_PIN, payload: pin, requestId });
         setPin('');
     };
 

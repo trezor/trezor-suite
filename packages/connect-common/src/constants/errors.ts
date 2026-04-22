@@ -1,4 +1,4 @@
-import type { FailureType } from '@trezor/protobuf/src/definitions';
+import type { FailureType } from '@trezor/protobuf';
 import type { thp } from '@trezor/protocol';
 
 export const ERROR_CODES = {
@@ -23,7 +23,6 @@ export const ERROR_CODES = {
     Method_Interrupted: 'Popup closed', // interruption: popup closed
     Method_UnknownCoin: 'Coin not found', // coin definition not found
     Method_AddressNotMatch: 'Addresses do not match', // thrown by all getAddress methods with custom UI validation
-    Method_Discovery_BundleException: '', // thrown by getAccountInfo method
     Method_Override: 'override', // inner "error", it's more like a interruption
     Method_NoResponse: 'Call resolved without response', // thrown by npm index(es), call to Core resolved without response, should not happen
     Method_Unsupported: 'Unsupported method', // 3rd party called a method unknown by current version

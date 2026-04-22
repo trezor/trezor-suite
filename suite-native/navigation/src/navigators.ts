@@ -22,7 +22,6 @@ import {
     type AppTabsRoutes,
     type AuthorizeDeviceStackRoutes,
     type DemoAccountQuestionnaireStackRoutes,
-    type DevUtilsStackRoutes,
     type DeviceAuthenticityStackRoutes,
     type DeviceAutoConnectStackRoutes,
     type DeviceCheckBackupStackRoutes,
@@ -92,11 +91,6 @@ export type DemoAccountQuestionnaireStackParamList = {
     [DemoAccountQuestionnaireStackRoutes.Reason]: undefined;
     [DemoAccountQuestionnaireStackRoutes.SuiteAction]: undefined;
     [DemoAccountQuestionnaireStackRoutes.Success]: undefined;
-};
-
-export type DevUtilsStackParamList = {
-    [DevUtilsStackRoutes.DevUtils]: undefined;
-    [DevUtilsStackRoutes.Demo]: undefined;
 };
 
 export type SettingsStackParamList = {
@@ -221,7 +215,7 @@ export type AccountsImportStackParamList = {
     };
 };
 
-export type AddCoinFlowType = 'home' | 'receive' | 'accounts' | 'trade';
+export type AddCoinFlowType = 'home' | 'receive' | 'accounts' | 'trade' | 'earn';
 
 export type PinActionType = 'enable' | 'change' | 'disable';
 
@@ -385,7 +379,7 @@ export type RootStackParamList = {
     [RootStackRoutes.DemoAccountQuestionnaireStack]: NavigatorScreenParams<DemoAccountQuestionnaireStackParamList>;
     [RootStackRoutes.AccountSettings]: { accountKey: AccountKey };
     [RootStackRoutes.TransactionDetailStack]: NavigatorScreenParams<TransactionDetailStackParamList>;
-    [RootStackRoutes.DevUtilsStack]: undefined;
+    [RootStackRoutes.DevUtils]: undefined;
     [RootStackRoutes.AccountDetail]: AccountDetailParams;
     [RootStackRoutes.StakingDetail]: { accountKey: AccountKey };
     [RootStackRoutes.StakingManagement]: { accountKey: AccountKey };
@@ -456,6 +450,8 @@ export type TransactionDetailStackParamList = {
     };
 };
 
+export type ExchangeFlowType = 'swap' | 'approve' | 'revoke';
+
 export type TradingStackParamList = {
     [TradingStackRoutes.Trading]: { tradingType?: TradingType };
     [TradingStackRoutes.ReceiveAccounts]: {
@@ -483,6 +479,7 @@ export type TradingStackParamList = {
         accountKey: AccountKey;
         tokenContract?: TokenAddress;
         orderId: string;
+        flowType: ExchangeFlowType;
     };
 };
 

@@ -1,4 +1,4 @@
-import { type PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils';
+import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 import {
     btcAsset,
     ethAsset,
@@ -17,7 +17,7 @@ import {
 describe('TradeableAssetAccountBalance', () => {
     const renderTradeableAssetAccountBalance = (
         props: Partial<TradeableAssetAccountBalanceProps> = {},
-        preloadedState: PreloadedState = {},
+        preloadedState = {},
     ) =>
         renderWithStoreProvider(
             <TradeableAssetAccountBalance
@@ -68,7 +68,7 @@ describe('TradeableAssetAccountBalance', () => {
     });
 
     describe('with ETH account selected', () => {
-        const preloadedState: PreloadedState = {
+        const preloadedState = {
             wallet: {
                 accounts: [getEthAccount(), getBtcAccount()],
             },

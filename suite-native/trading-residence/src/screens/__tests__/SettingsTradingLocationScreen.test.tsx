@@ -1,9 +1,20 @@
 import { type RouteProp } from '@react-navigation/native';
+import { combineReducers } from '@reduxjs/toolkit';
 
+import { messageSystemInitialState } from '@suite-common/message-system';
+import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { events } from '@suite-native/analytics';
+import { localeReducer } from '@suite-native/intl';
 import { type SettingsStackParamList, type SettingsStackRoutes } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
-import { renderWithStoreProvider, screen, userEvent } from '@suite-native/test-utils';
+import {
+    createLightStore,
+    createStaticReducer,
+    renderWithStoreProvider,
+    screen,
+    userEvent,
+} from '@suite-native/test-utils-store';
+import { residenceReducer } from '@suite-native/trading-state';
 
 import { SettingsTradingLocationScreen } from '../SettingsTradingLocationScreen';
 
@@ -33,7 +44,20 @@ jest.mock('@react-navigation/native', () => ({
 
 describe('TradingLocationSettingsScreen', () => {
     const renderTradingLocationSettingsScreen = () =>
-        renderWithStoreProvider(<SettingsTradingLocationScreen />);
+        renderWithStoreProvider(<SettingsTradingLocationScreen />, {
+            store: createLightStore({
+                reducer: {
+                    locale: localeReducer,
+                    messageSystem: createStaticReducer(messageSystemInitialState),
+                    wallet: combineReducers({
+                        settings: createStaticReducer(initialWalletSettingsState),
+                        trading: combineReducers({
+                            residence: residenceReducer,
+                        }),
+                    }),
+                },
+            }),
+        });
 
     beforeEach(() => {
         jest.clearAllMocks();

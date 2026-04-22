@@ -1,12 +1,7 @@
 import type { BuyTradeStatus, ExchangeTradeStatus, SellTradeStatus } from 'invity-api';
 
 import { type TradingTransaction } from '@suite-common/trading';
-import {
-    type PreloadedState,
-    act,
-    fireEvent,
-    renderWithStoreProvider,
-} from '@suite-native/test-utils';
+import { act, fireEvent, renderWithStoreProvider } from '@suite-native/test-utils-store';
 import {
     buyMercuryo,
     exchangeMercuryo,
@@ -16,9 +11,18 @@ import {
     getSellTrade,
     sellMercuryo,
 } from '@suite-native/trading-fixtures';
+import { mergeDeepObject } from '@trezor/utils';
 
+import {
+    type PreloadedStatePartial,
+    type TradingTestPreloadedState,
+} from '../../../../__tests__/tradingTestUtils';
 import { getTradeStatusStep } from '../../../../utils/general/utils';
 import { TradeDetailAlert } from '../TradeDetailAlert';
+
+// Note: this file uses `renderWithStoreProvider` (not `renderWithTradingProvider`) because several
+// cases assert on the *absence* of the test provider in `providerInfos`. The trading provider would
+// merge in a populated `providerInfos` from its base state, masking those fallback code paths.
 
 const TEST_PROVIDER = 'mercuryo';
 const TEST_PROVIDER_STATUS_URL = 'https://checkout.mercuryo.io/trade-history';
@@ -38,49 +42,67 @@ jest.mock('@react-navigation/native', () => ({
     useNavigation: () => mockNavigation,
 }));
 
-const createPreloadedState = (
-    trades: TradingTransaction[],
-    statusUrl?: string | null,
-): PreloadedState => {
-    const tradingState = getInitializedTradingStateWithQuotes();
-    tradingState.trades = trades;
+const wrapAsPreloadedState = (
+    trading: Record<string, unknown>,
+): PreloadedStatePartial<TradingTestPreloadedState> => ({ wallet: { trading } });
 
-    // Only add provider info if statusUrl is provided
-    if (statusUrl !== undefined) {
-        // null used to exclude statusUrl from provider info for testing fallback behavior
-        if (statusUrl === null) {
-            statusUrl = undefined;
-        }
+/**
+ * @param statusUrl
+ *   - `undefined` → leave the test provider with its base fixture `statusUrl`
+ *   - `null` → include the test provider but with `statusUrl: undefined` (tests support-url fallback)
+ *   - `string` → include the test provider with the supplied `statusUrl`
+ */
+const preloadedStateWithTrades = (trades: TradingTransaction[], statusUrl?: string | null) => {
+    const base = { ...getInitializedTradingStateWithQuotes(), trades };
 
-        const buyProviderInfo = {
-            ...buyMercuryo,
-            statusUrl,
-        };
-        const sellProviderInfo = {
-            ...sellMercuryo,
-            statusUrl,
-        };
-        const exchangeProviderInfo = {
-            ...exchangeMercuryo,
-            statusUrl,
-        };
-
-        if (tradingState.buy.buyInfo?.providerInfos) {
-            tradingState.buy.buyInfo.providerInfos[TEST_PROVIDER] = buyProviderInfo;
-        }
-        if (tradingState.sell.sellInfo?.providerInfos) {
-            tradingState.sell.sellInfo.providerInfos[TEST_PROVIDER] = sellProviderInfo;
-        }
-        if (tradingState.exchange.exchangeInfo?.providerInfos) {
-            tradingState.exchange.exchangeInfo.providerInfos[TEST_PROVIDER] = exchangeProviderInfo;
-        }
+    if (statusUrl === undefined) {
+        return wrapAsPreloadedState(base);
     }
 
-    return {
-        wallet: {
-            trading: tradingState,
+    const resolvedStatusUrl = statusUrl ?? undefined;
+
+    return wrapAsPreloadedState(
+        mergeDeepObject(base, {
+            buy: {
+                buyInfo: {
+                    providerInfos: {
+                        [TEST_PROVIDER]: { ...buyMercuryo, statusUrl: resolvedStatusUrl },
+                    },
+                },
+            },
+            sell: {
+                sellInfo: {
+                    providerInfos: {
+                        [TEST_PROVIDER]: { ...sellMercuryo, statusUrl: resolvedStatusUrl },
+                    },
+                },
+            },
+            exchange: {
+                exchangeInfo: {
+                    providerInfos: {
+                        [TEST_PROVIDER]: { ...exchangeMercuryo, statusUrl: resolvedStatusUrl },
+                    },
+                },
+            },
+        }),
+    );
+};
+
+const preloadedStateWithoutTestProvider = (trades: TradingTransaction[]) => {
+    const base = getInitializedTradingStateWithQuotes();
+    const { [TEST_PROVIDER]: _omitted, ...buyProvidersWithoutTestProvider } =
+        base.buy.buyInfo?.providerInfos ?? {};
+
+    // `providerInfos` must be *replaced* (not merged) to drop the test provider entry, so we rebuild
+    // `buy.buyInfo` manually instead of using `mergeDeepObject` which would merge the map back in.
+    return wrapAsPreloadedState({
+        ...base,
+        trades,
+        buy: {
+            ...base.buy,
+            buyInfo: { ...base.buy.buyInfo, providerInfos: buyProvidersWithoutTestProvider },
         },
-    };
+    });
 };
 
 describe('TradeDetailAlert', () => {
@@ -113,7 +135,7 @@ describe('TradeDetailAlert', () => {
                 orderId={orderId || trade.data.orderId}
                 onOpenedBrowser={mockOnOpenedBrowser}
             />,
-            { preloadedState: createPreloadedState([trade], statusUrl) },
+            { preloadedState: preloadedStateWithTrades([trade], statusUrl) },
         );
     };
 
@@ -150,7 +172,7 @@ describe('TradeDetailAlert', () => {
                     orderId="nonexistent-order-id"
                     onOpenedBrowser={mockOnOpenedBrowser}
                 />,
-                { preloadedState: createPreloadedState([], undefined) }, // No trades in store
+                { preloadedState: preloadedStateWithTrades([], undefined) },
             );
 
             expect(getByText('Proceed to pay')).toBeTruthy();
@@ -202,7 +224,7 @@ describe('TradeDetailAlert', () => {
                     orderId="test-order-id"
                     onOpenedBrowser={mockOnOpenedBrowser}
                 />,
-                { preloadedState: createPreloadedState([]) },
+                { preloadedState: preloadedStateWithTrades([]) },
             );
 
             expect(toJSON()).toBeNull();
@@ -247,7 +269,7 @@ describe('TradeDetailAlert', () => {
                     orderId="test-order-id"
                     onOpenedBrowser={mockOnOpenedBrowser}
                 />,
-                { preloadedState: createPreloadedState([]) },
+                { preloadedState: preloadedStateWithTrades([]) },
             );
 
             expect(toJSON()).toBeNull();
@@ -262,19 +284,13 @@ describe('TradeDetailAlert', () => {
                     orderId="test-order-id"
                     onOpenedBrowser={mockOnOpenedBrowser}
                 />,
-                { preloadedState: createPreloadedState([]) },
+                { preloadedState: preloadedStateWithTrades([]) },
             );
 
             expect(toJSON()).toBeNull();
         });
 
         it('should render error alert without button when trade and provider info is missing', () => {
-            const tradingState = getInitializedTradingStateWithQuotes();
-            tradingState.trades = [];
-            if (tradingState.buy.buyInfo?.providerInfos) {
-                delete tradingState.buy.buyInfo.providerInfos[TEST_PROVIDER];
-            }
-
             const { getByText, queryByText } = renderWithStoreProvider(
                 <TradeDetailAlert
                     alertType="error"
@@ -283,7 +299,7 @@ describe('TradeDetailAlert', () => {
                     orderId="test-order-id"
                     onOpenedBrowser={mockOnOpenedBrowser}
                 />,
-                { preloadedState: { wallet: { trading: tradingState } } },
+                { preloadedState: preloadedStateWithoutTestProvider([]) },
             );
 
             expect(getByText('Transaction failed')).toBeTruthy();
@@ -299,7 +315,7 @@ describe('TradeDetailAlert', () => {
                     orderId={undefined}
                     onOpenedBrowser={mockOnOpenedBrowser}
                 />,
-                { preloadedState: createPreloadedState([], null) },
+                { preloadedState: preloadedStateWithTrades([], null) },
             );
 
             act(() => {
@@ -310,9 +326,9 @@ describe('TradeDetailAlert', () => {
         });
 
         it('should render button but not navigate when partnerData is missing for buy trades', () => {
-            const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
-            // Remove partnerData to test missing url for browser navigation
-            delete buyTrade.data.partnerData;
+            const baseBuyTrade = getBuyTrade({ status: 'SUBMITTED' });
+            const { partnerData: _omitted, ...dataWithoutPartner } = baseBuyTrade.data;
+            const buyTrade = { ...baseBuyTrade, data: dataWithoutPartner };
 
             const { getByText } = renderWithStoreProvider(
                 <TradeDetailAlert
@@ -322,7 +338,7 @@ describe('TradeDetailAlert', () => {
                     orderId={buyTrade.data.orderId!}
                     onOpenedBrowser={mockOnOpenedBrowser}
                 />,
-                { preloadedState: createPreloadedState([buyTrade], undefined) }, // No support URL
+                { preloadedState: preloadedStateWithTrades([buyTrade], undefined) }, // No support URL
             );
 
             act(() => {
@@ -346,7 +362,12 @@ describe('TradeDetailAlert', () => {
                     orderId={exchangeTrade.data.orderId!}
                     onOpenedBrowser={mockOnOpenedBrowser}
                 />,
-                { preloadedState: createPreloadedState([exchangeTrade], TEST_PROVIDER_STATUS_URL) },
+                {
+                    preloadedState: preloadedStateWithTrades(
+                        [exchangeTrade],
+                        TEST_PROVIDER_STATUS_URL,
+                    ),
+                },
             );
 
             act(() => {
@@ -359,17 +380,9 @@ describe('TradeDetailAlert', () => {
         });
 
         it('should render button but not navigate when neither URL for browser auth nor support URL is available', () => {
-            const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
-            // Remove partnerData to test missing url for browser navigation
-            delete buyTrade.data.partnerData;
-
-            // Create state without provider info to test no support URL case
-            const tradingState = getInitializedTradingStateWithQuotes();
-            tradingState.trades = [buyTrade];
-            // Remove provider info to ensure no support URL
-            if (tradingState.buy.buyInfo?.providerInfos) {
-                delete tradingState.buy.buyInfo.providerInfos[TEST_PROVIDER];
-            }
+            const baseBuyTrade = getBuyTrade({ status: 'SUBMITTED' });
+            const { partnerData: _omitted, ...dataWithoutPartner } = baseBuyTrade.data;
+            const buyTrade = { ...baseBuyTrade, data: dataWithoutPartner };
 
             const { getByText } = renderWithStoreProvider(
                 <TradeDetailAlert
@@ -379,7 +392,7 @@ describe('TradeDetailAlert', () => {
                     orderId={buyTrade.data.orderId!}
                     onOpenedBrowser={mockOnOpenedBrowser}
                 />,
-                { preloadedState: { wallet: { trading: tradingState } } },
+                { preloadedState: preloadedStateWithoutTestProvider([buyTrade]) },
             );
 
             act(() => {
@@ -393,9 +406,11 @@ describe('TradeDetailAlert', () => {
         });
 
         it('should handle sell trades with browser navigation when partnerData is available', () => {
-            const sellTrade = getSellTrade({ status: 'ERROR' });
-            // Ensure partnerData is present for browser navigation
-            sellTrade.data.partnerData = 'https://sell.mercuryo.io/test';
+            const baseSellTrade = getSellTrade({ status: 'ERROR' });
+            const sellTrade = {
+                ...baseSellTrade,
+                data: { ...baseSellTrade.data, partnerData: 'https://sell.mercuryo.io/test' },
+            };
 
             const { getByText } = renderWithStoreProvider(
                 <TradeDetailAlert
@@ -405,7 +420,7 @@ describe('TradeDetailAlert', () => {
                     orderId={sellTrade.data.orderId!}
                     onOpenedBrowser={mockOnOpenedBrowser}
                 />,
-                { preloadedState: createPreloadedState([sellTrade], TEST_PROVIDER_STATUS_URL) },
+                { preloadedState: preloadedStateWithTrades([sellTrade], TEST_PROVIDER_STATUS_URL) },
             );
 
             act(() => {

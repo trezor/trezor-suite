@@ -7,7 +7,12 @@ import {
     selectFilterKnownTokens,
     selectNetworkTokenDefinitions,
 } from '@suite-common/token-definitions';
-import { type AccountType, type Bip43Path, type NetworkSymbol } from '@suite-common/wallet-config';
+import {
+    type AccountType,
+    type Bip43Path,
+    type NetworkSymbol,
+    getNetworkType,
+} from '@suite-common/wallet-config';
 import {
     accountsActions,
     selectAccountsByNetworkAndDeviceState,
@@ -101,6 +106,7 @@ export const getAccountInfoThunk = createThunk<
                     descriptor: taprootXpubWithApostrophes ?? xpubAddress,
                     details: 'txs',
                     suppressBackupWarning: true,
+                    includeErc4626: getNetworkType(symbol) === 'ethereum' ? true : undefined,
                 }),
                 dispatch(
                     updateFiatRatesThunk({

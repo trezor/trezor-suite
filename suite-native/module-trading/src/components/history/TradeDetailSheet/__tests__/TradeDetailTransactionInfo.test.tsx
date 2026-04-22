@@ -1,29 +1,58 @@
 import type { TradingTransaction } from '@suite-common/trading';
-import { type PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils';
 import {
+    MOCK_ACCOUNT_DEVICE_SESSION_ID,
     accounts,
     getBuyTrade,
     getExchangeTrade,
     getInitializedTradingState,
     getSellTrade,
 } from '@suite-native/trading-fixtures';
-import type { StaticSessionId } from '@trezor/connect';
 
+jest.mock('@suite-native/trading-state', () => {
+    const actual = jest.requireActual('@suite-native/trading-state');
+
+    return {
+        ...actual,
+        // selectAccountLabelWithNetworkFallback uses parseAccountKey internally which splits
+        // the account key by '-' and fails for mockWalletAccount descriptors containing hyphens
+        // (e.g. 'eth1-normal-eth-1@2:3'). Override with a direct key lookup + real network fallback.
+        selectAccountLabelWithNetworkFallback: (state: any, accountKey: any, cryptoId: any) => {
+            if (accountKey) {
+                const account = state?.wallet?.accounts?.find((a: any) => a.key === accountKey);
+
+                if (account?.accountLabel) return account.accountLabel;
+            }
+
+            // Delegate to real implementation for network name / unknown fallback,
+            // with accounts cleared so it skips the broken account-lookup path.
+            return actual.selectAccountLabelWithNetworkFallback(
+                { ...state, wallet: { ...state?.wallet, accounts: [] } },
+                undefined,
+                cryptoId,
+            );
+        },
+    };
+});
+
+import {
+    type PreloadedStatePartial,
+    type TradingTestPreloadedState,
+    renderWithTradingProvider,
+} from '../../../../__tests__/tradingTestUtils';
 import {
     TradeDetailTransactionInfo,
     type TradeDetailTransactionInfoProps,
 } from '../TradeDetailTransactionInfo';
 
-const getPreloadedState = (trades: TradingTransaction[]): PreloadedState => ({
+const getOverrides = (
+    trades: TradingTransaction[],
+): PreloadedStatePartial<TradingTestPreloadedState> => ({
     device: {
         devices: [],
         selectedDevice: {
             state: {
-                staticSessionId: 'staticSessionId' as StaticSessionId,
+                staticSessionId: MOCK_ACCOUNT_DEVICE_SESSION_ID,
             },
-            connected: true,
-            available: true,
-            remember: true,
         },
     },
     wallet: {
@@ -38,14 +67,14 @@ const getPreloadedState = (trades: TradingTransaction[]): PreloadedState => ({
 describe('TradeDetailTransactionInfo', () => {
     const renderComponent = (
         orderId: TradeDetailTransactionInfoProps['orderId'],
-        preloadedState = getPreloadedState([]),
+        overrides = getOverrides([]),
     ) =>
-        renderWithStoreProvider(<TradeDetailTransactionInfo orderId={orderId} />, {
-            preloadedState,
+        renderWithTradingProvider(<TradeDetailTransactionInfo orderId={orderId} />, {
+            overrides,
         });
 
     it('should not render when trade is not found', () => {
-        const { toJSON } = renderComponent('nonexistent_order_id', getPreloadedState([]));
+        const { toJSON } = renderComponent('nonexistent_order_id', getOverrides([]));
 
         expect(toJSON()).toBeNull();
     });
@@ -55,7 +84,7 @@ describe('TradeDetailTransactionInfo', () => {
 
         const { getByText, queryByText } = renderComponent(
             buyTrade.data.orderId!,
-            getPreloadedState([buyTrade]),
+            getOverrides([buyTrade]),
         );
 
         expect(getByText('$1,234.00')).toBeTruthy();
@@ -63,14 +92,10 @@ describe('TradeDetailTransactionInfo', () => {
         expect(queryByText('From')).toBeNull();
     });
 
-    // Todo: https://github.com/trezor/trezor-suite/issues/24906
-    it.skip('should render correct account name for buy trade', () => {
+    it('should render correct account name for buy trade', () => {
         const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
 
-        const { getByText } = renderComponent(
-            buyTrade.data.orderId!,
-            getPreloadedState([buyTrade]),
-        );
+        const { getByText } = renderComponent(buyTrade.data.orderId!, getOverrides([buyTrade]));
 
         expect(getByText('ETH Account #1')).toBeTruthy();
     });
@@ -80,20 +105,19 @@ describe('TradeDetailTransactionInfo', () => {
 
         const { getByText } = renderComponent(
             exchangeTrade.data.orderId!,
-            getPreloadedState([exchangeTrade]),
+            getOverrides([exchangeTrade]),
         );
 
         expect(getByText('10.1232 JTO')).toBeTruthy();
         expect(getByText('0.462586 SOL')).toBeTruthy();
     });
 
-    // Todo: https://github.com/trezor/trezor-suite/issues/24906
-    it.skip('should render correct account name for exchange trade', () => {
+    it('should render correct account name for exchange trade', () => {
         const exchangeTrade = getExchangeTrade({ status: 'CONVERTING' });
 
         const { getAllByText } = renderComponent(
             exchangeTrade.data.orderId!,
-            getPreloadedState([exchangeTrade]),
+            getOverrides([exchangeTrade]),
         );
 
         // For exchange trades, both from and to accounts are displayed and they are the same account
@@ -102,12 +126,12 @@ describe('TradeDetailTransactionInfo', () => {
 
     it('should render exchange trade even when accounts are not found', () => {
         const exchangeTrade = getExchangeTrade({ status: 'CONVERTING' });
-        const preloadedState = getPreloadedState([exchangeTrade]);
-        preloadedState!.wallet!.accounts = []; // remove all accounts
+        const overridesState = getOverrides([exchangeTrade]);
+        overridesState!.wallet!.accounts = []; // remove all accounts
 
         const { getByText, getAllByText } = renderComponent(
             exchangeTrade.data.orderId!,
-            preloadedState,
+            overridesState,
         );
 
         expect(getByText('10.1232 JTO')).toBeTruthy();
@@ -119,10 +143,10 @@ describe('TradeDetailTransactionInfo', () => {
         const exchangeTrade = getExchangeTrade({ status: 'CONVERTING' });
         exchangeTrade.data.send = 'unknown-asset' as any;
         exchangeTrade.data.receive = 'unknown-asset' as any;
-        const preloadedState = getPreloadedState([exchangeTrade]);
-        preloadedState!.wallet!.accounts = []; // remove all accounts
+        const overridesState = getOverrides([exchangeTrade]);
+        overridesState!.wallet!.accounts = []; // remove all accounts
 
-        const { getAllByText } = renderComponent(exchangeTrade.data.orderId!, preloadedState);
+        const { getAllByText } = renderComponent(exchangeTrade.data.orderId!, overridesState);
 
         expect(getAllByText('Unknown')).toHaveLength(2);
     });
@@ -132,7 +156,7 @@ describe('TradeDetailTransactionInfo', () => {
 
         const { getByText, queryByText } = renderComponent(
             sellTrade.data.orderId!,
-            getPreloadedState([sellTrade]),
+            getOverrides([sellTrade]),
         );
 
         expect(getByText('1.22 BTC')).toBeTruthy();
@@ -140,14 +164,10 @@ describe('TradeDetailTransactionInfo', () => {
         expect(queryByText('From')).toBeTruthy();
     });
 
-    // Todo: https://github.com/trezor/trezor-suite/issues/24906
-    it.skip('should render correct account name for sell trade', () => {
+    it('should render correct account name for sell trade', () => {
         const sellTrade = getSellTrade({ status: 'SEND_CRYPTO' });
 
-        const { getByText } = renderComponent(
-            sellTrade.data.orderId!,
-            getPreloadedState([sellTrade]),
-        );
+        const { getByText } = renderComponent(sellTrade.data.orderId!, getOverrides([sellTrade]));
 
         expect(getByText('BTC Account #1')).toBeTruthy();
     });

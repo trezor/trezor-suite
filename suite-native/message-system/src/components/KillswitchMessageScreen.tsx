@@ -22,7 +22,7 @@ const screenStyle = prepareNativeStyle(utils => ({
     top: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: utils.colors.backgroundSurfaceElevation0,
+    backgroundColor: utils.colors.surfaceFillPage,
 }));
 
 const contentStyle = prepareNativeStyle(_ => ({

@@ -1,14 +1,10 @@
 import { tradingSellActions } from '@suite-common/trading';
 import { type AccountKey } from '@suite-common/wallet-types';
-import {
-    type TestStore,
-    act,
-    initStore,
-    renderHookWithStoreProvider,
-} from '@suite-native/test-utils';
-import { getWalletState, sellQuotes } from '@suite-native/trading-fixtures';
+import { type TestStore, act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
+import { banxaCreditCardSellQuote } from '@suite-native/trading-fixtures';
 import { type SellFormType } from '@suite-native/trading-types';
 
+import { createTradingLightStore } from '../../../__tests__/tradingTestUtils';
 import { useSellForm } from '../useSellForm';
 import { useSellSelectQuote } from '../useSellSelectQuote';
 
@@ -29,7 +25,7 @@ describe('useSellSelectQuote', () => {
         renderHookWithStoreProvider(() => useSellSelectQuote(sellForm), { store });
 
     beforeEach(() => {
-        store = initStore({ wallet: getWalletState({ tradeType: 'sell' }) }).store;
+        store = createTradingLightStore({ tradeType: 'sell' });
 
         const { result } = renderSellForm();
         sellForm = result.current;
@@ -44,7 +40,7 @@ describe('useSellSelectQuote', () => {
 
         it('should be false when quotes are being fetched', () => {
             act(() => {
-                sellForm.setValue('quote', sellQuotes[0]);
+                sellForm.setValue('quote', banxaCreditCardSellQuote);
                 store.dispatch(tradingSellActions.setIsLoading(true));
             });
 
@@ -60,7 +56,7 @@ describe('useSellSelectQuote', () => {
                         'btc-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
                     ),
                 );
-                sellForm.setValue('quote', sellQuotes[0]);
+                sellForm.setValue('quote', banxaCreditCardSellQuote);
                 sellForm.setError('cryptoStringAmount', {
                     type: 'manual',
                     message: 'VALIDATION_ERROR',
@@ -74,7 +70,7 @@ describe('useSellSelectQuote', () => {
 
         it('should be true when quote is selected', () => {
             act(() => {
-                sellForm.setValue('quote', sellQuotes[0]);
+                sellForm.setValue('quote', banxaCreditCardSellQuote);
                 store.dispatch(
                     tradingSellActions.setTradingAccountKey(
                         'btc-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`

@@ -39,14 +39,14 @@ export const CountryListItem = ({
                         <Box flex={0}>
                             <Text
                                 variant="body-md"
-                                color="textDefault"
+                                color="contentPrimary"
                                 style={applyStyle(flagStyle)}
                             >
                                 {flag}
                             </Text>
                         </Box>
                         <Box flex={1}>
-                            <Text variant="body-md" color="textDefault">
+                            <Text variant="body-md" color="contentPrimary">
                                 {name}
                             </Text>
                         </Box>

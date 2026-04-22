@@ -1,6 +1,6 @@
 import { Context, type ContextDomain } from '@suite-common/message-system';
 import { type Action, type Message } from '@suite-common/suite-types';
-import { type PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils';
+import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { ContextMessage } from '../ContextMessage';
 
@@ -60,17 +60,23 @@ jest.mock('@suite-common/message-system', () => ({
 }));
 
 describe('ContextMessage', () => {
+    const emptyMessageSystem = {
+        config: { actions: [] },
+        validMessages: { banner: [], context: [], modal: [], feature: [] },
+        dismissedMessages: [],
+    };
+
     const render = ({
         context,
         preloadedState,
     }: {
         context: ContextDomain;
-        preloadedState?: PreloadedState;
+        preloadedState?: any;
     }) =>
         renderWithStoreProvider(
             <ContextMessage context={context} accessibilityHint={contextActionId} />,
             {
-                preloadedState,
+                preloadedState: { messageSystem: emptyMessageSystem, ...preloadedState },
             },
         );
 

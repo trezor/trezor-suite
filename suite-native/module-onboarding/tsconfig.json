@@ -27,6 +27,10 @@
         { "path": "../../packages/theme" },
         { "path": "../../packages/urls" },
         { "path": "../../packages/utils" },
-        { "path": "../test-utils" }
+        {
+            "path": "../../suite-common/message-system"
+        },
+        { "path": "../feature-flags" },
+        { "path": "../test-utils-store" }
     ]
 }

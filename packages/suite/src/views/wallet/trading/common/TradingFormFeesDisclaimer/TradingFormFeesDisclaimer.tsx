@@ -79,7 +79,7 @@ export const TradingFormFeesDisclaimer = () => {
                                     <IconCircle name={item.icon} size={40} intent="brand" />
                                 }
                             >
-                                <Text typographyStyle="body-md-strong" color="textDefault">
+                                <Text typographyStyle="body-md-strong" color="contentPrimary">
                                     {item.url ? (
                                         <Row gap={8}>
                                             <Link href={item.url} target="_blank">
@@ -93,7 +93,7 @@ export const TradingFormFeesDisclaimer = () => {
                                 </Text>
 
                                 {item.subTextId && (
-                                    <Text typographyStyle="body-sm" color="textSubdued" as="p">
+                                    <Text typographyStyle="body-sm" color="contentSecondary" as="p">
                                         <Translation id={item.subTextId} />
                                     </Text>
                                 )}

@@ -1,15 +1,47 @@
 import { Text } from 'react-native';
 
-import { renderWithStoreProvider } from '@suite-native/test-utils';
+import { combineReducers } from '@reduxjs/toolkit';
+
+import { deviceInitialState } from '@suite-common/device';
+import { messageSystemInitialState } from '@suite-common/message-system';
+import { initialSuiteSyncDataState, initialSuiteSyncState } from '@suite-common/suite-sync';
+import { initialWalletSettingsState } from '@suite-common/wallet-core';
+import { localeReducer } from '@suite-native/intl';
+import {
+    createLightStore,
+    createStaticReducer,
+    renderWithStoreProvider,
+} from '@suite-native/test-utils-store';
 import { btc1NormalAccount } from '@suite-native/trading-fixtures';
 
 import { NetworkAndAccountCard, type NetworkAndAccountCardProps } from '../NetworkAndAccountCard';
 
 describe('NetworkAndAccountCard', () => {
+    const reducer = {
+        locale: localeReducer,
+        device: createStaticReducer(deviceInitialState),
+        messageSystem: createStaticReducer(messageSystemInitialState),
+        suiteSync: createStaticReducer(initialSuiteSyncState),
+        suiteSyncData: createStaticReducer(initialSuiteSyncDataState),
+        wallet: combineReducers({
+            settings: createStaticReducer(initialWalletSettingsState),
+            accounts: createStaticReducer([btc1NormalAccount]),
+        }),
+    } as const;
+
     const renderNetworkAndAccountCard = (props: Partial<NetworkAndAccountCardProps>) =>
         renderWithStoreProvider(
             <NetworkAndAccountCard title="TITLE" account={btc1NormalAccount} {...props} />,
-            { preloadedState: { wallet: { accounts: [btc1NormalAccount] } } },
+            {
+                store: createLightStore({
+                    reducer,
+                    preloadedState: {
+                        wallet: {
+                            accounts: [btc1NormalAccount],
+                        },
+                    },
+                }),
+            },
         );
 
     it('should render title, network name and account label', () => {

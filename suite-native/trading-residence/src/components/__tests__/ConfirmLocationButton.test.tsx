@@ -1,13 +1,18 @@
 import { useEffect } from 'react';
 
+import { combineReducers } from '@reduxjs/toolkit';
+
+import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { useFormContext } from '@suite-native/forms';
+import { localeReducer } from '@suite-native/intl';
 import {
     type TestStore,
+    createLightStore,
+    createStaticReducer,
     fireEvent,
-    initStore,
     renderWithStoreProvider,
-} from '@suite-native/test-utils';
-import { selectTradingResidenceCountry } from '@suite-native/trading-state';
+} from '@suite-native/test-utils-store';
+import { residenceReducer, selectTradingResidenceCountry } from '@suite-native/trading-state';
 
 import { type TradingLocationFormValues } from '../../types/tradingLocationForm';
 import { ConfirmLocationButton, type ConfirmLocationButtonProps } from '../ConfirmLocationButton';
@@ -47,7 +52,17 @@ describe('ConfirmLocationButton', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
-        store = initStore().store;
+        store = createLightStore({
+            reducer: {
+                locale: localeReducer,
+                wallet: combineReducers({
+                    settings: createStaticReducer(initialWalletSettingsState),
+                    trading: combineReducers({
+                        residence: residenceReducer,
+                    }),
+                }),
+            },
+        });
     });
 
     it('should set location and call afterConfirmMock on press', () => {

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { selectThpStep } from '@suite-common/thp';
+import { selectThpPairingRequestId, selectThpStep } from '@suite-common/thp';
 import { useAlert } from '@suite-native/alerts';
 import { CenteredTitleHeader, Loader, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
@@ -17,6 +17,7 @@ export const ThpCodeEntryScreenContent = ({ onRetry }: ThpCodeEntryScreenContent
     const { showAlert } = useAlert();
 
     const thpStep = useSelector(selectThpStep);
+    const requestId = useSelector(selectThpPairingRequestId);
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -25,6 +26,7 @@ export const ThpCodeEntryScreenContent = ({ onRetry }: ThpCodeEntryScreenContent
         TrezorConnect.uiResponse({
             type: 'ui-receive_thp_pairing_tag',
             payload: { tag },
+            requestId,
         });
     };
 

@@ -17,3 +17,4 @@ export { walletConnectProposalRejectedEvent } from './walletConnectProposalRejec
 export { walletConnectSessionRequestEvent } from './walletConnectSessionRequestEvent';
 export { coinDiscoveryEvent } from './coinDiscoveryEvent';
 export { suiteSyncLabelCreatedEvent } from './suiteSyncLabelCreatedEvent';
+export { walletBalanceEvent } from './walletBalanceEvent';

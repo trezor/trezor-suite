@@ -43,8 +43,8 @@ export const ContextMessage = ({ context, ...rest }: ContextMessageProps) => {
                             textVariant="body-xs"
                             href={link}
                             isUnderlined
-                            textColor="textDefault"
-                            textPressedColor="textSubdued"
+                            textColor="contentPrimary"
+                            textPressedColor="contentSecondary"
                         />
                     )}
                 </Text>

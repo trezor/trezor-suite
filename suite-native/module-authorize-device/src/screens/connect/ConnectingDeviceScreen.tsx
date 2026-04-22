@@ -36,7 +36,7 @@ export const ConnectingDeviceScreen = () => {
                         <Icon name="trezorLogo" size="extraLarge" />
                     </Box>
                 </Box>
-                <Text variant="body-md-strong" color="textSubdued">
+                <Text variant="body-md-strong" color="contentSecondary">
                     <Translation id="moduleConnectDevice.connectingDeviceScreen.hodlOn" />
                 </Text>
             </VStack>

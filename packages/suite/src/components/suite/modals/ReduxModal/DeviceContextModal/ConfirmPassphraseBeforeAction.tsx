@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import { useIntl } from 'react-intl';
 
 import { Translation, messages } from '@suite/intl';
+import { selectModalRequestId } from '@suite/modal';
 import {
     selectDeviceModel,
     selectHasDevicePassphraseEntryCapability,
@@ -19,22 +20,27 @@ import { PassphraseInputCard } from './PassphraseInputCard';
 export const ConfirmPassphraseBeforeAction = () => {
     const device = useSelector(selectSelectedDevice);
     const deviceModel = useSelector(selectDeviceModel);
+    const requestId = useSelector(selectModalRequestId);
 
     const intl = useIntl();
 
     const onEnterPassphraseDialogCancel = () =>
         TrezorConnect.cancel(intl.formatMessage(messages.TR_CANCELLED));
 
-    const onSubmit = useCallback((value: string, passphraseOnDevice?: boolean) => {
-        TrezorConnect.uiResponse({
-            type: UI_RESPONSE.RECEIVE_PASSPHRASE,
-            payload: {
-                value,
-                save: true,
-                passphraseOnDevice: !!passphraseOnDevice,
-            },
-        });
-    }, []);
+    const onSubmit = useCallback(
+        (value: string, passphraseOnDevice?: boolean) => {
+            TrezorConnect.uiResponse({
+                type: UI_RESPONSE.RECEIVE_PASSPHRASE,
+                payload: {
+                    value,
+                    save: true,
+                    passphraseOnDevice: !!passphraseOnDevice,
+                },
+                requestId,
+            });
+        },
+        [requestId],
+    );
 
     const offerPassphraseOnDevice = useSelector(selectHasDevicePassphraseEntryCapability);
 

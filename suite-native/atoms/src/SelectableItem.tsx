@@ -12,7 +12,7 @@ import { VStack } from './Stack';
 import { Text } from './Text';
 
 const cardStyle = prepareNativeStyle((utils, { isSelected }: { isSelected: boolean }) => ({
-    backgroundColor: utils.colors.backgroundSurfaceElevation1,
+    backgroundColor: utils.colors.surfaceFillRaised,
     borderRadius: utils.borders.radii.r16,
     padding: utils.spacings.sp16,
     ...utils.boxShadows.small,
@@ -20,7 +20,7 @@ const cardStyle = prepareNativeStyle((utils, { isSelected }: { isSelected: boole
         {
             condition: isSelected,
             style: {
-                borderColor: utils.colors.iconPrimaryDefault,
+                borderColor: utils.colors.contentBrand,
                 borderWidth: utils.borders.widths.large,
                 padding: utils.spacings.sp16 - utils.borders.widths.large,
                 ...utils.boxShadows.medium,
@@ -72,14 +72,14 @@ export const SelectableItem = ({
         <PressableOpacity onPress={onSelected} style={applyStyle(cardStyle, { isSelected })}>
             <VStack spacing={utils.spacings.sp4}>
                 <Box style={applyStyle(titleWrapperStyle)}>
-                    <Text variant="headline-sm" color="textDefault">
+                    <Text variant="headline-sm" color="contentPrimary">
                         {title}
                     </Text>
                     {isDefault && (
                         <View style={applyStyle(badgeWrapperStyle)}>
                             <Badge
                                 key="defaultType"
-                                variant="greenSubtle"
+                                intent="brand"
                                 label={<Translation id="generic.default" />}
                                 icon="checkCircle"
                             />
@@ -88,7 +88,7 @@ export const SelectableItem = ({
                 </Box>
                 <Text
                     variant="body-sm"
-                    color="textDefault"
+                    color="contentPrimary"
                     style={applyStyle(subtitleWrapperStyle)}
                 >
                     {subtitle}

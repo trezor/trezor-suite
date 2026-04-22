@@ -1,6 +1,7 @@
 import { useCallback, useEffect } from 'react';
 
 import { Translation } from '@suite/intl';
+import { selectModalRequestId } from '@suite/modal';
 import {
     Banner,
     Button,
@@ -15,7 +16,7 @@ import TrezorConnect, { UI_RESPONSE } from '@trezor/connect';
 import { HELP_CENTER_ADVANCED_RECOVERY_URL } from '@trezor/urls';
 import { resolveAfter } from '@trezor/utils';
 
-import { useExternalLink } from 'src/hooks/suite';
+import { useExternalLink, useSelector } from 'src/hooks/suite';
 
 type WordInputAdvancedProps = {
     count: 6 | 9;
@@ -23,11 +24,15 @@ type WordInputAdvancedProps = {
 
 export const WordInputAdvanced = ({ count }: WordInputAdvancedProps) => {
     const learnMoreUrl = useExternalLink(HELP_CENTER_ADVANCED_RECOVERY_URL);
+    const requestId = useSelector(selectModalRequestId);
 
-    const onSubmit = useCallback(async (value: string) => {
-        await resolveAfter(600);
-        TrezorConnect.uiResponse({ type: UI_RESPONSE.RECEIVE_WORD, payload: value });
-    }, []);
+    const onSubmit = useCallback(
+        async (value: string) => {
+            await resolveAfter(600);
+            TrezorConnect.uiResponse({ type: UI_RESPONSE.RECEIVE_WORD, payload: value, requestId });
+        },
+        [requestId],
+    );
 
     const backspace = useCallback(() => {
         onSubmit(String.fromCharCode(8));

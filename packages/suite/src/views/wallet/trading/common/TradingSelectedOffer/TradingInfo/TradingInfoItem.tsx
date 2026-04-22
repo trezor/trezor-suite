@@ -24,6 +24,8 @@ interface TradingInfoItemProps {
     amount?: string;
     isReceive?: boolean;
     receiveAddress?: string;
+    cryptoAmountTestId?: string;
+    accountInfoTestId?: string;
 }
 
 export const TradingInfoItem = ({
@@ -34,6 +36,8 @@ export const TradingInfoItem = ({
     currency,
     amount,
     receiveAddress,
+    cryptoAmountTestId,
+    accountInfoTestId,
 }: TradingInfoItemProps) => {
     const { translationString } = useTranslation();
     const { createAssetOptionFromCryptoId } = useTradingAssets();
@@ -74,7 +78,7 @@ export const TradingInfoItem = ({
                         priority="secondary"
                         typographyStyle="body-sm"
                         as="div"
-                        data-testid={`${testIdPrefix}-account`}
+                        data-testid={accountInfoTestId ?? `${testIdPrefix}-account`}
                     >
                         <Row>
                             {accountLabelPrefix}&nbsp;
@@ -101,7 +105,7 @@ export const TradingInfoItem = ({
                     borderWidth={borders.widths.medium}
                     borderRadius={borders.radii.sm}
                     padding={16}
-                    backgroundColor="backgroundSurfaceElevation2"
+                    backgroundColor="legacyBackgroundSurfaceElevation2"
                 >
                     <Row gap={8} justifyContent="space-between">
                         <Row gap={8} alignItems="center">
@@ -138,7 +142,11 @@ export const TradingInfoItem = ({
                             </Column>
                         </Row>
                         <Column alignItems="flex-end">
-                            <TradingCryptoAmount amount={amount} cryptoId={currency} />
+                            <TradingCryptoAmount
+                                amount={amount}
+                                cryptoId={currency}
+                                testId={cryptoAmountTestId}
+                            />
 
                             {currencyInfo?.symbol && (
                                 <Text

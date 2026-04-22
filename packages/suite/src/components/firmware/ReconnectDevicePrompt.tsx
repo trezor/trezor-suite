@@ -1,5 +1,6 @@
 import * as semver from 'semver';
 
+import { useFirmwareDesktopUpdate } from '@suite/firmware-upgrade';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
@@ -17,7 +18,6 @@ import { spacings } from '@trezor/theme';
 import { WebUsbButton } from 'src/components/suite';
 import { DeviceConfirmImage } from 'src/components/suite/DeviceConfirmImage';
 import { useDevice, useSelector } from 'src/hooks/suite';
-import { useFirmwareDesktopUpdate } from 'src/hooks/suite/useFirmwareDesktopUpdate';
 import { selectHasTransportOfType } from 'src/selectors/suite/suiteSelectors';
 
 const RebootDeviceGraphics = ({

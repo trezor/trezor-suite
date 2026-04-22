@@ -18,7 +18,7 @@ const containerStyle = prepareNativeStyle<{ backgroundColor: Color }>(
         padding: utils.spacings.sp16,
         gap: utils.spacings.sp12,
         backgroundColor: utils.colors[backgroundColor],
-        borderColor: utils.colors.borderElevation1,
+        borderColor: utils.colors.borderNeutral,
         borderRadius: utils.borders.radii.r12,
         borderWidth: utils.borders.widths.small,
         alignItems: 'center',

@@ -1,7 +1,5 @@
-import { RESPONSES } from '@trezor/blockchain-link-types/src/constants';
-import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
-import type * as MessageTypes from '@trezor/blockchain-link-types/src/messages';
-import type * as Responses from '@trezor/blockchain-link-types/src/responses';
+import { CustomError, RESPONSES } from '@trezor/blockchain-link-types';
+import type { MessageTypes, ResponseTypes as Responses } from '@trezor/blockchain-link-types';
 
 import { BLOCK_SUBSCRIPTION } from '../constants';
 import type { Request } from '../types';

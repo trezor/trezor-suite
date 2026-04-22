@@ -11,18 +11,18 @@ export const TradingAvailability = () => {
         <HStack justifyContent="center" alignItems="center">
             <Box>
                 {isTradingAvailableForForm ? (
-                    <Icon name="check" size="large" color="iconPrimaryDefault" />
+                    <Icon name="check" size="large" color="contentBrand" />
                 ) : (
-                    <Icon name="x" size="large" color="iconAlertRed" />
+                    <Icon name="x" size="large" color="contentCritical" />
                 )}
             </Box>
             <Box>
                 {isTradingAvailableForForm ? (
-                    <Text variant="body-sm" color="textSecondaryHighlight">
+                    <Text variant="body-sm" color="contentBrand">
                         <Translation id="tradingResidence.locationSettings.tradingAvailable" />
                     </Text>
                 ) : (
-                    <Text variant="body-sm" color="textAlertRed">
+                    <Text variant="body-sm" color="contentCritical">
                         <Translation id="tradingResidence.locationSettings.tradingUnavailable" />
                     </Text>
                 )}

@@ -2,6 +2,7 @@ import type { Store as ReduxStore } from 'redux';
 import type { ThunkAction as TAction, ThunkDispatch } from 'redux-thunk';
 
 import type { backupActions } from '@suite/backup';
+import type { desktopUpdateActions } from '@suite/desktop-update';
 import { type featureFeedbackSlice } from '@suite/feature-feedback';
 import type { flagsActions } from '@suite/flags';
 import type { LockAction } from '@suite/locks';
@@ -42,7 +43,6 @@ import { type FilterOutFromUnionByTypeProperty } from '@trezor/type-utils';
 import { type deviceSlice } from 'src/actions/device/deviceSlice';
 import type { OnboardingAction } from 'src/actions/onboarding/onboardingActions';
 import type { BioAuthAction } from 'src/actions/suite/bioAuthActions';
-import type { DesktopUpdateAction } from 'src/actions/suite/desktopUpdateActions';
 import type { GuideAction } from 'src/actions/suite/guideActions';
 import type { ProtocolAction } from 'src/actions/suite/protocolActions';
 import type { StorageAction } from 'src/actions/suite/storageActions';
@@ -128,6 +128,9 @@ type SuiteSettingsAction = ReturnType<
 >;
 type RecoveryAction = ReturnType<(typeof recoveryActions)[keyof typeof recoveryActions]>;
 type BackupAction = ReturnType<(typeof backupActions)[keyof typeof backupActions]>;
+type DesktopUpdateAction = ReturnType<
+    (typeof desktopUpdateActions)[keyof typeof desktopUpdateActions]
+>;
 
 // all actions from all apps used to properly type Dispatch.
 export type Action =

@@ -53,7 +53,7 @@ const PermissionDetailCard = ({ app }: { app: AppRememberedPermission }) => {
                         <VStack flex={1} spacing="sp1">
                             <Text numberOfLines={1}>{app.manifest?.appName ?? app.origin}</Text>
                             {app.manifest?.appName && (
-                                <Text color="textSubdued" numberOfLines={1}>
+                                <Text color="contentSecondary" numberOfLines={1}>
                                     {app.origin}
                                 </Text>
                             )}
@@ -101,7 +101,7 @@ export const ConnectPermissionsScreen = () => {
                         <Text textAlign="center" variant="headline-sm">
                             <Translation id="moduleConnectPopup.noConnectedApps" />
                         </Text>
-                        <Text textAlign="center" color="textSubdued">
+                        <Text textAlign="center" color="contentSecondary">
                             <Translation id="moduleConnectPopup.noConnectedAppsDescription" />
                         </Text>
                     </>

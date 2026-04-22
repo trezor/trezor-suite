@@ -6,7 +6,7 @@ import {
     type TokenSymbol,
     asBaseCurrencyAmount,
 } from '@suite-common/wallet-types';
-import { fireEvent, renderWithStoreProvider } from '@suite-native/test-utils';
+import { fireEvent, renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { getBtcAccount, getEthAccount } from '@suite-native/trading-fixtures';
 import { type MyAsset } from '@suite-native/trading-types';
 import { BigNumber } from '@trezor/utils';

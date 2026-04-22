@@ -1,4 +1,4 @@
-import { getDaysToAddToPoolInitial } from '@suite-common/staking';
+import { getDaysToAddToPool, getDaysToAddToPoolInitial } from '@suite-common/staking';
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -119,15 +119,6 @@ export const selectEthereumUnstakingBalanceByAccountKey = (
     return stakingPool?.withdrawTotalAmount ?? '0';
 };
 
-export const selectEthereumPendingDepositedBalanceByAccountKey = (
-    state: AccountsRootState,
-    accountKey: AccountKey,
-) => {
-    const stakingPool = selectEthereumStakingPoolByAccountKey(state, accountKey);
-
-    return stakingPool?.pendingDepositedBalance ?? '0';
-};
-
 export const selectUnstakingPeriodInDaysBySymbol = (
     state: NativeStakingRootState,
     symbol: NetworkSymbol | undefined,
@@ -148,4 +139,14 @@ export const selectEntryPeriodInDaysBySymbol = (state: NativeStakingRootState) =
     }
 
     return getDaysToAddToPoolInitial(validatorsQueue);
+};
+
+export const selectEntryPeriodRemainingInDaysByAccountKey = (
+    state: NativeStakingRootState,
+    accountKey: AccountKey,
+) => {
+    const validatorsQueue = selectEthValidatorsQueue(state);
+    const stakeTxs = selectAccountStakeTransactions(state, accountKey);
+
+    return getDaysToAddToPool(stakeTxs, validatorsQueue);
 };

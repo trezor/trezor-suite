@@ -22,12 +22,12 @@ const Wrapper = styled.div`
 
 const LabelText = styled.div`
     ${typography['body-xs']}
-    color: ${({ theme }) => theme.textSubdued};
+    color: ${({ theme }) => theme.contentSecondary};
 `;
 
 const Value = styled.div`
     ${typography['body-md']}
-    color: ${({ theme }) => theme.textDefault};
+    color: ${({ theme }) => theme.contentPrimary};
 `;
 
 const ButtonWrapper = styled.div`
@@ -35,7 +35,7 @@ const ButtonWrapper = styled.div`
     align-items: center;
     justify-content: center;
     padding-top: ${spacingsPx.lg};
-    border-top: 1px solid ${({ theme }) => theme.borderElevation1};
+    border-top: 1px solid ${({ theme }) => theme.borderNeutral};
     margin: ${spacingsPx.lg} 0;
 `;
 

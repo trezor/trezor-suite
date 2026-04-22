@@ -1,8 +1,6 @@
+import { getFormattedFingerprint, validateFirmware } from '@suite/firmware-upgrade';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { DeviceModelInternal } from '@trezor/device-utils';
-
-import { type TrezorDevice } from 'src/types/suite';
-
-import { getFormattedFingerprint, validateFirmware } from '../index';
 
 describe('getFormattedFingerprint', () => {
     it('should return a formatted fingerprint', () => {

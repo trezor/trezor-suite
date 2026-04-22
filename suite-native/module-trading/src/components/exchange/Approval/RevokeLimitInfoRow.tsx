@@ -38,14 +38,14 @@ export const RevokeLimitInfoRow = () => {
                     amount={preapprovedStringAmount}
                     cryptoId={send}
                     variant="body-sm-strong"
-                    color="textDefault"
+                    color="contentPrimary"
                 />
-                <Icon name="arrowRight" size="medium" color="iconSubdued" />
+                <Icon name="arrowRight" size="medium" color="contentSecondary" />
                 <TradingCoinAmountFormatter
                     amount="0"
                     cryptoId={send}
                     variant="body-sm-strong"
-                    color="textDefault"
+                    color="contentPrimary"
                 />
             </HStack>
         </TradeInfoRow>

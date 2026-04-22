@@ -35,7 +35,7 @@ export const TradingFormInputCountrySubdivision = ({
 
         return (
             resolvedLabel ?? (
-                <Text color="textSubdued">
+                <Text color="contentSecondary">
                     <Translation id="TR_TRADING_COUNTRY_SUBDIVISION_NOT_SELECTED" />
                 </Text>
             )

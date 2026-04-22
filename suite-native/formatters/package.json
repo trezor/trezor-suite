@@ -35,6 +35,6 @@
     },
     "devDependencies": {
         "@suite-common/wallet-types": "workspace:*",
-        "@suite-native/test-utils": "workspace:*"
+        "@suite-native/test-utils-store": "workspace:*"
     }
 }

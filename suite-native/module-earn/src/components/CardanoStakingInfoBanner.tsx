@@ -14,9 +14,9 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { HELP_CENTER_ADA_STAKING } from '@trezor/urls';
 
 const bannerStyle = prepareNativeStyle(utils => ({
-    backgroundColor: utils.colors.backgroundAlertYellowSubtleOnElevation1,
+    backgroundColor: utils.colors.legacyBackgroundAlertYellowSubtleOnElevation1,
     borderWidth: utils.borders.widths.small,
-    borderColor: utils.colors.backgroundAlertYellowSubtleOnElevationNegative,
+    borderColor: utils.colors.legacyBackgroundAlertYellowSubtleOnElevationNegative,
     borderRadius: utils.borders.radii.r12,
     padding: utils.spacings.sp16,
 }));
@@ -59,13 +59,13 @@ export const CardanoStakingInfoBanner = ({ accountKey }: CardanoStakingInfoBanne
     return (
         <Box style={applyStyle(bannerStyle)}>
             <HStack spacing="sp12" alignItems="flex-start">
-                <Icon name="warning" color="iconAlertYellow" size="mediumLarge" />
+                <Icon name="warning" color="contentWarning" size="mediumLarge" />
 
                 <VStack spacing="sp2" flex={1}>
                     <Text variant="body-md">
                         <Translation id="earn.infoBanner.updateProviderTitle" />
                     </Text>
-                    <Text variant="body-sm" color="textSubdued">
+                    <Text variant="body-sm" color="contentSecondary">
                         <Translation id={descriptionTranslationId} values={{ apy: apyValue }} />
                     </Text>
                 </VStack>
@@ -79,7 +79,7 @@ export const CardanoStakingInfoBanner = ({ accountKey }: CardanoStakingInfoBanne
                     isFullWidth
                     size="medium"
                 >
-                    <Text variant="body-sm-strong" color="textOnYellow">
+                    <Text variant="body-sm-strong" color="contentButtonWarningPrimary">
                         <Translation id="earn.infoBanner.updateProviderButton" />
                     </Text>
                 </Button>

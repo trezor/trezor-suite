@@ -22,7 +22,7 @@ export const UnstakeOutputItem = ({ symbol, outputState, onLayout }: UnstakeOutp
                 title={translate('earn.earnUnstakeOutputItem.title')}
                 outputState={outputState}
             >
-                <Text variant="body-sm" color="textSubdued">
+                <Text variant="body-sm" color="contentSecondary">
                     <Translation
                         id="earn.earnUnstakeOutputItem.description"
                         values={{ displaySymbol }}

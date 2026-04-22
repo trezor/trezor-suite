@@ -1,5 +1,6 @@
 import { type MiddlewareAPI } from 'redux';
 
+import { desktopUpdateActions } from '@suite/desktop-update';
 import { METADATA } from '@suite/metadata';
 import { MODAL_CLOSE, MODAL_OPEN_USER_CONTEXT } from '@suite/modal';
 import { routerLocationChange, selectRouterUrl } from '@suite/router';
@@ -16,7 +17,7 @@ import {
 import { DEVICE, TRANSPORT } from '@trezor/connect';
 import { getBootloaderVersion, getFirmwareVersion } from '@trezor/device-utils';
 
-import { DESKTOP_UPDATE, PROTOCOL, SUITE } from 'src/actions/suite/constants';
+import { PROTOCOL, SUITE } from 'src/actions/suite/constants';
 import { type Action, type AppState, type Dispatch } from 'src/types/suite';
 import { getSuiteReadyPayload } from 'src/utils/suite/analytics';
 import {
@@ -41,10 +42,10 @@ const breadcrumbActions = new Set<Action['type']>([
     suiteSettingsActions.setOnionLinks.type,
     analyticsActions.enableAnalytics.type,
     analyticsActions.disableAnalytics.type,
-    DESKTOP_UPDATE.CHECKING,
-    DESKTOP_UPDATE.AVAILABLE,
-    DESKTOP_UPDATE.NOT_AVAILABLE,
-    DESKTOP_UPDATE.READY,
+    desktopUpdateActions.checking.type,
+    desktopUpdateActions.available.type,
+    desktopUpdateActions.notAvailable.type,
+    desktopUpdateActions.ready.type,
     MODAL_CLOSE,
     DEVICE.CONNECT,
     DEVICE.DISCONNECT,
@@ -59,7 +60,7 @@ const breadcrumbActions = new Set<Action['type']>([
     blockchainActions.setBackend.type,
     accountsActions.updateSelectedAccount.type,
     routerLocationChange.type,
-    DESKTOP_UPDATE.ALLOW_PRERELEASE,
+    desktopUpdateActions.allowPrerelease.type,
     SUITE.TOR_STATUS,
     SUITE.ONLINE_STATUS,
     deviceActions.addButtonRequest.type,

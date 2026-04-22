@@ -1,20 +1,15 @@
 import {
-    type CreateSqliteDriver,
+    type CreateSqliteDriverDep,
     type CreateWebSocket,
-    type SqliteDriver,
-    type SqliteRow,
     createConsole,
     createConsoleStoreOutput,
     createInMemoryLeaderLock,
     createMessageChannel,
     createMessagePort,
-    createPreparedStatementsCache,
     createRun,
     createSharedWorker,
     createWebSocket,
     createWorker,
-    lazyVoid,
-    ok,
 } from '@evolu/common';
 import {
     type DbWorkerInit,
@@ -22,45 +17,11 @@ import {
     initSharedWorker,
     startDbWorker,
 } from '@evolu/common/local-first';
-import BetterSqlite3, { type Statement } from 'better-sqlite3';
+import { createBetterSqliteDriver } from '@evolu/nodejs';
 import { WebSocket } from 'ws';
 
-const createSqliteDriver: CreateSqliteDriver = () => () => {
-    const db = new BetterSqlite3(':memory:');
-    let isDisposed = false;
-
-    const cache = createPreparedStatementsCache<Statement>(sql => db.prepare(sql), lazyVoid);
-
-    const driver: SqliteDriver = {
-        exec: query => {
-            const prepared = cache.get(query, true);
-            if (prepared.reader) {
-                return { rows: prepared.all(query.parameters) as Array<SqliteRow>, changes: 0 };
-            }
-            const { changes } = prepared.run(query.parameters);
-
-            return { rows: [], changes };
-        },
-
-        export: () => {
-            const file = db.serialize();
-            const { buffer } = file;
-            if (buffer instanceof ArrayBuffer) {
-                return new Uint8Array(buffer, file.byteOffset, file.byteLength);
-            }
-
-            return new Uint8Array(file);
-        },
-
-        [Symbol.dispose]: () => {
-            if (isDisposed) return;
-            isDisposed = true;
-            cache[Symbol.dispose]();
-            db.close();
-        },
-    };
-
-    return ok(driver);
+const isolatedInMemorySqliteDeps: CreateSqliteDriverDep = {
+    createSqliteDriver: name => createBetterSqliteDriver(name, { mode: 'memory' }),
 };
 
 export const createNodeEvoluDeps = () => {
@@ -84,7 +45,7 @@ export const createNodeEvoluDeps = () => {
         consoleStoreOutputEntry: consoleStoreOutput.entry,
         createMessagePort,
         leaderLock: createInMemoryLeaderLock(),
-        createSqliteDriver,
+        createSqliteDriver: isolatedInMemorySqliteDeps.createSqliteDriver,
     });
 
     const createDbWorker = () =>

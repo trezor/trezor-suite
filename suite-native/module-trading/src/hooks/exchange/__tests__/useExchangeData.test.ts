@@ -1,14 +1,9 @@
 import { tradingExchangeActions, tradingThunks } from '@suite-common/trading';
-import { type AccountKey } from '@suite-common/wallet-types';
-import {
-    type PreloadedState,
-    type TestStore,
-    act,
-    initStore,
-    renderHookWithStoreProvider,
-} from '@suite-native/test-utils';
+import { type AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
+import { type TestStore, act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import { getBtcAccount, getInitializedTradingState } from '@suite-native/trading-fixtures';
 
+import { createTradingLightStore } from '../../../__tests__/tradingTestUtils';
 import { useExchangeData } from '../useExchangeData';
 
 jest.mock('../../../utils/general/utils', () => ({
@@ -22,30 +17,38 @@ const btc3AccountKey = 'btc-account-3' as AccountKey; // Todo: create properly v
 
 describe('useExchangeData', () => {
     const getInitializedStore = (tradingAccountKey: string | undefined) => {
-        const preloadedState: PreloadedState = {
-            wallet: {
-                trading: getInitializedTradingState('exchange'),
-                accounts: [
-                    getBtcAccount(btc1AccountKey),
-                    getBtcAccount(btc2AccountKey),
-                    { ...getBtcAccount(btc3AccountKey), descriptor: '' },
-                ],
-            },
-        };
-        preloadedState.wallet!.trading!.exchange!.tradingAccountKey = tradingAccountKey;
+        const tradingState = getInitializedTradingState('exchange');
+        tradingState.exchange.tradingAccountKey = tradingAccountKey as any;
 
-        return initStore(preloadedState).store;
+        return createTradingLightStore({
+            tradeType: 'exchange',
+            overrides: {
+                wallet: {
+                    trading: tradingState,
+                    accounts: [
+                        getBtcAccount(btc1AccountKey),
+                        getBtcAccount(btc2AccountKey),
+                        {
+                            ...getBtcAccount(btc3AccountKey),
+                            descriptor: asAccountDescriptor(''),
+                        },
+                    ],
+                },
+            },
+        });
     };
 
     const renderUseExchangeData = async (
         reloadRequestOrdinalInitialValue: number = 0,
         store?: TestStore,
     ) => {
+        const effectiveStore = store ?? createTradingLightStore({ tradeType: 'exchange' });
+
         const ret = renderHookWithStoreProvider(
             ({ reloadRequestOrdinal }) => useExchangeData(reloadRequestOrdinal),
             {
                 initialProps: { reloadRequestOrdinal: reloadRequestOrdinalInitialValue },
-                store,
+                store: effectiveStore,
             },
         );
 

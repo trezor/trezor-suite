@@ -1,6 +1,20 @@
+import { combineReducers } from '@reduxjs/toolkit';
+
+import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { type TradingType } from '@suite-common/trading';
-import { type TestStore, initStore, renderHookWithStoreProvider } from '@suite-native/test-utils';
-import { selectActiveTradingType, selectEnabledTradingTypes } from '@suite-native/trading-state';
+import { initialWalletSettingsState } from '@suite-common/wallet-core';
+import { localeReducer } from '@suite-native/intl';
+import {
+    type TestStore,
+    createLightStore,
+    createStaticReducer,
+    renderHookWithStoreProvider,
+} from '@suite-native/test-utils-store';
+import {
+    selectActiveTradingType,
+    selectEnabledTradingTypes,
+    tradingSlice,
+} from '@suite-native/trading-state';
 
 import { useActiveTradingTypeReaction } from '../useActiveTradingTypeReaction';
 
@@ -22,6 +36,13 @@ jest.mock('@react-navigation/native', () => ({
 
 describe('useActiveTradingTypeReaction', () => {
     const castedSelectEnabledTradingTypes = selectEnabledTradingTypes as unknown as jest.Mock;
+    const reducer = {
+        locale: localeReducer,
+        wallet: combineReducers({
+            settings: createStaticReducer(initialWalletSettingsState),
+            trading: tradingSlice.prepareReducer(extraDependenciesCommonMock),
+        }),
+    } as const;
 
     const renderUseActiveTradingTypeReaction = (store: TestStore) =>
         renderHookWithStoreProvider(() => useActiveTradingTypeReaction(), { store });
@@ -33,7 +54,7 @@ describe('useActiveTradingTypeReaction', () => {
 
     it('should set buy active when only buy is allowed', () => {
         castedSelectEnabledTradingTypes.mockReturnValue(['buy']);
-        const { store } = initStore();
+        const store = createLightStore({ reducer });
 
         renderUseActiveTradingTypeReaction(store);
 
@@ -42,7 +63,7 @@ describe('useActiveTradingTypeReaction', () => {
 
     it('should set exchange active when only exchange is allowed', () => {
         castedSelectEnabledTradingTypes.mockReturnValue(['exchange']);
-        const { store } = initStore();
+        const store = createLightStore({ reducer });
 
         renderUseActiveTradingTypeReaction(store);
 
@@ -51,7 +72,7 @@ describe('useActiveTradingTypeReaction', () => {
 
     it('should set sell active when only sell is allowed', () => {
         castedSelectEnabledTradingTypes.mockReturnValue(['sell']);
-        const { store } = initStore();
+        const store = createLightStore({ reducer });
 
         renderUseActiveTradingTypeReaction(store);
 
@@ -60,13 +81,13 @@ describe('useActiveTradingTypeReaction', () => {
 
     it('should render with undefined navigation params', () => {
         (mockUseRouteParams as any) = undefined;
-        const { store } = initStore();
+        const store = createLightStore({ reducer });
 
         expect(() => renderUseActiveTradingTypeReaction(store)).not.toThrow();
     });
 
     it('should clear activeTradingType on unmount', () => {
-        const { store } = initStore();
+        const store = createLightStore({ reducer });
         const { unmount } = renderUseActiveTradingTypeReaction(store);
 
         unmount();
@@ -77,7 +98,7 @@ describe('useActiveTradingTypeReaction', () => {
     describe('with trading type specified by navigation params', () => {
         it('should set buy active when buy is specified', () => {
             mockUseRouteParams.tradingType = 'buy';
-            const { store } = initStore();
+            const store = createLightStore({ reducer });
 
             renderUseActiveTradingTypeReaction(store);
 
@@ -86,7 +107,7 @@ describe('useActiveTradingTypeReaction', () => {
 
         it('should set exchange active when exchange is specified', () => {
             mockUseRouteParams.tradingType = 'exchange';
-            const { store } = initStore();
+            const store = createLightStore({ reducer });
 
             renderUseActiveTradingTypeReaction(store);
 
@@ -95,7 +116,7 @@ describe('useActiveTradingTypeReaction', () => {
 
         it('should set sell active when sell is specified', () => {
             mockUseRouteParams.tradingType = 'sell';
-            const { store } = initStore();
+            const store = createLightStore({ reducer });
 
             renderUseActiveTradingTypeReaction(store);
 
@@ -105,7 +126,7 @@ describe('useActiveTradingTypeReaction', () => {
         it('should fallback to buy when navigating to exchange but exchange is disabled', () => {
             castedSelectEnabledTradingTypes.mockReturnValue(['buy']);
             mockUseRouteParams.tradingType = 'exchange';
-            const { store } = initStore();
+            const store = createLightStore({ reducer });
 
             renderUseActiveTradingTypeReaction(store);
 
@@ -115,7 +136,7 @@ describe('useActiveTradingTypeReaction', () => {
         it('should fallback to buy when navigating to sell but sell is disabled', () => {
             mockUseRouteParams.tradingType = 'sell';
             castedSelectEnabledTradingTypes.mockReturnValue(['buy']);
-            const { store } = initStore();
+            const store = createLightStore({ reducer });
 
             renderUseActiveTradingTypeReaction(store);
 

@@ -40,11 +40,11 @@ const FakeInput = styled.div`
 
     ${({ theme }) => css`
         &::after {
-            background-color: ${theme.backgroundPrimaryDefault};
+            background-color: ${theme.legacyBackgroundPrimaryDefault};
         }
 
         input:checked + & {
-            background-color: ${theme.backgroundSurfaceElevation0};
+            background-color: ${theme.surfaceFillPage};
 
             &::after {
                 opacity: 1;
@@ -56,11 +56,11 @@ const FakeInput = styled.div`
         }
 
         input:checked:disabled + & {
-            border-color: ${theme.backgroundPrimarySubtleOnElevation1};
+            border-color: ${theme.legacyBackgroundPrimarySubtleOnElevation1};
             background-color: transparent;
 
             &::after {
-                background-color: ${theme.backgroundPrimarySubtleOnElevation0};
+                background-color: ${theme.legacyBackgroundPrimarySubtleOnElevation0};
             }
         }
     `}

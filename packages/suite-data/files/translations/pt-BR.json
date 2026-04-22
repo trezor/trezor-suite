@@ -2346,7 +2346,7 @@
   "TR_TURN_ON_SECURE_SYNC": "Ligar",
   "TR_TURN_ON_SECURE_SYNC_DATA_LABELS": "Nomeie suas carteiras, personalize suas contas e rotule transações.",
   "TR_TURN_ON_SECURE_SYNC_DATA_STORED_LOCALLY": "Sincronize com segurança seus rótulos e nomes entre o telefone e o desktop.",
-  "TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_DESCRIPTION": "Atualize o firmware do dispositivo {name} para usar Suite Sync.",
+  "TR_FW_UPDATE_REQUIRED_MODAL_DESCRIPTION": "Atualize o firmware do dispositivo {name} para usar {featureName}.",
   "TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_HEADING": "Atualização do firmware necessária",
   "TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_NOT_NOW": "Agora não",
   "TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_UPGRADE": "Atualizar",

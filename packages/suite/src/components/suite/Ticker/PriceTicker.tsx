@@ -14,12 +14,12 @@ const FiatRateWrapper = styled.span`
     ${typography['body-sm-strong']}
     display: flex;
     align-items: center;
-    color: ${({ theme }) => theme.textDefault};
+    color: ${({ theme }) => theme.contentPrimary};
 `;
 
 const Empty = styled.div`
     ${typography['body-sm-strong']}
-    color: ${({ theme }) => theme.textSubdued};
+    color: ${({ theme }) => theme.contentSecondary};
 `;
 
 interface PriceTickerProps {

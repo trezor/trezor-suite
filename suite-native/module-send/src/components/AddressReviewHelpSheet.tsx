@@ -26,7 +26,7 @@ export const AddressReviewHelpSheet = ({ body, title, subtitle }: AddressReviewH
 
     return (
         <PressableOpacity onPress={handleOpen}>
-            <Icon name="question" size="large" color="iconSubdued" />
+            <Icon name="question" size="large" color="contentSecondary" />
         </PressableOpacity>
     );
 };

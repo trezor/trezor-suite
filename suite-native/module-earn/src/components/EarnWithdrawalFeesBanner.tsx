@@ -18,7 +18,7 @@ export const EarnWithdrawalFeesBanner = ({ accountKey, symbol }: EarnWithdrawalF
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
-    const { value: amountValue } = useField({ name: 'amount' });
+    const { value: amountValue, hasError } = useField({ name: 'amount' });
 
     const limits = getStakingLimitsByNetworkSymbol(symbol);
 
@@ -29,7 +29,10 @@ export const EarnWithdrawalFeesBanner = ({ accountKey, symbol }: EarnWithdrawalF
     const maxStakeAmount = new BigNumber(formattedBalance).minus(limits.MIN_BALANCE_FOR_FEE_BUFFER);
 
     const isVisible =
-        !!amountValue && new BigNumber(amountValue).gte(maxStakeAmount) && maxStakeAmount.gt(0);
+        !hasError &&
+        !!amountValue &&
+        new BigNumber(amountValue).gte(maxStakeAmount) &&
+        maxStakeAmount.gt(0);
 
     if (!isVisible) return null;
 

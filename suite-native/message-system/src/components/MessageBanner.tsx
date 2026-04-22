@@ -3,7 +3,15 @@ import { useDispatch } from 'react-redux';
 
 import { messageSystemActions } from '@suite-common/message-system';
 import { type Message, type Variant } from '@suite-common/suite-types';
-import { Box, HStack, PressableOpacity, RoundedIcon, Text, VStack } from '@suite-native/atoms';
+import {
+    Box,
+    HStack,
+    PressableOpacity,
+    RoundedIcon,
+    type RoundedIconIntent,
+    Text,
+    VStack,
+} from '@suite-native/atoms';
 import { Icon, type IconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type Color } from '@trezor/theme';
@@ -20,27 +28,27 @@ type MessageBannerStyle = {
     backgroundColor: Color;
     icon: IconName;
     iconColor: Color;
-    iconBackgroundColor: Color;
+    iconIntent: RoundedIconIntent;
 };
 
 const MessageBannerVariantToStyleMap = {
     info: {
-        backgroundColor: 'backgroundAlertBlueSubtleOnElevation0',
+        backgroundColor: 'legacyBackgroundAlertBlueSubtleOnElevation0',
         icon: 'info',
-        iconColor: 'iconAlertBlue',
-        iconBackgroundColor: 'backgroundAlertBlueSubtleOnElevation1',
+        iconColor: 'contentInfo',
+        iconIntent: 'info',
     },
     warning: {
-        backgroundColor: 'backgroundAlertYellowSubtleOnElevation0',
+        backgroundColor: 'legacyBackgroundAlertYellowSubtleOnElevation0',
         icon: 'warning',
-        iconColor: 'iconAlertYellow',
-        iconBackgroundColor: 'backgroundAlertYellowSubtleOnElevation1',
+        iconColor: 'contentWarning',
+        iconIntent: 'warning',
     },
     critical: {
-        backgroundColor: 'backgroundAlertRedSubtleOnElevation0',
+        backgroundColor: 'legacyBackgroundAlertRedSubtleOnElevation0',
         icon: 'warning',
-        iconColor: 'iconAlertRed',
-        iconBackgroundColor: 'backgroundAlertRedSubtleOnElevation1',
+        iconColor: 'contentCritical',
+        iconIntent: 'critical',
     },
 } as const satisfies Record<Variant, MessageBannerStyle>;
 
@@ -65,19 +73,14 @@ const messageTextContainerStyle = prepareNativeStyle(() => ({
 }));
 
 const MessageCloseButton = ({
-    backgroundColor,
+    intent,
     onClose,
 }: {
-    backgroundColor: Color;
+    intent: RoundedIconIntent;
     onClose: () => void;
 }) => (
     <PressableOpacity onPress={onClose}>
-        <RoundedIcon
-            name="x"
-            iconSize="medium"
-            containerSize={44}
-            backgroundColor={backgroundColor}
-        />
+        <RoundedIcon name="x" intent={intent} size={40} />
     </PressableOpacity>
 );
 
@@ -101,7 +104,7 @@ export const MessageBanner = ({ message }: MessageBannerProps) => {
         );
     };
 
-    const { backgroundColor, iconColor, icon, iconBackgroundColor } =
+    const { backgroundColor, iconColor, icon, iconIntent } =
         MessageBannerVariantToStyleMap[message.variant];
 
     return (
@@ -120,7 +123,7 @@ export const MessageBanner = ({ message }: MessageBannerProps) => {
                     <Icon name={icon} color={iconColor} size="mediumLarge" />
                 </Box>
                 <VStack spacing="sp4" style={applyStyle(messageTextContainerStyle)}>
-                    <Text color="textSubdued" variant="body-sm">
+                    <Text color="contentSecondary" variant="body-sm">
                         {messageContent}
                     </Text>
 
@@ -133,10 +136,7 @@ export const MessageBanner = ({ message }: MessageBannerProps) => {
                     )}
                 </VStack>
                 {isMessageDismissible && (
-                    <MessageCloseButton
-                        backgroundColor={iconBackgroundColor}
-                        onClose={handleDismissMessage}
-                    />
+                    <MessageCloseButton intent={iconIntent} onClose={handleDismissMessage} />
                 )}
             </HStack>
         </Animated.View>

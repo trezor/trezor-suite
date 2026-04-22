@@ -16,7 +16,7 @@ export const createChecksumAlert = (onPressPrimaryButton: () => void) => ({
                         href={HELP_CENTER_EVM_ADDRESS_CHECKSUM}
                         label={linkChunk}
                         isUnderlined
-                        textColor="textSubdued"
+                        textColor="contentSecondary"
                     />
                 ),
             }}

@@ -54,11 +54,11 @@ const BottomSheetTrigger = ({
         <PressableOpacity style={applyStyle(triggerStyle)} onPress={onPress}>
             <Box flexDirection="row" alignItems="center">
                 <Box marginRight="sp16">
-                    <Icon name={iconName} color="iconDefault" size="mediumLarge" />
+                    <Icon name={iconName} color="contentPrimary" size="mediumLarge" />
                 </Box>
                 <Text>{title}</Text>
             </Box>
-            <Icon name="caretRight" color="iconSubdued" size="mediumLarge" />
+            <Icon name="caretRight" color="contentSecondary" size="mediumLarge" />
         </PressableOpacity>
     );
 };

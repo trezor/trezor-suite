@@ -1,5 +1,8 @@
-import { act, fireEvent, renderWithStoreProvider } from '@suite-native/test-utils';
-import { buyQuotes, getInitializedTradingState } from '@suite-native/trading-fixtures';
+import { act, fireEvent, renderWithStoreProvider } from '@suite-native/test-utils-store';
+import {
+    getInitializedTradingState,
+    mercuryoApplePayBuyQuote,
+} from '@suite-native/trading-fixtures';
 
 import { PaymentMethodListItem, type PaymentMethodListItemProps } from '../PaymentMethodListItem';
 
@@ -8,7 +11,11 @@ describe('PaymentMethodListItem', () => {
 
     const renderPaymentMethodListItem = (props: Partial<PaymentMethodListItemProps<any>>) =>
         renderWithStoreProvider(
-            <PaymentMethodListItem quote={buyQuotes[0]} onPress={jest.fn()} {...props} />,
+            <PaymentMethodListItem
+                quote={mercuryoApplePayBuyQuote}
+                onPress={jest.fn()}
+                {...props}
+            />,
             { preloadedState: getPreloadedState() },
         );
 
@@ -33,7 +40,7 @@ describe('PaymentMethodListItem', () => {
 
     it('should not render rate row when rate is unknown', () => {
         const { getByText, queryByText } = renderPaymentMethodListItem({
-            quote: { ...buyQuotes[0], rate: undefined, receiveStringAmount: undefined },
+            quote: { ...mercuryoApplePayBuyQuote, rate: undefined, receiveStringAmount: undefined },
         });
 
         expect(getByText('Apple Pay')).toBeOnTheScreen();

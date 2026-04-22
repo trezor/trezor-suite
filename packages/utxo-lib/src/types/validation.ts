@@ -4,7 +4,8 @@
 
 import { Kind, type SchemaOptions, type TSchema, Type, TypeRegistry } from '@sinclair/typebox';
 import { Value } from '@sinclair/typebox/value';
-import ecc from 'tiny-secp256k1';
+
+import * as ecc from '../noble-compatibility';
 
 // ---------------------------------------------------------------------------
 // Custom typebox types

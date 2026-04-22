@@ -11,7 +11,7 @@ import { getTorUrlIfAvailable } from 'src/utils/suite/tor';
 type MessageSystemButtonProps = {
     cta?: Message['cta'];
     id?: Message['id'];
-} & Pick<ButtonProps, 'iconLeft' | 'iconRight' | 'size'>;
+} & Pick<ButtonProps, 'iconLeft' | 'iconRight' | 'size' | 'intent'>;
 
 export const MessageSystemButton = ({ cta, id, ...props }: MessageSystemButtonProps) => {
     const { isTorEnabled } = useSelector(selectTorState);
@@ -43,6 +43,7 @@ export const MessageSystemButton = ({ cta, id, ...props }: MessageSystemButtonPr
     return (
         <Banner.Button
             onClick={onClick!}
+            priority="primary"
             {...(id ? { 'data-testid': `@message-system/${id}/cta` } : {})}
             {...props}
         >

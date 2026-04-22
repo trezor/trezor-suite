@@ -2,13 +2,13 @@ import React from 'react';
 
 import { type AccountKey } from '@suite-common/wallet-types';
 import { useAnalytics } from '@suite-native/services';
-import {
-    type PreloadedState,
-    initStore,
-    renderHookWithStoreProvider,
-} from '@suite-native/test-utils';
-import { getBuyTrade, getInitializedTradingState } from '@suite-native/trading-fixtures';
+import { type TestStore } from '@suite-native/test-utils-store';
+import { getBuyTrade } from '@suite-native/trading-fixtures';
 
+import {
+    createTradingLightStore,
+    renderHookWithTradingProvider,
+} from '../../../__tests__/tradingTestUtils';
 import { useWatchTrade } from '../useWatchTrade';
 
 jest.mock('../useReloadTimer', () => ({
@@ -67,42 +67,38 @@ describe('useWatchTrade', () => {
     const getInitializedStore = ({
         trades = [],
         accounts = [],
-    }: { trades?: any[]; accounts?: any[] } = {}) => {
-        const preloadedState: PreloadedState = {
-            wallet: {
-                trading: {
-                    ...getInitializedTradingState(),
-                    trades,
+    }: { trades?: any[]; accounts?: any[] } = {}) =>
+        createTradingLightStore({
+            overrides: {
+                wallet: {
+                    trading: { trades },
+                    accounts:
+                        accounts.length > 0
+                            ? accounts
+                            : [
+                                  {
+                                      key: 'btc1',
+                                      symbol: 'btc',
+                                      deviceState: 'device1@test:123',
+                                      descriptor: 'btc-descriptor',
+                                      addresses: { unused: [{ address: 'btc-address' }] },
+                                      visible: true,
+                                  },
+                              ],
                 },
-                accounts:
-                    accounts.length > 0
-                        ? accounts
-                        : [
-                              {
-                                  key: 'btc1',
-                                  symbol: 'btc',
-                                  deviceState: 'device1@test:123',
-                                  descriptor: 'btc-descriptor',
-                                  addresses: { unused: [{ address: 'btc-address' }] },
-                                  visible: true,
-                              },
-                          ],
-            },
-            device: {
-                selectedDevice: {
-                    state: { staticSessionId: 'device1@test:123' },
+                device: {
+                    selectedDevice: {
+                        state: { staticSessionId: 'device1@test:123' },
+                    },
                 },
             },
-        };
-
-        return initStore(preloadedState).store;
-    };
+        });
 
     const renderUseWatchTrade = (
-        store: any,
+        store: TestStore,
         props: { accountKey?: AccountKey; orderId?: string; isInProgress?: boolean },
     ) =>
-        renderHookWithStoreProvider(() => useWatchTradeWithReportSpy(props), {
+        renderHookWithTradingProvider(() => useWatchTradeWithReportSpy(props), {
             store,
         });
 

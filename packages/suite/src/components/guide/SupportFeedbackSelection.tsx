@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 import { events } from '@suite/analytics';
+import { UpdateState } from '@suite/desktop-update';
 import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
 import { isDevEnv } from '@suite-common/suite-utils';
@@ -14,7 +15,6 @@ import { setView } from 'src/actions/suite/guideActions';
 import { GuideContent, GuideHeader, GuideViewWrapper } from 'src/components/guide';
 import { SupportConsentPopover } from 'src/components/guide/SupportConsentPopover';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { UpdateState } from 'src/reducers/suite/desktopUpdateReducer';
 import { useAnalytics } from 'src/support/useAnalytics';
 
 const Section = styled.div`
@@ -25,7 +25,7 @@ const Section = styled.div`
 
 const SectionHeader = styled.h3`
     ${typography['body-sm-strong']}
-    color: ${({ theme }) => theme.textSubdued};
+    color: ${({ theme }) => theme.contentSecondary};
     padding: 0 0 18px;
 `;
 
@@ -39,20 +39,20 @@ const SectionButton = styled.button<{ $hasBackground?: boolean }>`
     align-items: center;
     padding: 13px;
     background: ${({ $hasBackground, theme }) =>
-        $hasBackground ? theme.backgroundSurfaceElevation1 : 'none'};
+        $hasBackground ? theme.surfaceFillRaised : 'none'};
     border: 0;
 
     transition: background ${transitions.speed.normal} ${transitions.type};
 
     &:hover {
-        background: ${({ theme }) => theme.backgroundTertiaryPressedOnElevation1};
+        background: ${({ theme }) => theme.legacyBackgroundTertiaryPressedOnElevation1};
     }
 `;
 
 const Details = styled.div`
     padding: 10px 0 0;
     ${typography['body-xs']}
-    color: ${({ theme }) => theme.textSubdued};
+    color: ${({ theme }) => theme.contentSecondary};
     display: flex;
     justify-content: space-around;
 `;
@@ -75,7 +75,7 @@ const Label = styled.div`
 
 const LabelHeadline = styled.strong`
     ${typography['body-md']}
-    color: ${({ theme }) => theme.textDefault};
+    color: ${({ theme }) => theme.contentPrimary};
     display: flex;
     align-items: center;
     justify-content: space-between;

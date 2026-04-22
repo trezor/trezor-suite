@@ -1,10 +1,9 @@
 import { Translation } from '@suite/intl';
-import { SettingsAnchor } from '@suite/router';
+import { Anchor, SettingsAnchor } from '@suite/router';
 import { UNIT_LABELS, UNIT_OPTIONS } from '@suite-common/suite-constants';
 import { type PROTO } from '@trezor/connect';
-import { ActionColumn, ActionSelect, TextColumn } from '@trezor/product-components';
+import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
 
-import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 
 export const BitcoinAmountUnit = () => {
@@ -14,21 +13,31 @@ export const BitcoinAmountUnit = () => {
         setBitcoinAmountUnits(value);
 
     return (
-        <SettingsSectionItem anchorId={SettingsAnchor.BitcoinAmountUnit}>
-            <TextColumn title={<Translation id="TR_BTC_UNITS" />} />
-            <ActionColumn>
-                <ActionSelect
-                    value={{
-                        label: UNIT_LABELS[
-                            bitcoinAmountUnit as PROTO.AmountUnit.BITCOIN | PROTO.AmountUnit.SATOSHI
-                        ],
-                        value: bitcoinAmountUnit,
-                    }}
-                    options={UNIT_OPTIONS}
-                    onChange={handleUnitsChange}
-                    data-testid="@settings/btc-units-select"
-                />
-            </ActionColumn>
-        </SettingsSectionItem>
+        <Anchor anchorId={SettingsAnchor.BitcoinAmountUnit}>
+            {({ anchorId, anchorRef, shouldHighlight }) => (
+                <SectionItem
+                    data-testid={anchorId}
+                    ref={anchorRef}
+                    shouldHighlight={shouldHighlight}
+                >
+                    <TextColumn title={<Translation id="TR_BTC_UNITS" />} />
+                    <ActionColumn>
+                        <ActionSelect
+                            value={{
+                                label: UNIT_LABELS[
+                                    bitcoinAmountUnit as
+                                        | PROTO.AmountUnit.BITCOIN
+                                        | PROTO.AmountUnit.SATOSHI
+                                ],
+                                value: bitcoinAmountUnit,
+                            }}
+                            options={UNIT_OPTIONS}
+                            onChange={handleUnitsChange}
+                            data-testid="@settings/btc-units-select"
+                        />
+                    </ActionColumn>
+                </SectionItem>
+            )}
+        </Anchor>
     );
 };

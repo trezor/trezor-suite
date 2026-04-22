@@ -2325,7 +2325,7 @@
   "TR_TURN_ON_SECURE_SYNC": "Увімкнути",
   "TR_TURN_ON_SECURE_SYNC_DATA_LABELS": "Називайте гаманці, персоналізуйте акаунти й додавайте мітки до транзакцій.",
   "TR_TURN_ON_SECURE_SYNC_DATA_STORED_LOCALLY": "Безпечно синхронізуйте мітки та назви між мобільною і десктопною версіями.",
-  "TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_DESCRIPTION": "Оновіть прошивку на пристрої {name}, щоб користуватися Suite Sync.",
+  "TR_FW_UPDATE_REQUIRED_MODAL_DESCRIPTION": "Оновіть прошивку на пристрої {name}, щоб користуватися {featureName}.",
   "TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_HEADING": "Потрібне оновлення прошивки",
   "TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_NOT_NOW": "Не зараз",
   "TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_UPGRADE": "Оновити",

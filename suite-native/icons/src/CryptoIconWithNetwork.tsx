@@ -22,7 +22,7 @@ const networkWrapperStyle = prepareNativeStyle<{ size: CryptoIconSize }>((utils,
     right: 0,
     bottom: 0,
     borderWidth: utils.borders.widths.small,
-    borderColor: utils.colors.borderElevation1,
+    borderColor: utils.colors.borderNeutral,
     borderRadius: networkIconSizes[size] / 3,
 }));
 

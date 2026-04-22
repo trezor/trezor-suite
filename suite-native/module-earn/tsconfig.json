@@ -4,13 +4,22 @@
     "include": [".", "**/*.json"],
     "references": [
         { "path": "../../suite-common/device" },
-        { "path": "../../suite-common/earn-api" },
+        {
+            "path": "../../suite-common/earn-stablecoin-api"
+        },
+        {
+            "path": "../../suite-common/earn-staking-api"
+        },
         {
             "path": "../../suite-common/formatters"
         },
         {
             "path": "../../suite-common/message-system"
         },
+        {
+            "path": "../../suite-common/redux-utils"
+        },
+        { "path": "../../suite-common/staking" },
         {
             "path": "../../suite-common/validators"
         },

@@ -3,8 +3,8 @@ import {
     act,
     renderHookWithStoreProvider,
     renderWithStoreProvider,
-} from '@suite-native/test-utils';
-import { btcAsset, getBtcAccount } from '@suite-native/trading-fixtures';
+} from '@suite-native/test-utils-store';
+import { btcAsset, getBtcAccount, getWalletState } from '@suite-native/trading-fixtures';
 import { type BuyFormType } from '@suite-native/trading-types';
 
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';
@@ -15,15 +15,19 @@ import {
 
 describe('BuyReceiveAccountCryptoBalance', () => {
     let buyForm: BuyFormType;
+    const preloadedState = { wallet: getWalletState({ tradeType: 'buy' }) };
 
     const renderBuyForm = () => {
-        const { result } = renderHookWithStoreProvider(() => useBuyForm());
+        const { result } = renderHookWithStoreProvider(() => useBuyForm(), {
+            preloadedState,
+        });
 
         return result.current;
     };
 
     const renderComponent = () =>
         renderWithStoreProvider(<BuyReceiveAccountCryptoBalance />, {
+            preloadedState,
             wrapper: ({ children }) => <Form form={buyForm}>{children}</Form>,
         });
 

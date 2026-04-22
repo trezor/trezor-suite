@@ -2,9 +2,9 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { Translation } from '@suite/intl';
 import { Card, Column, Icon, Paragraph, Row, ShortcutBadge, Spinner } from '@trezor/components';
+import { DropZone } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
-import { DropZone } from 'src/components/suite/DropZone';
 import { decodeQRFromImage } from 'src/utils/suite/qrCode';
 
 const IMAGE_ACCEPT = '.png,.jpg,.jpeg,.gif,.bmp,.webp';
@@ -85,7 +85,14 @@ export const ImageQRReader = ({ onResult }: ImageQRReaderProps) => {
                 </Card>
             ) : (
                 <>
-                    <DropZone accept={IMAGE_ACCEPT} iconName="qrCode" onSelect={handleSelect} />
+                    <DropZone
+                        accept={IMAGE_ACCEPT}
+                        iconName="qrCode"
+                        emptyLabel={<Translation id="TR_DROPZONE" />}
+                        emptyError={<Translation id="TR_DROPZONE_ERROR_EMPTY" />}
+                        fileTypeError={<Translation id="TR_DROPZONE_ERROR_FILETYPE" />}
+                        onSelect={handleSelect}
+                    />
                     {error && (
                         <Card>
                             <Column alignItems="center" gap={spacings.xs}>

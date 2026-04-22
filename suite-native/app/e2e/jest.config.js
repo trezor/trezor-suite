@@ -38,6 +38,7 @@ const reporters =
 /** @type {import('@jest/types').Config.InitialOptions} */
 module.exports = {
     ...nativeJestConfig,
+    setupFiles: ['<rootDir>/e2e/jest.setup.js', ...(nativeJestConfig.setupFiles ?? [])],
     moduleNameMapper: restModuleNameMapper,
     rootDir: process.cwd(),
     testTimeout: 120000,

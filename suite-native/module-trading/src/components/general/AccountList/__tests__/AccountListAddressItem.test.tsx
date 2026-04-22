@@ -1,7 +1,8 @@
 import { type Account, type AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
-import { fireEvent, renderWithStoreProvider } from '@suite-native/test-utils';
+import { fireEvent } from '@suite-native/test-utils-store';
 import { type ReceiveAccount } from '@suite-native/trading-types';
 
+import { renderWithTradingProvider } from '../../../../__tests__/tradingTestUtils';
 import { AccountListAddressItem } from '../AccountListAddressItem';
 
 jest.mock('@suite-common/wallet-core', () => {
@@ -50,7 +51,7 @@ describe(AccountListAddressItem.name, () => {
     const onPressMock = jest.fn();
 
     const renderAccountListAddressItem = (receiveAccount: ReceiveAccount) =>
-        renderWithStoreProvider(
+        renderWithTradingProvider(
             <AccountListAddressItem receiveAccount={receiveAccount} onPress={onPressMock} />,
         );
 

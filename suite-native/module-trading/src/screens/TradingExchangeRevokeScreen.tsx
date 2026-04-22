@@ -146,7 +146,13 @@ export const TradingExchangeRevokeScreen = ({
                         closeActionType="back"
                     />
                 }
-                footer={<ApprovalButton isReady={isRevokeReady} isDisabled={!!error} />}
+                footer={
+                    <ApprovalButton
+                        isReady={isRevokeReady}
+                        isDisabled={!!error}
+                        flowType="revoke"
+                    />
+                }
             >
                 <VStack spacing="sp12">
                     {!!shouldIncreaseLimit && (

@@ -53,7 +53,7 @@ const MenuCategory = styled.div`
     font-weight: 600;
     text-transform: uppercase;
     ${typography['body-xs']}
-    color: ${({ theme }) => theme.textDefault};
+    color: ${({ theme }) => theme.contentPrimary};
 `;
 
 const SelectWrapper = styled.div`
@@ -80,6 +80,8 @@ interface MenuProps {
 
 function MenuInner({ directories, anchors, className, onlyCurrentDocs }: MenuProps): ReactElement {
     const renderStructure = (item: PageItem | Item) => {
+        if (item.display === 'hidden') return null;
+
         if (!onlyCurrentDocs || item.isUnderCurrentDocsTree) {
             if (
                 item.type === 'menu' ||

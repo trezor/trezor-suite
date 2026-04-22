@@ -1,5 +1,4 @@
-import { type PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils';
-
+import { renderWithTradingProvider } from '../../../__tests__/tradingTestUtils';
 import { ExchangeTab } from '../ExchangeTab';
 
 let mockIsDeviceInViewOnlyMode = false;
@@ -28,8 +27,8 @@ jest.mock('@suite-native/trading-state', () => ({
 }));
 
 describe('ExchangeTab', () => {
-    const renderExchangeTab = (preloadedState: PreloadedState = {}) =>
-        renderWithStoreProvider(<ExchangeTab />, { preloadedState });
+    const renderExchangeTab = () =>
+        renderWithTradingProvider(<ExchangeTab />, { tradeType: 'exchange' });
 
     beforeEach(() => {
         mockIsDeviceInViewOnlyMode = false;

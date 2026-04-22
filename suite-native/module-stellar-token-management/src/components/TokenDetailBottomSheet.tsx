@@ -32,7 +32,7 @@ export const TokenDetailBottomSheet = ({
                 <CryptoIcon symbol="xlm" contractAddress={iconContractAddress} size="large" />
                 <VStack>
                     <Text variant="body-md">{tokenName}</Text>
-                    <Text variant="body-sm" color="textSubdued">
+                    <Text variant="body-sm" color="contentSecondary">
                         {assetCode}
                     </Text>
                 </VStack>

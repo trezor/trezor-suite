@@ -135,7 +135,7 @@ export const ManualTokenInputScreen = () => {
                     <Text variant="headline-md">
                         <Translation id="moduleStellarToken.manualInput.title" />
                     </Text>
-                    <Text variant="body-md" color="textSubdued">
+                    <Text variant="body-md" color="contentSecondary">
                         <Translation id="moduleStellarToken.manualInput.subtitle" />
                     </Text>
                 </VStack>
@@ -159,7 +159,7 @@ export const ManualTokenInputScreen = () => {
                                 testID="@stellar-token/asset-code-input"
                             />
                             {hasAssetCodeError && (
-                                <Text variant="body-sm" color="textAlertRed">
+                                <Text variant="body-sm" color="contentCritical">
                                     <Translation id="moduleStellarToken.manualInput.assetCodeError" />
                                 </Text>
                             )}
@@ -182,7 +182,7 @@ export const ManualTokenInputScreen = () => {
                                 testID="@stellar-token/issuer-address-input"
                             />
                             {hasIssuerAddressError && (
-                                <Text variant="body-sm" color="textAlertRed">
+                                <Text variant="body-sm" color="contentCritical">
                                     <Translation id="moduleStellarToken.manualInput.issuerAddressError" />
                                 </Text>
                             )}

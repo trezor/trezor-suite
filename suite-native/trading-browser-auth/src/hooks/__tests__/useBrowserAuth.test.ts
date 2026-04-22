@@ -1,18 +1,24 @@
+import { type StateFromReducersMapObject, combineReducers } from '@reduxjs/toolkit';
 import { WebBrowserResultType } from 'expo-web-browser';
 
+import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { type TradingType, selectTradingSellLastErrorMessage } from '@suite-common/trading';
-import { getTranslation } from '@suite-native/intl';
+import { initialWalletSettingsState } from '@suite-common/wallet-core';
+import { getTranslation, localeReducer } from '@suite-native/intl';
 import {
+    type PreloadedStatePartial,
     type TestStore,
     act,
-    initStore,
+    createLightStore,
+    createStaticReducer,
     renderHookWithStoreProvider,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils-store';
 import { getWalletState } from '@suite-native/trading-fixtures';
 import {
     selectTradeToBeOpened,
     selectTradingProviderConfirmationStatus,
     tradingActions,
+    tradingSlice,
 } from '@suite-native/trading-state';
 
 import { TRADING_URL_DEFAULT_BACK } from '../../consts';
@@ -57,11 +63,34 @@ describe('useBrowserAuth', () => {
     const renderUseBrowserAuth = (tradingType: TradingType = 'sell') =>
         renderHookWithStoreProvider(() => useBrowserAuth(tradingType), { store });
 
+    const defaultWalletState = getWalletState();
+
+    const reducer = {
+        locale: localeReducer,
+        wallet: combineReducers({
+            settings: createStaticReducer(initialWalletSettingsState),
+            trading: tradingSlice.prepareReducer(extraDependenciesCommonMock),
+            accounts: createStaticReducer(defaultWalletState.accounts),
+            fiat: createStaticReducer(defaultWalletState.fiat),
+            send: createStaticReducer(defaultWalletState.send),
+        }),
+    } as const;
+
     beforeEach(() => {
         jest.clearAllMocks();
         mockLinkingURL = null;
         mockDismissBrowser.mockReturnValue(Promise.resolve({ type: WebBrowserResultType.DISMISS }));
-        ({ store } = initStore({ wallet: getWalletState() }));
+        store = createLightStore({
+            reducer,
+            preloadedState: {
+                wallet: {
+                    trading: defaultWalletState.trading,
+                    accounts: defaultWalletState.accounts,
+                    fiat: defaultWalletState.fiat,
+                    send: defaultWalletState.send,
+                },
+            } satisfies PreloadedStatePartial<StateFromReducersMapObject<typeof reducer>>,
+        });
     });
 
     it('should return openBrowser callback', () => {

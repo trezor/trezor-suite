@@ -12,8 +12,8 @@ export const EarnItemCardanoInfo = ({ symbol }: EarnItemCardanoInfoProps) => {
         <>
             <Divider />
             <HStack paddingHorizontal="sp16">
-                <Icon size="mediumLarge" name="info" color="textSubdued" />
-                <Text style={{ flexShrink: 1 }} variant="body-sm" color="textSubdued">
+                <Icon size="mediumLarge" name="info" color="contentSecondary" />
+                <Text style={{ flexShrink: 1 }} variant="body-sm" color="contentSecondary">
                     <Translation id="earn.earnScreen.adaInfo" />
                 </Text>
             </HStack>

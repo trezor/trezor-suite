@@ -3,13 +3,13 @@ import React from 'react';
 import type { ExchangeTrade, SellFiatTrade } from 'invity-api';
 
 import { type AccountKey } from '@suite-common/wallet-types';
-import { renderWithStoreProvider } from '@suite-native/test-utils';
+import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 import {
+    banxaCreditCardSellQuote,
     exchangeMercuryo,
-    exchangeQuotes,
     getWalletState,
+    mercuryoFixedWorstQuote,
     sellBanxa,
-    sellQuotes,
 } from '@suite-native/trading-fixtures';
 
 import { ProviderReceiveAddress } from '../ProviderReceiveAddress';
@@ -17,12 +17,12 @@ import { ProviderReceiveAddress } from '../ProviderReceiveAddress';
 describe('ProviderReceiveAddress', () => {
     // Use real fixtures for more realistic test data
     const mockExchangeTrade: ExchangeTrade = {
-        ...exchangeQuotes[0], // Use first exchange quote from fixtures
+        ...mercuryoFixedWorstQuote,
         sendAddress: '1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa', // Override with a real Bitcoin address
     };
 
     const mockSellFiatTrade: SellFiatTrade = {
-        ...sellQuotes[0], // Use first sell quote from fixtures
+        ...banxaCreditCardSellQuote,
         destinationAddress: '1BvBMSEYstWetqTFn5Au4m4GFg7xJaNVN2', // Add destination address
     };
 

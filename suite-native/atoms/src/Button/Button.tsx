@@ -108,7 +108,7 @@ const buttonTextStyle = prepareNativeStyle<ButtonTextStyleProps>((utils, { butto
 
 export const ButtonIcon = ({
     iconName,
-    color = 'iconDefault',
+    color = 'contentPrimary',
     size = 'large',
 }: ButtonIconProps) => (
     <Icon.Animated name={iconName} color={color} size={buttonToIconSizeMap[size]} />
@@ -116,7 +116,7 @@ export const ButtonIcon = ({
 
 export const ButtonAccessoryView = ({
     element,
-    iconColor = 'iconDefault',
+    iconColor = 'contentPrimary',
     iconSize = 'medium',
 }: ButtonAccessoryViewProps) => <ButtonIcon iconName={element} color={iconColor} size={iconSize} />;
 

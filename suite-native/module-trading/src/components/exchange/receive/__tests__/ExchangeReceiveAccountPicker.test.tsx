@@ -1,25 +1,27 @@
+import { FeatureFlag } from '@suite-native/feature-flags';
 import { Form } from '@suite-native/forms';
-import {
-    type PreloadedState,
-    act,
-    fireEvent,
-    renderHookWithStoreProvider,
-    renderWithStoreProvider,
-} from '@suite-native/test-utils';
-import { btcAsset, getBtcAccount } from '@suite-native/trading-fixtures';
-import { tradingInitialState } from '@suite-native/trading-state';
+import { act, fireEvent } from '@suite-native/test-utils-store';
+import { btc1NormalAccount, btcAsset } from '@suite-native/trading-fixtures';
 import {
     type ExchangeFormType,
     type ReceiveAccount,
     type TradeableAsset,
 } from '@suite-native/trading-types';
+import { mergeDeepObject } from '@trezor/utils';
 
+import {
+    type PreloadedStatePartial,
+    type TradingTestPreloadedState,
+    createTradingFeatureFlags,
+    renderHookWithTradingProvider,
+    renderWithTradingProvider,
+} from '../../../../__tests__/tradingTestUtils';
 import { useExchangeForm } from '../../../../hooks/exchange/useExchangeForm';
 import { ExchangeReceiveAccountPicker } from '../ExchangeReceiveAccountPicker';
 
 const mockNavigate = jest.fn();
 const btcAccountName1 = 'BTC Account #1';
-const btcAddressAddress = '1BTC';
+const btcAddressAddress = 'USED1';
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
@@ -28,32 +30,42 @@ jest.mock('@react-navigation/native', () => ({
     }),
 }));
 
-const getExchangeState = (selectedReceiveAccount: ReceiveAccount | undefined) => ({
+const exchangeStateWithReceiveAccount = (
+    selectedReceiveAccount: ReceiveAccount | undefined,
+): PreloadedStatePartial<TradingTestPreloadedState> => ({
     wallet: {
         trading: {
-            ...tradingInitialState,
             exchange: {
-                ...tradingInitialState.exchange,
                 receiveAddress: selectedReceiveAccount?.address?.address,
                 receiveAccountKey: selectedReceiveAccount?.account.key,
             },
         },
-        accounts: [getBtcAccount()],
+        accounts: [btc1NormalAccount],
     },
 });
 
 describe('ExchangeReceiveAccountPicker', () => {
     let exchangeForm: ExchangeFormType;
 
+    const baseOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {
+        featureFlags: createTradingFeatureFlags({
+            [FeatureFlag.AreTradingExchangeDexesEnabled]: true,
+        }),
+    };
+
     const renderExchangeForm = () => {
-        const { result } = renderHookWithStoreProvider(() => useExchangeForm());
+        const { result } = renderHookWithTradingProvider(() => useExchangeForm(), {
+            tradeType: 'exchange',
+            overrides: baseOverrides,
+        });
 
         return result.current;
     };
 
-    const renderPicker = ({ preloadedState }: { preloadedState?: PreloadedState } = {}) =>
-        renderWithStoreProvider(<ExchangeReceiveAccountPicker />, {
-            preloadedState,
+    const renderPicker = (overrides: PreloadedStatePartial<TradingTestPreloadedState> = {}) =>
+        renderWithTradingProvider(<ExchangeReceiveAccountPicker />, {
+            tradeType: 'exchange',
+            overrides: mergeDeepObject(baseOverrides, overrides),
             wrapper: ({ children }) => <Form form={exchangeForm}>{children}</Form>,
         });
 
@@ -81,16 +93,14 @@ describe('ExchangeReceiveAccountPicker', () => {
         expect(getByText('Not selected')).toBeTruthy();
     });
 
-    // Todo: https://github.com/trezor/trezor-suite/issues/24906
-    it.skip('should display selected account name and address', () => {
+    it('should display selected account name and address', () => {
         setSelectedAsset(btcAsset);
-        const btcAccount = getBtcAccount();
-        const { getByText } = renderPicker({
-            preloadedState: getExchangeState({
-                account: btcAccount,
-                address: btcAccount.addresses?.used[0],
+        const { getByText } = renderPicker(
+            exchangeStateWithReceiveAccount({
+                account: btc1NormalAccount,
+                address: btc1NormalAccount.addresses?.used[0],
             }),
-        });
+        );
 
         expect(getByText(btcAccountName1)).toBeTruthy();
         expect(getByText(btcAddressAddress)).toBeTruthy();
@@ -98,13 +108,12 @@ describe('ExchangeReceiveAccountPicker', () => {
 
     it('should call navigate with correct params on press', () => {
         setSelectedAsset(btcAsset);
-        const btcAccount = getBtcAccount();
-        const { getByText } = renderPicker({
-            preloadedState: getExchangeState({
-                account: btcAccount,
-                address: btcAccount.addresses?.used[0],
+        const { getByText } = renderPicker(
+            exchangeStateWithReceiveAccount({
+                account: btc1NormalAccount,
+                address: btc1NormalAccount.addresses?.used[0],
             }),
-        });
+        );
 
         fireEvent.press(getByText('Receive account'));
 

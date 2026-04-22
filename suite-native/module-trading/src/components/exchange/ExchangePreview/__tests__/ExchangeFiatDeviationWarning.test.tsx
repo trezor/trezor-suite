@@ -1,8 +1,8 @@
 import type { ExchangeTrade } from 'invity-api';
 
 import { getTranslation } from '@suite-native/intl';
-import { renderWithStoreProvider } from '@suite-native/test-utils';
-import { exchangeQuotes } from '@suite-native/trading-fixtures';
+import { renderWithStoreProvider } from '@suite-native/test-utils-store';
+import { mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 
 import { ExchangeFiatDeviationWarning } from '../ExchangeFiatDeviationWarning';
 
@@ -44,7 +44,7 @@ describe('ExchangeFiatDeviationWarning', () => {
             exceedsHighThreshold: false,
         });
 
-        const { toJSON } = renderExchangeFiatDeviationWarning(exchangeQuotes[0]);
+        const { toJSON } = renderExchangeFiatDeviationWarning(mercuryoFixedWorstQuote);
 
         expect(toJSON()).toBeNull();
     });
@@ -52,13 +52,13 @@ describe('ExchangeFiatDeviationWarning', () => {
     it('should render nothing when useExchangeFiatDeviation returns null', () => {
         mockExchangeFiatDeviation.mockReturnValue(null);
 
-        const { toJSON } = renderExchangeFiatDeviationWarning(exchangeQuotes[0]);
+        const { toJSON } = renderExchangeFiatDeviationWarning(mercuryoFixedWorstQuote);
 
         expect(toJSON()).toBeNull();
     });
 
     it('should call useExchangeFiatDeviation with proper params', () => {
-        const quote = exchangeQuotes[0];
+        const quote = mercuryoFixedWorstQuote;
 
         renderExchangeFiatDeviationWarning(quote);
 
@@ -72,7 +72,7 @@ describe('ExchangeFiatDeviationWarning', () => {
     });
 
     it('should call display warning when threshold is exceeded', () => {
-        const { getByText } = renderExchangeFiatDeviationWarning(exchangeQuotes[0]);
+        const { getByText } = renderExchangeFiatDeviationWarning(mercuryoFixedWorstQuote);
 
         expect(
             getByText(
@@ -90,7 +90,7 @@ describe('ExchangeFiatDeviationWarning', () => {
             exceedsHighThreshold: true,
         });
 
-        const { getByText } = renderExchangeFiatDeviationWarning(exchangeQuotes[0]);
+        const { getByText } = renderExchangeFiatDeviationWarning(mercuryoFixedWorstQuote);
 
         expect(
             getByText(

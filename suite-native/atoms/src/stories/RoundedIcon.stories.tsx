@@ -1,9 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/react-native';
 
-import { ICON_SIZES, icons } from '@suite-native/icons';
-import { COLOR_TOKENS } from '@trezor/theme';
+import { icons } from '@suite-native/icons';
 
-import { RoundedIcon as RoundedIconComponent, type RoundedIconProps } from '../RoundedIcon';
+import {
+    ROUNDED_ICON_INTENTS,
+    ROUNDED_ICON_SIZES,
+    RoundedIcon as RoundedIconComponent,
+    type RoundedIconProps,
+} from '../RoundedIcon';
 
 type RoundedIconStory = StoryObj<RoundedIconProps>;
 
@@ -18,29 +22,21 @@ export const RoundedIcon: RoundedIconStory = {
     name: 'RoundedIcon',
     args: {
         name: 'flag',
-        color: 'textPrimaryDefault',
-        iconSize: 'mediumLarge',
-        backgroundColor: 'backgroundTertiaryDefaultOnElevation1',
-        containerSize: 48,
+        intent: 'neutral',
+        size: 48,
     },
     argTypes: {
         name: {
             control: { type: 'select' },
             options: Object.keys(icons),
         },
-        iconSize: {
+        intent: {
             control: { type: 'select' },
-            options: Object.values(ICON_SIZES),
+            options: ROUNDED_ICON_INTENTS,
         },
-
-        color: {
+        size: {
             control: { type: 'select' },
-            options: COLOR_TOKENS,
-        },
-
-        backgroundColor: {
-            control: { type: 'select' },
-            options: COLOR_TOKENS,
+            options: ROUNDED_ICON_SIZES,
         },
         symbol: {
             control: false,

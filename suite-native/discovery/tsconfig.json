@@ -21,9 +21,6 @@
         {
             "path": "../../suite-common/wallet-core"
         },
-        {
-            "path": "../../suite-common/wallet-utils"
-        },
         { "path": "../atoms" },
         { "path": "../config" },
         { "path": "../device" },
@@ -37,6 +34,6 @@
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" },
-        { "path": "../test-utils" }
+        { "path": "../test-utils-store" }
     ]
 }

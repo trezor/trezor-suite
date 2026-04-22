@@ -6,6 +6,7 @@ import { Column, Icon, Row, SubTabs } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 import { spacings } from '@trezor/theme';
 
+import { SettingsLayout } from 'src/components/settings/SettingsLayout';
 import { useDispatch } from 'src/hooks/suite';
 
 import { ConnectPermissions } from './ConnectPermissions';
@@ -40,26 +41,28 @@ export const SettingsConnectedApps = () => {
     }, [tabs.length, dispatch]);
 
     return (
-        <Column gap={spacings.md} margin={{ top: spacings.md }} flex="1">
-            <Row justifyContent="space-between" flexWrap="wrap" gap={spacings.sm}>
-                <SubTabs size="large" activeItemId={activeItemdId}>
-                    {tabs.map(tab => (
-                        <SubTabs.Item
-                            key={tab.id}
-                            id={tab.id}
-                            data-testid={`@settings/connect-apps/tabs/${tab.id}`}
-                            onClick={() => setActiveItemId(tab.id)}
-                        >
-                            <Row alignItems="center" gap={spacings.xs}>
-                                <Icon name={tab.icon} />
-                                {tab.title}
-                            </Row>
-                        </SubTabs.Item>
-                    ))}
-                </SubTabs>
-                <WalletConnectButton handleOpened={() => setActiveItemId('walletconnect')} />
-            </Row>
-            {tabs.find(tab => tab.id === activeItemdId)?.component}
-        </Column>
+        <SettingsLayout>
+            <Column gap={spacings.md} flex="1">
+                <Row justifyContent="space-between" flexWrap="wrap" gap={spacings.sm}>
+                    <SubTabs size="large" activeItemId={activeItemdId}>
+                        {tabs.map(tab => (
+                            <SubTabs.Item
+                                key={tab.id}
+                                id={tab.id}
+                                data-testid={`@settings/connect-apps/tabs/${tab.id}`}
+                                onClick={() => setActiveItemId(tab.id)}
+                            >
+                                <Row alignItems="center" gap={spacings.xs}>
+                                    <Icon name={tab.icon} />
+                                    {tab.title}
+                                </Row>
+                            </SubTabs.Item>
+                        ))}
+                    </SubTabs>
+                    <WalletConnectButton handleOpened={() => setActiveItemId('walletconnect')} />
+                </Row>
+                {tabs.find(tab => tab.id === activeItemdId)?.component}
+            </Column>
+        </SettingsLayout>
     );
 };

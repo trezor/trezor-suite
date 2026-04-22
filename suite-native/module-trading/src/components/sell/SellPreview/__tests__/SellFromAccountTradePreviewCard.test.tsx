@@ -1,7 +1,7 @@
 import { type AccountKey } from '@suite-common/wallet-types';
-import { type PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils';
-import { eth1NormalAccount, getWalletState, sellQuotes } from '@suite-native/trading-fixtures';
+import { banxaCreditCardSellQuote, eth1NormalAccount } from '@suite-native/trading-fixtures';
 
+import { renderWithTradingProvider } from '../../../../__tests__/tradingTestUtils';
 import {
     SellFromAccountTradePreviewCard,
     type SellFromAccountTradePreviewCardProps,
@@ -11,16 +11,15 @@ describe('SellFromAccountTradePreviewCard', () => {
     const renderSellFromAccountTradePreviewCard = (
         props: Partial<SellFromAccountTradePreviewCardProps> = {},
         tradingAccountKey = eth1NormalAccount.key,
-    ) => {
-        const preloadedState: PreloadedState = {
-            wallet: getWalletState({ tradeType: 'sell' }),
-        };
-        preloadedState.wallet!.trading!.sell!.tradingAccountKey = tradingAccountKey;
-
-        return renderWithStoreProvider(<SellFromAccountTradePreviewCard {...props} />, {
-            preloadedState,
+    ) =>
+        renderWithTradingProvider(<SellFromAccountTradePreviewCard {...props} />, {
+            tradeType: 'sell',
+            overrides: {
+                wallet: {
+                    trading: { sell: { tradingAccountKey } },
+                },
+            },
         });
-    };
 
     it('should render nothing when there is no quote', () => {
         const { toJSON } = renderSellFromAccountTradePreviewCard({});
@@ -30,7 +29,7 @@ describe('SellFromAccountTradePreviewCard', () => {
 
     it('should render nothing when account is not found', () => {
         const { toJSON } = renderSellFromAccountTradePreviewCard(
-            { quote: sellQuotes[0] },
+            { quote: banxaCreditCardSellQuote },
             'unknown-account-key' as AccountKey,
         );
 
@@ -38,7 +37,9 @@ describe('SellFromAccountTradePreviewCard', () => {
     });
 
     it('should render TradeSideCard otherwise', () => {
-        const { getByText } = renderSellFromAccountTradePreviewCard({ quote: sellQuotes[0] });
+        const { getByText } = renderSellFromAccountTradePreviewCard({
+            quote: banxaCreditCardSellQuote,
+        });
 
         expect(getByText('From')).toBeOnTheScreen();
         expect(getByText('ETH Account #1')).toBeOnTheScreen();

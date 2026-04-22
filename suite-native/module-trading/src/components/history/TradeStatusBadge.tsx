@@ -1,5 +1,5 @@
 import { type TradingTransactionStatus } from '@suite-common/trading';
-import { Badge, type BadgeVariant } from '@suite-native/atoms';
+import { Badge, type BadgeIntent } from '@suite-native/atoms';
 import { useCoinLabel } from '@suite-native/device';
 import { type IconName } from '@suite-native/icons';
 import { Translation, useTranslate } from '@suite-native/intl';
@@ -9,21 +9,21 @@ export type TransactionStatusProps = {
     status: TradingTransactionStatus;
 };
 
-export const getBadgeVariant = (status: TradingTransactionStatus): BadgeVariant => {
+export const getBadgeVariant = (status: TradingTransactionStatus): BadgeIntent => {
     switch (status) {
         case undefined:
             return 'neutral';
 
         case 'SUCCESS':
-            return 'greenSubtle';
+            return 'brand';
 
         case 'BLOCKED':
         case 'ERROR':
         case 'REFUNDED':
-            return 'red';
+            return 'critical';
 
         default:
-            return 'yellow';
+            return 'warning';
     }
 };
 
@@ -117,7 +117,7 @@ export const TradeStatusBadge = ({ status }: TransactionStatusProps) => {
         <Badge
             label={getLabel(status, coinLabel)}
             size="small"
-            variant={getBadgeVariant(status)}
+            intent={getBadgeVariant(status)}
             icon={getBadgeIconName(status)}
             accessibilityHint={translate('moduleTrading.tradeHistory.status.badge')}
         />

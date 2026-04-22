@@ -17,16 +17,10 @@
             "path": "../protocol"
         },
         {
-            "path": "../transport"
-        },
-        {
             "path": "../type-utils"
         },
         {
             "path": "../utils"
-        },
-        {
-            "path": "../utxo-lib"
         },
         {
             "path": "../blockchain-link"
@@ -36,6 +30,12 @@
         },
         {
             "path": "../device-authenticity"
+        },
+        {
+            "path": "../transport"
+        },
+        {
+            "path": "../utxo-lib"
         }
     ]
 }

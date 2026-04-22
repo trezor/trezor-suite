@@ -16,13 +16,13 @@ const OpenGuideLink = styled.span`
     gap: ${spacingsPx.xxs};
     padding: ${spacingsPx.xxxs} ${spacingsPx.xs};
     border-radius: ${borders.radii.sm};
-    color: ${({ theme }) => theme.iconAlertYellow};
+    color: ${({ theme }) => theme.contentWarning};
     ${typography['body-sm']};
     overflow: visible;
     cursor: pointer;
 
     &:hover {
-        background: ${({ theme }) => transparentize(0.9, theme.backgroundAlertYellowBold)};
+        background: ${({ theme }) => transparentize(0.9, theme.legacyBackgroundAlertYellowBold)};
     }
 `;
 

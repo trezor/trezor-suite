@@ -19,8 +19,8 @@ const Code = styled.span`
         content: '';
         position: absolute;
         inset: -2px;
-        border: solid 1px ${({ theme }) => theme.borderOnElevation1};
-        background: ${({ theme }) => theme.backgroundSurfaceElevation1};
+        border: solid 1px ${({ theme }) => theme.borderNeutral};
+        background: ${({ theme }) => theme.surfaceFillRaised};
         border-radius: ${borders.radii.xxs};
     }
 `;

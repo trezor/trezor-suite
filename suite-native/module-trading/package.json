@@ -89,7 +89,11 @@
         "react-redux": "9.2.0"
     },
     "devDependencies": {
+        "@suite-common/test-utils": "workspace:*",
+        "@suite-native/bluetooth": "workspace:*",
+        "@suite-native/settings": "workspace:*",
         "@suite-native/test-utils": "workspace:*",
+        "@suite-native/test-utils-store": "workspace:*",
         "@suite-native/trading-fixtures": "workspace:*",
         "@suite-native/trading-types": "workspace:*",
         "@types/invity-api": "^1.1.15"

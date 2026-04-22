@@ -45,7 +45,7 @@ const amountsStyle = prepareNativeStyle(() => ({
 }));
 
 const backgroundStyle = prepareNativeStyle(utils => ({
-    backgroundColor: utils.colors.backgroundSurfaceElevation1,
+    backgroundColor: utils.colors.surfaceFillRaised,
 }));
 
 export const StakingManagementUnstakingModal = ({
@@ -102,17 +102,17 @@ export const StakingManagementUnstakingModal = ({
                             value={unstakingBalance}
                             symbol={symbol}
                             decimals={BASE_CRYPTO_MAX_DISPLAYED_DECIMALS}
-                            color="textDefault"
+                            color="contentPrimary"
                             variant="body-sm"
                         />
                         <HStack spacing="sp2">
-                            <Text color="textSubdued" variant="body-sm">
+                            <Text color="contentSecondary" variant="body-sm">
                                 ≈
                             </Text>
                             <CryptoToFiatAmountFormatter
                                 value={unstakingBalance}
                                 symbol={symbol}
-                                color="textSubdued"
+                                color="contentSecondary"
                                 variant="body-sm"
                                 isBalance
                             />
@@ -128,7 +128,7 @@ export const StakingManagementUnstakingModal = ({
             />
 
             <Button onPress={onClose} style={applyStyle(gotItButtonStyle)}>
-                <Text variant="body-md-strong" color="textOnPrimary">
+                <Text variant="body-md-strong" color="contentButtonBrandPrimary">
                     <Translation id="earn.stakingManagementScreen.pendingItemModal.gotIt" />
                 </Text>
             </Button>

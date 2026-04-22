@@ -7,8 +7,8 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { HOW_TO_CHOOSE_RIGHT_NETWORK_URL } from '@trezor/urls';
 
 const cardStyle = prepareNativeStyle(utils => ({
-    backgroundColor: utils.colors.backgroundTertiaryDefaultOnElevation1,
-    borderColor: utils.colors.borderElevation0,
+    backgroundColor: utils.colors.legacyBackgroundTertiaryDefaultOnElevation1,
+    borderColor: utils.colors.borderNeutral,
     borderWidth: utils.borders.widths.small,
     paddingVertical: utils.spacings.sp12,
 
@@ -45,7 +45,7 @@ export const CorrectNetworkMessageCard = ({ symbol }: CorrectNetworkMessageCardP
                                         label={label}
                                         isUnderlined
                                         textVariant="body-sm"
-                                        textColor="textDefault"
+                                        textColor="contentPrimary"
                                     />
                                 );
                             },

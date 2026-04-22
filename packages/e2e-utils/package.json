@@ -9,21 +9,24 @@
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
         "test-health": "tsx ./src/quarantineBot/index.ts",
+        "select-tests": "tsx ./src/testCoverage/selectTestsByChangedFiles.ts",
         "seed-tests": "CURRENTS_PROJECT_ID=iBEsWE yarn pwc --config ./src/quarantineBot/seed/playwright.config.ts",
-        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "analyze-tests": "tsx ./src/llmTestAnalyzer/index.ts",
+        "select-tests-llm": "tsx ./src/llmTestSelector/index.ts"
     },
     "dependencies": {
+        "@anthropic-ai/sdk": "^0.39.0",
         "@octokit/rest": "^21.1.1",
         "@trezor/trezor-user-env-link": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "dotenv": "^16.4.7",
+        "dotenv": "17.2.3",
         "express": "^5.2.1",
-        "uuid": "^13.0.0",
-        "ws": "^8.18.0"
+        "ws": "^8.20.0"
     },
     "devDependencies": {
-        "@currents/playwright": "^1.21.2",
-        "@playwright/test": "1.57.0",
+        "@currents/playwright": "^1.22.2",
+        "@playwright/test": "1.58.2",
         "@trezor/node-utils": "workspace:*",
         "tsx": "^4.21.0"
     }

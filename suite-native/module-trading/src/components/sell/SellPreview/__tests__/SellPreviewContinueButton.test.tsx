@@ -1,10 +1,13 @@
-import {
-    type AccountKey,
-    type GeneralPrecomposedTransactionFinal,
-} from '@suite-common/wallet-types';
-import { type PreloadedState, renderWithStoreProvider, userEvent } from '@suite-native/test-utils';
-import { getWalletState, sellQuotes } from '@suite-native/trading-fixtures';
+import { type AccountKey } from '@suite-common/wallet-types';
+import { userEvent } from '@suite-native/test-utils-store';
+import { banxaCreditCardSellQuote, createPrecomposedTxFinal } from '@suite-native/trading-fixtures';
+import { mergeDeepObject } from '@trezor/utils';
 
+import {
+    type PreloadedStatePartial,
+    type TradingTestPreloadedState,
+    renderWithTradingProvider,
+} from '../../../../__tests__/tradingTestUtils';
 import {
     SellPreviewContinueButton,
     type SellPreviewContinueButtonProps,
@@ -20,59 +23,58 @@ jest.mock('@react-navigation/native', () => ({
 }));
 
 describe('SellPreviewContinueButton', () => {
+    const baseOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {
+        wallet: {
+            trading: { sell: { tradingAccountKey: 'eth-account-1' as AccountKey } },
+            send: {
+                precomposedTx: createPrecomposedTxFinal({
+                    totalSpent: '1100',
+                    fee: '1000',
+                    feePerByte: '100',
+                    bytes: 1,
+                }),
+            },
+        },
+    };
+
     const renderSellPreviewContinueButton = (
         props: Partial<SellPreviewContinueButtonProps> = {},
-        preloadedState: PreloadedState = {},
+        extraOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
     ) =>
-        renderWithStoreProvider(
+        renderWithTradingProvider(
             <SellPreviewContinueButton
                 isDisabled={false}
-                quote={sellQuotes[0]}
+                quote={banxaCreditCardSellQuote}
                 onSignTransactionNavigation={jest.fn()}
                 {...props}
             />,
-            { preloadedState },
+            {
+                tradeType: 'sell',
+                overrides: mergeDeepObject(baseOverrides, extraOverrides),
+            },
         );
 
     beforeEach(() => {
         jest.restoreAllMocks();
     });
 
-    const getPreloadedState = (): PreloadedState => {
-        const preloadedState = { wallet: getWalletState({ tradeType: 'sell' }) };
-        preloadedState.wallet!.trading!.sell!.tradingAccountKey = 'eth-account-1' as AccountKey; // Todo: create properly via `createAccountKey()`
-        preloadedState.wallet!.send!.precomposedTx = {
-            type: 'final',
-            totalSpent: '1100',
-            fee: '1000',
-            feePerByte: '100',
-            bytes: 1,
-        } as GeneralPrecomposedTransactionFinal;
-
-        return preloadedState;
-    };
-
     it('should render nothing when precomposed transaction is not in final state', () => {
-        const preloadedState = getPreloadedState();
-        preloadedState!.wallet!.send!.precomposedTx = {
-            type: 'composing',
-        } as any;
-        const { toJSON } = renderSellPreviewContinueButton({}, preloadedState);
+        const { toJSON } = renderSellPreviewContinueButton(
+            {},
+            { wallet: { send: { precomposedTx: { type: 'composing' } as any } } },
+        );
 
         expect(toJSON()).toBeNull();
     });
 
     it('should render continue button', () => {
-        const { getByText } = renderSellPreviewContinueButton({}, getPreloadedState());
+        const { getByText } = renderSellPreviewContinueButton();
 
         expect(getByText('Continue')).toBeOnTheScreen();
     });
 
     it('should render disabled button when isDisabled prop is specified', () => {
-        const { getByText } = renderSellPreviewContinueButton(
-            { isDisabled: true },
-            getPreloadedState(),
-        );
+        const { getByText } = renderSellPreviewContinueButton({ isDisabled: true });
 
         expect(getByText('Continue')).toBeDisabled();
     });
@@ -80,10 +82,10 @@ describe('SellPreviewContinueButton', () => {
     it('should fire console.warn and do not navigate when quote is not specified', async () => {
         const mockOnSignTransactionNavigation = jest.fn();
         const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
-        const { getByText } = renderSellPreviewContinueButton(
-            { quote: undefined, onSignTransactionNavigation: mockOnSignTransactionNavigation },
-            getPreloadedState(),
-        );
+        const { getByText } = renderSellPreviewContinueButton({
+            quote: undefined,
+            onSignTransactionNavigation: mockOnSignTransactionNavigation,
+        });
 
         await userEvent.press(getByText('Continue'));
 
@@ -97,12 +99,14 @@ describe('SellPreviewContinueButton', () => {
 
     it('should fire console.warn and do not navigate when fromAccount is not found', async () => {
         const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
-        const preloadedState = getPreloadedState();
-        preloadedState!.wallet!.trading!.sell!.tradingAccountKey = 'non-existing-key';
         const mockOnSignTransactionNavigation = jest.fn();
         const { getByText } = renderSellPreviewContinueButton(
             { onSignTransactionNavigation: mockOnSignTransactionNavigation },
-            preloadedState,
+            {
+                wallet: {
+                    trading: { sell: { tradingAccountKey: 'non-existing-key' as AccountKey } },
+                },
+            },
         );
 
         await userEvent.press(getByText('Continue'));
@@ -118,10 +122,9 @@ describe('SellPreviewContinueButton', () => {
     it('should navigate to TradingOutputsReview on continue press', async () => {
         const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
         const mockOnSignTransactionNavigation = jest.fn();
-        const { getByText } = renderSellPreviewContinueButton(
-            { onSignTransactionNavigation: mockOnSignTransactionNavigation },
-            getPreloadedState(),
-        );
+        const { getByText } = renderSellPreviewContinueButton({
+            onSignTransactionNavigation: mockOnSignTransactionNavigation,
+        });
 
         await userEvent.press(getByText('Continue'));
 
@@ -130,7 +133,7 @@ describe('SellPreviewContinueButton', () => {
             name: 'TradingSellOutputsReview',
             params: {
                 accountKey: 'eth-account-1',
-                orderId: sellQuotes[0].orderId,
+                orderId: banxaCreditCardSellQuote.orderId,
                 tokenContract: undefined,
             },
         });

@@ -31,15 +31,14 @@ export const MyAssetListSectionHeader = ({ account, isFirst }: MyAssetListSectio
             padding="sp12"
         >
             <HStack alignItems="center" spacing="sp8">
-                <Text variant="body-md" color="textDefault">
+                <Text variant="body-md" color="contentPrimary">
                     <AccountLabel account={account} />
                 </Text>
                 {formattedAccountType && (
                     <Badge
                         label={formattedAccountType}
                         size="small"
-                        elevation="1"
-                        variant="blue"
+                        intent="info"
                         testID={TEST_ID_ACCOUNT_TYPE_BADGE}
                     />
                 )}

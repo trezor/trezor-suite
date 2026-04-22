@@ -1,17 +1,35 @@
+import { combineReducers } from '@reduxjs/toolkit';
+
+import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { type TradingCountryCode, type TradingCountryOption } from '@suite-common/trading';
-import { type TestStore, initStore, renderHookWithStoreProvider } from '@suite-native/test-utils';
-import { selectTradingResidenceCountry } from '@suite-native/trading-state';
+import { initialWalletSettingsState } from '@suite-common/wallet-core';
+import { localeReducer } from '@suite-native/intl';
+import {
+    type TestStore,
+    createLightStore,
+    createStaticReducer,
+    renderHookWithStoreProvider,
+} from '@suite-native/test-utils-store';
+import { selectTradingResidenceCountry, tradingSlice } from '@suite-native/trading-state';
 
 import { type CountryFormWatch, useCountryChangeEffect } from '../useCountryChangeEffect';
 
 describe('useCountryChangeEffect', () => {
     let store: TestStore;
 
+    const reducer = {
+        locale: localeReducer,
+        wallet: combineReducers({
+            settings: createStaticReducer(initialWalletSettingsState),
+            trading: tradingSlice.prepareReducer(extraDependenciesCommonMock),
+        }),
+    } as const;
+
     const renderUseCountryChangeEffect = (watch: CountryFormWatch) =>
         renderHookWithStoreProvider(() => useCountryChangeEffect(watch), { store });
 
     beforeEach(() => {
-        store = initStore().store;
+        store = createLightStore({ reducer });
     });
 
     it('should do nothing on mount', () => {

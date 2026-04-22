@@ -77,15 +77,15 @@ export const StakeClaimableCard = ({ accountKey }: StakeClaimableCardProps) => {
                             value={claimableAmount}
                             symbol={symbol}
                             decimals={BASE_CRYPTO_MAX_DISPLAYED_DECIMALS}
-                            color="textDefault"
+                            color="contentPrimary"
                             variant="body-md-strong"
                         />
                         <Box flexDirection="row">
-                            <Text color="textSubdued">≈</Text>
+                            <Text color="contentSecondary">≈</Text>
                             <CryptoToFiatAmountFormatter
                                 value={claimableAmount}
                                 symbol={symbol}
-                                color="textSubdued"
+                                color="contentSecondary"
                                 isBalance
                             />
                         </Box>

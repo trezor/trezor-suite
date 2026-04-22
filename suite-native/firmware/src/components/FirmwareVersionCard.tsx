@@ -42,8 +42,8 @@ const firmwareArrowStyle = prepareNativeStyle(utils => {
         height: firmwareArrowSize,
         top: -(firmwareArrowSize / 2 + utils.spacings.sp4),
         zIndex: 3,
-        backgroundColor: utils.colors.backgroundTertiaryDefaultOnElevation1,
-        borderColor: utils.colors.backgroundSurfaceElevation1,
+        backgroundColor: utils.colors.legacyBackgroundTertiaryDefaultOnElevation1,
+        borderColor: utils.colors.surfaceFillRaised,
         borderRadius: utils.borders.radii.round,
         borderWidth: utils.spacings.sp4,
         justifyContent: 'center',
@@ -93,29 +93,25 @@ export const FirmwareVersionCard = ({ isUpdateRequired, children }: FirmwareVers
                 </HStack>
                 <VStack spacing="sp6">
                     <FirmwareInfoBox
-                        backgroundColor="backgroundTertiaryDefaultOnElevation1"
+                        backgroundColor="legacyBackgroundTertiaryDefaultOnElevation1"
                         title={<Translation id="firmware.versionCard.currentFirmware" />}
-                        titleColor="textSubdued"
+                        titleColor="contentSecondary"
                         version={concatFirmwareVersion(firmwareVersion)}
                         type={firmwareType}
                         paddingBottom={isFirmwareUpgradable ? 'sp24' : 'sp16'}
                     />
                     {isFirmwareUpgradable && (
                         <FirmwareInfoBox
-                            backgroundColor="backgroundSurfaceElevation1"
+                            backgroundColor="surfaceFillRaised"
                             title={<Translation id="firmware.versionCard.newFirmware" />}
-                            titleColor="textPrimaryDefault"
+                            titleColor="contentBrand"
                             version={updateFirmwareVersion}
                             type={firmwareType}
                             paddingTop="sp24"
                         >
                             <FirmwareChangelogButton />
                             <Box style={applyStyle(firmwareArrowStyle)}>
-                                <Icon
-                                    name="arrowDown"
-                                    color="iconPrimaryDefault"
-                                    size="mediumLarge"
-                                />
+                                <Icon name="arrowDown" color="contentBrand" size="mediumLarge" />
                             </Box>
                         </FirmwareInfoBox>
                     )}

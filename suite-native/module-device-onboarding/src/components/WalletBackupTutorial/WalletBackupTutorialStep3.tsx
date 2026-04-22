@@ -19,7 +19,7 @@ const imageContainerStyle = prepareNativeStyle(() => ({
 
 const cardStyle = prepareNativeStyle(utils => ({
     paddingTop: 12,
-    borderColor: utils.colors.borderOnElevation1,
+    borderColor: utils.colors.borderNeutral,
     borderWidth: utils.borders.widths.small,
     ...utils.boxShadows.none,
 }));
@@ -37,7 +37,7 @@ const dividerStyle = prepareNativeStyle(() => ({
 const SectionHeader = ({
     title,
     description,
-    descriptionColor = 'textSecondaryHighlight',
+    descriptionColor = 'contentBrand',
     image,
 }: {
     title: TxKeyPath;
@@ -87,7 +87,7 @@ export const WalletBackupTutorialStep3 = ({
                         <SectionHeader
                             title="moduleDeviceOnboarding.walletBackupTutorialScreen.step3.section1.title"
                             description="moduleDeviceOnboarding.walletBackupTutorialScreen.step3.section1.description"
-                            descriptionColor="textSecondaryHighlight"
+                            descriptionColor="contentBrand"
                             image={<TrezorDeviceSvg />}
                         />
                         <IconListTextItem
@@ -106,7 +106,7 @@ export const WalletBackupTutorialStep3 = ({
                         <SectionHeader
                             title="moduleDeviceOnboarding.walletBackupTutorialScreen.step3.section2.title"
                             description="moduleDeviceOnboarding.walletBackupTutorialScreen.step3.section2.description"
-                            descriptionColor="textAlertYellow"
+                            descriptionColor="contentWarning"
                             image={<RecoveryCardSvg width={IMAGE_WIDTH} height={IMAGE_HEIGHT} />}
                         />
                         <IconListTextItem

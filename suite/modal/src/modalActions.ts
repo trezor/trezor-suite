@@ -10,6 +10,7 @@ import {
     MODAL_PRESERVE,
     MODAL_REMOVE_PRESERVE,
 } from './constants';
+import { type ModalRootState, selectModalConfirmationRequestId } from './modalReducer';
 
 export type ModalAction =
     | { type: typeof MODAL_CLOSE }
@@ -34,14 +35,17 @@ export const preserveModal = createAction(MODAL_PRESERVE);
  */
 export const removePreserveModal = createAction(MODAL_REMOVE_PRESERVE);
 
-export const onReceiveConfirmation = (confirmation: boolean) => (dispatch: Dispatch) => {
-    TrezorConnect.uiResponse({
-        type: UI_RESPONSE.RECEIVE_CONFIRMATION,
-        payload: confirmation,
-    });
+export const onReceiveConfirmation =
+    (confirmation: boolean) => (dispatch: Dispatch, getState: () => ModalRootState) => {
+        const requestId = selectModalConfirmationRequestId(getState());
+        TrezorConnect.uiResponse({
+            type: UI_RESPONSE.RECEIVE_CONFIRMATION,
+            payload: confirmation,
+            requestId,
+        });
 
-    dispatch(closeModal());
-};
+        dispatch(closeModal());
+    };
 export const onReceiveAccount = (accountIndex: number | null) => (dispatch: Dispatch) => {
     if (accountIndex === null) {
         TrezorConnect.cancel();

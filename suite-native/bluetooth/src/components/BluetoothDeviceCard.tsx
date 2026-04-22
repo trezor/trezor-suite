@@ -66,7 +66,7 @@ export const BluetoothDeviceCard = ({
                 <Text variant="headline-sm">{device.name}</Text>
                 <Text
                     variant="body-sm"
-                    color="textSubdued"
+                    color="contentSecondary"
                     style={applyStyle(resetLetterSpacingOnAndroidStyle)}
                 >
                     {modelConfig.name}

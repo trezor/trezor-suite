@@ -7,11 +7,12 @@ import {
 } from '@suite-common/trading';
 import { type Account, type TokenAddress, type TokenInfoBranded } from '@suite-common/wallet-types';
 import { getFormDraftKey } from '@suite-common/wallet-utils';
-import { type PreloadedState, type TestStore, initStore } from '@suite-native/test-utils';
+import { type TestStore } from '@suite-native/test-utils-store';
 import { selectAccountTokenInfo } from '@suite-native/tokens';
-import { eth1NormalAccount, exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
+import { eth1NormalAccount, invityDexQuote } from '@suite-native/trading-fixtures';
 
 import { clearTradingStateThunk, composeEvmApprovalFeeLevelsThunk } from '../thunks';
+import { createTradingLightStore } from './tradingTestUtils';
 
 jest.mock('@trezor/connect', () => ({
     ...jest.requireActual('@trezor/connect'),
@@ -129,7 +130,7 @@ describe('thunks', () => {
         let store: TestStore;
 
         const dexQuoteWithApprovalData: ExchangeTrade = {
-            ...exchangeQuotes[3],
+            ...invityDexQuote,
             isDex: true,
             sendStringAmount: '100',
             send: 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as CryptoId,
@@ -152,19 +153,22 @@ describe('thunks', () => {
         };
 
         beforeEach(() => {
-            const walletState = getWalletState({ tradeType: 'exchange' });
-            walletState.trading.exchange.tradingAccountKey = eth1NormalAccount.key;
-
-            const preloadedState: PreloadedState = {
-                wallet: walletState,
-                device: {
-                    selectedDevice: {
-                        state: { staticSessionId: 'device1@test:123' },
-                        features: { major_version: 2, minor_version: 6, patch_version: 0 },
+            store = createTradingLightStore({
+                tradeType: 'exchange',
+                overrides: {
+                    wallet: {
+                        trading: {
+                            exchange: { tradingAccountKey: eth1NormalAccount.key },
+                        },
+                    },
+                    device: {
+                        selectedDevice: {
+                            state: { staticSessionId: 'device1@test:123' },
+                            features: { major_version: 2, minor_version: 6, patch_version: 0 },
+                        },
                     },
                 },
-            };
-            store = initStore(preloadedState).store;
+            });
         });
 
         it('should reject when dexTx data is missing', async () => {
@@ -207,37 +211,39 @@ describe('thunks', () => {
 
         it('should merge composed approval fees into existing exchange form draft without dropping fields', async () => {
             const formDraftKey = getFormDraftKey('trading-exchange', '');
-            const walletState = getWalletState({ tradeType: 'exchange' });
-            walletState.trading.exchange.tradingAccountKey = eth1NormalAccount.key;
 
-            const preloadedState: PreloadedState = {
-                wallet: {
-                    ...walletState,
-                    formDrafts: {
-                        [formDraftKey]: {
-                            swapOnlyField: 'keep-around',
-                            outputs: [
-                                {
-                                    type: 'payment' as const,
-                                    address: '0xabc',
-                                    amount: '1',
-                                    fiat: '',
-                                    currency: { label: '', value: '' },
-                                    label: '',
-                                    token: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as TokenAddress,
-                                },
-                            ],
+            const localStore = createTradingLightStore({
+                tradeType: 'exchange',
+                overrides: {
+                    wallet: {
+                        trading: {
+                            exchange: { tradingAccountKey: eth1NormalAccount.key },
+                        },
+                        formDrafts: {
+                            [formDraftKey]: {
+                                swapOnlyField: 'keep-around',
+                                outputs: [
+                                    {
+                                        type: 'payment' as const,
+                                        address: '0xabc',
+                                        amount: '1',
+                                        fiat: '',
+                                        currency: { label: '', value: '' },
+                                        label: '',
+                                        token: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as TokenAddress,
+                                    },
+                                ],
+                            },
+                        },
+                    },
+                    device: {
+                        selectedDevice: {
+                            state: { staticSessionId: 'device1@test:123' },
+                            features: { major_version: 2, minor_version: 6, patch_version: 0 },
                         },
                     },
                 },
-                device: {
-                    selectedDevice: {
-                        state: { staticSessionId: 'device1@test:123' },
-                        features: { major_version: 2, minor_version: 6, patch_version: 0 },
-                    },
-                },
-            };
-            const localStore = initStore(preloadedState).store;
+            });
             const ethAccount = localStore
                 .getState()
                 .wallet.accounts.find((account: Account) => account.key === eth1NormalAccount.key);
@@ -262,22 +268,24 @@ describe('thunks', () => {
 
         it('should add default payment output with token when exchange form draft has no outputs', async () => {
             const formDraftKey = getFormDraftKey('trading-exchange', '');
-            const walletState = getWalletState({ tradeType: 'exchange' });
-            walletState.trading.exchange.tradingAccountKey = eth1NormalAccount.key;
 
-            const preloadedState: PreloadedState = {
-                wallet: {
-                    ...walletState,
-                    formDrafts: {},
-                },
-                device: {
-                    selectedDevice: {
-                        state: { staticSessionId: 'device1@test:123' },
-                        features: { major_version: 2, minor_version: 6, patch_version: 0 },
+            const localStore = createTradingLightStore({
+                tradeType: 'exchange',
+                overrides: {
+                    wallet: {
+                        trading: {
+                            exchange: { tradingAccountKey: eth1NormalAccount.key },
+                        },
+                        formDrafts: {},
+                    },
+                    device: {
+                        selectedDevice: {
+                            state: { staticSessionId: 'device1@test:123' },
+                            features: { major_version: 2, minor_version: 6, patch_version: 0 },
+                        },
                     },
                 },
-            };
-            const localStore = initStore(preloadedState).store;
+            });
             const ethAccount = localStore
                 .getState()
                 .wallet.accounts.find((account: Account) => account.key === eth1NormalAccount.key);

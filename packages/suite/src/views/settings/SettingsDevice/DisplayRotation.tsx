@@ -2,14 +2,13 @@ import { type JSX } from 'react';
 
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import { SettingsAnchor } from '@suite/router';
+import { Anchor, SettingsAnchor } from '@suite/router';
 import { Icon, SelectBar, Tooltip } from '@trezor/components';
 import { type DisplayRotation as DisplayRotationType, PROTO } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
-import { ActionColumn, TextColumn } from '@trezor/product-components';
+import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
-import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
 
@@ -72,31 +71,41 @@ export const DisplayRotation = ({ isDeviceLocked }: DisplayRotationProps) => {
     const currentRotation = device?.features?.display_rotation;
 
     return (
-        <SettingsSectionItem anchorId={SettingsAnchor.DisplayRotation}>
-            <TextColumn title={<Translation id="TR_DEVICE_SETTINGS_DISPLAY_ROTATION" />} />
-            <ActionColumn>
-                <Tooltip
-                    isActive={isDeviceLocked}
-                    content={<Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />}
+        <Anchor anchorId={SettingsAnchor.DisplayRotation}>
+            {({ anchorId, anchorRef, shouldHighlight }) => (
+                <SectionItem
+                    data-testid={anchorId}
+                    ref={anchorRef}
+                    shouldHighlight={shouldHighlight}
                 >
-                    <SelectBar
-                        isDisabled={isDeviceLocked}
-                        data-testid="@settings/device/rotation-button"
-                        selectedOption={currentRotation ?? undefined}
-                        options={DISPLAY_ROTATIONS}
-                        size="small"
-                        onChange={(value: DisplayRotationType) => {
-                            dispatch(applySettings({ display_rotation: value }));
-                            analytics.report({
-                                type: events.settingsDeviceChangeOrientationEvent.name,
-                                payload: {
-                                    value: PROTO.Enum_DisplayRotation[value],
-                                },
-                            });
-                        }}
-                    />
-                </Tooltip>
-            </ActionColumn>
-        </SettingsSectionItem>
+                    <TextColumn title={<Translation id="TR_DEVICE_SETTINGS_DISPLAY_ROTATION" />} />
+                    <ActionColumn>
+                        <Tooltip
+                            isActive={isDeviceLocked}
+                            content={
+                                <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
+                            }
+                        >
+                            <SelectBar
+                                isDisabled={isDeviceLocked}
+                                data-testid="@settings/device/rotation-button"
+                                selectedOption={currentRotation ?? undefined}
+                                options={DISPLAY_ROTATIONS}
+                                size="small"
+                                onChange={(value: DisplayRotationType) => {
+                                    dispatch(applySettings({ display_rotation: value }));
+                                    analytics.report({
+                                        type: events.settingsDeviceChangeOrientationEvent.name,
+                                        payload: {
+                                            value: PROTO.Enum_DisplayRotation[value],
+                                        },
+                                    });
+                                }}
+                            />
+                        </Tooltip>
+                    </ActionColumn>
+                </SectionItem>
+            )}
+        </Anchor>
     );
 };

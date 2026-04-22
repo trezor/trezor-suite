@@ -28,7 +28,7 @@ export const TxSimulationBanner = ({
                     isChecked={disclaimerAccepted}
                     onChange={() => setDisclaimerAccepted(!disclaimerAccepted)}
                 />
-                <Text color="textSubdued" variant="body-sm">
+                <Text color="contentSecondary" variant="body-sm">
                     <Translation id="moduleConnectPopup.simulation.disclaimerOverride" />
                 </Text>
             </HStack>

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Translation } from '@suite/intl';
 import { Box, Button, Column, IMAGES, IMAGES_PATH, Row, Text } from '@trezor/components';
 import { resolveStaticPath } from '@trezor/env-utils';
-import { borders, colorVariants, spacings, spacingsPx } from '@trezor/theme';
+import { borders, spacings, spacingsPx } from '@trezor/theme';
 import { DASHBOARD_BANNER_TEX_URL } from '@trezor/urls';
 
 import { useExternalLink, useLayoutSize } from 'src/hooks/suite';
@@ -25,11 +25,7 @@ const StyledImage = styled.img`
     max-width: 40%;
 `;
 
-const NextGenerationTextBlock = styled.span`
-    color: ${colorVariants.standard.textOnPrimary};
-`;
-
-const UnderlinedBlock = styled(NextGenerationTextBlock)`
+const UnderlinedBlock = styled.span`
     white-space: nowrap;
     background-image: url(${underlineImage});
     display: inline-block;

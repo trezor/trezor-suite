@@ -8,7 +8,6 @@ import type { MethodMessage, MethodPermission } from '../../../core/AbstractMeth
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { validateModelOneMessageSize } from '../../../device/validateMessageSize';
 import { messageToHex, stripHexPrefix } from '../../../utils/formatUtils';
-import { getFirmwareRange } from '../../common/paramsValidator';
 
 export default class EthereumVerifyMessage extends AbstractMethod<
     'ethereumVerifyMessage',
@@ -31,7 +30,6 @@ export default class EthereumVerifyMessage extends AbstractMethod<
 
         super(message, params);
         this.requiredDeviceCapabilities = ['Capability_Ethereum'];
-        this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
     }
 
     get requiredPermissions(): MethodPermission[] {

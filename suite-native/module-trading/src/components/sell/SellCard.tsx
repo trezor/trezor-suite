@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 
 import { cryptoIdToSymbol } from '@suite-common/trading';
 import { type AccountsRootState, selectAccountFormattedBalance } from '@suite-common/wallet-core';
-import { AnimatedBox, AnimatedCard, Box, HStack, VStack } from '@suite-native/atoms';
+import { AnimatedBorderCard, AnimatedBox, Box, HStack, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { CardTitle, useAnimatedBorderStyle } from '@suite-native/trading-atoms';
 import {
@@ -31,7 +31,7 @@ const SELL_CARD_TEST_ID = '@trading/sellCard';
 const sellSectionStyle = prepareNativeStyle<{ bottomBorder: boolean }>(
     ({ borders, colors, spacings }, { bottomBorder }) => ({
         borderBottomWidth: bottomBorder ? borders.widths.small : 0,
-        borderBottomColor: colors.backgroundSurfaceElevation0,
+        borderBottomColor: colors.surfaceFillPage,
         paddingHorizontal: spacings.sp12,
         paddingTop: spacings.sp16,
         paddingBottom: spacings.sp12,
@@ -65,7 +65,7 @@ export const SellCard = ({ isAmountInputActive, shouldAnimateEntering }: SellCar
 
     return (
         <AnimatedBox entering={enteringAnimation} layout={LinearTransition}>
-            <AnimatedCard style={animatedStyle} noPadding>
+            <AnimatedBorderCard style={animatedStyle} noPadding>
                 <VStack style={applyStyle(sellSectionStyle, { bottomBorder: true })}>
                     <HStack
                         justifyContent="space-between"
@@ -112,7 +112,7 @@ export const SellCard = ({ isAmountInputActive, shouldAnimateEntering }: SellCar
                     <SellFiatCurrencyPicker />
                 </VStack>
                 <SellReceiveMethodPicker />
-            </AnimatedCard>
+            </AnimatedBorderCard>
         </AnimatedBox>
     );
 };

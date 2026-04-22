@@ -1,20 +1,25 @@
-import { type PreloadedState, renderWithStoreProvider, userEvent } from '@suite-native/test-utils';
+import { userEvent } from '@suite-native/test-utils-store';
 
+import {
+    type PreloadedStatePartial,
+    type TradingTestPreloadedState,
+    renderWithTradingProvider,
+} from '../../../__tests__/tradingTestUtils';
 import { ReviewOutputsFooter, type ReviewOutputsFooterProps } from '../ReviewOutputsFooter';
 
 describe('ReviewOutputsFooter', () => {
     const renderReviewOutputsFooter = (
         props: Partial<ReviewOutputsFooterProps>,
-        preloadedState: PreloadedState = {},
+        overrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
     ) =>
-        renderWithStoreProvider(
+        renderWithTradingProvider(
             <ReviewOutputsFooter
                 resolveConsent={jest.fn()}
                 isConsentRequested={true}
                 testID="TEST_ID"
                 {...props}
             />,
-            { preloadedState },
+            { overrides },
         );
 
     it('should display "Send transaction" button', () => {

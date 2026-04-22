@@ -27,7 +27,7 @@ import { TradingUtilsKyc } from './TradingUtilsKyc';
 
 const PriceValue = styled.div`
     ${typography['headline-sm']}
-    color: ${({ theme }) => theme.textDefault};
+    color: ${({ theme }) => theme.contentPrimary};
     margin-top: ${spacingsPx.xxs};
     margin-right: ${spacingsPx.sm};
 

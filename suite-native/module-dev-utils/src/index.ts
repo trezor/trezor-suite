@@ -1,1 +1,1 @@
-export * from './navigation/DevUtilsStackNavigator';
+export * from './screens/DevUtilsScreen';

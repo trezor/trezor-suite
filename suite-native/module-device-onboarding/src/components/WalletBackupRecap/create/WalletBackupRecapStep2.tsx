@@ -32,11 +32,7 @@ export const WalletBackupRecapStep2 = ({
         >
             <WalletRecapStepContent>
                 <VStack spacing="sp12" alignItems="center">
-                    <Text
-                        variant="body-md-strong"
-                        color="textSecondaryHighlight"
-                        textAlign="center"
-                    >
+                    <Text variant="body-md-strong" color="contentBrand" textAlign="center">
                         <Translation id="moduleDeviceOnboarding.walletBackupRecapScreen.step2.callout" />
                     </Text>
                     <Box>

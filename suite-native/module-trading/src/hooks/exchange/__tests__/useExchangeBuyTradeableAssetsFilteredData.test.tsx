@@ -1,6 +1,7 @@
-import { type PreloadedState, act, renderHookWithStoreProvider } from '@suite-native/test-utils';
-import { btcAsset, ethAsset, getWalletState, usdcAsset } from '@suite-native/trading-fixtures';
+import { act } from '@suite-native/test-utils-store';
+import { btcAsset, ethAsset, usdcAsset } from '@suite-native/trading-fixtures';
 
+import { renderHookWithTradingProvider } from '../../../__tests__/tradingTestUtils';
 import { useExchangeBuyTradeableAssetsFilteredData } from '../useExchangeBuyTradeableAssetsFilteredData';
 
 const mockWatch = jest.fn();
@@ -13,15 +14,10 @@ jest.mock('../useExchangeFormContext', () => ({
 }));
 
 describe('useExchangeBuyTradeableAssetsFilteredData', () => {
-    const renderUseExchangeBuyTradeableAssetsFilteredData = () => {
-        const preloadedState: PreloadedState = {
-            wallet: getWalletState({ tradeType: 'exchange' }),
-        };
-
-        return renderHookWithStoreProvider(() => useExchangeBuyTradeableAssetsFilteredData(), {
-            preloadedState,
+    const renderUseExchangeBuyTradeableAssetsFilteredData = () =>
+        renderHookWithTradingProvider(() => useExchangeBuyTradeableAssetsFilteredData(), {
+            tradeType: 'exchange',
         });
-    };
 
     beforeEach(() => {
         jest.clearAllMocks();

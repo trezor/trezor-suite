@@ -6,9 +6,12 @@ import type {
     TradingStackParamList,
     TradingStackRoutes,
 } from '@suite-native/navigation';
-import { type TestStore, initStore, renderWithStoreProvider } from '@suite-native/test-utils';
-import { getWalletState } from '@suite-native/trading-fixtures';
+import { type TestStore } from '@suite-native/test-utils-store';
 
+import {
+    createTradingLightStore,
+    renderWithTradingProvider,
+} from '../../__tests__/tradingTestUtils';
 import {
     TradingExchangeOutputsReviewScreen,
     TradingSellOutputsReviewScreen,
@@ -134,7 +137,7 @@ describe('TradingSellOutputsReviewScreen', () => {
                 TradingStackRoutes.TradingSellOutputsReview
             >['route'],
         ) => {
-            const result = renderWithStoreProvider(
+            const result = renderWithTradingProvider(
                 <TradingSellOutputsReviewScreen route={route} navigation={mockNavigation} />,
                 { store },
             );
@@ -146,7 +149,7 @@ describe('TradingSellOutputsReviewScreen', () => {
 
         beforeEach(() => {
             jest.clearAllMocks();
-            store = initStore({ wallet: getWalletState({ tradeType: 'sell' }) }).store;
+            store = createTradingLightStore({ tradeType: 'sell' });
             mockNavigation.navigate.mockClear();
             mockNavigation.goBack.mockClear();
             mockNavigation.popToTop.mockClear();
@@ -177,7 +180,7 @@ describe('TradingSellOutputsReviewScreen', () => {
                 TradingStackRoutes.TradingExchangeOutputsReview
             >['route'],
         ) => {
-            const result = renderWithStoreProvider(
+            const result = renderWithTradingProvider(
                 <TradingExchangeOutputsReviewScreen route={route} navigation={mockNavigation} />,
                 { store },
             );
@@ -189,7 +192,7 @@ describe('TradingSellOutputsReviewScreen', () => {
 
         beforeEach(() => {
             jest.clearAllMocks();
-            store = initStore({ wallet: getWalletState({ tradeType: 'exchange' }) }).store;
+            store = createTradingLightStore({ tradeType: 'exchange' });
             mockNavigation.navigate.mockClear();
             mockNavigation.goBack.mockClear();
             mockNavigation.popToTop.mockClear();

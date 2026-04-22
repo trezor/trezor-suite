@@ -16,8 +16,8 @@ const emojiButtonStyle = prepareNativeStyle<{ isSelected: boolean }>((utils, { i
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: isSelected
-        ? utils.colors.backgroundPrimaryDefault
-        : utils.colors.backgroundTertiaryDefaultOnElevation1,
+        ? utils.colors.legacyBackgroundPrimaryDefault
+        : utils.colors.legacyBackgroundTertiaryDefaultOnElevation1,
 }));
 
 export const EmojiRatingOption = ({ id, emoji, isSelected, onPress }: EmojiRatingOptionProps) => {

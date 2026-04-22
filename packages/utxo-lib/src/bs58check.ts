@@ -1,5 +1,7 @@
-import bs58 from 'bs58';
-import bs58check from 'bs58check';
+import { sha256 as nobleSha256 } from '@noble/hashes/sha2.js';
+import { base58, base58check as createBase58check } from '@scure/base';
+
+const bs58check = createBase58check(nobleSha256);
 
 import { isCashAddress, toCashAddress, toLegacyAddress } from './bchUtils';
 import { blake256 } from './crypto';
@@ -17,14 +19,14 @@ export function decodeBlake(buffer: Buffer) {
 }
 
 export function decodeBlake256Key(key: string) {
-    const bytes = bs58.decode(key);
+    const bytes = base58.decode(key);
     const buffer = Buffer.from(bytes);
 
     return decodeBlake(buffer);
 }
 
 export function decodeBlake256(address: string) {
-    const bytes = bs58.decode(address);
+    const bytes = base58.decode(address);
     const buffer = Buffer.from(bytes);
     if (buffer.length !== 26) throw new Error(`${address} invalid address length`);
     let payload;
@@ -43,7 +45,7 @@ export function decodeBlake256(address: string) {
 export function encodeBlake256(payload: Buffer) {
     const checksum = blake256(blake256(payload)).subarray(0, 4);
 
-    return bs58.encode(Buffer.concat([payload, checksum]));
+    return base58.encode(Buffer.concat([payload, checksum]));
 }
 
 export function encode(payload: Buffer, network = BITCOIN_NETWORK) {

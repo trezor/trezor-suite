@@ -1,5 +1,5 @@
 import type { TradingTradeType } from '@suite-common/trading';
-import { renderHookWithStoreProvider } from '@suite-native/test-utils';
+import { renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import {
     getBuyTrade,
     getExchangeTrade,

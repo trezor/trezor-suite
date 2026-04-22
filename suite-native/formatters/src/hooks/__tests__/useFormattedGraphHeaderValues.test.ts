@@ -1,20 +1,27 @@
 import { type SupportedLocaleCode } from '@suite-native/intl';
+import { localeReducer } from '@suite-native/intl';
 import {
-    type PreloadedState,
     type TestStore,
-    initStore,
+    createLightStore,
+    createStaticReducer,
     renderHookWithStoreProvider,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils-store';
 import { AmountUnit } from '@trezor/protobuf/src/definitions';
 
 import { useFormattedGraphHeaderValues } from '../useFormattedGraphHeaderValues';
 
 let store: TestStore;
 
-const setNewStoreMockup = (preloadedState: PreloadedState) => {
-    store = initStore({
-        ...preloadedState,
-    }).store;
+const setNewStoreMockup = (preloadedState: any) => {
+    store = createLightStore({
+        reducer: {
+            locale: localeReducer,
+            wallet: createStaticReducer(preloadedState.wallet),
+        },
+        preloadedState: {
+            ...preloadedState,
+        },
+    });
 };
 
 describe(useFormattedGraphHeaderValues.name, () => {

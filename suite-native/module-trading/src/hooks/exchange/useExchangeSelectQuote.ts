@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import {
+    type ApprovalStatus,
     type TradingRootState,
     exchangeThunks,
     getApprovalStatus,
@@ -75,14 +76,17 @@ export const useExchangeSelectQuote = (form: ExchangeFormType) => {
         }
     };
 
-    const selectQuote = async () => {
+    const dispatchSelectQuote = async (
+        analyticsAction: 'continue' | 'revoke',
+        nextStep: (approvalStatus: ApprovalStatus) => void,
+    ) => {
         if (!candidateQuote || isLoading || isCandidateQuotePrefetchBlocked) {
             return;
         }
 
         if (!isFullySelectedReceiveAccount(receiveAccount)) {
             selectReceiveAccount();
-            analyticsReportCallback('account-selection', 'continue');
+            analyticsReportCallback('account-selection', analyticsAction);
 
             return;
         }
@@ -93,42 +97,64 @@ export const useExchangeSelectQuote = (form: ExchangeFormType) => {
                 timer,
                 nextStep: () => {
                     clearExchangeFormQuoteData(form);
-
-                    const approvalStatus = getApprovalStatus(candidateQuote);
-                    if (approvalStatus === 'approved' || approvalStatus === 'not_needed') {
-                        return navigation.navigate(TradingStackRoutes.TradingExchangePreview, {});
-                    }
-
-                    dispatch(tradingExchangeActions.savePreselectedQuote(candidateQuote));
-
-                    switch (approvalStatus) {
-                        case 'needs_increase':
-                            return navigation.navigate(TradingStackRoutes.TradingExchangeApproval, {
-                                shouldIncreaseLimit: true,
-                            });
-
-                        case 'needs_revoke':
-                            return navigation.navigate(TradingStackRoutes.TradingExchangeRevoke, {
-                                shouldIncreaseLimit: true,
-                            });
-
-                        case 'needs_approval':
-                            return navigation.navigate(
-                                TradingStackRoutes.TradingExchangeApproval,
-                                {},
-                            );
-
-                        case null:
-                            // do nothing (should not happen when quote is defined)
-                            return;
-
-                        default:
-                            return exhaustive(approvalStatus);
-                    }
+                    nextStep(getApprovalStatus(candidateQuote));
                 },
             }),
         );
     };
+
+    const selectQuote = () =>
+        dispatchSelectQuote('continue', approvalStatus => {
+            if (approvalStatus === 'approved' || approvalStatus === 'not_needed') {
+                return navigation.navigate(TradingStackRoutes.TradingExchangePreview, {});
+            }
+
+            dispatch(tradingExchangeActions.savePreselectedQuote(candidateQuote));
+
+            switch (approvalStatus) {
+                case 'needs_increase':
+                    return navigation.navigate(TradingStackRoutes.TradingExchangeApproval, {
+                        shouldIncreaseLimit: true,
+                    });
+
+                case 'needs_revoke':
+                    return navigation.navigate(TradingStackRoutes.TradingExchangeRevoke, {
+                        shouldIncreaseLimit: true,
+                    });
+
+                case 'needs_approval':
+                    return navigation.navigate(TradingStackRoutes.TradingExchangeApproval, {});
+
+                case null:
+                    // do nothing (should not happen when quote is defined)
+                    return;
+
+                default:
+                    return exhaustive(approvalStatus);
+            }
+        });
+
+    const selectQuoteForRevoke = () =>
+        dispatchSelectQuote('revoke', approvalStatus => {
+            switch (approvalStatus) {
+                case 'not_needed':
+                case 'needs_approval':
+                case null:
+                    return;
+
+                case 'needs_increase':
+                case 'needs_revoke':
+                case 'approved':
+                    dispatch(tradingExchangeActions.savePreselectedQuote(candidateQuote));
+
+                    return navigation.navigate(TradingStackRoutes.TradingExchangeRevoke, {
+                        shouldIncreaseLimit: false,
+                    });
+
+                default:
+                    return exhaustive(approvalStatus);
+            }
+        });
 
     return {
         canProceed,
@@ -138,5 +164,6 @@ export const useExchangeSelectQuote = (form: ExchangeFormType) => {
         isLoading,
         selectReceiveAccount,
         selectQuote,
+        selectQuoteForRevoke,
     };
 };

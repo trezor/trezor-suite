@@ -27,6 +27,7 @@
         "@suite-native/discovery": "workspace:*",
         "@suite-native/intl": "workspace:*",
         "@suite-native/link": "workspace:*",
+        "@suite-native/module-earn": "workspace:*",
         "@suite-native/navigation": "workspace:*",
         "@suite-native/passphrase": "workspace:*",
         "@trezor/styles-native": "workspace:*",

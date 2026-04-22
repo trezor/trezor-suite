@@ -87,7 +87,7 @@ const createMainWindow = ({ winBounds, cspNonce, store }: CreateMainWindowParams
             ],
         },
         icon: path.join(global.resourcesPath, 'images', 'icons', '512x512.png'),
-        backgroundColor: colorVariants[darkTheme ? 'dark' : 'standard'].backgroundSurfaceElevation0,
+        backgroundColor: colorVariants[darkTheme ? 'dark' : 'standard'].surfaceFillPage,
     });
 
     // Ensure all network requests from the renderer report a custom user-agent identifying Suite and its version.

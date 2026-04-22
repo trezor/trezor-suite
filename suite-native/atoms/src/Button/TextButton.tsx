@@ -42,7 +42,7 @@ type TextButtonStyleProps = {
 };
 
 const buttonContainerStyle = prepareNativeStyle(() => ({
-    alignSelf: 'flex-start',
+    alignSelf: 'center',
     maxWidth: '100%',
 }));
 

@@ -87,11 +87,11 @@ export const BuyFormFieldErrorBadge = ({ fieldName, children }: BuyFormFieldErro
 
     if (!isLoading) {
         if (hasError) {
-            return <Badge label={errorMessage} variant="red" size="small" />;
+            return <Badge label={errorMessage} intent="critical" size="small" />;
         }
 
         if (mismatchedAmountMessage) {
-            return <Badge label={mismatchedAmountMessage} variant="neutral" size="small" />;
+            return <Badge label={mismatchedAmountMessage} intent="neutral" size="small" />;
         }
     }
 

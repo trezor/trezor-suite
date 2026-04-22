@@ -1,12 +1,10 @@
 import { type AccountKey } from '@suite-common/wallet-types';
-import {
-    type TestStore,
-    act,
-    initStore,
-    renderHookWithStoreProvider,
-} from '@suite-native/test-utils';
-import { getWalletState } from '@suite-native/trading-fixtures';
+import { type TestStore, act } from '@suite-native/test-utils-store';
 
+import {
+    createTradingLightStore,
+    renderHookWithTradingProvider,
+} from '../../../__tests__/tradingTestUtils';
 import { useTradingOutputsReviewErrorAlert } from '../useTradingOutputsReviewErrorAlert';
 
 const mockShowAlert = jest.fn();
@@ -21,13 +19,13 @@ describe('useTradingOutputsReviewErrorAlert', () => {
     let store: TestStore;
 
     const renderUseTradingOutputsReviewErrorAlert = (accountKey: AccountKey) =>
-        renderHookWithStoreProvider(() => useTradingOutputsReviewErrorAlert(accountKey), {
+        renderHookWithTradingProvider(() => useTradingOutputsReviewErrorAlert(accountKey), {
             store,
         });
 
     beforeEach(() => {
         jest.clearAllMocks();
-        store = initStore({ wallet: getWalletState({ tradeType: 'exchange' }) }).store;
+        store = createTradingLightStore({ tradeType: 'exchange' });
     });
 
     it('should show alert', () => {

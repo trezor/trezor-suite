@@ -48,7 +48,11 @@ export const InputWrapper = ({ children, label, hint, error }: InputWrapperProps
     return (
         <Box>
             {label && (
-                <Text variant="body-md-strong" color="textSubdued" style={applyStyle(labelStyle)}>
+                <Text
+                    variant="body-md-strong"
+                    color="contentSecondary"
+                    style={applyStyle(labelStyle)}
+                >
                     {label}
                 </Text>
             )}

@@ -1,17 +1,12 @@
+import { type TestStore, act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import {
-    type PreloadedState,
-    type TestStore,
-    act,
-    initStore,
-    renderHookWithStoreProvider,
-} from '@suite-native/test-utils';
-import {
-    buyQuotes,
     getBtcAccount,
     getInitializedTradingStateWithQuotes,
+    invityErrorBuyQuote,
 } from '@suite-native/trading-fixtures';
 import { type BuyFormType } from '@suite-native/trading-types';
 
+import { createTradingLightStore } from '../../../__tests__/tradingTestUtils';
 import { useBuyFlow } from '../useBuyFlow';
 import { useBuyForm } from '../useBuyForm';
 
@@ -33,16 +28,18 @@ describe('useBuyFlow', () => {
     let buyForm: BuyFormType;
     let store: TestStore;
 
-    const getInitializedStore = ({ isLoading }: { isLoading?: boolean }) => {
-        const preloadedState: PreloadedState = {
-            wallet: { trading: getInitializedTradingStateWithQuotes() },
-        };
-        if (isLoading !== undefined) {
-            preloadedState.wallet!.trading!.buy!.isLoading = isLoading;
-        }
-
-        return initStore(preloadedState).store;
-    };
+    const getInitializedStore = ({ isLoading }: { isLoading?: boolean }) =>
+        createTradingLightStore({
+            tradeType: 'buy',
+            overrides: {
+                wallet: {
+                    trading: {
+                        ...getInitializedTradingStateWithQuotes(),
+                        ...(isLoading !== undefined && { buy: { isLoading } }),
+                    },
+                },
+            },
+        });
 
     const renderBuyForm = () => renderHookWithStoreProvider(() => useBuyForm(), { store });
 
@@ -71,7 +68,7 @@ describe('useBuyFlow', () => {
             buyForm = result.current;
 
             act(() => {
-                buyForm.setValue('quote', buyQuotes[2]);
+                buyForm.setValue('quote', invityErrorBuyQuote);
             });
         });
 

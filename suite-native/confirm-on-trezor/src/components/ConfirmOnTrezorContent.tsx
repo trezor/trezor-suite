@@ -36,10 +36,10 @@ const gradientStyle = prepareNativeStyle(() => ({
 const contentContainerStyle = prepareNativeStyle<{ colorVariant: ThemeColorVariant }>(
     (utils, { colorVariant }) => ({
         flex: 1,
-        backgroundColor: utils.colors.backgroundSurfaceElevation0,
+        backgroundColor: utils.colors.surfaceFillPage,
         borderWidth: utils.borders.widths.small,
         width: SCREEN_WIDTH + utils.borders.widths.small * 2,
-        borderColor: colorVariant === 'dark' ? utils.colors.borderOnElevation1 : 'transparent',
+        borderColor: colorVariant === 'dark' ? utils.colors.borderNeutral : 'transparent',
         position: 'absolute',
         top: 0,
         bottom: 0,
@@ -90,7 +90,7 @@ export const ConfirmOnTrezorContent = ({
 
     const insets = useBannerAwareSafeAreaInsets();
 
-    const gradientColor = utils.colors.backgroundSurfaceElevation0;
+    const gradientColor = utils.colors.surfaceFillPage;
 
     const animatedSheetStyle = useAnimatedStyle(() => {
         const paddingTop = interpolate(

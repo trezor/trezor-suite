@@ -1,5 +1,9 @@
-import { type PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils';
-import { getWalletState, sellQuotes } from '@suite-native/trading-fixtures';
+import { renderWithStoreProvider } from '@suite-native/test-utils-store';
+import {
+    banxaBankTransferSellQuote,
+    banxaCreditCardSellQuote,
+    getWalletState,
+} from '@suite-native/trading-fixtures';
 
 import {
     SellToFiatTradePreviewCard,
@@ -10,7 +14,7 @@ describe('SellToFiatTradePreviewCard', () => {
     const renderSellToFiatTradePreviewCard = (
         props: Partial<SellToFiatTradePreviewCardProps> = {},
     ) => {
-        const preloadedState: PreloadedState = {
+        const preloadedState = {
             wallet: getWalletState({ tradeType: 'sell' }),
         };
 
@@ -26,7 +30,7 @@ describe('SellToFiatTradePreviewCard', () => {
     });
 
     it('should render nothing when quote has no fiatCurrency', () => {
-        const quoteWithoutFiat = { ...sellQuotes[0], fiatCurrency: undefined };
+        const quoteWithoutFiat = { ...banxaCreditCardSellQuote, fiatCurrency: undefined };
         const { toJSON } = renderSellToFiatTradePreviewCard({
             quote: quoteWithoutFiat,
         });
@@ -35,7 +39,10 @@ describe('SellToFiatTradePreviewCard', () => {
     });
 
     it('should render nothing when quote has no paymentMethod', () => {
-        const quoteWithoutPaymentMethod = { ...sellQuotes[0], paymentMethod: undefined };
+        const quoteWithoutPaymentMethod = {
+            ...banxaCreditCardSellQuote,
+            paymentMethod: undefined,
+        };
         const { toJSON } = renderSellToFiatTradePreviewCard({
             quote: quoteWithoutPaymentMethod,
         });
@@ -45,7 +52,7 @@ describe('SellToFiatTradePreviewCard', () => {
 
     it('should render TradeFiatSideCard otherwise', () => {
         const { getByText } = renderSellToFiatTradePreviewCard({
-            quote: sellQuotes[0],
+            quote: banxaCreditCardSellQuote,
         });
 
         expect(getByText('To')).toBeOnTheScreen();
@@ -55,7 +62,7 @@ describe('SellToFiatTradePreviewCard', () => {
 
     it('should render bank transfer payment method', () => {
         const { getByText } = renderSellToFiatTradePreviewCard({
-            quote: sellQuotes[1], // This quote has bankTransfer payment method
+            quote: banxaBankTransferSellQuote,
         });
 
         expect(getByText('To')).toBeOnTheScreen();

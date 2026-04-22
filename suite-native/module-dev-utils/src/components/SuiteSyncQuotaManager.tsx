@@ -72,7 +72,7 @@ export const SuiteSyncQuotaManager = () => {
                     </VStack>
                 </Form>
                 <VStack>
-                    <Text variant="body-sm" color="textSubdued">
+                    <Text variant="body-sm" color="contentSecondary">
                         Registered Devices
                     </Text>
                     {registeredDevices.length === 0 ? (
@@ -91,7 +91,7 @@ export const SuiteSyncQuotaManager = () => {
                     )}
                 </VStack>
                 <VStack>
-                    <Text variant="body-sm" color="textSubdued">
+                    <Text variant="body-sm" color="contentSecondary">
                         Assigned Owner IDs
                     </Text>
                     {ownersAllowance.length === 0 ? (
@@ -109,7 +109,7 @@ export const SuiteSyncQuotaManager = () => {
                 </VStack>
                 <HStack justifyContent="space-between">
                     <Box flexShrink={1}>
-                        <Text variant="body-sm" color="textSubdued">
+                        <Text variant="body-sm" color="contentSecondary">
                             Enforce Quota Manager for custom relay
                         </Text>
                     </Box>

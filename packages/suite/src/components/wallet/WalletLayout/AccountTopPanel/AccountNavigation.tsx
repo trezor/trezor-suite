@@ -37,7 +37,12 @@ export const AccountNavigation = () => {
             },
             title: <Translation id="TR_NAV_TOKENS" />,
             isHidden: !hasNetworkFeatures(account, 'tokens'),
-            activeRoutes: ['wallet-tokens', 'wallet-tokens-hidden', 'wallet-tokens-inactive'],
+            activeRoutes: [
+                'wallet-tokens',
+                'wallet-tokens-hidden',
+                'wallet-tokens-inactive',
+                'wallet-tokens-defi',
+            ],
             'data-testid': '@wallet/menu/wallet-tokens',
         },
         {

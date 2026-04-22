@@ -5,16 +5,16 @@ import { type CSSColor, type Color } from '@trezor/theme';
 import { type TextIntent, type TextPriority } from './types';
 
 const colorMap: Record<Exclude<TextIntent, 'neutral'>, Color> = {
-    brand: 'textPrimaryDefault',
-    info: 'textAlertBlue',
-    warning: 'textAlertYellow',
-    critical: 'textAlertRed',
+    brand: 'contentBrand',
+    info: 'contentInfo',
+    warning: 'contentWarning',
+    critical: 'contentCritical',
     accentViolet: 'contentAccentViolet',
 };
 
 const neutralColorMap: Record<TextPriority, Color> = {
-    primary: 'textDefault',
-    secondary: 'textSubdued',
+    primary: 'contentPrimary',
+    secondary: 'contentSecondary',
 };
 
 export const mapIntentToCSS = (
@@ -24,7 +24,7 @@ export const mapIntentToCSS = (
     theme: DefaultTheme,
 ): CSSColor => {
     if (isDisabled) {
-        return theme.textDisabled;
+        return theme.contentDisabled;
     }
 
     const token = intent === 'neutral' ? neutralColorMap[priority] : colorMap[intent];

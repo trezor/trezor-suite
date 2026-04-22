@@ -5,11 +5,11 @@ import { type IconName } from '../Icon/Icon';
 
 export const mapIntentToBackgroundColor = (intent: BannerIntent): Color => {
     const colorMap: Record<BannerIntent, Color> = {
-        brand: 'backgroundPrimarySubtleOnElevation0',
-        info: 'backgroundAlertBlueSubtleOnElevation0',
-        warning: 'backgroundAlertYellowSubtleOnElevation0',
-        critical: 'backgroundAlertRedSubtleOnElevation0',
-        neutral: 'backgroundNeutralSubtleOnElevation0',
+        brand: 'legacyBackgroundPrimarySubtleOnElevation0',
+        info: 'legacyBackgroundAlertBlueSubtleOnElevation0',
+        warning: 'legacyBackgroundAlertYellowSubtleOnElevation0',
+        critical: 'legacyBackgroundAlertRedSubtleOnElevation0',
+        neutral: 'legacyBackgroundNeutralSubtleOnElevation0',
     };
 
     return colorMap[intent];
@@ -17,11 +17,11 @@ export const mapIntentToBackgroundColor = (intent: BannerIntent): Color => {
 
 export const mapIntentToIconColor = (intent: BannerIntent): Color => {
     const colorMap: Record<BannerIntent, Color> = {
-        brand: 'iconPrimaryDefault',
-        info: 'iconAlertBlue',
-        warning: 'iconAlertYellow',
-        critical: 'iconAlertRed',
-        neutral: 'iconSubdued',
+        brand: 'contentBrand',
+        info: 'contentInfo',
+        warning: 'contentWarning',
+        critical: 'contentCritical',
+        neutral: 'contentPrimary',
     };
 
     return colorMap[intent];

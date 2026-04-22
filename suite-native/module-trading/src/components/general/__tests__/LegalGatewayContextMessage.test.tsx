@@ -1,9 +1,9 @@
-import { renderWithStoreProvider } from '@suite-native/test-utils';
+import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { LegalGatewayContextMessage } from '../LegalGatewayContextMessage';
 
 jest.mock('@suite-common/message-system', () => {
-    const messages: Record<string, unknown> = {
+    const messages: Record<string, { content: string }> = {
         'legal.gateway': { content: 'Legal gateway message' },
     };
 

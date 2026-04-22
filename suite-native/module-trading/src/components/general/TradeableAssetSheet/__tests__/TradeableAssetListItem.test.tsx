@@ -1,17 +1,50 @@
-import { fireEvent, renderWithStoreProvider } from '@suite-native/test-utils';
-import { btcAsset, usdcAsset } from '@suite-native/trading-fixtures';
+import { combineReducers } from '@reduxjs/toolkit';
 
+import { extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { initialWalletSettingsState } from '@suite-common/wallet-core';
+import {
+    createLightStore,
+    createStaticReducer,
+    fireEvent,
+    renderWithStoreProvider,
+} from '@suite-native/test-utils-store';
+import { btcAsset, getWalletState, usdcAsset } from '@suite-native/trading-fixtures';
+import { tradingSlice } from '@suite-native/trading-state';
+import { typedObjectTransformValues } from '@trezor/utils';
+
+import { createTradingPreloadedState } from '../../../../__tests__/tradingTestUtils';
 import {
     TradeableAssetListItem,
     type TradeableAssetListItemProps,
 } from '../TradeableAssetListItem';
 
+const reducer = {
+    ...typedObjectTransformValues(createTradingPreloadedState(), createStaticReducer),
+    wallet: combineReducers({
+        settings: createStaticReducer(initialWalletSettingsState),
+        accounts: createStaticReducer(getWalletState({ tradeType: 'buy' }).accounts),
+        trading: tradingSlice.prepareReducer(extraDependenciesCommonMock),
+    }),
+};
+
 describe('TradeableAssetListItem', () => {
     const renderComponent = ({
         onPress = jest.fn(),
         asset = btcAsset,
-    }: Partial<TradeableAssetListItemProps>) =>
-        renderWithStoreProvider(<TradeableAssetListItem asset={asset} onPress={onPress} />);
+    }: Partial<TradeableAssetListItemProps>) => {
+        const store = createLightStore({
+            reducer,
+            preloadedState: {
+                wallet: {
+                    trading: getWalletState({ tradeType: 'buy' }).trading,
+                },
+            },
+        });
+
+        return renderWithStoreProvider(<TradeableAssetListItem asset={asset} onPress={onPress} />, {
+            store,
+        });
+    };
 
     it('should render with correct labels', () => {
         const { getAllByText } = renderComponent({ asset: usdcAsset });

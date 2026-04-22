@@ -3,14 +3,10 @@ import type { SellFiatTrade, SellFiatTradeResponse } from 'invity-api';
 import { tradingSellActions } from '@suite-common/trading';
 import type { sellThunks } from '@suite-common/trading';
 import { type AccountKey } from '@suite-common/wallet-types';
-import {
-    type TestStore,
-    act,
-    initStore,
-    renderHookWithStoreProvider,
-} from '@suite-native/test-utils';
-import { bankAccounts, getWalletState, sellQuotes } from '@suite-native/trading-fixtures';
+import { type TestStore, act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
+import { banxaCreditCardSellQuote, verifiedBankAccount } from '@suite-native/trading-fixtures';
 
+import { createTradingLightStore } from '../../../__tests__/tradingTestUtils';
 import { useSellFlow } from '../useSellFlow';
 
 // Store captured arguments for testing side effects (processResponseData callback)
@@ -72,7 +68,7 @@ describe('useSellFlow', () => {
     const renderUseSellFlow = () => renderHookWithStoreProvider(() => useSellFlow(), { store });
 
     beforeEach(() => {
-        store = initStore({ wallet: getWalletState({ tradeType: 'sell' }) }).store;
+        store = createTradingLightStore({ tradeType: 'sell' });
 
         capturedHandleTradeArgs = null;
         jest.clearAllMocks();
@@ -83,7 +79,7 @@ describe('useSellFlow', () => {
     describe('doSellTrade', () => {
         it('should dispatch handleTradeThunk with correct parameters', async () => {
             const dispatchSpy = jest.spyOn(store, 'dispatch');
-            const trade = sellQuotes[0];
+            const trade = banxaCreditCardSellQuote;
 
             // Set up required state
             act(() => {
@@ -113,7 +109,7 @@ describe('useSellFlow', () => {
 
         it('should not dispatch thunk if sendAccount is missing', async () => {
             const dispatchSpy = jest.spyOn(store, 'dispatch');
-            const trade = sellQuotes[0];
+            const trade = banxaCreditCardSellQuote;
 
             // Set up quote but not account
             act(() => {
@@ -138,7 +134,7 @@ describe('useSellFlow', () => {
 
         it('should dispatch thunk even when selectedQuote is not set (uses passed trade)', async () => {
             const dispatchSpy = jest.spyOn(store, 'dispatch');
-            const trade = sellQuotes[0];
+            const trade = banxaCreditCardSellQuote;
 
             // Set up account but not selectedQuote
             act(() => {
@@ -165,8 +161,8 @@ describe('useSellFlow', () => {
     describe('confirmTrade', () => {
         it('should dispatch confirmTradeThunk with bank account and correct parameters', async () => {
             const dispatchSpy = jest.spyOn(store, 'dispatch');
-            const trade = sellQuotes[0];
-            const bankAccount = bankAccounts[0];
+            const trade = banxaCreditCardSellQuote;
+            const bankAccount = verifiedBankAccount;
 
             // Set up required state
             act(() => {
@@ -197,7 +193,7 @@ describe('useSellFlow', () => {
 
         it('should not dispatch thunk if selectedQuote is missing', async () => {
             const dispatchSpy = jest.spyOn(store, 'dispatch');
-            const bankAccount = bankAccounts[0];
+            const bankAccount = verifiedBankAccount;
 
             // Set up account but not quote
             act(() => {
@@ -220,8 +216,8 @@ describe('useSellFlow', () => {
 
         it('should not dispatch thunk if sendAccount is missing', async () => {
             const dispatchSpy = jest.spyOn(store, 'dispatch');
-            const trade = sellQuotes[0];
-            const bankAccount = bankAccounts[0];
+            const trade = banxaCreditCardSellQuote;
+            const bankAccount = verifiedBankAccount;
 
             // Set up quote but not account
             act(() => {
@@ -246,7 +242,11 @@ describe('useSellFlow', () => {
     describe('doBankAccountVerificationCheck', () => {
         it('should call doSellTrade when needToRegisterOrVerifyBankAccount returns true', async () => {
             const dispatchSpy = jest.spyOn(store, 'dispatch');
-            const trade = { ...sellQuotes[0], exchange: 'banxa-sell', quoteId: undefined };
+            const trade = {
+                ...banxaCreditCardSellQuote,
+                exchange: 'banxa-sell',
+                quoteId: undefined,
+            };
 
             act(() => {
                 store.dispatch(tradingSellActions.setTradingAccountKey(btc1AccountKey));
@@ -269,7 +269,7 @@ describe('useSellFlow', () => {
 
         it('should call doSellTrade when quoteId is empty', async () => {
             const dispatchSpy = jest.spyOn(store, 'dispatch');
-            const trade = { ...sellQuotes[0], quoteId: '' };
+            const trade = { ...banxaCreditCardSellQuote, quoteId: '' };
 
             act(() => {
                 store.dispatch(tradingSellActions.setTradingAccountKey(btc1AccountKey));
@@ -293,7 +293,7 @@ describe('useSellFlow', () => {
         it('should not call doSellTrade when verification is not needed', async () => {
             const dispatchSpy = jest.spyOn(store, 'dispatch');
             // Use a trade with a quoteId to avoid triggering doSellTrade
-            const trade = { ...sellQuotes[0], quoteId: 'test-quote-id' };
+            const trade = { ...banxaCreditCardSellQuote, quoteId: 'test-quote-id' };
 
             act(() => {
                 store.dispatch(tradingSellActions.setTradingAccountKey(btc1AccountKey));
@@ -337,7 +337,7 @@ describe('useSellFlow', () => {
 
     describe('handleBrowser', () => {
         it('should navigate to browser when processResponseData is called with form data', async () => {
-            const trade = sellQuotes[0];
+            const trade = banxaCreditCardSellQuote;
 
             act(() => {
                 store.dispatch(tradingSellActions.setTradingAccountKey(btc1AccountKey));

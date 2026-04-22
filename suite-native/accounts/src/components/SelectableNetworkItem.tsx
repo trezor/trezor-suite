@@ -49,7 +49,7 @@ export const SelectableNetworkItem = ({ symbol, onPress, rightIcon }: Selectable
                     <Box flex={1} justifyContent="space-between" alignItems="flex-start">
                         <Text variant="body-md">{networkName}</Text>
                         <HStack alignItems="center" justifyContent="center">
-                            <Text variant="body-sm" color="textSubdued">
+                            <Text variant="body-sm" color="contentSecondary">
                                 <DisplaySymbolFormatter
                                     value={symbol}
                                     areAmountUnitsEnabled={false}
@@ -59,7 +59,7 @@ export const SelectableNetworkItem = ({ symbol, onPress, rightIcon }: Selectable
                                 <Box style={applyStyle(tokensBadgeStyle)}>
                                     <Badge
                                         label={<Translation id="generic.tokens" />}
-                                        variant="neutral"
+                                        intent="neutral"
                                         size="small"
                                     />
                                 </Box>
@@ -67,7 +67,7 @@ export const SelectableNetworkItem = ({ symbol, onPress, rightIcon }: Selectable
                         </HStack>
                     </Box>
                 </Box>
-                {rightIcon && <Icon name={rightIcon} color="iconDisabled" size="large" />}
+                {rightIcon && <Icon name={rightIcon} color="contentDisabled" size="large" />}
             </Box>
         </PressableOpacity>
     );

@@ -15,14 +15,14 @@ export type AccountLabelFieldHintProps = {
 
 function getTextColor(accountLabelLength: number) {
     if (accountLabelLength > MAX_ACCOUNT_LABEL_LENGTH) {
-        return 'textAlertRed';
+        return 'contentCritical';
     }
 
     if (accountLabelLength > ALMOST_MAX_ACCOUNT_LABEL_LENGTH) {
-        return 'textAlertYellow';
+        return 'contentWarning';
     }
 
-    return 'textSubdued';
+    return 'contentSecondary';
 }
 
 export const AccountLabelFieldHint = ({ formControl }: AccountLabelFieldHintProps) => {

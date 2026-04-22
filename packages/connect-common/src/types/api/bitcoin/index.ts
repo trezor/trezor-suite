@@ -1,5 +1,5 @@
 import type { AccountAddresses } from '@trezor/blockchain-link';
-import type { Transaction as BlockbookTransaction } from '@trezor/blockchain-link-types/src/blockbook';
+import type { BlockbookTransaction } from '@trezor/blockchain-link-types';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import type { Static } from '@trezor/schema-utils';
 import { Type } from '@trezor/schema-utils';

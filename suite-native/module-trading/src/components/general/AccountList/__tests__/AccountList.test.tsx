@@ -1,13 +1,20 @@
 import { useNavigation } from '@react-navigation/native';
+import { combineReducers } from '@reduxjs/toolkit';
 
+import { messageSystemInitialState } from '@suite-common/message-system';
+import { initialSuiteSyncDataState, initialSuiteSyncState } from '@suite-common/suite-sync';
+import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { selectTradingBuyReceiveAccountKey } from '@suite-common/trading';
+import { initialWalletSettingsState } from '@suite-common/wallet-core';
+import { localeReducer } from '@suite-native/intl';
 import {
     type TestStore,
+    createLightStore,
+    createStaticReducer,
     fireEvent,
-    initStore,
     renderWithStoreProvider,
     screen,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils-store';
 import {
     MOCK_ACCOUNT_DEVICE_SESSION_ID,
     accounts,
@@ -17,6 +24,7 @@ import {
     selectBuySelectedReceiveAccount,
     selectExchangeSelectedReceiveAccount,
     tradingInitialState,
+    tradingSlice,
 } from '@suite-native/trading-state';
 import { type ReceiveAccount } from '@suite-native/trading-types';
 import { type Address } from '@trezor/blockchain-link-types';
@@ -79,11 +87,28 @@ describe('AccountList', () => {
 
     let store: TestStore;
 
+    const createTestStore = (preloadedState = defaultPreloadedState) =>
+        createLightStore({
+            reducer: {
+                locale: localeReducer,
+                device: createStaticReducer(preloadedState.device),
+                messageSystem: createStaticReducer(messageSystemInitialState),
+                suiteSync: createStaticReducer(initialSuiteSyncState),
+                suiteSyncData: createStaticReducer(initialSuiteSyncDataState),
+                wallet: combineReducers({
+                    accounts: createStaticReducer(preloadedState.wallet.accounts),
+                    settings: createStaticReducer(initialWalletSettingsState),
+                    trading: tradingSlice.prepareReducer(extraDependenciesCommonMock),
+                }),
+            },
+            preloadedState,
+        });
+
     const renderComponent = (
         props: Partial<AccountsListProps>,
         preloadedState = defaultPreloadedState,
     ) => {
-        store = initStore(preloadedState).store;
+        store = createTestStore(preloadedState);
 
         return renderWithStoreProvider(
             <AccountList

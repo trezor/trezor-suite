@@ -42,7 +42,7 @@ export const DELAYED_SPIN = keyframes`
 `;
 
 const getOutlineSvg = (theme: DefaultTheme) =>
-    `url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='100' ry='100' stroke='${theme.iconSubdued.replace(
+    `url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='100' ry='100' stroke='${theme.contentSecondary.replace(
         /#/g,
         '%23',
     )}' stroke-width='5' stroke-dasharray='7' stroke-dashoffset='35' stroke-linecap='butt'/%3e%3c/svg%3e")`;
@@ -76,7 +76,7 @@ const Wheel = styled.div<{
     height: 94px;
     border-radius: 50%;
     background: ${({ theme, $progress, $elevation }) =>
-        `conic-gradient(${theme.backgroundPrimaryDefault} ${3.6 * $progress}deg, ${rgba(
+        `conic-gradient(${theme.legacyBackgroundPrimaryDefault} ${3.6 * $progress}deg, ${rgba(
             mapElevationToBorder({ theme, $elevation }),
             0.6,
         )} 0)`};
@@ -93,7 +93,7 @@ const Wheel = styled.div<{
             &:active {
                 ${ProgressContentContainer} {
                     background: ${({ theme }) =>
-                        lighten(0.02, theme.backgroundNeutralBoldInverted)};
+                        lighten(0.02, theme.legacyBackgroundNeutralBoldInverted)};
                 }
             }
         `}
@@ -102,13 +102,13 @@ const Wheel = styled.div<{
         $isWithoutProgressOutline &&
         css`
             background: none;
-            color: ${({ theme }) => theme.textPrimaryDefault};
+            color: ${({ theme }) => theme.contentBrand};
 
             ${ProgressContentContainer} {
-                background: ${({ theme }) => theme.backgroundPrimaryDefault};
+                background: ${({ theme }) => theme.legacyBackgroundPrimaryDefault};
 
                 path {
-                    fill: ${({ theme }) => theme.iconPrimaryDefault};
+                    fill: ${({ theme }) => theme.contentBrand};
                 }
             }
         `}
@@ -131,7 +131,7 @@ const Wheel = styled.div<{
                     height: calc(100% - 12px);
 
                     span {
-                        color: ${theme.textPrimaryDefault};
+                        color: ${theme.contentBrand};
                     }
                 }
             }
@@ -140,14 +140,14 @@ const Wheel = styled.div<{
     ${({ $isPaused, $hasCriticalError, theme, $progress, $elevation }) =>
         $isPaused &&
         css`
-            background: ${`conic-gradient(${theme.backgroundSurfaceElevation0} ${3.6 * $progress}deg, ${rgba(
+            background: ${`conic-gradient(${theme.surfaceFillPage} ${3.6 * $progress}deg, ${rgba(
                 mapElevationToBorder({ theme, $elevation }),
                 0.6,
             )} 0)`};
 
             &:hover {
                 path {
-                    fill: ${!$hasCriticalError && theme.iconPrimaryDefault};
+                    fill: ${!$hasCriticalError && theme.contentBrand};
                 }
             }
         `}
@@ -159,7 +159,7 @@ const Wheel = styled.div<{
             color: inherit;
 
             ${ProgressContentContainer} {
-                background: ${theme.backgroundNeutralBoldInverted};
+                background: ${theme.legacyBackgroundNeutralBoldInverted};
             }
         `}
 `;

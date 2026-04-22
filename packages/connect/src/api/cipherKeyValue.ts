@@ -11,7 +11,7 @@ import { Assert } from '@trezor/schema-utils';
 
 import type { MethodContext, MethodMessage, MethodPermission } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
-import { bundlify, getFirmwareRange } from './common/paramsValidator';
+import { bundlify } from './common/paramsValidator';
 import { validatePath } from '../utils/pathUtils';
 
 export default class CipherKeyValue extends AbstractMethod<
@@ -40,7 +40,6 @@ export default class CipherKeyValue extends AbstractMethod<
 
         super(message, params);
         this.hasBundle = hasBundle;
-        this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
     }
     get requiredPermissions(): MethodPermission[] {
         return ['read', 'write'];

@@ -1,0 +1,9 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        { "path": "../formatters-config" },
+        { "path": "../test-utils" },
+        { "path": "../../packages/utils" }
+    ]
+}

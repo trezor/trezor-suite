@@ -74,6 +74,30 @@ const getStatus: Array<{ device: TrezorDevice; status: string }> = [
     },
 ];
 
+const getIsDeviceDescriptorApiTypeBluetooth = [
+    {
+        description: 'device descriptor is missing',
+        device: mockSuiteDevice({
+            descriptor: undefined,
+        }),
+        result: false,
+    },
+    {
+        description: 'device api type is usb',
+        device: mockSuiteDevice({
+            descriptor: { apiType: 'usb' },
+        }),
+        result: false,
+    },
+    {
+        description: 'device api type is bluetooth',
+        device: mockSuiteDevice({
+            descriptor: { apiType: 'bluetooth' },
+        }),
+        result: true,
+    },
+];
+
 const getIsDeviceConnectedViaBluetooth = [
     {
         description: 'device is connected via bluetooth',
@@ -597,6 +621,7 @@ const getFirmwareDowngradeUrl = [
 
 export default {
     getStatus,
+    getIsDeviceDescriptorApiTypeBluetooth,
     getIsDeviceConnectedViaBluetooth,
     isSelectedDevice,
     isSelectedInstance,

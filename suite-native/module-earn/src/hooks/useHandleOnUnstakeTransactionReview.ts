@@ -4,22 +4,20 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { isFulfilled, isRejected } from '@reduxjs/toolkit';
 
-import { formDraftActions, sendFormActions } from '@suite-common/wallet-core';
+import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { getFormDraftKey } from '@suite-common/wallet-utils';
+import { events } from '@suite-native/analytics';
 import {
     type RootStackParamList,
     type RootStackRoutes,
     type StackNavigationProps,
-    useOverrideBackNavigation,
 } from '@suite-native/navigation';
+import { useAnalytics } from '@suite-native/services';
 import { signEthUnstakeTransactionNativeThunk } from '@suite-native/staking';
-import {
-    type TransactionReviewOutputsState,
-    selectIsTransactionReviewInProgress,
-    useShowReviewCancellationAlert,
-} from '@suite-native/transaction-management';
 
+import { handleEarnReviewError } from '../utils';
+import { useEarnReviewBackNavigation } from './useEarnReviewBackNavigation';
+import { useEarnSelectedPrecomposedTransaction } from './useEarnSelectedPrecomposedTransaction';
 import { useShowDeviceDisconnectedDuringEarnReviewAlert } from './useShowDeviceDisconnectedDuringEarnReviewAlert';
 import { useShowPushTransactionFailedDuringUnstakeReviewAlert } from './useShowPushTransactionFailedDuringUnstakeReviewAlert';
 
@@ -34,46 +32,44 @@ type HandleOnUnstakeTransactionReviewProps = {
     onTransactionSubmitted: (txid: string) => void;
 };
 
-const USER_CANCELLED_ERROR_CODES = [
-    'Failure_PinCancelled',
-    'Method_Cancel',
-    'Failure_ActionCancelled',
-] as const;
-
 export const useHandleOnUnstakeTransactionReview = ({
     accountKey,
     amount,
     onTransactionSubmitted,
 }: HandleOnUnstakeTransactionReviewProps) => {
-    const isTransactionReviewInProgress = useSelector((state: TransactionReviewOutputsState) =>
-        selectIsTransactionReviewInProgress(state, 'unstake', accountKey),
-    );
+    useEarnReviewBackNavigation('unstake', accountKey);
 
     const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProps>();
-    const showReviewCancellationAlert = useShowReviewCancellationAlert();
     const showDeviceDisconnectedAlert = useShowDeviceDisconnectedDuringEarnReviewAlert();
     const { showPushTransactionFailedAlert, showPendingTransactionConflictAlert } =
         useShowPushTransactionFailedDuringUnstakeReviewAlert();
+    const precomposedTransaction = useEarnSelectedPrecomposedTransaction('unstake', accountKey);
+    const networkSymbol = useSelector((state: AccountsRootState) =>
+        selectAccountNetworkSymbol(state, accountKey),
+    );
 
-    const onNavigateBack = useCallback(async () => {
-        if (isTransactionReviewInProgress) {
-            const { wasReviewCanceled } = await showReviewCancellationAlert();
-            if (!wasReviewCanceled) return;
-        }
-        dispatch(sendFormActions.discardTransaction());
-        dispatch(formDraftActions.removeDraft({ key: getFormDraftKey('unstake', '') }));
-        navigation.goBack();
-    }, [isTransactionReviewInProgress, showReviewCancellationAlert, dispatch, navigation]);
-
-    useOverrideBackNavigation({ onNavigateBack });
+    const analytics = useAnalytics();
 
     const handleOnUnstakeTransactionReview = useCallback(async () => {
+        if (!precomposedTransaction) return;
+
         const response = await dispatch(
-            signEthUnstakeTransactionNativeThunk({ accountKey, amount }),
+            signEthUnstakeTransactionNativeThunk({
+                accountKey,
+                amount,
+                precomposedTransaction,
+            }),
         );
 
         if (isFulfilled(response)) {
+            analytics.report({
+                type: events.stakingConfirmEvent.name,
+                payload: {
+                    action: 'unstake',
+                    networkSymbol: networkSymbol ?? undefined,
+                },
+            });
             onTransactionSubmitted(response.payload.txid);
 
             return;
@@ -83,33 +79,22 @@ export const useHandleOnUnstakeTransactionReview = ({
             return;
         }
 
-        if (response.payload?.error === 'push-transaction-pending-conflict') {
-            showPendingTransactionConflictAlert();
-
-            return;
-        }
-
-        if (response.payload?.error === 'push-transaction-failed') {
-            showPushTransactionFailedAlert();
-
-            return;
-        }
-
-        const errorCode = response.payload?.errorCode;
-
-        if (USER_CANCELLED_ERROR_CODES.some(code => code === errorCode)) {
-            navigation.pop();
-
-            return;
-        }
-
-        showDeviceDisconnectedAlert();
+        handleEarnReviewError({
+            payload: response.payload,
+            navigation,
+            showPushTransactionFailedAlert,
+            showPendingTransactionConflictAlert,
+            showDeviceDisconnectedAlert,
+        });
     }, [
         accountKey,
         amount,
+        analytics,
         dispatch,
         navigation,
+        networkSymbol,
         onTransactionSubmitted,
+        precomposedTransaction,
         showDeviceDisconnectedAlert,
         showPendingTransactionConflictAlert,
         showPushTransactionFailedAlert,

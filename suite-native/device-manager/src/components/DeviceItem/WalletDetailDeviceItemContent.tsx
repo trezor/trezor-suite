@@ -57,7 +57,7 @@ export const WalletDetailDeviceItemContent = ({
             </HStack>
             <Text
                 variant="body-sm"
-                color="textSubdued"
+                color="contentSecondary"
                 testID="@deviceManager/walletDetail/subheader"
             >
                 {isPortfolioTrackerDevice && (

@@ -8,7 +8,7 @@ type TrezorSuiteHeaderProps = {
 };
 
 export const TrezorSuiteHeader = ({ textVariant = 'headline-sm' }: TrezorSuiteHeaderProps) => (
-    <Text variant={textVariant} color="textSecondaryHighlight" textAlign="center">
+    <Text variant={textVariant} color="contentBrand" textAlign="center">
         <Translation id="generic.trezorSuite" />
     </Text>
 );

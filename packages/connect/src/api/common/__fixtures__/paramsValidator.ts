@@ -1,6 +1,5 @@
-import type { FirmwareRange } from '@trezor/connect-common';
-import type { DeviceModelInternal } from '@trezor/device-utils';
-import { typedObjectKeys } from '@trezor/utils';
+import type { CoinInfo, FirmwareRange } from '@trezor/connect-common';
+import { typedObjectEntries, typedObjectKeys } from '@trezor/utils';
 
 export const validateParams = [
     {
@@ -172,7 +171,7 @@ export const validateParams = [
     },
 ];
 
-const DEFAULT_RANGE: FirmwareRange = {
+const DEFAULT_RANGE = {
     UNKNOWN: { min: '1.0.0', max: '0' },
     T1B1: { min: '1.0.0', max: '0' },
     T2T1: { min: '2.0.0', max: '0' },
@@ -180,13 +179,9 @@ const DEFAULT_RANGE: FirmwareRange = {
     T3B1: { min: '2.0.0', max: '0' },
     T3T1: { min: '2.0.0', max: '0' },
     T3W1: { min: '2.0.0', max: '0' },
-};
+} satisfies FirmwareRange;
 
-const DEFAULT_COIN_INFO: {
-    support: Record<DeviceModelInternal, string>;
-    shortcut: string;
-    type: string;
-} = {
+const DEFAULT_COIN_INFO = {
     support: {
         UNKNOWN: '1.0.0',
         T1B1: '1.6.2',
@@ -198,7 +193,7 @@ const DEFAULT_COIN_INFO: {
     },
     shortcut: 'btc',
     type: 'bitcoin',
-};
+} as const satisfies Partial<CoinInfo>;
 
 const EMPTY_CONFIG = {
     supportedFirmware: [],
@@ -215,7 +210,7 @@ export const getFirmwareRange = [
         description: 'range from coinInfo',
         config: EMPTY_CONFIG,
         params: ['signTransaction', DEFAULT_COIN_INFO, DEFAULT_RANGE],
-        result: typedObjectKeys(DEFAULT_RANGE).reduce((acc, model: DeviceModelInternal) => {
+        result: typedObjectKeys(DEFAULT_RANGE).reduce((acc, model) => {
             acc[model] = {
                 min: DEFAULT_COIN_INFO.support[model],
                 max: '0',
@@ -249,9 +244,7 @@ export const getFirmwareRange = [
             },
             DEFAULT_RANGE,
         ],
-        result: (
-            Object.entries(DEFAULT_COIN_INFO.support) as [DeviceModelInternal, string][]
-        ).reduce((acc, [model, min]) => {
+        result: typedObjectEntries(DEFAULT_COIN_INFO.support).reduce((acc, [model, min]) => {
             acc[model] = { min: model === 'T1B1' ? '0' : min, max: '0' };
 
             return acc;
@@ -277,9 +270,7 @@ export const getFirmwareRange = [
             },
             DEFAULT_RANGE,
         ],
-        result: (
-            Object.entries(DEFAULT_COIN_INFO.support) as [DeviceModelInternal, string][]
-        ).reduce((acc, [model, min]) => {
+        result: typedObjectEntries(DEFAULT_COIN_INFO.support).reduce((acc, [model, min]) => {
             acc[model] = { min: model === 'T1B1' ? min : '0', max: '0' };
 
             return acc;
@@ -356,7 +347,7 @@ export const getFirmwareRange = [
         description: 'range from config.json (by methods)',
         config: {
             supportedFirmware: [
-                // this one is ignored, no data
+                // this one is always used (but is made impossible by types)
                 { min: { T1B1: '1.11.0', T2T1: '2.5.0' } },
                 // this one is ignored, different excludedMethod
                 { coin: ['btc'], methods: ['showAddress'], min: { T1B1: '1.11.0', T2T1: '2.5.0' } },
@@ -372,21 +363,21 @@ export const getFirmwareRange = [
                     methods: ['showAddress'],
                     min: { T1B1: '1.11.0', T2T1: '2.5.0' },
                 },
-                { methods: ['signTransaction'], min: { T1B1: '1.10.0', T2T1: '2.4.0' } },
+                { methods: ['signTransaction'], min: { T1B1: '1.10.0', T2T1: '2.6.0' } },
             ],
         },
         params: ['signTransaction', DEFAULT_COIN_INFO, DEFAULT_RANGE],
         result: {
             ...DEFAULT_RANGE,
-            T1B1: { min: '1.10.0', max: '0' },
-            T2T1: { min: '2.4.0', max: '0' },
+            T1B1: { min: '1.11.0', max: '0' },
+            T2T1: { min: '2.6.0', max: '0' },
         },
     },
     {
         description: 'range from config.json (by capabilities)',
         config: {
             supportedFirmware: [
-                // this one is ignored, no data
+                // this one is always used (but is made impossible by types)
                 { min: { T1B1: '1.11.0', T2T1: '2.5.0' } },
                 // this one is ignored, different excludedMethod
                 { coin: ['btc'], methods: ['showAddress'], min: { T1B1: '1.11.0', T2T1: '2.5.0' } },
@@ -402,14 +393,14 @@ export const getFirmwareRange = [
                     methods: ['showAddress'],
                     min: { T1B1: '1.11.0', T2T1: '2.5.0' },
                 },
-                { capabilities: ['decreaseOutput'], min: { T1B1: '1.10.0', T2T1: '2.4.0' } },
+                { capabilities: ['decreaseOutput'], min: { T1B1: '1.10.0', T2T1: '2.6.0' } },
             ],
         },
         params: ['decreaseOutput', DEFAULT_COIN_INFO, DEFAULT_RANGE],
         result: {
             ...DEFAULT_RANGE,
-            T1B1: { min: '1.10.0', max: '0' },
-            T2T1: { min: '2.4.0', max: '0' },
+            T1B1: { min: '1.11.0', max: '0' },
+            T2T1: { min: '2.6.0', max: '0' },
         },
     },
     {
@@ -463,7 +454,25 @@ export const getFirmwareRange = [
                 T2T1: { min: '1.0.0', max: '2.10.0' },
             },
         ],
-        result: { T1B1: { min: '1.6.2', max: '1.10.0' }, T2T1: { min: '2.1.0', max: '2.10.0' } },
+        result: { T1B1: { min: '1.6.2', max: '1.0.1' }, T2T1: { min: '2.1.0', max: '2.0.1' } },
+    },
+    {
+        description: 'range from config.json (handle zeros in both min and max)',
+        config: {
+            supportedFirmware: [
+                {
+                    methods: ['signTransaction'],
+                    min: { T1B1: '1.6.0', T2T1: '0' },
+                    max: { T1B1: '1.10.0', T2T1: '2.8.0' },
+                },
+            ],
+        },
+        params: [
+            'signTransaction',
+            null,
+            { T1B1: { min: '0', max: '0' }, T2T1: { min: '2.6.0', max: '0' } },
+        ],
+        result: { T1B1: { min: '0', max: '1.10.0' }, T2T1: { min: '0', max: '2.8.0' } },
     },
     // real config.json data
     {

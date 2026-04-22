@@ -1,9 +1,5 @@
 import { Translation } from '@suite/intl';
-import {
-    resolveEffectiveBackgroundRouteName,
-    selectIsAccountTabPage,
-    selectRoute,
-} from '@suite/router';
+import { isAccountTabRoute, resolveEffectiveBackgroundRouteName, selectRoute } from '@suite/router';
 import { selectDeviceAccountForNetworkSymbolAndAccountTypeWithIndex } from '@suite-common/wallet-core';
 
 import { useSelector } from 'src/hooks/suite';
@@ -23,7 +19,7 @@ export const PageName = () => {
         suiteRouterHistory.getLocation(),
     );
     const selectedAccount = useSelector(selectSelectedAccount);
-    const isAccountTabPage = useSelector(selectIsAccountTabPage);
+    const isAccountTabPage = isAccountTabRoute(currentRoute);
     const { params } = useSelector(state => state.wallet.selectedAccount);
 
     const fallbackAccount = useSelector(state =>

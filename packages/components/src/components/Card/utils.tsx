@@ -68,11 +68,11 @@ export const mapFillTypeToCSS = ({
             theme.variant === 'dark'
                 ? css`
                       background: none;
-                      outline: 1px solid ${theme.borderElevation3};
+                      outline: 1px solid ${theme.legacyBorderElevation3};
                   `
                 : css`
-                      background: ${theme.backgroundSurfaceElevationNegative};
-                      outline: 1px solid ${theme.borderElevation0};
+                      background: ${theme.surfaceFillSunken};
+                      outline: 1px solid ${theme.borderNeutral};
                   `,
     };
 
@@ -81,8 +81,8 @@ export const mapFillTypeToCSS = ({
 
 export const mapVariantToColor = ({ $variant, theme }: VariantMapArgs): CSSColor => {
     const colorMap: Record<CardVariant, CSSColor> = {
-        primary: theme.backgroundSecondaryDefault,
-        warning: theme.backgroundAlertYellowBold,
+        primary: theme.legacyBackgroundSecondaryDefault,
+        warning: theme.legacyBackgroundAlertYellowBold,
     };
 
     return colorMap[$variant];

@@ -12,7 +12,7 @@ import {
 
 const PaymentInfoWrapper = styled.div`
     display: flex;
-    color: ${({ theme }) => theme.textSubdued};
+    color: ${({ theme }) => theme.contentSecondary};
     gap: ${spacingsPx.xxs};
 `;
 

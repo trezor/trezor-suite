@@ -1,6 +1,5 @@
-import { RESPONSES } from '@trezor/blockchain-link-types/src/constants';
-import type * as MessageTypes from '@trezor/blockchain-link-types/src/messages';
-import type * as Responses from '@trezor/blockchain-link-types/src/responses';
+import { RESPONSES } from '@trezor/blockchain-link-types';
+import type { MessageTypes, ResponseTypes as Responses } from '@trezor/blockchain-link-types';
 
 import type { Request } from '../types';
 import { toHex } from '../utils/hex';

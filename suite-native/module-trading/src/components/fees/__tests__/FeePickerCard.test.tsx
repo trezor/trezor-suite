@@ -3,8 +3,8 @@ import React from 'react';
 import { type TradingExchangeType, type TradingSellType } from '@suite-common/trading';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { getTranslation } from '@suite-native/intl';
-import { renderWithStoreProvider } from '@suite-native/test-utils';
 
+import { renderWithTradingProvider } from '../../../__tests__/tradingTestUtils';
 import { FeePickerCard } from '../FeePickerCard';
 
 // Mock FeeSelector to avoid deep dependency chain (useFeesManagement, etc.)
@@ -28,7 +28,7 @@ describe('FeePickerCard', () => {
     const renderFeePickerCard = (props = {}) => {
         const finalProps = { ...defaultProps, ...props };
 
-        return renderWithStoreProvider(<FeePickerCard {...finalProps} />);
+        return renderWithTradingProvider(<FeePickerCard {...finalProps} />);
     };
 
     beforeEach(() => {

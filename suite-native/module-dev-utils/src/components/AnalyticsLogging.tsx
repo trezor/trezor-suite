@@ -65,7 +65,7 @@ export const AnalyticsLogging = () => {
     const renderAnalyticsDisabledBadge = () => (
         <Badge
             label="Enable analytics to see the events."
-            variant="yellow"
+            intent="warning"
             icon="info"
             size="small"
         />
@@ -75,7 +75,7 @@ export const AnalyticsLogging = () => {
         <Card>
             <VStack spacing="sp12">
                 <Text variant="headline-sm">Analytics URL</Text>
-                <Text variant="body-xs" color="textSubdued">
+                <Text variant="body-xs" color="contentSecondary">
                     Point to your own analytics server for testing.
                 </Text>
                 {customUrl && !isAnalyticsEnabled && renderAnalyticsDisabledBadge()}

@@ -39,7 +39,7 @@ export const AssetTableExtraRowsSection = styled.div<{
                 bottom: ${mapPositionToBottom($dashedLinePosition)};
                 left: 50%;
                 transform: translateX(-50%);
-                border-left: ${borders.widths.large} dotted ${({ theme }) => theme.borderDashed};
+                border-left: ${borders.widths.large} dotted ${({ theme }) => theme.borderNeutral};
                 z-index: -1;
             }
         `}

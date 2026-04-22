@@ -1,14 +1,15 @@
 import type { CryptoId } from 'invity-api';
 
 import {
-    type PreloadedState,
+    type PreloadedStatePartial,
     StoreProviderForTests,
     renderHook,
     waitFor,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils-store';
 import { adaAsset, btcAsset, usdcAsset } from '@suite-native/trading-fixtures';
 import { type TradeableAsset } from '@suite-native/trading-types';
 
+import { type TradingTestPreloadedState } from '../../../__tests__/tradingTestUtils';
 import { useFavouriteAssetsSectionList } from '../useFavouriteAssetsSectionList';
 
 describe('useFavouriteAssetsSectionList', () => {
@@ -21,7 +22,7 @@ describe('useFavouriteAssetsSectionList', () => {
         initialAssets: TradeableAsset[],
         favouriteAssets: Record<CryptoId, true>,
     ) => {
-        const preloadedState: Partial<PreloadedState> = {
+        const preloadedState: PreloadedStatePartial<TradingTestPreloadedState> = {
             wallet: {
                 trading: {
                     favouriteAssets,

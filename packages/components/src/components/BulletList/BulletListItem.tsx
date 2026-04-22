@@ -66,10 +66,10 @@ const Bullet = styled.div<{
     background-color: ${({ theme, $isDarkTheme, $state }) =>
         // eslint-disable-next-line no-nested-ternary
         $state === 'active'
-            ? theme.backgroundPrimarySubtleOnElevation0
+            ? theme.legacyBackgroundPrimarySubtleOnElevation0
             : $isDarkTheme
-              ? theme.textDefaultInverted
-              : theme.backgroundNeutralDisabled};
+              ? theme.contentPrimaryInverse
+              : theme.legacyBackgroundNeutralSubtleOnElevation0};
     color: ${({ $state, theme }) => theme[mapStateToTextColor($state)]};
     ${({ $size }) => ($size === 'small' ? typography['body-xs'] : typography['body-sm'])}
 
@@ -77,7 +77,7 @@ const Bullet = styled.div<{
         $state === 'active' &&
         $isOrdered &&
         css`
-            background-color: ${theme.textDefaultInverted};
+            background-color: ${theme.contentPrimaryInverse};
             box-shadow: ${theme.boxShadowBase};
         `}
 
@@ -95,10 +95,10 @@ const Bullet = styled.div<{
                       background-color: ${
                           // eslint-disable-next-line no-nested-ternary
                           $state === 'active'
-                              ? theme.backgroundPrimaryDefault
+                              ? theme.legacyBackgroundPrimaryDefault
                               : $isDarkTheme
-                                ? theme.backgroundNeutralDisabled
-                                : theme.textDefaultInverted
+                                ? theme.elementFillBoldDisabled
+                                : theme.contentPrimaryInverse
                       };
                       box-shadow: ${!$isDarkTheme && $state !== 'active' && theme.boxShadowBase};
                   `}
@@ -132,7 +132,7 @@ const Line = styled.div<{
                   grid-column: 2;
                   grid-row: 1;
                   margin: 0 ${$bulletGap}px;
-                  border-top: ${$lineWidth}px dashed ${({ theme }) => theme.borderDashed};
+                  border-top: ${$lineWidth}px dashed ${({ theme }) => theme.borderNeutral};
                   place-self: center stretch;
 
                   ${Item}:last-child & {
@@ -141,7 +141,7 @@ const Line = styled.div<{
               `
             : css`
                   place-self: stretch center;
-                  border-left: ${$lineWidth}px dashed ${({ theme }) => theme.borderDashed};
+                  border-left: ${$lineWidth}px dashed ${({ theme }) => theme.borderNeutral};
                   margin: calc(${mapSizeToDimension({ $size })}px * -0.5) 0;
 
                   ${Item}:last-child & {

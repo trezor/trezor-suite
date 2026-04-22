@@ -37,7 +37,7 @@ const accountListItemStyle = prepareNativeStyle<{
     extend: {
         condition: hasBackground,
         style: {
-            backgroundColor: utils.colors.backgroundSurfaceElevation1,
+            backgroundColor: utils.colors.surfaceFillRaised,
             paddingTop: utils.spacings.sp16,
             paddingBottom: utils.spacings.sp16,
 
@@ -63,7 +63,7 @@ const accountListItemStyle = prepareNativeStyle<{
                     condition: !isLast && showDivider,
                     style: {
                         borderBottomWidth: utils.borders.widths.small,
-                        borderBottomColor: utils.colors.borderElevation1,
+                        borderBottomColor: utils.colors.borderNeutral,
                     },
                 },
             ],

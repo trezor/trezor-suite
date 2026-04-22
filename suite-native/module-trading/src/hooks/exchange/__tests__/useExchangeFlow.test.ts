@@ -1,18 +1,13 @@
 import { type AccountKey } from '@suite-common/wallet-types';
 import { events } from '@suite-native/analytics';
 import { useAnalytics } from '@suite-native/services';
-import {
-    type PreloadedState,
-    type TestStore,
-    act,
-    initStore,
-    renderHookWithStoreProvider,
-} from '@suite-native/test-utils';
+import { type TestStore, act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import {
     getBtcAccount,
     getInitializedTradingStateWithQuotes,
 } from '@suite-native/trading-fixtures';
 
+import { createTradingTestStore } from '../../../__tests__/tradingTestUtils';
 import { useExchangeFlow } from '../useExchangeFlow';
 
 jest.mock('@suite-native/services', () => {
@@ -54,14 +49,15 @@ describe('useExchangeFlow', () => {
         tradingState.exchange.receiveAccountKey = btc2AccountKey;
         tradingState.exchange.selectedQuote = tradingState.exchange.quotes[0];
 
-        const preloadedState: PreloadedState = {
-            wallet: {
-                trading: tradingState,
-                accounts: getMockAccounts(),
+        return createTradingTestStore({
+            tradeType: 'exchange',
+            overrides: {
+                wallet: {
+                    trading: tradingState,
+                    accounts: getMockAccounts(),
+                },
             },
-        };
-
-        return initStore(preloadedState).store;
+        });
     };
 
     const renderUseExchangeFlow = ({ store }: { store: TestStore }) => {
@@ -184,14 +180,15 @@ describe('useExchangeFlow', () => {
             tradingState.exchange.receiveAccountKey = btc2AccountKey;
             tradingState.exchange.selectedQuote = tradingState.exchange.quotes[0];
 
-            const preloadedState: PreloadedState = {
-                wallet: {
-                    trading: tradingState,
-                    accounts: getMockAccounts(),
+            const store = createTradingTestStore({
+                tradeType: 'exchange',
+                overrides: {
+                    wallet: {
+                        trading: tradingState,
+                        accounts: getMockAccounts(),
+                    },
                 },
-            };
-
-            const { store } = initStore(preloadedState);
+            });
             const { result } = renderUseExchangeFlow({ store });
 
             const confirmResult = await act(() =>

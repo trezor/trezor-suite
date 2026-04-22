@@ -66,7 +66,7 @@ const loaderWrapperStyle = prepareNativeStyle(utils => ({
     paddingBottom: utils.spacings.sp32,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: utils.colors.backgroundSurfaceElevation1,
+    backgroundColor: utils.colors.surfaceFillRaised,
 }));
 
 export const PinOnKeypad = ({ variant, onSuccess }: PinOnKeypadProps) => {
@@ -103,7 +103,7 @@ export const PinOnKeypad = ({ variant, onSuccess }: PinOnKeypadProps) => {
             )}
             <Form form={form}>
                 <VStack spacing="sp8" alignItems="center">
-                    <Text color="textSubdued" textAlign="center">
+                    <Text color="contentSecondary" textAlign="center">
                         <Translation id="moduleConnectDevice.pinScreen.form.keypadInfo" />
                     </Text>
                     <Box style={applyStyle(pinProgressWrapperStyle)}>

@@ -24,7 +24,7 @@ const DiscreetTextExample = () => {
         <Box style={{ height: utils.typography['body-sm'].lineHeight }}>
             <DiscreetCanvas
                 text="$100"
-                color="textSubdued"
+                color="contentSecondary"
                 width={30}
                 fontSize={utils.typography['body-sm'].fontSize}
                 height={utils.typography['body-sm'].lineHeight}

@@ -33,7 +33,7 @@ const containerStyle = prepareNativeStyle<{ marginBottom: number }>((_, { margin
 export const WalletBackupSheetFooter = ({ onSubmit, selectedType }: CardFooterProps) => {
     const { utils, applyStyle } = useNativeStyles();
 
-    const backgroundColor = utils.colors.backgroundSurfaceElevation0;
+    const backgroundColor = utils.colors.surfaceFillPage;
     const transparentColor = hexToRgba(backgroundColor, 0.01);
     const { bottom } = useSafeAreaInsets();
 

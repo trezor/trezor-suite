@@ -1,3 +1,6 @@
+import { useSelector } from 'react-redux';
+
+import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
 import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { Box, Card, PressableOpacity, Text, VStack } from '@suite-native/atoms';
 import { CryptoIconWithNetwork, Icon } from '@suite-native/icons';
@@ -60,6 +63,7 @@ export const EarnAccountCard = ({ item, onPress, onClaimPress }: EarnAccountCard
     const isStakingItem = item.type === 'staking';
     const isStablecoinYieldItem = item.type === 'stablecoin-yield';
     const isSupportedStaking = isStakingItem && isMobileSupportedStakingNetwork(item.symbol);
+    const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
 
     const apy = useStakingSelector(state =>
         isStakingItem
@@ -78,7 +82,7 @@ export const EarnAccountCard = ({ item, onPress, onClaimPress }: EarnAccountCard
 
     const { isClaimingDisabled } = useMessageSystemStaking(isStakingItem ? item.symbol : null);
 
-    const showClaimAlert = canClaim && !isClaimingDisabled;
+    const showClaimAlert = canClaim && !isClaimingDisabled && !isPortfolioTrackerDevice;
 
     const symbol = isStakingItem ? item.symbol : item.networkSymbol;
     const contractAddress = isStakingItem ? undefined : item.contractAddress;
@@ -87,7 +91,7 @@ export const EarnAccountCard = ({ item, onPress, onClaimPress }: EarnAccountCard
         : null;
 
     return (
-        <Card borderColor="borderElevation1" noPadding style={applyStyle(itemCardStyle)}>
+        <Card borderColor="borderNeutral" noPadding style={applyStyle(itemCardStyle)}>
             <PressableOpacity onPress={onPress} style={applyStyle(rowStyle)}>
                 <Box marginRight="sp12">
                     <CryptoIconWithNetwork
@@ -100,7 +104,7 @@ export const EarnAccountCard = ({ item, onPress, onClaimPress }: EarnAccountCard
                 <VStack spacing="sp2" style={applyStyle(contentStyle)}>
                     <Text>{item.title}</Text>
                     {secondaryDescription && (
-                        <Text variant="body-sm" color="textSubdued">
+                        <Text variant="body-sm" color="contentSecondary">
                             {secondaryDescription}
                         </Text>
                     )}
@@ -109,14 +113,14 @@ export const EarnAccountCard = ({ item, onPress, onClaimPress }: EarnAccountCard
                 <VStack spacing="sp2" style={applyStyle(valuesStyle)}>
                     <Text variant="body-md">{formatActiveItemBalance(item)}</Text>
                     {apyValue != null && (
-                        <Text variant="body-sm" color="textSubdued">
+                        <Text variant="body-sm" color="contentSecondary">
                             <Translation id="earn.apyPercentage" values={{ apy: apyValue }} />
                         </Text>
                     )}
                 </VStack>
 
                 <Box marginLeft="sp12">
-                    <Icon name="caretRight" size="mediumLarge" color="iconSubdued" />
+                    <Icon name="caretRight" size="mediumLarge" color="contentSecondary" />
                 </Box>
             </PressableOpacity>
             {showClaimAlert && (

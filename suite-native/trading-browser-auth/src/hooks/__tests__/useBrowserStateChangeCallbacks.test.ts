@@ -1,11 +1,17 @@
+import { combineReducers } from '@reduxjs/toolkit';
+
+import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { type TradingType } from '@suite-common/trading';
+import { initialWalletSettingsState } from '@suite-common/wallet-core';
+import { localeReducer } from '@suite-native/intl';
 import {
     type TestStore,
     act,
-    initStore,
+    createLightStore,
+    createStaticReducer,
     renderHookWithStoreProvider,
-} from '@suite-native/test-utils';
-import { selectTradingProviderConfirmationStatus } from '@suite-native/trading-state';
+} from '@suite-native/test-utils-store';
+import { selectTradingProviderConfirmationStatus, tradingSlice } from '@suite-native/trading-state';
 
 import { useBrowserStateChangeCallbacks } from '../useBrowserStateChangeCallbacks';
 
@@ -26,7 +32,15 @@ describe('useBrowserStateChangeCallbacks', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
-        ({ store } = initStore());
+        store = createLightStore({
+            reducer: {
+                locale: localeReducer,
+                wallet: combineReducers({
+                    settings: createStaticReducer(initialWalletSettingsState),
+                    trading: tradingSlice.prepareReducer(extraDependenciesCommonMock),
+                }),
+            },
+        });
     });
 
     describe('handleBrowserOpened', () => {

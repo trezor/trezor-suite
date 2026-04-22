@@ -1,9 +1,0 @@
-{
-    "extends": "../../tsconfig.base.json",
-    "compilerOptions": { "outDir": "libDev" },
-    "references": [
-        { "path": "../calldata" },
-        { "path": "../react-query" },
-        { "path": "../../packages/utils" }
-    ]
-}

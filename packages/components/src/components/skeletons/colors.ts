@@ -10,11 +10,11 @@ export const mapElevationToSkeletonForeground = ({
     $elevation,
 }: StyledComponentElevationProps): CSSColor => {
     const map: Record<Elevation, Color> = {
-        '-1': 'backgroundSurfaceElevation0',
-        0: 'backgroundSurfaceElevationNegative',
-        1: 'backgroundSurfaceElevation0',
-        2: 'backgroundSurfaceElevation1',
-        3: 'backgroundSurfaceElevation0',
+        '-1': 'surfaceFillPage',
+        0: 'surfaceFillSunken',
+        1: 'surfaceFillPage',
+        2: 'surfaceFillRaised',
+        3: 'surfaceFillPage',
     };
 
     return theme[map[$elevation]];

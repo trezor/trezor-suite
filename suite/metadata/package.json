@@ -12,7 +12,9 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
+        "@noble/hashes": "^2.0.1",
         "@reduxjs/toolkit": "2.11.2",
+        "@scure/base": "^2.0.0",
         "@suite-common/device": "workspace:*",
         "@suite-common/metadata-types": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
@@ -36,7 +38,6 @@
         "@trezor/theme": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "bs58check": "^4.0.0",
         "dropbox": "^10.34.0",
         "immer": "11.0.0",
         "react": "19.2.4",

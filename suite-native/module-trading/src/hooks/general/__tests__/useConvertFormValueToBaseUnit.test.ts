@@ -1,5 +1,5 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { renderHookWithStoreProvider } from '@suite-native/test-utils';
+import { renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import { PROTO } from '@trezor/connect';
 
 import { useConvertFormValueToBaseUnit } from '../useConvertFormValueToBaseUnit';

@@ -24,7 +24,7 @@ const Section = styled.div<{ $selected?: boolean; $isSidebarCollapsed?: boolean 
     border-radius: ${borders.radii.sm};
 
     outline: 1px solid
-        ${({ theme, $selected }) => ($selected ? theme.borderElevation0 : 'transparent')};
+        ${({ theme, $selected }) => ($selected ? theme.borderNeutral : 'transparent')};
     padding: ${spacingsPx.xxs};
     margin: 0 -${spacingsPx.xxs};
 
@@ -34,7 +34,7 @@ const Section = styled.div<{ $selected?: boolean; $isSidebarCollapsed?: boolean 
         top: 24px;
         bottom: 28px;
         left: ${({ $isSidebarCollapsed }) => ($isSidebarCollapsed ? '50%' : '24px')};
-        border-left: 2px dotted ${({ theme }) => theme.borderDashed};
+        border-left: 2px dotted ${({ theme }) => theme.borderNeutral};
     }
 `;
 
@@ -69,7 +69,12 @@ export const AccountItemsGroup = ({
         ? BASE_CURRENCY_ZERO
         : getAccountTokensFiatBalance(account, baseCurrencyCode, rates, tokens);
 
-    const tokensRoutes = ['wallet-tokens', 'wallet-tokens-hidden', 'wallet-tokens-inactive'];
+    const tokensRoutes = [
+        'wallet-tokens',
+        'wallet-tokens-hidden',
+        'wallet-tokens-inactive',
+        'wallet-tokens-defi',
+    ];
 
     return (
         <Section $selected={selected} $isSidebarCollapsed={isSidebarCollapsed}>

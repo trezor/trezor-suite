@@ -49,8 +49,8 @@ const SvgWrapper = styled.div<{ $size?: number }>`
         border-radius: ${borders.radii.xxs};
         border-width: 1px;
         border-style: solid;
-        border-color: ${({ theme }) => theme.backgroundTertiaryDefaultOnElevation0};
-        background-color: ${({ theme }) => theme.backgroundTertiaryDefaultOnElevation0};
+        border-color: ${({ theme }) => theme.legacyBackgroundTertiaryDefaultOnElevation0};
+        background-color: ${({ theme }) => theme.legacyBackgroundTertiaryDefaultOnElevation0};
 
         div {
             line-height: 0;

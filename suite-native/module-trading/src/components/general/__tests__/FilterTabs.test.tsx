@@ -1,4 +1,4 @@
-import { fireEvent, renderWithStoreProvider, within } from '@suite-native/test-utils';
+import { fireEvent, renderWithStoreProvider, within } from '@suite-native/test-utils-store';
 import { type FilterItem, FilterTabs } from '@suite-native/trading-atoms';
 
 describe('FilterTabs', () => {

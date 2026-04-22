@@ -5,15 +5,32 @@ import type {
     FirmwareType,
     IntermediaryReleaseConfig,
 } from '@trezor/device-utils';
-import type { VersionArray } from '@trezor/utils/src/versionUtils';
+import type { VersionArray } from '@trezor/utils';
+
+export type FirmwareBoundary = `${number}.${number}.${number}` | '0';
 
 export type FirmwareRange = Record<
     DeviceModelInternal,
-    {
-        min: string;
-        max: string;
-    }
+    { min: FirmwareBoundary; max: FirmwareBoundary }
 >;
+
+type AtLeastOne<T> = {
+    [K in keyof T]: Pick<T, K> & Partial<Omit<T, K>>;
+}[keyof T];
+
+type RuleSelector = AtLeastOne<{
+    coin: string[];
+    coinType: string;
+    methods: string[];
+    capabilities: string[];
+}>;
+
+type RuleDeclaration = AtLeastOne<{
+    min: Partial<Record<DeviceModelInternal, FirmwareBoundary>>;
+    max: Partial<Record<DeviceModelInternal, FirmwareBoundary>>;
+}>;
+
+export type FirmwareRule = RuleSelector & RuleDeclaration & { comment?: string[] };
 
 export type BinaryInfo = {
     binary: ArrayBuffer;

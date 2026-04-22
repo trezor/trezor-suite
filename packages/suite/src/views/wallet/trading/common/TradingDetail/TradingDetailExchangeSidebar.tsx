@@ -66,6 +66,8 @@ export const TradingDetailExchangeSidebar = ({
                     label="TR_TRADING_YOU_PAY"
                     currency={trade.send}
                     amount={trade.sendStringAmount}
+                    cryptoAmountTestId="@trading/transaction/detail/send-amount"
+                    accountInfoTestId="@trading/transaction/detail/send-account"
                 />
 
                 <TradingInfoItem
@@ -76,6 +78,8 @@ export const TradingDetailExchangeSidebar = ({
                     amount={trade.receiveStringAmount}
                     receiveAddress={trade.receiveAddress}
                     isReceive
+                    cryptoAmountTestId="@trading/transaction/detail/receive-amount"
+                    accountInfoTestId="@trading/transaction/detail/receive-account"
                 />
 
                 <Column gap={12}>

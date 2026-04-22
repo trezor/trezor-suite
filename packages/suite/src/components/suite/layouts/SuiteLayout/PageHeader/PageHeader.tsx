@@ -2,7 +2,7 @@ import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { selectIsAccountTabPage, selectRouteName } from '@suite/router';
+import { isAccountTabRoute, resolveEffectiveBackgroundRouteName, selectRoute } from '@suite/router';
 import { selectAccounts } from '@suite-common/wallet-core';
 import { Row } from '@trezor/components';
 import { spacingsPx, zIndices } from '@trezor/theme';
@@ -10,6 +10,7 @@ import { spacingsPx, zIndices } from '@trezor/theme';
 import { HEADER_HEIGHT } from 'src/constants/suite/layout';
 import { useSelector } from 'src/hooks/suite';
 import { selectSelectedAccountKey } from 'src/reducers/wallet/selectedAccountReducer';
+import { useSuiteServices } from 'src/support/SuiteServicesProvider';
 
 import { GlobalSendReceive } from './GlobalSendReceive/GlobalSendReceive';
 import { HeaderActions } from './HeaderActions';
@@ -28,8 +29,8 @@ const Container = styled.div`
     height: ${HEADER_HEIGHT};
     min-height: ${HEADER_HEIGHT};
     padding: ${spacingsPx.xs} ${spacingsPx.md};
-    background: ${({ theme }) => theme.backgroundSurfaceElevation0};
-    border-bottom: 1px solid ${({ theme }) => theme.borderElevation1};
+    background: ${({ theme }) => theme.surfaceFillPage};
+    border-bottom: 1px solid ${({ theme }) => theme.borderNeutral};
     overflow: hidden;
     z-index: ${zIndices.pageHeader};
 `;
@@ -53,13 +54,17 @@ interface PageHeaderProps {
 }
 
 export const PageHeader = ({ children }: PageHeaderProps) => {
-    // Select minimal state to avoid unnecessary re-renders
     const selectedAccountKey = useSelector(selectSelectedAccountKey);
-    const routeName = useSelector(selectRouteName);
-    const isAccountTabPage = useSelector(selectIsAccountTabPage);
+    const route = useSelector(selectRoute);
+    const { suiteRouterHistory } = useSuiteServices();
+    const effectiveRouteName = resolveEffectiveBackgroundRouteName(
+        route,
+        suiteRouterHistory.getLocation(),
+    );
+    const isAccountTabPage = isAccountTabRoute(effectiveRouteName);
 
     // handle moment when children are not rendered yet in the Trade section
-    const isTradeSection = !!routeName?.includes('wallet-trading');
+    const isTradeSection = !!effectiveRouteName?.includes('wallet-trading');
 
     if (isTradeSection || children != null) {
         return <Container>{children}</Container>;
@@ -69,7 +74,7 @@ export const PageHeader = ({ children }: PageHeaderProps) => {
         <Container>
             <PageName />
 
-            {routeName === 'suite-index' && <PageHeaderIndex />}
+            {effectiveRouteName === 'suite-index' && <PageHeaderIndex />}
             {!!selectedAccountKey && isAccountTabPage && <HeaderActions />}
         </Container>
     );

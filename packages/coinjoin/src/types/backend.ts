@@ -2,16 +2,14 @@ import type {
     AccountAddresses,
     AccountInfo as AccountInfoBase,
     Address,
+    BlockbookTransaction,
     EnhancedVinVout,
+    BlockbookFilterResponse as FilterResponse,
+    BlockbookServerInfo as ServerInfo,
     Transaction,
     Utxo,
     VinVout,
 } from '@trezor/blockchain-link-types';
-import type {
-    Transaction as BlockbookTransaction,
-    FilterResponse,
-    ServerInfo,
-} from '@trezor/blockchain-link-types/src/blockbook';
 import type { Network } from '@trezor/utxo-lib';
 
 import type { RequestOptions } from '../utils/http';

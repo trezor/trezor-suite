@@ -57,7 +57,7 @@ const ConnectCard = ({ image, title, subtitle, icon, onPress }: ConnectCardProps
                         <Text variant="headline-sm">
                             <Translation id={subtitle} />
                         </Text>
-                        <RoundedIcon name={icon} iconSize="mediumLarge" containerSize={28} />
+                        <RoundedIcon name={icon} size={32} />
                     </HStack>
                 </Box>
             </VStack>

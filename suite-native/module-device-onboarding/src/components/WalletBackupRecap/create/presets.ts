@@ -42,24 +42,30 @@ export const walletBackupSecuritySteps = [
 
 export const iconColorsMap = {
     default: {
-        iconColor: 'iconDefault',
-        iconBorderColor: 'borderElevation0',
-        iconBackgroundColor: 'backgroundTertiaryDefaultOnElevation1',
+        iconColor: 'contentPrimary',
+        iconBorderColor: 'borderNeutral',
+        iconBackgroundColor: 'legacyBackgroundTertiaryDefaultOnElevation1',
     },
     warning: {
-        iconColor: 'iconAlertYellow',
-        iconBorderColor: 'backgroundAlertYellowSubtleOnElevation0',
-        iconBackgroundColor: 'backgroundAlertYellowSubtleOnElevation1',
+        iconColor: 'contentWarning',
+        iconBorderColor: 'legacyBackgroundAlertYellowSubtleOnElevation0',
+        iconBackgroundColor: 'legacyBackgroundAlertYellowSubtleOnElevation1',
     },
     primary: {
-        iconColor: 'iconDefaultInverted',
-        iconBorderColor: 'backgroundPrimaryDefault',
-        iconBackgroundColor: 'backgroundPrimaryDefault',
+        iconColor: 'contentPrimaryInverse',
+        iconBorderColor: 'legacyBackgroundPrimaryDefault',
+        iconBackgroundColor: 'legacyBackgroundPrimaryDefault',
     },
 } as const satisfies Record<ColorVariant, IconColors>;
 
 export const connectorColorsMap = {
-    default: ['backgroundTertiaryDefaultOnElevation0', 'backgroundTertiaryDefaultOnElevation0'],
-    warning: ['backgroundAlertYellowSubtleOnElevation1', 'backgroundTertiaryDefaultOnElevation0'],
-    primary: ['backgroundTertiaryDefaultOnElevation0', 'backgroundPrimaryDefault'],
+    default: [
+        'legacyBackgroundTertiaryDefaultOnElevation0',
+        'legacyBackgroundTertiaryDefaultOnElevation0',
+    ],
+    warning: [
+        'legacyBackgroundAlertYellowSubtleOnElevation1',
+        'legacyBackgroundTertiaryDefaultOnElevation0',
+    ],
+    primary: ['legacyBackgroundTertiaryDefaultOnElevation0', 'legacyBackgroundPrimaryDefault'],
 } as const satisfies Record<ColorVariant, [Color, Color]>;

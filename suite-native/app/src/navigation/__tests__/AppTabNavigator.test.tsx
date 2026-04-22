@@ -1,25 +1,43 @@
+import { deviceInitialState } from '@suite-common/device';
+import { messageSystemInitialState } from '@suite-common/message-system';
+import { mockMessageSystemStateWithFeatureFlags } from '@suite-common/message-system/mocks';
 import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
 import {
-    type PreloadedState,
-    act,
     fireEvent,
+    mergePreloadedState,
     renderWithStoreProvider,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils-store';
 
 import { AppTabNavigator } from '../AppTabNavigator';
 
-jest.mock('@suite-common/tx-simulation', () => ({}));
+jest.mock('@suite-native/module-home', () => ({ HomeStackNavigator: () => null }));
+jest.mock('@suite-native/module-accounts-management', () => ({
+    AccountsStackNavigator: () => null,
+}));
+jest.mock('@suite-native/module-earn', () => ({ EarnStackNavigator: () => null }));
+jest.mock('@suite-native/module-settings', () => ({ SettingsScreen: () => null }));
+jest.mock('@suite-native/module-trading', () => {
+    const { View } = require('react-native');
+
+    return {
+        TradingStackNavigator: () => <View testID="@screen/Trading" />,
+    };
+});
+
+const baseState = {
+    device: deviceInitialState,
+    featureFlags: featureFlagsInitialState,
+    messageSystem: messageSystemInitialState,
+    wallet: {
+        trading: { residence: { country: null, wasOnboardingVisited: false } },
+    },
+};
 
 describe('AppTabNavigator', () => {
-    const renderTabs = (preloadedState?: PreloadedState) =>
-        renderWithStoreProvider(<AppTabNavigator />, { preloadedState });
-
-    beforeEach(() => {
-        global.fetch = jest.fn().mockResolvedValue({
-            json: jest.fn().mockResolvedValue({}),
-            ok: true,
+    const renderTabs = (overrides: Record<string, unknown> = {}) =>
+        renderWithStoreProvider(<AppTabNavigator />, {
+            preloadedState: mergePreloadedState(baseState, overrides),
         });
-    });
 
     it('should render 3 buttons', () => {
         const { getByText } = renderTabs();
@@ -32,64 +50,30 @@ describe('AppTabNavigator', () => {
     it('should not render Trade tab when all trading flags are disabled', () => {
         const { queryByText } = renderTabs({
             featureFlags: {
-                ...featureFlagsInitialState,
                 [FeatureFlag.IsTradingBuyEnabled]: false,
                 [FeatureFlag.IsTradingExchangeEnabled]: false,
                 [FeatureFlag.IsTradingSellEnabled]: false,
                 [FeatureFlag.IsTradingResidenceCheckEnabled]: false,
             },
-            messageSystem: {
-                validMessages: {
-                    banner: [],
-                    context: [],
-                    modal: [],
-                    feature: ['actionId'],
-                },
-                dismissedMessages: [],
-                config: {
-                    actions: [
-                        {
-                            message: {
-                                id: 'actionId',
-                                category: ['feature'],
-                                feature: [
-                                    {
-                                        domain: 'trading.buy',
-                                        flag: false,
-                                    },
-                                    {
-                                        domain: 'trading.exchange',
-                                        flag: false,
-                                    },
-                                    {
-                                        domain: 'trading.sell',
-                                        flag: false,
-                                    },
-                                ],
-                            },
-                        },
-                    ],
-                },
-            },
-        } as unknown as PreloadedState);
+            messageSystem: mockMessageSystemStateWithFeatureFlags({
+                'trading.buy': false,
+                'trading.exchange': false,
+                'trading.sell': false,
+            }),
+        });
 
         expect(queryByText('Trade')).toBe(null);
     });
 
-    it('should render Trade tab when at least one trading flag is enabled', async () => {
+    it('should render Trade tab when at least one trading flag is enabled', () => {
         const { getByText, getByTestId } = renderTabs({
             featureFlags: {
-                ...featureFlagsInitialState,
                 [FeatureFlag.IsTradingBuyEnabled]: true,
                 [FeatureFlag.IsTradingResidenceCheckEnabled]: false,
             },
         });
 
-        const tradeTab = getByText('Trade');
-        await act(async () => {
-            fireEvent.press(tradeTab);
-            await Promise.resolve();
-        });
+        fireEvent.press(getByText('Trade'));
 
         expect(getByTestId('@screen/Trading')).toBeTruthy();
     });

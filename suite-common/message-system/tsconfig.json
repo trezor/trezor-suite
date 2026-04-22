@@ -5,7 +5,8 @@
         "schema/**/*.json",
         "src",
         "scripts",
-        "mock",
+        "mocks",
+        "build-mock",
         "redux.d.ts",
         "files"
     ],

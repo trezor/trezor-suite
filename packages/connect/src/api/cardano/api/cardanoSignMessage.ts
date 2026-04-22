@@ -15,7 +15,6 @@ import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { hasHexPrefix, isHexString } from '../../../utils/formatUtils';
 import { validatePath } from '../../../utils/pathUtils';
-import { getFirmwareRange } from '../../common/paramsValidator';
 import { addressParametersToProto } from '../cardanoAddressParameters';
 import type { Path } from '../cardanoInputs';
 import { hexStringByteLength } from '../cardanoUtils';
@@ -61,11 +60,7 @@ export default class CardanoSignMessage extends AbstractMethod<
 
         super(message, params);
 
-        this.firmwareRange = getFirmwareRange(
-            this.name,
-            getMiscNetwork('Cardano'),
-            this.firmwareRange,
-        );
+        this.requiredFirmwareCoins = [getMiscNetwork('Cardano')];
     }
 
     get requiredPermissions(): MethodPermission[] {

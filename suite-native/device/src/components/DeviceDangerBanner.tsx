@@ -12,8 +12,8 @@ const containerStyle = prepareNativeStyle<{ bannerVariant: DeviceDangerBannerVar
     (utils, { bannerVariant }) => ({
         backgroundColor:
             bannerVariant === 'other-error'
-                ? utils.colors.backgroundAlertYellowBold
-                : utils.colors.backgroundAlertRedSubtleOnElevation0,
+                ? utils.colors.legacyBackgroundAlertYellowBold
+                : utils.colors.legacyBackgroundAlertRedSubtleOnElevation0,
         // MessageSystemBanner critical variant has the same bgColor, so the margin serves to separate them visually
         marginBottom: utils.spacings.sp1,
     }),

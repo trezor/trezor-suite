@@ -23,7 +23,7 @@ const centerDotStyle = prepareNativeStyle(utils => ({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: utils.colors.backgroundSecondaryDefault,
+    backgroundColor: utils.colors.legacyBackgroundSecondaryDefault,
     zIndex: 3,
 }));
 
@@ -33,7 +33,7 @@ const ringStyle = prepareNativeStyle(utils => ({
     height: 12,
     borderRadius: 6,
     borderWidth: 2,
-    borderColor: utils.colors.backgroundSecondaryDefault,
+    borderColor: utils.colors.legacyBackgroundSecondaryDefault,
     backgroundColor: 'transparent',
     zIndex: 2,
 }));
@@ -43,7 +43,7 @@ const shadowRingStyle = prepareNativeStyle(utils => ({
     width: 14,
     height: 14,
     borderRadius: 7,
-    backgroundColor: utils.colors.backgroundSecondaryDefault,
+    backgroundColor: utils.colors.legacyBackgroundSecondaryDefault,
     zIndex: 1,
 }));
 

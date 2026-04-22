@@ -155,7 +155,7 @@ export const PopoverContent = forwardRef<HTMLDivElement, PopoverContentProps>((p
     const themeVariant: keyof typeof intermediaryTheme =
         theme.variant === 'standard' ? 'light' : theme.variant;
 
-    const color = intermediaryTheme[themeVariant]?.textDefault;
+    const color = intermediaryTheme[themeVariant]?.contentPrimary;
 
     if (!floatingContext.open) return null;
 

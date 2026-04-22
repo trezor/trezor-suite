@@ -29,7 +29,7 @@ export const ExchangeFromAccountTradePreviewCard = ({
             account={fromAccount}
             cryptoId={quote.send}
             amount={
-                <Text variant="body-sm" color="textAlertRed">
+                <Text variant="body-sm" color="contentCritical">
                     -{fromStringValue}
                 </Text>
             }
@@ -39,7 +39,7 @@ export const ExchangeFromAccountTradePreviewCard = ({
                 <CryptoToFiatValueBadge
                     amount={fromValue}
                     cryptoId={quote.send}
-                    color="textSubdued"
+                    color="contentSecondary"
                     textAlign="right"
                 />
             )}

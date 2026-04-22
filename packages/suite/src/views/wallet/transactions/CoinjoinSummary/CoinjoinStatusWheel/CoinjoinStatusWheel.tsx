@@ -23,7 +23,7 @@ const Container = styled(Card)<{ $isWide?: boolean }>`
     width: ${({ $isWide }) => ($isWide ? '240px' : '180px')};
     height: 100%;
     padding: 10px;
-    color: ${({ theme }) => theme.textSubdued};
+    color: ${({ theme }) => theme.contentSecondary};
     ${typography['body-sm-strong']}
     text-align: center;
 

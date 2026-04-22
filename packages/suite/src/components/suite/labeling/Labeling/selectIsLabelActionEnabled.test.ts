@@ -125,16 +125,18 @@ describe(selectIsLabelActionEnabled.name, () => {
     });
 
     const testLabelActionEnabled = ({
+        deviceOverrides,
         unavailableCapabilities,
         isSuiteSyncFeatureEnabled,
         isSuiteSyncEnabled = false,
     }: {
+        deviceOverrides?: Parameters<typeof mockSuiteDevice>[0];
         unavailableCapabilities: UnavailableCapabilities;
         isSuiteSyncFeatureEnabled: boolean;
         isSuiteSyncEnabled?: boolean;
     }) => {
         const state = createMockState(
-            { unavailableCapabilities },
+            { unavailableCapabilities, ...deviceOverrides },
             {
                 settings: {
                     ...initialSuiteSyncDesktopState.settings,
@@ -155,6 +157,36 @@ describe(selectIsLabelActionEnabled.name, () => {
         });
 
         expect(result).toBe(true);
+    });
+
+    it('allows labeling when Suite Sync is enabled and device is connected but keys are needed', () => {
+        const result = testLabelActionEnabled({
+            unavailableCapabilities: {},
+            isSuiteSyncFeatureEnabled: true,
+            isSuiteSyncEnabled: true,
+            deviceOverrides: {
+                connected: true,
+                available: true,
+                remember: true,
+            },
+        });
+
+        expect(result).toBe(true);
+    });
+
+    it('disables labeling when Suite Sync is enabled and remembered device is disconnected', () => {
+        const result = testLabelActionEnabled({
+            unavailableCapabilities: {},
+            isSuiteSyncFeatureEnabled: true,
+            isSuiteSyncEnabled: true,
+            deviceOverrides: {
+                connected: false,
+                available: false,
+                remember: true,
+            },
+        });
+
+        expect(result).toBe(false);
     });
 
     it('disables labeling for unsupported device', () => {
@@ -210,6 +242,21 @@ describe(selectIsLabelActionEnabled.name, () => {
         const result = testLabelActionEnabled({
             unavailableCapabilities: {},
             isSuiteSyncFeatureEnabled: true,
+        });
+
+        expect(result).toBe(true);
+    });
+
+    it('allows labeling when Suite Sync feature is available, disabled, and can be initialized', () => {
+        mocked(selectIsLabelingAvailableForEntity).mockReturnValue(false);
+        mocked(selectIsLabelingInitPossible).mockReturnValue(false);
+
+        const result = testLabelActionEnabled({
+            unavailableCapabilities: {},
+            isSuiteSyncFeatureEnabled: false,
+            deviceOverrides: {
+                connected: true,
+            },
         });
 
         expect(result).toBe(true);

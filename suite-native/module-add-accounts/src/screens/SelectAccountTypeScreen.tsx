@@ -48,7 +48,7 @@ const bulletsForKeyPath = (keyPath: TxKeyPath) => (
                                 <BulletListItem
                                     key={`${row}`}
                                     variant="body-sm"
-                                    color="textSubdued"
+                                    color="contentSecondary"
                                 >
                                     {row}
                                 </BulletListItem>
@@ -77,7 +77,7 @@ const gradientStyle = prepareNativeStyle(_ => ({
 
 const buttonWrapperStyle = prepareNativeStyle(utils => ({
     paddingHorizontal: utils.spacings.sp16,
-    backgroundColor: utils.colors.backgroundSurfaceElevation0,
+    backgroundColor: utils.colors.surfaceFillPage,
 }));
 
 const aboutStyle = prepareNativeStyle((utils, { bottomInset }: { bottomInset: number }) => ({
@@ -155,7 +155,7 @@ export const SelectAccountTypeScreen = ({
                     })}
                 </VStack>
                 <View style={applyStyle(aboutStyle, { bottomInset: insets.bottom })}>
-                    <Text variant="body-sm" color="textSubdued" textAlign="center">
+                    <Text variant="body-sm" color="contentSecondary" textAlign="center">
                         <Translation id="moduleAddAccounts.selectAccountTypeScreen.aboutTypesLabel" />
                     </Text>
                     <Button intent="neutral" priority="secondary" onPress={handleMoreTap}>
@@ -167,8 +167,8 @@ export const SelectAccountTypeScreen = ({
                 <LinearGradient
                     style={applyStyle(gradientStyle)}
                     colors={[
-                        utils.transparentize(1, utils.colors.backgroundSurfaceElevation0),
-                        utils.colors.backgroundSurfaceElevation0,
+                        utils.transparentize(1, utils.colors.surfaceFillPage),
+                        utils.colors.surfaceFillPage,
                     ]}
                 />
                 <View style={applyStyle(buttonWrapperStyle)}>

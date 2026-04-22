@@ -18,7 +18,7 @@ type EarnConsentsItemProps = {
 export const EarnConsentsItem = ({
     iconName,
     children,
-    color = 'textSubdued',
+    color = 'contentSecondary',
 }: EarnConsentsItemProps) => {
     const { applyStyle } = useNativeStyles();
 
@@ -27,9 +27,9 @@ export const EarnConsentsItem = ({
             <OrderedListIcon
                 iconName={iconName}
                 iconSize="large"
-                iconColor="iconAlertBlue"
-                iconBackgroundColor="backgroundAlertBlueSubtleOnElevation1"
-                iconBorderColor="backgroundAlertBlueSubtleOnElevation0"
+                iconColor="contentInfo"
+                iconBackgroundColor="legacyBackgroundAlertBlueSubtleOnElevation1"
+                iconBorderColor="legacyBackgroundAlertBlueSubtleOnElevation0"
             />
             <Text variant="body-sm-strong" color={color} style={applyStyle(textStyle)}>
                 {children}

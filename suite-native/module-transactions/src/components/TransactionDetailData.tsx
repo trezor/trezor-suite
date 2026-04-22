@@ -153,7 +153,7 @@ export const TransactionDetailData = ({
                 />
             )}
 
-            <Card borderColor="borderElevation1" style={applyStyle(cardStyle)}>
+            <Card borderColor="borderNeutral" style={applyStyle(cardStyle)}>
                 <VStack spacing="sp24">
                     <TransactionDetailRow title={translate('transactions.detail.feeLabel')}>
                         <Box alignItems="flex-end">
@@ -161,7 +161,7 @@ export const TransactionDetailData = ({
                                 value={transaction.fee}
                                 symbol={transaction.symbol}
                                 variant="body-sm"
-                                color="textDefault"
+                                color="contentPrimary"
                                 isBalance={false}
                             />
                             {historicRate !== undefined && historicRate !== 0 && (
@@ -172,7 +172,7 @@ export const TransactionDetailData = ({
                                         historicRate={historicRate}
                                         useHistoricRate
                                         variant="body-sm"
-                                        color="textSubdued"
+                                        color="contentSecondary"
                                     />
                                 </Box>
                             )}
@@ -187,7 +187,7 @@ export const TransactionDetailData = ({
                                     <Text variant="body-sm">
                                         <DateFormatter value={transactionBlockTime} />
                                     </Text>
-                                    <Text variant="body-sm" color="textSubdued">
+                                    <Text variant="body-sm" color="contentSecondary">
                                         <TimeFormatter value={transactionBlockTime} />
                                     </Text>
                                 </Box>

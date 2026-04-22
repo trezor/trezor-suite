@@ -4,28 +4,30 @@ import { type EnhancedStore } from '@reduxjs/toolkit';
 import type { BuyTrade, CryptoId } from 'invity-api';
 
 import { selectTradingProviderMetadata, tradingBuyActions } from '@suite-common/trading';
-import { type AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
 import { Form, useField } from '@suite-native/forms';
 import {
-    type PreloadedState,
     type TestStore,
     act,
-    initStore,
     renderHook,
     renderHookWithStoreProvider,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils-store';
 import {
     btcAsset,
     buyMercuryo,
     buyQuotes,
+    cexdirectCreditCardBuyQuote,
     getBtcAccount,
     getInitializedTradingState,
+    mercuryoApplePayBuyQuote,
+    mercuryoCreditCardBuyQuote,
     usdcAsset,
 } from '@suite-native/trading-fixtures';
 import { buyActions, selectTradingResidenceCountry } from '@suite-native/trading-state';
 import { type BuyFormType, type TradeableAsset } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
+import { createTradingLightStore } from '../../../__tests__/tradingTestUtils';
 import { clearBuyFormQuoteData, useBuyForm } from '../useBuyForm';
 
 jest.mock('@trezor/react-utils', () => {
@@ -46,24 +48,29 @@ describe('useBuyForm', () => {
         renderHookWithStoreProvider(() => useBuyForm(), { store });
 
     const getInitializedStore = (amountInSats = false) => {
-        const preloadedState: PreloadedState = {
-            wallet: {
-                trading: getInitializedTradingState(),
-                settings: {
-                    bitcoinAmountUnit: amountInSats
-                        ? PROTO.AmountUnit.SATOSHI
-                        : PROTO.AmountUnit.BITCOIN,
-                },
-                accounts: [
-                    getBtcAccount(btc1AccountKey),
-                    getBtcAccount(btc2AccountKey),
-                    { ...getBtcAccount(btc3AccountKey), descriptor: '' },
-                ],
-            },
-        };
-        preloadedState.wallet!.trading!.buy!.tradingAccountKey = btc1AccountKey;
+        const tradingState = getInitializedTradingState();
+        tradingState.buy.tradingAccountKey = btc1AccountKey;
 
-        return initStore(preloadedState).store;
+        return createTradingLightStore({
+            overrides: {
+                wallet: {
+                    trading: tradingState,
+                    settings: {
+                        bitcoinAmountUnit: amountInSats
+                            ? PROTO.AmountUnit.SATOSHI
+                            : PROTO.AmountUnit.BITCOIN,
+                    },
+                    accounts: [
+                        getBtcAccount(btc1AccountKey),
+                        getBtcAccount(btc2AccountKey),
+                        {
+                            ...getBtcAccount(btc3AccountKey),
+                            descriptor: asAccountDescriptor(''),
+                        },
+                    ],
+                },
+            },
+        });
     };
 
     const initFormAndQuotes = (form: BuyFormType, store: EnhancedStore) => {
@@ -303,7 +310,7 @@ describe('useBuyForm', () => {
                 result.current.setValue('fiatValue', '10');
                 result.current.setValue('asset', btcAsset);
                 // Only provide credit card quote
-                store.dispatch(tradingBuyActions.saveQuotes([buyQuotes[0]]));
+                store.dispatch(tradingBuyActions.saveQuotes([mercuryoApplePayBuyQuote]));
             });
 
             expect(result.current.getValues('quote')).toEqual(
@@ -371,7 +378,7 @@ describe('useBuyForm', () => {
             initFormAndQuotes(result.current, store);
 
             act(() => {
-                result.current.setValue('quote', buyQuotes[0]);
+                result.current.setValue('quote', mercuryoApplePayBuyQuote);
             });
 
             expect(result.current.getValues('cryptoValue')).toEqual('0.001000168');
@@ -390,7 +397,10 @@ describe('useBuyForm', () => {
             });
 
             act(() => {
-                const newQuote = { ...buyQuotes[0], fiatStringAmount: '10.123456789' } as BuyTrade;
+                const newQuote = {
+                    ...mercuryoApplePayBuyQuote,
+                    fiatStringAmount: '10.123456789',
+                } as BuyTrade;
                 result.current.setValue('quote', newQuote);
             });
 
@@ -405,10 +415,10 @@ describe('useBuyForm', () => {
             initFormAndQuotes(result.current, store);
 
             act(() => {
-                result.current.setValue('quote', buyQuotes[0]);
+                result.current.setValue('quote', mercuryoApplePayBuyQuote);
             });
 
-            expect(selectTradingProviderMetadata(store.getState())).toBe(buyMercuryo);
+            expect(selectTradingProviderMetadata(store.getState())).toEqual(buyMercuryo);
         });
 
         describe('when quote is selected and new quotes are fetched', () => {
@@ -429,20 +439,23 @@ describe('useBuyForm', () => {
 
             it('should select quote with same payment method and provider', () => {
                 act(() => {
-                    form.setValue('quote', { ...buyQuotes[3], orderId: 'test1' } as BuyTrade);
+                    form.setValue('quote', {
+                        ...mercuryoCreditCardBuyQuote,
+                        orderId: 'test1',
+                    } as BuyTrade);
                 });
 
                 act(() => {
                     store.dispatch(tradingBuyActions.saveQuotes(buyQuotes));
                 });
 
-                expect(form.getValues('quote')).toEqual(buyQuotes[3]);
+                expect(form.getValues('quote')).toEqual(mercuryoCreditCardBuyQuote);
             });
 
             it('should select 1st quote with same payment method if same provider is not available', () => {
                 act(() => {
                     form.setValue('quote', {
-                        ...buyQuotes[3],
+                        ...mercuryoCreditCardBuyQuote,
                         orderId: 'test1',
                         exchange: 'unavailable',
                     } as BuyTrade);
@@ -452,7 +465,7 @@ describe('useBuyForm', () => {
                     store.dispatch(tradingBuyActions.saveQuotes(buyQuotes));
                 });
 
-                expect(form.getValues('quote')).toEqual(buyQuotes[1]);
+                expect(form.getValues('quote')).toEqual(cexdirectCreditCardBuyQuote);
             });
 
             it('should select 1st quote on new quotes when payment method is not available even with different provider', () => {
@@ -461,7 +474,7 @@ describe('useBuyForm', () => {
                 });
 
                 act(() => {
-                    store.dispatch(tradingBuyActions.saveQuotes([buyQuotes[0]]));
+                    store.dispatch(tradingBuyActions.saveQuotes([mercuryoApplePayBuyQuote]));
                 });
 
                 expect(form.getValues('quote')).toEqual(
@@ -738,7 +751,7 @@ describe('useBuyForm', () => {
             act(() => {
                 result.current.setValue('fiatValue', '10');
                 result.current.setValue('cryptoValue', '10');
-                result.current.setValue('quote', buyQuotes[0]);
+                result.current.setValue('quote', mercuryoApplePayBuyQuote);
             });
 
             act(() => {

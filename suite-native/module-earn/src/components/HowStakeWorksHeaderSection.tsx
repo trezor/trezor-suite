@@ -3,8 +3,7 @@ import {
     getNetworkDisplaySymbol,
     getNetworkDisplaySymbolName,
 } from '@suite-common/wallet-config';
-import { InlineAlertBox, Text, VStack } from '@suite-native/atoms';
-import { CryptoIcon } from '@suite-native/icons';
+import { Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 type HowStakeWorksHeaderSectionProps = {
@@ -12,10 +11,7 @@ type HowStakeWorksHeaderSectionProps = {
     totalStakedAmount: string;
 };
 
-export const HowStakeWorksHeaderSection = ({
-    symbol,
-    totalStakedAmount,
-}: HowStakeWorksHeaderSectionProps) => {
+export const HowStakeWorksHeaderSection = ({ symbol }: HowStakeWorksHeaderSectionProps) => {
     const displaySymbol = getNetworkDisplaySymbol(symbol);
     const networkName = getNetworkDisplaySymbolName(symbol);
 
@@ -25,23 +21,24 @@ export const HowStakeWorksHeaderSection = ({
                 <Text variant="headline-md">
                     <Translation id="earn.howStakeWorksScreen.title" values={{ displaySymbol }} />
                 </Text>
-                <Text variant="body-sm" color="textSubdued">
+                <Text variant="body-sm" color="contentSecondary">
                     <Translation id="earn.howStakeWorksScreen.subtitle" values={{ networkName }} />
                 </Text>
             </VStack>
-            <InlineAlertBox
-                variant="neutral"
-                viewLeft={<CryptoIcon symbol={symbol} size="extraSmall" />}
-                title={
-                    <Translation
-                        id="earn.howStakeWorksScreen.infoBannerTitle"
-                        values={{
-                            totalStakedAmount,
-                            b: chunks => <Text variant="body-sm-strong">{chunks}</Text>,
-                        }}
-                    />
-                }
-            />
+            {/* TODO: fix the TVL value */}
+            {/* <InlineAlertBox */}
+            {/*     variant="neutral" */}
+            {/*     viewLeft={<CryptoIcon symbol={symbol} size="extraSmall" />} */}
+            {/*     title={ */}
+            {/*         <Translation */}
+            {/*             id="earn.howStakeWorksScreen.infoBannerTitle" */}
+            {/*             values={{ */}
+            {/*                 totalStakedAmount, */}
+            {/*                 b: chunks => <Text variant="body-sm-strong">{chunks}</Text>, */}
+            {/*             }} */}
+            {/*         /> */}
+            {/*     } */}
+            {/* /> */}
         </VStack>
     );
 };

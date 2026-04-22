@@ -1,0 +1,30 @@
+{
+    "name": "@suite-common/earn-stablecoin-api",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint './**/*.{ts,mjs}'",
+        "type-check": "yarn g:tsc --build",
+        "format": "prettier --write \"**/*.{ts,yaml}\"",
+        "orval": "orval --config ./orval.config.ts",
+        "api:generate": "yarn orval",
+        "api:update": "yarn api:generate && yarn lint:js --fix && yarn format",
+        "test:unit": "yarn g:jest"
+    },
+    "devDependencies": {
+        "orval": "8.5.0",
+        "prettier": "^3.8.1"
+    },
+    "dependencies": {
+        "@suite-common/calldata": "workspace:^",
+        "@suite-common/http-client": "workspace:^",
+        "@suite-common/react-query": "workspace:^",
+        "@trezor/env-utils": "workspace:*",
+        "@trezor/utils": "workspace:^",
+        "zod": "4.3.6"
+    }
+}

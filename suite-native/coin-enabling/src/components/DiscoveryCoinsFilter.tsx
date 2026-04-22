@@ -68,8 +68,8 @@ export const DiscoveryCoinsFilter = ({
                 />
             ))}
             <VStack paddingVertical="sp8" alignItems="center">
-                <Icon name="question" color="textSubdued" size="large" />
-                <Text color="textSubdued" textAlign="center">
+                <Icon name="question" color="contentSecondary" size="large" />
+                <Text color="contentSecondary" textAlign="center">
                     <Translation id="moduleSettings.coinEnabling.bottomNote" />
                 </Text>
             </VStack>

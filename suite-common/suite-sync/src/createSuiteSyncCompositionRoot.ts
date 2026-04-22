@@ -139,6 +139,7 @@ export const createSuiteSyncCompositionRoot = (
     const turnOffSuiteSyncForWallet = createTurnOffSuiteSyncForWallet({
         suiteSyncStorageRepository,
         subscriptionStorage,
+        dispatch: deps.dispatch,
     });
 
     const getIsSuiteSyncEnabled = toGetter(deps.getState, selectIsSuiteSyncEnabled);
@@ -171,6 +172,7 @@ export const createSuiteSyncCompositionRoot = (
             getIsSuiteSyncEnabled,
             dispatch: deps.dispatch,
             ensureWalletSuiteSyncOn,
+            getDeviceForStaticSessionId,
         }),
         labeling: {
             updateWalletLabel: createUpdateWalletLabel(labelingDeps),

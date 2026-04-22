@@ -22,12 +22,12 @@ import {
 } from './cardanoStakingSelectors';
 import {
     selectEntryPeriodInDaysBySymbol,
+    selectEntryPeriodRemainingInDaysByAccountKey,
     selectEthereumAccountHasStaking,
     selectEthereumCanClaimByAccountKey,
     selectEthereumClaimableAmountByAccountKey,
     selectEthereumIsStakeConfirmingByAccountKey,
     selectEthereumIsStakePendingByAccountKey,
-    selectEthereumPendingDepositedBalanceByAccountKey,
     selectEthereumRewardsBalanceByAccountKey,
     selectEthereumStakedBalanceByAccountKey,
     selectEthereumTotalStakePendingByAccountKey,
@@ -355,28 +355,8 @@ export const selectUnstakingPeriodInDaysByAccountKey = (
     return getUnstakingPeriodInDays(account.networkType, validatorsQueueData);
 };
 
-export const selectPendingDepositedBalanceByAccountKey = (
-    state: NativeStakingRootState,
-    accountKey: AccountKey,
-) => {
-    const account = selectAccountByKey(state, accountKey);
-    const symbol = account?.symbol;
-    if (!symbol || !doesCoinSupportStaking(symbol)) {
-        return '0';
-    }
-
-    switch (symbol) {
-        case 'eth':
-        case 'thod':
-        case 'tsep':
-            return selectEthereumPendingDepositedBalanceByAccountKey(state, accountKey);
-        case 'dsol':
-        case 'sol':
-            return selectSolanaTotalStakePendingByAccountKey(state, accountKey);
-        case 'ada':
-            return '0';
-        default:
-            return exhaustive(symbol);
-    }
+export {
+    selectEntryPeriodInDaysBySymbol,
+    selectEntryPeriodRemainingInDaysByAccountKey,
+    selectUnstakingPeriodInDaysBySymbol,
 };
-export { selectEntryPeriodInDaysBySymbol, selectUnstakingPeriodInDaysBySymbol };

@@ -2346,7 +2346,7 @@
   "TR_TURN_ON_SECURE_SYNC": "Activar",
   "TR_TURN_ON_SECURE_SYNC_DATA_LABELS": "Nombra tus billeteras, personaliza tus cuentas y etiqueta tus transacciones.",
   "TR_TURN_ON_SECURE_SYNC_DATA_STORED_LOCALLY": "Sincroniza de forma segura tus etiquetas entre móvil y escritorio.",
-  "TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_DESCRIPTION": "Actualiza el firmware en el dispositivo {name} para usar Suite Sync.",
+  "TR_FW_UPDATE_REQUIRED_MODAL_DESCRIPTION": "Actualiza el firmware en el dispositivo {name} para usar {featureName}.",
   "TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_HEADING": "Actualización de firmware necesaria",
   "TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_NOT_NOW": "Ahora no",
   "TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_UPGRADE": "Actualizar",

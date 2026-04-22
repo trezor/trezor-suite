@@ -34,8 +34,13 @@
         "type-fest": "5.5.0"
     },
     "devDependencies": {
+        "@suite-common/device": "workspace:*",
+        "@suite-common/message-system": "workspace:*",
+        "@suite-common/suite-sync": "workspace:*",
+        "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@suite-native/test-utils": "workspace:*",
+        "@suite-native/test-utils-store": "workspace:*",
         "@suite-native/trading-fixtures": "workspace:*",
         "@suite-native/trading-types": "workspace:*",
         "@types/invity-api": "^1.1.15"

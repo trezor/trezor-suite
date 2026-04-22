@@ -1,14 +1,10 @@
-import {
-    type TestStore,
-    fireEvent,
-    initStore,
-    renderWithStoreProvider,
-} from '@suite-native/test-utils';
+import { type TestStore, fireEvent, renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { btc1NormalAccount } from '@suite-native/trading-fixtures';
 
+import { createTradingTestStore } from '../../../../__tests__/tradingTestUtils';
 import { ReceiveAccountPicker, type ReceiveAccountPickerProps } from '../ReceiveAccountPicker';
 
-const defaultPreloadedState = {
+const defaultOverrides = {
     device: {
         devices: [],
         selectedDevice: {
@@ -35,9 +31,9 @@ describe('ReceiveAccountPicker', () => {
 
     const renderReceiveAccountPicker = (
         props: Partial<ReceiveAccountPickerProps>,
-        preloadedState = defaultPreloadedState,
+        overrides: Record<string, unknown> = defaultOverrides,
     ) => {
-        store = initStore(preloadedState).store;
+        store = createTradingTestStore({ overrides });
 
         return renderWithStoreProvider(
             <ReceiveAccountPicker
@@ -102,7 +98,7 @@ describe('ReceiveAccountPicker', () => {
         });
     });
 
-    it.skip('should display account name', () => {
+    it('should display account name', () => {
         const { getByText } = renderReceiveAccountPicker({
             receiveAccount: {
                 account: btc1NormalAccount,
@@ -113,8 +109,7 @@ describe('ReceiveAccountPicker', () => {
         expect(getByText('BTC Account #1')).toBeTruthy();
     });
 
-    // Todo: https://github.com/trezor/trezor-suite/issues/24906
-    it.skip('should display account name and address', () => {
+    it('should display account name and address', () => {
         const { getByText } = renderReceiveAccountPicker({
             receiveAccount: {
                 account: btc1NormalAccount,
@@ -123,7 +118,7 @@ describe('ReceiveAccountPicker', () => {
         });
 
         expect(getByText('BTC Account #1')).toBeTruthy();
-        expect(getByText('1BTC')).toBeTruthy();
+        expect(getByText('USED1')).toBeTruthy();
     });
 
     describe('with testID specified', () => {

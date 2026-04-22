@@ -21,10 +21,21 @@
         },
         { "path": "../../packages/theme" },
         { "path": "../../packages/type-utils" },
+        { "path": "../../suite-common/device" },
+        {
+            "path": "../../suite-common/message-system"
+        },
+        {
+            "path": "../../suite-common/suite-sync"
+        },
+        {
+            "path": "../../suite-common/wallet-core"
+        },
         {
             "path": "../../suite-common/wallet-types"
         },
         { "path": "../test-utils" },
+        { "path": "../test-utils-store" },
         { "path": "../trading-fixtures" },
         { "path": "../trading-types" }
     ]

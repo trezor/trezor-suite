@@ -1,10 +1,13 @@
+import { messageSystemInitialState } from '@suite-common/message-system';
+import { featureFlagsReducer } from '@suite-native/feature-flags';
 import { OnboardingStackRoutes } from '@suite-native/navigation';
 import {
     type TestStore,
-    initStore,
+    createLightStore,
+    createStaticReducer,
     renderWithStoreProvider,
     userEvent,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils-store';
 
 import { BiometricsScreen, type BiometricsScreenProps } from '../BiometricsScreen';
 
@@ -23,6 +26,16 @@ jest.mock('@react-navigation/native', () => ({
         dispatch: mockNavigationDispatch,
     }),
     useRoute: () => mockRoute,
+}));
+
+// Stub out postOnboardingInit so exiting the onboarding flow does not dispatch
+// initStakeDataThunk, which calls up-fetch and throws in the jsdom test env
+// because the global Request constructor is not available.
+jest.mock('@suite-native/app-init', () => ({
+    ...jest.requireActual('@suite-native/app-init'),
+    postOnboardingInit: () => ({
+        type: 'postOnboardingInitMock',
+    }),
 }));
 
 describe('BiometricsScreen', () => {
@@ -44,11 +57,28 @@ describe('BiometricsScreen', () => {
     });
 
     it('should redirect to TradingLocation screen on Skip press when isTradingResidenceCheckEnabled is set to true', async () => {
-        store = initStore({
-            featureFlags: {
-                isTradingResidenceCheckEnabled: true,
+        store = createLightStore({
+            reducer: {
+                featureFlags: featureFlagsReducer,
+                locale: createStaticReducer({
+                    appLocaleCode: 'en-US',
+                    systemLocaleCode: 'en-US',
+                    isSystemLocaleUsed: true,
+                }),
+                messageSystem: createStaticReducer(messageSystemInitialState),
+                wallet: createStaticReducer({
+                    settings: {
+                        localCurrency: 'usd',
+                        bitcoinAmountUnit: 0,
+                    },
+                }),
             },
-        }).store;
+            preloadedState: {
+                featureFlags: {
+                    isTradingResidenceCheckEnabled: true,
+                },
+            },
+        });
         const { getByText } = renderBiometricsScreen();
 
         await userEvent.press(getByText('Not now'));
@@ -57,11 +87,28 @@ describe('BiometricsScreen', () => {
     });
 
     it('should redirect to Home screen on Skip press when isTradingResidenceCheckEnabled is set to false', async () => {
-        store = initStore({
-            featureFlags: {
-                isTradingResidenceCheckEnabled: false,
+        store = createLightStore({
+            reducer: {
+                featureFlags: featureFlagsReducer,
+                locale: createStaticReducer({
+                    appLocaleCode: 'en-US',
+                    systemLocaleCode: 'en-US',
+                    isSystemLocaleUsed: true,
+                }),
+                messageSystem: createStaticReducer(messageSystemInitialState),
+                wallet: createStaticReducer({
+                    settings: {
+                        localCurrency: 'usd',
+                        bitcoinAmountUnit: 0,
+                    },
+                }),
             },
-        }).store;
+            preloadedState: {
+                featureFlags: {
+                    isTradingResidenceCheckEnabled: false,
+                },
+            },
+        });
         const { getByText } = renderBiometricsScreen();
 
         await userEvent.press(getByText('Not now'));

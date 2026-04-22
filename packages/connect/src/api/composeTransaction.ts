@@ -23,6 +23,7 @@ import type { ComposeOutput, TransactionInputOutputSortingStrategy } from '@trez
 import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
 import type { MethodContext, MethodMessage, MethodPermission } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
+import { requestExistingAccounts } from './common/requestExistingAccounts';
 import { fixCoinInfoNetwork, getBitcoinNetwork } from '../data/coinInfo';
 import { formatAmount } from '../utils/formatUtils';
 import * as pathUtils from '../utils/pathUtils';
@@ -40,7 +41,7 @@ import { signTx } from './bitcoin/signtx';
 import { signTxLegacy } from './bitcoin/signtxLegacy';
 import { deriveOutputScript, verifyTx } from './bitcoin/signtxVerify';
 import { Discovery } from './common/Discovery';
-import { getFirmwareRange, validateParams } from './common/paramsValidator';
+import { validateParams } from './common/paramsValidator';
 
 type Params = {
     outputs: ComposeOutput[];
@@ -122,8 +123,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
 
         this.useUi = this.useDevice;
 
-        // set required firmware from coinInfo support
-        this.firmwareRange = getFirmwareRange(this.name, coinInfo, this.firmwareRange);
+        this.requiredFirmwareCoins = [coinInfo];
     }
 
     discovery?: Discovery;
@@ -232,28 +232,76 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
     private async selectAccount(context: MethodContext) {
         const { coinInfo } = this.params;
         const blockchain = await this.getBlockchain(context.sendCoreMessage);
+
+        // Try to get existing accounts from the host (e.g. Suite) to skip device discovery
+        if (!this.discovery) {
+            const existingAccounts = await requestExistingAccounts({
+                postMessage: context.sendCoreMessage,
+                createUiPromise: context.createUiPromise,
+                device: this.getDevice(),
+                coinInfo,
+            });
+
+            if (existingAccounts) {
+                return this.selectFromExistingAccounts(existingAccounts, blockchain, context);
+            }
+        }
+
+        return this.selectFromDiscovery(blockchain, context);
+    }
+
+    private async selectFromExistingAccounts(
+        accounts: DiscoveryAccount[],
+        blockchain: Awaited<ReturnType<typeof this.getBlockchain>>,
+        context: MethodContext,
+    ) {
+        const { coinInfo } = this.params;
+        const dfd = context.createUiPromise(UI_RESPONSE.RECEIVE_ACCOUNT, this.getDevice());
+
+        context.sendCoreMessage(
+            createUiMessage(UI_REQUEST.SELECT_ACCOUNT, {
+                type: 'complete',
+                accountTypes: [...new Set(accounts.map(a => a.type))],
+                coinInfo,
+                accounts,
+            }),
+        );
+
+        const uiResp = await dfd.promise;
+        const account = accounts[uiResp.payload];
+        this.params.coinInfo = fixCoinInfoNetwork(this.params.coinInfo, account.address_n);
+        const utxo = await blockchain.getAccountUtxo(account.descriptor);
+
+        return { account, utxo };
+    }
+
+    private async selectFromDiscovery(
+        blockchain: Awaited<ReturnType<typeof this.getBlockchain>>,
+        context: MethodContext,
+    ) {
+        const { coinInfo } = this.params;
         const dfd = context.createUiPromise(UI_RESPONSE.RECEIVE_ACCOUNT, this.getDevice());
 
         if (this.discovery && this.discovery.completed) {
             const { discovery } = this;
             context.sendCoreMessage(
-                createUiMessage(UI_REQUEST.SELECT_ACCOUNT, {
-                    type: 'end',
-                    coinInfo,
-                    accountTypes: discovery.types.map(t => t.type),
-                    accounts: discovery.accounts,
-                }),
+                createUiMessage(
+                    UI_REQUEST.SELECT_ACCOUNT,
+                    {
+                        type: 'end',
+                        coinInfo,
+                        accountTypes: discovery.types.map(t => t.type),
+                        accounts: discovery.accounts,
+                    },
+                    dfd.requestId,
+                ),
             );
             const uiResp = await dfd.promise;
             const account = discovery.accounts[uiResp.payload];
             const utxo = await blockchain.getAccountUtxo(account.descriptor);
 
-            return {
-                account,
-                utxo,
-            };
+            return { account, utxo };
         }
-        // initialize backend
 
         const discovery =
             this.discovery ||
@@ -266,20 +314,27 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
 
         discovery.on('progress', accounts => {
             context.sendCoreMessage(
-                createUiMessage(UI_REQUEST.SELECT_ACCOUNT, {
-                    type: 'progress',
-                    // preventEmpty: true,
-                    coinInfo,
-                    accounts,
-                }),
+                createUiMessage(
+                    UI_REQUEST.SELECT_ACCOUNT,
+                    {
+                        type: 'progress',
+                        coinInfo,
+                        accounts,
+                    },
+                    dfd.requestId,
+                ),
             );
         });
         discovery.on('complete', () => {
             context.sendCoreMessage(
-                createUiMessage(UI_REQUEST.SELECT_ACCOUNT, {
-                    type: 'end',
-                    coinInfo,
-                }),
+                createUiMessage(
+                    UI_REQUEST.SELECT_ACCOUNT,
+                    {
+                        type: 'end',
+                        coinInfo,
+                    },
+                    dfd.requestId,
+                ),
             );
         });
 
@@ -292,11 +347,15 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         // set select account view
         // this view will be updated from discovery events
         context.sendCoreMessage(
-            createUiMessage(UI_REQUEST.SELECT_ACCOUNT, {
-                type: 'start',
-                accountTypes: discovery.types.map(t => t.type),
-                coinInfo,
-            }),
+            createUiMessage(
+                UI_REQUEST.SELECT_ACCOUNT,
+                {
+                    type: 'start',
+                    accountTypes: discovery.types.map(t => t.type),
+                    coinInfo,
+                },
+                dfd.requestId,
+            ),
         );
 
         // wait for user action
@@ -312,10 +371,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         this.params.coinInfo = fixCoinInfoNetwork(this.params.coinInfo, account.address_n);
         const utxo = await blockchain.getAccountUtxo(account.descriptor);
 
-        return {
-            account,
-            utxo,
-        };
+        return { account, utxo };
     }
 
     private async selectFee(
@@ -373,10 +429,14 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
                 // recompose custom fee level with requested value
                 composer.composeCustomFee(resp.payload.value);
                 context.sendCoreMessage(
-                    createUiMessage(UI_REQUEST.UPDATE_CUSTOM_FEE, {
-                        feeLevels: composer.getFeeLevelList(),
-                        coinInfo: this.params.coinInfo,
-                    }),
+                    createUiMessage(
+                        UI_REQUEST.UPDATE_CUSTOM_FEE,
+                        {
+                            feeLevels: composer.getFeeLevelList(),
+                            coinInfo: this.params.coinInfo,
+                        },
+                        resp.requestId,
+                    ),
                 );
 
                 // wait for user action

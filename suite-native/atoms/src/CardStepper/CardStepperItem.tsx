@@ -6,7 +6,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type Color } from '@trezor/theme';
 
 import { Button, type ButtonColorProps } from '../Button/Button';
-import { AnimatedCard } from '../Card/Card';
+import { AnimatedContainerCard } from '../Card/Card';
 import { Divider } from '../Divider';
 import { AnimatedVStack, HStack, VStack } from '../Stack';
 import { Text } from '../Text';
@@ -38,8 +38,8 @@ const buttonsColorSchemeMap = {
 } as const satisfies Record<CardStepperButtonsActionType, Record<string, ButtonColorProps>>;
 
 const cardStyle = prepareNativeStyle<{ isDisabled: boolean }>((utils, { isDisabled }) => ({
-    backgroundColor: utils.colors.backgroundSurfaceElevation1,
-    borderColor: utils.colors.borderOnElevation1,
+    backgroundColor: utils.colors.surfaceFillRaised,
+    borderColor: utils.colors.borderNeutral,
     borderWidth: 1,
     paddingVertical: utils.spacings.sp12,
     overflow: 'hidden',
@@ -47,8 +47,8 @@ const cardStyle = prepareNativeStyle<{ isDisabled: boolean }>((utils, { isDisabl
     extend: {
         condition: isDisabled,
         style: {
-            backgroundColor: utils.colors.backgroundSurfaceElevationNegative,
-            borderColor: utils.colors.borderOnElevation0,
+            backgroundColor: utils.colors.surfaceFillSunken,
+            borderColor: utils.colors.borderNeutral,
             ...utils.boxShadows.none,
         },
     },
@@ -83,12 +83,12 @@ export const CardStepperItem = ({
 }: CardStepperItemProps) => {
     const { applyStyle } = useNativeStyles();
     const iconName = isChecked ? 'check' : icon;
-    const headerColor: Color = isChecked ? 'textPrimaryDefault' : 'textSubdued';
+    const headerColor: Color = isChecked ? 'contentBrand' : 'contentSecondary';
 
     return (
-        <AnimatedCard
+        <AnimatedContainerCard
             layout={LAYOUT_ANIMATION}
-            style={[applyStyle(cardStyle, { isDisabled: !isOpened && !isChecked })]}
+            style={applyStyle(cardStyle, { isDisabled: !isOpened && !isChecked })}
         >
             <VStack spacing="sp16">
                 <VStack spacing="sp12">
@@ -132,6 +132,6 @@ export const CardStepperItem = ({
                     </AnimatedVStack>
                 )}
             </VStack>
-        </AnimatedCard>
+        </AnimatedContainerCard>
     );
 };

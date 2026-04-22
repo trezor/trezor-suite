@@ -3,7 +3,6 @@ import { Assert } from '@trezor/schema-utils';
 
 import type { MethodMessage, MethodPermission } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
-import { getFirmwareRange } from './common/paramsValidator';
 
 export default class CancelCoinjoinAuthorization extends AbstractMethod<'cancelCoinjoinAuthorization'> {
     constructor(message: MethodMessage<'cancelCoinjoinAuthorization'>) {
@@ -14,7 +13,6 @@ export default class CancelCoinjoinAuthorization extends AbstractMethod<'cancelC
         super(message, undefined);
         this.preauthorized =
             typeof payload.preauthorized === 'boolean' ? payload.preauthorized : true;
-        this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
     }
 
     get requiredPermissions(): MethodPermission[] {

@@ -1,11 +1,12 @@
 import { HomeStackRoutes, RootStackRoutes } from '@suite-native/navigation';
-import { setIsOnboardingFinished } from '@suite-native/settings';
+import { appSettingsReducer, setIsOnboardingFinished } from '@suite-native/settings';
 import {
     type TestStore,
     act,
-    initStore,
+    createLightStore,
+    createStaticReducer,
     renderHookWithStoreProvider,
-} from '@suite-native/test-utils';
+} from '@suite-native/test-utils-store';
 
 import { useExitOnboardingFlow } from '../useExitOnboardingFlow';
 
@@ -32,7 +33,22 @@ describe('useExitOnboardingFlow', () => {
         renderHookWithStoreProvider(() => useExitOnboardingFlow(), { store });
 
     beforeEach(() => {
-        store = initStore().store;
+        store = createLightStore({
+            reducer: {
+                appSettings: appSettingsReducer,
+                locale: createStaticReducer({
+                    appLocaleCode: 'en-US',
+                    systemLocaleCode: 'en-US',
+                    isSystemLocaleUsed: true,
+                }),
+                wallet: createStaticReducer({
+                    settings: {
+                        localCurrency: 'usd',
+                        bitcoinAmountUnit: 0,
+                    },
+                }),
+            },
+        });
         jest.clearAllMocks();
     });
 

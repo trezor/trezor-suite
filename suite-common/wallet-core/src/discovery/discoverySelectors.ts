@@ -43,3 +43,11 @@ export const selectIsDiscoveryStatusConfirmEmptyPassphrase = (
     state: DiscoveryRootState & DeviceRootState,
     path?: DeviceUniquePath,
 ) => selectDiscoveryByDevicePath(state, path)?.status === 'confirm-empty-passphrase';
+
+export const selectIsCreatingNewPassphraseWallet = (
+    state: DiscoveryRootState & DeviceRootState,
+) => {
+    const discovery = selectDiscoveryForSelectedDevice(state);
+
+    return discovery?.isAddingHiddenWallet;
+};

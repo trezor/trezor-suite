@@ -27,7 +27,7 @@ export const ConfirmOnTrezorBottomSheet = ({
                 <Text textAlign="center" variant="headline-sm">
                     <Translation id="moduleDevice.confirmOnDeviceSheetTitle" />
                 </Text>
-                <Text textAlign="center" color="textSubdued">
+                <Text textAlign="center" color="contentSecondary">
                     {text}
                 </Text>
             </VStack>

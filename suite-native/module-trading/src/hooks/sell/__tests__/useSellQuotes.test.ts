@@ -1,21 +1,16 @@
 import { INVITY_API_RELOAD_QUOTES_AFTER_SECONDS, tradingSellActions } from '@suite-common/trading';
 import { type AccountKey } from '@suite-common/wallet-types';
+import { type TestStore, act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import {
-    type PreloadedState,
-    type TestStore,
-    act,
-    initStore,
-    renderHookWithStoreProvider,
-} from '@suite-native/test-utils';
-import {
+    banxaCreditCardSellQuote,
     bnbAsset,
     getBtcAccount,
-    getWalletState,
     sellQuotes,
     usdcAsset,
 } from '@suite-native/trading-fixtures';
 import { type SellFormValues } from '@suite-native/trading-types';
 
+import { createTradingLightStore } from '../../../__tests__/tradingTestUtils';
 import { useSellForm } from '../useSellForm';
 import { useSellQuotes } from '../useSellQuotes';
 
@@ -47,16 +42,15 @@ jest.mock('@suite-common/trading', () => ({
 }));
 
 describe('useSellQuotes', () => {
-    const getInitializedStore = () => {
-        const preloadedState: PreloadedState = {
-            wallet: getWalletState({
-                tradeType: 'sell',
-            }),
-        };
-        preloadedState.wallet!.trading!.sell!.tradingAccountKey = 'btc-account-1';
-
-        return initStore(preloadedState).store;
-    };
+    const getInitializedStore = () =>
+        createTradingLightStore({
+            tradeType: 'sell',
+            overrides: {
+                wallet: {
+                    trading: { sell: { tradingAccountKey: 'btc-account-1' } },
+                },
+            },
+        });
 
     const renderUseSellQuotes = (store: TestStore) =>
         renderHookWithStoreProvider(
@@ -279,7 +273,7 @@ describe('useSellQuotes', () => {
 
     it('should not clear quotes when error is from quote', async () => {
         const sellQuoteWithTooHighCryptoAmount = {
-            ...sellQuotes[0],
+            ...banxaCreditCardSellQuote,
             cryptoStringAmount: '2',
         };
         const store = getInitializedStore();

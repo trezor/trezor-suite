@@ -1,0 +1,69 @@
+name: "[Build] LLM Test Analysis Nightly"
+
+# Nightly scheduled build of LLM-based test analysis cache on develop branch
+on:
+  schedule:
+    - cron: "0 5 * * 1-5"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+jobs:
+  build-llm-test-analysis:
+    name: Build LLM test analysis cache
+    runs-on: ubuntu-latest
+    # Only run in the canonical repository, not forks.
+    if: github.repository == 'trezor/trezor-suite'
+    timeout-minutes: 60
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@8df5847569e6427dd6c4fb1cf565c83acfa8afa7 # v6
+        with:
+          role-to-assume: "arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy"
+          aws-region: "eu-central-1"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
+        with:
+          node-version-file: ".nvmrc"
+          cache: yarn
+
+      - name: Cache node_modules
+        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5
+        with:
+          path: node_modules
+          key: node_modules-${{ hashFiles('yarn.lock') }}
+          restore-keys: node_modules-
+
+      - name: Install dependencies
+        shell: bash
+        run: yarn workspaces focus @trezor/e2e-utils
+
+      - name: Download existing LLM analysis cache from S3
+        run: |
+          mkdir -p packages/e2e-utils/coverage-map
+          aws s3 cp s3://dev.suite.sldev.cz/coverage/e2e/llm-analysis.json packages/e2e-utils/coverage-map/llm-analysis.json || true
+
+      - name: Build LLM test analysis cache
+        env:
+          CLAUDE_API_KEY: ${{ secrets.E2E_CLAUDE_API_KEY }}
+        run: |
+          yarn workspace @trezor/e2e-utils analyze-tests ../../suite/e2e/tests --buildCache --exclude "manual/**"
+
+      - name: Upload LLM analysis cache to S3
+        if: always()
+        run: |
+          if [ -f packages/e2e-utils/coverage-map/llm-analysis.json ]; then
+            aws s3api put-object --bucket dev.suite.sldev.cz --key coverage/e2e/llm-analysis.json --body packages/e2e-utils/coverage-map/llm-analysis.json --content-type application/json --cache-control "no-cache, max-age=0"
+          else
+            echo "Local file not found, skipping upload."
+          fi

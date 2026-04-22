@@ -58,7 +58,9 @@ export const TradingDetailProviderInfo = ({
                 {orderId && (
                     <InfoItem label={<Translation id="TR_TRADE_ID" />} direction="row">
                         <Row gap={12}>
-                            <Text>{orderId}</Text>
+                            <Text data-testid="@trading/transaction/detail/order-id">
+                                {orderId}
+                            </Text>
                             <Button
                                 size="small"
                                 intent="neutral"

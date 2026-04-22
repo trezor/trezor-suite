@@ -21,7 +21,7 @@ const itemStyle = prepareNativeStyle<{ isFirst: boolean; isLast: boolean }>(
     (
         {
             spacings: { sp1, sp12, sp20 },
-            colors: { backgroundSurfaceElevation1 },
+            colors: { surfaceFillRaised },
             borders: {
                 radii: { r20 },
             },
@@ -30,7 +30,7 @@ const itemStyle = prepareNativeStyle<{ isFirst: boolean; isLast: boolean }>(
     ) => ({
         paddingHorizontal: sp20,
         paddingVertical: sp12,
-        backgroundColor: backgroundSurfaceElevation1,
+        backgroundColor: surfaceFillRaised,
         marginBottom: sp1,
         extend: [
             {
@@ -66,7 +66,7 @@ export const PaymentMethodListItem = <T extends BuyTrade | SellFiatTrade>({
                 <HStack alignItems="center" justifyContent="space-between">
                     <Text
                         variant="body-md"
-                        color="textDefault"
+                        color="contentPrimary"
                         numberOfLines={1}
                         ellipsizeMode="tail"
                     >
@@ -77,7 +77,7 @@ export const PaymentMethodListItem = <T extends BuyTrade | SellFiatTrade>({
                     <HStack alignItems="center" justifyContent="space-between">
                         <Text
                             variant="body-sm"
-                            color="textSubdued"
+                            color="contentSecondary"
                             numberOfLines={1}
                             ellipsizeMode="tail"
                         >
@@ -85,7 +85,7 @@ export const PaymentMethodListItem = <T extends BuyTrade | SellFiatTrade>({
                         </Text>
                         <Text
                             variant="body-sm"
-                            color="textSubdued"
+                            color="contentSecondary"
                             numberOfLines={1}
                             ellipsizeMode="tail"
                         >

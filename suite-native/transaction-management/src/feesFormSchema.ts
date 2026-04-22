@@ -105,8 +105,7 @@ export const feesFormValidationSchema = yup.object({
 
             const { networkType } = getNetwork(symbol);
 
-            // Fee limit is used only for Ethereum, pass this validation for other networks.
-            if (networkType !== 'ethereum') return true;
+            if (networkType !== 'ethereum' && networkType !== 'tron') return true;
 
             if (!value || !minimalFeeLimit) return false;
 
@@ -114,10 +113,16 @@ export const feesFormValidationSchema = yup.object({
 
             if (feeBig.isLessThan(minimalFeeLimit)) {
                 return this.createError({
-                    message: translate!(
-                        'transactionManagement.fees.custom.bottomSheet.errors.feeLimit.low',
-                        { minGasLimit: minimalFeeLimit },
-                    ),
+                    message:
+                        networkType === 'tron'
+                            ? translate!(
+                                  'transactionManagement.fees.tron.feeLimitBelowRecommended',
+                                  { minFeeLimit: minimalFeeLimit },
+                              )
+                            : translate!(
+                                  'transactionManagement.fees.custom.bottomSheet.errors.feeLimit.low',
+                                  { minGasLimit: minimalFeeLimit },
+                              ),
                 });
             }
 

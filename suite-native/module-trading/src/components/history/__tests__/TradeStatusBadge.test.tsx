@@ -1,14 +1,14 @@
 import { type TradingTransactionStatus } from '@suite-common/trading';
-import { type BadgeVariant } from '@suite-native/atoms';
+import { type BadgeIntent } from '@suite-native/atoms';
 import { getTranslation } from '@suite-native/intl';
-import { renderWithStoreProvider } from '@suite-native/test-utils';
 import { getBuyTrade, getExchangeTrade, getSellTrade } from '@suite-native/trading-fixtures';
 
+import { renderWithTradingProvider } from '../../../__tests__/tradingTestUtils';
 import { TradeStatusBadge, getBadgeIconName, getBadgeVariant } from '../TradeStatusBadge';
 
 describe('TradeStatusBadge', () => {
     it('should render nothing when status is undefined', () => {
-        const { toJSON } = renderWithStoreProvider(<TradeStatusBadge status={undefined} />);
+        const { toJSON } = renderWithTradingProvider(<TradeStatusBadge status={undefined} />);
 
         expect(toJSON()).toBeNull();
     });
@@ -26,7 +26,7 @@ describe('TradeStatusBadge', () => {
         'should render badge with correct text for buy trade and status %s',
         (status, statusKey) => {
             const buyTrade = getBuyTrade({ status });
-            const { getByAccessibilityHint } = renderWithStoreProvider(
+            const { getByAccessibilityHint } = renderWithTradingProvider(
                 <TradeStatusBadge status={buyTrade.data.status} />,
             );
             const expectedText = new RegExp(
@@ -52,7 +52,7 @@ describe('TradeStatusBadge', () => {
         'should render badge with correct text for exchange trade and status %s',
         (status, statusKey) => {
             const exchangeTrade = getExchangeTrade({ status });
-            const { getByAccessibilityHint } = renderWithStoreProvider(
+            const { getByAccessibilityHint } = renderWithTradingProvider(
                 <TradeStatusBadge status={exchangeTrade.data.status} />,
             );
             const expectedText = new RegExp(
@@ -76,7 +76,7 @@ describe('TradeStatusBadge', () => {
         'should render badge with correct text for sell trade and status %s',
         (status, statusKey) => {
             const sellTrade = getSellTrade({ status });
-            const { getByAccessibilityHint } = renderWithStoreProvider(
+            const { getByAccessibilityHint } = renderWithTradingProvider(
                 <TradeStatusBadge status={sellTrade.data.status} />,
             );
             const expectedText = new RegExp(
@@ -89,15 +89,15 @@ describe('TradeStatusBadge', () => {
     describe('getBadgeVariant', () => {
         it.each([
             [undefined, 'neutral'],
-            ['CANCELLED', 'yellow'],
-            ['SUCCESS', 'greenSubtle'],
-            ['REFUNDED', 'red'],
-            ['BLOCKED', 'red'],
-            ['ERROR', 'red'],
-            ['SUBMITTED', 'yellow'],
-            ['CONVERTING', 'yellow'],
-            ['KYC', 'yellow'],
-        ] as [TradingTransactionStatus, BadgeVariant][])(
+            ['CANCELLED', 'warning'],
+            ['SUCCESS', 'brand'],
+            ['REFUNDED', 'critical'],
+            ['BLOCKED', 'critical'],
+            ['ERROR', 'critical'],
+            ['SUBMITTED', 'warning'],
+            ['CONVERTING', 'warning'],
+            ['KYC', 'warning'],
+        ] as [TradingTransactionStatus, BadgeIntent][])(
             'should render badge with correct text for status %s',
             (status, expectedVariant) => {
                 expect(getBadgeVariant(status)).toBe(expectedVariant);

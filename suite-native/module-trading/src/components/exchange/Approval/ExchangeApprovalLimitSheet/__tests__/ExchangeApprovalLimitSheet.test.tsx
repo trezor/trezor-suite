@@ -1,32 +1,20 @@
 import { getTranslation } from '@suite-native/intl';
-import { type PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils';
-import { exchangeQuotes, getInitializedTradingState } from '@suite-native/trading-fixtures';
+import { mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 
+import { renderWithTradingProvider } from '../../../../../__tests__/tradingTestUtils';
 import { ExchangeApprovalLimitSheet } from '../ExchangeApprovalLimitSheet';
 
 const mockOnDismiss = jest.fn();
 const mockOnApprovalTypeSelect = jest.fn();
 
-const testQuote = exchangeQuotes[0];
-
-const getPreloadedState = (): PreloadedState => ({
-    wallet: {
-        trading: {
-            ...getInitializedTradingState('exchange'),
-            exchange: {
-                ...getInitializedTradingState('exchange').exchange,
-                selectedQuote: testQuote,
-            },
-        },
-    },
-});
+const testQuote = mercuryoFixedWorstQuote;
 
 const renderSheet = (
     isVisible = true,
     quote = testQuote,
     selectedApprovalType: 'INFINITE' | 'MINIMAL' = 'INFINITE',
 ) =>
-    renderWithStoreProvider(
+    renderWithTradingProvider(
         <ExchangeApprovalLimitSheet
             isVisible={isVisible}
             onDismiss={mockOnDismiss}
@@ -34,7 +22,12 @@ const renderSheet = (
             onApprovalTypeSelect={mockOnApprovalTypeSelect}
             selectedApprovalType={selectedApprovalType}
         />,
-        { preloadedState: getPreloadedState() },
+        {
+            tradeType: 'exchange',
+            overrides: {
+                wallet: { trading: { exchange: { selectedQuote: testQuote } } },
+            },
+        },
     );
 
 describe('ExchangeApprovalLimitSheet', () => {
