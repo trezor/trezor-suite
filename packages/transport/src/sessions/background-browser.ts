@@ -1,3 +1,4 @@
+import * as ERRORS from '../errors';
 import type { Descriptor } from '../types';
 import { type SessionsBackground } from './background';
 import {
@@ -5,6 +6,8 @@ import {
     type HandleMessageResponse,
     type SessionsBackgroundInterface,
 } from './types';
+
+const REQUEST_TIMEOUT_MS = 10_000;
 
 /**
  * creating BrowserSessionsBackground initiates sessions-background for browser based environments and provides:
@@ -26,22 +29,42 @@ export class BrowserSessionsBackground implements SessionsBackgroundInterface {
     handleMessage<M extends HandleMessageParams>(params: M): Promise<HandleMessageResponse<M>> {
         const { background } = this;
 
-        return new Promise(resolve => {
+        return new Promise<HandleMessageResponse<M>>(resolve => {
+            let settled = false;
+            const cleanup: Array<() => void> = [];
+
+            const timeoutResponse = {
+                success: false,
+                error: { code: ERRORS.SESSION_BACKGROUND_TIMEOUT },
+                id: params.id ?? -1,
+            } as HandleMessageResponse<M>;
+
+            const settle = (value: HandleMessageResponse<M>) => {
+                if (settled) return;
+                settled = true;
+                cleanup.forEach(fn => fn());
+                resolve(value);
+            };
+
             const onmessage = (message: MessageEvent<any>) => {
                 if (params.id === message.data.id) {
-                    resolve(message.data);
-                    background.port.removeEventListener('message', onmessage);
+                    settle(message.data);
                 }
             };
 
-            background.port.addEventListener('message', onmessage);
-
-            background.port.onmessageerror = message => {
-                // not sure under what circumstances this error occurs. let's observe it during testing
+            const onmessageerror = (message: MessageEvent<any>) => {
                 console.error('background-browser onmessageerror,', message);
-
-                background.port.removeEventListener('message', onmessage);
+                settle(timeoutResponse);
             };
+
+            background.port.addEventListener('message', onmessage);
+            background.port.addEventListener('messageerror', onmessageerror);
+            cleanup.push(() => background.port.removeEventListener('message', onmessage));
+            cleanup.push(() => background.port.removeEventListener('messageerror', onmessageerror));
+
+            const timeoutHandle = setTimeout(() => settle(timeoutResponse), REQUEST_TIMEOUT_MS);
+            cleanup.push(() => clearTimeout(timeoutHandle));
+
             background.port.postMessage(params);
         });
     }
