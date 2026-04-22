@@ -12,8 +12,19 @@ import { prepareNativeTheme } from '@trezor/theme';
 
 import { extraDependenciesNativeMock } from './extraDependenciesNative.mock';
 
-type ProviderProps = {
+export type ProviderKey = 'intl' | 'navigation' | 'services' | 'formatter' | 'bottomSheet';
+
+export const ALL_PROVIDERS: ProviderKey[] = [
+    'intl',
+    'navigation',
+    'services',
+    'formatter',
+    'bottomSheet',
+];
+
+type ProviderForTestsProps = {
     children: ReactNode;
+    providers?: ProviderKey[];
     formattersConfig?: FormatterProviderConfig;
 };
 
@@ -27,18 +38,59 @@ const DEFAULT_FORMATTERS_CONFIG: FormatterProviderConfig = {
     is24HourFormat: true,
 };
 
-export const BasicProviderForTests = ({ children, formattersConfig }: ProviderProps) => (
-    <SafeAreaProvider>
-        <IntlProviderForTests>
-            <StylesProvider theme={theme} renderer={renderer}>
-                <NavigationContainer>
-                    <NativeServicesProvider services={extraDependenciesNativeMock.services}>
-                        <FormatterProvider config={formattersConfig ?? DEFAULT_FORMATTERS_CONFIG}>
-                            <BottomSheetModalProvider>{children}</BottomSheetModalProvider>
-                        </FormatterProvider>
-                    </NativeServicesProvider>
-                </NavigationContainer>
-            </StylesProvider>
-        </IntlProviderForTests>
-    </SafeAreaProvider>
+export const ProviderForTests = ({
+    children,
+    providers = [],
+    formattersConfig,
+}: ProviderForTestsProps) => {
+    const has = (key: ProviderKey) => providers.includes(key);
+
+    let tree: ReactNode = children;
+
+    if (has('bottomSheet')) {
+        tree = <BottomSheetModalProvider>{tree}</BottomSheetModalProvider>;
+    }
+    if (has('formatter')) {
+        tree = (
+            <FormatterProvider config={formattersConfig ?? DEFAULT_FORMATTERS_CONFIG}>
+                {tree}
+            </FormatterProvider>
+        );
+    }
+    if (has('services')) {
+        tree = (
+            <NativeServicesProvider services={extraDependenciesNativeMock.services}>
+                {tree}
+            </NativeServicesProvider>
+        );
+    }
+    if (has('navigation')) {
+        tree = <NavigationContainer>{tree}</NavigationContainer>;
+    }
+
+    tree = (
+        <StylesProvider theme={theme} renderer={renderer}>
+            {tree}
+        </StylesProvider>
+    );
+
+    if (has('intl')) {
+        tree = <IntlProviderForTests>{tree}</IntlProviderForTests>;
+    }
+
+    return <SafeAreaProvider>{tree}</SafeAreaProvider>;
+};
+
+type BasicProviderForTestsProps = {
+    children: ReactNode;
+    formattersConfig?: FormatterProviderConfig;
+};
+
+export const BasicProviderForTests = ({
+    children,
+    formattersConfig,
+}: BasicProviderForTestsProps) => (
+    <ProviderForTests providers={ALL_PROVIDERS} formattersConfig={formattersConfig}>
+        {children}
+    </ProviderForTests>
 );

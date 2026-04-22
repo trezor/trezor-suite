@@ -9,42 +9,55 @@ import {
 
 import type { FormatterProviderConfig } from '@suite-common/formatters';
 
-import { BasicProviderForTests } from './BasicProviderForTests';
+import { ALL_PROVIDERS, ProviderForTests, type ProviderKey } from './BasicProviderForTests';
 
-export const renderWithBasicProvider = <Props,>(
+type ExtraOptions = {
+    providers?: ProviderKey[];
+    formattersConfig?: FormatterProviderConfig;
+};
+
+export const renderWithProviders = <Props,>(
     element: ReactElement<Props>,
     {
+        providers,
         formattersConfig,
         wrapper: Wrapper,
         ...options
-    }: RenderOptions & {
-        formattersConfig?: FormatterProviderConfig;
-    } = {},
+    }: RenderOptions & ExtraOptions = {},
 ) =>
     render(element, {
         wrapper: ({ children }) => (
-            <BasicProviderForTests formattersConfig={formattersConfig}>
+            <ProviderForTests providers={providers} formattersConfig={formattersConfig}>
                 {Wrapper ? <Wrapper>{children}</Wrapper> : children}
-            </BasicProviderForTests>
+            </ProviderForTests>
         ),
         ...options,
     });
 
-export const renderHookWithBasicProvider = <Result, Props>(
+export const renderHookWithProviders = <Result, Props>(
     callback: (props: Props) => Result,
     {
+        providers,
         formattersConfig,
         wrapper: Wrapper,
         ...options
-    }: RenderHookOptions<Props> & {
-        formattersConfig?: FormatterProviderConfig;
-    } = {},
+    }: RenderHookOptions<Props> & ExtraOptions = {},
 ) =>
     renderHook(callback, {
         wrapper: ({ children }) => (
-            <BasicProviderForTests formattersConfig={formattersConfig}>
+            <ProviderForTests providers={providers} formattersConfig={formattersConfig}>
                 {Wrapper ? <Wrapper>{children}</Wrapper> : children}
-            </BasicProviderForTests>
+            </ProviderForTests>
         ),
         ...options,
     });
+
+export const renderWithBasicProvider = <Props,>(
+    element: ReactElement<Props>,
+    options: RenderOptions & { formattersConfig?: FormatterProviderConfig } = {},
+) => renderWithProviders(element, { providers: ALL_PROVIDERS, ...options });
+
+export const renderHookWithBasicProvider = <Result, Props>(
+    callback: (props: Props) => Result,
+    options: RenderHookOptions<Props> & { formattersConfig?: FormatterProviderConfig } = {},
+) => renderHookWithProviders(callback, { providers: ALL_PROVIDERS, ...options });
