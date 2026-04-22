@@ -5,6 +5,7 @@ import {
     parseUnsignedEvmTransaction,
 } from '@suite-common/earn-stablecoin-api';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { type AccountKey } from '@suite-common/wallet-types';
 import {
     getContractAddressForNetworkSymbol,
     getEvmApprovalTxData,
@@ -37,6 +38,19 @@ type WithdrawRequestAmountParams = {
     receiptToken: TokenLike;
     pricePerShare?: string | number;
 };
+
+type GetStablecoinYieldFlowKeyParams = {
+    accountKey: AccountKey;
+    tokenContract?: string | null;
+    yieldId: string;
+};
+
+export const getStablecoinYieldFlowKey = ({
+    accountKey,
+    tokenContract,
+    yieldId,
+}: GetStablecoinYieldFlowKeyParams) =>
+    `${accountKey}:${yieldId}:${tokenContract?.toLowerCase() ?? ''}`;
 
 export const splitYieldPendingTransaction = (
     pendingTransaction: YieldPendingTransactionState | null,

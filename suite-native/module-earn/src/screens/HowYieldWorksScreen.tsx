@@ -1,6 +1,6 @@
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
-import { Button, Text, TimelineDetailsCard, VStack } from '@suite-native/atoms';
+import { Button, TimelineDetailsCard, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     Screen,
@@ -13,7 +13,7 @@ import {
 import { HowEarnWorksBenefitsSection } from '../components/HowEarnWorks/HowEarnWorksBenefitsSection';
 import { HowEarnWorksHeaderSection } from '../components/HowEarnWorks/HowEarnWorksHeaderSection';
 import { HowEarnWorksTimelineCard } from '../components/HowEarnWorks/HowEarnWorksTimelineCard';
-import { useYieldOpportunityData } from '../hooks/useYieldOpportunityData';
+import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
 import { createHowYieldWorksPreset } from '../presets/HowEarnWorks/yieldPresets';
 
 type NavigationProps = StackNavigationProps<YieldStackParamList, YieldStackRoutes.HowYieldWorks>;
@@ -21,23 +21,16 @@ type NavigationProps = StackNavigationProps<YieldStackParamList, YieldStackRoute
 export const HowYieldWorksScreen = () => {
     const navigation = useNavigation<NavigationProps>();
     const route = useRoute<RouteProp<YieldStackParamList, YieldStackRoutes.HowYieldWorks>>();
-    const { yieldId } = route.params;
-    const { vault, apy, tokenSymbol, vaultTokenName } = useYieldOpportunityData({ yieldId });
+    const { vault, apy, tokenSymbol, vaultTokenName, resolutionStatus } = useResolvedYieldFlowData(
+        route.params,
+    );
 
     const handleNavigateToYieldConsents = () => {
         navigation.navigate(YieldStackRoutes.YieldConsents, route.params);
     };
 
-    if (!vault) {
-        return (
-            <Screen header={<ScreenHeader closeActionType="back" />}>
-                <VStack flex={1} justifyContent="center" alignItems="center">
-                    <Text variant="body-md">
-                        <Translation id="earn.notAvailable" />
-                    </Text>
-                </VStack>
-            </Screen>
-        );
+    if (resolutionStatus !== 'resolved' || !vault) {
+        return null;
     }
 
     const { benefitItems, timelineSections } = createHowYieldWorksPreset({

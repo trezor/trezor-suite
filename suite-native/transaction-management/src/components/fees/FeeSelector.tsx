@@ -1,5 +1,4 @@
 import { useCallback, useRef } from 'react';
-import { Keyboard } from 'react-native';
 import { useDispatch } from 'react-redux';
 
 import {
@@ -69,7 +68,6 @@ export const FeeSelector = ({
     const isTrc20 = networkType === 'tron' && !!tokenContract;
 
     const handleOpen = useCallback(() => {
-        Keyboard.dismiss();
         confirmedRef.current = false;
         snapshotRef.current = form.getValues();
         // Reset to current values so isDirty starts as false for this open cycle

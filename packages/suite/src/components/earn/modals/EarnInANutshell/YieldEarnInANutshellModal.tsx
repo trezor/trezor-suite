@@ -8,10 +8,9 @@ import {
     type EarnYieldContext,
 } from '@suite-common/suite-types/src/staking';
 import { type Account } from '@suite-common/wallet-types';
-import { isStakingNetworkType } from '@suite-common/wallet-utils';
+import { getApyPercent, isStakingNetworkType } from '@suite-common/wallet-utils';
 import { Divider } from '@trezor/components';
 
-import { getApyPercent } from 'src/components/earn/utils/earnApyUtils';
 import { useAnalytics } from 'src/support/useAnalytics';
 
 import { EarnInANutshellModalLayout } from './components/EarnInANutshellModalLayout';

@@ -1,20 +1,14 @@
 import { useCallback, useMemo } from 'react';
 
 import { useBottomSheetModal as useBottomSheetModalContext } from '@gorhom/bottom-sheet';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { useFocusEffect } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 
 import { events } from '@suite-native/analytics';
 import { ListItemSkeleton, TitleHeader, VStack } from '@suite-native/atoms';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { Translation } from '@suite-native/intl';
-import {
-    type RootStackParamList,
-    RootStackRoutes,
-    Screen,
-    type StackNavigationProps,
-    YieldStackRoutes,
-} from '@suite-native/navigation';
+import { Screen } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
 
 import { ChooseStakingAccountBottomSheet } from '../components/ChooseStakingAccountBottomSheet';
@@ -37,8 +31,6 @@ const getEarnListItemKey = (item: EarnPromoListDataItem) =>
 
 const EarnScreenContent = () => {
     const analytics = useAnalytics();
-    const navigation =
-        useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.YieldNavigator>>();
     const { dismissAll } = useBottomSheetModalContext();
 
     const {
@@ -79,17 +71,12 @@ const EarnScreenContent = () => {
             dismissAll();
 
             if (item.type === 'stablecoin-yield') {
+                if (!item.accountKey || !item.contractAddress) {
+                    return;
+                }
+
                 analytics.report({
                     type: events.earnStablecoinYieldTilePressedEvent.name,
-                });
-                // TODO: Replace this temporary educational entry once the full yield flow is ready.
-                navigation.navigate(RootStackRoutes.YieldNavigator, {
-                    screen: YieldStackRoutes.HowYieldWorks,
-                    params: {
-                        yieldId: item.id,
-                        tokenContract: item.contractAddress,
-                        accountKey: item.accountKey ?? undefined,
-                    },
                 });
 
                 return;
@@ -101,7 +88,7 @@ const EarnScreenContent = () => {
 
             handleStakingPromoPress(item);
         },
-        [analytics, dismissAll, handleStakingPromoPress, navigation],
+        [analytics, dismissAll, handleStakingPromoPress],
     );
 
     const renderItem = useCallback(

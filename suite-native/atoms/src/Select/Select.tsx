@@ -1,5 +1,4 @@
 import { type ReactNode, useMemo, useState } from 'react';
-import { Keyboard } from 'react-native';
 
 import { Translation } from '@suite-native/intl';
 
@@ -49,7 +48,6 @@ export const Select = <TItemValue extends SelectItemValue>({
     const [isConfirmButtonVisible, setIsConfirmButtonVisible] = useState(false);
 
     const openBottomSheet = () => {
-        Keyboard.dismiss();
         setSelectedItemValue(value);
         setIsConfirmButtonVisible(false);
         openModal();

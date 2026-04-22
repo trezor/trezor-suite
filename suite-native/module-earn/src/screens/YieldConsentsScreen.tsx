@@ -1,38 +1,39 @@
-import { type RouteProp, useRoute } from '@react-navigation/native';
+import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import { Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     Screen,
     ScreenHeader,
+    type StackNavigationProps,
     type YieldStackParamList,
-    type YieldStackRoutes,
+    YieldStackRoutes,
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
-import { capitalizeFirstLetter } from '@trezor/utils';
 
 import { YieldConsentsProviderCard } from '../components/YieldConsentsProviderCard';
-import { useWorkInProgressAlert } from '../hooks/useWorkInProgressAlert';
-import { useYieldOpportunityData } from '../hooks/useYieldOpportunityData';
+import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
 
 const titleStyle = prepareNativeStyle(utils => ({
     marginBottom: utils.spacings.sp32,
 }));
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldConsents>;
+type NavigationProps = StackNavigationProps<YieldStackParamList, YieldStackRoutes.YieldConsents>;
 
 export const YieldConsentsScreen = () => {
     const { applyStyle } = useNativeStyles();
+    const navigation = useNavigation<NavigationProps>();
     const route = useRoute<RouteProps>();
-    const { yieldId } = route.params;
-    const handleShowWorkInProgressAlert = useWorkInProgressAlert();
-    const { vault, tokenSymbol } = useYieldOpportunityData({ yieldId });
+    const { providerName, tokenSymbol, vault } = useResolvedYieldFlowData(route.params);
+
+    const handleNavigateToYieldSupplyFlow = () => {
+        navigation.navigate(YieldStackRoutes.YieldSupplyFlow, route.params);
+    };
 
     if (!vault || !tokenSymbol) {
         return;
     }
-
-    const providerName = capitalizeFirstLetter(vault.providerId);
 
     return (
         <Screen header={<ScreenHeader closeActionType="back" />}>
@@ -41,9 +42,9 @@ export const YieldConsentsScreen = () => {
                     <Translation id="earn.yieldConsentsScreen.title" />
                 </Text>
                 <YieldConsentsProviderCard
-                    providerName={providerName}
+                    providerName={providerName ?? ''}
                     tokenSymbol={tokenSymbol}
-                    onConfirm={handleShowWorkInProgressAlert}
+                    onConfirm={handleNavigateToYieldSupplyFlow}
                 />
             </VStack>
         </Screen>

@@ -11,13 +11,12 @@ import {
     type YieldFlowDisplayToken,
     type YieldFlowToken,
     doTokensMatch,
+    getStablecoinYieldFlowKey,
 } from '@suite-common/wallet-core';
 import type { Account, TokenInfoBranded } from '@suite-common/wallet-types';
-import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
+import { getApyPercent, getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import type { TokenInfo } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
-
-import { getApyPercent } from 'src/components/earn/utils/earnApyUtils';
 
 const hasTokenSymbol = (
     accountToken: NonNullable<Account['tokens']>[number],
@@ -192,7 +191,11 @@ export const useResolvedYieldFlowData = ({
           })
         : '0';
 
-    const flowKey = `${account.key}:${routeParams.yieldId}:${resolvedContractAddress ?? ''}`;
+    const flowKey = getStablecoinYieldFlowKey({
+        accountKey: account.key,
+        tokenContract: resolvedContractAddress,
+        yieldId: routeParams.yieldId,
+    });
 
     const apy = vault?.rewardRate?.total != null ? getApyPercent(vault.rewardRate.total) : null;
 
