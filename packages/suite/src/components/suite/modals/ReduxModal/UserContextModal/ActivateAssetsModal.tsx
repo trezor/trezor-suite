@@ -103,7 +103,7 @@ export const ActivateAssetsModal = ({ onCancel }: ActivateAssetsModalProps) => {
                 bottomContent={
                     hasChanges ? (
                         <Modal.Button onClick={onSave} data-testid="@modal/activate-assets/save">
-                            <Translation id="TR_SAVE" />
+                            <Translation id="TR_ADD" />
                         </Modal.Button>
                     ) : null
                 }

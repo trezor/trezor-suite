@@ -23,6 +23,7 @@ import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOv
 
 import { DashboardGraph } from './DashboardGraph';
 import { EmptyWallet } from './EmptyWallet';
+import { EmptyWalletSkeleton } from './EmptyWalletSkeleton';
 import { PortfolioCardException } from './PortfolioCardException';
 import { PortfolioCardHeader } from './PortfolioCardHeader';
 import { UnsupportedAssetsMessage, useUnsupportedNetworkMessage } from './UnsupportedAssetsMessage';
@@ -85,13 +86,21 @@ export const PortfolioCard = memo(() => {
             </MarginContainer>
         );
     } else if (discoveryStatus && discoveryStatus.status === 'loading') {
-        body = isGraphHidden ? null : (
-            <MarginContainer>
-                <Column height={320}>
-                    <GraphSkeleton data-testid="@dashboard/loading" />
-                </Column>
-            </MarginContainer>
-        );
+        if (isDeviceEmpty) {
+            body = (
+                <MarginContainer>
+                    <EmptyWalletSkeleton />
+                </MarginContainer>
+            );
+        } else if (!isGraphHidden) {
+            body = (
+                <MarginContainer>
+                    <Column height={320}>
+                        <GraphSkeleton data-testid="@dashboard/loading" />
+                    </Column>
+                </MarginContainer>
+            );
+        }
     } else if (isDeviceEmpty) {
         body = (
             <MarginContainer>
@@ -112,7 +121,6 @@ export const PortfolioCard = memo(() => {
         showGraphControls,
         device,
         accounts,
-        isGraphHidden,
     });
 
     const heading = <Translation id="TR_MY_PORTFOLIO" />;

@@ -69,7 +69,7 @@ const Container = ({ title, description, cta, dataTestBase, icon }: ContainerPro
                     <Button
                         key={a.label || 'TR_RETRY'}
                         intent={a.intent || 'warning'}
-                        iconLeft={a.icon || 'plus'}
+                        iconLeft={a.icon}
                         isLoading={a.isDisabled ?? isLocked()}
                         onClick={a.action}
                         data-testid={`@exception/${dataTestBase}/${a.intent || 'warning'}-button`}
@@ -149,7 +149,7 @@ export const PortfolioCardException = ({
                             action: () => dispatch(openModal({ type: 'activate-assets' })),
                             isDisabled: false,
                             intent: 'brand',
-                            label: 'TR_COIN_SETTINGS',
+                            label: 'TR_DASHBOARD_GET_STARTED',
                             size: 'large',
                         },
                     ]}
@@ -189,6 +189,7 @@ export const PortfolioCardException = ({
                             dispatch(startOrRestartDiscoveryThunk());
                         },
                         label: 'TR_ACCOUNT_ENABLE_PASSPHRASE',
+                        icon: 'plus',
                     }}
                     dataTestBase={exception.type}
                 />
