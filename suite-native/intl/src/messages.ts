@@ -2597,6 +2597,16 @@ export const messages = {
                 },
             },
         },
+        yieldConsentsScreen: {
+            title: 'Before you continue',
+            providerCard: {
+                title: 'Supplying to {providerName}',
+                firstItem:
+                    '{providerName} maintains and protects your supplied {tokenSymbol} with their smart contracts, infrastructure, and technology.',
+                secondItem:
+                    "When supplying, the responsibility for your funds' security transitions from your Trezor to {providerName}.",
+            },
+        },
         staked: 'Staked',
         stakedAutomatically: 'Staked automatically',
         fullBalance: 'Full balance',

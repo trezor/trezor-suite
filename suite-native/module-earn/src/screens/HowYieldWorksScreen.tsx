@@ -1,26 +1,32 @@
-import { type RouteProp, useRoute } from '@react-navigation/native';
+import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import { Button, Text, TimelineDetailsCard, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     Screen,
     ScreenHeader,
+    type StackNavigationProps,
     type YieldStackParamList,
-    type YieldStackRoutes,
+    YieldStackRoutes,
 } from '@suite-native/navigation';
 
 import { HowEarnWorksBenefitsSection } from '../components/HowEarnWorks/HowEarnWorksBenefitsSection';
 import { HowEarnWorksHeaderSection } from '../components/HowEarnWorks/HowEarnWorksHeaderSection';
 import { HowEarnWorksTimelineCard } from '../components/HowEarnWorks/HowEarnWorksTimelineCard';
-import { useWorkInProgressAlert } from '../hooks/useWorkInProgressAlert';
 import { useYieldOpportunityData } from '../hooks/useYieldOpportunityData';
 import { createHowYieldWorksPreset } from '../presets/HowEarnWorks/yieldPresets';
 
+type NavigationProps = StackNavigationProps<YieldStackParamList, YieldStackRoutes.HowYieldWorks>;
+
 export const HowYieldWorksScreen = () => {
+    const navigation = useNavigation<NavigationProps>();
     const route = useRoute<RouteProp<YieldStackParamList, YieldStackRoutes.HowYieldWorks>>();
     const { yieldId } = route.params;
-    const handleShowWorkInProgressAlert = useWorkInProgressAlert();
     const { vault, apy, tokenSymbol, vaultTokenName } = useYieldOpportunityData({ yieldId });
+
+    const handleNavigateToYieldConsents = () => {
+        navigation.navigate(YieldStackRoutes.YieldConsents, route.params);
+    };
 
     if (!vault) {
         return (
@@ -65,7 +71,7 @@ export const HowYieldWorksScreen = () => {
                         ))}
                     </HowEarnWorksTimelineCard>
                 </VStack>
-                <Button onPress={handleShowWorkInProgressAlert}>
+                <Button onPress={handleNavigateToYieldConsents}>
                     <Translation id="generic.buttons.continue" />
                 </Button>
             </VStack>
