@@ -155,20 +155,20 @@ const TradingExchangePreviewScreenContent = ({
     const errorString = txnErrorString ?? quote?.error;
 
     return (
-        <Screen header={<ExchangePreviewScreenHeader />}>
+        <Screen
+            header={<ExchangePreviewScreenHeader />}
+            footer={
+                <ExchangePreviewContinueButton
+                    isDisabled={!!errorString}
+                    onSignTransactionNavigation={onSignTransactionNavigation}
+                />
+            }
+        >
             <ExchangePreviewView
                 quote={quote}
                 txnErrorString={errorString}
                 isApproved={isApproved}
             />
-            {!isFinalized && (
-                <ExchangePreviewContinueButton
-                    quote={quote}
-                    isDisabled={!!errorString}
-                    onSignTransactionNavigation={onSignTransactionNavigation}
-                />
-            )}
-
             <Footer />
         </Screen>
     );

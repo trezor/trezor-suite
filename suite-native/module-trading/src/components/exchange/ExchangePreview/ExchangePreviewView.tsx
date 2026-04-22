@@ -1,5 +1,5 @@
 import { type ReactNode, memo } from 'react';
-import Animated, { LinearTransition } from 'react-native-reanimated';
+import Animated, { FadeIn, FadeOut, LinearTransition } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import type { ExchangeTrade } from 'invity-api';
@@ -47,7 +47,7 @@ export const ExchangePreviewView = memo(
                     />
                 )}
                 {isTxnError && (
-                    <Animated.View>
+                    <Animated.View layout={LinearTransition} entering={FadeIn} exiting={FadeOut}>
                         <InlineAlertBox variant="critical" title={txnErrorString} />
                     </Animated.View>
                 )}
