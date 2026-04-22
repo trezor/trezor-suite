@@ -1,12 +1,13 @@
 import { type ReactNode } from 'react';
 
+import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Button, Paragraph, Table } from '@trezor/components';
 
-import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { ApyValue } from 'src/views/wallet/staking/components/ApyValue';
 
 import { EarnAccountCell } from './EarnAccountCell';

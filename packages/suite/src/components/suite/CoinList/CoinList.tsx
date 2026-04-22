@@ -1,3 +1,4 @@
+import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { getCoinUnavailabilityMessage } from '@suite-common/suite-utils';
 import { type Network, type NetworkSymbol } from '@suite-common/wallet-config';
@@ -6,7 +7,7 @@ import { getFirmwareVersion, isDeviceInBootloaderMode } from '@trezor/device-uti
 import { spacings } from '@trezor/theme';
 import { versionUtils } from '@trezor/utils';
 
-import { useDevice, useDiscovery, useSelector } from 'src/hooks/suite';
+import { useDiscovery, useSelector } from 'src/hooks/suite';
 import { getCoinLabel } from 'src/utils/suite/getCoinLabel';
 
 import { Coin } from './Coin';

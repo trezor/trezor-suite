@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { checkAddressCheckSum, toChecksumAddress } from 'web3-utils';
 
 import { events } from '@suite/analytics';
+import { useDevice } from '@suite/device';
 import { Translation, useTranslation } from '@suite/intl';
 import { openDeferredModal } from '@suite/modal';
 import { selectIsDebugModeActive } from '@suite/settings';
@@ -36,7 +37,7 @@ import { capitalizeFirstLetter } from '@trezor/utils';
 import { AddressLabeling, Labeling } from 'src/components/suite';
 import { InputError } from 'src/components/wallet';
 import { type InputErrorProps } from 'src/components/wallet/InputError';
-import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { useAnalytics } from 'src/support/useAnalytics';
 import { getProtocolInfo } from 'src/utils/suite/protocol';

@@ -1,6 +1,6 @@
+import { useDevice } from '@suite/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
 
-import { useDevice } from 'src/hooks/suite';
 import { useServerEnvironment } from 'src/hooks/wallet/trading/useServerEnviroment';
 import { type TradingPageType } from 'src/types/trading/trading';
 

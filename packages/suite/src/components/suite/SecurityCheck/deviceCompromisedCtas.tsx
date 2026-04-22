@@ -1,3 +1,4 @@
+import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { deviceActions } from '@suite-common/device';
 import { Button } from '@trezor/components';
@@ -8,7 +9,7 @@ import {
     type Url,
 } from '@trezor/urls';
 
-import { useDevice, useDispatch } from 'src/hooks/suite';
+import { useDispatch } from 'src/hooks/suite';
 
 type ContactSupportProps = {
     supportUrl: Url;

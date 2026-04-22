@@ -1,6 +1,7 @@
 import { type FC, type PropsWithChildren, useEffect } from 'react';
 
 import { selectDesktopUpdateAllowPrerelease } from '@suite/desktop-update';
+import { useDevice } from '@suite/device';
 import { selectIsAnalyticsConfirmed } from '@suite-common/analytics-redux';
 import { useReportDeviceCompromised } from '@suite-common/firmware-authenticity';
 import { Card } from '@trezor/components';
@@ -8,7 +9,7 @@ import { Card } from '@trezor/components';
 import * as analyticsActions from 'src/actions/suite/analyticsActions';
 import { init } from 'src/actions/suite/initAction';
 import { useGuideKeyboard } from 'src/hooks/guide';
-import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useWindowVisibility } from 'src/hooks/suite/useWindowVisibility';
 import {
     selectIsTransportInitialized,

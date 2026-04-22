@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 
+import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import {
     connectPopupActions,
@@ -17,7 +18,7 @@ import { spacings } from '@trezor/theme';
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
 import { WalletLabeling } from 'src/components/suite/labeling';
-import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 
 export const ConnectAddressConfirmation = () => {
     const { device } = useDevice();

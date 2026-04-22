@@ -1,3 +1,4 @@
+import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { isRecoveryInProgress } from '@suite/recovery';
 import { Context } from '@suite-common/message-system';
@@ -11,7 +12,7 @@ import { setConnectionModal } from 'src/actions/device/deviceSlice';
 import { DeviceBanner } from 'src/components/settings/DeviceBanner';
 import { SettingsLayout } from 'src/components/settings/SettingsLayout';
 import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
-import { useDevice, useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
+import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 import { selectHasActiveTransport } from 'src/selectors/suite/suiteSelectors';
 import type { TrezorDevice } from 'src/types/suite';
 import { getHowToGetFromBootloaderInstructionsMap } from 'src/utils/device/bootloader';

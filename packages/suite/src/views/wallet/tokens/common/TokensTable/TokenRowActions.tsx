@@ -1,6 +1,7 @@
 import { type ReactNode } from 'react';
 
 import { events } from '@suite/analytics';
+import { useDevice } from '@suite/device';
 import { selectIsCopyAddressModalShown, selectIsUnhideTokenModalShown } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
@@ -48,13 +49,7 @@ import { setSendFormPrefill } from 'src/actions/suite/suiteActions';
 import { showAddress } from 'src/actions/wallet/receiveActions';
 import { getEarnRouteParams } from 'src/components/earn/utils/getEarnRouteParams';
 import { Address } from 'src/components/suite';
-import {
-    useDevice,
-    useDispatch,
-    useExternalLink,
-    useLayoutSize,
-    useSelector,
-} from 'src/hooks/suite';
+import { useDispatch, useExternalLink, useLayoutSize, useSelector } from 'src/hooks/suite';
 import { selectIsDeviceCompromised } from 'src/selectors/suite/suiteAuthenticityChecksSelectors';
 import { useAnalytics } from 'src/support/useAnalytics';
 import { getTokenAddressTranslationId } from 'src/utils/wallet/tokenUtils';

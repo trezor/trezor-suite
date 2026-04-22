@@ -1,9 +1,9 @@
 import { events } from '@suite/analytics';
+import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import TrezorConnect from '@trezor/connect';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
-import { useDevice } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
 
 interface DeviceLabelProps {

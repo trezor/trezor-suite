@@ -1,5 +1,6 @@
 import { type ComponentProps, type JSX } from 'react';
 
+import { useDevice } from '@suite/device';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { goto } from '@suite/router';
 import { type NetworkType, getNetwork } from '@suite-common/wallet-config';
@@ -9,7 +10,7 @@ import { Button, Column, H3, IconCircle, type IconName, Row, Text } from '@trezo
 import { spacings } from '@trezor/theme';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
-import { useDevice, useDispatch } from 'src/hooks/suite';
+import { useDispatch } from 'src/hooks/suite';
 import { type DiscoveryStatusType } from 'src/types/wallet';
 
 interface CTA {

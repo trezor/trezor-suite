@@ -3,6 +3,7 @@ import { type ChangeEvent, type ReactNode, useCallback, useState } from 'react';
 import styled from 'styled-components';
 
 import { events } from '@suite/analytics';
+import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import {
     type FeedbackCategory,
@@ -17,7 +18,7 @@ import { typography } from '@trezor/theme';
 
 import { setView } from 'src/actions/suite/guideActions';
 import { GuideContent, GuideHeader, GuideViewWrapper } from 'src/components/guide';
-import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
 
 const Headline = styled.div`

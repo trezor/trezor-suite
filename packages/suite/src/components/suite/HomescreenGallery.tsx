@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 
+import { useDevice } from '@suite/device';
 import { Grid } from '@trezor/components';
 import { DeviceModelInternal, hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { resolveStaticPath } from '@trezor/env-utils';
@@ -8,7 +9,7 @@ import { exhaustive } from '@trezor/type-utils';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { getDefaultHomeScreenImage, getHomescreens } from 'src/constants/suite/homescreens';
-import { useDevice, useDispatch } from 'src/hooks/suite';
+import { useDispatch } from 'src/hooks/suite';
 import { imagePathToHex } from 'src/utils/suite/homescreen';
 
 type HomescreensType = ReturnType<typeof getHomescreens>;

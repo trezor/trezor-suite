@@ -1,5 +1,6 @@
 import { type MouseEventHandler } from 'react';
 
+import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { isDesktop } from '@trezor/env-utils';
 
@@ -8,7 +9,6 @@ import {
     TROUBLESHOOTING_TIP_CLOSE_ALL_TABS,
     TROUBLESHOOTING_TIP_RECONNECT,
 } from 'src/components/suite/troubleshooting/tips';
-import { useDevice } from 'src/hooks/suite';
 
 import { AcquireDeviceButton } from '../AcquireDeviceButton';
 import { type TroubleshootingTipsItem } from '../troubleshooting/TroubleshootingTipsItem';

@@ -1,6 +1,7 @@
 import { type JSX } from 'react';
 
 import { events } from '@suite/analytics';
+import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { Icon, SelectBar, Tooltip } from '@trezor/components';
@@ -9,7 +10,7 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
-import { useDevice, useDispatch } from 'src/hooks/suite';
+import { useDispatch } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
 
 type Rotation = { label: JSX.Element; value: DisplayRotationType };

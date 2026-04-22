@@ -1,3 +1,4 @@
+import { useDevice } from '@suite/device';
 import {
     FirmwareWarningsList,
     FirmwareWipeWarning,
@@ -10,7 +11,6 @@ import { FirmwareType } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';
 
 import { FirmwareOffer } from 'src/components/firmware';
-import { useDevice } from 'src/hooks/suite';
 
 type GetDescriptionProps = {
     required: boolean;

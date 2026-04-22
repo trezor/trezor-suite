@@ -1,8 +1,6 @@
 import { type ReactNode, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
-import type { Dispatch } from 'redux';
-
 import { Translation } from '@suite/intl';
 import { Card, Column, Modal, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
@@ -17,7 +15,7 @@ type ThpCodeInvalidStepProps = {
 // reflection of components/onboarding/ThpPairing/ThpCodeInvalidStep
 export const ThpCodeInvalidStep = ({ modalHeading }: ThpCodeInvalidStepProps) => {
     const [isLoading, setIsLoading] = useState(false);
-    const dispatch = useDispatch<Dispatch>();
+    const dispatch = useDispatch();
 
     const handleRetry = () => {
         setIsLoading(true);

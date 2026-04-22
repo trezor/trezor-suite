@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 
+import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { SelectBackupType as SelectBackupMedium } from '@suite/nfc';
 import { OnboardingCard } from '@suite/onboarding-components';
@@ -9,7 +10,7 @@ import { type BackupType } from '@suite-common/suite-types';
 import { Badge, Column, Text } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-import { useDevice, useOnboarding, useSelector } from 'src/hooks/suite';
+import { useOnboarding, useSelector } from 'src/hooks/suite';
 
 import { SelectBackupType } from './SelectBackupType/SelectBackupType';
 import { isShamirBackupType } from './utils';

@@ -1,6 +1,5 @@
+import { useDevice } from '@suite/device';
 import { isDevicePerceivedAsNew } from '@suite-common/suite-utils';
-
-import { useDevice } from './useDevice';
 
 export const useLabelingDeviceState = () => {
     const { device, isLocked } = useDevice();

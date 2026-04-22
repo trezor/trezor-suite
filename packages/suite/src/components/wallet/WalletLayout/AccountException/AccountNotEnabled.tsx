@@ -1,9 +1,10 @@
+import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { type Network } from '@suite-common/wallet-config';
 import { changeCoinVisibility } from '@suite-common/wallet-core';
 
 import { AccountExceptionLayout } from 'src/components/wallet';
-import { useDevice, useDispatch } from 'src/hooks/suite';
+import { useDispatch } from 'src/hooks/suite';
 
 interface AccountNotEnabledProps {
     network: Network;

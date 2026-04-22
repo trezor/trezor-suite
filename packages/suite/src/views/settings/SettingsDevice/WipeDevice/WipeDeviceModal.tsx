@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import { isFulfilled } from '@reduxjs/toolkit';
 
+import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { wipeDeviceThunk } from '@suite-common/wallet-core';
@@ -9,7 +10,7 @@ import { Button, Column, Modal } from '@trezor/components';
 import { isDeviceInBootloaderMode } from '@trezor/device-utils';
 import { StepCard } from '@trezor/product-components';
 
-import { useDevice, useDispatch } from 'src/hooks/suite';
+import { useDispatch } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
 
 type WipeDeviceModalProps = {

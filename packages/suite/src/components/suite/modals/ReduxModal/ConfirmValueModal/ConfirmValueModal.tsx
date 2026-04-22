@@ -1,6 +1,7 @@
 import { type ReactNode, useEffect, useState } from 'react';
 
 import { events } from '@suite/analytics';
+import { useDevice } from '@suite/device';
 import { Translation, useTranslation } from '@suite/intl';
 import {
     selectIsLegacyLabelingVisible,
@@ -41,7 +42,7 @@ import { Address } from 'src/components/suite/Address';
 import { QrCode } from 'src/components/suite/QrCode';
 import { Labeling } from 'src/components/suite/labeling';
 import { useGuideOpenNode } from 'src/hooks/guide';
-import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
 import { type ThunkAction } from 'src/types/suite';
 import { DESTINATION_TAG_GUIDE_PATH } from 'src/views/wallet/send/Options/MiscNetworkOptions/DestinationTag';

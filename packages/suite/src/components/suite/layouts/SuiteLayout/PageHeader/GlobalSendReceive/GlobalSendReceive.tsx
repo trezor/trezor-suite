@@ -1,10 +1,11 @@
 import { memo } from 'react';
 
+import { useDevice } from '@suite/device';
 import { type Account } from '@suite-common/wallet-types';
 
 import { resetProtocol } from 'src/actions/suite/protocolActions';
 import { AppNavigationTooltip } from 'src/components/suite/AppNavigation/AppNavigationTooltip';
-import { useDevice, useDispatch } from 'src/hooks/suite';
+import { useDispatch } from 'src/hooks/suite';
 import { globalSendReceiveFilters } from 'src/slices/wallet/globalSendReceiveFilters';
 import { type AccountItemType } from 'src/types/wallet';
 

@@ -1,15 +1,8 @@
 {
     "extends": "../../tsconfig.base.json",
-    "compilerOptions": {
-        "outDir": "libDev"
-    },
+    "compilerOptions": { "outDir": "libDev" },
     "references": [
-        {
-            "path": "../locks"
-        },
-        {
-            "path": "../../suite-common/device"
-        },
+        { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/redux-utils"
         },
@@ -19,12 +12,9 @@
         {
             "path": "../../suite-common/wallet-core"
         },
-        {
-            "path": "../router"
-        },
-        {
-            "path": "../../packages/connect"
-        },
+        { "path": "../locks" },
+        { "path": "../router" },
+        { "path": "../../packages/connect" },
         {
             "path": "../../suite-common/test-utils"
         }

@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 
 import { canContinue } from '@suite/backup';
+import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { CreateNfcBackup, NoNfcTags } from '@suite/nfc';
 import { OnboardingCard } from '@suite/onboarding-components';
@@ -13,7 +14,7 @@ import { resetDevice } from 'src/actions/settings/deviceSettingsActions';
 import { BackupSeedCards } from 'src/components/backup';
 import { SkipStepConfirmation } from 'src/components/onboarding/SkipStepConfirmation';
 import { ConfirmActionModal } from 'src/components/suite/modals/ReduxModal/DeviceContextModal/ConfirmActionModal';
-import { useDevice, useDispatch, useOnboarding, useSelector } from 'src/hooks/suite';
+import { useDispatch, useOnboarding, useSelector } from 'src/hooks/suite';
 
 type SecurityStepStatus = 'initial' | 'in-progress' | 'skipping-backup' | 'finished';
 

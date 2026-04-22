@@ -2,12 +2,11 @@ import React, { useState } from 'react';
 
 import styled from 'styled-components';
 
+import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { EntryForm, PasswordsList, TagsList, getNextId, usePasswords } from '@suite/metadata';
 import { Button, Tooltip } from '@trezor/components';
 import { ActionColumn, TextColumn } from '@trezor/product-components';
-
-import { useDevice } from 'src/hooks/suite';
 
 const PasswordManagerBody = styled.div`
     display: flex;
