@@ -1,16 +1,43 @@
-import { type MouseEvent, type ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import { type Variants, motion } from 'framer-motion';
 
-import { Card, Column, ElevationContext, IconButton, Row } from '@trezor/components';
+import {
+    Button,
+    Card,
+    Column,
+    H4,
+    IconCircle,
+    type IconName,
+    Paragraph,
+    Row,
+} from '@trezor/components';
 
-type SidebarBannerProps = {
-    animate?: string | string[];
-    children: ReactNode;
+type SidebarBannerAnimation = 'drop' | 'shake' | Array<'drop' | 'shake'>;
+
+type SidebarBannerBaseProps = {
+    animate?: SidebarBannerAnimation;
+    ctaDataTestId?: string;
+    ctaLabel: ReactNode;
     'data-testid'?: string;
-    onClick?: () => void;
-    onClose?: () => void;
+    description?: ReactNode;
+    heading: ReactNode;
+    icon: IconName;
+    onClick: () => void;
 };
+
+type SidebarBannerWithCloseProps = {
+    closeLabel: ReactNode;
+    onClose: () => void;
+};
+
+type SidebarBannerWithoutCloseProps = {
+    closeLabel?: undefined;
+    onClose?: undefined;
+};
+
+export type SidebarBannerProps = SidebarBannerBaseProps &
+    (SidebarBannerWithCloseProps | SidebarBannerWithoutCloseProps);
 
 const variants: Variants = {
     initial: { y: 32, opacity: 0 },
@@ -38,44 +65,52 @@ const variants: Variants = {
 
 export const SidebarBanner = ({
     animate = 'drop',
-    children,
+    ctaDataTestId,
+    ctaLabel,
+    closeLabel,
     'data-testid': dataTestId,
+    description,
+    heading,
+    icon,
     onClick,
     onClose,
-}: SidebarBannerProps) => {
-    const handleOnClose = (event: MouseEvent<HTMLButtonElement>) => {
-        event.stopPropagation();
-        onClose?.();
-    };
-
-    return (
-        <ElevationContext baseElevation={0}>
-            <motion.div variants={variants} initial="initial" exit="exit" animate={animate}>
-                <Card
-                    onClick={onClick}
-                    data-testid={dataTestId}
-                    margin={12}
-                    paddingType="small"
-                    width="auto"
-                >
-                    {onClose ? (
-                        <Row gap={12}>
-                            <Column flex="1" alignItems="start">
-                                {children}
-                            </Column>
-                            <IconButton
-                                intent="neutral"
-                                priority="secondary"
-                                icon="x"
-                                size="small"
-                                onClick={handleOnClose}
-                            />
-                        </Row>
-                    ) : (
-                        children
+}: SidebarBannerProps) => (
+    <motion.div variants={variants} initial="initial" exit="exit" animate={animate}>
+        <Card data-testid={dataTestId} paddingType="none" width="auto">
+            <Column gap={12} padding={12}>
+                <IconCircle name={icon} size={40} intent="neutral" />
+                <Column gap={2}>
+                    <H4 typographyStyle="body-sm-strong">{heading}</H4>
+                    {description && (
+                        <Paragraph intent="neutral" typographyStyle="body-sm">
+                            {description}
+                        </Paragraph>
                     )}
-                </Card>
-            </motion.div>
-        </ElevationContext>
-    );
-};
+                </Column>
+                <Row gap={10} margin={{ top: 2 }}>
+                    <Button
+                        intent="brand"
+                        type="button"
+                        data-testid={ctaDataTestId}
+                        onClick={onClick}
+                        size="small"
+                    >
+                        {ctaLabel}
+                    </Button>
+
+                    {onClose !== undefined && (
+                        <Button
+                            intent="neutral"
+                            priority="secondary"
+                            type="button"
+                            onClick={onClose}
+                            size="small"
+                        >
+                            {closeLabel}
+                        </Button>
+                    )}
+                </Row>
+            </Column>
+        </Card>
+    </motion.div>
+);
