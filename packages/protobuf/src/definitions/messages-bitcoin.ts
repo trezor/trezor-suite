@@ -374,7 +374,7 @@ export const TxOutputType = Type.Union(
         Type.Object({
             address: Type.String(),
             address_n: Type.Optional(Type.Undefined()),
-            script_type: Type.Literal('PAYTOADDRESS'),
+            script_type: Type.Optional(Type.Literal('PAYTOADDRESS')),
             amount: Type.Uint(),
             multisig: Type.Optional(MultisigRedeemScriptType),
             orig_hash: Type.Optional(Type.String()),
@@ -384,16 +384,6 @@ export const TxOutputType = Type.Union(
         Type.Object({
             address: Type.Optional(Type.Undefined()),
             address_n: Type.Array(Type.Number()),
-            script_type: Type.Optional(ChangeOutputScriptType),
-            amount: Type.Uint(),
-            multisig: Type.Optional(MultisigRedeemScriptType),
-            orig_hash: Type.Optional(Type.String()),
-            orig_index: Type.Optional(Type.Number()),
-            payment_req_index: Type.Optional(Type.Number()),
-        }),
-        Type.Object({
-            address: Type.String(),
-            address_n: Type.Optional(Type.Undefined()),
             script_type: Type.Optional(ChangeOutputScriptType),
             amount: Type.Uint(),
             multisig: Type.Optional(MultisigRedeemScriptType),
