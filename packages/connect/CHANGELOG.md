@@ -11,6 +11,10 @@
 
 Use the persistent link [connect.trezor.io/9](https://connect.trezor.io/9/) to access the latest stable version of Connect Explorer.
 
+# 9.7.3
+
+Updated `protobufjs` dependency to address security advisory [CVE-2026-41242](https://github.com/advisories/GHSA-xq3m-2v4x-88gg). In our codebase we don't utilize `protobufjs` in a way that would be vulnerable to this issue, but we are updating it to ensure our dependencies are secure.
+
 # 9.7.2
 
 We have added support for Tron network in Connect APIs - `tronGetAddress`, `tronSignTransaction`. Available for firmware 2.10.1 and later.
