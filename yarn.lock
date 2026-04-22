@@ -9679,6 +9679,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@simple-git/args-pathspec@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "@simple-git/args-pathspec@npm:1.0.2"
+  checksum: 10/8ff2289110aa1c556aadb67da55c01f9430af6a647a9e4823aa023c59b11d3406819cfaead8a9c71c7fd44231271be9e71179ec817b6a3cb99d1da36cd17788e
+  languageName: node
+  linkType: hard
+
+"@simple-git/argv-parser@npm:^1.0.3":
+  version: 1.0.3
+  resolution: "@simple-git/argv-parser@npm:1.0.3"
+  dependencies:
+    "@simple-git/args-pathspec": "npm:^1.0.2"
+  checksum: 10/cfb11a054a854135d8262a7aae4b2bd1d2108f3763437080e60dcd9498f32b626857f752bb8b6c6d285cc120a7f221c6a3b2556df9c55c1b30ae136a3ba8e1be
+  languageName: node
+  linkType: hard
+
 "@sinclair/typebox-codegen@npm:^0.10.4":
   version: 0.10.5
   resolution: "@sinclair/typebox-codegen@npm:0.10.5"
@@ -16349,7 +16365,7 @@ __metadata:
     fs-extra: "npm:^11.3.1"
     postcss-loader: "npm:^8.2.0"
     semver: "npm:^7.7.1"
-    simple-git: "npm:^3.30.0"
+    simple-git: "npm:^3.32.3"
     style-loader: "npm:^4.0.0"
     tsx: "npm:^4.21.0"
     webpack: "npm:5.105.4"
@@ -42819,14 +42835,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"simple-git@npm:^3.30.0":
-  version: 3.30.0
-  resolution: "simple-git@npm:3.30.0"
+"simple-git@npm:^3.32.3":
+  version: 3.35.2
+  resolution: "simple-git@npm:3.35.2"
   dependencies:
     "@kwsites/file-exists": "npm:^1.1.1"
     "@kwsites/promise-deferred": "npm:^1.1.1"
+    "@simple-git/args-pathspec": "npm:^1.0.2"
+    "@simple-git/argv-parser": "npm:^1.0.3"
     debug: "npm:^4.4.0"
-  checksum: 10/65f78b2598950d4f7ce163ad736e7ad358199e13dd84096524b9f10b093f92278d6d40c7390330e7603f1a048db7d7ee1f5ea3a157eb382e691b5c85de549a6b
+  checksum: 10/4bfb2ac73041db774e8cfaefbc97e4cacf2725d955e458e135647209829336505223128f928aac9f86b92e30d0e7c4128daad0268a1303c2d88fda8be1fda0d1
   languageName: node
   linkType: hard
 
