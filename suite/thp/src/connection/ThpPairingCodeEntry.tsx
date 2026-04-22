@@ -1,11 +1,10 @@
 import { useCallback, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import { selectThpPairingRequestId } from '@suite-common/thp';
 import { PinInput, Row, Spinner } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { type SpacingValues } from '@trezor/theme';
-
-import { useSelector } from 'src/hooks/suite';
 
 const SPINNER_SIZE = 32;
 

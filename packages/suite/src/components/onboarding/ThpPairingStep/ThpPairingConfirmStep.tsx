@@ -6,7 +6,7 @@ type ThpPairingConfirmStepParams = {
     device: TrezorDevice;
 };
 
-// reflection of components/firmware/ThpPairing/ThpPairingConfirmStep
+// reflection of suite/thp/src/firmware/ThpPairingConfirmStep.tsx
 export const ThpPairingConfirmStep = ({ device }: ThpPairingConfirmStepParams) => (
     <ConfirmActionModal
         device={device}

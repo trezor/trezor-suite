@@ -3,12 +3,11 @@ import { useIntl } from 'react-intl';
 
 import { Translation, messages } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
+import { ThpPairingCodeEntry } from '@suite/thp';
 import { Column } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 
-import { ThpPairingCodeEntry } from 'src/components/connection/thp/ThpPairingCodeEntry';
-
-// reflection of components/firmware/ThpPairing/ThpCodeEntryStep
+// reflection of suite/thp/src/firmware/ThpCodeEntryStep.tsx
 export const ThpCodeEntryStep = () => {
     const intl = useIntl();
 

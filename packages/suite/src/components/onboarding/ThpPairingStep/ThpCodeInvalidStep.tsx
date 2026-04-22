@@ -2,13 +2,12 @@ import { useState } from 'react';
 
 import { Translation } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
+import { ThpPairingFailedForFirmwareInstallation, startThpSessionThunk } from '@suite/thp';
 import { Column, Paragraph } from '@trezor/components';
 
-import { startThpSessionThunk } from 'src/actions/thp/startThpSessionThunk';
-import { ThpPairingFailedForFirmwareInstallation } from 'src/components/connection/thp/ThpPairingFailedForFirmwareInstallation';
 import { useDispatch } from 'src/hooks/suite';
 
-// reflection of components/firmware/ThpPairing/ThpCodeInvalidStep
+// reflection of suite/thp/src/firmware/ThpCodeInvalidStep.tsx
 export const ThpCodeInvalidStep = () => {
     const dispatch = useDispatch();
     const [isLoading, setIsLoading] = useState(false);
