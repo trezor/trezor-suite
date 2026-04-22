@@ -1,6 +1,5 @@
 import { Icon } from '@suite-native/icons';
 import { type NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
-import { type Color } from '@trezor/theme';
 
 import { PressableOpacity } from './Pressable';
 import { ACCESSIBILITY_FONTSIZE_MULTIPLIER } from './Text';
@@ -21,17 +20,21 @@ type CheckBoxStyleProps = {
 const CHECKBOX_SIZE = 24 * ACCESSIBILITY_FONTSIZE_MULTIPLIER;
 const CHECKMARK_SIZE = 16 * ACCESSIBILITY_FONTSIZE_MULTIPLIER;
 
-const getBoxColor = ({ isChecked, isDisabled }: CheckBoxStyleProps): Color => {
-    if (isChecked && isDisabled) return 'legacyBackgroundPrimarySubtleOnElevation0';
-    if (isChecked) return 'legacyBackgroundPrimaryDefault';
-    if (isDisabled) return 'legacyBorderElevationNegative';
-
-    return 'contentSecondary';
-};
-
 const checkBoxStyle = prepareNativeStyle<CheckBoxStyleProps>((utils, { isChecked, isDisabled }) => {
-    const color = getBoxColor({ isChecked, isDisabled });
-    const resolvedColor = utils.colors[color];
+    const backgroundColor = (() => {
+        if (isChecked && isDisabled) return utils.colors.elementFillFieldSelectedDisabled;
+        if (isChecked) return utils.colors.elementFillFieldSelected;
+        if (isDisabled) return utils.colors.elementFillFieldDisabled;
+
+        return utils.colors.elementFillField;
+    })();
+
+    const borderColor = (() => {
+        if (isChecked) return 'transparent';
+        if (isDisabled) return utils.colors.elementBorderFieldDisabled;
+
+        return utils.colors.elementBorderField;
+    })();
 
     return {
         height: CHECKBOX_SIZE,
@@ -40,8 +43,8 @@ const checkBoxStyle = prepareNativeStyle<CheckBoxStyleProps>((utils, { isChecked
         justifyContent: 'center',
         borderRadius: utils.borders.radii.r4,
         borderWidth: utils.borders.widths.large,
-        borderColor: resolvedColor,
-        backgroundColor: isChecked ? resolvedColor : 'transparent',
+        borderColor,
+        backgroundColor,
     };
 });
 
