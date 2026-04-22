@@ -19,6 +19,7 @@ export type {
     AccountUtxo as BlockbookAccountUtxo,
     AddressNotification as BlockbookAddressNotification,
     BlockNotification as BlockbookBlockNotification,
+    ContractInfoResponse as BlockbookContractInfoResponse,
     Fee as BlockbookFee,
     FiatRatesNotification as BlockbookFiatRatesNotification,
     FilterRequestParams as BlockbookFilterRequestParams,

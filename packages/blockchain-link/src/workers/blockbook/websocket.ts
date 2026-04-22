@@ -12,6 +12,7 @@ import type {
     RpcCallParams,
     BlockbookSend as Send,
 } from '@trezor/blockchain-link-types';
+import { type GetContractInfo } from '@trezor/blockchain-link-types/src/messages';
 import { getSuiteVersion } from '@trezor/env-utils';
 
 import { BaseWebsocket } from '../baseWebsocket';
@@ -123,6 +124,10 @@ export class BlockbookAPI extends BaseWebsocket<BlockbookEvents> {
 
     rpcCall(payload: RpcCallParams) {
         return this.send('rpcCall', payload);
+    }
+
+    getContractInfo(payload: GetContractInfo['payload']) {
+        return this.send('getContractInfo', payload);
     }
 
     getCurrentFiatRates(payload: GetCurrentFiatRates['payload']) {

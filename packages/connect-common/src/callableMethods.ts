@@ -75,6 +75,7 @@ const connectCallableMethodGroups = {
         'blockchainGetTransactions',
         'blockchainEvmRpcCall',
         'blockchainGetCurrentFiatRates',
+        'blockchainGetContractInfo',
         'blockchainGetFiatRatesForTimestamps',
         'blockchainSubscribeFiatRates',
         'blockchainUnsubscribeFiatRates',

@@ -237,6 +237,15 @@ export class BlockchainLink extends TypedEmitter<Events> {
         });
     }
 
+    getContractInfo(
+        payload: MessageTypes.GetContractInfo['payload'],
+    ): Promise<ResponseTypes.GetContractInfo['payload']> {
+        return this.sendMessage({
+            type: MESSAGES.GET_CONTRACT_INFO,
+            payload,
+        });
+    }
+
     /**
      * Subscribe for live changes in
      * - blockchain i.e new blocks mined.

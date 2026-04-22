@@ -10,6 +10,7 @@ export const GET_FIAT_RATES_TICKERS_LIST = 'r_GET_FIAT_RATES_TICKERS_LIST';
 export const GET_ACCOUNT_INFO = 'r_account_info';
 export const GET_ACCOUNT_UTXO = 'r_get_account_utxo';
 export const GET_ACCOUNT_BALANCE_HISTORY = 'r_get_account_balance_history';
+export const GET_CONTRACT_INFO = 'r_get_contract_info';
 export const GET_TRANSACTION = 'r_get_transaction';
 export const GET_TRANSACTION_HEX = 'r_get_transaction_hex';
 export const ESTIMATE_FEE = 'r_estimate_fee';
