@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { Translation, type TranslationKey } from '@suite/intl';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
-import { Text } from '@trezor/components';
 import { SidebarBanner } from '@trezor/product-components';
 
 import { selectUpdateStatus } from './selectUpdateStatus';
@@ -13,6 +12,7 @@ import {
     type UpdateStatusSuite,
     mapDeviceUpdateToClick,
     mapSuiteUpdateToClick,
+    mapUpdateStatusToIcon,
 } from './updateQuickActionTypes';
 
 const mapDeviceUpdateStatusToTranslation: Record<UpdateStatusDevice, TranslationKey | null> = {
@@ -47,7 +47,13 @@ export const UpdateNotificationBanner = () => {
 
     const dispatch = useDispatch();
     const discoveryInProgress = useSelector(selectHasRunningDiscovery);
-    const { updateStatusDevice, updateStatusSuite } = useSelector(selectUpdateStatus);
+    const updateStatusData: {
+        updateStatus: UpdateStatus;
+        updateStatusDevice: UpdateStatusDevice;
+        updateStatusSuite: UpdateStatusSuite;
+    } = useSelector(selectUpdateStatus);
+
+    const { updateStatus, updateStatusDevice, updateStatusSuite } = updateStatusData;
 
     const isUpdateAvailable =
         (updateStatusSuite !== 'up-to-date' && !closedNotificationSuite) ||
@@ -99,16 +105,14 @@ export const UpdateNotificationBanner = () => {
     return (
         <SidebarBanner
             animate={['drop', 'shake']}
+            ctaLabel={<Translation id={translationCallToAction} />}
+            closeLabel={<Translation id="TR_DISMISS" />}
+            heading={<Translation id={translationHeader} />}
+            description="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+            icon={mapUpdateStatusToIcon[updateStatus]}
             onClick={handleOnClick}
             onClose={handleClose}
             data-testid="@notification/update-notification-banner"
-        >
-            <Text>
-                <Translation id={translationHeader} />
-            </Text>
-            <Text intent="brand">
-                <Translation id={translationCallToAction} />
-            </Text>
-        </SidebarBanner>
+        />
     );
 };

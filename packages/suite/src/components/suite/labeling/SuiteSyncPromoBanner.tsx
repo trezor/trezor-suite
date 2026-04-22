@@ -6,7 +6,6 @@ import {
     selectIsSuiteSyncDebugEnabled,
     selectSuiteSyncInteraction,
 } from '@suite-common/suite-sync';
-import { Button, Column, IconButton, IconCircle, Row, Text } from '@trezor/components';
 import { SidebarBanner } from '@trezor/product-components';
 
 import { selectIsLegacyLabelingVisible } from 'src/actions/labels/selectIsLegacyLabelingVisible';
@@ -53,40 +52,19 @@ export const SuiteSyncPromoBanner = () => {
                 />
             )}
 
-            <SidebarBanner data-testid="@notification/legacy-labeling-upgrade">
-                <Column gap={8} alignItems="start">
-                    <Column gap={12} alignItems="start">
-                        <IconCircle name="arrowsClockwise" size={32} intent="neutral" />
-
-                        <Text typographyStyle="body-md-strong">
-                            <Translation id="TR_TURN_ON_SECURE_SYNC_LABELS_MODAL_HEADING" />
-                        </Text>
-
-                        <Text intent="neutral" priority="secondary">
-                            <Translation id="TR_LEGACY_LABELING_TURN_ON_SUITE_SYNC_BANNER_DESCRIPTION" />
-                        </Text>
-                    </Column>
-
-                    <Row gap={8} width="100%" alignItems="stretch">
-                        <Button
-                            flex="1"
-                            onClick={handleTurnOn}
-                            data-testid="@notification/legacy-labeling-upgrade/button"
-                        >
-                            <Translation id="TR_LEARN_MORE" />
-                        </Button>
-
-                        <IconButton
-                            icon="x"
-                            size="medium"
-                            intent="neutral"
-                            priority="secondary"
-                            onClick={handleDismiss}
-                            aria-label="Close"
-                        />
-                    </Row>
-                </Column>
-            </SidebarBanner>
+            <SidebarBanner
+                ctaDataTestId="@notification/legacy-labeling-upgrade/button"
+                ctaLabel={<Translation id="TR_LEARN_MORE" />}
+                closeLabel={<Translation id="TR_DISMISS" />}
+                data-testid="@notification/legacy-labeling-upgrade"
+                description={
+                    <Translation id="TR_LEGACY_LABELING_TURN_ON_SUITE_SYNC_BANNER_DESCRIPTION" />
+                }
+                heading={<Translation id="TR_TURN_ON_SECURE_SYNC_LABELS_MODAL_HEADING" />}
+                icon="arrowsClockwise"
+                onClick={handleTurnOn}
+                onClose={handleDismiss}
+            />
         </>
     );
 };
