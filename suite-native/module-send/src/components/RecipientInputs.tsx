@@ -21,7 +21,10 @@ export const RecipientInputs = ({ index, accountKey }: RecipientInputsProps) => 
 
     if (!account) return null;
 
-    const hasDestinationTag = account.networkType === 'ripple' || account.networkType === 'stellar';
+    const hasDestinationTag =
+        account.networkType === 'ripple' ||
+        account.networkType === 'stellar' ||
+        account.networkType === 'solana';
 
     return (
         <VStack spacing="sp16">

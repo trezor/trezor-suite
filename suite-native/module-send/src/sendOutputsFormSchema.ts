@@ -289,7 +289,7 @@ export const sendOutputsFormValidationSchema = yup.object({
 
                 if (!symbol) return true;
                 const networkType = getNetworkType(symbol);
-                if (networkType === 'stellar') return true;
+                if (networkType === 'stellar' || networkType === 'solana') return true;
 
                 if (!value) return true;
 
@@ -312,7 +312,12 @@ export const sendOutputsFormValidationSchema = yup.object({
 
                 if (!symbol) return true;
                 const networkType = getNetworkType(symbol);
-                if (networkType !== 'ripple' && networkType !== 'stellar') return true;
+                if (
+                    networkType !== 'ripple' &&
+                    networkType !== 'stellar' &&
+                    networkType !== 'solana'
+                )
+                    return true;
 
                 // isDestinationTagEnabled is enabled, tag should be set
                 if (!value && isDestinationTagEnabled) return false;
@@ -347,11 +352,16 @@ export const sendOutputsFormValidationSchema = yup.object({
                 const { symbol } = context!;
 
                 if (!symbol) return true;
-                if (getNetworkType(symbol) !== 'stellar') return true;
+                const networkType = getNetworkType(symbol);
+                if (networkType !== 'stellar' && networkType !== 'solana') return true;
 
                 if (!value) return true;
 
-                if (value.length > formInputsMaxLength.stellarTextMemo) {
+                const destinationTagMaxLength =
+                    networkType === 'stellar'
+                        ? formInputsMaxLength.stellarTextMemo
+                        : formInputsMaxLength.solanaMemo;
+                if (value.length > destinationTagMaxLength) {
                     return false;
                 }
 
