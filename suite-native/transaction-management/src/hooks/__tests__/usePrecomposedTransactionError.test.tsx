@@ -41,6 +41,10 @@ describe('usePrecomposedTransactionError', () => {
             error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT',
             expectedErrorMsg: 'Insufficient BTC to cover the transaction fee.',
         },
+        {
+            error: 'NOT-ENOUGH-FUNDS',
+            expectedErrorMsg: 'Insufficient BTC to cover the transaction fee.',
+        },
 
         {
             error: 'AMOUNT_IS_LESS_THAN_RESERVE',
