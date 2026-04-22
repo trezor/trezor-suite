@@ -2958,6 +2958,7 @@ export const messages = {
                 settings: 'Advanced settings',
             },
             kycWarning: 'This provider requires to know your identity.',
+            kycRequired: 'Identity verification will be required.',
             buttons: {
                 continue: 'Continue',
                 swap: 'Swap',
