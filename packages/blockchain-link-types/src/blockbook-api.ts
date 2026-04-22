@@ -261,6 +261,28 @@ export interface StakingPool {
     /** Any balance automatically reinvested into the pool. */
     autocompoundBalance: string;
 }
+
+export interface Erc4626 {
+    asset?: {
+        contract: string;
+        name: string;
+        symbol: string;
+        decimals: number;
+    };
+    share?: {
+        contract: string;
+        name: string;
+        symbol: string;
+        decimals: number;
+    };
+    totalAssets?: string;
+    convertToAssets1Share?: string;
+    convertToShares1Asset?: string;
+    previewDeposit1Asset?: string;
+    previewRedeem1Share?: string;
+    error?: string;
+}
+
 export interface ContractInfo {
     /** @deprecated: Use standard instead. */
     type: '' | 'XPUBAddress' | 'ERC20' | 'ERC721' | 'ERC1155' | 'BEP20' | 'BEP721' | 'BEP1155';
@@ -309,26 +331,7 @@ export interface Token {
     /** Total amount of tokens sent. */
     totalSent?: string;
     /** Data containing information about the ERC4626 vault token. */
-    erc4626?: {
-        asset?: {
-            contract: string;
-            name: string;
-            symbol: string;
-            decimals: number;
-        };
-        share?: {
-            contract: string;
-            name: string;
-            symbol: string;
-            decimals: number;
-        };
-        totalAssets?: string;
-        convertToAssets1Share?: string;
-        convertToShares1Asset?: string;
-        previewDeposit1Asset?: string;
-        previewRedeem1Share?: string;
-        error?: string;
-    };
+    erc4626?: Erc4626;
 }
 export interface Address {
     /** Current page index. */
@@ -640,7 +643,8 @@ export interface WsReq {
         | 'getCurrentFiatRates'
         | 'getFiatRatesForTimestamps'
         | 'getFiatRatesTickersList'
-        | 'getMempoolFilters';
+        | 'getMempoolFilters'
+        | 'getContractInfo';
     /** Parameters for the requested method in raw JSON format. */
     params: any;
 }
@@ -874,4 +878,20 @@ export interface MempoolTxidFilterEntries {
     entries?: { [key: string]: string };
     /** Indicates if a zeroed key was used in filter calculation. */
     usedZeroedKey?: boolean;
+}
+export interface WsContractInfoReq {
+    contract: string;
+    currency?: string;
+    protocols?: string[];
+}
+export interface WsContractInfoRes {
+    contract: string;
+    standard?: string;
+    name?: string;
+    symbol?: string;
+    decimals?: number;
+    protocols?: {
+        erc4626?: Erc4626;
+    };
+    blockHeight: number;
 }

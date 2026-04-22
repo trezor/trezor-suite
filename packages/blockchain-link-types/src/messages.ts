@@ -144,6 +144,15 @@ export interface ValidateEvmRpc {
     };
 }
 
+export interface GetContractInfo {
+    type: typeof MESSAGES.GET_CONTRACT_INFO;
+    payload: {
+        contract: string;
+        currency?: string;
+        protocols?: string[];
+    };
+}
+
 export type Message =
     | ChannelMessage<{ type: typeof MESSAGES.TERMINATE; payload?: typeof undefined }>
     | ChannelMessage<{ type: typeof MESSAGES.HANDSHAKE; settings: BlockchainSettings }>
@@ -165,4 +174,5 @@ export type Message =
     | ChannelMessage<Subscribe>
     | ChannelMessage<Unsubscribe>
     | ChannelMessage<PushTransaction>
-    | ChannelMessage<ValidateEvmRpc>;
+    | ChannelMessage<ValidateEvmRpc>
+    | ChannelMessage<GetContractInfo>;

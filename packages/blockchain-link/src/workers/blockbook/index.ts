@@ -177,6 +177,16 @@ const rpcCall = async (request: Request<MessageTypes.RpcCall>) => {
     } as const;
 };
 
+const getContractInfo = async (request: Request<MessageTypes.GetContractInfo>) => {
+    const api = await request.connect();
+    const response = await api.getContractInfo(request.payload);
+
+    return {
+        type: RESPONSES.GET_CONTRACT_INFO,
+        payload: response,
+    } as const;
+};
+
 const onNewBlock = ({ post }: Context, event: BlockNotification) => {
     post({
         id: -1,
@@ -433,6 +443,8 @@ const onRequest = (request: Request<MessageTypes.Message>) => {
             return estimateFee(request);
         case MESSAGES.RPC_CALL:
             return rpcCall(request);
+        case MESSAGES.GET_CONTRACT_INFO:
+            return getContractInfo(request);
         case MESSAGES.PUSH_TRANSACTION:
             return pushTransaction(request);
         case MESSAGES.SUBSCRIBE:

@@ -11,6 +11,7 @@ import type { blockchainDisconnect } from './blockchainDisconnect';
 import type { blockchainEstimateFee } from './blockchainEstimateFee';
 import type { blockchainEvmRpcCall } from './blockchainEvmRpcCall';
 import type { blockchainGetAccountBalanceHistory } from './blockchainGetAccountBalanceHistory';
+import type { blockchainGetContractInfo } from './blockchainGetContractInfo';
 import type { blockchainGetCurrentFiatRates } from './blockchainGetCurrentFiatRates';
 import type { blockchainGetFiatRatesForTimestamps } from './blockchainGetFiatRatesForTimestamps';
 import type { blockchainGetInfo } from './blockchainGetInfo';
@@ -240,6 +241,9 @@ export const TrezorConnectBlockchain = Type.Object({
 
     // For internal use, no public documentation.
     blockchainGetCurrentFiatRates: Type.Unsafe<typeof blockchainGetCurrentFiatRates>(),
+
+    // For internal use, no public documentation.
+    blockchainGetContractInfo: Type.Unsafe<typeof blockchainGetContractInfo>(),
 
     // For internal use, no public documentation.
     blockchainGetFiatRatesForTimestamps: Type.Unsafe<typeof blockchainGetFiatRatesForTimestamps>(),

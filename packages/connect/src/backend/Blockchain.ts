@@ -194,6 +194,10 @@ export class Blockchain {
         return this.link.getCurrentFiatRates(params);
     }
 
+    getContractInfo(params: BlockchainLinkParams<'getContractInfo'>) {
+        return this.link.getContractInfo(params);
+    }
+
     getFiatRatesForTimestamps(params: {
         currencies?: string[];
         timestamps: number[];
