@@ -1,3 +1,5 @@
+/* eslint-disable */
+// @ts-nocheck
 'use strict';
 
 /**
@@ -317,4 +319,6 @@ function toHex(n) {
     return n.toString(16);
 }
 
+export default Blake2b;
 module.exports = Blake2b;
+module.exports.default = Blake2b;

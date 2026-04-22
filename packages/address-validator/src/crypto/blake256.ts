@@ -1,3 +1,5 @@
+/* eslint-disable */
+// @ts-nocheck
 'use strict';
 
 /**
@@ -180,4 +182,6 @@ Blake256.prototype.digest = function (encoding) {
     return buffer.toString(encoding);
 };
 
+export default Blake256;
 module.exports = Blake256;
+module.exports.default = Blake256;

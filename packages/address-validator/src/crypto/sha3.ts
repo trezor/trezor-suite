@@ -7,6 +7,8 @@
  * @license MIT
  */
 /*jslint bitwise: true */
+/* eslint-disable */
+// @ts-nocheck
 'use strict';
 
 var ERROR = 'input is invalid type';
@@ -737,4 +739,6 @@ var f = function (s) {
     }
 };
 
+export default methods;
 module.exports = methods;
+module.exports.default = methods;

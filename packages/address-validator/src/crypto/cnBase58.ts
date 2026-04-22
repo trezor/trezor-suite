@@ -1,5 +1,6 @@
-var moduleImport = require('./biginteger');
-var JSBigInt = moduleImport.JSBigInt;
+/* eslint-disable */
+// @ts-nocheck
+import { JSBigInt } from './biginteger';
 
 /**
 Copyright (c) 2017, moneroexamples
@@ -34,7 +35,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Parts of the project are originally copyright (c) 2014-2017, MyMonero.com
 */
 
-var cnBase58 = (function () {
+export interface CnBase58 {
+    encode: (hex: string) => string;
+    decode: (enc: string) => string;
+}
+
+var cnBase58: CnBase58 = (function () {
     var b58 = {};
 
     var alphabet_str = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
@@ -250,4 +256,8 @@ var cnBase58 = (function () {
 
     return b58;
 })();
+export default cnBase58;
+// Also assign to module.exports so legacy CJS `require('./cnBase58')` returns the object directly.
+// Remove once all consumers are migrated to ESM imports.
 module.exports = cnBase58;
+module.exports.default = cnBase58;
