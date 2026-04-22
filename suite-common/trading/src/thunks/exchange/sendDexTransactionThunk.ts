@@ -7,6 +7,7 @@ import { type Account } from '@suite-common/wallet-types';
 
 import { confirmExchangeTradeThunk } from './confirmExchangeTradeThunk';
 import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';
+import { tradingExchangeActions } from '../../reducers/exchangeReducer';
 import { tradingActions } from '../../reducers/tradingCommonReducer';
 import {
     selectTradingExchangeAccountKey,
@@ -135,7 +136,10 @@ export const sendDexTransactionThunk = createThunk<
             receiveAddress: selectedQuote.receiveAddress, // just for type assurance
         };
 
-        if (selectedQuote.status === 'CONFIRM' && selectedQuote.approvalType !== 'ZERO') {
+        const isSwapTx =
+            selectedQuote.status === 'CONFIRM' && selectedQuote.approvalType !== 'ZERO';
+
+        if (isSwapTx) {
             trade.receiveTxHash = txid;
             trade.status = 'CONFIRMING';
 
@@ -149,6 +153,9 @@ export const sendDexTransactionThunk = createThunk<
                     receiveAccountKey,
                 }),
             );
+            dispatch(tradingExchangeActions.saveTransactionId(trade.orderId));
+
+            nextStep();
         } else {
             trade.approvalSendTxHash = txid;
             trade.status = 'APPROVAL_PENDING';
@@ -162,7 +169,7 @@ export const sendDexTransactionThunk = createThunk<
                 account,
                 triggerAnalyticsTradeConfirmation,
                 processResponseData,
-                nextStep,
+                nextStep: isSwapTx ? undefined : nextStep,
             }),
         );
     },

@@ -25,7 +25,7 @@ export type ConfirmExchangeTradeThunkProps = {
 
     triggerAnalyticsTradeConfirmation: () => void;
     processResponseData: (response: ExchangeTrade) => void;
-    nextStep: () => void;
+    nextStep?: () => void;
 };
 
 export const confirmExchangeTradeThunk = createThunk(
@@ -66,8 +66,6 @@ export const confirmExchangeTradeThunk = createThunk(
                 trade = { ...trade, fromAddress: refundAddress };
             }
         }
-
-        dispatch(tradingExchangeActions.saveTransactionId(undefined));
 
         const response = await invityAPI.doExchangeTrade({
             trade,
@@ -127,6 +125,7 @@ export const confirmExchangeTradeThunk = createThunk(
         }
 
         // CONFIRMING, SUCCESS, LOADING
+        dispatch(tradingExchangeActions.saveSelectedQuote(response));
         dispatch(
             tradingActions.saveTrade({
                 tradeType: 'exchange',
@@ -150,7 +149,7 @@ export const confirmExchangeTradeThunk = createThunk(
             return response;
         }
 
-        nextStep();
+        nextStep?.();
 
         return response;
     },

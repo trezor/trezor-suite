@@ -148,14 +148,18 @@ export const TradingDetailExchange = () => {
                         </Paragraph>
                         <Box margin={{ top: 32, bottom: 12 }}>
                             <TradingDetailStepList>
-                                <TradingDetailExchangePaymentSending
-                                    trade={trade.data}
-                                    account={sendAccount}
-                                    composedTransaction={composedTransaction}
-                                />
+                                {!trade.data.isDex && (
+                                    <TradingDetailExchangePaymentSending
+                                        trade={trade.data}
+                                        account={sendAccount}
+                                        composedTransaction={composedTransaction}
+                                    />
+                                )}
                                 <TradingDetailExchangePaymentConverting
                                     trade={trade.data}
                                     provider={provider}
+                                    account={trade.data.isDex ? sendAccount : undefined}
+                                    isDex={trade.data.isDex}
                                 />
                                 <BulletList.Item
                                     state="pending"

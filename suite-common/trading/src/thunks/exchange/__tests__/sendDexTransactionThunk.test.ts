@@ -166,11 +166,12 @@ describe('sendDexTransactionThunk', () => {
                 createThunk('@trading-exchange/thunk/confirmTrade', () => undefined),
             );
 
+        const nextStep = jest.fn();
         const result = await store.dispatch(
             exchangeThunks.sendDexTransactionThunk({
                 account,
                 returnUrl,
-                nextStep: jest.fn(),
+                nextStep,
                 triggerAnalyticsTradeConfirmation: jest.fn(),
                 processResponseData: jest.fn(),
                 signAndPushSendFormTransaction: jest.fn(),
@@ -185,6 +186,8 @@ describe('sendDexTransactionThunk', () => {
         expect(confirmExchangeTradeThunkSpy).toHaveBeenCalledTimes(1);
         expect(confirmTradeThunkArgs.trade?.approvalSendTxHash).toEqual('txid');
         expect(confirmTradeThunkArgs.trade?.status).toEqual('APPROVAL_PENDING');
+        expect(nextStep).not.toHaveBeenCalled();
+        expect(confirmTradeThunkArgs.nextStep).toBe(nextStep);
     });
 
     it('should successfully call confirmTradeThunk for making trade', async () => {
@@ -213,11 +216,12 @@ describe('sendDexTransactionThunk', () => {
                 createThunk('@trading-exchange/thunk/confirmTrade', () => undefined),
             );
 
+        const nextStep = jest.fn();
         const result = await store.dispatch(
             exchangeThunks.sendDexTransactionThunk({
                 account,
                 returnUrl,
-                nextStep: jest.fn(),
+                nextStep,
                 triggerAnalyticsTradeConfirmation: jest.fn(),
                 processResponseData: jest.fn(),
                 signAndPushSendFormTransaction: jest.fn(),
@@ -240,5 +244,8 @@ describe('sendDexTransactionThunk', () => {
         expect(confirmExchangeTradeThunkSpy).toHaveBeenCalledTimes(1);
         expect(trade?.receiveTxHash).toEqual('txid');
         expect(trade?.status).toEqual('CONFIRMING');
+        expect(store.getState().wallet.trading.exchange.transactionId).toEqual(trade?.orderId);
+        expect(nextStep).toHaveBeenCalledTimes(1);
+        expect(confirmTradeThunkArgs.nextStep).toBeUndefined();
     });
 });
