@@ -45,51 +45,40 @@ function redirectWorkspaceSrc() {
     };
 }
 
-// Source of truth: the public-package-dependencies snapshot in the requirements package.
-// It lists every package the consumer ends up with after installing this one, so anything
-// in it is safe to keep as an external import in the bundled .d.ts. Anything NOT in it
-// must be inlined (consumer has no way to resolve it).
-function readExternalPackages(packageName) {
-    const snapshotFile = resolve(
-        packagesDir,
-        'requirements/src/requirements/public-package-dependencies/__snapshots__',
-        `${packageName}.json`,
-    );
+// External set of workspace packages = transitive closure of prod + peer deps starting
+// from the building package's own package.json. These are guaranteed to land in the
+// consumer's node_modules, so their root-level imports stay external. Workspace deps
+// NOT in this set (typically devDeps and their transitive types) must be inlined.
+function readWorkspaceExternals() {
+    const visited = new Set();
 
-    if (!existsSync(snapshotFile)) {
-        throw new Error(
-            `Missing public-package-dependencies snapshot for package "${packageName}" at "${snapshotFile}"`,
-        );
+    function visit(packageDir) {
+        const pkgJsonPath = resolve(packageDir, 'package.json');
+        if (!existsSync(pkgJsonPath)) return;
+
+        const pkgJson = JSON.parse(readFileSync(pkgJsonPath, 'utf8'));
+        const directDeps = [
+            ...Object.keys(pkgJson.dependencies || {}),
+            ...Object.keys(pkgJson.peerDependencies || {}),
+        ];
+
+        for (const dep of directDeps) {
+            if (visited.has(dep)) continue;
+            visited.add(dep);
+
+            if (dep.startsWith('@trezor/')) {
+                visit(resolve(packagesDir, dep.replace('@trezor/', '')));
+            }
+        }
     }
 
-    let snapshot;
-    try {
-        snapshot = JSON.parse(readFileSync(snapshotFile, 'utf8'));
-    } catch (error) {
-        throw new Error(
-            `Failed to read or parse public-package-dependencies snapshot for package "${packageName}" at "${snapshotFile}": ${error.message}`,
-        );
-    }
+    visit(process.cwd());
 
-    if (!snapshot || !Array.isArray(snapshot.prod)) {
-        throw new Error(
-            `Invalid public-package-dependencies snapshot for package "${packageName}" at "${snapshotFile}": expected a JSON object with a "prod" array`,
-        );
-    }
-    // Only @trezor/* are at risk of being inlined via workspace symlinks; everything else
-    // (bignumber.js, ts-mixer, etc.) stays external automatically. Exclude the package
-    // itself — it appears in its own snapshot but obviously can't import from itself.
-    return snapshot.prod.filter(
-        name => name.startsWith('@trezor/') && name !== `@trezor/${packageName}`,
-    );
+    return new Set([...visited].filter(dep => dep.startsWith('@trezor/')));
 }
 
-export function createDtsConfig({ packageName } = {}) {
-    if (!packageName) {
-        throw new Error('createDtsConfig requires a packageName');
-    }
-
-    const externalPackages = readExternalPackages(packageName);
+export function createDtsConfig() {
+    const workspaceExternals = readWorkspaceExternals();
     const outDir = process.env.DTS_OUT_DIR || 'lib';
 
     return {
@@ -104,6 +93,21 @@ export function createDtsConfig({ packageName } = {}) {
                 respectExternal: true,
             }),
         ],
-        external: id => externalPackages.some(pkg => id === pkg || id.startsWith(`${pkg}/`)),
+        // Externalization rules (only applied to bare package specifiers; relative/
+        // absolute paths fall through and get bundled as usual):
+        // - Workspace `@trezor/*` roots in the prod closure: external (consumer has them).
+        // - Workspace `@trezor/*` not in the closure (devDep leaks): inlined.
+        // - Workspace subpath imports (`@trezor/X/src/...`): handled by redirectWorkspaceSrc
+        //   so the bundled entry never ends up referencing another package's unbundled file.
+        // - Other bare specifiers (Node built-ins, npm packages): external. Inlining them
+        //   would drag in JS sources without .d.ts and Node built-ins. `@types/node` covers
+        //   built-ins; other npm types are a pre-existing concern of dep declarations.
+        external: id => {
+            if (id.startsWith('.') || id.startsWith('/')) return false;
+            if (id.startsWith('@trezor/')) {
+                return workspaceExternals.has(id);
+            }
+            return true;
+        },
     };
 }

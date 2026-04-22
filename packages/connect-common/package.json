@@ -77,8 +77,9 @@
     },
     "scripts": {
         "build:lib": "yarn build:lib:cjs && yarn build:lib:esm",
-        "build:lib:cjs": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
-        "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
+        "build:lib:cjs": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && yarn build:dts:bundle && ../../scripts/publish/replace-imports.sh ./lib cjs",
+        "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && DTS_OUT_DIR=libESM yarn build:dts:bundle && ../../scripts/publish/replace-imports.sh ./libESM esm",
+        "build:dts:bundle": "rollup -c rollup.dts.config.mjs && mv \"${DTS_OUT_DIR:-lib}/index.bundled.d.ts\" \"${DTS_OUT_DIR:-lib}/index.d.ts\"",
         "type-check": "yarn g:tsc --build tsconfig.json",
         "test:unit": "yarn g:jest",
         "depcheck": "yarn g:depcheck",
@@ -104,6 +105,8 @@
         "@trezor/utxo-lib": "workspace:*",
         "@types/chrome": "^0.0.299",
         "@types/jest": "29.5.12",
-        "@types/node": "22.13.10"
+        "@types/node": "22.13.10",
+        "rollup": "^4.60.1",
+        "rollup-plugin-dts": "^6.4.1"
     }
 }

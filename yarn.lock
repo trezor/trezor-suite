@@ -15622,6 +15622,8 @@ __metadata:
     "@types/chrome": "npm:^0.0.299"
     "@types/jest": "npm:29.5.12"
     "@types/node": "npm:22.13.10"
+    rollup: "npm:^4.60.1"
+    rollup-plugin-dts: "npm:^6.4.1"
   peerDependencies:
     tslib: ^2.6.2
   languageName: unknown
