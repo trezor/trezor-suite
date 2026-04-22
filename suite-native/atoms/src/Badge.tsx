@@ -44,23 +44,23 @@ const badgeStyle = prepareNativeStyle<BadgeStyleProps>((utils, { backgroundColor
 
 const badgeIntentToStylePropsMap = {
     neutral: {
-        backgroundColor: 'legacyBackgroundNeutralSubtleOnElevation0',
+        backgroundColor: 'elementFillNeutralSoft',
         textColor: 'contentSecondary',
     },
     brand: {
-        backgroundColor: 'legacyBackgroundPrimarySubtleOnElevation0',
+        backgroundColor: 'elementFillBrandSoft',
         textColor: 'contentBrand',
     },
     warning: {
-        backgroundColor: 'legacyBackgroundAlertYellowSubtleOnElevation0',
+        backgroundColor: 'elementFillWarningSoft',
         textColor: 'contentWarning',
     },
     critical: {
-        backgroundColor: 'legacyBackgroundAlertRedSubtleOnElevation0',
+        backgroundColor: 'elementFillCriticalSoft',
         textColor: 'contentCritical',
     },
     info: {
-        backgroundColor: 'legacyBackgroundAlertBlueSubtleOnElevation0',
+        backgroundColor: 'elementFillInfoSoft',
         textColor: 'contentInfo',
     },
 } as const satisfies Record<BadgeIntent, BadgeStyle>;
