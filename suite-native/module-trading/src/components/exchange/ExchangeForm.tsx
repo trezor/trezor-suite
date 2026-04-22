@@ -5,11 +5,10 @@ import { AnimatedBox, Card, VStack } from '@suite-native/atoms';
 import { AmountEditingDoneButton } from '@suite-native/trading-atoms';
 
 import { ExchangeAlert } from './ExchangeAlert';
+import { ExchangeCard } from './ExchangeCard';
 import { ExchangeConfirmation } from './ExchangeConfirmation';
 import { ExchangeRateAndProviderPicker } from './ExchangeRateAndProviderPicker';
 import { ExchangeReceiveAccountPicker } from './receive/ExchangeReceiveAccountPicker';
-import { ExchangeReceiveCard } from './receive/ExchangeReceiveCard';
-import { ExchangeSendCard } from './send/ExchangeSendCard';
 import { useExchangeFormContext } from '../../hooks/exchange/useExchangeFormContext';
 import { useExchangeQuotes } from '../../hooks/exchange/useExchangeQuotes';
 import { useFocusedValueWatch } from '../../hooks/general/useFocusedValueWatch';
@@ -48,8 +47,7 @@ const ExchangeFormMemoized = memo(
             <AnimatedBox layout={LinearTransition}>
                 <VStack spacing="sp16" testID={EXCHANGE_FORM_TEST_ID}>
                     <ExchangeAlert />
-                    <ExchangeSendCard isAmountInputActive={isAmountInputActive} />
-                    <ExchangeReceiveCard />
+                    <ExchangeCard isAmountInputActive={isAmountInputActive} />
                     {isAmountInputActive ? (
                         <AmountEditingDoneButton testID={AMOUNT_EDITING_DONE_BUTTON_TEST_ID} />
                     ) : (

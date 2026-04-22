@@ -13,9 +13,9 @@ import {
     createTradingPreloadedState,
 } from '../../../../__tests__/tradingTestUtils';
 import { useExchangeForm } from '../../../../hooks/exchange/useExchangeForm';
-import { ExchangeSendCard } from '../ExchangeSendCard';
+import { ExchangeSendContent } from '../ExchangeSendContent';
 
-describe('ExchangeSendCard', () => {
+describe('ExchangeSendContent', () => {
     let form: ExchangeFormType;
     const preloadedState = createTradingPreloadedState({
         tradeType: 'exchange',
@@ -31,8 +31,8 @@ describe('ExchangeSendCard', () => {
             preloadedState,
         });
 
-    const renderExchangeSendCard = (isAmountInputActive: boolean) =>
-        renderWithStoreProvider(<ExchangeSendCard isAmountInputActive={isAmountInputActive} />, {
+    const renderExchangeSendContent = () =>
+        renderWithStoreProvider(<ExchangeSendContent />, {
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
             preloadedState,
         });
@@ -47,10 +47,8 @@ describe('ExchangeSendCard', () => {
             form.setValue('sendAsset', usdcAsset);
             form.setValue('sendCryptoAmount', '100');
         });
-        const { getByText, getByLabelText } = renderExchangeSendCard(false);
+        const { getByText, getByLabelText } = renderExchangeSendContent();
 
-        expect(getByText('You pay')).toBeOnTheScreen();
-        expect(getByText('$99.00')).toBeOnTheScreen();
         expect(getByLabelText('Select asset')).toHaveTextContent(/USDC/);
         expect(getByLabelText('Network name')).toHaveTextContent('Ethereum');
         expect(getByLabelText('You pay')).toHaveDisplayValue('100');
