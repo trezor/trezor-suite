@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react';
 
 import { Translation } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
+import { startThpSessionThunk } from '@suite/thp';
 
-import { startThpSessionThunk } from 'src/actions/thp/startThpSessionThunk';
 import { useDispatch } from 'src/hooks/suite';
 
-// reflection of components/firmware/ThpPairing/ThpPairingStartStep
+// reflection of suite/thp/src/firmware/ThpPairingStartStep.tsx
 export const ThpPairingStartStep = (props: { isLoading?: boolean }) => {
     const [isLoading, setIsLoading] = useState(props.isLoading);
     const dispatch = useDispatch();

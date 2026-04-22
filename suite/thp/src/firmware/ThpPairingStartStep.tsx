@@ -1,11 +1,13 @@
 import { type ReactNode, useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+
+import type { Dispatch } from 'redux';
 
 import { Translation } from '@suite/intl';
 import { Card, Column, Modal, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { startThpSessionThunk } from 'src/actions/thp/startThpSessionThunk';
-import { useDispatch } from 'src/hooks/suite';
+import { startThpSessionThunk } from '../startThpSessionThunk';
 
 type ThpPairingStartStepProps = {
     modalHeading: ReactNode;
@@ -15,7 +17,7 @@ type ThpPairingStartStepProps = {
 // reflection of components/onboarding/ThpPairing/ThpPairingStartStep
 export const ThpPairingStartStep = (props: ThpPairingStartStepProps) => {
     const [isLoading, setIsLoading] = useState(props.isLoading);
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<Dispatch>();
     useEffect(() => {
         setIsLoading(props.isLoading);
     }, [props.isLoading]);

@@ -1,18 +1,17 @@
 import { type ReactNode, useRef } from 'react';
+import { useSelector } from 'react-redux';
 
 import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectThpStep } from '@suite-common/thp';
 import { Column, Image, Modal } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite';
-
 import { ThpCodeEntryStep } from './ThpCodeEntryStep';
 import { ThpCodeInvalidStep } from './ThpCodeInvalidStep';
 import { ThpPairingConfirmStep } from './ThpPairingConfirmStep';
 import { ThpPairingStartStep } from './ThpPairingStartStep';
 
-// reflection of components/onboarding/ThpPairingStep/ThpPairingStep.tsx
+// reflection of packages/suite/src/components/onboarding/ThpPairingStep/ThpPairingStep.tsx
 export const ThpPairingStep = ({ heading }: { heading: ReactNode }) => {
     const device = useSelector(selectSelectedDevice);
     const thpStep = useSelector(selectThpStep);

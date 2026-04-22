@@ -99,6 +99,7 @@
         "@suite/router": "workspace:*",
         "@suite/settings": "workspace:*",
         "@suite/suite-sync": "workspace:*",
+        "@suite/thp": "workspace:*",
         "@suite/trading": "workspace:*",
         "@suite/tx-simulation": "workspace:^",
         "@tanstack/react-query": "5.90.21",

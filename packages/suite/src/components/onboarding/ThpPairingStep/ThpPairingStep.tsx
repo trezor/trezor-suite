@@ -1,9 +1,9 @@
 import { useRef } from 'react';
+import { useSelector } from 'react-redux';
 
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectThpStep } from '@suite-common/thp';
 
-import { useSelector } from 'src/hooks/suite/useSelector';
 import { DeviceDisconnectedStep } from 'src/views/onboarding/UnexpectedState/DeviceDisconnectedStep';
 
 import { ThpCodeEntryStep } from './ThpCodeEntryStep';
@@ -11,7 +11,7 @@ import { ThpCodeInvalidStep } from './ThpCodeInvalidStep';
 import { ThpPairingConfirmStep } from './ThpPairingConfirmStep';
 import { ThpPairingStartStep } from './ThpPairingStartStep';
 
-// reflection of components/firmware/ThpPairingStep/ThpPairingStep.tsx
+// reflection of suite/thp/src/firmware/ThpPairingStep.tsx
 export const ThpPairingStep = () => {
     const device = useSelector(selectSelectedDevice);
     const thpStep = useSelector(selectThpStep);

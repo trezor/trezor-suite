@@ -5,7 +5,7 @@
     },
     "references": [
         {
-            "path": "../locks"
+            "path": "../device"
         },
         {
             "path": "../../suite-common/device"
@@ -17,16 +17,22 @@
             "path": "../../suite-common/suite-types"
         },
         {
+            "path": "../../suite-common/thp"
+        },
+        {
             "path": "../../suite-common/wallet-core"
         },
         {
-            "path": "../router"
+            "path": "../intl"
+        },
+        {
+            "path": "../../packages/components"
         },
         {
             "path": "../../packages/connect"
         },
         {
-            "path": "../../suite-common/test-utils"
+            "path": "../../packages/theme"
         }
     ]
 }
