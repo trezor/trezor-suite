@@ -9,6 +9,7 @@ import { AppNavigationTooltip } from 'src/components/suite/AppNavigation/AppNavi
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { globalSendReceiveFilters } from 'src/slices/wallet/globalSendReceiveFilters';
 import { type AccountItemType } from 'src/types/wallet';
+import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
 
 import { GlobalReceiveModal } from './GlobalReceiveModal/GlobalReceiveModal';
 import { GlobalSendModal } from './GlobalSendModal/GlobalSendModal';
@@ -22,12 +23,18 @@ export const GlobalSendReceive = memo(function GlobalSendReceiveInner() {
     const { sendAnalytics, receiveAnalytics } = useGlobalSendReceiveAnalytics();
     const dispatch = useDispatch();
     const accounts = useSelector(selectAllAccountsToList);
+    const discoveryStatus = useSelector(selectDiscoveryOverallStatus);
 
-    const buttonIntent = device?.connected && device?.available ? 'brand' : 'neutral';
-    const buttonPriority = device?.connected && device?.available ? 'primary' : 'secondary';
-    // When there is nothing to send (no accounts yet or all accounts empty) we demote the Send
-    // button so Receive stands out as the primary action.
-    const hasNothingToSend = accounts.length === 0 || accounts.every(a => a.empty);
+    const isDeviceConnected = !!device?.connected && !!device?.available;
+    // The dashboard shows the `EmptyWallet` screen (with its own primary Buy/Receive CTAs)
+    // when discovery has finished and every account is empty. In that case we demote the
+    // header Send/Receive buttons so the EmptyWallet CTAs stand out and we avoid two
+    // competing primary calls-to-action on the same page.
+    const isEmptyWalletShown =
+        discoveryStatus === undefined && accounts.length > 0 && accounts.every(a => a.empty);
+    const shouldPromoteButtons = isDeviceConnected && !isEmptyWalletShown;
+    const buttonIntent = shouldPromoteButtons ? 'brand' : 'neutral';
+    const buttonPriority = shouldPromoteButtons ? 'primary' : 'secondary';
 
     const handleSendSubmit = (account: Account, filledSearch: boolean) => {
         sendAnalytics.account(filledSearch);
@@ -64,7 +71,6 @@ export const GlobalSendReceive = memo(function GlobalSendReceiveInner() {
                 }}
                 intent={buttonIntent}
                 priority={buttonPriority}
-                hasNothingToSend={hasNothingToSend}
             />
             {activeModal === 'send' && (
                 <GlobalSendModal onCancel={handleSendCancel} onSubmit={handleSendSubmit} />

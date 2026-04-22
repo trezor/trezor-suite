@@ -28,7 +28,7 @@ export const EmptyWallet = () => {
             {enabledNetworks.length > 0 && (
                 <Row gap={spacings.xs} flexWrap="wrap" margin={{ top: spacings.sm }}>
                     <Paragraph intent="neutral" priority="secondary" typographyStyle="body-sm">
-                        <Translation id="TR_CHECKED_BALANCES_ON" />:
+                        <Translation id="TR_READY_ON" />:
                     </Paragraph>
                     <Row gap={spacings.xxs} flexWrap="wrap">
                         {enabledNetworks.map(network => (
@@ -40,22 +40,21 @@ export const EmptyWallet = () => {
             <Row gap={spacings.sm} margin={{ top: spacings.md }}>
                 <Button
                     intent="brand"
+                    iconLeft="currencyCircleDollar"
+                    size="large"
+                    onClick={handleBuy}
+                    data-testid="@dashboard/empty-wallet/buy"
+                >
+                    <Translation id="TR_BUY" />
+                </Button>
+                <Button
+                    intent="brand"
                     iconLeft="arrowDown"
                     size="large"
                     onClick={handleReceive}
                     data-testid="@dashboard/empty-wallet/receive"
                 >
                     <Translation id="TR_NAV_RECEIVE" />
-                </Button>
-                <Button
-                    intent="neutral"
-                    priority="secondary"
-                    iconLeft="plus"
-                    size="large"
-                    onClick={handleBuy}
-                    data-testid="@dashboard/empty-wallet/buy"
-                >
-                    <Translation id="TR_BUY" />
                 </Button>
             </Row>
         </Column>
