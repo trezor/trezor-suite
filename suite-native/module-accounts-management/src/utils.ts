@@ -1,4 +1,4 @@
-import { type RewardDto, type RewardDtoYieldSource } from '@suite-common/earn-api';
+import { type RewardDto, type RewardDtoYieldSource } from '@suite-common/earn-stablecoin-api';
 import { type TxKeyPath } from '@suite-native/intl';
 import { BigNumber } from '@trezor/utils';
 

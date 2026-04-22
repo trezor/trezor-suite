@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { type RewardDto } from '@suite-common/earn-api';
+import { type RewardDto } from '@suite-common/earn-stablecoin-api';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
