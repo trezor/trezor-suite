@@ -4,6 +4,7 @@ import { tradingSellActions } from '@suite-common/trading';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { events } from '@suite-native/analytics';
 import { Form, useField } from '@suite-native/forms';
+import { useAnalytics } from '@suite-native/services';
 import {
     type TestStore,
     act,
@@ -30,17 +31,6 @@ import { useSellForm } from '../useSellForm';
 
 const mockReport = jest.fn();
 
-jest.mock('@suite-native/services', () => {
-    const original = jest.requireActual('@suite-native/services');
-
-    return {
-        ...original,
-        useAnalytics: () => ({
-            report: mockReport,
-        }),
-    };
-});
-
 const btc1account = 'btc-account-1' as AccountKey; // Todo: create properly via `createAccountKey()`
 
 describe('useSellForm', () => {
@@ -58,6 +48,10 @@ describe('useSellForm', () => {
 
     beforeEach(() => {
         store = getInitializedStore();
+        mockReport.mockClear();
+        (useAnalytics as jest.Mock).mockReturnValue({
+            report: mockReport,
+        });
     });
 
     afterEach(() => {

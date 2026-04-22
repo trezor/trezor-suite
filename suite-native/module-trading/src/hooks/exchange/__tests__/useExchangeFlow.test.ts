@@ -10,15 +10,6 @@ import {
 import { createTradingTestStore } from '../../../__tests__/tradingTestUtils';
 import { useExchangeFlow } from '../useExchangeFlow';
 
-jest.mock('@suite-native/services', () => {
-    const original = jest.requireActual('@suite-native/services');
-
-    return {
-        ...original,
-        useAnalytics: jest.fn(),
-    };
-});
-
 // Mock TrezorConnect to prevent errors during cleanup
 jest.mock('@trezor/connect', () => ({
     ...jest.requireActual('@trezor/connect'),

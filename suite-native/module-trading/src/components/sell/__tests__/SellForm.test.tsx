@@ -26,15 +26,6 @@ jest.mock('../../../hooks/general/useFocusedValueWatch', () =>
 
 const reportMock = jest.fn();
 
-jest.mock('@suite-native/services', () => {
-    const original = jest.requireActual('@suite-native/services');
-
-    return {
-        ...original,
-        useAnalytics: jest.fn(),
-    };
-});
-
 describe('SellForm', () => {
     const renderFormHook = (overrides: PreloadedStatePartial<TradingTestPreloadedState> = {}) =>
         renderHookWithTradingProvider(() => useSellForm(), {

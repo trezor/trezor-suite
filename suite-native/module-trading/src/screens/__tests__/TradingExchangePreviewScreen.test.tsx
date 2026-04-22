@@ -44,15 +44,6 @@ jest.mock('@react-navigation/native', () => ({
         }) as RouteProp<TradingStackParamList, TradingStackRoutes.TradingExchangePreview>,
 }));
 
-jest.mock('@suite-native/services', () => {
-    const original = jest.requireActual('@suite-native/services');
-
-    return {
-        ...original,
-        useAnalytics: jest.fn(),
-    };
-});
-
 let mockIsDeviceConnected = true;
 jest.mock('@suite-common/device', () => ({
     ...jest.requireActual('@suite-common/device'),

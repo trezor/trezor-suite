@@ -21,15 +21,6 @@ import { SellReceiveMethodPicker } from '../SellReceiveMethodPicker';
 
 const reportMock = jest.fn();
 
-jest.mock('@suite-native/services', () => {
-    const original = jest.requireActual('@suite-native/services');
-
-    return {
-        ...original,
-        useAnalytics: jest.fn(),
-    };
-});
-
 describe('SellReceiveMethodPicker', () => {
     let form: SellFormType;
 

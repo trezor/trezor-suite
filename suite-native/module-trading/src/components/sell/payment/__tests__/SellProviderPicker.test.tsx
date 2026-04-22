@@ -21,15 +21,6 @@ import { SellProviderPicker } from '../SellProviderPicker';
 
 const reportMock = jest.fn();
 
-jest.mock('@suite-native/services', () => {
-    const original = jest.requireActual('@suite-native/services');
-
-    return {
-        ...original,
-        useAnalytics: jest.fn(),
-    };
-});
-
 describe('SellProviderPicker', () => {
     let form: SellFormType;
 

@@ -17,15 +17,6 @@ import { ExchangeRateAndProviderPicker } from '../ExchangeRateAndProviderPicker'
 
 const reportMock = jest.fn();
 
-jest.mock('@suite-native/services', () => {
-    const original = jest.requireActual('@suite-native/services');
-
-    return {
-        ...original,
-        useAnalytics: jest.fn(),
-    };
-});
-
 describe('ExchangeRateAndProviderPicker', () => {
     let exchangeForm: ExchangeFormType;
     let unmount: (() => void) | undefined;

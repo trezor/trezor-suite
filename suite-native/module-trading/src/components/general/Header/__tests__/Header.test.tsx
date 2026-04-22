@@ -12,15 +12,6 @@ import {
 } from '../../../../__tests__/tradingTestUtils';
 import { Header } from '../Header';
 
-jest.mock('@suite-native/services', () => {
-    const original = jest.requireActual('@suite-native/services');
-
-    return {
-        ...original,
-        useAnalytics: jest.fn(),
-    };
-});
-
 describe('Header', () => {
     const getFFOverrides = ({
         areTradingExchangeDexesEnabled = true,

@@ -23,15 +23,6 @@ import { BuyProviderPicker } from '../BuyProviderPicker';
 
 const reportMock = jest.fn();
 
-jest.mock('@suite-native/services', () => {
-    const original = jest.requireActual('@suite-native/services');
-
-    return {
-        ...original,
-        useAnalytics: jest.fn(),
-    };
-});
-
 describe('BuyProviderPicker', () => {
     let form: BuyFormType;
 

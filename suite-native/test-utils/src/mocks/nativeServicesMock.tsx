@@ -1,13 +1,13 @@
 import { type ReactNode } from 'react';
 
 const analyticsMock = {
-    report: () => {},
-    isEnabled: () => true,
-    disable: () => {},
-    enable: () => {},
-    setUrl: () => {},
-    setLoggerEnabled: () => {},
-    init: () => {},
+    report: jest.fn(),
+    isEnabled: jest.fn(() => true),
+    disable: jest.fn(),
+    enable: jest.fn(),
+    setUrl: jest.fn(),
+    setLoggerEnabled: jest.fn(),
+    init: jest.fn(),
 };
 
 const servicesMock = {
@@ -16,6 +16,6 @@ const servicesMock = {
 
 export const NativeServicesProvider = ({ children }: { children: ReactNode }) => <>{children}</>;
 
-export const useNativeServices = () => servicesMock;
+export const useNativeServices = jest.fn(() => servicesMock);
 
-export const useAnalytics = () => analyticsMock;
+export const useAnalytics = jest.fn(() => analyticsMock);

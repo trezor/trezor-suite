@@ -8,6 +8,7 @@ import {
 } from '@suite-common/trading';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { events } from '@suite-native/analytics';
+import { useAnalytics } from '@suite-native/services';
 import { type TestStore, act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import {
     btcAsset,
@@ -27,16 +28,7 @@ import { useExchangeQuotes } from '../useExchangeQuotes';
 
 const mockReport = jest.fn();
 
-jest.mock('@suite-native/services', () => {
-    const original = jest.requireActual('@suite-native/services');
-
-    return {
-        ...original,
-        useAnalytics: () => ({
-            report: mockReport,
-        }),
-    };
-});
+let mockTimeSpent: number;
 
 jest.mock('@trezor/react-utils', () => {
     const originalModule = jest.requireActual('@trezor/react-utils');
@@ -85,6 +77,7 @@ describe('useExchangeQuotes', () => {
 
     beforeEach(() => {
         mockReport.mockClear();
+        mockTimeSpent = 0;
     });
 
     it('should query quotes once all required data is selected', async () => {

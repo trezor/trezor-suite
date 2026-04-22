@@ -20,15 +20,6 @@ import { TradingCountryOfResidencePicker } from '../TradingCountryOfResidencePic
 
 const reportMock = jest.fn();
 
-jest.mock('@suite-native/services', () => {
-    const original = jest.requireActual('@suite-native/services');
-
-    return {
-        ...original,
-        useAnalytics: jest.fn(),
-    };
-});
-
 describe('TradingCountryOfResidencePicker', () => {
     let form: UseFormReturn<{ country: TradingCountryOption }>;
 

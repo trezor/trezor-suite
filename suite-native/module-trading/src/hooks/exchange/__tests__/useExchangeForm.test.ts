@@ -8,6 +8,7 @@ import {
 import { type AccountKey } from '@suite-common/wallet-types';
 import { events } from '@suite-native/analytics';
 import { FeatureFlag } from '@suite-native/feature-flags';
+import { useAnalytics } from '@suite-native/services';
 import { type TestStore, act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import {
     btcAsset,
@@ -44,17 +45,6 @@ const createPrefetchDexQuoteApprovalThunkMock = (
     return () => result;
 };
 
-jest.mock('@suite-native/services', () => {
-    const original = jest.requireActual('@suite-native/services');
-
-    return {
-        ...original,
-        useAnalytics: () => ({
-            report: mockReport,
-        }),
-    };
-});
-
 const btc1AccountKey = 'btc-account-1' as AccountKey; // Todo: create properly via `createAccountKey()`
 
 describe('useExchangeForm', () => {
@@ -82,6 +72,10 @@ describe('useExchangeForm', () => {
         jest.restoreAllMocks();
         jest.clearAllMocks();
         store = getInitializedStore();
+
+        (useAnalytics as jest.Mock).mockReturnValue({
+            report: mockReport,
+        });
 
         jest.spyOn(exchangeThunks, 'prefetchDexQuoteApprovalThunk').mockImplementation(
             createPrefetchDexQuoteApprovalThunkMock,
