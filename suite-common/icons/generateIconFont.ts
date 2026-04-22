@@ -185,6 +185,7 @@ const usedIcons = [
     'wifiX',
     'x',
     'xCircle',
+    'identificationCard',
 ] as const satisfies AllAvailableIcons[];
 
 const tempAssetsDir = path.join(__dirname, 'assetsTemp');
