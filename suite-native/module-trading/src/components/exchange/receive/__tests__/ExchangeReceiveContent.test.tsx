@@ -13,9 +13,9 @@ import {
     createTradingPreloadedState,
 } from '../../../../__tests__/tradingTestUtils';
 import { useExchangeForm } from '../../../../hooks/exchange/useExchangeForm';
-import { ExchangeReceiveCard } from '../ExchangeReceiveCard';
+import { ExchangeReceiveContent } from '../ExchangeReceiveContent';
 
-describe('ExchangeReceiveCard', () => {
+describe('ExchangeReceiveContent', () => {
     let form: ExchangeFormType;
     const preloadedState = createTradingPreloadedState({
         tradeType: 'exchange',
@@ -40,9 +40,8 @@ describe('ExchangeReceiveCard', () => {
             preloadedState,
         });
 
-    const renderExchangeBuyCard = () =>
-        renderWithStoreProvider(<ExchangeReceiveCard />, {
-            preloadedState,
+    const renderExchangeReceiveContent = () =>
+        renderWithStoreProvider(<ExchangeReceiveContent />, {
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 
@@ -56,9 +55,8 @@ describe('ExchangeReceiveCard', () => {
             form.setValue('receiveAsset', usdcAsset);
             form.setValue('quote', mercuryoFixedWorstQuote);
         });
-        const { getByText, getByLabelText } = renderExchangeBuyCard();
+        const { getByText, getByLabelText } = renderExchangeReceiveContent();
 
-        expect(getByText('You get')).toBeOnTheScreen();
         expect(getByLabelText('Select asset')).toHaveTextContent(/USDC/);
         expect(getByLabelText('Network name')).toHaveTextContent('Ethereum');
         expect(getByLabelText('You get')).toHaveDisplayValue('0.00083554');
