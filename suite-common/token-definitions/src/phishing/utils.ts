@@ -110,6 +110,7 @@ const PHISHING_RESULT_TRUE_BY_DETECTOR: Record<
     UNKNOWN_TX: { isPhishing: true, detectorId: 'UNKNOWN_TX' },
     DUST_AMOUNT: { isPhishing: true, detectorId: 'DUST_AMOUNT' },
     ZERO_AMOUNT: { isPhishing: true, detectorId: 'ZERO_AMOUNT' },
+    TRC10_TRANSFER: { isPhishing: true, detectorId: 'TRC10_TRANSFER' },
 };
 
 // fallback when `isPhishing` is true without a detector id

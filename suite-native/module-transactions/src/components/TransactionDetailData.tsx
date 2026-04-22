@@ -41,6 +41,8 @@ const getPhishingWarningTranslationId = (detectorId?: PhishingDetectorId) => {
             return 'transactions.phishing.warningDustAmount';
         case 'ZERO_AMOUNT':
             return 'transactions.phishing.warningZeroAmount';
+        case 'TRC10_TRANSFER':
+            return 'transactions.phishing.warningTrc10Transfer';
         default:
             return 'transactions.phishing.warning';
     }

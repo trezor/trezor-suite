@@ -9117,6 +9117,11 @@ export const messages = defineMessages({
         defaultMessage:
             'Proceed with caution. This transaction has a zero amount and may be suspicious. <a>Learn more</a>',
     },
+    TR_PHISHING_BANNER_TRC10_TRANSFER: {
+        id: 'TR_PHISHING_BANNER_TRC10_TRANSFER',
+        defaultMessage:
+            'Proceed with caution. This transaction is a TRC10 transfer and may be suspicious. <a>Learn more</a>',
+    },
     TR_HIDE_TRANSACTION: {
         id: 'TR_HIDE_TRANSACTION',
         defaultMessage: 'Mark as suspicious',

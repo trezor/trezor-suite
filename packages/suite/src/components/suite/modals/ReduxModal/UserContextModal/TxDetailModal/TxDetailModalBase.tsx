@@ -34,6 +34,8 @@ const getPhishingBannerTranslationId = (detectorId?: PhishingDetectorId) => {
             return 'TR_PHISHING_BANNER_DUST_AMOUNT';
         case 'ZERO_AMOUNT':
             return 'TR_PHISHING_BANNER_ZERO_AMOUNT';
+        case 'TRC10_TRANSFER':
+            return 'TR_PHISHING_BANNER_TRC10_TRANSFER';
         default:
             return 'TR_ZERO_PHISHING_BANNER';
     }

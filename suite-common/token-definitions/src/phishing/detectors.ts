@@ -143,6 +143,12 @@ const isUnknownTxPhishing: PhishingDetectorFn = ({ transaction }) => {
     return createResult(transaction.type === 'unknown', transaction);
 };
 
+const isTrc10TransferPhishing: PhishingDetectorFn = ({ transaction }) => {
+    const isTrc10Transfer = transaction.tronSpecific?.operation === 'trc10_transfer';
+
+    return createResult(isTrc10Transfer, transaction);
+};
+
 export const detectors = {
     dustValue: {
         id: 'DUST_AMOUNT',
@@ -159,5 +165,9 @@ export const detectors = {
     unknownTx: {
         id: 'UNKNOWN_TX',
         validator: isUnknownTxPhishing,
+    },
+    trc10: {
+        id: 'TRC10_TRANSFER',
+        validator: isTrc10TransferPhishing,
     },
 } as const satisfies Record<string, PhishingDetector>;

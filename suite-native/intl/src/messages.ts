@@ -2077,6 +2077,7 @@ export const messages = {
             warningDustAmount:
                 'This transaction contains dust amounts, which can be used in scams.',
             warningZeroAmount: 'This transaction has a zero amount and may be suspicious.',
+            warningTrc10Transfer: 'This transaction is a TRC10 transfer and may be suspicious.',
             markedAsRecognized: 'You’ve confirmed this transaction is safe.',
             hideTransaction: 'Mark as suspicious',
             unhideTransaction: 'Mark as safe',
