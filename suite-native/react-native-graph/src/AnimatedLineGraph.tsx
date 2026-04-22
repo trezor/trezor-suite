@@ -247,7 +247,6 @@ export function AnimatedLineGraph<TEventPayload extends object>({
                 };
             } else {
                 gradientPaths.value = {
-                    from: gradientPath,
                     to: gradientPath,
                 };
             }
@@ -265,7 +264,6 @@ export function AnimatedLineGraph<TEventPayload extends object>({
             };
         } else {
             paths.value = {
-                from: path,
                 to: path,
             };
         }
@@ -317,17 +315,17 @@ export function AnimatedLineGraph<TEventPayload extends object>({
     }, [color, enableFadeInMask]);
 
     const path = useDerivedValue(() => {
-        const from = paths.value.from ?? straightLine;
-        const to = paths.value.to ?? straightLine;
+        const { from, to } = paths.value;
+        if (from == null || to == null) return to ?? straightLine;
 
-        return to.interpolate(from, interpolateProgress.value);
+        return to.interpolate(from, interpolateProgress.value) ?? to;
     }, [interpolateProgress, paths]);
 
     const gradientPath = useDerivedValue(() => {
-        const from = gradientPaths.value.from ?? straightLine;
-        const to = gradientPaths.value.to ?? straightLine;
+        const { from, to } = gradientPaths.value;
+        if (from == null || to == null) return to ?? straightLine;
 
-        return to.interpolate(from, interpolateProgress.value);
+        return to.interpolate(from, interpolateProgress.value) ?? to;
     });
 
     const stopPulsating = useCallback(() => {
@@ -499,7 +497,6 @@ export function AnimatedLineGraph<TEventPayload extends object>({
                                         />
                                         <Group>
                                             <Path
-                                                // @ts-expect-error
                                                 path={path}
                                                 strokeWidth={lineThickness}
                                                 style="stroke"
@@ -515,10 +512,7 @@ export function AnimatedLineGraph<TEventPayload extends object>({
                                             </Path>
 
                                             {shouldFillGradient && (
-                                                <Path
-                                                    // @ts-expect-error
-                                                    path={gradientPath}
-                                                >
+                                                <Path path={gradientPath}>
                                                     <LinearGradient
                                                         start={vec(0, 0)}
                                                         end={vec(0, height)}
