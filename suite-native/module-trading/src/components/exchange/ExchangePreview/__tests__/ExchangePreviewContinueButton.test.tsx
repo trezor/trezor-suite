@@ -29,6 +29,7 @@ describe('ExchangePreviewContinueButton', () => {
                 exchange: {
                     tradingAccountKey: 'btc-account-1' as AccountKey,
                     receiveAccountKey: 'eth-account-1' as AccountKey,
+                    selectedQuote: mercuryoFixedWorstQuote,
                 },
             },
             send: {
@@ -49,7 +50,6 @@ describe('ExchangePreviewContinueButton', () => {
         renderWithTradingProvider(
             <ExchangePreviewContinueButton
                 isDisabled={false}
-                quote={mercuryoFixedWorstQuote}
                 onSignTransactionNavigation={jest.fn()}
                 {...props}
             />,
@@ -63,13 +63,13 @@ describe('ExchangePreviewContinueButton', () => {
         jest.restoreAllMocks();
     });
 
-    it('should render nothing when precomposed transaction is not in final state', () => {
-        const { toJSON } = renderExchangePreviewContinueButton(
+    it('should render disabled button when precomposed transaction is not in final state', () => {
+        const { getByText } = renderExchangePreviewContinueButton(
             {},
             { wallet: { send: { precomposedTx: { type: 'composing' } as any } } },
         );
 
-        expect(toJSON()).toBeNull();
+        expect(getByText('Continue')).toBeDisabled();
     });
 
     it('should render continue button', () => {
@@ -102,13 +102,36 @@ describe('ExchangePreviewContinueButton', () => {
         expect(queryByTestId('@trading/exchange-preview/continue-button/loading')).toBeNull();
     });
 
+    it('should render nothing when quote is finalized', () => {
+        const { toJSON } = renderExchangePreviewContinueButton(
+            {},
+            {
+                wallet: {
+                    trading: {
+                        exchange: {
+                            selectedQuote: { ...mercuryoFixedWorstQuote, status: 'SUCCESS' },
+                        },
+                    },
+                },
+            },
+        );
+
+        expect(toJSON()).toBeNull();
+    });
+
     it('should fire console.warn and do not navigate when quote is not specified', async () => {
         const mockOnSignTransactionNavigation = jest.fn();
         const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
-        const { getByText } = renderExchangePreviewContinueButton({
-            quote: undefined,
-            onSignTransactionNavigation: mockOnSignTransactionNavigation,
-        });
+        const { getByText } = renderExchangePreviewContinueButton(
+            { onSignTransactionNavigation: mockOnSignTransactionNavigation },
+            {
+                wallet: {
+                    trading: {
+                        exchange: { selectedQuote: undefined },
+                    },
+                },
+            },
+        );
 
         await userEvent.press(getByText('Continue'));
 
