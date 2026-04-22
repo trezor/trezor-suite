@@ -1,5 +1,6 @@
 import { FeatureFlag } from '@suite-native/feature-flags';
 import { Form } from '@suite-native/forms';
+import { getTranslation } from '@suite-native/intl';
 import {
     act,
     renderHookWithStoreProvider,
@@ -58,10 +59,16 @@ describe('ExchangeReceiveContent', () => {
         });
         const { getByText, getByLabelText } = renderExchangeReceiveContent();
 
-        expect(getByLabelText('Select asset')).toHaveTextContent(/USDC/);
-        expect(getByLabelText('Network name')).toHaveTextContent('Ethereum');
-        expect(getByLabelText('You get')).toHaveDisplayValue('0.00083554');
-        expect(getByText('Balance:')).toBeOnTheScreen();
-        expect(getByText('- USDC')).toBeOnTheScreen();
+        expect(
+            getByLabelText(getTranslation('moduleTrading.selectCoin.buttonTitle')),
+        ).toHaveTextContent(/USDC/);
+        expect(getByLabelText(getTranslation('moduleTrading.networkName'))).toHaveTextContent(
+            'Ethereum',
+        );
+        expect(
+            getByLabelText(getTranslation('moduleTrading.selectCoin.amountLabel')),
+        ).toHaveDisplayValue('0.00083554');
+        expect(getByText(getTranslation('moduleTrading.tradingScreen.balance'))).toBeOnTheScreen();
+        expect(getByText('- ' + usdcAsset.symbol)).toBeOnTheScreen();
     });
 });
