@@ -27,23 +27,23 @@ type RoundedIconStyle = {
 
 const roundedIconIntentToStylePropsMap = {
     neutral: {
-        backgroundColor: 'legacyBackgroundTertiaryDefaultOnElevation0',
+        backgroundColor: 'elementFillNeutralSoft',
         iconColor: 'contentSecondary',
     },
     brand: {
-        backgroundColor: 'legacyBackgroundPrimarySubtleOnElevation0',
+        backgroundColor: 'elementFillBrandSoft',
         iconColor: 'contentBrand',
     },
     warning: {
-        backgroundColor: 'legacyBackgroundAlertYellowSubtleOnElevation0',
+        backgroundColor: 'elementFillWarningSoft',
         iconColor: 'contentWarning',
     },
     critical: {
-        backgroundColor: 'legacyBackgroundAlertRedSubtleOnElevation0',
+        backgroundColor: 'elementFillCriticalSoft',
         iconColor: 'contentCritical',
     },
     info: {
-        backgroundColor: 'legacyBackgroundAlertBlueSubtleOnElevation0',
+        backgroundColor: 'elementFillInfoSoft',
         iconColor: 'contentInfo',
     },
 } as const satisfies Record<RoundedIconIntent, RoundedIconStyle>;
