@@ -37,7 +37,7 @@ const switchContainerStyle = prepareNativeStyle(utils => ({
 const switchCircleStyle = prepareNativeStyle(utils => ({
     width: SWITCH_CIRCLE_SIZE,
     height: SWITCH_CIRCLE_SIZE,
-    backgroundColor: utils.colors.legacyBackgroundNeutralBoldInverted,
+    backgroundColor: utils.colors.contentPrimaryInverse,
     borderRadius: utils.borders.radii.round,
     margin: SWITCH_CIRCLE_MARGIN,
     alignSelf: 'center',
@@ -59,11 +59,11 @@ const useAnimationStyles = ({
     }, [trackWidth, translateX]);
 
     const uncheckedColor = isDisabled
-        ? utils.colors.elementFillNeutralBold
-        : utils.colors.contentSecondary;
+        ? utils.colors.elementFillBoldDisabled
+        : utils.colors.elementFillNeutralBold;
     const checkedColor = isDisabled
-        ? utils.colors.legacyBackgroundPrimarySubtleOnElevation1
-        : utils.colors.legacyBackgroundPrimaryDefault;
+        ? utils.colors.elementFillFieldSelectedDisabled
+        : utils.colors.elementFillFieldSelected;
 
     const animatedSwitchCircleStyle = useAnimatedStyle(() => ({
         transform: [{ translateX: translateX.value }],
