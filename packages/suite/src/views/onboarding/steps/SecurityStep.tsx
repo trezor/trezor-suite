@@ -120,7 +120,10 @@ export const SecurityStep = () => {
                 <NoNfcTags
                     onBack={() => goToPreviousStep()}
                     onFinishSetup={() => handleSkipBackup({ showFinishedScreen: true })}
-                    onCreateWordlistBackup={() => updateBackupMedium('wordlist')}
+                    onCreateWordlistBackup={() => {
+                        updateBackupMedium('wordlist');
+                        goToPreviousStep();
+                    }}
                 />
             );
         }

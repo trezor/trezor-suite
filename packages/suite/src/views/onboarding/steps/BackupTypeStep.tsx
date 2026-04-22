@@ -25,15 +25,17 @@ export const BackupTypeStep = () => {
     const deviceModel = device?.features?.internal_model;
     const unitPackaging = device?.features?.unit_packaging ?? 0;
 
-    const [backupType, setBackupType] = useState<BackupType>(deviceDefaultBackupType);
-    const [showMediumChoice, setShowMediumChoice] = useState(isN4w1BackupEnabled);
     const {
         goToPreviousStep,
         goToNextStep,
         updateAnalytics,
         updateBackupType,
         updateBackupMedium,
+        backupMedium,
     } = useOnboarding();
+
+    const [backupType, setBackupType] = useState<BackupType>(deviceDefaultBackupType);
+    const [showMediumChoice, setShowMediumChoice] = useState(isN4w1BackupEnabled);
 
     const isDeviceLocked = isLocked();
 
@@ -60,7 +62,7 @@ export const BackupTypeStep = () => {
         return null;
     }
 
-    if (showMediumChoice) {
+    if (showMediumChoice && backupMedium !== 'wordlist') {
         return (
             <SelectBackupMedium
                 onBack={() => goToPreviousStep()}
