@@ -6,6 +6,7 @@
         "src",
         "scripts",
         "mocks",
+        "build-mock",
         "redux.d.ts",
         "files"
     ],
