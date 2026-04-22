@@ -30,9 +30,10 @@ test.describe('Discovery', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
     }) => {
         await test.step('Activate coins', async () => {
             await settingsPage.navigateTo('coins');
-            for (const symbol of coinsToActivate) {
-                await settingsPage.coinsTab.enableNetwork(symbol);
-                if (symbol === 'ada') {
+            for (const coin of coinsToActivate.filter(symbol => symbol !== 'eth')) {
+                // ETH is activated by default
+                await settingsPage.coinsTab.enableNetwork(coin);
+                if (coin === 'ada') {
                     await settingsPage.coinsTab.temporarilySetOfficialCardanoBackend();
                 }
             }

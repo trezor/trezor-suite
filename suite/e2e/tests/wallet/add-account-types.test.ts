@@ -87,23 +87,22 @@ test.describe('Account types suite', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () =
                 priority: TestPriority.High,
             }),
         },
-        async ({ page, dashboardPage, settingsPage, walletPage, analytics }) => {
+        async ({ dashboardPage, settingsPage, walletPage, analytics }) => {
             const coins: { symbol: NetworkSymbol; path: string }[] = [
                 { symbol: 'ada', path: `m/1852'/1815'/1'` },
                 { symbol: 'eth', path: `m/44'/60'/0'/0/1` },
+                { symbol: 'base', path: `m/44'/60'/0'/0/1` },
             ];
 
-            await settingsPage.navigateTo('coins');
-            for (const coin of coins) {
-                await settingsPage.coinsTab.enableNetwork(coin.symbol as NetworkSymbol);
-                if (coin.symbol === 'ada') {
-                    await settingsPage.coinsTab.temporarilySetOfficialCardanoBackend();
-                }
-            }
+            const symbolsToEnable = coins
+                .map(c => c.symbol)
+                .filter(symbol => symbol !== 'eth') as NetworkSymbol[];
+            await settingsPage.changeNetworks({
+                enableNetworks: symbolsToEnable,
+            });
 
             await dashboardPage.dashboardMenuButton.click();
             await walletPage.openAccount();
-            await page.discoveryShouldFinish();
 
             analytics.interceptAnalytics();
             await walletPage.filterAccountsButton.click();
