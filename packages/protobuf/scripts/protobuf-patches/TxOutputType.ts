@@ -10,7 +10,7 @@ export type TxOutputType =
     | {
           address: string;
           address_n?: typeof undefined;
-          script_type: 'PAYTOADDRESS';
+          script_type?: 'PAYTOADDRESS';
           amount: UintType;
           multisig?: MultisigRedeemScriptType;
           orig_hash?: string;
@@ -20,18 +20,6 @@ export type TxOutputType =
     | {
           address?: typeof undefined;
           address_n: number[];
-          script_type?: ChangeOutputScriptType;
-          amount: UintType;
-          multisig?: MultisigRedeemScriptType;
-          orig_hash?: string;
-          orig_index?: number;
-          payment_req_index?: number;
-      }
-    // NOTE: the type was loosened for compatibility (issue #10474)
-    // It is not originally intended to use address instead of address_n with change output
-    | {
-          address: string;
-          address_n?: typeof undefined;
           script_type?: ChangeOutputScriptType;
           amount: UintType;
           multisig?: MultisigRedeemScriptType;

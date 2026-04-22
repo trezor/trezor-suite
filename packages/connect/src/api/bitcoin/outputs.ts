@@ -32,6 +32,7 @@ export const validateTrezorOutputs = (
             { name: 'address', type: 'string' },
             { name: 'amount', type: 'uint' },
             { name: 'op_return_data', type: 'string' },
+            { name: 'script_type', type: 'string' },
             { name: 'multisig', type: 'object' },
         ]);
 
@@ -49,16 +50,22 @@ export const validateTrezorOutputs = (
             output.script_type = getOutputScriptType(output.address_n);
         }
 
-        if (
-            'address' in output &&
-            typeof output.address === 'string' &&
-            !isValidAddress(output.address, coinInfo)
-        ) {
-            // validate address with coin info
-            throw ERRORS.TypedError(
-                'Method_InvalidParameter',
-                `Invalid ${coinInfo.label} output address ${output.address}`,
-            );
+        if ('address' in output && typeof output.address === 'string') {
+            const externalOutput = output as { address: string; script_type?: string };
+            if (!externalOutput.script_type) {
+                externalOutput.script_type = 'PAYTOADDRESS';
+            } else if (externalOutput.script_type !== 'PAYTOADDRESS') {
+                throw ERRORS.TypedError(
+                    'Method_InvalidParameter',
+                    `External output (with address) must use script_type PAYTOADDRESS, got ${externalOutput.script_type}`,
+                );
+            }
+            if (!isValidAddress(externalOutput.address, coinInfo)) {
+                throw ERRORS.TypedError(
+                    'Method_InvalidParameter',
+                    `Invalid ${coinInfo.label} output address ${externalOutput.address}`,
+                );
+            }
         }
     });
 

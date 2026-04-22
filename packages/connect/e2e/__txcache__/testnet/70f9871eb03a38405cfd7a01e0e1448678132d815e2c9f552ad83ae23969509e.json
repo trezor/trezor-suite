@@ -26,7 +26,7 @@
         {
             "address": "tb1qkvwu9g3k2pdxewfqr7syz89r3gj557l3uuf9r9",
             "amount": 100000,
-            "script_type": "PAYTOWITNESS"
+            "script_type": "PAYTOADDRESS"
         },
         {
             "address_n": [2147483732, 2147483649, 2147483648, 1, 1],
