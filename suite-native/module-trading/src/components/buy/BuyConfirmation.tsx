@@ -1,5 +1,10 @@
 import { type AnimatedProps, FadeIn, FadeOutDown } from 'react-native-reanimated';
+import { useSelector } from 'react-redux';
 
+import {
+    type TradingRootState,
+    selectTradingProviderByNameAndTradeType,
+} from '@suite-common/trading';
 import { AnimatedBox, Button } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
@@ -21,6 +26,10 @@ export const BuyConfirmation = ({ enteringAnimation }: ConfirmationProps) => {
     const { canProceed, selectQuote } = useBuyFlow(form);
 
     const quote = form.watch('quote');
+    const providerInfo = useSelector((state: TradingRootState) =>
+        selectTradingProviderByNameAndTradeType(state, quote?.exchange, 'buy'),
+    );
+    const providerName = providerInfo?.companyName ?? quote?.exchange ?? '';
 
     const { isReceivingInactiveStellarToken, activateButtonElement } =
         useTradingStellarActivateToken({
@@ -35,8 +44,15 @@ export const BuyConfirmation = ({ enteringAnimation }: ConfirmationProps) => {
                 ? activateButtonElement
                 : canProceed && (
                       <AnimatedBox entering={FadeIn}>
-                          <Button onPress={selectQuote} testID={CONFIRMATION_TEST_ID}>
-                              <Translation id="moduleTrading.tradingScreen.buttons.continue" />
+                          <Button
+                              onPress={selectQuote}
+                              testID={CONFIRMATION_TEST_ID}
+                              iconRight="arrowSquareOut"
+                          >
+                              <Translation
+                                  id="moduleTrading.tradingScreen.buttons.buyVia"
+                                  values={{ providerName }}
+                              />
                           </Button>
                       </AnimatedBox>
                   )}

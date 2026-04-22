@@ -2960,6 +2960,8 @@ export const messages = {
             kycWarning: 'This provider requires to know your identity.',
             kycRequired: 'Identity verification will be required.',
             buttons: {
+                buyVia: 'Buy via {providerName}',
+                sellVia: 'Sell via {providerName}',
                 continue: 'Continue',
                 swap: 'Swap',
                 approveAndSwap: 'Approve and swap',
