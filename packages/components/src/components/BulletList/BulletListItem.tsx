@@ -69,7 +69,7 @@ const Bullet = styled.div<{
             ? theme.legacyBackgroundPrimarySubtleOnElevation0
             : $isDarkTheme
               ? theme.contentPrimaryInverse
-              : theme.elementFillBoldDisabled};
+              : theme.legacyBackgroundNeutralSubtleOnElevation0};
     color: ${({ $state, theme }) => theme[mapStateToTextColor($state)]};
     ${({ $size }) => ($size === 'small' ? typography['body-xs'] : typography['body-sm'])}
 
