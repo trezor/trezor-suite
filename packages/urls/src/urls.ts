@@ -268,14 +268,14 @@ export const HELP_CENTER_FIRMWARE_REVISION_CHECK_MOBILE: Url = withPlatformUtm(
     'https://trezor.io/learn/security-privacy/how-trezor-keeps-you-safe/trezor-firmware-authenticity-check',
 );
 export const HELP_CENTER_ENTROPY_CHECK_URL: Url = withPlatformUtm(
-    'https://trezor.io/learn/security-privacy/how-trezor-keeps-you-safe/entropy-check',
+    'https://trezor.io/learn/security-privacy/how-trezor-keeps-you-safe/entropy-check-how-trezor-verifies-your-wallet-is-truly-random',
 );
 
 export const HELP_CENTER_REPLACE_BY_FEE_ETHEREUM: Url = withPlatformUtm(
     'https://trezor.io/learn/supported-assets/ethereum-layer-2-EVM/replace-by-fee-rbf-ethereum',
 );
 export const HELP_CENTER_REPLACE_BY_FEE_BITCOIN = withPlatformUtm(
-    'https://trezor.io/learn/supported-assets/bitcoin/replace-by-fee-rbf-bitcoin',
+    'https://trezor.io/learn/supported-assets/bitcoin/speed-up-a-stuck-bitcoin-transaction-with-replace-by-fee-rbf',
 );
 export const HELP_CENTER_CANCEL_TRANSACTION: Url = withPlatformUtm(
     'https://trezor.io/support/troubleshooting/trezor-suite-issues/can-i-cancel-or-reverse-a-transaction',
