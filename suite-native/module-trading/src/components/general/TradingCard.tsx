@@ -1,26 +1,29 @@
-import { type ReactNode } from 'react';
-import { type AnimatedProps, LinearTransition } from 'react-native-reanimated';
+import { type PropsWithChildren } from 'react';
+import { Platform } from 'react-native';
+import { FadeIn, LinearTransition } from 'react-native-reanimated';
 
 import { AnimatedBorderCard, AnimatedBox } from '@suite-native/atoms';
 import { useAnimatedBorderStyle } from '@suite-native/trading-atoms';
 
 export type TradingCardProps = {
     isAmountInputActive?: boolean;
-    entering?: AnimatedProps<any>['entering'];
     testID?: string;
-    children: ReactNode;
+    shouldAnimateEntering?: boolean;
 };
 
 export const TradingCard = ({
     isAmountInputActive = false,
-    entering,
+    shouldAnimateEntering,
     testID,
     children,
-}: TradingCardProps) => {
+}: PropsWithChildren<TradingCardProps>) => {
     const animatedStyle = useAnimatedBorderStyle(isAmountInputActive);
 
+    // on android fade animation looks ugly on view with shadows, better to skip it
+    const enteringAnimation = shouldAnimateEntering && Platform.OS === 'ios' ? FadeIn : undefined;
+
     return (
-        <AnimatedBox entering={entering} layout={LinearTransition}>
+        <AnimatedBox entering={enteringAnimation} layout={LinearTransition}>
             <AnimatedBorderCard style={[animatedStyle]} noPadding testID={testID}>
                 {children}
             </AnimatedBorderCard>

@@ -1,5 +1,3 @@
-import { Platform } from 'react-native';
-import { FadeIn } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import { cryptoIdToSymbol } from '@suite-common/trading';
@@ -12,14 +10,14 @@ import {
 } from '@suite-native/transaction-management';
 
 import { SellFormFieldErrorBadge } from './SellFormFieldErrorBadge';
-import { SellFiatCurrencyPicker } from './fiat/SellFiatCurrencyPicker';
-import { SellReceiveMethodPicker } from './fiat/SellReceiveMethodPicker';
-import { SellSendAccountCryptoBalance } from './send/SellSendAccountCryptoBalance';
-import { SellSendAssetPicker } from './send/SellSendAssetPicker';
 import { useSellFormContext } from '../../hooks/sell/useSellFormContext';
 import { TradeableAssetNetworkInfo } from '../general/TradeableAssetNetworkInfo';
 import { TradingCard } from '../general/TradingCard';
 import { TradingCardSection } from '../general/TradingCardSection';
+import { SellFiatCurrencyPicker } from './fiat/SellFiatCurrencyPicker';
+import { SellReceiveMethodPicker } from './fiat/SellReceiveMethodPicker';
+import { SellSendAccountCryptoBalance } from './send/SellSendAccountCryptoBalance';
+import { SellSendAssetPicker } from './send/SellSendAssetPicker';
 
 type SellCardProps = {
     isAmountInputActive: boolean;
@@ -47,14 +45,14 @@ export const SellCard = ({ isAmountInputActive, shouldAnimateEntering }: SellCar
         balance: formattedBalance,
     });
 
-    // on android fade animation looks ugly on view with shadows, better to skip it
-    const enteringAnimation = shouldAnimateEntering && Platform.OS === 'ios' ? FadeIn : undefined;
-
     return (
-        <TradingCard isAmountInputActive={isAmountInputActive} entering={enteringAnimation}>
+        <TradingCard
+            isAmountInputActive={isAmountInputActive}
+            shouldAnimateEntering={shouldAnimateEntering}
+        >
             <TradingCardSection
                 bottomBorder
-                testID={SELL_CARD_TEST_ID + '/cryptoSection'}
+                testID={`${SELL_CARD_TEST_ID}/cryptoSection`}
                 title={<Translation id="moduleTrading.selectCoinToSell.title" />}
                 titleAction={
                     <Box alignItems="flex-end">
@@ -75,7 +73,7 @@ export const SellCard = ({ isAmountInputActive, shouldAnimateEntering }: SellCar
                 )}
             </TradingCardSection>
             <TradingCardSection
-                testID={SELL_CARD_TEST_ID + '/fiatSection'}
+                testID={`${SELL_CARD_TEST_ID}/fiatSection`}
                 title={<Translation id="moduleTrading.selectFiat.sell.title" />}
                 titleAction={
                     <Box alignItems="flex-end">
