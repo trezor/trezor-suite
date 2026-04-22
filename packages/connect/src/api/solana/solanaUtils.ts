@@ -5,6 +5,7 @@ import {
     type Transaction,
     type TransactionMessage,
 } from '@solana/kit';
+import { getAddMemoInstruction } from '@solana-program/memo';
 
 import type { TokenAccount } from '@trezor/blockchain-link-types';
 import { solanaUtils as SolanaBlockchainLinkUtils } from '@trezor/blockchain-link-utils';
@@ -23,9 +24,6 @@ const loadSolanaComputeBudgetProgramLib = async () =>
     );
 const loadSolanaSystemProgramLib = async () =>
     await import(/* webpackChunkName: "vendor-solana-program-system" */ '@solana-program/system');
-
-const loadSolanaMemoProgramLib = async () =>
-    await import(/* webpackChunkName: "vendor-solana-program-memo" */ '@solana-program/memo');
 
 const loadSolanaTokenProgramLib = async (tokenProgramName: TokenProgramName) => {
     switch (tokenProgramName) {
@@ -171,7 +169,6 @@ export const buildTransferTransaction = async (
         priorityFees,
     );
     if (memo) {
-        const { getAddMemoInstruction } = await loadSolanaMemoProgramLib();
         messageWithFees = appendTransactionMessageInstruction(
             getAddMemoInstruction({ memo }),
             messageWithFees,
@@ -400,7 +397,6 @@ export const buildTokenTransferTransaction = async (
 
     // Step 7: Append memo instruction if provided
     if (memo) {
-        const { getAddMemoInstruction } = await loadSolanaMemoProgramLib();
         message = appendTransactionMessageInstruction(getAddMemoInstruction({ memo }), message);
     }
 
