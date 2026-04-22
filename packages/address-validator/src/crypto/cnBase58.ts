@@ -1,5 +1,6 @@
-var moduleImport = require('./biginteger');
-var JSBigInt = moduleImport.JSBigInt;
+/* eslint-disable */
+// @ts-nocheck
+const { JSBigInt } = require('./biginteger');
 
 /**
 Copyright (c) 2017, moneroexamples

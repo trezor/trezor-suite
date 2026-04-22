@@ -9,10 +9,14 @@
 */
 
 /*
-	File: biginteger.js
+	File: biginteger.ts
 	Exports:
 		<BigInteger>
 */
+/* eslint-disable */
+// @ts-nocheck
+const moduleExports: { JSBigInt?: any } = {};
+
 (function (exports) {
     'use strict';
     /*
@@ -1457,4 +1461,6 @@
     })();
 
     exports.JSBigInt = BigInteger; // exports.BigInteger changed to exports.JSBigInt
-})(typeof exports !== 'undefined' ? exports : this);
+})(moduleExports);
+
+export const JSBigInt = moduleExports.JSBigInt;

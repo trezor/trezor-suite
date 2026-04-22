@@ -7,6 +7,8 @@
  * @license MIT
  */
 /*jslint bitwise: true */
+/* eslint-disable */
+// @ts-nocheck
 'use strict';
 
 var ERROR = 'input is invalid type';
