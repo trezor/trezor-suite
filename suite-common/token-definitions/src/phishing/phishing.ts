@@ -44,6 +44,7 @@ const PHISHING_VALIDATORS: NetworkPhishingValidators = new Map([
     [
         'tron',
         new PhishingTransactionValidator()
+            .addDetector(detectors.trc10)
             .addDetector(detectors.fakeToken)
             .addDetector(detectors.dustValue),
     ],

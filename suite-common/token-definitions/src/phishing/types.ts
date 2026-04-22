@@ -30,7 +30,12 @@ export interface PhishingDetectorResult {
 
 export type PhishingDetectorFn = (props: PhishingDetectorFnProps) => PhishingDetectorResult;
 
-export type PhishingDetectorId = 'FAKE_TOKEN' | 'UNKNOWN_TX' | 'DUST_AMOUNT' | 'ZERO_AMOUNT';
+export type PhishingDetectorId =
+    | 'FAKE_TOKEN'
+    | 'UNKNOWN_TX'
+    | 'DUST_AMOUNT'
+    | 'ZERO_AMOUNT'
+    | 'TRC10_TRANSFER';
 
 export type PhishingDetector = {
     id: PhishingDetectorId;
