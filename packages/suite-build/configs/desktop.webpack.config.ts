@@ -28,7 +28,7 @@ const messageSystemMockFile = path.join(
     '../../../',
     'suite-common',
     'message-system',
-    'mock',
+    'build-mock',
     'config.v1.ts',
 );
 
