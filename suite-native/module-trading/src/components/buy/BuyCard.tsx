@@ -1,6 +1,3 @@
-import { Platform } from 'react-native';
-import { FadeIn } from 'react-native-reanimated';
-
 import { Box, HStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
@@ -27,14 +24,14 @@ export const BuyCard = ({ isAmountInputActive, shouldAnimateEntering }: BuyCardP
 
     const [cryptoValue, asset] = watch(['cryptoValue', 'asset']);
 
-    // on android fade animation looks ugly on view with shadows, better to skip it
-    const enteringAnimation = shouldAnimateEntering && Platform.OS === 'ios' ? FadeIn : undefined;
-
     return (
-        <TradingCard isAmountInputActive={isAmountInputActive} entering={enteringAnimation}>
+        <TradingCard
+            isAmountInputActive={isAmountInputActive}
+            shouldAnimateEntering={shouldAnimateEntering}
+        >
             <TradingCardSection
                 bottomBorder
-                testID={BUY_CARD_TEST_ID + '/fiatSection'}
+                testID={`${BUY_CARD_TEST_ID}/fiatSection`}
                 title={<Translation id="moduleTrading.selectFiat.buy.title" />}
                 titleAction={
                     <Box alignItems="flex-end">
@@ -46,7 +43,7 @@ export const BuyCard = ({ isAmountInputActive, shouldAnimateEntering }: BuyCardP
             </TradingCardSection>
             <TradingCardSection
                 bottomBorder={!!asset}
-                testID={BUY_CARD_TEST_ID + '/cryptoSection'}
+                testID={`${BUY_CARD_TEST_ID}/cryptoSection`}
                 title={<Translation id="moduleTrading.selectCoin.title" />}
                 titleAction={
                     <BuyFormFieldErrorBadge fieldName="cryptoValue">

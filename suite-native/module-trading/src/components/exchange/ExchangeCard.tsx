@@ -22,7 +22,7 @@ export const ExchangeCard = ({ isAmountInputActive }: ExchangeCardProps) => {
         <TradingCard isAmountInputActive={isAmountInputActive}>
             <TradingCardSection
                 bottomBorder
-                testID={EXCHANGE_CARD_TEST_ID + '/sendSection'}
+                testID={`${EXCHANGE_CARD_TEST_ID}/sendSection`}
                 title={<Translation id="moduleTrading.selectCoinToSell.title" />}
                 titleAction={<ExchangeSendAmountBadge />}
             >
@@ -30,7 +30,7 @@ export const ExchangeCard = ({ isAmountInputActive }: ExchangeCardProps) => {
             </TradingCardSection>
             <TradingCardSection
                 readOnly
-                testID={EXCHANGE_CARD_TEST_ID + '/receiveSection'}
+                testID={`${EXCHANGE_CARD_TEST_ID}/receiveSection`}
                 title={<Translation id="moduleTrading.selectCoin.title" />}
                 titleAction={
                     <CryptoToFiatValueBadge
