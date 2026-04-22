@@ -1,0 +1,59 @@
+name: "[Trigger] Re-run project assignment check on project assignment"
+
+on:
+  projects_v2_item:
+    types:
+      - created
+
+jobs:
+  rerun-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate GitHub App token
+        id: trezor-bot-token
+        uses: actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3 # v3
+        with:
+          client-id: ${{ secrets.TREZOR_BOT_APP_ID }}
+          private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
+
+      - name: Re-run project assignment check on PR
+        env:
+          GITHUB_TOKEN: ${{ steps.trezor-bot-token.outputs.token }}
+        run: |
+          # Only process pull requests
+          if [ "${{ github.event.projects_v2_item.content_type }}" != "PullRequest" ]; then
+            echo "Skip: Project item is not a pull request."
+            exit 0
+          fi
+
+          # Resolve PR number from the project item node ID
+          PR_NUMBER=$(gh api graphql -f query='
+          query($id: ID!) {
+            node(id: $id) {
+              ... on PullRequest {
+                number
+              }
+            }
+          }' -F id="${{ github.event.projects_v2_item.content_node_id }}" --jq '.data.node.number')
+
+          if [ -z "$PR_NUMBER" ] || [ "$PR_NUMBER" = "null" ]; then
+            echo "Could not resolve PR number from project item."
+            exit 1
+          fi
+
+          echo "PR number: $PR_NUMBER"
+
+          # Get the PR's head SHA
+          PR_SHA=$(gh pr view "$PR_NUMBER" --json headRefOid --jq '.headRefOid')
+
+          # Find the latest run of the check workflow for this commit
+          RUN_ID=$(gh api "repos/${{ github.repository }}/actions/workflows/check-project-assignment.yml/runs?head_sha=$PR_SHA&per_page=1" \
+            --jq '.workflow_runs[0].id')
+
+          if [ -z "$RUN_ID" ] || [ "$RUN_ID" = "null" ]; then
+            echo "No existing workflow run found for PR #$PR_NUMBER (SHA: $PR_SHA). Nothing to re-run."
+            exit 0
+          fi
+
+          echo "Re-running workflow run $RUN_ID for PR #$PR_NUMBER"
+          gh api -X POST "repos/${{ github.repository }}/actions/runs/$RUN_ID/rerun-failed-jobs"
