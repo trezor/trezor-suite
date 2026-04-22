@@ -21,26 +21,36 @@ type RadioStyleProps = {
 const RADIO_SIZE = 24 * ACCESSIBILITY_FONTSIZE_MULTIPLIER;
 const RADIO_CHECK_SIZE = 14 * ACCESSIBILITY_FONTSIZE_MULTIPLIER;
 
-const radioStyle = prepareNativeStyle<RadioStyleProps>((utils, { isChecked, isDisabled }) => {
-    const borderColor = (() => {
-        if (isChecked && isDisabled) return utils.colors.legacyBackgroundPrimarySubtleOnElevation0;
-        if (isChecked) return utils.colors.legacyBackgroundPrimaryDefault;
-        if (isDisabled) return utils.colors.borderNeutral;
+const radioStyle = prepareNativeStyle<RadioStyleProps>(
+    ({ colors, borders }, { isChecked, isDisabled }) => {
+        const borderColor = (() => {
+            if (isChecked && isDisabled) return colors.elementFillFieldSelectedDisabled;
+            if (isChecked) return colors.elementFillFieldSelected;
+            if (isDisabled) return colors.elementBorderFieldDisabled;
 
-        return utils.colors.contentSecondary;
-    })();
+            return colors.elementBorderField;
+        })();
 
-    return {
-        height: RADIO_SIZE,
-        width: RADIO_SIZE,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius: utils.borders.radii.round,
-        borderWidth: utils.borders.widths.large,
-        borderColor,
-    };
-});
+        const backgroundColor = (() => {
+            if (isChecked) return 'transparent';
+            if (isDisabled) return colors.elementFillFieldDisabled;
+
+            return colors.elementFillField;
+        })();
+
+        return {
+            height: RADIO_SIZE,
+            width: RADIO_SIZE,
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderRadius: borders.radii.round,
+            borderWidth: borders.widths.large,
+            backgroundColor,
+            borderColor,
+        };
+    },
+);
 
 const radioCheckStyle = prepareNativeStyle<Pick<RadioStyleProps, 'isDisabled'>>(
     (utils, { isDisabled }) => ({
@@ -48,8 +58,8 @@ const radioCheckStyle = prepareNativeStyle<Pick<RadioStyleProps, 'isDisabled'>>(
         width: RADIO_CHECK_SIZE,
         borderRadius: utils.borders.radii.round,
         backgroundColor: isDisabled
-            ? utils.colors.legacyBackgroundPrimarySubtleOnElevation0
-            : utils.colors.legacyBackgroundPrimaryDefault,
+            ? utils.colors.elementFillFieldSelectedDisabled
+            : utils.colors.elementFillFieldSelected,
     }),
 );
 
