@@ -1,12 +1,12 @@
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
-import { renderWithBasicProvider } from '@suite-native/test-utils';
+import { renderWithProviders } from '@suite-native/test-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { FiatAmountBadge, type FiatAmountBadgeProps } from '../FiatAmountBadge';
 
 describe('FiatAmountBadge', () => {
     const renderFiatAmountBadge = (props: FiatAmountBadgeProps) =>
-        renderWithBasicProvider(<FiatAmountBadge {...props} />);
+        renderWithProviders(<FiatAmountBadge {...props} />, { providers: ['intl', 'formatter'] });
 
     it('should display nothing when amount is not provided', () => {
         const { toJSON } = renderFiatAmountBadge({ amount: undefined });

@@ -1,12 +1,12 @@
-import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
+import { fireEvent, renderWithProviders } from '@suite-native/test-utils';
 
 import { FiatCurrencyButton, type FiatCurrencyButtonProps } from '../FiatCurrencyButton';
 
 describe('FiatCurrencyButton', () => {
     const renderFiatCurrencyButton = (props: Partial<FiatCurrencyButtonProps>) =>
-        renderWithBasicProvider(
-            <FiatCurrencyButton currency="czk" onPress={jest.fn()} {...props} />,
-        );
+        renderWithProviders(<FiatCurrencyButton currency="czk" onPress={jest.fn()} {...props} />, {
+            providers: ['intl'],
+        });
 
     it('should render fiat currency uppercase', () => {
         const { getByLabelText } = renderFiatCurrencyButton({});

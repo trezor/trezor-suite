@@ -1,16 +1,17 @@
 import type { NetworkType } from '@suite-common/wallet-config';
 import { Text } from '@suite-native/atoms';
 import { getTranslation } from '@suite-native/intl';
-import { renderWithBasicProvider } from '@suite-native/test-utils';
+import { renderWithProviders } from '@suite-native/test-utils';
 
 import { FeeLabelTranslation } from '../FeeLabelTranslation';
 
 describe('FeeLabelTranslation', () => {
     const renderFeeLabelTranslation = (networkType: NetworkType) =>
-        renderWithBasicProvider(
+        renderWithProviders(
             <Text>
                 <FeeLabelTranslation networkType={networkType} />
             </Text>,
+            { providers: ['intl'] },
         );
 
     it('should render "Maximum fee" for [ethereum]', () => {

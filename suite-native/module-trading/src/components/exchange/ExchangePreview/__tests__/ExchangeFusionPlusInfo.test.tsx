@@ -1,16 +1,20 @@
-import { renderWithBasicProvider } from '@suite-native/test-utils';
+import { renderWithProviders } from '@suite-native/test-utils';
 
 import { ExchangeFusionPlusInfo } from '../ExchangeFusionPlusInfo';
 
 describe('ExchangeFusionPlusInfo', () => {
     it('should render the Fusion+ card with header', () => {
-        const { getByText } = renderWithBasicProvider(<ExchangeFusionPlusInfo />);
+        const { getByText } = renderWithProviders(<ExchangeFusionPlusInfo />, {
+            providers: ['intl'],
+        });
 
         expect(getByText('You are swapping with 1Inch Fusion+')).toBeOnTheScreen();
     });
 
     it('should render all three bullet points', () => {
-        const { getByText } = renderWithBasicProvider(<ExchangeFusionPlusInfo />);
+        const { getByText } = renderWithProviders(<ExchangeFusionPlusInfo />, {
+            providers: ['intl'],
+        });
 
         expect(
             getByText('Simply sign the order - no need to send transactions manually'),

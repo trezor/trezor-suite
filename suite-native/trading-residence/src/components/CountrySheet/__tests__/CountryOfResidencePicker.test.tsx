@@ -5,7 +5,7 @@ import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { Form, useForm } from '@suite-native/forms';
 import { localeReducer } from '@suite-native/intl';
 import { useAnalytics } from '@suite-native/services';
-import { renderHookWithBasicProvider, renderWithBasicProvider } from '@suite-native/test-utils';
+import { renderHookWithProviders, renderWithProviders } from '@suite-native/test-utils';
 import {
     createLightStore,
     createStaticReducer,
@@ -83,9 +83,10 @@ describe('CountryOfResidencePicker', () => {
             store: createTradingResidenceStore(),
         });
 
-        return renderWithBasicProvider(
+        return renderWithProviders(
             <CountryOfResidencePicker testID="TEST_ID" context="settings" {...props} />,
             {
+                providers: ['intl', 'navigation', 'bottomSheet'],
                 wrapper: ({ children }) => <Form form={result.current}>{children}</Form>,
             },
         );
@@ -145,13 +146,15 @@ describe('CountryOfResidencePicker', () => {
     });
 
     it('should render even when no value is selected', () => {
-        const formWithoutCountrySet = renderHookWithBasicProvider(() =>
-            useForm<TradingLocationFormValues>({ validation: locationFormValidationSchema }),
+        const formWithoutCountrySet = renderHookWithProviders(
+            () => useForm<TradingLocationFormValues>({ validation: locationFormValidationSchema }),
+            { providers: ['intl', 'bottomSheet'] },
         );
 
-        const { getByLabelText } = renderWithBasicProvider(
+        const { getByLabelText } = renderWithProviders(
             <CountryOfResidencePicker testID="TEST_ID" context="settings" />,
             {
+                providers: ['intl', 'navigation', 'bottomSheet'],
                 wrapper: ({ children }) => (
                     <Form form={formWithoutCountrySet.result.current}>{children}</Form>
                 ),

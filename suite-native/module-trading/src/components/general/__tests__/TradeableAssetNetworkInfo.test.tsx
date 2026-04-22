@@ -1,4 +1,4 @@
-import { renderWithBasicProvider } from '@suite-native/test-utils';
+import { renderWithProviders } from '@suite-native/test-utils';
 import { btcAsset, ethOnBaseAsset, usdcAsset } from '@suite-native/trading-fixtures';
 
 import {
@@ -8,7 +8,7 @@ import {
 
 describe('TradeableAssetNetworkInfo', () => {
     const renderTradeableAssetNetworkInfo = (asset: TradeableAssetNetworkInfoProps['asset']) =>
-        renderWithBasicProvider(<TradeableAssetNetworkInfo asset={asset} />);
+        renderWithProviders(<TradeableAssetNetworkInfo asset={asset} />, { providers: ['intl'] });
 
     it('should render nothing when asset is not set', () => {
         const { toJSON } = renderTradeableAssetNetworkInfo(undefined);

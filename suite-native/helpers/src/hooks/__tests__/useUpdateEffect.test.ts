@@ -1,12 +1,13 @@
 import { type EffectCallback } from 'react';
 
-import { renderHookWithBasicProvider } from '@suite-native/test-utils';
+import { renderHookWithProviders } from '@suite-native/test-utils';
 
 import { useUpdateEffect } from '../useUpdateEffect';
 
 describe('useUpdateEffect', () => {
     const renderUseUpdateEffect = (initialEffect: EffectCallback) =>
-        renderHookWithBasicProvider(({ effect }) => useUpdateEffect(effect), {
+        renderHookWithProviders(({ effect }) => useUpdateEffect(effect), {
+            providers: ['intl'],
             initialProps: { effect: initialEffect },
         });
 

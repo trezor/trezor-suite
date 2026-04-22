@@ -1,6 +1,6 @@
 import { Text } from 'react-native';
 
-import { renderWithBasicProvider } from '@suite-native/test-utils';
+import { renderWithProviders } from '@suite-native/test-utils';
 
 import { Card, type CardProps } from '../Card';
 
@@ -11,7 +11,7 @@ describe('Card', () => {
             ...props,
         } as CardProps;
 
-        return renderWithBasicProvider(<Card {...cardProps} />);
+        return renderWithProviders(<Card {...cardProps} />, { providers: ['intl'] });
     };
 
     it('should render children prop', () => {

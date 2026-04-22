@@ -3,7 +3,7 @@ import type { BuyTradeStatus, ExchangeTradeStatus, SellTradeStatus } from 'invit
 import type { TradingTransaction, TradingType } from '@suite-common/trading';
 import { type FormDraftKeyPrefix } from '@suite-common/wallet-types';
 import { useTranslate } from '@suite-native/intl';
-import { renderHookWithBasicProvider } from '@suite-native/test-utils';
+import { renderHookWithProviders } from '@suite-native/test-utils';
 import { getBuyTrade, getExchangeTrade, getSellTrade } from '@suite-native/trading-fixtures';
 
 import {
@@ -131,7 +131,9 @@ describe('utils', () => {
             ['Swap', 'exchange'],
         ])('should return "%s" for [%s] tradeType', (expectedTitle, tradeType) => {
             const trade = { tradeType } as TradingTransaction;
-            const { result } = renderHookWithBasicProvider(() => useTranslate());
+            const { result } = renderHookWithProviders(() => useTranslate(), {
+                providers: ['intl'],
+            });
 
             expect(getTradeTitle(trade, result.current.translate)).toBe(expectedTitle);
         });

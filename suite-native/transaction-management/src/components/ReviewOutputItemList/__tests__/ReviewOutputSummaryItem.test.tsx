@@ -1,6 +1,6 @@
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { Text as MockText } from '@suite-native/atoms';
-import { renderWithBasicProvider } from '@suite-native/test-utils';
+import { renderWithProviders } from '@suite-native/test-utils';
 
 import {
     ReviewOutputSummaryItem,
@@ -23,7 +23,7 @@ jest.mock('../ReviewOutputItemValues', () => ({
 
 describe('ReviewOutputSummaryItem', () => {
     const renderReviewOutputSummaryItem = (props: Partial<ReviewOutputSummaryItemProps>) =>
-        renderWithBasicProvider(
+        renderWithProviders(
             <ReviewOutputSummaryItem
                 accountKey={
                     'eth-account-1' as AccountKey // Todo: create properly via `createAccountKey()`
@@ -32,6 +32,7 @@ describe('ReviewOutputSummaryItem', () => {
                 onLayout={jest.fn()}
                 {...props}
             />,
+            { providers: ['intl'] },
         );
 
     it('should render nothing when summaryOutput is not specified', () => {

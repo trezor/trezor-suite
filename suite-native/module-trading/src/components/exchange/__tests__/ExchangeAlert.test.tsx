@@ -1,6 +1,6 @@
 import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
 import { Form } from '@suite-native/forms';
-import { renderWithBasicProvider } from '@suite-native/test-utils';
+import { renderWithProviders } from '@suite-native/test-utils';
 import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import { getWalletState } from '@suite-native/trading-fixtures';
 import { type ExchangeFormType } from '@suite-native/trading-types';
@@ -25,7 +25,8 @@ describe('ExchangeAlert', () => {
         });
 
     const renderTradingAlert = () =>
-        renderWithBasicProvider(<ExchangeAlert />, {
+        renderWithProviders(<ExchangeAlert />, {
+            providers: ['intl'],
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 

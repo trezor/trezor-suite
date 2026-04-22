@@ -1,11 +1,11 @@
-import { renderWithBasicProvider } from '@suite-native/test-utils';
+import { renderWithProviders } from '@suite-native/test-utils';
 import type { ExtendedSellCryptoPaymentMethod } from '@suite-native/trading-types';
 
 import { TradeFiatSideCard, type TradeFiatSideCardProps } from '../TradeFiatSideCard';
 
 describe('TradeFiatSideCard', () => {
     const renderTradeFiatSideCard = (props: TradeFiatSideCardProps) =>
-        renderWithBasicProvider(<TradeFiatSideCard {...props} />);
+        renderWithProviders(<TradeFiatSideCard {...props} />, { providers: ['intl'] });
 
     it('should render credit card payment method', () => {
         const { getByText } = renderTradeFiatSideCard({

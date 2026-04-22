@@ -1,14 +1,15 @@
 import { Text } from '@suite-native/atoms';
-import { renderWithBasicProvider } from '@suite-native/test-utils';
+import { renderWithProviders } from '@suite-native/test-utils';
 
 import { SlidingFooterOverlay } from '../SlidingFooterOverlay';
 
 describe('SlidingFooterOverlay', () => {
     it('should render children', () => {
-        const { getByText, getByTestId } = renderWithBasicProvider(
+        const { getByText, getByTestId } = renderWithProviders(
             <SlidingFooterOverlay activeStepOffset={123}>
                 <Text>CHILDREN</Text>
             </SlidingFooterOverlay>,
+            { providers: ['intl'] },
         );
 
         expect(getByText('CHILDREN')).toBeOnTheScreen();
@@ -18,8 +19,9 @@ describe('SlidingFooterOverlay', () => {
     });
 
     it('should render without children', () => {
-        const { getByTestId } = renderWithBasicProvider(
+        const { getByTestId } = renderWithProviders(
             <SlidingFooterOverlay activeStepOffset={321} />,
+            { providers: ['intl'] },
         );
 
         expect(getByTestId('sliding-footer-overlay')).toHaveStyle({

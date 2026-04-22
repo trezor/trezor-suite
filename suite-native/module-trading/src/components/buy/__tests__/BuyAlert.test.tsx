@@ -1,5 +1,5 @@
 import { Form } from '@suite-native/forms';
-import { renderWithBasicProvider } from '@suite-native/test-utils';
+import { renderWithProviders } from '@suite-native/test-utils';
 import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import { getWalletState } from '@suite-native/trading-fixtures';
 import { type BuyFormType } from '@suite-native/trading-types';
@@ -17,7 +17,8 @@ describe('BuyAlert', () => {
         });
 
     const renderTradingAlert = () =>
-        renderWithBasicProvider(<BuyAlert />, {
+        renderWithProviders(<BuyAlert />, {
+            providers: ['intl'],
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 

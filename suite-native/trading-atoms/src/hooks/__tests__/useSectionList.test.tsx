@@ -1,13 +1,13 @@
 import { Text } from 'react-native';
 
-import { renderHookWithBasicProvider } from '@suite-native/test-utils';
+import { renderHookWithProviders } from '@suite-native/test-utils';
 
 import { type UseSectionListProps, useSectionList } from '../useSectionList';
 
 const renderUseSectionListHook = <T, U = undefined>(
     initialProps: Partial<UseSectionListProps<T, U>>,
 ) =>
-    renderHookWithBasicProvider(
+    renderHookWithProviders(
         ({
             data = [],
             noSingletonSectionHeader = false,
@@ -24,9 +24,7 @@ const renderUseSectionListHook = <T, U = undefined>(
                 renderSectionHeader,
                 SectionEmptyComponent,
             }),
-        {
-            initialProps,
-        },
+        { providers: ['intl'], initialProps },
     );
 
 describe('useSectionList', () => {

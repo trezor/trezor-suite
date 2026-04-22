@@ -1,4 +1,4 @@
-import { renderWithBasicProvider } from '@suite-native/test-utils';
+import { renderWithProviders } from '@suite-native/test-utils';
 import { type ProviderConfirmationStatus } from '@suite-native/trading-types';
 
 import { ProviderConfirmationStatusInfo } from '../ProviderConfirmationStatusInfo';
@@ -11,7 +11,9 @@ jest.mock('../../hooks/useProviderConfirmationStatus', () => ({
 
 describe('ProviderConfirmationStatusInfo', () => {
     const renderProviderConfirmationStatusInfo = () =>
-        renderWithBasicProvider(<ProviderConfirmationStatusInfo />);
+        renderWithProviders(<ProviderConfirmationStatusInfo />, {
+            providers: ['intl', 'navigation'],
+        });
 
     beforeEach(() => {
         jest.clearAllMocks();

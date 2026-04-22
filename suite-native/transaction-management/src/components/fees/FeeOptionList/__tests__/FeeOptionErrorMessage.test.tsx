@@ -1,10 +1,12 @@
-import { renderWithBasicProvider } from '@suite-native/test-utils';
+import { renderWithProviders } from '@suite-native/test-utils';
 
 import { FeeOptionErrorMessage } from '../FeeOptionErrorMessage';
 
 describe('FeeOptionErrorMessage', () => {
     const renderFeeOptionErrorMessage = (isVisible: boolean) =>
-        renderWithBasicProvider(<FeeOptionErrorMessage isVisible={isVisible} />);
+        renderWithProviders(<FeeOptionErrorMessage isVisible={isVisible} />, {
+            providers: ['intl'],
+        });
 
     it('should render error message when visible', () => {
         const { getByText, queryByTestId } = renderFeeOptionErrorMessage(true);

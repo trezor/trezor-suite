@@ -1,11 +1,11 @@
-import { renderWithBasicProvider, userEvent } from '@suite-native/test-utils';
+import { renderWithProviders, userEvent } from '@suite-native/test-utils';
 
 import { Input } from '../../Input/Input';
 import { AnimatedDoubleInput, type AnimatedDoubleInputProps } from '../AnimatedDoubleInput';
 
 describe('AnimatedDoubleInput', () => {
     const renderAnimatedDoubleInput = (props: Partial<AnimatedDoubleInputProps>) =>
-        renderWithBasicProvider(
+        renderWithProviders(
             <AnimatedDoubleInput
                 renderPrimary={({ onPress, isDisabled, inputRef }) => (
                     <Input
@@ -27,6 +27,7 @@ describe('AnimatedDoubleInput', () => {
                 )}
                 {...props}
             />,
+            { providers: ['intl'] },
         );
 
     it('should call onViewSwitch when Switch button is pressed', async () => {

@@ -1,7 +1,7 @@
 import type { ExchangeKYCType } from 'invity-api';
 
 import { Text } from '@suite-native/atoms';
-import { renderWithBasicProvider } from '@suite-native/test-utils';
+import { renderWithProviders } from '@suite-native/test-utils';
 
 import { getKycPolicyWarningTranslation } from '../kycUtils';
 
@@ -10,7 +10,7 @@ describe('getKycPolicyWarningTranslation', () => {
         const component = getKycPolicyWarningTranslation(type);
         if (!component) return null;
 
-        return renderWithBasicProvider(<Text>{component}</Text>);
+        return renderWithProviders(<Text>{component}</Text>, { providers: ['intl'] });
     };
 
     it.each([

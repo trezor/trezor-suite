@@ -1,12 +1,12 @@
 import { getTranslation } from '@suite-native/intl';
-import { renderHook, renderWithBasicProvider } from '@suite-native/test-utils';
+import { renderHook, renderWithProviders } from '@suite-native/test-utils';
 
 import { useAccountLabelForm } from '../../hooks/useAccountLabelForm';
 import { AccountLabelFieldHint, type AccountLabelFieldHintProps } from '../AccountLabelFieldHint';
 
 describe('AccountLabelFieldHint', () => {
     const renderComponent = (props: AccountLabelFieldHintProps) =>
-        renderWithBasicProvider(<AccountLabelFieldHint {...props} />);
+        renderWithProviders(<AccountLabelFieldHint {...props} />, { providers: ['intl'] });
 
     it('should render', () => {
         const { result } = renderHook(() => useAccountLabelForm('Account label'));

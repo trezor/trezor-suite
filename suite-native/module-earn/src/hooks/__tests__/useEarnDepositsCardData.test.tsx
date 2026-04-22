@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { selectBaseCurrency, selectCurrentFiatRates } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress, type TokenSymbol } from '@suite-common/wallet-types';
 import { useTranslate } from '@suite-native/intl';
-import { renderHookWithBasicProvider } from '@suite-native/test-utils';
+import { renderHookWithProviders } from '@suite-native/test-utils';
 
 import { type StablecoinYieldEarnItem, type StakingEarnItem } from '../../types';
 import { useEarnDepositsCardData } from '../useEarnDepositsCardData';
@@ -134,11 +134,13 @@ describe('useEarnDepositsCardData', () => {
     });
 
     it('returns specific titles and a combined total for single active positions', () => {
-        const { result } = renderHookWithBasicProvider(() =>
-            useEarnDepositsCardData({
-                stakingActiveItems: [stakingActiveItem],
-                stablecoinYieldActiveItems: [stablecoinYieldActiveItem],
-            }),
+        const { result } = renderHookWithProviders(
+            () =>
+                useEarnDepositsCardData({
+                    stakingActiveItems: [stakingActiveItem],
+                    stablecoinYieldActiveItems: [stablecoinYieldActiveItem],
+                }),
+            { providers: ['intl'] },
         );
 
         expect(result.current.shouldShowCard).toBe(true);
@@ -175,14 +177,16 @@ describe('useEarnDepositsCardData', () => {
     });
 
     it('uses generic titles when there are multiple active positions of the same type', () => {
-        const { result } = renderHookWithBasicProvider(() =>
-            useEarnDepositsCardData({
-                stakingActiveItems: [stakingActiveItem, secondStakingActiveItem],
-                stablecoinYieldActiveItems: [
-                    stablecoinYieldActiveItem,
-                    secondStablecoinYieldActiveItem,
-                ],
-            }),
+        const { result } = renderHookWithProviders(
+            () =>
+                useEarnDepositsCardData({
+                    stakingActiveItems: [stakingActiveItem, secondStakingActiveItem],
+                    stablecoinYieldActiveItems: [
+                        stablecoinYieldActiveItem,
+                        secondStablecoinYieldActiveItem,
+                    ],
+                }),
+            { providers: ['intl'] },
         );
 
         expect(result.current.totalDepositedFiatAmount.toString()).toBe('2400');
@@ -200,11 +204,13 @@ describe('useEarnDepositsCardData', () => {
     });
 
     it('uses generic staking title when active staking positions have different symbols', () => {
-        const { result } = renderHookWithBasicProvider(() =>
-            useEarnDepositsCardData({
-                stakingActiveItems: [stakingActiveItem, solStakingActiveItem],
-                stablecoinYieldActiveItems: [],
-            }),
+        const { result } = renderHookWithProviders(
+            () =>
+                useEarnDepositsCardData({
+                    stakingActiveItems: [stakingActiveItem, solStakingActiveItem],
+                    stablecoinYieldActiveItems: [],
+                }),
+            { providers: ['intl'] },
         );
 
         expect(result.current.shouldShowCard).toBe(true);
@@ -218,14 +224,16 @@ describe('useEarnDepositsCardData', () => {
     });
 
     it('filters out invalid active items before building rows', () => {
-        const { result } = renderHookWithBasicProvider(() =>
-            useEarnDepositsCardData({
-                stakingActiveItems: [stakingActiveItem, invalidStakingActiveItem],
-                stablecoinYieldActiveItems: [
-                    stablecoinYieldActiveItem,
-                    invalidStablecoinYieldActiveItem,
-                ],
-            }),
+        const { result } = renderHookWithProviders(
+            () =>
+                useEarnDepositsCardData({
+                    stakingActiveItems: [stakingActiveItem, invalidStakingActiveItem],
+                    stablecoinYieldActiveItems: [
+                        stablecoinYieldActiveItem,
+                        invalidStablecoinYieldActiveItem,
+                    ],
+                }),
+            { providers: ['intl'] },
         );
 
         expect(result.current.shouldShowCard).toBe(true);
@@ -237,11 +245,13 @@ describe('useEarnDepositsCardData', () => {
     });
 
     it('hides the card when there are no active positions', () => {
-        const { result } = renderHookWithBasicProvider(() =>
-            useEarnDepositsCardData({
-                stakingActiveItems: [],
-                stablecoinYieldActiveItems: [],
-            }),
+        const { result } = renderHookWithProviders(
+            () =>
+                useEarnDepositsCardData({
+                    stakingActiveItems: [],
+                    stablecoinYieldActiveItems: [],
+                }),
+            { providers: ['intl'] },
         );
 
         expect(result.current.shouldShowCard).toBe(false);

@@ -4,7 +4,7 @@ import { type TradingCountryCode } from '@suite-common/trading';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { Form } from '@suite-native/forms';
 import { localeReducer } from '@suite-native/intl';
-import { renderHookWithBasicProvider } from '@suite-native/test-utils';
+import { renderHookWithProviders } from '@suite-native/test-utils';
 import {
     act,
     createLightStore,
@@ -34,7 +34,8 @@ describe('useFormCountryCode', () => {
         });
 
     const renderUseFormCountryCode = (locationForm: TradingLocationFormType) =>
-        renderHookWithBasicProvider(() => useFormCountryCode(), {
+        renderHookWithProviders(() => useFormCountryCode(), {
+            providers: ['intl'],
             wrapper: ({ children }) => <Form form={locationForm}>{children}</Form>,
         });
 

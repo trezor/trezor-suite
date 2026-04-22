@@ -1,40 +1,43 @@
-import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
+import { fireEvent, renderWithProviders } from '@suite-native/test-utils';
 import { btcAsset, ethOnBaseAsset, usdcAsset } from '@suite-native/trading-fixtures';
 
 import { TradeableAssetButton } from '../TradeableAssetButton';
 
 describe('TradeableAssetButton', () => {
     it('should render display name of given symbol', () => {
-        const { getByText } = renderWithBasicProvider(
+        const { getByText } = renderWithProviders(
             <TradeableAssetButton
                 asset={btcAsset}
                 onPress={jest.fn()}
                 accessibilityLabel="a11yLabel"
             />,
+            { providers: ['intl'] },
         );
 
         expect(getByText('BTC')).toBeTruthy();
     });
 
     it('should render display ETH as display symbol for L2 EVMs', () => {
-        const { getByText } = renderWithBasicProvider(
+        const { getByText } = renderWithProviders(
             <TradeableAssetButton
                 asset={ethOnBaseAsset}
                 onPress={jest.fn()}
                 accessibilityLabel="a11yLabel"
             />,
+            { providers: ['intl'] },
         );
 
         expect(getByText('ETH')).toBeTruthy();
     });
 
     it('should render display token name when token is present', () => {
-        const { getByText, getByLabelText } = renderWithBasicProvider(
+        const { getByText, getByLabelText } = renderWithProviders(
             <TradeableAssetButton
                 asset={usdcAsset}
                 onPress={jest.fn()}
                 accessibilityLabel="a11yLabel"
             />,
+            { providers: ['intl'] },
         );
 
         expect(getByText('USDC')).toBeTruthy();
@@ -43,12 +46,13 @@ describe('TradeableAssetButton', () => {
 
     it('should call onPress callback', () => {
         const pressSpy = jest.fn();
-        const { getByText } = renderWithBasicProvider(
+        const { getByText } = renderWithProviders(
             <TradeableAssetButton
                 asset={btcAsset}
                 onPress={pressSpy}
                 accessibilityLabel="a11yLabel"
             />,
+            { providers: ['intl'] },
         );
 
         const button = getByText('BTC');
@@ -58,12 +62,13 @@ describe('TradeableAssetButton', () => {
     });
 
     it('should render ETH icon for ETH on BASE asset', () => {
-        const { getByText, getByLabelText } = renderWithBasicProvider(
+        const { getByText, getByLabelText } = renderWithProviders(
             <TradeableAssetButton
                 asset={ethOnBaseAsset}
                 onPress={jest.fn()}
                 accessibilityLabel="a11yLabel"
             />,
+            { providers: ['intl'] },
         );
 
         expect(getByText('ETH')).toBeTruthy();

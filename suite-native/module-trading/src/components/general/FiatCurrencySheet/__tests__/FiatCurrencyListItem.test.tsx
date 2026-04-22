@@ -1,16 +1,17 @@
-import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
+import { fireEvent, renderWithProviders } from '@suite-native/test-utils';
 
 import { FiatCurrencyListItem, type FiatCurrencyListItemProps } from '../FiatCurrencyListItem';
 
 describe('FiatCurrencyListItem', () => {
     const renderFiatCurrencyListItem = (props: Partial<FiatCurrencyListItemProps>) =>
-        renderWithBasicProvider(
+        renderWithProviders(
             <FiatCurrencyListItem
                 label="LABEL"
                 displayValue="DISPLAY_VALUE"
                 onPress={jest.fn()}
                 {...props}
             />,
+            { providers: ['intl'] },
         );
 
     it('should render label and display value', () => {

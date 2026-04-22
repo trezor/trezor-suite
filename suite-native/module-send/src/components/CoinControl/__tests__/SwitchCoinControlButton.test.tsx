@@ -1,9 +1,5 @@
 import { type AccountKey } from '@suite-common/wallet-types';
-import {
-    BasicProviderForTests,
-    renderHook,
-    renderWithBasicProvider,
-} from '@suite-native/test-utils';
+import { BasicProviderForTests, renderHook, renderWithProviders } from '@suite-native/test-utils';
 import { type NativeStyleUtils, useNativeStyles } from '@trezor/styles-native';
 import { BigNumber } from '@trezor/utils';
 
@@ -41,8 +37,9 @@ describe('renders button with correct color scheme', () => {
             totalSelectedAmount: BigNumber(500),
         });
 
-        const { getByTestId } = renderWithBasicProvider(
+        const { getByTestId } = renderWithProviders(
             <SwitchCoinControlButton accountKey={accountKey} amount="1000" />,
+            { providers: ['intl', 'navigation'] },
         );
 
         const button = getByTestId('switch-coin-control-button');
@@ -65,8 +62,9 @@ describe('renders button with correct color scheme', () => {
             ],
             totalSelectedAmount: BigNumber(1000),
         });
-        const { getByTestId } = renderWithBasicProvider(
+        const { getByTestId } = renderWithProviders(
             <SwitchCoinControlButton accountKey={accountKey} amount="1000" />,
+            { providers: ['intl', 'navigation'] },
         );
 
         const button = getByTestId('switch-coin-control-button');
@@ -80,8 +78,9 @@ describe('renders button with correct color scheme', () => {
             totalSelectedAmount: BigNumber(1000),
         });
 
-        const { getByTestId } = renderWithBasicProvider(
+        const { getByTestId } = renderWithProviders(
             <SwitchCoinControlButton accountKey={accountKey} />,
+            { providers: ['intl', 'navigation'] },
         );
 
         const button = getByTestId('switch-coin-control-button');

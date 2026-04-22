@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { renderWithBasicProvider, userEvent } from '@suite-native/test-utils';
+import { renderWithProviders, userEvent } from '@suite-native/test-utils';
 import { bankAccounts, verifiedBankAccount } from '@suite-native/trading-fixtures';
 
 import { SellBankAccountSheet } from '../SellBankAccountSheet';
@@ -11,7 +11,7 @@ describe('SellBankAccountSheet', () => {
     const mockRef = { current: null };
 
     const renderSellBankAccountSheet = (props = {}) =>
-        renderWithBasicProvider(
+        renderWithProviders(
             <SellBankAccountSheet
                 ref={mockRef}
                 bankAccounts={bankAccounts}
@@ -20,6 +20,7 @@ describe('SellBankAccountSheet', () => {
                 closeModal={mockCloseModal}
                 {...props}
             />,
+            { providers: ['intl', 'bottomSheet'] },
         );
 
     beforeEach(() => {

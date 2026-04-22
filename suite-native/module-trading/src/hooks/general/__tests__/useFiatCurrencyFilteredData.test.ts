@@ -1,4 +1,4 @@
-import { act, renderHookWithBasicProvider } from '@suite-native/test-utils';
+import { act, renderHookWithProviders } from '@suite-native/test-utils';
 import { type FiatCurrencyItem } from '@suite-native/trading-types';
 
 import { useFiatCurrencyFilteredData } from '../useFiatCurrencyFilteredData';
@@ -23,7 +23,9 @@ const supportedFiatCurrencies: FiatCurrencyItem[] = [
 
 describe('useFiatCurrencyFilteredData', () => {
     const renderUseFiatCurrencyFilteredData = () =>
-        renderHookWithBasicProvider(() => useFiatCurrencyFilteredData(supportedFiatCurrencies));
+        renderHookWithProviders(() => useFiatCurrencyFilteredData(supportedFiatCurrencies), {
+            providers: ['intl'],
+        });
 
     it('should return section list data structure', () => {
         const { result } = renderUseFiatCurrencyFilteredData();

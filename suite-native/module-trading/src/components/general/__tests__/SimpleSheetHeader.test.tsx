@@ -1,10 +1,10 @@
-import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
+import { fireEvent, renderWithProviders } from '@suite-native/test-utils';
 
 import { SimpleSheetHeader, type SimpleSheetHeaderProps } from '../SimpleSheetHeader';
 
 describe('SimpleSheetHeader', () => {
     const renderSimpleSheetHeader = (props: SimpleSheetHeaderProps) =>
-        renderWithBasicProvider(<SimpleSheetHeader {...props} />);
+        renderWithProviders(<SimpleSheetHeader {...props} />, { providers: ['intl'] });
 
     it('should render title', () => {
         const { getByText } = renderSimpleSheetHeader({

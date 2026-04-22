@@ -1,6 +1,6 @@
 import { events } from '@suite-native/analytics';
 import { useAnalytics } from '@suite-native/services';
-import { act, renderHookWithBasicProvider } from '@suite-native/test-utils';
+import { act, renderHookWithProviders } from '@suite-native/test-utils';
 
 import { useCountrySelectionAnalyticsReport } from '../useCountrySelectionAnalyticsReport';
 
@@ -17,7 +17,9 @@ describe('useCountrySelectionAnalyticsReport', () => {
     const reportMock = jest.fn();
 
     const renderUseCountrySelectionAnalyticsReport = () =>
-        renderHookWithBasicProvider(() => useCountrySelectionAnalyticsReport());
+        renderHookWithProviders(() => useCountrySelectionAnalyticsReport(), {
+            providers: ['intl'],
+        });
 
     beforeEach(() => {
         jest.clearAllMocks();

@@ -1,4 +1,4 @@
-import { renderWithBasicProvider } from '@suite-native/test-utils';
+import { renderWithProviders } from '@suite-native/test-utils';
 
 import { TradingAvailability } from '../TradingAvailability';
 
@@ -9,7 +9,8 @@ jest.mock('../../hooks/useIsTradingAvailableForForm', () => ({
 }));
 
 describe('TradingAvailability', () => {
-    const renderTradingAvailability = () => renderWithBasicProvider(<TradingAvailability />);
+    const renderTradingAvailability = () =>
+        renderWithProviders(<TradingAvailability />, { providers: ['intl'] });
 
     it('should render negative message when selected country is not whitelisted', () => {
         mockIsTradingAvailableForForm = false;

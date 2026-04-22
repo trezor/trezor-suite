@@ -1,17 +1,18 @@
-import { fireEvent, renderWithBasicProvider, userEvent } from '@suite-native/test-utils';
+import { fireEvent, renderWithProviders, userEvent } from '@suite-native/test-utils';
 import { paletteV2 } from '@trezor/theme';
 
 import { AMOUNT_INPUT_TEST_ID, AmountInput, type AmountInputProps } from '../AmountInput';
 
 describe('AmountInput', () => {
     const renderAmountInput = (props: Partial<AmountInputProps>) =>
-        renderWithBasicProvider(
+        renderWithProviders(
             <AmountInput
                 inputTransformer={v => v}
                 onChangeText={jest.fn()}
                 accessibilityLabel="INPUT"
                 {...props}
             />,
+            { providers: ['intl'] },
         );
 
     it('should respect maxLength property', async () => {

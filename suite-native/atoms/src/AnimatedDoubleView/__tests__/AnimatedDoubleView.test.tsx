@@ -1,16 +1,17 @@
-import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
+import { fireEvent, renderWithProviders } from '@suite-native/test-utils';
 
 import { Box } from '../../Box';
 import { AnimatedDoubleView, type AnimatedDoubleViewProps } from '../AnimatedDoubleView';
 
 describe('AnimatedDoubleView', () => {
     const renderAnimatedDoubleView = (props: Partial<AnimatedDoubleViewProps>) =>
-        renderWithBasicProvider(
+        renderWithProviders(
             <AnimatedDoubleView
                 renderPrimary={() => <Box accessibilityLabel="PRIMARY_VIEW" />}
                 renderSecondary={() => <Box accessibilityLabel="SECONDARY_VIEW" />}
                 {...props}
             />,
+            { providers: ['intl'] },
         );
 
     it('should render primary and secondary component and switcher in between', () => {

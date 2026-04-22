@@ -1,4 +1,4 @@
-import { renderHookWithBasicProvider } from '@suite-native/test-utils';
+import { renderHookWithProviders } from '@suite-native/test-utils';
 import { type DeviceThpPairingStatus } from '@trezor/connect';
 
 import { useOnThpPairingCanceled } from '../useOnThpPairingCanceled';
@@ -23,7 +23,7 @@ describe('useOnThpPairingCanceled', () => {
         mockDeviceThpPairingStatusChange({ status: 'canceled' });
         const callback = jest.fn();
 
-        renderHookWithBasicProvider(() => useOnThpPairingCanceled(callback));
+        renderHookWithProviders(() => useOnThpPairingCanceled(callback), { providers: ['intl'] });
 
         expect(callback).toHaveBeenCalled();
     });
@@ -32,7 +32,7 @@ describe('useOnThpPairingCanceled', () => {
         mockDeviceThpPairingStatusChange({ status: 'finished' });
         const callback = jest.fn();
 
-        renderHookWithBasicProvider(() => useOnThpPairingCanceled(callback));
+        renderHookWithProviders(() => useOnThpPairingCanceled(callback), { providers: ['intl'] });
 
         expect(callback).not.toHaveBeenCalled();
     });

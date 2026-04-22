@@ -1,18 +1,19 @@
 import React from 'react';
 
-import { renderWithBasicProvider, userEvent } from '@suite-native/test-utils';
+import { renderWithProviders, userEvent } from '@suite-native/test-utils';
 import { unverifiedBankAccount, verifiedBankAccount } from '@suite-native/trading-fixtures';
 
 import { BANK_ACCOUNT_ITEM_TEST_ID, SellBankAccountItem } from '../SellBankAccountItem';
 
 describe('SellBankAccountItem', () => {
     const renderSellBankAccountItem = (props = {}) =>
-        renderWithBasicProvider(
+        renderWithProviders(
             <SellBankAccountItem
                 bankAccount={verifiedBankAccount}
                 accessoryType="none"
                 {...props}
             />,
+            { providers: ['intl'] },
         );
 
     describe('Rendering', () => {

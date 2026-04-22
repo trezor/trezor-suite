@@ -1,5 +1,5 @@
 import { type AccountKey } from '@suite-common/wallet-types';
-import { renderWithBasicProvider } from '@suite-native/test-utils';
+import { renderWithProviders } from '@suite-native/test-utils';
 
 import { useUtxoSelection } from '../../../hooks/useUtxoSelection';
 import { SendUtxoScreenHeader } from '../SendUtxoScreenHeader';
@@ -25,12 +25,13 @@ describe('SendUtxosScreenHeader', () => {
             setSelectedUtxos: jest.fn(),
         });
 
-        const { getByTestId } = renderWithBasicProvider(
+        const { getByTestId } = renderWithProviders(
             <SendUtxoScreenHeader
                 accountKey={
                     'testAccKey' as AccountKey // Todo: create properly via `createAccountKey()`
                 }
             />,
+            { providers: ['intl', 'navigation'] },
         );
 
         expect(getByTestId('coin-control-delete-button')).toBeTruthy();
@@ -42,12 +43,13 @@ describe('SendUtxosScreenHeader', () => {
             setSelectedUtxos: jest.fn(),
         });
 
-        const { queryByTestId } = renderWithBasicProvider(
+        const { queryByTestId } = renderWithProviders(
             <SendUtxoScreenHeader
                 accountKey={
                     'testAccKey' as AccountKey // Todo: create properly via `createAccountKey()`
                 }
             />,
+            { providers: ['intl', 'navigation'] },
         );
 
         expect(queryByTestId('coin-control-delete-button')).toBeNull();

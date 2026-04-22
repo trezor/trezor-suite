@@ -1,12 +1,13 @@
 import React from 'react';
 
 import { Text } from '@suite-native/atoms';
-import { renderWithBasicProvider, userEvent } from '@suite-native/test-utils';
+import { renderWithProviders, userEvent } from '@suite-native/test-utils';
 
 import { TradeInfoRow } from '../TradeInfoRow';
 
 describe('TradeInfoRow', () => {
-    const renderTradeInfoRow = (props = {}) => renderWithBasicProvider(<TradeInfoRow {...props} />);
+    const renderTradeInfoRow = (props = {}) =>
+        renderWithProviders(<TradeInfoRow {...props} />, { providers: ['intl'] });
 
     it('should render children content', () => {
         const { getByText } = renderTradeInfoRow({ children: <Text>Test Content</Text> });

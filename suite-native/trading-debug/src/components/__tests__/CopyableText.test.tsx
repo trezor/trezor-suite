@@ -1,4 +1,4 @@
-import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
+import { fireEvent, renderWithProviders } from '@suite-native/test-utils';
 
 import { CopyableText, type CopyableTextProps } from '../CopyableText';
 
@@ -10,7 +10,7 @@ jest.mock('@suite-native/clipboard', () => ({
 
 describe('CopyableText', () => {
     const renderCopyableText = (props: Partial<CopyableTextProps>) =>
-        renderWithBasicProvider(<CopyableText text="TEST TEXT" {...props} />);
+        renderWithProviders(<CopyableText text="TEST TEXT" {...props} />, { providers: ['intl'] });
 
     beforeEach(() => {
         jest.clearAllMocks();

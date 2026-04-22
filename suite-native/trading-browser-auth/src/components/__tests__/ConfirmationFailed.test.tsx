@@ -1,4 +1,4 @@
-import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
+import { fireEvent, renderWithProviders } from '@suite-native/test-utils';
 
 import { ConfirmationFailed } from '../ConfirmationFailed';
 
@@ -12,7 +12,8 @@ jest.mock('@react-navigation/native', () => ({
 }));
 
 describe('ConfirmationFailed', () => {
-    const renderConfirmationFailed = () => renderWithBasicProvider(<ConfirmationFailed />);
+    const renderConfirmationFailed = () =>
+        renderWithProviders(<ConfirmationFailed />, { providers: ['intl', 'navigation'] });
 
     it('should navigate back on button press', () => {
         const { getByText } = renderConfirmationFailed();

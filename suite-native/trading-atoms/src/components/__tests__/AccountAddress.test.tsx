@@ -1,12 +1,13 @@
-import { renderWithBasicProvider } from '@suite-native/test-utils';
+import { renderWithProviders } from '@suite-native/test-utils';
 
 import { AccountAddress } from '../AccountAddress';
 
 describe('AccountAddress', () => {
     describe('full form', () => {
         it('should render full address', () => {
-            const { getByText } = renderWithBasicProvider(
+            const { getByText } = renderWithProviders(
                 <AccountAddress address="0x1234567890abcdef" />,
+                { providers: ['intl'] },
             );
 
             expect(getByText('0x1234567890abcdef')).toBeTruthy();
@@ -15,15 +16,18 @@ describe('AccountAddress', () => {
 
     describe('short form', () => {
         it('should render address with ellipsis', () => {
-            const { getByText } = renderWithBasicProvider(
+            const { getByText } = renderWithProviders(
                 <AccountAddress address="0x1234567890abcdef" form="short" />,
+                { providers: ['intl'] },
             );
 
             expect(getByText('0x123456...')).toBeTruthy();
         });
 
         it('should render full address when it is shorter than 9 characters', () => {
-            const { getByText } = renderWithBasicProvider(<AccountAddress address="0x123456" />);
+            const { getByText } = renderWithProviders(<AccountAddress address="0x123456" />, {
+                providers: ['intl'],
+            });
 
             expect(getByText('0x123456')).toBeTruthy();
         });

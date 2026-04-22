@@ -1,6 +1,6 @@
 import { AppState } from 'react-native';
 
-import { act, renderHookWithBasicProvider, screen } from '@suite-native/test-utils';
+import { act, renderHookWithProviders, screen } from '@suite-native/test-utils';
 
 import { useOnForegroundCallback } from '../useOnForegroundCallback';
 
@@ -15,7 +15,9 @@ describe('useOnForegroundCallback', () => {
     const appStateSpy = jest.spyOn(AppState, 'addEventListener');
 
     const renderUseOnFocusCallback = () =>
-        renderHookWithBasicProvider(() => useOnForegroundCallback(mockCallback), {});
+        renderHookWithProviders(() => useOnForegroundCallback(mockCallback), {
+            providers: ['intl'],
+        });
 
     beforeEach(() => {
         jest.clearAllMocks();

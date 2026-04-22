@@ -1,5 +1,5 @@
 import { nonSanctionedRegional } from '@suite-common/trading';
-import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
+import { fireEvent, renderWithProviders } from '@suite-native/test-utils';
 
 import { CountryListItem, type CountryListItemProps } from '../CountryListItem';
 
@@ -7,8 +7,9 @@ describe('CountryListItem', () => {
     const usData = nonSanctionedRegional.countriesOptionsMap.get('US')!;
 
     const renderCountryListItem = (props: Partial<CountryListItemProps>) =>
-        renderWithBasicProvider(
+        renderWithProviders(
             <CountryListItem isSelected={false} onPress={jest.fn()} {...usData} {...props} />,
+            { providers: ['intl'] },
         );
     it('should render flag and name', () => {
         const { getByText } = renderCountryListItem({});

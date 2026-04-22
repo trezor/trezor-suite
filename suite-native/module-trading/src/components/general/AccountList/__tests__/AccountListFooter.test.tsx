@@ -1,12 +1,13 @@
 import { getTranslation } from '@suite-native/intl';
-import { act, fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
+import { act, fireEvent, renderWithProviders } from '@suite-native/test-utils';
 
 import { AccountListFooter, type AccountsListFooterProps } from '../AccountListFooter';
 
 describe('AccountListFooter', () => {
     const renderAccountsListFooter = (props: Partial<AccountsListFooterProps>) =>
-        renderWithBasicProvider(
+        renderWithProviders(
             <AccountListFooter hasTextualDivider onAddAccountTap={jest.fn()} {...props} />,
+            { providers: ['intl'] },
         );
 
     it('should not render "OR" when hasTextualDivider props is false', () => {

@@ -1,11 +1,12 @@
-import { renderWithBasicProvider } from '@suite-native/test-utils';
+import { renderWithProviders } from '@suite-native/test-utils';
 
 import { EmptyComponent } from '../EmptyComponent';
 
 describe('EmptyComponent', () => {
     it('should render given title and description', () => {
-        const { getByText } = renderWithBasicProvider(
+        const { getByText } = renderWithProviders(
             <EmptyComponent title="TITLE" description="DESCRIPTION" />,
+            { providers: ['intl'] },
         );
 
         expect(getByText('TITLE')).toBeTruthy();

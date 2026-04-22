@@ -1,4 +1,4 @@
-import { renderWithBasicProvider } from '@suite-native/test-utils';
+import { renderWithProviders } from '@suite-native/test-utils';
 
 import {
     MyAssetsDisabledListItem,
@@ -7,7 +7,7 @@ import {
 
 describe('MyAssetsDisabledListItem', () => {
     const renderMyAssetsDisabledListItem = (props: MyAssetsDisabledListItemProps) =>
-        renderWithBasicProvider(<MyAssetsDisabledListItem {...props} />);
+        renderWithProviders(<MyAssetsDisabledListItem {...props} />, { providers: ['intl'] });
 
     it.each<[number, string]>([
         [1, '+ 1 non-tradeable token'],

@@ -1,4 +1,4 @@
-import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
+import { fireEvent, renderWithProviders } from '@suite-native/test-utils';
 
 import { SkipButton, type SkipButtonProps } from '../SkipButton';
 
@@ -10,7 +10,7 @@ jest.mock('../../hooks/useCountrySelectionAnalyticsReport', () => ({
 
 describe('SkipButton', () => {
     const renderSkipButton = (props: Partial<SkipButtonProps>) =>
-        renderWithBasicProvider(<SkipButton onPress={jest.fn()} {...props} />);
+        renderWithProviders(<SkipButton onPress={jest.fn()} {...props} />, { providers: ['intl'] });
 
     beforeEach(() => {
         jest.clearAllMocks();

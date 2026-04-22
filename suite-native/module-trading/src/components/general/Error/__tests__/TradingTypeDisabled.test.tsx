@@ -1,11 +1,11 @@
 import { type TradingType } from '@suite-common/trading';
-import { renderWithBasicProvider } from '@suite-native/test-utils';
+import { renderWithProviders } from '@suite-native/test-utils';
 
 import { TradingTypeDisabled, type TradingTypeDisabledProps } from '../TradingTypeDisabled';
 
 describe('TradingTypeDisabled', () => {
     const renderTradingTypeDisabled = (props: TradingTypeDisabledProps) =>
-        renderWithBasicProvider(<TradingTypeDisabled {...props} />);
+        renderWithProviders(<TradingTypeDisabled {...props} />, { providers: ['intl'] });
 
     it.each<[TradingType, string]>([
         ['buy', 'Buy disabled'],

@@ -1,12 +1,14 @@
 import { Text } from 'react-native';
 
-import { renderWithBasicProvider } from '@suite-native/test-utils';
+import { renderWithProviders } from '@suite-native/test-utils';
 
 import { WaitingCard, type WaitingCardProps } from '../WaitingCard';
 
 describe('ProviderWaitingCard', () => {
     const renderProviderWaitingCard = (props: Partial<WaitingCardProps>) =>
-        renderWithBasicProvider(<WaitingCard title="TITLE" subtitle="SUBTITLE" {...props} />);
+        renderWithProviders(<WaitingCard title="TITLE" subtitle="SUBTITLE" {...props} />, {
+            providers: ['intl'],
+        });
 
     it('should render', () => {
         const { getByText } = renderProviderWaitingCard({});

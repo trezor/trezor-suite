@@ -1,5 +1,5 @@
 import { Text } from '@suite-native/atoms';
-import { renderWithBasicProvider } from '@suite-native/test-utils';
+import { renderWithProviders } from '@suite-native/test-utils';
 
 import { DebugModeView } from '../DebugModeView';
 
@@ -11,10 +11,11 @@ jest.mock('../../hooks/useTradingDebugModeFlag', () => ({
 
 describe('DebugModeView', () => {
     const renderDebugModeView = () =>
-        renderWithBasicProvider(
+        renderWithProviders(
             <DebugModeView>
                 <Text>TEST TEXT</Text>
             </DebugModeView>,
+            { providers: ['intl'] },
         );
 
     beforeEach(() => {

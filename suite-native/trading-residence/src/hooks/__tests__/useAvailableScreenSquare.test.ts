@@ -1,6 +1,6 @@
 import type { LayoutChangeEvent } from 'react-native';
 
-import { act, renderHookWithBasicProvider } from '@suite-native/test-utils';
+import { act, renderHookWithProviders } from '@suite-native/test-utils';
 
 import {
     HEADER_HEIGHT,
@@ -22,7 +22,9 @@ describe('useAvailableScreenSquare', () => {
         }) as LayoutChangeEvent;
 
     const renderUseAvailableScreenSpace = (maximumSize = MAXIMUM_SIZE) =>
-        renderHookWithBasicProvider(() => useAvailableScreenSquare(MINIMUM_SIZE, maximumSize));
+        renderHookWithProviders(() => useAvailableScreenSquare(MINIMUM_SIZE, maximumSize), {
+            providers: ['intl'],
+        });
 
     it('should return MAXIMUM_SIZE when totalAvailableHeight is larger than MAXIMUM_SIZE', () => {
         // totalAvailableHeight = 1334 - 100 = 1234 which is > MAXIMUM_SIZE = 300

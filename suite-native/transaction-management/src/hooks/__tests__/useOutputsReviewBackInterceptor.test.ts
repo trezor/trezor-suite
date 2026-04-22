@@ -1,4 +1,4 @@
-import { renderHookWithBasicProvider, waitFor } from '@suite-native/test-utils';
+import { renderHookWithProviders, waitFor } from '@suite-native/test-utils';
 
 import { useOutputsReviewBackInterceptor } from '../useOutputsReviewBackInterceptor';
 
@@ -16,7 +16,9 @@ jest.mock('../useShowReviewCancellationAlert', () => ({
 
 describe('useOutputsReviewBackInterceptor', () => {
     const renderUseOutputsReviewBackInterceptor = (onReviewCanceled: () => void = jest.fn()) =>
-        renderHookWithBasicProvider(() => useOutputsReviewBackInterceptor(onReviewCanceled));
+        renderHookWithProviders(() => useOutputsReviewBackInterceptor(onReviewCanceled), {
+            providers: ['intl'],
+        });
 
     beforeEach(() => {
         jest.clearAllMocks();

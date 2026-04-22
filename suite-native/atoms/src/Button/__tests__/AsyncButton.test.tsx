@@ -1,12 +1,12 @@
 import { Text } from 'react-native';
 
-import { act, fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
+import { act, fireEvent, renderWithProviders } from '@suite-native/test-utils';
 
 import { AsyncButton, type AsyncButtonProps } from '../AsyncButton';
 
 describe('AsyncButton', () => {
     const renderAsyncButton = (props: Partial<AsyncButtonProps>) =>
-        renderWithBasicProvider(
+        renderWithProviders(
             <AsyncButton
                 onPress={() => new Promise(resolve => setTimeout(resolve, 1000))}
                 testID="async-button"
@@ -14,6 +14,7 @@ describe('AsyncButton', () => {
             >
                 <Text>Press me</Text>
             </AsyncButton>,
+            { providers: ['intl'] },
         );
 
     beforeEach(() => {

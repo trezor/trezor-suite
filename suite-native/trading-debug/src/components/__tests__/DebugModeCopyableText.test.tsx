@@ -1,4 +1,4 @@
-import { renderWithBasicProvider } from '@suite-native/test-utils';
+import { renderWithProviders } from '@suite-native/test-utils';
 
 import { DebugModeCopyableText, type DebugModeCopyableTextProps } from '../DebugModeCopyableText';
 
@@ -10,7 +10,9 @@ jest.mock('../../hooks/useTradingDebugModeFlag', () => ({
 
 describe('DebugModeCopyableText', () => {
     const renderDebugModeCopyableText = (props: Partial<DebugModeCopyableTextProps>) =>
-        renderWithBasicProvider(<DebugModeCopyableText text="TEST TEXT" {...props} />);
+        renderWithProviders(<DebugModeCopyableText text="TEST TEXT" {...props} />, {
+            providers: ['intl'],
+        });
 
     beforeEach(() => {
         mockDebugMode = true;

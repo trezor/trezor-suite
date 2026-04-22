@@ -1,6 +1,6 @@
 import type { ExchangeTrade } from 'invity-api';
 
-import { act, renderHookWithBasicProvider } from '@suite-native/test-utils';
+import { act, renderHookWithProviders } from '@suite-native/test-utils';
 import { type QuotesByCategories } from '@suite-native/trading-types';
 
 import { useProviderFilters } from '../useProviderFilters';
@@ -12,15 +12,13 @@ type UseProviderFilterProps = {
 };
 describe('useProviderFilters', () => {
     const renderUseProviderFilters = (initialProps: UseProviderFilterProps) =>
-        renderHookWithBasicProvider(
+        renderHookWithProviders(
             ({
                 quotes = { fixed: [], float: [], dex: [] },
                 shouldShowFilters = true,
                 areTradingExchangeDexesEnabled = true,
             }) => useProviderFilters(quotes, shouldShowFilters, areTradingExchangeDexesEnabled),
-            {
-                initialProps,
-            },
+            { providers: ['intl'], initialProps },
         );
 
     it('filterItems should be stable', () => {

@@ -1,11 +1,11 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { renderWithBasicProvider } from '@suite-native/test-utils';
+import { renderWithProviders } from '@suite-native/test-utils';
 
 import { NetworkBadge } from '../NetworkBadge';
 
 describe('NetworkBadge', () => {
     const renderPlatformBadge = (symbol: NetworkSymbol) =>
-        renderWithBasicProvider(<NetworkBadge symbol={symbol} />);
+        renderWithProviders(<NetworkBadge symbol={symbol} />, { providers: ['intl'] });
 
     it('should render badge with platform name', () => {
         const { getByLabelText } = renderPlatformBadge('eth');

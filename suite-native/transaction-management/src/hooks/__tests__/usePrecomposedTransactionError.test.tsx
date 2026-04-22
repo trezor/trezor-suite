@@ -1,7 +1,7 @@
 import { Text } from 'react-native';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { renderHookWithBasicProvider, renderWithBasicProvider } from '@suite-native/test-utils';
+import { renderHookWithProviders, renderWithProviders } from '@suite-native/test-utils';
 
 import {
     type UsePrecomposedTransactionErrorProps,
@@ -24,8 +24,9 @@ describe('usePrecomposedTransactionError', () => {
     it.each([[null], [undefined], ['INVALID_ERROR'], ['']])(
         'should return null when error is %s',
         error => {
-            const { result } = renderHookWithBasicProvider(() =>
-                usePrecomposedTransactionError({ error, networkSymbol }),
+            const { result } = renderHookWithProviders(
+                () => usePrecomposedTransactionError({ error, networkSymbol }),
+                { providers: ['intl'] },
             );
 
             expect(result.current).toBeNull();
@@ -64,24 +65,27 @@ describe('usePrecomposedTransactionError', () => {
             expectedErrorMsg: 'Insufficient funds for staking.',
         },
     ])('should return correct translation data for $error', ({ error, expectedErrorMsg }) => {
-        const { getByText } = renderWithBasicProvider(
+        const { getByText } = renderWithProviders(
             <ErrorText error={error} networkSymbol={networkSymbol} />,
+            { providers: ['intl'] },
         );
 
         expect(getByText(expectedErrorMsg)).toBeOnTheScreen();
     });
 
     it('should handle context without network symbol', () => {
-        const { getByText } = renderWithBasicProvider(
+        const { getByText } = renderWithProviders(
             <ErrorText error="AMOUNT_NOT_ENOUGH_CURRENCY_FEE" />,
+            { providers: ['intl'] },
         );
 
         expect(getByText('Insufficient  to cover the transaction fee.')).toBeOnTheScreen();
     });
 
     it('should handle different network symbols', () => {
-        const { getByText } = renderWithBasicProvider(
+        const { getByText } = renderWithProviders(
             <ErrorText error="AMOUNT_NOT_ENOUGH_CURRENCY_FEE" networkSymbol="eth" />,
+            { providers: ['intl'] },
         );
 
         expect(getByText('Insufficient ETH to cover the transaction fee.')).toBeOnTheScreen();

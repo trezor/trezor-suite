@@ -1,13 +1,13 @@
 import React from 'react';
 
 import { Text } from '@suite-native/atoms';
-import { renderWithBasicProvider } from '@suite-native/test-utils';
+import { renderWithProviders } from '@suite-native/test-utils';
 
 import { TradeInfoHeader } from '../TradeInfoHeader';
 
 describe('TradeInfoHeader', () => {
     const renderTradeInfoRow = (title: string, props = {}) =>
-        renderWithBasicProvider(<TradeInfoHeader title={title} {...props} />);
+        renderWithProviders(<TradeInfoHeader title={title} {...props} />, { providers: ['intl'] });
 
     it('should render title', () => {
         const { getByText } = renderTradeInfoRow('Test Title', {});

@@ -1,6 +1,6 @@
 import { type LayoutChangeEvent } from 'react-native';
 
-import { act, renderHookWithBasicProvider } from '@suite-native/test-utils';
+import { act, renderHookWithProviders } from '@suite-native/test-utils';
 
 import { useActiveStepOffset } from '../useActiveStepOffset';
 
@@ -9,7 +9,8 @@ describe('useActiveStepOffset', () => {
         ({ nativeEvent: { layout: { height } } }) as LayoutChangeEvent;
 
     const renderUseReviewOutputItemListHeights = (initialActiveStep: number) =>
-        renderHookWithBasicProvider(({ activeStep }) => useActiveStepOffset(activeStep), {
+        renderHookWithProviders(({ activeStep }) => useActiveStepOffset(activeStep), {
+            providers: ['intl'],
             initialProps: { activeStep: initialActiveStep },
         });
 

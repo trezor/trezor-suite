@@ -1,5 +1,5 @@
 import { Text } from '@suite-native/atoms';
-import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
+import { fireEvent, renderWithProviders } from '@suite-native/test-utils';
 
 import {
     ExchangeApprovalLimitCard,
@@ -10,13 +10,14 @@ const mockOnChange = jest.fn();
 
 describe('ExchangeApprovalLimitCard', () => {
     const renderExchangeApprovalLimitCard = (props: Partial<ExchangeApprovalLimitCardProps>) =>
-        renderWithBasicProvider(
+        renderWithProviders(
             <ExchangeApprovalLimitCard
                 title={<Text>Test limit</Text>}
                 description="Test description"
                 onChange={mockOnChange}
                 {...props}
             />,
+            { providers: ['intl'] },
         );
 
     beforeEach(() => {

@@ -1,10 +1,10 @@
-import { renderWithBasicProvider } from '@suite-native/test-utils';
+import { renderWithProviders } from '@suite-native/test-utils';
 
 import { GeneralAlert, type GeneralAlertProps } from '../GeneralAlert';
 
 describe('GeneralAlert', () => {
     const renderGeneralAlert = (props: GeneralAlertProps) =>
-        renderWithBasicProvider(<GeneralAlert {...props} />);
+        renderWithProviders(<GeneralAlert {...props} />, { providers: ['intl'] });
 
     it('should render nothing when no text is provided', () => {
         const { toJSON } = renderGeneralAlert({});
