@@ -3,11 +3,12 @@ import { useMemo } from 'react';
 import { type RewardDto } from '@suite-common/earn-stablecoin-api';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenAddress } from '@suite-common/wallet-types';
+import { getApyPercent } from '@suite-common/wallet-utils';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
 import { CryptoIconWithNetwork, Icon, cryptoIconSizes } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 
-import { getApyBreakdownDescriptionKey, getApyPercent, sortApyRewards } from '../utils';
+import { getApyBreakdownDescriptionKey, sortApyRewards } from '../utils';
 
 type StablecoinYieldApyBreakdownProps = {
     networkSymbol: NetworkSymbol;

@@ -28,6 +28,7 @@ import {
     prepareStakeReducer,
     prepareTransactionsReducer,
     prepareWalletSettingsReducer,
+    stablecoinYieldReducer,
     walletSettingsPersistedWhitelist,
 } from '@suite-common/wallet-core';
 // Suite Native has circular in @suite-native/test-utils -> @suite-native/state -> ... -> @suite-native/test-utils
@@ -172,6 +173,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
         send: sendFormReducer,
         fees: feesReducer,
         stake: stakeReducer,
+        stablecoinYield: stablecoinYieldReducer,
         trading: tradingPersistedReducer,
         settings: walletSettingsPersistedReducer,
         formDrafts: formDraftReducer,

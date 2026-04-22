@@ -16,6 +16,7 @@
         {
             "path": "../../suite-common/message-system"
         },
+        { "path": "../../suite-common/mev" },
         {
             "path": "../../suite-common/react-query"
         },
@@ -48,6 +49,7 @@
         { "path": "../clipboard" },
         { "path": "../confirm-on-trezor" },
         { "path": "../device-manager" },
+        { "path": "../device-mutex" },
         { "path": "../feature-flags" },
         { "path": "../formatters" },
         { "path": "../forms" },

@@ -2607,6 +2607,65 @@ export const messages = {
                     "When supplying, the responsibility for your funds' security transitions from your Trezor to {providerName}.",
             },
         },
+        yieldSupplyFlowScreen: {
+            step: 'Step {stepNumber} of {stepCount}',
+            approvalStepTitle: 'Select amount & approve',
+            modalTitle: 'Supply',
+            supplyTransactionStepTitle: 'Supply transaction',
+            supplyCompleteStepTitle: 'Supply complete',
+            amountToSupply: 'Amount to supply',
+            supplyMax: 'Supply max',
+            balance: 'Balance:',
+            approvalLimit: 'Approval limit',
+            perSupply: 'Per supply',
+            estimatedRewardsLabel: 'Estimated yearly rewards',
+            approvalLimitSheet: {
+                title: 'Select approval limit',
+                perSupply: {
+                    description:
+                        'Approve the exact amount for the provider. Valid until fully used or revoked. Then a new approval and network fee will be required.',
+                },
+                unlimited: {
+                    title: 'Unlimited',
+                    description:
+                        'Approve once and avoid future network fees. This provider can spend any amount until you revoke the approval.',
+                    alert: 'If the provider is compromised, all your {tokenSymbol} may be taken.',
+                },
+            },
+            validation: {
+                amountIsZero: 'Amount must be greater than 0.',
+                insufficientBalance: "You don't have enough {tokenSymbol} balance.",
+                tooManyDecimals: 'Too many decimals.',
+            },
+        },
+        yieldSupplyApprovalReviewScreen: {
+            title: 'Review with Trezor',
+            successMessage: "You're all set.",
+            approvalCard: {
+                title: 'Approve',
+            },
+            detailsCard: {
+                title: 'Approval details',
+                amount: 'Amount',
+                approvalLimit: 'Approval limit',
+            },
+            errorAlert: {
+                title: 'Approval is not ready',
+                description: 'The approval transaction could not be prepared. Try again later.',
+            },
+            pushTransactionFailedAlert: {
+                title: 'Approval was not submitted',
+                description:
+                    'The approval transaction was signed but could not be submitted to the network.',
+                primaryButton: 'Go to homepage',
+            },
+            pendingTransactionConflictAlert: {
+                title: 'Approval was not submitted',
+                description:
+                    'There is already a pending transaction for this account. Wait for it to finish before trying again.',
+                primaryButton: 'Go to homepage',
+            },
+        },
         staked: 'Staked',
         stakedAutomatically: 'Staked automatically',
         fullBalance: 'Full balance',

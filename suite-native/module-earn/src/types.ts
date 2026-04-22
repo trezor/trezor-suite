@@ -9,6 +9,8 @@ import {
 
 export type EarnFormDraftPrefix = 'stake' | 'unstake' | 'claim';
 
+export type YieldApprovalLimitType = 'per-supply' | 'unlimited';
+
 export type StakingEarnItem = {
     id: string;
     type: 'staking';

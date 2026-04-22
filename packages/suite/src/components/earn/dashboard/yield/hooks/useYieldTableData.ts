@@ -8,10 +8,9 @@ import {
 } from '@suite-common/wallet-config';
 import { selectDeviceSupportedNetworks } from '@suite-common/wallet-core';
 import { type Account, type TokenInfoBranded, toTokenSymbol } from '@suite-common/wallet-types';
-import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
+import { getApyPercent, getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { getApyPercent } from 'src/components/earn/utils/earnApyUtils';
 import { useSelector } from 'src/hooks/suite';
 
 import {

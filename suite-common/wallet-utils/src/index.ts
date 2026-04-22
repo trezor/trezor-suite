@@ -1,4 +1,5 @@
 export * from './accountUtils';
+export * from './apyUtils';
 export * from './backendUtils';
 export * from './balanceUtils';
 export * from './bitcoinUtils';

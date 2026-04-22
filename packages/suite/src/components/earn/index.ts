@@ -27,4 +27,4 @@ export { PoweredByBadge } from './providers/PoweredByBadge';
 
 export { getStakingHelpCenterLink } from './utils/getStakingHelpCenterLink';
 export { getEarnProviderName } from './utils/getEarnProviderName';
-export { getApyPercent, getApyRate } from './utils/earnApyUtils';
+export { getApyRate } from './utils/earnApyUtils';

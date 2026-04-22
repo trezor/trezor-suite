@@ -13,7 +13,7 @@ import {
     type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 
-type ReviewFormType = 'stake' | 'claim';
+type ReviewFormType = 'stake' | 'claim' | 'yield-approval';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     AppTabsParamList,
@@ -63,6 +63,22 @@ const translationKeys = {
                 'earn.claimTransactionDataReviewScreen.pendingTransactionConflictAlert.description',
             primaryButton:
                 'earn.claimTransactionDataReviewScreen.pendingTransactionConflictAlert.primaryButton',
+        },
+    },
+    'yield-approval': {
+        pushFailed: {
+            title: 'earn.yieldSupplyApprovalReviewScreen.pushTransactionFailedAlert.title',
+            description:
+                'earn.yieldSupplyApprovalReviewScreen.pushTransactionFailedAlert.description',
+            primaryButton:
+                'earn.yieldSupplyApprovalReviewScreen.pushTransactionFailedAlert.primaryButton',
+        },
+        pendingConflict: {
+            title: 'earn.yieldSupplyApprovalReviewScreen.pendingTransactionConflictAlert.title',
+            description:
+                'earn.yieldSupplyApprovalReviewScreen.pendingTransactionConflictAlert.description',
+            primaryButton:
+                'earn.yieldSupplyApprovalReviewScreen.pendingTransactionConflictAlert.primaryButton',
         },
     },
 } as const satisfies Record<ReviewFormType, AlertTranslationKeys>;
