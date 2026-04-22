@@ -42,6 +42,7 @@ describe('ExchangeReceiveContent', () => {
 
     const renderExchangeReceiveContent = () =>
         renderWithStoreProvider(<ExchangeReceiveContent />, {
+            preloadedState,
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 
