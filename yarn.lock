@@ -9726,14 +9726,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sinclair/typebox@npm:^0.34.0":
-  version: 0.34.33
-  resolution: "@sinclair/typebox@npm:0.34.33"
-  checksum: 10/7948758249860cb6d6d093bea5902ab2e8cfd5095f4882d5a709773f69e4678a6e8f2b384d3116c021c4ebc11727e033882b791d146691a7d388dd78f36e611d
-  languageName: node
-  linkType: hard
-
-"@sinclair/typebox@npm:^0.34.49":
+"@sinclair/typebox@npm:^0.34.0, @sinclair/typebox@npm:^0.34.49":
   version: 0.34.49
   resolution: "@sinclair/typebox@npm:0.34.49"
   checksum: 10/5eb77de66c9deff83d43aa1f667832e2468f4dbd0ba91b80684f741a2e1e4120ffedb779be1578ae5b848250c3fbeffc032dc726947c5e42f3393903c1358cb9
@@ -15810,15 +15803,13 @@ __metadata:
     "@trezor/product-components": "workspace:*"
     "@trezor/theme": "workspace:*"
     "@trezor/type-utils": "workspace:*"
-    "@types/flexsearch": "npm:^0.7.42"
-    "@types/git-url-parse": "npm:^16.0.2"
     "@types/react": "npm:19.2.14"
     clsx: "npm:^2.1.1"
     concurrently: "npm:^9.2.1"
     escape-string-regexp: "npm:^5.0.0"
     flexsearch: "npm:^0.7.31"
     focus-visible: "npm:^5.2.1"
-    git-url-parse: "npm:^15.0.0"
+    git-url-parse: "npm:^16.1.0"
     intersection-observer: "npm:^0.12.2"
     match-sorter: "npm:^6.3.1"
     next: "npm:15.5.14"
@@ -17417,15 +17408,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/flexsearch@npm:^0.7.42":
-  version: 0.7.42
-  resolution: "@types/flexsearch@npm:0.7.42"
-  dependencies:
-    flexsearch: "npm:*"
-  checksum: 10/4df799d86cb3ff139da43008816a77e4b205cafe0f1d9ab8f6cb68fc6685402d264c8aa218f616d692d5ce2fdee264e3ebdbfe5d983e85124531759d4d6d4ada
-  languageName: node
-  linkType: hard
-
 "@types/fs-extra@npm:9.0.13, @types/fs-extra@npm:^9.0.11":
   version: 9.0.13
   resolution: "@types/fs-extra@npm:9.0.13"
@@ -17449,15 +17431,6 @@ __metadata:
   version: 0.1.2
   resolution: "@types/get-params@npm:0.1.2"
   checksum: 10/bf573d5d114696e5565ce305cdce461fe9ef434f31b8ad3bf21656bcf9fcd1f9851a3348c471aaec0246debc749303d41731b9fd9887276dc5098d59208d0e8a
-  languageName: node
-  linkType: hard
-
-"@types/git-url-parse@npm:^16.0.2":
-  version: 16.0.2
-  resolution: "@types/git-url-parse@npm:16.0.2"
-  dependencies:
-    git-url-parse: "npm:*"
-  checksum: 10/2f640048f0f0e4d246f1d029cc8d364eb57721272d5550b60996c186faf141aac15648e74bf3681d932ba9f9b156d949723896b5da53c3aa284cd7fcf4a03225
   languageName: node
   linkType: hard
 
@@ -28255,13 +28228,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"flexsearch@npm:*":
-  version: 0.8.212
-  resolution: "flexsearch@npm:0.8.212"
-  checksum: 10/d499fcd2b9f08d8f481995af50df5fbe7b4222e233fbdc59859da96f2c1dc528bc56a33516cc2ef49158130cd610f9a85841e01c50d3b23172538fa6997ef01f
-  languageName: node
-  linkType: hard
-
 "flexsearch@npm:^0.7.31":
   version: 0.7.43
   resolution: "flexsearch@npm:0.7.43"
@@ -28869,15 +28835,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"git-url-parse@npm:*":
-  version: 16.1.0
-  resolution: "git-url-parse@npm:16.1.0"
-  dependencies:
-    git-up: "npm:^8.1.0"
-  checksum: 10/1522e86ce89bb854ac5eaab13e71f9a72e93c4eb9897559d9731e03b700a7e2d38d16a77dddede9f79c8dac6f50633e2e420702bb1677580e797312e9b55379d
-  languageName: node
-  linkType: hard
-
 "git-url-parse@npm:^13.1.0":
   version: 13.1.1
   resolution: "git-url-parse@npm:13.1.1"
@@ -28887,12 +28844,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"git-url-parse@npm:^15.0.0":
-  version: 15.0.0
-  resolution: "git-url-parse@npm:15.0.0"
+"git-url-parse@npm:^16.1.0":
+  version: 16.1.0
+  resolution: "git-url-parse@npm:16.1.0"
   dependencies:
-    git-up: "npm:^7.0.0"
-  checksum: 10/b6e54fc58bb4f4c9bfb1060ec93c3d1462880c6bec76926978e32b2bbfac3535001c87efd1ef0dca9cd9ee0ffdaacba2f50dc4f7032ba09ad92d93e9acc9936b
+    git-up: "npm:^8.1.0"
+  checksum: 10/1522e86ce89bb854ac5eaab13e71f9a72e93c4eb9897559d9731e03b700a7e2d38d16a77dddede9f79c8dac6f50633e2e420702bb1677580e797312e9b55379d
   languageName: node
   linkType: hard
 

@@ -15,8 +15,6 @@
 @sinclair/typebox-codegen
 @types/bytebuffer
 @types/chrome
-@types/flexsearch
-@types/git-url-parse
 @types/jws
 @types/lodash
 @types/node

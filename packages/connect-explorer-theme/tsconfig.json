@@ -1,11 +1,6 @@
 {
     "extends": "../../tsconfig.base.json",
     "compilerOptions": {
-        "paths": {
-            "flexsearch": [
-                "./node_modules/@types/flexsearch"
-            ]
-        },
         "outDir": "./libDev",
         "noImplicitAny": false,
         "useUnknownInCatchVariables": false
