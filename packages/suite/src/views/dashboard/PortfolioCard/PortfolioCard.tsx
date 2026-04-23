@@ -45,9 +45,20 @@ export const PortfolioCard = memo(() => {
     const { device } = useDevice();
     const isDeviceEmpty = useMemo(() => accounts.every(a => a.empty), [accounts]);
     const failedAccounts = useMemo(() => accounts.filter(isAccountFailed), [accounts]);
+    // True once at least one account was loaded successfully and is non-empty.
+    // Used to avoid hiding real data behind a skeleton while discovery is still running.
+    const hasLoadedNonEmptyAccount = useMemo(
+        () => accounts.some(a => !a.empty && !isAccountFailed(a)),
+        [accounts],
+    );
     const walletBalance = useTotalFiatBalance(accounts, baseCurrencyCode, currentFiatRates);
 
-    const passphraseEntryCanceled = accounts.length === 0 && discoveryStatus === undefined;
+    // Only true when passphrase entry was explicitly cancelled (discovery reached the
+    // 'cancelled' state). Without this guard the heuristic also fires during the brief
+    // window between enabling the first network and discovery actually starting, causing
+    // a flash of the "Discovery error" screen.
+    const passphraseEntryCanceled =
+        accounts.length === 0 && discoveryStatus === undefined && discovery?.status === 'cancelled';
 
     const hasNetworkWithEnabledGraph = networksCollection.some(
         network =>
@@ -92,6 +103,10 @@ export const PortfolioCard = memo(() => {
                     <EmptyWalletSkeleton />
                 </MarginContainer>
             );
+        } else if (hasLoadedNonEmptyAccount && !isGraphHidden) {
+            // Keep showing real data once we have at least one successfully loaded
+            // non-empty account; discovery progress is still indicated in the header.
+            body = <DashboardGraph accounts={accounts} />;
         } else if (!isGraphHidden) {
             body = (
                 <MarginContainer>
