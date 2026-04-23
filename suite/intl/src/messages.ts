@@ -2952,10 +2952,6 @@ export const messages = defineMessages({
             'User is instructed to enter words from seed (backup) into the form in browser',
         id: 'TR_RANDOM_SEED_WORDS_DISCLAIMER',
     },
-    TR_SEND: {
-        defaultMessage: 'Send',
-        id: 'TR_SEND',
-    },
     TR_RECEIVE: {
         defaultMessage: 'Receive',
         id: 'TR_RECEIVE',
