@@ -1,4 +1,4 @@
-import { Run, testCreateWebSocket } from '@evolu/common';
+import { type Evolu, OwnerId, Run, createQueryBuilder, testCreateWebSocket } from '@evolu/common';
 import { EvoluPlatformDeps } from '@evolu/common/local-first';
 
 import {
@@ -16,6 +16,7 @@ import { createDeferred } from '@trezor/utils';
 import { testCreateRunWithEvoluDeps } from '../mocks/testCreateRunWithEvoluDeps';
 import { createEvoluInstanceFactory } from '../src/createEvoluInstance';
 import { createEvoluStorageFactory } from '../src/evoluStorage';
+import { Schema } from '../src/schema';
 
 const suiteSyncOwner: SuiteSyncOwner = {
     ownerId: asSuiteSyncOwnerId('yg0UgROParTpm60ltI3hDw'),
@@ -24,10 +25,35 @@ const suiteSyncOwner: SuiteSyncOwner = {
     ),
 };
 
-const createTestStorage = async (run: Run<EvoluPlatformDeps>) => {
-    const createEvoluInstance = createEvoluInstanceFactory({ run });
+const createQuery = createQueryBuilder(Schema);
 
-    return await createEvoluStorageFactory({ createEvoluInstance })({ suiteSyncOwner });
+const createTestStorage = async (run: Run<EvoluPlatformDeps>) => {
+    const instance = await createEvoluInstanceFactory({ run })({ suiteSyncOwner });
+    const storage = await createEvoluStorageFactory({
+        createEvoluInstance: () => Promise.resolve(instance),
+    })({ suiteSyncOwner });
+
+    return {
+        ...instance,
+        storage,
+    };
+};
+
+type ExpectOwnerIdToUseShardOwnerParams = {
+    evolu: Evolu<typeof Schema>;
+    ownerId: OwnerId | null;
+    expectedOwnerId: OwnerId;
+};
+
+const expectOwnerIdToUseShardOwner = async ({
+    evolu,
+    ownerId: rowOwnerId,
+    expectedOwnerId: shardOwnerId,
+}: ExpectOwnerIdToUseShardOwnerParams) => {
+    const appOwnerId = (await evolu.appOwner).id;
+
+    expect(rowOwnerId).toBe(shardOwnerId);
+    expect(rowOwnerId).not.toBe(appOwnerId);
 };
 
 describe(createEvoluStorageFactory.name, () => {
@@ -35,7 +61,7 @@ describe(createEvoluStorageFactory.name, () => {
         await using run = await testCreateRunWithEvoluDeps({
             createWebSocket: testCreateWebSocket({ throwOnCreate: true }),
         });
-        const storage = await createTestStorage(run);
+        const { evolu, shardOwner, storage } = await createTestStorage(run);
         const receivedWallets: SuiteSyncWallet[][] = [];
         const resolved = createDeferred<void>();
 
@@ -50,6 +76,7 @@ describe(createEvoluStorageFactory.name, () => {
             walletDescriptor: asWalletDescriptor('xpub123'),
             label: 'My Bitcoin Wallet',
         });
+
         expect(updateResult.success).toBe(true);
 
         await resolved.promise;
@@ -59,6 +86,15 @@ describe(createEvoluStorageFactory.name, () => {
             [{ label: 'My Bitcoin Wallet', walletDescriptor: 'xpub123' }],
         ]);
 
+        const rows = await evolu.loadQuery(createQuery(db => db.selectFrom('wallet').selectAll()));
+
+        expect(rows).toHaveLength(1);
+        await expectOwnerIdToUseShardOwner({
+            evolu,
+            ownerId: rows[0].ownerId,
+            expectedOwnerId: shardOwner.id,
+        });
+
         unsubscribe();
         await storage.dispose();
     });
@@ -67,7 +103,7 @@ describe(createEvoluStorageFactory.name, () => {
         await using run = await testCreateRunWithEvoluDeps({
             createWebSocket: testCreateWebSocket({ throwOnCreate: true }),
         });
-        const storage = await createTestStorage(run);
+        const { evolu, shardOwner, storage } = await createTestStorage(run);
 
         const receivedAccounts: SuiteSyncAccount[][] = [];
         const resolved = createDeferred<void>();
@@ -84,6 +120,7 @@ describe(createEvoluStorageFactory.name, () => {
             networkSymbol: 'btc',
             label: 'My Bitcoin Account',
         });
+
         expect(updateResult.success).toBe(true);
 
         await resolved.promise;
@@ -100,6 +137,15 @@ describe(createEvoluStorageFactory.name, () => {
             ],
         ]);
 
+        const rows = await evolu.loadQuery(createQuery(db => db.selectFrom('account').selectAll()));
+
+        expect(rows).toHaveLength(1);
+        await expectOwnerIdToUseShardOwner({
+            evolu,
+            ownerId: rows[0].ownerId,
+            expectedOwnerId: shardOwner.id,
+        });
+
         unsubscribe();
         await storage.dispose();
     });
@@ -108,7 +154,7 @@ describe(createEvoluStorageFactory.name, () => {
         await using run = await testCreateRunWithEvoluDeps({
             createWebSocket: testCreateWebSocket({ throwOnCreate: true }),
         });
-        const storage = await createTestStorage(run);
+        const { evolu, shardOwner, storage } = await createTestStorage(run);
 
         const receivedAddresses: SuiteSyncAddress[][] = [];
         const resolved = createDeferred<void>();
@@ -126,6 +172,7 @@ describe(createEvoluStorageFactory.name, () => {
             accountDescriptor: asAccountDescriptor('xpub123'),
             networkSymbol: 'btc',
         });
+
         expect(updateResult.success).toBe(true);
 
         await resolved.promise;
@@ -143,6 +190,15 @@ describe(createEvoluStorageFactory.name, () => {
             ],
         ]);
 
+        const rows = await evolu.loadQuery(createQuery(db => db.selectFrom('address').selectAll()));
+
+        expect(rows).toHaveLength(1);
+        await expectOwnerIdToUseShardOwner({
+            evolu,
+            ownerId: rows[0].ownerId,
+            expectedOwnerId: shardOwner.id,
+        });
+
         unsubscribe();
         await storage.dispose();
     });
@@ -151,7 +207,7 @@ describe(createEvoluStorageFactory.name, () => {
         await using run = await testCreateRunWithEvoluDeps({
             createWebSocket: testCreateWebSocket({ throwOnCreate: true }),
         });
-        const storage = await createTestStorage(run);
+        const { evolu, shardOwner, storage } = await createTestStorage(run);
 
         const receivedOutputs: SuiteSyncOutput[][] = [];
         const resolved = createDeferred<void>();
@@ -170,6 +226,7 @@ describe(createEvoluStorageFactory.name, () => {
             accountDescriptor: asAccountDescriptor('xpub123'),
             networkSymbol: 'btc',
         });
+
         expect(updateResult.success).toBe(true);
 
         await resolved.promise;
@@ -187,6 +244,15 @@ describe(createEvoluStorageFactory.name, () => {
                 },
             ],
         ]);
+
+        const rows = await evolu.loadQuery(createQuery(db => db.selectFrom('output').selectAll()));
+
+        expect(rows).toHaveLength(1);
+        await expectOwnerIdToUseShardOwner({
+            evolu,
+            ownerId: rows[0].ownerId,
+            expectedOwnerId: shardOwner.id,
+        });
 
         unsubscribe();
         await storage.dispose();

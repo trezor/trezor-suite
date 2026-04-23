@@ -4,6 +4,7 @@ import {
     NonEmptyString100,
     NonEmptyString1000,
     type QueryRows,
+    type ShardOwner,
     createIdFromString,
     createQueryBuilder,
     id,
@@ -47,7 +48,10 @@ export const AccountTableSchema = {
 const createQuery = createQueryBuilder(AccountTableSchema);
 
 export class EvoluAccountTable implements AccountTable {
-    constructor(private evolu: Evolu<typeof AccountTableSchema>) {}
+    constructor(
+        private evolu: Evolu<typeof AccountTableSchema>,
+        private shardOwner: ShardOwner,
+    ) {}
 
     update = ({ networkSymbol, accountDescriptor, label }: SuiteSyncAccount) => {
         const idResult = AccountEvoluId.from(
@@ -69,12 +73,15 @@ export class EvoluAccountTable implements AccountTable {
             return err(createSuiteSyncUpdateError({ caused: validated.error }));
         }
 
-        this.evolu.upsert('account', validated.value);
+        this.evolu.upsert('account', validated.value, { ownerId: this.shardOwner.id });
 
         return ok();
     };
 
-    private getQuery = () => createQuery(db => db.selectFrom('account').selectAll());
+    private getQuery = () =>
+        createQuery(db =>
+            db.selectFrom('account').where('ownerId', '=', this.shardOwner.id).selectAll(),
+        );
 
     subscribe = ({ onChange }: EntityListener<SuiteSyncAccount>) => {
         const query = this.getQuery();

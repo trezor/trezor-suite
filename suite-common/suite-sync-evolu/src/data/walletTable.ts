@@ -3,6 +3,7 @@ import {
     type InferRow,
     NonEmptyString1000,
     type QueryRows,
+    type ShardOwner,
     createIdFromString,
     createQueryBuilder,
     id,
@@ -41,9 +42,15 @@ export const WalletTableSchema = {
 const createQuery = createQueryBuilder(WalletTableSchema);
 
 export class EvoluWalletTable implements WalletTable {
-    constructor(private evolu: Evolu<typeof WalletTableSchema>) {}
+    constructor(
+        private evolu: Evolu<typeof WalletTableSchema>,
+        private shardOwner: ShardOwner,
+    ) {}
 
-    private getQuery = () => createQuery(db => db.selectFrom('wallet').selectAll());
+    private getQuery = () =>
+        createQuery(db =>
+            db.selectFrom('wallet').where('ownerId', '=', this.shardOwner.id).selectAll(),
+        );
 
     update = ({ walletDescriptor, label }: SuiteSyncWallet) => {
         const idResult = WalletLabelId.from(createIdFromString(walletDescriptor));
@@ -64,7 +71,7 @@ export class EvoluWalletTable implements WalletTable {
             return err(createSuiteSyncUpdateError({ caused: validated.error }));
         }
 
-        this.evolu.upsert('wallet', validated.value);
+        this.evolu.upsert('wallet', validated.value, { ownerId: this.shardOwner.id });
 
         return ok();
     };
