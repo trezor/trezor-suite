@@ -36,7 +36,7 @@ export const EmptyWallet = () => {
 
     return (
         <Column gap={spacings.xxs} data-testid="@dashboard/wallet-ready" alignItems="center">
-            <Illustration name="networks" width={224} />
+            <Illustration name="assetsGet" width={224} />
             <H3 margin={{ top: spacings.md }}>
                 <Translation id="TR_YOUR_WALLET_IS_READY_WHAT" />
             </H3>
