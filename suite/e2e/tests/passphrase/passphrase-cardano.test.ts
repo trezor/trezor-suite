@@ -57,7 +57,7 @@ test.describe('Passphrase with cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
 
             await devicePrompt.confirmOnDevicePromptIsShown();
             await expect(device).toShowReceiveAddress(correctPassphraseAddr, {
-                lineFormat: 'fullLine',
+                lineFormat: 'cardanoTetragrams',
             });
             await device.pressYes(); // Confirm receive address
 
