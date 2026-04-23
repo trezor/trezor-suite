@@ -73,6 +73,7 @@ export const RoundedIcon = ({
     contractAddress,
     intent = 'neutral',
     size = 48,
+    children,
     style,
     ...boxProps
 }: RoundedIconProps) => {
@@ -85,11 +86,12 @@ export const RoundedIcon = ({
             style={[applyStyle(iconContainerStyle, { backgroundColor, size }), style]}
             {...boxProps}
         >
-            {name && name in icons ? (
-                <Icon name={name as IconName} color={iconColor} size={iconSize} />
-            ) : (
-                symbol && <CryptoIcon symbol={symbol} contractAddress={contractAddress} />
-            )}
+            {children ??
+                (name && name in icons ? (
+                    <Icon name={name as IconName} color={iconColor} size={iconSize} />
+                ) : (
+                    symbol && <CryptoIcon symbol={symbol} contractAddress={contractAddress} />
+                ))}
         </Box>
     );
 };
