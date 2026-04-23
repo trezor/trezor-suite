@@ -39,7 +39,6 @@ import TrezorConnect, {
     type Device,
     asBluetoothDeviceId,
 } from '@trezor/connect';
-import { getEnvironment } from '@trezor/env-utils';
 import { exhaustive } from '@trezor/type-utils';
 import { isChanged } from '@trezor/utils';
 
@@ -240,8 +239,6 @@ export const confirmAddressOnDeviceThunk = createThunk(
 
         let response;
 
-        const isCardanoAddressChunked = getEnvironment() === 'mobile';
-
         switch (account.networkType) {
             case 'tron':
                 response = await TrezorConnect.tronGetAddress(params);
@@ -260,7 +257,7 @@ export const confirmAddressOnDeviceThunk = createThunk(
                     protocolMagic: getProtocolMagic(account.symbol),
                     networkId: getNetworkId(),
                     derivationType: getDerivationType(account.accountType),
-                    chunkify: isCardanoAddressChunked,
+                    chunkify,
                 });
                 break;
             case 'ripple':

@@ -13,7 +13,7 @@ import { formatAddress, isEqualWithOmit, normalizeWhitespace } from '../common';
 import { DeviceFixture } from '../device';
 import type { NormalizedDisplayContent } from '../helpers/displayContentNormalizedParser';
 
-type LineFormats = 'fourTetragrams' | 'evmTetragrams' | 'fullLine';
+type LineFormats = 'fourTetragrams' | 'evmTetragrams' | 'cardanoTetragrams' | 'fullLine';
 
 const DISPLAY_CHAR_LIMIT_T3T1 = 18;
 const STRING_UP_TO_T3T1_DISPLAY_LIMIT = new RegExp(`.{1,${DISPLAY_CHAR_LIMIT_T3T1}}`, 'g');
@@ -88,6 +88,14 @@ const formatEvmAddress = (address: string) => {
     return ['0x' + firstTetragram, ...rest].join(' ');
 };
 
+const formatCardanoAddress = (address: string) => {
+    const formatted = formatAddress(address);
+    const parts = formatted.split(' ');
+    const visibleParts = [...parts.slice(0, 15), '...'];
+
+    return visibleParts.join(' ');
+};
+
 export const transformAddress = (address: string, lineFormat: LineFormats = 'fourTetragrams') => {
     // Address is split to lines on Display so it can fit. There are different formats:
     // 1. Four tetragrams of address:
@@ -111,6 +119,10 @@ export const transformAddress = (address: string, lineFormat: LineFormats = 'fou
 
     if (lineFormat === 'evmTetragrams') {
         return addNewlinesToAddress(formatEvmAddress(address), fourTetragramsOfAddress, ' \n');
+    }
+
+    if (lineFormat === 'cardanoTetragrams') {
+        return addNewlinesToAddress(formatCardanoAddress(address), fourTetragramsOfAddress, ' \n');
     }
 
     if (lineFormat === 'fullLine') {

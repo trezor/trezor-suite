@@ -60,7 +60,7 @@ test.describe('Cardano', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
                 await walletPage.revealAddressButton.click();
                 await devicePrompt.confirmOnDevicePromptIsShown();
                 await expect(device).toShowReceiveAddress(receiveAddress, {
-                    lineFormat: 'fullLine',
+                    lineFormat: 'cardanoTetragrams',
                 });
                 await device.pressYes();
                 await expect(walletPage.copyAddressButton).toBeEnabled();
