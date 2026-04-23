@@ -61,8 +61,11 @@ export const BottomSheetFlashList = <TItem,>({
 
     const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
-    const handleClose = useCallback(() => {
+    const dismissSheet = useCallback(() => {
         bottomSheetModalRef.current?.dismiss();
+    }, []);
+
+    const handleDismiss = useCallback(() => {
         onClose(false);
     }, [onClose]);
 
@@ -73,22 +76,13 @@ export const BottomSheetFlashList = <TItem,>({
     // minHeight can be higher than maxHeight because of estimatedListHeight, but it must be capped by maxHeight
     const snapPoints = useMemo(() => [Math.min(minHeight, maxHeight)], [minHeight, maxHeight]);
 
-    const handleSheetChanges = useCallback(
-        (index: number) => {
-            if (index === -1) {
-                handleClose();
-            }
-        },
-        [handleClose],
-    );
-
     useEffect(() => {
         if (isVisible) {
             bottomSheetModalRef.current?.present();
         } else {
-            bottomSheetModalRef.current?.dismiss();
+            dismissSheet();
         }
-    }, [isVisible]);
+    }, [dismissSheet, isVisible]);
 
     const BottomSheetListScrollComponent = useBottomSheetScrollableCreator();
 
@@ -98,11 +92,11 @@ export const BottomSheetFlashList = <TItem,>({
             snapPoints={snapPoints}
             maxDynamicContentSize={maxHeight}
             enableDynamicSizing={false}
-            onChange={handleSheetChanges}
+            onDismiss={handleDismiss}
             backdropComponent={props => (
                 <BottomSheetBackdrop
                     {...props}
-                    onPress={handleClose}
+                    onPress={dismissSheet}
                     appearsOnIndex={0}
                     disappearsOnIndex={-1}
                 />
