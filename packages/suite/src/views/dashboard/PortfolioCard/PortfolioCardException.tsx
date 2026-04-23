@@ -1,5 +1,6 @@
 import { type ComponentProps, type JSX } from 'react';
 
+import { events } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { openModal } from '@suite/modal';
@@ -20,6 +21,7 @@ import { spacings } from '@trezor/theme';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { useDispatch } from 'src/hooks/suite';
+import { useAnalytics } from 'src/support/useAnalytics';
 import { type DiscoveryStatusType } from 'src/types/wallet';
 
 interface CTA {
@@ -136,6 +138,7 @@ export const PortfolioCardException = ({
     failed,
 }: PortfolioCardExceptionProps) => {
     const dispatch = useDispatch();
+    const analytics = useAnalytics();
 
     switch (exception.type) {
         case 'discovery-empty':
@@ -146,7 +149,13 @@ export const PortfolioCardException = ({
                     description="TR_DASHBOARD_ACTIVATE_ASSETS_DESC"
                     cta={[
                         {
-                            action: () => dispatch(openModal({ type: 'activate-assets' })),
+                            action: () => {
+                                analytics.report({
+                                    type: events.dashboardActivateAssetsModalEvent.name,
+                                    payload: { source: 'empty-wallet' },
+                                });
+                                dispatch(openModal({ type: 'activate-assets' }));
+                            },
                             isDisabled: false,
                             intent: 'brand',
                             label: 'TR_DASHBOARD_GET_STARTED',
