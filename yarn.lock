@@ -15953,6 +15953,7 @@ __metadata:
   resolution: "@trezor/connect@workspace:packages/connect"
   dependencies:
     "@babel/preset-typescript": "npm:^7.28.5"
+    "@bufbuild/protobuf": "npm:^2.11.0"
     "@ethereumjs/common": "npm:^10.1.1"
     "@ethereumjs/tx": "npm:^10.1.1"
     "@fivebinaries/coin-selection": "npm:3.0.0"
