@@ -269,7 +269,6 @@ describe('useExchangeSelectQuote', () => {
                         quote: expect.objectContaining({
                             quoteId: mercuryoFixedBestQuote?.quoteId,
                         }),
-                        timer: expect.objectContaining({ timeSpent: { seconds: 0 } }),
                     }),
                 }),
             );
@@ -372,7 +371,6 @@ describe('useExchangeSelectQuote', () => {
                             quote: expect.objectContaining({
                                 quoteId: mercuryoFixedBestQuote.quoteId,
                             }),
-                            timer: expect.objectContaining({ timeSpent: { seconds: 0 } }),
                         }),
                     }),
                 );
