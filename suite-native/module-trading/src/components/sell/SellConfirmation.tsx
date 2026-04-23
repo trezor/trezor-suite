@@ -25,7 +25,7 @@ export const SellConfirmation = ({ enteringAnimation }: ConfirmationProps) => {
     const providerInfo = useSelector((state: TradingRootState) =>
         selectTradingProviderByNameAndTradeType(state, quote?.exchange, 'sell'),
     );
-    const providerName = providerInfo?.companyName ?? quote?.exchange ?? '';
+    const providerName = providerInfo?.companyName ?? quote?.exchange;
 
     return (
         <AnimatedBox entering={enteringAnimation} exiting={FadeOutDown}>
@@ -36,10 +36,14 @@ export const SellConfirmation = ({ enteringAnimation }: ConfirmationProps) => {
                         testID={CONFIRMATION_TEST_ID}
                         iconRight="arrowSquareOut"
                     >
-                        <Translation
-                            id="moduleTrading.tradingScreen.buttons.sellVia"
-                            values={{ providerName }}
-                        />
+                        {providerName ? (
+                            <Translation
+                                id="moduleTrading.tradingScreen.buttons.sellVia"
+                                values={{ providerName }}
+                            />
+                        ) : (
+                            <Translation id="moduleTrading.tradingScreen.buttons.continue" />
+                        )}
                     </Button>
                 </AnimatedBox>
             )}

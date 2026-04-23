@@ -59,7 +59,7 @@ export const ExchangePreviewView = memo(
                     {isFusionPlus && <ExchangeFusionPlusInfo />}
                     {kycWarning && (
                         <InlineAlertBox
-                            variant="warning"
+                            iconName="identificationCard"
                             title={kycWarning}
                             accessibilityHint={translate('generic.warning')}
                         />

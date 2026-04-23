@@ -55,10 +55,10 @@ export const ProviderListItemInfo = <T extends TradingTradeType>({
             )}
             {kycWarning && (
                 <InfoLineItem
-                    iconName="warning"
+                    iconName="identificationCard"
                     text={kycWarning}
-                    iconColor="contentCritical"
-                    textColor="contentCritical"
+                    iconColor="contentWarning"
+                    textColor="contentWarning"
                 />
             )}
         </>
