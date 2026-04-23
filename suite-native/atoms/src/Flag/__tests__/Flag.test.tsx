@@ -1,3 +1,6 @@
+import { renderWithBasicProvider } from '@suite-native/test-utils';
+
+import { Flag } from '../Flag';
 import { getCountryFlag } from '../utils';
 
 describe('getCountryFlag', () => {
@@ -14,5 +17,13 @@ describe('getCountryFlag', () => {
     it('should return undefined for unsupported values', () => {
         expect(getCountryFlag('cz')).toBeUndefined();
         expect(getCountryFlag('BTC')).toBeUndefined();
+    });
+});
+
+describe('Flag component', () => {
+    it('should display the correct flag for a valid country code', () => {
+        const { getByLabelText } = renderWithBasicProvider(<Flag country="CZ" />);
+
+        expect(getByLabelText('flag-CZ')).toBeTruthy();
     });
 });

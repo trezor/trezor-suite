@@ -78,7 +78,7 @@ describe('TradingCountryOfResidencePicker', () => {
 
         const { getByTestId } = renderCountryOfResidencePicker(residenceCheckDisabledState);
 
-        expect(getByTestId('testID/value')).toHaveTextContent('🇺🇸 USA');
+        expect(getByTestId('testID/value')).toHaveTextContent('USA');
     });
 
     it('should call analytics on country change', async () => {
