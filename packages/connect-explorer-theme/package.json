@@ -53,7 +53,7 @@
         "nextra": "^2.13.4",
         "postcss": "^8.5.9",
         "postcss-cli": "^10.1.0",
-        "postcss-import": "^15.1.0",
+        "postcss-import": "^16.1.1",
         "postcss-lightningcss": "^1.1.0",
         "react": "19.2.4",
         "react-dom": "19.2.4"

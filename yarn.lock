@@ -15827,7 +15827,7 @@ __metadata:
     nextra: "npm:^2.13.4"
     postcss: "npm:^8.5.9"
     postcss-cli: "npm:^10.1.0"
-    postcss-import: "npm:^15.1.0"
+    postcss-import: "npm:^16.1.1"
     postcss-lightningcss: "npm:^1.1.0"
     react: "npm:19.2.4"
     react-dom: "npm:19.2.4"
@@ -38966,6 +38966,19 @@ __metadata:
   peerDependencies:
     postcss: ^8.0.0
   checksum: 10/33c91b7e6b794b5c33d7d7d4730e5f0729c131d2de1ada7fcc116955625a78c3ce613983f019fa9447681795cf3f851e9c38dfbe3f48a2d08a8aef917c70a32a
+  languageName: node
+  linkType: hard
+
+"postcss-import@npm:^16.1.1":
+  version: 16.1.1
+  resolution: "postcss-import@npm:16.1.1"
+  dependencies:
+    postcss-value-parser: "npm:^4.0.0"
+    read-cache: "npm:^1.0.0"
+    resolve: "npm:^1.1.7"
+  peerDependencies:
+    postcss: ^8.0.0
+  checksum: 10/2afac2b6e25f263f45ac2168c5f5e4b2e49e3d44c620338138fe89cf81bd83e6056784a26d54c58611d05dda18bc56069212484ec750bbf6d2e29b623460a7f9
   languageName: node
   linkType: hard
 
