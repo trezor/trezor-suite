@@ -112,4 +112,4 @@ const PRESERVE_TOKEN_SYMBOL_CASE_STANDARDS: ReadonlySet<TokenStandard> = new Set
 export const shouldUppercaseTokenSymbol = (token: TokenInfo) =>
     token.standard ? !PRESERVE_TOKEN_SYMBOL_CASE_STANDARDS.has(token.standard) : true;
 
-export const isErc4626 = (token: TokenInfo) => 'erc4626' in token;
+export const isErc4626 = (token: TokenInfo) => !!token.protocols?.erc4626;

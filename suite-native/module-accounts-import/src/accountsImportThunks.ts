@@ -106,7 +106,7 @@ export const getAccountInfoThunk = createThunk<
                     descriptor: taprootXpubWithApostrophes ?? xpubAddress,
                     details: 'txs',
                     suppressBackupWarning: true,
-                    includeErc4626: getNetworkType(symbol) === 'ethereum' ? true : undefined,
+                    protocols: getNetworkType(symbol) === 'ethereum' ? ['erc4626'] : undefined,
                 }),
                 dispatch(
                     updateFiatRatesThunk({

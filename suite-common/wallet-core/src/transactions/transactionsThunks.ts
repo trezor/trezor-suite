@@ -481,7 +481,7 @@ export const fetchTransactionsPageThunk = createThunk(
             // if back on first page, the marker is reset
             ...(marker && !isFirstPage ? { marker } : {}),
             suppressBackupWarning: true,
-            includeErc4626: account.networkType === 'ethereum' ? true : undefined,
+            protocols: account.networkType === 'ethereum' ? ['erc4626'] : undefined,
         });
 
         // Account might have changed during async getAccountInfo call, so we fetch current state

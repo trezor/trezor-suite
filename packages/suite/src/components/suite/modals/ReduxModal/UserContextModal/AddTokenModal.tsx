@@ -37,7 +37,7 @@ export const AddTokenModal = ({ onCancel }: AddTokenModalProps) => {
                 details: 'tokenBalances',
                 contractFilter: contractAddress,
                 suppressBackupWarning: true,
-                includeErc4626: acc.networkType === 'ethereum' ? true : undefined,
+                protocols: acc.networkType === 'ethereum' ? ['erc4626'] : undefined,
             });
 
             if (response.success) {

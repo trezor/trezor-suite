@@ -55,7 +55,7 @@ const fetchAccountTokens = async (account: Account, payloadTokens: AccountInfo['
             details: 'tokenBalances',
             contractFilter: t.contract,
             suppressBackupWarning: true,
-            includeErc4626: isEvmNetwork ? true : undefined,
+            protocols: isEvmNetwork ? ['erc4626'] : undefined,
         }),
     );
 
@@ -108,6 +108,7 @@ export const fetchAndUpdateAccountThunk = createThunk(
             details: account.networkType === 'solana' ? 'txids' : 'basic',
             suppressBackupWarning: true,
             tokenAccountsPubKeys,
+            protocols: account.networkType === 'ethereum' ? ['erc4626'] : undefined,
             gap,
         });
 
@@ -139,7 +140,7 @@ export const fetchAndUpdateAccountThunk = createThunk(
             page: 1, // useful for every network except ripple and stellar
             pageSize,
             suppressBackupWarning: true,
-            includeErc4626: account.networkType === 'ethereum' ? true : undefined,
+            protocols: account.networkType === 'ethereum' ? ['erc4626'] : undefined,
             gap:
                 account.networkType === 'bitcoin'
                     ? selectGapLimit(getState(), account.symbol)

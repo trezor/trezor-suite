@@ -99,7 +99,7 @@ export default class DiscoverAccounts extends AbstractMethod<
                 { name: 'identity', type: 'string' },
                 { name: 'details', type: 'string' },
                 { name: 'pageSize', type: 'number' },
-                { name: 'includeErc4626', type: 'boolean' },
+                { name: 'protocols', type: 'array' },
             ]);
 
             const { symbol, known: knownAccs, knownOnly, ...rest } = coin;
@@ -323,17 +323,8 @@ export default class DiscoverAccounts extends AbstractMethod<
         request: Request,
         sendCoreMessage: MethodContext['sendCoreMessage'],
     ): Promise<{ nonempty: number; error?: string }> {
-        const {
-            details,
-            identity,
-            pageSize,
-            gap,
-            includeErc4626,
-            coinInfo,
-            derivation,
-            offset,
-            skip,
-        } = request;
+        const { details, identity, pageSize, gap, protocols, coinInfo, derivation, offset, skip } =
+            request;
         const { path: bip43, ...accountKey } = request.account;
         const backendType = coinInfo.blockchainLink?.type;
         const utxoRequired = isUtxoBased(coinInfo) && details && details !== 'basic';
@@ -366,7 +357,7 @@ export default class DiscoverAccounts extends AbstractMethod<
                     descriptor,
                     details,
                     pageSize,
-                    includeErc4626,
+                    protocols,
                     gap,
                 });
 

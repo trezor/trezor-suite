@@ -4,7 +4,6 @@ import type {
     AvailableVsCurrencies,
     Address as BlockbookAddress,
     Block as BlockbookBlock,
-    Erc4626 as BlockbookErc4626,
     Token as BlockbookToken,
     TokenTransfer as BlockbookTokenTransfer,
     Tx as BlockbookTx,
@@ -166,8 +165,6 @@ export interface FiatRatesForTimestamp {
 }
 
 export type AvailableCurrencies = Omit<RequiredKey<AvailableVsCurrencies, 'ts'>, 'error'>;
-
-export type Erc4626 = BlockbookErc4626;
 
 export type ContractInfoResponse = WsContractInfoRes;
 
