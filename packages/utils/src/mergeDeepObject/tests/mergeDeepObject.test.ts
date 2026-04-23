@@ -195,33 +195,4 @@ describe(mergeDeepObject.name, () => {
             expect(value).toBe(1);
         });
     });
-
-    describe('dot notation', () => {
-        const fn = () => {};
-        const first = { a: { b: 1, c: 'foo' }, 'd.e': { f: null, 'g.h': 42 }, l: { m: [8] } };
-        const second = { 'a.b': 3, d: { 'e.f': fn, 'e.g': true }, 'i.j.k': undefined, 'l.m': [9] };
-        const third = { 'i.j': 'bar' };
-
-        it('dot notation off', () => {
-            const result = mergeDeepObject.withOptions(
-                { mergeArrays: false },
-                first,
-                second,
-                third,
-            );
-
-            expect(result).toStrictEqual({ ...first, ...second, ...third });
-        });
-
-        it('dot notation on', () => {
-            const result = mergeDeepObject.withOptions({ dotNotation: true }, first, second, third);
-
-            expect(result).toStrictEqual({
-                a: { b: 3, c: 'foo' },
-                d: { e: { f: fn, g: true } },
-                i: { j: 'bar' },
-                l: { m: [8, 9] },
-            });
-        });
-    });
 });

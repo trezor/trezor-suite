@@ -41,6 +41,7 @@ export * from './isUrl';
 export * from './isWhitelistedHost';
 export * from './logs';
 export * from './logsManager';
+export { mergeDeepObjectDotNotation } from './mergeDeepObject/mergeDeepObjectDotNotation';
 export { mergeDeepObject } from './mergeDeepObject/mergeDeepObject';
 export * from './objectPartition';
 export * from './parseElectrumUrl';

@@ -1,14 +1,23 @@
-import { mergeDeepObject } from '../mergeDeepObject';
+import { mergeDeepObjectDotNotation } from '../mergeDeepObjectDotNotation';
 
-export const _testDotNotation: {
+const baseState: {
     settings: {
         feature: {
             enabled: boolean;
             label: string;
         };
     };
-} = mergeDeepObject.withOptions(
-    { dotNotation: true },
+} = {
+    settings: {
+        feature: {
+            enabled: false,
+            label: 'disabled',
+        },
+    },
+};
+
+export const _testDotNotation = mergeDeepObjectDotNotation(
+    baseState,
     { 'settings.feature.enabled': true },
     { settings: { feature: { label: 'enabled' } } },
 );

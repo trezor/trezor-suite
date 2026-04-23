@@ -27,7 +27,7 @@ import { prepareThpReducer } from '@suite-common/thp';
 import { prepareTokenDefinitionsReducer } from '@suite-common/token-definitions';
 import { accountsActions } from '@suite-common/wallet-core';
 import { isCodesignBuild } from '@trezor/env-utils';
-import { mergeDeepObject } from '@trezor/utils';
+import { mergeDeepObjectDotNotation } from '@trezor/utils';
 
 import { suiteSyncSlice } from 'src/actions/suiteSync/suiteSyncSlice';
 import { suiteSyncQuotaManagerSlice } from 'src/actions/suiteSyncQuotaManager/suiteSyncQuotaManagerSlice';
@@ -142,11 +142,7 @@ export const initStore = (
 
     const patchedState =
         preloadedState && options?.statePatch && patchConfirm(options.statePatch)
-            ? mergeDeepObject.withOptions(
-                  { dotNotation: true },
-                  preloadedState,
-                  options.statePatch as Partial<AppState>,
-              )
+            ? mergeDeepObjectDotNotation(preloadedState, options.statePatch)
             : preloadedState;
 
     const extraFactory = (api: MiddlewareAPI) => ({

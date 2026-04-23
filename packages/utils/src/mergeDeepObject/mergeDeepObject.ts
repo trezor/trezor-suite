@@ -2,18 +2,16 @@
 // Original implementation was the https://github.com/voodoocreation/ts-deepmerge
 
 import { typedObjectKeys } from '../typedObject';
-import type { ExpandDotNotation, MergeValues } from './dotNotation';
+import type { MergeArrayValues } from './mergeArray';
 import { isObject } from './object';
-import type { ObjectMap } from './object';
+import type { NormalizedValue, ObjectMap, Primitive, RequiredKeys, Simplify } from './object';
 
 export type MergeOptions = {
     mergeArrays: boolean;
-    dotNotation: boolean;
 };
 
 type DefaultMergeOptions = {
     mergeArrays: true;
-    dotNotation: false;
 };
 
 export type ResolvedMergeOptions<T extends Partial<MergeOptions>> = {
@@ -22,27 +20,53 @@ export type ResolvedMergeOptions<T extends Partial<MergeOptions>> = {
             ? TMergeArrays
             : DefaultMergeOptions['mergeArrays']
         : DefaultMergeOptions['mergeArrays'];
-    dotNotation: T extends { dotNotation: infer TDotNotation }
-        ? TDotNotation extends boolean
-            ? TDotNotation
-            : DefaultMergeOptions['dotNotation']
-        : DefaultMergeOptions['dotNotation'];
 };
 
-type PrepareMergeValue<T, TOptions extends MergeOptions> = TOptions['dotNotation'] extends true
-    ? ExpandDotNotation<T, TOptions>
-    : T;
+type MergeObjectValue<
+    T extends object,
+    U extends object,
+    K extends PropertyKey,
+    TOptions extends MergeOptions,
+> = K extends keyof U
+    ? K extends keyof T
+        ? MergeValues<NormalizedValue<T, K>, NormalizedValue<U, K>, TOptions>
+        : NormalizedValue<U, K>
+    : K extends keyof T
+      ? NormalizedValue<T, K>
+      : never;
+
+type MergeObjects<T extends object, U extends object, TOptions extends MergeOptions> = Simplify<
+    {
+        [K in keyof T | keyof U as K extends RequiredKeys<T> | RequiredKeys<U>
+            ? K
+            : never]-?: MergeObjectValue<T, U, K, TOptions>;
+    } & {
+        [K in keyof T | keyof U as K extends RequiredKeys<T> | RequiredKeys<U>
+            ? never
+            : K]?: MergeObjectValue<T, U, K, TOptions>;
+    }
+>;
+
+export type MergeValues<T, U, TOptions extends MergeOptions> = [T] extends [readonly unknown[]]
+    ? MergeArrayValues<T, U, TOptions>
+    : [U] extends [readonly unknown[]]
+      ? U
+      : [T] extends [Primitive]
+        ? U
+        : [U] extends [Primitive]
+          ? U
+          : [T] extends [object]
+            ? [U] extends [object]
+                ? MergeObjects<T, U, TOptions>
+                : U
+            : U;
 
 export type MergeTuple<
     T extends readonly unknown[],
     TOptions extends MergeOptions,
     TResult = {},
 > = T extends readonly [infer TFirst, ...infer TRest]
-    ? MergeTuple<
-          TRest,
-          TOptions,
-          MergeValues<TResult, PrepareMergeValue<TFirst, TOptions>, TOptions>
-      >
+    ? MergeTuple<TRest, TOptions, MergeValues<TResult, TFirst, TOptions>>
     : TResult;
 
 export type MergeDeepObject = {
@@ -55,22 +79,6 @@ export type MergeDeepObject = {
 };
 
 const protectedObjectKeys: readonly string[] = ['__proto__', 'constructor', 'prototype'];
-
-const mergeValuesWithPath = (
-    target: unknown,
-    value: unknown,
-    [key, ...rest]: string[],
-): unknown => {
-    if (key === undefined) {
-        return mergeValues(target, value);
-    }
-
-    if (!isObject(target)) {
-        return { [key]: mergeValuesWithPath({}, value, rest) };
-    }
-
-    return { ...target, [key]: mergeValuesWithPath(target[key], value, rest) };
-};
 
 const mergeValues = (target: unknown, value: unknown) => {
     if (Array.isArray(target) && Array.isArray(value)) {
@@ -104,12 +112,7 @@ function mergeDeepObjectBase(...objects: readonly object[]) {
                 continue;
             }
 
-            if (mergeDeepObject.options.dotNotation) {
-                const [first, ...rest] = key.split('.');
-                result[first] = mergeValuesWithPath(result[first], current[key], rest);
-            } else {
-                result[key] = mergeValues(result[key], current[key]);
-            }
+            result[key] = mergeValues(result[key], current[key]);
         }
 
         return result;
@@ -118,7 +121,6 @@ function mergeDeepObjectBase(...objects: readonly object[]) {
 
 const defaultOptions: DefaultMergeOptions = {
     mergeArrays: true,
-    dotNotation: false,
 };
 
 export const mergeDeepObject: MergeDeepObject = Object.assign(mergeDeepObjectBase, {

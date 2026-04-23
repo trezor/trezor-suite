@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-import { mergeDeepObject } from '@trezor/utils';
+import { mergeDeepObjectDotNotation } from '@trezor/utils';
 
 import { app } from '../typed-electron';
 
@@ -55,7 +55,7 @@ export const processStatePatch = (): ProcessStatePatchResult =>
             return { [key]: tryParseJson(value) };
         })
         .reduce<ProcessStatePatchResult>(
-            (prev, cur) => mergeDeepObject.withOptions({ dotNotation: true }, prev ?? {}, cur),
+            (prev, cur) => mergeDeepObjectDotNotation(prev ?? {}, cur),
             undefined,
         )?.state;
 
