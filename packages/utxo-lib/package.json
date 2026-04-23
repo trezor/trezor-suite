@@ -67,7 +67,7 @@
         "@noble/curves": "^2.0.1",
         "@noble/hashes": "^2.0.1",
         "@scure/base": "^1.2.6",
-        "@sinclair/typebox": "^0.33.12",
+        "@sinclair/typebox": "^0.34.49",
         "@trezor/utils": "workspace:*",
         "bip66": "^2.0.0",
         "bitcoin-ops": "^1.4.1",
