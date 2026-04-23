@@ -37,7 +37,7 @@ Before submitting code, ensure:
 
 - [ ] Tests were written BEFORE implementation
 - [ ] Using `@suite-native/test-utils` (not direct `@testing-library/react-native`)
-- [ ] Correct render function used (renderWithStoreProvider, renderWithBasicProvider, render)
+- [ ] Correct render function used (renderWithStoreProvider, renderWithProviders, render)
 - [ ] Translation IDs used instead of literal strings
 - [ ] Fixtures are properly typed
 - [ ] Tests focus on behavior, not implementation

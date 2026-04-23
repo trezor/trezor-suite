@@ -10,6 +10,7 @@ describe('SendUtxosScreenFooter', () => {
     it('should render footer with selected total and continue button', () => {
         const { getByText } = renderWithStoreProvider(
             <SendUtxoScreenFooter symbol="btc" selectedTotal="800000000" onSubmit={jest.fn()} />,
+            { providers: ['intl', 'formatter'] },
         );
 
         expect(getByText('Selected')).toBeTruthy();
@@ -25,6 +26,7 @@ describe('SendUtxosScreenFooter', () => {
                 onSubmit={jest.fn()}
                 amount="800000000"
             />,
+            { providers: ['intl', 'formatter'] },
         );
 
         expect(getByText('Remaining to select')).toBeTruthy();
@@ -39,6 +41,7 @@ describe('SendUtxosScreenFooter', () => {
                 onSubmit={jest.fn()}
                 amount="800000000"
             />,
+            { providers: ['intl', 'formatter'] },
         );
 
         expect(queryByText('Remaining to select')).toBeNull();

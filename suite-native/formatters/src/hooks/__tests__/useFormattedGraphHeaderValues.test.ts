@@ -27,6 +27,7 @@ const setNewStoreMockup = (preloadedState: any) => {
 describe(useFormattedGraphHeaderValues.name, () => {
     const renderUseFormattedGraphHeaderValues = (value?: string) =>
         renderHookWithStoreProvider(() => useFormattedGraphHeaderValues(value), {
+            providers: ['intl', 'formatter'],
             store,
         });
 

@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import type { EnhancedStore } from '@reduxjs/toolkit';
 
 import { useFormattersConfig } from '@suite-native/formatters-config';
-import { BasicProviderForTests } from '@suite-native/test-utils';
+import { ALL_PROVIDERS, ProviderForTests, type ProviderKey } from '@suite-native/test-utils';
 
 import { createStoreFromPreloadedState } from './createStoreFromPreloadedState';
 
@@ -14,15 +14,22 @@ type ReduxProviderProps = {
     children: ReactNode;
     preloadedState?: Record<string, unknown>;
     injectedStore?: TestStore;
+    providers?: ProviderKey[];
 };
 
-const BasicProviderWithFormattingConfig = ({ children }: { children: ReactNode }) => {
+const ProviderForTestsWithFormattingConfig = ({
+    children,
+    providers,
+}: {
+    children: ReactNode;
+    providers?: ProviderKey[];
+}) => {
     const formattersConfig = useFormattersConfig();
 
     return (
-        <BasicProviderForTests formattersConfig={formattersConfig}>
+        <ProviderForTests providers={providers} formattersConfig={formattersConfig}>
             {children}
-        </BasicProviderForTests>
+        </ProviderForTests>
     );
 };
 
@@ -35,6 +42,7 @@ export const StoreProviderForTests = ({
     children,
     injectedStore,
     preloadedState,
+    providers = ALL_PROVIDERS,
 }: ReduxProviderProps) => {
     const store = useMemo(() => {
         if (injectedStore) {
@@ -46,7 +54,9 @@ export const StoreProviderForTests = ({
 
     return (
         <Provider store={store}>
-            <BasicProviderWithFormattingConfig>{children}</BasicProviderWithFormattingConfig>
+            <ProviderForTestsWithFormattingConfig providers={providers}>
+                {children}
+            </ProviderForTestsWithFormattingConfig>
         </Provider>
     );
 };

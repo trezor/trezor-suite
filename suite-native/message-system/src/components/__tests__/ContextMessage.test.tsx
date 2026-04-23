@@ -76,6 +76,7 @@ describe('ContextMessage', () => {
         renderWithStoreProvider(
             <ContextMessage context={context} accessibilityHint={contextActionId} />,
             {
+                providers: [],
                 preloadedState: { messageSystem: emptyMessageSystem, ...preloadedState },
             },
         );

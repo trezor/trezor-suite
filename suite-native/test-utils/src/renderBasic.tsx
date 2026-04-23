@@ -9,7 +9,7 @@ import {
 
 import type { FormatterProviderConfig } from '@suite-common/formatters';
 
-import { ALL_PROVIDERS, ProviderForTests, type ProviderKey } from './BasicProviderForTests';
+import { ProviderForTests, type ProviderKey } from './ProviderForTests';
 
 type ExtraOptions = {
     providers?: ProviderKey[];
@@ -51,13 +51,3 @@ export const renderHookWithProviders = <Result, Props>(
         ),
         ...options,
     });
-
-export const renderWithBasicProvider = <Props,>(
-    element: ReactElement<Props>,
-    options: RenderOptions & { formattersConfig?: FormatterProviderConfig } = {},
-) => renderWithProviders(element, { providers: ALL_PROVIDERS, ...options });
-
-export const renderHookWithBasicProvider = <Result, Props>(
-    callback: (props: Props) => Result,
-    options: RenderHookOptions<Props> & { formattersConfig?: FormatterProviderConfig } = {},
-) => renderHookWithProviders(callback, { providers: ALL_PROVIDERS, ...options });

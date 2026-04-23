@@ -86,6 +86,7 @@ describe('FeesFooter', () => {
             {
                 store,
                 preloadedState: getPreloadedState(),
+                providers: ['intl', 'formatter'],
             },
         );
     };

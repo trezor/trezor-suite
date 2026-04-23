@@ -12,6 +12,7 @@ describe('useFeesForm', () => {
 
     const renderUseFeesForm = (props: UseFeesFormProps = mockProps) =>
         renderHookWithStoreProvider(() => useFeesForm(props), {
+            providers: ['intl'],
             preloadedState: {
                 wallet: {
                     fees: {},
@@ -109,6 +110,7 @@ describe('useFeesForm', () => {
 
     it('should handle empty fee levels without crashing', () => {
         const { result } = renderHookWithStoreProvider(() => useFeesForm(mockProps), {
+            providers: ['intl'],
             preloadedState: {
                 wallet: {
                     fees: {},

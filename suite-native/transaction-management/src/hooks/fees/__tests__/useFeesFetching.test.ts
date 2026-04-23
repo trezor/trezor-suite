@@ -52,6 +52,7 @@ describe('useFeesFetching', () => {
     }) =>
         renderHookWithStoreProvider(() => useFeesFetching({ networkSymbol, isRefetchDisabled }), {
             store,
+            providers: [],
         });
 
     beforeEach(() => {

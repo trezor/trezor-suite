@@ -84,6 +84,7 @@ describe('FeeOptionsList', () => {
                 }),
             {
                 store,
+                providers: ['intl'],
             },
         );
 
@@ -103,6 +104,7 @@ describe('FeeOptionsList', () => {
 
         return renderWithStoreProvider(<FeeOptionsList {...finalProps} />, {
             store,
+            providers: ['intl', 'formatter'],
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
     };

@@ -197,6 +197,7 @@ describe('useStellarFeeScreen', () => {
 
     const renderUseStellarFeeScreen = (props: UseStellarFeeScreenParams = defaultProps) =>
         renderHookWithStoreProvider(hookProps => useStellarFeeScreen(hookProps), {
+            providers: [],
             store,
             initialProps: props,
         });

@@ -30,7 +30,10 @@ describe('useIsNetworkReserveBannerVisible', () => {
     });
 
     const renderHook = (params: Parameters<typeof useIsNetworkReserveBannerVisible>[0]) =>
-        renderHookWithStoreProvider(() => useIsNetworkReserveBannerVisible(params), { store });
+        renderHookWithStoreProvider(() => useIsNetworkReserveBannerVisible(params), {
+            store,
+            providers: [],
+        });
 
     it('returns false for null symbol, null amount, null balance, or no-reserve network', () => {
         expect(renderHook({ symbol: undefined, amount: '1', balance: '2' }).result.current).toBe(

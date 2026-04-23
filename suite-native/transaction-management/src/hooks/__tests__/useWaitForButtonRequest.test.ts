@@ -14,6 +14,7 @@ describe('useWaitForButtonRequest.ts', () => {
         renderHookWithStoreProvider(
             ({ onButtonRequest }) => useWaitForButtonRequest(onButtonRequest),
             {
+                providers: [],
                 initialProps: {
                     onButtonRequest: initialCallback,
                 },

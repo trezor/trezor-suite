@@ -44,6 +44,7 @@ describe('AccountLabel', () => {
 
     const renderAccountLabel = (props: AccountLabelPropsWithAccount) =>
         renderWithStoreProvider(<AccountLabel {...props} />, {
+            providers: [],
             store: createLightStore({
                 reducer,
                 preloadedState: {

@@ -15,7 +15,7 @@ describe('SelectableNetworkList', () => {
         const onSelectItem = jest.fn();
         const { getByText } = renderWithStoreProvider(
             <SelectableNetworkList onSelectItem={onSelectItem} />,
-            { preloadedState: getMockPreloadedState(true) },
+            { providers: ['intl', 'formatter'], preloadedState: getMockPreloadedState(true) },
         );
 
         expect(getByText('Select a coin to sync')).toBeTruthy();
@@ -26,7 +26,7 @@ describe('SelectableNetworkList', () => {
         const onSelectItem = jest.fn();
         const { getByText } = renderWithStoreProvider(
             <SelectableNetworkList onSelectItem={onSelectItem} />,
-            { preloadedState: getMockPreloadedState(true) },
+            { providers: ['intl', 'formatter'], preloadedState: getMockPreloadedState(true) },
         );
 
         expect(getByText('Bitcoin')).toBeTruthy();
@@ -39,7 +39,7 @@ describe('SelectableNetworkList', () => {
         const onSelectItem = jest.fn();
         const { getByText } = renderWithStoreProvider(
             <SelectableNetworkList onSelectItem={onSelectItem} />,
-            { preloadedState: getMockPreloadedState(true) },
+            { providers: ['intl', 'formatter'], preloadedState: getMockPreloadedState(true) },
         );
 
         fireEvent.press(getByText('Bitcoin'));
@@ -52,7 +52,7 @@ describe('SelectableNetworkList', () => {
         const onSelectItem = jest.fn();
         const { getByText, queryByText } = renderWithStoreProvider(
             <SelectableNetworkList onSelectItem={onSelectItem} />,
-            { preloadedState: getMockPreloadedState(false) },
+            { providers: ['intl', 'formatter'], preloadedState: getMockPreloadedState(false) },
         );
 
         expect(getByText('Select a coin to sync')).toBeTruthy();

@@ -9,8 +9,8 @@ It also reexports everything from `@testing-library/react-native`, so you should
 ```mermaid
 flowchart TD
     A{{Do you need redux store?}} -- Yes --> B[Use 'renderWithStoreProvider']
-    A -- No --> C{{Do you need any other provider? Such as theme, formatters, etc.}}
-    C -- Yes --> D[Use 'renderWithBasicProvider']
+    A -- No --> C{{Do you need any other provider? Such as intl, navigation, etc.}}
+    C -- Yes --> D[Use 'renderWithProviders' with the needed providers]
     C -- No --> E{{Are you sure?}}
     E -- Yes --> F[Use 'render']
     E -- No --> D
@@ -23,33 +23,45 @@ the [official documentation](https://testing-library.com/docs/react-native-testi
 
 You most probably do not want to use this function directly.
 
-### Using renderWithBasicProvider
+### Using renderWithProviders
 
-`renderWithBasicProvider` is a custom utility that provides basic context providers. Namely:
+`renderWithProviders` is a custom utility that wraps the element in a composable provider stack. Two providers are
+always on:
 
-- **IntlProvider**: Simplified variant for tests. Always uses `en-US` locale.
+- **SafeAreaProvider**
 - **StylesProvider**: With `colorVariant` set to `standard`.
-- **NavigationContainer**
-- **NativeServicesProvider**: With `extraDependenciesNativeMock.services`.
-- **FormatterProvider**: With `locale` set to `en` and `baseCurrency` set to `USD`.
-- **BottomSheetModalProvider**
+
+The rest are opt-in via the `providers` option (`ProviderKey[]`):
+
+- `'intl'` — **IntlProvider** simplified for tests. Always uses `en-US` locale.
+- `'navigation'` — **NavigationContainer** from `@react-navigation/native`.
+- `'services'` — **NativeServicesProvider** with `extraDependenciesNativeMock.services`.
+- `'formatter'` — **FormatterProvider** with `locale: 'en'` and `baseCurrency: 'usd'` (override via `formattersConfig`).
+- `'bottomSheet'` — **BottomSheetModalProvider**.
+
+Pick the smallest list that makes the component under test render. Leaving providers out keeps the test fast, because
+each opt-in provider pulls in its module graph at import time.
+
+If you need the full stack, import `ALL_PROVIDERS` and pass it as the `providers` option.
 
 #### Usage example
 
 Basic usage
 
 ```tsx
-import { renderWithBasicProvider, userEvent } from '@suite-native/test-utils';
+import { renderWithProviders, userEvent } from '@suite-native/test-utils';
 
 describe('Counter', () => {
     it('should start with 0 value', () => {
-        const { getByLabelText } = renderWithBasicProvider(<Counter />);
+        const { getByLabelText } = renderWithProviders(<Counter />, { providers: ['intl'] });
 
         expect(getByLabelText('Counter value')).toHaveTextContent('0');
     });
 
     it('should increment value on button press', async () => {
-        const { getByLabelText, getByText } = renderWithBasicProvider(<Counter />);
+        const { getByLabelText, getByText } = renderWithProviders(<Counter />, {
+            providers: ['intl'],
+        });
 
         await userEvent.press(getByText('+'));
 
@@ -60,8 +72,8 @@ describe('Counter', () => {
 
 ### Using renderWithStoreProvider
 
-`renderWithStoreProvider` is a custom utility that provides all the context providers from `renderWithBasicProvider`
-plus:
+`renderWithStoreProvider` is a custom utility that provides all the context providers from `renderWithProviders` (with
+the full `ALL_PROVIDERS` stack) plus:
 
 - **Redux store provider**
 - Formatters config is now loaded from store instead of being hardcoded.
@@ -154,7 +166,7 @@ describe('Counter', () => {
 
 #### Injecting custom providers
 
-To inject custom provider, you can use `wrapper` option of either `render`, `renderWithBasicProvider` or
+To inject custom provider, you can use `wrapper` option of either `render`, `renderWithProviders` or
 `renderWithStoreProvider`.
 
 ```tsx
@@ -162,7 +174,8 @@ const renderCounterA = () =>
     renderWithStoreProvider(<Counter />, { store, wrapper: MyCustomProvider });
 
 const renderCounterB = () =>
-    renderWithBasicProvider(<Counter />, {
+    renderWithProviders(<Counter />, {
+        providers: ['intl'],
         wrapper: ({ children }) => (
             <MyCustomProvider someProp={someValue}>{children}</MyCustomProvider>
         ),
@@ -174,8 +187,8 @@ const renderCounterB = () =>
 ```mermaid
 flowchart TD
     A{{Do you need redux store?}} -- Yes --> B[Use 'renderHookWithStoreProvider']
-    A -- No --> C{{Do you need any other provider? Such as theme, formatters, etc.}}
-    C -- Yes --> D[Use 'renderHookWithBasicProvider']
+    A -- No --> C{{Do you need any other provider? Such as intl, navigation, etc.}}
+    C -- Yes --> D[Use 'renderHookWithProviders' with the needed providers]
     C -- No --> F[Use 'renderHook']
 ```
 
@@ -186,18 +199,19 @@ the [official documentation](https://testing-library.com/docs/react-native-testi
 
 You should use it when your hook does not depend on any context providers.
 
-### Using renderHookWithBasicProvider
+### Using renderHookWithProviders
 
-`renderHookWithBasicProvider` is a custom utility that provides the same context providers as `renderWithBasicProvider`.
-For more information, please refer to the section about `renderWithBasicProvider`.
+`renderHookWithProviders` is a custom utility that provides the same composable provider stack as `renderWithProviders`.
+For more information, please refer to the section about `renderWithProviders`.
 
 #### Usage example
 
 ```ts
-import { act, renderHookWithBasicProvider } from '@suite-native/test-utils';
+import { act, renderHookWithProviders } from '@suite-native/test-utils';
 
 describe('useCounter', () => {
-    const renderUseCounter = () => renderHookWithBasicProvider(() => useCounter());
+    const renderUseCounter = () =>
+        renderHookWithProviders(() => useCounter(), { providers: ['intl'] });
 
     it('should initialize with count 0', () => {
         const { result } = renderUseCounter();
@@ -274,7 +288,7 @@ describe('useCounter', () => {
 
 #### Injecting custom providers
 
-To inject custom provider, you can use `wrapper` option of either `renderHook`, `renderHookWithBasicProvider` or
+To inject custom provider, you can use `wrapper` option of either `renderHook`, `renderHookWithProviders` or
 `renderHookWithStoreProvider`.
 
 ```tsx
@@ -282,7 +296,8 @@ const renderUseCounterA = () =>
     renderHookWithStoreProvider(() => useCounter(), { store, wrapper: MyCustomProvider });
 
 const renderUseCounterB = () =>
-    renderHookWithBasicProvider(() => useCounter(), {
+    renderHookWithProviders(() => useCounter(), {
+        providers: ['intl'],
         wrapper: ({ children }) => (
             <MyCustomProvider someProp={someValue}>{children}</MyCustomProvider>
         ),

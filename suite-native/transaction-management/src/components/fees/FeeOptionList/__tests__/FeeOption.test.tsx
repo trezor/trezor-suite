@@ -82,6 +82,7 @@ describe('FeeOption', () => {
             {
                 store,
                 preloadedState: getPreloadedState(),
+                providers: ['intl', 'formatter'],
             },
         );
     };

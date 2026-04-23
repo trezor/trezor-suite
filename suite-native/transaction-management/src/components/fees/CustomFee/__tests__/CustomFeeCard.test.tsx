@@ -33,6 +33,7 @@ describe('CustomFeeCard', () => {
                 }),
             {
                 preloadedState: defaultState,
+                providers: ['intl'],
             },
         );
 
@@ -50,6 +51,7 @@ describe('CustomFeeCard', () => {
 
         return renderWithStoreProvider(<CustomFeeCard {...finalProps} />, {
             preloadedState: defaultState,
+            providers: ['intl', 'formatter'],
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
     };

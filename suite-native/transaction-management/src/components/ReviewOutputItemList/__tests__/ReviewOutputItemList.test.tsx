@@ -34,7 +34,10 @@ describe('ReviewOutputItemList', () => {
                 }
                 {...props}
             />,
-            { preloadedState: { wallet: getWalletState() } },
+            {
+                preloadedState: { wallet: getWalletState() },
+                providers: ['intl', 'formatter'],
+            },
         );
 
     beforeEach(() => {

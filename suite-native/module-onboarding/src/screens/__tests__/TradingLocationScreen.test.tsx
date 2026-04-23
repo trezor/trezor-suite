@@ -41,6 +41,7 @@ const defaultMessageSystem = {
 describe('TradingLocationOnboardingScreen', () => {
     const renderTradingLocationScreen = () =>
         renderWithStoreProvider(<TradingLocationScreen />, {
+            providers: ['intl', 'navigation', 'bottomSheet'],
             preloadedState: {
                 messageSystem: defaultMessageSystem,
                 wallet: {

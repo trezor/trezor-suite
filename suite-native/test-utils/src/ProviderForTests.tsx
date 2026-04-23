@@ -80,17 +80,3 @@ export const ProviderForTests = ({
 
     return <SafeAreaProvider>{tree}</SafeAreaProvider>;
 };
-
-type BasicProviderForTestsProps = {
-    children: ReactNode;
-    formattersConfig?: FormatterProviderConfig;
-};
-
-export const BasicProviderForTests = ({
-    children,
-    formattersConfig,
-}: BasicProviderForTestsProps) => (
-    <ProviderForTests providers={ALL_PROVIDERS} formattersConfig={formattersConfig}>
-        {children}
-    </ProviderForTests>
-);

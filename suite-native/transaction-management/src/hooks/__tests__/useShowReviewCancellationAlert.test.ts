@@ -25,7 +25,10 @@ describe('useShowReviewCancellationAlert', () => {
     let store: TestStore;
 
     const renderUseShowReviewCancellationAlert = () =>
-        renderHookWithStoreProvider(() => useShowReviewCancellationAlert(), { store });
+        renderHookWithStoreProvider(() => useShowReviewCancellationAlert(), {
+            store,
+            providers: [],
+        });
 
     beforeEach(() => {
         mockShowAlert.mockClear();

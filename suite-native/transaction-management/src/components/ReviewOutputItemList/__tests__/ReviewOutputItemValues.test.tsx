@@ -25,6 +25,7 @@ describe('ReviewOutputItemValues', () => {
             />,
             {
                 preloadedState,
+                providers: ['intl', 'formatter'],
             },
         );
 

@@ -7,6 +7,7 @@ describe('TokenAmountFormatter', () => {
     const renderTokenAmountFormatter = (props: Partial<TokenAmountFormatterProps>) =>
         renderWithStoreProvider(
             <TokenAmountFormatter tokenSymbol={'USDC' as TokenSymbol} value="1234.56" {...props} />,
+            { providers: ['intl', 'formatter'] },
         );
 
     it('should render formatted value', () => {

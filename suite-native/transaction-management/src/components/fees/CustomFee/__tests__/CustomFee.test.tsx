@@ -51,6 +51,7 @@ describe('CustomFee', () => {
                 }),
             {
                 preloadedState: defaultState,
+                providers: ['intl'],
             },
         );
 
@@ -84,6 +85,7 @@ describe('CustomFee', () => {
 
         return renderWithStoreProvider(<CustomFee {...finalProps} />, {
             preloadedState: defaultState,
+            providers: ['intl', 'formatter', 'bottomSheet'],
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
     };

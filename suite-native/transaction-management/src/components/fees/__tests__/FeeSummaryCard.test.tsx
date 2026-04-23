@@ -20,6 +20,7 @@ describe('FeeSummaryCard', () => {
     const renderCard = (props: Partial<typeof defaultProps> = {}) =>
         renderWithStoreProvider(<FeeSummaryCard {...defaultProps} {...props} />, {
             preloadedState: getPreloadedState(),
+            providers: ['intl', 'formatter'],
         });
 
     it('should render fee label for bitcoin', () => {

@@ -45,6 +45,7 @@ describe('CustomFeeInputs', () => {
             {
                 store,
                 preloadedState: defaultState,
+                providers: ['intl'],
             },
         );
 
@@ -63,6 +64,7 @@ describe('CustomFeeInputs', () => {
         return renderWithStoreProvider(<CustomFeeInputs {...finalProps} />, {
             preloadedState: defaultState,
             store,
+            providers: ['intl', 'formatter'],
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
     };

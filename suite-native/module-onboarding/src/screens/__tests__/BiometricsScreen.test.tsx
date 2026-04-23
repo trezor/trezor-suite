@@ -49,7 +49,7 @@ describe('BiometricsScreen', () => {
                 }
                 route={mockRoute}
             />,
-            { store },
+            { providers: ['intl', 'navigation'], store },
         );
 
     beforeEach(() => {

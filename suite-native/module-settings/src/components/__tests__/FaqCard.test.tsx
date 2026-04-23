@@ -22,6 +22,7 @@ const defaultPreloadedState = {
 describe('FaqCard', () => {
     const renderFaqCard = (preloadedState = {}) =>
         renderWithStoreProvider(<FaqCard />, {
+            providers: ['intl'],
             preloadedState: { ...defaultPreloadedState, ...preloadedState },
         });
 

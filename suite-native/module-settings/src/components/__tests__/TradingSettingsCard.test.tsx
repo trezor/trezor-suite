@@ -13,7 +13,9 @@ jest.mock('@suite-native/trading-state', () => ({
 
 describe('TradingSettingsCard', () => {
     const renderTradingSettingsCard = (props: Partial<TradingSettingsCardProps> = {}) =>
-        renderWithStoreProvider(<TradingSettingsCard onPress={jest.fn()} {...props} />);
+        renderWithStoreProvider(<TradingSettingsCard onPress={jest.fn()} {...props} />, {
+            providers: ['intl'],
+        });
 
     beforeEach(() => {
         mockIsTradingCountrySet = false;

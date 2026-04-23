@@ -30,7 +30,10 @@ describe('useExitOnboardingFlow', () => {
     let store: TestStore;
 
     const renderUseExitOnboardingFlow = () =>
-        renderHookWithStoreProvider(() => useExitOnboardingFlow(), { store });
+        renderHookWithStoreProvider(() => useExitOnboardingFlow(), {
+            providers: [],
+            store,
+        });
 
     beforeEach(() => {
         store = createLightStore({

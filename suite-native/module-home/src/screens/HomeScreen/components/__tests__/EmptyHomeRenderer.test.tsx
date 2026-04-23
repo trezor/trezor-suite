@@ -14,6 +14,7 @@ const defaultMessageSystem = {
 describe('EmptyHomeRenderer', () => {
     const renderEmptyHomeRenderer = (preloadedState: Record<string, unknown>) =>
         renderWithStoreProvider(<EmptyHomeRenderer />, {
+            providers: ['intl', 'navigation'],
             preloadedState: { messageSystem: defaultMessageSystem, ...preloadedState },
         });
 

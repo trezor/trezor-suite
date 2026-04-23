@@ -36,6 +36,7 @@ const baseState = {
 describe('AppTabNavigator', () => {
     const renderTabs = (overrides: Record<string, unknown> = {}) =>
         renderWithStoreProvider(<AppTabNavigator />, {
+            providers: ['intl', 'navigation'],
             preloadedState: mergePreloadedState(baseState, overrides),
         });
 

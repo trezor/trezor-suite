@@ -89,6 +89,7 @@ describe('useAddressValidationAlerts', () => {
         const result = renderHookWithStoreProvider(
             () => useAddressValidationAlerts({ inputIndex }),
             {
+                providers: [],
                 preloadedState,
                 wrapper: ({ children }) => (
                     <Form form={{ setValue: mockSetValue, watch: mockWatch } as any}>

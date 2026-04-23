@@ -9,7 +9,8 @@ jest.mock('@suite-native/trading-state', () => ({
 }));
 
 describe('GeneralSettings', () => {
-    const renderGeneralSettings = () => renderWithStoreProvider(<GeneralSettings />);
+    const renderGeneralSettings = () =>
+        renderWithStoreProvider(<GeneralSettings />, { providers: ['intl', 'navigation'] });
 
     beforeEach(() => {
         jest.clearAllMocks();

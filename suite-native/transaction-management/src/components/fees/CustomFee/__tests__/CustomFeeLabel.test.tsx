@@ -26,6 +26,7 @@ describe('CustomFeeLabel', () => {
                 }),
             {
                 preloadedState: defaultState,
+                providers: ['intl'],
             },
         );
 
@@ -41,6 +42,7 @@ describe('CustomFeeLabel', () => {
     }) =>
         renderWithStoreProvider(<CustomFeeLabel networkType={networkType} />, {
             preloadedState: defaultState,
+            providers: ['intl', 'formatter'],
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 

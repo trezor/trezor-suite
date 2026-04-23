@@ -65,6 +65,7 @@ describe('FeesContent', () => {
             </TestFormWrapper>,
             {
                 preloadedState: getPreloadedState(),
+                providers: ['intl', 'formatter', 'bottomSheet'],
             },
         );
     };
