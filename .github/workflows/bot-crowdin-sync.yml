@@ -28,6 +28,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
+      - name: Verify workflow file matches develop
+        if: github.ref != 'refs/heads/develop'
+        run: |
+          git fetch --depth=1 origin develop
+          if ! git diff --exit-code origin/develop -- .github/workflows/bot-crowdin-sync.yml; then
+            echo "::error::.github/workflows/bot-crowdin-sync.yml on '${GITHUB_REF#refs/heads/}' differs from the version on develop. Sync this branch with develop's workflow file before re-running."
+            exit 1
+          fi
+
       - name: Setup node
         uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
         with:
