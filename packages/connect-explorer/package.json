@@ -14,7 +14,7 @@
     "dependencies": {
         "@codemirror/state": "^6.6.0",
         "@hbsnow/rehype-sectionize": "^1.0.7",
-        "@sinclair/typebox": "^0.33.12",
+        "@sinclair/typebox": "^0.34.49",
         "@trezor/components": "workspace:^",
         "@trezor/connect-common": "workspace:^",
         "@trezor/connect-explorer-theme": "workspace:^",

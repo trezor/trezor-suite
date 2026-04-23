@@ -35,12 +35,12 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "devDependencies": {
-        "@sinclair/typebox-codegen": "^0.10.4",
+        "@sinclair/typebox-codegen": "^0.11.1",
         "@trezor/eslint": "workspace:*",
         "ts-node": "^10.9.2"
     },
     "dependencies": {
-        "@sinclair/typebox": "^0.33.12",
+        "@sinclair/typebox": "^0.34.49",
         "@trezor/type-utils": "workspace:*",
         "ts-mixer": "^6.0.4"
     },
