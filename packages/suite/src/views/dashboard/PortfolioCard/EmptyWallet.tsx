@@ -2,9 +2,16 @@ import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
-import { Button, Column, H3, Illustration, Paragraph, Row, Text } from '@trezor/components';
-import { CoinLogo } from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
+import {
+    type Button,
+    type Column,
+    type H3,
+    type Illustration,
+    type Paragraph,
+    type Row,
+    type Text,
+} from '@trezor/components';
+import { type CoinLogo } from '@trezor/product-components';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
@@ -35,27 +42,27 @@ export const EmptyWallet = () => {
     };
 
     return (
-        <Column gap={spacings.xxs} data-testid="@dashboard/wallet-ready" alignItems="center">
+        <Column gap={4} data-testid="@dashboard/wallet-ready" alignItems="center">
             <Illustration name="assetsGet" width={224} />
-            <H3 margin={{ top: spacings.md }}>
+            <H3 margin={{ top: 16 }}>
                 <Translation id="TR_YOUR_WALLET_IS_READY_WHAT" />
             </H3>
             <Text intent="neutral" priority="secondary" typographyStyle="body-sm">
                 <Translation id="TR_DASHBOARD_EMPTY_WALLET_DESC" />
             </Text>
             {enabledNetworks.length > 0 && (
-                <Row gap={spacings.xs} flexWrap="wrap" margin={{ top: spacings.sm }}>
+                <Row gap={8} flexWrap="wrap" margin={{ top: 12 }}>
                     <Paragraph intent="neutral" priority="secondary" typographyStyle="body-sm">
                         <Translation id="TR_READY_ON" />:
                     </Paragraph>
-                    <Row gap={spacings.xxs} flexWrap="wrap">
+                    <Row gap={4} flexWrap="wrap">
                         {enabledNetworks.map(network => (
                             <CoinLogo key={network} symbol={network} size={16} />
                         ))}
                     </Row>
                 </Row>
             )}
-            <Row gap={spacings.sm} margin={{ top: spacings.md }}>
+            <Row gap={12} margin={{ top: 16 }}>
                 <Button
                     intent="brand"
                     iconLeft="currencyCircleDollar"

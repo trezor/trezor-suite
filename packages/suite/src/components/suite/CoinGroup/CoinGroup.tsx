@@ -17,9 +17,16 @@ type CoinGroupProps = {
     enabledNetworks?: NetworkSymbol[];
     onToggle?: CoinListProps['onToggle'];
     onSettings?: (symbol: NetworkSymbol) => void;
+    ignoreDeviceLock?: boolean;
 };
 
-export const CoinGroup = ({ networks, enabledNetworks, onToggle, onSettings }: CoinGroupProps) => {
+export const CoinGroup = ({
+    networks,
+    enabledNetworks,
+    onToggle,
+    onSettings,
+    ignoreDeviceLock,
+}: CoinGroupProps) => {
     const [settingsMode, setSettingsMode] = useState(false);
 
     const dispatch = useDispatch();
@@ -60,6 +67,7 @@ export const CoinGroup = ({ networks, enabledNetworks, onToggle, onSettings }: C
                 settingsMode={settingsMode}
                 onToggle={settingsMode ? handleSettings : handleToggle}
                 onSettings={settingsMode ? undefined : handleSettings}
+                ignoreDeviceLock={ignoreDeviceLock}
             />
         </Column>
     );
