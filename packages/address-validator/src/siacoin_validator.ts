@@ -1,6 +1,4 @@
 /* eslint-disable import/no-default-export */
-import isEqual from 'lodash/isEqual';
-
 import * as cryptoUtils from './crypto/utils';
 import { addressType } from './crypto/utils';
 
@@ -17,7 +15,7 @@ const validator = {
         const check = address.slice(32 * 2, 38 * 2);
         const blakeHash = cryptoUtils.blake2b(checksumBytes, 32).slice(0, 6 * 2);
 
-        return isEqual(blakeHash, check);
+        return blakeHash === check;
     },
 
     getAddressType(address: string, _currency?: any, _networkType?: string) {
