@@ -16499,7 +16499,7 @@ __metadata:
     electron: "npm:41.0.4"
     electron-builder: "npm:26.8.1"
     openpgp: "npm:^6.3.0"
-    usb: "npm:^2.15.0"
+    usb: "npm:^2.17.0"
   languageName: unknown
   linkType: soft
 
@@ -16816,7 +16816,7 @@ __metadata:
     react-intl: "npm:^8.1.3"
     rimraf: "npm:^6.1.2"
     styled-components: "npm:^6.3.9"
-    usb: "npm:^2.15.0"
+    usb: "npm:^2.17.0"
     webpack: "npm:5.105.4"
   languageName: unknown
   linkType: soft
@@ -16857,7 +16857,7 @@ __metadata:
     jest: "npm:29.7.0"
     jest-extended: "npm:^4.0.2"
     ts-node: "npm:^10.9.2"
-    usb: "npm:^2.15.0"
+    usb: "npm:^2.17.0"
   languageName: unknown
   linkType: soft
 
@@ -16878,7 +16878,7 @@ __metadata:
     "@types/w3c-web-usb": "npm:^1.0.14"
     cross-fetch: "npm:^4.1.0"
     jest: "npm:29.7.0"
-    usb: "npm:^2.15.0"
+    usb: "npm:^2.17.0"
   peerDependencies:
     tslib: ^2.6.2
   languageName: unknown
@@ -46140,15 +46140,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"usb@npm:^2.15.0":
-  version: 2.15.0
-  resolution: "usb@npm:2.15.0"
+"usb@npm:^2.17.0":
+  version: 2.17.0
+  resolution: "usb@npm:2.17.0"
   dependencies:
     "@types/w3c-web-usb": "npm:^1.0.6"
     node-addon-api: "npm:^8.0.0"
     node-gyp: "npm:latest"
     node-gyp-build: "npm:^4.5.0"
-  checksum: 10/fc344ab8bb0e3f46f7e83e51b6ad1b170d923c35bb42c64784d92787f7e5ae129aa36181c8d0298a4e50f03a1e3243c4cf87825b11dbeac9ab996332798ba2a6
+  checksum: 10/464585012a384fc0a199d0401e1f4966256afb807c1dd09b0f30b829f46516a9529cf0724961193cf4f13f2e9622f349544503e7e830340c8234eb67524a7e21
   languageName: node
   linkType: hard
 
