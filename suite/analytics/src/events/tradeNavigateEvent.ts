@@ -8,6 +8,7 @@ type Attributes = {
     from: AttributeDef<
         | 'dashboard/header'
         | 'dashboard/assets'
+        | 'dashboard/empty-wallet'
         | 'dashboard/staking-dashboard'
         | 'account/header'
         | 'account/tokens'
@@ -32,7 +33,10 @@ export const tradeNavigateEvent: EventDef<Attributes, EventType.TradeNavigate> =
             changelog: [{ version: '25.5.2', notes: 'added' }],
         },
         from: {
-            changelog: [{ version: '25.5.2', notes: 'added' }],
+            changelog: [
+                { version: '25.5.2', notes: 'added' },
+                { version: '26.3.0', notes: 'added `dashboard/empty-wallet` value' },
+            ],
         },
         networkSymbol: {
             changelog: [{ version: '25.5.2', notes: 'added' }],

@@ -1,3 +1,4 @@
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
@@ -6,15 +7,32 @@ import { CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 export const EmptyWallet = () => {
     const dispatch = useDispatch();
+    const analytics = useAnalytics();
     const enabledNetworks = useSelector(selectEnabledNetworks);
 
-    const handleReceive = () =>
+    const handleReceive = () => {
+        analytics.report({
+            type: events.dashboardReceiveModalEvent.name,
+            payload: { source: 'empty-wallet' },
+        });
         dispatch(goto({ routeName: 'suite-index', params: { modal: 'receive' } }));
+    };
 
-    const handleBuy = () => dispatch(goto({ routeName: 'wallet-trading-buy' }));
+    const handleBuy = () => {
+        analytics.report({
+            type: events.tradeNavigateEvent.name,
+            payload: {
+                action: 'navigate',
+                type: 'buy',
+                from: 'dashboard/empty-wallet',
+            },
+        });
+        dispatch(goto({ routeName: 'wallet-trading-buy' }));
+    };
 
     return (
         <Column gap={spacings.xxs} data-testid="@dashboard/wallet-ready" alignItems="center">
