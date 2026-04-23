@@ -12,7 +12,7 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@codemirror/state": "^6.4.1",
+        "@codemirror/state": "^6.6.0",
         "@hbsnow/rehype-sectionize": "^1.0.7",
         "@sinclair/typebox": "^0.33.12",
         "@trezor/components": "workspace:^",
@@ -26,7 +26,7 @@
         "@trezor/theme": "workspace:^",
         "@trezor/urls": "workspace:^",
         "@uiw/react-codemirror": "^4.23.0",
-        "codemirror-json-schema": "^0.7.8",
+        "codemirror-json-schema": "^0.8.1",
         "codemirror-json5": "^1.0.3",
         "json5": "^2.2.3",
         "next": "15.5.14",
