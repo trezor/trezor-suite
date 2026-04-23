@@ -20,7 +20,6 @@
 @types/jws
 @types/lodash
 @types/node
-@types/node-fetch
 @types/semver
 @types/sharedworker
 @types/w3c-web-usb
