@@ -42,7 +42,7 @@ export const FiatCurrencyButton = ({ currency, onPress, testID }: FiatCurrencyBu
             accessibilityLabel={translate('moduleTrading.selectFiat.buttonTitle')}
             testID={testID}
         >
-            <FiatCurrencyIcon size="extraSmall" />
+            <FiatCurrencyIcon size="extraSmall" value={currency} />
             <Text variant="body-sm-strong" color="contentPrimary" testID={tickerTestID}>
                 {displayCurrency}
             </Text>

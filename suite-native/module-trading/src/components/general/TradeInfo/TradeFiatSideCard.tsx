@@ -1,5 +1,7 @@
 import { type ReactNode } from 'react';
 
+import { type FiatCurrencyCode } from 'invity-api';
+
 import { Card, HStack, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { TradeInfoHeader, TradeInfoRow } from '@suite-native/trading-atoms';
@@ -11,6 +13,7 @@ export type TradeFiatSideCardProps = {
     paymentMethod: ExtendedSellCryptoPaymentMethod;
     amount: ReactNode;
     title: ReactNode;
+    fiatCurrency: FiatCurrencyCode;
 };
 const paymentMethodNamesMap: Record<ExtendedSellCryptoPaymentMethod, ReactNode> = {
     bankTransfer: (
@@ -39,7 +42,12 @@ const getPaymentMethodTranslation = (paymentMethod: ExtendedSellCryptoPaymentMet
     return paymentMethod;
 };
 
-export const TradeFiatSideCard = ({ paymentMethod, amount, title }: TradeFiatSideCardProps) => (
+export const TradeFiatSideCard = ({
+    paymentMethod,
+    amount,
+    title,
+    fiatCurrency,
+}: TradeFiatSideCardProps) => (
     <Card noPadding>
         <TradeInfoHeader
             title={title}
@@ -49,7 +57,7 @@ export const TradeFiatSideCard = ({ paymentMethod, amount, title }: TradeFiatSid
         />
         <TradeInfoRow>
             <HStack alignItems="center">
-                <FiatCurrencyIcon size="small" />
+                <FiatCurrencyIcon size="extraSmall" value={fiatCurrency} />
                 <VStack spacing="sp2">{amount}</VStack>
             </HStack>
         </TradeInfoRow>

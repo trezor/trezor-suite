@@ -1,4 +1,4 @@
-import type { SellFiatTrade } from 'invity-api';
+import type { FiatCurrencyCode, SellFiatTrade } from 'invity-api';
 
 import { Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
@@ -19,6 +19,7 @@ export const SellToFiatTradePreviewCard = ({ quote }: SellToFiatTradePreviewCard
 
     return (
         <TradeFiatSideCard
+            fiatCurrency={quote.fiatCurrency as FiatCurrencyCode}
             paymentMethod={quote.paymentMethod}
             amount={
                 !!toStringValue && (
