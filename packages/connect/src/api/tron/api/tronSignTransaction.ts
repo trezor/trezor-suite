@@ -13,7 +13,8 @@ import { Assert } from '@trezor/schema-utils';
 import type { MethodMessage, MethodPermission } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { validatePath } from '../../../utils/pathUtils';
-import { encodeBroadcastTransaction, encodeTronContractRawData } from '../tronEncode';
+import { encodeTronContractRawData } from '../tronEncode';
+import { encodeBroadcastTransaction } from '../tronProtobuf';
 
 // Transform official Tron field names to protobuf field names.
 const transformContract = (input: TronContractInput): TronContracts => {
