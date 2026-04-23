@@ -11,7 +11,7 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@blockaid/client": "^0.56.0",
+        "@blockaid/client": "^0.65.0",
         "@suite-common/react-query": "workspace:^",
         "@suite-common/wallet-config": "workspace:^",
         "@suite-common/wallet-types": "workspace:*",

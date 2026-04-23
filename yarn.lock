@@ -1814,9 +1814,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@blockaid/client@npm:^0.56.0":
-  version: 0.56.0
-  resolution: "@blockaid/client@npm:0.56.0"
+"@blockaid/client@npm:^0.65.0":
+  version: 0.65.0
+  resolution: "@blockaid/client@npm:0.65.0"
   dependencies:
     "@types/node": "npm:^18.11.18"
     "@types/node-fetch": "npm:^2.6.4"
@@ -1825,7 +1825,7 @@ __metadata:
     form-data-encoder: "npm:1.7.2"
     formdata-node: "npm:^4.3.2"
     node-fetch: "npm:^2.6.7"
-  checksum: 10/dcbf27dc223545ecd88913937942c4880c28b70861b57f1e1c18e831c27457d56988753ba55eb422a2e06e9421f31b79bdf97d513fd6524a1c3d0cbd786bec35
+  checksum: 10/ff8a8197886e50763b707acdd2250e9c6255a77391cff2bd17360919bc5c5b7962bd9795ee2868cdf33a36febdbcc52508b530605b67c5dc5f2a4fdb56b2aee4
   languageName: node
   linkType: hard
 
@@ -11697,7 +11697,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/tx-simulation@workspace:suite-common/tx-simulation"
   dependencies:
-    "@blockaid/client": "npm:^0.56.0"
+    "@blockaid/client": "npm:^0.65.0"
     "@suite-common/react-query": "workspace:^"
     "@suite-common/wallet-config": "workspace:^"
     "@suite-common/wallet-types": "workspace:*"
