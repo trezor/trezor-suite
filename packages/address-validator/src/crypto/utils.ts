@@ -1,6 +1,6 @@
 import BigNum from 'browserify-bignum';
 import groestl from 'groestl-hash-js';
-import jsSHA from 'jssha/src/sha256';
+import jsSHA from 'jssha';
 
 import * as base32Module from './base32';
 import { decode as base58Decode } from './base58';

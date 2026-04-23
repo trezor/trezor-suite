@@ -29,7 +29,6 @@ const REQUIRED_SCRIPTS: Record<string, RequiredScriptConfig> = {
     'type-check': {
         command: /^yarn g:tsc --build.*$/,
         ignoredPackages: [
-            '@trezor/address-validator',
             '@trezor/suite-desktop',
             'connect-example-electron-main',
             'connect-mobile-example',

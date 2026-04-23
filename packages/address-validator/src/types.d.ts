@@ -1,4 +1,4 @@
 declare module 'crc';
 declare module 'browserify-bignum';
 declare module 'groestl-hash-js';
-declare module 'jssha/src/sha256';
+declare module 'jssha';
