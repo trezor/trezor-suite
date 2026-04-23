@@ -2,7 +2,16 @@ import { Platform, Pressable } from 'react-native';
 import { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { type TradingCountryOption } from '@suite-common/trading';
-import { AnimatedBox, Box, Card, HStack, Radio, Text } from '@suite-native/atoms';
+import {
+    AnimatedBox,
+    Box,
+    Card,
+    Flag,
+    HStack,
+    Radio,
+    Text,
+    getCountryFlag,
+} from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 export type CountryListItemProps = {
@@ -14,19 +23,9 @@ const wrapperStyle = prepareNativeStyle(({ spacings }) => ({
     marginVertical: spacings.sp4,
 }));
 
-const flagStyle = prepareNativeStyle(() => ({
-    fontSize: 20,
-    lineHeight: 24,
-}));
-
-export const CountryListItem = ({
-    name,
-    flag,
-    onPress,
-    value,
-    isSelected,
-}: CountryListItemProps) => {
+export const CountryListItem = ({ name, onPress, value, isSelected }: CountryListItemProps) => {
     const { applyStyle } = useNativeStyles();
+    const countryFlag = getCountryFlag(value);
     // on android fade animation looks ugly on view with shadows, but without animation it looks even worse
     // do not display shadow on android and keep animating
     const noShadow = Platform.OS === 'android';
@@ -37,13 +36,7 @@ export const CountryListItem = ({
                 <Card noShadow={noShadow}>
                     <HStack alignItems="center" justifyContent="space-between">
                         <Box flex={0}>
-                            <Text
-                                variant="body-md"
-                                color="contentPrimary"
-                                style={applyStyle(flagStyle)}
-                            >
-                                {flag}
-                            </Text>
+                            {countryFlag && <Flag country={countryFlag} size={20} />}
                         </Box>
                         <Box flex={1}>
                             <Text variant="body-md" color="contentPrimary">
