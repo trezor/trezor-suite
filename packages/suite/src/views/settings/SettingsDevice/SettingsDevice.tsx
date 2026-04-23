@@ -27,6 +27,7 @@ import { Brightness } from './Brightness';
 import { ChangeLanguage } from './ChangeLanguage';
 import { ChangePin } from './ChangePin';
 import { CheckRecoverySeed } from './CheckRecoverySeed';
+import { CreateWalletBackup } from './CreateWalletBackup';
 import { CustomFirmware } from './CustomFirmware';
 import { DeviceAuthenticityOptOut } from './DeviceAuthenticityOptOut';
 import { DeviceLabel } from './DeviceLabel';
@@ -167,6 +168,7 @@ export const SettingsDevice = () => {
                             <BackupRecoverySeed isDeviceLocked={isDeviceLocked} />
                             <MultiShareBackup isDeviceLocked={isDeviceLocked} />
                             <CheckRecoverySeed isDeviceLocked={isDeviceLocked} />
+                            <CreateWalletBackup isDeviceLocked={isDeviceLocked} />
                         </>
                     )}
                 </SettingsSection>

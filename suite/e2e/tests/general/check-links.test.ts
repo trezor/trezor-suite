@@ -135,6 +135,7 @@ const SECTIONS = {
         '/firmware-type',
         '/firmware-custom',
         '/create-multi-share-backup',
+        '/create-wallet-backup',
     ],
     settings: [
         '/settings',

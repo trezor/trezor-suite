@@ -211,6 +211,13 @@ export const routes = [
         params: modalAppParams,
     },
     {
+        name: 'create-wallet-backup',
+        pattern: '/create-wallet-backup',
+        app: 'create-wallet-backup',
+        isForegroundApp: true,
+        params: modalAppParams,
+    },
+    {
         name: 'wallet-index',
         pattern: '/accounts',
         app: 'wallet',
