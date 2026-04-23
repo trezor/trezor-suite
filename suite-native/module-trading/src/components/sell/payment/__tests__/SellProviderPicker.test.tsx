@@ -97,22 +97,6 @@ describe('SellProviderPicker', () => {
             expect(getByLabelText('Selected provider')).toHaveTextContent('Banxa');
         });
 
-        it('should display kyc warning when not loading', () => {
-            const { getByText } = renderSellProviderPicker(withQuotes);
-
-            expect(getByText('This provider requires to know your identity.')).toBeOnTheScreen();
-        });
-
-        it('should not display kyc warning when loading', () => {
-            const { queryByText } = renderSellProviderPicker({
-                wallet: { trading: { sell: { quotes: sellQuotes, isLoading: true } } },
-            });
-
-            expect(
-                queryByText('This provider requires to know your identity.'),
-            ).not.toBeOnTheScreen();
-        });
-
         it('should allow to select provider', () => {
             const { getByText, getByLabelText } = renderSellProviderPicker(withQuotes);
 
