@@ -1,27 +1,15 @@
 import { type FC, useMemo } from 'react';
 
-import styled from 'styled-components';
-
 import { selectIsInitialRun } from '@suite/flags';
 import { type Route } from '@suite/router';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
-import { type SpacingPxValues, spacingsPx } from '@trezor/theme';
+import { Column } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
 import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
 
 import { NavigationItem, type NavigationItemProps } from './NavigationItem';
 import { NotificationDropdown } from './NotificationDropdown';
-
-export const Nav = styled.nav<{ $isSidebarCollapsed: boolean; $margin: SpacingPxValues }>`
-    display: flex;
-    flex-direction: column;
-    gap: ${spacingsPx.xxs};
-    align-items: stretch;
-
-    ${({ $margin }) => $margin && `margin: ${$margin};`}
-    ${({ $isSidebarCollapsed }) => $isSidebarCollapsed && `align-items: center;`}
-`;
 
 export const SETTINGS_ROUTES: Route['name'][] = [
     'settings-index',
@@ -33,10 +21,9 @@ export const SETTINGS_ROUTES: Route['name'][] = [
 
 type NavigationProps = {
     children?: React.ReactNode;
-    margin?: SpacingPxValues;
 };
 
-export const Navigation = ({ children, margin = spacingsPx.xs }: NavigationProps) => {
+export const Navigation = ({ children }: NavigationProps) => {
     const { isSidebarCollapsed } = useResponsiveContext();
 
     const isInitialRun = useSelector(selectIsInitialRun);
@@ -80,13 +67,13 @@ export const Navigation = ({ children, margin = spacingsPx.xs }: NavigationProps
         );
 
     return (
-        <Nav $isSidebarCollapsed={isSidebarCollapsed} $margin={margin}>
+        <Column alignItems={isSidebarCollapsed ? 'center' : 'stretch'} gap={4} margin={8} as="nav">
             {children ?? null}
             {navItems.map(item => {
                 const Component = item.CustomComponent ? item.CustomComponent : NavigationItem;
 
                 return <Component key={item.nameId} {...item} />;
             })}
-        </Nav>
+        </Column>
     );
 };
