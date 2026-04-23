@@ -25,7 +25,7 @@
         "react-dom": "19.2.4"
     },
     "dependencies": {
-        "@headlessui/react": "^2.2.2",
+        "@headlessui/react": "^2.2.10",
         "@trezor/components": "workspace:*",
         "@trezor/product-components": "workspace:*",
         "@trezor/theme": "workspace:*",
