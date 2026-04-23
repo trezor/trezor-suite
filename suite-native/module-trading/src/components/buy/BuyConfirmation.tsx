@@ -29,7 +29,7 @@ export const BuyConfirmation = ({ enteringAnimation }: ConfirmationProps) => {
     const providerInfo = useSelector((state: TradingRootState) =>
         selectTradingProviderByNameAndTradeType(state, quote?.exchange, 'buy'),
     );
-    const providerName = providerInfo?.companyName ?? quote?.exchange ?? '';
+    const providerName = providerInfo?.companyName ?? quote?.exchange;
 
     const { isReceivingInactiveStellarToken, activateButtonElement } =
         useTradingStellarActivateToken({
@@ -49,10 +49,17 @@ export const BuyConfirmation = ({ enteringAnimation }: ConfirmationProps) => {
                               testID={CONFIRMATION_TEST_ID}
                               iconRight="arrowSquareOut"
                           >
-                              <Translation
-                                  id="moduleTrading.tradingScreen.buttons.buyVia"
-                                  values={{ providerName }}
-                              />
+                              {providerName ? (
+                                  <Translation
+                                      id="moduleTrading.tradingScreen.buttons.buyVia"
+                                      values={{ providerName }}
+                                  />
+                              ) : (
+                                  <Translation
+                                      id="moduleTrading.tradingScreen.buttons.continue"
+                                      values={{ providerName }}
+                                  />
+                              )}
                           </Button>
                       </AnimatedBox>
                   )}
