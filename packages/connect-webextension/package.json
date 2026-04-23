@@ -58,7 +58,7 @@
     "devDependencies": {
         "@babel/preset-typescript": "^7.28.5",
         "@trezor/eslint": "workspace:*",
-        "@types/chrome": "^0.0.299",
+        "@types/chrome": "^0.1.40",
         "@types/w3c-web-usb": "^1.0.14",
         "babel-loader": "^10.1.1",
         "rimraf": "^6.1.2",

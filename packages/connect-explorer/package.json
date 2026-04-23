@@ -51,10 +51,10 @@
     },
     "devDependencies": {
         "@trezor/eslint": "workspace:*",
-        "@types/chrome": "^0.0.299",
+        "@types/chrome": "^0.1.40",
         "@types/node": "22.13.10",
         "@types/redux-logger": "^3.0.13",
-        "@types/web": "^0.0.197",
+        "@types/web": "^0.0.345",
         "babel-plugin-styled-components": "^2.1.4",
         "copy-webpack-plugin": "^14.0.0",
         "eslint-plugin-mdx": "^3.7.0",
