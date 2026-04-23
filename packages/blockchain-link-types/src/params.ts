@@ -58,5 +58,5 @@ export interface AccountInfoParams {
         seq: number;
     };
     tokenAccountsPubKeys?: string[]; // solana only, token accounts to fetch txids for
-    includeErc4626?: boolean; // blockbook only, include ERC4626 vault tokens
+    protocols?: string[]; // protocols to include in the response (e.g. 'erc4626')
 }

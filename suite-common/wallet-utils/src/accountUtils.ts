@@ -1182,6 +1182,7 @@ export const prepareNewAccountPayload = async ({
             useEmptyPassphrase: device.useEmptyPassphrase,
         },
         details: 'txs',
+        protocols: network.networkType === 'ethereum' ? ['erc4626'] : undefined,
     });
 
     if (!res.success) return new Error(res.error.message);

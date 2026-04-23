@@ -116,14 +116,14 @@ export const selectDiscoveryAccountsParam = (
         const identity = tryGetAccountIdentity({ networkType, deviceState });
         const bitcoinGap = networkType === 'bitcoin' ? selectGapLimit(state, symbol) : undefined;
 
-        const includeErc4626 = networkType === 'ethereum' ? true : undefined;
+        const protocols = networkType === 'ethereum' ? ['erc4626'] : undefined;
 
         // undiscovered network; discover as a whole
         if (!accounts)
             return {
                 symbol,
                 identity,
-                includeErc4626,
+                protocols,
                 gap: bitcoinGap,
             } as DiscoveryAccountsParam[number];
 
@@ -139,7 +139,7 @@ export const selectDiscoveryAccountsParam = (
         return {
             symbol,
             identity,
-            includeErc4626,
+            protocols,
             known,
             knownOnly,
             gap: bitcoinGap,

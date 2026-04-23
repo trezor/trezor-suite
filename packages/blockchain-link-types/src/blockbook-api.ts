@@ -330,8 +330,10 @@ export interface Token {
     totalReceived?: string;
     /** Total amount of tokens sent. */
     totalSent?: string;
-    /** Data containing information about the ERC4626 vault token. */
-    erc4626?: Erc4626;
+    /** Token protocols (e.g. erc4626). */
+    protocols?: {
+        erc4626?: Erc4626;
+    };
 }
 export interface Address {
     /** Current page index. */
@@ -675,8 +677,8 @@ export interface WsAccountInfoReq {
     secondaryCurrency?: string;
     /** Gap limit for XPUB scanning, if relevant. */
     gap?: number;
-    /** Include ERC4626 vault tokens in the response. */
-    includeErc4626?: boolean;
+    /** Protocols to include in the response (e.g. 'erc4626'). */
+    protocols?: string[];
 }
 export interface WsBackendInfo {
     /** Backend version string. */
