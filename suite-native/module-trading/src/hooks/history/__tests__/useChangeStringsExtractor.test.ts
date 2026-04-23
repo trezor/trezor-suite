@@ -15,6 +15,7 @@ describe('useChangeStringsExtractor', () => {
     const renderUseChangeStringsExtractor = (data: TradingTradeType | undefined) =>
         renderHookWithStoreProvider(() => useChangeStringsExtractor(data), {
             preloadedState: getPreloadedState(),
+            providers: ['formatter', 'intl'],
         });
 
     it('should extract strings for buy trade', () => {

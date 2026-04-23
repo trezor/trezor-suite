@@ -45,7 +45,7 @@ describe('ReceiveAccountPicker', () => {
                 }}
                 {...props}
             />,
-            { store },
+            { store, providers: ['intl'] },
         );
     };
 

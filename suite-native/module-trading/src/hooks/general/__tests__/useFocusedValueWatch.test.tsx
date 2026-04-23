@@ -42,6 +42,7 @@ describe('useFocusedValueWatch', () => {
     const renderForm = () =>
         renderHookWithStoreProvider(() => useBuyForm(), {
             preloadedState,
+            providers: ['intl', 'navigation'],
         });
 
     const renderUseFocusedValueWatch = () =>
@@ -49,6 +50,7 @@ describe('useFocusedValueWatch', () => {
             initialProps: { watch: form.watch },
             store,
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
+            providers: ['intl', 'navigation'],
         });
 
     beforeEach(() => {

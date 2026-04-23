@@ -35,6 +35,7 @@ describe('MaxSlippageForm', () => {
     ) => {
         const ret = renderWithStoreProvider(<MaxSlippageForm onSubmit={jest.fn()} {...props} />, {
             store,
+            providers: ['intl'],
         });
 
         // wait for validators to run

@@ -26,7 +26,10 @@ describe('LastErrorMessage', () => {
     } as const;
 
     const renderLastErrorMessage = (props: LastErrorMessageProps) =>
-        renderWithStoreProvider(<LastErrorMessage {...props} />, { store });
+        renderWithStoreProvider(<LastErrorMessage {...props} />, {
+            store,
+            providers: ['intl'],
+        });
 
     beforeEach(() => {
         store = createLightStore({ reducer });

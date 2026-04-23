@@ -28,8 +28,6 @@ import { useExchangeQuotes } from '../useExchangeQuotes';
 
 const mockReport = jest.fn();
 
-let mockTimeSpent: number;
-
 jest.mock('@trezor/react-utils', () => {
     const originalModule = jest.requireActual('@trezor/react-utils');
 
@@ -72,12 +70,14 @@ describe('useExchangeQuotes', () => {
 
                 return { form };
             },
-            { store },
+            { store, providers: ['intl', 'navigation'] },
         );
 
     beforeEach(() => {
         mockReport.mockClear();
-        mockTimeSpent = 0;
+        (useAnalytics as jest.Mock).mockReturnValue({
+            report: mockReport,
+        });
     });
 
     it('should query quotes once all required data is selected', async () => {

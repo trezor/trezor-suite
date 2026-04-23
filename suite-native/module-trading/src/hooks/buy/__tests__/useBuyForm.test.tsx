@@ -45,7 +45,10 @@ const btc3AccountKey = 'btc-account-3' as AccountKey; // Todo: create properly v
 
 describe('useBuyForm', () => {
     const renderUseTradingBuyForm = (store: TestStore) =>
-        renderHookWithStoreProvider(() => useBuyForm(), { store });
+        renderHookWithStoreProvider(() => useBuyForm(), {
+            store,
+            providers: ['intl', 'navigation', 'formatter'],
+        });
 
     const getInitializedStore = (amountInSats = false) => {
         const tradingState = getInitializedTradingState();

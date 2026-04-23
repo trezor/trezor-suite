@@ -29,7 +29,7 @@ describe('TradeDetailFooter', () => {
 
         const { toJSON } = renderWithStoreProvider(
             <TradeDetailFooter orderId="nonexistent_order_id" />,
-            { preloadedState },
+            { preloadedState, providers: ['intl'] },
         );
 
         expect(toJSON()).toBeNull();
@@ -41,7 +41,7 @@ describe('TradeDetailFooter', () => {
 
         const { getByText } = renderWithStoreProvider(
             <TradeDetailFooter orderId={sellTrade.data.orderId!} />,
-            { preloadedState },
+            { preloadedState, providers: ['intl'] },
         );
 
         fireEvent.press(getByText('Copy'));

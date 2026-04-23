@@ -14,6 +14,7 @@ describe('TradingCoinAmountFormatter', () => {
     ) =>
         renderWithStoreProvider(<TradingCoinAmountFormatter {...props} />, {
             preloadedState: { wallet: getWalletState() },
+            providers: ['intl', 'formatter'],
         });
 
     it('should render formatted value for network', () => {

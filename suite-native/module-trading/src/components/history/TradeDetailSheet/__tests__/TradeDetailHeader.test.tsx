@@ -26,7 +26,7 @@ describe('TradeDetailHeader', () => {
     const renderHeader = (orderId: string, trades: TradingTransaction[] = []) =>
         renderWithTradingProvider(
             <TradeDetailHeader orderId={orderId} onOpenedBrowser={jest.fn()} />,
-            { overrides: createOverrides(trades) },
+            { overrides: createOverrides(trades), providers: ['intl'] },
         );
 
     describe('Trade Not Found', () => {

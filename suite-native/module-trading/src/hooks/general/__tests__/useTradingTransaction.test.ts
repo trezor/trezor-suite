@@ -93,6 +93,7 @@ describe('useTradingTransaction', () => {
     const renderUseTradingTransaction = ({ store }: { store: TestStore }) =>
         renderHookWithTradingProvider(() => useTradingTransaction({ tradeType: 'exchange' }), {
             store,
+            providers: [],
         });
 
     beforeEach(() => {

@@ -35,6 +35,7 @@ describe('TradingTabContent', () => {
                     'trading.restrictions.blacklist': isBlacklisted,
                 }),
             },
+            providers: ['intl', 'navigation'],
         });
 
     const expectDeviceOffline = () => {

@@ -31,12 +31,14 @@ describe('ExchangeSendAmountBadge', () => {
             tradeType: 'exchange',
             overrides: { ...baseOverrides, ...extraOverrides },
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
+            providers: ['intl', 'formatter', 'navigation'],
         });
 
     beforeEach(() => {
         const { result } = renderHookWithTradingProvider(() => useExchangeForm(), {
             tradeType: 'exchange',
             overrides: baseOverrides,
+            providers: ['intl', 'formatter', 'navigation'],
         });
         form = result.current;
     });

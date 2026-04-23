@@ -38,6 +38,7 @@ describe('SellBankAccountPicker', () => {
         renderWithTradingProvider(<SellBankAccountPicker {...props} />, {
             tradeType: 'sell',
             overrides,
+            providers: [],
         });
 
     beforeEach(() => {

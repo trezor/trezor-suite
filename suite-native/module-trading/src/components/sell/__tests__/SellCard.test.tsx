@@ -19,6 +19,7 @@ describe('SellCard', () => {
     const renderForm = () =>
         renderHookWithStoreProvider(() => useSellForm(), {
             preloadedState,
+            providers: ['intl', 'formatter', 'navigation'],
         });
 
     const renderSellCard = (isAmountInputActive: boolean) => {
@@ -32,6 +33,7 @@ describe('SellCard', () => {
         return renderWithStoreProvider(<SellCard isAmountInputActive={isAmountInputActive} />, {
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
             preloadedState: cardPreloadedState,
+            providers: ['intl', 'formatter', 'navigation'],
         });
     };
 

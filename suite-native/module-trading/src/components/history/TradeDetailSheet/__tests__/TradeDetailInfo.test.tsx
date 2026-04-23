@@ -54,7 +54,7 @@ describe('TradeDetailInfo', () => {
 
         const { toJSON } = renderWithStoreProvider(
             <TradeDetailInfo orderId="nonexistent_order_id" />,
-            { preloadedState },
+            { preloadedState, providers: ['intl', 'formatter'] },
         );
 
         expect(toJSON()).toBeNull();
@@ -67,7 +67,7 @@ describe('TradeDetailInfo', () => {
 
         const { getByText } = renderWithStoreProvider(
             <TradeDetailInfo orderId={buyTrade.data.orderId!} />,
-            { preloadedState },
+            { preloadedState, providers: ['intl', 'formatter'] },
         );
 
         expect(getByText('Mercuryo')).toBeTruthy();
@@ -84,7 +84,7 @@ describe('TradeDetailInfo', () => {
 
         const { getByText, queryByText } = renderWithStoreProvider(
             <TradeDetailInfo orderId={exchangeTrade.data.orderId!} />,
-            { preloadedState },
+            { preloadedState, providers: ['intl', 'formatter'] },
         );
 
         expect(getByText(/0[23]\/12\/2025/)).toBeTruthy();

@@ -22,6 +22,7 @@ describe('OriginalLimit', () => {
                     tradeType: 'exchange',
                 }),
             },
+            providers: ['intl', 'formatter'],
         });
 
     beforeEach(() => {

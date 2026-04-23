@@ -22,6 +22,7 @@ describe('TradingStackNavigator', () => {
                     [FeatureFlag.IsTradingBuyEnabled]: true,
                 }),
             },
+            providers: ['intl', 'navigation', 'formatter', 'bottomSheet'],
         });
 
         expect(getByTestId('@screen/Trading')).toBeTruthy();

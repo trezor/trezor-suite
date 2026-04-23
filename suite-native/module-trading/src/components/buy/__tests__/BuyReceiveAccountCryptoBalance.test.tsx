@@ -20,6 +20,7 @@ describe('BuyReceiveAccountCryptoBalance', () => {
     const renderBuyForm = () => {
         const { result } = renderHookWithStoreProvider(() => useBuyForm(), {
             preloadedState,
+            providers: ['intl', 'formatter', 'navigation'],
         });
 
         return result.current;
@@ -29,6 +30,7 @@ describe('BuyReceiveAccountCryptoBalance', () => {
         renderWithStoreProvider(<BuyReceiveAccountCryptoBalance />, {
             preloadedState,
             wrapper: ({ children }) => <Form form={buyForm}>{children}</Form>,
+            providers: ['intl', 'formatter', 'navigation'],
         });
 
     beforeEach(() => {

@@ -57,7 +57,7 @@ describe('useBuyQuotes', () => {
 
                 return form;
             },
-            { store },
+            { store, providers: ['intl', 'navigation'] },
         );
 
     afterEach(() => {

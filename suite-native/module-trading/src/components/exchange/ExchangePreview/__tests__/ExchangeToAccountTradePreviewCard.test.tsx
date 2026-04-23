@@ -29,6 +29,7 @@ describe('ExchangeToAccountTradePreviewCard', () => {
                     },
                 },
             },
+            providers: ['intl', 'formatter'],
         });
 
     it('should render nothing when there is no quote', () => {

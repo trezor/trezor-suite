@@ -19,7 +19,7 @@ describe('ReviewOutputsFooter', () => {
                 testID="TEST_ID"
                 {...props}
             />,
-            { overrides },
+            { overrides, providers: ['intl'] },
         );
 
     it('should display "Send transaction" button', () => {

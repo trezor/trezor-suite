@@ -29,6 +29,7 @@ describe('TradeableAssetFilterTabs', () => {
                 animationDuration={300}
                 onSelectedNetworkFilter={onSelectedNetworkFilter}
             />,
+            { providers: ['intl'] },
         );
 
     it('should render all filter tabs including "All" option', () => {
@@ -46,6 +47,7 @@ describe('TradeableAssetFilterTabs', () => {
                 animationDuration={300}
                 onSelectedNetworkFilter={jest.fn()}
             />,
+            { providers: ['intl'] },
         );
 
         expect(queryByText('All')).toBeNull();

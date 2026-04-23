@@ -39,6 +39,7 @@ describe('ExchangePreviewView', () => {
                         },
                     },
                 },
+                providers: ['intl', 'formatter'],
             },
         );
 

@@ -81,7 +81,7 @@ describe('MyAssetListItem', () => {
     ) =>
         renderWithStoreProvider(
             <MyAssetListItem asset={asset} account={account} onPress={onPress} />,
-            { preloadedState },
+            { preloadedState, providers: ['intl', 'formatter'] },
         );
 
     it('should render with correct labels', () => {

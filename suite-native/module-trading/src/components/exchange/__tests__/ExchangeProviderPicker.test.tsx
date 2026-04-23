@@ -21,6 +21,7 @@ describe('ExchangeProviderPicker', () => {
             />,
             {
                 preloadedState,
+                providers: ['intl'],
             },
         );
 

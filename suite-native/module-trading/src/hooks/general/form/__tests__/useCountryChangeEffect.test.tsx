@@ -26,7 +26,10 @@ describe('useCountryChangeEffect', () => {
     } as const;
 
     const renderUseCountryChangeEffect = (watch: CountryFormWatch) =>
-        renderHookWithStoreProvider(() => useCountryChangeEffect(watch), { store });
+        renderHookWithStoreProvider(() => useCountryChangeEffect(watch), {
+            store,
+            providers: [],
+        });
 
     beforeEach(() => {
         store = createLightStore({ reducer });

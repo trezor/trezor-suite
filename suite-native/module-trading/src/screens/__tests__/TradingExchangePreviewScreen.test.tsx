@@ -136,7 +136,7 @@ describe('TradingExchangePreviewScreen', () => {
                 navigation={createNavigationProps()}
                 route={createRouteProps(isApproved)}
             />,
-            { store: testStore },
+            { store: testStore, providers: ['intl', 'navigation', 'formatter'] },
         );
 
         ({ unmount } = result);

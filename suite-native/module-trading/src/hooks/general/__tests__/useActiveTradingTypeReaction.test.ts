@@ -45,7 +45,10 @@ describe('useActiveTradingTypeReaction', () => {
     } as const;
 
     const renderUseActiveTradingTypeReaction = (store: TestStore) =>
-        renderHookWithStoreProvider(() => useActiveTradingTypeReaction(), { store });
+        renderHookWithStoreProvider(() => useActiveTradingTypeReaction(), {
+            store,
+            providers: [],
+        });
 
     beforeEach(() => {
         castedSelectEnabledTradingTypes.mockReturnValue(['buy', 'exchange', 'sell']);

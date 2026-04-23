@@ -23,7 +23,7 @@ describe('BuyCryptoAmountInput', () => {
             <Form form={form}>
                 <BuyCryptoAmountInput showAssetsSheet={jest.fn()} {...props} />
             </Form>,
-            { overrides },
+            { overrides, providers: ['intl', 'navigation', 'formatter'] },
         );
 
     const renderUseTradingBuyForm = (
@@ -31,6 +31,7 @@ describe('BuyCryptoAmountInput', () => {
     ) => {
         const { result } = renderHookWithTradingProvider(() => useBuyForm(), {
             overrides,
+            providers: ['intl', 'navigation', 'formatter'],
         });
 
         return result.current;

@@ -21,6 +21,7 @@ describe('ApprovalButton', () => {
     const renderApprovalButton = (props: Partial<ApprovalButtonProps>) =>
         renderWithStoreProvider(<ApprovalButton flowType="approve" isReady {...props} />, {
             store,
+            providers: ['intl'],
         });
 
     beforeEach(() => {

@@ -39,7 +39,11 @@ describe('TradingTypeAwareContextMessage', () => {
 
     const renderTradingTypeAwareContextMessage = (
         overrides: PreloadedStatePartial<TradingTestPreloadedState>,
-    ) => renderWithTradingProvider(<TradingTypeAwareContextMessage />, { overrides });
+    ) =>
+        renderWithTradingProvider(<TradingTypeAwareContextMessage />, {
+            overrides,
+            providers: ['intl'],
+        });
 
     it.each<[TradingType, string]>([
         ['buy', 'Trading buy message'],

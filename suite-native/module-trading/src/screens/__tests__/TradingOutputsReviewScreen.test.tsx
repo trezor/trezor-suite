@@ -139,7 +139,7 @@ describe('TradingSellOutputsReviewScreen', () => {
         ) => {
             const result = renderWithTradingProvider(
                 <TradingSellOutputsReviewScreen route={route} navigation={mockNavigation} />,
-                { store },
+                { store, providers: ['intl', 'navigation', 'formatter', 'bottomSheet'] },
             );
 
             ({ unmount } = result);
@@ -182,7 +182,7 @@ describe('TradingSellOutputsReviewScreen', () => {
         ) => {
             const result = renderWithTradingProvider(
                 <TradingExchangeOutputsReviewScreen route={route} navigation={mockNavigation} />,
-                { store },
+                { store, providers: ['intl', 'navigation', 'formatter', 'bottomSheet'] },
             );
 
             ({ unmount } = result);

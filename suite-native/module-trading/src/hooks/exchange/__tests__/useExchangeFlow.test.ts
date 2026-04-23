@@ -60,7 +60,10 @@ describe('useExchangeFlow', () => {
 
         return {
             reportMock,
-            result: renderHookWithStoreProvider(() => useExchangeFlow(), { store }).result,
+            result: renderHookWithStoreProvider(() => useExchangeFlow(), {
+                store,
+                providers: ['intl'],
+            }).result,
         };
     };
 

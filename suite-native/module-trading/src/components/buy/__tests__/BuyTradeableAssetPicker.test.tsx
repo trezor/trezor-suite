@@ -26,6 +26,7 @@ describe('BuyTradeableAssetPicker', () => {
     const renderFormHook = () => {
         const { result } = renderHookWithTradingProvider(() => useBuyForm(), {
             store,
+            providers: ['intl', 'navigation'],
         });
 
         return result.current;
@@ -36,7 +37,7 @@ describe('BuyTradeableAssetPicker', () => {
             <Form form={form}>
                 <BuyTradeableAssetPicker />
             </Form>,
-            { store },
+            { store, providers: ['intl', 'bottomSheet', 'navigation'] },
         );
 
     afterEach(() => {

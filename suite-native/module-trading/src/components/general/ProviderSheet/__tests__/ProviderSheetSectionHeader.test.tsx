@@ -8,7 +8,9 @@ import {
 
 describe('ProviderSheetSectionHeader', () => {
     const renderProviderSheetSectionHeader = (props: ProviderSheetSectionHeaderProps) =>
-        renderWithTradingProvider(<ProviderSheetSectionHeader {...props} />);
+        renderWithTradingProvider(<ProviderSheetSectionHeader {...props} />, {
+            providers: ['intl'],
+        });
 
     it.each<[QuotesCategory, string]>([
         ['fixed', 'Fixed-rate CEX'],

@@ -100,6 +100,7 @@ describe('useWatchTrade', () => {
     ) =>
         renderHookWithTradingProvider(() => useWatchTradeWithReportSpy(props), {
             store,
+            providers: ['services'],
         });
 
     describe('Trade Watching Behavior', () => {

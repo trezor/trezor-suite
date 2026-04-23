@@ -14,6 +14,7 @@ describe('RevokeLimitInfoRow', () => {
         renderWithTradingProvider(<RevokeLimitInfoRow />, {
             tradeType: 'exchange',
             overrides,
+            providers: ['intl', 'formatter'],
         });
 
     const withPreselectedQuote: PreloadedStatePartial<TradingTestPreloadedState> = {

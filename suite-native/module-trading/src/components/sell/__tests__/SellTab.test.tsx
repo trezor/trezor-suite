@@ -27,6 +27,7 @@ describe('SellTab', () => {
         const result = renderWithTradingProvider(<SellTab />, {
             tradeType: 'sell',
             overrides,
+            providers: ['intl', 'navigation'],
         });
 
         // wait for form reactions to run

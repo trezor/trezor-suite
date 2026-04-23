@@ -49,6 +49,7 @@ describe('useSellData', () => {
             {
                 initialProps: { reloadRequestOrdinal: reloadRequestOrdinalInitialValue },
                 store: store ?? getDefaultStore(),
+                providers: ['intl'],
             },
         );
 

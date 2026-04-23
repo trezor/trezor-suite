@@ -21,6 +21,7 @@ describe('ExchangeFeePickerCard', () => {
             overrides: {
                 wallet: { trading: { exchange: { tradingAccountKey } } },
             },
+            providers: ['intl', 'formatter'],
         });
 
     it('should render nothing when isTxnError', () => {

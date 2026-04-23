@@ -38,7 +38,7 @@ describe('useSendAccountChangeEffect', () => {
             () => {
                 useSendAccountChangeEffect(setValue, selectExchangeSelectedSendAccount);
             },
-            { store },
+            { store, providers: [] },
         );
 
     beforeEach(() => {

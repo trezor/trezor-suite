@@ -42,6 +42,7 @@ describe('ExchangeConfirmation', () => {
     const renderConfirmation = () =>
         renderWithStoreProvider(<ExchangeConfirmation />, {
             preloadedState: { wallet: { trading: getInitializedTradingStateWithQuotes() } },
+            providers: ['intl'],
         });
 
     const queryContinueButton = () =>

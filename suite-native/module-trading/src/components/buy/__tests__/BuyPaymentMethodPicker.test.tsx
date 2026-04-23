@@ -64,6 +64,7 @@ describe('BuyPaymentMethodPicker', () => {
         const { result } = renderHookWithStoreProvider(() => useBuyForm(), {
             preloadedState: mergedFormPreloadedState,
             store,
+            providers: ['intl', 'navigation', 'formatter'],
         });
         form = result.current;
 
@@ -71,7 +72,11 @@ describe('BuyPaymentMethodPicker', () => {
             <Form form={form}>
                 <BuyPaymentMethodPicker />
             </Form>,
-            { preloadedState: mergedComponentPreloadedState, store },
+            {
+                preloadedState: mergedComponentPreloadedState,
+                store,
+                providers: ['intl', 'navigation', 'formatter'],
+            },
         );
     };
 

@@ -38,7 +38,7 @@ describe('ProviderSheetHandle', () => {
                 ]}
                 {...props}
             />,
-            { overrides },
+            { overrides, providers: ['intl'] },
         );
 
     it('should render component with title and filter', () => {

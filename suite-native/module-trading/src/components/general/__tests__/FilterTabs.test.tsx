@@ -20,6 +20,7 @@ describe('FilterTabs', () => {
                 value={value}
                 keyExtractor={keyExtractor}
             />,
+            { providers: [] },
         );
 
     it('should render all filter tabs', () => {

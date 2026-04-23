@@ -75,7 +75,10 @@ describe('MyAssetSheet', () => {
                 tradingType="exchange"
                 {...props}
             />,
-            { overrides: getOverrides() },
+            {
+                overrides: getOverrides(),
+                providers: ['intl', 'formatter', 'bottomSheet'],
+            },
         );
 
     beforeEach(() => {

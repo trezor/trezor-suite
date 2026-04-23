@@ -57,6 +57,7 @@ describe('ExchangeReceiveAccountPicker', () => {
         const { result } = renderHookWithTradingProvider(() => useExchangeForm(), {
             tradeType: 'exchange',
             overrides: baseOverrides,
+            providers: ['intl', 'navigation'],
         });
 
         return result.current;
@@ -67,6 +68,7 @@ describe('ExchangeReceiveAccountPicker', () => {
             tradeType: 'exchange',
             overrides: mergeDeepObject(baseOverrides, overrides),
             wrapper: ({ children }) => <Form form={exchangeForm}>{children}</Form>,
+            providers: ['intl', 'navigation'],
         });
 
     const setSelectedAsset = (asset: TradeableAsset) => {

@@ -59,12 +59,17 @@ describe('SellSendAssetPicker', () => {
         },
     ];
 
-    const renderSellForm = () => renderHookWithStoreProvider(() => useSellForm(), { store });
+    const renderSellForm = () =>
+        renderHookWithStoreProvider(() => useSellForm(), {
+            store,
+            providers: ['intl', 'formatter', 'navigation'],
+        });
 
     const renderSellSendAssetPicker = () =>
         renderWithStoreProvider(<SellSendAssetPicker />, {
             store,
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
+            providers: ['intl', 'formatter', 'navigation'],
         });
 
     beforeEach(() => {

@@ -49,6 +49,7 @@ describe('ExchangeSendAmountInput', () => {
             {
                 tradeType: 'exchange',
                 overrides: mergeDeepObject(baseOverrides, extraOverrides),
+                providers: ['intl', 'navigation'],
             },
         );
 
@@ -58,6 +59,7 @@ describe('ExchangeSendAmountInput', () => {
         const { result } = renderHookWithTradingProvider(() => useExchangeForm(), {
             tradeType: 'exchange',
             overrides: mergeDeepObject(baseOverrides, extraOverrides),
+            providers: ['intl', 'navigation'],
         });
 
         return result.current;

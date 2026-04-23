@@ -72,7 +72,11 @@ describe('TradingExchangeRevokeScreen', () => {
     const renderScreen = () => {
         const result = renderWithTradingProvider(
             <TradingExchangeRevokeScreen route={{ params: {} } as any} navigation={{} as any} />,
-            { store, tradeType: 'exchange' },
+            {
+                store,
+                tradeType: 'exchange',
+                providers: ['intl', 'navigation', 'formatter', 'bottomSheet'],
+            },
         );
 
         ({ unmount } = result);

@@ -14,11 +14,12 @@ describe('SellAlert', () => {
     const renderFormHook = () =>
         renderHookWithStoreProvider(() => useSellForm(), {
             preloadedState,
+            providers: ['intl', 'navigation'],
         });
 
     const renderTradingAlert = () =>
         renderWithProviders(<SellAlert />, {
-            providers: ['intl'],
+            providers: ['intl', 'navigation'],
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 

@@ -30,6 +30,7 @@ describe('SellProviderPicker', () => {
         renderWithStoreProvider(<SellProviderPicker />, {
             preloadedState: createTradingPreloadedState({ tradeType: 'sell', overrides }),
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
+            providers: ['intl', 'navigation', 'formatter'],
         });
 
     beforeEach(() => {
@@ -41,6 +42,7 @@ describe('SellProviderPicker', () => {
 
         const { result } = renderHookWithStoreProvider(() => useSellForm(), {
             preloadedState: createTradingPreloadedState({ tradeType: 'sell' }),
+            providers: ['intl', 'navigation', 'formatter'],
         });
         form = result.current;
     });

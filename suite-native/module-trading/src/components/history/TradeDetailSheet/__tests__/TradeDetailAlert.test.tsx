@@ -135,7 +135,7 @@ describe('TradeDetailAlert', () => {
                 orderId={orderId || trade.data.orderId}
                 onOpenedBrowser={mockOnOpenedBrowser}
             />,
-            { preloadedState: preloadedStateWithTrades([trade], statusUrl) },
+            { preloadedState: preloadedStateWithTrades([trade], statusUrl), providers: ['intl'] },
         );
     };
 
@@ -172,7 +172,7 @@ describe('TradeDetailAlert', () => {
                     orderId="nonexistent-order-id"
                     onOpenedBrowser={mockOnOpenedBrowser}
                 />,
-                { preloadedState: preloadedStateWithTrades([], undefined) },
+                { preloadedState: preloadedStateWithTrades([], undefined), providers: ['intl'] },
             );
 
             expect(getByText('Proceed to pay')).toBeTruthy();
@@ -224,7 +224,7 @@ describe('TradeDetailAlert', () => {
                     orderId="test-order-id"
                     onOpenedBrowser={mockOnOpenedBrowser}
                 />,
-                { preloadedState: preloadedStateWithTrades([]) },
+                { preloadedState: preloadedStateWithTrades([]), providers: ['intl'] },
             );
 
             expect(toJSON()).toBeNull();
@@ -269,7 +269,7 @@ describe('TradeDetailAlert', () => {
                     orderId="test-order-id"
                     onOpenedBrowser={mockOnOpenedBrowser}
                 />,
-                { preloadedState: preloadedStateWithTrades([]) },
+                { preloadedState: preloadedStateWithTrades([]), providers: ['intl'] },
             );
 
             expect(toJSON()).toBeNull();
@@ -284,7 +284,7 @@ describe('TradeDetailAlert', () => {
                     orderId="test-order-id"
                     onOpenedBrowser={mockOnOpenedBrowser}
                 />,
-                { preloadedState: preloadedStateWithTrades([]) },
+                { preloadedState: preloadedStateWithTrades([]), providers: ['intl'] },
             );
 
             expect(toJSON()).toBeNull();
@@ -299,7 +299,7 @@ describe('TradeDetailAlert', () => {
                     orderId="test-order-id"
                     onOpenedBrowser={mockOnOpenedBrowser}
                 />,
-                { preloadedState: preloadedStateWithoutTestProvider([]) },
+                { preloadedState: preloadedStateWithoutTestProvider([]), providers: ['intl'] },
             );
 
             expect(getByText('Transaction failed')).toBeTruthy();
@@ -315,7 +315,7 @@ describe('TradeDetailAlert', () => {
                     orderId={undefined}
                     onOpenedBrowser={mockOnOpenedBrowser}
                 />,
-                { preloadedState: preloadedStateWithTrades([], null) },
+                { preloadedState: preloadedStateWithTrades([], null), providers: ['intl'] },
             );
 
             act(() => {
@@ -338,7 +338,10 @@ describe('TradeDetailAlert', () => {
                     orderId={buyTrade.data.orderId!}
                     onOpenedBrowser={mockOnOpenedBrowser}
                 />,
-                { preloadedState: preloadedStateWithTrades([buyTrade], undefined) }, // No support URL
+                {
+                    preloadedState: preloadedStateWithTrades([buyTrade], undefined), // No support URL
+                    providers: ['intl'],
+                },
             );
 
             act(() => {
@@ -367,6 +370,7 @@ describe('TradeDetailAlert', () => {
                         [exchangeTrade],
                         TEST_PROVIDER_STATUS_URL,
                     ),
+                    providers: ['intl'],
                 },
             );
 
@@ -392,7 +396,10 @@ describe('TradeDetailAlert', () => {
                     orderId={buyTrade.data.orderId!}
                     onOpenedBrowser={mockOnOpenedBrowser}
                 />,
-                { preloadedState: preloadedStateWithoutTestProvider([buyTrade]) },
+                {
+                    preloadedState: preloadedStateWithoutTestProvider([buyTrade]),
+                    providers: ['intl'],
+                },
             );
 
             act(() => {
@@ -420,7 +427,10 @@ describe('TradeDetailAlert', () => {
                     orderId={sellTrade.data.orderId!}
                     onOpenedBrowser={mockOnOpenedBrowser}
                 />,
-                { preloadedState: preloadedStateWithTrades([sellTrade], TEST_PROVIDER_STATUS_URL) },
+                {
+                    preloadedState: preloadedStateWithTrades([sellTrade], TEST_PROVIDER_STATUS_URL),
+                    providers: ['intl'],
+                },
             );
 
             act(() => {

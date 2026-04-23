@@ -17,7 +17,7 @@ jest.mock('@suite-native/trading-state', () => ({
 
 describe('ActiveTab', () => {
     const renderActiveTab = (overrides: PreloadedStatePartial<TradingTestPreloadedState>) =>
-        renderWithTradingProvider(<ActiveTab />, { overrides });
+        renderWithTradingProvider(<ActiveTab />, { overrides, providers: ['intl'] });
 
     it.each<[TradingType, string]>([
         ['buy', 'Buy disabled'],

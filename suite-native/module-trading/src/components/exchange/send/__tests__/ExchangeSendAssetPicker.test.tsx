@@ -89,12 +89,16 @@ describe('ExchangeSendAssetPicker', () => {
     });
 
     const renderExchangeForm = () =>
-        renderHookWithStoreProvider(() => useExchangeForm(), { store });
+        renderHookWithStoreProvider(() => useExchangeForm(), {
+            store,
+            providers: ['intl', 'formatter', 'navigation'],
+        });
 
     const renderExchangeSendAssetPicker = () =>
         renderWithStoreProvider(<ExchangeSendAssetPicker />, {
             store,
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
+            providers: ['intl', 'formatter', 'navigation'],
         });
 
     beforeEach(() => {

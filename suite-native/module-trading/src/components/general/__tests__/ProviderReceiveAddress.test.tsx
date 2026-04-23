@@ -50,6 +50,7 @@ describe('ProviderReceiveAddress', () => {
 
         return renderWithStoreProvider(<ProviderReceiveAddress trade={trade} />, {
             preloadedState: { wallet: walletState },
+            providers: ['intl'],
         });
     };
 
@@ -82,7 +83,7 @@ describe('ProviderReceiveAddress', () => {
 
         const { queryByText } = renderWithStoreProvider(
             <ProviderReceiveAddress trade={mockExchangeTrade} />,
-            { preloadedState: { wallet: walletState } },
+            { preloadedState: { wallet: walletState }, providers: ['intl'] },
         );
 
         // Component should not render when provider info is missing
@@ -96,7 +97,7 @@ describe('ProviderReceiveAddress', () => {
 
         const { queryByText } = renderWithStoreProvider(
             <ProviderReceiveAddress trade={mockExchangeTrade} />,
-            { preloadedState: { wallet: walletState } },
+            { preloadedState: { wallet: walletState }, providers: ['intl'] },
         );
 
         // Component should not render when company name is missing

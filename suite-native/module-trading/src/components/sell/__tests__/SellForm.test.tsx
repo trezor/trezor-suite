@@ -31,6 +31,7 @@ describe('SellForm', () => {
         renderHookWithTradingProvider(() => useSellForm(), {
             tradeType: 'sell',
             overrides,
+            providers: ['intl', 'navigation', 'formatter'],
         });
 
     const renderSellForm = (
@@ -41,6 +42,7 @@ describe('SellForm', () => {
             tradeType: 'sell',
             overrides,
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
+            providers: ['intl', 'services', 'navigation', 'formatter'],
         });
 
     beforeEach(() => {

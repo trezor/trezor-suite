@@ -61,7 +61,10 @@ describe('TradingHistoryScreen', () => {
     let unmount: (() => void) | undefined;
 
     const renderScreen = () => {
-        const result = renderWithTradingProvider(<TradingHistoryScreen />, { overrides });
+        const result = renderWithTradingProvider(<TradingHistoryScreen />, {
+            overrides,
+            providers: ['intl', 'navigation', 'formatter', 'bottomSheet'],
+        });
 
         ({ unmount } = result);
 

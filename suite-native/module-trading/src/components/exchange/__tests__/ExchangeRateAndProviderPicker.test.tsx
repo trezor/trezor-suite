@@ -35,6 +35,7 @@ describe('ExchangeRateAndProviderPicker', () => {
             tradeType: 'exchange',
             overrides: { ...baseOverrides, ...extraOverrides },
             wrapper: ({ children }) => <Form form={exchangeForm}>{children}</Form>,
+            providers: ['intl', 'services', 'bottomSheet', 'navigation', 'formatter'],
         });
 
         ({ unmount } = result);
@@ -52,6 +53,7 @@ describe('ExchangeRateAndProviderPicker', () => {
         const { result } = renderHookWithTradingProvider(() => useExchangeForm(), {
             tradeType: 'exchange',
             overrides: baseOverrides,
+            providers: ['intl', 'navigation', 'formatter'],
         });
         exchangeForm = result.current;
     });

@@ -36,7 +36,11 @@ const btc1account = 'btc-account-1' as AccountKey; // Todo: create properly via 
 describe('useSellForm', () => {
     let store: TestStore;
 
-    const renderUseSellForm = () => renderHookWithStoreProvider(() => useSellForm(), { store });
+    const renderUseSellForm = () =>
+        renderHookWithStoreProvider(() => useSellForm(), {
+            store,
+            providers: ['intl', 'navigation', 'formatter'],
+        });
 
     const getInitializedStore = (bitcoinAmountUnit = PROTO.AmountUnit.BITCOIN) =>
         createTradingLightStore({

@@ -51,7 +51,10 @@ describe('useExchangeForm', () => {
     let store: TestStore;
 
     const renderUseExchangeForm = () =>
-        renderHookWithStoreProvider(() => useExchangeForm(), { store });
+        renderHookWithStoreProvider(() => useExchangeForm(), {
+            store,
+            providers: ['intl', 'navigation', 'formatter'],
+        });
 
     const getInitializedStore = (bitcoinAmountUnit = PROTO.AmountUnit.BITCOIN) =>
         createTradingLightStore({

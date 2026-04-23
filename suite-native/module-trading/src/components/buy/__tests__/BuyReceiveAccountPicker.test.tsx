@@ -47,6 +47,7 @@ describe('BuyReceiveAccountPicker', () => {
     const renderBuyForm = () => {
         const { result } = renderHookWithTradingProvider(() => useBuyForm(), {
             tradeType: 'buy',
+            providers: ['intl', 'navigation'],
         });
 
         return result.current;
@@ -57,6 +58,7 @@ describe('BuyReceiveAccountPicker', () => {
             tradeType: 'buy',
             overrides,
             wrapper: ({ children }) => <Form form={buyForm}>{children}</Form>,
+            providers: ['intl', 'navigation'],
         });
 
     const setSelectedAsset = (asset: TradeableAsset) => {

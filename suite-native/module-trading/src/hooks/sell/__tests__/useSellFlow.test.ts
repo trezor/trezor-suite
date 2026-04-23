@@ -65,7 +65,8 @@ const btc1AccountKey = 'btc-account-1' as AccountKey; // Todo: create properly v
 describe('useSellFlow', () => {
     let store: TestStore;
 
-    const renderUseSellFlow = () => renderHookWithStoreProvider(() => useSellFlow(), { store });
+    const renderUseSellFlow = () =>
+        renderHookWithStoreProvider(() => useSellFlow(), { store, providers: ['intl'] });
 
     beforeEach(() => {
         store = createTradingLightStore({ tradeType: 'sell' });

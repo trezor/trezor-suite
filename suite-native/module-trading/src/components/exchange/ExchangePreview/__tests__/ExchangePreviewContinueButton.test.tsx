@@ -56,6 +56,7 @@ describe('ExchangePreviewContinueButton', () => {
             {
                 tradeType: 'exchange',
                 overrides: mergeDeepObject(baseOverrides, extraOverrides),
+                providers: ['intl'],
             },
         );
 

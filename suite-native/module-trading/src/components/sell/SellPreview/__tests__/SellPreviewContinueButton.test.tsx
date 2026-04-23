@@ -51,6 +51,7 @@ describe('SellPreviewContinueButton', () => {
             {
                 tradeType: 'sell',
                 overrides: mergeDeepObject(baseOverrides, extraOverrides),
+                providers: ['intl'],
             },
         );
 

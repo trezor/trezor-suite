@@ -22,6 +22,7 @@ describe('SellFormFieldErrorBadge', () => {
     const renderUseTradingSellForm = () => {
         const { result } = renderHookWithTradingProvider(() => useSellForm(), {
             tradeType: 'sell',
+            providers: ['intl', 'formatter', 'navigation'],
         });
 
         return result.current;
@@ -42,7 +43,7 @@ describe('SellFormFieldErrorBadge', () => {
             <Form form={form}>
                 <SellFormFieldErrorBadge {...props} />
             </Form>,
-            { tradeType: 'sell', overrides },
+            { tradeType: 'sell', overrides, providers: ['intl', 'formatter', 'navigation'] },
         );
 
     beforeEach(() => {

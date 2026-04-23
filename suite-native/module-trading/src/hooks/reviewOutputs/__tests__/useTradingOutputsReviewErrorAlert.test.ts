@@ -21,6 +21,7 @@ describe('useTradingOutputsReviewErrorAlert', () => {
     const renderUseTradingOutputsReviewErrorAlert = (accountKey: AccountKey) =>
         renderHookWithTradingProvider(() => useTradingOutputsReviewErrorAlert(accountKey), {
             store,
+            providers: ['intl'],
         });
 
     beforeEach(() => {

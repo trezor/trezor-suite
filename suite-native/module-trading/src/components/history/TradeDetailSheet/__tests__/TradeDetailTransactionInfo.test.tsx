@@ -71,6 +71,7 @@ describe('TradeDetailTransactionInfo', () => {
     ) =>
         renderWithTradingProvider(<TradeDetailTransactionInfo orderId={orderId} />, {
             overrides,
+            providers: ['intl', 'formatter'],
         });
 
     it('should not render when trade is not found', () => {

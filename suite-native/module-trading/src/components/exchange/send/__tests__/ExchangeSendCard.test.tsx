@@ -29,12 +29,14 @@ describe('ExchangeSendCard', () => {
     const renderForm = () =>
         renderHookWithStoreProvider(() => useExchangeForm(), {
             preloadedState,
+            providers: ['intl', 'formatter', 'navigation'],
         });
 
     const renderExchangeSendCard = (isAmountInputActive: boolean) =>
         renderWithStoreProvider(<ExchangeSendCard isAmountInputActive={isAmountInputActive} />, {
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
             preloadedState,
+            providers: ['intl', 'formatter', 'navigation'],
         });
 
     beforeEach(() => {

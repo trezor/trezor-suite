@@ -20,7 +20,7 @@ describe('BuyFiatAmountInput', () => {
             <Form form={form}>
                 <BuyFiatAmountInput />
             </Form>,
-            { tradeType: 'buy', overrides },
+            { tradeType: 'buy', overrides, providers: ['intl', 'navigation'] },
         );
 
     const renderUseTradingBuyForm = (
@@ -29,6 +29,7 @@ describe('BuyFiatAmountInput', () => {
         const { result } = renderHookWithTradingProvider(() => useBuyForm(), {
             tradeType: 'buy',
             overrides,
+            providers: ['intl', 'navigation'],
         });
 
         return result.current;

@@ -15,12 +15,13 @@ describe('SellFiatAmountInput', () => {
             <Form form={form}>
                 <SellFiatAmountInput />
             </Form>,
-            { tradeType: 'sell' },
+            { tradeType: 'sell', providers: ['intl', 'navigation'] },
         );
 
     const renderUseTradingSellForm = () => {
         const { result } = renderHookWithTradingProvider(() => useSellForm(), {
             tradeType: 'sell',
+            providers: ['intl', 'navigation'],
         });
 
         return result.current;

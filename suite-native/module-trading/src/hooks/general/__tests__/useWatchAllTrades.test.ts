@@ -65,7 +65,7 @@ describe('useWatchAllTrades', () => {
         });
 
     const renderUseWatchAllTrades = (store: TestStore) =>
-        renderHookWithTradingProvider(() => useWatchAllTrades(), { store });
+        renderHookWithTradingProvider(() => useWatchAllTrades(), { store, providers: [] });
 
     it('should return empty arrays when no trades', () => {
         const store = getInitializedStore();

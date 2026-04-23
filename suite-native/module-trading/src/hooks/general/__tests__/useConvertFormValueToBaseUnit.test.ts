@@ -10,6 +10,7 @@ describe('useConvertFormValueToBaseUnit', () => {
 
         return renderHookWithStoreProvider(() => useConvertFormValueToBaseUnit(), {
             preloadedState,
+            providers: [],
         });
     };
 

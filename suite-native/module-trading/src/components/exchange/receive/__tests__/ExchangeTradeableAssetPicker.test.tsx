@@ -31,6 +31,7 @@ describe('ExchangeTradeableAssetPicker', () => {
     const renderFormHook = () => {
         const { result } = renderHookWithTradingProvider(() => useExchangeForm(), {
             store,
+            providers: ['intl', 'navigation'],
         });
 
         return result.current;
@@ -40,6 +41,7 @@ describe('ExchangeTradeableAssetPicker', () => {
         renderWithTradingProvider(<ExchangeTradeableAssetPicker />, {
             store,
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
+            providers: ['intl', 'bottomSheet', 'navigation'],
         });
 
     beforeEach(() => {

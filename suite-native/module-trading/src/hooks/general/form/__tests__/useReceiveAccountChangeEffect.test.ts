@@ -33,7 +33,7 @@ describe('useReceiveAccountChangeEffect', () => {
     const renderUseReceiveAccountChangeEffect = () =>
         renderHookWithStoreProvider(
             () => useReceiveAccountChangeEffect(setValue, selectExchangeSelectedReceiveAccount),
-            { store },
+            { store, providers: [] },
         );
 
     beforeEach(() => {

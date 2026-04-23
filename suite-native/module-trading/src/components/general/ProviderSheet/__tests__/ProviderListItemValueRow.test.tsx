@@ -21,6 +21,7 @@ describe('ProviderListItemValueRow', () => {
     const renderProviderListItemValueRow = (quote: TradingTradeType) =>
         renderWithTradingProvider(<ProviderListItemValueRow quote={quote} />, {
             overrides: overridesWithQuotes,
+            providers: ['intl', 'formatter'],
         });
 
     it('should render formatted rate for a buy quote', () => {

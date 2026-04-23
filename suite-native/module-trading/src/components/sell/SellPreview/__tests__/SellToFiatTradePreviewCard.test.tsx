@@ -20,6 +20,7 @@ describe('SellToFiatTradePreviewCard', () => {
 
         return renderWithStoreProvider(<SellToFiatTradePreviewCard {...props} />, {
             preloadedState,
+            providers: ['intl', 'formatter'],
         });
     };
 

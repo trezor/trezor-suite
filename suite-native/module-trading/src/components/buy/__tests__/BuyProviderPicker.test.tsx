@@ -33,7 +33,10 @@ describe('BuyProviderPicker', () => {
             <Form form={form}>
                 <BuyProviderPicker />
             </Form>,
-            { overrides },
+            {
+                overrides,
+                providers: ['intl', 'services', 'bottomSheet', 'navigation', 'formatter'],
+            },
         );
 
     afterEach(() => {
@@ -47,7 +50,9 @@ describe('BuyProviderPicker', () => {
             report: reportMock,
         });
 
-        const { result } = renderHookWithTradingProvider(() => useBuyForm(), {});
+        const { result } = renderHookWithTradingProvider(() => useBuyForm(), {
+            providers: ['intl', 'navigation', 'formatter'],
+        });
         form = result.current;
     });
 

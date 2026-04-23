@@ -40,7 +40,10 @@ describe('Header', () => {
         const reportMock = setupReportMock();
 
         return {
-            renderer: renderWithTradingProvider(<Header />, { overrides }),
+            renderer: renderWithTradingProvider(<Header />, {
+                overrides,
+                providers: ['intl', 'services'],
+            }),
             reportMock,
         };
     };
@@ -51,7 +54,10 @@ describe('Header', () => {
         const reportMock = setupReportMock();
 
         return {
-            renderer: renderWithTradingProvider(<Header />, { store }),
+            renderer: renderWithTradingProvider(<Header />, {
+                store,
+                providers: ['intl', 'services'],
+            }),
             reportMock,
         };
     };

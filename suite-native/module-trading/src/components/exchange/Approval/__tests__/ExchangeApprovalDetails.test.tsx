@@ -41,6 +41,7 @@ describe('ExchangeApprovalDetails', () => {
             {
                 tradeType: 'exchange',
                 overrides,
+                providers: ['intl', 'formatter', 'bottomSheet', 'navigation'],
             },
         );
 

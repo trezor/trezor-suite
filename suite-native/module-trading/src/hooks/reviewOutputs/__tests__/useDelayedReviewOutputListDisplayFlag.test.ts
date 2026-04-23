@@ -11,7 +11,9 @@ jest.mock('@suite-common/device', () => ({
 
 describe('useDelayedReviewOutputListDisplayFlag', () => {
     const renderUseRequestDelayedNavigationToOutputsReview = () =>
-        renderHookWithStoreProvider(() => useDelayedReviewOutputListDisplayFlag());
+        renderHookWithStoreProvider(() => useDelayedReviewOutputListDisplayFlag(), {
+            providers: [],
+        });
 
     beforeEach(() => {
         jest.clearAllMocks();

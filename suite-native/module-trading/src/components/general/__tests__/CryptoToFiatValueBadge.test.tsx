@@ -21,6 +21,7 @@ describe('CryptoToFiatValueBadge', () => {
     const renderCryptoToFiatValueBadge = async (props: CryptoToFiatValueBadgeProps) => {
         const res = renderWithStoreProvider(<CryptoToFiatValueBadge {...props} />, {
             preloadedState: getPreloadedState(),
+            providers: ['intl', 'formatter'],
         });
 
         // await mocked loading of rates

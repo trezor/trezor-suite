@@ -41,10 +41,17 @@ describe('useBuyFlow', () => {
             },
         });
 
-    const renderBuyForm = () => renderHookWithStoreProvider(() => useBuyForm(), { store });
+    const renderBuyForm = () =>
+        renderHookWithStoreProvider(() => useBuyForm(), {
+            store,
+            providers: ['intl', 'navigation'],
+        });
 
     const renderUseTradingBuyFlow = () =>
-        renderHookWithStoreProvider(() => useBuyFlow(buyForm), { store });
+        renderHookWithStoreProvider(() => useBuyFlow(buyForm), {
+            store,
+            providers: ['intl', 'navigation'],
+        });
 
     describe('while loading quotes', () => {
         beforeEach(() => {

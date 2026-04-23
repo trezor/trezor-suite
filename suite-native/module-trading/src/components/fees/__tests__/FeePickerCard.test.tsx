@@ -28,7 +28,9 @@ describe('FeePickerCard', () => {
     const renderFeePickerCard = (props = {}) => {
         const finalProps = { ...defaultProps, ...props };
 
-        return renderWithTradingProvider(<FeePickerCard {...finalProps} />);
+        return renderWithTradingProvider(<FeePickerCard {...finalProps} />, {
+            providers: ['intl'],
+        });
     };
 
     beforeEach(() => {

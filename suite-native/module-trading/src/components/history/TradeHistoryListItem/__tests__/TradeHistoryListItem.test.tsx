@@ -39,7 +39,10 @@ describe('TradeHistoryListItem', () => {
     const renderTradeHistoryListItem = (transaction: TradingTransaction) =>
         renderWithTradingProvider(
             <TradeHistoryListItem transaction={transaction} onPress={jest.fn()} />,
-            { overrides: { wallet: { trading: getInitializedTradingState() } } },
+            {
+                overrides: { wallet: { trading: getInitializedTradingState() } },
+                providers: ['intl', 'formatter'],
+            },
         );
 
     it('should render trade correctly', () => {

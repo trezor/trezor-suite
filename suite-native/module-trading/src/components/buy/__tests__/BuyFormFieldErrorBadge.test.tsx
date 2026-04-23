@@ -27,6 +27,7 @@ describe('BuyFormFieldErrorBadge', () => {
     ) => {
         const { result } = renderHookWithTradingProvider(() => useBuyForm(), {
             overrides,
+            providers: ['intl', 'formatter', 'navigation'],
         });
 
         return result.current;
@@ -40,6 +41,7 @@ describe('BuyFormFieldErrorBadge', () => {
         renderWithTradingProvider(<BuyFormFieldErrorBadge {...props} />, {
             overrides,
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
+            providers: ['intl', 'formatter', 'navigation'],
         });
 
     beforeEach(() => {

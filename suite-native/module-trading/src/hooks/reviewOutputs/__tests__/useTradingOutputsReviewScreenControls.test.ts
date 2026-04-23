@@ -92,6 +92,7 @@ describe('useTradingOutputsReviewScreenControls', () => {
                 }),
             {
                 store,
+                providers: ['intl'],
             },
         );
 

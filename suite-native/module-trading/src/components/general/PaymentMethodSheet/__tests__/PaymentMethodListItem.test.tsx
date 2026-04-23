@@ -16,7 +16,10 @@ describe('PaymentMethodListItem', () => {
                 onPress={jest.fn()}
                 {...props}
             />,
-            { preloadedState: getPreloadedState() },
+            {
+                preloadedState: getPreloadedState(),
+                providers: ['intl', 'formatter'],
+            },
         );
 
     it('should render given name and rate', () => {

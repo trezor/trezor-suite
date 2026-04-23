@@ -35,7 +35,7 @@ describe('ProviderListItem', () => {
                 tradingType="buy"
                 {...props}
             />,
-            { overrides: baseOverrides },
+            { overrides: baseOverrides, providers: ['intl', 'formatter'] },
         );
 
     it('should render provider information correctly', () => {

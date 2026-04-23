@@ -37,6 +37,7 @@ describe('ExchangeReceiveAmountInput', () => {
                 tradeType: 'exchange',
                 overrides: { ...baseOverrides, ...extraOverrides },
                 wrapper: ({ children }) => <Form form={form}>{children}</Form>,
+                providers: ['intl', 'navigation'],
             },
         );
 
@@ -44,6 +45,7 @@ describe('ExchangeReceiveAmountInput', () => {
         const { result } = renderHookWithTradingProvider(() => useExchangeForm(), {
             tradeType: 'exchange',
             overrides: baseOverrides,
+            providers: ['intl', 'navigation'],
         });
         form = result.current;
     });

@@ -58,6 +58,7 @@ describe('SellPreviewView', () => {
             {
                 tradeType: 'sell',
                 overrides: baseOverrides(formStep),
+                providers: ['intl', 'formatter'],
             },
         );
 

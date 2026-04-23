@@ -19,6 +19,7 @@ describe('ExchangeFiatDeviationWarning', () => {
             preloadedState: {
                 wallet: { settings: { localCurrency: 'usd' } },
             },
+            providers: ['intl'],
         });
 
     beforeEach(() => {

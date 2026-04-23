@@ -29,6 +29,7 @@ describe('ExchangeRevokeDetails', () => {
         renderWithTradingProvider(<ExchangeRevokeDetails exchange="mercuryo" />, {
             tradeType: 'exchange',
             overrides,
+            providers: ['intl', 'formatter', 'bottomSheet'],
         });
 
     beforeEach(() => {

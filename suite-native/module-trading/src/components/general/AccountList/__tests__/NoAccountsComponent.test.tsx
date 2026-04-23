@@ -20,6 +20,7 @@ describe('NoAccountsComponent', () => {
                     },
                 },
             },
+            providers: ['intl'],
         });
 
     it('should render for not connected device', () => {

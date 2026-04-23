@@ -74,7 +74,11 @@ describe('TradingExchangeApprovalScreen', () => {
     const renderScreen = () => {
         const result = renderWithTradingProvider(
             <TradingExchangeApprovalScreen route={{ params: {} } as any} navigation={{} as any} />,
-            { store, tradeType: 'exchange' },
+            {
+                store,
+                tradeType: 'exchange',
+                providers: ['intl', 'navigation', 'formatter', 'bottomSheet'],
+            },
         );
 
         ({ unmount } = result);

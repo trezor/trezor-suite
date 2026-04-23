@@ -44,6 +44,7 @@ describe('ReviewOutputsContent', () => {
                 exchangeFlowType="swap"
                 {...props}
             />,
+            { providers: ['intl', 'formatter', 'bottomSheet'] },
         );
 
     beforeEach(() => {

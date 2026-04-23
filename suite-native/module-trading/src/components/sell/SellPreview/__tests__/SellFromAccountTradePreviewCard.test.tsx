@@ -19,6 +19,7 @@ describe('SellFromAccountTradePreviewCard', () => {
                     trading: { sell: { tradingAccountKey } },
                 },
             },
+            providers: ['intl', 'formatter'],
         });
 
     it('should render nothing when there is no quote', () => {

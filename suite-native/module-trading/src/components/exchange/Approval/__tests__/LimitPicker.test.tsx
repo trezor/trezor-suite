@@ -29,7 +29,7 @@ describe('LimitPicker', () => {
                     );
                 }}
             />,
-            { store },
+            { store, providers: ['intl', 'formatter', 'bottomSheet', 'navigation'] },
         );
 
     beforeEach(() => {

@@ -28,6 +28,7 @@ describe('SellFeePickerCard', () => {
                     },
                 },
             },
+            providers: ['intl'],
         });
 
     it('should render nothing when isTxnError', () => {

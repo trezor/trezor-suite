@@ -19,6 +19,7 @@ describe('SellSendAccountCryptoBalance', () => {
     const renderSellForm = () => {
         const { result } = renderHookWithTradingProvider(() => useSellForm(), {
             tradeType: 'sell',
+            providers: ['intl', 'formatter', 'navigation'],
         });
 
         return result.current;
@@ -28,6 +29,7 @@ describe('SellSendAccountCryptoBalance', () => {
         renderWithTradingProvider(<SellSendAccountCryptoBalance />, {
             tradeType: 'sell',
             wrapper: ({ children }) => <Form form={sellForm}>{children}</Form>,
+            providers: ['intl', 'formatter', 'navigation'],
         });
 
     beforeEach(() => {

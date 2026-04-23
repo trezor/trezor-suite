@@ -57,7 +57,7 @@ describe('useAllTradesReloadTimer', () => {
         });
 
     const renderUseAllTradesReloadTimer = (store: TestStore) =>
-        renderHookWithTradingProvider(() => useAllTradesReloadTimer(), { store });
+        renderHookWithTradingProvider(() => useAllTradesReloadTimer(), { store, providers: [] });
 
     it('should enable reload timer when there are trades to watch', () => {
         const mockTrades = [

@@ -8,7 +8,7 @@ import { useMaxSlippageForm } from '../useMaxSlippageForm';
 
 describe('useMaxSlippageForm', () => {
     const renderUseMaxSlippageForm = (store: TestStore) =>
-        renderHookWithTradingProvider(() => useMaxSlippageForm(), { store });
+        renderHookWithTradingProvider(() => useMaxSlippageForm(), { store, providers: ['intl'] });
 
     it('should have default value from store', () => {
         const store = createTradingTestStore();

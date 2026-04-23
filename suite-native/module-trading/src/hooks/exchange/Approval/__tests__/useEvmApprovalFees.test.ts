@@ -71,7 +71,11 @@ describe('useEvmApprovalFees', () => {
     const renderUseEvmApprovalFees = (
         store: TestStore,
         params?: Parameters<typeof useEvmApprovalFees>[0],
-    ) => renderHookWithStoreProvider(() => useEvmApprovalFees(params), { store });
+    ) =>
+        renderHookWithStoreProvider(() => useEvmApprovalFees(params), {
+            store,
+            providers: ['intl'],
+        });
 
     beforeEach(() => {
         mockComposeEvmApprovalFeeLevelsThunk.mockReset().mockImplementation(() => ({

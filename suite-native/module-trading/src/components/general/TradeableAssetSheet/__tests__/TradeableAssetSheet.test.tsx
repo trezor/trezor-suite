@@ -20,6 +20,7 @@ describe('TradeableAssetSheet', () => {
                 flashListKey="test-key"
                 {...props}
             />,
+            { providers: ['intl', 'bottomSheet'] },
         );
 
     afterEach(() => {

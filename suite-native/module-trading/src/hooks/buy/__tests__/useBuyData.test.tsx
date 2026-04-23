@@ -58,6 +58,7 @@ describe('useBuyData', () => {
             {
                 initialProps: { reloadRequestOrdinal: reloadRequestOrdinalInitialValue },
                 store,
+                providers: ['intl'],
             },
         );
 

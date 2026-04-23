@@ -32,6 +32,7 @@ describe('SellConfirmation', () => {
     const renderConfirmation = () =>
         renderWithStoreProvider(<SellConfirmation />, {
             preloadedState: { wallet: { trading: getInitializedTradingStateWithQuotes() } },
+            providers: ['intl'],
         });
 
     it('should render continue button when canProceed is true', () => {

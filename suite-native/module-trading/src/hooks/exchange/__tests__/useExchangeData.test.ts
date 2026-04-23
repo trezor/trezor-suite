@@ -49,6 +49,7 @@ describe('useExchangeData', () => {
             {
                 initialProps: { reloadRequestOrdinal: reloadRequestOrdinalInitialValue },
                 store: effectiveStore,
+                providers: ['intl'],
             },
         );
 

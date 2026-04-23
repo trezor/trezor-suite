@@ -40,7 +40,7 @@ describe('useGeolocationCountryCode', () => {
         });
 
     const renderUseGeolocationCountryCode = (store: TestStore) =>
-        renderHookWithStoreProvider(() => useGeolocationCountryCode(), { store });
+        renderHookWithStoreProvider(() => useGeolocationCountryCode(), { store, providers: [] });
 
     it('should call geolocation thunk on mount', () => {
         const store = createGeolocationTestStore();

@@ -29,6 +29,7 @@ describe('useProviderMetadataChangeEffect', () => {
         renderHookWithTradingProvider(() => useProviderMetadataChangeEffect(watch, 'buy'), {
             store,
             tradeType: 'buy',
+            providers: [],
         });
 
     beforeEach(() => {

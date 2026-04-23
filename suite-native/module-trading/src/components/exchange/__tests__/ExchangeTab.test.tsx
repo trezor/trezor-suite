@@ -28,7 +28,10 @@ jest.mock('@suite-native/trading-state', () => ({
 
 describe('ExchangeTab', () => {
     const renderExchangeTab = () =>
-        renderWithTradingProvider(<ExchangeTab />, { tradeType: 'exchange' });
+        renderWithTradingProvider(<ExchangeTab />, {
+            tradeType: 'exchange',
+            providers: ['intl', 'navigation'],
+        });
 
     beforeEach(() => {
         mockIsDeviceInViewOnlyMode = false;

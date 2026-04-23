@@ -17,6 +17,7 @@ describe('useExchangeBuyTradeableAssetsFilteredData', () => {
     const renderUseExchangeBuyTradeableAssetsFilteredData = () =>
         renderHookWithTradingProvider(() => useExchangeBuyTradeableAssetsFilteredData(), {
             tradeType: 'exchange',
+            providers: [],
         });
 
     beforeEach(() => {

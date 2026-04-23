@@ -56,7 +56,7 @@ describe('useSellQuotes', () => {
 
                 return form;
             },
-            { store },
+            { store, providers: ['intl', 'navigation'] },
         );
 
     afterEach(() => {

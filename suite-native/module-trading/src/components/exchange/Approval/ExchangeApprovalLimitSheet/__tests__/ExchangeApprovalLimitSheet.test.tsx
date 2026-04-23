@@ -27,6 +27,7 @@ const renderSheet = (
             overrides: {
                 wallet: { trading: { exchange: { selectedQuote: testQuote } } },
             },
+            providers: ['intl', 'formatter', 'bottomSheet'],
         },
     );
 

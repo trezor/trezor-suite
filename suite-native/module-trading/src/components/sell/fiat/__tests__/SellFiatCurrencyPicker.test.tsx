@@ -33,6 +33,7 @@ describe('SellFiatCurrencyPicker', () => {
         const preloadedState = { wallet: getWalletState({ tradeType: 'sell' }) };
         const { result } = renderHookWithStoreProvider(() => useSellForm(), {
             preloadedState,
+            providers: ['intl', 'navigation'],
         });
 
         return renderWithStoreProvider(
@@ -41,6 +42,7 @@ describe('SellFiatCurrencyPicker', () => {
             </Form>,
             {
                 preloadedState,
+                providers: ['intl', 'bottomSheet', 'navigation'],
             },
         );
     };

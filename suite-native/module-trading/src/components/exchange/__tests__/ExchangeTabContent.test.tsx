@@ -24,7 +24,10 @@ describe('ExchangeTab', () => {
     });
 
     const renderExchangeTab = () =>
-        renderWithTradingProvider(<ExchangeTabContent />, { tradeType: 'exchange' });
+        renderWithTradingProvider(<ExchangeTabContent />, {
+            tradeType: 'exchange',
+            providers: ['intl', 'navigation'],
+        });
 
     const expectSkeleton = () => {
         expect(screen.getAllByTestId('BoxSkeleton').length).toBeGreaterThan(0);

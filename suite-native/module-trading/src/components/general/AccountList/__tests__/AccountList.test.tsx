@@ -119,7 +119,7 @@ describe('AccountList', () => {
                 onSetPickerMode={jest.fn()}
                 {...props}
             />,
-            { store },
+            { store, providers: ['intl', 'formatter'] },
         );
     };
 

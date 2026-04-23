@@ -38,6 +38,7 @@ describe('ExchangeForm', () => {
     const renderForm = () =>
         renderHookWithStoreProvider(() => useExchangeForm(), {
             preloadedState: defaultPreloadedState,
+            providers: ['intl', 'navigation'],
         });
 
     const renderExchangeForm = () =>
@@ -50,6 +51,7 @@ describe('ExchangeForm', () => {
                     trading: getInitializedTradingState(),
                 },
             },
+            providers: ['intl', 'navigation'],
         });
 
     beforeEach(() => {

@@ -53,6 +53,7 @@ describe(AccountListAddressItem.name, () => {
     const renderAccountListAddressItem = (receiveAccount: ReceiveAccount) =>
         renderWithTradingProvider(
             <AccountListAddressItem receiveAccount={receiveAccount} onPress={onPressMock} />,
+            { providers: ['intl', 'formatter'] },
         );
 
     beforeEach(() => {

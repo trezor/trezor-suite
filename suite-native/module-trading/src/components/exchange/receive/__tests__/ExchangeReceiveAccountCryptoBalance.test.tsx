@@ -28,6 +28,7 @@ describe('ExchangeReceiveAccountCryptoBalance', () => {
     const renderExchangeForm = () => {
         const { result } = renderHookWithStoreProvider(() => useExchangeForm(), {
             preloadedState,
+            providers: ['intl', 'formatter', 'navigation'],
         });
 
         return result.current;
@@ -37,6 +38,7 @@ describe('ExchangeReceiveAccountCryptoBalance', () => {
         renderWithStoreProvider(<ExchangeReceiveAccountCryptoBalance />, {
             preloadedState,
             wrapper: ({ children }) => <Form form={exchangeForm}>{children}</Form>,
+            providers: ['intl', 'formatter', 'navigation'],
         });
 
     beforeEach(() => {

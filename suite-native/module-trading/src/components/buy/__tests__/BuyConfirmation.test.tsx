@@ -26,6 +26,7 @@ describe('BuyConfirmation', () => {
     const renderConfirmation = () =>
         renderWithStoreProvider(<BuyConfirmation />, {
             preloadedState: { wallet: { trading: getInitializedTradingStateWithQuotes() } },
+            providers: ['intl'],
         });
 
     beforeEach(() => {

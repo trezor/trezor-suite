@@ -15,7 +15,7 @@ describe('Footer', () => {
     const mockOpenLink = jest.spyOn(Linking, 'openURL');
 
     const renderFooter = (overrides: PreloadedStatePartial<TradingTestPreloadedState> = {}) =>
-        renderWithTradingProvider(<Footer />, { overrides });
+        renderWithTradingProvider(<Footer />, { overrides, providers: ['intl'] });
 
     beforeEach(() => {
         mockOpenLink.mockClear();

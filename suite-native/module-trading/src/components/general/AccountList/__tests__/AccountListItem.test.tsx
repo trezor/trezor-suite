@@ -66,7 +66,7 @@ describe('AccountListItem', () => {
 
         return renderWithStoreProvider(
             <AccountListItem onPress={onPressMock} receiveAccount={receiveAccount} />,
-            { store },
+            { store, providers: ['intl', 'formatter'] },
         );
     };
 

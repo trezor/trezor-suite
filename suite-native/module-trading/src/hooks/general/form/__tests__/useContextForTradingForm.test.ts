@@ -15,6 +15,7 @@ describe('useContextForTradingForm', () => {
     ) =>
         renderHookWithTradingProvider(() => useContextForTradingForm(limits), {
             overrides,
+            providers: ['intl', 'formatter'],
         });
 
     it('should return base context without limits and balance on initial render', () => {

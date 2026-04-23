@@ -26,7 +26,7 @@ describe('TradeableAssetAccountBalance', () => {
                 testID="TEST_ID"
                 {...props}
             />,
-            { preloadedState },
+            { preloadedState, providers: ['intl', 'formatter'] },
         );
 
     it('should render nothing without asset selected', () => {

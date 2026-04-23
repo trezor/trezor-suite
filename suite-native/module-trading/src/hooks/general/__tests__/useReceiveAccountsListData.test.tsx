@@ -50,6 +50,7 @@ describe('useReceiveAccountsListData', () => {
                     selectedAccount: initialSelectedAccount,
                     mode: initialMode,
                 },
+                providers: ['intl'],
             },
         );
 

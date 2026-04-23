@@ -7,7 +7,10 @@ describe('SellFiatCurrencySheet', () => {
     const renderSellFiatCurrencySheet = () =>
         renderWithStoreProvider(
             <SellFiatCurrencySheet onFiatSelect={jest.fn()} onClose={jest.fn()} isVisible={true} />,
-            { preloadedState: { wallet: getWalletState({ tradeType: 'sell' }) } },
+            {
+                preloadedState: { wallet: getWalletState({ tradeType: 'sell' }) },
+                providers: ['intl', 'bottomSheet'],
+            },
         );
 
     afterEach(() => {

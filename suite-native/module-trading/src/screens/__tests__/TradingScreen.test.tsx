@@ -69,7 +69,10 @@ describe('TradingScreen', () => {
     let unmount: (() => void) | undefined;
 
     const renderTradingScreen = (overrides?: PreloadedStatePartial<TradingTestPreloadedState>) => {
-        const result = renderWithTradingProvider(<TradingScreen />, { overrides });
+        const result = renderWithTradingProvider(<TradingScreen />, {
+            overrides,
+            providers: ['intl', 'navigation', 'formatter', 'bottomSheet'],
+        });
 
         ({ unmount } = result);
 

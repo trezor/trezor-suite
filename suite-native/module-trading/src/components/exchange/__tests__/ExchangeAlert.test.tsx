@@ -22,11 +22,12 @@ describe('ExchangeAlert', () => {
     const renderFormHook = () =>
         renderHookWithStoreProvider(() => useExchangeForm(), {
             preloadedState,
+            providers: ['intl', 'navigation'],
         });
 
     const renderTradingAlert = () =>
         renderWithProviders(<ExchangeAlert />, {
-            providers: ['intl'],
+            providers: ['intl', 'navigation'],
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 

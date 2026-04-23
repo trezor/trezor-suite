@@ -19,6 +19,7 @@ describe('ExchangeSendAccountCryptoBalance', () => {
     const renderExchangeForm = () => {
         const { result } = renderHookWithTradingProvider(() => useExchangeForm(), {
             tradeType: 'exchange',
+            providers: ['intl', 'formatter', 'navigation'],
         });
 
         return result.current;
@@ -28,6 +29,7 @@ describe('ExchangeSendAccountCryptoBalance', () => {
         renderWithTradingProvider(<ExchangeSendAccountCryptoBalance />, {
             tradeType: 'exchange',
             wrapper: ({ children }) => <Form form={exchangeForm}>{children}</Form>,
+            providers: ['intl', 'formatter', 'navigation'],
         });
 
     beforeEach(() => {

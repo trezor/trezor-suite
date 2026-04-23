@@ -33,7 +33,10 @@ describe('BuyForm', () => {
     };
 
     const renderFormHook = (overrides: PreloadedStatePartial<TradingTestPreloadedState> = {}) =>
-        renderHookWithTradingProvider(() => useBuyForm(), { overrides });
+        renderHookWithTradingProvider(() => useBuyForm(), {
+            overrides,
+            providers: ['intl', 'navigation'],
+        });
 
     const renderBuyForm = (
         overrides: PreloadedStatePartial<TradingTestPreloadedState>,
@@ -42,6 +45,7 @@ describe('BuyForm', () => {
         renderWithTradingProvider(<BuyForm />, {
             overrides,
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
+            providers: ['intl', 'navigation'],
         });
 
     afterEach(() => {

@@ -23,6 +23,7 @@ describe('useSendAccountAssetBalance', () => {
             {
                 preloadedState: { wallet: getWalletState({ tradeType: 'sell' }) },
                 initialProps,
+                providers: [],
             },
         );
 

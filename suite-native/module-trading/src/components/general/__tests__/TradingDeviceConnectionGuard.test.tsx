@@ -32,7 +32,7 @@ describe('TradingDeviceConnectionGuard', () => {
             <TradingDeviceConnectionGuard>
                 <Text>CHILDREN</Text>
             </TradingDeviceConnectionGuard>,
-            { store },
+            { store, providers: ['intl', 'navigation'] },
         );
 
     beforeEach(() => {

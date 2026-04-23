@@ -30,6 +30,7 @@ describe('HistoryButton', () => {
     ) =>
         renderWithTradingProvider(<HistoryButton />, {
             overrides,
+            providers: ['intl'],
         });
 
     it('should render nothing where no trades are available', () => {

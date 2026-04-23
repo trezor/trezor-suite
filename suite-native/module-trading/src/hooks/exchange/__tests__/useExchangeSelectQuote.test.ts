@@ -102,12 +102,15 @@ describe('useExchangeSelectQuote', () => {
     };
 
     const renderExchangeForm = () =>
-        renderHookWithStoreProvider(() => useExchangeForm(), { store });
+        renderHookWithStoreProvider(() => useExchangeForm(), {
+            store,
+            providers: ['intl', 'navigation'],
+        });
 
     const renderUseExchangeSelectQuote = () => {
         const hook = renderHookWithStoreProvider(
             () => useExchangeSelectQuoteWithReportSpy(exchangeForm),
-            { store },
+            { store, providers: ['intl', 'navigation'] },
         );
 
         const spy = hook.result.current.reportSpy;

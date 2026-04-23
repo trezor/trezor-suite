@@ -24,7 +24,7 @@ describe('ProviderSheet', () => {
                 tradingType="buy"
                 {...props}
             />,
-            { overrides },
+            { overrides, providers: ['intl', 'formatter', 'bottomSheet'] },
         );
 
     afterEach(() => {

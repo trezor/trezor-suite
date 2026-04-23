@@ -51,6 +51,7 @@ describe('TradingReceiveAccountsPickerScreen', () => {
         const result = renderWithTradingProvider(<TradingReceiveAccountsPickerScreen />, {
             tradeType: mockRouteParams.tradingType,
             overrides,
+            providers: ['intl', 'navigation', 'formatter'],
         });
 
         ({ unmount } = result);

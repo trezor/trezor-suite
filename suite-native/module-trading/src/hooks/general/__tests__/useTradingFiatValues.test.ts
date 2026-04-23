@@ -42,6 +42,7 @@ const renderUseTradingFiatValues = async (
 ) => {
     const res = renderHookWithTradingProvider(() => useTradingFiatValues(amount, cryptoId), {
         overrides,
+        providers: [],
     });
 
     // await mocked loading of rates

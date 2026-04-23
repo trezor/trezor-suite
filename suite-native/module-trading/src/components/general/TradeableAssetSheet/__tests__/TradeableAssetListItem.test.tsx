@@ -43,6 +43,7 @@ describe('TradeableAssetListItem', () => {
 
         return renderWithStoreProvider(<TradeableAssetListItem asset={asset} onPress={onPress} />, {
             store,
+            providers: ['intl'],
         });
     };
 

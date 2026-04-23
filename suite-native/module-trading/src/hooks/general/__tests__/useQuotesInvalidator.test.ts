@@ -34,6 +34,7 @@ describe('useQuotesInvalidator', () => {
                 getClearRequestAction,
                 getClearStateAction,
             },
+            providers: [],
         });
 
     beforeEach(() => {

@@ -8,7 +8,9 @@ import { TradeStatusBadge, getBadgeIconName, getBadgeVariant } from '../TradeSta
 
 describe('TradeStatusBadge', () => {
     it('should render nothing when status is undefined', () => {
-        const { toJSON } = renderWithTradingProvider(<TradeStatusBadge status={undefined} />);
+        const { toJSON } = renderWithTradingProvider(<TradeStatusBadge status={undefined} />, {
+            providers: ['intl'],
+        });
 
         expect(toJSON()).toBeNull();
     });
@@ -28,6 +30,7 @@ describe('TradeStatusBadge', () => {
             const buyTrade = getBuyTrade({ status });
             const { getByAccessibilityHint } = renderWithTradingProvider(
                 <TradeStatusBadge status={buyTrade.data.status} />,
+                { providers: ['intl'] },
             );
             const expectedText = new RegExp(
                 getTranslation(`moduleTrading.tradeHistory.status.${statusKey}`),
@@ -54,6 +57,7 @@ describe('TradeStatusBadge', () => {
             const exchangeTrade = getExchangeTrade({ status });
             const { getByAccessibilityHint } = renderWithTradingProvider(
                 <TradeStatusBadge status={exchangeTrade.data.status} />,
+                { providers: ['intl'] },
             );
             const expectedText = new RegExp(
                 getTranslation(`moduleTrading.tradeHistory.status.${statusKey}`),
@@ -78,6 +82,7 @@ describe('TradeStatusBadge', () => {
             const sellTrade = getSellTrade({ status });
             const { getByAccessibilityHint } = renderWithTradingProvider(
                 <TradeStatusBadge status={sellTrade.data.status} />,
+                { providers: ['intl'] },
             );
             const expectedText = new RegExp(
                 getTranslation(`moduleTrading.tradeHistory.status.${statusKey}`),

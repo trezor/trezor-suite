@@ -26,7 +26,7 @@ describe('TradingCountryOfResidencePicker', () => {
     const renderForm = () =>
         renderHookWithTradingProvider(
             () => useForm<{ country: TradingCountryOption }>({ validation: yup.object() }),
-            { overrides: residenceCheckDisabledState },
+            { overrides: residenceCheckDisabledState, providers: ['intl', 'navigation'] },
         );
 
     const renderCountryOfResidencePicker = (
@@ -37,6 +37,7 @@ describe('TradingCountryOfResidencePicker', () => {
             {
                 wrapper: ({ children }) => <Form form={form}>{children}</Form>,
                 overrides,
+                providers: ['intl', 'services', 'bottomSheet', 'navigation'],
             },
         );
 

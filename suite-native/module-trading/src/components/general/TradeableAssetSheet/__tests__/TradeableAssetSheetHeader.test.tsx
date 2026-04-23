@@ -20,6 +20,7 @@ describe('TradeableAssetSheetHeader', () => {
                 onFilterChange={jest.fn()}
                 onSelectedNetworkFilter={jest.fn()}
             />,
+            { providers: ['intl'] },
         );
 
     it('should display "Coins" and do not display tabs by default', () => {

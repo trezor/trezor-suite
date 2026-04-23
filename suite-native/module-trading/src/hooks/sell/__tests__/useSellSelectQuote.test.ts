@@ -19,10 +19,17 @@ describe('useSellSelectQuote', () => {
     let store: TestStore;
     let sellForm: SellFormType;
 
-    const renderSellForm = () => renderHookWithStoreProvider(() => useSellForm(), { store });
+    const renderSellForm = () =>
+        renderHookWithStoreProvider(() => useSellForm(), {
+            store,
+            providers: ['intl', 'navigation'],
+        });
 
     const renderUseSellSelectQuote = () =>
-        renderHookWithStoreProvider(() => useSellSelectQuote(sellForm), { store });
+        renderHookWithStoreProvider(() => useSellSelectQuote(sellForm), {
+            store,
+            providers: ['intl', 'navigation'],
+        });
 
     beforeEach(() => {
         store = createTradingLightStore({ tradeType: 'sell' });

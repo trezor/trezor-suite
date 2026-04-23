@@ -10,7 +10,7 @@ jest.mock('@suite-native/clipboard', () => ({
 
 describe('CopyableText', () => {
     const renderCopyableText = (props: Partial<CopyableTextProps>) =>
-        renderWithProviders(<CopyableText text="TEST TEXT" {...props} />, { providers: ['intl'] });
+        renderWithProviders(<CopyableText text="TEST TEXT" {...props} />, { providers: [] });
 
     beforeEach(() => {
         jest.clearAllMocks();

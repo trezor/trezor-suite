@@ -14,6 +14,7 @@ describe('quoteUtils', () => {
     const renderUseTradingSellForm = () =>
         renderHookWithStoreProvider(() => useSellForm(), {
             preloadedState: { wallet: getWalletState({ tradeType: 'sell' }) },
+            providers: ['intl', 'navigation'],
         });
 
     beforeEach(() => {

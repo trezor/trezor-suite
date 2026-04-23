@@ -38,12 +38,14 @@ describe('ExchangeReceiveCard', () => {
     const renderForm = () =>
         renderHookWithStoreProvider(() => useExchangeForm(), {
             preloadedState,
+            providers: ['intl', 'formatter', 'navigation'],
         });
 
     const renderExchangeBuyCard = () =>
         renderWithStoreProvider(<ExchangeReceiveCard />, {
             preloadedState,
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
+            providers: ['intl', 'formatter', 'navigation'],
         });
 
     beforeEach(() => {

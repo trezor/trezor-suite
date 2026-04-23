@@ -65,6 +65,7 @@ describe('TradingSellPreviewScreen', () => {
         const result = renderWithTradingProvider(<TradingSellPreviewScreen />, {
             overrides,
             tradeType: 'sell',
+            providers: ['intl', 'navigation', 'formatter', 'bottomSheet'],
         });
 
         unmount = result.unmount;

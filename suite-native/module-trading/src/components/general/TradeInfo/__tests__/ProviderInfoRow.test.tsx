@@ -13,6 +13,7 @@ describe('ProviderInfoRow', () => {
 
         return renderWithStoreProvider(<ProviderInfoRow exchange="mercuryo" {...props} />, {
             preloadedState,
+            providers: ['intl'],
         });
     };
 

@@ -30,7 +30,7 @@ describe('BuyTab', () => {
     });
 
     const renderBuyTab = (overrides?: PreloadedStatePartial<TradingTestPreloadedState>) =>
-        renderWithTradingProvider(<BuyTab />, { overrides });
+        renderWithTradingProvider(<BuyTab />, { overrides, providers: ['intl', 'navigation'] });
 
     const expectSkeleton = () => {
         expect(screen.getAllByTestId('BoxSkeleton').length).toBeGreaterThan(0);

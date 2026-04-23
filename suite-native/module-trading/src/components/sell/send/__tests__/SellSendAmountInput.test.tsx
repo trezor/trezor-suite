@@ -34,7 +34,7 @@ describe('SellSendAmountInput', () => {
             <Form form={form}>
                 <SellSendAmountInput showAssetsSheet={jest.fn()} {...props} />
             </Form>,
-            { tradeType: 'sell', overrides },
+            { tradeType: 'sell', overrides, providers: ['intl', 'navigation'] },
         );
 
     const renderUseTradingSellForm = (
@@ -43,6 +43,7 @@ describe('SellSendAmountInput', () => {
         const { result } = renderHookWithTradingProvider(() => useSellForm(), {
             tradeType: 'sell',
             overrides,
+            providers: ['intl', 'navigation'],
         });
 
         return result.current;
