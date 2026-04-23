@@ -6,6 +6,7 @@ describe('ResidenceCheckAwareAnimatedBox', () => {
     const renderResidenceCheckAwareAnimatedBox = (preloadedState = {}) =>
         renderWithStoreProvider(<ResidenceCheckAwareAnimatedBox testID="TEST_ID" />, {
             preloadedState,
+            providers: [],
         });
 
     it('should have no border when residence check is enabled', () => {

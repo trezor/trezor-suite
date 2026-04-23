@@ -41,6 +41,7 @@ describe('NetworkAndAccountCard', () => {
                         },
                     },
                 }),
+                providers: ['intl'],
             },
         );
 

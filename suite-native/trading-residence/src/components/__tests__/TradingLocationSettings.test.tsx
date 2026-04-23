@@ -21,7 +21,10 @@ describe('TradingLocationSettings', () => {
     let store: TestStore;
 
     const renderTradingLocationSettings = (props: TradingLocationSettingsProps) =>
-        renderWithStoreProvider(<TradingLocationSettings {...props} />, { store });
+        renderWithStoreProvider(<TradingLocationSettings {...props} />, {
+            store,
+            providers: ['intl', 'navigation'],
+        });
 
     beforeEach(() => {
         store = createLightStore({

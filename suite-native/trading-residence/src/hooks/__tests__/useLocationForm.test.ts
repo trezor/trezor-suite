@@ -18,7 +18,7 @@ describe('useLocationForm', () => {
     let store: TestStore;
 
     const renderUseLocationForm = () =>
-        renderHookWithStoreProvider(() => useLocationForm(), { store });
+        renderHookWithStoreProvider(() => useLocationForm(), { store, providers: ['intl'] });
 
     beforeEach(() => {
         store = createLightStore({

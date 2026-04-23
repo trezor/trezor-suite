@@ -28,6 +28,7 @@ describe('useBrowserStateChangeCallbacks', () => {
     const renderUseBrowserwStateChangeCallbacks = (tradingType: TradingType | undefined) =>
         renderHookWithStoreProvider(() => useBrowserStateChangeCallbacks(tradingType), {
             store,
+            providers: [],
         });
 
     beforeEach(() => {

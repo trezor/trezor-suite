@@ -9,6 +9,7 @@ describe('useIsTradingAvailableForForm', () => {
         renderHookWithStoreProvider(() => useIsTradingAvailableForForm(), {
             wrapper: LocationForm,
             preloadedState,
+            providers: ['intl'],
         });
 
     it.each<[boolean, TradingCountryCode | undefined]>([

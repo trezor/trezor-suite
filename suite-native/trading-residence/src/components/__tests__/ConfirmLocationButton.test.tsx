@@ -48,6 +48,7 @@ describe('ConfirmLocationButton', () => {
         renderWithStoreProvider(<ConfirmLocationButton afterConfirm={jest.fn} {...props} />, {
             wrapper: LocationForm,
             store,
+            providers: ['intl'],
         });
 
     beforeEach(() => {
@@ -88,6 +89,7 @@ describe('ConfirmLocationButton', () => {
         const { getByText } = renderWithStoreProvider(<ConfirmLocationButtonWithChangedCountry />, {
             wrapper: LocationForm,
             store,
+            providers: ['intl'],
         });
 
         fireEvent.press(getByText('Confirm location'));

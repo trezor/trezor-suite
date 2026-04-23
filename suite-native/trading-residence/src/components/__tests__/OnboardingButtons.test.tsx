@@ -25,6 +25,7 @@ describe('OnboardingButtons', () => {
         renderWithStoreProvider(<OnboardingButtons {...props} />, {
             wrapper: LocationForm,
             store,
+            providers: ['intl'],
         });
 
     beforeEach(() => {

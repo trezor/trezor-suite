@@ -81,6 +81,7 @@ describe('CountryOfResidencePicker', () => {
     const renderCountryOfResidencePicker = (props: Partial<CountryOfResidencePickerProps> = {}) => {
         const { result } = renderHookWithStoreProvider(() => useLocationForm(), {
             store: createTradingResidenceStore(),
+            providers: ['intl'],
         });
 
         return renderWithProviders(

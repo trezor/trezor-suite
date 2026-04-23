@@ -57,6 +57,7 @@ describe('TradingLocationSettingsScreen', () => {
                     }),
                 },
             }),
+            providers: ['intl', 'bottomSheet', 'navigation'],
         });
 
     beforeEach(() => {

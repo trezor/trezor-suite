@@ -61,7 +61,10 @@ describe('useBrowserAuth', () => {
     let store: TestStore;
 
     const renderUseBrowserAuth = (tradingType: TradingType = 'sell') =>
-        renderHookWithStoreProvider(() => useBrowserAuth(tradingType), { store });
+        renderHookWithStoreProvider(() => useBrowserAuth(tradingType), {
+            store,
+            providers: ['intl'],
+        });
 
     const defaultWalletState = getWalletState();
 
@@ -105,6 +108,7 @@ describe('useBrowserAuth', () => {
             mockOpenBrowserAsync.mockResolvedValue({ type: WebBrowserResultType.OPENED });
             const { result } = renderHookWithStoreProvider(() => useBrowserAuth(undefined), {
                 store,
+                providers: ['intl'],
             });
 
             await act(async () => {

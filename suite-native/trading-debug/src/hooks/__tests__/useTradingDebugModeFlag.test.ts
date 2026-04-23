@@ -5,7 +5,10 @@ import { useTradingDebugModeFlag } from '../useTradingDebugModeFlag';
 
 describe('useTradingDebugModeFlag', () => {
     const renderUseDebugModeFlag = (preloadedState = {}) =>
-        renderHookWithStoreProvider(() => useTradingDebugModeFlag(), { preloadedState });
+        renderHookWithStoreProvider(() => useTradingDebugModeFlag(), {
+            preloadedState,
+            providers: [],
+        });
 
     it.each([true, false])('should respect FF [%s]', ffValue => {
         const { result } = renderUseDebugModeFlag({

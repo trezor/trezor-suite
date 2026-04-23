@@ -56,7 +56,7 @@ describe('useTradingAnalyticReportCallback', () => {
         it('should return sell analytics callback', () => {
             const { result } = renderHookWithStoreProvider(
                 () => useTradingAnalyticReportCallback('sell'),
-                { preloadedState },
+                { preloadedState, providers: [] },
             );
 
             (result.current as (step: TradingSellStep, action: TradingSellAction) => void)(
@@ -93,7 +93,7 @@ describe('useTradingAnalyticReportCallback', () => {
         it('should return exchange analytics callback', () => {
             const { result } = renderHookWithStoreProvider(
                 () => useTradingAnalyticReportCallback('exchange'),
-                { preloadedState },
+                { preloadedState, providers: [] },
             );
 
             (result.current as (step: TradingExchangeStep, action: TradingExchangeAction) => void)(
@@ -122,7 +122,7 @@ describe('useTradingAnalyticReportCallback', () => {
         it('should return null action (no analytics)', () => {
             const { result } = renderHookWithStoreProvider(
                 () => useTradingAnalyticReportCallback(undefined),
-                { preloadedState },
+                { preloadedState, providers: [] },
             );
 
             result.current('fee-selection', 'visit');
@@ -141,7 +141,7 @@ describe('useTradingAnalyticReportCallback', () => {
         it('should return null action (no analytics)', () => {
             const { result } = renderHookWithStoreProvider(
                 () => useTradingAnalyticReportCallback('buy'),
-                { preloadedState },
+                { preloadedState, providers: [] },
             );
 
             result.current('fee-selection', 'visit');

@@ -18,7 +18,10 @@ describe('useDispatchProviderConfirmationStatus', () => {
     let store: TestStore;
 
     const renderUseDispatchProviderConfirmationStatus = () =>
-        renderHookWithStoreProvider(() => useDispatchProviderConfirmationStatus(), { store });
+        renderHookWithStoreProvider(() => useDispatchProviderConfirmationStatus(), {
+            store,
+            providers: [],
+        });
 
     beforeEach(() => {
         store = createLightStore({

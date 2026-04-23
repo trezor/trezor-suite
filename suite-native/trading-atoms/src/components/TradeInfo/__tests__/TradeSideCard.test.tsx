@@ -48,6 +48,7 @@ describe('TradeSideCard', () => {
                         },
                     } satisfies PreloadedStatePartial<StateFromReducersMapObject<typeof reducer>>,
                 }),
+                providers: ['intl'],
             },
         );
 

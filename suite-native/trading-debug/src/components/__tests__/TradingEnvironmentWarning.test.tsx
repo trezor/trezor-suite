@@ -37,6 +37,7 @@ describe('TradingEnvironmentWarning', () => {
                     },
                 } satisfies PreloadedStatePartial<StateFromReducersMapObject<typeof reducer>>,
             }),
+            providers: ['intl'],
         });
 
     it('should render nothing when tradingEnvironment is [production]', () => {

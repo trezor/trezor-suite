@@ -31,6 +31,7 @@ describe('useFormCountryCode', () => {
                     }),
                 },
             }),
+            providers: ['intl'],
         });
 
     const renderUseFormCountryCode = (locationForm: TradingLocationFormType) =>

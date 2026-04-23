@@ -45,6 +45,7 @@ describe('useExchangeAnalyticReportCallback', () => {
     } = {}) =>
         renderHookWithStoreProvider(() => useExchangeAnalyticReportCallback(candidateQuote), {
             preloadedState,
+            providers: [],
         });
 
     beforeEach(() => {

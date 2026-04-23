@@ -25,6 +25,7 @@ describe('useProviderConfirmationStatus', () => {
     const renderUseProviderConfirmationStatus = () =>
         renderHookWithStoreProvider(() => useProviderConfirmationStatus(), {
             store,
+            providers: [],
         });
 
     beforeEach(() => {

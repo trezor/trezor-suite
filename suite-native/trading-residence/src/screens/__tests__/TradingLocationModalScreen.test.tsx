@@ -78,6 +78,7 @@ describe('TradingLocationModalScreen', () => {
                         }),
                     },
                 }),
+                providers: ['intl', 'bottomSheet', 'navigation'],
             },
         );
 

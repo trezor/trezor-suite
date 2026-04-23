@@ -19,7 +19,10 @@ describe('ProviderStatusDevButtons', () => {
     let store: TestStore;
 
     const renderProviderStatusDevButtons = () =>
-        renderWithStoreProvider(<ProviderStatusDevButtons />, { store });
+        renderWithStoreProvider(<ProviderStatusDevButtons />, {
+            store,
+            providers: ['intl'],
+        });
 
     beforeEach(() => {
         store = createLightStore({
