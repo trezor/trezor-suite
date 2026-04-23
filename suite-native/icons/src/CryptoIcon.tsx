@@ -81,8 +81,12 @@ export const CryptoIcon = ({ symbol, contractAddress, size = 'small' }: CryptoIc
 
     /**
      * Retries loading the icon with the next available address in sourceUrls.
-     * This is crucial for ADA, where the logo might be stored
-     * under either the policyId or the full contract address.
+     * This is crucial for:
+     * - ADA, where the logo might be stored under either the policyId or the
+     *   full contract address.
+     * - XLM, where the logo might be stored under either the classic
+     *   CODE-ISSUER address or the Soroban contract id, depending on how far
+     *   CoinGecko has progressed with its Stellar id migration for the token.
      */
     const handleLoadError = () => {
         if (logoIndex + 1 >= sourceUrls.length) {
