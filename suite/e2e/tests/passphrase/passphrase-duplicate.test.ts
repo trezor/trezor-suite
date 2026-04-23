@@ -1,13 +1,8 @@
-import { scheduleAction } from '@trezor/utils';
-
 import { expect, test } from '../../support/fixtures';
 
 test.describe('Passphrase duplicate', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({ deviceSetup: { passphrase_protection: true } });
-    test.beforeEach(async ({ device, onboardingPage }) => {
-        await scheduleAction(() => device.applySettings({ passphrase_always_on_device: false }), {
-            timeout: 30_000,
-        });
+    test.beforeEach(async ({ onboardingPage }) => {
         await onboardingPage.completeOnboarding();
     });
 
