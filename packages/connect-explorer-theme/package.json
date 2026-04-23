@@ -34,7 +34,7 @@
         "escape-string-regexp": "^5.0.0",
         "flexsearch": "^0.7.31",
         "focus-visible": "^5.2.1",
-        "git-url-parse": "^15.0.0",
+        "git-url-parse": "^16.1.0",
         "intersection-observer": "^0.12.2",
         "match-sorter": "^6.3.1",
         "next-seo": "^6.6.0",
@@ -45,8 +45,6 @@
         "zod": "4.3.6"
     },
     "devDependencies": {
-        "@types/flexsearch": "^0.7.42",
-        "@types/git-url-parse": "^16.0.2",
         "@types/react": "19.2.14",
         "concurrently": "^9.2.1",
         "next": "15.5.14",
