@@ -157,7 +157,6 @@
         "@trezor/trezor-user-env-link": "workspace:*",
         "@types/jws": "^3.2.11",
         "@types/node": "22.13.10",
-        "@types/node-fetch": "^2.6.12",
         "@types/w3c-web-usb": "^1.0.14",
         "@vitest/browser-playwright": "^4.1.0",
         "crypto-browserify": "3.12.0",

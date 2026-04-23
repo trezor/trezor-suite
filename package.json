@@ -136,7 +136,6 @@
         "@trezor/eslint": "workspace:*",
         "@types/jest": "29.5.12",
         "@types/node": "22.13.10",
-        "@types/node-fetch": "^2.6.12",
         "babel-jest": "30.0.0",
         "depcheck": "^1.4.7",
         "eslint": "^9.39.4",
