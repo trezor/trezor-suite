@@ -15810,8 +15810,8 @@ __metadata:
     "@trezor/product-components": "workspace:*"
     "@trezor/theme": "workspace:*"
     "@trezor/type-utils": "workspace:*"
-    "@types/flexsearch": "npm:^0.7.3"
-    "@types/git-url-parse": "npm:^9.0.3"
+    "@types/flexsearch": "npm:^0.7.42"
+    "@types/git-url-parse": "npm:^16.0.2"
     "@types/react": "npm:19.2.14"
     clsx: "npm:^2.1.1"
     concurrently: "npm:^8.0.0"
@@ -17417,10 +17417,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/flexsearch@npm:^0.7.3":
-  version: 0.7.6
-  resolution: "@types/flexsearch@npm:0.7.6"
-  checksum: 10/93aaed91f5847a0c85e19b339147067897c92385de842071c959bf3f1efb8c7095acce460385aa285c75c67022d78979b4cae6ecb754bdb74348bf4976160ae3
+"@types/flexsearch@npm:^0.7.42":
+  version: 0.7.42
+  resolution: "@types/flexsearch@npm:0.7.42"
+  dependencies:
+    flexsearch: "npm:*"
+  checksum: 10/4df799d86cb3ff139da43008816a77e4b205cafe0f1d9ab8f6cb68fc6685402d264c8aa218f616d692d5ce2fdee264e3ebdbfe5d983e85124531759d4d6d4ada
   languageName: node
   linkType: hard
 
@@ -17450,10 +17452,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/git-url-parse@npm:^9.0.3":
-  version: 9.0.3
-  resolution: "@types/git-url-parse@npm:9.0.3"
-  checksum: 10/ae5389bf4339e0e863d84e92cd8af137ea485ea7141a25998300ae38ba471617af004791f4c6f86431eb5fb0c70ad4dda3558ca9b0a020a3897058e95a91515e
+"@types/git-url-parse@npm:^16.0.2":
+  version: 16.0.2
+  resolution: "@types/git-url-parse@npm:16.0.2"
+  dependencies:
+    git-url-parse: "npm:*"
+  checksum: 10/2f640048f0f0e4d246f1d029cc8d364eb57721272d5550b60996c186faf141aac15648e74bf3681d932ba9f9b156d949723896b5da53c3aa284cd7fcf4a03225
   languageName: node
   linkType: hard
 
@@ -17859,6 +17863,13 @@ __metadata:
   version: 4.0.0
   resolution: "@types/parse-json@npm:4.0.0"
   checksum: 10/4df9de98150d2978afc2161482a3a8e6617883effba3223324f079de97ba7eabd7d84b90ced11c3f82b0c08d4a8383f678c9f73e9c41258f769b3fa234a2bb4f
+  languageName: node
+  linkType: hard
+
+"@types/parse-path@npm:^7.0.0":
+  version: 7.0.3
+  resolution: "@types/parse-path@npm:7.0.3"
+  checksum: 10/21a12c228d38f5a75659dfd7cb127dc2001ed3f6acbd1b2e0575d1348c735594c0bab06a97fe849c151438384829f20ea5971cb045f7ecd37d53c76a9fcb9de3
   languageName: node
   linkType: hard
 
@@ -28247,6 +28258,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"flexsearch@npm:*":
+  version: 0.8.212
+  resolution: "flexsearch@npm:0.8.212"
+  checksum: 10/d499fcd2b9f08d8f481995af50df5fbe7b4222e233fbdc59859da96f2c1dc528bc56a33516cc2ef49158130cd610f9a85841e01c50d3b23172538fa6997ef01f
+  languageName: node
+  linkType: hard
+
 "flexsearch@npm:^0.7.31":
   version: 0.7.43
   resolution: "flexsearch@npm:0.7.43"
@@ -28841,6 +28859,25 @@ __metadata:
     is-ssh: "npm:^1.4.0"
     parse-url: "npm:^8.1.0"
   checksum: 10/003ef38424702ac4cbe6d2817ccfb5811251244c955a8011ca40298d12cf1fb6529529f074d5832b5221e193ec05f4742ecf7806e6c4f41a81a2f2cff65d6bf4
+  languageName: node
+  linkType: hard
+
+"git-up@npm:^8.1.0":
+  version: 8.1.1
+  resolution: "git-up@npm:8.1.1"
+  dependencies:
+    is-ssh: "npm:^1.4.0"
+    parse-url: "npm:^9.2.0"
+  checksum: 10/475bfb816ee6003c505f25f2d6859148eedf684b2381f59774a8b4baf279d603710b888ecd1c5f5619fd7a582b131c2c52f8d247d59c7cc10bb7f7edffc704f7
+  languageName: node
+  linkType: hard
+
+"git-url-parse@npm:*":
+  version: 16.1.0
+  resolution: "git-url-parse@npm:16.1.0"
+  dependencies:
+    git-up: "npm:^8.1.0"
+  checksum: 10/1522e86ce89bb854ac5eaab13e71f9a72e93c4eb9897559d9731e03b700a7e2d38d16a77dddede9f79c8dac6f50633e2e420702bb1677580e797312e9b55379d
   languageName: node
   linkType: hard
 
@@ -38210,6 +38247,16 @@ __metadata:
   dependencies:
     parse-path: "npm:^7.0.0"
   checksum: 10/ceb51dc474568092a50d6d936036dfe438a87aa45bcf20947c8fcdf1544ee9c50255608abae604644e718e91e0b83cfbea4675e8b2fd90bc197432f6d9be263c
+  languageName: node
+  linkType: hard
+
+"parse-url@npm:^9.2.0":
+  version: 9.2.0
+  resolution: "parse-url@npm:9.2.0"
+  dependencies:
+    "@types/parse-path": "npm:^7.0.0"
+    parse-path: "npm:^7.0.0"
+  checksum: 10/d2746f0dbcd34d39df966a0726c00ede272aa34d825513baca721ad95480786c664f91ab22cf4e79cdb130468056e41834f6c9cc912b9180539f73aa5bafa982
   languageName: node
   linkType: hard
 
