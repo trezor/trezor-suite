@@ -14,6 +14,7 @@ import { BridgeRequested } from 'src/views/suite/bridge-requested';
 import { UdevRules } from 'src/views/suite/udev';
 import { Version } from 'src/views/suite/version';
 
+import { CreateWalletBackupModal } from '../ReduxModal/UserContextModal/CreateWalletBackupModal/CreateWalletBackupModal';
 import { MultiShareBackupModal } from '../ReduxModal/UserContextModal/MultiShareBackupModal/MultiShareBackupModal';
 
 // would not work if defined directly in the switch
@@ -33,6 +34,7 @@ const getForegroundApp = (app: ForegroundAppRoute['app']) => {
         recovery: Recovery,
         backup: Backup,
         'create-multi-share-backup': MultiShareBackupModal,
+        'create-wallet-backup': CreateWalletBackupModal,
     };
 
     return map[app];
