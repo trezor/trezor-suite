@@ -25,7 +25,7 @@
         "@trezor/schema-utils": "workspace:^",
         "@trezor/theme": "workspace:^",
         "@trezor/urls": "workspace:^",
-        "@uiw/react-codemirror": "^4.23.0",
+        "@uiw/react-codemirror": "^4.25.9",
         "codemirror-json-schema": "^0.8.1",
         "codemirror-json5": "^1.0.3",
         "json5": "^2.2.3",
@@ -47,7 +47,7 @@
         "styled-components": "^6.3.9",
         "stylelint": "^17.1.1",
         "stylelint-config-standard": "^40.0.0",
-        "swr": "^2.3.3"
+        "swr": "^2.4.1"
     },
     "devDependencies": {
         "@trezor/eslint": "workspace:*",
