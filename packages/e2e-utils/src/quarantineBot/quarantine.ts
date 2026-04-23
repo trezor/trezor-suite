@@ -1,6 +1,7 @@
 import { computeStats, extractKeyFromAction, getTestKey, normalizeTitlePath } from './actions';
 import { createQuarantineAction } from './api';
 import {
+    CANARY_QUARANTINE_PREFIX,
     EXPLORER_LOOKBACK_DAYS,
     PRE_FILTER_FAILURE_RATE,
     QUARANTINE_FAILURE_RATE,
@@ -26,9 +27,18 @@ export async function quarantineFailingTests(
 ): Promise<void> {
     log(`\n── [${projectLabel}] Checking for failing tests to quarantine ──`);
 
-    const alreadyQuarantinedKeys = new Set(
-        existingActions.map(a => extractKeyFromAction(a)).filter(Boolean) as string[],
-    );
+    const canaryActionByKey = new Map<string, Action>();
+    const alreadyQuarantinedKeys = new Set<string>();
+
+    for (const action of existingActions) {
+        const key = extractKeyFromAction(action);
+        if (!key) continue;
+        if (action.name.startsWith(CANARY_QUARANTINE_PREFIX)) {
+            canaryActionByKey.set(key, action);
+        } else {
+            alreadyQuarantinedKeys.add(key);
+        }
+    }
     debug(`  already quarantined keys: ${alreadyQuarantinedKeys.size}`);
 
     const candidateTests = activeTests.filter(
@@ -90,6 +100,13 @@ export async function quarantineFailingTests(
                 `(${failurePercent}% fail rate, ${stats.failures}/${stats.executions} latest runs)`,
         );
 
+        const existingCanary = canaryActionByKey.get(getTestKey(test));
+        if (existingCanary) {
+            log(`  ↳ Removing stale canary-scoped action before creating global quarantine.`);
+            await deleteAction(existingCanary.actionId);
+            debug(`  deleted canary action: actionId=${existingCanary.actionId}`);
+        }
+
         const action = await createQuarantineAction(projectId, test, stats);
         debug(`  created action: actionId=${action.actionId}`);
         slackEvents.push({
@@ -131,6 +148,13 @@ export async function unquarantinePassingTests(
     debug(`  active tests index: ${testsByKey.size} entries`);
 
     for (const action of existingActions) {
+        if (action.name.startsWith(CANARY_QUARANTINE_PREFIX)) {
+            log(
+                `  ↳ Skipping canary-scoped action: "${action.name.slice(0, 80)}" — managed by nightly unquarantine only.`,
+            );
+            continue;
+        }
+
         const testKey = extractKeyFromAction(action);
         if (!testKey) {
             warn(`  ↳ Could not extract title from action "${action.name}", skipping.`);

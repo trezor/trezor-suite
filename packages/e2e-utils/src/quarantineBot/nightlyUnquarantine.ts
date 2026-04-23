@@ -1,9 +1,14 @@
 import { extractKeyFromAction } from './actions';
-import { findSignaturesForTitleKeys, getAutoQuarantineActions } from './api';
-import { DEVELOP_BRANCH, EXPLORER_LOOKBACK_DAYS } from './config';
+import {
+    findSignaturesForTitleKeys,
+    getAutoQuarantineActions,
+    narrowQuarantineToCanary,
+} from './api';
+import { DEVELOP_BRANCH, EXPLORER_LOOKBACK_DAYS, FW_CANARY_TAG } from './config';
+import { deleteAction, getLatestRunIdOnBranch, getResultsFromRun } from '../currentsApi/api';
 import { debug, log, warn } from '../logger';
 import type { SlackEvent } from './types';
-import { deleteAction, getLatestRunIdOnBranch, getResultsFromRun } from '../currentsApi/api';
+import type { TestResultItem } from '../currentsApi/types';
 
 /**
  * Unquarantine auto-quarantined tests that passed in the latest run on the
@@ -14,9 +19,15 @@ import { deleteAction, getLatestRunIdOnBranch, getResultsFromRun } from '../curr
  * on the main branch — without waiting for the broader statistical threshold
  * used by the regular health-check (`unquarantinePassingTests`).
  *
- * A test is only unquarantined if ALL its instances in the run passed (i.e.
- * every Playwright project that executed it reported a pass). This handles
- * multi-project runs where the same test title can appear more than once.
+ * When tag information is available in results, fw canary instances (tagged
+ * `fwCanary`) are evaluated separately from regular instances:
+ *  - Regular all pass + canary all pass (or no canary) → full unquarantine.
+ *  - Regular all pass + some canary still fail → narrow the quarantine action
+ *    to canary-only (tag: fwCanary), keeping the test visible in regular runs.
+ *  - Any regular instance fails → keep quarantine unchanged.
+ *
+ * If the API does not return tag information (all tags undefined), the
+ * function falls back to the original behaviour: all instances must pass.
  *
  * To minimise API calls the function never loads the full run. Instead it:
  *   1. Fetches only the auto-quarantined actions (one API call).
@@ -85,14 +96,14 @@ export async function nightlyUnquarantineFromLatestRun(
 
     // For each quarantined test, fetch only its own results filtered to the
     // latest run. One API call per test — no unrelated spec data is loaded.
-    const instanceStats = new Map<string, { total: number; passed: number }>();
+    const resultsByKey = new Map<string, TestResultItem[]>();
     await Promise.all(
         [...quarantinedByKey.keys()].map(async key => {
             const signature = signatureByKey.get(key);
             if (!signature) {
                 debug(`  no signature for key ${key} — leaving quarantined`);
 
-                return; // test not seen in the explorer lookback window — leave quarantined
+                return;
             }
             const results = await getResultsFromRun(signature, runId, EXPLORER_LOOKBACK_DAYS);
             debug(
@@ -101,52 +112,116 @@ export async function nightlyUnquarantineFromLatestRun(
                     ? `(${results.filter(r => r.status === 'passed').length} passed)`
                     : '',
             );
-            if (results.length === 0) {
-                return;
+            if (results.length > 0) {
+                resultsByKey.set(key, results);
             }
-            instanceStats.set(key, {
-                total: results.length,
-                passed: results.filter(r => r.status === 'passed').length,
-            });
         }),
     );
 
     let unquarantinedCount = 0;
+    let narrowedCount = 0;
 
     for (const [testKey, action] of quarantinedByKey) {
         const testTitle = (JSON.parse(testKey) as string[]).join(' > ');
-        const stats = instanceStats.get(testKey);
+        const results = resultsByKey.get(testKey);
 
-        if (!stats || stats.total === 0) {
+        if (!results || results.length === 0) {
             log(`  ↳ Not seen in run: "${testTitle.slice(0, 80)}" — keeping quarantine.`);
             continue;
         }
 
-        if (stats.passed < stats.total) {
+        // When the API returns tag information, evaluate canary and regular
+        // instances separately. Fall back to treating all results as regular
+        // (original behaviour) when tags are not present in the response.
+        const hasTagInfo = results.some(r => r.tags !== undefined);
+        const canaryResults = hasTagInfo
+            ? results.filter(r => r.tags?.includes(FW_CANARY_TAG))
+            : [];
+        const regularResults = hasTagInfo
+            ? results.filter(r => !r.tags?.includes(FW_CANARY_TAG))
+            : results;
+
+        debug(
+            `  key ${testKey.slice(0, 60)}: hasTagInfo=${hasTagInfo}`,
+            `regular=${regularResults.length} canary=${canaryResults.length}`,
+        );
+
+        if (regularResults.length === 0) {
+            // Only canary instances ran this test in the latest develop run.
+            // Keep the quarantine — we need regular instances to pass first.
             log(
-                `  ↳ Not all instances passed (${stats.passed}/${stats.total}): "${testTitle.slice(0, 80)}" — keeping quarantine.`,
+                `  ↳ Only canary instances in run: "${testTitle.slice(0, 80)}" — keeping quarantine.`,
             );
             continue;
         }
 
-        log(
-            `  ↳ Unquarantining: "${testTitle.slice(0, 80)}" (${stats.total} instance(s) all passed) ✓`,
-        );
-        await deleteAction(action.actionId);
-        debug(`  deleted action: actionId=${action.actionId}`);
-        unquarantinedCount++;
+        const regularPassed = regularResults.filter(r => r.status === 'passed').length;
 
-        slackEvents.push({
-            kind: 'unquarantined',
-            projectId,
-            titlePath: JSON.parse(testKey) as string[],
-            signature: undefined,
-            passes: stats.passed,
-            executions: stats.total,
-        });
+        if (regularPassed < regularResults.length) {
+            log(
+                `  ↳ Not all regular instances passed (${regularPassed}/${regularResults.length}): "${testTitle.slice(0, 80)}" — keeping quarantine.`,
+            );
+            continue;
+        }
+
+        // All regular instances passed. Now check canary.
+        const canaryPassed = canaryResults.filter(r => r.status === 'passed').length;
+        const canaryAllPassed = canaryResults.length === 0 || canaryPassed === canaryResults.length;
+        const signature = signatureByKey.get(testKey);
+
+        if (canaryAllPassed) {
+            log(
+                `  ↳ Unquarantining: "${testTitle.slice(0, 80)}" (${results.length} instance(s) all passed) ✓`,
+            );
+            await deleteAction(action.actionId);
+            debug(`  deleted action: actionId=${action.actionId}`);
+            unquarantinedCount++;
+
+            slackEvents.push({
+                kind: 'unquarantined',
+                projectId,
+                titlePath: JSON.parse(testKey) as string[],
+                signature,
+                passes: results.filter(r => r.status === 'passed').length,
+                executions: results.length,
+            });
+        } else {
+            // Regular passed but canary still failing. If the action is already
+            // canary-scoped, there is nothing to update — just keep it.
+            const alreadyCanaryScoped = action.matcher.cond.some(
+                c =>
+                    c.type === 'tag' &&
+                    (c.value === FW_CANARY_TAG ||
+                        (Array.isArray(c.value) && c.value.includes(FW_CANARY_TAG))),
+            );
+
+            if (alreadyCanaryScoped) {
+                log(
+                    `  ↳ Canary still failing (${canaryPassed}/${canaryResults.length}): "${testTitle.slice(0, 80)}" — keeping canary quarantine.`,
+                );
+                continue;
+            }
+
+            log(
+                `  ↳ Narrowing to canary: "${testTitle.slice(0, 80)}" (regular ${regularPassed}/${regularResults.length} passed, canary ${canaryPassed}/${canaryResults.length} passed) ✓`,
+            );
+            const narrowedAction = await narrowQuarantineToCanary(projectId, action);
+            debug(`  narrowed action: actionId=${narrowedAction.actionId}`);
+            narrowedCount++;
+
+            slackEvents.push({
+                kind: 'narrowed',
+                projectId,
+                titlePath: JSON.parse(testKey) as string[],
+                signature,
+                actionId: narrowedAction.actionId,
+                regularPasses: regularPassed,
+                regularTotal: regularResults.length,
+            });
+        }
     }
 
-    if (unquarantinedCount === 0) {
+    if (unquarantinedCount === 0 && narrowedCount === 0) {
         log('  ✓ No quarantined tests found passing in all instances of the latest run.');
     }
 }

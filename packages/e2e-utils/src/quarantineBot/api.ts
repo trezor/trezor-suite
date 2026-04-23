@@ -1,6 +1,11 @@
 import { type computeStats, normalizeTitlePath } from './actions';
-import { AUTO_QUARANTINE_PREFIX, EXPLORER_LOOKBACK_DAYS } from './config';
-import { createAction, currentsRequest, getActions } from '../currentsApi/api';
+import {
+    AUTO_QUARANTINE_PREFIX,
+    CANARY_QUARANTINE_PREFIX,
+    EXPLORER_LOOKBACK_DAYS,
+    FW_CANARY_TAG,
+} from './config';
+import { createAction, currentsRequest, deleteAction, getActions } from '../currentsApi/api';
 import type { Action, TestExplorerItem, TestsExplorerResponse } from '../currentsApi/types';
 import { debug } from '../logger';
 
@@ -8,8 +13,47 @@ export async function getAutoQuarantineActions(projectId: string): Promise<Actio
     const actions = await getActions(projectId);
 
     return actions.filter(
-        a => a.name.startsWith(AUTO_QUARANTINE_PREFIX) && a.action.some(r => r.op === 'quarantine'),
+        a =>
+            a.status === 'active' &&
+            (a.name.startsWith(AUTO_QUARANTINE_PREFIX) ||
+                a.name.startsWith(CANARY_QUARANTINE_PREFIX)) &&
+            a.action.some(r => r.op === 'quarantine'),
     );
+}
+
+/**
+ * Replace a global quarantine action with one scoped to fw canary runs only
+ * (identified by the `fwCanary` Currents tag). The original action is deleted
+ * and a new one is created with the `[auto-quarantine, canary]` prefix and an
+ * additional `tag: inc fwCanary` matcher condition.
+ */
+export async function narrowQuarantineToCanary(projectId: string, action: Action): Promise<Action> {
+    const titlePathCond = action.matcher.cond.find(
+        c => c.type === 'titlePath' && Array.isArray(c.value),
+    );
+    if (!titlePathCond || !Array.isArray(titlePathCond.value)) {
+        throw new Error(`Cannot extract titlePath from action "${action.name}"`);
+    }
+    const titlePath = titlePathCond.value as string[];
+    const name = `${CANARY_QUARANTINE_PREFIX} ${titlePath.join(' > ').slice(0, 80)}`;
+    const description =
+        action.description +
+        `\nNarrowed to fw canary (tag: ${FW_CANARY_TAG}) on ${new Date().toISOString().slice(0, 10)}.`;
+
+    await deleteAction(action.actionId);
+
+    return createAction(projectId, {
+        name,
+        description,
+        action: [{ op: 'quarantine' }],
+        matcher: {
+            op: 'AND',
+            cond: [
+                { type: 'titlePath', op: 'incAll', value: titlePath },
+                { type: 'tag', op: 'inc', value: [FW_CANARY_TAG] },
+            ],
+        },
+    });
 }
 
 /**

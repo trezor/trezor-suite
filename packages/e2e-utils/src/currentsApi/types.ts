@@ -93,6 +93,7 @@ export interface TestResultItem {
     runId: string;
     instanceId: string;
     spec: string;
+    tags?: string[];
     status: 'passed' | 'failed' | 'pending' | 'skipped';
     flaky: boolean;
     commit: TestResultCommit;

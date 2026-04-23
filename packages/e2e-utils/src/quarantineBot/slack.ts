@@ -62,6 +62,7 @@ export function buildSlackSummary(
 
         const quarantinedEvents = projectEvents.filter(e => e.kind === 'quarantined');
         const unquarantinedEvents = projectEvents.filter(e => e.kind === 'unquarantined');
+        const narrowedEvents = projectEvents.filter(e => e.kind === 'narrowed');
 
         const lines: string[] = [`*${projectLabel}*`];
 
@@ -86,6 +87,19 @@ export function buildSlackSummary(
                     : '';
                 lines.push(
                     `• ${truncateTitle(event.titlePath)} — ${event.passes}/${event.executions} passed${resultsLink}`,
+                );
+            }
+        }
+
+        if (narrowedEvents.length > 0) {
+            lines.push(`:arrows_counterclockwise: *Narrowed to canary (${narrowedEvents.length})*`);
+            for (const event of narrowedEvents) {
+                const resultsLink = event.signature
+                    ? ` · <${currentsTestUrl(projectId, event.signature)}|results>`
+                    : '';
+                const actionUrl = currentsActionUrl(projectId, event.actionId);
+                lines.push(
+                    `• ${truncateTitle(event.titlePath)} — passes in regular (${event.regularPasses}/${event.regularTotal}), still failing in fw canary · <${actionUrl}|action>${resultsLink}`,
                 );
             }
         }

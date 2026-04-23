@@ -3,6 +3,8 @@ export { CURRENTS_API_BASE, DEVELOP_BRANCH, TEST_RESULTS_PAGE_SIZE } from '../cu
 export const EXPLORER_LOOKBACK_DAYS = 2; // window used by Tests Explorer to discover active tests
 
 export const AUTO_QUARANTINE_PREFIX = '[auto-quarantine]';
+export const CANARY_QUARANTINE_PREFIX = '[auto-quarantine, canary]';
+export const FW_CANARY_TAG = 'fwCanary';
 
 /**
  * Heuristic thresholds

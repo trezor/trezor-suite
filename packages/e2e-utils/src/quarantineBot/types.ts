@@ -15,6 +15,15 @@ export type SlackEvent =
           signature: string | undefined;
           passes: number;
           executions: number;
+      }
+    | {
+          kind: 'narrowed';
+          projectId: string;
+          titlePath: string[];
+          signature: string | undefined;
+          actionId: string;
+          regularPasses: number;
+          regularTotal: number;
       };
 
 export interface FailedTestFromRun {
