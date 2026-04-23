@@ -94,7 +94,7 @@ describe('CountryOfResidencePicker', () => {
     it('should display value from expo-localization (Poland) when in default state', () => {
         const { getByLabelText } = renderCountryOfResidencePicker();
 
-        expect(getByLabelText('Selected country of residence')).toHaveTextContent('🇵🇱 POL');
+        expect(getByLabelText('Selected country of residence')).toHaveTextContent('POL');
     });
 
     it('should allow to select country', async () => {
@@ -103,7 +103,7 @@ describe('CountryOfResidencePicker', () => {
         await userEvent.press(getByText('Country of residence'));
         await userEvent.press(getByText(/Algeria/));
 
-        expect(getByLabelText('Selected country of residence')).toHaveTextContent('🇩🇿 DZA');
+        expect(getByLabelText('Selected country of residence')).toHaveTextContent('DZA');
     });
 
     it('should display empty component when filtered data is empty', async () => {
