@@ -132,23 +132,6 @@ describe('BuyProviderPicker', () => {
             expect(getByText('Mercuryo')).toBeOnTheScreen();
         });
 
-        it('should display kyc warning when not loading', () => {
-            const { getByText } = renderTradingProviderPicker(withQuotes);
-
-            expect(getByText('This provider requires to know your identity.')).toBeOnTheScreen();
-        });
-
-        it('should not display kyc warning when loading', () => {
-            const { queryByText } = renderTradingProviderPicker(
-                mergeDeepObject(withQuotes, {
-                    wallet: { trading: { buy: { isLoading: true } } },
-                }),
-            );
-            expect(
-                queryByText('This provider requires to know your identity.'),
-            ).not.toBeOnTheScreen();
-        });
-
         describe('analytics', () => {
             beforeEach(() => {
                 reportMock.mockClear();

@@ -4,13 +4,16 @@ import { getInitializedTradingStateWithQuotes } from '@suite-native/trading-fixt
 
 import { BuyConfirmation } from '../BuyConfirmation';
 
+const EXCHANGE_NAME = 'test-provider';
+const CTA_TEXT = `Buy via ${EXCHANGE_NAME}`;
+
 jest.mock('../../../hooks/buy/useBuyFlow', () => ({
     useBuyFlow: jest.fn(),
 }));
 
 jest.mock('../../../hooks/buy/useBuyFormContext', () => ({
     useBuyFormContext: () => ({
-        watch: () => ({ exchange: 'test-provider' }),
+        watch: () => ({ exchange: EXCHANGE_NAME }),
     }),
 }));
 
@@ -35,7 +38,7 @@ describe('BuyConfirmation', () => {
         });
     });
 
-    it('should render continue button when canProceed is true', () => {
+    it('should render buy button when canProceed is true', () => {
         mockUseBuyFlow.mockReturnValue({
             canProceed: true,
             selectQuote: jest.fn(),
@@ -45,10 +48,10 @@ describe('BuyConfirmation', () => {
         });
 
         const { getByText } = renderConfirmation();
-        expect(getByText('Continue')).toBeTruthy();
+        expect(getByText(CTA_TEXT)).toBeTruthy();
     });
 
-    it('should not render continue button when canProceed is false', () => {
+    it('should not render buy button when canProceed is false', () => {
         mockUseBuyFlow.mockReturnValue({
             canProceed: false,
             selectQuote: jest.fn(),
@@ -59,7 +62,7 @@ describe('BuyConfirmation', () => {
 
         const { queryByText } = renderConfirmation();
 
-        expect(queryByText('Continue')).toBeNull();
+        expect(queryByText(CTA_TEXT)).toBeNull();
     });
 
     it('should render activate button when trading inactive Stellar token', () => {
@@ -78,7 +81,7 @@ describe('BuyConfirmation', () => {
 
         const { queryByText } = renderConfirmation();
         expect(queryByText('Activate')).toBeTruthy();
-        expect(queryByText('Continue')).toBeNull();
+        expect(queryByText(CTA_TEXT)).toBeNull();
     });
 
     it('should not render activate button when not trading inactive Stellar token', () => {
@@ -97,6 +100,6 @@ describe('BuyConfirmation', () => {
 
         const { queryByText } = renderConfirmation();
         expect(queryByText('Activate')).toBeNull();
-        expect(queryByText('Continue')).toBeTruthy();
+        expect(queryByText(CTA_TEXT)).toBeTruthy();
     });
 });
