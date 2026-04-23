@@ -5,7 +5,7 @@ import { type CryptoId } from 'invity-api';
 import {
     type TradingAssetSellOption,
     createAssetNativeTokenOption,
-    createAssetTokenOption,
+    useTradingAssets,
 } from '@suite-common/trading';
 import { type NetworkConfigWithoutTestnets } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
@@ -25,6 +25,7 @@ export function useTradingDefaultSellAsset({
     cryptoId,
 }: UseTradingDefaultSellAssetProps) {
     const findAccountOrToken = useTradingFindAccountOrToken();
+    const { resolveAssetTokenOption } = useTradingAssets();
     const accountOrToken = useMemo(() => {
         if (!cryptoId || !accountKey) {
             return null;
@@ -43,7 +44,7 @@ export function useTradingDefaultSellAsset({
 
         if (token) {
             return {
-                ...createAssetTokenOption(account.symbol, token),
+                ...resolveAssetTokenOption(account.symbol, token),
                 accountKey: account.key,
             } satisfies TradingAssetSellOption;
         }
@@ -54,7 +55,7 @@ export function useTradingDefaultSellAsset({
             ),
             accountKey: account.key,
         } satisfies TradingAssetSellOption;
-    }, [accountOrToken]);
+    }, [accountOrToken, resolveAssetTokenOption]);
 
     return { account, defaultAsset };
 }

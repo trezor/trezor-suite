@@ -284,7 +284,32 @@ export function useTradingAssets() {
         [getCoinsAndPlatforms],
     );
 
-    return { buildAssetOptions, createAssetOptionFromCryptoId };
+    const resolveAssetTokenOption = useCallback(
+        (
+            networkSymbol: NetworkSymbol,
+            token: Pick<TokenInfo, 'contract' | 'symbol' | 'name'>,
+        ): TradingAssetOptionWithContractAddress => {
+            const { coins, platforms } = getCoinsAndPlatforms();
+            const cryptoId = getCryptoId(networkSymbol, token.contract) as CryptoId;
+
+            if (coins?.[cryptoId]) {
+                const result = createAssetOption({
+                    cryptoId,
+                    coinInfo: coins[cryptoId],
+                    platformInfo: getTradingPlatformsInfoByCryptoId(platforms, cryptoId),
+                });
+
+                if (result !== null && !result.isNativeToken) {
+                    return result;
+                }
+            }
+
+            return createAssetTokenOption(networkSymbol, token);
+        },
+        [getCoinsAndPlatforms],
+    );
+
+    return { buildAssetOptions, createAssetOptionFromCryptoId, resolveAssetTokenOption };
 }
 
 export type UseTradingAssets = ReturnType<typeof useTradingAssets>;
