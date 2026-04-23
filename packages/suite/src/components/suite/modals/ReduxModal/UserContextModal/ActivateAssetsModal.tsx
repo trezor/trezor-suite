@@ -1,9 +1,10 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { AnimatePresence, motion } from 'framer-motion';
 
 import { selectIsActivateAssetsBannerClosed, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
+import { preserveModal, removePreserveModal } from '@suite/modal';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     changeCoinVisibility,
@@ -14,7 +15,7 @@ import { Banner, Column, Modal, motionEasing } from '@trezor/components';
 
 import { CoinGroup } from 'src/components/suite';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 
 import { AdvancedCoinSettingsModal } from './AdvancedCoinSettingsModal/AdvancedCoinSettingsModal';
 
@@ -44,11 +45,27 @@ export const ActivateAssetsModal = ({ onCancel }: ActivateAssetsModalProps) => {
     const enabledNetworks = useSelector(selectEnabledNetworks);
     const isActivateAssetsBannerClosed = useSelector(selectIsActivateAssetsBannerClosed);
     const { supportedMainnets } = useNetworkSupport();
+    const { isDiscoveryRunning } = useDiscovery();
 
     const [pendingNetworks, setPendingNetworks] = useState<NetworkSymbol[]>(enabledNetworks);
     const [advancedSettingsSymbol, setAdvancedSettingsSymbol] = useState<NetworkSymbol | null>(
         null,
     );
+    // When user clicks Add while discovery is running, we defer the actual apply until
+    // the in-flight discovery finishes. This flag drives the Add button's loading state
+    // and the deferred-apply effect below.
+    const [isApplyPending, setIsApplyPending] = useState(false);
+
+    // Keep the modal open across TrezorConnect's CLOSE_UI_WINDOW events that fire when
+    // background discovery calls complete. Without this, the modal sometimes closes on
+    // its own while the user is still interacting with it.
+    useEffect(() => {
+        dispatch(preserveModal());
+
+        return () => {
+            dispatch(removePreserveModal());
+        };
+    }, [dispatch]);
 
     const hasChanges = useMemo(() => {
         const toEnable = pendingNetworks.filter(symbol => !enabledNetworks.includes(symbol));
@@ -71,7 +88,7 @@ export const ActivateAssetsModal = ({ onCancel }: ActivateAssetsModalProps) => {
         });
     };
 
-    const onSave = () => {
+    const applyChanges = () => {
         const toEnable = pendingNetworks.filter(symbol => !enabledNetworks.includes(symbol));
         const toDisable = enabledNetworks.filter(symbol => !pendingNetworks.includes(symbol));
 
@@ -89,6 +106,27 @@ export const ActivateAssetsModal = ({ onCancel }: ActivateAssetsModalProps) => {
         onCancel();
     };
 
+    const onSave = () => {
+        // Defer applying if a discovery is currently running — starting another discovery
+        // mid-flight would reset state and can race with the in-flight TrezorConnect calls.
+        if (isDiscoveryRunning) {
+            setIsApplyPending(true);
+
+            return;
+        }
+
+        applyChanges();
+    };
+
+    // Apply the pending save as soon as the background discovery finishes.
+    useEffect(() => {
+        if (!isApplyPending || isDiscoveryRunning) return;
+
+        applyChanges();
+        // applyChanges closes the modal; no need to clear isApplyPending manually.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isApplyPending, isDiscoveryRunning]);
+
     const handleBannerClose = () => {
         dispatch(setFlag({ key: 'activateAssetsBannerClosed', value: true }));
     };
@@ -102,7 +140,12 @@ export const ActivateAssetsModal = ({ onCancel }: ActivateAssetsModalProps) => {
                 width={600}
                 bottomContent={
                     hasChanges ? (
-                        <Modal.Button onClick={onSave} data-testid="@modal/activate-assets/save">
+                        <Modal.Button
+                            onClick={onSave}
+                            isLoading={isApplyPending}
+                            isDisabled={isApplyPending}
+                            data-testid="@modal/activate-assets/save"
+                        >
                             <Translation id="TR_ADD" />
                         </Modal.Button>
                     ) : null
@@ -132,6 +175,7 @@ export const ActivateAssetsModal = ({ onCancel }: ActivateAssetsModalProps) => {
                         enabledNetworks={pendingNetworks}
                         onToggle={handleToggle}
                         onSettings={setAdvancedSettingsSymbol}
+                        ignoreDeviceLock
                     />
                 </Column>
             </Modal>

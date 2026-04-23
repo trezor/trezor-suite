@@ -38,17 +38,17 @@ interface ContainerProps {
     description?: TranslationKey | JSX.Element;
     cta: CTA | CTA[];
     dataTestBase: string;
-    icon?: React.ReactNode;
+    image?: React.ReactNode;
 }
 
 // Common wrapper for all views
-const Container = ({ title, description, cta, dataTestBase, icon }: ContainerProps) => {
+const Container = ({ title, description, cta, dataTestBase, image }: ContainerProps) => {
     const { isLocked } = useDevice();
     const actions = Array.isArray(cta) ? cta : [cta];
 
     return (
         <Column gap={spacings.xxs} data-testid={`@exception/${dataTestBase}`} alignItems="center">
-            {icon ? icon : <IconCircle name="warning" size={96} intent="warning" />}
+            {image ? image : <IconCircle name="warning" size={96} intent="warning" />}
             <H3 data-testid={`@exception/${dataTestBase}/header`} margin={{ top: spacings.md }}>
                 <Translation id={title} />
             </H3>
@@ -144,7 +144,7 @@ export const PortfolioCardException = ({
         case 'discovery-empty':
             return (
                 <Container
-                    icon={<Illustration name="networks" width={224} />}
+                    image={<Illustration name="networks" width={224} />}
                     title="TR_YOUR_WALLET_IS_READY_WHAT"
                     description="TR_DASHBOARD_ACTIVATE_ASSETS_DESC"
                     cta={[
