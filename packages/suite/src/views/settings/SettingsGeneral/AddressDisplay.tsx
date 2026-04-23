@@ -3,35 +3,30 @@ import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { selectAddressDisplayType, suiteSettingsActions } from '@suite/settings';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
-import { SelectBar } from '@trezor/components';
+import { Switch } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
 
-const options = [
-    {
-        label: <Translation id="TR_ORIGINAL_ADDRESS" />,
-        value: AddressDisplayOptions.ORIGINAL,
-    },
-    {
-        label: <Translation id="TR_CHUNKED_ADDRESS" />,
-        value: AddressDisplayOptions.CHUNKED,
-    },
-];
+const getAddressDisplayType = (value: boolean) =>
+    value ? AddressDisplayOptions.CHUNKED : AddressDisplayOptions.ORIGINAL;
 
 export const AddressDisplay = () => {
-    const selectedAddressDisplay = useSelector(selectAddressDisplayType);
     const dispatch = useDispatch();
     const analytics = useAnalytics();
-    const onChange = (value: AddressDisplayOptions) => {
+
+    const selectedAddressDisplay = useSelector(selectAddressDisplayType);
+
+    const onChange = (value: boolean) => {
+        const addressDisplayType = getAddressDisplayType(value);
+
         analytics.report({
             type: events.settingsGeneralAddressDisplayTypeEvent.name,
-            payload: {
-                addressDisplayType: value,
-            },
+            payload: { addressDisplayType },
         });
-        dispatch(suiteSettingsActions.setAddressDisplayType(value));
+
+        dispatch(suiteSettingsActions.setAddressDisplayType(addressDisplayType));
     };
 
     return (
@@ -47,11 +42,9 @@ export const AddressDisplay = () => {
                         description={<Translation id="TR_ADDRESS_DISPLAY_DESCRIPTION" />}
                     />
                     <ActionColumn>
-                        <SelectBar
-                            selectedOption={selectedAddressDisplay}
-                            options={options}
+                        <Switch
+                            isChecked={selectedAddressDisplay === AddressDisplayOptions.CHUNKED}
                             onChange={onChange}
-                            size="small"
                         />
                     </ActionColumn>
                 </SectionItem>

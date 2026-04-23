@@ -1425,21 +1425,13 @@ export const messages = defineMessages({
         id: 'TR_BIO_AUTH_SYSTEM_MESSAGE_WIN',
     },
     TR_ADDRESS_DISPLAY: {
-        defaultMessage: 'Address display',
+        defaultMessage: 'Spaced address formatting',
         id: 'TR_ADDRESS_DISPLAY',
     },
     TR_ADDRESS_DISPLAY_DESCRIPTION: {
         defaultMessage:
-            'Display address continuous (bc1wetes...v54d8d) or spaced (bc1w etes ... v54d 8d).',
+            'Display addresses with spaces for easier reading. When disabled, addresses are shown as a continuous string.',
         id: 'TR_ADDRESS_DISPLAY_DESCRIPTION',
-    },
-    TR_ORIGINAL_ADDRESS: {
-        defaultMessage: 'Continuous',
-        id: 'TR_ORIGINAL_ADDRESS',
-    },
-    TR_CHUNKED_ADDRESS: {
-        defaultMessage: 'Spaced',
-        id: 'TR_CHUNKED_ADDRESS',
     },
     TR_ASSETS: {
         defaultMessage: 'Coin',
