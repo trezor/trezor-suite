@@ -128,7 +128,17 @@ jobs:
       - name: "Minimal yarn install"
         uses: ./.github/actions/minimal-yarn-install
       - name: Unit Tests
-        run: yarn test:unit:${{ matrix.test-task }} --output-style=stream -- --silent
+        run: |
+          if [ "${{ matrix.test-task }}" = "native" ]; then
+            yarn nx run-many --target=test:unit \
+              --exclude='@trezor/*,@suite/*,@suite-common/*' \
+              --skip-nx-cache \
+              --parallel=1 \
+              --output-style=stream \
+              -- --silent
+          else
+            yarn test:unit:${{ matrix.test-task }} --output-style=stream -- --silent
+          fi
 
   build-libs-for-publishing:
     name: "Build libs for publishing"

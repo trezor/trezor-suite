@@ -1,0 +1,68 @@
+name: "[Benchmark] Native Unit Tests"
+
+on:
+  workflow_dispatch:
+  push:
+  pull_request:
+    paths:
+      - ".github/workflows/native-unit-benchmark.yml"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  native-unit-benchmark:
+    name: Native Unit Benchmark (Nx ${{ matrix.nx-parallel }}, Jest ${{ matrix.jest-mode }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 600
+    strategy:
+      fail-fast: false
+      matrix:
+        nx-parallel: [1, 2, 3]
+        jest-mode: [default, run-in-band, max-workers-2]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          submodules: true
+      - name: "Checkout branches for Nx"
+        uses: ./.github/actions/nx-checkout
+      - name: "Minimal yarn install"
+        uses: ./.github/actions/minimal-yarn-install
+      - name: Native Unit Tests Benchmark
+        run: |
+          set -euo pipefail
+
+          jest_args="--silent"
+
+          if [ "${{ matrix.jest-mode }}" = "run-in-band" ]; then
+            jest_args="$jest_args --runInBand"
+          elif [ "${{ matrix.jest-mode }}" = "max-workers-2" ]; then
+            jest_args="$jest_args --maxWorkers=2"
+          fi
+
+          SECONDS=0
+          set +e
+          yarn nx run-many --target=test:unit \
+            --exclude='@trezor/*,@suite/*,@suite-common/*' \
+            --skip-nx-cache \
+            --parallel=${{ matrix.nx-parallel }} \
+            --output-style=stream \
+            -- $jest_args
+          exit_code=$?
+          set -e
+
+          elapsed_seconds=$SECONDS
+
+          {
+            echo "## Native Unit Benchmark"
+            echo ""
+            echo "- Nx parallel: ${{ matrix.nx-parallel }}"
+            echo "- Jest mode: ${{ matrix.jest-mode }}"
+            echo "- Jest args: \`$jest_args\`"
+            echo "- Test command duration: ${elapsed_seconds}s"
+            echo "- Exit code: ${exit_code}"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          exit $exit_code
