@@ -79,11 +79,11 @@ const getTransactionMessageId = ({ transaction, isPending }: GetTransactionMessa
 const getSolTransactionStakeTypeName = (stakeType: StakeType) => {
     switch (stakeType) {
         case 'stake':
-            return 'Stake';
+            return 'TR_TX_STAKE_STAKE';
         case 'unstake':
-            return 'Unstake';
+            return 'TR_TX_STAKE_UNSTAKE';
         case 'claim':
-            return 'Claim Withdraw Request';
+            return 'TR_TX_STAKE_CLAIM';
     }
 };
 
@@ -149,9 +149,11 @@ export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderP
 
     const solanaStakeType = transaction?.solanaSpecific?.stakeOperation?.type;
     if (solanaStakeType) {
+        const translationId = getSolTransactionStakeTypeName(solanaStakeType);
+
         return (
             <>
-                {getSolTransactionStakeTypeName(solanaStakeType)}
+                {translationId && <Translation id={translationId} />}
                 {isSupportedSolStakingNetworkSymbol(transaction.symbol) && (
                     <UnstakingTxAmount transaction={transaction} />
                 )}
