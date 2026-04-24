@@ -1,5 +1,5 @@
 import { createConsole, createConsoleFormatter } from '@evolu/common';
-import { createEvoluDeps, createRun } from '@evolu/web';
+import { createRun } from '@evolu/web';
 import { type Dispatch } from '@reduxjs/toolkit';
 
 import { type DesktopAnalyticsDep } from '@suite/analytics';
@@ -18,6 +18,7 @@ import {
 import { type SuiteSync } from '@suite-common/suite-sync-types';
 import { type TrezorConnect } from '@trezor/connect';
 
+import { createEvoluDepsFixed } from './createEvoluDepsFixed';
 import {
     type DisableLegacyMetadataIfNeededDep,
     createTurnOnDesktopSuiteSync,
@@ -40,7 +41,7 @@ export const createSuiteSyncDesktopCompositionRoot = (
         formatter: createConsoleFormatter()({ timestampFormat: 'absolute' }),
     });
 
-    const evoluDeps = createEvoluDeps({ console });
+    const evoluDeps = createEvoluDepsFixed({ console });
 
     const run = createRun(evoluDeps);
 
