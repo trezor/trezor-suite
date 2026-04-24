@@ -152,6 +152,7 @@
         "@types/node": "22.13.10",
         "@typescript/native-preview": "npm:typescript@^7.0.2",
         "babel-jest": "30.5.1",
+        "babel-plugin-react-compiler": "^1.0.0",
         "depcheck": "^1.4.7",
         "eslint": "^10.8.1",
         "husky": "^9.1.7",

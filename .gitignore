@@ -161,9 +161,6 @@ suite/app-assets/files/translations/master.json
 # playwright trace CLI extraction dir
 .playwright-cli/
 
-# AI agent plans
-/plans
-
 # coverage map and test analysis files
 coverage-map/
 
