@@ -1,6 +1,13 @@
 import { Status } from '../../src/client/Status';
-import * as http from '../../src/client/coordinatorRequest';
+import { coordinatorRequest } from '../../src/client/coordinatorRequest';
 import { STATUS_TIMEOUT } from '../../src/constants';
+
+jest.mock('../../src/client/coordinatorRequest', () => ({
+    ...jest.requireActual('../../src/client/coordinatorRequest'),
+    coordinatorRequest: jest.fn(
+        jest.requireActual('../../src/client/coordinatorRequest').coordinatorRequest,
+    ),
+}));
 import {
     AFFILIATE_INFO,
     DEFAULT_ROUND,
@@ -44,6 +51,9 @@ describe('Status', () => {
 
     afterEach(() => {
         jest.restoreAllMocks();
+        (coordinatorRequest as jest.Mock).mockImplementation(
+            jest.requireActual('../../src/client/coordinatorRequest').coordinatorRequest,
+        );
         jest.useRealTimers();
 
         status?.stop();
@@ -61,7 +71,7 @@ describe('Status', () => {
 
         const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
         const coordinatorRequestSpy = jest.fn();
-        jest.spyOn(http, 'coordinatorRequest').mockImplementation(url => {
+        (coordinatorRequest as jest.Mock).mockImplementation(url => {
             if (url === 'status') {
                 coordinatorRequestSpy();
             }
@@ -119,7 +129,7 @@ describe('Status', () => {
 
         const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
         const coordinatorRequestSpy = jest.fn();
-        jest.spyOn(http, 'coordinatorRequest').mockImplementation(url => {
+        (coordinatorRequest as jest.Mock).mockImplementation(url => {
             if (url === 'status') {
                 coordinatorRequestSpy();
             }
@@ -160,7 +170,7 @@ describe('Status', () => {
 
     it('Status identities', async () => {
         const identities: string[] = [];
-        jest.spyOn(http, 'coordinatorRequest').mockImplementation((url, _b, options) => {
+        (coordinatorRequest as jest.Mock).mockImplementation((url, _b, options) => {
             if (url === 'status') {
                 const id = options?.identity;
                 if (id && !identities.includes(id)) {
@@ -290,7 +300,7 @@ describe('Status', () => {
         const affiliateDataBase64 = Buffer.from('{}', 'utf-8').toString('base64');
 
         const coordinatorRequestSpy = jest.fn();
-        jest.spyOn(http, 'coordinatorRequest').mockImplementation(url => {
+        (coordinatorRequest as jest.Mock).mockImplementation(url => {
             if (url === 'status') {
                 coordinatorRequestSpy();
             }
