@@ -65,8 +65,8 @@ export const FiatCurrencySheet = memo(
                 handleComponent={renderHandle}
                 renderItem={({ value, ...rest }) => (
                     <FiatCurrencyListItem
-                        value={value}
                         {...rest}
+                        value={value}
                         onPress={() => onFiatSelectCallback(value)}
                     />
                 )}

@@ -8,6 +8,7 @@
     },
     "include": ["src/**/*", "styled.d.ts"],
     "references": [
+        { "path": "../../suite-common/flags" },
         {
             "path": "../../suite-common/geolocation"
         },

@@ -17,6 +17,7 @@
     "dependencies": {
         "@react-navigation/native": "7.1.28",
         "@reduxjs/toolkit": "2.11.2",
+        "@suite-common/flags": "workspace:*",
         "@suite-common/trading": "workspace:*",
         "@suite-common/validators": "workspace:*",
         "@suite-native/analytics": "workspace:*",

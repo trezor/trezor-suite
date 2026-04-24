@@ -56,6 +56,7 @@
         {
             "path": "../../suite-common/firmware-authenticity"
         },
+        { "path": "../../suite-common/flags" },
         {
             "path": "../../suite-common/formatters"
         },

@@ -39,6 +39,7 @@
         "@suite-common/fiat-services": "workspace:*",
         "@suite-common/firmware": "workspace:*",
         "@suite-common/firmware-authenticity": "workspace:*",
+        "@suite-common/flags": "workspace:*",
         "@suite-common/formatters": "workspace:*",
         "@suite-common/geolocation": "workspace:*",
         "@suite-common/logger": "workspace:*",

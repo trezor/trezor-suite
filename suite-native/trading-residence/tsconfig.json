@@ -2,6 +2,7 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../../suite-common/flags" },
         { "path": "../../suite-common/trading" },
         {
             "path": "../../suite-common/validators"

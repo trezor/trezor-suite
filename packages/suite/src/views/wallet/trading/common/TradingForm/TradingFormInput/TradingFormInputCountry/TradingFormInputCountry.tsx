@@ -3,8 +3,9 @@ import { type Control, useWatch } from 'react-hook-form';
 
 import { Translation, useTranslation } from '@suite/intl';
 import { useGetCountryName } from '@suite/trading';
+import { getCountryFlag } from '@suite-common/flags';
 import { TRADING_FORM_COUNTRY_SELECT } from '@suite-common/trading';
-import { Flag, GhostContainer, Icon, Row, Text, getCountryFlag } from '@trezor/components';
+import { Flag, GhostContainer, Icon, Row, Text } from '@trezor/components';
 
 import { FakeSelect } from 'src/components/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';

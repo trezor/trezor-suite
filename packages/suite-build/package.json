@@ -24,6 +24,7 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
+        "@suite-common/flags": "workspace:*",
         "@suite-common/suite-config": "workspace:*",
         "@suite/router-config": "workspace:*",
         "@trezor/bundler-security": "workspace:*",

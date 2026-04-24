@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-native';
 
+import { FLAGS, flagSizes } from '@suite-common/flags';
+
 import { Flag as FlagComponent, type FlagProps } from '../Flag/Flag';
-import { FLAGS } from '../Flag/flags';
-import { flagSizes } from '../Flag/types';
 
 type FlagStory = StoryObj<FlagProps>;
 
