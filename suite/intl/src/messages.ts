@@ -10187,6 +10187,18 @@ export const messages = defineMessages({
         id: 'TR_STAKE_ACKNOWLEDGE_ENTRY_PERIOD',
         defaultMessage: 'I acknowledge the entry period.',
     },
+    TR_TX_STAKE_STAKE: {
+        id: 'TR_TX_STAKE_STAKE',
+        defaultMessage: 'Stake',
+    },
+    TR_TX_STAKE_UNSTAKE: {
+        id: 'TR_TX_STAKE_UNSTAKE',
+        defaultMessage: 'Unstake',
+    },
+    TR_TX_STAKE_CLAIM: {
+        id: 'TR_TX_STAKE_CLAIM',
+        defaultMessage: 'Claim Withdraw Request',
+    },
     TR_STAKE_STAKE: {
         id: 'TR_STAKE_STAKE',
         defaultMessage: 'Stake',
