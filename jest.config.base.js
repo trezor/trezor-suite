@@ -1,6 +1,6 @@
 const path = require('path');
 
-const { reactCompilerPlugin } = require('./react-compiler.config');
+const { reactCompilerBabelOverride } = require('./react-compiler.config');
 
 const babelConfig = {
     presets: [
@@ -13,11 +13,9 @@ const babelConfig = {
             },
         ],
     ],
-    plugins: [
-        // React Compiler must run before other plugins.
-        reactCompilerPlugin,
-        ['@babel/plugin-proposal-decorators', { version: '2023-11' }],
-    ],
+    plugins: [['@babel/plugin-proposal-decorators', { version: '2023-11' }]],
+    // React Compiler is scoped via overrides (see react-compiler.config.js) — see plans/react-compiler-migration.md.
+    overrides: [reactCompilerBabelOverride],
 };
 
 module.exports = {
