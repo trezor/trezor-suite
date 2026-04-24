@@ -65,7 +65,7 @@ export const SecurityStep = () => {
                 return {
                     ...params,
                     backup_method: 1,
-                    backup_type: 1 as const,
+                    backup_type: 4 as const,
                 };
             }
 
