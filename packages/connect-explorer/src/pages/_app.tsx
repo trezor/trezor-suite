@@ -11,7 +11,6 @@ import { intermediaryTheme } from '@trezor/components';
 
 import '../styles/globals.css';
 import '@trezor/connect-explorer-theme/style.css';
-import StyledComponentsRegistry from '../components/util/StyledComponentsRegistry';
 import { store } from '../store';
 
 const ThemeComponent = ({ Component, pageProps }: AppProps) => {
@@ -33,11 +32,9 @@ const ThemeComponent = ({ Component, pageProps }: AppProps) => {
 
     return (
         <ThemeProvider theme={intermediaryTheme[theme]}>
-            <StyledComponentsRegistry>
-                <Provider store={store}>
-                    <Component {...pageProps} />
-                </Provider>
-            </StyledComponentsRegistry>
+            <Provider store={store}>
+                <Component {...pageProps} />
+            </Provider>
         </ThemeProvider>
     );
 };
