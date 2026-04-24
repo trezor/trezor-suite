@@ -7,12 +7,12 @@ import { AmountEditingDoneButton } from '@suite-native/trading-atoms';
 import { BuyAlert } from './BuyAlert';
 import { BuyCard } from './BuyCard';
 import { BuyConfirmation } from './BuyConfirmation';
-import { BuyKYCWarning } from './BuyKYCWarning';
 import { BuyPaymentCard } from './BuyPaymentCard';
 import { useBuyFormContext } from '../../hooks/buy/useBuyFormContext';
 import { useBuyQuotes } from '../../hooks/buy/useBuyQuotes';
 import { useFocusedValueWatch } from '../../hooks/general/useFocusedValueWatch';
 import { useMountedRecentlyFlag } from '../../hooks/general/useMountedRecentlyFlag';
+import { BuySellKYCWarning } from '../general/BuySellKYCWarning';
 import { LastErrorMessage } from '../general/Error/LastErrorMessage';
 
 type BuyFormProps = {
@@ -66,7 +66,7 @@ const BuyFormMemoized = memo(
                                 isFormMountedRecently={isFormMountedRecently}
                                 shouldAnimateEntering={shouldAnimateEntering}
                             />
-                            <BuyKYCWarning />
+                            <BuySellKYCWarning type="buy" />
                             <BuyConfirmation enteringAnimation={enteringAnimation} />
                         </>
                     )}
