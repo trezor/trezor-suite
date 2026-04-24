@@ -1,4 +1,4 @@
-import * as decomposition from '../../src/client/round/outputDecomposition';
+import { outputDecomposition } from '../../src/client/round/outputDecomposition';
 import { outputRegistration } from '../../src/client/round/outputRegistration';
 import { createInput } from '../fixtures/input.fixture';
 import { createCoinjoinRound } from '../fixtures/round.fixture';
@@ -14,6 +14,13 @@ jest.mock('@trezor/utils', () => {
         getWeakRandomNumberInRange: () => 0,
     };
 });
+
+jest.mock('../../src/client/round/outputDecomposition', () => ({
+    ...jest.requireActual('../../src/client/round/outputDecomposition'),
+    outputDecomposition: jest.fn(
+        jest.requireActual('../../src/client/round/outputDecomposition').outputDecomposition,
+    ),
+}));
 
 describe('outputRegistration', () => {
     let server: Awaited<ReturnType<typeof createServer>>;
@@ -55,7 +62,7 @@ describe('outputRegistration', () => {
         });
 
         // Mock outputDecomposition module responses
-        jest.spyOn(decomposition, 'outputDecomposition').mockImplementation(() =>
+        (outputDecomposition as jest.Mock).mockImplementation(() =>
             Promise.resolve([
                 {
                     accountKey: 'account-A',
