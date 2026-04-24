@@ -16,6 +16,7 @@ const webChannel = {
 
 export const useConnectPopupWeb = () => {
     const [incomingMessages, setIncomingMessages] = useState<ConnectPopupMessage[]>([]);
+    const [isChannelReady, setIsChannelReady] = useState(false);
     // Start with '*' because we don't know the opener's origin yet.
     // Protocol messages sent before the first incoming message (e.g.
     // POPUP.CORE_LOADED, channel-handshake-confirm) contain no sensitive
@@ -45,15 +46,16 @@ export const useConnectPopupWeb = () => {
         }
     }, []);
 
-    const popupLink = useMemo<ConnectPopupLink>(
-        () => ({
+    const popupLink = useMemo<ConnectPopupLink | null>(() => {
+        if (!isChannelReady) return null;
+
+        return {
             sendMessage: postMessageToParent,
             get origin() {
                 return originRef.current;
             },
-        }),
-        [postMessageToParent],
-    );
+        };
+    }, [postMessageToParent, isChannelReady]);
 
     const consumeMessages = useCallback(() => {
         setIncomingMessages(prev => prev.slice(1));
@@ -83,6 +85,7 @@ export const useConnectPopupWeb = () => {
         try {
             broadcastChannel = new BroadcastChannel(`@trezor/connect-popup/${requestId}`);
             channelRef.current = broadcastChannel;
+            setIsChannelReady(true);
         } catch (error) {
             // TODO: show warning to user
             console.warn('BroadcastChannel is not supported in this browser', error);
@@ -95,6 +98,7 @@ export const useConnectPopupWeb = () => {
             broadcastChannel.removeEventListener('message', onMessage);
             broadcastChannel.close();
             channelRef.current = null;
+            setIsChannelReady(false);
             // TODO: show warning to user
             console.warn('Popup handshake timeout');
         }, 3000);
