@@ -3,8 +3,15 @@ import type { Descriptor } from '@trezor/transport';
 import { Log } from '@trezor/utils';
 
 import { Device } from '../Device';
-import * as checkFirmwareHashModule from '../workflow/checkFirmwareHash';
+import { checkFirmwareHash } from '../workflow/checkFirmwareHash';
 import { checkFirmwareHashWithRetries } from '../workflow/checkFirmwareHashWithRetries';
+
+jest.mock('../workflow/checkFirmwareHash', () => ({
+    ...jest.requireActual('../workflow/checkFirmwareHash'),
+    checkFirmwareHash: jest.fn(
+        jest.requireActual('../workflow/checkFirmwareHash').checkFirmwareHash,
+    ),
+}));
 
 const { createTestTransport } = global.JestMocks;
 
@@ -29,7 +36,7 @@ describe(checkFirmwareHashWithRetries.name, () => {
     });
 
     it('performs check successfully from initial state', async () => {
-        jest.spyOn(checkFirmwareHashModule, 'checkFirmwareHash').mockImplementation(() =>
+        (checkFirmwareHash as jest.Mock).mockImplementation(() =>
             Promise.resolve({ success: true }),
         );
 
@@ -39,7 +46,7 @@ describe(checkFirmwareHashWithRetries.name, () => {
             firmwareHash: null,
         }));
         await checkFirmwareHashWithRetries({ device, logger });
-        expect(checkFirmwareHashModule.checkFirmwareHash).toHaveBeenCalled();
+        expect(checkFirmwareHash).toHaveBeenCalled();
         expect(device.setAuthenticityChecks).toHaveBeenCalledWith({
             success: true,
             attemptCount: 1,
@@ -47,7 +54,7 @@ describe(checkFirmwareHashWithRetries.name, () => {
     });
 
     it('performs check with error from initial state', async () => {
-        jest.spyOn(checkFirmwareHashModule, 'checkFirmwareHash').mockImplementation(() =>
+        (checkFirmwareHash as jest.Mock).mockImplementation(() =>
             Promise.resolve({ success: false, error: 'hash-mismatch' }),
         );
 
@@ -57,7 +64,7 @@ describe(checkFirmwareHashWithRetries.name, () => {
             firmwareHash: null,
         }));
         await checkFirmwareHashWithRetries({ device, logger });
-        expect(checkFirmwareHashModule.checkFirmwareHash).toHaveBeenCalled();
+        expect(checkFirmwareHash).toHaveBeenCalled();
         expect(device.setAuthenticityChecks).toHaveBeenCalledWith({
             success: false,
             error: 'hash-mismatch',
@@ -72,7 +79,7 @@ describe(checkFirmwareHashWithRetries.name, () => {
             firmwareHash: { success: true },
         }));
         await checkFirmwareHashWithRetries({ device, logger });
-        expect(checkFirmwareHashModule.checkFirmwareHash).not.toHaveBeenCalled();
+        expect(checkFirmwareHash).not.toHaveBeenCalled();
         expect(device.setAuthenticityChecks).not.toHaveBeenCalled();
     });
 
@@ -83,12 +90,12 @@ describe(checkFirmwareHashWithRetries.name, () => {
             firmwareHash: { success: false, error: 'hash-mismatch' },
         }));
         await checkFirmwareHashWithRetries({ device, logger });
-        expect(checkFirmwareHashModule.checkFirmwareHash).not.toHaveBeenCalled();
+        expect(checkFirmwareHash).not.toHaveBeenCalled();
         expect(device.setAuthenticityChecks).not.toHaveBeenCalled();
     });
 
     it('does retry with success for a retriable error', async () => {
-        jest.spyOn(checkFirmwareHashModule, 'checkFirmwareHash').mockImplementation(() =>
+        (checkFirmwareHash as jest.Mock).mockImplementation(() =>
             Promise.resolve({ success: true }),
         );
 
@@ -103,7 +110,7 @@ describe(checkFirmwareHashWithRetries.name, () => {
             },
         }));
         await checkFirmwareHashWithRetries({ device, logger });
-        expect(checkFirmwareHashModule.checkFirmwareHash).toHaveBeenCalled();
+        expect(checkFirmwareHash).toHaveBeenCalled();
         expect(device.setAuthenticityChecks).toHaveBeenCalledWith({
             success: true,
             attemptCount: 2,
@@ -112,7 +119,7 @@ describe(checkFirmwareHashWithRetries.name, () => {
     });
 
     it('does a single retry with error for a retriable error', async () => {
-        jest.spyOn(checkFirmwareHashModule, 'checkFirmwareHash').mockImplementation(() =>
+        (checkFirmwareHash as jest.Mock).mockImplementation(() =>
             Promise.resolve({
                 success: false,
                 error: 'other-error',
@@ -131,7 +138,7 @@ describe(checkFirmwareHashWithRetries.name, () => {
             },
         }));
         await checkFirmwareHashWithRetries({ device, logger });
-        expect(checkFirmwareHashModule.checkFirmwareHash).toHaveBeenCalled();
+        expect(checkFirmwareHash).toHaveBeenCalled();
         expect(device.setAuthenticityChecks).toHaveBeenCalledWith({
             success: false,
             error: 'other-error',
@@ -147,13 +154,13 @@ describe(checkFirmwareHashWithRetries.name, () => {
             firmwareHash: { success: false, error: 'other-error', attemptCount: 9 },
         }));
         await checkFirmwareHashWithRetries({ device, logger });
-        expect(checkFirmwareHashModule.checkFirmwareHash).not.toHaveBeenCalled();
+        expect(checkFirmwareHash).not.toHaveBeenCalled();
         expect(device.setAuthenticityChecks).not.toHaveBeenCalled();
     });
 
     it('keeps retrying timeout error until time limit is satisfied', async () => {
         let counter = 0;
-        jest.spyOn(checkFirmwareHashModule, 'checkFirmwareHash').mockImplementation(() => {
+        (checkFirmwareHash as jest.Mock).mockImplementation(() => {
             counter++;
 
             return Promise.resolve(
@@ -167,7 +174,7 @@ describe(checkFirmwareHashWithRetries.name, () => {
             firmwareHash: null,
         }));
         await checkFirmwareHashWithRetries({ device, logger });
-        expect(checkFirmwareHashModule.checkFirmwareHash).toHaveBeenCalledTimes(3);
+        expect(checkFirmwareHash).toHaveBeenCalledTimes(3);
         expect(device.setAuthenticityChecks).toHaveBeenCalledWith({
             success: false,
             error: 'takes-too-long',
@@ -176,7 +183,7 @@ describe(checkFirmwareHashWithRetries.name, () => {
     });
 
     it('keeps retrying timeout error until retry limit is reached', async () => {
-        jest.spyOn(checkFirmwareHashModule, 'checkFirmwareHash').mockImplementation(() =>
+        (checkFirmwareHash as jest.Mock).mockImplementation(() =>
             Promise.resolve({ success: false, error: 'takes-too-long' }),
         );
 
@@ -186,7 +193,7 @@ describe(checkFirmwareHashWithRetries.name, () => {
             firmwareHash: null,
         }));
         await checkFirmwareHashWithRetries({ device, logger });
-        expect(checkFirmwareHashModule.checkFirmwareHash).toHaveBeenCalledTimes(5);
+        expect(checkFirmwareHash).toHaveBeenCalledTimes(5);
         expect(device.setAuthenticityChecks).toHaveBeenCalledWith({
             success: false,
             error: 'takes-too-long',
