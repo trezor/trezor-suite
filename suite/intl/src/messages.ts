@@ -6495,10 +6495,6 @@ export const messages = defineMessages({
             'Choose where your legacy labels are stored. Only missing labels will be copied to Suite Sync.',
         id: 'TR_LABELING_MIGRATION_MODAL_DESCRIPTION',
     },
-    TR_LABELING_MIGRATION_FAILED: {
-        defaultMessage: 'Migration failed. Try again.',
-        id: 'TR_LABELING_MIGRATION_FAILED',
-    },
     TR_LABELING_MIGRATION_SUCCESS: {
         defaultMessage: '{added} labels migrated successfully, {skipped} skipped',
         id: 'TR_LABELING_MIGRATION_SUCCESS',
