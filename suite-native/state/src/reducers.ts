@@ -388,7 +388,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
         transforms: [walletPersistTransform, graphPersistTransform],
         mergeLevel: 2,
         key: 'root',
-        version: 3,
+        version: 4,
         migrations: {
             2: (oldState: any /* FIXME */) => {
                 if (!oldState?.wallet) return oldState;
@@ -407,7 +407,6 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
                         accounts: migratedAccounts,
                         transactions: {
                             transactions: migratedTransactions,
-                            phishing: oldStateWallet.transactions?.phishing ?? {},
                             fetchStatusDetail: oldStateWallet.transactions?.fetchStatusDetail,
                         },
                     },
@@ -430,8 +429,27 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
                         accounts: migratedAccounts,
                         transactions: {
                             transactions: migratedTransactions,
-                            phishing: oldStateWallet.transactions?.phishing ?? {},
                             fetchStatusDetail: oldStateWallet.transactions?.fetchStatusDetail,
+                        },
+                    },
+                };
+
+                return migratedState;
+            },
+            4: (oldState: any /* FIXME */) => {
+                if (!oldState?.wallet) return oldState;
+
+                const oldStateWallet = oldState.wallet;
+                const oldStateWalletTransactions = oldStateWallet.transactions;
+                const oldStateWalletTransactionsPhishing = oldStateWalletTransactions?.phishing;
+
+                const migratedState = {
+                    ...oldState,
+                    wallet: {
+                        ...oldStateWallet,
+                        transactions: {
+                            ...(oldStateWalletTransactions ?? {}),
+                            phishing: oldStateWalletTransactionsPhishing ?? {},
                         },
                     },
                 };
