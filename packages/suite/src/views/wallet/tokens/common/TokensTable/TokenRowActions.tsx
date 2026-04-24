@@ -356,11 +356,11 @@ const TokenRowBasicActions = ({
                         isDisabled: !canSwapToken,
                     },
                     {
-                        label: <Translation id="TR_NAV_SEND" />,
-                        'data-testid': '@trading/tokens/send-button',
-                        icon: 'arrowUp',
-                        onClick: onSendButtonClick,
-                        isDisabled: token.balance === '0',
+                        label: <Translation id="TR_NAV_RECEIVE" />,
+                        'data-testid': '@trading/tokens/receive-button',
+                        icon: 'arrowDown',
+                        onClick: onReceiveButtonClick,
+                        isDisabled: !canReceiveToken,
                         isHidden:
                             type !== 'defi' &&
                             (tokenStatusType === TokenManagementAction.HIDE
@@ -368,11 +368,11 @@ const TokenRowBasicActions = ({
                                 : true),
                     },
                     {
-                        label: <Translation id="TR_NAV_RECEIVE" />,
-                        'data-testid': '@trading/tokens/receive-button',
-                        icon: 'arrowDown',
-                        onClick: onReceiveButtonClick,
-                        isDisabled: !canReceiveToken,
+                        label: <Translation id="TR_NAV_SEND" />,
+                        'data-testid': '@trading/tokens/send-button',
+                        icon: 'arrowUp',
+                        onClick: onSendButtonClick,
+                        isDisabled: token.balance === '0',
                         isHidden:
                             type !== 'defi' &&
                             (tokenStatusType === TokenManagementAction.HIDE
@@ -503,15 +503,6 @@ const TokenRowBasicActions = ({
                             </ButtonGroup>
                         ) : (
                             <ButtonGroup intent="neutral" priority="secondary">
-                                <Tooltip content={<Translation id="TR_NAV_SEND" />}>
-                                    <IconButton
-                                        isDisabled={token.balance === '0'}
-                                        key="token-send"
-                                        icon="arrowUp"
-                                        onClick={onSendButtonClick}
-                                    />
-                                </Tooltip>
-
                                 <Tooltip
                                     content={
                                         <Translation
@@ -528,6 +519,15 @@ const TokenRowBasicActions = ({
                                         icon="arrowDown"
                                         isDisabled={!canReceiveToken}
                                         onClick={onReceiveButtonClick}
+                                    />
+                                </Tooltip>
+
+                                <Tooltip content={<Translation id="TR_NAV_SEND" />}>
+                                    <IconButton
+                                        isDisabled={token.balance === '0'}
+                                        key="token-send"
+                                        icon="arrowUp"
+                                        onClick={onSendButtonClick}
                                     />
                                 </Tooltip>
                             </ButtonGroup>
