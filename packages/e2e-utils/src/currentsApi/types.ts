@@ -62,13 +62,15 @@ export interface RuleAction {
     details?: { tags: string[] };
 }
 
+export type ActionStatus = 'active' | 'disabled' | 'archived' | 'expired';
+
 export interface Action {
     actionId: string;
     name: string;
     description: string;
     action: RuleAction[];
     matcher: RuleMatcher;
-    status: string;
+    status: ActionStatus;
     createdAt: string;
     expiresAfter?: string;
 }
