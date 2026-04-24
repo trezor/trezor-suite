@@ -43,6 +43,8 @@ const allowedCallsBeforeInitialize: Messages.MessageKey[] = [
     'FirmwareUpload',
     // Wallet recovery may also be called before Initialize
     'RecoveryDevice',
+    // Factory reset
+    'WipeDevice',
     // There are other, which are allowed by firmware (ApplySettings,...) but we do not use them this way in connect.
 ];
 
