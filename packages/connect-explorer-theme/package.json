@@ -14,7 +14,7 @@
         "dev": "concurrently \"yarn dev:tailwind\"",
         "dev:tailwind": "TAILWIND_MODE=watch yarn postcss css/styles.css -o style.css --watch",
         "prepublishOnly": "yarn build:all",
-        "type-check": "yarn g:tsc --build tsconfig.json",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "postinstall": "yarn build:all",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },

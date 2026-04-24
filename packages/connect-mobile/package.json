@@ -20,7 +20,7 @@
     ],
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib && DTS_OUT_DIR=lib yarn build:dts:inline",
         "build:dts:inline": "node ../../scripts/inline-devdep-types.mjs",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"

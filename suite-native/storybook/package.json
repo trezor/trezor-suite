@@ -8,7 +8,7 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "type-check": "yarn g:tsc --build",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "storybook:generate": "sb-rn-get-stories",
         "storybook:web": "yarn setup-skia-web && storybook dev -p 6006",
         "storybook:web:build": "yarn setup-skia-web && yarn storybook build -c .storybook -o .build-storybook"

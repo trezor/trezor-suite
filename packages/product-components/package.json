@@ -11,7 +11,7 @@
         "test:unit": "yarn g:jest --passWithNoTests",
         "lint": "yarn lint:js && yarn lint:styles",
         "lint:styles": "stylelint './src/**/*{.ts,.tsx}' --cache --config ../../.stylelintrc",
-        "type-check": "yarn g:tsc --build tsconfig.json",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "type-check:watch": "yarn type-check -- --watch",
         "storybook": "storybook dev -p 9004 -c .storybook",
         "storybook-build": "storybook build -c .storybook -o .build-storybook",

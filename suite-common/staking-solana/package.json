@@ -1,5 +1,5 @@
 {
-    "name": "@suite-common/staking",
+    "name": "@suite-common/staking-solana",
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",
@@ -12,17 +12,19 @@
         "type-check": "yarn g:tsc --build tsconfig.typecheck.json"
     },
     "dependencies": {
-        "@suite-common/calldata": "workspace:*",
-        "@suite-common/earn-staking-api": "workspace:*",
+        "@solana-program/compute-budget": "^0.8.0",
+        "@solana-program/stake": "^0.2.1",
+        "@solana-program/system": "^0.7.0",
+        "@solana/kit": "^2.3.0",
+        "@suite-common/staking-solana-types": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-constants": "workspace:*",
-        "@suite-common/wallet-types": "workspace:*",
         "@suite-common/wallet-utils": "workspace:*",
-        "@trezor/connect": "workspace:*",
-        "@trezor/connect-common": "workspace:*",
-        "@trezor/network-solana": "workspace:*",
+        "@trezor/blockchain-link": "workspace:*",
+        "@trezor/blockchain-link-types": "workspace:*",
+        "@trezor/blockchain-link-utils": "workspace:*",
+        "@trezor/env-utils": "workspace:*",
         "@trezor/type-utils": "workspace:*",
-        "@trezor/utils": "workspace:*",
-        "viem": "^2.54.1"
+        "@trezor/utils": "workspace:*"
     }
 }

@@ -6,7 +6,7 @@
     "sideEffects": false,
     "main": "src/index",
     "scripts": {
-        "type-check": "yarn g:tsc --build",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "build": "webpack --mode production",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },

@@ -7,7 +7,7 @@
     "main": "src/index.mjs",
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build"
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json"
     },
     "devDependencies": {
         "@eslint/js": "^9.39.4",

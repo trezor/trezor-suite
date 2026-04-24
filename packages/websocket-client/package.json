@@ -46,7 +46,7 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "test:unit": "yarn g:jest",
-        "type-check": "yarn g:tsc --build",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },

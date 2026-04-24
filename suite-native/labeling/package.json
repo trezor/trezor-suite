@@ -7,8 +7,9 @@
     "main": "src/index",
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build",
-        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "yarn g:jest:native"
     },
     "dependencies": {
         "@gorhom/bottom-sheet": "5.2.9",

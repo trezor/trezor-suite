@@ -8,7 +8,7 @@
     "main": "src/index",
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "generate-videos": "yarn g:tsx ./scripts/generateVideos.ts",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },

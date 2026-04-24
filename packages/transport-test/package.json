@@ -6,7 +6,7 @@
     "sideEffects": false,
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "test:e2e:bridge": "tsx ./e2e/bridge/run.ts",
         "test:e2e:bridge:hw": "USE_HW=true yarn test:e2e:bridge",
         "test:e2e:bridge:emu": "USE_HW=false yarn test:e2e:bridge",

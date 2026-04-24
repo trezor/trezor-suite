@@ -68,7 +68,7 @@
     "scripts": {
         "test:unit": "jest --version && jest",
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib",
         "version:prerelease": "yarn g:tsx scripts/bump-version.ts prerelease",
         "version:patch": "yarn g:tsx scripts/bump-version.ts patch",

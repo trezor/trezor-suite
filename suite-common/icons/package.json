@@ -7,7 +7,7 @@
     "main": "src/index",
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "generate-icons": "yarn g:tsx generateIcons.mjs && yarn g:tsx generateIconFont.ts",
         "generate-icon-font": "yarn g:tsx generateIconFont.ts",
         "download-crypto-icons": "yarn g:tsx ./scripts/downloadCryptoIcons.ts",

@@ -7,7 +7,7 @@
     "main": "src/index",
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build tsconfig.json",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "type-check:watch": "yarn type-check -- --watch",
         "lint:styles": "stylelint './src/**/*{.ts,.tsx}' --cache --config ../../.stylelintrc",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
