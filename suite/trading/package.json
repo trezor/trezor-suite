@@ -13,6 +13,7 @@
         "test:unit:watch": "yarn g:jest --watch"
     },
     "dependencies": {
+        "@suite-common/flags": "workspace:*",
         "@suite-common/geolocation": "workspace:*",
         "@suite-common/icons": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",

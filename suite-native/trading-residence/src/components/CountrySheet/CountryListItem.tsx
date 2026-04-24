@@ -1,17 +1,9 @@
 import { Platform, Pressable } from 'react-native';
 import { FadeIn, FadeOut } from 'react-native-reanimated';
 
+import { getCountryFlag } from '@suite-common/flags';
 import { type TradingCountryOption } from '@suite-common/trading';
-import {
-    AnimatedBox,
-    Box,
-    Card,
-    Flag,
-    HStack,
-    Radio,
-    Text,
-    getCountryFlag,
-} from '@suite-native/atoms';
+import { AnimatedBox, Box, Card, Flag, HStack, Radio, Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 export type CountryListItemProps = {

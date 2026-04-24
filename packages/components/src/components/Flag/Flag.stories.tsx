@@ -1,8 +1,10 @@
 import { type Meta, type StoryObj } from '@storybook/react';
 
+// TODO: suite-common imports in non-suite packages should not be allowed
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
+import { FLAGS, flagSizes } from '@suite-common/flags';
+
 import { Flag as FlagComponent } from './Flag';
-import { FLAGS } from './flags';
-import { flagSizes } from './types';
 
 const meta: Meta<typeof FlagComponent> = {
     title: 'Flags',

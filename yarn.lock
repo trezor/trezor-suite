@@ -11189,6 +11189,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-common/flags@workspace:*, @suite-common/flags@workspace:suite-common/flags":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/flags@workspace:suite-common/flags"
+  dependencies:
+    "@trezor/env-utils": "workspace:*"
+    "@types/invity-api": "npm:^1.1.15"
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/formatters@workspace:*, @suite-common/formatters@workspace:suite-common/formatters":
   version: 0.0.0-use.local
   resolution: "@suite-common/formatters@workspace:suite-common/formatters"
@@ -12306,6 +12315,7 @@ __metadata:
     "@shopify/flash-list": "npm:2.3.0"
     "@shopify/react-native-skia": "npm:2.5.1"
     "@storybook/react-native": "npm:^10.2.1"
+    "@suite-common/flags": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
@@ -13817,6 +13827,7 @@ __metadata:
     "@reduxjs/toolkit": "npm:2.11.2"
     "@shopify/flash-list": "npm:2.3.0"
     "@suite-common/device": "workspace:*"
+    "@suite-common/flags": "workspace:*"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/geolocation": "workspace:*"
     "@suite-common/message-system": "workspace:*"
@@ -14593,6 +14604,7 @@ __metadata:
   dependencies:
     "@react-navigation/native": "npm:7.1.28"
     "@reduxjs/toolkit": "npm:2.11.2"
+    "@suite-common/flags": "workspace:*"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/trading": "workspace:*"
     "@suite-common/validators": "workspace:*"
@@ -15225,6 +15237,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite/trading@workspace:suite/trading"
   dependencies:
+    "@suite-common/flags": "workspace:*"
     "@suite-common/geolocation": "workspace:*"
     "@suite-common/icons": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
@@ -15811,6 +15824,7 @@ __metadata:
     "@storybook/addon-links": "npm:^10.3.4"
     "@storybook/react": "npm:^10.3.4"
     "@storybook/react-webpack5": "npm:^10.3.4"
+    "@suite-common/flags": "workspace:*"
     "@suite-common/icons": "workspace:*"
     "@suite-common/illustrations": "workspace:*"
     "@testing-library/dom": "npm:^10.4.1"
@@ -16424,6 +16438,7 @@ __metadata:
     "@pmmmwh/react-refresh-webpack-plugin": "npm:^0.6.2"
     "@rolldown/plugin-babel": "npm:^0.2.1"
     "@sentry/webpack-plugin": "npm:^5.1.1"
+    "@suite-common/flags": "workspace:*"
     "@suite-common/suite-config": "workspace:*"
     "@suite/router-config": "workspace:*"
     "@trezor/bundler-security": "workspace:*"
@@ -16720,6 +16735,7 @@ __metadata:
     "@suite-common/fiat-services": "workspace:*"
     "@suite-common/firmware": "workspace:*"
     "@suite-common/firmware-authenticity": "workspace:*"
+    "@suite-common/flags": "workspace:*"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/geolocation": "workspace:*"
     "@suite-common/logger": "workspace:*"

@@ -97,6 +97,16 @@ const config: webpack.Configuration = {
                         from: path.join(__dirname, '../../', 'suite-desktop/releaseNotes'),
                         to: path.join(baseDir, 'build'),
                     },
+                ])
+                .concat([
+                    {
+                        from: path.join(
+                            path.dirname(require.resolve('@suite-common/flags/package.json')),
+                            'assets',
+                            'flags',
+                        ),
+                        to: path.join(baseDir, 'build', 'static', 'flags'),
+                    },
                 ]),
             options: {
                 concurrency: 100,

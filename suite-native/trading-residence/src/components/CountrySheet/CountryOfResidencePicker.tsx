@@ -1,7 +1,8 @@
 import { useCallback } from 'react';
 
+import { getCountryFlag } from '@suite-common/flags';
 import { type CountryChangeContext, events } from '@suite-native/analytics';
-import { Flag, HStack, Text, getCountryFlag } from '@suite-native/atoms';
+import { Flag, HStack, Text } from '@suite-native/atoms';
 import { useFormContext } from '@suite-native/forms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { useAnalytics } from '@suite-native/services';
@@ -69,10 +70,14 @@ export const CountryOfResidencePicker = ({ testID, context }: CountryOfResidence
                         accessibilityLabel={translate(
                             'tradingResidence.locationSettings.selectedCountryOfResidence',
                         )}
-                        testID={valueTestID}
                     >
                         {selectedFlag && <Flag country={selectedFlag} size={20} />}
-                        <Text color="contentSecondary" variant="body-md" numberOfLines={1}>
+                        <Text
+                            color="contentSecondary"
+                            variant="body-md"
+                            numberOfLines={1}
+                            testID={valueTestID}
+                        >
                             {selectedValue.codeAlpha3}
                         </Text>
                     </HStack>

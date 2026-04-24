@@ -63,6 +63,14 @@ const config: webpack.Configuration = {
                         ),
                         to: path.join(baseDir, 'build', 'static', 'message-system'),
                     },
+                    {
+                        from: path.join(
+                            path.dirname(require.resolve('@suite-common/flags/package.json')),
+                            'assets',
+                            'flags',
+                        ),
+                        to: path.join(baseDir, 'build', 'static', 'flags'),
+                    },
                 ]),
             options: {
                 concurrency: 100,

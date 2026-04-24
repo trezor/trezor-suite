@@ -2,7 +2,7 @@
 # this script finds duplicated files in project per provided extension
 #
 # Excluded from duplicate check (intentional duplicates):
-#   - packages/suite-data/files/images/images/flags/*
+#   - suite-common/flags/assets/flags/*
 #     Same flags are used on purpose (e.g. overseas territories share flags with parent country).
 #   - packages/suite-data/files/videos/device/t3t1/connect_bt.webm
 #   - packages/suite-data/files/videos/device/t3t1/connect_bt_loop.webm
@@ -13,7 +13,7 @@
 
 exclude_paths=(
     "**/node_modules/*"
-    "**/images/images/flags/*"
+    "**/suite-common/flags/assets/flags/*"
     "*t3t1/connect_bt.webm"
     "*t3t1/connect_bt_loop.webm"
 )

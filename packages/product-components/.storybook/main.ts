@@ -18,7 +18,11 @@ const config: StorybookConfig = {
 
     addons: [getAbsolutePath('@storybook/addon-links'), getAbsolutePath('@storybook/addon-docs')],
 
-    staticDirs: ['../public', { from: '../../suite-data/files', to: '/static' }],
+    staticDirs: [
+        '../public',
+        { from: '../../suite-data/files', to: '/static' },
+        { from: '../../../suite-common/flags/assets', to: '/static' },
+    ],
 
     framework: {
         name: getAbsolutePath('@storybook/react-webpack5'),

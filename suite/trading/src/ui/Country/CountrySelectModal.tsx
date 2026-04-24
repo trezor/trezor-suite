@@ -1,6 +1,7 @@
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
+import { getCountryFlag } from '@suite-common/flags';
 import { type TradingCountryCode, useCountryFilteredData } from '@suite-common/trading';
-import { Column, Flag, Input, Modal, Paragraph, Row, getCountryFlag } from '@trezor/components';
+import { Column, Flag, Input, Modal, Paragraph, Row } from '@trezor/components';
 import { CardList } from '@trezor/product-components';
 
 interface CountrySelectModalProps {

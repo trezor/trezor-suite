@@ -1,16 +1,9 @@
 import { useState } from 'react';
 
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
+import { getCountryFlag } from '@suite-common/flags';
 import { type TradingCountryCode, getDefaultCountry } from '@suite-common/trading';
-import {
-    Flag,
-    GhostContainer,
-    Icon,
-    Row,
-    SkeletonRectangle,
-    Text,
-    getCountryFlag,
-} from '@trezor/components';
+import { Flag, GhostContainer, Icon, Row, SkeletonRectangle, Text } from '@trezor/components';
 
 import { CountrySelectModal } from './CountrySelectModal';
 import { useGetCountryName } from '../../hooks';

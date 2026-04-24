@@ -12,6 +12,7 @@ describe('TradeFiatSideCard', () => {
             paymentMethod: 'creditCard',
             amount: '+90.17',
             title: 'To',
+            fiatCurrency: 'usd',
         });
 
         expect(getByText('To')).toBeOnTheScreen();
@@ -23,6 +24,7 @@ describe('TradeFiatSideCard', () => {
             paymentMethod: 'bankTransfer',
             amount: '+100.00',
             title: 'To',
+            fiatCurrency: 'usd',
         });
 
         expect(getByText('To')).toBeOnTheScreen();
@@ -34,6 +36,7 @@ describe('TradeFiatSideCard', () => {
             paymentMethod: 'customMethod' as ExtendedSellCryptoPaymentMethod,
             amount: '+100.00',
             title: 'To',
+            fiatCurrency: 'usd',
         });
 
         expect(getByText('To')).toBeOnTheScreen();

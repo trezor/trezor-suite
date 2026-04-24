@@ -1,10 +1,14 @@
+import {
+    type FlagSize,
+    type FlagType,
+    getFlagSource,
+    mapSizeToBorderRadius,
+    mapSizeToOutlineWidth,
+} from '@suite-common/flags';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { Box } from '../Box';
 import { Image } from '../Image';
-import { flagsMap } from './flagsMap';
-import { type FlagSize, type FlagType } from './types';
-import { mapSizeToBorderRadius, mapSizeToOutlineWidth } from './utils';
 
 const FLAG_ASPECT_RATIO = 30 / 24;
 
@@ -76,7 +80,7 @@ export const Flag = ({ country, size = 24 }: FlagProps) => {
                 testID="@atom/flag/content"
             >
                 <Image
-                    source={flagsMap[country]}
+                    source={getFlagSource(country)}
                     style={applyStyle(flagImageStyle)}
                     contentFit="contain"
                 />

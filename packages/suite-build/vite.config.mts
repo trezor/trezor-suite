@@ -28,6 +28,49 @@ const staticAliasPlugin = (): Plugin => ({
     },
 });
 
+// Plugin to serve flag SVGs from `@suite-common/flags` at `/static/flags/*.svg`
+// (flags moved out of `suite-data/files` so they need an explicit middleware +
+// build-time copy).
+const flagsPlugin = (): Plugin => {
+    const flagsAssetsDir = resolve(
+        require.resolve('@suite-common/flags/package.json'),
+        '../assets/flags',
+    );
+    let outDir: string | null = null;
+
+    return {
+        name: 'suite-flags',
+        enforce: 'pre',
+        configResolved(config) {
+            outDir = config.build.outDir;
+        },
+        configureServer(server: ViteDevServer) {
+            server.middlewares.use((req, res, next) => {
+                const match = req.url?.match(/^\/static\/flags\/([a-z0-9-]+\.svg)$/i);
+                if (!match) {
+                    next();
+
+                    return;
+                }
+                const filePath = resolve(flagsAssetsDir, match[1].toLowerCase());
+                if (!fs.existsSync(filePath)) {
+                    next();
+
+                    return;
+                }
+                res.setHeader('Content-Type', 'image/svg+xml');
+                fs.createReadStream(filePath).pipe(res);
+            });
+        },
+        closeBundle() {
+            if (!outDir) return;
+            const dest = resolve(outDir, 'static/flags');
+            fs.mkdirSync(dest, { recursive: true });
+            fs.cpSync(flagsAssetsDir, dest, { recursive: true });
+        },
+    };
+};
+
 const trezorLogosRequirePlugin = (): Plugin => ({
     name: 'trezor-logos-require',
     enforce: 'pre',
@@ -538,6 +581,7 @@ export default defineConfig({
         noopCoreJsPlugin(),
         guideMarkdownPlugin(),
         trezorLogosRequirePlugin(),
+        flagsPlugin(),
         staticAliasPlugin(),
         sessionsSharedWorkerPlugin(),
         faviconPlugin(),

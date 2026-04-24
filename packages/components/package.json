@@ -20,6 +20,7 @@
     },
     "dependencies": {
         "@floating-ui/react": "^0.27.17",
+        "@suite-common/flags": "workspace:*",
         "@suite-common/icons": "workspace:*",
         "@suite-common/illustrations": "workspace:*",
         "@testing-library/jest-dom": "6.9.1",

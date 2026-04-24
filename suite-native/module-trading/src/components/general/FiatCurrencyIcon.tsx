@@ -1,8 +1,7 @@
 import { type FiatCurrencyCode } from 'invity-api';
 
+import { getFiatCurrencyFlag } from '@suite-common/flags';
 import { Flag, RoundedIcon, type RoundedIconSize } from '@suite-native/atoms';
-
-import { getFiatCurrencyFlag } from '../../utils/general/fiatCurrencyFlagUtils';
 
 export type FiatCurrencyIconProps = {
     size: 'extraSmall' | 'small' | 'medium';

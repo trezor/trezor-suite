@@ -22,6 +22,7 @@
         "@reduxjs/toolkit": "2.11.2",
         "@shopify/flash-list": "2.3.0",
         "@suite-common/device": "workspace:*",
+        "@suite-common/flags": "workspace:*",
         "@suite-common/formatters": "workspace:*",
         "@suite-common/geolocation": "workspace:*",
         "@suite-common/message-system": "workspace:*",

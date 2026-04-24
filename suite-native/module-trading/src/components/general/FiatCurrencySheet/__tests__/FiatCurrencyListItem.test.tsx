@@ -8,7 +8,7 @@ describe('FiatCurrencyListItem', () => {
             <FiatCurrencyListItem
                 label="LABEL"
                 displayValue="DISPLAY_VALUE"
-                value="USD"
+                value="usd"
                 onPress={jest.fn()}
                 {...props}
             />,

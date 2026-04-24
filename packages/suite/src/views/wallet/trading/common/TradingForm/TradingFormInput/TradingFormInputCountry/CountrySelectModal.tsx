@@ -2,13 +2,14 @@ import { type UseFormSetValue } from 'react-hook-form';
 
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { useGetCountryName } from '@suite/trading';
+import { getCountryFlag } from '@suite-common/flags';
 import {
     TRADING_FORM_COUNTRY_SELECT,
     TRADING_FORM_COUNTRY_SUBDIVISION_SELECT,
     type TradingCountryOption,
     useCountryFilteredData,
 } from '@suite-common/trading';
-import { Column, Flag, Input, Modal, Paragraph, Row, getCountryFlag } from '@trezor/components';
+import { Column, Flag, Input, Modal, Paragraph, Row } from '@trezor/components';
 import { CardList } from '@trezor/product-components';
 
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
