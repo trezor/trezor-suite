@@ -2,6 +2,7 @@ import { CURRENTS_API_BASE, DEVELOP_BRANCH, TEST_RESULTS_PAGE_SIZE } from './con
 import { SpecFetchMode } from './types';
 import type {
     Action,
+    ActionStatus,
     ActionsListResponse,
     RawInstanceTest,
     RunData,
@@ -201,19 +202,27 @@ export async function getActiveTests(
 }
 
 /**
- * Fetch all actions for a project.
+ * Fetch actions for a project, optionally filtered by status.
  */
-export async function getActions(projectId: string): Promise<Action[]> {
-    const response = await currentsRequest<ActionsListResponse>(`/actions?projectId=${projectId}`);
+export async function getActions(
+    projectId: string,
+    status?: ActionStatus | ActionStatus[],
+): Promise<Action[]> {
+    const params = new URLSearchParams({ projectId });
+    if (status !== undefined) {
+        const statuses = Array.isArray(status) ? status : [status];
+        statuses.forEach(s => params.append('status', s));
+    }
+    const response = await currentsRequest<ActionsListResponse>(`/actions?${params.toString()}`);
 
     return response.data;
 }
 
 /**
- * Fetch all actions for a project that have a quarantine rule applied.
+ * Fetch active actions for a project that have a quarantine rule applied.
  */
 export async function getAllQuarantineActions(projectId: string): Promise<Action[]> {
-    const actions = await getActions(projectId);
+    const actions = await getActions(projectId, 'active');
 
     return actions.filter(a => a.action.some(r => r.op === 'quarantine'));
 }
