@@ -108,6 +108,7 @@ export const useGraphForSingleAccount = ({
         useGetTimeFrameForHistoryHours(accountGraphTimeframe);
 
     const identity = account ? tryGetAccountIdentity(account) : undefined;
+    // eslint-disable-next-line react-hooks/preserve-manual-memoization -- see plans/react-compiler-follow-ups.md
     const accounts = useMemo<AccountItem[]>(() => {
         if (!account?.symbol) return [];
 

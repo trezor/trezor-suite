@@ -56,6 +56,7 @@ export const useChangeDeviceLabel = (): {
     });
 
     const { watch } = form;
+    // eslint-disable-next-line react-hooks/incompatible-library -- react-hook-form; see plans/react-compiler-follow-ups.md
     const currentLabel = watch('deviceLabel');
 
     const onSubmit = form.handleSubmit(({ deviceLabel }) => {

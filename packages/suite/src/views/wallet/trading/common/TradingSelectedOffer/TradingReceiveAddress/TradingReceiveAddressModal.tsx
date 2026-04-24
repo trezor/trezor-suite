@@ -79,6 +79,7 @@ export const TradingReceiveAddressModal = () => {
         },
     });
 
+    // eslint-disable-next-line react-hooks/incompatible-library -- react-hook-form; see plans/react-compiler-follow-ups.md
     const receiveAddress = form.watch('address');
 
     const onCancel = () => {

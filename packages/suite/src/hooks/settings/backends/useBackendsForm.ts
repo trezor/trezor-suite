@@ -95,6 +95,7 @@ const useBackendUrlInput = (symbol: NetworkSymbol, type: BackendOption, currentU
         register,
         validate,
         error: errors[name],
+        // eslint-disable-next-line react-hooks/incompatible-library -- react-hook-form; see plans/react-compiler-follow-ups.md
         value: watch(name) || '',
         reset: () => setValue(name, ''),
     };

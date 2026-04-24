@@ -28,6 +28,7 @@ export const useResolvedYieldFlowData = (): UseResolvedYieldFlowDataResult => {
     const resolvedContractAddress = routeParams?.contractAddress ?? vault?.token.address;
 
     const matchedToken = useMemo(
+        // eslint-disable-next-line react-hooks/preserve-manual-memoization -- see plans/react-compiler-follow-ups.md
         () =>
             account?.tokens?.find((token): token is TokenInfo => {
                 const normalizedTokenAddress =

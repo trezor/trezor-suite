@@ -68,6 +68,7 @@ const useExplorerInput = (currentValues: Explorer) => {
         fields: {
             base: {
                 ref: baseInputRef,
+                // eslint-disable-next-line react-hooks/incompatible-library -- react-hook-form; see plans/react-compiler-follow-ups.md
                 value: watch('base'),
                 field: baseInputField,
                 error: errors.base?.message,

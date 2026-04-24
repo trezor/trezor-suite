@@ -66,6 +66,7 @@ export const TradingSellFormInputs = () => {
                 accountKey: sendCryptoSelect?.accountKey,
                 cryptoId: sendCryptoSelect?.id,
             }),
+        // eslint-disable-next-line react-hooks/preserve-manual-memoization -- see plans/react-compiler-follow-ups.md
         [getAssetDecimals, sendCryptoSelect?.accountKey, sendCryptoSelect?.id],
     );
 

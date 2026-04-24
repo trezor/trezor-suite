@@ -29,6 +29,7 @@ export const useCoinjoinUnavailableUtxos = ({
 
     const { translationString } = useTranslation();
 
+    // eslint-disable-next-line react-hooks/preserve-manual-memoization -- see plans/react-compiler-follow-ups.md
     return useMemo(() => {
         if (!coinjoinClient?.allowedInputAmounts) return;
 

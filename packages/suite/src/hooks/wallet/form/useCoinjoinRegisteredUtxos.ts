@@ -18,6 +18,7 @@ export const useCoinjoinRegisteredUtxos = ({ account }: UseCoinjoinRegisteredUtx
         selectRegisteredUtxosByAccountKey(state, account.key),
     );
 
+    // eslint-disable-next-line react-hooks/preserve-manual-memoization -- see plans/react-compiler-follow-ups.md
     return useMemo(() => {
         const registeredUtxos: AccountUtxo[] = [];
 

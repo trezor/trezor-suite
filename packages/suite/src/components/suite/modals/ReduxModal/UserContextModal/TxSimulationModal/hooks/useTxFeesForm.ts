@@ -46,6 +46,7 @@ export function useTxFeesForm({
     });
 
     const { watch } = form;
+    // eslint-disable-next-line react-hooks/incompatible-library -- react-hook-form; see plans/react-compiler-follow-ups.md
     const selectedFee = watch('selectedFee');
     const feePerUnit = watch('feePerUnit');
     const maxFeePerGas = watch('maxFeePerGas');

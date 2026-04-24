@@ -37,6 +37,7 @@ export const StellarTokenInputModal = ({ onSubmit, onCancel }: StellarTokenInput
     // `input:not([value='']) ~ &` selector moves the label up when value is not empty.
     // Without explicitly passing the value prop, the label won't animate correctly
     // when using react-hook-form's uncontrolled mode.
+    // eslint-disable-next-line react-hooks/incompatible-library -- react-hook-form; see plans/react-compiler-follow-ups.md
     const assetCode = watch('assetCode');
     const assetIssuer = watch('assetIssuer');
 

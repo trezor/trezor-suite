@@ -5,6 +5,7 @@ import type { AccountAddress } from '@trezor/connect';
 import type { Account } from 'src/types/wallet';
 
 export const useAccountAddressDictionary = (account: Account | undefined) =>
+    // eslint-disable-next-line react-hooks/preserve-manual-memoization -- see plans/react-compiler-follow-ups.md
     useMemo(() => {
         switch (account?.networkType) {
             case 'cardano':

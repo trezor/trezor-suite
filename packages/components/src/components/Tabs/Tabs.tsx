@@ -84,6 +84,7 @@ const Tabs = ({
         [],
     );
 
+    // eslint-disable-next-line react-hooks/preserve-manual-memoization -- see plans/react-compiler-follow-ups.md
     const updateIndicator = useCallback(() => {
         if (!activeItemId) return;
 

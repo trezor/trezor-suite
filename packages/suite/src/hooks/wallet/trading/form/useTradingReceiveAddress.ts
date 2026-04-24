@@ -292,6 +292,7 @@ export const useTradingReceiveAddress = ({
         methods,
     ]);
 
+    // eslint-disable-next-line react-hooks/incompatible-library -- react-hook-form; see plans/react-compiler-follow-ups.md
     const receiveAddressValue = methods.watch('address');
     const extraFieldValue = methods.watch('extraField');
 

@@ -96,6 +96,7 @@ export const useSignVerifyForm = (isSignPage: boolean, account: Account) => {
 
     const { isDirty, errors, isSubmitting } = formState;
 
+    // eslint-disable-next-line react-hooks/incompatible-library -- react-hook-form; see plans/react-compiler-follow-ups.md
     const formValues = watch();
 
     const { field: addressField } = useController({

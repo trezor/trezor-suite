@@ -120,6 +120,7 @@ export const Pagination = ({
         },
     });
 
+    // eslint-disable-next-line react-hooks/incompatible-library -- react-hook-form; see plans/react-compiler-follow-ups.md
     const pageInput = watch('pageInput');
 
     const isPageInputInvalid =

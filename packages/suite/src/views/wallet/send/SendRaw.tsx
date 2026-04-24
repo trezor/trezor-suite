@@ -38,6 +38,7 @@ export const SendRaw = ({ account }: SendRawProps) => {
     const dispatch = useDispatch();
     const { translationString } = useTranslation();
     const analytics = useAnalytics();
+    // eslint-disable-next-line react-hooks/incompatible-library -- react-hook-form; see plans/react-compiler-follow-ups.md
     const inputValue = watch(INPUT_NAME);
     const error = errors[INPUT_NAME];
     const hasError = !!error;

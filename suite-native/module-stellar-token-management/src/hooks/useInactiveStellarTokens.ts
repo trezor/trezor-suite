@@ -40,6 +40,7 @@ export const useInactiveStellarTokens = (accountKey?: AccountKey) => {
         }
     }, [tokenMetadata]);
 
+    // eslint-disable-next-line react-hooks/preserve-manual-memoization -- see plans/react-compiler-follow-ups.md
     const activatedTokenContracts = useMemo(() => {
         if (!account?.tokens) return new Set<string>();
 

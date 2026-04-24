@@ -60,6 +60,7 @@ export const SelectSuiteSyncServer = ({ suiteSync, onCancel }: SelectSuiteSyncSe
     });
 
     const { handleSubmit, watch } = form;
+    // eslint-disable-next-line react-hooks/incompatible-library -- react-hook-form; see plans/react-compiler-follow-ups.md
     const watchedServer = watch('server');
 
     const onSubmit = handleSubmit(async values => {
