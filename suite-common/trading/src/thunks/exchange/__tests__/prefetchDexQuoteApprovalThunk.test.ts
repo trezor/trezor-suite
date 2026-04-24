@@ -3,11 +3,13 @@ import type { ExchangeTrade } from 'invity-api';
 
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import type { Account } from '@suite-common/wallet-types';
+import { type AccountAddresses } from '@trezor/connect';
 
-import { accountEth } from '../../../__fixtures__/utils';
+import { accountBtc, accountEth } from '../../../__fixtures__/utils';
 import { invityAPI } from '../../../invityAPI';
 import { initialState } from '../../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../../reducers/tradingReducer';
+import { getUnusedAddressFromAccount } from '../../../utils';
 import { prefetchDexQuoteApprovalThunk } from '../prefetchDexQuoteApprovalThunk';
 
 jest.mock('../../../invityAPI');
@@ -53,6 +55,53 @@ describe('prefetchDexQuoteApprovalThunk', () => {
         jest.clearAllMocks();
     });
 
+    it('returns early and does not call the API when trade has no quoteId', async () => {
+        const quote = {
+            ...getExchangeTrade('quote-1'),
+            quoteId: undefined,
+        } as unknown as ExchangeTrade;
+        const store = getStore([quote]);
+        const doExchangeTrade = jest.spyOn(invityAPI, 'doExchangeTrade');
+
+        const result = await store.dispatch(
+            prefetchDexQuoteApprovalThunk({
+                account: accountEth as Account,
+                trade: quote,
+            }),
+        );
+
+        expect(result.meta.requestStatus).toBe('fulfilled');
+        expect(result.payload).toBeUndefined();
+        expect(doExchangeTrade).not.toHaveBeenCalled();
+        expect(
+            store.getState().wallet.trading.exchange.dexQuoteApprovalPrefetchLoadingQuoteId,
+        ).toBeUndefined();
+    });
+
+    it('returns early and does not call the API when there is no from address and trade has no fromAddress', async () => {
+        const quote = getExchangeTrade('quote-1');
+        const accountWithoutSpendAddress = {
+            ...accountBtc,
+            addresses: { unused: [], change: [], main: [], used: [] } as AccountAddresses,
+        } as Account;
+        const store = getStore([quote]);
+        const doExchangeTrade = jest.spyOn(invityAPI, 'doExchangeTrade');
+
+        const result = await store.dispatch(
+            prefetchDexQuoteApprovalThunk({
+                account: accountWithoutSpendAddress,
+                trade: { ...quote, fromAddress: undefined },
+            }),
+        );
+
+        expect(result.meta.requestStatus).toBe('fulfilled');
+        expect(result.payload).toBeUndefined();
+        expect(doExchangeTrade).not.toHaveBeenCalled();
+        expect(
+            store.getState().wallet.trading.exchange.dexQuoteApprovalPrefetchLoadingQuoteId,
+        ).toBeUndefined();
+    });
+
     it('does not overwrite existing quote with error-only response', async () => {
         const quote = getExchangeTrade('quote-1');
         const store = getStore([quote]);
@@ -69,14 +118,42 @@ describe('prefetchDexQuoteApprovalThunk', () => {
         );
 
         expect(result.meta.requestStatus).toBe('fulfilled');
+        expect(result.payload).toBeUndefined();
         expect(store.getState().wallet.trading.exchange.quotes).toEqual([quote]);
+        expect(
+            store.getState().wallet.trading.exchange.dexQuoteApprovalPrefetchLoadingQuoteId,
+        ).toBeUndefined();
     });
 
-    it('merges successful response into stored quote', async () => {
+    it('returns undefined and does not update quotes when API returns a falsy response', async () => {
         const quote = getExchangeTrade('quote-1');
         const store = getStore([quote]);
 
-        jest.spyOn(invityAPI, 'doExchangeTrade').mockResolvedValueOnce({
+        jest.spyOn(invityAPI, 'doExchangeTrade').mockResolvedValueOnce(
+            null as unknown as ExchangeTrade,
+        );
+
+        const result = await store.dispatch(
+            prefetchDexQuoteApprovalThunk({
+                account: accountEth as Account,
+                trade: quote,
+            }),
+        );
+
+        expect(result.meta.requestStatus).toBe('fulfilled');
+        expect(result.payload).toBeUndefined();
+        expect(store.getState().wallet.trading.exchange.quotes).toEqual([quote]);
+        expect(
+            store.getState().wallet.trading.exchange.dexQuoteApprovalPrefetchLoadingQuoteId,
+        ).toBeUndefined();
+    });
+
+    it('merges successful response into stored quote and calls approval prefetch on the API', async () => {
+        const quote = getExchangeTrade('quote-1');
+        const store = getStore([quote]);
+        const { address: fromAccount } = getUnusedAddressFromAccount(accountEth as Account);
+
+        const doExchangeTrade = jest.spyOn(invityAPI, 'doExchangeTrade').mockResolvedValueOnce({
             quoteId: quote.quoteId,
             status: 'APPROVAL_REQ',
             preapprovedStringAmount: '0',
@@ -89,6 +166,14 @@ describe('prefetchDexQuoteApprovalThunk', () => {
             }),
         );
 
+        expect(doExchangeTrade).toHaveBeenCalledWith({
+            trade: { ...quote, fromAddress: fromAccount },
+            receiveAddress: fromAccount,
+            refundAddress: fromAccount,
+            returnUrl: undefined,
+            approvalFlow: true,
+        });
+
         const [updatedQuote] = store.getState().wallet.trading.exchange.quotes;
         expect(updatedQuote).toEqual(
             expect.objectContaining({
@@ -98,6 +183,40 @@ describe('prefetchDexQuoteApprovalThunk', () => {
                 preapprovedStringAmount: '0',
             }),
         );
+        expect(
+            store.getState().wallet.trading.exchange.dexQuoteApprovalPrefetchLoadingQuoteId,
+        ).toBeUndefined();
+    });
+
+    it('passes through trade with fromAddress and receiveAddress for the API call', async () => {
+        const fromOnQuote = '0xfrom';
+        const receiveOnQuote = '0xreceive';
+        const quote = {
+            ...getExchangeTrade('quote-1'),
+            fromAddress: fromOnQuote,
+            receiveAddress: receiveOnQuote,
+        } as ExchangeTrade;
+        const store = getStore([quote]);
+        const { address: fromAccount } = getUnusedAddressFromAccount(accountEth as Account);
+
+        const doExchangeTrade = jest.spyOn(invityAPI, 'doExchangeTrade').mockResolvedValueOnce({
+            quoteId: quote.quoteId,
+        } as ExchangeTrade);
+
+        await store.dispatch(
+            prefetchDexQuoteApprovalThunk({
+                account: accountEth as Account,
+                trade: quote,
+            }),
+        );
+
+        expect(doExchangeTrade).toHaveBeenCalledWith({
+            trade: quote,
+            receiveAddress: receiveOnQuote,
+            refundAddress: fromAccount,
+            returnUrl: undefined,
+            approvalFlow: true,
+        });
     });
 
     it('tracks loading state correctly for concurrent prefetches', async () => {
@@ -133,6 +252,7 @@ describe('prefetchDexQuoteApprovalThunk', () => {
             }),
         );
 
+        // Each dispatch sets loading to that quote id; the latest wins while both are in flight
         expect(
             !!store.getState().wallet.trading.exchange.dexQuoteApprovalPrefetchLoadingQuoteId,
         ).toBe(true);

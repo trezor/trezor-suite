@@ -35,9 +35,12 @@ export const prefetchDexQuoteApprovalThunk = createThunk(
 
             const quoteToProcess = trade.fromAddress ? trade : { ...trade, fromAddress };
 
+            const receiveAddress =
+                quoteToProcess.receiveAddress ?? quoteToProcess.fromAddress ?? '';
+
             const response = await invityAPI.doExchangeTrade({
                 trade: quoteToProcess,
-                receiveAddress: quoteToProcess.receiveAddress ?? '',
+                receiveAddress,
                 refundAddress: fromAddress ?? quoteToProcess.fromAddress ?? '',
                 returnUrl: undefined,
                 approvalFlow: true,
