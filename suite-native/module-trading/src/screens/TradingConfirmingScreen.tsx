@@ -54,11 +54,6 @@ export const TradingConfirmingScreen = ({
 
     const { status, forceStatus } = useTransactionStatusOverride(originalStatus);
 
-    // TODO 25742 use this
-    const _transaction = useSelector((state: TransactionsRootState & AccountsRootState) =>
-        selectTransactionByAccountKeyAndTxid(state, accountKey, approvalTxid ?? ''),
-    );
-
     const { isConfirmed, isFailed, isPending } = status;
 
     useFocusEffect(

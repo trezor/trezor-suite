@@ -44,6 +44,10 @@ export const ExchangeConfirmationInfo = ({ flowType }: ExchangeConfirmationInfoC
         <AnimatedVStack spacing="sp16" paddingVertical="sp16" layout={LinearTransition}>
             <Card noPadding>
                 <TradeInfoRow>
+                    <Text variant="body-md-strong">THESE ARE DUMMY VALUES FOR NOW.</Text>
+                    <Text variant="body-md">Real data will be displayed in follow up tickets.</Text>
+                </TradeInfoRow>
+                <TradeInfoRow>
                     <Text variant="body-sm">
                         <Translation id="moduleTrading.tradingConfirmationScreen.date" />
                     </Text>
