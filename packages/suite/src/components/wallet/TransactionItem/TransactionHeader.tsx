@@ -1,5 +1,6 @@
 import { Translation, useTranslation } from '@suite/intl';
 import { getNetworkDisplaySymbol, isNetworkSymbol } from '@suite-common/wallet-config';
+import { type TronTxContractType } from '@suite-common/wallet-constants';
 import { type StakeType } from '@suite-common/wallet-types';
 import {
     getTxHeaderSymbol,
@@ -86,6 +87,37 @@ const getSolTransactionStakeTypeName = (stakeType: StakeType) => {
     }
 };
 
+const getTronTransactionMessageId = (transaction: WalletAccountTransaction) => {
+    const contractType = transaction.tronSpecific?.contractType as TronTxContractType;
+
+    switch (contractType) {
+        case 'AccountCreateContract':
+            return 'TR_TRON_TX_CREATE_ACCOUNT';
+        case 'AccountUpdateContract':
+            return 'TR_TRON_TX_UPDATE_ACCOUNT';
+        case 'CreateSmartContract':
+            return 'TR_TRON_TX_DEPLOY_SMART_CONTRACT';
+        case 'VoteWitnessContract':
+            return 'TR_TRON_TX_VOTE_WITNESS';
+        case 'FreezeBalanceContract':
+        case 'FreezeBalanceV2Contract':
+            return 'TR_TRON_TX_FREEZE_BALANCE';
+        case 'UnfreezeBalanceContract':
+        case 'UnfreezeBalanceV2Contract':
+            return 'TR_TRON_TX_UNFREEZE_BALANCE';
+        case 'WithdrawExpireUnfreezeContract':
+            return 'TR_TRON_TX_WITHDRAW_BALANCE';
+        case 'WithdrawBalanceContract':
+            return 'TR_TRON_TX_CLAIM_REWARDS';
+        case 'DelegateResourceContract':
+            return 'TR_TRON_TX_DELEGATE_RESOURCE';
+        case 'UnDelegateResourceContract':
+            return 'TR_TRON_TX_UNDELEGATE_RESOURCE';
+        default:
+            return undefined;
+    }
+};
+
 export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderProps) => {
     const { translationString } = useTranslation();
 
@@ -107,6 +139,12 @@ export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderP
                 )}
             </>
         );
+    }
+
+    // Tron-specific transactions
+    const tronTransactionMessageId = getTronTransactionMessageId(transaction);
+    if (tronTransactionMessageId) {
+        return <BlurUrls text={translationString(tronTransactionMessageId)} />;
     }
 
     const solanaStakeType = transaction?.solanaSpecific?.stakeOperation?.type;
