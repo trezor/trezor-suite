@@ -6,25 +6,25 @@ import { type InspectFn, type ValidateFn, createValidator } from '../createValid
 
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000' as EvmAddress;
 
-export const isValidAddress: ValidateFn<string> = input =>
+export const findAddressIssue: ValidateFn<string> = input =>
     isAddress(input, { strict: false }) ? null : 'INVALID_ADDRESS';
 
-export const isZeroAddress: InspectFn<EvmAddress> = value =>
+export const findZeroAddressIssue: InspectFn<EvmAddress> = value =>
     value === ZERO_ADDRESS ? 'ZERO_ADDRESS' : null;
 
 type SenderContext = ContextWith<{ sender?: EvmAddress }>;
 
-export const isSameAsSender: InspectFn<EvmAddress, SenderContext> = (value, context) =>
+export const findSelfAddressIssue: InspectFn<EvmAddress, SenderContext> = (value, context) =>
     context?.sender && value.toLowerCase() === context.sender.toLowerCase() ? 'SELF_ADDRESS' : null;
 
-export const isNotSameAsSender: InspectFn<EvmAddress, SenderContext> = (value, context) =>
+export const findSenderMismatchIssue: InspectFn<EvmAddress, SenderContext> = (value, context) =>
     context?.sender && value.toLowerCase() !== context.sender.toLowerCase()
         ? 'NOT_SAME_AS_SENDER'
         : null;
 
 type WhitelistContext = ContextWith<{ addressWhitelist?: EvmAddress[] }>;
 
-export const isNotWhitelisted: InspectFn<EvmAddress, WhitelistContext> = (value, context) =>
+export const findWhitelistIssue: InspectFn<EvmAddress, WhitelistContext> = (value, context) =>
     context?.addressWhitelist &&
     !context.addressWhitelist.some(addr => addr.toLowerCase() === value.toLowerCase())
         ? 'ADDRESS_NOT_WHITELISTED'
@@ -35,7 +35,12 @@ export const validateAddress = createValidator<
     EvmAddress,
     SenderContext & WhitelistContext
 >({
-    validate: [isValidAddress],
+    validate: [findAddressIssue],
     normalize: (input: string) => input.toLowerCase() as EvmAddress,
-    inspect: [isZeroAddress, isSameAsSender, isNotSameAsSender, isNotWhitelisted],
+    inspect: [
+        findZeroAddressIssue,
+        findSelfAddressIssue,
+        findSenderMismatchIssue,
+        findWhitelistIssue,
+    ],
 });

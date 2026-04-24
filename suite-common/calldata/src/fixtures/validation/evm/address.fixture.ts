@@ -22,7 +22,7 @@ type IsSameAsSenderTestCase = {
 
 const SENDER = asEvmAddress('0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
 
-export const isValidAddressTestCases: IsValidAddressTestCase[] = [
+export const findAddressIssueTestCases: IsValidAddressTestCase[] = [
     {
         description: 'valid lowercase address',
         input: '0x1111111111111111111111111111111111111111',
@@ -60,7 +60,7 @@ export const isValidAddressTestCases: IsValidAddressTestCase[] = [
     },
 ];
 
-export const isZeroAddressTestCases: IsZeroAddressTestCase[] = [
+export const findZeroAddressIssueTestCases: IsZeroAddressTestCase[] = [
     {
         description: 'zero address returns ZERO_ADDRESS',
         input: asEvmAddress('0x0000000000000000000000000000000000000000'),
@@ -73,7 +73,7 @@ export const isZeroAddressTestCases: IsZeroAddressTestCase[] = [
     },
 ];
 
-export const isSameAsSenderTestCases: IsSameAsSenderTestCase[] = [
+export const findSelfAddressIssueTestCases: IsSameAsSenderTestCase[] = [
     {
         description: 'same address same case returns SELF_ADDRESS',
         input: asEvmAddress('0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'),
@@ -100,7 +100,7 @@ export const isSameAsSenderTestCases: IsSameAsSenderTestCase[] = [
     },
 ];
 
-export const isNotSameAsSenderTestCases: IsSameAsSenderTestCase[] = [
+export const findSenderMismatchIssueTestCases: IsSameAsSenderTestCase[] = [
     {
         description: 'different address returns NOT_SAME_AS_SENDER',
         input: asEvmAddress('0x1111111111111111111111111111111111111111'),
@@ -139,7 +139,7 @@ const WHITELIST: EvmAddress[] = [
     asEvmAddress('0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb'),
 ];
 
-export const isNotWhitelistedTestCases: IsNotWhitelistedTestCase[] = [
+export const findWhitelistIssueTestCases: IsNotWhitelistedTestCase[] = [
     {
         description: 'address in whitelist returns null',
         input: asEvmAddress('0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'),

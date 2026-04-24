@@ -1,8 +1,8 @@
-import { isValidBytes32TestCases } from '../../../fixtures/validation/shared/bytes32.fixture';
-import { isValidBytes32 } from '../../../validation/shared/bytes32';
+import { findBytes32IssueTestCases } from '../../../fixtures/validation/shared/bytes32.fixture';
+import { findBytes32Issue } from '../../../validation/shared/bytes32';
 
-describe('isValidBytes32', () => {
-    it.each(isValidBytes32TestCases)('$description', ({ input, expected }) => {
-        expect(isValidBytes32(input)).toBe(expected);
+describe('findBytes32Issue', () => {
+    it.each(findBytes32IssueTestCases)('$description', ({ input, expected }) => {
+        expect(findBytes32Issue(input)).toBe(expected);
     });
 });

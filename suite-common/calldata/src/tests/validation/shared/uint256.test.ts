@@ -1,44 +1,47 @@
 import {
-    exceedsUint256TestCases,
-    hasBalanceTestCases,
-    isNegativeTestCases,
-    isNotIntegerTestCases,
-    isZeroTestCases,
+    findInsufficientBalanceIssueTestCases,
+    findNegativeAmountIssueTestCases,
+    findNonIntegerIssueTestCases,
+    findUint256OverflowIssueTestCases,
+    findZeroAmountIssueTestCases,
 } from '../../../fixtures/validation/shared/uint256.fixture';
 import {
-    exceedsUint256,
-    hasBalance,
-    isNegative,
-    isNotInteger,
-    isZero,
+    findInsufficientBalanceIssue,
+    findNegativeAmountIssue,
+    findNonIntegerIssue,
+    findUint256OverflowIssue,
+    findZeroAmountIssue,
 } from '../../../validation/shared/uint256';
 
-describe('isNegative', () => {
-    it.each(isNegativeTestCases)('$description', ({ input, expected }) => {
-        expect(isNegative(input)).toBe(expected);
+describe('findNegativeAmountIssue', () => {
+    it.each(findNegativeAmountIssueTestCases)('$description', ({ input, expected }) => {
+        expect(findNegativeAmountIssue(input)).toBe(expected);
     });
 });
 
-describe('isNotInteger', () => {
-    it.each(isNotIntegerTestCases)('$description', ({ input, expected }) => {
-        expect(isNotInteger(input)).toBe(expected);
+describe('findNonIntegerIssue', () => {
+    it.each(findNonIntegerIssueTestCases)('$description', ({ input, expected }) => {
+        expect(findNonIntegerIssue(input)).toBe(expected);
     });
 });
 
-describe('exceedsUint256', () => {
-    it.each(exceedsUint256TestCases)('$description', ({ input, expected }) => {
-        expect(exceedsUint256(input)).toBe(expected);
+describe('findUint256OverflowIssue', () => {
+    it.each(findUint256OverflowIssueTestCases)('$description', ({ input, expected }) => {
+        expect(findUint256OverflowIssue(input)).toBe(expected);
     });
 });
 
-describe('isZero', () => {
-    it.each(isZeroTestCases)('$description', ({ input, expected }) => {
-        expect(isZero(input)).toBe(expected);
+describe('findZeroAmountIssue', () => {
+    it.each(findZeroAmountIssueTestCases)('$description', ({ input, expected }) => {
+        expect(findZeroAmountIssue(input)).toBe(expected);
     });
 });
 
-describe('hasBalance', () => {
-    it.each(hasBalanceTestCases)('$description', ({ input, context, expected }) => {
-        expect(hasBalance(input, context)).toBe(expected);
-    });
+describe('findInsufficientBalanceIssue', () => {
+    it.each(findInsufficientBalanceIssueTestCases)(
+        '$description',
+        ({ input, context, expected }) => {
+            expect(findInsufficientBalanceIssue(input, context)).toBe(expected);
+        },
+    );
 });
