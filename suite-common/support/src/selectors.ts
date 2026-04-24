@@ -3,7 +3,7 @@ import {
     selectDeviceFirmwareRevision,
     selectDeviceFirmwareVersion,
     selectDeviceInternalModel,
-    selectIsDeviceUsingPassphrase,
+    selectIsDeviceProtectedByPassphrase,
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/device';
 import { createWeakMapSelector } from '@suite-common/redux-utils';
@@ -19,7 +19,7 @@ export const selectSupportChatUrl = createMemoizedSelector(
         selectDeviceInternalModel,
         selectDeviceFirmwareVersion,
         selectDeviceFirmwareRevision,
-        selectIsDeviceUsingPassphrase,
+        selectIsDeviceProtectedByPassphrase,
         selectIsPortfolioTrackerDevice,
         (_state, isSystemInfoShared) => isSystemInfoShared,
     ],
@@ -27,7 +27,7 @@ export const selectSupportChatUrl = createMemoizedSelector(
         deviceModel,
         firmwareVersion,
         firmwareRevision,
-        isDeviceUsingPassphrase,
+        isDeviceProtectedByPassphrase,
         isPortfolioTrackerDevice,
         isSystemInfoShared,
     ) => {
@@ -49,7 +49,7 @@ export const selectSupportChatUrl = createMemoizedSelector(
             if (firmwareRevision) {
                 deviceUtmParams.utm_rev = firmwareRevision;
             }
-            deviceUtmParams.utm_passphrase = isDeviceUsingPassphrase ? 'true' : 'false';
+            deviceUtmParams.utm_passphrase = isDeviceProtectedByPassphrase ? 'true' : 'false';
         }
 
         return withUtmParams(supportChatUrl, deviceUtmParams);
