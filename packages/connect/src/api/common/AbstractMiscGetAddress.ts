@@ -1,20 +1,9 @@
-import {
-    Bundle,
-    GetAddress as GetAddressSchema,
-    UI_REQUEST,
-    createUiMessage,
-} from '@trezor/connect-common';
-import { ERRORS } from '@trezor/connect-common/src/constants';
+import { Bundle, GetAddress as GetAddressSchema } from '@trezor/connect-common';
 import { Assert } from '@trezor/schema-utils';
 
+import { AbstractGetAddress } from './AbstractGetAddress';
 import { bundlify } from './paramsValidator';
-import type {
-    MethodContext,
-    MethodMessage,
-    MethodPermission,
-    MethodReturnType,
-} from '../../core/AbstractMethod';
-import { AbstractMethod } from '../../core/AbstractMethod';
+import type { MethodMessage } from '../../core/AbstractMethod';
 import { fromHardened, getSerializedPath, validatePath } from '../../utils/pathUtils';
 
 export type MiscGetAddressMethodName =
@@ -35,12 +24,16 @@ export type MiscGetAddressParams = {
     address?: string;
 };
 
+type MiscRunResponse = {
+    path: number[];
+    serializedPath: string;
+    address: string;
+    mac?: string;
+};
+
 export abstract class AbstractMiscGetAddress<
     Name extends MiscGetAddressMethodName,
-> extends AbstractMethod<Name, MiscGetAddressParams[]> {
-    hasBundle?: boolean;
-    progress = 0;
-
+> extends AbstractGetAddress<Name, MiscGetAddressParams, MiscRunResponse> {
     constructor(message: MethodMessage<Name>, pathDepth: number) {
         const { hasBundle, payload } = bundlify(message.payload);
 
@@ -62,10 +55,6 @@ export abstract class AbstractMiscGetAddress<
         this.confirmMissingBackup = true;
     }
 
-    get requiredPermissions(): MethodPermission[] {
-        return ['read'];
-    }
-
     protected getInfo(coinName: string, showAccountInInfo: boolean) {
         if (this.params.length > 1) {
             return `Export multiple ${coinName} addresses`;
@@ -77,16 +66,6 @@ export abstract class AbstractMiscGetAddress<
         }
 
         return `Export ${coinName} address`;
-    }
-
-    getButtonRequestData(code: string) {
-        if (code === 'ButtonRequest_Address') {
-            return {
-                type: 'address' as const,
-                serializedPath: getSerializedPath(this.params[this.progress].proto.address_n),
-                address: this.params[this.progress].address || 'not-set',
-            };
-        }
     }
 
     protected getConfirmation(coinName: string) {
@@ -105,55 +84,35 @@ export abstract class AbstractMiscGetAddress<
         };
     }
 
-    protected abstract _call(
-        params: MiscGetAddressParams,
-    ): Promise<{ address: string; mac?: string }>;
+    protected getAddressN(param: MiscGetAddressParams) {
+        return param.proto.address_n;
+    }
 
-    async run({ sendCoreMessage }: MethodContext): Promise<MethodReturnType<Name>> {
-        const responses: {
-            path: number[];
-            serializedPath: string;
-            address: string;
-            mac?: string;
-        }[] = [];
+    protected getShowDisplay(param: MiscGetAddressParams) {
+        return param.proto.show_display;
+    }
 
-        for (let i = 0; i < this.params.length; i++) {
-            const batch = this.params[i];
-            if (batch.proto.show_display) {
-                const silent = await this._call({
-                    ...batch,
-                    proto: { ...batch.proto, show_display: false },
-                });
-                if (typeof batch.address === 'string') {
-                    if (batch.address !== silent.address) {
-                        throw ERRORS.TypedError('Method_AddressNotMatch');
-                    }
-                } else {
-                    batch.address = silent.address;
-                }
-            }
+    protected paramForSilent(param: MiscGetAddressParams) {
+        return { ...param, proto: { ...param.proto, show_display: false } };
+    }
 
-            const response = await this._call(batch);
-            responses.push({
-                path: batch.proto.address_n,
-                serializedPath: getSerializedPath(batch.proto.address_n),
-                address: response.address,
-                mac: response.mac,
-            });
+    protected getPreviousAddress(param: MiscGetAddressParams) {
+        return param.address;
+    }
 
-            if (this.hasBundle) {
-                sendCoreMessage(
-                    createUiMessage(UI_REQUEST.BUNDLE_PROGRESS, {
-                        total: this.params.length,
-                        progress: i,
-                        response,
-                    }),
-                );
-            }
+    protected setPreviousAddress(param: MiscGetAddressParams, address: string) {
+        param.address = address;
+    }
 
-            this.progress++;
-        }
-
-        return (this.hasBundle ? responses : responses[0]) as MethodReturnType<Name>;
+    protected buildRunResponse(
+        param: MiscGetAddressParams,
+        response: { address: string; mac?: string },
+    ): MiscRunResponse {
+        return {
+            path: param.proto.address_n,
+            serializedPath: getSerializedPath(param.proto.address_n),
+            address: response.address,
+            mac: response.mac,
+        };
     }
 }
