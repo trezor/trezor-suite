@@ -2,6 +2,16 @@ import { blockfrostUtils } from '@trezor/blockchain-link-utils';
 
 import { getContractAddress } from '../fetchCoins';
 
+jest.mock('@trezor/blockchain-link-utils', () => ({
+    ...jest.requireActual('@trezor/blockchain-link-utils'),
+    blockfrostUtils: {
+        ...jest.requireActual('@trezor/blockchain-link-utils').blockfrostUtils,
+        parseAsset: jest.fn(
+            jest.requireActual('@trezor/blockchain-link-utils').blockfrostUtils.parseAsset,
+        ),
+    },
+}));
+
 describe('getContractAddress', () => {
     afterEach(() => {
         jest.restoreAllMocks();
@@ -13,7 +23,7 @@ describe('getContractAddress', () => {
                 cardano: 'valid_cardano_asset_string',
             };
 
-            const mockParseAsset = jest.spyOn(blockfrostUtils, 'parseAsset');
+            const mockParseAsset = blockfrostUtils.parseAsset as jest.Mock;
             mockParseAsset.mockReturnValue({ policyId: 'mock_policy_id' } as any);
 
             const result = await getContractAddress('cardano', platforms);
