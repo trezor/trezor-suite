@@ -3,6 +3,9 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
 import path from 'path';
 import webpack from 'webpack';
 
+// Shared build-time config lives at repo root; CJS require avoids TS rootDir inclusion.
+const { reactCompilerPlugin } = require('../../../react-compiler.config');
+
 if (!process.env.__SUITE_WEB_URL__) {
     console.warn(`
 ╔══════════════════════════════════════════════════════════════════╗
@@ -69,6 +72,8 @@ const config: webpack.Configuration = {
                             '@babel/preset-typescript',
                         ],
                         plugins: [
+                            // React Compiler must run before styled-components.
+                            reactCompilerPlugin,
                             [
                                 'babel-plugin-styled-components',
                                 {

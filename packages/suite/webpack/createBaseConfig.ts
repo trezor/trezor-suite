@@ -20,6 +20,9 @@ import {
 } from './env';
 import { getRevision } from './git';
 
+// Shared build-time config lives at repo root; CJS require avoids TS rootDir inclusion.
+const { reactCompilerPlugin } = require('../../../react-compiler.config');
+
 // Prevent "webpack: TypeError: Do not know how to serialize a BigInt"
 // @ts-expect-error
 BigInt.prototype.toJSON = function toJSON() {
@@ -207,6 +210,8 @@ export const createBaseConfig = ({
                                 ],
                             ],
                             plugins: [
+                                // React Compiler must run before styled-components / other transforms.
+                                reactCompilerPlugin,
                                 [
                                     'babel-plugin-styled-components',
                                     {
