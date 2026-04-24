@@ -1,5 +1,10 @@
 const path = require('path');
 
+// NOTE: @swc/jest does not execute babel plugins, so babel-plugin-react-compiler is NOT wired here.
+// Packages using this config (e.g. @trezor/components) exercise uncompiled code in tests even once
+// the compiler is enabled in production. Consider migrating to jest.config.base.js when the
+// compiler is enabled for that package. See plans/react-compiler-migration.md.
+
 const swcConfig = {
     jsc: {
         parser: {

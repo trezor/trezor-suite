@@ -1,5 +1,7 @@
 const path = require('path');
 
+const { reactCompilerPlugin } = require('./react-compiler.config');
+
 const babelConfig = {
     presets: [
         ['@babel/preset-env', { targets: { node: 'current' }, modules: 'commonjs' }],
@@ -11,7 +13,11 @@ const babelConfig = {
             },
         ],
     ],
-    plugins: [['@babel/plugin-proposal-decorators', { version: '2023-11' }]],
+    plugins: [
+        // React Compiler must run before other plugins.
+        reactCompilerPlugin,
+        ['@babel/plugin-proposal-decorators', { version: '2023-11' }],
+    ],
 };
 
 module.exports = {

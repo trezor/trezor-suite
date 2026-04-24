@@ -1,5 +1,6 @@
 const version = require('./package.json').suiteVersion;
 const baseConfig = require('../../jest.config.base');
+const { reactCompilerPlugin } = require('../../react-compiler.config');
 
 // all tests have same UTC timezone
 process.env.TZ = 'UTC';
@@ -17,6 +18,7 @@ const babelConfig = {
             },
         ],
     ],
+    plugins: [reactCompilerPlugin],
 };
 
 /**
