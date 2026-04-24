@@ -55,10 +55,7 @@ export const BuyConfirmation = ({ enteringAnimation }: ConfirmationProps) => {
                                       values={{ providerName }}
                                   />
                               ) : (
-                                  <Translation
-                                      id="moduleTrading.tradingScreen.buttons.continue"
-                                      values={{ providerName }}
-                                  />
+                                  <Translation id="moduleTrading.tradingScreen.buttons.continue" />
                               )}
                           </Button>
                       </AnimatedBox>
