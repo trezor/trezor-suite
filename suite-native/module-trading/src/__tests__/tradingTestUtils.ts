@@ -7,7 +7,11 @@ import { geolocationInitialState } from '@suite-common/geolocation';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { initialSuiteSyncDataState, initialSuiteSyncState } from '@suite-common/suite-sync';
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
-import { formDraftReducer, initialWalletSettingsState } from '@suite-common/wallet-core';
+import {
+    formDraftReducer,
+    initialWalletSettingsState,
+    transactionsInitialState,
+} from '@suite-common/wallet-core';
 import { bluetoothInitialState } from '@suite-native/bluetooth';
 import { deviceAuthorizationInitialState } from '@suite-native/device-authorization';
 import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
@@ -103,6 +107,7 @@ export const createTradingLightStore = (args?: {
             fees: createStaticReducer(preloadedState.wallet.fees ?? {}),
             formDrafts: formDraftReducer,
             send: createStaticReducer(preloadedState.wallet.send ?? {}),
+            transactions: createStaticReducer(transactionsInitialState),
             trading: tradingSlice.prepareReducer(extraDependenciesCommonMock),
         }),
     } as const;

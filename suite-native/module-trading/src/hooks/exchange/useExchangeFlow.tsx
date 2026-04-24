@@ -48,7 +48,6 @@ export const useExchangeFlow = () => {
     const { openBrowserForFormData } = useBrowserAuth('exchange');
     const quoteStatus = quote?.status;
 
-    // TODO 25742 tests
     useFocusEffect(
         useCallback(() => {
             if (quoteStatus === 'APPROVAL_PENDING') {

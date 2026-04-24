@@ -1,6 +1,6 @@
 import { Text } from '@suite-native/atoms';
 import { getTranslation } from '@suite-native/intl';
-import { renderWithStoreProvider, userEvent } from '@suite-native/test-utils';
+import { renderWithStoreProvider, userEvent } from '@suite-native/test-utils-store';
 import { getWalletState, mercuryoFixedBestQuote } from '@suite-native/trading-fixtures';
 
 import { LimitInfoRow } from '../LimitInfoRow';
