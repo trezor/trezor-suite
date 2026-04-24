@@ -8,6 +8,7 @@ import { requirePackageJsonScripts } from './package-json/requirePackageJsonScri
 import { requirePublishConfig } from './package-json/requirePublishConfig';
 import { requireConnectPublicDependencies } from './public-package-dependencies/requireConnectPublicDependencies';
 import { requireTypeDeclarationSize } from './type-declarations/requireTypeDeclarationSize';
+import { requireTypecheckTsconfig } from './tsconfig/requireTypecheckTsconfig';
 
 export const requirements: ReadonlyArray<Requirement<RequirementScope>> = [
     requireAgentsSkills,
@@ -17,6 +18,7 @@ export const requirements: ReadonlyArray<Requirement<RequirementScope>> = [
     requireFirmwareReleaseVersionMonotonicity,
     requireForbiddenDeps,
     requirePackageJsonScripts,
+    requireTypecheckTsconfig,
     requirePublishConfig,
     requireTypeDeclarationSize,
 ];
