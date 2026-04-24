@@ -1,6 +1,24 @@
-import * as data from '../../../data/config';
+import { config } from '../../../data/config';
 import * as fixtures from '../__fixtures__/paramsValidator';
 import { getFirmwareRange, validateParams } from '../paramsValidator';
+
+jest.mock('../../../data/config', () => {
+    const actual = jest.requireActual('../../../data/config');
+
+    return {
+        __esModule: true,
+        config: { ...actual.config },
+    };
+});
+
+const originalConfig = jest.requireActual('../../../data/config').config;
+
+const resetConfig = () => {
+    Object.keys(config).forEach(key => {
+        delete (config as Record<string, unknown>)[key];
+    });
+    Object.assign(config, originalConfig);
+};
 
 describe('helpers/paramsValidator', () => {
     describe('validateParams', () => {
@@ -21,12 +39,18 @@ describe('helpers/paramsValidator', () => {
 
     describe('getFirmwareRange', () => {
         afterEach(() => {
-            jest.restoreAllMocks();
+            resetConfig();
         });
 
         fixtures.getFirmwareRange.forEach(f => {
             it(f.description, () => {
-                if (f.config) jest.replaceProperty(data, 'config', f.config as any);
+                if (f.config) {
+                    resetConfig();
+                    Object.keys(config).forEach(key => {
+                        delete (config as Record<string, unknown>)[key];
+                    });
+                    Object.assign(config, f.config);
+                }
 
                 const [method, coinInfo, defaultRange] = f.params;
                 expect(

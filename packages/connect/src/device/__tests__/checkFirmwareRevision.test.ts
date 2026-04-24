@@ -4,9 +4,14 @@ import type { FirmwareRevisionCheckResult } from '@trezor/connect-common/src/typ
 import type { FirmwareRelease } from '@trezor/device-utils';
 import { DeviceModelInternal, FirmwareType } from '@trezor/device-utils';
 
-import * as utilsAssets from '../../utils/assets';
+import { httpRequest } from '../../utils/assets';
 import type { CheckFirmwareRevisionParams } from '../checkFirmwareRevision';
 import { checkFirmwareRevision } from '../checkFirmwareRevision';
+
+jest.mock('../../utils/assets', () => ({
+    ...jest.requireActual('../../utils/assets'),
+    httpRequest: jest.fn(jest.requireActual('../../utils/assets').httpRequest),
+}));
 
 const ONLINE_RELEASES_JSON_MOCK: FirmwareRelease = {
     required: false,
@@ -119,7 +124,7 @@ describe.each(DeviceNames)(`${checkFirmwareRevision.name} for device %s`, intern
         },
     ])(`$it`, async ({ params, expected, httpRequestMock }) => {
         if (httpRequestMock !== undefined) {
-            jest.spyOn(utilsAssets, 'httpRequest').mockImplementation(httpRequestMock);
+            (httpRequest as jest.Mock).mockImplementation(httpRequestMock);
         }
 
         const result = await checkFirmwareRevision({
