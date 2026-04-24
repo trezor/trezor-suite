@@ -34,8 +34,8 @@ export const reactConfig = [
             'react-hooks/static-components': 'off', // TODO fix & reenable
             'react-hooks/set-state-in-effect': 'off', // TODO fix & reenable, though this anti-pattern is unfortunately quite widespread
             'react-hooks/refs': 'off', // Too restrictive. Reading ref in render is often desired, though must be carefully considered
-            'react-hooks/incompatible-library': 'off', // Rule for React Compiler; it's unlikely we'll use it anytime soon
-            'react-hooks/preserve-manual-memoization': 'off', // Rule for React Compiler; it's unlikely we'll use it anytime soon
+            'react-hooks/incompatible-library': 'error', // React Compiler Phase 0: Rules-of-React checks apply regardless of whether the compiler runtime is on
+            'react-hooks/preserve-manual-memoization': 'error', // React Compiler Phase 0: guards memoization that is load-bearing for correctness
             'react-hooks/use-memo': 'off', // Too restrictive: enforces inline function in useMemo (forbids using variable)
         },
     },

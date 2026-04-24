@@ -142,6 +142,7 @@
         "@types/node": "22.13.10",
         "@types/node-fetch": "^2.6.12",
         "babel-jest": "30.0.0",
+        "babel-plugin-react-compiler": "^1.0.0",
         "depcheck": "^1.4.7",
         "eslint": "^9.39.4",
         "husky": "^9.1.7",

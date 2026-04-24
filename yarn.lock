@@ -44702,6 +44702,7 @@ __metadata:
     "@types/node": "npm:22.13.10"
     "@types/node-fetch": "npm:^2.6.12"
     babel-jest: "npm:30.0.0"
+    babel-plugin-react-compiler: "npm:^1.0.0"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^9.39.4"
     husky: "npm:^9.1.7"
