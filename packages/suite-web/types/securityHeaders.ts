@@ -9,6 +9,10 @@ export type ContentSecurityPolicyRules = {
     'upgrade-insecure-requests': true;
     'report-uri': string;
     'report-to': string;
+    'form-action': string[];
+    'frame-ancestors': string[];
+    'base-uri': string[];
+    'object-src': string[];
 };
 
 /**
