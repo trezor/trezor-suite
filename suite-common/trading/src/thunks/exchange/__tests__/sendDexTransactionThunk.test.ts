@@ -11,8 +11,20 @@ import { type TradingExchangeState } from '../../../reducers/exchangeReducer';
 import { initialState } from '../../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../../reducers/tradingReducer';
 import { tradingThunks } from '../../common';
-import * as confirmExchangeTradeThunk from '../confirmExchangeTradeThunk';
+import { confirmExchangeTradeThunk } from '../confirmExchangeTradeThunk';
 import { exchangeThunks } from '../index';
+
+jest.mock('../confirmExchangeTradeThunk', () => {
+    const actual = jest.requireActual('../confirmExchangeTradeThunk');
+
+    return {
+        ...actual,
+        confirmExchangeTradeThunk: Object.assign(
+            jest.fn(actual.confirmExchangeTradeThunk),
+            actual.confirmExchangeTradeThunk,
+        ),
+    };
+});
 
 const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
 
@@ -160,11 +172,9 @@ describe('sendDexTransactionThunk', () => {
                 ),
             );
 
-        const confirmExchangeTradeThunkSpy = jest
-            .spyOn(confirmExchangeTradeThunk, 'confirmExchangeTradeThunk')
-            .mockImplementation(
-                createThunk('@trading-exchange/thunk/confirmTrade', () => undefined),
-            );
+        const confirmExchangeTradeThunkSpy = (
+            confirmExchangeTradeThunk as jest.Mock
+        ).mockImplementation(createThunk('@trading-exchange/thunk/confirmTrade', () => undefined));
 
         const result = await store.dispatch(
             exchangeThunks.sendDexTransactionThunk({
@@ -207,11 +217,9 @@ describe('sendDexTransactionThunk', () => {
                 ),
             );
 
-        const confirmExchangeTradeThunkSpy = jest
-            .spyOn(confirmExchangeTradeThunk, 'confirmExchangeTradeThunk')
-            .mockImplementation(
-                createThunk('@trading-exchange/thunk/confirmTrade', () => undefined),
-            );
+        const confirmExchangeTradeThunkSpy = (
+            confirmExchangeTradeThunk as jest.Mock
+        ).mockImplementation(createThunk('@trading-exchange/thunk/confirmTrade', () => undefined));
 
         const result = await store.dispatch(
             exchangeThunks.sendDexTransactionThunk({

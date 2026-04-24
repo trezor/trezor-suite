@@ -3,7 +3,7 @@ import { type CryptoId } from 'invity-api';
 
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { getNetwork } from '@suite-common/wallet-config';
-import * as envUtils from '@trezor/env-utils';
+import { isNative } from '@trezor/env-utils';
 
 import { ALTERNATIVE_QUOTES } from '../../../__fixtures__/buyUtils';
 import { invityAPI } from '../../../invityAPI';
@@ -24,7 +24,11 @@ import { buyThunks } from '../index';
 const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
 const createMockQuotes = () =>
     [...MIN_MAX_QUOTES_OK, ...ALTERNATIVE_QUOTES].map(quote => ({ ...quote }));
-const mockedIsNative = jest.spyOn(envUtils, 'isNative');
+jest.mock('@trezor/env-utils', () => ({
+    ...jest.requireActual('@trezor/env-utils'),
+    isNative: jest.fn(),
+}));
+const mockedIsNative = isNative as jest.Mock;
 
 describe('handleBuyRequestThunk', () => {
     beforeEach(() => {
@@ -33,10 +37,6 @@ describe('handleBuyRequestThunk', () => {
 
     afterEach(() => {
         jest.clearAllMocks();
-    });
-
-    afterAll(() => {
-        mockedIsNative.mockRestore();
     });
 
     jest.mock('../../../invityAPI');

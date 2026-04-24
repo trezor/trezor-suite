@@ -5,7 +5,7 @@ import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/t
 import { getNetwork } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
-import * as envUtils from '@trezor/env-utils';
+import { isNative } from '@trezor/env-utils';
 
 import { sellThunks } from '../';
 import { invityAPI } from '../../../invityAPI';
@@ -23,8 +23,13 @@ import {
 } from '../../../types';
 import { sellUtilsFixtures } from '../../../utils/sell/__fixtures__/sellUtils';
 
+jest.mock('@trezor/env-utils', () => ({
+    ...jest.requireActual('@trezor/env-utils'),
+    isNative: jest.fn(),
+}));
+
 const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
-const mockedIsNative = jest.spyOn(envUtils, 'isNative');
+const mockedIsNative = isNative as jest.Mock;
 
 describe('handleSellRequestThunk', () => {
     beforeEach(() => {
@@ -33,10 +38,6 @@ describe('handleSellRequestThunk', () => {
 
     afterEach(() => {
         jest.clearAllMocks();
-    });
-
-    afterAll(() => {
-        mockedIsNative.mockRestore();
     });
 
     jest.mock('../../../invityAPI');

@@ -14,7 +14,19 @@ import { prepareTradingReducer } from '../../../reducers/tradingReducer';
 import { type TradingTransactionExchange } from '../../../types';
 import { tradingThunks } from '../../common';
 import { exchangeThunks } from '../index';
-import * as sendDexTransactionThunk from '../sendDexTransactionThunk';
+import { sendDexTransactionThunk } from '../sendDexTransactionThunk';
+
+jest.mock('../sendDexTransactionThunk', () => {
+    const actual = jest.requireActual('../sendDexTransactionThunk');
+
+    return {
+        ...actual,
+        sendDexTransactionThunk: Object.assign(
+            jest.fn(actual.sendDexTransactionThunk),
+            actual.sendDexTransactionThunk,
+        ),
+    };
+});
 
 const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
 
@@ -112,11 +124,11 @@ describe('sendTransactionThunk', () => {
             },
         });
 
-        const sendDexTransactionThunkSpy = jest
-            .spyOn(sendDexTransactionThunk, 'sendDexTransactionThunk')
-            .mockImplementation(
-                createThunk('@trading-exchange/thunk/sendDexTransactionThunk', () => undefined),
-            );
+        const sendDexTransactionThunkSpy = (
+            sendDexTransactionThunk as jest.Mock
+        ).mockImplementation(
+            createThunk('@trading-exchange/thunk/sendDexTransactionThunk', () => undefined),
+        );
 
         const result = await store
             .dispatch(
@@ -153,14 +165,14 @@ describe('sendTransactionThunk', () => {
             error: { id: 'TR_TRADING_CANNOT_SEND_TRANSACTION' },
         };
 
-        const sendDexTransactionThunkSpy = jest
-            .spyOn(sendDexTransactionThunk, 'sendDexTransactionThunk')
-            .mockImplementation(
-                createThunk(
-                    '@trading-exchange/thunk/sendDexTransactionThunk',
-                    (_, { rejectWithValue }) => rejectWithValue(rejectValue),
-                ) as any,
-            );
+        const sendDexTransactionThunkSpy = (
+            sendDexTransactionThunk as jest.Mock
+        ).mockImplementation(
+            createThunk(
+                '@trading-exchange/thunk/sendDexTransactionThunk',
+                (_, { rejectWithValue }) => rejectWithValue(rejectValue),
+            ) as any,
+        );
 
         const result = await store.dispatch(
             exchangeThunks.sendTransactionThunk({
@@ -195,10 +207,7 @@ describe('sendTransactionThunk', () => {
             ],
         ])('%s', async (_, tradeTest) => {
             const { store, returnUrl, account } = getMocks();
-            const sendDexTransactionThunkSpy = jest.spyOn(
-                sendDexTransactionThunk,
-                'sendDexTransactionThunk',
-            );
+            const sendDexTransactionThunkSpy = sendDexTransactionThunk as jest.Mock;
 
             const result = await store.dispatch(
                 exchangeThunks.sendTransactionThunk({
@@ -237,10 +246,7 @@ describe('sendTransactionThunk', () => {
         ])('%s', async (_, recomposeAndSignPayload) => {
             const { store, returnUrl, account, trade } = getMocks();
 
-            const sendDexTransactionThunkSpy = jest.spyOn(
-                sendDexTransactionThunk,
-                'sendDexTransactionThunk',
-            );
+            const sendDexTransactionThunkSpy = sendDexTransactionThunk as jest.Mock;
             (tradingThunks.recomposeAndSignTxThunk as unknown as jest.Mock) = jest
                 .fn()
                 .mockImplementation(
@@ -291,10 +297,7 @@ describe('sendTransactionThunk', () => {
         const mockNextStep = jest.fn();
         const dateString = new Date().toISOString();
         jest.spyOn(Date.prototype, 'toISOString').mockImplementation(() => dateString);
-        const sendDexTransactionThunkSpy = jest.spyOn(
-            sendDexTransactionThunk,
-            'sendDexTransactionThunk',
-        );
+        const sendDexTransactionThunkSpy = sendDexTransactionThunk as jest.Mock;
 
         const result = await store.dispatch(
             exchangeThunks.sendTransactionThunk({
