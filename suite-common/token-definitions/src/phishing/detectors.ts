@@ -144,7 +144,7 @@ const isUnknownTxPhishing: PhishingDetectorFn = ({ transaction }) => {
 };
 
 const isTrc10TransferPhishing: PhishingDetectorFn = ({ transaction }) => {
-    const isTrc10Transfer = transaction.tronSpecific?.operation === 'trc10_transfer';
+    const isTrc10Transfer = transaction.tronSpecific?.contractType === 'TransferAssetContract';
 
     return createResult(isTrc10Transfer, transaction);
 };
