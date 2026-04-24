@@ -3,12 +3,6 @@ import { useSelector } from 'react-redux';
 
 import { useFocusEffect } from '@react-navigation/native';
 
-import {
-    selectIsDeviceAuthorized,
-    selectIsDeviceInitialized,
-    selectIsDeviceUnlocked,
-    selectIsReconnectRequested,
-} from '@suite-common/device';
 import { selectIsDiscoveredDeviceAccountless } from '@suite-common/wallet-core';
 import {
     selectIsBluetoothDeviceOsUnpairingRequired,
@@ -16,33 +10,28 @@ import {
 } from '@suite-native/bluetooth';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { Screen } from '@suite-native/navigation';
+import { exhaustive } from '@trezor/type-utils';
 
-import { EmptyHomeRenderer } from './components/EmptyHomeRenderer';
+import { EmptyPortfolioCrossroads } from './components/EmptyPortfolioCrossroads';
+import { EmptyPortfolioTrackerState } from './components/EmptyPortfolioTrackerState';
 import { PortfolioContent } from './components/PortfolioContent';
 import { type PortfolioGraphRef } from './components/PortfolioGraph';
+import { UninitializedConnectedDeviceState } from './components/UninitializedConnectedDeviceState';
+import { selectHomeScreenState } from './homescreenSelectors';
 import { useHomeRefreshControl } from './useHomeRefreshControl';
 import { useShowAutoEjectAlert } from './useShowAutoEjectAlert';
 
 export const HomeScreen = () => {
     const { showSystemUnpairingAlert } = useBluetoothAlerts();
 
+    const homeScreenState = useSelector(selectHomeScreenState);
     const isDiscoveredDeviceAccountless = useSelector(selectIsDiscoveredDeviceAccountless);
-    const isDeviceAuthorized = useSelector(selectIsDeviceAuthorized);
-    const isDeviceUnlocked = useSelector(selectIsDeviceUnlocked);
-    const isDeviceInitialized = useSelector(selectIsDeviceInitialized);
     const isBluetoothDeviceOsUnpairingRequired = useSelector(
         selectIsBluetoothDeviceOsUnpairingRequired,
     );
-    const isReconnectRequested = useSelector(selectIsReconnectRequested);
-
-    const isEmptyHomeRendererShown =
-        (isDiscoveredDeviceAccountless && // There has to be no accounts and discovery not active.
-            (isDeviceAuthorized || // Initial state is empty portfolio device, that is authorized.
-                !isDeviceUnlocked)) ||
-        !isDeviceInitialized ||
-        isReconnectRequested;
 
     const portfolioContentRef = useRef<PortfolioGraphRef>(null);
+
     const refreshControl = useHomeRefreshControl({
         isDiscoveredDeviceAccountless,
         portfolioContentRef,
@@ -58,17 +47,31 @@ export const HomeScreen = () => {
 
     useShowAutoEjectAlert();
 
+    const renderContent = () => {
+        switch (homeScreenState) {
+            case 'portfolioContent':
+                return <PortfolioContent ref={portfolioContentRef} />;
+            case 'uninitializedDevice':
+                return <UninitializedConnectedDeviceState />;
+            case 'emptyPortfolioCrossroads':
+                return <EmptyPortfolioCrossroads />;
+            case 'emptyPortfolioTracker':
+                return <EmptyPortfolioTrackerState />;
+            default:
+                return exhaustive(homeScreenState);
+        }
+    };
+
+    // Portfolio graph needs to be rendered full width edge to edge.
+    const isFullWidthScreenState = homeScreenState === 'portfolioContent';
+
     return (
         <Screen
             header={<DeviceManagerScreenHeader />}
             refreshControl={refreshControl}
-            noHorizontalPadding
+            noHorizontalPadding={isFullWidthScreenState}
         >
-            {isEmptyHomeRendererShown ? (
-                <EmptyHomeRenderer />
-            ) : (
-                <PortfolioContent ref={portfolioContentRef} />
-            )}
+            {renderContent()}
         </Screen>
     );
 };
