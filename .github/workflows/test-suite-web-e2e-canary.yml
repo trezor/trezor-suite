@@ -1,7 +1,7 @@
-name: "[Test] Nightly Suite Web e2e tests"
-# Scheduled Mon-Fri on develop branch
+name: "[Test] Nightly Canary Suite Web e2e tests"
+# Scheduled Fridays at 06:00 on develop branch — starts after the regular nightly (00:00 Mon-Fri) finishes
 # Builds/deploys the web app to dev.suite.sldev.cz/suite-web/develop/web
-# Runs full e2e test suite for Suite Web with all supported device models and latest firmware
+# Runs only the canary FW e2e suite (smoke tests against firmware built nightly from main branch)
 
 permissions:
   id-token: write # for fetching the OIDC token
@@ -9,7 +9,7 @@ permissions:
 
 on:
   schedule:
-    - cron: "0 0 * * 1-5"
+    - cron: "0 6 * * 5"
   workflow_dispatch:
 
 concurrency:
@@ -24,8 +24,6 @@ jobs:
   build-web:
     if: github.repository == 'trezor/trezor-suite'
     uses: ./.github/workflows/build-suite-web-e2e.yml
-    with:
-      instrument-code: "true"
 
   extract-branch:
     if: github.repository == 'trezor/trezor-suite'
@@ -61,7 +59,7 @@ jobs:
           connectPopupUrl: "https://dev.suite.sldev.cz/suite-web/${{ needs.extract-branch.outputs.branch }}/web/connect-popup"
           suiteWebUrl: "https://dev.suite.sldev.cz/suite-web/${{ needs.extract-branch.outputs.branch }}/web"
 
-  run-e2e-suite-web-tests:
+  run-e2e-suite-web-canary-tests:
     if: github.repository == 'trezor/trezor-suite'
     needs:
       - build-web
@@ -73,57 +71,13 @@ jobs:
     uses: ./.github/workflows/template-suite-run-e2e.yml
     with:
       target: "web"
-      pw-config: "./playwright-config/playwright-web-nightly.config.ts"
+      pw-config: "./playwright-config/playwright-web-nightly-canary.config.ts"
       test-group: ${{ matrix.TEST_GROUP }}
       fail-fast: "false"
       currents-project-id: "Og0NOQ"
-      currents-ci-build-id: "nightly-run-${{ github.run_id }}-${{ github.run_attempt }}"
-      enable-coverage: "true"
+      currents-ci-build-id: "nightly-canary-run-${{ github.run_id }}-${{ github.run_attempt }}"
       download-artifact-name: "connect-explorer-webextension-dev.suite.sldev.cz"
     secrets:
       currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
       e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}
       e2e-passphrase-live: ${{ secrets.E2E_TEST_PASSPHRASE_LIVE }}
-
-  build-and-publish-coverage-map:
-    if: always() && github.repository == 'trezor/trezor-suite' && needs.run-e2e-suite-web-tests.result != 'skipped'
-    needs: [run-e2e-suite-web-tests]
-    runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      contents: read
-    steps:
-      - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@ec61189d14ec14c8efccab744f656cffd0e33f37 # v6
-        with:
-          role-to-assume: "arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy"
-          aws-region: "eu-central-1"
-
-      - name: Setup Node.js
-        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
-        with:
-          node-version-file: ".nvmrc"
-          cache: yarn
-
-      - name: Install dependencies
-        run: yarn workspaces focus @trezor/e2e-utils
-
-      - name: Download per-test coverage map artifacts
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
-        with:
-          pattern: coverage-map-group-*
-          merge-multiple: true
-          path: coverage-map/
-
-      - name: Build coverage map index
-        run: |
-          yarn tsx packages/e2e-utils/src/testCoverage/buildCoverageMap.ts \
-            --input coverage-map \
-            --output coverage-map/index.json
-
-      - name: Upload coverage map to S3
-        run: |
-          aws s3api put-object --bucket dev.suite.sldev.cz --key coverage/e2e/index.json --body coverage-map/index.json --content-type application/json --cache-control "no-cache, max-age=0"
