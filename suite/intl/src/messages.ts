@@ -5431,6 +5431,46 @@ export const messages = defineMessages({
         id: 'TR_TRON_ACCOUNT_ACTIVATION_FEE_TOOLTIP',
         defaultMessage: 'New TRON accounts require a one-time 1 TRX network fee to activate.',
     },
+    TR_TRON_TX_CREATE_ACCOUNT: {
+        id: 'TR_TRON_TX_CREATE_ACCOUNT',
+        defaultMessage: 'Create Account',
+    },
+    TR_TRON_TX_UPDATE_ACCOUNT: {
+        id: 'TR_TRON_TX_UPDATE_ACCOUNT',
+        defaultMessage: 'Update Account',
+    },
+    TR_TRON_TX_DEPLOY_SMART_CONTRACT: {
+        id: 'TR_TRON_TX_DEPLOY_SMART_CONTRACT',
+        defaultMessage: 'Deploy Smart Contract',
+    },
+    TR_TRON_TX_VOTE_WITNESS: {
+        id: 'TR_TRON_TX_VOTE_WITNESS',
+        defaultMessage: 'Vote Witness',
+    },
+    TR_TRON_TX_FREEZE_BALANCE: {
+        id: 'TR_TRON_TX_FREEZE_BALANCE',
+        defaultMessage: 'Freeze Balance',
+    },
+    TR_TRON_TX_UNFREEZE_BALANCE: {
+        id: 'TR_TRON_TX_UNFREEZE_BALANCE',
+        defaultMessage: 'Unfreeze Balance',
+    },
+    TR_TRON_TX_WITHDRAW_BALANCE: {
+        id: 'TR_TRON_TX_WITHDRAW_BALANCE',
+        defaultMessage: 'Withdraw Balance',
+    },
+    TR_TRON_TX_CLAIM_REWARDS: {
+        id: 'TR_TRON_TX_CLAIM_REWARDS',
+        defaultMessage: 'Claim Rewards',
+    },
+    TR_TRON_TX_DELEGATE_RESOURCE: {
+        id: 'TR_TRON_TX_DELEGATE_RESOURCE',
+        defaultMessage: 'Delegate Resource',
+    },
+    TR_TRON_TX_UNDELEGATE_RESOURCE: {
+        id: 'TR_TRON_TX_UNDELEGATE_RESOURCE',
+        defaultMessage: 'Undelegate Resource',
+    },
     TR_EXPERIMENTAL_TRON_VIEW_ONLY: {
         id: 'TR_EXPERIMENTAL_TRON_VIEW_ONLY',
         defaultMessage: 'Tron (Beta)',
