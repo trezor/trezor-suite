@@ -1,22 +1,21 @@
 import { useSelector } from 'react-redux';
 
-import { selectTradingExchangeActiveQuote, useAllowanceTxTracking } from '@suite-common/trading';
-import type { AccountKey } from '@suite-common/wallet-types';
+import { type TransactionStatus, selectTradingExchangeActiveQuote } from '@suite-common/trading';
 import { Button, HStack, Text } from '@suite-native/atoms';
 import { DebugModeView, type TransactionStatusWithOverride } from '@suite-native/trading-debug';
-import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
 
 export type ConfirmationQuoteDebugViewProps = {
+    approvalTxid: string | null;
     forceStatus: TransactionStatusWithOverride['forceStatus'];
+    transactionStatus: TransactionStatus;
 };
 
-export const ConfirmationQuoteDebugView = ({ forceStatus }: ConfirmationQuoteDebugViewProps) => {
+export const ConfirmationQuoteDebugView = ({
+    approvalTxid,
+    forceStatus,
+    transactionStatus,
+}: ConfirmationQuoteDebugViewProps) => {
     const quote = useSelector(selectTradingExchangeActiveQuote);
-    const sendAccount = useSelector(selectExchangeSelectedSendAccount);
-
-    const { status, approvalTxid } = useAllowanceTxTracking({
-        accountKey: sendAccount?.key ?? ('' as AccountKey),
-    });
 
     return (
         <DebugModeView>
@@ -47,9 +46,9 @@ export const ConfirmationQuoteDebugView = ({ forceStatus }: ConfirmationQuoteDeb
                 <Text variant="body-xs">Approval status</Text>
                 <Text variant="body-xs" color="contentSecondary">
                     {[
-                        status.isPending && 'pending',
-                        status.isConfirmed && 'confirmed',
-                        status.isFailed && 'failed',
+                        transactionStatus.isPending && 'pending',
+                        transactionStatus.isConfirmed && 'confirmed',
+                        transactionStatus.isFailed && 'failed',
                     ]
                         .filter(Boolean)
                         .join(' ') || 'none'}
