@@ -5,81 +5,27 @@ icon: lightning
 
 import Link from 'next/link';
 import { Card, Cards, Steps, Tabs } from 'nextra/components';
-import styled from 'styled-components';
 
-import { Button, CollapsibleBox, Card as TrezorCard, variables } from '@trezor/components';
-import { spacings, spacingsPx } from '@trezor/theme';
+import { Button, CollapsibleBox } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
 import { BetaOnly } from '../components/BetaOnly';
+import {
+    ExampleHeading,
+    ExamplesAside,
+    HiddenNextraHeading,
+    SdkContainer,
+    SdkDescription,
+    SdkHeading,
+    SdkName,
+    SdkTag,
+    SectionCard,
+} from '../components/IndexPageComponents';
 import ZoomableIllustration from '../components/ZoomableIllustration';
 import IconExtension from '../components/icons/IconExtension';
 import IconMobile from '../components/icons/IconMobile';
 import IconNode from '../components/icons/IconNode';
 import IconWeb from '../components/icons/IconWeb';
-
-export const SectionCard = ({ children }) => (
-    <TrezorCard margin={{ bottom: spacings.xl }}>{children}</TrezorCard>
-);
-
-export const SdkHeading = styled.h2`
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: ${spacingsPx.sm};
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin-bottom: ${spacingsPx.sm};
-`;
-
-export const HiddenNextraHeading = styled.div`
-    /* hidden heading for Nextra sidebar */
-    visibility: hidden;
-    height: 1px;
-`;
-
-export const SdkName = styled.div``;
-
-export const SdkTag = styled.div`
-    opacity: 0.5;
-
-    @media (min-width: ${variables.SCREEN_SIZE.LG}) {
-        flex: 1;
-    }
-
-`;
-
-export const SdkContainer = styled.div`
-    display: grid;
-    grid-template-columns: 1fr;
-    margin-top: ${spacingsPx.xxl};
-    gap: ${spacingsPx.xxl};
-
-    @media (min-width: ${variables.SCREEN_SIZE.LG}) {
-        grid-template-columns: 2fr 1fr;
-    }
-
-`;
-
-export const SdkDescription = styled.div``;
-
-export const ExamplesAside = styled.div`
-    p {
-        margin-top: ${spacingsPx.xs};
-    }
-    ul {
-        list-style-type: none;
-        padding: 0;
-        margin: 0;
-    }
-`;
-
-export const ExampleHeading = styled.h3`
-    font-size: 1rem;
-    text-transform: uppercase;
-    font-weight: 600;
-    margin-bottom: 0;
-`;
 
 # Integrate Trezor devices with your project
 
