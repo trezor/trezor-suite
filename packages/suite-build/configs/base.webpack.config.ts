@@ -21,7 +21,7 @@ import { getRevision } from '../utils/git';
 import { getPathForProject } from '../utils/path';
 
 // Shared build-time config lives at repo root; CJS require avoids TS rootDir inclusion.
-const { reactCompilerPlugin } = require('../../../react-compiler.config');
+const { reactCompilerBabelOverride } = require('../../../react-compiler.config');
 
 const gitRevision = getRevision();
 
@@ -129,9 +129,9 @@ const config: webpack.Configuration = {
                                 },
                             ],
                         ],
+                        // React Compiler is scoped via overrides so it doesn't see files it can't handle.
+                        overrides: [reactCompilerBabelOverride],
                         plugins: [
-                            // React Compiler must run before styled-components / other transforms.
-                            reactCompilerPlugin,
                             [
                                 'babel-plugin-styled-components',
                                 {

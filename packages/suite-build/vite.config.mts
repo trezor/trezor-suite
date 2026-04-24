@@ -14,7 +14,7 @@ import { assetPrefix, isTanstackReactQueryDevTools, project } from './utils/env'
 const require = createRequire(import.meta.url);
 
 // Shared build-time config lives at repo root; CJS require avoids TS rootDir inclusion.
-const { reactCompilerPlugin } = require('../../react-compiler.config');
+const { reactCompilerBabelOverride } = require('../../react-compiler.config');
 
 // Plugin to serve static files with /static prefix
 const staticAliasPlugin = (): Plugin => ({
@@ -553,9 +553,8 @@ export default defineConfig({
         wasm(),
         react(),
         babel({
+            overrides: [reactCompilerBabelOverride],
             plugins: [
-                // React Compiler must run before styled-components.
-                reactCompilerPlugin,
                 [
                     'babel-plugin-styled-components',
                     {

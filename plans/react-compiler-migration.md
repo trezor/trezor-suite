@@ -16,7 +16,9 @@ The codebase is in good shape for this migration. React 19.2.4 is already in pla
 
 Each phase is broken into small, independently-shippable steps below. Rough estimate: 1 engineer-week per phase for enablement + tuning. Scale is ~2,400 components across both surfaces (~1,900 web, ~1,400 native).
 
-**Rollout mechanism.** The compiler plugin accepts a `sources` option (`(filename) => boolean`) that gates which files it transforms. Each step below _expands_ that filter to cover more of the codebase — infrastructure is landed once, then scope is widened progressively without touching build configs again.
+**Rollout mechanism.** A shared `react-compiler.config.js` at repo root exports an `ENABLED_PATHS` list and a babel `overrides` entry (`reactCompilerBabelOverride`) that the build configs consume. Each step below _expands_ `ENABLED_PATHS` to cover more of the codebase — infrastructure is landed once, then scope is widened progressively without touching build configs again. An `EXCLUDED_PATHS` list lets us carve out problematic subtrees (e.g. `packages/suite/src/hooks/wallet/` contains react-hook-form-heavy form hooks that the compiler breaks).
+
+> **Why overrides, not the plugin's own `sources` option.** `babel-plugin-react-compiler@1.0.0` has an internal null-filename check that throws a Config error for virtual/mock files _before_ its `sources` filter runs — this crashes jest when it encounters certain transforms. Using babel `overrides` with `test: reactCompilerSources` gates the plugin's loading entirely, avoiding the null-filename check. See [plans/react-compiler-follow-ups.md](react-compiler-follow-ups.md).
 
 ---
 
@@ -89,7 +91,7 @@ No runtime behavior change. Lays the groundwork for both phases and surfaces any
 - **styled-components babel plugin ordering** — 374 call sites in suite alone. Compiler plugin must run _before_ `babel-plugin-styled-components`. Current ordering is fine; just preserve it.
 - **Dual web build** (webpack prod + vite dev) — both need the plugin or dev/prod behavior will diverge.
 - **Two web Jest transforms** (`babel-jest`, `@swc/jest`) — update together.
-- **Bundle size delta** — compiler adds runtime helpers per component. Usually net-neutral or slightly positive given `useMemo`/`useCallback` savings, but worth measuring on the suite web bundle specifically.
+- **Bundle size delta** — compiler adds runtime helpers per component. Measured on suite-web webpack prod build after step 5 (product-components + components + suite all in `ENABLED_PATHS`): **+800 KB raw / +290 KB gzipped across all JS assets (+3.63% / +4.73%)**. Overhead concentrates in the app chunks; vendor chunks (React, redux, etc.) are byte-identical. Webpack compile time: **44.9s → 62.0s (+38%)**. Not material for a one-shot prod build; acceptable trade for compiler memoization. See [plans/react-compiler-follow-ups.md](react-compiler-follow-ups.md) for raw numbers.
 - **Test snapshot churn** — compiler changes render output equivalence, not semantics, but snapshots comparing internals (e.g. prop identity) may need regeneration.
 
 ---
