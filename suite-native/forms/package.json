@@ -20,5 +20,6 @@
         "react-hook-form": "^7.77.0",
         "react-native": "0.85.3",
         "react-native-reanimated": "4.3.1"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

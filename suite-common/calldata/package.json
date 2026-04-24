@@ -16,5 +16,6 @@
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "viem": "^2.54.1"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

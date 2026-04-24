@@ -21,5 +21,6 @@
         "@trezor/utils": "workspace:^",
         "@types/invity-api": "^1.1.19",
         "react": "19.2.3"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

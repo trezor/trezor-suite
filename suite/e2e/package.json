@@ -76,5 +76,6 @@
         "tsx": "^4.21.0",
         "type-fest": "5.5.0",
         "xvfb-maybe": "^0.2.1"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

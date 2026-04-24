@@ -16,5 +16,6 @@
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/test-utils": "workspace:*",
         "@trezor/connect": "workspace:*"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

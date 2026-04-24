@@ -14,5 +14,6 @@
     "dependencies": {
         "@suite-common/wallet-types": "workspace:*",
         "@trezor/utils": "workspace:*"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

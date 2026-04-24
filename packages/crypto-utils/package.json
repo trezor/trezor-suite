@@ -46,5 +46,6 @@
     },
     "peerDependencies": {
         "tslib": "^2.6.2"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

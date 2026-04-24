@@ -16,5 +16,6 @@
         "@suite-common/sentry": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-native/config": "workspace:*"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

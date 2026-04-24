@@ -21,5 +21,6 @@
         "@trezor/eslint": "workspace:*",
         "@trezor/utils": "workspace:*",
         "idb": "^8.0.3"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

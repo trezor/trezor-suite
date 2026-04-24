@@ -72,5 +72,6 @@
     "devDependencies": {
         "@rozenite/redux-devtools-plugin": "^1.4.0",
         "@types/redux-logger": "^3.0.13"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

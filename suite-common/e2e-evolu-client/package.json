@@ -21,5 +21,6 @@
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@trezor/device-utils": "workspace:*"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

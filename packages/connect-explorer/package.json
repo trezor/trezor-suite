@@ -65,5 +65,6 @@
         "typescript-styled-plugin": "^0.18.3",
         "webpack": "5.108.1",
         "webpack-cli": "^7.0.3"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

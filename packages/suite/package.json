@@ -198,5 +198,6 @@
         "redux-mock-store": "^1.5.5",
         "stylelint": "^17.1.1",
         "stylelint-config-standard": "^40.0.0"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

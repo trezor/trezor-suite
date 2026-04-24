@@ -14,5 +14,6 @@
         "@reduxjs/toolkit": "2.12.0",
         "@suite-common/redux-utils": "workspace:*",
         "@trezor/urls": "workspace:*"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

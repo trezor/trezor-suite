@@ -49,5 +49,6 @@
     },
     "browser": {
         "crypto": false
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

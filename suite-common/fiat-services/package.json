@@ -20,5 +20,6 @@
         "@trezor/network-stellar": "workspace:*",
         "@trezor/utils": "workspace:*",
         "date-fns": "^4.1.0"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

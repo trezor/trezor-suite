@@ -21,5 +21,6 @@
         "@suite-native/navigation": "workspace:*",
         "@trezor/blockchain-link-types": "workspace:*",
         "@types/invity-api": "^1.1.19"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

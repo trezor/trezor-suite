@@ -212,5 +212,6 @@
         "tsx": "^4.21.0",
         "uri-scheme": "^2.0.18"
     },
-    "private": true
+    "private": true,
+    "types": "./libDev/src/index.d.ts"
 }

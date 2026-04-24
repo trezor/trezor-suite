@@ -19,5 +19,6 @@
     "devDependencies": {
         "@suite-common/suite-types": "workspace:*",
         "@trezor/device-utils": "workspace:*"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

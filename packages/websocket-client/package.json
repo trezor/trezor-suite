@@ -62,5 +62,6 @@
         "@types/node": "22.13.10",
         "@types/web": "^0.0.345",
         "@types/ws": "^8.5.13"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

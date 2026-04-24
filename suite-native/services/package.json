@@ -14,5 +14,6 @@
         "@suite-common/redux-utils": "workspace:*",
         "@suite-native/analytics": "workspace:*",
         "react-native-mmkv": "~4.3.1"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

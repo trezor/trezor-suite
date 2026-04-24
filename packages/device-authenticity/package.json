@@ -42,5 +42,6 @@
         "@trezor/protobuf": "workspace:*",
         "@trezor/schema-utils": "workspace:*",
         "@trezor/utils": "workspace:*"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

@@ -39,5 +39,6 @@
         "@playwright/test": "1.60.0",
         "@trezor/node-utils": "workspace:*",
         "tsx": "^4.21.0"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

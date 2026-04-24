@@ -16,5 +16,6 @@
         "@suite-common/thp": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/utils": "workspace:*"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

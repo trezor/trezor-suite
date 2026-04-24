@@ -36,7 +36,7 @@
         "CHANGELOG.md",
         "!lib/proxy"
     ],
-    "types": "src/index.ts",
+    "types": "./libDev/src/index.d.ts",
     "scripts": {
         "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib && DTS_OUT_DIR=lib yarn build:dts:inline",
         "build:dts:inline": "node ../../scripts/inline-devdep-types.mjs",

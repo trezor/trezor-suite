@@ -13,5 +13,6 @@
     "dependencies": {
         "@suite-common/suite-types": "workspace:*",
         "@trezor/type-utils": "workspace:*"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

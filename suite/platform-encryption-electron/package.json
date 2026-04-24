@@ -14,5 +14,6 @@
         "@suite-common/platform-encryption": "workspace:*",
         "@trezor/suite-desktop-api": "workspace:*",
         "@trezor/type-utils": "workspace:*"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

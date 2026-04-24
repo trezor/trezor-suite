@@ -19,5 +19,6 @@
         "@suite-native/sentry": "workspace:*",
         "@trezor/analytics-uploader": "workspace:*",
         "@trezor/env-utils": "workspace:*"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

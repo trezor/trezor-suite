@@ -33,5 +33,6 @@
         "@types/jest": "30.0.0",
         "@types/react-dom": "19.2.3",
         "tsx": "^4.21.0"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

@@ -12,5 +12,6 @@
     },
     "dependencies": {
         "zod": "4.3.6"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

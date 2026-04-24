@@ -17,5 +17,6 @@
     },
     "devDependencies": {
         "@trezor/type-utils": "workspace:*"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

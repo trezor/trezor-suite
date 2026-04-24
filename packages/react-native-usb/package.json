@@ -28,5 +28,6 @@
         "expo-modules-core": "*",
         "react": "*",
         "react-native": "*"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

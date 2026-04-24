@@ -35,5 +35,6 @@
         "@walletconnect/core": "^2.23.9",
         "@walletconnect/types": "^2.23.9",
         "@walletconnect/utils": "^2.23.9"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

@@ -15,5 +15,6 @@
     },
     "devDependencies": {
         "@types/invity-api": "^1.1.19"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

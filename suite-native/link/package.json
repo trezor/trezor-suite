@@ -24,5 +24,6 @@
     "peerDependencies": {
         "react-native": "*",
         "react-native-reanimated": "*"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

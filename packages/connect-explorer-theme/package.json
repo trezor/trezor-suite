@@ -60,5 +60,6 @@
     },
     "sideEffects": [
         "./src/polyfill.ts"
-    ]
+    ],
+    "types": "./libDev/src/index.d.ts"
 }

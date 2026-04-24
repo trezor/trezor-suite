@@ -22,5 +22,6 @@
         "eslint-plugin-react-hooks": "^7.1.1",
         "globals": "^17.6.0",
         "typescript-eslint": "^8.62.0"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

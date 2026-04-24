@@ -38,5 +38,6 @@
     },
     "devDependencies": {
         "@crowdin/cli": "4.13.0"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

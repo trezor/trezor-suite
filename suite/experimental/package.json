@@ -12,5 +12,6 @@
     },
     "dependencies": {
         "@suite/intl": "workspace:*"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }
