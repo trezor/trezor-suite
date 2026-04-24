@@ -10,7 +10,7 @@
         "ios": "expo run:ios",
         "start": "expo start --dev-client",
         "type-check": "yarn g:tsc --build",
-        "test:unit": "yarn g:jest src",
+        "test:unit": "yarn g:jest:native src",
         "prebuild": "expo prebuild",
         "eas-build-post-install": "yarn workspace @suite-common/message-system sign-config",
         "eas-build-on-success": "./eas-post-success.sh",

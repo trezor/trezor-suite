@@ -110,14 +110,14 @@ jobs:
         run: ./scripts/circular-dependencies/check-circular-dependencies.sh
 
   unit-tests-suite:
-    name: Unit Tests
+    name: Unit Tests (${{ matrix.test-task }})
     needs: setup-and-cache
     runs-on: ubuntu-latest
-    timeout-minutes: 90 # FIXME!: this too long, see https://github.com/trezor/trezor-suite/issues/26034
+    timeout-minutes: 30
     continue-on-error: true
     strategy:
       matrix:
-        test-task: [suite, native]
+        test-task: [suite, native, "native:trading"]
     steps:
       - name: Checkout repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6

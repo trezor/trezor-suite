@@ -9,7 +9,7 @@
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
         "generate-icons": "yarn workspace @suite-common/icons generate-icons",
-        "test:unit": "yarn g:jest",
+        "test:unit": "yarn g:jest:native",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {

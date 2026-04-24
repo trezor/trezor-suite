@@ -9,7 +9,7 @@
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "test:unit": "yarn g:jest -c jest.config.js"
+        "test:unit": "yarn g:jest:native -c jest.config.js"
     },
     "dependencies": {
         "@gorhom/bottom-sheet": "5.2.8",
