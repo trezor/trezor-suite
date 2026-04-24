@@ -18,6 +18,8 @@ import {
 import { type SuiteSync } from '@suite-common/suite-sync-types';
 import { type TrezorConnect } from '@trezor/connect';
 
+import { createNoopSuiteSync } from './createNoopSuiteSync';
+import { isSuiteSyncRuntimeAvailable } from './isSuiteSyncRuntimeAvailable';
 import { createTurnOnDesktopSuiteSync } from './turnOnDesktopSuiteSync';
 
 type SuiteSyncDesktopCompositionRootDeps = {
@@ -31,6 +33,10 @@ type SuiteSyncDesktopCompositionRootDeps = {
 export const createSuiteSyncDesktopCompositionRoot = (
     deps: SuiteSyncDesktopCompositionRootDeps,
 ): SuiteSync => {
+    if (!isSuiteSyncRuntimeAvailable()) {
+        return createNoopSuiteSync();
+    }
+
     const console = createConsole({
         level: 'warn',
         formatter: createConsoleFormatter()({ timestampFormat: 'absolute' }),

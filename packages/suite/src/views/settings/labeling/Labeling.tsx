@@ -5,7 +5,7 @@ import { useDevice } from '@suite/device';
 import { Translation, useTranslation } from '@suite/intl';
 import { metadataLabelingActions, metadataThunks } from '@suite/metadata';
 import { Anchor, SettingsAnchor } from '@suite/router';
-import { SuiteSyncServers } from '@suite/suite-sync';
+import { isSuiteSyncRuntimeAvailable, SuiteSyncServers } from '@suite/suite-sync';
 import { events } from '@suite-common/analytics';
 import {
     selectIsSuiteSyncEnabled,
@@ -71,8 +71,9 @@ export const Labeling = () => {
     const deviceStaticSessionId = device?.state?.staticSessionId;
     const { isDeviceLabelingDisabled } = useLabelingDeviceState();
 
-    const showSuiteSync = useSelector(selectIsSuiteSyncFeatureAvailable);
-    const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
+    const isRuntimeAvailable = isSuiteSyncRuntimeAvailable();
+    const showSuiteSync = useSelector(selectIsSuiteSyncFeatureAvailable) && isRuntimeAvailable;
+    const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled) && isRuntimeAvailable;
 
     const legacyMetadataState = useSelector(state => state.metadata);
 
