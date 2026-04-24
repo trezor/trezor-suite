@@ -8,7 +8,7 @@ type TestCase = {
 
 const VALID = '0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890';
 
-export const isValidBytes32TestCases: TestCase[] = [
+export const findBytes32IssueTestCases: TestCase[] = [
     { description: 'valid lowercase hex returns null', input: VALID, expected: null },
     {
         description: 'valid uppercase hex returns null',

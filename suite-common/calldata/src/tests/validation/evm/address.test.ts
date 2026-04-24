@@ -1,44 +1,44 @@
 import {
-    isNotSameAsSenderTestCases,
-    isNotWhitelistedTestCases,
-    isSameAsSenderTestCases,
-    isValidAddressTestCases,
-    isZeroAddressTestCases,
+    findAddressIssueTestCases,
+    findSelfAddressIssueTestCases,
+    findSenderMismatchIssueTestCases,
+    findWhitelistIssueTestCases,
+    findZeroAddressIssueTestCases,
 } from '../../../fixtures/validation/evm/address.fixture';
 import {
-    isNotSameAsSender,
-    isNotWhitelisted,
-    isSameAsSender,
-    isValidAddress,
-    isZeroAddress,
+    findAddressIssue,
+    findSelfAddressIssue,
+    findSenderMismatchIssue,
+    findWhitelistIssue,
+    findZeroAddressIssue,
 } from '../../../validation/evm/address';
 
-describe('isValidAddress', () => {
-    it.each(isValidAddressTestCases)('$description', ({ input, expected }) => {
-        expect(isValidAddress(input)).toBe(expected);
+describe('findAddressIssue', () => {
+    it.each(findAddressIssueTestCases)('$description', ({ input, expected }) => {
+        expect(findAddressIssue(input)).toBe(expected);
     });
 });
 
-describe('isZeroAddress', () => {
-    it.each(isZeroAddressTestCases)('$description', ({ input, expected }) => {
-        expect(isZeroAddress(input)).toBe(expected);
+describe('findZeroAddressIssue', () => {
+    it.each(findZeroAddressIssueTestCases)('$description', ({ input, expected }) => {
+        expect(findZeroAddressIssue(input)).toBe(expected);
     });
 });
 
-describe('isSameAsSender', () => {
-    it.each(isSameAsSenderTestCases)('$description', ({ input, context, expected }) => {
-        expect(isSameAsSender(input, context)).toBe(expected);
+describe('findSelfAddressIssue', () => {
+    it.each(findSelfAddressIssueTestCases)('$description', ({ input, context, expected }) => {
+        expect(findSelfAddressIssue(input, context)).toBe(expected);
     });
 });
 
-describe('isNotSameAsSender', () => {
-    it.each(isNotSameAsSenderTestCases)('$description', ({ input, context, expected }) => {
-        expect(isNotSameAsSender(input, context)).toBe(expected);
+describe('findSenderMismatchIssue', () => {
+    it.each(findSenderMismatchIssueTestCases)('$description', ({ input, context, expected }) => {
+        expect(findSenderMismatchIssue(input, context)).toBe(expected);
     });
 });
 
-describe('isNotWhitelisted', () => {
-    it.each(isNotWhitelistedTestCases)('$description', ({ input, context, expected }) => {
-        expect(isNotWhitelisted(input, context)).toBe(expected);
+describe('findWhitelistIssue', () => {
+    it.each(findWhitelistIssueTestCases)('$description', ({ input, context, expected }) => {
+        expect(findWhitelistIssue(input, context)).toBe(expected);
     });
 });

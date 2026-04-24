@@ -22,7 +22,7 @@ type HasBalanceTestCase = {
     expected: IssueCode | null;
 };
 
-export const isNegativeTestCases: ValidateFnTestCase[] = [
+export const findNegativeAmountIssueTestCases: ValidateFnTestCase[] = [
     {
         description: 'positive number returns null',
         input: new BigNumber('100'),
@@ -40,7 +40,7 @@ export const isNegativeTestCases: ValidateFnTestCase[] = [
     },
 ];
 
-export const isNotIntegerTestCases: ValidateFnTestCase[] = [
+export const findNonIntegerIssueTestCases: ValidateFnTestCase[] = [
     {
         description: 'integer returns null',
         input: new BigNumber('100'),
@@ -53,7 +53,7 @@ export const isNotIntegerTestCases: ValidateFnTestCase[] = [
     },
 ];
 
-export const exceedsUint256TestCases: ValidateFnTestCase[] = [
+export const findUint256OverflowIssueTestCases: ValidateFnTestCase[] = [
     {
         description: 'value within range returns null',
         input: new BigNumber('100'),
@@ -71,7 +71,7 @@ export const exceedsUint256TestCases: ValidateFnTestCase[] = [
     },
 ];
 
-export const isZeroTestCases: IsZeroTestCase[] = [
+export const findZeroAmountIssueTestCases: IsZeroTestCase[] = [
     {
         description: 'zero returns ZERO_AMOUNT',
         input: 0n,
@@ -84,7 +84,7 @@ export const isZeroTestCases: IsZeroTestCase[] = [
     },
 ];
 
-export const hasBalanceTestCases: HasBalanceTestCase[] = [
+export const findInsufficientBalanceIssueTestCases: HasBalanceTestCase[] = [
     {
         description: 'balance undefined returns null',
         input: 100n,

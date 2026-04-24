@@ -16,7 +16,7 @@ type IsSameAsSenderTestCase = {
 
 const ADDRESS = asTronAddress('TKWJhMU8NAviZ9TN5hroaFQPZ83FNctzz4');
 
-export const isValidTronAddressTestCases: IsValidTronAddressTestCase[] = [
+export const findTronAddressIssueTestCases: IsValidTronAddressTestCase[] = [
     {
         description: 'valid Tron address returns null',
         input: ADDRESS,
@@ -59,7 +59,7 @@ export const isValidTronAddressTestCases: IsValidTronAddressTestCase[] = [
     },
 ];
 
-export const isSameAsSenderTestCases: IsSameAsSenderTestCase[] = [
+export const findSelfAddressIssueTestCases: IsSameAsSenderTestCase[] = [
     {
         description: 'same address returns SELF_ADDRESS',
         input: ADDRESS,

@@ -1,15 +1,15 @@
 import { typedObjectFromEntries } from '@trezor/utils';
 
 import { createPolicy } from '../policy/createPolicy';
-import {
-    type BuildResult,
-    type Builder,
-    type CrossValidator,
-    type Encoder,
-    type ExtractContext,
-    type ExtractEncoderOutput,
-    type ExtractInputs,
-    type ExtractParamNames,
+import type {
+    BuildResult,
+    Builder,
+    CrossValidator,
+    Encoder,
+    ExtractContext,
+    ExtractEncoderOutput,
+    ExtractInputs,
+    ExtractParamNames,
 } from '../types/builder';
 import { type Param } from '../types/param';
 const defaultPolicy = createPolicy();

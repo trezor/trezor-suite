@@ -50,9 +50,9 @@ Validators use `createValidator` factory with three stages:
 
 ```typescript
 const validateAddress = createValidator({
-    validate: [isValidAddress],
+    validate: [findAddressIssue],
     normalize: input => input.toLowerCase(),
-    inspect: [isZeroAddress, isSameAsSender],
+    inspect: [findZeroAddressIssue, findSelfAddressIssue],
 });
 ```
 
