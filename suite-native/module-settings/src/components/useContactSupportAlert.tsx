@@ -14,25 +14,33 @@ export const useContactSupportAlert = () => {
     const { showAlert } = useAlert();
     const openLink = useOpenLink();
 
-    const showContactSupportAlert = useCallback(() => {
-        showAlert({
-            title: <Translation id="moduleSettings.faq.needHelp.contactSupportAlert.title" />,
-            textAlign: 'left',
-            appendix: <ContactSupportAlertAppendix ref={appendixRef} />,
-            primaryButtonTitle: (
-                <Translation id="moduleSettings.faq.needHelp.contactSupportAlert.primaryButton" />
-            ),
-            primaryButtonIconRight: 'arrowLineUpRight',
-            onPressPrimaryButton: async () => {
-                if (appendixRef.current) {
-                    // We need to access the URL via a ref to ensure it's always up to date, even if the value changes while the alert is already displayed.
-                    await openLink(appendixRef.current.getSupportChatUrl());
-                }
-            },
-            secondaryButtonTitle: <Translation id="generic.buttons.cancel" />,
-            testID: '@contact-support-alert',
-        });
-    }, [showAlert, openLink]);
+    const showContactSupportAlert = useCallback(
+        (options?: { initialShareSystemInfo?: boolean }) => {
+            showAlert({
+                title: <Translation id="moduleSettings.faq.needHelp.contactSupportAlert.title" />,
+                textAlign: 'left',
+                appendix: (
+                    <ContactSupportAlertAppendix
+                        ref={appendixRef}
+                        initialShareSystemInfo={options?.initialShareSystemInfo}
+                    />
+                ),
+                primaryButtonTitle: (
+                    <Translation id="moduleSettings.faq.needHelp.contactSupportAlert.primaryButton" />
+                ),
+                primaryButtonIconRight: 'arrowLineUpRight',
+                onPressPrimaryButton: async () => {
+                    if (appendixRef.current) {
+                        // We need to access the URL via a ref to ensure it's always up to date, even if the value changes while the alert is already displayed.
+                        await openLink(appendixRef.current.getSupportChatUrl());
+                    }
+                },
+                secondaryButtonTitle: <Translation id="generic.buttons.cancel" />,
+                testID: '@contact-support-alert',
+            });
+        },
+        [showAlert, openLink],
+    );
 
     return { showContactSupportAlert };
 };

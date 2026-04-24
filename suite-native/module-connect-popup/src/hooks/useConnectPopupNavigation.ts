@@ -10,6 +10,7 @@ import { isDevelopOrDebugEnv } from '@suite-native/config';
 import {
     type RootStackParamList,
     RootStackRoutes,
+    SettingsStackRoutes,
     type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 
@@ -34,6 +35,10 @@ const isWalletConnectUrl = (url: string): boolean =>
     url.startsWith('trezorsuite://walletconnect') ||
     /^https:\/\/connect\.trezor\.io\/\d+\/deeplink\/wc/.test(url);
 
+const GUIDE_SUPPORT_URL_PREFIX = 'trezorsuite://guide-support';
+
+const isGuideSupportUrl = (url: string): boolean => url.startsWith(GUIDE_SUPPORT_URL_PREFIX);
+
 // TODO: will be necessary to handle if device is not connected/unlocked so we probably want to wait until user unlock device
 // we already have some modals like biometrics or coin enabled which are waiting for device to be connected
 export const useConnectPopupNavigation = () => {
@@ -57,8 +62,19 @@ export const useConnectPopupNavigation = () => {
             }
         } else if (url && isConnectPopupUrl(url)) {
             dispatch(connectPopupDeeplinkThunk({ url }));
+        } else if (url && isGuideSupportUrl(url)) {
+            try {
+                const parsedUrl = new URL(url);
+                const shareSystemInfo = parsedUrl.searchParams.get('shareSystemInfo') === '1';
+                navigation.navigate(RootStackRoutes.SettingsScreenStack, {
+                    screen: SettingsStackRoutes.SettingsSupport,
+                    params: { autoOpenContactSupport: true, shareSystemInfo },
+                });
+            } catch {
+                // Malformed url, ignore
+            }
         }
-    }, [url, dispatch]);
+    }, [url, dispatch, navigation]);
 
     useEffect(() => {
         if (connectPopupCall?.state === 'deeplink-callback') {

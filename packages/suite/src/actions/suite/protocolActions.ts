@@ -14,11 +14,13 @@ import * as walletConnectActions from '@suite-common/walletconnect';
 import {
     SUITE_ANCHOR_DEEPLINK_PREFIX,
     SUITE_BRIDGE_DEEPLINK,
+    SUITE_GUIDE_SUPPORT_DEEPLINK,
     SUITE_TRADING_REDIRECT_DEEPLINKS,
     SUITE_WALLETCONNECT_DEEPLINK,
 } from '@trezor/urls';
 import { isArrayMember } from '@trezor/utils';
 
+import * as guideActions from 'src/actions/suite/guideActions';
 import type { SendFormState } from 'src/reducers/suite/protocolReducer';
 import { asSuiteServices } from 'src/support/extraDependencies';
 import { type Dispatch, type GetState } from 'src/types/suite';
@@ -102,6 +104,12 @@ export const handleProtocolRequest =
                     mapAnchorToRoute[domain.replace(/^@/, '') as AnchorSettingSection];
                 dispatch(goto({ routeName: targetRoute, anchor }));
             }
+        } else if (uri?.startsWith(SUITE_GUIDE_SUPPORT_DEEPLINK)) {
+            const parsed = parseUri(uri);
+            const shareSystemInfo = parsed?.searchParams?.get('shareSystemInfo') === '1';
+            dispatch(guideActions.open());
+            dispatch(guideActions.setView('SUPPORT_FEEDBACK_SELECTION'));
+            dispatch(guideActions.setSupportConsentAutoOpen({ shareSystemInfo }));
         } else if (SUITE_TRADING_REDIRECT_DEEPLINKS.some(deeplink => uri?.startsWith(deeplink))) {
             const parsedUri = parseUri(decodeURIComponent(uri));
             const redirectPath = parsedUri?.searchParams?.get('p');

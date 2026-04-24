@@ -97,7 +97,12 @@ export type SettingsStackParamList = {
     [SettingsStackRoutes.SettingsPreferences]: undefined;
     [SettingsStackRoutes.SettingsPrivacy]: undefined;
     [SettingsStackRoutes.SettingsViewOnly]: undefined;
-    [SettingsStackRoutes.SettingsSupport]: undefined;
+    [SettingsStackRoutes.SettingsSupport]:
+        | {
+              autoOpenContactSupport?: boolean;
+              shareSystemInfo?: boolean;
+          }
+        | undefined;
     [SettingsStackRoutes.SettingsAppLog]: undefined;
     [SettingsStackRoutes.SettingsCoinEnabling]: undefined;
     [SettingsStackRoutes.SettingsSuiteSync]: undefined;
