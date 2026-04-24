@@ -2,9 +2,10 @@ import type { ExchangeTrade } from 'invity-api';
 
 import { tradingExchangeActions } from '@suite-common/trading';
 import { getTranslation } from '@suite-native/intl';
-import { type TestStore, initStore, renderWithStoreProvider } from '@suite-native/test-utils';
-import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
+import { type TestStore, renderWithStoreProvider } from '@suite-native/test-utils-store';
+import { exchangeQuotes } from '@suite-native/trading-fixtures';
 
+import { createTradingLightStore } from '../../../../__tests__/tradingTestUtils';
 import {
     ExchangeConfirmationHeader,
     type ExchangeConfirmationHeaderProps,
@@ -19,7 +20,7 @@ describe('ExchangeConfirmationHeader', () => {
         renderWithStoreProvider(<ExchangeConfirmationHeader {...props} />, { store });
 
     beforeEach(() => {
-        store = initStore({ wallet: getWalletState({ tradeType: 'exchange' }) }).store;
+        store = createTradingLightStore({ tradeType: 'exchange' });
         store.dispatch(tradingExchangeActions.saveSelectedQuote(testQuote));
     });
 

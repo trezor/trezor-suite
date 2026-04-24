@@ -1,16 +1,12 @@
-import { tradingExchangeActions } from '@suite-common/trading';
+import { tradingExchangeActions, useAllowanceTxTracking } from '@suite-common/trading';
+import type { TransactionStatus } from '@suite-common/trading';
 import { getTranslation } from '@suite-native/intl';
 import { type TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
-import { type TestStore, initStore, renderWithStoreProvider } from '@suite-native/test-utils';
-import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
+import { type TestStore, renderWithStoreProvider } from '@suite-native/test-utils-store';
+import { exchangeQuotes } from '@suite-native/trading-fixtures';
 
+import { createTradingLightStore } from '../../__tests__/tradingTestUtils';
 import { TradingConfirmingScreen } from '../TradingConfirmingScreen';
-
-jest.mock('@react-navigation/native', () => ({
-    ...jest.requireActual('@react-navigation/native'),
-    useRoute: () => ({ name: 'TradingConfirming', params: undefined }),
-    useNavigation: () => ({ popToTop: jest.fn() }),
-}));
 
 jest.mock('@suite-common/device', () => ({
     ...jest.requireActual('@suite-common/device'),
@@ -40,7 +36,23 @@ jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
     useNavigation: () => mockNavigation,
     useRoute: () => mockUseRoute(),
+    useFocusEffect: (callback: () => void) => {
+        require('react').useEffect(callback, []);
+    },
 }));
+
+const mockAllowanceTxStatus: TransactionStatus = {
+    isConfirmed: false,
+    isFailed: false,
+    isPending: false,
+};
+
+jest.mock('@suite-common/trading', () => ({
+    ...jest.requireActual('@suite-common/trading'),
+    useAllowanceTxTracking: jest.fn(),
+}));
+
+const mockUseAllowanceTxTracking = useAllowanceTxTracking as jest.Mock;
 
 describe('TradingConfirmingScreen', () => {
     let store: TestStore;
@@ -60,8 +72,14 @@ describe('TradingConfirmingScreen', () => {
     };
 
     beforeEach(() => {
-        store = initStore({ wallet: getWalletState({ tradeType: 'exchange' }) }).store;
+        jest.clearAllMocks();
+        store = createTradingLightStore({ tradeType: 'exchange' });
         store.dispatch(tradingExchangeActions.saveSelectedQuote(testQuote));
+        mockUseAllowanceTxTracking.mockReturnValue({
+            status: mockAllowanceTxStatus,
+            approvalTxid: null,
+            setApprovalTxid: jest.fn(),
+        });
     });
 
     it('should render approve header when variant is approve', () => {
@@ -82,5 +100,23 @@ describe('TradingConfirmingScreen', () => {
                 symbol: 'USDC',
             }),
         );
+    });
+
+    it('should call navigation.popToTop when transaction is confirmed', () => {
+        mockUseAllowanceTxTracking.mockReturnValue({
+            status: { isConfirmed: true, isFailed: false, isPending: false } as TransactionStatus,
+            approvalTxid: 'some-txid',
+            setApprovalTxid: jest.fn(),
+        });
+
+        renderScreen();
+
+        expect(mockNavigation.popToTop).toHaveBeenCalled();
+    });
+
+    it('should not call navigation.popToTop when transaction is not confirmed', () => {
+        renderScreen();
+
+        expect(mockNavigation.popToTop).not.toHaveBeenCalled();
     });
 });

@@ -52,24 +52,6 @@ export const TradingConfirmingScreen = ({
         }
     }, [approvalSendTxHash, setApprovalTxid]);
 
-    const sendAccount = useSelector(selectExchangeSelectedSendAccount);
-    const activeQuote = useSelector(selectTradingExchangeActiveQuote);
-    const accountKey = sendAccount?.key ?? ('' as AccountKey);
-
-    const {
-        status: originalStatus,
-        approvalTxid,
-        setApprovalTxid,
-    } = useAllowanceTxTracking({
-        accountKey,
-    });
-
-    useEffect(() => {
-        if (activeQuote?.approvalSendTxHash) {
-            setApprovalTxid(activeQuote.approvalSendTxHash);
-        }
-    }, [activeQuote, setApprovalTxid]);
-
     const { status, forceStatus } = useTransactionStatusOverride(originalStatus);
 
     // TODO 25742 use this
@@ -79,7 +61,6 @@ export const TradingConfirmingScreen = ({
 
     const { isConfirmed, isFailed, isPending } = status;
 
-    // TODO 27126: Add navigation based on flow type (approve/revoke) instead of always popping to top
     useFocusEffect(
         useCallback(() => {
             if (isConfirmed) {

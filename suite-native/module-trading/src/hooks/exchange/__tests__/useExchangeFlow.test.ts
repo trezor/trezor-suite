@@ -1,5 +1,6 @@
 import { type AccountKey } from '@suite-common/wallet-types';
 import { events } from '@suite-native/analytics';
+import { TradingStackRoutes } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
 import { type TestStore, act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import {
@@ -9,6 +10,16 @@ import {
 
 import { createTradingTestStore } from '../../../__tests__/tradingTestUtils';
 import { useExchangeFlow } from '../useExchangeFlow';
+
+const mockNavigate = jest.fn();
+
+jest.mock('@react-navigation/native', () => ({
+    ...jest.requireActual('@react-navigation/native'),
+    useNavigation: () => ({ navigate: mockNavigate }),
+    useFocusEffect: (callback: () => void) => {
+        require('react').useEffect(callback, []);
+    },
+}));
 
 jest.mock('@suite-native/services', () => {
     const original = jest.requireActual('@suite-native/services');
@@ -243,6 +254,45 @@ describe('useExchangeFlow', () => {
                     type: 'exchange',
                 },
             });
+        });
+    });
+
+    describe('navigation', () => {
+        it('should navigate to TradingConfirming with flowType approve when quoteStatus is APPROVAL_PENDING', () => {
+            const tradingState = getInitializedTradingStateWithQuotes();
+            tradingState.exchange.tradingAccountKey = btc1AccountKey;
+            tradingState.exchange.receiveAccountKey = btc2AccountKey;
+            tradingState.exchange.selectedQuote = {
+                ...tradingState.exchange.quotes[0],
+                status: 'APPROVAL_PENDING',
+            };
+
+            const store = createTradingTestStore({
+                tradeType: 'exchange',
+                overrides: {
+                    wallet: {
+                        trading: tradingState,
+                        accounts: getMockAccounts(),
+                    },
+                },
+            });
+
+            renderUseExchangeFlow({ store });
+
+            expect(mockNavigate).toHaveBeenCalledWith(TradingStackRoutes.TradingConfirming, {
+                flowType: 'approve',
+            });
+        });
+
+        it('should not navigate to TradingConfirming when quoteStatus is not APPROVAL_PENDING', () => {
+            const store = getInitializedStore();
+
+            renderUseExchangeFlow({ store });
+
+            expect(mockNavigate).not.toHaveBeenCalledWith(
+                TradingStackRoutes.TradingConfirming,
+                expect.anything(),
+            );
         });
     });
 });

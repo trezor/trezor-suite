@@ -1,14 +1,10 @@
 import type { CryptoId, ExchangeTrade } from 'invity-api';
 
 import { tradingExchangeActions } from '@suite-common/trading';
-import {
-    type TestStore,
-    initStore,
-    renderWithStoreProvider,
-    screen,
-} from '@suite-native/test-utils';
-import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
+import { type TestStore, renderWithStoreProvider, screen } from '@suite-native/test-utils-store';
+import { exchangeQuotes } from '@suite-native/trading-fixtures';
 
+import { createTradingLightStore } from '../../../../__tests__/tradingTestUtils';
 import {
     ExchangeConfirmationInfo,
     type ExchangeConfirmationInfoCardProps,
@@ -23,7 +19,7 @@ describe('ExchangeConfirmationInfo', () => {
         renderWithStoreProvider(<ExchangeConfirmationInfo {...props} />, { store });
 
     beforeEach(() => {
-        ({ store } = initStore({ wallet: getWalletState({ tradeType: 'exchange' }) }));
+        store = createTradingLightStore({ tradeType: 'exchange' });
         store.dispatch(tradingExchangeActions.saveSelectedQuote(testQuote));
     });
 
