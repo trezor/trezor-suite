@@ -3,7 +3,16 @@ import { type Reducer, combineReducers } from '@reduxjs/toolkit';
 import { prepareDeviceReducer } from '@suite-common/device';
 import { geolocationReducer } from '@suite-common/geolocation';
 import { messageSystemActions, prepareMessageSystemReducer } from '@suite-common/message-system';
-import * as messageSystemUtils from '@suite-common/message-system/src/messageSystemUtils';
+import {
+    getValidExperimentIds,
+    getValidMessages,
+} from '@suite-common/message-system/src/messageSystemUtils';
+
+jest.mock('@suite-common/message-system/src/messageSystemUtils', () => ({
+    ...jest.requireActual('@suite-common/message-system/src/messageSystemUtils'),
+    getValidMessages: jest.fn(),
+    getValidExperimentIds: jest.fn(),
+}));
 import { type AnyAction } from '@suite-common/redux-utils';
 import { type Action } from '@suite-common/suite-types';
 import { configureMockStore } from '@suite-common/test-utils';
@@ -110,13 +119,13 @@ describe('Message system middleware', () => {
         };
 
         // @ts-expect-error: all properties except category and id are not required for testing
-        jest.spyOn(messageSystemUtils, 'getValidMessages').mockImplementation(() => [
+        (getValidMessages as jest.Mock).mockImplementation(() => [
             message1,
             message2,
             message3,
             message4,
         ]);
-        jest.spyOn(messageSystemUtils, 'getValidExperimentIds').mockImplementation(() => []);
+        (getValidExperimentIds as jest.Mock).mockImplementation(() => []);
 
         const store = initStore(getInitialState(undefined, undefined));
         store.dispatch({
@@ -147,8 +156,8 @@ describe('Message system middleware', () => {
     });
 
     it('saves messages even if there are no valid messages', () => {
-        jest.spyOn(messageSystemUtils, 'getValidMessages').mockImplementation(() => []);
-        jest.spyOn(messageSystemUtils, 'getValidExperimentIds').mockImplementation(() => []);
+        (getValidMessages as jest.Mock).mockImplementation(() => []);
+        (getValidExperimentIds as jest.Mock).mockImplementation(() => []);
 
         const store = initStore(getInitialState(undefined, undefined));
         store.dispatch({
@@ -174,8 +183,8 @@ describe('Message system middleware', () => {
     });
 
     it('keeps in-app messages when new file config arrives', () => {
-        jest.spyOn(messageSystemUtils, 'getValidMessages').mockImplementation(() => []);
-        jest.spyOn(messageSystemUtils, 'getValidExperimentIds').mockImplementation(() => []);
+        (getValidMessages as jest.Mock).mockImplementation(() => []);
+        (getValidExperimentIds as jest.Mock).mockImplementation(() => []);
 
         const manuallyAddedMessageId = 'inapp-1';
         const fileOldId = 'file-1';
@@ -238,9 +247,7 @@ describe('Message system middleware', () => {
             ],
         };
 
-        jest.spyOn(messageSystemUtils, 'getValidExperimentIds').mockImplementation(() => [
-            experiment1.id,
-        ]);
+        (getValidExperimentIds as jest.Mock).mockImplementation(() => [experiment1.id]);
 
         const store = initStore(getInitialState(undefined, undefined));
         store.dispatch({
