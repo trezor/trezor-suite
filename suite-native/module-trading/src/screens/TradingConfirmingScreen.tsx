@@ -72,7 +72,11 @@ export const TradingConfirmingScreen = ({
     return (
         <TradingDeviceConnectionGuard>
             <Screen header={<ExchangeConfirmationHeader flowType={flowType} />}>
-                <ConfirmationQuoteDebugView forceStatus={forceStatus} />
+                <ConfirmationQuoteDebugView
+                    forceStatus={forceStatus}
+                    approvalTxid={approvalTxid}
+                    transactionStatus={status}
+                />
                 <ExchangeConfirmationTitle
                     flowType={flowType}
                     isFailed={isFailed}
