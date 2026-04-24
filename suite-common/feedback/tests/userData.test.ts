@@ -1,18 +1,37 @@
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { getFirmwareVersion } from '@trezor/device-utils';
-import * as helpers from '@trezor/env-utils';
+import {
+    getCommitHash,
+    getEnvironment,
+    getOsName,
+    getSuiteVersion,
+    getUserAgent,
+    getWindowHeight,
+    getWindowWidth,
+} from '@trezor/env-utils';
 
 import { buildUserFeedbackData } from '../src/userData';
 
+jest.mock('@trezor/env-utils', () => ({
+    ...jest.requireActual('@trezor/env-utils'),
+    getEnvironment: jest.fn(),
+    getOsName: jest.fn(),
+    getUserAgent: jest.fn(),
+    getSuiteVersion: jest.fn(),
+    getCommitHash: jest.fn(),
+    getWindowWidth: jest.fn(),
+    getWindowHeight: jest.fn(),
+}));
+
 describe(buildUserFeedbackData.name, () => {
     beforeEach(() => {
-        jest.spyOn(helpers, 'getEnvironment').mockReturnValue('desktop');
-        jest.spyOn(helpers, 'getOsName').mockReturnValue('linux');
-        jest.spyOn(helpers, 'getUserAgent').mockReturnValue('user-agent');
-        jest.spyOn(helpers, 'getSuiteVersion').mockReturnValue('25.7.0');
-        jest.spyOn(helpers, 'getCommitHash').mockReturnValue('commit-hash');
-        jest.spyOn(helpers, 'getWindowWidth').mockReturnValue(1920);
-        jest.spyOn(helpers, 'getWindowHeight').mockReturnValue(1080);
+        (getEnvironment as jest.Mock).mockReturnValue('desktop');
+        (getOsName as jest.Mock).mockReturnValue('linux');
+        (getUserAgent as jest.Mock).mockReturnValue('user-agent');
+        (getSuiteVersion as jest.Mock).mockReturnValue('25.7.0');
+        (getCommitHash as jest.Mock).mockReturnValue('commit-hash');
+        (getWindowWidth as jest.Mock).mockReturnValue(1920);
+        (getWindowHeight as jest.Mock).mockReturnValue(1080);
     });
 
     it('returns full payload when device is connected', () => {

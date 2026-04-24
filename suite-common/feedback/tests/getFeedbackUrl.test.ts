@@ -1,7 +1,12 @@
-import * as helpers from '@trezor/env-utils';
+import { isCodesignBuild } from '@trezor/env-utils';
 
 import { FeedbackType } from '../src';
 import { FEEDBACK_ENDPOINT, getFeedbackUrl } from '../src/getFeedbackUrl';
+
+jest.mock('@trezor/env-utils', () => ({
+    ...jest.requireActual('@trezor/env-utils'),
+    isCodesignBuild: jest.fn(),
+}));
 
 describe(getFeedbackUrl.name, () => {
     it.each([
@@ -11,8 +16,8 @@ describe(getFeedbackUrl.name, () => {
         ['SUGGESTION', false, `${FEEDBACK_ENDPOINT}/feedback/develop.log`],
     ] as Array<[FeedbackType, boolean, string]>)(
         '(%s, codesign=%s) → %s',
-        (type, isCodesignBuild, expected) => {
-            jest.spyOn(helpers, 'isCodesignBuild').mockReturnValue(isCodesignBuild);
+        (type, codesign, expected) => {
+            (isCodesignBuild as jest.Mock).mockReturnValue(codesign);
             expect(getFeedbackUrl(type)).toBe(expected);
         },
     );
