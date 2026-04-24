@@ -3,6 +3,7 @@ import { A, pipe } from '@mobily/ts-belt';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
     type BackupType,
+    type FirmwareRevision,
     LANGUAGES,
     type Locale,
     type TrezorDevice,
@@ -28,6 +29,7 @@ import {
     getFirmwareRevision,
     getFirmwareVersion,
     getFirmwareVersionArray,
+    type FirmwareVersionString,
     hasBitcoinOnlyFirmware,
 } from '@trezor/device-utils';
 import { getSuiteVersion } from '@trezor/env-utils';
@@ -635,6 +637,53 @@ export const selectDeviceDelegatedIdentityKey = createMemoizedSelector(
     (persistentDeviceData, deviceId) =>
         persistentDeviceData.find(d => d.device_id === deviceId)?.delegatedIdentityKey ?? null,
 );
+
+type DeviceUtmParams = {
+    utm_model?: DeviceModelInternal;
+    utm_fw?: FirmwareVersionString;
+    utm_rev?: FirmwareRevision;
+    utm_passphrase?: 'true' | 'false';
+};
+
+export const selectSupportChatDeviceUtmParams = createMemoizedSelector(
+    [
+        selectDeviceInternalModel,
+        selectDeviceFirmwareVersion,
+        selectDeviceFirmwareRevision,
+        selectIsDeviceProtectedByPassphrase,
+        selectIsPortfolioTrackerDevice,
+    ],
+    (
+        deviceModel,
+        firmwareVersion,
+        firmwareRevision,
+        isDeviceProtectedByPassphrase,
+        isPortfolioTrackerDevice,
+    ) => {
+        const result: DeviceUtmParams = {};
+
+        if (isPortfolioTrackerDevice) {
+            return result;
+        }
+
+        if (deviceModel) {
+            result.utm_model = deviceModel;
+        }
+
+        if (firmwareVersion) {
+            result.utm_fw = firmwareVersion;
+        }
+
+        if (firmwareRevision) {
+            result.utm_rev = firmwareRevision;
+        }
+
+        result.utm_passphrase = isDeviceProtectedByPassphrase ? 'true' : 'false';
+
+        return result;
+    },
+);
+
 
 export const selectIsReconnectRequested = createMemoizedSelector(
     [selectSelectedDevice],
