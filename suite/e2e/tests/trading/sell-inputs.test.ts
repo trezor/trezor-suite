@@ -1,3 +1,4 @@
+import { messages } from '@suite/intl';
 import { localizeNumber } from '@suite-common/wallet-utils';
 
 import { expect, test } from '../../support/fixtures';
@@ -40,6 +41,8 @@ test.describe('Trading - Sell inputs', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, 
             solanaBalance = await walletPage.topPanelBalance.textContent();
             await walletPage.openTrading();
             await tradingPage.sellTabButton.click();
+            const worldwideOption = messages['TR_TRADING_COUNTRY_WORLD'].defaultMessage;
+            await expect(tradingPage.inputs.countryValue).not.toHaveText(worldwideOption);
         });
 
         await test.step('Check limits for BTC input', async () => {
