@@ -25,6 +25,7 @@ export * from './extractUrlsFromText';
 export * from './formatBigUintToLE';
 export * from './getLocaleSeparators';
 export * from './getRandomInt';
+export * from './getRandomString';
 export * from './getSynchronize';
 export * from './getWeakRandomId';
 export * from './getWeakRandomInt';
