@@ -13,7 +13,7 @@ const PRODUCTION_SECURITY_HEADERS = {
     /**
      * @link https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security
      */
-    'strict-transport-security': 'max-age=31536000',
+    'strict-transport-security': 'max-age=31536000; includeSubDomains; preload',
 
     /**
      * @link https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Upgrade-Insecure-Requests
@@ -39,7 +39,7 @@ const PRODUCTION_SECURITY_HEADERS = {
      * It's experimental feature and not supported by all browsers.
      */
     'permissions-policy':
-        'usb=(self), camera=(self), clipboard-write=(self), local-network-access=(self), geolocation=(), microphone=(), payment=(), hid=(), serial=(), fullscreen=(), accelerometer=(), gyroscope=(), magnetometer=(), storage-access=(), bluetooth=()',
+        'usb=(self), camera=(self), clipboard-write=(self), local-network-access=(self), geolocation=(), microphone=(), payment=(), hid=(), serial=(), fullscreen=(), accelerometer=(), gyroscope=(), magnetometer=(), storage-access=(), bluetooth=(), clipboard-read=(), display-capture=(), picture-in-picture=(), idle-detection=(), screen-wake-lock=()',
 
     /**
      * @link https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Referrer-Policy
@@ -67,6 +67,10 @@ const PRODUCTION_SECURITY_HEADERS = {
         'connect-src': ['data:', '*'],
         'upgrade-insecure-requests': true,
         'script-src': ['self', 'unsafe-eval'],
+        'form-action': ['self'],
+        'frame-ancestors': ['self'],
+        'base-uri': ['none'],
+        'object-src': ['self'],
         'report-uri': SENTRY_REPORT_URL,
         'report-to': 'csp-endpoint',
     },
