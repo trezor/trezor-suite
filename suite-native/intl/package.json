@@ -10,7 +10,7 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
-        "test:unit": "yarn g:jest",
+        "test:unit": "yarn g:jest:native",
         "translations:format": "yarn g:prettier --write \"translations/*\"",
         "translations:extract": "yarn g:tsx ./scripts/extractTranslations.ts",
         "translations:backport-en": "yarn g:tsx ./scripts/backportEnglish.ts && yarn g:prettier --write src/messages.ts",
