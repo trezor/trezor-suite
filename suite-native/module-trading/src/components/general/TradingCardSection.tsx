@@ -12,7 +12,7 @@ type TradingCardSectionStyleProps = {
 const tradingCardSectionStyle = prepareNativeStyle<TradingCardSectionStyleProps>(
     ({ borders, colors, spacings }, { bottomBorder, readOnly }) => ({
         borderBottomWidth: 0,
-        borderBottomColor: colors.surfaceFillPage,
+        borderBottomColor: colors.surfaceBorderRaised,
         paddingHorizontal: spacings.sp12,
         paddingTop: spacings.sp12,
         paddingBottom: spacings.sp12,
@@ -27,9 +27,13 @@ const tradingCardSectionStyle = prepareNativeStyle<TradingCardSectionStyleProps>
             {
                 condition: readOnly,
                 style: {
+                    borderColor: colors.surfaceBorderRaised,
                     backgroundColor: colors.surfaceFillPage,
                     borderBottomLeftRadius: borders.radii.r16,
                     borderBottomRightRadius: borders.radii.r16,
+                    borderTopWidth: 0,
+                    borderWidth: borders.widths.small,
+                    borderBottomWidth: borders.widths.small,
                 },
             },
         ],
