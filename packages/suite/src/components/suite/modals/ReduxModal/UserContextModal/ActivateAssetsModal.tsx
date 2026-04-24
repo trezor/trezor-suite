@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { AnimatePresence, motion } from 'framer-motion';
 
@@ -51,14 +51,8 @@ export const ActivateAssetsModal = ({ onCancel }: ActivateAssetsModalProps) => {
     const [advancedSettingsSymbol, setAdvancedSettingsSymbol] = useState<NetworkSymbol | null>(
         null,
     );
-    // When user clicks Add while discovery is running, we defer the actual apply until
-    // the in-flight discovery finishes. This flag drives the Add button's loading state
-    // and the deferred-apply effect below.
     const [isApplyPending, setIsApplyPending] = useState(false);
 
-    // Keep the modal open across TrezorConnect's CLOSE_UI_WINDOW events that fire when
-    // background discovery calls complete. Without this, the modal sometimes closes on
-    // its own while the user is still interacting with it.
     useEffect(() => {
         dispatch(preserveModal());
 
@@ -88,7 +82,7 @@ export const ActivateAssetsModal = ({ onCancel }: ActivateAssetsModalProps) => {
         });
     };
 
-    const applyChanges = () => {
+    const applyChanges = useCallback(() => {
         const toEnable = pendingNetworks.filter(symbol => !enabledNetworks.includes(symbol));
         const toDisable = enabledNetworks.filter(symbol => !pendingNetworks.includes(symbol));
 
@@ -104,11 +98,9 @@ export const ActivateAssetsModal = ({ onCancel }: ActivateAssetsModalProps) => {
         }
 
         onCancel();
-    };
+    }, [dispatch, enabledNetworks, onCancel, pendingNetworks]);
 
     const onSave = () => {
-        // Defer applying if a discovery is currently running — starting another discovery
-        // mid-flight would reset state and can race with the in-flight TrezorConnect calls.
         if (isDiscoveryRunning) {
             setIsApplyPending(true);
 
@@ -118,14 +110,11 @@ export const ActivateAssetsModal = ({ onCancel }: ActivateAssetsModalProps) => {
         applyChanges();
     };
 
-    // Apply the pending save as soon as the background discovery finishes.
     useEffect(() => {
         if (!isApplyPending || isDiscoveryRunning) return;
 
         applyChanges();
-        // applyChanges closes the modal; no need to clear isApplyPending manually.
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isApplyPending, isDiscoveryRunning]);
+    }, [applyChanges, isApplyPending, isDiscoveryRunning]);
 
     const handleBannerClose = () => {
         dispatch(setFlag({ key: 'activateAssetsBannerClosed', value: true }));

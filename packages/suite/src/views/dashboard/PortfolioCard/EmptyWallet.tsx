@@ -2,16 +2,8 @@ import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
-import {
-    type Button,
-    type Column,
-    type H3,
-    type Illustration,
-    type Paragraph,
-    type Row,
-    type Text,
-} from '@trezor/components';
-import { type CoinLogo } from '@trezor/product-components';
+import { Button, Column, H3, Illustration, Paragraph, Row, Text } from '@trezor/components';
+import { CoinLogo } from '@trezor/product-components';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';

@@ -1,8 +1,8 @@
 import { memo } from 'react';
 
+import { useDevice } from '@suite/device';
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { useDevice } from '@suite/device';
 
 import { resetProtocol } from 'src/actions/suite/protocolActions';
 import { AppNavigationTooltip } from 'src/components/suite/AppNavigation/AppNavigationTooltip';

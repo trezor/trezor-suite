@@ -52,9 +52,6 @@ const getDiscoveryStatus = ({
         };
     }
 
-    // Only surface the "discovery-failed" exception once discovery is no longer running.
-    // While it's still in progress, partially failed accounts shouldn't hide the data we
-    // already have; per-network failures are still reflected in AssetsView.
     if (
         (discovery?.status === 'failed' && discovery.error) ||
         (!isDiscoveryInProgress(discovery) && (accounts ?? []).some(a => a.failed))
@@ -73,10 +70,6 @@ const getDiscoveryStatus = ({
         };
     }
 
-    // Cover every in-progress state, not just 'progress'. When discovery is kicked off
-    // (e.g. after activating a new network) it first goes through 'starting' before
-    // transitioning to 'progress'. Without this we'd briefly show the empty-wallet view
-    // on top of a freshly-initiated discovery.
     if (isDiscoveryInProgress(discovery)) {
         return {
             status: 'loading',
