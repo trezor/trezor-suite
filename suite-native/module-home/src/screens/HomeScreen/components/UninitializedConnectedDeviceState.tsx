@@ -16,7 +16,6 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 const cardStyle = prepareNativeStyle(utils => ({
-    flex: 1,
     justifyContent: 'center',
     paddingTop: utils.spacings.sp32,
     paddingBottom: utils.spacings.sp16,
