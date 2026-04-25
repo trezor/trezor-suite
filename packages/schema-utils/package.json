@@ -17,7 +17,12 @@
                     "types": "./lib/index.d.ts",
                     "default": "./lib/index.js"
                 }
-            }
+            },
+            "./lib/custom-types/*": {
+                "types": "./lib/custom-types/*.d.ts",
+                "default": "./lib/custom-types/*.js"
+            },
+            "./libESM/custom-types/*": "./libESM/custom-types/*"
         }
     },
     "files": [

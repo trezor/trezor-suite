@@ -87,3 +87,5 @@ zod
 @types/cors
 @vitest/browser-playwright
 vitest
+rollup-plugin-dts
+rollup
