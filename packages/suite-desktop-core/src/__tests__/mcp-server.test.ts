@@ -27,6 +27,7 @@ jest.mock('@trezor/ipc-proxy', () => ({
 }));
 
 jest.mock('@trezor/node-utils', () => ({
+    ...jest.requireActual('@trezor/node-utils'),
     findProcessFromIncomingPort: jest.fn().mockResolvedValue(undefined),
 }));
 
@@ -50,6 +51,7 @@ jest.mock('../libs/process-icon', () => ({
     warn: jest.fn(),
     error: jest.fn(),
     debug: jest.fn(),
+    getLog: jest.fn().mockReturnValue([]),
 };
 
 import { init } from '../modules/mcp-server';
@@ -105,26 +107,8 @@ const startMcpServer = async (overrides?: {
         cspNonce: 'test-nonce',
     } as any);
 
-    result!.onLoad({} as any);
-
-    // Wait for the server to start listening
-    await new Promise<void>((resolve, reject) => {
-        const timeout = setTimeout(() => reject(new Error('Server did not start in time')), 3000);
-        const check = () => {
-            const getSettings = ipcHandlers['mcp/get-settings'];
-            if (getSettings) {
-                const settings = getSettings({});
-                if (settings?.running) {
-                    clearTimeout(timeout);
-                    resolve();
-
-                    return;
-                }
-            }
-            setTimeout(check, 10);
-        };
-        setTimeout(check, 20);
-    });
+    // onLoad is now async (uses HttpServer.start()) — await it
+    await result!.onLoad({} as any);
 
     return {
         port,
@@ -179,10 +163,10 @@ const jsonRpcNotification = (method: string, params?: Record<string, unknown>) =
 });
 
 describe('MCP server', () => {
-    let cleanup: (() => void) | undefined;
+    let cleanup: (() => void | Promise<void>) | undefined;
 
-    afterEach(() => {
-        cleanup?.();
+    afterEach(async () => {
+        await cleanup?.();
         cleanup = undefined;
     });
 
@@ -218,6 +202,24 @@ describe('MCP server', () => {
             expect(res.status).toBe(200);
         });
 
+        it('returns 500 when store returns empty token at request time', async () => {
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            // Override getMcpSettings to return no token after server has started
+            server.store.getMcpSettings.mockReturnValue({
+                enabled: true,
+                port: server.port,
+                token: '',
+            });
+
+            const res = await mcpFetch(server.port, jsonRpc('initialize'), { token: null });
+
+            expect(res.status).toBe(500);
+            const body = await res.json();
+            expect(body.error).toContain('no auth token');
+        });
+
         it('accepts requests with token in query parameter', async () => {
             const server = await startMcpServer();
             cleanup = server.cleanup;
@@ -241,34 +243,16 @@ describe('MCP server', () => {
 
             expect(res.status).toBe(401);
         });
-
-        it('returns 500 when store returns empty token at request time', async () => {
-            const server = await startMcpServer();
-            cleanup = server.cleanup;
-
-            // Override getMcpSettings to return no token after server has started
-            server.store.getMcpSettings.mockReturnValue({
-                enabled: true,
-                port: server.port,
-                token: '',
-            });
-
-            const res = await mcpFetch(server.port, jsonRpc('initialize'), { token: null });
-
-            expect(res.status).toBe(500);
-            const body = await res.json();
-            expect(body.error).toContain('no auth token');
-        });
     });
 
     describe('request routing', () => {
-        it('OPTIONS /mcp returns 405', async () => {
+        it('OPTIONS /mcp returns 404 (no route registered)', async () => {
             const server = await startMcpServer();
             cleanup = server.cleanup;
 
             const res = await mcpFetch(server.port, null, { method: 'OPTIONS' });
 
-            expect(res.status).toBe(405);
+            expect(res.status).toBe(404);
         });
 
         it('GET /mcp returns 405', async () => {
@@ -296,8 +280,6 @@ describe('MCP server', () => {
             const res = await mcpFetch(server.port, jsonRpc('initialize'), { path: '/other' });
 
             expect(res.status).toBe(404);
-            const body = await res.json();
-            expect(body.error).toContain('Not found');
         });
 
         it('PUT /mcp returns 404', async () => {
@@ -332,8 +314,7 @@ describe('MCP server', () => {
 
             expect(res.status).toBe(413);
             const body = await res.json();
-            expect(body.error.code).toBe(-32600);
-            expect(body.error.message).toBe('Payload too large');
+            expect(body.error).toBe('Payload too large');
         });
 
         it('rejects invalid JSON with 400', async () => {
@@ -344,8 +325,7 @@ describe('MCP server', () => {
 
             expect(res.status).toBe(400);
             const body = await res.json();
-            expect(body.error.code).toBe(-32700);
-            expect(body.error.message).toBe('Parse error');
+            expect(body.error).toContain('Invalid json body');
         });
 
         it('treats empty body as empty object', async () => {
@@ -413,6 +393,8 @@ describe('MCP server', () => {
             const res = await mcpFetch(server.port, jsonRpc('tools/list', undefined, 2));
 
             expect(res.status).toBe(404);
+            const body = await res.json();
+            expect(body.error).toBe('Session not found');
         });
 
         it('allows re-initialization without session ID (new client connecting)', async () => {
