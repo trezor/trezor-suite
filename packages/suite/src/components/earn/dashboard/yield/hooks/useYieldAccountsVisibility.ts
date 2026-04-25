@@ -17,15 +17,14 @@ export const useYieldAccountsVisibility = ({
                 .filter(opportunity => opportunity.hasRewardsData)
                 .map(opportunity => opportunity.key),
         );
-        const networkSymbols = new Set(
-            yieldAccountOpportunities.map(opportunity => opportunity.networkSymbol),
+        const vaultIds = new Set(
+            yieldAccountOpportunities.map(opportunity => opportunity.vault.id),
         );
 
-        networkSymbols.forEach(networkSymbol => {
+        vaultIds.forEach(vaultId => {
             const hasVisibleOpportunity = yieldAccountOpportunities.some(
                 opportunity =>
-                    opportunity.networkSymbol === networkSymbol &&
-                    visibleOpportunityKeys.has(opportunity.key),
+                    opportunity.vault.id === vaultId && visibleOpportunityKeys.has(opportunity.key),
             );
 
             if (hasVisibleOpportunity) {
@@ -33,7 +32,7 @@ export const useYieldAccountsVisibility = ({
             }
 
             const fallbackOpportunity = yieldAccountOpportunities.find(
-                opportunity => opportunity.networkSymbol === networkSymbol,
+                opportunity => opportunity.vault.id === vaultId,
             );
 
             if (fallbackOpportunity) {
