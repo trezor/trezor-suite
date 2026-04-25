@@ -159,5 +159,8 @@ export const useStakingAccountsVisibility = ({
     const displayedAccounts = isExpanded ? expandedAccounts : collapsedAccounts;
     const isExpandable = collapsedAccounts.length !== expandedAccounts.length;
 
-    return { displayedAccounts, isExpanded, toggleExpanded, isExpandable };
+    const hasAnyRewardsData =
+        accountsStakingActive.length > 0 || accountsSufficientFunds.length > 0;
+
+    return { displayedAccounts, isExpanded, toggleExpanded, isExpandable, hasAnyRewardsData };
 };

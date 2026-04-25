@@ -37,12 +37,16 @@ export const EarnYieldTable = () => {
     const { yieldOpportunities: availableVaults, isYieldOpportunitiesLoading } =
         useAllYieldOpportunities({ enabled: !isYieldDashboardDisabled });
 
-    const { yieldAccountOpportunities, yieldInactiveVaultOpportunities, isYieldActive } =
-        useYieldTableData({
-            availableVaults,
-            visibleAccounts,
-            visibleAccountSymbols,
-        });
+    const {
+        yieldAccountOpportunities,
+        yieldInactiveVaultOpportunities,
+        isYieldActive,
+        hasAnyRewardsData,
+    } = useYieldTableData({
+        availableVaults,
+        visibleAccounts,
+        visibleAccountSymbols,
+    });
 
     const {
         displayedYieldAccountOpportunities,
@@ -85,7 +89,7 @@ export const EarnYieldTable = () => {
                             )}
                         <Card paddingType="none">
                             <Table isRowHighlightedOnHover margin={{ top: 8 }}>
-                                <EarnDashboardTableHeader />
+                                <EarnDashboardTableHeader showRewardsColumns={hasAnyRewardsData} />
                                 <EarnYieldTableBody
                                     isYieldOpportunitiesLoading={isYieldOpportunitiesLoading}
                                     yieldAccountOpportunities={displayedYieldAccountOpportunities}
