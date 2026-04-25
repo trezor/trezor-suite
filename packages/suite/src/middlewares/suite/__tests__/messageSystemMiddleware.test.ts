@@ -7,12 +7,6 @@ import {
     getValidExperimentIds,
     getValidMessages,
 } from '@suite-common/message-system/src/messageSystemUtils';
-
-jest.mock('@suite-common/message-system/src/messageSystemUtils', () => ({
-    ...jest.requireActual('@suite-common/message-system/src/messageSystemUtils'),
-    getValidMessages: jest.fn(),
-    getValidExperimentIds: jest.fn(),
-}));
 import { type AnyAction } from '@suite-common/redux-utils';
 import { type Action } from '@suite-common/suite-types';
 import { configureMockStore } from '@suite-common/test-utils';
@@ -23,6 +17,12 @@ import WalletReducers from 'src/reducers/wallet';
 import { extraDependencies } from 'src/support/extraDependencies';
 
 import messageSystemMiddleware from '../messageSystemMiddleware';
+
+jest.mock('@suite-common/message-system/src/messageSystemUtils', () => ({
+    ...jest.requireActual('@suite-common/message-system/src/messageSystemUtils'),
+    getValidMessages: jest.fn(),
+    getValidExperimentIds: jest.fn(),
+}));
 const messageSystemReducer: Reducer<
     ReturnType<ReturnType<typeof prepareMessageSystemReducer>>,
     AnyAction
@@ -118,7 +118,6 @@ describe('Message system middleware', () => {
             category: 'feature',
         };
 
-        // @ts-expect-error: all properties except category and id are not required for testing
         (getValidMessages as jest.Mock).mockImplementation(() => [
             message1,
             message2,

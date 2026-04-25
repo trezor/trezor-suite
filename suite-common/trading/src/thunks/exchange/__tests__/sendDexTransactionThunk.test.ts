@@ -173,7 +173,7 @@ describe('sendDexTransactionThunk', () => {
             );
 
         const confirmExchangeTradeThunkSpy = (
-            confirmExchangeTradeThunk as jest.Mock
+            confirmExchangeTradeThunk as unknown as jest.Mock
         ).mockImplementation(createThunk('@trading-exchange/thunk/confirmTrade', () => undefined));
 
         const result = await store.dispatch(
@@ -218,7 +218,7 @@ describe('sendDexTransactionThunk', () => {
             );
 
         const confirmExchangeTradeThunkSpy = (
-            confirmExchangeTradeThunk as jest.Mock
+            confirmExchangeTradeThunk as unknown as jest.Mock
         ).mockImplementation(createThunk('@trading-exchange/thunk/confirmTrade', () => undefined));
 
         const result = await store.dispatch(
