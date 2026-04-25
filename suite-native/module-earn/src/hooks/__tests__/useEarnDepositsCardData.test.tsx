@@ -62,7 +62,7 @@ const invalidStakingActiveItem: StakingEarnItem = {
 const stablecoinYieldActiveItem: StablecoinYieldEarnItem = {
     id: 'steakhouse-usdc',
     type: 'stablecoin-yield',
-    vaultName: 'Steakhouse USDC',
+    vaultName: 'Steakhouse USDC Vault',
     tokenSymbol: testTokenSymbol,
     networkSymbol: 'eth',
     contractAddress: testContractAddress,
@@ -75,7 +75,7 @@ const stablecoinYieldActiveItem: StablecoinYieldEarnItem = {
 const secondStablecoinYieldActiveItem: StablecoinYieldEarnItem = {
     id: 'moonwell-usdc',
     type: 'stablecoin-yield',
-    vaultName: 'Moonwell USDC',
+    vaultName: 'Moonwell USDC Vault',
     tokenSymbol: testTokenSymbol,
     networkSymbol: 'base',
     contractAddress: testContractAddress,
@@ -88,7 +88,7 @@ const secondStablecoinYieldActiveItem: StablecoinYieldEarnItem = {
 const invalidStablecoinYieldActiveItem: StablecoinYieldEarnItem = {
     id: 'invalid-steakhouse-usdc',
     type: 'stablecoin-yield',
-    vaultName: 'Invalid Steakhouse USDC',
+    vaultName: 'Invalid Steakhouse USDC Vault',
     tokenSymbol: testTokenSymbol,
     networkSymbol: 'eth',
     contractAddress: testContractAddress,
@@ -158,11 +158,11 @@ describe('useEarnDepositsCardData', () => {
 
         expect(result.current.stablecoinYieldRow).toMatchObject({
             type: 'stablecoin-yield',
-            title: 'Steakhouse USDC',
+            title: 'Steakhouse USDC Vault',
         });
         expect(result.current.stablecoinYieldRow?.activeItems[0]).toMatchObject({
             type: 'stablecoin-yield',
-            title: 'Steakhouse USDC',
+            title: 'Steakhouse USDC Vault',
             networkSymbol: 'eth',
             tokenSymbol: 'USDC',
             contractAddress: testContractAddress,

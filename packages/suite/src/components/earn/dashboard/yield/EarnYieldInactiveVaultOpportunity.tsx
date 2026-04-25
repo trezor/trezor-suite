@@ -47,7 +47,14 @@ export const EarnYieldInactiveVaultOpportunity = ({
                     symbol={opportunity.networkSymbol}
                     iconToken={opportunity.vault.token}
                     showAssetNetworkIcon
-                    subtitle={opportunity.vault.metadata.name}
+                    subtitle={
+                        <Translation
+                            id="TR_EARN_VAULT_NAME"
+                            values={{
+                                vaultName: opportunity.vault.outputToken?.name ?? '',
+                            }}
+                        />
+                    }
                 />
             </Table.Cell>
 

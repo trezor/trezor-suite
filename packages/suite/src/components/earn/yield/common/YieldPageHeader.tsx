@@ -27,7 +27,7 @@ export const YieldPageHeader = ({ analyticsStep }: YieldPageHeaderProps) => {
     const vault = routeParams
         ? yieldOpportunities.find(opportunity => opportunity.id === routeParams.yieldId)
         : undefined;
-    const vaultName = vault?.metadata.name;
+    const vaultName = vault?.outputToken?.name;
     const networkSymbol = account?.symbol;
 
     const onBackClick = () => {
@@ -81,7 +81,7 @@ export const YieldPageHeader = ({ analyticsStep }: YieldPageHeaderProps) => {
                         )}
                         <Column gap={2} overflow="hidden">
                             <Text typographyStyle="body-md-strong" ellipsisLineCount={1}>
-                                {vaultName}
+                                <Translation id="TR_EARN_VAULT_NAME" values={{ vaultName }} />
                             </Text>
                             {account && (
                                 <AccountLabel
