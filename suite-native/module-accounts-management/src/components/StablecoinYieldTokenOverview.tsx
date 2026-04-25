@@ -70,7 +70,11 @@ export const StablecoinYieldTokenOverview = ({
         }
 
         showAlert({
-            title: vault.outputToken?.name ?? '',
+            title: vault.outputToken?.name ? (
+                <Translation id="earn.vaultName" values={{ vaultName: vault.outputToken.name }} />
+            ) : (
+                ''
+            ),
             description: translate(
                 'moduleAccounts.accountDetail.stablecoinYield.apyBreakdown.apyLabel',
                 { apy },
@@ -90,7 +94,6 @@ export const StablecoinYieldTokenOverview = ({
 
     if (!isEnabled || !vault) return null;
 
-    const vaultName = vault.outputToken?.name ?? '';
     const apyColor = apy === null ? 'contentSecondary' : 'contentPrimary';
     const apyValue = apy ?? <Translation id="earn.notAvailable" />;
     const hasSuppliedValue = !!account && !!token;
@@ -114,7 +117,16 @@ export const StablecoinYieldTokenOverview = ({
                         <Text variant="body-sm" color="contentSecondary">
                             <Translation id="moduleAccounts.accountDetail.stablecoinYield.vault" />
                         </Text>
-                        <Text variant="body-sm">{vaultName}</Text>
+                        <Text variant="body-sm">
+                            {vault.outputToken?.name ? (
+                                <Translation
+                                    id="earn.vaultName"
+                                    values={{ vaultName: vault.outputToken.name }}
+                                />
+                            ) : (
+                                ''
+                            )}
+                        </Text>
                     </HStack>
                     <CardDivider />
                     <PressableOpacity

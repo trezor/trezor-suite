@@ -9539,6 +9539,10 @@ export const messages = defineMessages({
         id: 'TR_EARN_STABLECOIN_YIELD_TITLE',
         defaultMessage: 'Stablecoin yield',
     },
+    TR_EARN_VAULT_NAME: {
+        id: 'TR_EARN_VAULT_NAME',
+        defaultMessage: '{vaultName} Vault',
+    },
     TR_MODIFY: {
         id: 'TR_MODIFY',
         defaultMessage: 'Modify',

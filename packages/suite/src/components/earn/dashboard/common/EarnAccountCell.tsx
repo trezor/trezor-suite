@@ -1,3 +1,5 @@
+import { type ReactNode } from 'react';
+
 import { type TokenDto } from '@suite-common/earn-stablecoin-api';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
@@ -13,7 +15,7 @@ type EarnAccountCellProps = {
     iconToken?: TokenDto;
     showAssetNetworkIcon?: boolean;
     tokenBalance?: EarnTokenBalance;
-    subtitle?: string;
+    subtitle?: ReactNode;
 };
 
 export const EarnAccountCell = ({

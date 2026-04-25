@@ -1,3 +1,5 @@
+import { type ReactNode } from 'react';
+
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { Text } from '@trezor/components';
@@ -10,7 +12,7 @@ type EarnAccountCellDetailsProps = {
     account?: Account;
     networkSymbol: NetworkSymbol;
     tokenBalance?: EarnTokenBalance;
-    subtitle?: string;
+    subtitle?: ReactNode;
 };
 
 export const EarnAccountCellDetails = ({
