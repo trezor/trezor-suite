@@ -190,6 +190,9 @@ export const createHttpReceiver = (options?: {
     ]);
 
     httpReceiver.get('/oauth', [
+        // OAuth providers only echo the `state` parameter back, so the per-flow
+        // single-use token is carried there.
+        httpReceiver.requireToken({ from: 'state' }),
         allowReferers(['', '127.0.0.1', 'www.dropbox.com']), // No referer is sent by Google, Dropbox sends referer when using Safari
         (request, response) => {
             const { search, hash } = parseRequestUrl(request.url);
@@ -207,6 +210,7 @@ export const createHttpReceiver = (options?: {
     httpReceiver.deactivateRoute('/oauth');
 
     httpReceiver.get('/buy-redirect', [
+        httpReceiver.requireToken(),
         allowReferers(['', 'localhost:3000', '*.invity.io', 'invity.io']),
         (request, response) => {
             const { query } = parseRequestUrl(request.url);
@@ -221,6 +225,7 @@ export const createHttpReceiver = (options?: {
     httpReceiver.deactivateRoute('/buy-redirect');
 
     httpReceiver.get('/buy-post', [
+        httpReceiver.requireToken(),
         allowReferers(['']), // No referer
         (request, response) => {
             try {
@@ -259,6 +264,7 @@ export const createHttpReceiver = (options?: {
     httpReceiver.deactivateRoute('/buy-post');
 
     httpReceiver.get('/sell-redirect', [
+        httpReceiver.requireToken(),
         allowReferers(['']), // No referer
         (request, response) => {
             const { query } = parseRequestUrl(request.url);
@@ -273,6 +279,7 @@ export const createHttpReceiver = (options?: {
     httpReceiver.deactivateRoute('/sell-redirect');
 
     httpReceiver.get('/exchange-redirect', [
+        httpReceiver.requireToken(),
         allowReferers(['']), // No referer
         (request, response) => {
             const { query } = parseRequestUrl(request.url);
