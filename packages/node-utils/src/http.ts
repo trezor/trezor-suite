@@ -364,7 +364,13 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
         const route = this.routes.find(r => r.pathname === pathname);
         if (!route) return;
 
-        const address = this.getServerAddress();
+        let address;
+        try {
+            address = this.getServerAddress();
+        } catch {
+            return;
+        }
+
         const token = randomUUID();
         this.purgeExpiredTokens(route);
         route.tokens.set(token, Date.now() + this.tokenTtlMs);
@@ -411,11 +417,19 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
             }
 
             this.purgeExpiredTokens(route);
+            if (route.tokens.size === 0) {
+                route.isActive = false;
+            }
 
             const raw = query?.[from];
             const token = Array.isArray(raw) ? raw[0] : raw;
-            if (!token || !route.tokens.has(token)) {
-                logger.warn(`Token rejected for ${pathname} (param '${from}')`);
+            if (!token) {
+                response.statusCode = 404;
+
+                return response.end();
+            }
+            if (!route.tokens.has(token)) {
+                logger.info(`Token rejected for ${pathname} (param '${from}')`);
                 response.statusCode = 404;
 
                 return response.end();
