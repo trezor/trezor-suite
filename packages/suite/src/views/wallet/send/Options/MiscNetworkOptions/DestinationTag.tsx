@@ -32,7 +32,7 @@ export const DestinationTag = ({ networkSymbol }: DestinationTagProps) => {
 
     const { networkType, name } = getNetwork(networkSymbol);
 
-    if (networkType !== 'ripple' && networkType !== 'stellar' && networkType !== 'solana') {
+    if (networkType !== 'ripple' && networkType !== 'stellar') {
         return null;
     }
 
@@ -72,15 +72,6 @@ export const DestinationTag = ({ networkSymbol }: DestinationTagProps) => {
         openNodeById(DESTINATION_TAG_GUIDE_PATH);
     };
 
-    let destinationTagMaxLength;
-    if (networkType === 'ripple') {
-        destinationTagMaxLength = formInputsMaxLength.xrpDestinationTag;
-    } else if (networkType === 'stellar') {
-        destinationTagMaxLength = formInputsMaxLength.stellarTextMemo;
-    } else if (networkType === 'solana') {
-        destinationTagMaxLength = formInputsMaxLength.solanaMemo;
-    }
-
     return (
         <Column gap={spacings.md}>
             <Row justifyContent="space-between">
@@ -105,7 +96,11 @@ export const DestinationTag = ({ networkSymbol }: DestinationTagProps) => {
                         hasError={!!error}
                         data-testid={inputName}
                         defaultValue={inputValue}
-                        maxLength={destinationTagMaxLength}
+                        maxLength={
+                            networkType === 'ripple'
+                                ? formInputsMaxLength.xrpDestinationTag
+                                : formInputsMaxLength.stellarTextMemo
+                        }
                         label={<Translation id="DESTINATION_TAG" />}
                         bottomText={error?.message || null}
                         innerRef={inputRef}

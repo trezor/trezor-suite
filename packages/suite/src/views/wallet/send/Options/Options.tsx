@@ -4,6 +4,7 @@ import { BitcoinOptions } from './BitcoinOptions/BitcoinOptions';
 import { CardanoOptions } from './CardanoOptions';
 import { EthereumOptions } from './EthereumOptions/EthereumOptions';
 import { MiscNetworkOptions } from './MiscNetworkOptions/MiscNetworkOptions';
+import { SolanaOptions } from './SolanaOptions/SolanaOptions';
 
 export const Options = () => {
     const {
@@ -14,9 +15,8 @@ export const Options = () => {
         <>
             {networkType === 'bitcoin' && <BitcoinOptions />}
             {networkType === 'ethereum' && <EthereumOptions />}
-            {(networkType === 'ripple' ||
-                networkType === 'stellar' ||
-                networkType === 'solana') && <MiscNetworkOptions />}
+            {(networkType === 'ripple' || networkType === 'stellar') && <MiscNetworkOptions />}
+            {networkType === 'solana' && <SolanaOptions />}
             {networkType === 'cardano' && <CardanoOptions />}
         </>
     );

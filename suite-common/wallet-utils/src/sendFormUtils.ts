@@ -528,9 +528,12 @@ export const restoreOrigOutputsOrder = (
         });
 };
 
-export const getDefaultValues = (currency: Output['currency']): FormState => ({
+export const getDefaultValues = (
+    currency: Output['currency'],
+    networkType?: NetworkType,
+): FormState => ({
     ...DEFAULT_VALUES,
-    options: ['broadcast', 'destinationTag'],
+    options: networkType === 'solana' ? ['broadcast'] : ['broadcast', 'destinationTag'],
     outputs: [{ ...DEFAULT_PAYMENT, currency }],
     selectedUtxos: [],
 });
