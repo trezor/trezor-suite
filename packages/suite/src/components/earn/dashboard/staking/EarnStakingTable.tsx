@@ -84,9 +84,7 @@ export const EarnStakingTable = () => {
         !stakingAccounts.some(account => account.symbol === 'ada') &&
         !isAdaStakingDisabled;
 
-    const stakingAccountsNotActivated = ethNotActivated && solNotActivated && adaNotActivated;
-
-    const { displayedAccounts, isExpandable, isExpanded, toggleExpanded } =
+    const { displayedAccounts, isExpandable, isExpanded, toggleExpanded, hasAnyRewardsData } =
         useStakingAccountsVisibility({
             stakingAccounts,
             currentRates,
@@ -128,7 +126,7 @@ export const EarnStakingTable = () => {
                             <Card paddingType="none">
                                 <Table isRowHighlightedOnHover margin={{ top: 8 }}>
                                     <EarnDashboardTableHeader
-                                        showRewardsColumns={!stakingAccountsNotActivated}
+                                        showRewardsColumns={hasAnyRewardsData}
                                     />
 
                                     <Table.Body>

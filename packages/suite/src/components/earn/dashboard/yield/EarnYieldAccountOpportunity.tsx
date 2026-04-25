@@ -40,7 +40,7 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
     const hasSuppliedBalance = opportunity.hasVaultPosition;
     const hasDisplayableSuppliedAmount = new BigNumber(opportunity.suppliedAmount).gt(0);
     const hasMatchedTokenWithBalance = new BigNumber(opportunity.additionalSupplyAmount).gt(0);
-    const hasRewardsData = hasMatchedTokenWithBalance || hasDisplayableSuppliedAmount;
+    const { hasRewardsData } = opportunity;
     const hasApy = opportunity.apyPercentage !== null;
     const yearlyRewards = hasDisplayableSuppliedAmount
         ? new BigNumber(opportunity.suppliedAmount)

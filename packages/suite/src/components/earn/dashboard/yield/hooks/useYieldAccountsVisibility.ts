@@ -1,16 +1,10 @@
 import { useCallback, useMemo, useState } from 'react';
 
-import { BigNumber } from '@trezor/utils';
-
 import { type YieldAccountOpportunity } from '../types';
 
 type UseYieldAccountsVisibilityProps = {
     yieldAccountOpportunities: YieldAccountOpportunity[];
 };
-
-const isOpportunityVisible = (opportunity: YieldAccountOpportunity) =>
-    new BigNumber(opportunity.suppliedAmount).gt(0) ||
-    new BigNumber(opportunity.additionalSupplyAmount).gt(0);
 
 export const useYieldAccountsVisibility = ({
     yieldAccountOpportunities,
@@ -20,7 +14,7 @@ export const useYieldAccountsVisibility = ({
     const { collapsedYieldAccountOpportunities, hiddenYieldAccountOpportunities } = useMemo(() => {
         const visibleOpportunityKeys = new Set(
             yieldAccountOpportunities
-                .filter(opportunity => isOpportunityVisible(opportunity))
+                .filter(opportunity => opportunity.hasRewardsData)
                 .map(opportunity => opportunity.key),
         );
         const networkSymbols = new Set(

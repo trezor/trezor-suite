@@ -9,6 +9,7 @@ export type YieldAccountOpportunity = {
     vault: YieldDto;
     matchedInputToken: TokenInfoBranded | undefined;
     hasVaultPosition: boolean;
+    hasRewardsData: boolean;
     suppliedAmount: string;
     additionalSupplyAmount: string;
     suppliedSymbol: TokenSymbol;
@@ -25,6 +26,7 @@ export type YieldOpportunityData = Pick<
     YieldAccountOpportunity,
     | 'matchedInputToken'
     | 'hasVaultPosition'
+    | 'hasRewardsData'
     | 'suppliedAmount'
     | 'additionalSupplyAmount'
     | 'suppliedSymbol'

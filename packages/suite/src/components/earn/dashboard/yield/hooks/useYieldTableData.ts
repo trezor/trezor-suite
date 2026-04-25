@@ -157,7 +157,7 @@ const getYieldOpportunityData = ({
     account: Account;
     networkSymbol: NetworkSymbol;
     vault: YieldDto;
-}) => {
+}): YieldOpportunityData => {
     const matchedInputToken = getMatchedAccountToken({
         account,
         networkSymbol,
@@ -169,19 +169,24 @@ const getYieldOpportunityData = ({
         token: vault.outputToken,
     });
     const hasVaultPosition = new BigNumber(matchedOutputToken?.balance ?? '0').gt(0);
+    const suppliedAmount = getConvertedOutputTokenBalanceToInputTokenAmount({
+        matchedOutputToken,
+        networkSymbol,
+        vault,
+    });
+    const additionalSupplyAmount = matchedInputToken?.balance ?? '0';
+    const hasRewardsData =
+        new BigNumber(suppliedAmount).gt(0) || new BigNumber(additionalSupplyAmount).gt(0);
 
     return {
         matchedInputToken,
         hasVaultPosition,
-        suppliedAmount: getConvertedOutputTokenBalanceToInputTokenAmount({
-            matchedOutputToken,
-            networkSymbol,
-            vault,
-        }),
-        additionalSupplyAmount: matchedInputToken?.balance ?? '0',
+        hasRewardsData,
+        suppliedAmount,
+        additionalSupplyAmount,
         suppliedSymbol: matchedInputToken?.symbol ?? toTokenSymbol(vault.token.symbol),
         suppliedContractAddress: matchedInputToken?.contract ?? vault.token.address ?? null,
-    } satisfies YieldOpportunityData;
+    };
 };
 
 type UseYieldTableDataProps = {
@@ -287,8 +292,14 @@ export const useYieldTableData = ({
         [yieldAccountOpportunities],
     );
 
+    const hasAnyRewardsData = useMemo(
+        () => yieldAccountOpportunities.some(opportunity => opportunity.hasRewardsData),
+        [yieldAccountOpportunities],
+    );
+
     return {
         isYieldActive,
+        hasAnyRewardsData,
         yieldAccountOpportunities,
         yieldInactiveVaultOpportunities,
     };
