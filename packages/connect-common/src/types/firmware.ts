@@ -15,11 +15,31 @@ export type FirmwareRange = Record<
     { min: FirmwareBoundary; max: FirmwareBoundary }
 >;
 
+export type FirmwareCapability =
+    | 'replaceTransaction'
+    | 'amountUnit'
+    | 'decreaseOutput'
+    | 'eip1559'
+    | 'taproot'
+    | 'signMessageNoScriptType'
+    | 'eip712-domain-only'
+    | 'coinjoin'
+    | 'tutorial'
+    | 'tropicDeviceAuthentication'
+    | 'getFirmwareHash'
+    | 'chunkify'
+    | 'entropyCheck'
+    | 'evmApproval'
+    | 'slip24'
+    | 'evolu'
+    | 'monero'
+    | 'telemetry';
+
 type RuleSelector = RequireAtLeastOne<{
-    coin: string[];
+    coin: Lowercase<string>[];
     coinType: string;
     methods: string[];
-    capabilities: string[];
+    capabilities: FirmwareCapability[];
 }>;
 
 type RuleDeclaration = RequireAtLeastOne<{
