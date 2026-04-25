@@ -1,13 +1,6 @@
 import { Status } from '../../src/client/Status';
 import { coordinatorRequest } from '../../src/client/coordinatorRequest';
 import { STATUS_TIMEOUT } from '../../src/constants';
-
-jest.mock('../../src/client/coordinatorRequest', () => ({
-    ...jest.requireActual('../../src/client/coordinatorRequest'),
-    coordinatorRequest: jest.fn(
-        jest.requireActual('../../src/client/coordinatorRequest').coordinatorRequest,
-    ),
-}));
 import {
     AFFILIATE_INFO,
     DEFAULT_ROUND,
@@ -15,6 +8,13 @@ import {
     createCoinjoinRound,
 } from '../fixtures/round.fixture';
 import { createServer } from '../mocks/server';
+
+jest.mock('../../src/client/coordinatorRequest', () => ({
+    ...jest.requireActual('../../src/client/coordinatorRequest'),
+    coordinatorRequest: jest.fn(
+        jest.requireActual('../../src/client/coordinatorRequest').coordinatorRequest,
+    ),
+}));
 
 // using fakeTimers and async callbacks
 const fastForward = (time: number) => jest.advanceTimersByTimeAsync(time);

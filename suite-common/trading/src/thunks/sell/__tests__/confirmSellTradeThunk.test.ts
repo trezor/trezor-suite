@@ -95,7 +95,7 @@ describe('confirmSellTradeThunk', () => {
             status: 'CANCELLED',
         };
 
-        (handleSellTradeThunk as jest.Mock).mockImplementation(
+        (handleSellTradeThunk as unknown as jest.Mock).mockImplementation(
             createThunk('@trading-sell/thunk/handleTrade', (_, { fulfillWithValue }) =>
                 fulfillWithValue(trade),
             ),
@@ -174,7 +174,7 @@ describe('confirmSellTradeThunk', () => {
             mockProcessResponseData,
         } = getMocks();
 
-        (handleSellTradeThunk as jest.Mock).mockImplementation(
+        (handleSellTradeThunk as unknown as jest.Mock).mockImplementation(
             createThunk('@trading-sell/thunk/handleTrade', (_, { fulfillWithValue }) =>
                 fulfillWithValue(undefined),
             ),
