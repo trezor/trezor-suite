@@ -251,6 +251,7 @@ export interface Transaction {
     solanaSpecific?: {
         status: 'confirmed';
         stakeOperation?: { type: StakeType; amount: string };
+        memo?: string;
     };
     details: TransactionDetail;
     vsize?: number;

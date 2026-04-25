@@ -1945,6 +1945,7 @@ export const messages = {
                 broadcast: 'Broadcast',
                 transactionId: 'Transaction ID',
                 transactionIdCopied: 'Transaction ID copied',
+                memo: 'Memo',
                 ethereum: {
                     gasLimit: 'Gas limit',
                     gasUsed: 'Gas used',
