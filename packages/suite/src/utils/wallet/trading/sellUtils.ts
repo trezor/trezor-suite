@@ -6,6 +6,8 @@ import { getLocationOrigin, isDesktop } from '@trezor/env-utils';
 
 import { type Account } from 'src/types/wallet';
 
+import { buildHttpReceiverRedirectUrl } from './tradingUtils';
+
 export const createQuoteLink = async (
     { desktopApi }: DesktopApiDep<'getHttpReceiverAddress'>,
     request: SellFiatTradeQuoteRequest,
@@ -41,9 +43,9 @@ export const createQuoteLink = async (
     const params = `sell-offers/${account.symbol}/${account.accountType}/${account.index}/${hash}`;
 
     if (isDesktop()) {
-        const url = await desktopApi.getHttpReceiverAddress('/sell-redirect');
+        const address = await desktopApi.getHttpReceiverAddress('/sell-redirect');
 
-        return `${url}?p=${encodeURIComponent(`/coinmarket-redirect/${params}`)}`;
+        return buildHttpReceiverRedirectUrl(address, `/coinmarket-redirect/${params}`);
     }
 
     return `${locationOrigin}${assetPrefix}/coinmarket-redirect#${params}`;

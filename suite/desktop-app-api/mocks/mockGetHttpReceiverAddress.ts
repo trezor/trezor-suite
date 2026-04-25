@@ -1,6 +1,7 @@
 import { mock } from '@trezor/dependency-injection';
 
-import { type DesktopApi } from '../src/api';
+import { type DesktopApi, type HttpReceiverAddress } from '../src/api';
 
-export const mockGetHttpReceiverAddress = (address = 'http://localhost:21325') =>
-    mock<DesktopApi['getHttpReceiverAddress']>(() => Promise.resolve(address));
+export const mockGetHttpReceiverAddress = (
+    address: HttpReceiverAddress = { url: 'http://localhost:21325', token: '' },
+) => mock<DesktopApi['getHttpReceiverAddress']>(() => Promise.resolve(address));
