@@ -1,3 +1,4 @@
+import { type HttpReceiverAddress } from '@suite/desktop-app-api';
 import { type ExtendedMessageDescriptor } from '@suite/intl';
 import type { TradingType } from '@suite-common/trading';
 import { type Network, type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
@@ -19,6 +20,21 @@ import {
     type TradingGetAmountLabelsReturnProps,
 } from 'src/types/trading/trading';
 import { type Account } from 'src/types/wallet';
+
+/**
+ * Build a redirect URL for an HTTP-receiver-backed coinmarket flow on desktop.
+ * On platforms where the receiver is bypassed for a `trezorsuite://` deeplink
+ * (`token === ''`), the token query parameter is omitted.
+ */
+export const buildHttpReceiverRedirectUrl = (
+    address: HttpReceiverAddress | undefined,
+    redirectPath: string,
+): string => {
+    const params = new URLSearchParams({ p: redirectPath });
+    if (address?.token) params.set('token', address.token);
+
+    return `${address?.url}?${params.toString()}`;
+};
 
 export const translationKeys: Record<
     TradingType,
