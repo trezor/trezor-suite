@@ -274,6 +274,12 @@ export const BasicTxDetails = ({
                     </Item>
                 )}
 
+                {tx.solanaSpecific?.memo && (
+                    <Item label={<Translation id="DESTINATION_TAG_SHORT" />} iconName="tag">
+                        <BlurUrls text={tx.solanaSpecific.memo} />
+                    </Item>
+                )}
+
                 {/* TX ID */}
                 <Item label={<Translation id="TR_TXID" />} iconName="fingerprint">
                     <Link

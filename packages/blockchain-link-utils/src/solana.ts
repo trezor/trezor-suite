@@ -44,6 +44,8 @@ export const COMPUTE_BUDGET_PROGRAM_ID = 'ComputeBudget1111111111111111111111111
 export const SERUM_ASSET_OWNER_PROGRAM_ID = '4MNPdKu9wFMvEeZBMt3Eipfs5ovVWTJb31pEXDJAAxX5';
 export const SERUM_ASSET_OWNER_PHANTOM_DEPLOYMENT_PROGRAM_ID =
     'DeJBGdMFa1uynnnKiwrVioatTuHmNLpyFKnmB5kaFdzQ';
+export const MEMO_PROGRAM_PUBLIC_KEY = 'MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr';
+export const MEMO_PROGRAM_PUBLIC_KEY_V1 = 'Memo1UhkJRfHyvLMcVucJwxXeuD728EqVDDwQDxFMNo';
 
 const tokenProgramNames = ['spl-token', 'spl-token-2022'] as const;
 export type TokenProgramName = (typeof tokenProgramNames)[number];
@@ -382,6 +384,8 @@ export const getTxType = (
             // some wallets use Serum's Assert Owner program during SPL transfer transactions, we don't want to report these as `contract` transactions
             SERUM_ASSET_OWNER_PROGRAM_ID,
             SERUM_ASSET_OWNER_PHANTOM_DEPLOYMENT_PROGRAM_ID,
+            MEMO_PROGRAM_PUBLIC_KEY,
+            MEMO_PROGRAM_PUBLIC_KEY_V1,
         ].includes(instruction.programId);
 
     // if there are any unknown program instructions, we interpret the transaction as `contract`
@@ -407,7 +411,9 @@ export const getTxType = (
             instruction.parsed.type === 'transfer' ||
             instruction.parsed.type === 'transferChecked' ||
             (instruction.program === 'system' && instruction.parsed.type === 'advanceNonce') ||
-            isInstructionCreatingTokenAccount(instruction),
+            isInstructionCreatingTokenAccount(instruction) ||
+            instruction.programId === MEMO_PROGRAM_PUBLIC_KEY ||
+            instruction.programId === MEMO_PROGRAM_PUBLIC_KEY_V1,
     );
 
     if (isTransfer) {
@@ -707,6 +713,18 @@ const determineTransactionType = (
     }
 };
 
+const getMemo = (tx: SolanaValidParsedTxWithMeta): string | undefined => {
+    const memoInstruction = tx.transaction.message.instructions.find(
+        ix =>
+            ix.programId === MEMO_PROGRAM_PUBLIC_KEY || ix.programId === MEMO_PROGRAM_PUBLIC_KEY_V1,
+    );
+    if (!memoInstruction || !('parsed' in memoInstruction)) return undefined;
+
+    const parsed = memoInstruction.parsed as unknown;
+
+    return typeof parsed === 'string' ? parsed : undefined;
+};
+
 export const transformTransaction = (
     tx: SolanaValidParsedTxWithMeta,
     accountAddress: string,
@@ -758,6 +776,7 @@ export const transformTransaction = (
                       amount: stakeAmount,
                   }
                 : undefined,
+            memo: getMemo(tx),
         },
     };
 };

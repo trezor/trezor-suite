@@ -480,6 +480,13 @@ const constructNewFlow = ({
         });
     }
 
+    if (isSolana && precomposedForm.destinationTag) {
+        outputs.push({
+            type: 'destination-tag',
+            value: precomposedForm.destinationTag,
+        });
+    }
+
     return outputs;
 };
 

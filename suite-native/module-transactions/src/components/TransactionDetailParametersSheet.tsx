@@ -156,6 +156,18 @@ export const TransactionDetailParametersSheet = ({
                     </TransactionDetailRow>
                 </Card>
 
+                {transaction.solanaSpecific?.memo && (
+                    <Card>
+                        <TransactionDetailRow
+                            title={translate(
+                                'transactions.TransactionDetailScreen.parametersSheet.memo',
+                            )}
+                        >
+                            {transaction.solanaSpecific.memo}
+                        </TransactionDetailRow>
+                    </Card>
+                )}
+
                 {parametersCardIsDisplayed && (
                     <Card>
                         {displayedParameters.includes('ethereumSpecific') &&
