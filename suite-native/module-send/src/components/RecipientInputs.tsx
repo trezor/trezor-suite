@@ -9,6 +9,7 @@ import { CardDivider, VStack } from '@suite-native/atoms';
 import { AddressInput } from './AddressInput';
 import { AmountInputs } from './AmountInputs';
 import { DestinationTagInput } from './DestinationTagInput';
+import { SolanaMemoInput } from './SolanaMemoInput';
 
 type RecipientInputsProps = {
     index: number;
@@ -21,10 +22,7 @@ export const RecipientInputs = ({ index, accountKey }: RecipientInputsProps) => 
 
     if (!account) return null;
 
-    const hasDestinationTag =
-        account.networkType === 'ripple' ||
-        account.networkType === 'stellar' ||
-        account.networkType === 'solana';
+    const hasDestinationTag = account.networkType === 'ripple' || account.networkType === 'stellar';
 
     return (
         <VStack spacing="sp16">
@@ -36,6 +34,14 @@ export const RecipientInputs = ({ index, accountKey }: RecipientInputsProps) => 
                     <VStack spacing="sp16">
                         <CardDivider />
                         <DestinationTagInput networkSymbol={account.symbol} />
+                    </VStack>
+                </Animated.View>
+            )}
+            {account.networkType === 'solana' && (
+                <Animated.View layout={LinearTransition}>
+                    <VStack spacing="sp16">
+                        <CardDivider />
+                        <SolanaMemoInput />
                     </VStack>
                 </Animated.View>
             )}
