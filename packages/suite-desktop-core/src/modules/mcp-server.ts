@@ -7,18 +7,24 @@
  * the renderer for permissions, device management, and UI interactions.
  */
 import * as crypto from 'crypto';
-import * as http from 'http';
 
 import { CALL_SOURCE_MCP, type ConnectProcessInfo } from '@suite-common/connect-popup';
 import { getNetworkOptional } from '@suite-common/wallet-config';
 import { convertAmountUnitsToSubunits, substituteBip43Path } from '@suite-common/wallet-utils';
 import { validateIpcMessage } from '@trezor/ipc-proxy';
-import { findProcessFromIncomingPort } from '@trezor/node-utils';
+import {
+    HttpServer,
+    type RequestWithParams,
+    type Response,
+    findProcessFromIncomingPort,
+    parseBodyJSONWithLimit,
+} from '@trezor/node-utils';
 
 import { addMessage } from '../libs/connect-popup-messages';
 import { getProcessIcon } from '../libs/process-icon';
 import { ipcMain } from '../typed-electron';
 import { type ModuleInit } from './module';
+import { convertILoggerToLog } from '../utils/IloggerToLog';
 
 export const SERVICE_NAME = 'mcp-server';
 
@@ -1062,231 +1068,194 @@ const handleJsonRpcRequest = async (
 
 const MAX_BODY_SIZE = 1024 * 1024; // 1 MB
 
-/**
- * Read and parse JSON body from an HTTP request.
- */
-const readJsonBody = (req: http.IncomingMessage): Promise<unknown> =>
-    new Promise((resolve, reject) => {
-        const chunks: Buffer[] = [];
-        let size = 0;
-        let rejected = false;
-        req.on('data', (chunk: Buffer) => {
-            if (rejected) return;
-            size += chunk.length;
-            if (size > MAX_BODY_SIZE) {
-                rejected = true;
-                req.resume(); // Drain remaining data without buffering
-                reject(new Error('Payload too large'));
-
-                return;
-            }
-            chunks.push(chunk);
-        });
-        req.on('end', () => {
-            if (rejected) return;
-            try {
-                const body = Buffer.concat(chunks).toString();
-                resolve(body ? JSON.parse(body) : {});
-            } catch (error) {
-                reject(error);
-            }
-        });
-        req.on('error', reject);
-    });
-
 export const init: ModuleInit = ({ mainWindowProxy, store }) => {
     const { logger } = global;
-    let server: http.Server | null = null;
+    let mcpHttpServer: HttpServer<Record<string, never>> | null = null;
     let sessionId: string | null = null;
     let sessionProcessInfo: ConnectProcessInfo | undefined;
     let sessionManifest: typeof MCP_MANIFEST = MCP_MANIFEST;
 
-    const startServer = (port: number) => {
-        if (server) {
+    const sendPopupCall = (call: {
+        id: string;
+        method: string;
+        payload: Record<string, unknown>;
+        silent?: boolean;
+        origin: string;
+        process?: {
+            name: string;
+            fullPath: string;
+            warning: boolean;
+            icon?: string;
+        };
+        manifest: typeof MCP_MANIFEST;
+    }) => {
+        const mainWindow = mainWindowProxy.getInstance();
+        if (!mainWindow) {
+            logger.error(LOG_PREFIX, 'Main window is not available for MCP call');
+
+            return Promise.resolve({
+                success: false,
+                error: 'Trezor Suite window is not available.',
+            });
+        }
+
+        const deferred = addMessage(call.id);
+
+        mainWindow.webContents.send('connect-popup/call', {
+            id: call.id,
+            method: call.method,
+            payload: call.payload,
+            silent: call.silent,
+            sourceType: CALL_SOURCE_MCP,
+            origin: call.origin,
+            process: call.process ?? sessionProcessInfo,
+            manifest: sessionManifest,
+        });
+
+        return deferred.promise;
+    };
+
+    const resetSession = () => {
+        sessionId = null;
+        sessionProcessInfo = undefined;
+        sessionManifest = MCP_MANIFEST;
+    };
+
+    const startServer = async (port: number) => {
+        if (mcpHttpServer) {
             logger.info(LOG_PREFIX, 'MCP server is already running');
 
             return;
         }
 
-        const sendPopupCall = (call: {
-            id: string;
-            method: string;
-            payload: Record<string, unknown>;
-            silent?: boolean;
-            origin: string;
-            process?: {
-                name: string;
-                fullPath: string;
-                warning: boolean;
-                icon?: string;
-            };
-            manifest: typeof MCP_MANIFEST;
-        }) => {
-            const mainWindow = mainWindowProxy.getInstance();
-            if (!mainWindow) {
-                logger.error(LOG_PREFIX, 'Main window is not available for MCP call');
+        const httpServer = new HttpServer<Record<string, never>>({
+            logger: convertILoggerToLog(logger, { serviceName: SERVICE_NAME }),
+            port,
+        });
 
-                return Promise.resolve({
-                    success: false,
-                    error: 'Trezor Suite window is not available.',
-                });
-            }
-
-            const deferred = addMessage(call.id);
-
-            mainWindow.webContents.send('connect-popup/call', {
-                id: call.id,
-                method: call.method,
-                payload: call.payload,
-                silent: call.silent,
-                sourceType: CALL_SOURCE_MCP,
-                origin: call.origin,
-                process: call.process ?? sessionProcessInfo,
-                manifest: sessionManifest,
-            });
-
-            return deferred.promise;
-        };
-
-        server = http.createServer(async (req, res) => {
-            // Only allow localhost connections
-            const { remoteAddress } = req.socket;
-            if (remoteAddress !== '127.0.0.1') {
-                logger.error(LOG_PREFIX, `Rejected connection from ${remoteAddress}`);
-                res.writeHead(403);
-                res.end();
-
-                return;
-            }
-
-            // No CORS headers — this server is for local native MCP clients only,
-            // not for browser-based access. Rejecting CORS prevents cross-origin
-            // data exfiltration from malicious webpages.
-            if (req.method === 'OPTIONS') {
-                res.writeHead(405);
-                res.end();
-
-                return;
-            }
-
-            // Validate Bearer token authentication
-            const { token } = store.getMcpSettings();
-            if (!token) {
-                logger.error(LOG_PREFIX, 'Rejected request: no authentication token configured');
-                res.writeHead(500, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ error: 'Server misconfiguration: no auth token' }));
-
-                return;
-            }
-            // Accept token via Authorization header OR ?token= query parameter.
-            // Query parameter allows MCP clients that don't support custom headers
-            // (e.g. Claude Code HTTP transport) to authenticate via the URL itself.
-            const url = new URL(req.url ?? '/', 'http://127.0.0.1');
-            const queryToken = url.searchParams.get('token');
-            const authHeader = req.headers.authorization;
-            const receivedToken = queryToken ?? authHeader?.replace('Bearer ', '') ?? '';
-
-            const expected = Buffer.from(token);
-            const received = Buffer.from(receivedToken);
-            if (
-                expected.length !== received.length ||
-                !crypto.timingSafeEqual(expected, received)
-            ) {
-                logger.error(LOG_PREFIX, 'Rejected request: invalid or missing token');
-                res.writeHead(401, { 'Content-Type': 'application/json' });
-                res.end(
-                    JSON.stringify({
-                        error: 'Unauthorized. Provide token via ?token= query parameter or Authorization: Bearer header. Copy the token from Trezor Suite: Settings → Experimental Features → MCP Server.',
-                    }),
-                );
-
-                return;
-            }
-
-            const { pathname } = url;
-
-            // Handle /mcp endpoint
-            if (pathname === '/mcp') {
-                // GET /mcp is for SSE streaming — we don't support it
-                if (req.method === 'GET') {
-                    res.writeHead(405);
-                    res.end();
+        // Global middleware: token authentication (header or query parameter)
+        httpServer.use([
+            (request: RequestWithParams, response: Response, next) => {
+                const { token } = store.getMcpSettings();
+                if (!token) {
+                    logger.error(
+                        LOG_PREFIX,
+                        'Rejected request: no authentication token configured',
+                    );
+                    response.writeHead(500, { 'Content-Type': 'application/json' });
+                    response.end(
+                        JSON.stringify({ error: 'Server misconfiguration: no auth token' }),
+                    );
 
                     return;
                 }
 
-                // DELETE /mcp is for session termination
-                if (req.method === 'DELETE') {
-                    sessionId = null;
-                    sessionProcessInfo = undefined;
-                    sessionManifest = MCP_MANIFEST;
-                    res.writeHead(200);
-                    res.end();
+                // Accept token via Authorization header OR ?token= query parameter.
+                // Query parameter allows MCP clients that don't support custom headers
+                // (e.g. Claude Code HTTP transport) to authenticate via the URL itself.
+                const url = new URL(request.url ?? '/', 'http://127.0.0.1');
+                const queryToken = url.searchParams.get('token');
+                const authHeader = request.headers.authorization;
+                const receivedToken = queryToken ?? authHeader?.replace('Bearer ', '') ?? '';
+
+                const expected = Buffer.from(token);
+                const received = Buffer.from(receivedToken);
+                if (
+                    expected.length !== received.length ||
+                    !crypto.timingSafeEqual(expected, received)
+                ) {
+                    logger.error(LOG_PREFIX, 'Rejected request: invalid or missing token');
+                    response.writeHead(401, { 'Content-Type': 'application/json' });
+                    response.end(
+                        JSON.stringify({
+                            error: 'Unauthorized. Provide token via ?token= query parameter or Authorization: Bearer header. Copy the token from Trezor Suite: Settings → Experimental Features → MCP Server.',
+                        }),
+                    );
 
                     return;
                 }
-            }
 
-            if (req.method !== 'POST' || pathname !== '/mcp') {
-                res.writeHead(404, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ error: 'Not found. Use POST /mcp' }));
+                next(request, response);
+            },
+        ]);
 
-                return;
-            }
+        // POST /mcp — main JSON-RPC endpoint
+        httpServer.post('/mcp', [
+            parseBodyJSONWithLimit(MAX_BODY_SIZE),
+            (request, response) => {
+                const body = request.body as unknown;
+                if (
+                    !body ||
+                    typeof body !== 'object' ||
+                    Array.isArray(body) ||
+                    typeof (body as { method?: unknown }).method !== 'string'
+                ) {
+                    response.writeHead(400, { 'Content-Type': 'application/json' });
+                    response.end(JSON.stringify({ error: 'Invalid JSON-RPC request' }));
 
-            try {
-                const body = await readJsonBody(req);
+                    return;
+                }
                 const jsonRpcRequest = body as {
                     id?: string | number;
                     method: string;
                     params?: Record<string, unknown>;
                 };
 
-                logger.debug(LOG_PREFIX, `Request: ${jsonRpcRequest.method}`);
+                (async () => {
+                    // Per MCP spec, clients MUST include Mcp-Session-Id once assigned.
+                    // Allow missing session ID only for initialize (new client connecting).
+                    const requestSessionId = request.headers['mcp-session-id'] as
+                        | string
+                        | undefined;
+                    if (
+                        sessionId &&
+                        requestSessionId !== sessionId &&
+                        jsonRpcRequest.method !== 'initialize'
+                    ) {
+                        response.writeHead(404, { 'Content-Type': 'application/json' });
+                        response.end(JSON.stringify({ error: 'Session not found' }));
 
-                // Per MCP spec, clients MUST include Mcp-Session-Id once assigned.
-                // Allow missing session ID only for initialize (new client connecting).
-                const requestSessionId = req.headers['mcp-session-id'] as string | undefined;
-                if (
-                    sessionId &&
-                    requestSessionId !== sessionId &&
-                    jsonRpcRequest.method !== 'initialize'
-                ) {
-                    res.writeHead(404, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify({ error: 'Session not found' }));
+                        return;
+                    }
 
-                    return;
-                }
+                    logger.debug(LOG_PREFIX, `Request: ${jsonRpcRequest.method}`);
 
-                // Assign session ID and resolve calling process on initialize
-                if (jsonRpcRequest.method === 'initialize') {
-                    sessionId = crypto.randomUUID();
+                    // Assign session ID and resolve calling process on initialize
+                    if (jsonRpcRequest.method === 'initialize') {
+                        sessionId = crypto.randomUUID();
 
-                    // Identify the calling process via TCP port lookup + MCP clientInfo
-                    const clientInfo = (
-                        jsonRpcRequest.params as {
-                            clientInfo?: { name?: string; version?: string };
-                        }
-                    )?.clientInfo;
+                        // Identify the calling process via TCP port lookup + MCP clientInfo
+                        const clientInfo = (
+                            jsonRpcRequest.params as {
+                                clientInfo?: { name?: string; version?: string };
+                            }
+                        )?.clientInfo;
 
-                    const { remotePort } = req.socket;
-                    if (remotePort) {
-                        const processInfo = await findProcessFromIncomingPort(
-                            remotePort,
-                            true,
-                        ).catch(() => {
-                            logger.warn(LOG_PREFIX, 'findProcessFromIncomingPort failed');
+                        const { remotePort } = request.socket;
+                        if (remotePort) {
+                            const processInfo = await findProcessFromIncomingPort(
+                                remotePort,
+                                true,
+                            ).catch(() => {
+                                logger.warn(LOG_PREFIX, 'findProcessFromIncomingPort failed');
 
-                            return undefined;
-                        });
+                                return undefined;
+                            });
 
-                        if (processInfo) {
-                            sessionProcessInfo = {
-                                name: processInfo.name,
-                                fullPath: processInfo.fullPath,
-                                warning: !!processInfo.warning,
-                                icon: await getProcessIcon(processInfo.fullPath),
-                            };
+                            if (processInfo) {
+                                sessionProcessInfo = {
+                                    name: processInfo.name,
+                                    fullPath: processInfo.fullPath,
+                                    warning: !!processInfo.warning,
+                                    icon: await getProcessIcon(processInfo.fullPath),
+                                };
+                            } else if (clientInfo?.name) {
+                                sessionProcessInfo = {
+                                    name: clientInfo.name,
+                                    fullPath: clientInfo.name,
+                                    warning: true,
+                                };
+                            }
                         } else if (clientInfo?.name) {
                             sessionProcessInfo = {
                                 name: clientInfo.name,
@@ -1294,81 +1263,87 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
                                 warning: true,
                             };
                         }
-                    } else if (clientInfo?.name) {
-                        sessionProcessInfo = {
-                            name: clientInfo.name,
-                            fullPath: clientInfo.name,
-                            warning: true,
-                        };
+
+                        if (clientInfo?.name) {
+                            sessionManifest = { ...MCP_MANIFEST, appName: clientInfo.name };
+                        }
+
+                        logger.info(
+                            LOG_PREFIX,
+                            `Session initialized for process: ${sessionProcessInfo?.name ?? 'unknown'}`,
+                        );
                     }
 
-                    if (clientInfo?.name) {
-                        sessionManifest = { ...MCP_MANIFEST, appName: clientInfo.name };
-                    }
-
-                    logger.info(
-                        LOG_PREFIX,
-                        `Session initialized for process: ${sessionProcessInfo?.name ?? 'unknown'}`,
+                    const jsonRpcResponse = await handleJsonRpcRequest(
+                        jsonRpcRequest,
+                        sendPopupCall,
                     );
-                }
 
-                const response = await handleJsonRpcRequest(jsonRpcRequest, sendPopupCall);
+                    // For notifications (no id), return 202 with no body
+                    if (jsonRpcRequest.id === undefined) {
+                        response.writeHead(202);
+                        response.end();
 
-                // For notifications (no id), return 202 with no body
-                if (jsonRpcRequest.id === undefined) {
-                    res.writeHead(202);
-                    res.end();
+                        return;
+                    }
 
-                    return;
-                }
+                    const headers: Record<string, string> = {
+                        'Content-Type': 'application/json',
+                    };
+                    if (sessionId) {
+                        headers['Mcp-Session-Id'] = sessionId;
+                    }
 
-                const headers: Record<string, string> = {
-                    'Content-Type': 'application/json',
-                };
-                if (sessionId) {
-                    headers['Mcp-Session-Id'] = sessionId;
-                }
+                    response.writeHead(200, headers);
+                    response.end(JSON.stringify(jsonRpcResponse));
+                })().catch(err => {
+                    logger.error(LOG_PREFIX, `Unhandled error in /mcp handler: ${String(err)}`);
+                    if (!response.headersSent) {
+                        response.writeHead(500, { 'Content-Type': 'application/json' });
+                        response.end(JSON.stringify({ error: 'Internal server error' }));
+                    } else {
+                        response.end();
+                    }
+                });
+            },
+        ]);
 
-                res.writeHead(200, headers);
-                res.end(JSON.stringify(response));
-            } catch (error) {
-                logger.error(LOG_PREFIX, `Request error: ${error}`);
-                const isPayloadTooLarge =
-                    error instanceof Error && error.message === 'Payload too large';
-                const statusCode = isPayloadTooLarge ? 413 : 400;
-                const errorPayload = isPayloadTooLarge
-                    ? { code: -32600, message: 'Payload too large' }
-                    : { code: -32700, message: 'Parse error' };
-                res.writeHead(statusCode, { 'Content-Type': 'application/json' });
-                res.end(
-                    JSON.stringify({
-                        jsonrpc: '2.0',
-                        error: errorPayload,
-                    }),
-                );
-            }
-        });
+        // DELETE /mcp — session termination
+        httpServer.delete('/mcp', [
+            (_request: RequestWithParams, response: Response) => {
+                resetSession();
+                response.writeHead(200);
+                response.end();
+            },
+        ]);
 
-        server.listen(port, '127.0.0.1', () => {
-            logger.info(LOG_PREFIX, `MCP server listening on http://127.0.0.1:${port}/mcp`);
-        });
+        // GET /mcp — SSE streaming is not supported
+        httpServer.get('/mcp', [
+            (_request: RequestWithParams, response: Response) => {
+                response.writeHead(405);
+                response.end();
+            },
+        ]);
 
-        server.on('error', error => {
-            logger.error(LOG_PREFIX, `Server error: ${error}`);
-            server = null;
-            sessionId = null;
-            sessionProcessInfo = undefined;
-            sessionManifest = MCP_MANIFEST;
-        });
+        const startResult = await httpServer.start();
+        if (!startResult.success) {
+            logger.error(LOG_PREFIX, `Failed to start MCP server: ${startResult.message}`);
+
+            return;
+        }
+
+        mcpHttpServer = httpServer;
+        logger.info(
+            LOG_PREFIX,
+            `MCP server listening on http://127.0.0.1:${startResult.payload.port}/mcp`,
+        );
     };
 
-    const stopServer = () => {
-        if (server) {
-            server.close();
-            server = null;
-            sessionId = null;
-            sessionProcessInfo = undefined;
-            sessionManifest = MCP_MANIFEST;
+    const stopServer = async () => {
+        if (mcpHttpServer) {
+            await mcpHttpServer.stop();
+            mcpHttpServer = null;
+            resetSession();
             logger.info(LOG_PREFIX, 'MCP server stopped');
         }
     };
@@ -1378,11 +1353,19 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
         validateIpcMessage({ ipcEvent });
 
         const settings = store.getMcpSettings();
+        // getServerAddress() throws if the underlying socket is not listening;
+        // guard so a stale HttpServer reference can't crash the IPC handler.
+        let listeningPort: number | null = null;
+        try {
+            listeningPort = mcpHttpServer?.getServerAddress().port ?? null;
+        } catch {
+            listeningPort = null;
+        }
 
         return {
             ...settings,
-            running: server !== null,
-            url: server ? `http://127.0.0.1:${settings.port}/mcp` : null,
+            running: listeningPort !== null,
+            url: listeningPort ? `http://127.0.0.1:${listeningPort}/mcp` : null,
             token: settings.token ?? null,
         };
     });
@@ -1395,7 +1378,7 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
         return { token: newToken };
     });
 
-    ipcMain.handle('mcp/set-enabled', (ipcEvent, enabled: boolean) => {
+    ipcMain.handle('mcp/set-enabled', async (ipcEvent, enabled: boolean) => {
         validateIpcMessage({ ipcEvent });
 
         if (typeof enabled !== 'boolean') return;
@@ -1409,24 +1392,24 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
 
         if (enabled) {
             const { port } = store.getMcpSettings();
-            startServer(port);
+            await startServer(port);
         } else {
-            stopServer();
+            await stopServer();
         }
     });
 
-    const onLoad = () => {
+    const onLoad = async () => {
         const settings = store.getMcpSettings();
         if (settings.enabled) {
             if (!settings.token) {
                 store.setMcpSettings({ token: generateToken() });
             }
-            startServer(settings.port);
+            await startServer(settings.port);
         }
     };
 
-    const onQuit = () => {
-        stopServer();
+    const onQuit = async () => {
+        await stopServer();
     };
 
     return { onLoad, onQuit };
