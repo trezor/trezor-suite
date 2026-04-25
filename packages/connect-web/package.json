@@ -61,10 +61,6 @@
         "@trezor/websocket-client": "workspace:*"
     },
     "devDependencies": {
-        "@babel/preset-typescript": "^7.28.5",
-        "@playwright/browser-chromium": "1.58.2",
-        "@playwright/browser-firefox": "1.58.2",
-        "@playwright/browser-webkit": "1.58.2",
         "@playwright/test": "1.58.2",
         "@trezor/eslint": "workspace:*",
         "@trezor/type-utils": "workspace:*",
@@ -72,9 +68,6 @@
         "@types/jest": "29.5.12",
         "@types/w3c-web-usb": "^1.0.14",
         "@types/web": "^0.0.197",
-        "babel-loader": "^10.1.1",
-        "rimraf": "^6.1.2",
-        "worker-loader": "^3.0.8",
         "xvfb-maybe": "^0.2.1"
     },
     "peerDependencies": {

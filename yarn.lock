@@ -15909,10 +15909,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/connect-web@workspace:packages/connect-web"
   dependencies:
-    "@babel/preset-typescript": "npm:^7.28.5"
-    "@playwright/browser-chromium": "npm:1.58.2"
-    "@playwright/browser-firefox": "npm:1.58.2"
-    "@playwright/browser-webkit": "npm:1.58.2"
     "@playwright/test": "npm:1.58.2"
     "@trezor/connect-common": "workspace:*"
     "@trezor/eslint": "workspace:*"
@@ -15923,9 +15919,6 @@ __metadata:
     "@types/jest": "npm:29.5.12"
     "@types/w3c-web-usb": "npm:^1.0.14"
     "@types/web": "npm:^0.0.197"
-    babel-loader: "npm:^10.1.1"
-    rimraf: "npm:^6.1.2"
-    worker-loader: "npm:^3.0.8"
     xvfb-maybe: "npm:^0.2.1"
   peerDependencies:
     tslib: ^2.6.2
