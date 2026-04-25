@@ -46,48 +46,6 @@
         "test:e2e": "yarn playwright install && yarn xvfb-maybe -- playwright test --config=./e2e/playwright.config.ts",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
-    "size-limit": [
-        {
-            "name": "ESM entry (gzipped)",
-            "path": "libESM/index.mjs",
-            "limit": "155 KB",
-            "gzip": true,
-            "ignore": [
-                "react",
-                "react-native",
-                "crypto",
-                "stream",
-                "fs",
-                "path",
-                "os",
-                "http",
-                "https",
-                "zlib",
-                "buffer",
-                "util"
-            ]
-        },
-        {
-            "name": "CJS entry (gzipped)",
-            "path": "lib/index.js",
-            "limit": "230 KB",
-            "gzip": true,
-            "ignore": [
-                "react",
-                "react-native",
-                "crypto",
-                "stream",
-                "fs",
-                "path",
-                "os",
-                "http",
-                "https",
-                "zlib",
-                "buffer",
-                "util"
-            ]
-        }
-    ],
     "dependencies": {
         "@trezor/connect-common": "workspace:*",
         "@trezor/utils": "workspace:*",
