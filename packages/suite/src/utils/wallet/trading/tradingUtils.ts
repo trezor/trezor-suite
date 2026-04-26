@@ -28,12 +28,11 @@ import { type Account } from 'src/types/wallet';
 export const buildHttpReceiverRedirectUrl = (
     address: HttpReceiverAddress | undefined,
     redirectPath: string,
-) => {
-    if (!address) return undefined;
+): string => {
     const params = new URLSearchParams({ p: redirectPath });
-    if (address.token) params.set('token', address.token);
+    if (address?.token) params.set('token', address.token);
 
-    return `${address.url}?${params.toString()}`;
+    return `${address?.url}?${params.toString()}`;
 };
 
 export const translationKeys: Record<
