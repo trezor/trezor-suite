@@ -9,6 +9,7 @@ interface GetTransactionReviewModalActionTranslationParams {
     stakeType: StakeFormState['stakeType'] | null;
     precomposedForm: FormState | StakeFormState;
     tradingToken: TokenInfo | undefined;
+    routeName?: string;
     isBumpFeeRbfAction: boolean;
     isCancelRbfAction: boolean;
     isSending?: boolean;
@@ -20,11 +21,14 @@ export const getTransactionReviewModalActionTranslation = ({
     stakeType,
     precomposedForm,
     tradingToken,
+    routeName,
     isBumpFeeRbfAction,
     isCancelRbfAction,
     isSending,
     source,
 }: GetTransactionReviewModalActionTranslationParams): ExtendedMessageDescriptor => {
+    const transactionPurpose = getEvmTransactionTextSignature(precomposedForm.transactionData);
+
     switch (stakeType) {
         case 'stake':
             return {
@@ -49,8 +53,6 @@ export const getTransactionReviewModalActionTranslation = ({
     }
 
     if (precomposedForm?.trading?.activeSection === 'exchange') {
-        const transactionPurpose = getEvmTransactionTextSignature(precomposedForm.transactionData);
-
         switch (transactionPurpose) {
             case 'approve':
                 return {
@@ -73,6 +75,15 @@ export const getTransactionReviewModalActionTranslation = ({
         }
     }
 
+    if (
+        (routeName === 'earn-supply' || routeName === 'earn-withdraw') &&
+        (transactionPurpose === 'approve' || transactionPurpose === 'revoke')
+    ) {
+        return {
+            id: transactionPurpose === 'approve' ? 'TR_APPROVE_DATA_TITLE' : 'TR_REVOKE_DATA_TITLE',
+        };
+    }
+
     if (isBumpFeeRbfAction) {
         return { id: 'TR_REPLACE_TX' };
     }
@@ -83,6 +94,14 @@ export const getTransactionReviewModalActionTranslation = ({
 
     if (isSending) {
         return { id: 'TR_CONFIRMING_TX' };
+    }
+
+    if (routeName === 'earn-supply') {
+        return { id: 'TR_EARN_YIELD_SUPPLY' };
+    }
+
+    if (routeName === 'earn-withdraw') {
+        return { id: 'TR_EARN_YIELD_WITHDRAW' };
     }
 
     return { id: 'SEND_TRANSACTION' };

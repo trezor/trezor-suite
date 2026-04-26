@@ -2,18 +2,29 @@ import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 import { type TranslationKey } from '@suite/intl';
 import { type TransactionDto } from '@suite-common/earn-stablecoin-api';
-import { type YieldFlowType } from '@suite-common/suite-types';
+import { type SerializedTx } from '@suite-common/wallet-core';
+import {
+    type AccountKey,
+    type FormState,
+    type PrecomposedTransactionFinal,
+} from '@suite-common/wallet-types';
 import { isSafeObjectKey } from '@trezor/utils';
-
-import { type AppState } from 'src/types/suite';
 
 import type {
     YieldApproveModalState,
     YieldFlowStepId,
+    YieldFlowType,
     YieldPendingTransactionState,
-} from './types';
+} from 'src/components/earn/yield/types';
 
 export const YIELD_PREFIX = '@suite/yield';
+
+export type YieldTxReviewState = {
+    precomposedTx?: PrecomposedTransactionFinal;
+    precomposedForm?: FormState;
+    serializedTx?: SerializedTx;
+    accountKey?: AccountKey;
+};
 
 export type YieldSessionState = {
     step: YieldFlowStepId;
@@ -42,7 +53,9 @@ export type YieldSessionState = {
     };
 };
 
-export type YieldState = Record<YieldFlowType, Record<string, YieldSessionState>>;
+export type YieldState = {
+    txReview: YieldTxReviewState;
+} & Record<YieldFlowType, Record<string, YieldSessionState>>;
 
 type YieldSessionActionPayload = {
     flowType: YieldFlowType;
@@ -76,9 +89,17 @@ export const initialYieldSessionState: YieldSessionState = {
     },
 };
 
+export const initialYieldTxReviewState: YieldTxReviewState = {
+    precomposedTx: undefined,
+    precomposedForm: undefined,
+    serializedTx: undefined,
+    accountKey: undefined,
+};
+
 export const initialYieldState: YieldState = {
-    supply: {},
-    withdraw: {},
+    supply: Object.create(null),
+    withdraw: Object.create(null),
+    txReview: initialYieldTxReviewState,
 };
 
 const createInitialYieldSessionState = (): YieldSessionState => ({
@@ -87,6 +108,8 @@ const createInitialYieldSessionState = (): YieldSessionState => ({
     action: { ...initialYieldSessionState.action },
     result: { ...initialYieldSessionState.result },
 });
+
+export const getYieldSessionKey = (flowKey: string) => `yield-session:${flowKey}`;
 
 const withSession = (
     state: YieldState,
@@ -97,7 +120,7 @@ const withSession = (
         return;
     }
 
-    const session = state[flowType][flowKey];
+    const session = state[flowType][getYieldSessionKey(flowKey)];
 
     if (!session) {
         return;
@@ -117,8 +140,10 @@ export const yieldSlice = createSlice({
                 return;
             }
 
-            if (!state[flowType][flowKey]) {
-                state[flowType][flowKey] = createInitialYieldSessionState();
+            const sessionKey = getYieldSessionKey(flowKey);
+
+            if (!state[flowType][sessionKey]) {
+                state[flowType][sessionKey] = createInitialYieldSessionState();
             }
         },
         disposeSession(state, action: PayloadAction<YieldSessionActionPayload>) {
@@ -128,7 +153,7 @@ export const yieldSlice = createSlice({
                 return;
             }
 
-            delete state[flowType][flowKey];
+            delete state[flowType][getYieldSessionKey(flowKey)];
         },
         resetSession(state, action: PayloadAction<YieldSessionActionPayload>) {
             const { flowType, flowKey } = action.payload;
@@ -137,7 +162,7 @@ export const yieldSlice = createSlice({
                 return;
             }
 
-            state[flowType][flowKey] = createInitialYieldSessionState();
+            state[flowType][getYieldSessionKey(flowKey)] = createInitialYieldSessionState();
         },
         setError(
             state,
@@ -344,13 +369,30 @@ export const yieldSlice = createSlice({
                 session.step = action.payload.step;
             });
         },
+        storePrecomposedTransaction(
+            state,
+            action: PayloadAction<{
+                precomposedTx: PrecomposedTransactionFinal;
+                precomposedForm: FormState;
+                accountKey: AccountKey;
+            }>,
+        ) {
+            state.txReview.precomposedTx = action.payload.precomposedTx;
+            state.txReview.precomposedForm = action.payload.precomposedForm;
+            state.txReview.accountKey = action.payload.accountKey;
+            state.txReview.serializedTx = undefined;
+        },
+        storeSignedTransaction(state, action: PayloadAction<{ serializedTx: SerializedTx }>) {
+            state.txReview.serializedTx = action.payload.serializedTx;
+        },
+        discardTransaction(state) {
+            state.txReview.precomposedTx = undefined;
+            state.txReview.precomposedForm = undefined;
+            state.txReview.serializedTx = undefined;
+            state.txReview.accountKey = undefined;
+        },
     },
 });
 
 export const yieldActions = yieldSlice.actions;
 export const yieldReducer = yieldSlice.reducer;
-
-export const selectYield = (state: AppState) => state.wallet.yield;
-
-export const selectYieldSession = (state: AppState, flowType: YieldFlowType, flowKey: string) =>
-    selectYield(state)[flowType][flowKey] ?? initialYieldSessionState;

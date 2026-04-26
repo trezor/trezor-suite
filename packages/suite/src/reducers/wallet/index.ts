@@ -15,7 +15,6 @@ import {
     prepareWalletSettingsReducer,
 } from '@suite-common/wallet-core';
 
-import { yieldReducer } from 'src/components/earn/yield/yieldReducer';
 import { extraDependencies } from 'src/support/extraDependencies';
 
 import accountSearchReducer from './accountSearchReducer';
@@ -24,6 +23,7 @@ import formDraftReducer from './formDraftReducer';
 import graphReducer from './graphReducer';
 import receiveReducer from './receiveReducer';
 import selectedAccountReducer from './selectedAccountReducer';
+import { yieldReducer } from './yieldReducer';
 
 export const transactionsReducer = prepareTransactionsReducer(extraDependencies);
 export const phishingReducer = preparePhishingReducer(extraDependencies);

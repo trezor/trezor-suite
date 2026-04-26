@@ -1,4 +1,4 @@
-import { type SendState, type StakeState, sendFormActions } from '@suite-common/wallet-core';
+import { sendFormActions } from '@suite-common/wallet-core';
 import { type FormState } from '@suite-common/wallet-types';
 
 import { useDispatch } from 'src/hooks/suite';
@@ -6,9 +6,10 @@ import { useTradingSellForm } from 'src/hooks/wallet/trading/form/useTradingSell
 
 import { TransactionReviewModalBody } from './TransactionReviewModalBody';
 import { type TransactionReviewModalProps } from './TransactionReviewModalProps';
+import { type TxInfoState } from './utils';
 
 type TransactionReviewModalSellProps = {
-    txInfoState: SendState | StakeState;
+    txInfoState: TxInfoState;
     isRbfConfirmedError: boolean;
     cancelSignTx: () => void;
     precomposedForm?: FormState;

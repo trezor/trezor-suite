@@ -22,8 +22,8 @@ import { type CoinjoinClientAction } from 'src/actions/wallet/coinjoinClientActi
 import { type GraphAction } from 'src/actions/wallet/graphActions';
 import { type ReceiveAction } from 'src/actions/wallet/receiveActions';
 import { type SignVerifyAction } from 'src/actions/wallet/signVerifyActions';
-import { type yieldActions } from 'src/components/earn/yield/yieldReducer';
 import { type accountSearchActions } from 'src/reducers/wallet/accountSearchReducer';
+import { type yieldActions } from 'src/reducers/wallet/yieldReducer';
 
 // reexport
 export type { CustomBackend } from './backend';

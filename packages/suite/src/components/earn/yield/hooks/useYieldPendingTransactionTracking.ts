@@ -9,9 +9,10 @@ import { type Account } from '@suite-common/wallet-types';
 import { isPending } from '@suite-common/wallet-utils';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { yieldActions } from 'src/reducers/wallet/yieldReducer';
 
 import type { YieldFlowType } from '../types';
-import { selectYieldSession, yieldActions } from '../yieldReducer';
+import { selectYieldSession } from '../yieldSelectors';
 
 const DEFAULT_PENDING_TX_POLL_INTERVAL_MS = 3_000;
 const MIN_PENDING_TX_POLL_INTERVAL_MS = 2_000;

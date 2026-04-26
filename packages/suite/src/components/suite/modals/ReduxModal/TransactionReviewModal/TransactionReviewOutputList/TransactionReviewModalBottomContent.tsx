@@ -4,7 +4,6 @@ import { type TransactionCreatedEventAction, events } from '@suite/analytics';
 import { type ExtendedMessageDescriptor, Translation } from '@suite/intl';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { type SendState, type StakeState } from '@suite-common/wallet-core';
 import {
     type Account,
     type FormState,
@@ -19,7 +18,7 @@ import { type Deferred } from '@trezor/utils';
 
 import { useAnalytics } from 'src/support/useAnalytics';
 
-import { getTxType } from '../utils';
+import { type TxInfoState, getTxType } from '../utils';
 
 const mapRbfTypeToReporting: Record<RbfTransactionType, TransactionCreatedEventAction> = {
     'bump-fee': 'replaced',
@@ -32,7 +31,7 @@ type TransactionReviewModalBottomContentProps = {
     onSend: (send: boolean) => void;
     onCancel: () => void;
     handleTryAgain: (close: boolean) => void;
-    txInfoState: SendState | StakeState;
+    txInfoState: TxInfoState;
     actionTranslation: ExtendedMessageDescriptor;
     isTxExpired: boolean;
     hasTxExpired: boolean;

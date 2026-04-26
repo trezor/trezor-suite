@@ -3,7 +3,6 @@ import { useCallback, useEffect, useState } from 'react';
 import { events } from '@suite/analytics';
 import { selectRouterUrl } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
-import { type SendState, type StakeState } from '@suite-common/wallet-core';
 import { type FormState } from '@suite-common/wallet-types';
 import {
     constructTransactionReviewOutputsOptional,
@@ -19,12 +18,12 @@ import { useAnalytics } from 'src/support/useAnalytics';
 import { redactRouterUrl } from 'src/utils/suite/analytics';
 
 import { TransactionReviewModalBodyInner } from './TransactionReviewModalBodyInner';
-import { isStakeState } from './utils';
+import { type TxInfoState, isStakeState } from './utils';
 import { ConfirmActionModal } from '../DeviceContextModal/ConfirmActionModal';
 
 export type TransactionReviewModalBodyProps = {
     decision: Deferred<boolean, string | number | undefined> | undefined;
-    txInfoState: SendState | StakeState;
+    txInfoState: TxInfoState;
     tryAgainSignTx: () => void;
     cancelSignTx: () => void;
     isRbfConfirmedError?: boolean;

@@ -7,7 +7,15 @@ import { type EarnParams } from '@suite/router';
 import { type Account } from '@suite-common/wallet-types';
 import { useCurrentRef } from '@trezor/react-utils';
 
+import {
+    handleYieldApproveCancelThunk,
+    handleYieldApproveSuccessTxidThunk,
+    submitYieldActionThunk,
+    submitYieldApproveThunk,
+    submitYieldRevokeThunk,
+} from 'src/actions/wallet/yieldThunks';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { yieldActions } from 'src/reducers/wallet/yieldReducer';
 
 import { useResolvedYieldFlowData } from './useResolvedYieldFlowData';
 import { useYieldPendingTransactionTracking } from './useYieldPendingTransactionTracking';
@@ -26,14 +34,7 @@ import {
     getYieldModifyAmountInput,
     isAmountGreaterThan,
 } from '../yieldFlowUtils';
-import { selectYieldSession, yieldActions } from '../yieldReducer';
-import {
-    handleYieldApproveCancelThunk,
-    handleYieldApproveSuccessTxidThunk,
-    submitYieldActionThunk,
-    submitYieldApproveThunk,
-    submitYieldRevokeThunk,
-} from '../yieldThunks';
+import { selectYieldSession } from '../yieldSelectors';
 
 type UseYieldFlowProps = {
     account: Account;

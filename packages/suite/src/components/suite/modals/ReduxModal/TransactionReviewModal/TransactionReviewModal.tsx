@@ -13,7 +13,9 @@ import {
     cancelSignTx as cancelSignStakingTx,
     signTransaction,
 } from 'src/actions/wallet/stakeActions';
+import { selectYieldTxReview } from 'src/components/earn/yield/yieldSelectors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { selectFullSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
 import { TransactionReviewModalBody } from './TransactionReviewModalBody';
 import { TransactionReviewModalExchange } from './TransactionReviewModalExchange';
@@ -26,18 +28,22 @@ import { isStakeState } from './utils';
 export const TransactionReviewModal = ({ type, decision }: TransactionReviewModalProps) => {
     const send = useSelector(state => state.wallet.send);
     const stake = useSelector(selectStake);
-    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+    const yieldTxReview = useSelector(selectYieldTxReview);
+    const selectedAccount = useSelector(selectFullSelectedAccount);
     const dispatch = useDispatch();
 
-    const isSend = Boolean(send?.precomposedTx);
+    const isYield = Boolean(yieldTxReview.precomposedTx);
+    const isSend = !isYield && Boolean(send?.precomposedTx);
     // Only one state should be available when the modal is open
-    const txInfoState = isSend ? send : stake;
+    // eslint-disable-next-line no-nested-ternary
+    const txInfoState = isSend ? send : isYield ? yieldTxReview : stake;
 
-    const precomposedForm = useSelector(state =>
-        isStakeState(txInfoState)
-            ? selectStakePrecomposedForm(state)
-            : selectPrecomposedSendForm(state),
-    );
+    const precomposedForm = useSelector(state => {
+        if (isYield) return yieldTxReview.precomposedForm;
+        if (isStakeState(txInfoState)) return selectStakePrecomposedForm(state);
+
+        return selectPrecomposedSendForm(state);
+    });
 
     const isRbfConfirmedError = type === 'review-transaction-rbf-previous-transaction-mined-error';
     const isExchange = precomposedForm?.trading?.activeSection === 'exchange';
@@ -46,7 +52,7 @@ export const TransactionReviewModal = ({ type, decision }: TransactionReviewModa
     const handleCancelSignTx = () => {
         if (isSend) {
             dispatch(cancelSignSendFormTransactionThunk());
-        } else {
+        } else if (!isYield) {
             dispatch(cancelSignStakingTx());
         }
     };
