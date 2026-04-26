@@ -7,7 +7,6 @@ import {
     type FormState,
     type GeneralPrecomposedLevels,
     type TokenAddress,
-    isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
 import {
     BottomSheetModal,
@@ -78,10 +77,6 @@ export const FeesBottomSheet = ({
 }: FeesBottomSheetProps) => {
     const isTrc20 = networkType === 'tron' && tokenContract !== undefined;
     const showCustomTab = networkType !== 'solana' && !isTrc20;
-
-    const estimatedFeeLimit = isFinalPrecomposedTransaction(feeLevels.normal)
-        ? feeLevels.normal.estimatedFeeLimit
-        : undefined;
 
     const [activeTab, setActiveTab] = useState<TabValue>(() =>
         showCustomTab ? feeLevelToTab(form.getValues('feeLevel')) : 'standard',
@@ -177,12 +172,7 @@ export const FeesBottomSheet = ({
                         />
                     </Box>
                 )}
-                {isTrc20 && (
-                    <TronFeeLimitContent
-                        estimatedFeeLimit={estimatedFeeLimit}
-                        onSubmittableChange={setCustomIsSubmittable}
-                    />
-                )}
+                {isTrc20 && <TronFeeLimitContent onSubmittableChange={setCustomIsSubmittable} />}
                 {!isTrc20 && activeTab === 'standard' && (
                     <FeeOptionsList
                         feeLevels={feeLevels}

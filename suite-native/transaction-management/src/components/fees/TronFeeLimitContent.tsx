@@ -10,31 +10,17 @@ import { type FeesFormValues } from '../../feesFormSchema';
 import { FEE_LIMIT_FIELD_NAME } from '../../presets';
 
 type TronFeeLimitContentProps = {
-    estimatedFeeLimit: string | undefined;
     onSubmittableChange: (isSubmittable: boolean) => void;
 };
 
-export const TronFeeLimitContent = ({
-    estimatedFeeLimit,
-    onSubmittableChange,
-}: TronFeeLimitContentProps) => {
+export const TronFeeLimitContent = ({ onSubmittableChange }: TronFeeLimitContentProps) => {
     const { translate } = useTranslate();
     const {
         formState: { isValid },
         setValue,
-        getValues,
         trigger,
     } = useFormContext<FeesFormValues>();
     const debounce = useDebounce();
-
-    useEffect(() => {
-        const currentValue = getValues(FEE_LIMIT_FIELD_NAME);
-        if (!currentValue && estimatedFeeLimit) {
-            setValue(FEE_LIMIT_FIELD_NAME, estimatedFeeLimit, { shouldDirty: false });
-            trigger(FEE_LIMIT_FIELD_NAME);
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
 
     useEffect(() => {
         onSubmittableChange(isValid);
