@@ -6,9 +6,7 @@ import { closeModal } from '@suite/modal';
 import type { DeviceRootState } from '@suite-common/device';
 import { selectTradingComposedTransactionInfo } from '@suite-common/trading';
 import {
-    type SendState,
     type SerializedTx,
-    type StakeState,
     selectIsTxOutputInternal,
     selectSendFormReviewButtonRequestsCount,
     selectSendFormReviewLastButtonCode,
@@ -41,6 +39,7 @@ import { TransactionReviewModalConfirmOnDevice } from './TransactionReviewOutput
 import { TransactionReviewModalContent } from './TransactionReviewOutputList/TransactionReviewModalContent';
 import { TransactionReviewOutputTimer } from './TransactionReviewOutputList/TransactionReviewOutputTimer';
 import { TransactionReviewSummary } from './TransactionReviewSummary';
+import { type TxInfoState } from './utils';
 
 export const hasTxValidityExpired = (deadline: number) => deadline <= Date.now();
 
@@ -77,7 +76,7 @@ export type TransactionReviewModalBodyInnerProps = {
     outputs: ReviewOutput[];
     account: Account;
     decision: Deferred<boolean, string | number | undefined> | undefined;
-    txInfoState: SendState | StakeState;
+    txInfoState: TxInfoState;
     tryAgainSignTx: () => void;
     cancelSignTx: () => void;
     precomposedForm: FormState;
@@ -109,6 +108,7 @@ export const TransactionReviewModalBodyInner = ({
     const { symbol, networkType } = account;
     const { options } = precomposedForm;
     const { serializedTx } = txInfoState;
+    const routeName = useSelector(state => state.router.route?.name);
     const tradingToken = useSelector(selectTradingComposedTransactionInfo).composed?.token;
 
     const isApprovalTx = isEvmApprovalTx(precomposedForm.transactionData);
@@ -204,6 +204,7 @@ export const TransactionReviewModalBodyInner = ({
             stakeType,
             precomposedForm,
             tradingToken,
+            routeName,
             isBumpFeeRbfAction,
             isCancelRbfAction,
             isSending,

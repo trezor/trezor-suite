@@ -4,7 +4,8 @@ import {
     selectFeatureMessageContent,
     selectIsFeatureDisabled,
 } from '@suite-common/message-system';
-import type { YieldFlowType } from '@suite-common/suite-types';
+
+import type { YieldFlowType } from 'src/components/earn/yield/types';
 
 import { useSelector } from './useSelector';
 

@@ -44,6 +44,8 @@ const buttonRequest =
                     'wallet-index',
                     'wallet-trading-exchange-confirm',
                     'wallet-trading-sell-confirm',
+                    'earn-supply',
+                    'earn-withdraw',
                 ].includes(route?.name || '');
             const isInConnectCall =
                 activeCall?.state === 'ongoing' &&

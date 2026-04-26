@@ -118,7 +118,7 @@ export const TradingFormApproval = () => {
         allowanceState.openApproveModal();
     };
 
-    const onRevokeApprovalClick = async () => {
+    const onRevokeClick = async () => {
         if (!selectedQuote || !selectedQuote.receiveAddress) {
             return;
         }
@@ -232,7 +232,7 @@ export const TradingFormApproval = () => {
                             {!isIncreasingAllowanceSupported ? (
                                 <>
                                     <Button
-                                        onClick={onRevokeApprovalClick}
+                                        onClick={onRevokeClick}
                                         intent="brand"
                                         size="large"
                                         width="100%"
@@ -276,7 +276,7 @@ export const TradingFormApproval = () => {
                                             isApproveButtonDisabled ||
                                             isApproveButtonLoading
                                                 ? null
-                                                : onRevokeApprovalClick()
+                                                : onRevokeClick()
                                         }
                                         $disabled={
                                             isRevokeButtonDisabled || isApproveButtonDisabled
@@ -326,7 +326,7 @@ export const TradingFormApproval = () => {
                             isSwapButtonDisabled ||
                             isSwapButtonLoading
                                 ? null
-                                : onRevokeApprovalClick()
+                                : onRevokeClick()
                         }
                         $disabled={isRevokeButtonDisabled || isSwapButtonDisabled}
                     >

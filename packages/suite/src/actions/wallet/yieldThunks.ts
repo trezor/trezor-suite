@@ -1,3 +1,6 @@
+import { fromWei } from 'web3-utils';
+
+import { closeModal, openDeferredModal, preserveModal } from '@suite/modal';
 import { selectAddressDisplayType } from '@suite/settings';
 import { selectSelectedDevice } from '@suite-common/device';
 import {
@@ -11,16 +14,26 @@ import {
     verifyExitTransactions,
 } from '@suite-common/earn-stablecoin-api';
 import { createThunk } from '@suite-common/redux-utils';
-import { type YieldFlowType } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { transactionsActions } from '@suite-common/wallet-core';
-import { type Account, AddressDisplayOptions } from '@suite-common/wallet-types';
-import { getAccountIdentity } from '@suite-common/wallet-utils';
-import TrezorConnect, { type EthereumSignTransaction } from '@trezor/connect';
+import {
+    type Account,
+    AddressDisplayOptions,
+    type FormState,
+    type PrecomposedTransactionFinal,
+} from '@suite-common/wallet-types';
+import {
+    convertAmountUnitsToSubunits,
+    getAccountIdentity,
+    getContractAddressForNetworkSymbol,
+} from '@suite-common/wallet-utils';
+import TrezorConnect, { type EthereumSignTransaction, type TokenInfo } from '@trezor/connect';
+import { exhaustive } from '@trezor/type-utils';
 
-import type { AppState, Dispatch } from 'src/types/suite';
-
-import type { YieldFlowDisplayToken, YieldFlowToken } from './types';
+import type {
+    YieldFlowDisplayToken,
+    YieldFlowToken,
+    YieldFlowType,
+} from 'src/components/earn/yield/types';
 import {
     getWithdrawRequestAmount,
     getYieldApprovalModalParams,
@@ -28,8 +41,10 @@ import {
     getYieldSpenderFromTransactions,
     getYieldSupplyTransaction,
     getYieldWithdrawTransaction,
-} from './yieldFlowUtils';
-import { YIELD_PREFIX, selectYieldSession, yieldActions } from './yieldReducer';
+} from 'src/components/earn/yield/yieldFlowUtils';
+import { selectYieldSession } from 'src/components/earn/yield/yieldSelectors';
+import { YIELD_PREFIX, yieldActions } from 'src/reducers/wallet/yieldReducer';
+import type { AppState, Dispatch } from 'src/types/suite';
 
 const YIELD_THUNK_PREFIX = `${YIELD_PREFIX}/thunk`;
 const YIELD_GENERIC_ERROR = 'TR_EARN_YIELD_ERROR_GENERIC';
@@ -43,15 +58,56 @@ type YieldFlowResolvedData = {
 
 type EvmAccount = Extract<Account, { networkType: 'ethereum' }>;
 
-const setYieldGenericError = ({
-    dispatch,
-    flowType,
-    flowKey,
-}: {
-    dispatch: Dispatch;
+type YieldSessionPayload = {
     flowType: YieldFlowType;
     flowKey: string;
-}) => {
+};
+
+type YieldSessionDataPayload = YieldSessionPayload & {
+    flowData: YieldFlowResolvedData;
+};
+
+type YieldSessionDataAmountPayload = YieldSessionDataPayload & {
+    amount: string;
+};
+
+type SetYieldGenericErrorParams = YieldSessionPayload & {
+    dispatch: Dispatch;
+};
+
+type GetApprovalContractAddressParams = {
+    flowType: YieldFlowType;
+    flowData: YieldFlowResolvedData;
+};
+
+type GetApprovalRequestAmountParams = GetApprovalContractAddressParams & {
+    amount: string;
+};
+
+type OpenYieldApproveModalParams = YieldSessionDataPayload & {
+    dispatch: Dispatch;
+    amount: string;
+    spender: string;
+    transactionId?: string;
+    preapprovedAmount?: string;
+    txType: 'approve' | 'revoke' | 'revoke-only';
+};
+
+type OpenYieldRevokeModalParams = YieldSessionDataPayload & {
+    dispatch: Dispatch;
+    approveAmount: string;
+    lastApprovedAmount: string;
+    transactions: TransactionDto[] | null;
+    fallbackSpender?: string | null;
+};
+
+type SubmitYieldOpportunityParams = {
+    flowType: YieldFlowType;
+    flowData: YieldFlowResolvedData;
+    amount: string;
+};
+
+const setYieldGenericError = ({ dispatch, flowType, flowKey }: SetYieldGenericErrorParams) => {
     dispatch(
         yieldActions.setError({
             flowType,
@@ -61,13 +117,7 @@ const setYieldGenericError = ({
     );
 };
 
-const getApprovalContractAddress = ({
-    flowType,
-    flowData,
-}: {
-    flowType: YieldFlowType;
-    flowData: YieldFlowResolvedData;
-}) =>
+const getApprovalContractAddress = ({ flowType, flowData }: GetApprovalContractAddressParams) =>
     flowType === 'supply'
         ? (flowData.token.contractAddress ?? undefined)
         : (flowData.receiptToken.contractAddress ?? undefined);
@@ -76,11 +126,7 @@ const getApprovalRequestAmount = ({
     flowType,
     amount,
     flowData,
-}: {
-    flowType: YieldFlowType;
-    amount: string;
-    flowData: YieldFlowResolvedData;
-}) => {
+}: GetApprovalRequestAmountParams) => {
     if (flowType === 'supply') {
         return amount;
     }
@@ -94,15 +140,8 @@ const getApprovalRequestAmount = ({
     });
 };
 
-const getRevokeModalAmount = ({
-    flowType,
-    amount,
-    flowData,
-}: {
-    flowType: YieldFlowType;
-    amount: string;
-    flowData: YieldFlowResolvedData;
-}) => getApprovalRequestAmount({ flowType, amount, flowData }) ?? amount;
+const getRevokeModalAmount = ({ flowType, amount, flowData }: GetApprovalRequestAmountParams) =>
+    getApprovalRequestAmount({ flowType, amount, flowData }) ?? amount;
 
 const openYieldApproveModal = ({
     dispatch,
@@ -114,17 +153,7 @@ const openYieldApproveModal = ({
     transactionId,
     preapprovedAmount,
     txType,
-}: {
-    dispatch: Dispatch;
-    flowKey: string;
-    flowType: YieldFlowType;
-    flowData: YieldFlowResolvedData;
-    amount: string;
-    spender: string;
-    transactionId?: string;
-    preapprovedAmount?: string;
-    txType: 'approve' | 'revoke' | 'revoke-only';
-}) => {
+}: OpenYieldApproveModalParams) => {
     const contractAddress = getApprovalContractAddress({ flowType, flowData });
 
     if (!contractAddress) {
@@ -161,16 +190,7 @@ const openYieldRevokeModal = ({
     lastApprovedAmount,
     transactions,
     fallbackSpender,
-}: {
-    dispatch: Dispatch;
-    flowKey: string;
-    flowType: YieldFlowType;
-    flowData: YieldFlowResolvedData;
-    approveAmount: string;
-    lastApprovedAmount: string;
-    transactions: TransactionDto[] | null;
-    fallbackSpender?: string | null;
-}) => {
+}: OpenYieldRevokeModalParams) => {
     const revokeModalParams = transactions ? getYieldRevokeModalParams(transactions) : null;
     const spender =
         revokeModalParams?.spender ??
@@ -202,38 +222,39 @@ const submitYieldOpportunity = async ({
     flowType,
     flowData,
     amount,
-}: {
-    flowType: YieldFlowType;
-    flowData: YieldFlowResolvedData;
-    amount: string;
-}) => {
-    if (flowType === 'supply') {
-        const response = await enterYield({
-            yieldId: flowData.vault.id,
-            address: flowData.account.descriptor,
-            arguments: { amount },
-        });
-        const verification = verifyEnterTransactions(response, {
-            yieldId: flowData.vault.id,
-            address: flowData.account.descriptor,
-            amount,
-            decimals: flowData.token.decimals,
-        });
+}: SubmitYieldOpportunityParams) => {
+    switch (flowType) {
+        case 'supply': {
+            const response = await enterYield({
+                yieldId: flowData.vault.id,
+                address: flowData.account.descriptor,
+                arguments: { amount },
+            });
+            const verification = verifyEnterTransactions(response, {
+                yieldId: flowData.vault.id,
+                address: flowData.account.descriptor,
+                amount,
+                decimals: flowData.token.decimals,
+            });
 
-        return { response, verification };
+            return { response, verification };
+        }
+        case 'withdraw': {
+            const response = await exitYield({
+                yieldId: flowData.vault.id,
+                address: flowData.account.descriptor,
+                arguments: { amount },
+            });
+            const verification = verifyExitTransactions(response, {
+                yieldId: flowData.vault.id,
+                address: flowData.account.descriptor,
+            });
+
+            return { response, verification };
+        }
+        default:
+            return exhaustive(flowType);
     }
-
-    const response = await exitYield({
-        yieldId: flowData.vault.id,
-        address: flowData.account.descriptor,
-        arguments: { amount },
-    });
-    const verification = verifyExitTransactions(response, {
-        yieldId: flowData.vault.id,
-        address: flowData.account.descriptor,
-    });
-
-    return { response, verification };
 };
 
 const serializeNonce = (nonce: number | `0x${string}`) =>
@@ -242,6 +263,30 @@ const serializeNonce = (nonce: number | `0x${string}`) =>
 type ParsedTransactionForSigning = NonNullable<
     ReturnType<typeof parseUnsignedEvmTransactionForSigning>
 >;
+
+type BuildYieldReviewTokenParams = {
+    token: YieldFlowDisplayToken;
+    symbol: Account['symbol'];
+};
+
+type BuildYieldReviewStateParams = BuildYieldReviewTokenParams & {
+    parsedTransaction: ParsedTransactionForSigning;
+    amount: string;
+};
+
+type BuildYieldReviewStateResult = {
+    formState: FormState;
+    precomposedTransaction: PrecomposedTransactionFinal;
+};
+
+type SendYieldTransactionParams = {
+    account: Account;
+    amount: string;
+    token: YieldFlowDisplayToken;
+    transaction: TransactionDto;
+    dispatch: Dispatch;
+    getState: () => AppState;
+};
 
 const getTransactionForSigning = (
     parsedTransaction: ParsedTransactionForSigning,
@@ -274,17 +319,102 @@ const getTransactionForSigning = (
     throw new Error('Yield transaction gas parameters are missing.');
 };
 
+const toGweiAmount = (amount: bigint) => fromWei(amount.toString(), 'gwei');
+
+const buildYieldReviewToken = ({
+    token,
+    symbol,
+}: BuildYieldReviewTokenParams): TokenInfo | undefined => {
+    if (!token.contractAddress) {
+        return undefined;
+    }
+
+    return {
+        standard: 'ERC20',
+        contract: getContractAddressForNetworkSymbol(symbol, token.contractAddress),
+        symbol: token.symbol,
+        decimals: token.decimals,
+        name: token.symbol,
+    };
+};
+
+const buildYieldReviewState = ({
+    parsedTransaction,
+    amount,
+    token,
+    symbol,
+}: BuildYieldReviewStateParams): BuildYieldReviewStateResult => {
+    const gasLimit = BigInt(parsedTransaction.gasLimit);
+    const gasPriceWei = BigInt(
+        parsedTransaction.maxFeePerGas ?? parsedTransaction.gasPrice ?? ('0x0' as `0x${string}`),
+    );
+    const feeWei = gasLimit * gasPriceWei;
+    const reviewToken = buildYieldReviewToken({ token, symbol });
+    const amountSubunits = convertAmountUnitsToSubunits(amount, token.decimals);
+    let eip1559ReviewFields: Partial<
+        Pick<PrecomposedTransactionFinal, 'maxFeePerGas' | 'maxPriorityFeePerGas'>
+    > = {};
+
+    if (parsedTransaction.maxFeePerGas && parsedTransaction.maxPriorityFeePerGas) {
+        eip1559ReviewFields = {
+            maxFeePerGas: toGweiAmount(BigInt(parsedTransaction.maxFeePerGas)),
+            maxPriorityFeePerGas: toGweiAmount(BigInt(parsedTransaction.maxPriorityFeePerGas)),
+        };
+    }
+
+    const formState: FormState = {
+        outputs: [
+            {
+                type: 'payment',
+                address: parsedTransaction.to,
+                amount,
+                fiat: '',
+                currency: { value: '', label: '' },
+                token: reviewToken?.contract ?? null,
+                dataHex: parsedTransaction.data,
+            },
+        ],
+        selectedFee: 'custom',
+        feePerUnit: toGweiAmount(gasPriceWei),
+        feeLimit: gasLimit.toString(),
+        ...eip1559ReviewFields,
+        options: ['broadcast', 'transactionData'],
+        transactionData: parsedTransaction.data,
+        isCoinControlEnabled: false,
+        hasCoinControlBeenOpened: false,
+        selectedUtxos: [],
+    };
+
+    const precomposedTransaction: PrecomposedTransactionFinal = {
+        type: 'final',
+        fee: feeWei.toString(),
+        feePerByte: toGweiAmount(gasPriceWei),
+        feeLimit: gasLimit.toString(),
+        totalSpent: reviewToken ? amountSubunits : (BigInt(amountSubunits) + feeWei).toString(),
+        bytes: 0,
+        inputs: [],
+        outputs: [
+            {
+                address: parsedTransaction.to,
+                amount: amountSubunits,
+            },
+        ],
+        outputsPermutation: [0],
+        ...(reviewToken ? { token: reviewToken, isTokenKnown: true } : {}),
+        ...eip1559ReviewFields,
+    };
+
+    return { formState, precomposedTransaction };
+};
+
 const sendYieldTransaction = async ({
     account,
+    amount,
+    token,
     transaction,
     dispatch,
     getState,
-}: {
-    account: Account;
-    transaction: TransactionDto;
-    dispatch: Dispatch;
-    getState: () => AppState;
-}) => {
+}: SendYieldTransactionParams) => {
     const device = selectSelectedDevice(getState());
     const addressDisplayType = selectAddressDisplayType(getState());
 
@@ -305,75 +435,79 @@ const sendYieldTransaction = async ({
     }
 
     const transactionForSigning = getTransactionForSigning(parsedTransaction);
-
-    const signingResponse = await TrezorConnect.ethereumSignTransaction({
-        device: {
-            path: device.path,
-            instance: device.instance,
-            state: device.state,
-            useEmptyPassphrase: device.useEmptyPassphrase,
-        },
-        path: (account as EvmAccount).path,
-        transaction: transactionForSigning,
-        chunkify: addressDisplayType === AddressDisplayOptions.CHUNKED,
+    const { formState, precomposedTransaction } = buildYieldReviewState({
+        parsedTransaction,
+        amount,
+        token,
+        symbol: account.symbol,
     });
-
-    if (!signingResponse.success) {
-        throw new Error(signingResponse.error.message);
-    }
-
-    const pushResponse = await TrezorConnect.pushTransaction({
-        tx: signingResponse.payload.serializedTx,
-        coin: account.symbol,
-        identity: getAccountIdentity(account),
-    });
-
-    if (!pushResponse.success) {
-        throw new Error(pushResponse.error.message);
-    }
-
-    const { txid } = pushResponse.payload;
 
     dispatch(
-        transactionsActions.addTransaction({
-            transactions: [
-                {
-                    type: 'sent',
-                    txid,
-                    blockTime: Math.floor(Date.now() / 1000),
-                    amount: '0',
-                    fee: '0',
-                    targets: [],
-                    tokens: [],
-                    internalTransfers: [],
-                    details: {
-                        vin: [],
-                        vout: [],
-                        size: 0,
-                        totalInput: '0',
-                        totalOutput: '0',
-                    },
-                },
-            ],
-            account,
+        yieldActions.storePrecomposedTransaction({
+            precomposedTx: precomposedTransaction,
+            precomposedForm: formState,
+            accountKey: account.key,
         }),
     );
 
-    return { txid };
+    try {
+        dispatch(preserveModal());
+
+        const signingResponse = await TrezorConnect.ethereumSignTransaction({
+            device: {
+                path: device.path,
+                instance: device.instance,
+                state: device.state,
+                useEmptyPassphrase: device.useEmptyPassphrase,
+            },
+            path: (account as EvmAccount).path,
+            transaction: transactionForSigning,
+            chunkify: addressDisplayType === AddressDisplayOptions.CHUNKED,
+        });
+
+        if (!signingResponse.success) {
+            dispatch(closeModal());
+
+            throw new Error(signingResponse.error.message);
+        }
+
+        dispatch(
+            yieldActions.storeSignedTransaction({
+                serializedTx: {
+                    tx: signingResponse.payload.serializedTx,
+                    symbol: account.symbol,
+                },
+            }),
+        );
+
+        const isPushConfirmed = await dispatch(openDeferredModal({ type: 'review-transaction' }));
+
+        if (!isPushConfirmed) {
+            return;
+        }
+
+        const pushResponse = await TrezorConnect.pushTransaction({
+            tx: signingResponse.payload.serializedTx,
+            coin: account.symbol,
+            identity: getAccountIdentity(account),
+        });
+
+        dispatch(closeModal());
+
+        if (!pushResponse.success) {
+            throw new Error(pushResponse.error.message);
+        }
+
+        return pushResponse.payload;
+    } finally {
+        dispatch(yieldActions.discardTransaction());
+    }
 };
 
 export const handleYieldApproveSuccessTxidThunk = createThunk(
     `${YIELD_THUNK_PREFIX}/handleApproveSuccessTxid`,
     async (
-        {
-            flowType,
-            flowKey,
-            txid,
-        }: {
-            flowType: YieldFlowType;
-            flowKey: string;
-            txid: string;
-        },
+        { flowType, flowKey, txid }: YieldSessionPayload & { txid: string },
         { dispatch, getState },
     ) => {
         const { approval } = selectYieldSession(getState(), flowType, flowKey);
@@ -409,7 +543,7 @@ export const handleYieldApproveSuccessTxidThunk = createThunk(
 
 export const handleYieldApproveCancelThunk = createThunk(
     `${YIELD_THUNK_PREFIX}/handleApproveCancel`,
-    ({ flowKey, flowType }: { flowKey: string; flowType: YieldFlowType }, { dispatch }) => {
+    ({ flowKey, flowType }: YieldSessionPayload, { dispatch }) => {
         dispatch(yieldActions.closeApprovalModal({ flowType, flowKey }));
         dispatch(yieldActions.clearApprovalTransition({ flowType, flowKey }));
     },
@@ -418,17 +552,7 @@ export const handleYieldApproveCancelThunk = createThunk(
 export const submitYieldRevokeThunk = createThunk(
     `${YIELD_THUNK_PREFIX}/submitRevoke`,
     async (
-        {
-            flowKey,
-            flowType,
-            flowData,
-            amount,
-        }: {
-            flowKey: string;
-            flowType: YieldFlowType;
-            flowData: YieldFlowResolvedData;
-            amount: string;
-        },
+        { flowKey, flowType, flowData, amount }: YieldSessionDataAmountPayload,
         { dispatch, getState },
     ) => {
         const { approval } = selectYieldSession(getState(), flowType, flowKey);
@@ -480,17 +604,7 @@ export const submitYieldRevokeThunk = createThunk(
 export const submitYieldApproveThunk = createThunk(
     `${YIELD_THUNK_PREFIX}/submitApprove`,
     async (
-        {
-            flowKey,
-            flowType,
-            flowData,
-            amount,
-        }: {
-            flowKey: string;
-            flowType: YieldFlowType;
-            flowData: YieldFlowResolvedData;
-            amount: string;
-        },
+        { flowKey, flowType, flowData, amount }: YieldSessionDataAmountPayload,
         { dispatch },
     ) => {
         const requestAmount = getApprovalRequestAmount({
@@ -578,17 +692,7 @@ export const submitYieldApproveThunk = createThunk(
 export const submitYieldActionThunk = createThunk(
     `${YIELD_THUNK_PREFIX}/submitAction`,
     async (
-        {
-            flowKey,
-            flowType,
-            flowData,
-            amount,
-        }: {
-            flowKey: string;
-            flowType: YieldFlowType;
-            flowData: YieldFlowResolvedData;
-            amount: string;
-        },
+        { flowKey, flowType, flowData, amount }: YieldSessionDataAmountPayload,
         { dispatch, getState },
     ) => {
         const requestAmount = getApprovalRequestAmount({
@@ -659,10 +763,16 @@ export const submitYieldActionThunk = createThunk(
 
             const result = await sendYieldTransaction({
                 account: flowData.account,
+                amount,
+                token: flowData.token,
                 transaction: actionTransaction,
                 dispatch,
                 getState,
             });
+
+            if (!result) {
+                return;
+            }
 
             await submitTransactionHash(
                 { transactionId: actionTransaction.id },
