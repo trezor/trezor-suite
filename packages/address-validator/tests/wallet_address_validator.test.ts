@@ -1201,6 +1201,19 @@ describe('WAValidator.validate()', function () {
             invalid('qp3wjpa3tjlj042z2wv7hahsldgwhwy0rq9sywjpyya', 'bch');
         });
 
+        // KNOWN BUG: bch_validator.verifyChecksum uses Array.prototype.concat on a Uint8Array,
+        // which appends it as a single element instead of spreading. The bitwise ops in polymod
+        // then yield NaN, so the checksum check effectively never fails and any address that
+        // passes the length/charset/case filters is accepted. These assertions document the
+        // current behavior; they must FLIP from valid → invalid once the cashaddr checksum is
+        // fixed in a follow-up.
+        it('incorrectly accepts bitcoincash addresses with corrupted checksums (known bug)', function () {
+            // Tampered last char of a known-valid address
+            valid('bitcoincash:qq4v32mtagxac29my6gwj6fd4tmqg8rysu23dax808', 'bch');
+            // Tampered middle of a known-valid address
+            valid('bitcoincash:qq4v32mtagxac29my6gxx6fd4tmqg8rysu23dax807', 'bch');
+        });
+
         it('should return false for incorrect litecoin addresses', function () {
             commonTests('litecoin');
             // do not allow old ltc addresses
