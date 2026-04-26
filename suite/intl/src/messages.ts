@@ -9576,6 +9576,10 @@ export const messages = defineMessages({
         id: 'TR_STAKING_MODAL_OUTDATED_BUTTON',
         defaultMessage: 'Update provider',
     },
+    TR_EARN_DASHBOARD_TABLE_ACCOUNT_BALANCE: {
+        id: 'TR_EARN_DASHBOARD_TABLE_ACCOUNT_BALANCE',
+        defaultMessage: 'Account & balance',
+    },
     TR_EARN_DASHBOARD_TABLE_ACCOUNT_VAULT: {
         id: 'TR_EARN_DASHBOARD_TABLE_ACCOUNT_VAULT',
         defaultMessage: 'Account & vault',
@@ -9873,7 +9877,7 @@ export const messages = defineMessages({
     },
     TR_EARN_YIELD_NUTSHELL_COMPOUND_INTEREST: {
         id: 'TR_EARN_YIELD_NUTSHELL_COMPOUND_INTEREST',
-        defaultMessage: 'We then invest your yield so you benefit from compound interest.',
+        defaultMessage: 'Your supplied {supplySymbol} earns yield that compounds over time.',
     },
     TR_EARN_YIELD_NUTSHELL_VAULT_TOKENS: {
         id: 'TR_EARN_YIELD_NUTSHELL_VAULT_TOKENS',

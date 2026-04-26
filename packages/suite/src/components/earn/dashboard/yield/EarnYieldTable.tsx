@@ -89,7 +89,10 @@ export const EarnYieldTable = () => {
                             )}
                         <Card paddingType="none">
                             <Table isRowHighlightedOnHover margin={{ top: 8 }}>
-                                <EarnDashboardTableHeader showRewardsColumns={hasAnyRewardsData} />
+                                <EarnDashboardTableHeader
+                                    accountColumnTranslationId="TR_EARN_DASHBOARD_TABLE_ACCOUNT_VAULT"
+                                    showRewardsColumns={hasAnyRewardsData}
+                                />
                                 <EarnYieldTableBody
                                     isYieldOpportunitiesLoading={isYieldOpportunitiesLoading}
                                     yieldAccountOpportunities={displayedYieldAccountOpportunities}
