@@ -28,14 +28,7 @@ export type InitializeFirmwareConfig = (
     intermediaries: Record<DeviceModelInternal, IntermediaryReleaseConfig[]>;
 }>;
 
-type AssetKeys = `firmware-${string}` | 'coins' | 'coinsEth';
-type AssetCollection = {
-    [K in AssetKeys]?: Record<string, any>;
-};
-
 export class DataManager {
-    static assets: AssetCollection = {};
-
     private static settings: ConnectSettings;
     // at the moment, messages is readonly but it might make sense to modify this in the future, when
     // we implement additive protobufs handling as a part of modularization effort
@@ -63,16 +56,9 @@ export class DataManager {
 
         if (!withAssets) return;
 
-        const assetsMap = {
-            coins,
-            coinsEth,
-        };
-        Object.assign(this.assets, assetsMap);
-
-        // parse coins definitions
         parseCoinsJson({
-            ...this.assets.coins,
-            ...this.assets.coinsEth,
+            ...coins,
+            ...coinsEth,
         });
 
         const { config: localFirmwareReleaseConfig } = getOnlyLocalFirmwareReleaseConfig();
