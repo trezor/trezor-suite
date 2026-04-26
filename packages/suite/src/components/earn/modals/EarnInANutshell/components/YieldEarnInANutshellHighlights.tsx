@@ -27,7 +27,12 @@ export const YieldEarnInANutshellHighlights = ({
         },
         {
             icon: 'handCoins',
-            content: <Translation id="TR_EARN_YIELD_NUTSHELL_COMPOUND_INTEREST" />,
+            content: (
+                <Translation
+                    id="TR_EARN_YIELD_NUTSHELL_COMPOUND_INTEREST"
+                    values={{ supplySymbol }}
+                />
+            ),
         },
         ...(vaultSymbol !== undefined
             ? [

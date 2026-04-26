@@ -1,3 +1,5 @@
+import { type ComponentProps } from 'react';
+
 import { render, screen } from '@testing-library/react';
 
 import { EarnDashboardTableHeader } from '../EarnDashboardTableHeader';
@@ -7,10 +9,16 @@ jest.mock('@suite/intl', () => ({
     Translation: ({ id }: { id: string }) => <span>{id}</span>,
 }));
 
-const renderHeader = (showRewardsColumns?: boolean) =>
+const renderHeader = ({
+    accountColumnTranslationId = 'TR_EARN_DASHBOARD_TABLE_ACCOUNT_VAULT',
+    showRewardsColumns,
+}: Partial<ComponentProps<typeof EarnDashboardTableHeader>> = {}) =>
     render(
         <table>
-            <EarnDashboardTableHeader showRewardsColumns={showRewardsColumns} />
+            <EarnDashboardTableHeader
+                accountColumnTranslationId={accountColumnTranslationId}
+                showRewardsColumns={showRewardsColumns}
+            />
         </table>,
     );
 
@@ -23,7 +31,7 @@ describe('EarnDashboardTableHeader', () => {
     });
 
     it('should not render reward column headers when showRewardsColumns is false', () => {
-        renderHeader(false);
+        renderHeader({ showRewardsColumns: false });
 
         expect(
             screen.queryByText('TR_EARN_DASHBOARD_TABLE_YEARLY_REWARDS'),
@@ -33,10 +41,20 @@ describe('EarnDashboardTableHeader', () => {
         ).not.toBeInTheDocument();
     });
 
-    it('should always render the account and APY column headers', () => {
-        renderHeader(false);
+    it('should render configured account and APY column headers', () => {
+        renderHeader({ showRewardsColumns: false });
 
         expect(screen.getByText('TR_EARN_DASHBOARD_TABLE_ACCOUNT_VAULT')).toBeInTheDocument();
+        expect(screen.getByText('TR_EARN_DASHBOARD_TABLE_APY')).toBeInTheDocument();
+    });
+
+    it('should render account balance column header when configured', () => {
+        renderHeader({
+            accountColumnTranslationId: 'TR_EARN_DASHBOARD_TABLE_ACCOUNT_BALANCE',
+            showRewardsColumns: false,
+        });
+
+        expect(screen.getByText('TR_EARN_DASHBOARD_TABLE_ACCOUNT_BALANCE')).toBeInTheDocument();
         expect(screen.getByText('TR_EARN_DASHBOARD_TABLE_APY')).toBeInTheDocument();
     });
 });

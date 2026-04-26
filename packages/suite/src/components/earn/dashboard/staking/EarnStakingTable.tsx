@@ -126,6 +126,7 @@ export const EarnStakingTable = () => {
                             <Card paddingType="none">
                                 <Table isRowHighlightedOnHover margin={{ top: 8 }}>
                                     <EarnDashboardTableHeader
+                                        accountColumnTranslationId="TR_EARN_DASHBOARD_TABLE_ACCOUNT_BALANCE"
                                         showRewardsColumns={hasAnyRewardsData}
                                     />
 
