@@ -97,11 +97,9 @@ instance. Read the full file and any page objects, fixtures, or helpers it uses.
 
 ## Step 6 — Produce the diagnosis report
 
-Write a structured report (see format below).
+Write the report to `packages/e2e-utils/src/fixBot/reports/<YYYY-MM-DD>.md`.
 
----
-
-## Output format
+Open with:
 
 ```
 # Nightly Test Failure Report — <date>
@@ -138,6 +136,73 @@ After all test entries, append a **Prompt gaps** section:
 ```
 
 If nothing was unclear, write `## Prompt gaps\n\n_None._`
+
+## Step 7 — Cluster failures into fix tasks
+
+Group the diagnosed failures by shared root cause. Failures that require the same code change
+belong in one fix task, regardless of which platform, device group, or spec file they appear in.
+
+Use your judgment: errors may differ in wording across platforms or tests and still point to the
+same fix. Only split into separate tasks when the required changes are genuinely independent.
+
+For each fix task assign:
+
+- **`id`** — sequential string: `"fix-001"`, `"fix-002"`, …
+- **`branch`** — `"fix/nightly-<YYYY-MM-DD>-<slug>"` where `<slug>` is a short kebab-case
+  summary of the root cause (e.g. `send-button-locator`, `receive-address-timeout`).
+  Use today's date. Keep the slug under 40 characters.
+- **`root_cause`** — one sentence describing the underlying problem
+- **`fix_scope`** — one of: `TEST_CODE`, `LOCATOR_ADD`, `PRODUCT_BUG`, `INFRA`
+- **`confidence`** — `HIGH`, `MEDIUM`, or `LOW`
+- **`fix_description`** — concrete description of what needs to change and where
+- **`diagnosis`** — the full MD prose from Step 6 for every test that belongs to this fix
+  task: error messages, stack traces, visual evidence descriptions, and root cause reasoning.
+  Copy it verbatim from the diagnosis report. This is the only context the fix agent
+  receives from the analysis — do not summarize or shorten it.
+- **`validations`** — list of `{ platform, group, spec }` entries covering **all** affected
+  platform/group/spec combinations. Every group where the failure was observed must be
+  included — the fix agent will verify the fix on each one.
+
+Tasks with `fix_scope` of `PRODUCT_BUG` or `INFRA` go into `skipped` instead of `fix_tasks`.
+
+## Step 8 — Write report.json
+
+Write the following JSON structure to the reports directory alongside `report.md`.
+The file must be named `<YYYY-MM-DD>.json` using today's date (same date as the `.md` file).
+
+The reports directory path is: `packages/e2e-utils/src/fixBot/reports/`
+
+```json
+{
+    "run_date": "<YYYY-MM-DD>",
+    "web_run_id": "<runId or null>",
+    "desktop_run_id": "<runId or null>",
+    "fix_tasks": [
+        {
+            "id": "fix-001",
+            "branch": "fix/nightly-<YYYY-MM-DD>-<slug>",
+            "root_cause": "<one sentence>",
+            "fix_scope": "TEST_CODE | LOCATOR_ADD",
+            "confidence": "HIGH | MEDIUM | LOW",
+            "fix_description": "<what to change and where>",
+            "validations": [
+                {
+                    "platform": "web | desktop",
+                    "group": "T3W1 | T3T1 | ...",
+                    "spec": "suite/e2e/tests/..."
+                }
+            ]
+        }
+    ],
+    "skipped": [
+        {
+            "root_cause": "<one sentence>",
+            "reason": "<fix_scope> — <brief explanation>",
+            "affected_tests": ["suite/e2e/tests/..."]
+        }
+    ]
+}
+```
 
 ---
 

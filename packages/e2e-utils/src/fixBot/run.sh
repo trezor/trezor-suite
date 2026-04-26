@@ -22,7 +22,6 @@ fi
 CLAUDE_BIN="$ROOT/node_modules/.bin/claude"
 
 REPORT_DIR="$ROOT/packages/e2e-utils/src/fixBot/reports"
-REPORT_FILE="$REPORT_DIR/$(date +%Y-%m-%d).md"
 mkdir -p "$REPORT_DIR"
 
 echo "Starting nightly test failure analysis..."
@@ -31,8 +30,9 @@ unset MCP_CONNECTION_NONBLOCKING
     --settings packages/e2e-utils/src/fixBot/settings.json \
     --mcp-config packages/e2e-utils/src/fixBot/mcp.json \
     --strict-mcp-config \
-    < packages/e2e-utils/src/fixBot/AGENT.md \
-    | tee "$REPORT_FILE"
+    < packages/e2e-utils/src/fixBot/AGENT.md
 
+DATE="$(date +%Y-%m-%d)"
 echo ""
-echo "Report saved to $REPORT_FILE"
+echo "Report saved to $REPORT_DIR/$DATE.md"
+echo "Fix tasks saved to $REPORT_DIR/$DATE.json"
