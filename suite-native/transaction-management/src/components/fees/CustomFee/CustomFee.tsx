@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import Animated, { FadeInLeft, FadeOutLeft } from 'react-native-reanimated';
 
-import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
+import { type NetworkSymbol, type NetworkType, getNetworkType } from '@suite-common/wallet-config';
 import { type AccountKey, type FormState } from '@suite-common/wallet-types';
 import { Box, Button, useBottomSheetModal } from '@suite-native/atoms';
 import { useFormContext } from '@suite-native/forms';
@@ -111,11 +111,11 @@ const CustomFeeContentWrapper = ({ accountKey, formDraft, onCustomFeeSet }: Cust
     );
 };
 
+const CUSTOM_FEE_UNSUPPORTED_NETWORK_TYPES: NetworkType[] = ['solana', 'tron'];
+
 export const CustomFee = ({ accountKey, symbol, formDraft, onCustomFeeSet }: CustomFeeProps) => {
-    // custom fees are not allowed for solana or tron
-    // we return null here so we don't need to mount the hooks there
     const networkType = getNetworkType(symbol);
-    if (networkType === 'solana' || networkType === 'tron') {
+    if (CUSTOM_FEE_UNSUPPORTED_NETWORK_TYPES.includes(networkType)) {
         return null;
     }
 

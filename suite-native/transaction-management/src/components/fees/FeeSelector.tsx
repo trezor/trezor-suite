@@ -12,7 +12,7 @@ import { useBottomSheetModal } from '@suite-native/atoms';
 
 import { FeeSummaryCard } from './FeeSummaryCard';
 import { FeesBottomSheet } from './FeesBottomSheet';
-import { TronFeeSummaryCard } from './TronFeeSummaryCard';
+import { TronFeeSummaryCard } from './TronFeeSummaryCard/TronFeeSummaryCard';
 import { type FeesFormValues } from '../../feesFormSchema';
 import { type CustomFeeParams } from '../../hooks';
 import { useFeesManagement } from '../../hooks/fees/useFeesManagement';

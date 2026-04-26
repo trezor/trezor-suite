@@ -4,6 +4,6 @@ export * from './FeesFooter';
 export * from './FeesContent';
 export * from './FeeLabelTranslation';
 export * from './FeeSummaryCard';
-export * from './TronFeeSummaryCard';
+export * from './TronFeeSummaryCard/TronFeeSummaryCard';
 export * from './CustomFee/CustomFeeContent';
 export * from './FeeSelector';
