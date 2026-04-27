@@ -1,12 +1,6 @@
-import coinsJSON from '@trezor/connect-data/files/coins.json';
-
-import { getAllNetworks, getCoinInfo, getUniqueNetworks, parseCoinsJson } from '../coinInfo';
+import { getAllNetworks, getCoinInfo, getUniqueNetworks } from '../coinInfo';
 
 describe('data/coinInfo', () => {
-    beforeAll(() => {
-        parseCoinsJson(coinsJSON);
-    });
-
     it('getUniqueNetworks', () => {
         const inputs = [
             getCoinInfo('btc'),

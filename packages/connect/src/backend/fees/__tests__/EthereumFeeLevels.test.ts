@@ -1,14 +1,10 @@
 import { BlockchainLink } from '@trezor/blockchain-link';
-import coinsJSONEth from '@trezor/connect-data/files/coins-eth.json';
-import coinsJSON from '@trezor/connect-data/files/coins.json';
 
-import { getEthereumNetwork, parseCoinsJson } from '../../../data/coinInfo';
+import { getEthereumNetwork } from '../../../data/coinInfo';
 import { initBlockchain } from '../../BlockchainLink';
 import { EthereumFeeLevels } from '../EthereumFeeLevels';
 
 describe('api/ethereum/Fees', () => {
-    parseCoinsJson({ ...coinsJSON, ...coinsJSONEth });
-
     const ETH_REQUEST = { blocks: [1] };
 
     const ETH_EIP1559_RESPONSE = [

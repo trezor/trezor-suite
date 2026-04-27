@@ -1,9 +1,7 @@
 import { BlockchainLink } from '@trezor/blockchain-link';
 import type { FeeLevel } from '@trezor/connect-common';
-import coinsJSONEth from '@trezor/connect-data/files/coins-eth.json';
-import coinsJSON from '@trezor/connect-data/files/coins.json';
 
-import { getBitcoinNetwork, parseCoinsJson } from '../../../data/coinInfo';
+import { getBitcoinNetwork } from '../../../data/coinInfo';
 import { dispose, initBlockchain } from '../../BlockchainLink';
 import { BitcoinFeeLevels } from '../BitcoinFeeLevels';
 
@@ -35,9 +33,6 @@ const estimateFeeMockIncomplete: typeof BlockchainLink.prototype.estimateFee = p
     );
 
 describe('BitcoinFeeLevels', () => {
-    // load coin definitions
-    parseCoinsJson({ ...coinsJSON, ...coinsJSONEth });
-
     afterAll(() => {
         dispose();
         jest.clearAllMocks();
