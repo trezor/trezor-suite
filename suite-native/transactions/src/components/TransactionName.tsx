@@ -1,3 +1,4 @@
+import { type TronTxContractType } from '@suite-common/wallet-constants';
 import { type StakeType, type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { getTxStakeType } from '@suite-common/wallet-utils';
 import { Text } from '@suite-native/atoms';
@@ -74,6 +75,37 @@ export const getTransactionName = (
     }
 };
 
+const getTronTransactionMessage = (transaction: WalletAccountTransaction) => {
+    const contractType = transaction.tronSpecific?.contractType as TronTxContractType;
+
+    switch (contractType) {
+        case 'AccountCreateContract':
+            return 'transactions.name.tron.createAccount';
+        case 'AccountUpdateContract':
+            return 'transactions.name.tron.updateAccount';
+        case 'CreateSmartContract':
+            return 'transactions.name.tron.deploySmartContract';
+        case 'VoteWitnessContract':
+            return 'transactions.name.tron.voteWitness';
+        case 'FreezeBalanceContract':
+        case 'FreezeBalanceV2Contract':
+            return 'transactions.name.tron.freezeBalance';
+        case 'UnfreezeBalanceContract':
+        case 'UnfreezeBalanceV2Contract':
+            return 'transactions.name.tron.unfreezeBalance';
+        case 'WithdrawExpireUnfreezeContract':
+            return 'transactions.name.tron.withdrawBalance';
+        case 'WithdrawBalanceContract':
+            return 'transactions.name.tron.claimRewards';
+        case 'DelegateResourceContract':
+            return 'transactions.name.tron.delegateResource';
+        case 'UnDelegateResourceContract':
+            return 'transactions.name.tron.undelegateResource';
+        default:
+            return undefined;
+    }
+};
+
 export const TransactionName = ({ transaction, isPending, variant }: TransactionNameProps) => {
     const ethName = transaction.ethereumSpecific?.parsedData?.name;
 
@@ -89,6 +121,16 @@ export const TransactionName = ({ transaction, isPending, variant }: Transaction
                 ) : (
                     <Translation id="transactions.name.stellarTrustlineAdded" />
                 )}
+            </Text>
+        );
+    }
+
+    // Tron-specific transactions
+    const tronTransactionMessageId = getTronTransactionMessage(transaction);
+    if (tronTransactionMessageId) {
+        return (
+            <Text variant={variant}>
+                <Translation id={tronTransactionMessageId} />
             </Text>
         );
     }
