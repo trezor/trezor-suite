@@ -16,12 +16,14 @@ export class ServiceWorkerWindowExtConnectableChannel<
 > extends AbstractMessageChannel<IncomingMessages> {
     private currentId?: () => Promise<number | undefined> | undefined;
     /**
-     * Expected origin (scheme + host) of the popup page.
-     * When set, onMessageExternal messages whose sender.tab.url does not
-     * start with this origin are silently dropped.  This is a
-     * defense-in-depth measure: externally_connectable may match more
-     * origins than intended (e.g. wildcards in manifest), so we
-     * double-check that only the popup we actually opened can talk to us.
+     * Expected origin (scheme + host[:port]) of the popup page.
+     * When set, onMessageExternal messages are accepted only when the parsed
+     * `URL(sender.tab.url).origin` is strictly equal to `URL(allowedOrigin).origin`.
+     * Senders whose URL is malformed, or whose origin does not match exactly,
+     * are silently dropped. This is a defense-in-depth measure: the
+     * externally_connectable manifest entry may match more origins than
+     * intended (e.g. wildcards), so we double-check that only the popup we
+     * actually opened can talk to us.
      */
     private allowedOrigin?: string;
     private messageListener?: (
@@ -199,16 +201,38 @@ export class ServiceWorkerWindowExtConnectableChannel<
             // popup we opened.  externally_connectable patterns may be broader
             // than our popup URL (e.g. wildcard sub-domains), so this ensures
             // only the exact popup origin is accepted.
-            if (
-                this.allowedOrigin &&
-                sender.tab.url &&
-                !sender.tab.url.startsWith(this.allowedOrigin)
-            ) {
-                this.logger?.warn(
-                    `CHANNEL: Sender origin mismatch — expected ${this.allowedOrigin}, got ${sender.tab.url}. Ignoring.`,
-                );
+            if (this.allowedOrigin) {
+                if (!sender.tab.url) {
+                    // tab.url is only populated when the extension has either
+                    // the "tabs" permission or matching host_permissions; an
+                    // empty URL means we cannot verify the sender, so reject.
+                    this.logger?.warn(
+                        `CHANNEL: Missing sender tab URL while allowed origin is configured (allowed=${this.allowedOrigin}). Ignoring.`,
+                    );
 
-                return false;
+                    return false;
+                }
+
+                let senderOrigin: string;
+                let expectedOrigin: string;
+                try {
+                    senderOrigin = new URL(sender.tab.url).origin;
+                    expectedOrigin = new URL(this.allowedOrigin).origin;
+                } catch {
+                    this.logger?.warn(
+                        `CHANNEL: Could not parse sender or allowed origin (sender=${sender.tab.url}, allowed=${this.allowedOrigin}). Ignoring.`,
+                    );
+
+                    return false;
+                }
+
+                if (senderOrigin !== expectedOrigin) {
+                    this.logger?.warn(
+                        `CHANNEL: Sender origin mismatch — expected ${expectedOrigin}, got ${senderOrigin}. Ignoring.`,
+                    );
+
+                    return false;
+                }
             }
 
             // Verify message comes from the correct extension context
