@@ -155,7 +155,7 @@ const createSnapshot = (
 
 const snapshotFileName = (packageName: string) => `${packageName.replace('@trezor/', '')}.json`;
 
-const stringifySnapshot = (snapshot: Snapshot) => `${JSON.stringify(snapshot, null, 2)}\n`;
+const stringifySnapshot = (snapshot: Snapshot) => `${JSON.stringify(snapshot, null, 4)}\n`;
 
 const validateSnapshots = ({ repoRoot, write }: { repoRoot: string; write: boolean }) => {
     const workspacePackages = collectWorkspacePackages(repoRoot);
