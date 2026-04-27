@@ -16868,6 +16868,7 @@ __metadata:
     "@testing-library/user-event": "npm:^14.6.1"
     "@trezor/address-validator": "workspace:*"
     "@trezor/analytics-uploader": "workspace:*"
+    "@trezor/asset-utils": "workspace:*"
     "@trezor/blockchain-link": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/blockchain-link-utils": "workspace:*"
