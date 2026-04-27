@@ -1,6 +1,7 @@
 import { Text } from 'react-native';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { getTranslation } from '@suite-native/intl';
 import { renderHookWithBasicProvider, renderWithBasicProvider } from '@suite-native/test-utils';
 
 import {
@@ -16,6 +17,7 @@ const ErrorText = (props: UsePrecomposedTransactionErrorProps) => {
 
 describe('usePrecomposedTransactionError', () => {
     const networkSymbol = 'btc' as NetworkSymbol;
+    const networkDisplaySymbol = 'BTC';
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -35,33 +37,54 @@ describe('usePrecomposedTransactionError', () => {
     it.each([
         {
             error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
-            expectedErrorMsg: 'Insufficient BTC to cover the transaction fee.',
+            expectedErrorMsg: getTranslation(
+                'transactionManagement.precomposedTransaction.errors.amountNotEnoughCurrencyFee',
+                { networkDisplaySymbol },
+            ),
         },
         {
             error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT',
-            expectedErrorMsg: 'Insufficient BTC to cover the transaction fee.',
+            expectedErrorMsg: getTranslation(
+                'transactionManagement.precomposedTransaction.errors.amountNotEnoughCurrencyFee',
+                { networkDisplaySymbol },
+            ),
         },
-
+        {
+            error: 'NOT-ENOUGH-FUNDS',
+            expectedErrorMsg: getTranslation(
+                'transactionManagement.precomposedTransaction.errors.amountNotEnoughCurrencyFee',
+                { networkDisplaySymbol },
+            ),
+        },
         {
             error: 'AMOUNT_IS_LESS_THAN_RESERVE',
-            expectedErrorMsg: 'Recipient account requires minimum reserve to activate.',
+            expectedErrorMsg: getTranslation(
+                'transactionManagement.precomposedTransaction.errors.amountIsLessThanReserve',
+            ),
         },
         {
             error: 'REMAINING_BALANCE_LESS_THAN_RENT',
-            expectedErrorMsg:
-                'After sending this amount, your account will have SOL remaining lower than the rent.',
+            expectedErrorMsg: getTranslation(
+                'transactionManagement.precomposedTransaction.errors.remainingBalanceLessThanRent',
+            ),
         },
         {
             error: 'AMOUNT_IS_NOT_ENOUGH',
-            expectedErrorMsg: "You don't have enough funds.",
+            expectedErrorMsg: getTranslation(
+                'transactionManagement.precomposedTransaction.errors.amountIsNotEnough',
+            ),
         },
         {
             error: 'AMOUNT_IS_TOO_LOW',
-            expectedErrorMsg: 'Amount is too low.',
+            expectedErrorMsg: getTranslation(
+                'transactionManagement.precomposedTransaction.errors.amountIsTooLow',
+            ),
         },
         {
             error: 'TR_STAKE_NOT_ENOUGH_FUNDS',
-            expectedErrorMsg: 'Insufficient funds for staking.',
+            expectedErrorMsg: getTranslation(
+                'transactionManagement.precomposedTransaction.errors.stakeNotEnoughFunds',
+            ),
         },
     ])('should return correct translation data for $error', ({ error, expectedErrorMsg }) => {
         const { getByText } = renderWithBasicProvider(
@@ -76,7 +99,14 @@ describe('usePrecomposedTransactionError', () => {
             <ErrorText error="AMOUNT_NOT_ENOUGH_CURRENCY_FEE" />,
         );
 
-        expect(getByText('Insufficient  to cover the transaction fee.')).toBeOnTheScreen();
+        expect(
+            getByText(
+                getTranslation(
+                    'transactionManagement.precomposedTransaction.errors.amountNotEnoughCurrencyFee',
+                    { networkDisplaySymbol: '' },
+                ),
+            ),
+        ).toBeOnTheScreen();
     });
 
     it('should handle different network symbols', () => {
@@ -84,6 +114,13 @@ describe('usePrecomposedTransactionError', () => {
             <ErrorText error="AMOUNT_NOT_ENOUGH_CURRENCY_FEE" networkSymbol="eth" />,
         );
 
-        expect(getByText('Insufficient ETH to cover the transaction fee.')).toBeOnTheScreen();
+        expect(
+            getByText(
+                getTranslation(
+                    'transactionManagement.precomposedTransaction.errors.amountNotEnoughCurrencyFee',
+                    { networkDisplaySymbol: 'ETH' },
+                ),
+            ),
+        ).toBeOnTheScreen();
     });
 });

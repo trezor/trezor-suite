@@ -1,8 +1,10 @@
 import { expect, test } from '../../support/fixtures';
 
 test.describe('Assets', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
-    test.beforeEach(async ({ onboardingPage }) => {
+    test.beforeEach(async ({ onboardingPage, settingsPage, dashboardPage }) => {
         await onboardingPage.completeOnboarding();
+        await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
+        await dashboardPage.navigateTo();
     });
 
     test('User can initiate buy from Assets in table view', async ({
@@ -23,15 +25,8 @@ test.describe('Assets', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
         await expect(tradingPage.section).toBeVisible();
     });
 
-    test('New asset is shown in both grid and row', async ({
-        page,
-        assetsSection,
-        dashboardPage,
-        settingsPage,
-    }) => {
-        await assetsSection.enableMoreCoins.click();
-        await settingsPage.coinsTab.enableNetwork('ltc');
-        await dashboardPage.navigateTo();
+    test('New asset is shown in both grid and row', async ({ page, assetsSection }) => {
+        await assetsSection.enableNetworkViaActivateAssetsModal('eth');
         await page.discoveryShouldFinish();
         await assetsSection.verifyAssetContents();
         await assetsSection.tableIcon.click();

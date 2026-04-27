@@ -27,7 +27,10 @@ export const GlobalSendReceiveButtons = ({
                 onClick={() => {
                     setActiveModal('receive');
 
-                    analytics.report({ type: events.dashboardReceiveModalEvent.name });
+                    analytics.report({
+                        type: events.dashboardReceiveModalEvent.name,
+                        payload: { source: 'page-header' },
+                    });
                 }}
                 data-testid="@wallet/menu/wallet-global-receive"
             >
@@ -40,7 +43,10 @@ export const GlobalSendReceiveButtons = ({
                 onClick={() => {
                     setActiveModal('send');
 
-                    analytics.report({ type: events.dashboardSendModalEvent.name });
+                    analytics.report({
+                        type: events.dashboardSendModalEvent.name,
+                        payload: { source: 'page-header' },
+                    });
                 }}
                 data-testid="@wallet/menu/wallet-global-send"
             >

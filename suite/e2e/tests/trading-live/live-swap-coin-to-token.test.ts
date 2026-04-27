@@ -19,10 +19,7 @@ test.describe(
         });
         test.beforeEach(async ({ onboardingPage, dashboardPage, walletPage, settingsPage }) => {
             await onboardingPage.completeOnboarding();
-            await settingsPage.changeNetworks({
-                enableNetworks: ['sol', 'base'],
-                disableNetworks: ['btc'],
-            });
+            await settingsPage.changeNetworks({ enableNetworks: ['sol', 'base'] });
             await dashboardPage.deviceSwitchingOpenButton.click();
             await dashboardPage.addHiddenWallet(process.env.PASSPHRASE_LIVE!);
 

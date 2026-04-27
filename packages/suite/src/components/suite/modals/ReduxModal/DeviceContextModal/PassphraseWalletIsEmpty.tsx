@@ -107,7 +107,7 @@ const PassphraseWalletIsEmptyContent = ({
                                 priority="secondary"
                                 typographyStyle="body-sm"
                             >
-                                <Translation id="TR_CHECKED_BALANCES_ON" />:
+                                <Translation id="TR_READY_ON" />:
                             </Paragraph>
                             <Row gap={spacings.xxs} flexWrap="wrap">
                                 {enabledNetworks.map(network => (

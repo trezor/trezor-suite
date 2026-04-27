@@ -24,8 +24,7 @@ test.describe('Send Eth', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
 
     test.beforeEach(async ({ onboardingPage, dashboardPage, walletPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
-        await settingsPage.navigateTo('coins');
-        await settingsPage.coinsTab.disableNetwork('btc');
+        await settingsPage.changeNetworks({ enableNetworks: ['eth'] });
         await dashboardPage.deviceSwitchingOpenButton.click();
         await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
         await walletPage.openAccount({ symbol: 'eth', type: 'normal', atIndex: 0 });

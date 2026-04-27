@@ -1,11 +1,11 @@
 import { type ReactNode, memo } from 'react';
-import Animated from 'react-native-reanimated';
+import Animated, { FadeIn, FadeOut, LinearTransition } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import type { ExchangeTrade } from 'invity-api';
 
 import { type TradingRootState, selectTradingProviderKycPolicy } from '@suite-common/trading';
-import { InlineAlertBox, VStack } from '@suite-native/atoms';
+import { AnimatedVStack, InlineAlertBox, VStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 
 import { ExchangeFeePickerCard } from './ExchangeFeePickerCard';
@@ -47,22 +47,24 @@ export const ExchangePreviewView = memo(
                     />
                 )}
                 {isTxnError && (
-                    <Animated.View>
+                    <Animated.View layout={LinearTransition} entering={FadeIn} exiting={FadeOut}>
                         <InlineAlertBox variant="critical" title={txnErrorString} />
                     </Animated.View>
                 )}
-                <ExchangeFromAccountTradePreviewCard quote={quote} />
-                <ExchangeToAccountTradePreviewCard quote={quote} />
-                <ExchangeFiatDeviationWarning quote={quote} />
-                <ExchangeFeePickerCard quote={quote} isTxnError={isTxnError} />
-                {isFusionPlus && <ExchangeFusionPlusInfo />}
-                {kycWarning && (
-                    <InlineAlertBox
-                        variant="warning"
-                        title={kycWarning}
-                        accessibilityHint={translate('generic.warning')}
-                    />
-                )}
+                <AnimatedVStack layout={LinearTransition}>
+                    <ExchangeFromAccountTradePreviewCard quote={quote} />
+                    <ExchangeToAccountTradePreviewCard quote={quote} />
+                    <ExchangeFiatDeviationWarning quote={quote} />
+                    <ExchangeFeePickerCard quote={quote} isTxnError={isTxnError} />
+                    {isFusionPlus && <ExchangeFusionPlusInfo />}
+                    {kycWarning && (
+                        <InlineAlertBox
+                            variant="warning"
+                            title={kycWarning}
+                            accessibilityHint={translate('generic.warning')}
+                        />
+                    )}
+                </AnimatedVStack>
             </VStack>
         );
     },

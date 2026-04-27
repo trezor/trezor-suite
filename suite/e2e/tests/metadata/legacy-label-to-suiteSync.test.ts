@@ -9,16 +9,19 @@ const { accountSeed, ownerSecret, ownerId } = mnemonic12Fixtures;
 test.describe('Labeling migration', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
     test.use({ wipeEvoluRelay: true });
 
-    test.beforeEach(async ({ metadataMock, metadataPage, evoluClient, onboardingPage }) => {
-        await metadataMock.start(MetadataProvider.DROPBOX);
-        await test.step('Seed Evolu relay server', async () => {
-            await evoluClient.init({ ownerSecret });
-            evoluClient.writeTo('account', accountSeed);
-            evoluClient.seedQuotaManagerData({ ownerId });
-        });
-        await onboardingPage.completeOnboarding({ keepDebugModeEnabled: true });
-        await metadataPage.enableLegacyLabeling(MetadataProvider.DROPBOX);
-    });
+    test.beforeEach(
+        async ({ metadataMock, metadataPage, evoluClient, onboardingPage, settingsPage }) => {
+            await metadataMock.start(MetadataProvider.DROPBOX);
+            await test.step('Seed Evolu relay server', async () => {
+                await evoluClient.init({ ownerSecret });
+                evoluClient.writeTo('account', accountSeed);
+                evoluClient.seedQuotaManagerData({ ownerId });
+            });
+            await onboardingPage.completeOnboarding({ keepDebugModeEnabled: true });
+            await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
+            await metadataPage.enableLegacyLabeling(MetadataProvider.DROPBOX);
+        },
+    );
 
     test('Migration from Dropbox', async ({ page, walletPage, metadataPage }) => {
         await test.step('Set up Dropbox labeling', async () => {

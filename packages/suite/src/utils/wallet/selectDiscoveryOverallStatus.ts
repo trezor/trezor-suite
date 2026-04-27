@@ -2,6 +2,7 @@ import { selectSelectedDevice } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
+    isDiscoveryInProgress,
     selectAccountsByDeviceState,
     selectDiscoveryByDevicePath,
 } from '@suite-common/wallet-core';
@@ -53,7 +54,7 @@ const getDiscoveryStatus = ({
 
     if (
         (discovery?.status === 'failed' && discovery.error) ||
-        (accounts ?? []).find(a => a.failed)
+        (!isDiscoveryInProgress(discovery) && (accounts ?? []).some(a => a.failed))
     ) {
         return {
             status: 'exception',
@@ -69,7 +70,7 @@ const getDiscoveryStatus = ({
         };
     }
 
-    if (discovery?.status === 'progress') {
+    if (isDiscoveryInProgress(discovery)) {
         return {
             status: 'loading',
             type: 'discovery',

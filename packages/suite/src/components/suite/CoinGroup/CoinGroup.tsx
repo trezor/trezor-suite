@@ -15,19 +15,36 @@ import { type CoinListProps } from '../CoinList/CoinList';
 type CoinGroupProps = {
     networks: Network[];
     enabledNetworks?: NetworkSymbol[];
+    onToggle?: CoinListProps['onToggle'];
+    onSettings?: (symbol: NetworkSymbol) => void;
+    ignoreDeviceLock?: boolean;
 };
 
-export const CoinGroup = ({ networks, enabledNetworks }: CoinGroupProps) => {
+export const CoinGroup = ({
+    networks,
+    enabledNetworks,
+    onToggle,
+    onSettings,
+    ignoreDeviceLock,
+}: CoinGroupProps) => {
     const [settingsMode, setSettingsMode] = useState(false);
 
     const dispatch = useDispatch();
 
     const isAtLeastOneActive = networks.some(({ symbol }) => enabledNetworks?.includes(symbol));
 
-    const onToggle: CoinListProps['onToggle'] = (symbol, shouldBeVisible) =>
-        dispatch(changeCoinVisibility({ symbol, shouldBeVisible }));
-    const onSettings = (symbol: NetworkSymbol) => {
+    const handleToggle: CoinListProps['onToggle'] =
+        onToggle ??
+        ((symbol, shouldBeVisible) => dispatch(changeCoinVisibility({ symbol, shouldBeVisible })));
+    const handleSettings = (symbol: NetworkSymbol) => {
         setSettingsMode(false);
+
+        if (onSettings) {
+            onSettings(symbol);
+
+            return;
+        }
+
         dispatch(
             openModal({
                 type: 'advanced-coin-settings',
@@ -48,8 +65,9 @@ export const CoinGroup = ({ networks, enabledNetworks }: CoinGroupProps) => {
                 networks={networks}
                 enabledNetworks={enabledNetworks}
                 settingsMode={settingsMode}
-                onToggle={settingsMode ? onSettings : onToggle}
-                onSettings={settingsMode ? undefined : onSettings}
+                onToggle={settingsMode ? handleSettings : handleToggle}
+                onSettings={settingsMode ? undefined : handleSettings}
+                ignoreDeviceLock={ignoreDeviceLock}
             />
         </Column>
     );

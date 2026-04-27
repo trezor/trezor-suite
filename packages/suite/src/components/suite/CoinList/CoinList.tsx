@@ -18,6 +18,13 @@ export type CoinListProps = {
     settingsMode?: boolean;
     onSettings?: (symbol: NetworkSymbol) => void;
     onToggle: (symbol: NetworkSymbol, toggled: boolean) => void;
+    /**
+     * When `true`, toggles stay enabled regardless of device/UI lock state and the
+     * "Loading accounts" tooltip is not shown. Intended for callers that only stage
+     * changes locally and apply them explicitly (e.g. ActivateAssetsModal), where
+     * transient TrezorConnect locks during discovery shouldn't block selection.
+     */
+    ignoreDeviceLock?: boolean;
 };
 
 export const CoinList = ({
@@ -26,14 +33,15 @@ export const CoinList = ({
     settingsMode = false,
     onSettings,
     onToggle,
+    ignoreDeviceLock = false,
 }: CoinListProps) => {
     const { device, isLocked } = useDevice();
 
     const blockchain = useSelector(state => state.wallet.blockchain);
-    const isDeviceLocked = !!device && isLocked(true);
+    const isDeviceLocked = !ignoreDeviceLock && !!device && isLocked(true);
     const { isDiscoveryRunning } = useDiscovery();
     const lockedTooltip = isDeviceLocked ? 'TR_DISABLED_SWITCH_TOOLTIP' : null;
-    const discoveryTooltip = isDiscoveryRunning ? 'TR_LOADING_ACCOUNTS' : null;
+    const discoveryTooltip = !ignoreDeviceLock && isDiscoveryRunning ? 'TR_LOADING_ACCOUNTS' : null;
 
     const deviceModelInternal = device?.features?.internal_model;
     const isBootloaderMode = isDeviceInBootloaderMode(device);

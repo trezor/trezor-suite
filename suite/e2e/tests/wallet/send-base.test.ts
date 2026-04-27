@@ -27,10 +27,7 @@ test.describe(
             async ({ page, onboardingPage, dashboardPage, walletPage, settingsPage }) => {
                 await page.clock.install();
                 await onboardingPage.completeOnboarding();
-                await settingsPage.changeNetworks({
-                    enableNetworks: ['base'], //add more EVMs
-                    disableNetworks: ['btc'],
-                });
+                await settingsPage.changeNetworks({ enableNetworks: ['base'] }); //add more EVMs
                 await dashboardPage.deviceSwitchingOpenButton.click();
                 await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
                 await walletPage.openAccount({ symbol: 'base', type: 'normal', atIndex: 0 });

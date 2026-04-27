@@ -123,7 +123,6 @@ export const TransactionRenderer = ({ render: View, ...props }: TransactionRende
                         }
                         notificationType={props.notification.type}
                         symbol={props.notification.symbol}
-                        accountSymbol={account.symbol}
                         token={transactionToken}
                         amount={props.notification.formattedAmount}
                         isInfiniteApproval={

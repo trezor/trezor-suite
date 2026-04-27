@@ -33,6 +33,23 @@ export const messages = defineMessages({
         defaultMessage: 'No assets are active',
         id: 'TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY',
     },
+    TR_DASHBOARD_ACTIVATE_ASSETS_DESC: {
+        defaultMessage:
+            'Enable the networks you want to use. You can receive or buy assets on any network you enable.',
+        id: 'TR_DASHBOARD_ACTIVATE_ASSETS_DESC',
+    },
+    TR_DASHBOARD_MODAL_ACTIVATE_ASSETS_TITLE: {
+        defaultMessage: 'Choose networks',
+        id: 'TR_DASHBOARD_MODAL_ACTIVATE_ASSETS_TITLE',
+    },
+    TR_DASHBOARD_MODAL_ACTIVATE_ASSETS_DESC: {
+        defaultMessage: 'You can receive or buy assets on any network you enable.',
+        id: 'TR_DASHBOARD_MODAL_ACTIVATE_ASSETS_DESC',
+    },
+    TR_DASHBOARD_MODAL_ACTIVATE_ASSETS_NOTE: {
+        defaultMessage: 'You can change your networks anytime in Settings.',
+        id: 'TR_DASHBOARD_MODAL_ACTIVATE_ASSETS_NOTE',
+    },
     TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY_DESC: {
         defaultMessage: 'Go to settings to activate assets.',
         id: 'TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY_DESC',
@@ -318,9 +335,9 @@ export const messages = defineMessages({
         defaultMessage: 'Disable Tor to see better offers.',
         id: 'TR_TRADING_DISABLE_TOR',
     },
-    TR_CHECKED_BALANCES_ON: {
-        defaultMessage: 'Checked balances on',
-        id: 'TR_CHECKED_BALANCES_ON',
+    TR_READY_ON: {
+        defaultMessage: 'Ready on',
+        id: 'TR_READY_ON',
     },
     TR_ALL_NETWORKS: {
         defaultMessage: 'All networks',
@@ -1748,7 +1765,7 @@ export const messages = defineMessages({
         id: 'TR_COIN_DISCOVERY_LOADER_DESCRIPTION',
     },
     TR_COINS: {
-        defaultMessage: 'Coins',
+        defaultMessage: 'Networks',
         id: 'TR_COINS',
     },
     TR_HIDDEN: {
@@ -3110,20 +3127,6 @@ export const messages = defineMessages({
         defaultMessage: 'System',
         id: 'TR_SETTINGS_SAME_AS_SYSTEM',
     },
-    TR_SETTINGS_TOOLTIP_DESCRIPTION_BTC_ONLY: {
-        defaultMessage: '<strong>Power user?</strong> Set up <tor>Tor</tor> in Settings first.',
-        id: 'TR_SETTINGS_TOOLTIP_DESCRIPTION_BTC_ONLY',
-    },
-    TR_SETTINGS_TOOLTIP_DESCRIPTION_DESKTOP: {
-        defaultMessage:
-            '<strong>Power user?</strong> Set up <tor>Tor</tor> & <networks>networks</networks> in Settings first.',
-        id: 'TR_SETTINGS_TOOLTIP_DESCRIPTION_DESKTOP',
-    },
-    TR_SETTINGS_TOOLTIP_DESCRIPTION_WEB: {
-        defaultMessage:
-            '<strong>Power user?</strong> Set up <networks>networks</networks> in Settings first.',
-        id: 'TR_SETTINGS_TOOLTIP_DESCRIPTION_WEB',
-    },
     TR_SETTINGS_DEVICE_BANNER_TITLE_DISCONNECTED: {
         defaultMessage: 'Connect your Trezor to access device settings',
         id: 'TR_SETTINGS_DEVICE_BANNER_TITLE_DISCONNECTED',
@@ -3604,6 +3607,10 @@ export const messages = defineMessages({
     TR_YOUR_WALLET_IS_READY_WHAT: {
         defaultMessage: 'Your wallet is ready',
         id: 'TR_YOUR_WALLET_IS_READY_WHAT',
+    },
+    TR_DASHBOARD_EMPTY_WALLET_DESC: {
+        defaultMessage: 'Get started by receiving or buying crypto.',
+        id: 'TR_DASHBOARD_EMPTY_WALLET_DESC',
     },
     TR_GAS_PRICE: {
         id: 'TR_GAS_PRICE',
@@ -4479,6 +4486,10 @@ export const messages = defineMessages({
     TR_COIN_SETTINGS: {
         id: 'TR_COIN_SETTINGS',
         defaultMessage: 'Activate assets',
+    },
+    TR_DASHBOARD_GET_STARTED: {
+        id: 'TR_DASHBOARD_GET_STARTED',
+        defaultMessage: 'Get started',
     },
     TR_SELECT_COIN_FOR_SETTINGS: {
         id: 'TR_SELECT_COIN_FOR_SETTINGS',
@@ -6758,7 +6769,7 @@ export const messages = defineMessages({
     },
     TR_ENABLE_MORE_COINS: {
         id: 'TR_ENABLE_MORE_COINS',
-        defaultMessage: 'Activate more assets',
+        defaultMessage: 'Add networks',
     },
     TR_BACKUP_RECOVERY_SEED_FAILED_TITLE: {
         id: 'TR_BACKUP_RECOVERY_SEED_FAILED_TITLE',

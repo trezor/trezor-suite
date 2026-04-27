@@ -23,8 +23,9 @@ const expectedOutput = buildExpectedOutput({
 test.describe('Suite Sync - Labelling', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({ wipeEvoluRelay: true });
 
-    test.beforeEach(async ({ onboardingPage, metadataPage }) => {
+    test.beforeEach(async ({ onboardingPage, metadataPage, settingsPage }) => {
         await onboardingPage.completeOnboarding({ keepDebugModeEnabled: true });
+        await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
         await metadataPage.enableSuiteSync();
     });
 

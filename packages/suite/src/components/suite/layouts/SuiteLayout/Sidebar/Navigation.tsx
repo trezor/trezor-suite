@@ -10,7 +10,6 @@ import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
 
 import { NavigationItem, type NavigationItemProps } from './NavigationItem';
 import { NotificationDropdown } from './NotificationDropdown';
-import { SettingsWithTooltip } from './SettingsWithTooltip';
 
 export const SETTINGS_ROUTES: Route['name'][] = [
     'settings-index',
@@ -62,7 +61,6 @@ export const Navigation = ({ children }: NavigationProps) => {
                     goToRoute: 'settings-index',
                     routes: SETTINGS_ROUTES,
                     'data-testid': '@suite/menu/settings',
-                    CustomComponent: SettingsWithTooltip,
                 },
             ],
             [startRoute, isBtcOnly],

@@ -40,10 +40,8 @@ export type AssetLogoSize = (typeof allowedAssetLogoSizes)[number];
 export const allowedAssetLogoFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 export type AllowedFrameProps = Pick<FrameProps, (typeof allowedAssetLogoFrameProps)[number]>;
 
-export type AssetLogoProps = AllowedFrameProps & {
+type AssetLogoBaseProps = AllowedFrameProps & {
     size: AssetLogoSize;
-    coingeckoId?: string;
-    symbol?: NetworkSymbolExtended;
     contractAddress?: string | null;
     shouldTryToFetch?: boolean;
     placeholderWithTooltip?: boolean;
@@ -52,7 +50,14 @@ export type AssetLogoProps = AllowedFrameProps & {
     showNetworkIcon?: boolean;
 };
 
-export type AssetLogoWithIdProps = Omit<AssetLogoProps, 'coingeckoId'> & { coingeckoId: string };
+export type AssetLogoProps = AssetLogoBaseProps & {
+    symbol: NetworkSymbolExtended;
+};
+
+export type AssetLogoWithIdProps = AssetLogoBaseProps & {
+    coingeckoId: string;
+    symbol?: NetworkSymbolExtended;
+};
 
 const Container = styled.div<TransientProps<AllowedFrameProps> & { $size: number }>`
     ${({ $size }) => `

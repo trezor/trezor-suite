@@ -12,11 +12,13 @@ const formattedCryptoAmount = `${localizeNumber(buyQuotesEthereum[3].receiveStri
 const formattedFiatAmount = `CZK ${localizeNumber(fiatAmount, 'en-US', 2)}`;
 
 test.describe('Trading - Buy Ethereum', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
-    test.beforeEach(async ({ page, onboardingPage }) => {
+    test.beforeEach(async ({ page, onboardingPage, settingsPage, dashboardPage }) => {
         await page.route(invityEndpoint.buyQuotes, async route => {
             await route.fulfill({ json: buyQuotesEthereum });
         });
         await onboardingPage.completeOnboarding();
+        await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
+        await dashboardPage.navigateTo();
     });
 
     test('Enable Ethereum on account by buying it', async ({
@@ -35,7 +37,7 @@ test.describe('Trading - Buy Ethereum', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
             await tradingPage.fillBuyForm({
                 amount: fiatAmount,
                 selectReceiveAddress: async () => {
-                    await tradingPage.receiveAccount.selectSuiteReceiveAccount(0);
+                    await tradingPage.receiveAccount.selectAddSuiteReceiveAccount(0);
                 },
             });
             await expect(tradingPage.quotes.bestOfferAmount).toContainText('0.018615 ETH');

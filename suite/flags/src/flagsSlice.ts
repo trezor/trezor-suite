@@ -4,7 +4,6 @@ import { createSliceWithExtraDeps } from '@suite-common/redux-utils';
 
 export interface FlagsState {
     initialRun: boolean;
-    settingsSidebarTooltipClosed: boolean;
     taprootBannerClosed: boolean;
     firmwareTypeBannerClosed: boolean;
     discreetModeCompleted: boolean;
@@ -14,6 +13,7 @@ export interface FlagsState {
     showTEXDashboardPromoBanner: boolean;
     showTS7DashboardPromoBanner: boolean;
     showSettingsDesktopAppPromoBanner: boolean;
+    activateAssetsBannerClosed: boolean;
     stakeEthBannerClosed: boolean;
     stakeSolBannerClosed: boolean;
     stakeCardanoBannerClosed: boolean;
@@ -32,7 +32,6 @@ export type FlagsRootState = { flags: FlagsState };
 
 export const flagsInitialState: FlagsState = {
     initialRun: true,
-    settingsSidebarTooltipClosed: false,
     discreetModeCompleted: false,
     taprootBannerClosed: false,
     firmwareTypeBannerClosed: false,
@@ -42,6 +41,7 @@ export const flagsInitialState: FlagsState = {
     showTEXDashboardPromoBanner: true,
     showTS7DashboardPromoBanner: true,
     showSettingsDesktopAppPromoBanner: true,
+    activateAssetsBannerClosed: false,
     stakeEthBannerClosed: false,
     stakeSolBannerClosed: false,
     stakeCardanoBannerClosed: false,
@@ -81,6 +81,8 @@ export const selectIsTS7DashboardPromoBannerShown = (state: FlagsRootState) =>
     state.flags.showTS7DashboardPromoBanner;
 export const selectIsSettingsDesktopAppPromoBannerShown = (state: FlagsRootState) =>
     state.flags.showSettingsDesktopAppPromoBanner;
+export const selectIsActivateAssetsBannerClosed = (state: FlagsRootState) =>
+    state.flags.activateAssetsBannerClosed;
 export const selectIsUnhideTokenModalShown = (state: FlagsRootState) =>
     state.flags.showUnhideTokenModal;
 export const selectIsCopyAddressModalShown = (state: FlagsRootState) =>

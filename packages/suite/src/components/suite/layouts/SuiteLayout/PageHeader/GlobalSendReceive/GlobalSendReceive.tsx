@@ -1,13 +1,15 @@
 import { memo } from 'react';
 
 import { useDevice } from '@suite/device';
+import { selectAllAccountsToList } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 
 import { resetProtocol } from 'src/actions/suite/protocolActions';
 import { AppNavigationTooltip } from 'src/components/suite/AppNavigation/AppNavigationTooltip';
-import { useDispatch } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { globalSendReceiveFilters } from 'src/slices/wallet/globalSendReceiveFilters';
 import { type AccountItemType } from 'src/types/wallet';
+import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
 
 import { GlobalReceiveModal } from './GlobalReceiveModal/GlobalReceiveModal';
 import { GlobalSendModal } from './GlobalSendModal/GlobalSendModal';
@@ -20,9 +22,19 @@ export const GlobalSendReceive = memo(function GlobalSendReceiveInner() {
     const { activeModal, openModal, closeModal } = useGlobalSendReceiveModal();
     const { sendAnalytics, receiveAnalytics } = useGlobalSendReceiveAnalytics();
     const dispatch = useDispatch();
+    const accounts = useSelector(selectAllAccountsToList);
+    const discoveryStatus = useSelector(selectDiscoveryOverallStatus);
 
-    const buttonIntent = device?.connected && device?.available ? 'brand' : 'neutral';
-    const buttonPriority = device?.connected && device?.available ? 'primary' : 'secondary';
+    const isDeviceConnected = !!device?.connected && !!device?.available;
+    // The dashboard shows the `EmptyWallet` screen (with its own primary Buy/Receive CTAs)
+    // when discovery has finished and every account is empty. In that case we demote the
+    // header Send/Receive buttons so the EmptyWallet CTAs stand out and we avoid two
+    // competing primary calls-to-action on the same page.
+    const isEmptyWalletShown =
+        discoveryStatus === undefined && accounts.length > 0 && accounts.every(a => a.empty);
+    const shouldPromoteButtons = isDeviceConnected && !isEmptyWalletShown;
+    const buttonIntent = shouldPromoteButtons ? 'brand' : 'neutral';
+    const buttonPriority = shouldPromoteButtons ? 'primary' : 'secondary';
 
     const handleSendSubmit = (account: Account, filledSearch: boolean) => {
         sendAnalytics.account(filledSearch);

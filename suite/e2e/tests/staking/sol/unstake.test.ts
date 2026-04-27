@@ -35,10 +35,7 @@ test.describe('sol staking', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
             },
         });
         await onboardingPage.completeOnboarding();
-        await settingsPage.changeNetworks({
-            enableNetworks: ['sol'],
-            disableNetworks: ['btc'],
-        });
+        await settingsPage.changeNetworks({ enableNetworks: ['sol'] });
     });
 
     test(

@@ -29,7 +29,6 @@ export function AssetPickerInputContent({ value }: AssetPickerInputContentProps)
         symbol,
         displaySymbol,
         name,
-        coingeckoId,
         contractAddress,
         networkName,
     } = value;
@@ -43,7 +42,6 @@ export function AssetPickerInputContent({ value }: AssetPickerInputContentProps)
             ) : (
                 <AssetLogo
                     size={32}
-                    coingeckoId={coingeckoId}
                     symbol={networkSymbol}
                     contractAddress={contractAddress}
                     placeholder={displaySymbol}

@@ -26,6 +26,7 @@ export enum EventType {
     // eslint-disable-next-line local-rules/analytics-event-name
     CreateReceiveAddressShowAddress = 'create-receive-address/show-address',
     DashboardActions = 'dashboard/actions',
+    DashboardActivateAssetsModal = 'dashboard/activate-assets-modal',
     DashboardReceiveModal = 'dashboard/receive-modal',
     DashboardReceiveModalOptions = 'dashboard/receive-modal/options',
     DashboardSendModal = 'dashboard/send-modal',

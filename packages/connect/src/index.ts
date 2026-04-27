@@ -12,10 +12,10 @@ class CoreInModuleNode extends CoreInModule {
     }
 
     protected async updateProxy(proxy: UpdateConnectSettings['proxy']) {
+        // updateConnectSettings() may be called before init() — nothing to do yet.
+        if (!DataManager.isLoaded()) return;
         const settings = DataManager.getSettings();
-        // If settings is null, it means that TrezorConnect.updateConnectSettings() was called
-        // before TrezorConnect.init() so nothing should be done.
-        if (settings && proxy !== undefined && !deepEqual(settings.proxy, proxy)) {
+        if (proxy !== undefined && !deepEqual(settings.proxy, proxy)) {
             DataManager.updateSettings({ proxy });
             await reconnectAllBackends();
         }

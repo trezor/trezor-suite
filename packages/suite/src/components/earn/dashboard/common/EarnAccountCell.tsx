@@ -34,7 +34,6 @@ export const EarnAccountCell = ({
         <Row gap={16} cursor="inherit">
             <Column alignItems="center">
                 <AssetLogo
-                    coingeckoId={iconToken?.coinGeckoId ?? undefined}
                     placeholder={iconToken?.symbol || iconToken?.name || ''}
                     symbol={networkSymbol}
                     contractAddress={iconToken?.address ?? null}

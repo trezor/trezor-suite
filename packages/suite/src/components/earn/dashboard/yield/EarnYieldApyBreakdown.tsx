@@ -46,7 +46,6 @@ export const EarnYieldApyBreakdown = ({ rewards, networkSymbol }: EarnYieldApyBr
             return (
                 <Row key={index} gap={8} alignItems="center">
                     <AssetLogo
-                        coingeckoId={reward.token.coinGeckoId}
                         placeholder={reward.token.symbol || reward.token.name || 'token'}
                         symbol={networkSymbol}
                         contractAddress={reward.token.address}

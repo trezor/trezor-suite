@@ -1,4 +1,4 @@
-import { getCoingeckoId, getDisplaySymbol } from '@suite-common/wallet-config';
+import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { type Account, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Row } from '@trezor/components';
 import { AssetLogo, shouldShowNetworkIcon } from '@trezor/product-components';
@@ -35,7 +35,6 @@ export function AssetRowToken({
             <Row data-testid={dataTestId} gap={12} overflow="hidden">
                 <AssetLogo
                     size={40}
-                    coingeckoId={getCoingeckoId(account.symbol)!}
                     symbol={account.symbol}
                     contractAddress={token.contract}
                     placeholder={getDisplaySymbol(token.symbol!, token.contract)}

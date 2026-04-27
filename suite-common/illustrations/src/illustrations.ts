@@ -2,7 +2,9 @@
 // Run `yarn generate-illustrations` to regenerate.
 
 export const illustrations = {
+    assetsGet: require('../assets/assetsGet.svg'),
     connectTrezor: require('../assets/connectTrezor.svg'),
     disconnectTrezor: require('../assets/disconnectTrezor.svg'),
+    networks: require('../assets/networks.svg'),
 } as const;
 export type IllustrationName = keyof typeof illustrations;

@@ -8,7 +8,7 @@ test.describe('Analytics Events - Staking Navigate', { tag: ['@T3W1', '@nightlyO
     test.beforeEach(async ({ onboardingPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
         await settingsPage.changeNetworks({
-            enableNetworks: ['ada'],
+            enableNetworks: ['eth', 'ada'],
         });
     });
 

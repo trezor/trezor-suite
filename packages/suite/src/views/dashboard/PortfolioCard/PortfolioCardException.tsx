@@ -1,16 +1,27 @@
 import { type ComponentProps, type JSX } from 'react';
 
+import { events } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation, type TranslationKey } from '@suite/intl';
-import { goto } from '@suite/router';
+import { openModal } from '@suite/modal';
 import { type NetworkType, getNetwork } from '@suite-common/wallet-config';
 import { startOrRestartDiscoveryThunk } from '@suite-common/wallet-core';
 import { type DiscoveryStatus, type FailedAccount } from '@suite-common/wallet-types';
-import { Button, Column, H3, IconCircle, type IconName, Row, Text } from '@trezor/components';
+import {
+    Button,
+    Column,
+    H3,
+    IconCircle,
+    type IconName,
+    Illustration,
+    Row,
+    Text,
+} from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { useDispatch } from 'src/hooks/suite';
+import { useAnalytics } from 'src/support/useAnalytics';
 import { type DiscoveryStatusType } from 'src/types/wallet';
 
 interface CTA {
@@ -19,6 +30,7 @@ interface CTA {
     action: () => void;
     icon?: IconName;
     isDisabled?: boolean;
+    size?: ComponentProps<typeof Button>['size'];
 }
 
 interface ContainerProps {
@@ -26,16 +38,17 @@ interface ContainerProps {
     description?: TranslationKey | JSX.Element;
     cta: CTA | CTA[];
     dataTestBase: string;
+    image?: React.ReactNode;
 }
 
 // Common wrapper for all views
-const Container = ({ title, description, cta, dataTestBase }: ContainerProps) => {
+const Container = ({ title, description, cta, dataTestBase, image }: ContainerProps) => {
     const { isLocked } = useDevice();
     const actions = Array.isArray(cta) ? cta : [cta];
 
     return (
         <Column gap={spacings.xxs} data-testid={`@exception/${dataTestBase}`} alignItems="center">
-            <IconCircle name="warning" size={96} intent="warning" />
+            {image ? image : <IconCircle name="warning" size={96} intent="warning" />}
             <H3 data-testid={`@exception/${dataTestBase}/header`} margin={{ top: spacings.md }}>
                 <Translation id={title} />
             </H3>
@@ -58,10 +71,11 @@ const Container = ({ title, description, cta, dataTestBase }: ContainerProps) =>
                     <Button
                         key={a.label || 'TR_RETRY'}
                         intent={a.intent || 'warning'}
-                        iconLeft={a.icon || 'plus'}
+                        iconLeft={a.icon}
                         isLoading={a.isDisabled ?? isLocked()}
                         onClick={a.action}
                         data-testid={`@exception/${dataTestBase}/${a.intent || 'warning'}-button`}
+                        size={a.size}
                     >
                         <Translation id={a.label || 'TR_RETRY'} />
                     </Button>
@@ -124,19 +138,28 @@ export const PortfolioCardException = ({
     failed,
 }: PortfolioCardExceptionProps) => {
     const dispatch = useDispatch();
+    const analytics = useAnalytics();
 
     switch (exception.type) {
         case 'discovery-empty':
             return (
                 <Container
-                    title="TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY"
-                    description="TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY_DESC"
+                    image={<Illustration name="networks" width={224} />}
+                    title="TR_YOUR_WALLET_IS_READY_WHAT"
+                    description="TR_DASHBOARD_ACTIVATE_ASSETS_DESC"
                     cta={[
                         {
-                            action: () => dispatch(goto({ routeName: 'settings-coins' })),
+                            action: () => {
+                                analytics.report({
+                                    type: events.dashboardActivateAssetsModalEvent.name,
+                                    payload: { source: 'empty-wallet' },
+                                });
+                                dispatch(openModal({ type: 'activate-assets' }));
+                            },
                             isDisabled: false,
-                            icon: 'gear',
-                            label: 'TR_COIN_SETTINGS',
+                            intent: 'brand',
+                            label: 'TR_DASHBOARD_GET_STARTED',
+                            size: 'large',
                         },
                     ]}
                     dataTestBase={exception.type}
@@ -175,6 +198,7 @@ export const PortfolioCardException = ({
                             dispatch(startOrRestartDiscoveryThunk());
                         },
                         label: 'TR_ACCOUNT_ENABLE_PASSPHRASE',
+                        icon: 'plus',
                     }}
                     dataTestBase={exception.type}
                 />

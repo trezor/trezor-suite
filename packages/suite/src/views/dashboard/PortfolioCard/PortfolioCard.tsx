@@ -23,12 +23,13 @@ import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOv
 
 import { DashboardGraph } from './DashboardGraph';
 import { EmptyWallet } from './EmptyWallet';
+import { EmptyWalletSkeleton } from './EmptyWalletSkeleton';
 import { PortfolioCardException } from './PortfolioCardException';
 import { PortfolioCardHeader } from './PortfolioCardHeader';
 import { UnsupportedAssetsMessage, useUnsupportedNetworkMessage } from './UnsupportedAssetsMessage';
 
 const MarginContainer = ({ children }: { children: React.ReactNode }) => (
-    <Box margin={{ horizontal: 24, vertical: 16 }}>{children}</Box>
+    <Box margin={{ horizontal: 24, vertical: 32 }}>{children}</Box>
 );
 
 export const PortfolioCard = memo(() => {
@@ -44,9 +45,15 @@ export const PortfolioCard = memo(() => {
     const { device } = useDevice();
     const isDeviceEmpty = useMemo(() => accounts.every(a => a.empty), [accounts]);
     const failedAccounts = useMemo(() => accounts.filter(isAccountFailed), [accounts]);
+
+    const hasLoadedNonEmptyAccount = useMemo(
+        () => accounts.some(a => !a.empty && !isAccountFailed(a)),
+        [accounts],
+    );
     const walletBalance = useTotalFiatBalance(accounts, baseCurrencyCode, currentFiatRates);
 
-    const passphraseEntryCanceled = accounts.length === 0 && discoveryStatus === undefined;
+    const passphraseEntryCanceled =
+        accounts.length === 0 && discoveryStatus === undefined && discovery?.status === 'cancelled';
 
     const hasNetworkWithEnabledGraph = networksCollection.some(
         network =>
@@ -85,13 +92,23 @@ export const PortfolioCard = memo(() => {
             </MarginContainer>
         );
     } else if (discoveryStatus && discoveryStatus.status === 'loading') {
-        body = isGraphHidden ? null : (
-            <MarginContainer>
-                <Column height={320}>
-                    <GraphSkeleton data-testid="@dashboard/loading" />
-                </Column>
-            </MarginContainer>
-        );
+        if (isDeviceEmpty) {
+            body = (
+                <MarginContainer>
+                    <EmptyWalletSkeleton />
+                </MarginContainer>
+            );
+        } else if (hasLoadedNonEmptyAccount && !isGraphHidden) {
+            body = <DashboardGraph accounts={accounts} />;
+        } else if (!isGraphHidden) {
+            body = (
+                <MarginContainer>
+                    <Column height={320}>
+                        <GraphSkeleton data-testid="@dashboard/loading" />
+                    </Column>
+                </MarginContainer>
+            );
+        }
     } else if (isDeviceEmpty) {
         body = (
             <MarginContainer>
@@ -102,6 +119,7 @@ export const PortfolioCard = memo(() => {
         body = <DashboardGraph accounts={accounts} />;
     }
 
+    const isDiscoveryEmpty = discoveryStatus?.type === 'discovery-empty';
     const isWalletEmpty = !discoveryStatus && isDeviceEmpty;
     const isWalletLoading = discoveryStatus?.status === 'loading';
     const isWalletError = discoveryStatus?.status === 'exception';
@@ -111,13 +129,12 @@ export const PortfolioCard = memo(() => {
         showGraphControls,
         device,
         accounts,
-        isGraphHidden,
     });
 
     const heading = <Translation id="TR_MY_PORTFOLIO" />;
 
     const header =
-        discovery && discoveryStatus?.status === 'exception' ? null : (
+        (discovery && discoveryStatus?.status === 'exception') || isWalletEmpty ? null : (
             <PortfolioCardHeader
                 discovery={discovery}
                 showGraphControls={showGraphControls}
@@ -132,7 +149,7 @@ export const PortfolioCard = memo(() => {
 
     return (
         <DashboardSection
-            heading={heading}
+            heading={isDiscoveryEmpty || isWalletEmpty ? undefined : heading}
             subheading={
                 showMissingDataTooltip ? (
                     <UnsupportedAssetsMessage
@@ -175,7 +192,10 @@ export const PortfolioCard = memo(() => {
                 ) : undefined
             }
         >
-            <Card header={body ? header : null} paddingType="none">
+            <Card
+                header={body && !isDiscoveryEmpty && !isWalletEmpty ? header : null}
+                paddingType="none"
+            >
                 {body ? (
                     <Column justifyContent="center" minHeight={329}>
                         {body}

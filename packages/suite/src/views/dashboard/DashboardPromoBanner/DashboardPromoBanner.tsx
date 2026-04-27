@@ -13,6 +13,7 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { useSelector } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
+import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
 
 import { TS7Banner } from './TS7Banner';
 import { TrezorExpertBanner } from './TrezorExpertBanner';
@@ -21,7 +22,8 @@ import { type DashboardBannerTypeWithNull, isDashboardBannerType } from './dashb
 export const DashboardPromoBanner = () => {
     const [isVisible, setIsVisible] = useState(true);
     const analytics = useAnalytics();
-
+    const discoveryStatus = useSelector(selectDiscoveryOverallStatus);
+    const isDiscoveryEmpty = discoveryStatus?.type === 'discovery-empty';
     const shouldShowTEXDashboardPromoBanner = useSelector(selectIsTEXDashboardPromoBannerShown);
     const shouldShowTS7DashboardPromoBanner = useSelector(selectIsTS7DashboardPromoBannerShown);
     const selectedDevice = useSelector(selectSelectedDevice);
@@ -82,7 +84,7 @@ export const DashboardPromoBanner = () => {
             : null;
     });
 
-    if (!promoBanner) return null;
+    if (!promoBanner || isDiscoveryEmpty) return null;
     const { visibleBanner } = promoBanner;
 
     if (visibleBanner === 'ts7')

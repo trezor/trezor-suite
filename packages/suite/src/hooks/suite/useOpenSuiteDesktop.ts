@@ -11,10 +11,9 @@ export const useOpenSuiteDesktop = () => {
     const windowFocused = useWindowFocus();
     const handleOpenSuite = () => {
         const iframe = document.createElement('iframe');
+        iframe.src = SUITE_BRIDGE_DEEPLINK;
         iframe.style.display = 'none';
         document.body.appendChild(iframe);
-
-        iframe.src = SUITE_BRIDGE_DEEPLINK;
 
         // fallback in case deeplink does not work
         window.setTimeout(() => {

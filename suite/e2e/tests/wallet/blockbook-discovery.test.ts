@@ -18,12 +18,14 @@ test.describe('Custom-blockbook-discovery', { tag: ['@T3W1', '@T3T1'] }, () => {
                 priority: TestPriority.High,
             }),
         },
-        async ({ settingsPage, dashboardPage }) => {
+        async ({ page, settingsPage, dashboardPage }) => {
             const btcBlockbook = 'https://btc.trezor.io';
             await settingsPage.navigateTo('coins');
+            await settingsPage.coinsTab.enableNetwork('btc');
             await settingsPage.coinsTab.openNetworkAdvanceSettings('btc');
             await settingsPage.coinsTab.changeBackend('blockbook', btcBlockbook);
             await dashboardPage.navigateTo();
+            await page.discoveryShouldFinish();
             await expect(dashboardPage.graph).toBeVisible();
             //TODO: Improve verification
         },
@@ -32,7 +34,6 @@ test.describe('Custom-blockbook-discovery', { tag: ['@T3W1', '@T3T1'] }, () => {
     test('LTC blockbook discovery', async ({ page, settingsPage, dashboardPage }) => {
         const ltcBlockbook = 'https://ltc.trezor.io';
         await settingsPage.navigateTo('coins');
-        await settingsPage.coinsTab.disableNetwork('btc');
         await settingsPage.coinsTab.enableNetwork('ltc');
         await settingsPage.coinsTab.openNetworkAdvanceSettings('ltc');
         await settingsPage.coinsTab.changeBackend('blockbook', ltcBlockbook);

@@ -114,7 +114,7 @@
         "### We need promise to be same version in mobile unless it produces undefined behavior, check PR #15815": "1.0.0",
         "promise": "8.3.0",
         "elliptic": "6.6.1",
-        "@headlessui/react": "^2.2.2",
+        "@headlessui/react": "^2.2.10",
         "### Align versions of sentry internal packages, because electron & native use different versions of @core": "1.0.0",
         "@sentry/core": "10.42.0",
         "@sentry/browser": "10.42.0",

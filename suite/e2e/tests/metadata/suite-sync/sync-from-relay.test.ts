@@ -14,7 +14,7 @@ const outputSeed = createOutputSeed();
 test.describe('Suite Sync - Labelling', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({ wipeEvoluRelay: true });
 
-    test.beforeEach(async ({ evoluClient, onboardingPage }) => {
+    test.beforeEach(async ({ evoluClient, onboardingPage, settingsPage }) => {
         await test.step('Seed Evolu relay server', async () => {
             await evoluClient.init({ ownerSecret });
             evoluClient.writeTo('wallet', walletSeed);
@@ -24,6 +24,7 @@ test.describe('Suite Sync - Labelling', { tag: ['@T3W1', '@T3T1'] }, () => {
             evoluClient.seedQuotaManagerData({ ownerId: mnemonic12Fixtures.ownerId });
         });
         await onboardingPage.completeOnboarding({ keepDebugModeEnabled: true });
+        await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
     });
 
     test('Sync labels from server', async ({

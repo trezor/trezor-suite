@@ -28,6 +28,7 @@ test.describe('Remembered device', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =
     }) => {
         await test.step('Complete onboarding and open BTC account', async () => {
             await onboardingPage.completeOnboarding();
+            await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
             await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });
         });
 

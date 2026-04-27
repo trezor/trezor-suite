@@ -17,6 +17,7 @@ const VALID_PRECOMPOSED_ERRORS: PrecomposedTransactionError['error'][] = [
     'TR_STAKE_NOT_ENOUGH_FUNDS',
     'REMAINING_BALANCE_LESS_THAN_RENT',
     'AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT',
+    'NOT-ENOUGH-FUNDS',
 ];
 
 /**
@@ -43,6 +44,7 @@ export const usePrecomposedTransactionError = ({
 
         switch (error) {
             case 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE':
+            case 'NOT-ENOUGH-FUNDS':
                 return (
                     <Translation
                         id="transactionManagement.precomposedTransaction.errors.amountNotEnoughCurrencyFee"
