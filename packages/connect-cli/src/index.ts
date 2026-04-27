@@ -101,29 +101,40 @@ const runTestCase = async (device: Device) => {
         process.exit(1);
     }
 
-    // device is ready, start workflow
+    const params = args.params ? JSON.parse(args.params) : {};
+
     let result;
-    if (method === 'fw-update') {
-        result = await fwUpdate(device);
-    } else if (method === 'get-credentials') {
-        result = await TrezorConnect.thpGetCredentials({ device });
-    } else if (method === 'get-account-info') {
-        result = await TrezorConnect.getAccountInfo({
-            device,
-            coin: 'btc',
-            path: "m/84'/0'/0'",
-        });
-    } else if (method === 'get-account-descriptor') {
-        result = await TrezorConnect.getAccountDescriptor({
-            device,
-            coin: 'btc',
-            path: "m/84'/0'/0'",
-        });
-    } else {
-        result = await TrezorConnect.getAddress({
-            device,
-            path: "m/44'/0'/0'/0/0",
-        });
+    switch (method) {
+        case 'fw-update':
+            result = await fwUpdate(device);
+            break;
+        case 'get-credentials':
+            result = await TrezorConnect.thpGetCredentials({ device });
+            break;
+        case 'get-account-info':
+            result = await TrezorConnect.getAccountInfo({
+                device,
+                coin: 'btc',
+                path: "m/84'/0'/0'",
+                ...params,
+            });
+            break;
+        case 'get-account-descriptor':
+            result = await TrezorConnect.getAccountDescriptor({
+                device,
+                coin: 'btc',
+                path: "m/84'/0'/0'",
+                ...params,
+            });
+            break;
+        case 'get-features':
+            result = await TrezorConnect.getFeatures({ device, ...params });
+            break;
+        case 'apply-settings':
+            result = await TrezorConnect.applySettings({ device, ...params });
+            break;
+        default:
+            result = await TrezorConnect.getAddress({ device, path: "m/44'/0'/0'/0/0", ...params });
     }
 
     console.warn(result);
@@ -198,6 +209,7 @@ const run = async () => {
             return TrezorConnect.uiResponse({
                 type: 'ui-receive_confirmation',
                 payload: true,
+                requestId: event.requestId,
             });
         }
 
@@ -210,6 +222,7 @@ const run = async () => {
                 // @ts-expect-error
                 return TrezorConnect.uiResponse({
                     type: 'ui-receive_passphrase',
+                    requestId: event.requestId,
                 });
             }
 
@@ -217,6 +230,7 @@ const run = async () => {
             TrezorConnect.uiResponse({
                 type: 'ui-receive_passphrase',
                 payload: { value, passphraseOnDevice: args['passphrase-on-device'] },
+                requestId: event.requestId,
             });
         }
 
@@ -226,6 +240,7 @@ const run = async () => {
                 TrezorConnect.uiResponse({
                     type: 'ui-receive_thp_pairing_tag',
                     payload: { tag },
+                    requestId: event.requestId,
                 });
             } else {
                 return TrezorConnect.cancel();
