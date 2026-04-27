@@ -25,5 +25,8 @@
         "react": "19.2.4",
         "react-native": "0.83.2",
         "react-native-reanimated": "~4.2.1"
+    },
+    "devDependencies": {
+        "@trezor/requirements": "workspace:*"
     }
 }

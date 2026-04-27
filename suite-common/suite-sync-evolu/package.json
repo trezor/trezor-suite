@@ -22,6 +22,7 @@
     },
     "devDependencies": {
         "@evolu/nodejs": "3.0.0-next.2",
-        "@trezor/eslint": "workspace:*"
+        "@trezor/eslint": "workspace:*",
+        "@trezor/requirements": "workspace:*"
     }
 }

@@ -8,6 +8,7 @@
         { "path": "../wallet-types" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" },
-        { "path": "../../packages/eslint" }
+        { "path": "../../packages/eslint" },
+        { "path": "../../packages/requirements" }
     ]
 }

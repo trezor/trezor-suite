@@ -32,6 +32,7 @@
         "react-redux": "9.2.0"
     },
     "devDependencies": {
+        "@trezor/requirements": "workspace:*",
         "jest-mock": "^29.7.0"
     }
 }

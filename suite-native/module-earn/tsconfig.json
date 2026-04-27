@@ -70,6 +70,7 @@
         },
         { "path": "../../packages/theme" },
         { "path": "../../packages/urls" },
-        { "path": "../../packages/utils" }
+        { "path": "../../packages/utils" },
+        { "path": "../../packages/requirements" }
     ]
 }
