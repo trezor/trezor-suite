@@ -23,6 +23,7 @@
         "@suite-common/suite-utils": "workspace:*",
         "@suite-common/token-definitions": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
+        "@suite-common/wallet-constants": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@suite-common/wallet-utils": "workspace:*",

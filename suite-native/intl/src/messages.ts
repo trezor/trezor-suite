@@ -2132,6 +2132,18 @@ export const messages = {
             claiming: 'Claiming',
             changeDelegate: 'Change delegate',
             changingDelegate: 'Changing delegate',
+            tron: {
+                createAccount: 'Create Account',
+                updateAccount: 'Update Account',
+                deploySmartContract: 'Deploy Smart Contract',
+                voteWitness: 'Vote Witness',
+                freezeBalance: 'Freeze Balance',
+                unfreezeBalance: 'Unfreeze Balance',
+                withdrawBalance: 'Withdraw Balance',
+                claimRewards: 'Claim Rewards',
+                delegateResource: 'Delegate Resource',
+                undelegateResource: 'Undelegate Resource',
+            },
         },
         TransactionDetailScreen: {
             sheetSubtitle: 'Transaction #{transactionId}',
