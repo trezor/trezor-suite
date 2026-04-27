@@ -4,6 +4,13 @@ import { isDevEnv } from '@suite-common/suite-utils';
 
 import { restartApp } from './app-utils';
 import type { MainWindowProxy } from './main-window-proxy';
+import {
+    WindowTile,
+    centerWindow,
+    restorePreviousWindowBounds,
+    tileWindow,
+    toggleWindowFullScreen,
+} from './window-tiling';
 
 const isMac = process.platform === 'darwin';
 
@@ -99,6 +106,131 @@ export const buildMainMenu = (mainWindowProxy: MainWindowProxy) => {
         // Extend "Window"
         mainMenuTemplate[3].submenu.push(
             { type: 'separator' },
+            {
+                label: 'Fill',
+                accelerator: 'Ctrl+Alt+F',
+                click: () => {
+                    const win = mainWindowProxy.getInstance();
+                    if (!win) return;
+                    tileWindow({ win, tile: WindowTile.FullScreen });
+                },
+            },
+            {
+                label: 'Center',
+                accelerator: 'Ctrl+Alt+C',
+                click: () => {
+                    const win = mainWindowProxy.getInstance();
+                    if (!win) return;
+                    centerWindow(win);
+                },
+            },
+            {
+                label: 'Full Screen',
+                accelerator: 'Ctrl+Alt+Return',
+                click: () => {
+                    const win = mainWindowProxy.getInstance();
+                    if (!win) return;
+                    toggleWindowFullScreen(win);
+                },
+            },
+            { type: 'separator' },
+            {
+                // Electron uses '&' for mnemonics on some platforms; '&&' keeps a literal '&'
+                label: 'Move && Resize',
+                submenu: [
+                    {
+                        label: 'Halves',
+                        enabled: false,
+                    },
+                    {
+                        label: 'Left',
+                        accelerator: 'Ctrl+Alt+Left',
+                        click: () => {
+                            const win = mainWindowProxy.getInstance();
+                            if (!win) return;
+                            tileWindow({ win, tile: WindowTile.LeftHalf });
+                        },
+                    },
+                    {
+                        label: 'Right',
+                        accelerator: 'Ctrl+Alt+Right',
+                        click: () => {
+                            const win = mainWindowProxy.getInstance();
+                            if (!win) return;
+                            tileWindow({ win, tile: WindowTile.RightHalf });
+                        },
+                    },
+                    {
+                        label: 'Top',
+                        accelerator: 'Ctrl+Alt+Up',
+                        click: () => {
+                            const win = mainWindowProxy.getInstance();
+                            if (!win) return;
+                            tileWindow({ win, tile: WindowTile.TopHalf });
+                        },
+                    },
+                    {
+                        label: 'Bottom',
+                        accelerator: 'Ctrl+Alt+Down',
+                        click: () => {
+                            const win = mainWindowProxy.getInstance();
+                            if (!win) return;
+                            tileWindow({ win, tile: WindowTile.BottomHalf });
+                        },
+                    },
+                    { type: 'separator' },
+                    {
+                        label: 'Quarters',
+                        enabled: false,
+                    },
+                    {
+                        label: 'Top Left',
+                        accelerator: 'Ctrl+Alt+1',
+                        click: () => {
+                            const win = mainWindowProxy.getInstance();
+                            if (!win) return;
+                            tileWindow({ win, tile: WindowTile.TopLeftQuarter });
+                        },
+                    },
+                    {
+                        label: 'Top Right',
+                        accelerator: 'Ctrl+Alt+2',
+                        click: () => {
+                            const win = mainWindowProxy.getInstance();
+                            if (!win) return;
+                            tileWindow({ win, tile: WindowTile.TopRightQuarter });
+                        },
+                    },
+                    {
+                        label: 'Bottom Left',
+                        accelerator: 'Ctrl+Alt+3',
+                        click: () => {
+                            const win = mainWindowProxy.getInstance();
+                            if (!win) return;
+                            tileWindow({ win, tile: WindowTile.BottomLeftQuarter });
+                        },
+                    },
+                    {
+                        label: 'Bottom Right',
+                        accelerator: 'Ctrl+Alt+4',
+                        click: () => {
+                            const win = mainWindowProxy.getInstance();
+                            if (!win) return;
+                            tileWindow({ win, tile: WindowTile.BottomRightQuarter });
+                        },
+                    },
+                    { type: 'separator' },
+                    {
+                        label: 'Return to Previous Size',
+                        accelerator: 'Ctrl+Alt+R',
+                        click: () => {
+                            const win = mainWindowProxy.getInstance();
+                            if (!win) return;
+                            restorePreviousWindowBounds(win);
+                        },
+                    },
+                ],
+            },
             { role: 'front' },
             { type: 'separator' },
             { role: 'window' },
