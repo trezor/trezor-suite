@@ -12,9 +12,6 @@
         {
             "path": "../../suite-common/wallet-types"
         },
-        {
-            "path": "../../suite-common/wallet-utils"
-        },
         { "path": "../atoms" },
         { "path": "../clipboard" },
         { "path": "../icons" },
