@@ -62,14 +62,7 @@ export const EarnInANutshellModal = ({
                 });
                 break;
             case EarnFlow.Yield:
-                analytics.report({
-                    type: earnFlowToEventTypeMap[flow],
-                    payload: {
-                        action: 'continue',
-                        step: analyticsStep,
-                        networkSymbol: account.symbol,
-                    },
-                });
+                // analytics are handled directly inside the modal component
                 break;
             default:
                 exhaustive(flow);

@@ -41,6 +41,8 @@ export const useEarnProviderConsentActions = ({
     const selectedVotingDelegation = useSelector(selectVotingDelegationOption);
 
     const report = (action: EarnModalAction) => {
+        if (flow === EarnFlow.Yield) return;
+
         analytics.report({
             type: earnFlowToEventTypeMap[flow],
             payload: {

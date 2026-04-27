@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { events } from '@suite/analytics';
 import { FirmwareUpgradeNeededModal } from '@suite/firmware-upgrade';
 import { Translation, useTranslation } from '@suite/intl';
 import { openModal } from '@suite/modal';
@@ -18,6 +19,7 @@ import { BigNumber } from '@trezor/utils';
 
 import { HiddenPlaceholder } from 'src/components/suite/HiddenPlaceholder';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 import { EarnYieldApyTooltip } from './EarnYieldApyTooltip';
 import { type YieldAccountOpportunity } from './types';
@@ -31,6 +33,7 @@ type EarnYieldAccountOpportunityProps = {
 
 export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpportunityProps) => {
     const dispatch = useDispatch();
+    const analytics = useAnalytics();
     const { CryptoAmountFormatter } = useFormatters();
     const { translationString } = useTranslation();
     const [isFirmwareModalOpen, setIsFirmwareModalOpen] = useState(false);
@@ -112,6 +115,17 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
             return;
         }
 
+        analytics.report({
+            type: events.yieldNavigateEvent.name,
+            payload: {
+                action: 'continue',
+                from: 'earn-dashboard',
+                to: 'supply-in-a-nutshell-modal',
+                networkSymbol: opportunity.account.symbol,
+                contractAddress: opportunity.vault.token.address,
+            },
+        });
+
         dispatch(
             openModal({
                 type: 'earn-in-a-nutshell',
@@ -138,6 +152,17 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
             return;
         }
 
+        analytics.report({
+            type: events.yieldNavigateEvent.name,
+            payload: {
+                action: 'continue',
+                from: 'earn-dashboard',
+                to: 'supply-form',
+                networkSymbol: opportunity.account.symbol,
+                contractAddress: opportunity.vault.token.address,
+            },
+        });
+
         dispatch(
             goto({
                 routeName: 'earn-supply',
@@ -160,6 +185,17 @@ export const EarnYieldAccountOpportunity = ({ opportunity }: EarnYieldAccountOpp
 
             return;
         }
+
+        analytics.report({
+            type: events.yieldNavigateEvent.name,
+            payload: {
+                action: 'continue',
+                from: 'earn-dashboard',
+                to: 'withdraw-form',
+                networkSymbol: opportunity.account.symbol,
+                contractAddress: opportunity.vault.token.address,
+            },
+        });
 
         dispatch(
             goto({

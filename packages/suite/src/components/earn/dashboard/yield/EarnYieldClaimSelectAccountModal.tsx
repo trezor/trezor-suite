@@ -1,3 +1,4 @@
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
 import { type Account, type BaseCurrencyAmount } from '@suite-common/wallet-types';
@@ -6,6 +7,7 @@ import { CoinLogo } from '@trezor/product-components';
 
 import { AccountLabel } from 'src/components/suite/AccountLabel';
 import { Address } from 'src/components/suite/Address';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 export type EarnYieldClaimableAccount = {
     account: Account;
@@ -23,17 +25,48 @@ export const EarnYieldClaimSelectAccountModal = ({
     onSelect,
     onClose,
 }: EarnYieldClaimSelectAccountModalProps) => {
+    const analytics = useAnalytics();
     const { BaseCurrencyAmountFormatter } = useFormatters();
+
+    const handleOnSelect = (claimableAccount: EarnYieldClaimableAccount) => {
+        analytics.report({
+            type: events.yieldNavigateEvent.name,
+            payload: {
+                action: 'continue',
+                from: 'claim-select-account-modal',
+                to: 'claim-form',
+                networkSymbol: claimableAccount.account.symbol,
+            },
+        });
+
+        onSelect(claimableAccount);
+    };
+
+    const handleOnCancel = () => {
+        analytics.report({
+            type: events.yieldNavigateEvent.name,
+            payload: {
+                action: 'cancel',
+                from: 'claim-select-account-modal',
+                to: 'claim-select-account-modal',
+            },
+        });
+
+        onClose();
+    };
 
     return (
         <Modal
             heading={<Translation id="TR_EARN_YIELD_CLAIM_MODAL_TITLE" />}
             description={<Translation id="TR_EARN_YIELD_CLAIM_MODAL_SUBTITLE" />}
-            onCancel={onClose}
+            onCancel={handleOnCancel}
         >
             <CardList>
                 {claimableAccounts.map(claimable => (
-                    <CardList.Item key={claimable.account.key} onClick={() => onSelect(claimable)}>
+                    <CardList.Item
+                        key={claimable.account.key}
+                        onClick={() => handleOnSelect(claimable)}
+                    >
                         <Row gap={16} flex="1" overflow="hidden">
                             <CoinLogo symbol={claimable.account.symbol} size={32} type="token" />
                             <Column flex="1" overflow="hidden" gap={2} alignItems="flex-start">

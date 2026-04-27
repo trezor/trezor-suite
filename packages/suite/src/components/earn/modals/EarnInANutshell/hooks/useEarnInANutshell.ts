@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { openModal } from '@suite/modal';
 import { type YieldDto, useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
 import {
-    type EarnFlow,
+    EarnFlow,
     type EarnModalAction,
     type EarnProvider,
     type EarnYieldContext,
@@ -63,6 +63,8 @@ export const useEarnInANutshell = ({
             );
         }
 
+        if (flow === EarnFlow.Yield) return;
+
         analytics.report({
             type: earnFlowToEventTypeMap[flow],
             payload: {
@@ -75,6 +77,8 @@ export const useEarnInANutshell = ({
 
     const onCancelClick = () => {
         onCancel();
+
+        if (flow === EarnFlow.Yield) return;
 
         analytics.report({
             type: earnFlowToEventTypeMap[flow],

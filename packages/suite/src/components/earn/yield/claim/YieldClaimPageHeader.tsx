@@ -1,3 +1,4 @@
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { type Account } from '@suite-common/wallet-types';
@@ -7,6 +8,7 @@ import { AccountLabel } from 'src/components/suite/AccountLabel';
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 import { BasicName } from 'src/components/suite/layouts/SuiteLayout/PageHeader/PageNames/BasicName';
 import { useDispatch } from 'src/hooks/suite';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 type YieldClaimPageHeaderProps = {
     account?: Account;
@@ -14,8 +16,19 @@ type YieldClaimPageHeaderProps = {
 
 export const YieldClaimPageHeader = ({ account }: YieldClaimPageHeaderProps) => {
     const dispatch = useDispatch();
+    const analytics = useAnalytics();
 
     const onBackClick = () => {
+        analytics.report({
+            type: events.yieldNavigateEvent.name,
+            payload: {
+                action: 'continue',
+                from: `claim-form`,
+                to: 'earn-dashboard',
+                networkSymbol: account?.symbol,
+            },
+        });
+
         dispatch(goto({ routeName: 'suite-earn' }));
     };
 

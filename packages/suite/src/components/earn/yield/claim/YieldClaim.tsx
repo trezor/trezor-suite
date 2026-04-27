@@ -1,10 +1,13 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { ChainAddressKey } from '@suite-common/earn-stablecoin-api';
 import { type Account } from '@suite-common/wallet-types';
 import { Banner, Button, Card, Column, Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
+
+import { useAnalytics } from 'src/support/useAnalytics';
 
 import { YieldRewardsList } from './YieldRewardsList';
 import { useMerkleRewards } from '../../dashboard/yield/hooks/useMerkleRewards';
@@ -15,6 +18,8 @@ type YieldClaimProps = {
 };
 
 export const YieldClaim = ({ account }: YieldClaimProps) => {
+    const analytics = useAnalytics();
+
     const [isClaimComplete, setIsClaimComplete] = useState(false);
 
     const merkleRewardsSources = useMemo(
@@ -38,6 +43,37 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
                 rewardList.filter(reward => new BigNumber(reward.claimable).gt(0)),
             );
     }, [account, merkleRewardsQuery.isSuccess, rewards]);
+
+    // TODO: update when claim is properly implemented
+    const handleOnClaim = () => {
+        analytics.report({
+            type: events.yieldClaimEvent.name,
+            payload: {
+                action: 'continue',
+                type: 'claim',
+                networkSymbol: account?.symbol,
+            },
+        });
+
+        setIsClaimComplete(true);
+    };
+
+    // trigger success analytics event
+    // TODO: update when claim is properly implemented
+    useEffect(() => {
+        if (isClaimComplete) {
+            analytics.report({
+                type: events.yieldClaimEvent.name,
+                payload: {
+                    action: 'continue',
+                    type: 'success',
+                    networkSymbol: account?.symbol,
+                },
+            });
+        }
+    }, [isClaimComplete, account?.symbol, analytics]);
+
+    // TODO: add error analytics event when claim is properly implemented
 
     if (!account) {
         return null;
@@ -85,7 +121,7 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
                     size="large"
                     width="100%"
                     isDisabled={merkleRewardsQuery.isLoading || claimableRewards.length === 0}
-                    onClick={() => setIsClaimComplete(true)}
+                    onClick={handleOnClaim}
                 >
                     <Translation id="TR_EARN_YIELD_CLAIM" />
                 </Button>

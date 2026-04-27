@@ -1,3 +1,4 @@
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { type EarnParams, goto } from '@suite/router';
@@ -13,6 +14,7 @@ import { AssetLogo } from '@trezor/product-components';
 import { AccountLabel } from 'src/components/suite';
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 import { useDispatch } from 'src/hooks/suite';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 import { useAllYieldOpportunities } from '../../dashboard/yield/hooks/useAllYieldOpportunities';
 
@@ -24,6 +26,7 @@ interface YieldPageHeaderProps {
 
 export const YieldPageHeader = ({ analyticsStep, account, routeParams }: YieldPageHeaderProps) => {
     const dispatch = useDispatch();
+    const analytics = useAnalytics();
     const { yieldOpportunities } = useAllYieldOpportunities();
     const vault = routeParams
         ? yieldOpportunities.find(opportunity => opportunity.id === routeParams.yieldId)
@@ -32,6 +35,23 @@ export const YieldPageHeader = ({ analyticsStep, account, routeParams }: YieldPa
     const networkSymbol = account?.symbol;
 
     const onBackClick = () => {
+        analytics.report({
+            type: events.yieldNavigateEvent.name,
+            payload: {
+                action: 'continue',
+                from: (() => {
+                    switch (analyticsStep) {
+                        case 'yield-supply':
+                            return 'supply-form';
+                        case 'yield-withdraw':
+                            return 'withdraw-form';
+                    }
+                })(),
+                to: 'earn-dashboard',
+                networkSymbol: account?.symbol,
+            },
+        });
+
         dispatch(goto({ routeName: 'suite-earn' }));
     };
 

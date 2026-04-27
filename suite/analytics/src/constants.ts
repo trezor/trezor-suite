@@ -105,7 +105,10 @@ export enum EventType {
     StakingStake = 'staking/stake',
     StakingUnstake = 'staking/unstake',
     StakingUpdateProvider = 'staking/update-provider',
-    StakingYield = 'staking/yield',
+    YieldNavigate = 'yield/navigate',
+    YieldSupply = 'yield/supply',
+    YieldWithdraw = 'yield/withdraw',
+    YieldClaim = 'yield/claim',
     // eslint-disable-next-line local-rules/analytics-event-name
     SuiteReady = 'suite-ready',
     // eslint-disable-next-line local-rules/analytics-event-name

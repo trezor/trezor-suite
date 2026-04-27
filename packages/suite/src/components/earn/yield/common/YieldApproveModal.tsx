@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 
+import { events } from '@suite/analytics';
 import { toTokenCryptoId } from '@suite-common/trading';
 import { type Account } from '@suite-common/wallet-types';
 import { getAssetLogoUrl } from '@trezor/asset-utils';
@@ -8,6 +9,7 @@ import { exhaustive } from '@trezor/type-utils';
 import { ApproveModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/AllowanceModals/ApproveModal';
 import { RevokeModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/AllowanceModals/RevokeModal';
 import { useAllowanceContext } from 'src/hooks/wallet/allowance';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 import { EARN_PROVIDER_METADATA } from '../../providers/providerMetadata';
 
@@ -32,6 +34,8 @@ export const YieldApproveModal = ({
     onCancel,
     onSuccess,
 }: YieldApproveModalProps) => {
+    const analytics = useAnalytics();
+
     const {
         state: { isApproveModalOpen, isRevokeModalOpen, openApproveModal, openRevokeModal },
         tx: { approvalTxid, setApprovalTxid },
@@ -73,6 +77,58 @@ export const YieldApproveModal = ({
         setApprovalTxid(null);
     }, [approvalTxid, onSuccess, setApprovalTxid]);
 
+    const handleOnApproveConfirm = () => {
+        analytics.report({
+            type: events.yieldSupplyEvent.name,
+            payload: {
+                type: 'approve-modal',
+                action: 'continue',
+                networkSymbol: account.symbol,
+                contractAddress,
+            },
+        });
+    };
+
+    const handleOnApproveCancel = () => {
+        analytics.report({
+            type: events.yieldSupplyEvent.name,
+            payload: {
+                type: 'approve-modal',
+                action: 'cancel',
+                networkSymbol: account.symbol,
+                contractAddress,
+            },
+        });
+
+        onCancel();
+    };
+
+    const handleOnRevokeConfirm = () => {
+        analytics.report({
+            type: events.yieldSupplyEvent.name,
+            payload: {
+                type: 'revoke-modal',
+                action: 'continue',
+                networkSymbol: account.symbol,
+                contractAddress,
+            },
+        });
+    };
+
+    const handleOnRevokeCancel = () => {
+        analytics.report({
+            type: events.yieldSupplyEvent.name,
+            payload: {
+                type: 'revoke-modal',
+                action: 'cancel',
+                networkSymbol: account.symbol,
+                contractAddress,
+            },
+        });
+
+        onCancel();
+    };
+
     if (txType === 'approve' && isApproveModalOpen) {
         return (
             <ApproveModal
@@ -82,7 +138,8 @@ export const YieldApproveModal = ({
                 provider={provider}
                 spender={spender}
                 logoSourceType="url"
-                onCancel={onCancel}
+                onCancel={handleOnApproveCancel}
+                onConfirm={handleOnApproveConfirm}
             />
         );
     }
@@ -96,7 +153,8 @@ export const YieldApproveModal = ({
                 spender={spender}
                 logoSourceType="url"
                 preapprovedAmount={preapprovedAmount}
-                onCancel={onCancel}
+                onCancel={handleOnRevokeCancel}
+                onConfirm={handleOnRevokeConfirm}
             />
         );
     }

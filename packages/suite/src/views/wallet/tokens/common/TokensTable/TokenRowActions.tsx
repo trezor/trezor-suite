@@ -135,6 +135,17 @@ const TokenRowBasicActions = ({
         const yieldId = availableVault.id;
         const contractAddress = availableVault.token.address;
 
+        analytics.report({
+            type: events.yieldNavigateEvent.name,
+            payload: {
+                action: 'continue',
+                from: 'account-defi-tokens',
+                to: 'supply-form',
+                networkSymbol: account.symbol,
+                contractAddress,
+            },
+        });
+
         dispatch(
             goto({
                 routeName: 'earn-supply',
@@ -152,6 +163,17 @@ const TokenRowBasicActions = ({
 
         const yieldId = availableVault.id;
         const contractAddress = availableVault.token.address;
+
+        analytics.report({
+            type: events.yieldNavigateEvent.name,
+            payload: {
+                action: 'continue',
+                from: 'account-defi-tokens',
+                to: 'withdraw-form',
+                networkSymbol: account.symbol,
+                contractAddress,
+            },
+        });
 
         dispatch(
             goto({

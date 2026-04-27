@@ -1,3 +1,4 @@
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import {
     EarnFlow,
@@ -10,6 +11,7 @@ import { type Account } from '@suite-common/wallet-types';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 
 import { useSelector } from 'src/hooks/suite';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 import { EarnProviderConsentModalLayout } from './components/EarnProviderConsentModalLayout';
 import { YieldProviderConsentBanners } from './components/YieldProviderConsentBanners';
@@ -30,6 +32,8 @@ export const YieldEarnProviderConsentModal = ({
     provider,
     yieldContext,
 }: YieldEarnProviderConsentModalProps) => {
+    const analytics = useAnalytics();
+
     const tokenContractAddress = yieldContext?.tokenContractAddress;
     const normalizedTokenContractAddress = tokenContractAddress
         ? getContractAddressForNetworkSymbol(account.symbol, tokenContractAddress)
@@ -61,6 +65,36 @@ export const YieldEarnProviderConsentModal = ({
     const supplySymbol = tokenSymbolFromAccount ?? tokenSymbolFromTrading ?? displaySymbol;
     const providerName = getEarnProviderName(provider);
 
+    const handleOnConfirm = () => {
+        analytics.report({
+            type: events.yieldNavigateEvent.name,
+            payload: {
+                action: 'continue',
+                from: 'supply-morpho-modal',
+                to: 'supply-form',
+                networkSymbol: account.symbol,
+                contractAddress: yieldContext?.tokenContractAddress,
+            },
+        });
+
+        proceedToSupply();
+    };
+
+    const handleOnCancel = () => {
+        analytics.report({
+            type: events.yieldNavigateEvent.name,
+            payload: {
+                action: 'cancel',
+                from: 'supply-morpho-modal',
+                to: 'supply-morpho-modal',
+                networkSymbol: account.symbol,
+                contractAddress: yieldContext?.tokenContractAddress,
+            },
+        });
+
+        onCancelClick();
+    };
+
     return (
         <EarnProviderConsentModalLayout
             heading={<Translation id="TR_EARN_SUPPLY_TOKEN" values={{ symbol: supplySymbol }} />}
@@ -83,8 +117,8 @@ export const YieldEarnProviderConsentModal = ({
                     values={{ providerName }}
                 />
             }
-            onConfirm={proceedToSupply}
-            onCancel={onCancelClick}
+            onConfirm={handleOnConfirm}
+            onCancel={handleOnCancel}
             networkType={account.networkType}
         >
             <VotingDelegations account={account} />
