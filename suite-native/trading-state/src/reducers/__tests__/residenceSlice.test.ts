@@ -7,6 +7,7 @@ describe('residenceSlice', () => {
         const state = residenceReducer(undefined, { type: 'unknown-action' });
         expect(state).toEqual({
             country: undefined,
+            countrySubdivision: undefined,
             wasOnboardingVisited: false,
         });
     });
@@ -21,6 +22,24 @@ describe('residenceSlice', () => {
             );
 
             expect(state.country).toBe(country);
+            expect(state.countrySubdivision).toBeUndefined();
+        });
+    });
+
+    describe('setResidenceLocation', () => {
+        it('should set residence country and subdivision', () => {
+            const country: TradingCountryCode = 'US';
+
+            const state = residenceReducer(
+                undefined,
+                residenceActions.setResidenceLocation({
+                    country,
+                    countrySubdivision: 'CA',
+                }),
+            );
+
+            expect(state.country).toBe(country);
+            expect(state.countrySubdivision).toBe('CA');
         });
     });
 

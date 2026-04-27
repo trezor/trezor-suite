@@ -375,7 +375,10 @@ describe('tradingSlice', () => {
     describe('residence slice', () => {
         it('should handle residence actions', () => {
             const actions = [
-                residenceActions.setResidenceCountry('PL'),
+                residenceActions.setResidenceLocation({
+                    country: 'US',
+                    countrySubdivision: 'CA',
+                }),
                 residenceActions.setOnboardingVisited(),
             ];
 
@@ -384,7 +387,8 @@ describe('tradingSlice', () => {
             expect(state).toEqual(
                 expect.objectContaining({
                     residence: {
-                        country: 'PL',
+                        country: 'US',
+                        countrySubdivision: 'CA',
                         wasOnboardingVisited: true,
                     },
                 }),

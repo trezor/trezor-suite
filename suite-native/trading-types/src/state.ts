@@ -11,6 +11,7 @@ import type { ProviderConfirmationStatus } from './general';
 
 export type TradingResidenceState = {
     country: TradingCountryCode | undefined;
+    countrySubdivision: string | undefined;
     wasOnboardingVisited: boolean;
 };
 

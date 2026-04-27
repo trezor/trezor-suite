@@ -14,6 +14,7 @@ import { type TradingLocationFormValues } from '../../types/tradingLocationForm'
 export type CountryOfResidencePickerProps = {
     testID: string;
     context: CountryChangeContext;
+    noBottomBorder?: boolean;
 };
 
 const reportCountryChange = (
@@ -29,7 +30,11 @@ const reportCountryChange = (
     });
 };
 
-export const CountryOfResidencePicker = ({ testID, context }: CountryOfResidencePickerProps) => {
+export const CountryOfResidencePicker = ({
+    testID,
+    context,
+    noBottomBorder = true,
+}: CountryOfResidencePickerProps) => {
     const { translate } = useTranslate();
     const analytics = useAnalytics();
     const { isSheetVisible, hideSheet, showSheet } = useBottomSheetControls();
@@ -38,20 +43,18 @@ export const CountryOfResidencePicker = ({ testID, context }: CountryOfResidence
     const selectedValue = watch('country');
     const selectedFlag = getCountryFlag(selectedValue?.value);
 
-    const setSelectedValue = useCallback(
-        (value: TradingLocationFormValues['country']) => setValue('country', value),
-        [setValue],
-    );
-
     const handleCountrySelect = useCallback(
         (country: TradingLocationFormValues['country']) => {
-            setSelectedValue(country);
+            const hasCountryChanged = selectedValue?.value !== country?.value;
 
-            if (selectedValue?.value !== country?.value) {
+            setValue('country', country);
+
+            if (hasCountryChanged) {
+                setValue('countrySubdivision', undefined);
                 reportCountryChange(context, analytics);
             }
         },
-        [setSelectedValue, selectedValue?.value, context, analytics],
+        [setValue, selectedValue?.value, context, analytics],
     );
 
     const valueTestID = testID ? `${testID}/value` : undefined;
@@ -62,7 +65,7 @@ export const CountryOfResidencePicker = ({ testID, context }: CountryOfResidence
                 title={translate('tradingResidence.locationSettings.countryOfResidence')}
                 onPress={showSheet}
                 testID={testID}
-                noBottomBorder
+                noBottomBorder={noBottomBorder}
             >
                 {selectedValue ? (
                     <HStack

@@ -11,6 +11,19 @@ const residenceSlice = createSlice({
     reducers: {
         setResidenceCountry(state, action: { payload: TradingCountryCode }) {
             state.country = action.payload;
+            state.countrySubdivision = undefined;
+        },
+        setResidenceLocation(
+            state,
+            action: {
+                payload: {
+                    country: TradingCountryCode;
+                    countrySubdivision?: string;
+                };
+            },
+        ) {
+            state.country = action.payload.country;
+            state.countrySubdivision = action.payload.countrySubdivision;
         },
         setOnboardingVisited(state) {
             state.wasOnboardingVisited = true;
