@@ -99,11 +99,12 @@ const patchFieldForDecode = (field: DescField, value: unknown) => {
 };
 
 const transformSchemaFields = (
+    operation: 'encode' | 'decode',
     schema: DescMessage,
     sourceData: Record<string, unknown> | undefined,
-    transformField: (field: DescField, value: unknown) => unknown,
 ) => {
     const transformedData: Record<string, unknown> = {};
+    const transformField = operation === 'encode' ? patchFieldForEncode : patchFieldForDecode;
 
     schema.fields.forEach(schemaField => {
         const fieldValue = sourceData?.[schemaField.name];
@@ -114,9 +115,9 @@ const transformSchemaFields = (
             } else if (schemaField.listKind === 'message') {
                 transformedData[schemaField.name] = fieldValue.map(item =>
                     transformSchemaFields(
+                        operation,
                         schemaField.message,
                         item as Record<string, unknown> | undefined,
-                        transformField,
                     ),
                 );
             } else if (schemaField.listKind === 'scalar') {
@@ -127,13 +128,16 @@ const transformSchemaFields = (
                 transformedData[schemaField.name] = fieldValue; // enum
             }
         } else if (schemaField.fieldKind === 'message') {
-            transformedData[schemaField.name] = fieldValue
-                ? transformSchemaFields(
-                      schemaField.message,
-                      fieldValue as Record<string, unknown>,
-                      transformField,
-                  )
-                : undefined;
+            if (!fieldValue) {
+                // [compatibility]: protobufjs decode returns {} for absent optional message fields.
+                transformedData[schemaField.name] = operation === 'decode' ? {} : undefined;
+            } else {
+                transformedData[schemaField.name] = transformSchemaFields(
+                    operation,
+                    schemaField.message,
+                    fieldValue as Record<string, unknown>,
+                );
+            }
         } else if (schemaField.fieldKind === 'scalar') {
             transformedData[schemaField.name] = transformField(schemaField, fieldValue);
         } else if (schemaField.fieldKind === 'enum') {
@@ -264,7 +268,7 @@ export const ProtobufManager = () => {
     const encode = (messageName: string, data: Record<string, unknown>) => {
         const { schema, messageType } = findSchema(messageName);
 
-        const normalizedPayload = transformSchemaFields(schema, data, patchFieldForEncode);
+        const normalizedPayload = transformSchemaFields('encode', schema, data);
         const messageJson = fromJson(schema, normalizedPayload as Parameters<typeof fromJson>[1]);
         const encodedBytes = toBinary(schema, messageJson);
 
@@ -288,11 +292,7 @@ export const ProtobufManager = () => {
 
         const decoded = fromBinary(schema, patchedPayload, { readUnknownFields: false }); // , { readUnknownFields: true }
         const json = toJson(schema, decoded, { useProtoFieldName: true });
-        const message = transformSchemaFields(
-            schema,
-            json as Record<string, unknown>,
-            patchFieldForDecode,
-        );
+        const message = transformSchemaFields('decode', schema, json as Record<string, unknown>);
 
         return {
             type: messageName,
