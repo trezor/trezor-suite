@@ -19,6 +19,7 @@ export class WindowWindowChannel<
 > extends AbstractMessageChannel<IncomingMessages> {
     _windowHere: Window;
     _listener: typeof WindowWindowChannel.prototype.listener;
+    _origin: string;
 
     constructor({
         windowHere,
@@ -43,10 +44,25 @@ export class WindowWindowChannel<
 
         this._listener = this.listener.bind(this);
         this._windowHere = windowHere;
+        this._origin = origin;
         this.connect();
     }
 
     listener(event: MessageEvent<Message<IncomingMessages>>) {
+        // Only accept messages from the expected peer origin. Without this check
+        // any window with a reference to `windowHere` (e.g. an opener or embedder)
+        // could inject messages with spoofed `channel` metadata, since
+        // `AbstractMessageChannel.onMessage` only validates the channel name strings,
+        // which are well-known constants. Reject the special "null" origin
+        // (sandboxed iframes / file://) outright.
+        if (event.origin !== this._origin || event.origin === 'null') {
+            this.logger?.warn(
+                `WindowWindowChannel: ignoring message from unexpected origin "${event.origin}", expected "${this._origin}"`,
+            );
+
+            return;
+        }
+
         const message = {
             ...event.data,
             success: true,
