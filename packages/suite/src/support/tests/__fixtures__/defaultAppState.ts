@@ -54,6 +54,7 @@ export const initialAppState: AppState = {
         view: 'GUIDE_DEFAULT',
         indexNode: null,
         currentNode: null,
+        supportConsentAutoOpen: null,
     },
     messageSystem: messageSystemInitialState,
     modal: {
