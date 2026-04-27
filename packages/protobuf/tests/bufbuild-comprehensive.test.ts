@@ -507,6 +507,58 @@ describe('ProtobufManager comprehensive tests', () => {
         });
     });
 
+    describe('TxRequest with undefined optional fields', () => {
+        const messageName = 'TxRequest';
+
+        const cases = [
+            {
+                description: 'encodes with all fields undefined',
+                data: {},
+            },
+            {
+                description: 'encodes with only request_type',
+                data: { request_type: 0 },
+            },
+            {
+                description: 'encodes with details but no serialized',
+                data: {
+                    request_type: 0,
+                    details: { request_index: 0 },
+                },
+            },
+            {
+                description: 'encodes with serialized but no details',
+                data: {
+                    request_type: 0,
+                    serialized: { serialized_tx: 'deadbeef' },
+                },
+            },
+            {
+                description: 'encodes with empty nested messages',
+                data: {
+                    request_type: 0,
+                    details: {},
+                    serialized: {},
+                },
+            },
+        ];
+
+        cases.forEach(({ description, data }) => {
+            it(`${description}`, () => {
+                const newResult = protobufManager.encode(messageName, data);
+                const oldResult = encodeProtobufJs(lookupType(messageName), data);
+
+                expect(newResult.message.compare(oldResult)).toEqual(0);
+
+                const decoded = protobufManager.decode(messageName, newResult.message);
+
+                const decoded1 = decodeProtobufJs(lookupType(messageName), newResult.message);
+                //expect(decoded.message).toEqual(data);
+                expect(decoded1).toEqual(decoded.message);
+            });
+        });
+    });
+
     describe('error handling', () => {
         it('throws error for unknown message type on encode', () => {
             expect(() => {
