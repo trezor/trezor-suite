@@ -19,7 +19,15 @@ import { type Account, type WalletAccountTransaction } from 'src/types/wallet';
 import { NoSearchResults } from './NoSearchResults';
 import { SkeletonTransactionItem } from './SkeletonTransactionItem';
 import { TransactionGroupedList } from './TransactionGroupedList';
-import { TransactionListActions } from './TransactionListActions/TransactionListActions';
+import { FilterChips } from './TransactionListActions/FilterChips';
+import {
+    TransactionListActions,
+    type TransactionListActionsRef,
+} from './TransactionListActions/TransactionListActions';
+import {
+    applyNonTextFilters,
+    useTransactionFilters,
+} from './TransactionListActions/useTransactionFilters';
 import { PendingGroupHeader } from './TransactionsGroup/PendingGroupHeader';
 import { useFetchTransactions } from './useFetchTransactions';
 
@@ -58,19 +66,33 @@ export const TransactionList = ({
 
     const { fetchPage, fetchedAll, fetchAll } = useFetchTransactions(account, allTransactions);
 
-    // Search
-    const [searchQuery, setSearchQuery] = useState('');
+    // Search & filters
+    const {
+        conditions,
+        logics,
+        fulltext,
+        setFulltext,
+        addCondition,
+        updateCondition,
+        removeCondition,
+        toggleLogic,
+        clearConditions,
+        searchQuery,
+    } = useTransactionFilters();
+
     const [searchedTransactions, setSearchedTransactions] = useState(transactions);
 
     const sectionRef = useRef<HTMLDivElement>(null);
+    const actionsRef = useRef<TransactionListActionsRef>(null);
 
     useDebounce(
         () => {
-            const results = advancedSearchTransactions(transactions, searchLabels, searchQuery);
+            const preFiltered = applyNonTextFilters(transactions, conditions);
+            const results = advancedSearchTransactions(preFiltered, searchLabels, searchQuery);
             setSearchedTransactions(results);
         },
         200,
-        [transactions, searchQuery, searchLabels],
+        [transactions, conditions, searchQuery, searchLabels],
     );
 
     useEffect(() => {
@@ -149,16 +171,31 @@ export const TransactionList = ({
             heading={<Translation id="TR_ALL_TRANSACTIONS" />}
             actions={
                 <TransactionListActions
+                    ref={actionsRef}
                     account={account}
-                    searchQuery={searchQuery}
-                    setSearch={setSearchQuery}
+                    searchQuery={fulltext}
+                    setSearch={setFulltext}
                     setSelectedPage={setSelectedPage}
                     isExportable={isExportable}
                     isTxFilteringEnabled={isTxFilteringEnabled}
+                    conditions={conditions}
+                    logics={logics}
+                    onAddCondition={addCondition}
+                    onUpdateCondition={updateCondition}
+                    onClearConditions={clearConditions}
                 />
             }
             data-testid="@wallet/accounts/transaction-list"
         >
+            {conditions.length > 0 && (
+                <FilterChips
+                    conditions={conditions}
+                    logics={logics}
+                    onRemove={removeCondition}
+                    onToggleLogic={toggleLogic}
+                    onEditCondition={id => actionsRef.current?.editCondition(id)}
+                />
+            )}
             <Column gap={32} padding={{ top: 16 }}>
                 {/* TODO: show this skeleton also while searching in txs */}
                 {isLoading ||

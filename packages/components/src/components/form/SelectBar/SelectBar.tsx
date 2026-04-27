@@ -188,14 +188,16 @@ export const SelectBar = <V extends ValueTypes>({
 
             <Options $elevation={elevation}>
                 <Box margin={spacings.xxs} position={{ type: 'relative' }}>
-                    <Puck
-                        $optionsCount={options.length}
-                        $selectedIndex={selectedIndex}
-                        $elevation={nextElevation[elevation]}
-                        $orientation={isVertical ? 'vertical' : orientation}
-                        tabIndex={0}
-                        onKeyDown={handleKeyboardNav}
-                    />
+                    {selectedOptionIn && (
+                        <Puck
+                            $optionsCount={options.length}
+                            $selectedIndex={selectedIndex}
+                            $elevation={nextElevation[elevation]}
+                            $orientation={isVertical ? 'vertical' : orientation}
+                            tabIndex={0}
+                            onKeyDown={handleKeyboardNav}
+                        />
+                    )}
                     <Grid columns={isVertical ? 1 : options.length} gap={GAP}>
                         {options.map(option => {
                             const isSelected =
