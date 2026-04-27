@@ -92,12 +92,8 @@ export const ConfigProvider = ({
         isValidated = true;
     }
     const extendedConfig: Config = {
-        newNextLinkBehavior: false,
         ...theme,
         flexsearch: pageOpts.flexsearch,
-        ...(typeof pageOpts.newNextLinkBehavior === 'boolean' && {
-            newNextLinkBehavior: pageOpts.newNextLinkBehavior,
-        }),
         title: pageOpts.title,
         frontMatter: pageOpts.frontMatter,
     };

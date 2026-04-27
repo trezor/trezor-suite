@@ -3,7 +3,6 @@ auto_sections: false
 icon: lightning
 ---
 
-import Link from 'next/link';
 import { Card, Cards, Steps, Tabs } from 'nextra/components';
 
 import { Button, CollapsibleBox } from '@trezor/components';
@@ -21,6 +20,7 @@ import {
     SdkTag,
     SectionCard,
 } from '../components/IndexPageComponents';
+import { LinkButton } from '../components/LinkButton';
 import ZoomableIllustration from '../components/ZoomableIllustration';
 import IconExtension from '../components/icons/IconExtension';
 import IconMobile from '../components/icons/IconMobile';
@@ -80,17 +80,14 @@ import IconWeb from '../components/icons/IconWeb';
         <IconNode />
         <SdkName>Node.js</SdkName>
         <SdkTag></SdkTag>
-        <Link href="/readme/connect" passHref legacyBehavior>
-            <Button
-                intent="neutral"
-                priority="secondary"
-                size="small"
-                iconLeft="bookOpenText"
-                target="_self"
-                href="#">
-                README
-            </Button>
-        </Link>
+        <LinkButton
+            intent="neutral"
+            priority="secondary"
+            size="small"
+            iconLeft="bookOpenText"
+            href="/readme/connect">
+            README
+        </LinkButton>
         <Button
             intent="neutral"
             priority="secondary"
@@ -179,17 +176,14 @@ import IconWeb from '../components/icons/IconWeb';
         <IconWeb />
         <SdkName>Web</SdkName>
         <SdkTag>DOM required</SdkTag>
-        <Link href="/readme/connect-web" passHref legacyBehavior>
-            <Button
-                intent="neutral"
-                priority="secondary"
-                size="small"
-                iconLeft="bookOpenText"
-                target="_self"
-                href="#">
-                README
-            </Button>
-        </Link>
+        <LinkButton
+            intent="neutral"
+            priority="secondary"
+            size="small"
+            iconLeft="bookOpenText"
+            href="/readme/connect-web">
+            README
+        </LinkButton>
         <Button
             intent="neutral"
             priority="secondary"
@@ -293,17 +287,14 @@ import IconWeb from '../components/icons/IconWeb';
         <IconExtension />
         <SdkName>Web extension</SdkName>
         <SdkTag>Using service worker</SdkTag>
-        <Link href="/readme/connect-webextension" passHref legacyBehavior>
-            <Button
-                intent="neutral"
-                priority="secondary"
-                size="small"
-                iconLeft="bookOpenText"
-                target="_self"
-                href="#">
-                README
-            </Button>
-        </Link>
+        <LinkButton
+            intent="neutral"
+            priority="secondary"
+            size="small"
+            iconLeft="bookOpenText"
+            href="/readme/connect-webextension">
+            README
+        </LinkButton>
         <Button
             intent="neutral"
             priority="secondary"
@@ -329,18 +320,15 @@ import IconWeb from '../components/icons/IconWeb';
             allowing secure connection to Trezor hardware wallets.
             By the end, you'll have a fully functional web extension.
 
-            <Link href="/guides/webextension-implementation-tutorial" passHref legacyBehavior>
-                <Button
-                    intent="neutral"
-                    priority="secondary"
-                    className="nx-mt-4 nx-mb-8"
-                    size="small"
-                    iconLeft="bookOpenText"
-                    target="_self"
-                    href="#">
-                    Open Tutorial  →
-                </Button>
-            </Link>
+            <LinkButton
+                intent="neutral"
+                priority="secondary"
+                className="nx-mt-4 nx-mb-8"
+                size="small"
+                iconLeft="bookOpenText"
+                href="/guides/webextension-implementation-tutorial">
+                Open Tutorial  →
+            </LinkButton>
         </SdkDescription>
         <ExamplesAside>
             <ExampleHeading>Examples:</ExampleHeading>
@@ -426,17 +414,14 @@ import IconWeb from '../components/icons/IconWeb';
         <IconMobile />
         <SdkName>Mobile</SdkName>
         <SdkTag>Using deep linking</SdkTag>
-        <Link href="/readme/connect-mobile" passHref legacyBehavior>
-            <Button
-                intent="neutral"
-                priority="secondary"
-                size="small"
-                iconLeft="bookOpenText"
-                target="_self"
-                href="#">
-                README
-            </Button>
-        </Link>
+        <LinkButton
+            intent="neutral"
+            priority="secondary"
+            size="small"
+            iconLeft="bookOpenText"
+            href="/readme/connect-mobile">
+            README
+        </LinkButton>
         <Button
             intent="neutral"
             priority="secondary"
@@ -463,18 +448,15 @@ import IconWeb from '../components/icons/IconWeb';
 
             This can be done by implementing the following specification.
 
-            <Link href="/details/deeplinking" passHref legacyBehavior>
-                <Button
-                    intent="neutral"
-                    priority="secondary"
-                    className="nx-mt-4 nx-mb-8"
-                    size="small"
-                    iconRight="arrowRight"
-                    target="_self"
-                    href="#">
-                    Deep linking specification
-                </Button>
-            </Link>
+            <LinkButton
+                intent="neutral"
+                priority="secondary"
+                className="nx-mt-4 nx-mb-8"
+                size="small"
+                iconRight="arrowRight"
+                href="/details/deeplinking">
+                Deep linking specification
+            </LinkButton>
 
         </SdkDescription>
         <ExamplesAside>

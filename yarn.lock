@@ -15829,7 +15829,7 @@ __metadata:
     tailwindcss: "npm:^3.4.10"
     zod: "npm:4.3.6"
   peerDependencies:
-    next: ">=9.5.3"
+    next: ">=15.0.0"
     nextra: ^2.13.4
     react: 19.2.4
     react-dom: 19.2.4
