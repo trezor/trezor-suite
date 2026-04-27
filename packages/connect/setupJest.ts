@@ -1,12 +1,20 @@
 /* WARNING! This file should be imported ONLY in tests! */
 
 import type { Features } from '@trezor/connect-common';
+import { parseConnectSettings } from '@trezor/connect-common/src/data/connectSettings';
 import { firmwareAssets } from '@trezor/connect-data';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import type { FirmwareRelease } from '@trezor/device-utils';
 import { AbstractApiTransport } from '@trezor/transport';
 import type { UsbApi } from '@trezor/transport';
 import { versionUtils } from '@trezor/utils';
+
+import { DataManager } from './src/data/DataManager';
+
+// Initialize DataManager so tests reaching getSettings() (via BackendManager,
+// firmwareInfo, etc.) don't trip the pre-load() throw. With withAssets=false
+// the load is synchronous up to the first await, so fire-and-forget is safe.
+DataManager.load(parseConnectSettings({}), false, true);
 
 // mock of navigator.usb
 const createTransportApi = (override = {}) =>
