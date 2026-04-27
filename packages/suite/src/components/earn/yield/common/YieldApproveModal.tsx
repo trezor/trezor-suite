@@ -1,34 +1,25 @@
 import { useEffect, useRef } from 'react';
 
-import { useGetYieldProvider } from '@suite-common/earn-stablecoin-api';
 import { toTokenCryptoId } from '@suite-common/trading';
 import { type Account } from '@suite-common/wallet-types';
+import { getAssetLogoUrl } from '@trezor/asset-utils';
 import { exhaustive } from '@trezor/type-utils';
 
 import { ApproveModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/AllowanceModals/ApproveModal';
 import { RevokeModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/AllowanceModals/RevokeModal';
 import { useAllowanceContext } from 'src/hooks/wallet/allowance';
 
-import { type EarnProviderId, earnProviderMetadata } from '../../providers/providerMetadata';
+import { EARN_PROVIDER_METADATA } from '../../providers/providerMetadata';
 
 export type YieldApproveModalProps = {
     amount: string;
     contractAddress: string;
     account: Account;
     spender: string;
-    providerId?: string;
     preapprovedAmount?: string;
     txType: 'approve' | 'revoke' | 'revoke-only';
     onCancel: () => void;
     onSuccess: (txid: string) => void;
-};
-
-const getDefaultProviderName = (providerId?: string) => {
-    if (providerId && providerId in earnProviderMetadata) {
-        return earnProviderMetadata[providerId as EarnProviderId].name;
-    }
-
-    return providerId ?? earnProviderMetadata.morpho.name;
 };
 
 export const YieldApproveModal = ({
@@ -36,7 +27,6 @@ export const YieldApproveModal = ({
     contractAddress,
     account,
     spender,
-    providerId,
     preapprovedAmount,
     txType,
     onCancel,
@@ -47,14 +37,12 @@ export const YieldApproveModal = ({
         tx: { approvalTxid, setApprovalTxid },
     } = useAllowanceContext();
     const handledTxidRef = useRef<string | null>(null);
-    const defaultProviderName = getDefaultProviderName(providerId);
     const cryptoId = toTokenCryptoId(account.symbol, contractAddress);
-    const providerQuery = useGetYieldProvider(providerId);
-    const providerName = providerQuery.data?.data.name ?? defaultProviderName;
+
     const provider = {
-        name: providerName,
-        companyName: providerName,
-        logo: providerQuery.data?.data.logoURI ?? '',
+        name: EARN_PROVIDER_METADATA.morpho.name,
+        companyName: EARN_PROVIDER_METADATA.morpho.companyName,
+        logo: getAssetLogoUrl({ ...EARN_PROVIDER_METADATA.morpho.tokenLogo, size: 80 }),
         isActive: true,
     };
 
