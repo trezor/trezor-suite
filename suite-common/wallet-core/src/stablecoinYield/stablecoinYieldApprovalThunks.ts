@@ -157,7 +157,6 @@ export const openYieldApproveModal = ({
                 amount,
                 contractAddress,
                 spender,
-                providerId: flowData.vault.providerId,
                 preapprovedAmount,
                 txType,
             },

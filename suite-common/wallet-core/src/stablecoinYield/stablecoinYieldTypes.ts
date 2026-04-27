@@ -31,7 +31,6 @@ export type YieldApproveModalState = {
     amount: string;
     contractAddress: string;
     spender: string;
-    providerId?: string;
     preapprovedAmount?: string;
     txType: Extract<YieldPendingTransactionState['type'], 'approve' | 'revoke' | 'revoke-only'>;
 };
