@@ -1,3 +1,4 @@
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { RewardDtoYieldSource } from '@suite-common/earn-stablecoin-api';
 import {
@@ -11,6 +12,7 @@ import { isStakingNetworkType } from '@suite-common/wallet-utils';
 import { Divider } from '@trezor/components';
 
 import { getApyPercent } from 'src/components/earn/utils/earnApyUtils';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 import { EarnInANutshellModalLayout } from './components/EarnInANutshellModalLayout';
 import {
@@ -37,6 +39,8 @@ export const YieldEarnInANutshellModal = ({
     actionType,
     yieldContext,
 }: YieldEarnInANutshellModalProps) => {
+    const analytics = useAnalytics();
+
     const { handleAction, onCancelClick, vault } = useEarnInANutshell({
         flow: EarnFlow.Yield,
         provider,
@@ -69,12 +73,42 @@ export const YieldEarnInANutshellModal = ({
         },
     ];
 
+    const handleOnAction = () => {
+        analytics.report({
+            type: events.yieldNavigateEvent.name,
+            payload: {
+                action: 'continue',
+                from: 'supply-in-a-nutshell-modal',
+                to: 'supply-morpho-modal',
+                networkSymbol: account.symbol,
+                contractAddress: vault?.token.address,
+            },
+        });
+
+        handleAction();
+    };
+
+    const handleOnCancel = () => {
+        analytics.report({
+            type: events.yieldNavigateEvent.name,
+            payload: {
+                action: 'cancel',
+                from: 'supply-in-a-nutshell-modal',
+                to: 'supply-in-a-nutshell-modal',
+                networkSymbol: account.symbol,
+                contractAddress: vault?.token.address,
+            },
+        });
+
+        onCancelClick();
+    };
+
     return (
         <EarnInANutshellModalLayout
             heading={<Translation id="TR_EARN_SUPPLYING_IN_A_NUTSHELL" />}
-            onCancel={onCancelClick}
+            onCancel={handleOnCancel}
             actionType={actionType}
-            onAction={handleAction}
+            onAction={handleOnAction}
         >
             <YieldEarnInANutshellHighlights
                 supplySymbol={supplySymbol}

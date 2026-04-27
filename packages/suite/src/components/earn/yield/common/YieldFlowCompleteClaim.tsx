@@ -19,6 +19,7 @@ export const YieldFlowCompleteClaim = ({ rewards }: YieldFlowCompleteClaimProps)
 
     return (
         <YieldFlowComplete
+            type="claim"
             heading={<Translation id="TR_EARN_YIELD_CLAIM_COMPLETE" />}
             description={<Translation id="TR_EARN_YIELD_CLAIM_COMPLETE_DESCRIPTION" />}
         >

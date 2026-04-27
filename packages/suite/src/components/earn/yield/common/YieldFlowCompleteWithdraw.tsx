@@ -11,6 +11,7 @@ type YieldFlowCompleteWithdrawProps = {
 
 export const YieldFlowCompleteWithdraw = ({ input, output }: YieldFlowCompleteWithdrawProps) => (
     <YieldFlowComplete
+        type="withdraw"
         heading={<Translation id="TR_EARN_YIELD_WITHDRAW_COMPLETE" />}
         description={
             <Translation

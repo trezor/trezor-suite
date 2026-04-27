@@ -1,5 +1,6 @@
 import { type ReactNode } from 'react';
 
+import { events } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { type Rating, buildUserFeedbackData, sendFeedbackAction } from '@suite-common/feedback';
@@ -7,8 +8,10 @@ import { Button, Card, Column, Divider, Icon, IconCircle, Row, Text } from '@tre
 import { FeedbackCard } from '@trezor/product-components';
 
 import { useDispatch } from 'src/hooks/suite';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 type YieldFlowCompleteProps = {
+    type: 'supply' | 'withdraw' | 'claim';
     heading: ReactNode;
     description: ReactNode;
     showFeedback?: boolean;
@@ -16,15 +19,26 @@ type YieldFlowCompleteProps = {
 };
 
 export const YieldFlowComplete = ({
+    type,
     heading,
     description,
     showFeedback,
     children,
 }: YieldFlowCompleteProps) => {
     const dispatch = useDispatch();
+    const analytics = useAnalytics();
     const { translationString } = useTranslation();
 
     const handleBackToOverview = () => {
+        analytics.report({
+            type: events.yieldNavigateEvent.name,
+            payload: {
+                action: 'continue',
+                from: `${type}-form`,
+                to: 'earn-dashboard',
+            },
+        });
+
         dispatch(goto({ routeName: 'suite-earn' }));
     };
 

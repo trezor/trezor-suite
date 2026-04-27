@@ -15,6 +15,7 @@ type YieldFlowCompleteSupplyProps = {
 
 export const YieldFlowCompleteSupply = ({ input, output, apy }: YieldFlowCompleteSupplyProps) => (
     <YieldFlowComplete
+        type="supply"
         heading={<Translation id="TR_EARN_YIELD_SUPPLY_COMPLETE" />}
         description={<Translation id="TR_EARN_YIELD_SUPPLY_COMPLETE_DESCRIPTION" />}
         showFeedback

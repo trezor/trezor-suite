@@ -18,6 +18,7 @@ export const ANALYTICS_ALLOWED_DOMAINS = [
     'send',
     'settings',
     'staking',
+    'yield',
     'trading',
     'transaction',
     'wallet-connect',

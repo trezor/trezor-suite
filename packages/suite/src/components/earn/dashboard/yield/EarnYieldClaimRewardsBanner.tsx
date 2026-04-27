@@ -1,7 +1,10 @@
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
 import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Banner, Row, SkeletonRectangle } from '@trezor/components';
+
+import { useAnalytics } from 'src/support/useAnalytics';
 
 type EarnYieldClaimRewardsBannerProps = {
     value: BaseCurrencyAmount;
@@ -18,7 +21,21 @@ export const EarnYieldClaimRewardsBanner = ({
     isClaimDisabled,
     onClaim,
 }: EarnYieldClaimRewardsBannerProps) => {
+    const analytics = useAnalytics();
     const { BaseCurrencyAmountFormatter } = useFormatters();
+
+    const handleOnClaim = () => {
+        analytics.report({
+            type: events.yieldNavigateEvent.name,
+            payload: {
+                action: 'continue',
+                from: 'earn-dashboard',
+                to: 'claim-select-account-modal',
+            },
+        });
+
+        onClaim?.();
+    };
 
     return (
         <Banner
@@ -37,7 +54,7 @@ export const EarnYieldClaimRewardsBanner = ({
                 </Row>
             }
             rightContent={
-                <Banner.Button isDisabled={isClaimDisabled} onClick={onClaim}>
+                <Banner.Button isDisabled={isClaimDisabled} onClick={handleOnClaim}>
                     <Translation id="TR_EARN_CLAIM_REWARDS_BUTTON" />
                 </Banner.Button>
             }

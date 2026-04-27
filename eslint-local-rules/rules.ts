@@ -338,6 +338,7 @@ export const rules = {
                 'send',
                 'settings',
                 'staking',
+                'yield',
                 'trading',
                 'transaction',
                 'wallet-connect',
