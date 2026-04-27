@@ -2,32 +2,34 @@ import { type TimerId } from '@trezor/type-utils';
 
 import { type Deferred, createDeferred } from './createDeferred';
 
-type ManagedDeferred<T> = Deferred<T, number> & { deadline: number };
+type ManagedDeferred<T, ID extends string | number> = Deferred<T, ID> & { deadline: number };
 
-type DeferredManagerOptions = {
+type DeferredManagerOptions<ID extends string | number = number> = {
     /** default timeout for promises without explicitly specified timeout */
     timeout?: number;
     /** callback which is called whenever a promise time out, with its id */
-    onTimeout?: (promiseId: number) => void;
-    /** from which id should the promises start (for specific use case, should be removed in the future) */
+    onTimeout?: (promiseId: ID) => void;
+    /** custom ID generator; when provided, replaces the default incrementing counter */
+    generateId?: () => ID;
+    /** from which id should the promises start; only used with the default numeric counter */
     initialId?: number;
 };
 
-type IdPromise<T> = { promiseId: number; promise: Promise<T> };
+type IdPromise<ID, T> = { promiseId: ID; promise: Promise<T> };
 
-export type DeferredManager<T> = {
+export type DeferredManager<T, ID extends string | number = number> = {
     /** How many pending promises are there */
     length: () => number;
     /** Creates new pending promise (with optional timeout) and returns it and its unique id */
-    create: (timeout?: number) => IdPromise<T>;
+    create: (timeout?: number) => IdPromise<ID, T>;
     /** Waits until there is less than `concurrency` promises and then creates a new one */
-    createConcurrent: (concurrency: number, timeout?: number) => Promise<IdPromise<T>>;
+    createConcurrent: (concurrency: number, timeout?: number) => Promise<IdPromise<ID, T>>;
     /** Resolves (and removes) promise with given id by given value and returns whether it was present or not */
-    resolve: (promiseId: number, value: T) => boolean;
+    resolve: (promiseId: ID, value: T) => boolean;
     /** Resolves (and removes) all pending promises by given value */
-    resolveAll: (getValue: (promiseId: number) => T) => void;
+    resolveAll: (getValue: (promiseId: ID) => T) => void;
     /** Rejects (and removes) promise with given id by given error and returns whether it was present or not */
-    reject: (promiseId: number, error: Error) => boolean;
+    reject: (promiseId: ID, error: Error) => boolean;
     /** Rejects (and removes) all pending promises by given error */
     rejectAll: (error: Error) => void;
 };
@@ -37,17 +39,19 @@ export type DeferredManager<T> = {
  * (usually requests), which can be resolved or rejected in a random order, or they can
  * time out
  *
- * @param options optional default timeout and onTimeout callback
+ * @param options optional default timeout, onTimeout callback, and custom ID generator
  *
  * @returns Deferred promise manager instance
  */
-export const createDeferredManager = <T = any>(
-    options?: DeferredManagerOptions,
-): DeferredManager<T> => {
-    const { initialId = 0, timeout: defaultTimeout = 0, onTimeout } = options ?? {};
-    const promises: ManagedDeferred<T>[] = [];
+export const createDeferredManager = <T = any, ID extends string | number = number>(
+    options?: DeferredManagerOptions<ID>,
+): DeferredManager<T, ID> => {
+    const { initialId = 0, timeout: defaultTimeout = 0, onTimeout, generateId } = options ?? {};
+    const promises: ManagedDeferred<T, ID>[] = [];
 
-    let ID = initialId;
+    let counter = initialId;
+    const getNextId: () => ID = generateId ?? (() => counter++ as unknown as ID);
+
     let timeoutHandle: TimerId | undefined;
     let onRemovePromise = createDeferred();
 
@@ -84,8 +88,8 @@ export const createDeferredManager = <T = any>(
     };
 
     const create = (timeout = defaultTimeout) => {
-        const promiseId = ID++;
-        const deferred = createDeferred<T, number>(promiseId);
+        const promiseId = getNextId();
+        const deferred = createDeferred<T, ID>(promiseId);
         const deadline = timeout && Date.now() + timeout;
         promises.push({ ...deferred, deadline });
         if (timeout) replanTimeout();
@@ -101,7 +105,7 @@ export const createDeferredManager = <T = any>(
         return create(timeout);
     };
 
-    const extract = (promiseId: number) => {
+    const extract = (promiseId: ID) => {
         const index = promises.findIndex(({ id }) => id === promiseId);
         const [promise] = index >= 0 ? promises.splice(index, 1) : [undefined];
         if (promise) onPromiseRemoved();
@@ -110,14 +114,14 @@ export const createDeferredManager = <T = any>(
         return promise;
     };
 
-    const resolve = (promiseId: number, value: T) => {
+    const resolve = (promiseId: ID, value: T) => {
         const promise = extract(promiseId);
         promise?.resolve(value);
 
         return !!promise;
     };
 
-    const resolveAll = (getValue: (promiseId: number) => T) => {
+    const resolveAll = (getValue: (promiseId: ID) => T) => {
         promises.forEach(promise => promise.resolve(getValue(promise.id)));
         const deleted = promises.splice(0, promises.length);
         if (deleted.length) {
@@ -126,7 +130,7 @@ export const createDeferredManager = <T = any>(
         }
     };
 
-    const reject = (promiseId: number, error: Error) => {
+    const reject = (promiseId: ID, error: Error) => {
         const promise = extract(promiseId);
         promise?.reject(error);
 
