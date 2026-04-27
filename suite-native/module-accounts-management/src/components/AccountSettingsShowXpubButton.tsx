@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import { selectIsDeviceBackupRequired, selectSelectedDevice } from '@suite-common/device';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { isAddressBasedNetwork } from '@suite-common/wallet-utils';
 import { useAlert } from '@suite-native/alerts';
 import { Button, useBottomSheetModal } from '@suite-native/atoms';
 import { selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice } from '@suite-native/device';
@@ -72,18 +71,6 @@ export const AccountSettingsShowXpubButton = ({ accountKey }: { accountKey: Acco
         convertTaprootXpub({ xpub: account.descriptor, direction: 'apostrophe-to-h' }) ??
         account.descriptor;
 
-    const isAddressBased = isAddressBasedNetwork(account.networkType);
-
-    const buttonTitle = (
-        <Translation
-            id={
-                isAddressBased
-                    ? 'moduleAccountManagement.accountSettingsScreen.xpubBottomSheet.address.showButton'
-                    : 'moduleAccountManagement.accountSettingsScreen.xpubBottomSheet.xpub.showButton'
-            }
-        />
-    );
-
     return (
         <>
             {isDeviceBackupRequired && (
@@ -105,12 +92,11 @@ export const AccountSettingsShowXpubButton = ({ accountKey }: { accountKey: Acco
                 intent="neutral"
                 priority="secondary"
             >
-                {buttonTitle}
+                <Translation id="moduleAccountManagement.accountSettingsScreen.xpubBottomSheet.xpub.showButton" />
             </Button>
             <XpubQRCodeBottomSheet
                 ref={xpubQRSheetRef}
                 onClose={closeXpubQRSheet}
-                symbol={account.symbol}
                 qrCodeData={accountXpub}
                 accountKey={accountKey}
             />

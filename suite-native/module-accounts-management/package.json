@@ -8,7 +8,11 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
+        "test:unit": "yarn g:jest:native",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
+    },
+    "devDependencies": {
+        "@suite-native/test-utils-store": "workspace:*"
     },
     "dependencies": {
         "@react-navigation/native": "7.1.28",
