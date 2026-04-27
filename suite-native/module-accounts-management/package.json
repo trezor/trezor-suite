@@ -12,7 +12,8 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "devDependencies": {
-        "@suite-native/test-utils-store": "workspace:*"
+        "@suite-native/test-utils-store": "workspace:*",
+        "@trezor/requirements": "workspace:*"
     },
     "dependencies": {
         "@react-navigation/native": "7.1.28",

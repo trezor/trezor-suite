@@ -43,6 +43,7 @@
     "devDependencies": {
         "@suite-common/message-system": "workspace:*",
         "@suite-native/feature-flags": "workspace:*",
-        "@suite-native/test-utils-store": "workspace:*"
+        "@suite-native/test-utils-store": "workspace:*",
+        "@trezor/requirements": "workspace:*"
     }
 }

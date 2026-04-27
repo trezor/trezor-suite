@@ -54,7 +54,8 @@
         },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/urls" },
-        { "path": "../test-utils-store" }
+        { "path": "../test-utils-store" },
+        { "path": "../../packages/requirements" }
     ],
     "include": [".", "**/*.json"]
 }

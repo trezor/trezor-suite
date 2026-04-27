@@ -37,6 +37,7 @@
         {
             "path": "../../packages/connect-common"
         },
-        { "path": "../../packages/env-utils" }
+        { "path": "../../packages/env-utils" },
+        { "path": "../../packages/requirements" }
     ]
 }

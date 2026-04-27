@@ -97,6 +97,7 @@
         "@suite-native/test-utils-store": "workspace:*",
         "@suite-native/trading-fixtures": "workspace:*",
         "@suite-native/trading-types": "workspace:*",
+        "@trezor/requirements": "workspace:*",
         "@types/invity-api": "^1.1.15"
     }
 }

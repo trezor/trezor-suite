@@ -101,6 +101,7 @@
         { "path": "../test-utils" },
         { "path": "../test-utils-store" },
         { "path": "../trading-fixtures" },
-        { "path": "../trading-types" }
+        { "path": "../trading-types" },
+        { "path": "../../packages/requirements" }
     ]
 }

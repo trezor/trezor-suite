@@ -48,5 +48,8 @@
         "react-native": "0.83.2",
         "react-native-reanimated": "~4.2.1",
         "react-redux": "9.2.0"
+    },
+    "devDependencies": {
+        "@trezor/requirements": "workspace:*"
     }
 }
