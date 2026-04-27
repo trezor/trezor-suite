@@ -23,6 +23,7 @@ export default class RecoveryDevice extends AbstractMethod<'recoveryDevice', PRO
             input_method: payload.input_method,
             type: payload.type,
             u2f_counter: payload.u2f_counter,
+            backup_method: payload.backup_method,
         };
 
         super(message, params);
