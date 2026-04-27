@@ -118,8 +118,7 @@ export const TradingFormOffer = () => {
     const isLoadingQuote = isTradingExchangeContext(context) && context.isLoadingQuote;
 
     const bestScoredQuote = quotes?.[0];
-    const { preselectedQuote } = context;
-    const quote = preselectedQuote ?? getSelectedQuote(context);
+    const quote = getSelectedQuote(context);
     const bestScoredQuoteAmounts = getCryptoQuoteAmountProps(quote, context);
     const areFeesLoading = useSelector(state => selectAreFeesLoading(state, account.symbol));
     const composedTransactionInfo = useSelector(selectTradingComposedTransactionInfo);
@@ -276,7 +275,6 @@ export const TradingFormOffer = () => {
 
     const isConfirmButtonLoading =
         areFeesLoading ||
-        (preselectedQuote && state.isFormLoading) ||
         (state.isFormLoading && !isAmountEmpty && (type === 'sell' || isReceiveAddressSelected));
 
     const confirmButtonTranslationId =
@@ -353,7 +351,7 @@ export const TradingFormOffer = () => {
                         top: 16,
                     }}
                     isDisabled={isButtonDisabled || isLoading}
-                    isLoading={areFeesLoading || (preselectedQuote && state.isFormLoading)}
+                    isLoading={areFeesLoading || state.isFormLoading}
                     size="large"
                     minWidth={160}
                     width="100%"

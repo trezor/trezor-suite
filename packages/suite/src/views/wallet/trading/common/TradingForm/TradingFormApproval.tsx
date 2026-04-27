@@ -49,7 +49,6 @@ export const TradingFormApproval = () => {
         confirmApproval,
         resetSelectedOffer,
         selectedQuote,
-        preselectedQuote,
         isScheduledQuotesRefresh,
         form: {
             state: { isFormLoading },
@@ -241,7 +240,7 @@ export const TradingFormApproval = () => {
                                         isLoading={
                                             isApproveButtonLoading ||
                                             isRevokeButtonLoading ||
-                                            (preselectedQuote && isFormLoading)
+                                            isFormLoading
                                         }
                                         isDisabled={
                                             isApproveButtonDisabled || isRevokeButtonDisabled
@@ -290,11 +289,7 @@ export const TradingFormApproval = () => {
                         intent="brand"
                         size="large"
                         width="100%"
-                        isLoading={
-                            isSwapButtonLoading ||
-                            isRevokeButtonLoading ||
-                            (preselectedQuote && isFormLoading)
-                        }
+                        isLoading={isSwapButtonLoading || isRevokeButtonLoading || isFormLoading}
                         isDisabled={isSwapButtonDisabled || isRevokeButtonDisabled}
                     >
                         <Translation id="TR_TRADING_SWAP" />

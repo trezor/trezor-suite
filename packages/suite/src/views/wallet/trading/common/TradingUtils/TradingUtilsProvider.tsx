@@ -1,6 +1,7 @@
+import styled from 'styled-components';
+
 import { Translation } from '@suite/intl';
 import { type TradingUtilsProvidersProps, invityAPI } from '@suite-common/trading';
-import { Row } from '@trezor/components';
 
 import { TradingIcon } from '../TradingIcon';
 
@@ -9,6 +10,17 @@ interface TradingUtilsProviderProps {
     className?: string;
     providers?: TradingUtilsProvidersProps;
 }
+
+const Wrapper = styled.div`
+    display: grid;
+    grid-template-columns: 1.5rem auto;
+    gap: 0.75rem;
+`;
+
+const TradingIconWrapper = styled.div`
+    display: flex;
+    justify-content: center;
+`;
 
 export const TradingUtilsProvider = ({
     exchange,
@@ -19,17 +31,19 @@ export const TradingUtilsProvider = ({
     const providerName = provider?.brandName ?? provider?.companyName;
 
     return (
-        <Row gap={8} className={className} data-testid="@trading/offers/quote/provider">
+        <Wrapper className={className} data-testid="@trading/offers/quote/provider">
             {provider ? (
                 <>
                     {provider.logo && (
-                        <TradingIcon iconUrl={invityAPI.getProviderLogoUrl(provider.logo)} />
+                        <TradingIconWrapper>
+                            <TradingIcon iconUrl={invityAPI.getProviderLogoUrl(provider.logo)} />
+                        </TradingIconWrapper>
                     )}
                     {providerName}
                 </>
             ) : (
                 <>{exchange ? exchange : <Translation id="TR_TRADING_UNKNOWN_PROVIDER" />}</>
             )}
-        </Row>
+        </Wrapper>
     );
 };

@@ -335,6 +335,10 @@ export const messages = defineMessages({
         defaultMessage: 'Disable Tor to see better offers.',
         id: 'TR_TRADING_DISABLE_TOR',
     },
+    TR_NO_OFFERS_AVAILABLE: {
+        defaultMessage: 'No offers available',
+        id: 'TR_NO_OFFERS_AVAILABLE',
+    },
     TR_READY_ON: {
         defaultMessage: 'Ready on',
         id: 'TR_READY_ON',
@@ -1221,6 +1225,11 @@ export const messages = defineMessages({
         defaultMessage: 'KYC is never required. Exceptional cases are automatically refunded.',
         id: 'TR_TRADING_KYC_NO_KYC',
     },
+    TR_TRADING_KYC_ANONYMOUS: {
+        defaultMessage: 'Anonymous.',
+        id: 'TR_TRADING_KYC_ANONYMOUS',
+    },
+
     TR_TRADING_BUY_AND_SELL: {
         defaultMessage: 'Buy & sell',
         id: 'TR_TRADING_BUY_AND_SELL',

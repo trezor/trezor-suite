@@ -15,6 +15,15 @@ import { expect, test } from '../../support/fixtures';
 const fiatAmount = localizeNumber(sellQuotesSolana[0].fiatStringAmount, 'en-US', 2, 2);
 const cryptoAmount = sellQuotesSolana[0].cryptoStringAmount;
 const provider = getCompanyNameFromList(sellQuotesSolana[0].exchange, 'sellList');
+const selectedPaymentMethod = sellQuotesSolana[0].paymentMethod;
+const comparedSellQuotes = [
+    ...new Map(
+        sellQuotesSolana
+            .filter(quote => quote.paymentMethod === selectedPaymentMethod)
+            .map(quote => [quote.exchange, quote]),
+    ).values(),
+];
+const secondComparedOfferQuote = comparedSellQuotes[1];
 // This address belongs to second account in this wallet.
 // So if me make mistake in updating the test case, and actually send crypto.
 // It will be sent to this address and we will not lose it.
@@ -130,7 +139,7 @@ test.describe('Trading - Sell Solana', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, 
     });
 
     test('Sell Solana for compared offer', async ({ page, tradingPage }) => {
-        await test.step('Fill input amount and opens offer comparison', async () => {
+        await test.step('Fill input amount and open offer comparison modal', async () => {
             await tradingPage.fillSellForm({
                 cryptoAmount,
                 networkSymbolOrTokenId: 'sol',
@@ -142,37 +151,15 @@ test.describe('Trading - Sell Solana', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, 
             await tradingPage.quotes.selectedProvider.click();
         });
 
-        await test.step('Check compared offers', async () => {
-            await expect(tradingPage.inputs.cryptoAmount).toHaveValue(cryptoAmount);
-            await expect(tradingPage.quotes.refreshTime).toHaveText(
-                /Offers refresh in(0:2[5-9]|0:30)/,
-            );
-            await expect(tradingPage.inputs.paymentMethodSelect).toHaveAttribute(
-                'value',
-                paymentMethodName,
-            );
-            await tradingPage.quotes.validateSellQuotes(
-                sellQuotesSolana,
-                tradingPage.inputs.getSelectedPaymentMethod,
-            );
-        });
-
-        await test.step('Change payment method to Bank Transfer', async () => {
-            await tradingPage.inputs.selectPaymentMethod('bankTransfer');
-            await tradingPage.quotes.validateSellQuotes(
-                sellQuotesSolana,
-                tradingPage.inputs.getSelectedPaymentMethod,
-            );
-        });
-
-        await test.step('Select second offer and check correct values are sent in trade request', async () => {
+        await test.step('Select second offer from modal and check correct values are sent in trade request', async () => {
             const sellTradePromise = page.waitForRequest(invityEndpoint.sellTrade);
-            await tradingPage.quotes.selectButton.nth(1).click();
+            await tradingPage.quotes.selectQuoteByProvider(
+                getCompanyNameFromList(secondComparedOfferQuote.exchange, 'sellList'),
+            );
             await tradingPage.sellBestOfferButton.click();
             await expect.soft(sellTradePromise).toHavePayload(
                 {
-                    // the second chosen offer via Bank Transfer that matches input criteria has index 3
-                    trade: sellQuotesSolana[3],
+                    trade: secondComparedOfferQuote,
                 },
                 {
                     omit: ['returnUrl', 'trade.orderId', 'trade.paymentId', 'trade.refundAddress'],

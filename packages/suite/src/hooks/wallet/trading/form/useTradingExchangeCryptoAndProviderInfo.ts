@@ -5,13 +5,12 @@ import { type TradingExchangeType } from '@suite-common/trading';
 import { useTradingFormContext } from './useTradingCommonForm';
 
 export const useTradingExchangeCryptoAndProviderInfo = () => {
-    const { selectedQuote, preselectedQuote, exchangeInfo, getValues } =
-        useTradingFormContext<TradingExchangeType>();
+    const { selectedQuote, exchangeInfo, getValues } = useTradingFormContext<TradingExchangeType>();
 
     const getCryptoInfo = useCallback(() => {
         const { sendCryptoSelect, receiveCryptoSelect, selectedFee } = getValues();
 
-        const quoteExchange = preselectedQuote?.exchange ?? selectedQuote?.exchange;
+        const quoteExchange = selectedQuote?.exchange;
         const quoteProviderName =
             quoteExchange && exchangeInfo?.providerInfos[quoteExchange]?.companyName;
 
@@ -27,12 +26,7 @@ export const useTradingExchangeCryptoAndProviderInfo = () => {
             exchangeName: quoteProviderName,
             selectedFee,
         };
-    }, [
-        getValues,
-        preselectedQuote?.exchange,
-        selectedQuote?.exchange,
-        exchangeInfo?.providerInfos,
-    ]);
+    }, [getValues, selectedQuote?.exchange, exchangeInfo?.providerInfos]);
 
     return getCryptoInfo;
 };

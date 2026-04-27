@@ -31,10 +31,6 @@ export const useTradingReceiveAddressValues = () => {
 
     const getQuote = () => {
         if (isTradingExchangeContext(context)) {
-            if (context.preselectedQuote) {
-                return context.preselectedQuote;
-            }
-
             if (context.getValues(TRADING_EXCHANGE_FORM) === TRADING_EXCHANGE_FORM_DEX) {
                 return context.dexQuotes?.[0];
             }

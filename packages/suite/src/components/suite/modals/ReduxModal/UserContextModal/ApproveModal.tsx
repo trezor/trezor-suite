@@ -71,7 +71,6 @@ export const ApproveModal = ({
         exchangeInfo,
         confirmApproval,
         sendTransaction,
-        preselectedQuote,
         feeInfo,
         composedLevels,
         setValue,
@@ -96,7 +95,7 @@ export const ApproveModal = ({
     const { exchange, dexTx } = selectedQuote;
     if (!exchange || !dexTx) return null;
 
-    const quoteExchange = preselectedQuote?.exchange ?? exchange;
+    const quoteExchange = exchange;
 
     const providerName = exchangeInfo?.providerInfos[quoteExchange]?.companyName || quoteExchange;
 

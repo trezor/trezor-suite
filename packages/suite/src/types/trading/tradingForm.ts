@@ -142,7 +142,6 @@ export interface TradingBuyFormContextProps
     quotesRequest: BuyTradeQuoteRequest | undefined;
     quotes: BuyTrade[];
     selectedQuote: BuyTrade | undefined;
-    preselectedQuote: BuyTrade | undefined;
     trade?: TradingTransactionBuy;
     verifiedAddress: TradingVerifiedAddress;
     // form - additional helpers for form
@@ -153,6 +152,7 @@ export interface TradingBuyFormContextProps
     isAmountEmpty: boolean;
 
     selectQuote: (quote: BuyTrade) => Promise<void>;
+    onQuoteSelected: (quote: BuyTrade) => void;
     confirmTrade: ({
         receiveAddress,
     }: TradingBuyConfirmTradeProps) => Promise<BuyTrade | undefined>;
@@ -178,7 +178,6 @@ export interface TradingSellFormContextProps
     feeInfo: FeeInfo;
     quotes: SellFiatTrade[];
     selectedQuote?: SellFiatTrade;
-    preselectedQuote: SellFiatTrade | undefined;
     trade?: TradingTransactionSell;
     suiteReceiveAccounts?: AppState['wallet']['accounts'];
     // form - additional helpers for form
@@ -196,6 +195,7 @@ export interface TradingSellFormContextProps
     confirmTrade: (bankAccount: BankAccount) => void;
     sendTransaction: () => Promise<boolean>;
     selectQuote: (quote: SellFiatTrade) => void;
+    onQuoteSelected: (quote: SellFiatTrade) => void;
     methods: UseFormReturn<TradingSellFormProps>;
     showReserveBanner: boolean;
     setShowReserveBanner: (showReserveBanner: boolean) => void;
@@ -219,7 +219,6 @@ export interface TradingExchangeFormContextProps
     };
 
     selectedQuote?: ExchangeTrade;
-    preselectedQuote?: ExchangeTrade;
     trade?: TradingTransactionExchange;
     suiteReceiveAccounts?: AccountsState;
     feeInfo: FeeInfo;
@@ -250,6 +249,7 @@ export interface TradingExchangeFormContextProps
     sendTransaction: () => Promise<boolean>;
     signDataAndConfirm: () => Promise<void>;
     selectQuote: (quote: ExchangeTrade) => void;
+    onQuoteSelected: (quote: ExchangeTrade) => void;
     verifyAddress: TradingVerifyAccountProps;
     approveTransaction: (trade: ExchangeTrade) => Promise<boolean>;
     revokeApproval: (trade: ExchangeTrade) => Promise<boolean>;

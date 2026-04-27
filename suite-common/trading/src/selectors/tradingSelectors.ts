@@ -334,9 +334,6 @@ export const selectTradingSellIsFromRedirect = (state: TradingRootState) =>
 export const selectTradingBuySelectedQuote = (state: TradingRootState) =>
     state.wallet.trading.buy.selectedQuote;
 
-export const selectTradingBuyPreselectedQuote = (state: TradingRootState) =>
-    state.wallet.trading.buy.preselectedQuote;
-
 export const selectTradingExchangeSelectedQuote = (state: TradingRootState) =>
     state.wallet.trading.exchange.selectedQuote;
 
@@ -348,9 +345,6 @@ export const selectTradingExchangeActiveQuote = (state: TradingRootState) =>
 
 export const selectTradingSellSelectedQuote = (state: TradingRootState) =>
     state.wallet.trading.sell.selectedQuote;
-
-export const selectTradingSellPreselectedQuote = (state: TradingRootState) =>
-    state.wallet.trading.sell.preselectedQuote;
 
 export const selectTradingPaymentMethods = (state: TradingRootState) =>
     state.wallet.trading.info.paymentMethods;
