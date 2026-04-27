@@ -7,6 +7,7 @@ import {
     type AccountsRootState,
     selectAccountByKey,
     selectFormattedAccountType,
+    selectIsAccountUtxoBased,
 } from '@suite-common/wallet-core';
 import { Box, Card, HStack, Text, VStack } from '@suite-native/atoms';
 import { CryptoIcon } from '@suite-native/icons';
@@ -66,6 +67,10 @@ export const AccountSettingsScreen = ({
         selectFormattedAccountType(state, accountKey),
     );
 
+    const isUtxoBasedAccount = useSelector((state: AccountsRootState) =>
+        selectIsAccountUtxoBased(state, accountKey),
+    );
+
     if (!account) return null;
 
     return (
@@ -99,7 +104,9 @@ export const AccountSettingsScreen = ({
                     </VStack>
                 </Card>
                 <VStack spacing="sp16">
-                    <AccountSettingsShowXpubButton accountKey={account.key} />
+                    {isUtxoBasedAccount && (
+                        <AccountSettingsShowXpubButton accountKey={account.key} />
+                    )}
                     {isPortfolioTrackerDevice && (
                         <AccountSettingsRemoveCoinButton accountKey={account.key} />
                     )}
