@@ -22,7 +22,10 @@ export const HELP = `@trezor/connect CLI arguments:
     --pairing=code | qr | nfc | skip
 
   Passphrase
-    --passphrase=<value>                      Use passphrase (default: empty)
+    --passphrase=<value>                      Use passphrase value (default: empty string)
+    --passphrase-on-device                    Enter passphrase on device instead of host
+    --cancel-passphrase                       Cancel the call when passphrase is requested
+    --cancel-passphrase-ui                    Respond with missing payload (tests error handling)
 
   Method (default: GetAddress)
     --method=<name>                           Run TrezorConnect method
@@ -31,6 +34,10 @@ export const HELP = `@trezor/connect CLI arguments:
                                                 --method=get-credentials
                                                 --method=get-account-info
                                                 --method=get-account-descriptor
+                                                --method=get-features
+                                                --method=apply-settings
+    --params=<json>                           Extra params passed to the method (JSON object)
+                                                --params='{"use_passphrase": true}'
 `;
 
 // read and parse application arguments
