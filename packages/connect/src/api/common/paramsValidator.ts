@@ -1,7 +1,9 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/paramsValidator.js
 import type {
+    CallMethodKeys,
     CoinInfo,
     FirmwareBoundary,
+    FirmwareCapability,
     FirmwareRange,
     FirmwareRule,
 } from '@trezor/connect-common';
@@ -10,6 +12,8 @@ import { typedObjectTransformValues, versionUtils } from '@trezor/utils';
 
 import { config } from '../../data/config';
 import { fromHardened } from '../../utils/pathUtils';
+
+type MethodOrCapability = CallMethodKeys | FirmwareCapability;
 
 type ParamType = 'string' | 'number' | 'array' | 'array-buffer' | 'boolean' | 'uint' | 'object';
 
@@ -147,8 +151,8 @@ const filterByCoins = (coins: CoinInfo[]) => {
         ensureArray(rule.coinType).some(coinTypeSet.has.bind(coinTypeSet));
 };
 
-const filterByMethods = (methodsOrCapabilities: string[]) => {
-    const methodSet = new Set(methodsOrCapabilities);
+const filterByMethods = (methodsOrCapabilities: MethodOrCapability[]) => {
+    const methodSet: Set<string> = new Set(methodsOrCapabilities);
 
     return (rule: FirmwareRule) =>
         (!rule.methods && !rule.capabilities) ||
@@ -166,7 +170,7 @@ const getCoinRules = (coins: CoinInfo[], currentRange: FirmwareRange): FirmwareR
     }));
 
 const getConfigRules = (
-    methodsOrCapabilities: string[],
+    methodsOrCapabilities: MethodOrCapability[],
     coins: CoinInfo[],
     currentRange: FirmwareRange,
 ): FirmwareRange[] =>
@@ -181,7 +185,7 @@ const getConfigRules = (
         );
 
 export const getFirmwareRange = (
-    methodsOrCapabilities: string[],
+    methodsOrCapabilities: MethodOrCapability[],
     coins: CoinInfo[],
     currentRange = DEFAULT_FIRMWARE_RANGE,
 ) =>
