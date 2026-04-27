@@ -1,6 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/data/DataManager.js
 
 import type { ConnectSettings, LocalFirmwares } from '@trezor/connect-common';
+import { ERRORS } from '@trezor/connect-common/src/constants';
 import coinsEth from '@trezor/connect-data/files/coins-eth.json';
 import coins from '@trezor/connect-data/files/coins.json';
 import type {
@@ -110,10 +111,16 @@ export class DataManager {
         };
     }
 
+    public static isLoaded(): boolean {
+        return this.settings != null;
+    }
+
     public static getSettings(key?: undefined): ConnectSettings;
     public static getSettings<T extends keyof ConnectSettings>(key: T): ConnectSettings[T];
     public static getSettings(key?: keyof ConnectSettings) {
-        if (!this.settings) return null;
+        if (!this.settings) {
+            throw ERRORS.TypedError('Runtime', 'DataManager.getSettings called before load()');
+        }
         if (typeof key === 'string') {
             return this.settings[key];
         }
