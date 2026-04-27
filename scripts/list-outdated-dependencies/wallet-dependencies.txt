@@ -4,7 +4,6 @@
 @exodus/patch-broken-hermes-typed-arrays
 @fivebinaries/coin-selection
 @hookform/resolvers
-@metamask/eth-sig-util
 @noble/hashes
 @reduxjs/toolkit
 @solana-program/compute-budget

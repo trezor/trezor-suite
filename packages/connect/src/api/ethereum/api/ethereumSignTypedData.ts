@@ -18,7 +18,12 @@ import { getNetworkLabel } from '../../../utils/ethereumUtils';
 import { messageToHex } from '../../../utils/formatUtils';
 import { getSerializedPath, getSlip44ByPath, validatePath } from '../../../utils/pathUtils';
 import { getEthereumDefinitions } from '../ethereumDefinitions';
-import { encodeData, getFieldType, parseArrayType } from '../ethereumSignTypedData';
+import {
+    encodeData,
+    getFieldType,
+    parseArrayType,
+    transformTypedData,
+} from '../ethereumSignTypedData';
 
 // This type is not inferred, because it internally uses types that are generic
 type Params = (
@@ -51,6 +56,33 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
         const path = validatePath(payload.path, 3);
         const network = getEthereumNetwork(path);
 
+        // T1B1 firmware cannot compute EIP-712 hashes on-device, so they must be
+        // supplied to the signing command. Historically callers had to pre-compute
+        // these themselves via @trezor/connect-plugin-ethereum. We now auto-compute
+        // any missing hash when the caller provides `data`, so the API works
+        // uniformly across device models. Caller-provided hashes still win for
+        // backwards compatibility (we only fill in what's missing).
+        // Gated on metamask_v4_compat === true: transformTypedData supports only v4,
+        // and pre-existing v3-style calls (where T2T1+ doesn't need hashes anyway)
+        // must keep working without an auto-compute throw.
+        // Domain-only payloads (primaryType === 'EIP712Domain') don't need
+        // message_hash — only run auto-compute when domain_separator_hash itself
+        // is missing, otherwise nothing to fill in.
+        const isDomainOnly = payload.data?.primaryType === 'EIP712Domain';
+        const needsAutoCompute = isDomainOnly
+            ? !payload.domain_separator_hash
+            : !payload.domain_separator_hash || !payload.message_hash;
+        const autoHashes =
+            needsAutoCompute && payload.data && payload.metamask_v4_compat === true
+                ? transformTypedData(payload.data, payload.metamask_v4_compat)
+                : undefined;
+
+        const effectiveDomainHash =
+            payload.domain_separator_hash ?? autoHashes?.domain_separator_hash;
+        const effectiveMessageHash =
+            payload.message_hash ??
+            (autoHashes?.message_hash ? autoHashes.message_hash : undefined);
+
         const paramsBase = {
             address_n: path,
             metamask_v4_compat: payload.metamask_v4_compat,
@@ -60,13 +92,13 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
             show_message_hash: payload.show_message_hash ?? payload.data.primaryType === 'SafeTx',
         };
 
-        const params = !payload.domain_separator_hash
+        const params = !effectiveDomainHash
             ? paramsBase
             : {
                   ...paramsBase,
-                  domain_separator_hash: messageToHex(payload.domain_separator_hash),
-                  ...(payload.message_hash
-                      ? { message_hash: messageToHex(payload.message_hash) }
+                  domain_separator_hash: messageToHex(effectiveDomainHash),
+                  ...(effectiveMessageHash
+                      ? { message_hash: messageToHex(effectiveMessageHash) }
                       : {}),
               };
 

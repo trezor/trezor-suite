@@ -5,7 +5,6 @@ import TrezorConnect, {
     type EthereumSignTypedDataMessage,
     type EthereumSignTypedDataTypes,
 } from '@trezor/connect';
-import { transformTypedData } from '@trezor/connect-plugin-ethereum';
 
 import { confirmExchangeTradeThunk } from './confirmExchangeTradeThunk';
 import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';
@@ -72,28 +71,11 @@ export const signDataAndConfirmThunk = createThunk(
         const typedData = selectedQuote?.signData
             .data as EthereumSignTypedDataMessage<EthereumSignTypedDataTypes>;
 
-        let hashes;
-        try {
-            hashes = transformTypedData(typedData as any, true);
-        } catch (error) {
-            dispatch(
-                logErrorThunk({
-                    errorMessage: error.message,
-                    tradingType: 'exchange',
-                    toastType: 'sign-message-error',
-                }),
-            );
-
-            return;
-        }
-
         dispatch(tradingActions.setModalAccountKey(account.key));
         const result = await TrezorConnect.ethereumSignTypedData({
             path: account.path,
             metamask_v4_compat: true,
             data: typedData,
-            domain_separator_hash: hashes.domain_separator_hash,
-            message_hash: hashes.message_hash || undefined,
             device: {
                 path: device?.path,
                 instance: device?.instance,

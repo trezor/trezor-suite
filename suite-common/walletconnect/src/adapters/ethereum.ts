@@ -17,7 +17,6 @@ import { getAccountIdentity, getMevProtectedTxData, sanitizeHex } from '@suite-c
 import TrezorConnect, {
     type CallMethodResponse,
     type EthereumSignTypedData,
-    type EthereumSignTypedHash,
 } from '@trezor/connect';
 import { isAscii, isHex } from '@trezor/utils';
 
@@ -110,26 +109,13 @@ const ethereumRequestThunk = createThunk<
             const account = getAccount(address);
             const parsedData = JSON.parse(data);
 
-            // For Trezor One (T1B1), we need to pre-compute the hashes
-            // as the device cannot process the full EIP-712 JSON structure
-            let payload: EthereumSignTypedData<any> | EthereumSignTypedHash<any> = {
+            // EIP-712 hashes for T1B1 are computed by @trezor/connect internally
+            // since Connect 10 — pass `data` directly for all device models.
+            const payload: EthereumSignTypedData<any> = {
                 path: account.path,
                 data: parsedData,
                 metamask_v4_compat: true,
             };
-
-            if (device?.features?.internal_model === 'T1B1') {
-                // Import the hash computation function
-                const { transformTypedData } = await import('@trezor/connect-plugin-ethereum');
-                const transformed = transformTypedData(parsedData, true);
-
-                // Add the pre-computed hashes for Trezor One
-                payload = {
-                    ...payload,
-                    domain_separator_hash: transformed.domain_separator_hash,
-                    message_hash: transformed.message_hash || undefined,
-                };
-            }
 
             dispatch(
                 trezorConnectPopupActions.connectPopupCallThunk({

@@ -18,11 +18,6 @@ import { exchangeThunks } from '../index';
 
 const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
 
-jest.mock('@trezor/connect-plugin-ethereum', () => ({
-    ...jest.requireActual('@trezor/connect-plugin-ethereum'),
-    transformTypedData: jest.fn().mockReturnValue({ domain_separator_hash: '', message_hash: '' }),
-}));
-
 jest.mock('../../common/logErrorThunk', () => ({
     logErrorThunk: (props: LogErrorThunkProps) => ({
         type: 'mockedLogErrorThunk',
