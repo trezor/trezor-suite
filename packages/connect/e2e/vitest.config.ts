@@ -7,6 +7,7 @@ import wasm from 'vite-plugin-wasm';
 import { type Plugin, defineConfig } from 'vitest/config';
 
 const isWebProject = process.env.VITEST_PROJECT === 'browser';
+const collectCoverage = process.env.COLLECT_COVERAGE === 'true' && !isWebProject;
 const nodeRequire = createRequire(import.meta.url);
 const e2eDir = path.dirname(fileURLToPath(import.meta.url));
 
@@ -313,6 +314,25 @@ export default defineConfig(
                     : {
                           environment: 'node',
                       }),
+                ...(collectCoverage
+                    ? {
+                          coverage: {
+                              enabled: true,
+                              provider: 'v8' as const,
+                              reporter: ['json', 'text-summary'],
+                              reportsDirectory: path.resolve(__dirname, './coverage'),
+                              include: ['src/**/*.ts'],
+                              exclude: [
+                                  'e2e/**',
+                                  '**/*.test.ts',
+                                  '**/__fixtures__/**',
+                                  '**/__mocks__/**',
+                              ],
+                              clean: true,
+                              all: false,
+                          },
+                      }
+                    : {}),
             },
         };
     })(),
