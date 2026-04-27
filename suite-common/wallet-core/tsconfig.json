@@ -6,6 +6,7 @@
         { "path": "../bluetooth" },
         { "path": "../calldata" },
         { "path": "../device" },
+        { "path": "../earn-stablecoin-api" },
         { "path": "../earn-staking-api" },
         { "path": "../fiat-services" },
         { "path": "../firmware" },

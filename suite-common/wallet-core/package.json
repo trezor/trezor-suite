@@ -18,6 +18,7 @@
         "@suite-common/bluetooth": "workspace:*",
         "@suite-common/calldata": "workspace:*",
         "@suite-common/device": "workspace:*",
+        "@suite-common/earn-stablecoin-api": "workspace:*",
         "@suite-common/earn-staking-api": "workspace:*",
         "@suite-common/fiat-services": "workspace:*",
         "@suite-common/firmware": "workspace:*",

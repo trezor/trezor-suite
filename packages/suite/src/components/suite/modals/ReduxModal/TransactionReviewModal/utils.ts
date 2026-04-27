@@ -1,9 +1,11 @@
-import { type SendState, type StakeState } from '@suite-common/wallet-core';
+import {
+    type SendState,
+    type StablecoinYieldTxReviewState,
+    type StakeState,
+} from '@suite-common/wallet-core';
 import { type FormState } from '@suite-common/wallet-types';
 
-import { type YieldTxReviewState } from 'src/reducers/wallet/yieldReducer';
-
-export type TxInfoState = SendState | StakeState | YieldTxReviewState;
+export type TxInfoState = SendState | StakeState | StablecoinYieldTxReviewState;
 
 export const isStakeState = (state: TxInfoState): state is StakeState => 'data' in state;
 

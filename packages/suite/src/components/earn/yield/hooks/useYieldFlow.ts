@@ -4,42 +4,46 @@ import { type UseFormReturn, useForm } from 'react-hook-form';
 import { type TranslationKey } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { type EarnParams } from '@suite/router';
-import { type Account } from '@suite-common/wallet-types';
-import { useCurrentRef } from '@trezor/react-utils';
-
 import {
+    type YieldApproveModalState,
+    type YieldFlowDisplayToken,
+    type YieldFlowFormValues,
+    type YieldFlowStepId,
+    type YieldFlowToken,
+    type YieldFlowType,
+    type YieldPendingTransactionState,
     handleYieldApproveCancelThunk,
     handleYieldApproveSuccessTxidThunk,
-    submitYieldActionThunk,
+    selectStablecoinYieldSession,
+    stablecoinYieldActions,
     submitYieldApproveThunk,
     submitYieldRevokeThunk,
-} from 'src/actions/wallet/yieldThunks';
+} from '@suite-common/wallet-core';
+import { type Account } from '@suite-common/wallet-types';
+import type { BulletListItemState } from '@trezor/components';
+import { useCurrentRef } from '@trezor/react-utils';
+
+import { submitYieldActionThunk } from 'src/actions/wallet/stablecoinYieldSigningThunks';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { yieldActions } from 'src/reducers/wallet/yieldReducer';
 
 import { useResolvedYieldFlowData } from './useResolvedYieldFlowData';
 import { useYieldPendingTransactionTracking } from './useYieldPendingTransactionTracking';
-import type {
-    UseYieldFlowStepsResult,
-    YieldApproveModalState,
-    YieldFlowDisplayToken,
-    YieldFlowFormValues,
-    YieldFlowStepId,
-    YieldFlowToken,
-    YieldFlowType,
-    YieldPendingTransactionState,
-} from '../types';
 import {
     getBulletListItemStates,
     getYieldModifyAmountInput,
     isAmountGreaterThan,
 } from '../yieldFlowUtils';
-import { selectYieldSession } from '../yieldSelectors';
 
 type UseYieldFlowProps = {
     account: Account;
     routeParams: EarnParams;
     flowType: YieldFlowType;
+};
+
+type UseYieldFlowStepsResult = {
+    currentStep: YieldFlowStepId;
+    stepStates: Record<YieldFlowStepId, BulletListItemState>;
+    goToStep: (step: YieldFlowStepId) => void;
 };
 
 export type UseYieldFlowResult = {
@@ -107,7 +111,7 @@ export const useYieldFlow = ({
         routeParams,
     });
 
-    const session = useSelector(state => selectYieldSession(state, flowType, flowKey));
+    const session = useSelector(state => selectStablecoinYieldSession(state, flowType, flowKey));
 
     const maxAmount = flowType === 'supply' ? (token?.balance ?? '') : suppliedAmount;
 
@@ -116,17 +120,17 @@ export const useYieldFlow = ({
             return;
         }
 
-        dispatch(yieldActions.initSession({ flowType, flowKey }));
-        dispatch(yieldActions.resetSession({ flowType, flowKey }));
+        dispatch(stablecoinYieldActions.initSession({ flowType, flowKey }));
+        dispatch(stablecoinYieldActions.resetSession({ flowType, flowKey }));
 
         if (flowType === 'withdraw') {
-            dispatch(yieldActions.skipApprovalStep({ flowType, flowKey }));
+            dispatch(stablecoinYieldActions.skipApprovalStep({ flowType, flowKey }));
         }
 
         methodsRef.current.reset({ amountInput: '' });
 
         return () => {
-            dispatch(yieldActions.disposeSession({ flowType, flowKey }));
+            dispatch(stablecoinYieldActions.disposeSession({ flowType, flowKey }));
         };
     }, [flowKey, flowType, dispatch, methodsRef]);
 
@@ -164,7 +168,7 @@ export const useYieldFlow = ({
 
     const goToStep = useCallback(
         (step: YieldFlowStepId) => {
-            dispatch(yieldActions.goToStep({ flowType, flowKey, step }));
+            dispatch(stablecoinYieldActions.goToStep({ flowType, flowKey, step }));
         },
         [dispatch, flowKey, flowType],
     );
@@ -195,7 +199,7 @@ export const useYieldFlow = ({
     );
 
     const enterModifyApproval = useCallback(() => {
-        dispatch(yieldActions.enterModifyMode({ flowType, flowKey }));
+        dispatch(stablecoinYieldActions.enterModifyMode({ flowType, flowKey }));
     }, [dispatch, flowType, flowKey]);
 
     const setAmountInput = useCallback(
@@ -208,7 +212,11 @@ export const useYieldFlow = ({
     const submitApprove = useCallback(() => {
         if (!token || !receiptToken || !vault) {
             dispatch(
-                yieldActions.setError({ flowType, flowKey, error: 'TR_EARN_YIELD_ERROR_GENERIC' }),
+                stablecoinYieldActions.setError({
+                    flowType,
+                    flowKey,
+                    error: 'TR_EARN_YIELD_ERROR_GENERIC',
+                }),
             );
 
             return;
@@ -229,7 +237,11 @@ export const useYieldFlow = ({
     const submitRevoke = useCallback(() => {
         if (!token || !receiptToken || !vault) {
             dispatch(
-                yieldActions.setError({ flowType, flowKey, error: 'TR_EARN_YIELD_ERROR_GENERIC' }),
+                stablecoinYieldActions.setError({
+                    flowType,
+                    flowKey,
+                    error: 'TR_EARN_YIELD_ERROR_GENERIC',
+                }),
             );
 
             return;
@@ -252,7 +264,11 @@ export const useYieldFlow = ({
     const submitAction = useCallback(() => {
         if (!token || !receiptToken || !vault) {
             dispatch(
-                yieldActions.setError({ flowType, flowKey, error: 'TR_EARN_YIELD_ERROR_GENERIC' }),
+                stablecoinYieldActions.setError({
+                    flowType,
+                    flowKey,
+                    error: 'TR_EARN_YIELD_ERROR_GENERIC',
+                }),
             );
 
             return;
@@ -311,7 +327,7 @@ export const useYieldFlow = ({
         actionAmount: session.action.amount,
         completedAmount: session.result.completedAmount,
         completedReceiptAmount: session.result.completedReceiptAmount,
-        errorMessage: session.error ?? undefined,
+        errorMessage: session.error as TranslationKey | undefined,
         approveModalState: session.approval.modalState,
         pendingTransaction: session.action.pendingTransaction,
         isModifyMode: session.approval.isModifyMode,

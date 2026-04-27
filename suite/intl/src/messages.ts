@@ -9927,7 +9927,7 @@ export const messages = defineMessages({
     },
     TR_EARN_YIELD_EARN_REWARDS_EACH_BLOCK: {
         id: 'TR_EARN_YIELD_EARN_REWARDS_EACH_BLOCK',
-        defaultMessage: 'Earn rewards with each mined block',
+        defaultMessage: 'Earn rewards with each confimed block',
     },
     TR_EARN_YIELD_RECEIVE_IN_ACCOUNT: {
         id: 'TR_EARN_YIELD_RECEIVE_IN_ACCOUNT',

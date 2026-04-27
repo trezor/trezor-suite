@@ -5,12 +5,11 @@ import { Translation } from '@suite/intl';
 import type { TranslationKey } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import { formInputsMaxLength } from '@suite-common/validators';
+import type { YieldFlowFormValues } from '@suite-common/wallet-core';
 import { Button, Card, Column, Row, Text } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';
 
 import { useSelector } from 'src/hooks/suite';
-
-import type { YieldFlowFormValues } from '../types';
 
 type YieldAmountCardSummaryProps = {
     value: ReactNode;

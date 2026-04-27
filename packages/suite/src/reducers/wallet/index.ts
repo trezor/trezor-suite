@@ -13,6 +13,7 @@ import {
     prepareStakeReducer,
     prepareTransactionsReducer,
     prepareWalletSettingsReducer,
+    stablecoinYieldReducer,
 } from '@suite-common/wallet-core';
 
 import { extraDependencies } from 'src/support/extraDependencies';
@@ -23,7 +24,6 @@ import formDraftReducer from './formDraftReducer';
 import graphReducer from './graphReducer';
 import receiveReducer from './receiveReducer';
 import selectedAccountReducer from './selectedAccountReducer';
-import { yieldReducer } from './yieldReducer';
 
 export const transactionsReducer = prepareTransactionsReducer(extraDependencies);
 export const phishingReducer = preparePhishingReducer(extraDependencies);
@@ -56,7 +56,7 @@ const WalletReducers = combineReducers({
     coinjoin: coinjoinReducer,
     stake: stakeReducer,
     settings: walletSettingsReducer,
-    yield: yieldReducer,
+    stablecoinYield: stablecoinYieldReducer,
 });
 
 export default WalletReducers;

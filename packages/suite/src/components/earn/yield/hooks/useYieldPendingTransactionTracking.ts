@@ -1,18 +1,17 @@
 import { useEffect } from 'react';
 
 import {
+    type YieldFlowType,
     fetchAndUpdateAccountThunk,
     selectConvertedNetworkFeeInfo,
+    selectStablecoinYieldSession,
     selectTransactionByAccountKeyAndTxid,
+    stablecoinYieldActions,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { isPending } from '@suite-common/wallet-utils';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { yieldActions } from 'src/reducers/wallet/yieldReducer';
-
-import type { YieldFlowType } from '../types';
-import { selectYieldSession } from '../yieldSelectors';
 
 const DEFAULT_PENDING_TX_POLL_INTERVAL_MS = 3_000;
 const MIN_PENDING_TX_POLL_INTERVAL_MS = 2_000;
@@ -40,7 +39,7 @@ export const useYieldPendingTransactionTracking = ({
 }: UseYieldPendingTransactionTrackingProps) => {
     const dispatch = useDispatch();
     const pendingTransaction = useSelector(
-        state => selectYieldSession(state, flowType, flowKey).action.pendingTransaction,
+        state => selectStablecoinYieldSession(state, flowType, flowKey).action.pendingTransaction,
     );
     const trackedPendingTransaction = useSelector(state =>
         pendingTransaction
@@ -76,20 +75,20 @@ export const useYieldPendingTransactionTracking = ({
         }
 
         if (trackedPendingTransaction.type === 'failed') {
-            dispatch(yieldActions.transactionFailed({ flowType, flowKey }));
+            dispatch(stablecoinYieldActions.transactionFailed({ flowType, flowKey }));
 
             return;
         }
 
         if (pendingTransaction.type === 'revoke' || pendingTransaction.type === 'revoke-only') {
-            dispatch(yieldActions.revokeSuccess({ flowType, flowKey }));
+            dispatch(stablecoinYieldActions.revokeSuccess({ flowType, flowKey }));
 
             return;
         }
 
         if (pendingTransaction.type === 'approve') {
             dispatch(
-                yieldActions.completeApproval({
+                stablecoinYieldActions.completeApproval({
                     flowType,
                     flowKey,
                     amount: pendingTransaction.amount,
@@ -101,7 +100,7 @@ export const useYieldPendingTransactionTracking = ({
 
         if (pendingTransaction.type === flowType) {
             dispatch(
-                yieldActions.completeAction({
+                stablecoinYieldActions.completeAction({
                     flowType,
                     flowKey,
                     amount: pendingTransaction.amount,
@@ -111,6 +110,6 @@ export const useYieldPendingTransactionTracking = ({
             return;
         }
 
-        dispatch(yieldActions.resetSession({ flowType, flowKey }));
+        dispatch(stablecoinYieldActions.resetSession({ flowType, flowKey }));
     }, [flowKey, flowType, pendingTransaction, dispatch, trackedPendingTransaction]);
 };

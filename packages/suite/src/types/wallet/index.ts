@@ -14,6 +14,7 @@ import {
     type discoveryActions,
     type explorerActions,
     type sendFormActions,
+    type stablecoinYieldActions,
     type stakeActions,
 } from '@suite-common/wallet-core';
 
@@ -23,7 +24,6 @@ import { type GraphAction } from 'src/actions/wallet/graphActions';
 import { type ReceiveAction } from 'src/actions/wallet/receiveActions';
 import { type SignVerifyAction } from 'src/actions/wallet/signVerifyActions';
 import { type accountSearchActions } from 'src/reducers/wallet/accountSearchReducer';
-import { type yieldActions } from 'src/reducers/wallet/yieldReducer';
 
 // reexport
 export type { CustomBackend } from './backend';
@@ -74,7 +74,9 @@ type ConnectPopupAction = ReturnType<
 type AccountSearchAction = ReturnType<
     (typeof accountSearchActions)[keyof typeof accountSearchActions]
 >;
-type YieldAction = ReturnType<(typeof yieldActions)[keyof typeof yieldActions]>;
+type StablecoinYieldAction = ReturnType<
+    (typeof stablecoinYieldActions)[keyof typeof stablecoinYieldActions]
+>;
 
 export type WalletAction =
     | TokenDefinitionsAction
@@ -97,4 +99,4 @@ export type WalletAction =
     | StakeAction
     | ConnectPopupAction
     | WalletSettingsAction
-    | YieldAction;
+    | StablecoinYieldAction;

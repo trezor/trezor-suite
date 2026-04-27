@@ -1,11 +1,15 @@
 import type { ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
+import type {
+    YieldFlowDisplayToken,
+    YieldFlowType,
+    YieldPendingTransactionState,
+} from '@suite-common/wallet-core';
 import { Button, Column } from '@trezor/components';
 
 import { YieldAmountCard } from './YieldAmountCard';
 import { YieldPendingTransaction } from './YieldPendingTransaction';
-import type { YieldFlowDisplayToken, YieldFlowType, YieldPendingTransactionState } from '../types';
 
 const actionStepTranslationMap = {
     supply: {

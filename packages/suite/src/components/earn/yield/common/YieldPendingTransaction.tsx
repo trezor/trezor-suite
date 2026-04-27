@@ -1,10 +1,9 @@
 import type { TranslationKey } from '@suite/intl';
 import { Translation } from '@suite/intl';
+import type { YieldPendingTransactionState } from '@suite-common/wallet-core';
 import { Column, Link, Paragraph, Row, Spinner } from '@trezor/components';
 
 import { Address } from 'src/components/suite/Address';
-
-import type { YieldPendingTransactionState } from '../types';
 
 type YieldPendingTransactionProps = {
     pendingTransaction: YieldPendingTransactionState;
@@ -29,7 +28,7 @@ export const YieldPendingTransaction = ({
     pendingTransaction,
     onTxClick,
 }: YieldPendingTransactionProps) => {
-    const transactionId = (
+    const txidComponent = (
         <Address
             isTruncated
             isChunked={false}
@@ -66,10 +65,10 @@ export const YieldPendingTransaction = ({
 
                         {onTxClick ? (
                             <Link onClick={() => onTxClick(pendingTransaction.txid)}>
-                                {transactionId}
+                                {txidComponent}
                             </Link>
                         ) : (
-                            transactionId
+                            txidComponent
                         )}
                     </Row>
                 </Column>
