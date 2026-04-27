@@ -18,10 +18,10 @@ import type {
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { fromHardened, getSerializedPath, validatePath } from '../../../utils/pathUtils';
+import { computeConfirmMissingBackup } from '../../common/computeConfirmMissingBackup';
 import { bundlify } from '../../common/paramsValidator';
 interface Params {
     proto: PROTO.CardanoGetPublicKey;
-    suppressBackupWarning?: boolean;
 }
 
 export default class CardanoGetPublicKey extends AbstractMethod<'cardanoGetPublicKey', Params[]> {
@@ -44,14 +44,17 @@ export default class CardanoGetPublicKey extends AbstractMethod<'cardanoGetPubli
                 show_display: typeof batch.showOnTrezor === 'boolean' ? batch.showOnTrezor : false,
             };
 
-            return { proto, suppressBackupWarning: batch.suppressBackupWarning };
+            return { proto };
         });
 
         super(message, params);
 
         this.hasBundle = hasBundle;
-        this.confirmMissingBackup = !this.params.every(
-            batch => batch.suppressBackupWarning || !batch.proto.show_display,
+        this.confirmMissingBackup = computeConfirmMissingBackup(
+            payload.bundle.map((batch, i) => ({
+                showOnTrezor: this.params[i].proto.show_display,
+                suppressBackupWarning: batch.suppressBackupWarning,
+            })),
         );
         this.requiredDeviceCapabilities = ['Capability_Cardano'];
         this.requiredFirmwareCoins = [getMiscNetwork('Cardano')];

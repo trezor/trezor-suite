@@ -18,6 +18,7 @@ import type {
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { fromHardened, getSerializedPath, validatePath } from '../../../utils/pathUtils';
+import { computeConfirmMissingBackup } from '../../common/computeConfirmMissingBackup';
 import { bundlify } from '../../common/paramsValidator';
 
 export default class TezosGetPublicKey extends AbstractMethod<
@@ -45,6 +46,12 @@ export default class TezosGetPublicKey extends AbstractMethod<
         super(message, params);
 
         this.hasBundle = hasBundle;
+        this.confirmMissingBackup = computeConfirmMissingBackup(
+            payload.bundle.map((batch, i) => ({
+                showOnTrezor: this.params[i].show_display,
+                suppressBackupWarning: batch.suppressBackupWarning,
+            })),
+        );
         this.requiredDeviceCapabilities = ['Capability_Tezos'];
         this.requiredFirmwareCoins = [getMiscNetwork('Tezos')];
     }

@@ -19,6 +19,7 @@ import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getEthereumNetwork, getUniqueNetworks } from '../../../data/coinInfo';
 import { getNetworkLabel } from '../../../utils/ethereumUtils';
 import { getSerializedPath, validatePath } from '../../../utils/pathUtils';
+import { computeConfirmMissingBackup } from '../../common/computeConfirmMissingBackup';
 import { bundlify } from '../../common/paramsValidator';
 
 type Params = {
@@ -51,6 +52,12 @@ export default class EthereumGetPublicKey extends AbstractMethod<'ethereumGetPub
 
         this.requiredFirmwareCoins = params.map(({ network }) => network);
         this.hasBundle = hasBundle;
+        this.confirmMissingBackup = computeConfirmMissingBackup(
+            payload.bundle.map((batch, i) => ({
+                showOnTrezor: this.params[i].proto.show_display,
+                suppressBackupWarning: batch.suppressBackupWarning,
+            })),
+        );
         this.requiredDeviceCapabilities = ['Capability_Ethereum'];
     }
 

@@ -18,6 +18,7 @@ import type {
 } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { getBitcoinNetwork } from '../data/coinInfo';
+import { computeConfirmMissingBackup } from './common/computeConfirmMissingBackup';
 import { bundlify, validateCoinPath } from './common/paramsValidator';
 import { getPublicKeyLabel } from '../utils/accountUtils';
 import { validatePath } from '../utils/pathUtils';
@@ -25,7 +26,6 @@ import { validatePath } from '../utils/pathUtils';
 type Params = {
     proto: PROTO.GetPublicKey;
     coinInfo?: BitcoinNetworkInfo;
-    suppressBackupWarning?: boolean;
     unlockPath?: PROTO.UnlockPath;
 };
 
@@ -66,7 +66,6 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
                 proto,
                 coinInfo,
                 unlockPath: batch.unlockPath,
-                suppressBackupWarning: batch.suppressBackupWarning,
             };
         });
 
@@ -74,8 +73,11 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
 
         this.requiredFirmwareCoins = params.map(({ coinInfo }) => coinInfo);
         this.hasBundle = hasBundle;
-        this.confirmMissingBackup = !this.params.every(
-            batch => batch.suppressBackupWarning || !batch.proto.show_display,
+        this.confirmMissingBackup = computeConfirmMissingBackup(
+            payload.bundle.map((batch, i) => ({
+                showOnTrezor: this.params[i].proto.show_display,
+                suppressBackupWarning: batch.suppressBackupWarning,
+            })),
         );
     }
 

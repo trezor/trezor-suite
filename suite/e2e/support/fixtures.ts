@@ -15,6 +15,7 @@ import { DashboardPage } from './pageObjects/dashboardPage';
 import { DevicePrompt } from './pageObjects/devicePrompt';
 import { GuidePanel } from './pageObjects/guidePanel';
 import { MetadataPage } from './pageObjects/metadata/metadataPage';
+import { NoBackupModal } from './pageObjects/noBackupModal';
 import { OnboardingPage } from './pageObjects/onboarding/onboardingPage';
 import { PaginationControl } from './pageObjects/pagination';
 import { RecoveryModal } from './pageObjects/recoveryModal';
@@ -50,6 +51,7 @@ type Fixtures = {
     solanaStakingMock: SolanaStakingMock;
     tradingMock: TradingMock;
     connectPermissionsModal: ConnectPermissionsModal;
+    noBackupModal: NoBackupModal;
     stakingSection: StakingSection;
     paginationControl: PaginationControl;
     evoluClient: EvoluClient;
@@ -125,6 +127,9 @@ const test = suiteBaseTest.extend<Fixtures>({
     },
     connectPermissionsModal: async ({ page }, use) => {
         await use(new ConnectPermissionsModal(page));
+    },
+    noBackupModal: async ({ page }, use) => {
+        await use(new NoBackupModal(page));
     },
     stakingSection: async ({ page }, use) => {
         await use(new StakingSection(page));
