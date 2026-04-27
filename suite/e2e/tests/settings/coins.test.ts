@@ -21,8 +21,8 @@ test.describe('Coin Settings', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
                 stream: TestStream.Foundation,
             }),
         },
-        async ({ dashboardPage, settingsPage }) => {
-            const defaultUnchecked: NetworkSymbol[] = [
+        async ({ dashboardPage, settingsPage, assetsSection }) => {
+            const defaultUncheckedMainnet: NetworkSymbol[] = [
                 'btc',
                 'ltc',
                 'eth',
@@ -34,6 +34,9 @@ test.describe('Coin Settings', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
                 'zec',
                 'ada',
                 'sol',
+            ];
+            // Testnets are not shown in ActivateAssetsModal, must be enabled via coins settings
+            const defaultUncheckedTestnet: NetworkSymbol[] = [
                 'test',
                 'tsep',
                 'thod',
@@ -41,8 +44,12 @@ test.describe('Coin Settings', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
                 // 'txlm', add when removed from experimental features
                 'dsol',
             ];
+            const defaultUnchecked: NetworkSymbol[] = [
+                ...defaultUncheckedMainnet,
+                ...defaultUncheckedTestnet,
+            ];
 
-            await test.step('No assets are active', async () => {
+            await test.step('Empty state on dashboard', async () => {
                 await settingsPage.toggleTestnetNetworks();
                 await settingsPage.navigateTo('coins');
 
@@ -52,24 +59,26 @@ test.describe('Coin Settings', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
                 // check dashboard with all coins disabled
                 await dashboardPage.navigateTo();
                 await expect(dashboardPage.discoveryEmptyHeader).toHaveTranslation(
-                    'TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY',
+                    'TR_YOUR_WALLET_IS_READY_WHAT',
                 );
                 await expect(dashboardPage.discoveryEmptyDesc).toHaveTranslation(
-                    'TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY_DESC',
+                    'TR_DASHBOARD_ACTIVATE_ASSETS_DESC',
                 );
                 await expect(dashboardPage.discoveryEmptyPrimaryButton).toHaveTranslation(
-                    'TR_COIN_SETTINGS',
+                    'TR_DASHBOARD_GET_STARTED',
                 );
             });
 
             await test.step('Activate assets', async () => {
                 await dashboardPage.discoveryEmptyPrimaryButton.click();
+                for (const network of defaultUncheckedMainnet) {
+                    await assetsSection.activateAssetsModalNetworkButton(network).click();
+                }
+                await assetsSection.activateAssetsModalSaveButton.click();
                 await settingsPage.navigateTo('coins');
-                for (const network of defaultUnchecked) {
+                await settingsPage.coinsTab.temporarilySetOfficialCardanoBackend();
+                for (const network of defaultUncheckedTestnet) {
                     await settingsPage.coinsTab.enableNetwork(network);
-                    if (network === 'ada') {
-                        await settingsPage.coinsTab.temporarilySetOfficialCardanoBackend();
-                    }
                 }
             });
 
