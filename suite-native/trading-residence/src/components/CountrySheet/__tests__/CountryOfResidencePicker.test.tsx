@@ -3,7 +3,7 @@ import { combineReducers } from '@reduxjs/toolkit';
 import { useCountryFilteredData } from '@suite-common/trading';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { Form, useForm } from '@suite-native/forms';
-import { localeReducer } from '@suite-native/intl';
+import { getTranslation, localeReducer } from '@suite-native/intl';
 import { useAnalytics } from '@suite-native/services';
 import { renderHookWithBasicProvider, renderWithBasicProvider } from '@suite-native/test-utils';
 import {
@@ -100,10 +100,47 @@ describe('CountryOfResidencePicker', () => {
     it('should allow to select country', async () => {
         const { getByText, getByLabelText } = renderCountryOfResidencePicker();
 
-        await userEvent.press(getByText('Country of residence'));
+        await userEvent.press(
+            getByText(getTranslation('tradingResidence.locationSettings.countryOfResidence')),
+        );
         await userEvent.press(getByText(/Algeria/));
 
         expect(getByLabelText('Selected country of residence')).toHaveTextContent('DZA');
+    });
+
+    it('should clear selected subdivision when country changes', async () => {
+        const form = renderHookWithBasicProvider(() =>
+            useForm<TradingLocationFormValues>({
+                defaultValues: {
+                    country: {
+                        value: 'US',
+                        label: '🇺🇸 United States',
+                        shortLabel: '🇺🇸 USA',
+                        codeAlpha3: 'USA',
+                        flag: '🇺🇸',
+                        name: 'United States',
+                    },
+                    countrySubdivision: {
+                        value: 'CA',
+                        label: 'California',
+                        name: 'California',
+                    },
+                },
+                validation: locationFormValidationSchema,
+            }),
+        );
+
+        const { getByText } = renderWithBasicProvider(
+            <CountryOfResidencePicker testID="TEST_ID" context="settings" />,
+            {
+                wrapper: ({ children }) => <Form form={form.result.current}>{children}</Form>,
+            },
+        );
+
+        await userEvent.press(getByText('Country of residence'));
+        await userEvent.press(getByText(/Algeria/));
+
+        expect(form.result.current.getValues('countrySubdivision')).toBeUndefined();
     });
 
     it('should display empty component when filtered data is empty', async () => {

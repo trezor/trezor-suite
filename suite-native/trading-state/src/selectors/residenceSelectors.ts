@@ -9,6 +9,9 @@ import { type TradingResidenceRootState } from '@suite-native/trading-types';
 export const selectTradingResidenceCountry = (state: TradingResidenceRootState) =>
     state.wallet.trading.residence.country;
 
+export const selectTradingResidenceCountrySubdivision = (state: TradingResidenceRootState) =>
+    state.wallet.trading.residence.countrySubdivision;
+
 export const selectWasTradingResidenceOnboardingVisited = (state: TradingResidenceRootState) =>
     state.wallet.trading.residence.wasOnboardingVisited;
 

@@ -16,12 +16,14 @@ import {
     selectIsTradingResidenceCheckEnabled,
     selectShouldDisplayTradingResidenceOnboarding,
     selectTradingResidenceCountry,
+    selectTradingResidenceCountrySubdivision,
     selectWasTradingResidenceOnboardingVisited,
 } from '../residenceSelectors';
 
 describe('residenceSelectors', () => {
     const visitedState: TradingResidenceState = {
         country: 'US',
+        countrySubdivision: 'CA',
         wasOnboardingVisited: true,
     };
 
@@ -46,11 +48,24 @@ describe('residenceSelectors', () => {
     });
 
     describe('selectTradingResidenceCountry', () => {
-        it(' should select the country', () => {
+        it('should select the country', () => {
             expect(
                 selectTradingResidenceCountry(getRootResidenceState(tradingInitialState.residence)),
             ).toBe(undefined);
             expect(selectTradingResidenceCountry(getRootResidenceState(visitedState))).toBe('US');
+        });
+    });
+
+    describe('selectTradingResidenceCountrySubdivision', () => {
+        it('should select the country subdivision', () => {
+            expect(
+                selectTradingResidenceCountrySubdivision(
+                    getRootResidenceState(tradingInitialState.residence),
+                ),
+            ).toBe(undefined);
+            expect(
+                selectTradingResidenceCountrySubdivision(getRootResidenceState(visitedState)),
+            ).toBe('CA');
         });
     });
 

@@ -48,6 +48,45 @@ describe('useLocationForm', () => {
         );
     });
 
+    it('should use default subdivision value from redux state', () => {
+        act(() => {
+            store.dispatch(
+                residenceActions.setResidenceLocation({
+                    country: 'US',
+                    countrySubdivision: 'CA',
+                }),
+            );
+        });
+
+        const { result } = renderUseLocationForm();
+
+        expect(result.current.getValues('country')).toEqual(
+            expect.objectContaining({
+                value: 'US',
+            }),
+        );
+        expect(result.current.getValues('countrySubdivision')).toEqual({
+            value: 'CA',
+            label: 'California',
+            name: 'California',
+        });
+    });
+
+    it('should ignore persisted subdivision when it does not belong to country', () => {
+        act(() => {
+            store.dispatch(
+                residenceActions.setResidenceLocation({
+                    country: 'CZ',
+                    countrySubdivision: 'CA',
+                }),
+            );
+        });
+
+        const { result } = renderUseLocationForm();
+
+        expect(result.current.getValues('countrySubdivision')).toBeUndefined();
+    });
+
     it('should use value from expo-localization when country is not set in store', () => {
         const { result } = renderUseLocationForm();
 

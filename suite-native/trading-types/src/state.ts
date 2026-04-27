@@ -20,6 +20,7 @@ export interface TradingSellState extends CommonTradingSellState {}
 
 export type TradingResidenceState = {
     country: TradingCountryCode | undefined;
+    countrySubdivision: string | undefined;
     wasOnboardingVisited: boolean;
 };
 
