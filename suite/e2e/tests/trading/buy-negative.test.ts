@@ -52,7 +52,6 @@ test.describe('Trading - Buy Negative scenarios', { tag: ['@webOnly', '@T3W1', '
             await expect(tradingPage.buyBestOfferButton).toBeDisabled();
             await expect(tradingPage.quotes.selectedProvider).toBeHidden();
             await expect(page.getByTestId('trading-offer-found-none')).toBeVisible();
-            await expect(tradingPage.quotes.selectButton).toBeHidden();
         });
     });
 });

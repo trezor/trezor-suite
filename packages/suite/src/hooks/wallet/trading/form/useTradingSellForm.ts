@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
 import type { BankAccount, CryptoId, SellFiatTrade, SellFiatTradeResponse } from 'invity-api';
@@ -29,7 +29,6 @@ import {
     selectTradingSellInfo,
     selectTradingSellIsFromRedirect,
     selectTradingSellIsLoading,
-    selectTradingSellPreselectedQuote,
     selectTradingSellQuotes,
     selectTradingSellQuotesRequest,
     selectTradingSellSelectedQuote,
@@ -81,7 +80,6 @@ export const useTradingSellForm = ({
     const isFromRedirect = useSelector(selectTradingSellIsFromRedirect);
     const quotes = useSelector(selectTradingSellQuotes);
     const transactionId = useSelector(selectTradingSellTransactionId);
-    const preselectedQuote = useSelector(selectTradingSellPreselectedQuote);
     const selectedQuote = useSelector(selectTradingSellSelectedQuote);
     const sellInfo = useSelector(selectTradingSellInfo);
     const amountLimits = useSelector(selectTradingSellAmountLimits);
@@ -475,37 +473,31 @@ export const useTradingSellForm = ({
         dispatch(tradingThunks.loadInitialDataThunk({ activeSection: type }));
     }, [dispatch]);
 
-    useEffect(() => {
-        if (!preselectedQuote) {
-            return;
-        }
+    const onQuoteSelected = useCallback(
+        (quote: SellFiatTrade) => {
+            const quoteProvider = quote.exchange;
+            const quotePaymentMethod = quote.paymentMethod;
 
-        const preselectedProvider = preselectedQuote.exchange;
-        const preselectedPaymentMethod = preselectedQuote.paymentMethod;
-        const shouldUpdateProvider = !!preselectedProvider && preselectedProvider !== provider;
-        const shouldUpdatePaymentMethod =
-            !!preselectedPaymentMethod && paymentMethod?.value !== preselectedPaymentMethod;
+            if (quoteProvider && quoteProvider !== provider) {
+                setValue(TRADING_FORM_PROVIDER_SELECT, quoteProvider);
+            }
 
-        dispatch(tradingSellActions.savePreselectedQuote(undefined));
+            if (quotePaymentMethod && paymentMethod?.value !== quotePaymentMethod) {
+                const matchingOption = paymentMethods.find(
+                    method => method.value === quotePaymentMethod,
+                );
 
-        if (shouldUpdateProvider) {
-            setValue(TRADING_FORM_PROVIDER_SELECT, preselectedProvider);
-        }
-
-        if (shouldUpdatePaymentMethod) {
-            const matchingOption = paymentMethods.find(
-                method => method.value === preselectedPaymentMethod,
-            );
-
-            setValue(
-                TRADING_FORM_PAYMENT_METHOD_SELECT,
-                matchingOption ?? {
-                    value: preselectedPaymentMethod,
-                    label: preselectedQuote.paymentMethodName ?? preselectedPaymentMethod,
-                },
-            );
-        }
-    }, [paymentMethod, paymentMethods, preselectedQuote, provider, setValue, dispatch]);
+                setValue(
+                    TRADING_FORM_PAYMENT_METHOD_SELECT,
+                    matchingOption ?? {
+                        value: quotePaymentMethod,
+                        label: quote.paymentMethodName ?? quotePaymentMethod,
+                    },
+                );
+            }
+        },
+        [paymentMethod, paymentMethods, provider, setValue],
+    );
 
     useEffect(() => {
         if (!isChanged(defaultValues, values)) {
@@ -612,7 +604,6 @@ export const useTradingSellForm = ({
         amountLimits,
         network,
         device,
-        preselectedQuote,
         selectedQuote,
         shouldSendInSats,
         trade,
@@ -624,6 +615,7 @@ export const useTradingSellForm = ({
         confirmTrade,
         goToOffers,
         selectQuote,
+        onQuoteSelected,
         sendTransaction,
         showReserveBanner,
         setShowReserveBanner,

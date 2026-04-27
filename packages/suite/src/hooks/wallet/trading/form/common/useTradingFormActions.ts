@@ -287,16 +287,6 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
         setValue(TRADING_FORM_OUTPUT_FIAT, '', { shouldDirty: true });
     };
 
-    // reset preselectedQuote when opening swap form
-    useEffect(() => {
-        const cryptoValue = values?.outputs?.[0]?.amount;
-        const previousCryptoValue = previousValues.current?.outputs?.[0].amount;
-
-        if (cryptoValue === '' && previousCryptoValue === undefined) {
-            dispatch(tradingExchangeActions.savePreselectedQuote(undefined));
-        }
-    }, [values, previousValues, dispatch]);
-
     // call change handler on every change of text inputs with debounce
     useDebounce(
         () => {

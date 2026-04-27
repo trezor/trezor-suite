@@ -40,7 +40,6 @@ import {
     selectTradingBuyIsLoading,
     selectTradingBuyLastErrorMessage,
     selectTradingBuyLoadingTimestampAndStatus,
-    selectTradingBuyPreselectedQuote,
     selectTradingBuyProviders,
     selectTradingBuyQuoteByOrderId,
     selectTradingBuyQuotes,
@@ -87,7 +86,6 @@ import {
     selectTradingSellIsFromRedirect,
     selectTradingSellLastErrorMessage,
     selectTradingSellLoadingTimestampAndStatus,
-    selectTradingSellPreselectedQuote,
     selectTradingSellProviders,
     selectTradingSellQuotes,
     selectTradingSellQuotesByPaymentMethod,
@@ -656,14 +654,6 @@ describe('tradingSelectors', () => {
         expect(selectTradingBuySelectedQuote(state)).toBe(state.wallet.trading.buy.selectedQuote);
     });
 
-    it('selectTradingBuyPreselectedQuote should return correct data', () => {
-        state.wallet.trading.buy.preselectedQuote = state.wallet.trading.buy.quotes[0];
-
-        expect(selectTradingBuyPreselectedQuote(state)).toBe(
-            state.wallet.trading.buy.preselectedQuote,
-        );
-    });
-
     it('selectTradingExchangeSelectedQuote should return correct data', () => {
         expect(selectTradingExchangeSelectedQuote(state)).toBe(
             state.wallet.trading.exchange.selectedQuote,
@@ -699,14 +689,6 @@ describe('tradingSelectors', () => {
 
     it('selectTradingSellSelectedQuote should return correct data', () => {
         expect(selectTradingSellSelectedQuote(state)).toBe(state.wallet.trading.sell.selectedQuote);
-    });
-
-    it('selectTradingSellPreselectedQuote should return correct data', () => {
-        state.wallet.trading.sell.preselectedQuote = state.wallet.trading.sell.quotes[0];
-
-        expect(selectTradingSellPreselectedQuote(state)).toBe(
-            state.wallet.trading.sell.preselectedQuote,
-        );
     });
 
     it('selectTradingPaymentMethods should return correct data', () => {

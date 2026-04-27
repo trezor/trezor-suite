@@ -33,7 +33,6 @@ import {
     selectTradingExchangeInfo,
     selectTradingExchangeIsFromRedirect,
     selectTradingExchangeIsLoading,
-    selectTradingExchangePreselectedQuote,
     selectTradingExchangeQuotes,
     selectTradingExchangeQuotesRequest,
     selectTradingExchangeSelectedQuote,
@@ -94,7 +93,6 @@ export const useTradingExchangeForm = ({
     const quotes = useSelector(selectTradingExchangeQuotes);
     const transactionId = useSelector(selectTradingExchangeTransactionId);
     const selectedQuote = useSelector(selectTradingExchangeSelectedQuote);
-    const preselectedQuote = useSelector(selectTradingExchangePreselectedQuote);
     const amountLimits = useSelector(selectTradingExchangeAmountLimits);
     const isLoading = useSelector(selectTradingExchangeIsLoading);
     const verifiedAddress = useSelector(selectTradingVerifiedAddress);
@@ -602,9 +600,8 @@ export const useTradingExchangeForm = ({
     };
 
     const resetSelectedOffer = useCallback(() => {
-        dispatch(tradingExchangeActions.savePreselectedQuote(undefined));
         setIsScheduledQuotesRefresh(true);
-    }, [dispatch]);
+    }, []);
 
     const refreshQuotes = async () => {
         await handleChange();
@@ -648,7 +645,7 @@ export const useTradingExchangeForm = ({
         const isEvmNativeToken = isSendingEvmNativeToken(sendCryptoSelect.id);
         const requiresApproval = network?.networkType === 'ethereum' && !isEvmNativeToken;
 
-        const quote = preselectedQuote ?? (requiresApproval ? selectedQuote : dexQuotes[0]);
+        const quote = requiresApproval ? selectedQuote : dexQuotes[0];
 
         if (!quote || !quote.dexTx) {
             setValue('transactionData', '');
@@ -666,7 +663,6 @@ export const useTradingExchangeForm = ({
     }, [
         dexQuotes,
         selectedQuote,
-        preselectedQuote,
         exchangeType,
         isApproval,
         sendCryptoSelect,
@@ -694,25 +690,22 @@ export const useTradingExchangeForm = ({
         dispatch(tradingThunks.loadInitialDataThunk({ activeSection: type }));
     }, [dispatch]);
 
-    useEffect(() => {
-        if (!preselectedQuote) {
-            return;
-        }
+    const onQuoteSelected = useCallback(
+        (quote: ExchangeTrade) => {
+            const quoteProvider = quote.exchange;
+            if (quoteProvider && quoteProvider !== provider) {
+                setValue(TRADING_FORM_PROVIDER_SELECT, quoteProvider);
+            }
 
-        const preselectedProvider = preselectedQuote.exchange;
-        if (preselectedProvider && preselectedProvider !== provider) {
-            setValue(TRADING_FORM_PROVIDER_SELECT, preselectedProvider);
-        }
-
-        const preselectedFormType = preselectedQuote.isDex
-            ? TRADING_EXCHANGE_FORM_DEX
-            : TRADING_EXCHANGE_FORM_CEX;
-        if (preselectedFormType !== exchangeType) {
-            setValue(TRADING_EXCHANGE_FORM, preselectedFormType);
-        }
-
-        dispatch(tradingExchangeActions.savePreselectedQuote(undefined));
-    }, [dispatch, preselectedQuote, provider, setValue, exchangeType]);
+            const quoteFormType = quote.isDex
+                ? TRADING_EXCHANGE_FORM_DEX
+                : TRADING_EXCHANGE_FORM_CEX;
+            if (quoteFormType !== exchangeType) {
+                setValue(TRADING_EXCHANGE_FORM, quoteFormType);
+            }
+        },
+        [provider, exchangeType, setValue],
+    );
 
     // Subscribe to blocks for Solana, since they are not fetched globally
     useSolanaSubscribeBlocks(account);
@@ -806,7 +799,6 @@ export const useTradingExchangeForm = ({
         network,
         receiveAccount,
         selectedQuote,
-        preselectedQuote,
         verifiedAddress,
         shouldSendInSats,
         trade,
@@ -817,6 +809,7 @@ export const useTradingExchangeForm = ({
         changeFeeLevel,
         setAmountLimits,
         goToOffers,
+        onQuoteSelected,
         sendTransaction,
         signDataAndConfirm,
         verifyAddress,

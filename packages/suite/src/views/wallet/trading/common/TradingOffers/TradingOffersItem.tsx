@@ -1,16 +1,9 @@
-import { type BuyTrade, type ExchangeTrade, type SellFiatTrade } from 'invity-api';
+import { type SellFiatTrade } from 'invity-api';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
-import {
-    type TradingTradeMapProps,
-    getTagAndInfoNote,
-    sellUtils,
-    tradingBuyActions,
-    tradingExchangeActions,
-    tradingSellActions,
-} from '@suite-common/trading';
+import { type TradingTradeType, getTagAndInfoNote, sellUtils } from '@suite-common/trading';
 import { Badge, Button, Card, Row, Text } from '@trezor/components';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { spacings, spacingsPx } from '@trezor/theme';
@@ -95,7 +88,7 @@ const ButtonWrapper = styled.div`
 `;
 
 export interface TradingOffersItemProps {
-    quote: TradingTradeMapProps[keyof TradingTradeMapProps];
+    quote: TradingTradeType;
     isBestRate: boolean;
 }
 
@@ -120,17 +113,14 @@ export const TradingOffersItem = ({ quote }: TradingOffersItemProps) => {
     const onSelectQuote = () => {
         switch (context.type) {
             case 'exchange':
-                dispatch(tradingExchangeActions.savePreselectedQuote(quote as ExchangeTrade));
                 dispatch(goto({ routeName: 'wallet-trading-exchange' }));
                 break;
 
             case 'buy':
-                dispatch(tradingBuyActions.savePreselectedQuote(quote as BuyTrade));
                 dispatch(goto({ routeName: 'wallet-trading-buy' }));
                 break;
 
             case 'sell':
-                dispatch(tradingSellActions.savePreselectedQuote(quote as SellFiatTrade));
                 dispatch(goto({ routeName: 'wallet-trading-sell' }));
                 break;
         }
