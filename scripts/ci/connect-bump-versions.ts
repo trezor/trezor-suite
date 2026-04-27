@@ -120,8 +120,11 @@ const updateConnectChangelog = async (
 
 const bumpConnect = async () => {
     try {
+        // connect-plugin-ethereum is deprecated in 10.x (its hashing logic was
+        // inlined into @trezor/connect). The 10.x release is a stub and the
+        // package source is frozen — no need to auto-bump it on every connect
+        // release. Keep it removed from this list unless the stub itself changes.
         const mainPackages = [
-            'connect-plugin-ethereum',
             'connect-plugin-stellar',
             'connect-webextension',
             'connect-mobile',

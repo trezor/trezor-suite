@@ -82,7 +82,35 @@ const fixtures = [...ethereumDefinitionFixture, ...commonFixtures.tests]
             },
         };
 
-        return fixture;
+        // Parallel variant without precomputed domain_separator_hash / message_hash.
+        // Connect 10 derives the hashes internally (required for T1B1 firmware,
+        // ignored by core firmwares which compute from `data` on-device), so the
+        // resulting signature must match the precomputed-hashes variant byte-for-byte.
+        // This proves the same payload works across all supported models.
+        // Skipped for v3-only fixtures (auto-compute supports v4 only, matching firmware).
+        if (!parameters.metamask_v4_compat) {
+            return fixture;
+        }
+
+        const {
+            domain_separator_hash: _dsh,
+            message_hash: _mh,
+            ...paramsWithoutHashes
+        } = params as typeof params & {
+            domain_separator_hash?: string;
+            message_hash?: string;
+        };
+        const autoComputeFixture: Fixture = {
+            description: `${name} (auto-computed hashes)`,
+            params: paramsWithoutHashes,
+            legacyResults,
+            result: {
+                address: result.address,
+                signature: result.sig,
+            },
+        };
+
+        return [fixture, autoComputeFixture];
     });
 
 export default {

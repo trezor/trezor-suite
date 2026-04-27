@@ -31,7 +31,6 @@
         "@trezor/coins-solana": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/connect-common": "workspace:*",
-        "@trezor/connect-plugin-ethereum": "workspace:*",
         "@trezor/env-utils": "workspace:*",
         "@trezor/react-utils": "workspace:*",
         "@trezor/type-utils": "workspace:*",

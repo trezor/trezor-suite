@@ -1,71 +1,37 @@
-import * as sigUtil from '@metamask/eth-sig-util';
+/**
+ * @deprecated `@trezor/connect-plugin-ethereum` is deprecated as of `@trezor/connect@10`.
+ * EIP-712 hash construction is now handled internally by `@trezor/connect`.
+ * Pass the EIP-712 `data` object directly to `TrezorConnect.ethereumSignTypedData`
+ * — `domain_separator_hash` and `message_hash` are computed automatically when
+ * the device requires them (T1B1 firmware).
+ *
+ * See https://github.com/trezor/trezor-suite/pull/27091 for migration details.
+ */
+const DEPRECATION_MESSAGE =
+    '@trezor/connect-plugin-ethereum is deprecated. ' +
+    'TrezorConnect.ethereumSignTypedData now computes EIP-712 hashes internally; ' +
+    'pass `data` directly. See https://github.com/trezor/trezor-suite/pull/27091.';
 
-// Sanitization is used for T1B1 as eth-sig-util does not support BigInt
-function sanitizeData(data: any): any {
-    switch (Object.prototype.toString.call(data)) {
-        case '[object Object]': {
-            const entries = Object.keys(data).map(k => [k, sanitizeData(data[k])]);
-
-            return Object.fromEntries(entries);
-        }
-
-        case '[object Array]':
-            return data.map((v: any[]) => sanitizeData(v));
-
-        case '[object BigInt]':
-            return data.toString();
-
-        default:
-            return data;
-    }
-}
+// Branded return type so legacy callers get a TypeScript error at compile time
+// (not just at runtime). The single property name reads as the actionable
+// migration hint when destructuring fails — e.g. typical legacy usage
+// `const { domain_separator_hash } = transformTypedData(data, true)` triggers:
+// "Property 'domain_separator_hash' does not exist on type
+// '__TREZOR_CONNECT_PLUGIN_ETHEREUM_DEPRECATED__SeePullRequest27091'".
+type __TREZOR_CONNECT_PLUGIN_ETHEREUM_DEPRECATED__SeePullRequest27091 = {
+    readonly __deprecated: 'See https://github.com/trezor/trezor-suite/pull/27091';
+};
 
 /**
- * Calculates the domain_separator_hash and message_hash from an EIP-712 Typed Data object.
- *
- * T1B1 does not currently support constructing the hash on the device,
- * so this function pre-computes them.
- *
- * @template {sigUtil.TypedMessage} T
- * @param {T} data - The EIP-712 Typed Data object.
- * @param {boolean} metamask_v4_compat - Set to `true` for compatibility with Metamask's signTypedData_v4 function.
- * @returns {{domain_separator_hash: string, message_hash?: string | null} & T} The hashes.
+ * @deprecated See https://github.com/trezor/trezor-suite/pull/27091.
+ * `TrezorConnect.ethereumSignTypedData` now computes EIP-712 hashes internally.
+ * Pass `data` directly; remove your manual `transformTypedData` call.
  */
-export const transformTypedData = <T extends sigUtil.MessageTypes>(
-    data: sigUtil.TypedMessage<T>,
-    metamask_v4_compat: boolean,
-) => {
-    if (!metamask_v4_compat) {
-        throw new Error('Trezor: Only version 4 of typed data signing is supported');
-    }
-
-    const version = sigUtil.SignTypedDataVersion.V4;
-
-    const { types, primaryType, domain, message } = sigUtil.TypedDataUtils.sanitizeData(data);
-
-    const domainSeparatorHash = sigUtil.TypedDataUtils.hashStruct(
-        'EIP712Domain',
-        sanitizeData(domain),
-        types,
-        version,
-    ).toString('hex');
-
-    let messageHash = null;
-
-    if (primaryType !== 'EIP712Domain') {
-        messageHash = sigUtil.TypedDataUtils.hashStruct(
-            primaryType as string,
-            sanitizeData(message),
-            types,
-            version,
-        ).toString('hex');
-    }
-
-    return {
-        domain_separator_hash: domainSeparatorHash,
-        message_hash: messageHash,
-        ...data,
-    };
+export const transformTypedData = (
+    _data?: unknown,
+    _metamask_v4_compat?: unknown,
+): __TREZOR_CONNECT_PLUGIN_ETHEREUM_DEPRECATED__SeePullRequest27091 => {
+    throw new Error(DEPRECATION_MESSAGE);
 };
 
 // eslint-disable-next-line import/no-default-export

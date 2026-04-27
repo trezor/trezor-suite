@@ -20,9 +20,6 @@
             "path": "../../packages/connect-common"
         },
         {
-            "path": "../../packages/connect-plugin-ethereum"
-        },
-        {
             "path": "../../packages/connect-plugin-stellar"
         },
         { "path": "../../packages/env-utils" },

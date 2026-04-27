@@ -19,6 +19,7 @@ This version removes support for legacy iframe and popup integration methods and
 Features:
 
 - Tron support (`tronGetAddress`, `tronSignTransaction`)
+- `ethereumSignTypedData` now computes `domain_separator_hash` / `message_hash` internally for T1B1 firmware. Callers no longer need to pre-compute hashes via `@trezor/connect-plugin-ethereum`; passing only `data` works for all supported Trezor models. Caller-provided hashes still take precedence for backwards compatibility. Implementation is powered by `viem` and lives in the lazy-loaded ethereum chunk, so non-Ethereum consumers do not pay any bundle cost.
 
 Breaking changes:
 
@@ -31,6 +32,7 @@ Deprecations:
 - Remove connect-iframe and connect-popup integration
 - Remove EOS support
 - Remove NEM support
+- `@trezor/connect-plugin-ethereum` is deprecated. Its logic was inlined into `@trezor/connect`. When upgrading to Connect 10, drop your direct dependency on the plugin and remove manual `transformTypedData` calls. The 10.x release of the plugin is a stub that throws a deprecation error pointing at the migration.
 
 Commits:
 
