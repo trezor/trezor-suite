@@ -5,6 +5,7 @@ import type {
     CoinInfo,
     CoreEventMessage,
     DeviceState,
+    FirmwareCapability,
     PrecomposeResultFinal,
     StaticSessionId,
     UiRequestButtonData,
@@ -143,7 +144,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
     public allowDeviceMode: DeviceMode[]; // used in device management (like ResetDevice allow !UI_REQUEST.INITIALIZED)
 
     protected requiredDeviceCapabilities: Capability[] = [];
-    protected requiredFirmwareCapabilities: string[] = [];
+    protected requiredFirmwareCapabilities: FirmwareCapability[] = [];
     protected requiredFirmwareCoins: (CoinInfo | undefined)[] = [];
 
     public useCardanoDerivation: boolean;
