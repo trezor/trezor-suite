@@ -2,8 +2,6 @@
 
 import type { ConnectSettings, LocalFirmwares } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
-import coinsEth from '@trezor/connect-data/files/coins-eth.json';
-import coins from '@trezor/connect-data/files/coins.json';
 import type {
     ConditionalRelease,
     DeviceModelInternal,
@@ -13,7 +11,6 @@ import type {
     ReleasesConfig,
 } from '@trezor/device-utils';
 
-import { parseCoinsJson } from './coinInfo';
 import {
     getFirmwareReleaseConfig,
     getOnlyLocalFirmwareReleaseConfig,
@@ -53,11 +50,6 @@ export class DataManager {
         this.settings = settings;
 
         if (!withAssets) return;
-
-        parseCoinsJson({
-            ...coins,
-            ...coinsEth,
-        });
 
         const { config: localFirmwareReleaseConfig } = getOnlyLocalFirmwareReleaseConfig();
         this.localFirmwareReleaseConfig = localFirmwareReleaseConfig;

@@ -5,6 +5,8 @@ import type {
     MiscNetworkInfo,
 } from '@trezor/connect-common/src/types/coinInfo';
 import type { DerivationPath } from '@trezor/connect-common/src/types/params';
+import coinsEth from '@trezor/connect-data/files/coins-eth.json';
+import coins from '@trezor/connect-data/files/coins.json';
 import { cloneObject } from '@trezor/utils';
 
 import { getBitcoinFeeLevels, getEthereumFeeLevels, getMiscFeeLevels } from './defaultFeeLevels';
@@ -237,7 +239,7 @@ const parseMiscNetworksJSON = (json: any) => {
     });
 };
 
-export const parseCoinsJson = (json: any) => {
+const parseCoinsJson = (json: any) => {
     Object.keys(json).forEach(key => {
         switch (key) {
             case 'bitcoin':
@@ -259,3 +261,6 @@ export const getUniqueNetworks = <T extends { shortcut: string }>(networks: (T |
     }, []);
 
 export const getAllNetworks = () => [...bitcoinNetworks, ...ethereumNetworks, ...miscNetworks];
+
+// Populate the network registries from the bundled coin definitions on module load.
+parseCoinsJson({ ...coins, ...coinsEth });

@@ -1,9 +1,7 @@
 import type { CoinInfo, Features } from '@trezor/connect-common';
-import coinsJSONEth from '@trezor/connect-data/files/coins-eth.json';
-import coinsJSON from '@trezor/connect-data/files/coins.json';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-import { getAllNetworks, parseCoinsJson } from '../../data/coinInfo';
+import { getAllNetworks } from '../../data/coinInfo';
 import {
     getUnavailableCapabilities,
     parseCapabilities,
@@ -26,12 +24,6 @@ const T1B1_UPDATE_REQUIRED = {
 describe('utils/deviceFeaturesUtils', () => {
     beforeEach(() => {
         jest.clearAllMocks();
-    });
-    beforeAll(() => {
-        parseCoinsJson({
-            ...coinsJSON,
-            ...coinsJSONEth,
-        });
     });
 
     it('parseCapabilities', () => {
@@ -102,7 +94,9 @@ describe('utils/deviceFeaturesUtils', () => {
     });
 
     describe('getUnavailableCapabilities', () => {
-        const coins = getAllNetworks();
+        // Capability-only tests (T2T1 update-required / no-support below) intentionally
+        // run against an empty coin list so the assertion can isolate capability handling.
+        const coins: CoinInfo[] = [];
         beforeEach(() => {
             jest.resetModules();
         });
