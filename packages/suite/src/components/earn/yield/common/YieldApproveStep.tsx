@@ -2,13 +2,17 @@ import type { ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
 import { tokenSupportsIncreasingAllowance } from '@suite-common/trading';
+import type {
+    YieldFlowDisplayToken,
+    YieldFlowType,
+    YieldPendingTransactionState,
+} from '@suite-common/wallet-core';
 import { Button, Column } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
 import { YieldAmountCard } from './YieldAmountCard';
 import { YieldApprovedAmountCard } from './YieldApprovedAmountCard';
 import { YieldPendingTransaction } from './YieldPendingTransaction';
-import type { YieldFlowDisplayToken, YieldFlowType, YieldPendingTransactionState } from '../types';
 
 const approveStepTranslationMap = {
     supply: {

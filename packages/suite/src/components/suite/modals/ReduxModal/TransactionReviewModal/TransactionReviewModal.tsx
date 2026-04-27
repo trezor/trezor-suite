@@ -1,6 +1,7 @@
 import {
     cancelSignSendFormTransactionThunk,
     selectPrecomposedSendForm,
+    selectStablecoinYieldTxReview,
     selectStake,
     selectStakePrecomposedForm,
     sendFormActions,
@@ -13,7 +14,6 @@ import {
     cancelSignTx as cancelSignStakingTx,
     signTransaction,
 } from 'src/actions/wallet/stakeActions';
-import { selectYieldTxReview } from 'src/components/earn/yield/yieldSelectors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectFullSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
@@ -28,7 +28,7 @@ import { isStakeState } from './utils';
 export const TransactionReviewModal = ({ type, decision }: TransactionReviewModalProps) => {
     const send = useSelector(state => state.wallet.send);
     const stake = useSelector(selectStake);
-    const yieldTxReview = useSelector(selectYieldTxReview);
+    const yieldTxReview = useSelector(selectStablecoinYieldTxReview);
     const selectedAccount = useSelector(selectFullSelectedAccount);
     const dispatch = useDispatch();
 

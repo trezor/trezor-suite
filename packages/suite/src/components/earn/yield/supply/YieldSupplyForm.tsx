@@ -1,4 +1,5 @@
 import { Translation } from '@suite/intl';
+import { splitYieldPendingTransaction } from '@suite-common/wallet-core';
 import { Banner, BulletList, Button, Column, Row, Text } from '@trezor/components';
 
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
@@ -9,7 +10,6 @@ import { YieldActionStepWarning } from '../common/YieldActionStepWarning';
 import { YieldApproveModal } from '../common/YieldApproveModal';
 import { YieldApproveStep } from '../common/YieldApproveStep';
 import { YieldFlowComplete } from '../common/YieldFlowComplete';
-import { splitYieldPendingTransaction } from '../yieldFlowUtils';
 
 export const YieldSupplyForm = () => {
     const {

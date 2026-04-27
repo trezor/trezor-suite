@@ -27,7 +27,7 @@ export const getTransactionReviewModalActionTranslation = ({
     isSending,
     source,
 }: GetTransactionReviewModalActionTranslationParams): ExtendedMessageDescriptor => {
-    const transactionPurpose = getEvmTransactionTextSignature(precomposedForm.transactionData);
+    const txSignature = getEvmTransactionTextSignature(precomposedForm.transactionData);
 
     switch (stakeType) {
         case 'stake':
@@ -53,7 +53,7 @@ export const getTransactionReviewModalActionTranslation = ({
     }
 
     if (precomposedForm?.trading?.activeSection === 'exchange') {
-        switch (transactionPurpose) {
+        switch (txSignature) {
             case 'approve':
                 return {
                     id:
@@ -77,10 +77,10 @@ export const getTransactionReviewModalActionTranslation = ({
 
     if (
         (routeName === 'earn-supply' || routeName === 'earn-withdraw') &&
-        (transactionPurpose === 'approve' || transactionPurpose === 'revoke')
+        (txSignature === 'approve' || txSignature === 'revoke')
     ) {
         return {
-            id: transactionPurpose === 'approve' ? 'TR_APPROVE_DATA_TITLE' : 'TR_REVOKE_DATA_TITLE',
+            id: txSignature === 'approve' ? 'TR_APPROVE_DATA_TITLE' : 'TR_REVOKE_DATA_TITLE',
         };
     }
 

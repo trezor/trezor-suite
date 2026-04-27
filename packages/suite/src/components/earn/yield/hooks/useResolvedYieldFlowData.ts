@@ -7,15 +7,17 @@ import {
     useAllYieldOpportunities,
 } from '@suite-common/earn-stablecoin-api';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import {
+    type YieldFlowDisplayToken,
+    type YieldFlowToken,
+    doTokensMatch,
+} from '@suite-common/wallet-core';
 import type { Account, TokenInfoBranded } from '@suite-common/wallet-types';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import type { TokenInfo } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
 import { getApyPercent } from 'src/components/earn/utils/earnApyUtils';
-
-import type { YieldFlowDisplayToken, YieldFlowToken } from '../types';
-import { doTokensMatch } from '../yieldFlowUtils';
 
 const hasTokenSymbol = (
     accountToken: NonNullable<Account['tokens']>[number],

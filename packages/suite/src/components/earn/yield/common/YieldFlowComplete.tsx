@@ -1,13 +1,13 @@
 import { Translation, useTranslation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { type Rating, buildUserFeedbackData, sendFeedbackAction } from '@suite-common/feedback';
+import type { YieldFlowCompleteValue } from '@suite-common/wallet-core';
 import { Button, Card, Column, Icon, IconCircle, Row, Text } from '@trezor/components';
 import { FeedbackCard } from '@trezor/product-components';
 
 import { useDispatch } from 'src/hooks/suite';
 import { ApyValue } from 'src/views/wallet/staking/components/ApyValue';
 
-import type { YieldFlowCompleteValue } from '../types';
 import { YieldTokenValue } from './YieldTokenValue';
 
 const flowTypeContentMap = {
