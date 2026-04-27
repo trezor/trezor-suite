@@ -25,7 +25,7 @@ export const useConnectPopupWeb = () => {
     // scoped to that origin.
     const originRef = useRef<string>('*');
     const initialUrl = useRef<string>(window.location.href.split('?')[1] ?? '');
-    const channelRef = useRef<BroadcastChannel | null>(null);
+    const [broadcast, setBroadcast] = useState<BroadcastChannel | null>(null);
 
     /**
      * Send a message back to the caller (opener window or same window).
@@ -35,25 +35,25 @@ export const useConnectPopupWeb = () => {
      * malicious opener from a different origin from intercepting sensitive data
      * such as addresses or signatures.
      */
-    const postMessageToParent = useCallback((message: ConnectPopupOutgoingMessage) => {
-        message.channel = webChannel;
-        if (channelRef.current) {
-            channelRef.current.postMessage(message);
-        } else {
-            // TODO: show warning to user
-            console.error('BroadcastChannel not available', initialUrl.current);
-        }
-    }, []);
 
-    const popupLink = useMemo<ConnectPopupLink>(
-        () => ({
-            sendMessage: postMessageToParent,
+    const popupLink = useMemo<ConnectPopupLink | null>(() => {
+        if (!broadcast) return null;
+
+        return {
+            sendMessage: (message: ConnectPopupOutgoingMessage) => {
+                message.channel = webChannel;
+                if (broadcast) {
+                    broadcast.postMessage(message);
+                } else {
+                    // TODO: show warning to user
+                    console.warn('BroadcastChannel not available', initialUrl.current);
+                }
+            },
             get origin() {
                 return originRef.current;
             },
-        }),
-        [postMessageToParent],
-    );
+        };
+    }, [broadcast]);
 
     const consumeMessages = useCallback(() => {
         setIncomingMessages(prev => prev.slice(1));
@@ -82,7 +82,7 @@ export const useConnectPopupWeb = () => {
         let broadcastChannel: BroadcastChannel | undefined;
         try {
             broadcastChannel = new BroadcastChannel(`@trezor/connect-popup/${requestId}`);
-            channelRef.current = broadcastChannel;
+            setBroadcast(broadcastChannel);
         } catch (error) {
             // TODO: show warning to user
             console.warn('BroadcastChannel is not supported in this browser', error);
@@ -94,7 +94,7 @@ export const useConnectPopupWeb = () => {
             // eslint-disable-next-line @typescript-eslint/no-use-before-define
             broadcastChannel.removeEventListener('message', onMessage);
             broadcastChannel.close();
-            channelRef.current = null;
+            setBroadcast(null);
             // TODO: show warning to user
             console.warn('Popup handshake timeout');
         }, 3000);
