@@ -74,6 +74,7 @@ const usedIcons = [
     'currencyBtc',
     'cpu',
     'clipboard',
+    'creditCard',
     'database',
     'detective',
     'deviceMobileCamera',

@@ -1,5 +1,7 @@
-import { act, fireEvent, renderWithStoreProvider } from '@suite-native/test-utils-store';
+import { getTranslation } from '@suite-native/intl';
+import { act, renderWithStoreProvider, userEvent } from '@suite-native/test-utils-store';
 import {
+    cexdirectCreditCardBuyQuote,
     getInitializedTradingState,
     mercuryoApplePayBuyQuote,
 } from '@suite-native/trading-fixtures';
@@ -23,16 +25,30 @@ describe('PaymentMethodListItem', () => {
         const { getByText } = renderPaymentMethodListItem({});
 
         expect(getByText('Apple Pay')).toBeOnTheScreen();
-        expect(getByText('Rate')).toBeOnTheScreen();
         expect(getByText('€9,998.32 / 1 BTC')).toBeOnTheScreen();
+        expect(getByText(getTranslation('moduleTrading.providerListItem.rate'))).toBeOnTheScreen();
     });
 
-    it('should call onPress callback on item press', () => {
+    it('should render payment method logo for branded payment methods', () => {
+        const { getByTestId } = renderPaymentMethodListItem({});
+
+        expect(getByTestId('@icons/payment-method-logo/applePay')).toBeOnTheScreen();
+    });
+
+    it('should render fallback icon for non-branded payment methods', () => {
+        const { getByTestId } = renderPaymentMethodListItem({
+            quote: cexdirectCreditCardBuyQuote,
+        });
+
+        expect(getByTestId('@icons/payment-method-icon/creditCard')).toBeOnTheScreen();
+    });
+
+    it('should call onPress callback on item press', async () => {
         const onPress = jest.fn();
         const { getByText } = renderPaymentMethodListItem({ onPress });
 
-        act(() => {
-            fireEvent.press(getByText('Apple Pay'));
+        await act(async () => {
+            await userEvent.press(getByText('Apple Pay'));
         });
 
         expect(onPress).toHaveBeenCalledTimes(1);
@@ -44,6 +60,6 @@ describe('PaymentMethodListItem', () => {
         });
 
         expect(getByText('Apple Pay')).toBeOnTheScreen();
-        expect(queryByText('Rate')).toBeNull();
+        expect(queryByText('€9,998.32 / 1 BTC')).toBeNull();
     });
 });

@@ -3,6 +3,7 @@ import { Pressable } from 'react-native';
 import type { BuyTrade, SellFiatTrade } from 'invity-api';
 
 import { HStack, Text, VStack } from '@suite-native/atoms';
+import { PaymentMethodIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -15,7 +16,7 @@ export type PaymentMethodListItemProps<T extends BuyTrade | SellFiatTrade> = {
     isLast?: boolean;
 };
 
-export const PAYMENT_METHOD_LIST_ITEM_HEIGHT = 74 as const;
+export const PAYMENT_METHOD_LIST_ITEM_HEIGHT = 72 as const;
 
 const itemStyle = prepareNativeStyle<{ isFirst: boolean; isLast: boolean }>(
     (
@@ -63,7 +64,8 @@ export const PaymentMethodListItem = <T extends BuyTrade | SellFiatTrade>({
     return (
         <Pressable onPress={onPress} style={applyStyle(itemStyle, { isFirst, isLast })}>
             <VStack spacing="sp4">
-                <HStack alignItems="center" justifyContent="space-between">
+                <HStack alignItems="center" spacing="sp12" flex={1} flexShrink={1}>
+                    <PaymentMethodIcon paymentMethod={quote.paymentMethod} />
                     <Text
                         variant="body-md"
                         color="contentPrimary"
@@ -74,7 +76,7 @@ export const PaymentMethodListItem = <T extends BuyTrade | SellFiatTrade>({
                     </Text>
                 </HStack>
                 {!!formattedRate && (
-                    <HStack alignItems="center" justifyContent="space-between">
+                    <HStack alignItems="center" justifyContent="space-between" paddingLeft="sp32">
                         <Text
                             variant="body-sm"
                             color="contentSecondary"
