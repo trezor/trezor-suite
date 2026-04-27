@@ -195,6 +195,7 @@
         { "path": "../../suite/tx-simulation" },
         { "path": "../address-validator" },
         { "path": "../analytics-uploader" },
+        { "path": "../asset-utils" },
         { "path": "../blockchain-link" },
         { "path": "../blockchain-link-types" },
         { "path": "../blockchain-link-utils" },

@@ -1,13 +1,11 @@
+import { type GetAssetLogoUrlParams } from '@trezor/asset-utils';
 import { type ImageType } from '@trezor/components';
 
 type ProviderMetadata = {
     name: string;
     companyName: string;
     logo: ImageType;
-    tokenLogo?: {
-        coingeckoId: string;
-        contractAddress: string;
-    };
+    tokenLogo?: Required<Pick<GetAssetLogoUrlParams, 'coingeckoId' | 'contractAddress'>>;
 };
 
 export const EARN_PROVIDER_METADATA = {
