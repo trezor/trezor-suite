@@ -1,24 +1,6 @@
 const path = require('path');
 
-const swcConfig = {
-    jsc: {
-        parser: {
-            syntax: 'typescript',
-            tsx: true,
-            decorators: true,
-        },
-        transform: {
-            react: {
-                runtime: 'automatic',
-            },
-            decoratorVersion: '2022-03',
-        },
-        target: 'esnext',
-    },
-    module: {
-        type: 'commonjs',
-    },
-};
+const swcConfig = require('./jest.config.swc-transform');
 
 module.exports = {
     rootDir: process.cwd(),
