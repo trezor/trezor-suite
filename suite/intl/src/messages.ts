@@ -2895,6 +2895,10 @@ export const messages = defineMessages({
         defaultMessage: 'Passphrases are case-sensitive',
         id: 'TR_PASSPHRASE_CASE_SENSITIVE',
     },
+    TR_PASSPHRASE_CAPS_LOCK_ON: {
+        defaultMessage: 'Caps Lock is on',
+        id: 'TR_PASSPHRASE_CAPS_LOCK_ON',
+    },
     TR_PASSPHRASE_TOO_LONG: {
         defaultMessage: 'Passphrase length exceeds the allowed limit.',
         id: 'TR_PASSPHRASE_TOO_LONG',
