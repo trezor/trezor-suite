@@ -5,7 +5,7 @@ import { eslint, globalNoExtraneousDependenciesDevDependencies } from '@trezor/e
 export default [
     ...eslint,
     {
-        ignores: ['.next/**/*'],
+        ignores: ['.next/**/*', 'next-env.d.ts'],
     },
 
     // Mdx
