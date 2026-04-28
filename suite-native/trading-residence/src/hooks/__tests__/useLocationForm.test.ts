@@ -34,24 +34,10 @@ describe('useLocationForm', () => {
         });
     });
 
-    it('should use default value from redux state', () => {
-        act(() => {
-            store.dispatch(residenceActions.setResidenceCountry('CZ'));
-        });
-
-        const { result } = renderUseLocationForm();
-
-        expect(result.current.getValues('country')).toEqual(
-            expect.objectContaining({
-                value: 'CZ',
-            }),
-        );
-    });
-
     it('should use default subdivision value from redux state', () => {
         act(() => {
             store.dispatch(
-                residenceActions.setResidenceLocation({
+                residenceActions.setResidenceCountry({
                     country: 'US',
                     countrySubdivision: 'CA',
                 }),
@@ -75,7 +61,7 @@ describe('useLocationForm', () => {
     it('should ignore persisted subdivision when it does not belong to country', () => {
         act(() => {
             store.dispatch(
-                residenceActions.setResidenceLocation({
+                residenceActions.setResidenceCountry({
                     country: 'CZ',
                     countrySubdivision: 'CA',
                 }),
