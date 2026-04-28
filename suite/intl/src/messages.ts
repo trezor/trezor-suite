@@ -3472,6 +3472,10 @@ export const messages = defineMessages({
         defaultMessage: 'unknown',
         id: 'TR_UNKNOWN_CONFIRMATION_TIME',
     },
+    TR_UNKNOWN: {
+        defaultMessage: 'Unknown',
+        id: 'TR_UNKNOWN',
+    },
     TR_UNKNOWN_TRANSACTION: {
         defaultMessage: 'Unknown transaction',
         id: 'TR_UNKNOWN_TRANSACTION',

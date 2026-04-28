@@ -108,7 +108,7 @@ export type YieldApproveStepProps = {
     onMaxClick?: () => void;
     onApprove?: () => void;
     onRevoke?: () => void;
-    onPendingTxClick?: (txid: string) => void;
+    onPendingTxClick: (txid: string) => void;
 };
 
 export const YieldApproveStep = ({

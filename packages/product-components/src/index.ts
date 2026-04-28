@@ -62,3 +62,7 @@ export {
 } from './components/EmojiRatingSelector/EmojiRatingSelector';
 export { QuickActionButton } from './components/QuickActionButton/QuickActionButton';
 export { TooltipRow } from './components/TooltipRow/TooltipRow';
+export {
+    PendingTransactionInfo,
+    type PendingTransactionInfoProps,
+} from './components/PendingTransactionInfo/PendingTransactionInfo';
