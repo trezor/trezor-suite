@@ -13,6 +13,7 @@ import {
     sortByCoin,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
+import { type ContractInfoProtocol } from '@trezor/blockchain-link-types/src/blockbook';
 import { type StaticSessionId, type TrezorConnect } from '@trezor/connect';
 import { arrayToDictionary } from '@trezor/utils';
 
@@ -116,7 +117,8 @@ export const selectDiscoveryAccountsParam = (
         const identity = tryGetAccountIdentity({ networkType, deviceState });
         const bitcoinGap = networkType === 'bitcoin' ? selectGapLimit(state, symbol) : undefined;
 
-        const protocols = networkType === 'ethereum' ? ['erc4626'] : undefined;
+        const protocols: ContractInfoProtocol[] | undefined =
+            networkType === 'ethereum' ? ['erc4626'] : undefined;
 
         // undiscovered network; discover as a whole
         if (!accounts)

@@ -261,28 +261,6 @@ export interface StakingPool {
     /** Any balance automatically reinvested into the pool. */
     autocompoundBalance: string;
 }
-
-export interface Erc4626 {
-    asset?: {
-        contract: string;
-        name: string;
-        symbol: string;
-        decimals: number;
-    };
-    share?: {
-        contract: string;
-        name: string;
-        symbol: string;
-        decimals: number;
-    };
-    totalAssets?: string;
-    convertToAssets1Share?: string;
-    convertToShares1Asset?: string;
-    previewDeposit1Asset?: string;
-    previewRedeem1Share?: string;
-    error?: string;
-}
-
 export interface ContractInfo {
     /** @deprecated: Use standard instead. */
     type: '' | 'XPUBAddress' | 'ERC20' | 'ERC721' | 'ERC1155' | 'BEP20' | 'BEP721' | 'BEP1155';
@@ -299,6 +277,34 @@ export interface ContractInfo {
     createdInBlock?: number;
     /** Block height where contract was destroyed (if any). */
     destructedInBlock?: number;
+}
+export interface Erc4626TokenMetadata {
+    /** Token contract address. */
+    contract: string;
+    /** Human-readable token name. */
+    name?: string;
+    /** Token symbol. */
+    symbol?: string;
+    /** Token decimals. */
+    decimals: number;
+}
+export interface Erc4626Token {
+    /** Metadata of the underlying asset token. */
+    asset?: Erc4626TokenMetadata;
+    /** Metadata of the vault share token. */
+    share?: Erc4626TokenMetadata;
+    /** Total underlying assets managed by the vault. */
+    totalAssets?: string;
+    /** Underlying assets for one whole share unit. */
+    convertToAssets1Share?: string;
+    /** Shares for one whole underlying asset unit. */
+    convertToShares1Asset?: string;
+    /** Previewed shares minted for one whole underlying asset unit. */
+    previewDeposit1Asset?: string;
+    /** Previewed assets redeemed for one whole share unit. */
+    previewRedeem1Share?: string;
+    /** Error message for partial failures while fetching ERC4626 fields. */
+    error?: string;
 }
 export interface Token {
     /** @deprecated: Use standard instead. */
@@ -330,10 +336,8 @@ export interface Token {
     totalReceived?: string;
     /** Total amount of tokens sent. */
     totalSent?: string;
-    /** Token protocols (e.g. erc4626). */
-    protocols?: {
-        erc4626?: Erc4626;
-    };
+    /** Optional protocol-specific enrichments requested by the caller. */
+    protocols?: ContractInfoProtocols;
 }
 export interface Address {
     /** Current page index. */
@@ -398,6 +402,64 @@ export interface Address {
     chainExtraData?:
         | { payloadType: 'tron'; payload?: TronAccountExtraData }
         | { payloadType: string; payload?: any };
+}
+export type ContractInfoProtocol = 'erc4626';
+export interface ContractInfoProtocols {
+    /** ERC4626 vault details when explicitly requested and detected. */
+    erc4626?: Erc4626Token;
+}
+export interface ContractInfoRates {
+    /** Current price of one whole token in the chain base currency, when available. */
+    baseRate?: number;
+    /** Requested secondary currency code for the secondaryRate field, lower-cased. */
+    currency?: string;
+    /** Current price of one whole token in the requested secondary currency, when available. */
+    secondaryRate?: number;
+}
+export interface ContractInfoResult {
+    /** @deprecated: Use standard instead. */
+    type:
+        | ''
+        | 'XPUBAddress'
+        | 'ERC20'
+        | 'ERC721'
+        | 'ERC1155'
+        | 'BEP20'
+        | 'BEP721'
+        | 'BEP1155'
+        | 'TRC20'
+        | 'TRC721'
+        | 'TRC1155';
+    standard:
+        | ''
+        | 'XPUBAddress'
+        | 'ERC20'
+        | 'ERC721'
+        | 'ERC1155'
+        | 'BEP20'
+        | 'BEP721'
+        | 'BEP1155'
+        | 'TRC20'
+        | 'TRC721'
+        | 'TRC1155';
+    /** Smart contract address. */
+    contract: string;
+    /** Readable name of the contract. */
+    name: string;
+    /** Symbol for tokens under this contract, if applicable. */
+    symbol: string;
+    /** Number of decimal places, if applicable. */
+    decimals: number;
+    /** Block height where contract was first created. */
+    createdInBlock?: number;
+    /** Block height where contract was destroyed (if any). */
+    destructedInBlock?: number;
+    /** Current rate data for the contract when available. */
+    rates?: ContractInfoRates;
+    /** Optional protocol-specific enrichments requested by the caller. */
+    protocols?: ContractInfoProtocols;
+    /** Indexed best block height used as freshness metadata for this response. */
+    blockHeight: number;
 }
 export interface Utxo {
     /** Transaction ID in which this UTXO was created. */
@@ -624,6 +686,7 @@ export interface WsReq {
     /** Requested method name. */
     method:
         | 'getAccountInfo'
+        | 'getContractInfo'
         | 'getInfo'
         | 'getBlockHash'
         | 'getBlock'
@@ -645,8 +708,7 @@ export interface WsReq {
         | 'getCurrentFiatRates'
         | 'getFiatRatesForTimestamps'
         | 'getFiatRatesTickersList'
-        | 'getMempoolFilters'
-        | 'getContractInfo';
+        | 'getMempoolFilters';
     /** Parameters for the requested method in raw JSON format. */
     params: any;
 }
@@ -663,6 +725,8 @@ export interface WsAccountInfoReq {
     details?: 'basic' | 'tokens' | 'tokenBalances' | 'txids' | 'txslight' | 'txs';
     /** Which tokens to include in the account info. */
     tokens?: 'derived' | 'used' | 'nonzero';
+    /** Optional protocol enrichments to include. Supported values currently include 'erc4626'. */
+    protocols?: ContractInfoProtocol[];
     /** Number of items per page, if paging is used. */
     pageSize?: number;
     /** Requested page index, if paging is used. */
@@ -677,8 +741,14 @@ export interface WsAccountInfoReq {
     secondaryCurrency?: string;
     /** Gap limit for XPUB scanning, if relevant. */
     gap?: number;
-    /** Protocols to include in the response (e.g. 'erc4626'). */
-    protocols?: string[];
+}
+export interface WsContractInfoReq {
+    /** Contract address to query. */
+    contract: string;
+    /** Optional secondary currency code used to include fiat pricing information. */
+    currency?: string;
+    /** Optional protocol enrichments to include. Supported values currently include 'erc4626'. */
+    protocols?: ContractInfoProtocol[];
 }
 export interface WsBackendInfo {
     /** Backend version string. */
@@ -880,20 +950,4 @@ export interface MempoolTxidFilterEntries {
     entries?: { [key: string]: string };
     /** Indicates if a zeroed key was used in filter calculation. */
     usedZeroedKey?: boolean;
-}
-export interface WsContractInfoReq {
-    contract: string;
-    currency?: string;
-    protocols?: string[];
-}
-export interface WsContractInfoRes {
-    contract: string;
-    standard?: string;
-    name?: string;
-    symbol?: string;
-    decimals?: number;
-    protocols?: {
-        erc4626?: Erc4626;
-    };
-    blockHeight: number;
 }

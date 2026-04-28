@@ -58,5 +58,5 @@ export interface AccountInfoParams {
         seq: number;
     };
     tokenAccountsPubKeys?: string[]; // solana only, token accounts to fetch txids for
-    protocols?: string[]; // protocols to include in the response (e.g. 'erc4626')
+    protocols?: 'erc4626'[]; // protocols to include in the response (e.g. 'erc4626')
 }
