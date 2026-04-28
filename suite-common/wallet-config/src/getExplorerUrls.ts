@@ -56,11 +56,16 @@ export const getExplorerUrls = (
     return networkTypeExplorerMap[networkType];
 };
 
+// `{} extends Pick<T, K>` is the canonical TS idiom for distinguishing required vs
+// optional properties — it relies on {}'s "any non-nullish" semantics and cannot be
+// expressed with Record<string, never>, which is strictly empty.
 type RequiredKeys<T> = {
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     [K in keyof T]-?: {} extends Pick<T, K> ? never : K;
 }[keyof T];
 
 type OptionalKeys<T> = {
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     [K in keyof T]-?: {} extends Pick<T, K> ? K : never;
 }[keyof T];
 

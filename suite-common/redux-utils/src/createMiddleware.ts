@@ -4,7 +4,7 @@ import { type Action, type Dispatch, type Middleware, type MiddlewareAPI } from 
 import { type ExtraDependencies } from './extraDependenciesType';
 import { type AnyAction } from './types';
 
-interface SimpleMiddleware<TAction extends Action, TExtraMiddlewareAPI = {}> {
+interface SimpleMiddleware<TAction extends Action, TExtraMiddlewareAPI = unknown> {
     (
         action: TAction,
         api: MiddlewareAPI<ThunkDispatch<any, any, AnyAction>> &
@@ -14,7 +14,7 @@ interface SimpleMiddleware<TAction extends Action, TExtraMiddlewareAPI = {}> {
 
 export const createMiddleware =
     <TAction extends Action = AnyAction>(simpleMiddleware: SimpleMiddleware<TAction>): Middleware =>
-    (middlewareAPI: MiddlewareAPI<ThunkDispatch<any, {}, AnyAction>>) =>
+    (middlewareAPI: MiddlewareAPI<ThunkDispatch<any, unknown, AnyAction>>) =>
     next =>
     action => {
         try {

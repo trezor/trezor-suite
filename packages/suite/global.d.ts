@@ -39,7 +39,7 @@ declare module 'redux' {
     }
 
     export interface Middleware<
-        _DispatchExt = {},
+        _DispatchExt = Record<never, never>,
         S = any,
         D extends Dispatch = Dispatch<AnyAction>,
     > {

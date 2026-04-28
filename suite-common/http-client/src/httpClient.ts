@@ -63,7 +63,7 @@ export function createHttpClient<
             RouteParams extends GenerateRouteParams<Endpoint>,
         >(
             fetcherOptions?: Options &
-                ([RouteParams] extends [never] ? {} : { routeParams: RouteParams }),
+                ([RouteParams] extends [never] ? unknown : { routeParams: RouteParams }),
         ) => {
             const opts = fetcherOptions as
                 | (Options & { routeParams?: Record<string, string> })

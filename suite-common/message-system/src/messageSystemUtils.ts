@@ -414,7 +414,7 @@ type ExtraByCategory = {
     modal: { modal: { title: Localization; image: string } };
     context: { context: { domain: string } };
     feature: { feature: Array<{ domain: string; flag: boolean }> };
-    banner: {};
+    banner: Record<never, never>;
 };
 
 const EXTRA_BY_CATEGORY = {

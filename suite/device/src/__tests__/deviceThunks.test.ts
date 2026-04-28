@@ -32,7 +32,7 @@ const getInitialState = (state?: {
     } as RouterState,
 });
 
-const configureStore = <S, DispatchExts = {}>(
+const configureStore = <S, DispatchExts = Record<never, never>>(
     additionalExtraDeps: Partial<ExtraDependencies> = {},
 ): MockStoreCreator<S, DispatchExts> =>
     reduxMockStore([

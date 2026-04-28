@@ -3,7 +3,7 @@ import type * as RN from 'react-native';
 import type { UniversalStyleUtils } from '@trezor/styles-common';
 import type { CSSColor, NativeTheme } from '@trezor/theme';
 
-export interface NativeStyleUtils extends NativeTheme, UniversalStyleUtils {}
+export type NativeStyleUtils = NativeTheme & UniversalStyleUtils;
 
 interface ConditionalExtend<TStyleObject extends object = NativeStyleObject> {
     condition: boolean;

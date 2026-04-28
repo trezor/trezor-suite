@@ -14,14 +14,18 @@ interface MiddlewareAPI<D extends Dispatch = Dispatch<AnyAction>, S = any> {
     getState(): S;
 }
 
-interface Middleware<_DispatchExt = {}, S = any, D extends Dispatch = Dispatch<any>> {
+interface Middleware<
+    _DispatchExt = Record<never, never>,
+    S = any,
+    D extends Dispatch = Dispatch<any>,
+> {
     (api: MiddlewareAPI<D, S>): (next: Dispatch<AnyAction>) => (action: any) => any;
 }
 
 /**
  * @deprecated Use configureStore from @suite-common/test-utils instead.
  */
-export const configureStore = <S, DispatchExts = {}>(
+export const configureStore = <S, DispatchExts = Record<never, never>>(
     middlewares?: Middleware[],
     additionalExtraDeps: Partial<Omit<ExtraDependencies, 'services'>> &
         Partial<{ services: Partial<SuiteServices> }> = {},

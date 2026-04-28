@@ -262,7 +262,7 @@ export interface FirmwareProgress {
 
 export interface FirmwareProgressUnexpectedDelay {
     type: typeof UI_REQUEST.FIRMWARE_PROGRESS_UNEXPECTED_DELAY;
-    payload: {};
+    payload: Record<string, never>;
 }
 
 /**

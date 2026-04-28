@@ -12,11 +12,11 @@ import type {
 
 import type { ProviderConfirmationStatus } from './general';
 
-export interface TradingBuyState extends CommonTradingBuyState {}
+export type TradingBuyState = CommonTradingBuyState;
 
-export interface TradingExchangeState extends CommonTradingExchangeState {}
+export type TradingExchangeState = CommonTradingExchangeState;
 
-export interface TradingSellState extends CommonTradingSellState {}
+export type TradingSellState = CommonTradingSellState;
 
 export type TradingResidenceState = {
     country: TradingCountryCode | undefined;

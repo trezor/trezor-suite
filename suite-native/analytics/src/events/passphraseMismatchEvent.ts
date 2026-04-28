@@ -2,7 +2,7 @@ import type { EventDef } from '@suite-common/analytics';
 
 import { EventType } from '../constants';
 
-type Attributes = {};
+type Attributes = Record<never, never>;
 
 export const passphraseMismatchEvent: EventDef<Attributes, EventType.PassphraseMismatch> = {
     name: EventType.PassphraseMismatch,

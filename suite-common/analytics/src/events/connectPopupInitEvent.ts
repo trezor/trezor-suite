@@ -1,7 +1,7 @@
 import { EventType } from '../constants';
 import type { EventDef } from '../eventDefinition';
 
-type Attributes = {};
+type Attributes = Record<never, never>;
 
 export const connectPopupInitEvent: EventDef<Attributes, EventType.ConnectPopupInit> = {
     name: EventType.ConnectPopupInit,
