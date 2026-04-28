@@ -1037,7 +1037,7 @@
     "moduleAccountManagement.accountDetailContentScreen.coinPriceCard.changeIn24h": "Variação 24h",
     "moduleAccountManagement.accountDetailContentScreen.coinPriceCard.coinPrice": "Preço de {coinName}",
     "moduleAccounts.accountNotFound": "Conta {accountKey} não encontrada.",
-    "moduleAccounts.tokens.runOn": "Executar em {accountLabel}",
+    "moduleAccounts.tokens.runOn": "Executar em {networkName}",
     "moduleAccounts.tokens.errorMessage": "Token não encontrado.",
     "moduleAccounts.accountDetail.accountLabelBadge": "Executar em {accountLabel}",
     "moduleAccounts.accountDetail.stablecoinYield.infoText": "This token represents your deposit and all rewards in stablecoin yield.",

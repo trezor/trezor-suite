@@ -1037,7 +1037,7 @@
     "moduleAccountManagement.accountDetailContentScreen.coinPriceCard.changeIn24h": "24h změna",
     "moduleAccountManagement.accountDetailContentScreen.coinPriceCard.coinPrice": "Cena {coinName}",
     "moduleAccounts.accountNotFound": "Účet {accountKey} nenalezen.",
-    "moduleAccounts.tokens.runOn": "Běží na {accountLabel}",
+    "moduleAccounts.tokens.runOn": "Běží na {networkName}",
     "moduleAccounts.tokens.errorMessage": "Token nebyl nalezen.",
     "moduleAccounts.accountDetail.accountLabelBadge": "Běží na {accountLabel}",
     "moduleAccounts.accountDetail.stablecoinYield.infoText": "This token represents your deposit and all rewards in stablecoin yield.",

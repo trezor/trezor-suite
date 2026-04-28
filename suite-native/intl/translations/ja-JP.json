@@ -1037,7 +1037,7 @@
     "moduleAccountManagement.accountDetailContentScreen.coinPriceCard.changeIn24h": "24時間の変動",
     "moduleAccountManagement.accountDetailContentScreen.coinPriceCard.coinPrice": "{coinName} の価格",
     "moduleAccounts.accountNotFound": "{accountKey}アカウントが見つかりません。",
-    "moduleAccounts.tokens.runOn": "{accountLabel} 上で実行",
+    "moduleAccounts.tokens.runOn": "{networkName} 上で実行",
     "moduleAccounts.tokens.errorMessage": "トークンが見つかりません.",
     "moduleAccounts.accountDetail.accountLabelBadge": "{accountLabel} 上で実行",
     "moduleAccounts.accountDetail.stablecoinYield.infoText": "This token represents your deposit and all rewards in stablecoin yield.",

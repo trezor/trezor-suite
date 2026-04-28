@@ -1,9 +1,8 @@
 import { useSelector } from 'react-redux';
 
-import { type SuiteSyncDataRootState, selectSuiteSyncAccountLabel } from '@suite-common/suite-sync';
+import { getNetwork } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
-import { parseAccountKey, parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { Badge, Box, ErrorMessage, Text, VStack } from '@suite-native/atoms';
 import { TokenAmountFormatter, TokenToFiatAmountFormatter } from '@suite-native/formatters';
 import { CryptoIconWithNetwork } from '@suite-native/icons';
@@ -29,13 +28,6 @@ const valuesContainerStyle = prepareNativeStyle(utils => ({
 
 export const TokenReceiveCard = ({ contract, accountKey }: TokenReceiveCardProps) => {
     const { applyStyle } = useNativeStyles();
-
-    const { accountDescriptor, networkSymbol, deviceStaticSessionId } = parseAccountKey(accountKey);
-    const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticSessionId);
-
-    const accountLabel = useSelector((state: AccountsRootState & SuiteSyncDataRootState) =>
-        selectSuiteSyncAccountLabel(state, walletDescriptor, accountDescriptor, networkSymbol),
-    );
     const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
@@ -51,6 +43,8 @@ export const TokenReceiveCard = ({ contract, accountKey }: TokenReceiveCardProps
 
     const tokenName = getTokenName(token.name);
 
+    const networkName = getNetwork(symbol).name;
+
     return (
         <VStack>
             <Box flexDirection="row" justifyContent="space-between" alignItems="center">
@@ -64,7 +58,7 @@ export const TokenReceiveCard = ({ contract, accountKey }: TokenReceiveCardProps
                             label={
                                 <Translation
                                     id="moduleAccounts.tokens.runOn"
-                                    values={{ accountLabel }}
+                                    values={{ networkName }}
                                 />
                             }
                             size="small"

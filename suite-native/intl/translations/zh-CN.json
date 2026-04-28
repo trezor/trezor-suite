@@ -1037,7 +1037,7 @@
     "moduleAccountManagement.accountDetailContentScreen.coinPriceCard.changeIn24h": "24 小时内的变动",
     "moduleAccountManagement.accountDetailContentScreen.coinPriceCard.coinPrice": "{coinName} 价格",
     "moduleAccounts.accountNotFound": "未找到帐户 {accountKey}。",
-    "moduleAccounts.tokens.runOn": "在 {accountLabel} 上运行",
+    "moduleAccounts.tokens.runOn": "在 {networkName} 上运行",
     "moduleAccounts.tokens.errorMessage": "未能找到此代币。",
     "moduleAccounts.accountDetail.accountLabelBadge": "在 {accountLabel} 上运行",
     "moduleAccounts.accountDetail.stablecoinYield.infoText": "该代币代表您的存款以及以稳定币形式获得的所有收益。",

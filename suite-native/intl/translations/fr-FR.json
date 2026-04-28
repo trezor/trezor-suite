@@ -1037,7 +1037,7 @@
     "moduleAccountManagement.accountDetailContentScreen.coinPriceCard.changeIn24h": "Variation sur 24 h",
     "moduleAccountManagement.accountDetailContentScreen.coinPriceCard.coinPrice": "Prix du {coinName}",
     "moduleAccounts.accountNotFound": "Compte {accountKey} introuvable.",
-    "moduleAccounts.tokens.runOn": "Fonctionne sur {accountLabel}",
+    "moduleAccounts.tokens.runOn": "Fonctionne sur {networkName}",
     "moduleAccounts.tokens.errorMessage": "Token introuvable.",
     "moduleAccounts.accountDetail.accountLabelBadge": "Fonctionne sur {accountLabel}",
     "moduleAccounts.accountDetail.stablecoinYield.infoText": "Ce token représente votre dépôt et toutes les récompenses en rendement stablecoin.",

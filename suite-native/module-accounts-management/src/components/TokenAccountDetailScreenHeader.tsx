@@ -2,14 +2,9 @@ import { useSelector } from 'react-redux';
 
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
-import { type SuiteSyncDataRootState, selectSuiteSyncAccountLabel } from '@suite-common/suite-sync';
-import {
-    type AccountsRootState,
-    selectAccountByKey,
-    selectAccountNetworkSymbol,
-} from '@suite-common/wallet-core';
+import { getNetwork } from '@suite-common/wallet-config';
+import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
-import { parseAccountKey, parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
 import { CryptoIconWithNetwork } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';
@@ -31,15 +26,6 @@ export const TokenAccountDetailScreenHeader = ({
 }: TokenAccountDetailScreenHeaderProps) => {
     const { translate } = useTranslate();
 
-    const { accountDescriptor, networkSymbol, deviceStaticSessionId } = parseAccountKey(accountKey);
-    const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticSessionId);
-    const account = useSelector((state: AccountsRootState) =>
-        selectAccountByKey(state, accountKey),
-    );
-    const accountLabel = useSelector((state: AccountsRootState & SuiteSyncDataRootState) =>
-        selectSuiteSyncAccountLabel(state, walletDescriptor, accountDescriptor, networkSymbol),
-    );
-
     const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
@@ -53,7 +39,7 @@ export const TokenAccountDetailScreenHeader = ({
         return null;
     }
 
-    const accountLabelBadge = accountLabel ?? account?.accountLabel ?? '';
+    const networkName = getNetwork(symbol).name;
 
     return (
         <ScreenHeader
@@ -75,8 +61,8 @@ export const TokenAccountDetailScreenHeader = ({
                                 numberOfLines={1}
                                 ellipsizeMode="tail"
                             >
-                                {translate('moduleAccounts.accountDetail.accountLabelBadge', {
-                                    accountLabel: accountLabelBadge,
+                                {translate('moduleAccounts.tokens.runOn', {
+                                    networkName,
                                 })}
                             </Text>
                         </VStack>

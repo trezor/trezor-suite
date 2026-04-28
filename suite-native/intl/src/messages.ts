@@ -2015,11 +2015,10 @@ export const messages = {
     moduleAccounts: {
         accountNotFound: 'Account {accountKey} not found.',
         tokens: {
-            runOn: 'Run on {accountLabel}',
+            runOn: 'Run on {networkName}',
             errorMessage: 'Token not found.',
         },
         accountDetail: {
-            accountLabelBadge: 'Run on {accountLabel}',
             stablecoinYield: {
                 infoText: 'This token represents your deposit and all rewards in stablecoin yield.',
                 vault: 'Vault',
