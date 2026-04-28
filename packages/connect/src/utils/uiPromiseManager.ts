@@ -2,7 +2,12 @@ import { DEVICE } from '@trezor/connect-common';
 import type { DeviceUniquePath } from '@trezor/connect-common/src/types/device';
 import { arrayPartition, createDeferred } from '@trezor/utils';
 
-import type { AnyUiPromise, UiPromise, UiPromiseCreator, UiPromiseResponse } from '../events';
+import type {
+    AnyUiPromise,
+    UiPromise,
+    UiPromiseCreator,
+    UiPromiseResponse,
+} from '../events/ui-promise';
 
 export const createUiPromiseManager = () => {
     let _uiPromises: AnyUiPromise[] = [];

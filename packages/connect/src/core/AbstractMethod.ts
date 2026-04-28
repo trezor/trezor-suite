@@ -16,7 +16,7 @@ import { isNotUndefined, versionUtils } from '@trezor/utils';
 
 import { DEFAULT_FIRMWARE_RANGE, getFirmwareRange } from '../api/common/paramsValidator';
 import type { Device } from '../device/Device';
-import type { UiPromiseCreator } from '../events';
+import type { UiPromiseCreator } from '../events/ui-promise';
 
 export { DEFAULT_FIRMWARE_RANGE };
 

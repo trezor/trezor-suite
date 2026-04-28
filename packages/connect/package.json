@@ -49,15 +49,7 @@
                 "types": "./lib/*.d.ts",
                 "default": "./lib/*.js"
             },
-            "./libESM/*": "./libESM/*",
-            "./lib/events": {
-                "types": "./lib/events/index.d.ts",
-                "default": "./lib/events/index.js"
-            },
-            "./libESM/events": {
-                "types": "./libESM/events/index.d.mts",
-                "default": "./libESM/events/index.mjs"
-            }
+            "./libESM/*": "./libESM/*"
         },
         "browser": {
             "./lib/index.js": "./lib/index-browser.js",
@@ -68,12 +60,10 @@
             "./libESM/utils/assets.mjs": "./libESM/utils/assets-browser.mjs",
             "./libESM/workers/workers.mjs": "./libESM/workers/workers-browser.mjs",
             "./lib/data/*": "./lib/data/*.js",
-            "./lib/events": "./lib/events/index.js",
             "./lib/exports": "./lib/exports.js",
             "./lib/impl/*": "./lib/impl/*.js",
             "./lib/utils/*": "./lib/utils/*.js",
             "./libESM/data/*": "./libESM/data/*",
-            "./libESM/events/index.mjs": "./libESM/events/index.mjs",
             "./libESM/exports.mjs": "./libESM/exports.mjs",
             "./libESM/impl/*": "./libESM/impl/*",
             "./libESM/utils/*": "./libESM/utils/*"
@@ -87,12 +77,10 @@
             "./libESM/utils/assets.mjs": "./libESM/utils/assets.native.mjs",
             "./libESM/workers/workers.mjs": "./libESM/workers/workers.native.mjs",
             "./lib/data/*": "./lib/data/*.js",
-            "./lib/events": "./lib/events/index.js",
             "./lib/exports": "./lib/exports.js",
             "./lib/impl/*": "./lib/impl/*.js",
             "./lib/utils/*": "./lib/utils/*.js",
             "./libESM/data/*": "./libESM/data/*",
-            "./libESM/events/index.mjs": "./libESM/events/index.mjs",
             "./libESM/exports.mjs": "./libESM/exports.mjs",
             "./libESM/impl/*": "./libESM/impl/*",
             "./libESM/utils/*": "./libESM/utils/*"
