@@ -1,4 +1,4 @@
-//Mocked responses from sol1.trazor.io
+// Mocked responses from sol.trezor.io
 
 export const sendTransactionResponse = (id: string) => ({
     jsonrpc: '2.0',

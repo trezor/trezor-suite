@@ -9,7 +9,7 @@ import {
 } from '../../fixtures/solana-responses';
 import { step } from '../common';
 
-export const solanaUrlPattern = /^https:\/\/sol\d+\.trezor\.io\//;
+export const solanaUrlPattern = /^https:\/\/sol\d*\.trezor\.io\//;
 
 export class TradingMock {
     readonly watchPeriod = '00:30';
