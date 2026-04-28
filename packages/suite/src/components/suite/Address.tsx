@@ -2,6 +2,7 @@ import styled, { type RuleSet, css } from 'styled-components';
 
 import { selectAddressDisplayType } from '@suite/settings';
 import { selectSelectedDevice } from '@suite-common/device';
+import { AddressFormatter } from '@suite-common/formatters';
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import { IconButton, Row, Text, type TextProps, Tooltip } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
@@ -10,8 +11,6 @@ import { type TypographyStyle } from '@trezor/theme';
 import { copyAddressToClipboard } from 'src/actions/suite/copyAddressActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
-const TRUNCATION_PLACEHOLDER = '...';
-const REGEXP_ADDRESS = /^(0x)?((.{8})(?:.{4})*(.{5,8}))$/;
 const REGEXP_ADDRESS_CHUNKS = /((?:\S+\s){3}\S+)\s/g;
 
 const mapDeviceModelToFontStyle = (deviceModelInternal: DeviceModelInternal): RuleSet<object> => {
@@ -42,7 +41,6 @@ const AddressWrapper = styled.p<{ $device?: DeviceModelInternal }>`
         `};
 `;
 
-const addSpacing = (value?: string) => value?.match(/.{1,4}/g)?.join(' ') ?? value;
 const addNewlineAfterEveryFourthChunk = (value: string) =>
     value?.replace(REGEXP_ADDRESS_CHUNKS, '$1\n') ?? value;
 
@@ -88,19 +86,18 @@ export const Address = ({
     const deviceModelInternal = selectedDevice?.features?.internal_model || DEFAULT_FLAGSHIP_MODEL;
     const isChunkedSettings = useSelector(selectAddressDisplayType);
     const isAddressChunked = isChunked ?? isChunkedSettings === 'chunked';
-    const separator = isAddressChunked ? ' ' : '';
+    console.log(isAddressChunked);
 
-    const [, prefix, rest, beginning, end] = (value.match(REGEXP_ADDRESS) || []).map(part =>
-        isAddressChunked ? addSpacing(part) : part,
-    );
+    const formattedValue = AddressFormatter.format(value, {
+        format: isTruncated ? 'long' : 'full',
+        isChunked: isAddressChunked,
+    });
+    const formattedValueFull = AddressFormatter.format(value, {
+        format: 'full',
+        isChunked: isAddressChunked,
+    });
 
-    const formattedValueTruncated = [prefix, beginning, TRUNCATION_PLACEHOLDER, end]
-        .filter(Boolean)
-        .join(separator);
-    const formattedValueFull = [prefix, rest].filter(Boolean).join(separator);
-    const formattedValue = isTruncated ? formattedValueTruncated : formattedValueFull;
-
-    const deviceRenderedIndent = isAddressChunked && prefix ? '  ' : '';
+    const deviceRenderedIndent = isAddressChunked && value.startsWith('0x') ? '  ' : '';
     const deviceRenderedValue =
         deviceRenderedIndent + addNewlineAfterEveryFourthChunk(formattedValueFull);
 

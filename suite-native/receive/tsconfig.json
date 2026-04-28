@@ -4,6 +4,9 @@
     "references": [
         { "path": "../../suite-common/device" },
         {
+            "path": "../../suite-common/formatters"
+        },
+        {
             "path": "../../suite-common/wallet-config"
         },
         {
@@ -23,7 +26,6 @@
         { "path": "../confirm-on-trezor" },
         { "path": "../device" },
         { "path": "../device-mutex" },
-        { "path": "../helpers" },
         { "path": "../icons" },
         { "path": "../in-app-rating" },
         { "path": "../intl" },
