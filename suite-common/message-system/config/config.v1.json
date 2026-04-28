@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2026-04-27T12:00:00+00:00",
-    "sequence": 136,
+    "timestamp": "2026-04-28T12:00:00+00:00",
+    "sequence": 137,
     "actions": [
         {
             "conditions": [
@@ -1550,39 +1550,6 @@
                         "flag": false
                     }
                 ]
-            }
-        },
-        {
-            "conditions": [
-                {
-                    "environment": {
-                        "desktop": "*",
-                        "mobile": "*",
-                        "web": "*"
-                    }
-                }
-            ],
-            "message": {
-                "id": "d3f7a2b1-9c4e-4d8f-b6a5-2e1f0c3d7e9a",
-                "priority": 97,
-                "dismissible": true,
-                "variant": "warning",
-                "category": "context",
-                "content": {
-                    "en": "We're experiencing temporary infrastructure performance issues that may affect trading services. Your funds are safe.",
-                    "es": "Estamos experimentando problemas temporales de rendimiento de la infraestructura que pueden afectar a los servicios de trading. Sus fondos están seguros.",
-                    "cs": "Aktuálně se potýkáme s dočasnými problémy s výkonem infrastruktury, které mohou ovlivnit funkce obchodování. Vaše prostředky jsou v bezpečí.",
-                    "de": "Wir erleben vorübergehende Leistungsprobleme der Infrastruktur, die den Handelsservice beeinträchtigen können. Ihr Guthaben ist sicher.",
-                    "fr": "Nous rencontrons des problèmes temporaires de performance de l'infrastructure susceptibles d'affecter les services de trading. Vos fonds sont en sécurité.",
-                    "pt": "Estamos a experienciar problemas temporários de desempenho da infraestrutura que podem afetar os serviços de trading. Os seus fundos estão seguros.",
-                    "ru": "Мы сталкиваемся с периодическими проблемами сетевого подключения, которые могут влиять на торговые сервисы. Ваши средства в безопасности.",
-                    "ja": "断続的なネットワーク接続の問題が発生しており、取引サービスに影響する可能性があります。お客様の資産は安全です。",
-                    "tr": "Ticaret hizmetlerini etkileyebilecek aralıklı ağ bağlantısı sorunları yaşıyoruz. Fonlarınız güvende.",
-                    "zh": "我们正在遭遇可能影响交易服务的间歇性网络连接问题。您的资金是安全的。"
-                },
-                "context": {
-                    "domain": ["trading.buy", "trading.sell", "trading.exchange"]
-                }
             }
         }
     ],
