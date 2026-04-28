@@ -44,6 +44,7 @@ const tradingSlice = createSliceWithExtraDeps({
                 state.buy.isLoading = false;
             })
             .addCase(buyThunks.handleRequestThunk.rejected, state => {
+                state.buy.isLoading = false;
                 state.buy.amountLimits = undefined;
                 state.buy.quotes = [];
                 state.buy.quotesRequest = undefined;
