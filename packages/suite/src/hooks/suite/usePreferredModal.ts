@@ -19,6 +19,7 @@ const hasPriority = (route: ForegroundAppRoute) => {
         udev: true,
         version: true,
         'create-multi-share-backup': true,
+        'create-wallet-backup': true,
 
         // Recovery - beats redux modals with some exceptions (raw-rendered)
         recovery: true,
