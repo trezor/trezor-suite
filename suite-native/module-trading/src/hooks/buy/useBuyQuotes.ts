@@ -32,6 +32,7 @@ type ShouldFetchBuyQuotesRef = {
     amount: string | undefined;
     amountInCrypto: boolean | undefined;
     country: string | undefined;
+    countrySubdivision: string | undefined;
     accountDescriptor: string | undefined;
 };
 
@@ -47,19 +48,29 @@ const useShouldFetchBuyQuotes = (form: BuyFormType): ShouldFetchBuyQuotes => {
         amount: undefined,
         amountInCrypto: false,
         country: undefined,
+        countrySubdivision: undefined,
         accountDescriptor: undefined,
     });
 
-    const [asset, fiatCurrency, fiatValue, cryptoValue, amountInCrypto, country, receiveAccount] =
-        form.watch([
-            'asset',
-            'fiatCurrency',
-            'fiatValue',
-            'cryptoValue',
-            'amountInCrypto',
-            'country',
-            'receiveAccount',
-        ]);
+    const [
+        asset,
+        fiatCurrency,
+        fiatValue,
+        cryptoValue,
+        amountInCrypto,
+        country,
+        countrySubdivision,
+        receiveAccount,
+    ] = form.watch([
+        'asset',
+        'fiatCurrency',
+        'fiatValue',
+        'cryptoValue',
+        'amountInCrypto',
+        'country',
+        'countrySubdivision',
+        'receiveAccount',
+    ]);
 
     const amount = amountInCrypto ? cryptoValue : fiatValue;
     const isFetchAllowed = !!(asset && fiatCurrency && amount && parseFloat(amount) > 0);
@@ -70,6 +81,7 @@ const useShouldFetchBuyQuotes = (form: BuyFormType): ShouldFetchBuyQuotes => {
         amount === prevState.current.amount &&
         amountInCrypto === prevState.current.amountInCrypto &&
         country?.value === prevState.current.country &&
+        countrySubdivision?.value === prevState.current.countrySubdivision &&
         receiveAccount?.account?.descriptor === prevState.current.accountDescriptor
     ) {
         return {
@@ -84,6 +96,7 @@ const useShouldFetchBuyQuotes = (form: BuyFormType): ShouldFetchBuyQuotes => {
         amount,
         amountInCrypto,
         country: country?.value,
+        countrySubdivision: countrySubdivision?.value,
         accountDescriptor: receiveAccount?.account?.descriptor,
     };
 

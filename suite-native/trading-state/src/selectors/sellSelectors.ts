@@ -14,12 +14,16 @@ import {
 import { selectAccountByKey } from '@suite-common/wallet-core';
 import { type FiatCurrencyItem, type SellFormValues } from '@suite-native/trading-types';
 
-import { selectTradingResidenceCountry } from './residenceSelectors';
+import {
+    selectTradingResidenceCountry,
+    selectTradingResidenceCountrySubdivision,
+} from './residenceSelectors';
 import {
     type TradingRootState,
     createMemoizedSelector,
     createMemoizedSelectorWithAccounts,
 } from '../reducers';
+import { getDefaultCountrySubdivision } from '../utils';
 
 const DEFAULT_FIAT_CURRENCY_FALLBACK = 'USD';
 export const selectTradingSell = (state: TradingRootState) => state.wallet.trading.sell;
@@ -49,8 +53,9 @@ export const selectSellFormDefaultValues = createMemoizedSelector(
         ) => ReturnType<typeof selectTradingSellInfo>,
         ({ wallet }) => wallet.trading.info.coins,
         selectTradingResidenceCountry,
+        selectTradingResidenceCountrySubdivision,
     ],
-    (sellInfo, coins, residenceCountry) => {
+    (sellInfo, coins, residenceCountry, residenceCountrySubdivision) => {
         if (!sellInfo || !coins) {
             return {} as Partial<SellFormValues>;
         }
@@ -61,9 +66,15 @@ export const selectSellFormDefaultValues = createMemoizedSelector(
         const countryDefaultValue =
             nonSanctionedRegional.getCountryOptionWithWorldwideFallback(country);
 
+        const countrySubdivisionDefaultValue = getDefaultCountrySubdivision(
+            countryDefaultValue.value,
+            residenceCountrySubdivision,
+        );
+
         return {
             fiatCurrency: fiatCurrency.toLowerCase(),
             country: countryDefaultValue,
+            countrySubdivision: countrySubdivisionDefaultValue,
             amountInCrypto: false,
         } as Partial<SellFormValues>;
     },

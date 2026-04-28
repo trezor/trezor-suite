@@ -2,10 +2,13 @@ import { Platform } from 'react-native';
 import { FadeIn, FadeInDown, FadeOutUp, StretchInY, StretchOutY } from 'react-native-reanimated';
 
 import { AnimatedBox, Card } from '@suite-native/atoms';
+import { useBottomSheetControls } from '@suite-native/trading-atoms';
+import { CountrySubdivisionPickerControlsContext } from '@suite-native/trading-residence';
 
 import { BuyPaymentMethodPicker } from './BuyPaymentMethodPicker';
 import { BuyProviderPicker } from './BuyProviderPicker';
-import { TradingCountryOfResidencePicker } from '../general/TradingCountryOfResidencePicker';
+import { TradingCountrySubdivisionPickerButton } from '../general/TradingCountrySubdivisionPickerButton';
+import { TradingLocationPickers } from '../general/TradingLocationPickers';
 
 export type PaymentCardProps = {
     isFormMountedRecently?: boolean;
@@ -33,16 +36,21 @@ export const BuyPaymentCard = ({
     isFormMountedRecently,
     shouldAnimateEntering,
 }: PaymentCardProps) => {
+    const subdivisionPickerControls = useBottomSheetControls();
+
     const enteringAnimation = getEnteringAnimation(isFormMountedRecently, shouldAnimateEntering);
     const exitingAnimation = getExitingAnimation();
 
     return (
-        <AnimatedBox entering={enteringAnimation} exiting={exitingAnimation}>
-            <Card noPadding>
-                <BuyPaymentMethodPicker />
-                <TradingCountryOfResidencePicker testID="@trading/buy/country" context="buy" />
-                <BuyProviderPicker />
-            </Card>
-        </AnimatedBox>
+        <CountrySubdivisionPickerControlsContext value={subdivisionPickerControls}>
+            <AnimatedBox entering={enteringAnimation} exiting={exitingAnimation}>
+                <Card noPadding>
+                    <BuyPaymentMethodPicker />
+                    <TradingLocationPickers context="buy" />
+                    <BuyProviderPicker />
+                </Card>
+            </AnimatedBox>
+            <TradingCountrySubdivisionPickerButton testID="@trading/buy/country-subdivision-button" />
+        </CountrySubdivisionPickerControlsContext>
     );
 };

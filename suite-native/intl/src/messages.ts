@@ -3422,6 +3422,8 @@ export const messages = {
             selectedCountrySubdivision: 'Selected state',
             notSelected: 'Not selected',
             selectCountrySubdivisionButton: 'Select state',
+            selectCountrySubdivisionLabel:
+                'To see available offers, select your state of residence.',
         },
         countrySheet: {
             title: 'Country of residence',

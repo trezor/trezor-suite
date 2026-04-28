@@ -37,13 +37,22 @@ export const tradingBuyFormToTradingBuyFormProps = (
     coinInfo: CoinInfo | undefined,
     platformInfo: PlatformsInfo | undefined,
 ): TradingBuyFormProps => {
-    const [asset, fiatCurrency, fiatValue, cryptoValue, amountInCrypto, country] = form.getValues([
+    const [
+        asset,
+        fiatCurrency,
+        fiatValue,
+        cryptoValue,
+        amountInCrypto,
+        country,
+        countrySubdivision,
+    ] = form.getValues([
         'asset',
         'fiatCurrency',
         'fiatValue',
         'cryptoValue',
         'amountInCrypto',
         'country',
+        'countrySubdivision',
     ]);
     const currencyName = getCurrencyLabel(fiatCurrency);
 
@@ -60,6 +69,7 @@ export const tradingBuyFormToTradingBuyFormProps = (
         },
         cryptoSelect: createAssetOption({ cryptoId: asset.cryptoId, coinInfo, platformInfo })!,
         countrySelect: country as TradingCountryOption,
+        countrySubdivisionSelect: countrySubdivision,
         paymentMethod: getPaymentMethodFromBuyForm(form),
         amountInCrypto,
     };
