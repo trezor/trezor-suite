@@ -51,10 +51,8 @@ module.exports = {
     resolve: {
         modules: [SRC, 'node_modules'],
         extensions: ['.ts', '.js'],
-        fallback: {
-            crypto: require.resolve('crypto-browserify'),
-            stream: require.resolve('stream-browserify'),
-        },
+        // 'browser' first so packages like @xrplf/isomorphic pick noble-based browser builds instead of node:crypto
+        mainFields: ['browser', 'main'],
     },
     performance: {
         hints: false,
