@@ -4,7 +4,7 @@ import { Translation } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { Column, Row, Text } from '@trezor/components';
 
-import { NfcTag } from './NfcTag';
+import { NfcTag } from '../components/NfcTag';
 
 type SelectBackupTypeProps = {
     onBack: () => void;
