@@ -2173,6 +2173,16 @@ export const messages = {
                         primaryButton: 'I understand',
                     },
                 },
+                solana: {
+                    memo: {
+                        label: 'Memo',
+                        addButton: 'Add memo',
+                        editButton: 'Edit memo',
+                        inputPlaceholder: 'Enter your memo',
+                        saveButton: 'Save memo',
+                        removeButton: 'Remove memo',
+                    },
+                },
             },
         },
         tron: {
