@@ -48,7 +48,7 @@ export const LimitPicker = ({ onApprovalTypeChange }: LimitPickerProps) => {
                         <Translation id="moduleTrading.exchangeApprovalLimitSheet.limitedCard.info" />
                     )}
                 </Text>
-                {isInfinite ? <LimitPickerUnlimitedAlert cryptoId={quote.send} /> : null}
+                {isInfinite && <LimitPickerUnlimitedAlert cryptoId={quote.send} />}
             </LimitInfoRow>
             <ExchangeApprovalLimitSheet
                 isVisible={isSheetVisible}
