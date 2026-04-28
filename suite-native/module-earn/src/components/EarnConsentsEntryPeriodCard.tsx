@@ -35,9 +35,6 @@ const buttonsRowStyle = prepareNativeStyle(utils => ({
     gap: utils.spacings.sp12,
 }));
 
-const learnMoreButtonStyle = prepareNativeStyle(() => ({ flex: 3 }));
-const confirmButtonStyle = prepareNativeStyle(() => ({ flex: 7 }));
-
 export const EarnConsentsEntryPeriodCard = ({
     onConfirm,
     entryPeriodInDays,
@@ -112,21 +109,16 @@ export const EarnConsentsEntryPeriodCard = ({
                 <HStack style={applyStyle(buttonsRowStyle)}>
                     {learnMoreUrl && (
                         <Button
+                            flex={1}
                             intent="info"
                             priority="secondary"
                             size="medium"
                             onPress={handleLearnMore}
-                            style={applyStyle(learnMoreButtonStyle)}
                         >
                             <Translation id="generic.buttons.learnMore" />
                         </Button>
                     )}
-                    <Button
-                        intent="info"
-                        size="medium"
-                        onPress={handleConfirm}
-                        style={applyStyle(confirmButtonStyle)}
-                    >
+                    <Button flex={2} intent="info" size="medium" onPress={handleConfirm}>
                         <Translation id="generic.buttons.understand" />
                     </Button>
                 </HStack>
