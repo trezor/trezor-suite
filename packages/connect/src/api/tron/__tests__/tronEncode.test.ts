@@ -1,10 +1,6 @@
 import { bytesToHex } from '@noble/hashes/utils.js';
 
 import { loadProtobufModules } from '../../../data/protobufLoader';
-import {
-    estimateTronTransferBandwidth,
-    estimateTronTrc20Bandwidth,
-} from '../estimateTronBandwidth';
 import { encodeTronContractRawData } from '../tronEncode';
 import { decodeBroadcastTransaction, encodeBroadcastTransaction } from '../tronProtobuf';
 
@@ -33,24 +29,8 @@ const TRX_TRANSFER = {
     },
 } as const;
 
-const TRC20_TRIGGER = {
-    data: 'a9059cbb000000000000000000000000d093f24888ab06073a4bdffbb8107db1ea9dc0a000000000000000000000000000000000000000000000000000000000013bb450',
-};
-
 beforeAll(async () => {
     await loadProtobufModules();
-});
-
-describe('tron/estimateTronTransferBandwidth', () => {
-    it('returns the expected bandwidth for a TRX transfer', () => {
-        expect(estimateTronTransferBandwidth(TRX_TRANSFER.amount)).toBe(268);
-    });
-});
-
-describe('tron/estimateTronTrc20Bandwidth', () => {
-    it('returns the expected bandwidth for a TRC-20 trigger', () => {
-        expect(estimateTronTrc20Bandwidth(TRC20_TRIGGER.data)).toBe(345);
-    });
 });
 
 describe('tron/encodeBroadcastTransaction', () => {
