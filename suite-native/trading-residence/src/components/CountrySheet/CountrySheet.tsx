@@ -1,10 +1,10 @@
-import { memo, useCallback } from 'react';
-import { Dimensions, Keyboard } from 'react-native';
+import { memo, useCallback, useMemo } from 'react';
+import { Keyboard } from 'react-native';
 
 import { type TradingCountryOption, useCountryFilteredData } from '@suite-common/trading';
-import { BottomSheetFlashList } from '@suite-native/atoms';
+import { Divider } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
-import { SearchableSheetHeader } from '@suite-native/trading-atoms';
+import { BottomSheetSectionList, SearchableSheetHeader } from '@suite-native/trading-atoms';
 
 import { CountryListEmptyComponent } from './CountryListEmptyComponent';
 import { CountryListItem } from './CountryListItem';
@@ -49,30 +49,43 @@ export const CountrySheet = memo(
             onClose();
         };
 
-        const listHeight = Dimensions.get('window').height * 0.9;
+        const listData = useMemo(
+            () => [
+                {
+                    key: 'countries',
+                    label: '',
+                    data: filteredData,
+                    sectionData: undefined,
+                },
+            ],
+            [filteredData],
+        );
+
         // re-mount FLashList component when filterValue changes (resets scroll position)
         const flashListKey = 'countries_list-' + filterValue;
 
+        const renderItemSeparator = () => <Divider />;
+
         return (
-            <BottomSheetFlashList<TradingCountryOption>
+            <BottomSheetSectionList<TradingCountryOption>
                 isVisible={isVisible}
                 onClose={onClose}
                 ListEmptyComponent={<CountryListEmptyComponent />}
                 handleComponent={renderHandle}
-                renderItem={({ item }) => (
+                renderItem={item => (
                     <CountryListItem
                         {...item}
                         onPress={() => onCountrySelectCallback(item)}
                         isSelected={item.value === selectedCountryId}
                     />
                 )}
-                data={filteredData}
-                estimatedListHeight={listHeight}
+                data={listData}
                 keyExtractor={keyExtractor}
-                keyboardShouldPersistTaps="handled"
                 flashListKey={flashListKey}
                 extraData={selectedCountryId}
                 testID={bottomSheetTestId}
+                ItemSeparatorComponent={renderItemSeparator}
+                noSingletonSectionHeader
             />
         );
     },
