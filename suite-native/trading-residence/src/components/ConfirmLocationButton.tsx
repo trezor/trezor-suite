@@ -28,7 +28,7 @@ export const ConfirmLocationButton = ({ afterConfirm }: ConfirmLocationButtonPro
 
     const confirmLocation = () => {
         dispatch(
-            residenceActions.setResidenceLocation({
+            residenceActions.setResidenceCountry({
                 country: countryCode,
                 countrySubdivision: countrySubdivision?.value,
             }),

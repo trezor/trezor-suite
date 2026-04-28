@@ -1,45 +1,21 @@
 import { type ReactNode } from 'react';
 
-import { isCountrySubdivisionRequired } from '@suite-common/trading';
 import { type CountryChangeContextCheck } from '@suite-native/analytics';
 import { Box, Card, Text, VStack } from '@suite-native/atoms';
-import { useFormContext } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { useBottomSheetControls } from '@suite-native/trading-atoms';
 
 import { CountryChangeContextCheckContext } from './CountryChangeContextCheckContext';
-import { CountryOfResidencePicker } from './CountrySheet/CountryOfResidencePicker';
-import { CountrySubdivisionPicker } from './CountrySheet/CountrySubdivisionPicker';
 import { CountrySubdivisionPickerControlsContext } from './CountrySheet/CountrySubdivisionPickerControlsContext';
 import { GLOBE_SIZE_DEFAULT, GLOBE_SIZE_MINIMUM, GlobeSvg } from './GlobeSvg';
 import { LocationForm } from './LocationForm';
 import { TradingAvailability } from './TradingAvailability';
+import { TradingLocationPickers } from './TradingLocationPickers';
 import { useAvailableScreenSquare } from '../hooks/useAvailableScreenSquare';
-import { type TradingLocationFormValues } from '../types/tradingLocationForm';
 
 export type TradingLocationSettingsProps = {
     context: CountryChangeContextCheck;
     children: ReactNode | ReactNode[];
-};
-
-const TradingLocationPickers = ({ context }: { context: CountryChangeContextCheck }) => {
-    const { watch } = useFormContext<TradingLocationFormValues>();
-    const selectedCountry = watch('country');
-    const isSubdivisionRequired = isCountrySubdivisionRequired(selectedCountry?.value);
-
-    return (
-        <Card noPadding>
-            <CountryOfResidencePicker
-                testID="@trading/residence/country"
-                context={context}
-                noBottomBorder={!isSubdivisionRequired}
-            />
-            <CountrySubdivisionPicker
-                testID="@trading/residence/country-subdivision"
-                noBottomBorder
-            />
-        </Card>
-    );
 };
 
 export const TradingLocationSettings = ({ context, children }: TradingLocationSettingsProps) => {
@@ -67,7 +43,13 @@ export const TradingLocationSettings = ({ context, children }: TradingLocationSe
                                 </Text>
                             </VStack>
                             <VStack spacing="sp8">
-                                <TradingLocationPickers context={context} />
+                                <Card noPadding>
+                                    <TradingLocationPickers
+                                        context={context}
+                                        testID="@trading-residence"
+                                        hasCountrySubdivisionBottomBorder={false}
+                                    />
+                                </Card>
                                 <TradingAvailability />
                             </VStack>
                             <VStack spacing="sp12">{children}</VStack>
