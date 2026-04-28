@@ -5,23 +5,16 @@ import { tradingInitialState } from '@suite-native/trading-consts';
 
 export const TRADING_RESIDENCE = 'tradingResidence';
 
+type SetResidenceCountryPayload = {
+    country: TradingCountryCode;
+    countrySubdivision?: string;
+};
+
 const residenceSlice = createSlice({
     name: TRADING_RESIDENCE,
     initialState: tradingInitialState.residence,
     reducers: {
-        setResidenceCountry(state, action: { payload: TradingCountryCode }) {
-            state.country = action.payload;
-            state.countrySubdivision = undefined;
-        },
-        setResidenceLocation(
-            state,
-            action: {
-                payload: {
-                    country: TradingCountryCode;
-                    countrySubdivision?: string;
-                };
-            },
-        ) {
+        setResidenceCountry(state, action: { payload: SetResidenceCountryPayload }) {
             state.country = action.payload.country;
             state.countrySubdivision = action.payload.countrySubdivision;
         },
