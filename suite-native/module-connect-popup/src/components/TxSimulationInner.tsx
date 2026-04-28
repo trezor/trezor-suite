@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { type ConnectCallSource, connectPopupActions } from '@suite-common/connect-popup';
-import { useTxSimulation } from '@suite-common/tx-simulation';
+import { areTxSimulationMethods, useTxSimulation } from '@suite-common/tx-simulation';
 import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import { type Account, type TxSimulationAction } from '@suite-common/wallet-types';
 import { AccountsListItem } from '@suite-native/accounts';
@@ -49,20 +49,27 @@ export function TxSimulationInner({ action, account, source }: TxSimulationInner
             : ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT;
     const [gasLimit, setGasLimit] = useState(defaultGasLimit);
 
-    const { txSimulationQuery, network, targetContract } = useTxSimulation(action, {
-        onSuccess({ simulation, gas_estimation }) {
-            // Use TX simulation gas estimation instead of the default
-            const newFeeLimit =
-                gas_estimation?.status === 'Success'
-                    ? Number(gas_estimation.estimate).toString()
-                    : null;
+    const simulation = useTxSimulation(action, {
+        onSuccess({ method, payload }) {
+            switch (method) {
+                case 'ethereumSignTransaction':
+                case 'ethereumSignTypedData': {
+                    const { simulation: evmSimulation, gas_estimation } = payload;
+                    const newFeeLimit =
+                        gas_estimation?.status === 'Success'
+                            ? Number(gas_estimation.estimate).toString()
+                            : null;
 
-            if (
-                simulation?.status === 'Success' &&
-                newFeeLimit &&
-                newFeeLimit !== defaultGasLimit
-            ) {
-                setGasLimit(newFeeLimit);
+                    if (
+                        evmSimulation?.status === 'Success' &&
+                        newFeeLimit &&
+                        newFeeLimit !== defaultGasLimit
+                    ) {
+                        setGasLimit(newFeeLimit);
+                    }
+
+                    break;
+                }
             }
         },
     });
@@ -103,6 +110,12 @@ export function TxSimulationInner({ action, account, source }: TxSimulationInner
     const onCancel = () => {
         dispatch(connectPopupActions.rejectPermissions(ERRORS.TypedError('Method_Cancel')));
     };
+
+    if (!simulation) {
+        return null;
+    }
+
+    const { txSimulationQuery, network, targetContract } = simulation;
 
     return (
         <VStack testID="@popup/tx-simulation" spacing="sp16" flex={1}>
@@ -149,60 +162,48 @@ export function TxSimulationInner({ action, account, source }: TxSimulationInner
                 </Card>
             )}
 
-            {txSimulationQuery.data?.simulation?.status === 'Success' && (
-                <VStack>
-                    <Text>
-                        <Translation id="moduleConnectPopup.simulation.simulation" />
-                    </Text>
-                    <Card noPadding>
-                        <VStack spacing={0}>
-                            {txSimulationQuery.data.simulation.account_summary.assets_diffs.map(
-                                (assetDiff, index) => (
-                                    <TxSimulationAsset
-                                        key={index}
-                                        assetDiff={assetDiff}
-                                        network={network}
-                                    />
-                                ),
-                            )}
-                            {txSimulationQuery.data.simulation.account_summary.exposures.map(
-                                (assetExposure, index) => (
-                                    <TxSimulationAsset
-                                        key={index}
-                                        assetExposure={assetExposure}
-                                        network={network}
-                                    />
-                                ),
-                            )}
-                        </VStack>
+            {areTxSimulationMethods(
+                ['ethereumSignTypedData', 'ethereumSignTransaction'] as const,
+                txSimulationQuery.data?.method,
+            ) && (
+                <>
+                    {txSimulationQuery.data.payload.simulation?.status === 'Success' && (
+                        <VStack>
+                            <Text>
+                                <Translation id="moduleConnectPopup.simulation.simulation" />
+                            </Text>
+                            <Card noPadding>
+                                <VStack spacing={0}>
+                                    {txSimulationQuery.data.payload.simulation.account_summary.assets_diffs.map(
+                                        (assetDiff, index) => (
+                                            <TxSimulationAsset
+                                                key={index}
+                                                assetDiff={assetDiff}
+                                                network={network}
+                                            />
+                                        ),
+                                    )}
+                                    {txSimulationQuery.data.payload.simulation.account_summary.exposures.map(
+                                        (assetExposure, index) => (
+                                            <TxSimulationAsset
+                                                key={index}
+                                                assetExposure={assetExposure}
+                                                network={network}
+                                            />
+                                        ),
+                                    )}
+                                </VStack>
 
-                        <CardDivider />
-
-                        <PressableOpacity onPress={openContractInfoModal}>
-                            <HStack
-                                padding="sp16"
-                                justifyContent="space-between"
-                                alignItems="center"
-                            >
-                                <Text>
-                                    <Translation id="moduleConnectPopup.simulation.contractInfo" />
-                                </Text>
-                                <Icon name="caretDown" size="small" color="contentSecondary" />
-                            </HStack>
-                        </PressableOpacity>
-
-                        {isSigningTransaction && (
-                            <>
                                 <CardDivider />
 
-                                <PressableOpacity onPress={openFeeInfoModal}>
+                                <PressableOpacity onPress={openContractInfoModal}>
                                     <HStack
                                         padding="sp16"
                                         justifyContent="space-between"
                                         alignItems="center"
                                     >
                                         <Text>
-                                            <Translation id="moduleConnectPopup.simulation.feeInfo" />
+                                            <Translation id="moduleConnectPopup.simulation.contractInfo" />
                                         </Text>
                                         <Icon
                                             name="caretDown"
@@ -211,97 +212,125 @@ export function TxSimulationInner({ action, account, source }: TxSimulationInner
                                         />
                                     </HStack>
                                 </PressableOpacity>
-                            </>
+
+                                {isSigningTransaction && (
+                                    <>
+                                        <CardDivider />
+
+                                        <PressableOpacity onPress={openFeeInfoModal}>
+                                            <HStack
+                                                padding="sp16"
+                                                justifyContent="space-between"
+                                                alignItems="center"
+                                            >
+                                                <Text>
+                                                    <Translation id="moduleConnectPopup.simulation.feeInfo" />
+                                                </Text>
+                                                <Icon
+                                                    name="caretDown"
+                                                    size="small"
+                                                    color="contentSecondary"
+                                                />
+                                            </HStack>
+                                        </PressableOpacity>
+                                    </>
+                                )}
+                            </Card>
+                        </VStack>
+                    )}
+
+                    {txSimulationQuery.data.payload?.validation?.result_type === 'Malicious' && (
+                        <TxSimulationBanner
+                            type="error"
+                            title={
+                                <Translation id="moduleConnectPopup.simulation.simulationStatusMalicious" />
+                            }
+                            description={txSimulationQuery.data.payload.validation?.description}
+                            disclaimerAccepted={disclaimerAccepted}
+                            setDisclaimerAccepted={setDisclaimerAccepted}
+                        />
+                    )}
+
+                    {txSimulationQuery.data.payload?.validation?.result_type === 'Warning' && (
+                        <TxSimulationBanner
+                            type="warning"
+                            title={
+                                <Translation id="moduleConnectPopup.simulation.simulationStatusWarning" />
+                            }
+                            description={txSimulationQuery.data.payload.validation?.description}
+                            disclaimerAccepted={disclaimerAccepted}
+                            setDisclaimerAccepted={setDisclaimerAccepted}
+                        />
+                    )}
+
+                    {txSimulationQuery.data.payload.simulation?.status === 'Error' && (
+                        <TxSimulationBanner
+                            type="error"
+                            title={
+                                <Translation id="moduleConnectPopup.simulation.simulationStatusError" />
+                            }
+                            description={txSimulationQuery.data.payload.simulation.error}
+                            disclaimerAccepted={disclaimerAccepted}
+                            setDisclaimerAccepted={setDisclaimerAccepted}
+                        />
+                    )}
+
+                    {txSimulationQuery.error && (
+                        <TxSimulationBanner
+                            type="error"
+                            title={
+                                <Translation id="moduleConnectPopup.simulation.simulationStatusError" />
+                            }
+                            description={txSimulationQuery.error.message}
+                            disclaimerAccepted={disclaimerAccepted}
+                            setDisclaimerAccepted={setDisclaimerAccepted}
+                        />
+                    )}
+
+                    <Text variant="body-sm">
+                        <Translation
+                            id="moduleConnectPopup.simulation.simulationPoweredBy"
+                            values={{ provider: 'Blockaid' }}
+                        />
+                    </Text>
+
+                    <Button
+                        testID="@popup/confirm-simulation"
+                        onPress={onConfirm}
+                        isDisabled={
+                            txSimulationQuery.isLoading ||
+                            (txSimulationQuery.data.payload?.needsDisclaimer && !disclaimerAccepted)
+                        }
+                    >
+                        <Translation id="generic.buttons.continue" />
+                    </Button>
+
+                    <Button
+                        testID="@popup/cancel-simulation"
+                        onPress={onCancel}
+                        intent="neutral"
+                        priority="secondary"
+                    >
+                        <Translation id="generic.buttons.cancel" />
+                    </Button>
+
+                    {targetContract &&
+                        txSimulationQuery.data.payload.simulation?.status === 'Success' && (
+                            <ContractInfoBottomSheet
+                                ref={contractInfoBottomSheetRef}
+                                targetContract={targetContract}
+                                txSimulation={txSimulationQuery.data.payload.simulation}
+                            />
                         )}
-                    </Card>
-                </VStack>
-            )}
-
-            {txSimulationQuery.data?.validation?.result_type === 'Malicious' && (
-                <TxSimulationBanner
-                    type="error"
-                    title={
-                        <Translation id="moduleConnectPopup.simulation.simulationStatusMalicious" />
-                    }
-                    description={txSimulationQuery.data.validation?.description}
-                    disclaimerAccepted={disclaimerAccepted}
-                    setDisclaimerAccepted={setDisclaimerAccepted}
-                />
-            )}
-
-            {txSimulationQuery.data?.validation?.result_type === 'Warning' && (
-                <TxSimulationBanner
-                    type="warning"
-                    title={
-                        <Translation id="moduleConnectPopup.simulation.simulationStatusWarning" />
-                    }
-                    description={txSimulationQuery.data.validation?.description}
-                    disclaimerAccepted={disclaimerAccepted}
-                    setDisclaimerAccepted={setDisclaimerAccepted}
-                />
-            )}
-
-            {txSimulationQuery.data?.simulation?.status === 'Error' && (
-                <TxSimulationBanner
-                    type="error"
-                    title={<Translation id="moduleConnectPopup.simulation.simulationStatusError" />}
-                    description={txSimulationQuery.data.simulation.error}
-                    disclaimerAccepted={disclaimerAccepted}
-                    setDisclaimerAccepted={setDisclaimerAccepted}
-                />
-            )}
-
-            {txSimulationQuery.error && (
-                <TxSimulationBanner
-                    type="error"
-                    title={<Translation id="moduleConnectPopup.simulation.simulationStatusError" />}
-                    description={txSimulationQuery.error.message}
-                    disclaimerAccepted={disclaimerAccepted}
-                    setDisclaimerAccepted={setDisclaimerAccepted}
-                />
-            )}
-
-            <Text variant="body-sm">
-                <Translation
-                    id="moduleConnectPopup.simulation.simulationPoweredBy"
-                    values={{ provider: 'Blockaid' }}
-                />
-            </Text>
-
-            <Button
-                testID="@popup/confirm-simulation"
-                onPress={onConfirm}
-                isDisabled={
-                    txSimulationQuery.isLoading ||
-                    (txSimulationQuery.data?.needsDisclaimer && !disclaimerAccepted)
-                }
-            >
-                <Translation id="generic.buttons.continue" />
-            </Button>
-
-            <Button
-                testID="@popup/cancel-simulation"
-                onPress={onCancel}
-                intent="neutral"
-                priority="secondary"
-            >
-                <Translation id="generic.buttons.cancel" />
-            </Button>
-
-            {targetContract && txSimulationQuery.data?.simulation?.status === 'Success' && (
-                <ContractInfoBottomSheet
-                    ref={contractInfoBottomSheetRef}
-                    targetContract={targetContract}
-                    txSimulation={txSimulationQuery.data.simulation}
-                />
-            )}
-            {action.method === 'ethereumSignTransaction' && (
-                <FeeInfoBottomSheet
-                    ref={feeInfoBottomSheetRef}
-                    network={network}
-                    transaction={action.payload.transaction}
-                    defaultGasLimit={defaultGasLimit}
-                />
+                    {action.method === 'ethereumSignTransaction' && (
+                        <FeeInfoBottomSheet
+                            ref={feeInfoBottomSheetRef}
+                            network={network}
+                            transaction={action.payload.transaction}
+                            defaultGasLimit={defaultGasLimit}
+                        />
+                    )}
+                </>
             )}
         </VStack>
     );

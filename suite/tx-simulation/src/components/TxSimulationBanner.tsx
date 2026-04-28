@@ -7,16 +7,16 @@ export interface TxSimulationBannerProps {
     title: TranslationKey;
     description: ReactNode;
     type: 'error' | 'warning';
-    disclaimerAccepted: boolean;
-    setDisclaimerAccepted: (value: boolean) => void;
+    isAccepted: boolean;
+    onChange: (value: boolean) => void;
 }
 
 export const TxSimulationBanner = ({
     title,
     description,
     type = 'error',
-    disclaimerAccepted,
-    setDisclaimerAccepted,
+    isAccepted,
+    onChange,
 }: TxSimulationBannerProps) => (
     <BaseBanner
         intent={type === 'warning' ? 'warning' : 'critical'}
@@ -31,8 +31,8 @@ export const TxSimulationBanner = ({
                 <Card margin={{ top: 12 }} paddingType="small">
                     <Checkbox
                         data-testid="@tx-simulation-modal/disclaimer-checkbox"
-                        isChecked={disclaimerAccepted}
-                        onChange={() => setDisclaimerAccepted(!disclaimerAccepted)}
+                        isChecked={isAccepted}
+                        onChange={() => onChange(!isAccepted)}
                         verticalAlignment="center"
                     >
                         <Text intent="neutral" typographyStyle="body-sm">

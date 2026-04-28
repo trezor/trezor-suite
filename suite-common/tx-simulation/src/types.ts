@@ -1,13 +1,13 @@
 import type { NativeAddressAssetBalanceChangeDiff } from '@blockaid/client/resources';
 import type { AccountSummary } from '@blockaid/client/resources/evm';
 
-export type AssetDiff =
+export type EvmAssetDiff =
     | AccountSummary.Erc20AddressAssetBalanceChangeDiff
     | AccountSummary.Erc721AddressAssetBalanceChangeDiff
     | AccountSummary.Erc1155AddressAssetBalanceChangeDiff
     | NativeAddressAssetBalanceChangeDiff;
 
-export type AssetExposure =
+export type EvmAssetExposure =
     | AccountSummary.Erc20AddressExposure
     | AccountSummary.Erc721AddressExposure
     | AccountSummary.Erc1155AddressExposure;

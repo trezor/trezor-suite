@@ -1,20 +1,21 @@
 import React from 'react';
 
 import { useFormatters } from '@suite-common/formatters';
-import { type AssetDiff, type AssetExposure } from '@suite-common/tx-simulation';
+import { type EvmAssetDiff, type EvmAssetExposure } from '@suite-common/tx-simulation';
 import { type Network, isNetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenAddress, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Box, HStack, Text } from '@suite-native/atoms';
 import { CryptoIcon, CryptoIconWithNetwork, Icon } from '@suite-native/icons';
 import { BigNumber } from '@trezor/utils';
 
+// FIXME: rename to EvmTxSimulationAsset
 export const TxSimulationAsset = ({
     assetDiff,
     assetExposure,
     network,
 }: {
-    assetDiff?: AssetDiff;
-    assetExposure?: AssetExposure;
+    assetDiff?: EvmAssetDiff;
+    assetExposure?: EvmAssetExposure;
     network: Network;
 }) => {
     const { BaseCurrencyAmountFormatter } = useFormatters();

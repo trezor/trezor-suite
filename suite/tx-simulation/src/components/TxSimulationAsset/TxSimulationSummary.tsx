@@ -1,10 +1,11 @@
-import { type AssetDiff } from '@suite-common/tx-simulation';
+import { type EvmAssetDiff } from '@suite-common/tx-simulation';
 
 interface TxSimulationSummaryProps {
-    amount: AssetDiff['in'][number];
-    assetDiff?: AssetDiff;
+    amount: EvmAssetDiff['in'][number];
+    assetDiff?: EvmAssetDiff;
 }
 
+// FIXME: rename to EvmTxSimulationSummary
 export function TxSimulationSummary({ amount, assetDiff }: TxSimulationSummaryProps) {
     if (amount.summary) {
         return amount.summary;
