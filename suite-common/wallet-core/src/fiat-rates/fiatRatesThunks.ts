@@ -21,7 +21,6 @@ import {
 import {
     fetchTransactionsRates,
     groupTokensTransactionsByContractAddress,
-    isErc4626,
     isTestnet,
 } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
@@ -31,7 +30,7 @@ import { BigNumber, typedObjectKeys } from '@trezor/utils';
 
 import { FIAT_RATES_MODULE_PREFIX, REFETCH_INTERVAL } from './fiatRatesConstants';
 import { selectTickersToBeUpdated } from './fiatRatesSelectors';
-import { selectAccountByKey, selectDeviceAccounts } from '../accounts/accountsSelectors';
+import { selectAccountByKey } from '../accounts/accountsSelectors';
 import {
     selectActiveBackendType,
     selectIsElectrumBackendSelected,
@@ -205,25 +204,25 @@ export const updateFiatRatesThunk = createThunk<
         { tickers, baseCurrencyCode, rateType, forceFetchToken, skipCache = false },
         { getState },
     ) => {
-        const accounts = selectDeviceAccounts(getState());
-
-        const findTokenByTicker = (ticker: TickerId) => {
-            if (!ticker.tokenAddress) return undefined;
-
-            for (const account of accounts) {
-                if (account.symbol !== ticker.symbol) continue;
-
-                for (const token of account.tokens ?? []) {
-                    if (token.contract === ticker.tokenAddress) return token;
-                }
-            }
-
-            return undefined;
-        };
-
         const fetchRate = async (ticker: TickerId) => {
             if (isTestnet(ticker.symbol)) {
                 throw new Error('Testnet');
+            }
+
+            const backendType = selectActiveBackendType(getState(), ticker.symbol);
+
+            // fetch ERC4626 fiat rate from Blockbook
+            if (
+                ticker.protocols?.includes('erc4626') &&
+                (!backendType || backendType === 'blockbook')
+            ) {
+                return fetchErc4626FiatRate({
+                    ticker,
+                    rateType,
+                    baseCurrencyCode,
+                    backendType,
+                    skipCache,
+                });
             }
 
             const hasCoinDefinitions = getNetworkFeatures(ticker.symbol).includes(
@@ -238,23 +237,6 @@ export const updateFiatRatesThunk = createThunk<
 
                 if (!isTokenKnown) {
                     throw new Error('Missing token definition');
-                }
-            }
-
-            const backendType = selectActiveBackendType(getState(), ticker.symbol);
-
-            // fetch ERC4626 fiat rate from Blockbook
-            if (ticker.tokenAddress && backendType === 'blockbook') {
-                const token = findTokenByTicker(ticker);
-
-                if (token && isErc4626(token)) {
-                    return fetchErc4626FiatRate({
-                        ticker,
-                        rateType,
-                        baseCurrencyCode,
-                        backendType,
-                        skipCache,
-                    });
                 }
             }
 

@@ -1,7 +1,7 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
-import { type Timestamp, type TokenAddress } from '@suite-common/wallet-types';
+import { type TickerId, type Timestamp, type TokenAddress } from '@suite-common/wallet-types';
 import { isNative } from '@trezor/env-utils';
 
 import {
@@ -111,7 +111,8 @@ export const prepareFiatRatesMiddleware = createMiddlewareWithExtraDeps(
             const tokenTickers = tokens.map(token => ({
                 symbol,
                 tokenAddress: token.contract as TokenAddress,
-            }));
+                protocols: token.protocols?.erc4626 ? ['erc4626'] : undefined,
+            })) satisfies TickerId[];
             // include main account fiat rate ticker
             const tickers = [...tokenTickers, { symbol }];
 

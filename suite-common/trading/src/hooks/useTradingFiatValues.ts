@@ -36,6 +36,7 @@ export interface TradingFiatRatesProps {
     cryptoId?: CryptoId;
     amount?: string;
     shouldSendInSats?: boolean;
+    isErc4626?: boolean;
 }
 
 export interface TradingFiatRatesReturn {
@@ -57,6 +58,7 @@ export const useTradingFiatValues = ({
     fiatCurrency,
     amount,
     shouldSendInSats,
+    isErc4626,
 }: TradingFiatRatesProps): TradingFiatRatesReturn | null => {
     const dispatch = useDispatch();
 
@@ -100,6 +102,7 @@ export const useTradingFiatValues = ({
                         {
                             symbol,
                             tokenAddress: isNativeToken ? undefined : tokenAddress,
+                            protocols: isErc4626 ? ['erc4626'] : undefined,
                         },
                     ],
                     baseCurrencyCode: value,
@@ -124,7 +127,7 @@ export const useTradingFiatValues = ({
 
             return null;
         },
-        [contractAddress, dispatch, symbol, isNativeToken],
+        [contractAddress, dispatch, symbol, isNativeToken, isErc4626],
     );
 
     useEffect(() => {

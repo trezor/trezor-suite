@@ -12,6 +12,7 @@ import {
     type RatesByTimestamps,
     type TickerId,
     type Timestamp,
+    type TokenAddress,
 } from '@suite-common/wallet-types';
 import {
     getFiatRateKeyFromTicker,
@@ -101,8 +102,9 @@ export const selectTickerFromAccounts = (
                     token =>
                         ({
                             symbol: account.symbol,
-                            tokenAddress: token.contract,
-                        }) as TickerId,
+                            tokenAddress: token.contract as TokenAddress,
+                            protocols: token.protocols?.erc4626 ? ['erc4626'] : undefined,
+                        }) satisfies TickerId,
                 ),
         ]),
         A.flat,
