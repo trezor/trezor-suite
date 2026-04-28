@@ -240,6 +240,28 @@ describe('sellSelectors', () => {
         it('should be stable', () => {
             expect(selectSellFormDefaultValues(state)).toBe(selectSellFormDefaultValues(state));
         });
+
+        it('should restore persisted subdivision when valid for the selected country', () => {
+            state.wallet.trading.residence.country = 'US';
+            state.wallet.trading.residence.countrySubdivision = 'CA';
+
+            expect(selectSellFormDefaultValues(state)).toEqual(
+                expect.objectContaining({
+                    country: expect.objectContaining({ value: 'US' }),
+                    countrySubdivision: expect.objectContaining({
+                        value: 'CA',
+                        name: 'California',
+                    }),
+                }),
+            );
+        });
+
+        it('should ignore stale persisted subdivision when country does not require one', () => {
+            state.wallet.trading.residence.country = 'DE';
+            state.wallet.trading.residence.countrySubdivision = 'CA';
+
+            expect(selectSellFormDefaultValues(state).countrySubdivision).toBeUndefined();
+        });
     });
 
     describe('selectSellSelectedSendAccount', () => {

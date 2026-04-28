@@ -63,6 +63,11 @@ describe('quotesUtils', () => {
                         label: '🇺🇸 United States',
                         shortLabel: '🇺🇸 USA',
                     });
+                    form.setValue('countrySubdivision', {
+                        label: 'California',
+                        value: 'CA',
+                        name: 'California',
+                    });
                     form.setValue('quote', mercuryoApplePayBuyQuote);
                 });
             });
@@ -100,6 +105,11 @@ describe('quotesUtils', () => {
                         name: 'United States of America',
                         shortLabel: '🇺🇸 USA',
                         value: 'US',
+                    },
+                    countrySubdivisionSelect: {
+                        label: 'California',
+                        value: 'CA',
+                        name: 'California',
                     },
                     paymentMethod: {
                         value: 'applePay',

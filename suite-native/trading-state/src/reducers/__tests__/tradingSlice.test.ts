@@ -375,7 +375,7 @@ describe('tradingSlice', () => {
     describe('residence slice', () => {
         it('should handle residence actions', () => {
             const actions = [
-                residenceActions.setResidenceLocation({
+                residenceActions.setResidenceCountry({
                     country: 'US',
                     countrySubdivision: 'CA',
                 }),

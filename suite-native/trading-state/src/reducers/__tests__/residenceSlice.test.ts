@@ -18,21 +18,19 @@ describe('residenceSlice', () => {
 
             const state = residenceReducer(
                 undefined,
-                residenceActions.setResidenceCountry(country),
+                residenceActions.setResidenceCountry({ country }),
             );
 
             expect(state.country).toBe(country);
             expect(state.countrySubdivision).toBeUndefined();
         });
-    });
 
-    describe('setResidenceLocation', () => {
         it('should set residence country and subdivision', () => {
             const country: TradingCountryCode = 'US';
 
             const state = residenceReducer(
                 undefined,
-                residenceActions.setResidenceLocation({
+                residenceActions.setResidenceCountry({
                     country,
                     countrySubdivision: 'CA',
                 }),

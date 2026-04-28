@@ -178,6 +178,28 @@ describe('buySelectors', () => {
                 }),
             );
         });
+
+        it('should restore persisted subdivision when valid for the selected country', () => {
+            state.wallet.trading.residence.country = 'US';
+            state.wallet.trading.residence.countrySubdivision = 'CA';
+
+            expect(selectBuyFormDefaultValues(state)).toEqual(
+                expect.objectContaining({
+                    country: expect.objectContaining({ value: 'US' }),
+                    countrySubdivision: expect.objectContaining({
+                        value: 'CA',
+                        name: 'California',
+                    }),
+                }),
+            );
+        });
+
+        it('should ignore stale persisted subdivision when country does not require one', () => {
+            state.wallet.trading.residence.country = 'DE';
+            state.wallet.trading.residence.countrySubdivision = 'CA';
+
+            expect(selectBuyFormDefaultValues(state).countrySubdivision).toBeUndefined();
+        });
     });
 
     describe('selectBuySupportedFiatCurrencies', () => {
