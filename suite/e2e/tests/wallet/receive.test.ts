@@ -54,9 +54,23 @@ test.describe('Receive transaction', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () =
                 await walletPage.revealAddressButton.click();
                 const address = await devicePrompt.getAddressFromDisplay();
                 await devicePrompt.waitForPromptAndConfirm();
+                // Intercept writeText before clicking copy — Chromium enforces Permissions-Policy
+                // at the HTTP header level, so navigator.clipboard.readText() is blocked in CI
+                // even when context permissions are granted. Capture the value on write instead.
+                await page.evaluate(() => {
+                    const clipboard = navigator.clipboard as any;
+                    const original = clipboard.writeText.bind(clipboard);
+                    clipboard.writeText = (text: string) => {
+                        (window as any).__clipboardCapture = text;
+
+                        return original(text).catch(() => undefined);
+                    };
+                });
                 await walletPage.copyAddressButton.click();
                 await expect(walletPage.copyToCliboardToast).toBeVisible();
-                const clipboardText = await page.evaluate(() => navigator.clipboard.readText());
+                const clipboardText = await page.evaluate(
+                    () => (window as any).__clipboardCapture as string,
+                );
                 expect.soft(clipboardText).toEqual(address);
                 expect.soft(address).toMatch(addressFormat);
             },
