@@ -1,7 +1,11 @@
 import type { SocksProxyAgentOptions } from 'socks-proxy-agent';
 
 import type { BaseCurrencyCode } from './baseCurrency';
-import type { Erc4626, TronAccountExtraData, TronChainExtraData } from './blockbook-api';
+import type {
+    ContractInfoProtocols,
+    TronAccountExtraData,
+    TronChainExtraData,
+} from './blockbook-api';
 
 /* Shared types — canonical definitions used by both common and backend-specific modules */
 
@@ -322,9 +326,7 @@ export interface TokenInfo {
     accounts?: TokenAccount[];
     policyId?: string;
     fingerprint?: string;
-    protocols?: {
-        erc4626?: Erc4626;
-    };
+    protocols?: ContractInfoProtocols;
 }
 
 /**

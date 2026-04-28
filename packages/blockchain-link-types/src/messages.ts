@@ -1,3 +1,4 @@
+import { type ContractInfoParams } from './blockbook';
 import type { BlockchainSettings, ChannelMessage, SubscriptionAccountInfo } from './common';
 import type * as MESSAGES from './constants/messages';
 import type {
@@ -146,11 +147,7 @@ export interface ValidateEvmRpc {
 
 export interface GetContractInfo {
     type: typeof MESSAGES.GET_CONTRACT_INFO;
-    payload: {
-        contract: string;
-        currency?: string;
-        protocols?: string[];
-    };
+    payload: ContractInfoParams;
 }
 
 export type Message =
