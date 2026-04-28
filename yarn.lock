@@ -11186,6 +11186,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-common/earn-stablecoin@workspace:suite-common/earn-stablecoin":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/earn-stablecoin@workspace:suite-common/earn-stablecoin"
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/earn-staking-api@workspace:*, @suite-common/earn-staking-api@workspace:suite-common/earn-staking-api":
   version: 0.0.0-use.local
   resolution: "@suite-common/earn-staking-api@workspace:suite-common/earn-staking-api"
