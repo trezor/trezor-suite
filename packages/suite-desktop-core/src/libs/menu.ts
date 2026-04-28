@@ -98,6 +98,7 @@ export const buildMainMenu = (mainWindowProxy: MainWindowProxy) => {
         );
         // Extend "Window"
         mainMenuTemplate[3].submenu.push(
+            { role: 'togglefullscreen' },
             { type: 'separator' },
             { role: 'front' },
             { type: 'separator' },
