@@ -126,11 +126,11 @@ export const composeTxPlan = (
 export const hexStringByteLength = (s: string) => s.length / 2;
 
 export const sendChunkedHexString = async (
-    typedCall: any,
+    typedCall: PROTO.TypedCall,
     data: string,
     chunkSize: number,
-    messageType: string,
-    responseType = 'CardanoTxItemAck',
+    messageType: PROTO.MessageKey,
+    responseType: PROTO.MessageKey = 'CardanoTxItemAck',
 ) => {
     let processedSize = 0;
     while (processedSize < data.length) {
