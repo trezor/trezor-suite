@@ -2,6 +2,7 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../../suite-common/bip329" },
         { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/earn-stablecoin-api"
@@ -55,6 +56,7 @@
         { "path": "../services" },
         { "path": "../tokens" },
         { "path": "../transactions" },
+        { "path": "../../packages/connect" },
         {
             "path": "../../packages/styles-native"
         },

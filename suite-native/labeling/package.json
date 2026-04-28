@@ -15,6 +15,7 @@
         "@gorhom/bottom-sheet": "5.2.8",
         "@react-navigation/native": "7.1.28",
         "@reduxjs/toolkit": "2.11.2",
+        "@suite-common/bip329": "workspace:*",
         "@suite-common/device": "workspace:*",
         "@suite-common/message-system": "workspace:*",
         "@suite-common/suite-sync": "workspace:*",

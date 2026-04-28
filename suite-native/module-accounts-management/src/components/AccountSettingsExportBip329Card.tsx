@@ -28,10 +28,20 @@ export const AccountSettingsExportBip329Card = ({
             title={<Translation id="moduleAccounts.accountSettingsExportBip329Button.title" />}
         >
             <VStack marginTop="sp2" spacing="sp16">
-                <Text variant="body-sm" adjustsFontSizeToFit numberOfLines={3}>
+                <Text
+                    variant="body-sm"
+                    color="contentSecondary"
+                    adjustsFontSizeToFit
+                    numberOfLines={3}
+                >
                     <Translation id="moduleAccounts.accountSettingsExportBip329Button.description" />
                 </Text>
-                <Button size="small" onPress={openBip329Modal} colorScheme="tertiaryElevation0">
+                <Button
+                    size="medium"
+                    onPress={openBip329Modal}
+                    intent="neutral"
+                    priority="secondary"
+                >
                     <Translation id="moduleAccounts.accountSettingsExportBip329Button.button" />
                 </Button>
             </VStack>
