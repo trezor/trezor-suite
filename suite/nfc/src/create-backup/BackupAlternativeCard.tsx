@@ -11,7 +11,7 @@ import {
     Text,
 } from '@trezor/components';
 
-interface BackupAlternativeCardProps {
+type BackupAlternativeCardProps = {
     badge: ReactNode;
     badgeIntent?: BadgeIntent;
     heading: ReactNode;
@@ -20,7 +20,7 @@ interface BackupAlternativeCardProps {
     buttonIntent?: ButtonIntent;
     buttonPriority?: ComponentProps<typeof Button>['priority'];
     onClick?: () => void;
-}
+};
 
 export const BackupAlternativeCard = ({
     badge,

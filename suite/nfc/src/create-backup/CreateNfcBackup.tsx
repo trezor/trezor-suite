@@ -4,7 +4,7 @@ import { Translation } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { Card, Column, Text } from '@trezor/components';
 
-import { NfcTag } from './NfcTag';
+import { NfcTag } from '../components/NfcTag';
 
 const TagRow = styled.div`
     display: flex;
