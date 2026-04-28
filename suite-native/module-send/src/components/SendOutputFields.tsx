@@ -1,6 +1,7 @@
 import { useFieldArray } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 
+import { getNetworkType } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     selectAccountFormattedBalance,
@@ -17,6 +18,7 @@ import {
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { RecipientInputs } from './RecipientInputs';
+import { SolanaMemoInput } from './SolanaMemoInput';
 import { TronAccountActivationInfo } from './TronAccountActivationInfo';
 import { type SendOutputsFormValues } from '../sendOutputsFormSchema';
 import { CorrectNetworkMessageCard } from './CorrectNetworkMessageCard';
@@ -78,6 +80,7 @@ export const SendOutputFields = ({
                     <TronAccountActivationInfo accountKey={accountKey} />
                 </VStack>
             </Card>
+            {symbol && getNetworkType(symbol) === 'solana' && <SolanaMemoInput />}
         </VStack>
     );
 };
