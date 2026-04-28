@@ -1,5 +1,3 @@
-import { getRandomValues as cryptoGetRandomValues } from 'crypto';
-
 /**
  * Before changing anything here, see the Modulo Bias problem!
  * @see https://research.kudelskisecurity.com/2020/07/28/the-definitive-guide-to-modulo-bias-and-how-to-avoid-it/
@@ -35,10 +33,12 @@ export const getRandomInt = (min: number, max: number) => {
         );
     }
 
-    const getRandomValues =
-        typeof window !== 'undefined'
-            ? (array: ArrayBufferView<ArrayBuffer>) => window.crypto.getRandomValues(array)
-            : (array: ArrayBufferView<ArrayBuffer>) => cryptoGetRandomValues(array);
+    if (typeof globalThis.crypto?.getRandomValues !== 'function') {
+        throw new Error(
+            'Web Crypto API (globalThis.crypto.getRandomValues) is not available in this environment. ' +
+                'Requires a secure browser context (HTTPS) or Node.js 19+.',
+        );
+    }
 
     const array = new Uint32Array(1); // This provides 32 bits of entropy.
 
@@ -50,7 +50,7 @@ export const getRandomInt = (min: number, max: number) => {
 
     let randomValue: number;
     do {
-        getRandomValues(array);
+        globalThis.crypto.getRandomValues(array);
         randomValue = array[0];
     } while (randomValue >= maxRange);
 
