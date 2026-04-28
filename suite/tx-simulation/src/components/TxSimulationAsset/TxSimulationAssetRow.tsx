@@ -1,5 +1,5 @@
 import { useFormatters } from '@suite-common/formatters';
-import { type AssetDiff } from '@suite-common/tx-simulation';
+import { type EvmAssetDiff } from '@suite-common/tx-simulation';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Text, type TextProps } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
@@ -10,13 +10,14 @@ interface TxSimulationAssetRowProps {
     intent: NonNullable<TextProps['intent']>;
     priority?: TextProps['priority'];
     amountPrefix?: '+' | '-';
-    amount: AssetDiff['in'][number] | AssetDiff['out'][number];
+    amount: EvmAssetDiff['in'][number] | EvmAssetDiff['out'][number];
     fiatAmount?: string;
     fiatCurrency?: string;
-    assetDiff?: AssetDiff;
+    assetDiff?: EvmAssetDiff;
     dataTestId: string;
 }
 
+// FIXME: rename to EvmTxSimulationAssetRow
 export function TxSimulationAssetRow({
     intent,
     priority,

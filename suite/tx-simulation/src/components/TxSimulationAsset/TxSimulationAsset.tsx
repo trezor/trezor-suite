@@ -1,4 +1,4 @@
-import { type AssetDiff, type AssetExposure } from '@suite-common/tx-simulation';
+import { type EvmAssetDiff, type EvmAssetExposure } from '@suite-common/tx-simulation';
 import { type Network } from '@suite-common/wallet-config';
 import { Row } from '@trezor/components';
 
@@ -6,11 +6,12 @@ import { TxSimulationAssetLogo } from './TxSimulationAssetLogo';
 import { TxSimulationAssetRow } from './TxSimulationAssetRow';
 
 type TxSimulationAssetProps = {
-    assetDiff?: AssetDiff;
-    assetExposure?: AssetExposure;
+    assetDiff?: EvmAssetDiff;
+    assetExposure?: EvmAssetExposure;
     network: Network;
 };
 
+// FIXME: rename to EvmTxSimulationAsset
 export const TxSimulationAsset = ({
     assetDiff,
     assetExposure,

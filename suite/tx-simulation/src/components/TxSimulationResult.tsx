@@ -1,19 +1,14 @@
+import { type ReactNode } from 'react';
+
 import { Translation } from '@suite/intl';
-import { type AccountSummary } from '@suite-common/tx-simulation';
-import { type Network } from '@suite-common/wallet-config';
 import { Card, Column, H4, Row, Text } from '@trezor/components';
 
-import { TxSimulationAsset } from './TxSimulationAsset/TxSimulationAsset';
-
 interface TxSimulationResultProps {
-    accountSummary: AccountSummary;
-    network: Network;
+    children: ReactNode;
+    isEmpty: boolean;
 }
 
-export function TxSimulationResult({
-    accountSummary: { assets_diffs, exposures },
-    network,
-}: TxSimulationResultProps) {
+export function TxSimulationResult({ children, isEmpty }: TxSimulationResultProps) {
     return (
         <Card
             header={
@@ -32,17 +27,9 @@ export function TxSimulationResult({
                 }}
                 hasDivider
             >
-                {assets_diffs.map((assetDiff, index) => (
-                    <TxSimulationAsset key={index} assetDiff={assetDiff} network={network} />
-                ))}
-                {exposures.map((assetExposure, index) => (
-                    <TxSimulationAsset
-                        key={index}
-                        assetExposure={assetExposure}
-                        network={network}
-                    />
-                ))}
-                {assets_diffs.length === 0 && exposures.length === 0 && (
+                {children}
+
+                {isEmpty && (
                     <Row
                         padding={{
                             horizontal: 16,
