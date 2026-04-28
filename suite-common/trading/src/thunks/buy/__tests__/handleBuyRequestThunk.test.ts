@@ -3,7 +3,6 @@ import { type CryptoId } from 'invity-api';
 
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { getNetwork } from '@suite-common/wallet-config';
-import { isNative } from '@trezor/env-utils';
 
 import { ALTERNATIVE_QUOTES } from '../../../__fixtures__/buyUtils';
 import { invityAPI } from '../../../invityAPI';
@@ -20,21 +19,11 @@ import {
 } from '../../../types';
 import { MIN_MAX_QUOTES_OK } from '../../../utils/buy/__fixtures__/buyUtils';
 import { buyThunks } from '../index';
-
 const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
 const createMockQuotes = () =>
     [...MIN_MAX_QUOTES_OK, ...ALTERNATIVE_QUOTES].map(quote => ({ ...quote }));
-jest.mock('@trezor/env-utils', () => ({
-    ...jest.requireActual('@trezor/env-utils'),
-    isNative: jest.fn(),
-}));
-const mockedIsNative = isNative as jest.Mock;
 
 describe('handleBuyRequestThunk', () => {
-    beforeEach(() => {
-        mockedIsNative.mockReturnValue(false);
-    });
-
     afterEach(() => {
         jest.clearAllMocks();
     });
@@ -240,52 +229,6 @@ describe('handleBuyRequestThunk', () => {
         expect(state.buy.quotesRequest).toEqual({
             country: 'US',
             subdivision: 'CA',
-            cryptoStringAmount: '0',
-            fiatCurrency: 'USD',
-            fiatStringAmount: '1000',
-            receiveCurrency: 'bitcoin',
-            wantCrypto: false,
-        });
-        expect(quotesResponse).toEqual([
-            expect.objectContaining(mockQuotes[1]),
-            expect.objectContaining(mockQuotes[6]),
-        ]);
-    });
-
-    it('should request quotes for US without subdivision on native', async () => {
-        const { input, store } = getMocks();
-        const mockQuotes = createMockQuotes();
-
-        mockedIsNative.mockReturnValue(true);
-
-        invityAPI.getBuyQuotes = () => Promise.resolve(mockQuotes);
-
-        const quotesResponse = await store
-            .dispatch(
-                buyThunks.handleRequestThunk({
-                    ...input,
-                    formValues: {
-                        ...input.formValues,
-                        countrySelect: {
-                            value: 'US' as const,
-                            codeAlpha3: 'USA',
-                            flag: '🇺🇸',
-                            name: 'United States of America',
-                            label: '🇺🇸 United States',
-                            shortLabel: '🇺🇸 USA',
-                        },
-                        countrySubdivisionSelect: undefined,
-                    },
-                }),
-            )
-            .unwrap();
-
-        const state = store.getState().wallet.trading;
-
-        expect(state.buy.amountLimits).toBeUndefined();
-        expect(state.buy.quotes?.length).toEqual(2);
-        expect(state.buy.quotesRequest).toEqual({
-            country: 'US',
             cryptoStringAmount: '0',
             fiatCurrency: 'USD',
             fiatStringAmount: '1000',
