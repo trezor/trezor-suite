@@ -261,7 +261,7 @@ describe('commonSelectors', () => {
             it('should correctly select that trading is enabled when country is whitelisted', () => {
                 expect(
                     selectIsTradingEnabled(
-                        getPreloadedState({ residence: true, buy: true, countryCode: 'US' }),
+                        getPreloadedState({ residence: true, buy: true, countryCode: 'CZ' }),
                     ),
                 ).toBe(true);
             });
