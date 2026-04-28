@@ -35,8 +35,10 @@ const buttonsRowStyle = prepareNativeStyle(utils => ({
     gap: utils.spacings.sp12,
 }));
 
-const learnMoreButtonStyle = prepareNativeStyle(() => ({ flex: 3 }));
-const confirmButtonStyle = prepareNativeStyle(() => ({ flex: 7 }));
+const confirmButtonStyle = prepareNativeStyle(() => ({
+    flexGrow: 1,
+    flexShrink: 1,
+}));
 
 export const EarnConsentsEntryPeriodCard = ({
     onConfirm,
@@ -116,7 +118,6 @@ export const EarnConsentsEntryPeriodCard = ({
                             priority="secondary"
                             size="medium"
                             onPress={handleLearnMore}
-                            style={applyStyle(learnMoreButtonStyle)}
                         >
                             <Translation id="generic.buttons.learnMore" />
                         </Button>
