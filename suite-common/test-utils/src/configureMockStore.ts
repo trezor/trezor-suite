@@ -29,6 +29,10 @@ export const filterThunkActionTypes = (actions: AnyAction[]) =>
 export type MockStoreConfig<S = any, A extends AnyAction = AnyAction> = {
     middleware?: any[];
     extra?: ExtraDependenciesPartial;
+    // The third generic (PreloadedState) sits in a contravariant position in redux's Reducer
+    // signature, so neither `unknown` nor `Record<string, never>` work as drop-in replacements
+    // for `{}` here — both reject test fixtures that pass a Partial<S> as preloaded state.
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     reducer?: Reducer<S, A, {}> | ReducersMapObject<S, A, {}>;
     preloadedState?: any;
     serializableCheck?: { ignoredActions?: string[] };

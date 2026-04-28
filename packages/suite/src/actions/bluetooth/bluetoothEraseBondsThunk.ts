@@ -35,7 +35,7 @@ export const forgetBluetoothDeviceThunk = createThunk<void, ForgetBluetoothDevic
     },
 );
 
-type UnpairCurrentBondThunkParams = {};
+type UnpairCurrentBondThunkParams = Record<never, never>;
 
 /**
  * Sends bleUnpair command to the Trezor device and cleans up BT state on success.

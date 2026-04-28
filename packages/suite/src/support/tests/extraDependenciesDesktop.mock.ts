@@ -18,7 +18,7 @@ export const extraDependenciesDesktopMock: ExtraDependenciesSuiteMock = {
                 search: '?mocked_search',
             }),
             navigate: (to, state) => console.warn(`Mock navigating to ${to} with state`, state),
-            listen: (_: {}) => () => {},
+            listen: (_: unknown) => () => {},
         },
         migrateLegacyLabelsToSuiteSync: () => Promise.resolve(ok({ changed: 0, skipped: 0 })),
     },

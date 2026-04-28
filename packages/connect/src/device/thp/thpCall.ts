@@ -24,7 +24,7 @@ type ThpTypedCall = {
     ThpCreateNewSession: 'Success';
 };
 
-type ThpMessage = protocolThp.ThpMessageType & { Success: {} };
+type ThpMessage = protocolThp.ThpMessageType & { Success: Record<never, never> };
 type TypedPayloadItem<K> = K extends keyof ThpMessage
     ? {
           type: K;

@@ -24,7 +24,7 @@ export type ConnectDynamicSettings = Partial<ConnectImplSettings> & {
 type ImplType = 'core-in-suite-desktop' | 'core-in-suite-web';
 
 export type ConnectImpl = Omit<
-    ConnectFactoryDependencies<{}>,
+    ConnectFactoryDependencies<Record<never, never>>,
     'init' | 'eventEmitter' | 'uiResponse' | 'updateConnectSettings'
 > & {
     init: (params: ConnectImplSettings) => Promise<void>;
@@ -38,7 +38,7 @@ type TrezorConnectDynamicParams = {
  * Implementation of TrezorConnect that can dynamically switch between different implementations.
  *
  */
-export class TrezorConnectDynamic implements ConnectFactoryDependencies<{}> {
+export class TrezorConnectDynamic implements ConnectFactoryDependencies<Record<never, never>> {
     public readonly eventEmitter = new ConnectEmitter();
 
     private currentTarget: ImplType;

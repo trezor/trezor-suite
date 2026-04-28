@@ -50,7 +50,6 @@ export const typescriptConfig = [
                     minimumDescriptionLength: 0, // Todo: reconsider
                 },
             ],
-            '@typescript-eslint/no-empty-object-type': 'off', // Todo: we shall solve this, this is bad practice
         },
     },
     {

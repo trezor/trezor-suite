@@ -3,7 +3,7 @@ import type { EventDef } from '@suite-common/analytics';
 import { EventType } from '../constants';
 
 export const earnStablecoinYieldTilePressedEvent: EventDef<
-    {},
+    Record<never, never>,
     EventType.EarnStablecoinYieldTilePressed
 > = {
     name: EventType.EarnStablecoinYieldTilePressed,

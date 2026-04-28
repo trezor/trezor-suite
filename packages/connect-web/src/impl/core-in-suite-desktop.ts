@@ -15,7 +15,7 @@ import { WebsocketClient, WebsocketError } from '@trezor/websocket-client';
 export class CoreInSuiteDesktop implements ConnectImpl {
     private manifest?: Manifest;
     private version?: string;
-    private ws: WebsocketClient<{}>;
+    private ws: WebsocketClient<Record<never, never>>;
     private localNetworkPermissionState: PermissionState | 'unknown' = 'unknown';
 
     public constructor() {

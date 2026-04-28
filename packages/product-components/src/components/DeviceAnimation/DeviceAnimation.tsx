@@ -35,10 +35,10 @@ type GenericDeviceAnimationProps<T extends AnimationType> = {
     [M in ModelFor<T>]: Base & {
         type: T;
         deviceModelInternal: M;
-    } & (ColorsFor<T, M> extends never ? {} : { deviceUnitColor?: ColorsFor<T, M> }) &
+    } & (ColorsFor<T, M> extends never ? unknown : { deviceUnitColor?: ColorsFor<T, M> }) &
         ((typeof DEVICE_ANIMATION_CONFIG)[T] extends { hasSize: true }
             ? { sizeVariant?: 'LARGE' }
-            : {});
+            : unknown);
 }[ModelFor<T>];
 
 export type DeviceAnimationProps = {

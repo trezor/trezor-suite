@@ -144,7 +144,7 @@ const generateMessageItem = (desc: DescMessage): TypeItem => {
     if (DEFINITION_PATCH[messageName]) {
         lines.push(DEFINITION_PATCH[messageName]());
     } else if (!desc.fields || desc.fields.length === 0) {
-        lines.push(`export type ${messageName} = {};`, '');
+        lines.push(`export type ${messageName} = Record<never, never>;`, '');
     } else {
         lines.push(`export type ${messageName} = {`);
         for (const field of desc.fields) {

@@ -1,6 +1,8 @@
 import { type Result } from '@trezor/type-utils';
 
-export type EntityListener<T extends {}> = { onChange: (payload: T[]) => void };
+export type EntityListener<T extends object> = {
+    onChange: (payload: T[]) => void;
+};
 
 export type SuiteSyncUpdateError = { type: 'SuiteSyncUpdateError'; caused: any };
 
@@ -13,7 +15,7 @@ export const createSuiteSyncUpdateError = (caused: any): SuiteSyncUpdateError =>
  * This is an abstraction to define a subscribable entity storage in the
  * Suite Sync.
  */
-export type SuiteSyncTable<T extends {}> = {
+export type SuiteSyncTable<T extends object> = {
     update(entity: Partial<T>): Result<void, SuiteSyncUpdateError>;
     subscribe(params: EntityListener<T>): () => void;
 };

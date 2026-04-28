@@ -14,7 +14,7 @@ export type OriginalReduxThunk<TPayload, TReturn = void> = (
 // for both redux-toolkit and legacy redux stuff like it is in externalDependencies.
 // Primary you should use types like ActionCreatorWithPayload from redux-toolkit!
 export type SuiteCompatibleThunk<TPayload, TReturn = void> =
-    | AsyncThunk<TReturn, TPayload, {}>
+    | AsyncThunk<TReturn, TPayload, Record<never, never>>
     | OriginalReduxThunk<TPayload, TReturn>;
 
 export type SuiteCompatibleSelector<TReturn> = (state: any) => TReturn;

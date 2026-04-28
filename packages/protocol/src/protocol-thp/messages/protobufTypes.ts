@@ -56,9 +56,9 @@ export type ThpDeviceProperties = {
     pairing_methods: (keyof typeof ThpPairingMethod)[];
 };
 
-export type ThpEndRequest = {};
+export type ThpEndRequest = Record<never, never>;
 
-export type ThpEndResponse = {};
+export type ThpEndResponse = Record<never, never>;
 
 export type ThpHandshakeCompletionReqNoisePayload = {
     host_pairing_credential?: string;
@@ -72,14 +72,14 @@ export type ThpNfcTagTrezor = {
     tag: string;
 };
 
-export type ThpPairingPreparationsFinished = {};
+export type ThpPairingPreparationsFinished = Record<never, never>;
 
 export type ThpPairingRequest = {
     host_name: string;
     app_name: string;
 };
 
-export type ThpPairingRequestApproved = {};
+export type ThpPairingRequestApproved = Record<never, never>;
 
 export type ThpQrCodeSecret = {
     secret: string;
