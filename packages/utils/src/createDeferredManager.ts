@@ -13,13 +13,17 @@ type DeferredManagerOptions = {
     initialId?: number;
 };
 
+type IdPromise<T> = { promiseId: number; promise: Promise<T> };
+
 export type DeferredManager<T> = {
     /** How many pending promises are there */
     length: () => number;
     /** ID of the next created promise (for specific use case, should be removed in the future) */
     nextId: () => number;
     /** Creates new pending promise (with optional timeout) and returns it and its unique id */
-    create: (timeout?: number) => { promiseId: number; promise: Promise<T> };
+    create: (timeout?: number) => IdPromise<T>;
+    /** Waits until there is less than `concurrency` promises and then creates a new one */
+    createConcurrent: (concurrency: number, timeout?: number) => Promise<IdPromise<T>>;
     /** Resolves (and removes) promise with given id by given value and returns whether it was present or not */
     resolve: (promiseId: number, value: T) => boolean;
     /** Resolves (and removes) all pending promises by given value */
@@ -47,10 +51,17 @@ export const createDeferredManager = <T = any>(
 
     let ID = initialId;
     let timeoutHandle: TimerId | undefined;
+    let onRemovePromise = createDeferred();
 
     const length = () => promises.length;
 
     const nextId = () => ID;
+
+    const onPromiseRemoved = () => {
+        const { resolve } = onRemovePromise;
+        onRemovePromise = createDeferred();
+        resolve();
+    };
 
     const replanTimeout = () => {
         const now = Date.now();
@@ -86,9 +97,18 @@ export const createDeferredManager = <T = any>(
         return { promiseId, promise: deferred.promise };
     };
 
+    const createConcurrent = async (concurrency: number, timeout?: number) => {
+        while (promises.length >= concurrency) {
+            await onRemovePromise.promise;
+        }
+
+        return create(timeout);
+    };
+
     const extract = (promiseId: number) => {
         const index = promises.findIndex(({ id }) => id === promiseId);
         const [promise] = index >= 0 ? promises.splice(index, 1) : [undefined];
+        if (promise) onPromiseRemoved();
         if (promise?.deadline) replanTimeout();
 
         return promise;
@@ -104,7 +124,10 @@ export const createDeferredManager = <T = any>(
     const resolveAll = (getValue: (promiseId: number) => T) => {
         promises.forEach(promise => promise.resolve(getValue(promise.id)));
         const deleted = promises.splice(0, promises.length);
-        if (deleted.length) replanTimeout();
+        if (deleted.length) {
+            onPromiseRemoved();
+            replanTimeout();
+        }
     };
 
     const reject = (promiseId: number, error: Error) => {
@@ -117,8 +140,11 @@ export const createDeferredManager = <T = any>(
     const rejectAll = (error: Error) => {
         promises.forEach(promise => promise.reject(error));
         const deleted = promises.splice(0, promises.length);
-        if (deleted.length) replanTimeout();
+        if (deleted.length) {
+            onPromiseRemoved();
+            replanTimeout();
+        }
     };
 
-    return { length, nextId, create, resolve, reject, resolveAll, rejectAll };
+    return { length, nextId, create, createConcurrent, resolve, reject, resolveAll, rejectAll };
 };
