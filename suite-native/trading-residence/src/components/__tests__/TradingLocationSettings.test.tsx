@@ -2,7 +2,7 @@ import { combineReducers } from '@reduxjs/toolkit';
 
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { Text } from '@suite-native/atoms';
-import { localeReducer } from '@suite-native/intl';
+import { getTranslation, localeReducer } from '@suite-native/intl';
 import {
     type TestStore,
     createLightStore,
@@ -20,11 +20,8 @@ import {
 describe('TradingLocationSettings', () => {
     let store: TestStore;
 
-    const renderTradingLocationSettings = (props: TradingLocationSettingsProps) =>
-        renderWithStoreProvider(<TradingLocationSettings {...props} />, { store });
-
-    beforeEach(() => {
-        store = createLightStore({
+    const createStore = (preloadedResidenceState = {}) =>
+        createLightStore({
             reducer: {
                 locale: localeReducer,
                 wallet: combineReducers({
@@ -34,7 +31,20 @@ describe('TradingLocationSettings', () => {
                     }),
                 }),
             },
+            preloadedState: {
+                wallet: {
+                    trading: {
+                        residence: preloadedResidenceState,
+                    },
+                },
+            },
         });
+
+    const renderTradingLocationSettings = (props: TradingLocationSettingsProps) =>
+        renderWithStoreProvider(<TradingLocationSettings {...props} />, { store });
+
+    beforeEach(() => {
+        store = createStore();
     });
 
     afterEach(() => {
@@ -52,5 +62,22 @@ describe('TradingLocationSettings', () => {
         expect(getByText('Trading is available')).toBeOnTheScreen();
         expect(getByText('Country of residence')).toBeOnTheScreen();
         expect(getByText('POL')).toBeOnTheScreen();
+    });
+
+    it('should show trading as unavailable when required subdivision is missing', () => {
+        store = createStore({
+            country: 'US',
+            countrySubdivision: undefined,
+            wasOnboardingVisited: false,
+        });
+
+        const { getByText } = renderTradingLocationSettings({
+            context: 'settings',
+            children: <Text>Test Children</Text>,
+        });
+
+        expect(
+            getByText(getTranslation('tradingResidence.locationSettings.tradingUnavailable')),
+        ).toBeOnTheScreen();
     });
 });
