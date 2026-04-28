@@ -9554,10 +9554,6 @@ export const messages = defineMessages({
         id: 'TR_EARN_YIELD_PENDING_WITHDRAW',
         defaultMessage: 'Confirming withdrawal...',
     },
-    TR_EARN_YIELD_APPROVAL_INSUFFICIENT: {
-        id: 'TR_EARN_YIELD_APPROVAL_INSUFFICIENT',
-        defaultMessage: 'Approval amount is lower than the requested amount.',
-    },
     TR_EARN_YIELD_APPROVAL_TOO_LOW: {
         id: 'TR_EARN_YIELD_APPROVAL_TOO_LOW',
         defaultMessage: 'Approval is too low. Modify approval or lower the amount.',
