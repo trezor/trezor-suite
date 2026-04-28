@@ -1,6 +1,8 @@
 import { Translation } from '@suite/intl';
 import { type Account } from '@suite-common/wallet-types';
-import { Card, Row } from '@trezor/components';
+import { Flex } from '@trezor/components';
+
+import { useLayoutSize } from 'src/hooks/suite';
 
 import { Resource } from './Resource';
 
@@ -9,6 +11,8 @@ type TronResourcesProps = {
 };
 
 export const TronResources = ({ account }: TronResourcesProps) => {
+    const { isBelowMobile } = useLayoutSize();
+
     if (account.networkType !== 'tron') return null;
 
     const { tronResources } = account.misc;
@@ -28,21 +32,20 @@ export const TronResources = ({ account }: TronResourcesProps) => {
     const totalBandwidth = totalStakedBandwidth + totalFreeBandwidth;
 
     return (
-        <Card>
-            <Row gap={48} flexWrap="wrap">
-                <Resource
-                    label={<Translation id="TR_TRON_BANDWIDTH" />}
-                    tooltip={<Translation id="TR_TRON_BANDWIDTH_TOOLTIP" />}
-                    available={availableBandwidth}
-                    total={totalBandwidth}
-                />
-                <Resource
-                    label={<Translation id="TR_TRON_ENERGY" />}
-                    tooltip={<Translation id="TR_TRON_ENERGY_TOOLTIP" />}
-                    available={availableEnergy}
-                    total={totalEnergy}
-                />
-            </Row>
-        </Card>
+        <Flex gap={16} direction={isBelowMobile ? 'column' : 'row'}>
+            <Resource
+                label={<Translation id="TR_TRON_BANDWIDTH" />}
+                tooltip={<Translation id="TR_TRON_BANDWIDTH_TOOLTIP" />}
+                available={availableBandwidth}
+                total={totalBandwidth}
+            />
+
+            <Resource
+                label={<Translation id="TR_TRON_ENERGY" />}
+                tooltip={<Translation id="TR_TRON_ENERGY_TOOLTIP" />}
+                available={availableEnergy}
+                total={totalEnergy}
+            />
+        </Flex>
     );
 };
