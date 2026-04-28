@@ -1,3 +1,4 @@
+import { isCountrySubdivisionEmpty } from '@suite-common/trading';
 import {
     FeatureFlag,
     type FeatureFlagsRootState,
@@ -27,16 +28,27 @@ export const selectIsTradingEnabledForCountry = (
     }
 
     const country = selectTradingResidenceCountry(state);
+
     if (!country) {
+        return false;
+    }
+    const countrySubdivision = selectTradingResidenceCountrySubdivision(state);
+
+    if (isCountrySubdivisionEmpty(country, countrySubdivision)) {
         return false;
     }
 
     return tradingCountriesWhitelistSet.has(country);
 };
 
-export const selectIsTradingCountrySet = (state: TradingResidenceRootState) =>
-    selectTradingResidenceCountry(state) !== undefined;
+export const selectIsTradingCountrySet = (state: TradingResidenceRootState) => {
+    const country = selectTradingResidenceCountry(state);
 
+    return (
+        country !== undefined &&
+        !isCountrySubdivisionEmpty(country, selectTradingResidenceCountrySubdivision(state))
+    );
+};
 export const selectShouldDisplayTradingResidenceOnboarding = (
     state: TradingResidenceRootState & FeatureFlagsRootState,
 ) => {
