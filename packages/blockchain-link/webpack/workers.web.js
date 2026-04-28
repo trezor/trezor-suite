@@ -35,11 +35,9 @@ module.exports = {
     resolve: {
         modules: [SRC, 'node_modules'],
         extensions: ['.ts', '.js'],
-        mainFields: ['main', 'module'], // prevent wrapping default exports by harmony export (bignumber.js in ripple issue)
-        fallback: {
-            crypto: require.resolve('crypto-browserify'),
-            stream: require.resolve('stream-browserify'),
-        },
+        // - 'browser' first so packages like @xrplf/isomorphic pick noble-based browser builds instead of node:crypto
+        // - 'module' is intentionally omitted; it caused a default-export wrapping issue with bignumber.js in the ripple worker
+        mainFields: ['browser', 'main'],
     },
     externals: [
         {

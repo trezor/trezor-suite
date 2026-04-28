@@ -101,9 +101,7 @@
         "@trezor/utxo-lib": "workspace:*",
         "@trezor/websocket-client": "workspace:*",
         "@types/web": "^0.0.345",
-        "crypto-browserify": "3.12.1",
         "socks-proxy-agent": "8.0.5",
-        "stream-browserify": "^3.0.0",
         "viem": "^2.48.1",
         "xrpl": "4.6.0"
     },
