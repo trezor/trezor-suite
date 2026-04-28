@@ -1,27 +1,17 @@
-import {
-    type AnimatedProps,
-    FadeIn,
-    FadeOut,
-    FadeOutDown,
-    LinearTransition,
-} from 'react-native-reanimated';
+import { FadeIn, FadeOut, LinearTransition } from 'react-native-reanimated';
 
 import { type ApprovalStatus, getApprovalStatus } from '@suite-common/trading';
-import { AnimatedBox, AnimatedVStack, Button } from '@suite-native/atoms';
+import { AnimatedBox, Button, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 import { useExchangeFormContext } from '../../hooks/exchange/useExchangeFormContext';
 import { useExchangeSelectQuote } from '../../hooks/exchange/useExchangeSelectQuote';
 import { useTradingStellarActivateToken } from '../../hooks/general/useTradingStellarActivateToken';
 
-export type ExchangeConfirmationProps = {
-    enteringAnimation?: AnimatedProps<any>['entering'];
-};
-
 export const CONFIRMATION_TEST_ID = '@trading/exchange/continue-button';
 export const REVOKE_TEST_ID = '@trading/exchange/revoke-button';
 
-export const ExchangeConfirmation = ({ enteringAnimation }: ExchangeConfirmationProps) => {
+export const ExchangeConfirmation = () => {
     const form = useExchangeFormContext();
     const receiveAsset = form.watch('receiveAsset');
     const receiveCryptoId = receiveAsset?.cryptoId;
@@ -43,7 +33,7 @@ export const ExchangeConfirmation = ({ enteringAnimation }: ExchangeConfirmation
         });
 
     return (
-        <AnimatedVStack entering={enteringAnimation} exiting={FadeOutDown} spacing="sp16">
+        <VStack spacing="sp16">
             {isReceivingInactiveStellarToken ? (
                 activateButtonElement
             ) : (
@@ -69,6 +59,6 @@ export const ExchangeConfirmation = ({ enteringAnimation }: ExchangeConfirmation
                     )}
                 </>
             )}
-        </AnimatedVStack>
+        </VStack>
     );
 };
