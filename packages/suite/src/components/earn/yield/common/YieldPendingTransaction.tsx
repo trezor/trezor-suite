@@ -1,13 +1,13 @@
 import type { TranslationKey } from '@suite/intl';
 import { Translation } from '@suite/intl';
 import type { YieldPendingTransactionState } from '@suite-common/wallet-core';
-import { Column, Link, Paragraph, Row, Spinner } from '@trezor/components';
+import { PendingTransactionInfo } from '@trezor/product-components';
 
 import { Address } from 'src/components/suite/Address';
 
 type YieldPendingTransactionProps = {
     pendingTransaction: YieldPendingTransactionState;
-    onTxClick?: (txid: string) => void;
+    onTxClick: (txid: string) => void;
 };
 
 const getPendingTransactionLabel = (kind: YieldPendingTransactionState['type']): TranslationKey => {
@@ -27,52 +27,19 @@ const getPendingTransactionLabel = (kind: YieldPendingTransactionState['type']):
 export const YieldPendingTransaction = ({
     pendingTransaction,
     onTxClick,
-}: YieldPendingTransactionProps) => {
-    const txidComponent = (
-        <Address
-            isTruncated
-            isChunked={false}
-            value={pendingTransaction.txid}
-            intent="brand"
-            typographyStyle="body-md"
-        />
-    );
-
-    return (
-        <Column width="100%" alignItems="flex-start">
-            <Row alignItems="flex-start" gap={12}>
-                <Spinner size={20} />
-
-                <Column>
-                    <Paragraph
-                        typographyStyle="body-md"
-                        intent="neutral"
-                        priority="secondary"
-                        align="start"
-                    >
-                        <Translation id={getPendingTransactionLabel(pendingTransaction.type)} />
-                    </Paragraph>
-
-                    <Row gap={4} flexWrap="wrap" alignItems="center">
-                        <Paragraph
-                            typographyStyle="body-md"
-                            intent="neutral"
-                            priority="secondary"
-                            align="start"
-                        >
-                            <Translation id="TR_EXCHANGE_APPROVAL_FORM_TRANSACTION_ID" />
-                        </Paragraph>
-
-                        {onTxClick ? (
-                            <Link onClick={() => onTxClick(pendingTransaction.txid)}>
-                                {txidComponent}
-                            </Link>
-                        ) : (
-                            txidComponent
-                        )}
-                    </Row>
-                </Column>
-            </Row>
-        </Column>
-    );
-};
+}: YieldPendingTransactionProps) => (
+    <PendingTransactionInfo
+        title={<Translation id={getPendingTransactionLabel(pendingTransaction.type)} />}
+        txidLabel={<Translation id="TR_EXCHANGE_APPROVAL_FORM_TRANSACTION_ID" />}
+        txidComponent={
+            <Address
+                isTruncated
+                isChunked={false}
+                value={pendingTransaction.txid}
+                intent="brand"
+                typographyStyle="body-md"
+            />
+        }
+        onTxClick={() => onTxClick(pendingTransaction.txid)}
+    />
+);

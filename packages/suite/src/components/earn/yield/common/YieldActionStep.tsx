@@ -33,7 +33,7 @@ export type YieldActionStepProps = {
     pendingTransaction?: YieldPendingTransactionState;
     onMaxClick?: () => void;
     onSubmit: () => void;
-    onPendingTxClick?: (txid: string) => void;
+    onPendingTxClick: (txid: string) => void;
 };
 
 export const YieldActionStep = ({

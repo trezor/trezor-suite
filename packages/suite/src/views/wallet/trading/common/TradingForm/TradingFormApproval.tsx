@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import styled, { type DefaultTheme, keyframes } from 'styled-components';
+import styled, { type DefaultTheme } from 'styled-components';
 
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
@@ -13,7 +13,8 @@ import {
     useTradingUtils,
 } from '@suite-common/trading';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
-import { Banner, Button, Column, Icon, Link, Paragraph, Row } from '@trezor/components';
+import { Banner, Button, Column } from '@trezor/components';
+import { PendingTransactionInfo } from '@trezor/product-components';
 
 import { Address } from 'src/components/suite/Address';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -31,26 +32,6 @@ const TextButton = styled.div<{ $disabled: boolean }>`
         color: ${({ theme, $disabled }) =>
             $disabled ? theme.contentDisabled : theme['contentBrandPressed' as keyof DefaultTheme]};
     }
-`;
-
-const loadingAnimation = keyframes`
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
-`;
-
-const IconWrapper = styled.div`
-    background-color: inherit;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transform: translateY(2px);
-
-    animation: ${loadingAnimation} 1s linear infinite;
 `;
 
 export const TradingFormApproval = () => {
@@ -355,66 +336,45 @@ export const TradingFormApproval = () => {
             )}
 
             {approvalStep === 'LOADING' && (
-                <Column width="100%" alignItems="flex-start">
-                    <Row alignItems="flex-start" gap={12}>
-                        <IconWrapper>
-                            <Icon name="spinnerGap" size={20} />
-                        </IconWrapper>
-
-                        <Column>
-                            <Paragraph
+                <PendingTransactionInfo
+                    title={
+                        <Translation
+                            id={
+                                allowanceState.approvalType === 'APPROVE'
+                                    ? 'TR_EXCHANGE_APPROVAL_FORM_CONFIRMING_APPROVAL'
+                                    : 'TR_EXCHANGE_APPROVAL_FORM_REVOKING_APPROVAL'
+                            }
+                        />
+                    }
+                    txidLabel={<Translation id="TR_EXCHANGE_APPROVAL_FORM_TRANSACTION_ID" />}
+                    txidComponent={
+                        tx.approvalTxid ? (
+                            <Address
+                                isTruncated
+                                value={tx.approvalTxid}
+                                intent="brand"
                                 typographyStyle="body-md"
-                                intent="neutral"
-                                priority="secondary"
-                                align="start"
-                            >
-                                <Translation
-                                    id={
-                                        allowanceState.approvalType === 'APPROVE'
-                                            ? 'TR_EXCHANGE_APPROVAL_FORM_CONFIRMING_APPROVAL'
-                                            : 'TR_EXCHANGE_APPROVAL_FORM_REVOKING_APPROVAL'
-                                    }
-                                />
-                            </Paragraph>
-
-                            <Paragraph
-                                typographyStyle="body-md"
-                                intent="neutral"
-                                priority="secondary"
-                                align="start"
-                            >
-                                <Translation id="TR_EXCHANGE_APPROVAL_FORM_TRANSACTION_ID" />
-                            </Paragraph>
-
-                            {tx.approvalTxid && (
-                                <Link
-                                    onClick={() => {
-                                        const txid = tx.approvalTxid;
-                                        if (txid) {
-                                            dispatch(
-                                                openModal({
-                                                    type: 'transaction-detail',
-                                                    txid,
-                                                    descriptor: account.descriptor,
-                                                    symbol: account.symbol,
-                                                    deviceState: account.deviceState,
-                                                    flow: 'detail',
-                                                }),
-                                            );
-                                        }
-                                    }}
-                                >
-                                    <Address
-                                        isTruncated
-                                        value={tx.approvalTxid}
-                                        intent="brand"
-                                        typographyStyle="body-md"
-                                    />
-                                </Link>
-                            )}
-                        </Column>
-                    </Row>
-                </Column>
+                            />
+                        ) : (
+                            <Translation id="TR_UNKNOWN" />
+                        )
+                    }
+                    onTxClick={
+                        tx.approvalTxid
+                            ? () =>
+                                  dispatch(
+                                      openModal({
+                                          type: 'transaction-detail',
+                                          txid: tx.approvalTxid!,
+                                          descriptor: account.descriptor,
+                                          symbol: account.symbol,
+                                          deviceState: account.deviceState,
+                                          flow: 'detail',
+                                      }),
+                                  )
+                            : undefined
+                    }
+                />
             )}
         </Column>
     );
