@@ -30,10 +30,6 @@ const transform = (fieldType: string, value: any) => {
     if (typeof value === 'number' && !Number.isSafeInteger(value)) {
         throw new RangeError('field value is not within safe integer range');
     }
-    // https://satoshilabs.slack.com/archives/C078GRAK58U/p1756471857417049
-    if (fieldType === 'string' && typeof value === 'string') {
-        value = value.replace(/[’‘]/g, "'");
-    }
 
     return value;
 };
