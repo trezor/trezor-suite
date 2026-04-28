@@ -13,6 +13,7 @@ type Options = WebsocketOptions & {
     pingTimeout?: number;
     connectionTimeout?: number;
     keepAlive?: boolean;
+    concurrency?: number;
     onSending?: (message: Record<string, any>) => void;
 };
 
@@ -104,12 +105,23 @@ export class WebsocketClient<Events extends Record<string, any>> extends TypedEm
         this.onClose();
     }
 
-    sendMessage(message: WebsocketRequest, { timeout }: { timeout?: number } = {}) {
+    async sendMessage(message: WebsocketRequest, { timeout }: { timeout?: number } = {}) {
         const { ws } = this;
         if (!ws || !this.isConnected()) throw new WebsocketError('websocket_not_initialized');
-        const { promiseId, promise } = this.messages.create(timeout);
 
-        const req = { id: promiseId.toString(), ...message };
+        let promise;
+        if (this.options.concurrency) {
+            promise = await this.messages.createConcurrent(this.options.concurrency, timeout);
+
+            if (!ws || !this.isConnected()) {
+                this.messages.resolve(promise.promiseId, undefined);
+                throw new WebsocketError('websocket_not_initialized');
+            }
+        } else {
+            promise = this.messages.create(timeout);
+        }
+
+        const req = { id: promise.promiseId.toString(), ...message };
 
         this.setPingTimeout();
 
@@ -117,7 +129,7 @@ export class WebsocketClient<Events extends Record<string, any>> extends TypedEm
 
         ws.send(JSON.stringify(req));
 
-        return promise;
+        return promise.promise;
     }
 
     protected sendRawMessage(message: WebSocket.Data) {
