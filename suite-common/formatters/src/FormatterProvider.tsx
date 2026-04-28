@@ -7,6 +7,7 @@ import type { SignValue } from '@suite-common/suite-types';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { BaseCurrencyAmount } from '@suite-common/wallet-types';
 
+import { AddressFormatter, type AddressFormatterDataContext } from './formatters/AddressFormatter';
 import { NetworkNameFormatter } from './formatters/NetworkNameFormatter';
 import { SignValueFormatter } from './formatters/SignValueFormatter';
 import {
@@ -35,6 +36,7 @@ type FormatterProviderProps = {
 };
 
 export type Formatters = {
+    AddressFormatter: Formatter<string, string, AddressFormatterDataContext>;
     CryptoAmountFormatter: Formatter<
         CryptoAmountFormatterInputValue,
         string,
@@ -65,6 +67,7 @@ export const getFormatters = (config: FormatterConfig): Formatters => {
     const DateTimeFormatter = prepareDateTimeFormatter(config);
 
     return {
+        AddressFormatter,
         CryptoAmountFormatter,
         DisplaySymbolFormatter,
         NetworkNameFormatter,

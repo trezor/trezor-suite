@@ -1,7 +1,7 @@
 import { A, S, pipe } from '@mobily/ts-belt';
 import { type RequireAllOrNone } from 'type-fest';
 
-import { splitAddressToChunks } from '@suite-native/helpers';
+import { AddressFormatter } from '@suite-common/formatters';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { type DevicePaginationActivePage } from './types';
@@ -19,6 +19,13 @@ const filterAddressChunksByPagination = (
     }
 
     return [paginationEmptyChunk, ...A.sliceToEnd(addressChunks, 15)];
+};
+
+const padFirstAddressChunk = (addressChunks: readonly string[]): readonly string[] => {
+    const firstChunk = addressChunks[0];
+    if (!firstChunk || firstChunk.length >= 4) return addressChunks;
+
+    return [firstChunk.padStart(4, ' '), ...addressChunks.slice(1)];
 };
 
 export const parseAddressToDeviceLines = ({
@@ -48,13 +55,10 @@ export const parseAddressToDeviceLines = ({
     }
 
     return pipe(
-        address,
-        splitAddressToChunks,
-        addressChunks => {
-            if (!isPaginationEnabled) return addressChunks;
-
-            return filterAddressChunksByPagination(addressChunks, activePage);
-        },
+        AddressFormatter.format(address, { format: 'full' }).split(' '),
+        padFirstAddressChunk,
+        chunks =>
+            isPaginationEnabled ? filterAddressChunksByPagination(chunks, activePage) : chunks,
         A.splitEvery(4),
         A.map(A.join(' ')),
     );
