@@ -4,6 +4,7 @@ import type { Formatters } from '@suite-common/formatters';
 import type {
     TradingAmountLimitProps,
     TradingCountryOption,
+    TradingCountrySubdivisionOption,
     TradingTradeType,
 } from '@suite-common/trading';
 import type { NetworkSymbol, NetworkSymbolExtended } from '@suite-common/wallet-config';
@@ -68,6 +69,7 @@ export type FormWithFiatCurrencyValues = {
     fiatCurrency: FiatCurrencyCode;
     amountInCrypto: boolean;
     country: TradingCountryOption;
+    countrySubdivision?: TradingCountrySubdivisionOption;
 };
 
 export type QuotesCategory = 'fixed' | 'float' | 'dex';

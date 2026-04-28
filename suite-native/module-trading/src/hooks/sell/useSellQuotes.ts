@@ -31,6 +31,7 @@ type ShouldFetchSellQuotesRef = {
     amountInCrypto: boolean | undefined;
     fiatCurrency: string | undefined;
     country: string | undefined;
+    countrySubdivision: string | undefined;
     accountDescriptor: string | undefined;
 };
 
@@ -40,6 +41,7 @@ const defaultState: ShouldFetchSellQuotesRef = {
     amountInCrypto: true,
     fiatCurrency: undefined,
     country: undefined,
+    countrySubdivision: undefined,
     accountDescriptor: undefined,
 } as const;
 
@@ -67,15 +69,23 @@ const useShouldFetchSellQuotes = ({ watch, control }: SellFormType): ShouldFetch
         }
     }
 
-    const [sendAsset, sendAccount, cryptoStringAmount, fiatStringAmount, fiatCurrency, country] =
-        watch([
-            'sendAsset',
-            'sendAccount',
-            'cryptoStringAmount',
-            'fiatStringAmount',
-            'fiatCurrency',
-            'country',
-        ]);
+    const [
+        sendAsset,
+        sendAccount,
+        cryptoStringAmount,
+        fiatStringAmount,
+        fiatCurrency,
+        country,
+        countrySubdivision,
+    ] = watch([
+        'sendAsset',
+        'sendAccount',
+        'cryptoStringAmount',
+        'fiatStringAmount',
+        'fiatCurrency',
+        'country',
+        'countrySubdivision',
+    ]);
 
     const amount = amountInCrypto ? cryptoStringAmount : fiatStringAmount;
     const isFetchAllowed = !!(sendAsset && fiatCurrency && amount && parseFloat(amount) > 0);
@@ -86,6 +96,7 @@ const useShouldFetchSellQuotes = ({ watch, control }: SellFormType): ShouldFetch
         amountInCrypto === prevState.current.amountInCrypto &&
         fiatCurrency === prevState.current.fiatCurrency &&
         country?.value === prevState.current.country &&
+        countrySubdivision?.value === prevState.current.countrySubdivision &&
         sendAccount?.descriptor === prevState.current.accountDescriptor
     ) {
         return {
@@ -100,6 +111,7 @@ const useShouldFetchSellQuotes = ({ watch, control }: SellFormType): ShouldFetch
         amountInCrypto,
         fiatCurrency,
         country: country?.value,
+        countrySubdivision: countrySubdivision?.value,
         accountDescriptor: sendAccount?.descriptor,
     };
 

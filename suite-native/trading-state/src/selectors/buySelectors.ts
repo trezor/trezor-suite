@@ -23,8 +23,11 @@ import {
 } from '@suite-native/trading-atoms';
 import { type BuyFormValues, type FiatCurrencyItem } from '@suite-native/trading-types';
 
-import { getAssetByEnabledNetworksFilter } from '../utils';
-import { selectTradingResidenceCountry } from './residenceSelectors';
+import { getAssetByEnabledNetworksFilter, getDefaultCountrySubdivision } from '../utils';
+import {
+    selectTradingResidenceCountry,
+    selectTradingResidenceCountrySubdivision,
+} from './residenceSelectors';
 import {
     type TradingRootState,
     createMemoizedSelector,
@@ -85,8 +88,9 @@ export const selectBuyFormDefaultValues = createMemoizedSelector(
         ) => ReturnType<typeof selectTradingBuyInfo>,
         ({ wallet }) => wallet.trading.info.coins,
         selectTradingResidenceCountry,
+        selectTradingResidenceCountrySubdivision,
     ],
-    (buyInfo, coins, residenceCountry) => {
+    (buyInfo, coins, residenceCountry, residenceCountrySubdivision) => {
         if (!buyInfo || !coins) {
             return {} as Partial<BuyFormValues>;
         }
@@ -98,9 +102,15 @@ export const selectBuyFormDefaultValues = createMemoizedSelector(
         const countryDefaultValue =
             nonSanctionedRegional.getCountryOptionWithWorldwideFallback(country);
 
+        const countrySubdivisionDefaultValue = getDefaultCountrySubdivision(
+            countryDefaultValue.value,
+            residenceCountrySubdivision,
+        );
+
         return {
             fiatCurrency: fiatCurrency.toLowerCase(),
             country: countryDefaultValue,
+            countrySubdivision: countrySubdivisionDefaultValue,
             amountInCrypto: false,
         } as Partial<BuyFormValues>;
     },

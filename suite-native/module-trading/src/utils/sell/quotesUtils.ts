@@ -7,15 +7,23 @@ import { isBaseCurrencyCode } from '@trezor/blockchain-link-types';
 export const tradingSellFormToTradingSellFormProps = (
     getValues: SellFormType['getValues'],
 ): MinimalSellFormProps => {
-    const [amountInCrypto, fiatStringAmount, cryptoStringAmount, fiatCurrency, sendAsset, country] =
-        getValues([
-            'amountInCrypto',
-            'fiatStringAmount',
-            'cryptoStringAmount',
-            'fiatCurrency',
-            'sendAsset',
-            'country',
-        ]);
+    const [
+        amountInCrypto,
+        fiatStringAmount,
+        cryptoStringAmount,
+        fiatCurrency,
+        sendAsset,
+        country,
+        countrySubdivision,
+    ] = getValues([
+        'amountInCrypto',
+        'fiatStringAmount',
+        'cryptoStringAmount',
+        'fiatCurrency',
+        'sendAsset',
+        'country',
+        'countrySubdivision',
+    ]);
 
     invariant(sendAsset, 'sendAsset is required');
     invariant(!amountInCrypto || cryptoStringAmount, 'cryptoStringAmount is required');
@@ -38,6 +46,7 @@ export const tradingSellFormToTradingSellFormProps = (
         outputs,
         amountInCrypto,
         countrySelect: country,
+        countrySubdivisionSelect: countrySubdivision,
         sendCryptoSelect: { id: sendAsset.cryptoId },
     };
 };
