@@ -2691,12 +2691,7 @@
         {
             "blockchain_link": {
                 "type": "solana",
-                "url": [
-                    "https://sol1.trezor.io",
-                    "https://sol2.trezor.io",
-                    "https://sol3.trezor.io",
-                    "https://sol4.trezor.io"
-                ]
+                "url": ["https://sol.trezor.io"]
             },
             "curve": "ed25519",
             "decimals": 9,
