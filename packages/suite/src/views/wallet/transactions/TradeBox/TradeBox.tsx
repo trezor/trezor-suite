@@ -44,6 +44,18 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
     }) => {
         const gotoRouteName: Route['name'] =
             type === 'stake' ? 'wallet-staking' : `wallet-trading-${type}`;
+        const gotoProps =
+            type === 'stake'
+                ? {
+                      routeName: gotoRouteName,
+                      preserveParams: true,
+                      params: {
+                          symbol: account.symbol,
+                          accountIndex: account.index,
+                          accountType: account.accountType,
+                      },
+                  }
+                : { routeName: gotoRouteName };
         const dataTestId = type === 'stake' ? undefined : `@trading/menu/wallet-trading-${type}`;
 
         const handleOnClick = () => {
@@ -53,7 +65,7 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
                 ),
             );
 
-            dispatch(goto({ routeName: gotoRouteName }));
+            dispatch(goto(gotoProps));
 
             switch (type) {
                 case 'buy':
