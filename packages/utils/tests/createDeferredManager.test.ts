@@ -80,4 +80,51 @@ describe('createDeferredManager', () => {
         expect(onTimeout).toHaveBeenCalledTimes(1);
         expect(onTimeout).toHaveBeenCalledWith(third.promiseId);
     });
+
+    it('concurrency', async () => {
+        const manager = createDeferredManager<void>();
+
+        const first = manager.create();
+        const secondPromise = manager.createConcurrent(2);
+        const thirdPromise = manager.createConcurrent(2);
+
+        let secondSettled = false;
+        secondPromise.then(() => {
+            secondSettled = true;
+        });
+
+        let thirdSettled = false;
+        thirdPromise.then(() => {
+            thirdSettled = true;
+        });
+
+        await Promise.resolve();
+
+        expect(manager.length()).toBe(2);
+        expect(secondSettled).toBe(true);
+        expect(thirdSettled).toBe(false);
+
+        manager.resolve(first.promiseId);
+
+        await first.promise;
+
+        await Promise.resolve();
+
+        expect(manager.length()).toBe(2);
+        expect(secondSettled).toBe(true);
+        expect(thirdSettled).toBe(true);
+
+        const fourth = manager.create();
+
+        expect(manager.length()).toBe(3);
+
+        const second = await secondPromise;
+        const third = await thirdPromise;
+
+        manager.resolve(second.promiseId);
+        manager.resolve(third.promiseId);
+        manager.resolve(fourth.promiseId);
+
+        expect(manager.length()).toBe(0);
+    });
 });
