@@ -5,7 +5,6 @@ import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/t
 import { getNetwork } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
-import { isNative } from '@trezor/env-utils';
 
 import { sellThunks } from '../';
 import { invityAPI } from '../../../invityAPI';
@@ -23,19 +22,9 @@ import {
 } from '../../../types';
 import { sellUtilsFixtures } from '../../../utils/sell/__fixtures__/sellUtils';
 
-jest.mock('@trezor/env-utils', () => ({
-    ...jest.requireActual('@trezor/env-utils'),
-    isNative: jest.fn(),
-}));
-
 const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
-const mockedIsNative = isNative as jest.Mock;
 
 describe('handleSellRequestThunk', () => {
-    beforeEach(() => {
-        mockedIsNative.mockReturnValue(false);
-    });
-
     afterEach(() => {
         jest.clearAllMocks();
     });
@@ -304,53 +293,6 @@ describe('handleSellRequestThunk', () => {
             fiatCurrency: 'USD',
             country: 'US',
             subdivision: 'CA',
-            cryptoStringAmount: '0.0015',
-            fiatStringAmount: '50',
-            flows: ['BANK_ACCOUNT', 'PAYMENT_GATE'],
-        });
-        expect(state.isLoading).toBe(false);
-    });
-
-    it('should request sell quotes for US without subdivision on native', async () => {
-        const { input, store } = getMocks();
-        const mockQuotes = sellUtilsFixtures.MIN_MAX_QUOTES_OK.map(quote => ({
-            ...quote,
-            orderId: undefined,
-        }));
-
-        mockedIsNative.mockReturnValue(true);
-
-        invityAPI.getSellQuotes = () => Promise.resolve(mockQuotes);
-
-        const quotesResponse = await store
-            .dispatch(
-                sellThunks.handleRequestThunk({
-                    ...input,
-                    formValues: {
-                        ...input.formValues,
-                        countrySelect: {
-                            value: 'US' as const,
-                            codeAlpha3: 'USA',
-                            flag: '🇺🇸',
-                            name: 'United States of America',
-                            label: '🇺🇸 United States',
-                            shortLabel: '🇺🇸 USA',
-                        },
-                        countrySubdivisionSelect: undefined,
-                    },
-                }),
-            )
-            .unwrap();
-
-        const state = store.getState().wallet.trading;
-
-        expect(state.sell.quotes.length).toEqual(1);
-        expect(quotesResponse?.length).toEqual(1);
-        expect(state.sell.quotesRequest).toEqual({
-            amountInCrypto: true,
-            cryptoCurrency: 'bitcoin',
-            fiatCurrency: 'USD',
-            country: 'US',
             cryptoStringAmount: '0.0015',
             fiatStringAmount: '50',
             flows: ['BANK_ACCOUNT', 'PAYMENT_GATE'],
