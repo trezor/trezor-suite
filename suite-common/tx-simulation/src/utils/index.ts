@@ -30,12 +30,20 @@ function resolveChainIdOfEvmNetwork({
 }
 
 /**
- * Get network based on the chainId from the payload, default to Ethereum mainnet
+ * Get network based on the tx simulation action, default to Ethereum mainnet.
  */
-export function getNetworkFromTxSimulationAction(action: TxSimulationAction): Network {
-    const chainId = resolveChainIdOfEvmNetwork(action);
+export function getNetworkFromTxSimulationAction(action: TxSimulationAction): Network | null {
+    switch (action.method) {
+        case 'ethereumSignTransaction':
+        case 'ethereumSignTypedData': {
+            const chainId = resolveChainIdOfEvmNetwork(action);
 
-    return getNetworkByEvmChainId(chainId) ?? networks.eth;
+            return getNetworkByEvmChainId(chainId) ?? null;
+        }
+
+        default:
+            return null;
+    }
 }
 
 export const getSimulationErrorRiskLevel = (message: string) => {
@@ -45,3 +53,12 @@ export const getSimulationErrorRiskLevel = (message: string) => {
 
     return 'error';
 };
+
+export function areTxSimulationMethods<
+    const Methods extends ReadonlyArray<TxSimulationAction['method']>,
+>(
+    supportedMethods: Methods,
+    methodToVerify?: TxSimulationAction['method'],
+): methodToVerify is Methods[number] {
+    return methodToVerify ? supportedMethods.includes(methodToVerify) : false;
+}
