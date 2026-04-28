@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { AnimatePresence, motion } from 'framer-motion';
 
@@ -13,6 +13,7 @@ import {
     Icon,
     Image,
     Input,
+    Note,
     Row,
     Text,
     Tooltip,
@@ -44,6 +45,14 @@ const getErrorMessage = (isPassphraseTooLong: boolean, isUsingNonAsciiCharacters
     return null;
 };
 
+const heightFadeMotionProps = {
+    initial: { height: 0, opacity: 0 },
+    animate: { height: 'auto', opacity: 1 },
+    exit: { height: 0, opacity: 0 },
+    transition: { duration: 0.2, ease: motionEasing.transition },
+    style: { overflow: 'hidden' as const },
+};
+
 export const PassphraseInputCard = ({
     deviceModel,
     isLoading,
@@ -56,6 +65,8 @@ export const PassphraseInputCard = ({
     const modal = useSelector(state => state.modal);
     const [internalValue, setInternalValue] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+    const [isFocused, setIsFocused] = useState(false);
+    const [isCapsLockOn, setIsCapsLockOn] = useState(false);
     const { translationString } = useTranslation();
     const value = externalValue ?? internalValue;
     const setValue = setExternalValue ?? setInternalValue;
@@ -69,6 +80,25 @@ export const PassphraseInputCard = ({
         ? false
         : getNonAsciiChars(value) !== null;
     const errorMessage = getErrorMessage(isPassphraseTooLong, isUsingNonAsciiCharacters);
+    const showCapsLockHint = isCapsLockOn && !errorMessage;
+
+    useEffect(() => {
+        if (!isFocused) {
+            setIsCapsLockOn(false);
+
+            return;
+        }
+
+        const handler = (event: KeyboardEvent) => {
+            setIsCapsLockOn(event.getModifierState('CapsLock'));
+        };
+
+        window.addEventListener('keydown', handler);
+
+        return () => {
+            window.removeEventListener('keydown', handler);
+        };
+    }, [isFocused]);
 
     const submit = useCallback(
         (value2: string, passphraseOnDevice?: boolean) => {
@@ -117,6 +147,9 @@ export const PassphraseInputCard = ({
                             data-testid="@passphrase/input"
                             placeholder={translationString('TR_ENTER_PASSPHRASE')}
                             onChange={e => setValue(e.target.value)}
+                            onFocus={() => setIsFocused(true)}
+                            onBlur={() => setIsFocused(false)}
+                            onMouseDown={e => setIsCapsLockOn(e.getModifierState('CapsLock'))}
                             // eslint-disable-next-line jsx-a11y/no-autofocus
                             autoFocus={!isAndroid()}
                             isMasked={!showPassword}
@@ -136,18 +169,20 @@ export const PassphraseInputCard = ({
                         />
                         <AnimatePresence initial={false}>
                             {value && !errorMessage && (
-                                <motion.div
-                                    initial={{ height: 0, opacity: 0 }}
-                                    animate={{ height: 'auto', opacity: 1 }}
-                                    exit={{ height: 0, opacity: 0 }}
-                                    transition={{
-                                        duration: 0.2,
-                                        ease: motionEasing.transition,
-                                    }}
-                                    style={{ overflow: 'hidden' }}
-                                >
-                                    <Box padding={{ top: spacings.xs }}>
+                                <motion.div {...heightFadeMotionProps}>
+                                    <Box padding={{ top: 8 }}>
                                         <PasswordStrengthIndicator password={value} />
+                                    </Box>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                        <AnimatePresence initial={false}>
+                            {showCapsLockHint && (
+                                <motion.div {...heightFadeMotionProps}>
+                                    <Box padding={{ top: 8 }}>
+                                        <Note>
+                                            <Translation id="TR_PASSPHRASE_CAPS_LOCK_ON" />
+                                        </Note>
                                     </Box>
                                 </motion.div>
                             )}
