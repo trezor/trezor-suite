@@ -9,6 +9,7 @@ import { createDeferred } from '@trezor/utils';
 import { abortThpWorkflow, thpCall } from './thpCall';
 import { DataManager } from '../../data/DataManager';
 import type { IDevice } from '../../types/idevice';
+import { sanitizeString } from '../../utils/formatUtils';
 
 const processQrCodeTag = async (device: IDevice, value: string) => {
     const thpState = device.getThpState();
@@ -283,8 +284,8 @@ export const thpPairing = async (device: IDevice) => {
     // ThpPairingRequest will trigger ButtonRequest.thp_pairing_request flow
     const settings = DataManager.getSettings('thp');
     await thpCall(device, 'ThpPairingRequest', {
-        host_name: settings?.hostName || 'Unknown hostName',
-        app_name: settings?.appName || 'Unknown appName',
+        host_name: sanitizeString(settings?.hostName) || 'Unknown hostName',
+        app_name: sanitizeString(settings?.appName) || 'Unknown appName',
     });
 
     // State HP1

@@ -70,3 +70,12 @@ type DeepTransformed<T, V> = T extends string
       : T extends object
         ? { [K in keyof T]: DeepTransformed<T[K], V> }
         : T;
+
+export const sanitizeString = (value?: string) => {
+    // replace special chars ’‘ displayed on Trezor
+    // https://github.com/trezor/trezor-suite/pull/21835
+    // https://satoshilabs.slack.com/archives/C078GRAK58U/p1756471857417049
+    if (typeof value === 'string') {
+        return value.replace(/[\u2018\u2019]/g, "'");
+    }
+};
