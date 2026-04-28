@@ -95,6 +95,7 @@ import {
     DebugLinkOptigaSetSecMax,
     DebugLinkPairingInfo,
     DebugLinkResetDebugEvents,
+    DebugLinkSetBatteryState,
     DebugLinkSetLogFilter,
 } from './messages-debug';
 import {
@@ -454,6 +455,7 @@ export const MessageType = Type.Object(
         SerialNumber,
         DebugLinkGetPairingInfo,
         DebugLinkPairingInfo,
+        DebugLinkSetBatteryState,
         DebugLinkResetDebugEvents,
         DebugLinkOptigaSetSecMax,
         DebugLinkGetGcInfo,

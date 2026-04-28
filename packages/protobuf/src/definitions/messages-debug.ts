@@ -115,6 +115,20 @@ export const DebugLinkPairingInfo = Type.Object(
 export type DebugLinkResetDebugEvents = Static<typeof DebugLinkResetDebugEvents>;
 export const DebugLinkResetDebugEvents = Type.Object({}, { $id: 'DebugLinkResetDebugEvents' });
 
+export type DebugLinkSetBatteryState = Static<typeof DebugLinkSetBatteryState>;
+export const DebugLinkSetBatteryState = Type.Object(
+    {
+        soc: Type.Optional(Type.Number()),
+        usb_connected: Type.Optional(Type.Boolean()),
+        wireless_connected: Type.Optional(Type.Boolean()),
+        ntc_connected: Type.Optional(Type.Boolean()),
+        charging_limited: Type.Optional(Type.Boolean()),
+        temp_control_active: Type.Optional(Type.Boolean()),
+        battery_connected: Type.Optional(Type.Boolean()),
+    },
+    { $id: 'DebugLinkSetBatteryState' },
+);
+
 export type DebugLinkSetLogFilter = Static<typeof DebugLinkSetLogFilter>;
 export const DebugLinkSetLogFilter = Type.Object(
     {
