@@ -14899,6 +14899,7 @@ __metadata:
     "@suite/intl": "workspace:*"
     "@suite/onboarding-components": "workspace:*"
     "@trezor/components": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
     react: "npm:19.2.4"
     styled-components: "npm:^6.3.9"
   languageName: unknown

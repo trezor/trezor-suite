@@ -1,3 +1,6 @@
+import styled from 'styled-components';
+
+import { hasNonWordlistBackup, isBackupComplete } from '@suite/backup';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { selectIsN4w1BackupEnabled } from '@suite/settings';
@@ -7,21 +10,24 @@ import { HELP_CENTER_MULTI_SHARE_BACKUP_URL } from '@trezor/urls';
 import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 
-interface CreateWalletBackupProps {
+const DisabledWrapper = styled.div<{ $isDisabled: boolean }>`
+    opacity: ${({ $isDisabled }) => ($isDisabled ? 0.5 : 1)};
+`;
+
+type CreateWalletBackupProps = {
     isDeviceLocked: boolean;
-}
+};
 
 export const CreateWalletBackup = ({ isDeviceLocked }: CreateWalletBackupProps) => {
     const { device } = useDevice();
     const dispatch = useDispatch();
     const isN4w1BackupEnabled = useSelector(selectIsN4w1BackupEnabled);
 
-    const isBackupDone = device?.features?.backup_availability === 'NotAvailable';
-    // BIP39 wordlist backups can't be extended — only SLIP39 variants support additional backups.
-    const hasNonWordlistBackup =
-        device?.features?.backup_type != null && device.features.backup_type !== 'Bip39';
+    const features = device?.features;
+    const isBackupDone = features !== undefined && isBackupComplete(features);
+    const canExtendBackup = features !== undefined && hasNonWordlistBackup(features);
 
-    if (!isN4w1BackupEnabled || !hasNonWordlistBackup) {
+    if (!isN4w1BackupEnabled || !canExtendBackup) {
         return null;
     }
 
@@ -32,23 +38,27 @@ export const CreateWalletBackup = ({ isDeviceLocked }: CreateWalletBackupProps) 
     };
 
     return (
-        <SectionItem style={!isBackupDone ? { opacity: 0.5 } : undefined}>
-            <TextColumn
-                title={<Translation id="TR_CREATE_NEW_WALLET_BACKUP" />}
-                description={<Translation id="TR_CREATE_NEW_WALLET_BACKUP_DESCRIPTION" />}
-                bottomContent={<LearnMoreButton url={HELP_CENTER_MULTI_SHARE_BACKUP_URL} />}
-            />
-            <ActionColumn>
-                <ActionButton
-                    intent="brand"
-                    onClick={handleClick}
-                    isDisabled={isActionDisabled}
-                    isTooltipActive={isDeviceLocked}
-                    tooltipContent={<Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />}
-                >
-                    <Translation id="TR_CREATE_NEW_WALLET_BACKUP" />
-                </ActionButton>
-            </ActionColumn>
-        </SectionItem>
+        <DisabledWrapper $isDisabled={!isBackupDone}>
+            <SectionItem>
+                <TextColumn
+                    title={<Translation id="TR_CREATE_NEW_WALLET_BACKUP" />}
+                    description={<Translation id="TR_CREATE_NEW_WALLET_BACKUP_DESCRIPTION" />}
+                    bottomContent={<LearnMoreButton url={HELP_CENTER_MULTI_SHARE_BACKUP_URL} />}
+                />
+                <ActionColumn>
+                    <ActionButton
+                        intent="brand"
+                        onClick={handleClick}
+                        isDisabled={isActionDisabled}
+                        isTooltipActive={isDeviceLocked}
+                        tooltipContent={
+                            <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
+                        }
+                    >
+                        <Translation id="TR_CREATE_NEW_WALLET_BACKUP" />
+                    </ActionButton>
+                </ActionColumn>
+            </SectionItem>
+        </DisabledWrapper>
     );
 };

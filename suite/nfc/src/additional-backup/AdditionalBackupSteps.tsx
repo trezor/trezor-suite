@@ -1,6 +1,7 @@
 import { Translation } from '@suite/intl';
 import { BulletList, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+import { exhaustive } from '@trezor/type-utils';
 
 type AdditionalBackupStep = 'verify-ownership' | 'backup';
 
@@ -10,10 +11,14 @@ type AdditionalBackupStepsProps = {
 
 export const AdditionalBackupSteps = ({ step }: AdditionalBackupStepsProps) => {
     const getVerifyState = () => {
-        if (step === 'backup') return 'done';
-        if (step === 'verify-ownership') return 'active';
-
-        return 'pending';
+        switch (step) {
+            case 'backup':
+                return 'done';
+            case 'verify-ownership':
+                return 'active';
+            default:
+                return exhaustive(step);
+        }
     };
 
     return (
