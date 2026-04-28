@@ -1,3 +1,5 @@
+const path = require('path');
+
 const version = require('./package.json').suiteVersion;
 const baseConfig = require('../../jest.config.base');
 
@@ -17,6 +19,7 @@ const babelConfig = {
             },
         ],
     ],
+    plugins: [path.resolve(__dirname, './jest.transformImportMetaUrlPlugin.js')],
 };
 
 /**
