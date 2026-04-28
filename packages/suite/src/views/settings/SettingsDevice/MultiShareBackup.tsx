@@ -2,6 +2,7 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
+import { selectIsN4w1BackupEnabled } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
@@ -33,11 +34,12 @@ export const MultiShareBackup = ({ isDeviceLocked }: { isDeviceLocked: boolean }
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const device = useSelector(selectSelectedDevice);
     const dispatch = useDispatch();
+    const isN4w1BackupEnabled = useSelector(selectIsN4w1BackupEnabled);
 
     // "NotAvailable" means, that backup has been already done and thus is not available.
     const isBackupDone = device?.features?.backup_availability === 'NotAvailable';
 
-    if (!doesSupportMultiShare(device) || !isBackupDone) {
+    if (isN4w1BackupEnabled || !doesSupportMultiShare(device) || !isBackupDone) {
         return;
     }
 
