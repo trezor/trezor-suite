@@ -466,6 +466,7 @@ class BlockbookWorker extends BaseWorker<BlockbookAPI> {
             pingTimeout,
             keepAlive,
             agent: this.proxyAgent,
+            concurrency: 42,
         });
         await api.connect();
 
