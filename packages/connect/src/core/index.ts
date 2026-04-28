@@ -42,7 +42,7 @@ import { initializeFirmwareConfig } from '../data/firmwareInfo';
 import type { Device, DeviceEvents } from '../device/Device';
 import type { IDeviceList } from '../device/DeviceList';
 import { DeviceList, assertDeviceListConnected } from '../device/DeviceList';
-import * as workflows from '../device/workflow';
+import { validateState } from '../device/workflow/validateState';
 import { createUiPromiseManager } from '../utils/uiPromiseManager';
 
 // custom log
@@ -135,7 +135,7 @@ const inner = async (context: CoreContext, method: AbstractMethod<any>, device: 
 
     // Make sure that device will display pin/passphrase
     if (method.useDeviceState) {
-        await workflows.validateState({
+        await validateState({
             device,
             method,
             signal: context.signal,
