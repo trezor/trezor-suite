@@ -175,7 +175,7 @@ export function useMerkleRewards(yieldAccountOpportunities: YieldAccountOpportun
             (result, rewards) =>
                 result.plus(
                     rewards.reduce(
-                        (acc, reward) => acc.plus(reward.pendingFiat ?? '0'),
+                        (acc, reward) => acc.plus(reward.amountFiat ?? '0'),
                         new BigNumber(0),
                     ),
                 ),
