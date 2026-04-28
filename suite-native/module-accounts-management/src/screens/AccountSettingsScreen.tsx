@@ -102,7 +102,7 @@ export const AccountSettingsScreen = ({
                             >
                                 <CryptoNameWithIcon symbol={account.symbol} />
                             </AccountDetailSettingsRow>
-                            {formattedAccountType && (
+                            {!!formattedAccountType && (
                                 <AccountDetailSettingsRow
                                     title={
                                         <Translation id="moduleAccountManagement.accountSettingsScreen.accountType" />

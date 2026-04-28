@@ -44,6 +44,7 @@ const buildPreloadedState = (account: ReturnType<typeof mockWalletAccount>) => (
     },
     suiteSyncData: { wallets: {} },
     wallet: { accounts: [account] },
+    suiteSync: { settings: {} },
 });
 
 describe('AccountSettingsScreen', () => {

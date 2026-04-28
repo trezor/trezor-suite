@@ -2,6 +2,7 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../../suite-common/bip329" },
         { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/message-system"
