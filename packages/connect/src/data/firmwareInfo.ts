@@ -22,6 +22,7 @@ import { getIntegerInRangeFromString, removeTrailingSlashes, versionUtils } from
 import type { VersionArray } from '@trezor/utils/src/versionUtils';
 
 import { DataManager } from './DataManager';
+import * as firmwareReleaseStore from './firmwareReleaseStore';
 import { getReleaseAsset, getReleasesAssetByDeviceModelAndFirmwareType } from '../utils/assetUtils';
 import { httpRequest } from '../utils/assets';
 import { getOnlineFirmwareBaseUrl } from '../utils/firmwareReleaseConfigUtils';
@@ -39,7 +40,7 @@ const getBundledFirmwareVersion = (
     deviceModel: DeviceModelInternal,
     firmwareType: FirmwareType,
 ): string | undefined => {
-    const localFirmwareReleaseConfig = DataManager.getLocalFirmwareReleaseConfig();
+    const localFirmwareReleaseConfig = firmwareReleaseStore.getLocal();
     const modelReleases = localFirmwareReleaseConfig.releases[deviceModel];
     const bundledRelease = modelReleases?.[firmwareType];
     if (!bundledRelease) {
@@ -137,7 +138,7 @@ export const getReleaseConfig = (
     if (internal_model === DeviceModelInternal.UNKNOWN) {
         return undefined;
     }
-    const firmwareReleaseConfig = DataManager.getFirmwareReleaseConfig();
+    const firmwareReleaseConfig = firmwareReleaseStore.getReleases();
 
     if (!firmwareReleaseConfig) {
         throw new Error('Firmware release config not loaded.');
@@ -288,7 +289,7 @@ export const initializeFirmwareConfig = async (
     }
 
     // We had some issue getting remote so we use local data.
-    const localFirmwareReleaseConfig = DataManager.getLocalFirmwareReleaseConfig();
+    const localFirmwareReleaseConfig = firmwareReleaseStore.getLocal();
     const localReleases = createLocalFirmwareConfig(localFirmwareReleaseConfig);
 
     return {
@@ -319,7 +320,7 @@ const getCurrentVersion = (features: Features): CurrentVersion => {
 };
 
 const getIntermediaryMessageRelease = (features: Features) => {
-    const config = DataManager.getFirmwareIntermediaryReleaseConfig();
+    const config = firmwareReleaseStore.getIntermediary();
     if (!config) {
         throw new Error('Firmware release config not loaded.');
     }
@@ -353,7 +354,7 @@ const getIsBitcoinOnlyAvailable = (features: Features) => {
         return false;
     }
 
-    const firmwareReleaseConfig = DataManager.getFirmwareReleaseConfig();
+    const firmwareReleaseConfig = firmwareReleaseStore.getReleases();
 
     if (!firmwareReleaseConfig) {
         throw new Error('Firmware release config not loaded.');
