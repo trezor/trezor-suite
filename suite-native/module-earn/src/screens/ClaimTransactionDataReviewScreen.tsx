@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { CommonActions } from '@react-navigation/native';
 
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type TransactionsRootState,
@@ -33,20 +34,29 @@ import {
 } from '@suite-native/transaction-management';
 
 import { ClaimTransactionDataReviewStepList } from '../components/ClaimTransactionDataReviewStepList';
+import { isMobileSupportedStakingNetwork } from '../constants';
 
 const navigateToClaimedTransactionAction = ({
     accountKey,
+    symbol,
     txid,
 }: {
     accountKey: AccountKey;
+    symbol: NetworkSymbol;
     txid: string;
 }) =>
     CommonActions.reset({
-        index: 1,
+        index: 2,
         routes: [
             {
                 name: RootStackRoutes.AppTabs,
                 params: { screen: AppTabsRoutes.EarnStack },
+            },
+            {
+                name: isMobileSupportedStakingNetwork(symbol)
+                    ? RootStackRoutes.StakingManagement
+                    : RootStackRoutes.StakingDetail,
+                params: { accountKey },
             },
             {
                 name: RootStackRoutes.TransactionDetailStack,
@@ -101,8 +111,11 @@ export const ClaimTransactionDataReviewScreen = ({
     }, [closeSheet, showSignSuccessMessage]);
 
     const handleViewTransaction = useCallback(() => {
-        navigation.dispatch(navigateToClaimedTransactionAction({ accountKey, txid }));
-    }, [accountKey, navigation, txid]);
+        if (!account) return;
+        navigation.dispatch(
+            navigateToClaimedTransactionAction({ accountKey, symbol: account.symbol, txid }),
+        );
+    }, [account, accountKey, navigation, txid]);
 
     return (
         <ConfirmOnTrezorWrapper

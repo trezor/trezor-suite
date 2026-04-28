@@ -3,12 +3,14 @@ import { useSelector } from 'react-redux';
 
 import { CommonActions, useFocusEffect } from '@react-navigation/native';
 
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type TransactionsRootState,
     selectAccountByKey,
     selectTransactionByAccountKeyAndTxid,
 } from '@suite-common/wallet-core';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { Button, Card, LottieAnimation, Text, VStack } from '@suite-native/atoms';
 import {
     ConfirmOnTrezorWrapper,
@@ -33,21 +35,30 @@ import {
 } from '@suite-native/transaction-management';
 
 import { EarnTransactionDataReviewStepList } from '../components/EarnTransactionDataReviewStepList';
+import { isMobileSupportedStakingNetwork } from '../constants';
 import { useStakingDetailNavigation } from '../hooks/useStakingDetailNavigation';
 
 const navigateToStakedTransactionAction = ({
     accountKey,
+    symbol,
     txid,
 }: {
-    accountKey: string;
+    accountKey: AccountKey;
+    symbol: NetworkSymbol;
     txid: string;
 }) =>
     CommonActions.reset({
-        index: 1,
+        index: 2,
         routes: [
             {
                 name: RootStackRoutes.AppTabs,
                 params: { screen: AppTabsRoutes.EarnStack },
+            },
+            {
+                name: isMobileSupportedStakingNetwork(symbol)
+                    ? RootStackRoutes.StakingManagement
+                    : RootStackRoutes.StakingDetail,
+                params: { accountKey },
             },
             {
                 name: RootStackRoutes.TransactionDetailStack,
@@ -115,8 +126,11 @@ export const EarnTransactionDataReviewScreen = ({
     }, [closeSheet, showSignSuccessMessage]);
 
     const handleViewTransaction = useCallback(() => {
-        navigation.dispatch(navigateToStakedTransactionAction({ accountKey, txid }));
-    }, [accountKey, navigation, txid]);
+        if (!account) return;
+        navigation.dispatch(
+            navigateToStakedTransactionAction({ accountKey, symbol: account.symbol, txid }),
+        );
+    }, [account, accountKey, navigation, txid]);
 
     return (
         <ConfirmOnTrezorWrapper
