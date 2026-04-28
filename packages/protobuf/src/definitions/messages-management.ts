@@ -73,6 +73,7 @@ export enum Enum_Capability {
     Capability_BLE = 22,
     Capability_NFC = 23,
     Capability_Tron = 24,
+    Capability_N4W1 = 25,
 }
 
 export type EnumEnum_Capability = Static<typeof EnumEnum_Capability>;
@@ -228,6 +229,8 @@ export const AuthenticityProof = Type.Object(
         optiga_signature: Type.String(),
         tropic_certificates: Type.Array(Type.String()),
         tropic_signature: Type.Optional(Type.String()),
+        mcu_certificates: Type.Array(Type.String()),
+        mcu_signature: Type.Optional(Type.String()),
     },
     { $id: 'AuthenticityProof' },
 );
