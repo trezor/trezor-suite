@@ -92,6 +92,7 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
         cryptoId: sendCryptoSelect?.id,
         amount: sendCryptoAccount?.balance,
         fiatCurrency: getValues().outputs?.[0]?.currency?.value || undefined,
+        isErc4626: !!tokenData?.protocols?.erc4626,
     });
 
     const { getAssetDecimals } = useTradingAssetDecimals();

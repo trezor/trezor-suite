@@ -8,6 +8,7 @@ import { type TokenAddress } from './account';
 export interface TickerId {
     symbol: NetworkSymbol;
     tokenAddress?: TokenAddress;
+    protocols?: 'erc4626'[];
 }
 
 export interface TimestampedRates {

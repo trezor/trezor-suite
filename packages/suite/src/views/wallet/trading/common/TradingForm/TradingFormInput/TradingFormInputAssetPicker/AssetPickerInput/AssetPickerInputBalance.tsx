@@ -25,20 +25,23 @@ export const AssetPickerInputBalance = memo(function AssetPickerInputBalance({
     const { watch, getValues } = useFormContext<TradingSellFormProps | TradingExchangeFormProps>();
     const value = watch(name);
     const findAccountOrToken = useTradingFindAccountOrToken();
-    const amount = useMemo(() => {
+
+    const accountOrToken = useMemo(() => {
         if (!value) return undefined;
 
-        const accountOrToken = findAccountOrToken.current({
+        return findAccountOrToken.current({
             accountKey: value.accountKey,
             cryptoId: value.id,
         });
+    }, [findAccountOrToken, value]);
 
+    const amount = useMemo(() => {
         if (!accountOrToken) return undefined;
 
         return accountOrToken.token
             ? accountOrToken.token.balance
             : accountOrToken.account.formattedBalance;
-    }, [findAccountOrToken, value]);
+    }, [accountOrToken]);
 
     const { getAssetDecimals } = useTradingAssetDecimals();
     const assetDecimals = useMemo(() => {
@@ -51,6 +54,7 @@ export const AssetPickerInputBalance = memo(function AssetPickerInputBalance({
         amount,
         cryptoId: value?.id,
         fiatCurrency: getValues('outputs')?.[0]?.currency?.value || undefined,
+        isErc4626: !!accountOrToken?.token?.protocols?.erc4626,
     });
 
     if (!fiatValues || !value) {
