@@ -155,15 +155,14 @@ export const validatePath = (path: DerivationPath, length = 0, base = false): nu
     if (typeof path === 'string') {
         valid = getHDPath(path);
     } else if (Array.isArray(path)) {
-        valid = path.map((p: any) => {
-            const n = parseInt(p, 10);
-            if (Number.isNaN(n)) {
+        valid = path.map(p => {
+            if (Number.isNaN(p)) {
                 throw PATH_NOT_VALID;
-            } else if (n < 0) {
+            } else if (p < 0) {
                 throw PATH_NEGATIVE_VALUES;
             }
 
-            return n;
+            return p;
         });
     }
     if (!valid) throw PATH_NOT_VALID;
