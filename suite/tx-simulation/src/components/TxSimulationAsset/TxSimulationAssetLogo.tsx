@@ -1,15 +1,16 @@
-import { type AssetDiff, type AssetExposure } from '@suite-common/tx-simulation';
+import { type EvmAssetDiff, type EvmAssetExposure } from '@suite-common/tx-simulation';
 import { type Network } from '@suite-common/wallet-config';
 import { IconCircle } from '@trezor/components';
 import { AssetLogo, type AssetLogoSize, CoinLogo, isCoinSymbol } from '@trezor/product-components';
 
 interface TxSimulationAssetLogoProps {
-    asset?: AssetDiff['asset'] | AssetExposure['asset'];
-    assetType?: AssetDiff['asset_type'] | AssetExposure['asset_type'];
+    asset?: EvmAssetDiff['asset'] | EvmAssetExposure['asset'];
+    assetType?: EvmAssetDiff['asset_type'] | EvmAssetExposure['asset_type'];
     network: Network;
     size?: AssetLogoSize;
 }
 
+// FIXME: rename to EvmTxSimulationAssetLogo
 export function TxSimulationAssetLogo({
     asset,
     assetType,

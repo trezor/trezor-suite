@@ -1,4 +1,4 @@
 export { TxSimulationResult } from './components/TxSimulationResult';
 export { TxSimulationTitle } from './components/TxSimulationTitle';
-export { TxSimulationBanner } from './components/TxSimulationBanner';
+export { TxSimulationBanner, type TxSimulationBannerProps } from './components/TxSimulationBanner';
 export { TxSimulationProvider } from './components/TxSimulationProvider';

@@ -1,7 +1,8 @@
 import type { AllowedQueryKey } from '../types';
 
 export const commonQueryKeys = {
-    txSimulationEVM: (input?: any) => ['tx-simulation-evm', input],
+    networkTxSimulation: (input?: any) => ['network-tx-simulation', input],
+    supplyTxSimulation: (input?: any) => ['tx-simulation-supply', input],
     dappScan: (url?: string) => ['dapp-scan', url],
     validatorsQueue: (accountKey: string, timestamp?: number) => [
         'everstake',
