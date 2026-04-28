@@ -5,6 +5,8 @@ import type {
     TrezorDeviceWithState,
 } from '@suite-common/suite-types';
 import { type Device } from '@trezor/connect';
+import { DeviceModelInternal, getFirmwareVersionArray } from '@trezor/device-utils';
+import { versionUtils } from '@trezor/utils';
 
 export const DeviceCancelledErr = (): DeviceCancelledErrType => ({
     type: 'DeviceCancelled' as const,
@@ -35,10 +37,15 @@ export const shouldDeviceBeRemembered = ({
 export const isApprovalFlowSupported = (device: TrezorDevice | undefined) =>
     !device?.unavailableCapabilities?.['evmApproval'];
 
-export const isStablecoinYieldSupported = (_device: TrezorDevice | undefined) =>
-    // TODO: Replace with actual fw capability check once defined in trezor/trezor-firmware#6435.
-    // device?.unavailableCapabilities?.['erc4626'] !== 'update-required';
-    true;
+export const isStablecoinYieldSupported = (device: TrezorDevice | undefined) => {
+    if (device?.features?.internal_model === DeviceModelInternal.T1B1) {
+        return true;
+    }
+
+    const firmware = getFirmwareVersionArray(device);
+
+    return firmware !== null && versionUtils.isNewerOrEqual(firmware, [2, 11, 2]);
+};
 
 export const isTrezorDeviceWithState = (
     device: TrezorDevice | undefined,
