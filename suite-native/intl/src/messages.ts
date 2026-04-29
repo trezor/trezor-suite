@@ -2584,6 +2584,10 @@ export const messages = {
             reviewAndSignButton: 'Review & Sign',
             amountLabel: 'Amount',
             instantClaimBanner: "You'll claim the {displaySymbol} instantly",
+            insufficientFeeBalance: {
+                title: 'Insufficient {displaySymbol} to cover the transaction fee.',
+                description: 'You only have {amount} available.',
+            },
         },
         claimTransactionDataReviewScreen: {
             title: 'Review with Trezor',
