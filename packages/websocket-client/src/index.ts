@@ -3,4 +3,5 @@ export {
     type WebsocketRequest,
     type WebsocketResponse,
     WebsocketError,
+    type WebsocketSendParams,
 } from './client';

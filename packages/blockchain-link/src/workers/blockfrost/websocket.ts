@@ -69,16 +69,20 @@ export class BlockfrostAPI extends BaseWebsocket<BlockfrostEvents> {
 
     subscribeBlock() {
         this.removeSubscription('block');
-        this.addSubscription('block', result => this.emit('block', result));
 
-        return this.send('SUBSCRIBE_BLOCK');
+        return this.sendMessage(
+            { command: 'SUBSCRIBE_BLOCK' },
+            { onIdCreated: id => this.addSubscription('block', id) },
+        );
     }
 
     subscribeAddresses(addresses: string[]) {
         this.removeSubscription('notification');
-        this.addSubscription('notification', result => this.emit('notification', result));
 
-        return this.send('SUBSCRIBE_ADDRESS', { addresses });
+        return this.sendMessage(
+            { command: 'SUBSCRIBE_ADDRESS', params: { addresses } },
+            { onIdCreated: id => this.addSubscription('notification', id) },
+        );
     }
 
     unsubscribeBlock() {

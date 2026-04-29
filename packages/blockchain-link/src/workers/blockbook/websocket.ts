@@ -143,9 +143,11 @@ export class BlockbookAPI extends BaseWebsocket<BlockbookEvents> {
 
     subscribeAddresses(addresses: string[]) {
         this.removeSubscription('notification');
-        this.addSubscription('notification', result => this.emit('notification', result));
 
-        return this.send('subscribeAddresses', { addresses });
+        return this.sendMessage(
+            { method: 'subscribeAddresses', params: { addresses } },
+            { onIdCreated: id => this.addSubscription('notification', id) },
+        );
     }
 
     unsubscribeAddresses() {
@@ -156,9 +158,11 @@ export class BlockbookAPI extends BaseWebsocket<BlockbookEvents> {
 
     subscribeBlock() {
         this.removeSubscription('block');
-        this.addSubscription('block', result => this.emit('block', result));
 
-        return this.send('subscribeNewBlock');
+        return this.sendMessage(
+            { method: 'subscribeNewBlock' },
+            { onIdCreated: id => this.addSubscription('block', id) },
+        );
     }
 
     unsubscribeBlock() {
@@ -169,9 +173,11 @@ export class BlockbookAPI extends BaseWebsocket<BlockbookEvents> {
 
     subscribeFiatRates(currency?: string) {
         this.removeSubscription('fiatRates');
-        this.addSubscription('fiatRates', result => this.emit('fiatRates', result));
 
-        return this.send('subscribeFiatRates', { currency });
+        return this.sendMessage(
+            { method: 'subscribeFiatRates', params: { currency } },
+            { onIdCreated: id => this.addSubscription('fiatRates', id) },
+        );
     }
 
     unsubscribeFiatRates() {
@@ -182,9 +188,11 @@ export class BlockbookAPI extends BaseWebsocket<BlockbookEvents> {
 
     subscribeMempool() {
         this.removeSubscription('mempool');
-        this.addSubscription('mempool', result => this.emit('mempool', result));
 
-        return this.send('subscribeNewTransaction');
+        return this.sendMessage(
+            { method: 'subscribeNewTransaction' },
+            { onIdCreated: id => this.addSubscription('mempool', id) },
+        );
     }
 
     unsubscribeMempool() {

@@ -25,6 +25,8 @@ type WebsocketClientEvents = {
     disconnected: undefined;
 };
 
+export type WebsocketSendParams = { timeout?: number; onIdCreated?: (id: number) => void };
+
 export type WebsocketRequest = Record<string, any>;
 export type WebsocketResponse = WebSocket.Data;
 
@@ -105,7 +107,10 @@ export class WebsocketClient<Events extends Record<string, any>> extends TypedEm
         this.onClose();
     }
 
-    async sendMessage(message: WebsocketRequest, { timeout }: { timeout?: number } = {}) {
+    async sendMessage(
+        message: WebsocketRequest,
+        { timeout, onIdCreated }: WebsocketSendParams = {},
+    ) {
         const { ws } = this;
         if (!ws || !this.isConnected()) throw new WebsocketError('websocket_not_initialized');
 
@@ -120,6 +125,8 @@ export class WebsocketClient<Events extends Record<string, any>> extends TypedEm
         } else {
             promise = this.messages.create(timeout);
         }
+
+        onIdCreated?.(promise.promiseId);
 
         const req = { id: promise.promiseId.toString(), ...message };
 
