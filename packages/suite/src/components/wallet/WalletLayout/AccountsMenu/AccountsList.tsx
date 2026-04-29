@@ -1,18 +1,30 @@
 import { Translation } from '@suite/intl';
 import { selectAccountLabelsLegacy } from '@suite/metadata';
-import { type RouteParams, selectRouterParams } from '@suite/router';
+import { type RouteParams, goto, selectRouteName, selectRouterParams } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
+import {
+    SparkAccountsMenu,
+    selectIsSparkEnabled,
+    selectSelectedSparkAccountNumber,
+    selectSparkAccountsByWalletDescriptor,
+    sparkActions,
+} from '@suite-common/spark';
 import { selectAccountsWithSuiteSyncLabel } from '@suite-common/suite-sync';
 import { type AccountType } from '@suite-common/wallet-config';
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { accountSearchFn } from '@suite-common/wallet-utils';
+import { accountSearchFn, parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { CollapsedSidebarOnly } from 'src/components/suite/layouts/SuiteLayout/Sidebar/CollapsedSidebarOnly';
 import { ExpandedSidebarOnly } from 'src/components/suite/layouts/SuiteLayout/Sidebar/ExpandedSidebarOnly';
-import { useAccountSearch, useDefaultAccountLabel, useSelector } from 'src/hooks/suite';
+import {
+    useAccountSearch,
+    useDefaultAccountLabel,
+    useDispatch,
+    useSelector,
+} from 'src/hooks/suite';
 import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
 import { type AccountItemType } from 'src/types/wallet';
 import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
@@ -83,9 +95,11 @@ export const AccountsList = ({
     hideStaking,
     onItemClick,
 }: AccountListProps) => {
+    const dispatch = useDispatch();
     const device = useSelector(selectSelectedDevice);
     const baseAccounts = useSelector(selectAllAccountsToList);
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+    const routeName = useSelector(selectRouteName);
 
     const coinjoinIsPreloading = useSelector(state => state.wallet.coinjoin.isPreloading);
     const accountLegacyLabels = useSelector(selectAccountLabelsLegacy);
@@ -103,6 +117,18 @@ export const AccountsList = ({
     const { coinFilter, searchString } = useAccountSearch();
     const discoveryStatus = useSelector(selectDiscoveryOverallStatus);
     const discoveryInProgress = discoveryStatus && discoveryStatus.status === 'loading';
+    const isSparkEnabled = useSelector(selectIsSparkEnabled);
+    const walletDescriptor = device?.state?.staticSessionId
+        ? parseDeviceStaticSessionId(device.state.staticSessionId).walletDescriptor
+        : null;
+    const sparkAccounts = useSelector(state =>
+        walletDescriptor ? selectSparkAccountsByWalletDescriptor(state, walletDescriptor) : [],
+    );
+    const selectedSparkAccountNumber = useSelector(state =>
+        walletDescriptor ? selectSelectedSparkAccountNumber(state, walletDescriptor) : undefined,
+    );
+    const isSparkRoute =
+        routeName === 'spark-index' || routeName === 'spark-send' || routeName === 'spark-receive';
 
     if (!device) {
         return null;
@@ -196,6 +222,30 @@ export const AccountsList = ({
                 {buildGroup('segwit', segwitAccounts)}
                 {buildGroup('legacy', legacyAccounts)}
                 {buildGroup('ledger', ledgerAccounts)}
+                {isSparkEnabled && walletDescriptor && sparkAccounts.length > 0 && (
+                    <SparkAccountsMenu
+                        accounts={sparkAccounts}
+                        isActive={isSparkRoute}
+                        isSidebarCollapsed={isSidebarCollapsed}
+                        selectedAccountNumber={selectedSparkAccountNumber}
+                        onSelectAccount={accountNumber => {
+                            dispatch(
+                                sparkActions.selectSparkAccount({
+                                    accountNumber,
+                                    walletDescriptor,
+                                }),
+                            );
+                            dispatch(
+                                goto({
+                                    routeName:
+                                        routeName === 'spark-send' || routeName === 'spark-receive'
+                                            ? routeName
+                                            : 'spark-index',
+                                }),
+                            );
+                        }}
+                    />
+                )}
             </Column>
         );
     }

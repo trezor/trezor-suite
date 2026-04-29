@@ -345,6 +345,21 @@ export const routes = [
         params: walletParams,
     },
     {
+        name: 'spark-index',
+        pattern: '/spark',
+        app: 'spark',
+    },
+    {
+        name: 'spark-send',
+        pattern: '/spark/send',
+        app: 'spark',
+    },
+    {
+        name: 'spark-receive',
+        pattern: '/spark/receive',
+        app: 'spark',
+    },
+    {
         name: 'notifications-index',
         pattern: '/notifications',
         app: 'notifications',

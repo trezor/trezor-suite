@@ -1,10 +1,26 @@
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { goto } from '@suite/router';
 import { selectIsCoinsFilterVisible, suiteSettingsActions } from '@suite/settings';
 import { selectSelectedDevice } from '@suite-common/device';
+import {
+    selectIsSparkEnabled,
+    selectSparkAccountsByWalletDescriptor,
+    sparkActions,
+} from '@suite-common/spark';
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
-import { Box, Column, Divider, Icon, Row, SkeletonRectangle, Tooltip } from '@trezor/components';
+import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
+import {
+    Box,
+    Button,
+    Column,
+    Divider,
+    Icon,
+    Row,
+    SkeletonRectangle,
+    Tooltip,
+} from '@trezor/components';
 
 import { CollapsedSidebarOnly } from 'src/components/suite/layouts/SuiteLayout/Sidebar/CollapsedSidebarOnly';
 import { ExpandedSidebarOnly } from 'src/components/suite/layouts/SuiteLayout/Sidebar/ExpandedSidebarOnly';
@@ -44,10 +60,41 @@ export const AccountsMenuHeader = () => {
     const isCoinsFilterVisible = useSelector(selectIsCoinsFilterVisible);
     const dispatch = useDispatch();
     const availableNetworksSymbols = useAvailableNetworkSymbols();
+    const isSparkEnabled = useSelector(selectIsSparkEnabled);
+    const walletDescriptor = device?.state?.staticSessionId
+        ? parseDeviceStaticSessionId(device.state.staticSessionId).walletDescriptor
+        : null;
+    const sparkAccounts = useSelector(state =>
+        walletDescriptor ? selectSparkAccountsByWalletDescriptor(state, walletDescriptor) : [],
+    );
 
     const toggleCoinsFilter = () =>
         dispatch(suiteSettingsActions.setIsCoinsFilterVisible(!isCoinsFilterVisible));
     const showCoinFilter = availableNetworksSymbols.length > 1;
+    const addSparkAccount = () => {
+        if (!walletDescriptor) {
+            return;
+        }
+
+        const nextAccountNumber =
+            sparkAccounts.length > 0
+                ? Math.max(...sparkAccounts.map(account => account.accountNumber)) + 1
+                : 0;
+
+        dispatch(
+            sparkActions.addSparkAccount({
+                accountNumber: nextAccountNumber,
+                walletDescriptor,
+            }),
+        );
+        dispatch(
+            sparkActions.selectSparkAccount({
+                accountNumber: nextAccountNumber,
+                walletDescriptor,
+            }),
+        );
+        dispatch(goto({ routeName: 'spark-index' }));
+    };
 
     return (
         <>
@@ -89,6 +136,17 @@ export const AccountsMenuHeader = () => {
                                 )}
 
                                 <AddAccountButton isIconOnly={!isEmpty} device={device} />
+                                {isSparkEnabled && walletDescriptor && (
+                                    <Button
+                                        onClick={addSparkAccount}
+                                        iconLeft="plus"
+                                        intent="neutral"
+                                        priority="secondary"
+                                        data-testid="@account-menu/add-spark-account"
+                                    >
+                                        {!isEmpty ? 'Add Spark' : 'Spark'}
+                                    </Button>
+                                )}
                             </>
                         )}
                     </Row>
@@ -97,6 +155,16 @@ export const AccountsMenuHeader = () => {
                 <CollapsedSidebarOnly>
                     <Column alignItems="center" margin={{ bottom: 12 }}>
                         <AddAccountButton isIconOnly={true} device={device} />
+                        {isSparkEnabled && walletDescriptor && (
+                            <Button
+                                margin={{ top: 8 }}
+                                size="small"
+                                onClick={addSparkAccount}
+                                data-testid="@account-menu/add-spark-account-collapsed"
+                            >
+                                S+
+                            </Button>
+                        )}
                     </Column>
                 </CollapsedSidebarOnly>
             </Box>

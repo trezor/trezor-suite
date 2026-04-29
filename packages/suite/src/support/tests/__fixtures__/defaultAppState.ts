@@ -8,6 +8,7 @@ import { suiteSettingsInitialState } from '@suite/settings';
 import { type FirmwareUpdateState } from '@suite-common/firmware';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { type MetadataState } from '@suite-common/metadata-types';
+import { initialSparkState } from '@suite-common/spark';
 import { quotaManagerInitialState } from '@suite-common/suite-sync-quota-manager/src/quotaManagerReducer';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 
@@ -38,6 +39,7 @@ export const initialAppState: AppState = {
     },
     suiteSync: initialSuiteSyncDesktopState,
     suiteSyncQuotaManager: quotaManagerInitialState,
+    spark: initialSparkState,
     window: {
         isVisible: true,
         isBelowMobile: false,

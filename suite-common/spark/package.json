@@ -1,0 +1,27 @@
+{
+    "name": "@suite-common/spark",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "type-check": "yarn g:tsc --build",
+        "test:unit": "yarn g:jest",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
+    },
+    "dependencies": {
+        "@evolu/common": "8.0.0-next.3",
+        "@reduxjs/toolkit": "2.11.2",
+        "@suite-common/suite-sync-storage": "workspace:*",
+        "@suite-common/wallet-types": "workspace:*",
+        "@trezor/components": "workspace:*",
+        "@trezor/type-utils": "workspace:*",
+        "react": "18.3.1"
+    },
+    "devDependencies": {
+        "@suite-common/test-utils": "workspace:*",
+        "@trezor/eslint": "workspace:*"
+    }
+}

@@ -18,6 +18,7 @@ import { type firmwareActions } from '@suite-common/firmware';
 import { type geolocationActions } from '@suite-common/geolocation';
 import { type addLog } from '@suite-common/logger';
 import { type messageSystemActions } from '@suite-common/message-system';
+import { type sparkActions } from '@suite-common/spark';
 import {
     type suiteSyncSlice as suiteSyncCommonSlice,
     type suiteSyncDataSlice,
@@ -126,6 +127,7 @@ type FlagsAction = ReturnType<(typeof flagsActions)[keyof typeof flagsActions]>;
 type SuiteSettingsAction = ReturnType<
     (typeof suiteSettingsActions)[keyof typeof suiteSettingsActions]
 >;
+type SparkAction = ReturnType<(typeof sparkActions)[keyof typeof sparkActions]>;
 type RecoveryAction = ReturnType<(typeof recoveryActions)[keyof typeof recoveryActions]>;
 type BackupAction = ReturnType<(typeof backupActions)[keyof typeof backupActions]>;
 type DesktopUpdateAction = ReturnType<
@@ -159,6 +161,7 @@ export type Action =
     | RecoveryAction
     | ReturnType<typeof addLog>
     | RouterAction
+    | SparkAction
     | StorageAction
     | SuiteAction
     | SuiteSettingsAction

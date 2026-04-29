@@ -71,6 +71,25 @@ export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>>
     'wallet-anonymize': lazy(
         () => import(/* webpackChunkName: "wallet" */ 'src/views/wallet/anonymize'),
     ),
+    'spark-index': lazy(() =>
+        import(/* webpackChunkName: "spark" */ 'src/views/spark/index').then(({ SparkIndex }) => ({
+            default: SparkIndex,
+        })),
+    ),
+    'spark-send': lazy(() =>
+        import(/* webpackChunkName: "spark" */ 'src/views/spark/send/index').then(
+            ({ SparkSend }) => ({
+                default: SparkSend,
+            }),
+        ),
+    ),
+    'spark-receive': lazy(() =>
+        import(/* webpackChunkName: "spark" */ 'src/views/spark/receive/index').then(
+            ({ SparkReceive }) => ({
+                default: SparkReceive,
+            }),
+        ),
+    ),
 
     // trading
     'wallet-trading-buy': lazy(() =>

@@ -22,6 +22,7 @@ import {
     castExtraStore,
     createStoreWithExtraStoreMiddleware,
 } from '@suite-common/redux-utils';
+import { sparkReducer } from '@suite-common/spark';
 import { suiteSyncDataReducer } from '@suite-common/suite-sync';
 import { prepareThpReducer } from '@suite-common/thp';
 import { prepareTokenDefinitionsReducer } from '@suite-common/token-definitions';
@@ -71,6 +72,7 @@ const rootReducer = combineReducers({
     suiteSync: suiteSyncReducer,
     suiteSyncQuotaManager: suiteSyncQuotaManagerReducer,
     suiteSyncData: suiteSyncDataReducer,
+    spark: sparkReducer,
     geolocation: geolocationReducer,
     globalSendReceiveFilters: globalSendReceiveFilters.reducer,
 });

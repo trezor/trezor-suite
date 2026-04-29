@@ -7,15 +7,16 @@ import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { selectHasExperimentalFeature } from '@suite/settings';
 import { Context } from '@suite-common/message-system';
+import { selectIsSparkEnabled, sparkActions } from '@suite-common/spark';
 import {
     selectDeviceSupportedNetworks,
     selectEnabledNetworks,
     selectShowRediscoverButton,
     startOrRestartDiscoveryThunk,
 } from '@suite-common/wallet-core';
-import { Button, Column, Tooltip, motionEasing } from '@trezor/components';
+import { Button, Column, Switch, Tooltip, motionEasing } from '@trezor/components';
 import { hasBitcoinOnlyFirmware, isBitcoinOnlyDevice } from '@trezor/device-utils';
-import { SectionItem, SettingsSection } from '@trezor/product-components';
+import { ActionColumn, SectionItem, SettingsSection, TextColumn } from '@trezor/product-components';
 import { spacingsPx } from '@trezor/theme';
 
 import { DeviceBanner } from 'src/components/settings/DeviceBanner';
@@ -88,6 +89,7 @@ export const SettingsCoins = () => {
         selectShowRediscoverButton(state, device),
     );
     const useTestnetNetworks = useSelector(selectHasExperimentalFeature('testnet-networks'));
+    const isSparkEnabled = useSelector(selectIsSparkEnabled);
 
     const supportedEnabledNetworks = enabledNetworks.filter(enabledNetwork =>
         deviceSupportedNetworkSymbols.includes(enabledNetwork),
@@ -148,6 +150,22 @@ export const SettingsCoins = () => {
                         </SectionItem>
                     )}
                 </Anchor>
+
+                <SectionItem>
+                    <TextColumn
+                        title="Spark"
+                        description="Enable the mocked Spark network for this Suite wallet."
+                    />
+                    <ActionColumn>
+                        <Switch
+                            data-testid="@settings/wallet/network/spark"
+                            isChecked={isSparkEnabled}
+                            onChange={() => {
+                                dispatch(sparkActions.setSparkEnabled(!isSparkEnabled));
+                            }}
+                        />
+                    </ActionColumn>
+                </SectionItem>
             </SettingsSection>
 
             {useTestnetNetworks && (

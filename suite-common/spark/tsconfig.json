@@ -1,0 +1,26 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "outDir": "libDev"
+    },
+    "references": [
+        {
+            "path": "../suite-sync-storage"
+        },
+        {
+            "path": "../wallet-types"
+        },
+        {
+            "path": "../../packages/components"
+        },
+        {
+            "path": "../test-utils"
+        },
+        {
+            "path": "../../packages/type-utils"
+        },
+        {
+            "path": "../../packages/eslint"
+        }
+    ]
+}

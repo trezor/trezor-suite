@@ -14,6 +14,9 @@ import { SettingsConnectedApps } from 'src/views/settings/SettingsConnectedApps/
 import { SettingsDebug } from 'src/views/settings/SettingsDebug/SettingsDebug';
 import { SettingsDevice } from 'src/views/settings/SettingsDevice/SettingsDevice';
 import { SettingsGeneral } from 'src/views/settings/SettingsGeneral/SettingsGeneral';
+import { SparkIndex } from 'src/views/spark';
+import { SparkReceive } from 'src/views/spark/receive';
+import { SparkSend } from 'src/views/spark/send';
 import Notification from 'src/views/suite/notifications';
 import WalletAnonymize from 'src/views/wallet/anonymize';
 import WalletDetails from 'src/views/wallet/details';
@@ -73,6 +76,9 @@ export const desktopComponents: Record<PageName, ComponentType> = {
     'wallet-trading-concierge': TradingConciergeDetail,
     'wallet-trading-redirect': TradingRedirect,
     'wallet-trading-transactions': TradingTransactions,
+    'spark-index': SparkIndex,
+    'spark-send': SparkSend,
+    'spark-receive': SparkReceive,
 
     'password-manager-index': PasswordManagerView,
 
