@@ -6,9 +6,11 @@ import { type TradingAssetOption, useTradingAssets } from '@suite-common/trading
 
 const AssetOptionsContext = createContext<{
     assets: TradingAssetOption[];
+    includedCryptoIds: Set<CryptoId>;
     excludedCryptoIds: Set<CryptoId>;
 }>({
     assets: [],
+    includedCryptoIds: new Set(),
     excludedCryptoIds: new Set(),
 });
 
@@ -27,7 +29,7 @@ export function AssetOptionsProvider({
     const contextValue = useMemo(() => {
         const { assets } = buildAssetOptions({ includedCryptoIds });
 
-        return { assets, excludedCryptoIds };
+        return { assets, includedCryptoIds, excludedCryptoIds };
     }, [buildAssetOptions, excludedCryptoIds, includedCryptoIds]);
 
     return (
