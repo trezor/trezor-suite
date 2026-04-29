@@ -18,6 +18,7 @@ export type CountrySheetProps = {
 };
 
 const keyExtractor = (item: TradingCountryOption) => item.value;
+const ItemSeparator = () => <Divider />;
 
 export const CountrySheet = memo(
     ({ isVisible, onClose, onCountrySelect, selectedCountryId, testID }: CountrySheetProps) => {
@@ -64,8 +65,6 @@ export const CountrySheet = memo(
         // re-mount FLashList component when filterValue changes (resets scroll position)
         const flashListKey = 'countries_list-' + filterValue;
 
-        const renderItemSeparator = () => <Divider />;
-
         return (
             <BottomSheetSectionList<TradingCountryOption>
                 isVisible={isVisible}
@@ -73,18 +72,14 @@ export const CountrySheet = memo(
                 ListEmptyComponent={<CountryListEmptyComponent />}
                 handleComponent={renderHandle}
                 renderItem={item => (
-                    <CountryListItem
-                        {...item}
-                        onPress={() => onCountrySelectCallback(item)}
-                        isSelected={item.value === selectedCountryId}
-                    />
+                    <CountryListItem {...item} onPress={() => onCountrySelectCallback(item)} />
                 )}
                 data={listData}
                 keyExtractor={keyExtractor}
                 flashListKey={flashListKey}
                 extraData={selectedCountryId}
                 testID={bottomSheetTestId}
-                ItemSeparatorComponent={renderItemSeparator}
+                ItemSeparatorComponent={ItemSeparator}
                 noSingletonSectionHeader
             />
         );

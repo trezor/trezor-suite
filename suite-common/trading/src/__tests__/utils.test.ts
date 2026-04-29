@@ -335,6 +335,18 @@ describe('getDefaultCountrySubdivision', () => {
             name: 'California',
         });
     });
+
+    it('should return correct option for a known subdivision code and country code', () => {
+        expect(getDefaultCountrySubdivision('CA', 'US')).toEqual({
+            value: 'CA',
+            label: 'California',
+            name: 'California',
+        });
+    });
+
+    it('should return undefined when country does not require subdivision', () => {
+        expect(getDefaultCountrySubdivision('CA', 'CZ')).toBeUndefined();
+    });
 });
 
 describe('getBestRatedQuote', () => {

@@ -25,6 +25,7 @@ export type CountrySubdivisionSheetProps = {
 };
 
 const keyExtractor = (item: TradingCountrySubdivisionOption) => item.value;
+const ItemSeparator = () => <Divider />;
 
 export const CountrySubdivisionSheet = memo(
     ({
@@ -39,8 +40,8 @@ export const CountrySubdivisionSheet = memo(
             useCountrySubdivisionFilteredData(countryCode);
         const { translate } = useTranslate();
 
-        const searchInputTestId = testID ? testID + '/search-input' : undefined;
-        const bottomSheetTestId = testID ? testID + '/bottom-sheet' : undefined;
+        const searchInputTestId = `${testID}/search-input`;
+        const bottomSheetTestId = `${testID}/bottom-sheet`;
 
         const renderHandle = useCallback(
             () => (
@@ -77,8 +78,6 @@ export const CountrySubdivisionSheet = memo(
 
         const flashListKey = 'country_subdivisions_list-' + filterValue;
 
-        const renderItemSeparator = () => <Divider />;
-
         return (
             <BottomSheetSectionList<TradingCountrySubdivisionOption>
                 isVisible={isVisible}
@@ -98,7 +97,6 @@ export const CountrySubdivisionSheet = memo(
                     <CountrySubdivisionListItem
                         {...item}
                         onPress={() => onSubdivisionSelectCallback(item)}
-                        isSelected={item.value === selectedSubdivisionId}
                     />
                 )}
                 data={listData}
@@ -107,7 +105,7 @@ export const CountrySubdivisionSheet = memo(
                 extraData={selectedSubdivisionId}
                 testID={bottomSheetTestId}
                 noSingletonSectionHeader
-                ItemSeparatorComponent={renderItemSeparator}
+                ItemSeparatorComponent={ItemSeparator}
             />
         );
     },

@@ -4,7 +4,6 @@ import { type TradingCountrySubdivisionOption } from '@suite-common/trading';
 import { HStack, Text } from '@suite-native/atoms';
 
 export type CountrySubdivisionListItemProps = {
-    isSelected: boolean;
     onPress: () => void;
 } & TradingCountrySubdivisionOption;
 

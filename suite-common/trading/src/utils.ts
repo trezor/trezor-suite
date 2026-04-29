@@ -244,10 +244,11 @@ export const getDefaultCountry = (country: TradingCountryCode = regional.UNKNOWN
 
 export const getDefaultCountrySubdivision = (
     subdivision: string | undefined,
+    countryCode?: string,
 ): TradingCountrySubdivisionOption | undefined => {
     if (!subdivision) return undefined;
 
-    const found = getCountrySubdivisionByCode(subdivision);
+    const found = getCountrySubdivisionByCode(subdivision, countryCode);
 
     if (!found) return undefined;
 

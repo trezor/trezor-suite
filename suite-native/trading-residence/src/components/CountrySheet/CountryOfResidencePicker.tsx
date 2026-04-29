@@ -57,7 +57,7 @@ export const CountryOfResidencePicker = ({
         [setValue, selectedValue?.value, context, analytics],
     );
 
-    const valueTestID = testID ? `${testID}/value` : undefined;
+    const valueTestID = `${testID}/value`;
 
     return (
         <>

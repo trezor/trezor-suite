@@ -5,7 +5,6 @@ import { type TradingCountryOption } from '@suite-common/trading';
 import { Box, Flag, HStack, Text } from '@suite-native/atoms';
 
 export type CountryListItemProps = {
-    isSelected: boolean;
     onPress: () => void;
 } & TradingCountryOption;
 

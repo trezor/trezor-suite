@@ -1,11 +1,4 @@
-import {
-    type TradingCountrySubdivisionOption,
-    type TradingExchangeType,
-    type TradingSellType,
-    getCountrySubdivisionByCode,
-    isCountryCode,
-    isCountrySubdivisionRequired,
-} from '@suite-common/trading';
+import { type TradingExchangeType, type TradingSellType } from '@suite-common/trading';
 import { getNetworkByCoingeckoId } from '@suite-common/wallet-config';
 import { getFormDraftKey } from '@suite-common/wallet-utils';
 import { type TradeableAsset } from '@suite-native/trading-types';
@@ -20,31 +13,6 @@ export const getFormDraftKeyByTradeType = (tradeType: TradingSellType | TradingE
         default:
             return exhaustive(tradeType);
     }
-};
-
-export const getDefaultCountrySubdivision = (
-    countryCode: string,
-    countrySubdivisionCode: string | undefined,
-): TradingCountrySubdivisionOption | undefined => {
-    if (
-        !countrySubdivisionCode ||
-        !isCountryCode(countryCode) ||
-        !isCountrySubdivisionRequired(countryCode)
-    ) {
-        return undefined;
-    }
-
-    const subdivision = getCountrySubdivisionByCode(countrySubdivisionCode, countryCode);
-
-    if (!subdivision) {
-        return undefined;
-    }
-
-    return {
-        value: subdivision.code,
-        label: subdivision.name,
-        name: subdivision.name,
-    };
 };
 
 export const getAssetByEnabledNetworksFilter =
