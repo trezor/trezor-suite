@@ -64,6 +64,7 @@ export const buildMainMenu = (mainWindowProxy: MainWindowProxy) => {
         },
         // { role: 'windowMenu' }
         {
+            role: 'windowMenu',
             label: 'Window',
             submenu: [{ role: 'minimize' }, { role: 'zoom' }],
             // extended below
