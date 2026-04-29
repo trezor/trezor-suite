@@ -4,6 +4,7 @@ import { createVerifier } from './verifier/createVerifier';
 export const Verifier = {
     evm: {
         erc20: {
+            allowance: createVerifier({ abi: EVM_ABI.erc20.allowance }),
             approve: createVerifier({ abi: EVM_ABI.erc20.approve }),
         },
         erc4626: {

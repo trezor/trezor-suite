@@ -2,6 +2,9 @@ import { parseAbi } from 'viem';
 
 export const EVM_ABI = {
     erc20: {
+        allowance: parseAbi([
+            'function allowance(address owner, address spender) returns (uint256)',
+        ]),
         approve: parseAbi(['function approve(address spender, uint256 amount)']),
         transfer: parseAbi(['function transfer(address to, uint256 amount)']),
     },
