@@ -41,10 +41,14 @@ export const getCountrySubdivisions = (
 
 export const getCountrySubdivisionByCode = (
     subdivisionCode: string,
-    countryCode?: CountryCode,
+    countryCode?: string,
 ): CountrySubdivision | undefined => {
-    if (countryCode && hasCountrySubdivisions(countryCode)) {
-        return subdivisionsByCountry[countryCode].find(s => s.code === subdivisionCode);
+    if (countryCode && isCountryCode(countryCode)) {
+        if (hasCountrySubdivisions(countryCode)) {
+            return subdivisionsByCountry[countryCode].find(s => s.code === subdivisionCode);
+        }
+
+        return undefined;
     }
 
     for (const subdivisions of Object.values(subdivisionsByCountry)) {

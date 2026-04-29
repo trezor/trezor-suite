@@ -9,6 +9,7 @@ import {
     type TradingPaymentMethodProps,
     bestBuyQuotePerPaymentMethodProjection,
     getCurrencyLabel,
+    getDefaultCountrySubdivision,
     getTradingQuotesByPaymentMethod,
     nonSanctionedRegional,
     selectTradingBuyInfo,
@@ -23,7 +24,7 @@ import {
 } from '@suite-native/trading-atoms';
 import { type BuyFormValues, type FiatCurrencyItem } from '@suite-native/trading-types';
 
-import { getAssetByEnabledNetworksFilter, getDefaultCountrySubdivision } from '../utils';
+import { getAssetByEnabledNetworksFilter } from '../utils';
 import {
     selectTradingResidenceCountry,
     selectTradingResidenceCountrySubdivision,
@@ -103,8 +104,8 @@ export const selectBuyFormDefaultValues = createMemoizedSelector(
             nonSanctionedRegional.getCountryOptionWithWorldwideFallback(country);
 
         const countrySubdivisionDefaultValue = getDefaultCountrySubdivision(
-            countryDefaultValue.value,
             residenceCountrySubdivision,
+            countryDefaultValue.value,
         );
 
         return {

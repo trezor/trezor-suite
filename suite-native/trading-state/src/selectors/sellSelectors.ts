@@ -6,6 +6,7 @@ import {
     type TradingPaymentMethodProps,
     bestSellQuotePerPaymentMethodProjection,
     getCurrencyLabel,
+    getDefaultCountrySubdivision,
     getTradingQuotesByPaymentMethod,
     nonSanctionedRegional,
     selectTradingSellInfo,
@@ -23,7 +24,6 @@ import {
     createMemoizedSelector,
     createMemoizedSelectorWithAccounts,
 } from '../reducers';
-import { getDefaultCountrySubdivision } from '../utils';
 
 const DEFAULT_FIAT_CURRENCY_FALLBACK = 'USD';
 export const selectTradingSell = (state: TradingRootState) => state.wallet.trading.sell;
@@ -67,8 +67,8 @@ export const selectSellFormDefaultValues = createMemoizedSelector(
             nonSanctionedRegional.getCountryOptionWithWorldwideFallback(country);
 
         const countrySubdivisionDefaultValue = getDefaultCountrySubdivision(
-            countryDefaultValue.value,
             residenceCountrySubdivision,
+            countryDefaultValue.value,
         );
 
         return {

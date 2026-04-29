@@ -86,11 +86,8 @@ describe('countryUtils', () => {
             expect(getCountrySubdivisionByCode('ZZ', 'US')).toBeUndefined();
         });
 
-        it('falls back to global search when country has no subdivisions', () => {
-            expect(getCountrySubdivisionByCode('TX', 'DE')).toEqual({
-                code: 'TX',
-                name: 'Texas',
-            });
+        it('returns undefined when country has no subdivisions', () => {
+            expect(getCountrySubdivisionByCode('TX', 'DE')).toBeUndefined();
         });
 
         it('searches globally when country is not provided', () => {

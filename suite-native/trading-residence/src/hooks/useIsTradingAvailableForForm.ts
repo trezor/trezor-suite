@@ -6,7 +6,7 @@ import { type TradingLocationFormValues } from '../types/tradingLocationForm';
 
 export const useIsTradingAvailableForForm = () => {
     const { watch } = useFormContext<TradingLocationFormValues>();
-    const countryCode = watch('country').value;
+    const countryCode = watch('country')?.value;
     const countrySubdivision = watch('countrySubdivision');
 
     return (

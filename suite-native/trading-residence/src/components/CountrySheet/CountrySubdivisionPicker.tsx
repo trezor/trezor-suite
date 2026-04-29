@@ -40,7 +40,7 @@ export const CountrySubdivisionPicker = ({
         return null;
     }
 
-    const valueTestID = testID ? `${testID}/value` : undefined;
+    const valueTestID = `${testID}/value`;
 
     return (
         <>

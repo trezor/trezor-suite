@@ -164,13 +164,17 @@ describe('ConfirmLocationButton', () => {
 
     it('should open subdivision picker and not confirm when subdivision is required but missing', async () => {
         const afterConfirmMock = jest.fn();
-        const { getByText } = renderWithStoreProvider(
+        const { getByText, queryByText } = renderWithStoreProvider(
             <ConfirmLocationButtonWithUSCountry afterConfirm={afterConfirmMock} />,
             {
                 wrapper: LocationFormWithCountrySubdivisionPickerControls,
                 store,
             },
         );
+
+        expect(
+            queryByText(getTranslation('tradingResidence.locationSettings.confirmButton')),
+        ).not.toBeOnTheScreen();
 
         await userEvent.press(
             getByText(

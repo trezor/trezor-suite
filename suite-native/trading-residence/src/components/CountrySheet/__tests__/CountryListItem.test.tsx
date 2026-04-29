@@ -7,9 +7,7 @@ describe('CountryListItem', () => {
     const usData = nonSanctionedRegional.countriesOptionsMap.get('US')!;
 
     const renderCountryListItem = (props: Partial<CountryListItemProps>) =>
-        renderWithBasicProvider(
-            <CountryListItem isSelected={false} onPress={jest.fn()} {...usData} {...props} />,
-        );
+        renderWithBasicProvider(<CountryListItem onPress={jest.fn()} {...usData} {...props} />);
 
     it('should render flag and name', () => {
         const { getByLabelText, getByText } = renderCountryListItem({});
