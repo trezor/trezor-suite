@@ -11,7 +11,7 @@ type SolanaMemoProps = {
 export const SolanaMemo = ({ close }: SolanaMemoProps) => {
     const {
         register,
-        formState: { errors },
+        formState: { errors, isValid },
         getDefaultValue,
         composeTransaction,
         resetDefaultValue,
@@ -35,23 +35,21 @@ export const SolanaMemo = ({ close }: SolanaMemoProps) => {
             <Column gap={12}>
                 <Row justifyContent="space-between">
                     <H4 typographyStyle="body-md">
-                        <Translation id="DESTINATION_TAG" />
+                        <Translation id="MEMO" />
                     </H4>
                     <IconButton
                         intent="neutral"
                         priority="secondary"
                         icon="x"
                         size="small"
-                        data-testid="send/close-solana-memo"
                         onClick={handleClose}
                     />
                 </Row>
                 <Input
-                    hasError={!!error}
-                    data-testid={inputName}
+                    hasError={!isValid}
                     defaultValue={inputValue}
                     maxLength={formInputsMaxLength.solanaMemo}
-                    bottomText={error?.message || null}
+                    bottomText={error?.message}
                     innerRef={inputRef}
                     {...inputField}
                 />

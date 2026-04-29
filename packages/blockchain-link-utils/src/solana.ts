@@ -714,15 +714,16 @@ const determineTransactionType = (
 };
 
 const getMemo = (tx: SolanaValidParsedTxWithMeta): string | undefined => {
-    const memoInstruction = tx.transaction.message.instructions.find(
-        ix =>
-            ix.programId === MEMO_PROGRAM_PUBLIC_KEY || ix.programId === MEMO_PROGRAM_PUBLIC_KEY_V1,
-    );
-    if (!memoInstruction || !('parsed' in memoInstruction)) return undefined;
+    const memos = tx.transaction.message.instructions
+        .filter(
+            ix =>
+                ix.programId === MEMO_PROGRAM_PUBLIC_KEY ||
+                ix.programId === MEMO_PROGRAM_PUBLIC_KEY_V1,
+        )
+        .map(ix => ('parsed' in ix ? (ix.parsed as unknown) : undefined))
+        .filter((p): p is string => typeof p === 'string');
 
-    const parsed = memoInstruction.parsed as unknown;
-
-    return typeof parsed === 'string' ? parsed : undefined;
+    return memos.length > 0 ? memos.join('\n') : undefined;
 };
 
 export const transformTransaction = (

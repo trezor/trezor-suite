@@ -275,7 +275,7 @@ export const BasicTxDetails = ({
                 )}
 
                 {tx.solanaSpecific?.memo && (
-                    <Item label={<Translation id="DESTINATION_TAG_SHORT" />} iconName="tag">
+                    <Item label={<Translation id="MEMO" />} iconName="tag">
                         <BlurUrls text={tx.solanaSpecific.memo} />
                     </Item>
                 )}

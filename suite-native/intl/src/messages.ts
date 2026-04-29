@@ -2169,6 +2169,7 @@ export const messages = {
                 transactionId: 'Transaction ID',
                 transactionIdCopied: 'Transaction ID copied',
                 memo: 'Memo',
+                memoCopied: 'Memo copied',
                 ethereum: {
                     gasLimit: 'Gas limit',
                     gasUsed: 'Gas used',
