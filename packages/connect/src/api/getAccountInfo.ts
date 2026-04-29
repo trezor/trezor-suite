@@ -263,11 +263,16 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
 
                 if (this.disposed) break;
 
+                // EVM descriptors may be names (.eth and other TLDs) which the backend resolved to hex
+                const isNamedEvmDescriptor =
+                    request.coinInfo.type === 'ethereum' && descriptor.includes('.');
+
                 // add account to responses
                 const account: AccountInfo = {
                     path: request.path,
                     ...info,
-                    descriptor, // override descriptor (otherwise eth checksum is lost)
+                    // override descriptor (otherwise eth checksum is lost)
+                    descriptor: isNamedEvmDescriptor ? info.descriptor : descriptor,
                     legacyXpub,
                     utxo,
                     descriptorChecksum,
