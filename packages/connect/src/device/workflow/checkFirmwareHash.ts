@@ -1,4 +1,4 @@
-import { randomBytes } from 'crypto';
+import { randomBytes } from '@noble/hashes/utils.js';
 
 import type { FirmwareHashCheckError, FirmwareHashCheckResult } from '@trezor/connect-common';
 import type { Log } from '@trezor/connect-common/src/utils/debug';
@@ -79,7 +79,7 @@ export const checkFirmwareHash = async ({
         internal_model: device.features.internal_model,
         firmwareVersion,
         fw: Buffer.from(strippedBinary),
-        key: randomBytes(32),
+        key: Buffer.from(randomBytes(32)),
     });
 
     // handle rejection of call by a counterfeit device. If unhandled, it crashes device initialization,

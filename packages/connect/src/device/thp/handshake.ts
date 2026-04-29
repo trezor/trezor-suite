@@ -1,4 +1,4 @@
-import { randomBytes } from 'crypto';
+import { randomBytes } from '@noble/hashes/utils.js';
 
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { protobufManager } from '@trezor/protobuf';
@@ -34,7 +34,7 @@ export const createThpChannel = async (device: IDevice) => {
 
     // set default channel and create random nonce
     thpState.setChannel(protocolThp.constants.THP_DEFAULT_CHANNEL);
-    const nonce = randomBytes(8);
+    const nonce = Buffer.from(randomBytes(8));
     const createChannel = await thpCall(device, 'ThpCreateChannelRequest', { nonce });
 
     const { properties, ...resp } = createChannel.message;
@@ -81,7 +81,7 @@ export const thpHandshake = async (device: IDevice, unlockPin = false) => {
     const tryToUnlock = unlockPin ? 1 : 0;
 
     // 1. Generate a new ephemeral X25519 key pair (host_ephemeral_privkey, host_ephemeral_pubkey).
-    const hostEphemeralKeys = protocolThp.getCurve25519KeyPair(randomBytes(32));
+    const hostEphemeralKeys = protocolThp.getCurve25519KeyPair(Buffer.from(randomBytes(32)));
 
     // 2. Send the message HandshakeInitiationReq(host_ephemeral_pubkey) to the host.
     const handshakeInit = await thpCall(device, 'ThpHandshakeInitRequest', {

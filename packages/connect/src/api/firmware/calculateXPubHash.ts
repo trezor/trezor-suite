@@ -1,4 +1,5 @@
-import { createHash } from 'crypto';
+import { sha256 } from '@noble/hashes/sha2.js';
+import { bytesToHex } from '@noble/hashes/utils.js';
 
 import type { XPubHashesPerBip43Path } from '@trezor/connect-common';
 
@@ -7,7 +8,7 @@ import type { XPubHashesPerBip43Path } from '@trezor/connect-common';
  * This function provides a conventional way to hash them.
  */
 export const calculateXPubHash = (xpub: string): string =>
-    createHash('sha256').update(xpub, 'utf8').digest('hex');
+    bytesToHex(sha256(new TextEncoder().encode(xpub)));
 
 export const calculateXPubHashes = (xpubs: Record<string, string>): XPubHashesPerBip43Path => {
     const hashes: XPubHashesPerBip43Path = {};

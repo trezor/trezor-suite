@@ -1,4 +1,5 @@
-import { createHash, randomBytes } from 'crypto';
+import { sha256 } from '@noble/hashes/sha2.js';
+import { bytesToHex, concatBytes, randomBytes } from '@noble/hashes/utils.js';
 
 import type { UiResponseThpPairingTag } from '@trezor/connect-common';
 import { DEVICE } from '@trezor/connect-common';
@@ -11,16 +12,18 @@ import * as settingsStore from '../../data/settingsStore';
 import type { IDevice } from '../../types/idevice';
 import { sanitizeString } from '../../utils/formatUtils';
 
+const sha256Hex = (...parts: Uint8Array[]): string => bytesToHex(sha256(concatBytes(...parts)));
+
 const processQrCodeTag = async (device: IDevice, value: string) => {
     const thpState = device.getThpState();
     if (!thpState?.handshakeCredentials) {
         throw ERRORS.TypedError('Device_ThpStateMissing');
     }
 
-    const tagSha = createHash('sha256')
-        .update(thpState.handshakeCredentials.handshakeHash)
-        .update(Buffer.from(value, 'hex'))
-        .digest('hex');
+    const tagSha = sha256Hex(
+        thpState.handshakeCredentials.handshakeHash,
+        Buffer.from(value, 'hex'),
+    );
     const qrCodeSecret = await thpCall(device, 'ThpQrCodeTag', {
         tag: tagSha,
     });
@@ -43,11 +46,11 @@ const processNfcTag = async (device: IDevice, value: string) => {
         throw new Error('missing nfcSecret');
     }
 
-    const tagSha = createHash('sha256')
-        .update(Buffer.from([protocolThp.ThpPairingMethod.NFC]))
-        .update(thpState.handshakeCredentials.handshakeHash)
-        .update(Buffer.from(value, 'hex'))
-        .digest('hex');
+    const tagSha = sha256Hex(
+        Buffer.from([protocolThp.ThpPairingMethod.NFC]),
+        thpState.handshakeCredentials.handshakeHash,
+        Buffer.from(value, 'hex'),
+    );
 
     const nfcTagTrezor = await thpCall(device, 'ThpNfcTagHost', {
         tag: tagSha,
@@ -302,7 +305,7 @@ export const thpPairing = async (device: IDevice) => {
     // State HP2
     if (selectMethod.type === 'ThpCodeEntryCommitment') {
         // store handshakeCommitment and validate later in `processCodeEntry`
-        const codeEntryChallenge = randomBytes(32);
+        const codeEntryChallenge = Buffer.from(randomBytes(32));
         const handshakeCommitment = Buffer.from(selectMethod.message.commitment, 'hex');
         thpState.updateHandshakeCredentials({
             handshakeCommitment,
@@ -328,7 +331,7 @@ export const thpPairing = async (device: IDevice) => {
     if (selectMethod.type === 'ThpPairingPreparationsFinished') {
         if (thpState.pairingMethod === protocolThp.ThpPairingMethod.NFC) {
             // generate random secret and store it
-            thpState.setNfcSecret(randomBytes(16));
+            thpState.setNfcSecret(Buffer.from(randomBytes(16)));
         }
 
         // State HP6 and HP7
