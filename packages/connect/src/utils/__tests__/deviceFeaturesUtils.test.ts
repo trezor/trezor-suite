@@ -228,6 +228,7 @@ describe('utils/deviceFeaturesUtils', () => {
                 dsol: 'update-required',
                 thod: 'update-required',
                 tropicDeviceAuthentication: 'no-support',
+                mcuDeviceAuthentication: 'no-support',
                 trx: 'no-capability',
                 ttrx: 'no-capability',
                 tsep: 'update-required',
