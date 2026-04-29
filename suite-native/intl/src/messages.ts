@@ -1126,9 +1126,9 @@ export const messages = {
                     title: 'Eject wallets',
                     subtitle: 'Hide wallet without connected Trezor',
                 },
-                coinEnabling: {
-                    title: 'Coins',
-                    subtitle: 'Manage assets that you want to use',
+                networks: {
+                    title: 'Networks',
+                    subtitle: 'Enable networks to receive assets',
                 },
                 suiteSync: {
                     title: 'Suite Sync',
@@ -1389,6 +1389,15 @@ export const messages = {
                 subtitle: 'Use facial or fingerprint verification to unlock the app.',
             },
             discreetMode: 'Discreet mode',
+        },
+        networks: {
+            title: 'Networks',
+            subtitle: {
+                configurable:
+                    'Enable networks to buy or receive assets. Turn off networks you don’t intend to use to speed up loading.',
+                bitcoinOnly:
+                    'Your device is running Bitcoin-only firmware. There’s nothing more to configure here.',
+            },
         },
         coinEnabling: {
             initialSetup: {

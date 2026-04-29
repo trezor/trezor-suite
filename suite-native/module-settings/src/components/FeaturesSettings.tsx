@@ -46,9 +46,9 @@ export const FeaturesSettings = () => {
             />
             <AppSettingsCardWithIconLayout
                 icon="coins"
-                title={<Translation id="moduleSettings.items.features.coinEnabling.title" />}
-                subtitle={<Translation id="moduleSettings.items.features.coinEnabling.subtitle" />}
-                onPress={() => navigateTo(SettingsStackRoutes.SettingsCoinEnabling)}
+                title={<Translation id="moduleSettings.items.features.networks.title" />}
+                subtitle={<Translation id="moduleSettings.items.features.networks.subtitle" />}
+                onPress={() => navigateTo(SettingsStackRoutes.SettingsNetworks)}
                 isDisabled={hasDiscovery}
                 testID="@settings/coin-enabling"
             />

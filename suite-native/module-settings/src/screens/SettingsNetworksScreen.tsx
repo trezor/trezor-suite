@@ -6,7 +6,7 @@ import { selectDiscoveryNetworkSymbols } from '@suite-native/discovery';
 import { Translation } from '@suite-native/intl';
 import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
 
-export const SettingsCoinEnablingScreen = () => {
+export const SettingsNetworksScreen = () => {
     const availableNetworkSymbols = useSelector(selectDiscoveryNetworkSymbols);
     const hasBitcoinOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);
 
@@ -17,8 +17,16 @@ export const SettingsCoinEnablingScreen = () => {
         <Screen
             header={
                 <DynamicScreenHeader
-                    title={<Translation id="moduleSettings.coinEnabling.settings.title" />}
-                    subtitle={<Translation id="moduleSettings.coinEnabling.settings.subtitle" />}
+                    title={<Translation id="moduleSettings.networks.title" />}
+                    subtitle={
+                        <Translation
+                            id={
+                                showNetworks
+                                    ? 'moduleSettings.networks.subtitle.configurable'
+                                    : 'moduleSettings.networks.subtitle.bitcoinOnly'
+                            }
+                        />
+                    }
                 />
             }
         >

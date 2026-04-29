@@ -11,9 +11,9 @@ import { BitcoinBackendsScreen } from '../screens/BitcoinBackendsScreen';
 import { SettingsAdvancedScreen } from '../screens/SettingsAdvancedScreen';
 import { SettingsAppLogScreen } from '../screens/SettingsAppLogScreen';
 import { SettingsAutoEjectScreen } from '../screens/SettingsAutoEjectScreen';
-import { SettingsCoinEnablingScreen } from '../screens/SettingsCoinEnablingScreen';
 import { SettingsDustPhishingScreen } from '../screens/SettingsDustPhishingScreen';
 import { SettingsExperimentalScreen } from '../screens/SettingsExperimentalScreen';
+import { SettingsNetworksScreen } from '../screens/SettingsNetworksScreen';
 import { SettingsPreferencesScreen } from '../screens/SettingsPreferencesScreen';
 import { SettingsPrivacyScreen } from '../screens/SettingsPrivacyScreen';
 import { SettingsSuiteSyncScreen } from '../screens/SettingsSuiteSyncScreen';
@@ -52,9 +52,9 @@ export const SettingsStackNavigator = () => (
             component={SettingsAppLogScreen}
         />
         <SettingsStack.Screen
-            options={{ title: SettingsStackRoutes.SettingsCoinEnabling }}
-            name={SettingsStackRoutes.SettingsCoinEnabling}
-            component={SettingsCoinEnablingScreen}
+            options={{ title: SettingsStackRoutes.SettingsNetworks }}
+            name={SettingsStackRoutes.SettingsNetworks}
+            component={SettingsNetworksScreen}
         />
         <SettingsStack.Screen
             options={{ title: SettingsStackRoutes.SettingsSuiteSync }}
