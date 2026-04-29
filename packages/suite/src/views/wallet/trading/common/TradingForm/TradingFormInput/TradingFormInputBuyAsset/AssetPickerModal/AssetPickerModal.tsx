@@ -108,6 +108,8 @@ export const AssetPickerModal = memo(function AssetPickerModalInner({
                 networkFilter={networkSymbol}
                 setNetworkFilter={setNetworkSymbol}
                 networks={networks}
+                // eslint-disable-next-line jsx-a11y/no-autofocus
+                autoFocus
             />
 
             <Divider margin={{ top: 16 }} />
