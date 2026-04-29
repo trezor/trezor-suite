@@ -37,7 +37,6 @@ export class AssetsSection {
 
     @step()
     async enableNetworkViaActivateAssetsModal(symbol: NetworkSymbol) {
-        await this.enableMoreCoins.click();
         await this.activateAssetsModalNetworkButton(symbol).click();
         await this.activateAssetsModalSaveButton.click();
     }

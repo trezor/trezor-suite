@@ -26,6 +26,7 @@ test.describe('Assets', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
     });
 
     test('New asset is shown in both grid and row', async ({ page, assetsSection }) => {
+        await assetsSection.enableMoreCoins.click();
         await assetsSection.enableNetworkViaActivateAssetsModal('eth');
         await page.discoveryShouldFinish();
         await assetsSection.verifyAssetContents();

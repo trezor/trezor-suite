@@ -1,10 +1,11 @@
-import { Locator, Page, expect } from '@playwright/test';
+import { Locator, Page } from '@playwright/test';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { step } from '../common';
 import { DevicePrompt } from './devicePrompt';
 import { DeviceFixture } from '../device';
+import { expect } from '../testExtends/customMatchers';
 
 export type graphRangeOptions = 'day' | 'week' | 'month' | 'year' | 'all';
 export type PromoBannerType = 'tex' | 'ts7';
@@ -59,6 +60,9 @@ export class DashboardPage {
     readonly discoveryEmptyPrimaryButton: Locator;
     readonly promoBannerButton = (bannerTyp: PromoBannerType): Locator =>
         this.page.getByTestId(`@dashboard/promo-banner/${bannerTyp}/button`);
+    readonly discoveryFailed: Locator;
+    readonly discoveryFailedHeader: Locator;
+    readonly discoveryFailedDesc: Locator;
 
     constructor(
         private readonly page: Page,
@@ -115,6 +119,9 @@ export class DashboardPage {
         this.discoveryEmptyPrimaryButton = this.page.getByTestId(
             '@exception/discovery-empty/brand-button',
         );
+        this.discoveryFailed = this.page.getByTestId('@exception/discovery-failed');
+        this.discoveryFailedHeader = this.page.getByTestId('@exception/discovery-failed/header');
+        this.discoveryFailedDesc = this.page.getByTestId('@exception/discovery-failed/description');
     }
 
     @step()
@@ -219,5 +226,26 @@ export class DashboardPage {
     @step()
     async openDevice(index: number) {
         await this.page.getByTestId(`@switch-device/wallet-on-index/${index}`).click();
+    }
+
+    @step()
+    async verifyDiscoveryEmpty() {
+        await expect(this.discoveryEmptyHeader).toHaveTranslation('TR_YOUR_WALLET_IS_READY_WHAT');
+        await expect(this.discoveryEmptyDesc).toHaveTranslation(
+            'TR_DASHBOARD_ACTIVATE_ASSETS_DESC',
+        );
+        await expect(this.discoveryEmptyPrimaryButton).toHaveTranslation(
+            'TR_DASHBOARD_GET_STARTED',
+        );
+    }
+
+    @step()
+    async verifyDiscoveryFailed() {
+        await expect(this.discoveryFailed).toBeVisible();
+        await expect(this.discoveryFailedHeader).toHaveTranslation('TR_DASHBOARD_DISCOVERY_ERROR');
+        await expect(this.discoveryFailedDesc).toContainTranslation(
+            'TR_DASHBOARD_DISCOVERY_ERROR_PARTIAL_DESC',
+            { values: { details: 'Device not found' } },
+        );
     }
 }
