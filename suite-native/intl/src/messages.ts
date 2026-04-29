@@ -1872,6 +1872,42 @@ export const messages = {
             continueButton: 'Continue setup',
         },
     },
+    moduleNfcOnboarding: {
+        backupType: {
+            callout: "Let's create your backup",
+            title: 'Wallet backup type',
+            description:
+                'Your wallet backup consists of 3 Trezor wallet backup tags. Each tag stores 1 of the 3 unique shares of the backup.',
+            continueButton: 'Continue with NFC backup',
+            chooseDifferentButton: 'Choose different backup type',
+        },
+        howItWorks: {
+            callout: 'Recover your assets, even if one tag is lost',
+            title: 'You can recover your wallet even if one backup tag is lost or damaged.',
+            description:
+                "Any 2 of the 3 backup tags can recover your wallet. It doesn't matter which tags you use.",
+            createBackupButton: 'Create backup',
+        },
+        noNfcTags: {
+            callout: "Let's create your backup",
+            title: "Don't have NFC backup tags?",
+            subtitle: 'You can finish setup now and create your wallet backup later.',
+            finishSetup: {
+                badge: 'Recommended',
+                title: 'Finish setup and order tags',
+                description:
+                    "Finish setting up your device. Then you'll be redirected to the Trezor Store to order NFC backup tags. Create your wallet backup once they arrive.",
+                button: 'Finish setup',
+            },
+            wordlistBackup: {
+                badge: 'Alternative',
+                title: 'Create wordlist backup',
+                description:
+                    'Write down one or more 20-word wordlists (shares) on paper or metal. You can upgrade to NFC backup later.',
+                button: 'Create wordlist backup',
+            },
+        },
+    },
     moduleAccountManagement: {
         accountsScreen: {
             title: 'My assets',
