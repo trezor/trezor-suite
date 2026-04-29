@@ -1,8 +1,9 @@
 import { forwardRef, useState } from 'react';
-import { Pressable } from 'react-native';
+import { Platform, Pressable } from 'react-native';
 
 import { type InputType } from '@suite-native/atoms';
 import { Icon, type IconName } from '@suite-native/icons';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { type FieldProps, TextInputField } from './TextInputField';
 
@@ -10,6 +11,11 @@ type ToggleSecureTextIconProps = {
     onPress: () => void;
     isTextHidden: boolean;
 };
+
+// Ensures that the caps lock indicator shown on iOS doesn't overlap with the right icon.
+const inputStyle = prepareNativeStyle(({ spacings }) => ({
+    marginRight: Platform.OS === 'ios' ? spacings.sp16 : 0,
+}));
 
 const ToggleSecureTextIcon = ({ onPress, isTextHidden }: ToggleSecureTextIconProps) => {
     const iconName: IconName = isTextHidden ? 'eye' : 'eyeSlash';
@@ -24,6 +30,7 @@ const ToggleSecureTextIcon = ({ onPress, isTextHidden }: ToggleSecureTextIconPro
 export const SecureTextInputField = forwardRef<InputType, FieldProps>(
     ({ ...textInputFieldProps }, ref) => {
         const [isTextHidden, setIsTextHidden] = useState(true);
+        const { applyStyle } = useNativeStyles();
 
         return (
             <TextInputField
@@ -41,6 +48,7 @@ export const SecureTextInputField = forwardRef<InputType, FieldProps>(
                 importantForAutofill="no"
                 autoComplete="off"
                 textContentType="oneTimeCode"
+                style={applyStyle(inputStyle)}
             />
         );
     },

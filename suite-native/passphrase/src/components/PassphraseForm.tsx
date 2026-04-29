@@ -99,7 +99,6 @@ export const PassphraseForm = ({
                             autoCapitalize="none"
                             onFocus={handleFocusInput}
                             onBlur={() => setIsInputFocused(false)}
-                            secureTextEntry
                             testID="@passphrase/passphraseInput"
                         />
                         {isDirty && (
