@@ -191,6 +191,9 @@ const usedIcons = [
     'x',
     'xCircle',
     'identificationCard',
+    'money',
+    'user',
+    'arrowFatLinesRight',
 ] as const satisfies AllAvailableIcons[];
 
 const tempAssetsDir = path.join(__dirname, 'assetsTemp');
