@@ -9,7 +9,7 @@ import { YieldActionStep } from '../common/YieldActionStep';
 import { YieldActionStepWarning } from '../common/YieldActionStepWarning';
 import { YieldApproveModal } from '../common/YieldApproveModal';
 import { YieldApproveStep } from '../common/YieldApproveStep';
-import { YieldFlowComplete } from '../common/YieldFlowComplete';
+import { YieldFlowCompleteSupply } from '../common/YieldFlowCompleteSupply';
 
 export const YieldSupplyForm = () => {
     const {
@@ -57,8 +57,7 @@ export const YieldSupplyForm = () => {
             <Column width="100%" alignItems="center">
                 <Column gap={24} width="100%" maxWidth={500}>
                     {flow.currentStep === 'complete' ? (
-                        <YieldFlowComplete
-                            flowType="supply"
+                        <YieldFlowCompleteSupply
                             apy={apy}
                             input={{
                                 token,

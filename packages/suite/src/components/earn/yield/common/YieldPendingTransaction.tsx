@@ -21,6 +21,8 @@ const getPendingTransactionLabel = (kind: YieldPendingTransactionState['type']):
             return 'TR_EARN_YIELD_PENDING_SUPPLY';
         case 'withdraw':
             return 'TR_EARN_YIELD_PENDING_WITHDRAW';
+        case 'claim':
+            return 'TR_EARN_YIELD_PENDING_CLAIM';
     }
 };
 

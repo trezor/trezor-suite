@@ -6,8 +6,8 @@ import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { Column, Row, Spinner, Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
-import { YieldRewardItem } from './YieldRewardItem';
 import { type MerkleRewardWithFiat } from '../../dashboard/yield/hooks/useMerkleRewards';
+import { YieldRewardItem } from '../common/YieldRewardItem';
 
 type YieldRewardsListProps = {
     rewards: MerkleRewardWithFiat[];
@@ -34,9 +34,14 @@ export const YieldRewardsList = ({ rewards, isLoading }: YieldRewardsListProps) 
     }
 
     return (
-        <Column gap={16} hasDivider>
+        <Column gap={16}>
             {rewards.map((reward, index) => {
                 const network = getNetworkByEvmChainId(reward.token.chainId);
+
+                if (!network) {
+                    return null;
+                }
+
                 const claimableUnits = subunitsToUnits({
                     value: asAmountSubunit(new BigNumber(reward.claimable)),
                     decimals: reward.token.decimals,
@@ -45,6 +50,8 @@ export const YieldRewardsList = ({ rewards, isLoading }: YieldRewardsListProps) 
                     symbol: toTokenSymbol(reward.token.symbol),
                     withSymbol: false,
                     isBalance: true,
+                    maxDisplayedDecimals: reward.token.decimals,
+                    isEllipsisAppended: false,
                 });
                 const formattedFiatAmount = reward.fiat.claimable
                     ? BaseCurrencyAmountFormatter.format(
@@ -59,7 +66,7 @@ export const YieldRewardsList = ({ rewards, isLoading }: YieldRewardsListProps) 
                         formattedFiatAmount={formattedFiatAmount}
                         tokenSymbol={reward.token.symbol}
                         tokenAddress={reward.token.address}
-                        networkSymbol={network?.symbol}
+                        networkSymbol={network.symbol}
                     />
                 );
             })}

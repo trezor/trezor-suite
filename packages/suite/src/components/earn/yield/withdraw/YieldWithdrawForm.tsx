@@ -7,7 +7,7 @@ import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmoun
 import { useYieldWithdrawContext } from './useYieldWithdrawContext';
 import { YieldActionStep } from '../common/YieldActionStep';
 import { YieldActionStepWarning } from '../common/YieldActionStepWarning';
-import { YieldFlowComplete } from '../common/YieldFlowComplete';
+import { YieldFlowCompleteWithdraw } from '../common/YieldFlowCompleteWithdraw';
 
 export const YieldWithdrawForm = () => {
     const {
@@ -36,8 +36,7 @@ export const YieldWithdrawForm = () => {
         <Column width="100%" alignItems="center">
             <Column gap={24} width="100%" maxWidth={500}>
                 {flow.currentStep === 'complete' ? (
-                    <YieldFlowComplete
-                        flowType="withdraw"
+                    <YieldFlowCompleteWithdraw
                         input={{
                             token: receiptToken,
                             amount: completedReceiptAmount,
