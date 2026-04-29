@@ -313,4 +313,7 @@ export const SKIP = [
     'DebugLinkFlashErase',
     'DebugLinkEraseSdCard',
     'DebugLinkWatchLayout',
+    // currently not used, needs patching
+    'EthereumABIValueInfo',
+    'EthereumABITupleInfo',
 ];
