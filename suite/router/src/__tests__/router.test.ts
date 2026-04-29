@@ -60,6 +60,13 @@ describe('router', () => {
                     yieldId: 'vault-1',
                 }),
             ).toEqual('/earn/withdraw#/eth/0/normal/vault-1');
+            expect(
+                test('earn-claim', {
+                    symbol: 'eth',
+                    accountIndex: 0,
+                    accountType: 'normal',
+                }),
+            ).toEqual('/earn/claim#/eth/0/normal');
             // tests below with intentionally mixed # params
             expect(
                 test('wallet-index', {
@@ -228,6 +235,21 @@ describe('router', () => {
                 app: 'earn',
                 params: undefined,
                 route: getRoute('earn-supply'),
+            });
+
+            expect(
+                getAppWithParams({
+                    pathname: '/earn/claim',
+                    hash: '#/eth/0/normal',
+                }),
+            ).toEqual({
+                app: 'earn',
+                params: {
+                    symbol: 'eth',
+                    accountIndex: 0,
+                    accountType: 'normal',
+                },
+                route: getRoute('earn-claim'),
             });
         });
     });

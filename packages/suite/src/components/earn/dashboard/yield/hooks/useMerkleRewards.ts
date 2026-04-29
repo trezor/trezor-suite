@@ -8,13 +8,18 @@ import {
     useGetMerkleRewards,
 } from '@suite-common/earn-stablecoin-api';
 import { commonQueryKeys } from '@suite-common/react-query';
-import { getNetwork, getNetworkByEvmChainId } from '@suite-common/wallet-config';
+import {
+    type NetworkSymbol,
+    getNetwork,
+    getNetworkByEvmChainId,
+} from '@suite-common/wallet-config';
 import {
     selectBaseCurrency,
     selectCurrentFiatRates,
     updateFiatRatesThunk,
 } from '@suite-common/wallet-core';
 import {
+    type BaseCurrencyAmount,
     type RatesByKey,
     type TickerId,
     type Timestamp,
@@ -34,22 +39,37 @@ import { BigNumber, unique } from '@trezor/utils';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
-import { type YieldAccountOpportunity } from '../types';
+export type MerkleRewardWithFiat =
+    MerkleRewardsByChainAndAddress[keyof MerkleRewardsByChainAndAddress][number] & {
+        claimable: string;
+        fiat: {
+            amount: BaseCurrencyAmount | null;
+            claimed: BaseCurrencyAmount | null;
+            pending: BaseCurrencyAmount | null;
+            claimable: BaseCurrencyAmount | null;
+        };
+    };
 
-function getMerkleRewardsQueryEntries(yieldAccountOpportunities: YieldAccountOpportunity[]) {
-    const candidatesForMerkleRewards = yieldAccountOpportunities
-        .filter(
-            opportunity =>
-                opportunity.hasVaultPosition &&
-                opportunity.account &&
-                getNetwork(opportunity.networkSymbol),
-        )
-        .map(opportunity =>
-            ChainAddressKey.compose(
-                getNetwork(opportunity.networkSymbol)?.chainId as number,
-                opportunity.account?.descriptor as string,
-            ),
-        );
+export type MerkleRewardsWithFiatRecord = Record<
+    keyof MerkleRewardsByChainAndAddress,
+    MerkleRewardWithFiat[]
+>;
+
+export type MerkleRewardsSource = {
+    networkSymbol: NetworkSymbol;
+    address: string;
+};
+
+function getMerkleRewardsQueryEntries(sources: MerkleRewardsSource[]) {
+    const candidatesForMerkleRewards = sources.flatMap(source => {
+        const network = getNetwork(source.networkSymbol);
+
+        if (!network?.chainId) {
+            return [];
+        }
+
+        return [ChainAddressKey.compose(network.chainId, source.address)];
+    });
 
     return unique(candidatesForMerkleRewards).map(candidate => {
         const { chainId, address } = ChainAddressKey.parse(candidate);
@@ -88,12 +108,21 @@ function extendMerkleRewardsWithFiat(
             const network = getNetworkByEvmChainId(chainId);
 
             const rewardsWithFiat = rewards.map(reward => {
+                const claimable = new BigNumber(reward.amount)
+                    .minus(reward.claimed)
+                    .minus(reward.pending)
+                    .toFixed();
+
                 if (!network) {
                     return {
                         ...reward,
-                        amountFiat: null,
-                        claimedFiat: null,
-                        pendingFiat: null,
+                        claimable,
+                        fiat: {
+                            amount: null,
+                            claimed: null,
+                            pending: null,
+                            claimable: null,
+                        },
                     };
                 }
 
@@ -113,15 +142,15 @@ function extendMerkleRewardsWithFiat(
                     missingRateTickers.push(ticker);
                 }
 
-                const amountFiat = toFiatFromSubunits(reward.amount, reward.token.decimals, rate);
-                const claimedFiat = toFiatFromSubunits(reward.claimed, reward.token.decimals, rate);
-                const pendingFiat = toFiatFromSubunits(reward.pending, reward.token.decimals, rate);
-
                 return {
                     ...reward,
-                    amountFiat,
-                    claimedFiat,
-                    pendingFiat,
+                    claimable,
+                    fiat: {
+                        amount: toFiatFromSubunits(reward.amount, reward.token.decimals, rate),
+                        claimed: toFiatFromSubunits(reward.claimed, reward.token.decimals, rate),
+                        pending: toFiatFromSubunits(reward.pending, reward.token.decimals, rate),
+                        claimable: toFiatFromSubunits(claimable, reward.token.decimals, rate),
+                    },
                 };
             });
 
@@ -136,14 +165,14 @@ function extendMerkleRewardsWithFiat(
 }
 
 /**
- * - Fetches Merkle rewards from provided `YieldAccountOpportunity`.
+ * - Fetches Merkle rewards from provided chain/address query entries.
  * - Extends Merkle rewards with fiat rates (and fetches missing rate tickers).
  */
-export function useMerkleRewards(yieldAccountOpportunities: YieldAccountOpportunity[]) {
+export function useMerkleRewards(sources: MerkleRewardsSource[]) {
     const dispatch = useDispatch();
     const merkleRewardsQueryEntries = useMemo(
-        () => getMerkleRewardsQueryEntries(yieldAccountOpportunities),
-        [yieldAccountOpportunities],
+        () => getMerkleRewardsQueryEntries(sources),
+        [sources],
     );
 
     const baseCurrency = useSelector(selectBaseCurrency);
@@ -175,7 +204,7 @@ export function useMerkleRewards(yieldAccountOpportunities: YieldAccountOpportun
             (result, rewards) =>
                 result.plus(
                     rewards.reduce(
-                        (acc, reward) => acc.plus(reward.amountFiat ?? '0'),
+                        (acc, reward) => acc.plus(reward.fiat.claimable ?? '0'),
                         new BigNumber(0),
                     ),
                 ),

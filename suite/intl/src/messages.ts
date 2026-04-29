@@ -9578,6 +9578,14 @@ export const messages = defineMessages({
         id: 'TR_EARN_YIELD_WITHDRAW_COMPLETE_DESCRIPTION',
         defaultMessage: '{displaySymbol} is now available in your account.',
     },
+    TR_EARN_YIELD_CLAIM_COMPLETE: {
+        id: 'TR_EARN_YIELD_CLAIM_COMPLETE',
+        defaultMessage: 'Claim complete',
+    },
+    TR_EARN_YIELD_CLAIM_COMPLETE_DESCRIPTION: {
+        id: 'TR_EARN_YIELD_CLAIM_COMPLETE_DESCRIPTION',
+        defaultMessage: 'Rewards added to your balance.',
+    },
     TR_EARN_YIELD_STATUS: {
         id: 'TR_EARN_YIELD_STATUS',
         defaultMessage: 'Status',
@@ -9779,8 +9787,8 @@ export const messages = defineMessages({
         id: 'TR_STAKING_REWARDS_REMAIN_INTACT',
         defaultMessage: 'Your past rewards remain safe and intact.',
     },
-    TR_STAKING_REWARDS_NETWORK_FEE_WARNING: {
-        id: 'TR_STAKING_REWARDS_NETWORK_FEE_WARNING',
+    TR_EARN_REWARDS_NETWORK_FEE_WARNING: {
+        id: 'TR_EARN_REWARDS_NETWORK_FEE_WARNING',
         defaultMessage:
             'The network fee currently exceeds your rewards. Consider waiting until your rewards increase before claiming.',
     },
@@ -9874,8 +9882,8 @@ export const messages = defineMessages({
         defaultMessage:
             'An epoch in Solana is approximately {count, plural, one {# day} other {# days}} long.',
     },
-    TR_STAKE_REWARDS_ARE_EMPTY: {
-        id: 'TR_STAKE_REWARDS_ARE_EMPTY',
+    TR_EARN_REWARDS_ARE_EMPTY: {
+        id: 'TR_EARN_REWARDS_ARE_EMPTY',
         defaultMessage: 'No rewards',
     },
     TR_STAKE_WAIT_TO_CHECK_REWARDS: {
@@ -10307,8 +10315,8 @@ export const messages = defineMessages({
         id: 'TR_STAKE_UNSTAKE_TO_CLAIM',
         defaultMessage: 'Unstake to claim',
     },
-    TR_STAKE_CLAIM_REWARDS: {
-        id: 'TR_STAKE_CLAIM_REWARDS',
+    TR_EARN_CLAIM_REWARDS: {
+        id: 'TR_EARN_CLAIM_REWARDS',
         defaultMessage: 'Claim rewards',
     },
     TR_STAKE_CHANGE_DELEGATE: {
@@ -11591,5 +11599,25 @@ export const messages = defineMessages({
     TR_OUTSIDE_STAKING_CARD_TEXT: {
         id: 'TR_OUTSIDE_STAKING_CARD_TEXT',
         defaultMessage: '{amount} {displaySymbol} (= {fiat}) is currently staked elsewhere.',
+    },
+    TR_EARN_YIELD_CLAIMABLE_REWARDS: {
+        id: 'TR_EARN_YIELD_CLAIMABLE_REWARDS',
+        defaultMessage: 'Claimable rewards: {amount}',
+    },
+    TR_EARN_YIELD_CLAIMABLE_REWARDS_NO_AMOUNT: {
+        id: 'TR_EARN_YIELD_CLAIMABLE_REWARDS_NO_AMOUNT',
+        defaultMessage: 'Claimable rewards',
+    },
+    TR_EARN_YIELD_CLAIM: {
+        id: 'TR_EARN_YIELD_CLAIM',
+        defaultMessage: 'Claim',
+    },
+    TR_EARN_YIELD_CLAIM_MODAL_TITLE: {
+        id: 'TR_EARN_YIELD_CLAIM_MODAL_TITLE',
+        defaultMessage: 'Claimable rewards',
+    },
+    TR_EARN_YIELD_CLAIM_MODAL_SUBTITLE: {
+        id: 'TR_EARN_YIELD_CLAIM_MODAL_SUBTITLE',
+        defaultMessage: 'Select an account to claim rewards.',
     },
 } as const);

@@ -397,7 +397,7 @@ export const StakingCard = ({
                             intent="brand"
                             data-testid="@account/staking/claim-rewards-button"
                         >
-                            <Translation id="TR_STAKE_CLAIM_REWARDS" />
+                            <Translation id="TR_EARN_CLAIM_REWARDS" />
                         </Button>
                     )}
                     <Tooltip content={unstakingMessageContent}>

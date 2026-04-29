@@ -108,9 +108,9 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
 
             await test.step('Verify warning on too small reward claim', async () => {
                 await stakingSection.claimRewardsButton.click();
-                await expect(page.modalHeader).toHaveTranslation('TR_STAKE_CLAIM_REWARDS');
+                await expect(page.modalHeader).toHaveTranslation('TR_EARN_CLAIM_REWARDS');
                 await expect(stakingSection.claimWarningBanner).toHaveTranslation(
-                    'TR_STAKING_REWARDS_NETWORK_FEE_WARNING',
+                    'TR_EARN_REWARDS_NETWORK_FEE_WARNING',
                 );
                 await expect(stakingSection.cardanoModalRewardAmount).toHaveText(
                     tooSmallRewardAmountFormatted,
@@ -156,7 +156,7 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
 
             await test.step('Initiate reward claim with big enough reward', async () => {
                 await stakingSection.claimRewardsButton.click();
-                await expect(page.modalHeader).toHaveTranslation('TR_STAKE_CLAIM_REWARDS');
+                await expect(page.modalHeader).toHaveTranslation('TR_EARN_CLAIM_REWARDS');
                 await expect(stakingSection.claimWarningBanner).toBeHidden();
                 await expect(stakingSection.cardanoModalRewardAmount).toHaveText(
                     bigRewardAmountFormatted,

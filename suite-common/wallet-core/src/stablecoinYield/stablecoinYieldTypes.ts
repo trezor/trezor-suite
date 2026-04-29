@@ -40,3 +40,9 @@ export type YieldPendingTransactionState = {
     txid: string;
     amount: string;
 };
+
+export type YieldFlowCompleteRewardItem = {
+    token: YieldFlowDisplayToken;
+    value: string;
+    fiatValue?: string | null;
+};
