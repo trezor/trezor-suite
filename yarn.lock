@@ -12935,7 +12935,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/helpers@workspace:suite-native/helpers"
   dependencies:
-    "@mobily/ts-belt": "npm:^3.13.1"
     "@reduxjs/toolkit": "npm:2.11.2"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
@@ -13352,6 +13351,7 @@ __metadata:
     "@suite-native/config": "workspace:*"
     "@suite-native/confirm-on-trezor": "workspace:*"
     "@suite-native/device-manager": "workspace:*"
+    "@suite-native/formatters": "workspace:*"
     "@suite-native/icons": "workspace:^"
     "@suite-native/intl": "workspace:^"
     "@suite-native/navigation": "workspace:*"
@@ -14084,6 +14084,7 @@ __metadata:
     "@suite-common/wallet-types": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/clipboard": "workspace:*"
+    "@suite-native/formatters": "workspace:*"
     "@suite-native/icons": "workspace:*"
     "@suite-native/intl": "workspace:*"
     "@suite-native/labeling": "workspace:*"

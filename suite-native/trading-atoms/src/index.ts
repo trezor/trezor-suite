@@ -15,7 +15,6 @@ export * from './components/TradeInfo/TradeInfoHeader';
 export * from './components/TradeInfo/TradeInfoRow';
 export * from './components/TradeInfo/TradeSideCard';
 
-export * from './components/AccountAddress';
 export * from './components/AmountEditingDoneButton';
 export * from './components/BottomSheetSectionList';
 export * from './components/CardTitle';

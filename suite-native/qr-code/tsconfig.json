@@ -14,6 +14,7 @@
         },
         { "path": "../atoms" },
         { "path": "../clipboard" },
+        { "path": "../formatters" },
         { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../labeling" },

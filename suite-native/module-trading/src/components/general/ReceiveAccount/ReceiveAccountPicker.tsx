@@ -6,6 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import { type TradingType } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Text, VStack } from '@suite-native/atoms';
+import { AddressFormatter } from '@suite-native/formatters';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { type CombinedLabelingState, selectAccountLabel } from '@suite-native/labeling';
 import {
@@ -14,7 +15,7 @@ import {
     type TradingStackParamList,
     TradingStackRoutes,
 } from '@suite-native/navigation';
-import { AccountAddress, OverviewRow } from '@suite-native/trading-atoms';
+import { OverviewRow } from '@suite-native/trading-atoms';
 import { type ReceiveAccount } from '@suite-native/trading-types';
 import { type Color } from '@trezor/theme';
 
@@ -95,9 +96,9 @@ const ReceiveAccountPickerRight = ({
             >
                 {accountLabel}
             </RightText>
-            <AccountAddress
-                address={addressText}
-                form="short"
+            <AddressFormatter
+                value={addressText}
+                format="short"
                 color="contentSecondary"
                 variant="body-sm"
                 textAlign="right"

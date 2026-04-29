@@ -36,6 +36,7 @@
         { "path": "../config" },
         { "path": "../confirm-on-trezor" },
         { "path": "../device-manager" },
+        { "path": "../formatters" },
         { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../navigation" },

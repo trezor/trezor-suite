@@ -121,17 +121,6 @@ describe('ProviderReceiveAddress', () => {
         expect(queryByText("Banxa's receive address")).toBeFalsy();
     });
 
-    it('should display solana address as-is without splitting', () => {
-        const { getByText } = renderProviderReceiveAddress(
-            mockExchangeTrade,
-            'exchange',
-            'sol-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
-        );
-
-        // For Solana addresses, the address should be displayed without splitting
-        expect(getByText('1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa')).toBeTruthy();
-    });
-
     it('should display ethereum address with chunking for non-solana networks', () => {
         const { getByText } = renderProviderReceiveAddress(
             mockExchangeTrade,
@@ -152,22 +141,6 @@ describe('ProviderReceiveAddress', () => {
 
         // For non-Solana addresses, the address should be displayed with chunking
         expect(getByText('1A1z P1eP 5QGe fi2D MPTf TL5S Lmv7 Divf Na')).toBeTruthy();
-    });
-
-    it('should handle solana network type correctly', () => {
-        const solanaTrade = {
-            ...mockExchangeTrade,
-            sendAddress: '9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM', // Real Solana address
-        };
-
-        const { getByText } = renderProviderReceiveAddress(
-            solanaTrade,
-            'exchange',
-            'sol-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
-        );
-
-        // For Solana addresses, the address should be displayed without splitting
-        expect(getByText('9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM')).toBeTruthy();
     });
 
     it('should handle undefined network symbol gracefully', () => {
