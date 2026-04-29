@@ -5,8 +5,10 @@ import { G } from '@mobily/ts-belt';
 
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
-import { Card, ErrorMessage, VStack } from '@suite-native/atoms';
+import { isErc4626 } from '@suite-common/wallet-utils';
+import { Card, ErrorMessage, FullAlertBox, VStack } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
+import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { AccountsListItem } from './AccountsList/AccountsListItem';
@@ -47,6 +49,12 @@ export const AccountDetailsCard = ({
         selectAccountByKey(state, accountKey),
     );
 
+    const token = useSelector((state: TokensRootState) =>
+        selectAccountTokenInfo(state, accountKey, tokenContract),
+    );
+
+    const isDefiToken = !!token && isErc4626(token);
+
     if (G.isNullable(account))
         return (
             <ErrorMessage
@@ -56,6 +64,15 @@ export const AccountDetailsCard = ({
 
     return (
         <VStack spacing="sp16">
+            {isDefiToken && (
+                <FullAlertBox
+                    title={translate('moduleSend.defi.banner.title', { token: token?.symbol })}
+                    description={translate('moduleSend.defi.banner.description')}
+                    iconName="info"
+                    variant="info"
+                />
+            )}
+
             <Card
                 noPadding={!tokenContract}
                 noShadow={isStakeVariant}

@@ -2361,6 +2361,13 @@ export const messages = {
         accountsList: {
             title: 'Send',
         },
+        defi: {
+            banner: {
+                title: '{token} represents your position in a vault.',
+                description:
+                    'If you transfer this token elsewhere, you will move your entire position and stop future rewards.',
+            },
+        },
         outputs: {
             title: '{assetName} Send',
             correctNetworkMessage:
