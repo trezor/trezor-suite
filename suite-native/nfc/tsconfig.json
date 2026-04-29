@@ -7,7 +7,7 @@
         {
             "path": "../../packages/styles-native"
         },
-        { "path": "../test-utils" }
+        { "path": "../../packages/theme" }
     ],
     "include": [".", "**/*.json"]
 }
