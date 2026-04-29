@@ -13,6 +13,7 @@ export interface AssetSearchWithNetworkFilterProps {
     networkFilter: NetworkSymbol | undefined;
     setNetworkFilter: (networkFilter: NetworkSymbol | undefined) => void;
     networks: NetworkSymbol[];
+    autoFocus?: boolean;
 }
 
 export const AssetSearchWithNetworkFilter = memo(function AssetSearchWithNetworkFilterInner({
@@ -22,6 +23,7 @@ export const AssetSearchWithNetworkFilter = memo(function AssetSearchWithNetwork
     networkFilter,
     setNetworkFilter,
     networks,
+    autoFocus,
 }: AssetSearchWithNetworkFilterProps) {
     const { translationString } = useTranslation();
 
@@ -31,6 +33,8 @@ export const AssetSearchWithNetworkFilter = memo(function AssetSearchWithNetwork
                 searchPlaceholder={translationString(placeholder)}
                 search={search}
                 setSearch={setSearch}
+                // eslint-disable-next-line jsx-a11y/no-autofocus
+                autoFocus={autoFocus}
                 selectConfig={{
                     networks,
                     selectedNetwork: networkFilter,

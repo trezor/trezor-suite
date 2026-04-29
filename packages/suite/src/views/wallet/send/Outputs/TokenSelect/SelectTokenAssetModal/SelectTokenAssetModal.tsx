@@ -120,6 +120,8 @@ export function SelectTokenAssetModal({
                     searchPlaceholder={translationString('TR_SEARCH_TOKEN_IN_SEND_FORM_MODAL')}
                     search={search}
                     setSearch={setSearch}
+                    // eslint-disable-next-line jsx-a11y/no-autofocus
+                    autoFocus
                 />
             }
             noItemsAvailablePlaceholder={{
