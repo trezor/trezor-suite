@@ -39,6 +39,7 @@ import { onCallFirmwareUpdate } from './onCallFirmwareUpdate';
 import { dispose as disposeBackend } from '../backend/BlockchainLink';
 import { DataManager } from '../data/DataManager';
 import { initializeFirmwareConfig } from '../data/firmwareInfo';
+import * as localFirmwareStore from '../data/localFirmwareStore';
 import { loadProtobufModules } from '../data/protobufLoader';
 import type { Device, DeviceEvents } from '../device/Device';
 import type { IDeviceList } from '../device/DeviceList';
@@ -819,7 +820,7 @@ export class Core extends EventEmitter {
             case UI_RESPONSE.RECEIVE_FIRMWARE: {
                 const localFirmwares = message.payload && parseLocalFirmwares(message.payload);
                 if (localFirmwares) {
-                    DataManager.setLocalFirmwares(localFirmwares);
+                    localFirmwareStore.set(localFirmwares);
                 }
                 break;
             }
@@ -909,7 +910,7 @@ export class Core extends EventEmitter {
             const localFirmwares =
                 settings.localFirmwares && parseLocalFirmwares(settings.localFirmwares);
             if (localFirmwares) {
-                DataManager.setLocalFirmwares(localFirmwares);
+                localFirmwareStore.set(localFirmwares);
             }
             await loadProtobufModules();
             const { debug, priority, manifest } = DataManager.getSettings();

@@ -23,6 +23,7 @@ import type { VersionArray } from '@trezor/utils/src/versionUtils';
 
 import { DataManager } from './DataManager';
 import * as firmwareReleaseStore from './firmwareReleaseStore';
+import * as localFirmwareStore from './localFirmwareStore';
 import { getReleaseAsset, getReleasesAssetByDeviceModelAndFirmwareType } from '../utils/assetUtils';
 import { httpRequest } from '../utils/assets';
 import { getOnlineFirmwareBaseUrl } from '../utils/firmwareReleaseConfigUtils';
@@ -180,7 +181,7 @@ export const getReleaseByVersion = async (
 
     const releaseName = buildLocalReleaseName(firmwareType, deviceModel, firmwareVersion);
 
-    const { firmwareDir, firmwareList } = DataManager.getLocalFirmwares();
+    const { firmwareDir, firmwareList } = localFirmwareStore.get();
     if (
         isFirmwareCacheUsedForSelectedSource(DataManager.getSettings('firmwareChannel')) &&
         firmwareList.includes(releaseName)
@@ -641,7 +642,7 @@ export const getFirmwareLocation = ({
         };
     }
 
-    const { firmwareDir, firmwareList } = DataManager.getLocalFirmwares();
+    const { firmwareDir, firmwareList } = localFirmwareStore.get();
     if (
         isFirmwareCacheUsedForSelectedSource(DataManager.getSettings('firmwareChannel')) &&
         firmwareList.includes(firmwareName)
