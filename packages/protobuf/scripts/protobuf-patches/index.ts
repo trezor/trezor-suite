@@ -297,6 +297,17 @@ export const SKIP = [
     'TransactionType', // connect uses custom definition
     'TxInput', // declared in TxInputType patch
     'TxOutput', // declared in TxOutputType patch
+    // ETHEREUM_DISPLAY_FORMAT definition types — not consumed in trezor-suite,
+    // and EthereumABITupleInfo<->EthereumABIValueInfo form a cyclic schema
+    // dependency that the topological sort cannot break.
+    'EthereumABIType',
+    'EthereumABITupleInfo',
+    'EthereumABIValueInfo',
+    'EthereumERC7730FieldFormatterType',
+    'EthereumERC7730ContainerPath',
+    'EthereumERC7730Path',
+    'EthereumERC7730FieldInfo',
+    'EthereumDisplayFormatInfo',
     // not implemented
     'DebugSwipeDirection',
     'DebugLinkDecision',
