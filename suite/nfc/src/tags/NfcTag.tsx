@@ -6,11 +6,11 @@ const Wrapper = styled.div<{ $isActive: boolean }>`
     opacity: ${({ $isActive }) => ($isActive ? 1 : 0.4)};
 `;
 
-interface NfcTagProps {
-    active?: boolean;
-}
+type NfcTagProps = {
+    isActive?: boolean;
+};
 
-export const NfcTag = ({ active = false }: NfcTagProps) => (
+export const NfcTag = ({ isActive: active = false }: NfcTagProps) => (
     <Wrapper $isActive={active}>
         <Image image="NFC_TAG" width={72} />
     </Wrapper>

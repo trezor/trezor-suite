@@ -61,9 +61,9 @@ export const SelectBackupType = ({
         <Column>
             <Column gap={32} alignItems="center">
                 <TagRow>
-                    <NfcTag active />
-                    <NfcTag active />
-                    <NfcTag active />
+                    <NfcTag isActive />
+                    <NfcTag isActive />
+                    <NfcTag isActive />
                 </TagRow>
 
                 <Column alignItems="center">

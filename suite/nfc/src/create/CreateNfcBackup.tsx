@@ -38,8 +38,8 @@ export const CreateNfcBackup = ({ onBack, onCreateBackup }: CreateNfcBackupProps
                         <Translation id="TR_NFC_BACKUP_RESILIENCE" />
                     </Text>
                     <TagRow>
-                        <NfcTag active />
-                        <NfcTag active />
+                        <NfcTag isActive />
+                        <NfcTag isActive />
                         <NfcTag />
                     </TagRow>
                     <Text
