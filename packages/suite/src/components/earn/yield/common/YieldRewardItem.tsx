@@ -9,7 +9,7 @@ type YieldRewardItemProps = {
     formattedFiatAmount: string | null;
     tokenSymbol: string;
     tokenAddress: string;
-    networkSymbol: NetworkSymbol | undefined;
+    networkSymbol: NetworkSymbol;
 };
 
 export const YieldRewardItem = ({
@@ -28,7 +28,7 @@ export const YieldRewardItem = ({
                 size={24}
             />
             <HiddenPlaceholder>
-                <Text typographyStyle="body-md-strong" ellipsisLineCount={1}>
+                <Text typographyStyle="body-md-strong">
                     {formattedAmount} {tokenSymbol}
                 </Text>
             </HiddenPlaceholder>

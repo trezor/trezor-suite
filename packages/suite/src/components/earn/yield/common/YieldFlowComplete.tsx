@@ -1,41 +1,28 @@
+import { type ReactNode } from 'react';
+
 import { Translation, useTranslation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { type Rating, buildUserFeedbackData, sendFeedbackAction } from '@suite-common/feedback';
-import type { YieldFlowCompleteValue } from '@suite-common/wallet-core';
-import { Button, Card, Column, Icon, IconCircle, Row, Text } from '@trezor/components';
+import { Button, Card, Column, Divider, Icon, IconCircle, Row, Text } from '@trezor/components';
 import { FeedbackCard } from '@trezor/product-components';
 
 import { useDispatch } from 'src/hooks/suite';
-import { ApyValue } from 'src/views/wallet/staking/components/ApyValue';
-
-import { YieldTokenValue } from './YieldTokenValue';
-
-const flowTypeContentMap = {
-    supply: {
-        heading: 'TR_EARN_YIELD_SUPPLY_COMPLETE',
-        description: 'TR_EARN_YIELD_SUPPLY_COMPLETE_DESCRIPTION',
-        input: 'TR_EARN_YIELD_SUPPLIED',
-        output: 'TR_RECEIVED',
-    },
-    withdraw: {
-        heading: 'TR_EARN_YIELD_WITHDRAW_COMPLETE',
-        description: 'TR_EARN_YIELD_WITHDRAW_COMPLETE_DESCRIPTION',
-        input: 'TR_SENT',
-        output: 'TR_RECEIVED',
-    },
-} as const;
 
 type YieldFlowCompleteProps = {
-    flowType: keyof typeof flowTypeContentMap;
-    input: YieldFlowCompleteValue;
-    output: YieldFlowCompleteValue;
-    apy?: number | null;
+    heading: ReactNode;
+    description: ReactNode;
+    showFeedback?: boolean;
+    children: ReactNode;
 };
 
-export const YieldFlowComplete = ({ flowType, input, output, apy }: YieldFlowCompleteProps) => {
+export const YieldFlowComplete = ({
+    heading,
+    description,
+    showFeedback,
+    children,
+}: YieldFlowCompleteProps) => {
     const dispatch = useDispatch();
     const { translationString } = useTranslation();
-    const flowContent = flowTypeContentMap[flowType];
 
     const handleBackToOverview = () => {
         dispatch(goto({ routeName: 'suite-earn' }));
@@ -61,20 +48,15 @@ export const YieldFlowComplete = ({ flowType, input, output, apy }: YieldFlowCom
             <IconCircle name="check" intent="brand" size={96} />
 
             <Column gap={4}>
-                <Text typographyStyle="headline-md">
-                    <Translation id={flowContent.heading} />
-                </Text>
+                <Text typographyStyle="headline-md">{heading}</Text>
 
                 <Text intent="neutral" priority="secondary">
-                    <Translation
-                        id={flowContent.description}
-                        values={{ displaySymbol: output.token.symbol }}
-                    />
+                    {description}
                 </Text>
             </Column>
 
             <Card fillType="flat" paddingType="none">
-                <Column gap={0} hasDivider>
+                <Column gap={0}>
                     <Row
                         justifyContent="space-between"
                         alignItems="center"
@@ -90,51 +72,8 @@ export const YieldFlowComplete = ({ flowType, input, output, apy }: YieldFlowCom
                             </Text>
                         </Row>
                     </Row>
-                    {flowType === 'supply' && (
-                        <Row
-                            justifyContent="space-between"
-                            alignItems="center"
-                            padding={{ vertical: 16, horizontal: 20 }}
-                        >
-                            <Text typographyStyle="body-md">
-                                <Translation id="TR_EARN_DASHBOARD_TABLE_APY" />
-                            </Text>
-                            <Text typographyStyle="body-md-strong">
-                                <ApyValue apy={apy} />
-                            </Text>
-                        </Row>
-                    )}
-                    <Row
-                        justifyContent="space-between"
-                        alignItems="center"
-                        padding={{ vertical: 16, horizontal: 20 }}
-                    >
-                        <Column gap={8}>
-                            <Text typographyStyle="body-md">
-                                <Translation id={flowContent.input} />
-                            </Text>
-                            <YieldTokenValue
-                                token={{
-                                    ...input.token,
-                                    contractAddress: input.token.contractAddress ?? null,
-                                }}
-                                amount={input.amount}
-                            />
-                        </Column>
-                        <Icon name="arrowRight" size={20} intent="neutral" priority="secondary" />
-                        <Column gap={8} alignItems="flex-end">
-                            <Text typographyStyle="body-md">
-                                <Translation id={flowContent.output} />
-                            </Text>
-                            <YieldTokenValue
-                                token={{
-                                    ...output.token,
-                                    contractAddress: output.token.contractAddress ?? null,
-                                }}
-                                amount={output.amount}
-                            />
-                        </Column>
-                    </Row>
+                    <Divider color="borderNeutral" margin={0} />
+                    {children}
                 </Column>
             </Card>
 
@@ -142,21 +81,23 @@ export const YieldFlowComplete = ({ flowType, input, output, apy }: YieldFlowCom
                 <Translation id="TR_EARN_YIELD_BACK_TO_OVERVIEW" />
             </Button>
 
-            <FeedbackCard
-                heading={
-                    <Translation
-                        id="TR_FEATURE_FEEDBACK_CARD_HEADING"
-                        values={{
-                            feature: translationString('TR_EARN_STABLECOIN_YIELD_TITLE'),
-                        }}
-                    />
-                }
-                description={<Translation id="TR_FEEDBACK_CARD_DESCRIPTION" />}
-                submitLabel={<Translation id="TR_FEEDBACK_CARD_SEND" />}
-                successHeading={<Translation id="TR_FEEDBACK_CARD_SUCCESS_TITLE" />}
-                successDescription={<Translation id="TR_FEEDBACK_CARD_SUCCESS_DESCRIPTION" />}
-                onSubmit={handleFeedbackSubmit}
-            />
+            {showFeedback && (
+                <FeedbackCard
+                    heading={
+                        <Translation
+                            id="TR_FEATURE_FEEDBACK_CARD_HEADING"
+                            values={{
+                                feature: translationString('TR_EARN_STABLECOIN_YIELD_TITLE'),
+                            }}
+                        />
+                    }
+                    description={<Translation id="TR_FEEDBACK_CARD_DESCRIPTION" />}
+                    submitLabel={<Translation id="TR_FEEDBACK_CARD_SEND" />}
+                    successHeading={<Translation id="TR_FEEDBACK_CARD_SUCCESS_TITLE" />}
+                    successDescription={<Translation id="TR_FEEDBACK_CARD_SUCCESS_DESCRIPTION" />}
+                    onSubmit={handleFeedbackSubmit}
+                />
+            )}
         </Column>
     );
 };

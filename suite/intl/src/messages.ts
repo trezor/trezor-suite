@@ -9626,6 +9626,10 @@ export const messages = defineMessages({
         id: 'TR_EARN_YIELD_PENDING_WITHDRAW',
         defaultMessage: 'Confirming withdrawal...',
     },
+    TR_EARN_YIELD_PENDING_CLAIM: {
+        id: 'TR_EARN_YIELD_PENDING_CLAIM',
+        defaultMessage: 'Confirming claim...',
+    },
     TR_EARN_YIELD_APPROVAL_TOO_LOW: {
         id: 'TR_EARN_YIELD_APPROVAL_TOO_LOW',
         defaultMessage: 'Approval is too low. Modify approval or lower the amount.',

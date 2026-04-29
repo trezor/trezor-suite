@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 import { Translation } from '@suite/intl';
 import { ChainAddressKey } from '@suite-common/earn-stablecoin-api';
@@ -7,33 +7,22 @@ import { Banner, Button, Card, Column, Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
 import { YieldRewardsList } from './YieldRewardsList';
-import { useAllYieldOpportunities } from '../../dashboard/yield/hooks/useAllYieldOpportunities';
 import { useMerkleRewards } from '../../dashboard/yield/hooks/useMerkleRewards';
-import { useYieldTableData } from '../../dashboard/yield/hooks/useYieldTableData';
+import { YieldFlowCompleteClaim } from '../common/YieldFlowCompleteClaim';
 
 type YieldClaimProps = {
     account?: Account;
 };
 
 export const YieldClaim = ({ account }: YieldClaimProps) => {
-    const { yieldOpportunities: availableVaults, isYieldOpportunitiesLoading } =
-        useAllYieldOpportunities({
-            enabled: account !== undefined,
-        });
+    const [isClaimComplete, setIsClaimComplete] = useState(false);
 
-    const visibleAccounts = useMemo(() => (account ? [account] : []), [account]);
-    const visibleAccountSymbols = useMemo(
-        () => new Set(account ? [account.symbol] : []),
+    const merkleRewardsSources = useMemo(
+        () => (account ? [{ networkSymbol: account.symbol, address: account.descriptor }] : []),
         [account],
     );
 
-    const { yieldAccountOpportunities } = useYieldTableData({
-        availableVaults,
-        visibleAccounts,
-        visibleAccountSymbols,
-    });
-
-    const { merkleRewardsQuery } = useMerkleRewards(yieldAccountOpportunities);
+    const { merkleRewardsQuery } = useMerkleRewards(merkleRewardsSources);
     const { rewards } = merkleRewardsQuery.data;
 
     const claimableRewards = useMemo(() => {
@@ -54,6 +43,16 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
         return null;
     }
 
+    if (isClaimComplete) {
+        return (
+            <Column width="100%" alignItems="center">
+                <Column gap={24} width="100%" maxWidth={500}>
+                    <YieldFlowCompleteClaim rewards={claimableRewards} />
+                </Column>
+            </Column>
+        );
+    }
+
     return (
         <Column width="100%" alignItems="center">
             <Column gap={24} width="100%" maxWidth={500}>
@@ -69,7 +68,7 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
 
                         <YieldRewardsList
                             rewards={claimableRewards}
-                            isLoading={isYieldOpportunitiesLoading || merkleRewardsQuery.isLoading}
+                            isLoading={merkleRewardsQuery.isLoading}
                         />
                     </Column>
                 </Card>
@@ -85,11 +84,8 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
                 <Button
                     size="large"
                     width="100%"
-                    isDisabled={
-                        isYieldOpportunitiesLoading ||
-                        merkleRewardsQuery.isLoading ||
-                        claimableRewards.length === 0
-                    }
+                    isDisabled={merkleRewardsQuery.isLoading || claimableRewards.length === 0}
+                    onClick={() => setIsClaimComplete(true)}
                 >
                     <Translation id="TR_EARN_YIELD_CLAIM" />
                 </Button>
