@@ -20,7 +20,7 @@ test.describe('Trading - Swap history', { tag: ['@webOnly', '@T3T1', '@T3W1'] },
         });
 
         await onboardingPage.completeOnboarding();
-        await settingsPage.changeNetworks({ enableNetworks: ['ltc'] });
+        await settingsPage.changeNetworks({ enableNetworks: ['btc', 'eth', 'ltc'] });
         await tradingStore.insertSwapHistory(SEEDED_TRADES);
     });
 
