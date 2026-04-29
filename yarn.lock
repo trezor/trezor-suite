@@ -12833,6 +12833,7 @@ __metadata:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/icons": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
     react: "npm:19.2.4"
     react-hook-form: "npm:^7.71.2"
     react-native: "npm:0.83.2"
