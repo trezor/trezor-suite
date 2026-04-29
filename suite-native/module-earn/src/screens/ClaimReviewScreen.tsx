@@ -12,7 +12,7 @@ import {
     subunitsToUnits,
 } from '@suite-common/wallet-utils';
 import { AccountDetailsCard } from '@suite-native/accounts';
-import { Box, Button, InlineAlertBox, Text, VStack } from '@suite-native/atoms';
+import { Box, Button, FullAlertBox, InlineAlertBox, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     type RootStackParamList,
@@ -52,12 +52,12 @@ export const ClaimReviewScreen = () => {
     );
 
     const feeBuffer = getStakingLimitsByNetworkSymbol(symbol)?.MIN_BALANCE_FOR_FEE_BUFFER;
-    const isInsufficientFeeBalance =
-        !!feeBuffer &&
-        subunitsToUnits({
-            value: asAmountSubunit(new BigNumber(availableBalance)),
-            symbol,
-        }).lt(feeBuffer);
+    const availableBalanceInUnits = subunitsToUnits({
+        value: asAmountSubunit(new BigNumber(availableBalance)),
+        symbol,
+    });
+    const isInsufficientFeeBalance = !!feeBuffer && availableBalanceInUnits.lt(feeBuffer);
+    const formattedAvailableBalance = `${availableBalanceInUnits.toString()} ${displaySymbol}`;
 
     const claimFormState = useMemo(
         () =>
@@ -109,14 +109,28 @@ export const ClaimReviewScreen = () => {
                     titleLabel={<Translation id="earn.claimReviewScreen.amountLabel" />}
                     cryptoAmount={claimableAmount}
                 />
+                <FeeSelector
+                    accountKey={accountKey}
+                    updateThunk={updateFeeLevelThunk}
+                    selectedFee={formDraft?.selectedFee ?? 'normal'}
+                    selectedFeePerUnit={formDraft?.feePerUnit}
+                    formDraft={formDraft}
+                    formDraftKey={formDraftKey}
+                />
                 {isInsufficientFeeBalance && (
-                    <InlineAlertBox
+                    <FullAlertBox
                         variant="critical"
                         iconName="warningCircle"
                         title={
                             <Translation
-                                id="transactionManagement.precomposedTransaction.errors.amountNotEnoughCurrencyFee"
-                                values={{ networkDisplaySymbol: displaySymbol }}
+                                id="earn.claimReviewScreen.insufficientFeeBalance.title"
+                                values={{ displaySymbol }}
+                            />
+                        }
+                        description={
+                            <Translation
+                                id="earn.claimReviewScreen.insufficientFeeBalance.description"
+                                values={{ amount: formattedAvailableBalance }}
                             />
                         }
                     />
@@ -132,14 +146,6 @@ export const ClaimReviewScreen = () => {
                         }
                     />
                 )}
-                <FeeSelector
-                    accountKey={accountKey}
-                    updateThunk={updateFeeLevelThunk}
-                    selectedFee={formDraft?.selectedFee ?? 'normal'}
-                    selectedFeePerUnit={formDraft?.feePerUnit}
-                    formDraft={formDraft}
-                    formDraftKey={formDraftKey}
-                />
             </VStack>
         </Screen>
     );
