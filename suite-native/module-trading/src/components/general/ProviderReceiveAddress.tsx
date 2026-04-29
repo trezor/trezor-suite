@@ -12,7 +12,7 @@ import {
 } from '@suite-common/trading';
 import { type AccountsRootState, selectAccountNetworkType } from '@suite-common/wallet-core';
 import { Text, VStack } from '@suite-native/atoms';
-import { splitAddressToChunks } from '@suite-native/helpers';
+import { AddressFormatter } from '@suite-native/formatters';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { TradeInfoRow } from '@suite-native/trading-atoms';
 
@@ -45,11 +45,6 @@ export const ProviderReceiveAddress = ({ trade }: { trade: ExchangeTrade | SellF
         return null;
     }
 
-    const addressText =
-        networkType === 'solana'
-            ? receiveAddress
-            : splitAddressToChunks(receiveAddress ?? '').join(' ');
-
     return (
         <Animated.View entering={FadeIn}>
             <TradeInfoRow>
@@ -60,9 +55,12 @@ export const ProviderReceiveAddress = ({ trade }: { trade: ExchangeTrade | SellF
                             values={{ providerName }}
                         />
                     </Text>
-                    <Text variant="body-sm" color="contentSecondary">
-                        {addressText}
-                    </Text>
+                    <AddressFormatter
+                        value={receiveAddress}
+                        format="full"
+                        variant="body-sm"
+                        color="contentSecondary"
+                    />
                 </VStack>
             </TradeInfoRow>
         </Animated.View>

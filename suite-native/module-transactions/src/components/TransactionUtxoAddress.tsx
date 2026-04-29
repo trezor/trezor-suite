@@ -11,11 +11,6 @@ import {
     selectIsLabellingAllowed,
 } from '@suite-native/labeling';
 import type { StaticSessionId } from '@trezor/connect';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
-
-const addressTextStyle = prepareNativeStyle(_ => ({
-    maxWidth: '80%',
-}));
 
 type TransactionUtxoAddressProps = {
     address: string;
@@ -36,22 +31,15 @@ export const TransactionUtxoAddress = ({
     networkSymbol,
     showLabels,
 }: TransactionUtxoAddressProps) => {
-    const { applyStyle } = useNativeStyles();
     const isLabellingAllowed = useSelector(selectIsLabellingAllowed);
 
     return (
         <VStack alignItems="flex-start">
-            <HStack spacing={2}>
+            <HStack spacing={4}>
                 <AddressLabel
                     address={address}
                     deviceStaticSessionId={deviceStaticSessionId}
-                    fallback={
-                        <AddressFormatter
-                            key={address}
-                            value={address}
-                            style={applyStyle(addressTextStyle)}
-                        />
-                    }
+                    fallback={<AddressFormatter key={address} value={address} format="long" />}
                 />
 
                 {isLabellingAllowed && isDebugEnv() && <Text>[{`${txTargetId}`}]</Text>}

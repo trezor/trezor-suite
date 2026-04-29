@@ -122,12 +122,14 @@ describe('ReviewOutputItem', () => {
         const { getByTestId } = renderReviewOutputItem({
             reviewOutput: {
                 type,
-                value: 'mockvalue',
+                value: '0xde0B295669a9FD93d5F28D9Ec85E40f4cb697BAe',
                 state: 'active',
             } as StatefulReviewOutput,
         });
 
-        expect(getByTestId('review-output-card/content')).toHaveTextContent('mock valu e');
+        expect(getByTestId('review-output-card/content')).toHaveTextContent(
+            '0x de0B 2956 69a9 FD93 d5F2 8D9E c85E 40f4 cb69 7BAe',
+        );
     });
 
     it('should render "No restriction" for type "timebounds"', () => {

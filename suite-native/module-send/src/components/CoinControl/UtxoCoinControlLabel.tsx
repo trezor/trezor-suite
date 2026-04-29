@@ -55,6 +55,7 @@ export const UtxoCoinControlLabel = ({
                 maxLength={hasOutputLabel ? ADDRESS_LABEL_MAX_LENGTH : undefined}
                 fallback={
                     <AddressFormatter
+                        format="long"
                         value={address}
                         variant="body-sm"
                         color="contentSecondary"

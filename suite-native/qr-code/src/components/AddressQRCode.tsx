@@ -2,8 +2,9 @@ import { Alert, Pressable, Share } from 'react-native';
 
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountDescriptor } from '@suite-common/wallet-types';
-import { Button, HStack, Text, VStack } from '@suite-native/atoms';
+import { Button, HStack, VStack } from '@suite-native/atoms';
 import { useCopyToClipboard } from '@suite-native/clipboard';
+import { AddressFormatter } from '@suite-native/formatters';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { AddressLabelEditable } from '@suite-native/labeling';
 import type { StaticSessionId } from '@trezor/connect';
@@ -52,13 +53,13 @@ export const AddressQRCode = ({
         <VStack spacing="sp24">
             <QRCode data={address} />
             <Pressable onLongPress={handleCopyAddress} style={applyStyle(addressContainer)}>
-                <Text
+                <AddressFormatter
+                    value={address}
+                    format="full"
                     variant="headline-sm"
                     textAlign="center"
                     testID="@receive/confirmed-receive-address"
-                >
-                    {address}
-                </Text>
+                />
             </Pressable>
             {showLabelEdit && (
                 <AddressLabelEditable

@@ -6,8 +6,7 @@ import {
 } from '@suite-common/wallet-types';
 import { convertAmountSubunitsToUnits } from '@suite-common/wallet-utils';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
-import { CryptoAmountFormatter } from '@suite-native/formatters';
-import { splitAddressToChunks } from '@suite-native/helpers';
+import { AddressFormatter, CryptoAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 import { type ExchangeFlowType } from '@suite-native/navigation';
 import type { TokenInfo } from '@trezor/connect';
@@ -70,17 +69,17 @@ export const ReviewOutputItemContent = ({
                 );
             }
 
-            return <Text variant="body-sm">{splitAddressToChunks(value).join(' ')}</Text>;
+            return <AddressFormatter value={value} format="full" variant="body-sm" />;
 
         case 'contract':
             if (flowType === 'approve' || flowType === 'revoke') {
                 return <Text variant="body-sm">{value}</Text>;
             }
 
-            return <Text variant="body-sm">{splitAddressToChunks(value).join(' ')}</Text>;
+            return <AddressFormatter value={value} format="full" variant="body-sm" />;
 
         case 'signing-with':
-            return <Text variant="body-sm">{splitAddressToChunks(value).join(' ')}</Text>;
+            return <AddressFormatter value={value} format="full" variant="body-sm" />;
 
         case 'timebounds':
             return (

@@ -32,7 +32,7 @@ const TransactionAddressAmount = ({
     decimals,
 }: TransactionAddressAmountProps) => (
     <Box>
-        <AddressFormatter value={address} variant="body-sm" />
+        <AddressFormatter value={address} variant="body-sm" format="short" />
         {amount &&
             (isNetworkSymbol(symbol) ? (
                 <CryptoAmountFormatter
