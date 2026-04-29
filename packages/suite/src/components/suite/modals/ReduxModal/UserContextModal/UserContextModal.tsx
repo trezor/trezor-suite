@@ -183,7 +183,7 @@ export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL_CONTE
             return <ConnectLoadingModal />;
         case 'auto-start-before-quit':
             return <AutoStartBeforeQuitModal />;
-        case 'tx-simulation':
+        case 'connect-popup-tx-simulation':
             return <TxSimulationModal />;
         case 'wipe-device-success':
             return <WipeDeviceSuccessModal />;

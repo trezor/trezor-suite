@@ -43,7 +43,7 @@ export const useConnectPopupModals = () => {
                 'connect-loading',
                 'connect-address-confirmation',
                 'connect-error',
-                'tx-simulation',
+                'connect-popup-tx-simulation',
             ].includes(modalType);
 
         // During a connect popup call the device may request interaction
@@ -64,7 +64,7 @@ export const useConnectPopupModals = () => {
                 | 'connect-loading'
                 | 'connect-address-confirmation'
                 | 'connect-error'
-                | 'tx-simulation',
+                | 'connect-popup-tx-simulation',
         ) => {
             // Prevent duplicate opening of the same modal
             // And also prevent opening connect modals if different modal is already open
@@ -101,7 +101,7 @@ export const useConnectPopupModals = () => {
                 return openIfNeeded('connect-address-confirmation');
             }
             case 'tx-simulation': {
-                return openIfNeeded('tx-simulation');
+                return openIfNeeded('connect-popup-tx-simulation');
             }
             case 'error':
             case 'call-error': {
