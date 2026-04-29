@@ -218,8 +218,10 @@ const verifyOnlyDeviceCertificate = async ({
 
 /**
  * Parses certificate, matches them against known root public keys, and verifies the signature over the prepared data.
- * P-256, Ed25519 and ML-DSA-44 algorithms are supported and automatically detected from the certificate.
- * Certificates are expected to be either [device, CA] or only [device]
+ * P-256, Ed25519, and ML-DSA-44 algorithms are supported and automatically detected from the certificate.
+ * Certificates are expected to be either:
+ * - [device, CA] signed by P-256 or Ed25519
+ * - [device] signed by ML-DSA-44
  * Following signing schemes are verified:
  * - With CA certificate: rootPubKey → CA pub key → device key → prefixed challenge
  * - Without CA certificate: rootPubKey → device key → prefixed challenge
@@ -244,9 +246,27 @@ export const verifyAuthenticityProof = async ({
     const parsedCertificates = certificates.map(c =>
         parseCertificate(new Uint8Array(Buffer.from(c, 'hex'))),
     );
+    // For both signing schemes, the 1st certificate is the one expected to be signed by rootPubKey (checked by matchRootPubKeyToCertificate)
+    const firstCertAlgName = parsedCertificates[0].signatureAlgorithm.algorithmName;
 
-    // Certificates are assumed to be in this form and comply with the signing scheme above; verification will fail otherwise.
-    if (certificates.length === 2) {
+    if (firstCertAlgName === 'MLDSA44') {
+        if (parsedCertificates.length !== 1) {
+            return { valid: false, error: 'RESPONSE_MALFORMED' };
+        }
+        const [deviceCert] = parsedCertificates;
+
+        return await verifyOnlyDeviceCertificate({
+            deviceCert,
+            signature,
+            signedData,
+            deviceModel,
+            allRootPubKeys,
+        });
+    }
+    if (firstCertAlgName === 'Ed25519' || firstCertAlgName === 'P-256') {
+        if (parsedCertificates.length !== 2) {
+            return { valid: false, error: 'RESPONSE_MALFORMED' };
+        }
         const [deviceCert, caCert] = parsedCertificates;
 
         return await verifyDeviceAndCACertificates({
@@ -259,17 +279,6 @@ export const verifyAuthenticityProof = async ({
             caPubKeyBlacklist,
         });
     }
-    if (certificates.length === 1) {
-        const [deviceCert] = parsedCertificates;
 
-        return await verifyOnlyDeviceCertificate({
-            deviceCert,
-            signature,
-            signedData,
-            deviceModel,
-            allRootPubKeys,
-        });
-    }
-
-    throw new Error('Invalid number of certificates provided. Expected 1 or 2 certificates.');
+    return { valid: false, error: 'RESPONSE_MALFORMED' }; // unknown signature
 };
