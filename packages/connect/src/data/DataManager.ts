@@ -1,6 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/data/DataManager.js
 
-import type { ConnectSettings, LocalFirmwares } from '@trezor/connect-common';
+import type { ConnectSettings } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 
 import * as firmwareReleaseStore from './firmwareReleaseStore';
@@ -8,7 +8,6 @@ import type { InitializeFirmwareConfig } from './firmwareReleaseStore';
 
 export class DataManager {
     private static settings: ConnectSettings;
-    private static localFirmwares: LocalFirmwares = { firmwareDir: '', firmwareList: [] };
 
     public static async load(
         settings: ConnectSettings,
@@ -51,12 +50,5 @@ export class DataManager {
         }
 
         return this.settings;
-    }
-
-    public static setLocalFirmwares(firmwares: LocalFirmwares): void {
-        this.localFirmwares = firmwares;
-    }
-    public static getLocalFirmwares(): LocalFirmwares {
-        return this.localFirmwares;
     }
 }
