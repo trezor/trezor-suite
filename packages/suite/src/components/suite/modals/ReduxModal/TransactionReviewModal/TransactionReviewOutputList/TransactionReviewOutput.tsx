@@ -194,6 +194,8 @@ const getOutputTitle = (
             return <Translation id="TR_GAS_PRICE" />;
         case 'txid':
             return <Translation id={isRbf ? 'TR_TXID_RBF' : 'TR_TXID'} />;
+        case 'note':
+            return <Translation id="TR_TRON_NOTE" />;
         case 'data':
             return <Translation id={translation ? translation.label : 'DATA_ETH'} />;
         case 'opreturn':
@@ -296,6 +298,15 @@ const getOutputLines = ({
                     value: value2,
                 },
             ];
+        case 'note': {
+            return [
+                {
+                    id: type,
+                    type: 'default',
+                    value,
+                },
+            ];
+        }
         case 'address':
         case 'data':
         case 'regular_legacy': {

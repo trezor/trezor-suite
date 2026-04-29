@@ -14,6 +14,7 @@ type BlockParams = {
     expiration: number;
     timestamp: number;
     fee_limit?: number;
+    data?: string;
 };
 
 const contractTypeUrl = (name: string) => `type.googleapis.com/protocol.${name}`;
@@ -68,7 +69,7 @@ export const encodeTronContractRawData = (
     blockParams: BlockParams,
 ): Uint8Array => {
     const { type, bytes } = encodeInnerContract(contract);
-    const { ref_block_bytes, ref_block_hash, expiration, timestamp, fee_limit } = blockParams;
+    const { ref_block_bytes, ref_block_hash, expiration, timestamp, fee_limit, data } = blockParams;
     const schema = getSchema('TronRawTransaction');
 
     return toBinary(
@@ -80,6 +81,7 @@ export const encodeTronContractRawData = (
             timestamp: BigInt(timestamp),
             // fee_limit is only valid for smart-contract calls; TRON ignores it on transfers.
             feeLimit: contract.type === 'TriggerSmartContract' ? BigInt(fee_limit ?? 0) : undefined,
+            data: data ? hexToBytes(data) : undefined,
             contract: [
                 {
                     type,

@@ -7,6 +7,7 @@ export type ReviewOutput =
           type:
               | 'opreturn'
               | 'data'
+              | 'note'
               | 'locktime'
               | 'fee'
               | 'destination-tag'

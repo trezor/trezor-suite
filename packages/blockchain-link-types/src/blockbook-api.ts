@@ -22,6 +22,7 @@ export interface TronChainExtraData {
     bandwidthFee?: string;
     result?: string;
     votes?: TronVoteExtra[];
+    note?: string;
 }
 export interface TronAccountExtraData {
     availableStakedBandwidth: number;

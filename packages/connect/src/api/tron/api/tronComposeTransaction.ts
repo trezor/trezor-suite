@@ -30,7 +30,7 @@ export default class TronComposeTransaction extends AbstractMethod<
 
     // eslint-disable-next-line require-await
     async run() {
-        const { contract, blockHash, blockHeight, fee_limit } = this.params;
+        const { contract, blockHash, blockHeight, fee_limit, data } = this.params;
 
         const ref_block_bytes = blockHeight.toString(16).padStart(16, '0').slice(12, 16);
         const ref_block_hash = blockHash.replace(/^0x/, '').slice(16, 32);
@@ -44,6 +44,7 @@ export default class TronComposeTransaction extends AbstractMethod<
             expiration,
             timestamp,
             fee_limit,
+            data,
         });
 
         return {
