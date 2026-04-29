@@ -41,5 +41,6 @@ export type VerifyAuthenticityProofResult =
               | 'INVALID_DEVICE_MODEL'
               | 'INVALID_DEVICE_CERTIFICATE'
               | 'INVALID_DEVICE_SIGNATURE'
-              | 'RESPONSE_PAYLOAD_MISSING';
+              | 'RESPONSE_PAYLOAD_MISSING'
+              | 'RESPONSE_MALFORMED';
       };
