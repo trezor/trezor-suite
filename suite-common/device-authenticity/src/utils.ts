@@ -4,20 +4,20 @@ type IsDeviceAuthenticityValidParams = {
     result: AuthenticateDeviceResult;
     isOptigaRemotelyDisabled: boolean;
     isTropicRemotelyDisabled: boolean;
-    isMLDSA44RemotelyDisabled: boolean;
+    isMCURemotelyDisabled: boolean;
 };
 
 export const isDeviceAuthenticityValid = ({
     result,
     isOptigaRemotelyDisabled,
     isTropicRemotelyDisabled,
-    isMLDSA44RemotelyDisabled,
+    isMCURemotelyDisabled,
 }: IsDeviceAuthenticityValidParams) => {
     const isOptigaValid = result.optigaResult.valid === true || isOptigaRemotelyDisabled;
-    // Note: Tropic and ML-DSA-44 are expected to be undefined for T2B1, T3B1, T3T1, but Connect will make it fail
-    // for models which are expected to have it (all T3W1 versions for Tropic, TODO T3W1 >= 2.xx.x for ML-DSA-44)
+    // Note: Tropic and MCU are expected to be undefined for T2B1, T3B1, T3T1, but Connect will make it fail
+    // for models which are expected to have it (all T3W1 versions for Tropic, T3W1 >= 2.11.2 for MCU)
     const isTropicValid = result.tropicResult?.valid !== false || isTropicRemotelyDisabled;
-    const isMLDSA44Valid = result.MLDSA44Result?.valid !== false || isMLDSA44RemotelyDisabled;
+    const isMCUValid = result.mcuResult?.valid !== false || isMCURemotelyDisabled;
 
-    return isOptigaValid && isTropicValid && isMLDSA44Valid;
+    return isOptigaValid && isTropicValid && isMCUValid;
 };

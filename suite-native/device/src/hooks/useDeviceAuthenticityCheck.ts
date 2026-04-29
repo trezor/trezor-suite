@@ -40,8 +40,8 @@ export const useDeviceAuthenticityCheck = () => {
     const isTropicRemotelyDisabled = useSelector((state: MessageSystemRootState) =>
         selectIsFeatureDisabled(state, Feature.deviceAuthenticityCheckTropic),
     );
-    const isMLDSA44RemotelyDisabled = useSelector((state: MessageSystemRootState) =>
-        selectIsFeatureDisabled(state, Feature.deviceAuthenticityCheckMLDSA44),
+    const isMCURemotelyDisabled = useSelector((state: MessageSystemRootState) =>
+        selectIsFeatureDisabled(state, Feature.deviceAuthenticityCheckMCU),
     );
     const analytics = useAnalytics();
     const device = useSelector(selectSelectedDevice);
@@ -90,7 +90,7 @@ export const useDeviceAuthenticityCheck = () => {
                 result: result.payload,
                 isOptigaRemotelyDisabled,
                 isTropicRemotelyDisabled,
-                isMLDSA44RemotelyDisabled,
+                isMCURemotelyDisabled,
             });
 
             return { valid: isOverallValid, ...result.payload };
@@ -99,7 +99,7 @@ export const useDeviceAuthenticityCheck = () => {
             isDeviceBootloaderUnlocked,
             isOptigaRemotelyDisabled,
             isTropicRemotelyDisabled,
-            isMLDSA44RemotelyDisabled,
+            isMCURemotelyDisabled,
         ],
     );
 
@@ -209,12 +209,8 @@ export const useDeviceAuthenticityCheck = () => {
                 if ('tropicResult' in storedResult && storedResult.tropicResult?.error) {
                     reportCheckResult('compromised', storedResult.tropicResult.error, storedResult);
                 }
-                if ('MLDSA44Result' in storedResult && storedResult.MLDSA44Result?.error) {
-                    reportCheckResult(
-                        'compromised',
-                        storedResult.MLDSA44Result.error,
-                        storedResult,
-                    );
+                if ('mcuResult' in storedResult && storedResult.mcuResult?.error) {
+                    reportCheckResult('compromised', storedResult.mcuResult.error, storedResult);
                 }
             } else if (result.success) {
                 handleSuccess();
