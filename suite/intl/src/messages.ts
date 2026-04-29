@@ -2605,14 +2605,6 @@ export const messages = defineMessages({
         id: 'TR_DUST_PHISHING_ERROR_EMPTY',
         defaultMessage: 'Dust threshold cannot be empty',
     },
-    TR_GAP_LIMIT_ERROR_EMPTY: {
-        id: 'TR_GAP_LIMIT_ERROR_EMPTY',
-        defaultMessage: 'Gap limit cannot be empty',
-    },
-    TR_GAP_LIMIT_ERROR_NUMBER: {
-        id: 'TR_GAP_LIMIT_ERROR_NUMBER',
-        defaultMessage: 'Enter a valid whole number',
-    },
     TR_GAP_LIMIT_ERROR_POSITIVE: {
         id: 'TR_GAP_LIMIT_ERROR_POSITIVE',
         defaultMessage: 'Gap limit must be a positive number',
