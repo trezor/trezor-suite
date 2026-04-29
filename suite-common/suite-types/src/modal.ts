@@ -216,7 +216,11 @@ export type UserContextPayload =
           type: 'auto-start-before-quit';
       }
     | {
-          type: 'tx-simulation';
+          type: 'connect-popup-tx-simulation';
+      }
+    | {
+          type: 'earn-yield-tx-simulation';
+          payload: unknown;
       }
     | {
           type: 'wipe-device-success';
