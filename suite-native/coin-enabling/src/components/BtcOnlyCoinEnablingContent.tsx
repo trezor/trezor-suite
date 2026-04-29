@@ -1,31 +1,9 @@
-import { Box, Text, VStack } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+import { Box } from '@suite-native/atoms';
 
 import { BtcOnlySvg } from '../assets/BtcOnlySvg';
 
-const contentStyle = prepareNativeStyle(_ => ({
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-}));
-
-export const BtcOnlyCoinEnablingContent = () => {
-    const { applyStyle } = useNativeStyles();
-
-    return (
-        <Box style={applyStyle(contentStyle)}>
-            <VStack spacing="sp24" alignItems="center">
-                <BtcOnlySvg />
-                <VStack spacing="sp8">
-                    <Text textAlign="center" variant="headline-sm">
-                        <Translation id="moduleSettings.coinEnabling.btcOnly.title" />
-                    </Text>
-                    <Text textAlign="center" color="contentSecondary">
-                        <Translation id="moduleSettings.coinEnabling.btcOnly.subtitle" />
-                    </Text>
-                </VStack>
-            </VStack>
-        </Box>
-    );
-};
+export const BtcOnlyCoinEnablingContent = () => (
+    <Box flex={0.6} alignItems="center" justifyContent="center">
+        <BtcOnlySvg />
+    </Box>
+);

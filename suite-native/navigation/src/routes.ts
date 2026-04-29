@@ -253,7 +253,7 @@ export enum SettingsStackRoutes {
     SettingsViewOnly = 'SettingsViewOnly',
     SettingsSupport = 'SettingsSupport',
     SettingsAppLog = 'SettingsAppLog',
-    SettingsCoinEnabling = 'SettingsCoinEnabling',
+    SettingsNetworks = 'SettingsNetworks',
     SettingsSuiteSync = 'SettingsSuiteSync',
     SettingsAdvanced = 'SettingsAdvanced',
     SettingsDustPhishing = 'SettingsDustPhishing',
