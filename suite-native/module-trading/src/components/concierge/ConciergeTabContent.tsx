@@ -1,3 +1,3 @@
-import { View } from 'react-native';
+import { ConciergeInfoCard } from './ConciergeInfoCard';
 
-export const ConciergeTabContent = () => <View />;
+export const ConciergeTabContent = () => <ConciergeInfoCard />;

@@ -3146,6 +3146,30 @@ export const messages = {
                 settings: 'Advanced settings',
                 concierge: 'Concierge',
             },
+            concierge: {
+                infoCard: {
+                    title: 'Large trades, made simple',
+                    description:
+                        'Get private, competitive pricing for trades over 50,000 EUR, handled by a dedicated specialist.',
+                    items: {
+                        pricing: {
+                            title: 'Competitive pricing',
+                            description: 'Avoid slippage and get a tailored quote for your trade.',
+                        },
+                        specialist: {
+                            title: 'Dedicated specialist',
+                            description:
+                                'One expert handles your trade and answers all your questions.',
+                        },
+                        execution: {
+                            title: 'Expedited execution & settlement',
+                            description:
+                                'Lock in your price instantly. Funds typically arrive the next business day.',
+                        },
+                    },
+                },
+            },
+            kycWarning: 'This provider requires to know your identity.',
             kycRequired: 'Identity verification will be required.',
             buttons: {
                 buyVia: 'Buy via {providerName}',
