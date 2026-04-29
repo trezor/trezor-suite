@@ -132,7 +132,7 @@ export const EarnClaimModal = ({ onCancel, account }: EarnClaimModalProps) => {
             data-testid="@staking/claim-modal"
             heading={
                 <Translation
-                    id={isCardanoNetworkType ? 'TR_STAKE_CLAIM_REWARDS' : 'TR_STAKE_CLAIM_TOKEN'}
+                    id={isCardanoNetworkType ? 'TR_EARN_CLAIM_REWARDS' : 'TR_STAKE_CLAIM_TOKEN'}
                     values={{ symbol: getNetworkDisplaySymbol(account.symbol) }}
                 />
             }
@@ -158,7 +158,7 @@ export const EarnClaimModal = ({ onCancel, account }: EarnClaimModalProps) => {
                             data-testid="@staking/claim-modal/continue-button"
                         >
                             {isCardanoNetworkType ? (
-                                <Translation id="TR_STAKE_CLAIM_REWARDS" />
+                                <Translation id="TR_EARN_CLAIM_REWARDS" />
                             ) : (
                                 <Translation id="TR_CONTINUE" />
                             )}
@@ -183,7 +183,7 @@ export const EarnClaimModal = ({ onCancel, account }: EarnClaimModalProps) => {
                                         intent="warning"
                                         icon="warning"
                                         description={
-                                            <Translation id="TR_STAKING_REWARDS_NETWORK_FEE_WARNING" />
+                                            <Translation id="TR_EARN_REWARDS_NETWORK_FEE_WARNING" />
                                         }
                                     />
                                 )}

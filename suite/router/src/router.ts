@@ -98,7 +98,7 @@ const validateWalletParams = (hash: HashString): CommonWalletParams => {
     });
 };
 
-const validateEarnParams = (hash: HashString) => {
+const validateEarnParams = (route: Route, hash: HashString) => {
     const [symbol, index, rawAccountType, rawYieldId, rawContractAddress] = parseHash(hash);
 
     const accountRouteParams = validateAccountRouteParams({
@@ -111,7 +111,15 @@ const validateEarnParams = (hash: HashString) => {
         rawContractAddress,
     });
 
-    if (!accountRouteParams || !decodedEarnRouteParams) {
+    if (!accountRouteParams) {
+        return;
+    }
+
+    if (route.name === 'earn-claim') {
+        return accountRouteParams;
+    }
+
+    if (!rawYieldId) {
         return;
     }
 
@@ -174,7 +182,7 @@ const getAppParams = (route: Route, hash: HashString = '') => {
         case 'dashboard':
             return validateDashboardParams(hash);
         case 'earn':
-            return validateEarnParams(hash);
+            return validateEarnParams(route, hash);
         case 'wallet':
             return validateWalletParams(hash);
         default:

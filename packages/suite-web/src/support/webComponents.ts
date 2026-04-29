@@ -27,6 +27,13 @@ export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>>
             }),
         ),
     ),
+    'earn-claim': lazy(() =>
+        import(/* webpackChunkName: "earn" */ 'src/views/earn/claim/index').then(
+            ({ EarnClaim }) => ({
+                default: EarnClaim,
+            }),
+        ),
+    ),
     'suite-connect-popup': lazy(() =>
         import(/* webpackChunkName: "connect-popup" */ 'src/views/connect-popup/index').then(
             ({ ConnectPopup }) => ({ default: ConnectPopup }),

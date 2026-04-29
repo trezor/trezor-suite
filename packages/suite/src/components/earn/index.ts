@@ -13,6 +13,8 @@ export { EarnDashboard } from './dashboard/EarnDashboard';
 
 export { YieldPageHeader } from './yield/common/YieldPageHeader';
 
+export { YieldClaim } from './yield/claim/YieldClaim';
+export { YieldClaimPageHeader } from './yield/claim/YieldClaimPageHeader';
 export { YieldSupply } from './yield/supply/YieldSupply';
 export { YieldWithdraw } from './yield/withdraw/YieldWithdraw';
 export { EarnSupplyingInfo } from './modals/EarnInANutshell/components/EarnSupplyingInfo';

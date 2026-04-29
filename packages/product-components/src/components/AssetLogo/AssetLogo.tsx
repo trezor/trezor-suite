@@ -14,7 +14,7 @@ export const AssetLogo = ({ symbol, size, ...rest }: AssetLogoProps) => {
             <CoinLogo
                 size={size}
                 symbol={symbol as NetworkSymbol | LegacyNetworkSymbol}
-                type="tokenWithNetwork"
+                type="token"
             />
         );
     }

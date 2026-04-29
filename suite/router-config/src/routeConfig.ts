@@ -48,6 +48,12 @@ export const routes = [
         params: earnParams,
     },
     {
+        name: 'earn-claim',
+        pattern: '/earn/claim',
+        app: 'earn',
+        params: earnParams,
+    },
+    {
         name: 'suite-version',
         pattern: '/version',
         app: 'version',

@@ -18,5 +18,4 @@ const minutes = (value: number) => value * 60 * 1000;
 export const queriesStaleTime = {
     getYieldOpportunities: minutes(5),
     getMerkleRewards: minutes(5),
-    getYieldProvider: minutes(5),
 } as const satisfies Record<string, number>;

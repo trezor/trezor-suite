@@ -21,7 +21,6 @@ export const desktopQueryKeys = {
     inactiveTokens: (symbol: string, accountKey?: string) =>
         accountKey ? ['inactive-tokens', symbol, accountKey] : ['inactive-tokens', symbol],
     yieldOpportunities: (pagination: any) => ['yield-opportunities', pagination],
-    yieldProvider: (providerId?: string) => ['yield-provider', providerId],
 } as const satisfies Record<string, AllowedQueryKey>;
 
 export const mobileQueryKeys = {} as const satisfies Record<string, AllowedQueryKey>;

@@ -25,7 +25,7 @@ export const earnParamsSchema = yup.object({
     symbol: yup.mixed<NetworkSymbol>().required(),
     accountIndex: yup.number().required(),
     accountType: yup.mixed<AccountType>().oneOf(accountTypes).required(),
-    yieldId: yup.string().required(),
+    yieldId: yup.string().default('no-yield-id'),
     contractAddress: yup.string().notRequired(),
 });
 
@@ -66,10 +66,6 @@ export const decodeEarnRouteParams = ({
         const contractAddress = rawContractAddress
             ? decodeURIComponent(rawContractAddress)
             : undefined;
-
-        if (!yieldId) {
-            return;
-        }
 
         return {
             yieldId,
