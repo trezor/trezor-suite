@@ -18,8 +18,6 @@ type IdPromise<T> = { promiseId: number; promise: Promise<T> };
 export type DeferredManager<T> = {
     /** How many pending promises are there */
     length: () => number;
-    /** ID of the next created promise (for specific use case, should be removed in the future) */
-    nextId: () => number;
     /** Creates new pending promise (with optional timeout) and returns it and its unique id */
     create: (timeout?: number) => IdPromise<T>;
     /** Waits until there is less than `concurrency` promises and then creates a new one */
@@ -54,8 +52,6 @@ export const createDeferredManager = <T = any>(
     let onRemovePromise = createDeferred();
 
     const length = () => promises.length;
-
-    const nextId = () => ID;
 
     const onPromiseRemoved = () => {
         const { resolve } = onRemovePromise;
@@ -146,5 +142,5 @@ export const createDeferredManager = <T = any>(
         }
     };
 
-    return { length, nextId, create, createConcurrent, resolve, reject, resolveAll, rejectAll };
+    return { length, create, createConcurrent, resolve, reject, resolveAll, rejectAll };
 };
