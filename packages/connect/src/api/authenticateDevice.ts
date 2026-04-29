@@ -94,9 +94,11 @@ export default class AuthenticateDevice extends AbstractMethod<
             return isRequired ? { valid: false, error: 'RESPONSE_PAYLOAD_MISSING' } : null;
         };
 
-        const optigaResult = await getOptigaResult();
-        const tropicResult = await getTropicResult();
-        const mcuResult = await getMCUResult();
+        const [optigaResult, tropicResult, mcuResult] = await Promise.all([
+            getOptigaResult(),
+            getTropicResult(),
+            getMCUResult(),
+        ]);
 
         return { optigaResult, tropicResult, mcuResult };
     }
