@@ -1,5 +1,5 @@
 import type { AttributeDef, EventDef } from '@suite-common/analytics';
-import { type TradingType } from '@suite-common/trading';
+import { type TradingTypeWithConcierge } from '@suite-common/trading';
 
 import { EventType } from '../constants';
 import { type TradingNavigateFrom } from '../definitions';
@@ -8,7 +8,7 @@ type TradingNavigateAction = 'navigate' | 'cancel';
 
 type Attributes = {
     action: AttributeDef<TradingNavigateAction>;
-    type: AttributeDef<TradingType>;
+    type: AttributeDef<TradingTypeWithConcierge>;
     from: AttributeDef<TradingNavigateFrom>;
     networkSymbol?: AttributeDef<string>;
     contractAddress?: AttributeDef<string>;

@@ -4,7 +4,7 @@ import type {
     TradingState as CommonTradingState,
     InvityServerEnvironment,
     TradingCountryCode,
-    TradingType,
+    TradingTypeWithConcierge,
 } from '@suite-common/trading';
 
 import type { ProviderConfirmationStatus } from './general';
@@ -28,7 +28,7 @@ export interface TradingState extends CommonTradingState {
     tradingEnvironment: InvityServerEnvironment;
     tradeOrderIdToBeOpened: string | undefined;
     isAmountInputActive: boolean;
-    activeTradingType: TradingType | undefined;
+    activeTradingType: TradingTypeWithConcierge | undefined;
     providerConfirmationStatus: ProviderConfirmationStatus;
     currentProviderMetadata: ProviderMetadata | undefined;
 }

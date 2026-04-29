@@ -2,7 +2,7 @@ import { useCallback, useMemo } from 'react';
 import { FlatList } from 'react-native-gesture-handler';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { type TradingType } from '@suite-common/trading';
+import { type TradingTypeWithConcierge } from '@suite-common/trading';
 import { events } from '@suite-native/analytics';
 import { HStack, IconButton, useBottomSheetModal } from '@suite-native/atoms';
 import { FeatureFlag, selectIsFeatureFlagEnabled } from '@suite-native/feature-flags';
@@ -24,7 +24,7 @@ const useSelectedTab = () => {
     const activeTab = useSelector(selectActiveTradingType);
 
     const setActiveTab = useCallback(
-        (tab: TradingType) => {
+        (tab: TradingTypeWithConcierge) => {
             dispatch(tradingActions.setActiveTradingType(tab));
         },
         [dispatch],
@@ -56,7 +56,13 @@ const useTabsData = () => {
                 icon: 'arrowsLeftRight',
                 testID: '@trading/exchange/header-tab',
             },
-        ] as { key: TradingType; label: string; icon: IconName; testID: string }[];
+            {
+                key: 'concierge',
+                label: translate('moduleTrading.tradingScreen.tabs.concierge'),
+                icon: 'handshake',
+                testID: '@trading/concierge/header-tab',
+            },
+        ] as { key: TradingTypeWithConcierge; label: string; icon: IconName; testID: string }[];
 
         return tabs.filter(Boolean);
     }, [translate]);
@@ -76,7 +82,7 @@ export const HeaderTabs = () => {
         selectIsFeatureFlagEnabled(state, FeatureFlag.AreTradingExchangeDexesEnabled),
     );
     const analytics = useAnalytics();
-    const onTabPress = (tab: TradingType) => {
+    const onTabPress = (tab: TradingTypeWithConcierge) => {
         if (tab === activeTab) {
             return;
         }

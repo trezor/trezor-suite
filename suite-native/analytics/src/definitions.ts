@@ -57,7 +57,8 @@ export type TradingNavigateFrom =
     | 'dashboard'
     | 'trade/buy'
     | 'trade/sell'
-    | 'trade/exchange';
+    | 'trade/exchange'
+    | 'trade/concierge';
 export type TradingExchangeAction = 'continue' | 'cancel' | 'retry' | 'visit' | 'revoke';
 export type TradingExchangeStep =
     | 'exchange-form'

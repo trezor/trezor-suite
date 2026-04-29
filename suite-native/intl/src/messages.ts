@@ -3144,6 +3144,7 @@ export const messages = {
                 sell: 'Sell',
                 exchange: 'Swap',
                 settings: 'Advanced settings',
+                concierge: 'Concierge',
             },
             kycRequired: 'Identity verification will be required.',
             buttons: {
