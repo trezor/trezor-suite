@@ -94,9 +94,7 @@ test.describe('Account types suite', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () =
                 { symbol: 'base', path: `m/44'/60'/0'/0/1` },
             ];
 
-            const symbolsToEnable = coins
-                .map(c => c.symbol)
-                .filter(symbol => symbol !== 'eth') as NetworkSymbol[];
+            const symbolsToEnable = coins.map(c => c.symbol) as NetworkSymbol[];
             await settingsPage.changeNetworks({
                 enableNetworks: symbolsToEnable,
             });
