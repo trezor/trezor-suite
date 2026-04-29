@@ -140,6 +140,7 @@ export const TronComposeTransaction = Type.Object({
     blockHash: Type.String(),
     blockHeight: Type.Number(),
     fee_limit: Type.Optional(Type.Number()),
+    data: Type.Optional(Type.String()),
 });
 
 export type TronComposedTransaction = Static<typeof TronComposedTransaction>;

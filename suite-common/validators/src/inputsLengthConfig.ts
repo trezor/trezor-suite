@@ -13,6 +13,7 @@ export const formInputsMaxLength = {
      * - For UTF-16 encoding: 16384 B / 2 = 8192 B
      */
     ethData: 8192,
+    tronNote: 512,
 
     btcLocktime: 10, // max: 4294967294
     xrpDestinationTag: 10, // max: 4294967295

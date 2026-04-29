@@ -277,10 +277,15 @@ export const composeTronTransactionFeeLevelsThunk = createThunk<
                   },
               };
 
+        const tronData = formState.transactionData
+            ? formState.transactionData.replace(/^0x/, '')
+            : undefined;
+
         const bandwidthEstimate = await TrezorConnect.tronComposeTransaction({
             contract,
             blockHash: DUMMY_BLOCK_HASH,
             blockHeight: DUMMY_BLOCK_HEIGHT,
+            data: tronData || undefined,
         });
 
         if (!bandwidthEstimate.success) {
@@ -451,11 +456,16 @@ export const signTronSendFormTransactionThunk = createThunk<
                   },
               };
 
+        const tronData = formState.transactionData
+            ? formState.transactionData.replace(/^0x/, '')
+            : undefined;
+
         const composed = await TrezorConnect.tronComposeTransaction({
             contract,
             blockHash,
             blockHeight,
             fee_limit: tokenFeeLimitSun,
+            data: tronData || undefined,
         });
 
         if (!composed.success) {
@@ -480,6 +490,7 @@ export const signTronSendFormTransactionThunk = createThunk<
             expiration,
             timestamp,
             fee_limit: tokenFeeLimitSun,
+            data: tronData || undefined,
             contract: [contract],
         });
 

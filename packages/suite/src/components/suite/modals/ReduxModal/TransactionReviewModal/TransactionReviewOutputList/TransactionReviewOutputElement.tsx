@@ -121,6 +121,8 @@ const Value = ({ value, type, symbol, token, isFiatVisible, state }: ValueProps)
             );
         case 'safe-address':
             return <Address value={value} isDeviceRendered />;
+        case 'note':
+            return <Text>{value}</Text>;
         case 'data':
             return <Data value={value} />;
         case 'amount': {
@@ -166,7 +168,7 @@ export type OutputElementLine = {
     id: string;
     value: string;
     token?: TokenInfo;
-    type: 'default' | 'address' | 'safe-address' | 'data' | 'amount';
+    type: 'default' | 'address' | 'safe-address' | 'note' | 'data' | 'amount';
     label?: ReactNode;
 };
 

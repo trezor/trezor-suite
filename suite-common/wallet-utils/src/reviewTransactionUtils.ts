@@ -228,11 +228,15 @@ const constructOldFlow = ({
             });
     }
 
-    if (
-        precomposedForm.transactionData &&
-        (!precomposedTx.token || precomposedForm.yieldMetadata)
-    ) {
-        outputs.push({ type: 'data', value: precomposedForm.transactionData });
+    if (precomposedForm.tronDataAscii) {
+        outputs.push({ type: 'note', value: precomposedForm.tronDataAscii });
+    } else {
+        if (
+            precomposedForm.transactionData &&
+            (!precomposedTx.token || precomposedForm.yieldMetadata)
+        ) {
+            outputs.push({ type: 'data', value: precomposedForm.transactionData });
+        }
     }
 
     // For bump fee we have to analyze tx data,
@@ -334,14 +338,18 @@ const constructNewFlow = ({
         });
     }
 
-    if (
-        (precomposedForm.transactionData && !precomposedTx.token && !isEvmApproval) ||
-        (precomposedForm.transactionData && isEvmApproval && !isApprovalFlowSupported) ||
-        (precomposedForm.transactionData &&
-            precomposedForm.yieldMetadata &&
-            !isUpdatedEthereumSendFlow)
-    ) {
-        outputs.push({ type: 'data', value: precomposedForm.transactionData });
+    if (precomposedForm.tronDataAscii) {
+        outputs.push({ type: 'note', value: precomposedForm.tronDataAscii });
+    } else {
+        if (
+            (precomposedForm.transactionData && !precomposedTx.token && !isEvmApproval) ||
+            (precomposedForm.transactionData && isEvmApproval && !isApprovalFlowSupported) ||
+            (precomposedForm.transactionData &&
+                precomposedForm.yieldMetadata &&
+                !isUpdatedEthereumSendFlow)
+        ) {
+            outputs.push({ type: 'data', value: precomposedForm.transactionData });
+        }
     }
 
     const isRbf = isRbfBumpFeeTransaction(precomposedTx);

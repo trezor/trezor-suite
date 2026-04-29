@@ -1,4 +1,5 @@
 import { Translation } from '@suite/intl';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { InfoItem, Tooltip } from '@trezor/components';
 
@@ -36,7 +37,12 @@ export const TronNewAccountInfo = () => {
                 <Tooltip
                     hasIcon
                     maxWidth={328}
-                    content={<Translation id="TR_TRON_ACCOUNT_ACTIVATION_FEE_TOOLTIP" />}
+                    content={
+                        <Translation
+                            id="TR_TRON_ACCOUNT_ACTIVATION_FEE_TOOLTIP"
+                            values={{ networkDisplaySymbol: getNetworkDisplaySymbol(symbol) }}
+                        />
+                    }
                 >
                     <Translation id="TR_TRON_ACCOUNT_ACTIVATION_FEE" />
                 </Tooltip>

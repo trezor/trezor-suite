@@ -302,6 +302,12 @@ export const BasicTxDetails = ({
                         {tx.tronSpecific.bandwidthUsage}
                     </Item>
                 )}
+
+                {tx.tronSpecific?.note && (
+                    <Item label={<Translation id="TR_TRON_NOTE" />} iconName="pencil">
+                        {tx.tronSpecific.note}
+                    </Item>
+                )}
             </Grid>
         </Card>
     );

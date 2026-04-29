@@ -5415,6 +5415,26 @@ export const messages = defineMessages({
         id: 'TR_TRON_FEE_LIMIT_BELOW_RECOMMENDED',
         defaultMessage: 'Fee limit too low',
     },
+    TR_TRON_NOTE: {
+        id: 'TR_TRON_NOTE',
+        defaultMessage: 'Note',
+    },
+    TR_TRON_NOTE_ADD: {
+        id: 'TR_TRON_NOTE_ADD',
+        defaultMessage: 'Add note',
+    },
+    TR_TRON_NOTE_ADD_TOOLTIP: {
+        id: 'TR_TRON_NOTE_ADD_TOOLTIP',
+        defaultMessage: 'Add a note to the transaction.',
+    },
+    TR_TRON_NOTE_TOO_LONG: {
+        id: 'TR_TRON_NOTE_TOO_LONG',
+        defaultMessage: 'Note is too long',
+    },
+    TR_TRON_NOTE_INFO: {
+        id: 'TR_TRON_NOTE_INFO',
+        defaultMessage: 'Adds 1 TRX in network fee.',
+    },
     TR_FEE_LIMIT: {
         id: 'TR_FEE_LIMIT',
         defaultMessage: 'Fee limit',
