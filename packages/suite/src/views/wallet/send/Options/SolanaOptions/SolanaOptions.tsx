@@ -19,14 +19,8 @@ export const SolanaOptions = () => {
     return (
         <>
             {!memoEnabled && (
-                <Button
-                    intent="neutral"
-                    priority="secondary"
-                    iconLeft="tag"
-                    data-testid="send/open-solana-memo"
-                    onClick={toggleMemo}
-                >
-                    <Translation id="DESTINATION_TAG_SWITCH" />
+                <Button intent="neutral" priority="secondary" iconLeft="tag" onClick={toggleMemo}>
+                    <Translation id="MEMO_SWITCH" />
                 </Button>
             )}
 

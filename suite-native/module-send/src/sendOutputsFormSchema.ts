@@ -357,15 +357,18 @@ export const sendOutputsFormValidationSchema = yup.object({
 
                 if (!value) return true;
 
-                const destinationTagMaxLength =
-                    networkType === 'stellar'
-                        ? formInputsMaxLength.stellarTextMemo
-                        : formInputsMaxLength.solanaMemo;
-                if (value.length > destinationTagMaxLength) {
-                    return false;
-                }
+                const destinationTagMaxLength = (() => {
+                    switch (networkType) {
+                        case 'stellar':
+                            return formInputsMaxLength.stellarTextMemo;
+                        case 'solana':
+                            return formInputsMaxLength.solanaMemo;
+                        default:
+                            throw new Error(`Unsupported network type: ${networkType}`);
+                    }
+                })();
 
-                return true;
+                return value.length <= destinationTagMaxLength;
             },
         ),
     setMaxOutputId: yup.number(),

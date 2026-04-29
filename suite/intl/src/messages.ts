@@ -11644,4 +11644,12 @@ export const messages = defineMessages({
         id: 'TR_EARN_YIELD_CLAIM_MODAL_SUBTITLE',
         defaultMessage: 'Select an account to claim rewards.',
     },
+    MEMO: {
+        id: 'MEMO',
+        defaultMessage: 'Memo',
+    },
+    MEMO_SWITCH: {
+        id: 'MEMO_SWITCH',
+        defaultMessage: 'Add memo',
+    },
 } as const);

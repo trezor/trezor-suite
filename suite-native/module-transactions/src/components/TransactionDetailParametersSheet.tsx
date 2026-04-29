@@ -165,7 +165,31 @@ export const TransactionDetailParametersSheet = ({
                                 'transactions.TransactionDetailScreen.parametersSheet.memo',
                             )}
                         >
-                            {transaction.solanaSpecific.memo}
+                            <Box
+                                flexDirection="row"
+                                alignItems="center"
+                                paddingLeft="sp16"
+                                justifyContent="flex-end"
+                            >
+                                <Text numberOfLines={1} style={{ flexShrink: 1 }}>
+                                    {transaction.solanaSpecific.memo}
+                                </Text>
+                                <Box marginLeft="sp8">
+                                    <IconButton
+                                        iconName="copy"
+                                        onPress={() =>
+                                            copyToClipboard(
+                                                transaction.solanaSpecific!.memo!,
+                                                translate(
+                                                    'transactions.TransactionDetailScreen.parametersSheet.memoCopied',
+                                                ),
+                                            )
+                                        }
+                                        intent="neutral"
+                                        priority="secondary"
+                                    />
+                                </Box>
+                            </Box>
                         </TransactionDetailRow>
                     </Card>
                 )}

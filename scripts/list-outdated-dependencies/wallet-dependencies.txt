@@ -13,11 +13,11 @@
 @solana-program/system
 @solana-program/token
 @solana-program/token-2022
+@solana-program/memo
 @solana/addresses
 @solana/keys
 @solana/kit
 @solana/rpc-api
-@solana-program/memo
 @solana/rpc-types
 @stellar/stellar-sdk
 @swc/core
