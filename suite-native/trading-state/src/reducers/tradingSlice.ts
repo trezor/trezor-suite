@@ -3,7 +3,7 @@ import { type PayloadAction, isAnyOf } from '@reduxjs/toolkit';
 import { createSliceWithExtraDeps } from '@suite-common/redux-utils';
 import {
     type InvityServerEnvironment,
-    type TradingType,
+    type TradingTypeWithConcierge,
     prepareTradingReducer,
 } from '@suite-common/trading';
 import { tradingInitialState } from '@suite-native/trading-consts';
@@ -62,7 +62,7 @@ export const tradingSlice = createSliceWithExtraDeps({
         setIsAmountInputActive: (state, { payload }: PayloadAction<boolean>) => {
             state.isAmountInputActive = payload;
         },
-        setActiveTradingType: (state, { payload }: PayloadAction<TradingType>) => {
+        setActiveTradingType: (state, { payload }: PayloadAction<TradingTypeWithConcierge>) => {
             state.activeTradingType = payload;
         },
         clearActiveTradingType: state => {

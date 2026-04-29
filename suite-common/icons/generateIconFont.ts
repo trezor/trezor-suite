@@ -99,6 +99,7 @@ const usedIcons = [
     'graph',
     'handPalm',
     'handWaving',
+    'handshake',
     'heart',
     'hourglass',
     'house',
