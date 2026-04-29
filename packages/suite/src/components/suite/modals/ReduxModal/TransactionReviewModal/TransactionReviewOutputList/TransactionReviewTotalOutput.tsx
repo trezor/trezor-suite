@@ -98,10 +98,12 @@ const getLines = ({
             type: 'amount',
         };
 
-        return isUnknownStakingValue ||
-            (isEvmApprovalTx(precomposedForm.transactionData) && isApprovalFlowSupported(device))
-            ? [feeLine]
-            : [amountLine, feeLine];
+        const isFeeOnly =
+            isUnknownStakingValue ||
+            (isEvmApprovalTx(precomposedForm.transactionData) && isApprovalFlowSupported(device)) ||
+            !!precomposedForm.yieldMetadata;
+
+        return isFeeOnly ? [feeLine] : [amountLine, feeLine];
     }
     if (isUpdatedSendFlow) {
         const amount = showAmountWithoutFee ? amountWithoutFee : precomposedTx.totalSpent;
@@ -123,15 +125,27 @@ const getLines = ({
         ];
     }
 
-    return [
-        {
-            id: 'total',
-            label: <Translation id="TR_TOTAL" />,
-            value: precomposedTx.totalSpent,
-            token: tokenInfo,
-            type: 'amount',
-        },
-    ];
+    const totalLine: OutputElementLine = {
+        id: 'total',
+        label: <Translation id="TR_TOTAL" />,
+        value: precomposedTx.totalSpent,
+        token: tokenInfo,
+        type: 'amount',
+    };
+
+    if (precomposedForm.yieldMetadata) {
+        return [
+            totalLine,
+            {
+                id: 'fee',
+                label: <Translation id={feeLabelId} />,
+                value: precomposedTx.fee,
+                type: 'amount',
+            },
+        ];
+    }
+
+    return [totalLine];
 };
 
 export type TransactionReviewTotalOutputProps = {

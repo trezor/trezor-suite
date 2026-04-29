@@ -30,6 +30,7 @@ import {
     AddressDisplayOptions,
     type FormState,
     type PrecomposedTransactionFinal,
+    type YieldFormMetadata,
 } from '@suite-common/wallet-types';
 import {
     convertAmountUnitsToSubunits,
@@ -59,6 +60,8 @@ type BuildYieldReviewTokenParams = {
 type BuildYieldReviewStateParams = BuildYieldReviewTokenParams & {
     parsedTransaction: ParsedTransactionForSigning;
     amount: string;
+    flowType: YieldFormMetadata['type'];
+    vaultName: string;
 };
 
 type BuildYieldReviewStateResult = {
@@ -71,6 +74,8 @@ type SendYieldTransactionParams = {
     amount: string;
     token: YieldFlowDisplayToken;
     transaction: TransactionDto;
+    flowType: YieldFormMetadata['type'];
+    vaultName: string;
     dispatch: Dispatch;
     getState: () => AppState;
 };
@@ -130,6 +135,8 @@ const buildYieldReviewState = ({
     amount,
     token,
     symbol,
+    flowType,
+    vaultName,
 }: BuildYieldReviewStateParams): BuildYieldReviewStateResult => {
     const gasLimit = BigInt(parsedTransaction.gasLimit);
     const gasPriceWei = BigInt(
@@ -170,6 +177,7 @@ const buildYieldReviewState = ({
         isCoinControlEnabled: false,
         hasCoinControlBeenOpened: false,
         selectedUtxos: [],
+        yieldMetadata: { type: flowType, vaultName },
     };
 
     const precomposedTransaction: PrecomposedTransactionFinal = {
@@ -199,6 +207,8 @@ const sendYieldTransaction = async ({
     amount,
     token,
     transaction,
+    flowType,
+    vaultName,
     dispatch,
     getState,
 }: SendYieldTransactionParams) => {
@@ -227,6 +237,8 @@ const sendYieldTransaction = async ({
         amount,
         token,
         symbol: account.symbol,
+        flowType,
+        vaultName,
     });
 
     dispatch(
@@ -363,11 +375,18 @@ export const submitYieldActionThunk = createThunk(
                 return;
             }
 
+            const isWithdraw = flowType === 'withdraw';
+            const reviewAmount = isWithdraw ? requestAmount : amount;
+            const reviewToken = isWithdraw ? flowData.receiptToken : flowData.token;
+            const vaultName = flowData.vault.outputToken?.name ?? flowData.vault.metadata.name;
+
             const result = await sendYieldTransaction({
                 account: flowData.account,
-                amount,
-                token: flowData.token,
+                amount: reviewAmount,
+                token: reviewToken,
                 transaction: actionTransaction,
+                flowType,
+                vaultName,
                 dispatch,
                 getState,
             });

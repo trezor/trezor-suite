@@ -8,6 +8,7 @@ import {
     stakeActions,
 } from '@suite-common/wallet-core';
 import { type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import TrezorConnect from '@trezor/connect';
 
 import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
 import {
@@ -52,7 +53,11 @@ export const TransactionReviewModal = ({ type, decision }: TransactionReviewModa
     const handleCancelSignTx = () => {
         if (isSend) {
             dispatch(cancelSignSendFormTransactionThunk());
-        } else if (!isYield) {
+        } else if (isYield) {
+            if (!yieldTxReview.serializedTx) {
+                TrezorConnect.cancel('tx-cancelled');
+            }
+        } else {
             dispatch(cancelSignStakingTx());
         }
     };
