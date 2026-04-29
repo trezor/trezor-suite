@@ -1,7 +1,5 @@
-import { FadeIn, FadeOut, LinearTransition } from 'react-native-reanimated';
-
 import { type ApprovalStatus, getApprovalStatus } from '@suite-common/trading';
-import { AnimatedBox, Button, VStack } from '@suite-native/atoms';
+import { Button, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 import { useExchangeFormContext } from '../../hooks/exchange/useExchangeFormContext';
@@ -39,23 +37,19 @@ export const ExchangeConfirmation = () => {
             ) : (
                 <>
                     {canProceed && (
-                        <AnimatedBox entering={FadeIn} exiting={FadeOut} layout={LinearTransition}>
-                            <Button onPress={selectQuote} testID={CONFIRMATION_TEST_ID}>
-                                <Translation id="moduleTrading.tradingScreen.buttons.continue" />
-                            </Button>
-                        </AnimatedBox>
+                        <Button onPress={selectQuote} testID={CONFIRMATION_TEST_ID}>
+                            <Translation id="moduleTrading.tradingScreen.buttons.continue" />
+                        </Button>
                     )}
                     {canRevoke && (
-                        <AnimatedBox entering={FadeIn} exiting={FadeOut} layout={LinearTransition}>
-                            <Button
-                                onPress={selectQuoteForRevoke}
-                                testID={REVOKE_TEST_ID}
-                                intent="neutral"
-                                priority="secondary"
-                            >
-                                <Translation id="moduleTrading.tradingScreen.buttons.revoke" />
-                            </Button>
-                        </AnimatedBox>
+                        <Button
+                            onPress={selectQuoteForRevoke}
+                            testID={REVOKE_TEST_ID}
+                            intent="neutral"
+                            priority="secondary"
+                        >
+                            <Translation id="moduleTrading.tradingScreen.buttons.revoke" />
+                        </Button>
                     )}
                 </>
             )}

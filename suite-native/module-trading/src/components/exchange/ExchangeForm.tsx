@@ -1,12 +1,5 @@
 import { memo } from 'react';
-import { Platform } from 'react-native';
-import {
-    FadeInUp,
-    FadeOutUp,
-    LinearTransition,
-    StretchInY,
-    StretchOutY,
-} from 'react-native-reanimated';
+import { LinearTransition } from 'react-native-reanimated';
 
 import { AnimatedBox, Card, VStack } from '@suite-native/atoms';
 import { AmountEditingDoneButton } from '@suite-native/trading-atoms';
@@ -28,9 +21,6 @@ type ExchangeFormMemoizedProps = {
 const EXCHANGE_FORM_TEST_ID = '@trading/exchange/form';
 const AMOUNT_EDITING_DONE_BUTTON_TEST_ID = '@trading/exchange/amount-editing-done-button';
 
-const cardEnteringAnimation = Platform.OS === 'android' ? StretchInY : FadeInUp;
-const cardExitingAnimation = Platform.OS === 'android' ? StretchOutY : FadeOutUp;
-
 const ExchangeFormMemoized = memo(({ isAmountInputActive }: ExchangeFormMemoizedProps) => (
     <AnimatedBox layout={LinearTransition}>
         <VStack spacing="sp16" testID={EXCHANGE_FORM_TEST_ID}>
@@ -41,16 +31,10 @@ const ExchangeFormMemoized = memo(({ isAmountInputActive }: ExchangeFormMemoized
                 <AmountEditingDoneButton testID={AMOUNT_EDITING_DONE_BUTTON_TEST_ID} />
             ) : (
                 <>
-                    <AnimatedBox
-                        layout={LinearTransition}
-                        entering={cardEnteringAnimation}
-                        exiting={cardExitingAnimation}
-                    >
-                        <Card noPadding>
-                            <ExchangeReceiveAccountPicker />
-                            <ExchangeRateAndProviderPicker />
-                        </Card>
-                    </AnimatedBox>
+                    <Card noPadding>
+                        <ExchangeReceiveAccountPicker />
+                        <ExchangeRateAndProviderPicker />
+                    </Card>
                     <ExchangeConfirmation />
                 </>
             )}
