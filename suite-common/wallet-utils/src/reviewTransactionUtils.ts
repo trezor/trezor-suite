@@ -228,7 +228,10 @@ const constructOldFlow = ({
             });
     }
 
-    if (precomposedForm.transactionData && !precomposedTx.token) {
+    if (
+        precomposedForm.transactionData &&
+        (!precomposedTx.token || precomposedForm.yieldMetadata)
+    ) {
         outputs.push({ type: 'data', value: precomposedForm.transactionData });
     }
 
@@ -248,7 +251,11 @@ const constructOldFlow = ({
                 value: precomposedForm.destinationTag,
             });
         }
-    } else if ((!isBumpFeeRbf || !precomposedTx.useNativeRbf) && !stakeType) {
+    } else if (
+        (!isBumpFeeRbf || !precomposedTx.useNativeRbf) &&
+        !stakeType &&
+        !precomposedForm.yieldMetadata
+    ) {
         outputs.push({ type: 'fee', value: precomposedTx.fee });
     }
 
@@ -283,6 +290,26 @@ const constructNewFlow = ({
     const hasDestinationTag = 'destinationTag' in precomposedForm;
     const trading = precomposedForm?.trading;
 
+    if (precomposedForm.yieldMetadata && isUpdatedEthereumSendFlow) {
+        outputs.push(
+            { type: 'data', value: '' },
+            { type: 'address', value: precomposedForm.yieldMetadata.vaultName },
+        );
+
+        precomposedTx.outputs.forEach(o => {
+            if ('address' in o && typeof o.address === 'string') {
+                outputs.push({
+                    type: 'amount',
+                    value: o.amount.toString(),
+                    value2: networks[symbol].name,
+                    token: precomposedTx.token,
+                });
+            }
+        });
+
+        return outputs;
+    }
+
     if (networkType === 'stellar') {
         if (!isUpdatedStellarSendFlow) {
             outputs.push({
@@ -309,7 +336,10 @@ const constructNewFlow = ({
 
     if (
         (precomposedForm.transactionData && !precomposedTx.token && !isEvmApproval) ||
-        (precomposedForm.transactionData && isEvmApproval && !isApprovalFlowSupported)
+        (precomposedForm.transactionData && isEvmApproval && !isApprovalFlowSupported) ||
+        (precomposedForm.transactionData &&
+            precomposedForm.yieldMetadata &&
+            !isUpdatedEthereumSendFlow)
     ) {
         outputs.push({ type: 'data', value: precomposedForm.transactionData });
     }

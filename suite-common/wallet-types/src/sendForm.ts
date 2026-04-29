@@ -90,4 +90,10 @@ export interface FormState {
     selectedUtxos: AccountUtxo[];
     utxoSorting?: UtxoSorting;
     trading?: FormStateTrading;
+    yieldMetadata?: YieldFormMetadata;
 }
+
+export type YieldFormMetadata = {
+    type: 'supply' | 'withdraw';
+    vaultName: string;
+};

@@ -9520,7 +9520,7 @@ export const messages = defineMessages({
     },
     TR_EARN_YIELD_WITHDRAW: {
         id: 'TR_EARN_YIELD_WITHDRAW',
-        defaultMessage: 'Withdraw',
+        defaultMessage: 'Redeem',
     },
     TR_EARN_YIELD_DASHBOARD_SUPPLY_NOW: {
         id: 'TR_EARN_YIELD_DASHBOARD_SUPPLY_NOW',
@@ -9657,6 +9657,34 @@ export const messages = defineMessages({
     TR_EARN_YIELD_ERROR_TRANSACTION_FAILED: {
         id: 'TR_EARN_YIELD_ERROR_TRANSACTION_FAILED',
         defaultMessage: 'Transaction failed.',
+    },
+    TR_EARN_YIELD_REVIEW_SUPPLY_TITLE: {
+        id: 'TR_EARN_YIELD_REVIEW_SUPPLY_TITLE',
+        defaultMessage: 'Deposit',
+    },
+    TR_EARN_YIELD_REVIEW_SUPPLY_DESCRIPTION: {
+        id: 'TR_EARN_YIELD_REVIEW_SUPPLY_DESCRIPTION',
+        defaultMessage: 'Review details to deposit to vault',
+    },
+    TR_EARN_YIELD_REVIEW_WITHDRAW_TITLE: {
+        id: 'TR_EARN_YIELD_REVIEW_WITHDRAW_TITLE',
+        defaultMessage: 'Redeem',
+    },
+    TR_EARN_YIELD_REVIEW_WITHDRAW_DESCRIPTION: {
+        id: 'TR_EARN_YIELD_REVIEW_WITHDRAW_DESCRIPTION',
+        defaultMessage: 'Review details to redeem from vault',
+    },
+    TR_EARN_YIELD_VAULT: {
+        id: 'TR_EARN_YIELD_VAULT',
+        defaultMessage: 'Vault',
+    },
+    TR_EARN_YIELD_REVIEW_SUPPLY_AMOUNT: {
+        id: 'TR_EARN_YIELD_REVIEW_SUPPLY_AMOUNT',
+        defaultMessage: 'Deposit amount',
+    },
+    TR_EARN_YIELD_REVIEW_WITHDRAW_AMOUNT: {
+        id: 'TR_EARN_YIELD_REVIEW_WITHDRAW_AMOUNT',
+        defaultMessage: 'Redeem amount',
     },
     TR_EARN_DASHBOARD_ACTIVE: {
         id: 'TR_EARN_DASHBOARD_ACTIVE',
@@ -11367,8 +11395,9 @@ export const messages = defineMessages({
         id: 'TR_REVOKE_AMOUNT_TITLE',
         defaultMessage: 'Token',
     },
-    TR_APPROVE_CHAIN_TITLE: {
-        id: 'TR_APPROVE_CHAIN_TITLE',
+
+    TR_CHAIN: {
+        id: 'TR_CHAIN',
         defaultMessage: 'Chain',
     },
     TR_CONTRACT_REVOKE_TITLE: {

@@ -112,6 +112,19 @@ const getTranslationValues = (
         return getStakeTranslations(stakeType, networkType);
     }
 
+    if (evmTxType === 'supply' || evmTxType === 'withdraw') {
+        const isSupply = evmTxType === 'supply';
+
+        return {
+            label: isSupply
+                ? 'TR_EARN_YIELD_REVIEW_SUPPLY_TITLE'
+                : 'TR_EARN_YIELD_REVIEW_WITHDRAW_TITLE',
+            value: isSupply
+                ? 'TR_EARN_YIELD_REVIEW_SUPPLY_DESCRIPTION'
+                : 'TR_EARN_YIELD_REVIEW_WITHDRAW_DESCRIPTION',
+        };
+    }
+
     return null;
 };
 
@@ -159,10 +172,18 @@ const getOutputTitle = (
             return <Translation id={contractTitle} />;
         case 'address':
         case 'regular_legacy':
+            if (evmTxType === 'supply' || evmTxType === 'withdraw') {
+                return <Translation id="TR_EARN_YIELD_VAULT" />;
+            }
+
             return <Translation id={translation ? translation.label : 'TR_RECIPIENT_ADDRESS'} />;
 
         case 'amount':
-            return <Translation id="TR_AMOUNT_SENT" />;
+            if (evmTxType === 'supply' || evmTxType === 'withdraw') {
+                return <Translation id="AMOUNT" />;
+            }
+
+            return <Translation id={translation ? translation.label : 'TR_AMOUNT_SENT'} />;
         case 'destination-tag':
             return <Translation id="DESTINATION_TAG" />;
         case 'signing-with':
@@ -278,12 +299,36 @@ const getOutputLines = ({
         case 'address':
         case 'data':
         case 'regular_legacy': {
-            const translation = getTranslationValues(
+            const translationValues = getTranslationValues(
                 networkType,
                 stakeType,
                 evmTxType,
                 device,
-            )?.value;
+            );
+
+            if (evmTxType === 'supply' || evmTxType === 'withdraw') {
+                if (type === 'data' && translationValues) {
+                    return [
+                        {
+                            id: 'data',
+                            type: 'default',
+                            value: translationString(translationValues.value, {}),
+                        },
+                    ];
+                }
+
+                if (type === 'address') {
+                    return [
+                        {
+                            id: 'address',
+                            type: 'default',
+                            value,
+                        },
+                    ];
+                }
+            }
+
+            const translation = translationValues?.value;
 
             const defaultOutput = [
                 {
@@ -338,6 +383,32 @@ const getOutputLines = ({
                 },
             ];
         case 'amount': {
+            if (evmTxType === 'supply' || evmTxType === 'withdraw') {
+                return [
+                    {
+                        id: 'amount',
+                        label: (
+                            <Translation
+                                id={
+                                    evmTxType === 'supply'
+                                        ? 'TR_EARN_YIELD_REVIEW_SUPPLY_AMOUNT'
+                                        : 'TR_EARN_YIELD_REVIEW_WITHDRAW_AMOUNT'
+                                }
+                            />
+                        ),
+                        value,
+                        type: 'amount',
+                        token: token || nativeToken,
+                    },
+                    {
+                        id: 'chain',
+                        label: <Translation id="TR_CHAIN" />,
+                        value: value2,
+                        type: 'data',
+                    },
+                ];
+            }
+
             const output: OutputElementLine[] = [
                 {
                     id: type,
@@ -395,7 +466,7 @@ const getOutputLines = ({
                 },
                 {
                     id: `${type}-chain`,
-                    label: <Translation id="TR_APPROVE_CHAIN_TITLE" />,
+                    label: <Translation id="TR_CHAIN" />,
                     value: value2,
                     type: 'data',
                 },
