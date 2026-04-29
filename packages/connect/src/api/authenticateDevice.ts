@@ -79,7 +79,7 @@ export default class AuthenticateDevice extends AbstractMethod<
             return isRequired ? { valid: false, error: 'RESPONSE_PAYLOAD_MISSING' } : null;
         };
 
-        const getMLDSA44Result = async (): Promise<VerifyAuthenticityProofResult | null> => {
+        const getMCUResult = async (): Promise<VerifyAuthenticityProofResult | null> => {
             const { mcu_signature: signature, mcu_certificates: certificates } = message;
             const isAvailable = signature !== undefined && certificates.length > 0;
             const isRequired = !this.getDevice().unavailableCapabilities['mcuDeviceAuthentication'];
@@ -96,8 +96,8 @@ export default class AuthenticateDevice extends AbstractMethod<
 
         const optigaResult = await getOptigaResult();
         const tropicResult = await getTropicResult();
-        const MLDSA44Result = await getMLDSA44Result();
+        const mcuResult = await getMCUResult();
 
-        return { optigaResult, tropicResult, MLDSA44Result };
+        return { optigaResult, tropicResult, mcuResult };
     }
 }

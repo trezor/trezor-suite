@@ -65,15 +65,15 @@ export const checkDeviceAuthenticityThunk = createThunk<
             getState(),
             Feature.deviceAuthenticityCheckTropic,
         );
-        const isMLDSA44RemotelyDisabled = selectIsFeatureDisabled(
+        const isMCURemotelyDisabled = selectIsFeatureDisabled(
             getState(),
-            Feature.deviceAuthenticityCheckMLDSA44,
+            Feature.deviceAuthenticityCheckMCU,
         );
         const isOverallValid = isDeviceAuthenticityValid({
             result: result.payload,
             isOptigaRemotelyDisabled,
             isTropicRemotelyDisabled,
-            isMLDSA44RemotelyDisabled,
+            isMCURemotelyDisabled,
         });
         const storedResult = { valid: isOverallValid, ...result.payload };
 
@@ -83,7 +83,7 @@ export const checkDeviceAuthenticityThunk = createThunk<
             const error =
                 result.payload.optigaResult.error ??
                 result.payload.tropicResult?.error ??
-                result.payload.MLDSA44Result?.error;
+                result.payload.mcuResult?.error;
             dispatch(
                 notificationsActions.addToast({
                     type: 'device-authenticity-error',

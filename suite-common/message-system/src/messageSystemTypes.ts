@@ -76,7 +76,7 @@ export const Feature = {
 
     deviceAuthenticityCheckOptiga: 'security.deviceAuthenticityCheck.optiga',
     deviceAuthenticityCheckTropic: 'security.deviceAuthenticityCheck.tropic',
-    deviceAuthenticityCheckMLDSA44: 'security.deviceAuthenticityCheck.MLDSA44',
+    deviceAuthenticityCheckMCU: 'security.deviceAuthenticityCheck.mcu',
 
     idCheck: 'security.deviceMetaChecks.id',
     invariabilityCheck: 'security.deviceMetaChecks.invariability',
