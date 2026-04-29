@@ -1451,7 +1451,7 @@ export const messages = defineMessages({
         id: 'TR_ADDRESS_DISPLAY_DESCRIPTION',
     },
     TR_ASSETS: {
-        defaultMessage: 'Coin',
+        defaultMessage: 'Network',
         id: 'TR_ASSETS',
     },
     TR_BACK: {
@@ -1939,7 +1939,7 @@ export const messages = defineMessages({
     },
     TR_DEVICE_DISCONNECTED_DURING_ACTION_DESCRIPTION: {
         defaultMessage:
-            'Your Trezor was disconnected during the wallet backup setup. We strongly recommend that you use the factory reset option in Device settings to wipe your device and start the wallet backup setup again.',
+            'Your Trezor was disconnected during the wallet backup setup. We strongly recommend that you use the factory reset option in device settings to wipe your device and start the wallet backup setup again.',
         description: 'Error message. Instruction what to do.',
         id: 'TR_DEVICE_DISCONNECTED_DURING_ACTION_DESCRIPTION',
     },
@@ -2413,7 +2413,7 @@ export const messages = defineMessages({
         id: 'TR_FIRMWARE_SUBHEADING_BITCOIN',
     },
     TR_CHANGE_FIRMWARE_TYPE_ANYTIME: {
-        defaultMessage: 'You can change your firmware type in device settings anytime.',
+        defaultMessage: 'You can change your firmware type anytime in device settings.',
         description: 'Info in onboarding',
         id: 'TR_CHANGE_FIRMWARE_TYPE_ANYTIME',
     },
@@ -2582,7 +2582,7 @@ export const messages = defineMessages({
     },
     TR_DUST_PHISHING_PROTECTION_DESCRIPTION: {
         defaultMessage:
-            'Hide suspicious micro transactions used in scams from your transaction history.',
+            'Hide suspicious microtransactions used in scams from your transaction history.',
         id: 'TR_DUST_PHISHING_PROTECTION_DESCRIPTION',
     },
     TR_DUST_PHISHING_THRESHOLD: {
@@ -2603,7 +2603,7 @@ export const messages = defineMessages({
     },
     TR_DUST_PHISHING_ERROR_EMPTY: {
         id: 'TR_DUST_PHISHING_ERROR_EMPTY',
-        defaultMessage: 'Dust threshold cannot be empty',
+        defaultMessage: "Dust threshold can't be empty",
     },
     TR_GAP_LIMIT_ERROR_POSITIVE: {
         id: 'TR_GAP_LIMIT_ERROR_POSITIVE',
@@ -3136,11 +3136,11 @@ export const messages = defineMessages({
         id: 'TR_SETTINGS_SAME_AS_SYSTEM',
     },
     TR_SETTINGS_DEVICE_BANNER_TITLE_DISCONNECTED: {
-        defaultMessage: 'Connect your Trezor to access device settings',
+        defaultMessage: 'Trezor disconnected',
         id: 'TR_SETTINGS_DEVICE_BANNER_TITLE_DISCONNECTED',
     },
     TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_DISCONNECTED: {
-        defaultMessage: 'Connect your Trezor to access Device Settings',
+        defaultMessage: 'Connect your Trezor to access device settings',
         id: 'TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_DISCONNECTED',
     },
     TR_SETTINGS_DEVICE_BANNER_TITLE_UNAVAILABLE: {
@@ -3549,12 +3549,12 @@ export const messages = defineMessages({
     },
     TR_FACTORY_RESET_DESCRIPTION: {
         defaultMessage:
-            'Performing a factory reset in bootloader mode erases all device data, including your wallet backup, PIN, and firmware. Without a wallet backup, any funds on the device will be irrecoverable. Make sure you have your wallet backup before performing a factory reset, as it is essential for restoring access to your funds. Proceed with caution.',
+            "Performing a factory reset in bootloader mode erases all device data, including your wallet backup, PIN, and firmware. Without a wallet backup, any funds on the device will be irrecoverable. Make sure you have your wallet backup before performing a factory reset, as it's essential for restoring access to your funds. Proceed with caution.",
         id: 'TR_FACTORY_RESET_DESCRIPTION',
     },
     TR_WIPE_DEVICE_DESCRIPTION: {
         defaultMessage:
-            'Wiping the device permanently erases all stored data, including your wallet backup and PIN. Without a wallet backup, any funds on the device will be irrecoverable. Make sure you have your wallet backup before wiping the device, as it is essential for restoring access to your funds. Proceed with caution.',
+            "Wiping the device permanently erases all stored data, including your wallet backup and PIN. Without a wallet backup, any funds on the device will be irrecoverable. Make sure you have your wallet backup before wiping the device, as it's essential for restoring access to your funds. Proceed with caution.",
         id: 'TR_WIPE_DEVICE_DESCRIPTION',
     },
     TR_WORDS: {
@@ -4095,7 +4095,7 @@ export const messages = defineMessages({
     },
     TR_QUICK_ACTION_UPDATE_POPOVER_APP_UPDATE_AVAILABLE: {
         id: 'TR_QUICK_ACTION_UPDATE_POPOVER_APP_UPDATE_AVAILABLE',
-        defaultMessage: 'Trezor Suite update now available',
+        defaultMessage: 'Trezor Suite update available',
     },
     TR_QUICK_ACTION_UPDATE_POPOVER_APP_HAS_BEEN_UPDATED: {
         id: 'TR_QUICK_ACTION_UPDATE_POPOVER_APP_HAS_BEEN_UPDATED',
@@ -4633,7 +4633,7 @@ export const messages = defineMessages({
     TR_FORGET_DEVICE_MODAL_REMOVE_FROM_OS: {
         id: 'TR_FORGET_DEVICE_MODAL_REMOVE_FROM_OS',
         defaultMessage:
-            '<b>Remove your Trezor from the <link>Bluetooth settings</link>.</b> If you don’t, you might have trouble pairing it again in the future.',
+            '<b>Go to <link>Bluetooth settings</link> and remove your Trezor.</b> If not, you might have trouble pairing it again in the future.',
     },
     TR_FORGET_DEVICE_MODAL_REMOVE_FROM_TREZOR: {
         id: 'TR_FORGET_DEVICE_MODAL_REMOVE_FROM_TREZOR',
@@ -4646,11 +4646,11 @@ export const messages = defineMessages({
     },
     TR_FORGET_DEVICE_MODAL_FINISH_FORGETTING_HEADING: {
         id: 'TR_FORGET_DEVICE_MODAL_FINISH_FORGETTING_HEADING',
-        defaultMessage: 'Finish forgetting this Trezor',
+        defaultMessage: 'Finish removing this Trezor',
     },
     TR_FORGET_DEVICE_MODAL_DISCONNECT_SUBTITLE: {
         id: 'TR_FORGET_DEVICE_MODAL_DISCONNECT_SUBTITLE',
-        defaultMessage: 'Disconnect your Trezor from the computer.',
+        defaultMessage: 'Disconnect your Trezor from your computer.',
     },
     RECEIVE_TITLE: {
         id: 'RECEIVE_TITLE',
@@ -4876,7 +4876,7 @@ export const messages = defineMessages({
     TR_WALLET_CREATED_NOT_SECURED_DESCRIPTION: {
         id: 'TR_WALLET_CREATED_NOT_SECURED_DESCRIPTION',
         defaultMessage:
-            'If your Trezor is lost, damaged, or stolen, you will lose access to your funds without a wallet backup. Finish your Trezor setup first, then create a wallet backup in Device Settings.',
+            'If your Trezor is lost, damaged, or stolen, you won’t be able to regain access to your assets without a wallet backup. Finish setting up your Trezor, then create a wallet backup in device settings.',
     },
     TR_CONTINUE_TO_PIN: {
         id: 'TR_CONTINUE_TO_PIN',
@@ -5079,7 +5079,7 @@ export const messages = defineMessages({
     TR_LABEL_REQUIREMENTS: {
         id: 'TR_LABEL_REQUIREMENTS',
         defaultMessage:
-            'Select a name up to {length} characters, containing letters only from the English alphabet.',
+            'Enter a name up to {length} characters, containing letters only from the English alphabet.',
         description: 'How many characters may be in device label and of what type.',
     },
     TR_LABEL_ERROR_LENGTH: {
@@ -6520,16 +6520,16 @@ export const messages = defineMessages({
         id: 'TR_LABELING_NOT_SYNCED',
     },
     TR_LABELING_SYNCED_THROUGH_TREZOR_SERVERS: {
-        defaultMessage: 'Label server',
+        defaultMessage: 'Label server (Trezor)',
         id: 'TR_LABELING_SYNCED_THROUGH_TREZOR_SERVERS',
     },
     TR_LABELING_SERVERS_DESCRIPTION: {
         defaultMessage:
-            'Sync your labels via Trezor servers by default. Connect to your own server for more privacy and control.',
+            'Sync your labels via Trezor servers by default. Connect to a custom server for more privacy and control.',
         id: 'TR_LABELING_SERVERS_DESCRIPTION',
     },
     TR_LABELING_SYNCED_THROUGH_CUSTOM_SERVER: {
-        defaultMessage: 'Label synced through your custom server',
+        defaultMessage: 'Label server (Custom)',
         id: 'TR_LABELING_SYNCED_THROUGH_CUSTOM_SERVER',
     },
     TR_LABELING_SERVERS_CHANGE: {
@@ -6602,8 +6602,7 @@ export const messages = defineMessages({
     },
     FIRMWARE_UNSUPPORTED_DEVICE_SUITE_SYNC: {
         id: 'FIRMWARE_UNSUPPORTED_DEVICE_SUITE_SYNC',
-        defaultMessage:
-            'The device {name} isn’t compatible with Suite Sync. Suite Sync supports Trezor Safe 3, 5, and 7 devices.',
+        defaultMessage: 'Suite Sync supports Trezor Safe 3, 5, and 7 devices.',
     },
     TR_DISABLED_SWITCH_TOOLTIP: {
         id: 'TR_DISABLED_SWITCH_TOOLTIP',
@@ -6636,7 +6635,7 @@ export const messages = defineMessages({
     SETTINGS_BACKEND_SETTINGS_DESCRIPTION: {
         id: 'SETTINGS_BACKEND_SETTINGS_DESCRIPTION',
         defaultMessage:
-            'Connect to trusted backend servers to securely load your account data. Customize the experience by using your own backend and choosing a different blockchain explorer.',
+            'Connect to trusted servers to securely load your account data. Personalize your experience by using a custom backend or selecting a different blockchain explorer.',
     },
     SETTINGS_ADV_COIN_URL_INPUT_PLACEHOLDER: {
         id: 'SETTINGS_ADV_COIN_URL_INPUT_PLACEHOLDER',
@@ -6785,7 +6784,7 @@ export const messages = defineMessages({
     },
     TR_SUITE_SYNC_SERVER_CUSTOM: {
         id: 'TR_SUITE_SYNC_SERVER_CUSTOM',
-        defaultMessage: 'Own server',
+        defaultMessage: 'Custom server',
     },
     TR_SUITE_SYNC_SERVER_CUSTOM_PLACEHOLDER: {
         id: 'TR_SUITE_SYNC_SERVER_CUSTOM_PLACEHOLDER',
@@ -6801,7 +6800,7 @@ export const messages = defineMessages({
     },
     TR_SUITE_SYNC_SERVER_MODAL_DESCRIPTION: {
         id: 'TR_SUITE_SYNC_SERVER_MODAL_DESCRIPTION',
-        defaultMessage: 'Connect to your own server for more privacy and control.',
+        defaultMessage: 'Connect to a custom server for more privacy and control.',
     },
     TR_GRAPH_MISSING_DATA_WITH_TOKENS: {
         id: 'TR_GRAPH_MISSING_DATA_WITH_TOKENS',
@@ -6830,11 +6829,11 @@ export const messages = defineMessages({
     METADATA_PROVIDER_UNEXPECTED_ERROR: {
         id: 'METADATA_PROVIDER_UNEXPECTED_ERROR',
         defaultMessage:
-            'Failed to sync labels with cloud storage provider {provider}. User was logged out.',
+            'Failed to sync labels with cloud storage provider {provider}. The user was logged out.',
     },
     TR_ENABLE_MORE_COINS: {
         id: 'TR_ENABLE_MORE_COINS',
-        defaultMessage: 'Add networks',
+        defaultMessage: 'Activate more assets',
     },
     TR_BACKUP_RECOVERY_SEED_FAILED_TITLE: {
         id: 'TR_BACKUP_RECOVERY_SEED_FAILED_TITLE',
@@ -8154,11 +8153,11 @@ export const messages = defineMessages({
     },
     TR_TROUBLESHOOTING_TIP_CABLE_TITLE: {
         id: 'TR_TROUBLESHOOTING_TIP_CABLE_TITLE',
-        defaultMessage: 'Use a different USB cable.',
+        defaultMessage: 'Use a different USB data cable.',
     },
     TR_TROUBLESHOOTING_TIP_DIFFERENT_COMPUTER_TITLE: {
         id: 'TR_TROUBLESHOOTING_TIP_DIFFERENT_COMPUTER_TITLE',
-        defaultMessage: 'Connect your Trezor to a different computer or phone.',
+        defaultMessage: 'Connect your Trezor to a different mobile device or computer.',
     },
     TR_TROUBLESHOOTING_TIP_RESTART_COMPUTER_TITLE: {
         id: 'TR_TROUBLESHOOTING_TIP_RESTART_COMPUTER_TITLE',
@@ -9232,12 +9231,12 @@ export const messages = defineMessages({
     TR_HIDE_TRANSACTION_TOOLTIP: {
         id: 'TR_HIDE_TRANSACTION_TOOLTIP',
         defaultMessage:
-            'Disable auto-eject in Application settings to mark this transaction as suspicious.',
+            'Disable auto-eject in application settings to mark this transaction as suspicious.',
     },
     TR_UNHIDE_TRANSACTION_TOOLTIP: {
         id: 'TR_UNHIDE_TRANSACTION_TOOLTIP',
         defaultMessage:
-            'Disable auto-eject in Application settings to mark this transaction as safe.',
+            'Disable auto-eject in application settings to mark this transaction as safe.',
     },
     TR_SENDFORM_LABELING_EXAMPLE_1: {
         id: 'TR_SENDFORM_LABELING_EXAMPLE_1',
@@ -10757,7 +10756,7 @@ export const messages = defineMessages({
     TR_BRIDGE_REQUESTED_DESCRIPTION: {
         id: 'TR_BRIDGE_REQUESTED_DESCRIPTION',
         defaultMessage:
-            'Another app requested Trezor Suite to connect with your Trezor device. Keep Trezor Suite running in the background and retry the action in the other app.',
+            'Another app requested Trezor Suite to connect with your Trezor device. Keep Trezor Suite running in the background and try the action again in the other app.',
     },
     TR_BRIDGE_GO_TO_WALLET_DESCRIPTION: {
         id: 'TR_BRIDGE_GO_TO_WALLET_DESCRIPTION',
