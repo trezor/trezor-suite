@@ -51,5 +51,8 @@
         "react-hook-form": "^7.71.2",
         "react-redux": "9.2.0",
         "web3-utils": "^4.3.3"
+    },
+    "devDependencies": {
+        "@testing-library/react": "^16.3.2"
     }
 }

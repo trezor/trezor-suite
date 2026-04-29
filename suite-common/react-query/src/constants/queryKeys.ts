@@ -9,6 +9,11 @@ export const commonQueryKeys = {
         accountKey,
         timestamp ?? 'no-ts',
     ],
+    resolveNamedAddress: (symbol: string, value: string) => [
+        'resolve-named-address',
+        symbol,
+        value,
+    ],
     solanaRewards: (...args: any[]) => ['solana-rewards', ...args],
     solanaRewardsTotal: (address: string) => ['solana-rewards-total', address],
     merkleRewards: (...args: any[]) => ['merkle-rewards', ...args],

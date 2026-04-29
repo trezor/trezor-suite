@@ -282,7 +282,9 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
                 const account: AccountInfo = {
                     path: request.path,
                     ...info,
-                    descriptor, // override descriptor (otherwise eth checksum is lost)
+                    // For hex inputs, preserve the caller's checksum (Blockbook may lowercase).
+                    // For named inputs (.eth and other TLDs), keep Blockbook's resolved hex.
+                    descriptor: descriptor.includes('.') ? info.descriptor : descriptor,
                     legacyXpub,
                     utxo,
                     descriptorChecksum,
