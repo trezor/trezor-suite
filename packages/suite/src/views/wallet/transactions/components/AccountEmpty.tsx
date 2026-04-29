@@ -75,27 +75,29 @@ export const AccountEmpty = ({ account }: AccountEmptyProps) => {
             iconVariant="neutral"
             actions={[
                 {
-                    'data-testid': '@accounts/empty-account/receive',
-                    key: '1',
-                    onClick: handleNavigateToReceivePage,
-                    children: isTokensNetwork ? (
-                        <Translation id="TR_RECEIVE" />
-                    ) : (
-                        <Translation
-                            id="TR_RECEIVE_NETWORK"
-                            values={{ networkDisplaySymbol: displaySymbol }}
-                        />
-                    ),
-                },
-                {
                     'data-testid': '@accounts/empty-account/buy',
-                    key: '2',
+                    key: '1',
                     onClick: handleNavigateToBuyPage,
+                    iconLeft: 'currencyCircleDollar',
                     children: isTokensNetwork ? (
                         <Translation id="TR_BUY" />
                     ) : (
                         <Translation
                             id="TR_BUY_NETWORK"
+                            values={{ networkDisplaySymbol: displaySymbol }}
+                        />
+                    ),
+                },
+                {
+                    'data-testid': '@accounts/empty-account/receive',
+                    key: '2',
+                    onClick: handleNavigateToReceivePage,
+                    iconLeft: 'arrowDown',
+                    children: isTokensNetwork ? (
+                        <Translation id="TR_RECEIVE" />
+                    ) : (
+                        <Translation
+                            id="TR_RECEIVE_NETWORK"
                             values={{ networkDisplaySymbol: displaySymbol }}
                         />
                     ),
