@@ -75,17 +75,24 @@ export default class AuthenticateDevice extends AbstractMethod<
             if (isAvailable) {
                 return await verifyAuthenticityProof({ ...commonParams, certificates, signature });
             }
-            if (isRequired) {
-                return { valid: false, error: 'RESPONSE_PAYLOAD_MISSING' };
-            }
 
-            return null;
+            return isRequired ? { valid: false, error: 'RESPONSE_PAYLOAD_MISSING' } : null;
         };
 
-        // TODO https://github.com/trezor/trezor-suite/issues/26169
-        // when firmware support for STM32U5 MLDSA-44 is added, regenerate protobuf and get the results from message
-        const getMLDSA44Result = (): Promise<VerifyAuthenticityProofResult | null> =>
-            Promise.resolve(null);
+        const getMLDSA44Result = async (): Promise<VerifyAuthenticityProofResult | null> => {
+            const { mcu_signature: signature, mcu_certificates: certificates } = message;
+            const isAvailable = signature !== undefined && certificates.length > 0;
+            const isRequired = !this.getDevice().unavailableCapabilities['mcuDeviceAuthentication'];
+            if (isAvailable) {
+                return await verifyAuthenticityProof({
+                    ...commonParams,
+                    certificates,
+                    signature,
+                });
+            }
+
+            return isRequired ? { valid: false, error: 'RESPONSE_PAYLOAD_MISSING' } : null;
+        };
 
         const optigaResult = await getOptigaResult();
         const tropicResult = await getTropicResult();

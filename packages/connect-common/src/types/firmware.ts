@@ -26,6 +26,7 @@ export type FirmwareCapability =
     | 'coinjoin'
     | 'tutorial'
     | 'tropicDeviceAuthentication'
+    | 'mcuDeviceAuthentication'
     | 'getFirmwareHash'
     | 'chunkify'
     | 'entropyCheck'
