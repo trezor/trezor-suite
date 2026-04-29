@@ -1,3 +1,4 @@
+import { buildAllowance } from './builder/evm/allowance';
 import { buildApprove } from './builder/evm/approve';
 import { buildClaim } from './builder/evm/claim';
 import { buildDeposit } from './builder/evm/deposit';
@@ -9,6 +10,7 @@ import { buildTrc20Transfer } from './builder/tron/trc20/transfer';
 export const Calldata = {
     evm: {
         erc20: {
+            allowance: buildAllowance,
             approve: buildApprove,
             transfer: buildTransfer,
         },
