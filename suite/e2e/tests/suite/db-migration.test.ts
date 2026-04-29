@@ -20,6 +20,7 @@ test.describe(
     () => {
         test.use({
             deviceSetup: { passphrase_protection: true, mnemonic: 'mnemonic_all' },
+            bypassCSP: true,
         });
 
         test(
@@ -46,7 +47,15 @@ test.describe(
                     ],
                 }),
             },
-            async ({ page, device, devicePrompt, onboardingPage, dashboardPage, walletPage }) => {
+            async ({
+                page,
+                device,
+                devicePrompt,
+                onboardingPage,
+                dashboardPage,
+                walletPage,
+                assetsSection,
+            }) => {
                 const discoveryBar = page.locator(
                     '[data-test="\\@wallet\\/discovery-progress-bar"] div',
                 );
@@ -123,7 +132,21 @@ test.describe(
 
                 await test.step(`Navigate to new version ${migrateToVersion} and check wallet status`, async () => {
                     await page.goto(`${suiteDevInstance}/${migrateToVersion}`);
-                    await expect(dashboardPage.graph).toBeVisible({ timeout: 30_000 });
+                    // PR#26782 No coins activated after onboarding
+                    await test.step('Verify "wallet is ready"', async () => {
+                        await dashboardPage.discoveryEmptyHeader.waitFor({
+                            state: 'attached',
+                            timeout: 30_000,
+                        });
+
+                        await dashboardPage.verifyDiscoveryEmpty();
+                    });
+                    await test.step('Get started - Enable BTC coin', async () => {
+                        await dashboardPage.discoveryEmptyPrimaryButton.click();
+                        await assetsSection.enableNetworkViaActivateAssetsModal('btc');
+
+                        await dashboardPage.verifyDiscoveryFailed();
+                    });
                     await page.getByTestId('@account-menu/btc/normal/0').click();
                     await walletPage.openAccount({ symbol: 'btc' });
                     await dashboardPage.openDeviceSwitcher();
