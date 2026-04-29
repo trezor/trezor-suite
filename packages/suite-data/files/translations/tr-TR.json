@@ -1294,7 +1294,6 @@
   "TR_ONBOARDING_SEED_TYPE_SINGLE_SEED_DESCRIPTION": "Cüzdanınızı kurtaran 20 kelimelik tek bir dizi oluşturur. Bu yedekleme türü, hazır olduğunuzda Çok Paylaşımlı Yedeklemeye yükseltilebilir.",
   "TR_ONBOARDING_SELECTED_DEFAULT_BACKUP_TYPE": "Cihazınıza bağlı olarak cüzdanınız için <primary>varsayılan yedekleme türünü</primary> seçtik.",
   "TR_ONBOARDING_SELECTED_OPTIMAL_BACKUP_TYPE": "Cüzdanınız için <primary>en uygun yedekleme türünü</primary> seçtik.",
-  "TR_ONBOARDING_SELECT_SEED_TYPE_CONFIRM": "Cüzdan oluştur",
   "TR_ONBOARDING_STEP_WALLET": "Cüzdan",
   "TR_ONBOARDING_TREZOR_WILL_DISPLAY_BACKUP": "Trezor, cüzdan yedeklemenizi gösterecektir. Bunu doğru bir şekilde yazın ve güvenli bir şekilde saklayın. Fonlarınızı kurtarmanın tek yolu budur.",
   "TR_ONBOARDING_TROUBLESHOOTING_FAILED": "Hâlâ çalışmıyor mu?",
