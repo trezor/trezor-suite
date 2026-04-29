@@ -3,16 +3,16 @@ import {
     WebsocketClient,
     type WebsocketRequest,
     type WebsocketResponse,
+    type WebsocketSendParams,
 } from '@trezor/websocket-client';
 
 interface Subscription<T> {
     id: string;
     type: T;
-    callback: (result: any) => void;
 }
 
 export abstract class BaseWebsocket<T extends Record<string, any>> extends WebsocketClient<T> {
-    private readonly subscriptions: Subscription<keyof T>[] = [];
+    private readonly subscriptions: Subscription<keyof T & string>[] = [];
 
     async onPing() {
         // make sure that connection is alive if there are subscriptions
@@ -35,21 +35,21 @@ export abstract class BaseWebsocket<T extends Record<string, any>> extends Webso
             if (!messageSettled) {
                 const subs = this.subscriptions.find(s => s.id === id);
                 if (subs) {
-                    subs.callback(data);
+                    // @ts-expect-error Dunno how to resolve this issue
+                    this.emit(subs.type, data);
                 }
             }
         });
     }
 
-    sendMessage(message: WebsocketRequest) {
-        return super.sendMessage(message).catch(error => {
+    sendMessage(message: WebsocketRequest, params: WebsocketSendParams = {}) {
+        return super.sendMessage(message, params).catch(error => {
             throw new CustomError(error.message);
         });
     }
 
-    protected addSubscription<E extends keyof T>(type: E, callback: (result: T[E]) => void) {
-        const id = this.messages.nextId().toString();
-        this.subscriptions.push({ id, type, callback });
+    protected addSubscription<E extends keyof T & string>(type: E, id: number) {
+        this.subscriptions.push({ id: id.toString(), type });
     }
 
     protected removeSubscription(type: keyof T) {
