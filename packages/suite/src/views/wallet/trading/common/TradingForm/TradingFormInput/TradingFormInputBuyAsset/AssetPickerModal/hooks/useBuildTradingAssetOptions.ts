@@ -145,7 +145,7 @@ export function useBuildTradingAssetOptions({
     search,
     networkSymbol,
 }: UseBuildTradingAssetOptionsProps) {
-    const { assets, excludedCryptoIds } = useAssetsContext();
+    const { assets, includedCryptoIds, excludedCryptoIds } = useAssetsContext();
     const accountsWithTokens = useAgregatedAccountsWithTokens();
 
     return useMemo(() => {
@@ -169,9 +169,23 @@ export function useBuildTradingAssetOptions({
             );
         }
 
-        const allAccountsWithTokens = accountsWithTokens.filter(
-            excludeCryptoIds(excludedCryptoIds),
-        );
+        const allAccountsWithTokens = accountsWithTokens
+            .filter(excludeCryptoIds(excludedCryptoIds))
+            .filter(accountOrToken => {
+                switch (accountOrToken.type) {
+                    case 'account':
+                        return includedCryptoIds.has(getCryptoId(accountOrToken.account.symbol));
+                    case 'token':
+                        return includedCryptoIds.has(
+                            getCryptoId(
+                                accountOrToken.account.symbol,
+                                accountOrToken.token.contract,
+                            ),
+                        );
+                    default:
+                        return false;
+                }
+            });
 
         const filteredAccounts = allAccountsWithTokens
             .filter(accountOrToken => {
@@ -264,5 +278,5 @@ export function useBuildTradingAssetOptions({
         });
 
         return { listItems, networks: orderedNetworks };
-    }, [accountsWithTokens, assets, excludedCryptoIds, networkSymbol, search]);
+    }, [accountsWithTokens, assets, includedCryptoIds, excludedCryptoIds, networkSymbol, search]);
 }
