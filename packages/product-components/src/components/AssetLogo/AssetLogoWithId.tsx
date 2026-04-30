@@ -48,6 +48,7 @@ type AssetLogoBaseProps = AllowedFrameProps & {
     placeholder?: string;
     'data-testid'?: string;
     showNetworkIcon?: boolean;
+    customLogoUrl?: string;
 };
 
 export type AssetLogoProps = AssetLogoBaseProps & {
@@ -102,6 +103,7 @@ export const AssetLogoWithId = ({
     placeholder = '',
     placeholderWithTooltip = true,
     showNetworkIcon = false,
+    customLogoUrl,
     'data-testid': dataTest,
     ...rest
 }: AssetLogoWithIdProps) => {
@@ -137,7 +139,22 @@ export const AssetLogoWithId = ({
     const [showPlaceholder, setShowPlaceholder] = useState(!shouldTryToFetch);
 
     const candidates = useMemo<LogoCandidate[]>(() => {
-        if (!shouldTryToFetch || !canonicalAddresses.length) return [];
+        if (!shouldTryToFetch) return [];
+
+        const result: LogoCandidate[] = [];
+
+        if (
+            customLogoUrl &&
+            !failedAddressesCache.has(makeAddressKey(coingeckoIdLogo, customLogoUrl))
+        ) {
+            result.push({
+                address: customLogoUrl,
+                src: customLogoUrl,
+                srcSet: customLogoUrl,
+            });
+        }
+
+        if (!canonicalAddresses.length) return result;
 
         const filtered = canonicalAddresses.filter(
             address => !failedAddressesCache.has(makeAddressKey(coingeckoIdLogo, address)),
@@ -145,7 +162,7 @@ export const AssetLogoWithId = ({
 
         const hasNative = filtered.some(addr => addr === ZERO_ADDRESS);
 
-        return filtered.map(address => {
+        for (const address of filtered) {
             const url1x = getAssetLogoUrl({
                 coingeckoId: coingeckoIdLogo,
                 contractAddress: !hasNative ? address : undefined,
@@ -159,9 +176,11 @@ export const AssetLogoWithId = ({
                 size,
             });
 
-            return { address, src: url1x, srcSet: `${url1x} 1x, ${url2x} 2x` };
-        });
-    }, [shouldTryToFetch, canonicalAddresses, coingeckoIdLogo, size]);
+            result.push({ address, src: url1x, srcSet: `${url1x} 1x, ${url2x} 2x` });
+        }
+
+        return result;
+    }, [shouldTryToFetch, canonicalAddresses, coingeckoIdLogo, size, customLogoUrl]);
 
     const hasCandidates = candidates.length > 0;
     const hasValidIndex = candidateIndex >= 0 && candidateIndex < candidates.length;

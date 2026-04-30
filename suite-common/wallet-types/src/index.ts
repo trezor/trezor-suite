@@ -19,3 +19,4 @@ export * from './baseCurrency';
 export type * from './transactionSimulation';
 export type * from './stakeTypes';
 export type * from './stellarTokens';
+export type * from './fees';

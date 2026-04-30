@@ -40,14 +40,20 @@ export function EarnYieldTxSimulationModalInner({
 }: EarnYieldTxSimulationModalInnerProps) {
     const [disclaimerAccepted, setDisclaimerAccepted] = useState(false);
 
-    const { form, changeFeeLevel, feeInfo, composedLevels, handleTxSimulationResult } =
-        useEvmTxSimulationFeesForm({
-            networkType: account.networkType,
-            networkSymbol: account.symbol,
-            defaultGasLimit: areTxSimulationMethods(TX_METHODS_WITH_FEES, action)
-                ? action.payload.transaction.gasLimit
-                : undefined,
-        });
+    const {
+        form,
+        changeFeeLevel,
+        feeInfo,
+        composedLevels,
+        handleTxSimulationResult,
+        getSelectedFee,
+    } = useEvmTxSimulationFeesForm({
+        networkType: account.networkType,
+        networkSymbol: account.symbol,
+        defaultGasLimit: areTxSimulationMethods(TX_METHODS_WITH_FEES, action)
+            ? action.payload.transaction.gasLimit
+            : undefined,
+    });
 
     const simulation = useTxSimulation(action, {
         onSuccess(result) {
@@ -72,8 +78,26 @@ export function EarnYieldTxSimulationModalInner({
 
     function cancel() {
         closeModal();
-        decision.resolve(false);
+        decision.resolve({
+            value: false,
+        });
     }
+
+    function confirm() {
+        const selectedFee = areTxSimulationMethods(TX_METHODS_WITH_FEES, action)
+            ? getSelectedFee()
+            : null;
+
+        decision.resolve({
+            value: true,
+            selectedFee,
+        });
+    }
+
+    const isConfirmDisabled = Boolean(
+        txSimulationQuery.isLoading ||
+        (txSimulationQuery.data?.payload?.needsDisclaimer && !disclaimerAccepted),
+    );
 
     return (
         <Modal.Backdrop onClick={cancel}>
@@ -83,21 +107,9 @@ export function EarnYieldTxSimulationModalInner({
                 description={<TxSimulationHeader account={account} />}
                 bottomContent={
                     <TxSimulationFooter
-                        onConfirm={() => {
-                            if (areTxSimulationMethods(TX_METHODS_WITH_FEES, action)) {
-                                // TODO:
-                                // getSelectedFee()
-                            }
-
-                            closeModal();
-                            decision.resolve(true);
-                        }}
+                        onConfirm={confirm}
                         onCancel={cancel}
-                        isConfirmDisabled={Boolean(
-                            txSimulationQuery.isLoading ||
-                            (txSimulationQuery.data?.payload?.needsDisclaimer &&
-                                !disclaimerAccepted),
-                        )}
+                        isConfirmDisabled={isConfirmDisabled}
                     />
                 }
                 // Disable shadow bottom to make `Fees` component fully visible

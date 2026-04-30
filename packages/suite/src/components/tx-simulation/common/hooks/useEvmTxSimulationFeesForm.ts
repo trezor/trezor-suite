@@ -7,26 +7,17 @@ import { type TxSimulationEVMResult } from '@suite-common/tx-simulation';
 import { type NetworkSymbol, type NetworkType } from '@suite-common/wallet-config';
 import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import { selectRawNetworkFeeInfo } from '@suite-common/wallet-core';
-import { getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
+import { type EvmSelectedFee } from '@suite-common/wallet-types';
+import {
+    getConvertedOrDefaultFeeInfo,
+    hasEip1559MaxPriorityFee,
+    isEip1559,
+} from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
 import { useComposedLevelsPlaceholder } from 'src/hooks/wallet/form/useComposedLevelsPlaceholder';
 import { type FeesFormValues, useFees } from 'src/hooks/wallet/form/useFees';
-
-type SelectedFee =
-    | {
-          gasPrice: undefined;
-          maxFeePerGas: string;
-          maxPriorityFeePerGas: string;
-          gasLimit: string;
-      }
-    | {
-          gasPrice: string;
-          maxFeePerGas: undefined;
-          maxPriorityFeePerGas: undefined;
-          gasLimit: string;
-      };
 
 interface UseTxFeesFormProps {
     networkType?: NetworkType;
@@ -93,33 +84,40 @@ export function useEvmTxSimulationFeesForm({
         }
     }
 
-    function getSelectedFee(): SelectedFee | undefined {
+    function getSelectedFee(): EvmSelectedFee | null {
         const values = form.getValues();
         const selectedFeeInfo = feeInfo.levels.find(
             level => level.label === (values.selectedFee ?? 'normal'),
         );
-        const maxFeePerGas = values.maxFeePerGas ?? selectedFeeInfo?.maxFeePerGas;
-        const maxPriorityFeePerGas =
-            values.maxPriorityFeePerGas ?? selectedFeeInfo?.maxPriorityFeePerGas;
-        const gasPrice = values.feePerUnit ?? selectedFeeInfo?.feePerUnit;
 
-        if (maxFeePerGas && maxPriorityFeePerGas) {
+        const eip1559payload = {
+            maxFeePerGas: values.maxFeePerGas ?? selectedFeeInfo?.maxFeePerGas,
+            maxPriorityFeePerGas:
+                values.maxPriorityFeePerGas ?? selectedFeeInfo?.maxPriorityFeePerGas,
+        };
+
+        if (isEip1559(eip1559payload) && hasEip1559MaxPriorityFee(eip1559payload)) {
             return {
+                type: 'eip1559',
                 gasLimit: numberToHex(values.feeLimit),
-                gasPrice: undefined,
-                maxFeePerGas: numberToHex(toWei(maxFeePerGas, 'gwei')),
-                maxPriorityFeePerGas: numberToHex(toWei(maxPriorityFeePerGas, 'gwei')),
+                maxFeePerGas: numberToHex(toWei(eip1559payload.maxFeePerGas, 'gwei')),
+                maxPriorityFeePerGas: numberToHex(
+                    toWei(eip1559payload.maxPriorityFeePerGas, 'gwei'),
+                ),
             };
         }
+
+        const gasPrice = values.feePerUnit ?? selectedFeeInfo?.feePerUnit;
 
         if (gasPrice) {
             return {
+                type: 'legacy',
                 gasLimit: numberToHex(values.feeLimit),
                 gasPrice: numberToHex(toWei(gasPrice, 'gwei')),
-                maxFeePerGas: undefined,
-                maxPriorityFeePerGas: undefined,
             };
         }
+
+        return null;
     }
 
     return {

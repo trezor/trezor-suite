@@ -30,6 +30,8 @@ export function TxSimulationAssetLogo({
                 contractAddress={asset.address}
                 size={size}
                 placeholder={asset.name ?? asset.symbol}
+                // Temp. solution until we extend token defs with Vault tokens
+                customLogoUrl={asset.logo_url}
             />
         );
     }

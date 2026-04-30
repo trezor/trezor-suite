@@ -25,11 +25,18 @@ async function handleTxScan(input: UseTxSimulationParams): Promise<NetworkTxSimu
             const scanResult = await client.evm.jsonRpc.scan(input.params);
 
             if (scanResult.simulation?.status === 'Success') {
-                // Prevent flickering of asset diffs as the data are being refetched and ordered each diffently.
+                // Stable order across refetches: outgoing assets first, then incoming, each by USD value desc.
+                const sumUsd = (diffs: ReadonlyArray<{ usd_price?: string }>) =>
+                    diffs.reduce((acc, d) => acc + Number(d.usd_price ?? 0), 0);
+
                 scanResult.simulation.account_summary.assets_diffs =
-                    scanResult.simulation.account_summary.assets_diffs.toSorted(
-                        (a, b) => a.out.length - b.in.length,
-                    );
+                    scanResult.simulation.account_summary.assets_diffs.toSorted((a, b) => {
+                        const aIsOut = a.out.length > 0;
+                        const bIsOut = b.out.length > 0;
+                        if (aIsOut !== bIsOut) return aIsOut ? -1 : 1;
+
+                        return aIsOut ? sumUsd(b.out) - sumUsd(a.out) : sumUsd(b.in) - sumUsd(a.in);
+                    });
             }
 
             const result: TxSimulationEVMResult = {
