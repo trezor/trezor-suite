@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { FormProvider } from 'react-hook-form';
 
+import { type UserContextModalType } from '@suite/modal';
 import {
     TxSimulationError,
     TxSimulationFooter,
@@ -9,7 +10,6 @@ import {
     TxSimulationTitle,
 } from '@suite/tx-simulation/src/common';
 import { EvmTxSimulationDisclaimer } from '@suite/tx-simulation/src/evm';
-import { connectPopupActions } from '@suite-common/connect-popup';
 import {
     TX_METHODS_WITH_FEES,
     areTxSimulationMethods,
@@ -18,43 +18,36 @@ import {
 } from '@suite-common/tx-simulation';
 import { type Account, type TxSimulationAction } from '@suite-common/wallet-types';
 import { Column, Modal } from '@trezor/components';
-import { ERRORS } from '@trezor/connect-common';
 
-import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
-import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
 import { Fees } from 'src/components/wallet/Fees/Fees';
-import { useDispatch } from 'src/hooks/suite';
 
 import { TxSimulationHeader } from '../common/components/TxSimulationHeader';
 import { TxSimulationSuccessResult } from '../common/components/TxSimulationSuccessResult';
 import { useEvmTxSimulationFeesForm } from '../common/hooks/useEvmTxSimulationFeesForm';
 
-interface ConnectPopupTxSimulationModalInnerProps {
+interface EarnYieldTxSimulationModalInnerProps {
     action: TxSimulationAction;
     account: Account;
+    decision: UserContextModalType<'earn-yield-tx-simulation'>['decision'];
+    closeModal: () => void;
 }
 
-export function ConnectPopupTxSimulationModalInner({
+export function EarnYieldTxSimulationModalInner({
     action,
     account,
-}: ConnectPopupTxSimulationModalInnerProps) {
-    const dispatch = useDispatch();
+    decision,
+    closeModal,
+}: EarnYieldTxSimulationModalInnerProps) {
     const [disclaimerAccepted, setDisclaimerAccepted] = useState(false);
 
-    const {
-        form,
-        changeFeeLevel,
-        feeInfo,
-        composedLevels,
-        handleTxSimulationResult,
-        getSelectedFee,
-    } = useEvmTxSimulationFeesForm({
-        networkType: account.networkType,
-        networkSymbol: account.symbol,
-        defaultGasLimit: areTxSimulationMethods(TX_METHODS_WITH_FEES, action)
-            ? action.payload.transaction.gasLimit
-            : undefined,
-    });
+    const { form, changeFeeLevel, feeInfo, composedLevels, handleTxSimulationResult } =
+        useEvmTxSimulationFeesForm({
+            networkType: account.networkType,
+            networkSymbol: account.symbol,
+            defaultGasLimit: areTxSimulationMethods(TX_METHODS_WITH_FEES, action)
+                ? action.payload.transaction.gasLimit
+                : undefined,
+        });
 
     const simulation = useTxSimulation(action, {
         onSuccess(result) {
@@ -77,36 +70,29 @@ export function ConnectPopupTxSimulationModalInner({
         return null;
     }
 
+    function cancel() {
+        closeModal();
+        decision.resolve(false);
+    }
+
     return (
-        <ConnectModalBackdrop canSwitchDevice>
+        <Modal.Backdrop onClick={cancel}>
             <Modal.ModalBase
                 width={600}
                 heading={<TxSimulationTitle method={action.method} />}
-                description={
-                    <TxSimulationHeader account={account}>
-                        <ConnectCallSource />
-                    </TxSimulationHeader>
-                }
+                description={<TxSimulationHeader account={account} />}
                 bottomContent={
                     <TxSimulationFooter
                         onConfirm={() => {
                             if (areTxSimulationMethods(TX_METHODS_WITH_FEES, action)) {
-                                dispatch(
-                                    connectPopupActions.setSelectedFee({
-                                        selectedFee: getSelectedFee(),
-                                    }),
-                                );
+                                // TODO:
+                                // getSelectedFee()
                             }
 
-                            dispatch(connectPopupActions.approvePermissions());
+                            closeModal();
+                            decision.resolve(true);
                         }}
-                        onCancel={() => {
-                            dispatch(
-                                connectPopupActions.rejectPermissions(
-                                    ERRORS.TypedError('Method_Cancel'),
-                                ),
-                            );
-                        }}
+                        onCancel={cancel}
                         isConfirmDisabled={Boolean(
                             txSimulationQuery.isLoading ||
                             (txSimulationQuery.data?.payload?.needsDisclaimer &&
@@ -155,6 +141,6 @@ export function ConnectPopupTxSimulationModalInner({
                     </Column>
                 </Column>
             </Modal.ModalBase>
-        </ConnectModalBackdrop>
+        </Modal.Backdrop>
     );
 }

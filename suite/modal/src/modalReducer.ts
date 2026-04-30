@@ -181,6 +181,18 @@ export const selectModalType = (state: ModalRootState) => {
     return undefined;
 };
 
+type ContextModal<Context extends ModalState['context']> = Extract<
+    ModalState,
+    { context: Context }
+>;
+
+type UserContextModal = ContextModal<typeof MODAL_CONTEXT_USER>['payload'];
+
+export type UserContextModalType<Type extends UserContextModal['type']> = Extract<
+    UserContextModal,
+    { type: Type }
+>;
+
 export const selectRecoveryWordRequestInputType = (state: ModalRootState) => {
     if (state.modal.context !== MODAL_CONTEXT_DEVICE) {
         return null;

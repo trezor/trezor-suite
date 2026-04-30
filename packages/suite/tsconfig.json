@@ -44,6 +44,9 @@
             "path": "../../suite-common/device-authenticity"
         },
         {
+            "path": "../../suite-common/earn-stablecoin"
+        },
+        {
             "path": "../../suite-common/earn-stablecoin-api"
         },
         {

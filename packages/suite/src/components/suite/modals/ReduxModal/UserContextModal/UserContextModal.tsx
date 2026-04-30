@@ -187,7 +187,13 @@ export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL_CONTE
         case 'connect-popup-tx-simulation':
             return <ConnectPopupTxSimulationModal />;
         case 'earn-yield-tx-simulation':
-            return <EarnYieldTxSimulationModal />;
+            return (
+                <EarnYieldTxSimulationModal
+                    decision={payload.decision}
+                    data={payload.data}
+                    closeModal={onCancel}
+                />
+            );
         case 'wipe-device-success':
             return <WipeDeviceSuccessModal />;
         default:

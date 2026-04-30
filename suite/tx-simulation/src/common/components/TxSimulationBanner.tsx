@@ -5,7 +5,7 @@ import { Banner as BaseBanner, Card, Checkbox, Column, Text } from '@trezor/comp
 
 export interface TxSimulationBannerProps {
     title: TranslationKey;
-    description: ReactNode;
+    description?: ReactNode;
     type: 'error' | 'warning';
     isAccepted: boolean;
     onChange: (value: boolean) => void;
@@ -26,7 +26,7 @@ export const TxSimulationBanner = ({
                 <Text typographyStyle="body-sm-strong">
                     <Translation id={title} />
                 </Text>
-                <Text>{description}</Text>
+                {description && <Text>{description}</Text>}
 
                 <Card margin={{ top: 12 }} paddingType="small">
                     <Checkbox

@@ -86,7 +86,8 @@ type DeferredModals = Extract<
             | 'disable-tor-stop-coinjoin'
             | 'tor-loading'
             | 'review-transaction'
-            | 'import-transaction';
+            | 'import-transaction'
+            | 'earn-yield-tx-simulation';
     }
 >;
 // extract single modal by `type` util

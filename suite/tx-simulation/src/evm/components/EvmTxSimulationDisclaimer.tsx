@@ -22,7 +22,6 @@ export function EvmTxSimulationDisclaimer({
             <TxSimulationBanner
                 type={getSimulationErrorRiskLevel(result.simulation.error)}
                 title="TR_SIMULATION_ERROR"
-                description="TR_SIMULATION_ERROR_DESC"
                 isAccepted={isAccepted}
                 onChange={onChange}
             />

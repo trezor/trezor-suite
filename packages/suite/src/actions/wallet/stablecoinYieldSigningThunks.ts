@@ -4,6 +4,7 @@ import { closeModal, openDeferredModal, preserveModal } from '@suite/modal';
 import { selectAddressDisplayType } from '@suite/settings';
 import { asEvmAddress, buildClaim } from '@suite-common/calldata';
 import { selectSelectedDevice } from '@suite-common/device';
+import { type SupplyTxSimulationParams } from '@suite-common/earn-stablecoin/src/tx-simulation';
 import {
     type TransactionDto,
     parseUnsignedEvmTransactionForSigning,
@@ -286,7 +287,7 @@ const sendYieldTransaction = async ({
         if (!signingResponse.success) {
             dispatch(closeModal());
 
-            throw new Error(signingResponse.error.message);
+            throw new Error(`${signingResponse.error.code}: ${signingResponse.error.message}`);
         }
 
         dispatch(
@@ -313,7 +314,7 @@ const sendYieldTransaction = async ({
         dispatch(closeModal());
 
         if (!pushResponse.success) {
-            throw new Error(pushResponse.error.message);
+            throw new Error(`${pushResponse.error.code}: ${pushResponse.error.message}`);
         }
 
         dispatch(
@@ -326,6 +327,9 @@ const sendYieldTransaction = async ({
         );
 
         return pushResponse.payload;
+        // eslint-disable-next-line no-useless-catch
+    } catch (error) {
+        throw error;
     } finally {
         dispatch(stablecoinYieldActions.discardTransaction());
     }
@@ -403,6 +407,28 @@ export const submitYieldActionThunk = createThunk(
                 return;
             }
 
+            if (flowType === 'supply') {
+                if (typeof actionTransaction.unsignedTransaction !== 'string') {
+                    setYieldGenericError({ dispatch, flowType, flowKey });
+
+                    return;
+                }
+
+                const userAcceptedTxSimulation = await dispatch(
+                    openDeferredModal({
+                        type: 'earn-yield-tx-simulation',
+                        data: {
+                            unsignedSupplyTx: actionTransaction.unsignedTransaction,
+                            account: flowData.account,
+                        } satisfies SupplyTxSimulationParams,
+                    }),
+                );
+
+                if (!userAcceptedTxSimulation) {
+                    return;
+                }
+            }
+
             const isWithdraw = flowType === 'withdraw';
             const reviewAmount = isWithdraw ? requestAmount : amount;
             const reviewToken = isWithdraw ? flowData.receiptToken : flowData.token;
@@ -460,7 +486,8 @@ export const submitYieldActionThunk = createThunk(
                     receiptAmount,
                 }),
             );
-        } catch {
+        } catch (error) {
+            console.error(error);
             setYieldGenericError({ dispatch, flowType, flowKey });
         } finally {
             dispatch(stablecoinYieldActions.finishSubmittingAction({ flowType, flowKey }));

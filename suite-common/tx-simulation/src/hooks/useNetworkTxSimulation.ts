@@ -23,6 +23,15 @@ async function handleTxScan(input: UseTxSimulationParams): Promise<NetworkTxSimu
         case 'ethereumSignTransaction':
         case 'ethereumSignTypedData': {
             const scanResult = await client.evm.jsonRpc.scan(input.params);
+
+            if (scanResult.simulation?.status === 'Success') {
+                // Prevent flickering of asset diffs as the data are being refetched and ordered each diffently.
+                scanResult.simulation.account_summary.assets_diffs =
+                    scanResult.simulation.account_summary.assets_diffs.toSorted(
+                        (a, b) => a.out.length - b.in.length,
+                    );
+            }
+
             const result: TxSimulationEVMResult = {
                 ...scanResult,
                 needsDisclaimer: getEVMNeedsDisclaimer(scanResult),
