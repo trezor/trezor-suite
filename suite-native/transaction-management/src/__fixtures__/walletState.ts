@@ -1,5 +1,10 @@
 import { type FiatRatesState } from '@suite-common/wallet-core';
-import { type Account, type RatesByKey, type WalletSettings } from '@suite-common/wallet-types';
+import {
+    type Account,
+    AddressDisplayOptions,
+    type RatesByKey,
+    type WalletSettings,
+} from '@suite-common/wallet-types';
 import { PROTO } from '@trezor/connect';
 
 import { createFeeLevels } from './feeLevels';
@@ -206,6 +211,7 @@ export const getWalletState = () => ({
     settings: {
         localCurrency: 'usd',
         bitcoinAmountUnit: PROTO.AmountUnit.BITCOIN,
+        addressDisplayType: AddressDisplayOptions.CHUNKED,
     } as WalletSettings,
     fiat: {
         current: {

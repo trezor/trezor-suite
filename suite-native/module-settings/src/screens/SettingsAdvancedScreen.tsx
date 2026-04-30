@@ -11,6 +11,7 @@ import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
 
 import { BitcoinBackendsCard } from '../components/BitcoinBackendsCard';
 import { DustPhishingThresholdCard } from '../components/DustPhishingThresholdCard';
+import { ToggleAddressDisplayCard } from '../components/ToggleAddressDisplayCard';
 import { ToggleDeviceAuthenticityCheckCard } from '../components/ToggleDeviceAuthenticityCheckCard';
 import { ToggleFirmwareAuthenticityCheckCard } from '../components/ToggleFirmwareAuthenticityCheckCard';
 import { ToggleMevProtectionCard } from '../components/ToggleMevProtectionCard';
@@ -33,6 +34,7 @@ export const SettingsAdvancedScreen = () => {
         >
             <VStack spacing="sp16">
                 {isBitcoinBackendsConfigVisible && <BitcoinBackendsCard />}
+                <ToggleAddressDisplayCard />
                 {isMevProtectionSettingsVisible && <ToggleMevProtectionCard />}
                 {isDustPhishingThresholdSettingsVisible && <DustPhishingThresholdCard />}
                 <ToggleFirmwareAuthenticityCheckCard />

@@ -14,7 +14,6 @@ import {
     notImplementedThunk,
 } from '@suite-common/redux-utils';
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
-import { AddressDisplayOptions } from '@suite-common/wallet-types';
 import { analytics } from '@suite-native/analytics';
 import { forgetBluetoothDeviceThunk } from '@suite-native/bluetooth';
 import { selectTokenDefinitionsEnabledNetworks } from '@suite-native/discovery';
@@ -135,10 +134,6 @@ export const extraDependencies: ExtraDependenciesStatic = {
         // need for this is architectural mistake. Please DO NOT add more and try
         // to remove them.
         selectDesktopBinDir: notImplementedSelector('selectDesktopBinDir', '/bin'),
-        selectAddressDisplayType: notImplementedSelector(
-            'selectAddressDisplayType',
-            AddressDisplayOptions.CHUNKED,
-        ),
         selectSelectedAccountStatus: notImplementedSelector(
             'selectSelectedAccountStatus',
             'loaded',

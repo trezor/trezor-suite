@@ -15,9 +15,6 @@
             "path": "../../suite-common/test-utils"
         },
         { "path": "../../suite-common/trading" },
-        {
-            "path": "../../suite-common/wallet-types"
-        },
         { "path": "../experimental" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/env-utils" },

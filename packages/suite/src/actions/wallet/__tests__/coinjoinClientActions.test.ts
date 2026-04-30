@@ -2,9 +2,9 @@ import { combineReducers, createReducer } from '@reduxjs/toolkit';
 
 import { locksReducer } from '@suite/locks';
 import { modalReducer } from '@suite/modal';
-import { suiteSettingsInitialState } from '@suite/settings';
 import { prepareMessageSystemReducer } from '@suite-common/message-system';
 import { configureMockStore, initPreloadedState, testMocks } from '@suite-common/test-utils';
+import { prepareWalletSettingsReducer } from '@suite-common/wallet-core';
 import '@suite-common/test-utils/src/globalOverrides';
 import { type AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
@@ -38,9 +38,10 @@ jest.mock('src/services/coinjoin/coinjoinService', () => {
 
 const messageSystemReducer = prepareMessageSystemReducer(extraDependencies);
 
+const walletSettingsReducer = prepareWalletSettingsReducer(extraDependencies);
+
 const rootReducer = combineReducers({
     suite: createReducer({}, () => ({})),
-    suiteSettings: createReducer(suiteSettingsInitialState, state => state),
     locks: locksReducer,
     device: createReducer(
         { devices: [fixtures.DEVICE], selectedDevice: fixtures.DEVICE },
@@ -52,6 +53,7 @@ const rootReducer = combineReducers({
         coinjoin: coinjoinReducer,
         accounts: accountsReducer,
         selectedAccount: selectedAccountReducer,
+        settings: walletSettingsReducer,
     }),
 });
 
@@ -59,19 +61,10 @@ type State = ReturnType<typeof rootReducer>;
 type Wallet = Partial<State['wallet']> & {
     device?: State['device'];
     suite?: State['suite'];
-    suiteSettings?: State['suiteSettings'];
     locks?: Partial<State['locks']>;
 };
 
-const initStore = ({
-    accounts,
-    coinjoin,
-    device,
-    selectedAccount,
-    suite,
-    suiteSettings,
-    locks,
-}: Wallet = {}) => {
+const initStore = ({ accounts, coinjoin, device, selectedAccount, suite, locks }: Wallet = {}) => {
     // State != suite AppState, therefore <any>
     const store = configureMockStore<any>({
         reducer: rootReducer,
@@ -79,7 +72,6 @@ const initStore = ({
             rootReducer,
             partialState: {
                 suite,
-                suiteSettings,
                 locks,
                 device,
                 wallet: {

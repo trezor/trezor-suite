@@ -55,7 +55,7 @@ export const parseAddressToDeviceLines = ({
     }
 
     return pipe(
-        AddressFormatter.format(address, { format: 'full' }).split(' '),
+        AddressFormatter.format(address, { format: 'full', isChunked: true }).split(' '),
         padFirstAddressChunk,
         chunks =>
             isPaginationEnabled ? filterAddressChunksByPagination(chunks, activePage) : chunks,

@@ -11,8 +11,6 @@ export const selectAutodetectLanguage = (state: SuiteSettingsRootState) =>
     state.suiteSettings.autodetect.language;
 export const selectAutodetectTheme = (state: SuiteSettingsRootState) =>
     state.suiteSettings.autodetect.theme;
-export const selectAddressDisplayType = (state: SuiteSettingsRootState) =>
-    state.suiteSettings.addressDisplayType;
 export const selectTorOnionLinks = (state: SuiteSettingsRootState) =>
     state.suiteSettings.torOnionLinks;
 export const selectIsCoinjoinReceiveWarningHidden = (state: SuiteSettingsRootState) =>

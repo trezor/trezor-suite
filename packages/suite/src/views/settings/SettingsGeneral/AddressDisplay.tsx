@@ -26,7 +26,7 @@ export const AddressDisplay = () => {
             payload: { addressDisplayType },
         });
 
-        dispatch(setAddressDisplayType(value));
+        dispatch(setAddressDisplayType(addressDisplayType));
     };
 
     return (

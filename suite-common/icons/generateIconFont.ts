@@ -145,6 +145,7 @@ const usedIcons = [
     'shuffle',
     'sliders',
     'slidersHorizontal',
+    'slideshow',
     'spinner',
     'spinnerGap',
     'stack',
