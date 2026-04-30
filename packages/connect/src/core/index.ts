@@ -113,6 +113,7 @@ const inner = async (context: CoreContext, method: AbstractMethod<any>, device: 
                         view: 'no-backup',
                     },
                     uiPromise.requestId,
+                    method.callId,
                 ),
             );
 
@@ -125,13 +126,13 @@ const inner = async (context: CoreContext, method: AbstractMethod<any>, device: 
             }
         }
         // show notification
-        sendCoreMessage(createUiMessage(UI_REQUEST.DEVICE_NEEDS_BACKUP, device.toMessageObject()));
+        sendCoreMessage(createUiMessage(UI_REQUEST.DEVICE_NEEDS_BACKUP, device.toMessageObject(), undefined, method.callId));
     }
 
     // notify if firmware is outdated but not required
     if (device.firmwareStatus === 'outdated') {
         // show notification
-        sendCoreMessage(createUiMessage(UI_REQUEST.FIRMWARE_OUTDATED, device.toMessageObject()));
+        sendCoreMessage(createUiMessage(UI_REQUEST.FIRMWARE_OUTDATED, device.toMessageObject(), undefined, method.callId));
     }
 
     // Make sure that device will display pin/passphrase
@@ -442,15 +443,15 @@ const onDeviceButtonHandler =
                 ...request,
                 device: device.toMessageObject(),
                 data,
-            }),
+            }, undefined, method?.callId),
         );
         if (addressRequest && !method?.useUi) {
-            sendCoreMessage(createUiMessage(UI_REQUEST.ADDRESS_VALIDATION, data));
+            sendCoreMessage(createUiMessage(UI_REQUEST.ADDRESS_VALIDATION, data, undefined, method?.callId));
         }
     };
 
 const onDevicePinHandler =
-    (device: Device, context: CoreContext) =>
+    (device: Device, context: CoreContext, callId?: string) =>
     async ({ type, callback }: DeviceEvents['pin']) => {
         const { uiPromises, sendCoreMessage } = context;
         // create ui promise
@@ -461,6 +462,7 @@ const onDevicePinHandler =
                 UI_REQUEST.REQUEST_PIN,
                 { device: device.toMessageObject(), type },
                 uiPromise.requestId,
+                callId,
             ),
         );
         // wait for pin
@@ -480,7 +482,7 @@ const onDevicePinHandler =
     };
 
 const onDeviceWordHandler =
-    (device: Device, context: CoreContext) =>
+    (device: Device, context: CoreContext, callId?: string) =>
     async ({ type, callback }: DeviceEvents['word']) => {
         const { uiPromises, sendCoreMessage } = context;
         // create ui promise
@@ -490,6 +492,7 @@ const onDeviceWordHandler =
                 UI_REQUEST.REQUEST_WORD,
                 { device: device.toMessageObject(), type },
                 uiPromise.requestId,
+                callId,
             ),
         );
         // wait for word
@@ -509,7 +512,7 @@ const onDeviceWordHandler =
     };
 
 const onDevicePassphraseHandler =
-    (device: Device, context: CoreContext) =>
+    (device: Device, context: CoreContext, callId?: string) =>
     async ({ callback }: DeviceEvents['passphrase']) => {
         const { uiPromises, sendCoreMessage } = context;
         // create ui promise
@@ -520,6 +523,7 @@ const onDevicePassphraseHandler =
                 UI_REQUEST.REQUEST_PASSPHRASE,
                 { device: device.toMessageObject() },
                 uiPromise.requestId,
+                callId,
             ),
         );
         // wait for passphrase
@@ -552,7 +556,7 @@ const onEmptyPassphraseHandler =
     };
 
 const onThpPairingHandler =
-    (device: Device, context: CoreContext) =>
+    (device: Device, context: CoreContext, callId?: string) =>
     async ({ callback, payload }: DeviceEvents['thp_pairing']) => {
         const { uiPromises, sendCoreMessage } = context;
         // create ui promise
@@ -566,6 +570,7 @@ const onThpPairingHandler =
                     ...payload,
                 },
                 uiPromise.requestId,
+                callId,
             ),
         );
         // wait for response
@@ -614,26 +619,27 @@ const registerDeviceEvents =
     (context: CoreContext, method?: AbstractMethod<any>) => (device: Device) => {
         device.removeAllListeners();
         device.on(DEVICE.BUTTON, onDeviceButtonHandler(device, context, method));
-        device.on(DEVICE.PIN, onDevicePinHandler(device, context));
-        device.on(DEVICE.WORD, onDeviceWordHandler(device, context));
+        device.on(DEVICE.PIN, onDevicePinHandler(device, context, method?.callId));
+        device.on(DEVICE.WORD, onDeviceWordHandler(device, context, method?.callId));
         device.on(
             DEVICE.PASSPHRASE,
             (method?.useEmptyPassphrase ? onEmptyPassphraseHandler : onDevicePassphraseHandler)(
                 device,
                 context,
+                method?.callId,
             ),
         );
         device.on(DEVICE.PASSPHRASE_ON_DEVICE, () => {
             context.sendCoreMessage(
                 createUiMessage(UI_REQUEST.REQUEST_PASSPHRASE_ON_DEVICE, {
                     device: device.toMessageObject(),
-                }),
+                }, undefined, method?.callId),
             );
         });
         device.on(DEVICE.FIRMWARE_VERSION_CHANGED, payload => {
             context.sendCoreMessage(createDeviceMessage(DEVICE.FIRMWARE_VERSION_CHANGED, payload));
         });
-        device.on(DEVICE.THP_PAIRING, onThpPairingHandler(device, context));
+        device.on(DEVICE.THP_PAIRING, onThpPairingHandler(device, context, method?.callId));
         device.on(DEVICE.THP_CREDENTIALS_CHANGED, onThpCredentialsChangedHandler(device, context));
         device.on(DEVICE.THP_PAIRING_STATUS_CHANGED, onThpPhaseChangedHandler(device, context));
     };
@@ -765,6 +771,7 @@ export class Core extends EventEmitter {
         _log.debug('handleMessage', message.type);
 
         switch (message.type) {
+            // TODO(karliatto): we probably want to rename this.
             case POPUP.CLOSED:
                 onPopupClosed(
                     this.getCoreContext(),

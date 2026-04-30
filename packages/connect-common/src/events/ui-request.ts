@@ -10,7 +10,6 @@ import type { DiscoveryAccount, DiscoveryAccountType } from '../types/account';
 import type { BitcoinNetworkInfo, CoinInfo } from '../types/coinInfo';
 import type { Device } from '../types/device';
 import type { SelectFeeLevel } from '../types/fees';
-import type { MessageFactoryFn } from '../types/utils';
 
 export const UI_EVENT = 'UI_EVENT';
 export const UI_REQUEST = {
@@ -317,16 +316,19 @@ export type UiEvent =
 export type UiEventMessage = UiEvent & {
     event: typeof UI_EVENT;
     requestId?: string;
+    callId?: string;
 };
 
-export const createUiMessage: MessageFactoryFn<typeof UI_EVENT, UiEvent> = (
-    type,
-    payload,
-    requestId,
-) =>
+export const createUiMessage = (
+    type: UiEvent['type'],
+    payload?: any,
+    requestId?: string,
+    callId?: string,
+): UiEventMessage =>
     ({
         event: UI_EVENT,
         type,
         payload,
         requestId,
+        callId,
     }) as any;

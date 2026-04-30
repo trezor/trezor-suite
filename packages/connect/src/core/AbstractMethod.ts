@@ -105,6 +105,8 @@ function validateDeviceState(device: CallMethodPayload['device']): DeviceState |
 export abstract class AbstractMethod<Name extends CallMethodPayload['method'], Params = undefined> {
     public responseID: string;
 
+    public callId?: string;
+
     public device: Device | undefined;
 
     protected params: Params;
@@ -160,6 +162,8 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         this.name = payload.method;
         this.params = params;
         this.responseID = message.id ?? '';
+        console.log('payload.callId in AbstractMethod', payload.callId);
+        this.callId = payload.callId;
         this.deviceState = validateDeviceState(payload.device);
         this.keepSession = typeof payload.keepSession === 'boolean' ? payload.keepSession : false;
         this.skipFinalReload = true;

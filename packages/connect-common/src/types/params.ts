@@ -17,6 +17,8 @@ export interface CommonParams {
     device?: DeviceIdentity & { useEmptyPassphrase?: boolean };
     keepSession?: boolean;
     useCardanoDerivation?: boolean;
+    /** client-provided correlation token forwarded to related UI events during this call */
+    callId?: string;
     /**
      * internal flag. if set to true, call will only return info about the method, not execute it.
      * todo: this should be moved to another argument instead of mixing this with params
