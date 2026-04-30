@@ -82,10 +82,6 @@ const connect: webpack.Configuration = {
     performance: {
         hints: false,
     },
-    // @trezor/utxo-lib NOTE:
-    // When uglifying the javascript, you must exclude the following variable names from being mangled:
-    // Array, BigInteger, Boolean, Buffer, ECPair, Function, Number, Point and Script.
-    // This is because of the function-name-duck-typing used in typeforce.
     optimization: {
         emitOnErrors: true,
         moduleIds: 'named',
@@ -93,22 +89,6 @@ const connect: webpack.Configuration = {
             new TerserPlugin({
                 parallel: true,
                 extractComments: false,
-                terserOptions: {
-                    mangle: {
-                        reserved: [
-                            'Array',
-                            'BigInteger',
-                            'Boolean',
-                            'Buffer',
-                            'ECPair',
-                            'Function',
-                            'Number',
-                            'Point',
-                            'Script',
-                            'events',
-                        ],
-                    },
-                },
             }),
         ],
         usedExports: true,
