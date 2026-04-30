@@ -3,8 +3,6 @@ import { renderHook } from '@testing-library/react';
 import { type ReactNode } from 'react';
 import { Provider } from 'react-redux';
 
-import { type CryptoId } from 'invity-api';
-
 import { type AccountKey } from '@suite-common/wallet-types';
 
 import { useTradingFormAccount } from '../useTradingFormAccount';
@@ -110,7 +108,7 @@ describe('useTradingFormAccount', () => {
                 wrapper: createWrapper(),
             });
 
-            expect(result.current.cryptoId).toBe<CryptoId>('bitcoin');
+            expect(result.current.cryptoId).toBe('bitcoin');
         });
 
         it('should return undefined tradingAccountKey when account is undefined', () => {
@@ -171,7 +169,7 @@ describe('useTradingFormAccount', () => {
                 wrapper: createWrapper(),
             });
 
-            expect(result.current.cryptoId).toBe<CryptoId>('bitcoin');
+            expect(result.current.cryptoId).toBe('bitcoin');
         });
     });
 });
