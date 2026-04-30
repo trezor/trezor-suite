@@ -3,10 +3,7 @@ import { useState } from 'react';
 import { Translation } from '@suite/intl';
 import { selectIsLegacyLabelingVisible } from '@suite/metadata';
 import { selectDeviceStaticSessionId, selectSelectedDevice } from '@suite-common/device';
-import {
-    selectIsSuiteSyncDebugEnabled,
-    selectSuiteSyncInteraction,
-} from '@suite-common/suite-sync';
+import { selectSuiteSyncInteraction } from '@suite-common/suite-sync';
 import { SidebarBanner } from '@trezor/product-components';
 
 import { useSelector } from 'src/hooks/suite';
@@ -20,16 +17,12 @@ export const SuiteSyncPromoBanner = () => {
     const selectedDevice = useSelector(selectSelectedDevice);
     const deviceStaticSessionId = useSelector(selectDeviceStaticSessionId);
 
-    // Todo: remove for the 26.6 release when we want to start advertising for Suite Sync
-    const isSuiteSyncDebugEnabled = useSelector(selectIsSuiteSyncDebugEnabled);
-
     const isLegacyLabelingVisible = useSelector(selectIsLegacyLabelingVisible);
     const suiteSyncInteraction = useSelector(state =>
         selectSuiteSyncInteraction(state, deviceStaticSessionId),
     );
     const shouldDisplayBanner =
         !isDismissed &&
-        isSuiteSyncDebugEnabled &&
         isLegacyLabelingVisible &&
         selectedDevice !== undefined &&
         selectedDevice.connected &&
