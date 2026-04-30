@@ -8,7 +8,7 @@ export interface TxSimulationBannerProps {
     description?: ReactNode;
     type: 'error' | 'warning';
     isAccepted: boolean;
-    onChange: (value: boolean) => void;
+    onChange?: (value: boolean) => void;
 }
 
 export const TxSimulationBanner = ({
@@ -32,8 +32,9 @@ export const TxSimulationBanner = ({
                     <Checkbox
                         data-testid="@tx-simulation-modal/disclaimer-checkbox"
                         isChecked={isAccepted}
-                        onChange={() => onChange(!isAccepted)}
+                        onChange={() => onChange?.(!isAccepted)}
                         verticalAlignment="center"
+                        isDisabled={!onChange}
                     >
                         <Text intent="neutral" typographyStyle="body-sm">
                             <Translation id="TR_SIMULATION_DISCLAIMER_OVERRIDE" />

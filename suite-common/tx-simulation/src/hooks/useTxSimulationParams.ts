@@ -2,22 +2,22 @@ import { useMemo } from 'react';
 
 import { type JsonRpcScanParams } from '@blockaid/client/resources/evm';
 
+import { type NetworkConfig, networks } from '@suite-common/wallet-config';
 import { U_INT_32 } from '@suite-common/wallet-constants';
-import { type NetworkConfig } from '@suite-common/wallet-config';
 import { type TxSimulationAction, type TxSimulationMethod } from '@suite-common/wallet-types';
 
 type ChainId = Extract<NetworkConfig, { networkType: 'ethereum'; testnet: false }>['chainId'];
 
 // Maps EVM chainId to Blockaid's canonical chain name.
 const BLOCKAID_EVM_CHAIN_BY_CHAIN_ID = {
-    1: 'ethereum',
-    10: 'optimism',
-    56: 'bsc',
-    61: 'ethereumClassic',
-    137: 'polygon',
-    8453: 'base',
-    42161: 'arbitrum',
-    43114: 'avalanche',
+    [networks.eth.chainId]: 'ethereum',
+    [networks.op.chainId]: 'optimism',
+    [networks.bsc.chainId]: 'bsc',
+    [networks.etc.chainId]: 'ethereumClassic',
+    [networks.pol.chainId]: 'polygon',
+    [networks.base.chainId]: 'base',
+    [networks.arb.chainId]: 'arbitrum',
+    [networks.avax.chainId]: 'avalanche',
 } as const satisfies Readonly<Record<ChainId, string>>;
 
 const resolveBlockaidEvmChain = (chainId: number | undefined = 1) =>

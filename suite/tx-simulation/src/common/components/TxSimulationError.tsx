@@ -9,7 +9,7 @@ interface TxSimulationErrorProps {
 
 export function TxSimulationError({ children, error }: TxSimulationErrorProps) {
     if (!error) {
-        return <>{children}</>;
+        return children;
     }
 
     return (
@@ -18,7 +18,6 @@ export function TxSimulationError({ children, error }: TxSimulationErrorProps) {
             title="TR_SIMULATION_ERROR"
             description={error}
             isAccepted={false}
-            onChange={() => {}}
         />
     );
 }

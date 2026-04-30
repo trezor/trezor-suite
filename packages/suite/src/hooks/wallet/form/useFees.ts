@@ -161,7 +161,7 @@ export const useFees = <TFieldValues extends FeesFormValues>({
             feePerUnit = '';
             feeLimit = '';
             clearErrors(['feePerUnit', 'feeLimit', 'maxPriorityFeePerGas', 'maxFeePerGas']);
-            composeRequest();
+            composeRequest?.();
         }
 
         setValue('selectedFee', level);

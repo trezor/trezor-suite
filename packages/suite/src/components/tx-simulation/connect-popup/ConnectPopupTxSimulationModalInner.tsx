@@ -77,6 +77,42 @@ export function ConnectPopupTxSimulationModalInner({
         return null;
     }
 
+    function confirm() {
+        const selectedFee = getSelectedFee();
+
+        if (areTxSimulationMethods(TX_METHODS_WITH_FEES, action) && selectedFee) {
+            dispatch(
+                connectPopupActions.setSelectedFee({
+                    selectedFee:
+                        selectedFee.type === 'eip1559'
+                            ? {
+                                  maxFeePerGas: selectedFee.maxFeePerGas,
+                                  maxPriorityFeePerGas: selectedFee.maxPriorityFeePerGas,
+                                  gasLimit: selectedFee.gasLimit,
+                                  gasPrice: undefined,
+                              }
+                            : {
+                                  gasPrice: selectedFee.gasPrice,
+                                  gasLimit: selectedFee.gasLimit,
+                                  maxFeePerGas: undefined,
+                                  maxPriorityFeePerGas: undefined,
+                              },
+                }),
+            );
+        }
+
+        dispatch(connectPopupActions.approvePermissions());
+    }
+
+    function cancel() {
+        dispatch(connectPopupActions.rejectPermissions(ERRORS.TypedError('Method_Cancel')));
+    }
+
+    const isConfirmDisabled = Boolean(
+        txSimulationQuery.isLoading ||
+        (txSimulationQuery.data?.payload?.needsDisclaimer && !disclaimerAccepted),
+    );
+
     return (
         <ConnectModalBackdrop canSwitchDevice>
             <Modal.ModalBase
@@ -89,29 +125,9 @@ export function ConnectPopupTxSimulationModalInner({
                 }
                 bottomContent={
                     <TxSimulationFooter
-                        onConfirm={() => {
-                            if (areTxSimulationMethods(TX_METHODS_WITH_FEES, action)) {
-                                dispatch(
-                                    connectPopupActions.setSelectedFee({
-                                        selectedFee: getSelectedFee(),
-                                    }),
-                                );
-                            }
-
-                            dispatch(connectPopupActions.approvePermissions());
-                        }}
-                        onCancel={() => {
-                            dispatch(
-                                connectPopupActions.rejectPermissions(
-                                    ERRORS.TypedError('Method_Cancel'),
-                                ),
-                            );
-                        }}
-                        isConfirmDisabled={Boolean(
-                            txSimulationQuery.isLoading ||
-                            (txSimulationQuery.data?.payload?.needsDisclaimer &&
-                                !disclaimerAccepted),
-                        )}
+                        onConfirm={confirm}
+                        onCancel={cancel}
+                        isConfirmDisabled={isConfirmDisabled}
                     />
                 }
                 // Disable shadow bottom to make `Fees` component fully visible

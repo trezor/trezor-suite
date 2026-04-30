@@ -12,5 +12,5 @@ export function TxSimulationLoader({ children, isLoading }: TxSimulationLoaderPr
         return <Spinner size={48} isDisabled={true} />;
     }
 
-    return <>{children}</>;
+    return children;
 }

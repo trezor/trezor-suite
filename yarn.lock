@@ -2585,7 +2585,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@emnapi/core@npm:1.9.2":
+"@emnapi/core@npm:1.9.2, @emnapi/core@npm:^1.1.0, @emnapi/core@npm:^1.4.3":
   version: 1.9.2
   resolution: "@emnapi/core@npm:1.9.2"
   dependencies:
@@ -2595,40 +2595,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@emnapi/core@npm:^1.1.0, @emnapi/core@npm:^1.4.3":
-  version: 1.9.1
-  resolution: "@emnapi/core@npm:1.9.1"
-  dependencies:
-    "@emnapi/wasi-threads": "npm:1.2.0"
-    tslib: "npm:^2.4.0"
-  checksum: 10/c44cfe471702b43306b84d0f4f2f1506dac0065dbd73dc5a41bd99a2c39802ca7e2d7ebfbfae8997468d1ff0420603596bf35b19eabd5951bad1eb630d2d4574
-  languageName: node
-  linkType: hard
-
-"@emnapi/runtime@npm:1.9.2":
+"@emnapi/runtime@npm:1.9.2, @emnapi/runtime@npm:^1.1.0, @emnapi/runtime@npm:^1.4.3, @emnapi/runtime@npm:^1.7.0":
   version: 1.9.2
   resolution: "@emnapi/runtime@npm:1.9.2"
   dependencies:
     tslib: "npm:^2.4.0"
   checksum: 10/de123d6b7acdbe34bf997523be761e5ae6d8f9b3967b72e8e50ff7dd1791a2a0d2b9fb0d7d92230b0738502980ea6f947189b7c1f47814ff666515a55c6fff48
-  languageName: node
-  linkType: hard
-
-"@emnapi/runtime@npm:^1.1.0, @emnapi/runtime@npm:^1.4.3, @emnapi/runtime@npm:^1.7.0":
-  version: 1.9.1
-  resolution: "@emnapi/runtime@npm:1.9.1"
-  dependencies:
-    tslib: "npm:^2.4.0"
-  checksum: 10/337767fa44ec1f6277494342664be8773f16aad4086e9e49423a9f06c5eee7495e2e1b0b50dcd764c5a5cc4c15c9d80c13fba2da6763a97c06a48115cd7ccd14
-  languageName: node
-  linkType: hard
-
-"@emnapi/wasi-threads@npm:1.2.0":
-  version: 1.2.0
-  resolution: "@emnapi/wasi-threads@npm:1.2.0"
-  dependencies:
-    tslib: "npm:^2.4.0"
-  checksum: 10/c8e48c7200530744dc58170d2e25933b61433e4a0c50b4f192f5d8d4b065c7023dbfc48dac0afadbc29bd239013f2ae454c6e54e0ca6e8248402bf95c9e77e22
   languageName: node
   linkType: hard
 
@@ -8696,7 +8668,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rolldown/pluginutils@npm:1.0.0-rc.15":
+"@rolldown/pluginutils@npm:1.0.0-rc.15, @rolldown/pluginutils@npm:^1.0.0-rc.9":
   version: 1.0.0-rc.15
   resolution: "@rolldown/pluginutils@npm:1.0.0-rc.15"
   checksum: 10/528e6c4ebe43cc64daa1b068b23aac3df5de1aa152842f842c00d343dc4505603133f1f4e95c761551bca42fcf8506063d955c27d3b7ca748b6426d11d1e9fb5
@@ -8714,13 +8686,6 @@ __metadata:
   version: 1.0.0-rc.7
   resolution: "@rolldown/pluginutils@npm:1.0.0-rc.7"
   checksum: 10/92853a53b75d665da0b4cc3f855c87e606dda6b8d55e929fd08b4428b68ea833afbb140ba25c6c1f9856a739e419fd2929ef15ac0fd05b44e904705be34efe1f
-  languageName: node
-  linkType: hard
-
-"@rolldown/pluginutils@npm:^1.0.0-rc.9":
-  version: 1.0.0-rc.12
-  resolution: "@rolldown/pluginutils@npm:1.0.0-rc.12"
-  checksum: 10/6ce1601849b3095a2b6e57074c1f8a661eba67ebf65cf9afdf894d903302318247ddb69ab6cbc621e7f582408af301ea0523ed59ddb9a4ef3ea97f3d7002683e
   languageName: node
   linkType: hard
 
@@ -11151,7 +11116,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-common/earn-stablecoin-api@workspace:*, @suite-common/earn-stablecoin-api@workspace:suite-common/earn-stablecoin-api":
+"@suite-common/earn-stablecoin-api@workspace:*, @suite-common/earn-stablecoin-api@workspace:^, @suite-common/earn-stablecoin-api@workspace:suite-common/earn-stablecoin-api":
   version: 0.0.0-use.local
   resolution: "@suite-common/earn-stablecoin-api@workspace:suite-common/earn-stablecoin-api"
   dependencies:
@@ -11170,6 +11135,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/earn-stablecoin@workspace:suite-common/earn-stablecoin"
   dependencies:
+    "@suite-common/earn-stablecoin-api": "workspace:^"
+    "@suite-common/wallet-config": "workspace:^"
     "@suite-common/wallet-types": "workspace:^"
     zod: "npm:4.3.6"
   languageName: unknown
