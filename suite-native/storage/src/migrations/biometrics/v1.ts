@@ -17,7 +17,7 @@ const parseStoredBoolean = (value: string | undefined | null): boolean | undefin
 
 const BIOMETRICS_PERSISTED_ATOM_STORAGE_KEY = 'isBiometricsOptionEnabled';
 
-export const migrateBiometricsAtomToRedux = (oldState: unknown) => {
+export const migrateBiometricsAtomToRedux = (oldState: unknown): PersistedState => {
     if (!oldState || !isPersistedState(oldState)) {
         return oldState as PersistedState;
     }
@@ -32,8 +32,5 @@ export const migrateBiometricsAtomToRedux = (oldState: unknown) => {
 
     unecryptedJotaiStorage.remove(BIOMETRICS_PERSISTED_ATOM_STORAGE_KEY);
 
-    return {
-        ...oldState,
-        isBiometricsEnabled: storedValue,
-    };
+    return { ...oldState, isBiometricsEnabled: storedValue } as PersistedState;
 };

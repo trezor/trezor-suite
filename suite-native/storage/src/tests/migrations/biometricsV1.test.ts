@@ -22,6 +22,21 @@ describe('migrate biometrics atom to redux', () => {
         ...overrides,
     });
 
+    it('should migrate true value from storage to Redux state', () => {
+        const oldState = createPersistedState({ someExistingField: 'value' });
+        (unecryptedJotaiStorage.getString as jest.Mock).mockReturnValue('true');
+
+        const result = migrateBiometricsAtomToRedux(oldState);
+
+        expect(unecryptedJotaiStorage.remove).toHaveBeenCalledWith(
+            LEGACY_BIOMETRICS_ATOM_STORAGE_KEY,
+        );
+        expect(result).toEqual({
+            ...oldState,
+            isBiometricsEnabled: true,
+        });
+    });
+
     it('should migrate false value from storage to Redux state', () => {
         const oldState = createPersistedState({ someExistingField: 'value' });
         (unecryptedJotaiStorage.getString as jest.Mock).mockReturnValue('false');
@@ -51,5 +66,35 @@ describe('migrate biometrics atom to redux', () => {
         );
         expect(unecryptedJotaiStorage.remove).not.toHaveBeenCalled();
         expect(result).toEqual(oldState);
+    });
+
+    it('should not migrate when storage returns malformed JSON', () => {
+        const oldState = createPersistedState();
+        (unecryptedJotaiStorage.getString as jest.Mock).mockReturnValue('{not json');
+
+        const result = migrateBiometricsAtomToRedux(oldState);
+
+        expect(unecryptedJotaiStorage.remove).not.toHaveBeenCalled();
+        expect(result).toEqual(oldState);
+    });
+
+    it('should not migrate when stored value is not a boolean', () => {
+        const oldState = createPersistedState();
+        (unecryptedJotaiStorage.getString as jest.Mock).mockReturnValue('"yes"');
+
+        const result = migrateBiometricsAtomToRedux(oldState);
+
+        expect(unecryptedJotaiStorage.remove).not.toHaveBeenCalled();
+        expect(result).toEqual(oldState);
+    });
+
+    it('should pass through oldState that is not a PersistedState', () => {
+        const oldState = { isBiometricsEnabled: true };
+
+        const result = migrateBiometricsAtomToRedux(oldState);
+
+        expect(unecryptedJotaiStorage.getString).not.toHaveBeenCalled();
+        expect(unecryptedJotaiStorage.remove).not.toHaveBeenCalled();
+        expect(result).toBe(oldState);
     });
 });
