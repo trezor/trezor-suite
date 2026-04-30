@@ -14,7 +14,8 @@ import { type Result, err, ok } from '@trezor/type-utils';
 
 import { sparkActions } from './sparkFeatureReducer';
 import { createSparkWalletKey } from '../accounts/sparkAccounts';
-import { loadSparkWalletSnapshot, paySparkLightningInvoice } from '../wallet/sparkWalletSdk';
+import { loadSparkWalletSnapshot } from '../sdk/loadSparkWalletSnapshot';
+import { paySparkLightningInvoice } from '../sdk/paySparkLightningInvoice';
 
 const actionPrefix = '@suite-common/spark';
 
