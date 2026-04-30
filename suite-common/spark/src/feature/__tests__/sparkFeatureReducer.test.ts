@@ -1,11 +1,5 @@
 import { asWalletDescriptor } from '@suite-common/wallet-types';
 
-import {
-    createInitialSparkBalanceSats,
-    createInitialSparkTransfers,
-    createSparkBitcoinDepositAddress,
-    createSparkLightningInvoice,
-} from '../../wallet/sparkMockData';
 import { initialSparkState, sparkActions, sparkReducer } from '../sparkFeatureReducer';
 
 const walletDescriptor = asWalletDescriptor('wallet-1');
@@ -26,7 +20,7 @@ describe('sparkFeatureReducer', () => {
         });
     });
 
-    it('adds spark account once per wallet and initializes wallet state', () => {
+    it('adds spark account once per wallet and initializes empty wallet state', () => {
         const stateWithAccount = sparkReducer(
             initialSparkState,
             sparkActions.addSparkAccount({
@@ -47,23 +41,14 @@ describe('sparkFeatureReducer', () => {
         );
         expect(stateWithAccount.walletsByKey['wallet-1:1']).toEqual({
             accountNumber: 1,
-            balanceSats: createInitialSparkBalanceSats(1),
-            bitcoinDepositAddress: createSparkBitcoinDepositAddress({
-                accountNumber: 1,
-                walletDescriptor,
-            }),
+            balanceSats: null,
+            bitcoinDepositAddress: '',
             error: null,
             lastLoadedAt: null,
-            lightningInvoice: createSparkLightningInvoice({
-                accountNumber: 1,
-                walletDescriptor,
-            }),
+            lightningInvoice: '',
             mnemonic: null,
             status: 'idle',
-            transfers: createInitialSparkTransfers({
-                accountNumber: 1,
-                walletDescriptor,
-            }),
+            transfers: [],
             walletDescriptor,
             walletKey: 'wallet-1:1',
         });
@@ -126,7 +111,7 @@ describe('sparkFeatureReducer', () => {
         expect(loadedState.walletsByKey['wallet-1:0'].lastLoadedAt).not.toBeNull();
     });
 
-    it('records mocked lightning send into history', () => {
+    it('stores wallet error state', () => {
         const stateWithAccount = sparkReducer(
             initialSparkState,
             sparkActions.addSparkAccount({
@@ -134,23 +119,19 @@ describe('sparkFeatureReducer', () => {
                 walletDescriptor,
             }),
         );
-        const sentState = sparkReducer(
+        const errorState = sparkReducer(
             stateWithAccount,
-            sparkActions.submitSparkLightningSend({
+            sparkActions.setSparkWalletError({
                 accountNumber: 0,
-                amountSats: '1000',
-                invoice: 'lnbc1destination',
+                error: 'Spark unavailable',
                 walletDescriptor,
             }),
         );
 
-        expect(sentState.walletsByKey['wallet-1:0'].balanceSats).toEqual('249000');
-        expect(sentState.walletsByKey['wallet-1:0'].transfers[0]).toEqual(
+        expect(errorState.walletsByKey['wallet-1:0']).toEqual(
             expect.objectContaining({
-                amountSats: '1000',
-                counterparty: 'lnbc1destination',
-                direction: 'send',
-                rail: 'lightning',
+                error: 'Spark unavailable',
+                status: 'error',
             }),
         );
     });

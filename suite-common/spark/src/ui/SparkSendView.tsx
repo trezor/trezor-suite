@@ -21,8 +21,7 @@ export const SparkSendView = ({
         <Column gap={16}>
             <Text typographyStyle="body-md-strong">Send Spark over Lightning</Text>
             <Text color="contentSecondary">
-                Paste a Lightning invoice and a mocked amount in sats. Submitting records a fake
-                Spark payment in local history.
+                Paste a Lightning invoice. Amount is only needed for zero-amount invoices.
             </Text>
             <Input
                 value={invoice}
@@ -33,10 +32,10 @@ export const SparkSendView = ({
                 value={amountSats}
                 onChange={event => onAmountChange(event.target.value)}
                 inputMode="numeric"
-                label="Amount in sats"
+                label="Amount in sats (optional)"
             />
             <Button onClick={onSubmit} isDisabled={isSubmitDisabled}>
-                Send mocked Spark payment
+                Send Spark payment
             </Button>
         </Column>
     </Card>

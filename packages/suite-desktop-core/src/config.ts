@@ -23,6 +23,9 @@ export const allowedDomains = [
     'trezor.io',
     'sldev.cz', // Test environment, available only with VPN
     'invity.io',
+    'lightspark.com', // Spark
+    'spark.flashnet.xyz', // Spark
+    'spark-operator.breez.technology', // Spark mainnet signing operator
     'api.github.com',
     'api.dropboxapi.com',
     'content.dropboxapi.com',

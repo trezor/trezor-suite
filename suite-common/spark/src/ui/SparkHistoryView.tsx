@@ -6,8 +6,8 @@ type SparkTransferView = {
     createdAt: string;
     direction: 'send' | 'receive';
     id: string;
-    rail: 'bitcoin' | 'lightning';
-    status: 'completed';
+    rail: 'bitcoin' | 'lightning' | 'spark';
+    status: string;
     summary: string;
 };
 

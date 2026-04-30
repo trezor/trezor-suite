@@ -18,9 +18,9 @@ export const SparkReceive = () => {
                     lightningInvoice={wallet.lightningInvoice}
                     lightningQrCode={
                         <Box
-                            height={160}
-                            width={160}
-                            padding={4}
+                            height={512}
+                            width={512}
+                            padding={8}
                             backgroundColor="surfaceFillRaised"
                         >
                             <QrCode value={wallet.lightningInvoice} />

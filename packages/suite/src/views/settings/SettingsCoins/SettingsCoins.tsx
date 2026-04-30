@@ -154,7 +154,7 @@ export const SettingsCoins = () => {
                 <SectionItem>
                     <TextColumn
                         title="Spark"
-                        description="Enable the mocked Spark network for this Suite wallet."
+                        description="Enable Spark for the selected Suite wallet descriptor. Spark uses the Suite Sync owner secret as its seed source."
                     />
                     <ActionColumn>
                         <Switch

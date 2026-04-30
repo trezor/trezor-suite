@@ -12,7 +12,8 @@ export const SparkSend = () => {
     const [invoice, setInvoice] = useState('');
     const [amountSats, setAmountSats] = useState('');
 
-    const isSubmitDisabled = !invoice.trim() || !isPositiveNumericString(amountSats);
+    const isSubmitDisabled =
+        !invoice.trim() || (amountSats !== '' && !isPositiveNumericString(amountSats));
 
     return (
         <SparkLayout>
@@ -22,12 +23,20 @@ export const SparkSend = () => {
                 isSubmitDisabled={isSubmitDisabled}
                 onAmountChange={setAmountSats}
                 onInvoiceChange={setInvoice}
-                onSubmit={() => {
+                onSubmit={async () => {
                     if (isSubmitDisabled) {
                         return;
                     }
 
-                    submitLightningSend({ amountSats, invoice: invoice.trim() });
+                    const hasSent = await submitLightningSend({
+                        amountSats: amountSats.trim() || undefined,
+                        invoice: invoice.trim(),
+                    });
+
+                    if (!hasSent) {
+                        return;
+                    }
+
                     setAmountSats('');
                     setInvoice('');
                     goToSparkRoute('spark-index');

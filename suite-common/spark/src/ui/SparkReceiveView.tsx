@@ -22,7 +22,7 @@ export const SparkReceiveView = ({
             <Column gap={12}>
                 <Text typographyStyle="body-md-strong">Deposit from Bitcoin on-chain</Text>
                 <Text color="contentSecondary">
-                    Copy this mocked Bitcoin deposit address and fund it manually from your external
+                    Copy this Bitcoin deposit address and fund it manually from your external
                     wallet.
                 </Text>
                 <Text>{bitcoinDepositAddress}</Text>
@@ -36,7 +36,8 @@ export const SparkReceiveView = ({
             <Column gap={12}>
                 <Text typographyStyle="body-md-strong">Deposit over Lightning</Text>
                 <Text color="contentSecondary">
-                    This mocked invoice can be shared directly or scanned with a Lightning wallet.
+                    This Lightning invoice can be shared directly or scanned with a Lightning
+                    wallet.
                 </Text>
                 {lightningQrCode}
                 <Text>{lightningInvoice}</Text>

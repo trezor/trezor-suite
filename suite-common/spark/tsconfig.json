@@ -5,7 +5,19 @@
     },
     "references": [
         {
+            "path": "../platform-encryption"
+        },
+        {
+            "path": "../redux-utils"
+        },
+        {
+            "path": "../suite-sync"
+        },
+        {
             "path": "../suite-sync-storage"
+        },
+        {
+            "path": "../suite-sync-types"
         },
         {
             "path": "../wallet-types"

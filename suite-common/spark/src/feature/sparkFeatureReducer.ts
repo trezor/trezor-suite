@@ -4,12 +4,6 @@ import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 import type { WalletDescriptor } from '@suite-common/wallet-types';
 
 import { type SparkAccount, createSparkWalletKey } from '../accounts/sparkAccounts';
-import {
-    createInitialSparkBalanceSats,
-    createInitialSparkTransfers,
-    createSparkBitcoinDepositAddress,
-    createSparkLightningInvoice,
-} from '../wallet/sparkMockData';
 
 export type SparkWalletStatus = 'idle' | 'loading' | 'loaded' | 'error';
 
@@ -19,8 +13,8 @@ export type SparkTransfer = {
     createdAt: string;
     direction: 'send' | 'receive';
     id: string;
-    rail: 'bitcoin' | 'lightning';
-    status: 'completed';
+    rail: 'bitcoin' | 'lightning' | 'spark';
+    status: string;
     summary: string;
 };
 
@@ -53,14 +47,14 @@ const createSparkWalletState = ({
     walletDescriptor: WalletDescriptor;
 }): SparkWalletState => ({
     accountNumber,
-    balanceSats: createInitialSparkBalanceSats(accountNumber),
-    bitcoinDepositAddress: createSparkBitcoinDepositAddress({ accountNumber, walletDescriptor }),
+    balanceSats: null,
+    bitcoinDepositAddress: '',
     error: null,
     lastLoadedAt: null,
-    lightningInvoice: createSparkLightningInvoice({ accountNumber, walletDescriptor }),
+    lightningInvoice: '',
     mnemonic: null,
     status: 'idle',
-    transfers: createInitialSparkTransfers({ accountNumber, walletDescriptor }),
+    transfers: [],
     walletDescriptor,
     walletKey: createSparkWalletKey({ accountNumber, walletDescriptor }),
 });
@@ -192,7 +186,7 @@ const sparkFeatureSlice = createSlice({
 
             state.walletsByKey[walletKey] = walletState;
         },
-        refreshSparkLightningInvoice: (
+        clearSparkWalletError: (
             state,
             action: PayloadAction<{
                 accountNumber: number;
@@ -203,44 +197,7 @@ const sparkFeatureSlice = createSlice({
             const walletState =
                 state.walletsByKey[walletKey] ?? createSparkWalletState(action.payload);
 
-            walletState.lightningInvoice = createSparkLightningInvoice({
-                ...action.payload,
-                nonce: Date.now().toString(),
-            });
-
-            state.walletsByKey[walletKey] = walletState;
-        },
-        submitSparkLightningSend: (
-            state,
-            action: PayloadAction<{
-                accountNumber: number;
-                amountSats: string;
-                invoice: string;
-                walletDescriptor: WalletDescriptor;
-            }>,
-        ) => {
-            const walletKey = createSparkWalletKey(action.payload);
-            const walletState =
-                state.walletsByKey[walletKey] ?? createSparkWalletState(action.payload);
-            const currentBalance = BigInt(walletState.balanceSats ?? '0');
-            const amountSats = BigInt(action.payload.amountSats);
-            const nextBalance = currentBalance > amountSats ? currentBalance - amountSats : 0n;
-
-            walletState.balanceSats = nextBalance.toString();
-            walletState.lastLoadedAt = Date.now();
-            walletState.transfers = [
-                {
-                    id: `${walletKey}:${Date.now()}`,
-                    amountSats: action.payload.amountSats,
-                    counterparty: action.payload.invoice,
-                    createdAt: new Date().toISOString(),
-                    direction: 'send',
-                    rail: 'lightning',
-                    status: 'completed',
-                    summary: 'Mocked Spark payment',
-                },
-                ...walletState.transfers,
-            ];
+            walletState.error = null;
 
             state.walletsByKey[walletKey] = walletState;
         },

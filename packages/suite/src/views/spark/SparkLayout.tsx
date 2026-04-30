@@ -10,7 +10,16 @@ type SparkLayoutProps = {
 };
 
 export const SparkLayout = ({ children }: SparkLayoutProps) => {
-    const { addAccount, device, isEnabled, walletDescriptor, accounts } = useSparkWallet();
+    const {
+        addAccount,
+        device,
+        isEnabled,
+        walletDescriptor,
+        accounts,
+        reloadSelectedAccount,
+        selectedAccount,
+        wallet,
+    } = useSparkWallet();
 
     useLayout('Spark', <SparkHeader />);
 
@@ -46,10 +55,38 @@ export const SparkLayout = ({ children }: SparkLayoutProps) => {
                 <Column gap={12}>
                     <Text typographyStyle="body-md-strong">No Spark account yet</Text>
                     <Text color="contentSecondary">
-                        Create the first mocked Spark account for this wallet descriptor.
+                        Create the first Spark account for this wallet descriptor.
                     </Text>
                     <Button width="fit-content" onClick={addAccount}>
                         Add Spark account
+                    </Button>
+                </Column>
+            </Card>
+        );
+    }
+
+    if (selectedAccount && (!wallet || wallet.status === 'idle' || wallet.status === 'loading')) {
+        return (
+            <Card>
+                <Column gap={12}>
+                    <Text typographyStyle="body-md-strong">Loading Spark wallet</Text>
+                    <Text color="contentSecondary">
+                        Syncing Spark balance, history, and receive details for the selected
+                        account.
+                    </Text>
+                </Column>
+            </Card>
+        );
+    }
+
+    if (selectedAccount && wallet?.status === 'error') {
+        return (
+            <Card>
+                <Column gap={12}>
+                    <Text typographyStyle="body-md-strong">Spark wallet unavailable</Text>
+                    <Text color="contentSecondary">{wallet.error ?? 'Unknown Spark error.'}</Text>
+                    <Button width="fit-content" onClick={reloadSelectedAccount}>
+                        Retry
                     </Button>
                 </Column>
             </Card>

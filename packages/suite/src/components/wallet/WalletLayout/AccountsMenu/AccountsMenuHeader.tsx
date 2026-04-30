@@ -5,9 +5,9 @@ import { goto } from '@suite/router';
 import { selectIsCoinsFilterVisible, suiteSettingsActions } from '@suite/settings';
 import { selectSelectedDevice } from '@suite-common/device';
 import {
+    addSparkAccountThunk,
     selectIsSparkEnabled,
     selectSparkAccountsByWalletDescriptor,
-    sparkActions,
 } from '@suite-common/spark';
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
@@ -61,8 +61,9 @@ export const AccountsMenuHeader = () => {
     const dispatch = useDispatch();
     const availableNetworksSymbols = useAvailableNetworkSymbols();
     const isSparkEnabled = useSelector(selectIsSparkEnabled);
-    const walletDescriptor = device?.state?.staticSessionId
-        ? parseDeviceStaticSessionId(device.state.staticSessionId).walletDescriptor
+    const deviceStaticSessionId = device?.state?.staticSessionId;
+    const walletDescriptor = deviceStaticSessionId
+        ? parseDeviceStaticSessionId(deviceStaticSessionId).walletDescriptor
         : null;
     const sparkAccounts = useSelector(state =>
         walletDescriptor ? selectSparkAccountsByWalletDescriptor(state, walletDescriptor) : [],
@@ -81,15 +82,14 @@ export const AccountsMenuHeader = () => {
                 ? Math.max(...sparkAccounts.map(account => account.accountNumber)) + 1
                 : 0;
 
+        if (!deviceStaticSessionId) {
+            return;
+        }
+
         dispatch(
-            sparkActions.addSparkAccount({
+            addSparkAccountThunk({
                 accountNumber: nextAccountNumber,
-                walletDescriptor,
-            }),
-        );
-        dispatch(
-            sparkActions.selectSparkAccount({
-                accountNumber: nextAccountNumber,
+                deviceStaticSessionId,
                 walletDescriptor,
             }),
         );
