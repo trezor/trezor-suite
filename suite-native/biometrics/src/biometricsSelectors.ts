@@ -1,8 +1,4 @@
-import type { BiometricsSliceState } from './biometricsSlice';
-
-export type BiometricsSliceRootState = {
-    biometrics: BiometricsSliceState;
-};
+import type { BiometricsSliceRootState } from './types';
 
 export const selectIsUserAuthenticated = (state: BiometricsSliceRootState) =>
     state.biometrics.isUserAuthenticated;

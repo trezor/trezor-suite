@@ -8,31 +8,20 @@ import type { LocalAuthenticationResult } from 'expo-local-authentication';
 import { createThunk } from '@suite-common/redux-utils';
 import { asTypedNativeAnalytics, events } from '@suite-native/analytics';
 
+import {
+    selectGoneToBackgroundAtTimestamp,
+    selectIsBiometricsEnabled,
+    selectIsTogglingBiometrics,
+    selectShouldUserBeAuthenticated,
+} from './biometricsSelectors';
 import { getIsBiometricsFeatureAvailable, getShouldRevokeAuth } from './biometricsUtils';
-
-export enum AuthenticateError {
-    AuthenticationFailed = 'authentication-failed',
-    BiometricsNotAvailable = 'biometrics-not-available',
-}
+import { AuthenticateError, type BiometricsSliceState } from './types';
 
 export enum BiometricsToggleResult {
     Enabled = 'enabled',
     Disabled = 'disabled',
     BiometricsNotAvailable = 'biometrics-not-available',
 }
-
-export type BiometricsSliceState = {
-    isUserAuthenticated: boolean;
-    isBiometricsEnabled: boolean;
-    biometricsError: AuthenticateError | null;
-    isTogglingBiometricsSettingsOption: boolean;
-    isAuthenticatingUser: boolean;
-    goneToBackgroundAtTimestamp: number | null;
-};
-
-type BiometricsSliceRootState = {
-    biometrics: BiometricsSliceState;
-};
 
 export const biometricsSliceInitialState: BiometricsSliceState = {
     isUserAuthenticated: false,
@@ -48,17 +37,6 @@ export const biometricsPersistWhitelist: Array<keyof BiometricsSliceState> = [
 ];
 
 const BIOMETRICS_THUNK_PREFIX = 'biometrics';
-
-const selectIsBiometricsEnabled = (state: BiometricsSliceRootState) =>
-    state.biometrics.isBiometricsEnabled;
-const selectIsUserAuthenticated = (state: BiometricsSliceRootState) =>
-    state.biometrics.isUserAuthenticated;
-const selectShouldUserBeAuthenticated = (state: BiometricsSliceRootState) =>
-    selectIsBiometricsEnabled(state) && !selectIsUserAuthenticated(state);
-const selectIsTogglingBiometrics = (state: BiometricsSliceRootState) =>
-    state.biometrics.isTogglingBiometricsSettingsOption;
-const selectGoneToBackgroundAtTimestamp = (state: BiometricsSliceRootState) =>
-    state.biometrics.goneToBackgroundAtTimestamp;
 
 export const authenticateUserThunk = createThunk<
     LocalAuthenticationResult,
