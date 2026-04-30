@@ -2,7 +2,7 @@
 
 import type { MethodMessage, MethodPermission } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
-import { DataManager } from '../data/DataManager';
+import * as settingsStore from '../data/settingsStore';
 
 export default class GetSettings extends AbstractMethod<'getSettings'> {
     constructor(message: MethodMessage<'getSettings'>) {
@@ -15,6 +15,6 @@ export default class GetSettings extends AbstractMethod<'getSettings'> {
     }
 
     run() {
-        return Promise.resolve(DataManager.getSettings());
+        return Promise.resolve(settingsStore.get());
     }
 }

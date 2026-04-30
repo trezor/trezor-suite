@@ -6,7 +6,7 @@ import type { ThpPairingMethod } from '@trezor/protocol';
 import { thp as protocolThp } from '@trezor/protocol';
 
 import { thpCall } from './thpCall';
-import { DataManager } from '../../data/DataManager';
+import * as settingsStore from '../../data/settingsStore';
 import type { IDevice } from '../../types/idevice';
 
 // intersection of device acceptable methods and host acceptable methods
@@ -47,7 +47,7 @@ export const createThpChannel = async (device: IDevice) => {
     }
 
     // find common pairing methods
-    const settings = DataManager.getSettings('thp');
+    const settings = settingsStore.get('thp');
     const pairingMethods = getPairingMethods(properties.pairing_methods, settings?.pairingMethods);
     if (!pairingMethods?.length) {
         throw ERRORS.TypedError('Device_ThpPairingMethodsException');
@@ -73,7 +73,7 @@ export const thpHandshake = async (device: IDevice, unlockPin = false) => {
         throw ERRORS.TypedError('Device_ThpStateMissing');
     }
 
-    const settings = DataManager.getSettings('thp');
+    const settings = settingsStore.get('thp');
     // sort credentials by autoconnect field
     const knownCredentials = (settings?.knownCredentials || []).sort(cre =>
         cre.autoconnect ? -1 : 1,

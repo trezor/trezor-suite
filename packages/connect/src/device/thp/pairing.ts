@@ -7,7 +7,7 @@ import { ThpPairingMethod, thp as protocolThp } from '@trezor/protocol';
 import { createDeferred } from '@trezor/utils';
 
 import { abortThpWorkflow, thpCall } from './thpCall';
-import { DataManager } from '../../data/DataManager';
+import * as settingsStore from '../../data/settingsStore';
 import type { IDevice } from '../../types/idevice';
 import { sanitizeString } from '../../utils/formatUtils';
 
@@ -282,7 +282,7 @@ export const thpPairing = async (device: IDevice) => {
 
     // State HP0
     // ThpPairingRequest will trigger ButtonRequest.thp_pairing_request flow
-    const settings = DataManager.getSettings('thp');
+    const settings = settingsStore.get('thp');
     await thpCall(device, 'ThpPairingRequest', {
         host_name: sanitizeString(settings?.hostName) || 'Unknown hostName',
         app_name: sanitizeString(settings?.appName) || 'Unknown appName',
@@ -341,7 +341,7 @@ export const thpPairing = async (device: IDevice) => {
     device.emit(DEVICE.THP_CREDENTIALS_CHANGED, {
         credentials,
     });
-    const settings1 = DataManager.getSettings('thp');
+    const settings1 = settingsStore.get('thp');
     if (settings1) {
         settings1.knownCredentials?.push(credentials);
     }

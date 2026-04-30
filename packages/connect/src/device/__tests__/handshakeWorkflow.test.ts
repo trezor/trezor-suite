@@ -1,8 +1,9 @@
 import { parseConnectSettings } from '@trezor/connect-common/src/data/connectSettings';
 
-import { DataManager } from '../../data/DataManager';
 import { initializeFirmwareConfig } from '../../data/firmwareInfo';
+import * as firmwareReleaseStore from '../../data/firmwareReleaseStore';
 import { loadProtobufModules } from '../../data/protobufLoader';
+import * as settingsStore from '../../data/settingsStore';
 import { Device } from '../Device';
 import { handshakeCancel } from '../workflow/handshake';
 
@@ -46,14 +47,9 @@ const fastForward = (time: number) => jest.advanceTimersByTimeAsync(time);
 describe('workflow/handshake', () => {
     beforeAll(async () => {
         // todo: I don't get it. If we pass empty messages: {} (see getDeviceListParams), tests behave differently.
-        await DataManager.load(
-            {
-                ...parseConnectSettings({}),
-            },
-            true,
-            true,
-            initializeFirmwareConfig,
-        );
+        const settings = { ...parseConnectSettings({}) };
+        settingsStore.set(settings);
+        await firmwareReleaseStore.init(settings.firmwareChannel, true, initializeFirmwareConfig);
         await loadProtobufModules();
     });
 

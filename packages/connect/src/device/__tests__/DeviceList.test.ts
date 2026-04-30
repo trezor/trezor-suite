@@ -1,8 +1,9 @@
 import { parseConnectSettings } from '@trezor/connect-common/src/data/connectSettings';
 
-import { DataManager } from '../../data/DataManager';
 import { initializeFirmwareConfig } from '../../data/firmwareInfo';
+import * as firmwareReleaseStore from '../../data/firmwareReleaseStore';
 import { loadProtobufModules } from '../../data/protobufLoader';
+import * as settingsStore from '../../data/settingsStore';
 import { DeviceList } from '../DeviceList';
 
 const { createTestTransport, createTestTransportClass } = global.JestMocks;
@@ -25,14 +26,9 @@ const waitForNthEventOfType = (
 describe('DeviceList', () => {
     beforeAll(async () => {
         // todo: I don't get it. If we pass empty messages: {} (see getDeviceListParams), tests behave differently.
-        await DataManager.load(
-            {
-                ...parseConnectSettings({}),
-            },
-            true,
-            true,
-            initializeFirmwareConfig,
-        );
+        const settings = { ...parseConnectSettings({}) };
+        settingsStore.set(settings);
+        await firmwareReleaseStore.init(settings.firmwareChannel, true, initializeFirmwareConfig);
         await loadProtobufModules();
     });
 

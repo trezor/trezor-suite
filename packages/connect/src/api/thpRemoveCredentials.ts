@@ -3,7 +3,7 @@ import type { ThpCredentials } from '@trezor/protocol';
 
 import type { MethodMessage, MethodPermission } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
-import { DataManager } from '../data/DataManager';
+import * as settingsStore from '../data/settingsStore';
 
 type Params = { credentials: ThpCredentials[] };
 
@@ -38,7 +38,7 @@ export default class ThpRemoveCredentials extends AbstractMethod<'thpRemoveCrede
         }
 
         const credentialsMap = new Map(requestedCredentials.map(c => [c.credential, c]));
-        const knownCredentials = DataManager.getSettings('thp')?.knownCredentials;
+        const knownCredentials = settingsStore.get('thp')?.knownCredentials;
         if (knownCredentials && knownCredentials.length > 0) {
             credentialsMap.forEach(c => {
                 let index;
