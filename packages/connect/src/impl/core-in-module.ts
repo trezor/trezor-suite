@@ -45,9 +45,10 @@ export abstract class CoreInModule implements ConnectFactoryDependencies<Connect
         this.settings = parseConnectSettings();
         this.log = initLog('@trezor/connect');
         this.coreManager = initCoreState();
-        this.messagePromises = createDeferredManager<Omit<MethodResponseMessage, 'event' | 'type'>>(
-            { initialId: 1 },
-        );
+        this.messagePromises = createDeferredManager<
+            Omit<MethodResponseMessage, 'event' | 'type'>,
+            string
+        >({ generateId: (): string => crypto.randomUUID() });
     }
 
     // handle messages to core
@@ -67,7 +68,7 @@ export abstract class CoreInModule implements ConnectFactoryDependencies<Connect
 
         switch (event) {
             case RESPONSE_EVENT: {
-                const { id = 0, success, device } = message;
+                const { id = '', success, device } = message;
                 const resolved = this.messagePromises.resolve(
                     id,
                     success
