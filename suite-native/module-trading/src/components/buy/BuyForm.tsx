@@ -12,6 +12,7 @@ import { useBuyFormContext } from '../../hooks/buy/useBuyFormContext';
 import { useBuyQuotes } from '../../hooks/buy/useBuyQuotes';
 import { useFocusedValueWatch } from '../../hooks/general/useFocusedValueWatch';
 import { useMountedRecentlyFlag } from '../../hooks/general/useMountedRecentlyFlag';
+import { ConciergeAlert } from '../concierge/ConciergeAlert';
 import { BuySellKYCWarning } from '../general/BuySellKYCWarning';
 import { LastErrorMessage } from '../general/Error/LastErrorMessage';
 
@@ -68,6 +69,7 @@ const BuyFormMemoized = memo(
                             />
                             <BuySellKYCWarning type="buy" />
                             <BuyConfirmation enteringAnimation={enteringAnimation} />
+                            <ConciergeAlert tradingType="buy" />
                         </>
                     )}
                 </VStack>
