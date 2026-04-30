@@ -9,5 +9,9 @@
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@suite-common/wallet-types": "workspace:^",
+        "zod": "4.3.6"
     }
 }

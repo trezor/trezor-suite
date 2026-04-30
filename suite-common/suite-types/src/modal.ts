@@ -220,7 +220,8 @@ export type UserContextPayload =
       }
     | {
           type: 'earn-yield-tx-simulation';
-          payload: unknown;
+          data: unknown;
+          decision: Deferred<boolean>;
       }
     | {
           type: 'wipe-device-success';
