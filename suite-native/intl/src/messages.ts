@@ -2787,6 +2787,7 @@ export const messages = {
             bankAccount: 'Bank account',
             verified: 'Verified',
             notVerified: 'Not verified',
+            bankAccountSheetTitle: 'Select an account',
             providerStatus: {
                 confirming: 'Provider is confirming your sell',
                 waitingForAddress: 'Waiting for the provider’s receive address',
