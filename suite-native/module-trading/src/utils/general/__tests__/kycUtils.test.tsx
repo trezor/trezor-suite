@@ -16,7 +16,7 @@ describe('getKycPolicyWarningTranslation', () => {
     it.each([
         {
             kycPolicyType: 'KYC-required' as const,
-            expected: 'This provider requires to verify identity.',
+            expected: 'This provider requires identity verification.',
         },
         {
             kycPolicyType: 'KYC-norefund' as const,

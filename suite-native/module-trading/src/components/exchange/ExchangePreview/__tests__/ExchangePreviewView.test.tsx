@@ -83,7 +83,7 @@ describe('ExchangePreviewView', () => {
             quote: cexdirectFloatingQuote,
         });
 
-        expect(getByText('This provider requires to verify identity.')).toBeOnTheScreen();
+        expect(getByText('This provider requires identity verification.')).toBeOnTheScreen();
     });
 
     it('should not render KYC provider warning for providers with "noKYC"', () => {
@@ -91,6 +91,6 @@ describe('ExchangePreviewView', () => {
             quote: mercuryoFixedWorstQuote,
         });
 
-        expect(queryByText('This provider requires to verify identity.')).toBeNull();
+        expect(queryByText('This provider requires identity verification.')).toBeNull();
     });
 });
