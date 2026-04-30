@@ -66,7 +66,7 @@ describe('Trade Exchange [@androidOnly]', () => {
             await tradingExchangeActions.selectReceiveAccount('Ethereum #1');
             await tradingExchangeActions.setSendCryptoAmount('10');
 
-            await tradingExchangeActions.scrollToLearnMoreLink();
+            await tradingExchangeActions.viewHowTradingWorks();
             await tradingExchangeActions.expectValidExchangeForm();
 
             await tradingExchangeActions.confirmTradingForm();
@@ -104,7 +104,7 @@ describe('Trade Exchange [@androidOnly]', () => {
             await tradingExchangeActions.selectReceiveAccount('Ethereum #1');
             await tradingExchangeActions.setSendCryptoAmount('10');
 
-            await tradingExchangeActions.scrollToLearnMoreLink();
+            await tradingExchangeActions.viewHowTradingWorks();
             await tradingExchangeActions.viewProviders();
             await tradingExchangeActions.expectValidExchangeForm();
 
