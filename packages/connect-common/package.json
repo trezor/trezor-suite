@@ -50,8 +50,7 @@
         }
     },
     "scripts": {
-        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib && DTS_OUT_DIR=lib yarn build:dts:inline",
-        "build:dts:inline": "node ../../scripts/inline-devdep-types.mjs",
+        "build:lib": "yarn g:tsc --build tsconfig.json && yarn g:tsdown",
         "type-check": "yarn g:tsc --build tsconfig.json",
         "test:unit": "yarn g:jest",
         "depcheck": "yarn g:depcheck",

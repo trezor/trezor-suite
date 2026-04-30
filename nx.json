@@ -14,13 +14,8 @@
     },
     "targetDefaults": {
         "build:lib": {
-            "dependsOn": [],
-            "inputs": [
-                "^production",
-                "default",
-                "{workspaceRoot}/tsconfig.base.json",
-                "{workspaceRoot}/tsconfig.lib.json"
-            ],
+            "dependsOn": ["^build:lib"],
+            "inputs": ["^production", "default", "{workspaceRoot}/tsconfig.base.json"],
             "outputs": ["{projectRoot}/lib", "{projectRoot}/build"],
             "cache": true
         },
@@ -31,12 +26,7 @@
                 "guide-pull-content",
                 "@suite-common/message-system:build:lib"
             ],
-            "inputs": [
-                "^production",
-                "default",
-                "{workspaceRoot}/tsconfig.base.json",
-                "{workspaceRoot}/tsconfig.lib.json"
-            ],
+            "inputs": ["^production", "default", "{workspaceRoot}/tsconfig.base.json"],
             "outputs": ["{projectRoot}/libDev"],
             "cache": true
         },

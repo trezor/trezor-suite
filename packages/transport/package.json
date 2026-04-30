@@ -53,7 +53,7 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build tsconfig.json",
-        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib",
+        "build:lib": "yarn g:tsdown",
         "publish:lib": "./scripts/publish-lib.sh",
         "test:unit": "jest",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"

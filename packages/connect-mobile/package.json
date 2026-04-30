@@ -21,8 +21,7 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
-        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib && DTS_OUT_DIR=lib yarn build:dts:inline",
-        "build:dts:inline": "node ../../scripts/inline-devdep-types.mjs",
+        "build:lib": "yarn g:tsc --build tsconfig.json && yarn g:tsdown",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {

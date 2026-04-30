@@ -56,8 +56,14 @@ function redirectWorkspaceSrc() {
                 for (const base of [
                     resolve(packagesDir, pkg, 'libDev', subpath),
                     resolve(packagesDir, pkg, 'libDev', 'src', subpath),
+                    resolve(packagesDir, pkg, 'lib', subpath),
                 ]) {
-                    for (const candidate of [`${base}.d.ts`, `${base}/index.d.ts`]) {
+                    for (const candidate of [
+                        `${base}.d.ts`,
+                        `${base}.d.mts`,
+                        `${base}/index.d.ts`,
+                        `${base}/index.d.mts`,
+                    ]) {
                         if (existsSync(candidate)) return candidate;
                     }
                 }
@@ -68,6 +74,7 @@ function redirectWorkspaceSrc() {
                 for (const candidate of [
                     resolve(packagesDir, pkg, 'libDev', 'index.d.ts'),
                     resolve(packagesDir, pkg, 'libDev', 'src', 'index.d.ts'),
+                    resolve(packagesDir, pkg, 'lib', 'index.d.ts'),
                 ]) {
                     if (existsSync(candidate)) return candidate;
                 }
@@ -107,7 +114,7 @@ function scanLeaks(dtsFiles, prodClosure) {
     return leaks;
 }
 
-// Recursively expand the leak set: each leaked package's libDev .d.ts may pull in
+// Recursively expand the leak set: each leaked package's .d.ts may pull in
 // other @trezor/* packages that aren't in the prod closure either; those become
 // new leaks too. Without this, vendor files for the initial leaks would inline the
 // transitive @trezor/* deps and create duplicate type definitions across vendors.
@@ -116,15 +123,22 @@ function expandLeakSet(initialLeaks, prodClosure) {
     const queue = [...initialLeaks];
     while (queue.length) {
         const pkg = queue.shift();
-        const libDev = resolve(packagesDir, pkg.replace('@trezor/', ''), 'libDev');
-        for (const file of walkDts(libDev, '.d.ts')) {
-            const content = readFileSync(file, 'utf8');
-            for (const m of content.matchAll(IMPORT_RE)) {
-                const root = rootOf(m[1]);
-                if (prodClosure.has(root)) continue;
-                if (leaks.has(root)) continue;
-                leaks.add(root);
-                queue.push(root);
+        const pkgDir = resolve(packagesDir, pkg.replace('@trezor/', ''));
+        const sourceDirs = ['libDev', 'lib']
+            .map(d => resolve(pkgDir, d))
+            .filter(d => existsSync(d));
+        for (const sourceDir of sourceDirs) {
+            for (const ext of ['.d.ts', '.d.mts']) {
+                for (const file of walkDts(sourceDir, ext)) {
+                    const content = readFileSync(file, 'utf8');
+                    for (const m of content.matchAll(IMPORT_RE)) {
+                        const root = rootOf(m[1]);
+                        if (prodClosure.has(root)) continue;
+                        if (leaks.has(root)) continue;
+                        leaks.add(root);
+                        queue.push(root);
+                    }
+                }
             }
         }
     }
