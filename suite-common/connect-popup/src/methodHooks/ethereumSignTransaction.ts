@@ -129,7 +129,7 @@ const preCallHook = async <M extends CallMethodKeys>({
         }
 
         // Modify payload to include selected fee, if present
-        if (method === 'ethereumSignTransaction') {
+        if (method === 'ethereumSignTransaction' && source.type === 'walletconnect') {
             const currentPopupCall = selectConnectPopupCall(getState());
             const typedPayload = payload as any as EthereumSignTransaction;
             if (
