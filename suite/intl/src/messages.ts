@@ -7688,6 +7688,18 @@ export const messages = defineMessages({
         id: 'TR_ONBOARDING_STEP_WALLET',
         defaultMessage: 'Wallet',
     },
+    TR_ONBOARDING_FINAL_HEADING: {
+        id: 'TR_ONBOARDING_FINAL_HEADING',
+        defaultMessage: 'You’re all set!',
+    },
+    TR_ONBOARDING_FINAL_DESCRIPTION: {
+        id: 'TR_ONBOARDING_FINAL_DESCRIPTION',
+        defaultMessage: 'Your {deviceName} is set up and ready for use.',
+    },
+    TR_ONBOARDING_FINAL_GO_TO_DASHBOARD: {
+        id: 'TR_ONBOARDING_FINAL_GO_TO_DASHBOARD',
+        defaultMessage: 'Go to Dashboard',
+    },
     TR_ONBOARDING_CURRENT_VERSION: {
         id: 'TR_ONBOARDING_CURRENT_VERSION',
         defaultMessage: 'Current version',

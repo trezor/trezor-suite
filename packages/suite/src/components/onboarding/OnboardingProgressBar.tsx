@@ -25,19 +25,23 @@ const useOnboardingStepCategoriesInPath = () => {
 
     return useMemo(
         () =>
-            stepCategories.filter(stepCategory =>
-                isStepCategoryUsed(stepCategory, {
-                    device,
-                    onboardingPath,
-                    isDeviceAuthenticityCheckEnabled,
-                    isUnlockedBootloaderAllowed,
-                }),
+            stepCategories.filter(
+                stepCategory =>
+                    stepCategory.labelTranslationId &&
+                    isStepCategoryUsed(stepCategory, {
+                        device,
+                        onboardingPath,
+                        isDeviceAuthenticityCheckEnabled,
+                        isUnlockedBootloaderAllowed,
+                    }),
             ),
         [device, onboardingPath, isDeviceAuthenticityCheckEnabled, isUnlockedBootloaderAllowed],
     );
 };
 
 const getState = (index: number, indexOfActiveStep: number): BulletListItemState => {
+    // When active category is not in the visible list (e.g. final step), all visible steps are done.
+    if (indexOfActiveStep === -1) return 'done';
     if (index < indexOfActiveStep) return 'done';
     if (index === indexOfActiveStep) return 'default';
 

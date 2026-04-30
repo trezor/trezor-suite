@@ -13,6 +13,7 @@ import { BackupTypeStep } from 'src/views/onboarding/steps/BackupTypeStep';
 import { CreateOrRecoverStep } from 'src/views/onboarding/steps/CreateOrRecoverStep';
 import { DeviceAuthenticityStep } from 'src/views/onboarding/steps/DeviceAuthenticityStep';
 import { DeviceTutorialStep } from 'src/views/onboarding/steps/DeviceTutorialStep';
+import { FinalStep } from 'src/views/onboarding/steps/FinalStep';
 import { FirmwareStep } from 'src/views/onboarding/steps/FirmwareStep';
 import { PinStep } from 'src/views/onboarding/steps/PinStep';
 import { RecoveryStep } from 'src/views/onboarding/steps/RecoveryStep';
@@ -60,6 +61,9 @@ export const Onboarding = () => {
             case STEP.ID_SET_PIN_STEP:
                 // Pin setup
                 return PinStep;
+            case STEP.ID_FINAL_STEP:
+                // Onboarding success
+                return FinalStep;
             default:
                 return exhaustive(activeStepId);
         }

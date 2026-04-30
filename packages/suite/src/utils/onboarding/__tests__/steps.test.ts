@@ -50,6 +50,7 @@ describe('steps', () => {
                 STEP.ID_BACKUP_TYPE_STEP,
                 STEP.ID_SECURITY_STEP,
                 STEP.ID_SET_PIN_STEP,
+                STEP.ID_FINAL_STEP,
             ]);
         });
 
@@ -66,7 +67,10 @@ describe('steps', () => {
             expect(findNextStep(STEP.ID_SECURITY_STEP, createSteps, defaultDevice)?.id).toBe(
                 STEP.ID_SET_PIN_STEP,
             );
-            expect(findNextStep(STEP.ID_SET_PIN_STEP, createSteps, defaultDevice)).toBe(null);
+            expect(findNextStep(STEP.ID_SET_PIN_STEP, createSteps, defaultDevice)?.id).toBe(
+                STEP.ID_FINAL_STEP,
+            );
+            expect(findNextStep(STEP.ID_FINAL_STEP, createSteps, defaultDevice)).toBe(null);
         });
 
         it('should skip PIN step when device already has pin protection', () => {
@@ -75,7 +79,9 @@ describe('steps', () => {
                 pin_protection: true,
             });
 
-            expect(findNextStep(STEP.ID_SECURITY_STEP, createSteps, deviceWithPin)).toBe(null);
+            expect(findNextStep(STEP.ID_SECURITY_STEP, createSteps, deviceWithPin)?.id).toBe(
+                STEP.ID_FINAL_STEP,
+            );
         });
     });
 
@@ -125,6 +131,7 @@ describe('steps', () => {
                 STEP.ID_RECOVERY_STEP,
                 STEP.ID_SECURITY_STEP,
                 STEP.ID_SET_PIN_STEP,
+                STEP.ID_FINAL_STEP,
             ]);
         });
 
@@ -238,9 +245,9 @@ describe('steps', () => {
                 pin_protection: true,
             });
 
-            expect(resolveNextAvailableStep(STEP.ID_SET_PIN_STEP, createSteps, deviceWithPin)).toBe(
-                null,
-            );
+            expect(
+                resolveNextAvailableStep(STEP.ID_SET_PIN_STEP, createSteps, deviceWithPin)?.id,
+            ).toBe(STEP.ID_FINAL_STEP);
         });
 
         it('should return null when requested step is not in steps list', () => {

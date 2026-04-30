@@ -101,4 +101,14 @@ export const stepCategories: StepCategory[] = [
             },
         ],
     },
+    {
+        id: 'final',
+        steps: [
+            {
+                id: STEP.ID_FINAL_STEP,
+                path: [STEP.PATH_RECOVERY, STEP.PATH_CREATE],
+                prerequisites: [...commonPrerequisites, ...afterInitializePrerequisites],
+            },
+        ],
+    },
 ];
