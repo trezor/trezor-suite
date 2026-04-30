@@ -9432,10 +9432,6 @@ export const messages = defineMessages({
         id: 'TR_DISCOVERY_NEW_COINS',
         defaultMessage: 'Refresh',
     },
-    TR_DISCOVERY_NEW_COINS_TEXT: {
-        id: 'TR_DISCOVERY_NEW_COINS_TEXT',
-        defaultMessage: "Don't see an account after activating an asset?",
-    },
     TR_EVM_EXPLANATION_TITLE: {
         id: 'TR_EVM_EXPLANATION_TITLE',
         defaultMessage: '{network} is its own network',
