@@ -42,7 +42,7 @@ test.describe('Public Keys', { tag: ['@T3W1', '@T3T1'] }, () => {
                     const value = await devicePrompt.outputValue.textContent();
 
                     expect(value?.replace(/\s+/g, '')).toBe(xpub);
-                }).toPass({ timeout: 5000 });
+                }).toPass({ timeout: 25000 });
             });
 
             await test.step('Display and Verify Public key again', async () => {

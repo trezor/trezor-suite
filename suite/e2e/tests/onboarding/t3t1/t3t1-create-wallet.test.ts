@@ -52,6 +52,7 @@ test.describe('Onboarding - create wallet', { tag: ['@T3T1', '@smoke'] }, () => 
 
             await devicePrompt.confirmOnDevicePromptIsShown();
             await device.pressYes();
+            await onboardingPage.finalButton.click();
         },
     );
 });
