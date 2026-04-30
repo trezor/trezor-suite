@@ -3,19 +3,13 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
-            "path": "../../suite-common/dependency-injection"
+            "path": "../../suite-common/redux-utils"
         },
         { "path": "../alerts" },
         { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../icons" },
         { "path": "../intl" },
-        { "path": "../storage" },
-        {
-            "path": "../../packages/styles-native"
-        },
-        {
-            "path": "../../suite-common/redux-utils"
-        }
+        { "path": "../../packages/styles-native" }
     ]
 }
