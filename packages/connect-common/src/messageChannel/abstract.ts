@@ -25,7 +25,7 @@ export interface AbstractMessageChannelConstructorParams {
 
 export type Message<IncomingMessages extends { type: string }> = IncomingMessages & {
     channel: AbstractMessageChannelConstructorParams['channel'];
-    id: number;
+    id: string;
     success: boolean;
     payload: Extract<IncomingMessages, { type: IncomingMessages['type'] }> | undefined;
 };
@@ -40,7 +40,7 @@ export abstract class AbstractMessageChannel<
 > extends TypedEmitter<{
     message: Message<IncomingMessages>;
 }> {
-    protected messages = createDeferredManager();
+    protected messages = createDeferredManager({ generateId: (): string => crypto.randomUUID() });
     /** queue of messages that were scheduled before handshake */
     protected messagesQueue: any[] = [];
 

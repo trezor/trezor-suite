@@ -42,7 +42,7 @@ export interface TransportRequestWebUSBDevice {
 }
 
 export interface TransportGetInfo {
-    id: number;
+    id: string;
     type: typeof TRANSPORT.GET_INFO;
     payload?: undefined;
 }

@@ -57,7 +57,7 @@ export type CallMethodAnyResponse = ReturnType<CallMethodUnion>;
 export type CallMethod = (params: CallMethodPayload) => Promise<any>;
 
 export interface CoreCallMessage {
-    id: number;
+    id: string;
     type: typeof CORE_CALL;
     payload: CallMethodPayload;
 }
@@ -67,7 +67,7 @@ export const RESPONSE_EVENT = 'RESPONSE_EVENT';
 export type MethodResponseMessage = {
     event: typeof RESPONSE_EVENT;
     type: typeof RESPONSE_EVENT;
-    id: number;
+    id: string;
 
     device?: DeviceIdentity;
 } & (
@@ -84,7 +84,7 @@ export type MethodResponseMessage = {
 );
 
 export const createResponseMessage = (
-    id: number,
+    id: string,
     success: boolean,
     payload: any,
     deviceIdentity:
