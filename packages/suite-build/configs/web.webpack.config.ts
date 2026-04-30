@@ -33,9 +33,6 @@ const config: webpack.Configuration = {
     output: {
         path: path.join(baseDir, 'build'),
     },
-    resolve: {
-        fallback: { vm: require.resolve('vm-browserify') },
-    },
     plugins: [
         new CopyWebpackPlugin({
             patterns: [
