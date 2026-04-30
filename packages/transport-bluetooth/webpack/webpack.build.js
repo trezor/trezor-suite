@@ -68,7 +68,6 @@ module.exports = {
     resolve: {
         modules: [SRC, 'node_modules'],
         extensions: ['.tsx', '.ts', '.jsx', '.js'],
-        mainFields: ['main', 'module'], // prevent wrapping default exports by harmony export (bignumber.js in ripple issue)
     },
     performance: {
         hints: false,
