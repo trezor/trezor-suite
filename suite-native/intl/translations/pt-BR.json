@@ -135,7 +135,7 @@
     "bluetooth.alerts.pairingFailed.primaryButton": "Abrir configurações do sistema",
     "bluetooth.alerts.pairingFailed.secondaryButton": "Dispositivo removido",
     "bluetooth.alerts.systemUnpairing.title": "Remover das configurações do Bluetooth",
-    "bluetooth.alerts.systemUnpairing.description": "Remova seu Trezor de coBluetoothnfigurações de Bluetooth. Se você não fizer isso, poderá ter problemas para emparelhá-lo novamente no futuro.",
+    "bluetooth.alerts.systemUnpairing.description": "Remova seu Trezor de configurações de Bluetooth. Se você não fizer isso, poderá ter problemas para emparelhá-lo novamente no futuro.",
     "bluetooth.alerts.systemUnpairing.primaryButton": "Abrir configurações do sistema",
     "bluetooth.alerts.systemUnpairing.secondaryButton": "Dispositivo removido",
     "bluetooth.alerts.unpairingInstructions.step1": "Vá em Configurações > Bluetooth",
