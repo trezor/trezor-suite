@@ -10,14 +10,24 @@ import { createMessageChannel, createSharedWorker, createWorker } from '@evolu/w
 
 const getSharedWorker = () => {
     if ('SharedWorker' in globalThis) {
-        return new SharedWorker(new URL('./Shared.worker.ts', import.meta.url), {
-            type: 'module',
-        });
+        return new SharedWorker(
+            new URL(
+                /* webpackChunkName: "workers/evolu-sharedworker" */
+                './Shared.worker.ts',
+                import.meta.url,
+            ),
+            { type: 'module' },
+        );
     }
 
-    const regularWorker = new Worker(new URL('./Shared.worker.ts', import.meta.url), {
-        type: 'module',
-    });
+    const regularWorker = new Worker(
+        new URL(
+            /* webpackChunkName: "workers/evolu-sharedworker" */
+            './Shared.worker.ts',
+            import.meta.url,
+        ),
+        { type: 'module' },
+    );
 
     return { port: regularWorker } as unknown as SharedWorker;
 };
@@ -28,9 +38,14 @@ const getSharedWorker = () => {
 export const createEvoluDepsFixed = (deps: Partial<ConsoleDep> = {}): EvoluDeps => {
     const createDbWorker: CreateDbWorker = () =>
         createWorker<DbWorkerInit, never>(
-            new Worker(new URL('./Db.worker.ts', import.meta.url), {
-                type: 'module',
-            }),
+            new Worker(
+                new URL(
+                    /* webpackChunkName: "workers/evolu-db-worker" */
+                    './Db.worker.ts',
+                    import.meta.url,
+                ),
+                { type: 'module' },
+            ),
         );
 
     const sharedWorker = createSharedWorker<SharedWorkerInput>(getSharedWorker());
