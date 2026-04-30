@@ -15,6 +15,6 @@
         "@trezor/blockchain-link-utils": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "viem": "^2.46.3"
+        "viem": "^2.48.1"
     }
 }
