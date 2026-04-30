@@ -1,6 +1,11 @@
 import { type ReactNode, useCallback, useEffect } from 'react';
 import { Pressable, type PressableProps } from 'react-native';
-import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import Animated, {
+    cancelAnimation,
+    useAnimatedStyle,
+    useSharedValue,
+    withTiming,
+} from 'react-native-reanimated';
 
 import { Icon, type IconName } from '@suite-native/icons';
 import { type NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -109,6 +114,8 @@ export const TextButton = ({
     useEffect(() => {
         setAnimatedColor(hasDisabledVisualState ? disabledColor : defaultTextColor);
     }, [defaultTextColor, disabledColor, hasDisabledVisualState, setAnimatedColor]);
+
+    useEffect(() => () => cancelAnimation(animatedColor), [animatedColor]);
 
     const handlePressIn = () => {
         setAnimatedColor(pressedTextColor);

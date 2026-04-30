@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo } from 'react';
 import { type AccessibilityProps } from 'react-native';
 import {
+    cancelAnimation,
     interpolate,
     useDerivedValue,
     useSharedValue,
@@ -57,6 +58,8 @@ export const BoxSkeleton = ({
             ENDLESS_ANIMATION_VALUE,
         );
     }, [width, progress]);
+
+    useEffect(() => () => cancelAnimation(progress), [progress]);
 
     const position = useDerivedValue(() => [
         {
