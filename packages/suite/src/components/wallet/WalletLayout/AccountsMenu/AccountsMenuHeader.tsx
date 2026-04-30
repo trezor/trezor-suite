@@ -4,11 +4,7 @@ import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { selectIsCoinsFilterVisible, suiteSettingsActions } from '@suite/settings';
 import { selectSelectedDevice } from '@suite-common/device';
-import {
-    addSparkAccountThunk,
-    selectIsSparkEnabled,
-    selectSparkAccountsByWalletDescriptor,
-} from '@suite-common/spark';
+import { selectIsSparkEnabled, selectSparkAccountsByWalletDescriptor } from '@suite-common/spark';
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import {
@@ -24,7 +20,13 @@ import {
 
 import { CollapsedSidebarOnly } from 'src/components/suite/layouts/SuiteLayout/Sidebar/CollapsedSidebarOnly';
 import { ExpandedSidebarOnly } from 'src/components/suite/layouts/SuiteLayout/Sidebar/ExpandedSidebarOnly';
-import { useAccountSearch, useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
+import {
+    useAccountSearch,
+    useDiscovery,
+    useDispatch,
+    useSelector,
+    useSuiteServices,
+} from 'src/hooks/suite';
 
 import { AccountSearchBox } from './AccountSearchBox';
 import { AddAccountButton } from './AddAccountButton';
@@ -59,6 +61,7 @@ export const AccountsMenuHeader = () => {
     const isDiscoveryRunning = discovery?.status === 'progress';
     const isCoinsFilterVisible = useSelector(selectIsCoinsFilterVisible);
     const dispatch = useDispatch();
+    const { spark } = useSuiteServices();
     const availableNetworksSymbols = useAvailableNetworkSymbols();
     const isSparkEnabled = useSelector(selectIsSparkEnabled);
     const deviceStaticSessionId = device?.state?.staticSessionId;
@@ -86,13 +89,11 @@ export const AccountsMenuHeader = () => {
             return;
         }
 
-        dispatch(
-            addSparkAccountThunk({
-                accountNumber: nextAccountNumber,
-                deviceStaticSessionId,
-                walletDescriptor,
-            }),
-        );
+        void spark.addSparkAccount({
+            accountNumber: nextAccountNumber,
+            deviceStaticSessionId,
+            walletDescriptor,
+        });
         dispatch(goto({ routeName: 'spark-index' }));
     };
 

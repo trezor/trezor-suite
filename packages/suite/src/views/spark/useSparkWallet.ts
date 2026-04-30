@@ -3,20 +3,16 @@ import { useEffect } from 'react';
 import { goto, selectRouteName } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
 import {
-    addSparkAccountThunk,
-    loadSparkWalletThunk,
-    refreshSparkLightningInvoiceThunk,
     selectIsSparkEnabled,
     selectSelectedSparkAccount,
     selectSelectedSparkAccountNumber,
     selectSparkAccountsByWalletDescriptor,
     selectSparkWalletByAccountNumber,
     sparkActions,
-    submitSparkLightningSendThunk,
 } from '@suite-common/spark';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector, useSuiteServices } from 'src/hooks/suite';
 
 type SparkRouteName = 'spark-index' | 'spark-send' | 'spark-receive';
 
@@ -25,6 +21,7 @@ const isSparkRouteName = (routeName: string | undefined): routeName is SparkRout
 
 export const useSparkWallet = () => {
     const dispatch = useDispatch();
+    const { spark } = useSuiteServices();
     const device = useSelector(selectSelectedDevice);
     const routeName = useSelector(selectRouteName);
     const isEnabled = useSelector(selectIsSparkEnabled);
@@ -63,18 +60,16 @@ export const useSparkWallet = () => {
             return;
         }
 
-        dispatch(
-            loadSparkWalletThunk({
-                accountNumber: selectedAccount.accountNumber,
-                deviceStaticSessionId,
-                walletDescriptor,
-            }),
-        );
+        void spark.loadSparkWallet({
+            accountNumber: selectedAccount.accountNumber,
+            deviceStaticSessionId,
+            walletDescriptor,
+        });
     }, [
         deviceStaticSessionId,
-        dispatch,
         isEnabled,
         selectedAccount,
+        spark,
         wallet?.status,
         walletDescriptor,
     ]);
@@ -97,13 +92,11 @@ export const useSparkWallet = () => {
             return;
         }
 
-        dispatch(
-            addSparkAccountThunk({
-                accountNumber: nextAccountNumber,
-                deviceStaticSessionId,
-                walletDescriptor,
-            }),
-        );
+        void spark.addSparkAccount({
+            accountNumber: nextAccountNumber,
+            deviceStaticSessionId,
+            walletDescriptor,
+        });
         dispatch(goto({ routeName: 'spark-index' }));
     };
 
@@ -130,13 +123,11 @@ export const useSparkWallet = () => {
             return;
         }
 
-        dispatch(
-            refreshSparkLightningInvoiceThunk({
-                accountNumber: selectedAccount.accountNumber,
-                deviceStaticSessionId,
-                walletDescriptor,
-            }),
-        );
+        void spark.refreshSparkLightningInvoice({
+            accountNumber: selectedAccount.accountNumber,
+            deviceStaticSessionId,
+            walletDescriptor,
+        });
     };
 
     const reloadSelectedAccount = () => {
@@ -144,31 +135,25 @@ export const useSparkWallet = () => {
             return;
         }
 
-        dispatch(
-            loadSparkWalletThunk({
-                accountNumber: selectedAccount.accountNumber,
-                deviceStaticSessionId,
-                walletDescriptor,
-            }),
-        );
+        void spark.loadSparkWallet({
+            accountNumber: selectedAccount.accountNumber,
+            deviceStaticSessionId,
+            walletDescriptor,
+        });
     };
 
-    const submitLightningSend = async (params: { amountSats?: string; invoice: string }) => {
+    const submitLightningSend = (params: { amountSats?: string; invoice: string }) => {
         if (!deviceStaticSessionId || !walletDescriptor || !selectedAccount) {
-            return false;
+            return Promise.resolve(false);
         }
 
-        const result = await dispatch(
-            submitSparkLightningSendThunk({
-                accountNumber: selectedAccount.accountNumber,
-                amountSats: params.amountSats,
-                deviceStaticSessionId,
-                invoice: params.invoice,
-                walletDescriptor,
-            }),
-        );
-
-        return !submitSparkLightningSendThunk.rejected.match(result);
+        return spark.submitSparkLightningSend({
+            accountNumber: selectedAccount.accountNumber,
+            amountSats: params.amountSats,
+            deviceStaticSessionId,
+            invoice: params.invoice,
+            walletDescriptor,
+        });
     };
 
     return {

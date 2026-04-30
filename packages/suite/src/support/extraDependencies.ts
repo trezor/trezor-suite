@@ -41,6 +41,7 @@ import {
     type ConnectInitSettings,
     type ExtraDependenciesStatic,
 } from '@suite-common/redux-utils';
+import { type SparkDep, createSparkCompositionRoot } from '@suite-common/spark';
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
 import {
     selectAllLabelsForAccount,
@@ -100,6 +101,7 @@ export type SuiteAppDeps = StoreAPIDep & HistoryDep;
 export type SuiteServices = CommonServices &
     DesktopAnalyticsDep &
     MetadataMigrationDep &
+    SparkDep &
     SuiteRouterHistoryDep;
 
 export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteServices => {
@@ -145,8 +147,17 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         updateOutputLabel: suiteSync.labeling.updateOutputLabel,
     });
 
+    const spark = createSparkCompositionRoot({
+        dispatch: deps.dispatch,
+        ensureWalletSuiteSyncOn: suiteSync.ensureWalletSuiteSyncOn,
+        getState: deps.getState,
+        platformEncryption,
+        turnOnSuiteSync: suiteSync.turnOnSuiteSync,
+    });
+
     return {
         suiteSync,
+        spark,
         bip329,
         migrateLegacyLabelsToSuiteSync,
         ensureDelegatedIdentityKey,
