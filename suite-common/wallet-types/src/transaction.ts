@@ -83,6 +83,7 @@ export const asTxTargetId = (value: string) => value as TxTargetId;
 export type Output = {
     type: 'payment' | 'opreturn';
     address: string;
+    resolvedAddress?: string; // resolved address by Blockbook
     amount: string;
     fiat: string;
     currency: BaseCurrencyOption;

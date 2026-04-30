@@ -449,7 +449,9 @@ export const getExternalComposeOutput = (
     if (!values || !Array.isArray(values.outputs) || !values.outputs[0]) return;
     const out = values.outputs[0];
     if (!out || typeof out !== 'object') return;
-    const { address, amount, token } = out;
+    const { amount, token } = out;
+    // Prefer the resolved onchain address when a name (e.g. ENS) was entered.
+    const address = out.resolvedAddress ?? out.address;
 
     const isMaxActive = typeof values.setMaxOutputId === 'number';
     if (!isMaxActive && !amount) return; // incomplete Output
