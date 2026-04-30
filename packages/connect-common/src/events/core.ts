@@ -49,7 +49,7 @@ export const parseMessage = <T extends CoreRequestMessage | CoreEventMessage = n
         device: messageData.device,
     };
 
-    if (typeof messageData.id === 'number') {
+    if (typeof messageData.id === 'string') {
         (message as any).id = messageData.id;
     }
 
