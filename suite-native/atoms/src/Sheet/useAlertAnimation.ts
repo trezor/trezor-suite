@@ -1,6 +1,7 @@
 import { useCallback, useEffect } from 'react';
 import {
     Easing,
+    cancelAnimation,
     interpolateColor,
     runOnJS,
     useAnimatedStyle,
@@ -26,7 +27,9 @@ export const useAlertAnimation = ({ onClose }: { onClose?: () => void }) => {
             duration: ANIMATION_DURATION,
             easing: Easing.out(Easing.cubic),
         });
-    });
+    }, [animatedTransparency, transparency]);
+
+    useEffect(() => () => cancelAnimation(animatedTransparency), [animatedTransparency]);
 
     const animatedSheetWithOverlayStyle = useAnimatedStyle(() => ({
         backgroundColor: interpolateColor(
