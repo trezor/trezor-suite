@@ -20,8 +20,6 @@ export default defineConfig({
             mode: 'single',
             target: resolve(OUTPUT_DIR, 'yieldxyz.ts'),
             mock: false,
-            // Use our custom Prettier config
-            prettier: false,
             clean: true,
             tsconfig: './tsconfig.json',
             packageJson: './package.json',

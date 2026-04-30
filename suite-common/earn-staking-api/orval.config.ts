@@ -34,7 +34,6 @@ export default defineConfig({
             mode: 'split',
             mock: false,
             target: resolve(API_DIR, 'schemas', 'index.ts'),
-            prettier: false,
             clean: true,
             tsconfig: './tsconfig.json',
             packageJson: './package.json',
