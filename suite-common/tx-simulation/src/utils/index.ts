@@ -58,7 +58,7 @@ export function areTxSimulationMethods<
     const Methods extends ReadonlyArray<TxSimulationAction['method']>,
 >(
     supportedMethods: Methods,
-    methodToVerify?: TxSimulationAction['method'],
-): methodToVerify is Methods[number] {
-    return methodToVerify ? supportedMethods.includes(methodToVerify) : false;
+    action?: TxSimulationAction,
+): action is Methods[number] & TxSimulationMethod<Methods[number]> {
+    return action ? supportedMethods.includes(action.method) : false;
 }
