@@ -108,7 +108,6 @@ export const UpdateNotificationBanner = () => {
             ctaLabel={<Translation id={translationCallToAction} />}
             closeLabel={<Translation id="TR_DISMISS" />}
             heading={<Translation id={translationHeader} />}
-            description="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
             icon={mapUpdateStatusToIcon[updateStatus]}
             onClick={handleOnClick}
             onClose={handleClose}

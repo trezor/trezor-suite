@@ -87,7 +87,7 @@ export const SidebarBanner = ({
                         </Paragraph>
                     )}
                 </Column>
-                <Row gap={10} margin={{ top: 2 }}>
+                <Row gap={10} margin={{ top: 2 }} flexWrap="wrap">
                     <Button
                         intent="brand"
                         type="button"
