@@ -1,16 +1,18 @@
+import { type ReactNode } from 'react';
+
 import { type Account } from '@suite-common/wallet-types';
 import { Row } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
 import { AccountLabel } from 'src/components/suite/AccountLabel';
-import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
 
 interface TxSimulationHeaderProps {
     account: Account | null;
+    children?: ReactNode;
 }
 
-export function TxSimulationHeader({ account }: TxSimulationHeaderProps) {
+export function TxSimulationHeader({ account, children }: TxSimulationHeaderProps) {
     return (
         <Row
             columnGap={spacings.md}
@@ -28,7 +30,7 @@ export function TxSimulationHeader({ account }: TxSimulationHeaderProps) {
                     />
                 </Row>
             )}
-            <ConnectCallSource />
+            {children}
         </Row>
     );
 }
