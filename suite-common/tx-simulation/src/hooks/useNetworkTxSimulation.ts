@@ -37,6 +37,13 @@ async function handleTxScan(input: UseTxSimulationParams): Promise<NetworkTxSimu
     }
 }
 
+export function isTxSimulationResultWithMethods<Result extends NetworkTxSimulationResult>(
+    methods: ReadonlyArray<Result['method']>,
+    result?: Result | null,
+): result is Result {
+    return result ? methods.includes(result.method) : false;
+}
+
 export interface UseTxSimulationProps {
     onSuccess?: (result: NetworkTxSimulationResult) => void;
 }

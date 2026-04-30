@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { Translation } from '@suite/intl';
 import { closeModal } from '@suite/modal';
 import { goto } from '@suite/router';
-import { TxSimulationBanner } from '@suite/tx-simulation';
+import { TxSimulationBanner } from '@suite/tx-simulation/src/common';
 import { useDappScan } from '@suite-common/tx-simulation';
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -274,8 +274,8 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                         type="error"
                         title="TR_WALLETCONNECT_IS_SCAM"
                         description={<></>}
-                        disclaimerAccepted={ignoreWarning}
-                        setDisclaimerAccepted={setIgnoreWarning}
+                        isAccepted={ignoreWarning}
+                        onChange={setIgnoreWarning}
                     />
                 )}
                 {pendingProposal.validation === 'INVALID' && (
