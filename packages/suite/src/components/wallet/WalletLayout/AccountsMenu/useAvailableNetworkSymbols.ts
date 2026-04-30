@@ -1,14 +1,18 @@
+import { SPARK_NETWORK_SYMBOL, selectIsSparkEnabled } from '@suite-common/spark';
 import { getNetwork } from '@suite-common/wallet-config';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
 
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { useSelector } from 'src/hooks/suite';
+import { type AccountSearchCoinFilter } from 'src/reducers/wallet/accountSearchReducer';
 
+// cspell:ignore Mainnets
 export const useAvailableNetworkSymbols = () => {
     const enabledNetworks = useSelector(selectEnabledNetworks);
-    const { supportedMainnets, supportedTestnets } = useNetworkSupport();
+    const isSparkEnabled = useSelector(selectIsSparkEnabled);
+    const { supportedMainnets: supportedPrimaryNetworks, supportedTestnets } = useNetworkSupport();
 
-    const supportedNetworkSymbols = [...supportedMainnets, ...supportedTestnets].map(
+    const supportedNetworkSymbols = [...supportedPrimaryNetworks, ...supportedTestnets].map(
         network => network.symbol,
     );
 
@@ -19,5 +23,8 @@ export const useAvailableNetworkSymbols = () => {
         return isTestnet || supportedNetworkSymbols.includes(networkSymbol);
     });
 
-    return availableNetworksSymbols;
+    return [
+        ...availableNetworksSymbols,
+        ...(isSparkEnabled ? [SPARK_NETWORK_SYMBOL] : []),
+    ] as AccountSearchCoinFilter[];
 };

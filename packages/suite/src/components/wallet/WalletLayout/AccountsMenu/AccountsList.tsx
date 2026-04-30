@@ -3,6 +3,7 @@ import { selectAccountLabelsLegacy } from '@suite/metadata';
 import { type RouteParams, goto, selectRouteName, selectRouterParams } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
 import {
+    SPARK_NETWORK_SYMBOL,
     SparkAccountsMenu,
     selectIsSparkEnabled,
     selectSelectedSparkAccountNumber,
@@ -134,6 +135,12 @@ export const AccountsList = ({
         return null;
     }
 
+    const networkCoinFilter = coinFilter.filter(
+        (symbol): symbol is Account['symbol'] => symbol !== SPARK_NETWORK_SYMBOL,
+    );
+    const sparkFilterMatches = coinFilter.length === 0 || coinFilter.includes(SPARK_NETWORK_SYMBOL);
+    const normalizedSearchString = searchString?.trim().toLowerCase();
+
     const filteredAccounts =
         searchString || coinFilter
             ? accounts.filter(account => {
@@ -147,11 +154,31 @@ export const AccountsList = ({
                       '';
 
                   return accountSearchFn(account, searchString, {
-                      coinsFilter: coinFilter,
+                      coinsFilter: networkCoinFilter,
                       accountLabel,
                   });
               })
             : accounts;
+
+    const filteredSparkAccounts =
+        isSparkEnabled && walletDescriptor
+            ? sparkAccounts.filter(account => {
+                  if (!sparkFilterMatches) {
+                      return false;
+                  }
+
+                  if (!normalizedSearchString) {
+                      return true;
+                  }
+
+                  return [
+                      'spark',
+                      `spark account #${account.accountNumber + 1}`,
+                      `account #${account.accountNumber + 1}`,
+                      `s${account.accountNumber + 1}`,
+                  ].some(value => value.includes(normalizedSearchString));
+              })
+            : [];
 
     const filterAccountsByType = (type: Account['accountType']) =>
         filteredAccounts.filter(a => a.accountType === type);
@@ -213,7 +240,7 @@ export const AccountsList = ({
         );
     };
 
-    if (filteredAccounts.length > 0) {
+    if (filteredAccounts.length > 0 || filteredSparkAccounts.length > 0) {
         return (
             <Column gap={spacings.xs} margin={{ bottom: spacings.lg }}>
                 {buildGroup('coinjoin', coinjoinAccounts)}
@@ -222,9 +249,9 @@ export const AccountsList = ({
                 {buildGroup('segwit', segwitAccounts)}
                 {buildGroup('legacy', legacyAccounts)}
                 {buildGroup('ledger', ledgerAccounts)}
-                {isSparkEnabled && walletDescriptor && sparkAccounts.length > 0 && (
+                {isSparkEnabled && walletDescriptor && filteredSparkAccounts.length > 0 && (
                     <SparkAccountsMenu
-                        accounts={sparkAccounts}
+                        accounts={filteredSparkAccounts}
                         isActive={isSparkRoute}
                         isSidebarCollapsed={isSidebarCollapsed}
                         selectedAccountNumber={selectedSparkAccountNumber}

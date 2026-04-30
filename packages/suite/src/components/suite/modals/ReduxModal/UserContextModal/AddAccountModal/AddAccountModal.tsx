@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { Translation } from '@suite/intl';
 import { goto, selectRouterApp } from '@suite/router';
 import { selectHasExperimentalFeature, selectIsDebugModeActive } from '@suite/settings';
+import { SPARK_NETWORK_SYMBOL } from '@suite-common/spark';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type Network,
@@ -98,7 +99,9 @@ export const AddAccountModal = ({
     const isSelectedNetworkEnabled =
         !!selectedNetwork && enabledNetworkSymbols.includes(selectedNetwork.symbol);
 
-    const availableNetworksSymbols = useAvailableNetworkSymbols();
+    const availableNetworksSymbols = useAvailableNetworkSymbols().filter(
+        symbol => symbol !== SPARK_NETWORK_SYMBOL,
+    );
 
     const enabledNetworks = availableNetworksSymbols.map(symbol => getNetwork(symbol));
     const disabledNetworks = supportedNetworks.filter(

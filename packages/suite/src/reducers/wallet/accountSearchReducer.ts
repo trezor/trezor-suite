@@ -1,6 +1,7 @@
 import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 import { deviceActions } from '@suite-common/device';
+import { type SPARK_NETWORK_SYMBOL } from '@suite-common/spark';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { changeNetworks } from '@suite-common/wallet-core';
 
@@ -8,8 +9,10 @@ import { type AppState } from 'src/types/suite';
 
 export const ACCOUNT_SEARCH_PREFIX = '@suite/account-search';
 
+export type AccountSearchCoinFilter = NetworkSymbol | typeof SPARK_NETWORK_SYMBOL;
+
 export type AccountSearchState = {
-    coinFilter: Array<NetworkSymbol>;
+    coinFilter: AccountSearchCoinFilter[];
     searchString: string | undefined;
 };
 
@@ -22,10 +25,10 @@ const accountSearchSlice = createSlice({
     name: ACCOUNT_SEARCH_PREFIX,
     initialState: accountSearchInitialState,
     reducers: {
-        setCoinFilter(state, action: PayloadAction<Array<NetworkSymbol>>) {
+        setCoinFilter(state, action: PayloadAction<AccountSearchCoinFilter[]>) {
             state.coinFilter = action.payload ?? [];
         },
-        toggleCoinFilter(state, action: PayloadAction<NetworkSymbol>) {
+        toggleCoinFilter(state, action: PayloadAction<AccountSearchCoinFilter>) {
             const symbol = action.payload;
             if (!symbol) return;
 
