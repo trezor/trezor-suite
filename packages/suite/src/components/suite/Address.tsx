@@ -86,7 +86,6 @@ export const Address = ({
     const deviceModelInternal = selectedDevice?.features?.internal_model || DEFAULT_FLAGSHIP_MODEL;
     const isChunkedSettings = useSelector(selectAddressDisplayType);
     const isAddressChunked = isChunked ?? isChunkedSettings === 'chunked';
-    console.log(isAddressChunked);
 
     const formattedValue = AddressFormatter.format(value, {
         format: isTruncated ? 'long' : 'full',

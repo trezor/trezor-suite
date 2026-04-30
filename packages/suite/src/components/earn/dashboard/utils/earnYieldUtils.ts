@@ -29,6 +29,10 @@ export const getClaimableAccounts = ({
             return [];
         }
 
+        if (account.symbol !== 'eth') {
+            return [];
+        }
+
         const claimableRewards = accountRewards.filter(reward =>
             new BigNumber(reward.claimable).gt(0),
         );

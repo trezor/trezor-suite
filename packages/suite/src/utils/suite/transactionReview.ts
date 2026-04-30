@@ -104,5 +104,9 @@ export const getTransactionReviewModalActionTranslation = ({
         return { id: 'TR_EARN_YIELD_WITHDRAW' };
     }
 
+    if (routeName === 'earn-claim') {
+        return { id: source === 'heading' ? 'TR_EARN_CLAIM_REWARDS' : 'TR_EARN_YIELD_CLAIM' };
+    }
+
     return { id: 'SEND_TRANSACTION' };
 };

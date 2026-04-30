@@ -66,7 +66,11 @@ export const EarnYieldTable = () => {
     const merkleRewardsSources = useMemo(
         () =>
             yieldAccountOpportunities.flatMap(opportunity => {
-                if (!opportunity.hasVaultPosition || !opportunity.account) {
+                if (
+                    !opportunity.hasVaultPosition ||
+                    !opportunity.account ||
+                    opportunity.networkSymbol !== 'eth'
+                ) {
                     return [];
                 }
 
@@ -81,13 +85,12 @@ export const EarnYieldTable = () => {
     );
     const { merkleRewardsQuery } = useMerkleRewards(merkleRewardsSources);
     const { rewards } = merkleRewardsQuery.data;
-    const isClaimDisabled =
-        !merkleRewardsQuery.isSuccess || !merkleRewardsQuery.data.totalRewardsToClaim.value.gt(0);
     const claimableAccounts = useMemo<EarnYieldClaimableAccount[]>(
         () =>
             merkleRewardsQuery.isSuccess ? getClaimableAccounts({ rewards, visibleAccounts }) : [],
         [merkleRewardsQuery.isSuccess, rewards, visibleAccounts],
     );
+    const isClaimDisabled = !merkleRewardsQuery.isSuccess || claimableAccounts.length === 0;
 
     const badge = getEarnDashboardBadgeState({
         isSectionActive: !isYieldDashboardDisabled && isYieldActive,

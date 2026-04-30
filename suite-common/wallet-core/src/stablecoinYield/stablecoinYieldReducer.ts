@@ -12,8 +12,8 @@ import { isSafeObjectKey } from '@trezor/utils';
 import type {
     YieldApproveModalState,
     YieldFlowStepId,
-    YieldFlowType,
     YieldPendingTransactionState,
+    YieldSessionType,
 } from './stablecoinYieldTypes';
 
 type StablecoinYieldTranslationKey = string;
@@ -61,7 +61,7 @@ export type StablecoinYieldSessionState = {
 
 export type StablecoinYieldState = {
     txReview: StablecoinYieldTxReviewState;
-} & Record<YieldFlowType, Record<string, StablecoinYieldSessionState>>;
+} & Record<YieldSessionType, Record<string, StablecoinYieldSessionState>>;
 
 export type StablecoinYieldRootState = {
     wallet: {
@@ -70,7 +70,7 @@ export type StablecoinYieldRootState = {
 };
 
 type StablecoinYieldSessionActionPayload = {
-    flowType: YieldFlowType;
+    flowType: YieldSessionType;
     flowKey: string;
 };
 
@@ -111,6 +111,7 @@ export const initialStablecoinYieldTxReviewState: StablecoinYieldTxReviewState =
 export const initialStablecoinYieldState: StablecoinYieldState = {
     supply: Object.create(null),
     withdraw: Object.create(null),
+    claim: Object.create(null),
     txReview: initialStablecoinYieldTxReviewState,
 };
 
