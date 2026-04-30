@@ -191,6 +191,8 @@ const verifyOnlyDeviceCertificate = async ({
     }
     const modelFromSubject = parseModelFromDeviceCertSubject(deviceCert);
     if (modelFromSubject !== deviceModel) {
+        // This path is practically unreachable because here it's the deviceCert that is signed with rootPubKey, so
+        // tampering that certificate part invalidates the rootPubKey signature → 'ROOT_PUBKEY_NOT_FOUND' was already thrown.
         return {
             valid: false,
             rootPubKey: rootPubKeyMatch,
