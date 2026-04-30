@@ -27,6 +27,7 @@
         "@suite-common/bip329": "workspace:*",
         "@suite-common/bip329-types": "workspace:*",
         "@suite-common/bluetooth": "workspace:*",
+        "@suite-common/calldata": "workspace:*",
         "@suite-common/connect-init": "workspace:*",
         "@suite-common/connect-popup": "workspace:*",
         "@suite-common/delegated-identity-key": "workspace:*",

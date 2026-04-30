@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 import {
-    type YieldFlowType,
+    type YieldSessionType,
     fetchAndUpdateAccountThunk,
     selectConvertedNetworkFeeInfo,
     selectStablecoinYieldSession,
@@ -27,8 +27,8 @@ const getPollIntervalMs = (blockTime: number | undefined): number => {
 };
 
 type UseYieldPendingTransactionTrackingProps = {
-    account: Account;
-    flowType: YieldFlowType;
+    account?: Account;
+    flowType: YieldSessionType;
     flowKey: string;
 };
 
@@ -42,14 +42,17 @@ export const useYieldPendingTransactionTracking = ({
         state => selectStablecoinYieldSession(state, flowType, flowKey).action.pendingTransaction,
     );
     const trackedPendingTransaction = useSelector(state =>
-        pendingTransaction
+        account && pendingTransaction
             ? selectTransactionByAccountKeyAndTxid(state, account.key, pendingTransaction.txid)
             : null,
     );
-    const feeInfo = useSelector(state => selectConvertedNetworkFeeInfo(state, account.symbol));
+    const feeInfo = useSelector(state =>
+        account ? selectConvertedNetworkFeeInfo(state, account.symbol) : null,
+    );
     const pollIntervalMs = getPollIntervalMs(feeInfo?.blockTime);
 
     const isCurrentlyPending =
+        !!account &&
         !!pendingTransaction &&
         (!trackedPendingTransaction || isPending(trackedPendingTransaction));
 
@@ -63,7 +66,7 @@ export const useYieldPendingTransactionTracking = ({
         }, pollIntervalMs);
 
         return () => clearInterval(interval);
-    }, [account.key, dispatch, isCurrentlyPending, pollIntervalMs]);
+    }, [account, dispatch, isCurrentlyPending, pollIntervalMs]);
 
     useEffect(() => {
         if (!pendingTransaction || !trackedPendingTransaction) {

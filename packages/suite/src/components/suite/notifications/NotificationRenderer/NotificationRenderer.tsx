@@ -564,7 +564,6 @@ export const NotificationRenderer = ({
                     variant="success"
                     message="TOAST_TX_YIELD_SUPPLY"
                     messageValues={{
-                        amount: notification.formattedAmount,
                         account: notification.descriptor,
                     }}
                 />
@@ -579,7 +578,6 @@ export const NotificationRenderer = ({
                     variant="success"
                     message="TOAST_TX_YIELD_WITHDRAW"
                     messageValues={{
-                        amount: notification.formattedAmount,
                         account: notification.descriptor,
                     }}
                 />
@@ -594,7 +592,6 @@ export const NotificationRenderer = ({
                     variant="success"
                     message="TOAST_TX_YIELD_CLAIM"
                     messageValues={{
-                        amount: notification.formattedAmount,
                         account: notification.descriptor,
                     }}
                 />
