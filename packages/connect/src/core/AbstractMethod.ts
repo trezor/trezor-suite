@@ -48,7 +48,7 @@ export type MethodContext = {
 };
 
 export type MethodMessage<Name extends CallMethodPayload['method']> = {
-    id?: number;
+    id?: string;
     payload: Payload<Name>;
 };
 
@@ -103,7 +103,7 @@ function validateDeviceState(device: CallMethodPayload['device']): DeviceState |
 }
 
 export abstract class AbstractMethod<Name extends CallMethodPayload['method'], Params = undefined> {
-    public responseID: number;
+    public responseID: string;
 
     public device: Device | undefined;
 
@@ -159,7 +159,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         const { payload } = message;
         this.name = payload.method;
         this.params = params;
-        this.responseID = message.id || 0;
+        this.responseID = message.id ?? '';
         this.deviceState = validateDeviceState(payload.device);
         this.keepSession = typeof payload.keepSession === 'boolean' ? payload.keepSession : false;
         this.skipFinalReload = true;
