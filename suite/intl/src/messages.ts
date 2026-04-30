@@ -11604,14 +11604,6 @@ export const messages = defineMessages({
         id: 'TR_OUTSIDE_STAKING_CARD_TEXT',
         defaultMessage: '{amount} {displaySymbol} (= {fiat}) is currently staked elsewhere.',
     },
-    TR_EARN_YIELD_CLAIMABLE_REWARDS: {
-        id: 'TR_EARN_YIELD_CLAIMABLE_REWARDS',
-        defaultMessage: 'Claimable rewards: {amount}',
-    },
-    TR_EARN_YIELD_CLAIMABLE_REWARDS_NO_AMOUNT: {
-        id: 'TR_EARN_YIELD_CLAIMABLE_REWARDS_NO_AMOUNT',
-        defaultMessage: 'Claimable rewards',
-    },
     TR_EARN_YIELD_CLAIM: {
         id: 'TR_EARN_YIELD_CLAIM',
         defaultMessage: 'Claim',
