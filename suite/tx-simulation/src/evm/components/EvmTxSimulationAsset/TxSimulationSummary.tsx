@@ -5,7 +5,6 @@ interface TxSimulationSummaryProps {
     assetDiff?: EvmAssetDiff;
 }
 
-// FIXME: rename to EvmTxSimulationSummary
 export function TxSimulationSummary({ amount, assetDiff }: TxSimulationSummaryProps) {
     if (amount.summary) {
         return amount.summary;

@@ -10,7 +10,6 @@ interface TxSimulationAssetLogoProps {
     size?: AssetLogoSize;
 }
 
-// FIXME: rename to EvmTxSimulationAssetLogo
 export function TxSimulationAssetLogo({
     asset,
     assetType,

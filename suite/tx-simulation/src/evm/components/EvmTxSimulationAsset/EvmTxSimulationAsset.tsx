@@ -3,7 +3,8 @@ import { type Network } from '@suite-common/wallet-config';
 import { Row } from '@trezor/components';
 
 import { TxSimulationAssetLogo } from './TxSimulationAssetLogo';
-import { TxSimulationAssetRow } from './TxSimulationAssetRow';
+import { TxSimulationSummary } from './TxSimulationSummary';
+import { TxSimulationAssetRow } from '../../../common';
 
 type TxSimulationAssetProps = {
     assetDiff?: EvmAssetDiff;
@@ -11,8 +12,7 @@ type TxSimulationAssetProps = {
     network: Network;
 };
 
-// FIXME: rename to EvmTxSimulationAsset
-export const TxSimulationAsset = ({
+export const EvmTxSimulationAsset = ({
     assetDiff,
     assetExposure,
     network,
@@ -28,25 +28,37 @@ export const TxSimulationAsset = ({
                 <TxSimulationAssetRow
                     key={`in-${inIndex}`}
                     intent="brand"
-                    amountPrefix="+"
-                    amount={inAmount}
-                    fiatAmount={inAmount.usd_price}
-                    fiatCurrency="USD"
-                    assetDiff={assetDiff}
+                    fiatAmount={
+                        inAmount.usd_price
+                            ? {
+                                  prefix: '+',
+                                  value: inAmount.usd_price,
+                                  currency: 'USD',
+                              }
+                            : undefined
+                    }
                     dataTestId={`@sign-message-modal/tx-simulation-in-${inIndex}`}
-                />
+                >
+                    <TxSimulationSummary amount={inAmount} assetDiff={assetDiff} />
+                </TxSimulationAssetRow>
             ))}
             {assetDiff?.out.map((outAmount, outIndex) => (
                 <TxSimulationAssetRow
                     key={`out-${outIndex}`}
                     intent="critical"
-                    amountPrefix="-"
-                    amount={outAmount}
-                    fiatAmount={outAmount.usd_price}
-                    fiatCurrency="USD"
-                    assetDiff={assetDiff}
+                    fiatAmount={
+                        outAmount.usd_price
+                            ? {
+                                  prefix: '-',
+                                  value: outAmount.usd_price,
+                                  currency: 'USD',
+                              }
+                            : undefined
+                    }
                     dataTestId={`@sign-message-modal/tx-simulation-out-${outIndex}`}
-                />
+                >
+                    <TxSimulationSummary amount={outAmount} assetDiff={assetDiff} />
+                </TxSimulationAssetRow>
             ))}
             {assetExposure?.spenders &&
                 Object.values(assetExposure.spenders).map((spender, index) => (
@@ -54,12 +66,18 @@ export const TxSimulationAsset = ({
                         key={`spender-${index}`}
                         intent="neutral"
                         priority="secondary"
-                        amount={spender}
-                        fiatAmount={spender.exposure.usd_price}
-                        fiatCurrency="USD"
-                        assetDiff={assetDiff}
+                        fiatAmount={
+                            spender.exposure.usd_price
+                                ? {
+                                      value: spender.exposure.usd_price,
+                                      currency: 'USD',
+                                  }
+                                : undefined
+                        }
                         dataTestId={`@sign-message-modal/tx-simulation-spender-${index}`}
-                    />
+                    >
+                        <TxSimulationSummary amount={spender} assetDiff={assetDiff} />
+                    </TxSimulationAssetRow>
                 ))}
         </Row>
     );
