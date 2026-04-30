@@ -1,9 +1,9 @@
-import { TxSimulationResult } from '@suite/tx-simulation';
-import { TxSimulationAsset } from '@suite/tx-simulation/src/components/TxSimulationAsset/TxSimulationAsset';
+import { TxSimulationResult } from '@suite/tx-simulation/src/common';
+import { EvmTxSimulationAsset } from '@suite/tx-simulation/src/evm';
 import { type NetworkTxSimulationResult } from '@suite-common/tx-simulation';
 import { type Network } from '@suite-common/wallet-config';
 
-import { TxSimulationContractInfo } from './components/TxSimulationContractInfo';
+import { TxSimulationContractInfo } from './TxSimulationContractInfo';
 
 export interface TxSimulationSuccessResultProps {
     result: NetworkTxSimulationResult;
@@ -31,14 +31,14 @@ export function TxSimulationSuccessResult({
                         isEmpty={assets_diffs.length === 0 && exposures.length === 0}
                     >
                         {assets_diffs.map((assetDiff, index) => (
-                            <TxSimulationAsset
+                            <EvmTxSimulationAsset
                                 key={index}
                                 assetDiff={assetDiff}
                                 network={network}
                             />
                         ))}
                         {exposures.map((assetExposure, index) => (
-                            <TxSimulationAsset
+                            <EvmTxSimulationAsset
                                 key={index}
                                 assetExposure={assetExposure}
                                 network={network}

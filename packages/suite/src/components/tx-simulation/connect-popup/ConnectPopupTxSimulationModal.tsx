@@ -1,8 +1,8 @@
 import { useTxSimulationPopupCall } from '@suite-common/connect-popup';
 
-import { TxSimulationModalInner } from './TxSimulationModalInner';
+import { ConnectPopupTxSimulationModalInner } from './ConnectPopupTxSimulationModalInner';
 
-export const TxSimulationModal = () => {
+export const ConnectPopupTxSimulationModal = () => {
     const txSimulationCallWithAccount = useTxSimulationPopupCall();
 
     if (!txSimulationCallWithAccount) {
@@ -11,5 +11,5 @@ export const TxSimulationModal = () => {
 
     const { action, account } = txSimulationCallWithAccount;
 
-    return <TxSimulationModalInner action={action} account={account} />;
+    return <ConnectPopupTxSimulationModalInner action={action} account={account} />;
 };

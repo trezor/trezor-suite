@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { type ConnectCallSource, connectPopupActions } from '@suite-common/connect-popup';
-import { areTxSimulationMethods, useTxSimulation } from '@suite-common/tx-simulation';
+import { isTxSimulationResultWithMethods, useTxSimulation } from '@suite-common/tx-simulation';
 import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import { type Account, type TxSimulationAction } from '@suite-common/wallet-types';
 import { AccountsListItem } from '@suite-native/accounts';
@@ -162,9 +162,9 @@ export function TxSimulationInner({ action, account, source }: TxSimulationInner
                 </Card>
             )}
 
-            {areTxSimulationMethods(
+            {isTxSimulationResultWithMethods(
                 ['ethereumSignTypedData', 'ethereumSignTransaction'] as const,
-                txSimulationQuery.data?.method,
+                txSimulationQuery.data,
             ) && (
                 <>
                     {txSimulationQuery.data.payload.simulation?.status === 'Success' && (
