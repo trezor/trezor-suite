@@ -62,6 +62,7 @@
             "path": "../../networks/tron/network-tron"
         },
         { "path": "../../packages/protobuf" },
+        { "path": "../../packages/react-utils" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" }
     ]

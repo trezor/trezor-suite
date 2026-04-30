@@ -1,19 +1,28 @@
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import TrezorConnect from '@trezor/connect';
 
 /**
+ * Forward-resolve a named input (ENS or other TLD) to its onchain address via Blockbook.
+ *
+ * Blockbook accepts the name as the account `descriptor` and returns the resolved hex
+ * address back on `payload.descriptor` (see the descriptor override in
+ * `@trezor/connect` getAccountInfo). We request `details: 'basic'` since we only need
+ * the resolved descriptor, not the account's transaction history.
  *
  * @param value - ENS name or other TLD name.
- * @returns The resolved address or the original value if it's a valid address.
+ * @param symbol - Network symbol the name should be resolved on (e.g. `eth`).
+ * @returns The resolved onchain address.
  */
-export const resolveViaBlockbook = async (value: string) => {
-    const result = await TrezorConnect.getAddress({
-        address: value,
-        path: [],
+export const resolveViaBlockbook = async (value: string, symbol: NetworkSymbol) => {
+    const result = await TrezorConnect.getAccountInfo({
+        descriptor: value,
+        coin: symbol,
+        details: 'basic',
     });
 
     if (!result.success) {
         throw new Error(result.error.message);
     }
 
-    return result.payload.address;
+    return result.payload.descriptor;
 };

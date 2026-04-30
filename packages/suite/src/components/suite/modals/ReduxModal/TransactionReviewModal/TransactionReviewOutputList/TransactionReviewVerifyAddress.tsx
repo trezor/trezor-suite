@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { Card, Column, H3, H4, StepList } from '@trezor/components';
+import { Card, Column, H3, H4, StepList, Text } from '@trezor/components';
 
 import { TransactionReviewOutputTimer } from './TransactionReviewOutputTimer';
 
@@ -8,6 +8,11 @@ type VerifyAddressProps = {
     deadline?: number;
     onTryAgain: (close: boolean) => void;
     isSending?: boolean;
+    // When the user typed an ENS name, both the original input ("vitalik.eth") and the
+    // resolved hex are surfaced so the user can cross-check them against the resolved
+    // address shown on the Trezor device.
+    ensName?: string;
+    resolvedAddress?: string;
 };
 
 export const TransactionReviewVerifyAddress = ({
@@ -15,6 +20,8 @@ export const TransactionReviewVerifyAddress = ({
     deadline,
     onTryAgain,
     isSending,
+    ensName,
+    resolvedAddress,
 }: VerifyAddressProps) => (
     <Card>
         <Column gap={32}>
@@ -22,6 +29,24 @@ export const TransactionReviewVerifyAddress = ({
                 <H3>
                     <Translation id="TR_SEND_ADDRESS_CONFIRMATION_HEADING" />
                 </H3>
+                {ensName && (
+                    <Column gap={2}>
+                        <Text typographyStyle="body-sm" color="contentSecondary">
+                            <Translation
+                                id="TR_SEND_ADDRESS_CONFIRMATION_ENS_NOTE"
+                                values={{ ensName }}
+                            />
+                        </Text>
+                        {resolvedAddress && (
+                            <Text typographyStyle="body-sm" color="contentSecondary">
+                                <Translation
+                                    id="TR_SEND_ADDRESS_CONFIRMATION_ENS_WALLET_ADDRESS"
+                                    values={{ address: resolvedAddress }}
+                                />
+                            </Text>
+                        )}
+                    </Column>
+                )}
                 {networkType === 'solana' && deadline && (
                     <TransactionReviewOutputTimer
                         deadline={deadline}

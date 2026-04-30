@@ -38,9 +38,11 @@ export const useResolveNamedAddress = (value: string, symbol: NetworkSymbol | nu
     // to resolve this" signal even before the debounce window elapses.
     const liveMode = getResolveMode(trimmedValue, symbol);
 
+    // eslint-disable-next-line @tanstack/query/exhaustive-deps -- debouncedMode is derived from debouncedValue + symbol, both already part of the key
     const query = useQuery({
         queryKey: commonQueryKeys.resolveNamedAddress(symbol ?? 'unknown', debouncedValue),
-        queryFn: () => getResolveFn(debouncedMode)!(debouncedValue),
+        // `enabled` guarantees a supported symbol whenever the query runs (forward mode).
+        queryFn: () => getResolveFn(debouncedMode)(debouncedValue, symbol as NetworkSymbol),
         enabled: !isDebouncing && debouncedMode !== 'idle',
         staleTime: STALE_TIME_MS,
         gcTime: GC_TIME_MS,
@@ -56,18 +58,20 @@ export const useResolveNamedAddress = (value: string, symbol: NetworkSymbol | nu
     const hasResolvedString = isSuccess && typeof data === 'string';
 
     return {
-        ...query,
-        // Override the raw query flags for the debouncing window so consumers that
+        // Raw query fields, overridden for the debouncing window so consumers that
         // read these directly (mostly tests) see a consistent "resolving" state.
+        // We deliberately enumerate fields instead of spreading `query` — spreading
+        // observes every property and defeats react-query's per-field render tracking.
         data,
         isFetching,
         isError,
         isSuccess,
+        error: query.error,
         // High-level fields — prefer these over the raw query in feature code so a
         // single hook owns the forward/reverse/idle classification.
         mode: liveMode,
         isResolving: liveMode !== 'idle' && isFetching,
-        resolvedAddress: liveMode === 'forward' && hasResolvedString ? (data as string) : undefined,
+        resolvedAddress: liveMode === 'forward' && hasResolvedString ? data : undefined,
         // reverseResolvedName:
         //     liveMode === 'reverse' && hasResolvedString ? (data as string) : undefined,
         // Forward-only error: a successful query that returned `null` (no record) is also

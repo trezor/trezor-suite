@@ -18,12 +18,12 @@ jest.mock('@trezor/react-utils', () => ({
     useDebouncedValue: <T,>(value: T) => value,
 }));
 
-const mockGetAddress = jest.fn();
+const mockGetAccountInfo = jest.fn();
 
 jest.mock('@trezor/connect', () => ({
     __esModule: true,
     default: {
-        getAddress: (...args: unknown[]) => mockGetAddress(...args),
+        getAccountInfo: (...args: unknown[]) => mockGetAccountInfo(...args),
     },
 }));
 
@@ -31,7 +31,7 @@ const RESOLVED_HEX = '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045';
 
 describe('useResolveNamedAddress', () => {
     beforeEach(() => {
-        mockGetAddress.mockReset();
+        mockGetAccountInfo.mockReset();
     });
 
     describe('idle mode (no fetch)', () => {
@@ -43,7 +43,7 @@ describe('useResolveNamedAddress', () => {
             expect(result.current.mode).toBe('idle');
             expect(result.current.isResolving).toBe(false);
             expect(result.current.resolvedAddress).toBeUndefined();
-            expect(mockGetAddress).not.toHaveBeenCalled();
+            expect(mockGetAccountInfo).not.toHaveBeenCalled();
         });
 
         it('is idle when the symbol is null', () => {
@@ -52,7 +52,7 @@ describe('useResolveNamedAddress', () => {
             );
 
             expect(result.current.mode).toBe('idle');
-            expect(mockGetAddress).not.toHaveBeenCalled();
+            expect(mockGetAccountInfo).not.toHaveBeenCalled();
         });
 
         it('is idle when the value looks like a hex address (no dot)', () => {
@@ -61,7 +61,7 @@ describe('useResolveNamedAddress', () => {
             );
 
             expect(result.current.mode).toBe('idle');
-            expect(mockGetAddress).not.toHaveBeenCalled();
+            expect(mockGetAccountInfo).not.toHaveBeenCalled();
         });
 
         it('is idle for a bare identifier without a dot', () => {
@@ -70,15 +70,15 @@ describe('useResolveNamedAddress', () => {
             );
 
             expect(result.current.mode).toBe('idle');
-            expect(mockGetAddress).not.toHaveBeenCalled();
+            expect(mockGetAccountInfo).not.toHaveBeenCalled();
         });
     });
 
     describe('forward mode (resolves via Blockbook)', () => {
         it('resolves a named input on eth mainnet', async () => {
-            mockGetAddress.mockResolvedValueOnce({
+            mockGetAccountInfo.mockResolvedValueOnce({
                 success: true,
-                payload: { address: RESOLVED_HEX },
+                payload: { descriptor: RESOLVED_HEX },
             });
 
             const { result } = renderHookWithQueryClient(() =>
@@ -92,16 +92,17 @@ describe('useResolveNamedAddress', () => {
             expect(result.current.data).toBe(RESOLVED_HEX);
             expect(result.current.resolvedAddress).toBe(RESOLVED_HEX);
             expect(result.current.isResolveError).toBe(false);
-            expect(mockGetAddress).toHaveBeenCalledWith({
-                address: 'vitalik.eth',
-                path: [],
+            expect(mockGetAccountInfo).toHaveBeenCalledWith({
+                descriptor: 'vitalik.eth',
+                coin: 'eth',
+                details: 'basic',
             });
         });
 
         it('resolves a named input on tsep', async () => {
-            mockGetAddress.mockResolvedValueOnce({
+            mockGetAccountInfo.mockResolvedValueOnce({
                 success: true,
-                payload: { address: RESOLVED_HEX },
+                payload: { descriptor: RESOLVED_HEX },
             });
 
             const { result } = renderHookWithQueryClient(() =>
@@ -110,12 +111,17 @@ describe('useResolveNamedAddress', () => {
 
             await waitFor(() => expect(result.current.isSuccess).toBe(true));
             expect(result.current.resolvedAddress).toBe(RESOLVED_HEX);
+            expect(mockGetAccountInfo).toHaveBeenCalledWith({
+                descriptor: 'vitalik.eth',
+                coin: 'tsep',
+                details: 'basic',
+            });
         });
 
         it('trims whitespace before calling TrezorConnect', async () => {
-            mockGetAddress.mockResolvedValueOnce({
+            mockGetAccountInfo.mockResolvedValueOnce({
                 success: true,
-                payload: { address: RESOLVED_HEX },
+                payload: { descriptor: RESOLVED_HEX },
             });
 
             const { result } = renderHookWithQueryClient(() =>
@@ -123,16 +129,17 @@ describe('useResolveNamedAddress', () => {
             );
 
             await waitFor(() => expect(result.current.isSuccess).toBe(true));
-            expect(mockGetAddress).toHaveBeenCalledWith({
-                address: 'vitalik.eth',
-                path: [],
+            expect(mockGetAccountInfo).toHaveBeenCalledWith({
+                descriptor: 'vitalik.eth',
+                coin: 'eth',
+                details: 'basic',
             });
         });
     });
 
     describe('error states', () => {
         it('surfaces a query error when TrezorConnect reports failure', async () => {
-            mockGetAddress.mockResolvedValue({
+            mockGetAccountInfo.mockResolvedValue({
                 success: false,
                 error: { message: 'not found' },
             });
