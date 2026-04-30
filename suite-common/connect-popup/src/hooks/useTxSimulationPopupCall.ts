@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { U_INT_32 } from '@suite-common/wallet-constants';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type TxSimulationAction, type TxSimulationMethod } from '@suite-common/wallet-types';
 
@@ -29,24 +28,13 @@ export function useTxSimulationPopupCall() {
         const { method, payload, fromAddress, source } = txSimulationPopupCall;
 
         switch (method) {
-            case 'ethereumSignTransaction': {
-                const typedPayload =
-                    payload as TxSimulationMethod<'ethereumSignTransaction'>['payload'];
-
+            case 'ethereumSignTransaction':
                 return {
                     method,
-                    payload: {
-                        ...typedPayload,
-                        transaction: {
-                            ...typedPayload.transaction,
-                            // Ensure a high gas limit to prevent out of gas errors during simulation
-                            gasLimit: `0x${U_INT_32.toString(16)}`,
-                        },
-                    },
+                    payload: payload as TxSimulationMethod<'ethereumSignTransaction'>['payload'],
                     fromAddress,
                     sourceOrigin: source.origin,
                 };
-            }
 
             case 'ethereumSignTypedData':
                 return {
