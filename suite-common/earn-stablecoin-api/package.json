@@ -16,7 +16,7 @@
         "test:unit": "yarn g:jest"
     },
     "devDependencies": {
-        "orval": "8.5.0",
+        "orval": "8.8.0",
         "prettier": "^3.8.1"
     },
     "dependencies": {
