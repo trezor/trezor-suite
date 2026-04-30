@@ -4,8 +4,8 @@ import type { FirmwareHash } from '@trezor/protobuf/src/definitions';
 import type { Descriptor } from '@trezor/transport';
 import { Log } from '@trezor/utils';
 
-import { DataManager } from '../../data/DataManager';
 import { getReleaseByVersion } from '../../data/firmwareInfo';
+import * as settingsStore from '../../data/settingsStore';
 import { Device } from '../Device';
 import type { TypedCallProvider } from '../DeviceCurrentSession';
 import { checkFirmwareHash } from '../workflow/checkFirmwareHash';
@@ -63,12 +63,11 @@ jest.mock('../../data/firmwareInfo', () => ({
     ]),
 }));
 
-// @ts-expect-error setting a private property
-DataManager.settings = {
+settingsStore.set({
     binFilesBaseUrl: 'https://example.com',
     enableFirmwareHashCheck: true,
     firmwareHashCheckTimeouts: { T1B1: 1000 },
-} as ConnectSettings;
+} as ConnectSettings);
 
 describe(checkFirmwareHash.name, () => {
     afterEach(() => jest.clearAllMocks());

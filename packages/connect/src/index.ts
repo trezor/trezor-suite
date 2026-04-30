@@ -3,7 +3,7 @@ import { factory } from '@trezor/connect-common';
 import { deepEqual } from '@trezor/utils';
 
 import { reconnectAllBackends } from './backend/BlockchainLink';
-import { DataManager } from './data/DataManager';
+import * as settingsStore from './data/settingsStore';
 import { CoreInModule } from './impl/core-in-module';
 
 class CoreInModuleNode extends CoreInModule {
@@ -13,10 +13,10 @@ class CoreInModuleNode extends CoreInModule {
 
     protected async updateProxy(proxy: UpdateConnectSettings['proxy']) {
         // updateConnectSettings() may be called before init() — nothing to do yet.
-        if (!DataManager.isLoaded()) return;
-        const settings = DataManager.getSettings();
+        if (!settingsStore.isLoaded()) return;
+        const settings = settingsStore.get();
         if (proxy !== undefined && !deepEqual(settings.proxy, proxy)) {
-            DataManager.updateSettings({ proxy });
+            settingsStore.update({ proxy });
             await reconnectAllBackends();
         }
     }

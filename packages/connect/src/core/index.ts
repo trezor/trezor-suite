@@ -37,10 +37,11 @@ import type { AbstractMethod } from './AbstractMethod';
 import { getMethod } from './method';
 import { onCallFirmwareUpdate } from './onCallFirmwareUpdate';
 import { dispose as disposeBackend } from '../backend/BlockchainLink';
-import { DataManager } from '../data/DataManager';
 import { initializeFirmwareConfig } from '../data/firmwareInfo';
+import * as firmwareReleaseStore from '../data/firmwareReleaseStore';
 import * as localFirmwareStore from '../data/localFirmwareStore';
 import { loadProtobufModules } from '../data/protobufLoader';
+import * as settingsStore from '../data/settingsStore';
 import type { Device, DeviceEvents } from '../device/Device';
 import type { IDeviceList } from '../device/DeviceList';
 import { DeviceList, assertDeviceListConnected } from '../device/DeviceList';
@@ -239,7 +240,7 @@ const onCallDevice = async (
 ): Promise<void> => {
     const { deviceList, callMethods, sendCoreMessage } = context;
     const responseID = message.id;
-    const { env, transports, pendingTransportEvent } = DataManager.getSettings();
+    const { env, transports, pendingTransportEvent } = settingsStore.get();
 
     if (!deviceList.isConnected() && !deviceList.pendingConnection()) {
         // transport is missing try to initialize it once again
@@ -774,7 +775,7 @@ export class Core extends EventEmitter {
                 break;
 
             case TRANSPORT.DISABLE_WEBUSB: {
-                const settings = DataManager.getSettings();
+                const settings = settingsStore.get();
                 const transports = settings.transports?.filter(t => t !== 'WebUsbTransport');
                 if (transports && !transports.includes('BridgeTransport')) {
                     transports.unshift('BridgeTransport');
@@ -785,7 +786,7 @@ export class Core extends EventEmitter {
                 break;
             }
             case TRANSPORT.SET_TRANSPORTS:
-                DataManager.updateSettings({ transports: message.payload.transports });
+                settingsStore.update({ transports: message.payload.transports });
                 resetTransports(this.getCoreContext());
                 break;
 
@@ -906,14 +907,19 @@ export class Core extends EventEmitter {
             throttlePromise.promise.then(() => onCoreEvent(message));
 
         try {
-            await DataManager.load(settings, true, false, initializeFirmwareConfig);
+            settingsStore.set(settings);
+            await firmwareReleaseStore.init(
+                settings.firmwareChannel,
+                false,
+                initializeFirmwareConfig,
+            );
             const localFirmwares =
                 settings.localFirmwares && parseLocalFirmwares(settings.localFirmwares);
             if (localFirmwares) {
                 localFirmwareStore.set(localFirmwares);
             }
             await loadProtobufModules();
-            const { debug, priority, manifest } = DataManager.getSettings();
+            const { debug, priority, manifest } = settingsStore.get();
 
             enableLog(debug);
 
@@ -933,7 +939,7 @@ export class Core extends EventEmitter {
         }
 
         const { transports, pendingTransportEvent, transportReconnect, coreMode } =
-            DataManager.getSettings();
+            settingsStore.get();
 
         try {
             this.deviceList.init({ transports, pendingTransportEvent, transportReconnect });
@@ -956,7 +962,7 @@ export class Core extends EventEmitter {
 }
 
 const resetTransports = async ({ deviceList, sendCoreMessage }: CoreContext) => {
-    const { transports, pendingTransportEvent, transportReconnect } = DataManager.getSettings();
+    const { transports, pendingTransportEvent, transportReconnect } = settingsStore.get();
 
     try {
         await deviceList.init({ transports, pendingTransportEvent, transportReconnect });

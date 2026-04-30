@@ -7,7 +7,7 @@ import { Assert } from '@trezor/schema-utils';
 
 import type { MethodMessage, MethodPermission } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
-import { DataManager } from '../data/DataManager';
+import * as settingsStore from '../data/settingsStore';
 
 export default class RequestLogin extends AbstractMethod<'requestLogin', PROTO.SignIdentity> {
     constructor(message: MethodMessage<'requestLogin'>) {
@@ -17,7 +17,7 @@ export default class RequestLogin extends AbstractMethod<'requestLogin', PROTO.S
         Assert(RequestLoginSchema, payload);
 
         const identity: PROTO.IdentityType = {};
-        const settings: ConnectSettings = DataManager.getSettings();
+        const settings: ConnectSettings = settingsStore.get();
 
         const origin = payload.origin || settings.origin;
 

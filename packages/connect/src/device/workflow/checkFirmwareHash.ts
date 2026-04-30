@@ -5,8 +5,8 @@ import type { Log } from '@trezor/connect-common/src/utils/debug';
 import { serializeError } from '@trezor/utils';
 
 import { calculateFirmwareHash, getBinaryOptional, stripFwHeaders } from '../../api/firmware';
-import { DataManager } from '../../data/DataManager';
 import { getFirmwareLocation, getReleaseByVersion } from '../../data/firmwareInfo';
+import * as settingsStore from '../../data/settingsStore';
 import type { IDevice } from '../../types/idevice';
 import { getFirmwareType } from '../../utils/firmwareUtils';
 
@@ -25,7 +25,7 @@ export const checkFirmwareHash = async ({
     device,
     logger,
 }: Context): Promise<FirmwareHashCheckResult | null> => {
-    const enabled = DataManager.getSettings('enableFirmwareHashCheck');
+    const enabled = settingsStore.get('enableFirmwareHashCheck');
     if (!enabled) return createFailResult('check-skipped');
 
     const firmwareVersion = device.getVersion();
@@ -48,7 +48,7 @@ export const checkFirmwareHash = async ({
     });
     const { baseUrl, path } = firmwareLocation;
 
-    const timeoutThresholdsPerModel = DataManager.getSettings('firmwareHashCheckTimeouts');
+    const timeoutThresholdsPerModel = settingsStore.get('firmwareHashCheckTimeouts');
     // device has no features (not yet connected) or no firmware
     if (firmwareVersion === undefined || !device.features || device.features.bootloader_mode) {
         return null;

@@ -5,7 +5,7 @@ import type { TimerId } from '@trezor/type-utils';
 
 import type { BlockchainOptions } from './Blockchain';
 import { Blockchain } from './Blockchain';
-import { DataManager } from '../data/DataManager';
+import * as settingsStore from '../data/settingsStore';
 
 type CoinShortcut = CoinInfo['shortcut'];
 type Identity = string;
@@ -32,8 +32,8 @@ export class BackendManager {
             backend = new Blockchain({
                 coinInfo: this.patchCoinInfo(coinInfo),
                 identity,
-                debug: DataManager.getSettings('debug'),
-                proxy: DataManager.getSettings('proxy'),
+                debug: settingsStore.get('debug'),
+                proxy: settingsStore.get('proxy'),
                 postMessage,
                 onDisconnected: pendingSubscriptions => {
                     const reconnectAttempts = pendingSubscriptions ? 0 : undefined;

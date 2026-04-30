@@ -3,7 +3,7 @@ import { ERRORS } from '@trezor/connect-common/src/constants';
 
 import type { MethodMessage, MethodPermission } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
-import { DataManager } from '../data/DataManager';
+import * as settingsStore from '../data/settingsStore';
 import { getThpCredentials } from '../device/thp';
 
 export default class ThpGetCredentials extends AbstractMethod<'thpGetCredentials'> {
@@ -25,10 +25,10 @@ export default class ThpGetCredentials extends AbstractMethod<'thpGetCredentials
         const credentials = await getThpCredentials(this.getDevice(), true);
         thpState.setPairingCredentials([credentials]);
 
-        // update values in DataManager
-        DataManager.getSettings('thp')?.knownCredentials?.push(credentials);
+        // update cached settings
+        settingsStore.get('thp')?.knownCredentials?.push(credentials);
 
-        // emit change event to host, store new credentials in DataManager
+        // emit change event to host, store new credentials
         this.getDevice().emit(DEVICE.THP_CREDENTIALS_CHANGED, {
             credentials,
         });

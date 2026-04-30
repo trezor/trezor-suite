@@ -1,8 +1,24 @@
 import { parseConnectSettings } from '@trezor/connect-common/src/data/connectSettings';
 import type { ConnectSettings } from '@trezor/connect-common/src/types/settings';
 
-import { DataManager } from '../../data/DataManager';
+import * as firmwareReleaseStore from '../../data/firmwareReleaseStore';
 import { initCoreState } from '../index';
+
+// `import * as` against a CJS-transpiled module gives non-configurable property
+// bindings, so jest.spyOn cannot replace `init` directly. Wrap it in a jest.fn
+// at the module level; the default delegates to the real implementation, and
+// individual tests can `mockImplementationOnce` to override behavior for one call.
+jest.mock('../../data/firmwareReleaseStore', () => {
+    const actual: typeof firmwareReleaseStore = jest.requireActual(
+        '../../data/firmwareReleaseStore',
+    );
+
+    return {
+        __esModule: true,
+        ...actual,
+        init: jest.fn().mockImplementation(actual.init),
+    };
+});
 
 // import { createTestTransport } from '../../device/__tests__/DeviceList.test';
 const { createTestTransport } = global.JestMocks;
@@ -17,17 +33,15 @@ const getSettings = (partial: Partial<ConnectSettings> = {}) =>
 describe('Core', () => {
     beforeAll(async () => {});
 
-    it('getOrInit throws error on DataManager load', async () => {
-        jest.spyOn(DataManager, 'load').mockImplementation(() => {
-            throw new Error('DataManager init error');
+    it('getOrInit throws error on firmware release init', async () => {
+        (firmwareReleaseStore.init as jest.Mock).mockImplementationOnce(() => {
+            throw new Error('firmware release init error');
         });
 
         const coreManager = initCoreState();
         await expect(coreManager.getOrInit(getSettings(), jest.fn())).rejects.toThrow(
-            'DataManager init error',
+            'firmware release init error',
         );
-
-        jest.restoreAllMocks();
     });
 
     it('getOrInit throws error when disposed before initialization', async () => {

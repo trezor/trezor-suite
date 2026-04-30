@@ -5,9 +5,10 @@ import { buildMessage } from '@trezor/transport/src/utils/send';
 import { Log, bufferUtils } from '@trezor/utils';
 
 import { calculateFirmwareHash } from '../../api/firmware/calculateFirmwareHash';
-import { DataManager } from '../../data/DataManager';
 import { getBundledRelease, initializeFirmwareConfig } from '../../data/firmwareInfo';
+import * as firmwareReleaseStore from '../../data/firmwareReleaseStore';
 import { loadProtobufModules } from '../../data/protobufLoader';
+import * as settingsStore from '../../data/settingsStore';
 import { DeviceList } from '../../device/DeviceList';
 import { httpRequest } from '../../utils/assets';
 import { onCallFirmwareUpdate } from '../onCallFirmwareUpdate';
@@ -184,7 +185,7 @@ const calculateFirmwareHashMock = (hash?: string) => ({
 // common setup for all tests
 const setupTest = () => {
     const deviceList = new DeviceList({
-        ...DataManager.getSettings(),
+        ...settingsStore.get(),
         // debug: true,
     });
 
@@ -244,7 +245,9 @@ const setupTest = () => {
 describe('onCallFirmwareUpdate', () => {
     beforeAll(async () => {
         await loadProtobufModules();
-        await DataManager.load(parseConnectSettings({}), true, true, initializeFirmwareConfig);
+        const settings = parseConnectSettings({});
+        settingsStore.set(settings);
+        await firmwareReleaseStore.init(settings.firmwareChannel, true, initializeFirmwareConfig);
     });
     beforeEach(() => {
         if (!ASSETS_BASE_URL) {

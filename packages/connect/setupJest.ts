@@ -9,12 +9,11 @@ import { AbstractApiTransport } from '@trezor/transport';
 import type { UsbApi } from '@trezor/transport';
 import { versionUtils } from '@trezor/utils';
 
-import { DataManager } from './src/data/DataManager';
+import * as settingsStore from './src/data/settingsStore';
 
-// Initialize DataManager so tests reaching getSettings() (via BackendManager,
-// firmwareInfo, etc.) don't trip the pre-load() throw. With withAssets=false
-// the load is synchronous up to the first await, so fire-and-forget is safe.
-DataManager.load(parseConnectSettings({}), false, true);
+// Initialize settings store so tests reaching settingsStore.get() (via
+// BackendManager, firmwareInfo, etc.) don't trip the pre-set() throw.
+settingsStore.set(parseConnectSettings({}));
 
 // mock of navigator.usb
 const createTransportApi = (override = {}) =>
