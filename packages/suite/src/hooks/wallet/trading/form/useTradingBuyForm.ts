@@ -91,7 +91,7 @@ export const useTradingBuyForm = ({
 
     const shouldResetOnInitialBuyInfoLoad = useRef(!buyInfo);
 
-    const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
+    const { shouldSendInSats } = useBitcoinAmountUnit(account?.symbol);
     const isPreviousRouteFromTradeSection = useTradingPreviousRoute(type);
 
     const fiatTradingValuesParams = selectedQuote
@@ -117,7 +117,7 @@ export const useTradingBuyForm = ({
     const redirectValues = useTradingBuyFormRedirectValues(isFromRedirect, quotesRequest);
     const { saveDraft, draft, removeDraft } = useFormDraft<TradingBuyFormProps>(
         'trading-buy',
-        account.key,
+        account?.key ?? '',
     );
     const draftUpdated: TradingBuyFormProps | null = draft
         ? {

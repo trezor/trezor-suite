@@ -95,7 +95,7 @@ export const useTradingFormAccount = (tradingType: TradingType) => {
         [isAccountEligibleForTrade],
     );
 
-    const account = useMemo(() => {
+    const account: Account | undefined = useMemo(() => {
         if (preferredAccount && isAccountEligibleForTrade(preferredAccount, prefilled.cryptoId)) {
             return preferredAccount;
         }
@@ -120,15 +120,19 @@ export const useTradingFormAccount = (tradingType: TradingType) => {
     ]);
 
     const cryptoId = useMemo(() => {
+        if (!account) {
+            return 'bitcoin' as CryptoId;
+        }
+
         if (prefilled.cryptoId && account.key === preferredAccount?.key) {
             return prefilled.cryptoId;
         }
 
         return (getNetwork(account.symbol).tradeCryptoId ?? 'bitcoin') as CryptoId;
-    }, [prefilled.cryptoId, account.key, account.symbol, preferredAccount?.key]);
+    }, [prefilled.cryptoId, account, preferredAccount?.key]);
 
     useEffect(() => {
-        if (!accountKey && account.key) {
+        if (!accountKey && account?.key) {
             switch (tradingType) {
                 case 'exchange':
                     dispatch(tradingExchangeActions.setTradingAccountKey(account.key));
@@ -141,7 +145,7 @@ export const useTradingFormAccount = (tradingType: TradingType) => {
                     break;
             }
         }
-    }, [account.key, accountKey, dispatch, tradingType]);
+    }, [account?.key, accountKey, dispatch, tradingType]);
 
     useEffect(() => {
         if (prefilled.key && accountKey) {
@@ -155,7 +159,7 @@ export const useTradingFormAccount = (tradingType: TradingType) => {
     }, [accountKey, dispatch, prefilled.key, prefilled.cryptoId]);
 
     return {
-        tradingAccountKey: account.key,
+        tradingAccountKey: account?.key,
         account,
         cryptoId,
     };

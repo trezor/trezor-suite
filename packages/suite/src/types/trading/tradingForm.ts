@@ -105,7 +105,7 @@ interface TradingFormStateProps {
 
 interface TradingCommonFormProps {
     device: TrezorDevice | undefined;
-    account: Account;
+    account: Account | undefined;
     network: Network;
 
     goToOffers: () => Promise<void>;

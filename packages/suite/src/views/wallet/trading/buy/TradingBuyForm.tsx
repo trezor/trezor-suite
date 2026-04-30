@@ -25,6 +25,10 @@ export const TradingBuyFormContent = () => (
 const TradingBuyFormWrapper = () => {
     const tradingBuyContextValues = useTradingBuyForm();
 
+    if (!tradingBuyContextValues.account) {
+        return null;
+    }
+
     return (
         <TradingFormContext.Provider value={tradingBuyContextValues}>
             <FormProvider {...tradingBuyContextValues.methods}>

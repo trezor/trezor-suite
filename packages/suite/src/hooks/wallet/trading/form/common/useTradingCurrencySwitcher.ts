@@ -24,7 +24,7 @@ import { type SendContextValues } from 'src/types/wallet/sendForm';
 import { useTradingAssetDecimals } from './useTradingAssetDecimals';
 
 interface TradingUseCurrencySwitcherProps<T extends TradingAllFormProps> {
-    account: Account;
+    account: Account | undefined;
     methods: UseFormReturn<T>;
     inputNames: {
         cryptoInput: typeof TRADING_FORM_CRYPTO_INPUT | typeof TRADING_FORM_OUTPUT_AMOUNT;
@@ -44,7 +44,7 @@ export const useTradingCurrencySwitcher = <T extends TradingAllFormProps>({
 }: TradingUseCurrencySwitcherProps<T>) => {
     const { setValue, getValues, control } =
         methods as unknown as UseFormReturn<TradingAllFormProps>;
-    const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
+    const { shouldSendInSats } = useBitcoinAmountUnit(account?.symbol);
     const cryptoInputValue = useWatch({ control, name: inputNames.cryptoInput });
     const sendCryptoSelect = getValues(TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT);
     const { getAssetDecimals } = useTradingAssetDecimals();
