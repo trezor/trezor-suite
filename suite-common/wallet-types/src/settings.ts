@@ -26,4 +26,5 @@ export interface WalletSettings {
     mevProtection: boolean;
     networkReserve: boolean;
     isAutoEjectEnabled: boolean;
+    addressDisplayType: AddressDisplayOptions;
 }

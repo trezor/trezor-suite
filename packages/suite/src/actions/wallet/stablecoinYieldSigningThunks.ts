@@ -1,7 +1,6 @@
 import { fromWei } from 'web3-utils';
 
 import { closeModal, openDeferredModal, preserveModal } from '@suite/modal';
-import { selectAddressDisplayType } from '@suite/settings';
 import { asEvmAddress, buildClaim } from '@suite-common/calldata';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type SupplyTxSimulationParams } from '@suite-common/earn-stablecoin/src/tx-simulation';
@@ -31,6 +30,7 @@ import {
     getYieldWithdrawTransaction,
     openYieldApproveModal,
     selectStablecoinYieldTxReview,
+    selectAddressDisplayType,
     setYieldGenericError,
     stablecoinYieldActions,
     submitYieldOpportunity,

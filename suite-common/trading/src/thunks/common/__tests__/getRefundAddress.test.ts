@@ -2,7 +2,10 @@ import { combineReducers } from '@reduxjs/toolkit';
 
 import { createThunk } from '@suite-common/redux-utils';
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
-import { confirmAddressOnDeviceThunk } from '@suite-common/wallet-core';
+import {
+    confirmAddressOnDeviceThunk,
+    prepareWalletSettingsReducer,
+} from '@suite-common/wallet-core';
 import { type Account, AddressDisplayOptions } from '@suite-common/wallet-types';
 
 import { accounts } from '../../../reducers/__fixtures__/account';
@@ -11,6 +14,7 @@ import { prepareTradingReducer } from '../../../reducers/tradingReducer';
 import { getRefundAddress } from '../getRefundAddress';
 
 const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
+const walletSettingsReducer = prepareWalletSettingsReducer(extraDependenciesCommonMock);
 
 // Mock external dependencies
 jest.mock('@suite-common/wallet-core', () => ({
@@ -43,16 +47,10 @@ describe('getRefundAddress thunk', () => {
 
     const createMockStore = (preloadedState = {}) =>
         configureMockStore({
-            extra: {
-                ...extraDependenciesCommonMock,
-                selectors: {
-                    selectAddressDisplayType: jest
-                        .fn()
-                        .mockReturnValue(AddressDisplayOptions.CHUNKED),
-                },
-            },
+            extra: extraDependenciesCommonMock,
             reducer: combineReducers({
                 wallet: combineReducers({
+                    settings: walletSettingsReducer,
                     trading: tradingReducer,
                 }),
             }),
@@ -110,21 +108,16 @@ describe('getRefundAddress thunk', () => {
             );
 
             const storeWithNonChunked = configureMockStore({
-                extra: {
-                    ...extraDependenciesCommonMock,
-                    selectors: {
-                        selectAddressDisplayType: jest
-                            .fn()
-                            .mockReturnValue(AddressDisplayOptions.ORIGINAL),
-                    },
-                },
+                extra: extraDependenciesCommonMock,
                 reducer: combineReducers({
                     wallet: combineReducers({
+                        settings: walletSettingsReducer,
                         trading: tradingReducer,
                     }),
                 }),
                 preloadedState: {
                     wallet: {
+                        settings: { addressDisplayType: AddressDisplayOptions.ORIGINAL },
                         trading: initialState,
                     },
                 },

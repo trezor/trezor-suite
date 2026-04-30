@@ -34,6 +34,7 @@ import {
     type SignTransactionError,
     type SignTransactionThunkArguments,
 } from './sendFormTypes';
+import { selectAddressDisplayType } from '../settings/walletSettingsReducer';
 
 const calculate = (
     availableBalance: string,
@@ -231,12 +232,8 @@ export const signRippleStellarSendFormTransactionThunk = createThunk<
     `${SEND_MODULE_PREFIX}/signRippleStellarSendFormTransactionThunk`,
     async (
         { formState, precomposedTransaction, selectedAccount, device, paymentRequests },
-        { getState, extra, rejectWithValue },
+        { getState, rejectWithValue },
     ) => {
-        const {
-            selectors: { selectAddressDisplayType },
-        } = extra;
-
         const addressDisplayType = selectAddressDisplayType(getState());
 
         let response;

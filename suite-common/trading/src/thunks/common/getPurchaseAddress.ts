@@ -1,5 +1,5 @@
 import { createThunk } from '@suite-common/redux-utils';
-import { confirmAddressOnDeviceThunk } from '@suite-common/wallet-core';
+import { confirmAddressOnDeviceThunk, selectAddressDisplayType } from '@suite-common/wallet-core';
 import { type Account, AddressDisplayOptions } from '@suite-common/wallet-types';
 
 import { TRADING_THUNK_PREFIX } from '../../constants';
@@ -24,10 +24,7 @@ export const getPurchaseAddress = createThunk<
     }
 >(
     `${TRADING_THUNK_PREFIX}/getPurchaseAddress`,
-    async (
-        { account, address },
-        { getState, dispatch, extra, rejectWithValue, fulfillWithValue },
-    ) => {
+    async ({ account, address }, { getState, dispatch, rejectWithValue, fulfillWithValue }) => {
         let path: string | undefined;
 
         if (account.addresses) {
@@ -50,7 +47,7 @@ export const getPurchaseAddress = createThunk<
             });
         }
 
-        const addressDisplayType = extra.selectors.selectAddressDisplayType(getState());
+        const addressDisplayType = selectAddressDisplayType(getState());
 
         const params: Parameters<typeof confirmAddressOnDeviceThunk>[0] = {
             accountKey: account.key,

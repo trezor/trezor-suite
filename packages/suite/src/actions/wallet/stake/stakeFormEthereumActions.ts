@@ -1,7 +1,6 @@
 import { toWei } from 'web3-utils';
 
 import { asTypedDesktopAnalytics, events } from '@suite/analytics';
-import { selectAddressDisplayType } from '@suite/settings';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type ExtraDependencies } from '@suite-common/redux-utils';
 import {
@@ -22,6 +21,7 @@ import {
     MIN_ETH_FOR_WITHDRAWALS,
     UNSTAKE_INTERCHANGES,
 } from '@suite-common/wallet-constants';
+import { selectAddressDisplayType } from '@suite-common/wallet-core';
 import { ethereumGetCurrentNonceThunk } from '@suite-common/wallet-core/src/send/sendFormEthereumThunks';
 import {
     AddressDisplayOptions,

@@ -1,6 +1,6 @@
 import { selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
-import { confirmAddressOnDeviceThunk } from '@suite-common/wallet-core';
+import { confirmAddressOnDeviceThunk, selectAddressDisplayType } from '@suite-common/wallet-core';
 import { type Account, AddressDisplayOptions } from '@suite-common/wallet-types';
 
 import { logErrorThunk } from './logErrorThunk';
@@ -39,7 +39,7 @@ export const verifyAddressThunk = createThunk(
             dispatch(tradingExchangeActions.setReceiveAccountKey(account.key));
         }
 
-        const addressDisplayType = extra.selectors.selectAddressDisplayType(getState());
+        const addressDisplayType = selectAddressDisplayType(getState());
         const { connected, available } = device;
 
         // Show warning when device is not connected

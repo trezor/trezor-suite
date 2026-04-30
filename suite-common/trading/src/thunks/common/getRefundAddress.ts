@@ -1,5 +1,5 @@
 import { createThunk } from '@suite-common/redux-utils';
-import { confirmAddressOnDeviceThunk } from '@suite-common/wallet-core';
+import { confirmAddressOnDeviceThunk, selectAddressDisplayType } from '@suite-common/wallet-core';
 import { type Account, AddressDisplayOptions } from '@suite-common/wallet-types';
 
 import { TRADING_THUNK_PREFIX } from '../../constants';
@@ -24,9 +24,9 @@ export const getRefundAddress = createThunk<
     }
 >(
     `${TRADING_THUNK_PREFIX}/getRefundAddress`,
-    async ({ account }, { getState, dispatch, extra, rejectWithValue, fulfillWithValue }) => {
+    async ({ account }, { getState, dispatch, rejectWithValue, fulfillWithValue }) => {
         const { path } = getUnusedAddressFromAccount(account);
-        const addressDisplayType = extra.selectors.selectAddressDisplayType(getState());
+        const addressDisplayType = selectAddressDisplayType(getState());
 
         if (!path) {
             return rejectWithValue({

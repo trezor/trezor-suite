@@ -49,6 +49,7 @@ import {
     type SignTransactionError,
     type SignTransactionThunkArguments,
 } from './sendFormTypes';
+import { selectAddressDisplayType } from '../settings/walletSettingsReducer';
 import { selectTransactions } from '../transactions/transactionsSelectors';
 
 export const calculate = (
@@ -377,12 +378,8 @@ export const signEthereumSendFormTransactionThunk = createThunk<
     `${SEND_MODULE_PREFIX}/signEthereumSendFormTransactionThunk`,
     async (
         { formState, precomposedTransaction, selectedAccount, device, paymentRequests },
-        { dispatch, getState, extra, rejectWithValue },
+        { dispatch, getState, rejectWithValue },
     ) => {
-        const {
-            selectors: { selectAddressDisplayType },
-        } = extra;
-
         const network = getNetwork(selectedAccount.symbol);
 
         if (selectedAccount.networkType !== 'ethereum' || !network.chainId)
