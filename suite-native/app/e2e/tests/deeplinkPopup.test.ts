@@ -88,7 +88,7 @@ describe('Deeplink connect popup. [@androidOnly @T3T1]', () => {
 
         jestExpect(response).toEqual({
             success: true,
-            id: jestExpect.any(Number),
+            id: jestExpect.any(String),
             payload: jestExpect.objectContaining({
                 path: [2147483697, 2147483648, 2147483648, 0, 0],
                 serializedPath: "m/49'/0'/0'/0/0",
