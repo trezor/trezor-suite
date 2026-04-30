@@ -12,7 +12,6 @@ import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOv
 import { AccountsList } from './AccountsList';
 import { AccountsMenuHeader } from './AccountsMenuHeader';
 import { AccountsMenuNotice } from './AccountsMenuNotice';
-import { RefreshAfterDiscoveryNeeded } from './RefreshAfterDiscoveryNeeded';
 
 const ScrollContainer = styled.div`
     height: auto;
@@ -49,8 +48,6 @@ export const AccountsMenu = () => {
                 <ShadowTop backgroundColor="surfaceFillSunken" />
                 <ScrollContainer ref={scrollElementRef} onScroll={onScroll}>
                     <AccountsList />
-
-                    <RefreshAfterDiscoveryNeeded />
                 </ScrollContainer>
                 <ShadowBottom backgroundColor="surfaceFillSunken" />
             </ShadowContainer>
