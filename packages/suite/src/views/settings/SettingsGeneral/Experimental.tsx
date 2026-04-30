@@ -102,10 +102,10 @@ const motionDivProps = {
 
 const bannerMotionDivProps = {
     variants: {
-        initial: { overflow: 'hidden', height: 0, marginBottom: 0, opacity: 0 },
+        initial: { overflow: 'hidden', height: 0, marginTop: 0, opacity: 0 },
         visible: {
             height: 'auto',
-            marginBottom: '12px',
+            marginTop: '12px',
             opacity: 1,
             transitionEnd: { overflow: 'unset' },
         },
