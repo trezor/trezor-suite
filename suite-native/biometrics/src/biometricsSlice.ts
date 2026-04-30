@@ -136,10 +136,12 @@ export const handleBiometricsAppStateChangeThunk = createThunk(
 
         switch (currentAppState) {
             case 'active':
-                if (shouldRevokeAuth && shouldUserBeAuthenticated) {
-                    dispatch(authenticateUserThunk());
-                } else if (!shouldRevokeAuth) {
+                if (goneToBackgroundAtTimestamp !== null && !shouldRevokeAuth) {
+                    // Returning to the foreground within the keep-logged-in window: restore prior auth.
                     dispatch(setIsUserAuthenticated(true));
+                } else if (shouldUserBeAuthenticated) {
+                    // Cold start or returning after the keep-logged-in window: prompt the user.
+                    dispatch(authenticateUserThunk());
                 }
                 break;
 
