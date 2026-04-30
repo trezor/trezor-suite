@@ -1,7 +1,8 @@
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Text as MockText } from '@suite-native/atoms';
 import { getTranslation } from '@suite-native/intl';
-import { renderWithBasicProvider, within } from '@suite-native/test-utils';
+import { within } from '@suite-native/test-utils';
+import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { type StatefulReviewOutput } from '../../../types';
 import { ReviewOutputItem, type ReviewOutputItemProps } from '../ReviewOutputItem';
@@ -22,7 +23,7 @@ jest.mock('../ReviewOutputItemValues', () => ({
 
 describe('ReviewOutputItem', () => {
     const renderReviewOutputItem = (props: Partial<ReviewOutputItemProps>) =>
-        renderWithBasicProvider(
+        renderWithStoreProvider(
             <ReviewOutputItem
                 accountKey={
                     'eth-account-1' as AccountKey // Todo: create properly via `createAccountKey()`

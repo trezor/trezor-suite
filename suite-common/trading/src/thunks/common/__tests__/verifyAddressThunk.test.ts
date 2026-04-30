@@ -1,10 +1,13 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { selectSelectedDevice } from '@suite-common/device';
-import { createReducerWithExtraDeps, createThunk } from '@suite-common/redux-utils';
+import { createThunk } from '@suite-common/redux-utils';
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
-import { confirmAddressOnDeviceThunk } from '@suite-common/wallet-core';
-import { type Account, AddressDisplayOptions } from '@suite-common/wallet-types';
+import {
+    confirmAddressOnDeviceThunk,
+    prepareWalletSettingsReducer,
+} from '@suite-common/wallet-core';
+import { type Account } from '@suite-common/wallet-types';
 
 import { tradingThunks } from '../';
 import { accounts } from '../../../reducers/__fixtures__/account';
@@ -13,14 +16,7 @@ import { prepareTradingReducer } from '../../../reducers/tradingReducer';
 import type { LogErrorThunkProps } from '../logErrorThunk';
 
 const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
-const mockedSuiteReducer = createReducerWithExtraDeps(
-    {
-        settings: {
-            addressDisplayType: AddressDisplayOptions.CHUNKED,
-        },
-    },
-    () => {},
-);
+const walletSettingsReducer = prepareWalletSettingsReducer(extraDependenciesCommonMock);
 
 jest.mock('@suite-common/device', () => ({
     ...jest.requireActual('@suite-common/device'),
@@ -28,8 +24,8 @@ jest.mock('@suite-common/device', () => ({
 }));
 
 jest.mock('@suite-common/wallet-core', () => ({
+    ...jest.requireActual('@suite-common/wallet-core'),
     confirmAddressOnDeviceThunk: jest.fn(),
-    selectAccounts: jest.fn(),
 }));
 
 jest.mock('../../common/logErrorThunk', () => ({
@@ -50,8 +46,8 @@ describe('verifyAddressThunk', () => {
             reducer: combineReducers({
                 wallet: combineReducers({
                     trading: tradingReducer,
+                    settings: walletSettingsReducer,
                 }),
-                suite: mockedSuiteReducer(extraDependenciesCommonMock),
             }),
             preloadedState: {
                 wallet: {
@@ -99,8 +95,8 @@ describe('verifyAddressThunk', () => {
             reducer: combineReducers({
                 wallet: combineReducers({
                     trading: tradingReducer,
+                    settings: walletSettingsReducer,
                 }),
-                suite: mockedSuiteReducer(extraDependenciesCommonMock),
             }),
             preloadedState: {
                 wallet: {
@@ -132,8 +128,8 @@ describe('verifyAddressThunk', () => {
             reducer: combineReducers({
                 wallet: combineReducers({
                     trading: tradingReducer,
+                    settings: walletSettingsReducer,
                 }),
-                suite: mockedSuiteReducer(extraDependenciesCommonMock),
             }),
             preloadedState: {
                 wallet: {
@@ -174,8 +170,8 @@ describe('verifyAddressThunk', () => {
             reducer: combineReducers({
                 wallet: combineReducers({
                     trading: tradingReducer,
+                    settings: walletSettingsReducer,
                 }),
-                suite: mockedSuiteReducer(extraDependenciesCommonMock),
             }),
             preloadedState: {
                 wallet: {
@@ -221,8 +217,8 @@ describe('verifyAddressThunk', () => {
             reducer: combineReducers({
                 wallet: combineReducers({
                     trading: tradingReducer,
+                    settings: walletSettingsReducer,
                 }),
-                suite: mockedSuiteReducer(extraDependenciesCommonMock),
             }),
             preloadedState: {
                 wallet: {
@@ -268,8 +264,8 @@ describe('verifyAddressThunk', () => {
             reducer: combineReducers({
                 wallet: combineReducers({
                     trading: tradingReducer,
+                    settings: walletSettingsReducer,
                 }),
-                suite: mockedSuiteReducer(extraDependenciesCommonMock),
             }),
             preloadedState: {
                 wallet: {
@@ -313,8 +309,8 @@ describe('verifyAddressThunk', () => {
             reducer: combineReducers({
                 wallet: combineReducers({
                     trading: tradingReducer,
+                    settings: walletSettingsReducer,
                 }),
-                suite: mockedSuiteReducer(extraDependenciesCommonMock),
             }),
             preloadedState: {
                 wallet: {

@@ -31,8 +31,8 @@ const LearnMoreButton = ({ onPress }: { onPress: () => void }) => (
 
 export type TouchableSwitchRowProps = {
     icon: IconName;
-    accessibilityLabel: string;
     text: ReactNode;
+    accessibilityLabel?: string;
     description?: ReactNode;
     isChecked: boolean;
     onChange: (value: boolean) => void;

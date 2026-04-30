@@ -1331,6 +1331,11 @@ export const messages = {
                 subtitle:
                     'Stay safe and secure fair prices by preventing others from interfering with your transactions. Available on {supportedNetworks}.',
             },
+            addressDisplay: {
+                title: 'Spaced address formatting',
+                subtitle:
+                    'Display addresses with spaces for easier reading. When disabled, addresses are shown as a continuous string.',
+            },
             dustPhishing: {
                 title: 'Dust phishing protection',
                 subtitle:
