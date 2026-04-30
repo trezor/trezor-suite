@@ -25,7 +25,6 @@ import {
 } from '@suite/router';
 import {
     type SuiteSettingsState,
-    selectAddressDisplayType,
     selectDebugSettings,
     selectInvityServerEnvironment,
     selectLanguage,
@@ -181,7 +180,6 @@ export const extraDependencies: ExtraDependenciesStatic = {
         // FW binaries on desktop are stored in "*/static/connect/data/firmware/*/*.bin" (see "connect-common" package)
         selectDesktopBinDir: (state: AppState) => state.desktop?.paths?.binDir,
         selectLanguage,
-        selectAddressDisplayType,
         selectSelectedAccount: (state: AppState) => state.wallet.selectedAccount,
         selectSelectedAccountStatus: (state: AppState) => state.wallet.selectedAccount.status,
         selectIsWindowVisible,

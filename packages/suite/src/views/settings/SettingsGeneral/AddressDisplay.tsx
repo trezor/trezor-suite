@@ -1,7 +1,7 @@
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
-import { selectAddressDisplayType, suiteSettingsActions } from '@suite/settings';
+import { selectAddressDisplayType, setAddressDisplayType } from '@suite-common/wallet-core';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
 import { Switch } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
@@ -26,7 +26,7 @@ export const AddressDisplay = () => {
             payload: { addressDisplayType },
         });
 
-        dispatch(suiteSettingsActions.setAddressDisplayType(addressDisplayType));
+        dispatch(setAddressDisplayType(value));
     };
 
     return (

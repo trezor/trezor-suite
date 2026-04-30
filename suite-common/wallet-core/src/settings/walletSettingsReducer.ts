@@ -12,7 +12,7 @@ import {
     getNetworkType,
     networkSymbolCollection,
 } from '@suite-common/wallet-config';
-import type { WalletSettings } from '@suite-common/wallet-types';
+import { AddressDisplayOptions, type WalletSettings } from '@suite-common/wallet-types';
 import { isBaseCurrencyWithSats } from '@suite-common/wallet-utils';
 import { PROTO } from '@trezor/connect';
 
@@ -38,6 +38,7 @@ const initialState: WalletSettingsState = {
     mevProtection: true,
     networkReserve: true,
     isAutoEjectEnabled: false,
+    addressDisplayType: AddressDisplayOptions.CHUNKED,
 };
 export const initialWalletSettingsState: WalletSettingsState = initialState;
 
@@ -50,6 +51,7 @@ export const walletSettingsPersistedWhitelist: Array<keyof WalletSettingsState> 
     'mevProtection',
     'networkReserve',
     'isAutoEjectEnabled',
+    'addressDisplayType',
 ];
 
 export const prepareWalletSettingsReducer = createReducerWithExtraDeps(
@@ -103,6 +105,12 @@ export const prepareWalletSettingsReducer = createReducerWithExtraDeps(
             WALLET_SETTINGS.SET_AUTO_EJECT,
             (state, action: ReturnType<typeof walletSettingsActions.setAutoEjectEnabled>) => {
                 state.isAutoEjectEnabled = action.payload;
+            },
+        );
+        builder.addCase(
+            WALLET_SETTINGS.SET_ADDRESS_DISPLAY_TYPE,
+            (state, action: ReturnType<typeof walletSettingsActions.setAddressDisplayType>) => {
+                state.addressDisplayType = action.payload;
             },
         );
     },
@@ -181,3 +189,6 @@ export const selectIsDustPhishingThresholdSettingsVisible = createMemoizedSelect
             NETWORKS_WITH_DUST_PHISHING_DETECTION.includes(getNetworkType(enabledNetwork)),
         ),
 );
+
+export const selectAddressDisplayType = (state: WalletSettingsRootState) =>
+    state.wallet.settings.addressDisplayType;

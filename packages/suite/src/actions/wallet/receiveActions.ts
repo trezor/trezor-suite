@@ -1,11 +1,10 @@
 import { asTypedDesktopAnalytics, events } from '@suite/analytics';
 import { closeModal, openModal, preserveModal, removePreserveModal } from '@suite/modal';
-import { selectAddressDisplayType } from '@suite/settings';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type ExtraDependencies } from '@suite-common/redux-utils';
 import { type UserContextPayload } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { confirmAddressOnDeviceThunk } from '@suite-common/wallet-core';
+import { confirmAddressOnDeviceThunk, selectAddressDisplayType } from '@suite-common/wallet-core';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
 
 import { RECEIVE } from 'src/actions/wallet/constants';

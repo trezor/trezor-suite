@@ -1,5 +1,5 @@
-import { selectAddressDisplayType } from '@suite/settings';
 import { selectDeviceUnavailableCapabilities } from '@suite-common/device';
+import { selectAddressDisplayType } from '@suite-common/wallet-core';
 import {
     AddressDisplayOptions,
     type ReviewOutput,

@@ -1,11 +1,10 @@
 import { selectIsDeviceLocked } from '@suite/locks';
 import { closeModal, openModal } from '@suite/modal';
-import { selectAddressDisplayType } from '@suite/settings';
 import { selectDevices } from '@suite-common/device';
 import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
 import { getDeviceInstances } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { selectAccountByKey } from '@suite-common/wallet-core';
+import { selectAccountByKey, selectAddressDisplayType } from '@suite-common/wallet-core';
 import { type Account, type AccountKey, AddressDisplayOptions } from '@suite-common/wallet-types';
 import { getUtxoOutpoint } from '@suite-common/wallet-utils';
 import {

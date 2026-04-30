@@ -6,6 +6,7 @@ import { MODAL_CLOSE, MODAL_OPEN_USER_CONTEXT } from '@suite/modal';
 import { routerLocationChange } from '@suite/router';
 import { suiteSettingsActions } from '@suite/settings';
 import { addLog } from '@suite-common/logger';
+import { WALLET_SETTINGS } from '@suite-common/wallet-core';
 import { redactUserPathFromString } from '@trezor/utils';
 
 import { PROTOCOL, SUITE } from 'src/actions/suite/constants';
@@ -20,7 +21,7 @@ const log =
         switch (action.type) {
             case suiteSettingsActions.setLanguage.type:
             case suiteSettingsActions.setTheme.type:
-            case suiteSettingsActions.setAddressDisplayType.type:
+            case WALLET_SETTINGS.SET_ADDRESS_DISPLAY_TYPE:
             case suiteSettingsActions.setAutodetect.type:
             case METADATA.ENABLE:
             case METADATA.DISABLE:

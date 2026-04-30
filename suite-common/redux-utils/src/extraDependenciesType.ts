@@ -13,11 +13,7 @@ import { type MigrateSuiteSyncLabelsForRbfTransactionDep } from '@suite-common/s
 import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
 import { type ReportSecurityCheckDep, type UserContextPayload } from '@suite-common/suite-types';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import {
-    type Account,
-    type AddressDisplayOptions,
-    type SelectedAccountStatus,
-} from '@suite-common/wallet-types';
+import { type Account, type SelectedAccountStatus } from '@suite-common/wallet-types';
 import { type Analytics } from '@trezor/analytics-uploader';
 import {
     type BluetoothDeviceId,
@@ -71,7 +67,6 @@ export type ExtraDependenciesStatic = {
         selectDesktopBinDir: SuiteCompatibleSelector<string | undefined>;
         selectLanguage: SuiteCompatibleSelector<string>;
         selectIsWindowVisible: SuiteCompatibleSelector<boolean>;
-        selectAddressDisplayType: SuiteCompatibleSelector<AddressDisplayOptions>;
         selectSelectedAccount: SuiteCompatibleSelector<SelectedAccountStatus>;
         selectSelectedAccountStatus: SuiteCompatibleSelector<SelectedAccountStatus['status']>;
         selectTradingEnvironment: SuiteCompatibleSelector<

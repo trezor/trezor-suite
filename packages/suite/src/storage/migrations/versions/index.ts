@@ -19,3 +19,4 @@ export { default as m26_4_0 } from './26.4.0';
 export { default as m26_4_0_1 } from './26.4.0.1';
 export { default as m26_4_0_2 } from './26.4.0.2';
 export { default as m26_5_0 } from './26.5.0';
+export { default as m26_5_0_1 } from './26.5.0.1';

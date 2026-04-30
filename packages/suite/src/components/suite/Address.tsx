@@ -1,9 +1,9 @@
 import styled, { type RuleSet, css } from 'styled-components';
 
-import { selectAddressDisplayType } from '@suite/settings';
 import { selectSelectedDevice } from '@suite-common/device';
 import { AddressFormatter } from '@suite-common/formatters';
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
+import { selectAddressDisplayType } from '@suite-common/wallet-core';
 import { IconButton, Row, Text, type TextProps, Tooltip } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { type TypographyStyle } from '@trezor/theme';

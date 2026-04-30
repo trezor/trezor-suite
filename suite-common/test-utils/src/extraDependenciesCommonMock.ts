@@ -16,11 +16,7 @@ import {
 } from '@suite-common/redux-utils';
 import type { SuiteSync } from '@suite-common/suite-sync-types';
 import { type ReportSecurityCheckParams, asDelegatedIdentityKey } from '@suite-common/suite-types';
-import {
-    AddressDisplayOptions,
-    type SelectedAccountLoaded,
-    asAccountDescriptor,
-} from '@suite-common/wallet-types';
+import { type SelectedAccountLoaded, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type Analytics } from '@trezor/analytics-uploader';
 import { err, ok } from '@trezor/type-utils';
@@ -108,10 +104,6 @@ export const extraDependenciesCommonMock: ExtraDependencies = {
         }),
         selectDesktopBinDir: notImplementedSelector('selectDesktopBinDir', '/bin'),
         selectLanguage: notImplementedSelector('selectLanguage', 'en'),
-        selectAddressDisplayType: notImplementedSelector(
-            'selectAddressDisplayType',
-            AddressDisplayOptions.CHUNKED,
-        ),
         selectSelectedAccount: notImplementedSelector('selectSelectedAccount', {
             status: 'loaded',
             account: mockWalletAccount({

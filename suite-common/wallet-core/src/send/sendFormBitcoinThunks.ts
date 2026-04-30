@@ -39,6 +39,7 @@ import {
     type SignTransactionThunkArguments,
 } from './sendFormTypes';
 import {
+    selectAddressDisplayType,
     selectAreSatsAmountUnit,
     selectBitcoinAmountUnit,
 } from '../settings/walletSettingsReducer';
@@ -251,12 +252,8 @@ export const signBitcoinSendFormTransactionThunk = createThunk<
     `${SEND_MODULE_PREFIX}/signBitcoinSendFormTransactionThunk`,
     async (
         { formState, precomposedTransaction, selectedAccount, device, paymentRequests },
-        { getState, extra, rejectWithValue },
+        { getState, rejectWithValue },
     ) => {
-        const {
-            selectors: { selectAddressDisplayType },
-        } = extra;
-
         const bitcoinAmountUnit = selectBitcoinAmountUnit(getState());
         const transactions = selectTransactions(getState());
         const addressDisplayType = selectAddressDisplayType(getState());
