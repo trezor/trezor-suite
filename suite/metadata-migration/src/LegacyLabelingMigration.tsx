@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
-import { selectIsSuiteSyncDebugEnabled, selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
+import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { Tooltip } from '@trezor/components';
 import { type StaticSessionId } from '@trezor/connect';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
@@ -29,12 +29,10 @@ export const LegacyLabelingMigration = ({
     const [isModalVisible, setIsModalVisible] = useState(false);
     const selectedDevice = useSelector(selectSelectedDevice);
     const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
-    const isSuiteSyncDebugEnabled = useSelector(selectIsSuiteSyncDebugEnabled);
 
     const isMigratable = isMigratableDevice(selectedDevice);
 
-    // Todo: remove the `isSuiteSyncDebugEnabled` check after we are confident to offer migration
-    if (!isSuiteSyncEnabled || !isSuiteSyncDebugEnabled) {
+    if (!isSuiteSyncEnabled) {
         return null;
     }
 
