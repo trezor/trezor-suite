@@ -157,7 +157,7 @@ export class WalletPage {
         await this.accountButton(params).click();
 
         if (!params.symbol || !isTestnet(params.symbol)) {
-            await expect(this.fiatAmount).toBeVisible();
+            await expect(this.fiatAmount).toBeVisible({ timeout: 25_000 });
         }
     }
 

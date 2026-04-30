@@ -37,6 +37,7 @@ export class OnboardingPage {
         this.page.getByTestId(`@onboarding/select-seed-type-${backupType}`);
     readonly selectSeedTypeOpenButton: Locator;
     readonly selectSeedConfirmButton: Locator;
+    readonly finalButton: Locator;
     readonly continueAtYourOwnRiskButton: Locator;
     readonly deviceCompromisedModal: Locator;
     readonly pairingInputAtIndex = (index: number) =>
@@ -76,6 +77,7 @@ export class OnboardingPage {
         this.selectSeedConfirmButton = this.page.getByTestId(
             '@onboarding/select-seed-type-confirm',
         );
+        this.finalButton = this.page.getByTestId('@onboarding/final-button');
         this.continueAtYourOwnRiskButton = this.page.getByTestId('@continue-to-suite');
         this.deviceCompromisedModal = this.page.getByTestId('@device-compromised');
     }

@@ -72,6 +72,7 @@ test.describe('Onboarding - create wallet', { tag: ['@desktopOnly', '@T3T1', '@s
 
                 await devicePrompt.confirmOnDevicePromptIsShown();
                 await device.pressYes();
+                await onboardingPage.finalButton.click();
             });
 
             await test.step('Enable Bitcoin so discovery can be attempted', async () => {

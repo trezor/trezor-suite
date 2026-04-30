@@ -62,6 +62,7 @@ test.describe('Onboarding - create wallet', { tag: ['@T3W1'] }, () => {
             await device.pressYes();
 
             await test.step('Finish wallet creation', async () => {
+                await onboardingPage.finalButton.click();
                 await dashboardPage.discoveryEmptyPrimaryButton.click();
                 await assetsSection.enableNetworkViaActivateAssetsModal(['btc', 'eth']);
 
