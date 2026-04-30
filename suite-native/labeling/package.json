@@ -15,7 +15,6 @@
         "@gorhom/bottom-sheet": "5.2.8",
         "@react-navigation/native": "7.1.28",
         "@reduxjs/toolkit": "2.11.2",
-        "@suite-common/bip329": "workspace:*",
         "@suite-common/device": "workspace:*",
         "@suite-common/message-system": "workspace:*",
         "@suite-common/suite-sync": "workspace:*",
@@ -36,10 +35,7 @@
         "@suite-native/settings": "workspace:*",
         "@suite-native/toasts": "workspace:*",
         "@trezor/connect": "workspace:*",
-        "@trezor/styles-native": "workspace:*",
         "@trezor/type-utils": "workspace:*",
-        "expo-file-system": "~55.0.10",
-        "expo-sharing": "~55.0.11",
         "react": "19.2.4",
         "react-native": "0.83.2",
         "react-redux": "9.2.0"
