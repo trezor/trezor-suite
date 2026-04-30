@@ -13,7 +13,7 @@ import { createDeferredManager, removeTrailingSlashes } from '@trezor/utils';
 
 type BuildUrlParams = {
     method: string;
-    id: number;
+    id: string;
     params: any;
     connectSrc: string | undefined;
     callbackUrl: string;
@@ -22,7 +22,7 @@ type BuildUrlParams = {
 
 const buildUrl = ({ method, id, params, connectSrc, callbackUrl, manifest }: BuildUrlParams) => {
     const urlWithParams = new URL(callbackUrl);
-    urlWithParams.searchParams.set('id', id.toString());
+    urlWithParams.searchParams.set('id', id);
 
     return (
         removeTrailingSlashes(connectSrc || DEFAULT_DOMAIN_MAJOR_VER) +
@@ -45,7 +45,7 @@ interface ConnectSettingsMobile {
 
 export class TrezorConnectDeeplink implements ConnectFactoryDependencies<ConnectSettingsMobile> {
     public eventEmitter = new ConnectEmitter();
-    private messages = createDeferredManager();
+    private messages = createDeferredManager({ generateId: (): string => crypto.randomUUID() });
 
     private manifest?: Manifest;
 
@@ -53,7 +53,7 @@ export class TrezorConnectDeeplink implements ConnectFactoryDependencies<Connect
         return Promise.resolve(createErrorMessage(ERRORS.TypedError('Method_InvalidPackage')));
     }
 
-    private openDeeplink: (method: string, id: number, params: any) => void = () => {
+    private openDeeplink: (method: string, id: string, params: any) => void = () => {
         throw ERRORS.TypedError('Init_NotInitialized');
     };
 
@@ -131,8 +131,7 @@ export class TrezorConnectDeeplink implements ConnectFactoryDependencies<Connect
         try {
             parsedUrl = new URL(url);
             id = parsedUrl.searchParams.get('id');
-            if (!id || isNaN(Number(id))) throw new Error('Missing `id` parameter.');
-            id = Number(id);
+            if (!id) throw new Error('Missing `id` parameter.');
         } catch (error) {
             this.resolveMessagePromises({ success: false, error });
 
