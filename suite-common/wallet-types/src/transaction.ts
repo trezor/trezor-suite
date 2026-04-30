@@ -83,6 +83,9 @@ export const asTxTargetId = (value: string) => value as TxTargetId;
 export type Output = {
     type: 'payment' | 'opreturn';
     address: string;
+    // Onchain hex address a named input (e.g. ENS) resolved to, if any. The user-typed
+    // name stays on `address`; composing/signing uses this resolved value when present.
+    resolvedAddress?: string;
     amount: string;
     fiat: string;
     currency: BaseCurrencyOption;

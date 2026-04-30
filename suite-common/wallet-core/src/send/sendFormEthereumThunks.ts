@@ -314,7 +314,9 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
 
         const { output, tokenInfo, decimals } = composedOutput;
         const { availableBalance } = account;
-        const { address, amount } = firstOutput;
+        const { amount } = firstOutput;
+        // Use the resolved onchain address for a named input (e.g. ENS), otherwise the raw input.
+        const address = firstOutput.resolvedAddress ?? firstOutput.address;
 
         const ethereumEstimateFeeParams =
             isApproveTx && contract
@@ -624,7 +626,8 @@ export const signEthereumSendFormTransactionThunk = createThunk<
         const transaction = prepareEthereumTransaction({
             token: precomposedTransaction.token,
             chainId: network.chainId,
-            to: firstSignOutput.address,
+            // Use the resolved onchain address for a named input (e.g. ENS), otherwise the raw input.
+            to: firstSignOutput.resolvedAddress ?? firstSignOutput.address,
             amount: firstSignOutput.amount,
             data: formState.transactionData,
             gasLimit: precomposedTransaction.feeLimit || '',

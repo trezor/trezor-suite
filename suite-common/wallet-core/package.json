@@ -55,6 +55,7 @@
         "@trezor/network-stellar": "workspace:*",
         "@trezor/network-tron": "workspace:*",
         "@trezor/protobuf": "workspace:*",
+        "@trezor/react-utils": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "lodash": "^4.18.1",
