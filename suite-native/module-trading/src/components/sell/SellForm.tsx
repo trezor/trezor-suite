@@ -13,6 +13,7 @@ import { useFocusedValueWatch } from '../../hooks/general/useFocusedValueWatch';
 import { useMountedRecentlyFlag } from '../../hooks/general/useMountedRecentlyFlag';
 import { useSellFormContext } from '../../hooks/sell/useSellFormContext';
 import { useSellQuotes } from '../../hooks/sell/useSellQuotes';
+import { ConciergeAlert } from '../concierge/ConciergeAlert';
 import { BuySellKYCWarning } from '../general/BuySellKYCWarning';
 
 type SellFormProps = {
@@ -67,6 +68,7 @@ const SellFormMemoized = memo(
                             />
                             <BuySellKYCWarning type="sell" />
                             <SellConfirmation enteringAnimation={enteringAnimation} />
+                            <ConciergeAlert tradingType="sell" />
                         </>
                     )}
                 </VStack>

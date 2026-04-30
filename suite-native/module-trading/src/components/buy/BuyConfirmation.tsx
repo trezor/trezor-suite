@@ -1,4 +1,4 @@
-import { type AnimatedProps, FadeIn, FadeOutDown } from 'react-native-reanimated';
+import { type AnimatedProps, FadeOutDown } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import {
@@ -38,28 +38,24 @@ export const BuyConfirmation = ({ enteringAnimation }: ConfirmationProps) => {
             buttonTestId: CONFIRMATION_TEST_ID,
         });
 
-    return (
-        <AnimatedBox entering={enteringAnimation} exiting={FadeOutDown}>
-            {isReceivingInactiveStellarToken
-                ? activateButtonElement
-                : canProceed && (
-                      <AnimatedBox entering={FadeIn}>
-                          <Button
-                              onPress={selectQuote}
-                              testID={CONFIRMATION_TEST_ID}
-                              iconRight="arrowSquareOut"
-                          >
-                              {providerName ? (
-                                  <Translation
-                                      id="moduleTrading.tradingScreen.buttons.buyVia"
-                                      values={{ providerName }}
-                                  />
-                              ) : (
-                                  <Translation id="moduleTrading.tradingScreen.buttons.continue" />
-                              )}
-                          </Button>
-                      </AnimatedBox>
-                  )}
-        </AnimatedBox>
-    );
+    return isReceivingInactiveStellarToken
+        ? activateButtonElement
+        : canProceed && (
+              <AnimatedBox entering={enteringAnimation} exiting={FadeOutDown}>
+                  <Button
+                      onPress={selectQuote}
+                      testID={CONFIRMATION_TEST_ID}
+                      iconRight="arrowSquareOut"
+                  >
+                      {providerName ? (
+                          <Translation
+                              id="moduleTrading.tradingScreen.buttons.buyVia"
+                              values={{ providerName }}
+                          />
+                      ) : (
+                          <Translation id="moduleTrading.tradingScreen.buttons.continue" />
+                      )}
+                  </Button>
+              </AnimatedBox>
+          );
 };

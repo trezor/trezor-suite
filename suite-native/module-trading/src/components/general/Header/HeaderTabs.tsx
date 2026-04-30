@@ -1,6 +1,6 @@
-import { useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
 import { FlatList } from 'react-native-gesture-handler';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { type TradingTypeWithConcierge } from '@suite-common/trading';
 import { events } from '@suite-native/analytics';
@@ -9,29 +9,12 @@ import { FeatureFlag, selectIsFeatureFlagEnabled } from '@suite-native/feature-f
 import { type IconName } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';
 import { useAnalytics } from '@suite-native/services';
-import {
-    type TradingWithFeatureFlagsRootState,
-    selectActiveTradingType,
-    tradingActions,
-} from '@suite-native/trading-state';
+import { type TradingWithFeatureFlagsRootState } from '@suite-native/trading-state';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { HeaderTab } from './HeaderTab';
+import { useTradingTabs } from '../../../hooks/general/useTradingTabs';
 import { AdvancedSettingsSheet } from '../../settings/AdvancedSettingsSheet';
-
-const useSelectedTab = () => {
-    const dispatch = useDispatch();
-    const activeTab = useSelector(selectActiveTradingType);
-
-    const setActiveTab = useCallback(
-        (tab: TradingTypeWithConcierge) => {
-            dispatch(tradingActions.setActiveTradingType(tab));
-        },
-        [dispatch],
-    );
-
-    return { activeTab, setActiveTab };
-};
 
 const useTabsData = () => {
     const { translate } = useTranslate();
@@ -74,7 +57,7 @@ const tabsStyle = prepareNativeStyle(({ spacings }) => ({
 
 export const HeaderTabs = () => {
     const { applyStyle } = useNativeStyles();
-    const { activeTab, setActiveTab } = useSelectedTab();
+    const { activeTab, setActiveTab } = useTradingTabs();
     const data = useTabsData();
     const { translate } = useTranslate();
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();

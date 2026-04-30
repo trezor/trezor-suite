@@ -3147,6 +3147,14 @@ export const messages = {
                 concierge: 'Concierge',
             },
             concierge: {
+                alert: {
+                    labelBuy:
+                        'For buys over 50,000 EUR, use Concierge for competitive, private, and secure trades.',
+                    labelSell:
+                        'For sells over 50,000 EUR, use Concierge for competitive, private, and secure trades.',
+                    ctaBuy: 'Buy with Concierge',
+                    ctaSell: 'Sell with Concierge',
+                },
                 infoCard: {
                     title: 'Large trades, made simple',
                     description:

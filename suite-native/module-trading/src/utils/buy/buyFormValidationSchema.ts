@@ -6,6 +6,8 @@ import {
     getAmountLimitContext,
 } from '../general/validationSchemes';
 
+export const CRYPTO_MAX__FORM_TYPE = 'crypto-max';
+
 export const buyFormValidationSchema = yup.object({
     cryptoValue: yup
         .number()
@@ -37,7 +39,7 @@ export const buyFormValidationSchema = yup.object({
                 }),
             });
         })
-        .test('crypto-max', (value, testContext) => {
+        .test(CRYPTO_MAX__FORM_TYPE, (value, testContext) => {
             const {
                 currency,
                 maxCrypto,
