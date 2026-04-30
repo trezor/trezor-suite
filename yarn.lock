@@ -10988,7 +10988,6 @@ __metadata:
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/toast-notifications": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
-    "@suite-common/wallet-constants": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/connect": "workspace:*"
@@ -11801,6 +11800,7 @@ __metadata:
     "@blockaid/client": "npm:^0.65.0"
     "@suite-common/react-query": "workspace:^"
     "@suite-common/wallet-config": "workspace:^"
+    "@suite-common/wallet-constants": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     react: "npm:19.2.4"
   languageName: unknown

@@ -4,6 +4,7 @@
     "references": [
         { "path": "../react-query" },
         { "path": "../wallet-config" },
+        { "path": "../wallet-constants" },
         { "path": "../wallet-types" }
     ],
     "include": [".", "**/*.json"]

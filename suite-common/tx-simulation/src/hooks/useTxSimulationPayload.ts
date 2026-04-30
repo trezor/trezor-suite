@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 
 import { type JsonRpcScanParams } from '@blockaid/client/resources/evm';
 
+import { U_INT_32 } from '@suite-common/wallet-constants';
 import { type TxSimulationAction, type TxSimulationMethod } from '@suite-common/wallet-types';
 
 function transformPayloadOfEthereumSignTransaction({
@@ -19,7 +20,8 @@ function transformPayloadOfEthereumSignTransaction({
                     to: transaction.to || '',
                     value: transaction.value || '0x0',
                     data: transaction.data || '0x',
-                    gas: transaction.gasLimit,
+                    // Ensure a high gas limit to prevent out of gas errors during simulation
+                    gas: `0x${U_INT_32.toString(16)}`,
                 },
             ],
         },
