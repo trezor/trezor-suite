@@ -20,13 +20,8 @@ import {
 
 import { CollapsedSidebarOnly } from 'src/components/suite/layouts/SuiteLayout/Sidebar/CollapsedSidebarOnly';
 import { ExpandedSidebarOnly } from 'src/components/suite/layouts/SuiteLayout/Sidebar/ExpandedSidebarOnly';
-import {
-    useAccountSearch,
-    useDiscovery,
-    useDispatch,
-    useSelector,
-    useSuiteServices,
-} from 'src/hooks/suite';
+import { useAccountSearch, useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
+import { useSuiteServices } from 'src/support/SuiteServicesProvider';
 
 import { AccountSearchBox } from './AccountSearchBox';
 import { AddAccountButton } from './AddAccountButton';

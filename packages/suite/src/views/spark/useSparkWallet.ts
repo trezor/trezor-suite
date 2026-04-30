@@ -12,7 +12,8 @@ import {
 } from '@suite-common/spark';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 
-import { useDispatch, useSelector, useSuiteServices } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSuiteServices } from 'src/support/SuiteServicesProvider';
 
 type SparkRouteName = 'spark-index' | 'spark-send' | 'spark-receive';
 
@@ -60,9 +61,10 @@ export const useSparkWallet = () => {
             return;
         }
 
-        void spark.loadSparkWallet({
+        void spark.syncSparkWallet({
             accountNumber: selectedAccount.accountNumber,
             deviceStaticSessionId,
+            setLoading: true,
             walletDescriptor,
         });
     }, [
@@ -123,9 +125,10 @@ export const useSparkWallet = () => {
             return;
         }
 
-        void spark.refreshSparkLightningInvoice({
+        void spark.syncSparkWallet({
             accountNumber: selectedAccount.accountNumber,
             deviceStaticSessionId,
+            setLoading: true,
             walletDescriptor,
         });
     };
@@ -135,9 +138,10 @@ export const useSparkWallet = () => {
             return;
         }
 
-        void spark.loadSparkWallet({
+        void spark.syncSparkWallet({
             accountNumber: selectedAccount.accountNumber,
             deviceStaticSessionId,
+            setLoading: true,
             walletDescriptor,
         });
     };

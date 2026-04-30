@@ -1,9 +1,8 @@
 import type { Dispatch } from '@reduxjs/toolkit';
 
-import { type EnsureSparkOwnerSecretDep } from './createEnsureSparkOwnerSecret';
-import { type LoadSparkWalletDep, type SparkWalletParams } from './createLoadSparkWallet';
+import { type EnsureSparkWalletDep, type SparkWalletParams } from './createEnsureSparkWallet';
+import { type SyncSparkWalletDep } from './createSyncSparkWallet';
 import { sparkActions } from './sparkFeatureReducer';
-import { createSparkWalletKey } from '../accounts/sparkAccounts';
 import { paySparkLightningInvoice } from '../sdk/paySparkLightningInvoice';
 
 export type SparkLightningSendParams = SparkWalletParams & {
@@ -19,8 +18,8 @@ export type SubmitSparkLightningSendDep = {
 
 export type SubmitSparkLightningSendDeps = {
     dispatch: Dispatch;
-} & EnsureSparkOwnerSecretDep &
-    LoadSparkWalletDep;
+} & EnsureSparkWalletDep &
+    SyncSparkWalletDep;
 
 export const createSubmitSparkLightningSend =
     (deps: SubmitSparkLightningSendDeps): SubmitSparkLightningSend =>
@@ -32,28 +31,19 @@ export const createSubmitSparkLightningSend =
             }),
         );
 
-        const ownerSecretResult = await deps.ensureSparkOwnerSecret({
-            deviceStaticSessionId: params.deviceStaticSessionId,
+        const ensuredSparkWallet = await deps.ensureSparkWallet({
+            ...params,
         });
 
-        if (!ownerSecretResult.success) {
-            deps.dispatch(
-                sparkActions.setSparkWalletError({
-                    accountNumber: params.accountNumber,
-                    error: ownerSecretResult.error.message,
-                    walletDescriptor: params.walletDescriptor,
-                }),
-            );
-
+        if (ensuredSparkWallet === null) {
             return false;
         }
 
         const sendResult = await paySparkLightningInvoice({
-            accountNumber: params.accountNumber,
             amountSats: params.amountSats,
             invoice: params.invoice,
-            ownerSecret: ownerSecretResult.payload,
-            walletKey: createSparkWalletKey(params),
+            wallet: ensuredSparkWallet.wallet,
+            walletKey: ensuredSparkWallet.walletKey,
         });
 
         if (!sendResult.success) {
@@ -68,7 +58,10 @@ export const createSubmitSparkLightningSend =
             return false;
         }
 
-        await deps.loadSparkWallet(params);
+        await deps.syncSparkWallet({
+            ...params,
+            setLoading: false,
+        });
 
         return true;
     };

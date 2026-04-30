@@ -1,6 +1,7 @@
 import type { Dispatch } from '@reduxjs/toolkit';
 
-import { type LoadSparkWalletDep, type SparkWalletParams } from './createLoadSparkWallet';
+import { type SparkWalletParams } from './createEnsureSparkWallet';
+import { type SyncSparkWalletDep } from './createSyncSparkWallet';
 import { sparkActions } from './sparkFeatureReducer';
 
 export type AddSparkAccount = (params: SparkWalletParams) => Promise<void>;
@@ -11,7 +12,7 @@ export type AddSparkAccountDep = {
 
 export type AddSparkAccountDeps = {
     dispatch: Dispatch;
-} & LoadSparkWalletDep;
+} & SyncSparkWalletDep;
 
 export const createAddSparkAccount =
     (deps: AddSparkAccountDeps): AddSparkAccount =>
@@ -29,5 +30,8 @@ export const createAddSparkAccount =
             }),
         );
 
-        await deps.loadSparkWallet(params);
+        await deps.syncSparkWallet({
+            ...params,
+            setLoading: true,
+        });
     };

@@ -12,17 +12,24 @@ import {
     type EnsureSparkOwnerSecretDep,
     createEnsureSparkOwnerSecret,
 } from './feature/createEnsureSparkOwnerSecret';
-import { createLoadSparkWallet } from './feature/createLoadSparkWallet';
-import type { LoadSparkWalletDep } from './feature/createLoadSparkWallet';
-import { createRefreshSparkLightningInvoice } from './feature/createRefreshSparkLightningInvoice';
-import type { RefreshSparkLightningInvoiceDep } from './feature/createRefreshSparkLightningInvoice';
+import {
+    type EnsureSparkWalletDep,
+    createEnsureSparkWallet,
+} from './feature/createEnsureSparkWallet';
+import { createRunningSparkWalletRepository } from './feature/createRunningSparkWalletRepository';
+import { createSparkWalletSubscriptionStorage } from './feature/createSparkWalletSubscriptionStorage';
 import { createSubmitSparkLightningSend } from './feature/createSubmitSparkLightningSend';
 import type { SubmitSparkLightningSendDep } from './feature/createSubmitSparkLightningSend';
+import {
+    type SyncSparkWalletDep,
+    createSyncSparkWallet,
+    createSyncSparkWalletState,
+} from './feature/createSyncSparkWallet';
 
 export type Spark = AddSparkAccountDep &
     EnsureSparkOwnerSecretDep &
-    LoadSparkWalletDep &
-    RefreshSparkLightningInvoiceDep &
+    EnsureSparkWalletDep &
+    SyncSparkWalletDep &
     SubmitSparkLightningSendDep;
 
 export type SparkDep = {
@@ -42,29 +49,40 @@ export type SparkCompositionRootDeps = SparkStoreDeps &
 export const createSparkCompositionRoot = (deps: SparkCompositionRootDeps): Spark => {
     const ensureSparkOwnerSecret = createEnsureSparkOwnerSecret(deps);
 
-    const loadSparkWallet = createLoadSparkWallet({
+    const runningSparkWalletRepository = createRunningSparkWalletRepository();
+    const sparkWalletSubscriptionStorage = createSparkWalletSubscriptionStorage();
+    const syncSparkWalletState = createSyncSparkWalletState({ dispatch: deps.dispatch });
+
+    const ensureSparkWallet = createEnsureSparkWallet({
         dispatch: deps.dispatch,
         ensureSparkOwnerSecret,
+        runningSparkWalletRepository,
+        sparkWalletSubscriptionStorage,
+        syncSparkWalletState,
+    });
+
+    const syncSparkWallet = createSyncSparkWallet({
+        dispatch: deps.dispatch,
+        ensureSparkWallet,
+        syncSparkWalletState,
     });
 
     const addSparkAccount = createAddSparkAccount({
         dispatch: deps.dispatch,
-        loadSparkWallet,
+        syncSparkWallet,
     });
-
-    const refreshSparkLightningInvoice = createRefreshSparkLightningInvoice({ loadSparkWallet });
 
     const submitSparkLightningSend = createSubmitSparkLightningSend({
         dispatch: deps.dispatch,
-        ensureSparkOwnerSecret,
-        loadSparkWallet,
+        ensureSparkWallet,
+        syncSparkWallet,
     });
 
     return {
         addSparkAccount,
         ensureSparkOwnerSecret,
-        loadSparkWallet,
-        refreshSparkLightningInvoice,
+        ensureSparkWallet,
+        syncSparkWallet,
         submitSparkLightningSend,
     };
 };

@@ -1,8 +1,9 @@
+import { type SparkWallet } from '@buildonspark/spark-sdk';
+
 import { type Result, err, ok } from '@trezor/type-utils';
 
 import { getErrorMessage } from './getErrorMessage';
 import { getLightningInvoice } from './getLightningInvoice';
-import { type SparkWalletClientParams, getSdkWallet } from './getSdkWallet';
 import { type SparkWalletClientError } from './getSparkWalletMnemonic';
 import { mapSparkTransfer } from './mapSparkTransfer';
 import { type SparkTransfer } from '../feature/sparkFeatureReducer';
@@ -17,30 +18,28 @@ type SparkWalletSnapshot = {
     transfers: SparkTransfer[];
 };
 
+type LoadSparkWalletSnapshotParams = {
+    mnemonic: string;
+    wallet: SparkWallet;
+};
+
 export const loadSparkWalletSnapshot = async (
-    params: SparkWalletClientParams,
+    params: LoadSparkWalletSnapshotParams,
 ): Promise<Result<SparkWalletSnapshot, SparkWalletClientError>> => {
-    const walletResult = await getSdkWallet(params);
-
-    if (!walletResult.success) {
-        return walletResult;
-    }
-
     try {
-        const { wallet, mnemonic } = walletResult.payload;
         const [{ satsBalance }, bitcoinDepositAddress, lightningInvoice, transfersResult] =
             await Promise.all([
-                wallet.getBalance(),
-                wallet.getStaticDepositAddress(),
-                getLightningInvoice(wallet),
-                wallet.getTransfers(DEFAULT_TRANSFERS_PAGE_SIZE, 0),
+                params.wallet.getBalance(),
+                params.wallet.getStaticDepositAddress(),
+                getLightningInvoice(params.wallet),
+                params.wallet.getTransfers(DEFAULT_TRANSFERS_PAGE_SIZE, 0),
             ]);
 
         return ok({
             balanceSats: satsBalance.available.toString(),
             bitcoinDepositAddress,
             lightningInvoice,
-            mnemonic,
+            mnemonic: params.mnemonic,
             transfers: transfersResult.transfers.map(mapSparkTransfer),
         });
     } catch (error) {
