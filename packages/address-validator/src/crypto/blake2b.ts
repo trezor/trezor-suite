@@ -1,4 +1,3 @@
-'use strict';
 /* eslint-disable @typescript-eslint/no-use-before-define, import/no-default-export */
 
 type Blake2bContext = {

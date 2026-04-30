@@ -20,7 +20,6 @@
 const moduleExports: { JSBigInt?: any } = {};
 
 (function (exports) {
-    'use strict';
     /*
         Class: BigInteger
         An arbitrarily-large integer.

@@ -10,7 +10,6 @@
  * @copyright Chen, Yi-Cyuan 2015-2017
  * @license MIT
  */
-'use strict';
 
 var ERROR = 'input is invalid type';
 var WINDOW = typeof window === 'object';
