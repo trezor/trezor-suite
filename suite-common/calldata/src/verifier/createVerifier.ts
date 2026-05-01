@@ -37,8 +37,9 @@ export const createVerifier = <const T extends Abi>(config: { abi: T }) => {
 
         try {
             const decoded = decodeFunctionData({ abi: config.abi, data: externalHex });
+            const args = decoded.args ?? [];
 
-            if (!Array.isArray(decoded.args)) {
+            if (!Array.isArray(args)) {
                 return { isValid: false, issues: [{ code: 'DECODING_FAILED', field: null }] };
             }
 
@@ -54,7 +55,7 @@ export const createVerifier = <const T extends Abi>(config: { abi: T }) => {
                     );
                 }
 
-                const decodedValue = decoded.args[index];
+                const decodedValue = args[index];
                 const expectedValue = params[field];
 
                 if (!valuesEqual(decodedValue, expectedValue)) {

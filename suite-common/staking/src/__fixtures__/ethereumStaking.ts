@@ -1,7 +1,7 @@
-import { ETH_NETWORK_ADDRESSES } from '@everstake/wallet-sdk-ethereum';
-
 import { type EthValidatorsQueue } from '@suite-common/earn-staking-api';
 import { DAYS_TO_ADD_TO_POOL_DEFAULT } from '@suite-common/wallet-constants';
+
+import { ETH_NETWORK_ADDRESSES } from '../constants/ethereumNetworkAddresses';
 
 export const transformTxFixtures = [
     {
@@ -684,18 +684,25 @@ export const getEthNetworkForWalletSdkFixture = [
         result: 'mainnet',
     },
     {
-        description: 'should return "mainnet" for undefined',
+        description: 'should return null for undefined',
         args: {
             symbol: undefined,
         },
-        result: 'mainnet',
+        result: null,
     },
     {
-        description: 'should return "mainnet" for an unknown symbol',
+        description: 'should return null for an unknown symbol',
         args: {
             symbol: 'unknown' as const,
         },
-        result: 'mainnet',
+        result: null,
+    },
+    {
+        description: 'should return null for a non-staking network symbol',
+        args: {
+            symbol: 'btc' as const,
+        },
+        result: null,
     },
 ];
 
@@ -781,6 +788,19 @@ export const getInstantStakeTypeFixture = [
             },
             address: 'address',
             symbol: 'eth' as const,
+        },
+        result: null,
+    },
+    {
+        description:
+            'should return null for an unsupported network symbol even if addresses match mainnet contracts',
+        args: {
+            internalTransfer: {
+                from: ETH_NETWORK_ADDRESSES.mainnet.addressContractPool,
+                to: ETH_NETWORK_ADDRESSES.mainnet.addressContractWithdrawTreasury,
+            },
+            address: 'address',
+            symbol: 'pol' as const,
         },
         result: null,
     },

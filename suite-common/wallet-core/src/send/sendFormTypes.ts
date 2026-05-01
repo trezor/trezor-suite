@@ -59,7 +59,7 @@ export type SignTransactionTimeoutError = {
 };
 
 export type PushTransactionError = {
-    error: 'push-transaction-failed';
+    error: 'push-transaction-failed' | 'push-transaction-pending-conflict';
     metadata: Err<SerializedError>;
 };
 

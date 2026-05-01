@@ -12,6 +12,8 @@ const DEFAULT_POLICY: PolicyConfig = {
     // Amount
     NEGATIVE_AMOUNT: 'error',
     NOT_INTEGER: 'error',
+    EXCEEDS_UINT16: 'error',
+    EXCEEDS_UINT64: 'error',
     EXCEEDS_UINT256: 'error',
     ZERO_AMOUNT: 'warning',
     INSUFFICIENT_BALANCE: 'warning',

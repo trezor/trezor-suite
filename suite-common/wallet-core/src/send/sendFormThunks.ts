@@ -442,12 +442,20 @@ export const pushSendFormTransactionThunk = createThunk<
             );
         }
 
-        return pushTxResponse.success
-            ? fulfillWithValue(pushTxResponse)
-            : rejectWithValue({
-                  error: 'push-transaction-failed',
-                  metadata: pushTxResponse,
-              });
+        if (pushTxResponse.success) {
+            return fulfillWithValue(pushTxResponse);
+        }
+
+        const isPendingConflict = pushTxResponse.error.message.includes(
+            'could not replace existing tx',
+        );
+
+        return rejectWithValue({
+            error: isPendingConflict
+                ? 'push-transaction-pending-conflict'
+                : 'push-transaction-failed',
+            metadata: pushTxResponse,
+        });
     },
 );
 
