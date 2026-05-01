@@ -26,7 +26,7 @@ import {
 import {
     type SuiteSettingsState,
     selectAddressDisplayType,
-    selectDebugSettings,
+    selectDebugSettings as selectDebugSettingsRaw,
     selectInvityServerEnvironment,
     selectLanguage,
 } from '@suite/settings';
@@ -40,6 +40,7 @@ import {
     type CommonServices,
     type ConnectInitSettings,
     type ExtraDependenciesStatic,
+    type TransportRegistryEntry,
 } from '@suite-common/redux-utils';
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
 import {
@@ -67,6 +68,8 @@ import { buildHistoricRatesFromStorage } from '@suite-common/wallet-utils';
 import TrezorConnect, { type StaticSessionId } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
+import { createBridgeTransports } from '@trezor/transport/src/bridge';
+import { WebUsbTransport } from '@trezor/transport/src/web';
 
 import { type StorageLoadAction } from 'src/actions/suite/storageActions';
 import { selectIsWindowVisible } from 'src/reducers/suite/windowReducer';
@@ -88,6 +91,38 @@ const connectInitSettings: ConnectInitSettings = {
     sharedLogger: false,
     enableFirmwareHashCheck: true,
     firmwareHashCheckTimeouts: FW_HASH_CHECK_DEFAULT_TIMEOUTS,
+};
+
+/**
+ * Web (renderer) transport registry. Desktop renderer never instantiates
+ * transports here — its main process owns the lifecycle and resolves
+ * `transportIds` to instances using its own registry. We therefore only
+ * populate the registry for the web build; on desktop the connect-init
+ * thunk forwards `transportIds` over IPC and lets main resolve.
+ */
+const webTransportRegistry: TransportRegistryEntry[] = isDesktop()
+    ? []
+    : [
+          {
+              id: 'BridgeTransport',
+              description:
+                  'Trezor Bridge HTTP client (node-bridge / trezord-go). Listens on 127.0.0.1:21328 and 127.0.0.1:21325.',
+              factory: () => createBridgeTransports(),
+          },
+          {
+              id: 'WebUsbTransport',
+              description: 'WebUSB API direct device access (Chromium-based browsers).',
+              factory: () => WebUsbTransport,
+          },
+      ];
+
+const webDebugSettings = (state: AppState) => {
+    const debug = selectDebugSettingsRaw(state);
+
+    return {
+        ...debug,
+        transportIds: debug.transports,
+    };
 };
 
 export type StoreAPIDep = {
@@ -158,6 +193,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         reportSecurityCheck,
         saveAs: (data: Blob, fileName: string) => saveAs(data, fileName),
         connectInitSettings,
+        transportRegistry: webTransportRegistry,
         migrateSuiteSyncLabelsForRbfTransaction:
             createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot({
                 dispatch: deps.dispatch,
@@ -177,7 +213,7 @@ export const extraDependencies: ExtraDependenciesStatic = {
     selectors: {
         selectTokenDefinitionsEnabledNetworks: (state: AppState) =>
             state.wallet.settings.enabledNetworks,
-        selectDebugSettings,
+        selectDebugSettings: webDebugSettings,
         // FW binaries on desktop are stored in "*/static/connect/data/firmware/*/*.bin" (see "connect-common" package)
         selectDesktopBinDir: (state: AppState) => state.desktop?.paths?.binDir,
         selectLanguage,

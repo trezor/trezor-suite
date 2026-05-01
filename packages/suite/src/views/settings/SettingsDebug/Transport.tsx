@@ -1,31 +1,33 @@
 import { useMemo } from 'react';
 
-import {
-    type DebugModeOptions,
-    selectDebugTransports,
-    suiteSettingsActions,
-} from '@suite/settings';
+import { selectDebugTransports, suiteSettingsActions } from '@suite/settings';
 import { Checkbox } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
-import { type ArrayElement } from '@trezor/type-utils';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectActiveTransports } from 'src/selectors/suite/suiteSelectors';
 
-type Transport = ArrayElement<NonNullable<DebugModeOptions['transports']>>;
-
 type TransportMenuItem = {
-    name: Transport;
+    id: string;
     description: string;
     active?: boolean;
     checked: boolean;
 };
 
+/**
+ * Available transport ids per platform. These mirror the registry ids
+ * defined in:
+ *   - web: packages/suite/src/support/extraDependencies.ts
+ *   - desktop main: packages/suite-desktop-core/src/modules/trezor-connect.ts
+ *
+ * If a new transport is added on either side, list it here as well so the
+ * debug UI exposes a toggle.
+ */
 const TRANSPORTS_WEB = ['BridgeTransport', 'WebUsbTransport'] as const;
 const TRANSPORTS_DESKTOP = ['BridgeTransport', 'NodeUsbTransport', 'UdpTransport'] as const;
-const TRANSPORT_DESCRIPTIONS: Record<Transport, string> = {
+const TRANSPORT_DESCRIPTIONS: Record<string, string> = {
     BridgeTransport:
         'Client for bridge http interface regardless node-bridge or trezord-go implementation. It expects bridge to run on http://127.0.0.1:21328/ or http://127.0.0.1:21325/.\
         This is the most general transport that may be used for both desktop and web version of Trezor Suite.',
@@ -34,17 +36,17 @@ const TRANSPORT_DESCRIPTIONS: Record<Transport, string> = {
     UdpTransport: 'Direct communication with emulators over udp.',
 };
 
-const useTransportItems = (transports: readonly Transport[]): TransportMenuItem[] => {
+const useTransportItems = (transports: readonly string[]): TransportMenuItem[] => {
     const activeTransports = useSelector(selectActiveTransports);
     const debugTransports = useSelector(selectDebugTransports);
 
     return useMemo(
         () =>
-            transports.map(type => ({
-                name: type,
-                description: TRANSPORT_DESCRIPTIONS[type],
-                active: activeTransports.some(a => a.type === type),
-                checked: debugTransports?.includes(type),
+            transports.map(id => ({
+                id,
+                description: TRANSPORT_DESCRIPTIONS[id] ?? '',
+                active: activeTransports.some(a => a.type === id),
+                checked: debugTransports?.includes(id) ?? false,
             })),
         [transports, activeTransports, debugTransports],
     );
@@ -63,29 +65,30 @@ export const Transport = () => {
                     description="You may override TrezorConnect default settings here. Select your preferred transport clients that are to be used. You will need to reload after changes"
                 />
             </SectionItem>
-            {/* todo: make it drag and drop sortable */}
             {items.map(transport => (
                 <SectionItem
-                    key={transport.name}
-                    data-testid={`@settings/debug/transport/${transport.name}`}
+                    key={transport.id}
+                    data-testid={`@settings/debug/transport/${transport.id}`}
                 >
                     <TextColumn
-                        title={`${transport.name}${transport.active ? ' (Active)' : ''}`}
+                        title={`${transport.id}${transport.active ? ' (Active)' : ''}`}
                         description={transport.description}
                     />
                     <ActionColumn>
                         <Checkbox
                             isChecked={transport.checked}
                             onChange={() => {
-                                const nextTransports = items
-                                    .filter(t => (t.name === transport.name) !== t.checked)
-                                    .map(t => t.name);
+                                const nextTransportIds = items
+                                    .filter(t => (t.id === transport.id) !== t.checked)
+                                    .map(t => t.id);
                                 dispatch(
                                     suiteSettingsActions.setDebugMode({
-                                        transports: nextTransports,
+                                        transports: nextTransportIds,
                                     }),
                                 );
-                                TrezorConnect.updateConnectSettings({ transports: nextTransports });
+                                TrezorConnect.updateConnectSettings({
+                                    transportIds: nextTransportIds,
+                                });
                             }}
                         />
                     </ActionColumn>

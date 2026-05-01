@@ -34,6 +34,7 @@
         { "path": "../suite-desktop-api" },
         { "path": "../suite-desktop-native" },
         { "path": "../theme" },
+        { "path": "../transport" },
         { "path": "../transport-bluetooth" },
         { "path": "../transport-bridge" },
         { "path": "../urls" },

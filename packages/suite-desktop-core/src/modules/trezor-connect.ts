@@ -2,12 +2,15 @@ import { ipcMain } from 'electron';
 
 import TrezorConnect, {
     type ConnectSettings,
+    type ConnectSettingsTransport,
     type LocalFirmwares,
     UI_EVENT,
     UI_REQUEST,
     UI_RESPONSE,
 } from '@trezor/connect';
 import { type IpcProxyHandlerOptions, createIpcProxyHandler } from '@trezor/ipc-proxy';
+import { createBridgeTransports } from '@trezor/transport/src/bridge';
+import { NodeUsbTransport, UdpTransport } from '@trezor/transport/src/node';
 import { parseElectrumUrl } from '@trezor/utils';
 
 import { bluetoothModuleState } from './bluetooth';
@@ -48,20 +51,56 @@ const emitOnSetCustomBackendToMainThreadToAllowDomains = ({
     }
 };
 
-// override TrezorConnect.init and TrezorConnect.updateConnectSettings params
-// add BluetoothTransport if bluetooth module is enabled
-const getTransportsParam = (
-    transports?: ConnectSettings['transports'],
-): ConnectSettings['transports'] => {
-    const bluetooth = bluetoothModuleState.getTransport();
-    if (!bluetooth) return transports;
+/**
+ * Desktop-side transport registry. The renderer sends serializable
+ * `transportIds`; this registry maps them to real instances/constructors
+ * before forwarding to TrezorConnect.init / updateConnectSettings (which
+ * runs in this main process).
+ */
+type DesktopRegistryEntry = {
+    id: string;
+    factory: () => ConnectSettingsTransport | ConnectSettingsTransport[];
+};
 
-    if (transports && transports.length > 0) {
-        return [...transports, bluetooth];
+const desktopTransportRegistry = (): DesktopRegistryEntry[] => {
+    const entries: DesktopRegistryEntry[] = [
+        {
+            id: 'BridgeTransport',
+            factory: () => createBridgeTransports(),
+        },
+        { id: 'NodeUsbTransport', factory: () => NodeUsbTransport },
+        { id: 'UdpTransport', factory: () => UdpTransport },
+    ];
+
+    const bluetooth = bluetoothModuleState.getTransport();
+    if (bluetooth) {
+        entries.push({ id: 'BluetoothTransport', factory: () => bluetooth });
     }
 
-    // we don't want to break fallback in https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/device/TransportList.ts#L70
-    return [bluetooth, 'BridgeTransport'];
+    return entries;
+};
+
+const resolveTransportsParam = (settings: {
+    transportIds?: string[];
+}): ConnectSettings['transports'] => {
+    const registry = desktopTransportRegistry();
+    const ids = settings.transportIds;
+    const resolved = (ids?.length ? ids : ['BridgeTransport']).flatMap(id => {
+        const entry = registry.find(r => r.id === id);
+        if (!entry) return [];
+        const result = entry.factory();
+
+        return Array.isArray(result) ? result : [result];
+    });
+
+    // ensure Bluetooth is appended even if not selected explicitly,
+    // mirroring previous behavior
+    const bluetooth = bluetoothModuleState.getTransport();
+    if (bluetooth && !resolved.includes(bluetooth)) {
+        resolved.push(bluetooth);
+    }
+
+    return resolved;
 };
 
 export const initBackground: ModuleInitBackground = ({ mainThreadEmitter, store }) => {
@@ -94,7 +133,8 @@ export const initBackground: ModuleInitBackground = ({ mainThreadEmitter, store 
                     if (localFirmwares.success) {
                         settings.localFirmwares = localFirmwares.payload;
                     }
-                    settings.transports = getTransportsParam(settings.transports);
+                    settings.transports = resolveTransportsParam(settings);
+                    delete settings.transportIds;
 
                     const response = await TrezorConnect.init(settings);
                     await setProxy();
@@ -116,7 +156,8 @@ export const initBackground: ModuleInitBackground = ({ mainThreadEmitter, store 
                 }
 
                 if (method === 'updateConnectSettings') {
-                    params[0].transports = getTransportsParam(params[0].transports);
+                    params[0].transports = resolveTransportsParam(params[0]);
+                    delete params[0].transportIds;
                 }
 
                 return (TrezorConnect[method] as any)(...params);

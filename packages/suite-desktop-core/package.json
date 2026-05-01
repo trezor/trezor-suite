@@ -34,6 +34,7 @@
         "@trezor/suite-desktop-api": "workspace:*",
         "@trezor/suite-desktop-native": "workspace:*",
         "@trezor/theme": "workspace:*",
+        "@trezor/transport": "workspace:*",
         "@trezor/transport-bluetooth": "workspace:*",
         "@trezor/transport-bridge": "workspace:*",
         "@trezor/urls": "workspace:*",

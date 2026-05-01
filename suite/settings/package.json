@@ -20,7 +20,6 @@
         "@suite-common/trading": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@suite/experimental": "workspace:*",
-        "@trezor/connect": "workspace:*",
         "@trezor/env-utils": "workspace:*",
         "@trezor/suite-desktop-api": "workspace:*"
     }

@@ -29,6 +29,7 @@ import { DATA_URL } from '@trezor/urls';
 import { capitalizeFirstLetter, getSynchronize } from '@trezor/utils';
 
 import { blacklist } from './blacklist';
+import { resolveTransports } from './resolveTransports';
 import { type ConnectKey, type ConnectWebKey } from './types';
 
 const CONNECT_INIT_MODULE = '@common/connect-init';
@@ -55,7 +56,7 @@ export const connectInitThunk = createThunk<void, ConnectInitHooks | void, void>
         const {
             selectors: { selectDebugSettings, selectThpSettings },
             actions: { lockDevice },
-            services: { connectInitSettings, analytics },
+            services: { connectInitSettings, analytics, transportRegistry },
         } = extra;
 
         const getEnabledNetworks = () => selectEnabledNetworks(getState());
@@ -195,7 +196,15 @@ export const connectInitThunk = createThunk<void, ConnectInitHooks | void, void>
             ...firmwareHashCheckTimeoutsOverride,
         };
 
-        const { transports, showConnectLogs } = selectDebugSettings(getState());
+        const debugSettings = selectDebugSettings(getState());
+        const showConnectLogs = debugSettings?.showConnectLogs;
+        const transportIds: string[] | undefined = debugSettings?.transportIds;
+        const transports = resolveTransports({
+            debugTransports: debugSettings?.transports,
+            transportIds,
+            registry: transportRegistry,
+            defaults: connectInitSettings.transports,
+        });
         const thp = selectThpSettings(getState());
         // desktop thp appName/hostName enhanced in ./packages/suite-desktop-core/src/modules/trezor-connect.ts
         if (isWeb()) {
@@ -208,6 +217,7 @@ export const connectInitThunk = createThunk<void, ConnectInitHooks | void, void>
                 binFilesBaseUrl,
                 pendingTransportEvent: selectIsPendingTransportEvent(getState()),
                 transports,
+                transportIds,
                 thp,
                 debug: showConnectLogs,
                 firmwareHashCheckTimeouts,

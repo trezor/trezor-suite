@@ -127,6 +127,7 @@
         "@trezor/suite-desktop-api": "workspace:*",
         "@trezor/suite-storage": "workspace:*",
         "@trezor/theme": "workspace:*",
+        "@trezor/transport": "workspace:*",
         "@trezor/transport-bluetooth": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/urls": "workspace:*",

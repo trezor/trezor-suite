@@ -1,5 +1,6 @@
 import { type ConnectSettingsTransport, type UiRequestThpPairing } from '@trezor/connect';
-import { NodeUsbTransport, UdpTransport } from '@trezor/transport';
+import { createBridgeTransports } from '@trezor/transport/src/bridge';
+import { NodeUsbTransport, UdpTransport } from '@trezor/transport/src/node';
 import { BluetoothTransport, TrezorBluetooth } from '@trezor/transport-bluetooth';
 
 import { args } from './args';
@@ -117,7 +118,9 @@ export const debugLinkDecision = async () => {
     await debugTransport.enumerate();
 };
 
-export const getTransport = async (): Promise<ConnectSettingsTransport> => {
+export const getTransport = async (): Promise<
+    ConnectSettingsTransport | ConnectSettingsTransport[]
+> => {
     const transportName = getCurrentTransport();
 
     const bluetoothApi = new TrezorBluetooth({ url: `ws://localhost:21327/` });
@@ -138,10 +141,10 @@ export const getTransport = async (): Promise<ConnectSettingsTransport> => {
             id: 'ble',
         });
     } else if (transportName === 'bridge') {
-        return 'BridgeTransport';
+        return createBridgeTransports();
     } else if (transportName === 'udp') {
-        return 'UdpTransport';
+        return UdpTransport;
     }
 
-    return 'NodeUsbTransport';
+    return NodeUsbTransport;
 };

@@ -19,7 +19,6 @@
             "path": "../../suite-common/wallet-types"
         },
         { "path": "../experimental" },
-        { "path": "../../packages/connect" },
         { "path": "../../packages/env-utils" },
         {
             "path": "../../packages/suite-desktop-api"

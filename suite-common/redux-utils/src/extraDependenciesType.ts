@@ -22,6 +22,7 @@ import { type Analytics } from '@trezor/analytics-uploader';
 import {
     type BluetoothDeviceId,
     type ConnectSettings,
+    type ConnectSettingsTransport,
     type Manifest,
     type StaticSessionId,
 } from '@trezor/connect';
@@ -36,6 +37,19 @@ export type ConnectInitSettings = {
     manifest: Manifest;
 } & Partial<ConnectSettings>;
 
+/**
+ * Registry entry exposed by the host application's composition root.
+ * Lets the connect-init thunk and debug UI list available transports
+ * by stable id without knowing the concrete class. The factory is
+ * called once at init time; it can return a single transport or an
+ * array (e.g. Bridge listening on two ports).
+ */
+export type TransportRegistryEntry = {
+    id: string;
+    description?: string;
+    factory: () => ConnectSettingsTransport | ConnectSettingsTransport[];
+};
+
 export type CommonServices = SuiteSyncDep &
     Bip329Dep &
     EnsureDelegatedIdentityKeyDep &
@@ -43,6 +57,12 @@ export type CommonServices = SuiteSyncDep &
         analytics: Analytics<AnalyticsSharedEvents>;
         saveAs: (data: Blob, fileName: string) => void;
         connectInitSettings: ConnectInitSettings;
+        /**
+         * Available transports the host can offer; consumed by the connect-init
+         * thunk and the debug Transport settings UI. Optional — when absent,
+         * the thunk falls back to `connectInitSettings.transports`.
+         */
+        transportRegistry?: TransportRegistryEntry[];
     } & ReportSecurityCheckDep &
     MigrateSuiteSyncLabelsForRbfTransactionDep;
 

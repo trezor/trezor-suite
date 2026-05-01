@@ -6,7 +6,6 @@ import { createSliceWithExtraDeps } from '@suite-common/redux-utils';
 import { type Locale } from '@suite-common/suite-types';
 import type { InvityServerEnvironment } from '@suite-common/trading';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
-import { type ConnectSettings } from '@trezor/connect';
 import { isWeb } from '@trezor/env-utils';
 import { type SuiteThemeVariant } from '@trezor/suite-desktop-api';
 
@@ -16,7 +15,11 @@ export interface DebugModeOptions {
     invityServerEnvironment?: InvityServerEnvironment;
     oauthServerEnvironment?: OAuthServerEnvironment;
     showDebugMenu: boolean;
-    transports: Extract<NonNullable<ConnectSettings['transports']>[number], string>[];
+    /**
+     * Registry ids of transports the user has toggled in the debug UI.
+     * Persisted in storage; resolved to instances at the composition root.
+     */
+    transports: string[];
     isUnlockedBootloaderAllowed: boolean;
     showConnectLogs: boolean;
     isN4w1BackupEnabled: boolean;

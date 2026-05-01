@@ -277,7 +277,7 @@ const run = async () => {
 
     await TrezorConnect.init({
         manifest: { appUrl: 'a', appName: 'TrezorConnect Cli', email: 'b' },
-        transports: [transport],
+        transports: Array.isArray(transport) ? transport : [transport],
         pendingTransportEvent: false,
         debug: args.debug,
         thp: {
