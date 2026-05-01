@@ -70,6 +70,8 @@ const OutputLabel = ({
             return <Translation id="transactionManagement.review.outputs.approveLabel" />;
         case 'fee-limit':
             return <Translation id="transactionManagement.review.outputs.feeLimitSummaryLabel" />;
+        case 'note':
+            return <Translation id="transactionManagement.review.outputs.noteLabel" />;
         default:
             return type;
     }

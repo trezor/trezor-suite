@@ -17,11 +17,12 @@ import {
 } from '@suite-native/transaction-management';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
+import { CorrectNetworkMessageCard } from './CorrectNetworkMessageCard';
 import { RecipientInputs } from './RecipientInputs';
 import { SolanaMemoInput } from './SolanaMemoInput';
 import { TronAccountActivationInfo } from './TronAccountActivationInfo';
 import { type SendOutputsFormValues } from '../sendOutputsFormSchema';
-import { CorrectNetworkMessageCard } from './CorrectNetworkMessageCard';
+import { TronNoteInput } from './TronNoteInput';
 
 type SendOutputFieldsProps = {
     accountKey: AccountKey;
@@ -80,6 +81,8 @@ export const SendOutputFields = ({
                     <TronAccountActivationInfo accountKey={accountKey} />
                 </VStack>
             </Card>
+
+            {symbol && getNetworkType(symbol) === 'tron' && <TronNoteInput symbol={symbol} />}
             {symbol && getNetworkType(symbol) === 'solana' && <SolanaMemoInput />}
         </VStack>
     );

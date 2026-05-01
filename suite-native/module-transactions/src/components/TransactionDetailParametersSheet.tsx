@@ -144,6 +144,17 @@ export const TransactionDetailParametersSheet = ({
                             </Box>
                         </Box>
                     </TransactionDetailRow>
+
+                    {transaction.tronSpecific?.note && (
+                        <TransactionDetailRow
+                            title={translate(
+                                'transactions.TransactionDetailScreen.parametersSheet.tronNote',
+                            )}
+                        >
+                            <Text>{transaction.tronSpecific.note}</Text>
+                        </TransactionDetailRow>
+                    )}
+
                     <TransactionDetailRow
                         title={translate(
                             'transactions.TransactionDetailScreen.parametersSheet.confirmations',
