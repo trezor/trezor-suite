@@ -35,11 +35,4 @@ export default [
             'react-hooks/rules-of-hooks': 'off', // It is possible to use hooks in Storybook stories outside of the component (e.g in the render method).
         },
     },
-    {
-        // TARGET: tsdown config files — the tsdown CLI requires `export default`.
-        files: ['**/tsdown.config.ts'],
-        rules: {
-            'import/no-default-export': 'off',
-        },
-    },
 ];
