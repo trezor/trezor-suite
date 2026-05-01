@@ -1,91 +1,97 @@
+// CashAddr address format spec:
+// https://github.com/bitcoincashorg/bitcoincash.org/blob/master/spec/cashaddr.md
 import * as BTCValidator from './bitcoin_validator';
-import * as cryptoUtils from './crypto/utils';
 import { addressType } from './crypto/utils';
 
 const DEFAULT_NETWORK_TYPE = 'prod';
-const GENERATOR = [0x3b6a57b2, 0x26508e6d, 0x1ea119fa, 0x3d4233dd, 0x2a1462b3];
 
-function polymod(values: number[]): number {
-    let chk = 1;
-    for (let p = 0; p < values.length; ++p) {
-        const top = chk >> 25;
-        chk = ((chk & 0x1ffffff) << 5) ^ values[p];
-        for (let i = 0; i < 5; ++i) {
-            if ((top >> i) & 1) {
-                chk ^= GENERATOR[i];
+// Base32 charset used for the cashaddr payload (see "Base32" in the spec).
+const CASHADDR_CHARSET = 'qpzry9x8gf2tvdw0s3jn54khce6mua7l';
+
+// Mainnet human-readable prefix; testnet/regtest use 'bchtest'/'bchreg'.
+const CASHADDR_PREFIX = 'bitcoincash';
+
+// BCH polymod generator constants from the cashaddr spec
+// ("Checksum" section): https://github.com/bitcoincashorg/bitcoincash.org/blob/master/spec/cashaddr.md#checksum
+const CASHADDR_GENERATOR = [
+    BigInt('0x98f2bc8e61'),
+    BigInt('0x79b76d99e2'),
+    BigInt('0xf33e5fb3c4'),
+    BigInt('0xae2eabe2a8'),
+    BigInt('0x1e4f43e470'),
+];
+
+// Polymod implementation from the cashaddr spec ("Checksum" section):
+// https://github.com/bitcoincashorg/bitcoincash.org/blob/master/spec/cashaddr.md#checksum
+function cashAddrPolymod(values: number[]): bigint {
+    let checksum = BigInt(1);
+    for (let i = 0; i < values.length; ++i) {
+        const high = checksum >> BigInt(35);
+        checksum = ((checksum & BigInt('0x07ffffffff')) << BigInt(5)) ^ BigInt(values[i]);
+        for (let j = 0; j < 5; ++j) {
+            if ((high >> BigInt(j)) & BigInt(1)) {
+                checksum ^= CASHADDR_GENERATOR[j];
             }
         }
     }
 
-    return chk;
+    return checksum ^ BigInt(1);
 }
 
-function hrpExpand(hrp: string): number[] {
-    const ret: number[] = [];
-    let p;
-    for (p = 0; p < hrp.length; ++p) {
-        ret.push(hrp.charCodeAt(p) >> 5);
+// Expands the human-readable prefix into the low 5 bits of each character,
+// terminated by a zero, as defined in the cashaddr spec ("Checksum" section).
+function hrpExpand(prefix: string): number[] {
+    const result: number[] = [];
+    for (let i = 0; i < prefix.length; ++i) {
+        result.push(prefix.charCodeAt(i) & 0x1f);
     }
-    ret.push(0);
-    for (p = 0; p < hrp.length; ++p) {
-        ret.push(hrp.charCodeAt(p) & 31);
+    result.push(0);
+
+    return result;
+}
+
+function verifyChecksum(prefix: string, payload: string): boolean {
+    const data = hrpExpand(prefix);
+    for (let i = 0; i < payload.length; ++i) {
+        const v = CASHADDR_CHARSET.indexOf(payload[i]);
+        if (v === -1) return false;
+        data.push(v);
     }
 
-    return ret;
+    return cashAddrPolymod(data) === BigInt(0);
 }
 
-function verifyChecksum(hrp: string, data: number[] | Uint8Array): boolean {
-    // Preserves original JS semantics: Array.prototype.concat does not spread a Uint8Array,
-    // so `data` is appended as a single element. The bitwise ops in polymod then produce NaN,
-    // which means this effectively never returns true for typed-array inputs. A real cashaddr
-    // checksum implementation is tracked as a follow-up.
-    return polymod(hrpExpand(hrp).concat(data as any)) === 1;
-}
+function validateAddress(address: string, currency: any): boolean {
+    if (address.toLowerCase() !== address && address.toUpperCase() !== address) {
+        return false;
+    }
 
-function validateAddress(address: string, currency: any, networkType?: string): boolean {
-    let prefix = 'bitcoincash';
+    const normalized = address.toLowerCase();
+    const colonIndex = normalized.indexOf(':');
     const regexp = new RegExp(currency.regexp);
-    let rawAddress: string;
 
-    const res = address.split(':');
-    if (res.length > 2) {
-        return false;
-    }
-    if (res.length === 1) {
-        rawAddress = address;
-    } else {
-        if (res[0] !== 'bitcoincash') {
+    if (colonIndex !== -1) {
+        const prefix = normalized.slice(0, colonIndex);
+        const payload = normalized.slice(colonIndex + 1);
+        if (prefix !== CASHADDR_PREFIX) {
             return false;
         }
-        rawAddress = res[1];
-    }
-
-    if (!regexp.test(rawAddress)) {
-        return false;
-    }
-
-    if (rawAddress.toLowerCase() !== rawAddress && rawAddress.toUpperCase() !== rawAddress) {
-        return false;
-    }
-
-    const decoded = cryptoUtils.base32.b32decode(rawAddress);
-    if (networkType === 'testnet') {
-        prefix = 'bchtest';
-    }
-
-    try {
-        if (verifyChecksum(prefix, decoded)) {
+        if (!regexp.test(payload)) {
             return false;
         }
-    } catch {
+
+        return verifyChecksum(prefix, payload);
+    }
+
+    if (!regexp.test(normalized)) {
         return false;
     }
 
-    return true;
+    return verifyChecksum(CASHADDR_PREFIX, normalized);
 }
 
 export const isValidAddress = (address: string, currency?: any, networkType?: string): boolean =>
-    validateAddress(address, currency, networkType) ||
+    validateAddress(address, currency) ||
     (currency.symbol !== 'bch' && BTCValidator.isValidAddress(address, currency, networkType));
 
 export const getAddressType = (address: string, currency?: any, networkType?: string) => {

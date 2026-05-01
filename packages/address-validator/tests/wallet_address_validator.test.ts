@@ -1201,17 +1201,30 @@ describe('WAValidator.validate()', function () {
             invalid('qp3wjpa3tjlj042z2wv7hahsldgwhwy0rq9sywjpyya', 'bch');
         });
 
-        // KNOWN BUG: bch_validator.verifyChecksum uses Array.prototype.concat on a Uint8Array,
-        // which appends it as a single element instead of spreading. The bitwise ops in polymod
-        // then yield NaN, so the checksum check effectively never fails and any address that
-        // passes the length/charset/case filters is accepted. These assertions document the
-        // current behavior; they must FLIP from valid → invalid once the cashaddr checksum is
-        // fixed in a follow-up.
-        it('incorrectly accepts bitcoincash addresses with corrupted checksums (known bug)', function () {
+        it('should return false for bitcoincash addresses with corrupted checksums', function () {
             // Tampered last char of a known-valid address
-            valid('bitcoincash:qq4v32mtagxac29my6gwj6fd4tmqg8rysu23dax808', 'bch');
+            invalid('bitcoincash:qq4v32mtagxac29my6gwj6fd4tmqg8rysu23dax808', 'bch');
             // Tampered middle of a known-valid address
-            valid('bitcoincash:qq4v32mtagxac29my6gxx6fd4tmqg8rysu23dax807', 'bch');
+            invalid('bitcoincash:qq4v32mtagxac29my6gxx6fd4tmqg8rysu23dax807', 'bch');
+        });
+
+        it('should return false for mixed-case bitcoincash addresses', function () {
+            invalid('bitcoincash:Qq4v32mtagxac29my6gwj6fd4tmqg8rysu23dax807', 'bch');
+            invalid('bitcoincash:QP3WJPA3tjlj042z2wv7hahsldgwhwy0rq9sywjpyy', 'bch');
+        });
+
+        it('should return false for structurally invalid bitcoincash addresses with valid checksums', function () {
+            invalid('bitcoincash:a5a8yrhz', 'bch');
+            invalid('a5a8yrhz', 'bch');
+            invalid('bitcoincash:q0n354ecu', 'bch');
+        });
+
+        it('should return false for non-mainnet bitcoincash addresses', function () {
+            // 'bchtest' (testnet) and 'bchreg' (regtest) prefixes per cashaddr spec:
+            // https://github.com/bitcoincashorg/bitcoincash.org/blob/master/spec/cashaddr.md#prefix
+            invalid('bchtest:pr6m7j9njldwwzlg9v7v53unlr4jkmx6eyvwc0uz5t', 'bch');
+            invalid('bchtest:qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqdpn3jdgd', 'bch');
+            invalid('bchreg:qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqha9s37tt', 'bch');
         });
 
         it('should return false for incorrect litecoin addresses', function () {
@@ -1565,6 +1578,10 @@ describe('WAValidator.validate()', function () {
             invalid('pzuefrpg3kl2ykqe52rxn96pd3kp4qudywr5py', 'bsv');
             invalid('rlt2c2wuxr644encp3as0hygtj9djrsaumku3cex5', 'bsv');
             invalid('qra607y4wnkmnpy3wcmrxmltzkrxywcq85c7watpdx09', 'bsv');
+            invalid('bitcoincash:qq4v32mtagxac29my6gwj6fd4tmqg8rysu23dax808', 'bsv');
+            invalid('bitcoincash:Qq4v32mtagxac29my6gwj6fd4tmqg8rysu23dax807', 'bsv');
+            invalid('bitcoincash:a5a8yrhz', 'bsv');
+            invalid('a5a8yrhz', 'bsv');
         });
 
         it('should return false for incorrect stellar addresses', function () {
