@@ -47,21 +47,25 @@ const config: webpack.Configuration = {
         },
         fallback: {
             // Polyfills crypto API for NodeJS libraries in the browser. 'crypto' does not run without 'stream'
-            crypto: require.resolve('crypto-browserify'),
-            stream: require.resolve('stream-browserify'),
-            vm: require.resolve('vm-browserify'),
+            crypto: require.resolve('crypto-browserify'), // required by multiple dependencies
+            stream: require.resolve('stream-browserify'), // required by utxo-lib and keccak
+            vm: require.resolve('vm-browserify'), // ignore "vm" imports in "asn1.js@4.10.1" > crypto-browserify"
+            util: require.resolve('util'), // required by "xrpl.js"
+            assert: require.resolve('assert'), // required by multiple dependencies
+            events: require.resolve('events'),
             // Not required
             child_process: false,
-            fs: false,
+            fs: false, // ignore "fs" import in fastxpub (hd-wallet)
             net: false,
             tls: false,
-            os: false,
-            path: false,
+            os: false, // usb
+            path: false, // usb
             https: false,
             http: false,
             zlib: false,
             url: false,
         },
+        mainFields: ['browser', 'module', 'main'],
     },
     optimization: {
         splitChunks: {
@@ -85,11 +89,16 @@ const config: webpack.Configuration = {
         },
         minimizer: [
             new TerserPlugin({
-                exclude: /static\/connect/, // connect is already minimized with specific rules
+                parallel: true,
+                extractComments: false,
             }),
         ],
+        emitOnErrors: true,
+        moduleIds: 'named',
+        usedExports: true,
     },
     performance: {
+        hints: false,
         maxAssetSize: 10 * 1000 * 1000,
         maxEntrypointSize: 1000 * 1000,
     },
@@ -97,6 +106,23 @@ const config: webpack.Configuration = {
         // Throw error on missing exports instead of warning
         strictExportPresence: true,
         rules: [
+            {
+                test: /pinger[\\/]pingWorker.ts/i,
+                loader: 'worker-loader',
+                options: {
+                    filename: './workers/ping-worker.[contenthash].js',
+                },
+            },
+            // fakin solana. for some reason it can't be running in a worker. at least becauses of playwright tests, where we can't manipulate time in the worker context, but
+            // I hope there were more reasons not to use worker for solana
+            // TODO worker-loader not needed anymore; we may create workers directly
+            ...['blockbook', 'ripple', 'blockfrost', 'stellar' /* solana */].map(worker => ({
+                test: new RegExp(`workers[\\/]${worker}[\\/]index`, 'i'),
+                loader: 'worker-loader',
+                options: {
+                    filename: `./workers/${worker}-worker.[contenthash].js`,
+                },
+            })),
             // Allow extensionless imports from ESM packages in node_modules (webpack 5 strict ESM)
             {
                 test: /\.m?js$/,
@@ -108,20 +134,13 @@ const config: webpack.Configuration = {
             // TypeScript/JavaScript
             {
                 test: /\.(j|t)sx?$/,
-                exclude:
-                    // do not use suite loaders for workers, hot reload plugin fucks it up
-                    /node_modules|workers\/(blockbook|ripple|blockfrost|stellar)\/index|socks-proxy-agent/i,
+                exclude: /node_modules/i,
                 use: {
                     loader: 'babel-loader',
                     options: {
                         cacheDirectory: !process.env.INSTRUMENT_CODE,
                         presets: [
-                            [
-                                '@babel/preset-react',
-                                {
-                                    runtime: 'automatic',
-                                },
-                            ],
+                            ['@babel/preset-react', { runtime: 'automatic' }],
                             '@babel/preset-typescript',
                             [
                                 '@babel/preset-env',
@@ -171,11 +190,7 @@ const config: webpack.Configuration = {
             },
             {
                 test: /\.md/,
-                use: [
-                    {
-                        loader: 'raw-loader',
-                    },
-                ],
+                use: [{ loader: 'raw-loader' }],
             },
             // Images
             {
@@ -228,6 +243,20 @@ const config: webpack.Configuration = {
                   }),
               ]
             : []),
+    ],
+    // We are using WASM package - it's much faster (https://github.com/Emurgo/cardano-serialization-lib)
+    // This option makes it possible
+    experiments: { asyncWebAssembly: true },
+    ignoreWarnings: [
+        // Unfortunately Cardano Serialization Lib triggers webpack warning:
+        // "Critical dependency: the request of a dependency is an expression" due to require in generated wasm module
+        // https://github.com/Emurgo/cardano-serialization-lib/issues/119
+        { module: /cardano-serialization-lib-browser/ },
+        // checkAuthenticityProof (see comment on how subtle is used there), should be safe to suppress this message
+        warning =>
+            warning.message.includes(
+                "export 'subtle' (imported as 'crypto') was not found in 'crypto' ",
+            ),
     ],
 };
 
