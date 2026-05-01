@@ -14,7 +14,7 @@ export const SendOutputsScreenFooter = ({
 
     return (
         <Animated.View entering={FadeInDown} exiting={FadeOutDown}>
-            <Box paddingHorizontal="sp16" paddingVertical="sp16">
+            <Box paddingVertical="sp16">
                 <Button
                     accessibilityRole="button"
                     accessibilityLabel={translate('generic.validateForm')}
