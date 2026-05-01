@@ -7,12 +7,12 @@ import {
     type AccountsRootState,
     selectAccountByKey,
     selectAccountNetworkSymbol,
+    selectFormattedAccountType,
 } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { parseAccountKey, parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
-import { Box, HStack, Text, VStack } from '@suite-native/atoms';
+import { Badge, Box, HStack, Text, VStack } from '@suite-native/atoms';
 import { CryptoIconWithNetwork } from '@suite-native/icons';
-import { useTranslate } from '@suite-native/intl';
 import {
     type RootStackParamList,
     type RootStackRoutes,
@@ -29,16 +29,20 @@ export const TokenAccountDetailScreenHeader = ({
     accountKey,
     tokenContract,
 }: TokenAccountDetailScreenHeaderProps) => {
-    const { translate } = useTranslate();
-
     const { accountDescriptor, networkSymbol, deviceStaticSessionId } = parseAccountKey(accountKey);
     const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticSessionId);
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
-    const accountLabel = useSelector((state: AccountsRootState & SuiteSyncDataRootState) =>
-        selectSuiteSyncAccountLabel(state, walletDescriptor, accountDescriptor, networkSymbol),
+    const formattedAccountType = useSelector((state: AccountsRootState) =>
+        selectFormattedAccountType(state, accountKey),
     );
+    const accountLabel =
+        useSelector((state: AccountsRootState & SuiteSyncDataRootState) =>
+            selectSuiteSyncAccountLabel(state, walletDescriptor, accountDescriptor, networkSymbol),
+        ) ??
+        account?.accountLabel ??
+        '';
 
     const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
@@ -52,8 +56,6 @@ export const TokenAccountDetailScreenHeader = ({
     if (!symbol) {
         return null;
     }
-
-    const accountLabelBadge = accountLabel ?? account?.accountLabel ?? '';
 
     return (
         <ScreenHeader
@@ -69,16 +71,21 @@ export const TokenAccountDetailScreenHeader = ({
                             <Text ellipsizeMode="tail" numberOfLines={1}>
                                 {token?.name}
                             </Text>
-                            <Text
-                                variant="body-xs"
-                                color="contentSecondary"
-                                numberOfLines={1}
-                                ellipsizeMode="tail"
-                            >
-                                {translate('moduleAccounts.accountDetail.accountLabelBadge', {
-                                    accountLabel: accountLabelBadge,
-                                })}
-                            </Text>
+
+                            <HStack alignItems="center" spacing="sp4">
+                                <Text
+                                    variant="body-xs"
+                                    color="contentSecondary"
+                                    numberOfLines={1}
+                                    ellipsizeMode="tail"
+                                >
+                                    {accountLabel}
+                                </Text>
+
+                                {formattedAccountType && (
+                                    <Badge label={formattedAccountType} size="small" />
+                                )}
+                            </HStack>
                         </VStack>
                     </HStack>
                 </Box>
