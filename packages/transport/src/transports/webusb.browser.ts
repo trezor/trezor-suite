@@ -2,6 +2,7 @@ import { type AbstractTransportMethodParams, type AbstractTransportParams } from
 import { AbstractApiTransport } from './abstractApi';
 import { UsbApi } from '../api/usb';
 import { BrowserSessionsBackground } from '../sessions/background-browser';
+import type { UsbInterfaceApi } from '../types/usbInterface';
 
 const defaultSessionsBackgroundUrl =
     window.location.origin +
@@ -23,7 +24,13 @@ export class WebUsbTransport extends AbstractApiTransport {
 
     constructor({ logger, sessionsBackgroundUrl, ...rest }: WebUsbTransportParams) {
         super({
-            api: new UsbApi({ usbInterface: navigator.usb, logger }),
+            api: new UsbApi({
+                // navigator.usb is the standard WebUSB API; cast to our
+                // structural shape so we don't need @types/w3c-web-usb in
+                // the package's published types.
+                usbInterface: (navigator as unknown as { usb: UsbInterfaceApi }).usb,
+                logger,
+            }),
             logger,
             ...rest,
         });

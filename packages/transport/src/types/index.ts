@@ -4,6 +4,7 @@ import { type DEVICE_TYPE } from '../constants';
 import type { DescriptorModel } from '../utils/descriptor';
 
 export type * from './apiCall';
+export type * from './usbInterface';
 
 export type Session = `${number}` & Branded<'Session'>;
 export const Session = (input: `${number}`) => `${input}` as Session;

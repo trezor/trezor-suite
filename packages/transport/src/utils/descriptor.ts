@@ -1,3 +1,5 @@
+import type { UsbDeviceLike } from '../types/usbInterface';
+
 /**
  * references: DeviceModelInternal, MODEL_BLE_CODE
  * DeviceModelInternal represented as number
@@ -12,10 +14,7 @@ export enum DescriptorModel {
     T3W1 = 6,
 }
 
-/**
- * Returns DescriptorModel from USBDevice
- */
-export const getUSBDescriptorModel = (device: USBDevice): DescriptorModel => {
+export const getUSBDescriptorModel = (device: UsbDeviceLike): DescriptorModel => {
     if (device.deviceVersionMajor === 1) {
         return DescriptorModel.T1B1;
     }

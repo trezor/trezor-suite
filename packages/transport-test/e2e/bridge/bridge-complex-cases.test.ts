@@ -1,4 +1,5 @@
-import { BridgeTransport, Descriptor, Session } from '@trezor/transport';
+import { type Descriptor, type Session } from '@trezor/transport';
+import { BridgeTransport } from '@trezor/transport/src/bridge';
 
 import { controller as TrezorUserEnvLink, env } from './controller';
 import { descriptor as expectedDescriptor } from './expect';

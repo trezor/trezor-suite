@@ -3,7 +3,7 @@
     "include": ["./src"],
     "compilerOptions": {
         "outDir": "./libESM",
-        "types": ["w3c-web-usb", "node"]
+        "types": ["node"]
     },
     "references": [
         {

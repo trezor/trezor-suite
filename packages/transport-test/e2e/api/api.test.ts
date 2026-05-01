@@ -1,4 +1,5 @@
 import { UsbApi } from '@trezor/transport/src/api/usb';
+import type { UsbInterfaceApi } from '@trezor/transport/src/types/usbInterface';
 
 import { debug, error, info, sharedTest, success } from './shared';
 import { assertEquals, assertFailure, assertMessage, assertSuccess, buildMessage } from './utils';
@@ -11,7 +12,7 @@ const setupApisUnderTest = async () => {
 
     if (typeof window !== 'undefined' && 'usb' in window.navigator) {
         window.Buffer = (await import('buffer')).Buffer;
-        usbInterface = window.navigator.usb;
+        usbInterface = (window.navigator as unknown as { usb: UsbInterfaceApi }).usb;
     } else {
         usbInterface = await import('usb').then(lib => new lib.WebUSB({ allowAllDevices: true }));
     }

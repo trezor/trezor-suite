@@ -5,17 +5,10 @@ export { TREZOR_USB_DESCRIPTORS, TRANSPORT } from './constants';
 
 export { AbstractTransport as Transport, isTransportInstance } from './transports/abstract';
 export { AbstractApiTransport } from './transports/abstractApi';
-export { UsbApi } from './api/usb';
 
-// browser + node
-export { BridgeTransport } from './transports/bridge';
-
-// browser (chrome-like) only
-export { WebUsbTransport } from './transports/webusb';
-
-// node only
-export { NodeUsbTransport } from './transports/nodeusb';
-export { SessionsBackground } from './sessions/background';
-export { SessionsClient } from './sessions/client';
-
-export { UdpTransport } from './transports/udp';
+// Concrete transports moved to environment-specific subpaths so node consumers
+// no longer pull browser USB types (and vice versa) through this barrel:
+//   - @trezor/transport/bridge — BridgeTransport, createBridgeTransports
+//   - @trezor/transport/web    — WebUsbTransport, UsbApi
+//   - @trezor/transport/node   — NodeUsbTransport, UdpTransport, UsbApi,
+//                                SessionsBackground, SessionsClient
