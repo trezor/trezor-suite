@@ -12,7 +12,7 @@ import {
 
 export type TransactionNotificationProps = {
     message: ReactNode;
-    amount: ReactNode;
+    amount?: ReactNode;
     notificationType: TransactionNotificationType;
     symbol: NetworkSymbol;
     token?: TransactionNotificationToken;
@@ -37,23 +37,25 @@ export const TransactionNotification = ({
 }: TransactionNotificationProps) => (
     <Column gap={4}>
         <Text typographyStyle="body-md-strong">{message}</Text>
-        <Row gap={8} alignItems="center">
-            <TransactionIcon
-                icon={icon}
-                notificationType={notificationType}
-                symbol={symbol}
-                token={token}
-            />
-            <TransactionAmount
-                amount={amount}
-                notificationType={notificationType}
-                symbol={symbol}
-                token={token}
-                tokenSymbol={tokenSymbol}
-                isInfiniteApproval={isInfiniteApproval}
-                unlimitedApprovalLabel={unlimitedApprovalLabel}
-                renderAmount={renderAmount}
-            />
-        </Row>
+        {amount && (
+            <Row gap={8} alignItems="center">
+                <TransactionIcon
+                    icon={icon}
+                    notificationType={notificationType}
+                    symbol={symbol}
+                    token={token}
+                />
+                <TransactionAmount
+                    amount={amount}
+                    notificationType={notificationType}
+                    symbol={symbol}
+                    token={token}
+                    tokenSymbol={tokenSymbol}
+                    isInfiniteApproval={isInfiniteApproval}
+                    unlimitedApprovalLabel={unlimitedApprovalLabel}
+                    renderAmount={renderAmount}
+                />
+            </Row>
+        )}
     </Column>
 );

@@ -8,4 +8,3 @@ export * from './hooks/useExitYieldOpportunity';
 export * from './hooks/useSubmitTxHash';
 export * from './hooks/useGetMerkleRewards';
 export * from './constants/vaults';
-export * from './constants/merklxyz';

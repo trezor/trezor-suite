@@ -127,7 +127,7 @@ export const TransactionRenderer = ({ render: View, ...props }: TransactionRende
                         amount={
                             'formattedAmount' in props.notification
                                 ? props.notification.formattedAmount
-                                : ''
+                                : undefined
                         }
                         isInfiniteApproval={
                             props.notification.type === 'tx-approved' &&

@@ -5,6 +5,8 @@ import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { ChainAddressKey } from '@suite-common/earn-stablecoin-api';
+import { Context } from '@suite-common/message-system';
+import { isEarnYieldClaimSupported } from '@suite-common/wallet-config';
 import {
     selectStablecoinYieldSession,
     selectStablecoinYieldTxReview,
@@ -15,11 +17,14 @@ import { Banner, Button, Card, Column, Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
 import { claimMerkleRewardsThunk } from 'src/actions/wallet/stablecoinYieldSigningThunks';
+import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useMessageSystemYield } from 'src/hooks/suite/useMessageSystemYield';
 import { useAnalytics } from 'src/support/useAnalytics';
 
 import { YieldRewardsList } from './YieldRewardsList';
 import { useMerkleRewards } from '../../dashboard/yield/hooks/useMerkleRewards';
+import { YieldDisabledBanner } from '../common/YieldDisabledBanner';
 import { YieldFlowCompleteClaim } from '../common/YieldFlowCompleteClaim';
 import { YieldPendingTransaction } from '../common/YieldPendingTransaction';
 import { useYieldPendingTransactionTracking } from '../hooks/useYieldPendingTransactionTracking';
@@ -34,6 +39,7 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
     const { device } = useDevice();
     const flowKey = account?.key ?? '';
     const hasReportedSuccessRef = useRef(false);
+    const { isDisabled, content } = useMessageSystemYield('claim');
 
     const yieldTxReview = useSelector(selectStablecoinYieldTxReview);
     const claimSession = useSelector(state =>
@@ -41,23 +47,24 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
     );
     const isClaiming =
         claimSession.action.isSubmitting ||
+        !!claimSession.action.pendingTransaction ||
         (!!yieldTxReview.precomposedTx && yieldTxReview.accountKey === account?.key);
     const isDeviceConnected = !!device?.connected && device.available;
-    const isEthereumAccount = account?.symbol === 'eth';
+    const isClaimSupported = !!account && isEarnYieldClaimSupported(account.symbol);
 
     const merkleRewardsSources = useMemo(
         () =>
-            account && isEthereumAccount
+            account && isClaimSupported
                 ? [{ networkSymbol: account.symbol, address: account.descriptor }]
                 : [],
-        [account, isEthereumAccount],
+        [account, isClaimSupported],
     );
 
     const { merkleRewardsQuery } = useMerkleRewards(merkleRewardsSources);
     const { rewards } = merkleRewardsQuery.data;
 
     const claimableRewards = useMemo(() => {
-        if (!account || !isEthereumAccount || !merkleRewardsQuery.isSuccess) return [];
+        if (!account || !isClaimSupported || !merkleRewardsQuery.isSuccess) return [];
 
         return Object.entries(rewards)
             .filter(([key]) => {
@@ -68,7 +75,7 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
             .flatMap(([, rewardList]) =>
                 rewardList.filter(reward => new BigNumber(reward.claimable).gt(0)),
             );
-    }, [account, isEthereumAccount, merkleRewardsQuery.isSuccess, rewards]);
+    }, [account, isClaimSupported, merkleRewardsQuery.isSuccess, rewards]);
 
     useEffect(() => {
         if (!flowKey) {
@@ -157,52 +164,62 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
     return (
         <Column width="100%" alignItems="center">
             <Column gap={24} width="100%" maxWidth={500}>
+                <ContextMessage context={Context.getEarnYield('claim')} />
+
                 <Text typographyStyle="headline-md">
                     <Translation id="TR_EARN_CLAIM_REWARDS" />
                 </Text>
 
-                <Card>
-                    <Column gap={24}>
-                        <Text typographyStyle="body-md-strong">
-                            <Translation id="TR_STAKE_REWARDS" />
-                        </Text>
+                {isDisabled ? (
+                    <YieldDisabledBanner type="claim" content={content} />
+                ) : (
+                    <>
+                        <Card>
+                            <Column gap={24}>
+                                <Text typographyStyle="body-md-strong">
+                                    <Translation id="TR_STAKE_REWARDS" />
+                                </Text>
 
-                        <YieldRewardsList
-                            rewards={claimableRewards}
-                            isLoading={merkleRewardsQuery.isLoading}
-                        />
-                    </Column>
-                </Card>
+                                <YieldRewardsList
+                                    rewards={claimableRewards}
+                                    isLoading={merkleRewardsQuery.isLoading}
+                                />
+                            </Column>
+                        </Card>
 
-                {merkleRewardsQuery.isSuccess &&
-                    claimableRewards.length > 0 &&
-                    !claimSession.action.pendingTransaction && (
-                        <Banner
-                            intent="warning"
-                            icon="warning"
-                            description={<Translation id="TR_EARN_REWARDS_NETWORK_FEE_WARNING" />}
-                        />
-                    )}
+                        {merkleRewardsQuery.isSuccess &&
+                            claimableRewards.length > 0 &&
+                            !claimSession.action.pendingTransaction && (
+                                <Banner
+                                    intent="warning"
+                                    icon="warning"
+                                    description={
+                                        <Translation id="TR_EARN_REWARDS_NETWORK_FEE_WARNING" />
+                                    }
+                                />
+                            )}
 
-                <Button
-                    size="large"
-                    width="100%"
-                    isDisabled={
-                        merkleRewardsQuery.isLoading ||
-                        claimableRewards.length === 0 ||
-                        isClaiming ||
-                        !isDeviceConnected
-                    }
-                    isLoading={isClaiming}
-                    onClick={handleClaim}
-                >
-                    <Translation id="TR_EARN_YIELD_CLAIM" />
-                </Button>
-                {claimSession.action.pendingTransaction && (
-                    <YieldPendingTransaction
-                        pendingTransaction={claimSession.action.pendingTransaction}
-                        onTxClick={handleTxClick}
-                    />
+                        <Button
+                            size="large"
+                            width="100%"
+                            isDisabled={
+                                merkleRewardsQuery.isLoading ||
+                                claimableRewards.length === 0 ||
+                                isClaiming ||
+                                !isDeviceConnected
+                            }
+                            isLoading={isClaiming}
+                            onClick={handleClaim}
+                        >
+                            <Translation id="TR_EARN_YIELD_CLAIM" />
+                        </Button>
+                        {claimSession.action.pendingTransaction && (
+                            <YieldPendingTransaction
+                                pendingTransaction={claimSession.action.pendingTransaction}
+                                onTxClick={handleTxClick}
+                            />
+                        )}
+                    </>
                 )}
             </Column>
         </Column>

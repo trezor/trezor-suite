@@ -12,6 +12,7 @@ type YieldDisabledBannerProps = {
 const yieldDisabledMessageMap = {
     supply: 'TR_EARN_YIELD_SUPPLY_DISABLED',
     withdraw: 'TR_EARN_YIELD_WITHDRAW_DISABLED',
+    claim: 'TR_EARN_YIELD_CLAIM_DISABLED',
 } as const;
 
 export const YieldDisabledBanner = ({ type, content }: YieldDisabledBannerProps) => (

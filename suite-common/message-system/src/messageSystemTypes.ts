@@ -100,6 +100,7 @@ export const Feature = {
         yield: {
             supply: 'earn.yield.supply',
             withdraw: 'earn.yield.withdraw',
+            claim: 'earn.yield.claim',
         } as const satisfies Record<YieldFlowType, string>,
     },
     mevProtection: 'settings.mevProtection',
@@ -157,6 +158,7 @@ const getLegalContext = (key: LegalContextKey) => `legal.${key}` as const;
  * - `getTrading('buy')` → 'trading.buy'
  * - `getEarnDashboard('yield')` → 'earn.dashboard.yield'
  * - `getEarnYield('supply')` → 'earn.yield.supply'
+ * - `getEarnYield('claim')` → 'earn.yield.claim'
  * - `getSettings('device')` → 'settings.device'
 
  */

@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 import {
-    type YieldSessionType,
+    type YieldFlowType,
     fetchAndUpdateAccountThunk,
     selectConvertedNetworkFeeInfo,
     selectStablecoinYieldSession,
@@ -28,7 +28,7 @@ const getPollIntervalMs = (blockTime: number | undefined): number => {
 
 type UseYieldPendingTransactionTrackingProps = {
     account?: Account;
-    flowType: YieldSessionType;
+    flowType: YieldFlowType;
     flowKey: string;
 };
 

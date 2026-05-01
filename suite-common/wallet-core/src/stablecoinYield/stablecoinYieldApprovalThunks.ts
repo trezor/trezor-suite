@@ -15,7 +15,11 @@ import { exhaustive } from '@trezor/type-utils';
 
 import { STABLECOIN_YIELD_PREFIX, stablecoinYieldActions } from './stablecoinYieldReducer';
 import { selectStablecoinYieldSession } from './stablecoinYieldSelectors';
-import type { YieldFlowDisplayToken, YieldFlowToken, YieldFlowType } from './stablecoinYieldTypes';
+import type {
+    YieldActionFlowType,
+    YieldFlowDisplayToken,
+    YieldFlowToken,
+} from './stablecoinYieldTypes';
 import {
     getWithdrawRequestAmount,
     getYieldApprovalModalParams,
@@ -35,7 +39,7 @@ export type YieldFlowResolvedData = {
 };
 
 export type YieldSessionPayload = {
-    flowType: YieldFlowType;
+    flowType: YieldActionFlowType;
     flowKey: string;
 };
 
@@ -52,7 +56,7 @@ type SetYieldGenericErrorParams = YieldSessionPayload & {
 };
 
 type GetApprovalContractAddressParams = {
-    flowType: YieldFlowType;
+    flowType: YieldActionFlowType;
     flowData: YieldFlowResolvedData;
 };
 
@@ -78,7 +82,7 @@ type OpenYieldRevokeModalParams = YieldSessionDataPayload & {
 };
 
 export type SubmitYieldOpportunityParams = {
-    flowType: YieldFlowType;
+    flowType: YieldActionFlowType;
     flowData: YieldFlowResolvedData;
     amount: string;
 };

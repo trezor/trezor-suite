@@ -2,8 +2,8 @@ import type { ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
 import type {
+    YieldActionFlowType,
     YieldFlowDisplayToken,
-    YieldFlowType,
     YieldPendingTransactionState,
 } from '@suite-common/wallet-core';
 import { Button, Column } from '@trezor/components';
@@ -25,7 +25,7 @@ const actionStepTranslationMap = {
 } as const;
 
 export type YieldActionStepProps = {
-    flowType: YieldFlowType;
+    flowType: YieldActionFlowType;
     token: YieldFlowDisplayToken;
     summaryValue: ReactNode;
     isDisabled?: boolean;
