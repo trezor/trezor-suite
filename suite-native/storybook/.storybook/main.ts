@@ -41,8 +41,6 @@ const main: StorybookConfig = {
                         'node_modules',
                         'react-native-web/dist/modules/AssetRegistry',
                     ),
-                    '@trezor/address-validator':
-                        require.resolve('./mocks/address-validator.mock.ts'),
                     // @formatjs packages export ./polyfill.js but imports use ./polyfill (no extension)
                     // Vite enforces strict exports resolution so we alias to the full paths
                     '@formatjs/intl-getcanonicallocales/polyfill':
