@@ -5433,7 +5433,7 @@ export const messages = defineMessages({
     },
     TR_TRON_NOTE_INFO: {
         id: 'TR_TRON_NOTE_INFO',
-        defaultMessage: 'Adds 1 TRX in network fee.',
+        defaultMessage: 'Adds 1 {networkDisplaySymbol} in network fee.',
     },
     TR_FEE_LIMIT: {
         id: 'TR_FEE_LIMIT',
@@ -5445,7 +5445,8 @@ export const messages = defineMessages({
     },
     TR_TRON_ACCOUNT_ACTIVATION_FEE_TOOLTIP: {
         id: 'TR_TRON_ACCOUNT_ACTIVATION_FEE_TOOLTIP',
-        defaultMessage: 'New TRON accounts require a one-time 1 TRX network fee to activate.',
+        defaultMessage:
+            'New TRON accounts require a one-time 1 {networkDisplaySymbol} network fee to activate.',
     },
     TR_TRON_TX_CREATE_ACCOUNT: {
         id: 'TR_TRON_TX_CREATE_ACCOUNT',

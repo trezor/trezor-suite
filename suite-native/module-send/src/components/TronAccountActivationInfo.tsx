@@ -1,6 +1,7 @@
 import { Pressable } from 'react-native';
 import { useSelector } from 'react-redux';
 
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import {
@@ -68,7 +69,12 @@ export const TronAccountActivationInfo = ({ accountKey }: TronAccountActivationI
                             <Translation id="moduleSend.tron.accountActivationFeeTitle" />
                         </Text>
                         <Text variant="body-sm" color="contentSecondary">
-                            <Translation id="moduleSend.tron.accountActivationFeeDescription" />
+                            <Translation
+                                id="moduleSend.tron.accountActivationFeeDescription"
+                                values={{
+                                    networkDisplaySymbol: getNetworkDisplaySymbol(account.symbol),
+                                }}
+                            />
                         </Text>
                     </VStack>
                     <Button onPress={closeModal}>

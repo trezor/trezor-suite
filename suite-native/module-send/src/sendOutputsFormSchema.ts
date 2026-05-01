@@ -273,6 +273,8 @@ export type OutputsFormValues = yup.InferType<typeof outputSchema>;
 
 export const sendOutputsFormValidationSchema = yup.object({
     outputs: yup.array(outputSchema).required(),
+    transactionData: yup.string(),
+    tronDataAscii: yup.string(),
     isDestinationTagEnabled: yup.boolean(),
     destinationTag: yup
         .string()

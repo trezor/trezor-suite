@@ -434,8 +434,9 @@ const constructNewFlow = ({
                     outputs.push(tokenOutput);
                     outputs.push({ type: 'address', value: o.address });
                 } else if (
-                    (precomposedForm.transactionData && !isEvmApproval) ||
-                    (isEvmApproval && !isApprovalFlowSupported)
+                    !isTron &&
+                    ((precomposedForm.transactionData && !isEvmApproval) ||
+                        (isEvmApproval && !isApprovalFlowSupported))
                 ) {
                     // EVM contract call
                     outputs.push({ type: 'contract', value: o.address });

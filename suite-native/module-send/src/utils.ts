@@ -10,7 +10,7 @@ export const getOutputFieldName = <TField extends SendOutputFieldName>(
 ): `outputs.${number}.${TField}` => `outputs.${index}.${field}`;
 
 export const constructFormDraft = ({
-    formValues: { outputs, ...restFormValues },
+    formValues: { outputs, transactionData, tronDataAscii, ...restFormValues },
     tokenContract,
     feeLevel = { label: 'normal', feePerUnit: '' },
     selectedUtxos = [],
@@ -36,6 +36,8 @@ export const constructFormDraft = ({
     selectedFee: feeLevel.label,
     feePerUnit: feeLevel.feePerUnit,
     feeLimit: feeLevel.feeLimit ?? '',
+    transactionData: transactionData || undefined,
+    tronDataAscii: tronDataAscii || undefined,
     ...restFormValues,
 });
 

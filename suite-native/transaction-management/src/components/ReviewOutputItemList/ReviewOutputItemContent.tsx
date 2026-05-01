@@ -151,6 +151,9 @@ export const ReviewOutputItemContent = ({
 
             return null;
 
+        case 'note':
+            return <Text variant="body-sm">{value}</Text>;
+
         case 'fee-limit':
             return (
                 <HStack>
