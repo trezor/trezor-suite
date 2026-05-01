@@ -540,7 +540,7 @@ export const getDaysToAddToPoolFixture = [
         result: undefined,
     },
     {
-        description: 'should return 2 if blockTime is undefined',
+        description: 'should return undefined if blockTime is undefined',
         args: {
             stakeTxs: [{}], // blockTime is undefined
             validatorsQueue: {
@@ -548,7 +548,7 @@ export const getDaysToAddToPoolFixture = [
                 activationTime: 86400,
             } satisfies EthValidatorsQueue,
         },
-        result: 2,
+        result: undefined,
     },
     {
         description: 'should return the number of days to wait',
