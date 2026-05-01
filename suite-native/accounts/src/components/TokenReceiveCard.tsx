@@ -1,10 +1,15 @@
 import { useSelector } from 'react-redux';
 
 import { type SuiteSyncDataRootState, selectSuiteSyncAccountLabel } from '@suite-common/suite-sync';
-import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
+import {
+    type AccountsRootState,
+    selectAccountByKey,
+    selectAccountNetworkSymbol,
+    selectFormattedAccountType,
+} from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { parseAccountKey, parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
-import { Badge, Box, ErrorMessage, Text, VStack } from '@suite-native/atoms';
+import { Badge, Box, ErrorMessage, HStack, Text, VStack } from '@suite-native/atoms';
 import { TokenAmountFormatter, TokenToFiatAmountFormatter } from '@suite-native/formatters';
 import { CryptoIconWithNetwork } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
@@ -33,9 +38,19 @@ export const TokenReceiveCard = ({ contract, accountKey }: TokenReceiveCardProps
     const { accountDescriptor, networkSymbol, deviceStaticSessionId } = parseAccountKey(accountKey);
     const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticSessionId);
 
-    const accountLabel = useSelector((state: AccountsRootState & SuiteSyncDataRootState) =>
-        selectSuiteSyncAccountLabel(state, walletDescriptor, accountDescriptor, networkSymbol),
+    const account = useSelector((state: AccountsRootState) =>
+        selectAccountByKey(state, accountKey),
     );
+    const formattedAccountType = useSelector((state: AccountsRootState) =>
+        selectFormattedAccountType(state, accountKey),
+    );
+    const accountLabel =
+        useSelector((state: AccountsRootState & SuiteSyncDataRootState) =>
+            selectSuiteSyncAccountLabel(state, walletDescriptor, accountDescriptor, networkSymbol),
+        ) ??
+        account?.accountLabel ??
+        '';
+
     const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
@@ -60,15 +75,21 @@ export const TokenReceiveCard = ({ contract, accountKey }: TokenReceiveCardProps
                     </Box>
                     <Box style={applyStyle(tokenDescriptionStyle)}>
                         <Text>{tokenName}</Text>
-                        <Badge
-                            label={
-                                <Translation
-                                    id="moduleAccounts.tokens.runOn"
-                                    values={{ accountLabel }}
-                                />
-                            }
-                            size="small"
-                        />
+
+                        <HStack alignItems="center" spacing="sp4">
+                            <Text
+                                variant="body-xs"
+                                color="contentSecondary"
+                                numberOfLines={1}
+                                ellipsizeMode="tail"
+                            >
+                                {accountLabel}
+                            </Text>
+
+                            {formattedAccountType && (
+                                <Badge label={formattedAccountType} size="small" />
+                            )}
+                        </HStack>
                     </Box>
                 </Box>
                 <Box style={applyStyle(valuesContainerStyle)}>
