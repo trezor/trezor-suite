@@ -8,6 +8,7 @@ import type { ConnectSettingsTransport, Proxy } from '../settings';
 export type UpdateConnectSettings = {
     proxy?: Proxy;
     transports?: ConnectSettingsTransport[];
+    transportIds?: string[];
 };
 
 export declare function updateConnectSettings(

@@ -31,6 +31,7 @@ import {
     setLogWriter,
 } from '@trezor/connect-common/src/utils/debug';
 import { TRANSPORT, TRANSPORT_ERROR } from '@trezor/transport';
+import { createBridgeTransports } from '@trezor/transport/src/bridge';
 import { createDeferred, createLazy, getSynchronize, throwError } from '@trezor/utils';
 
 import type { AbstractMethod } from './AbstractMethod';
@@ -774,9 +775,15 @@ export class Core extends EventEmitter {
 
             case TRANSPORT.DISABLE_WEBUSB: {
                 const settings = DataManager.getSettings();
-                const transports = settings.transports?.filter(t => t !== 'WebUsbTransport');
-                if (transports && !transports.includes('BridgeTransport')) {
-                    transports.unshift('BridgeTransport');
+                // works for both Transport instances (`name` property) and
+                // class constructors (`Function.prototype.name`).
+                const transportName = (t: NonNullable<ConnectSettings['transports']>[number]) =>
+                    (t as { name?: string }).name;
+                const transports = settings.transports?.filter(
+                    t => transportName(t) !== 'WebUsbTransport',
+                );
+                if (transports && !transports.some(t => transportName(t) === 'BridgeTransport')) {
+                    transports.unshift(...createBridgeTransports());
                 }
                 settings.transports = transports;
 

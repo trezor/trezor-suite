@@ -65,15 +65,6 @@ describe('DeviceList', () => {
         list.dispose();
     });
 
-    it('.init() throws error on unknown transport (string)', async () => {
-        await expect(() =>
-            list.init({
-                // @ts-expect-error
-                transports: ['FooBarTransport'],
-            }),
-        ).rejects.toThrow('unexpected type: FooBarTransport');
-    });
-
     it('.init() throws error on unknown transport (class)', async () => {
         await expect(() =>
             list.init({

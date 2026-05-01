@@ -23,11 +23,6 @@ export type Proxy = BlockchainSettings['proxy'];
 
 export type LocalFirmwares = { firmwareDir: string; firmwareList: string[] };
 
-// omit transports which are not implemented in @trezor/connect
-type KnownTransport = Exclude<
-    Transport['name'],
-    'NativeUsbTransport' | 'BluetoothTransport' | 'NativeBluetoothTransport'
->;
 export type ThpSettings = {
     hostName?: string; // displayed on Trezor during pairing process.
     appName?: string; // displayed on Trezor during pairing process. fallbacks to Manifest['appName']
@@ -35,16 +30,29 @@ export type ThpSettings = {
     pairingMethods: ThpPairingMethod[] | (keyof typeof ThpPairingMethod)[]; // pairing methods supported by the host
 };
 
-export type ConnectSettingsTransport =
-    | KnownTransport
-    | Transport
-    | (new (...args: any[]) => Transport);
+/**
+ * Connect now uses pure dependency injection for transports — callers must
+ * pass either a constructed Transport instance or a Transport constructor.
+ * String discriminators (`'BridgeTransport'`, `'WebUsbTransport'`, …) used
+ * pre-v10 are no longer accepted; the host application is responsible for
+ * importing the right transport class for its environment and providing the
+ * defaults.
+ */
+export type ConnectSettingsTransport = Transport | (new (...args: any[]) => Transport);
 
 export interface ConnectSettingsPublic {
     manifest?: Manifest;
     debug?: boolean;
     transportReconnect?: boolean;
     transports?: ConnectSettingsTransport[];
+    /**
+     * Serializable transport selection by registry id. Used at process
+     * boundaries (e.g. the desktop renderer → main IPC proxy) where
+     * Transport instances cannot cross. The receiving side is expected
+     * to map ids to instances via its own registry before forwarding to
+     * connect's `init` / `updateConnectSettings`.
+     */
+    transportIds?: string[];
     pendingTransportEvent?: boolean;
     // URL for binary files such as firmware, may be local or remote
     binFilesBaseUrl?: string;

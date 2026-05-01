@@ -1,5 +1,6 @@
 import type { UpdateConnectSettings } from '@trezor/connect-common';
 import { factory } from '@trezor/connect-common';
+import { createBridgeTransports } from '@trezor/transport/src/bridge';
 import { deepEqual } from '@trezor/utils';
 
 import { reconnectAllBackends } from './backend/BlockchainLink';
@@ -8,7 +9,7 @@ import { CoreInModule } from './impl/core-in-module';
 
 class CoreInModuleNode extends CoreInModule {
     protected get defaultTransports() {
-        return ['BridgeTransport' as const];
+        return createBridgeTransports();
     }
 
     protected async updateProxy(proxy: UpdateConnectSettings['proxy']) {

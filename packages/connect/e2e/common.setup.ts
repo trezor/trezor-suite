@@ -2,6 +2,7 @@
 import TrezorConnect from '@trezor/connect';
 import { UI_REQUEST, UI_RESPONSE } from '@trezor/connect-common';
 import type { ApplySettings } from '@trezor/protobuf/src/definitions';
+import { createBridgeTransports } from '@trezor/transport/src/bridge';
 import type { EmuStartOptsType, TrezorUserEnvLinkClass } from '@trezor/trezor-user-env-link';
 import { MNEMONICS, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { versionUtils } from '@trezor/utils';
@@ -198,7 +199,7 @@ export const initTrezorConnect = async (
             appUrl: 'tests.connect.trezor.io',
             email: 'tests@connect.trezor.io',
         },
-        transports: ['BridgeTransport'],
+        transports: createBridgeTransports(),
         debug: true,
         pendingTransportEvent: true,
         transportReconnect: false,

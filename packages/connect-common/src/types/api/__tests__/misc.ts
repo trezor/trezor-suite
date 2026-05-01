@@ -1,3 +1,5 @@
+import type { Transport } from '@trezor/transport';
+
 import type { TrezorConnect } from '../../..';
 
 export const cipherKeyValue = async (api: TrezorConnect) => {
@@ -51,17 +53,23 @@ export const updateConnectSettings = async (api: TrezorConnect) => {
     api.updateConnectSettings({ proxy: { uri: 'socks://localhost:9050' } });
     api.updateConnectSettings({ proxy: undefined });
 
-    // transports settings
-    api.updateConnectSettings({ transports: ['BridgeTransport'] });
-    api.updateConnectSettings({ transports: ['BridgeTransport', 'WebUsbTransport'] });
+    // transports settings — instances or constructors of Transport
+    const fakeTransport = {} as Transport;
+    const FakeTransportCtor = class {} as unknown as new (...args: unknown[]) => Transport;
+    api.updateConnectSettings({ transports: [fakeTransport] });
+    api.updateConnectSettings({ transports: [fakeTransport, FakeTransportCtor] });
     api.updateConnectSettings({ transports: [] });
-    // @ts-expect-error - invalid transport name
+    // @ts-expect-error - plain string is not a Transport
     api.updateConnectSettings({ transports: ['InvalidTransport'] });
+
+    // serializable id form (for IPC boundaries)
+    api.updateConnectSettings({ transportIds: ['BridgeTransport'] });
+    api.updateConnectSettings({ transportIds: [] });
 
     // both proxy and transports together
     api.updateConnectSettings({
         proxy: { uri: 'socks://localhost:9050' },
-        transports: ['BridgeTransport'],
+        transports: [fakeTransport],
     });
 
     // empty object is valid (no-op)

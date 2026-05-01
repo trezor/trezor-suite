@@ -1,12 +1,14 @@
 import { ERRORS, type UpdateConnectSettings, factory } from '@trezor/connect-common';
 import { TRANSPORT } from '@trezor/transport';
+import { createBridgeTransports } from '@trezor/transport/src/bridge';
+import { WebUsbTransport } from '@trezor/transport/src/web';
 
 import { config } from './data/config';
 import { CoreInModule } from './impl/core-in-module';
 
 class CoreInModuleWeb extends CoreInModule {
     protected get defaultTransports() {
-        return ['BridgeTransport' as const, 'WebUsbTransport' as const];
+        return [...createBridgeTransports(), WebUsbTransport];
     }
 
     updateProxy(proxy: UpdateConnectSettings['proxy']) {

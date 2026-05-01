@@ -1,13 +1,7 @@
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import type { ConnectSettingsTransport } from '@trezor/connect-common/src/types/settings';
 import type { Transport } from '@trezor/transport';
-import {
-    BridgeTransport,
-    NodeUsbTransport,
-    UdpTransport,
-    WebUsbTransport,
-    isTransportInstance,
-} from '@trezor/transport';
+import { isTransportInstance } from '@trezor/transport';
 import type { AbstractTransportParams } from '@trezor/transport/src/transports/abstract';
 
 type Params = AbstractTransportParams & { sessionsBackgroundUrl?: string | null };
@@ -19,29 +13,8 @@ const getOrCreateTransport = (
     transports: Transport[],
     transportType: ConnectSettingsTransport,
     params: Params,
-) => {
-    if (transportType === 'BridgeTransport') {
-        // Temporary handling of BridgeTransport which translates to two instances listening on ports 21328/21325
-        const existing = transports.filter(t => t.name === transportType);
-
-        return existing.length
-            ? existing
-            : [new BridgeTransport({ ...params, port: 21328 }), new BridgeTransport(params)];
-    }
-
-    if (typeof transportType === 'string') {
-        const existing = tryGetTransport(transports, transportType);
-        if (existing) return existing;
-
-        switch (transportType) {
-            case 'WebUsbTransport':
-                return new WebUsbTransport(params);
-            case 'NodeUsbTransport':
-                return new NodeUsbTransport(params);
-            case 'UdpTransport':
-                return new UdpTransport(params);
-        }
-    } else if (typeof transportType === 'function' && 'prototype' in transportType) {
+): Transport => {
+    if (typeof transportType === 'function' && 'prototype' in transportType) {
         const transportInstance = new transportType(params);
         if (isTransportInstance(transportInstance)) {
             return tryGetTransport(transports, transportInstance.name) ?? transportInstance;
@@ -66,12 +39,7 @@ const createTransports = (
     existing: Transport[],
     transports: ConnectSettingsTransport[] = [],
     params: Params,
-) => {
-    // BridgeTransport is the ultimate fallback
-    const transportTypes = transports?.length ? transports : ['BridgeTransport' as const];
-
-    return transportTypes.flatMap(type => getOrCreateTransport(existing, type, params));
-};
+) => transports.map(type => getOrCreateTransport(existing, type, params));
 
 export const createTransportList =
     (params: Params) => (existing: Transport[], transports?: ConnectSettingsTransport[]) =>
