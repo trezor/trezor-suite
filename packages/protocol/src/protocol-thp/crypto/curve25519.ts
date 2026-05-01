@@ -1,5 +1,7 @@
 // TypeScript implementation of elligator2 https://www.rfc-editor.org/rfc/rfc9380.html#ell2-opt
 
+import { littleEndianBytesToBigInt } from './tools';
+
 let constants: ReturnType<typeof getConstants> | undefined;
 
 const getConstants = (): {
@@ -39,16 +41,6 @@ const getConstants = (): {
 
     return ctx;
 };
-
-// python int.from_bytes(array, "little")
-function littleEndianBytesToBigInt(bytes: Uint8Array): bigint {
-    let result = 0n;
-    for (let i = 0; i < bytes.length; i++) {
-        result += BigInt(bytes[i]) << (8n * BigInt(i));
-    }
-
-    return result;
-}
 
 // python int.to_bytes(32, "little")
 function bigintToLittleEndianBytes(value: bigint, length: number = 32): Uint8Array {
