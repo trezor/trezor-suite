@@ -232,35 +232,15 @@ export const validateCodeEntryTag = (
     }
 };
 
-export const validateQrCodeTag = (
-    { handshakeHash }: ThpHandshakeCredentials,
+const validatePairingTag = (
+    handshakeHash: Buffer,
+    method: ThpPairingMethod,
+    secret: Buffer,
     value: string,
-    secret: string, // ThpQrCodeSecret.secret
+    errorCode: string,
 ) => {
-    // Assert that value = SHA-256(ThpPairingMethod.QrCode || h || secret)
     const shaCtx = createHash('sha256');
-    shaCtx.update(Buffer.from([ThpPairingMethod.QrCode]));
-    shaCtx.update(handshakeHash);
-    shaCtx.update(Buffer.from(secret, 'hex'));
-
-    const calculatedValue = shaCtx.digest().subarray(0, 16);
-    const expectedValue = Buffer.from(value, 'hex').subarray(0, 16);
-    if (calculatedValue.compare(expectedValue) !== 0) {
-        throw new Error(
-            `HP6: code mismatch ${calculatedValue.toString('hex')} != ${expectedValue.toString('hex')}`,
-        );
-    }
-};
-
-// validate ThpNfcTagTrezor
-export const validateNfcTag = (
-    { handshakeHash }: ThpHandshakeCredentials,
-    value: string, // ThpNfcTagTrezor.tag
-    secret: Buffer, // ThpState.nfcSecret
-) => {
-    // Assert that value = SHA-256(ThpPairingMethod.NFC || h || secret)
-    const shaCtx = createHash('sha256');
-    shaCtx.update(Buffer.from([ThpPairingMethod.NFC]));
+    shaCtx.update(Buffer.from([method]));
     shaCtx.update(handshakeHash);
     shaCtx.update(secret);
 
@@ -268,7 +248,30 @@ export const validateNfcTag = (
     const expectedValue = Buffer.from(value, 'hex').subarray(0, 16);
     if (calculatedValue.compare(expectedValue) !== 0) {
         throw new Error(
-            `HP7: code mismatch ${calculatedValue.toString('hex')} != ${expectedValue.toString('hex')}`,
+            `${errorCode}: code mismatch ${calculatedValue.toString('hex')} != ${expectedValue.toString('hex')}`,
         );
     }
 };
+
+export const validateQrCodeTag = (
+    { handshakeHash }: ThpHandshakeCredentials,
+    value: string,
+    secret: string, // ThpQrCodeSecret.secret
+) =>
+    // Assert that value = SHA-256(ThpPairingMethod.QrCode || h || secret)
+    validatePairingTag(
+        handshakeHash,
+        ThpPairingMethod.QrCode,
+        Buffer.from(secret, 'hex'),
+        value,
+        'HP6',
+    );
+
+// validate ThpNfcTagTrezor
+export const validateNfcTag = (
+    { handshakeHash }: ThpHandshakeCredentials,
+    value: string, // ThpNfcTagTrezor.tag
+    secret: Buffer, // ThpState.nfcSecret
+) =>
+    // Assert that value = SHA-256(ThpPairingMethod.NFC || h || secret)
+    validatePairingTag(handshakeHash, ThpPairingMethod.NFC, secret, value, 'HP7');
