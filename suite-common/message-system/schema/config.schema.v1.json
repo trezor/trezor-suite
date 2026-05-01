@@ -789,7 +789,7 @@
         },
         "yieldFlowType": {
             "type": "string",
-            "enum": ["supply", "withdraw"]
+            "enum": ["supply", "withdraw", "claim"]
         }
     }
 }

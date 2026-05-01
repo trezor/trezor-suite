@@ -5,14 +5,17 @@ import { selectAddressDisplayType } from '@suite/settings';
 import { asEvmAddress, buildClaim } from '@suite-common/calldata';
 import { selectSelectedDevice } from '@suite-common/device';
 import {
-    ETHEREUM_MERKL_XYZ_CONTRACT,
     type TransactionDto,
     parseUnsignedEvmTransactionForSigning,
     submitTransactionHash,
 } from '@suite-common/earn-stablecoin-api';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import {
+    type NetworkSymbol,
+    getEarnYieldClaimContractAddress,
+    getNetwork,
+} from '@suite-common/wallet-config';
 import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import {
     STABLECOIN_YIELD_PREFIX,
@@ -42,6 +45,7 @@ import {
     getAccountIdentity,
     getContractAddressForNetworkSymbol,
     prepareEthereumTransaction,
+    strip,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, { type EthereumSignTransaction, type TokenInfo } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
@@ -51,14 +55,14 @@ import type { AppState, Dispatch } from 'src/types/suite';
 
 const YIELD_THUNK_PREFIX = `${STABLECOIN_YIELD_PREFIX}/thunk`;
 
-type EvmAccount = Extract<Account, { networkType: 'ethereum' }>;
-
 const serializeNonce = (nonce: number | `0x${string}`) =>
     typeof nonce === 'number' ? `0x${nonce.toString(16)}` : nonce;
 
 type ParsedTransactionForSigning = NonNullable<
     ReturnType<typeof parseUnsignedEvmTransactionForSigning>
 >;
+
+const evmHexToBigNumber = (hex: `0x${string}`) => new BigNumber(strip(hex), 16);
 
 type BuildYieldReviewTokenParams = {
     token: YieldFlowDisplayToken;
@@ -119,11 +123,6 @@ const getTransactionForSigning = (
     throw new Error('Yield transaction gas parameters are missing.');
 };
 
-const toWeiString = (amount: bigint | BigNumber) =>
-    typeof amount === 'bigint' ? amount.toString() : amount.toFixed(0);
-
-const toGweiAmount = (amount: bigint | BigNumber) => fromWei(toWeiString(amount), 'gwei');
-
 const buildYieldReviewToken = ({
     token,
     symbol,
@@ -149,11 +148,11 @@ const buildYieldReviewState = ({
     flowType,
     vaultName,
 }: BuildYieldReviewStateParams): BuildYieldReviewStateResult => {
-    const gasLimit = BigInt(parsedTransaction.gasLimit);
-    const gasPriceWei = BigInt(
+    const gasLimit = evmHexToBigNumber(parsedTransaction.gasLimit);
+    const gasPrice = evmHexToBigNumber(
         parsedTransaction.maxFeePerGas ?? parsedTransaction.gasPrice ?? ('0x0' as `0x${string}`),
     );
-    const feeWei = gasLimit * gasPriceWei;
+    const fee = gasLimit.multipliedBy(gasPrice);
     const reviewToken = buildYieldReviewToken({ token, symbol });
     const amountSubunits = convertAmountUnitsToSubunits(amount, token.decimals);
     let eip1559ReviewFields: Partial<
@@ -162,8 +161,14 @@ const buildYieldReviewState = ({
 
     if (parsedTransaction.maxFeePerGas && parsedTransaction.maxPriorityFeePerGas) {
         eip1559ReviewFields = {
-            maxFeePerGas: toGweiAmount(BigInt(parsedTransaction.maxFeePerGas)),
-            maxPriorityFeePerGas: toGweiAmount(BigInt(parsedTransaction.maxPriorityFeePerGas)),
+            maxFeePerGas: fromWei(
+                evmHexToBigNumber(parsedTransaction.maxFeePerGas).toFixed(0),
+                'gwei',
+            ),
+            maxPriorityFeePerGas: fromWei(
+                evmHexToBigNumber(parsedTransaction.maxPriorityFeePerGas).toFixed(0),
+                'gwei',
+            ),
         };
     }
 
@@ -180,8 +185,8 @@ const buildYieldReviewState = ({
             },
         ],
         selectedFee: 'custom',
-        feePerUnit: toGweiAmount(gasPriceWei),
-        feeLimit: gasLimit.toString(),
+        feePerUnit: fromWei(gasPrice.toFixed(0), 'gwei'),
+        feeLimit: gasLimit.toFixed(0),
         ...eip1559ReviewFields,
         options: ['broadcast', 'transactionData'],
         transactionData: parsedTransaction.data,
@@ -193,10 +198,12 @@ const buildYieldReviewState = ({
 
     const precomposedTransaction: PrecomposedTransactionFinal = {
         type: 'final',
-        fee: feeWei.toString(),
-        feePerByte: toGweiAmount(gasPriceWei),
-        feeLimit: gasLimit.toString(),
-        totalSpent: reviewToken ? amountSubunits : (BigInt(amountSubunits) + feeWei).toString(),
+        fee: fee.toFixed(0),
+        feePerByte: fromWei(gasPrice.toFixed(0), 'gwei'),
+        feeLimit: gasLimit.toFixed(0),
+        totalSpent: reviewToken
+            ? amountSubunits
+            : new BigNumber(amountSubunits).plus(fee).toFixed(0),
         bytes: 0,
         inputs: [],
         outputs: [
@@ -270,7 +277,7 @@ const sendYieldTransaction = async ({
                 state: device.state,
                 useEmptyPassphrase: device.useEmptyPassphrase,
             },
-            path: (account as EvmAccount).path,
+            path: account.path,
             transaction: transactionForSigning,
             chunkify: addressDisplayType === AddressDisplayOptions.CHUNKED,
         });
@@ -455,42 +462,42 @@ type BuildClaimReviewStateParams = {
     data: string;
     contractAddress: `0x${string}`;
     gasLimit: BigNumber;
-    gasPriceWei?: BigNumber;
-    maxFeePerGasWei?: BigNumber;
-    maxPriorityFeePerGasWei?: BigNumber;
-    baseFeePerGasWei?: BigNumber;
+    gasPrice?: BigNumber;
+    maxFeePerGas?: BigNumber;
+    maxPriorityFeePerGas?: BigNumber;
+    baseFeePerGas?: BigNumber;
 };
 
 const buildClaimReviewState = ({
     data,
     contractAddress,
     gasLimit,
-    gasPriceWei,
-    maxFeePerGasWei,
-    maxPriorityFeePerGasWei,
-    baseFeePerGasWei,
+    gasPrice,
+    maxFeePerGas,
+    maxPriorityFeePerGas,
+    baseFeePerGas,
 }: BuildClaimReviewStateParams): BuildYieldReviewStateResult => {
-    const feePriceWei = maxFeePerGasWei ?? gasPriceWei;
+    const feePrice = maxFeePerGas ?? gasPrice;
 
-    if (typeof feePriceWei === 'undefined') {
+    if (typeof feePrice === 'undefined') {
         throw new Error('Fee price is missing.');
     }
 
-    const feeWei = gasLimit.multipliedBy(feePriceWei).toFixed(0);
+    const feeWei = gasLimit.multipliedBy(feePrice).toFixed(0);
     let eip1559TransactionFields: Partial<
         Pick<PrecomposedTransactionFinal, 'maxFeePerGas' | 'maxPriorityFeePerGas'>
     > = {};
     let eip1559FormFields: Pick<FormState, 'baseFeePerGas'> = {};
 
-    if (typeof maxFeePerGasWei !== 'undefined' && typeof maxPriorityFeePerGasWei !== 'undefined') {
+    if (typeof maxFeePerGas !== 'undefined' && typeof maxPriorityFeePerGas !== 'undefined') {
         eip1559TransactionFields = {
-            maxFeePerGas: toGweiAmount(maxFeePerGasWei),
-            maxPriorityFeePerGas: toGweiAmount(maxPriorityFeePerGasWei),
+            maxFeePerGas: fromWei(maxFeePerGas.toFixed(0), 'gwei'),
+            maxPriorityFeePerGas: fromWei(maxPriorityFeePerGas.toFixed(0), 'gwei'),
         };
         eip1559FormFields = {
             baseFeePerGas:
-                typeof baseFeePerGasWei !== 'undefined'
-                    ? toGweiAmount(baseFeePerGasWei)
+                typeof baseFeePerGas !== 'undefined'
+                    ? fromWei(baseFeePerGas.toFixed(0), 'gwei')
                     : undefined,
         };
     }
@@ -508,7 +515,7 @@ const buildClaimReviewState = ({
             },
         ],
         selectedFee: 'custom',
-        feePerUnit: toGweiAmount(feePriceWei),
+        feePerUnit: fromWei(feePrice.toFixed(0), 'gwei'),
         feeLimit: gasLimit.toFixed(0),
         ...eip1559TransactionFields,
         ...eip1559FormFields,
@@ -522,7 +529,7 @@ const buildClaimReviewState = ({
     const precomposedTransaction: PrecomposedTransactionFinal = {
         type: 'final',
         fee: feeWei,
-        feePerByte: toGweiAmount(feePriceWei),
+        feePerByte: fromWei(feePrice.toFixed(0), 'gwei'),
         feeLimit: gasLimit.toFixed(0),
         totalSpent: feeWei,
         bytes: 0,
@@ -549,10 +556,10 @@ type ClaimEstimateFeeLevel = {
 
 type ClaimFeeFields = {
     gasLimit: BigNumber;
-    gasPriceWei?: BigNumber;
-    maxFeePerGasWei?: BigNumber;
-    maxPriorityFeePerGasWei?: BigNumber;
-    baseFeePerGasWei?: BigNumber;
+    gasPrice?: BigNumber;
+    maxFeePerGas?: BigNumber;
+    maxPriorityFeePerGas?: BigNumber;
+    baseFeePerGas?: BigNumber;
 };
 
 const getClaimFeeFields = (feeLevel: ClaimEstimateFeeLevel): ClaimFeeFields => {
@@ -562,9 +569,9 @@ const getClaimFeeFields = (feeLevel: ClaimEstimateFeeLevel): ClaimFeeFields => {
     if (eip1559MediumFee?.maxFeePerGas && eip1559MediumFee.maxPriorityFeePerGas) {
         return {
             gasLimit,
-            maxFeePerGasWei: new BigNumber(eip1559MediumFee.maxFeePerGas),
-            maxPriorityFeePerGasWei: new BigNumber(eip1559MediumFee.maxPriorityFeePerGas),
-            baseFeePerGasWei: feeLevel.eip1559?.baseFeePerGas
+            maxFeePerGas: new BigNumber(eip1559MediumFee.maxFeePerGas),
+            maxPriorityFeePerGas: new BigNumber(eip1559MediumFee.maxPriorityFeePerGas),
+            baseFeePerGas: feeLevel.eip1559?.baseFeePerGas
                 ? new BigNumber(feeLevel.eip1559.baseFeePerGas)
                 : undefined,
         };
@@ -576,7 +583,7 @@ const getClaimFeeFields = (feeLevel: ClaimEstimateFeeLevel): ClaimFeeFields => {
 
     return {
         gasLimit,
-        gasPriceWei: new BigNumber(feeLevel.feePerUnit),
+        gasPrice: new BigNumber(feeLevel.feePerUnit),
     };
 };
 
@@ -613,17 +620,13 @@ export const claimMerkleRewardsThunk = createThunk(
             throw new Error('Yield claim currently supports only EVM accounts.');
         }
 
-        if (account.symbol !== 'eth') {
-            throw new Error('Yield claim currently supports only Ethereum accounts.');
-        }
-
         const network = getNetwork(account.symbol);
 
         if (!network.chainId) {
             throw new Error('Chain ID not found for network.');
         }
 
-        const merklXyzContractAddress = ETHEREUM_MERKL_XYZ_CONTRACT[network.chainId];
+        const merklXyzContractAddress = getEarnYieldClaimContractAddress(network.symbol);
 
         if (!merklXyzContractAddress) {
             throw new Error('Merkl.xyz contract address not found for network.');
@@ -678,7 +681,7 @@ export const claimMerkleRewardsThunk = createThunk(
             const claimFeeFields = getClaimFeeFields(feeLevel);
 
             const { nonce } = await dispatch(
-                ethereumGetCurrentNonceThunk({ selectedAccount: account as EvmAccount }),
+                ethereumGetCurrentNonceThunk({ selectedAccount: account }),
             ).unwrap();
 
             const { formState, precomposedTransaction } = buildClaimReviewState({
@@ -703,24 +706,23 @@ export const claimMerkleRewardsThunk = createThunk(
                 gasLimit: claimFeeFields.gasLimit.toFixed(0),
                 data: claimResult.data,
             };
-            const { gasPriceWei, maxFeePerGasWei, maxPriorityFeePerGasWei } = claimFeeFields;
+            const { gasPrice, maxFeePerGas, maxPriorityFeePerGas } = claimFeeFields;
 
-            const hasEip1559Fees =
-                maxFeePerGasWei !== undefined && maxPriorityFeePerGasWei !== undefined;
+            const hasEip1559Fees = maxFeePerGas !== undefined && maxPriorityFeePerGas !== undefined;
 
-            if (!hasEip1559Fees && gasPriceWei === undefined) {
+            if (!hasEip1559Fees && gasPrice === undefined) {
                 throw new Error('Gas price is missing.');
             }
 
             const transactionForSigning: EthereumSignTransaction['transaction'] = hasEip1559Fees
                 ? prepareEthereumTransaction({
                       ...commonTxFields,
-                      maxFeePerGas: toGweiAmount(maxFeePerGasWei),
-                      maxPriorityFeePerGas: toGweiAmount(maxPriorityFeePerGasWei),
+                      maxFeePerGas: fromWei(maxFeePerGas.toFixed(0), 'gwei'),
+                      maxPriorityFeePerGas: fromWei(maxPriorityFeePerGas.toFixed(0), 'gwei'),
                   })
                 : prepareEthereumTransaction({
                       ...commonTxFields,
-                      gasPrice: toGweiAmount(gasPriceWei!),
+                      gasPrice: fromWei(gasPrice!.toFixed(0), 'gwei'),
                   });
 
             try {
@@ -733,7 +735,7 @@ export const claimMerkleRewardsThunk = createThunk(
                         state: device.state,
                         useEmptyPassphrase: device.useEmptyPassphrase,
                     },
-                    path: (account as EvmAccount).path,
+                    path: account.path,
                     transaction: transactionForSigning,
                     chunkify: addressDisplayType === AddressDisplayOptions.CHUNKED,
                 });

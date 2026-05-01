@@ -1,10 +1,10 @@
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 
-export const YIELD_FLOW_TYPES = ['supply', 'withdraw'] as const;
+export const YIELD_FLOW_TYPES = ['supply', 'withdraw', 'claim'] as const;
 export const YIELD_FLOW_STEPS = ['approve', 'action', 'complete'] as const;
 
 export type YieldFlowType = (typeof YIELD_FLOW_TYPES)[number];
-export type YieldSessionType = YieldFlowType | 'claim';
+export type YieldActionFlowType = Exclude<YieldFlowType, 'claim'>;
 export type YieldFlowStepId = (typeof YIELD_FLOW_STEPS)[number];
 
 export type YieldFlowFormValues = {

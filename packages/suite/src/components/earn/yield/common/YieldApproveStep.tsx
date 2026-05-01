@@ -3,8 +3,8 @@ import type { ReactNode } from 'react';
 import { Translation } from '@suite/intl';
 import { tokenSupportsIncreasingAllowance } from '@suite-common/trading';
 import type {
+    YieldActionFlowType,
     YieldFlowDisplayToken,
-    YieldFlowType,
     YieldPendingTransactionState,
 } from '@suite-common/wallet-core';
 import { Button, Column } from '@trezor/components';
@@ -91,7 +91,7 @@ const getApproveButtonTranslationId = ({
 };
 
 export type YieldApproveStepProps = {
-    flowType: YieldFlowType;
+    flowType: YieldActionFlowType;
     token: YieldFlowDisplayToken;
     variant: 'active' | 'done';
     /** Live input value — used for change/increase calculations. */

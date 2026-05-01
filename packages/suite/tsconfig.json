@@ -26,6 +26,7 @@
         {
             "path": "../../suite-common/bluetooth"
         },
+        { "path": "../../suite-common/calldata" },
         {
             "path": "../../suite-common/connect-init"
         },

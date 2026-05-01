@@ -1,6 +1,6 @@
 import { Translation } from '@suite/intl';
 import { type YieldFlowCompleteValue } from '@suite-common/wallet-core';
-import { Row, Text } from '@trezor/components';
+import { Divider, Row, Text } from '@trezor/components';
 
 import { ApyValue } from 'src/views/wallet/staking/components/ApyValue';
 
@@ -32,6 +32,7 @@ export const YieldFlowCompleteSupply = ({ input, output, apy }: YieldFlowComplet
                 <ApyValue apy={apy} />
             </Text>
         </Row>
+        <Divider color="borderNeutral" margin={0} />
         <YieldFlowTransferRow
             inputLabelId="TR_EARN_YIELD_SUPPLIED"
             outputLabelId="TR_RECEIVED"

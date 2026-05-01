@@ -5,12 +5,12 @@ import { type TranslationKey } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { type EarnParams } from '@suite/router';
 import {
+    type YieldActionFlowType,
     type YieldApproveModalState,
     type YieldFlowDisplayToken,
     type YieldFlowFormValues,
     type YieldFlowStepId,
     type YieldFlowToken,
-    type YieldFlowType,
     type YieldPendingTransactionState,
     handleYieldApproveCancelThunk,
     handleYieldApproveSuccessTxidThunk,
@@ -37,7 +37,7 @@ import {
 type UseYieldFlowProps = {
     account: Account;
     routeParams: EarnParams;
-    flowType: YieldFlowType;
+    flowType: YieldActionFlowType;
 };
 
 type UseYieldFlowStepsResult = {

@@ -12,7 +12,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { type YieldPendingTransactionState, type YieldSessionType } from './stablecoinYieldTypes';
+import { type YieldFlowType, type YieldPendingTransactionState } from './stablecoinYieldTypes';
 
 type TokenLike = {
     address?: string | null;
@@ -66,7 +66,7 @@ export const getStablecoinYieldFlowKey = ({
 
 export const splitYieldPendingTransaction = (
     pendingTransaction: YieldPendingTransactionState | null,
-    actionKind: YieldSessionType,
+    actionKind: YieldFlowType,
 ) => {
     const isApprovalPending =
         pendingTransaction?.type === 'approve' ||

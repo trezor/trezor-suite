@@ -4,14 +4,14 @@ import {
     getStablecoinYieldSessionKey,
     initialStablecoinYieldSessionState,
 } from './stablecoinYieldReducer';
-import type { YieldSessionType } from './stablecoinYieldTypes';
+import type { YieldFlowType } from './stablecoinYieldTypes';
 
 export const selectStablecoinYield = (state: StablecoinYieldRootState) =>
     state.wallet.stablecoinYield;
 
 export const selectStablecoinYieldSession = (
     state: StablecoinYieldRootState,
-    flowType: YieldSessionType,
+    flowType: YieldFlowType,
     flowKey: string,
 ) =>
     selectStablecoinYield(state)[flowType][getStablecoinYieldSessionKey(flowKey)] ??

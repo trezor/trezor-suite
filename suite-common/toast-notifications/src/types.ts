@@ -25,12 +25,8 @@ type TransactionNotificationPayload = {
     txid: string;
 };
 
-type BaseTransactionNotificationPayload = {
-    device?: TrezorDevice;
-    descriptor: string;
-    symbol: NetworkSymbol;
-    txid: string;
-};
+type BaseTransactionNotificationPayload = Omit<TransactionNotificationPayload, 'formattedAmount'>;
+
 type SentTransactionNotification = {
     type: 'tx-sent';
     token?: TokenInfo;
