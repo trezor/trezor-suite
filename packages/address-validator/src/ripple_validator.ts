@@ -1,4 +1,3 @@
-/* eslint-disable import/no-default-export */
 import baseX from 'base-x';
 
 import * as cryptoUtils from './crypto/utils';
@@ -9,30 +8,26 @@ const ALLOWED_CHARS = 'rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxy
 const codec = baseX(ALLOWED_CHARS);
 const regexp = new RegExp('^r[' + ALLOWED_CHARS + ']{27,35}$');
 
-const validator = {
-    isValidAddress(address: string): boolean {
-        if (regexp.test(address)) {
-            return this.verifyChecksum(address);
-        }
+function verifyChecksum(address: string): boolean {
+    const bytes = codec.decode(address);
+    const computedChecksum = cryptoUtils.sha256Checksum(cryptoUtils.toHex(bytes.slice(0, -4)));
+    const checksum = cryptoUtils.toHex(bytes.slice(-4));
 
-        return false;
-    },
+    return computedChecksum === checksum;
+}
 
-    verifyChecksum(address: string): boolean {
-        const bytes = codec.decode(address);
-        const computedChecksum = cryptoUtils.sha256Checksum(cryptoUtils.toHex(bytes.slice(0, -4)));
-        const checksum = cryptoUtils.toHex(bytes.slice(-4));
+export const isValidAddress = (address: string): boolean => {
+    if (regexp.test(address)) {
+        return verifyChecksum(address);
+    }
 
-        return computedChecksum === checksum;
-    },
-
-    getAddressType(address: string, _currency?: any, _networkType?: string) {
-        if (this.isValidAddress(address)) {
-            return addressType.ADDRESS;
-        }
-
-        return undefined;
-    },
+    return false;
 };
 
-export default validator;
+export const getAddressType = (address: string, _currency?: any, _networkType?: string) => {
+    if (isValidAddress(address)) {
+        return addressType.ADDRESS;
+    }
+
+    return undefined;
+};

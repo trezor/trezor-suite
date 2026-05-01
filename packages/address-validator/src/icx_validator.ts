@@ -1,4 +1,3 @@
-/* eslint-disable import/no-default-export */
 import { addressType } from './crypto/utils';
 
 function isValidICXAddress(address: string): boolean {
@@ -7,18 +6,12 @@ function isValidICXAddress(address: string): boolean {
     return address.search(regex) !== -1;
 }
 
-const validator = {
-    isValidAddress(address: string): boolean {
-        return isValidICXAddress(address);
-    },
+export const isValidAddress = (address: string): boolean => isValidICXAddress(address);
 
-    getAddressType(address: string, _currency?: any, _networkType?: string) {
-        if (this.isValidAddress(address)) {
-            return addressType.ADDRESS;
-        }
+export const getAddressType = (address: string, _currency?: any, _networkType?: string) => {
+    if (isValidAddress(address)) {
+        return addressType.ADDRESS;
+    }
 
-        return undefined;
-    },
+    return undefined;
 };
-
-export default validator;

@@ -1,5 +1,4 @@
-/* eslint-disable import/no-default-export */
-import BTCValidator from './bitcoin_validator';
+import * as BTCValidator from './bitcoin_validator';
 import * as cryptoUtils from './crypto/utils';
 import { addressType } from './crypto/utils';
 
@@ -85,22 +84,15 @@ function validateAddress(address: string, currency: any, networkType?: string): 
     return true;
 }
 
-const validator = {
-    isValidAddress(address: string, currency?: any, networkType?: string): boolean {
-        return (
-            validateAddress(address, currency, networkType) ||
-            (currency.symbol !== 'bch' &&
-                BTCValidator.isValidAddress(address, currency, networkType))
-        );
-    },
-    getAddressType(address: string, currency?: any, networkType?: string) {
-        const network = networkType || DEFAULT_NETWORK_TYPE;
-        if (this.isValidAddress(address, currency, network)) {
-            return addressType.ADDRESS;
-        }
+export const isValidAddress = (address: string, currency?: any, networkType?: string): boolean =>
+    validateAddress(address, currency, networkType) ||
+    (currency.symbol !== 'bch' && BTCValidator.isValidAddress(address, currency, networkType));
 
-        return undefined;
-    },
+export const getAddressType = (address: string, currency?: any, networkType?: string) => {
+    const network = networkType || DEFAULT_NETWORK_TYPE;
+    if (isValidAddress(address, currency, network)) {
+        return addressType.ADDRESS;
+    }
+
+    return undefined;
 };
-
-export default validator;

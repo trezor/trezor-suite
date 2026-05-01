@@ -1,5 +1,3 @@
-/* eslint-disable import/no-default-export */
-
 import { bech32 } from '@scure/base';
 import * as cbor from 'cbor';
 import CRC from 'crc';
@@ -63,19 +61,16 @@ function isValidBech32Address(address: string, currency: any, networkType: strin
     return true;
 }
 
-const validator = {
-    isValidAddress(address: string, currency?: any, networkType?: string): boolean {
-        const network = networkType || DEFAULT_NETWORK_TYPE;
+export const isValidAddress = (address: string, currency?: any, networkType?: string): boolean => {
+    const network = networkType || DEFAULT_NETWORK_TYPE;
 
-        return isValidLegacyAddress(address) || isValidBech32Address(address, currency, network);
-    },
-    getAddressType(address: string, currency?: any, networkType?: string) {
-        if (this.isValidAddress(address, currency, networkType)) {
-            return addressType.ADDRESS;
-        }
-
-        return undefined;
-    },
+    return isValidLegacyAddress(address) || isValidBech32Address(address, currency, network);
 };
 
-export default validator;
+export const getAddressType = (address: string, currency?: any, networkType?: string) => {
+    if (isValidAddress(address, currency, networkType)) {
+        return addressType.ADDRESS;
+    }
+
+    return undefined;
+};

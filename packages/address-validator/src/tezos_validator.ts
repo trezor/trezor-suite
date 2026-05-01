@@ -1,4 +1,3 @@
-/* eslint-disable import/no-default-export */
 import * as base58 from './crypto/base58';
 import * as cryptoUtils from './crypto/utils';
 import { addressType } from './crypto/utils';
@@ -24,7 +23,7 @@ function decodeRaw(buffer: number[]): number[] | undefined {
     return payload;
 }
 
-const isValidAddress = (address: string): boolean => {
+export const isValidAddress = (address: string): boolean => {
     try {
         const buffer = base58.decode(address);
         const payload = decodeRaw(buffer);
@@ -37,16 +36,10 @@ const isValidAddress = (address: string): boolean => {
     }
 };
 
-const validator = {
-    isValidAddress,
+export const getAddressType = (address: string, _currency?: any, _networkType?: string) => {
+    if (isValidAddress(address)) {
+        return addressType.ADDRESS;
+    }
 
-    getAddressType(address: string, _currency?: any, _networkType?: string) {
-        if (this.isValidAddress(address)) {
-            return addressType.ADDRESS;
-        }
-
-        return undefined;
-    },
+    return undefined;
 };
-
-export default validator;

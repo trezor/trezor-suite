@@ -1,5 +1,3 @@
-/* eslint-disable import/no-default-export */
-
 import cnBase58Module from './crypto/cnBase58';
 import * as cryptoUtils from './crypto/utils';
 import { addressType } from './crypto/utils';
@@ -56,44 +54,40 @@ function hextobin(hex: string): Uint8Array | null {
     return res;
 }
 
-const validator = {
-    isValidAddress(address: string, currency?: any, networkType?: string): boolean {
-        const network = networkType || DEFAULT_NETWORK_TYPE;
-        let addrKind = 'standard';
-        if (network === 'testnet') {
-            if (!testnetRegTest.test(address)) {
-                return false;
-            }
-        } else if (!addressRegTest.test(address)) {
-            if (subAddressRegTest.test(address)) {
-                addrKind = 'subaddress';
-            } else if (integratedAddressRegTest.test(address)) {
-                addrKind = 'integrated';
-            } else {
-                return false;
-            }
+export const isValidAddress = (address: string, currency?: any, networkType?: string): boolean => {
+    const network = networkType || DEFAULT_NETWORK_TYPE;
+    let addrKind = 'standard';
+    if (network === 'testnet') {
+        if (!testnetRegTest.test(address)) {
+            return false;
         }
-
-        const decodedAddrStr = cnBase58.decode(address);
-        if (!decodedAddrStr) return false;
-
-        if (!validateNetwork(decodedAddrStr, currency, network, addrKind)) return false;
-
-        const addrChecksum = decodedAddrStr.slice(-8);
-        const hashChecksum = cryptoUtils.keccak256Checksum(
-            hextobin(decodedAddrStr.slice(0, -8)) as Uint8Array,
-        );
-
-        return addrChecksum === hashChecksum;
-    },
-
-    getAddressType(address: string, currency?: any, networkType?: string) {
-        if (this.isValidAddress(address, currency, networkType)) {
-            return addressType.ADDRESS;
+    } else if (!addressRegTest.test(address)) {
+        if (subAddressRegTest.test(address)) {
+            addrKind = 'subaddress';
+        } else if (integratedAddressRegTest.test(address)) {
+            addrKind = 'integrated';
+        } else {
+            return false;
         }
+    }
 
-        return undefined;
-    },
+    const decodedAddrStr = cnBase58.decode(address);
+    if (!decodedAddrStr) return false;
+
+    if (!validateNetwork(decodedAddrStr, currency, network, addrKind)) return false;
+
+    const addrChecksum = decodedAddrStr.slice(-8);
+    const hashChecksum = cryptoUtils.keccak256Checksum(
+        hextobin(decodedAddrStr.slice(0, -8)) as Uint8Array,
+    );
+
+    return addrChecksum === hashChecksum;
 };
 
-export default validator;
+export const getAddressType = (address: string, currency?: any, networkType?: string) => {
+    if (isValidAddress(address, currency, networkType)) {
+        return addressType.ADDRESS;
+    }
+
+    return undefined;
+};

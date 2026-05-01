@@ -1,4 +1,3 @@
-/* eslint-disable import/no-default-export */
 import * as cryptoUtils from './crypto/utils';
 import { addressType } from './crypto/utils';
 
@@ -44,28 +43,28 @@ function getEnv(currency: any, networkType?: string): number {
     return currency.addressTypes[evn][0];
 }
 
-const validator = {
-    isValidAddress(mainAddress: string, currency?: any, networkType?: string): boolean {
-        const address = decodeBase58Address(mainAddress);
+export const isValidAddress = (
+    mainAddress: string,
+    currency?: any,
+    networkType?: string,
+): boolean => {
+    const address = decodeBase58Address(mainAddress);
 
-        if (!address) {
-            return false;
-        }
+    if (!address) {
+        return false;
+    }
 
-        if (address.length !== 21) {
-            return false;
-        }
+    if (address.length !== 21) {
+        return false;
+    }
 
-        return getEnv(currency, networkType) === address[0];
-    },
-
-    getAddressType(address: string, currency?: any, networkType?: string) {
-        if (this.isValidAddress(address, currency, networkType)) {
-            return addressType.ADDRESS;
-        }
-
-        return undefined;
-    },
+    return getEnv(currency, networkType) === address[0];
 };
 
-export default validator;
+export const getAddressType = (address: string, currency?: any, networkType?: string) => {
+    if (isValidAddress(address, currency, networkType)) {
+        return addressType.ADDRESS;
+    }
+
+    return undefined;
+};

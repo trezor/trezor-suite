@@ -1,4 +1,3 @@
-/* eslint-disable import/no-default-export */
 import { addressType } from './crypto/utils';
 
 function isValidHBarAddress(address: string): boolean {
@@ -13,18 +12,12 @@ function isValidHBarAddress(address: string): boolean {
     return false;
 }
 
-const validator = {
-    isValidAddress(address: string): boolean {
-        return isValidHBarAddress(address);
-    },
+export const isValidAddress = (address: string): boolean => isValidHBarAddress(address);
 
-    getAddressType(address: string, _currency?: any, _networkType?: string) {
-        if (this.isValidAddress(address)) {
-            return addressType.ADDRESS;
-        }
+export const getAddressType = (address: string, _currency?: any, _networkType?: string) => {
+    if (isValidAddress(address)) {
+        return addressType.ADDRESS;
+    }
 
-        return undefined;
-    },
+    return undefined;
 };
-
-export default validator;

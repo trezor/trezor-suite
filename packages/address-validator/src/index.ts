@@ -1,4 +1,3 @@
-/* eslint-disable import/no-default-export */
 import { addressType } from './crypto/utils';
 import * as currencies from './currencies';
 import type { Currency } from './currencies';
@@ -46,13 +45,3 @@ export function findCurrency(symbol: string): Currency | null {
 
 export { addressType };
 export type { Currency, AddressType };
-
-const addressValidator = {
-    validate,
-    getAddressType,
-    getCurrencies,
-    findCurrency,
-    addressType,
-};
-
-export default addressValidator;
