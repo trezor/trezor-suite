@@ -110,7 +110,7 @@ const config: webpack.Configuration = {
                 test: /pinger[\\/]pingWorker.ts/i,
                 loader: 'worker-loader',
                 options: {
-                    filename: './workers/ping-worker.[contenthash].js',
+                    filename: 'js/workers/ping-worker.[contenthash].js',
                 },
             },
             // fakin solana. for some reason it can't be running in a worker. at least becauses of playwright tests, where we can't manipulate time in the worker context, but
@@ -120,7 +120,7 @@ const config: webpack.Configuration = {
                 test: new RegExp(`workers[\\/]${worker}[\\/]index`, 'i'),
                 loader: 'worker-loader',
                 options: {
-                    filename: `./workers/${worker}-worker.[contenthash].js`,
+                    filename: `js/workers/${worker}-worker.[contenthash].js`,
                 },
             })),
             // Allow extensionless imports from ESM packages in node_modules (webpack 5 strict ESM)
