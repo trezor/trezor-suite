@@ -1,5 +1,5 @@
 {
-    "extends": "../../../tsconfig.lib.json",
+    "extends": "../../../tsconfig.base.json",
     "compilerOptions": {
         "module": "NodeNext",
         "moduleResolution": "nodenext",
