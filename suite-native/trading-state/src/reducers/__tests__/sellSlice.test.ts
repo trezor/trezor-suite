@@ -1,9 +1,9 @@
 import type { CryptoId } from 'invity-api';
 
+import { type TradingSellState } from '@suite-common/trading';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { tradingInitialState } from '@suite-native/trading-consts';
 import { banxaCreditCardSellQuote, sellQuotes } from '@suite-native/trading-fixtures';
-import { type TradingSellState } from '@suite-native/trading-types';
 
 import { sellActions, sellReducer } from '../sellSlice';
 

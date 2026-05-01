@@ -1,9 +1,6 @@
 import type { ProviderMetadata } from 'invity-api';
 
 import type {
-    TradingBuyState as CommonTradingBuyState,
-    TradingExchangeState as CommonTradingExchangeState,
-    TradingSellState as CommonTradingSellState,
     TradingState as CommonTradingState,
     InvityServerEnvironment,
     TradingCountryCode,
@@ -11,12 +8,6 @@ import type {
 } from '@suite-common/trading';
 
 import type { ProviderConfirmationStatus } from './general';
-
-export type TradingBuyState = CommonTradingBuyState;
-
-export type TradingExchangeState = CommonTradingExchangeState;
-
-export type TradingSellState = CommonTradingSellState;
 
 export type TradingResidenceState = {
     country: TradingCountryCode | undefined;
@@ -32,9 +23,6 @@ export type TradingResidenceRootState = {
 };
 
 export interface TradingState extends CommonTradingState {
-    buy: TradingBuyState;
-    exchange: TradingExchangeState;
-    sell: TradingSellState;
     residence: TradingResidenceState;
     tradingEnvironment: InvityServerEnvironment;
     tradeOrderIdToBeOpened: string | undefined;
