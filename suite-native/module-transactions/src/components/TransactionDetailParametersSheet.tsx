@@ -132,12 +132,14 @@ export const TransactionDetailParametersSheet = ({
                             <Text numberOfLines={1} style={{ flexShrink: 1 }}>
                                 <TransactionIdFormatter value={transaction.txid} />
                             </Text>
+
                             <Box marginLeft="sp8">
                                 <IconButton
                                     iconName="copy"
                                     onPress={handleClickCopy}
                                     intent="neutral"
                                     priority="secondary"
+                                    size="small"
                                 />
                             </Box>
                         </Box>
