@@ -17,7 +17,7 @@ const config: webpack.Configuration = {
     entry: {
         main: [path.join(baseDir, 'src', 'index.ts')],
         'sessions-background-sharedworker': {
-            filename: 'workers/[name].js',
+            filename: 'js/workers/[name].js',
             import: path.resolve(
                 __dirname,
                 '../../transport/src/sessions/background-sharedworker.ts',

@@ -5,7 +5,7 @@ import { BrowserSessionsBackground } from '../sessions/background-browser';
 
 const defaultSessionsBackgroundUrl =
     window.location.origin +
-    `${process.env.ASSET_PREFIX || ''}/workers/sessions-background-sharedworker.js`
+    `${process.env.ASSET_PREFIX || ''}/js/workers/sessions-background-sharedworker.js`
         // just in case so that whoever defines ASSET_PREFIX does not need to worry about trailing slashes
         .replace(/\/+/g, '/');
 
