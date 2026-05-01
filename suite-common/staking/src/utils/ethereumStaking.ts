@@ -558,8 +558,13 @@ export const getDaysToAddToPool = (
         return undefined;
     }
 
+    const lastTxBlockTime = stakeTxs[0]?.blockTime;
+
+    if (!lastTxBlockTime) {
+        return undefined;
+    }
+
     const now = Math.floor(Date.now() / 1000);
-    const lastTxBlockTime = stakeTxs[0]?.blockTime || now;
 
     const secondsToWait =
         lastTxBlockTime + validatorsQueue.addingDelay + validatorsQueue.activationTime - now;
