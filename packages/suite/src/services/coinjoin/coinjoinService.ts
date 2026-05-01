@@ -18,9 +18,7 @@ const loadInstance = (settings: ReturnType<typeof getCoinjoinConfig>) => {
         ] as const);
     }
 
-    return import(/* webpackChunkName: "coinjoin" */ '@trezor/coinjoin').then(
-        pkg => [new pkg.CoinjoinBackend(settings), new pkg.CoinjoinClient(settings)] as const,
-    );
+    throw new Error('Coinjoin supported only in Suite Desktop');
 };
 
 export interface CoinjoinServiceInstance {
@@ -42,10 +40,6 @@ export class CoinjoinService {
         const config = settings ?? getCoinjoinConfig(symbol);
         const [backend, client] = await loadInstance({ ...config, prison });
         const instance = { backend, client };
-        if (!isDesktop()) {
-            // display client log directly in console
-            client.on('log', ({ level, payload }) => console[level](payload));
-        }
 
         this.instances[symbol] = instance;
 
