@@ -1,4 +1,3 @@
-/* eslint-disable import/no-default-export */
 import * as base58 from './crypto/base58';
 import * as bech32 from './crypto/bech32';
 import * as cryptoUtils from './crypto/utils';
@@ -168,36 +167,33 @@ function isValidSegwitAddress(address: string, currency: any, networkType: strin
     return false;
 }
 
-const validator = {
-    isValidAddress(address: string, currency?: any, networkType?: string): boolean {
-        const network = networkType || DEFAULT_NETWORK_TYPE;
-        const addrType = this.getAddressType(address, currency, network);
+export const getAddressType = (address: string, currency?: any, networkType?: string) => {
+    const network = networkType || DEFAULT_NETWORK_TYPE;
+    if (isValidPayToPublicKeyHashAddress(address, currency, network)) {
+        return addressType.P2PKH;
+    }
+    if (isValidPayToScriptHashAddress(address, currency, network)) {
+        return addressType.P2SH;
+    }
+    if (isValidPayToWitnessScriptHashAddress(address, currency, network)) {
+        return addressType.P2WSH;
+    }
+    if (isValidPayToWitnessPublicKeyHashAddress(address, currency, network)) {
+        return addressType.P2WPKH;
+    }
+    if (isValidPayToTaprootAddress(address, currency, network)) {
+        return addressType.P2TR;
+    }
+    if (isValidSegwitAddress(address, currency, network)) {
+        return addressType.WITNESS_UNKNOWN;
+    }
 
-        return addrType !== undefined && addrType !== addressType.WITNESS_UNKNOWN;
-    },
-    getAddressType(address: string, currency?: any, networkType?: string) {
-        const network = networkType || DEFAULT_NETWORK_TYPE;
-        if (isValidPayToPublicKeyHashAddress(address, currency, network)) {
-            return addressType.P2PKH;
-        }
-        if (isValidPayToScriptHashAddress(address, currency, network)) {
-            return addressType.P2SH;
-        }
-        if (isValidPayToWitnessScriptHashAddress(address, currency, network)) {
-            return addressType.P2WSH;
-        }
-        if (isValidPayToWitnessPublicKeyHashAddress(address, currency, network)) {
-            return addressType.P2WPKH;
-        }
-        if (isValidPayToTaprootAddress(address, currency, network)) {
-            return addressType.P2TR;
-        }
-        if (isValidSegwitAddress(address, currency, network)) {
-            return addressType.WITNESS_UNKNOWN;
-        }
-
-        return undefined;
-    },
+    return undefined;
 };
 
-export default validator;
+export const isValidAddress = (address: string, currency?: any, networkType?: string): boolean => {
+    const network = networkType || DEFAULT_NETWORK_TYPE;
+    const addrType = getAddressType(address, currency, network);
+
+    return addrType !== undefined && addrType !== addressType.WITNESS_UNKNOWN;
+};

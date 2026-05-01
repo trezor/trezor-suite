@@ -1,5 +1,3 @@
-/* eslint-disable import/no-default-export */
-
 import baseX from 'base-x';
 import crc from 'crc';
 
@@ -19,35 +17,31 @@ function swap16(number: number): number {
     return (lower << 8) | upper;
 }
 
-const validator = {
-    isValidAddress(address: string): boolean {
-        if (regexp.test(address)) {
-            return this.verifyChecksum(address);
-        }
-
+function verifyChecksum(address: string): boolean {
+    const bytes = base32.decode(address);
+    if (bytes[0] !== ed25519PublicKeyVersionByte) {
         return false;
-    },
+    }
 
-    verifyChecksum(address: string): boolean {
-        const bytes = base32.decode(address);
-        if (bytes[0] !== ed25519PublicKeyVersionByte) {
-            return false;
-        }
+    const payload = bytes.slice(0, -2);
+    const checksum = cryptoUtils.toHex(bytes.slice(-2));
+    const computedChecksum = cryptoUtils.numberToHex(swap16(crc.crc16xmodem(payload)), 2);
 
-        const payload = bytes.slice(0, -2);
-        const checksum = cryptoUtils.toHex(bytes.slice(-2));
-        const computedChecksum = cryptoUtils.numberToHex(swap16(crc.crc16xmodem(payload)), 2);
+    return computedChecksum === checksum;
+}
 
-        return computedChecksum === checksum;
-    },
+export const isValidAddress = (address: string): boolean => {
+    if (regexp.test(address)) {
+        return verifyChecksum(address);
+    }
 
-    getAddressType(address: string, _currency?: any, _networkType?: string) {
-        if (this.isValidAddress(address)) {
-            return addressType.ADDRESS;
-        }
-
-        return undefined;
-    },
+    return false;
 };
 
-export default validator;
+export const getAddressType = (address: string, _currency?: any, _networkType?: string) => {
+    if (isValidAddress(address)) {
+        return addressType.ADDRESS;
+    }
+
+    return undefined;
+};

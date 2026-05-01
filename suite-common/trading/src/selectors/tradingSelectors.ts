@@ -18,7 +18,7 @@ import {
     selectDeviceAccounts,
 } from '@suite-common/wallet-core';
 import { type Account, type SelectedAccountStatus } from '@suite-common/wallet-types';
-import addressValidator from '@trezor/address-validator';
+import { getCurrencies } from '@trezor/address-validator';
 import { exhaustive } from '@trezor/type-utils';
 
 import { groupTradingExchangeQuotesProjection } from './utils/groupTradingExchangeQuotesProjection';
@@ -472,9 +472,7 @@ const getFilteredCryptoIds = (
         return [];
     }
 
-    const supportedAddressValidatorSymbols = new Set(
-        addressValidator.getCurrencies().map(c => c.symbol),
-    );
+    const supportedAddressValidatorSymbols = new Set(getCurrencies().map(c => c.symbol));
 
     const uniqueSupportedCryptoIds = [...new Set(supportedCryptoIds).values()];
 

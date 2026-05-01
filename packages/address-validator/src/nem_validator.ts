@@ -1,8 +1,7 @@
-/* eslint-disable import/no-default-export */
 import * as cryptoUtils from './crypto/utils';
 import { addressType } from './crypto/utils';
 
-const isValidAddress = (_address: string): boolean => {
+export const isValidAddress = (_address: string): boolean => {
     const address = _address.toString().toUpperCase().replace(/-/g, '');
     if (!address || address.length !== 40) {
         return false;
@@ -15,16 +14,10 @@ const isValidAddress = (_address: string): boolean => {
     return stepThreeChecksum === decoded.slice(42);
 };
 
-const validator = {
-    isValidAddress,
+export const getAddressType = (address: string, _currency?: any, _networkType?: string) => {
+    if (isValidAddress(address)) {
+        return addressType.ADDRESS;
+    }
 
-    getAddressType(address: string, _currency?: any, _networkType?: string) {
-        if (this.isValidAddress(address)) {
-            return addressType.ADDRESS;
-        }
-
-        return undefined;
-    },
+    return undefined;
 };
-
-export default validator;

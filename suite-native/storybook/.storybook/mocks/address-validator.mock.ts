@@ -1,3 +1,22 @@
-// There is an import error: `baseX is not a function at ripple_validator.js:7:13`
-// This library is not needed for the Storybook build so it can be replaced with an empty object.
-export default {};
+type Currency = {
+    symbol: string;
+};
+
+// Keep Storybook aligned with the named-export surface of @trezor/address-validator.
+export const addressType = {
+    ADDRESS: 'address',
+    P2PKH: 'p2pkh',
+    P2WPKH: 'p2wpkh',
+    P2WSH: 'p2wsh',
+    P2SH: 'p2sh',
+    P2TR: 'p2tr',
+    WITNESS_UNKNOWN: 'p2w-unknown',
+} as const;
+
+export const validate = (): boolean => false;
+
+export const getAddressType = (): undefined => undefined;
+
+export const getCurrencies = (): Currency[] => [];
+
+export const findCurrency = (): null => null;

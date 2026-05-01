@@ -1,4 +1,3 @@
-/* eslint-disable import/no-default-export */
 import * as base58 from './crypto/base58';
 import { addressType } from './crypto/utils';
 
@@ -6,30 +5,26 @@ const ALLOWED_CHARS = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxy
 
 const regexp = new RegExp('^(ak_)([' + ALLOWED_CHARS + ']+)$');
 
-const validator = {
-    isValidAddress(address: string): boolean {
-        const match = regexp.exec(address);
-        if (match !== null) {
-            return this.verifyChecksum(match[2]);
-        }
+function verifyChecksum(address: string): boolean {
+    const decoded = base58.decode(address);
+    decoded.splice(-4, 4); // remove last 4 elements. Why is base 58 adding them?
 
-        return false;
-    },
+    return decoded.length === 32;
+}
 
-    verifyChecksum(address: string): boolean {
-        const decoded = base58.decode(address);
-        decoded.splice(-4, 4); // remove last 4 elements. Why is base 58 adding them?
+export const isValidAddress = (address: string): boolean => {
+    const match = regexp.exec(address);
+    if (match !== null) {
+        return verifyChecksum(match[2]);
+    }
 
-        return decoded.length === 32;
-    },
-
-    getAddressType(address: string, _currency?: any, _networkType?: string) {
-        if (this.isValidAddress(address)) {
-            return addressType.ADDRESS;
-        }
-
-        return undefined;
-    },
+    return false;
 };
 
-export default validator;
+export const getAddressType = (address: string, _currency?: any, _networkType?: string) => {
+    if (isValidAddress(address)) {
+        return addressType.ADDRESS;
+    }
+
+    return undefined;
+};
