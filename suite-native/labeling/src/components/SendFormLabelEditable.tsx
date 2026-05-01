@@ -17,7 +17,7 @@ export const SendFormLabelEditable = ({ onLabelChange, label }: SendFormLabelEdi
     if (!isLabellingAllowed) return null;
 
     return (
-        <Box flex={1} alignItems="flex-end">
+        <Box alignItems="flex-end">
             <EditableLabelLayout label={label}>
                 {({ onClose }) => (
                     <LabelEditForm

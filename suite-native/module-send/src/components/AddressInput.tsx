@@ -86,7 +86,7 @@ export const AddressInput = ({ index, accountKey }: AddressInputProps) => {
 
     return (
         <VStack spacing="sp12">
-            <HStack alignItems="center" spacing="sp12">
+            <HStack alignItems="center" justifyContent="space-between" spacing="sp12">
                 <Text variant="body-sm">
                     <Translation id="moduleSend.outputs.recipients.addressLabel" />
                 </Text>

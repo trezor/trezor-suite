@@ -34,6 +34,7 @@ export const EditableLabelLayout = ({ children, label, testID }: EditableLabelLa
                 }}
                 iconRight="pencil"
                 testID={testID}
+                size="small"
             >
                 {label ?? <Translation id="suiteSync.addLabel" />}
             </TextButton>
