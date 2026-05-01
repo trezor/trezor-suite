@@ -87,7 +87,7 @@ export const SendOutputsScreen = ({
                     </Form>
                 </Box>
                 {isValid && network && (
-                    <Box marginTop="sp24">
+                    <Box marginTop="sp16">
                         <FeeSelector
                             accountKey={accountKey}
                             tokenContract={tokenContract}
