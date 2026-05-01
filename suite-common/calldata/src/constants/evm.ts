@@ -18,4 +18,11 @@ export const EVM_ABI = {
             'function claim(address[] users, address[] tokens, uint256[] amounts, bytes32[][] proofs)',
         ]),
     },
+    everstake: {
+        stake: parseAbi(['function stake(uint64 source)']),
+        unstake: parseAbi([
+            'function unstake(uint256 value, uint16 allowedInterchangeNum, uint64 source) returns (uint256 unstakeFromPendingValue)',
+        ]),
+        claimWithdrawRequest: parseAbi(['function claimWithdrawRequest()']),
+    },
 } as const;

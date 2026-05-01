@@ -2,6 +2,7 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../calldata" },
         { "path": "../earn-staking-api" },
         { "path": "../staking-solana-types" },
         { "path": "../wallet-config" },

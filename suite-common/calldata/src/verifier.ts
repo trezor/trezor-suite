@@ -15,5 +15,10 @@ export const Verifier = {
         distributor: {
             claim: createVerifier({ abi: EVM_ABI.distributor.claim }),
         },
+        everstake: {
+            stake: createVerifier({ abi: EVM_ABI.everstake.stake }),
+            unstake: createVerifier({ abi: EVM_ABI.everstake.unstake }),
+            claimWithdrawRequest: createVerifier({ abi: EVM_ABI.everstake.claimWithdrawRequest }),
+        },
     },
 } as const;

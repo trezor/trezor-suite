@@ -2,6 +2,9 @@ import { buildAllowance } from './builder/evm/allowance';
 import { buildApprove } from './builder/evm/approve';
 import { buildClaim } from './builder/evm/claim';
 import { buildDeposit } from './builder/evm/deposit';
+import { buildClaimWithdrawRequest } from './builder/evm/everstake/claimWithdrawRequest';
+import { buildStake } from './builder/evm/everstake/stake';
+import { buildUnstake } from './builder/evm/everstake/unstake';
 import { buildRedeem } from './builder/evm/redeem';
 import { buildTransfer } from './builder/evm/transfer';
 import { buildWithdraw } from './builder/evm/withdraw';
@@ -21,6 +24,11 @@ export const Calldata = {
         },
         distributor: {
             claim: buildClaim,
+        },
+        everstake: {
+            stake: buildStake,
+            unstake: buildUnstake,
+            claimWithdrawRequest: buildClaimWithdrawRequest,
         },
     },
     tron: {
