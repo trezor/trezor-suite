@@ -19,9 +19,9 @@ const isIndexableNativeElement = (v: ElementOrMatcher): v is Detox.NativeElement
 
 export const platform = device.getPlatform();
 
-// There is inconsistency between platforms. Android needs to have 100% of an element visible to be able to interact with it.
+// There is inconsistency between platforms. Android needs to have at least 75% of an element visible to be able to interact with it.
 // On the other hand, if we are trying to scroll to 100% visibility on iOS, it causes scrolling more than height of the screen and it makes Detox crash.
-const SCROLL_VISIBILITY_THRESHOLD = platform === 'android' ? 100 : undefined;
+const SCROLL_VISIBILITY_THRESHOLD = platform === 'android' ? 95 : undefined;
 
 export const RETRY_CONF = {
     attempts: 5,
