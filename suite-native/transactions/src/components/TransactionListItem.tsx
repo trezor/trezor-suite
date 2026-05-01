@@ -79,7 +79,7 @@ export const TransactionListItemValues = ({
                 <EmptyAmountText />
             ) : (
                 <Box flexDirection="row">
-                    {!isFailedTx && <SignValueFormatter value={sign} />}
+                    {!isFailedTx && !isPhishingTransaction && <SignValueFormatter value={sign} />}
                     <CryptoToFiatAmountFormatter
                         value={transaction.amount}
                         symbol={transaction.symbol}

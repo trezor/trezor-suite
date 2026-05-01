@@ -71,7 +71,7 @@ export const TokenToFiatAmountFormatter = ({
 
     return (
         <Box flexDirection="row">
-            <SignValueFormatter value={signValue} />
+            {!isForcedDiscreetMode && <SignValueFormatter value={signValue} />}
             {amountText}
         </Box>
     );
