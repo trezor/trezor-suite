@@ -34,7 +34,7 @@ const MAX_VISIBLE_ROW_ICONS = 3;
 const getRowItemIconKey = (rowItem: EarnDepositsCardRowType['activeItems'][number]) =>
     rowItem.type === 'staking'
         ? `${rowItem.type}:${rowItem.symbol}`
-        : `${rowItem.type}:${rowItem.networkSymbol}:${rowItem.contractAddress}`;
+        : `${rowItem.type}:${rowItem.networkSymbol}:${rowItem.tokenContractAddress}`;
 
 const getVisibleRowIcons = (row: EarnDepositsCardRowType) =>
     row.activeItems.reduce<typeof row.activeItems>((uniqueItems, rowItem) => {
@@ -80,7 +80,7 @@ export const EarnDepositsCardRow = React.memo(({ row, onPress }: EarnDepositsCar
                                     }
                                     contractAddress={
                                         item.type === 'stablecoin-yield'
-                                            ? item.contractAddress
+                                            ? item.tokenContractAddress
                                             : undefined
                                     }
                                     size="extraSmall"

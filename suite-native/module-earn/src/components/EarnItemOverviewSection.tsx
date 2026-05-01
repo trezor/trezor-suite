@@ -84,7 +84,7 @@ export const EarnItemOverviewSection = (item: EarnPromoItem) => {
     const iconProps =
         item.type === 'staking'
             ? { symbol: item.symbol }
-            : { symbol: item.networkSymbol, contractAddress: item.contractAddress };
+            : { symbol: item.networkSymbol, contractAddress: item.tokenContractAddress };
 
     return (
         <HStack

@@ -68,9 +68,10 @@ export const YieldSupplyFlowScreen = () => {
         flowKey,
         routeParams: route.params,
     });
+    const isApprovalFeeReady = approvalFeeFormDraft !== undefined;
 
     const handleSubmit = form.handleSubmit(async ({ amount }) => {
-        if (isComposingApprovalFee) {
+        if (!isApprovalFeeReady || isComposingApprovalFee) {
             return;
         }
 
@@ -105,7 +106,12 @@ export const YieldSupplyFlowScreen = () => {
                 <YieldSupplyFlowFooter
                     amountValue={amountValue}
                     apy={apy}
-                    isDisabled={!isValid || isComposingApprovalFee || isCheckingApproval}
+                    isDisabled={
+                        !isValid ||
+                        !isApprovalFeeReady ||
+                        isComposingApprovalFee ||
+                        isCheckingApproval
+                    }
                     isLoading={isCheckingApproval}
                     onPress={handleSubmit}
                     tokenSymbol={tokenSymbol}

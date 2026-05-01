@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { isFulfilled } from '@reduxjs/toolkit';
 
-import { EVM_VAULT_ADDRESSES } from '@suite-common/earn-stablecoin-api';
 import {
     type FeesRootState,
     type FormDraftRootState,
@@ -133,7 +132,7 @@ export const useYieldApprovalFees = ({
                 return;
             }
 
-            const spender = EVM_VAULT_ADDRESSES[approvalFlowData.vault.id];
+            const spender = approvalFlowData.vault.outputToken?.address;
             if (!spender) {
                 dispatch(formDraftActions.removeDraft({ key: approvalFormDraftKey }));
 
@@ -162,6 +161,8 @@ export const useYieldApprovalFees = ({
             );
 
             if (!isFulfilled(feeResponse)) {
+                dispatch(formDraftActions.removeDraft({ key: approvalFormDraftKey }));
+
                 return;
             }
 
@@ -172,6 +173,8 @@ export const useYieldApprovalFees = ({
             const selectedFeeTransaction = feeResponse.payload[selectedFee];
 
             if (!isFinalPrecomposedTransaction(selectedFeeTransaction)) {
+                dispatch(formDraftActions.removeDraft({ key: approvalFormDraftKey }));
+
                 return;
             }
 

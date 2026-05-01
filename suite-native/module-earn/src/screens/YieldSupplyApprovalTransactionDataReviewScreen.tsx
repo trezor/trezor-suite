@@ -44,20 +44,20 @@ const ApprovalReviewContent = ({
         isApprovalSigned,
         isPreparingApproval,
         isSendingApproval,
+        isSigningApproval,
         isSubmitDisabled,
-        isSubmittingApproval,
     } = useYieldApprovalReview({
         flowData,
         flowKey,
     });
 
     useEffect(() => {
-        if (isSubmittingApproval) {
+        if (isSigningApproval) {
             revealConfirmOnTrezorSheet();
         } else {
             closeSheet();
         }
-    }, [closeSheet, isSubmittingApproval, revealConfirmOnTrezorSheet]);
+    }, [closeSheet, isSigningApproval, revealConfirmOnTrezorSheet]);
 
     return (
         <ConfirmOnTrezorWrapper
@@ -81,9 +81,9 @@ const ApprovalReviewContent = ({
                     amount={route.params.amount}
                     approvalLimitType={route.params.approvalLimitType}
                     fee={fee}
-                    isFooterVisible={!isSubmittingApproval && !isApprovalSigned}
+                    isFooterVisible={!isSigningApproval && !isApprovalSigned}
                     isSubmitDisabled={isSubmitDisabled}
-                    isSubmitLoading={isPreparingApproval || isSubmittingApproval}
+                    isSubmitLoading={isPreparingApproval || isSigningApproval}
                     onSubmit={handleSubmitApprovalReview}
                     tokenSymbol={tokenSymbol}
                 />

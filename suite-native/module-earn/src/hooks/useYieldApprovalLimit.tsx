@@ -8,15 +8,13 @@ export const useYieldApprovalLimit = () => {
     const [approvalLimitType, setApprovalLimitType] =
         useState<YieldApprovalLimitType>('per-supply');
 
-    const approvalLimitTitle =
-        approvalLimitType === 'per-supply' ? (
-            <Translation id="earn.yieldSupplyFlowScreen.perSupply" />
-        ) : (
-            <Translation id="earn.yieldSupplyFlowScreen.approvalLimitSheet.unlimited.title" />
-        );
+    const approvalLimitTitleId =
+        approvalLimitType === 'per-supply'
+            ? 'earn.yieldSupplyFlowScreen.perSupply'
+            : 'earn.yieldSupplyFlowScreen.approvalLimitSheet.unlimited.title';
 
     return {
-        approvalLimitTitle,
+        approvalLimitTitle: <Translation id={approvalLimitTitleId} />,
         approvalLimitType,
         setApprovalLimitType,
     };

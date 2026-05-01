@@ -91,7 +91,7 @@ export const useEarnDepositsCardData = ({
                 const fiatRateKey = getFiatRateKey(
                     item.networkSymbol,
                     fiatCurrency,
-                    item.contractAddress,
+                    item.tokenContractAddress,
                 );
 
                 const fiatRate = currentFiatRates?.[fiatRateKey]?.rate;
@@ -109,6 +109,7 @@ export const useEarnDepositsCardData = ({
                         networkSymbol: item.networkSymbol,
                         tokenSymbol: item.tokenSymbol,
                         contractAddress: item.contractAddress,
+                        tokenContractAddress: item.tokenContractAddress,
                         accountKey: item.accountKey,
                         accountLabel: item.accountLabel,
                         balance: item.tokenBalance,

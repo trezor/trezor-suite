@@ -76,7 +76,7 @@ export const YieldSupplyFlowFooter = ({
                     )}
                     <Button
                         accessibilityRole="button"
-                        accessibilityLabel={translate('generic.validateForm')}
+                        accessibilityLabel={translate('generic.buttons.continue')}
                         onPress={onPress}
                         isDisabled={isDisabled}
                         isLoading={isLoading}
