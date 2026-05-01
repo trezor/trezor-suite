@@ -17,7 +17,9 @@ const useFetchMessages = (locale: Locale) => {
             const messages =
                 locale === 'en-US'
                     ? {}
-                    : await import(`@trezor/suite-data/files/translations/${locale}.json`)
+                    : await import(
+                          /* webpackChunkName: "translations/[request]" */ `@trezor/suite-data/files/translations/${locale}.json`
+                      )
                           .then(res => res.default)
                           .catch(() => ({}));
             if (!active) return;
