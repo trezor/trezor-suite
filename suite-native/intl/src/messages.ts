@@ -2555,7 +2555,7 @@ export const messages = {
             subtitle: 'Your stablecoins are put to work in lending protocols to earn yield.',
             benefits: {
                 first: {
-                    title: 'The supplied amount of USDC is locked until you withdraw it.',
+                    title: 'The supplied amount of {tokenSymbol} is locked until you withdraw it.',
                     description: 'Withdrawal is instant.',
                 },
                 second: {

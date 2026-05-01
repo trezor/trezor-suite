@@ -56,9 +56,10 @@ export const YieldSupplyApprovalReviewStepList = ({
     const { translate } = useTranslate();
     const [stepIndex, setStepIndex] = useState(0);
     const { activeStepBottomOffset, handleReadListItemHeight } = useActiveStepOffset(stepIndex);
+    const isLastStep = stepIndex === NUMBER_OF_STEPS - 1;
 
     const handlePrimaryAction = () => {
-        if (stepIndex === NUMBER_OF_STEPS - 1) {
+        if (isLastStep) {
             onSubmit();
 
             return;
@@ -67,8 +68,7 @@ export const YieldSupplyApprovalReviewStepList = ({
         setStepIndex(previousStepIndex => previousStepIndex + 1);
     };
 
-    const actionTranslationId =
-        stepIndex === NUMBER_OF_STEPS - 1 ? 'generic.buttons.continue' : 'generic.buttons.next';
+    const actionTranslationId = isLastStep ? 'generic.buttons.continue' : 'generic.buttons.next';
     const approvalLimitTranslationId =
         approvalLimitType === 'per-supply'
             ? 'earn.yieldSupplyFlowScreen.perSupply'
@@ -119,8 +119,8 @@ export const YieldSupplyApprovalReviewStepList = ({
             {isFooterVisible && (
                 <SlidingFooterOverlay activeStepOffset={activeStepBottomOffset}>
                     <Button
-                        isDisabled={isSubmitDisabled && stepIndex === NUMBER_OF_STEPS - 1}
-                        isLoading={isSubmitLoading && stepIndex === NUMBER_OF_STEPS - 1}
+                        isDisabled={isSubmitDisabled && isLastStep}
+                        isLoading={isSubmitLoading && isLastStep}
                         onPress={handlePrimaryAction}
                     >
                         <Translation id={actionTranslationId} />

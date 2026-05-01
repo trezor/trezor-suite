@@ -49,13 +49,14 @@ export const useYieldSupplyApprovalSubmit = ({
 
             const sessionParams = { flowType: 'supply' as const, flowKey };
             const showSupplyWorkInProgress = (title?: string) => {
+                // TODO: Replace with correct handling flow once deposit is implemented.
                 showWorkInProgressAlert(title);
                 dispatch(stablecoinYieldActions.resetSession(sessionParams));
             };
 
             setIsCheckingApproval(true);
-            dispatch(stablecoinYieldActions.initSession(sessionParams));
             dispatch(stablecoinYieldActions.resetSession(sessionParams));
+            dispatch(stablecoinYieldActions.initSession(sessionParams));
 
             try {
                 const response = await dispatch(
@@ -75,6 +76,7 @@ export const useYieldSupplyApprovalSubmit = ({
                 const session = selectStablecoinYieldSession(store.getState(), 'supply', flowKey);
 
                 if (session.error) {
+                    // TODO: Show a dedicated approval error
                     showSupplyWorkInProgress();
 
                     return;
@@ -97,6 +99,7 @@ export const useYieldSupplyApprovalSubmit = ({
                 );
 
                 if (!isFulfilled(reviewTransactionResponse)) {
+                    // TODO: Show a dedicated error
                     showSupplyWorkInProgress();
 
                     return;

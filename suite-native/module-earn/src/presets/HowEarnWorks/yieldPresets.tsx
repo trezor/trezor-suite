@@ -17,7 +17,12 @@ export const createHowYieldWorksPreset = ({
         {
             id: 'yield-benefit-lock',
             icon: 'lock',
-            title: <Translation id="earn.howYieldWorksScreen.benefits.first.title" />,
+            title: (
+                <Translation
+                    id="earn.howYieldWorksScreen.benefits.first.title"
+                    values={{ tokenSymbol }}
+                />
+            ),
             description: <Translation id="earn.howYieldWorksScreen.benefits.first.description" />,
         },
         {

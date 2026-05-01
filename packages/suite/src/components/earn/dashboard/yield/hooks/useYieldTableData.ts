@@ -6,9 +6,13 @@ import {
     type NetworkSymbol,
     getNetworkByYieldXyzId,
 } from '@suite-common/wallet-config';
-import { selectDeviceSupportedNetworks } from '@suite-common/wallet-core';
+import {
+    doTokensMatch,
+    getConvertedOutputTokenBalanceToInputTokenAmount,
+    selectDeviceSupportedNetworks,
+} from '@suite-common/wallet-core';
 import { type Account, type TokenInfoBranded, toTokenSymbol } from '@suite-common/wallet-types';
-import { getApyPercent, getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
+import { getApyPercent } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
@@ -22,52 +26,6 @@ import {
     type YieldInactiveVaultOpportunity,
     type YieldOpportunityData,
 } from '../types';
-
-const getNormalizedTokenAddress = ({
-    networkSymbol,
-    tokenAddress,
-}: {
-    networkSymbol: NetworkSymbol;
-    tokenAddress?: string;
-}) => {
-    if (!tokenAddress) {
-        return undefined;
-    }
-
-    return getContractAddressForNetworkSymbol(networkSymbol, tokenAddress);
-};
-
-const doTokensMatch = ({
-    networkSymbol,
-    firstToken,
-    secondToken,
-}: {
-    networkSymbol: NetworkSymbol;
-    firstToken?: Pick<TokenDto, 'address' | 'symbol' | 'decimals'>;
-    secondToken?: Pick<TokenDto, 'address' | 'symbol' | 'decimals'>;
-}) => {
-    if (!firstToken || !secondToken) {
-        return false;
-    }
-
-    const firstTokenAddress = getNormalizedTokenAddress({
-        networkSymbol,
-        tokenAddress: firstToken.address,
-    });
-    const secondTokenAddress = getNormalizedTokenAddress({
-        networkSymbol,
-        tokenAddress: secondToken.address,
-    });
-
-    if (firstTokenAddress && secondTokenAddress) {
-        return firstTokenAddress === secondTokenAddress;
-    }
-
-    return (
-        firstToken.symbol.toLowerCase() === secondToken.symbol.toLowerCase() &&
-        firstToken.decimals === secondToken.decimals
-    );
-};
 
 const hasTokenSymbol = (
     accountToken: NonNullable<Account['tokens']>[number],
@@ -101,53 +59,6 @@ const getMatchedAccountToken = ({
     );
 };
 
-const getConvertedOutputTokenBalanceToInputTokenAmount = ({
-    matchedOutputToken,
-    networkSymbol,
-    vault,
-}: {
-    matchedOutputToken: TokenInfoBranded | undefined;
-    networkSymbol: NetworkSymbol;
-    vault: YieldDto;
-}) => {
-    if (!matchedOutputToken) {
-        return '0';
-    }
-
-    if (
-        doTokensMatch({
-            networkSymbol,
-            firstToken: vault.outputToken,
-            secondToken: vault.token,
-        })
-    ) {
-        return matchedOutputToken.balance ?? '0';
-    }
-
-    const pricePerShareState = vault.state?.pricePerShareState;
-
-    if (
-        !pricePerShareState ||
-        !doTokensMatch({
-            networkSymbol,
-            firstToken: pricePerShareState.shareToken,
-            secondToken: vault.outputToken,
-        }) ||
-        !doTokensMatch({
-            networkSymbol,
-            firstToken: pricePerShareState.quoteToken,
-            secondToken: vault.token,
-        })
-    ) {
-        return '0';
-    }
-
-    return new BigNumber(matchedOutputToken.balance ?? '0')
-        .times(pricePerShareState.price)
-        .decimalPlaces(vault.token.decimals, BigNumber.ROUND_DOWN)
-        .toString();
-};
-
 const getYieldOpportunityData = ({
     account,
     networkSymbol,
@@ -169,9 +80,11 @@ const getYieldOpportunityData = ({
     });
     const hasVaultPosition = new BigNumber(matchedOutputToken?.balance ?? '0').gt(0);
     const suppliedAmount = getConvertedOutputTokenBalanceToInputTokenAmount({
-        matchedOutputToken,
         networkSymbol,
-        vault,
+        token: vault.token,
+        outputToken: vault.outputToken,
+        outputTokenBalance: matchedOutputToken?.balance,
+        pricePerShareState: vault.state?.pricePerShareState,
     });
     const additionalSupplyAmount = matchedInputToken?.balance ?? '0';
     const hasRewardsData =

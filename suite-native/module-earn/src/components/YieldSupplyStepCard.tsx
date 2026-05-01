@@ -56,7 +56,7 @@ export const YieldSupplyStepCard = () => {
                         <Text variant="body-sm">
                             <Translation
                                 id="earn.yieldSupplyFlowScreen.step"
-                                values={{ stepNumber: 1, stepCount: 3 }}
+                                values={{ stepNumber: 1, stepCount: steps.length }}
                             />
                         </Text>
                         <Text variant="body-md-strong">
@@ -79,8 +79,8 @@ export const YieldSupplyStepCard = () => {
                 }
                 onClose={closeModal}
             >
-                {/* // TODO: implement step logic  */}
-                <EarnModalStepIndicator currentStepIndex={1} steps={steps} />
+                {/* TODO: Derive current step from the full supply flow once it is implemented. */}
+                <EarnModalStepIndicator currentStepIndex={0} steps={steps} />
             </BottomSheetModal>
         </>
     );

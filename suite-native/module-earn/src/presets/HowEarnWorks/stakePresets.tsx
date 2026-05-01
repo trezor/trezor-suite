@@ -16,143 +16,150 @@ export const createHowStakeWorksPreset = ({
     entryPeriodInDays,
     unstakingPeriodInDays,
     apy,
-}: CreateHowStakeWorksPresetProps): HowEarnWorksScreenPreset => ({
-    benefitItems: [
-        {
-            id: 'stake-benefit-rewards',
-            icon: 'piggyBank',
-            title: (
-                <Translation
-                    id="earn.howStakeWorksScreen.benefits.first.title"
-                    values={{ displaySymbol, potentialRewards }}
-                />
-            ),
-            description: (
-                <Translation
-                    id="earn.howStakeWorksScreen.benefits.first.description"
-                    values={{ displaySymbol }}
-                />
-            ),
-        },
-        {
-            id: 'stake-benefit-compound',
-            icon: 'trendUp',
-            title: <Translation id="earn.howStakeWorksScreen.benefits.second.title" />,
-            description: <Translation id="earn.howStakeWorksScreen.benefits.second.description" />,
-        },
-        {
-            id: 'stake-benefit-growth',
-            icon: 'clock',
-            title: (
-                <Translation
-                    id="earn.howStakeWorksScreen.benefits.third.title"
-                    values={{ displaySymbol }}
-                />
-            ),
-            description: <Translation id="earn.howStakeWorksScreen.benefits.third.description" />,
-        },
-    ],
-    timelineSections: [
-        {
-            id: 'staking',
-            title: <Translation id="earn.howStakeWorksScreen.stakingTimelineTitle" />,
-            iconName: 'arrowUpRight',
-            items: [
-                {
-                    id: 'staking.first',
-                    title: (
-                        <Translation id="earn.howStakeWorksScreen.stakingTimeline.first.title" />
-                    ),
-                    description: (
-                        <Translation id="earn.howStakeWorksScreen.stakingTimeline.first.description" />
-                    ),
-                },
-                {
-                    id: 'staking.second',
-                    title: (
-                        <Translation id="earn.howStakeWorksScreen.stakingTimeline.second.title" />
-                    ),
-                    description:
-                        entryPeriodInDays !== undefined ? (
+}: CreateHowStakeWorksPresetProps): HowEarnWorksScreenPreset => {
+    const entryPeriodDescriptionId =
+        entryPeriodInDays !== undefined
+            ? 'earn.howStakeWorksScreen.stakingTimeline.second.description'
+            : 'earn.notAvailable';
+    const stakingRewardsDescriptionId =
+        apy != null
+            ? 'earn.howStakeWorksScreen.stakingTimeline.third.description'
+            : 'earn.notAvailableShort';
+    const unstakingPeriodDescriptionId =
+        unstakingPeriodInDays !== undefined
+            ? 'earn.howStakeWorksScreen.unstakeTimeline.second.description'
+            : 'earn.notAvailable';
+
+    return {
+        benefitItems: [
+            {
+                id: 'stake-benefit-rewards',
+                icon: 'piggyBank',
+                title: (
+                    <Translation
+                        id="earn.howStakeWorksScreen.benefits.first.title"
+                        values={{ displaySymbol, potentialRewards }}
+                    />
+                ),
+                description: (
+                    <Translation
+                        id="earn.howStakeWorksScreen.benefits.first.description"
+                        values={{ displaySymbol }}
+                    />
+                ),
+            },
+            {
+                id: 'stake-benefit-compound',
+                icon: 'trendUp',
+                title: <Translation id="earn.howStakeWorksScreen.benefits.second.title" />,
+                description: (
+                    <Translation id="earn.howStakeWorksScreen.benefits.second.description" />
+                ),
+            },
+            {
+                id: 'stake-benefit-growth',
+                icon: 'clock',
+                title: (
+                    <Translation
+                        id="earn.howStakeWorksScreen.benefits.third.title"
+                        values={{ displaySymbol }}
+                    />
+                ),
+                description: (
+                    <Translation id="earn.howStakeWorksScreen.benefits.third.description" />
+                ),
+            },
+        ],
+        timelineSections: [
+            {
+                id: 'staking',
+                title: <Translation id="earn.howStakeWorksScreen.stakingTimelineTitle" />,
+                iconName: 'arrowUpRight',
+                items: [
+                    {
+                        id: 'staking.first',
+                        title: (
+                            <Translation id="earn.howStakeWorksScreen.stakingTimeline.first.title" />
+                        ),
+                        description: (
+                            <Translation id="earn.howStakeWorksScreen.stakingTimeline.first.description" />
+                        ),
+                    },
+                    {
+                        id: 'staking.second',
+                        title: (
+                            <Translation id="earn.howStakeWorksScreen.stakingTimeline.second.title" />
+                        ),
+                        description: (
                             <Translation
-                                id="earn.howStakeWorksScreen.stakingTimeline.second.description"
+                                id={entryPeriodDescriptionId}
                                 values={{ entryPeriod: entryPeriodInDays }}
                             />
-                        ) : (
-                            <Translation id="earn.notAvailable" />
                         ),
-                },
-                {
-                    id: 'staking.third',
-                    title: (
-                        <Translation id="earn.howStakeWorksScreen.stakingTimeline.third.title" />
-                    ),
-                    description:
-                        apy != null ? (
-                            <Translation
-                                id="earn.howStakeWorksScreen.stakingTimeline.third.description"
-                                values={{ apy }}
-                            />
-                        ) : (
-                            <Translation id="earn.notAvailableShort" />
+                    },
+                    {
+                        id: 'staking.third',
+                        title: (
+                            <Translation id="earn.howStakeWorksScreen.stakingTimeline.third.title" />
                         ),
-                },
-            ],
-        },
-        {
-            id: 'unstake',
-            title: <Translation id="earn.howStakeWorksScreen.unstakeTimelineTitle" />,
-            iconName: 'arrowDownLeft',
-            items: [
-                {
-                    id: 'unstake.first',
-                    title: (
-                        <Translation id="earn.howStakeWorksScreen.unstakeTimeline.first.title" />
-                    ),
-                    description: (
-                        <Translation id="earn.howStakeWorksScreen.unstakeTimeline.first.description" />
-                    ),
-                },
-                {
-                    id: 'unstake.second',
-                    title: (
-                        <Translation id="earn.howStakeWorksScreen.unstakeTimeline.second.title" />
-                    ),
-                    description:
-                        unstakingPeriodInDays !== undefined ? (
+                        description: (
+                            <Translation id={stakingRewardsDescriptionId} values={{ apy }} />
+                        ),
+                    },
+                ],
+            },
+            {
+                id: 'unstake',
+                title: <Translation id="earn.howStakeWorksScreen.unstakeTimelineTitle" />,
+                iconName: 'arrowDownLeft',
+                items: [
+                    {
+                        id: 'unstake.first',
+                        title: (
+                            <Translation id="earn.howStakeWorksScreen.unstakeTimeline.first.title" />
+                        ),
+                        description: (
+                            <Translation id="earn.howStakeWorksScreen.unstakeTimeline.first.description" />
+                        ),
+                    },
+                    {
+                        id: 'unstake.second',
+                        title: (
+                            <Translation id="earn.howStakeWorksScreen.unstakeTimeline.second.title" />
+                        ),
+                        description: (
                             <Translation
-                                id="earn.howStakeWorksScreen.unstakeTimeline.second.description"
+                                id={unstakingPeriodDescriptionId}
                                 values={{ unstakingPeriod: unstakingPeriodInDays }}
                             />
-                        ) : (
-                            <Translation id="earn.notAvailable" />
                         ),
-                },
-                {
-                    id: 'unstake.third',
-                    title: (
-                        <Translation
-                            id="earn.howStakeWorksScreen.unstakeTimeline.third.title"
-                            values={{ symbol: displaySymbol }}
-                        />
-                    ),
-                    description: (
-                        <Translation id="earn.howStakeWorksScreen.unstakeTimeline.third.description" />
-                    ),
-                },
-                {
-                    id: 'unstake.fourth',
-                    title: (
-                        <Translation
-                            id="earn.howStakeWorksScreen.unstakeTimeline.fourth.title"
-                            values={{ symbol: displaySymbol }}
-                        />
-                    ),
-                    description: (
-                        <Translation id="earn.howStakeWorksScreen.unstakeTimeline.fourth.description" />
-                    ),
-                },
-            ],
-        },
-    ],
-});
+                    },
+                    {
+                        id: 'unstake.third',
+                        title: (
+                            <Translation
+                                id="earn.howStakeWorksScreen.unstakeTimeline.third.title"
+                                values={{ symbol: displaySymbol }}
+                            />
+                        ),
+                        description: (
+                            <Translation id="earn.howStakeWorksScreen.unstakeTimeline.third.description" />
+                        ),
+                    },
+                    {
+                        id: 'unstake.fourth',
+                        title: (
+                            <Translation
+                                id="earn.howStakeWorksScreen.unstakeTimeline.fourth.title"
+                                values={{ symbol: displaySymbol }}
+                            />
+                        ),
+                        description: (
+                            <Translation id="earn.howStakeWorksScreen.unstakeTimeline.fourth.description" />
+                        ),
+                    },
+                ],
+            },
+        ],
+    };
+};

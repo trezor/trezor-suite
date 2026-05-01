@@ -85,7 +85,7 @@ export const EarnAccountCard = ({ item, onPress, onClaimPress }: EarnAccountCard
     const showClaimAlert = canClaim && !isClaimingDisabled && !isPortfolioTrackerDevice;
 
     const symbol = isStakingItem ? item.symbol : item.networkSymbol;
-    const contractAddress = isStakingItem ? undefined : item.contractAddress;
+    const contractAddress = isStablecoinYieldItem ? item.tokenContractAddress : undefined;
     const secondaryDescription = isStablecoinYieldItem
         ? item.accountLabel || getNetworkDisplaySymbolName(item.networkSymbol)
         : null;

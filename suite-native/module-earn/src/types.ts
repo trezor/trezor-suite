@@ -27,6 +27,7 @@ export type StablecoinYieldEarnItem = {
     tokenSymbol: TokenSymbol;
     networkSymbol: NetworkSymbol;
     contractAddress: TokenAddress;
+    tokenContractAddress: TokenAddress;
     accountKey: AccountKey | null;
     accountLabel?: Account['accountLabel'];
     tokenBalance: string | null;
@@ -61,6 +62,7 @@ export type EarnDepositsCardActiveItem =
           networkSymbol: NetworkSymbol;
           tokenSymbol: TokenSymbol;
           contractAddress: TokenAddress;
+          tokenContractAddress: TokenAddress;
           accountKey: AccountKey;
           accountLabel?: string;
           balance: string;

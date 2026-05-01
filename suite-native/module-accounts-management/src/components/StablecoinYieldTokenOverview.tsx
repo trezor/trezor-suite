@@ -4,9 +4,18 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
-import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
-import { getApyPercent } from '@suite-common/wallet-utils';
+import {
+    type AccountsRootState,
+    getConvertedOutputTokenBalanceToInputTokenAmount,
+    selectAccountByKey,
+} from '@suite-common/wallet-core';
+import {
+    type AccountKey,
+    type TokenAddress,
+    toTokenAddress,
+    toTokenSymbol,
+} from '@suite-common/wallet-types';
+import { getApyPercent, getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import { useAlert } from '@suite-native/alerts';
 import {
     Box,
@@ -58,10 +67,22 @@ export const StablecoinYieldTokenOverview = ({
     );
 
     const vault = useMemo(() => {
-        const normalizedContract = tokenContract.toLowerCase();
+        if (!account) {
+            return undefined;
+        }
 
-        return yieldOpportunities.find(v => v.token.address?.toLowerCase() === normalizedContract);
-    }, [yieldOpportunities, tokenContract]);
+        const normalizedContract = getContractAddressForNetworkSymbol(
+            account.symbol,
+            tokenContract,
+        );
+
+        return yieldOpportunities.find(
+            v =>
+                v.outputToken?.address &&
+                getContractAddressForNetworkSymbol(account.symbol, v.outputToken.address) ===
+                    normalizedContract,
+        );
+    }, [account, yieldOpportunities, tokenContract]);
 
     const apyPercent =
         vault?.rewardRate.total != null ? getApyPercent(vault.rewardRate.total)?.toFixed(2) : null;
@@ -96,7 +117,7 @@ export const StablecoinYieldTokenOverview = ({
     }, [account, apy, showAlert, translate, vault]);
 
     const handleSupplyMorePress = useCallback(() => {
-        if (!vault) {
+        if (!vault?.token.address) {
             return;
         }
 
@@ -104,19 +125,30 @@ export const StablecoinYieldTokenOverview = ({
             screen: YieldStackRoutes.HowYieldWorks,
             params: {
                 accountKey,
-                tokenContract,
+                tokenContract: toTokenAddress(vault.token.address),
                 yieldId: vault.id,
             },
         });
-    }, [accountKey, navigation, tokenContract, vault]);
+    }, [accountKey, navigation, vault]);
 
-    if (!isEnabled || !vault) return null;
+    if (!isEnabled || !vault?.token.address) return null;
 
     const apyColor = apy === null ? 'contentSecondary' : 'contentPrimary';
     const apyValue = apy ?? <Translation id="earn.notAvailable" />;
     const suppliedPosition =
         account && token?.balance !== undefined
-            ? { symbol: account.symbol, tokenSymbol: token.symbol, balance: token.balance }
+            ? {
+                  balance: getConvertedOutputTokenBalanceToInputTokenAmount({
+                      networkSymbol: account.symbol,
+                      token: vault.token,
+                      outputToken: vault.outputToken,
+                      outputTokenBalance: token.balance,
+                      pricePerShareState: vault.state?.pricePerShareState,
+                  }),
+                  contractAddress: toTokenAddress(vault.token.address),
+                  symbol: account.symbol,
+                  tokenSymbol: toTokenSymbol(vault.token.symbol.toUpperCase()),
+              }
             : null;
     const hasApyBreakdown = vault.rewardRate.components.length > 0;
     const isApyRowDisabled = apy === null || !hasApyBreakdown || !account;
@@ -173,7 +205,7 @@ export const StablecoinYieldTokenOverview = ({
                             <HStack alignItems="center" spacing="sp8">
                                 <CryptoIconWithNetwork
                                     symbol={suppliedPosition.symbol}
-                                    contractAddress={tokenContract}
+                                    contractAddress={suppliedPosition.contractAddress}
                                     size="extraSmall"
                                 />
                                 <TokenAmountFormatter

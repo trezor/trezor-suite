@@ -48,8 +48,8 @@ type UseYieldApprovalReviewResult = {
     isApprovalSigned: boolean;
     isPreparingApproval: boolean;
     isSendingApproval: boolean;
+    isSigningApproval: boolean;
     isSubmitDisabled: boolean;
-    isSubmittingApproval: boolean;
 };
 
 type NavigationProps = StackToStackCompositeNavigationProps<
@@ -238,7 +238,7 @@ export const useYieldApprovalReview = ({
         isApprovalSigned,
         isPreparingApproval,
         isSendingApproval,
+        isSigningApproval,
         isSubmitDisabled,
-        isSubmittingApproval: isSigningApproval,
     };
 };

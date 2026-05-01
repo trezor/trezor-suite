@@ -3,8 +3,11 @@ import { useSelector } from 'react-redux';
 
 import { useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
 import { getNetworkByYieldXyzId } from '@suite-common/wallet-config';
-import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
-import { type TokenAddress, type TokenSymbol } from '@suite-common/wallet-types';
+import {
+    getConvertedOutputTokenBalanceToInputTokenAmount,
+    selectVisibleDeviceAccounts,
+} from '@suite-common/wallet-core';
+import { toTokenAddress, toTokenSymbol } from '@suite-common/wallet-types';
 import { useTranslate } from '@suite-native/intl';
 
 import {
@@ -58,27 +61,30 @@ export const useStablecoinYieldListData = () => {
                 continue;
             }
 
-            const stablecoinSymbol = vault.token.symbol.toUpperCase();
+            if (!vault.token.address) {
+                continue;
+            }
+
+            const stablecoinSymbol = toTokenSymbol(vault.token.symbol.toUpperCase());
 
             const apy = vault.rewardRate.total
                 ? Number((vault.rewardRate.total * 100).toFixed(2))
                 : null;
 
-            const vaultTokenAddress = vault.token.address?.toLowerCase();
+            const tokenContractAddress = toTokenAddress(vault.token.address);
+            const outputTokenAddress = vault.outputToken?.address?.toLowerCase();
 
-            const accountsWithToken = accounts.filter(account => {
-                if (account.symbol !== network.symbol) {
-                    return false;
-                }
+            const accountsWithPosition = outputTokenAddress
+                ? accounts.filter(account => {
+                      if (account.symbol !== network.symbol) {
+                          return false;
+                      }
 
-                return account.tokens?.some(token => {
-                    if (vaultTokenAddress && token.contract) {
-                        return token.contract.toLowerCase() === vaultTokenAddress;
-                    }
-
-                    return token.symbol?.toUpperCase() === stablecoinSymbol;
-                });
-            });
+                      return account.tokens?.some(
+                          token => token.contract.toLowerCase() === outputTokenAddress,
+                      );
+                  })
+                : [];
 
             const defaultYieldItem: StablecoinYieldEarnItem = {
                 id: vault.id,
@@ -86,9 +92,10 @@ export const useStablecoinYieldListData = () => {
                 vaultName: vault.outputToken?.name
                     ? translate('earn.vaultName', { vaultName: vault.outputToken.name })
                     : '',
-                tokenSymbol: stablecoinSymbol as TokenSymbol,
+                tokenSymbol: stablecoinSymbol,
                 networkSymbol: network.symbol,
-                contractAddress: (vault.token.address || '') as TokenAddress,
+                contractAddress: tokenContractAddress,
+                tokenContractAddress,
                 accountKey: null,
                 accountLabel: undefined,
                 tokenBalance: null,
@@ -97,25 +104,29 @@ export const useStablecoinYieldListData = () => {
 
             promoItems.push(defaultYieldItem);
 
-            if (accountsWithToken.length > 0) {
-                for (const account of accountsWithToken) {
-                    const token = account.tokens?.find(t => {
-                        if (vaultTokenAddress && t.contract) {
-                            return t.contract.toLowerCase() === vaultTokenAddress;
-                        }
+            if (outputTokenAddress && accountsWithPosition.length > 0) {
+                for (const account of accountsWithPosition) {
+                    const outputToken = account.tokens?.find(
+                        token => token.contract.toLowerCase() === outputTokenAddress,
+                    );
 
-                        return t.symbol?.toUpperCase() === stablecoinSymbol;
-                    });
+                    if (!outputToken) {
+                        continue;
+                    }
 
                     activeItems.push({
                         ...defaultYieldItem,
                         id: `${vault.id}-${account.key}`,
-                        contractAddress: (token?.contract ||
-                            vault.token.address ||
-                            '') as TokenAddress,
+                        contractAddress: toTokenAddress(outputToken.contract),
                         accountKey: account.key,
                         accountLabel: account.accountLabel,
-                        tokenBalance: token?.balance ?? null,
+                        tokenBalance: getConvertedOutputTokenBalanceToInputTokenAmount({
+                            networkSymbol: network.symbol,
+                            token: vault.token,
+                            outputToken: vault.outputToken,
+                            outputTokenBalance: outputToken.balance,
+                            pricePerShareState: vault.state?.pricePerShareState,
+                        }),
                     });
                 }
             }

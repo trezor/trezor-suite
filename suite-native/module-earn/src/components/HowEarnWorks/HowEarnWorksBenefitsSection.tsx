@@ -39,12 +39,7 @@ export const HowEarnWorksBenefitsSection = ({ items }: HowEarnWorksBenefitsSecti
     return (
         <VStack spacing="sp16">
             {items.map(item => (
-                <HStack
-                    key={item.id}
-                    spacing="sp12"
-                    alignItems="flex-start"
-                    style={applyStyle(benefitRowStyle)}
-                >
+                <HStack key={item.id} spacing="sp12" style={applyStyle(benefitRowStyle)}>
                     <OrderedListIcon
                         iconName={item.icon}
                         iconSize="large"

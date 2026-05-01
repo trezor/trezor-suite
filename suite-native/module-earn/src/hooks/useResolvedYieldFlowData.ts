@@ -54,6 +54,11 @@ type ResolveYieldFlowDataParams = {
     yieldOpportunities: YieldDto[];
 };
 
+type GetMatchingTokenParams = {
+    account: Account;
+    tokenContract: string;
+};
+
 const normalizeContractAddress = (value: string) => value.toLowerCase();
 
 const defaultFlowData: ResolvedYieldFlowData = {
@@ -70,13 +75,7 @@ const defaultFlowData: ResolvedYieldFlowData = {
     vaultTokenName: null,
 };
 
-const getMatchingToken = ({
-    account,
-    tokenContract,
-}: {
-    account: Account;
-    tokenContract: string;
-}) => {
+const getMatchingToken = ({ account, tokenContract }: GetMatchingTokenParams) => {
     const normalizedTokenContract = normalizeContractAddress(tokenContract);
 
     return (
