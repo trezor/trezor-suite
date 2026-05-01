@@ -50,6 +50,7 @@ export interface SuiteSettingsState {
     isCoinsFilterVisible: boolean;
     suiteSyncRelayUrl: string | null;
     autoEject: boolean;
+    focusOnDeviceUnlock: boolean;
 }
 
 export type SuiteSettingsRootState = {
@@ -88,6 +89,7 @@ export const suiteSettingsInitialState: SuiteSettingsState = {
     isCoinsFilterVisible: false,
     suiteSyncRelayUrl: null,
     autoEject: false,
+    focusOnDeviceUnlock: true,
 };
 
 const suiteSettingsSlice = createSliceWithExtraDeps({
@@ -144,6 +146,9 @@ const suiteSettingsSlice = createSliceWithExtraDeps({
         },
         toggleDeviceMetaChecks: (state, { payload }: PayloadAction<boolean>) => {
             state.enabledSecurityChecks.deviceMeta = payload;
+        },
+        setFocusOnDeviceUnlock: (state, { payload }: PayloadAction<boolean>) => {
+            state.focusOnDeviceUnlock = payload;
         },
     },
     extraReducers: (builder, extra) => {

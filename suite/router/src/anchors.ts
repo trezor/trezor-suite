@@ -32,6 +32,7 @@ export const SettingsAnchor = {
     VersionWithUpdate: '@general-settings/version-with-update',
     EarlyAccess: '@general-settings/early-access',
     AutoStart: '@general-settings/auto-start',
+    FocusOnDeviceUnlock: '@general-settings/focus-on-device-unlock',
     AutomaticUpdate: '@general-settings/automatic-update',
     AutoEject: '@general-settings/auto-eject',
     MevProtection: '@general-settings/mev-protection',
