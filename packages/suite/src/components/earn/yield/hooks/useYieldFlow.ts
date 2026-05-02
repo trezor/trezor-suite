@@ -4,6 +4,7 @@ import { type UseFormReturn, useForm } from 'react-hook-form';
 import { type TranslationKey } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { type EarnParams } from '@suite/router';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type YieldActionFlowType,
     type StablecoinYieldAllowanceStatus,
@@ -16,12 +17,14 @@ import {
     handleYieldApproveCancelThunk,
     handleYieldApproveSuccessTxidThunk,
     initYieldAllowanceThunk,
+    selectRawNetworkFeeInfo,
     selectStablecoinYieldSession,
     stablecoinYieldActions,
     submitYieldApproveThunk,
     submitYieldRevokeThunk,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import { getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
 import type { BulletListItemState } from '@trezor/components';
 import { useCurrentRef } from '@trezor/react-utils';
 
@@ -32,9 +35,12 @@ import { useResolvedYieldFlowData } from './useResolvedYieldFlowData';
 import { useYieldPendingTransactionTracking } from './useYieldPendingTransactionTracking';
 import {
     type YieldApprovalAction,
+    type YieldNetworkFeeWarning,
     getBulletListItemStates,
     getYieldApprovalAction,
+    getYieldEstimatedContractCallFee,
     getYieldModifyAmountInput,
+    getYieldNetworkFeeWarning,
     isAmountGreaterThan,
 } from '../yieldFlowUtils';
 
@@ -70,6 +76,8 @@ export type UseYieldFlowResult = {
     allowanceStatus: StablecoinYieldAllowanceStatus;
     approvalAction: YieldApprovalAction;
     canRevokeAllowance: boolean;
+    approvalNetworkFeeWarning: YieldNetworkFeeWarning | null;
+    actionNetworkFeeWarning: YieldNetworkFeeWarning | null;
     isApprovedAmountUnlimited: boolean;
     isAmountEmpty: boolean;
     isAmountTooHigh: boolean;
@@ -116,6 +124,15 @@ export const useYieldFlow = ({
         account,
         routeParams,
     });
+    const rawFeeInfo = useSelector(state => selectRawNetworkFeeInfo(state, account.symbol));
+    const feeInfo = useMemo(
+        () =>
+            getConvertedOrDefaultFeeInfo({
+                networkType: account.networkType,
+                feeInfo: rawFeeInfo,
+            }),
+        [account.networkType, rawFeeInfo],
+    );
     const allowanceFlowDataRef = useCurrentRef({ account, vault, token, receiptToken });
 
     const session = useSelector(state => selectStablecoinYieldSession(state, flowType, flowKey));
@@ -401,6 +418,35 @@ export const useYieldFlow = ({
             amount: liveAmount,
             threshold: session.approval.allowanceAmount ?? undefined,
         });
+    const networkFeeWarning = useMemo(() => {
+        if (account.networkType !== 'ethereum') {
+            return {
+                approvalNetworkFeeWarning: null,
+                actionNetworkFeeWarning: null,
+            };
+        }
+
+        const networkDisplaySymbol = getNetworkDisplaySymbol(account.symbol);
+        const estimatedContractCallFee = getYieldEstimatedContractCallFee(feeInfo);
+
+        if (!estimatedContractCallFee) {
+            return {
+                approvalNetworkFeeWarning: null,
+                actionNetworkFeeWarning: null,
+            };
+        }
+
+        const warning = getYieldNetworkFeeWarning({
+            availableBalance: account.availableBalance,
+            requiredFee: estimatedContractCallFee,
+            networkDisplaySymbol,
+        });
+
+        return {
+            approvalNetworkFeeWarning: flowType === 'supply' ? warning : null,
+            actionNetworkFeeWarning: warning,
+        };
+    }, [account.availableBalance, account.networkType, account.symbol, feeInfo, flowType]);
 
     return {
         account,
@@ -422,6 +468,8 @@ export const useYieldFlow = ({
         allowanceStatus: session.approval.allowanceStatus,
         approvalAction,
         canRevokeAllowance,
+        approvalNetworkFeeWarning: networkFeeWarning.approvalNetworkFeeWarning,
+        actionNetworkFeeWarning: networkFeeWarning.actionNetworkFeeWarning,
         isApprovedAmountUnlimited: session.approval.isAllowanceUnlimited,
         isAmountEmpty,
         isAmountTooHigh,

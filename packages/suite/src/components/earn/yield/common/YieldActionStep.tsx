@@ -30,6 +30,7 @@ export type YieldActionStepProps = {
     summaryValue: ReactNode;
     isDisabled?: boolean;
     warning?: ReactNode;
+    networkFeeWarning?: ReactNode;
     pendingTransaction?: YieldPendingTransactionState;
     onMaxClick?: () => void;
     onSubmit: () => void;
@@ -42,6 +43,7 @@ export const YieldActionStep = ({
     summaryValue,
     isDisabled = false,
     warning,
+    networkFeeWarning,
     pendingTransaction,
     onMaxClick,
     onSubmit,
@@ -65,6 +67,8 @@ export const YieldActionStep = ({
                 warning={warning}
                 isDisabled={!!pendingTransaction}
             />
+
+            {networkFeeWarning}
 
             <Button
                 size="large"
