@@ -61,6 +61,7 @@ export type YieldApproveStepProps = {
     approvalAction: YieldApprovalAction;
     canRevokeAllowance: boolean;
     warning?: ReactNode;
+    networkFeeWarning?: ReactNode;
     pendingApproveTransaction?: YieldPendingTransactionState;
     onMaxClick?: () => void;
     onApprovalSubmit?: () => void;
@@ -81,6 +82,7 @@ export const YieldApproveStep = ({
     approvalAction,
     canRevokeAllowance,
     warning,
+    networkFeeWarning,
     pendingApproveTransaction,
     onMaxClick,
     onApprovalSubmit,
@@ -123,6 +125,8 @@ export const YieldApproveStep = ({
                         warning={warning}
                         isDisabled={!!pendingApproveTransaction}
                     />
+
+                    {networkFeeWarning}
 
                     <Button
                         size="large"

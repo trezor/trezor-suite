@@ -157,7 +157,7 @@ const decodeAllowance = (data: string, decimals: number) => {
 
     return {
         amount: convertAmountSubunitsToUnits(amountSubunits, decimals),
-        isUnlimited: allowance === UINT256_MAX,
+        isUnlimited: new BigNumber(UINT256_MAX).div(10).isLessThan(allowance),
     };
 };
 
