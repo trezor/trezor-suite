@@ -1,4 +1,5 @@
 import { type NetworkSymbol, type StakingNetworkSymbol } from '@suite-common/wallet-config';
+import { type YieldApprovalLimitType } from '@suite-common/wallet-core';
 import {
     type Account,
     type AccountKey,
@@ -7,9 +8,9 @@ import {
     type TokenSymbol,
 } from '@suite-common/wallet-types';
 
-export type EarnFormDraftPrefix = 'stake' | 'unstake' | 'claim';
+export type { YieldApprovalLimitType };
 
-export type YieldApprovalLimitType = 'per-supply' | 'unlimited';
+export type EarnFormDraftPrefix = 'stake' | 'unstake' | 'claim';
 
 export type StakingEarnItem = {
     id: string;

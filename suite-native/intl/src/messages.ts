@@ -2349,6 +2349,15 @@ export const messages = {
                 stepReadyToClaim: 'Ready to claim',
             },
         },
+        pendingTransactionModal: {
+            confirmingApprovalTitle: 'Confirming approval',
+            date: 'Date',
+            todayAt: 'Today, {time}',
+            account: 'Account',
+            vault: 'Vault',
+            approvalLimit: 'Approval limit',
+            maximumFee: 'Maximum fee',
+        },
         stakingInsufficientBalance: {
             title: "You don't have enough {displaySymbol} balance",
             subtitle: 'The minimum amount for staking is {minAmount} {displaySymbol}',

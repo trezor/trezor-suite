@@ -1,10 +1,18 @@
+import { useSelector } from 'react-redux';
+
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
+import {
+    type StablecoinYieldRootState,
+    selectStablecoinYieldSession,
+    splitYieldPendingTransaction,
+} from '@suite-common/wallet-core';
 import { Box, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
 import { Screen, type YieldStackParamList, type YieldStackRoutes } from '@suite-native/navigation';
 import { FeeSelector } from '@suite-native/transaction-management';
 
+import { YieldApprovalPendingModal } from '../components/YieldApprovalPendingModal';
 import { YieldSupplyAmountInputCard } from '../components/YieldSupplyAmountInputCard';
 import { YieldSupplyApprovalLimitBottomSheet } from '../components/YieldSupplyApprovalLimitBottomSheet';
 import { YieldSupplyFlowFooter } from '../components/YieldSupplyFlowFooter';
@@ -14,7 +22,9 @@ import { YieldSupplyStepCard } from '../components/YieldSupplyStepCard';
 import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
 import { useYieldApprovalFees } from '../hooks/useYieldApprovalFees';
 import { useYieldApprovalLimit } from '../hooks/useYieldApprovalLimit';
+import { useYieldApprovalPendingTransactionTracker } from '../hooks/useYieldApprovalPendingTransactionTracker';
 import { useYieldSupplyApprovalSubmit } from '../hooks/useYieldSupplyApprovalSubmit';
+import { useYieldSupplyFlowSession } from '../hooks/useYieldSupplyFlowSession';
 import { useYieldSupplyForm } from '../hooks/useYieldSupplyForm';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldSupplyFlow>;
@@ -33,6 +43,11 @@ export const YieldSupplyFlowScreen = () => {
         openModal: openApprovalLimitBottomSheet,
     } = useBottomSheetModal();
     const {
+        bottomSheetRef: approvalPendingBottomSheetRef,
+        closeModal: closeApprovalPendingBottomSheet,
+        openModal: openApprovalPendingBottomSheet,
+    } = useBottomSheetModal();
+    const {
         account,
         apy,
         flowData,
@@ -48,6 +63,15 @@ export const YieldSupplyFlowScreen = () => {
     const {
         formState: { isValid },
     } = form;
+    const stablecoinYieldSession = useSelector((state: StablecoinYieldRootState) =>
+        flowKey ? selectStablecoinYieldSession(state, 'supply', flowKey) : undefined,
+    );
+    const { approvalPendingTransaction } = splitYieldPendingTransaction(
+        stablecoinYieldSession?.action.pendingTransaction ?? null,
+        'supply',
+    );
+    const isApprovalPending = approvalPendingTransaction !== undefined;
+    const isFlowLocked = isApprovalPending;
     const {
         formDraft: approvalFeeFormDraft,
         formDraftKey: approvalFeeFormDraftKey,
@@ -59,7 +83,7 @@ export const YieldSupplyFlowScreen = () => {
         approvalLimitType,
         flowData,
         flowKey,
-        isEnabled: isValid,
+        isEnabled: isValid && !isFlowLocked,
         tokenContract: route.params.tokenContract,
     });
     const { handleSubmitApproval, isCheckingApproval } = useYieldSupplyApprovalSubmit({
@@ -70,8 +94,18 @@ export const YieldSupplyFlowScreen = () => {
     });
     const isApprovalFeeReady = approvalFeeFormDraft !== undefined;
 
+    useYieldSupplyFlowSession(flowKey);
+
+    useYieldApprovalPendingTransactionTracker({
+        accountKey: account?.key ?? null,
+        flowKey,
+        onApprovalPending: openApprovalPendingBottomSheet,
+        onApprovalSettled: closeApprovalPendingBottomSheet,
+        pendingTransaction: approvalPendingTransaction,
+    });
+
     const handleSubmit = form.handleSubmit(async ({ amount }) => {
-        if (!isApprovalFeeReady || isComposingApprovalFee) {
+        if (isFlowLocked || !isApprovalFeeReady || isComposingApprovalFee) {
             return;
         }
 
@@ -97,6 +131,7 @@ export const YieldSupplyFlowScreen = () => {
             header={
                 <YieldSupplyFlowScreenHeader
                     account={account}
+                    isDisabled={isFlowLocked}
                     onInfoPress={openInfoBottomSheet}
                     tokenContract={route.params.tokenContract}
                     vaultName={vault.metadata.name}
@@ -110,7 +145,8 @@ export const YieldSupplyFlowScreen = () => {
                         !isValid ||
                         !isApprovalFeeReady ||
                         isComposingApprovalFee ||
-                        isCheckingApproval
+                        isCheckingApproval ||
+                        isFlowLocked
                     }
                     isLoading={isCheckingApproval}
                     onPress={handleSubmit}
@@ -120,12 +156,13 @@ export const YieldSupplyFlowScreen = () => {
         >
             <Form form={form}>
                 <VStack spacing="sp16">
-                    <YieldSupplyStepCard />
+                    <YieldSupplyStepCard isDisabled={isFlowLocked} />
 
                     <Box paddingHorizontal="sp16">
                         <YieldSupplyAmountInputCard
                             approvalLimitTitle={approvalLimitTitle}
                             balance={token.balance}
+                            isDisabled={isFlowLocked}
                             isMaxSelected={isMaxSelected}
                             onAmountChange={handleAmountChange}
                             onApprovalLimitPress={openApprovalLimitBottomSheet}
@@ -142,6 +179,7 @@ export const YieldSupplyFlowScreen = () => {
                             selectedFeePerUnit={approvalFeeFormDraft?.feePerUnit}
                             formDraft={approvalFeeFormDraft}
                             formDraftKey={approvalFeeFormDraftKey}
+                            isDisabled={isFlowLocked}
                         />
                     </Box>
                 </VStack>
@@ -161,6 +199,14 @@ export const YieldSupplyFlowScreen = () => {
                 selectedApprovalLimitType={approvalLimitType}
                 tokenContract={route.params.tokenContract}
                 tokenSymbol={tokenSymbol}
+            />
+            <YieldApprovalPendingModal
+                ref={approvalPendingBottomSheetRef}
+                account={account}
+                pendingTransaction={approvalPendingTransaction}
+                tokenContract={route.params.tokenContract}
+                tokenSymbol={tokenSymbol}
+                vaultName={vault.metadata.name}
             />
         </Screen>
     );

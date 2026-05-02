@@ -27,6 +27,7 @@ type FeeSelectorProps = {
     selectedSetMaxOutputId?: number;
     formDraft: FormState | null | undefined;
     formDraftKey?: string;
+    isDisabled?: boolean;
 };
 
 export const FeeSelector = ({
@@ -38,6 +39,7 @@ export const FeeSelector = ({
     selectedSetMaxOutputId,
     formDraft,
     formDraftKey,
+    isDisabled = false,
 }: FeeSelectorProps) => {
     const {
         form,
@@ -106,6 +108,7 @@ export const FeeSelector = ({
             {networkType === 'tron' ? (
                 <TronFeeSummaryCard
                     accountKey={accountKey}
+                    isDisabled={isDisabled}
                     onPress={isTrc20 ? handleOpen : undefined}
                     testID="@transactionManagement/fee-selector-card"
                     feeLimitSunOverride={feeLimitSunOverride}
@@ -117,6 +120,7 @@ export const FeeSelector = ({
                     symbol={symbol}
                     networkType={networkType}
                     areFeesLoading={areFeesLoading}
+                    isDisabled={isDisabled}
                     onPress={handleOpen}
                     testID="@transactionManagement/fee-selector-card"
                     withCaret

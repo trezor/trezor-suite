@@ -35,10 +35,15 @@ export type YieldApproveModalState = {
     txType: Extract<YieldPendingTransactionState['type'], 'approve' | 'revoke' | 'revoke-only'>;
 };
 
+export type YieldApprovalLimitType = 'per-supply' | 'unlimited';
+
 export type YieldPendingTransactionState = {
     type: 'approve' | 'revoke' | 'revoke-only' | 'supply' | 'withdraw' | 'claim';
     txid: string;
     amount: string;
+    createdTimestamp: number;
+    fee?: string;
+    approvalLimitType?: YieldApprovalLimitType;
 };
 
 export type YieldFlowCompleteRewardItem = {

@@ -44,13 +44,21 @@ const steps = [
     },
 ];
 
-export const YieldSupplyStepCard = () => {
+type YieldSupplyStepCardProps = {
+    isDisabled?: boolean;
+};
+
+export const YieldSupplyStepCard = ({ isDisabled = false }: YieldSupplyStepCardProps) => {
     const { applyStyle } = useNativeStyles();
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
 
     return (
         <>
-            <PressableOpacity style={applyStyle(stepCardStyle)} onPress={openModal}>
+            <PressableOpacity
+                disabled={isDisabled}
+                style={applyStyle(stepCardStyle)}
+                onPress={openModal}
+            >
                 <HStack spacing="sp16" alignItems="center">
                     <VStack flex={1} spacing="sp2">
                         <Text variant="body-sm">

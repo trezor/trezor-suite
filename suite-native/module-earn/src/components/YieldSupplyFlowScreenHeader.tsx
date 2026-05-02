@@ -7,6 +7,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type YieldSupplyFlowScreenHeaderProps = {
     account: Account;
+    isDisabled?: boolean;
     onInfoPress: () => void;
     tokenContract: TokenAddress;
     vaultName: string;
@@ -20,6 +21,7 @@ const titleContainerStyle = prepareNativeStyle(() => ({
 
 export const YieldSupplyFlowScreenHeader = ({
     account,
+    isDisabled = false,
     onInfoPress,
     tokenContract,
     vaultName,
@@ -57,6 +59,7 @@ export const YieldSupplyFlowScreenHeader = ({
                     intent="neutral"
                     priority="secondary"
                     iconName="info"
+                    isDisabled={isDisabled}
                     onPress={onInfoPress}
                 />
             }

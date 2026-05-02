@@ -1,6 +1,10 @@
 import { useMemo } from 'react';
-import { Text, type TextProps } from 'react-native';
-import Animated, { type SharedValue, useAnimatedStyle } from 'react-native-reanimated';
+import { Text, type TextProps, type TextStyle } from 'react-native';
+import Animated, {
+    type AnimatedStyle,
+    type SharedValue,
+    useAnimatedStyle,
+} from 'react-native-reanimated';
 
 import { MOBILE_ICON_FONT_NAME } from '@suite-common/icons';
 // TODO fix deep import
@@ -97,8 +101,9 @@ const getColorCode = (color: AnimatedIconColor, themeColors: Colors) => {
     return color.value;
 };
 
-type AnimatedIconProps = Omit<IconProps, 'color'> & {
+type AnimatedIconProps = Omit<IconProps, 'color' | 'style'> & {
     color?: AnimatedIconColor;
+    style?: AnimatedStyle<TextStyle>;
 };
 
 // We have two versions of the Icon component, one that is animated and one that should be super fast without animations.
@@ -106,6 +111,7 @@ const AnimatedIcon = ({
     name,
     size = 'large',
     color = 'contentPrimary',
+    style,
     ...props
 }: AnimatedIconProps) => {
     const char = String.fromCodePoint(codepoints[name]);
@@ -124,13 +130,13 @@ const AnimatedIcon = ({
         [sizeNumber],
     );
 
-    const style = useAnimatedStyle(() => ({
+    const colorStyle = useAnimatedStyle(() => ({
         color: getColorCode(color, colors),
     }));
 
     return (
         <Animated.Text
-            style={[baseStyle, style]}
+            style={[baseStyle, colorStyle, style]}
             {...props}
             maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
         >

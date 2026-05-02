@@ -13,6 +13,7 @@ export type FeeSummaryCardProps = {
     symbol: NetworkSymbol;
     networkType: NetworkType;
     areFeesLoading: boolean;
+    isDisabled?: boolean;
     onPress?: () => void;
     testID?: string;
     withCaret?: boolean;
@@ -23,6 +24,7 @@ export const FeeSummaryCard = ({
     symbol,
     networkType,
     areFeesLoading,
+    isDisabled = false,
     onPress,
     testID,
     withCaret,
@@ -32,7 +34,13 @@ export const FeeSummaryCard = ({
     } = useNativeStyles();
 
     return (
-        <AnimatedPressable exiting={FadeOut} entering={FadeIn} onPress={onPress} testID={testID}>
+        <AnimatedPressable
+            disabled={isDisabled}
+            exiting={FadeOut}
+            entering={FadeIn}
+            onPress={onPress}
+            testID={testID}
+        >
             <Card style={{ paddingVertical: spacings.sp12 }}>
                 <HStack justifyContent="space-between" alignItems="center">
                     <VStack spacing="sp4">

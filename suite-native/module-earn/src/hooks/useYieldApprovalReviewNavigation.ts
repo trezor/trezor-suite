@@ -1,11 +1,13 @@
 import { useCallback, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useStore } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
 import {
+    type StablecoinYieldRootState,
     cancelSignSendFormTransactionThunk,
     handleYieldApproveCancelThunk,
+    selectStablecoinYieldSession,
     sendFormActions,
 } from '@suite-common/wallet-core';
 import { useDisableIOSGesture } from '@suite-native/navigation';
@@ -21,6 +23,7 @@ export const useYieldApprovalReviewNavigation = ({
     shouldConfirmCancellation,
 }: UseYieldApprovalReviewNavigationParams) => {
     const dispatch = useDispatch();
+    const store = useStore<StablecoinYieldRootState>();
     const navigation = useNavigation();
     const showReviewCancellationAlert = useShowReviewCancellationAlert();
 
@@ -33,7 +36,14 @@ export const useYieldApprovalReviewNavigation = ({
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('beforeRemove', event => {
-            if (event.data.action.type === 'GO_BACK' && shouldConfirmCancellation) {
+            const isBackNavigation = event.data.action.type === 'GO_BACK';
+            const { approval } = selectStablecoinYieldSession(store.getState(), 'supply', flowKey);
+
+            if (approval.isPending) {
+                return;
+            }
+
+            if (isBackNavigation && shouldConfirmCancellation) {
                 event.preventDefault();
                 showReviewCancellationAlert().then(({ wasReviewCanceled }) => {
                     if (wasReviewCanceled) {
@@ -46,7 +56,7 @@ export const useYieldApprovalReviewNavigation = ({
                 return;
             }
 
-            if (event.data.action.type === 'GO_BACK') {
+            if (isBackNavigation) {
                 dispatch(sendFormActions.discardTransaction());
 
                 return;
@@ -59,8 +69,10 @@ export const useYieldApprovalReviewNavigation = ({
     }, [
         cleanupApprovalReview,
         dispatch,
+        flowKey,
         navigation,
         shouldConfirmCancellation,
         showReviewCancellationAlert,
+        store,
     ]);
 };

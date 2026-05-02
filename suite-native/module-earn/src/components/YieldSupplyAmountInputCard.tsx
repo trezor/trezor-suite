@@ -21,6 +21,7 @@ import { YieldSupplyAmountInput } from './YieldSupplyAmountInput';
 type YieldSupplyAmountInputCardProps = {
     approvalLimitTitle: ReactNode;
     balance?: string;
+    isDisabled?: boolean;
     isMaxSelected: boolean;
     onAmountChange: () => void;
     onApprovalLimitPress: () => void;
@@ -31,6 +32,7 @@ type YieldSupplyAmountInputCardProps = {
 export const YieldSupplyAmountInputCard = ({
     approvalLimitTitle,
     balance,
+    isDisabled = false,
     isMaxSelected,
     onAmountChange,
     onApprovalLimitPress,
@@ -51,11 +53,15 @@ export const YieldSupplyAmountInputCard = ({
                         <Text variant="body-sm">
                             <Translation id="earn.yieldSupplyFlowScreen.supplyMax" />
                         </Text>
-                        <Switch isChecked={isMaxSelected} onChange={onMaxChange} />
+                        <Switch
+                            isChecked={isMaxSelected}
+                            isDisabled={isDisabled}
+                            onChange={onMaxChange}
+                        />
                     </HStack>
                 </HStack>
                 <YieldSupplyAmountInput
-                    isDisabled={isMaxSelected}
+                    isDisabled={isMaxSelected || isDisabled}
                     onAmountChange={onAmountChange}
                     tokenSymbol={tokenSymbol}
                 />
@@ -75,7 +81,7 @@ export const YieldSupplyAmountInputCard = ({
                 )}
             </VStack>
             <Divider paddingHorizontal="sp16" />
-            <PressableOpacity onPress={onApprovalLimitPress}>
+            <PressableOpacity disabled={isDisabled} onPress={onApprovalLimitPress}>
                 <HStack
                     justifyContent="space-between"
                     alignItems="center"

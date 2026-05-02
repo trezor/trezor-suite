@@ -15,7 +15,12 @@ import { exhaustive } from '@trezor/type-utils';
 
 import { STABLECOIN_YIELD_PREFIX, stablecoinYieldActions } from './stablecoinYieldReducer';
 import { selectStablecoinYieldSession } from './stablecoinYieldSelectors';
-import type { YieldFlowDisplayToken, YieldFlowToken, YieldFlowType } from './stablecoinYieldTypes';
+import type {
+    YieldApprovalLimitType,
+    YieldFlowDisplayToken,
+    YieldFlowToken,
+    YieldFlowType,
+} from './stablecoinYieldTypes';
 import {
     getWithdrawRequestAmount,
     getYieldApprovalModalParams,
@@ -46,6 +51,14 @@ export type YieldSessionDataPayload = YieldSessionPayload & {
 export type YieldSessionDataAmountPayload = YieldSessionDataPayload & {
     amount: string;
 };
+
+type YieldApproveSuccessTxidPayload = YieldSessionPayload & {
+    txid: string;
+    fee?: string;
+    approvalLimitType?: YieldApprovalLimitType;
+};
+
+type YieldApproveSuccessTxidError = 'submit-transaction-hash-failed';
 
 type SetYieldGenericErrorParams = YieldSessionPayload & {
     dispatch: Dispatch;
@@ -243,11 +256,15 @@ export const submitYieldOpportunity = async ({
     }
 };
 
-export const handleYieldApproveSuccessTxidThunk = createThunk(
+export const handleYieldApproveSuccessTxidThunk = createThunk<
+    true,
+    YieldApproveSuccessTxidPayload,
+    { rejectValue: YieldApproveSuccessTxidError }
+>(
     `${YIELD_THUNK_PREFIX}/handleApproveSuccessTxid`,
     async (
-        { flowType, flowKey, txid }: YieldSessionPayload & { txid: string },
-        { dispatch, getState },
+        { flowType, flowKey, txid, fee, approvalLimitType }: YieldApproveSuccessTxidPayload,
+        { dispatch, getState, rejectWithValue },
     ) => {
         const { approval } = selectStablecoinYieldSession(getState(), flowType, flowKey);
         const approveTxType = approval.modalState?.txType ?? 'approve';
@@ -270,12 +287,19 @@ export const handleYieldApproveSuccessTxidThunk = createThunk(
                         type: approveTxType,
                         txid,
                         amount: approval.amount ?? '',
+                        createdTimestamp: new Date().getTime(),
+                        fee,
+                        approvalLimitType,
                     },
                 }),
             );
             dispatch(stablecoinYieldActions.closeApprovalModal({ flowType, flowKey }));
+
+            return true;
         } catch {
             setYieldGenericError({ dispatch, flowType, flowKey });
+
+            return rejectWithValue('submit-transaction-hash-failed');
         }
     },
 );

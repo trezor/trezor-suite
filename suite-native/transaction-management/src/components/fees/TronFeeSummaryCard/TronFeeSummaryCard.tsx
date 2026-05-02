@@ -22,6 +22,7 @@ type TronFeeSummaryCardProps = {
     testID?: string;
     feeLimitSunOverride?: string;
     supportsAdjustableFees: boolean;
+    isDisabled?: boolean;
 };
 
 export const TronFeeSummaryCard = ({
@@ -30,6 +31,7 @@ export const TronFeeSummaryCard = ({
     testID,
     feeLimitSunOverride,
     supportsAdjustableFees,
+    isDisabled = false,
 }: TronFeeSummaryCardProps) => {
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
@@ -83,6 +85,7 @@ export const TronFeeSummaryCard = ({
     if (onPress) {
         return (
             <AnimatedPressable
+                disabled={isDisabled}
                 exiting={FadeOut}
                 entering={FadeIn}
                 onPress={onPress}

@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { CommonActions, useNavigation } from '@react-navigation/native';
+import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { isRejected } from '@reduxjs/toolkit';
 
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
@@ -14,18 +14,13 @@ import {
     selectIsMevProtectionEnabled,
     selectStablecoinYieldSession,
     signTransactionThunk,
-    stablecoinYieldActions,
 } from '@suite-common/wallet-core';
-import { useAlert } from '@suite-native/alerts';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
-import {
-    AppTabsRoutes,
-    EarnStackRoutes,
-    type RootStackParamList,
-    RootStackRoutes,
-    type StackToStackCompositeNavigationProps,
-    type YieldStackParamList,
-    type YieldStackRoutes,
+import type {
+    RootStackParamList,
+    StackToStackCompositeNavigationProps,
+    YieldStackParamList,
+    YieldStackRoutes,
 } from '@suite-native/navigation';
 import { selectIsTransactionAlreadySigned } from '@suite-native/transaction-management';
 
@@ -57,20 +52,7 @@ type NavigationProps = StackToStackCompositeNavigationProps<
     YieldStackRoutes.YieldSupplyApprovalReview,
     RootStackParamList
 >;
-
-const navigateToEarnScreenAction = () =>
-    CommonActions.reset({
-        index: 0,
-        routes: [
-            {
-                name: RootStackRoutes.AppTabs,
-                params: {
-                    screen: AppTabsRoutes.EarnStack,
-                    params: { screen: EarnStackRoutes.Earn },
-                },
-            },
-        ],
-    });
+type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldSupplyApprovalReview>;
 
 export const useYieldApprovalReview = ({
     flowData,
@@ -78,7 +60,7 @@ export const useYieldApprovalReview = ({
 }: UseYieldApprovalReviewParams): UseYieldApprovalReviewResult => {
     const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProps>();
-    const { showAlert } = useAlert();
+    const route = useRoute<RouteProps>();
     const showDeviceDisconnectedAlert = useShowDeviceDisconnectedDuringEarnReviewAlert();
     const { showPendingTransactionConflictAlert, showPushTransactionFailedAlert } =
         useShowPushTransactionFailedDuringReviewAlert('yield-approval');
@@ -107,10 +89,6 @@ export const useYieldApprovalReview = ({
         flowKey,
         shouldConfirmCancellation: shouldConfirmApprovalCancellation,
     });
-
-    useEffect(() => {
-        dispatch(stablecoinYieldActions.initSession({ flowType: 'supply', flowKey }));
-    }, [dispatch, flowKey]);
 
     const handleSubmitApprovalReview = useCallback(async () => {
         if (!reviewTransaction || isSigningApproval) {
@@ -203,18 +181,27 @@ export const useYieldApprovalReview = ({
 
         const { txid } = pushResponse.payload.payload;
 
-        await dispatch(handleYieldApproveSuccessTxidThunk({ flowType: 'supply', flowKey, txid }));
+        const handleApproveSuccessResponse = await dispatch(
+            handleYieldApproveSuccessTxidThunk({
+                flowType: 'supply',
+                flowKey,
+                txid,
+                fee: reviewTransaction?.precomposedTransaction.fee,
+                approvalLimitType: route.params.approvalLimitType,
+            }),
+        );
+
+        if (isRejected(handleApproveSuccessResponse)) {
+            setIsSendingApproval(false);
+            showPushTransactionFailedAlert();
+
+            return;
+        }
+
         dispatch(formDraftActions.removeDraft({ key: formDraftKey }));
         setIsSendingApproval(false);
 
-        showAlert({
-            title: 'Successfully approved',
-            description: 'Supply is not available in this mobile preview yet.',
-            primaryButtonTitle: 'Go to Earn',
-            onPressPrimaryButton: () => {
-                navigation.dispatch(navigateToEarnScreenAction());
-            },
-        });
+        navigation.goBack();
     }, [
         dispatch,
         flowData.account,
@@ -225,7 +212,8 @@ export const useYieldApprovalReview = ({
         isMevProtectionFeatureEnabled,
         isSendingApproval,
         navigation,
-        showAlert,
+        reviewTransaction,
+        route.params.approvalLimitType,
         showDeviceDisconnectedAlert,
         showPendingTransactionConflictAlert,
         showPushTransactionFailedAlert,

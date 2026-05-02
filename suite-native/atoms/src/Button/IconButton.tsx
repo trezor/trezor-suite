@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { type PressableProps } from 'react-native';
+import { type PressableProps, type TextStyle } from 'react-native';
+import { type AnimatedStyle } from 'react-native-reanimated';
 
 import { Icon, type IconName } from '@suite-native/icons';
 import {
@@ -28,6 +29,7 @@ export type IconButtonProps = Omit<
     iconName: IconName;
     size?: ButtonSize;
     style?: NativeStyleObject;
+    iconStyle?: AnimatedStyle<TextStyle>;
     isLoading?: boolean;
     isDisabled?: boolean;
 } & ButtonColorProps;
@@ -47,6 +49,7 @@ export const IconButton = ({
     iconName,
     testID,
     style,
+    iconStyle,
     intent = 'brand',
     priority = 'primary',
     isInverse = false,
@@ -95,7 +98,12 @@ export const IconButton = ({
             {isLoading ? (
                 <Loader color={contentColor} />
             ) : (
-                <Icon name={iconName} color={contentColor} size={iconButtonToIconSizeMap[size]} />
+                <Icon.Animated
+                    name={iconName}
+                    color={contentColor}
+                    size={iconButtonToIconSizeMap[size]}
+                    style={iconStyle}
+                />
             )}
         </AnimatedPressable>
     );

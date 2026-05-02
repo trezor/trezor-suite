@@ -55,9 +55,6 @@ export const useYieldSupplyApprovalSubmit = ({
             };
 
             setIsCheckingApproval(true);
-            dispatch(stablecoinYieldActions.resetSession(sessionParams));
-            dispatch(stablecoinYieldActions.initSession(sessionParams));
-
             try {
                 const response = await dispatch(
                     submitYieldApproveThunk({

@@ -429,6 +429,7 @@ export const submitYieldActionThunk = createThunk(
                         type: flowType,
                         txid: result.txid,
                         amount,
+                        createdTimestamp: new Date().getTime(),
                     },
                     receiptAmount,
                 }),
