@@ -7,6 +7,7 @@ interface BuildAllowanceTransactionFixture {
         balance: string;
         contract: string;
         feeLevel: FeeLevel;
+        networkDisplaySymbol: string;
         token?: TokenInfo;
         estimatedFeeLimit?: string;
     };
@@ -25,6 +26,7 @@ export const buildAllowanceTransaction: BuildAllowanceTransactionFixture[] = [
                 feeLimit: '50000',
                 blocks: -1,
             },
+            networkDisplaySymbol: 'ETH',
         },
         result: {
             type: 'final',
@@ -59,6 +61,7 @@ export const buildAllowanceTransaction: BuildAllowanceTransactionFixture[] = [
                 feeLimit: '50000',
                 blocks: -1,
             },
+            networkDisplaySymbol: 'ETH',
         },
         result: {
             type: 'error',
@@ -67,6 +70,7 @@ export const buildAllowanceTransaction: BuildAllowanceTransactionFixture[] = [
                 id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT',
                 values: {
                     feeAmount: '0.0005',
+                    networkDisplaySymbol: 'ETH',
                 },
             },
         },

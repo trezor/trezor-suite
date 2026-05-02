@@ -6,7 +6,7 @@ import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
-import { Box, Column, Modal, Row } from '@trezor/components';
+import { Banner, Box, Column, Modal, Row } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 import { borders } from '@trezor/theme';
 
@@ -44,6 +44,8 @@ export const ApproveModal = (props: ApproveModalProps) => {
         approvalType,
         isLoading,
         composedLevels,
+        composeErrorMessage,
+        canSubmit,
         data,
         methods,
         selectApprovalType,
@@ -70,7 +72,7 @@ export const ApproveModal = (props: ApproveModalProps) => {
                     <>
                         <Modal.Button
                             isLoading={isLoading}
-                            isDisabled={!device?.connected}
+                            isDisabled={!device?.connected || !canSubmit}
                             onClick={confirmAndSend}
                         >
                             <Translation id="TR_CONTINUE" />
@@ -124,6 +126,19 @@ export const ApproveModal = (props: ApproveModalProps) => {
                             changeFeeLevel={handleFeeChange}
                         />
                     </Box>
+
+                    {composeErrorMessage && (
+                        <Banner
+                            intent="critical"
+                            icon="warning"
+                            description={
+                                <Translation
+                                    id={composeErrorMessage.id}
+                                    values={composeErrorMessage.values}
+                                />
+                            }
+                        />
+                    )}
                 </Column>
             </Modal>
         </FormProvider>
