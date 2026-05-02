@@ -8,6 +8,7 @@ describe(buildAllowanceTransaction.name, () => {
                 f.input.balance,
                 f.input.contract,
                 f.input.feeLevel,
+                f.input.networkDisplaySymbol,
                 f.input.token,
                 f.input.estimatedFeeLimit,
             );

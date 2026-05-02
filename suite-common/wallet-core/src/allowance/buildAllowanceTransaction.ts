@@ -9,6 +9,7 @@ export const buildAllowanceTransaction = (
     balance: string,
     contract: string,
     feeLevel: FeeLevel,
+    networkDisplaySymbol: string,
     token?: TokenInfo,
     estimatedFeeLimit?: string,
 ): PrecomposedTransaction => {
@@ -24,6 +25,7 @@ export const buildAllowanceTransaction = (
                 id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT',
                 values: {
                     feeAmount: fromWei(fee, 'ether'),
+                    networkDisplaySymbol,
                 },
             },
         };
