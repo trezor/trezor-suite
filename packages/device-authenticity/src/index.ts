@@ -1,5 +1,6 @@
 export { verifyAuthenticityProof, prepareDeviceAuthenticityData } from './verifyAuthenticityProof';
 export { validateCaCertExtensions } from './validateCaCertExtensions';
+export { validateSerialNumbers } from './validateSerialNumbers';
 export {
     verifySignatureEd25519,
     verifySignatureP256,

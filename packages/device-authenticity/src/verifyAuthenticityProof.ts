@@ -1,5 +1,6 @@
 import { bufferUtils } from '@trezor/utils';
 
+import { findSubjectContentByOid } from './findSubjectContentByOid';
 import {
     type PrepareDeviceAuthenticityDataParams,
     type VerifyAuthenticityProofParams,
@@ -8,7 +9,7 @@ import {
 import { getCaPubKeyBlacklist, getRootPubKeys } from './utils';
 import { validateCaCertExtensions } from './validateCaCertExtensions';
 import { getVerifyFn } from './verifySignatures';
-import { parseCertificate } from './x509certificate';
+import { type ParsedCertificate, parseCertificate } from './x509certificate';
 
 // Compose the data against which the signatures will be verified.
 export const prepareDeviceAuthenticityData = ({
@@ -23,8 +24,6 @@ export const prepareDeviceAuthenticityData = ({
         chunks.flatMap(chunk => [bufferUtils.getChunkSize(chunk.byteLength), chunk]),
     );
 };
-
-type ParsedCertificate = ReturnType<typeof parseCertificate>;
 
 type MatchRootPubKeyToCertificateParams = {
     cert: ParsedCertificate;
@@ -54,17 +53,26 @@ export const matchRootPubKeyToCertificate = async ({
 };
 
 /**
- * Validates DEVICE certificate subject (Trezor features internal_model) and return the model
+ * Get internal model name from deviceCert Subject by its OID https://www.alvestrand.no/objectid/2.5.4.3.html
+ * This OID must always be present, so if this returns null, it should be treated as an error.
  */
 const parseModelFromDeviceCertSubject = (deviceCert: ParsedCertificate) => {
-    const [subject] = deviceCert.tbsCertificate.subject;
-    // subject algorithm (OID) https://www.alvestrand.no/objectid/2.5.4.3.html
-    if (!subject.parameters || subject.algorithmOid !== '2.5.4.3') {
-        throw new Error('Missing certificate subject');
-    }
+    const modelDescriptionBytes = findSubjectContentByOid(deviceCert, '2.5.4.3');
+    if (modelDescriptionBytes === null) return null;
 
-    // slice 4 bytes from the subject (internal model)
-    return Buffer.from(subject.parameters.asn1.contents.subarray(0, 4)).toString();
+    // the whole string would be something like 'T3W1 Trezor Safe 7', so only the first 4 chars for internal model name
+    return Buffer.from(modelDescriptionBytes.subarray(0, 4)).toString();
+};
+
+/**
+ * Get serial number from deviceCert Subject by its OID https://www.alvestrand.no/objectid/2.5.4.5.html
+ * This OID is only present on T3W1 and above.
+ */
+const parseSerialNumberFromDeviceCert = (deviceCert: ParsedCertificate) => {
+    const serialNumber = findSubjectContentByOid(deviceCert, '2.5.4.5');
+    if (serialNumber === null) return undefined;
+
+    return Buffer.from(serialNumber).toString('hex');
 };
 
 type VerifyDeviceAndCACertificatesParams = {
@@ -118,6 +126,7 @@ const verifyDeviceAndCACertificates = async ({
         throw new Error(`CA validity from ${caCertValidityFrom} can't be in the future!`);
     }
     const modelFromSubject = parseModelFromDeviceCertSubject(deviceCert);
+    // compulsory field, null value will also be considered an invalid model and fail the check
     if (modelFromSubject !== deviceModel) {
         return {
             valid: false,
@@ -150,7 +159,9 @@ const verifyDeviceAndCACertificates = async ({
         Buffer.from(signature, 'hex'),
     );
     if (isSignatureValid) {
-        return { valid: true, caPubKey, rootPubKey: rootPubKeyMatch };
+        const serialNumber = parseSerialNumberFromDeviceCert(deviceCert);
+
+        return { valid: true, caPubKey, rootPubKey: rootPubKeyMatch, serialNumber };
     }
 
     return {
@@ -189,6 +200,7 @@ const verifyOnlyDeviceCertificate = async ({
     if (rootPubKeyMatch === undefined) {
         return { valid: false, error: 'ROOT_PUBKEY_NOT_FOUND' };
     }
+    // compulsory field, null value will also be considered an invalid model and fail the check
     const modelFromSubject = parseModelFromDeviceCertSubject(deviceCert);
     if (modelFromSubject !== deviceModel) {
         // This path is practically unreachable because here it's the deviceCert that is signed with rootPubKey, so
@@ -208,7 +220,9 @@ const verifyOnlyDeviceCertificate = async ({
         Buffer.from(signature, 'hex'),
     );
     if (isSignatureValid) {
-        return { valid: true, rootPubKey: rootPubKeyMatch };
+        const serialNumber = parseSerialNumberFromDeviceCert(deviceCert);
+
+        return { valid: true, rootPubKey: rootPubKeyMatch, serialNumber };
     }
 
     return {

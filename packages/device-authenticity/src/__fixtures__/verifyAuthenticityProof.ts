@@ -53,6 +53,7 @@ export const verifyAuthenticityProofFixtures: Fixture[] = [
             valid: true,
             rootPubKey: T3W1_ROOT_PUB_KEY_TROPIC,
             caPubKey: CA_PUB_KEY_TROPIC,
+            serialNumber: '343732303930323235323232323232323232323232323232',
         },
     },
     {
@@ -61,6 +62,7 @@ export const verifyAuthenticityProofFixtures: Fixture[] = [
         result: {
             valid: true,
             rootPubKey: T3W1_ROOT_PUB_KEY_MLDSA,
+            serialNumber: '3437333032313932363030303972',
         },
     },
 
@@ -89,6 +91,7 @@ export const verifyAuthenticityProofFixtures: Fixture[] = [
             valid: true,
             rootPubKey: T3W1_ROOT_PUB_KEY_TROPIC,
             caPubKey: CA_PUB_KEY_TROPIC,
+            serialNumber: '343732303930323235323232323232323232323232323232',
         },
     },
     {
@@ -101,6 +104,7 @@ export const verifyAuthenticityProofFixtures: Fixture[] = [
         result: {
             valid: true,
             rootPubKey: T3W1_ROOT_PUB_KEY_MLDSA,
+            serialNumber: '3437333032313932363030303972',
         },
     },
 
