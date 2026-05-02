@@ -35,6 +35,8 @@ export const YieldSupplyForm = () => {
         allowanceStatus,
         approvalAction,
         canRevokeAllowance,
+        approvalNetworkFeeWarning,
+        actionNetworkFeeWarning,
         isApprovedAmountUnlimited,
         isAmountEmpty,
         isAmountTooHigh,
@@ -218,7 +220,17 @@ export const YieldSupplyForm = () => {
                                         canRevokeAllowance={canRevokeAllowance}
                                         warning={
                                             isAmountTooHigh ? (
-                                                <YieldActionStepWarning isInsufficientFunds />
+                                                <YieldActionStepWarning
+                                                    isInsufficientFunds={isAmountTooHigh}
+                                                />
+                                            ) : undefined
+                                        }
+                                        networkFeeWarning={
+                                            approveStepState === 'active' &&
+                                            approvalNetworkFeeWarning ? (
+                                                <YieldActionStepWarning
+                                                    networkFeeWarning={approvalNetworkFeeWarning}
+                                                />
                                             ) : undefined
                                         }
                                         isDisabled={
@@ -252,6 +264,13 @@ export const YieldSupplyForm = () => {
                                                     isApprovalInsufficient={isApprovalInsufficient}
                                                     onModifyApproval={enterModifyApproval}
                                                 />
+                                            }
+                                            networkFeeWarning={
+                                                actionNetworkFeeWarning ? (
+                                                    <YieldActionStepWarning
+                                                        networkFeeWarning={actionNetworkFeeWarning}
+                                                    />
+                                                ) : undefined
                                             }
                                             isDisabled={
                                                 isAmountEmpty ||
