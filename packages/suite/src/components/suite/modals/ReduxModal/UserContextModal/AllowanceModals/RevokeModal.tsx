@@ -27,12 +27,21 @@ interface RevokeModalProps {
     spender: string;
     logoSourceType?: ProviderLogoSourceType;
     preapprovedAmount?: string;
+    preapprovedAmountIsUnlimited?: boolean;
     onConfirm?: () => void;
     onCancel?: () => void;
 }
 
 export const RevokeModal = (props: RevokeModalProps) => {
-    const { account, provider, spender, cryptoId, logoSourceType, preapprovedAmount } = props;
+    const {
+        account,
+        provider,
+        spender,
+        cryptoId,
+        logoSourceType,
+        preapprovedAmount,
+        preapprovedAmountIsUnlimited,
+    } = props;
     const { device } = useDevice();
 
     const context = useAllowanceModal({
@@ -116,7 +125,11 @@ export const RevokeModal = (props: RevokeModalProps) => {
                                     <Row gap={12}>
                                         <TradingCoinLogo cryptoId={cryptoId} size={24} />
                                         <Text>
-                                            {preapprovedAmount ?? '∞'} {displaySymbol}
+                                            {preapprovedAmountIsUnlimited ? (
+                                                <Translation id="TR_APPROVE_AMOUNT_UNLIMITED" />
+                                            ) : (
+                                                `${preapprovedAmount ?? '∞'} ${displaySymbol}`
+                                            )}
                                         </Text>
                                     </Row>
                                 </Column>

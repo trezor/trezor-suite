@@ -1,5 +1,6 @@
 import { type Dispatch } from '@reduxjs/toolkit';
 
+import { Calldata } from '@suite-common/calldata';
 import {
     type TransactionDto,
     type YieldDto,
@@ -11,7 +12,10 @@ import {
 } from '@suite-common/earn-stablecoin-api';
 import { createThunk } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
+import { convertAmountSubunitsToUnits } from '@suite-common/wallet-utils';
+import TrezorConnect from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
+import { BigNumber } from '@trezor/utils';
 
 import { STABLECOIN_YIELD_PREFIX, stablecoinYieldActions } from './stablecoinYieldReducer';
 import { selectStablecoinYieldSession } from './stablecoinYieldSelectors';
@@ -30,6 +34,7 @@ import {
 
 const YIELD_THUNK_PREFIX = `${STABLECOIN_YIELD_PREFIX}/thunk`;
 const YIELD_GENERIC_ERROR = 'TR_EARN_YIELD_ERROR_GENERIC';
+const UINT256_MAX = (1n << 256n) - 1n;
 
 export type YieldFlowResolvedData = {
     account: Account;
@@ -51,6 +56,10 @@ export type YieldSessionDataAmountPayload = YieldSessionDataPayload & {
     amount: string;
 };
 
+type InitYieldAllowancePayload = YieldSessionDataPayload & {
+    flowType: 'supply';
+};
+
 type SetYieldGenericErrorParams = YieldSessionPayload & {
     dispatch: Dispatch;
 };
@@ -70,13 +79,15 @@ type OpenYieldApproveModalParams = YieldSessionDataPayload & {
     spender: string;
     transactionId?: string;
     preapprovedAmount?: string;
+    preapprovedAmountIsUnlimited?: boolean;
     txType: 'approve' | 'revoke' | 'revoke-only';
 };
 
 type OpenYieldRevokeModalParams = YieldSessionDataPayload & {
     dispatch: Dispatch;
     approveAmount: string;
-    lastApprovedAmount: string;
+    allowanceAmount: string;
+    allowanceAmountIsUnlimited: boolean;
     transactions: TransactionDto[] | null;
     fallbackSpender?: string | null;
 };
@@ -134,6 +145,57 @@ export const getRevokeModalAmount = ({
 }: GetApprovalRequestAmountParams) =>
     getApprovalRequestAmount({ flowType, amount, flowData }) ?? amount;
 
+const getVaultAddressFromYieldId = (yieldId: string) =>
+    yieldId.match(/0x[a-fA-F0-9]{40}/)?.[0] ?? null;
+
+const getAllowanceSpender = (flowData: YieldFlowResolvedData) =>
+    flowData.receiptToken.contractAddress ?? getVaultAddressFromYieldId(flowData.vault.id);
+
+const decodeAllowance = (data: string, decimals: number) => {
+    const allowance = BigInt(data);
+    const amountSubunits = allowance.toString();
+
+    return {
+        amount: convertAmountSubunitsToUnits(amountSubunits, decimals),
+        isUnlimited: allowance === UINT256_MAX,
+    };
+};
+
+const getYieldAllowanceAmount = async ({
+    flowData,
+}: Pick<InitYieldAllowancePayload, 'flowData'>) => {
+    const spender = getAllowanceSpender(flowData);
+    const tokenContractAddress = flowData.token.contractAddress;
+
+    if (!spender || !tokenContractAddress) {
+        throw new Error(
+            'Yield allowance cannot be initialized without spender and token contract.',
+        );
+    }
+
+    const allowanceCalldata = Calldata.evm.erc20.allowance({
+        owner: flowData.account.descriptor,
+        spender,
+    });
+
+    if (!allowanceCalldata.data) {
+        throw new Error('Yield allowance calldata could not be built.');
+    }
+
+    const response = await TrezorConnect.blockchainEvmRpcCall({
+        coin: flowData.account.symbol,
+        from: flowData.account.descriptor,
+        to: tokenContractAddress,
+        data: allowanceCalldata.data,
+    });
+
+    if (!response.success) {
+        throw new Error(response.error.message);
+    }
+
+    return decodeAllowance(response.payload.data, flowData.token.decimals);
+};
+
 export const openYieldApproveModal = ({
     dispatch,
     flowKey,
@@ -143,6 +205,7 @@ export const openYieldApproveModal = ({
     spender,
     transactionId,
     preapprovedAmount,
+    preapprovedAmountIsUnlimited,
     txType,
 }: OpenYieldApproveModalParams) => {
     const contractAddress = getApprovalContractAddress({ flowType, flowData });
@@ -162,6 +225,7 @@ export const openYieldApproveModal = ({
                 contractAddress,
                 spender,
                 preapprovedAmount,
+                preapprovedAmountIsUnlimited,
                 txType,
             },
             txHashTransactionId: transactionId ?? null,
@@ -177,7 +241,8 @@ export const openYieldRevokeModal = ({
     flowType,
     flowData,
     approveAmount,
-    lastApprovedAmount,
+    allowanceAmount,
+    allowanceAmountIsUnlimited,
     transactions,
     fallbackSpender,
 }: OpenYieldRevokeModalParams) => {
@@ -203,10 +268,38 @@ export const openYieldRevokeModal = ({
         amount: getRevokeModalAmount({ flowType, amount: approveAmount, flowData }),
         spender,
         transactionId: revokeModalParams?.transactionId,
-        preapprovedAmount: lastApprovedAmount || undefined,
+        preapprovedAmount: allowanceAmount || undefined,
+        preapprovedAmountIsUnlimited: allowanceAmountIsUnlimited,
         txType: revokeModalParams ? 'revoke' : 'revoke-only',
     });
 };
+
+const openFallbackYieldRevokeModal = ({
+    dispatch,
+    flowKey,
+    flowType,
+    flowData,
+    amount,
+    allowanceAmount,
+    allowanceAmountIsUnlimited,
+    fallbackSpender,
+}: YieldSessionDataAmountPayload & {
+    dispatch: Dispatch;
+    allowanceAmount: string;
+    allowanceAmountIsUnlimited: boolean;
+    fallbackSpender?: string | null;
+}) =>
+    openYieldRevokeModal({
+        dispatch,
+        flowKey,
+        flowType,
+        flowData,
+        approveAmount: amount,
+        allowanceAmount,
+        allowanceAmountIsUnlimited,
+        transactions: null,
+        fallbackSpender,
+    });
 
 export const submitYieldOpportunity = async ({
     flowType,
@@ -273,7 +366,7 @@ export const handleYieldApproveSuccessTxidThunk = createThunk(
                     tx: {
                         type: approveTxType,
                         txid,
-                        amount: approval.amount ?? '',
+                        amount: approval.modalState?.amount ?? '',
                     },
                 }),
             );
@@ -292,6 +385,35 @@ export const handleYieldApproveCancelThunk = createThunk(
     },
 );
 
+export const initYieldAllowanceThunk = createThunk<void, InitYieldAllowancePayload, void>(
+    `${YIELD_THUNK_PREFIX}/initAllowance`,
+    async ({ flowKey, flowType, flowData }, { dispatch }) => {
+        dispatch(stablecoinYieldActions.startInitializingAllowance({ flowType, flowKey }));
+
+        try {
+            const allowance = await getYieldAllowanceAmount({ flowData });
+            const amount = new BigNumber(allowance.amount).gt(0) ? allowance.amount : '0';
+
+            dispatch(
+                stablecoinYieldActions.setInitializedAllowance({
+                    flowType,
+                    flowKey,
+                    amount,
+                    isUnlimited: allowance.isUnlimited,
+                }),
+            );
+
+            if (amount !== '0') {
+                dispatch(stablecoinYieldActions.skipApprovalStep({ flowType, flowKey }));
+            }
+        } catch {
+            dispatch(stablecoinYieldActions.setAllowanceError({ flowType, flowKey }));
+        } finally {
+            dispatch(stablecoinYieldActions.finishInitializingAllowance({ flowType, flowKey }));
+        }
+    },
+);
+
 export const submitYieldRevokeThunk = createThunk(
     `${YIELD_THUNK_PREFIX}/submitRevoke`,
     async (
@@ -299,6 +421,7 @@ export const submitYieldRevokeThunk = createThunk(
         { dispatch, getState },
     ) => {
         const { approval } = selectStablecoinYieldSession(getState(), flowType, flowKey);
+        const fallbackSpender = approval.approvedSpender ?? getAllowanceSpender(flowData);
 
         dispatch(stablecoinYieldActions.clearError({ flowType, flowKey }));
 
@@ -310,7 +433,16 @@ export const submitYieldRevokeThunk = createThunk(
             });
 
             if (verification === 'failure') {
-                setYieldGenericError({ dispatch, flowType, flowKey });
+                openFallbackYieldRevokeModal({
+                    dispatch,
+                    flowKey,
+                    flowType,
+                    flowData,
+                    amount,
+                    allowanceAmount: approval.allowanceAmount ?? '',
+                    allowanceAmountIsUnlimited: approval.isAllowanceUnlimited,
+                    fallbackSpender,
+                });
 
                 return;
             }
@@ -319,7 +451,7 @@ export const submitYieldRevokeThunk = createThunk(
             const spender =
                 getYieldRevokeModalParams(transactions)?.spender ??
                 getYieldSpenderFromTransactions(transactions) ??
-                approval.approvedSpender;
+                fallbackSpender;
 
             dispatch(
                 stablecoinYieldActions.setApprovalResponse({
@@ -336,12 +468,26 @@ export const submitYieldRevokeThunk = createThunk(
                 flowType,
                 flowData,
                 approveAmount: amount,
-                lastApprovedAmount: approval.lastApprovedAmount,
+                allowanceAmount: approval.allowanceAmount ?? '',
+                allowanceAmountIsUnlimited: approval.isAllowanceUnlimited,
                 transactions,
                 fallbackSpender: spender,
             });
         } catch {
-            setYieldGenericError({ dispatch, flowType, flowKey });
+            const isRevokeModalOpen = openFallbackYieldRevokeModal({
+                dispatch,
+                flowKey,
+                flowType,
+                flowData,
+                amount,
+                allowanceAmount: approval.allowanceAmount ?? '',
+                allowanceAmountIsUnlimited: approval.isAllowanceUnlimited,
+                fallbackSpender,
+            });
+
+            if (!isRevokeModalOpen) {
+                setYieldGenericError({ dispatch, flowType, flowKey });
+            }
         }
     },
 );
@@ -364,7 +510,7 @@ export const submitYieldApproveThunk = createThunk(
             return;
         }
 
-        dispatch(stablecoinYieldActions.startSubmittingApproval({ flowType, flowKey, amount }));
+        dispatch(stablecoinYieldActions.startSubmittingApproval({ flowType, flowKey }));
 
         try {
             if (flowType === 'withdraw') {

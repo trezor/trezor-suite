@@ -1,18 +1,17 @@
 import type { ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
-import { tokenSupportsIncreasingAllowance } from '@suite-common/trading';
 import type {
     YieldActionFlowType,
     YieldFlowDisplayToken,
     YieldPendingTransactionState,
 } from '@suite-common/wallet-core';
 import { Button, Column } from '@trezor/components';
-import { BigNumber } from '@trezor/utils';
 
 import { YieldAmountCard } from './YieldAmountCard';
 import { YieldApprovedAmountCard } from './YieldApprovedAmountCard';
 import { YieldPendingTransaction } from './YieldPendingTransaction';
+import type { YieldApprovalAction } from '../yieldFlowUtils';
 
 const approveStepTranslationMap = {
     supply: {
@@ -31,59 +30,17 @@ type ApproveButtonTranslationId =
     | 'TR_APPROVE_DATA_TITLE';
 
 type GetApproveButtonTranslationIdParams = {
-    shouldRevokeApproval: boolean;
-    isModifyMode: boolean;
-    isIncreasing: boolean;
-};
-
-type GetApprovalStateParams = {
-    amount: string;
-    previousApprovedAmount?: string;
-    isModifyMode: boolean;
-    isRevokeRequired: boolean;
-    tokenContractAddress?: string | null;
-};
-
-const getApprovalState = ({
-    amount,
-    previousApprovedAmount,
-    isModifyMode,
-    isRevokeRequired,
-    tokenContractAddress,
-}: GetApprovalStateParams) => {
-    if (!isModifyMode) {
-        return {
-            isIncreasing: false,
-            shouldRevokeApproval: false,
-        };
-    }
-
-    const previousApprovedAmountValue = new BigNumber(previousApprovedAmount || '0');
-    const amountValue = new BigNumber(amount || '0');
-    const hasPreviousApprovedAmount =
-        !!previousApprovedAmount && !previousApprovedAmountValue.isZero();
-    const isAmountChanged =
-        hasPreviousApprovedAmount && !amountValue.eq(previousApprovedAmountValue);
-    const isIncreasing = hasPreviousApprovedAmount && amountValue.gt(previousApprovedAmountValue);
-    const needsZeroApprovalReset =
-        !!tokenContractAddress && !tokenSupportsIncreasingAllowance(tokenContractAddress);
-
-    return {
-        isIncreasing,
-        shouldRevokeApproval: isRevokeRequired || (isAmountChanged && needsZeroApprovalReset),
-    };
+    approvalAction: YieldApprovalAction;
 };
 
 const getApproveButtonTranslationId = ({
-    shouldRevokeApproval,
-    isModifyMode,
-    isIncreasing,
+    approvalAction,
 }: GetApproveButtonTranslationIdParams): ApproveButtonTranslationId => {
-    if (shouldRevokeApproval) {
+    if (approvalAction === 'revoke') {
         return 'TR_EARN_YIELD_REVOKE_APPROVAL';
     }
 
-    if (isModifyMode && isIncreasing) {
+    if (approvalAction === 'increase') {
         return 'TR_EARN_YIELD_INCREASE_APPROVAL';
     }
 
@@ -94,19 +51,19 @@ export type YieldApproveStepProps = {
     flowType: YieldActionFlowType;
     token: YieldFlowDisplayToken;
     variant: 'active' | 'done';
-    /** Live input value — used for change/increase calculations. */
-    amount: string;
     summaryValue: ReactNode;
     isDisabled?: boolean;
-    /** Committed approval amount — shown in the done variant. */
+    /** Current on-chain allowance amount fetched by RPC. */
     approvedAmount?: string;
-    isModifyMode?: boolean;
-    previousApprovedAmount?: string;
-    isRevokeRequired?: boolean;
+    isApprovedAmountLoading?: boolean;
+    hasApprovedAmountError?: boolean;
+    isApprovedAmountUnlimited?: boolean;
+    approvalAction: YieldApprovalAction;
+    canRevokeAllowance: boolean;
     warning?: ReactNode;
     pendingApproveTransaction?: YieldPendingTransactionState;
     onMaxClick?: () => void;
-    onApprove?: () => void;
+    onApprovalSubmit?: () => void;
     onRevoke?: () => void;
     onPendingTxClick: (txid: string) => void;
 };
@@ -115,47 +72,43 @@ export const YieldApproveStep = ({
     flowType,
     token,
     variant,
-    amount,
     summaryValue,
     isDisabled = false,
     approvedAmount,
-    isModifyMode = false,
-    previousApprovedAmount,
-    isRevokeRequired = false,
+    isApprovedAmountLoading = false,
+    hasApprovedAmountError = false,
+    isApprovedAmountUnlimited = false,
+    approvalAction,
+    canRevokeAllowance,
     warning,
     pendingApproveTransaction,
     onMaxClick,
-    onApprove,
+    onApprovalSubmit,
     onRevoke,
     onPendingTxClick,
 }: YieldApproveStepProps) => {
     const { amountLabelTranslationId, balanceLabelTranslationId } =
         approveStepTranslationMap[flowType];
-    const { isIncreasing, shouldRevokeApproval } = getApprovalState({
-        amount,
-        previousApprovedAmount,
-        isModifyMode,
-        isRevokeRequired,
-        tokenContractAddress: token.contractAddress,
-    });
     const approveButtonId = getApproveButtonTranslationId({
-        shouldRevokeApproval,
-        isModifyMode,
-        isIncreasing,
+        approvalAction,
     });
-    const onApproveButtonClick = shouldRevokeApproval ? onRevoke : onApprove;
+    const approvedAmountValue = approvedAmount ?? '0';
+    const shouldEnableRevoke =
+        canRevokeAllowance && !isApprovedAmountLoading && !hasApprovedAmountError;
+    const onRevokeClick = shouldEnableRevoke ? onRevoke : undefined;
 
     return (
         <>
             {variant === 'active' && (
                 <Column gap={16}>
-                    {previousApprovedAmount && (
-                        <YieldApprovedAmountCard
-                            token={token}
-                            amount={previousApprovedAmount}
-                            onRevoke={onRevoke}
-                        />
-                    )}
+                    <YieldApprovedAmountCard
+                        token={token}
+                        amount={approvedAmountValue}
+                        isUnlimited={isApprovedAmountUnlimited}
+                        isLoading={isApprovedAmountLoading}
+                        hasError={hasApprovedAmountError}
+                        onRevoke={onRevokeClick}
+                    />
 
                     <YieldAmountCard
                         tokenSymbol={token.symbol}
@@ -174,10 +127,8 @@ export const YieldApproveStep = ({
                     <Button
                         size="large"
                         width="100%"
-                        onClick={onApproveButtonClick}
-                        isDisabled={
-                            isDisabled || !!pendingApproveTransaction || !onApproveButtonClick
-                        }
+                        onClick={onApprovalSubmit}
+                        isDisabled={isDisabled || !!pendingApproveTransaction || !onApprovalSubmit}
                     >
                         <Translation id={approveButtonId} />
                     </Button>
@@ -191,8 +142,14 @@ export const YieldApproveStep = ({
                 </Column>
             )}
 
-            {variant === 'done' && approvedAmount && (
-                <YieldApprovedAmountCard token={token} amount={approvedAmount} />
+            {variant === 'done' && (
+                <YieldApprovedAmountCard
+                    token={token}
+                    amount={approvedAmountValue}
+                    isUnlimited={isApprovedAmountUnlimited}
+                    isLoading={isApprovedAmountLoading}
+                    hasError={hasApprovedAmountError}
+                />
             )}
         </>
     );
