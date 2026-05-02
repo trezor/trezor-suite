@@ -5,6 +5,7 @@ import {
     deviceAuthenticityConfig,
     getRandomChallenge,
     prepareDeviceAuthenticityData,
+    validateSerialNumbers,
     verifyAuthenticityProof,
 } from '@trezor/device-authenticity';
 import { Assert } from '@trezor/schema-utils';
@@ -67,11 +68,13 @@ export default class AuthenticateDevice extends AbstractMethod<
             return { valid: false, error: 'RESPONSE_PAYLOAD_MISSING' };
         };
 
+        const hasTropicAbility =
+            !this.getDevice().unavailableCapabilities['tropicDeviceAuthentication'];
+
         const getTropicResult = async (): Promise<VerifyAuthenticityProofResult | null> => {
             const { tropic_signature: signature, tropic_certificates: certificates } = message;
             const isAvailable = signature !== undefined && certificates.length > 0;
-            const isRequired =
-                !this.getDevice().unavailableCapabilities['tropicDeviceAuthentication'];
+            const isRequired = hasTropicAbility;
             if (isAvailable) {
                 return await verifyAuthenticityProof({ ...commonParams, certificates, signature });
             }
@@ -99,7 +102,9 @@ export default class AuthenticateDevice extends AbstractMethod<
             getTropicResult(),
             getMCUResult(),
         ]);
+        const results = { optigaResult, tropicResult, mcuResult };
 
-        return { optigaResult, tropicResult, mcuResult };
+        // Only T3W1 and later have serialNumber (i.e. devices that support Tropic authentication), this validation is skipped for all older models.
+        return hasTropicAbility ? validateSerialNumbers(results) : results;
     }
 }

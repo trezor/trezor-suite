@@ -16,7 +16,7 @@ interface Asn1 {
 
 type OneOrTwoNumbers = `${number}` | `${number}.${number}`;
 // type that allows between 4 to 8 numbers to specify an OID
-type Oid = `${OneOrTwoNumbers}.${OneOrTwoNumbers}.${OneOrTwoNumbers}.${OneOrTwoNumbers}`;
+export type Oid = `${OneOrTwoNumbers}.${OneOrTwoNumbers}.${OneOrTwoNumbers}.${OneOrTwoNumbers}`;
 
 // algorithms supported by Suite to verify certificates and signatures
 export type AlgorithmName = 'P-256' | 'Ed25519' | 'MLDSA44' | 'unknown';
@@ -470,3 +470,5 @@ export const parseCertificate = (byteArray: Uint8Array) => {
         signatureValue: parseSignatureValue(pieces[2]),
     };
 };
+
+export type ParsedCertificate = ReturnType<typeof parseCertificate>;

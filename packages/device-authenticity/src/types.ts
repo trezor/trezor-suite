@@ -30,11 +30,13 @@ export type VerifyAuthenticityProofResult =
           caPubKey?: string;
           rootPubKey: string;
           error?: typeof undefined;
+          serialNumber?: string;
       }
     | {
           valid: false;
           caPubKey?: string;
           rootPubKey?: string;
+          serialNumber?: string;
           error:
               | 'ROOT_PUBKEY_NOT_FOUND'
               | 'CA_PUBKEY_BLACKLISTED'
@@ -42,5 +44,12 @@ export type VerifyAuthenticityProofResult =
               | 'INVALID_DEVICE_CERTIFICATE'
               | 'INVALID_DEVICE_SIGNATURE'
               | 'RESPONSE_PAYLOAD_MISSING'
-              | 'RESPONSE_MALFORMED';
+              | 'RESPONSE_MALFORMED'
+              | 'SERIAL_NUMBER_MISMATCH';
       };
+
+export type ResultsToValidate = {
+    optigaResult: VerifyAuthenticityProofResult;
+    tropicResult: VerifyAuthenticityProofResult | null;
+    mcuResult: VerifyAuthenticityProofResult | null;
+};
