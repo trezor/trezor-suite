@@ -1447,7 +1447,7 @@ export const messages = defineMessages({
     },
     TR_ADDRESS_DISPLAY_DESCRIPTION: {
         defaultMessage:
-            'Display addresses with spaces for easier reading. When disabled, addresses are shown as a continuous string.',
+            'Add spaces to addresses for easier reading. When off, addresses are shown as a continuous string.',
         id: 'TR_ADDRESS_DISPLAY_DESCRIPTION',
     },
     TR_ASSETS: {
@@ -5801,7 +5801,7 @@ export const messages = defineMessages({
     },
     TR_OFF: {
         id: 'TR_OFF',
-        defaultMessage: 'off',
+        defaultMessage: 'Off',
     },
     TR_COULD_NOT_RETRIEVE_CHANGELOG: {
         id: 'TR_COULD_NOT_RETRIEVE_CHANGELOG',
@@ -6768,7 +6768,7 @@ export const messages = defineMessages({
     },
     TR_LABELING_LEGACY_DISABLED_TOOLTIP: {
         id: 'TR_LABELING_LEGACY_DISABLED_TOOLTIP',
-        defaultMessage: 'Connect your Trezor to switch to Legacy labeling',
+        defaultMessage: 'Connect your Trezor to switch to legacy labeling',
     },
     TR_LABELING_SECURE_SYNC: {
         id: 'TR_LABELING_SECURE_SYNC',
@@ -9512,7 +9512,7 @@ export const messages = defineMessages({
     },
     TR_EARN_YIELD_DASHBOARD_SUPPLY_MORE: {
         id: 'TR_EARN_YIELD_DASHBOARD_SUPPLY_MORE',
-        defaultMessage: 'Supply more',
+        defaultMessage: 'Deposit more',
     },
     TR_EARN_YIELD_DASHBOARD_WITHDRAW: {
         id: 'TR_EARN_YIELD_DASHBOARD_WITHDRAW',
@@ -9520,11 +9520,11 @@ export const messages = defineMessages({
     },
     TR_EARN_YIELD_WITHDRAW: {
         id: 'TR_EARN_YIELD_WITHDRAW',
-        defaultMessage: 'Redeem',
+        defaultMessage: 'Withdraw',
     },
     TR_EARN_YIELD_DASHBOARD_SUPPLY_NOW: {
         id: 'TR_EARN_YIELD_DASHBOARD_SUPPLY_NOW',
-        defaultMessage: 'Supply now',
+        defaultMessage: 'Deposit now',
     },
     TR_EARN_YIELD_SELECT_AMOUNT_AND_APPROVE: {
         id: 'TR_EARN_YIELD_SELECT_AMOUNT_AND_APPROVE',
@@ -9532,7 +9532,7 @@ export const messages = defineMessages({
     },
     TR_EARN_YIELD_SUPPLY: {
         id: 'TR_EARN_YIELD_SUPPLY',
-        defaultMessage: 'Supply',
+        defaultMessage: 'Deposit',
     },
     TR_EARN_YIELD_APY_SOURCE_LENDING_INTEREST: {
         id: 'TR_EARN_YIELD_APY_SOURCE_LENDING_INTEREST',
@@ -9548,7 +9548,7 @@ export const messages = defineMessages({
     },
     TR_EARN_YIELD_AMOUNT_TO_SUPPLY: {
         id: 'TR_EARN_YIELD_AMOUNT_TO_SUPPLY',
-        defaultMessage: 'Amount to supply',
+        defaultMessage: 'Amount to deposit',
     },
     TR_EARN_YIELD_AMOUNT_TO_WITHDRAW: {
         id: 'TR_EARN_YIELD_AMOUNT_TO_WITHDRAW',
@@ -9560,7 +9560,7 @@ export const messages = defineMessages({
     },
     TR_EARN_YIELD_SUPPLY_COMPLETE: {
         id: 'TR_EARN_YIELD_SUPPLY_COMPLETE',
-        defaultMessage: 'Supply complete',
+        defaultMessage: 'Deposit complete',
     },
     TR_EARN_YIELD_WITHDRAW_COMPLETE: {
         id: 'TR_EARN_YIELD_WITHDRAW_COMPLETE',
@@ -9592,7 +9592,7 @@ export const messages = defineMessages({
     },
     TR_EARN_YIELD_SUPPLIED: {
         id: 'TR_EARN_YIELD_SUPPLIED',
-        defaultMessage: 'Supplied',
+        defaultMessage: 'Deposited',
     },
     TR_EARN_YIELD_BACK_TO_OVERVIEW: {
         id: 'TR_EARN_YIELD_BACK_TO_OVERVIEW',
@@ -9600,7 +9600,7 @@ export const messages = defineMessages({
     },
     TR_EARN_YIELD_SUPPLY_DISABLED: {
         id: 'TR_EARN_YIELD_SUPPLY_DISABLED',
-        defaultMessage: 'Supply is currently disabled.',
+        defaultMessage: 'Deposit is currently disabled.',
     },
     TR_EARN_YIELD_WITHDRAW_DISABLED: {
         id: 'TR_EARN_YIELD_WITHDRAW_DISABLED',
@@ -9616,7 +9616,7 @@ export const messages = defineMessages({
     },
     TR_EARN_YIELD_PENDING_SUPPLY: {
         id: 'TR_EARN_YIELD_PENDING_SUPPLY',
-        defaultMessage: 'Confirming supply...',
+        defaultMessage: 'Confirming deposit...',
     },
     TR_EARN_YIELD_PENDING_WITHDRAW: {
         id: 'TR_EARN_YIELD_PENDING_WITHDRAW',
@@ -9648,7 +9648,7 @@ export const messages = defineMessages({
     },
     TR_EARN_YIELD_DASHBOARD_SUPPLIED: {
         id: 'TR_EARN_YIELD_DASHBOARD_SUPPLIED',
-        defaultMessage: '{amount} {displaySymbol} supplied',
+        defaultMessage: '{amount} {displaySymbol} deposited',
     },
     TR_EARN_YIELD_ERROR_GENERIC: {
         id: 'TR_EARN_YIELD_ERROR_GENERIC',
@@ -10003,16 +10003,16 @@ export const messages = defineMessages({
     },
     TR_EARN_SUPPLYING_IN_A_NUTSHELL: {
         id: 'TR_EARN_SUPPLYING_IN_A_NUTSHELL',
-        defaultMessage: 'Supplying in a nutshell',
+        defaultMessage: 'Stablecoin yield explained',
     },
     TR_EARN_YIELD_NUTSHELL_AMOUNT_LOCKED: {
         id: 'TR_EARN_YIELD_NUTSHELL_AMOUNT_LOCKED',
         defaultMessage:
-            'The supplied amount of {supplySymbol} is locked until you withdraw it. Withdrawal is instant.',
+            'The deposited amount of {supplySymbol} is locked until you withdraw it. Withdrawal is instant.',
     },
     TR_EARN_YIELD_NUTSHELL_COMPOUND_INTEREST: {
         id: 'TR_EARN_YIELD_NUTSHELL_COMPOUND_INTEREST',
-        defaultMessage: 'Your supplied {supplySymbol} earns yield that compounds over time.',
+        defaultMessage: 'Your deposited {supplySymbol} earns yield that compounds over time.',
     },
     TR_EARN_YIELD_NUTSHELL_VAULT_TOKENS: {
         id: 'TR_EARN_YIELD_NUTSHELL_VAULT_TOKENS',
@@ -10030,7 +10030,7 @@ export const messages = defineMessages({
     },
     TR_EARN_SIGN_SUPPLYING_TRANSACTION: {
         id: 'TR_EARN_SIGN_SUPPLYING_TRANSACTION',
-        defaultMessage: 'Sign supplying transaction',
+        defaultMessage: 'Sign deposit transaction',
     },
     TR_EARN_YIELD_EARN_REWARDS_EACH_BLOCK: {
         id: 'TR_EARN_YIELD_EARN_REWARDS_EACH_BLOCK',
@@ -10046,30 +10046,30 @@ export const messages = defineMessages({
     },
     TR_EARN_SUPPLYING_PROCESS: {
         id: 'TR_EARN_SUPPLYING_PROCESS',
-        defaultMessage: 'Supplying process',
+        defaultMessage: 'Deposit process',
     },
     TR_EARN_SUPPLY_TOKEN: {
         id: 'TR_EARN_SUPPLY_TOKEN',
-        defaultMessage: 'Supply {symbol}',
+        defaultMessage: 'Deposit {symbol}',
     },
     TR_EARN_SUPPLY_PROVIDER_MANAGES: {
         id: 'TR_EARN_SUPPLY_PROVIDER_MANAGES',
         defaultMessage:
-            '{providerName} maintains and protects your supplied {networkDisplaySymbol} with their smart contracts, infrastructure, and technology.',
+            '{providerName} maintains and protects your deposited {networkDisplaySymbol} with their smart contracts, infrastructure, and technology.',
     },
     TR_EARN_SUPPLY_PROVIDER_NO_LIABILITY: {
         id: 'TR_EARN_SUPPLY_PROVIDER_NO_LIABILITY',
         defaultMessage:
-            "When supplying, the responsibility for your funds' security transitions from your Trezor to {providerName}.",
+            "When depositing, the responsibility for your funds' security transitions from your Trezor to {providerName}.",
     },
     TR_EARN_SUPPLY_PROVIDER_SMART_CONTRACT_RISK: {
         id: 'TR_EARN_SUPPLY_PROVIDER_SMART_CONTRACT_RISK',
         defaultMessage:
-            'Supplying assets involves smart contract risks. {providerName} applies rigorous security measures, but cannot guarantee against all losses.',
+            "Depositing assets involves smart contract risks. {providerName} applies rigorous security measures, but can't guarantee against all losses.",
     },
     TR_EARN_CONSENT_TO_SUPPLY_WITH_PROVIDER: {
         id: 'TR_EARN_CONSENT_TO_SUPPLY_WITH_PROVIDER',
-        defaultMessage: 'I acknowledge and consent to supply with {providerName}.',
+        defaultMessage: 'I acknowledge and consent to deposit with {providerName}.',
     },
     TR_EARN_PROVIDER_UPDATE: {
         id: 'TR_EARN_PROVIDER_UPDATE',
@@ -10471,7 +10471,7 @@ export const messages = defineMessages({
     },
     TOAST_TX_YIELD_SUPPLY: {
         id: 'TOAST_TX_YIELD_SUPPLY',
-        defaultMessage: 'Supply broadcasted from {account}',
+        defaultMessage: 'Deposit broadcasted from {account}',
     },
     TOAST_TX_YIELD_WITHDRAW: {
         id: 'TOAST_TX_YIELD_WITHDRAW',
@@ -10526,7 +10526,7 @@ export const messages = defineMessages({
     },
     TR_EARN_YOUR_SUPPLIED_FUNDS_MAINTAINED: {
         id: 'TR_EARN_YOUR_SUPPLIED_FUNDS_MAINTAINED',
-        defaultMessage: 'Your supplied funds are maintained by {providerName}.',
+        defaultMessage: 'Your deposited funds are maintained by {providerName}.',
     },
     TR_EARN_STAKE_EVERSTAKE_MANAGES: {
         id: 'TR_EARN_STAKE_EVERSTAKE_MANAGES',
@@ -11395,7 +11395,6 @@ export const messages = defineMessages({
         id: 'TR_REVOKE_AMOUNT_TITLE',
         defaultMessage: 'Token',
     },
-
     TR_CHAIN: {
         id: 'TR_CHAIN',
         defaultMessage: 'Chain',
@@ -11462,7 +11461,7 @@ export const messages = defineMessages({
     TR_DYK_ITEM_8: {
         id: 'TR_DYK_ITEM_8',
         defaultMessage:
-            'Trezor co-founder Marek "Slush" Palatinus launched the very first Bitcoin mining pool.',
+            'Trezor co-founder Marek "Slush" Palatinus launched the first Bitcoin mining pool.',
     },
     TR_DYK_ITEM_9: {
         id: 'TR_DYK_ITEM_9',
