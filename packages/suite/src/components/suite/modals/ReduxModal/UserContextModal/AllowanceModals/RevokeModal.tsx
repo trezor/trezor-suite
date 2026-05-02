@@ -6,7 +6,7 @@ import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
-import { Box, Column, Icon, Modal, Row, Text } from '@trezor/components';
+import { Banner, Box, Column, Icon, Modal, Row, Text } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 import { borders } from '@trezor/theme';
 
@@ -55,6 +55,8 @@ export const RevokeModal = (props: RevokeModalProps) => {
         token,
         isLoading,
         composedLevels,
+        composeErrorMessage,
+        canSubmit,
         methods,
         handleClose,
         handleFeeChange,
@@ -81,7 +83,7 @@ export const RevokeModal = (props: RevokeModalProps) => {
                     <>
                         <Modal.Button
                             isLoading={isLoading}
-                            isDisabled={!device?.connected}
+                            isDisabled={!device?.connected || !canSubmit}
                             onClick={confirmAndSend}
                         >
                             <Translation id="TR_CONTINUE" />
@@ -164,6 +166,19 @@ export const RevokeModal = (props: RevokeModalProps) => {
                             changeFeeLevel={handleFeeChange}
                         />
                     </Box>
+
+                    {composeErrorMessage && (
+                        <Banner
+                            intent="critical"
+                            icon="warning"
+                            description={
+                                <Translation
+                                    id={composeErrorMessage.id}
+                                    values={composeErrorMessage.values}
+                                />
+                            }
+                        />
+                    )}
                 </Column>
             </Modal>
         </FormProvider>

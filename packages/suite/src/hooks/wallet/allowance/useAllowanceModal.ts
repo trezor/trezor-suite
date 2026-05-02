@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { type CryptoId, type DexApprovalType } from 'invity-api';
 
+import { type TranslationKey, isTranslationKey } from '@suite/intl';
 import { parseCryptoId } from '@suite-common/trading';
 import { type Account, type AllowanceType } from '@suite-common/wallet-types';
 import { asAmountSubunit, findToken, getAllowanceAmount } from '@suite-common/wallet-utils';
@@ -69,6 +70,24 @@ export const useAllowanceModal = ({
         account,
         methods,
     });
+    const selectedComposedLevel = composedLevels?.[selectedFee];
+    const composeErrorMessage = useMemo(() => {
+        if (selectedComposedLevel?.type !== 'error') {
+            return undefined;
+        }
+
+        const { errorMessage } = selectedComposedLevel;
+
+        if (!errorMessage || !isTranslationKey(errorMessage.id)) {
+            return undefined;
+        }
+
+        return {
+            id: errorMessage.id as TranslationKey,
+            values: errorMessage.values,
+        };
+    }, [selectedComposedLevel]);
+    const canSubmit = !isComposing && !!composedTransaction && !composeErrorMessage;
 
     const composeRequestRef = useCurrentRef(composeRequest);
     const onSelectApprovalTypeRef = useCurrentRef(onSelectApprovalType);
@@ -128,6 +147,8 @@ export const useAllowanceModal = ({
         feeInfo,
         composedLevels,
         composedTransaction,
+        composeErrorMessage,
+        canSubmit,
         selectedFee,
         data,
         methods,
