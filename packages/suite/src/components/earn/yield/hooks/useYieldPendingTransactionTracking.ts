@@ -87,6 +87,7 @@ export const useYieldPendingTransactionTracking = ({
 
         if (pendingTransaction.type === 'revoke' || pendingTransaction.type === 'revoke-only') {
             dispatch(stablecoinYieldActions.revokeSuccess({ flowType, flowKey }));
+            dispatch(stablecoinYieldActions.invalidateAllowance({ flowType, flowKey }));
 
             return;
         }
@@ -99,6 +100,7 @@ export const useYieldPendingTransactionTracking = ({
                     amount: pendingTransaction.amount,
                 }),
             );
+            dispatch(stablecoinYieldActions.invalidateAllowance({ flowType, flowKey }));
 
             return;
         }

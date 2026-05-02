@@ -1,6 +1,6 @@
 import { Translation } from '@suite/intl';
 import type { YieldFlowDisplayToken } from '@suite-common/wallet-core';
-import { Card, IconButton, Row, Text } from '@trezor/components';
+import { Card, IconButton, Row, Spinner, Text } from '@trezor/components';
 import { AssetLogo } from '@trezor/product-components';
 
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
@@ -8,12 +8,46 @@ import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmoun
 type YieldApprovedAmountCardProps = {
     token: YieldFlowDisplayToken;
     amount: string;
+    isUnlimited?: boolean;
+    isLoading?: boolean;
+    hasError?: boolean;
     onRevoke?: () => void;
+};
+
+const getApprovedAmountValue = ({
+    amount,
+    isUnlimited,
+    isLoading,
+    hasError,
+    symbol,
+}: Pick<YieldApprovedAmountCardProps, 'amount' | 'isUnlimited' | 'isLoading' | 'hasError'> & {
+    symbol: string;
+}) => {
+    if (isLoading) {
+        return <Spinner size={16} isDisabled />;
+    }
+
+    if (hasError) {
+        return <Text typographyStyle="body-md">-</Text>;
+    }
+
+    if (isUnlimited) {
+        return (
+            <Text typographyStyle="body-md">
+                <Translation id="TR_APPROVE_AMOUNT_UNLIMITED" />
+            </Text>
+        );
+    }
+
+    return <FormattedCryptoAmount value={amount} symbol={symbol} />;
 };
 
 export const YieldApprovedAmountCard = ({
     token,
     amount,
+    isUnlimited = false,
+    isLoading = false,
+    hasError = false,
     onRevoke,
 }: YieldApprovedAmountCardProps) => (
     <Card fillType="flat" paddingType="small">
@@ -29,7 +63,13 @@ export const YieldApprovedAmountCard = ({
                     placeholder={token.symbol}
                     showNetworkIcon
                 />
-                <FormattedCryptoAmount value={amount} symbol={token.symbol} />
+                {getApprovedAmountValue({
+                    amount,
+                    isUnlimited,
+                    isLoading,
+                    hasError,
+                    symbol: token.symbol,
+                })}
                 {onRevoke && (
                     <IconButton
                         icon="x"
