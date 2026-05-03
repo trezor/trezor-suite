@@ -55,7 +55,6 @@
         { "path": "../sentry" },
         { "path": "../services" },
         { "path": "../settings" },
-        { "path": "../staking" },
         { "path": "../theme" },
         { "path": "../toasts" },
         {

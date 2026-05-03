@@ -48,7 +48,6 @@ export const EarnTransactionDataReviewStepList = ({
     const { activeStepBottomOffset, handleReadListItemHeight } = useActiveStepOffset(stepIndex);
     const handleOnEarnTransactionReview = useHandleOnEarnTransactionReview({
         accountKey,
-        amount,
         onTransactionSubmitted,
     });
 

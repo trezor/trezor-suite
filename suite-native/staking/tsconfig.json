@@ -3,6 +3,7 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../../suite-common/device" },
+        { "path": "../../suite-common/mev" },
         {
             "path": "../../suite-common/redux-utils"
         },
@@ -31,7 +32,13 @@
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" },
         {
+            "path": "../../suite-common/message-system"
+        },
+        {
             "path": "../../suite-common/suite-types"
+        },
+        {
+            "path": "../../suite-common/test-utils"
         }
     ]
 }

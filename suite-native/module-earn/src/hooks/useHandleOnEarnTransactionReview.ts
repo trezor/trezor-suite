@@ -13,7 +13,7 @@ import {
     type StackNavigationProps,
 } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
-import { signEthStakeTransactionNativeThunk } from '@suite-native/staking';
+import { signStakeTransactionNativeThunk } from '@suite-native/staking';
 
 import { handleEarnReviewError } from '../utils';
 import { useEarnReviewBackNavigation } from './useEarnReviewBackNavigation';
@@ -28,13 +28,11 @@ type NavigationProps = StackNavigationProps<
 
 type HandleOnEarnTransactionReviewProps = {
     accountKey: AccountKey;
-    amount: string;
     onTransactionSubmitted: (txid: string) => void;
 };
 
 export const useHandleOnEarnTransactionReview = ({
     accountKey,
-    amount,
     onTransactionSubmitted,
 }: HandleOnEarnTransactionReviewProps) => {
     useEarnReviewBackNavigation('stake', accountKey);
@@ -55,7 +53,11 @@ export const useHandleOnEarnTransactionReview = ({
         if (!precomposedTransaction) return;
 
         const response = await dispatch(
-            signEthStakeTransactionNativeThunk({ accountKey, amount, precomposedTransaction }),
+            signStakeTransactionNativeThunk({
+                accountKey,
+                stakeType: 'stake',
+                precomposedTransaction,
+            }),
         );
 
         if (isFulfilled(response)) {
@@ -84,7 +86,6 @@ export const useHandleOnEarnTransactionReview = ({
         });
     }, [
         accountKey,
-        amount,
         analytics,
         dispatch,
         navigation,

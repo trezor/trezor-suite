@@ -1,7 +1,6 @@
 @bitcoinerlab/secp256k1
 @ethereumjs/common
 @ethereumjs/tx
-@everstake/wallet-sdk-ethereum
 @exodus/patch-broken-hermes-typed-arrays
 @fivebinaries/coin-selection
 @hookform/resolvers

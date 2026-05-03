@@ -52,7 +52,7 @@ import {
     type RatesByKey,
     asBaseCurrencyAmount,
 } from '@suite-common/wallet-types';
-import { getAccountFiatBalance } from '@suite-common/wallet-utils';
+import { getAccountFiatBalance, isStakingSymbol } from '@suite-common/wallet-utils';
 import { type DeviceOnboardingSliceRootState } from '@suite-native/device-onboarding';
 import { type FeatureFlagsRootState } from '@suite-native/feature-flags';
 import { type NativeFirmwareRootState } from '@suite-native/firmware';
@@ -62,7 +62,6 @@ import {
     selectIsDeviceAuthenticityCheckEnabled,
     selectIsFirmwareRevisionCheckEnabled,
 } from '@suite-native/settings';
-import { doesCoinSupportStaking } from '@suite-native/staking';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { type Device } from '@trezor/connect';
 import { BigNumber, isNotNullOrUndefined } from '@trezor/utils';
@@ -143,7 +142,7 @@ const getTotalFiatBalanceNative = ({
                 account: a,
                 baseCurrencyCode: localCurrency,
                 rates,
-                shouldIncludeStaking: doesCoinSupportStaking(a.symbol),
+                shouldIncludeStaking: isStakingSymbol(a.symbol),
             }) ?? '0';
         instanceBalance = instanceBalance.plus(accountFiatBalance);
     });

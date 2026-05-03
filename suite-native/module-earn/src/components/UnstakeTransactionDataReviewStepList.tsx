@@ -56,7 +56,6 @@ export const UnstakeTransactionDataReviewStepList = ({
     const { activeStepBottomOffset, handleReadListItemHeight } = useActiveStepOffset(stepIndex);
     const handleOnUnstakeTransactionReview = useHandleOnUnstakeTransactionReview({
         accountKey,
-        amount,
         onTransactionSubmitted,
     });
 
