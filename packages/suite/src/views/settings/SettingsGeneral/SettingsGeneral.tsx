@@ -92,14 +92,32 @@ export const SettingsGeneral = () => {
 
                 <SettingsSection
                     isBelowLaptop={isBelowLaptop}
-                    title={<Translation id="TR_LOCALIZATION" />}
-                    icon="flag"
+                    title={<Translation id="TR_PRIVACY" />}
+                    icon="lock"
                 >
-                    <Language />
-                    <BaseCurrency />
-                    {hasBitcoinNetworks && <BitcoinAmountUnit />}
+                    <AutoEject />
+                    {isDesktop() && !isLinux() && <BioAuthSettings />}
+                    {(isDesktop() || (isWeb() && isTorEnabled)) && (
+                        <>
+                            {isDesktop() && <Tor />}
+                            {(isTorEnabled || torStatus === TorStatus.Enabling) && (
+                                <TorOnionLinks />
+                            )}
+                            {torExternalExperimentalFeature && <TorExternal />}
+                        </>
+                    )}
                 </SettingsSection>
             </div>
+
+            <SettingsSection
+                isBelowLaptop={isBelowLaptop}
+                title={<Translation id="TR_LOCALIZATION" />}
+                icon="flag"
+            >
+                <Language />
+                <BaseCurrency />
+                {hasBitcoinNetworks && <BitcoinAmountUnit />}
+            </SettingsSection>
 
             <SettingsSection
                 isBelowLaptop={isBelowLaptop}
@@ -114,22 +132,6 @@ export const SettingsGeneral = () => {
                         <ConnectLabelingProvider />
                     ))}
                 <LegacyLabelingMigration />
-            </SettingsSection>
-
-            <SettingsSection
-                isBelowLaptop={isBelowLaptop}
-                title={<Translation id="TR_PRIVACY" />}
-                icon="lock"
-            >
-                <AutoEject />
-                {isDesktop() && !isLinux() && <BioAuthSettings />}
-                {(isDesktop() || (isWeb() && isTorEnabled)) && (
-                    <>
-                        {isDesktop() && <Tor />}
-                        {(isTorEnabled || torStatus === TorStatus.Enabling) && <TorOnionLinks />}
-                        {torExternalExperimentalFeature && <TorExternal />}
-                    </>
-                )}
             </SettingsSection>
 
             <SettingsSection
