@@ -35,9 +35,6 @@ module.exports = {
     resolve: {
         modules: [SRC, 'node_modules'],
         extensions: ['.ts', '.js'],
-        // - 'browser' first so packages like @xrplf/isomorphic pick noble-based browser builds instead of node:crypto
-        // - 'module' is intentionally omitted; it caused a default-export wrapping issue with bignumber.js in the ripple worker
-        mainFields: ['browser', 'main'],
     },
     externals: [
         {

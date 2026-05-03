@@ -51,8 +51,6 @@ module.exports = {
     resolve: {
         modules: [SRC, 'node_modules'],
         extensions: ['.ts', '.js'],
-        // 'browser' first so packages like @xrplf/isomorphic pick noble-based browser builds instead of node:crypto
-        mainFields: ['browser', 'main'],
     },
     performance: {
         hints: false,
