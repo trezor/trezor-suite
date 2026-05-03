@@ -94,12 +94,18 @@ export type YieldSupplyApprovalReviewParams = YieldFlowParams & {
     approvalLimitType: 'per-supply' | 'unlimited';
 };
 
+export type YieldSupplyReviewParams = YieldFlowParams & {
+    amount: string;
+    receiptAmount: string;
+    transactionId: string;
+};
+
 export type YieldStackParamList = {
     [YieldStackRoutes.HowYieldWorks]: YieldFlowParams;
     [YieldStackRoutes.YieldConsents]: YieldFlowParams;
     [YieldStackRoutes.YieldSupplyFlow]: YieldFlowParams;
     [YieldStackRoutes.YieldSupplyApprovalReview]: YieldSupplyApprovalReviewParams;
-    [YieldStackRoutes.YieldSupplyReview]: YieldFlowParams;
+    [YieldStackRoutes.YieldSupplyReview]: YieldSupplyReviewParams;
 };
 
 export type HomeStackParamList = {

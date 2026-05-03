@@ -1,21 +1,19 @@
-import { fromWei } from 'web3-utils';
-
 import { closeModal, openDeferredModal, preserveModal } from '@suite/modal';
 import { selectAddressDisplayType } from '@suite/settings';
 import { selectSelectedDevice } from '@suite-common/device';
 import {
     type TransactionDto,
-    parseUnsignedEvmTransactionForSigning,
+    type UnsignedEvmTransactionForSigning,
     submitTransactionHash,
 } from '@suite-common/earn-stablecoin-api';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     STABLECOIN_YIELD_PREFIX,
     type YieldFlowDisplayToken,
     type YieldSessionDataAmountPayload,
     getApprovalRequestAmount,
+    getYieldActionReviewState,
     openYieldApproveModal,
     prepareYieldAction,
     setYieldGenericError,
@@ -24,16 +22,10 @@ import {
 import {
     type Account,
     AddressDisplayOptions,
-    type FormState,
-    type PrecomposedTransactionFinal,
     type YieldFormMetadata,
 } from '@suite-common/wallet-types';
-import {
-    convertAmountUnitsToSubunits,
-    getAccountIdentity,
-    getContractAddressForNetworkSymbol,
-} from '@suite-common/wallet-utils';
-import TrezorConnect, { type EthereumSignTransaction, type TokenInfo } from '@trezor/connect';
+import { getAccountIdentity } from '@suite-common/wallet-utils';
+import TrezorConnect, { type EthereumSignTransaction } from '@trezor/connect';
 
 import type { AppState, Dispatch } from 'src/types/suite';
 
@@ -43,27 +35,6 @@ type EvmAccount = Extract<Account, { networkType: 'ethereum' }>;
 
 const serializeNonce = (nonce: number | `0x${string}`) =>
     typeof nonce === 'number' ? `0x${nonce.toString(16)}` : nonce;
-
-type ParsedTransactionForSigning = NonNullable<
-    ReturnType<typeof parseUnsignedEvmTransactionForSigning>
->;
-
-type BuildYieldReviewTokenParams = {
-    token: YieldFlowDisplayToken;
-    symbol: NetworkSymbol;
-};
-
-type BuildYieldReviewStateParams = BuildYieldReviewTokenParams & {
-    parsedTransaction: ParsedTransactionForSigning;
-    amount: string;
-    flowType: YieldFormMetadata['type'];
-    vaultName: string;
-};
-
-type BuildYieldReviewStateResult = {
-    formState: FormState;
-    precomposedTransaction: PrecomposedTransactionFinal;
-};
 
 type SendYieldTransactionParams = {
     account: Account;
@@ -77,7 +48,7 @@ type SendYieldTransactionParams = {
 };
 
 const getTransactionForSigning = (
-    parsedTransaction: ParsedTransactionForSigning,
+    parsedTransaction: UnsignedEvmTransactionForSigning,
 ): EthereumSignTransaction['transaction'] => {
     const commonTransactionFields = {
         to: parsedTransaction.to,
@@ -107,97 +78,6 @@ const getTransactionForSigning = (
     throw new Error('Yield transaction gas parameters are missing.');
 };
 
-const toGweiAmount = (amount: bigint) => fromWei(amount.toString(), 'gwei');
-
-const buildYieldReviewToken = ({
-    token,
-    symbol,
-}: BuildYieldReviewTokenParams): TokenInfo | undefined => {
-    if (!token.contractAddress) {
-        return undefined;
-    }
-
-    return {
-        standard: 'ERC20',
-        contract: getContractAddressForNetworkSymbol(symbol, token.contractAddress),
-        symbol: token.symbol,
-        decimals: token.decimals,
-        name: token.symbol,
-    };
-};
-
-const buildYieldReviewState = ({
-    parsedTransaction,
-    amount,
-    token,
-    symbol,
-    flowType,
-    vaultName,
-}: BuildYieldReviewStateParams): BuildYieldReviewStateResult => {
-    const gasLimit = BigInt(parsedTransaction.gasLimit);
-    const gasPriceWei = BigInt(
-        parsedTransaction.maxFeePerGas ?? parsedTransaction.gasPrice ?? ('0x0' as `0x${string}`),
-    );
-    const feeWei = gasLimit * gasPriceWei;
-    const reviewToken = buildYieldReviewToken({ token, symbol });
-    const amountSubunits = convertAmountUnitsToSubunits(amount, token.decimals);
-    let eip1559ReviewFields: Partial<
-        Pick<PrecomposedTransactionFinal, 'maxFeePerGas' | 'maxPriorityFeePerGas'>
-    > = {};
-
-    if (parsedTransaction.maxFeePerGas && parsedTransaction.maxPriorityFeePerGas) {
-        eip1559ReviewFields = {
-            maxFeePerGas: toGweiAmount(BigInt(parsedTransaction.maxFeePerGas)),
-            maxPriorityFeePerGas: toGweiAmount(BigInt(parsedTransaction.maxPriorityFeePerGas)),
-        };
-    }
-
-    const formState: FormState = {
-        outputs: [
-            {
-                type: 'payment',
-                address: parsedTransaction.to,
-                amount,
-                fiat: '',
-                currency: { value: '', label: '' },
-                token: reviewToken?.contract ?? null,
-                dataHex: parsedTransaction.data,
-            },
-        ],
-        selectedFee: 'custom',
-        feePerUnit: toGweiAmount(gasPriceWei),
-        feeLimit: gasLimit.toString(),
-        ...eip1559ReviewFields,
-        options: ['broadcast', 'transactionData'],
-        transactionData: parsedTransaction.data,
-        isCoinControlEnabled: false,
-        hasCoinControlBeenOpened: false,
-        selectedUtxos: [],
-        yieldMetadata: { type: flowType, vaultName },
-    };
-
-    const precomposedTransaction: PrecomposedTransactionFinal = {
-        type: 'final',
-        fee: feeWei.toString(),
-        feePerByte: toGweiAmount(gasPriceWei),
-        feeLimit: gasLimit.toString(),
-        totalSpent: reviewToken ? amountSubunits : (BigInt(amountSubunits) + feeWei).toString(),
-        bytes: 0,
-        inputs: [],
-        outputs: [
-            {
-                address: parsedTransaction.to,
-                amount: amountSubunits,
-            },
-        ],
-        outputsPermutation: [0],
-        ...(reviewToken ? { token: reviewToken, isTokenKnown: true } : {}),
-        ...eip1559ReviewFields,
-    };
-
-    return { formState, precomposedTransaction };
-};
-
 const sendYieldTransaction = async ({
     account,
     amount,
@@ -219,23 +99,21 @@ const sendYieldTransaction = async ({
         throw new Error('Yield actions currently support only EVM accounts.');
     }
 
-    const parsedTransaction = parseUnsignedEvmTransactionForSigning(
-        transaction.unsignedTransaction,
-    );
-
-    if (!parsedTransaction) {
-        throw new Error('Unsupported yield transaction payload.');
-    }
-
-    const transactionForSigning = getTransactionForSigning(parsedTransaction);
-    const { formState, precomposedTransaction } = buildYieldReviewState({
-        parsedTransaction,
+    const reviewState = getYieldActionReviewState({
         amount,
         token,
         symbol: account.symbol,
+        transaction,
         flowType,
         vaultName,
     });
+
+    if (!reviewState) {
+        throw new Error('Unsupported yield transaction payload.');
+    }
+
+    const transactionForSigning = getTransactionForSigning(reviewState.parsedTransaction);
+    const { formState, precomposedTransaction } = reviewState;
 
     dispatch(
         stablecoinYieldActions.storePrecomposedTransaction({

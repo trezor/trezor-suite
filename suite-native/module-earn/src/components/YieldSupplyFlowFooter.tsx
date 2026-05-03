@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { Keyboard } from 'react-native';
 import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
 
 import { useFormatters } from '@suite-common/formatters';
@@ -43,6 +44,11 @@ export const YieldSupplyFlowFooter = ({
     const { translate } = useTranslate();
     const { CryptoAmountFormatter } = useFormatters();
 
+    const handlePress = () => {
+        Keyboard.dismiss();
+        onPress();
+    };
+
     const estimatedRewards = useMemo(() => {
         if (!amountValue || apy === null) return null;
 
@@ -77,7 +83,7 @@ export const YieldSupplyFlowFooter = ({
                     <Button
                         accessibilityRole="button"
                         accessibilityLabel={translate('generic.buttons.continue')}
-                        onPress={onPress}
+                        onPress={handlePress}
                         isDisabled={isDisabled}
                         isLoading={isLoading}
                     >

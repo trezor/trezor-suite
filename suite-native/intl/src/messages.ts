@@ -2674,6 +2674,9 @@ export const messages = {
                 primaryButton: 'Go to homepage',
             },
         },
+        yieldSupplyTransactionReviewScreen: {
+            title: 'Review with Trezor',
+        },
         staked: 'Staked',
         stakedAutomatically: 'Staked automatically',
         fullBalance: 'Full balance',

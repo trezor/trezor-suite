@@ -8,6 +8,7 @@ import {
 import {
     type AccountKey,
     type FormDraftWithSendKeyPrefix,
+    type FormState,
     type TokenAddress,
 } from '@suite-common/wallet-types';
 import { ErrorMessage, VStack } from '@suite-native/atoms';
@@ -22,6 +23,7 @@ import {
     selectIsTransactionAlreadySigned,
     selectReviewSummaryOutput,
     selectTransactionReviewActiveStepIndex,
+    selectTransactionReviewOutputs,
     selectTransactionReviewOutputsFromDraft,
 } from '../../selectors';
 import { SlidingFooterOverlay } from '../SlidingFooterOverlay';
@@ -29,6 +31,7 @@ import { SlidingFooterOverlay } from '../SlidingFooterOverlay';
 export type ReviewOutputItemListProps = {
     prefix: FormDraftWithSendKeyPrefix;
     accountKey: AccountKey;
+    formState?: FormState;
     tokenContract?: TokenAddress;
     flowType?: ExchangeFlowType;
 };
@@ -36,20 +39,23 @@ export type ReviewOutputItemListProps = {
 export const ReviewOutputItemList = ({
     prefix,
     accountKey,
+    formState,
     tokenContract,
     flowType,
 }: ReviewOutputItemListProps) => {
     const isTransactionAlreadySigned = useSelector(selectIsTransactionAlreadySigned);
     const activeStep = useSelector((state: TransactionReviewOutputsState) =>
-        selectTransactionReviewActiveStepIndex(state, prefix, accountKey, tokenContract),
+        selectTransactionReviewActiveStepIndex(state, prefix, accountKey, tokenContract, formState),
     );
     const reviewOutputs =
         useSelector((state: TransactionReviewOutputsState) =>
-            selectTransactionReviewOutputsFromDraft(state, prefix, accountKey, tokenContract),
+            formState
+                ? selectTransactionReviewOutputs(state, accountKey, tokenContract, formState)
+                : selectTransactionReviewOutputsFromDraft(state, prefix, accountKey, tokenContract),
         ) || undefined;
     const summaryOutput =
         useSelector((state: TransactionReviewOutputsState) =>
-            selectReviewSummaryOutput(state, prefix, accountKey, tokenContract),
+            selectReviewSummaryOutput(state, prefix, accountKey, tokenContract, formState),
         ) || undefined;
     const accountSymbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),

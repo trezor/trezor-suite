@@ -12,18 +12,18 @@ import {
     isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
 
-export type YieldApprovalReviewTransaction = {
+export type YieldReviewTransaction = {
     formState: FormState;
     precomposedTransaction: PrecomposedTransactionFinal;
 };
 
-type UseYieldApprovalReviewTransactionParams = {
+type UseYieldReviewTransactionParams = {
     accountKey: AccountKey;
 };
 
-export const useYieldApprovalReviewTransaction = ({
+export const useYieldReviewTransaction = ({
     accountKey,
-}: UseYieldApprovalReviewTransactionParams): YieldApprovalReviewTransaction | null => {
+}: UseYieldReviewTransactionParams): YieldReviewTransaction | null => {
     const formState = useSelector(selectPrecomposedSendForm);
     const precomposedTransaction = useSelector(selectSendPrecomposedTx);
     const storedAccountKey = useSelector(selectSendFormAccountKey);

@@ -27,7 +27,7 @@ import { selectIsTransactionAlreadySigned } from '@suite-native/transaction-mana
 import { useShowDeviceDisconnectedDuringEarnReviewAlert } from './useShowDeviceDisconnectedDuringEarnReviewAlert';
 import { useShowPushTransactionFailedDuringReviewAlert } from './useShowPushTransactionFailedDuringReviewAlert';
 import { useYieldApprovalReviewNavigation } from './useYieldApprovalReviewNavigation';
-import { useYieldApprovalReviewTransaction } from './useYieldApprovalReviewTransaction';
+import { useYieldReviewTransaction } from './useYieldReviewTransaction';
 import { handleEarnReviewError } from '../utils';
 import { getYieldApprovalFormDraftKey } from '../yieldApprovalThunks';
 
@@ -76,7 +76,7 @@ export const useYieldApprovalReview = ({
     );
     const { approval } = session;
 
-    const reviewTransaction = useYieldApprovalReviewTransaction({
+    const reviewTransaction = useYieldReviewTransaction({
         accountKey: flowData.account.key,
     });
 

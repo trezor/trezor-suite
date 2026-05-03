@@ -1,4 +1,20 @@
-import { type TransactionDto } from '@suite-common/earn-stablecoin-api';
+import { fromWei } from 'web3-utils';
+
+import {
+    type TransactionDto,
+    parseUnsignedEvmTransactionForSigning,
+} from '@suite-common/earn-stablecoin-api';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import {
+    type FormState,
+    type PrecomposedTransactionFinal,
+    type YieldFormMetadata,
+} from '@suite-common/wallet-types';
+import {
+    convertAmountUnitsToSubunits,
+    getContractAddressForNetworkSymbol,
+} from '@suite-common/wallet-utils';
+import { type TokenInfo } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
 
 import {
@@ -6,7 +22,7 @@ import {
     getApprovalRequestAmount,
     submitYieldOpportunity,
 } from './stablecoinYieldApprovalThunks';
-import { type YieldFlowType } from './stablecoinYieldTypes';
+import { type YieldFlowDisplayToken, type YieldFlowType } from './stablecoinYieldTypes';
 import {
     getWithdrawRequestAmount,
     getYieldApprovalModalParams,
@@ -25,6 +41,28 @@ type PrepareYieldActionParams = {
 };
 
 type YieldApprovalModalParams = NonNullable<ReturnType<typeof getYieldApprovalModalParams>>;
+
+type ParsedYieldActionTransaction = NonNullable<
+    ReturnType<typeof parseUnsignedEvmTransactionForSigning>
+>;
+
+type GetYieldActionReviewTokenParams = {
+    token: YieldFlowDisplayToken;
+    symbol: NetworkSymbol;
+};
+
+type GetYieldActionReviewStateParams = GetYieldActionReviewTokenParams & {
+    amount: string;
+    flowType: YieldFormMetadata['type'];
+    transaction: TransactionDto;
+    vaultName: string;
+};
+
+export type YieldActionReviewState = {
+    formState: FormState;
+    parsedTransaction: ParsedYieldActionTransaction;
+    precomposedTransaction: PrecomposedTransactionFinal;
+};
 
 export type PrepareYieldActionErrorReason =
     | 'request-amount-unavailable'
@@ -91,6 +129,113 @@ const getYieldReceiptAmount = ({
         default:
             return exhaustive(flowType);
     }
+};
+
+const toGweiAmount = (amount: bigint) => fromWei(amount.toString(), 'gwei');
+
+const getYieldActionReviewToken = ({
+    token,
+    symbol,
+}: GetYieldActionReviewTokenParams): TokenInfo | undefined => {
+    if (!token.contractAddress) {
+        return undefined;
+    }
+
+    return {
+        standard: 'ERC20',
+        contract: getContractAddressForNetworkSymbol(symbol, token.contractAddress),
+        symbol: token.symbol,
+        decimals: token.decimals,
+        name: token.symbol,
+    };
+};
+
+export const getYieldActionReviewState = ({
+    amount,
+    flowType,
+    token,
+    symbol,
+    transaction,
+    vaultName,
+}: GetYieldActionReviewStateParams): YieldActionReviewState | null => {
+    const parsedTransaction = parseUnsignedEvmTransactionForSigning(
+        transaction.unsignedTransaction,
+    );
+
+    if (!parsedTransaction) {
+        return null;
+    }
+
+    const gasPrice = parsedTransaction.maxFeePerGas ?? parsedTransaction.gasPrice;
+
+    if (!gasPrice) {
+        return null;
+    }
+
+    const gasLimit = BigInt(parsedTransaction.gasLimit);
+    const gasPriceWei = BigInt(gasPrice);
+    const feeWei = gasLimit * gasPriceWei;
+    const reviewToken = getYieldActionReviewToken({ token, symbol });
+    const amountSubunits = convertAmountUnitsToSubunits(amount, token.decimals);
+    let eip1559ReviewFields: Partial<
+        Pick<PrecomposedTransactionFinal, 'maxFeePerGas' | 'maxPriorityFeePerGas'>
+    > = {};
+
+    if (parsedTransaction.maxFeePerGas && parsedTransaction.maxPriorityFeePerGas) {
+        eip1559ReviewFields = {
+            maxFeePerGas: toGweiAmount(BigInt(parsedTransaction.maxFeePerGas)),
+            maxPriorityFeePerGas: toGweiAmount(BigInt(parsedTransaction.maxPriorityFeePerGas)),
+        };
+    }
+
+    const formState: FormState = {
+        outputs: [
+            {
+                type: 'payment',
+                address: parsedTransaction.to,
+                amount,
+                fiat: '',
+                currency: { value: '', label: '' },
+                token: reviewToken?.contract ?? null,
+                dataHex: parsedTransaction.data,
+            },
+        ],
+        selectedFee: 'custom',
+        feePerUnit: toGweiAmount(gasPriceWei),
+        feeLimit: gasLimit.toString(),
+        ...eip1559ReviewFields,
+        options: ['broadcast', 'transactionData'],
+        transactionData: parsedTransaction.data,
+        isCoinControlEnabled: false,
+        hasCoinControlBeenOpened: false,
+        selectedUtxos: [],
+        yieldMetadata: { type: flowType, vaultName },
+    };
+
+    const precomposedTransaction: PrecomposedTransactionFinal = {
+        type: 'final',
+        fee: feeWei.toString(),
+        feePerByte: toGweiAmount(gasPriceWei),
+        feeLimit: gasLimit.toString(),
+        totalSpent: reviewToken ? amountSubunits : (BigInt(amountSubunits) + feeWei).toString(),
+        bytes: 0,
+        inputs: [],
+        outputs: [
+            {
+                address: parsedTransaction.to,
+                amount: amountSubunits,
+            },
+        ],
+        outputsPermutation: [0],
+        ...(reviewToken ? { token: reviewToken, isTokenKnown: true } : {}),
+        ...eip1559ReviewFields,
+    };
+
+    return {
+        formState,
+        parsedTransaction,
+        precomposedTransaction,
+    };
 };
 
 export const prepareYieldAction = async ({

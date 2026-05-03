@@ -216,6 +216,7 @@ export const selectReviewSummaryOutputState = (
     prefix: FormDraftWithSendKeyPrefix,
     accountKey: AccountKey,
     tokenContract?: TokenAddress,
+    formState?: FormState,
 ) => {
     const isTransactionAlreadySigned = selectIsTransactionAlreadySigned(state);
 
@@ -223,12 +224,9 @@ export const selectReviewSummaryOutputState = (
         return 'success';
     }
 
-    const reviewOutputs = selectTransactionReviewOutputsFromDraft(
-        state,
-        prefix,
-        accountKey,
-        tokenContract,
-    );
+    const reviewOutputs = formState
+        ? selectTransactionReviewOutputs(state, accountKey, tokenContract, formState)
+        : selectTransactionReviewOutputsFromDraft(state, prefix, accountKey, tokenContract);
 
     if (reviewOutputs && A.all(reviewOutputs, output => output.state === 'success')) {
         return 'active';
@@ -257,13 +255,11 @@ export const selectTransactionReviewActiveStepIndex = (
     prefix: FormDraftWithSendKeyPrefix,
     accountKey: AccountKey,
     tokenContract?: TokenAddress,
+    formState?: FormState,
 ) => {
-    const reviewOutputs = selectTransactionReviewOutputsFromDraft(
-        state,
-        prefix,
-        accountKey,
-        tokenContract,
-    );
+    const reviewOutputs = formState
+        ? selectTransactionReviewOutputs(state, accountKey, tokenContract, formState)
+        : selectTransactionReviewOutputsFromDraft(state, prefix, accountKey, tokenContract);
 
     if (!reviewOutputs) {
         return 0;
